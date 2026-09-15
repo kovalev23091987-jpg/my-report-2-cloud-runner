@@ -31,6 +31,9 @@ jobs:
       REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
     steps:
       - name: Disabled schedule gate
         if: ${{ github.event_name == 'schedule' && env.REPORT2_RUNNER_ENABLED != '1' }}

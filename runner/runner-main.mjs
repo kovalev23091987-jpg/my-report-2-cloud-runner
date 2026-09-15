@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.1";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.3-d1-budget-gate";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -12,6 +12,10 @@ function envText(name, { required = true } = {}) {
   const value = String(process.env[name] || "").trim();
   if (required && !value) throw new Error(`${name}_REQUIRED`);
   return value;
+}
+function envNumber(name, fallback) {
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) && value > 0 ? value : fallback;
 }
 async function sha256File(path) {
   const data = await fs.readFile(path);
@@ -29,7 +33,7 @@ function installSourceProxyFetch() {
         headers: {
           "content-type": "application/json", accept: "application/json",
           authorization: `Bearer ${envText("REPORT2_SOURCE_PROXY_TOKEN")}`,
-          "user-agent": "My-Report-2-GitHub-Source-Proxy/4",
+          "user-agent": "My-Report-2-GitHub-Source-Proxy/4.3",
         },
         body: JSON.stringify({ url: target.toString() }),
         signal: init?.signal ?? (input instanceof Request ? input.signal : undefined),
@@ -67,6 +71,35 @@ function assertClosedCron(cron, scan) {
   if (Number(scan.stale || 0) !== 0) throw new Error(`SCAN_STALE_${scan.stale}`);
   if (Number(scan.stage0_coverage_pct || 0) < 99.9) throw new Error(`SCAN_COVERAGE_${scan.stage0_coverage_pct}`);
 }
+function enforceD1Budget(db) {
+  const usage = db.usageSnapshot();
+  const runsPerDay = envNumber("REPORT2_D1_RUNS_PER_DAY", 288);
+  const maxDailyReads = envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000);
+  const maxDailyWrites = envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000);
+  const projectedReads = usage.rows_read * runsPerDay;
+  const projectedWrites = usage.rows_written * runsPerDay;
+  const targets = Object.entries(usage.targets || {})
+    .map(([target, v]) => ({ target, ...v }))
+    .sort((a, b) => (b.rows_read - a.rows_read) || (b.rows_written - a.rows_written))
+    .slice(0, 12);
+  const report = {
+    measured_rows_read: usage.rows_read,
+    measured_rows_written: usage.rows_written,
+    measured_requests: usage.requests,
+    unknown_ops: usage.unknown_ops,
+    runs_per_day: runsPerDay,
+    projected_daily_rows_read: projectedReads,
+    projected_daily_rows_written: projectedWrites,
+    safety_budget_daily_rows_read: maxDailyReads,
+    safety_budget_daily_rows_written: maxDailyWrites,
+    top_targets: targets,
+  };
+  console.log("D1_USAGE_TELEMETRY", JSON.stringify(report));
+  if (usage.unknown_ops > 0) throw new Error(`D1_USAGE_UNMEASURED_OPS_${usage.unknown_ops}`);
+  if (projectedReads > maxDailyReads) throw new Error(`D1_FREE_TIER_READ_BUDGET_UNSAFE:${projectedReads}>${maxDailyReads}`);
+  if (projectedWrites > maxDailyWrites) throw new Error(`D1_FREE_TIER_WRITE_BUDGET_UNSAFE:${projectedWrites}>${maxDailyWrites}`);
+  return report;
+}
 async function main() {
   const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const { worker, sha } = await loadWorker();
@@ -79,7 +112,8 @@ async function main() {
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE started_ts >= ? ORDER BY started_ts DESC LIMIT 1").bind(started - 1000).first();
   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts >= ? ORDER BY ts DESC LIMIT 1").bind(started - 300000).first();
   assertClosedCron(cron, scan);
+  const d1Usage = enforceD1Budget(env.DATA_DB);
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });

@@ -22,6 +22,21 @@ function jsonSafe(value) {
   return value;
 }
 
+function targetFromSql(sql) {
+  const s = String(sql || "").replace(/\s+/g, " ").trim();
+  const patterns = [
+    /\bDELETE\s+FROM\s+["`\[]?([A-Za-z0-9_]+)/i,
+    /\bINSERT\s+INTO\s+["`\[]?([A-Za-z0-9_]+)/i,
+    /\bUPDATE\s+["`\[]?([A-Za-z0-9_]+)/i,
+    /\bFROM\s+["`\[]?([A-Za-z0-9_]+)/i,
+  ];
+  for (const re of patterns) {
+    const m = s.match(re);
+    if (m?.[1]) return m[1];
+  }
+  return "OTHER";
+}
+
 export class RemoteD1PreparedStatement {
   constructor(db, sql, params = []) {
     this.db = db;
@@ -67,6 +82,7 @@ export class RemoteD1Database {
     this.timeoutMs = Number.isFinite(Number(options.timeoutMs))
       ? Math.max(1_000, Number(options.timeoutMs))
       : DEFAULT_TIMEOUT_MS;
+    this._usage = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0, targets: {} };
   }
 
   prepare(sql) {
@@ -88,6 +104,40 @@ export class RemoteD1Database {
     return this._request({ op: "exec", sql: requiredText(sql, "D1_SQL") });
   }
 
+  usageSnapshot() {
+    return JSON.parse(JSON.stringify(this._usage));
+  }
+
+  _recordSingle(op, sql, usage) {
+    this._usage.requests += 1;
+    const target = `${String(op || "unknown")}:${targetFromSql(sql)}`;
+    if (!this._usage.targets[target]) {
+      this._usage.targets[target] = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0 };
+    }
+    const bucket = this._usage.targets[target];
+    bucket.requests += 1;
+    if (usage?.measured === true) {
+      const rr = Number(usage.rows_read || 0);
+      const rw = Number(usage.rows_written || 0);
+      this._usage.rows_read += rr;
+      this._usage.rows_written += rw;
+      bucket.rows_read += rr;
+      bucket.rows_written += rw;
+    } else {
+      this._usage.unknown_ops += 1;
+      bucket.unknown_ops += 1;
+    }
+  }
+
+  _recordUsage(payload, usage) {
+    if (payload?.op === "batch" && Array.isArray(payload.statements)) {
+      const parts = Array.isArray(usage?.statements) ? usage.statements : [];
+      payload.statements.forEach((stmt, i) => this._recordSingle("batch", stmt?.sql, parts[i]));
+      return;
+    }
+    this._recordSingle(payload?.op, payload?.sql, usage);
+  }
+
   async _request(payload) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -98,7 +148,7 @@ export class RemoteD1Database {
           "content-type": "application/json",
           accept: "application/json",
           authorization: `Bearer ${this.token}`,
-          "user-agent": "My-Report-2-GitHub-D1-Adapter/4",
+          "user-agent": "My-Report-2-GitHub-D1-Adapter/4.3",
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
@@ -114,6 +164,7 @@ export class RemoteD1Database {
         const code = String(data?.error || `HTTP_${response.status}`);
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }
+      this._recordUsage(payload, data?.usage);
       return data.result;
     } catch (error) {
       if (error?.name === "AbortError") throw new Error("D1_BRIDGE_TIMEOUT");
