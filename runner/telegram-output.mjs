@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 
-const OUTPUT_VERSION = "telegram-output-v2-watch70";
+const OUTPUT_VERSION = "telegram-output-v3-watch70-analysis";
 const DEFAULT_RELAY_URL = "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test";
 const RELAY_TIMEOUT_MS = 15_000;
 
@@ -278,7 +278,7 @@ async function loadWatch70Candidates(db, now, threshold = 70) {
   const minTs = Number(now) - 30 * 60_000;
   const result = await db.prepare(`
     SELECT shadow_id, contract_code, observed_ts, direction_hint, dc_long, dc_short,
-           eq_status, dq_status, data_sufficiency, calibrated,
+           eq_status, dq_status, stage, data_sufficiency, missing_chains_json, evidence_flags_json, calibrated,
            actual_decision_generated, validated, telegram_started
     FROM shadow_decision_log
     WHERE observed_ts >= ?1
@@ -315,9 +315,131 @@ async function loadWatch70Candidates(db, now, threshold = 70) {
       score,
       dq_status: dq,
       eq_status: String(row?.eq_status || ""),
+      stage: String(row?.stage || ""),
+      data_sufficiency: String(row?.data_sufficiency || ""),
+      evidence_flags: parseJsonObject(row?.evidence_flags_json),
+      missing_chains: parseJsonArray(row?.missing_chains_json),
     });
   }
   return out.slice(0, 5);
+}
+
+function parseJsonObject(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) return value;
+  try {
+    const parsed = JSON.parse(String(value || "{}"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+  } catch { return {}; }
+}
+
+function parseJsonArray(value) {
+  if (Array.isArray(value)) return value.map((x) => String(x));
+  try {
+    const parsed = JSON.parse(String(value || "[]"));
+    return Array.isArray(parsed) ? parsed.map((x) => String(x)) : [];
+  } catch { return []; }
+}
+
+function flagTrue(value) {
+  if (value === true || value === 1) return true;
+  const s = String(value ?? "").trim().toLowerCase();
+  return s === "true" || s === "1" || s === "yes";
+}
+
+function fmtSignedPct(value, digits = 1) {
+  const n = finite(value);
+  if (n === null) return null;
+  const sign = n > 0 ? "+" : "";
+  return `${sign}${n.toFixed(digits)}%`;
+}
+
+function unique(items) {
+  return [...new Set(items.filter(Boolean))];
+}
+
+function explainWatch70Candidate(candidate) {
+  const e = candidate?.evidence_flags || {};
+  const side = String(candidate?.direction || "").toUpperCase();
+  const isLong = side === "LONG";
+  const funding = finite(e.funding_pct);
+  const p1 = finite(e.price_1h_pct);
+  const p4 = finite(e.price_4h_pct);
+  const f1 = finite(e.futures_flow_1h_delta_pct);
+  const f4 = finite(e.futures_flow_4h_delta_pct);
+  const spot = finite(e.spot_flow_delta_pct);
+  const oi1 = finite(e.oi_1h_change_pct);
+  const oi4 = finite(e.oi_4h_change_pct);
+  const coverage = finite(e.htx_coverage_pct);
+  const absorption1 = flagTrue(e.absorption_1h);
+  const absorption4 = flagTrue(e.absorption_4h);
+  const spotGreen = String(e.spot_quality || "").toUpperCase() === "GREEN";
+
+  const why = [];
+  const patterns = [];
+  const strengths = [];
+  const risks = [];
+
+  if (funding !== null && ((isLong && funding < 0) || (!isLong && funding > 0))) {
+    why.push(`${isLong ? "отрицательный" : "положительный"} funding ${fmtSignedPct(funding, 3)}`);
+    patterns.push(isLong ? "squeeze-фон по funding" : "перегрев по funding");
+  }
+  if (p1 !== null && ((isLong && p1 > 0) || (!isLong && p1 < 0))) {
+    why.push(`цена ${fmtSignedPct(p1)} за 1ч`);
+    patterns.push(isLong ? "цена подтверждает силу" : "цена подтверждает слабость");
+  } else if (p4 !== null && ((isLong && p4 > 0) || (!isLong && p4 < 0))) {
+    why.push(`цена ${fmtSignedPct(p4)} за 4ч`);
+  }
+  if (f1 !== null && ((isLong && f1 > 0) || (!isLong && f1 < 0))) {
+    why.push(`фьючерсный поток ${fmtSignedPct(f1)}`);
+    patterns.push(isLong ? "активные покупки поддерживают движение" : "активные продажи поддерживают движение");
+  } else if (f4 !== null && ((isLong && f4 > 0) || (!isLong && f4 < 0))) {
+    why.push(`поток 4ч ${fmtSignedPct(f4)}`);
+  }
+
+  if (oi1 !== null && p1 !== null) {
+    if (isLong && oi1 > 0 && oi1 > Math.max(p1, 0) + 0.5) {
+      patterns.push(`OI ${fmtSignedPct(oi1)} растёт быстрее цены`);
+    }
+    if (!isLong && oi1 > 0 && p1 <= 0) {
+      patterns.push(`OI ${fmtSignedPct(oi1)} растёт при слабой цене`);
+    }
+  } else if (oi4 !== null && p4 !== null) {
+    if (isLong && oi4 > 0 && oi4 > Math.max(p4, 0) + 1) patterns.push(`OI 4ч ${fmtSignedPct(oi4)} опережает цену`);
+    if (!isLong && oi4 > 0 && p4 <= 0) patterns.push(`OI 4ч ${fmtSignedPct(oi4)} растёт при слабой цене`);
+  }
+
+  if (isLong && (absorption1 || absorption4)) patterns.push("продажи поглощаются");
+  if (isLong && f1 !== null && f1 < 0 && p1 !== null && p1 >= 0) strengths.push(`продажи ${fmtSignedPct(f1)} не продавили цену`);
+  if (!isLong && f1 !== null && f1 > 0 && p1 !== null && p1 <= 0) strengths.push(`покупки ${fmtSignedPct(f1)} не подняли цену`);
+  if (spot !== null && ((isLong && spot > 0) || (!isLong && spot < 0))) strengths.push(`спот подтверждает: ${fmtSignedPct(spot)}`);
+  if (spotGreen) strengths.push("спотовые данные качественные");
+  if (coverage !== null) strengths.push(`HTX покрытие ${Math.round(coverage)}%`);
+
+  const missing = new Set((candidate?.missing_chains || []).map(String));
+  const priorityMissing = [
+    ["btc_eth_and_sector_relative_strength", "сила к BTC/ETH ещё не закрыта"],
+    ["cross_exchange_derivatives", "кросс-биржевая проверка ещё не закрыта"],
+    ["smart_money_onchain", "Smart Money/on-chain ещё не закрыт"],
+    ["external_market_regime_timing", "режим рынка и тайминг ещё не закрыты"],
+    ["supporting_risk_supply_social_fundamentals", "social/unlock/fundamentals ещё не закрыты"],
+    ["portfolio_risk_if_positions_known", "портфельный риск не проверен"],
+  ];
+  for (const [key, label] of priorityMissing) if (missing.has(key)) risks.push(label);
+
+  if (funding !== null && ((isLong && funding > 0) || (!isLong && funding < 0))) risks.push(`funding ${fmtSignedPct(funding, 3)} не поддерживает ${isLong ? "LONG" : "SHORT"}`);
+  if (spot !== null && ((isLong && spot < 0) || (!isLong && spot > 0))) risks.push(`спот-поток ${fmtSignedPct(spot)} идёт против идеи`);
+
+  const whyFinal = unique(why).slice(0, 3);
+  const patternsFinal = unique(patterns).slice(0, 4);
+  const strengthsFinal = unique(strengths).slice(0, 2);
+  const risksFinal = unique(risks).slice(0, 2);
+
+  return {
+    why: whyFinal.length ? whyFinal : [`совокупная оценка ${Math.round(Number(candidate?.score || 0))}/100 при закрытой HTX-исполнимости`],
+    patterns: patternsFinal,
+    strengths: strengthsFinal,
+    risks: risksFinal,
+  };
 }
 
 export function buildWatch70TelegramMessage(candidate, { test = false } = {}) {
@@ -326,17 +448,18 @@ export function buildWatch70TelegramMessage(candidate, { test = false } = {}) {
   const directionRaw = String(candidate?.direction || "").toUpperCase();
   if (!Number.isFinite(score) || score < 70 || score > 100) return { ok: false, status: "SCORE_BELOW_70_OR_INVALID", message: null };
   if (!new Set(["LONG","SHORT"]).has(directionRaw)) return { ok: false, status: "DIRECTION_INVALID", message: null };
-  const direction = directionRaw === "LONG" ? "ЛОНГ" : "ШОРТ";
   const emoji = directionRaw === "LONG" ? "🟢" : "🔴";
+  const info = explainWatch70Candidate(candidate);
   const lines = [
-    test ? "🧪 Мой отчёт 2 — проверка режима 70+" : "📡 Мой отчёт 2 — кандидат 70+",
-    "НЕ ТОРГОВЫЙ СИГНАЛ",
+    test ? `🧪 ${emoji} ${directionRaw} • ${cleanTicker(candidate.contract_code)}` : `${emoji} ${directionRaw} • ${cleanTicker(candidate.contract_code)}`,
+    `Оценка: ${Math.round(score)}/100`,
     "",
-    `${emoji} ${cleanTicker(candidate.contract_code)} • ${direction}`,
-    `Внутренняя оценка: ${Math.round(score)}/100`,
-    "Данные HTX и исполнение: закрыты для наблюдения.",
-    "Это внутренняя оценка силы по текущей логике, а не статистическая вероятность прибыли.",
+    `Почему в списке: ${info.why.join(" • ")}.`,
   ];
+  if (info.patterns.length) lines.push(`Паттерны: ${info.patterns.join(" • ")}.`);
+  if (info.strengths.length) lines.push(`Сильное: ${info.strengths.join(" • ")}.`);
+  if (info.risks.length) lines.push(`Перед входом: ${info.risks.join(" • ")}.`);
+  else lines.push("Перед входом: перепроверить структуру, ликвидность и условие отмены идеи.");
   const message = lines.join("\n");
   return { ok: message.length <= 4096, status: message.length <= 4096 ? "READY" : "MESSAGE_TOO_LONG", message: message.length <= 4096 ? message : null };
 }
