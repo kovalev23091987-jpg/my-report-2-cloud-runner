@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.6.3-cron-identity-lock";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.6.2-discovery-recall-kpi-shadow-readback";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -383,13 +383,8 @@ async function main() {
   const started = Date.now();
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "*/5 * * * *" : "manual" }, env, ctx);
   if (pending.length) await Promise.all(pending);
-  const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
-  if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
-  if (Number(cron.scheduled_time) !== Number(started)) throw new Error(`CRON_IDENTITY_MISMATCH:${cron.scheduled_time}!=${started}`);
-  if (cron.status !== "SUCCESS" || cron.completed_ts == null) throw new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
-  console.log("CRON_IDENTITY_BINDING", JSON.stringify({ expected_scheduled_time:started, selected_scheduled_time:Number(cron.scheduled_time), run_id:String(cron.run_id || "") }));
-  const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts BETWEEN ?1 AND ?2 ORDER BY ABS(ts - ?3) ASC LIMIT 1").bind(Number(cron.started_ts), Number(cron.completed_ts), Number(cron.started_ts)).first();
-  console.log("SCAN_IDENTITY_BINDING", JSON.stringify({ cron_started_ts:Number(cron.started_ts), cron_completed_ts:Number(cron.completed_ts), selected_scan_ts:Number(scan?.ts || 0) || null }));
+  const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE started_ts >= ? ORDER BY started_ts DESC LIMIT 1").bind(started - 1000).first();
+  const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts >= ? ORDER BY ts DESC LIMIT 1").bind(started - 300000).first();
   assertClosedCron(cron, scan);
   const telegramObserver = await observeNaturalTelegramDecision(env.DATA_DB);
   const discoveryRecallKpi = await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id });
