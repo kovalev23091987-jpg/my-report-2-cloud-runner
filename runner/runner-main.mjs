@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.3-d1-budget-gate";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.4-d1-write-shard";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
