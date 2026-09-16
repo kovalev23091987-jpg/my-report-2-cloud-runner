@@ -3,9 +3,8 @@ import crypto from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
-import { runTelegramOutputLayer } from "./telegram-output.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.7.1-telegram-watch70";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.6.3-cron-identity-lock";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -129,7 +128,6 @@ async function observeNaturalTelegramDecision(db) {
 }
 
 function finite(v) {
-  if (v === null || v === undefined || (typeof v === "string" && v.trim() === "")) return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
@@ -398,26 +396,8 @@ async function main() {
   if (source !== "schedule" && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
     throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
   }
-  const telegramOutput = await runTelegramOutputLayer({
-    db: env.DATA_DB,
-    scan,
-    telegramObserver,
-    startedTs: started,
-    source,
-    relayUrl: envText("REPORT2_TELEGRAM_RELAY_URL", { required: false }),
-    relayKey: envText("REPORT2_TELEGRAM_RELAY_KEY", { required: false }),
-    reportTest: envText("REPORT2_TELEGRAM_REPORT_TEST", { required: false }),
-    shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
-    watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
-    watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-    enabled: envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
-    fetchImpl: nativeFetch,
-  });
-  if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
-    throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
-  }
   const d1Usage = enforceD1Budget(env.DATA_DB);
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, discovery_recall_kpi:discoveryRecallKpi, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
