@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.4-d1-write-shard";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.5-telegram-natural-observer";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -71,6 +71,62 @@ function assertClosedCron(cron, scan) {
   if (Number(scan.stale || 0) !== 0) throw new Error(`SCAN_STALE_${scan.stale}`);
   if (Number(scan.stage0_coverage_pct || 0) < 99.9) throw new Error(`SCAN_COVERAGE_${scan.stage0_coverage_pct}`);
 }
+
+async function observeNaturalTelegramDecision(db) {
+  try {
+    const row = await db.prepare(`SELECT decision_id, mode, decision_status, contract_code, observation_ts, direction,
+      entry_action, management_action, data_quality, hard_veto, shadow_only, live_probability,
+      validated_signal, execution_authorized, telegram_eligible, persisted_ts
+      FROM final_decision_integration_shadow
+      ORDER BY persisted_ts DESC LIMIT 1`).first();
+
+    if (!row) {
+      const report = {
+        status: "NO_FINAL_DECISION_ROW",
+        row_present: false,
+        auto_send: false,
+      };
+      console.log("TELEGRAM_NATURAL_DECISION_OBSERVER", JSON.stringify(report));
+      return report;
+    }
+
+    const failClosedReasons = [];
+    if (row.mode !== "SHADOW_ONLY_NO_EXECUTION") failClosedReasons.push("NOT_SHADOW_ONLY");
+    if (Number(row.shadow_only) !== 1) failClosedReasons.push("SHADOW_FLAG_NOT_ONE");
+    if (row.live_probability !== null && row.live_probability !== undefined) failClosedReasons.push("LIVE_PROBABILITY_PRESENT");
+    if (Number(row.validated_signal || 0) !== 0) failClosedReasons.push("VALIDATED_SIGNAL_PRESENT");
+    if (Number(row.execution_authorized || 0) !== 0) failClosedReasons.push("EXECUTION_AUTHORIZED");
+    if (Number(row.telegram_eligible || 0) !== 0) failClosedReasons.push("TELEGRAM_ELIGIBLE_UNEXPECTED");
+
+    const report = {
+      status: failClosedReasons.length ? "FOUND_REJECTED_FAIL_CLOSED" : "FOUND_SAFE_SHADOW_ROW",
+      row_present: true,
+      decision_id: String(row.decision_id || ""),
+      contract_code: String(row.contract_code || "UNKNOWN"),
+      direction: String(row.direction || "UNKNOWN"),
+      decision_status: String(row.decision_status || "UNKNOWN"),
+      entry_action: String(row.entry_action || "NOT_EVALUATED"),
+      management_action: String(row.management_action || "NOT_EVALUATED"),
+      data_quality: String(row.data_quality || "NOT_EVALUATED"),
+      hard_veto: Number(row.hard_veto || 0) === 1,
+      persisted_ts: Number(row.persisted_ts || 0) || null,
+      fail_closed_reasons: failClosedReasons,
+      auto_send: false,
+    };
+    console.log("TELEGRAM_NATURAL_DECISION_OBSERVER", JSON.stringify(report));
+    return report;
+  } catch (error) {
+    const report = {
+      status: "OBSERVER_ERROR_FAIL_CLOSED",
+      row_present: false,
+      error: String(error?.message || error),
+      auto_send: false,
+    };
+    console.log("TELEGRAM_NATURAL_DECISION_OBSERVER", JSON.stringify(report));
+    return report;
+  }
+}
+
 function enforceD1Budget(db) {
   const usage = db.usageSnapshot();
   const runsPerDay = envNumber("REPORT2_D1_RUNS_PER_DAY", 288);
@@ -112,8 +168,9 @@ async function main() {
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE started_ts >= ? ORDER BY started_ts DESC LIMIT 1").bind(started - 1000).first();
   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts >= ? ORDER BY ts DESC LIMIT 1").bind(started - 300000).first();
   assertClosedCron(cron, scan);
+  const telegramObserver = await observeNaturalTelegramDecision(env.DATA_DB);
   const d1Usage = enforceD1Budget(env.DATA_DB);
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
