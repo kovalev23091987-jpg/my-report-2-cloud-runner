@@ -1,0 +1,61 @@
+{
+  "schema": "my-report-2-v3-r5-node24-isolated-ci-gate-r2",
+  "date": "2026-09-17",
+  "base_main": "26bf598affe96e224a65df522c80d85779ed3c13",
+  "candidate_worker_sha256": "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c",
+  "embedded_r5_zip_sha256": "18f543cb781edc1d697fd4d3ac13b9f1aefee92536deb2fb93303aa1b9876e2e",
+  "production_changed": false,
+  "remote_d1_changed": false,
+  "ci_actions": [
+    "node24_full_readiness",
+    "remote_d1_check_only",
+    "runner_patch_emit",
+    "encrypted_payload_build",
+    "artifact_upload"
+  ],
+  "forbidden_actions": [
+    "main_write",
+    "d1_apply",
+    "deploy",
+    "telegram_market_send",
+    "trading_execution"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/report2-v3-r5-node24-ci.yml",
+      "bytes": 5287,
+      "sha256": "52e27922ff5c762d56bdb433e996d1f562877ca508238077df01605559969871"
+    },
+    {
+      "path": ".v3-r5-ci/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R5_20260917.zip",
+      "bytes": 2638660,
+      "sha256": "18f543cb781edc1d697fd4d3ac13b9f1aefee92536deb2fb93303aa1b9876e2e"
+    },
+    {
+      "path": ".v3-r5-ci/d1-bridge-check.mjs",
+      "bytes": 3345,
+      "sha256": "55a3e1d848e2f026c34359f1f213ce34bf3cdef758305912498fc67f370d74d4"
+    },
+    {
+      "path": "README_RU.md",
+      "bytes": 814,
+      "sha256": "8fe8f62e6c6f8862e1b29a626dbbde6d38db770c5dad8887739f57f976836979"
+    },
+    {
+      "path": "tests/test_ci_bundle.py",
+      "bytes": 1013,
+      "sha256": "8f768c9345a0a54f1bea8bf712fc1a9605803959ad44c8e502bd37703151104f"
+    }
+  ],
+  "previous_failed_run": {
+    "run_id": 35272472538,
+    "classification": "STALE_TEST_EXPECTATION_AGAINST_EXISTING_R9_WRITE_SHARDING",
+    "node24": "24.20.0",
+    "v3_node24": "PASS",
+    "v3_python_static_schema": "PASS",
+    "core_node24_before_stop": "124/125_PASS",
+    "fixed_scope": "TEST_ONLY_RUNTIME_EXACT_R9",
+    "production_changed": false,
+    "remote_d1_changed": false
+  }
+}
