@@ -4,6 +4,8 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 import { runTelegramOutputLayer } from "./telegram-output.mjs";
+import { deriveRunReservation, loadDailyUsageAggregate, reserveRunBudget, evaluateDailyReservationBudget, evaluateWithinRunReservation, finalizeRunUsage } from "./d1-preaction-budget-guard.mjs";
+import { classifyZeroTelegram } from "./telegram-zero-reason.mjs";
 
 const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.7.3-telegram-watch70-tree-guard";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -269,10 +271,14 @@ async function observeDiscoveryRecallKpi(db, { startedTs, source, runId } = {}) 
   try {
     const ts = Number(startedTs || Date.now());
     const minute = new Date(ts).getUTCMinutes();
-    if (source === "schedule" && minute !== 2) {
-      const report = { mode:"DISCOVERY_RECALL_KPI_SHADOW_V1", status:"DEFERRED_HOURLY_SLOT", scheduled_minute_utc:minute, persisted:false };
-      console.log("DISCOVERY_RECALL_KPI_SHADOW", JSON.stringify(report));
-      return report;
+    const hourlyBucket = Math.floor(ts / 3_600_000) * 3_600_000;
+    if (source === "schedule") {
+      const already = await db.prepare(`SELECT audit_ts_bucket FROM discovery_recall_kpi_shadow WHERE audit_ts_bucket=?1 LIMIT 1`).bind(hourlyBucket).first();
+      if (already) {
+        const report = { mode:"DISCOVERY_RECALL_KPI_SHADOW_V1", status:"ALREADY_FILLED_THIS_HOUR", scheduled_minute_utc:minute, persisted:true };
+        console.log("DISCOVERY_RECALL_KPI_SHADOW", JSON.stringify(report));
+        return report;
+      }
     }
     const targets = [
       ["current", ts, 15*60_000],
@@ -292,7 +298,7 @@ async function observeDiscoveryRecallKpi(db, { startedTs, source, runId } = {}) 
     const current = pick(0);
     const baselines = { "1h":pick(1), "4h":pick(2), "24h":pick(3) };
     const kpi = evaluateRecallKpi({ current, baselines });
-    const bucket = Math.floor(ts / 3_600_000) * 3_600_000;
+    const bucket = hourlyBucket;
     const record = {
       ...kpi,
       audit_ts:ts,
@@ -383,6 +389,22 @@ async function main() {
   const pending = [];
   const ctx = { waitUntil(promise) { pending.push(Promise.resolve(promise)); }, passThroughOnException() {} };
   const started = Date.now();
+  const d1RunReservation = deriveRunReservation({
+    runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY", 288),
+    maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
+    maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
+  });
+  if (!d1RunReservation.ok) throw new Error(`D1_RUN_RESERVATION_NOT_CLOSED:${d1RunReservation.status}`);
+  const d1DailyBeforeReservation = await loadDailyUsageAggregate(env.DATA_DB, started);
+  const d1DayAdmission = evaluateDailyReservationBudget({
+    daily:d1DailyBeforeReservation,
+    nextReservation:d1RunReservation,
+    maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
+    maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
+  });
+  if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${d1DayAdmission.status}:${(d1DayAdmission.reasons||[]).join(",")}`);
+  const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
+  const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "*/5 * * * *" : "manual" }, env, ctx);
   if (pending.length) await Promise.all(pending);
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
@@ -398,7 +420,21 @@ async function main() {
   if (source !== "schedule" && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
     throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
   }
-  const telegramOutput = await runTelegramOutputLayer({
+  const d1PreTelegramBudget = evaluateWithinRunReservation({
+    reservation:d1RunReservation,
+    currentUsage:env.DATA_DB.usageSnapshot(),
+    extraRowsRead:64,
+    extraRowsWritten:41,
+  });
+  let telegramOutput;
+  if (!d1PreTelegramBudget.allowed) {
+    telegramOutput = {
+      version:"telegram-output-budget-guard", enabled:true, final_chain_auto:false,
+      morning:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false},
+      watch70:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:0},
+      shadow_decision:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false,count:0,skipped:[{reason:d1PreTelegramBudget.status}]},
+    };
+  } else telegramOutput = await runTelegramOutputLayer({
     db: env.DATA_DB,
     scan,
     telegramObserver,
@@ -413,11 +449,15 @@ async function main() {
     enabled: envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
     fetchImpl: nativeFetch,
   });
+  const telegramZeroReason = classifyZeroTelegram({ preBudget:d1PreTelegramBudget, telegramObserver, telegramOutput });
   if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
+  const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot()});
+  if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
   const d1Usage = enforceD1Budget(env.DATA_DB);
+  const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
