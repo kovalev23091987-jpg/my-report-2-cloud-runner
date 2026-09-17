@@ -1,0 +1,50 @@
+{
+  "schema": "my-report-2-v3-r5-node24-isolated-ci-gate-v1",
+  "date": "2026-09-17",
+  "base_main": "26bf598affe96e224a65df522c80d85779ed3c13",
+  "candidate_worker_sha256": "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c",
+  "embedded_r5_zip_sha256": "179ee014928bdf2938a1410d7820a9b1dfb82b4436dbfd371e70fb8f8f0f84a0",
+  "production_changed": false,
+  "remote_d1_changed": false,
+  "ci_actions": [
+    "node24_full_readiness",
+    "remote_d1_check_only",
+    "runner_patch_emit",
+    "encrypted_payload_build",
+    "artifact_upload"
+  ],
+  "forbidden_actions": [
+    "main_write",
+    "d1_apply",
+    "deploy",
+    "telegram_market_send",
+    "trading_execution"
+  ],
+  "files": [
+    {
+      "path": ".github/workflows/report2-v3-r5-node24-ci.yml",
+      "bytes": 4975,
+      "sha256": "34d85edd6649cfaebd0ea4e3f50478b558512a4ca718eabf4420a364893603f1"
+    },
+    {
+      "path": ".v3-r5-ci/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R5_20260917.zip",
+      "bytes": 2629364,
+      "sha256": "179ee014928bdf2938a1410d7820a9b1dfb82b4436dbfd371e70fb8f8f0f84a0"
+    },
+    {
+      "path": ".v3-r5-ci/d1-bridge-check.mjs",
+      "bytes": 3345,
+      "sha256": "55a3e1d848e2f026c34359f1f213ce34bf3cdef758305912498fc67f370d74d4"
+    },
+    {
+      "path": "README_RU.md",
+      "bytes": 991,
+      "sha256": "1b53e19a5ae282a0cc81dec07485b00b0fd016f7930902f9b8e3caac3b1631c0"
+    },
+    {
+      "path": "tests/test_ci_bundle.py",
+      "bytes": 952,
+      "sha256": "788cf76c4fb9443f9d61a006184448c0b9d20e4f1a54bc45589c456a769157dc"
+    }
+  ]
+}

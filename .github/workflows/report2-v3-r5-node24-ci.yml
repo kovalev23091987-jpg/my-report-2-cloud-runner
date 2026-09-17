@@ -1,0 +1,101 @@
+name: Report 2 V3 R5 Node24 CI Gate
+
+on:
+  push:
+    branches:
+      - "report2-v3-r5-node24-*"
+
+permissions:
+  contents: read
+
+jobs:
+  v3-r5-node24-gate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      BASE_MAIN_SHA: "26bf598affe96e224a65df522c80d85779ed3c13"
+      R5_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify isolation and unchanged main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          echo "ISOLATED_BRANCH_BASE=PASS"
+      - name: Run full R5 Node24 readiness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .v3-r5-ci/bin
+          if ! command -v shasum >/dev/null 2>&1; then
+            printf '%s\n' '#!/bin/bash' 'set -Eeuo pipefail' 'if [ "${1:-}" = "-a" ] && [ "${2:-}" = "256" ]; then shift 2; fi' 'exec sha256sum "$@"' > .v3-r5-ci/bin/shasum
+            chmod +x .v3-r5-ci/bin/shasum
+            export PATH="$GITHUB_WORKSPACE/.v3-r5-ci/bin:$PATH"
+          fi
+          rm -rf .v3-r5-ci/unpacked
+          mkdir -p .v3-r5-ci/unpacked
+          unzip -q .v3-r5-ci/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R5_20260917.zip -d .v3-r5-ci/unpacked
+          ROOT="$GITHUB_WORKSPACE/.v3-r5-ci/unpacked/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R5_20260917"
+          chmod +x "$ROOT/RUN_INTERNAL_NODE24_READINESS.command"
+          REPORT2_REPO="$GITHUB_WORKSPACE" "$ROOT/RUN_INTERNAL_NODE24_READINESS.command" | tee .v3-r5-ci/NODE24_READINESS.log
+          grep -q '^FINAL_RESULT=READY_FOR_CONTROLLED_INTEGRATION_NOT_DEPLOYED$' .v3-r5-ci/NODE24_READINESS.log
+          RESULT_FILE="$(grep '^RESULT_FILE=' .v3-r5-ci/NODE24_READINESS.log | tail -1 | cut -d= -f2-)"
+          test -f "$RESULT_FILE"
+          cp "$RESULT_FILE" .v3-r5-ci/NODE24_READINESS_RESULT.txt
+          echo "R5_ROOT=$ROOT" >> "$GITHUB_ENV"
+      - name: Remote D1 read-only audit
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_D1_BRIDGE_URL"
+          test -n "$REPORT2_D1_BRIDGE_TOKEN"
+          node .v3-r5-ci/d1-bridge-check.mjs | tee .v3-r5-ci/D1_CHECK_ONLY.json
+          grep -q '"remote_d1_changed": false' .v3-r5-ci/D1_CHECK_ONLY.json
+      - name: Emit exact runner patch and encrypted candidate payload
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          test "${#REPORT2_PAYLOAD_KEY}" -eq 64
+          python3 "$R5_ROOT/overlay/tools/patch_cloud_runner_v3.py" "$GITHUB_WORKSPACE" --worker-sha "$R5_WORKER_SHA" --emit-dir .v3-r5-ci/emitted | tee .v3-r5-ci/PATCH_EMIT.log
+          rm -rf .v3-r5-ci/candidate
+          mkdir -p .v3-r5-ci/candidate
+          unzip -q "$R5_ROOT/authoritative/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_TZ10_1_20260917.zip" -d .v3-r5-ci/candidate
+          cp -R "$R5_ROOT/overlay/." .v3-r5-ci/candidate/
+          ACTUAL="$(sha256sum .v3-r5-ci/candidate/src/worker.js | awk '{print $1}')"
+          test "$ACTUAL" = "$R5_WORKER_SHA"
+          tar -czf .v3-r5-ci/report2-runtime.tar.gz -C .v3-r5-ci/candidate .
+          node runner/payload-crypto.mjs encrypt .v3-r5-ci/report2-runtime.tar.gz "$REPORT2_PAYLOAD_KEY" .v3-r5-ci/report2-runtime.enc
+          rm -f .v3-r5-ci/report2-runtime.tar.gz
+          sha256sum .v3-r5-ci/report2-runtime.enc .v3-r5-ci/emitted/runner-main.mjs .v3-r5-ci/emitted/report2.yml | tee .v3-r5-ci/ARTIFACT_SHA256.txt
+          printf '{\n  "status":"READY_FOR_CONTROLLED_PROMOTION_NOT_DEPLOYED",\n  "base_main":"%s",\n  "candidate_worker_sha256":"%s",\n  "node":"%s",\n  "production_changed":false,\n  "remote_d1_changed":false\n}\n' "$BASE_MAIN_SHA" "$R5_WORKER_SHA" "$(node -p 'process.versions.node')" > .v3-r5-ci/CI_PASS_PROOF.json
+      - name: Upload isolated promotion candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r5-node24-candidate
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            .v3-r5-ci/report2-runtime.enc
+            .v3-r5-ci/emitted/runner-main.mjs
+            .v3-r5-ci/emitted/report2.yml
+            .v3-r5-ci/NODE24_READINESS.log
+            .v3-r5-ci/NODE24_READINESS_RESULT.txt
+            .v3-r5-ci/D1_CHECK_ONLY.json
+            .v3-r5-ci/PATCH_EMIT.log
+            .v3-r5-ci/ARTIFACT_SHA256.txt
+            .v3-r5-ci/CI_PASS_PROOF.json
