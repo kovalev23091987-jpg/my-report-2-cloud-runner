@@ -1,0 +1,103 @@
+/**
+ * TZ 10.1 score interval scaffold.
+ *
+ * Uses only already-confirmed binary detectors for subcriteria whose numerical
+ * rule is presently explicit. Unknown criteria keep [0, weight]; weights are
+ * never renormalized and missing is never coerced to zero.
+ *
+ * This is SHADOW / CALIBRATION_REQUIRED. It is not a probability and cannot by
+ * itself authorize publication, Telegram or trading.
+ */
+export const TZ101_SCORE_VERSION = 'tz101-four-block-score-interval-r5';
+export const TZ101_SCORE_SEMANTICS = 'FOUR_BLOCK_35_30_20_15_V1';
+
+export const BLOCKS = Object.freeze([
+  { id:'DERIVATIVES_CROSS_VENUE', weight:35, items:[
+    {id:'PRICE_OI_DYNAMICS',weight:10},
+    {id:'FUTURES_FLOW_PRICE_REACTION',weight:10},
+    {id:'FUNDING_CONTEXT_HOLD_COST',weight:5},
+    {id:'CROSS_VENUE_CONFIRMATION',weight:10},
+  ]},
+  { id:'RELATIVE_STRENGTH_SPOT', weight:30, items:[
+    {id:'BTC_ETH_SECTOR_RELATIVE_STRENGTH',weight:10},
+    {id:'SPOT_FLOW_PRICE_REACTION',weight:10},
+    {id:'DEMAND_SUPPLY_VOLUME_STRUCTURE',weight:10},
+  ]},
+  { id:'SMART_MONEY_ONCHAIN', weight:20, items:[
+    {id:'LARGE_PARTICIPANT_DIRECTION',weight:10},
+    {id:'CAPITAL_MOVE_PERSISTENCE_BREADTH',weight:10},
+  ]},
+  { id:'SUPPORTING_RISK', weight:15, items:[
+    {id:'SUPPLY_UNLOCK_BUYBACK',weight:6},
+    {id:'FUNDAMENTALS_PROJECT_STATE',weight:4},
+    {id:'ATTENTION_EVENTS_PHASE',weight:5},
+  ]},
+]);
+
+const validDirection = d => ['LONG','SHORT'].includes(String(d||'').toUpperCase());
+const arr = v => Array.isArray(v) ? v : [];
+const unique = xs => [...new Set(xs.filter(Boolean))];
+
+function confirmedDecisionDomain(rows, domain, direction) {
+  const d=String(direction||'').toUpperCase();
+  return arr(rows).some(r => r?.status==='CLOSED' && r?.eligible_for_decision===true && r?.effect==='SUPPORT' &&
+    String(r?.stance||'').toUpperCase()===d && String(r?.causal_domain||'').toUpperCase()===domain);
+}
+function itemState(id,{decision_evidence,direction,smart_money_raw}={}) {
+  if(id==='FUTURES_FLOW_PRICE_REACTION') {
+    return confirmedDecisionDomain(decision_evidence,'PRICE_ACTION',direction)
+      ? {state:'CONFIRMED',method:'EXISTING_HTX_PRICE_FLOW_CONFIRMATION_5M_BINARY',calibration_required:true}
+      : {state:'UNKNOWN',method:'EXISTING_HTX_PRICE_FLOW_CONFIRMATION_5M_BINARY',calibration_required:true};
+  }
+  if(id==='BTC_ETH_SECTOR_RELATIVE_STRENGTH') {
+    return confirmedDecisionDomain(decision_evidence,'RELATIVE_MARKET',direction)
+      ? {state:'CONFIRMED',method:'OKX_SPOT_RS_BTC_ETH_1H_STRICT_BINARY',calibration_required:true}
+      : {state:'UNKNOWN',method:'OKX_SPOT_RS_BTC_ETH_1H_STRICT_BINARY',calibration_required:true};
+  }
+  if(id==='LARGE_PARTICIPANT_DIRECTION' || id==='CAPITAL_MOVE_PERSISTENCE_BREADTH') {
+    const raw=smart_money_raw;
+    const present=raw?.status==='CLOSED_RAW_UNCALIBRATED' && raw?.score_eligible===false && raw?.directional_vote_eligible===false;
+    return {state:'UNKNOWN',method:present?'RAW_SMART_MONEY_PRESENT_UNCALIBRATED':'NORMALIZATION_NOT_YET_VALIDATED',calibration_required:true,raw_observed:present};
+  }
+  return {state:'UNKNOWN',method:'NORMALIZATION_NOT_YET_VALIDATED',calibration_required:true};
+}
+
+export function buildTz101ScoreInterval({direction,decision_evidence=[],smart_money_raw=null}={}) {
+  const d=String(direction||'').toUpperCase();
+  if(!validDirection(d)) return {status:'NOT_CLOSED',reason:'DIRECTION_NOT_CLOSED',score_lower_bound:null,score_upper_bound:null};
+  const weighted_blocks=[];
+  const missing=[];
+  let totalLower=0,totalUpper=0;
+  for(const block of BLOCKS) {
+    const subcriteria=[];
+    let lo=0,hi=0;
+    for(const item of block.items) {
+      const s=itemState(item.id,{decision_evidence,direction:d,smart_money_raw});
+      const lower=s.state==='CONFIRMED' ? item.weight : 0;
+      const upper=s.state==='UNKNOWN' ? item.weight : lower;
+      if(s.state==='UNKNOWN') missing.push(`${block.id}:${item.id}`);
+      lo+=lower;hi+=upper;
+      subcriteria.push({id:item.id,weight:item.weight,state:s.state,contribution_lower:lower,contribution_upper:upper,method:s.method,calibration_required:s.calibration_required,...(s.raw_observed===true?{raw_observed:true}:{})});
+    }
+    const blockState=subcriteria.every(x=>x.state==='CONFIRMED') ? 'CLOSED' : subcriteria.some(x=>x.state==='CONFIRMED') ? 'PARTIAL' : 'UNKNOWN';
+    weighted_blocks.push({id:block.id,weight:block.weight,state:blockState,contribution_lower:lo,contribution_upper:hi,subcriteria});
+    totalLower+=lo;totalUpper+=hi;
+  }
+  const wholeMissing=weighted_blocks.filter(b=>b.state==='UNKNOWN').map(b=>b.id);
+  return {
+    version:TZ101_SCORE_VERSION,
+    score_semantics:TZ101_SCORE_SEMANTICS,
+    is_probability:false,
+    direction:d,
+    status: wholeMissing.length ? 'INCOMPLETE_REQUIRED_BLOCKS' : missing.length ? 'PARTIAL' : 'CLOSED',
+    score_lower_bound:totalLower,
+    score_upper_bound:totalUpper,
+    weighted_blocks,
+    missing_subcriteria:unique(missing),
+    wholly_missing_blocks:wholeMissing,
+    threshold_60_lower_bound_pass:totalLower>=60,
+    threshold_70_lower_bound_pass:totalLower>=70,
+    calibration_status:'CALIBRATION_REQUIRED_BEFORE_LIVE_SCORE_PROMOTION',
+    safety:{missing_as_zero:false,renormalized_available_weight:false,probability:false,telegram_authorized:false,trading_authorized:false},
+  };
+}
