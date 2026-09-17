@@ -1,0 +1,282 @@
+{
+  "version": "3.9.2-final-decision-integration-shadow",
+  "rules_version": "decision-orchestrator-gates-v2",
+  "mode": "FINAL_DECISION_INTEGRATION_SHADOW_NO_EXECUTION",
+  "status": "SHADOW_EVALUATED",
+  "decision_id": "FDI:TEST-USDT:1789329600000:e7430a101d69e57d",
+  "material_digest": "e7430a101d69e57d",
+  "contract_code": "TEST-USDT",
+  "snapshot_id": "RUN-TEST-1",
+  "observation_ts": 1789329600000,
+  "direction": "INSUFFICIENT",
+  "directional_quality": "INSUFFICIENT",
+  "entry_action": "WAIT",
+  "entry_action_id": null,
+  "entry_quality": "INSUFFICIENT",
+  "data_quality": "CLOSED",
+  "execution_quality": "INSUFFICIENT",
+  "entry_execution_quality": "INSUFFICIENT",
+  "management_execution_quality": "NOT_EVALUATED",
+  "campaign_phase": "ENTRY_TRIGGER",
+  "campaign_quality": "CLOSED",
+  "independence_state": "PARTIAL",
+  "timing_state": "ENTRY_WINDOW",
+  "risk_state": "CLEAR",
+  "position_state": "FLAT",
+  "management_action": "NOT_EVALUATED",
+  "management_intent": "NOT_EVALUATED",
+  "management_action_id": null,
+  "management_quality": "NOT_EVALUATED",
+  "management_trigger_basis": null,
+  "action_identity": {
+    "entry": null,
+    "management": null
+  },
+  "lineage_receipts": {
+    "decision_evidence": {
+      "receipt_id": "ER:019657a00124719a",
+      "content_digest": "4b04551b1ec81eab",
+      "committed_ts": 1789329600000
+    },
+    "full_evidence_source": {
+      "receipt_id": "FER:TEST-USDT:RUN-TEST-1",
+      "content_digest": "8bfffd3517d542d0",
+      "committed_ts": 1789329599750
+    },
+    "full_evidence": {
+      "receipt_id": "FEROW:TEST-USDT:RUN-TEST-1",
+      "content_digest": "66752d78c05b53c5",
+      "committed_ts": 1789329599900
+    },
+    "opportunity": {
+      "receipt_id": "OPR:f0e79872d1371471",
+      "content_digest": "2cb505972fc1539e",
+      "committed_ts": 1789329599900
+    },
+    "campaign": {
+      "receipt_id": "CMR:MW:TEST-USDT:1:4",
+      "content_digest": "13fb81edb417b062",
+      "committed_ts": 1789329599950
+    },
+    "safety_gate": {
+      "receipt_id": "SGR:TEST-USDT:RUN-TEST-1",
+      "content_digest": "653a80eec77f816f",
+      "committed_ts": 1789329599600
+    },
+    "position": {
+      "receipt_id": "PSR:TEST-USDT:1",
+      "content_digest": "13b659c436b54436",
+      "committed_ts": 1789329599900
+    },
+    "position_origin_campaign": {
+      "receipt_id": null,
+      "content_digest": null,
+      "committed_ts": null
+    },
+    "position_management": {
+      "receipt_id": null,
+      "content_digest": null,
+      "committed_ts": null
+    }
+  },
+  "input_lineage_digest": "008b6984837b7cdd",
+  "hard_veto": false,
+  "hard_veto_state": "CLEAR",
+  "calibration_eligible": false,
+  "calibration_status": "NOT_STATISTICALLY_VALIDATED",
+  "shadow_outcome_collection_eligible": false,
+  "live_probability": null,
+  "validated_signal": false,
+  "execution_authorized": false,
+  "telegram_eligible": false,
+  "shadow_only": true,
+  "reason_codes": [
+    "DIRECTIONAL_QUALITY_INSUFFICIENT",
+    "ENTRY_DIRECTION_REQUIRED_FOR_SIDE_EXECUTION",
+    "EVIDENCE_INDEPENDENCE_PARTIAL",
+    "EXECUTION_QUALITY_INSUFFICIENT",
+    "SHADOW_NO_ENTRY_PROMOTION"
+  ],
+  "opportunity_latency": {
+    "event_ts": 1789326000000,
+    "event_close_ts": 1789326060000,
+    "first_detected_ts": 1789327800000,
+    "entry_trigger_ts": 1789329000000,
+    "detection_lag_ms": 1800000,
+    "detection_lag_from_close_ms": 1740000,
+    "entry_lag_from_detection_ms": 1200000,
+    "observation_age_from_event_ms": 3600000
+  },
+  "evidence_independence": {
+    "semantics": "RULE_BASED_CAUSAL_DOMAIN_SEPARATION_NOT_STATISTICAL_INDEPENDENCE",
+    "status": "PARTIAL",
+    "causal_domains": {
+      "POSITIONING": {
+        "state": "UNKNOWN",
+        "evidence_ids": [],
+        "support_ids": [],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [],
+        "correlation_groups": [],
+        "raw_support_count": 0,
+        "effective_domain_votes": 0
+      },
+      "PRICE_ACTION": {
+        "state": "LONG",
+        "evidence_ids": [
+          "PF:89658d91317bc4e7"
+        ],
+        "support_ids": [
+          "PF:89658d91317bc4e7"
+        ],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [
+          "PRICE_RESPONSE"
+        ],
+        "correlation_groups": [
+          "HTX-PF:13f595224befb176"
+        ],
+        "raw_support_count": 1,
+        "effective_domain_votes": 1
+      },
+      "REGIME_CONTEXT": {
+        "state": "UNKNOWN",
+        "evidence_ids": [],
+        "support_ids": [],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [],
+        "correlation_groups": [],
+        "raw_support_count": 0,
+        "effective_domain_votes": 0
+      },
+      "RELATIVE_MARKET": {
+        "state": "UNKNOWN",
+        "evidence_ids": [],
+        "support_ids": [],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [],
+        "correlation_groups": [],
+        "raw_support_count": 0,
+        "effective_domain_votes": 0
+      },
+      "RISK_INVALIDATION": {
+        "state": "UNKNOWN",
+        "evidence_ids": [],
+        "support_ids": [],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [],
+        "correlation_groups": [],
+        "raw_support_count": 0,
+        "effective_domain_votes": 0
+      },
+      "VENUE_BREADTH_CONTEXT": {
+        "state": "UNKNOWN",
+        "evidence_ids": [],
+        "support_ids": [],
+        "invalidates_long_ids": [],
+        "invalidates_short_ids": [],
+        "causal_families": [],
+        "correlation_groups": [],
+        "raw_support_count": 0,
+        "effective_domain_votes": 0
+      }
+    },
+    "effective_directional_domains": [
+      "PRICE_ACTION"
+    ],
+    "raw_usable_evidence_count": 1,
+    "effective_directional_vote_count": 1,
+    "duplicate_or_correlated_suppressed": [],
+    "cross_domain_payload_digest_reuse": [],
+    "cross_plane_reuse": {
+      "state": "CLOSED",
+      "total_reuse_count": 0,
+      "all_reuse_digest": "ed09c966dbcf99dd",
+      "report_truncated": false,
+      "reports": [],
+      "reason_codes": []
+    },
+    "statistical_independence_validated": false
+  },
+  "explainability": {
+    "confirming_evidence": [
+      "PRICE_ACTION:PF:89658d91317bc4e7"
+    ],
+    "contradictory_evidence": [],
+    "blockers": [
+      "DIRECTIONAL_QUALITY_INSUFFICIENT",
+      "EVIDENCE_INDEPENDENCE_PARTIAL",
+      "EXECUTION_QUALITY_INSUFFICIENT"
+    ],
+    "missing_or_unusable": [
+      "ENTRY_DIRECTION_REQUIRED_FOR_SIDE_EXECUTION"
+    ],
+    "suppressed_evidence": [],
+    "gate_order": [
+      "INPUT_AND_TEMPORAL_INTEGRITY",
+      "DATA_QUALITY",
+      "HARD_VETO",
+      "HTX_EXECUTION",
+      "DIRECTION_COHERENCE",
+      "EVIDENCE_INDEPENDENCE",
+      "CAMPAIGN_AND_TIMING",
+      "POSITION_ACTION"
+    ],
+    "no_score_aggregation_used": true
+  },
+  "source_quality": {
+    "full_evidence": "CLOSED",
+    "opportunity": "CLOSED",
+    "campaign": "CLOSED",
+    "position": "CLOSED",
+    "position_origin_campaign": "NOT_EVALUATED",
+    "position_management": "NOT_EVALUATED",
+    "entry_execution": "INSUFFICIENT",
+    "management_execution": "NOT_EVALUATED",
+    "hard_veto": "CLOSED",
+    "strict_weighted_chain_status": {
+      "CROSS_EXCHANGE_DERIVATIVES": {
+        "declared_closed": true,
+        "eligible_rows": 1,
+        "closed": true
+      },
+      "MARKET_STRENGTH_SPOT": {
+        "declared_closed": true,
+        "eligible_rows": 1,
+        "closed": true
+      },
+      "SMART_MONEY_ONCHAIN": {
+        "declared_closed": true,
+        "eligible_rows": 1,
+        "closed": true
+      },
+      "SUPPORTING_RISK": {
+        "declared_closed": true,
+        "eligible_rows": 1,
+        "closed": true
+      }
+    }
+  },
+  "safety": {
+    "shadow_only": true,
+    "classification_is_probability": false,
+    "live_probability": null,
+    "live_signal": false,
+    "validated_signal": false,
+    "telegram_eligible": false,
+    "telegram_started": false,
+    "trading_execution": false,
+    "execution_authorized": false,
+    "automatic_weight_tuning": false,
+    "strategy_weights_changed": false,
+    "fixed_strategy_weights_applied_by_this_layer": false,
+    "statistical_validation_claimed": false,
+    "missing_data_coerced_to_zero": false,
+    "correlated_features_counted_as_independent": false
+  }
+}

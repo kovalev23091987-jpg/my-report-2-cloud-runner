@@ -1,0 +1,84 @@
+name: Report 2 Cloud Runner
+
+on:
+  schedule:
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "manual validation"
+        required: false
+        default: "manual"
+      telegram_report_test:
+        description: "send one compact Telegram report test"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+
+jobs:
+  run-report2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_EXPECTED_WORKER_SHA: "15c7d88537af7464b572387ded53326d99d7633c4cc2f5b0e4767af921569be1"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "1"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "1"
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      REPORT2_RUN_SOURCE: ${{ github.event_name }}
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+    steps:
+      - name: Disabled schedule gate
+        if: ${{ github.event_name == 'schedule' && env.REPORT2_RUNNER_ENABLED != '1' }}
+        run: |
+          echo "REPORT2_RUNNER_DISABLED"
+          exit 0
+      - name: Checkout encrypted runner
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Decrypt authoritative runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf runtime
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm -f runtime/payload.tar.gz
+          cp runner/runner-main.mjs runtime/runner-main.mjs
+          cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs runtime/telegram-output.mjs
+          cd runtime
+          ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
+          test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+      - name: Full Report 2 cycle
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd runtime
+          node runner-main.mjs
