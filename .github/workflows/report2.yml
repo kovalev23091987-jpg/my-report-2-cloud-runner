@@ -29,7 +29,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "15c7d88537af7464b572387ded53326d99d7633c4cc2f5b0e4767af921569be1"
+      REPORT2_EXPECTED_WORKER_SHA: "c016d0c468dc124a27d7383beae95743e7f917c7aefcfb3bf29f8f32a216a0ba"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -70,8 +70,6 @@ jobs:
           rm -f runtime/payload.tar.gz
           cp runner/runner-main.mjs runtime/runner-main.mjs
           cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
-          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
-          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
           cp runner/telegram-output.mjs runtime/telegram-output.mjs
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
