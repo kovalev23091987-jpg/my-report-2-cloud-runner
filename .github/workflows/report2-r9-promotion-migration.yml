@@ -1,0 +1,35 @@
+name: Report 2 R9 Promotion Migration
+
+on:
+  push:
+    branches:
+      - "report2-tz10-1-r9-migrate-*"
+
+permissions:
+  contents: read
+
+jobs:
+  migrate-r9-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - name: Checkout migration branch
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify main base unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "462123237b56ccb90122f569da56faec83beab8a"
+      - name: Apply additive R9 D1 migrations and read back
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node .promotion/apply_r9_migrations.mjs
