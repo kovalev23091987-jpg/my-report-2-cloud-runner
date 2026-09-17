@@ -1,0 +1,171 @@
+name: Report 2 R9 Candidate Builder
+on:
+  push:
+    branches:
+      - 'report2-tz10-1-r9-build-*'
+permissions:
+  contents: read
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+jobs:
+  build-candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      EXPECTED_BASE_WORKER_SHA: c016d0c468dc124a27d7383beae95743e7f917c7aefcfb3bf29f8f32a216a0ba
+      EXPECTED_R9_WORKER_SHA: 15c7d88537af7464b572387ded53326d99d7633c4cc2f5b0e4767af921569be1
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Record Node 24 runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p candidate-out
+          NODEV="$(node --version)"
+          case "$NODEV" in v24.*) ;; *) echo "Unexpected Node: $NODEV"; exit 1;; esac
+          echo "NODE24_VERSION=$NODEV" | tee -a candidate-out/metadata.env
+      - name: Decrypt exact active runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf runtime candidate-out
+          mkdir -p runtime candidate-out
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime.tar.gz
+          tar -xzf runtime.tar.gz -C runtime
+          rm runtime.tar.gz
+          ACTUAL="$(sha256sum runtime/src/worker.js | awk '{print $1}')"
+          echo "BASE_WORKER_SHA=$ACTUAL" | tee candidate-out/metadata.env
+          test "$ACTUAL" = "$EXPECTED_BASE_WORKER_SHA"
+      - name: Overlay exact R9 candidate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf runtime/src runtime/tests runtime/migrations
+          cp -a .candidate/candidate/src runtime/src
+          cp -a .candidate/candidate/tests runtime/tests
+          cp -a .candidate/candidate/migrations runtime/migrations
+          NEW_SHA="$(sha256sum runtime/src/worker.js | awk '{print $1}')"
+          test "$NEW_SHA" = "$EXPECTED_R9_WORKER_SHA"
+          echo "R9_WORKER_SHA=$NEW_SHA" | tee -a candidate-out/metadata.env
+          node --check runtime/src/worker.js
+          for f in runtime/src/tz101-*.mjs; do node --check "$f"; done
+      - name: R9 focused Node24 tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd runtime
+          for T in \
+            tz101-fee-source.test.mjs \
+            tz101-publication-gate.test.mjs \
+            tz101-publication-runtime.test.mjs \
+            tz101-score-interval.test.mjs \
+            tz101-smart-money-evidence.test.mjs \
+            tz101-smart-money-full-evidence.test.mjs \
+            tz101-scenario-plan.test.mjs \
+            tz101-cost-assessment.test.mjs \
+            tz101-execution-facts.test.mjs \
+            tz101-hard-veto-producer.test.mjs \
+            tz101-decision-evidence-producer.test.mjs \
+            tz101-entry-area-calibration.test.mjs; do
+              node "tests/$T"
+          done
+          echo 'R9_WORKER_FOCUSED_NODE24=PASS' | tee -a ../candidate-out/metadata.env
+      - name: Cloud runner focused Node24 tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check .candidate/cloud_runner/candidate/d1-preaction-budget-guard.mjs
+          node --check .candidate/cloud_runner/candidate/telegram-zero-reason.mjs
+          node --check .candidate/cloud_runner/candidate/telegram-output.mjs
+          node .candidate/cloud_runner/tests/test-d1-preaction-budget-guard-r9.mjs
+          python3 .candidate/cloud_runner/tests/test-d1-preaction-budget-schema-r9.py
+          node .candidate/cloud_runner/tests/test-telegram-zero-reason-r9.mjs
+          python3 .candidate/cloud_runner/tests/test-patcher-r9.py
+          node .candidate/cloud_runner/tests/test-telegram-output-r5.mjs
+          echo 'R9_CLOUD_FOCUSED_NODE24=PASS' | tee -a candidate-out/metadata.env
+      - name: Green64 Node24 regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 .candidate/run_green64.py runtime | tee candidate-out/green64.log
+          grep -Fq 'GREEN64_RESULT=PASS count=64' candidate-out/green64.log
+          echo 'R9_GREEN64_NODE24=PASS count=64' | tee -a candidate-out/metadata.env
+      - name: 9162 totality Node24
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd runtime
+          node tests/stage392-builder-totality-shard.mjs LONG FLAT  | tee ../candidate-out/totality-long-flat.log
+          node tests/stage392-builder-totality-shard.mjs LONG OPEN  | tee ../candidate-out/totality-long-open.log
+          node tests/stage392-builder-totality-shard.mjs SHORT FLAT | tee ../candidate-out/totality-short-flat.log
+          node tests/stage392-builder-totality-shard.mjs SHORT OPEN | tee ../candidate-out/totality-short-open.log
+          grep -Fq '"mutation_cases":2198' ../candidate-out/totality-long-flat.log
+          grep -Fq '"mutation_cases":2383' ../candidate-out/totality-long-open.log
+          grep -Fq '"mutation_cases":2198' ../candidate-out/totality-short-flat.log
+          grep -Fq '"mutation_cases":2383' ../candidate-out/totality-short-open.log
+          echo 'R9_TOTALITY_NODE24=PASS cases=9162' | tee -a ../candidate-out/metadata.env
+      - name: Read-only live D1 preflight
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp runner/report2-d1-adapter.mjs .candidate/report2-d1-adapter.mjs
+          node .candidate/d1_readonly_preflight.mjs | tee candidate-out/d1-readonly-preflight.log
+          grep -Fq '"status":"READ_ONLY_PASS"' candidate-out/d1-readonly-preflight.log
+          echo 'LIVE_D1_READONLY_PREFLIGHT=PASS' | tee -a candidate-out/metadata.env
+      - name: Patcher guards against exact main bytes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 .candidate/patch_cloud_runner_r9.py . --candidate-root .candidate/cloud_runner/candidate --worker-sha "$EXPECTED_R9_WORKER_SHA" --dry-run | tee candidate-out/patcher-dry-run.log
+          grep -Fq 'PATCH_GUARDS=PASS' candidate-out/patcher-dry-run.log
+          echo 'R9_PATCHER_GUARDS=PASS' | tee -a candidate-out/metadata.env
+      - name: Wrangler dry-run
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd runtime
+          if [ -f wrangler.toml ] || [ -f wrangler.json ] || [ -f wrangler.jsonc ]; then
+            npx --yes wrangler@4.131.1 deploy --dry-run > ../candidate-out/wrangler-dry-run.log 2>&1
+            grep -Fq -- '--dry-run: exiting now.' ../candidate-out/wrangler-dry-run.log || grep -Fq 'Total Upload' ../candidate-out/wrangler-dry-run.log
+            echo 'WRANGLER_DRY_RUN=PASS' | tee -a ../candidate-out/metadata.env
+          else
+            echo 'WRANGLER_DRY_RUN=NOT_APPLICABLE_NO_CONFIG' | tee -a ../candidate-out/metadata.env
+          fi
+      - name: Encrypt exact candidate runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf candidate-runtime.tar.gz -C runtime .
+          node runner/payload-crypto.mjs encrypt candidate-runtime.tar.gz "$REPORT2_PAYLOAD_KEY" candidate-out/report2-runtime.enc
+          rm candidate-runtime.tar.gz
+          python3 - <<'PY'
+          import zipfile
+          from pathlib import Path
+          root=Path('runtime'); out=Path('candidate-out/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_CANDIDATE.zip')
+          with zipfile.ZipFile(out,'w',zipfile.ZIP_DEFLATED) as z:
+              for f in sorted(root.rglob('*')):
+                  if f.is_file(): z.write(f,f.relative_to(root))
+          PY
+          sha256sum candidate-out/report2-runtime.enc | awk '{print "PAYLOAD_SHA256="$1}' | tee -a candidate-out/metadata.env
+          sha256sum candidate-out/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_CANDIDATE.zip | awk '{print "SOURCE_ZIP_SHA256="$1}' | tee -a candidate-out/metadata.env
+          echo 'NODE24_CANDIDATE_BUILD=PASS' | tee -a candidate-out/metadata.env
+          cat candidate-out/metadata.env
+      - name: Upload candidate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-r9-node24-candidate
+          path: candidate-out/
+          if-no-files-found: error
+          retention-days: 1
