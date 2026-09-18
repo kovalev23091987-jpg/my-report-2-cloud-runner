@@ -1,0 +1,327 @@
+name: Report 2 V3 R8.20 Prospective Validation Gate
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-20-prospective-validation-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-20-prospective-validation
+  cancel-in-progress: false
+
+jobs:
+  r8-20-prospective-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      BASE_MAIN_SHA: "d77525b36ccc94808070a006f05f85e4f8ba86f3"
+      BASE_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      BASE_RUNTIME_SHA: "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88"
+      BASE_RUNNER_SHA: "83cc498468528222b2199f6dccfb5f40d5f717476e724ba4c19515c10355db5a"
+      BASE_WORKFLOW_SHA: "424b3878d68b48984332b527f6ed70e30bd7f491f9ac25197017d076075d6692"
+      OVERLAY_B64_SHA: "2c038d241ab7320b4811794fa712b6643e56b9ea13bf265d3a2eba4e6aa99463"
+      OVERLAY_TGZ_SHA: "c5d3786331f7d264175ffc5c521d68855445fbc26839054dad520edec07d46ab"
+      R8_20_MODULE_SHA: "d8244c7556f653cf47b5ff5598a4006de1c6c8f7993d8433bc84f273a408286b"
+      R8_20_RUNNER_SHA: "58300fd25ea97d88a4f7d96ce0f3cfcfbd0af05a82ff4ba892b0208c3a92a861"
+      REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      REPORT2_TELEGRAM_REPORT_TEST: "false"
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      REPORT2_RUN_SOURCE: "controlled-v3-r8-20"
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+    steps:
+      - name: Checkout isolated R8.20 branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Verify production base and isolated delta
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git merge-base HEAD origin/main)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          test "$(sha256sum payload/report2-runtime.enc | awk '{print $1}')" = "$BASE_RUNTIME_SHA"
+          test "$(sha256sum runner/runner-main.mjs | awk '{print $1}')" = "$BASE_RUNNER_SHA"
+          test "$(sha256sum .github/workflows/report2.yml | awk '{print $1}')" = "$BASE_WORKFLOW_SHA"
+          test "$(sha256sum .r8-20/R8_20_OVERLAY.tgz.b64 | awk '{print $1}')" = "$OVERLAY_B64_SHA"
+          BAD="$(git diff --name-only "$BASE_MAIN_SHA"..HEAD | grep -Ev '^\.r8-20/R8_20_OVERLAY\.tgz\.b64$|^\.github/workflows/report2-v3-r8-20-prospective-validation\.yml$' || true)"
+          test -z "$BAD" || { echo "UNEXPECTED_BRANCH_DELTA=$BAD"; exit 1; }
+          echo "R8_20_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+
+      - name: Unpack exact R8.20 overlay
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf .r8-20/work
+          mkdir -p .r8-20/work/overlay
+          base64 -d .r8-20/R8_20_OVERLAY.tgz.b64 > .r8-20/work/R8_20_OVERLAY.tgz
+          test "$(sha256sum .r8-20/work/R8_20_OVERLAY.tgz | awk '{print $1}')" = "$OVERLAY_TGZ_SHA"
+          tar -xzf .r8-20/work/R8_20_OVERLAY.tgz -C .r8-20/work/overlay
+          test "$(sha256sum .r8-20/work/overlay/src/v3-prospective-validation-sidecar.mjs | awk '{print $1}')" = "$R8_20_MODULE_SHA"
+          test "$(sha256sum .r8-20/work/overlay/runner/runner-main.r820.mjs | awk '{print $1}')" = "$R8_20_RUNNER_SHA"
+          echo "R8_20_OVERLAY_INTEGRITY=PASS"
+
+      - name: Decrypt exact production runtime and apply R8.20 overlay
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          mkdir -p .r8-20/work/base .r8-20/work/candidate
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" .r8-20/work/base.tar.gz
+          tar -xzf .r8-20/work/base.tar.gz -C .r8-20/work/base
+          cp -a .r8-20/work/base/. .r8-20/work/candidate/
+          test "$(sha256sum .r8-20/work/candidate/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          cp .r8-20/work/overlay/src/v3-prospective-validation-sidecar.mjs .r8-20/work/candidate/src/
+          cp .r8-20/work/overlay/tests/v3-prospective-validation-sidecar.test.mjs .r8-20/work/candidate/tests/
+          cp .r8-20/work/overlay/tests/v3-r820-prospective-validation-static.test.py .r8-20/work/candidate/tests/
+          cp .r8-20/work/overlay/runner/runner-main.r820.mjs .r8-20/work/candidate/runner-main.r820.mjs
+          test "$(sha256sum .r8-20/work/candidate/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          echo "R8_20_WORKER_UNCHANGED=PASS"
+          echo "R8_20_CANDIDATE=$GITHUB_WORKSPACE/.r8-20/work/candidate" >> "$GITHUB_ENV"
+
+      - name: R8.20 Node24 syntax and focused tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check "$R8_20_CANDIDATE/src/v3-prospective-validation-sidecar.mjs"
+          node --check .r8-20/work/overlay/runner/runner-main.r820.mjs
+          node --test "$R8_20_CANDIDATE/tests/v3-prospective-validation-sidecar.test.mjs" | tee .r8-20/R8_20_FOCUSED_NODE24.log
+          python3 "$R8_20_CANDIDATE/tests/v3-r820-prospective-validation-static.test.py" | tee .r8-20/R8_20_STATIC.log
+          grep -q '# fail 0' .r8-20/R8_20_FOCUSED_NODE24.log
+          grep -q 'R8_20_STATIC_SAFETY=PASS' .r8-20/R8_20_STATIC.log
+          echo "R8_20_FOCUSED=PASS"
+
+      - name: Full V3 Node24 regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test "$R8_20_CANDIDATE"/tests/v3-*.test.mjs > .r8-20/R8_20_V3_NODE24.log 2>&1 || { tail -180 .r8-20/R8_20_V3_NODE24.log; exit 1; }
+          grep -q '# fail 0' .r8-20/R8_20_V3_NODE24.log
+          echo "R8_20_V3_NODE24=PASS"
+
+      - name: Full V3 Python static and schema regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          : > .r8-20/R8_20_V3_PYTHON.log
+          for f in "$R8_20_CANDIDATE"/tests/v3-*.test.py; do
+            [ -f "$f" ] || continue
+            python3 "$f" >> .r8-20/R8_20_V3_PYTHON.log 2>&1 || { tail -180 .r8-20/R8_20_V3_PYTHON.log; exit 1; }
+          done
+          echo "R8_20_V3_PYTHON=PASS"
+
+      - name: Inherited Node24 core regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          TESTS=(
+            bounded-deep-check.test.mjs deep-check-journal.test.mjs
+            fast-move-watch-engine.test.mjs fast-move-watch-failure-injection.test.mjs fast-move-watch-runtime.test.mjs
+            full-evidence-contract.test.mjs full-evidence-shadow-model.test.mjs
+            liquidation-intelligence.test.mjs liquidation-persistence-budget.test.mjs
+            multi-wave-campaign-engine.test.mjs multi-wave-campaign-failure-injection.test.mjs multi-wave-campaign-runtime.test.mjs
+            opportunity-intelligence-engine.test.mjs opportunity-intelligence-runtime.test.mjs
+            final-decision-integration-adapter.test.mjs final-decision-integration-boundaries.test.mjs
+            final-decision-integration-correlation-closure.test.mjs final-decision-integration-engine.test.mjs
+            final-decision-integration-evidence.test.mjs final-decision-integration-failure-injection.test.mjs
+            final-decision-integration-gate-metamorphic.test.mjs final-decision-integration-lifecycle.test.mjs
+            final-decision-integration-runtime.test.mjs final-decision-integration-state-grid.test.mjs
+            final-decision-integration-symmetry.test.mjs final-decision-integration-temporal.test.mjs
+            final-decision-integration-validator-persistence.test.mjs final-decision-integration-veto-safety.test.mjs
+            final-decision-shadow-outcome-contract.test.mjs final-decision-upstream-compat-runtime.test.mjs
+            final-decision-upstream-freshness-contract.test.mjs tz101-entry-area-calibration.test.mjs
+          )
+          ARGS=()
+          for t in "${TESTS[@]}"; do [ -f "$R8_20_CANDIDATE/tests/$t" ] && ARGS+=("$R8_20_CANDIDATE/tests/$t"); done
+          node --test "${ARGS[@]}" > .r8-20/R8_20_INHERITED_NODE24.log 2>&1 || { tail -220 .r8-20/R8_20_INHERITED_NODE24.log; exit 1; }
+          grep -q '# fail 0' .r8-20/R8_20_INHERITED_NODE24.log
+          echo "R8_20_INHERITED_NODE24=PASS"
+
+      - name: Builder totality Node24
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test "$R8_20_CANDIDATE/tests/final-decision-integration-builder-totality.test.mjs" > .r8-20/R8_20_BUILDER_TOTALITY_NODE24.log 2>&1 || { tail -220 .r8-20/R8_20_BUILDER_TOTALITY_NODE24.log; exit 1; }
+          grep -q '# fail 0' .r8-20/R8_20_BUILDER_TOTALITY_NODE24.log
+          echo "R8_20_BUILDER_TOTALITY=PASS"
+
+      - name: Inherited D1 schema and capacity regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          TESTS=(
+            fast-move-watch-concurrency.test.py fast-move-watch-d1.test.py fast-move-watch-hardening-d1.test.py fast-move-watch-runtime-sql.test.py
+            final-decision-integration-d1.test.py full-evidence-d1-schema.test.py liquidation-d1-schema.test.py multi-wave-campaign-d1.test.py
+            opportunity-integrity-concurrency.test.py opportunity-integrity-d1.test.py opportunity-intelligence-d1.test.py
+            stage391-capacity-budget.test.py stage391-integrity-static.test.py stage392-capacity-budget.test.py stage392-d1-schema.test.py
+            stage392-trigger-atomicity.test.py stage392-wave-lifecycle-backcompat.test.py tz101-entry-area-calibration-d1.test.py
+          )
+          : > .r8-20/R8_20_INHERITED_PYTHON.log
+          for t in "${TESTS[@]}"; do
+            [ -f "$R8_20_CANDIDATE/tests/$t" ] || continue
+            python3 "$R8_20_CANDIDATE/tests/$t" >> .r8-20/R8_20_INHERITED_PYTHON.log 2>&1 || { tail -220 .r8-20/R8_20_INHERITED_PYTHON.log; exit 1; }
+          done
+          echo "R8_20_INHERITED_PYTHON=PASS"
+
+      - name: Build exact encrypted R8.20 candidate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf .r8-20/work/prod-form
+          mkdir -p .r8-20/work/prod-form
+          tar -czf .r8-20/report2-runtime-r8-20.tar.gz -C "$R8_20_CANDIDATE" .
+          node runner/payload-crypto.mjs encrypt .r8-20/report2-runtime-r8-20.tar.gz "$REPORT2_PAYLOAD_KEY" .r8-20/report2-runtime-r8-20.enc
+          rm .r8-20/report2-runtime-r8-20.tar.gz
+          cp .r8-20/work/overlay/runner/runner-main.r820.mjs .r8-20/runner-main-r8-20.mjs
+          cp .github/workflows/report2.yml .r8-20/report2.yml
+          node runner/payload-crypto.mjs decrypt .r8-20/report2-runtime-r8-20.enc "$REPORT2_PAYLOAD_KEY" .r8-20/work/prod-form/payload.tar.gz
+          tar -xzf .r8-20/work/prod-form/payload.tar.gz -C .r8-20/work/prod-form
+          rm .r8-20/work/prod-form/payload.tar.gz
+          cp .r8-20/runner-main-r8-20.mjs .r8-20/work/prod-form/runner-main.mjs
+          cp runner/report2-d1-adapter.mjs .r8-20/work/prod-form/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs .r8-20/work/prod-form/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs .r8-20/work/prod-form/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs .r8-20/work/prod-form/telegram-output.mjs
+          test "$(sha256sum .r8-20/work/prod-form/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          test "$(sha256sum .r8-20/work/prod-form/src/v3-prospective-validation-sidecar.mjs | awk '{print $1}')" = "$R8_20_MODULE_SHA"
+          test "$(sha256sum .r8-20/work/prod-form/runner-main.mjs | awk '{print $1}')" = "$R8_20_RUNNER_SHA"
+          node --check .r8-20/work/prod-form/runner-main.mjs
+          node --check .r8-20/work/prod-form/src/v3-prospective-validation-sidecar.mjs
+          echo "R8_20_EXACT_RUNTIME_BUILD=PASS"
+
+      - name: Controlled real-data cycle with Telegram network disabled
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd .r8-20/work/prod-form
+          node runner-main.mjs 2>&1 | tee "$GITHUB_WORKSPACE/.r8-20/CONTROLLED_R8_20_RUN.log"
+          cd "$GITHUB_WORKSPACE"
+          grep -q '^R8_20_PROSPECTIVE_VALIDATION_BUDGET ' .r8-20/CONTROLLED_R8_20_RUN.log
+          grep -q '^R8_20_PROSPECTIVE_VALIDATION_SIDECAR ' .r8-20/CONTROLLED_R8_20_RUN.log
+          ! grep -q 'D1_POST_CYCLE_RESERVATION_EXCEEDED' .r8-20/CONTROLLED_R8_20_RUN.log
+          echo "R8_20_CONTROLLED_RUN_EXIT=PASS"
+
+      - name: Build controlled proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY' | tee .r8-20/R8_20_CONTROLLED_PROOF.json
+          import hashlib,json,os,pathlib
+          lines=pathlib.Path('.r8-20/CONTROLLED_R8_20_RUN.log').read_text(errors='replace').splitlines()
+          def marker(name):
+              xs=[x for x in lines if x.startswith(name+' ')]
+              if not xs: raise SystemExit(name+'_MISSING')
+              return json.loads(xs[-1].split(' ',1)[1])
+          budget=marker('R8_20_PROSPECTIVE_VALIDATION_BUDGET')
+          sidecar=marker('R8_20_PROSPECTIVE_VALIDATION_SIDECAR')
+          early=marker('V3_EARLY_PERSISTENCE_SIDECAR')
+          realized=marker('V3_REALIZED_LIQUIDATION_SIDECAR')
+          projected=marker('V3_LIQUIDATION_INTELLIGENCE_SIDECAR')
+          finals=[json.loads(x) for x in lines if x.startswith('{"ok":true')]
+          if not finals: raise SystemExit('FINAL_JSON_MISSING')
+          final=finals[-1]
+          if budget.get('allowed') is not True or budget.get('status')!='CLOSED': raise SystemExit('R8_20_BUDGET_NOT_CLOSED')
+          if sidecar.get('status')!='CLOSED': raise SystemExit('R8_20_SIDECAR_NOT_CLOSED:'+str(sidecar.get('status')))
+          if sidecar.get('live_probability') is not None: raise SystemExit('LIVE_PROBABILITY_PRESENT')
+          if sidecar.get('validated_signal') is not False: raise SystemExit('VALIDATED_SIGNAL_PRESENT')
+          if sidecar.get('trading_execution') is not False: raise SystemExit('TRADING_EXECUTION_PRESENT')
+          if str(early.get('status') or '') not in {'CLOSED','CLOSED_NO_EARLY_CANDIDATE'}: raise SystemExit('EARLY_NOT_CLOSED')
+          if not str(realized.get('status') or '').startswith('CLOSED'): raise SystemExit('REALIZED_NOT_CLOSED')
+          if not str(projected.get('status') or '').startswith('CLOSED'): raise SystemExit('PROJECTED_NOT_CLOSED')
+          if final.get('v3_telegram_network_enabled') is not False: raise SystemExit('TELEGRAM_NETWORK_NOT_OFF')
+          post=final.get('d1_post_cycle_budget') or {}
+          if post.get('allowed') is not True or post.get('status')!='CLOSED': raise SystemExit('D1_POST_NOT_CLOSED')
+          usage=final.get('d1_usage') or {}
+          if int(usage.get('unknown_ops') or 0)!=0: raise SystemExit('UNKNOWN_D1_OPS')
+          def f(rel):
+              p=pathlib.Path(rel); return {'path':rel,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+          files={
+            'runtime':f('.r8-20/report2-runtime-r8-20.enc'),
+            'runner':f('.r8-20/runner-main-r8-20.mjs'),
+            'workflow':f('.r8-20/report2.yml'),
+            'worker':f('.r8-20/work/prod-form/src/worker.js'),
+            'r8_20_module':f('.r8-20/work/prod-form/src/v3-prospective-validation-sidecar.mjs'),
+          }
+          if files['worker']['sha256']!=os.environ['BASE_WORKER_SHA']: raise SystemExit('WORKER_SHA_DRIFT')
+          if files['r8_20_module']['sha256']!=os.environ['R8_20_MODULE_SHA']: raise SystemExit('R8_20_MODULE_SHA_DRIFT')
+          if files['runner']['sha256']!=os.environ['R8_20_RUNNER_SHA']: raise SystemExit('R8_20_RUNNER_SHA_DRIFT')
+          out={
+            'status':'R8_20_PROSPECTIVE_VALIDATION_CONTROLLED_PASS',
+            'github_run_id':os.environ.get('GITHUB_RUN_ID'),
+            'production_main_changed':False,
+            'worker_unchanged':True,
+            'strategy_weights':'35/30/20/15_UNCHANGED',
+            'telegram_v3_network_enabled':False,
+            'live_probability':False,
+            'validated_signal':False,
+            'trading_execution':False,
+            'automatic_weight_tuning':False,
+            'r8_20_budget_status':budget.get('status'),
+            'r8_20_sidecar_status':sidecar.get('status'),
+            'early_status':early.get('status'),
+            'realized_status':realized.get('status'),
+            'projected_status':projected.get('status'),
+            'd1_post_status':post.get('status'),
+            'unknown_ops':usage.get('unknown_ops'),
+            'files':files,
+          }
+          print(json.dumps(out,indent=2,ensure_ascii=False))
+          PY
+          grep -q '"status": "R8_20_PROSPECTIVE_VALIDATION_CONTROLLED_PASS"' .r8-20/R8_20_CONTROLLED_PROOF.json
+
+      - name: Verify production main remains exact
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+          echo "REMOTE_D1_SCHEMA_CHANGED=NO"
+
+      - name: Upload exact R8.20 proof candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-20-prospective-validation-proof
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            .r8-20/R8_20_FOCUSED_NODE24.log
+            .r8-20/R8_20_STATIC.log
+            .r8-20/R8_20_V3_NODE24.log
+            .r8-20/R8_20_V3_PYTHON.log
+            .r8-20/R8_20_INHERITED_NODE24.log
+            .r8-20/R8_20_BUILDER_TOTALITY_NODE24.log
+            .r8-20/R8_20_INHERITED_PYTHON.log
+            .r8-20/CONTROLLED_R8_20_RUN.log
+            .r8-20/R8_20_CONTROLLED_PROOF.json
+            .r8-20/report2-runtime-r8-20.enc
+            .r8-20/runner-main-r8-20.mjs
+            .r8-20/report2.yml
+            .r8-20/work/prod-form/src/worker.js
+            .r8-20/work/prod-form/src/v3-prospective-validation-sidecar.mjs
