@@ -1,0 +1,214 @@
+name: Report 2 V3 R8.15.4 Cluster State Write Burst Validation
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-15-4-cluster-write-burst-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-15-4-cluster-write-burst-validation
+  cancel-in-progress: false
+
+jobs:
+  cluster-write-burst-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      BASE_MAIN_SHA: "5567d946973dd16ac237b3ec82e19d07528b060e"
+      R8_15_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      R8_15_READINESS_SHA: "4aa1198ffb8558822e32f05f6af4ce9cda83e2c94d699e2a97a0e8fef47a0996"
+      REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      REPORT2_TELEGRAM_REPORT_TEST: "false"
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      REPORT2_RUN_SOURCE: "controlled-v3-r8-15-4"
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+    steps:
+      - name: Checkout isolated validation branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact production parent and gate bytes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          sha256sum --check .r8-15/CHECKSUMS.sha256
+          test "$(sha256sum .r8-15/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_15_20260918.zip | awk '{print $1}')" = "$R8_15_READINESS_SHA"
+          echo "R8_15_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Full R8.12 Node24 readiness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .r8-15/bin .r8-15/unpacked
+          if ! command -v shasum >/dev/null 2>&1; then
+            printf '%s\n' '#!/bin/bash' 'set -Eeuo pipefail' 'if [ "${1:-}" = "-a" ] && [ "${2:-}" = "256" ]; then shift 2; fi' 'exec sha256sum "$@"' > .r8-15/bin/shasum
+            chmod +x .r8-15/bin/shasum
+            export PATH="$GITHUB_WORKSPACE/.r8-15/bin:$PATH"
+          fi
+          unzip -q .r8-15/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_15_20260918.zip -d .r8-15/unpacked
+          ROOT="$GITHUB_WORKSPACE/.r8-15/unpacked/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_15_20260918"
+          chmod +x "$ROOT/RUN_INTERNAL_NODE24_READINESS.command"
+          "$ROOT/RUN_INTERNAL_NODE24_READINESS.command" | tee .r8-15/NODE24_READINESS.log
+          grep -q '^FINAL_RESULT=READY_FOR_CONTROLLED_INTEGRATION_NOT_DEPLOYED$' .r8-15/NODE24_READINESS.log
+          echo "R8_15_ROOT=$ROOT" >> "$GITHUB_ENV"
+      - name: Synthetic 120-cluster write-burst regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -f "$R8_15_ROOT/overlay/migrations/20260913_cross_venue_liquidation_shadow.sql"
+          echo "R8_15_SYNTHETIC_MIGRATION_FIXTURE=PASS"
+          node --test "$R8_15_ROOT/overlay/tests/liquidation-persistence-budget.test.mjs" | tee .r8-15/R8_15_CLUSTER_BURST_TEST.log
+          python3 "$R8_15_ROOT/overlay/tests/v3-cluster-state-burst-cap-static.test.py" | tee .r8-15/R8_15_CLUSTER_CAP_STATIC.log
+          grep -q "pass 2" .r8-15/R8_15_CLUSTER_BURST_TEST.log
+          grep -q "R8_15_CLUSTER_STATE_BURST_CAP_STATIC=PASS" .r8-15/R8_15_CLUSTER_CAP_STATIC.log
+          echo "R8_15_SYNTHETIC_CLUSTER_BURST=PASS"
+      - name: Live projected provider identity proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          # R8.12.1 packaging repair: assemble the exact authoritative runtime + R8.12 overlay
+          # before importing Worker, so all legitimate relative imports resolve exactly as production.
+          rm -rf .r8-15/live-candidate
+          mkdir -p .r8-15/live-candidate
+          unzip -q "$R8_15_ROOT/authoritative/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_TZ10_1_20260917.zip" -d .r8-15/live-candidate
+          cp -R "$R8_15_ROOT/overlay/." .r8-15/live-candidate/
+          test "$(sha256sum .r8-15/live-candidate/src/worker.js | awk '{print $1}')" = "$R8_15_WORKER_SHA"
+          node .r8-15/tools/live-projected-identity-proof.mjs .r8-15/live-candidate/src/worker.js .r8-15/R8_15_LIVE_PROJECTED_IDENTITY_PROOF.json .r8-15/live-candidate/src/v3-liquidation-intelligence.mjs | tee .r8-15/LIVE_PROJECTED_IDENTITY.log
+          grep -q '"status":"R8_12_LIVE_PROJECTED_IDENTITY_PASS"' .r8-15/LIVE_PROJECTED_IDENTITY.log
+          echo "R8_15_FULL_CANDIDATE_LIVE_PROOF_PACKAGING=PASS"
+      - name: Build exact candidate runtime and production-form files
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf .r8-15/candidate .r8-15/runtime
+          mkdir -p .r8-15/candidate .r8-15/runtime
+          unzip -q "$R8_15_ROOT/authoritative/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_TZ10_1_20260917.zip" -d .r8-15/candidate
+          cp -R "$R8_15_ROOT/overlay/." .r8-15/candidate/
+          test "$(sha256sum .r8-15/candidate/src/worker.js | awk '{print $1}')" = "$R8_15_WORKER_SHA"
+          tar -czf .r8-15/report2-runtime.tar.gz -C .r8-15/candidate .
+          node runner/payload-crypto.mjs encrypt .r8-15/report2-runtime.tar.gz "$REPORT2_PAYLOAD_KEY" .r8-15/report2-runtime.enc
+          rm -f .r8-15/report2-runtime.tar.gz
+          cp runner/runner-main.mjs .r8-15/runner-main.mjs
+          cp .github/workflows/report2.yml .r8-15/report2.yml
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('.r8-15/report2.yml'); s=p.read_text()
+          s,n=re.subn(r'REPORT2_EXPECTED_WORKER_SHA: "[0-9a-f]{64}"','REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"',s,count=1)
+          if n!=1: raise SystemExit('R8_12_WORKFLOW_SHA_PATCH_FAIL')
+          p.write_text(s)
+          PY
+          grep -Fq 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .r8-15/report2.yml
+          grep -Fq 'REPORT2_D1_MAX_DAILY_WRITES: "70000"' .r8-15/report2.yml
+          node runner/payload-crypto.mjs decrypt .r8-15/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" .r8-15/runtime/payload.tar.gz
+          tar -xzf .r8-15/runtime/payload.tar.gz -C .r8-15/runtime
+          rm .r8-15/runtime/payload.tar.gz
+          cp .r8-15/runner-main.mjs .r8-15/runtime/runner-main.mjs
+          cp runner/report2-d1-adapter.mjs .r8-15/runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs .r8-15/runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs .r8-15/runtime/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs .r8-15/runtime/telegram-output.mjs
+          test "$(sha256sum .r8-15/runtime/src/worker.js | awk '{print $1}')" = "$R8_15_WORKER_SHA"
+          echo "R8_15_EXACT_RUNTIME_BUILD=PASS"
+      - name: One controlled R8.12 real-data cycle with Telegram disabled
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd .r8-15/runtime
+          node runner-main.mjs 2>&1 | tee ../CONTROLLED_R8_15_RUN.log
+          cd "$GITHUB_WORKSPACE"
+          grep -q '^V3_EARLY_PERSISTENCE_SIDECAR ' .r8-15/CONTROLLED_R8_15_RUN.log
+          grep -q '^V3_LIQUIDATION_INTELLIGENCE_SIDECAR ' .r8-15/CONTROLLED_R8_15_RUN.log
+          ! grep -q 'D1_POST_CYCLE_RESERVATION_EXCEEDED' .r8-15/CONTROLLED_R8_15_RUN.log
+          echo "R8_15_CONTROLLED_RUN_EXIT=PASS"
+      - name: Build R8.12 controlled proof and exact artifact manifest
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY' | tee .r8-15/R8_15_CONTROLLED_PROOF.json
+          import json,pathlib,hashlib,os
+          lines=pathlib.Path('.r8-15/CONTROLLED_R8_15_RUN.log').read_text(errors='replace').splitlines()
+          def marker(name):
+              xs=[x for x in lines if x.startswith(name+' ')]
+              if not xs: raise SystemExit(name+'_MISSING')
+              return json.loads(xs[-1].split(' ',1)[1])
+          early=marker('V3_EARLY_PERSISTENCE_SIDECAR')
+          projected=marker('V3_LIQUIDATION_INTELLIGENCE_SIDECAR')
+          preaction=marker('R8_8_D1_PRE_SIDECARS_USAGE') if any(x.startswith('R8_8_D1_PRE_SIDECARS_USAGE ') for x in lines) else None
+          finals=[x for x in lines if x.startswith('{"ok":true')]
+          if not finals: raise SystemExit('R8_15_FINAL_JSON_MISSING')
+          final=json.loads(finals[-1])
+          if str(early.get('status') or '') not in {'CLOSED','CLOSED_NO_EARLY_CANDIDATE'}: raise SystemExit('R8_15_EARLY_NOT_CLOSED')
+          if final.get('v3_telegram_network_enabled') is not False: raise SystemExit('R8_15_TELEGRAM_NETWORK_NOT_OFF')
+          pre=final.get('v3_sidecars_preaction_budget') or {}
+          if pre.get('allowed') is not True or pre.get('status')!='CLOSED': raise SystemExit('R8_15_PREACTION_NOT_CLOSED')
+          post=final.get('d1_post_cycle_budget') or {}
+          if post.get('allowed') is not True or post.get('status')!='CLOSED': raise SystemExit('R8_15_D1_POST_NOT_CLOSED')
+          usage=final.get('d1_usage') or {}
+          if int(usage.get('unknown_ops') or 0)!=0: raise SystemExit('R8_15_UNKNOWN_D1_OPS')
+          live=json.load(open('.r8-15/R8_15_LIVE_PROJECTED_IDENTITY_PROOF.json'))
+          if live.get('status')!='R8_12_LIVE_PROJECTED_IDENTITY_PASS': raise SystemExit('R8_15_LIVE_IDENTITY_PROOF_FAIL')
+          files={}
+          for name,rel in {'runtime':'report2-runtime.enc','runner':'runner-main.mjs','workflow':'report2.yml','worker':'candidate/src/worker.js','liquidation_module':'candidate/src/liquidation-intelligence.mjs','readiness':'MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_15_20260918.zip'}.items():
+              p=pathlib.Path('.r8-15')/rel
+              files[name]={'path':rel,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+          if files['worker']['sha256']!='7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83': raise SystemExit('R8_15_WORKER_SHA_DRIFT')
+          out={'status':'R8_15_CLUSTER_WRITE_BURST_CONTROLLED_PASS','github_run_id':os.environ.get('GITHUB_RUN_ID'),'live_identity_closed_contracts':live.get('closed_contracts',[]),'cluster_state_summary_cap':32,'raw_projected_cluster_json':'UNCHANGED','early_status':early.get('status'),'projected_sidecar_status':projected.get('status'),'d1_preaction_status':pre.get('status'),'d1_post_status':post.get('status'),'unknown_ops':usage.get('unknown_ops'),'telegram_network_enabled':False,'production_main_changed':False,'files':files}
+          print(json.dumps(out,indent=2,ensure_ascii=False))
+          PY
+          grep -q '"status": "R8_15_CLUSTER_WRITE_BURST_CONTROLLED_PASS"' .r8-15/R8_15_CONTROLLED_PROOF.json
+      - name: Verify production main remains unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+          echo "REMOTE_D1_SCHEMA_CHANGED=NO"
+      - name: Upload R8.12 proof and exact candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-15-4-cluster-write-burst-proof
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            .r8-15/NODE24_READINESS.log
+            .r8-15/R8_15_CLUSTER_BURST_TEST.log
+            .r8-15/R8_15_CLUSTER_CAP_STATIC.log
+            .r8-15/LIVE_PROJECTED_IDENTITY.log
+            .r8-15/R8_15_LIVE_PROJECTED_IDENTITY_PROOF.json
+            .r8-15/CONTROLLED_R8_15_RUN.log
+            .r8-15/R8_15_CONTROLLED_PROOF.json
+            .r8-15/report2-runtime.enc
+            .r8-15/runner-main.mjs
+            .r8-15/report2.yml
+            .r8-15/candidate/src/worker.js
+            .r8-15/candidate/src/liquidation-intelligence.mjs
+            .r8-15/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_15_20260918.zip
+            .r8-15/CHECKSUMS.sha256
