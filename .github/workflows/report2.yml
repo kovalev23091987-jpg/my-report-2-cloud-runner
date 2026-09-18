@@ -14,6 +14,11 @@ on:
         required: false
         type: boolean
         default: false
+      controlled_no_telegram:
+        description: "controlled smoke with Telegram fully disabled"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -29,7 +34,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "15c7d88537af7464b572387ded53326d99d7633c4cc2f5b0e4767af921569be1"
+      REPORT2_EXPECTED_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -40,7 +45,9 @@ jobs:
       REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "1"
       REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
-      REPORT2_TELEGRAM_OUTPUT_ENABLED: "1"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_D1_RUNS_PER_DAY: "288"

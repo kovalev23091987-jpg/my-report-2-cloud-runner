@@ -1,0 +1,385 @@
+{
+  "status": "R8_8_ADAPTIVE_BUDGET_CONTROLLED_PASS",
+  "rows_read": 10116,
+  "rows_written": 147,
+  "read_headroom": 5884,
+  "write_headroom": 173,
+  "early_status": "CLOSED",
+  "realized_status": "CLOSED",
+  "projected_status": "CLOSED_OBSERVATION_ONLY_IDENTITY_NOT_CLOSED",
+  "adaptive_daily_admission": {
+    "nominal": {
+      "ok": true,
+      "status": "CLOSED",
+      "runs_per_day": 288,
+      "rows_read": 12152,
+      "rows_written": 243,
+      "daily_reserved_if_all_runs": {
+        "rows_read": 3499776,
+        "rows_written": 69984
+      },
+      "daily_limits": {
+        "rows_read": 3500000,
+        "rows_written": 70000
+      }
+    },
+    "burst": {
+      "ok": true,
+      "status": "CLOSED_BURST",
+      "runs_per_day": 288,
+      "rows_read": 16000,
+      "rows_written": 320,
+      "daily_reserved_if_all_runs": {
+        "rows_read": 3499776,
+        "rows_written": 69984
+      },
+      "daily_limits": {
+        "rows_read": 3500000,
+        "rows_written": 70000
+      },
+      "budget_mode": "ADAPTIVE_DAILY_ACTUAL_WITH_BURST_CAP_V1",
+      "nominal_rows_read": 12152,
+      "nominal_rows_written": 243
+    },
+    "raw_daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-09-18",
+      "run_count": 53,
+      "reserved_rows_read": 644056,
+      "reserved_rows_written": 12879,
+      "measured_rows_read": 188506,
+      "measured_rows_written": 4997,
+      "unknown_ops": 0,
+      "unfinished_count": 3
+    },
+    "adaptive_daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-09-18",
+      "run_count": 53,
+      "reserved_rows_read": 236506,
+      "reserved_rows_written": 5957,
+      "measured_rows_read": 188506,
+      "measured_rows_written": 4997,
+      "unknown_ops": 0,
+      "unfinished_count": 3,
+      "budget_mode": "ADAPTIVE_DAILY_ACTUAL_WITH_BURST_CAP_V1",
+      "raw_reserved_rows_read": 644056,
+      "raw_reserved_rows_written": 12879,
+      "adaptive_effective_rows_read": 236506,
+      "adaptive_effective_rows_written": 5957,
+      "unfinished_reservation_cap": {
+        "rows_read": 16000,
+        "rows_written": 320
+      }
+    },
+    "admission": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "daily": {
+        "ok": true,
+        "status": "DAY_USAGE_CLOSED",
+        "day_utc": "2026-09-18",
+        "run_count": 53,
+        "reserved_rows_read": 236506,
+        "reserved_rows_written": 5957,
+        "measured_rows_read": 188506,
+        "measured_rows_written": 4997,
+        "unknown_ops": 0,
+        "unfinished_count": 3,
+        "budget_mode": "ADAPTIVE_DAILY_ACTUAL_WITH_BURST_CAP_V1",
+        "raw_reserved_rows_read": 644056,
+        "raw_reserved_rows_written": 12879,
+        "adaptive_effective_rows_read": 236506,
+        "adaptive_effective_rows_written": 5957,
+        "unfinished_reservation_cap": {
+          "rows_read": 16000,
+          "rows_written": 320
+        }
+      },
+      "next_reservation": {
+        "rows_read": 16000,
+        "rows_written": 320
+      },
+      "projected_reserved": {
+        "rows_read": 252506,
+        "rows_written": 6277
+      },
+      "limits": {
+        "rows_read": 3500000,
+        "rows_written": 70000
+      }
+    }
+  },
+  "gates": {
+    "downstream_reserve": {
+      "rows_read": 4500,
+      "rows_written": 50
+    },
+    "early": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 3046,
+        "rows_written": 101,
+        "requests": 41,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 7572,
+        "rows_written": 74
+      },
+      "reservation": {
+        "rows_read": 16000,
+        "rows_written": 320
+      },
+      "remaining": {
+        "rows_read": 12954,
+        "rows_written": 219
+      }
+    },
+    "realized": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 5474,
+        "rows_written": 106,
+        "requests": 48,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 6548,
+        "rows_written": 114
+      },
+      "reservation": {
+        "rows_read": 16000,
+        "rows_written": 320
+      },
+      "remaining": {
+        "rows_read": 10526,
+        "rows_written": 214
+      }
+    },
+    "projected": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "current_usage": {
+        "rows_read": 6961,
+        "rows_written": 142,
+        "requests": 62,
+        "unknown_ops": 0
+      },
+      "extra": {
+        "rows_read": 7572,
+        "rows_written": 90
+      },
+      "reservation": {
+        "rows_read": 16000,
+        "rows_written": 320
+      },
+      "remaining": {
+        "rows_read": 9039,
+        "rows_written": 178
+      }
+    },
+    "usage": {
+      "requests": 63,
+      "rows_read": 6964,
+      "rows_written": 142,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 54,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 10,
+          "unknown_ops": 0
+        },
+        "batch:scan_runs": {
+          "requests": 8,
+          "rows_read": 3206,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:scan_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_outcome": {
+          "requests": 2,
+          "rows_read": 783,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_watch_state": {
+          "requests": 6,
+          "rows_read": 174,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "batch:fast_move_recheck_queue": {
+          "requests": 2,
+          "rows_read": 7,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "run:fast_move_watch_state": {
+          "requests": 1,
+          "rows_read": 44,
+          "rows_written": 11,
+          "unknown_ops": 0
+        },
+        "all:deep_check_scheduler_state": {
+          "requests": 1,
+          "rows_read": 38,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:deep_check_scheduler_state": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 11,
+          "unknown_ops": 0
+        },
+        "all:scan_runs": {
+          "requests": 1,
+          "rows_read": 43,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:OTHER": {
+          "requests": 3,
+          "rows_read": 2,
+          "rows_written": 15,
+          "unknown_ops": 0
+        },
+        "batch:shadow_decision_log": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_shadow_observation": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_cluster_state": {
+          "requests": 2,
+          "rows_read": 1039,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:opportunity_shadow_event": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_event": {
+          "requests": 1,
+          "rows_read": 5,
+          "rows_written": 9,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_outcome": {
+          "requests": 1,
+          "rows_read": 36,
+          "rows_written": 30,
+          "unknown_ops": 0
+        },
+        "batch:opportunity_shadow_funnel": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:multi_wave_campaign_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_scheduler_state": {
+          "requests": 1,
+          "rows_read": 3,
+          "rows_written": 5,
+          "unknown_ops": 0
+        },
+        "batch:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:cron_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:scan_runs": {
+          "requests": 1,
+          "rows_read": 781,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_candidate_wave": {
+          "requests": 2,
+          "rows_read": 12,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "all:v3_market_microstructure_1m": {
+          "requests": 1,
+          "rows_read": 17,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_early_feature_snapshot": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:liquidation_events": {
+          "requests": 1,
+          "rows_read": 694,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_aggregate": {
+          "requests": 4,
+          "rows_read": 4,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "batch:v3_realized_liquidation_density_5m": {
+          "requests": 8,
+          "rows_read": 8,
+          "rows_written": 24,
+          "unknown_ops": 0
+        }
+      }
+    }
+  },
+  "production_main_changed": false,
+  "telegram_network_enabled": false
+}

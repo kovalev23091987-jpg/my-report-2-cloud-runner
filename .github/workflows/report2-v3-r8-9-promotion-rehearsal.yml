@@ -1,0 +1,199 @@
+name: Report 2 V3 R8.9 Promotion Rehearsal
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-9-promotion-rehearsal-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-9-promotion-rehearsal
+  cancel-in-progress: false
+
+jobs:
+  promotion-rehearsal:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      BASE_MAIN_SHA: "26bf598affe96e224a65df522c80d85779ed3c13"
+      R8_8_PROVEN_RUN_ID: "35339095664"
+      EXPECTED_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"
+      EXPECTED_PAYLOAD_SHA: "84cc04cac61e12a8d9cddf2ad47b9a1a07edf90a8b1b1d716988440ed6785384"
+      EXPECTED_RUNNER_SHA: "83cc498468528222b2199f6dccfb5f40d5f717476e724ba4c19515c10355db5a"
+      EXPECTED_WORKFLOW_SHA: "7ce831c435f4fc14856f4e6a3d6c5315b66bdf8d6ca73384cb32dacd5686c6fc"
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+    steps:
+      - name: Checkout isolated rehearsal branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Verify exact base and promotion shape
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          mapfile -t CHANGED < <(git diff --name-only "$BASE_MAIN_SHA"..HEAD | sort)
+          printf '%s\n' "${CHANGED[@]}" | tee /tmp/r89_changed.txt
+          cat > /tmp/r89_expected_changed.txt <<'EOF'
+          .github/workflows/report2-v3-r8-9-promotion-rehearsal.yml
+          .r8-9-rehearsal/R8_8_ADAPTIVE_BUDGET_PROOF.json
+          .r8-9-rehearsal/R8_8_EXACT_ARTIFACT_MANIFEST.json
+          .github/workflows/report2.yml
+          payload/report2-runtime.enc
+          runner/runner-main.mjs
+          EOF
+          sort -o /tmp/r89_expected_changed.txt /tmp/r89_expected_changed.txt
+          diff -u /tmp/r89_expected_changed.txt /tmp/r89_changed.txt
+          echo "R8_9_PROMOTION_SHAPE=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+
+      - name: Verify exact R8.8 proven bytes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(sha256sum payload/report2-runtime.enc | awk '{print $1}')" = "$EXPECTED_PAYLOAD_SHA"
+          test "$(sha256sum runner/runner-main.mjs | awk '{print $1}')" = "$EXPECTED_RUNNER_SHA"
+          test "$(sha256sum .github/workflows/report2.yml | awk '{print $1}')" = "$EXPECTED_WORKFLOW_SHA"
+          python3 - <<'PY'
+          import json
+          p=json.load(open('.r8-9-rehearsal/R8_8_ADAPTIVE_BUDGET_PROOF.json'))
+          m=json.load(open('.r8-9-rehearsal/R8_8_EXACT_ARTIFACT_MANIFEST.json'))
+          assert p['status']=='R8_8_ADAPTIVE_BUDGET_CONTROLLED_PASS'
+          assert p['early_status']=='CLOSED'
+          assert p['realized_status']=='CLOSED'
+          assert int(p['read_headroom'])>=2000
+          assert int(p['write_headroom'])>=50
+          assert p['production_main_changed'] is False
+          assert p['telegram_network_enabled'] is False
+          assert str(m['github_run_id'])=='35339095664'
+          assert m['files']['encrypted_runtime']['sha256']=='84cc04cac61e12a8d9cddf2ad47b9a1a07edf90a8b1b1d716988440ed6785384'
+          assert m['files']['runner']['sha256']=='83cc498468528222b2199f6dccfb5f40d5f717476e724ba4c19515c10355db5a'
+          assert m['files']['workflow']['sha256']=='7ce831c435f4fc14856f4e6a3d6c5315b66bdf8d6ca73384cb32dacd5686c6fc'
+          assert m['files']['worker']['sha256']=='72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c'
+          print('R8_8_PROOF_BINDING=PASS')
+          PY
+          grep -Fq 'REPORT2_EXPECTED_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"' .github/workflows/report2.yml
+          grep -Fq 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .github/workflows/report2.yml
+          grep -Fq 'controlled_no_telegram:' .github/workflows/report2.yml
+          grep -Fq 'REPORT2_D1_MAX_DAILY_READS: "3500000"' .github/workflows/report2.yml
+          grep -Fq 'REPORT2_D1_MAX_DAILY_WRITES: "70000"' .github/workflows/report2.yml
+          grep -Fq 'v3-adaptive-budget.mjs' runner/runner-main.mjs
+          echo "R8_9_EXACT_BYTES=PASS"
+
+      - name: Production-form decrypt and syntax smoke
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          test "${#REPORT2_PAYLOAD_KEY}" -eq 64
+          rm -rf /tmp/r89-runtime
+          mkdir -p /tmp/r89-runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" /tmp/r89-runtime/payload.tar.gz
+          tar -xzf /tmp/r89-runtime/payload.tar.gz -C /tmp/r89-runtime
+          rm -f /tmp/r89-runtime/payload.tar.gz
+          cp runner/runner-main.mjs /tmp/r89-runtime/runner-main.mjs
+          cp runner/report2-d1-adapter.mjs /tmp/r89-runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs /tmp/r89-runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs /tmp/r89-runtime/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs /tmp/r89-runtime/telegram-output.mjs
+          test "$(sha256sum /tmp/r89-runtime/src/worker.js | awk '{print $1}')" = "$EXPECTED_WORKER_SHA"
+          node --check /tmp/r89-runtime/runner-main.mjs
+          node --check /tmp/r89-runtime/src/v3-adaptive-budget.mjs
+          node --check /tmp/r89-runtime/src/v3-early-sidecar.mjs
+          node --check /tmp/r89-runtime/src/v3-early-persistence-runtime.mjs
+          echo "R8_9_PRODUCTION_FORM_DECRYPT=PASS"
+
+      - name: Rollback byte rehearsal
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p /tmp/r89-candidate /tmp/r89-base
+          cp payload/report2-runtime.enc /tmp/r89-candidate/report2-runtime.enc
+          cp runner/runner-main.mjs /tmp/r89-candidate/runner-main.mjs
+          cp .github/workflows/report2.yml /tmp/r89-candidate/report2.yml
+          git show "$BASE_MAIN_SHA:payload/report2-runtime.enc" > /tmp/r89-base/report2-runtime.enc
+          git show "$BASE_MAIN_SHA:runner/runner-main.mjs" > /tmp/r89-base/runner-main.mjs
+          git show "$BASE_MAIN_SHA:.github/workflows/report2.yml" > /tmp/r89-base/report2.yml
+          sha256sum /tmp/r89-base/* | sort > /tmp/r89_base_hashes.txt
+          git checkout "$BASE_MAIN_SHA" -- payload/report2-runtime.enc runner/runner-main.mjs .github/workflows/report2.yml
+          cmp -s payload/report2-runtime.enc /tmp/r89-base/report2-runtime.enc
+          cmp -s runner/runner-main.mjs /tmp/r89-base/runner-main.mjs
+          cmp -s .github/workflows/report2.yml /tmp/r89-base/report2.yml
+          git diff --quiet "$BASE_MAIN_SHA" -- payload/report2-runtime.enc runner/runner-main.mjs .github/workflows/report2.yml
+          echo "R8_9_ROLLBACK_BYTES=PASS"
+          cp /tmp/r89-candidate/report2-runtime.enc payload/report2-runtime.enc
+          cp /tmp/r89-candidate/runner-main.mjs runner/runner-main.mjs
+          cp /tmp/r89-candidate/report2.yml .github/workflows/report2.yml
+          test "$(sha256sum payload/report2-runtime.enc | awk '{print $1}')" = "$EXPECTED_PAYLOAD_SHA"
+          test "$(sha256sum runner/runner-main.mjs | awk '{print $1}')" = "$EXPECTED_RUNNER_SHA"
+          test "$(sha256sum .github/workflows/report2.yml | awk '{print $1}')" = "$EXPECTED_WORKFLOW_SHA"
+          echo "R8_9_CANDIDATE_RESTORE_AFTER_ROLLBACK=PASS"
+
+      - name: Build rehearsal proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          python3 - <<'PY'
+          import hashlib,json,subprocess,pathlib,os
+          def sha(path): return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+          def git_bytes(spec): return subprocess.check_output(['git','show',spec])
+          base={}
+          for key,path in {
+              'payload':'payload/report2-runtime.enc',
+              'runner':'runner/runner-main.mjs',
+              'workflow':'.github/workflows/report2.yml',
+          }.items():
+              base[key]=hashlib.sha256(git_bytes(os.environ['BASE_MAIN_SHA']+':'+path)).hexdigest()
+          out={
+              'schema':'report2-r8-9-promotion-rehearsal-v1',
+              'status':'R8_9_PROMOTION_REHEARSAL_PASS',
+              'base_main':os.environ['BASE_MAIN_SHA'],
+              'rehearsal_head':os.environ['GITHUB_SHA'],
+              'proven_r8_8_run_id':os.environ['R8_8_PROVEN_RUN_ID'],
+              'candidate':{
+                  'payload_sha256':sha('payload/report2-runtime.enc'),
+                  'runner_sha256':sha('runner/runner-main.mjs'),
+                  'workflow_sha256':sha('.github/workflows/report2.yml'),
+                  'worker_sha256':os.environ['EXPECTED_WORKER_SHA'],
+              },
+              'base':base,
+              'promotion_target_files':['payload/report2-runtime.enc','runner/runner-main.mjs','.github/workflows/report2.yml'],
+              'rollback_rehearsal':'PASS',
+              'production_form_decrypt':'PASS',
+              'production_main_changed':False,
+              'remote_d1_changed':False,
+              'telegram_v3_network_enabled':False,
+              'next_action':'SEPARATE_EXPLICIT_PRODUCTION_PROMOTION_DECISION',
+          }
+          assert out['candidate']['payload_sha256']==os.environ['EXPECTED_PAYLOAD_SHA']
+          assert out['candidate']['runner_sha256']==os.environ['EXPECTED_RUNNER_SHA']
+          assert out['candidate']['workflow_sha256']==os.environ['EXPECTED_WORKFLOW_SHA']
+          pathlib.Path('R8_9_PROMOTION_REHEARSAL_PROOF.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          PY
+          echo "R8_9_REHEARSAL_PROOF=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+
+      - name: Upload rehearsal proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-9-promotion-rehearsal-proof
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            R8_9_PROMOTION_REHEARSAL_PROOF.json
+            .r8-9-rehearsal/R8_8_ADAPTIVE_BUDGET_PROOF.json
+            .r8-9-rehearsal/R8_8_EXACT_ARTIFACT_MANIFEST.json
