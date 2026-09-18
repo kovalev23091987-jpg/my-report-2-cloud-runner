@@ -1,0 +1,263 @@
+name: Report 2 V3 R8.18 Telegram Final Closure
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-18-telegram-final-closure-*"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: report2-v3-r8-18-telegram-final-closure
+  cancel-in-progress: false
+
+jobs:
+  telegram-final-closure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      BASE_MAIN_SHA: "d77525b36ccc94808070a006f05f85e4f8ba86f3"
+      EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      EXPECTED_PAYLOAD_SHA: "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88"
+      EXPECTED_RUNNER_SHA: "83cc498468528222b2199f6dccfb5f40d5f717476e724ba4c19515c10355db5a"
+      EXPECTED_WORKFLOW_SHA: "424b3878d68b48984332b527f6ed70e30bd7f491f9ac25197017d076075d6692"
+      NATURAL_RUN_1: "35370397162"
+      NATURAL_RUN_2: "35371289680"
+      NATURAL_RUN_3: "35372539431"
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      REPO_FULL: ${{ github.repository }}
+    steps:
+      - name: Checkout isolated closure branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Verify exact production base and isolated diff
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          test "$(sha256sum payload/report2-runtime.enc | awk '{print $1}')" = "$EXPECTED_PAYLOAD_SHA"
+          test "$(sha256sum runner/runner-main.mjs | awk '{print $1}')" = "$EXPECTED_RUNNER_SHA"
+          test "$(sha256sum .github/workflows/report2.yml | awk '{print $1}')" = "$EXPECTED_WORKFLOW_SHA"
+          grep -Fq 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .github/workflows/report2.yml
+          mapfile -t CHANGED < <(git diff --name-only "$BASE_MAIN_SHA"..HEAD | sort)
+          printf '%s\n' "${CHANGED[@]}" > /tmp/r818_changed.txt
+          cat > /tmp/r818_expected.txt <<'EOF'
+          .github/workflows/report2-v3-r8-18-telegram-final-closure.yml
+          .r8-18-telegram/tests/v3-pipeline-health-runtime.test.mjs
+          .r8-18-telegram/tests/v3-pipeline-health-sidecar.test.mjs
+          .r8-18-telegram/tests/v3-telegram-delivery-sidecar.test.mjs
+          .r8-18-telegram/tests/v3-telegram-lifecycle-sidecar-sqlite.test.mjs
+          .r8-18-telegram/tests/v3-telegram-lifecycle-sidecar.test.mjs
+          .r8-18-telegram/tests/v3-telegram-lifecycle.test.mjs
+          .r8-18-telegram/tests/v3-telegram-runtime.test.mjs
+          EOF
+          sort -o /tmp/r818_expected.txt /tmp/r818_expected.txt
+          diff -u /tmp/r818_expected.txt /tmp/r818_changed.txt
+          echo "R8_18_ISOLATION=PASS"
+          echo "PRODUCTION_CHANGED=NO"
+
+      - name: Decrypt exact production runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          test "${#REPORT2_PAYLOAD_KEY}" -eq 64
+          rm -rf /tmp/r818-runtime
+          mkdir -p /tmp/r818-runtime/tests
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" /tmp/r818-runtime/payload.tar.gz
+          tar -xzf /tmp/r818-runtime/payload.tar.gz -C /tmp/r818-runtime
+          rm -f /tmp/r818-runtime/payload.tar.gz
+          test "$(sha256sum /tmp/r818-runtime/src/worker.js | awk '{print $1}')" = "$EXPECTED_WORKER_SHA"
+          for f in .r8-18-telegram/tests/*.mjs; do cp "$f" /tmp/r818-runtime/tests/; done
+          node --check /tmp/r818-runtime/src/v3-telegram-lifecycle.mjs
+          node --check /tmp/r818-runtime/src/v3-telegram-runtime.mjs
+          node --check /tmp/r818-runtime/src/v3-telegram-lifecycle-sidecar.mjs
+          node --check /tmp/r818-runtime/src/v3-telegram-delivery-sidecar.mjs
+          node --check /tmp/r818-runtime/src/v3-pipeline-health-runtime.mjs
+          node --check /tmp/r818-runtime/src/v3-pipeline-health-sidecar.mjs
+          echo "R8_18_EXACT_PRODUCTION_RUNTIME=PASS"
+
+      - name: Node24 Telegram lifecycle and delivery regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd /tmp/r818-runtime
+          node --test \
+            tests/v3-telegram-lifecycle.test.mjs \
+            tests/v3-telegram-runtime.test.mjs \
+            tests/v3-telegram-delivery-sidecar.test.mjs \
+            tests/v3-telegram-lifecycle-sidecar.test.mjs \
+            tests/v3-telegram-lifecycle-sidecar-sqlite.test.mjs \
+            tests/v3-pipeline-health-runtime.test.mjs \
+            tests/v3-pipeline-health-sidecar.test.mjs | tee "$GITHUB_WORKSPACE/R8_18_NODE24_TELEGRAM_TESTS.log"
+          grep -Eq '# pass 36|# pass[[:space:]]+36' "$GITHUB_WORKSPACE/R8_18_NODE24_TELEGRAM_TESTS.log"
+          grep -Eq '# fail 0|# fail[[:space:]]+0' "$GITHUB_WORKSPACE/R8_18_NODE24_TELEGRAM_TESTS.log"
+          echo "R8_18_TELEGRAM_NODE24=PASS"
+
+      - name: Read-only production D1 Telegram schema proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_D1_BRIDGE_URL"
+          test -n "$REPORT2_D1_BRIDGE_TOKEN"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {RemoteD1Database} from './runner/report2-d1-adapter.mjs';
+          const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{timeoutMs:30000});
+          const qs=[
+            ['lifecycle',`SELECT COUNT(*) AS n FROM v3_user_lifecycle_shadow`],
+            ['dispatch',`SELECT COUNT(*) AS n FROM v3_telegram_dispatch_shadow`],
+            ['health',`SELECT COUNT(*) AS n FROM v3_pipeline_health_shadow`],
+            ['health_event',`SELECT COUNT(*) AS n FROM v3_pipeline_health_event_shadow`],
+          ];
+          const out={};
+          for(const [k,sql] of qs){const r=await db.prepare(sql).first();out[k]=Number(r?.n??0);}
+          const latest=await db.prepare(`SELECT status,reasons_json,last_checked_ts FROM v3_pipeline_health_shadow WHERE namespace='PIPELINE' LIMIT 1`).first();
+          const usage=db.usageSnapshot();
+          if(usage.unknown_ops!==0) throw new Error('D1_UNKNOWN_OPS_NONZERO');
+          if(out.health<1) throw new Error('PIPELINE_HEALTH_ROW_MISSING');
+          fs.writeFileSync('R8_18_D1_READONLY_PROOF.json',JSON.stringify({status:'PASS',counts:out,latest_health:latest??null,usage},null,2)+'\n');
+          console.log('R8_18_D1_READONLY_SCHEMA=PASS');
+          console.log('R8_18_D1_HEALTH_ROWS='+out.health);
+          NODE
+          echo "REMOTE_D1_CHANGED=NO_READ_ONLY"
+
+      - name: Natural production lifecycle health proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p natural_logs
+          for rid in "$NATURAL_RUN_1" "$NATURAL_RUN_2" "$NATURAL_RUN_3"; do
+            head="$(gh api "/repos/$REPO_FULL/actions/runs/$rid" --jq '.head_sha')"
+            event="$(gh api "/repos/$REPO_FULL/actions/runs/$rid" --jq '.event')"
+            conclusion="$(gh api "/repos/$REPO_FULL/actions/runs/$rid" --jq '.conclusion')"
+            test "$head" = "$BASE_MAIN_SHA"
+            test "$event" = "schedule"
+            test "$conclusion" = "success"
+            gh run view "$rid" -R "$REPO_FULL" --log > "natural_logs/$rid.log"
+          done
+          python3 - <<'PY'
+          import json,os,pathlib,re
+          ids=[os.environ['NATURAL_RUN_1'],os.environ['NATURAL_RUN_2'],os.environ['NATURAL_RUN_3']]
+          rows=[]; any_completed=False; any_dispatch=False
+          for rid in ids:
+              text=pathlib.Path(f'natural_logs/{rid}.log').read_text(errors='replace')
+              assert 'REPORT2_RUNNER_FATAL' not in text, rid
+              def last(marker):
+                  xs=[x for x in text.splitlines() if marker in x]
+                  assert xs, (rid,marker)
+                  return xs[-1]
+              lc=last('V3_TELEGRAM_LIFECYCLE_SIDECAR ')
+              hp=last('V3_PIPELINE_HEALTH_SIDECAR ')
+              dl=last('V3_TELEGRAM_DELIVERY_SIDECAR ')
+              finals=[x for x in text.splitlines() if '{"ok":true' in x]
+              assert finals, rid
+              final=finals[-1]
+              assert '"status":"CLOSED"' in lc, (rid,lc[-500:])
+              assert '"completed_handoffs":0' not in lc, (rid,lc[-500:])
+              any_completed=True
+              if '"dispatch":{"state":"PENDING"' in lc: any_dispatch=True
+              assert '"status":"CLOSED"' in hp, (rid,hp[-500:])
+              assert '"market_signal":false' in hp, rid
+              assert '"status":"NETWORK_DISABLED_FAIL_CLOSED"' in dl, rid
+              assert '"network_send":false' in dl, rid
+              assert '"v3_telegram_network_enabled":false' in final, rid
+              rows.append({'run_id':int(rid),'lifecycle_closed':True,'completed_handoff':True,'pipeline_health_closed':True,'v3_network_off':True})
+          assert any_completed
+          live='NATURAL_EVENT_PRESENT_JOURNALED' if any_dispatch else 'READY_AWAITING_NATURAL_EVENT'
+          pathlib.Path('R8_18_NATURAL_TELEGRAM_PROOF.json').write_text(json.dumps({'status':'PASS','runs':rows,'natural_completed_handoff_proven':True,'natural_qualifying_dispatch_observed':any_dispatch,'live_market_branch':live},indent=2)+'\n')
+          print('R8_18_NATURAL_LIFECYCLE_HEALTH=PASS')
+          print('R8_18_LIVE_MARKET_BRANCH='+live)
+          PY
+
+      - name: Isolated real Telegram relay delivery test
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_TELEGRAM_RELAY_KEY"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {sendLifecycleRelay} from '/tmp/r818-runtime/src/v3-telegram-delivery-sidecar.mjs';
+          const message='🧪 ТЕСТ СИСТЕМЫ «МОЙ ОТЧЁТ 2»\nЭто техническая проверка доставки. НЕ торговый сигнал. Рыночной идеи нет.';
+          const r=await sendLifecycleRelay({
+            relay_url:'https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test',
+            relay_key:process.env.REPORT2_TELEGRAM_RELAY_KEY,
+            text:message,
+            timeout_ms:8000,
+            fetch_impl:globalThis.fetch,
+          });
+          if(!r.ok||r.network_result!=='CONFIRMED_SENT') throw new Error(`ISOLATED_RELAY_NOT_CONFIRMED:${r.network_result}:${r.status}`);
+          const proof={status:'PASS',network_result:r.network_result,relay_status:r.status,message_id:r.message_id??null,test_only:true,market_signal:false,text_class:'SYSTEM_TEST_NOT_MARKET_SIGNAL'};
+          fs.writeFileSync('R8_18_REAL_RELAY_PROOF.json',JSON.stringify(proof,null,2)+'\n');
+          console.log('R8_18_REAL_RELAY_DELIVERY=PASS');
+          console.log('R8_18_TEST_MESSAGE_ID='+String(r.message_id??'CONFIRMED'));
+          NODE
+
+      - name: Build final Telegram closure proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          def load(p): return json.loads(pathlib.Path(p).read_text())
+          d1=load('R8_18_D1_READONLY_PROOF.json')
+          nat=load('R8_18_NATURAL_TELEGRAM_PROOF.json')
+          relay=load('R8_18_REAL_RELAY_PROOF.json')
+          testlog=pathlib.Path('R8_18_NODE24_TELEGRAM_TESTS.log').read_text()
+          assert '# fail 0' in testlog
+          out={
+            'schema':'report2-r8-18-telegram-final-closure-v1',
+            'status':'R8_18_TELEGRAM_FINAL_CLOSURE_PASS',
+            'production_main':os.environ['BASE_MAIN_SHA'],
+            'validation_head':os.environ['GITHUB_SHA'],
+            'production_changed':False,
+            'remote_d1_changed':False,
+            'v3_production_network_enabled':False,
+            'node24_focused_tests':{'status':'PASS','tests':36,'fail':0},
+            'revalidate_before_send':'PASS',
+            'dedup_retry_expiry':'PASS',
+            'confirmed_receipt_only_sent':'PASS',
+            'health_alert_semantics':'PASS',
+            'no_fake_market_alert':'PASS',
+            'isolated_real_relay_delivery':relay,
+            'natural_production_proof':nat,
+            'production_d1_readonly':d1,
+            'live_market_branch':nat['live_market_branch'],
+            'telegram_final_status':'CLOSED_DELIVERY_PROVEN_LIVE_BRANCH_AWAITING_NATURAL_EVENT' if nat['live_market_branch']=='READY_AWAITING_NATURAL_EVENT' else 'CLOSED_DELIVERY_AND_NATURAL_EVENT_PROVEN',
+            'next_action':'BUILD_R8_17_AUTHORITATIVE_SOURCE_AND_FINAL_28_POINT_ACCEPTANCE_AUDIT',
+          }
+          pathlib.Path('R8_18_TELEGRAM_FINAL_CLOSURE_PROOF.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(out,indent=2,sort_keys=True))
+          print('R8_18_TELEGRAM_FINAL_CLOSURE=PASS')
+          print('PRODUCTION_CHANGED=NO')
+          print('REMOTE_D1_CHANGED=NO_READ_ONLY')
+          PY
+
+      - name: Upload Telegram closure proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-18-telegram-final-closure-proof
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            R8_18_TELEGRAM_FINAL_CLOSURE_PROOF.json
+            R8_18_REAL_RELAY_PROOF.json
+            R8_18_NATURAL_TELEGRAM_PROOF.json
+            R8_18_D1_READONLY_PROOF.json
+            R8_18_NODE24_TELEGRAM_TESTS.log
