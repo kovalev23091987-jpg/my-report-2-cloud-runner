@@ -5,9 +5,16 @@ import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
 import { runTelegramOutputLayer } from "./telegram-output.mjs";
 import { deriveRunReservation, loadDailyUsageAggregate, reserveRunBudget, evaluateDailyReservationBudget, evaluateWithinRunReservation, finalizeRunUsage } from "./d1-preaction-budget-guard.mjs";
+import { buildR88BurstReservation, buildR88DailyAdmissionView, enforceR88RunBudget } from "./src/v3-adaptive-budget.mjs";
 import { classifyZeroTelegram } from "./telegram-zero-reason.mjs";
+import { runV3EarlyPersistenceSidecar, V3_EARLY_SIDECAR_BUDGET } from "./src/v3-early-sidecar.mjs";
+import { runV3RealizedLiquidationSidecar, V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET } from "./src/v3-realized-liquidation-sidecar.mjs";
+import { runV3LiquidationIntelligenceSidecar, V3_LIQUIDATION_SIDECAR_BUDGET } from "./src/v3-liquidation-sidecar.mjs";
+import { runV3PipelineHealthSidecar, V3_PIPELINE_HEALTH_SIDECAR_BUDGET } from "./src/v3-pipeline-health-sidecar.mjs";
+import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } from "./src/v3-telegram-lifecycle-sidecar.mjs";
+import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.7.3-telegram-watch70-tree-guard";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.12.0-v3-telegram-journal-gated-delivery";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -389,25 +396,29 @@ async function main() {
   const pending = [];
   const ctx = { waitUntil(promise) { pending.push(Promise.resolve(promise)); }, passThroughOnException() {} };
   const started = Date.now();
-  const d1RunReservation = deriveRunReservation({
-    runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY", 288),
-    maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
-    maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
-  });
-  if (!d1RunReservation.ok) throw new Error(`D1_RUN_RESERVATION_NOT_CLOSED:${d1RunReservation.status}`);
-  const d1DailyBeforeReservation = await loadDailyUsageAggregate(env.DATA_DB, started);
-  const d1DayAdmission = evaluateDailyReservationBudget({
-    daily:d1DailyBeforeReservation,
-    nextReservation:d1RunReservation,
-    maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
-    maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
-  });
-  if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${d1DayAdmission.status}:${(d1DayAdmission.reasons||[]).join(",")}`);
+  const d1NominalReservation = deriveRunReservation({
+  runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY", 288),
+  maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
+  maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
+});
+if (!d1NominalReservation.ok) throw new Error(`D1_RUN_RESERVATION_NOT_CLOSED:${d1NominalReservation.status}`);
+const d1RunReservation = buildR88BurstReservation(d1NominalReservation);
+if (!d1RunReservation.ok) throw new Error(`R8_8_BURST_RESERVATION_NOT_CLOSED:${d1RunReservation.status}`);
+const d1DailyBeforeReservationRaw = await loadDailyUsageAggregate(env.DATA_DB, started);
+const d1DailyBeforeReservation = buildR88DailyAdmissionView(d1DailyBeforeReservationRaw,d1RunReservation);
+const d1DayAdmission = evaluateDailyReservationBudget({
+  daily:d1DailyBeforeReservation,
+  nextReservation:d1RunReservation,
+  maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
+  maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
+});
+if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${d1DayAdmission.status}:${(d1DayAdmission.reasons||[]).join(",")}`);
+console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "*/5 * * * *" : "manual" }, env, ctx);
   if (pending.length) await Promise.all(pending);
-  const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
+  const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
   if (Number(cron.scheduled_time) !== Number(started)) throw new Error(`CRON_IDENTITY_MISMATCH:${cron.scheduled_time}!=${started}`);
   if (cron.status !== "SUCCESS" || cron.completed_ts == null) throw new Error(`CRON_IDENTITY_NOT_SUCCESS:${JSON.stringify(cron)}`);
@@ -415,6 +426,54 @@ async function main() {
   const scan = await env.DATA_DB.prepare("SELECT ts,universe_total,scanned,errors,stale,stage0_coverage_pct FROM scan_runs WHERE ts BETWEEN ?1 AND ?2 ORDER BY ABS(ts - ?3) ASC LIMIT 1").bind(Number(cron.started_ts), Number(cron.completed_ts), Number(cron.started_ts)).first();
   console.log("SCAN_IDENTITY_BINDING", JSON.stringify({ cron_started_ts:Number(cron.started_ts), cron_completed_ts:Number(cron.completed_ts), selected_scan_ts:Number(scan?.ts || 0) || null }));
   assertClosedCron(cron, scan);
+  console.log("R8_8_D1_PRE_SIDECARS_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
+  // V3 Telegram journal may persist state before network delivery is enabled.
+  // Network delivery itself remains fail-closed until the dedicated env gate is on.
+  const v3TelegramJournalEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_V3_TELEGRAM_JOURNAL_ENABLED || "0").trim().toLowerCase());
+  const v3TelegramNetworkRequested = ["1","true","yes","on"].includes(String(process.env.REPORT2_V3_TELEGRAM_NETWORK_ENABLED || "0").trim().toLowerCase());
+  const v3LegacyTelegramOutputEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED || "0").trim().toLowerCase());
+  const v3TelegramNetworkEnabled = v3TelegramNetworkRequested && v3LegacyTelegramOutputEnabled;
+  // R8.8 adaptive burst budget: preserve downstream reserve while guaranteeing one bounded early-persistence slot under the R8.8 observed high-write state.
+  // Raw factual liquidations are already upstream-persisted; compact aggregation may defer fail-closed without source loss.
+  const R88_DOWNSTREAM_RESERVE = Object.freeze({rows_read:4500,rows_written:50});
+  const r88Gate = (envelope) => evaluateWithinRunReservation({
+    reservation:d1RunReservation,
+    currentUsage:env.DATA_DB.usageSnapshot(),
+    extraRowsRead:R88_DOWNSTREAM_RESERVE.rows_read + envelope.rows_read,
+    extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written + envelope.rows_written,
+  });
+  const v3SidecarsPreactionBudget = evaluateWithinRunReservation({
+    reservation:d1RunReservation,
+    currentUsage:env.DATA_DB.usageSnapshot(),
+    extraRowsRead:R88_DOWNSTREAM_RESERVE.rows_read,
+    extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written,
+  });
+  const v3Blocked = (version, gate, lane) => ({version,mode:"SHADOW_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",persisted:0,reasons:gate?.reasons||[],capacity_lane:lane,capacity_gate:gate,probability:null,validated_signal:false,trading_execution:false});
+  let v3EarlySidecar;
+  let v3RealizedLiquidationSidecar;
+  let v3LiquidationSidecar;
+  const r88EarlyGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_EARLY_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+  if (r88EarlyGate.allowed) {
+    v3EarlySidecar = await runV3EarlyPersistenceSidecar(env.DATA_DB, {
+      current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+    });
+  } else v3EarlySidecar = v3Blocked("v3-early-sidecar-shadow-v1",r88EarlyGate,"EARLY_PERSISTENCE");
+  const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+  if (r88RealizedGate.allowed) {
+    v3RealizedLiquidationSidecar = await runV3RealizedLiquidationSidecar(env.DATA_DB, {
+      current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+    });
+  } else v3RealizedLiquidationSidecar = v3Blocked("v3-realized-liquidation-sidecar-shadow-v1",r88RealizedGate,"REALIZED_LIQUIDATION_AGGREGATION");
+  const r88ProjectedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+  if (r88ProjectedGate.allowed) {
+    v3LiquidationSidecar = await runV3LiquidationIntelligenceSidecar(env.DATA_DB, {
+      current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+    });
+  } else v3LiquidationSidecar = v3Blocked("v3-liquidation-intelligence-sidecar-shadow-v1",r88ProjectedGate,"PROJECTED_LIQUIDATION");
+  console.log("R8_8_BUDGET_GATES", JSON.stringify({downstream_reserve:R88_DOWNSTREAM_RESERVE,early:r88EarlyGate,realized:r88RealizedGate,projected:r88ProjectedGate,usage:env.DATA_DB.usageSnapshot()}));
+  console.log("V3_EARLY_PERSISTENCE_SIDECAR", JSON.stringify(v3EarlySidecar));
+  console.log("V3_REALIZED_LIQUIDATION_SIDECAR", JSON.stringify(v3RealizedLiquidationSidecar));
+  console.log("V3_LIQUIDATION_INTELLIGENCE_SIDECAR", JSON.stringify(v3LiquidationSidecar));
   const telegramObserver = await observeNaturalTelegramDecision(env.DATA_DB);
   const discoveryRecallKpi = await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id });
   if (source !== "schedule" && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
@@ -446,18 +505,53 @@ async function main() {
     shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
     watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
     watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-    enabled: envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
+    // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
+    // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
+    enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
     fetchImpl: nativeFetch,
   });
   const telegramZeroReason = classifyZeroTelegram({ preBudget:d1PreTelegramBudget, telegramObserver, telegramOutput });
+  const v3RealizedFeedStatus = String(v3RealizedLiquidationSidecar?.status || "UNKNOWN").toUpperCase();
+  const v3ProjectedFeedStatus = String(v3LiquidationSidecar?.status || "UNKNOWN").toUpperCase();
+  const v3CriticalFeedState = (v3RealizedFeedStatus.startsWith("CLOSED") && v3ProjectedFeedStatus.startsWith("CLOSED")) ? "OK" : "UNAVAILABLE";
+  let v3PipelineHealthSidecar;
+  if (!v3SidecarsPreactionBudget.allowed) {
+    v3PipelineHealthSidecar = {version:"v3-pipeline-health-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",market_signal:false,reasons:v3SidecarsPreactionBudget.reasons||[]};
+  } else {
+    v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,now_ts:Date.now()});
+  }
+  console.log("V3_PIPELINE_HEALTH_SIDECAR", JSON.stringify(v3PipelineHealthSidecar));
+  let v3TelegramLifecycleSidecar;
+  if (!v3SidecarsPreactionBudget.allowed) {
+    v3TelegramLifecycleSidecar = {version:"v3-telegram-lifecycle-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,dispatch_enabled:v3TelegramJournalEnabled,reasons:v3SidecarsPreactionBudget.reasons||[]};
+  } else {
+    v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {
+      source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
+      d1_pretelegram_budget_closed:d1PreTelegramBudget.allowed, dispatch_enabled:v3TelegramJournalEnabled,
+    });
+  }
+  console.log("V3_TELEGRAM_LIFECYCLE_SIDECAR", JSON.stringify(v3TelegramLifecycleSidecar));
+  let v3TelegramDeliverySidecar;
+  if (!v3SidecarsPreactionBudget.allowed || !d1PreTelegramBudget.allowed) {
+    v3TelegramDeliverySidecar = {version:"v3-telegram-delivery-sidecar-shadow-v1",mode:"SHADOW_GATED_DELIVERY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,sent:0,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(d1PreTelegramBudget.reasons||[])]};
+  } else {
+    v3TelegramDeliverySidecar = await runV3TelegramDeliverySidecar(env.DATA_DB, {
+      enabled:v3TelegramNetworkEnabled,
+      relay_url:envText("REPORT2_TELEGRAM_RELAY_URL", { required: false }),
+      relay_key:envText("REPORT2_TELEGRAM_RELAY_KEY", { required: false }),
+      now_ts:Date.now(), fetch_impl:nativeFetch,
+    });
+  }
+  console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
   if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
-  const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot()});
+  console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
+  const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
-  const d1Usage = enforceD1Budget(env.DATA_DB);
+  const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
