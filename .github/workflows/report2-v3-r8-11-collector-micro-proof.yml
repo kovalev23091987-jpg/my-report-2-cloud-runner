@@ -1,0 +1,85 @@
+name: Report 2 V3 R8.11 Collector Microstructure Proof
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-11-collector-micro-proof-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-11-collector-micro-proof
+  cancel-in-progress: false
+
+jobs:
+  collector-micro-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      BASE_MAIN_SHA: "79ddddf91f436b47b11a75d8875f3ff4b0ab17c7"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - name: Checkout isolated proof branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact production parent and source hashes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          sha256sum --check .r8-11/CHECKSUMS.sha256
+          echo "R8_11_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Exact source targeted tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test .r8-11/tests/*.test.mjs
+          node --check .r8-11/tools/live-bybit-micro-proof.mjs
+          node --check .r8-11/tools/v3-collector-endurance-probe.mjs
+          echo "R8_11_TARGETED_NODE24=PASS"
+      - name: Bounded live collector and microstructure proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .r8-11/proof
+          node .r8-11/tools/v3-collector-endurance-probe.mjs --venue=BYBIT --contract=BTC-USDT --symbol=BTCUSDT --seconds=180 --out=.r8-11/proof/bybit-liquidation-endurance.json > .r8-11/proof/bybit-endurance.log 2>&1 & P1=$!
+          node .r8-11/tools/v3-collector-endurance-probe.mjs --venue=BINANCE --contract=BTC-USDT --symbol=BTCUSDT --seconds=180 --out=.r8-11/proof/binance-liquidation-endurance.json > .r8-11/proof/binance-endurance.log 2>&1 & P2=$!
+          node .r8-11/tools/live-bybit-micro-proof.mjs --seconds=70 --out=.r8-11/proof/bybit-microstructure-live.json > .r8-11/proof/microstructure-live.log 2>&1 & P3=$!
+          RC=0
+          wait "$P1" || RC=1
+          wait "$P2" || RC=1
+          wait "$P3" || RC=1
+          cat .r8-11/proof/bybit-endurance.log
+          cat .r8-11/proof/binance-endurance.log
+          cat .r8-11/proof/microstructure-live.log
+          test "$RC" = "0"
+          node .r8-11/tools/build-proof.mjs
+      - name: Verify production main remains unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+          echo "REMOTE_D1_SCHEMA_CHANGED=NO"
+      - name: Upload R8.11 proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-11-collector-micro-proof
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            .r8-11/proof/*.json
+            .r8-11/proof/*.log
+            .r8-11/CHECKSUMS.sha256
