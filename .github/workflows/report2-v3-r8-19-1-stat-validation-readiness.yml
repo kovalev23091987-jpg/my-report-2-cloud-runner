@@ -1,0 +1,97 @@
+name: Report 2 V3 R8.19.1 Statistical Validation Readiness
+
+on:
+  push:
+    branches:
+      - 'report2-v3-r8-19-1-stat-validation-readiness-*'
+
+permissions:
+  contents: read
+
+env:
+  BASE_MAIN_SHA: "d77525b36ccc94808070a006f05f85e4f8ba86f3"
+  REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+  REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+
+jobs:
+  validation-readiness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout isolated audit branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact production base and isolated diff
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          mapfile -t CHANGED < <(git diff --name-only "$BASE_MAIN_SHA"..HEAD | sort)
+          printf '%s\n' "${CHANGED[@]}" > /tmp/r819_changed.txt
+          cat > /tmp/r819_expected.txt <<'EOT'
+          .github/workflows/report2-v3-r8-19-1-stat-validation-readiness.yml
+          .r8-19-validation/readiness-audit.mjs
+          .r8-19-validation/readiness-lib.mjs
+          .r8-19-validation/readiness-lib.test.mjs
+          EOT
+          sort -o /tmp/r819_expected.txt /tmp/r819_expected.txt
+          diff -u /tmp/r819_expected.txt /tmp/r819_changed.txt
+          echo "R8_19_ISOLATION=PASS"
+          echo "PRODUCTION_CHANGED=NO"
+      - name: Node24 validation-readiness unit tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap .r8-19-validation/readiness-lib.test.mjs | tee R8_19_NODE24_TESTS.log
+          grep -Fxq '# tests 4' R8_19_NODE24_TESTS.log
+          grep -Fxq '# pass 4' R8_19_NODE24_TESTS.log
+          grep -Fxq '# fail 0' R8_19_NODE24_TESTS.log
+          echo "R8_19_NODE24_TESTS=PASS"
+      - name: Read-only D1 statistical readiness audit
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_D1_BRIDGE_URL"
+          test -n "$REPORT2_D1_BRIDGE_TOKEN"
+          R8_19_JSON="$GITHUB_WORKSPACE/R8_19_VALIDATION_READINESS.json" \
+          R8_19_MD="$GITHUB_WORKSPACE/R8_19_VALIDATION_READINESS.md" \
+          node .r8-19-validation/readiness-audit.mjs | tee R8_19_AUDIT.log
+          python3 - <<'PY'
+          import json
+          p=json.load(open('R8_19_VALIDATION_READINESS.json'))
+          assert p['status']=='VALIDATION_READINESS_AUDIT_COMPLETE_NOT_VALIDATED'
+          assert p['safety']['d1_read_only'] is True
+          assert p['safety']['live_probability'] is False
+          assert p['safety']['validated_signal'] is False
+          assert p['safety']['trading_execution'] is False
+          assert p['validation_policy']['long_short_separate'] is True
+          assert p['existing_entry_area_threshold']=={'min_train':80,'min_holdout':40,'required':120,'source':'tz101-entry-area-calibration.mjs'}
+          assert p['d1_usage']['rows_written']==0
+          assert p['d1_usage']['unknown_ops']==0
+          print('R8_19_D1_READONLY_AUDIT=PASS')
+          PY
+      - name: Verify production main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_UNCHANGED=PASS"
+      - name: Upload R8.19 readiness proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-19-stat-validation-readiness-proof
+          path: |
+            R8_19_VALIDATION_READINESS.json
+            R8_19_VALIDATION_READINESS.md
+            R8_19_AUDIT.log
+            R8_19_NODE24_TESTS.log
+          if-no-files-found: error
