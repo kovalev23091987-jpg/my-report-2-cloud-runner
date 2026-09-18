@@ -1,0 +1,346 @@
+name: Report 2 V3 R8.7 Early Lane Capacity Fit Validation
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-early-capacity-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-early-capacity-validation
+  cancel-in-progress: false
+
+jobs:
+  r8-controlled-integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      BASE_MAIN_SHA: "26bf598affe96e224a65df522c80d85779ed3c13"
+      R8_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"
+      REPORT2_EXPECTED_WORKER_SHA: "72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c"
+      R8_ZIP_SHA: "be4f802a22eb08df09bdcb789ab16a71a6cc0482052fc364cba3733aef415da0"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      REPORT2_TELEGRAM_REPORT_TEST: "false"
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      REPORT2_RUN_SOURCE: "controlled-v3-r8"
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+    steps:
+      - name: Checkout isolated integration branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify isolation and exact R9 main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          sha256sum --check .v3-r8-integration/GATE_CHECKSUMS.sha256
+          test "$(sha256sum .v3-r8-integration/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_7_20260918.zip | awk '{print $1}')" = "$R8_ZIP_SHA"
+          echo "R8_INTEGRATION_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Full R8 Node24 readiness before any D1 write
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .v3-r8-integration/bin .v3-r8-integration/unpacked
+          if ! command -v shasum >/dev/null 2>&1; then
+            printf '%s\n' '#!/bin/bash' 'set -Eeuo pipefail' 'if [ "${1:-}" = "-a" ] && [ "${2:-}" = "256" ]; then shift 2; fi' 'exec sha256sum "$@"' > .v3-r8-integration/bin/shasum
+            chmod +x .v3-r8-integration/bin/shasum
+            export PATH="$GITHUB_WORKSPACE/.v3-r8-integration/bin:$PATH"
+          fi
+          rm -rf .v3-r8-integration/unpacked/*
+          unzip -q .v3-r8-integration/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_7_20260918.zip -d .v3-r8-integration/unpacked
+          ROOT="$GITHUB_WORKSPACE/.v3-r8-integration/unpacked/MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_7_20260918"
+          chmod +x "$ROOT/RUN_INTERNAL_NODE24_READINESS.command"
+          REPORT2_REPO="$GITHUB_WORKSPACE" "$ROOT/RUN_INTERNAL_NODE24_READINESS.command" | tee .v3-r8-integration/NODE24_READINESS.log
+          grep -q '^FINAL_RESULT=READY_FOR_CONTROLLED_INTEGRATION_NOT_DEPLOYED$' .v3-r8-integration/NODE24_READINESS.log
+          RESULT_FILE="$(grep '^RESULT_FILE=' .v3-r8-integration/NODE24_READINESS.log | tail -1 | cut -d= -f2-)"
+          test -f "$RESULT_FILE"
+          cp "$RESULT_FILE" .v3-r8-integration/NODE24_READINESS_RESULT.txt
+          echo "R8_ROOT=$ROOT" >> "$GITHUB_ENV"
+          printf '{\n  "status":"READY_FOR_CONTROLLED_R8_NOT_DEPLOYED",\n  "base_main":"%s",\n  "candidate_worker_sha256":"%s",\n  "node":"%s",\n  "telegram_lifecycle_persistence_only":true,\n  "telegram_lifecycle_dispatch_enabled":true,\n  "telegram_v3_network_enabled":false,\n  "production_changed":false,\n  "remote_d1_changed":false\n}\n' "$BASE_MAIN_SHA" "$R8_WORKER_SHA" "$(node -p 'process.versions.node')" > .v3-r8-integration/R8_NODE24_PASS_PROOF.json
+      - name: D1 read-only preflight
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node .v3-r8-integration/d1-bridge-check.mjs | tee .v3-r8-integration/D1_PRECHECK_ONLY.json
+          grep -q '"remote_d1_changed": false' .v3-r8-integration/D1_PRECHECK_ONLY.json
+      - name: Self-test and apply additive V3 shadow schema
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 .v3-r8-integration/apply_v3_migrations_r8.py --self-test | tee .v3-r8-integration/MIGRATION_SELF_TEST.log
+          grep -q '^V3_MIGRATION_SELF_TEST=PASS' .v3-r8-integration/MIGRATION_SELF_TEST.log
+          python3 .v3-r8-integration/apply_v3_migrations_r8.py --check | tee .v3-r8-integration/D1_PRE_MIGRATION.log
+          grep -q '^V3_D1_MIGRATION_CHECK=PASS$' .v3-r8-integration/D1_PRE_MIGRATION.log
+          python3 .v3-r8-integration/apply_v3_migrations_r8.py --apply | tee .v3-r8-integration/D1_MIGRATION.log
+          grep -q '^V3_D1_MIGRATION_RESULT=PASS$' .v3-r8-integration/D1_MIGRATION.log
+          echo "V3_D1_SCHEMA=APPLIED_READBACK_PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Emit R8.7 early-capacity controlled candidate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          test "${#REPORT2_PAYLOAD_KEY}" -eq 64
+          python3 "$R8_ROOT/overlay/tools/patch_cloud_runner_v3.py" "$GITHUB_WORKSPACE" --worker-sha "$R8_WORKER_SHA" --emit-dir .v3-r8-integration/emitted | tee .v3-r8-integration/PATCH_EMIT.log
+          grep -q 'runV3RealizedLiquidationSidecar' .v3-r8-integration/emitted/runner-main.mjs
+          grep -q 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .v3-r8-integration/emitted/report2.yml
+          python3 - <<'PY_R87_RUNNER'
+          from pathlib import Path
+          import re
+          p=Path('.v3-r8-integration/emitted/runner-main.mjs')
+          s=p.read_text()
+          pat=re.compile(r'  // V3 SHADOW sidecars share one conservative pre-action envelope\..*?(?=  console\.log\("V3_EARLY_PERSISTENCE_SIDECAR")', re.S)
+          m=pat.search(s)
+          if not m:
+              raise SystemExit('R8_7_SIDECAR_BUDGET_BLOCK_ANCHOR_MISSING')
+          block = '''  // R8.7 early-lane capacity fit: R8.6 proof plus bounded two-candidate early persistence.
+            // Optional V3 shadow persistence is admitted sequentially. Capacity shortage is fail-closed.
+            const R87_DOWNSTREAM_RESERVE = Object.freeze({rows_read:4500,rows_written:50});
+            const r87Gate = (envelope) => evaluateWithinRunReservation({
+              reservation:d1RunReservation,
+              currentUsage:env.DATA_DB.usageSnapshot(),
+              extraRowsRead:R87_DOWNSTREAM_RESERVE.rows_read + envelope.rows_read,
+              extraRowsWritten:R87_DOWNSTREAM_RESERVE.rows_written + envelope.rows_written,
+            });
+            const v3SidecarsPreactionBudget = evaluateWithinRunReservation({
+              reservation:d1RunReservation,
+              currentUsage:env.DATA_DB.usageSnapshot(),
+              extraRowsRead:R87_DOWNSTREAM_RESERVE.rows_read,
+              extraRowsWritten:R87_DOWNSTREAM_RESERVE.rows_written,
+            });
+            const v3Blocked = (version, gate, lane) => ({version,mode:"SHADOW_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",persisted:0,reasons:gate?.reasons||[],capacity_lane:lane,capacity_gate:gate,probability:null,validated_signal:false,trading_execution:false});
+            let v3EarlySidecar;
+            let v3RealizedLiquidationSidecar;
+            let v3LiquidationSidecar;
+            // Priority order is factual realized liquidations -> early discovery -> projected map context.
+            // This follows fail-closed evidence quality: realized facts are preserved before optional projected context.
+            const r87RealizedGate = v3SidecarsPreactionBudget.allowed ? r87Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+            if (r87RealizedGate.allowed) {
+              v3RealizedLiquidationSidecar = await runV3RealizedLiquidationSidecar(env.DATA_DB, {
+                current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+              });
+            } else v3RealizedLiquidationSidecar = v3Blocked("v3-realized-liquidation-sidecar-shadow-v1",r87RealizedGate,"REALIZED_LIQUIDATION");
+            const r87EarlyGate = v3SidecarsPreactionBudget.allowed ? r87Gate(V3_EARLY_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+            if (r87EarlyGate.allowed) {
+              v3EarlySidecar = await runV3EarlyPersistenceSidecar(env.DATA_DB, {
+                current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+              });
+            } else v3EarlySidecar = v3Blocked("v3-early-sidecar-shadow-v1",r87EarlyGate,"EARLY_PERSISTENCE");
+            const r87ProjectedGate = v3SidecarsPreactionBudget.allowed ? r87Gate(V3_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
+            if (r87ProjectedGate.allowed) {
+              v3LiquidationSidecar = await runV3LiquidationIntelligenceSidecar(env.DATA_DB, {
+                current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+              });
+            } else v3LiquidationSidecar = v3Blocked("v3-liquidation-intelligence-sidecar-shadow-v1",r87ProjectedGate,"PROJECTED_LIQUIDATION");
+            console.log("R8_7_BUDGET_GATES", JSON.stringify({downstream_reserve:R87_DOWNSTREAM_RESERVE,early:r87EarlyGate,realized:r87RealizedGate,projected:r87ProjectedGate,usage:env.DATA_DB.usageSnapshot()}));
+          '''
+          s=s[:m.start()]+block+s[m.end():]
+          a='  // V3 Telegram journal may persist state before network delivery is enabled.\n'
+          if a not in s:
+              raise SystemExit('R8_7_PRE_SIDECARS_ANCHOR_MISSING')
+          s=s.replace(a,'  console.log("R8_7_D1_PRE_SIDECARS_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));\n'+a,1)
+          b='  const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot()});\n'
+          if b not in s:
+              raise SystemExit('R8_7_PRE_POST_ANCHOR_MISSING')
+          s=s.replace(b,'  console.log("R8_7_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));\n'+b,1)
+          p.write_text(s)
+          PY_R87_RUNNER
+          grep -q 'R8_7_BUDGET_GATES' .v3-r8-integration/emitted/runner-main.mjs
+          grep -q 'CAPACITY_DEFERRED_FAIL_CLOSED' .v3-r8-integration/emitted/runner-main.mjs
+          grep -q 'R87_DOWNSTREAM_RESERVE' .v3-r8-integration/emitted/runner-main.mjs
+          rm -rf .v3-r8-integration/candidate
+          mkdir -p .v3-r8-integration/candidate
+          unzip -q "$R8_ROOT/authoritative/MY_REPORT_2_AUTHORITATIVE_SOURCE_R9_TZ10_1_20260917.zip" -d .v3-r8-integration/candidate
+          cp -R "$R8_ROOT/overlay/." .v3-r8-integration/candidate/
+          grep -q 'rows_read: 3072' .v3-r8-integration/candidate/src/v3-early-sidecar.mjs
+          grep -q 'rows_written: 48' .v3-r8-integration/candidate/src/v3-early-sidecar.mjs
+          grep -q 'rows_read:2048' .v3-r8-integration/candidate/src/v3-realized-liquidation-sidecar.mjs
+          grep -q 'rows_written:64' .v3-r8-integration/candidate/src/v3-realized-liquidation-sidecar.mjs
+          grep -q 'rows_read:3072' .v3-r8-integration/candidate/src/v3-liquidation-sidecar.mjs
+          grep -q 'v2-budget-prefilter' .v3-r8-integration/candidate/src/v3-liquidation-sidecar.mjs
+          grep -q 'provider_prefilter_short_circuit' .v3-r8-integration/candidate/src/v3-liquidation-sidecar.mjs
+          test "$(sha256sum .v3-r8-integration/candidate/src/v3-early-sidecar.mjs | awk '{print $1}')" = "3bed2c48ee80189a555689215d7d98a1b83551642d001ad49af6ab6aecb9bc18"
+          grep -q 'V3_EARLY_MAX_PERSIST_CANDIDATES_PER_CYCLE = 2' .v3-r8-integration/candidate/src/v3-early-persistence-runtime.mjs
+          test "$(sha256sum .v3-r8-integration/candidate/src/v3-early-persistence-runtime.mjs | awk '{print $1}')" = "26fb4104b10590f8fdbf10ea0918a46598b5bfd74b823ab2772db17f1b64308e"
+          test "$(sha256sum .v3-r8-integration/candidate/src/v3-realized-liquidation-sidecar.mjs | awk '{print $1}')" = "4fc46783e5d189df89d8845fddb94d8b42555bcef4763941525b472f6c7bae85"
+          test "$(sha256sum .v3-r8-integration/candidate/src/v3-liquidation-sidecar.mjs | awk '{print $1}')" = "6c1ee0856b814fc82f3fc973314964a8435f87e03ae179e11c65d1b8a9e6a73b"
+          echo "R8_7_RUNTIME_SIDECAR_HASHES=PASS"
+          test "$(sha256sum .v3-r8-integration/candidate/src/worker.js | awk '{print $1}')" = "$R8_WORKER_SHA"
+          tar -czf .v3-r8-integration/report2-runtime.tar.gz -C .v3-r8-integration/candidate .
+          node runner/payload-crypto.mjs encrypt .v3-r8-integration/report2-runtime.tar.gz "$REPORT2_PAYLOAD_KEY" .v3-r8-integration/report2-runtime.enc
+          rm -f .v3-r8-integration/report2-runtime.tar.gz
+          sha256sum .v3-r8-integration/report2-runtime.enc .v3-r8-integration/emitted/runner-main.mjs .v3-r8-integration/emitted/report2.yml | tee .v3-r8-integration/ARTIFACT_SHA256.txt
+          echo "R8_7_BUDGET_HARDENING_EMIT=PASS"
+      - name: Decrypt exact R8 candidate runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf .v3-r8-integration/runtime
+          mkdir -p .v3-r8-integration/runtime
+          node runner/payload-crypto.mjs decrypt .v3-r8-integration/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" .v3-r8-integration/runtime/payload.tar.gz
+          tar -xzf .v3-r8-integration/runtime/payload.tar.gz -C .v3-r8-integration/runtime
+          rm -f .v3-r8-integration/runtime/payload.tar.gz
+          cp .v3-r8-integration/emitted/runner-main.mjs .v3-r8-integration/runtime/runner-main.mjs
+          cp runner/report2-d1-adapter.mjs .v3-r8-integration/runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs .v3-r8-integration/runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs .v3-r8-integration/runtime/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs .v3-r8-integration/runtime/telegram-output.mjs
+          test "$(sha256sum .v3-r8-integration/runtime/src/worker.js | awk '{print $1}')" = "$R8_WORKER_SHA"
+          echo "CONTROLLED_R8_RUNTIME_SHA=PASS"
+      - name: Run one controlled R8.7 early-capacity real-data cycle with Telegram disabled
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$REPORT2_EXPECTED_WORKER_SHA" = "$R8_WORKER_SHA"
+          test "$REPORT2_V3_TELEGRAM_NETWORK_ENABLED" = "0"
+          cd .v3-r8-integration/runtime
+          node runner-main.mjs 2>&1 | tee ../CONTROLLED_R8_RUN.log
+          cd "$GITHUB_WORKSPACE"
+          grep -q '^R8_7_BUDGET_GATES ' .v3-r8-integration/CONTROLLED_R8_RUN.log
+          grep -q '^R8_7_D1_PRE_POST_USAGE ' .v3-r8-integration/CONTROLLED_R8_RUN.log
+          ! grep -q 'D1_POST_CYCLE_RESERVATION_EXCEEDED' .v3-r8-integration/CONTROLLED_R8_RUN.log
+          echo "R8_7_CONTROLLED_RUN_EXIT=PASS"
+      - name: Build and enforce R8.7 early-capacity proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY_R87_PARSE' | tee .v3-r8-integration/R8_7_EARLY_CAPACITY_PROOF.json
+          import json, pathlib
+          lines=pathlib.Path('.v3-r8-integration/CONTROLLED_R8_RUN.log').read_text(errors='replace').splitlines()
+          def marker(name):
+              xs=[x for x in lines if x.startswith(name+' ')]
+              if not xs: raise SystemExit(name+'_MISSING')
+              return json.loads(xs[-1].split(' ',1)[1])
+          gates=marker('R8_7_BUDGET_GATES')
+          post=marker('R8_7_D1_PRE_POST_USAGE')
+          finals=[x for x in lines if x.startswith('{"ok":true')]
+          if not finals: raise SystemExit('R8_7_FINAL_RUN_JSON_MISSING')
+          final=json.loads(finals[-1])
+          usage=post.get('usage') or {}
+          reservation=post.get('reservation') or {}
+          rr=int(reservation.get('rows_read') or 0)
+          rw=int(reservation.get('rows_written') or 0)
+          ur=int(usage.get('rows_read') or 0)
+          uw=int(usage.get('rows_written') or 0)
+          rem_r=rr-ur
+          rem_w=rw-uw
+          if usage.get('unknown_ops') != 0: raise SystemExit('R8_7_UNKNOWN_D1_OPS')
+          if rem_r < 2000: raise SystemExit(f'R8_7_READ_HEADROOM_TOO_SMALL:{rem_r}')
+          if rem_w < 50: raise SystemExit(f'R8_7_WRITE_HEADROOM_TOO_SMALL:{rem_w}')
+          post_budget=final.get('d1_post_cycle_budget') or {}
+          if post_budget.get('allowed') is not True or post_budget.get('status')!='CLOSED':
+              raise SystemExit('R8_7_POST_BUDGET_NOT_CLOSED')
+          early=final.get('v3_early_sidecar') or {}
+          realized=final.get('v3_realized_liquidation_sidecar') or {}
+          projected=final.get('v3_liquidation_sidecar') or {}
+          early_gate=(gates.get('early') or {})
+          if early_gate.get('allowed') is not True or early_gate.get('status')!='CLOSED':
+              raise SystemExit('R8_7_EARLY_GATE_NOT_ADMITTED')
+          early_status=str(early.get('status') or '')
+          if early_status not in {'CLOSED','CLOSED_NO_EARLY_CANDIDATE'}:
+              raise SystemExit(f'R8_7_EARLY_LANE_NOT_CLOSED:{early_status}')
+          early_delta=early.get('usage_delta') or {}
+          if int(early_delta.get('rows_written') or 0)>48:
+              raise SystemExit('R8_7_EARLY_WRITE_ENVELOPE_EXCEEDED')
+          if int(early.get('selected_count') or 0)>2:
+              raise SystemExit('R8_7_EARLY_SELECTED_COUNT_EXCEEDED')
+          for name,obj in [('realized',realized)]:
+              st=str(obj.get('status') or '')
+              if 'BUDGET_ENVELOPE_EXCEEDED' in st or 'BUDGET_BLOCKED' in st or 'CAPACITY_DEFERRED' in st:
+                  raise SystemExit(f'R8_7_{name.upper()}_BUDGET_STATUS_UNSAFE:{st}')
+          if final.get('v3_telegram_network_enabled') is not False:
+              raise SystemExit('R8_7_TELEGRAM_NETWORK_NOT_OFF')
+          out={
+              'status':'R8_7_EARLY_CAPACITY_CONTROLLED_PASS',
+              'rows_read':ur,'rows_written':uw,
+              'read_headroom':rem_r,'write_headroom':rem_w,
+              'early_status':early.get('status'),
+              'realized_status':realized.get('status'),
+              'projected_status':projected.get('status'),
+              'gates':gates,
+              'production_main_changed':False,
+              'telegram_network_enabled':False,
+          }
+          print(json.dumps(out,ensure_ascii=False,indent=2))
+          PY_R87_PARSE
+          grep -q '"status": "R8_7_EARLY_CAPACITY_CONTROLLED_PASS"' .v3-r8-integration/R8_7_EARLY_CAPACITY_PROOF.json
+          echo "R8_7_EARLY_CAPACITY_PROOF=PASS"
+          python3 - <<'PY_R87_ARTIFACT'
+          import hashlib,json,pathlib,os
+          root=pathlib.Path('.v3-r8-integration')
+          files={
+            'encrypted_runtime':'report2-runtime.enc',
+            'runner':'emitted/runner-main.mjs',
+            'workflow':'emitted/report2.yml',
+            'early_sidecar':'candidate/src/v3-early-sidecar.mjs',
+            'early_persistence_runtime':'candidate/src/v3-early-persistence-runtime.mjs',
+            'worker':'candidate/src/worker.js',
+            'readiness_zip':'MY_REPORT_2_V3_PREDEPLOY_READINESS_CANDIDATE_R8_7_20260918.zip',
+          }
+          out={'schema':'report2-r8-7-exact-artifact-v1','github_run_id':os.environ.get('GITHUB_RUN_ID'),'head_sha':os.environ.get('GITHUB_SHA'),'files':{}}
+          for k,rel in files.items():
+            p=root/rel
+            if not p.is_file(): raise SystemExit('R8_7_ARTIFACT_MISSING:'+rel)
+            out['files'][k]={'path':rel,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+          if out['files']['worker']['sha256']!='72f0cab80ac9c38c4b3a84116b40c16fb54d5944ce20e1da2b6c399a386bc36c': raise SystemExit('R8_7_WORKER_SHA_DRIFT')
+          if out['files']['early_sidecar']['sha256']!='3bed2c48ee80189a555689215d7d98a1b83551642d001ad49af6ab6aecb9bc18': raise SystemExit('R8_7_EARLY_SIDECAR_SHA_DRIFT')
+          if out['files']['early_persistence_runtime']['sha256']!='26fb4104b10590f8fdbf10ea0918a46598b5bfd74b823ab2772db17f1b64308e': raise SystemExit('R8_7_EARLY_RUNTIME_SHA_DRIFT')
+          pathlib.Path('.v3-r8-integration/R8_7_EXACT_ARTIFACT_MANIFEST.json').write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
+          print('R8_7_EXACT_ARTIFACT_CAPTURE=PASS')
+          PY_R87_ARTIFACT
+      - name: Final main immutability check
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Upload R8.7 early-capacity proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-7-early-capacity-proof
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            .v3-r8-integration/R8_NODE24_PASS_PROOF.json
+            .v3-r8-integration/NODE24_READINESS.log
+            .v3-r8-integration/NODE24_READINESS_RESULT.txt
+            .v3-r8-integration/D1_PRECHECK_ONLY.json
+            .v3-r8-integration/MIGRATION_SELF_TEST.log
+            .v3-r8-integration/D1_PRE_MIGRATION.log
+            .v3-r8-integration/D1_MIGRATION.log
+            .v3-r8-integration/ARTIFACT_SHA256.txt
+            .v3-r8-integration/PATCH_EMIT.log
+            .v3-r8-integration/CONTROLLED_R8_RUN.log
+            .v3-r8-integration/R8_7_EARLY_CAPACITY_PROOF.json
+            .v3-r8-integration/R8_7_EXACT_ARTIFACT_MANIFEST.json
+            .v3-r8-integration/report2-runtime.enc
+            .v3-r8-integration/emitted/runner-main.mjs
+            .v3-r8-integration/emitted/report2.yml
+            .v3-r8-integration/candidate/src/v3-early-sidecar.mjs
+            .v3-r8-integration/candidate/src/v3-early-persistence-runtime.mjs
