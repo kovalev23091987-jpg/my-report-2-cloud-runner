@@ -48,6 +48,7 @@ jobs:
       REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_D1_RUNS_PER_DAY: "288"
@@ -76,6 +77,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
           cp runner/runner-main.mjs runtime/runner-main.mjs
+          cp runner/r8-20-prospective-validation-sidecar.mjs runtime/r8-20-prospective-validation-sidecar.mjs
           cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
           cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
           cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
