@@ -1,0 +1,47 @@
+{
+  "schema": "my-report-2-r8-20-final-proof-v1",
+  "generated_at_utc": "2026-09-19T13:47:30.679557+00:00",
+  "status": "R8_20_PRODUCTION_CLOSED_SHADOW_PROSPECTIVE_COLLECTION",
+  "base_main": "37be6e26e9afeb55fe21814636afd294d19c8672",
+  "promotion_commit": "f12d7c12441c3ddd710b2fd333d90ab402fa6785",
+  "backup_branch": "report2-pre-r8-20-backup-20260919T131041Z",
+  "runs": {
+    "validation": 35445034629,
+    "migration": 35445153171,
+    "rehearsal": 35445175112,
+    "manual_smoke": 35445212212,
+    "natural": [
+      35445685982,
+      35446284611,
+      35446728160
+    ],
+    "final_audit": 35446780677
+  },
+  "worker_sha256": "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83",
+  "payload_sha256": "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88",
+  "runner_sha256": "bc02a0b317cab3f5c1cf27217a9294c5679d3d9c9437167f15eb82557c2257c5",
+  "sidecar_sha256": "032dd21974336534b86e5862703b1c6cd5a4c026f5b6780baea192c7caaba581",
+  "workflow_sha256": "abb0842c0a28f73484fa31a2108747ad0e62eba07332b6d218609df4cad0e8c7",
+  "migration_sha256": "d871082daa19e17894475e63e3e6c769cf3332b7fb0950c1b7edd6aa4d029bbd",
+  "d1": {
+    "migration_change": "NO_ALREADY_APPLIED",
+    "signal_rows": 0,
+    "outcome_rows": 0,
+    "early_closed_factual": 9,
+    "train_samples": 0,
+    "holdout_samples": 0
+  },
+  "safety": {
+    "strategy_weights": "35/30/20/15_UNCHANGED",
+    "v3_telegram_network": false,
+    "live_probability": false,
+    "validated_signal": false,
+    "trading_execution": false,
+    "automatic_weight_tuning": false,
+    "retrospective_backfill": false
+  },
+  "production_changed": true,
+  "prospective_dataset_collection_only": true,
+  "statistical_validation": "NOT_CLOSED_DATA_COLLECTION_ACTIVE",
+  "entry_readiness_threshold": "80 train + 40 holdout retained; readiness not claimed until factually met"
+}

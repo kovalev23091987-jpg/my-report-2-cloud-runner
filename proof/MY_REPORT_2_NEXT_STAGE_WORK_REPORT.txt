@@ -1,0 +1,110 @@
+MY REPORT 2 — R8.20 FINAL WORK REPORT
+Date UTC: 20260919T131041Z
+FINAL_STATUS=R8_20_PRODUCTION_CLOSED_SHADOW_PROSPECTIVE_COLLECTION
+
+A. BASELINE
+- Base production main: 37be6e26e9afeb55fe21814636afd294d19c8672
+- Base Worker SHA-256: 7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83
+- Base encrypted runtime SHA-256: 30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88
+- Baseline remained unchanged through isolated validation, additive migration and exact rollback rehearsal.
+- Production changed only at guarded promotion commit: f12d7c12441c3ddd710b2fd333d90ab402fa6785.
+
+B. WHAT WAS INSPECTED
+- Full original 27-section development TZ was used as the control checklist.
+- Canonical R8.20 working checkpoint and R8.19.1 Statistical Validation Readiness evidence.
+- Authoritative R8.17/R8.15.5 source, current runner/workflow, D1 contracts, Early Discovery journal, Final Decision shadow, Stage392 campaign receipts, existing entry-area calibration machinery, migration and tests.
+- Existing 28-point TZ V3 closure remains inherited; R8.20 is an additive post-closure validation-data stage.
+
+C. WHAT WAS IMPLEMENTED
+- SHADOW-only prospective validation data path.
+- Factual Early Discovery outcome closure for 1h/4h/12h/24h from factual Stage-0 history.
+- Prospective entry-area capture only after R8.20 activation and factually committed Final Decision context.
+- Factual LONG/SHORT entry-area outcome closure with no interpolation.
+- Activation barrier forbids retrospective backfill.
+- Low-priority runner sidecar with independent capacity gate.
+
+D. ARCHITECTURE DECISION
+- Existing Worker/strategy runtime is byte-exact preserved: 7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83.
+- No Decision Layer weights or strategy logic were changed.
+- Existing Early journal, scan_runs, Stage392 campaign receipts and tz101 calibration contracts were reused instead of creating a duplicate pipeline.
+
+E. STATE MACHINE / LIFECYCLE
+- Early: PENDING -> CLOSED_FACTUAL only when a due factual path exists.
+- Entry: activation -> prospective sample -> factual 1h/4h/12h/24h outcomes.
+- Missing/stale/future/identity/anchor uncertainty remains fail-closed / NOT_CLOSED.
+- Restart, duplicate and INSERT/UPDATE idempotency are covered by R8.20 focused tests.
+
+F. WORKLOAD SAFETY
+- R8.20 budget: <=1200 rows read, <=8 rows written, <=14 soft requests per cycle.
+- Maximum each cycle: 1 Early closure + 1 entry sample + 1 entry outcome.
+- Global D1 daily ceilings remain 3,500,000 reads / 70,000 writes.
+- Existing Early/Telegram/liquidation lanes remain higher priority.
+
+G. DATA QUALITY
+- Missing != zero; no stale/future substitution; no retrospective price anchor.
+- Factual Stage-0 path requires closed coverage/no errors/no stale and fresh market point.
+- Existing Symbol/Unicode/alias protections remain inherited through byte-exact Worker preservation.
+
+H. LIQUIDATION INTEGRATION
+- R8.20 does not alter realized/projected liquidation semantics.
+- Existing projected != realized, single-provider != consensus, unsupported-source fail-closed and no synthetic guaranteed TP protections remain intact.
+
+I. TEST RESULTS
+- Local R8.20 focused tests: PASS (10/10).
+- Local runner-order/static migration tests: PASS.
+- Isolated Node24 validation run: 35445034629 PASS.
+- Broad inherited Node24 regression: PASS.
+- Authoritative Python regression: PASS.
+- Builder Totality Node24: PASS.
+- Controlled additive D1 migration run: 35445153171 PASS.
+- Promotion/rollback rehearsal run: 35445175112 PASS.
+- Controlled Telegram-OFF production smoke: 35445212212 PASS.
+- Three natural scheduled production cycles: 35445685982 35446284611 35446728160 PASS.
+- Final read-only production/D1 audit: 35446780677 PASS.
+
+J. REGRESSION / SAFETY
+- Stage 3.5/3.6/3.7/3.7.1 and subsequent production lineage preserved by unchanged Worker payload.
+- Decision weights 35/30/20/15 unchanged.
+- live probability: OFF.
+- validated signal: OFF.
+- trading execution: OFF.
+- automatic weight tuning: OFF.
+- V3 Telegram network: OFF.
+
+K. CREATED / ACTIVE FILES
+- runner/runner-main.mjs SHA-256: bc02a0b317cab3f5c1cf27217a9294c5679d3d9c9437167f15eb82557c2257c5
+- runner/r8-20-prospective-validation-sidecar.mjs SHA-256: 032dd21974336534b86e5862703b1c6cd5a4c026f5b6780baea192c7caaba581
+- .github/workflows/report2.yml SHA-256: abb0842c0a28f73484fa31a2108747ad0e62eba07332b6d218609df4cad0e8c7
+- D1 additive migration SHA-256: d871082daa19e17894475e63e3e6c769cf3332b7fb0950c1b7edd6aa4d029bbd
+- Production payload remains SHA-256: 30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88
+- Worker remains SHA-256: 7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83
+
+L. REMAINING RISKS
+- Prospective statistical sample remains immature until natural samples accumulate.
+- Natural-event scarcity affects collection speed and must never be treated as zero evidence.
+- Previously declared PARTIAL_REALTIME_COVERAGE remains honest where sustainable 24/7 source coverage is not proven.
+
+M. WHAT IS NOT PROVEN YET
+- Statistical live probability is NOT validated and remains OFF.
+- Validated signal is NOT closed and remains OFF.
+- Trading execution is NOT authorized.
+- Entry-area OOS acceptance remains pending until the already-existing 80 train + 40 holdout threshold is factually reached.
+- Final readback now: signal_rows=0; outcome_rows=0; train_samples=0; holdout_samples=0; early_closed_factual=9.
+
+N. DEPLOY READINESS / PRODUCTION STATUS
+- R8.20 validation-data path: DEPLOYED_AND_PRODUCTION_READBACK_PASS.
+- D1 migration: NO_ALREADY_APPLIED.
+- Production main: f12d7c12441c3ddd710b2fd333d90ab402fa6785.
+- Statistical validation state: DATA_COLLECTION_ACTIVE_NOT_VALIDATED.
+
+O. USER NEXT ACTION
+- No additional Terminal command is required after this run. Main chat should independently read the final proof branch and rotate/update canonical cloud Version 1, master, latest checkpoint and changelog.
+
+HANDOFF_TO_MAIN_CHAT
+- Started at main 37be6e26e9afeb55fe21814636afd294d19c8672 / Worker 7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83.
+- R8.20 prospective factual validation collection is deployed and production-audited.
+- Validation=35445034629; migration=35445153171; rehearsal=35445175112; smoke=35445212212; natural=35445685982 35446284611 35446728160; final_audit=35446780677.
+- Production main=f12d7c12441c3ddd710b2fd333d90ab402fa6785.
+- D1 entry-area schema additive/readback PASS; no destructive migration.
+- live probability / validated signal / trading remain OFF.
+- Next technical stage is data accumulation followed by independent LONG/SHORT statistical validation only when existing readiness thresholds are met. Do not invent readiness.
