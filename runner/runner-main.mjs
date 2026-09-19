@@ -13,9 +13,8 @@ import { runV3LiquidationIntelligenceSidecar, V3_LIQUIDATION_SIDECAR_BUDGET } fr
 import { runV3PipelineHealthSidecar, V3_PIPELINE_HEALTH_SIDECAR_BUDGET } from "./src/v3-pipeline-health-sidecar.mjs";
 import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } from "./src/v3-telegram-lifecycle-sidecar.mjs";
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
-import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.13.0-r8-20-prospective-validation-shadow";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.12.0-v3-telegram-journal-gated-delivery";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -544,31 +543,6 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     });
   }
   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
-  // R8.20 is intentionally last / low priority. It cannot consume capacity before
-  // Early, liquidation, pipeline-health or Telegram lanes. The +1 write preserves
-  // the existing final run-usage persistence slot.
-  const r820ProspectiveValidationEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED || "0").trim().toLowerCase());
-  const r820ProspectiveValidationGate = evaluateWithinRunReservation({
-    reservation:d1RunReservation,
-    currentUsage:env.DATA_DB.usageSnapshot(),
-    extraRowsRead:R820_PROSPECTIVE_VALIDATION_BUDGET.rows_read,
-    extraRowsWritten:R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written + 1,
-  });
-  let r820ProspectiveValidationSidecar;
-  if (!r820ProspectiveValidationEnabled) {
-    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DISABLED",calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
-  } else if (!r820ProspectiveValidationGate.allowed) {
-    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",reasons:r820ProspectiveValidationGate.reasons||[],capacity_gate:r820ProspectiveValidationGate,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
-  } else {
-    r820ProspectiveValidationSidecar = await runR820ProspectiveValidationSidecar(env.DATA_DB, {
-      current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
-    });
-  }
-  console.log("R8_20_PROSPECTIVE_VALIDATION_GATE", JSON.stringify(r820ProspectiveValidationGate));
-  console.log("R8_20_PROSPECTIVE_VALIDATION_SIDECAR", JSON.stringify(r820ProspectiveValidationSidecar));
-  if (source !== "schedule" && r820ProspectiveValidationEnabled && r820ProspectiveValidationSidecar?.status !== "CLOSED") {
-    throw new Error(`R8_20_PROSPECTIVE_VALIDATION_SMOKE_FAIL_CLOSED:${r820ProspectiveValidationSidecar?.status || "UNKNOWN"}`);
-  }
   if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
@@ -578,6 +552,6 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
