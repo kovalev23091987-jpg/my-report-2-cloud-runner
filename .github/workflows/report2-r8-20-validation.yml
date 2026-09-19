@@ -1,0 +1,229 @@
+name: Report 2 V3 R8.20 Prospective Validation Gate
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-20-validate-*"
+
+permissions:
+  contents: read
+
+
+concurrency:
+  group: report2-v3-r8-20-validation
+  cancel-in-progress: false
+
+jobs:
+  validate-r8-20:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      BASE_MAIN_SHA: "d77525b36ccc94808070a006f05f85e4f8ba86f3"
+      BASE_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      BASE_PAYLOAD_SHA: "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88"
+      BASE_RUNNER_SHA: "83cc498468528222b2199f6dccfb5f40d5f717476e724ba4c19515c10355db5a"
+      BASE_WORKFLOW_SHA: "424b3878d68b48984332b527f6ed70e30bd7f491f9ac25197017d076075d6692"
+      CANDIDATE_RUNNER_SHA: "bc02a0b317cab3f5c1cf27217a9294c5679d3d9c9437167f15eb82557c2257c5"
+      CANDIDATE_SIDECAR_SHA: "032dd21974336534b86e5862703b1c6cd5a4c026f5b6780baea192c7caaba581"
+      CANDIDATE_WORKFLOW_SHA: "abb0842c0a28f73484fa31a2108747ad0e62eba07332b6d218609df4cad0e8c7"
+      MIGRATION_SHA: "d871082daa19e17894475e63e3e6c769cf3332b7fb0950c1b7edd6aa4d029bbd"
+      SOURCE_SHA: "c1fa44c5b18a63f0e4144f8c3620fdf11910d8d79778618fb00accf787822e73"
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - name: Checkout isolated validation branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify isolation and exact production base
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          test "$(sha256sum payload/report2-runtime.enc | awk '{print $1}')" = "$BASE_PAYLOAD_SHA"
+          test "$(sha256sum runner/runner-main.mjs | awk '{print $1}')" = "$BASE_RUNNER_SHA"
+          test "$(sha256sum .github/workflows/report2.yml | awk '{print $1}')" = "$BASE_WORKFLOW_SHA"
+          test "$(sha256sum .r8-20/authoritative-source.zip | awk '{print $1}')" = "$SOURCE_SHA"
+          echo "R8_20_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Verify Node24 runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          NODEV="$(node --version)"
+          case "$NODEV" in v24.*) ;; *) echo "NODE24_REQUIRED got=$NODEV"; exit 1;; esac
+          echo "R8_20_NODE_VERSION=$NODEV"
+          echo "R8_20_NODE24=PASS"
+      - name: Verify R8.20 exact candidate bytes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(sha256sum .r8-20/candidate/runner-main.mjs | awk '{print $1}')" = "$CANDIDATE_RUNNER_SHA"
+          test "$(sha256sum .r8-20/candidate/r8-20-prospective-validation-sidecar.mjs | awk '{print $1}')" = "$CANDIDATE_SIDECAR_SHA"
+          test "$(sha256sum .r8-20/candidate/report2.yml | awk '{print $1}')" = "$CANDIDATE_WORKFLOW_SHA"
+          test "$(sha256sum .r8-20/migration/20260917_tz101_entry_area_calibration_shadow.sql | awk '{print $1}')" = "$MIGRATION_SHA"
+          grep -Fq 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .r8-20/candidate/report2.yml
+          grep -Fq 'REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"' .r8-20/candidate/report2.yml
+          grep -Fq 'REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"' .r8-20/candidate/report2.yml
+          node --check .r8-20/candidate/runner-main.mjs
+          node --check .r8-20/candidate/r8-20-prospective-validation-sidecar.mjs
+          echo "R8_20_EXACT_CANDIDATE_BYTES=PASS"
+      - name: Production-form decrypt and exact Worker preservation
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf .r8-20/runtime-root && mkdir -p .r8-20/runtime-root
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" .r8-20/runtime-root.tar.gz
+          tar -xzf .r8-20/runtime-root.tar.gz -C .r8-20/runtime-root
+          rm .r8-20/runtime-root.tar.gz
+          test "$(sha256sum .r8-20/runtime-root/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          cp .r8-20/candidate/runner-main.mjs .r8-20/runtime-root/runner-main.mjs
+          cp .r8-20/candidate/r8-20-prospective-validation-sidecar.mjs .r8-20/runtime-root/r8-20-prospective-validation-sidecar.mjs
+          cp runner/report2-d1-adapter.mjs .r8-20/runtime-root/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs .r8-20/runtime-root/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs .r8-20/runtime-root/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs .r8-20/runtime-root/telegram-output.mjs
+          node --check .r8-20/runtime-root/runner-main.mjs
+          node --check .r8-20/runtime-root/r8-20-prospective-validation-sidecar.mjs
+          echo "R8_20_PRODUCTION_FORM_DECRYPT=PASS"
+      - name: R8.20 focused Node24 and static tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p .r8-20/logs
+          node --test --test-reporter=tap .r8-20/tests/r8-20-prospective-validation-sidecar.test.mjs | tee .r8-20/logs/R8_20_FOCUSED_NODE24.log
+          grep -q '^# fail 0$' .r8-20/logs/R8_20_FOCUSED_NODE24.log
+          python3 .r8-20/tests/r8-20-runner-order-static.test.py | tee .r8-20/logs/R8_20_RUNNER_STATIC.log
+          python3 .r8-20/tests/r8-20-entry-migration-static.test.py | tee .r8-20/logs/R8_20_MIGRATION_STATIC.log
+          grep -q '^R8_20_RUNNER_ORDER_STATIC=PASS$' .r8-20/logs/R8_20_RUNNER_STATIC.log
+          grep -q '^R8_20_ENTRY_MIGRATION_STATIC=PASS$' .r8-20/logs/R8_20_MIGRATION_STATIC.log
+          echo "R8_20_FOCUSED=PASS"
+      - name: Maximum broad inherited Node24 compatibility regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf .r8-20/source && mkdir -p .r8-20/source
+          unzip -q .r8-20/authoritative-source.zip -d .r8-20/source
+          test "$(sha256sum .r8-20/source/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          cd .r8-20/source
+          mapfile -t tests < <(find tests -maxdepth 1 -type f -name '*.test.mjs' ! -name '*CHECKPOINT*' | sort)
+          test "${#tests[@]}" -ge 90
+          : > ../logs/BROAD_NODE24.log
+          pass_files=0
+          baseline_known_failures=0
+          for t in "${tests[@]}"; do
+            name="$(basename "$t")"
+            safe="${name//[^A-Za-z0-9_.-]/_}"
+            log="../logs/BROAD_${safe}.log"
+            set +e
+            node --test --test-reporter=tap "$t" > "$log" 2>&1
+            rc=$?
+            set -e
+            cat "$log" >> ../logs/BROAD_NODE24.log
+            if [ "$rc" -eq 0 ]; then
+              grep -q '^# fail 0$' "$log"
+              pass_files=$((pass_files+1))
+              continue
+            fi
+            case "$name" in
+              htx-liquidation-budget.test.mjs)
+                test "$(sha256sum "$t" | awk '{print $1}')" = "5d455ef528b3467d3d5f52ad1a485d778cb3fc9495a650fe9256314de1ece017"
+                grep -Fq 'ERR_UNSUPPORTED_RESOLVE_REQUEST' "$log"
+                grep -Fq './tz101-publication-runtime.mjs' "$log"
+                baseline_known_failures=$((baseline_known_failures+1))
+                echo "KNOWN_BASELINE_FAIL_COMPAT=PASS test=$name reason=STALE_DATA_URL_RELATIVE_IMPORT_HARNESS" | tee -a ../logs/BROAD_NODE24.log
+                ;;
+              public-evidence-adapters.test.mjs)
+                test "$(sha256sum "$t" | awk '{print $1}')" = "7d4c9f0f5e2c1b0303fe7e98245bdb2f38b308de4a723884744a332d5138c81d"
+                grep -Fq '_opportunity_hourly_candles.BINANCE_PERP.length' "$log"
+                grep -Fq "Cannot read properties of undefined (reading 'length')" "$log"
+                baseline_known_failures=$((baseline_known_failures+1))
+                echo "KNOWN_BASELINE_FAIL_COMPAT=PASS test=$name reason=LEGACY_BINANCE_PERP_FIXTURE_ASSUMPTION" | tee -a ../logs/BROAD_NODE24.log
+                ;;
+              *)
+                echo "UNEXPECTED_INHERITED_NODE24_FAILURE=$name" >&2
+                tail -160 "$log" >&2
+                exit 1
+                ;;
+            esac
+          done
+          test "$baseline_known_failures" = "2"
+          test $((pass_files + baseline_known_failures)) = "${#tests[@]}"
+          echo "R8_20_BROAD_NODE24_COMPAT=PASS files=${#tests[@]} clean_pass=$pass_files known_baseline_failures=$baseline_known_failures unexpected_failures=0" | tee -a ../logs/BROAD_NODE24.log
+      - name: Authoritative Python regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd .r8-20/source
+          : > ../logs/PYTHON_REGRESSION.log
+          count=0
+          for f in tests/v3-*.test.py tests/tz101-*.test.py; do
+            [ -f "$f" ] || continue
+            python3 "$f" >> ../logs/PYTHON_REGRESSION.log 2>&1
+            count=$((count+1))
+          done
+          inherited=(fast-move-watch-concurrency.test.py fast-move-watch-d1.test.py fast-move-watch-hardening-d1.test.py fast-move-watch-runtime-sql.test.py final-decision-integration-d1.test.py full-evidence-d1-schema.test.py liquidation-d1-schema.test.py multi-wave-campaign-d1.test.py opportunity-integrity-concurrency.test.py opportunity-integrity-d1.test.py opportunity-intelligence-d1.test.py stage391-capacity-budget.test.py stage391-integrity-static.test.py stage392-capacity-budget.test.py stage392-d1-schema.test.py stage392-trigger-atomicity.test.py stage392-wave-lifecycle-backcompat.test.py)
+          for t in "${inherited[@]}"; do python3 "tests/$t" >> ../logs/PYTHON_REGRESSION.log 2>&1; count=$((count+1)); done
+          echo "R8_20_PYTHON_REGRESSION=PASS files=$count" | tee -a ../logs/PYTHON_REGRESSION.log
+      - name: Builder totality Node24
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd .r8-20/source
+          node --test --test-reporter=tap tests/final-decision-integration-builder-totality.test.mjs | tee ../logs/BUILDER_TOTALITY_NODE24.log
+          grep -q '^# fail 0$' ../logs/BUILDER_TOTALITY_NODE24.log
+          grep -Eq '9162/9162|9162' ../logs/BUILDER_TOTALITY_NODE24.log
+          echo "R8_20_BUILDER_TOTALITY_NODE24=PASS" | tee -a ../logs/BUILDER_TOTALITY_NODE24.log
+      - name: Read-only D1 schema preflight
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --input-type=module <<'JS' | tee .r8-20/logs/D1_SCHEMA_PREFLIGHT.log
+          import { RemoteD1Database } from './runner/report2-d1-adapter.mjs';
+          const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{timeoutMs:45000});
+          const result=await db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+          const rows=Array.isArray(result?.results)?result.results:[];
+          const have=new Set(rows.map(r=>String(r?.name||'')).filter(Boolean));
+          const base=['scan_runs','v3_early_outcome_journal','final_decision_integration_shadow','stage392_multi_wave_receipt_journal'];
+          const missing=base.filter(x=>!have.has(x));
+          if(missing.length) throw new Error('BASE_D1_SCHEMA_MISSING:'+missing.join(','));
+          const entry=['tz101_entry_area_calibration_signal','tz101_entry_area_calibration_outcome','tz101_entry_area_calibration_state'];
+          const n=entry.filter(x=>have.has(x)).length;
+          if(![0,3].includes(n)) throw new Error('R8_20_ENTRY_SCHEMA_PARTIAL_FAIL_CLOSED');
+          const usage=db.usageSnapshot();
+          if(Number(usage.unknown_ops||0)!==0) throw new Error('D1_PREFLIGHT_UNKNOWN_OPS');
+          console.log('R8_20_ENTRY_SCHEMA='+(n===3?'APPLIED':'PENDING_ADDITIVE_MIGRATION'));
+          console.log('R8_20_D1_PREFLIGHT_ADAPTER=PASS');
+          console.log('REMOTE_D1_CHANGED=NO');
+          JS
+      - name: Final immutability proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(sha256sum .r8-20/runtime-root/src/worker.js | awk '{print $1}')" = "$BASE_WORKER_SHA"
+          echo "R8_20_ISOLATED_VALIDATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+          echo "REMOTE_D1_CHANGED=NO"
+      - name: Upload R8.20 validation proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-20-isolated-validation-proof
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .r8-20/logs/
+            .r8-20/candidate/runner-main.mjs
+            .r8-20/candidate/r8-20-prospective-validation-sidecar.mjs
+            .r8-20/candidate/report2.yml
+            .r8-20/migration/20260917_tz101_entry_area_calibration_shadow.sql
