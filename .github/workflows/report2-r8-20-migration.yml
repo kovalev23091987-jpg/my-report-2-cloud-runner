@@ -1,0 +1,85 @@
+name: Report 2 V3 R8.20 Controlled Additive D1 Migration
+
+on:
+  push:
+    branches:
+      - "report2-v3-r8-20-migrate-*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-v3-r8-20-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate-r8-20:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      BASE_MAIN_SHA: "3a9722a58eb1581bd06c938bd7d5cd71ed9cf29e"
+      MIGRATION_SHA: "d871082daa19e17894475e63e3e6c769cf3332b7fb0950c1b7edd6aa4d029bbd"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - name: Checkout isolated migration branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify Node24 runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          NODEV="$(node --version)"
+          case "$NODEV" in v24.*) ;; *) echo "NODE24_REQUIRED got=$NODEV"; exit 1;; esac
+          echo "R8_20_MIGRATION_NODE_VERSION=$NODEV"
+      - name: Verify isolation and exact main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          test "$(git rev-parse HEAD^)" = "$BASE_MAIN_SHA"
+          test "$GITHUB_REF_NAME" != "main"
+          test "$(sha256sum .r8-20-migrate/20260917_tz101_entry_area_calibration_shadow.sql | awk '{print $1}')" = "$MIGRATION_SHA"
+          test -f runner/report2-d1-adapter.mjs
+          node --check .r8-20-migrate/apply_r8_20_migration.mjs
+          echo "R8_20_MIGRATION_ISOLATION=PASS"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Static self-test and read-only preflight
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 .r8-20-migrate/apply_r8_20_migration.py --self-test | tee .r8-20-migrate/SELF_TEST.log
+          node .r8-20-migrate/apply_r8_20_migration.mjs --check | tee .r8-20-migrate/PRECHECK.log
+          grep -q '^R8_20_MIGRATION_SELF_TEST=PASS' .r8-20-migrate/SELF_TEST.log
+          grep -q '^R8_20_D1_MIGRATION_CHECK=PASS$' .r8-20-migrate/PRECHECK.log
+      - name: Apply additive R8.20 schema and read back
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node .r8-20-migrate/apply_r8_20_migration.mjs --apply | tee .r8-20-migrate/MIGRATION.log
+          grep -q '^R8_20_D1_MIGRATION_RESULT=PASS$' .r8-20-migrate/MIGRATION.log
+          echo "R8_20_D1_SCHEMA=APPLIED_OR_ALREADY_APPLIED_READBACK_PASS"
+      - name: Verify main immutability
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = "$BASE_MAIN_SHA"
+          echo "PRODUCTION_MAIN_CHANGED=NO"
+      - name: Upload migration proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v3-r8-20-d1-migration-proof
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            .r8-20-migrate/SELF_TEST.log
+            .r8-20-migrate/PRECHECK.log
+            .r8-20-migrate/MIGRATION.log
+            .r8-20-migrate/20260917_tz101_entry_area_calibration_shadow.sql
