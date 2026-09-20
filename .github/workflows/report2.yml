@@ -42,10 +42,11 @@ jobs:
       REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
       REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
       REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}
-      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "1"
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
       REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
       REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
+      REPORT2_TELEGRAM_INFO_ENABLED: "1"
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"
