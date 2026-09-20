@@ -1,3 +1,5 @@
+import { runInformationalTelegram } from './telegram-info-runtime.mjs';
+export { buildMorningInformationalMessage, buildWaitInformationalMessage } from './telegram-info-runtime.mjs';
 import crypto from "node:crypto";
 
 const OUTPUT_VERSION = "telegram-output-v8-sidecar-exact-decision-context";
@@ -404,18 +406,34 @@ async function sendRelay({ relayUrl, relayKey, text, fetchImpl }) {
   } finally { clearTimeout(timer); }
 }
 
+export function buildBudgetBlockedTelegramOutput({enabled=false,infoEnabled=false,shadowDecisionAuto=false}={}) {
+  const outputEnabled=boolValue(enabled);
+  const infoOn=outputEnabled && boolValue(infoEnabled);
+  const finalAuto=outputEnabled && boolValue(shadowDecisionAuto);
+  return {
+    version:"telegram-output-budget-guard", enabled:outputEnabled, info_enabled:infoOn, final_chain_auto:finalAuto,
+    morning:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false},
+    early_info:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false,count:0},
+    watch70:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:0},
+    shadow_decision:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false,count:0,skipped:[{reason:"BLOCKED"}]},
+  };
+}
+
+
 export async function runTelegramOutputLayer({
   db, startedTs, source, relayUrl, relayKey,
   reportTest=false, shadowDecisionAuto=false, watch70Enabled=false, watch70Threshold=70,
-  enabled=false, fetchImpl=globalThis.fetch.bind(globalThis),
+  infoEnabled=false, infoTestId=null, enabled=false, clock=Date.now, fetchImpl=globalThis.fetch.bind(globalThis),
 }={}) {
   const ts=Number(startedTs||Date.now());
   const outputEnabled=boolValue(enabled);
   const finalAuto=outputEnabled && boolValue(shadowDecisionAuto);
   const threshold=Number.isFinite(Number(watch70Threshold)) ? Math.max(70,Math.min(100,Number(watch70Threshold))) : 70;
+  const infoOn=outputEnabled && boolValue(infoEnabled);
   const output={
-    version:OUTPUT_VERSION, enabled:outputEnabled, final_chain_auto:finalAuto, final_chain_threshold:threshold,
-    morning:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:false},
+    version:OUTPUT_VERSION, enabled:outputEnabled, info_enabled:infoOn, final_chain_auto:finalAuto, final_chain_threshold:threshold,
+    morning:{status:infoOn?"NOT_DUE":"INFO_DISABLED",sent:false},
+    early_info:{status:infoOn?"NO_NEW_WAIT":"INFO_DISABLED",sent:false,count:0},
     watch70:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:0},
     shadow_decision:{status:finalAuto?"NO_EVENT":"AUTO_OFF",sent:false,count:0},
   };
@@ -423,6 +441,22 @@ export async function runTelegramOutputLayer({
     output.shadow_decision={status:"OUTPUT_DISABLED",sent:false,count:0};
     console.log("TELEGRAM_OUTPUT_LAYER",JSON.stringify(output));
     return output;
+  }
+  if (infoOn && finalAuto) {
+    output.morning={status:"INFO_FINAL_AUTO_CONFLICT",sent:false};
+    output.shadow_decision={status:"INFO_FINAL_AUTO_CONFLICT",sent:false,count:0};
+    console.log("TELEGRAM_OUTPUT_LAYER",JSON.stringify(output));
+    return output;
+  }
+  if (infoOn) {
+    try {
+      const info=await runInformationalTelegram({db,now:ts,source,relayUrl,relayKey,fetchImpl,reportTest,infoTestId,sendRelay,clock});
+      output.morning=info.morning;
+      output.early_info=info.early_info;
+    } catch(error) {
+      output.morning={status:"INFO_ERROR_FAIL_CLOSED",sent:false,error:String(error?.message||error).slice(0,400)};
+      output.early_info={status:"INFO_ERROR_FAIL_CLOSED",sent:false,count:0};
+    }
   }
   if (!finalAuto) {
     console.log("TELEGRAM_OUTPUT_LAYER",JSON.stringify(output));
