@@ -404,18 +404,155 @@ async function sendRelay({ relayUrl, relayKey, text, fetchImpl }) {
   } finally { clearTimeout(timer); }
 }
 
+
+const INFO_CURRENT_MS = 12 * 60_000;
+const INFO_MAX_ROWS = 24;
+const INFO_MORNING_HOUR_MSK = 9;
+const INFO_WAIT_COOLDOWN_MS = 30 * 60_000;
+
+function infoUpper(v) { return String(v ?? "").trim().toUpperCase(); }
+function infoDirection(v) {
+  const d=infoUpper(v);
+  return d === "LONG" || d === "SHORT" ? d : null;
+}
+function mskClock(ts) {
+  const n=Number(ts);
+  const d=new Date((Number.isFinite(n)?n:Date.now()) + 3*60*60*1000);
+  return {
+    date:`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`,
+    hour:d.getUTCHours(), minute:d.getUTCMinutes(),
+  };
+}
+function infoReasonRu(reason,status) {
+  const r=infoUpper(reason), s=infoUpper(status);
+  if (s === "WAIT" || r === "DIRECTION_CLOSED_ENTRY_WINDOW_NOT_READY") return "направление подтверждено, но точка входа ещё не готова";
+  if (r === "USEFUL_LIVE_OBSERVATION") return "структура интересная, но подтверждений для входа ещё недостаточно";
+  if (r === "HARD_VETO") return "появился защитный запрет";
+  if (r === "EDGE_SPENT") return "основная часть движения уже могла пройти";
+  if (r === "INVALIDATED" || r === "STRUCTURE_BROKEN") return "структура идеи нарушена";
+  if (r === "DATA_UNUSABLE") return "данные перестали быть достаточно надёжными";
+  if (r === "DIRECTION_DESTROYED") return "направление больше не подтверждается";
+  return s === "WAIT" ? "точка входа ещё не подтверждена" : "кандидат требует дальнейшего наблюдения";
+}
+function infoScoreText(value) {
+  const n=finite(value);
+  if (n === null) return null;
+  return `внутренняя оценка структуры ${Math.max(0,Math.min(100,Math.round(n)))}/100`;
+}
+function normalizeInfoRow(row, now) {
+  const direction=infoDirection(row?.direction);
+  const status=infoUpper(row?.status);
+  const updated=Number(row?.updated_ts||0);
+  const until=Number(row?.valid_until_ts||0);
+  if (!direction || !["OBSERVE","WAIT"].includes(status)) return null;
+  if (!updated || updated > Number(now)+60_000 || Number(now)-updated > INFO_CURRENT_MS) return null;
+  if (until && until < Number(now)) return null;
+  return {
+    contract:String(row?.contract||""), direction, wave_id:String(row?.wave_id||""), status,
+    reason:String(row?.reason||""), observation_ts:Number(row?.observation_ts||0)||null,
+    updated_ts:updated, score_0_100:finite(row?.early_detection_quality_0_100),
+    lifecycle_stage:String(row?.lifecycle_stage||""),
+  };
+}
+async function loadInformationalRows(db, now) {
+  const result=await db.prepare(`SELECT l.contract,l.direction,l.wave_id,l.status,l.reason,l.observation_ts,l.valid_until_ts,l.updated_ts,
+      e.lifecycle_stage,e.early_detection_quality_0_100,e.last_seen_ts
+    FROM v3_user_lifecycle_shadow l
+    LEFT JOIN v3_early_candidate_wave e ON e.contract_code=l.contract AND e.wave_id=l.wave_id
+    WHERE l.shadow_only=1 AND l.status IN ('OBSERVE','WAIT') AND l.updated_ts BETWEEN ?1 AND ?2
+    ORDER BY CASE WHEN l.status='WAIT' THEN 0 ELSE 1 END,
+             COALESCE(e.early_detection_quality_0_100,-1) DESC,l.updated_ts DESC
+    LIMIT ${INFO_MAX_ROWS}`).bind(Number(now)-INFO_CURRENT_MS,Number(now)+60_000).all();
+  return (Array.isArray(result?.results)?result.results:[]).map((r)=>normalizeInfoRow(r,now)).filter(Boolean);
+}
+export function buildMorningInformationalMessage(rows,{now=Date.now(),test=false}={}) {
+  const list=(Array.isArray(rows)?rows:[]).map((r)=>normalizeInfoRow(r,now)||r).filter((r)=>r&&infoDirection(r.direction)&&["OBSERVE","WAIT"].includes(infoUpper(r.status)));
+  const ranked=(dir)=>list.filter((r)=>infoDirection(r.direction)===dir)
+    .sort((a,b)=>(infoUpper(a.status)==="WAIT"?-1:0)-(infoUpper(b.status)==="WAIT"?-1:0) || (finite(b.score_0_100)??-1)-(finite(a.score_0_100)??-1) || Number(b.updated_ts||0)-Number(a.updated_ts||0))
+    .slice(0,3);
+  const longs=ranked("LONG"), shorts=ranked("SHORT");
+  const lines=[test?"🧪 Проверка Telegram — утренний отчёт":"☀️ Мой отчёт 2 — утро","Информационный обзор. Это не торговый сигнал."];
+  const section=(title,items)=>{
+    lines.push("",title);
+    if(!items.length){lines.push("Сильных текущих наблюдений нет.");return;}
+    items.forEach((r,i)=>{
+      const state=infoUpper(r.status)==="WAIT"?"ЖДАТЬ":"НАБЛЮДАТЬ";
+      const score=infoScoreText(r.score_0_100);
+      lines.push(`${i+1}. ${cleanTicker(r.contract)} — ${state}${score?` — ${score}`:""}`);
+      lines.push(`Причина: ${infoReasonRu(r.reason,r.status)}.`);
+    });
+  };
+  section("🟢 ЛОНГ",longs); section("🔴 ШОРТ",shorts);
+  lines.push("","Подтверждённые торговые сигналы остаются выключены до статистической проверки.");
+  const message=lines.join("\n");
+  return {ok:message.length<=4096,status:message.length<=4096?"READY":"MESSAGE_TOO_LONG",message:message.length<=4096?message:null,long_count:longs.length,short_count:shorts.length};
+}
+export function buildWaitInformationalMessage(row,{now=Date.now()}={}) {
+  const r=normalizeInfoRow(row,now)||row;
+  if (!r || infoUpper(r.status)!=="WAIT" || !infoDirection(r.direction) || !String(r.contract||"").trim()) return {ok:false,status:"WAIT_ROW_REQUIRED",message:null};
+  const side=infoDirection(r.direction)==="LONG"?"🟢 ЛОНГ":"🔴 ШОРТ";
+  const score=infoScoreText(r.score_0_100);
+  const lines=["🟡 Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ",`${cleanTicker(r.contract)} • ${side} • ЖДАТЬ`,infoReasonRu(r.reason,r.status)+"."];
+  if(score) lines.push(`Оценка: ${score}.`);
+  lines.push("Система продолжает проверку. Вход пока не подтверждён.");
+  const message=lines.join("\n");
+  return {ok:message.length<=4096,status:message.length<=4096?"READY":"MESSAGE_TOO_LONG",message:message.length<=4096?message:null};
+}
+async function recentInfoWaitCooldown(db,contract,direction,now) {
+  const ref=`${String(contract||"")}|${infoDirection(direction)||"UNKNOWN"}`;
+  const row=await db.prepare(`SELECT status,reserved_ts FROM telegram_output_dispatch_journal_v2
+    WHERE category='INFO_WAIT' AND source_ref=?1 AND reserved_ts>=?2
+    ORDER BY reserved_ts DESC LIMIT 1`).bind(ref,Number(now)-INFO_WAIT_COOLDOWN_MS).first();
+  return Boolean(row && ["SENT","RESERVED"].includes(infoUpper(row.status)));
+}
+async function sendInformationalTelegram({db,rows,now,source,relayUrl,relayKey,fetchImpl,reportTest=false}={}) {
+  const clock=mskClock(now);
+  const forceTest=boolValue(reportTest);
+  const out={morning:{status:"NOT_DUE",sent:false},early_info:{status:"NO_NEW_WAIT",sent:false,count:0}};
+  const morningDue=forceTest || (String(source||"")==="schedule" && clock.hour===INFO_MORNING_HOUR_MSK);
+  if(morningDue){
+    const built=buildMorningInformationalMessage(rows,{now,test:forceTest});
+    if(!built.ok){out.morning={status:built.status,sent:false};}
+    else {
+      const key=forceTest?`info-morning-test:${Math.trunc(Number(now))}`:`info-morning:${clock.date}`;
+      const res=await reserveDispatch(db,{dispatchKey:key,category:forceTest?"INFO_MORNING_TEST":"INFO_MORNING",sourceRef:clock.date,text:built.message,now});
+      if(res.reserved){const net=await sendRelay({relayUrl,relayKey,text:built.message,fetchImpl});const state=await finalizeDispatch(db,key,net,Date.now());out.morning={status:state,sent:state==="SENT",message_id:net.message_id??null,long_count:built.long_count,short_count:built.short_count};}
+      else out.morning={status:res.reason||"DUPLICATE",sent:false,long_count:built.long_count,short_count:built.short_count};
+    }
+  }
+  if(!morningDue && String(source||"")==="schedule"){
+    const wait=(Array.isArray(rows)?rows:[]).filter((r)=>infoUpper(r?.status)==="WAIT"&&infoDirection(r?.direction)).sort((a,b)=>Number(b.updated_ts||0)-Number(a.updated_ts||0))[0]||null;
+    if(wait){
+      const built=buildWaitInformationalMessage(wait,{now});
+      if(!built.ok) out.early_info={status:built.status,sent:false,count:0};
+      else {
+        const cooldown=await recentInfoWaitCooldown(db,wait.contract,wait.direction,now);
+        if(cooldown){out.early_info={status:"COOLDOWN_ACTIVE",sent:false,count:0,contract:wait.contract,direction:wait.direction};return out;}
+        const key=`info-wait:${String(wait.contract)}:${infoDirection(wait.direction)}:${String(wait.wave_id||"")}`;
+        const sourceRef=`${String(wait.contract)}|${infoDirection(wait.direction)}`;
+        const res=await reserveDispatch(db,{dispatchKey:key,category:"INFO_WAIT",sourceRef,text:built.message,now});
+        if(res.reserved){const net=await sendRelay({relayUrl,relayKey,text:built.message,fetchImpl});const state=await finalizeDispatch(db,key,net,Date.now());out.early_info={status:state,sent:state==="SENT",count:state==="SENT"?1:0,contract:wait.contract,direction:wait.direction,message_id:net.message_id??null};}
+        else out.early_info={status:res.reason||"DUPLICATE",sent:false,count:0,contract:wait.contract,direction:wait.direction};
+      }
+    }
+  }
+  return out;
+}
+
 export async function runTelegramOutputLayer({
   db, startedTs, source, relayUrl, relayKey,
   reportTest=false, shadowDecisionAuto=false, watch70Enabled=false, watch70Threshold=70,
-  enabled=false, fetchImpl=globalThis.fetch.bind(globalThis),
+  infoEnabled=false, enabled=false, fetchImpl=globalThis.fetch.bind(globalThis),
 }={}) {
   const ts=Number(startedTs||Date.now());
   const outputEnabled=boolValue(enabled);
   const finalAuto=outputEnabled && boolValue(shadowDecisionAuto);
   const threshold=Number.isFinite(Number(watch70Threshold)) ? Math.max(70,Math.min(100,Number(watch70Threshold))) : 70;
+  const infoOn=outputEnabled && boolValue(infoEnabled);
   const output={
-    version:OUTPUT_VERSION, enabled:outputEnabled, final_chain_auto:finalAuto, final_chain_threshold:threshold,
-    morning:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:false},
+    version:OUTPUT_VERSION, enabled:outputEnabled, info_enabled:infoOn, final_chain_auto:finalAuto, final_chain_threshold:threshold,
+    morning:{status:infoOn?"NOT_DUE":"INFO_DISABLED",sent:false},
+    early_info:{status:infoOn?"NO_NEW_WAIT":"INFO_DISABLED",sent:false,count:0},
     watch70:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:0},
     shadow_decision:{status:finalAuto?"NO_EVENT":"AUTO_OFF",sent:false,count:0},
   };
@@ -423,6 +560,17 @@ export async function runTelegramOutputLayer({
     output.shadow_decision={status:"OUTPUT_DISABLED",sent:false,count:0};
     console.log("TELEGRAM_OUTPUT_LAYER",JSON.stringify(output));
     return output;
+  }
+  if (infoOn) {
+    try {
+      const infoRows=await loadInformationalRows(db,ts);
+      const info=await sendInformationalTelegram({db,rows:infoRows,now:ts,source,relayUrl,relayKey,fetchImpl,reportTest});
+      output.morning=info.morning;
+      output.early_info=info.early_info;
+    } catch(error) {
+      output.morning={status:"INFO_ERROR_FAIL_CLOSED",sent:false,error:String(error?.message||error).slice(0,400)};
+      output.early_info={status:"INFO_ERROR_FAIL_CLOSED",sent:false,count:0};
+    }
   }
   if (!finalAuto) {
     console.log("TELEGRAM_OUTPUT_LAYER",JSON.stringify(output));
