@@ -3,8 +3,7 @@ import crypto from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 import { RemoteD1Database } from "./report2-d1-adapter.mjs";
-import { buildBudgetBlockedTelegramOutput, runTelegramOutputLayer } from "./telegram-output.mjs";
-import { INFO_D1_BUDGET } from "./telegram-info-runtime.mjs";
+import { runTelegramOutputLayer } from "./telegram-output.mjs";
 import { deriveRunReservation, loadDailyUsageAggregate, reserveRunBudget, evaluateDailyReservationBudget, evaluateWithinRunReservation, finalizeRunUsage } from "./d1-preaction-budget-guard.mjs";
 import { buildR88BurstReservation, buildR88DailyAdmissionView, enforceR88RunBudget } from "./src/v3-adaptive-budget.mjs";
 import { classifyZeroTelegram } from "./telegram-zero-reason.mjs";
@@ -16,7 +15,7 @@ import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } f
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.14.2-telegram-validation-isolated";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.13.0-r8-20-prospective-validation-shadow";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -435,51 +434,6 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const v3TelegramNetworkRequested = ["1","true","yes","on"].includes(String(process.env.REPORT2_V3_TELEGRAM_NETWORK_ENABLED || "0").trim().toLowerCase());
   const v3LegacyTelegramOutputEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED || "0").trim().toLowerCase());
   const v3TelegramNetworkEnabled = v3TelegramNetworkRequested && v3LegacyTelegramOutputEnabled;
-  const telegramInstallValidation = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_INSTALL_VALIDATION || "0").trim().toLowerCase());
-  const telegramReportTestRequested = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "0").trim().toLowerCase());
-  const runTelegramLayer = async () => {
-    const budget = evaluateWithinRunReservation({
-      reservation:d1RunReservation,
-      currentUsage:env.DATA_DB.usageSnapshot(),
-      extraRowsRead:INFO_D1_BUDGET.rowsRead,
-      extraRowsWritten:INFO_D1_BUDGET.rowsWritten,
-    });
-    let output;
-    if (!budget.allowed) {
-      output = buildBudgetBlockedTelegramOutput({
-        enabled:envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
-        infoEnabled:envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
-        shadowDecisionAuto:envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
-      });
-      output.shadow_decision.skipped[0].reason=budget.status;
-    } else output = await runTelegramOutputLayer({
-      db: env.DATA_DB,
-      scan,
-      startedTs: started,
-      source,
-      relayUrl: envText("REPORT2_TELEGRAM_RELAY_URL", { required: false }),
-      relayKey: envText("REPORT2_TELEGRAM_RELAY_KEY", { required: false }),
-      reportTest: envText("REPORT2_TELEGRAM_REPORT_TEST", { required: false }),
-      shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
-      watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
-      watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-      infoEnabled: envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
-      infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
-      // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
-      // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
-      enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
-      fetchImpl: nativeFetch,
-    });
-    return {budget,output};
-  };
-  let d1PreTelegramBudget=null;
-  let telegramOutput=null;
-  // The single owner-authorized delivery test runs before optional sidecars so
-  // its bounded D1 envelope cannot be consumed by unrelated shadow observers.
-  // Scheduled production and ordinary manual runs retain their original order.
-  if (telegramInstallValidation && telegramReportTestRequested) {
-    ({budget:d1PreTelegramBudget,output:telegramOutput}=await runTelegramLayer());
-  }
   // R8.8 adaptive burst budget: preserve downstream reserve while guaranteeing one bounded early-persistence slot under the R8.8 observed high-write state.
   // Raw factual liquidations are already upstream-persisted; compact aggregation may defer fail-closed without source loss.
   const R88_DOWNSTREAM_RESERVE = Object.freeze({rows_read:4500,rows_written:50});
@@ -522,16 +476,41 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("V3_REALIZED_LIQUIDATION_SIDECAR", JSON.stringify(v3RealizedLiquidationSidecar));
   console.log("V3_LIQUIDATION_INTELLIGENCE_SIDECAR", JSON.stringify(v3LiquidationSidecar));
   const telegramObserver = await observeNaturalTelegramDecision(env.DATA_DB);
-  const discoveryRecallKpi = telegramInstallValidation
-    ? {status:"SKIPPED_OWNER_TELEGRAM_VALIDATION",shadow_only:true,auto_send:false}
-    : await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id });
-  if (source !== "schedule" && !telegramInstallValidation && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
+  const discoveryRecallKpi = await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id });
+  if (source !== "schedule" && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
     throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
   }
-  if (telegramOutput === null) {
-    ({budget:d1PreTelegramBudget,output:telegramOutput}=await runTelegramLayer());
-  }
-  await fs.writeFile("telegram-info-proof.json",JSON.stringify({schema:"telegram-info-proof-v1",head:process.env.GITHUB_SHA||null,candidate_sha:process.env.REPORT2_TELEGRAM_INFO_TEST_ID||null,v3_telegram_network_enabled:v3TelegramNetworkEnabled,output:telegramOutput,live_probability:null,validated_signal:false,execution:false,automatic_weight_tuning:false},null,2));
+  const d1PreTelegramBudget = evaluateWithinRunReservation({
+    reservation:d1RunReservation,
+    currentUsage:env.DATA_DB.usageSnapshot(),
+    extraRowsRead:64,
+    extraRowsWritten:41,
+  });
+  let telegramOutput;
+  if (!d1PreTelegramBudget.allowed) {
+    telegramOutput = {
+      version:"telegram-output-budget-guard", enabled:true, final_chain_auto:false,
+      morning:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false},
+      watch70:{status:"DISABLED_FINAL_CHAIN_ONLY",sent:0},
+      shadow_decision:{status:"BLOCKED_D1_PREACTION_BUDGET",sent:false,count:0,skipped:[{reason:d1PreTelegramBudget.status}]},
+    };
+  } else telegramOutput = await runTelegramOutputLayer({
+    db: env.DATA_DB,
+    scan,
+    telegramObserver,
+    startedTs: started,
+    source,
+    relayUrl: envText("REPORT2_TELEGRAM_RELAY_URL", { required: false }),
+    relayKey: envText("REPORT2_TELEGRAM_RELAY_KEY", { required: false }),
+    reportTest: envText("REPORT2_TELEGRAM_REPORT_TEST", { required: false }),
+    shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
+    watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
+    watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
+    // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
+    // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
+    enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
+    fetchImpl: nativeFetch,
+  });
   const telegramZeroReason = classifyZeroTelegram({ preBudget:d1PreTelegramBudget, telegramObserver, telegramOutput });
   const v3RealizedFeedStatus = String(v3RealizedLiquidationSidecar?.status || "UNKNOWN").toUpperCase();
   const v3ProjectedFeedStatus = String(v3LiquidationSidecar?.status || "UNKNOWN").toUpperCase();
@@ -590,7 +569,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (source !== "schedule" && r820ProspectiveValidationEnabled && r820ProspectiveValidationSidecar?.status !== "CLOSED") {
     throw new Error(`R8_20_PROSPECTIVE_VALIDATION_SMOKE_FAIL_CLOSED:${r820ProspectiveValidationSidecar?.status || "UNKNOWN"}`);
   }
-  if (source !== "schedule" && telegramReportTestRequested && telegramOutput?.morning?.sent !== true && telegramOutput?.morning?.delivery_confirmed !== true) {
+  if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
