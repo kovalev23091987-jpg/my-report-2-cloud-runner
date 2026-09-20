@@ -1,0 +1,73 @@
+{
+  "schema": "my-report-2-telegram-info-repair-package-v1",
+  "generated_at_utc": "2026-09-20T17:31:55Z",
+  "status": "READY_FOR_OWNER_RUN_R7_FALSE_VETO_FIXED_NOT_DEPLOYED",
+  "base_main": "06456805eded133965324b1e5786daf1ad783575",
+  "candidate_id": "a1bb1e44d4fbe9280e4cdce4ec6c3a092478a222a946d9679e5357ab99e9e3b3",
+  "worker_sha256": "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83",
+  "payload_sha256": "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88",
+  "production_files": [
+    "runner/telegram-output.mjs",
+    "runner/telegram-info-runtime.mjs",
+    "runner/runner-main.mjs",
+    ".github/workflows/report2.yml"
+  ],
+  "protected_base": {},
+  "safety": {
+    "strategy_weights": "35/30/20/15 unchanged",
+    "live_probability": false,
+    "live_signal": false,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false,
+    "v3_telegram_network": false,
+    "final_chain_auto": false,
+    "worker_changed": false
+  },
+  "tests": {
+    "telegram_info_sqlite": 17,
+    "schema_contract": 4,
+    "owner_safety": 8,
+    "final_chain_regression": "PASS",
+    "targeted_baseline": 22,
+    "package_static": 4,
+    "d1_bridge_preflight_e2e": 1
+  },
+  "sha256": {
+    "FINAL_TECHNICAL_REPORT.md": "5cf093544d1666b701ea7b68fb158d9f31b40229f59f72b86c7690a2da81c1d8",
+    "README_RU.md": "a42ee5ea0bf566262875a7e0415c38cfb00930e5d08c8afdbd072c62dc483186",
+    "TEST_MATRIX.md": "853653861b65c6144798dd73dd627faaffd58d8a84b37c9b5950abbeed106cac",
+    "candidate/.github/workflows/report2.yml": "e2fb8c512513ed0e9a620a0045958c8c216bd35916fabf5ad973609af08b794c",
+    "candidate/runner/runner-main.mjs": "c80de400ffd42ec77d15c146e2bff1e006e59cb7e5c95dc1a65156e0d954fe94",
+    "candidate/runner/telegram-info-runtime.mjs": "758096cfcd26f46c91c542cfe69eaed692c696b52b798e60581766fafb92a3c3",
+    "candidate/runner/telegram-output.mjs": "730f1c56546efa3c4f5f68d81f03779c67c896c66ecd81a43e5335b51837da74",
+    "fixtures/20260917_v3_early_discovery_shadow.sql": "9dadc72e3b5905285b64fc93239d543fe21529dd4477339535970d2f7249889e",
+    "fixtures/20260917_v3_telegram_lifecycle_shadow.sql": "7a4e2659387cb39b829a6646f1f2793ac89cd50ba299df529d0a2fabfa62dbb0",
+    "fixtures/info-lifecycle-index.sql": "c850024536a1357952e7b5e769499ab3e40dba4ffe59d2114b785481dff21bb7",
+    "fixtures/legacy-telegram-journal.sql": "79f0694f032c2acc0072c588d433931006b5225898ced85798c3843e2f9aa978",
+    "tests/final-chain-regression.mjs": "e9cb3ddc437495fd42cd3a92fcfa8de97b56d2123ef40a951cffcedc6abfc8bb",
+    "tests/owner-safety.test.py": "c090904c374aead9d54b9dc27a04733da4396e31efa29c71926fe6347c740fe2",
+    "tests/package-static.test.py": "2866c1d67145df074129a8f203288427d3c49d8ed5d6867292b5cd595e6c01cb",
+    "tests/preflight-contract.test.mjs": "0187251245ef5ee4ff3493d6ab8f1da1d6693f91a77a033f987b27b169259f81",
+    "tests/sqlite-db.mjs": "c9adc968131e6d8498a094def033b09ee47158125719c760cae81ae560c8b3d5",
+    "tests/telegram-info-sqlite.test.mjs": "6137c159d1d7d57f5aef4d43faea053e0692a233013fe328acb7c2a4e013c6a0",
+    "tools/d1-preflight.mjs": "d805925c30d282dc5a451e4f9b4ffade1130a6d856ef5114a2948afaad36e399",
+    "tools/owner.py": "9468a9bef90f453609421c467f8ce53a779a1c8db68fe3ab1871536762346aa1"
+  },
+  "remote_evidence": {
+    "preflight_pass_run": 35521643482,
+    "no_send_success_run": 35521665753,
+    "r8_20_isolation_diagnosis_run": 35522458529,
+    "r6_candidate": "c123a431d9eda5257b1b34dd9191a5a7af776155",
+    "r6_preflight_pass_run": 35523550365,
+    "r6_no_send_success_run": 35523572043,
+    "r6_delivery_success_run": 35523609289,
+    "r6_rehearsal_success_run": 35523642974,
+    "r6_production_no_send_success_run": 35523676121,
+    "r6_natural_success_runs": [35524118026, 35524705787],
+    "r6_false_veto": "NATURAL_LOG_SAFETY_MARKER_MISSING",
+    "r6_rollback_commit": "06456805eded133965324b1e5786daf1ad783575",
+    "r6_rollback_tree": "cd07411c57bb1cc5f5d905d4035a3dad6de44d47",
+    "r7_remote_validation": "PENDING_OWNER_RUN"
+  }
+}
