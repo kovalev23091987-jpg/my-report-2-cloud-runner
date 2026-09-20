@@ -1,0 +1,57 @@
+{
+  "schema": "my-report-2-telegram-info-repair-package-v1",
+  "generated_at_utc": "2026-09-20T16:17:14Z",
+  "status": "READY_FOR_OWNER_RUN_REMOTE_NO_SEND_DIAGNOSED_NOT_DEPLOYED",
+  "base_main": "f12d7c12441c3ddd710b2fd333d90ab402fa6785",
+  "candidate_id": "8dc04f03b159ba58efa0128639685c1f881cecf98bcaf88025ecd6bdf14e91d3",
+  "worker_sha256": "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83",
+  "payload_sha256": "30f9d3b589b0caa8d409707e7e38f0a04c5080130fdd27ea7fa25826e234cf88",
+  "production_files": [
+    "runner/telegram-output.mjs",
+    "runner/telegram-info-runtime.mjs",
+    "runner/runner-main.mjs",
+    ".github/workflows/report2.yml"
+  ],
+  "protected_base": {},
+  "safety": {
+    "strategy_weights": "35/30/20/15 unchanged",
+    "live_probability": false,
+    "live_signal": false,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false,
+    "v3_telegram_network": false,
+    "final_chain_auto": false,
+    "worker_changed": false
+  },
+  "tests": {
+    "telegram_info_sqlite": 17,
+    "schema_contract": 4,
+    "owner_safety": 7,
+    "final_chain_regression": "PASS",
+    "targeted_baseline": 22,
+    "package_static": 4,
+    "d1_bridge_preflight_e2e": 1
+  },
+  "sha256": {
+    "FINAL_TECHNICAL_REPORT.md": "2bdea08d0c12468d20abdac5fc04f254f6879924dddc8283a2223e555fe9b9fc",
+    "README_RU.md": "1af79224b5ef1830ad15a791b5b4a9860f6b25494977619614f336ce6c67e0db",
+    "TEST_MATRIX.md": "dda1afbfc3de3dbbb4fd02f575c82fa16f96ff4240b021af2f2386077438ce59",
+    "candidate/.github/workflows/report2.yml": "80f965d901f083d63bcf1d6d087456cb8eb6db82a15a29b7f7f76ce57a043346",
+    "candidate/runner/runner-main.mjs": "ae89c7f85f9b951522e75addc7a2b5775621b1cfc37ae862f09c17a8cbf795d8",
+    "candidate/runner/telegram-info-runtime.mjs": "758096cfcd26f46c91c542cfe69eaed692c696b52b798e60581766fafb92a3c3",
+    "candidate/runner/telegram-output.mjs": "730f1c56546efa3c4f5f68d81f03779c67c896c66ecd81a43e5335b51837da74",
+    "fixtures/20260917_v3_early_discovery_shadow.sql": "9dadc72e3b5905285b64fc93239d543fe21529dd4477339535970d2f7249889e",
+    "fixtures/20260917_v3_telegram_lifecycle_shadow.sql": "7a4e2659387cb39b829a6646f1f2793ac89cd50ba299df529d0a2fabfa62dbb0",
+    "fixtures/info-lifecycle-index.sql": "c850024536a1357952e7b5e769499ab3e40dba4ffe59d2114b785481dff21bb7",
+    "fixtures/legacy-telegram-journal.sql": "79f0694f032c2acc0072c588d433931006b5225898ced85798c3843e2f9aa978",
+    "tests/final-chain-regression.mjs": "428a8ef4e4a7ec153c25d3305d73accac44317d6db8edee08329a2d6c78b5634",
+    "tests/owner-safety.test.py": "b9f4a0a1d0953f6d99610016c2848e329b7d3a9e70b4d83d4e734527534deb4a",
+    "tests/package-static.test.py": "fae7bd72b68e5cd693bfac8d22c0142575755ac7af2f00363366605c7cc87888",
+    "tests/preflight-contract.test.mjs": "0187251245ef5ee4ff3493d6ab8f1da1d6693f91a77a033f987b27b169259f81",
+    "tests/sqlite-db.mjs": "c9adc968131e6d8498a094def033b09ee47158125719c760cae81ae560c8b3d5",
+    "tests/telegram-info-sqlite.test.mjs": "e2589b8a3c3cbb1e24c0cf4cd66e13c202c575853ecc1401628b937e1666b59c",
+    "tools/d1-preflight.mjs": "d805925c30d282dc5a451e4f9b4ffade1130a6d856ef5114a2948afaad36e399",
+    "tools/owner.py": "c09ef33ff9306697d620e710dcc7df07a9e943aa8fe7c07c6b5c7aa2d4b6349a"
+  }
+}

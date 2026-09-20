@@ -1,0 +1,105 @@
+name: Report 2 Cloud Runner
+
+on:
+  schedule:
+    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "manual validation"
+        required: false
+        default: "manual"
+      telegram_report_test:
+        description: "send one compact Telegram report test"
+        required: false
+        type: boolean
+        default: false
+      controlled_no_telegram:
+        description: "controlled smoke with Telegram fully disabled"
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+
+jobs:
+  run-report2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
+      REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
+      REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
+      REPORT2_TELEGRAM_INFO_ENABLED: "1"
+      REPORT2_TELEGRAM_INFO_TEST_ID: "8dc04f03b159ba58efa0128639685c1f881cecf98bcaf88025ecd6bdf14e91d3"
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      REPORT2_RUN_SOURCE: ${{ github.event_name }}
+      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+    steps:
+      - name: Disabled schedule gate
+        if: ${{ github.event_name == 'schedule' && env.REPORT2_RUNNER_ENABLED != '1' }}
+        run: |
+          echo "REPORT2_RUNNER_DISABLED"
+          exit 0
+      - name: Checkout encrypted runner
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Decrypt authoritative runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf runtime
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm -f runtime/payload.tar.gz
+          cp runner/runner-main.mjs runtime/runner-main.mjs
+          cp runner/r8-20-prospective-validation-sidecar.mjs runtime/r8-20-prospective-validation-sidecar.mjs
+          cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
+          cp runner/telegram-output.mjs runtime/telegram-output.mjs
+          cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
+          cd runtime
+          ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
+          test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+      - name: Full Report 2 cycle
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cd runtime
+          node runner-main.mjs
+
+      - name: Informational delivery proof
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-telegram-info-proof
+          path: runtime/telegram-info-proof.json
+          if-no-files-found: warn
+          retention-days: 30

@@ -1,0 +1,52 @@
+name: Report2 informational repair preflight
+on:
+  push:
+    branches: ["report2-info-repair-preflight-*"]
+permissions:
+  contents: read
+concurrency:
+  group: my-report-2-production-cycle
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact isolation and payload
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = f12d7c12441c3ddd710b2fd333d90ab402fa6785
+          test "$(git rev-parse HEAD^)" = f12d7c12441c3ddd710b2fd333d90ab402fa6785
+          python3 .info-repair/tools/owner.py --self-test
+          mkdir -p .info-repair/runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" .info-repair/runtime/payload.tar.gz
+          tar -xzf .info-repair/runtime/payload.tar.gz -C .info-repair/runtime
+          rm .info-repair/runtime/payload.tar.gz
+          test "$(sha256sum .info-repair/runtime/src/worker.js | cut -d' ' -f1)" = 7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83
+      - name: Read-only schema gate
+        run: node .info-repair/tools/d1-preflight.mjs --check
+      - name: Bounded additive index and exact readback
+        run: node .info-repair/tools/d1-preflight.mjs --apply-index
+      - name: Main unchanged
+        run: |
+          git fetch origin main --depth=1
+          test "$(git rev-parse origin/main)" = f12d7c12441c3ddd710b2fd333d90ab402fa6785
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: report2-info-preflight-proof
+          path: .info-repair/proof/*.json
+          if-no-files-found: warn
+          retention-days: 30
