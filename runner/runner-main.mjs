@@ -15,7 +15,7 @@ import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } f
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.13.0-r8-20-prospective-validation-shadow";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.14.0-telegram-informational-safe";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -506,6 +506,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
     watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
     watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
+    infoEnabled: envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
     // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
     // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
     enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
