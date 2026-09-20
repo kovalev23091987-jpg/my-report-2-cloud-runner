@@ -15,7 +15,7 @@ import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } f
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.13.0-r8-20-prospective-validation-shadow";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.14.1-telegram-informational-safe";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -483,7 +483,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const d1PreTelegramBudget = evaluateWithinRunReservation({
     reservation:d1RunReservation,
     currentUsage:env.DATA_DB.usageSnapshot(),
-    extraRowsRead:64,
+    extraRowsRead:2560,
     extraRowsWritten:41,
   });
   let telegramOutput;
@@ -506,11 +506,14 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
     watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
     watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
+    infoEnabled: envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
+    infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
     // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
     // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
     enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
     fetchImpl: nativeFetch,
   });
+  await fs.writeFile("telegram-info-proof.json",JSON.stringify({schema:"telegram-info-proof-v1",head:process.env.GITHUB_SHA||null,candidate_sha:process.env.REPORT2_TELEGRAM_INFO_TEST_ID||null,v3_telegram_network_enabled:v3TelegramNetworkEnabled,output:telegramOutput,live_probability:null,validated_signal:false,execution:false,automatic_weight_tuning:false},null,2));
   const telegramZeroReason = classifyZeroTelegram({ preBudget:d1PreTelegramBudget, telegramObserver, telegramOutput });
   const v3RealizedFeedStatus = String(v3RealizedLiquidationSidecar?.status || "UNKNOWN").toUpperCase();
   const v3ProjectedFeedStatus = String(v3LiquidationSidecar?.status || "UNKNOWN").toUpperCase();
@@ -569,7 +572,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (source !== "schedule" && r820ProspectiveValidationEnabled && r820ProspectiveValidationSidecar?.status !== "CLOSED") {
     throw new Error(`R8_20_PROSPECTIVE_VALIDATION_SMOKE_FAIL_CLOSED:${r820ProspectiveValidationSidecar?.status || "UNKNOWN"}`);
   }
-  if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true) {
+  if (source !== "schedule" && ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "").trim().toLowerCase()) && telegramOutput?.morning?.sent !== true && telegramOutput?.morning?.delivery_confirmed !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));

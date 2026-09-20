@@ -42,10 +42,12 @@ jobs:
       REPORT2_TELEGRAM_RELAY_URL: "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test"
       REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
       REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}
-      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "1"
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
       REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
       REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
+      REPORT2_TELEGRAM_INFO_ENABLED: "1"
+      REPORT2_TELEGRAM_INFO_TEST_ID: "bc2b63151422f8061bc96401b6237932f4d7b41204688d7b182511043811fde6"
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"
@@ -82,6 +84,7 @@ jobs:
           cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
           cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
           cp runner/telegram-output.mjs runtime/telegram-output.mjs
+          cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
@@ -91,3 +94,12 @@ jobs:
           set -Eeuo pipefail
           cd runtime
           node runner-main.mjs
+
+      - name: Informational delivery proof
+        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-telegram-info-proof
+          path: runtime/telegram-info-proof.json
+          if-no-files-found: warn
+          retention-days: 30
