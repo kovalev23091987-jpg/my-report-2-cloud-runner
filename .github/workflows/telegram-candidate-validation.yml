@@ -1,0 +1,53 @@
+name: Telegram candidate validation
+on:
+  push:
+    branches: ['telegram-info-fix/*']
+permissions:
+  contents: read
+concurrency:
+  group: telegram-candidate-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Decrypt exact baseline and apply checked ephemeral overlay
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+      - name: Complete local pipeline and regression suite - no production writes or messages
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check runner-main.mjs
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          echo TELEGRAM_CANDIDATE_TESTS_PASS
+      - name: Bounded read-only production diagnosis
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node runner/telegram-readonly-diagnostic.mjs
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telegram-candidate-proof
+          path: |
+            runtime/telegram-candidate-tests.tap
+            telegram-readonly-diagnosis.json
+          retention-days: 14

@@ -68,6 +68,16 @@ export function buildWaitInformationalMessage(row,{now=Date.now()}={}) {
   return {ok:message.length<=4096,status:'READY',message};
 }
 
+export function buildObserveInformationalMessage(row,{now=Date.now()}={}) {
+  const r=normalizeInfoRow(row,now);
+  if(!r || r.status!=='OBSERVE')return {ok:false,status:'NOT_CURRENT_OBSERVATION',message:null};
+  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ',
+    `${r.contract.slice(0,-5)} • предварительный ${r.direction==='LONG'?'ЛОНГ':'ШОРТ'} • НАБЛЮДАТЬ${scoreText(r)}`,
+    'Глубокая проверка выделила наблюдение. Подтверждение входа и полной достаточности данных отсутствует.',
+    'Это гипотеза для наблюдения, а не рекомендация открыть сделку.'].join('\n');
+  return {ok:message.length<=4096,status:'READY',message};
+}
+
 export async function reserveInformational(db,{dispatchKey,category,sourceRef,text,now,wait=false}) {
   if(!integer(now) || !safeText(dispatchKey,300) || !dispatchKey.startsWith('info:') || typeof sourceRef!=='string' || !sourceRef.startsWith('INFO_') || !safeText(sourceRef.replaceAll('|',':'),400) || !['MORNING_REPORT','SHADOW_FINAL_DECISION'].includes(category) || typeof text!=='string' || !text.length || text.length>4096) throw new Error('INFO_RESERVATION_INPUT_INVALID');
   const hash=sha(text);
@@ -118,7 +128,7 @@ async function finalizeInformational(db,key,claim,net,now) {
   return {status:status==='RESERVED'?'DELIVERY_UNKNOWN_NO_AUTORETRY':status,sent:confirmed,delivery_confirmed:confirmed,message_id:confirmed?net.message_id:null};
 }
 
-export async function runInformationalTelegram({db,now,source,relayUrl,relayKey,fetchImpl,reportTest=false,infoTestId=null,sendRelay,clock=Date.now}={}) {
+export async function runInformationalTelegram({db,now,source,relayUrl,relayKey,fetchImpl,reportTest=false,infoTestId=null,sendRelay,clock=Date.now,observeEnabled=false,currentLifecycle=null}={}) {
   const out={morning:{status:'NOT_DUE',sent:false},early_info:{status:'NO_NEW_WAIT',sent:false,count:0}};
   if(!integer(now))throw new Error('INFO_CLOCK_INVALID');
   const test=reportTest===true || ['1','true','yes','on'].includes(String(reportTest).toLowerCase());
@@ -126,13 +136,32 @@ export async function runInformationalTelegram({db,now,source,relayUrl,relayKey,
   const morning=test || (source==='schedule' && msk.getUTCHours()===9);
   if(!morning && source!=='schedule')return out;
   if(test && !/^[a-f0-9]{64}$/.test(String(infoTestId))) {out.morning.status='INFO_TEST_ID_REQUIRED';return out;}
+  if(currentLifecycle && !['CLOSED','CLOSED_NO_TRANSITION','CLOSED_NO_COMPLETED_HANDOFF'].includes(currentLifecycle.status)) {
+    out.early_info={status:'UPSTREAM_LIFECYCLE_NOT_CLOSED',source_status:currentLifecycle.status,sent:false,count:0};
+    out.morning={status:'UPSTREAM_LIFECYCLE_NOT_CLOSED',sent:false};return out;
+  }
   const list=await loadInformationalRows(db,now);
+  out.early_info.valid_wait_count=list.filter(r=>r.status==='WAIT').length;
+  out.early_info.valid_observe_count=list.filter(r=>r.status==='OBSERVE').length;
   const jobs=[];
   if(morning) {
     jobs.push({built:buildMorningInformationalMessage(list,{now,test}),key:test?`info:test:${infoTestId}`:`info:morning:${date}`,ref:test?`INFO_TEST|${infoTestId}`:`INFO_MORNING|${date}`,category:INFO_CATEGORIES.MORNING,wait:false,row:null});
   } else {
-    for(const row of list.filter(r=>r.status==='WAIT').sort((a,b)=>b.updated_ts-a.updated_ts).slice(0,8))
-      jobs.push({row,built:buildWaitInformationalMessage(row,{now}),key:`info:wait:${sha(JSON.stringify([row.contract,row.direction,row.wave_id]))}`,ref:`INFO_WAIT|${row.contract}|${row.direction}`,category:INFO_CATEGORIES.WAIT,wait:true});
+    const currentKeys=currentLifecycle?new Set((currentLifecycle.transitions||[])
+      .filter(t=>t.status==='CLOSED'&&['OBSERVE','WAIT'].includes(t.current_status))
+      .map(t=>JSON.stringify([t.contract,t.direction,t.wave_id,t.current_status]))):null;
+    const eligible=list.filter(r=>(r.status==='WAIT'||(observeEnabled===true&&r.status==='OBSERVE'))&&
+      (!currentKeys||currentKeys.has(JSON.stringify([r.contract,r.direction,r.wave_id,r.status]))));
+    if(!eligible.length && observeEnabled===true)out.early_info.status='NO_CURRENT_EARLY_OBSERVATION';
+    if(currentLifecycle)out.early_info.upstream_reasons=(currentLifecycle.transitions||[]).map(t=>({contract:t.contract,status:t.status,reason:t.reason??null}));
+    for(const row of eligible.sort((a,b)=>(a.status==='WAIT'?-1:0)-(b.status==='WAIT'?-1:0)||b.updated_ts-a.updated_ts).slice(0,8)) {
+      const observe=row.status==='OBSERVE';
+      jobs.push({row,built:observe?buildObserveInformationalMessage(row,{now}):buildWaitInformationalMessage(row,{now}),
+        key:`info:${observe?'observe':'wait'}:${sha(JSON.stringify([row.contract,row.direction,row.wave_id]))}`,
+        // Share the pre-existing per-symbol/direction cooldown and uncertain-send
+        // scope with WAIT, so enabling observations cannot bypass old reservations.
+        ref:`INFO_WAIT|${row.contract}|${row.direction}`,category:INFO_CATEGORIES.WAIT,wait:true});
+    }
   }
   for(const {row,built,key,ref,category,wait} of jobs) {
   const field=morning?'morning':'early_info';
@@ -149,7 +178,7 @@ export async function runInformationalTelegram({db,now,source,relayUrl,relayKey,
   const net=await sendRelay({relayUrl,relayKey,text:built.message,fetchImpl});
   out[field]=await finalizeInformational(db,key,claim,net,Math.max(sendNow,clock()));
   if(morning){out[field].long_count=built.long_count;out[field].short_count=built.short_count;}
-  else {out[field].count=out[field].sent?1:0;out[field].contract=row.contract;out[field].direction=row.direction;}
+  else {out[field].count=out[field].sent?1:0;out[field].contract=row.contract;out[field].direction=row.direction;out[field].lifecycle_status=row.status;}
   return out;
   }
   return out;

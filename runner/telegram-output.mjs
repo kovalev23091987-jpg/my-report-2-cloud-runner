@@ -424,6 +424,7 @@ export async function runTelegramOutputLayer({
   db, startedTs, source, relayUrl, relayKey,
   reportTest=false, shadowDecisionAuto=false, watch70Enabled=false, watch70Threshold=70,
   infoEnabled=false, infoTestId=null, enabled=false, clock=Date.now, fetchImpl=globalThis.fetch.bind(globalThis),
+  infoObserveEnabled=false, currentLifecycle=null,
 }={}) {
   const ts=Number(startedTs||Date.now());
   const outputEnabled=boolValue(enabled);
@@ -450,7 +451,10 @@ export async function runTelegramOutputLayer({
   }
   if (infoOn) {
     try {
-      const info=await runInformationalTelegram({db,now:ts,source,relayUrl,relayKey,fetchImpl,reportTest,infoTestId,sendRelay,clock});
+      // A lifecycle persisted during this cycle is newer than startedTs.
+      // Validate against the actual publication clock, never move timestamps.
+      const info=await runInformationalTelegram({db,now:clock(),source,relayUrl,relayKey,fetchImpl,reportTest,infoTestId,sendRelay,clock,
+        observeEnabled:boolValue(infoObserveEnabled),currentLifecycle});
       output.morning=info.morning;
       output.early_info=info.early_info;
     } catch(error) {

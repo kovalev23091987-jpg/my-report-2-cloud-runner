@@ -1,0 +1,188 @@
+{
+  "schema": "telegram-runtime-overlay-v1",
+  "worker_sha256": "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83",
+  "files": [
+    {
+      "path": "src/v3-early-sidecar.mjs",
+      "before_sha256": "dc91d7df674d26972d99c11366add9cb03ed1f43abfbc747197b30f2e4de35ad",
+      "after_sha256": "50a4d790428c1322b455d9f393dfa0f8139d98a3527632351d76156ea4afd676",
+      "edits": [
+        {
+          "start": 78,
+          "end": 79,
+          "old": "export function chooseEarlyPersistenceTargets({observations=[],active_candidates=[]}={}){\n",
+          "new": "export function chooseEarlyPersistenceTargets({observations=[],active_candidates=[],preferred_contracts=[]}={}){\n"
+        },
+        {
+          "start": 85,
+          "end": 85,
+          "old": "",
+          "new": "    // A completed Deep Check may request the existing slot, but never reopen\n    // a terminal wave or bypass the ordinary observation eligibility checks.\n    if(prior && TERMINAL.has(text(prior.lifecycle_stage))) continue;\n"
+        },
+        {
+          "start": 94,
+          "end": 94,
+          "old": "",
+          "new": "  for(const contract of preferred_contracts.slice(0,6)) take(items.find(x=>x.contract===contract));\n"
+        },
+        {
+          "start": 104,
+          "end": 105,
+          "old": "async function loadEarlyInputs(db,{current_scan_ts,now_ts}={}){\n",
+          "new": "async function loadEarlyInputs(db,{current_scan_ts,now_ts,preferred_contracts=[]}={}){\n"
+        },
+        {
+          "start": 120,
+          "end": 120,
+          "old": "",
+          "new": "  // Point lookups retain first-seen/generation even when the handoff candidate\n  // falls outside the oldest twelve active rows. No fabricated wave identity.\n  const preferred=[...new Set(preferred_contracts)].slice(0,6);\n  for(const contract of preferred) statements.push(db.prepare(`SELECT * FROM v3_early_candidate_wave\n    WHERE contract_code=?1 ORDER BY last_seen_ts DESC LIMIT 1`).bind(contract));\n"
+        },
+        {
+          "start": 124,
+          "end": 125,
+          "old": "  const active=resultRows(result?.[3]);\n",
+          "new": "  const activeMap=new Map(resultRows(result?.[3]).map(r=>[r.contract_code,r]));\n  for(const response of result.slice(4)) for(const row of resultRows(response)) activeMap.set(row.contract_code,row);\n  const active=[...activeMap.values()];\n"
+        },
+        {
+          "start": 134,
+          "end": 135,
+          "old": "export async function runV3EarlyPersistenceSidecar(db,{current_scan_ts,source_run_id=null,now_ts=Date.now()}={}){\n",
+          "new": "export async function runV3EarlyPersistenceSidecar(db,{current_scan_ts,source_run_id=null,now_ts=Date.now(),preferred_contracts=[]}={}){\n"
+        },
+        {
+          "start": 139,
+          "end": 140,
+          "old": "  try{ loaded=await loadEarlyInputs(db,{current_scan_ts,now_ts}); }\n",
+          "new": "  try{ loaded=await loadEarlyInputs(db,{current_scan_ts,now_ts,preferred_contracts}); }\n"
+        },
+        {
+          "start": 160,
+          "end": 161,
+          "old": "  const targets=chooseEarlyPersistenceTargets({observations,active_candidates:loaded.active_candidates});\n",
+          "new": "  const targets=chooseEarlyPersistenceTargets({observations,active_candidates:loaded.active_candidates,preferred_contracts});\n"
+        }
+      ]
+    },
+    {
+      "path": "src/v3-telegram-lifecycle-sidecar.mjs",
+      "before_sha256": "5cc9c1690288feea4463a291b52cde0a6d77ab72db0265d7346853ba6d7a07ad",
+      "after_sha256": "c2cd8e06a4734da2ca8377e8b8591caeee97446daa4d75c2ee77f6c9a2202a33",
+      "edits": [
+        {
+          "start": 9,
+          "end": 9,
+          "old": "",
+          "new": "  // D1 counts index maintenance as writes: one transition plus its optional\n  // dispatch costs up to eight rows with the deployed schema, not two.\n  max_persist_transitions:1,\n"
+        },
+        {
+          "start": 17,
+          "end": 18,
+          "old": "function rows(x){return Array.isArray(x?.results)?x.results:[];}\n",
+          "new": "function rows(x){if(x?.success===false||!Array.isArray(x?.results))throw new Error('LIFECYCLE_READ_RESULT_UNKNOWN');return x.results;}\n"
+        },
+        {
+          "start": 26,
+          "end": 27,
+          "old": "  if(waveId){const exact=arr.find(x=>text(x?.wave_id)===waveId);if(exact)return exact;}\n",
+          "new": "  if(waveId)return arr.find(x=>text(x?.wave_id)===waveId)||null;\n"
+        },
+        {
+          "start": 48,
+          "end": 49,
+          "old": "function isCurrentTs(ts,now,maxAgeMs=10*60_000){const n=finite(ts);return n!==null&&n<=now+1000&&n>=now-maxAgeMs;}\n",
+          "new": "function isCurrentTs(ts,now,maxAgeMs=10*60_000){return typeof ts==='number'&&Number.isSafeInteger(ts)&&ts>0&&ts<=now&&ts>=now-maxAgeMs;}\n"
+        },
+        {
+          "start": 56,
+          "end": 56,
+          "old": "",
+          "new": "  if(!isCurrentTs(handoff.deep_started_ts,now)||!isCurrentTs(handoff.deep_completed_ts,now)||\n    handoff.deep_started_ts<handoff.scan_ts||handoff.deep_completed_ts<handoff.deep_started_ts)return {status:'DEEP_TIME_NOT_CLOSED',ctx:null};\n  if(!early || text(early.contract_code)!==contract || text(early.wave_id)!==wave ||\n    !isCurrentTs(early.last_seen_ts,now) || (finite(early.first_seen_ts)!==null && early.first_seen_ts>handoff.scan_ts))return {status:'WAVE_NOT_CURRENT',ctx:null};\n  if(shadow && (text(shadow.contract_code)!==contract || !isCurrentTs(shadow.observed_ts,now) ||\n    (finite(handoff.deep_started_ts)!==null && shadow.observed_ts<handoff.deep_started_ts) ||\n    (finite(shadow.created_ts)!==null && shadow.created_ts>now)))return {status:'SHADOW_NOT_CURRENT',ctx:null};\n  if(shadow && (shadow.observed_ts>handoff.deep_completed_ts || !isCurrentTs(shadow.created_ts,now) || shadow.created_ts<shadow.observed_ts))return {status:'SHADOW_TIME_NOT_CLOSED',ctx:null};\n  if(final && (text(final.contract_code||contract)!==contract || !isCurrentTs(final.observation_ts,now) ||\n    !isCurrentTs(final.persisted_ts,now)))return {status:'FINAL_NOT_CURRENT',ctx:null};\n"
+        },
+        {
+          "start": 58,
+          "end": 59,
+          "old": "  const dataCurrent=scanTs!==null&&scanTs<=now+1000&&scanTs>=now-10*60_000;\n",
+          "new": "  const dataCurrent=isCurrentTs(handoff?.scan_ts,now);\n"
+        },
+        {
+          "start": 63,
+          "end": 64,
+          "old": "  const currentDirs=[fdir,sdir,hdir].filter(Boolean);\n",
+          "new": "  const currentDirs=[fdir,sdir,hdir,direction(early.direction_hint)].filter(Boolean);\n"
+        },
+        {
+          "start": 74,
+          "end": 74,
+          "old": "",
+          "new": "  if(removal && !['OBSERVE','WAIT','ENTRY'].includes(upper(previous?.status)))return {status:'RISK_BLOCKED',reason:removal,ctx:null};\n"
+        },
+        {
+          "start": 79,
+          "end": 80,
+          "old": "  const sufficientObservation=deepCompleted&&observationUseful&&!['INSUFFICIENT','UNKNOWN'].includes(shadowSuff)&&upper(shadow?.stage)!=='OBSERVE_DATA_INSUFFICIENT';\n",
+          "new": "  const sufficientObservation=deepCompleted&&observationUseful&&['PARTIAL','SUFFICIENT'].includes(shadowSuff)&&\n    ['PARTIAL','HTX_CLOSED_EXTERNAL_CHAINS_MISSING','CLOSED'].includes(upper(shadow?.dq_status))&&\n    upper(shadow?.eq_status)==='SHADOW_MEASURABLE'&&upper(shadow?.stage)!=='OBSERVE_DATA_INSUFFICIENT';\n"
+        },
+        {
+          "start": 125,
+          "end": 126,
+          "old": "export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now()}={}){\n",
+          "new": "export async function loadCompletedLifecycleHandoffs(db,{source_run_id,now_ts=Date.now()}={}){\n"
+        },
+        {
+          "start": 132,
+          "end": 136,
+          "old": "      d.execution_status,d.data_sufficiency,d.error_text AS deep_error,d.completed_ts AS deep_completed_ts\n      FROM v3_discovery_deep_handoff_shadow h\n      LEFT JOIN deep_check_run_log d ON d.run_id=h.deep_check_run_id AND d.contract_code=h.contract_code\n      WHERE h.source_run_id=?1 AND h.state='COMPLETED'\n",
+          "new": "      d.execution_status,d.data_sufficiency,d.error_text AS deep_error,d.started_ts AS deep_started_ts,d.completed_ts AS deep_completed_ts\n      FROM deep_check_run_log d CROSS JOIN v3_discovery_deep_handoff_shadow h\n      ON h.handoff_id=d.v3_handoff_id AND h.contract_code=d.contract_code AND h.source_run_id=d.run_id\n      WHERE d.run_id=?1 AND h.state='COMPLETED' AND h.deep_check_run_id=d.run_id\n"
+        },
+        {
+          "start": 139,
+          "end": 140,
+          "old": "  if(!handoffs.length)return {status:'CLOSED_NO_COMPLETED_HANDOFF',handoffs:[],early:[],shadow:[],final:[],previous:[]};\n",
+          "new": "  return {status:handoffs.length?'CLOSED':'CLOSED_NO_COMPLETED_HANDOFF',source_run_id:run,handoffs};\n}\n\nexport async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(),completed_handoffs=null}={}){\n  const run=text(source_run_id),now=Math.trunc(finite(now_ts)??Date.now());\n  const completed=completed_handoffs || await loadCompletedLifecycleHandoffs(db,{source_run_id,now_ts});\n  if(completed.source_run_id && completed.source_run_id!==run)return {status:'SOURCE_RUN_MISMATCH',handoffs:[]};\n  if(completed.status!=='CLOSED')return {...completed,early:[],shadow:[],final:[],previous:[]};\n  const handoffs=completed.handoffs;\n"
+        },
+        {
+          "start": 143,
+          "end": 144,
+          "old": "  const args=[...contracts,minScan,now+1000];\n",
+          "new": "  const args=[...contracts,minScan,now];\n"
+        },
+        {
+          "start": 166,
+          "end": 167,
+          "old": "export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Date.now(),d1_pretelegram_budget_closed=true,dispatch_enabled=false}={}){\n",
+          "new": "export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Date.now(),d1_pretelegram_budget_closed=true,dispatch_enabled=false,completed_handoffs=null}={}){\n"
+        },
+        {
+          "start": 170,
+          "end": 171,
+          "old": "  const loaded=await loadLifecycleSourceRows(db,{source_run_id,now_ts});\n",
+          "new": "  const loaded=await loadLifecycleSourceRows(db,{source_run_id,now_ts,completed_handoffs});\n"
+        },
+        {
+          "start": 176,
+          "end": 176,
+          "old": "",
+          "new": "  let persistAttempts=0;\n  const loadedDelta=usageDelta(before,typeof db.usageSnapshot==='function'?db.usageSnapshot():null);\n  if(loadedDelta && (loadedDelta.rows_read>V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read || loadedDelta.unknown_ops>0))return {...base,status:'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED',transitions,usage_delta:loadedDelta};\n"
+        },
+        {
+          "start": 183,
+          "end": 184,
+          "old": "    if(derived.status!=='CLOSED'){transitions.push({contract,status:derived.status,current_status:null,dispatch:null});continue;}\n",
+          "new": "    if(derived.status!=='CLOSED'){transitions.push({contract,status:derived.status,reason:derived.reason??null,current_status:null,dispatch:null});continue;}\n    if(persistAttempts>=V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.max_persist_transitions){transitions.push({contract,status:'CAPACITY_DEFERRED',current_status:null,dispatch:null});continue;}\n    persistAttempts++;\n"
+        },
+        {
+          "start": 185,
+          "end": 185,
+          "old": "",
+          "new": "    if(persisted.status==='CLOSED') {\n      try {\n        const proof=await db.prepare(`SELECT status,reason,observation_ts,valid_until_ts,updated_ts,shadow_only FROM v3_user_lifecycle_shadow\n          WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 LIMIT 1`)\n          .bind(contract,derived.ctx.direction,derived.ctx.wave_id,derived.ctx.rules_version).first();\n        if(!proof || proof.status!==persisted.current_status || proof.reason!==persisted.reason ||\n          proof.observation_ts!==derived.ctx.observation_ts || proof.valid_until_ts!==derived.ctx.valid_until_ts ||\n          proof.updated_ts!==now_ts || proof.shadow_only!==1)persisted.status='PERSISTENCE_READBACK_FAILED';\n      } catch {persisted.status='PERSISTENCE_READBACK_FAILED';}\n    }\n"
+        },
+        {
+          "start": 190,
+          "end": 190,
+          "old": "",
+          "new": "  if(transitions.some(t=>['PARTIAL','PERSISTENCE_READBACK_FAILED','MIGRATION_REQUIRED','SOURCE_UNSUPPORTED'].includes(t.status)))return {...base,status:'PERSISTENCE_NOT_CLOSED',transitions,usage_delta:delta};\n"
+        }
+      ]
+    }
+  ]
+}

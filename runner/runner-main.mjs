@@ -12,7 +12,7 @@ import { runV3EarlyPersistenceSidecar, V3_EARLY_SIDECAR_BUDGET } from "./src/v3-
 import { runV3RealizedLiquidationSidecar, V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET } from "./src/v3-realized-liquidation-sidecar.mjs";
 import { runV3LiquidationIntelligenceSidecar, V3_LIQUIDATION_SIDECAR_BUDGET } from "./src/v3-liquidation-sidecar.mjs";
 import { runV3PipelineHealthSidecar, V3_PIPELINE_HEALTH_SIDECAR_BUDGET } from "./src/v3-pipeline-health-sidecar.mjs";
-import { runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } from "./src/v3-telegram-lifecycle-sidecar.mjs";
+import { loadCompletedLifecycleHandoffs, runV3TelegramLifecycleSidecar, V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET } from "./src/v3-telegram-lifecycle-sidecar.mjs";
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
@@ -437,6 +437,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const v3TelegramNetworkEnabled = v3TelegramNetworkRequested && v3LegacyTelegramOutputEnabled;
   const telegramInstallValidation = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_INSTALL_VALIDATION || "0").trim().toLowerCase());
   const telegramReportTestRequested = ["1","true","yes","on"].includes(String(process.env.REPORT2_TELEGRAM_REPORT_TEST || "0").trim().toLowerCase());
+  let v3TelegramLifecycleSidecar=null;
   const runTelegramLayer = async () => {
     const budget = evaluateWithinRunReservation({
       reservation:d1RunReservation,
@@ -465,6 +466,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
       infoEnabled: envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
       infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
+      infoObserveEnabled: envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
+      currentLifecycle: telegramInstallValidation && telegramReportTestRequested ? null : (v3TelegramLifecycleSidecar || {status:"LIFECYCLE_NOT_RUN"}),
       // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
       // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
       enabled: v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false }),
@@ -496,6 +499,10 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written,
   });
   const v3Blocked = (version, gate, lane) => ({version,mode:"SHADOW_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",persisted:0,reasons:gate?.reasons||[],capacity_lane:lane,capacity_gate:gate,probability:null,validated_signal:false,trading_execution:false});
+  const completedLifecycleHandoffs = v3SidecarsPreactionBudget.allowed
+    ? await loadCompletedLifecycleHandoffs(env.DATA_DB,{source_run_id:String(cron.run_id||""),now_ts:Date.now()})
+    : {status:"BUDGET_BLOCKED_FAIL_CLOSED",handoffs:[]};
+  console.log("TELEGRAM_COMPLETED_HANDOFFS",JSON.stringify({status:completedLifecycleHandoffs.status,contracts:completedLifecycleHandoffs.handoffs.map(h=>h.contract_code)}));
   let v3EarlySidecar;
   let v3RealizedLiquidationSidecar;
   let v3LiquidationSidecar;
@@ -503,6 +510,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (r88EarlyGate.allowed) {
     v3EarlySidecar = await runV3EarlyPersistenceSidecar(env.DATA_DB, {
       current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
+      preferred_contracts:completedLifecycleHandoffs.status==="CLOSED"?completedLifecycleHandoffs.handoffs.map(h=>h.contract_code):[],
     });
   } else v3EarlySidecar = v3Blocked("v3-early-sidecar-shadow-v1",r88EarlyGate,"EARLY_PERSISTENCE");
   const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
@@ -528,10 +536,23 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (source !== "schedule" && !telegramInstallValidation && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
     throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
   }
+  const lifecyclePreactionBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),
+    extraRowsRead:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+INFO_D1_BUDGET.rowsRead,
+    extraRowsWritten:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+INFO_D1_BUDGET.rowsWritten+1});
+  if (!v3SidecarsPreactionBudget.allowed || !lifecyclePreactionBudget.allowed) {
+    v3TelegramLifecycleSidecar = {version:"v3-telegram-lifecycle-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,dispatch_enabled:v3TelegramJournalEnabled,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(lifecyclePreactionBudget.reasons||[])]};
+  } else {
+    v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {
+      source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
+      d1_pretelegram_budget_closed:lifecyclePreactionBudget.allowed, dispatch_enabled:v3TelegramJournalEnabled,
+      completed_handoffs:completedLifecycleHandoffs,
+    });
+  }
+  console.log("V3_TELEGRAM_LIFECYCLE_SIDECAR", JSON.stringify(v3TelegramLifecycleSidecar));
   if (telegramOutput === null) {
     ({budget:d1PreTelegramBudget,output:telegramOutput}=await runTelegramLayer());
   }
-  await fs.writeFile("telegram-info-proof.json",JSON.stringify({schema:"telegram-info-proof-v1",head:process.env.GITHUB_SHA||null,candidate_sha:process.env.REPORT2_TELEGRAM_INFO_TEST_ID||null,v3_telegram_network_enabled:v3TelegramNetworkEnabled,output:telegramOutput,live_probability:null,validated_signal:false,execution:false,automatic_weight_tuning:false},null,2));
+  await fs.writeFile("telegram-info-proof.json",JSON.stringify({schema:"telegram-info-proof-v1",head:process.env.GITHUB_SHA||null,source,source_run_id:String(cron.run_id||""),lifecycle:v3TelegramLifecycleSidecar,candidate_sha:process.env.REPORT2_TELEGRAM_INFO_TEST_ID||null,v3_telegram_network_enabled:v3TelegramNetworkEnabled,output:telegramOutput,live_probability:null,validated_signal:false,execution:false,automatic_weight_tuning:false},null,2));
   const telegramZeroReason = classifyZeroTelegram({ preBudget:d1PreTelegramBudget, telegramObserver, telegramOutput });
   const v3RealizedFeedStatus = String(v3RealizedLiquidationSidecar?.status || "UNKNOWN").toUpperCase();
   const v3ProjectedFeedStatus = String(v3LiquidationSidecar?.status || "UNKNOWN").toUpperCase();
@@ -543,16 +564,6 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     v3PipelineHealthSidecar = await runV3PipelineHealthSidecar(env.DATA_DB, {cron,scan,telegram_zero_reason:telegramZeroReason,critical_feed_state:v3CriticalFeedState,now_ts:Date.now()});
   }
   console.log("V3_PIPELINE_HEALTH_SIDECAR", JSON.stringify(v3PipelineHealthSidecar));
-  let v3TelegramLifecycleSidecar;
-  if (!v3SidecarsPreactionBudget.allowed) {
-    v3TelegramLifecycleSidecar = {version:"v3-telegram-lifecycle-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,dispatch_enabled:v3TelegramJournalEnabled,reasons:v3SidecarsPreactionBudget.reasons||[]};
-  } else {
-    v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {
-      source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
-      d1_pretelegram_budget_closed:d1PreTelegramBudget.allowed, dispatch_enabled:v3TelegramJournalEnabled,
-    });
-  }
-  console.log("V3_TELEGRAM_LIFECYCLE_SIDECAR", JSON.stringify(v3TelegramLifecycleSidecar));
   let v3TelegramDeliverySidecar;
   if (!v3SidecarsPreactionBudget.allowed || !d1PreTelegramBudget.allowed) {
     v3TelegramDeliverySidecar = {version:"v3-telegram-delivery-sidecar-shadow-v1",mode:"SHADOW_GATED_DELIVERY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,sent:0,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(d1PreTelegramBudget.reasons||[])]};
