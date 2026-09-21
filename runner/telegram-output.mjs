@@ -292,18 +292,52 @@ export function extractExactScoreContext(observer, sidecarRow, threshold = 70, n
   };
 }
 
-function liquidationLines(context) {
-  const l = context?.liquidations;
-  if (!l || !["CONFIRMED","PARTIAL"].includes(String(l.status || ""))) {
-    return ["Ликвидации: уровни крупных ликвидаций не подтверждены."];
+const BLOCK_REASON_TEXT = Object.freeze({
+  DERIVATIVES_CROSS_VENUE:"данные срочного рынка",
+  RELATIVE_STRENGTH_SPOT:"сила монеты относительно рынка",
+  SMART_MONEY_ONCHAIN:"потоки крупных участников",
+  SUPPORTING_RISK:"риск и ликвидность",
+});
+function entryReason(context) {
+  const names=(Array.isArray(context?.weighted_blocks)?context.weighted_blocks:[])
+    .filter(row=>finite(row?.contribution_lower)!==null&&Number(row.contribution_lower)>0)
+    .map(row=>BLOCK_REASON_TEXT[String(row?.id||'')]).filter(Boolean).slice(0,2);
+  if(names.length>=2)return `Почему интересно: ${names[0]} и ${names[1]} подтверждают текущую область входа.`;
+  if(names.length===1)return `Почему интересно: ${names[0]} подтверждают область входа; остальные обязательные проверки также закрыты.`;
+  return 'Почему интересно: обязательные проверки закрыты, цена сейчас находится внутри подтверждённой области входа.';
+}
+function priceText(value) {
+  const n=finite(value);if(n===null||n<=0)return null;
+  return Number(n.toPrecision(10)).toString().replace('.',',');
+}
+function majorLiquidationList(value,{side,observationTs}={}) {
+  if(!Array.isArray(value)||value.length>32)return [];
+  const seen=new Set(),out=[];
+  for(const row of value){
+    const level=finite(row?.level_price),sourceTs=Number(row?.observed_ts??row?.source_ts);
+    if(level===null||level<=0||String(row?.side||'')!==side||String(row?.significance||'')!=='MAJOR')continue;
+    if(row?.asset_identity_verified!==true||String(row?.source_status||'')!=='CLOSED_SHADOW')continue;
+    if(!Number.isSafeInteger(sourceTs)||sourceTs>observationTs||observationTs-sourceTs>15*60_000)continue;
+    if(['SWEPT','INVALIDATED','EXPIRED'].includes(String(row?.lifecycle||'').toUpperCase()))continue;
+    const key=level.toPrecision(12);if(seen.has(key))continue;seen.add(key);
+    out.push({level,distance_pct:finite(row?.distance_pct)});if(out.length===3)break;
   }
-  const above = textValue(l.short_above, 500) || "не подтверждены";
-  const below = textValue(l.long_below, 500) || "не подтверждены";
-  const map = l.status === "PARTIAL" ? "частичная" : "подтверждённая";
+  return out;
+}
+export function extractMajorLiquidationLevels(liquidations,{observationTs}={}) {
+  const ts=Number(observationTs);
+  if(!liquidations||!Number.isSafeInteger(ts)||!['CONFIRMED','PARTIAL'].includes(String(liquidations.status||'')))return {complete:false,above:[],below:[]};
+  const above=majorLiquidationList(liquidations.short_above,{side:'SHORT_LIQUIDATION_ABOVE',observationTs:ts});
+  const below=majorLiquidationList(liquidations.long_below,{side:'LONG_LIQUIDATION_BELOW',observationTs:ts});
+  return {complete:above.length>0&&below.length>0,above,below};
+}
+function liquidationLines(context,observationTs) {
+  const levels=extractMajorLiquidationLevels(context?.liquidations,{observationTs});
+  if(!levels.complete)return [];
+  const one=row=>`${priceText(row.level)} USDT${row.distance_pct===null?'':` (${row.distance_pct>0?'+':''}${row.distance_pct.toFixed(1).replace('.',',')}%)`}`;
   return [
-    `Ликвидации шортов сверху: ${above}.`,
-    `Ликвидации лонгов снизу: ${below}.`,
-    `Карта: ${map}.`,
+    `Крупные ликвидации выше: ${levels.above.map(one).join(', ')}.`,
+    `Крупные ликвидации ниже: ${levels.below.map(one).join(', ')}.`,
   ];
 }
 
@@ -318,22 +352,21 @@ export function buildFinalChainTelegramMessage(observer, context, { now = Date.n
 
   const emoji = direction === "LONG" ? "🟢" : "🔴";
   const directionRu = direction === "LONG" ? "ЛОНГ" : "ШОРТ";
-  const reasons = context.reasons?.length ? context.reasons.join("; ") : "полная проверенная цепочка закрыта на этом снимке данных";
-  const fundingLine = formatFunding(context.funding);
-  if (!fundingLine) return { ok:false, status:"FUNDING_CONTEXT_NOT_COMPLETE", message:null };
+  if (!formatFunding(context.funding)) return { ok:false, status:"FUNDING_CONTEXT_NOT_COMPLETE", message:null };
   const lines = [
-    `${emoji} ${directionRu} • ${cleanTicker(observer.contract_code)}`,
-    "Условия входа подтверждены",
-    `Оценка: ${formatScore(context.score_lower_bound, context.score_upper_bound)}`,
+    'Рыночная возможность — автоматическая торговля выключена',
     "",
+    cleanTicker(observer.contract_code),
+    `${emoji} ${directionRu}`,
+    '✅ МОЖНО ВХОДИТЬ СЕЙЧАС',
+    '',
+    entryReason(context),
     `Вход: ${context.entry.area}`,
-    `Цель: ${context.entry.target} | Отмена: ${context.entry.invalidation}`,
-    `Почему: ${reasons}.`,
-    fundingLine,
-    `Риск: ${context.risk}.`,
-    ...liquidationLines(context),
-    `Проверено: ${formatMsk(observer.observation_ts)}. Действительно до ${formatMsk(context.valid_until_ts)}.`,
-    "Уведомление означает рыночную возможность, а не подтверждение открытой позиции пользователя.",
+    `Выход: ${context.entry.target}`,
+    `Отмена идеи: ${context.entry.invalidation}`,
+    ...liquidationLines(context,Number(observer.observation_ts)),
+    `Действительно до ${formatMsk(context.valid_until_ts)}.`,
+    'Решение принимаешь ты; сделка автоматически не открывается.',
   ];
   const message = lines.join("\n");
   return { ok:message.length <= 4096, status:message.length <= 4096 ? "READY" : "MESSAGE_TOO_LONG", message:message.length <= 4096 ? message : null };

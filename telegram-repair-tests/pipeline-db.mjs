@@ -29,8 +29,14 @@ export function seedHandoff(db,{contract='RAY-USDT',dir='LONG',run='cycle',wave=
     .run('SD:'+handoff,contract,start+1000,dir,shadowStage||'SHADOW_OBSERVE_'+dir+'_BIAS',sufficiency,completed);
   return handoff;
 }
-export function seedWave(db,{contract='RAY-USDT',dir='LONG',wave='EDW:RAY:1',last=SCAN,first=SCAN-60000,stage='PRE_IMPULSE_WATCH',generation=1}={}) {
+export function seedWave(db,{contract='RAY-USDT',dir='LONG',wave='EDW:RAY:1',last=SCAN,first=SCAN-60000,stage='PRE_IMPULSE_WATCH',generation=1,score=73}={}) {
+  const evidence=JSON.stringify([{domain:'OI_ACCELERATION',side:'BOTH',status:'CLOSED'},{domain:'RELATIVE_STRENGTH',side:dir,status:'CLOSED'},{domain:'FUNDING_TRAJECTORY',side:dir,status:'CLOSED'}]);
   db.sqlite.prepare(`INSERT INTO v3_early_candidate_wave(wave_id,contract_code,generation,first_seen_ts,first_seen_detectors_json,
     lifecycle_stage,direction_hint,direction_state,early_detection_quality_0_100,remaining_edge_json,evidence_refs_json,last_seen_ts)
-    VALUES(?,?,?,?, '[]',?,?,?,65,'{}','[]',?)`).run(wave,contract,generation,first,stage,dir,dir+'_WATCH',last);
+    VALUES(?,?,?,?, '[]',?,?,?,?,'{}',?,?)`).run(wave,contract,generation,first,stage,dir,dir+'_WATCH',score,evidence,last);
+  db.sqlite.prepare(`INSERT OR REPLACE INTO v3_early_feature_snapshot(
+    contract_code,ts_bucket,observed_ts,rules_version,direction_hint,direction_state,
+    long_evidence_domain_count,short_evidence_domain_count,early_detection_quality_0_100,
+    feature_json,evidence_json,shadow_only) VALUES(?,?,?,'fixture',?,'FIXTURE_WATCH',?,?,?,'{}',?,1)`)
+    .run(contract,Math.floor(last/300000)*300000,last,dir,dir==='LONG'?3:0,dir==='SHORT'?3:0,score,evidence);
 }

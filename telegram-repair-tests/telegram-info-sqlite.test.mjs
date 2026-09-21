@@ -5,9 +5,10 @@ import os from 'node:os';
 import path from 'node:path';
 import { SQLiteDB } from './sqlite-db.mjs';
 import { runTelegramOutputLayer, reserveDispatch, buildBudgetBlockedTelegramOutput, buildMorningInformationalMessage, buildWaitInformationalMessage } from '../telegram-output.mjs';
-import { reserveInformational, normalizeInfoRow, loadInformationalRows, INFO_D1_BUDGET, INFO_LIMITS } from '../telegram-info-runtime.mjs';
+import { reserveInformational, normalizeInfoRow, loadInformationalRows, INFO_D1_BUDGET, INFO_LIMITS, INFO_MIN_SCORE } from '../telegram-info-runtime.mjs';
 const NOW=Date.UTC(2026,8,20,12),ID='a'.repeat(64);
-const candidate=(direction='LONG',extra={})=>({contract:'RAY-USDT',direction,wave_id:'W1',status:'WAIT',reason:'DIRECTION_CLOSED_ENTRY_WINDOW_NOT_READY',observation_ts:NOW-30000,updated_ts:NOW-10000,valid_until_ts:NOW+240000,...extra});
+const evidence=direction=>JSON.stringify([{domain:'OI_ACCELERATION',side:'BOTH',status:'CLOSED'},{domain:'RELATIVE_STRENGTH',side:direction,status:'CLOSED'},{domain:'FUNDING_TRAJECTORY',side:direction,status:'CLOSED'}]);
+const candidate=(direction='LONG',extra={})=>{const r={contract:'RAY-USDT',direction,wave_id:'W1',status:'WAIT',reason:'DIRECTION_CLOSED_ENTRY_WINDOW_NOT_READY',observation_ts:NOW-30000,updated_ts:NOW-10000,valid_until_ts:NOW+240000,early_detection_quality_0_100:73,evidence_refs_json:evidence(direction),...extra};return {...r,early_last_seen_ts:r.updated_ts,evidence_observed_ts:r.updated_ts,current_evidence_json:r.evidence_refs_json};};
 const okFetch=calls=>async(_url,init)=>{calls.push(JSON.parse(init.body));return {ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:77})};};
 async function run(db,extra={}) {const calls=[];const out=await runTelegramOutputLayer({db,startedTs:NOW,source:'schedule',enabled:true,infoEnabled:true,shadowDecisionAuto:false,relayUrl:'https://relay.invalid',relayKey:'TEST_FIXTURE_ONLY',clock:()=>NOW,fetchImpl:okFetch(calls),...extra});return {out,calls};}
 const reserveArgs=(extra={})=>({dispatchKey:'info:wait:one',category:'SHADOW_FINAL_DECISION',sourceRef:'INFO_WAIT|RAY-USDT|LONG',text:'НЕ ТОРГОВЫЙ СИГНАЛ',now:NOW,wait:true,...extra});
@@ -24,7 +25,7 @@ test('morning test uses compatible category and confirmed receipt, exactly one n
  const again=await run(db,{reportTest:true,infoTestId:ID,source:'workflow_dispatch'});assert.equal(again.calls.length,0);assert.equal(again.out.morning.delivery_confirmed,true);assert.equal(again.out.morning.sent,false);db.close();
 });
 test('LONG and SHORT WAIT symmetry, exact Unicode identity and no guessed alias',async()=>{
- for(const d of ['LONG','SHORT'])for(const contract of ['RAY-USDT','币安人生-USDT']) {const db=new SQLiteDB();db.add(candidate(d,{contract}));const {out,calls}=await run(db);assert.equal(out.early_info.sent,true);assert.equal(calls.length,1);assert.match(calls[0].text,/ЖДАТЬ/);assert.equal(out.early_info.contract,contract);db.close();}
+ for(const d of ['LONG','SHORT'])for(const contract of ['RAY-USDT','币安人生-USDT']) {const db=new SQLiteDB();db.add(candidate(d,{contract}));const {out,calls}=await run(db);assert.equal(out.early_info.sent,true);assert.equal(calls.length,1);assert.match(calls[0].text,/🟡 ЖДЁМ/);assert.doesNotMatch(calls[0].text,/73|\/100|ПЕРЕЗАХОД/);assert.equal(out.early_info.contract,contract);db.close();}
  for(const contract of [' RAY-USDT','RAY\u202E-USDT','ＲＡＹ-USDT'])assert.equal(normalizeInfoRow(candidate('LONG',{contract}),NOW),null);
 });
 test('missing/null/stale/future/malformed facts never become valid rows in loader or builders',async()=>{
@@ -37,7 +38,7 @@ test('missing/null/stale/future/malformed facts never become valid rows in loade
  const db=new SQLiteDB();db.add(candidate('LONG',{observation_ts:NOW-INFO_LIMITS.freshMs-1}));const {calls}=await run(db);assert.equal(calls.length,0);db.close();
 });
 test('source index is mandatory and query plan uses it; schema missing fails before network',async()=>{
- const db=new SQLiteDB();await loadInformationalRows(db,NOW);const sql=db.sql.at(-1);const plan=db.sqlite.prepare('EXPLAIN QUERY PLAN '+sql).all(NOW-INFO_LIMITS.freshMs,NOW).map(x=>x.detail).join('\n');assert.match(plan,/idx_report2_info_lifecycle_fresh/);
+ const db=new SQLiteDB();await loadInformationalRows(db,NOW);const sql=db.sql.at(-1);const plan=db.sqlite.prepare('EXPLAIN QUERY PLAN '+sql).all(NOW-INFO_LIMITS.freshMs,NOW).map(x=>x.detail).join('\n');assert.match(plan,/idx_report2_info_lifecycle_fresh/);assert.match(plan,/v3_early_feature_snapshot/);
  db.sqlite.exec('DROP INDEX idx_report2_info_lifecycle_fresh');const {out,calls}=await run(db);assert.equal(calls.length,0);assert.equal(out.morning.status,'INFO_ERROR_FAIL_CLOSED');db.close();
 });
 test('same wave is durable dedup; different waves share atomic 30 minute cooldown',async()=>{
@@ -74,7 +75,7 @@ test('storage fuse bounds only the informational namespace and preserves legacy 
 test('budget-block proof preserves actual gates and bounded envelope fits the run headroom observed remotely',()=>{
  const closed=buildBudgetBlockedTelegramOutput({enabled:'0',infoEnabled:'1',shadowDecisionAuto:'0'});assert.equal(closed.enabled,false);assert.equal(closed.info_enabled,false);assert.equal(closed.final_chain_auto,false);
  const open=buildBudgetBlockedTelegramOutput({enabled:'1',infoEnabled:'1',shadowDecisionAuto:'0'});assert.equal(open.enabled,true);assert.equal(open.info_enabled,true);assert.equal(open.final_chain_auto,false);
- assert.deepEqual(INFO_D1_BUDGET,{rowsRead:1536,rowsWritten:4});assert.ok(6388+INFO_D1_BUDGET.rowsRead<=16000);assert.ok(13538+INFO_D1_BUDGET.rowsRead<=16000);assert.ok(156+INFO_D1_BUDGET.rowsWritten<=320);
+ assert.deepEqual(INFO_D1_BUDGET,{rowsRead:1536,rowsWritten:4});assert.equal(INFO_MIN_SCORE,70);assert.ok(6388+INFO_D1_BUDGET.rowsRead<=16000);assert.ok(13538+INFO_D1_BUDGET.rowsRead<=16000);assert.ok(156+INFO_D1_BUDGET.rowsWritten<=320);
 });
 test('output disabled, conflicting flags, and invalid test identity never send',async()=>{
  for(const extra of [{enabled:false},{shadowDecisionAuto:true},{reportTest:true,infoTestId:null}]){const db=new SQLiteDB();db.add(candidate());const {calls}=await run(db,extra);assert.equal(calls.length,0);db.close();}

@@ -2,7 +2,8 @@
 // INFO_* source refs and info:* keys are the authoritative semantic namespace.
 import crypto from 'node:crypto';
 
-export const INFO_LIMITS = Object.freeze({freshMs:720000, cooldownMs:1800000, rows:24, journalRows:1024});
+export const INFO_MIN_SCORE = 70;
+export const INFO_LIMITS = Object.freeze({freshMs:720000, cooldownMs:1800000, rows:24, journalRows:1024, minScore:INFO_MIN_SCORE});
 // Worst-case preaction envelope: the 1024-row namespace fuse plus bounded
 // lifecycle/index lookups, reservation/readback and finalization/readback.
 export const INFO_D1_BUDGET = Object.freeze({rowsRead:1536, rowsWritten:4});
@@ -15,37 +16,110 @@ const direction = x => ['LONG','SHORT'].includes(x) ? x : null;
 const ack = r => r?.success !== false && typeof r?.meta?.changes === 'number' && Number.isSafeInteger(r.meta.changes) && [0,1].includes(r.meta.changes) ? r.meta.changes : null;
 const rows = r => { if (r?.success === false || !Array.isArray(r?.results)) throw new Error('INFO_DATA_RESULT_UNKNOWN'); return r.results; };
 
+const EVIDENCE_TEXT = Object.freeze({
+  OI_ACCELERATION:Object.freeze({BOTH:()=> 'открытый интерес ускоряется'}),
+  FUNDING_TRAJECTORY:Object.freeze({
+    LONG:()=> 'финансирование становится отрицательнее',
+    SHORT:()=> 'финансирование становится положительнее',
+  }),
+  RELATIVE_STRENGTH:Object.freeze({
+    LONG:()=> 'монета сильнее рынка',
+    SHORT:()=> 'монета слабее рынка',
+  }),
+  VOLUME_ACCELERATION_PROXY:Object.freeze({BOTH:()=> 'торговая активность ускоряется'}),
+  VOLUME_ACCELERATION:Object.freeze({BOTH:()=> 'торговая активность ускоряется'}),
+  PRICE_STATE_TRANSITION:Object.freeze({
+    LONG:()=> 'цена ускоряется вверх',
+    SHORT:()=> 'цена теряет поддержку',
+  }),
+  ORDERFLOW_ABSORPTION:Object.freeze({
+    LONG:()=> 'продажи поглощаются без падения цены',
+    SHORT:()=> 'покупки поглощаются без роста цены',
+  }),
+  ORDERFLOW_EXHAUSTION:Object.freeze({
+    LONG:()=> 'продавцы теряют силу',
+    SHORT:()=> 'покупатели теряют силу',
+  }),
+  EXECUTION_BOOK_SUPPORT:Object.freeze({
+    LONG:()=> 'стакан поддерживает покупателей',
+    SHORT:()=> 'стакан поддерживает продавцов',
+  }),
+  POSITIONING_TRAJECTORY:Object.freeze({
+    LONG:()=> 'участники смещаются к росту',
+    SHORT:()=> 'участники смещаются к снижению',
+  }),
+  REALIZED_LIQUIDATION_PRESSURE:Object.freeze({
+    LONG:()=> 'ликвидации продавцов поддерживают рост',
+    SHORT:()=> 'ликвидации покупателей усиливают снижение',
+  }),
+});
+const EVIDENCE_PRIORITY = Object.freeze([
+  'RELATIVE_STRENGTH','OI_ACCELERATION','ORDERFLOW_ABSORPTION','ORDERFLOW_EXHAUSTION',
+  'PRICE_STATE_TRANSITION','VOLUME_ACCELERATION','VOLUME_ACCELERATION_PROXY',
+  'FUNDING_TRAJECTORY','EXECUTION_BOOK_SUPPORT','POSITIONING_TRAJECTORY','REALIZED_LIQUIDATION_PRESSURE',
+]);
+
+function parseEvidence(r) {
+  if(r?.evidence_observed_ts!==r?.early_last_seen_ts || !integer(r?.evidence_observed_ts) || typeof r?.current_evidence_json!=='string' || Buffer.byteLength(r.current_evidence_json,'utf8')>16384)return [];
+  let input;try{input=JSON.parse(r.current_evidence_json);}catch{return [];}
+  if(!Array.isArray(input) || input.length>32)return [];
+  const positions=new Map(),out=[];
+  for(const item of input) {
+    const domain=typeof item?.domain==='string'?item.domain:'';
+    const side=typeof item?.side==='string'?item.side:'';
+    if(item?.status!=='CLOSED' || !EVIDENCE_TEXT[domain] || ![r.direction,'BOTH'].includes(side))continue;
+    const make=EVIDENCE_TEXT[domain][r.direction]??EVIDENCE_TEXT[domain].BOTH;
+    if(typeof make!=='function')continue;
+    const value={domain,phrase:make(item),side,detail_count:Object.keys(item).length};
+    if(positions.has(domain)){
+      const index=positions.get(domain);if(value.detail_count>out[index].detail_count)out[index]=value;
+    }else{positions.set(domain,out.length);out.push(value);}
+  }
+  return out;
+}
+
 export function normalizeInfoRow(r,now) {
   if (!integer(now) || !safeText(r?.contract,120) || !/^[\p{L}\p{N}][\p{L}\p{N}._-]*-USDT$/u.test(r.contract) || !safeText(r?.wave_id,256) || !direction(r?.direction)) return null;
   if (!['OBSERVE','WAIT'].includes(r.status)) return null;
   if (![r.observation_ts,r.updated_ts,r.valid_until_ts].every(integer)) return null;
   if (r.observation_ts > r.updated_ts || r.updated_ts > now || r.observation_ts > now || now-r.observation_ts > INFO_LIMITS.freshMs || now-r.updated_ts > INFO_LIMITS.freshMs || r.valid_until_ts <= now) return null;
+  if (!integer(r.early_last_seen_ts) || r.early_last_seen_ts>now || now-r.early_last_seen_ts>INFO_LIMITS.freshMs) return null;
   if (['HARD_VETO','EDGE_SPENT','INVALIDATED','STRUCTURE_BROKEN','DATA_UNUSABLE','DIRECTION_DESTROYED'].includes(r.reason)) return null;
   const raw = r.early_detection_quality_0_100 ?? r.score_0_100;
   const score = typeof raw === 'number' && Number.isFinite(raw) && raw >= 0 && raw <= 100 ? raw : null;
-  return {...r,score_0_100:score};
+  if(score===null || score<INFO_MIN_SCORE)return null;
+  const evidence=parseEvidence({...r,score_0_100:score});
+  if(!evidence.length)return null;
+  return {...r,score_0_100:score,evidence};
 }
 
 export async function loadInformationalRows(db,now) {
   // Each status range uses an explicitly verified index and stops before the join.
-  const sql = `SELECT l.*,e.lifecycle_stage,e.early_detection_quality_0_100
+  const sql = `SELECT l.*,e.lifecycle_stage,e.direction_state,e.early_detection_quality_0_100,e.last_seen_ts AS early_last_seen_ts,
+      f.observed_ts AS evidence_observed_ts,f.evidence_json AS current_evidence_json
     FROM (SELECT * FROM (SELECT contract,direction,wave_id,status,reason,observation_ts,valid_until_ts,updated_ts
       FROM v3_user_lifecycle_shadow INDEXED BY ${INDEX_NAME}
       WHERE shadow_only=1 AND status='WAIT' AND updated_ts BETWEEN ?1 AND ?2 ORDER BY updated_ts DESC LIMIT 24)
     UNION ALL SELECT * FROM (SELECT contract,direction,wave_id,status,reason,observation_ts,valid_until_ts,updated_ts
       FROM v3_user_lifecycle_shadow INDEXED BY ${INDEX_NAME}
       WHERE shadow_only=1 AND status='OBSERVE' AND updated_ts BETWEEN ?1 AND ?2 ORDER BY updated_ts DESC LIMIT 24)) l
-    LEFT JOIN v3_early_candidate_wave e ON e.wave_id=l.wave_id AND e.contract_code=l.contract`;
+    LEFT JOIN v3_early_candidate_wave e ON e.wave_id=l.wave_id AND e.contract_code=l.contract
+    LEFT JOIN v3_early_feature_snapshot f ON f.contract_code=e.contract_code AND f.ts_bucket=CAST(e.last_seen_ts/300000 AS INTEGER)*300000`;
   const raw = rows(await db.prepare(sql).bind(now-INFO_LIMITS.freshMs,now).all());
   if (raw.length > INFO_LIMITS.rows*2) throw new Error('INFO_ROW_BOUND_EXCEEDED');
   const seen = new Set();
   return raw.map(r=>normalizeInfoRow(r,now)).filter(r=>{if(!r)return false;const k=JSON.stringify([r.contract,r.direction,r.wave_id]);if(seen.has(k))return false;seen.add(k);return true;});
 }
 
-function reason(r) {
-  return r.status==='WAIT' ? 'Система наблюдает направление; вход пока не подтверждён.' : 'Кандидат требует дальнейшего наблюдения.';
+function actionText(){return '🟡 ЖДЁМ';}
+function directionText(r){return r.direction==='LONG'?'🟢 ЛОНГ':'🔴 ШОРТ';}
+function briefReason(r) {
+  const byDomain=new Map(r.evidence.map(x=>[x.domain,x.phrase]));
+  const clauses=EVIDENCE_PRIORITY.map(domain=>byDomain.get(domain)).filter(Boolean).slice(0,2);
+  if(!clauses.length)return null;
+  const wait=clauses.length===1?'вход по текущей цене ещё требует подтверждения':'вход ещё требует подтверждения';
+  return `Почему интересно: ${clauses.join(', ')}; ${wait}.`;
 }
-function scoreText(r) { return r.score_0_100===null ? '' : ` — внутренняя оценка структуры ${Math.round(r.score_0_100)}/100`; }
 function validRows(input,now) { return (Array.isArray(input)?input:[]).map(r=>normalizeInfoRow(r,now)).filter(Boolean); }
 export function buildMorningInformationalMessage(input,{now=Date.now(),test=false}={}) {
   const list=validRows(input,now);
@@ -55,7 +129,7 @@ export function buildMorningInformationalMessage(input,{now=Date.now(),test=fals
   for(const [label,items] of [['ЛОНГ',longs],['ШОРТ',shorts]]) {
     out.push('',label);
     if(!items.length)out.push('Свежих допустимых наблюдений нет. Это не подтверждение отсутствия возможностей на рынке.');
-    for(const r of items)out.push(`${r.contract.slice(0,-5)} — ${r.status==='WAIT'?'ЖДАТЬ':'НАБЛЮДАТЬ'}${scoreText(r)}`,reason(r));
+    for(const r of items)out.push(`${r.contract.slice(0,-5)}\n${directionText(r)}\n${actionText(r)}\n${briefReason(r)}`);
   }
   out.push('','Подтверждённые торговые сигналы остаются выключены до статистической проверки.');
   const message=out.join('\n');
@@ -64,17 +138,14 @@ export function buildMorningInformationalMessage(input,{now=Date.now(),test=fals
 export function buildWaitInformationalMessage(row,{now=Date.now()}={}) {
   const r=normalizeInfoRow(row,now);
   if(!r || r.status!=='WAIT')return {ok:false,status:'NOT_CURRENT_WAIT',message:null};
-  const message=[`Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ`,`${r.contract.slice(0,-5)} • ${r.direction==='LONG'?'ЛОНГ':'ШОРТ'} • ЖДАТЬ${scoreText(r)}`,reason(r)].join('\n');
+  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',r.contract.slice(0,-5),directionText(r),actionText(r),'',briefReason(r)].join('\n');
   return {ok:message.length<=4096,status:'READY',message};
 }
 
 export function buildObserveInformationalMessage(row,{now=Date.now()}={}) {
   const r=normalizeInfoRow(row,now);
   if(!r || r.status!=='OBSERVE')return {ok:false,status:'NOT_CURRENT_OBSERVATION',message:null};
-  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ',
-    `${r.contract.slice(0,-5)} • предварительный ${r.direction==='LONG'?'ЛОНГ':'ШОРТ'} • НАБЛЮДАТЬ${scoreText(r)}`,
-    'Глубокая проверка выделила наблюдение. Подтверждение входа и полной достаточности данных отсутствует.',
-    'Это гипотеза для наблюдения, а не рекомендация открыть сделку.'].join('\n');
+  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',r.contract.slice(0,-5),directionText(r),actionText(r),'',briefReason(r)].join('\n');
   return {ok:message.length<=4096,status:'READY',message};
 }
 

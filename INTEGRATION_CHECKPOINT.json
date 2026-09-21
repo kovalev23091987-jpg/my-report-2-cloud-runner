@@ -1,0 +1,30 @@
+{
+  "schema_version": "report2-telegram-v2-tz101-cloud-candidate-v1",
+  "exact_production_base": "3cb2d9bdcb344e6034cd419824f31fd4f6ac1fd3",
+  "candidate_branch": "telegram-info-fix/v2-tz101-3cb2d9b",
+  "source_integration_commit": "491f49ad3d849cd003e0cc9c713dc52f1d20df00",
+  "source_archive_sha256": "da4faccd2b820991f92ca7b75a41477f05b9adf8f53a10a859453a0744d02818",
+  "status": "CANDIDATE_ONLY_AWAITING_CI",
+  "production_changed": false,
+  "main_changed": false,
+  "telegram_live_changed": false,
+  "telegram_network_enabled": false,
+  "final_auto_enabled": false,
+  "force_push_used": false,
+  "migration_applied_to_remote_d1": false,
+  "protected_files": {
+    ".github/workflows/report2.yml": "PRESERVED_FROM_EXACT_BASE",
+    "runner/runner-main.mjs": "PRESERVED_FROM_EXACT_BASE",
+    "runner/telegram-zero-reason.mjs": "PRESERVED_FROM_EXACT_BASE",
+    "src/v3-early-sidecar.mjs": "PRESERVED_BY_HASH_GUARDED_EPHEMERAL_OVERLAY",
+    "src/v3-telegram-lifecycle-sidecar.mjs": "PRESERVED_BY_HASH_GUARDED_EPHEMERAL_OVERLAY"
+  },
+  "selective_changes": [
+    "runner/telegram-info-runtime.mjs",
+    "runner/telegram-output.mjs",
+    "telegram-repair-tests/*format-v2*",
+    "telegram-repair-tests/final-chain-regression.mjs",
+    "tz101-shadow-overlay/*",
+    ".github/workflows/telegram-candidate-validation.yml"
+  ]
+}

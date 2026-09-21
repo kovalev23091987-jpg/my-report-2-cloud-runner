@@ -15,7 +15,7 @@ async function publish(db,lifecycle,extra={}) {
     shadowDecisionAuto:false,clock:()=>NOW,fetchImpl:fakeRelay(calls),relayUrl:'https://relay.invalid',relayKey:'FIXTURE',currentLifecycle:lifecycle,...extra});
   return {calls,out};
 }
-const observe=(contract)=>({contract,current_row:{market_age_sec:1,prior_discovery:{long_watch:true}},observation:{status:'CLOSED',contract,long_evidence_domain_count:2,short_evidence_domain_count:0,early_detection_quality_0_100:65}});
+const observe=(contract)=>({contract,current_row:{market_age_sec:1,prior_discovery:{long_watch:true}},observation:{status:'CLOSED',contract,long_evidence_domain_count:2,short_evidence_domain_count:0,early_detection_quality_0_100:73}});
 
 test('a completed handoff gets the existing bounded slot without starving behind unrelated active rows',()=>{
   const active=[{contract_code:'OLD-USDT',wave_id:'old',generation:1,last_seen_ts:1,lifecycle_stage:'DISCOVERY',first_seen_detectors_json:'[]',remaining_edge_json:'{}',evidence_refs_json:'[]'}];
@@ -35,7 +35,7 @@ test('same-cycle completed Deep Check -> OBSERVE -> information receipt, symmetr
     const life=await runV3TelegramLifecycleSidecar(db,{source_run_id:'cycle',now_ts:NOW,dispatch_enabled:false,completed_handoffs:h});
     assert.equal(life.status,'CLOSED');assert.equal(life.transitions[0].current_status,'OBSERVE');
     const first=await publish(db,life);assert.equal(first.calls.length,1);assert.equal(first.out.early_info.sent,true);assert.equal(first.out.early_info.lifecycle_status,'OBSERVE');
-    assert.match(first.calls[0].text,/НАБЛЮДАТЬ/);assert.match(first.calls[0].text,/НЕ ТОРГОВЫЙ СИГНАЛ/);assert.doesNotMatch(first.calls[0].text,/ЖДАТЬ|\d\s*%/);
+    assert.match(first.calls[0].text,/🟡 ЖДЁМ/);assert.match(first.calls[0].text,/НЕ ТОРГОВЫЙ СИГНАЛ/);assert.doesNotMatch(first.calls[0].text,/73|\/100|ПЕРЕЗАХОД|МОЖНО ВХОДИТЬ/);
     assert.equal((await publish(db,life)).calls.length,0);
     assert.equal(db.sqlite.prepare('SELECT count(*) n FROM final_decision_integration_shadow').get().n,0);
     assert.equal(db.sqlite.prepare('SELECT count(*) n FROM v3_telegram_dispatch_shadow').get().n,0);
@@ -43,7 +43,7 @@ test('same-cycle completed Deep Check -> OBSERVE -> information receipt, symmetr
   }
 });
 
-test('real early producer creates the missing handoff wave in its existing one-candidate slot',async()=>{
+test('real early producer creates the missing handoff wave, while a score below 70 remains unsent',async()=>{
   const db=pipelineDB();seedHandoff(db);seedWave(db,{contract:'OLD-USDT',wave:'EDW:OLD:1',first:SCAN-60000});
   db.sqlite.exec('CREATE TABLE scan_runs(ts INTEGER PRIMARY KEY,payload_json TEXT,stage0_coverage_pct REAL,errors INTEGER,stale INTEGER)');
   const payload=JSON.stringify({schema:'stage0-compact-v2',timestamp:SCAN,contracts:[
@@ -57,7 +57,9 @@ test('real early producer creates the missing handoff wave in its existing one-c
   const early=await runV3EarlyPersistenceSidecar(db,{current_scan_ts:SCAN,source_run_id:'cycle',now_ts:NOW,preferred_contracts:h.handoffs.map(x=>x.contract_code)});
   assert.equal(early.status,'CLOSED');assert.equal(early.persisted,1);assert.equal(early.targets[0].contract,'RAY-USDT');
   const life=await runV3TelegramLifecycleSidecar(db,{source_run_id:'cycle',now_ts:NOW,completed_handoffs:h,dispatch_enabled:false});
-  assert.equal(life.transitions[0].current_status,'OBSERVE');assert.equal((await publish(db,life)).calls.length,1);db.close();
+  assert.equal(life.transitions[0].current_status,'OBSERVE');
+  const stored=db.sqlite.prepare("SELECT early_detection_quality_0_100 FROM v3_early_candidate_wave WHERE contract_code='RAY-USDT'").get();assert.ok(stored.early_detection_quality_0_100<70);
+  assert.equal((await publish(db,life)).calls.length,0);db.close();
 });
 
 test('observation publishing is explicit; it never relabels OBSERVE as WAIT or ENTRY',async()=>{
