@@ -35,7 +35,8 @@ test('same-cycle completed Deep Check -> OBSERVE -> information receipt, symmetr
     const life=await runV3TelegramLifecycleSidecar(db,{source_run_id:'cycle',now_ts:NOW,dispatch_enabled:false,completed_handoffs:h});
     assert.equal(life.status,'CLOSED');assert.equal(life.transitions[0].current_status,'OBSERVE');
     const first=await publish(db,life);assert.equal(first.calls.length,1);assert.equal(first.out.early_info.sent,true);assert.equal(first.out.early_info.lifecycle_status,'OBSERVE');
-    assert.match(first.calls[0].text,/🟡 ЖДЁМ/);assert.match(first.calls[0].text,/НЕ ТОРГОВЫЙ СИГНАЛ/);assert.doesNotMatch(first.calls[0].text,/73|\/100|ПЕРЕЗАХОД|МОЖНО ВХОДИТЬ/);
+    assert.deepEqual(Object.keys(first.calls[0]),['text']);
+    assert.match(first.calls[0].text,/🟡 ЖДЁМ/);assert.match(first.calls[0].text,/НЕ ТОРГОВЫЙ СИГНАЛ/);assert.match(first.calls[0].text,/Оценка: 73 из 100/);assert.doesNotMatch(first.calls[0].text,/ПЕРЕЗАХОД|МОЖНО ВХОДИТЬ/);
     assert.equal((await publish(db,life)).calls.length,0);
     assert.equal(db.sqlite.prepare('SELECT count(*) n FROM final_decision_integration_shadow').get().n,0);
     assert.equal(db.sqlite.prepare('SELECT count(*) n FROM v3_telegram_dispatch_shadow').get().n,0);

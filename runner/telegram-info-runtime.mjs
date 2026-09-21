@@ -1,6 +1,7 @@
 // Informational transport only. Legacy SQL categories do not denote trading signals.
 // INFO_* source refs and info:* keys are the authoritative semantic namespace.
 import crypto from 'node:crypto';
+import { assertPlainTextTelegramMessage } from './plain-text-telegram.mjs';
 
 export const INFO_MIN_SCORE = 70;
 export const INFO_LIMITS = Object.freeze({freshMs:720000, cooldownMs:1800000, rows:24, journalRows:1024, minScore:INFO_MIN_SCORE});
@@ -113,12 +114,47 @@ export async function loadInformationalRows(db,now) {
 
 function actionText(){return '🟡 ЖДЁМ';}
 function directionText(r){return r.direction==='LONG'?'🟢 ЛОНГ':'🔴 ШОРТ';}
+function formatMsk(ts){
+  const d=new Date(Number(ts)+3*60*60*1000);
+  const two=n=>String(n).padStart(2,'0');
+  return `${two(d.getUTCDate())}.${two(d.getUTCMonth()+1)} ${two(d.getUTCHours())}:${two(d.getUTCMinutes())} МСК`;
+}
+function scoreQuality(score){
+  if(score>=95)return 'почти идеальное совпадение с текущими правилами';
+  if(score>=90)return 'исключительно сильное совпадение';
+  if(score>=85)return 'очень сильное совпадение';
+  if(score>=80)return 'сильное совпадение';
+  if(score>=75)return 'хорошее совпадение, но ещё не идеальное';
+  return 'допустимое раннее наблюдение, требующее подтверждения';
+}
+function scoreLine(r){
+  const score=Number(r.score_0_100);
+  return `Оценка: ${Number.isInteger(score)?score:score.toFixed(1)} из 100 — ${scoreQuality(score)}. Это балл модели, не вероятность.`;
+}
+function evidenceLines(r,limit=4){
+  const byDomain=new Map(r.evidence.map(x=>[x.domain,x.phrase]));
+  const clauses=EVIDENCE_PRIORITY.map(domain=>byDomain.get(domain)).filter(Boolean).slice(0,limit);
+  return clauses.map(value=>`• ${value}.`);
+}
 function briefReason(r) {
   const byDomain=new Map(r.evidence.map(x=>[x.domain,x.phrase]));
   const clauses=EVIDENCE_PRIORITY.map(domain=>byDomain.get(domain)).filter(Boolean).slice(0,2);
   if(!clauses.length)return null;
   const wait=clauses.length===1?'вход по текущей цене ещё требует подтверждения':'вход ещё требует подтверждения';
   return `Почему интересно: ${clauses.join(', ')}; ${wait}.`;
+}
+function informationalBlock(r,{reasonLimit=4}={}){
+  return [
+    r.contract.slice(0,-5),
+    directionText(r),
+    actionText(r),
+    `Снимок рынка: ${formatMsk(r.updated_ts)}.`,
+    'Статус: новое раннее наблюдение текущего цикла, не финальный сигнал.',
+    scoreLine(r),
+    'Что подтверждает идею:',
+    ...evidenceLines(r,reasonLimit),
+    briefReason(r),
+  ].filter(Boolean).join('\n');
 }
 function validRows(input,now) { return (Array.isArray(input)?input:[]).map(r=>normalizeInfoRow(r,now)).filter(Boolean); }
 export function buildMorningInformationalMessage(input,{now=Date.now(),test=false}={}) {
@@ -129,27 +165,34 @@ export function buildMorningInformationalMessage(input,{now=Date.now(),test=fals
   for(const [label,items] of [['ЛОНГ',longs],['ШОРТ',shorts]]) {
     out.push('',label);
     if(!items.length)out.push('Свежих допустимых наблюдений нет. Это не подтверждение отсутствия возможностей на рынке.');
-    for(const r of items)out.push(`${r.contract.slice(0,-5)}\n${directionText(r)}\n${actionText(r)}\n${briefReason(r)}`);
+    for(const r of items)out.push(informationalBlock(r,{reasonLimit:3}));
   }
   out.push('','Подтверждённые торговые сигналы остаются выключены до статистической проверки.');
   const message=out.join('\n');
-  return {ok:message.length<=4096,status:message.length<=4096?'READY':'MESSAGE_TOO_LONG',message:message.length<=4096?message:null,long_count:longs.length,short_count:shorts.length};
+  if(message.length>4096)return {ok:false,status:'MESSAGE_TOO_LONG',message:null,long_count:longs.length,short_count:shorts.length};
+  assertPlainTextTelegramMessage(message);
+  return {ok:true,status:'READY',message,long_count:longs.length,short_count:shorts.length};
 }
 export function buildWaitInformationalMessage(row,{now=Date.now()}={}) {
   const r=normalizeInfoRow(row,now);
   if(!r || r.status!=='WAIT')return {ok:false,status:'NOT_CURRENT_WAIT',message:null};
-  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',r.contract.slice(0,-5),directionText(r),actionText(r),'',briefReason(r)].join('\n');
-  return {ok:message.length<=4096,status:'READY',message};
+  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',informationalBlock(r)].join('\n');
+  if(message.length>4096)return {ok:false,status:'MESSAGE_TOO_LONG',message:null};
+  assertPlainTextTelegramMessage(message);
+  return {ok:true,status:'READY',message};
 }
 
 export function buildObserveInformationalMessage(row,{now=Date.now()}={}) {
   const r=normalizeInfoRow(row,now);
   if(!r || r.status!=='OBSERVE')return {ok:false,status:'NOT_CURRENT_OBSERVATION',message:null};
-  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',r.contract.slice(0,-5),directionText(r),actionText(r),'',briefReason(r)].join('\n');
-  return {ok:message.length<=4096,status:'READY',message};
+  const message=['Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ','',informationalBlock(r)].join('\n');
+  if(message.length>4096)return {ok:false,status:'MESSAGE_TOO_LONG',message:null};
+  assertPlainTextTelegramMessage(message);
+  return {ok:true,status:'READY',message};
 }
 
 export async function reserveInformational(db,{dispatchKey,category,sourceRef,text,now,wait=false}) {
+  assertPlainTextTelegramMessage(text);
   if(!integer(now) || !safeText(dispatchKey,300) || !dispatchKey.startsWith('info:') || typeof sourceRef!=='string' || !sourceRef.startsWith('INFO_') || !safeText(sourceRef.replaceAll('|',':'),400) || !['MORNING_REPORT','SHADOW_FINAL_DECISION'].includes(category) || typeof text!=='string' || !text.length || text.length>4096) throw new Error('INFO_RESERVATION_INPUT_INVALID');
   const hash=sha(text);
   const prior=await db.prepare(`SELECT status,message_hash,telegram_message_id,source_ref,category,reserved_ts FROM telegram_output_dispatch_journal_v2 WHERE dispatch_key=?1 LIMIT 1`).bind(dispatchKey).first();

@@ -1,8 +1,9 @@
 import { runInformationalTelegram } from './telegram-info-runtime.mjs';
 export { buildMorningInformationalMessage, buildWaitInformationalMessage } from './telegram-info-runtime.mjs';
+import { assertPlainTextTelegramMessage, buildPlainTextTelegramPayload } from './plain-text-telegram.mjs';
 import crypto from "node:crypto";
 
-const OUTPUT_VERSION = "telegram-output-v8-sidecar-exact-decision-context";
+const OUTPUT_VERSION = "telegram-output-v9-plain-text-explained-score";
 const DEFAULT_RELAY_URL = "https://my-report-2-hub.kovalev23091987.workers.dev/telegram-test";
 const RELAY_TIMEOUT_MS = 15_000;
 const FINAL_DECISION_FRESH_MS = 15 * 60_000;
@@ -298,6 +299,42 @@ const BLOCK_REASON_TEXT = Object.freeze({
   SMART_MONEY_ONCHAIN:"потоки крупных участников",
   SUPPORTING_RISK:"риск и ликвидность",
 });
+const BLOCK_SCORE_TEXT = Object.freeze({
+  DERIVATIVES_CROSS_VENUE:"Срочный рынок",
+  RELATIVE_STRENGTH_SPOT:"Spot и сила",
+  SMART_MONEY_ONCHAIN:"Smart Money",
+  SUPPORTING_RISK:"Риск и ликвидность",
+});
+function scoreQualityLabel(lower) {
+  const score=Number(lower);
+  if(score>=95)return 'почти идеальный вариант по действующим правилам';
+  if(score>=90)return 'исключительно сильный вариант';
+  if(score>=85)return 'очень сильный вариант';
+  if(score>=80)return 'сильный вариант';
+  if(score>=75)return 'хороший вариант, но не идеальный';
+  return 'допустимый вариант у нижней границы';
+}
+function scoreExplanation(context) {
+  const lower=Number(context?.score_lower_bound),upper=Number(context?.score_upper_bound);
+  const gapBest=Math.max(0,100-upper),gapConservative=Math.max(0,100-lower);
+  const gap=approximatelyEqual(gapBest,gapConservative)
+    ? `${Number.isInteger(gapBest)?gapBest:gapBest.toFixed(1)} баллов`
+    : `${Number.isInteger(gapBest)?gapBest:gapBest.toFixed(1)}–${Number.isInteger(gapConservative)?gapConservative:gapConservative.toFixed(1)} баллов`;
+  return [
+    `Оценка: ${formatScore(lower,upper)} — ${scoreQualityLabel(lower)}.`,
+    `До максимальных 100 не хватает ${gap}. Это балл модели, не вероятность успеха.`,
+  ];
+}
+function blockScoreLines(context) {
+  const blocks=Array.isArray(context?.weighted_blocks)?context.weighted_blocks:[];
+  return BLOCKS.map(([id,weight])=>{
+    const row=blocks.find(item=>String(item?.id||'')===id);
+    const lo=finite(row?.contribution_lower),hi=finite(row?.contribution_upper);
+    if(lo===null||hi===null)return null;
+    const value=approximatelyEqual(lo,hi)?String(Number(lo.toFixed(1))):`${Number(lo.toFixed(1))}–${Number(hi.toFixed(1))}`;
+    return `• ${BLOCK_SCORE_TEXT[id]}: ${value}/${weight}.`;
+  }).filter(Boolean);
+}
 function entryReason(context) {
   const names=(Array.isArray(context?.weighted_blocks)?context.weighted_blocks:[])
     .filter(row=>finite(row?.contribution_lower)!==null&&Number(row.contribution_lower)>0)
@@ -360,7 +397,16 @@ export function buildFinalChainTelegramMessage(observer, context, { now = Date.n
     `${emoji} ${directionRu}`,
     '✅ МОЖНО ВХОДИТЬ СЕЙЧАС',
     '',
+    `Снимок рынка: ${formatMsk(observer.observation_ts)}.`,
+    'Тип: финальный кандидат этого рыночного цикла.',
+    ...scoreExplanation(context),
+    'Из чего складывается оценка:',
+    ...blockScoreLines(context),
+    '',
     entryReason(context),
+    ...safeReasons(context.reasons).map(reason=>`• ${reason}.`),
+    formatFunding(context.funding),
+    `Главный риск: ${safeRisk(context.risk)}.`,
     `Вход: ${context.entry.area}`,
     `Выход: ${context.entry.target}`,
     `Отмена идеи: ${context.entry.invalidation}`,
@@ -368,7 +414,8 @@ export function buildFinalChainTelegramMessage(observer, context, { now = Date.n
     `Действительно до ${formatMsk(context.valid_until_ts)}.`,
     'Решение принимаешь ты; сделка автоматически не открывается.',
   ];
-  const message = lines.join("\n");
+  const message = lines.filter(line=>line!==null&&line!==undefined).join("\n");
+  if(message.length<=4096)assertPlainTextTelegramMessage(message);
   return { ok:message.length <= 4096, status:message.length <= 4096 ? "READY" : "MESSAGE_TOO_LONG", message:message.length <= 4096 ? message : null };
 }
 
@@ -424,7 +471,8 @@ async function sendRelay({ relayUrl, relayKey, text, fetchImpl }) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), RELAY_TIMEOUT_MS);
   try {
-    const response = await fetchImpl(url,{method:"POST",headers:{"content-type":"application/json; charset=UTF-8",authorization:`Bearer ${key}`},body:JSON.stringify({text:String(text||"")}),signal:controller.signal});
+    const payload=buildPlainTextTelegramPayload(text);
+    const response = await fetchImpl(url,{method:"POST",headers:{"content-type":"application/json; charset=UTF-8",authorization:`Bearer ${key}`},body:JSON.stringify(payload),signal:controller.signal});
     let body=null, parsed=false;
     try { body=await response.json(); parsed=true; } catch { body=null; }
     if (response.ok && parsed && body?.ok === true) {

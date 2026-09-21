@@ -1,0 +1,958 @@
+diff --git a/src/public-evidence-adapters.mjs b/src/public-evidence-adapters.mjs
+index 2fedd41..74a43db 100644
+--- a/src/public-evidence-adapters.mjs
++++ b/src/public-evidence-adapters.mjs
+@@ -1,7 +1,17 @@
+-export const PUBLIC_EVIDENCE_ADAPTERS_VERSION = "public-evidence-adapters-v1";
++export const PUBLIC_EVIDENCE_ADAPTERS_VERSION = "public-evidence-adapters-v2-cross-venue-verification";
+
+ const HOUR_MS = 60 * 60 * 1000;
+ const FETCH_TIMEOUT_MS = 6500;
++const VISUAL_ENDPOINT_TOKEN = /(?:^|\/)(?:chart|charts|widget|widgets|card|cards|image|images|media|attachment|attachments|screenshot|heatmap)(?:\/|$)/iu;
++
++export function rawStructuredEndpointAllowed(value) {
++  let url;
++  try { url = new URL(String(value || "")); } catch { return false; }
++  if (url.protocol !== "https:") return false;
++  if (VISUAL_ENDPOINT_TOKEN.test(url.pathname)) return false;
++  for (const key of url.searchParams.keys()) if (VISUAL_ENDPOINT_TOKEN.test(`/${key}/`)) return false;
++  return true;
++}
+
+ function finiteOrNull(value) {
+   if (value === null || value === undefined || value === "") return null;
+@@ -90,6 +100,9 @@ export function candidateVenueAliases(contractCode) {
+ }
+
+ async function fetchJson(fetchImpl, url, timeoutMs = FETCH_TIMEOUT_MS) {
++  if (!rawStructuredEndpointAllowed(url)) {
++    return { ok: false, status: null, data: null, error: "RAW_STRUCTURED_ENDPOINT_REQUIRED", url };
++  }
+   const f = fetchImpl || globalThis.fetch;
+   if (typeof f !== "function") {
+     return { ok: false, status: null, data: null, error: "FETCH_UNAVAILABLE", url };
+@@ -113,7 +126,7 @@ async function fetchJson(fetchImpl, url, timeoutMs = FETCH_TIMEOUT_MS) {
+       ok: Boolean(response?.ok),
+       status,
+       data,
+-      error: response?.ok ? null : `HTTP_${status ?? "UNKNOWN"}`,
++      error: response?.ok ? null : (status === 429 ? "SOURCE_RATE_LIMITED" : `HTTP_${status ?? "UNKNOWN"}`),
+       url,
+     };
+   } catch (error) {
+@@ -157,7 +170,7 @@ function gateApiError(raw) {
+   return null;
+ }
+
+-function externalEvidenceBase({ contractCode, chain, metric, source, venue, marketType, nowTs, sourceTs, maxAgeSec, status, value, unit, coveragePct, historyCoveragePct, window, aliasRequired, aliasVerified, sourceCompatible, primaryMarketId, settlementPeriod, note, error }) {
++function externalEvidenceBase({ contractCode, chain, metric, source, venue, marketType, nowTs, sourceTs, maxAgeSec, status, value, unit, coveragePct, historyCoveragePct, window, aliasRequired, aliasVerified, sourceCompatible, primaryMarketId, settlementPeriod, note, error, reasonCode = null }) {
+   const venueObservationStatus = status;
+   const identityBlocked = Boolean(aliasRequired && !aliasVerified);
+   return {
+@@ -181,7 +194,7 @@ function externalEvidenceBase({ contractCode, chain, metric, source, venue, mark
+     coverage_pct: coveragePct ?? null,
+     history_coverage_pct: historyCoveragePct ?? null,
+     window: window ?? null,
+-    source_health: error ? "ERROR" : (status === "CLOSED" ? "OK" : "DEGRADED"),
++    source_health: error === "SOURCE_RATE_LIMITED" ? "RATE_LIMITED" : (error ? "ERROR" : (status === "CLOSED" ? "OK" : "DEGRADED")),
+     symbol_verified: true,
+     alias_required: Boolean(aliasRequired),
+     alias_verified: Boolean(aliasVerified),
+@@ -191,6 +204,7 @@ function externalEvidenceBase({ contractCode, chain, metric, source, venue, mark
+     independence_group: `${venue}_OFFICIAL_PUBLIC`,
+     primary_market_id: primaryMarketId ?? null,
+     settlement_period: settlementPeriod ?? null,
++    reason_code: reasonCode,
+     note: note ?? null,
+     error: error ?? null,
+   };
+@@ -266,6 +280,29 @@ export function parseBinanceEchoVerification(payload, expectedSymbol) {
+   };
+ }
+
++export function parseBinanceSpotVerification(payload, expectedSymbol) {
++  const expected = nfcUpper(expectedSymbol);
++  const rows = Array.isArray(payload?.symbols) ? payload.symbols : [];
++  const row = rows.find(r => nfcUpper(r?.symbol) === expected) || null;
++  const apiOk = !payload?.code && Array.isArray(payload?.symbols);
++  const permissions = Array.isArray(row?.permissions) ? row.permissions.map(nfcUpper) : [];
++  const permissionSets = Array.isArray(row?.permissionSets) ? row.permissionSets.flat().map(nfcUpper) : [];
++  const spotAllowed = row?.isSpotTradingAllowed === true || permissions.includes("SPOT") || permissionSets.includes("SPOT");
++  const ok = apiOk && Boolean(row) && nfcUpper(row?.status) === "TRADING" &&
++    nfcUpper(row?.quoteAsset) === "USDT" && spotAllowed;
++  return {
++    api_ok: apiOk,
++    verified: ok,
++    exact_symbol: row?.symbol || null,
++    base_coin: row?.baseAsset || null,
++    quote_coin: row?.quoteAsset || null,
++    settle_coin: null,
++    instrument_type: "SPOT",
++    status: row?.status || null,
++    error: ok ? null : (!apiOk ? `BINANCE_API_${payload?.code ?? "UNKNOWN"}:${text(payload?.msg) || "ERROR"}` : "BINANCE_ACTIVE_USDT_SPOT_NOT_VERIFIED"),
++  };
++}
++
+
+ export function parseGateInstrumentVerification(payload, expectedContract) {
+   const expected = nfcUpper(expectedContract);
+@@ -473,7 +510,7 @@ function targetWindowClosed(actualHours, targetHours, toleranceHours = 0.25) {
+   return Math.abs(actual - target) <= Number(toleranceHours);
+ }
+
+-function normalizedCandle(ts, open, high, low, close, volume, closed) {
++function normalizedCandle(ts, open, high, low, close, volume, closed, takerBuyVolume = null) {
+   const row = {
+     ts: finiteOrNull(ts),
+     open: finiteOrNull(open),
+@@ -481,6 +518,7 @@ function normalizedCandle(ts, open, high, low, close, volume, closed) {
+     low: finiteOrNull(low),
+     close: finiteOrNull(close),
+     volume: finiteOrNull(volume),
++    taker_buy_volume: finiteOrNull(takerBuyVolume),
+     closed: Boolean(closed),
+   };
+   return row.ts !== null && row.close !== null ? row : null;
+@@ -503,10 +541,36 @@ export function parseBinanceHourlyCandles(payload, nowTs = Date.now()) {
+   return rows.map(r => {
+     const openTs = finiteOrNull(r?.[0]);
+     const closeTs = finiteOrNull(r?.[6]);
+-    return normalizedCandle(openTs, r?.[1], r?.[2], r?.[3], r?.[4], r?.[5], closeTs !== null ? closeTs < nowTs : openTs + HOUR_MS <= nowTs);
++    return normalizedCandle(openTs, r?.[1], r?.[2], r?.[3], r?.[4], r?.[5], closeTs !== null ? closeTs < nowTs : openTs + HOUR_MS <= nowTs, r?.[9]);
+   }).filter(Boolean).filter(r => r.closed).sort((a,b)=>a.ts-b.ts);
+ }
+
++function binanceFlowBalance(candles, hours) {
++  const rows = (Array.isArray(candles) ? candles : []).slice(-Number(hours));
++  if (rows.length !== Number(hours) || rows.some(r => !Number.isFinite(r.volume) || r.volume <= 0 || !Number.isFinite(r.taker_buy_volume))) return null;
++  const volume = rows.reduce((sum, row) => sum + row.volume, 0);
++  const takerBuy = rows.reduce((sum, row) => sum + row.taker_buy_volume, 0);
++  if (!(volume > 0) || takerBuy < 0 || takerBuy > volume) return null;
++  return { value: ((2 * takerBuy / volume) - 1) * 100, source_ts: rows.at(-1)?.ts ?? null, coverage_pct: 100 };
++}
++
++export function parseBinanceOrderBook(payload) {
++  const side = rows => (Array.isArray(rows) ? rows : []).map(r => ({price:finiteOrNull(r?.[0]),qty:finiteOrNull(r?.[1])})).filter(r => r.price > 0 && r.qty >= 0);
++  const bids = side(payload?.bids), asks = side(payload?.asks);
++  const bestBid = bids[0]?.price ?? null, bestAsk = asks[0]?.price ?? null;
++  if (!(bestBid > 0) || !(bestAsk > bestBid)) return {status:"NOT_CLOSED",spread_bps:null,depth_50bps_usdt:null,imbalance_pct:null};
++  const mid = (bestBid + bestAsk) / 2;
++  const bidDepth = bids.filter(r => r.price >= mid * 0.995).reduce((s,r)=>s+r.price*r.qty,0);
++  const askDepth = asks.filter(r => r.price <= mid * 1.005).reduce((s,r)=>s+r.price*r.qty,0);
++  const total = bidDepth + askDepth;
++  return {
++    status: total > 0 ? "CLOSED" : "NOT_CLOSED",
++    spread_bps: (bestAsk - bestBid) / mid * 10000,
++    depth_50bps_usdt: total > 0 ? total : null,
++    imbalance_pct: total > 0 ? (bidDepth - askDepth) / total * 100 : null,
++  };
++}
++
+ function attachOpportunityHourlyCandles(evidence, candles) {
+   Object.defineProperty(evidence, "_opportunity_hourly_candles", {
+     enumerable: false,
+@@ -604,23 +668,25 @@ export function buildCrossVenueAssetIdentityProof(contractCode, verification = {
+   const bybit = matchesBase(verification?.bybit);
+   const okxSwap = matchesBase(verification?.okx_swap);
+   const okxSpot = matchesBase(verification?.okx_spot);
++  const binanceSpot = matchesBase(verification?.binance_spot);
+   const gate = matchesBase(verification?.gate_futures);
+   const binance = matchesBase(verification?.binance_futures);
+   const corroborators = [];
+   if (bybit) corroborators.push("BYBIT_LINEAR_PERP");
+   if (okxSwap) corroborators.push("OKX_SWAP");
+   if (okxSpot) corroborators.push("OKX_SPOT");
++  if (binanceSpot) corroborators.push("BINANCE_SPOT");
+   if (gate) corroborators.push("GATE_USDT_PERP");
+   if (binance) corroborators.push("BINANCE_USDT_PERP");
+
+   let verified = false;
+   let method = "VENUE_MARKET_SYMBOL_ONLY";
+-  if (okxSpot && okxSwap) {
++  if ((okxSpot || binanceSpot) && okxSwap) {
+     verified = true;
+-    method = "HTX_CANONICAL_PLUS_OKX_SPOT_SWAP_EXACT_BASE";
+-  } else if (okxSpot && (bybit || gate || binance)) {
++    method = okxSpot ? "HTX_CANONICAL_PLUS_OKX_SPOT_SWAP_EXACT_BASE" : "HTX_CANONICAL_PLUS_BINANCE_SPOT_OKX_SWAP_EXACT_BASE";
++  } else if ((okxSpot || binanceSpot) && (bybit || gate || binance)) {
+     verified = true;
+-    method = "HTX_CANONICAL_PLUS_OKX_SPOT_PLUS_EXTERNAL_PERP_EXACT_BASE";
++    method = `HTX_CANONICAL_PLUS_${okxSpot ? "OKX" : "BINANCE"}_SPOT_PLUS_EXTERNAL_PERP_EXACT_BASE`;
+   } else if ((bybit && gate) || (bybit && binance) || (gate && okxSwap)) {
+     verified = true;
+     method = gate ? "HTX_CANONICAL_PLUS_TWO_EXTERNAL_EXACT_BASE_WITH_GATE" : "HTX_CANONICAL_PLUS_BYBIT_BINANCE_EXACT_BASE";
+@@ -675,6 +741,7 @@ async function verifyAliases(contractCode, fetchImpl, nowTs) {
+     okx_swap: `https://www.okx.com/api/v5/public/instruments?instType=SWAP&instId=${encodeURIComponent(aliases.okx_swap)}`,
+     okx_spot: `https://www.okx.com/api/v5/public/instruments?instType=SPOT&instId=${encodeURIComponent(aliases.okx_spot)}`,
+     gate_futures: `https://api.gateio.ws/api/v4/futures/usdt/contracts/${encodeURIComponent(aliases.gate_futures)}`,
++    binance_spot: `https://api.binance.com/api/v3/exchangeInfo?symbol=${encodeURIComponent(aliases.binance_spot)}`,
+   };
+   const [bybitRaw, okxSwapRaw, okxSpotRaw, gateFutRaw] = await Promise.all([
+     fetchJson(fetchImpl, urls.bybit),
+@@ -683,6 +750,11 @@ async function verifyAliases(contractCode, fetchImpl, nowTs) {
+     fetchJson(fetchImpl, urls.gate_futures),
+   ]);
+   const wrap = (raw, parsed) => ({ ...parsed, status: parsed.verified ? "CLOSED" : (parsed.api_ok ? "SOURCE_INCOMPATIBLE" : "NOT_CLOSED"), http_status: raw.status, fetched_ts: nowTs, fetch_error: raw.error || (parsed.api_ok ? null : parsed.error) });
++  let binanceSpot = { verified: false, status: "FALLBACK_NOT_NEEDED", reason: "OKX Spot verification is closed." };
++  if (!parseOkxInstrumentVerification(okxSpotRaw.data, aliases.okx_spot, "SPOT").verified) {
++    const binSpotRaw = await fetchJson(fetchImpl, urls.binance_spot);
++    binanceSpot = wrap(binSpotRaw, parseBinanceSpotVerification(binSpotRaw.data, aliases.binance_spot));
++  }
+   const result = {
+     aliases,
+     bybit: wrap(bybitRaw, parseBybitInstrumentVerification(bybitRaw.data, aliases.bybit)),
+@@ -690,7 +762,7 @@ async function verifyAliases(contractCode, fetchImpl, nowTs) {
+     okx_spot: wrap(okxSpotRaw, parseOkxInstrumentVerification(okxSpotRaw.data, aliases.okx_spot, "SPOT")),
+     gate_futures: wrap(gateFutRaw, parseGateInstrumentVerification(gateFutRaw.data, aliases.gate_futures)),
+     binance_futures: { verified: false, status: "REPLACED_BY_GATE", reason: "Gate is the active public fallback for this production path." },
+-    binance_spot: { verified: false, status: "UNUSED_IN_3_7", reason: "No Binance Spot adapter is promoted in 3.7." },
++    binance_spot: binanceSpot,
+   };
+   result.asset_identity = buildCrossVenueAssetIdentityProof(contractCode, result);
+   return result;
+@@ -837,6 +909,58 @@ async function collectOkxRelativeStrength(contractCode, alias, verification, fet
+   };
+ }
+
++async function collectBinanceSpotFallback(contractCode, alias, verification, fetchImpl, nowTs) {
++  const source = "Binance Spot Public";
++  const venue = "BINANCE";
++  if (!verification?.verified) {
++    return {
++      evidence: [externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"relative_strength_status",source,venue,marketType:"SPOT",nowTs,status:verification?.status||"NOT_CLOSED",value:null,coveragePct:0,aliasRequired:true,aliasVerified:false,sourceCompatible:verification?.status!=="SOURCE_INCOMPATIBLE",note:verification?.reason||verification?.error,error:verification?.fetch_error||null})],
++      detail: null,
++    };
++  }
++  const symbols = [alias, "BTCUSDT", "ETHUSDT"];
++  const candleUrls = symbols.map(symbol => `https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=1h&limit=30`);
++  const depthUrl = `https://api.binance.com/api/v3/depth?symbol=${encodeURIComponent(alias)}&limit=100`;
++  const [candidateRaw, btcRaw, ethRaw, depthRaw] = await Promise.all([...candleUrls.map(url=>fetchJson(fetchImpl,url)), fetchJson(fetchImpl,depthUrl)]);
++  const candidateError = binanceApiError(candidateRaw), btcError = binanceApiError(btcRaw), ethError = binanceApiError(ethRaw);
++  const depthError = binanceApiError(depthRaw);
++  const rsError = candidateError || btcError || ethError;
++  const candidate = parseBinanceHourlyCandles(candidateRaw.data, nowTs);
++  const btc = parseBinanceHourlyCandles(btcRaw.data, nowTs);
++  const eth = parseBinanceHourlyCandles(ethRaw.data, nowTs);
++  const sync = synchronizedReturns(candidate, btc, eth, [1,4,24]);
++  const downBtc = downMarketRelativeObservations(candidate, btc), downEth = downMarketRelativeObservations(candidate, eth);
++  const evidence = [];
++  if (rsError || Object.keys(sync.windows).length === 0) {
++    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"relative_strength_status",source,venue,marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:"NOT_CLOSED",value:null,coveragePct:0,historyCoveragePct:0,window:"1h/4h/24h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:"Synchronized candidate/BTC/ETH closed-hourly evidence unavailable.",error:rsError||"INSUFFICIENT_SYNCHRONIZED_CANDLES"}));
++  }
++  for (const [window, row] of Object.entries(sync.windows)) {
++    const status = !rsError && row.status === "CLOSED" ? "CLOSED" : "NOT_CLOSED";
++    const note = `synchronized_closed_hourly_points=${sync.common_points}; expected_points=${row.expected_points??"NA"}; received_points=${row.received_points??"NA"}; max_gap_ms=${row.max_gap_ms??"NA"}`;
++    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:`rs_vs_btc_${window}`,source,venue,marketType:"SPOT",nowTs,sourceTs:row.latest_ts??sync.latest_common_ts,maxAgeSec:2*60*60,status,value:row.vs_btc_pp,unit:"percentage_points",coveragePct:row.coverage_pct??0,historyCoveragePct:row.coverage_pct??0,window,aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note,error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:`rs_vs_eth_${window}`,source,venue,marketType:"SPOT",nowTs,sourceTs:row.latest_ts??sync.latest_common_ts,maxAgeSec:2*60*60,status,value:row.vs_eth_pp,unit:"percentage_points",coveragePct:row.coverage_pct??0,historyCoveragePct:row.coverage_pct??0,window,aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note,error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  }
++  const spot24 = sync.windows?.["24h"] || null;
++  if (spot24?.status === "CLOSED") {
++    const rows = candidate.filter(row => row.ts > spot24.reference_ts && row.ts <= spot24.latest_ts);
++    const volume = rows.length === 24 && rows.every(row => Number.isFinite(row.volume) && row.volume >= 0) ? rows.reduce((s,r)=>s+r.volume,0) : null;
++    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"spot_turnover_24h",source,venue,marketType:"SPOT",nowTs,sourceTs:spot24.latest_ts,maxAgeSec:2*60*60,status:volume>0?"CLOSED":"NOT_CLOSED",value:volume,unit:"base_volume_24h",coveragePct:spot24.coverage_pct??0,historyCoveragePct:spot24.coverage_pct??0,window:"24h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:`closed_hourly_volume_points=${rows.length}; raw Binance Spot fallback`,error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  }
++  for (const hours of [1,4]) {
++    const flow = binanceFlowBalance(candidate, hours);
++    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:`spot_flow_${hours}h_delta_pct`,source,venue,marketType:"SPOT",nowTs,sourceTs:flow?.source_ts,maxAgeSec:2*60*60,status:flow?"CLOSED":"NOT_CLOSED",value:flow?.value,unit:"pct_taker_buy_minus_sell_of_volume",coveragePct:flow?.coverage_pct??0,historyCoveragePct:flow?.coverage_pct??0,window:`${hours}h`,aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:"Raw closed-candle taker-buy volume; no visual endpoint.",error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  }
++  const book = parseBinanceOrderBook(depthRaw.data);
++  for (const [metric,value,unit] of [
++    ["spot_spread_bps",book.spread_bps,"bps"],
++    ["spot_depth_50bps_usdt",book.depth_50bps_usdt,"usdt"],
++    ["spot_order_book_imbalance_pct",book.imbalance_pct,"pct"],
++  ]) evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric,source,venue,marketType:"SPOT",nowTs,sourceTs:nowTs,maxAgeSec:5*60,status:!depthError&&book.status==="CLOSED"&&value!==null?"CLOSED":"NOT_CLOSED",value,unit,coveragePct:!depthError&&book.status==="CLOSED"?100:0,window:"CURRENT",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:"Raw JSON order book snapshot; no chart/card/widget endpoint.",error:depthError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"down_market_rs_vs_btc_raw",source,venue,marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:!rsError&&downBtc.negative_benchmark_hours?"CLOSED":"NOT_CLOSED",value:downBtc.average_relative_pp,unit:"average_percentage_points",coveragePct:!rsError&&downBtc.negative_benchmark_hours?100:0,window:"LAST_24_CONTIGUOUS_HOURS",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:`negative_btc_hours=${downBtc.negative_benchmark_hours}; uncalibrated raw feature`,error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"down_market_rs_vs_eth_raw",source,venue,marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:!rsError&&downEth.negative_benchmark_hours?"CLOSED":"NOT_CLOSED",value:downEth.average_relative_pp,unit:"average_percentage_points",coveragePct:!rsError&&downEth.negative_benchmark_hours?100:0,window:"LAST_24_CONTIGUOUS_HOURS",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BINANCE:SPOT`,note:`negative_eth_hours=${downEth.negative_benchmark_hours}; uncalibrated raw feature`,error:rsError,reasonCode:"EXTERNAL_SPOT_FALLBACK_USED"}));
++  return { evidence, detail:{provider:"BINANCE_SPOT",fallback_reason:"EXTERNAL_SPOT_FALLBACK_USED",synchronized_returns:sync,down_market_vs_btc:downBtc,down_market_vs_eth:downEth,hourly_candles:{candidate,btc,eth}} };
++}
++
+ function fundingPerHourDetail(evidence) {
+   const rows = (Array.isArray(evidence) ? evidence : [])
+     .filter(r => r?.chain === "CROSS_EXCHANGE_DERIVATIVES" && r?.metric === "funding_rate" && r?.venue_observation_status === "CLOSED" && !r?.error)
+@@ -869,11 +993,14 @@ export async function collectPublicFullEvidence({ contract_code, fetch_impl, now
+   const nowTs = finiteOrNull(now_ts) ?? Date.now();
+   const verification = await verifyAliases(contractCode, fetch_impl, nowTs);
+
++  const spotCollector = verification.okx_spot?.verified
++    ? collectOkxRelativeStrength(contractCode, verification.aliases.okx_spot, verification.okx_spot, fetch_impl, nowTs)
++    : collectBinanceSpotFallback(contractCode, verification.aliases.binance_spot, verification.binance_spot, fetch_impl, nowTs);
+   const [bybit, okx, gate, rs] = await Promise.all([
+     collectBybitDerivatives(contractCode, verification.aliases.bybit, verification.bybit, fetch_impl, nowTs),
+     collectOkxDerivatives(contractCode, verification.aliases.okx_swap, verification.okx_swap, fetch_impl, nowTs),
+     collectGateDerivatives(contractCode, verification.aliases.gate_futures, verification.gate_futures, fetch_impl, nowTs),
+-    collectOkxRelativeStrength(contractCode, verification.aliases.okx_spot, verification.okx_spot, fetch_impl, nowTs),
++    spotCollector,
+   ]);
+
+   const externalRequired = [
+@@ -884,12 +1011,29 @@ export async function collectPublicFullEvidence({ contract_code, fetch_impl, now
+
+   const rawEvidence = [...bybit, ...okx, ...gate, ...rs.evidence, ...externalRequired];
+   const allEvidence = promoteCorroboratedAssetIdentity(rawEvidence, verification.asset_identity);
++  const usableExternalSpot = allEvidence.filter(row =>
++    row?.chain === "MARKET_STRENGTH_SPOT" &&
++    row?.market_type === "SPOT" &&
++    row?.status === "CLOSED" &&
++    row?.error == null &&
++    row?.value != null &&
++    row?.asset_identity_verified === true
++  );
++  const externalSpotVenues = [...new Set(usableExternalSpot.map(row => row?.venue).filter(Boolean))].sort();
++  const externalSpotFallbackUsed = rs.detail?.fallback_reason === "EXTERNAL_SPOT_FALLBACK_USED" && usableExternalSpot.length > 0;
+   const response = {
+     version: PUBLIC_EVIDENCE_ADAPTERS_VERSION,
+     contract_code: contractCode,
+     observed_ts: nowTs,
+     alias_verification: verification,
+     evidence: allEvidence,
++    spot_verification: {
++      htx_spot_status: "EVALUATED_BY_HTX_RUNTIME",
++      external_spot_status: usableExternalSpot.length ? "CONFIRMED" : "NOT_CLOSED",
++      external_spot_venues: externalSpotVenues,
++      fallback_used: externalSpotFallbackUsed,
++      reason_codes: externalSpotFallbackUsed ? ["EXTERNAL_SPOT_FALLBACK_USED"] : [],
++    },
+     cross_venue_derivatives_detail: { funding: fundingPerHourDetail(allEvidence) },
+     relative_strength_detail: rs.detail,
+     safety: {
+@@ -898,6 +1042,8 @@ export async function collectPublicFullEvidence({ contract_code, fetch_impl, now
+       live_promotion: false,
+       telegram: false,
+       execution: false,
++      raw_structured_only: true,
++      visual_endpoints_used: false,
+     },
+   };
+   Object.defineProperty(response, "_opportunity_hourly_candles", {
+@@ -906,7 +1052,9 @@ export async function collectPublicFullEvidence({ contract_code, fetch_impl, now
+       BYBIT_PERP: bybit._opportunity_hourly_candles || [],
+       OKX_PERP: okx._opportunity_hourly_candles || [],
+       GATE_PERP: gate._opportunity_hourly_candles || [],
+-      OKX_SPOT: rs.detail?.hourly_candles?.candidate || [],
++      EXTERNAL_SPOT: rs.detail?.hourly_candles?.candidate || [],
++      OKX_SPOT: rs.detail?.provider === "BINANCE_SPOT" ? [] : (rs.detail?.hourly_candles?.candidate || []),
++      BINANCE_SPOT: rs.detail?.provider === "BINANCE_SPOT" ? (rs.detail?.hourly_candles?.candidate || []) : [],
+       BTC_SPOT: rs.detail?.hourly_candles?.btc || [],
+       ETH_SPOT: rs.detail?.hourly_candles?.eth || [],
+     },
+diff --git a/src/full-evidence-contract.mjs b/src/full-evidence-contract.mjs
+index 1c8ccfd..d251966 100644
+--- a/src/full-evidence-contract.mjs
++++ b/src/full-evidence-contract.mjs
+@@ -1,4 +1,4 @@
+-export const EVIDENCE_CONTRACT_VERSION = "full-evidence-v1";
++export const EVIDENCE_CONTRACT_VERSION = "full-evidence-v2-cross-venue-conflict";
+
+ export const FIXED_DECISION_WEIGHTS = Object.freeze({
+   CROSS_EXCHANGE_DERIVATIVES: 35,
+@@ -16,6 +16,8 @@ const VALID_STATUS = new Set([
+   "CONFLICT",
+   "SOURCE_INCOMPATIBLE",
+   "UNSUPPORTED",
++  "RATE_LIMITED",
++  "TIMEOUT",
+ ]);
+
+ const VALID_CHAINS = new Set([
+@@ -111,6 +113,9 @@ export function normalizeEvidenceItem(raw = {}) {
+     independence_group: textOrNull(raw.independence_group),
+     primary_market_id: textOrNull(raw.primary_market_id),
+     settlement_period: textOrNull(raw.settlement_period),
++    contract_multiplier: finiteOrNull(raw.contract_multiplier),
++    reason_code: textOrNull(raw.reason_code),
++    fallback_closed: asBool(raw.fallback_closed),
+     note: textOrNull(raw.note),
+     error: textOrNull(raw.error),
+   };
+@@ -137,12 +142,43 @@ export function evidenceUsable(item) {
+   );
+ }
+
+-// Deliberately compare only evidence claiming to describe the SAME primary market.
+-// Cross-venue differences (e.g. HTX vs Bybit funding) are market dispersion, not a
+-// data-source conflict. Same-venue independent sources can conflict and must not
+-// be silently averaged.
++function comparableMarketType(value) {
++  const market = String(value || "").toUpperCase();
++  if (market === "SPOT") return "SPOT";
++  if (["PERP", "SWAP", "LINEAR_PERP", "USDT_PERP", "LINEAR", "FUTURES"].includes(market)) return "LINEAR_DERIVATIVES";
++  return market || "UNKNOWN";
++}
++
++function metricSupportsCrossVenueDirection(metric) {
++  return /(?:^|_)(?:oi_change|price_change|flow|balance|imbalance|funding_rate|basis|positioning|liquidation)(?:_|$)/iu.test(String(metric || ""));
++}
++
++function comparableMetric(e) {
++  const metric = String(e?.metric || "").toLowerCase();
++  let match = metric.match(/^(?:htx_)?oi_(\d+h)_change_pct$/u);
++  if (!match) match = metric.match(/^oi_change_(\d+h)$/u);
++  if (match) return { metric: `oi_change_${match[1]}`, window: e?.window || match[1] };
++
++  match = metric.match(/^(?:htx_)?price_(\d+h)_pct$/u);
++  if (!match) match = metric.match(/^price_change_(\d+h)$/u);
++  if (match) return { metric: `price_change_${match[1]}`, window: e?.window || match[1] };
++
++  return { metric, window: e?.window || "" };
++}
++
+ function comparisonKey(e) {
+-  return [e.metric, e.venue || "", e.market_type || "", e.unit || "", e.settlement_period || ""].join("|");
++  const comparable = comparableMetric(e);
++  const multiplier = /(?:contracts?|coins?|base_volume)/iu.test(String(e.unit || ""))
++    ? (e.contract_multiplier ?? "MULTIPLIER_UNKNOWN")
++    : "NOT_APPLICABLE";
++  return [
++    comparable.metric,
++    comparableMarketType(e.market_type),
++    e.unit || "",
++    comparable.window,
++    comparable.metric === "funding_rate" ? (e.settlement_period || "PERIOD_UNKNOWN") : "NOT_APPLICABLE",
++    multiplier,
++  ].join("|");
+ }
+
+ export function detectEvidenceConflicts(items = [], options = {}) {
+@@ -162,11 +198,66 @@ export function detectEvidenceConflicts(items = [], options = {}) {
+   const conflicts = [];
+   for (const [key, rows] of groups) {
+     const usable = rows.filter(evidenceUsable);
++    const timestampSpan = usable.length
++      ? Math.max(...usable.map(row => row.source_ts ?? row.observed_ts ?? 0)) - Math.min(...usable.map(row => row.source_ts ?? row.observed_ts ?? 0))
++      : null;
++    const aligned = usable.filter(row => {
++      const ts = row.source_ts ?? row.observed_ts;
++      const latest = usable.reduce((max, item) => Math.max(max, item.source_ts ?? item.observed_ts ?? 0), 0);
++      return ts !== null && latest - ts <= timestampToleranceMs;
++    });
++    const crossVenueValues = aligned
++      .filter(row => row.venue)
++      .map(row => ({ venue: row.venue, source: row.source, value: finiteOrNull(row.value), source_ts: row.source_ts, primary_market_id: row.primary_market_id }))
++      .filter(row => row.value !== null);
++    const venues = new Set(crossVenueValues.map(row => row.venue).filter(Boolean));
++    const positive = crossVenueValues.filter(row => row.value > 0);
++    const negative = crossVenueValues.filter(row => row.value < 0);
++    const neutral = crossVenueValues.filter(row => row.value === 0);
++    const directionalDivergence = metricSupportsCrossVenueDirection(comparableMetric(aligned[0]).metric) && venues.size >= 2 && positive.length > 0 && negative.length > 0;
++    if (directionalDivergence) {
++      const comparable = comparableMetric(aligned[0]);
++      const thirdSourceUsed = venues.size >= 3;
++      const majorityDirection = positive.length > negative.length && positive.length > neutral.length
++        ? "UP"
++        : (negative.length > positive.length && negative.length > neutral.length ? "DOWN" : null);
++      const unresolved = !thirdSourceUsed || !majorityDirection;
++      conflicts.push({
++        key,
++        metric: comparable.metric || null,
++        source_metrics: [...new Set(aligned.map(row => row.metric).filter(Boolean))].sort(),
++        chains: [...new Set(aligned.map(row => row.chain).filter(Boolean))].sort(),
++        market_type: comparableMarketType(aligned[0]?.market_type),
++        unit: aligned[0]?.unit || null,
++        window: comparable.window || null,
++        settlement_period: aligned[0]?.settlement_period || null,
++        contract_multiplier: aligned[0]?.contract_multiplier ?? null,
++        venues: [...venues].sort(),
++        observations: crossVenueValues,
++        cross_venue_divergence: true,
++        values_averaged: false,
++        symbol_contract_checked: true,
++        market_type_checked: true,
++        timestamp_checked: timestampSpan !== null && timestampSpan <= timestampToleranceMs,
++        funding_interval_checked: aligned[0]?.metric === "funding_rate" ? Boolean(aligned[0]?.settlement_period) : null,
++        units_checked: true,
++        multiplier_checked: true,
++        freshness_checked: true,
++        completeness_checked: true,
++        third_source_used: thirdSourceUsed,
++        majority_direction: majorityDirection,
++        resolution_status: unresolved ? "UNRESOLVED_THIRD_SOURCE_REQUIRED" : "THIRD_SOURCE_MAJORITY",
++        unresolved,
++      });
++    }
+     for (let i = 0; i < usable.length; i++) {
+       for (let j = i + 1; j < usable.length; j++) {
+         const a = usable[i], b = usable[j];
+         if (a.independence_group && b.independence_group && a.independence_group === b.independence_group) continue;
+-        if (a.primary_market_id && b.primary_market_id && a.primary_market_id !== b.primary_market_id) continue;
++        // Different venues legitimately have different levels. Their directional
++        // divergence is recorded once above and never averaged. Numeric conflicts
++        // below are only for independent observations of the same primary market.
++        if (!a.primary_market_id || !b.primary_market_id || a.primary_market_id !== b.primary_market_id) continue;
+         const ta = a.source_ts ?? a.observed_ts;
+         const tb = b.source_ts ?? b.observed_ts;
+         if (ta !== null && tb !== null && Math.abs(ta - tb) > timestampToleranceMs) continue;
+@@ -190,6 +281,9 @@ export function detectEvidenceConflicts(items = [], options = {}) {
+             abs_diff: absDiff,
+             rel_diff: relDiff,
+             timestamp_delta_ms: ta !== null && tb !== null ? Math.abs(ta - tb) : null,
++            cross_venue_divergence: false,
++            values_averaged: false,
++            resolution_status: "UNRESOLVED_SAME_MARKET_CONFLICT",
+             unresolved: true,
+           });
+         }
+@@ -207,9 +301,11 @@ export function summarizeDataQuality(items = [], conflicts = []) {
+   const chainsObserved = new Set(critical.map(e => e.chain));
+   const chainsWithUsableEvidence = new Set(usable.map(e => e.chain));
+   const stale = critical.filter(e => e.status === "STALE").length;
++  const rateLimited = critical.filter(e => e.status === "RATE_LIMITED" || e.source_health === "RATE_LIMITED" || e.error === "SOURCE_RATE_LIMITED").length;
++  const timedOut = critical.filter(e => e.status === "TIMEOUT" || e.error === "TIMEOUT").length;
+   const incompatible = critical.filter(e => e.status === "SOURCE_INCOMPATIBLE").length;
+   const future = critical.filter(e => e.status === "FUTURE").length;
+-  const notClosed = critical.filter(e => ["NOT_CLOSED","UNSUPPORTED","PARTIAL","FUTURE"].includes(e.status)).length;
++  const notClosed = critical.filter(e => !e.fallback_closed && ["NOT_CLOSED","UNSUPPORTED","PARTIAL","FUTURE","RATE_LIMITED","TIMEOUT"].includes(e.status)).length;
+   const unresolvedConflicts = conflicts.filter(c => c.unresolved).length;
+   const coverageValues = usable.map(e => e.coverage_pct).filter(v => v !== null);
+   const coveragePct = coverageValues.length ? coverageValues.reduce((a,b)=>a+b,0)/coverageValues.length : null;
+@@ -238,12 +334,16 @@ export function summarizeDataQuality(items = [], conflicts = []) {
+     observed_weight_pct: observedWeightPct,
+     average_coverage_pct: coveragePct,
+     stale_items: stale,
++    rate_limited_items: rateLimited,
++    timeout_items: timedOut,
+     future_items: future,
+     incompatible_items: incompatible,
+     not_closed_items: notClosed,
+     unresolved_conflicts: unresolvedConflicts,
+     uncertainty_flags: [
+       ...(stale ? ["STALE_EVIDENCE"] : []),
++      ...(rateLimited ? ["RATE_LIMIT_FALLBACK_REQUIRED"] : []),
++      ...(timedOut ? ["TIMEOUT_FALLBACK_REQUIRED"] : []),
+       ...(future ? ["FUTURE_EVIDENCE"] : []),
+       ...(incompatible ? ["SOURCE_OR_SYMBOL_INCOMPATIBLE"] : []),
+       ...(notClosed ? ["NOT_CLOSED_EVIDENCE"] : []),
+diff --git a/src/full-evidence-shadow-model.mjs b/src/full-evidence-shadow-model.mjs
+index c8ebce9..c23b549 100644
+--- a/src/full-evidence-shadow-model.mjs
++++ b/src/full-evidence-shadow-model.mjs
+@@ -1,4 +1,6 @@
+-const FULL_EVIDENCE_RULES_VERSION = "full-evidence-shadow-v1";
++import { buildFullEvidenceEnvelope } from "./full-evidence-contract.mjs";
++
++const FULL_EVIDENCE_RULES_VERSION = "full-evidence-shadow-v2-cross-venue-verification";
+
+ function finiteOrNull(value) {
+   if (value === null || value === undefined || value === "") return null;
+@@ -46,6 +48,10 @@ function compactEvidenceRow(row) {
+     independence_group: row?.independence_group || null,
+     primary_market_id: row?.primary_market_id || null,
+     settlement_period: row?.settlement_period || null,
++    contract_multiplier: row?.contract_multiplier ?? null,
++    reason_code: row?.reason_code || null,
++    fallback_closed: row?.fallback_closed === true,
++    source_health: row?.source_health || null,
+     conflict_status: row?.status === "CONFLICT" ? "CONFLICT" : null,
+     source_incompatible: row?.status === "SOURCE_INCOMPATIBLE" || row?.source_compatible === false,
+     not_closed: row?.status !== "CLOSED",
+@@ -54,7 +60,7 @@ function compactEvidenceRow(row) {
+   };
+ }
+
+-function htxEvidenceFromShadow(shadowDecision, nowTs) {
++function htxEvidenceFromShadow(shadowDecision, nowTs, { externalSpotFallback = false, externalSpotVenues = [] } = {}) {
+   const contract = textOrNull(shadowDecision?.contract) || "UNKNOWN";
+   const flags = shadowDecision?.evidence_flags || {};
+   const htxCoverage = finiteOrNull(shadowDecision?.dq?.htx_coverage_pct ?? flags?.htx_coverage_pct);
+@@ -113,13 +119,20 @@ function htxEvidenceFromShadow(shadowDecision, nowTs) {
+   ];
+   for (const [metric, rawValue, unit] of metrics) {
+     const value = finiteOrNull(rawValue);
++    const externalSpotClosesMetric = metric === "htx_spot_flow_delta_pct" && value === null && externalSpotFallback;
+     rows.push({
+       ...base,
+       metric,
+       value,
+       unit,
+       status: value === null ? "NOT_CLOSED" : "CLOSED",
+-      note: value === null ? "Metric absent in factual HTX shadow telemetry; not coerced to zero." : null,
++      fallback_closed: externalSpotClosesMetric,
++      reason_code: externalSpotClosesMetric ? "EXTERNAL_SPOT_FALLBACK_USED" : null,
++      note: value === null
++        ? (externalSpotClosesMetric
++          ? `HTX Spot отсутствует; внешний Spot подтверждён: ${externalSpotVenues.join(", ") || "EXTERNAL"}.`
++          : "Metric absent in factual HTX shadow telemetry; not coerced to zero.")
++        : null,
+     });
+   }
+
+@@ -172,10 +185,14 @@ function htxEvidenceFromShadow(shadowDecision, nowTs) {
+     value: spotFlow,
+     unit: "pct_of_turnover",
+     status: spotFlow === null ? "NOT_CLOSED" : "CLOSED",
++    fallback_closed: spotFlow === null && externalSpotFallback,
++    reason_code: spotFlow === null && externalSpotFallback ? "EXTERNAL_SPOT_FALLBACK_USED" : null,
+     independence_group: "HTX_OFFICIAL_SPOT",
+     primary_market_id: `${contract}:HTX:SPOT`,
+     note: spotFlow === null
+-      ? "HTX Spot factual flow is unavailable for this observation; Chain 3 cannot be fully closed from RS alone."
++      ? (externalSpotFallback
++        ? `HTX Spot отсутствует; внешний Spot подтверждён: ${externalSpotVenues.join(", ") || "EXTERNAL"}.`
++        : "HTX Spot factual flow is unavailable for this observation; Chain 3 cannot be fully closed from RS alone.")
+       : "Factual HTX Spot flow carried from shadow telemetry; no directional interpretation is applied here.",
+   });
+
+@@ -215,6 +232,12 @@ function chainStatus(envelope) {
+     const metrics = new Set(usable.map(row => row?.metric).filter(Boolean));
+     const venues = new Set(usable.map(row => row?.venue).filter(Boolean));
+     const reasons = [];
++    const unresolvedChainConflict = (envelope?.conflicts || []).some(conflict => {
++      if (conflict?.unresolved !== true) return false;
++      if (Array.isArray(conflict?.chains) && conflict.chains.includes(chain)) return true;
++      const sourceMetrics = Array.isArray(conflict?.source_metrics) ? conflict.source_metrics : [conflict?.metric];
++      return rows.some(row => sourceMetrics.includes(row?.metric));
++    });
+     let chainClosed = false;
+
+     if (chain === "HTX_EXECUTION") {
+@@ -231,6 +254,7 @@ function chainStatus(envelope) {
+       if (!oiTrajectory) reasons.push("OI_TRAJECTORY_NOT_CLOSED");
+       if (!priceTrajectory) reasons.push("PRICE_TRAJECTORY_NOT_CLOSED");
+       if (groups.size < 2) reasons.push("LOW_DERIVATIVES_SOURCE_INDEPENDENCE");
++      if (unresolvedChainConflict) reasons.push("UNRESOLVED_CROSS_VENUE_CONFLICT");
+       chainClosed = reasons.length === 0;
+     } else if (chain === "MARKET_STRENGTH_SPOT") {
+       const requiredRs = [
+@@ -245,6 +269,7 @@ function chainStatus(envelope) {
+       );
+       if (missingRs.length) reasons.push(`RS_WINDOWS_MISSING:${missingRs.join(",")}`);
+       if (!spotConfirmation) reasons.push("SPOT_CONFIRMATION_NOT_CLOSED");
++      if (unresolvedChainConflict) reasons.push("UNRESOLVED_CROSS_VENUE_CONFLICT");
+       chainClosed = reasons.length === 0;
+     } else {
+       // Chain 4/5 and gate/layer chains remain explicitly not closed unless a
+@@ -290,6 +315,7 @@ function compactAliasVerification(publicEvidence) {
+     okx_spot: take(v?.okx_spot),
+     gate_futures: take(v?.gate_futures),
+     binance_futures: take(v?.binance_futures),
++    binance_spot: take(v?.binance_spot),
+   };
+ }
+
+@@ -298,8 +324,22 @@ export function buildFullEvidenceShadowRecord({ shadow_decision, public_evidence
+   const publicEvidence = public_evidence || {};
+   const observedTs = finiteOrNull(shadow?.observed_ts) ?? finiteOrNull(publicEvidence?.observed_ts) ?? finiteOrNull(now) ?? Date.now();
+   const contract = textOrNull(shadow?.contract) || textOrNull(publicEvidence?.contract_code) || "UNKNOWN";
+-  const htxEvidence = htxEvidenceFromShadow({ ...shadow, contract }, observedTs);
+   const external = Array.isArray(publicEvidence?.evidence) ? publicEvidence.evidence : [];
++  const usableExternalSpot = external.filter(row =>
++    row?.chain === "MARKET_STRENGTH_SPOT" &&
++    row?.market_type === "SPOT" &&
++    row?.status === "CLOSED" &&
++    row?.error == null &&
++    row?.value != null &&
++    row?.asset_identity_verified === true
++  );
++  const externalSpotVenues = [...new Set(usableExternalSpot.map(row => row?.venue).filter(Boolean))].sort();
++  const externalSpotFallback = usableExternalSpot.length > 0 && finiteOrNull(shadow?.evidence_flags?.spot_flow_delta_pct) === null;
++  const htxEvidence = htxEvidenceFromShadow(
++    { ...shadow, contract },
++    observedTs,
++    { externalSpotFallback, externalSpotVenues },
++  );
+   const envelope = buildFullEvidenceEnvelope({
+     contract_code: contract,
+     observed_ts: observedTs,
+@@ -309,7 +349,7 @@ export function buildFullEvidenceShadowRecord({ shadow_decision, public_evidence
+   const weightedChains = Object.keys(envelope?.fixed_decision_weights || {});
+   const missingWeightedChains = weightedChains.filter(chain => status?.[chain]?.chain_closed !== true);
+   const compactEvidence = (envelope?.evidence || []).map(compactEvidenceRow);
+-  const fullId = `${observedTs}:${contract}:full-evidence-v1`;
++  const fullId = `${observedTs}:${contract}:full-evidence-v2`;
+
+   return {
+     full_evidence_id: fullId,
+@@ -328,6 +368,14 @@ export function buildFullEvidenceShadowRecord({ shadow_decision, public_evidence
+     missing_weighted_chains: missingWeightedChains,
+     data_quality: envelope?.data_quality || null,
+     conflicts: envelope?.conflicts || [],
++    cross_venue_verification: {
++      htx_spot_status: finiteOrNull(shadow?.evidence_flags?.spot_flow_delta_pct) === null ? "ABSENT_OR_UNAVAILABLE" : "CONFIRMED",
++      external_spot_status: usableExternalSpot.length ? "CONFIRMED" : "NOT_CLOSED",
++      external_spot_venues: externalSpotVenues,
++      fallback_used: externalSpotFallback,
++      reasons: externalSpotFallback ? ["EXTERNAL_SPOT_FALLBACK_USED"] : [],
++      unresolved_critical_conflict: (envelope?.conflicts || []).some(conflict => conflict?.unresolved === true),
++    },
+     alias_verification: compactAliasVerification(publicEvidence),
+     evidence_compact: compactEvidence,
+     cross_venue_derivatives_detail: publicEvidence?.cross_venue_derivatives_detail || null,
+@@ -365,6 +413,8 @@ export function buildFullEvidenceShadowRecord({ shadow_decision, public_evidence
+     safety: {
+       missing_data_coerced_to_zero: false,
+       cross_venue_dispersion_called_conflict: false,
++      cross_venue_divergence_preserved: true,
++      cross_venue_values_averaged: false,
+       strategy_weights_changed: false,
+       full_decision_eligible: false,
+       live_probability_generated: false,
+diff --git a/src/worker.js b/src/worker.js
+index 62fb4be..e76ea30 100644
+--- a/src/worker.js
++++ b/src/worker.js
+@@ -62,6 +62,14 @@ import {
+   smartMoneyRawEvidenceRows,
+ } from "./tz101-smart-money-evidence.mjs";
+
++import {
++  collectPublicFullEvidence as collectPublicFullEvidenceCrossVenue,
++} from "./public-evidence-adapters.mjs";
++
++import {
++  buildFullEvidenceShadowRecord as buildFullEvidenceShadowRecordCrossVenue,
++} from "./full-evidence-shadow-model.mjs";
++
+ const STAGE392_SHADOW_INTEGRATION_VERSION = "3.9.2-final-decision-shadow-lifecycle-hardening";
+ const TELEGRAM_SHADOW_BRIDGE_VERSION = "3.9.3-telegram-shadow-bridge";
+ const TELEGRAM_SHADOW_BODYFIX_VERSION = "3.9.3.1-telegram-shadow-bodyfix";
+@@ -15611,7 +15619,7 @@ async function buildDeepCheckInput(params, env) {
+   let publicEvidenceAvailableTs = null;
+   try {
+     publicEvidence =
+-      await collectPublicFullEvidence({
++      await collectPublicFullEvidenceCrossVenue({
+         contract_code: contract,
+         fetch_impl: fetch,
+         now_ts: now,
+@@ -15967,7 +15975,7 @@ async function buildDeepCheckInput(params, env) {
+   }
+
+   const fullEvidenceShadow =
+-    buildFullEvidenceShadowRecord({
++    buildFullEvidenceShadowRecordCrossVenue({
+       shadow_decision: shadowDecision,
+       public_evidence: publicEvidence,
+       now,
+@@ -18784,4 +18792,3 @@ async function __report2CloudByKProxy(request, env) {
+  const provider=await fetch(target.toString(),{method:"GET",headers:{accept:"application/json",authorization:`Bearer ${apiKey}`,"user-agent":"My-Report-2-HUB/4.1-github-proxy"}}); return new Response(provider.body,{status:provider.status,headers:{"content-type":provider.headers.get("content-type")||"application/json","cache-control":"no-store"}});
+ }
+ export default {...__REPORT2_ORIGINAL_HANDLER,async fetch(request,env,ctx){const url=new URL(request.url);if(url.pathname==="/cloud-bykaranteli-proxy")return __report2CloudByKProxy(request,env);if(typeof __REPORT2_ORIGINAL_HANDLER.fetch!=="function")return new Response("Not Found",{status:404});return __REPORT2_ORIGINAL_HANDLER.fetch(request,env,ctx);}};
+-
+diff --git a/src/report2-source-policy.mjs b/src/report2-source-policy.mjs
+index f0a87d8..b8601d1 100644
+--- a/src/report2-source-policy.mjs
++++ b/src/report2-source-policy.mjs
+@@ -1,4 +1,4 @@
+-export const REPORT2_SOURCE_POLICY_VERSION = 'report2-source-policy-v1';
++export const REPORT2_SOURCE_POLICY_VERSION = 'report2-source-policy-v2-cross-venue';
+ export const REPORT2_PROJECT_SCOPE = 'MY_REPORT_2';
+
+ // Runtime/autonomous sources embedded in the Worker. These are the only source
+@@ -8,10 +8,13 @@ export const REPORT2_RUNTIME_SOURCE_ALLOWLIST = Object.freeze(new Set([
+   'Bybit Public V5',
+   'OKX Public V5',
+   'Binance USD-M Public',
++  'Binance Spot Public',
+   'OKX Spot Public V5',
++  'Gate Public Futures',
+   'EXTERNAL_EVIDENCE_REQUIRED',
+   'HTX_TIMING_EXISTING_ONLY',
+   'ByKaranteli Smart Money Public API',
++  'Hyperliquid whale event recorder',
+ ]));
+
+ // Sources approved for the wider Report 2 orchestration layer. Presence in this
+diff --git a/src/v3-telegram-delivery-sidecar.mjs b/src/v3-telegram-delivery-sidecar.mjs
+index d2b2a13..50cde62 100644
+--- a/src/v3-telegram-delivery-sidecar.mjs
++++ b/src/v3-telegram-delivery-sidecar.mjs
+@@ -1,5 +1,6 @@
+ import {claimLifecycleDispatch,finalizeLifecycleDispatch,renderLifecycleForDispatch} from './v3-telegram-runtime.mjs';
+ import {renderPipelineHealthMessage,classifyHealthDelivery} from './v3-pipeline-health-runtime.mjs';
++import {buildPlainTextTelegramPayload} from '../plain-text-telegram.mjs';
+
+ export const V3_TELEGRAM_DELIVERY_SIDECAR_VERSION='v3-telegram-delivery-sidecar-shadow-v1';
+ export const V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET=Object.freeze({
+@@ -22,7 +23,7 @@ export async function sendLifecycleRelay({relay_url,relay_key,text:message,fetch
+   if(!url||!key||!msg)return {ok:false,network_result:'CONFIG_ERROR',status:'RELAY_NOT_CONFIGURED',message_id:null};
+   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),Math.max(1000,Number(timeout_ms)||8000));
+   try{
+-    const response=await fetch_impl(url,{method:'POST',headers:{'content-type':'application/json; charset=UTF-8',authorization:`Bearer ${key}`},body:JSON.stringify({text:msg}),signal:controller.signal});
++    const response=await fetch_impl(url,{method:'POST',headers:{'content-type':'application/json; charset=UTF-8',authorization:`Bearer ${key}`},body:JSON.stringify(buildPlainTextTelegramPayload(msg)),signal:controller.signal});
+     let body=null;try{body=await response.json();}catch{body=null;}
+     if(response.ok&&body?.ok===true)return {ok:true,network_result:'CONFIRMED_SENT',status:text(body.status)||'SENT',message_id:body.message_id??null,http_status:response.status};
+     if(response.status>=500)return {ok:false,network_result:'5XX',status:'RELAY_5XX',message_id:null,http_status:response.status};
+diff --git a/tests/public-evidence-adapters.test.mjs b/tests/public-evidence-adapters.test.mjs
+index 1a62fca..437406b 100644
+--- a/tests/public-evidence-adapters.test.mjs
++++ b/tests/public-evidence-adapters.test.mjs
+@@ -119,7 +119,7 @@ async function mockFetch(url){
+   if(url.includes("bybit.com/v5/market/instruments-info")) return jsonResponse({retCode:0,retMsg:"OK",result:{list:[{symbol:"ETHFIUSDT",baseCoin:"ETHFI",quoteCoin:"USDT",settleCoin:"USDT",contractType:"LinearPerpetual",status:"Trading",isPreListing:false,fundingInterval:"60"}]}});
+   if(url.includes("okx.com/api/v5/public/instruments") && url.includes("SWAP")) return jsonResponse({code:"0",msg:"",data:[{instId:"ETHFI-USDT-SWAP",instType:"SWAP",ctValCcy:"ETHFI",settleCcy:"USDT",state:"live"}]});
+   if(url.includes("okx.com/api/v5/public/instruments") && url.includes("SPOT")) return jsonResponse({code:"0",msg:"",data:[{instId:"ETHFI-USDT",instType:"SPOT",baseCcy:"ETHFI",quoteCcy:"USDT",state:"live"}]});
+-  if(url.includes("fapi.binance.com/fapi/v1/exchangeInfo")) return jsonResponse(binanceInfo);
++  if(url.includes("gateio.ws/api/v4/futures/usdt/contracts/")) return jsonResponse({name:"ETHFI_USDT",funding_interval:3600,in_delisting:false});
+   if(url.includes("bybit.com/v5/market/funding/history")) return jsonResponse({retCode:0,result:{list:[{fundingRateTimestamp:String(NOW-H),fundingRate:"-0.001"},{fundingRateTimestamp:String(NOW-2*H),fundingRate:"-0.0011"}]}});
+   if(url.includes("bybit.com/v5/market/open-interest")) return jsonResponse({retCode:0,result:{list:[{timestamp:String(NOW),openInterest:"121"},{timestamp:String(NOW-H),openInterest:"110"},{timestamp:String(NOW-2*H),openInterest:"100"}]}});
+   if(url.includes("bybit.com/v5/market/kline")) return jsonResponse({retCode:0,result:{list:Array.from({length:26},(_,i)=>[String(NOW-(i+1)*H),String(100+i),String(101+i),String(99+i),String(100+i),"1"])}});
+@@ -129,9 +129,14 @@ async function mockFetch(url){
+     const base=url.includes("BTC-USDT")?200:url.includes("ETH-USDT")?300:100;
+     return jsonResponse({code:"0",data:Array.from({length:26},(_,i)=>[String(NOW-(i+1)*H),String(base+i),String(base+i+1),String(base+i-1),String(base+i),"1","","","1"])});
+   }
+-  if(url.includes("fapi.binance.com/fapi/v1/fundingRate")) return jsonResponse([{fundingTime:NOW-2*H,fundingRate:"-0.0007"},{fundingTime:NOW-H,fundingRate:"-0.0008"}]);
+-  if(url.includes("fapi.binance.com/futures/data/openInterestHist")) return jsonResponse([{timestamp:NOW-2*H,sumOpenInterest:"100",sumOpenInterestValue:"1000"},{timestamp:NOW-H,sumOpenInterest:"110",sumOpenInterestValue:"1100"}]);
+-  if(url.includes("fapi.binance.com/fapi/v1/klines")) return jsonResponse(Array.from({length:26},(_,i)=>{const ts=NOW-(i+1)*H;return [ts,"1","2","0.5",String(1+i/100),"1",ts+H-1];}));
++  if(url.includes("gateio.ws/api/v4/futures/usdt/contract_stats")) return jsonResponse(Array.from({length:26},(_,i)=>({time:(NOW-(25-i)*H)/1000,open_interest:String(100+i),open_interest_usd:String(1000+i*10),mark_price:String(1+i/100),last_funding_rate:"-0.0008",long_taker_size:"60",short_taker_size:"40"})));
++  if(url.includes("gateio.ws/api/v4/futures/usdt/candlesticks")) return jsonResponse(Array.from({length:26},(_,i)=>({t:(NOW-(26-i)*H)/1000,o:"1",h:"2",l:"0.5",c:String(1+i/100),v:"10"})));
++  if(url.includes("api.binance.com/api/v3/exchangeInfo")) return jsonResponse({symbols:[{symbol:"ETHFIUSDT",baseAsset:"ETHFI",quoteAsset:"USDT",status:"TRADING",isSpotTradingAllowed:true,permissions:["SPOT"]}]});
++  if(url.includes("api.binance.com/api/v3/klines")) {
++    const base=url.includes("BTCUSDT")?200:url.includes("ETHUSDT")?300:100;
++    return jsonResponse(Array.from({length:26},(_,i)=>{const ts=NOW-(26-i)*H;return [ts,String(base+i),String(base+i+1),String(base+i-1),String(base+i),"10",ts+H-1,"",0,"6"];}));
++  }
++  if(url.includes("api.binance.com/api/v3/depth")) return jsonResponse({bids:[["99","10"],["98.8","5"]],asks:[["101","10"],["101.2","5"]]});
+   throw new Error(`unmocked ${url}`);
+ }
+ const ascii=await collectPublicFullEvidence({contract_code:"ETHFI-USDT",now_ts:NOW,fetch_impl:mockFetch});
+@@ -150,7 +155,7 @@ assert.equal(ascii.safety.strategy_weights_changed,false);
+ assert.equal(ascii.safety.missing_data_directional_penalty,false);
+ assert.ok(ascii._opportunity_hourly_candles.BYBIT_PERP.length >= 20);
+ assert.ok(ascii._opportunity_hourly_candles.OKX_PERP.length >= 20);
+-assert.ok(ascii._opportunity_hourly_candles.BINANCE_PERP.length >= 20);
++assert.ok(ascii._opportunity_hourly_candles.GATE_PERP.length >= 20);
+ assert.ok(ascii._opportunity_hourly_candles.OKX_SPOT.length >= 20);
+ assert.ok(ascii._opportunity_hourly_candles.BTC_SPOT.length >= 20);
+ assert.ok(ascii._opportunity_hourly_candles.ETH_SPOT.length >= 20);
+@@ -187,12 +192,16 @@ assert.match(apiErrorResult.alias_verification.bybit.fetch_error,/BYBIT_API_1000
+
+ const rateLimitResponse={ok:false,status:429,async json(){return {code:-1003,msg:"rate limited"};}};
+ async function rateLimitMock(url){
+-  if(url.includes("fapi.binance.com/fapi/v1/exchangeInfo")) return rateLimitResponse;
++  if(url.includes("okx.com/api/v5/public/instruments") && url.includes("SPOT")) return rateLimitResponse;
+   return mockFetch(url);
+ }
+ const rateLimited=await collectPublicFullEvidence({contract_code:"ETHFI-USDT",now_ts:NOW,fetch_impl:rateLimitMock});
+-assert.equal(rateLimited.alias_verification.binance_futures.status,"NOT_CLOSED");
+-assert.equal(rateLimited.alias_verification.binance_futures.http_status,429);
++assert.equal(rateLimited.alias_verification.okx_spot.status,"NOT_CLOSED");
++assert.equal(rateLimited.alias_verification.okx_spot.http_status,429);
++assert.equal(rateLimited.alias_verification.okx_spot.fetch_error,"SOURCE_RATE_LIMITED");
++assert.equal(rateLimited.alias_verification.binance_spot.verified,true);
++assert.equal(rateLimited.spot_verification.fallback_used,true);
++assert.ok(rateLimited.evidence.some(row=>row.reason_code==="EXTERNAL_SPOT_FALLBACK_USED" && row.value!==0));
+
+ async function timeoutMock(url){
+   if(url.includes("okx.com/api/v5/public/instruments")) { const e=new Error("aborted"); e.name="AbortError"; throw e; }
+diff --git a/tests/report2-source-isolation.test.mjs b/tests/report2-source-isolation.test.mjs
+index 8882749..dfc1230 100644
+--- a/tests/report2-source-isolation.test.mjs
++++ b/tests/report2-source-isolation.test.mjs
+@@ -21,10 +21,13 @@ const expectedRuntimeSources = [
+   'Bybit Public V5',
+   'OKX Public V5',
+   'Binance USD-M Public',
++  'Binance Spot Public',
+   'OKX Spot Public V5',
++  'Gate Public Futures',
+   'EXTERNAL_EVIDENCE_REQUIRED',
+   'HTX_TIMING_EXISTING_ONLY',
+   'ByKaranteli Smart Money Public API',
++  'Hyperliquid whale event recorder',
+ ];
+ for (const source of expectedRuntimeSources) {
+   assert.equal(isReport2RuntimeSourceAllowed(source), true, `runtime source must be allowlisted: ${source}`);
+diff --git a/tests/bounded-deep-check.test.mjs b/tests/bounded-deep-check.test.mjs
+index 4ed0ced..1cfe7b4 100644
+--- a/tests/bounded-deep-check.test.mjs
++++ b/tests/bounded-deep-check.test.mjs
+@@ -19,7 +19,7 @@ const workerSourceRaw =
+   );
+
+ const workerSource = workerSourceRaw.replace(
+-  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/v3-live-handoff\.mjs";\n\n)?import \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?/,
++  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/v3-live-handoff\.mjs";\n\n)?import \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/public-evidence-adapters\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/full-evidence-shadow-model\.mjs";\n\n)?/,
+   `const FAST_MOVE_WATCH_VERSION = "3.8-fast-move-watch-shadow";
+    const FAST_MOVE_WATCH_STATUS = "ACTIVE_SHADOW_BOUNDED_NO_EXECUTION";
+    const buildFastMoveDeepObservation = () => null;
+@@ -43,7 +43,9 @@ const workerSource = workerSourceRaw.replace(
+    const runTz101PublicationShadow = async () => ({ status: "TEST_STUB", sidecar_persisted: false });
+    const validateByKaranteliProxyTarget = () => ({ allowed: true });
+    const fetchByKaranteliSmartMoneyRaw = async () => ({ status: "NOT_CLOSED", external_fetches: 0, score_eligible: false, directional_vote_eligible: false });
+-   const smartMoneyRawEvidenceRows = () => [];\n\n`,
++   const smartMoneyRawEvidenceRows = () => [];
++   const collectPublicFullEvidenceCrossVenue = async () => ({ evidence: [] });
++   const buildFullEvidenceShadowRecordCrossVenue = () => ({ status: "TEST_STUB" });\n\n`,
+ );
+
+ assert.notEqual(workerSource, workerSourceRaw, "Stage 3.8 import test adapter must match exactly once");
+diff --git a/tests/deep-check-journal.test.mjs b/tests/deep-check-journal.test.mjs
+index 0b78e80..9fce4c5 100644
+--- a/tests/deep-check-journal.test.mjs
++++ b/tests/deep-check-journal.test.mjs
+@@ -14,7 +14,7 @@ const workerSourceRaw =
+   );
+
+ const workerSource = workerSourceRaw.replace(
+-  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?/,
++  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/public-evidence-adapters\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/full-evidence-shadow-model\.mjs";\n\n)?/,
+   `const FAST_MOVE_WATCH_VERSION = "3.8-fast-move-watch-shadow";
+    const FAST_MOVE_WATCH_STATUS = "ACTIVE_SHADOW_BOUNDED_NO_EXECUTION";
+    const buildFastMoveDeepObservation = () => null;
+@@ -36,7 +36,9 @@ const workerSource = workerSourceRaw.replace(
+    const runTz101PublicationShadow = async () => ({ status: "TEST_STUB", sidecar_persisted: false });
+    const validateByKaranteliProxyTarget = () => ({ allowed: true });
+    const fetchByKaranteliSmartMoneyRaw = async () => ({ status: "NOT_CLOSED", external_fetches: 0, score_eligible: false, directional_vote_eligible: false });
+-   const smartMoneyRawEvidenceRows = () => [];\n\n`,
++   const smartMoneyRawEvidenceRows = () => [];
++   const collectPublicFullEvidenceCrossVenue = async () => ({ evidence: [] });
++   const buildFullEvidenceShadowRecordCrossVenue = () => ({ status: "TEST_STUB" });\n\n`,
+ );
+
+ assert.notEqual(workerSource, workerSourceRaw, "Stage 3.8 import test adapter must match exactly once");
+diff --git a/tests/discovery-recall-ab.test.mjs b/tests/discovery-recall-ab.test.mjs
+index c74e7c9..d06fdc5 100644
+--- a/tests/discovery-recall-ab.test.mjs
++++ b/tests/discovery-recall-ab.test.mjs
+@@ -3,8 +3,8 @@ import fs from "node:fs";
+
+ const root = new URL("../src/", import.meta.url);
+ const stubImports = (raw) => raw.replace(
+-  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?/,
+-  `const FAST_MOVE_WATCH_VERSION="TEST";const FAST_MOVE_WATCH_STATUS="TEST";const buildFastMoveDeepObservation=()=>null;const prepareFastMoveWatchCycle=async({discovery_prefilter})=>({adaptive_discovery_prefilter:discovery_prefilter});const finalizeFastMoveWatchCycle=async()=>({});const fastMoveWatchDataPlaneSummary=async()=>({});const OPPORTUNITY_VERSION="TEST";const buildOpportunityJournalPrefilter=x=>x;const opportunityDataPlaneSummary=async()=>({});const runOpportunityShadowCycle=async()=>({});const selectOpportunityJournalCandidate=async()=>({status:"NO"});const MULTI_WAVE_VERSION="TEST";const multiWaveCampaignDataPlaneSummary=async()=>({});const runMultiWaveCampaignShadowCycle=async()=>({});const prepareFullEvidenceProofBundle=()=>({});const sealFullEvidenceProofBundleAfterAck=()=>({});const stage392ProofSafetyEnvelope=()=>({});const evaluateFinalDecisionUpstreamCompatibility=()=>({});const adaptStage391ToFinalDecisionInput=()=>({});const persistFinalDecisionIntegrationShadow=async()=>({});const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false});const validateByKaranteliProxyTarget=()=>({allowed:true});const fetchByKaranteliSmartMoneyRaw=async()=>({status:"NOT_CLOSED",external_fetches:0,score_eligible:false,directional_vote_eligible:false});const smartMoneyRawEvidenceRows=()=>[];\n\n`
++  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/public-evidence-adapters\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/full-evidence-shadow-model\.mjs";\n\n)?/,
++  `const FAST_MOVE_WATCH_VERSION="TEST";const FAST_MOVE_WATCH_STATUS="TEST";const buildFastMoveDeepObservation=()=>null;const prepareFastMoveWatchCycle=async({discovery_prefilter})=>({adaptive_discovery_prefilter:discovery_prefilter});const finalizeFastMoveWatchCycle=async()=>({});const fastMoveWatchDataPlaneSummary=async()=>({});const OPPORTUNITY_VERSION="TEST";const buildOpportunityJournalPrefilter=x=>x;const opportunityDataPlaneSummary=async()=>({});const runOpportunityShadowCycle=async()=>({});const selectOpportunityJournalCandidate=async()=>({status:"NO"});const MULTI_WAVE_VERSION="TEST";const multiWaveCampaignDataPlaneSummary=async()=>({});const runMultiWaveCampaignShadowCycle=async()=>({});const prepareFullEvidenceProofBundle=()=>({});const sealFullEvidenceProofBundleAfterAck=()=>({});const stage392ProofSafetyEnvelope=()=>({});const evaluateFinalDecisionUpstreamCompatibility=()=>({});const adaptStage391ToFinalDecisionInput=()=>({});const persistFinalDecisionIntegrationShadow=async()=>({});const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false});const validateByKaranteliProxyTarget=()=>({allowed:true});const fetchByKaranteliSmartMoneyRaw=async()=>({status:"NOT_CLOSED",external_fetches:0,score_eligible:false,directional_vote_eligible:false});const smartMoneyRawEvidenceRows=()=>[];const collectPublicFullEvidenceCrossVenue=async()=>({evidence:[]});const buildFullEvidenceShadowRecordCrossVenue=()=>({status:"TEST_STUB"});\n\n`
+ );
+ async function load(name){
+   const raw=fs.readFileSync(new URL(name,root),"utf8");
+diff --git a/tests/discovery-recall-upgrade.test.mjs b/tests/discovery-recall-upgrade.test.mjs
+index b459290..aa2d8e4 100644
+--- a/tests/discovery-recall-upgrade.test.mjs
++++ b/tests/discovery-recall-upgrade.test.mjs
+@@ -4,7 +4,7 @@ import fs from "node:fs";
+ const workerPath = new URL("../src/worker.js", import.meta.url);
+ const raw = fs.readFileSync(workerPath, "utf8");
+ const source = raw.replace(
+-  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n/,
++  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/public-evidence-adapters\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/full-evidence-shadow-model\.mjs";\n\n)?/,
+   `const FAST_MOVE_WATCH_VERSION = "TEST";
+    const FAST_MOVE_WATCH_STATUS = "TEST";
+    const buildFastMoveDeepObservation = () => null;
+@@ -24,7 +24,7 @@ const source = raw.replace(
+    const stage392ProofSafetyEnvelope = () => ({ status: "TEST" });
+    const evaluateFinalDecisionUpstreamCompatibility = () => ({ status: "TEST" });
+    const adaptStage391ToFinalDecisionInput = () => ({ status: "TEST" });
+-   const persistFinalDecisionIntegrationShadow = async () => ({ status: "TEST" });const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false}); const validateByKaranteliProxyTarget=()=>({ok:true}); const fetchByKaranteliSmartMoneyRaw=async()=>({status:"UNKNOWN",score_eligible:false,directional_vote_eligible:false}); const smartMoneyRawEvidenceRows=()=>[];\n\n`
++   const persistFinalDecisionIntegrationShadow = async () => ({ status: "TEST" });const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false}); const validateByKaranteliProxyTarget=()=>({ok:true}); const fetchByKaranteliSmartMoneyRaw=async()=>({status:"UNKNOWN",score_eligible:false,directional_vote_eligible:false}); const smartMoneyRawEvidenceRows=()=>[]; const collectPublicFullEvidenceCrossVenue=async()=>({evidence:[]}); const buildFullEvidenceShadowRecordCrossVenue=()=>({status:"TEST_STUB"});\n\n`
+ );
+ assert.notEqual(source, raw);
+ const testable = source + `\nexport { buildDeepCheckQueue, buildDiscoveryPrefilter, compactStage0Payload };\n`;
+diff --git a/tests/worker-opportunity-inputs.test.mjs b/tests/worker-opportunity-inputs.test.mjs
+index 885d371..1c953f2 100644
+--- a/tests/worker-opportunity-inputs.test.mjs
++++ b/tests/worker-opportunity-inputs.test.mjs
+@@ -4,7 +4,7 @@ import fs from "node:fs";
+ const workerPath = new URL("../src/worker.js", import.meta.url);
+ const raw = fs.readFileSync(workerPath, "utf8");
+ const source = raw.replace(
+-  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n/,
++  /^import \{[\s\S]*?\} from "\.\/fast-move-watch-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/opportunity-intelligence-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/multi-wave-campaign-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/stage392-proof-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-upstream-compat-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-adapter\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/final-decision-integration-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-publication-runtime\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-byk-proxy-policy\.mjs";\n\nimport \{[\s\S]*?\} from "\.\/tz101-smart-money-evidence\.mjs";\n\n(?:import \{[\s\S]*?\} from "\.\/public-evidence-adapters\.mjs";\n\n)?(?:import \{[\s\S]*?\} from "\.\/full-evidence-shadow-model\.mjs";\n\n)?/,
+   `const FAST_MOVE_WATCH_VERSION = "TEST";
+    const FAST_MOVE_WATCH_STATUS = "TEST";
+    const buildFastMoveDeepObservation = () => null;
+@@ -24,7 +24,7 @@ const source = raw.replace(
+    const stage392ProofSafetyEnvelope = () => ({ status: "TEST_STUB" });
+    const evaluateFinalDecisionUpstreamCompatibility = () => ({ status: "TEST_STUB" });
+    const adaptStage391ToFinalDecisionInput = () => ({ status: "TEST_STUB" });
+-   const persistFinalDecisionIntegrationShadow = async () => ({ status: "TEST_STUB" });const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false}); const validateByKaranteliProxyTarget=()=>({ok:true}); const fetchByKaranteliSmartMoneyRaw=async()=>({status:"UNKNOWN",score_eligible:false,directional_vote_eligible:false}); const smartMoneyRawEvidenceRows=()=>[];\n\n`,
++   const persistFinalDecisionIntegrationShadow = async () => ({ status: "TEST_STUB" });const runTz101PublicationShadow=async()=>({status:"TEST_STUB",sidecar_persisted:false}); const validateByKaranteliProxyTarget=()=>({ok:true}); const fetchByKaranteliSmartMoneyRaw=async()=>({status:"UNKNOWN",score_eligible:false,directional_vote_eligible:false}); const smartMoneyRawEvidenceRows=()=>[]; const collectPublicFullEvidenceCrossVenue=async()=>({evidence:[]}); const buildFullEvidenceShadowRecordCrossVenue=()=>({status:"TEST_STUB"});\n\n`,
+ );
+ assert.notEqual(source, raw, "worker import adapter must match once");
+

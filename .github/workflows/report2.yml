@@ -39,7 +39,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83"
+      REPORT2_EXPECTED_WORKER_SHA: "5eeb4e84c8158455112333ba0f2e53c23e21e612726fffafc30da6878fa69b46"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -90,9 +90,11 @@ jobs:
           cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
           cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
           cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
+          cp runner/plain-text-telegram.mjs runtime/plain-text-telegram.mjs
           cp runner/telegram-output.mjs runtime/telegram-output.mjs
           cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
           node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"

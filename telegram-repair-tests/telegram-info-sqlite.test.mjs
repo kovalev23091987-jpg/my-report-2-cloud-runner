@@ -25,7 +25,7 @@ test('morning test uses compatible category and confirmed receipt, exactly one n
  const again=await run(db,{reportTest:true,infoTestId:ID,source:'workflow_dispatch'});assert.equal(again.calls.length,0);assert.equal(again.out.morning.delivery_confirmed,true);assert.equal(again.out.morning.sent,false);db.close();
 });
 test('LONG and SHORT WAIT symmetry, exact Unicode identity and no guessed alias',async()=>{
- for(const d of ['LONG','SHORT'])for(const contract of ['RAY-USDT','币安人生-USDT']) {const db=new SQLiteDB();db.add(candidate(d,{contract}));const {out,calls}=await run(db);assert.equal(out.early_info.sent,true);assert.equal(calls.length,1);assert.match(calls[0].text,/🟡 ЖДЁМ/);assert.doesNotMatch(calls[0].text,/73|\/100|ПЕРЕЗАХОД/);assert.equal(out.early_info.contract,contract);db.close();}
+ for(const d of ['LONG','SHORT'])for(const contract of ['RAY-USDT','币安人生-USDT']) {const db=new SQLiteDB();db.add(candidate(d,{contract}));const {out,calls}=await run(db);assert.equal(out.early_info.sent,true);assert.equal(calls.length,1);assert.deepEqual(Object.keys(calls[0]),['text']);assert.match(calls[0].text,/🟡 ЖДЁМ/);assert.match(calls[0].text,/Оценка: 73 из 100/);assert.doesNotMatch(calls[0].text,/ПЕРЕЗАХОД/);assert.equal(out.early_info.contract,contract);db.close();}
  for(const contract of [' RAY-USDT','RAY\u202E-USDT','ＲＡＹ-USDT'])assert.equal(normalizeInfoRow(candidate('LONG',{contract}),NOW),null);
 });
 test('missing/null/stale/future/malformed facts never become valid rows in loader or builders',async()=>{

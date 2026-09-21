@@ -1,7 +1,7 @@
 name: Telegram candidate validation
 on:
   push:
-    branches: ['telegram-info-fix/*']
+    branches: ['cross-venue-no-visuals-delta-*']
 permissions:
   contents: read
 concurrency:
@@ -17,11 +17,13 @@ jobs:
       REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
       - name: Verify exact protected checkpoint and candidate hashes
-        run: node runner/validate-v2-tz101-candidate.mjs
+        run: node runner/validate-cross-venue-delta-candidate.mjs
       - name: Decrypt exact baseline and apply checked ephemeral overlays
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -33,20 +35,36 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
-          node tz101-shadow-overlay/apply-runtime-overlay.mjs runtime
-          node tz101-shadow-overlay/apply-runtime-overlay.mjs runtime
-          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runtime/
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
           cp -R telegram-repair-tests runtime/telegram-repair-tests
-          cp tz101-shadow-overlay/tests/*.mjs runtime/tests/
-          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = "1bf1012db1e1f7913d8dd132f7ad95bab7e2c914f2f5f9ece2eb313811a1dd12"
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = "5eeb4e84c8158455112333ba0f2e53c23e21e612726fffafc30da6878fa69b46"
           test "$(sha256sum runtime/src/v3-early-sidecar.mjs | awk '{print $1}')" = "50a4d790428c1322b455d9f393dfa0f8139d98a3527632351d76156ea4afd676"
           test "$(sha256sum runtime/src/v3-telegram-lifecycle-sidecar.mjs | awk '{print $1}')" = "c2cd8e06a4734da2ca8377e8b8591caeee97446daa4d75c2ee77f6c9a2202a33"
-      - name: Complete Telegram and TZ 10.1 regression suites - no writes or messages
+      - name: Complete delta, Telegram and existing regression suites - no writes or messages
         working-directory: runtime
         shell: bash
         run: |
           set -Eeuo pipefail
           node --check runner-main.mjs
+          node --check src/worker.js
+          node --test --test-reporter=tap \
+            tests/cross-venue-delta.test.mjs \
+            tests/public-evidence-adapters.test.mjs \
+            tests/full-evidence-contract.test.mjs \
+            tests/full-evidence-shadow-model.test.mjs \
+            tests/report2-source-isolation.test.mjs > cross-venue-delta-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' \
+            ! -name 'htx-liquidation-budget.test.mjs' \
+            ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' \
+            ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' \
+            -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
           node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
           node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
           node --test --test-reporter=tap \
@@ -56,7 +74,7 @@ jobs:
             tests/tz101-publication-wiring-static.test.mjs \
             tests/tz101-scenario-plan.test.mjs \
             tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
-          echo TELEGRAM_V2_TZ101_CANDIDATE_TESTS_PASS
+          echo CROSS_VENUE_NO_VISUALS_DELTA_TESTS_PASS
       - name: Bounded read-only production diagnosis
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
@@ -70,6 +88,8 @@ jobs:
           path: |
             runtime/telegram-candidate-tests.tap
             runtime/telegram-final-chain.txt
+            runtime/cross-venue-delta-tests.tap
+            runtime/runtime-regression-tests.tap
             runtime/tz101-candidate-tests.tap
             telegram-readonly-diagnosis.json
           retention-days: 14

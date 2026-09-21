@@ -170,8 +170,12 @@ assert.match(built.message,/AAA\n🟢 ЛОНГ\n✅ МОЖНО ВХОДИТЬ С
 assert.match(built.message,/Вход: 100–101/);
 assert.match(built.message,/Выход: 108/);
 assert.match(built.message,/Отмена идеи: 97/);
+assert.match(built.message,/Оценка: 78 из 100/);
+assert.match(built.message,/Это балл модели, не вероятность успеха/);
+assert.match(built.message,/Срочный рынок: 28\/35/);
+assert.match(built.message,/Ставка: -0\.0200% за 8 ч; лонг получает/);
 assert.match(built.message,/Решение принимаешь ты; сделка автоматически не открывается\./);
-assert.doesNotMatch(built.message,/Оценка\s*:|78\s+из\s+100|Ставка:|ставка финансирования поддерживает|ставка финансирования может ослабить|funding|ПРОПУСТИТЬ|ПЕРЕЗАХОД/i);
+assert.doesNotMatch(built.message,/ставка финансирования поддерживает|ставка финансирования может ослабить|funding|ПРОПУСТИТЬ|ПЕРЕЗАХОД/i);
 
 const positiveRow=observer("2");
 const positiveCtx=sidecar(positiveRow,{funding:{rate_pct:0.015,interval_hours:8,observed_ts:positiveRow.observation_ts-40_000}});
@@ -179,7 +183,10 @@ const posExtract=extractExactScoreContext(positiveRow,positiveCtx,70,now);
 assert.equal(posExtract.ok,true,posExtract.status);
 const posMsg=buildFinalChainTelegramMessage(positiveRow,posExtract.context,{now}).message;
 assert.match(posMsg,/Почему интересно: данные срочного рынка и сила монеты относительно рынка подтверждают текущую область входа\./);
-assert.doesNotMatch(posMsg,/Оценка\s*:|Ставка:|вероятност|ПРОПУСТИТЬ|ПЕРЕЗАХОД/i);
+assert.match(posMsg,/Оценка: 78 из 100/);
+assert.match(posMsg,/Ставка: \+0\.0150% за 8 ч; лонг платит/);
+assert.match(posMsg,/не вероятность успеха/);
+assert.doesNotMatch(posMsg,/ПРОПУСТИТЬ|ПЕРЕЗАХОД/i);
 
 // No sidecar context: fail closed. No neighboring score query is allowed.
 const noContext=observer("3");

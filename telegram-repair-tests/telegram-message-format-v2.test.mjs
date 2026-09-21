@@ -21,12 +21,14 @@ const reasonWords=message=>{
   return [...line.replace(/^Почему интересно:\s*/,'').matchAll(/\p{L}+/gu)].length;
 };
 
-test('internal threshold is 70, but no score or probability is rendered',()=>{
+test('the 100-point score is rendered explicitly and never called a probability',()=>{
   assert.equal(INFO_MIN_SCORE,70);
   assert.equal(normalizeInfoRow(row('LONG',{early_detection_quality_0_100:69}),NOW),null);
   assert.ok(normalizeInfoRow(row('LONG',{early_detection_quality_0_100:70}),NOW));
   const message=buildObserveInformationalMessage(row(),{now:NOW}).message;
-  assert.doesNotMatch(message,/\b(?:70|73)\b|\/100|процент|вероятност|оценк/iu);
+  assert.match(message,/Оценка: 73 из 100/iu);
+  assert.match(message,/балл модели, не вероятность/iu);
+  assert.match(message,/Снимок рынка:/u);
 });
 
 test('compact LONG and SHORT layout is symmetric: coin, colour, WAIT and one reason',()=>{
@@ -37,9 +39,11 @@ test('compact LONG and SHORT layout is symmetric: coin, colour, WAIT and one rea
   assert.match(short.message,/RAY\n🔴 ШОРТ\n🟡 ЖДЁМ/);
   for(const message of [long.message,short.message]){
     assert.match(message,/Раннее наблюдение — НЕ ТОРГОВЫЙ СИГНАЛ/);
+    assert.match(message,/Статус: новое раннее наблюдение текущего цикла, не финальный сигнал/);
+    assert.ok((message.match(/^• /gmu)||[]).length>=3);
     assert.equal((message.match(/Почему интересно:/g)||[]).length,1);
     assert.ok(reasonWords(message)>=10&&reasonWords(message)<=15,reasonWords(message));
-    assert.doesNotMatch(message,/предварительн|внутренняя оценка|OI_ACCELERATION|RELATIVE_STRENGTH|ПЕРЕЗАХОД/iu);
+    assert.doesNotMatch(message,/OI_ACCELERATION|RELATIVE_STRENGTH|ПЕРЕЗАХОД/iu);
   }
 });
 

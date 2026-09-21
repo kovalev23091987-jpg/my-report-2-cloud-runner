@@ -22,10 +22,10 @@ const context=(direction='LONG',extra={})=>({
   schema:'telegram-final-context-v1',score_semantics:'FOUR_BLOCK_35_30_20_15_V1',direction,
   valid_until_ts:NOW+300_000,score_lower_bound:78,score_upper_bound:82,
   weighted_blocks:[
-    {id:'DERIVATIVES_CROSS_VENUE',contribution_lower:25},
-    {id:'RELATIVE_STRENGTH_SPOT',contribution_lower:21},
-    {id:'SMART_MONEY_ONCHAIN',contribution_lower:17},
-    {id:'SUPPORTING_RISK',contribution_lower:15},
+    {id:'DERIVATIVES_CROSS_VENUE',weight:35,contribution_lower:25,contribution_upper:27},
+    {id:'RELATIVE_STRENGTH_SPOT',weight:30,contribution_lower:21,contribution_upper:22},
+    {id:'SMART_MONEY_ONCHAIN',weight:20,contribution_lower:17,contribution_upper:18},
+    {id:'SUPPORTING_RISK',weight:15,contribution_lower:15,contribution_upper:15},
   ],
   entry:{area:'1,20–1,23 USDT',target:'1,35 USDT',invalidation:'1,14 USDT'},
   funding:{rate_pct:0.01,interval_hours:8,observed_ts:NOW-60_000},
@@ -43,8 +43,10 @@ test('entry notification is explicit, compact and contains real entry/exit/inval
     assert.equal(built.ok,true,built.status);
     assert.match(built.message,direction==='LONG'?/RAY\n🟢 ЛОНГ\n✅ МОЖНО ВХОДИТЬ СЕЙЧАС/:/RAY\n🔴 ШОРТ\n✅ МОЖНО ВХОДИТЬ СЕЙЧАС/);
     assert.match(built.message,/Вход: 1,20–1,23 USDT/);assert.match(built.message,/Выход: 1,35 USDT/);assert.match(built.message,/Отмена идеи: 1,14 USDT/);
+    assert.match(built.message,/Оценка: 78–82 из 100/);assert.match(built.message,/балл модели, не вероятность успеха/);
+    assert.match(built.message,/Срочный рынок: 25–27\/35/);assert.match(built.message,/Снимок рынка:/);
     assert.ok(reasonWords(built.message)>=10&&reasonWords(built.message)<=15,reasonWords(built.message));
-    assert.doesNotMatch(built.message,/Оценка\s*:|\b(?:78|82)\s*\/\s*100\b|вероятност|ПРОПУСТИТЬ|ПЕРЕЗАХОД/iu);
+    assert.doesNotMatch(built.message,/\b(?:78|82)\s*\/\s*100\b|вероятность успеха составляет|ПРОПУСТИТЬ|ПЕРЕЗАХОД/iu);
   }
 });
 
