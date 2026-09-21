@@ -65,6 +65,7 @@ const manifest = JSON.parse(fs.readFileSync(path.join(root, "cross-venue-delta-o
 if (manifest.productionBaseCommit !== productionBase) refuse("MANIFEST_BASE_MISMATCH");
 if (manifest.expectedWorkerSha256 !== expectedWorker) refuse("MANIFEST_WORKER_MISMATCH");
 if (sha("cross-venue-delta-overlay/runtime.patch") !== manifest.patchSha256) refuse("MANIFEST_PATCH_HASH_MISMATCH");
+if (sha("cross-venue-delta-overlay/runtime-files.tar.gz") !== manifest.payloadSha256) refuse("MANIFEST_PAYLOAD_HASH_MISMATCH");
 const workerEntry = manifest.files.find((entry) => entry.path === "src/worker.js");
 if (workerEntry?.beforeSha256 !== "7a3c73770e516db9e7ef17ca3e582947769c0fa3f8cb2814e915ee0303695a83" || workerEntry?.afterSha256 !== expectedWorker) refuse("WORKER_TRANSITION_MISMATCH");
 
