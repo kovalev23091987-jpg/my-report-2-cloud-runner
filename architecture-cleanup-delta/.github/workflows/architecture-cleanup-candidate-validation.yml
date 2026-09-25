@@ -1,0 +1,204 @@
+name: Architecture cleanup candidate validation
+on:
+  push:
+    branches: ['architecture-cleanup-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: architecture-cleanup-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact V4 parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          V4='bc6eb86a135187271b3a8af85ad90e557505b8c6'
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$V4"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$V4" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do
+            case "$p" in
+              architecture-cleanup-delta/*|.github/workflows/architecture-cleanup-candidate-validation.yml) ;;
+              *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41 ;;
+            esac
+          done
+          echo ARCHITECTURE_EXACT_PARENT_AND_ALLOWLIST_PASS
+      - name: Reconstruct exact production runtime base twice
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime-base
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime-base/payload.tar.gz
+          tar -xzf runtime-base/payload.tar.gz -C runtime-base
+          rm runtime-base/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime-base runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime-base
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime-base
+          test "$(sha256sum runtime-base/src/worker.js | awk '{print $1}')" = "5eeb4e84c8158455112333ba0f2e53c23e21e612726fffafc30da6878fa69b46"
+          cp -a runtime-base runtime-sequential
+          cp -a runtime-base runtime-canonical
+          echo PRODUCTION_RUNTIME_BASE_RECONSTRUCTION_PASS
+      - name: Build sequential retained runtime plus architecture cleanup
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node unified-entry-signal-delta/overlay/apply-unified-runtime-overlay.mjs runtime-sequential
+          node free-sources-delta/overlay/apply-free-sources-runtime-overlay.mjs runtime-sequential
+          node architecture-cleanup-delta/overlay/apply-architecture-cleanup-overlay.mjs runtime-sequential
+          node architecture-cleanup-delta/overlay/apply-architecture-cleanup-overlay.mjs runtime-sequential
+          echo SEQUENTIAL_ARCHITECTURE_RUNTIME_PASS
+      - name: Build one canonical final layer directly from production base
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime-canonical
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime-canonical
+          node - <<'NODE'
+          const p=require('./runtime-canonical/canonical-final-overlay-proof.json');
+          if(p.production_changed||p.d1_migration||p.telegram_send||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.hard_gates_changed||p.strategy_weights_changed||p.thresholds_changed||p.automatic_execution||p.validated_signal||p.live_probability||p.new_sources_added||p.single_worker_copy!==true)process.exit(42);
+          console.log('CANONICAL_FINAL_LAYER_SAFETY_PASS');
+          NODE
+          echo CANONICAL_FINAL_LAYER_PASS
+      - name: Prove canonical layer equals sequential overlays exactly
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, json
+          def hashes(root):
+              out={}
+              for p in sorted((Path(root)/'src').glob('*')):
+                  if p.is_file(): out[p.name]=hashlib.sha256(p.read_bytes()).hexdigest()
+              return out
+          a=hashes('runtime-sequential'); b=hashes('runtime-canonical')
+          if a!=b:
+              keys=sorted(set(a)|set(b)); diff={k:[a.get(k),b.get(k)] for k in keys if a.get(k)!=b.get(k)}
+              print(json.dumps(diff,indent=2)); raise SystemExit(43)
+          Path('canonical-equivalence-proof.json').write_text(json.dumps({'status':'PASS','files':a},indent=2)+'\n')
+          print('CANONICAL_EQUIVALENCE_PASS',len(a))
+          PY
+      - name: Prepare final runtime test harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime-canonical/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime-canonical/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime-canonical/
+          cp -R telegram-repair-tests runtime-canonical/telegram-repair-tests
+          echo FINAL_RUNTIME_HARNESS_PASS
+      - name: Architecture cleanup focused tests
+        shell: bash
+        env:
+          REPORT2_ARCH_RUNTIME_DIR: runtime-canonical
+        run: |
+          set -Eeuo pipefail
+          node --check runtime-canonical/src/worker.js
+          node --check runtime-canonical/src/capability-registry.mjs
+          node --check runtime-canonical/src/source-registry.mjs
+          node --check runtime-canonical/src/reason-registry.mjs
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-cleanup-tests.tap
+          grep -F '# fail 0' architecture-cleanup-tests.tap >/dev/null
+          echo ARCHITECTURE_CLEANUP_FOCUSED_PASS
+      - name: Retain Free Sources and Unified focused suites
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained-tests.tap
+          grep -F '# fail 0' free-sources-retained-tests.tap >/dev/null
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime-canonical/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained-tests.tap
+          grep -F '# fail 0' unified-retained-tests.tap >/dev/null
+          echo RETAINED_FOCUSED_SUITES_PASS
+      - name: Cross venue and inherited active regression on canonical runtime
+        working-directory: runtime-canonical
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap tests/cross-venue-delta.test.mjs tests/public-evidence-adapters.test.mjs tests/full-evidence-contract.test.mjs tests/full-evidence-shadow-model.test.mjs tests/report2-source-isolation.test.mjs > cross-venue-delta-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+          echo INHERITED_ACTIVE_REGRESSION_PASS
+      - name: Telegram and TZ10.1 retention on canonical runtime
+        working-directory: runtime-canonical
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+          echo TELEGRAM_TZ101_RETENTION_PASS
+      - name: Read-only production replay retention
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_REPLAY_OUTPUT: architecture-unified-readonly-replay.json
+          REPORT2_FREE_FUNNEL_OUTPUT: architecture-free-sources-funnel-replay.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node runner/telegram-readonly-diagnostic.mjs
+          node unified-entry-signal-delta/validation/unified-readonly-replay.mjs
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs
+          REPORT2_ARCH_STATS_OUTPUT=architecture-shadow-statistics.json node architecture-cleanup-delta/validation/architecture-shadow-statistics.mjs
+          node - <<'NODE'
+          const u=require('./architecture-unified-readonly-replay.json');const f=require('./architecture-free-sources-funnel-replay.json');
+          if(u.d1_usage?.rows_written!==0||u.d1_usage?.unknown_ops!==0||u.no_lookahead?.status==='FAIL')process.exit(44);
+          if(f.production_writes!==false||f.d1_usage?.rows_written!==0||f.d1_usage?.unknown_ops!==0)process.exit(45);
+          console.log('READ_ONLY_REPLAY_RETENTION_PASS');
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-cleanup-candidate-proof
+          path: |
+            runtime-sequential/architecture-cleanup-overlay-proof.json
+            runtime-canonical/canonical-final-overlay-proof.json
+            canonical-equivalence-proof.json
+            architecture-cleanup-tests.tap
+            free-sources-retained-tests.tap
+            unified-retained-tests.tap
+            runtime-canonical/cross-venue-delta-tests.tap
+            runtime-canonical/runtime-regression-tests.tap
+            runtime-canonical/failure-injection-tests.tap
+            runtime-canonical/telegram-candidate-tests.tap
+            runtime-canonical/telegram-final-chain.txt
+            runtime-canonical/tz101-candidate-tests.tap
+            telegram-readonly-diagnosis.json
+            architecture-unified-readonly-replay.json
+            architecture-free-sources-funnel-replay.json
+            architecture-shadow-statistics.json
+            architecture-cleanup-delta/spec/*.md
+          retention-days: 14
