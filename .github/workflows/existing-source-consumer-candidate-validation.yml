@@ -1,0 +1,195 @@
+name: Existing source consumer candidate validation
+on:
+  push:
+    branches: ['existing-source-consumer-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: existing-source-consumer-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact Architecture V3 parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='041808866eb9b83ed28f71db90eeb4b3365bb683'
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do
+            case "$p" in
+              existing-source-consumer-delta/*|.github/workflows/existing-source-consumer-candidate-validation.yml) ;;
+              *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41 ;;
+            esac
+          done
+          echo EXISTING_SOURCE_EXACT_PARENT_AND_ALLOWLIST_PASS
+      - name: Reconstruct production runtime and apply canonical Architecture V3 layer
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          echo ARCHITECTURE_V3_CANONICAL_RUNTIME_PASS
+      - name: Apply existing-source consumer overlay twice and assert safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node - <<'NODE'
+          const p=require('./runtime/existing-source-consumer-overlay-proof.json');
+          if(p.production_changed||p.d1_migration||p.telegram_send||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.hard_gates_changed||p.strategy_weights_changed||p.thresholds_changed||p.automatic_execution||p.validated_signal||p.live_probability||p.new_sources_added||p.worker_copy_added||p.hot_cycle_external_request_delta!==0)process.exit(42);
+          console.log('EXISTING_SOURCE_CONSUMER_SAFETY_PASS');
+          NODE
+      - name: Prepare final runtime test harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+          echo FINAL_RUNTIME_HARNESS_PASS
+      - name: Existing-source consumer focused and final-runtime E2E tests
+        shell: bash
+        env:
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          node --check runtime/src/existing-source-consumer.mjs
+          node --check runtime/src/canonical-runtime-adapter.mjs
+          node --check existing-source-consumer-delta/maintenance/existing-source-live-consumer-proof.mjs
+          node --test --test-reporter=tap existing-source-consumer-delta/overlay/tests/*.test.mjs > existing-source-consumer-tests.tap
+          grep -F '# fail 0' existing-source-consumer-tests.tap >/dev/null
+          echo EXISTING_SOURCE_CONSUMER_FOCUSED_PASS
+      - name: Retain Architecture Cleanup / Free Sources / Unified focused suites
+        shell: bash
+        env:
+          REPORT2_ARCH_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-retained-tests.tap
+          grep -F '# fail 0' architecture-retained-tests.tap >/dev/null
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained-tests.tap
+          grep -F '# fail 0' free-sources-retained-tests.tap >/dev/null
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained-tests.tap
+          grep -F '# fail 0' unified-retained-tests.tap >/dev/null
+          echo RETAINED_FOCUSED_SUITES_PASS
+      - name: Cross venue and inherited active regression on final runtime
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap tests/cross-venue-delta.test.mjs tests/public-evidence-adapters.test.mjs tests/full-evidence-contract.test.mjs tests/full-evidence-shadow-model.test.mjs tests/report2-source-isolation.test.mjs > cross-venue-delta-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+          echo INHERITED_ACTIVE_REGRESSION_PASS
+      - name: Telegram and TZ10.1 retention
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+          echo TELEGRAM_TZ101_RETENTION_PASS
+      - name: Bounded live existing-source producer-to-consumer proof
+        shell: bash
+        env:
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          REPORT2_EXISTING_SOURCE_CONSUMER_PROOF_OUTPUT=existing-source-live-consumer-proof.json node existing-source-consumer-delta/maintenance/existing-source-live-consumer-proof.mjs
+          node - <<'NODE'
+          const p=require('./existing-source-live-consumer-proof.json');
+          if(p.production_writes||p.d1_writes||p.telegram_send||p.trading||p.auto_payment||p.calls_used>p.max_calls)process.exit(43);
+          for(const k of ['goplus','solana','dex','defillama']){const c=p.checks?.[k];if(!c?.canonical_closed||!c?.manual_ok||!c?.telegram_ok||!c?.fingerprint_equal||!c?.manual_has_context||!c?.telegram_has_context)process.exit(44);}
+          if(p.dex_dedupe?.some(x=>x.independent_confirmation_count!==1))process.exit(45);
+          console.log('LIVE_EXISTING_SOURCE_CONSUMER_PROOF_PASS');
+          NODE
+      - name: Read-only replay and R093 retention
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_REPLAY_OUTPUT: existing-source-unified-readonly-replay.json
+          REPORT2_FREE_FUNNEL_OUTPUT: existing-source-free-sources-funnel-replay.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf runtime-link
+          ln -s runtime runtime-link
+          if [ ! -e runtime/src/worker.js ]; then exit 46; fi
+          node runner/telegram-readonly-diagnostic.mjs
+          node unified-entry-signal-delta/validation/unified-readonly-replay.mjs
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs
+          REPORT2_ARCH_STATS_OUTPUT=existing-source-shadow-statistics.json node architecture-cleanup-delta/validation/architecture-shadow-statistics.mjs
+          node - <<'NODE'
+          const u=require('./existing-source-unified-readonly-replay.json');const f=require('./existing-source-free-sources-funnel-replay.json');const s=require('./existing-source-shadow-statistics.json');
+          if(u.d1_usage?.rows_written!==0||u.d1_usage?.unknown_ops!==0||u.no_lookahead?.status==='FAIL')process.exit(47);
+          if(f.production_writes!==false||f.d1_usage?.rows_written!==0||f.d1_usage?.unknown_ops!==0)process.exit(48);
+          if(s.d1_usage?.rows_written!==0||s.d1_usage?.unknown_ops!==0)process.exit(49);
+          console.log('READ_ONLY_REPLAY_RETENTION_PASS');
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: existing-source-consumer-candidate-proof
+          path: |
+            runtime/existing-source-consumer-overlay-proof.json
+            existing-source-consumer-tests.tap
+            architecture-retained-tests.tap
+            free-sources-retained-tests.tap
+            unified-retained-tests.tap
+            runtime/cross-venue-delta-tests.tap
+            runtime/runtime-regression-tests.tap
+            runtime/failure-injection-tests.tap
+            runtime/telegram-candidate-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-candidate-tests.tap
+            existing-source-live-consumer-proof.json
+            telegram-readonly-diagnosis.json
+            existing-source-unified-readonly-replay.json
+            existing-source-free-sources-funnel-replay.json
+            existing-source-shadow-statistics.json
+            existing-source-consumer-delta/spec/*.md
+          retention-days: 14

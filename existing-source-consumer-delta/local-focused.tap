@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: GoPlus consumer fact reaches one canonical object and both outputs
+ok 1 - GoPlus consumer fact reaches one canonical object and both outputs
+  ---
+  duration_ms: 5.116954
+  type: 'test'
+  ...
+# Subtest: DefiLlama consumer fact reaches both formatters without changing state
+ok 2 - DefiLlama consumer fact reaches both formatters without changing state
+  ---
+  duration_ms: 1.146653
+  type: 'test'
+  ...
+# Subtest: no existing-source receipt has a no-change output path
+ok 3 - no existing-source receipt has a no-change output path
+  ---
+  duration_ms: 1.232082
+  type: 'test'
+  ...
+# Subtest: GoPlus normalized receipt closes Supporting Risk consumer without hard gate or directional vote
+ok 4 - GoPlus normalized receipt closes Supporting Risk consumer without hard gate or directional vote
+  ---
+  duration_ms: 1.059231
+  type: 'test'
+  ...
+# Subtest: Solana normalized signatures close onchain context only
+ok 5 - Solana normalized signatures close onchain context only
+  ---
+  duration_ms: 0.339193
+  type: 'test'
+  ...
+# Subtest: DEX same pool from two providers is one independent confirmation
+ok 6 - DEX same pool from two providers is one independent confirmation
+  ---
+  duration_ms: 0.502069
+  type: 'test'
+  ...
+# Subtest: DefiLlama closes protocol context but TVL is not inferred as inflow
+ok 7 - DefiLlama closes protocol context but TVL is not inferred as inflow
+  ---
+  duration_ms: 0.203648
+  type: 'test'
+  ...
+# Subtest: missing receipts produce no consumer facts and no invented zero
+ok 8 - missing receipts produce no consumer facts and no invented zero
+  ---
+  duration_ms: 0.161003
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 71.439

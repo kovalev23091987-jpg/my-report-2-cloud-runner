@@ -1,0 +1,49 @@
+{
+  "version": "existing-source-consumer-overlay-v1-20260925",
+  "base_candidate_sha": "041808866eb9b83ed28f71db90eeb4b3365bb683",
+  "production_base": "08d98579c5ecbeb4de426ffeb1160f25ece52708",
+  "existing_files": [
+    {
+      "path": "src/canonical-runtime-adapter.mjs",
+      "source": "canonical-runtime-adapter.mjs",
+      "before_sha256": "fc64273b62d7742d779b40055a36159c0cc76b7e7332c377fb255830d5c2768d",
+      "after_sha256": "a59376bd384d1686064361a54e47b58d3863031de0670b45e60e0f558a23a71d"
+    },
+    {
+      "path": "src/manual-report-formatter.mjs",
+      "source": "manual-report-formatter.mjs",
+      "before_sha256": "953eb318f321c5a21191b37b17b77291d36f7e9ae5a7bd1feaca82470d56fa1f",
+      "after_sha256": "07065ac3fc3972d067ca1af25f624af4041a15d5bdefc4901d6fd40fbb843a56"
+    },
+    {
+      "path": "src/telegram-compact-formatter.mjs",
+      "source": "telegram-compact-formatter.mjs",
+      "before_sha256": "7e55ffea79a2780dc77a3391fb10ca02dd212e8d304da2410235311a68eab7eb",
+      "after_sha256": "0979b92f6fb684419d9408a8b3ffa98b24d4b863fb625797a5b6c6162687026f"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "src/existing-source-consumer.mjs",
+      "source": "existing-source-consumer.mjs",
+      "sha256": "e2ba51974b151f60079c5868fd736728b0b5eb2410cd5b46c900ec715a4999c5"
+    }
+  ],
+  "safety": {
+    "production_changed": false,
+    "d1_migration": false,
+    "telegram_send": false,
+    "telegram_recipients_changed": false,
+    "cloudflare_deploy": false,
+    "force_push": false,
+    "hard_gates_changed": false,
+    "strategy_weights_changed": false,
+    "thresholds_changed": false,
+    "automatic_execution": false,
+    "validated_signal": false,
+    "live_probability": false,
+    "new_sources_added": false,
+    "worker_copy_added": false,
+    "hot_cycle_external_request_delta": 0
+  }
+}
