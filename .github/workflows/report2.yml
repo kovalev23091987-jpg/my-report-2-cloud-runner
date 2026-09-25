@@ -57,7 +57,7 @@ jobs:
       REPORT2_TELEGRAM_INSTALL_VALIDATION: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '1' || '0' }}
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
-      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '0' || '1' }}
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_D1_RUNS_PER_DAY: "288"

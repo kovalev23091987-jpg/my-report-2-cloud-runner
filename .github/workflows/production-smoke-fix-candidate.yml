@@ -1,0 +1,31 @@
+name: Production smoke fix candidate validation
+on:
+  push:
+    branches: ['production-smoke-fix-candidate-v1-20260925']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Verify exact parent and one-line safety patch
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD^)" = "550f90ea6c5ec69be4be51601a2b08c6b414fee9"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "550f90ea6c5ec69be4be51601a2b08c6b414fee9"
+          mapfile -t changed < <(git diff --name-only HEAD^ HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = ".github/workflows/production-smoke-fix-candidate.yml"
+          test "${changed[1]}" = ".github/workflows/report2.yml"
+          grep -F "inputs.controlled_no_telegram == true" .github/workflows/report2.yml
+          grep -F 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .github/workflows/report2.yml
+          grep -F 'REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"' .github/workflows/report2.yml
+          grep -F 'REPORT2_EXPECTED_WORKER_SHA: "a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225"' .github/workflows/report2.yml
+          echo PRODUCTION_SMOKE_FIX_CANDIDATE_PASS
