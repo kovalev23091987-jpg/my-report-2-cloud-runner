@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';
+const runtime=path.resolve(process.env.REPORT2_CLOSURE_RUNTIME_DIR||'runtime');
+const {buildSourceRegistry}=await import(pathToFileURL(path.join(runtime,'src','source-registry.mjs')).href);
+const REQUIRED=['adapter','test','allowed_state','hot_cycle_invocation','normalized_receipt','consumer','decision_block','proof','runtime_stage'];
+test('every source carries the nine-stage truthful lifecycle contract',()=>{const r=buildSourceRegistry({});assert.equal(r.lifecycle_contract,'ADAPTER_TEST_ALLOWED_HOT_RECEIPT_CONSUMER_DECISION_PROOF_RUNTIME_STAGE');for(const e of r.entries){for(const k of REQUIRED)assert.ok(String(e[k]??'').length>0,`${e.id}:${k}`);assert.equal(e.runtime_stage,e.status);}});
+test('static deployment state never makes a source decision-usable',()=>{const r=buildSourceRegistry({});for(const e of r.entries)assert.equal(e.decision_usable,false,`${e.id}`);});
+test('only a current factual receipt makes the matching source usable',()=>{const now=1760000000000;const r=buildSourceRegistry({public_evidence:{evidence:[{venue:'BYBIT',status:'CLOSED',source_ts:now-1000,observed_ts:now-1000,max_age_sec:60,source_compatible:true}]},now});assert.equal(r.entries.find(x=>x.id==='Bybit').decision_usable,true);assert.equal(r.entries.find(x=>x.id==='OKX').decision_usable,false);});
