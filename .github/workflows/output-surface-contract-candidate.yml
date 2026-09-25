@@ -1,0 +1,173 @@
+name: Output surface contract candidate validation
+on:
+  push:
+    branches: ['output-surface-contract-candidate-v3-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: output-surface-contract-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='7bd9fd6113e30fcbcaabea05ed7148167729d630'
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do case "$p" in output-surface-contract-delta/*|.github/workflows/output-surface-contract-candidate.yml) ;; *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41;; esac; done
+      - name: Reconstruct verified runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+      - name: Apply output surface overlay twice and safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node --check runtime/src/manual-report-formatter.mjs
+          node --check runtime/src/telegram-compact-formatter.mjs
+          node --check runtime/src/canonical-runtime-adapter.mjs
+          node --check runtime/src/output-surface-contract.mjs
+          node - <<'NODE'
+          const p=require('./runtime/output-surface-contract-overlay-proof.json');
+          if(p.production_changed||p.d1_migration||p.d1_write_delta!==0||p.telegram_send||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.hard_gates_changed||p.strategy_weights_changed||p.thresholds_changed||p.automatic_execution||p.validated_signal||p.live_probability||p.new_sources_added||p.worker_copy_added||p.hot_cycle_external_request_delta!==0)process.exit(42);
+          NODE
+      - name: Output surface focused tests
+        env:
+          REPORT2_OUTPUT_RUNTIME_DIR: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap output-surface-contract-delta/overlay/tests/*.test.mjs > output-surface-focused.tap
+          grep -F '# fail 0' output-surface-focused.tap >/dev/null
+      - name: Retained focused suites
+        env:
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+          REPORT2_ARCH_RUNTIME_DIR: runtime
+          REPORT2_HL_RUNTIME_DIR: runtime
+          REPORT2_PRESELECTION_RUNTIME_DIR: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap existing-source-preselection-router-delta/overlay/tests/*.test.mjs > preselection-retained.tap
+          node --test --test-reporter=tap existing-source-hyperliquid-recorder-delta/overlay/tests/*.test.mjs > hyperliquid-retained.tap
+          node --test --test-reporter=tap existing-source-fact-contract-delta/overlay/tests/*.test.mjs > fact-retained.tap
+          node --test --test-reporter=tap existing-source-closure-audit-delta/overlay/tests/*.test.mjs > closure-retained.tap
+          node --test --test-reporter=tap existing-source-history-sequence-delta/overlay/tests/*.test.mjs > history-retained.tap
+          node --test --test-reporter=tap existing-source-coverage-delta/overlay/tests/*.test.mjs > coverage-retained.tap
+          node --test --test-reporter=tap existing-source-consumer-delta/overlay/tests/*.test.mjs > consumer-retained.tap
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-retained.tap
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained.tap
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained.tap
+          for f in preselection-retained.tap hyperliquid-retained.tap fact-retained.tap closure-retained.tap history-retained.tap coverage-retained.tap consumer-retained.tap architecture-retained.tap free-sources-retained.tap unified-retained.tap; do grep -F '# fail 0' "$f" >/dev/null; done
+      - name: Prepare inherited regression harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+      - name: Inherited runtime regression
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+      - name: Telegram and TZ10.1 retention
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+      - name: Output surface runtime proof
+        env:
+          REPORT2_OUTPUT_RUNTIME_DIR: runtime
+          REPORT2_OUTPUT_PROOF: output-surface-live-proof.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node output-surface-contract-delta/validation/output-surface-live-proof.mjs
+          node - <<'NODE'
+          const p=require('./output-surface-live-proof.json');
+          if(p.status!=='CLOSED_OUTPUT_SURFACES'||p.production_writes||p.d1_writes||p.telegram_send||p.trading||p.thresholds_changed||p.strategy_weights_changed||p.probability_enabled||p.new_sources_added)process.exit(70);
+          for(const [k,v] of Object.entries(p.checks))if(v!==true){console.error(k);process.exit(71);}
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: output-surface-contract-candidate-proof
+          path: |
+            runtime/output-surface-contract-overlay-proof.json
+            output-surface-focused.tap
+            preselection-retained.tap
+            hyperliquid-retained.tap
+            fact-retained.tap
+            closure-retained.tap
+            history-retained.tap
+            coverage-retained.tap
+            consumer-retained.tap
+            architecture-retained.tap
+            free-sources-retained.tap
+            unified-retained.tap
+            runtime/runtime-regression-tests.tap
+            runtime/failure-injection-tests.tap
+            runtime/telegram-candidate-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-candidate-tests.tap
+            output-surface-live-proof.json
+            output-surface-contract-delta/spec/*.md
+          retention-days: 14
