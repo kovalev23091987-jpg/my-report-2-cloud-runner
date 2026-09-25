@@ -1,0 +1,196 @@
+name: Existing source coverage candidate validation
+on:
+  push:
+    branches: ['existing-source-coverage-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: existing-source-coverage-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - name: Verify exact parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='d086fba363c2dc20c2f837b0220020913d0b6851'
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do case "$p" in existing-source-coverage-delta/*|.github/workflows/existing-source-coverage-candidate-validation.yml) ;; *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41;; esac; done
+          echo EXACT_PARENT_AND_MAIN_PASS
+      - name: Reconstruct current verified runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime && rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          echo CURRENT_VERIFIED_RUNTIME_PASS
+      - name: Apply coverage overlay and safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node - <<'NODE'
+          const p=require('./runtime/existing-source-coverage-overlay-proof.json');
+          for(const k of ['production_changed','d1_migration','telegram_send','telegram_recipients_changed','cloudflare_deploy','force_push','hard_gates_changed','strategy_weights_changed','thresholds_changed','automatic_execution','validated_signal','live_probability','new_sources_added','worker_copy_added','automatic_voting'])if(p[k])process.exit(42);
+          if(p.hot_cycle_external_request_delta!==0)process.exit(43);
+          console.log('COVERAGE_OVERLAY_SAFETY_PASS');
+          NODE
+      - name: Prepare test harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+      - name: Coverage focused tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check runtime/src/existing-source-consumer.mjs
+          node --check runtime/src/existing-source-coverage-normalizers.mjs
+          node --check existing-source-coverage-delta/maintenance/existing-source-coverage-live-proof.mjs
+          node --check existing-source-coverage-delta/maintenance/binance-history-maintenance-proof.mjs
+          node --test --test-reporter=tap existing-source-coverage-delta/overlay/tests/*.test.mjs > coverage-tests.tap
+          grep -F '# fail 0' coverage-tests.tap >/dev/null
+          echo COVERAGE_FOCUSED_PASS
+      - name: Retained focused and regression
+        shell: bash
+        env:
+          REPORT2_ARCH_RUNTIME_DIR: runtime
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap existing-source-consumer-delta/overlay/tests/*.test.mjs > existing-source-retained.tap
+          grep -F '# fail 0' existing-source-retained.tap >/dev/null
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-retained.tap
+          grep -F '# fail 0' architecture-retained.tap >/dev/null
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained.tap
+          grep -F '# fail 0' free-sources-retained.tap >/dev/null
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained.tap
+          grep -F '# fail 0' unified-retained.tap >/dev/null
+      - name: Inherited runtime regression
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap tests/cross-venue-delta.test.mjs tests/public-evidence-adapters.test.mjs tests/full-evidence-contract.test.mjs tests/full-evidence-shadow-model.test.mjs tests/report2-source-isolation.test.mjs > cross-venue-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection.tap
+      - name: Telegram and TZ10.1 retention
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-tests.tap
+      - name: Live existing source coverage proof
+        shell: bash
+        env:
+          REPORT2_COVERAGE_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          REPORT2_COVERAGE_PROOF_OUTPUT=existing-source-coverage-live-proof.json node existing-source-coverage-delta/maintenance/existing-source-coverage-live-proof.mjs
+          node - <<'NODE'
+          const p=require('./existing-source-coverage-live-proof.json');
+          if(p.production_writes||p.d1_writes||p.telegram_send||p.trading||p.auto_payment||p.calls_used>p.max_calls)process.exit(44);
+          if(p.hyperliquid.normalized.status!=='CLOSED'||p.bitget.normalized.status!=='CLOSED'||p.coinbase.normalized.status!=='CLOSED')process.exit(45);
+          for(const k of ['hyperliquid','bitget','coinbase']){const c=p.checks[k];if(!c.canonical_closed||!c.manual_ok||!c.telegram_ok||!c.fingerprint_equal||!c.manual_has_context||!c.telegram_has_context)process.exit(46);}
+          if(p.deribit.utility.status!=='CLOSED'||p.deribit.utility.decision!=='DISABLED_NO_DIRECT_ALTCOIN_SIGNAL')process.exit(47);
+          console.log('LIVE_COVERAGE_PROOF_PASS');
+          NODE
+      - name: Binance 90-day maintenance proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          REPORT2_BINANCE_HISTORY_PROOF_OUTPUT=binance-history-maintenance-proof.json node existing-source-coverage-delta/maintenance/binance-history-maintenance-proof.mjs
+          node - <<'NODE'
+          const p=require('./binance-history-maintenance-proof.json');
+          if(p.production_writes||p.d1_writes||p.telegram_send||p.trading||p.hot_cycle||p.persist_every_trade||p.calls_used>p.max_calls)process.exit(48);
+          if(!p.coverage_notes?.trades_aggTrades_1m_3m_5m_checksums_verified||!p.coverage_notes?.ninety_day_1m_actual_download_and_checksum)process.exit(49);
+          for(const m of ['spot','usd_m_futures'])if((p.by_market?.[m]?.span_days??0)<80)process.exit(50);
+          console.log('BINANCE_HISTORY_90D_MAINTENANCE_PASS');
+          NODE
+      - name: Read-only replay retention
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_REPLAY_OUTPUT: coverage-unified-replay.json
+          REPORT2_FREE_FUNNEL_OUTPUT: coverage-funnel-replay.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node runner/telegram-readonly-diagnostic.mjs
+          node unified-entry-signal-delta/validation/unified-readonly-replay.mjs
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs
+          REPORT2_ARCH_STATS_OUTPUT=coverage-shadow-statistics.json node architecture-cleanup-delta/validation/architecture-shadow-statistics.mjs
+          node - <<'NODE'
+          const u=require('./coverage-unified-replay.json'),f=require('./coverage-funnel-replay.json'),s=require('./coverage-shadow-statistics.json');
+          if(u.d1_usage?.rows_written!==0||u.d1_usage?.unknown_ops!==0||u.no_lookahead?.status==='FAIL')process.exit(51);
+          if(f.production_writes!==false||f.d1_usage?.rows_written!==0||f.d1_usage?.unknown_ops!==0)process.exit(52);
+          if(s.d1_usage?.rows_written!==0||s.d1_usage?.unknown_ops!==0)process.exit(53);
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: existing-source-coverage-candidate-proof
+          path: |
+            runtime/existing-source-coverage-overlay-proof.json
+            coverage-tests.tap
+            existing-source-retained.tap
+            architecture-retained.tap
+            free-sources-retained.tap
+            unified-retained.tap
+            runtime/cross-venue-tests.tap
+            runtime/runtime-regression.tap
+            runtime/failure-injection.tap
+            runtime/telegram-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-tests.tap
+            existing-source-coverage-live-proof.json
+            binance-history-maintenance-proof.json
+            telegram-readonly-diagnosis.json
+            coverage-unified-replay.json
+            coverage-funnel-replay.json
+            coverage-shadow-statistics.json
+            existing-source-coverage-delta/spec/*.md
+          retention-days: 14
