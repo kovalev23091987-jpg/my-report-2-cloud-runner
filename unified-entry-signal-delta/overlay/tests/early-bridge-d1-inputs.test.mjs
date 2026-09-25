@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {loadEarlyBridgeInputs} from '../src/early-candidate-bridge.mjs';
+test('early bridge uses two bounded D1 reads, no network and no writes',async()=>{let prepares=0,batches=0;const db={prepare(sql){prepares++;return{sql,bind(){return this;}}},async batch(stmts){batches++;assert.equal(stmts.length,2);return[{results:[{contract_code:'A-USDT'}]},{results:[{contract_code:'A-USDT'}]}];}};const out=await loadEarlyBridgeInputs({DATA_DB:db},{now:1_800_000_000_000});assert.equal(out.status,'CLOSED');assert.equal(prepares,2);assert.equal(batches,1);assert.equal(out.d1_queries,2);assert.equal(out.network_calls,0);assert.equal(out.writes,0);assert.equal(out.rows_read_upper_bound,2);});
+test('missing D1 fails closed without pretending data is zero',async()=>{const out=await loadEarlyBridgeInputs({},{});assert.equal(out.status,'SOURCE_UNSUPPORTED');assert.deepEqual(out.early_rows,[]);});
