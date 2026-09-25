@@ -215,7 +215,7 @@ function integrationCoverage({runtimeDir,telemetry,proofs}){
       producer:proofs.coverage?.status==='CLOSED_OBSERVATION_ONLY',
       receipt:liveCoverageChecks.bitget?.canonical_closed===true&&liveCoverageChecks.coinbase?.canonical_closed===true,
       consumer:liveCoverageChecks.bitget?.canonical_closed===true&&liveCoverageChecks.coinbase?.canonical_closed===true,
-      fixture_effect:liveCoverageChecks.bitget?.manual_has_context===true&&liveCoverageChecks.coinbase?.manual_has_context===true&&proofs.coverage?.deribit?.utility?.decision,
+      fixture_effect:liveCoverageChecks.bitget?.manual_has_context===true&&liveCoverageChecks.coinbase?.manual_has_context===true&&proofs.coverage?.deribit?.utility?.decision==='DISABLED_NO_DIRECT_ALTCOIN_SIGNAL',
       canonical:liveCoverageChecks.bitget?.canonical_closed===true&&liveCoverageChecks.coinbase?.canonical_closed===true,
       formatter:liveCoverageChecks.bitget?.fingerprint_equal===true&&liveCoverageChecks.coinbase?.fingerprint_equal===true,
       telemetry:proofs.coverage?.status==='CLOSED_OBSERVATION_ONLY',

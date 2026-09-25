@@ -1,7 +1,7 @@
 name: Validation acceptance candidate
 on:
   push:
-    branches: ['validation-acceptance-candidate-v1-20260925']
+    branches: ['validation-acceptance-candidate-v2-20260925']
 permissions:
   contents: read
 concurrency:
@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           set -Eeuo pipefail
-          PARENT='788b4e71ab71d98dee5e98cc5241295784ebbb7a'
+          PARENT='5bc388f5ebcea8c61b50edeac3374fa44344ea9a'
           MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
           test "$(git rev-parse HEAD^)" = "$PARENT"
           git fetch --no-tags origin main:refs/remotes/origin/main

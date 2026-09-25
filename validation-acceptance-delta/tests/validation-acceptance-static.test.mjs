@@ -15,3 +15,8 @@ test('integration coverage requires all seven stages',()=>{
 test('R051 requires all requested horizons',()=>{
  for(const value of ['15','30','60','240','1440'])assert.match(source,new RegExp(`\\b${value}\\b`));
 });
+
+test('R054 treats explicit measured Deribit disabled decision as factual fixture effect',()=>{
+ assert.match(source,/decision==='DISABLED_NO_DIRECT_ALTCOIN_SIGNAL'/);
+ assert.doesNotMatch(source,/fixture_effect:[^\n]*utility\?\.decision,\s*$/m);
+});
