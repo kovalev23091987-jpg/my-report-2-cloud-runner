@@ -1,0 +1,71 @@
+name: Production integration candidate validation
+on:
+  push:
+    branches: ['production-integration-candidate-v1-20260925']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify lineage and main guard
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "$(git rev-parse HEAD^)" = "ffa54510ccca9e935562ecb2fe7bfc0f465dac85"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "08d98579c5ecbeb4de426ffeb1160f25ece52708"
+          git merge-base --is-ancestor "08d98579c5ecbeb4de426ffeb1160f25ece52708" HEAD
+      - name: Reconstruct exact integrated runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
+          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          ACTUAL="$(sha256sum runtime/src/worker.js | awk '{print $1}')"
+          test "$ACTUAL" = "a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225"
+          node --check runtime/src/worker.js
+          node --check runtime/src/canonical-runtime-adapter.mjs
+          node --check runtime/src/tz101-publication-runtime.mjs
+      - name: Verify production workflow safety and exact chain
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          grep -F 'REPORT2_EXPECTED_WORKER_SHA: "a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225"' .github/workflows/report2.yml
+          grep -F 'REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"' .github/workflows/report2.yml
+          grep -F 'REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"' .github/workflows/report2.yml
+          grep -F 'node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime' .github/workflows/report2.yml
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "08d98579c5ecbeb4de426ffeb1160f25ece52708"
+          echo PRODUCTION_INTEGRATION_CANDIDATE_PASS
