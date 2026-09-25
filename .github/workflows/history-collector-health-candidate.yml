@@ -1,0 +1,120 @@
+name: History collector health candidate validation
+on:
+  push:
+    branches: ['history-collector-health-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: history-collector-health-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='933067cad9b713c0ec6f21e8c12f6a7d3b09998c'; MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do case "$p" in history-collector-health-delta/*|.github/workflows/history-collector-health-candidate.yml) ;; *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41;; esac; done
+      - name: Static read-only validation safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check history-collector-health-delta/validation/history-collector-health-audit.mjs
+          node --test --test-reporter=tap history-collector-health-delta/tests/*.test.mjs > history-health-static.tap
+          grep -F '# fail 0' history-health-static.tap >/dev/null
+      - name: Reconstruct verified Snapshot Diff V3 runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
+      - name: Retain latest focused contracts
+        env:
+          REPORT2_OUTPUT_RUNTIME_DIR: runtime
+          REPORT2_SNAPSHOT_RUNTIME_DIR: runtime
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+          REPORT2_HL_RUNTIME_DIR: runtime
+          REPORT2_PRESELECTION_RUNTIME_DIR: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap snapshot-diff-delta/overlay/tests/*.test.mjs > snapshot-retained.tap
+          node --test --test-reporter=tap output-surface-contract-delta/overlay/tests/*.test.mjs > output-retained.tap
+          node --test --test-reporter=tap existing-source-preselection-router-delta/overlay/tests/*.test.mjs > preselection-retained.tap
+          node --test --test-reporter=tap existing-source-hyperliquid-recorder-delta/overlay/tests/*.test.mjs > hyperliquid-retained.tap
+          for f in snapshot-retained.tap output-retained.tap preselection-retained.tap hyperliquid-retained.tap; do grep -F '# fail 0' "$f" >/dev/null; done
+      - name: Factual R039 R048 read-only audit
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_HISTORY_HEALTH_RUNTIME_DIR: runtime
+          REPORT2_HISTORY_HEALTH_OUTPUT: history-collector-health-audit.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node history-collector-health-delta/validation/history-collector-health-audit.mjs
+          node - <<'NODE'
+          const p=require('./history-collector-health-audit.json');
+          if(p.status!=='CLOSED_READ_ONLY_AUDIT'||p.d1_usage?.rows_written!==0||p.d1_usage?.unknown_ops!==0)process.exit(70);
+          if(p.safety?.runtime_changes!==0||p.safety?.production_writes||p.safety?.d1_writes||p.safety?.telegram_send||p.safety?.trading||p.safety?.thresholds_changed||p.safety?.strategy_weights_changed||p.safety?.probability_enabled||p.safety?.new_sources_added||p.safety?.hot_cycle_external_request_delta!==0)process.exit(71);
+          console.log('R039_R048_FACTUAL_AUDIT_PASS',JSON.stringify({r039:p.r039,r048:p.r048,d1_usage:p.d1_usage}));
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: history-collector-health-candidate-proof
+          path: |
+            history-health-static.tap
+            snapshot-retained.tap
+            output-retained.tap
+            preselection-retained.tap
+            hyperliquid-retained.tap
+            history-collector-health-audit.json
+            history-collector-health-delta/spec/*.md
+          retention-days: 14
