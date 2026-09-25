@@ -1,0 +1,212 @@
+name: Free sources delta unified candidate validation
+on:
+  push:
+    branches: ['free-sources-unified-candidate-v3-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: free-sources-unified-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact protected production base and candidate-only allowlist
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          BASE='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$BASE"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$BASE"
+          mapfile -t changed < <(git diff --name-only "$BASE" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do
+            case "$p" in
+              unified-entry-signal-delta/*|free-sources-delta/*|.github/workflows/free-sources-delta-candidate-validation.yml) ;;
+              *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41 ;;
+            esac
+          done
+          test -z "$(git diff --name-only "$BASE" HEAD -- payload runner cross-venue-delta-overlay telegram-repair-tests tz101-shadow-overlay | cat)"
+          echo FREE_SOURCES_EXACT_BASE_AND_ALLOWLIST_PASS
+      - name: Decrypt exact production runtime and apply existing production overlays
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = "5eeb4e84c8158455112333ba0f2e53c23e21e612726fffafc30da6878fa69b46"
+          echo PRODUCTION_RUNTIME_RECONSTRUCTION_PASS
+      - name: Apply retained unified overlay twice
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node unified-entry-signal-delta/overlay/apply-unified-runtime-overlay.mjs runtime
+          node unified-entry-signal-delta/overlay/apply-unified-runtime-overlay.mjs runtime
+          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = "4721646492cbf07fa4f2d1b2216d47116ee271fc38ac02aa6a98d95f547089f3"
+          node -e 'const p=require("./runtime/unified-candidate-overlay-proof.json"); if(p.production_changed||p.external_request_delta!==0||p.d1_query_delta_per_hot_cycle!==2||p.d1_write_delta_per_hot_cycle!==0||p.hard_gates_bypassed||p.strategy_weights_changed||p.automatic_execution||p.validated_signal_enabled||p.live_probability_enabled||p.continuous_collector_status!=="PARTIAL_REALTIME_COVERAGE")process.exit(42)'
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+          echo RETAINED_UNIFIED_OVERLAY_PASS
+      - name: Apply Free Sources DELTA overlay twice and assert safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node free-sources-delta/overlay/apply-free-sources-runtime-overlay.mjs runtime
+          node free-sources-delta/overlay/apply-free-sources-runtime-overlay.mjs runtime
+          EXPECTED_WORKER="$(node -e 'const m=require("./free-sources-delta/overlay/manifest.json"); console.log(m.existing_files.find(x=>x.path==="src/worker.js").after_sha256)')"
+          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = "$EXPECTED_WORKER"
+          node - <<'NODE'
+          const p=require('./runtime/free-sources-overlay-proof.json');
+          if(p.production_changed!==false||p.external_hot_request_delta!==0||p.d1_write_delta_hot!==0||p.hard_gates_changed||p.strategy_weights_changed||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.automatic_execution||p.validated_signal||p.live_probability||p.continuous_collector_status!=='PARTIAL_REALTIME_COVERAGE') process.exit(43);
+          console.log('FREE_SOURCES_SAFETY_PROOF_PASS');
+          NODE
+          echo FREE_SOURCES_OVERLAY_PASS
+      - name: Free Sources focused tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --check runtime/src/worker.js
+          node --check free-sources-delta/maintenance/free-source-live-probe.mjs
+          node --check free-sources-delta/maintenance/incremental-coverage-measurement.mjs
+          node --check free-sources-delta/validation/free-sources-funnel-replay.mjs
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-focused-tests.tap
+          grep -F '# fail 0' free-sources-focused-tests.tap >/dev/null
+          echo FREE_SOURCES_FOCUSED_TESTS_PASS
+      - name: Retained unified focused tests and exact bridge E2E
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf r10_7_auth
+          mkdir -p r10_7_auth
+          ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > runtime/unified-focused-tests.tap
+          grep -F '# fail 0' runtime/unified-focused-tests.tap >/dev/null
+          echo UNIFIED_FOCUSED_TESTS_PASS
+      - name: Cross venue retained tests and inherited active regression on final runtime
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap \
+            tests/cross-venue-delta.test.mjs \
+            tests/public-evidence-adapters.test.mjs \
+            tests/full-evidence-contract.test.mjs \
+            tests/full-evidence-shadow-model.test.mjs \
+            tests/report2-source-isolation.test.mjs > cross-venue-delta-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' \
+            ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' \
+            ! -name 'htx-liquidation-budget.test.mjs' \
+            ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' \
+            ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' \
+            -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap \
+            tests/fast-move-watch-failure-injection.test.mjs \
+            tests/multi-wave-campaign-failure-injection.test.mjs \
+            tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+          echo INHERITED_ACTIVE_REGRESSION_PASS
+      - name: Telegram and TZ 10.1 retention
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap \
+            tests/tz101-publication-input-runtime.test.mjs \
+            tests/tz101-liquidation-context.test.mjs \
+            tests/tz101-publication-runtime.test.mjs \
+            tests/tz101-publication-wiring-static.test.mjs \
+            tests/tz101-scenario-plan.test.mjs \
+            tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+          echo TELEGRAM_TZ101_RETENTION_PASS
+      - name: Bounded read-only production diagnosis and replays
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_REPLAY_OUTPUT: unified-readonly-replay.json
+          REPORT2_FREE_FUNNEL_OUTPUT: free-sources-funnel-replay.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node runner/telegram-readonly-diagnostic.mjs
+          node unified-entry-signal-delta/validation/unified-readonly-replay.mjs
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs
+          node - <<'NODE'
+          const u=require('./unified-readonly-replay.json');
+          const f=require('./free-sources-funnel-replay.json');
+          if(u.d1_usage?.rows_written!==0||u.d1_usage?.unknown_ops!==0||u.no_lookahead?.status==='FAIL')process.exit(44);
+          if(f.production_writes!==false||f.d1_usage?.rows_written!==0||f.d1_usage?.unknown_ops!==0)process.exit(45);
+          console.log('READ_ONLY_REPLAY_GUARDS_PASS');
+          NODE
+          echo READ_ONLY_DIAGNOSIS_REPLAY_PASS
+      - name: Bounded public source availability and incremental coverage probes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          REPORT2_FREE_SOURCE_PROBE_OUTPUT=free-source-live-probe.json node free-sources-delta/maintenance/free-source-live-probe.mjs
+          REPORT2_INCREMENTAL_COVERAGE_OUTPUT=free-sources-incremental-coverage.json node free-sources-delta/maintenance/incremental-coverage-measurement.mjs
+          node - <<'NODE'
+          const a=require('./free-source-live-probe.json'); const b=require('./free-sources-incremental-coverage.json');
+          if(a.production_writes||a.d1_writes||a.telegram_send||a.trading||a.auto_payment||a.calls_used>a.max_calls)process.exit(46);
+          if(b.production_writes||b.d1_writes||b.telegram_send||b.trading||b.auto_payment||b.calls_used>b.max_calls||b.no_automatic_voting!==true||b.no_source_enablement!==true)process.exit(47);
+          console.log('BOUNDED_PUBLIC_PROBES_SAFETY_PASS');
+          NODE
+          echo FREE_SOURCE_LIVE_PROBES_PASS
+      - name: Verify protected main still exact
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          BASE='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$BASE"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: free-sources-delta-candidate-proof
+          path: |
+            runtime/unified-candidate-overlay-proof.json
+            runtime/free-sources-overlay-proof.json
+            free-sources-focused-tests.tap
+            runtime/unified-focused-tests.tap
+            runtime/cross-venue-delta-tests.tap
+            runtime/runtime-regression-tests.tap
+            runtime/failure-injection-tests.tap
+            runtime/telegram-candidate-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-candidate-tests.tap
+            telegram-readonly-diagnosis.json
+            unified-readonly-replay.json
+            free-sources-funnel-replay.json
+            free-source-live-probe.json
+            free-sources-incremental-coverage.json
+            free-sources-delta/spec/*.md
+          retention-days: 14

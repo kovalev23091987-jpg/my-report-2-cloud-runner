@@ -1,0 +1,19 @@
+import fs from 'node:fs';
+export const FREE_SOURCES_FUNNEL_REPLAY_VERSION='free-sources-funnel-replay-v1-20260925';
+const rows=x=>Array.isArray(x?.results)?x.results:[];
+async function q(db,sql,binds,label){try{return {status:'CLOSED',rows:rows(await db.prepare(sql).bind(...binds).all())};}catch(e){return {status:'SOURCE_UNSUPPORTED',rows:[],error:`${label}:${String(e?.message||e).slice(0,240)}`};}}
+export function summarizeFunnel({decisions=[],publicationInputs=[]}={}){
+  const inputs=new Set(publicationInputs.map(x=>String(x.decision_id)));
+  const counts={decisions:decisions.length,entry_eligible:0,wait_or_observe:0,rejected_or_blocked:0,publication_input_closed:0,publication_input_missing:0};
+  const by_action={};const by_quality={};
+  for(const d of decisions){const action=String(d.entry_action||d.decision_status||'UNKNOWN');by_action[action]=(by_action[action]||0)+1;const dq=String(d.data_quality||'UNKNOWN');by_quality[dq]=(by_quality[dq]||0)+1;if(action==='SHADOW_ENTRY_ELIGIBLE'||action.includes('ENTRY'))counts.entry_eligible++;else if(action.includes('WAIT')||action.includes('OBSERVE'))counts.wait_or_observe++;else counts.rejected_or_blocked++;if(inputs.has(String(d.decision_id)))counts.publication_input_closed++;else counts.publication_input_missing++;}
+  return {version:FREE_SOURCES_FUNNEL_REPLAY_VERSION,status:'CLOSED_READ_ONLY_SUMMARY',counts,by_action,by_quality,cost_blocker_measurement:{immutable_publication_input_missing:counts.publication_input_missing,exact_future_funding_blocker_count:null,exact_future_funding_blocker_status:'NOT_MEASURABLE_FROM_PERSISTED_ROWS_WITHOUT_REPLAYING_PROSPECTIVE_COST_CONTEXT',confirmed_code_behavior:'CURRENT_RATE_NOT_EXTRAPOLATED_ACROSS_FUTURE_SETTLEMENT'},production_writes:false};
+}
+export async function run({db,startTs,endTs=Date.now()}={}){
+  if(!db)throw new Error('D1_DB_REQUIRED');
+  const decisions=await q(db,`SELECT decision_id,contract_code,observation_ts,direction,entry_action,data_quality,decision_status,hard_veto_state FROM final_decision_integration_shadow WHERE observation_ts>=?1 AND observation_ts<=?2 ORDER BY observation_ts DESC LIMIT 4096`,[startTs,endTs],'decisions');
+  const inputs=await q(db,`SELECT decision_id,contract_code,observation_ts,status FROM tz101_publication_input_shadow WHERE observation_ts>=?1 AND observation_ts<=?2 ORDER BY observation_ts DESC LIMIT 4096`,[startTs,endTs],'publication_inputs');
+  const out=summarizeFunnel({decisions:decisions.rows,publicationInputs:inputs.rows});out.query_status={decisions:{status:decisions.status,rows:decisions.rows.length,error:decisions.error??null},publication_inputs:{status:inputs.status,rows:inputs.rows.length,error:inputs.error??null}};out.d1_usage=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;if(out.d1_usage&&(Number(out.d1_usage.rows_written)!==0||Number(out.d1_usage.unknown_ops)!==0))throw new Error('READ_ONLY_GUARD_FAILED');if(decisions.status!=='CLOSED'||inputs.status!=='CLOSED')out.status='PARTIAL_READ_ONLY_SUMMARY_SOURCE_GAPS';return out;
+}
+async function main(){const startTs=Number(process.env.REPORT2_REPLAY_START_TS||Date.parse('2026-09-21T10:42:46Z'));const endTs=Number(process.env.REPORT2_REPLAY_END_TS||Date.now());const {RemoteD1Database}=await import('../../runner/report2-d1-adapter.mjs');const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN,{timeoutMs:30000});const result=await run({db,startTs,endTs});const out=process.env.REPORT2_FREE_FUNNEL_OUTPUT||'free-sources-funnel-replay.json';fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n');console.log('FREE_SOURCES_FUNNEL_REPLAY',JSON.stringify(result));}
+if(process.argv[1]&&new URL(import.meta.url).pathname===process.argv[1])main().catch(e=>{console.error('FREE_SOURCES_FUNNEL_REPLAY_FATAL',String(e?.stack||e));process.exit(1);});
