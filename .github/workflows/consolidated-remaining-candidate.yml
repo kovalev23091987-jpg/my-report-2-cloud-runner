@@ -1,0 +1,198 @@
+name: Consolidated remaining candidate validation
+on:
+  push:
+    branches: ['consolidated-remaining-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: consolidated-remaining-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+      REPORT2_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 2}
+      - uses: actions/setup-node@v4
+        with: {node-version: '24'}
+      - name: Verify exact parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='506be05148a148071a001b39164833473bf515f9'; MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do case "$p" in consolidated-remaining-delta/*|.github/workflows/consolidated-remaining-candidate.yml) ;; *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41;; esac; done
+      - name: Reconstruct all verified runtime layers
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
+      - name: Apply consolidated overlay twice and safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          for f in protective-asset-filter.mjs evidence-domain-contract.mjs bounded-official-event-fetcher.mjs canonical-runtime-adapter.mjs tz101-publication-runtime.mjs opportunity-intelligence-engine.mjs worker.js reason-registry.mjs; do node --check "runtime/src/$f"; done
+          node - <<'NODE'
+          const p=require('./runtime/consolidated-remaining-overlay-proof.json');
+          if(p.production_changed||p.d1_migration||p.d1_write_delta!==0||p.telegram_send||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.strategy_weights_changed||p.weights_35_30_20_15_changed||p.automatic_execution||p.validated_signal||p.live_probability||p.new_source_family_added||p.hot_cycle_external_request_delta!==0)process.exit(42);
+          NODE
+      - name: Consolidated focused tests
+        env:
+          REPORT2_CONSOLIDATED_RUNTIME_DIR: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap consolidated-remaining-delta/overlay/tests/*.test.mjs > consolidated-focused.tap
+          grep -F '# fail 0' consolidated-focused.tap >/dev/null
+      - name: Retained focused suites
+        env:
+          REPORT2_OUTPUT_RUNTIME_DIR: runtime
+          REPORT2_SNAPSHOT_RUNTIME_DIR: runtime
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+          REPORT2_ARCH_RUNTIME_DIR: runtime
+          REPORT2_HL_RUNTIME_DIR: runtime
+          REPORT2_PRESELECTION_RUNTIME_DIR: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap snapshot-diff-delta/overlay/tests/*.test.mjs > snapshot-retained.tap
+          node --test --test-reporter=tap output-surface-contract-delta/overlay/tests/*.test.mjs > output-retained.tap
+          node --test --test-reporter=tap existing-source-preselection-router-delta/overlay/tests/*.test.mjs > preselection-retained.tap
+          node --test --test-reporter=tap existing-source-hyperliquid-recorder-delta/overlay/tests/*.test.mjs > hyperliquid-retained.tap
+          node --test --test-reporter=tap existing-source-fact-contract-delta/overlay/tests/*.test.mjs > fact-retained.tap
+          node --test --test-reporter=tap existing-source-closure-audit-delta/overlay/tests/*.test.mjs > closure-retained.tap
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-retained.tap
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained.tap
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained.tap
+          for f in snapshot-retained.tap output-retained.tap preselection-retained.tap hyperliquid-retained.tap fact-retained.tap closure-retained.tap architecture-retained.tap free-sources-retained.tap unified-retained.tap; do grep -F '# fail 0' "$f" >/dev/null; done
+      - name: Prepare full inherited regression harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+      - name: Full inherited runtime regression and Telegram TZ10.1
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+      - name: Live existing-source protective/domain proof
+        env:
+          REPORT2_CONSOLIDATED_RUNTIME_DIR: runtime
+          REPORT2_CONSOLIDATED_LIVE_OUTPUT: consolidated-live-proof.json
+        shell: bash
+        run: node consolidated-remaining-delta/validation/consolidated-live-proof.mjs
+      - name: Refresh read-only factual validation set
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_ACCEPTANCE_RUNTIME_DIR: runtime
+          REPORT2_ACCEPTANCE_OUTPUT: validation-acceptance-refresh.json
+          REPORT2_PRESELECTION_RUNTIME_DIR: runtime
+          REPORT2_PRESELECTION_AUDIT_OUTPUT: preselection-router-refresh.json
+          REPORT2_FREE_FUNNEL_OUTPUT: consolidated-funnel-replay.json
+          REPORT2_ARCH_STATS_OUTPUT: consolidated-shadow-statistics.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node validation-acceptance-delta/validation/validation-acceptance-audit.mjs || true
+          node existing-source-preselection-router-delta/validation/preselection-router-readonly-audit.mjs || true
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs || true
+          node architecture-cleanup-delta/validation/architecture-shadow-statistics.mjs || true
+      - name: One consolidated factual audit of every remaining requirement
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONSOLIDATED_RUNTIME_DIR: runtime
+          REPORT2_CONSOLIDATED_AUDIT_OUTPUT: consolidated-remaining-audit.json
+          REPORT2_ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node consolidated-remaining-delta/validation/consolidated-remaining-audit.mjs
+          node - <<'NODE'
+          const p=require('./consolidated-remaining-audit.json');
+          if(p.status!=='CLOSED_READ_ONLY_AUDIT'||p.d1_usage?.rows_written!==0||p.d1_usage?.unknown_ops!==0)process.exit(70);
+          if(p.safety?.production_writes||p.safety?.d1_writes||p.safety?.telegram_send||p.safety?.trading||p.safety?.threshold_autotune||p.safety?.probability_enabled)process.exit(71);
+          console.log('CONSOLIDATED_AUDIT_PASS',JSON.stringify(Object.fromEntries(Object.entries(p.requirements).map(([k,v])=>[k,v.status]))));
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save consolidated proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidated-remaining-candidate-proof
+          path: |
+            runtime/consolidated-remaining-overlay-proof.json
+            consolidated-focused.tap
+            snapshot-retained.tap
+            output-retained.tap
+            preselection-retained.tap
+            hyperliquid-retained.tap
+            fact-retained.tap
+            closure-retained.tap
+            architecture-retained.tap
+            free-sources-retained.tap
+            unified-retained.tap
+            runtime/runtime-regression-tests.tap
+            runtime/failure-injection-tests.tap
+            runtime/telegram-candidate-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-candidate-tests.tap
+            consolidated-live-proof.json
+            validation-acceptance-refresh.json
+            preselection-router-refresh.json
+            consolidated-funnel-replay.json
+            consolidated-shadow-statistics.json
+            consolidated-remaining-audit.json
+            consolidated-remaining-delta/spec/*
+          retention-days: 14
