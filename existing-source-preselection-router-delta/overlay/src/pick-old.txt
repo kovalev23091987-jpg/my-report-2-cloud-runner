@@ -1,0 +1,21 @@
+function pickPreselectionContext(contract, fullEvidenceRows, earlyDirection, now) {
+  const candidates = (Array.isArray(fullEvidenceRows) ? fullEvidenceRows : [])
+    .map((row) => normalizeExternalEvidenceRow(row, now))
+    .filter((row) => row && row.contract === contract)
+    .sort((a,b) => b.observed_ts - a.observed_ts);
+  const latest = candidates[0] || null;
+  if (!latest) return { status: 'NO_RECENT_CROSS_VENUE_RECEIPT', confirmed: false, conflict: false, evidence: [] };
+  if (latest.conflicts.length) return { status: 'CROSS_VENUE_DIVERGENCE', confirmed: false, conflict: true, evidence: latest.evidence, observed_ts: latest.observed_ts };
+  const rs = latest.evidence.filter((e) => /^rs_vs_(?:btc|eth)_(?:1h|4h|24h)$/i.test(text(e?.metric)) && finite(e?.value) !== null);
+  let confirmed = false;
+  if (earlyDirection === 'LONG') confirmed = rs.length >= 2 && rs.every((e) => finite(e.value) > 0);
+  else if (earlyDirection === 'SHORT') confirmed = rs.length >= 2 && rs.every((e) => finite(e.value) < 0);
+  else confirmed = latest.evidence.length > 0;
+  return {
+    status: latest.evidence.length ? 'CLOSED' : 'NO_USABLE_CROSS_VENUE_FACT',
+    confirmed,
+    conflict: false,
+    observed_ts: latest.observed_ts,
+    evidence: latest.evidence.slice(0, 16),
+  };
+}

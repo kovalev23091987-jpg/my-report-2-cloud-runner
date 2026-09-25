@@ -1,0 +1,23 @@
+function pickPreselectionContext(contract, fullEvidenceRows, earlyDirection, now) {
+  const candidates = (Array.isArray(fullEvidenceRows) ? fullEvidenceRows : [])
+    .map((row) => normalizeExternalEvidenceRow(row, now))
+    .filter((row) => row && row.contract === contract)
+    .sort((a,b) => b.observed_ts - a.observed_ts);
+  const latest = candidates[0] || null;
+  if (!latest) return { status: 'NO_RECENT_CROSS_VENUE_RECEIPT', confirmed: false, conflict: false, evidence: [], router: null };
+  const router = buildPreselectionMetricRouter({ contract, evidence: latest.evidence, now });
+  if (latest.conflicts.length) return { status: 'CROSS_VENUE_DIVERGENCE', confirmed: false, conflict: true, evidence: router.selected_facts, observed_ts: latest.observed_ts, router };
+  const rs = router.selected_facts.filter((e) => /^rs_vs_(?:btc|eth)_(?:1h|4h|24h)$/i.test(text(e?.metric)) && finite(e?.value) !== null);
+  let confirmed = false;
+  if (earlyDirection === 'LONG') confirmed = rs.length >= 2 && rs.every((e) => finite(e.value) > 0);
+  else if (earlyDirection === 'SHORT') confirmed = rs.length >= 2 && rs.every((e) => finite(e.value) < 0);
+  else confirmed = router.selected_metric_count > 0;
+  return {
+    status: router.status === 'CLOSED' ? 'CLOSED' : 'NO_USABLE_CROSS_VENUE_FACT',
+    confirmed,
+    conflict: false,
+    observed_ts: latest.observed_ts,
+    evidence: router.selected_facts.slice(0, 16),
+    router,
+  };
+}

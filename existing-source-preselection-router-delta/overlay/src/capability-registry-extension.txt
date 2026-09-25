@@ -1,0 +1,141 @@
+
+/* MY_REPORT_2_PRESELECTION_CAPABILITY_METADATA_V1 */
+const PRESELECTION_SOURCE_ALIASES=Object.freeze({
+  HTX:'HTX',BYBIT:'Bybit',OKX:'OKX',GATE:'Gate',BINANCE:'Binance',
+  HYPERLIQUID:'Hyperliquid',BYKARANTELI:'ByKaranteli',
+});
+export function canonicalCapabilitySource(row={}){
+  const venue=upper(row?.venue).toUpperCase();
+  if(PRESELECTION_SOURCE_ALIASES[venue])return PRESELECTION_SOURCE_ALIASES[venue];
+  const raw=upper(row?.source||row?.provider||row?.venue);
+  const u=raw.toUpperCase();
+  if(/HTX|HUOBI/.test(u))return'HTX';
+  if(/BYBIT/.test(u))return'Bybit';
+  if(/OKX/.test(u))return'OKX';
+  if(/GATE/.test(u))return'Gate';
+  if(/BINANCE/.test(u))return'Binance';
+  if(/HYPERLIQUID/.test(u))return'Hyperliquid';
+  if(/BYKARANTELI/.test(u))return'ByKaranteli';
+  return raw||null;
+}
+function preselectionAuthorityRank(metric,source,row){
+  const explicit=finite(row?.authority_rank);
+  if(explicit!==null)return{rank:explicit,source:'FACTUAL_RECEIPT'};
+  const idx=(ORDER[metric]||[]).indexOf(source);
+  return{rank:idx>=0?idx+1:null,source:idx>=0?'CAPABILITY_POLICY_ORDER':'NOT_CONFIGURED'};
+}
+function preselectionFreshnessScore({fresh,age_ms,max_age_ms}={}){
+  if(!fresh)return 0;
+  const age=finite(age_ms),max=finite(max_age_ms);
+  if(age===null||max===null||max<=0)return 80;
+  const ratio=Math.max(0,Math.min(1,age/max));
+  return Math.max(0,100-ratio*100);
+}
+export function buildCapabilityMetadataReceipt(row={},metric,{now=Date.now()}={}){
+  const source=canonicalCapabilitySource(row);
+  if(!source)return null;
+  const provider=upper(row?.provider||row?.source)||null;
+  const venue=upper(row?.venue)||null;
+  const status=upper(row?.status||'UNKNOWN').toUpperCase();
+  const receiptClosed=CLOSED.has(status);
+  const coverage=finite(row?.coverage_pct??row?.coverage);
+  const completeness=finite(row?.completeness_pct??row?.completeness??coverage);
+  const historyCoverage=finite(row?.history_coverage_pct);
+  const sourceTs=finite(row?.source_ts??row?.data_timestamp??row?.timestamp);
+  const receivedTs=finite(row?.received_ts??row?.observed_ts);
+  const maxAgeMs=finite(row?.max_age_ms)??((finite(row?.freshness_sla_sec)??finite(row?.max_age_sec))!==null?(finite(row?.freshness_sla_sec)??finite(row?.max_age_sec))*1000:null);
+  const ageMs=sourceTs===null?null:now-sourceTs;
+  const fresh=row?.fresh===true||(sourceTs!==null&&sourceTs<=now+60_000&&(maxAgeMs===null||ageMs<=maxAgeMs));
+  const healthRaw=upper(row?.health??row?.source_health??row?.quality_status);
+  const health=(healthRaw|| (receiptClosed?'CLOSED':'UNKNOWN')).toUpperCase();
+  const healthy=!BAD_HEALTH.has(health)&&(health==='OK'||health==='HEALTHY'||health==='CLOSED'||receiptClosed);
+  const connected=row?.connected===true||row?.available===true||row?.attempted===true||row?.receipt_present===true||receiptClosed;
+  const compatible=(!row?.metric||preselectionMetricFamilyCompat(row.metric,metric))&&row?.source_compatible!==false;
+  const availability=sourceAvailabilityProof(row,{freshness_proven:fresh,connected,healthy,compatible});
+  const usable=availability.available===true&&receiptClosed;
+  const authority=preselectionAuthorityRank(metric,source,row);
+  const freshnessScore=preselectionFreshnessScore({fresh,age_ms:ageMs,max_age_ms:maxAgeMs});
+  const authorityScore=authority.rank===null?50:Math.max(0,100-(Math.max(1,authority.rank)-1)*15);
+  const healthScore=healthy?100:0;
+  const selectionScore=usable?
+    (Math.max(0,Math.min(100,completeness??0))*0.30+
+     Math.max(0,Math.min(100,coverage??0))*0.20+
+     freshnessScore*0.20+
+     authorityScore*0.20+
+     healthScore*0.10):-Infinity;
+  const interval=upper(row?.interval||row?.window||row?.settlement_period)||null;
+  const marketType=upper(row?.market_type||row?.instrument_type)||null;
+  const lastSuccess=finite(row?.last_success_ts)??(receiptClosed?sourceTs:null);
+  return{
+    version:'capability-metadata-receipt-v1-20260925',
+    metric,source,provider,venue,
+    mapping:{
+      contract_code:upper(row?.contract_code)||null,
+      provider_symbol:upper(row?.provider_symbol||row?.symbol)||null,
+      primary_market_id:upper(row?.primary_market_id)||null,
+      base_asset:upper(row?.base_asset)||null,
+      quote_asset:upper(row?.quote_asset)||null,
+    },
+    market_type:marketType,
+    unit:upper(row?.unit)||null,
+    multiplier:finite(row?.multiplier??row?.contract_multiplier),
+    interval,
+    interval_status:interval?'CLOSED':'NOT_APPLICABLE_OR_NOT_PROVIDED',
+    history_coverage_pct:historyCoverage,
+    history_status:historyCoverage===null?'NOT_MEASURED':'CLOSED',
+    source_ts:sourceTs,
+    received_ts:receivedTs,
+    age_ms:ageMs,
+    max_age_ms:maxAgeMs,
+    freshness_status:fresh?'CURRENT':'NOT_CURRENT',
+    freshness_score_0_100:freshnessScore,
+    coverage_pct:coverage,
+    completeness_pct:completeness,
+    health,
+    healthy,
+    authority_rank:authority.rank,
+    authority_source:authority.source,
+    last_success_ts:lastSuccess,
+    connected,
+    compatible,
+    usable,
+    runtime_state:availability.state,
+    reason:availability.reason,
+    selection_score:selectionScore,
+    source_selection_not_strategy_weight:true,
+    raw:row,
+  };
+}
+function preselectionMetricFamilyCompat(rowMetric,metric){
+  const m=upper(rowMetric).toLowerCase();
+  if(metric==='funding')return/funding/.test(m);
+  if(metric==='oi')return/open_interest|(^|_)oi(_|$)|oi_change/.test(m);
+  if(metric==='relative_strength')return/^rs_vs_(?:btc|eth)_/.test(m);
+  if(metric==='spot_flow')return/spot_flow|spot_turnover|spot_order_book_imbalance/.test(m);
+  if(metric==='realized_liquidations')return/realized.*liquid|liquidation.*realized/.test(m);
+  return false;
+}
+export function rankPreselectionMetricSources({metric,rows=[],now=Date.now()}={}){
+  const plan=capabilityPlan(metric),allowed=new Set(plan.sources);
+  const receipts=(Array.isArray(rows)?rows:[])
+    .map(row=>buildCapabilityMetadataReceipt(row,metric,{now}))
+    .filter(Boolean)
+    .filter(row=>allowed.has(row.source));
+  const bestBySource=new Map();
+  for(const receipt of receipts){
+    const prev=bestBySource.get(receipt.source);
+    if(!prev||Number(receipt.selection_score)>Number(prev.selection_score))bestBySource.set(receipt.source,receipt);
+  }
+  const ranked=plan.sources.map(source=>bestBySource.get(source)||{
+    version:'capability-metadata-receipt-v1-20260925',metric,source,provider:null,venue:null,
+    mapping:null,market_type:null,unit:null,multiplier:null,interval:null,interval_status:'NOT_AVAILABLE',
+    history_coverage_pct:null,history_status:'NOT_AVAILABLE',source_ts:null,received_ts:null,age_ms:null,max_age_ms:null,
+    freshness_status:'NOT_AVAILABLE',freshness_score_0_100:0,coverage_pct:null,completeness_pct:null,
+    health:'MISSING',healthy:false,authority_rank:(plan.sources.indexOf(source)+1),authority_source:'CAPABILITY_POLICY_ORDER',
+    last_success_ts:null,connected:false,compatible:false,usable:false,runtime_state:'MISSING',
+    reason:'NO_FACTUAL_CAPABILITY_RECEIPT',selection_score:-Infinity,source_selection_not_strategy_weight:true,raw:null,
+  });
+  ranked.sort((a,b)=>Number(b.usable)-Number(a.usable)||(b.selection_score-a.selection_score)||(plan.sources.indexOf(a.source)-plan.sources.indexOf(b.source)));
+  return ranked;
+}
+/* END_MY_REPORT_2_PRESELECTION_CAPABILITY_METADATA_V1 */

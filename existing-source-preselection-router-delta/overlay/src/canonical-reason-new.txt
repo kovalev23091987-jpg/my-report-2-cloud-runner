@@ -1,0 +1,14 @@
+ if(discovery?.preselection_cross_venue_conflict===true)out.push({label:'Расхождение между биржами',event:'обнаружено, не усреднялось',source:'несколько бирж'});
+ const preselectionRouter=discovery?.preselection_metric_router;
+ if(preselectionRouter?.status==='CLOSED'){
+   const routed=finite(preselectionRouter?.selected_metric_count);
+   const sources=arr(preselectionRouter?.selected_sources).slice(0,4);
+   out.push({
+     label:'Предвыбор источников',
+     value:routed,
+     unit:'метрик',
+     source:sources.length?sources.join(', '):'межбиржевые данные',
+     event:'выбраны по полноте, свежести, авторитетности и состоянию источника',
+   });
+ }
+ const ev=opportunity?.newest_event;
