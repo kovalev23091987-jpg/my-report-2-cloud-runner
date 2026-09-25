@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {classifyBlockchainEvent,dedupeBlockchainEvents} from '../src/blockchain-event-classifier.mjs';
+import {buildSolanaRpcRequest,classifySolanaParsedAction} from '../src/solana-rpc-adapter.mjs';
+import {alchemyRpcRequest,normalizeEvmLogBatch} from '../src/alchemy-evm-adapter.mjs';
+const MINT='So11111111111111111111111111111111111111112';
+test('Solana bounded RPC request preserves mint case',()=>{const r=buildSolanaRpcRequest({method:'getSignaturesForAddress',mint:MINT,limit:50});assert.equal(r.status,'CANDIDATE');assert.equal(r.body.params[0],MINT);});
+test('unsupported Solana operation stays unsupported',()=>{const r=classifySolanaParsedAction({program:'unknown',type:'SWAP'});assert.equal(r.status,'UNSUPPORTED');assert.equal(r.is_buy,false);});
+test('transfer bridge liquidity never become automatic buy',()=>{for(const type of ['TRANSFER','BRIDGE','ADD_LIQUIDITY'])assert.equal(classifyBlockchainEvent({type}).is_buy,false);});
+test('multihop/unknown swap direction is not a buy',()=>{const r=classifyBlockchainEvent({type:'SWAP',supported_program:true,asset_identity_verified:true,direction:null});assert.equal(r.is_buy,false);assert.equal(r.status,'UNKNOWN');});
+test('only supported verified swap legs can classify buy',()=>{const r=classifyBlockchainEvent({type:'SWAP',supported_program:true,asset_identity_verified:true,direction:'BUY',quote_outflow_verified:true,token_inflow_verified:true});assert.equal(r.is_buy,true);assert.equal(r.classification,'DEX_BUY');});
+test('reorg removed log invalidates event',()=>{assert.equal(classifyBlockchainEvent({type:'SWAP',removed:true}).status,'INVALIDATED');});
+test('duplicate EVM log is deduplicated by tx hash and log index',()=>{const ev={chain:'ethereum',tx_hash:'0xabc',log_index:1};const r=dedupeBlockchainEvents([ev,ev]);assert.equal(r.duplicate_count,1);assert.equal(r.events.length,1);});
+test('Alchemy stays NOT_CONFIGURED without approved key',()=>{assert.equal(alchemyRpcRequest({api_key:'',method:'eth_getLogs'}).status,'NOT_CONFIGURED');});
+test('EVM duplicate and removed logs do not become buys',()=>{const contract='0x1111111111111111111111111111111111111111';const ts=1760000000000;const logs=[{transactionHash:'0xaaa',logIndex:1,blockTimestamp:ts,removed:false},{transactionHash:'0xaaa',logIndex:1,blockTimestamp:ts,removed:false}];const r=normalizeEvmLogBatch(logs,{chain:'ethereum',contract_or_mint:contract,event_name:'TRANSFER'});assert.equal(r.duplicate_count,1);assert.equal(r.events[0].classification.is_buy,false);});

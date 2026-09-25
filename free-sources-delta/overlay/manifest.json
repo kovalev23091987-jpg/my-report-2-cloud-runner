@@ -1,0 +1,130 @@
+{
+  "schema": "my-report-2-free-sources-overlay-v1",
+  "version": "20260925",
+  "applies_after": "UNIFIED_OVERLAY",
+  "production_base": "08d98579c5ecbeb4de426ffeb1160f25ece52708",
+  "existing_files": [
+    {
+      "path": "src/worker.js",
+      "before_sha256": "4721646492cbf07fa4f2d1b2216d47116ee271fc38ac02aa6a98d95f547089f3",
+      "after_sha256": "989a7eb84acb040d38331b49adc36bc89cb0f25cb776f5bba6099e91370b50c6",
+      "source": "worker.js"
+    },
+    {
+      "path": "src/capability-registry.mjs",
+      "before_sha256": "70f3f1b502e61b3c26fbfcab04c05c95b2c8755a3acc126a81c743cb4bd07e98",
+      "after_sha256": "e1c4841a17ad945211dd42ac5baca1d105cda290fd91481125e544e6b0f8ea40",
+      "source": "capability-registry.mjs"
+    },
+    {
+      "path": "src/canonical-analytical-result.mjs",
+      "before_sha256": "2adc90e965e527a2273220472d890b70add7d953e770700487ba8a3763d26d3d",
+      "after_sha256": "9f43930d256c5a1be08af9918de52a4789036b1a1419955afd1fd38614ba365d",
+      "source": "canonical-analytical-result.mjs"
+    },
+    {
+      "path": "src/canonical-runtime-adapter.mjs",
+      "before_sha256": "45aa4fdb0d8d6337851681ad640f2630c6f139015e3543b767660a9fc8e83bf9",
+      "after_sha256": "4d0a28be8c3b2c59f08e8e339b768b384bc11513f7b6193c833ed6ecb3a68428",
+      "source": "canonical-runtime-adapter.mjs"
+    },
+    {
+      "path": "src/manual-report-formatter.mjs",
+      "before_sha256": "d82977a4a2ab92ce0077bfce5a1230ebc38d1cbb81772af09b4edadb5d63f147",
+      "after_sha256": "7014e86d17626fab4ac11e35a4cf4717a6ec7101ba2bee5a262aea226f067c2f",
+      "source": "manual-report-formatter.mjs"
+    },
+    {
+      "path": "src/telegram-compact-formatter.mjs",
+      "before_sha256": "21a7df81c9f92fc3b3adac8bff80a421ca3e9d375df6f65159b8c46ad0335a57",
+      "after_sha256": "461486b66ec265fcbd5007ddb52ef55c232b8dbe48d0fbfe528730bbefedcfe5",
+      "source": "telegram-compact-formatter.mjs"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "src/asset-identity.mjs",
+      "sha256": "ce80aa2895e6d59d60ad99beb341c7749564780ab58cead4230103db082e3e5e",
+      "source": "asset-identity.mjs"
+    },
+    {
+      "path": "src/binance-public-data-history.mjs",
+      "sha256": "9aae08226102c96d31079cac11f4e8722134382dcac80eec175ac0d7658efc8e",
+      "source": "binance-public-data-history.mjs"
+    },
+    {
+      "path": "src/goplus-security-adapter.mjs",
+      "sha256": "ee96729ca23320e554682feafada35de7cd82cad19441a5f640ed38f40508304",
+      "source": "goplus-security-adapter.mjs"
+    },
+    {
+      "path": "src/blockchain-event-classifier.mjs",
+      "sha256": "b01093b8876b1a8532514e4636efe86e4f67916f604df9be14884916a7ea7f9c",
+      "source": "blockchain-event-classifier.mjs"
+    },
+    {
+      "path": "src/solana-rpc-adapter.mjs",
+      "sha256": "33f1c10c1f6ba94ca7c6d8c0c8d92b2427556ad2dc7563de6eaf6713fea7e86b",
+      "source": "solana-rpc-adapter.mjs"
+    },
+    {
+      "path": "src/dex-pool-bridge.mjs",
+      "sha256": "bbc4d13678979fa742a971281a180a980e926d12b0a6d5cc3226f3dcc7607f05",
+      "source": "dex-pool-bridge.mjs"
+    },
+    {
+      "path": "src/resource-budget.mjs",
+      "sha256": "a173c574ec0656b1514eb18744b8bafc679cde86f1d54a12725956c33df97f37",
+      "source": "resource-budget.mjs"
+    },
+    {
+      "path": "src/funnel-diagnostics.mjs",
+      "sha256": "ef35f3164d273a935bcfbde7e755ba55b166a30bea4ce8f5a3e623278ad5a478",
+      "source": "funnel-diagnostics.mjs"
+    },
+    {
+      "path": "src/source-registry.mjs",
+      "sha256": "513db290f3e914a65b52d7413d757d0306be57076b542a73fabc2c6985714045",
+      "source": "source-registry.mjs"
+    },
+    {
+      "path": "src/alchemy-evm-adapter.mjs",
+      "sha256": "3f5c95d64cd381b6c64a11bcabfd5fc7f78595957441233eb496a3d1125233e0",
+      "source": "alchemy-evm-adapter.mjs"
+    },
+    {
+      "path": "src/official-event-receipt.mjs",
+      "sha256": "4036e0d2302fea52322f46daac563c9added81cfb652bb9408f85a28d10b8f67",
+      "source": "official-event-receipt.mjs"
+    },
+    {
+      "path": "src/market-measurement-adapters.mjs",
+      "sha256": "f9ef2a53dd1d5b6cd26d21a5f9e8c499767408c9624f139cea75cb87181d0b7f",
+      "source": "market-measurement-adapters.mjs"
+    },
+    {
+      "path": "src/provider-context-normalizers.mjs",
+      "sha256": "24c75b9cba75164f87b1e67184b1db652092253e7f9085dc388ab85253b87830",
+      "source": "provider-context-normalizers.mjs"
+    },
+    {
+      "path": "src/runtime-status-semantics.mjs",
+      "sha256": "a1a0e2bf7b0e1e167b301671591b82ece31cbde396fdd58c34915af494a4e222",
+      "source": "runtime-status-semantics.mjs"
+    }
+  ],
+  "safety": {
+    "external_hot_request_delta": 0,
+    "d1_write_delta_hot": 0,
+    "production_changed": false,
+    "hard_gates_changed": false,
+    "strategy_weights_changed": false,
+    "telegram_recipients_changed": false,
+    "cloudflare_deploy": false,
+    "force_push": false,
+    "automatic_execution": false,
+    "validated_signal": false,
+    "live_probability": false,
+    "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE"
+  }
+}

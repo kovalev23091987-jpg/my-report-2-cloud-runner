@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
+const src=fs.readFileSync(new URL('../src/worker.js',import.meta.url),'utf8');
+test('worker reuses canonical runtime and adds no new hot fetch function for free source summary',()=>{assert.match(src,/buildFreeSourceRuntimeSummary/);assert.match(src,/free_source_summary:\s*freeSourceRuntimeSummary/);assert.match(src,/free_sources_delta_summary:\s*freeSourceRuntimeSummary/);assert.doesNotMatch(src,/fetchGoPlus|fetchAlchemy|fetchBitget|fetchCoinbase|fetchDeribit/);});
+test('existing hot request constants remain unchanged',()=>{assert.match(src,/STAGE0_EXTERNAL_REQUESTS = 4/);assert.match(src,/DEEP_CHECK_EXTERNAL_REQUESTS = 39/);assert.match(src,/SMART_MONEY_EXTERNAL_REQUESTS = 1/);assert.match(src,/WORKERS_FREE_EXTERNAL_LIMIT = 50/);assert.match(src,/EXTERNAL_REQUEST_RESERVE = 6/);});

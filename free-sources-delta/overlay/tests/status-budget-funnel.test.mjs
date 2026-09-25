@@ -1,0 +1,14 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {sourceExhaustion,resolveCrossVenueConflict,capabilityPlan} from '../src/capability-registry.mjs';
+import {semanticMissing} from '../src/runtime-status-semantics.mjs';
+import {freeSourcesBudget} from '../src/resource-budget.mjs';
+import {extractEntryBlockers,aggregateFunnel} from '../src/funnel-diagnostics.mjs';
+const NOW=1760000000000;
+test('rate limit timeout stale and unsupported never become zero',()=>{for(const s of ['RATE_LIMITED','TIMEOUT','STALE','UNSUPPORTED']){const r=semanticMissing(s);assert.equal(r.value,null);assert.equal(r.is_zero,false);}});
+test('quota exhausted means incomplete check, not data absent',()=>{const r=semanticMissing('BUDGET_EXHAUSTED');assert.equal(r.check_complete,false);assert.match(r.message,/ПРОВЕРКА НЕ ЗАВЕРШЕНА/);});
+test('source exhaustion distinguishes budget exhausted',()=>{const r=sourceExhaustion({metric:'funding',attempts:[{source:'HTX',status:'BUDGET_EXHAUSTED'}],capabilities:[{source:'HTX',connected:true,fresh:true,health:'HEALTHY',metric:'funding',coverage_pct:100}],now:NOW});assert.equal(r.status,'BUDGET_EXHAUSTED');assert.equal(r.value,null);});
+test('cross venue conflict is never averaged and retains divergence code',()=>{const rows=[{source:'HTX',status:'CLOSED',value:10},{source:'Bybit',status:'CLOSED',value:-10}];const r=resolveCrossVenueConflict({metric:'oi',rows,tolerance_pct:1});assert.equal(r.status,'CONFLICT');assert.equal(r.reason_code,'CROSS_VENUE_DIVERGENCE');assert.equal(r.averaged,false);});
+test('supporting risk/onchain extend existing capability registry instead of new router',()=>{assert.deepEqual(capabilityPlan('supporting_risk').sources,['GoPlus']);assert.deepEqual(capabilityPlan('onchain').sources,['Alchemy','Solana Public RPC']);});
+test('free source delta adds zero hot-cycle external calls and no auto payment',()=>{const b=freeSourcesBudget();assert.equal(b.hot_cycle.free_sources_external_request_delta,0);assert.equal(b.quota_policy.auto_payment,false);assert.equal(b.continuous_collector_status,'PARTIAL_REALTIME_COVERAGE');});
+test('future funding and fee blockers are counted explicitly, never zero-filled',()=>{const d=extractEntryBlockers({publication_shadow:{cost_assessment:{reasons:['FACTUAL_FEE_SCHEDULE_NOT_CLOSED','FUNDING_HOLDING_COST_NOT_PROVEN']}}});assert.equal(d.fee_blocked,true);assert.equal(d.funding_holding_blocked,true);});
+test('funnel aggregates exact states and blocker reasons',()=>{const a=aggregateFunnel([{early:true,deep_check:true,state:'WAIT_FOR_TRIGGER',blockers:['FEE_RECEIPT_MISSING']},{early:false,deep_check:true,state:'REJECTED',blockers:['SOURCE_EXHAUSTED']}]);assert.equal(a.counts.found,2);assert.equal(a.counts.deep_check,2);assert.equal(a.counts.wait,1);assert.equal(a.blocker_counts.FEE_RECEIPT_MISSING,1);});
