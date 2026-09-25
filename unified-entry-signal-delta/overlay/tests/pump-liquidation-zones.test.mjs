@@ -1,0 +1,8 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {classifyPump24h,buildPumpLiquidationZones} from '../src/pump-liquidation-zones.mjs';
+const rows=[
+ {level_price:120,source:'A',status:'CLOSED',notional_usdt:1000},{level_price:140,source:'B',status:'CLOSED',notional_usdt:5000},{level_price:160,source:'C',status:'CLOSED',notional_usdt:3500},{level_price:80,source:'A',status:'CLOSED',notional_usdt:900},{level_price:60,source:'B',status:'CLOSED',notional_usdt:6000},{level_price:40,source:'C',status:'CLOSED',notional_usdt:4000},
+];
+test('19.99 is not pump and exact 20 is pump',()=>{assert.equal(classifyPump24h(19.99).is_pump,false);assert.equal(classifyPump24h(20).is_pump,true);assert.equal(classifyPump24h(70).is_pump,true);});
+test('pump zones are two-sided, uncapped by distance, max three each, nearest and largest retained',()=>{const out=buildPumpLiquidationZones({rolling_24h_change_pct:20,current_price:100,projected:rows});assert.equal(out.status,'CLOSED');assert.equal(out.distance_cap_pct,null);assert.equal(out.above.length,3);assert.equal(out.below.length,3);assert.equal(out.above[0].price,120);assert.ok(out.above.some(x=>x.price===140&&x.selection_role==='LARGEST_DISTANT'));assert.equal(out.below[0].price,80);assert.ok(out.below.some(x=>x.price===60&&x.selection_role==='LARGEST_DISTANT'));});
+test('missing side never invents a zone',()=>{const out=buildPumpLiquidationZones({rolling_24h_change_pct:30,current_price:100,projected:rows.filter(x=>x.level_price>100)});assert.equal(out.below.length,0);assert.equal(out.below_status,'STRONG_ZONES_NOT_CONFIRMED');});
