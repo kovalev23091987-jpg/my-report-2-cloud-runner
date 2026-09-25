@@ -1,0 +1,98 @@
+name: Telegram V3 activation candidate V2
+on:
+  push:
+    branches: ['telegram-activation-candidate-v2-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: telegram-v3-activation-v2-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      EXPECTED_MAIN: "d2b1b9259a21de0b427b656713c9b6dedb746db0"
+      EXPECTED_TEST_ID: "12564ec9b4c6c3f1039d204da2a0765c0016bdd81bcbdfb29e1cafd09e5d72eb"
+      EXPECTED_WORKER_SHA: "a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify bounded activation diff and safety gates
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git merge-base --is-ancestor "$EXPECTED_MAIN" HEAD
+          mapfile -t changed < <(git diff --name-only "$EXPECTED_MAIN"...HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          test "${#changed[@]}" -eq 2
+          test "${changed[0]}" = ".github/workflows/report2.yml"
+          test "${changed[1]}" = ".github/workflows/telegram-v3-activation-candidate-v2.yml"
+          node - "$EXPECTED_TEST_ID" <<'NODE_CHECK'
+          const fs=require('fs');
+          const id=process.argv[2];
+          const s=fs.readFileSync('.github/workflows/report2.yml','utf8');
+          const idLine=(s.match(/^\s*REPORT2_TELEGRAM_INFO_TEST_ID:.*$/m)||[])[0]||'';
+          const netLine=(s.match(/^\s*REPORT2_V3_TELEGRAM_NETWORK_ENABLED:.*$/m)||[])[0]||'';
+          if(!idLine.includes(id)) throw new Error('candidate test id mismatch');
+          const off=/REPORT2_V3_TELEGRAM_NETWORK_ENABLED:\s*"0"/.test(netLine);
+          const scheduled=netLine.includes("github.event_name == 'schedule'") && netLine.includes("&& '1' || '0'");
+          if(!(off||scheduled)) throw new Error('unexpected Telegram network gate');
+          for(const anchor of ['REPORT2_TELEGRAM_OUTPUT_ENABLED:','REPORT2_TELEGRAM_RELAY_URL:','REPORT2_TELEGRAM_RELAY_KEY:','REPORT2_V3_TELEGRAM_JOURNAL_ENABLED:']) {
+            if(!s.includes(anchor)) throw new Error('missing '+anchor);
+          }
+          console.log('TELEGRAM_ACTIVATION_STATIC_GUARD_PASS', off?'OFF_VALIDATION':'SCHEDULE_ONLY');
+          NODE_CHECK
+      - name: Reconstruct exact integrated production runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf runtime
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm -f runtime/payload.tar.gz
+          cp runner/runner-main.mjs runtime/runner-main.mjs
+          cp runner/r8-20-prospective-validation-sidecar.mjs runtime/r8-20-prospective-validation-sidecar.mjs
+          cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
+          cp runner/plain-text-telegram.mjs runtime/plain-text-telegram.mjs
+          cp runner/telegram-output.mjs runtime/telegram-output.mjs
+          cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
+          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+          cd runtime
+          test "$(sha256sum src/worker.js | awk '{print $1}')" = "$EXPECTED_WORKER_SHA"
+          node --check runner-main.mjs
+      - name: Telegram lifecycle, delivery, dedupe and output regression
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap \
+            telegram-repair-tests/v3-telegram-delivery-sidecar.test.mjs \
+            telegram-repair-tests/v3-telegram-lifecycle.test.mjs \
+            telegram-repair-tests/telegram-pipeline.test.mjs \
+            telegram-repair-tests/telegram-info-sqlite.test.mjs
+          node telegram-repair-tests/final-chain-regression.mjs
+          echo TELEGRAM_V3_ACTIVATION_V2_CANDIDATE_PASS
