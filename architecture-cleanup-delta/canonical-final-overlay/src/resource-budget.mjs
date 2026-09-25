@@ -1,0 +1,7 @@
+export const FREE_SOURCES_RESOURCE_BUDGET_VERSION='free-sources-resource-budget-v1-20260925';
+export const BASE_HOT_CYCLE=Object.freeze({stage0_external_requests:4,deep_check_external_requests:39,smart_money_external_requests:1,workers_free_external_limit:50,reserve:6});
+export function freeSourcesBudget({candidate_count=20,history_days=30,history_markets=2,minute_rows_per_day=1440}={}){
+  const candidates=Math.max(1,Number(candidate_count)||20),days=Math.max(1,Math.min(90,Number(history_days)||30)),markets=Math.max(1,Number(history_markets)||2);
+  const minuteRows=candidates*markets*Number(minute_rows_per_day)*days;
+  return {version:FREE_SOURCES_RESOURCE_BUDGET_VERSION,status:'CLOSED',hot_cycle:{base_external_requests:BASE_HOT_CYCLE.stage0_external_requests+BASE_HOT_CYCLE.deep_check_external_requests+BASE_HOT_CYCLE.smart_money_external_requests,free_sources_external_request_delta:0,limit:BASE_HOT_CYCLE.workers_free_external_limit,reserve:BASE_HOT_CYCLE.reserve,within_policy:true},history_lane:{candidate_count:candidates,days,markets,hypothetical_raw_minute_rows:minuteRows,persist_raw_minutes:false,persist_each_trade:false,persistence:'AGGREGATES_FEATURES_EVENTS_OUTCOMES',hot_cycle:false},quota_policy:{auto_payment:false,budget_exhausted_means:'BUDGET_EXHAUSTED',rate_limit_means:'SOURCE_TEMPORARILY_UNAVAILABLE',fabricate_zero:false},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE'};
+}

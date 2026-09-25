@@ -1,0 +1,20 @@
+{
+  "schema":"my-report-2-architecture-cleanup-overlay-v1",
+  "version":"20260925",
+  "applies_after":"FREE_SOURCES_V4_CLOSED",
+  "base_candidate_sha":"bc6eb86a135187271b3a8af85ad90e557505b8c6",
+  "production_base":"08d98579c5ecbeb4de426ffeb1160f25ece52708",
+  "existing_files":[
+    {"path":"src/capability-registry.mjs","before_sha256":"e1c4841a17ad945211dd42ac5baca1d105cda290fd91481125e544e6b0f8ea40","after_sha256":"fd1f24dde8dc7d716859be443dc483ca960203e82e9e8d78d435ed5facb9c3f4","source":"capability-registry.mjs"},
+    {"path":"src/source-registry.mjs","before_sha256":"513db290f3e914a65b52d7413d757d0306be57076b542a73fabc2c6985714045","after_sha256":"0f58b4d8c1eaa5e7624648d220cd8d377fdeb5e0a5712d77a3d7756b2e04bb48","source":"source-registry.mjs"},
+    {"path":"src/funnel-diagnostics.mjs","before_sha256":"ef35f3164d273a935bcfbde7e755ba55b166a30bea4ce8f5a3e623278ad5a478","after_sha256":"8492720cce85962b4648b6e8e838c4fb6162d1ff1d4dc384e212bd9dfc6fd337","source":"funnel-diagnostics.mjs"},
+    {"path":"src/canonical-runtime-adapter.mjs","before_sha256":"4d0a28be8c3b2c59f08e8e339b768b384bc11513f7b6193c833ed6ecb3a68428","after_sha256":"fc64273b62d7742d779b40055a36159c0cc76b7e7332c377fb255830d5c2768d","source":"canonical-runtime-adapter.mjs"},
+    {"path":"src/manual-report-formatter.mjs","before_sha256":"7014e86d17626fab4ac11e35a4cf4717a6ec7101ba2bee5a262aea226f067c2f","after_sha256":"953eb318f321c5a21191b37b17b77291d36f7e9ae5a7bd1feaca82470d56fa1f","source":"manual-report-formatter.mjs"},
+    {"path":"src/telegram-compact-formatter.mjs","before_sha256":"461486b66ec265fcbd5007ddb52ef55c232b8dbe48d0fbfe528730bbefedcfe5","after_sha256":"7e55ffea79a2780dc77a3391fb10ca02dd212e8d304da2410235311a68eab7eb","source":"telegram-compact-formatter.mjs"}
+  ],
+  "new_files":[
+    {"path":"src/state-contract.mjs","sha256":"c016c73ac0f85e3b630cdffc667295da224b3e7bd2ee8b0b43aee4718aff841f","source":"state-contract.mjs"},
+    {"path":"src/reason-registry.mjs","sha256":"de09b0383b260146e8d2d08512a971bcbd8555e5d83d930c78052ae107c8ab41","source":"reason-registry.mjs"}
+  ],
+  "safety":{"production_changed":false,"d1_migration":false,"telegram_send":false,"telegram_recipients_changed":false,"cloudflare_deploy":false,"force_push":false,"hard_gates_changed":false,"strategy_weights_changed":false,"thresholds_changed":false,"automatic_execution":false,"validated_signal":false,"live_probability":false,"new_sources_added":false,"worker_copy_added":false}
+}

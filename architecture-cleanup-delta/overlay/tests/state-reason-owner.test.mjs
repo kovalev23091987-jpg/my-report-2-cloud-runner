@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';import path from 'node:path';import {pathToFileURL} from 'node:url';
+const root=process.env.REPORT2_ARCH_RUNTIME_DIR?path.resolve(process.env.REPORT2_ARCH_RUNTIME_DIR):path.resolve('runtime');
+const load=name=>import(pathToFileURL(path.join(root,'src',name)).href);
+const {BLOCKER_CODES,normalizeBlockerReason,reasonDefinition,safeUserReason}=await load('reason-registry.mjs');
+const {SOURCE_DEPLOYMENT_STAGES,SOURCE_RUNTIME_STATES,DECISION_STATES}=await load('state-contract.mjs');
+const {buildFreeSourceRuntimeSummary,buildSourceRegistry}=await load('source-registry.mjs');
+const NOW=1_800_000_000_000;
+test('all registered blocker reasons have full and short Russian text',()=>{for(const c of BLOCKER_CODES){const d=reasonDefinition(c);assert.match(d.full_ru,/[А-Яа-яЁё]/u);assert.match(d.short_ru,/[А-Яа-яЁё]/u);}});
+test('unknown reason fails closed without raw code leak',()=>{const d=normalizeBlockerReason('SOME_NEW_INTERNAL_CODE_X');assert.equal(d.code,'UNKNOWN_INTERNAL_REASON');assert.equal(d.known,false);const u=safeUserReason('SOME_NEW_INTERNAL_CODE_X',{short:true});assert.match(u,/внутрен/i);assert.doesNotMatch(u,/SOME_NEW_INTERNAL_CODE_X/);});
+test('single enums own source deployment runtime and decision states',()=>{assert.ok(SOURCE_DEPLOYMENT_STAGES.includes('PRODUCTION'));assert.ok(SOURCE_RUNTIME_STATES.includes('BLOCKED'));assert.ok(DECISION_STATES.includes('WAIT_FOR_TRIGGER'));});
+test('runtime registry does not call a closed receipt current without timestamp freshness proof',()=>{const r=buildSourceRegistry({public_evidence:{evidence:[{venue:'BINANCE',status:'CLOSED'}]},now:NOW});const b=r.entries.find(x=>x.id==='Binance Live Public');assert.equal(b.runtime_current,false);assert.equal(b.decision_usable,false);});
+test('runtime registry accepts a current factual timestamped receipt',()=>{const r=buildSourceRegistry({public_evidence:{evidence:[{venue:'BINANCE',status:'CLOSED',source_ts:NOW-1000,max_age_sec:60,source_compatible:true}]},now:NOW});const b=r.entries.find(x=>x.id==='Binance Live Public');assert.equal(b.runtime_current,true);assert.equal(b.decision_usable,true);});
+test('free source summary has one explicit owner',()=>{const s=buildFreeSourceRuntimeSummary({now:NOW});assert.equal(s.owner,'source-registry.mjs');assert.equal(s.status,'CLOSED');});
