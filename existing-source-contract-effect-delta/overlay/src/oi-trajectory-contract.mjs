@@ -1,0 +1,12 @@
+export const OI_TRAJECTORY_CONTRACT_VERSION='oi-trajectory-contract-v1-20260925';
+const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
+const clean=v=>String(v??'').trim();const pct=(a,b)=>a!==null&&b!==null&&a!==0?(b/a-1)*100:null;
+export function normalizeOiTrajectory({venue,native_unit='UNKNOWN',contract_multiplier=null,points=[]}={}){
+ const mult=finite(contract_multiplier);const unit=clean(native_unit).toUpperCase();const rows=(Array.isArray(points)?points:[]).map(p=>({ts:finite(p?.ts),native_oi:finite(p?.native_oi??p?.contracts??p?.open_interest),price:finite(p?.price)})).filter(p=>p.ts!==null&&p.native_oi!==null).sort((a,b)=>a.ts-b.ts);
+ if(rows.length<2)return{version:OI_TRAJECTORY_CONTRACT_VERSION,status:'NOT_CLOSED',reason:'OI_TIME_SERIES_INSUFFICIENT',venue:clean(venue)||null,points:rows.length,do_not_average_across_venues:true};
+ const first=rows[0],last=rows.at(-1);const nativeChange=pct(first.native_oi,last.native_oi);const baseFactor=unit==='CONTRACTS'?mult:unit==='BASE_ASSET'?1:null;
+ const baseStart=baseFactor!==null?first.native_oi*baseFactor:null,baseEnd=baseFactor!==null?last.native_oi*baseFactor:null;const usdStart=baseStart!==null&&first.price!==null?baseStart*first.price:null,usdEnd=baseEnd!==null&&last.price!==null?baseEnd*last.price:null;const priceChange=pct(first.price,last.price),usdChange=pct(usdStart,usdEnd);
+ return{version:OI_TRAJECTORY_CONTRACT_VERSION,status:'CLOSED',venue:clean(venue)||null,native_unit:unit,native_start:first.native_oi,native_end:last.native_oi,native_change_pct:nativeChange,contract_multiplier:mult,multiplier_status:unit==='CONTRACTS'?(mult!==null?'EXPLICIT':'MISSING_NOT_COERCED'):'NOT_APPLICABLE',base_start:baseStart,base_end:baseEnd,usd_value_start:usdStart,usd_value_end:usdEnd,usd_value_change_pct:usdChange,price_change_pct:priceChange,usd_change_may_include_price_effect:true,oi_trajectory_from_time_series:true,do_not_average_across_venues:true,execution_costs_liquidity_venue:'HTX_ONLY',first_ts:first.ts,last_ts:last.ts,points:rows.length};
+}
+export function compareOiVenues(rows=[]){return{version:OI_TRAJECTORY_CONTRACT_VERSION,status:'CLOSED',venues:(Array.isArray(rows)?rows:[]).map(x=>({venue:x?.venue||null,native_change_pct:x?.native_change_pct??null,usd_value_change_pct:x?.usd_value_change_pct??null,price_change_pct:x?.price_change_pct??null})),average:null,averaged:false,rule:'DO_NOT_AVERAGE_OI_ACROSS_VENUES'};}
+export default{OI_TRAJECTORY_CONTRACT_VERSION,normalizeOiTrajectory,compareOiVenues};

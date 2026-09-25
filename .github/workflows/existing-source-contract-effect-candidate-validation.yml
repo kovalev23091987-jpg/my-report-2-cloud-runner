@@ -1,0 +1,200 @@
+name: Existing source contract effect candidate validation
+on:
+  push:
+    branches: ['existing-source-contract-effect-candidate-v1-20260925']
+permissions:
+  contents: read
+concurrency:
+  group: existing-source-contract-effect-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact parent and protected main
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='17892e5cf44ed562d659e5caa9e7907015d7423a'
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          test "${#changed[@]}" -gt 0
+          for p in "${changed[@]}"; do case "$p" in existing-source-contract-effect-delta/*|.github/workflows/existing-source-contract-effect-candidate-validation.yml) ;; *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41;; esac; done
+          echo EXACT_PARENT_AND_MAIN_PASS
+      - name: Reconstruct current verified runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          echo CURRENT_VERIFIED_RUNTIME_PASS
+      - name: Apply contract effect overlay and safety
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node existing-source-contract-effect-delta/overlay/apply-existing-source-contract-effect-overlay.mjs runtime
+          node existing-source-contract-effect-delta/overlay/apply-existing-source-contract-effect-overlay.mjs runtime
+          node - <<'NODE'
+          const p=require('./runtime/existing-source-contract-effect-overlay-proof.json');
+          if(p.production_changed||p.d1_migration||p.telegram_send||p.telegram_recipients_changed||p.cloudflare_deploy||p.force_push||p.hard_gates_changed||p.strategy_weights_changed||p.thresholds_changed||p.automatic_execution||p.validated_signal||p.live_probability||p.new_sources_added||p.worker_copy_added||p.hot_cycle_external_request_delta!==0||p.automatic_voting)process.exit(42);
+          console.log('CONTRACT_EFFECT_OVERLAY_SAFETY_PASS');
+          NODE
+      - name: Prepare test harness
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/runner-main.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+          echo FINAL_RUNTIME_HARNESS_PASS
+      - name: Contract effect focused tests
+        shell: bash
+        env:
+          REPORT2_CONTRACT_EFFECT_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          node --check runtime/src/inherited-fact-contract.mjs
+          node --check runtime/src/oi-trajectory-contract.mjs
+          node --check runtime/src/canonical-runtime-adapter.mjs
+          node --check existing-source-contract-effect-delta/maintenance/contract-effect-live-proof.mjs
+          node --test --test-reporter=tap existing-source-contract-effect-delta/overlay/tests/*.test.mjs > contract-effect-tests.tap
+          grep -F '# fail 0' contract-effect-tests.tap >/dev/null
+          echo CONTRACT_EFFECT_FOCUSED_PASS
+      - name: Retained focused suites
+        shell: bash
+        env:
+          REPORT2_EXISTING_SOURCE_RUNTIME_DIR: runtime
+          REPORT2_ARCH_RUNTIME_DIR: runtime
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap existing-source-history-sequence-delta/overlay/tests/*.test.mjs > history-retained.tap
+          node --test --test-reporter=tap existing-source-coverage-delta/overlay/tests/*.test.mjs > coverage-retained.tap
+          node --test --test-reporter=tap existing-source-consumer-delta/overlay/tests/*.test.mjs > consumer-retained.tap
+          node --test --test-reporter=tap architecture-cleanup-delta/overlay/tests/*.test.mjs > architecture-retained.tap
+          node --test --test-reporter=tap free-sources-delta/overlay/tests/*.test.mjs > free-sources-retained.tap
+          rm -rf r10_7_auth && mkdir -p r10_7_auth && ln -s ../runtime/src r10_7_auth/src
+          node --test --test-reporter=tap unified-entry-signal-delta/overlay/tests/*.test.mjs > unified-retained.tap
+          for f in history-retained.tap coverage-retained.tap consumer-retained.tap architecture-retained.tap free-sources-retained.tap unified-retained.tap; do grep -F '# fail 0' "$f" >/dev/null; done
+          echo RETAINED_FOCUSED_PASS
+      - name: Inherited runtime regression
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap tests/cross-venue-delta.test.mjs tests/public-evidence-adapters.test.mjs tests/full-evidence-contract.test.mjs tests/full-evidence-shadow-model.test.mjs tests/report2-source-isolation.test.mjs > cross-venue-delta-tests.tap
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > runtime-regression-tests.tap
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection-tests.tap
+          echo INHERITED_ACTIVE_REGRESSION_PASS
+      - name: Telegram and TZ10.1 retention
+        working-directory: runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-candidate-tests.tap
+          node telegram-repair-tests/final-chain-regression.mjs > telegram-final-chain.txt
+          node --test --test-reporter=tap tests/tz101-publication-input-runtime.test.mjs tests/tz101-liquidation-context.test.mjs tests/tz101-publication-runtime.test.mjs tests/tz101-publication-wiring-static.test.mjs tests/tz101-scenario-plan.test.mjs tests/tz101-cost-assessment.test.mjs > tz101-candidate-tests.tap
+          echo TELEGRAM_TZ101_RETENTION_PASS
+      - name: Live source contract and priority effect proof
+        shell: bash
+        env:
+          REPORT2_CONTRACT_EFFECT_RUNTIME_DIR: runtime
+          REPORT2_CONTRACT_EFFECT_PROOF_OUTPUT: contract-effect-live-proof.json
+        run: |
+          set -Eeuo pipefail
+          node existing-source-contract-effect-delta/maintenance/contract-effect-live-proof.mjs
+          node - <<'NODE'
+          const p=require('./contract-effect-live-proof.json');
+          if(p.status!=='CLOSED_OBSERVATION_ONLY'||p.production_writes||p.d1_writes||p.telegram_send||p.trading||p.auto_payment||p.thresholds_changed||p.hard_gates_changed||p.weights_changed||p.new_sources_added||p.calls_used>p.max_calls)process.exit(43);
+          if(p.priority_effect?.delta!==7||p.priority_effect?.source_confirmed!==true||p.priority_effect?.probability!==false||p.priority_effect?.hard_gate_bypass!==false)process.exit(44);
+          if(!p.canonical_effect?.closed||!p.canonical_effect?.manual_has_effect||!p.canonical_effect?.telegram_has_effect)process.exit(45);
+          if(p.rich_fact_contract?.identity_status!=='CLOSED'||p.rich_fact_contract?.decision_usable!==true||p.rich_fact_contract?.freshness!=='CURRENT')process.exit(46);
+          if(p.oi_trajectory?.status!=='CLOSED'||p.oi_trajectory?.oi_trajectory_from_time_series!==true||p.oi_trajectory?.do_not_average_across_venues!==true||p.oi_trajectory?.usd_change_may_include_price_effect!==true)process.exit(47);
+          console.log('LIVE_CONTRACT_EFFECT_PASS');
+          NODE
+      - name: Read-only replay retention and truthful blocker semantics
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_REPLAY_OUTPUT: contract-effect-unified-replay.json
+          REPORT2_FREE_FUNNEL_OUTPUT: contract-effect-funnel-replay.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node runner/telegram-readonly-diagnostic.mjs
+          node unified-entry-signal-delta/validation/unified-readonly-replay.mjs
+          node free-sources-delta/validation/free-sources-funnel-replay.mjs
+          REPORT2_ARCH_STATS_OUTPUT=contract-effect-shadow-statistics.json node architecture-cleanup-delta/validation/architecture-shadow-statistics.mjs
+          node - <<'NODE'
+          const u=require('./contract-effect-unified-replay.json'),f=require('./contract-effect-funnel-replay.json'),s=require('./contract-effect-shadow-statistics.json');
+          if(u.d1_usage?.rows_written!==0||u.d1_usage?.unknown_ops!==0||u.no_lookahead?.status==='FAIL')process.exit(48);
+          if(f.production_writes!==false||f.d1_usage?.rows_written!==0||f.d1_usage?.unknown_ops!==0)process.exit(49);
+          if(f.cost_blocker_measurement?.exact_future_funding_blocker_count!==null)process.exit(50);
+          if(f.cost_blocker_measurement?.exact_future_funding_blocker_status!=='NOT_MEASURABLE_FROM_PERSISTED_ROWS_WITHOUT_REPLAYING_PROSPECTIVE_COST_CONTEXT')process.exit(51);
+          if(s.d1_usage?.rows_written!==0||s.d1_usage?.unknown_ops!==0)process.exit(52);
+          console.log('READ_ONLY_REPLAY_TRUTHFUL_PASS');
+          NODE
+      - name: Verify protected main unchanged
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          MAIN='08d98579c5ecbeb4de426ffeb1160f25ece52708'
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$MAIN"
+          echo PRODUCTION_MAIN_UNCHANGED_PASS
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: existing-source-contract-effect-candidate-proof
+          path: |
+            runtime/existing-source-contract-effect-overlay-proof.json
+            contract-effect-tests.tap
+            history-retained.tap
+            coverage-retained.tap
+            consumer-retained.tap
+            architecture-retained.tap
+            free-sources-retained.tap
+            unified-retained.tap
+            runtime/cross-venue-delta-tests.tap
+            runtime/runtime-regression-tests.tap
+            runtime/failure-injection-tests.tap
+            runtime/telegram-candidate-tests.tap
+            runtime/telegram-final-chain.txt
+            runtime/tz101-candidate-tests.tap
+            contract-effect-live-proof.json
+            telegram-readonly-diagnosis.json
+            contract-effect-unified-replay.json
+            contract-effect-funnel-replay.json
+            contract-effect-shadow-statistics.json
+            existing-source-contract-effect-delta/spec/*.md
+          retention-days: 14
