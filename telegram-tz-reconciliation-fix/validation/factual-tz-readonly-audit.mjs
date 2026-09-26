@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
+const req=n=>{const v=String(process.env[n]||'').trim();if(!v)throw new Error(`${n}_REQUIRED`);return v;};
+const db=new RemoteD1Database(req('REPORT2_D1_BRIDGE_URL'),req('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:45000});
+const now=Date.now(),fresh=now-2*60*60_000,wide=now-6*60*60_000;
+const q=async(sql,...args)=>db.prepare(sql).bind(...args).first();
+const proof={schema:'my-report-2-tz-readonly-audit-v1',now,checks:{},facts:{},writes:false};
+async function newest(table,col){return q(`SELECT MAX(${col}) AS ts,COUNT(*) AS n FROM ${table}`);}
+const scan=await newest('scan_runs','ts');const early=await newest('v3_early_feature_snapshot','observed_ts');const wave=await newest('v3_early_candidate_wave','last_seen_ts');const opp=await newest('opportunity_shadow_event','observed_ts');const deep=await newest('deep_check_run_log','completed_ts');const shadow=await newest('shadow_decision_log','created_ts');const liq=await newest('liquidation_shadow_observation','observed_ts');const micro=await newest('v3_market_microstructure_1m','observed_ts');
+for(const [k,v] of Object.entries({scan,early,wave,opportunity:opp,deep_check:deep,shadow_decision:shadow,liquidation:liq,microstructure:micro}))proof.facts[k]=v;
+for(const k of ['scan','early','wave','opportunity','deep_check','shadow_decision'])proof.checks[`${k}_fresh_2h`]=Number(proof.facts[k]?.ts||0)>=fresh;
+proof.checks.liquidation_recent_6h=Number(liq?.ts||0)>=wide;
+const candles=await q(`SELECT COUNT(*) AS n FROM opportunity_shadow_event WHERE observed_ts>=?1 AND json_extract(event_json,'$.minute_decomposition.classification_allowed')=1 AND json_extract(event_json,'$.minute_decomposition.one_minute_bars')=15 AND json_extract(event_json,'$.minute_decomposition.three_minute_bars')=5 AND json_extract(event_json,'$.minute_decomposition.five_minute_bars')=3`,wide);
+proof.facts.complete_minute_decomposition_6h=Number(candles?.n||0);proof.checks.complete_1m3m5m_exists=proof.facts.complete_minute_decomposition_6h>0;
+const hypotheses=await q(`SELECT COUNT(*) AS n FROM opportunity_shadow_event WHERE observed_ts>=?1 AND json_type(event_json,'$.early_anomaly_classification.accumulation')='object' AND json_type(event_json,'$.early_anomaly_classification.distribution')='object' AND json_type(event_json,'$.early_anomaly_classification.two_sided_transfer')='object' AND json_type(event_json,'$.early_anomaly_classification.liquidation_futures_noise')='object'`,wide);
+proof.facts.four_hypothesis_events_6h=Number(hypotheses?.n||0);proof.checks.four_competing_hypotheses_exist=proof.facts.four_hypothesis_events_6h>0;
+const finals=await q(`SELECT COUNT(*) AS n FROM final_decision_integration_shadow WHERE persisted_ts>=?1`,wide);proof.facts.final_decisions_6h=Number(finals?.n||0);proof.checks.final_decision_absence_is_not_failure=true;
+proof.facts.microstructure_status='PARTIAL_REALTIME_COVERAGE';proof.checks.microstructure_not_falsely_claimed_full=true;
+proof.usage=db.usageSnapshot();
+const failed=Object.entries(proof.checks).filter(([,v])=>v!==true).map(([k])=>k);proof.status=failed.length?'NOT_CLOSED':'CLOSED';proof.failed=failed;
+fs.writeFileSync(process.env.REPORT2_TZ_AUDIT_PROOF||'tz-readonly-audit.json',JSON.stringify(proof,null,2));
+console.log('TZ_READONLY_AUDIT',JSON.stringify(proof));
+if(failed.length)process.exit(2);

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {runV3TelegramDeliverySidecar} from '../src/v3-telegram-delivery-sidecar.mjs';
+import {runV3TelegramDeliverySidecar} from '../../test_runtime/src/v3-telegram-delivery-sidecar.mjs';
 
 function norm(sql,args){const picks=[];const q=String(sql).replace(/\?(\d+)/g,(_,n)=>{picks.push(Number(n)-1);return '?';});return picks.length?[q,picks.map(i=>args[i])]:[sql,args];}
 class Prep{constructor(owner,sql,args=[]){this.owner=owner;this.sql=sql;this.args=args;}bind(...args){return new Prep(this.owner,this.sql,args);}async first(){const [q,a]=norm(this.sql,this.args);const r=this.owner.db.prepare(q).get(...a)??null;this.owner.read(r?1:0);return r;}async all(){const [q,a]=norm(this.sql,this.args);const r=this.owner.db.prepare(q).all(...a);this.owner.read(r.length);return {results:r};}async run(){const [q,a]=norm(this.sql,this.args);const r=this.owner.db.prepare(q).run(...a);this.owner.write(Number(r.changes||0));return {meta:{changes:Number(r.changes||0)}};}}

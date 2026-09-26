@@ -2,7 +2,7 @@ name: Report 2 Cloud Runner
 
 on:
   schedule:
-    - cron: "2,7,12,17,22,27,32,37,42,47,52,57 * * * *"
+    - cron: "2,14,26,38,50 * * * *"
   workflow_dispatch:
     inputs:
       reason:
@@ -60,7 +60,7 @@ jobs:
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
-      REPORT2_D1_RUNS_PER_DAY: "288"
+      REPORT2_D1_RUNS_PER_DAY: "120"
       REPORT2_D1_MAX_DAILY_READS: "3500000"
       REPORT2_D1_MAX_DAILY_WRITES: "70000"
     steps:
@@ -106,6 +106,7 @@ jobs:
           node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
           node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
           node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          node telegram-tz-reconciliation-fix/overlay/apply-telegram-tz-reconciliation-overlay.mjs runtime
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"

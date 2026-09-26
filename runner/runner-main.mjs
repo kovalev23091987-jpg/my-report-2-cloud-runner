@@ -16,7 +16,7 @@ import { loadCompletedLifecycleHandoffs, runV3TelegramLifecycleSidecar, V3_TELEG
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 
-const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.14.2-telegram-validation-isolated";
+const RUNNER_VERSION = "my-report-2-github-cloud-runner-v4.15.2-tz-reconciled-v4";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -418,7 +418,7 @@ if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
-  await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "*/5 * * * *" : "manual" }, env, ctx);
+  await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "*/12 * * * *" : "manual" }, env, ctx);
   if (pending.length) await Promise.all(pending);
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);
@@ -530,12 +530,11 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("V3_REALIZED_LIQUIDATION_SIDECAR", JSON.stringify(v3RealizedLiquidationSidecar));
   console.log("V3_LIQUIDATION_INTELLIGENCE_SIDECAR", JSON.stringify(v3LiquidationSidecar));
   const telegramObserver = await observeNaturalTelegramDecision(env.DATA_DB);
-  const discoveryRecallKpi = telegramInstallValidation
+  // Low-priority statistical replay must never consume capacity before Early,
+  // liquidations, Telegram lifecycle or Telegram delivery. It is evaluated later.
+  let discoveryRecallKpi = telegramInstallValidation
     ? {status:"SKIPPED_OWNER_TELEGRAM_VALIDATION",shadow_only:true,auto_send:false}
-    : await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id });
-  if (source !== "schedule" && !telegramInstallValidation && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
-    throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
-  }
+    : {status:"DEFERRED_LOW_PRIORITY_UNTIL_AFTER_CRITICAL_LANES",shadow_only:true,auto_send:false};
   const lifecyclePreactionBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),
     extraRowsRead:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+INFO_D1_BUDGET.rowsRead,
     extraRowsWritten:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+INFO_D1_BUDGET.rowsWritten+1});
@@ -576,10 +575,31 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     });
   }
   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
+
+  // Statistical/diagnostic observers are hourly and only after every user-critical
+  // lane. This preserves the 7–14 day evidence programme without starving live work.
+  const scheduledMinuteUtc = new Date(started).getUTCMinutes();
+  const lowPriorityCadenceDue = source !== "schedule" || scheduledMinuteUtc === 2;
+  if (!telegramInstallValidation && lowPriorityCadenceDue) {
+    const recallGate = evaluateWithinRunReservation({
+      reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:6000,extraRowsWritten:4,
+    });
+    discoveryRecallKpi = recallGate.allowed
+      ? await observeDiscoveryRecallKpi(env.DATA_DB, { startedTs:started, source, runId:cron.run_id })
+      : {status:"CAPACITY_DEFERRED_LOW_PRIORITY",reasons:recallGate.reasons||[],capacity_gate:recallGate,shadow_only:true,auto_send:false};
+  } else if (!telegramInstallValidation) {
+    discoveryRecallKpi = {status:"DEFERRED_LOW_PRIORITY_CADENCE",scheduled_minute_utc:scheduledMinuteUtc,shadow_only:true,auto_send:false};
+  }
+  if (source !== "schedule" && !telegramInstallValidation && discoveryRecallKpi?.status === "OBSERVER_ERROR_FAIL_CLOSED") {
+    throw new Error(`DISCOVERY_RECALL_KPI_VALIDATION_FAIL_CLOSED:${discoveryRecallKpi.error || "UNKNOWN"}`);
+  }
+  console.log("DISCOVERY_RECALL_KPI_SHADOW", JSON.stringify(discoveryRecallKpi));
+
   // R8.20 is intentionally last / low priority. It cannot consume capacity before
   // Early, liquidation, pipeline-health or Telegram lanes. The +1 write preserves
   // the existing final run-usage persistence slot.
-  const r820ProspectiveValidationEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED || "0").trim().toLowerCase());
+  const r820ProspectiveValidationConfigured = ["1","true","yes","on"].includes(String(process.env.REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED || "0").trim().toLowerCase());
+  const r820ProspectiveValidationEnabled = r820ProspectiveValidationConfigured && lowPriorityCadenceDue;
   const r820ProspectiveValidationGate = evaluateWithinRunReservation({
     reservation:d1RunReservation,
     currentUsage:env.DATA_DB.usageSnapshot(),
@@ -587,8 +607,10 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     extraRowsWritten:R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written + 1,
   });
   let r820ProspectiveValidationSidecar;
-  if (!r820ProspectiveValidationEnabled) {
+  if (!r820ProspectiveValidationConfigured) {
     r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DISABLED",calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
+  } else if (!lowPriorityCadenceDue) {
+    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DEFERRED_LOW_PRIORITY_CADENCE",scheduled_minute_utc:scheduledMinuteUtc,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else if (!r820ProspectiveValidationGate.allowed) {
     r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",reasons:r820ProspectiveValidationGate.reasons||[],capacity_gate:r820ProspectiveValidationGate,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else {
