@@ -34,7 +34,7 @@ function insertObserve(d,{now=100000,valid=160000,state='PENDING'}={}){
 test('OBSERVE uses TZ-compliant Russian message, not raw lifecycle codes',async()=>{
  const d=new DB();schema(d);insertObserve(d);let msg='';
  const r=await runV3TelegramDeliverySidecar(d,{enabled:true,relay_url:'https://relay.test',relay_key:'secret',now_ts:100000,fetch_impl:async(_u,o)=>{msg=JSON.parse(o.body).text;return {ok:true,status:200,json:async()=>({ok:true,message_id:321})};}});
- assert.equal(r.status,'CLOSED');assert.equal(r.sent,1);assert.match(msg,/РАННЕЕ НАБЛЮДЕНИЕ/);assert.match(msg,/Свечной разбор/);assert.match(msg,/Монета интересна: 73 из 100/);assert.doesNotMatch(msg,/USEFUL_LIVE_OBSERVATION|\bOI\b|Funding|receipt|shadow/iu);
+ assert.equal(r.status,'CLOSED');assert.equal(r.sent,1);assert.match(msg,/РАННЕЕ НАБЛЮДЕНИЕ/);assert.match(msg,/Свечной разбор/);assert.match(msg,/Монета интересна: 66 из 100/);assert.doesNotMatch(msg,/Монета интересна: 73 из 100/);assert.doesNotMatch(msg,/USEFUL_LIVE_OBSERVATION|\bOI\b|Funding|receipt|shadow/iu);
 });
 
 test('WAIT without exact trigger is never sent and remains retryable',async()=>{

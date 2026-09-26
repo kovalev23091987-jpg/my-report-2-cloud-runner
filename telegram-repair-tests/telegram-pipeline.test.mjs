@@ -113,7 +113,7 @@ test('current lifecycle failure blocks old visible rows and produces a technical
 });
 
 test('read budget failure precedes lifecycle writes',async()=>{
-  const db=pipelineDB();seedHandoff(db);seedWave(db);let calls=0;db.usageSnapshot=()=>({rows_read:calls++?97:0,rows_written:0,requests:5,unknown_ops:0});
+  const db=pipelineDB();seedHandoff(db);seedWave(db);let calls=0;db.usageSnapshot=()=>({rows_read:calls++?161:0,rows_written:0,requests:5,unknown_ops:0});
   const life=await runV3TelegramLifecycleSidecar(db,{source_run_id:'cycle',now_ts:NOW});assert.equal(life.status,'BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED');
   assert.equal(db.sqlite.prepare('SELECT count(*) n FROM v3_user_lifecycle_shadow').get().n,0);db.close();
 });
