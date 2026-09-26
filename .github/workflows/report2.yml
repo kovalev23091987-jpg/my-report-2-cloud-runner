@@ -107,6 +107,7 @@ jobs:
           node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
           node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
           node telegram-tz-reconciliation-fix/overlay/apply-telegram-tz-reconciliation-overlay.mjs runtime
+          node early-surfacing-v7/apply-early-surfacing-v7-overlay.mjs runtime
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"

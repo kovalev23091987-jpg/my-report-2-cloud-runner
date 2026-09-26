@@ -1,0 +1,206 @@
+name: Early surfacing remediation V7
+on:
+  push:
+    branches: ['early-surfacing-remediation-v7-resume-20260926']
+permissions:
+  contents: read
+concurrency:
+  group: telegram-tz-reconciliation-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: "0"
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: "0"
+      REPORT2_TRADING_EXECUTION_ENABLED: "0"
+      REPORT2_VALIDATED_SIGNAL_ENABLED: "0"
+      REPORT2_LIVE_PROBABILITY_ENABLED: "0"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact parent / protected main / changed paths
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          PARENT='35fd2c6d15c0a55c8c885cad1d8911c5f60bb9ee'
+          test "$(git rev-parse HEAD^)" = "$PARENT"
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = "$PARENT"
+          mapfile -t changed < <(git diff --name-only "$PARENT" HEAD | sort)
+          printf '%s\n' "${changed[@]}"
+          for p in "${changed[@]}"; do
+            case "$p" in
+              telegram-tz-reconciliation-fix/*|early-surfacing-v7/*|telegram-repair-tests/v3-telegram-delivery-sidecar.test.mjs|runner/runner-main.mjs|.github/workflows/report2.yml|.github/workflows/early-surfacing-remediation-v7.yml) ;;
+              *) echo "PROTECTED_PATH_CHANGED:$p" >&2; exit 41 ;;
+            esac
+          done
+      - name: Static schedule and safety contract
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          grep -F 'cron: "2,14,26,38,50 * * * *"' .github/workflows/report2.yml
+          grep -F 'REPORT2_D1_RUNS_PER_DAY: "120"' .github/workflows/report2.yml
+          grep -F 'apply-telegram-tz-reconciliation-overlay.mjs runtime' .github/workflows/report2.yml
+          grep -F '*/12 * * * *' runner/runner-main.mjs
+          grep -F 'DEFERRED_LOW_PRIORITY_UNTIL_AFTER_CRITICAL_LANES' runner/runner-main.mjs
+          grep -F 'lowPriorityCadenceDue' runner/runner-main.mjs
+          grep -F 'REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"' .github/workflows/report2.yml
+      - name: Reconstruct exact production runtime and apply fix overlay
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf runtime && mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          cp runner/runner-main.mjs runtime/runner-main.mjs
+          cp runner/r8-20-prospective-validation-sidecar.mjs runtime/r8-20-prospective-validation-sidecar.mjs
+          cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
+          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
+          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
+          cp runner/plain-text-telegram.mjs runtime/plain-text-telegram.mjs
+          cp runner/telegram-output.mjs runtime/telegram-output.mjs
+          cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
+          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
+          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
+          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
+          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
+          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
+          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
+          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
+          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
+          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
+          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
+          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
+          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
+          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
+          node telegram-tz-reconciliation-fix/overlay/apply-telegram-tz-reconciliation-overlay.mjs runtime
+          node early-surfacing-v7/apply-early-surfacing-v7-overlay.mjs runtime
+          test "$(sha256sum runtime/src/worker.js | awk '{print $1}')" = 'a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225'
+          node --check runtime/src/v3-telegram-tz-formatter.mjs
+          node --check runtime/src/v3-telegram-delivery-sidecar.mjs
+          node --check runtime/src/v3-adaptive-budget.mjs
+          node --check runtime/src/v3-early-sidecar.mjs
+          node --check runtime/src/v3-realized-liquidation-sidecar.mjs
+          node --check runtime/src/v3-liquidation-sidecar.mjs
+          grep -F 'rows_read: 4096' runtime/src/v3-early-sidecar.mjs
+          grep -F 'rows_read:3200' runtime/src/v3-realized-liquidation-sidecar.mjs
+          grep -F 'rows_read:5000' runtime/src/v3-liquidation-sidecar.mjs
+          grep -F 'rows_written:80' runtime/src/v3-liquidation-sidecar.mjs
+          grep -F 'rows_read: 28000, rows_written: 560' runtime/src/v3-adaptive-budget.mjs
+          node --check runtime/runner-main.mjs
+      - name: New TZ reconciliation focused tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap telegram-tz-reconciliation-fix/overlay/tests/telegram-tz-formatter.test.mjs telegram-tz-reconciliation-fix/overlay/tests/adaptive-budget.test.mjs > tz-fix-focused.tap
+          grep -F '# fail 0' tz-fix-focused.tap >/dev/null
+      - name: Telegram runtime retention with new delivery formatter
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf runtime/telegram-repair-tests
+          cp -R telegram-repair-tests runtime/telegram-repair-tests
+          # Retained tests import these runner helpers from runtime root.
+          # They are test harness dependencies, not additional production behavior.
+          cp runner/apply-telegram-runtime-overlay.mjs runtime/apply-telegram-runtime-overlay.mjs
+          cp runner/telegram-readonly-diagnostic.mjs runtime/telegram-readonly-diagnostic.mjs
+          cd runtime
+          node --test --test-reporter=tap telegram-repair-tests/*.test.mjs > telegram-retained.tap
+          grep -F '# fail 0' telegram-retained.tap >/dev/null
+      - name: Early / candles / trigger / liquidation retained tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          # This retained E2E test imports the authoritative Fast Move modules from r10_7_auth.
+          # Reconstruct that test-only path from the exact decrypted production runtime.
+          mkdir -p r10_7_auth/src
+          test -f runtime/src/fast-move-watch-runtime.mjs
+          test -f runtime/src/fast-move-watch-engine.mjs
+          cp runtime/src/fast-move-watch-runtime.mjs r10_7_auth/src/fast-move-watch-runtime.mjs
+          cp runtime/src/fast-move-watch-engine.mjs r10_7_auth/src/fast-move-watch-engine.mjs
+          node --test --test-reporter=tap \
+            unified-entry-signal-delta/overlay/tests/entry-signal-router.test.mjs \
+            unified-entry-signal-delta/overlay/tests/closed-minute-decomposition.test.mjs \
+            unified-entry-signal-delta/overlay/tests/early-to-fastmove-e2e.test.mjs \
+            unified-entry-signal-delta/overlay/tests/canonical-runtime-adapter.test.mjs \
+            unified-entry-signal-delta/overlay/tests/pump-liquidation-zones.test.mjs > retained-big-tz.tap
+          grep -F '# fail 0' retained-big-tz.tap >/dev/null
+      - name: Factual read-only big-TZ runtime audit
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_TZ_AUDIT_PROOF: tz-readonly-audit.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node telegram-tz-reconciliation-fix/validation/factual-tz-readonly-audit.mjs
+          node -e "const p=require('./tz-readonly-audit.json');if(p.status!=='CLOSED'||p.writes!==false)process.exit(1)"
+      - name: Inherited production regression
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          cp cross-venue-delta-overlay/tests/*.mjs runtime/tests/
+          cp unified-entry-signal-delta/overlay/runtime-test-overrides/*.mjs runtime/tests/
+          cp runner/apply-telegram-runtime-overlay.mjs runner/r8-20-prospective-validation-sidecar.mjs runner/telegram-info-runtime.mjs runner/telegram-output.mjs runner/telegram-zero-reason.mjs runner/plain-text-telegram.mjs runner/telegram-readonly-diagnostic.mjs runner/report2-d1-adapter.mjs runner/d1-preaction-budget-guard.mjs runtime/
+          # Replace the inherited pre-reconciliation delivery fixture with the current tested contract.
+          cp telegram-repair-tests/v3-telegram-delivery-sidecar.test.mjs runtime/tests/v3-telegram-delivery-sidecar.test.mjs
+          cd runtime
+          # Two historical budget fixtures assert the superseded 3072/24 envelope.
+          # Their replacement coverage already ran above: adaptive-budget.test.mjs plus runtime constant readbacks.
+          mapfile -t regression_files < <(find tests -maxdepth 1 -name '*.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs' ! -name 'deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs' ! -name 'htx-liquidation-budget.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar.test.mjs' ! -name 'v3-telegram-lifecycle-sidecar-sqlite.test.mjs' ! -name 'v3-early-sidecar-budget.test.mjs' ! -name 'v3-r88-adaptive-budget.test.mjs' -print | sort)
+          node --test --test-reporter=tap "${regression_files[@]}" > inherited-regression.tap
+          grep -F '# fail 0' inherited-regression.tap >/dev/null
+          node --test --test-reporter=tap tests/fast-move-watch-failure-injection.test.mjs tests/multi-wave-campaign-failure-injection.test.mjs tests/final-decision-integration-failure-injection.test.mjs > failure-injection.tap
+          grep -F '# fail 0' failure-injection.tap >/dev/null
+      - name: Early surfacing V7 focused tests
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --test --test-reporter=tap early-surfacing-v7/tests/*.test.mjs > early-v7.tap
+          grep -F '# fail 0' early-v7.tap >/dev/null
+      - name: Factual early surfacing self audit
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_EARLY_SELF_AUDIT_PROOF: early-self-audit.json
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node early-surfacing-v7/validation/production-self-audit.mjs
+      - name: Runtime overlay safety proof
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node - <<'NODE'
+          const p=require('./runtime/telegram-tz-reconciliation-overlay-proof.json');
+          const s=p.safety||{};
+          for(const k of ['strategy_changed','hard_gates_changed','weights_changed','thresholds_changed','live_probability','validated_signal','automatic_execution','d1_schema_migration','telegram_recipients_changed','cloudflare_deploy']) if(s[k]!==false) throw new Error(k);
+          NODE
+          git fetch --no-tags origin main:refs/remotes/origin/main
+          test "$(git rev-parse refs/remotes/origin/main)" = '35fd2c6d15c0a55c8c885cad1d8911c5f60bb9ee'
+      - name: Save proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: early-surfacing-v7-proof
+          path: |
+            runtime/telegram-tz-reconciliation-overlay-proof.json
+            tz-fix-focused.tap
+            retained-big-tz.tap
+            runtime/telegram-retained.tap
+            runtime/inherited-regression.tap
+            runtime/failure-injection.tap
+            tz-readonly-audit.json
+            early-v7.tap
+            early-self-audit.json
+          retention-days: 30
