@@ -26,9 +26,16 @@ test('K00: all recorded overlay and module hashes still match',()=>{
 });
 
 test('K00: unavailable production evidence is explicit, never synthesized',()=>{
-  assert.equal(manifest.completeness.status,'INCOMPLETE');
+  assert.match(manifest.completeness.status,/INCOMPLETE|PARTIAL/);
   assert.ok(manifest.completeness.blocking_missing.length>=1);
-  assert.equal(manifest.runtime_capture.status,'BLOCKED_GITHUB_CONTENTS_WRITE_PERMISSION');
-  assert.equal(manifest.runtime_capture.tz101_entry_area_calibration_present,false);
   for(const status of Object.values(manifest.required_historical_fixtures))assert.match(status,/NOT_PRESENT|NOT_CAPTURED/);
+});
+
+test('K00: authorized decrypted runtime matches the production worker and includes TZ10.1',()=>{
+  assert.equal(manifest.runtime_capture.status,'CAPTURED_AUTHORIZED_DECRYPTED_RUNTIME');
+  assert.equal(manifest.runtime_capture.capture_run_id,36359352694);
+  assert.equal(manifest.runtime_capture.worker_sha256,manifest.production.expected_worker_sha256);
+  assert.equal(manifest.runtime_capture.tz101_entry_area_calibration_present,true);
+  assert.deepEqual(manifest.runtime_capture.tz101_tests,{node:'PASS',d1_schema:'PASS'});
+  assert.ok(Object.hasOwn(manifest.runtime_capture.files,'src/tz101-entry-area-calibration.mjs'));
 });

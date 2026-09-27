@@ -8,7 +8,7 @@ This file is an internal implementation ledger. It is not part of the user-visib
 
 | Package | Status | Evidence |
 |---|---|---|
-| T00 | IN_PROGRESS | Repository manifest captured (57 effective overrides, 19 overlays, 6 migrations); authorized runtime/live Hub/D1 evidence blocked by GitHub contents-write permission |
+| T00 | IN_PROGRESS | Authorized runtime captured by run 36359352694; worker hash exact; TZ10.1 tests pass; live Hub/bindings, D1 schema and six exact historical fixtures remain |
 | T01 | COMPLETED_LOCAL | K01: 11/11 tests pass; immutable fixtures and module hashes captured |
 | T02 | PENDING | — |
 | T03 | PENDING | — |

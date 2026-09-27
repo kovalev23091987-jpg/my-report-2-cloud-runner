@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 02:37 MSK
+Updated: 2026-09-28 02:41 MSK
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -21,18 +21,18 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Added a branch-only, Telegram-disabled, encrypted production-runtime capture path. The capture is encrypted to a short-lived local audit certificate; no payload key or decrypted source is printed.
 - Completed T01 locally: eight immutable canonical/output fixtures cover Long/Short, OBSERVE/WAIT/ENTRY/REMOVED, full/coin/liquidation modes and missing data. K01 passes 11/11 tests. Effective presentation-module hashes are frozen in the fixture manifest.
 - Generated the partial T00 production manifest: 57 effective override files, the exact 15+4 overlay order, six additive migration files, dependency lock, workflow bindings by name, schedules, roles and the verified successful production run are recorded. Missing cloud evidence is explicitly marked unavailable.
+- GitHub write/workflow authorization was restored; branch push succeeded. Controlled run `36359352694` captured the authoritative decrypted runtime encrypted to the local audit certificate. The normal report step was skipped and Telegram network/output were both zero. Worker SHA matches production; both TZ10.1 calibration tests pass.
 
 ## Verified blockers
 
-- The current GitHub App token can read repository contents but has `contents=read` only. Git push and Git reference creation return HTTP 403 despite the account itself being repository administrator.
-- Because the branch cannot yet be pushed, the authorized production-runtime capture has not run.
+- Exact live Cloudflare Hub bundle/bindings, the live D1 schema export and six exact sanitized historical fixtures are not yet captured into T00.
 - No production code, schedule, database, Hub worker, or Telegram delivery has been changed.
 
 ## Exact next actions
 
-1. Commit the partial T00 manifest checkpoint locally.
-2. Restore GitHub write authorization, push the existing branch, run `T00_RUNTIME_EXPORT`, download and decrypt the one-day artifact locally, then complete K00.
-3. Continue T02, T15, T17 frame only after Stage A gates are closed or explicitly recorded as access-blocked per the specification.
+1. Capture the remaining read-only D1 inventory and exact historical fixtures without Telegram or market calls.
+2. Obtain the live Hub configuration/bundle through an authorized read-only path, or preserve it as an explicit deployment blocker.
+3. Complete K00 and then continue T02, T15 and the T17 frame.
 
 ## Safety state
 
