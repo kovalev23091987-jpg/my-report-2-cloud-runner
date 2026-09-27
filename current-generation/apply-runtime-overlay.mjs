@@ -26,6 +26,8 @@ const files=[
  'src/supplemental-candidate-context.mjs',
  'src/dynamic-liquidation-panel.mjs',
  'src/liquidation-command-router.mjs',
+ 'src/publication-reconciler.mjs',
+ 'src/bound-telegram-delivery-sidecar.mjs',
  'src/oxarchive-cost-probe.mjs',
  'src/liquidation-extension/runner-extension.mjs',
  'src/liquidation-extension/htx-liquidation-route.mjs',

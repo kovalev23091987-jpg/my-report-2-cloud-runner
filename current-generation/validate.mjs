@@ -23,6 +23,7 @@ const checks=[
  'files/src/supplemental-candidate-context.mjs','files/src/oxarchive-cost-probe.mjs',
  'files/src/dynamic-liquidation-panel.mjs',
  'files/src/liquidation-command-router.mjs',
+ 'files/src/publication-reconciler.mjs','files/src/bound-telegram-delivery-sidecar.mjs',
  'files/src/liquidation-extension/runner-extension.mjs','files/src/liquidation-extension/htx-liquidation-route.mjs',
  'files/src/liquidation-extension/combined-runner-service.mjs','files/src/liquidation-extension/native-verification.mjs',
  'files/src/liquidation-extension/native-liquidation-guard.mjs',
@@ -46,7 +47,7 @@ if(sourceRuntime){
  const actual=createHash('sha256').update(worker).digest('hex');
  if(actual!==expectedWorker||overlay.worker_sha256!==expectedWorker)throw Error(`OVERLAY_WORKER_HASH_MISMATCH:${actual}`);
  if(!fs.existsSync(path.join(runtime,'byk-quota-budget.mjs')))throw Error('OVERLAY_QUOTA_MODULE_MISSING');
- for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
+ for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
  run(['--input-type=module','--eval',"await import('./src/manual-report-formatter.mjs'); await import('./src/telegram-compact-formatter.mjs');"],{cwd:runtime});
  fs.rmSync(temp,{recursive:true,force:true});
 }
