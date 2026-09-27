@@ -6,6 +6,7 @@ import {
   BYK_SCHEDULED_MONTHLY_CAP,
   BYK_MAX_REQUESTS_PER_DEEP_CHECK,
   evaluateBykQuotaAdmission,
+  installBykQuotaLedger,
 } from '../files/byk-quota-budget.mjs';
 
 test('quota constants preserve official headroom and a manual reserve',()=>{
@@ -32,4 +33,18 @@ test('all sources stop at the operational cap before the official quota',()=>{
 
 test('a reservation can never exceed one deep-check maximum',()=>{
  for(const units of [0,6,1.5,NaN])assert.equal(evaluateBykQuotaAdmission({source:'manual',units}).status,'INVALID_REQUEST_UNITS');
+});
+
+test('quota ledger installation sends complete DDL statements through one batch',async()=>{
+ const seen=[];
+ const db={
+  prepare(sql){return {sql};},
+  async batch(statements){seen.push(...statements.map(x=>x.sql));return [];},
+  async exec(){throw new Error('MULTI_STATEMENT_EXEC_MUST_NOT_BE_USED');},
+ };
+ await installBykQuotaLedger(db);
+ assert.equal(seen.length,3);
+ assert.match(seen[0],/^CREATE TABLE IF NOT EXISTS report2_byk_monthly_usage\([\s\S]+\)$/);
+ assert.match(seen[1],/^CREATE TABLE IF NOT EXISTS report2_byk_reservations\([\s\S]+\)$/);
+ assert.match(seen[2],/^CREATE INDEX IF NOT EXISTS idx_report2_byk_reservations_month[\s\S]+\)$/);
 });
