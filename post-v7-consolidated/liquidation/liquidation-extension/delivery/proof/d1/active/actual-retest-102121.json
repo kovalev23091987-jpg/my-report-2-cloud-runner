@@ -1,0 +1,50 @@
+{
+  "evidence_kind": "FIELD_PROJECTION_OF_ACTUAL_CLOUDFLARE_API_RESPONSE",
+  "scope": "ISOLATED_D1_ACTIVE_ADMISSION_SQL_RETEST_NOT_PRODUCTION",
+  "at": "2026-09-27T10:21:21.843Z",
+  "database_id": "d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5",
+  "database_name": "report2-liq-proof-20260927",
+  "production_database_forbidden": "057a2847-2cc4-4e52-8534-1be1596d21d5",
+  "pre_cost": {
+    "rows_read": 2,
+    "rows_written": 0
+  },
+  "mutation_cost": {
+    "rows_read": 4,
+    "rows_written": 8,
+    "changes": [
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "readback_cost": {
+    "rows_read": 2,
+    "rows_written": 0
+  },
+  "total_rows_read": 8,
+  "total_rows_written": 8,
+  "logical_statements": 8,
+  "test_database_bytes": 49152,
+  "readback": [
+    {
+      "provider": "HYPERLIQUID",
+      "reserved_units": 5,
+      "expected_version": 1,
+      "committed_version": 2,
+      "reservation_fingerprint": "459c1998e16d6da4a769bb5dacfeef46363125331911448752ac716bd751cdfe"
+    },
+    {
+      "provider": "LIQFLOW",
+      "reserved_units": 1,
+      "expected_version": 1,
+      "committed_version": 2,
+      "reservation_fingerprint": "bfc5c63972321bc9a27da9ad1a713a09a4c31218834c430e9e451e11283c4c35"
+    }
+  ],
+  "source_counter_budget_not_trading_account": true,
+  "production_changed": false,
+  "full_runner_cost_measured": false,
+  "sample_database_is_small": true
+}

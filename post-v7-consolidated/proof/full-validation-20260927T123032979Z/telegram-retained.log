@@ -1,0 +1,495 @@
+TAP version 13
+# TELEGRAM_RUNTIME_OVERLAY_VERIFIED
+# TELEGRAM_RUNTIME_OVERLAY_VERIFIED
+# Subtest: overlay checks every base before any writes, is idempotent, and never touches the Worker
+ok 1 - overlay checks every base before any writes, is idempotent, and never touches the Worker
+  ---
+  duration_ms: 32.244233
+  type: 'test'
+  ...
+# {"status":"READ_ONLY_DIAGNOSIS_CLOSED","production_writes":false,"network_send":false,"evidence":[{"contract":"RAY-USDT","deep_status":"COMPLETED","sufficiency":"PARTIAL","wave_present":true,"shadow":[{"stage":"SHADOW_OBSERVE_LONG_BIAS","direction":"LONG","quality":"HTX_CLOSED_EXTERNAL_CHAINS_MISSING"}],"final_present":false,"lifecycle":[]}],"usage":{"requests":7,"rows_read":21,"rows_written":0,"unknown_ops":0,"targets":{"all:deep_check_run_log":{"requests":1,"rows_read":1,"rows_written":0,"unknown_ops":0},"all:v3_discovery_deep_handoff_shadow":{"requests":1,"rows_read":1,"rows_written":0,"unknown_ops":0},"all:v3_early_candidate_wave":{"requests":1,"rows_read":1,"rows_written":0,"unknown_ops":0},"all:shadow_decision_log":{"requests":1,"rows_read":1,"rows_written":0,"unknown_ops":0},"all:final_decision_integration_shadow":{"requests":1,"rows_read":0,"rows_written":0,"unknown_ops":0},"all:v3_user_lifecycle_shadow":{"requests":1,"rows_read":0,"rows_written":0,"unknown_ops":0},"all:sqlite_master":{"requests":1,"rows_read":17,"rows_written":0,"unknown_ops":0}}}}
+# Subtest: read-only production diagnostic executes actual deployed-schema SELECTs and never sends
+ok 2 - read-only production diagnostic executes actual deployed-schema SELECTs and never sends
+  ---
+  duration_ms: 63.77122
+  type: 'test'
+  ...
+# Subtest: diagnostic stops when D1 read usage is unproven and publishes no success proof
+ok 3 - diagnostic stops when D1 read usage is unproven and publishes no success proof
+  ---
+  duration_ms: 33.577591
+  type: 'test'
+  ...
+# Subtest: entry notification is explicit, compact and contains real entry/exit/invalidation levels
+ok 4 - entry notification is explicit, compact and contains real entry/exit/invalidation levels
+  ---
+  duration_ms: 7.388377
+  type: 'test'
+  ...
+# Subtest: confirmed major liquidation levels are shown on both sides without becoming targets
+ok 5 - confirmed major liquidation levels are shown on both sides without becoming targets
+  ---
+  duration_ms: 2.002817
+  type: 'test'
+  ...
+# Subtest: missing, one-sided or unsafe liquidation data never blocks entry and is simply omitted
+ok 6 - missing, one-sided or unsafe liquidation data never blocks entry and is simply omitted
+  ---
+  duration_ms: 1.686454
+  type: 'test'
+  ...
+# Subtest: liquidation normalization rejects swept, duplicate, non-major and future rows
+ok 7 - liquidation normalization rejects swept, duplicate, non-major and future rows
+  ---
+  duration_ms: 0.259638
+  type: 'test'
+  ...
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"long_count":1,"short_count":0},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0,"valid_wait_count":1,"valid_observe_count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":true,"message_id":"77"},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0,"valid_wait_count":1,"valid_observe_count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"币安人生-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"RAY-USDT","direction":"SHORT","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"币安人生-USDT","direction":"SHORT","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"error":"no such index: idx_report2_info_lifecycle_fresh"},"early_info":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"77"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_COOLDOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"DELIVERY_UNKNOWN_NO_AUTORETRY","sent":false,"delivery_confirmed":false,"message_id":null,"count":0,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"EXISTING_RESERVATION_NO_AUTORETRY","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_COOLDOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"error":"INJECTED_PREPARE"},"early_info":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"error":"INJECTED_READ"},"early_info":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"error":"INJECTED_WRITE"},"early_info":{"status":"INFO_ERROR_FAIL_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_FINALIZE_ACK_UNKNOWN","sent":false,"delivery_confirmed":false,"count":0,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"91"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"DELIVERY_UNKNOWN_NO_AUTORETRY","sent":false,"delivery_confirmed":false,"message_id":null,"count":0,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"EXISTING_RESERVATION_NO_AUTORETRY","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_STALE_BEFORE_RESERVATION","sent":false},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":false,"info_enabled":false,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_DISABLED","sent":false},"early_info":{"status":"INFO_DISABLED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"OUTPUT_DISABLED","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":true,"final_chain_threshold":70,"morning":{"status":"INFO_FINAL_AUTO_CONFLICT","sent":false},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"INFO_FINAL_AUTO_CONFLICT","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"INFO_TEST_ID_REQUIRED","sent":false},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":77,"count":1,"contract":"AKE-USDT","direction":"SHORT","lifecycle_status":"WAIT"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# Subtest: original R3 failure reproduced with actual archived migration, while known categories insert
+ok 8 - original R3 failure reproduced with actual archived migration, while known categories insert
+  ---
+  duration_ms: 7.150724
+  type: 'test'
+  ...
+# Subtest: morning test uses compatible category and confirmed receipt, exactly one network call
+ok 9 - morning test uses compatible category and confirmed receipt, exactly one network call
+  ---
+  duration_ms: 12.090172
+  type: 'test'
+  ...
+# Subtest: LONG and SHORT WAIT symmetry, exact Unicode identity and no guessed alias
+ok 10 - LONG and SHORT WAIT symmetry, exact Unicode identity and no guessed alias
+  ---
+  duration_ms: 19.811165
+  type: 'test'
+  ...
+# Subtest: missing/null/stale/future/malformed facts never become valid rows in loader or builders
+ok 11 - missing/null/stale/future/malformed facts never become valid rows in loader or builders
+  ---
+  duration_ms: 2.047687
+  type: 'test'
+  ...
+# Subtest: source index is mandatory and query plan uses it; schema missing fails before network
+ok 12 - source index is mandatory and query plan uses it; schema missing fails before network
+  ---
+  duration_ms: 2.169609
+  type: 'test'
+  ...
+# Subtest: same wave is durable dedup; different waves share atomic 30 minute cooldown
+ok 13 - same wave is durable dedup; different waves share atomic 30 minute cooldown
+  ---
+  duration_ms: 8.513601
+  type: 'test'
+  ...
+# Subtest: two independent connections cannot acquire separate waves concurrently
+ok 14 - two independent connections cannot acquire separate waves concurrently
+  ---
+  duration_ms: 11.764038
+  type: 'test'
+  ...
+# Subtest: restart preserves sent identity and ambiguity never enables automatic retry
+ok 15 - restart preserves sent identity and ambiguity never enables automatic retry
+  ---
+  duration_ms: 18.346096
+  type: 'test'
+  ...
+# Subtest: ACK missing/null/string/rows_written and partial failures cannot authorize send
+ok 16 - ACK missing/null/string/rows_written and partial failures cannot authorize send
+  ---
+  duration_ms: 23.467783
+  type: 'test'
+  ...
+# Subtest: finalize lost ACK does not report SENT or retry automatically
+ok 17 - finalize lost ACK does not report SENT or retry automatically
+  ---
+  duration_ms: 5.39665
+  type: 'test'
+  ...
+# Subtest: corrupted persisted reservation and absent receipt cannot create a confirmation
+ok 18 - corrupted persisted reservation and absent receipt cannot create a confirmation
+  ---
+  duration_ms: 5.566475
+  type: 'test'
+  ...
+# Subtest: late database response expires evidence before send
+ok 19 - late database response expires evidence before send
+  ---
+  duration_ms: 2.46744
+  type: 'test'
+  ...
+# Subtest: storage fuse bounds only the informational namespace and preserves legacy rows
+ok 20 - storage fuse bounds only the informational namespace and preserves legacy rows
+  ---
+  duration_ms: 12.05079
+  type: 'test'
+  ...
+# Subtest: budget-block proof preserves actual gates and bounded envelope fits the run headroom observed remotely
+ok 21 - budget-block proof preserves actual gates and bounded envelope fits the run headroom observed remotely
+  ---
+  duration_ms: 0.354225
+  type: 'test'
+  ...
+# Subtest: output disabled, conflicting flags, and invalid test identity never send
+ok 22 - output disabled, conflicting flags, and invalid test identity never send
+  ---
+  duration_ms: 5.075284
+  type: 'test'
+  ...
+# Subtest: already sent newest candidate does not starve another eligible symbol
+ok 23 - already sent newest candidate does not starve another eligible symbol
+  ---
+  duration_ms: 9.113938
+  type: 'test'
+  ...
+# Subtest: additive index is idempotent and existing journal constraints remain unchanged
+ok 24 - additive index is idempotent and existing journal constraints remain unchanged
+  ---
+  duration_ms: 2.569916
+  type: 'test'
+  ...
+# Subtest: the 100-point score is rendered explicitly and never called a probability
+ok 25 - the 100-point score is rendered explicitly and never called a probability
+  ---
+  duration_ms: 5.570573
+  type: 'test'
+  ...
+# Subtest: compact LONG and SHORT layout is symmetric: coin, colour, WAIT and one reason
+ok 26 - compact LONG and SHORT layout is symmetric: coin, colour, WAIT and one reason
+  ---
+  duration_ms: 2.839457
+  type: 'test'
+  ...
+# Subtest: reason uses only current closed direction-compatible evidence
+ok 27 - reason uses only current closed direction-compatible evidence
+  ---
+  duration_ms: 0.420902
+  type: 'test'
+  ...
+# Subtest: missing, malformed, stale or future evidence fails closed
+ok 28 - missing, malformed, stale or future evidence fails closed
+  ---
+  duration_ms: 0.594596
+  type: 'test'
+  ...
+# Subtest: WAIT means required entry confirmation is missing; it never says enter now
+ok 29 - WAIT means required entry confirmation is missing; it never says enter now
+  ---
+  duration_ms: 0.490382
+  type: 'test'
+  ...
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"71"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"币安人生-USDT","direction":"LONG","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"71"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"RAY-USDT","direction":"SHORT","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"71"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"币安人生-USDT","direction":"SHORT","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"ALREADY_SENT","sent":false,"delivery_confirmed":false,"message_id":"71"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED","reason":"USEFUL_LIVE_OBSERVATION"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_NEW_WAIT","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":1,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED","reason":"USEFUL_LIVE_OBSERVATION"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"WAVE_NOT_CLOSED","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"WAVE_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"WAVE_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED_NOT_USER_VISIBLE","reason":"OBSERVATION_NOT_USEFUL_OR_INSUFFICIENT"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"SHADOW_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"SHADOW_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED_NOT_USER_VISIBLE","reason":"OBSERVATION_NOT_USEFUL_OR_INSUFFICIENT"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED_NOT_USER_VISIBLE","reason":"OBSERVATION_NOT_USEFUL_OR_INSUFFICIENT"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"DEEP_TIME_NOT_CLOSED","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"DEEP_TIME_NOT_CLOSED","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"RISK_BLOCKED","reason":"DIRECTION_DESTROYED"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"RISK_BLOCKED","reason":"DATA_UNUSABLE"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED_NOT_USER_VISIBLE","reason":"LIVE_DEEP_CHECK_NOT_COMPLETED"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"CLOSED_NOT_USER_VISIBLE","reason":"OBSERVATION_NOT_USEFUL_OR_INSUFFICIENT"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"WAVE_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"WAVE_NOT_CURRENT","reason":null}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"RISK_BLOCKED","reason":"EXIT"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"NO_CURRENT_EARLY_OBSERVATION","sent":false,"count":0,"valid_wait_count":0,"valid_observe_count":0,"upstream_reasons":[{"contract":"RAY-USDT","status":"RISK_BLOCKED","reason":"DIRECTION_DESTROYED"}]},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","sent":false},"early_info":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","source_status":"BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","sent":false},"early_info":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","source_status":"PERSISTENCE_NOT_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","sent":false},"early_info":{"status":"UPSTREAM_LIFECYCLE_NOT_CLOSED","source_status":"PERSISTENCE_NOT_CLOSED","sent":false,"count":0},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"SENT","sent":true,"delivery_confirmed":true,"message_id":71,"count":1,"contract":"RAY-USDT","direction":"LONG","lifecycle_status":"OBSERVE"},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# TELEGRAM_OUTPUT_LAYER {"version":"telegram-output-v9-plain-text-explained-score","enabled":true,"info_enabled":true,"final_chain_auto":false,"final_chain_threshold":70,"morning":{"status":"NOT_DUE","sent":false},"early_info":{"status":"INFO_COOLDOWN","sent":false,"delivery_confirmed":false,"message_id":null},"watch70":{"status":"DISABLED_FINAL_CHAIN_ONLY","sent":0},"shadow_decision":{"status":"AUTO_OFF","sent":false,"count":0}}
+# Subtest: a completed handoff gets the existing bounded slot without starving behind unrelated active rows
+ok 30 - a completed handoff gets the existing bounded slot without starving behind unrelated active rows
+  ---
+  duration_ms: 16.07172
+  type: 'test'
+  ...
+# Subtest: same-cycle completed Deep Check -> OBSERVE -> information receipt, symmetric LONG/SHORT including Unicode
+ok 31 - same-cycle completed Deep Check -> OBSERVE -> information receipt, symmetric LONG/SHORT including Unicode
+  ---
+  duration_ms: 137.742857
+  type: 'test'
+  ...
+# Subtest: real early producer creates the missing handoff wave, while a score below 70 remains unsent
+ok 32 - real early producer creates the missing handoff wave, while a score below 70 remains unsent
+  ---
+  duration_ms: 25.339614
+  type: 'test'
+  ...
+# Subtest: observation publishing is explicit; it never relabels OBSERVE as WAIT or ENTRY
+ok 33 - observation publishing is explicit; it never relabels OBSERVE as WAIT or ENTRY
+  ---
+  duration_ms: 15.576085
+  type: 'test'
+  ...
+# Subtest: NULL wave is joined only to an actual current wave; explicit different wave is never guessed
+ok 34 - NULL wave is joined only to an actual current wave; explicit different wave is never guessed
+  ---
+  duration_ms: 33.718883
+  type: 'test'
+  ...
+# Subtest: stale, future, old-run, conflicting, insufficient and failed observations stay unsent
+ok 35 - stale, future, old-run, conflicting, insufficient and failed observations stay unsent
+  ---
+  duration_ms: 253.386348
+  type: 'test'
+  ...
+# Subtest: current lifecycle failure blocks old visible rows and produces a technical reason
+ok 36 - current lifecycle failure blocks old visible rows and produces a technical reason
+  ---
+  duration_ms: 15.236423
+  type: 'test'
+  ...
+# Subtest: read budget failure precedes lifecycle writes
+ok 37 - read budget failure precedes lifecycle writes
+  ---
+  duration_ms: 17.278305
+  type: 'test'
+  ...
+# Subtest: hard veto and invalidation cannot become a new WAIT/OBSERVE through a closed direction
+ok 38 - hard veto and invalidation cannot become a new WAIT/OBSERVE through a closed direction
+  ---
+  duration_ms: 1.028243
+  type: 'test'
+  ...
+# Subtest: partial lifecycle persistence and missing readback cannot authorize a notification
+ok 39 - partial lifecycle persistence and missing readback cannot authorize a notification
+  ---
+  duration_ms: 37.582021
+  type: 'test'
+  ...
+# Subtest: multiple completed handoffs cannot spend more than the single transition write envelope
+ok 40 - multiple completed handoffs cannot spend more than the single transition write envelope
+  ---
+  duration_ms: 34.792803
+  type: 'test'
+  ...
+# Subtest: the handoff query starts from indexed exact run, not completed history
+ok 41 - the handoff query starts from indexed exact run, not completed history
+  ---
+  duration_ms: 21.963339
+  type: 'test'
+  ...
+# Subtest: explicit OBSERVE shares cooldown with existing WAIT reservations
+ok 42 - explicit OBSERVE shares cooldown with existing WAIT reservations
+  ---
+  duration_ms: 19.765142
+  type: 'test'
+  ...
+# Subtest: the runner orders current lifecycle before regular output, while preserving isolated test route
+ok 43 - the runner orders current lifecycle before regular output, while preserving isolated test route
+  ---
+  duration_ms: 0.774393
+  type: 'test'
+  ...
+# Subtest: sidecar enriches stage0 early candidate with bounded microstructure evidence
+ok 44 - sidecar enriches stage0 early candidate with bounded microstructure evidence
+  ---
+  duration_ms: 24.254107
+  type: 'test'
+  ...
+# Subtest: V3 early sidecar persists bounded first-seen wave without probability
+ok 45 - V3 early sidecar persists bounded first-seen wave without probability
+  ---
+  duration_ms: 9.078216
+  type: 'test'
+  ...
+# Subtest: V3 sidecar target selection keeps an active candidate and does not exceed cap
+ok 46 - V3 sidecar target selection keeps an active candidate and does not exceed cap
+  ---
+  duration_ms: 0.598773
+  type: 'test'
+  ...
+# Subtest: network disabled is fail-closed and does not touch D1
+ok 47 - network disabled is fail-closed and does not touch D1
+  ---
+  duration_ms: 5.89215
+  type: 'test'
+  ...
+# Subtest: current OBSERVE dispatch is revalidated, sent, and finalized exactly once
+ok 48 - current OBSERVE dispatch is revalidated, sent, and finalized exactly once
+  ---
+  duration_ms: 25.745449
+  type: 'test'
+  ...
+# Subtest: expired ENTRY becomes EXPIRED_NOT_SENT without network call
+ok 49 - expired ENTRY becomes EXPIRED_NOT_SENT without network call
+  ---
+  duration_ms: 1.871541
+  type: 'test'
+  ...
+# Subtest: 5xx never becomes SENT and remains retryable
+ok 50 - 5xx never becomes SENT and remains retryable
+  ---
+  duration_ms: 2.570299
+  type: 'test'
+  ...
+# Subtest: pipeline health delivery is explicitly system-only and persists receipt
+ok 51 - pipeline health delivery is explicitly system-only and persists receipt
+  ---
+  duration_ms: 1.983314
+  type: 'test'
+  ...
+# Subtest: relay parser treats ambiguous and timeout as non-SENT
+ok 52 - relay parser treats ambiguous and timeout as non-SENT
+  ---
+  duration_ms: 0.390956
+  type: 'test'
+  ...
+# Subtest: nothing -> OBSERVE only after useful live deep check
+ok 53 - nothing -> OBSERVE only after useful live deep check
+  ---
+  duration_ms: 2.308555
+  type: 'test'
+  ...
+# Subtest: WAIT requires direction plus closed quality but not entry window
+ok 54 - WAIT requires direction plus closed quality but not entry window
+  ---
+  duration_ms: 0.28081
+  type: 'test'
+  ...
+# Subtest: ENTRY requires entire strict final chain
+ok 55 - ENTRY requires entire strict final chain
+  ---
+  duration_ms: 0.467175
+  type: 'test'
+  ...
+# Subtest: surfaced idea is removed once when invalidated
+ok 56 - surfaced idea is removed once when invalidated
+  ---
+  duration_ms: 0.517909
+  type: 'test'
+  ...
+# Subtest: WAIT -> ENTRY bypasses cooldown and dedup key contains wave/rules/event
+ok 57 - WAIT -> ENTRY bypasses cooldown and dedup key contains wave/rules/event
+  ---
+  duration_ms: 0.682379
+  type: 'test'
+  ...
+# Subtest: repeat status suppressed
+ok 58 - repeat status suppressed
+  ---
+  duration_ms: 0.212924
+  type: 'test'
+  ...
+# Subtest: entry expires before send and timeout is never SENT
+ok 59 - entry expires before send and timeout is never SENT
+  ---
+  duration_ms: 0.495406
+  type: 'test'
+  ...
+# Subtest: Russian user format calls score internal not probability
+ok 60 - Russian user format calls score internal not probability
+  ---
+  duration_ms: 0.613936
+  type: 'test'
+  ...
+# Subtest: pipeline health distinguishes healthy no idea from technical degradation
+ok 61 - pipeline health distinguishes healthy no idea from technical degradation
+  ---
+  duration_ms: 1.617837
+  type: 'test'
+  ...
+# Subtest: health alerts only on transitions
+ok 62 - health alerts only on transitions
+  ---
+  duration_ms: 0.472757
+  type: 'test'
+  ...
+# Subtest: grouped early report caps 3 LONG and 3 SHORT and excludes ENTRY
+ok 63 - grouped early report caps 3 LONG and 3 SHORT and excludes ENTRY
+  ---
+  duration_ms: 1.133891
+  type: 'test'
+  ...
+# Subtest: ENTRY is rendered only as separate immediate lifecycle message
+ok 64 - ENTRY is rendered only as separate immediate lifecycle message
+  ---
+  duration_ms: 0.657046
+  type: 'test'
+  ...
+# Subtest: nothing to WAIT creates dispatch before any network send
+ok 65 - nothing to WAIT creates dispatch before any network send
+  ---
+  duration_ms: 1.808274
+  type: 'test'
+  ...
+# Subtest: repeat WAIT creates no dispatch
+ok 66 - repeat WAIT creates no dispatch
+  ---
+  duration_ms: 0.517682
+  type: 'test'
+  ...
+# Subtest: retry claim always revalidates and expired entry is not claimed
+ok 67 - retry claim always revalidates and expired entry is not claimed
+  ---
+  duration_ms: 0.424434
+  type: 'test'
+  ...
+# Subtest: timeout is retryable and never SENT
+ok 68 - timeout is retryable and never SENT
+  ---
+  duration_ms: 0.637956
+  type: 'test'
+  ...
+# Subtest: confirmed receipt alone becomes SENT
+ok 69 - confirmed receipt alone becomes SENT
+  ---
+  duration_ms: 0.191531
+  type: 'test'
+  ...
+1..69
+# tests 69
+# suites 0
+# pass 69
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 806.334184

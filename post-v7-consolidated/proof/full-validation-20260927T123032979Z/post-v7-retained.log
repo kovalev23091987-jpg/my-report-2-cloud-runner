@@ -1,0 +1,472 @@
+TAP version 13
+# Subtest: network sends exact persisted canonical Telegram text and never reconstructs market facts
+ok 1 - network sends exact persisted canonical Telegram text and never reconstructs market facts
+  ---
+  duration_ms: 55.582479
+  type: 'test'
+  ...
+# Subtest: retry/dedup does not send a SENT dispatch twice
+ok 2 - retry/dedup does not send a SENT dispatch twice
+  ---
+  duration_ms: 7.053023
+  type: 'test'
+  ...
+# Subtest: tampered persisted Telegram text is rejected before network
+ok 3 - tampered persisted Telegram text is rejected before network
+  ---
+  duration_ms: 5.363543
+  type: 'test'
+  ...
+# Subtest: wrong lifecycle snapshot/state is rejected before network
+ok 4 - wrong lifecycle snapshot/state is rejected before network
+  ---
+  duration_ms: 7.150933
+  type: 'test'
+  ...
+# Subtest: manual and Telegram artifacts share one canonical fingerprint
+ok 5 - manual and Telegram artifacts share one canonical fingerprint
+  ---
+  duration_ms: 3.872198
+  type: 'test'
+  ...
+# Subtest: transient technical degradation is debounced and never reaches Telegram before 20 minutes
+ok 6 - transient technical degradation is debounced and never reaches Telegram before 20 minutes
+  ---
+  duration_ms: 1.287374
+  type: 'test'
+  ...
+# Subtest: persistent technical degradation is sent only after debounce window
+ok 7 - persistent technical degradation is sent only after debounce window
+  ---
+  duration_ms: 8.990852
+  type: 'test'
+  ...
+# Subtest: recovery is not sent when user never saw a degradation alert
+ok 8 - recovery is not sent when user never saw a degradation alert
+  ---
+  duration_ms: 4.162578
+  type: 'test'
+  ...
+# Subtest: recovery is sent only after a previously visible persistent degradation
+ok 9 - recovery is sent only after a previously visible persistent degradation
+  ---
+  duration_ms: 1.886651
+  type: 'test'
+  ...
+# Subtest: superseded health event is terminally closed instead of remaining pending forever
+ok 10 - superseded health event is terminally closed instead of remaining pending forever
+  ---
+  duration_ms: 1.829103
+  type: 'test'
+  ...
+# Subtest: migration is additive and core tables enforce shadow constraints
+ok 11 - migration is additive and core tables enforce shadow constraints
+  ---
+  duration_ms: 3.083259
+  type: 'test'
+  ...
+# Subtest: OBSERVE without exact action contract stays internal even with high score
+ok 12 - OBSERVE without exact action contract stays internal even with high score
+  ---
+  duration_ms: 1.416432
+  type: 'test'
+  ...
+# Subtest: strong early OBSERVE is deliverable only with working area + exact trigger + TTL + recheck
+ok 13 - strong early OBSERVE is deliverable only with working area + exact trigger + TTL + recheck
+  ---
+  duration_ms: 0.578211
+  type: 'test'
+  ...
+# Subtest: strong early OBSERVE may keep canonical overall missing without inventing a proxy score
+ok 14 - strong early OBSERVE may keep canonical overall missing without inventing a proxy score
+  ---
+  duration_ms: 19.064807
+  type: 'test'
+  ...
+# Subtest: weak ZKC/APT/AVNT-like WAIT stays internal
+ok 15 - weak ZKC/APT/AVNT-like WAIT stays internal
+  ---
+  duration_ms: 0.326571
+  type: 'test'
+  ...
+# Subtest: FIL-like 100 without trigger cannot publish
+ok 16 - FIL-like 100 without trigger cannot publish
+  ---
+  duration_ms: 1.348311
+  type: 'test'
+  ...
+# Subtest: WAIT requires complete trigger and creates recheck intent
+ok 17 - WAIT requires complete trigger and creates recheck intent
+  ---
+  duration_ms: 0.367946
+  type: 'test'
+  ...
+# Subtest: ENTRY needs strict state context and hard gates, score alone never creates it
+ok 18 - ENTRY needs strict state context and hard gates, score alone never creates it
+  ---
+  duration_ms: 0.880939
+  type: 'test'
+  ...
+# Subtest: persist -> finalize -> exact dispatch binding -> sender reads only same publication
+ok 19 - persist -> finalize -> exact dispatch binding -> sender reads only same publication
+  ---
+  duration_ms: 4.857048
+  type: 'test'
+  ...
+# Subtest: tampered score after fingerprint is rejected before persistence
+ok 20 - tampered score after fingerprint is rejected before persistence
+  ---
+  duration_ms: 1.699079
+  type: 'test'
+  ...
+# Subtest: display direction mismatch is rejected
+ok 21 - display direction mismatch is rejected
+  ---
+  duration_ms: 2.831816
+  type: 'test'
+  ...
+# Subtest: wrong snapshot cannot be substituted because binding names publication id
+ok 22 - wrong snapshot cannot be substituted because binding names publication id
+  ---
+  duration_ms: 4.782378
+  type: 'test'
+  ...
+# Subtest: ENTRY exact decision id is binding-critical
+ok 23 - ENTRY exact decision id is binding-critical
+  ---
+  duration_ms: 5.134808
+  type: 'test'
+  ...
+# Subtest: IDEA_REMOVED is preserved only after a prior delivered idea
+ok 24 - IDEA_REMOVED is preserved only after a prior delivered idea
+  ---
+  duration_ms: 0.341907
+  type: 'test'
+  ...
+# Subtest: WAIT durable recheck task is due by timestamp, not a 15m transient TTL
+ok 25 - WAIT durable recheck task is due by timestamp, not a 15m transient TTL
+  ---
+  duration_ms: 3.932875
+  type: 'test'
+  ...
+# Subtest: scheduler ownership prevents duplicate analytics execution
+ok 26 - scheduler ownership prevents duplicate analytics execution
+  ---
+  duration_ms: 0.115223
+  type: 'test'
+  ...
+# Subtest: hourly statistics cadence is due-time/last-success, not minute==2
+ok 27 - hourly statistics cadence is due-time/last-success, not minute==2
+  ---
+  duration_ms: 0.124239
+  type: 'test'
+  ...
+# Subtest: canonical renderers preserve approved Telegram/manual score and direction layout
+ok 28 - canonical renderers preserve approved Telegram/manual score and direction layout
+  ---
+  duration_ms: 1.215508
+  type: 'test'
+  ...
+# Subtest: reconciler preserves the canonical manual presentation when it was saved at analysis time
+ok 29 - reconciler preserves the canonical manual presentation when it was saved at analysis time
+  ---
+  duration_ms: 5.678315
+  type: 'test'
+  ...
+# Subtest: reconciler binds the exact source run even when lifecycle observation timestamp differs
+ok 30 - reconciler binds the exact source run even when lifecycle observation timestamp differs
+  ---
+  duration_ms: 3.251971
+  type: 'test'
+  ...
+# Subtest: reconciler fails closed when one run contains multiple canonical snapshots for the same wave
+ok 31 - reconciler fails closed when one run contains multiple canonical snapshots for the same wave
+  ---
+  duration_ms: 2.001585
+  type: 'test'
+  ...
+# Subtest: BEAT 43/56 early observation from screenshot stays internal
+ok 32 - BEAT 43/56 early observation from screenshot stays internal
+  ---
+  duration_ms: 0.197536
+  type: 'test'
+  ...
+# Subtest: ZEC IDEA_REMOVED is suppressed when its earlier observation was never delivered
+ok 33 - ZEC IDEA_REMOVED is suppressed when its earlier observation was never delivered
+  ---
+  duration_ms: 0.15238
+  type: 'test'
+  ...
+# Subtest: full evidence persisted=true only on one inserted row
+ok 34 - full evidence persisted=true only on one inserted row
+  ---
+  duration_ms: 3.028111
+  type: 'test'
+  ...
+# Subtest: full evidence SQL ignores only duplicate full_evidence_id, not arbitrary constraints
+ok 35 - full evidence SQL ignores only duplicate full_evidence_id, not arbitrary constraints
+  ---
+  duration_ms: 0.891611
+  type: 'test'
+  ...
+# Subtest: undocumented heatmap arrays fail closed
+ok 36 - undocumented heatmap arrays fail closed
+  ---
+  duration_ms: 0.496502
+  type: 'test'
+  ...
+# Subtest: explicit array schema can be used only when declared
+ok 37 - explicit array schema can be used only when declared
+  ---
+  duration_ms: 2.721061
+  type: 'test'
+  ...
+# Subtest: object projected row requires exact side and size/intensity
+ok 38 - object projected row requires exact side and size/intensity
+  ---
+  duration_ms: 0.304939
+  type: 'test'
+  ...
+# Subtest: HTTP 200 is not a usable liquidation map when stale
+ok 39 - HTTP 200 is not a usable liquidation map when stale
+  ---
+  duration_ms: 0.33701
+  type: 'test'
+  ...
+# Subtest: usable provider with zero significant zones is distinct from unavailable source
+ok 40 - usable provider with zero significant zones is distinct from unavailable source
+  ---
+  duration_ms: 0.252921
+  type: 'test'
+  ...
+# Subtest: zone selection retains a large distant zone
+ok 41 - zone selection retains a large distant zone
+  ---
+  duration_ms: 0.634368
+  type: 'test'
+  ...
+# Subtest: CoinLobster free projected fixture has exact price/side/USD intensity/leverage schema
+ok 42 - CoinLobster free projected fixture has exact price/side/USD intensity/leverage schema
+  ---
+  duration_ms: 2.04629
+  type: 'test'
+  ...
+# Subtest: 01 missing canonical never promotes FIL legacy price-only 100/89
+ok 43 - 01 missing canonical never promotes FIL legacy price-only 100/89
+  ---
+  duration_ms: 1.56813
+  type: 'test'
+  ...
+# Subtest: 02 shared canonical supplies exact two scores without recalculation
+ok 44 - 02 shared canonical supplies exact two scores without recalculation
+  ---
+  duration_ms: 2.270037
+  type: 'test'
+  ...
+# Subtest: 03 manual and Telegram share canonical numbers
+ok 45 - 03 manual and Telegram share canonical numbers
+  ---
+  duration_ms: 23.839006
+  type: 'test'
+  ...
+# Subtest: 04 legacy shadow 100 and historical noise cannot alter canonical score labels
+ok 46 - 04 legacy shadow 100 and historical noise cannot alter canonical score labels
+  ---
+  duration_ms: 2.04658
+  type: 'test'
+  ...
+# Subtest: 05 snapshot mismatch rejected
+ok 47 - 05 snapshot mismatch rejected
+  ---
+  duration_ms: 0.613861
+  type: 'test'
+  ...
+# Subtest: 06 run mismatch rejected
+ok 48 - 06 run mismatch rejected
+  ---
+  duration_ms: 0.479355
+  type: 'test'
+  ...
+# Subtest: 07 observation time mismatch rejected
+ok 49 - 07 observation time mismatch rejected
+  ---
+  duration_ms: 0.35364
+  type: 'test'
+  ...
+# Subtest: 08 direction mismatch rejected
+ok 50 - 08 direction mismatch rejected
+  ---
+  duration_ms: 0.392168
+  type: 'test'
+  ...
+# Subtest: 09 contract mismatch rejected
+ok 51 - 09 contract mismatch rejected
+  ---
+  duration_ms: 0.515174
+  type: 'test'
+  ...
+# Subtest: 10 canonical score mutation without new fingerprint rejected
+ok 52 - 10 canonical score mutation without new fingerprint rejected
+  ---
+  duration_ms: 4.931709
+  type: 'test'
+  ...
+# Subtest: 11 explicit null binding fails closed without exception
+ok 53 - 11 explicit null binding fails closed without exception
+  ---
+  duration_ms: 0.922571
+  type: 'test'
+  ...
+# Subtest: 12 missing score stays missing and zero stays factual zero
+ok 54 - 12 missing score stays missing and zero stays factual zero
+  ---
+  duration_ms: 1.609204
+  type: 'test'
+  ...
+# Subtest: 13 canonical 100 still cannot manufacture ENTRY and display direction remains bound
+ok 55 - 13 canonical 100 still cannot manufacture ENTRY and display direction remains bound
+  ---
+  duration_ms: 0.553526
+  type: 'test'
+  ...
+# Subtest: portable package is fail-closed and candidate-only
+ok 56 - portable package is fail-closed and candidate-only
+  ---
+  duration_ms: 1.950933
+  type: 'test'
+  ...
+# Subtest: periodic analytics has one durable owner and hub fails closed
+ok 57 - periodic analytics has one durable owner and hub fails closed
+  ---
+  duration_ms: 3.505009
+  type: 'test'
+  ...
+# Subtest: cadence is due by last success, not wall-clock minute
+ok 58 - cadence is due by last success, not wall-clock minute
+  ---
+  duration_ms: 2.211957
+  type: 'test'
+  ...
+# Subtest: failed maintenance does not advance last success and becomes due after lease release
+ok 59 - failed maintenance does not advance last success and becomes due after lease release
+  ---
+  duration_ms: 2.001236
+  type: 'test'
+  ...
+# Subtest: active lease prevents duplicate scheduler execution
+ok 60 - active lease prevents duplicate scheduler execution
+  ---
+  duration_ms: 2.015291
+  type: 'test'
+  ...
+# Subtest: explicit null/undefined binding fails closed without throw
+ok 61 - explicit null/undefined binding fails closed without throw
+  ---
+  duration_ms: 2.926972
+  type: 'test'
+  ...
+# Subtest: exact canonical scores pass unchanged
+ok 62 - exact canonical scores pass unchanged
+  ---
+  duration_ms: 1.621694
+  type: 'test'
+  ...
+# Subtest: display direction binding is critical
+ok 63 - display direction binding is critical
+  ---
+  duration_ms: 0.414119
+  type: 'test'
+  ...
+# Subtest: contract/snapshot/run/time mismatch rejected
+ok 64 - contract/snapshot/run/time mismatch rejected
+  ---
+  duration_ms: 0.507374
+  type: 'test'
+  ...
+# Subtest: tampered canonical score without new fingerprint rejected
+ok 65 - tampered canonical score without new fingerprint rejected
+  ---
+  duration_ms: 0.446584
+  type: 'test'
+  ...
+# Subtest: missing is null, factual zero stays zero, probability/out-of-range refused
+ok 66 - missing is null, factual zero stays zero, probability/out-of-range refused
+  ---
+  duration_ms: 0.971474
+  type: 'test'
+  ...
+# Subtest: formatter transform removes local score inputs and injects canonical reader
+ok 67 - formatter transform removes local score inputs and injects canonical reader
+  ---
+  duration_ms: 0.701125
+  type: 'test'
+  ...
+# Subtest: HTX is primary execution/OI authority
+ok 68 - HTX is primary execution/OI authority
+  ---
+  duration_ms: 1.27243
+  type: 'test'
+  ...
+# Subtest: same ByKaranteli family repeated twice is one independence group
+ok 69 - same ByKaranteli family repeated twice is one independence group
+  ---
+  duration_ms: 0.535061
+  type: 'test'
+  ...
+# Subtest: CoinLobster remains secondary projected validation and is not relabeled primary
+ok 70 - CoinLobster remains secondary projected validation and is not relabeled primary
+  ---
+  duration_ms: 0.507155
+  type: 'test'
+  ...
+# Subtest: official Binance and aggregate ByK remain independent families for cross-venue OI
+ok 71 - official Binance and aggregate ByK remain independent families for cross-venue OI
+  ---
+  duration_ms: 0.442147
+  type: 'test'
+  ...
+# Subtest: unknown source is retained but cannot count as independent evidence
+ok 72 - unknown source is retained but cannot count as independent evidence
+  ---
+  duration_ms: 0.178324
+  type: 'test'
+  ...
+# Subtest: HTX is execution truth
+ok 73 - HTX is execution truth
+  ---
+  duration_ms: 1.26188
+  type: 'test'
+  ...
+# Subtest: projected liquidation has a primary free provider
+ok 74 - projected liquidation has a primary free provider
+  ---
+  duration_ms: 0.156385
+  type: 'test'
+  ...
+# Subtest: same aggregate family counts once
+ok 75 - same aggregate family counts once
+  ---
+  duration_ms: 0.162357
+  type: 'test'
+  ...
+# Subtest: early observation cannot promote without trigger
+ok 76 - early observation cannot promote without trigger
+  ---
+  duration_ms: 0.122604
+  type: 'test'
+  ...
+# Subtest: early observation can promote only with HTX, trigger, independent families
+ok 77 - early observation can promote only with HTX, trigger, independent families
+  ---
+  duration_ms: 0.328183
+  type: 'test'
+  ...
+1..77
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 272.663454

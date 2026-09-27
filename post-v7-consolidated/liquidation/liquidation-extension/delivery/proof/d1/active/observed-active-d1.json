@@ -1,0 +1,213 @@
+{
+  "evidence_kind": "FIELD_PROJECTION_FROM_ACTUAL_CLOUDFLARE_TOOL_RESPONSE_NOT_RAW_HTTP",
+  "checked_at_utc": "2026-09-27T10:15:40.540Z",
+  "test_database_id": "d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5",
+  "test_database_name": "report2-liq-proof-20260927",
+  "module_sha256": "cd4171ae06fc4094a7a1d163827f7735716cd6d0baee88d99153376d0c818e2e",
+  "before": [
+    {
+      "success": true,
+      "results": [
+        {
+          "scope_id": "ACTIVE_PROOF_HYPERLIQUID",
+          "provider": "HYPERLIQUID",
+          "unit": "REQUEST",
+          "window_start_ts": 1790504069070,
+          "window_end_ts": 1790507670070,
+          "allowance_units": 10,
+          "used_units": 0,
+          "version": 0,
+          "last_reservation_id": null,
+          "config_fingerprint": "TEST_ACTIVE_REVIEWED_V1",
+          "shared_quota_reviewed": 1,
+          "active": 1,
+          "schema_version": 1
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [
+        {
+          "scope_id": "ACTIVE_PROOF_LIQFLOW",
+          "provider": "LIQFLOW",
+          "unit": "REQUEST",
+          "window_start_ts": 1790504069070,
+          "window_end_ts": 1790507670070,
+          "allowance_units": 2,
+          "used_units": 0,
+          "version": 0,
+          "last_reservation_id": null,
+          "config_fingerprint": "TEST_ACTIVE_REVIEWED_V1",
+          "shared_quota_reviewed": 1,
+          "active": 1,
+          "schema_version": 1
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    }
+  ],
+  "first": [
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 1,
+        "rows_written": 3,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 1,
+        "rows_written": 3,
+        "size_after": 49152
+      }
+    }
+  ],
+  "readback": [
+    {
+      "success": true,
+      "results": [
+        {
+          "reservation_id": "ACTIVE_LIQ_20260927:HYPERLIQUID",
+          "scope_id": "ACTIVE_PROOF_HYPERLIQUID",
+          "provider": "HYPERLIQUID",
+          "reserved_units": 5,
+          "expected_version": 0,
+          "committed_version": 1,
+          "reservation_fingerprint": "12ea308db079e481dce2d3da64238370e1ee7068941bea4a3691c2ee511b9afa"
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [
+        {
+          "reservation_id": "ACTIVE_LIQ_20260927:LIQFLOW",
+          "scope_id": "ACTIVE_PROOF_LIQFLOW",
+          "provider": "LIQFLOW",
+          "reserved_units": 1,
+          "expected_version": 0,
+          "committed_version": 1,
+          "reservation_fingerprint": "05db387977c297a58b36df0ffa58a9e45ba9f0fbf66cbdb7f4cf15a5f5178070"
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    }
+  ],
+  "identical_retry": [
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 2,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 2,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 49152
+      }
+    }
+  ],
+  "final_scopes": [
+    {
+      "scope_id": "ACTIVE_PROOF_HYPERLIQUID",
+      "used_units": 5,
+      "version": 1
+    },
+    {
+      "scope_id": "ACTIVE_PROOF_LIQFLOW",
+      "used_units": 1,
+      "version": 1
+    }
+  ],
+  "actual_primary_admission": {
+    "rows_read": 8,
+    "rows_written": 8,
+    "logical_statements": 8,
+    "http_batches": 3
+  },
+  "actual_identical_write_batch_retry": {
+    "rows_read": 6,
+    "rows_written": 0
+  },
+  "whole_runner_cost_measured": false,
+  "production_bridge_network_used": false,
+  "production_database_changed": false,
+  "provider_quotas_configured_in_production": false
+}

@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: one runtime canonical result feeds two different formatters with identical fingerprint
+ok 1 - one runtime canonical result feeds two different formatters with identical fingerprint
+  ---
+  duration_ms: 6.177875
+  type: 'test'
+  ...
+# Subtest: complete closed 1m history produces exact 1m/3m/5m decomposition and four competing hypotheses
+ok 2 - complete closed 1m history produces exact 1m/3m/5m decomposition and four competing hypotheses
+  ---
+  duration_ms: 4.364727
+  type: 'test'
+  ...
+# Subtest: missing one minute blocks final classification instead of interpolating
+ok 3 - missing one minute blocks final classification instead of interpolating
+  ---
+  duration_ms: 0.667438
+  type: 'test'
+  ...
+# Subtest: unclosed or future event cannot classify
+ok 4 - unclosed or future event cannot classify
+  ---
+  duration_ms: 0.424776
+  type: 'test'
+  ...
+# Subtest: existing V3 early receipt becomes existing Fast Move anomaly without a second early engine
+ok 5 - existing V3 early receipt becomes existing Fast Move anomaly without a second early engine
+  ---
+  duration_ms: 3.642924
+  type: 'test'
+  ...
+# Subtest: analytical entry reachable without pretending validation is closed
+ok 6 - analytical entry reachable without pretending validation is closed
+  ---
+  duration_ms: 1.469892
+  type: 'test'
+  ...
+# Subtest: validated state remains reserved
+ok 7 - validated state remains reserved
+  ---
+  duration_ms: 0.264365
+  type: 'test'
+  ...
+# Subtest: hard veto rejects even high-quality candidate
+ok 8 - hard veto rejects even high-quality candidate
+  ---
+  duration_ms: 0.205754
+  type: 'test'
+  ...
+# Subtest: outside entry area becomes numerical wait trigger
+ok 9 - outside entry area becomes numerical wait trigger
+  ---
+  duration_ms: 0.630181
+  type: 'test'
+  ...
+# Subtest: telegram output is evidence driven and never calls score probability
+ok 10 - telegram output is evidence driven and never calls score probability
+  ---
+  duration_ms: 1.326648
+  type: 'test'
+  ...
+# Subtest: WAIT trigger has exact crossing timeframe expiry cancellation evidence binding and next recheck
+ok 11 - WAIT trigger has exact crossing timeframe expiry cancellation evidence binding and next recheck
+  ---
+  duration_ms: 1.441799
+  type: 'test'
+  ...
+# Subtest: 19.99 is not pump and exact 20 is pump
+ok 12 - 19.99 is not pump and exact 20 is pump
+  ---
+  duration_ms: 0.874264
+  type: 'test'
+  ...
+# Subtest: pump zones are two-sided, uncapped by distance, max three each, nearest and largest retained
+ok 13 - pump zones are two-sided, uncapped by distance, max three each, nearest and largest retained
+  ---
+  duration_ms: 0.700794
+  type: 'test'
+  ...
+# Subtest: missing side never invents a zone
+ok 14 - missing side never invents a zone
+  ---
+  duration_ms: 0.300395
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 177.344097

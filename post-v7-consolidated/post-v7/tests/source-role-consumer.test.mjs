@@ -1,0 +1,7 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {buildRoleEvidenceView,primaryReceiptForRole,independentConfirmationCount} from '../src/source-role-consumer.mjs';
+const r=[{source:'HTX',metric:'OI'},{source:'ByKaranteli',metric:'liq'},{provider:'ByKaranteli LiqMap Public API',metric:'liq2'},{source:'CoinLobster',metric:'liq3'},{source:'Binance',metric:'OI2'}];
+test('HTX is primary execution/OI authority',()=>{assert.equal(primaryReceiptForRole(r,'OI_PRIMARY').source_key,'HTX_OFFICIAL');});
+test('same ByKaranteli family repeated twice is one independence group',()=>{const v=buildRoleEvidenceView(r);assert.equal(v.independent_groups.PROJECTED_LIQUIDATION_MAP.length,1);});
+test('CoinLobster remains secondary projected validation and is not relabeled primary',()=>{assert.equal(primaryReceiptForRole(r,'PROJECTED_LIQUIDATION_VALIDATION').source_key,'COINLOBSTER');assert.equal(primaryReceiptForRole(r,'PROJECTED_LIQUIDATION_MAP').source_key,'BYKARANTELI');});
+test('official Binance and aggregate ByK remain independent families for cross-venue OI',()=>{const x=[{source:'ByKaranteli'},{source:'Binance'}];assert.equal(independentConfirmationCount(x,'OI_CROSS_VENUE'),2);});
+test('unknown source is retained but cannot count as independent evidence',()=>{const v=buildRoleEvidenceView([{source:'MYSTERY',metric:'x'}]);assert.equal(v.unknown_sources.length,1);assert.equal(v.classified[0].independence_group,null);});

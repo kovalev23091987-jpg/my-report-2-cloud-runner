@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: R054 R065: missing new schema cannot produce CLOSED canonical-binding audit
+ok 1 - R054 R065: missing new schema cannot produce CLOSED canonical-binding audit
+  ---
+  duration_ms: 1.592106
+  type: 'test'
+  ...
+# Subtest: R054: missing pipeline telemetry is not healthy
+ok 2 - R054: missing pipeline telemetry is not healthy
+  ---
+  duration_ms: 0.291022
+  type: 'test'
+  ...
+# Subtest: R054: stale pipeline telemetry is not healthy
+ok 3 - R054: stale pipeline telemetry is not healthy
+  ---
+  duration_ms: 0.209605
+  type: 'test'
+  ...
+# Subtest: R054: future pipeline telemetry is not healthy
+ok 4 - R054: future pipeline telemetry is not healthy
+  ---
+  duration_ms: 0.374576
+  type: 'test'
+  ...
+# Subtest: R054: unknown pipeline telemetry is not healthy
+ok 5 - R054: unknown pipeline telemetry is not healthy
+  ---
+  duration_ms: 0.265138
+  type: 'test'
+  ...
+# Subtest: R054: missing count rows must not be interpreted as zero defects
+ok 6 - R054: missing count rows must not be interpreted as zero defects
+  ---
+  duration_ms: 0.260553
+  type: 'test'
+  ...
+# Subtest: R054: fresh healthy pipeline with zero factual activity remains an honest no-activity audit
+ok 7 - R054: fresh healthy pipeline with zero factual activity remains an honest no-activity audit
+  ---
+  duration_ms: 0.387247
+  type: 'test'
+  ...
+# Subtest: R049: optional aggregation cannot block lifecycle and delivery that fit the original cap
+ok 8 - R049: optional aggregation cannot block lifecycle and delivery that fit the original cap
+  ---
+  duration_ms: 1.387994
+  type: 'test'
+  ...
+# Subtest: R049: no cap is raised and insufficient final delivery capacity remains blocked
+ok 9 - R049: no cap is raised and insufficient final delivery capacity remains blocked
+  ---
+  duration_ms: 1.222691
+  type: 'test'
+  ...
+# Subtest: exact unified candidate without extension preserves analytical facts (presentation defects corrected separately)
+ok 10 - exact unified candidate without extension preserves analytical facts (presentation defects corrected separately)
+  ---
+  duration_ms: 131.816579
+  type: 'test'
+  ...
+# Subtest: exact post-V7 owner keeps both independent sources in its actual saved full manual report
+ok 11 - exact post-V7 owner keeps both independent sources in its actual saved full manual report
+  ---
+  duration_ms: 88.284005
+  type: 'test'
+  ...
+# Subtest: exact candidate canonical + saved manual -> database + queue -> real bound sender socket contains both sources
+ok 12 - exact candidate canonical + saved manual -> database + queue -> real bound sender socket contains both sources
+  ---
+  duration_ms: 153.048342
+  type: 'test'
+  ...
+# Subtest: R006: completion requires a fresh saved canonical result, not just a fulfilled HTTP request
+ok 13 - R006: completion requires a fresh saved canonical result, not just a fulfilled HTTP request
+  ---
+  duration_ms: 47.428946
+  type: 'test'
+  ...
+# Subtest: R006: a stale attempt cannot cancel a reclaimed task
+ok 14 - R006: a stale attempt cannot cancel a reclaimed task
+  ---
+  duration_ms: 7.667314
+  type: 'test'
+  ...
+# Subtest: R006: an absent write acknowledgement cannot invent a durable recheck
+ok 15 - R006: an absent write acknowledgement cannot invent a durable recheck
+  ---
+  duration_ms: 0.431877
+  type: 'test'
+  ...
+# Subtest: R039 R049: an old process cannot complete a newer lease of the same actor
+ok 16 - R039 R049: an old process cannot complete a newer lease of the same actor
+  ---
+  duration_ms: 6.140061
+  type: 'test'
+  ...
+# Subtest: R049: a missing lease token or expired lease cannot advance last success
+ok 17 - R049: a missing lease token or expired lease cannot advance last success
+  ---
+  duration_ms: 4.431133
+  type: 'test'
+  ...
+# Subtest: R049 R051: deferral, unknown result and migration failure are not successful maintenance
+ok 18 - R049 R051: deferral, unknown result and migration failure are not successful maintenance
+  ---
+  duration_ms: 0.272229
+  type: 'test'
+  ...
+# Subtest: R020 R029 R059: full manual and actual sender agree on fractional score presentation
+ok 19 - R020 R029 R059: full manual and actual sender agree on fractional score presentation
+  ---
+  duration_ms: 32.370366
+  type: 'test'
+  ...
+# Subtest: R020: unavailable overall score is unavailable in both full report and Telegram
+ok 20 - R020: unavailable overall score is unavailable in both full report and Telegram
+  ---
+  duration_ms: 5.645978
+  type: 'test'
+  ...
+# Subtest: R006 R028 R059: actual full manual preserves trigger, cancellation, expiry and recheck separately
+ok 21 - R006 R028 R059: actual full manual preserves trigger, cancellation, expiry and recheck separately
+  ---
+  duration_ms: 2.978973
+  type: 'test'
+  ...
+# Subtest: R023: oversize WAIT is rejected without removing risk or silently expanding 850 limit
+ok 22 - R023: oversize WAIT is rejected without removing risk or silently expanding 850 limit
+  ---
+  duration_ms: 1.900602
+  type: 'test'
+  ...
+# Subtest: R022: oversize ENTRY is rejected at 1100 without deleting cancellation
+ok 23 - R022: oversize ENTRY is rejected at 1100 without deleting cancellation
+  ---
+  duration_ms: 1.788103
+  type: 'test'
+  ...
+# Subtest: R019: OI window and units have Russian presentation
+ok 24 - R019: OI window and units have Russian presentation
+  ---
+  duration_ms: 2.260547
+  type: 'test'
+  ...
+# Subtest: R059: direction must be correct in each presentation, never only the concatenation
+ok 25 - R059: direction must be correct in each presentation, never only the concatenation
+  ---
+  duration_ms: 2.274396
+  type: 'test'
+  ...
+# Subtest: R059: a changed cancellation cannot pass just because scores and direction match
+ok 26 - R059: a changed cancellation cannot pass just because scores and direction match
+  ---
+  duration_ms: 3.193665
+  type: 'test'
+  ...
+# Subtest: R080 R081: absolute OI and monetary flow cannot be mislabeled as percentages
+ok 27 - R080 R081: absolute OI and monetary flow cannot be mislabeled as percentages
+  ---
+  duration_ms: 3.401288
+  type: 'test'
+  ...
+# Subtest: R025 R026 R059: legacy projected levels are factual prices in the full manual as well
+ok 28 - R025 R026 R059: legacy projected levels are factual prices in the full manual as well
+  ---
+  duration_ms: 3.444275
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 763.33794

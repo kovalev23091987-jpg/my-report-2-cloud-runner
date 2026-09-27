@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: R020 R029 R059: full manual and actual sender agree on fractional score presentation
+ok 1 - R020 R029 R059: full manual and actual sender agree on fractional score presentation
+  ---
+  duration_ms: 32.734823
+  type: 'test'
+  ...
+# Subtest: R020: unavailable overall score is unavailable in both full report and Telegram
+ok 2 - R020: unavailable overall score is unavailable in both full report and Telegram
+  ---
+  duration_ms: 5.439627
+  type: 'test'
+  ...
+# Subtest: R006 R028 R059: actual full manual preserves trigger, cancellation, expiry and recheck separately
+ok 3 - R006 R028 R059: actual full manual preserves trigger, cancellation, expiry and recheck separately
+  ---
+  duration_ms: 7.080035
+  type: 'test'
+  ...
+# Subtest: R023: oversize WAIT is rejected without removing risk or silently expanding 850 limit
+ok 4 - R023: oversize WAIT is rejected without removing risk or silently expanding 850 limit
+  ---
+  duration_ms: 3.0778
+  type: 'test'
+  ...
+# Subtest: R022: oversize ENTRY is rejected at 1100 without deleting cancellation
+ok 5 - R022: oversize ENTRY is rejected at 1100 without deleting cancellation
+  ---
+  duration_ms: 1.633054
+  type: 'test'
+  ...
+# Subtest: R019: OI window and units have Russian presentation
+ok 6 - R019: OI window and units have Russian presentation
+  ---
+  duration_ms: 2.971984
+  type: 'test'
+  ...
+# Subtest: R059: direction must be correct in each presentation, never only the concatenation
+ok 7 - R059: direction must be correct in each presentation, never only the concatenation
+  ---
+  duration_ms: 3.541826
+  type: 'test'
+  ...
+# Subtest: R059: a changed cancellation cannot pass just because scores and direction match
+ok 8 - R059: a changed cancellation cannot pass just because scores and direction match
+  ---
+  duration_ms: 3.479469
+  type: 'test'
+  ...
+# Subtest: R080 R081: absolute OI and monetary flow cannot be mislabeled as percentages
+not ok 9 - R080 R081: absolute OI and monetary flow cannot be mislabeled as percentages
+  ---
+  duration_ms: 4.631271
+  type: 'test'
+  location: '/workspace/scratch/814011e8af98/work/release/final-reconciliation/tests/surface-invariants.test.mjs:45:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /120000 контракты/. Input:
+    
+    'FIL\n' +
+      '🟢 ПОКУПКА\n' +
+      '⚪️ РАННЕЕ НАБЛЮДЕНИЕ\n' +
+      'Общая оценка: 72 из 100\n' +
+      'Монета интересна: 73 из 100\n' +
+      'Готовность ко входу: сильный ранний сценарий, вход ещё не подтверждён\n' +
+      '• Открытый интерес HTX (1 ч): +120000,00% [контракты].\n' +
+      '• Спотовый поток Bybit: +2500,00%.\n' +
+      'Рабочая зона наблюдения: 1,10–1,15 USDT. Это ещё не точка входа.\n' +
+      'Контрольный уровень приближения: 1,15 USDT. После его достижения система заново проверит свежий рынок и все обязательные условия.\n' +
+      'Отмена сценария: цена ниже 1,05 USDT.\n' +
+      'Сценарий действителен до: 27.09 10:31 МСК.\n' +
+      'Следующая автоматическая проверка: 27.09 10:06 МСК.\n' +
+      'Ликвидации: пригодные предполагаемые зоны для этого снимка не подтверждены.\n' +
+      'Снимок рынка: 27.09 10:01 МСК.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    FIL
+    🟢 ПОКУПКА
+    ⚪️ РАННЕЕ НАБЛЮДЕНИЕ
+    Общая оценка: 72 из 100
+    Монета интересна: 73 из 100
+    Готовность ко входу: сильный ранний сценарий, вход ещё не подтверждён
+    • Открытый интерес HTX (1 ч): +120000,00% [контракты].
+    • Спотовый поток Bybit: +2500,00%.
+    Рабочая зона наблюдения: 1,10–1,15 USDT. Это ещё не точка входа.
+    Контрольный уровень приближения: 1,15 USDT. После его достижения система заново проверит свежий рынок и все обязательные условия.
+    Отмена сценария: цена ниже 1,05 USDT.
+    Сценарий действителен до: 27.09 10:31 МСК.
+    Следующая автоматическая проверка: 27.09 10:06 МСК.
+    Ликвидации: пригодные предполагаемые зоны для этого снимка не подтверждены.
+    Снимок рынка: 27.09 10:01 МСК.
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/814011e8af98/work/release/final-reconciliation/tests/surface-invariants.test.mjs:48:47)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+# Subtest: R025 R026 R059: legacy projected levels are factual prices in the full manual as well
+not ok 10 - R025 R026 R059: legacy projected levels are factual prices in the full manual as well
+  ---
+  duration_ms: 2.173284
+  type: 'test'
+  location: '/workspace/scratch/814011e8af98/work/release/final-reconciliation/tests/surface-invariants.test.mjs:50:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /выше: 1,3 USDT/. Input:
+    
+    'МОЙ ОТЧЁТ 2\n' +
+      'Снимок рынка: 2026-09-27T07:01:36.608Z\n' +
+      'КАНОНИЧЕСКОЕ СОСТОЯНИЕ\n' +
+      'Состояние: вход подтверждён аналитически\n' +
+      'Направление: покупка\n' +
+      'Общая оценка: 72 из 100\n' +
+      'Монета интересна: 73 из 100\n' +
+      'Готовность ко входу: подтверждена обязательными проверками\n' +
+      'ПРИЧИНЫ\n' +
+      '- подтверждённых причин нет\n' +
+      'РАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\n' +
+      'Подтверждённых ранних кандидатов нет.\n' +
+      'Всего ранних кандидатов: 0.\n' +
+      'ИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\n' +
+      'Свежие подтверждённые источники: нет подтверждённых источников для этого снимка.\n' +
+      'Жёсткие проверки: 1.\n' +
+      'Вход: 1,10–1,15 USDT\n' +
+      'Условие входа: цена >= 1,15 USDT (5 мин).\n' +
+      'Отмена ожидания: цена ниже 1,05 USDT.\n' +
+      'Условие действительно до: 27.09 10:31 МСК.\n' +
+      'Следующая автоматическая проверка: 27.09 10:06 МСК.\n' +
+      'Отмена идеи: цена ниже 1,05 USDT\n' +
+      'Цели: 1,2\n' +
+      'ПАМП И ЛИКВИДАЦИИ\n' +
+      'Выше: 1 подтверждённых зон.\n' +
+      'Ниже: 1 подтверждённых зон.'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: |-
+    МОЙ ОТЧЁТ 2
+    Снимок рынка: 2026-09-27T07:01:36.608Z
+    КАНОНИЧЕСКОЕ СОСТОЯНИЕ
+    Состояние: вход подтверждён аналитически
+    Направление: покупка
+    Общая оценка: 72 из 100
+    Монета интересна: 73 из 100
+    Готовность ко входу: подтверждена обязательными проверками
+    ПРИЧИНЫ
+    - подтверждённых причин нет
+    РАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ
+    Подтверждённых ранних кандидатов нет.
+    Всего ранних кандидатов: 0.
+    ИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ
+    Свежие подтверждённые источники: нет подтверждённых источников для этого снимка.
+    Жёсткие проверки: 1.
+    Вход: 1,10–1,15 USDT
+    Условие входа: цена >= 1,15 USDT (5 мин).
+    Отмена ожидания: цена ниже 1,05 USDT.
+    Условие действительно до: 27.09 10:31 МСК.
+    Следующая автоматическая проверка: 27.09 10:06 МСК.
+    Отмена идеи: цена ниже 1,05 USDT
+    Цели: 1,2
+    ПАМП И ЛИКВИДАЦИИ
+    Выше: 1 подтверждённых зон.
+    Ниже: 1 подтверждённых зон.
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///workspace/scratch/814011e8af98/work/release/final-reconciliation/tests/surface-invariants.test.mjs:53:47)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1382:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+    Test.postRun (node:internal/test_runner/test:1522:19)
+    Test.run (node:internal/test_runner/test:1447:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 8
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 237.498985

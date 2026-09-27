@@ -1,0 +1,175 @@
+{
+  "evidence_kind": "FIELD_PROJECTION_OF_ACTUAL_CLOUDFLARE_API_RESPONSES_NOT_SYNTHETIC_VALUES",
+  "checked_at_utc": "2026-09-27T09:20:28.212Z",
+  "rollback_readback_at_utc": "2026-09-27T09:21:36.376Z",
+  "test_database_id": "d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5",
+  "test_database_name": "report2-liq-proof-20260927",
+  "production_database_unchanged": true,
+  "first": [
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 3,
+        "rows_written": 2,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 2,
+        "rows_written": 1,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 2,
+        "rows_written": 1,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 2,
+        "rows_written": 1,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [
+        {
+          "reservation_id": "D1_LIQ_20260927_FIRST",
+          "acquisition_hash": "ef24905481b0ee5948296c9bf620002b71ab0d250388fc854d449b82ea78d6ba",
+          "attempt_nonce": "D1_TEST_NONCE_1",
+          "state": "RESERVED"
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    }
+  ],
+  "identical_retry": [
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 3,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 2,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 2,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 2,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    },
+    {
+      "success": true,
+      "results": [
+        {
+          "reservation_id": "D1_LIQ_20260927_FIRST",
+          "acquisition_hash": "ef24905481b0ee5948296c9bf620002b71ab0d250388fc854d449b82ea78d6ba",
+          "attempt_nonce": "D1_TEST_NONCE_1",
+          "state": "RESERVED"
+        }
+      ],
+      "meta": {
+        "changes": 0,
+        "rows_read": 1,
+        "rows_written": 0,
+        "size_after": 28672
+      }
+    }
+  ],
+  "actual_first_rows_read": 11,
+  "actual_first_rows_written": 6,
+  "actual_retry_rows_read": 11,
+  "actual_retry_rows_written": 0,
+  "rollback_error_code": 7500,
+  "rollback_error": "CHECK constraint failed: reserved >= 0 AND reserved <= capacity: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_CHECK)",
+  "after_failed_batch": [
+    {
+      "quota_key": "TEST_HL",
+      "capacity": 10,
+      "reserved": 5
+    },
+    {
+      "quota_key": "TEST_LIQFLOW",
+      "capacity": 2,
+      "reserved": 1
+    },
+    {
+      "quota_key": "TEST_RUN",
+      "capacity": 6,
+      "reserved": 6
+    }
+  ],
+  "reservation_count_after_failure": 1,
+  "test_database_bytes": 28672,
+  "rest_numeric_params_serialized_as_strings": true,
+  "production_budget_configuration_applied": false,
+  "whole_runner_cost_measured": false,
+  "test_database_kept_for_followup": true
+}

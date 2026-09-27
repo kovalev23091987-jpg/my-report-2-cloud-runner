@@ -1,0 +1,10 @@
+import fs from 'node:fs';import {createHash} from 'node:crypto';import {createD1SourceAdmission} from '../../../../src/d1-source-admission.mjs';
+const now=Date.now(),until=now+3600000;const calls=[];
+const configs=['HYPERLIQUID','LIQFLOW'].map((p,i)=>({scope_id:'ACTIVE_PROOF_'+p,provider:p,unit:'REQUEST',window_start_ts:now-1000,window_end_ts:until,allowance_units:p==='HYPERLIQUID'?10:2,used_units:0,version:0,last_reservation_id:null,config_fingerprint:'TEST_ACTIVE_REVIEWED_V1',shared_quota_reviewed:1,active:1,schema_version:1}));
+let phase=0;
+const db={prepare(sql){return{sql,args:[],bind(...params){return{sql,params}}}},async batch(stmts){calls.push(stmts);phase++;if(phase===1)return configs.map(r=>({success:true,results:[r]}));if(phase===2)return stmts.map(()=>({success:true,meta:{changes:1}}));return [];}};
+const request={reservation_id:'ACTIVE_LIQ_20260927',contract:'FIL-USDT',run_id:'ACTIVE_D1_TEST',requests:{HYPERLIQUID:5,LIQFLOW:1},max_requests:6,deadline_ts:until};
+const admit=createD1SourceAdmission({db,scope_bindings:Object.fromEntries(configs.map(c=>[c.provider,{scope_id:c.scope_id,config_fingerprint:c.config_fingerprint}])),within_run_budget:()=>({allowed:true}),clock:()=>now});
+await admit(request);
+const plan={kind:'EXACT_ACTIVE_MODULE_QUERY_PLAN',module_sha256:createHash('sha256').update(fs.readFileSync(new URL('../../../../src/d1-source-admission.mjs',import.meta.url))).digest('hex'),database_id:'d764f32a-f8c2-4ce9-b7c8-0e472ed2f4d5',production_database_forbidden:'057a2847-2cc4-4e52-8534-1be1596d21d5',request,now,until,configs,calls};
+fs.writeFileSync(new URL('query-plan.json',import.meta.url),JSON.stringify(plan,null,2));console.log(JSON.stringify(plan));

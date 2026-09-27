@@ -1,0 +1,22 @@
+{
+  "name": "gmx_query_schema",
+  "url": "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+  "method": "POST",
+  "request_body": {
+    "query": "{ __type(name:\"Query\") { fields { name args { name type { kind name ofType {kind name} } } type {kind name ofType {kind name}} } } }"
+  },
+  "authentication": "NONE",
+  "started_ts": 1790490959846,
+  "http_status": 200,
+  "received_ts": 1790490960219,
+  "bytes": 65662,
+  "sha256": "a5e0e35b0b7a8e47d36e00c7ae7e96951459783308d5019b89d980dfd0c1471f",
+  "headers": {
+    "Date": "Sun, 27 Sep 2026 06:36:00 GMT",
+    "Content-Type": "application/json; charset=utf-8"
+  },
+  "json_type": "dict",
+  "keys": [
+    "data"
+  ]
+}
