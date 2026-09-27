@@ -598,13 +598,13 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
       watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
       watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-      infoEnabled: postV7UnifiedEnabled ? (postV7OwnerTelegramTestEnabled ? "1" : "0") : envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
+      infoEnabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }) : "0") : envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
       infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
-      infoObserveEnabled: postV7UnifiedEnabled ? "0" : envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
+      infoObserveEnabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }) : "0") : envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
       currentLifecycle: telegramInstallValidation && telegramReportTestRequested ? null : (v3TelegramLifecycleSidecar || {status:"LIFECYCLE_NOT_RUN"}),
-      // V3 network delivery supersedes legacy final-chain output to prevent duplicate ENTRY.
-      // R8 ships with V3 network OFF, so legacy production behavior is unchanged initially.
-      enabled: postV7UnifiedEnabled ? (postV7OwnerTelegramTestEnabled ? "1" : "0") : (v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false })),
+      // Canonical V3 remains the only final-chain sender. The informational
+      // transport stays enabled for deduplicated OBSERVE/WAIT candidate notices.
+      enabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? "1" : "0") : (v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false })),
       fetchImpl: nativeFetch,
     });
     return {budget,output};
