@@ -12,7 +12,7 @@
   },
   "audit_branch": {
     "name": "audit-fixes-20260928-internal-v1",
-    "head": "f0e2ccbbea383d953905a1195055cd5efee7d874"
+    "head": "12da6fa1c81ab88e5686e0c91a37cf4c2756d50b"
   },
   "schedules": {
     "github_analytics": "*/20 * * * *",
@@ -28,7 +28,7 @@
   "workflow": {
     "path": ".github/workflows/report2.yml",
     "production_sha256": "a97790939ae3a510dbbe56c58674f3d747e768d8adf97aa2a640243ee46c3605",
-    "audit_branch_sha256": "138c12213a34282f48695fe74849cece4c7673550534ca9bfcec6a4fa526bce9",
+    "audit_branch_sha256": "e54a3a45ac42c23810b88eb00b9c09973060a4b4f6aa2afa85d32fd2adfa28c5",
     "entrypoint": "runtime/runner-main.mjs",
     "node": "24",
     "timeout_minutes": 10,
@@ -694,23 +694,21 @@
     "github_recent_runs": "READ_CONFIRMED",
     "cloudflare_hub_bundle": "AUDIT_EVIDENCE_ONLY_FILE_NOT_PRESENT",
     "cloudflare_bindings": "NAMES_PARTIAL_FROM_WORKFLOW; LIVE_LIST_NOT_AVAILABLE",
-    "d1_schema": "AUDIT_EVIDENCE_ONLY_EXACT_SCHEMA_EXPORT_NOT_PRESENT"
+    "d1_schema": "CAPTURED_READ_ONLY_RUN_36359630895_248_OBJECTS"
   },
   "required_historical_fixtures": {
-    "ETC": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
-    "ETHFI": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
-    "DOT": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
-    "LSK": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
-    "HTX_TIMEOUT": "RUN_36350755672_LOG_AVAILABLE_EXACT_FIXTURE_NOT_CAPTURED",
-    "ETC_BINDING_FAILURE": "RUN_LOG_REFERENCES_AVAILABLE_EXACT_FIXTURE_NOT_CAPTURED"
+    "ETC": "CAPTURED_EXACT_SANITIZED_D1_ROW",
+    "ETHFI": "CAPTURED_EXACT_SANITIZED_D1_ROW",
+    "DOT": "CAPTURED_EXACT_SANITIZED_D1_ROW",
+    "LSK": "CAPTURED_EXACT_SANITIZED_D1_ROW",
+    "HTX_TIMEOUT": "CAPTURED_EXACT_SANITIZED_D1_ROW_RUN_1790543463456-1790543476898",
+    "ETC_BINDING_FAILURE": "CAPTURED_EXACT_GITHUB_MASKED_LOG_RUN_36351939109_JOB_108712177639"
   },
   "completeness": {
-    "status": "PARTIAL_CLOUD_FILES_MISSING",
+    "status": "PARTIAL_CLOUDFLARE_CONFIGURATION_MISSING",
     "blocking_missing": [
       "effective live Hub bundle",
-      "exact live bindings list without values",
-      "exact D1 sqlite schema",
-      "six exact sanitized historical fixtures"
+      "exact live Cloudflare bindings list without values"
     ]
   }
 }

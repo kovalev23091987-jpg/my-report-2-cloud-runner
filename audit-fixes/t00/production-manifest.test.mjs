@@ -28,7 +28,23 @@ test('K00: all recorded overlay and module hashes still match',()=>{
 test('K00: unavailable production evidence is explicit, never synthesized',()=>{
   assert.match(manifest.completeness.status,/INCOMPLETE|PARTIAL/);
   assert.ok(manifest.completeness.blocking_missing.length>=1);
-  for(const status of Object.values(manifest.required_historical_fixtures))assert.match(status,/NOT_PRESENT|NOT_CAPTURED/);
+  for(const status of Object.values(manifest.required_historical_fixtures))assert.match(status,/CAPTURED_EXACT/);
+});
+
+test('K00: exact sanitized V4, timeout, binding failure and D1 schema fixtures are frozen',()=>{
+  const dir=path.join(repo,'audit-fixes/t00/fixtures');
+  const fixtureManifest=JSON.parse(fs.readFileSync(path.join(dir,'FIXTURE_MANIFEST.json'),'utf8'));
+  assert.equal(fixtureManifest.changed_db,false);assert.equal(fixtureManifest.rows_written,0);
+  for(const [name,expected] of Object.entries(fixtureManifest.hashes))assert.equal(sha(path.join(dir,name)),expected,name);
+  const canonical=JSON.parse(fs.readFileSync(path.join(dir,'v4-canonical-ETC-ETHFI-DOT-LSK.json'),'utf8')).rows;
+  assert.deepEqual(canonical.map(x=>x.contract_code).sort(),['DOT-USDT','ETC-USDT','ETHFI-USDT','LSK-USDT']);
+  assert.ok(canonical.every(x=>x.direction===null&&x.canonical_state==='REJECTED'&&x.lifecycle_event===null));
+  const timeout=JSON.parse(fs.readFileSync(path.join(dir,'htx-four-endpoint-timeout.json'),'utf8')).row;
+  assert.equal(timeout.run_id,'1790543463456-1790543476898');assert.match(timeout.error_text,/contracts.*timeout.*market.*timeout.*oi.*timeout.*funding.*timeout/);
+  const binding=JSON.parse(fs.readFileSync(path.join(dir,'etc-binding-not-found.json'),'utf8'));
+  assert.equal(binding.run_id,36351939109);assert.match(binding.line,/ETC-USDT.*BINDING_NOT_FOUND/);
+  const schema=JSON.parse(fs.readFileSync(path.join(dir,'d1-schema.json'),'utf8')).rows;
+  assert.equal(schema.length,248);
 });
 
 test('K00: authorized decrypted runtime matches the production worker and includes TZ10.1',()=>{

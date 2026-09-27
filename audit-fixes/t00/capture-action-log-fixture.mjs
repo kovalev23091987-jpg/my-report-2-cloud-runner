@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+
+const gh=process.argv[2];
+const output=path.resolve(process.argv[3]||'audit-fixes/t00/fixtures');
+if(!gh)throw new Error('GH_BINARY_REQUIRED');
+const runId='36351939109';
+const log=execFileSync(gh,['run','view',runId,'--repo','kovalev23091987-jpg/my-report-2-cloud-runner','--log'],{encoding:'utf8',maxBuffer:30_000_000});
+const lines=log.split(/\r?\n/).filter(line=>line.includes('V3_TELEGRAM_DELIVERY_SIDECAR')&&line.includes('BINDING_NOT_FOUND')&&line.includes('ETC-USDT'));
+if(lines.length!==1)throw new Error(`EXACT_BINDING_FAILURE_LINE_NOT_UNIQUE:${lines.length}`);
+const fixture={schema:'my-report-2-t00-sanitized-action-log-fixture-v1',source:'GitHub Actions masked log',run_id:Number(runId),job_id:108712177639,head_sha:'2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba',changed_db:false,rows_written:0,line:lines[0]};
+const name='etc-binding-not-found.json';
+fs.writeFileSync(path.join(output,name),`${JSON.stringify(fixture,null,2)}\n`,'utf8');
+const manifestPath=path.join(output,'FIXTURE_MANIFEST.json');
+const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
+manifest.hashes[name]=crypto.createHash('sha256').update(fs.readFileSync(path.join(output,name))).digest('hex');
+fs.writeFileSync(manifestPath,`${JSON.stringify(manifest,null,2)}\n`,'utf8');
+console.log(JSON.stringify({status:'EXACT_MASKED_LOG_FIXTURE_WRITTEN',run_id:Number(runId),job_id:fixture.job_id,file:name}));

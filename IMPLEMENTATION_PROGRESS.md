@@ -8,7 +8,7 @@ This file is an internal implementation ledger. It is not part of the user-visib
 
 | Package | Status | Evidence |
 |---|---|---|
-| T00 | IN_PROGRESS | Authorized runtime captured by run 36359352694; worker hash exact; TZ10.1 tests pass; live Hub/bindings, D1 schema and six exact historical fixtures remain |
+| T00 | PARTIAL_ACCESS_BLOCKER | Runtime exact; TZ10.1 pass; D1 schema (248 objects), four V4 rows, HTX timeout and ETC binding failure captured. The live Cloudflare Hub bundle/binding-name list is blocked by the dashboard bot-security challenge; nothing was inferred or invented. |
 | T01 | COMPLETED_LOCAL | K01: 11/11 tests pass; immutable fixtures and module hashes captured |
 | T02 | PENDING | — |
 | T03 | PENDING | — |
@@ -48,7 +48,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 
 | Stage | Packages | Status |
 |---|---|---|
-| A | T00–T01 | IN_PROGRESS — T01 complete locally, T00 awaits authorized cloud inventory |
+| A | T00–T01 | PARTIAL_ACCESS_BLOCKER — T01 complete locally; all obtainable T00 evidence is frozen, with the exact live Hub bundle/binding-name list explicitly blocked by Cloudflare dashboard access |
 | B | T02, T15, T17 frame | BLOCKED_BY_A |
 | C | T03–T05, T07 | BLOCKED_BY_B |
 | D | T06, T08–T10, T16 | BLOCKED_BY_C |
