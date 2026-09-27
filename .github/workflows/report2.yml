@@ -2,15 +2,17 @@ name: Report 2 Cloud Runner
 
 on:
   schedule:
-    - cron: "0,18,36,54 0-23/3 * * *"
-    - cron: "12,30,48 1-23/3 * * *"
-    - cron: "6,24,42 2-23/3 * * *"
+    - cron: "*/20 * * * *"
   workflow_dispatch:
     inputs:
       reason:
         description: "manual validation"
         required: false
         default: "manual"
+      coin_contract:
+        description: "optional exact HTX futures contract for a deep analysis, for example SOL-USDT"
+        required: false
+        default: ""
       telegram_report_test:
         description: "send one compact Telegram report test"
         required: false
@@ -26,6 +28,15 @@ on:
         required: false
         type: boolean
         default: false
+      oxarchive_cost_probe:
+        description: "run one idempotent authenticated 0xArchive cost probe"
+        required: false
+        type: boolean
+        default: false
+      oxarchive_probe_symbol:
+        description: "0xArchive Hyperliquid symbol for the one-call cost probe"
+        required: false
+        default: "SOL"
 
 permissions:
   contents: read
@@ -41,7 +52,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "c1d3bd22f5739050688d87f58bab1bb2c3fe612a128427b19c492a631fe6158d"
+      REPORT2_EXPECTED_WORKER_SHA: "96b352d1e09c63b912a150b62a0eb69a233a10719ae0dd0f581383514788ac86"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -61,9 +72,14 @@ jobs:
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
+      REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
-      REPORT2_D1_RUNS_PER_DAY: "83"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_LIQ_ALL_HTX_EXCEPT_BTC_ETH_V1"
+      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
+      REPORT2_D1_RUNS_PER_DAY: "80"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_SUPPLEMENTAL_V2_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "OFF"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"

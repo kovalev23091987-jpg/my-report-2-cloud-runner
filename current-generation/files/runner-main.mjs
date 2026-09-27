@@ -20,6 +20,9 @@ import { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from 
 import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from "./src/scheduler-control.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
+import {loadGlobalMarketContext} from './src/global-market-context.mjs';
+import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
+import {runOxArchiveCostProbe} from './src/oxarchive-cost-probe.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v1-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -76,6 +79,8 @@ function buildEnv() {
     BYKARANTELI_API_KEY: envText("BYKARANTELI_API_KEY"),
     REPORT2_POST_V7_UNIFIED_ENABLED: envText("REPORT2_POST_V7_UNIFIED_ENABLED", { required:false }),
     REPORT2_ANALYTICS_ACTOR: envText("REPORT2_ANALYTICS_ACTOR", { required:false }) || "GITHUB_ACTIONS",
+    REPORT2_RUN_SOURCE: envText("REPORT2_RUN_SOURCE", { required:false }),
+    REPORT2_MANUAL_COIN_CONTRACT: envText("REPORT2_MANUAL_COIN_CONTRACT", { required:false }),
   };
 }
 function assertClosedCron(cron, scan) {
@@ -401,10 +406,16 @@ function enforceD1Budget(db) {
 async function main() {
   const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260927_LIQ_ALL_HTX_EXCEPT_BTC_ETH_V1")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260927_SUPPLEMENTAL_V2_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, sha } = await loadWorker();
   const env = buildEnv();
+  env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
+    db:env.DATA_DB,
+    fetch_impl:globalThis.fetch,
+    registry:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{},
+    ...params,
+  });
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
   const pending = [];
@@ -430,6 +441,16 @@ if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
+  try{
+    env.REPORT2_GLOBAL_MARKET_CONTEXT=await loadGlobalMarketContext({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started});
+  }catch(error){
+    env.REPORT2_GLOBAL_MARKET_CONTEXT={status:'SOURCE_ERROR',observed_ts:started,internal_only:true,error:String(error?.message||error)};
+  }
+  console.log('GLOBAL_MARKET_CONTEXT_RECEIPT',JSON.stringify({status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status,deribit:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.status,deribit_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.cache_status,coinlobster:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.status,coinlobster_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.cache_status,internal_only:true}));
+  if(source!=='schedule'&&['1','true','yes','on'].includes(envText('REPORT2_OXARCHIVE_COST_PROBE',{required:false}).toLowerCase())){
+    const probe=await runOxArchiveCostProbe({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:envText('OXARCHIVE_API_KEY',{required:false}),symbol:envText('REPORT2_OXARCHIVE_PROBE_SYMBOL',{required:false})||'SOL',now:started});
+    console.log('OXARCHIVE_COST_PROBE_RECEIPT',JSON.stringify(probe));
+  }
   if (postV7UnifiedEnabled && source === "schedule") {
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:"GITHUB_ACTIONS"});
     if (!ownership.allowed) throw new Error(`PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:${ownership.status}`);
@@ -445,7 +466,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:4,max_http_per_run:24,max_total_ms:45000});
     env.REPORT2_LIQUIDATION_NATIVE_COLLECT=liquidationSources.collect;
   }
-  await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_18_MINUTES" : "manual" }, env, ctx);
+  await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
   if(liquidationSources)console.log('LIQUIDATION_SOURCES_CANONICAL_RECEIPT',JSON.stringify(liquidationSources.summary()));
   if (pending.length) await Promise.all(pending);
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();

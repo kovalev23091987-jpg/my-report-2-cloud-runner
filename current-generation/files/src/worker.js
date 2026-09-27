@@ -96,6 +96,8 @@ import {
   buildFreeSourceRuntimeSummary,
 } from "./source-registry.mjs";
 
+import {contextForContract} from './global-market-context.mjs';
+
 const STAGE392_SHADOW_INTEGRATION_VERSION = "3.9.2-final-decision-shadow-lifecycle-hardening";
 const TELEGRAM_SHADOW_BRIDGE_VERSION = "3.9.3-telegram-shadow-bridge";
 const TELEGRAM_SHADOW_BODYFIX_VERSION = "3.9.3.1-telegram-shadow-bodyfix";
@@ -15923,6 +15925,20 @@ async function buildDeepCheckInput(params, env) {
     ];
   }
 
+  let supplementalCandidateContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
+  try{
+    if(typeof env?.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT==='function'){
+      const derivativeVenues=new Set((Array.isArray(publicEvidence?.evidence)?publicEvidence.evidence:[])
+        .filter(row=>row?.status==='CLOSED'&&['FUTURES','PERP','SWAP','USDT_M_PERPETUAL'].includes(String(row?.market_type||'').toUpperCase()))
+        .map(row=>String(row?.venue||row?.source||'').trim()).filter(Boolean));
+      const conflict=Boolean(publicEvidence?.conflicts?.length)||String(publicEvidence?.dq_status||'').toUpperCase().includes('CONFLICT');
+      supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
+        contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
+        critical_conflict:conflict,primary_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),
+      });
+    }
+  }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
+
   let htxLiquidationShadow;
   try {
     htxLiquidationShadow = await htxLiquidationTape(
@@ -16450,6 +16466,8 @@ async function buildDeepCheckInput(params, env) {
           row: null,
         };
 
+  const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},internal_only:true};
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
@@ -16489,9 +16507,11 @@ async function buildDeepCheckInput(params, env) {
         smartMoneyRaw?.hyperliquid_context
           ? { hyperliquid: smartMoneyRaw.hyperliquid_context }
           : null,
+      internal_market_context:internalMarketContext,
       previous_snapshot_context:
         previousSnapshotContext,
     });
+  console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
 
   let postV7CanonicalPersistence = {status:'DISABLED',persisted:false};
   if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1' && canonicalAnalyticalBundle?.canonical?.status === 'CLOSED') {
@@ -18621,7 +18641,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
         }
       }
 
-      const liveHandoffPlan = dueRecheckContract
+      let liveHandoffPlan = dueRecheckContract
         ? {lane:'LIVE_RECHECK',require_exact_contract:true,required_contract:dueRecheckContract,live_shortlist_count:1,maintenance_available:Boolean(opportunityJournalPlan?.candidate),maintenance_deferred:Boolean(opportunityJournalPlan?.candidate)}
         : buildV3LiveHandoffPlan({
           discovery_prefilter:
@@ -18631,6 +18651,22 @@ const __REPORT2_ORIGINAL_HANDLER = {
           opportunity_journal_plan:
             opportunityJournalPlan,
         });
+
+      const manualRequestedContract=String(env?.REPORT2_RUN_SOURCE||'')!=='schedule'
+        ? String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim().toUpperCase()
+        : '';
+      if(manualRequestedContract){
+        const scopeConfirmed=confirmedScopeContracts.includes(manualRequestedContract);
+        const telemetry=(Array.isArray(postV7DeepPrefilter?.contract_telemetry)?postV7DeepPrefilter.contract_telemetry:[])
+          .find(row=>String(row?.contract||'').trim().toUpperCase()===manualRequestedContract);
+        if(scopeConfirmed&&telemetry){
+          const forced={priority_rank:0,...telemetry,contract:manualRequestedContract,manual_coin_analysis:true};
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==manualRequestedContract)]};
+          liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};
+        }else{
+          liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS_REJECTED',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false};
+        }
+      }
 
       const journalMaintenanceSelected =
         liveHandoffPlan?.lane ===

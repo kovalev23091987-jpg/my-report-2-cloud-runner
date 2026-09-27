@@ -2,9 +2,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const runtime=path.resolve(process.env.REPORT2_TEST_RUNTIME||'runtime');
+const runtimeFile=rel=>path.join(runtime,rel);
 
 test('V7 overlay proof preserves external Telegram layout and safety',()=>{
-  const p=JSON.parse(fs.readFileSync('runtime/early-surfacing-v7-overlay-proof.json','utf8'));
+  const p=JSON.parse(fs.readFileSync(runtimeFile('early-surfacing-v7-overlay-proof.json'),'utf8'));
   assert.equal(p.safety.telegram_template_layout_changed,false);
   assert.equal(p.safety.strategy_35_30_20_15_changed,false);
   assert.equal(p.safety.hard_gates_changed,false);
@@ -16,14 +20,14 @@ test('V7 overlay proof preserves external Telegram layout and safety',()=>{
 });
 
 test('runtime contains unsent rearm and material refresh',()=>{
-  const s=fs.readFileSync('runtime/src/v3-telegram-runtime.mjs','utf8');
+  const s=fs.readFileSync(runtimeFile('src/v3-telegram-runtime.mjs'),'utf8');
   assert.match(s,/UNSENT_OBSERVATION_REARM/);
   assert.match(s,/MATERIAL_OBSERVATION_REFRESH/);
   assert.match(s,/PRE_ACTIVATION_BACKLOG_SUPPRESSED/);
 });
 
 test('formatter no longer exposes coarse early score directly as interest score',()=>{
-  const s=fs.readFileSync('runtime/src/v3-telegram-tz-formatter.mjs','utf8');
+  const s=fs.readFileSync(runtimeFile('src/v3-telegram-tz-formatter.mjs'),'utf8');
   assert.match(s,/function evidenceStrengthScore/);
   assert.doesNotMatch(s,/const interest=fmtScore\(early\?\.early_detection_quality_0_100\)/);
   assert.match(s,/Общая оценка:/);
@@ -32,7 +36,7 @@ test('formatter no longer exposes coarse early score directly as interest score'
 });
 
 test('same coarse early base produces different user interest scores when factual strength differs',async()=>{
-  const {renderTzCompliantLifecycleMessage}=await import('../../runtime/src/v3-telegram-tz-formatter.mjs');
+  const {renderTzCompliantLifecycleMessage}=await import(pathToFileURL(runtimeFile('src/v3-telegram-tz-formatter.mjs')).href);
   const mk=(dc,pp)=>renderTzCompliantLifecycleMessage({
     now:100000,status:'OBSERVE',ticker:'TEST-USDT',direction:'LONG',
     lifecycle:{status:'OBSERVE',observation_ts:99500,valid_until_ts:110000},
