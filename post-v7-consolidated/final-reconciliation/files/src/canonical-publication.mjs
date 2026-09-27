@@ -1,0 +1,191 @@
+import {formatManualReport} from './manual-report-formatter.mjs';
+import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations} from './canonical-display.mjs';
+import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
+import crypto from 'node:crypto';
+export const CANONICAL_PUBLICATION_VERSION='post-v7-canonical-publication-v1-20260926';
+const text=v=>v===null||v===undefined?'':String(v).trim();
+const upper=v=>text(v).toUpperCase();
+const finite=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
+const stamp=v=>Number.isSafeInteger(Number(v))&&Number(v)>=1_000_000_000_000?Number(v):null;
+const score=v=>{const n=finite(v);return n!==null&&n>=0&&n<=100?n:null;};
+const stable=v=>Array.isArray(v)?v.map(stable):(v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,stable(v[k])])):v);
+export const sha256=v=>crypto.createHash('sha256').update(typeof v==='string'?v:JSON.stringify(stable(v))).digest('hex');
+export function canonicalFingerprint(result){const c={...(result||{})};delete c.analytical_fingerprint;return sha256(c);}
+function contractOf(c){return text(c?.metadata?.contract||c?.candidates?.[0]?.contract||c?.candidates?.[0]?.ticker||c?.universe?.[0]?.contract);}
+function closedHardGates(c){const gs=Array.isArray(c?.hard_gates)?c.hard_gates:[];return gs.length>0&&gs.every(g=>['CLOSED','PASS','CLEAR','ELIGIBLE'].includes(upper(g?.status??g?.state??g?.result)));}
+function exactTrigger(t,observed){return Boolean(t&&text(t.metric)&&['>=','<=','>','<'].includes(text(t.operator))&&finite(t.value)!==null&&text(t.unit)&&text(t.timeframe)&&stamp(t.expires_ts)!==null&&t.expires_ts>=observed&&text(t.cancel_condition)&&stamp(t.next_recheck_ts)!==null&&t.next_recheck_ts>observed&&t.next_recheck_ts<=t.expires_ts);}
+function observationAreaClosed(c){const e=c?.entry;return Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));}
+function earlySourceRolesClosed(c){const v=c?.metadata?.source_role_view;if(v?.status!=='CLOSED')return false;const xs=Array.isArray(v.classified)?v.classified:[];const htx=xs.some(x=>x?.source_key==='HTX_OFFICIAL'&&Array.isArray(x?.assigned_roles)&&x.assigned_roles.includes('EXECUTION_TRUTH'));const families=new Set(xs.filter(x=>x?.registry_known===true).map(x=>text(x?.source_family)).filter(Boolean));return htx&&families.size>=2;}
+function entryClosed(c){const e=c?.entry;const inv=c?.invalidation;const targets=Array.isArray(c?.targets)?c.targets:[];const area=Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));return area&&Boolean(displayInvalidation(inv))&&targets.some(t=>finite(t?.price??t)!==null);}
+function directionClosed(c){return ['LONG','SHORT'].includes(upper(c?.direction));}
+function scoresClosed(c){return score(c?.scores?.overall_0_100)!==null&&score(c?.scores?.coin_interest_0_100)!==null&&c?.scores?.is_probability===false;}
+
+export function validateCanonicalIdentity(canonical,{contract,direction=null,run_id,snapshot_id,observed_ts}={}){
+ const fail=reason=>({status:'NOT_CLOSED',reason});
+ if(canonical?.status!=='CLOSED')return fail('CANONICAL_NOT_CLOSED');
+ if(!text(contract)||!text(run_id)||!text(snapshot_id)||stamp(observed_ts)===null)return fail('IDENTITY_REQUIRED');
+ if(text(canonical.run_id)!==text(run_id)||text(canonical.snapshot_id)!==text(snapshot_id)||Number(canonical.observed_ts)!==Number(observed_ts))return fail('SNAPSHOT_IDENTITY_MISMATCH');
+ if(contractOf(canonical)!==text(contract))return fail('CONTRACT_MISMATCH');
+ if(direction!==null&&upper(canonical.direction)!==upper(direction))return fail('DIRECTION_MISMATCH');
+ if(text(canonical.analytical_fingerprint)!==canonicalFingerprint(canonical))return fail('CANONICAL_FINGERPRINT_MISMATCH');
+ const nativeCheck=validateNativeLiquidationContext(canonical);if(!nativeCheck.ok)return fail(nativeCheck.status);
+ return {status:'CLOSED',reason:null};
+}
+
+export function assessActionability({canonical,lifecycle_event,prior_sent=false}={}){
+ const event=upper(lifecycle_event);const observed=stamp(canonical?.observed_ts);
+ const base={deliver:false,status:'INTERNAL_ONLY',reason:'NOT_ACTIONABLE',create_recheck:false};
+ if(canonical?.status!=='CLOSED'||observed===null)return {...base,reason:'CANONICAL_NOT_CLOSED'};
+ if(event==='IDEA_REMOVED')return prior_sent?{deliver:true,status:'ACTIONABLE',reason:'IDEA_REMOVED_AFTER_PRIOR_DELIVERY',create_recheck:false}:{...base,reason:'REMOVAL_WITHOUT_PRIOR_DELIVERY'};
+ if(!['OBSERVE','WAIT','ENTRY'].includes(event))return {...base,reason:'LIFECYCLE_NOT_USER_ACTIONABLE'};
+ if(!directionClosed(canonical))return {...base,reason:'DIRECTION_NOT_CLOSED'};
+ const overall=score(canonical?.scores?.overall_0_100),interest=score(canonical?.scores?.coin_interest_0_100);
+ if(canonical?.scores?.is_probability!==false)return {...base,reason:'CANONICAL_SCORE_SEMANTICS_NOT_CLOSED'};
+ if(event==='OBSERVE'){
+   // Early surfacing must not depend on a fabricated or partial final score.
+   // The canonical interest score is required and must clear the user threshold;
+   // overall may remain missing until a real canonical overall exists. If overall
+   // is factual, it must also clear the same threshold.
+   if(interest===null)return {...base,reason:'CANONICAL_INTEREST_NOT_CLOSED'};
+   if(interest<60)return {...base,reason:'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
+   if(overall!==null&&overall<60)return {...base,reason:'CANONICAL_OVERALL_BELOW_USER_THRESHOLD'};
+   if(canonical.state!=='OBSERVE')return {...base,reason:'OBSERVE_STATE_MISMATCH'};
+   if(!observationAreaClosed(canonical))return {...base,reason:'OBSERVE_WORKING_AREA_NOT_CLOSED'};
+   if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'OBSERVE_TRIGGER_NOT_CLOSED'};
+   if(!earlySourceRolesClosed(canonical))return {...base,reason:'OBSERVE_SOURCE_ROLES_NOT_CLOSED'};
+   return {deliver:true,status:'ACTIONABLE',reason:'EARLY_ACTIONABLE_OBSERVE',create_recheck:true};
+ }
+ if(!scoresClosed(canonical))return {...base,reason:'CANONICAL_SCORES_NOT_CLOSED'};
+ if(overall<60||interest<60)return {...base,reason:overall<60?'CANONICAL_OVERALL_BELOW_USER_THRESHOLD':'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
+ if(event==='WAIT'){
+   if(canonical.state!=='WAIT_FOR_TRIGGER')return {...base,reason:'WAIT_STATE_MISMATCH'};
+   if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'WAIT_TRIGGER_NOT_CLOSED'};
+   return {deliver:true,status:'ACTIONABLE',reason:'WAIT_TRIGGER_CONTRACT_CLOSED',create_recheck:true};
+ }
+ if(!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(canonical.state))return {...base,reason:'ENTRY_STATE_MISMATCH'};
+ if(!entryClosed(canonical))return {...base,reason:'ENTRY_CONTEXT_NOT_CLOSED'};
+ if(!closedHardGates(canonical))return {...base,reason:'HARD_GATES_NOT_CLOSED'};
+ return {deliver:true,status:'ACTIONABLE',reason:'STRICT_ENTRY_CHAIN_CLOSED',create_recheck:false};
+}
+
+function expectedScoreText(canonical,label,key){const n=score(canonical?.scores?.[key]);return n===null?`${label}: не подтверждена`:`${label}: ${Math.round(n)} из 100`;}
+
+function fmtScore(v){const n=score(v);return n===null?'не подтверждена':`${Math.round(n)} из 100`;}
+function fmtPrice(v){const n=finite(v);return n===null?null:String(Number(n.toPrecision(10))).replace('.',',');}
+function fmtPct(v,d=2){const n=finite(v);if(n===null)return null;const x=Math.abs(n).toFixed(d).replace('.',',');return `${n>0?'+':n<0?'-':''}${x}%`;}
+function fmtMsk(ts){const n=stamp(ts);if(n===null)return null;return new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(n)).replace(',','');}
+function liquidationLines(c,{manual=false}={}){return nativeLiquidationLines(c?.liquidations||{},{manual})??displayLegacyLiquidations(c?.liquidations);}
+export function renderCanonicalTelegram({canonical,lifecycle_event}={}){
+ if(canonical?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};const nativeGuard=validateNativeLiquidationContext(canonical);if(!nativeGuard.ok)return{ok:false,status:nativeGuard.status,text:null};const event=upper(lifecycle_event),d=upper(canonical.direction),ticker=text(canonical?.metadata?.contract||canonical?.candidates?.[0]?.contract||canonical?.candidates?.[0]?.ticker).replace(/-USDT$/i,'');
+ if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
+ const dir=d==='LONG'?'🟢 ПОКУПКА':'🔴 ПРОДАЖА';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 БЛИЗКО К ТОЧКЕ ВХОДА — ЖДЁМ УСЛОВИЕ':event==='ENTRY'?'✅ МОЖНО ВХОДИТЬ СЕЙЧАС':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
+ const lines=[ticker,dir,title,'',`Общая оценка: ${fmtScore(canonical.scores?.overall_0_100)}`,`Монета интересна: ${fmtScore(canonical.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${event==='ENTRY'?'подтверждена обязательными проверками':event==='WAIT'?'условие входа сформировано, но ещё не выполнено':event==='OBSERVE'?'сильный ранний сценарий, вход ещё не подтверждён':'не подтверждена'}`];
+ for(const fact of displayMarketFacts(canonical).slice(0,event==='WAIT'?1:4))lines.push(`• ${fact}`);
+ if(event==='OBSERVE'){
+   const t=canonical.trigger,e=canonical.entry||{};lines.push(`Рабочая зона наблюдения: ${text(e.area)||`${fmtPrice(e.min_price)}–${fmtPrice(e.max_price)} USDT`}. Это ещё не точка входа.`,`Контрольный уровень приближения: ${fmtPrice(t?.value)} USDT. После его достижения система заново проверит свежий рынок и все обязательные условия.`,`Отмена сценария: ${displayCondition(t?.cancel_condition)}.`,`Сценарий действителен до: ${fmtMsk(t?.expires_ts)} МСК.`,`Следующая автоматическая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
+ } else if(event==='WAIT'){
+   const t=canonical.trigger;lines.push(`Уровень приближения к входу: ${fmtPrice(t?.value)} USDT.`,'После достижения уровня система заново проверит свежий рынок и защитные фильтры; только затем возможен вход.',`Отмена ожидания: ${displayCondition(t?.cancel_condition)}.`,`Условие действительно до: ${fmtMsk(t?.expires_ts)} МСК.`,`Следующая автоматическая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
+ } else if(event==='ENTRY'){
+   const e=canonical.entry||{};lines.push(`Вход: ${text(e.area)||`${fmtPrice(e.min_price)}–${fmtPrice(e.max_price)} USDT`}.`,`Отмена идеи: ${displayInvalidation(canonical.invalidation)||''}.`);if(Array.isArray(canonical.targets)&&canonical.targets.length)lines.push(`Цели: ${canonical.targets.slice(0,3).map(x=>fmtPrice(x?.price??x)).filter(Boolean).join(', ')} USDT.`);
+ } else lines.push('Причина: ранее отправленная идея больше не соответствует обязательным условиям.');
+ lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=event==='WAIT'?850:event==='ENTRY'?1100:1200;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
+}
+export function renderCanonicalManual({canonical}={}){return formatManualReport(canonical);}
+
+export function validatePresentation({canonical,manual_text,telegram_text,direction,lifecycle_event}={}){
+ const fail=reason=>({status:'NOT_CLOSED',reason,presentation_hash:null});
+ if(!text(manual_text)||!text(telegram_text))return fail('BOTH_PRESENTATIONS_REQUIRED');
+ const nativeCheck=validateNativeLiquidationContext(canonical);if(!nativeCheck.ok)return fail(nativeCheck.status);
+ const nl=nativeLiquidationLines(canonical?.liquidations),ml=nativeLiquidationLines(canonical?.liquidations,{manual:true});
+ if(nl&&nl.some(line=>!telegram_text.includes(line)))return fail('NATIVE_LIQUIDATION_TELEGRAM_TEXT_MISMATCH');
+ if(ml&&ml.some(line=>!manual_text.includes(line)))return fail('NATIVE_LIQUIDATION_MANUAL_TEXT_MISMATCH');
+ const pairs=[['Общая оценка','overall_0_100'],['Монета интересна','coin_interest_0_100']];
+ for(const [label,key] of pairs){const exp=expectedScoreText(canonical,label,key);if(!manual_text.includes(exp)||!telegram_text.includes(exp))return fail(`PRESENTATION_SCORE_MISMATCH:${key}`);}
+ const d=upper(direction??canonical?.direction);
+ for(const output of [manual_text,telegram_text]){
+ if(d==='LONG'){
+   if(!/(Направление:\s*покупка|🟢\s*ПОКУПКА)/iu.test(output))return fail('LONG_DIRECTION_NOT_RENDERED');
+   if(/🔴\s*ПРОДАЖА|Направление:\s*продажа/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
+ } else if(d==='SHORT'){
+   if(!/(Направление:\s*продажа|🔴\s*ПРОДАЖА)/iu.test(output))return fail('SHORT_DIRECTION_NOT_RENDERED');
+   if(/🟢\s*ПОКУПКА|Направление:\s*покупка/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
+ } else return fail('DISPLAY_DIRECTION_BINDING_REQUIRED');
+ }
+ const event=upper(lifecycle_event)||({'WAIT_FOR_TRIGGER':'WAIT','OBSERVE':'OBSERVE','ENTRY_NOW_ANALYTICAL':'ENTRY','ENTRY_NOW_VALIDATED':'ENTRY','REJECTED':'IDEA_REMOVED'})[canonical?.state];
+ const expectedTelegram=renderCanonicalTelegram({canonical,lifecycle_event:event});
+ if(!expectedTelegram.ok)return fail(expectedTelegram.status);
+ if(telegram_text!==expectedTelegram.text)return fail('TELEGRAM_CANONICAL_CONTENT_MISMATCH');
+ const expectedManual=formatManualReport(canonical);
+ if(!expectedManual.ok)return fail(expectedManual.status);
+ if(manual_text!==expectedManual.text)return fail('MANUAL_CANONICAL_CONTENT_MISMATCH');
+ return {status:'CLOSED',reason:null,presentation_hash:sha256({manual_text,telegram_text,analytical_fingerprint:canonical.analytical_fingerprint})};
+}
+
+export function makePublicationId({contract,direction,run_id,snapshot_id,observed_ts,analytical_fingerprint,wave_id=null}={}){
+ if(!text(contract)||!text(run_id)||!text(snapshot_id)||stamp(observed_ts)===null||!text(analytical_fingerprint))return null;
+ return 'PUB:'+sha256([text(contract),upper(direction)||'NONE',text(run_id),text(snapshot_id),Number(observed_ts),text(analytical_fingerprint),text(wave_id)||'NONE'].join('|')).slice(0,40);
+}
+
+export async function persistCanonicalSnapshot(db,{canonical,presentation_inputs={},wave_id=null,decision_id=null,now_ts=Date.now()}={}){
+ if(!db?.prepare)return {status:'SOURCE_UNSUPPORTED',persisted:false};
+ const contract=contractOf(canonical),direction=directionClosed(canonical)?upper(canonical.direction):null,run_id=text(canonical?.run_id),snapshot_id=text(canonical?.snapshot_id),observed_ts=stamp(canonical?.observed_ts);
+ const idCheck=validateCanonicalIdentity(canonical,{contract,run_id,snapshot_id,observed_ts});if(idCheck.status!=='CLOSED')return {...idCheck,persisted:false};
+ const publication_id=makePublicationId({contract,direction,run_id,snapshot_id,observed_ts,analytical_fingerprint:canonical.analytical_fingerprint,wave_id});
+ try{
+  const r=await db.prepare(`INSERT INTO canonical_publication_shadow(publication_id,contract_code,direction,run_id,snapshot_id,wave_id,decision_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,analytical_fingerprint,canonical_json,presentation_inputs_json,manual_text,telegram_text,presentation_hash,actionability_status,actionability_reason,created_ts,bound_ts,shadow_only) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,NULL,?10,?11,?12,?13,NULL,NULL,NULL,'UNASSESSED',NULL,?14,NULL,1) ON CONFLICT(publication_id) DO NOTHING`).bind(publication_id,contract,direction,run_id,snapshot_id,text(wave_id)||null,text(decision_id)||null,observed_ts,stamp(canonical?.trigger?.expires_ts)??stamp(canonical?.metadata?.valid_until_ts),text(canonical.state),text(canonical.analytical_fingerprint),JSON.stringify(canonical),JSON.stringify(presentation_inputs||{}),Math.trunc(Number(now_ts)||Date.now())).run();
+  const changes=Number(r?.meta?.changes??r?.changes??0);const row=await db.prepare(`SELECT publication_id,analytical_fingerprint,canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(publication_id).first();
+  if(!row||row.analytical_fingerprint!==canonical.analytical_fingerprint||sha256(JSON.parse(row.canonical_json))!==sha256(canonical))return {status:'PERSISTENCE_READBACK_FAILED',persisted:false,publication_id};
+  return {status:changes===1?'CLOSED':'DEDUPLICATED',persisted:changes===1,publication_id,contract,direction,run_id,snapshot_id,observed_ts};
+ }catch(error){return {status:'PERSISTENCE_FAILED',persisted:false,error:String(error?.message||error).slice(0,400)};}
+}
+
+export async function finalizePublication(db,{publication_id,lifecycle_event,direction,manual_text,telegram_text,prior_sent=false,now_ts=Date.now()}={}){
+ const row=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(text(publication_id)).first();if(!row)return {status:'PUBLICATION_NOT_FOUND',deliver:false};
+ let canonical;try{canonical=JSON.parse(row.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',deliver:false};}
+ const id=validateCanonicalIdentity(canonical,{contract:row.contract_code,direction,run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:row.observed_ts});if(id.status!=='CLOSED')return {...id,deliver:false};
+ const action=assessActionability({canonical,lifecycle_event,prior_sent});
+ if(action.deliver!==true){await db.prepare(`UPDATE canonical_publication_shadow SET lifecycle_event=?2,actionability_status='INTERNAL_ONLY',actionability_reason=?3,bound_ts=?4 WHERE publication_id=?1`).bind(row.publication_id,upper(lifecycle_event),action.reason,Math.trunc(Number(now_ts)||Date.now())).run();return {...action,publication_id:row.publication_id};}
+ const p=validatePresentation({canonical,manual_text,telegram_text,direction,lifecycle_event});if(p.status!=='CLOSED')return {...p,deliver:false,publication_id:row.publication_id};
+ const valid=stamp(canonical?.trigger?.expires_ts)??stamp(canonical?.metadata?.valid_until_ts)??row.valid_until_ts;
+ const u=await db.prepare(`UPDATE canonical_publication_shadow SET direction=?2,lifecycle_event=?3,valid_until_ts=?4,manual_text=?5,telegram_text=?6,presentation_hash=?7,actionability_status='ACTIONABLE',actionability_reason=?8,bound_ts=?9 WHERE publication_id=?1 AND analytical_fingerprint=?10`).bind(row.publication_id,upper(direction),upper(lifecycle_event),valid,manual_text,telegram_text,p.presentation_hash,action.reason,Math.trunc(Number(now_ts)||Date.now()),row.analytical_fingerprint).run();
+ if(Number(u?.meta?.changes??u?.changes??0)!==1)return {status:'PUBLICATION_UPDATE_ACK_FAILED',deliver:false};
+ return {...action,status:'ACTIONABLE',publication_id:row.publication_id,presentation_hash:p.presentation_hash,valid_until_ts:valid,canonical};
+}
+
+export async function bindDispatchToPublication(db,{idempotency_key,publication_id,contract,direction,wave_id,lifecycle_event,rules_version,decision_id=null,now_ts=Date.now()}={}){
+ const pub=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(text(publication_id)).first();if(!pub)return {status:'PUBLICATION_NOT_FOUND',bound:false};
+ if(pub.actionability_status!=='ACTIONABLE'||!text(pub.presentation_hash)||!text(pub.telegram_text))return {status:'PUBLICATION_NOT_ACTIONABLE',bound:false};
+ if(pub.contract_code!==text(contract)||upper(pub.direction)!==upper(direction)||text(pub.wave_id)!==text(wave_id)||upper(pub.lifecycle_event)!==upper(lifecycle_event))return {status:'PUBLICATION_DISPATCH_IDENTITY_MISMATCH',bound:false};
+ if(upper(lifecycle_event)==='ENTRY'&&text(pub.decision_id)!==text(decision_id))return {status:'DECISION_ID_MISMATCH',bound:false};
+ try{const r=await db.prepare(`INSERT INTO v3_dispatch_publication_binding_shadow(idempotency_key,publication_id,contract_code,direction,wave_id,lifecycle_event,rules_version,decision_id,snapshot_id,run_id,observed_ts,analytical_fingerprint,presentation_hash,created_ts,shadow_only) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,1) ON CONFLICT(idempotency_key) DO NOTHING`).bind(text(idempotency_key),pub.publication_id,pub.contract_code,upper(pub.direction),text(wave_id),upper(lifecycle_event),text(rules_version),text(decision_id)||null,pub.snapshot_id,pub.run_id,pub.observed_ts,pub.analytical_fingerprint,pub.presentation_hash,Math.trunc(Number(now_ts)||Date.now())).run();const changes=Number(r?.meta?.changes??r?.changes??0);const got=await db.prepare(`SELECT * FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key=?1 LIMIT 1`).bind(text(idempotency_key)).first();if(!got||got.publication_id!==pub.publication_id||got.presentation_hash!==pub.presentation_hash)return {status:'BIND_READBACK_FAILED',bound:false};return {status:changes===1?'CLOSED':'DEDUPLICATED',bound:true,publication_id:pub.publication_id};}catch(error){return {status:'BIND_FAILED',bound:false,error:String(error?.message||error).slice(0,300)};}
+}
+
+export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={}){
+ const b=await db.prepare(`SELECT * FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key=?1 LIMIT 1`).bind(text(idempotency_key)).first();if(!b)return {status:'BINDING_NOT_FOUND',ok:false};
+ const p=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(b.publication_id).first();if(!p)return {status:'PUBLICATION_NOT_FOUND',ok:false};
+ if(p.actionability_status!=='ACTIONABLE'||p.presentation_hash!==b.presentation_hash||p.analytical_fingerprint!==b.analytical_fingerprint||p.snapshot_id!==b.snapshot_id||p.run_id!==b.run_id||Number(p.observed_ts)!==Number(b.observed_ts)||p.contract_code!==b.contract_code||upper(p.direction)!==upper(b.direction)||upper(p.lifecycle_event)!==upper(b.lifecycle_event)||text(p.wave_id)!==text(b.wave_id))return {status:'BOUND_PUBLICATION_MISMATCH',ok:false};
+ if(upper(b.lifecycle_event)==='ENTRY'&&text(p.decision_id)!==text(b.decision_id))return {status:'BOUND_DECISION_MISMATCH',ok:false};
+ let canonical;try{canonical=JSON.parse(p.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',ok:false};}
+ const id=validateCanonicalIdentity(canonical,{contract:b.contract_code,direction:b.direction,run_id:b.run_id,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts});if(id.status!=='CLOSED')return {...id,ok:false};
+ const ph=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});if(ph!==b.presentation_hash)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
+ const display=validatePresentation({canonical,manual_text:p.manual_text,telegram_text:p.telegram_text,direction:b.direction,lifecycle_event:b.lifecycle_event});if(display.status!=='CLOSED')return {...display,ok:false};
+ const now=Math.trunc(Number(now_ts)||Date.now());const nativeFreshness=validateNativeLiquidationContext(canonical,{checked_ts:now,check_freshness:upper(b.lifecycle_event)!=='IDEA_REMOVED'});if(!nativeFreshness.ok)return {status:nativeFreshness.status,ok:false};if(p.valid_until_ts!=null&&Number(p.valid_until_ts)<now&&upper(b.lifecycle_event)!=='IDEA_REMOVED')return {status:'PUBLICATION_EXPIRED',ok:false};
+ let prior_delivery_verified=false;
+ if(upper(b.lifecycle_event)==='IDEA_REMOVED'){
+  const visible=await db.prepare(`SELECT idempotency_key FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND state='SENT' AND lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND CAST(telegram_message_id AS INTEGER)>0 AND updated_ts<?4 ORDER BY updated_ts DESC LIMIT 1`).bind(b.contract_code,b.direction,b.wave_id,Number(p.bound_ts??now)).first();
+  if(!visible)return {status:'REMOVAL_WITHOUT_PRIOR_DELIVERY',ok:false};prior_delivery_verified=true;
+ }
+ return {status:'CLOSED',ok:true,publication_id:p.publication_id,text:p.telegram_text,manual_text:p.manual_text,canonical,analytical_fingerprint:p.analytical_fingerprint,presentation_hash:p.presentation_hash,prior_delivery_verified};
+}
+
+export async function loadExactManual(db,{publication_id,expected_identity=null}={}){
+ const p=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 AND actionability_status='ACTIONABLE' LIMIT 1`).bind(text(publication_id)).first();
+ if(!p||!text(p.manual_text))return {status:'NOT_FOUND',ok:false};let canonical;try{canonical=JSON.parse(p.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',ok:false};}
+ const identity=validateCanonicalIdentity(canonical,{contract:p.contract_code,direction:p.direction,run_id:p.run_id,snapshot_id:p.snapshot_id,observed_ts:p.observed_ts});if(identity.status!=='CLOSED')return {...identity,ok:false};
+ if(expected_identity&&Object.entries(expected_identity).some(([k,v])=>({publication_id:p.publication_id,contract:p.contract_code,direction:p.direction,run_id:p.run_id,snapshot_id:p.snapshot_id,observed_ts:p.observed_ts})[k]!==v))return {status:'MANUAL_EXACT_IDENTITY_MISMATCH',ok:false};
+ const actual=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});
+ if(actual!==p.presentation_hash||canonical.analytical_fingerprint!==p.analytical_fingerprint)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
+ return {status:'CLOSED',ok:true,text:p.manual_text,canonical,analytical_fingerprint:p.analytical_fingerprint,presentation_hash:p.presentation_hash,full_presentation_hash_verified:true,historical_snapshot:true};
+}
+
+export default {CANONICAL_PUBLICATION_VERSION,canonicalFingerprint,validateCanonicalIdentity,assessActionability,renderCanonicalTelegram,renderCanonicalManual,validatePresentation,makePublicationId,persistCanonicalSnapshot,finalizePublication,bindDispatchToPublication,loadBoundTelegram,loadExactManual};

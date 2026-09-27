@@ -1,0 +1,45 @@
+{
+  "node": "v24.21.0",
+  "status": "ACTUAL_D1_RESPONSE_ACCEPTED_BY_EXACT_MODULE_VALIDATOR",
+  "results": [
+    {
+      "case": "first",
+      "result": {
+        "allowed": true,
+        "status": "ALL_REQUIREMENTS_RESERVED",
+        "reservation_id": "D1_LIQ_20260927_FIRST",
+        "acquisition_hash": "ef24905481b0ee5948296c9bf620002b71ab0d250388fc854d449b82ea78d6ba",
+        "requirements": [
+          {
+            "quota_key": "TEST_HL",
+            "policy_receipt": "TEST_ONLY_REVIEWED",
+            "units": 5
+          },
+          {
+            "quota_key": "TEST_LIQFLOW",
+            "policy_receipt": "TEST_ONLY_REVIEWED",
+            "units": 1
+          },
+          {
+            "quota_key": "TEST_RUN",
+            "policy_receipt": "TEST_ONLY_REVIEWED",
+            "units": 6
+          }
+        ],
+        "logical_statements": 6,
+        "new_insert_ack": 1,
+        "version": "liq-quota-d1-candidate-v1"
+      }
+    },
+    {
+      "case": "identical_retry",
+      "result": {
+        "allowed": false,
+        "status": "ALREADY_RESERVED_DO_NOT_REEXECUTE",
+        "reservation_id": "D1_LIQ_20260927_FIRST"
+      }
+    }
+  ],
+  "production_changed": false,
+  "validation_uses_response_replay_not_second_live_request": true
+}

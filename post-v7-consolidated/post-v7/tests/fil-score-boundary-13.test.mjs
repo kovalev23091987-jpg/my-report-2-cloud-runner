@@ -1,0 +1,24 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {readCanonicalPublicationScores as read} from '../src/score-origin-reader.mjs';
+import {canonicalFingerprint,renderCanonicalTelegram,renderCanonicalManual,assessActionability} from '../src/canonical-publication.mjs';
+const fil=JSON.parse(readFileSync(new URL('../fixtures/fil1857-regression.json',import.meta.url),'utf8')).render;
+const observed_ts=fil.shadow.observed_ts;
+const binding={contract:'FIL-USDT',direction:'LONG',snapshot_id:'FIL:20260926:1857',run_id:'RUN:FIL:1857',observed_ts};
+function make(overall=72,interest=64,entry=null){const c={version:'fixture',status:'CLOSED',snapshot_id:binding.snapshot_id,run_id:binding.run_id,observed_ts,snapshot_time_utc:new Date(observed_ts).toISOString(),universe:[{contract:'FIL-USDT'}],candidates:[{contract:'FIL-USDT',ticker:'FIL-USDT'}],state:'OBSERVE',direction:'LONG',scores:{overall_0_100:overall,coin_interest_0_100:interest,entry_readiness_0_100:entry,is_probability:false},reasons:[],source_receipts:[],hard_gates:[],current_price:null,entry:null,trigger:null,invalidation:null,targets:[],costs:null,early_candidate:null,opportunity:null,microstructure:null,liquidations:null,data_quality:null,free_sources:null,changes_from_previous:[],metadata:{contract:'FIL-USDT'},safety:{strategy_weights_changed:false,hard_gates_bypassed:false,automatic_execution:false,validated_signal:false}};c.analytical_fingerprint=canonicalFingerprint(c);return c;}
+const scoreLines=s=>String(s).split('\n').filter(x=>/^(Общая оценка|Монета интересна|Готовность ко входу):/.test(x));
+const other=s=>String(s).split('\n').filter(x=>!/^(Общая оценка|Монета интересна|Готовность ко входу):/.test(x)).join('\n');
+test('01 missing canonical never promotes FIL legacy price-only 100/89',()=>{assert.equal(read(null,binding).status,'NOT_CLOSED');});
+test('02 shared canonical supplies exact two scores without recalculation',()=>{const r=read(make(),binding);assert.equal(r.status,'CLOSED');assert.equal(r.scores.overall_0_100,72);assert.equal(r.scores.coin_interest_0_100,64);});
+test('03 manual and Telegram share canonical numbers',()=>{const c=make();const t=renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'}),m=renderCanonicalManual({canonical:c,lifecycle_event:'WAIT'});for(const x of [t.text,m.text]){assert.match(x,/Общая оценка: 72 из 100/);assert.match(x,/Монета интересна: 64 из 100/);}});
+test('04 legacy shadow 100 and historical noise cannot alter canonical score labels',()=>{const c=make();const a=renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'}).text;const noisy=structuredClone(fil);noisy.shadow.dc_long=0;noisy.early.early_detection_quality_0_100=100;noisy.opportunity.event_json.early_anomaly_classification.liquidation_futures_noise.evidence_score=100;const b=renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'}).text;assert.deepEqual(scoreLines(a),scoreLines(b));});
+test('05 snapshot mismatch rejected',()=>assert.equal(read(make(),{...binding,snapshot_id:'WRONG'}).status,'NOT_CLOSED'));
+test('06 run mismatch rejected',()=>assert.equal(read(make(),{...binding,run_id:'WRONG'}).status,'NOT_CLOSED'));
+test('07 observation time mismatch rejected',()=>assert.equal(read(make(),{...binding,observed_ts:observed_ts+1}).status,'NOT_CLOSED'));
+test('08 direction mismatch rejected',()=>assert.equal(read(make(),{...binding,direction:'SHORT'}).status,'NOT_CLOSED'));
+test('09 contract mismatch rejected',()=>assert.equal(read(make(),{...binding,contract:'APT-USDT'}).status,'NOT_CLOSED'));
+test('10 canonical score mutation without new fingerprint rejected',()=>{const c=make();c.scores.overall_0_100=100;assert.equal(read(c,binding).reason,'CANONICAL_CONTENT_MISMATCH');});
+test('11 explicit null binding fails closed without exception',()=>{for(const x of [null,undefined,{},''])assert.equal(read(make(),x).status,'NOT_CLOSED');});
+test('12 missing score stays missing and zero stays factual zero',()=>{const missing=read(make(null,null,null),binding);assert.equal(missing.scores.overall_0_100,null);const zero=read(make(0,0,0),binding);assert.equal(zero.scores.overall_0_100,0);assert.match(renderCanonicalTelegram({canonical:make(0,0,0),lifecycle_event:'WAIT'}).text,/Общая оценка: 0 из 100/);});
+test('13 canonical 100 still cannot manufacture ENTRY and display direction remains bound',()=>{const c=make(100,100,null);assert.equal(c.state,'OBSERVE');const act=assessActionability(c,{lifecycle_event:'ENTRY'});assert.equal(act.deliver,false);assert.equal(read(c,{...binding,direction:'SHORT'}).status,'NOT_CLOSED');});

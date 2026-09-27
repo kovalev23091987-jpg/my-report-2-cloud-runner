@@ -39,7 +39,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "a2b3c2d364202b3cbbd3a40407733cb5d385f01b70e43786066fbeb84bb25225"
+      REPORT2_EXPECTED_WORKER_SHA: "940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -61,6 +61,9 @@ jobs:
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_D1_RUNS_PER_DAY: "120"
+      REPORT2_POST_V7_UNIFIED_ENABLED: "0"
+      REPORT2_LIQUIDATION_EXTENSION_MODE: "OFF"
+      REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
       REPORT2_D1_MAX_DAILY_READS: "3500000"
       REPORT2_D1_MAX_DAILY_WRITES: "70000"
     steps:
@@ -85,29 +88,8 @@ jobs:
           node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
-          cp runner/runner-main.mjs runtime/runner-main.mjs
-          cp runner/r8-20-prospective-validation-sidecar.mjs runtime/r8-20-prospective-validation-sidecar.mjs
-          cp runner/report2-d1-adapter.mjs runtime/report2-d1-adapter.mjs
-          cp runner/d1-preaction-budget-guard.mjs runtime/d1-preaction-budget-guard.mjs
-          cp runner/telegram-zero-reason.mjs runtime/telegram-zero-reason.mjs
-          cp runner/plain-text-telegram.mjs runtime/plain-text-telegram.mjs
-          cp runner/telegram-output.mjs runtime/telegram-output.mjs
-          cp runner/telegram-info-runtime.mjs runtime/telegram-info-runtime.mjs
-          node runner/apply-telegram-runtime-overlay.mjs runtime runner/telegram-runtime-overlay.json
-          node cross-venue-delta-overlay/apply-runtime-overlay.mjs runtime
-          node architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs runtime
-          node existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs runtime
-          node existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs runtime
-          node existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs runtime
-          node existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs runtime
-          node existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs runtime
-          node existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs runtime
-          node existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs runtime
-          node output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs runtime
-          node snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs runtime
-          node consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs runtime
-          node telegram-tz-reconciliation-fix/overlay/apply-telegram-tz-reconciliation-overlay.mjs runtime
-          node early-surfacing-v7/apply-early-surfacing-v7-overlay.mjs runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
