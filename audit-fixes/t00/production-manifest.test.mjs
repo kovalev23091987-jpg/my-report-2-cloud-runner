@@ -39,3 +39,12 @@ test('K00: authorized decrypted runtime matches the production worker and includ
   assert.deepEqual(manifest.runtime_capture.tz101_tests,{node:'PASS',d1_schema:'PASS'});
   assert.ok(Object.hasOwn(manifest.runtime_capture.files,'src/tz101-entry-area-calibration.mjs'));
 });
+
+test('K00: controlled D1 inventory is read-only and cannot enter the report cycle',()=>{
+  const capture=fs.readFileSync(path.join(repo,'audit-fixes/t00/capture-d1-inventory.mjs'),'utf8');
+  const workflow=fs.readFileSync(path.join(repo,'.github/workflows/report2.yml'),'utf8');
+  assert.doesNotMatch(capture,/\b(?:INSERT|UPDATE|DELETE|REPLACE|CREATE|DROP|ALTER)\b\s+(?:INTO|TABLE|INDEX|VIEW|TRIGGER)?/i);
+  assert.match(capture,/changed_db:false,rows_written:0/);
+  assert.match(workflow,/inputs\.reason != 'T00_RUNTIME_EXPORT' && inputs\.reason != 'T00_D1_INVENTORY'/);
+  assert.match(workflow,/REPORT2_TELEGRAM_OUTPUT_ENABLED:.*controlled_no_telegram.*'0'/);
+});

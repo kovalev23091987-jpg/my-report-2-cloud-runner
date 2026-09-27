@@ -123,7 +123,7 @@ jobs:
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
-          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ]; then
+          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ] && [ "${{ inputs.reason || '' }}" != "T00_D1_INVENTORY" ]; then
             npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           fi
       - name: Encrypt authoritative runtime for T00 audit
@@ -146,8 +146,28 @@ jobs:
           path: report2-runtime-t00.tar.gz.cms
           if-no-files-found: error
           retention-days: 1
+      - name: Capture and encrypt read-only T00 D1 inventory
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_D1_INVENTORY' }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node audit-fixes/t00/capture-d1-inventory.mjs runtime report2-t00-d1-inventory.json
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in report2-t00-d1-inventory.json \
+            -outform DER \
+            -out report2-t00-d1-inventory.json.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f report2-t00-d1-inventory.json
+      - name: Upload encrypted T00 D1 inventory
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_D1_INVENTORY' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-t00-d1-inventory-encrypted
+          path: report2-t00-d1-inventory.json.cms
+          if-no-files-found: error
+          retention-days: 1
       - name: Full Report 2 cycle
-        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' }}
+        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' }}
         shell: bash
         run: |
           set -Eeuo pipefail
