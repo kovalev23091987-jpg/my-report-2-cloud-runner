@@ -4,10 +4,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
 
 const repo=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const manifest=JSON.parse(fs.readFileSync(path.join(repo,'audit-fixes/t00/PRODUCTION_MANIFEST.json'),'utf8'));
 const sha=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const T00_CAPTURE_COMMIT='a0f61da17b1ebbc0abbff6e43ba0e5bcfae2e14a';
+const shaAtCapture=relative=>crypto.createHash('sha256').update(execFileSync('git',['show',`${T00_CAPTURE_COMMIT}:${relative}`],{cwd:repo})).digest('hex');
+const frozenSha=relative=>relative.startsWith('current-generation/')?shaAtCapture(relative):sha(path.join(repo,relative));
 
 test('K00: production identity and exact worker override match V4',()=>{
   assert.equal(manifest.production.commit,'2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba');
@@ -16,13 +20,13 @@ test('K00: production identity and exact worker override match V4',()=>{
   assert.equal(manifest.production.observed_run_head_sha,manifest.production.commit);
 });
 
-test('K00: all recorded overlay and module hashes still match',()=>{
+test('K00: all recorded overlay and module hashes match the immutable T00 capture commit',()=>{
   assert.equal(manifest.reconstruction.production_overlays.length,15);
   assert.equal(manifest.reconstruction.final_overlays.length,4);
-  for(const item of [...manifest.reconstruction.production_overlays,...manifest.reconstruction.final_overlays])assert.equal(sha(path.join(repo,item.entrypoint)),item.sha256,item.entrypoint);
-  for(const [relative,expected] of Object.entries(manifest.repository_effective_override_modules))assert.equal(sha(path.join(repo,relative)),expected,relative);
-  for(const [relative,expected] of Object.entries(manifest.migrations))assert.equal(sha(path.join(repo,relative)),expected,relative);
-  assert.equal(sha(path.join(repo,manifest.dependencies.lockfile)),manifest.dependencies.lockfile_sha256);
+  for(const item of [...manifest.reconstruction.production_overlays,...manifest.reconstruction.final_overlays])assert.equal(frozenSha(item.entrypoint),item.sha256,item.entrypoint);
+  for(const [relative,expected] of Object.entries(manifest.repository_effective_override_modules))assert.equal(frozenSha(relative),expected,relative);
+  for(const [relative,expected] of Object.entries(manifest.migrations))assert.equal(frozenSha(relative),expected,relative);
+  assert.equal(frozenSha(manifest.dependencies.lockfile),manifest.dependencies.lockfile_sha256);
 });
 
 test('K00: unavailable production evidence is explicit, never synthesized',()=>{

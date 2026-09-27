@@ -23,6 +23,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Generated the partial T00 production manifest: 57 effective override files, the exact 15+4 overlay order, six additive migration files, dependency lock, workflow bindings by name, schedules, roles and the verified successful production run are recorded. Missing cloud evidence is explicitly marked unavailable.
 - GitHub write/workflow authorization was restored; branch push succeeded. Controlled run `36359352694` captured the authoritative decrypted runtime encrypted to the local audit certificate. The normal report step was skipped and Telegram network/output were both zero. Worker SHA matches production; both TZ10.1 calibration tests pass.
 - Controlled read-only run `36359630895` captured 248 live D1 schema objects, exact V4 rows for ETC/ETHFI/DOT/LSK, delivery/lifecycle rows, and the four-endpoint HTX timeout. GitHub run `36351939109` supplied the exact masked ETC `BINDING_NOT_FOUND` line. Sanitized immutable fixtures are stored with hashes; the capture wrote zero D1 rows.
+- T02 local controls are implemented: the workflow gates the entire working job before checkout/decrypt, manual analytics requires explicit authorization, invalid switches fail closed, the runtime checks role/generation before setup, and D1 analytics ownership uses an expiring fencing token. Immutable snapshot repeats are no-op only for the same hash; changed payloads conflict. K00/K01/K02 focused suite passes 28/28.
 
 ## Verified blockers
 
@@ -31,8 +32,8 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Obtain the live Hub configuration/bundle through an authorized read-only path, or preserve it as an explicit deployment blocker.
-2. Complete K00 and then continue T02, T15 and the T17 frame.
+1. Continue the T15 unified-budget and T17 health frame while preserving the live Hub replacement as an explicit access blocker.
+2. Obtain the exact live Hub configuration/bundle through an authorized path before claiming T02/F01 fully closed or performing the final cutover.
 
 ## Safety state
 

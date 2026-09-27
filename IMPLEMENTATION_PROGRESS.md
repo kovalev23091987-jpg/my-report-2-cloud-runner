@@ -10,7 +10,7 @@ This file is an internal implementation ledger. It is not part of the user-visib
 |---|---|---|
 | T00 | PARTIAL_ACCESS_BLOCKER | Runtime exact; TZ10.1 pass; D1 schema (248 objects), four V4 rows, HTX timeout and ETC binding failure captured. The live Cloudflare Hub bundle/binding-name list is blocked by the dashboard bot-security challenge; nothing was inferred or invented. |
 | T01 | COMPLETED_LOCAL | K01: 11/11 tests pass; immutable fixtures and module hashes captured |
-| T02 | PENDING | — |
+| T02 | PARTIAL_ACCESS_BLOCKER | K02 local: whole-job stop, explicit manual authorization, strict switches, D1 analytics lease/fencing and immutable snapshots pass 8/8. Replacing the live legacy Hub handler awaits the exact blocked Hub bundle. |
 | T03 | PENDING | — |
 | T04 | PENDING | — |
 | T05 | PENDING | — |
@@ -34,7 +34,9 @@ All findings begin as `PENDING`. A finding may only be changed to `CLOSED` with 
 
 | Findings | Status |
 |---|---|
-| F01–F51 | PENDING |
+| F01 | PARTIAL_ACCESS_BLOCKER — GitHub analytics owner is fenced; exact live legacy Hub removal awaits its blocked bundle |
+| F02 | CLOSED_LOCAL_K02 — disabled schedule performs no checkout/decrypt/runtime; runner has a second pre-decrypt/pre-network gate |
+| F03–F51 | PENDING |
 
 ## New data blocks
 
@@ -49,7 +51,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 | Stage | Packages | Status |
 |---|---|---|
 | A | T00–T01 | PARTIAL_ACCESS_BLOCKER — T01 complete locally; all obtainable T00 evidence is frozen, with the exact live Hub bundle/binding-name list explicitly blocked by Cloudflare dashboard access |
-| B | T02, T15, T17 frame | BLOCKED_BY_A |
+| B | T02, T15, T17 frame | IN_PROGRESS_WITH_T00_ACCESS_BLOCKER — all locally verifiable T02 controls are implemented; T15 and T17 frame next |
 | C | T03–T05, T07 | BLOCKED_BY_B |
 | D | T06, T08–T10, T16 | BLOCKED_BY_C |
 | E | T11–T12 | BLOCKED_BY_D |

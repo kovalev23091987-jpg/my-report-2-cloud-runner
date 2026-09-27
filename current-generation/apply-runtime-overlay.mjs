@@ -40,6 +40,8 @@ const files=[
  'src/publication-reconciler.mjs',
  'src/bound-telegram-delivery-sidecar.mjs',
  'src/oxarchive-cost-probe.mjs',
+ 'src/runtime-control.mjs',
+ 'src/analytics-lease.mjs',
  'src/liquidation-extension/runner-extension.mjs',
  'src/liquidation-extension/htx-liquidation-route.mjs',
  'src/liquidation-extension/native-verification.mjs',

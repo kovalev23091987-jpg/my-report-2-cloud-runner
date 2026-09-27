@@ -33,6 +33,8 @@ import {createLiquidationSourceWeightStore} from './src/liquidation-source-weigh
 import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
 import {createLiquidationCandidateQueue} from './src/liquidation-candidate-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
+import {evaluatePreflight} from './src/runtime-control.mjs';
+import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -416,12 +418,21 @@ function enforceD1Budget(db) {
   return report;
 }
 async function main() {
+  const preflight=evaluatePreflight(process.env);
+  console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
+  if(!preflight.allowed)throw new Error(`REPORT2_RUNTIME_PREFLIGHT_BLOCKED:${preflight.status}`);
+  process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
   const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
   if(generation!=="MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
   const env = buildEnv();
+  await installRuntimeControl(env.DATA_DB);
+  const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
+  if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
+  console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
   const commandIntent=source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_IGNORES_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
   if(commandIntent.matched&&commandIntent.mode==='EXACT_COIN_LIQUIDATIONS')env.REPORT2_MANUAL_COIN_CONTRACT=commandIntent.contract;
   console.log('LIQUIDATION_COMMAND_INTENT',JSON.stringify(commandIntent));
@@ -444,7 +455,6 @@ async function main() {
   env.REPORT2_LIQUIDATION_SIGNAL_RECORD=params=>liquidationCalibration.record(params);
   const pending = [];
   const ctx = { waitUntil(promise) { pending.push(Promise.resolve(promise)); }, passThroughOnException() {} };
-  const started = Date.now();
   const d1NominalReservation = deriveRunReservation({
   runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY", 288),
   maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
@@ -542,14 +552,20 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const d1Usage=enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
     const d1FinalizedUsage=await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
     const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:5,cross_exchange_risk:3,total:8},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
-    console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify(result));
+    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
+    console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify({...result,analytics_lease:leaseFinish}));
     return;
   }
   const queueClaimRunId=`QUEUE:${started}`;
   const scheduledQueueClaim=source==='schedule'?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
   if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,run_id:queueClaimRunId,usable:params?.usable===true,result:params?.result||null,now:Date.now()});}
   console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
+  const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!leaseRenewal.allowed)throw new Error(`ANALYTICS_FENCE_LOST_BEFORE_WORKER:${leaseRenewal.status}`);
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
+  const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);
   if(liquidationSources)console.log('LIQUIDATION_SOURCES_CANONICAL_RECEIPT',JSON.stringify(liquidationSources.summary()));
   console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS_FINAL',JSON.stringify(await liquidationCalibration.summary()));
   if (pending.length) await Promise.all(pending);
@@ -776,7 +792,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
   const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
+  const analyticsLeaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!analyticsLeaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${analyticsLeaseFinish.status}`);
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });

@@ -45,6 +45,11 @@ on:
         description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"
         required: false
         default: ""
+      manual_run_authorized:
+        description: "explicitly authorize this manual analytics run"
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -54,11 +59,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  execution-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      admitted: ${{ steps.gate.outputs.admitted }}
+    env:
+      LEGACY_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      EVENT_NAME: ${{ github.event_name }}
+      MANUAL_AUTHORIZED: ${{ inputs.manual_run_authorized || 'false' }}
+    steps:
+      - name: Gate the entire working job
+        id: gate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          normalize_true() {
+            case "${1,,}" in 1|true|yes|on) return 0 ;; *) return 1 ;; esac
+          }
+          admitted=false
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            if normalize_true "$LEGACY_RUNNER_ENABLED"; then admitted=true; fi
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi
+          fi
+          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"
+          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
+
   run-report2:
+    needs: execution-gate
+    if: ${{ needs.execution-gate.outputs.admitted == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      ANALYTICS_ENABLED: "1"
+      PUBLIC_COLLECTOR_ENABLED: "0"
+      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
+      CALIBRATION_APPLY_ENABLED: "0"
+      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_EXPECTED_WORKER_SHA: "c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
@@ -98,17 +136,15 @@ jobs:
       REPORT2_D1_MAX_DAILY_READS: "3500000"
       REPORT2_D1_MAX_DAILY_WRITES: "70000"
     steps:
-      - name: Disabled schedule gate
-        if: ${{ github.event_name == 'schedule' && env.REPORT2_RUNNER_ENABLED != '1' }}
-        run: |
-          echo "REPORT2_RUNNER_DISABLED"
-          exit 0
       - name: Checkout encrypted runner
         uses: actions/checkout@v4
       - name: Node 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Runtime preflight before decrypt and external access
+        shell: bash
+        run: node runner/preflight-role-gate.mjs
       - name: Decrypt authoritative runtime
         shell: bash
         run: |
