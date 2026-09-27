@@ -26,4 +26,5 @@ if(count!==15||sha(path.join(runtime,'src/worker.js'))!=='a2b3c2d364202b3cbbd3a4
 run(process.execPath,[path.join(bundle,'post-v7/overlay/apply-post-v7-unified-overlay.mjs'),runtime]);
 run(process.execPath,[path.join(bundle,'liquidation/liquidation-extension/integration/apply-after-unified.mjs'),runtime]);
 run(process.execPath,[path.join(bundle,'final-reconciliation/apply-runtime-overlay.mjs'),runtime]);
-console.log(JSON.stringify({status:'FULL_COMBINED_RUNTIME_RECONSTRUCTED',base:BASE,production_overlays:count,worker_sha256:sha(path.join(runtime,'src/worker.js')),source_mode_default:'OFF',production_changed:false}));
+run(process.execPath,[path.join(repo,'current-generation/apply-runtime-overlay.mjs'),runtime]);
+console.log(JSON.stringify({status:'FULL_COMBINED_RUNTIME_RECONSTRUCTED',base:BASE,production_overlays:count,worker_sha256:sha(path.join(runtime,'src/worker.js')),source_mode_default:'OFF',production_changed:true}));

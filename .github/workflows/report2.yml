@@ -2,7 +2,9 @@ name: Report 2 Cloud Runner
 
 on:
   schedule:
-    - cron: "2,14,26,38,50 * * * *"
+    - cron: "0,18,36,54 0-23/3 * * *"
+    - cron: "12,30,48 1-23/3 * * *"
+    - cron: "6,24,42 2-23/3 * * *"
   workflow_dispatch:
     inputs:
       reason:
@@ -39,7 +41,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2"
+      REPORT2_EXPECTED_WORKER_SHA: "c1d3bd22f5739050688d87f58bab1bb2c3fe612a128427b19c492a631fe6158d"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -60,7 +62,8 @@ jobs:
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
-      REPORT2_D1_RUNS_PER_DAY: "120"
+      REPORT2_D1_RUNS_PER_DAY: "83"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_LIQ_ALL_HTX_EXCEPT_BTC_ETH_V1"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "OFF"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
