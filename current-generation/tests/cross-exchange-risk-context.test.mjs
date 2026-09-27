@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory} from '../files/src/cross-exchange-risk-context.mjs';
+import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets} from '../files/src/cross-exchange-risk-context.mjs';
 
 test('only active exact USDT perpetual markets enter the cross-exchange catalog',()=>{
  const entries=normalizeCrossExchangeCatalogs({
@@ -28,6 +28,16 @@ test('Coinalyze history produces a recent-versus-baseline liquidation intensity'
  const now=1_800_000_000_000,point=(minutes,l,s)=>({t:Math.floor((now-minutes*60000)/1000),l,s});
  const out=normalizeCoinalyzeLiquidationHistory([{symbol:'FIL.A',history:[point(5,5000,1000),point(30,1000,1000),point(60,1000,1000)]}],now);
  assert.equal(out.status,'CLOSED');assert.equal(out.recent_total,6000);assert.ok(out.intensity_ratio>1);
+});
+
+test('Coinalyze catalog persistence keeps only compact exact-base perpetual markets',()=>{
+ const rows=compactCoinalyzeMarkets([
+  {symbol:'SOLUSDT_PERP.A',base_asset:'SOL',quote_asset:'USDT',exchange:'Binance',is_perpetual:true,large_unused_field:'x'.repeat(10000)},
+  {symbol:'SOLUSD_QUARTER.A',base_asset:'SOL',quote_asset:'USD',exchange:'Other',is_perpetual:false},
+  {symbol:'ETHUSDT_PERP.A',base_asset:'ETH',quote_asset:'USDT',exchange:'Binance',is_perpetual:true},
+ ],'SOL');
+ assert.deepEqual(rows,[{symbol:'SOLUSDT_PERP.A',base_asset:'SOL',quote_asset:'USDT',exchange:'BINANCE',is_perpetual:true}]);
+ assert.ok(JSON.stringify(rows).length<512);
 });
 
 test('workflow wires the optional free Coinalyze key without embedding a value',()=>{

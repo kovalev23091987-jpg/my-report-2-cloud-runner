@@ -90,20 +90,23 @@ export function normalizeCoinalyzeLiquidationHistory(payload,now){
  const amounts=set=>set.reduce((a,r)=>({long:a.long+(finite(r?.l)||0),short:a.short+(finite(r?.s)||0)}),{long:0,short:0}),a=amounts(recent),b=amounts(prior),priorBucketMean=(b.long+b.short)/Math.max(1,prior.length),expectedRecent=priorBucketMean*Math.max(1,recent.length),current=a.long+a.short;
  return{source:'COINALYZE',status:rows.length?'CLOSED':'NOT_CLOSED',observed_ts:now,market_count:rows.length,datapoints:series.length,long_liquidated_recent:a.long,short_liquidated_recent:a.short,recent_total:current,prior_bucket_mean:priorBucketMean,expected_recent_total:expectedRecent,intensity_ratio:expectedRecent>0?current/Math.max(expectedRecent,1):null,history_window_minutes:120,recent_window_minutes:15,advisory_only:true};
 }
-async function loadCoinalyzeMarkets({db,fetch_impl,api_key,now}={}){
+export function compactCoinalyzeMarkets(payload,base){return (Array.isArray(payload)?payload:[]).filter(r=>text(r?.base_asset).toUpperCase()===text(base).toUpperCase()&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).map(r=>({symbol:text(r?.symbol),base_asset:text(r?.base_asset).toUpperCase(),quote_asset:text(r?.quote_asset).toUpperCase(),exchange:text(r?.exchange).toUpperCase(),is_perpetual:true})).filter(r=>r.symbol);}
+async function loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now}={}){
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinalyze_catalog (catalog_id TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
- const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id='FUTURES_V1' AND expires_ts>=?1 LIMIT 1`).bind(now).first();if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:JSON.parse(prior.payload_json)};}catch{}}
- const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),rows=raw.ok&&Array.isArray(raw.payload)?raw.payload:[];
- if(rows.length)await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES('FUTURES_V1',?1,?2,?3) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(now,now+CATALOG_TTL_MS,JSON.stringify(rows)).run();
+ const catalogId=`FUTURES_V2:${text(base).toUpperCase()}`;
+ const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>=?2 LIMIT 1`).bind(catalogId,now).first();if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:JSON.parse(prior.payload_json)};}catch{}}
+ const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),rows=raw.ok?compactCoinalyzeMarkets(raw.payload,base):[];
+ if(rows.length)await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(catalogId,now,now+CATALOG_TTL_MS,JSON.stringify(rows)).run();
  return{status:rows.length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:1,rows,error:raw.error};
 }
 async function collectHistory({db,fetch_impl,api_key,base,now}={}){
  if(!text(api_key))return{source:'COINALYZE',status:'DISABLED',reason:'API_KEY_REQUIRED',network_calls:0,observed_ts:now};
- const catalog=await loadCoinalyzeMarkets({db,fetch_impl,api_key,now});if(catalog.network_calls>0)return{source:'COINALYZE',status:'CATALOG_REFRESHED',network_calls:1,observed_ts:now};
+ const catalog=await loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now});
  const preferred=['HUOBI','BINANCE','BYBIT','OKX','GATE'],rank=exchange=>{const i=preferred.indexOf(text(exchange).toUpperCase());return i<0?preferred.length:i;},markets=catalog.rows.filter(r=>text(r?.base_asset).toUpperCase()===base&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).sort((a,b)=>rank(a.exchange)-rank(b.exchange)).slice(0,4),symbols=markets.map(r=>r.symbol).filter(Boolean);
- if(!symbols.length)return{source:'COINALYZE',status:'NOT_CLOSED',reason:'NO_EXACT_FUTURES_MARKETS',network_calls:0,observed_ts:now};
+ if(!symbols.length)return{source:'COINALYZE',status:'NOT_CLOSED',reason:'NO_EXACT_FUTURES_MARKETS',network_calls:catalog.network_calls,provider_call_units:catalog.network_calls,observed_ts:now};
  const to=Math.floor(now/1000),from=to-2*60*60,url=`https://api.coinalyze.net/v1/liquidation-history?symbols=${encodeURIComponent(symbols.join(','))}&interval=5min&from=${from}&to=${to}&convert_to_usd=true`,raw=await requestJson(fetch_impl,url,{headers:{api_key},timeout_ms:12000});
- return raw.ok?{...normalizeCoinalyzeLiquidationHistory(raw.payload,now),network_calls:1,provider_call_units:symbols.length,symbols}:{source:'COINALYZE',status:'SOURCE_ERROR',error:raw.error,network_calls:1,provider_call_units:symbols.length,observed_ts:now};
+ const networkCalls=catalog.network_calls+1,providerUnits=symbols.length+catalog.network_calls;
+ return raw.ok?{...normalizeCoinalyzeLiquidationHistory(raw.payload,now),network_calls:networkCalls,provider_call_units:providerUnits,symbols,catalog_cache_status:catalog.cache_status}:{source:'COINALYZE',status:'SOURCE_ERROR',error:raw.error,network_calls:networkCalls,provider_call_units:providerUnits,observed_ts:now};
 }
 
 async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{sources[row.source]=JSON.parse(row.payload_json);}catch{}}return sources;}
@@ -122,4 +125,4 @@ export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.
  return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,receipts:[{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED'}],internal_only:true,automatic_execution:false};
 }
 
-export default{CROSS_EXCHANGE_RISK_VERSION,normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,collectCrossExchangeRiskContext};
+export default{CROSS_EXCHANGE_RISK_VERSION,normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets,collectCrossExchangeRiskContext};
