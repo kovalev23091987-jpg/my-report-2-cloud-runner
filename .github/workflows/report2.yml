@@ -120,11 +120,34 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
-          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ]; then
+            npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          fi
+      - name: Encrypt authoritative runtime for T00 audit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_RUNTIME_EXPORT' }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf report2-runtime-t00.tar.gz -C runtime .
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in report2-runtime-t00.tar.gz \
+            -outform DER \
+            -out report2-runtime-t00.tar.gz.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f report2-runtime-t00.tar.gz
+      - name: Upload encrypted T00 runtime
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_RUNTIME_EXPORT' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-runtime-t00-encrypted
+          path: report2-runtime-t00.tar.gz.cms
+          if-no-files-found: error
+          retention-days: 1
       - name: Full Report 2 cycle
+        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' }}
         shell: bash
         run: |
           set -Eeuo pipefail
