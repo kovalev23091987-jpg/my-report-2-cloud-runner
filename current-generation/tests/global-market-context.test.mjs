@@ -15,6 +15,10 @@ test('CoinLobster candidate slicing prevents a different symbol from leaking int
  const out=contextForContract({observed_ts:4,deribit:{status:'CLOSED'},coinlobster:c},'FIL-USDT');
  assert.equal(out.coinlobster.whale_radar.length,1);assert.equal(out.coinlobster.realized_liquidations.length,1);assert.equal(out.coinlobster.whale_radar[0].coin,'FIL');
 });
+test('CoinLobster accepts current nested rows while retaining only harmless schema diagnostics',()=>{
+ const out=normalizeCoinLobsterContext({whale_radar:{ok:true,data:{rows:[{coin:'ABC',unusual:true,direction:'BUY'}]}},liquidations:{ok:true,data:{topCoins:[{symbol:'ABC',long_usd:2,short_usd:3}]}},observed_ts:5});
+ assert.equal(out.status,'CLOSED');assert.equal(out.radar_array_path,'data.rows');assert.equal(out.liquidations_array_path,'data.topCoins');assert.equal(out.whale_radar.length,1);assert.deepEqual(out.response_shapes.whale_radar_keys,['ok','data']);
+});
 test('CoinLobster has a 30 minute shared cache because its public IP quota is unpublished',()=>{
  assert.equal(COINLOBSTER_TTL_MS,30*60*1000);
 });

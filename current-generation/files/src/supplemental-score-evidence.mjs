@@ -55,11 +55,12 @@ export function applySupplementalScoreAdjustment(baseScore,evidence=[]){
  for(const item of byFamily.values()){
   // Supplemental sources may influence at most ten percent of the existing
   // fixed block. This preserves 35/30/20/15 ownership and bounds the total to 10.
-  const contribution=item.chain_weight*0.10*item.signed_strength*item.quality;
-  adjustment+=contribution;receipts.push({...item,score_contribution:Number(contribution.toFixed(4))});
+  const effectiveMax=item.chain_weight*0.10*item.quality;
+  const contribution=effectiveMax*item.signed_strength;
+  adjustment+=contribution;receipts.push({...item,source_quality_factor:item.quality,effective_max_score_points:Number(effectiveMax.toFixed(4)),score_contribution:Number(contribution.toFixed(4)),weighting_mode:'PER_RUN_VERIFIED_QUALITY'});
  }
  adjustment=clamp(adjustment,-10,10);
- return{status:'CLOSED',base_score:base,final_score:Math.round(clamp(base+adjustment,0,100)),adjustment:Number(adjustment.toFixed(4)),receipts,weights:{...FIXED_DECISION_WEIGHTS},maximum_absolute_adjustment:10,missing_or_stale_is_zero:true,duplicate_family_counted_once:true};
+ return{status:'CLOSED',base_score:base,final_score:Math.round(clamp(base+adjustment,0,100)),adjustment:Number(adjustment.toFixed(4)),receipts,weights:{...FIXED_DECISION_WEIGHTS},source_weighting:'ADAPTIVE_PER_RUN_QUALITY_WITH_FIXED_DECISION_BLOCKS',core_weights_automatically_changed:false,maximum_absolute_adjustment:10,missing_or_stale_is_zero:true,duplicate_family_counted_once:true};
 }
 
 export default{SUPPLEMENTAL_SCORE_EVIDENCE_VERSION,FIXED_DECISION_WEIGHTS,buildSupplementalScoreEvidence,applySupplementalScoreAdjustment};

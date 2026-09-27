@@ -1,6 +1,6 @@
 import {base,fail,complete,sourceClock,zone,num,obj,timestamp,seal} from './core.mjs';
 export function normalizeOxArchive(p,c){
- const b=base('0xArchive',c,['HYPERLIQUID_MAINNET_PERPS'],'POSITION_DERIVED_PROJECTED_BUCKETS',{venue:'Hyperliquid',quote:'USD_NOTIONAL_USDC_MARGIN',access:'MCP_TESTED_REST_REQUIRES_SEPARATE_KEY',coverage:'PARTIAL_BUCKETED_PROJECTION'});
+ const b=base('0xArchive',c,['HYPERLIQUID_MAINNET_PERPS'],'POSITION_DERIVED_PROJECTED_BUCKETS',{venue:'Hyperliquid',quote:'USD_NOTIONAL_USDC_MARGIN',access:'REST_API_KEY_REQUIRED',coverage:'PARTIAL_BUCKETED_PROJECTION'});
  if(p?.success===false)return fail(b,'PROVIDER_REJECTED');const d=p?.data;
  if(!obj(d)||!['raw','histogram'].includes(d.source)||!Array.isArray(d.levels)||!(num(d.mid_price)>0)||!Number.isSafeInteger(d.block_number))return fail(b,'OX_SCHEMA_UNSUPPORTED');
  if(c.route_symbol!==c.symbol)return fail(b,'REQUEST_ROUTE_SYMBOL_BINDING_MISSING');

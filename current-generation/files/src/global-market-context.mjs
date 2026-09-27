@@ -36,9 +36,11 @@ export function normalizeDeribitMarketContext({btc_dvol,eth_dvol,btc_options,eth
 }
 
 export function normalizeCoinLobsterContext({whale_radar,liquidations,observed_ts=Date.now()}={}){
- const radarRows=Array.isArray(whale_radar?.data)?whale_radar.data:Array.isArray(whale_radar?.data?.coins)?whale_radar.data.coins:Array.isArray(whale_radar?.coins)?whale_radar.coins:Array.isArray(whale_radar?.radar)?whale_radar.radar:Array.isArray(whale_radar)?whale_radar:[];
- const liqRows=Array.isArray(liquidations?.data)?liquidations.data:Array.isArray(liquidations?.data?.top_coins)?liquidations.data.top_coins:Array.isArray(liquidations?.top_coins)?liquidations.top_coins:Array.isArray(liquidations?.coins)?liquidations.coins:Array.isArray(liquidations)?liquidations:[];
- return {source:'COINLOBSTER',version:GLOBAL_MARKET_CONTEXT_VERSION,status:(radarRows.length||liqRows.length)?'CLOSED':'NOT_CLOSED',observed_ts,ttl_ms:COINLOBSTER_TTL_MS,whale_radar:radarRows.slice(0,250),realized_liquidations:liqRows.slice(0,250),advisory_only:true,directional_vote:false,hard_gate:false,internal_only:true};
+ const pick=(payload,paths)=>{for(const path of paths){let value=payload;for(const key of path.split('.'))value=value?.[key];if(Array.isArray(value))return{rows:value,path};}return{rows:[],path:null};};
+ const radar=pick(whale_radar,['data','data.coins','data.rows','data.items','data.radar','coins','rows','items','radar','results']);
+ const liq=pick(liquidations,['data','data.top_coins','data.topCoins','data.coins','data.rows','data.items','data.liquidations','top_coins','topCoins','coins','rows','items','liquidations','results']);
+ const response_shapes={whale_radar_keys:whale_radar&&typeof whale_radar==='object'?Object.keys(whale_radar).slice(0,20):[],whale_radar_data_keys:whale_radar?.data&&typeof whale_radar.data==='object'&&!Array.isArray(whale_radar.data)?Object.keys(whale_radar.data).slice(0,20):[],liquidations_keys:liquidations&&typeof liquidations==='object'?Object.keys(liquidations).slice(0,20):[],liquidations_data_keys:liquidations?.data&&typeof liquidations.data==='object'&&!Array.isArray(liquidations.data)?Object.keys(liquidations.data).slice(0,20):[]};
+ return {source:'COINLOBSTER',version:GLOBAL_MARKET_CONTEXT_VERSION,status:(radar.rows.length||liq.rows.length)?'CLOSED':'NOT_CLOSED',observed_ts,ttl_ms:COINLOBSTER_TTL_MS,whale_radar:radar.rows.slice(0,250),realized_liquidations:liq.rows.slice(0,250),radar_array_path:radar.path,liquidations_array_path:liq.path,response_shapes,advisory_only:true,directional_vote:false,hard_gate:false,internal_only:true};
 }
 
 async function jsonFetch(fetchImpl,url,init={},timeoutMs=12000){

@@ -13,6 +13,8 @@ test('manual Russian command is wired to a bounded liquidation-only runner path'
   const full=runner.indexOf('await worker.scheduled(');
   assert.ok(branch>=0&&full>branch);
   assert.match(runner.slice(branch,full),/LIQUIDATION_ONLY_RESULT/);
+  assert.match(runner.slice(branch,full),/dynamic_liquidation_panel:liquidationPanel/);
+  assert.match(runner,/createLiquidationSourceWeightStore/);
   assert.match(runner.slice(branch,full),/return;/);
 });
 

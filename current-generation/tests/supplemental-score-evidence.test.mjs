@@ -5,6 +5,7 @@ test('verified useful sources change the score inside existing fixed blocks',()=
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{deribit:{status:'CLOSED',internal_only:true,market_regime:'RISK_OFF_ELEVATED'},coinlobster:{status:'CLOSED',internal_only:true,whale_radar:[{coin:'FIL',direction:'BUY',multiple:5}]}}});
  const out=applySupplementalScoreAdjustment(70,rows);
  assert.equal(out.status,'CLOSED');assert.notEqual(out.adjustment,0);assert.equal(out.final_score,71);assert.deepEqual(out.weights,FIXED_DECISION_WEIGHTS);assert.ok(out.receipts.some(x=>x.source_id==='DERIBIT'));assert.ok(out.receipts.some(x=>x.source_id==='COINLOBSTER'));
+ assert.equal(out.source_weighting,'ADAPTIVE_PER_RUN_QUALITY_WITH_FIXED_DECISION_BLOCKS');assert.equal(out.core_weights_automatically_changed,false);assert.ok(out.receipts.every(x=>Number.isFinite(x.effective_max_score_points)));
 });
 test('stale, unidentified and duplicate-family facts cannot distort the result',()=>{
  const out=applySupplementalScoreAdjustment(60,[

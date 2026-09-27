@@ -7,7 +7,7 @@ export const SOURCE_POLICY=Object.freeze({
  GMX: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:8000,per_minute_cap:4,max_concurrency:2,ttl_ms:300000,role:'FEE_AWARE_SCOPED_POSITIONS',default_decision_enabled:false},
  GTRADE: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:4000,per_minute_cap:6,max_concurrency:2,ttl_ms:300000,role:'BATCH_OPEN_POSITIONS_AND_FEES',default_decision_enabled:false},
  HYPERPERPS: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:6000,per_minute_cap:6,max_concurrency:2,ttl_ms:300000,role:'BTC_ETH_SOL_COHORT_CROSSCHECK',default_decision_enabled:false},
- OXARCHIVE: {unit:'CREDIT',provider_monthly_free:50000,module_monthly_cap:5000,per_minute_cap:6,max_concurrency:2,ttl_ms:300000,per_request_cost:null,role:'ALTERNATE_HL_BUCKETS',default_decision_enabled:false},
+ OXARCHIVE: {unit:'CREDIT',provider_monthly_free:50000,module_monthly_cap:5000,per_minute_cap:6,max_concurrency:2,ttl_ms:300000,per_request_cost:1,role:'ALTERNATE_HL_BUCKETS',key_required:true,default_decision_enabled:true},
 });
 export const RUN_POLICY=Object.freeze({max_new_requests:24,max_parallel:2,max_response_bytes:8000000,max_wall_ms:45000,automatic_payment:false,automatic_trade:false,raw_accounts_to_D1:false,source_snapshots_do_not_create_ENTRY:true});
 export function planBudget({provider,used=0,remaining_account_units=null,estimated_calls,credit_cost,run_remaining_requests,quota_reconciled=false}={}){

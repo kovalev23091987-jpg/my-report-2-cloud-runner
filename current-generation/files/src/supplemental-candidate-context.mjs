@@ -1,11 +1,13 @@
-export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v1-20260927';
-const TTL_MS=60*60*1000;
+export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v2-auto-identity-20260927';
+const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const baseOf=contract=>clean(contract).toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'');
 const EVM=/^0x[0-9a-f]{40}$/i,BASE58=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const chainId=chain=>({ethereum:'1',bsc:'56',arbitrum:'42161',base:'8453',polygon:'137',optimism:'10',avalanche:'43114'}[clean(chain).toLowerCase()]||null);
 const geckoNetwork=chain=>({ethereum:'eth',bsc:'bsc',arbitrum:'arbitrum',base:'base',polygon:'polygon_pos',optimism:'optimism',avalanche:'avax',solana:'solana'}[clean(chain).toLowerCase()]||null);
+const canonicalChain=value=>({eth:'ethereum',ethereum:'ethereum',bsc:'bsc',arbitrum:'arbitrum',base:'base',polygon:'polygon',polygon_pos:'polygon',optimism:'optimism',avax:'avalanche',avalanche:'avalanche',solana:'solana'}[clean(value).toLowerCase()]||null);
+const stableSymbol=value=>['USDT','USDC','USD','DAI','FDUSD'].includes(clean(value).toUpperCase());
 const exactIdentity=row=>{
  const chain=clean(row?.chain).toLowerCase(),address=clean(row?.contract_or_mint);
  if(!chain||!address)return null;
@@ -39,14 +41,82 @@ export function chooseSupplementalLane({run_id,contract,entry,derivatives_venues
  return available[hashLane(`${run_id}:${contract}`)%available.length];
 }
 
-async function requestJson(fetchImpl,url,{method='GET',body=null,timeout_ms=9000}={}){
+async function requestJson(fetchImpl,url,{method='GET',body=null,headers={},timeout_ms=9000}={}){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout_ms);
  try{
-  const response=await fetchImpl(url,{method,headers:{accept:'application/json','content-type':'application/json','user-agent':'My-Report-2/supplemental-v1'},body:body===null?undefined:JSON.stringify(body),signal:controller.signal});
+  const response=await fetchImpl(url,{method,headers:{accept:'application/json','content-type':'application/json','user-agent':'My-Report-2/supplemental-v2',...headers},body:body===null?undefined:JSON.stringify(body),signal:controller.signal});
   const payload=await response.json().catch(()=>null);
   return {ok:response.ok,status:response.status,payload,error:response.ok?null:`HTTP_${response.status}`};
  }catch(error){return {ok:false,status:null,payload:null,error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160)};}
  finally{clearTimeout(timer);}
+}
+
+function splitGeckoTokenId(value){
+ const id=clean(value),at=id.indexOf('_');if(at<1)return null;
+ const chain=canonicalChain(id.slice(0,at)),address=id.slice(at+1);if(!chain)return null;
+ return exactIdentity({chain,contract_or_mint:address});
+}
+function dominantIdentity(rows){
+ const groups=new Map();
+ for(const row of rows){const identity=exactIdentity(row),liq=finite(row?.liquidity_usd);if(!identity||liq===null||liq<0)continue;const key=`${identity.chain}|${identity.contract_or_mint}`;const prior=groups.get(key)||{identity,liquidity_usd:0,pools:0};prior.liquidity_usd+=liq;prior.pools+=1;groups.set(key,prior);}
+ const ranked=[...groups.values()].sort((a,b)=>b.liquidity_usd-a.liquidity_usd);const top=ranked[0],second=ranked[1];
+ if(!top||top.liquidity_usd<100_000)return null;
+ if(second&&top.liquidity_usd<second.liquidity_usd*5)return null;
+ return top;
+}
+function dexSearchIdentities(payload,base){
+ const rows=Array.isArray(payload?.pairs)?payload.pairs:[];
+ return rows.flatMap(row=>{
+  const chain=canonicalChain(row?.chainId),a=clean(row?.baseToken?.symbol).toUpperCase(),b=clean(row?.quoteToken?.symbol).toUpperCase();
+  if(!chain)return[];
+  if(a===base&&stableSymbol(b))return[{chain,contract_or_mint:row?.baseToken?.address,liquidity_usd:row?.liquidity?.usd}];
+  if(b===base&&stableSymbol(a))return[{chain,contract_or_mint:row?.quoteToken?.address,liquidity_usd:row?.liquidity?.usd}];
+  return[];
+ });
+}
+function geckoSearchIdentities(payload,base){
+ const included=new Map((Array.isArray(payload?.included)?payload.included:[]).filter(x=>x?.type==='token').map(x=>[clean(x?.id),clean(x?.attributes?.symbol).toUpperCase()]));
+ return (Array.isArray(payload?.data)?payload.data:[]).flatMap(row=>{
+  const baseId=clean(row?.relationships?.base_token?.data?.id),quoteId=clean(row?.relationships?.quote_token?.data?.id),a=included.get(baseId),b=included.get(quoteId);
+  const tokenId=a===base&&stableSymbol(b)?baseId:b===base&&stableSymbol(a)?quoteId:null,identity=splitGeckoTokenId(tokenId);
+  return identity?[{...identity,liquidity_usd:row?.attributes?.reserve_in_usd}]:[];
+ });
+}
+function uniqueProtocolSlug(payload,base,identity){
+ const rows=(Array.isArray(payload)?payload:[]).filter(row=>clean(row?.symbol).toUpperCase()===base&&(finite(row?.tvl)??0)>=100_000&&clean(row?.slug));
+ const chain=identity?.chain;if(!chain)return rows.length===1?clean(rows[0].slug):null;
+ const aliases={ethereum:['ethereum','eth'],bsc:['bsc','binance'],arbitrum:['arbitrum'],base:['base'],polygon:['polygon'],optimism:['optimism'],avalanche:['avalanche'],solana:['solana']}[chain]||[];
+ const compatible=rows.filter(row=>[row?.chain,...(Array.isArray(row?.chains)?row.chains:[])].some(v=>aliases.some(a=>clean(v).toLowerCase().includes(a))));
+ return compatible.length===1?clean(compatible[0].slug):rows.length===1?clean(rows[0].slug):null;
+}
+export function resolveDiscoveredIdentity({base,dex_payload,gecko_payload,protocols_payload,now=Date.now()}={}){
+ const symbol=baseOf(base),dex=dominantIdentity(dexSearchIdentities(dex_payload,symbol)),gecko=dominantIdentity(geckoSearchIdentities(gecko_payload,symbol));
+ const agrees=Boolean(dex&&gecko&&dex.identity.chain===gecko.identity.chain&&dex.identity.contract_or_mint.toLowerCase()===gecko.identity.contract_or_mint.toLowerCase());
+ const identity=agrees?dex.identity:null,protocol_slug=uniqueProtocolSlug(protocols_payload,symbol,identity);
+ return {base:symbol,identity,protocol_slug,coinbase_product:`${symbol}-USD`,status:identity||protocol_slug?'CLOSED':'NOT_CLOSED',observed_ts:now,identity_method:identity?'DUAL_PROVIDER_DOMINANT_ADDRESS':null,identity_sources:identity?['DEX_SCREENER_SEARCH','GECKOTERMINAL_SEARCH']:[],dex_liquidity_usd:dex?.liquidity_usd??null,gecko_liquidity_usd:gecko?.liquidity_usd??null,exact_identity:Boolean(identity)};
+}
+
+async function loadOrDiscoverIdentity({db,fetch_impl,base,now}={}){
+ await db.prepare(`CREATE TABLE IF NOT EXISTS report2_supplemental_identity_cache (base_symbol TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
+ const prior=await db.prepare(`SELECT observed_ts,expires_ts,payload_json FROM report2_supplemental_identity_cache WHERE base_symbol=?1 AND expires_ts>=?2 LIMIT 1`).bind(base,now).first();
+ if(prior){try{return{entry:JSON.parse(prior.payload_json),network_calls:0,cache_status:'HIT'};}catch{}}
+ const query=encodeURIComponent(`${base}/USDT`),[dex,gecko,protocols]=await Promise.all([
+  requestJson(fetch_impl,`https://api.dexscreener.com/latest/dex/search?q=${query}`),
+  requestJson(fetch_impl,`https://api.geckoterminal.com/api/v2/search/pools?query=${query}&include=base_token%2Cquote_token&page=1`),
+  requestJson(fetch_impl,'https://api.llama.fi/protocols',{timeout_ms:12000}),
+ ]);
+ const entry=resolveDiscoveredIdentity({base,dex_payload:dex.ok?dex.payload:null,gecko_payload:gecko.ok?gecko.payload:null,protocols_payload:protocols.ok?protocols.payload:null,now});
+ entry.discovery_receipts=[{source:'DEX_SCREENER_SEARCH',status:dex.ok?'CLOSED':dex.error},{source:'GECKOTERMINAL_SEARCH',status:gecko.ok?'CLOSED':gecko.error},{source:'DEFILLAMA_PROTOCOLS',status:protocols.ok?'CLOSED':protocols.error}];
+ const ttl=entry.status==='CLOSED'?IDENTITY_TTL_MS:IDENTITY_RETRY_TTL_MS;
+ await db.prepare(`INSERT INTO report2_supplemental_identity_cache(base_symbol,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(base_symbol) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(base,now,now+ttl,JSON.stringify(entry)).run();
+ return{entry,network_calls:3,cache_status:'REFRESHED'};
+}
+
+const sourceTtl=source=>({OXARCHIVE:5*60*1000,BITGET:5*60*1000,COINBASE:5*60*1000,DEFILLAMA:6*60*60*1000,GOPLUS:24*60*60*1000}[source]||TTL_MS);
+async function loadCachedSources(db,contract,now,refreshed=[]){
+ const cached=await db.prepare(`SELECT source,observed_ts,expires_ts,payload_json FROM report2_candidate_source_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all();
+ const sources={};for(const row of cached?.results||[]){try{sources[row.source]={...JSON.parse(row.payload_json),cache_status:refreshed.includes(row.source)?'REFRESHED':'HIT'};}catch{}}
+ return sources;
 }
 
 function normalizeDexScreener(payload,identity,now){
@@ -98,9 +168,18 @@ function normalizeCoinbase(product,ticker,now,primaryPrice){
 export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false}={}){
  if(!db)throw new Error('SUPPLEMENTAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_candidate_source_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
- const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},entry=parsed.entries[base]||Object.keys(providerIds).length?{...(parsed.entries[base]||{base,identity:null,protocol_slug:null,coinbase_product:null}),...providerIds}:null;
+ const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},manual=parsed.entries[base]||null;
+ let discovered=null,identityDiscovery={network_calls:0,cache_status:'NOT_NEEDED'};
+ if(!reserve_for_liquidations&&manual?.identity==null&&manual?.protocol_slug==null){
+  identityDiscovery=await loadOrDiscoverIdentity({db,fetch_impl,base,now});discovered=identityDiscovery.entry;
+ }
+ const entry={base,identity:manual?.identity||discovered?.identity||null,protocol_slug:manual?.protocol_slug||discovered?.protocol_slug||null,coinbase_product:manual?.coinbase_product||discovered?.coinbase_product||`${base}-USD`,lighter_market_id:manual?.lighter_market_id??providerIds?.lighter_market_id??null,gmx_market_address:manual?.gmx_market_address||providerIds?.gmx_market_address||null};
+ if(identityDiscovery.network_calls>0){
+  const sources=await loadCachedSources(db,contract,now);
+  return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'IDENTITY_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:discovered?.status||'NOT_CLOSED',identity_method:discovered?.identity_method||null,lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
+ }
  const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
- const receipts=[],calls=[];const get=url=>requestJson(fetch_impl,url);const post=(url,body)=>requestJson(fetch_impl,url,{method:'POST',body});
+ const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
  if(lane==='DEX_RISK'&&entry?.identity){
   const id=entry.identity,network=geckoNetwork(id.chain),cid=chainId(id.chain);
   calls.push(['DEX_SCREENER',get(`https://api.dexscreener.com/tokens/v1/${encodeURIComponent(id.chain)}/${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeDexScreener(p,id,now)]);
@@ -119,15 +198,14 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   const productId=entry.coinbase_product;const [product,ticker]=await Promise.all([get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}`),get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}/ticker`)]);
   calls.push(['COINBASE',Promise.resolve({ok:product.ok&&ticker.ok,payload:[product.payload,ticker.payload],error:[product.error,ticker.error].filter(Boolean).join(',')}),p=>normalizeCoinbase(p[0],p[1],now,primary_price)]);
  }
- if(calls.length>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
+ if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
  for(const {source,payload} of settled){
   receipts.push({source,status:payload.status});
-  await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+TTL_MS,JSON.stringify(payload)).run();
+  await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+sourceTtl(source),JSON.stringify(payload)).run();
  }
- const cached=await db.prepare(`SELECT source,observed_ts,expires_ts,payload_json FROM report2_candidate_source_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all();
- const sources={};for(const row of cached?.results||[]){try{sources[row.source]={...JSON.parse(row.payload_json),cache_status:settled.some(x=>x.source===row.source)?'REFRESHED':'HIT'};}catch{}}
- return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:calls.length,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:entry?{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address}:null,receipts,sources,internal_only:true};
+ const sources=await loadCachedSources(db,contract,now,settled.map(x=>x.source));
+ return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity||discovered?.identity?'CLOSED':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
 }
 
 export default{parseSupplementalIdentityRegistry,chooseSupplementalLane,collectSupplementalCandidateContext};

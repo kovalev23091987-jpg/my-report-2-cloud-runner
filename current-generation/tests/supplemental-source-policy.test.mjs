@@ -31,11 +31,13 @@ test('rotating liquidation lanes preserve the 50 request hot envelope', () => {
   assert.ok(liqflow.provider_quota_headroom > 46_000);
 });
 
-test('0xArchive stays pending for one authenticated cost probe instead of being discarded', () => {
+test('0xArchive requires its key and then uses the official one-credit bounded route', () => {
   const result=validateSupplementalRequest({source_id:'OXARCHIVE',request_count:1});
   assert.equal(result.allowed,false);
-  assert.equal(result.probe_required,true);
-  assert.equal(result.probe_calls,1);
+  assert.equal(result.reason,'API_KEY_REQUIRED');
+  assert.equal(validateSupplementalRequest({source_id:'OXARCHIVE',request_count:1,secret_configured:true}).allowed,true);
+  assert.equal(SUPPLEMENTAL_SOURCES.OXARCHIVE.credits_per_assigned_run,1);
+  assert.equal(SUPPLEMENTAL_SOURCES.OXARCHIVE.module_monthly_credit_cap,5000);
 });
 
 test('CoinLobster keyless layer is admitted while paid worst-case credit use is explicit', () => {
@@ -75,8 +77,9 @@ test('Bitget remains conditional instead of duplicating every run', () => {
   assert.equal(validateSupplementalRequest({source_id:'BITGET',request_count:3,condition_closed:true}).allowed,true);
 });
 
-test('rotation uses LiqFlow only when its key is configured', () => {
-  assert.equal(rotatingLane(3,{liqflowKeyConfigured:false}),'LIGHTER');
+test('rotation uses LiqFlow during the public pilot or with its later key', () => {
+  assert.equal(rotatingLane(3,{liqflowAvailable:false}),'LIGHTER');
+  assert.equal(rotatingLane(3,{liqflowAvailable:true}),'LIQFLOW_HL_NATIVE');
   assert.equal(rotatingLane(3,{liqflowKeyConfigured:true}),'LIQFLOW_HL_NATIVE');
 });
 

@@ -17,13 +17,13 @@ export const SUPPLEMENTAL_LANE_MAX_REQUESTS = 5;
 
 // New caches add only bounded row operations. DDL is idempotent and does not
 // modify rows after the tables exist. The values below deliberately include
-// the optional one-time 0xArchive probe in a manual run.
+// the optional one-time 0xArchive authentication check in a manual run.
 export const SUPPLEMENTAL_D1_WORST_PER_RUN = Object.freeze({
   rows_read: 8,
   rows_written: 8,
 });
 export const D1_BURST_RESERVATION = Object.freeze({
-  rows_read: 28_000,
+  rows_read: 34_000,
   rows_written: 560,
 });
 
@@ -63,26 +63,28 @@ export const SUPPLEMENTAL_SOURCES = Object.freeze({
     decision_role: 'PROJECTED_LIQUIDATION_VALIDATION',
   }),
   LIQFLOW_HL_NATIVE: source('LIQFLOW_HL_NATIVE', {
-    disposition: 'ROTATING_DEEP_CHECK_REQUIRES_SECRET',
+    disposition: 'ROTATING_DEEP_CHECK_PUBLIC_PILOT_THEN_SECRET',
     unique_value: 'ACCOUNT_DISCOVERY_THEN_NATIVE_HYPERLIQUID_RECHECK',
     calls_per_assigned_run: 5,
     rotation_share: 0.25,
     provider_rate_per_minute: 6,
     provider_monthly_quota: 50_000,
-    requires_secret: true,
+    requires_secret_after_utc: '2026-10-27T00:00:00Z',
     decision_role: 'PROJECTED_LIQUIDATION_VALIDATION',
   }),
   OXARCHIVE: source('OXARCHIVE', {
-    disposition: 'AUTHENTICATED_COST_PROBE_REQUIRED',
+    disposition: 'AUTHENTICATED_BOUNDED_ROTATING_LIQUIDATION_SOURCE',
     unique_value: 'ALTERNATIVE_HYPERLIQUID_BUCKET_HISTORY',
     calls_per_probe: 1,
     calls_per_assigned_run: 1,
-    rotation_share: 0,
+    credits_per_assigned_run: 1,
+    module_monthly_credit_cap: 5000,
+    rotation_share_when_configured: 0.25,
     provider_rate_per_second: 15,
     provider_monthly_quota: 50_000,
     requires_secret: true,
-    blocker: 'EXACT_ROUTE_CREDIT_COST_UNKNOWN',
-    decision_role: 'PROJECTED_LIQUIDATION_CROSSCHECK_AFTER_COST_PROBE',
+    blocker: 'API_KEY_REQUIRED',
+    decision_role: 'PROJECTED_LIQUIDATION_CROSSCHECK',
   }),
   DEX_PAIR: source('DEX_PAIR', {
     disposition: 'CACHED_EXACT_IDENTITY_ONLY',
@@ -296,19 +298,17 @@ export function sourceBudgetView() {
   };
 }
 
-export function rotatingLane(runNumber, { liqflowKeyConfigured = false } = {}) {
-  const lanes = ['LIGHTER', 'GMX', 'GTRADE', liqflowKeyConfigured ? 'LIQFLOW_HL_NATIVE' : 'LIGHTER'];
+export function rotatingLane(runNumber, { liqflowAvailable = false, liqflowKeyConfigured = false } = {}) {
+  const lanes = ['LIGHTER', 'GMX', 'GTRADE', liqflowAvailable||liqflowKeyConfigured ? 'LIQFLOW_HL_NATIVE' : 'LIGHTER'];
   const n = Number(runNumber);
   if (!Number.isSafeInteger(n) || n < 0) return null;
   return lanes[n % lanes.length];
 }
 
-export function validateSupplementalRequest({ source_id, request_count, exact_identity = false, condition_closed = false } = {}) {
+export function validateSupplementalRequest({ source_id, request_count, exact_identity = false, condition_closed = false, secret_configured = false } = {}) {
   const s = SUPPLEMENTAL_SOURCES[source_id];
   if (!s) return { allowed: false, reason: 'SOURCE_NOT_REGISTERED' };
-  if (s.disposition === 'AUTHENTICATED_COST_PROBE_REQUIRED') {
-    return { allowed: false, reason: s.blocker, probe_required: true, probe_calls: s.calls_per_probe };
-  }
+  if(s.requires_secret===true&&secret_configured!==true)return {allowed:false,reason:s.blocker||'SOURCE_SECRET_REQUIRED'};
   const count = Number(request_count);
   const max = Number(s.calls_per_assigned_run ?? s.calls_per_refresh ?? 0);
   if (!Number.isSafeInteger(count) || count < 1 || count > max || count > SUPPLEMENTAL_LANE_MAX_REQUESTS) {

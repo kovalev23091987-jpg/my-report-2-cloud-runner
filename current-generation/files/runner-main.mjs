@@ -22,12 +22,14 @@ import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext} from './src/global-market-context.mjs';
 import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
-import {runOxArchiveCostProbe} from './src/oxarchive-cost-probe.mjs';
+import {runOxArchiveCostProbe,loadOxArchiveReadiness,createOxArchiveCollector} from './src/oxarchive-cost-probe.mjs';
 import {installSourceAllowances} from './src/liquidation-extension/install-source-allowances.mjs';
 import {loadLiquidationVenueCatalog} from './src/liquidation-extension/venue-catalog-cache.mjs';
 import {parseLiquidationCommand} from './src/liquidation-command-router.mjs';
 import {attachNativeContext} from './src/liquidation-extension/runtime-bridge.mjs';
-import {nativeLiquidationLines} from './src/native-liquidation-guard.mjs';
+import {nativeLiquidationLines,nativeLiquidationSources} from './src/native-liquidation-guard.mjs';
+import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs';
+import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v1-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -457,14 +459,18 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }catch(error){
     env.REPORT2_GLOBAL_MARKET_CONTEXT={status:'SOURCE_ERROR',observed_ts:started,internal_only:true,error:String(error?.message||error)};
   }
-  console.log('GLOBAL_MARKET_CONTEXT_RECEIPT',JSON.stringify({status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status,deribit:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.status,deribit_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.cache_status,coinlobster:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.status,coinlobster_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.cache_status,internal_only:true}));
+  console.log('GLOBAL_MARKET_CONTEXT_RECEIPT',JSON.stringify({status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status,deribit:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.status,deribit_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.cache_status,coinlobster:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.status,coinlobster_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.cache_status,coinlobster_whale_rows:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.whale_radar?.length??0,coinlobster_liquidation_rows:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.realized_liquidations?.length??0,coinlobster_paths:{radar:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.radar_array_path??null,liquidations:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.liquidations_array_path??null},coinlobster_response_shapes:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.status==='NOT_CLOSED'?env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.response_shapes:null,internal_only:true}));
   try{env.REPORT2_LIQUIDATION_VENUE_REGISTRY=await loadLiquidationVenueCatalog({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started});}
   catch(error){env.REPORT2_LIQUIDATION_VENUE_REGISTRY={status:'SOURCE_ERROR',entries:{},internal_only:true,error:String(error?.message||error)};}
   console.log('LIQUIDATION_VENUE_CATALOG',JSON.stringify({status:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.status,network_calls:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.network_calls,entries:Object.keys(env.REPORT2_LIQUIDATION_VENUE_REGISTRY.entries||{}).length,receipts:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.receipts||[]}));
+  const oxarchiveApiKey=envText('OXARCHIVE_API_KEY',{required:false});
   if(source!=='schedule'&&['1','true','yes','on'].includes(envText('REPORT2_OXARCHIVE_COST_PROBE',{required:false}).toLowerCase())){
-    const probe=await runOxArchiveCostProbe({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:envText('OXARCHIVE_API_KEY',{required:false}),symbol:envText('REPORT2_OXARCHIVE_PROBE_SYMBOL',{required:false})||'SOL',now:started});
+    const probe=await runOxArchiveCostProbe({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:oxarchiveApiKey,symbol:envText('REPORT2_OXARCHIVE_PROBE_SYMBOL',{required:false})||'SOL',now:started});
     console.log('OXARCHIVE_COST_PROBE_RECEIPT',JSON.stringify(probe));
   }
+  const oxarchiveReadiness=await loadOxArchiveReadiness({db:env.DATA_DB,api_key:oxarchiveApiKey});
+  const oxarchiveCollector=createOxArchiveCollector({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:oxarchiveApiKey,readiness:oxarchiveReadiness});
+  console.log('OXARCHIVE_RUNTIME_READINESS',JSON.stringify({status:oxarchiveReadiness.status,reason:oxarchiveReadiness.reason||null,enabled:oxarchiveReadiness.enabled===true,credit_cost:oxarchiveReadiness.credit_cost??null,monthly_credit_cap:oxarchiveReadiness.monthly_credit_cap,max_monthly_calls:oxarchiveReadiness.max_monthly_calls??0,automatic_topup:false}));
   if (postV7UnifiedEnabled && source === "schedule") {
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:"GITHUB_ACTIONS"});
     if (!ownership.allowed) throw new Error(`PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:${ownership.status}`);
@@ -479,7 +485,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       rows_written:50+V3_EARLY_SIDECAR_BUDGET.rows_written+V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written,
     };
     const providerAdmit=createD1SourceAdmission({db:env.DATA_DB,scope_bindings:scopes,within_run_budget:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:requiredDownstream.rows_read+e.extraRowsRead,extraRowsWritten:requiredDownstream.rows_written+e.extraRowsWritten})});
-    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:5,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false})});
+    const sourceWeightStore=createLiquidationSourceWeightStore({db:env.DATA_DB});
+    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:5,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_collect:oxarchiveCollector,source_weight_store:sourceWeightStore});
     env.REPORT2_LIQUIDATION_NATIVE_COLLECT=liquidationSources.collect;
   }
   if(commandIntent.matched){
@@ -503,12 +510,14 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       }
     }
     const lines=candidate?(nativeLiquidationLines(liquidationContext,{manual:true})||['Ликвидации: свежие нативные уровни в проверенной выборке не подтверждены.']):[];
+    const contexts=nativeLiquidationSources(liquidationContext).contexts;
+    const liquidationPanel=candidate?.current_price?buildDynamicLiquidationPanel({contexts,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_CLOSED',reason:'REFERENCE_PRICE_REQUIRED',clusters:[],score_evidence:null};
     if(pending.length)await Promise.all(pending);
     const d1PostCycleBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
     if(!d1PostCycleBudget.allowed)throw new Error(`D1_LIQUIDATION_ONLY_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(',')}`);
     const d1Usage=enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
     const d1FinalizedUsage=await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
-    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,max_additional_liquidation_requests:5,d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
+    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,max_additional_liquidation_requests:5,d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
     console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify(result));
     return;
   }
