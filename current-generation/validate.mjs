@@ -16,6 +16,7 @@ const run=(args,{cwd=repo}={})=>{
 const checks=[
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
  'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs',
+ 'files/src/canonical-display.mjs','files/src/native-liquidation-guard.mjs','files/src/reason-registry.mjs',
  'files/src/manual-report-formatter.mjs','files/src/telegram-compact-formatter.mjs',
  'files/src/liquidation-extension/runner-extension.mjs','files/src/liquidation-extension/htx-liquidation-route.mjs',
 ];
@@ -35,7 +36,8 @@ if(sourceRuntime){
  const actual=createHash('sha256').update(worker).digest('hex');
  if(actual!==expectedWorker||overlay.worker_sha256!==expectedWorker)throw Error(`OVERLAY_WORKER_HASH_MISMATCH:${actual}`);
  if(!fs.existsSync(path.join(runtime,'byk-quota-budget.mjs')))throw Error('OVERLAY_QUOTA_MODULE_MISSING');
- for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js'])run(['--check',path.join(runtime,rel)]);
+ for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs'])run(['--check',path.join(runtime,rel)]);
+ run(['--input-type=module','--eval',"await import('./src/manual-report-formatter.mjs'); await import('./src/telegram-compact-formatter.mjs');"],{cwd:runtime});
  fs.rmSync(temp,{recursive:true,force:true});
 }
 console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:18,scheduled_runs_per_day:80,worst_case_31_day_requests:12865,overlay:overlay?'PASS':'NOT_REQUESTED'}));

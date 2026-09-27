@@ -25,3 +25,9 @@ test('workflow schedule and generation binding are exact',()=>{
  assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260927_LIQ_ALL_HTX_EXCEPT_BTC_ETH_V1"/);
  assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"OFF"/);
 });
+test('runtime overlay carries the complete formatter dependency set',()=>{
+ const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
+ for(const rel of ['src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs']){
+  assert.match(overlay,new RegExp(`['\"]${rel.replaceAll('/','\\/')}['\"]`));
+ }
+});
