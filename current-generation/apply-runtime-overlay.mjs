@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
+import {applyRuntimePolicyPatches} from './runtime-policy-patches.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const runtime=path.resolve(process.argv[2]||'runtime');
 const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
@@ -12,6 +13,11 @@ const files=[
  'runner-main.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',
+ 'src/user-approved-publication-policy.mjs',
+ 'src/entry-area-rule-v2.mjs',
+ 'src/tz101-scenario-plan.mjs',
+ 'src/tz101-cost-assessment.mjs',
+ 'src/technical-move-potential.mjs',
  'src/canonical-display.mjs',
  'src/native-liquidation-guard.mjs',
  'src/reason-registry.mjs',
@@ -58,4 +64,6 @@ const files=[
  ,'src/liquidation-extension/venue-catalog-cache.mjs'
 ];
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M',worker_sha256:sha(input),schedule_minutes:20,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT'}));
+fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.mjs'),path.join(runtime,'r8-20-prospective-validation-sidecar.mjs'));
+const policyPatches=applyRuntimePolicyPatches(runtime);
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M',worker_sha256:sha(input),schedule_minutes:20,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));

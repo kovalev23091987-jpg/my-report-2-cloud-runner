@@ -57,6 +57,10 @@ import {
 } from "./tz101-publication-runtime.mjs";
 
 import {
+  buildApprovedPublicationInputs,
+} from "./user-approved-publication-policy.mjs";
+
+import {
   validateByKaranteliProxyTarget,
 } from "./tz101-byk-proxy-policy.mjs";
 
@@ -16432,11 +16436,39 @@ async function buildDeepCheckInput(params, env) {
     }
   }
 
+  // The owner-approved analytical policy supplies the previously missing entry
+  // band, conservative fee reserve and maximum holding horizon. Hard vetoes,
+  // evidence identity and execution freshness remain unchanged and fail closed.
+  const approvedPublicationInputs =
+    buildApprovedPublicationInputs({
+      decision_summary:
+        finalDecisionShadowPersistence?.decision_summary ||
+        null,
+      observed_ts: now,
+    });
+
+  const publicationLiquidationContext = {
+    status:
+      Array.isArray(liquidationIntelligence?.projected_clusters) &&
+      liquidationIntelligence.projected_clusters.length
+        ? "CONFIRMED"
+        : Array.isArray(liquidationIntelligence?.realized?.provider) &&
+            liquidationIntelligence.realized.provider.length
+          ? "PARTIAL"
+          : "NOT_CONFIRMED",
+    short_above:
+      liquidationIntelligence?.projected_clusters?.find?.(
+        (row) => Number(row?.level_price ?? row?.price) > Number(futures?.data?.mark_price)
+      )?.level_price ?? null,
+    long_below:
+      liquidationIntelligence?.projected_clusters?.find?.(
+        (row) => Number(row?.level_price ?? row?.price) < Number(futures?.data?.mark_price)
+      )?.level_price ?? null,
+    note:
+      "Контекст ликвидаций передан из того же снимка рынка; отсутствие точной суммы не превращается в выдуманную сумму.",
+  };
+
   // TZ 10.1 publication stays separate from analytical Final Decision.
-  // Publication runtime derives prospective scenario/cost assessments from the
-  // exact committed receipts; null here means "derive internally", not absent
-  // producers. Missing entry-area/fee/holding proofs remain fail-closed and spend
-  // zero Telegram-sidecar D1 statements.
   const finalDecisionPublicationShadow = await runTz101PublicationShadow({
     env,
     final_decision_persistence: finalDecisionShadowPersistence,
@@ -16445,12 +16477,16 @@ async function buildDeepCheckInput(params, env) {
     execution_gate: sealedFullEvidenceProof?.bundle?.execution_gate || null,
     trajectory: trajectory?.data || null,
     trajectory_available_ts: trajectory?.available_ts ?? null,
-    entry_area_rule: null,
-    fee_schedule: null,
-    holding_plan: null,
+    entry_area_rule:
+      approvedPublicationInputs.entry_area_rule,
+    fee_schedule:
+      approvedPublicationInputs.fee_schedule,
+    holding_plan:
+      approvedPublicationInputs.holding_plan,
     scenario_plan: null,
     cost_assessment: null,
-    liquidation_context: null,
+    liquidation_context:
+      publicationLiquidationContext,
     smart_money_raw: smartMoneyRaw,
     daily_candles:
       trajectory?.data?._opportunity_shadow_inputs?.one_day || [],

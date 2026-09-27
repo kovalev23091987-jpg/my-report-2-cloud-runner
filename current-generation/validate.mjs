@@ -7,15 +7,17 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='255241fb90c19e6174fe91d0eb49335436f7f4d91166e68ef8c06012a59cb0e0';
+const expectedWorker='c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
  return result.stdout.trim();
 };
 const checks=[
+ 'runtime-policy-patches.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
+ 'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs',
  'files/src/canonical-display.mjs','files/src/native-liquidation-guard.mjs','files/src/reason-registry.mjs',
  'files/src/manual-report-formatter.mjs','files/src/telegram-compact-formatter.mjs',
@@ -49,8 +51,12 @@ if(sourceRuntime){
  const actual=createHash('sha256').update(worker).digest('hex');
  if(actual!==expectedWorker||overlay.worker_sha256!==expectedWorker)throw Error(`OVERLAY_WORKER_HASH_MISMATCH:${actual}`);
  if(!fs.existsSync(path.join(runtime,'byk-quota-budget.mjs')))throw Error('OVERLAY_QUOTA_MODULE_MISSING');
- for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/cross-exchange-risk-context.mjs','src/liquidation-candidate-queue.mjs','src/liquidation-outcome-calibration.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
+ for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/user-approved-publication-policy.mjs','src/entry-area-rule-v2.mjs','src/tz101-scenario-plan.mjs','src/tz101-cost-assessment.mjs','src/technical-move-potential.mjs','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/cross-exchange-risk-context.mjs','src/liquidation-candidate-queue.mjs','src/liquidation-outcome-calibration.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
+ const campaignEngine=fs.readFileSync(path.join(runtime,'src/multi-wave-campaign-engine.mjs'),'utf8');
+ if(!campaignEngine.includes('const thresholdPct = measuredBaseMovePct;')||!campaignEngine.includes("target_basis: 'PRECOMMITTED_BASE_MEASURED_MOVE_AT_LEAST_5_PERCENT'"))throw Error('MEASURED_FIVE_PERCENT_RUNTIME_POLICY_MISSING');
  run(['--input-type=module','--eval',"await import('./src/manual-report-formatter.mjs'); await import('./src/telegram-compact-formatter.mjs');"],{cwd:runtime});
+ run([path.join(here,'tests/approved-entry-path.runtime.mjs'),runtime]);
+ run([path.join(here,'tests/approved-entry-performance.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
 console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,worst_case_31_day_requests:12400,overlay:overlay?'PASS':'NOT_REQUESTED'}));

@@ -2,7 +2,7 @@ import {formatManualReport} from './manual-report-formatter.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
-export const CANONICAL_PUBLICATION_VERSION='post-v7-canonical-publication-v1-20260926';
+export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v1-20260927';
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const upper=v=>text(v).toUpperCase();
 const finite=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
@@ -16,7 +16,10 @@ function closedHardGates(c){const gs=Array.isArray(c?.hard_gates)?c.hard_gates:[
 function exactTrigger(t,observed){return Boolean(t&&text(t.metric)&&['>=','<=','>','<'].includes(text(t.operator))&&finite(t.value)!==null&&text(t.unit)&&text(t.timeframe)&&stamp(t.expires_ts)!==null&&t.expires_ts>=observed&&text(t.cancel_condition)&&stamp(t.next_recheck_ts)!==null&&t.next_recheck_ts>observed&&t.next_recheck_ts<=t.expires_ts);}
 function observationAreaClosed(c){const e=c?.entry;return Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));}
 function earlySourceRolesClosed(c){const v=c?.metadata?.source_role_view;if(v?.status!=='CLOSED')return false;const xs=Array.isArray(v.classified)?v.classified:[];const htx=xs.some(x=>x?.source_key==='HTX_OFFICIAL'&&Array.isArray(x?.assigned_roles)&&x.assigned_roles.includes('EXECUTION_TRUTH'));const families=new Set(xs.filter(x=>x?.registry_known===true).map(x=>text(x?.source_family)).filter(Boolean));return htx&&families.size>=2;}
-function entryClosed(c){const e=c?.entry;const inv=c?.invalidation;const targets=Array.isArray(c?.targets)?c.targets:[];const area=Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));return area&&Boolean(displayInvalidation(inv))&&targets.some(t=>finite(t?.price??t)!==null);}
+function referenceEntry(c){const e=c?.entry||{};const lo=finite(e.min_price),hi=finite(e.max_price);if(lo!==null&&hi!==null)return(lo+hi)/2;const trigger=finite(c?.trigger?.value);return trigger;}
+function remainingMove(c,target){const entry=referenceEntry(c),price=finite(target?.price??target),d=upper(c?.direction);if(entry===null||entry<=0||price===null||!['LONG','SHORT'].includes(d))return null;return d==='LONG'?(price/entry-1)*100:(1-price/entry)*100;}
+function reportableTarget(c){return(Array.isArray(c?.targets)?c.targets:[]).find(t=>(remainingMove(c,t)??-Infinity)>=5-1e-7)??null;}
+function entryClosed(c){const e=c?.entry;const inv=c?.invalidation;const area=Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));return area&&Boolean(displayInvalidation(inv))&&Boolean(reportableTarget(c));}
 function directionClosed(c){return ['LONG','SHORT'].includes(upper(c?.direction));}
 function scoresClosed(c){return score(c?.scores?.overall_0_100)!==null&&score(c?.scores?.coin_interest_0_100)!==null&&c?.scores?.is_probability===false;}
 
@@ -47,19 +50,21 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
    // overall may remain missing until a real canonical overall exists. If overall
    // is factual, it must also clear the same threshold.
    if(interest===null)return {...base,reason:'CANONICAL_INTEREST_NOT_CLOSED'};
-   if(interest<60)return {...base,reason:'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
-   if(overall!==null&&overall<60)return {...base,reason:'CANONICAL_OVERALL_BELOW_USER_THRESHOLD'};
+   if(interest<70)return {...base,reason:'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
+   if(overall!==null&&overall<70)return {...base,reason:'CANONICAL_OVERALL_BELOW_USER_THRESHOLD'};
    if(canonical.state!=='OBSERVE')return {...base,reason:'OBSERVE_STATE_MISMATCH'};
    if(!observationAreaClosed(canonical))return {...base,reason:'OBSERVE_WORKING_AREA_NOT_CLOSED'};
    if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'OBSERVE_TRIGGER_NOT_CLOSED'};
+   if(!reportableTarget(canonical))return {...base,reason:'POTENTIAL_MOVE_BELOW_USER_MINIMUM'};
    if(!earlySourceRolesClosed(canonical))return {...base,reason:'OBSERVE_SOURCE_ROLES_NOT_CLOSED'};
    return {deliver:true,status:'ACTIONABLE',reason:'EARLY_ACTIONABLE_OBSERVE',create_recheck:true};
  }
  if(!scoresClosed(canonical))return {...base,reason:'CANONICAL_SCORES_NOT_CLOSED'};
- if(overall<60||interest<60)return {...base,reason:overall<60?'CANONICAL_OVERALL_BELOW_USER_THRESHOLD':'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
+ if(overall<70||interest<70)return {...base,reason:overall<70?'CANONICAL_OVERALL_BELOW_USER_THRESHOLD':'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
  if(event==='WAIT'){
    if(canonical.state!=='WAIT_FOR_TRIGGER')return {...base,reason:'WAIT_STATE_MISMATCH'};
    if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'WAIT_TRIGGER_NOT_CLOSED'};
+   if(!reportableTarget(canonical))return {...base,reason:'POTENTIAL_MOVE_BELOW_USER_MINIMUM'};
    return {deliver:true,status:'ACTIONABLE',reason:'WAIT_TRIGGER_CONTRACT_CLOSED',create_recheck:true};
  }
  if(!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(canonical.state))return {...base,reason:'ENTRY_STATE_MISMATCH'};
@@ -74,21 +79,36 @@ function fmtScore(v){const n=score(v);return n===null?'не подтвержде
 function fmtPrice(v){const n=finite(v);return n===null?null:String(Number(n.toPrecision(10))).replace('.',',');}
 function fmtPct(v,d=2){const n=finite(v);if(n===null)return null;const x=Math.abs(n).toFixed(d).replace('.',',');return `${n>0?'+':n<0?'-':''}${x}%`;}
 function fmtMsk(ts){const n=stamp(ts);if(n===null)return null;return new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(n)).replace(',','');}
-function liquidationLines(c,{manual=false}={}){return nativeLiquidationLines(c?.liquidations||{},{manual})??displayLegacyLiquidations(c?.liquidations);}
+function strength(z){return text(z?.strength_label_ru)||'сила не определена';}
+function liquidationLines(c,{manual=false}={}){
+ const liq=c?.liquidations||{},pump=liq?.pump?.is_pump===true,max=pump?4:2,lines=[];
+ for(const [rows,label] of [[liq.above,'Сильные зоны выше'],[liq.below,'Сильные зоны ниже']]){
+  const parts=(Array.isArray(rows)?rows:[]).slice(0,max).map(z=>{const p=fmtPrice(z?.price??z?.level_price),d=finite(z?.distance_pct);if(!p)return null;const amount=finite(z?.exact_notional_usdt);return `${p} USDT${d!==null?` (${fmtPct(d,1)})`:''} — ${strength(z)}${amount!==null?`, точная сумма ${fmtPrice(amount)} USDT`:z?.kind==='CALCULATED'?', расчётная вероятная зона':''}`;}).filter(Boolean);
+  if(parts.length)lines.push(`${label}: ${parts.join('; ')}.`);
+ }
+ const native=nativeLiquidationLines(liq,{manual});
+ if(native!==null&&manual)lines.push('Дополнительная фактическая выборка площадок:',...native);
+ return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
+}
+function basisLabel(c){const b=upper(c?.metadata?.idea_basis);if(b==='LIQUIDATION_PUMP')return'ликвидационные зоны и ускорение движения';if(b==='CANDLE_ANOMALY')return'более ранняя свечная аномалия, которая сейчас подтверждается';return'совокупность рыночных подтверждений';}
+function relativeLine(direction,confirmed){if(direction==='LONG')return confirmed?'Относительная сила: при снижении биткоина и эфира монета теряет меньше, а при росте растёт быстрее.':'Ждём подтверждения: при снижении биткоина и эфира монета должна терять меньше, а при росте — расти быстрее.';return confirmed?'Относительная слабость: при росте биткоина и эфира монета растёт слабее, а при снижении падает быстрее.':'Ждём подтверждения: при росте биткоина и эфира монета должна расти слабее, а при снижении — падать быстрее.';}
+function relativeConfirmed(c){return(Array.isArray(c?.source_receipts)?c.source_receipts:[]).some(r=>/RELATIVE/i.test(text(r?.metric)))||(Array.isArray(c?.reasons)?c.reasons:[]).some(r=>/относительн/i.test(text(r?.label)||text(r)));}
 export function renderCanonicalTelegram({canonical,lifecycle_event}={}){
  if(canonical?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};const nativeGuard=validateNativeLiquidationContext(canonical);if(!nativeGuard.ok)return{ok:false,status:nativeGuard.status,text:null};const event=upper(lifecycle_event),d=upper(canonical.direction),ticker=text(canonical?.metadata?.contract||canonical?.candidates?.[0]?.contract||canonical?.candidates?.[0]?.ticker).replace(/-USDT$/i,'');
  if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
- const dir=d==='LONG'?'🟢 ПОКУПКА':'🔴 ПРОДАЖА';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 БЛИЗКО К ТОЧКЕ ВХОДА — ЖДЁМ УСЛОВИЕ':event==='ENTRY'?'✅ МОЖНО ВХОДИТЬ СЕЙЧАС':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
- const lines=[ticker,dir,title,'',`Общая оценка: ${fmtScore(canonical.scores?.overall_0_100)}`,`Монета интересна: ${fmtScore(canonical.scores?.coin_interest_0_100)}`,`Готовность ко входу: ${event==='ENTRY'?'подтверждена обязательными проверками':event==='WAIT'?'условие входа сформировано, но ещё не выполнено':event==='OBSERVE'?'сильный ранний сценарий, вход ещё не подтверждён':'не подтверждена'}`];
- for(const fact of displayMarketFacts(canonical).slice(0,event==='WAIT'?1:4))lines.push(`• ${fact}`);
+ const dir=d==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 ЖДЁМ ПОДТВЕРЖДЕНИЕ ВХОДА':event==='ENTRY'?'✅ ВХОД ОДОБРЕН':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
+ const shownScore=score(canonical.scores?.overall_0_100)??score(canonical.scores?.coin_interest_0_100);
+ const lines=[ticker,dir,title,'',`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)}%.`}`,`Основа идеи: ${basisLabel(canonical)}.`];
+ lines.push(relativeLine(d,relativeConfirmed(canonical)));
+ for(const fact of displayMarketFacts(canonical).slice(0,event==='WAIT'?1:3))lines.push(`• ${fact}`);
  if(event==='OBSERVE'){
-   const t=canonical.trigger,e=canonical.entry||{};lines.push(`Рабочая зона наблюдения: ${text(e.area)||`${fmtPrice(e.min_price)}–${fmtPrice(e.max_price)} USDT`}. Это ещё не точка входа.`,`Контрольный уровень приближения: ${fmtPrice(t?.value)} USDT. После его достижения система заново проверит свежий рынок и все обязательные условия.`,`Отмена сценария: ${displayCondition(t?.cancel_condition)}.`,`Сценарий действителен до: ${fmtMsk(t?.expires_ts)} МСК.`,`Следующая автоматическая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
+   const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,`• повторного подтверждения объёма, открытого интереса и ликвидаций.`,`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Начинать закрывать позицию: ${fmtPrice(target?.price??target)} USDT.`:null,`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
  } else if(event==='WAIT'){
-   const t=canonical.trigger;lines.push(`Уровень приближения к входу: ${fmtPrice(t?.value)} USDT.`,'После достижения уровня система заново проверит свежий рынок и защитные фильтры; только затем возможен вход.',`Отмена ожидания: ${displayCondition(t?.cancel_condition)}.`,`Условие действительно до: ${fmtMsk(t?.expires_ts)} МСК.`,`Следующая автоматическая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
+   const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,'• сохранения подтверждений при повторной проверке.',`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Начинать закрывать позицию: ${fmtPrice(target?.price??target)} USDT.`:null,`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
  } else if(event==='ENTRY'){
-   const e=canonical.entry||{};lines.push(`Вход: ${text(e.area)||`${fmtPrice(e.min_price)}–${fmtPrice(e.max_price)} USDT`}.`,`Отмена идеи: ${displayInvalidation(canonical.invalidation)||''}.`);if(Array.isArray(canonical.targets)&&canonical.targets.length)lines.push(`Цели: ${canonical.targets.slice(0,3).map(x=>fmtPrice(x?.price??x)).filter(Boolean).join(', ')} USDT.`);
+   const e=canonical.entry||{},target=reportableTarget(canonical);lines.push(`Зона входа: ${text(e.area)||`${fmtPrice(e.min_price)}–${fmtPrice(e.max_price)} USDT`}.`,`Начинать закрывать позицию: ${fmtPrice(target?.price??target)} USDT.`,`Отмена идеи: ${displayInvalidation(canonical.invalidation)||''}.`);
  } else lines.push('Причина: ранее отправленная идея больше не соответствует обязательным условиям.');
- lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=event==='WAIT'?850:event==='ENTRY'?1100:1200;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
+ lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 export function renderCanonicalManual({canonical}={}){return formatManualReport(canonical);}
 
@@ -97,18 +117,15 @@ export function validatePresentation({canonical,manual_text,telegram_text,direct
  if(!text(manual_text)||!text(telegram_text))return fail('BOTH_PRESENTATIONS_REQUIRED');
  const nativeCheck=validateNativeLiquidationContext(canonical);if(!nativeCheck.ok)return fail(nativeCheck.status);
  const nl=nativeLiquidationLines(canonical?.liquidations),ml=nativeLiquidationLines(canonical?.liquidations,{manual:true});
- if(nl&&nl.some(line=>!telegram_text.includes(line)))return fail('NATIVE_LIQUIDATION_TELEGRAM_TEXT_MISMATCH');
  if(ml&&ml.some(line=>!manual_text.includes(line)))return fail('NATIVE_LIQUIDATION_MANUAL_TEXT_MISMATCH');
- const pairs=[['Общая оценка','overall_0_100'],['Монета интересна','coin_interest_0_100']];
- for(const [label,key] of pairs){const exp=expectedScoreText(canonical,label,key);if(!manual_text.includes(exp)||!telegram_text.includes(exp))return fail(`PRESENTATION_SCORE_MISMATCH:${key}`);}
  const d=upper(direction??canonical?.direction);
  for(const output of [manual_text,telegram_text]){
  if(d==='LONG'){
-   if(!/(Направление:\s*покупка|🟢\s*ПОКУПКА)/iu.test(output))return fail('LONG_DIRECTION_NOT_RENDERED');
-   if(/🔴\s*ПРОДАЖА|Направление:\s*продажа/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
+   if(!/(Направление:\s*покупка|🟢\s*РОСТ)/iu.test(output))return fail('LONG_DIRECTION_NOT_RENDERED');
+   if(/🔴\s*СНИЖЕНИЕ|Направление:\s*продажа/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
  } else if(d==='SHORT'){
-   if(!/(Направление:\s*продажа|🔴\s*ПРОДАЖА)/iu.test(output))return fail('SHORT_DIRECTION_NOT_RENDERED');
-   if(/🟢\s*ПОКУПКА|Направление:\s*покупка/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
+   if(!/(Направление:\s*продажа|🔴\s*СНИЖЕНИЕ)/iu.test(output))return fail('SHORT_DIRECTION_NOT_RENDERED');
+   if(/🟢\s*РОСТ|Направление:\s*покупка/iu.test(output))return fail('DISPLAY_DIRECTION_MISMATCH');
  } else return fail('DISPLAY_DIRECTION_BINDING_REQUIRED');
  }
  const event=upper(lifecycle_event)||({'WAIT_FOR_TRIGGER':'WAIT','OBSERVE':'OBSERVE','ENTRY_NOW_ANALYTICAL':'ENTRY','ENTRY_NOW_VALIDATED':'ENTRY','REJECTED':'IDEA_REMOVED'})[canonical?.state];

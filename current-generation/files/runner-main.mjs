@@ -18,7 +18,7 @@ import { loadCompletedLifecycleHandoffs, runV3TelegramLifecycleSidecar, V3_TELEG
 import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from "./src/v3-telegram-delivery-sidecar.mjs";
 import { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from "./src/bound-telegram-delivery-sidecar.mjs";
 import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from "./src/scheduler-control.mjs";
-import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET } from "./r8-20-prospective-validation-sidecar.mjs";
+import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET, R820_PROSPECTIVE_VALIDATION_VERSION } from "./r8-20-prospective-validation-sidecar.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext} from './src/global-market-context.mjs';
 import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
@@ -34,7 +34,7 @@ import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context
 import {createLiquidationCandidateQueue} from './src/liquidation-candidate-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v1-20260927";
+const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -418,7 +418,7 @@ function enforceD1Budget(db) {
 async function main() {
   const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
   const env = buildEnv();
@@ -598,13 +598,14 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
       watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
       watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-      infoEnabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }) : "0") : envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
+      infoEnabled: postV7UnifiedEnabled ? "0" : envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
       infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
-      infoObserveEnabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }) : "0") : envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
+      infoObserveEnabled: postV7UnifiedEnabled ? "0" : envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
       currentLifecycle: telegramInstallValidation && telegramReportTestRequested ? null : (v3TelegramLifecycleSidecar || {status:"LIFECYCLE_NOT_RUN"}),
-      // Canonical V3 remains the only final-chain sender. The informational
-      // transport stays enabled for deduplicated OBSERVE/WAIT candidate notices.
-      enabled: postV7UnifiedEnabled ? (v3TelegramNetworkEnabled ? "1" : "0") : (v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false })),
+      // The bound canonical publisher owns OBSERVE, WAIT and ENTRY in post-v7.
+      // Keeping the legacy sender disabled prevents duplicate or differently
+      // qualified messages from bypassing the canonical technical-move filter.
+      enabled: postV7UnifiedEnabled ? (postV7OwnerTelegramTestEnabled ? "1" : "0") : (v3TelegramNetworkEnabled ? "0" : envText("REPORT2_TELEGRAM_OUTPUT_ENABLED", { required: false })),
       fetchImpl: nativeFetch,
     });
     return {budget,output};
@@ -748,11 +749,11 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   });
   let r820ProspectiveValidationSidecar;
   if (!r820ProspectiveValidationConfigured) {
-    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DISABLED",calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
+    r820ProspectiveValidationSidecar = {version:R820_PROSPECTIVE_VALIDATION_VERSION,mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DISABLED",calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else if (!lowPriorityCadenceDue) {
-    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DEFERRED_LOW_PRIORITY_CADENCE",scheduled_minute_utc:scheduledMinuteUtc,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
+    r820ProspectiveValidationSidecar = {version:R820_PROSPECTIVE_VALIDATION_VERSION,mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"DEFERRED_LOW_PRIORITY_CADENCE",scheduled_minute_utc:scheduledMinuteUtc,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else if (!r820ProspectiveValidationGate.allowed) {
-    r820ProspectiveValidationSidecar = {version:"r8-20-prospective-validation-sidecar-v1",mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",reasons:r820ProspectiveValidationGate.reasons||[],capacity_gate:r820ProspectiveValidationGate,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
+    r820ProspectiveValidationSidecar = {version:R820_PROSPECTIVE_VALIDATION_VERSION,mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",reasons:r820ProspectiveValidationGate.reasons||[],capacity_gate:r820ProspectiveValidationGate,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else {
     r820ProspectiveValidationSidecar = await runR820ProspectiveValidationSidecar(env.DATA_DB, {
       current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:Date.now(),

@@ -4,8 +4,9 @@ import {
   buildProspectiveEntryAreaSample,
   attachFactualEntryAreaOutcome,
 } from './src/tz101-entry-area-calibration.mjs';
+import {digest} from './src/upstream-proof-utils.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-validation-sidecar-v1';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-approved-entry-performance-v2-20260927';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -84,11 +85,32 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
       FROM tz101_entry_area_calibration_signal
       WHERE created_ts>=?1 AND calibration_only=1 AND live_promotion_allowed=0
       GROUP BY direction ORDER BY direction`).bind(activationTs).all(),
-    db.prepare(`SELECT direction,horizon_hours,COUNT(DISTINCT sample_id) AS closed_samples,
-        MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts
-      FROM tz101_entry_area_calibration_outcome
-      WHERE computed_ts>=?1 AND calibration_only=1 AND live_promotion_allowed=0
-      GROUP BY direction,horizon_hours ORDER BY direction,horizon_hours`).bind(activationTs).all(),
+    db.prepare(`WITH base AS (
+        SELECT o.sample_id,o.direction,o.horizon_hours,o.observed_ts,o.outcome_json,s.sample_json,
+          COALESCE(json_extract(s.sample_json,'$.idea_basis'),'UNKNOWN') AS idea_basis
+        FROM tz101_entry_area_calibration_outcome o
+        JOIN tz101_entry_area_calibration_signal s ON s.sample_id=o.sample_id
+        WHERE o.computed_ts>=?1 AND o.calibration_only=1 AND o.live_promotion_allowed=0
+      )
+      SELECT 'BASIS' AS dimension,idea_basis AS dimension_value,direction,horizon_hours,
+        COUNT(DISTINCT sample_id) AS closed_samples,MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts,
+        AVG(json_extract(outcome_json,'$.directional_return_pct')) AS average_return_pct,
+        AVG(json_extract(outcome_json,'$.mfe_directional_pct_snapshot')) AS average_best_move_pct,
+        AVG(json_extract(outcome_json,'$.mae_directional_pct_snapshot')) AS average_worst_move_pct,
+        SUM(CASE WHEN json_extract(outcome_json,'$.target_touched')=1 THEN 1 ELSE 0 END) AS begin_close_hits,
+        SUM(CASE WHEN json_extract(outcome_json,'$.invalidation_touched')=1 THEN 1 ELSE 0 END) AS invalidation_hits
+      FROM base GROUP BY idea_basis,direction,horizon_hours
+      UNION ALL
+      SELECT 'SOURCE' AS dimension,CAST(j.value AS TEXT) AS dimension_value,b.direction,b.horizon_hours,
+        COUNT(DISTINCT b.sample_id),MIN(b.observed_ts),MAX(b.observed_ts),
+        AVG(json_extract(b.outcome_json,'$.directional_return_pct')),
+        AVG(json_extract(b.outcome_json,'$.mfe_directional_pct_snapshot')),
+        AVG(json_extract(b.outcome_json,'$.mae_directional_pct_snapshot')),
+        SUM(CASE WHEN json_extract(b.outcome_json,'$.target_touched')=1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN json_extract(b.outcome_json,'$.invalidation_touched')=1 THEN 1 ELSE 0 END)
+      FROM base b,json_each(b.sample_json,'$.source_ids') j
+      GROUP BY CAST(j.value AS TEXT),b.direction,b.horizon_hours
+      ORDER BY dimension,direction,horizon_hours,dimension_value`).bind(activationTs).all(),
   ]);
   const signalRows = rowsOf(signalsResult).map(row => ({
     direction: text(row.direction),
@@ -96,14 +118,14 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     first_observed_ts: int(row.first_observed_ts),
     last_observed_ts: int(row.last_observed_ts),
   }));
-  const observed = new Map(rowsOf(outcomesResult).map(row => [
-    `${text(row.direction)}:${Number(row.horizon_hours)}`,
-    {
-      closed_samples: Number(row.closed_samples) || 0,
-      first_observed_ts: int(row.first_observed_ts),
-      last_observed_ts: int(row.last_observed_ts),
-    },
-  ]));
+  const outcomeRows=rowsOf(outcomesResult);
+  const observed=new Map();
+  for(const row of outcomeRows.filter(row=>row.dimension==='BASIS')){
+    const key=`${text(row.direction)}:${Number(row.horizon_hours)}`,prior=observed.get(key)||{closed_samples:0,first_observed_ts:null,last_observed_ts:null};
+    const first=int(row.first_observed_ts),last=int(row.last_observed_ts);
+    observed.set(key,{closed_samples:prior.closed_samples+(Number(row.closed_samples)||0),first_observed_ts:prior.first_observed_ts===null?first:first===null?prior.first_observed_ts:Math.min(prior.first_observed_ts,first),last_observed_ts:prior.last_observed_ts===null?last:last===null?prior.last_observed_ts:Math.max(prior.last_observed_ts,last)});
+  }
+  const performance=outcomeRows.map(row=>({dimension:text(row.dimension),group:text(row.dimension_value),direction:text(row.direction),horizon_hours:Number(row.horizon_hours),samples:Number(row.closed_samples)||0,average_return_pct:finite(row.average_return_pct),average_best_move_pct:finite(row.average_best_move_pct),average_worst_move_pct:finite(row.average_worst_move_pct),begin_close_hits:Number(row.begin_close_hits)||0,invalidation_hits:Number(row.invalidation_hits)||0}));
   const cells = [];
   for (const direction of ['LONG', 'SHORT']) {
     for (const horizonHours of HORIZONS) {
@@ -131,6 +153,8 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     total_cells: cells.length,
     signal_rows: signalRows,
     outcome_cells: cells,
+    approved_entry_performance: performance,
+    performance_dimensions:['BASIS','SOURCE'],
     data_ready_for_separate_oos_validation: readyCells === cells.length,
     validated_out_of_sample: false,
   });
@@ -224,9 +248,11 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
   const result = await db.prepare(`SELECT
       f.decision_id,f.snapshot_id,f.contract_code,f.direction,f.campaign_receipt_id,f.observation_ts,f.persisted_ts,
       f.decision_status,f.shadow_only,f.live_probability,f.validated_signal,f.execution_authorized,f.telegram_eligible,
-      j.receipt_json
+      j.receipt_json,p.publication_id,p.canonical_json
     FROM final_decision_integration_shadow f
     JOIN stage392_multi_wave_receipt_journal j ON j.receipt_id=f.campaign_receipt_id
+    JOIN canonical_publication_shadow p ON p.decision_id=f.decision_id
+      AND p.lifecycle_event='ENTRY' AND p.actionability_status='ACTIONABLE'
     WHERE f.persisted_ts>=?1
       AND f.decision_status='SHADOW_EVALUATED'
       AND f.direction IN ('LONG','SHORT')
@@ -241,8 +267,22 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
   for (const row of candidates) {
     const decision = decisionSummaryFromRow(row);
     const proof = parseJson(row.receipt_json, null);
-    const sampleRecord = buildProspectiveEntryAreaSample({ decision_summary: decision, campaign_proof: proof, observed_ts: now_ts });
+    let sampleRecord = buildProspectiveEntryAreaSample({ decision_summary: decision, campaign_proof: proof, observed_ts: now_ts });
     if (sampleRecord.status !== 'CAPTURED_PROSPECTIVE') continue;
+    const canonical=parseJson(row.canonical_json,null),entryPrice=finite(canonical?.current_price),target=finite(canonical?.targets?.find?.(item=>finite(item?.price??item)!==null)?.price??canonical?.targets?.[0]),direction=text(decision.direction);
+    const remaining=entryPrice&&target?(direction==='LONG'?(target/entryPrice-1)*100:(1-target/entryPrice)*100):null;
+    if(!canonical||!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(text(canonical.state))||entryPrice===null||entryPrice<=0||target===null||target<=0||remaining===null||remaining<5-1e-7)continue;
+    const sourceIds=[...new Set([
+      ...(Array.isArray(canonical?.source_receipts)?canonical.source_receipts:[]).flatMap(item=>[text(item?.source),text(item?.venue)]),
+      ...(Array.isArray(canonical?.metadata?.supplemental_score_adjustment?.receipts)?canonical.metadata.supplemental_score_adjustment.receipts:[]).map(item=>text(item?.source_id)),
+      ...[canonical?.liquidations?.native_extension,...(Array.isArray(canonical?.liquidations?.independent_extensions)?canonical.liquidations.independent_extensions:[])].filter(Boolean).flatMap(item=>[text(item?.provider),text(item?.source)]),
+    ].filter(Boolean))];
+    const revised=structuredClone(sampleRecord.sample);
+    revised.entry_trigger_price=entryPrice;revised.target_price=target;revised.target_move_pct=remaining;
+    revised.features={...revised.features,target_distance_pct:remaining};
+    revised.approved_entry_only=true;revised.publication_id=text(row.publication_id);revised.idea_basis=text(canonical?.metadata?.idea_basis)||'MULTI_FACTOR';revised.source_ids=sourceIds;
+    revised.begin_close_price=target;revised.minimum_reportable_move_pct=5;
+    const revisedDigest=digest(revised);sampleRecord={...sampleRecord,sample_id:`EAC:${revisedDigest}`,material_digest:revisedDigest,sample:revised};
     const s = sampleRecord.sample;
     const ack = await db.prepare(`INSERT OR IGNORE INTO tz101_entry_area_calibration_signal(
       sample_id,decision_id,snapshot_id,contract_code,direction,campaign_receipt_id,campaign_id,observed_ts,

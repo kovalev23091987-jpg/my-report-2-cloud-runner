@@ -34,10 +34,13 @@ export function displayMarketFacts(c){
 export function displayLegacyLiquidations(liq){
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
-  const parts=(Array.isArray(rows)?rows:[]).slice(0,3).map(z=>{
+  const parts=(Array.isArray(rows)?rows:[]).slice(0,4).map(z=>{
    const price=displayNumber(z?.price??z?.level_price);if(price===null)return null;
-   const d=z?.distance_pct;return `${price} USDT${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''}`;
+   const d=z?.distance_pct,strength=text(z?.strength_label_ru)||'сила не определена';
+   const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; точная сумма ${displayNumber(z.exact_notional_usdt)} USDT`:'';
+   const kind=z?.kind==='CALCULATED'?'; расчётная вероятная зона':'';
+   return `${price} USDT${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''} — ${strength}${amount}${kind}`;
   }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
  }
- return lines.length?lines:['Ликвидации: пригодные предполагаемые зоны для этого снимка не подтверждены.'];
+ return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
 }

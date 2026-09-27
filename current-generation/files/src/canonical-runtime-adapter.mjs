@@ -14,8 +14,9 @@ import { buildEvidenceDomainContract } from './evidence-domain-contract.mjs';
 import { liquidationMapPriority } from './liquidation-extension/htx-liquidation-route.mjs';
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from './supplemental-score-evidence.mjs';
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
+import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v8-snapshot-diff-20260925';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v9-user-strategy-20260927';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -86,6 +87,7 @@ function opportunityCompact(opportunity){
   version:opportunity?.version??null,status:opportunity?.status??null,event_id:ev.event_id??null,timeframe:ev.timeframe??null,
   event_close_ts:ev.event_close_ts??null,funnel_stage:ev?.funnel?.stage??null,
   minute_decomposition:ev.minute_decomposition??null,early_anomaly_classification:ev.early_anomaly_classification??null,
+  event_type:ev.event_type??ev.type??null,candle:ev.candle?{open:finite(ev.candle.open),high:finite(ev.candle.high),low:finite(ev.candle.low),close:finite(ev.candle.close)}:null,
   hypotheses:ev.hypotheses??null,
  };
 }
@@ -100,10 +102,33 @@ function hardGates({discovery,publication,executionHandoff}={}){
  if(executionHandoff)gates.push({gate:'HTX_EXECUTION_HANDOFF',status:executionHandoff.status??null,reason:executionHandoff.reason??null});
  return gates;
 }
-function targetsFrom(publication){
- const p=finite(publication?.scenario_plan?.target_price);return p===null?[]:[{price:p,source:'scenario_plan'}];
+function normalizedDirection(route,discovery){
+ const values=[route?.direction,discovery?.early_candidate_direction_hint,discovery?.direction_hint];
+ for(const value of values){const d=text(value).toUpperCase().replace(/_(?:WATCH|CANDIDATE|BIAS)$/,'');if(['LONG','SHORT'].includes(d))return d;}
+ return null;
 }
-function entryFrom(publication){
+function observationPlan({publication,route,direction,price,opportunity,observedTs,pump,discovery}={}){
+ const scenario=publication?.scenario_plan;
+ if(scenario?.entry_area_min_price!=null&&scenario?.entry_area_max_price!=null)return null;
+ if(!['LONG','SHORT'].includes(direction)||finite(price)===null||price<=0)return null;
+ const candle=opportunity?.newest_event?.candle||{};
+ const eventHigh=finite(candle.high),eventLow=finite(candle.low);
+ const routedLevel=finite(route?.trigger?.value);
+ const level=routedLevel??(direction==='LONG'?(eventHigh&&eventHigh>price?eventHigh:price*1.01):(eventLow&&eventLow<price?eventLow:price*.99));
+ const cancel=direction==='LONG'?(eventLow&&eventLow<level?eventLow:price*.98):(eventHigh&&eventHigh>level?eventHigh:price*1.02);
+ const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,opportunity,rolling_24h_change_pct:finite(discovery?.rolling_24h_change_pct),oi_change_pct:finite(discovery?.best_oi_build_pct),volume_ratio:finite(discovery?.volume_ratio),funding_rate_pct:finite(discovery?.funding_per_hour_pct??discovery?.funding_rate_pct),early_anomaly:pump?.pump?.early_anomaly===true});
+ if(potential.status!=='CLOSED')return null;
+ const band=.003;
+ const entry={area:`${level*(1-band)}–${level*(1+band)} USDT`,min_price:level*(1-band),max_price:level*(1+band),basis:eventHigh!==null&&eventLow!==null?'ANOMALY_CANDLE_LEVEL':'CURRENT_STRUCTURE_LEVEL'};
+ const targetPrice=potential.target_price;
+ const expires=observedTs+30*60_000;
+ const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`};
+ return {entry,trigger:route?.trigger??fallbackTrigger,invalidation:{condition:route?.trigger?.cancel_condition??`price${direction==='LONG'?'<':'>'}${cancel}`,price:cancel},targets:[{price:targetPrice,source:'technically_proven_move_potential',start_closing:true,potential_move_pct:potential.potential_move_pct,basis:potential.basis,basis_ru:potential.basis_ru}],technical_move_potential:potential};
+}
+function targetsFrom(publication,observation){
+ const p=finite(publication?.scenario_plan?.target_price);return p===null?(observation?.targets??[]):[{price:p,source:'scenario_plan',start_closing:true,potential_move_pct:finite(publication?.scenario_plan?.remaining_move_pct)}];
+}
+function entryFrom(publication,observation){
  const s=publication?.scenario_plan;if(!s)return null;
  const lo=finite(s.entry_area_min_price),hi=finite(s.entry_area_max_price);
  if(lo===null||hi===null)return s.entry_area?{area:s.entry_area}:null;
@@ -117,17 +142,17 @@ export function buildRuntimeCanonicalBundle({
 }={}){
  const route=publication_shadow?.entry_signal||null;
  const early=discovery_row?.early_candidate_bridge===true;
- const exactMinute=opportunity?.newest_event?.minute_decomposition?.classification_allowed===true;
- const state=validState(route?.state)?route.state:(early&&exactMinute?'OBSERVE':'REJECTED');
- const direction=['LONG','SHORT'].includes(text(route?.direction).toUpperCase())?text(route.direction).toUpperCase():null;
+ const earlyQuality=finite(discovery_row?.early_candidate_quality_0_100);
+ const state=validState(route?.state)?route.state:(early&&earlyQuality!==null&&earlyQuality>=70?'OBSERVE':'REJECTED');
+ const direction=normalizedDirection(route,discovery_row);
  const price=currentPrice({publication:publication_shadow,liquidations:liquidation_intelligence,futures:futures_component,discovery:discovery_row});
  const liqPriority=liquidationMapPriority({
   contract,
-  rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),
-  oi_change_pct:finite(discovery_row?.best_oi_build_pct),
-  funding_shift_pct_points:finite(discovery_row?.funding_per_hour_pct),
-  volume_ratio:finite(discovery_row?.volume_ratio),
-  spot_anomaly:discovery_row?.early_candidate_bridge===true||discovery_row?.microstructure_priority_confirmed===true,
+  move_pct:finite(discovery_row?.rolling_24h_change_pct),
+  oi_delta_pct:finite(discovery_row?.best_oi_build_pct),
+  funding_shift_abs:finite(discovery_row?.funding_per_hour_pct),
+  volume_spike_ratio:finite(discovery_row?.volume_ratio),
+  spot_flow_anomaly:discovery_row?.early_candidate_bridge===true||discovery_row?.microstructure_priority_confirmed===true,
  });
  const pump=buildPumpLiquidationZones({
   contract,
@@ -137,7 +162,15 @@ export function buildRuntimeCanonicalBundle({
   priority_reason:liqPriority.reason,
   realized:arr(liquidation_intelligence?.realized?.provider),
   projected:arr(liquidation_intelligence?.projected_clusters).map(r=>({...r,status:String(liquidation_intelligence?.projected_map_status||'').startsWith('CLOSED')?'CLOSED':'NOT_CLOSED',source:r?.provider||liquidation_intelligence?.provider||'PROJECTED_PROVIDER'})),
+  calculation_context:{
+   oi_change_pct:finite(discovery_row?.best_oi_build_pct),
+   funding_rate_pct:finite(discovery_row?.funding_per_hour_pct??discovery_row?.funding_rate_pct),
+   volume_ratio:finite(discovery_row?.volume_ratio),
+  },
  });
+ const needsTechnicalFallback=['OBSERVE','WAIT_FOR_TRIGGER'].includes(state)&&finite(publication_shadow?.scenario_plan?.target_price)===null;
+ const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,opportunity,observedTs:observed_ts,pump,discovery:discovery_row}):null;
+ const effectiveState=needsTechnicalFallback&&!observation?'REJECTED':state;
  const overall=finite(publication_shadow?.score_interval?.score_lower_bound);
  const baseInterest=direction?computeCanonicalInterestFromRuntime({direction,discovery_row,shadow_decision,public_evidence,opportunity}):null;
  const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
@@ -170,14 +203,14 @@ export function buildRuntimeCanonicalBundle({
   observed_ts,
   universe:[{contract:text(contract)||null}],candidates:[{contract:text(contract)||null,ticker:text(contract)||null}],
   source_receipts:runtimeSourceReceipts,hard_gates:hardGates({discovery:discovery_row,publication:publication_shadow,executionHandoff:execution_handoff}),
-  state,direction,overall_score_0_100:overall,coin_interest_score_0_100:interest,entry_readiness_score_0_100:null,
+  state:effectiveState,direction,overall_score_0_100:overall,coin_interest_score_0_100:interest,entry_readiness_score_0_100:null,
   reasons:reasonFacts({discovery:discovery_row,opportunity,publication:publication_shadow}),current_price:price,
-  entry:entryFrom(publication_shadow),trigger:route?.trigger??null,invalidation:publication_shadow?.scenario_plan?.invalidation??null,
-  targets:targetsFrom(publication_shadow),costs:publication_shadow?.cost_assessment??null,
+  entry:entryFrom(publication_shadow,observation)??observation?.entry??null,trigger:route?.trigger??observation?.trigger??null,invalidation:publication_shadow?.scenario_plan?.invalidation??observation?.invalidation??null,
+  targets:targetsFrom(publication_shadow,observation),costs:publication_shadow?.cost_assessment??null,
   early_candidate:earlyCandidate(discovery_row),opportunity:opportunityCompact(opportunity),microstructure:microCompact(discovery_row),
   liquidations:nativeLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
   changes_from_previous:snapshotChanges.lines,
-  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
+  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
  });
  const telegram=formatTelegramCompact(canonical,{facts:canonical?.reasons||[]});
  const manual=formatManualReport(canonical);
