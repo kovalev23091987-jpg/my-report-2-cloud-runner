@@ -50,11 +50,11 @@ test('CoinLobster keyless layer is admitted while paid worst-case credit use is 
 
 test('supplemental D1 rows fit both per-run burst and 80-run daily budget with wide margin',()=>{
   const view=sourceBudgetView().d1_incremental_budget;
-  assert.deepEqual(SUPPLEMENTAL_D1_WORST_PER_RUN,{rows_read:8,rows_written:8});
+  assert.deepEqual(SUPPLEMENTAL_D1_WORST_PER_RUN,{rows_read:20,rows_written:20});
   assert.ok(view.rows_read<D1_BURST_RESERVATION.rows_read);
   assert.ok(view.rows_written<D1_BURST_RESERVATION.rows_written);
-  assert.equal(view.projected_daily_rows_read,640);
-  assert.equal(view.projected_daily_rows_written,640);
+  assert.equal(view.projected_daily_rows_read,1600);
+  assert.equal(view.projected_daily_rows_written,1600);
   assert.ok(view.projected_daily_rows_read<3_500_000);
   assert.ok(view.projected_daily_rows_written<70_000);
 });
@@ -83,10 +83,20 @@ test('rotation uses LiqFlow during the public pilot or with its later key', () =
   assert.equal(rotatingLane(3,{liqflowKeyConfigured:true}),'LIQFLOW_HL_NATIVE');
 });
 
-test('all fourteen requested sources have exactly one primary responsibility',()=>{
+test('all seventeen active source families have exactly one primary responsibility',()=>{
   const ids=Object.values(SOURCE_RESPONSIBILITY_GROUPS).flatMap(x=>x.sources);
-  assert.equal(ids.length,14);assert.equal(new Set(ids).size,14);
+  assert.equal(ids.length,17);assert.equal(new Set(ids).size,17);
   for(const id of ids){assert.ok(responsibilityForSource(id));assert.ok(policyForSource(id));}
+});
+
+test('new cross-exchange family shares the five-call envelope and Coinalyze keeps minute headroom',()=>{
+  assert.equal(SUPPLEMENTAL_SOURCES.CROSS_EXCHANGE_DEPTH.calls_per_assigned_run,3);
+  assert.equal(SUPPLEMENTAL_SOURCES.CROSS_EXCHANGE_REALIZED.calls_per_assigned_run,3);
+  assert.equal(SUPPLEMENTAL_SOURCES.COINALYZE.calls_per_assigned_run,1);
+  assert.equal(SUPPLEMENTAL_SOURCES.COINALYZE.provider_units_per_assigned_run,4);
+  assert.ok(9*SUPPLEMENTAL_SOURCES.COINALYZE.provider_units_per_assigned_run+1<40);
+  assert.equal(validateSupplementalRequest({source_id:'COINALYZE',request_count:1}).reason,'API_KEY_REQUIRED');
+  assert.equal(validateSupplementalRequest({source_id:'COINALYZE',request_count:1,secret_configured:true}).allowed,true);
 });
 
 test('same-family duplicate facts cannot multiply influence',()=>{

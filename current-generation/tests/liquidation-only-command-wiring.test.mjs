@@ -14,6 +14,10 @@ test('manual Russian command is wired to a bounded liquidation-only runner path'
   assert.ok(branch>=0&&full>branch);
   assert.match(runner.slice(branch,full),/LIQUIDATION_ONLY_RESULT/);
   assert.match(runner.slice(branch,full),/dynamic_liquidation_panel:liquidationPanel/);
+  assert.match(runner.slice(branch,full),/cross_exchange_risk:crossExchangeRisk/);
+  assert.match(runner.slice(branch,full),/liquidation_candidate_queue:liquidationQueueSummary/);
+  assert.match(runner.slice(branch,full),/outcome_calibration:/);
+  assert.match(runner.slice(branch,full),/total:8/);
   assert.match(runner,/createLiquidationSourceWeightStore/);
   assert.match(runner.slice(branch,full),/return;/);
 });
@@ -22,4 +26,5 @@ test('GitHub manual input passes the natural-language command into runtime',()=>
   const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
   assert.match(workflow,/\n\s+command:\n/);
   assert.match(workflow,/REPORT2_MANUAL_COMMAND: \$\{\{ inputs\.command \|\| '' \}\}/);
+  assert.match(workflow,/COINALYZE_API_KEY: \$\{\{ secrets\.COINALYZE_API_KEY \}\}/);
 });

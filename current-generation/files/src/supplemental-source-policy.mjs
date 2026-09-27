@@ -8,9 +8,9 @@ export const MAX_DAYS_PER_MONTH = 31;
 export const MAX_MONTHLY_DEEP_CHECKS =
   (SCHEDULED_RUNS_PER_DAY + MANUAL_RUNS_PER_DAY) * MAX_DAYS_PER_MONTH;
 
-// The existing hot path uses 44 of its 50 external-request envelope.  A source
-// lane therefore gets at most five calls and only one rotating lane may run for
-// a deep check.  The sixth request remains an error/retry reserve, not capacity.
+// The existing hot path uses 44 of its 50 external-request envelope.  All
+// projected and cross-exchange additions share one five-request rotating lane.
+// The sixth request remains an error/retry reserve, not usable capacity.
 export const EXISTING_HOT_REQUESTS = 44;
 export const HOT_REQUEST_LIMIT = 50;
 export const SUPPLEMENTAL_LANE_MAX_REQUESTS = 5;
@@ -19,8 +19,8 @@ export const SUPPLEMENTAL_LANE_MAX_REQUESTS = 5;
 // modify rows after the tables exist. The values below deliberately include
 // the optional one-time 0xArchive authentication check in a manual run.
 export const SUPPLEMENTAL_D1_WORST_PER_RUN = Object.freeze({
-  rows_read: 8,
-  rows_written: 8,
+  rows_read: 20,
+  rows_written: 20,
 });
 export const D1_BURST_RESERVATION = Object.freeze({
   rows_read: 34_000,
@@ -182,6 +182,36 @@ export const SUPPLEMENTAL_SOURCES = Object.freeze({
     decision_role: 'WHALE_FLOW_AND_REALIZED_LIQUIDATION_CROSSCHECK',
     directional_vote: false,
   }),
+  CROSS_EXCHANGE_DEPTH: source('CROSS_EXCHANGE_DEPTH', {
+    disposition: 'SHARED_ROTATING_DEEP_CHECK',
+    unique_value: 'INDEPENDENT_1_2_5_PERCENT_BOOK_DEPTH_AND_25000_USD_SLIPPAGE',
+    calls_per_assigned_run: 3,
+    rotation_share: 1/9,
+    provider_monthly_quota: null,
+    requires_secret: false,
+    decision_role: 'CROSS_EXCHANGE_LIQUIDITY_VALIDATION',
+  }),
+  CROSS_EXCHANGE_REALIZED: source('CROSS_EXCHANGE_REALIZED', {
+    disposition: 'SHARED_ROTATING_DEEP_CHECK',
+    unique_value: 'PUBLIC_LIVE_FORCED_LIQUIDATION_EVENTS',
+    calls_per_assigned_run: 3,
+    rotation_share: 1/9,
+    provider_monthly_quota: null,
+    requires_secret: false,
+    decision_role: 'REALIZED_LIQUIDATION_VALIDATION',
+  }),
+  COINALYZE: source('COINALYZE', {
+    disposition: 'SHARED_ROTATING_CACHED_HISTORY',
+    unique_value: 'RECENT_LIQUIDATIONS_VERSUS_TWO_HOUR_CROSS_VENUE_BASELINE',
+    calls_per_assigned_run: 1,
+    provider_units_per_assigned_run: 4,
+    provider_rate_per_minute: 40,
+    rotation_share: 1/9,
+    provider_monthly_quota: null,
+    requires_secret: true,
+    blocker: 'API_KEY_REQUIRED',
+    decision_role: 'HISTORICAL_LIQUIDATION_BASELINE',
+  }),
 });
 
 // One primary responsibility per source. Secondary fields may corroborate a
@@ -216,6 +246,21 @@ export const SOURCE_RESPONSIBILITY_GROUPS=Object.freeze({
     sources:['COINLOBSTER'],
     primary_output:'WHALE_ANOMALY_AND_REALIZED_LIQUIDATION_CROSSCHECK',
     merge_rule:'AGGREGATOR_IS_ONE_FAMILY_NOT_ONE_VOTE_PER_UNDERLYING_EXCHANGE',
+  }),
+  CROSS_EXCHANGE_LIQUIDITY:Object.freeze({
+    sources:['CROSS_EXCHANGE_DEPTH'],
+    primary_output:'ORDER_BOOK_DEPTH_AND_SLIPPAGE',
+    merge_rule:'VENUE_NOTIONALS_STAY_SEPARATE_ONLY_NORMALIZED_IMBALANCE_IS_AVERAGED',
+  }),
+  REALIZED_LIQUIDATION_LIVE:Object.freeze({
+    sources:['CROSS_EXCHANGE_REALIZED'],
+    primary_output:'LIVE_FORCED_LIQUIDATION_IMBALANCE',
+    merge_rule:'EXACT_FUTURES_SYMBOLS_ONE_COMBINED_FAMILY',
+  }),
+  HISTORICAL_LIQUIDATION_BASELINE:Object.freeze({
+    sources:['COINALYZE'],
+    primary_output:'RECENT_VERSUS_PRIOR_LIQUIDATION_INTENSITY',
+    merge_rule:'AGGREGATED_HISTORY_IS_ONE_FAMILY_NOT_EXTRA_VOTES_PER_EXCHANGE',
   }),
 });
 

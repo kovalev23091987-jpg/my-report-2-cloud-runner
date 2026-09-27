@@ -43,3 +43,19 @@ test('every candidate-context provider has an explicit useful evidence path',()=
  assert.ok(Math.abs(out.adjustment)<=10);
  assert.ok(out.receipts.length<=4,'one strongest fact per responsibility family');
 });
+test('cross-exchange depth, live liquidations and history enter bounded evidence families',()=>{
+ const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:{sources:{
+  CROSS_EXCHANGE_DEPTH:{status:'CLOSED',venue_count:3,aggregate_depth_imbalance_2pct:0.4},
+  CROSS_EXCHANGE_REALIZED:{status:'CLOSED',long_liquidated_usd:9000,short_liquidated_usd:1000},
+  COINALYZE:{status:'CLOSED',long_liquidated_recent:8000,short_liquidated_recent:2000},
+ }}}});
+ const ids=new Set(rows.map(x=>x.source_id));for(const id of ['CROSS_EXCHANGE_DEPTH','CROSS_EXCHANGE_REALIZED','COINALYZE'])assert.ok(ids.has(id));
+ const out=applySupplementalScoreAdjustment(50,rows);assert.ok(out.adjustment<=10);assert.ok(out.receipts.length<=3);
+});
+test('cross-exchange quality weight stays neutral before twenty outcomes and adapts afterwards',()=>{
+ const risk={sources:{CROSS_EXCHANGE_DEPTH:{status:'CLOSED',venue_count:3,aggregate_depth_imbalance_2pct:0.4}}};
+ const early=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:19,eligible:0,predictive_weight_factor:1.25}]}}});
+ assert.equal(early[0].quality,0.6);assert.equal(early[0].predictive_weight_status,'CALIBRATING');
+ const proven=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:20,eligible:1,predictive_weight_factor:1.25}]}}});
+ assert.equal(proven[0].base_quality,0.6);assert.equal(proven[0].quality,0.75);assert.equal(proven[0].predictive_weight_status,'ACTIVE_AFTER_20_OUTCOMES');
+});

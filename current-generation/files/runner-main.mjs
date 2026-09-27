@@ -30,6 +30,9 @@ import {attachNativeContext} from './src/liquidation-extension/runtime-bridge.mj
 import {nativeLiquidationLines,nativeLiquidationSources} from './src/native-liquidation-guard.mjs';
 import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
+import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
+import {createLiquidationCandidateQueue} from './src/liquidation-candidate-queue.mjs';
+import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v1-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -429,8 +432,16 @@ async function main() {
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });
+  env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=params=>collectCrossExchangeRiskContext({
+    db:env.DATA_DB,fetch_impl:globalThis.fetch,coinalyze_api_key:envText('COINALYZE_API_KEY',{required:false}),...params,
+    lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false}),
+  });
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
+  const liquidationQueue=createLiquidationCandidateQueue({db:env.DATA_DB});
+  const liquidationCalibration=createLiquidationOutcomeCalibration({db:env.DATA_DB,fetch_impl:globalThis.fetch});
+  await Promise.all([liquidationQueue.install(),liquidationCalibration.install()]);
+  env.REPORT2_LIQUIDATION_SIGNAL_RECORD=params=>liquidationCalibration.record(params);
   const pending = [];
   const ctx = { waitUntil(promise) { pending.push(Promise.resolve(promise)); }, passThroughOnException() {} };
   const started = Date.now();
@@ -454,6 +465,10 @@ if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
+  const liquidationCalibrationSettlement=await liquidationCalibration.settle({now:started});
+  console.log('LIQUIDATION_OUTCOME_CALIBRATION',JSON.stringify(liquidationCalibrationSettlement));
+  env.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH=await liquidationCalibration.summary();
+  console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS',JSON.stringify(env.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH));
   try{
     env.REPORT2_GLOBAL_MARKET_CONTEXT=await loadGlobalMarketContext({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started});
   }catch(error){
@@ -492,9 +507,12 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if(commandIntent.matched){
     const sourceRunId=`LIQ_ONLY:${started}`;
     const scanResult=await scanLiquidationCandidates({env,max_candidates:5,exact_contract:commandIntent.contract||null,freshness_sec:300});
-    const candidate=Array.isArray(scanResult?.candidates)?scanResult.candidates[0]:null;
+    await liquidationQueue.enqueue(scanResult?.candidates||[],{now:started});
+    const queueClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:scanResult?.candidates?.[0]?.contract||null,now:started});
+    const candidate=Array.isArray(scanResult?.candidates)?scanResult.candidates.find(row=>row.contract===queueClaim.contract)||scanResult.candidates[0]:null;
     let acquisition=null;
     let liquidationContext={};
+    let crossExchangeRisk={status:'NOT_RUN',sources:{},internal_only:true};
     if(candidate&&liquidationSources){
       const contract=String(candidate.contract||'').trim().toUpperCase();
       const nativeSymbol=contract.replace(/-USDT$/,'');
@@ -508,21 +526,32 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
         const observedTs=Date.now();
         liquidationContext=attachNativeContext({},acquisition,{contract,run_id:sourceRunId,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,observed_ts:observedTs,direction:null});
       }
+      try{crossExchangeRisk=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({contract,run_id:sourceRunId,reference_price:candidate.current_price,now:Date.now()});}
+      catch(error){crossExchangeRisk={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
     }
     const lines=candidate?(nativeLiquidationLines(liquidationContext,{manual:true})||['Ликвидации: свежие нативные уровни в проверенной выборке не подтверждены.']):[];
     const contexts=nativeLiquidationSources(liquidationContext).contexts;
     const liquidationPanel=candidate?.current_price?buildDynamicLiquidationPanel({contexts,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_CLOSED',reason:'REFERENCE_PRICE_REQUIRED',clusters:[],score_evidence:null};
+    const calibrationRecord=candidate?await liquidationCalibration.record({contract:candidate.contract,panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_RECORDED',rows:0};
+    const predictiveSourceWeights=await liquidationCalibration.summary();
+    if(queueClaim.claimed&&candidate)await liquidationQueue.complete({contract:candidate.contract,run_id:sourceRunId,usable:Boolean(acquisition)||crossExchangeRisk.status==='CLOSED',result:{native:Boolean(acquisition),cross_exchange:crossExchangeRisk.status,panel:liquidationPanel.status},now:Date.now()});
+    const liquidationQueueSummary=await liquidationQueue.summary({now:Date.now()});
     if(pending.length)await Promise.all(pending);
     const d1PostCycleBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
     if(!d1PostCycleBudget.allowed)throw new Error(`D1_LIQUIDATION_ONLY_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(',')}`);
     const d1Usage=enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
     const d1FinalizedUsage=await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
-    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,max_additional_liquidation_requests:5,d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
+    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:5,cross_exchange_risk:3,total:8},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
     console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify(result));
     return;
   }
+  const queueClaimRunId=`QUEUE:${started}`;
+  const scheduledQueueClaim=source==='schedule'?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
+  if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,run_id:queueClaimRunId,usable:params?.usable===true,result:params?.result||null,now:Date.now()});}
+  console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
   if(liquidationSources)console.log('LIQUIDATION_SOURCES_CANONICAL_RECEIPT',JSON.stringify(liquidationSources.summary()));
+  console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS_FINAL',JSON.stringify(await liquidationCalibration.summary()));
   if (pending.length) await Promise.all(pending);
   const cron = await env.DATA_DB.prepare("SELECT run_id,scheduled_time,started_ts,completed_ts,status,universe_total,scanned,persistence_status,error_text,v3_discovery_shortlist_count,v3_live_shortlist_count,v3_live_deep_check_count,v3_live_zero_reason,v3_pipeline_health_status,v3_pipeline_health_reason,v3_live_lane,v3_maintenance_deferred FROM cron_runs WHERE scheduled_time = ?1 ORDER BY started_ts DESC LIMIT 1").bind(started).first();
   if (!cron) throw new Error(`CRON_IDENTITY_NOT_FOUND:${started}`);

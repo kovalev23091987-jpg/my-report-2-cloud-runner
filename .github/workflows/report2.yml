@@ -41,6 +41,10 @@ on:
         description: "0xArchive Hyperliquid symbol for the one-call cost probe"
         required: false
         default: "SOL"
+      cross_exchange_validation_lane:
+        description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -56,7 +60,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "6784bff8c9f7f5535d67d48ed66b7cc9f09cfcd41ad9194e346b2fb75a99a6ca"
+      REPORT2_EXPECTED_WORKER_SHA: "255241fb90c19e6174fe91d0eb49335436f7f4d91166e68ef8c06012a59cb0e0"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -79,8 +83,10 @@ jobs:
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
       REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
       LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
+      REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}

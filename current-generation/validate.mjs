@@ -7,15 +7,16 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='6784bff8c9f7f5535d67d48ed66b7cc9f09cfcd41ad9194e346b2fb75a99a6ca';
+const expectedWorker='255241fb90c19e6174fe91d0eb49335436f7f4d91166e68ef8c06012a59cb0e0';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
  return result.stdout.trim();
 };
 const checks=[
+ '../runner/r8-20-prospective-validation-sidecar.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
- 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs',
+ 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs',
  'files/src/canonical-display.mjs','files/src/native-liquidation-guard.mjs','files/src/reason-registry.mjs',
  'files/src/manual-report-formatter.mjs','files/src/telegram-compact-formatter.mjs',
  'files/src/global-market-context.mjs','files/src/supplemental-source-policy.mjs',
@@ -48,7 +49,7 @@ if(sourceRuntime){
  const actual=createHash('sha256').update(worker).digest('hex');
  if(actual!==expectedWorker||overlay.worker_sha256!==expectedWorker)throw Error(`OVERLAY_WORKER_HASH_MISMATCH:${actual}`);
  if(!fs.existsSync(path.join(runtime,'byk-quota-budget.mjs')))throw Error('OVERLAY_QUOTA_MODULE_MISSING');
- for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
+ for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/supplemental-candidate-context.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/cross-exchange-risk-context.mjs','src/liquidation-candidate-queue.mjs','src/liquidation-outcome-calibration.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
  run(['--input-type=module','--eval',"await import('./src/manual-report-formatter.mjs'); await import('./src/telegram-compact-formatter.mjs');"],{cwd:runtime});
  fs.rmSync(temp,{recursive:true,force:true});
 }

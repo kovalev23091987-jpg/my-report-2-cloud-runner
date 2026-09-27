@@ -15926,6 +15926,11 @@ async function buildDeepCheckInput(params, env) {
   }
 
   let supplementalCandidateContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
+  let crossExchangeRiskContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
+  // The established Deep Check has one five-request extension envelope.  The
+  // new cross-exchange family shares that envelope with projected liquidation
+  // sources instead of silently pushing the invocation above its proven cap.
+  const crossExchangeFamilyTurn=Math.floor(Number(params?.cycle_started_ts??cycleStartedTs)/(20*60*1000))%3===0;
   try{
     if(typeof env?.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT==='function'){
       const derivativeVenues=new Set((Array.isArray(publicEvidence?.evidence)?publicEvidence.evidence:[])
@@ -15934,13 +15939,19 @@ async function buildDeepCheckInput(params, env) {
       const conflict=Boolean(publicEvidence?.conflicts?.length)||String(publicEvidence?.dq_status||'').toUpperCase().includes('CONFLICT');
       const moveForLiquidations=Number(params?.discovery_row?.rolling_24h_change_pct??params?.discovery_row?.move_pct);
       const manualCoin=String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract;
-      const reserveForLiquidations=manualCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true;
+      const queuedCoin=String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract;
+      const reserveForLiquidations=!crossExchangeFamilyTurn&&(manualCoin||queuedCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true);
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
         critical_conflict:conflict,primary_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  try{
+    if(crossExchangeFamilyTurn&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
+      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),
+    });else if(!crossExchangeFamilyTurn)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},internal_only:true,next_family_rotation:true};
+  }catch(error){crossExchangeRiskContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
 
   let htxLiquidationShadow;
   try {
@@ -16022,7 +16033,7 @@ async function buildDeepCheckInput(params, env) {
    */
   // All new source facts finish before the analytical cutoff is fixed.
   let nativeLiquidationAcquisition = null;
-  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && /^[A-Z0-9]+-USDT$/.test(contract)) {
+  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && /^[^-\s]+-USDT$/u.test(contract)) {
     try {
       nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({
         contract, native_symbol: contract.slice(0,-5), run_id: String(params?.run_id || "").trim() || `manual-shadow-${cycleStartedTs}`,
@@ -16033,6 +16044,9 @@ async function buildDeepCheckInput(params, env) {
         source_identity:supplementalCandidateContext?.liquidation_identity||null,
       });
     } catch { /* Optional source fails closed; never refresh its old timestamps. */ }
+  }
+  if(String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
+    try{await env.REPORT2_LIQUIDATION_QUEUE_COMPLETE({usable:Boolean(nativeLiquidationAcquisition)||crossExchangeRiskContext?.status==='CLOSED',result:{native:Boolean(nativeLiquidationAcquisition),cross_exchange:crossExchangeRiskContext?.status||'NOT_CLOSED'}});}catch{}
   }
   // Receipt observation cannot predate completion of its market inputs.
   now = Date.now();
@@ -16471,7 +16485,7 @@ async function buildDeepCheckInput(params, env) {
         };
 
   const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},internal_only:true};
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,internal_only:true};
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
@@ -16516,6 +16530,9 @@ async function buildDeepCheckInput(params, env) {
         previousSnapshotContext,
     });
   console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
+  if(typeof env?.REPORT2_LIQUIDATION_SIGNAL_RECORD==='function'){
+    try{console.log('LIQUIDATION_SIGNAL_CALIBRATION_RECORD',JSON.stringify(await env.REPORT2_LIQUIDATION_SIGNAL_RECORD({contract,panel:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel,cross_exchange_risk:crossExchangeRiskContext,reference_price:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel?.reference_price??params?.discovery_row?.current_price??null,observed_ts:now})));}catch{}
+  }
 
   let postV7CanonicalPersistence = {status:'DISABLED',persisted:false};
   if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1' && canonicalAnalyticalBundle?.canonical?.status === 'CLOSED') {
@@ -18670,6 +18687,15 @@ const __REPORT2_ORIGINAL_HANDLER = {
         }else{
           liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS_REJECTED',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false};
         }
+      }
+
+      const queuedLiquidationContract=String(env?.REPORT2_RUN_SOURCE||'')==='schedule'
+        ? String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim().toUpperCase()
+        : '';
+      if(queuedLiquidationContract&&!dueRecheckContract){
+        const scopeConfirmed=confirmedScopeContracts.includes(queuedLiquidationContract);
+        const telemetry=(Array.isArray(postV7DeepPrefilter?.contract_telemetry)?postV7DeepPrefilter.contract_telemetry:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
+        if(scopeConfirmed&&telemetry){const forced={priority_rank:0,...telemetry,contract:queuedLiquidationContract,liquidation_queue_analysis:true};postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==queuedLiquidationContract)]};liveHandoffPlan={lane:'LIQUIDATION_QUEUE',require_exact_contract:true,required_contract:queuedLiquidationContract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};}
       }
 
       const journalMaintenanceSelected =

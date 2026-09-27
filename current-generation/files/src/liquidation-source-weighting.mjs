@@ -15,8 +15,8 @@ export function buildLiquidationSourceWeightProfile(lanes,rows=[]){
  const prior=new Map((Array.isArray(rows)?rows:[]).map(row=>[sourceId(row?.source_id),row]));
  return [...new Set((Array.isArray(lanes)?lanes:[]).map(sourceId).filter(Boolean))].map(id=>{
   const row=prior.get(id),attempts=Math.max(0,Number(row?.attempts)||0);
-  const reliability=attempts?clamp(Number(row?.reliability)||0,0,1):0.5;
-  return {source_id:id,responsibility:LIQUIDATION_SOURCE_ROLES[id]||'Verified supplemental liquidation context',attempts,usable_runs:Math.max(0,Number(row?.usable_runs)||0),not_closed_runs:Math.max(0,Number(row?.not_closed_runs)||0),reliability:Number(reliability.toFixed(4)),selection_weight:Number((0.5+reliability).toFixed(4)),exploration_floor:0.5,last_status:row?.last_status||null,updated_ts:Number(row?.updated_ts)||null};
+  const reliability=attempts?clamp(Number(row?.reliability)||0,0,1):0.5,predictiveObservations=Math.max(0,Number(row?.predictive_observations)||0),predictiveFactor=predictiveObservations>=20?clamp(Number(row?.predictive_weight_factor)||1,0.75,1.25):1;
+  return {source_id:id,responsibility:LIQUIDATION_SOURCE_ROLES[id]||'Verified supplemental liquidation context',attempts,usable_runs:Math.max(0,Number(row?.usable_runs)||0),not_closed_runs:Math.max(0,Number(row?.not_closed_runs)||0),reliability:Number(reliability.toFixed(4)),predictive_observations:predictiveObservations,predictive_accuracy:predictiveObservations?Number(row?.predictive_accuracy)||null:null,predictive_weight_factor:Number(predictiveFactor.toFixed(4)),predictive_weight_eligible:predictiveObservations>=20,selection_weight:Number(Math.max(0.5,(0.5+reliability)*predictiveFactor).toFixed(4)),exploration_floor:0.5,last_status:row?.last_status||null,updated_ts:Number(row?.updated_ts)||null};
  });
 }
 
@@ -37,10 +37,13 @@ export function nextLiquidationSourceReliability(current,outcome){
 export function createLiquidationSourceWeightStore({db,clock=Date.now}={}){
  if(!db)throw new Error('LIQUIDATION_SOURCE_WEIGHT_DB_REQUIRED');
  let installed=false;
- async function install(){if(installed)return;await db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_source_health (source_id TEXT PRIMARY KEY, attempts INTEGER NOT NULL, usable_runs INTEGER NOT NULL, not_closed_runs INTEGER NOT NULL, reliability REAL NOT NULL, last_status TEXT, updated_ts INTEGER NOT NULL)`).run();installed=true;}
+ async function install(){if(installed)return;await db.batch([
+  db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_source_health (source_id TEXT PRIMARY KEY, attempts INTEGER NOT NULL, usable_runs INTEGER NOT NULL, not_closed_runs INTEGER NOT NULL, reliability REAL NOT NULL, last_status TEXT, updated_ts INTEGER NOT NULL)`),
+  db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_predictive_health (source_id TEXT PRIMARY KEY, observations INTEGER NOT NULL, hits INTEGER NOT NULL, ewma_accuracy REAL NOT NULL, predictive_weight_factor REAL NOT NULL, eligible INTEGER NOT NULL, updated_ts INTEGER NOT NULL)`),
+ ]);installed=true;}
  async function load(lanes=[]){
   await install();const wanted=new Set(lanes.map(sourceId));
-  const result=await db.prepare(`SELECT source_id,attempts,usable_runs,not_closed_runs,reliability,last_status,updated_ts FROM report2_liquidation_source_health`).all();
+  const result=await db.prepare(`SELECT h.source_id,h.attempts,h.usable_runs,h.not_closed_runs,h.reliability,h.last_status,h.updated_ts,p.observations AS predictive_observations,p.ewma_accuracy AS predictive_accuracy,p.predictive_weight_factor FROM report2_liquidation_source_health h LEFT JOIN report2_liquidation_predictive_health p ON p.source_id=h.source_id`).all();
   return (result?.results||[]).filter(row=>wanted.has(sourceId(row?.source_id)));
  }
  async function record({source_id,usable,status,now=clock()}={}){

@@ -8,7 +8,7 @@ import {
 export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-validation-sidecar-v1';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
-  rows_read: 1200,
+  rows_read: 3000,
   rows_written: 8,
   requests_soft_cap: 14,
   max_scan_rows_per_path: 320,
@@ -19,6 +19,9 @@ export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
 });
 
 const HORIZONS = Object.freeze([1, 4, 12, 24]);
+const READINESS_MIN_TRAIN = 80;
+const READINESS_MIN_HOLDOUT = 40;
+const READINESS_REQUIRED_PER_CELL = READINESS_MIN_TRAIN + READINESS_MIN_HOLDOUT;
 const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 
@@ -69,6 +72,68 @@ function closedStage0Point(row, contract) {
   if (finite(point.market_age_sec) === null || Number(point.market_age_sec) > 300) return null;
   if (finite(point.price) === null || Number(point.price) <= 0) return null;
   return { ts: Number(point.ts), price: Number(point.price) };
+}
+
+export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_ts = Date.now() } = {}) {
+  const activationTs = int(activation_ts);
+  if (!db?.prepare || activationTs === null) {
+    return base('READINESS_NOT_CLOSED', { reason: 'ACTIVATION_OR_DB_INVALID' });
+  }
+  const [signalsResult, outcomesResult] = await Promise.all([
+    db.prepare(`SELECT direction,COUNT(*) AS sample_count,MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts
+      FROM tz101_entry_area_calibration_signal
+      WHERE created_ts>=?1 AND calibration_only=1 AND live_promotion_allowed=0
+      GROUP BY direction ORDER BY direction`).bind(activationTs).all(),
+    db.prepare(`SELECT direction,horizon_hours,COUNT(DISTINCT sample_id) AS closed_samples,
+        MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts
+      FROM tz101_entry_area_calibration_outcome
+      WHERE computed_ts>=?1 AND calibration_only=1 AND live_promotion_allowed=0
+      GROUP BY direction,horizon_hours ORDER BY direction,horizon_hours`).bind(activationTs).all(),
+  ]);
+  const signalRows = rowsOf(signalsResult).map(row => ({
+    direction: text(row.direction),
+    sample_count: Number(row.sample_count) || 0,
+    first_observed_ts: int(row.first_observed_ts),
+    last_observed_ts: int(row.last_observed_ts),
+  }));
+  const observed = new Map(rowsOf(outcomesResult).map(row => [
+    `${text(row.direction)}:${Number(row.horizon_hours)}`,
+    {
+      closed_samples: Number(row.closed_samples) || 0,
+      first_observed_ts: int(row.first_observed_ts),
+      last_observed_ts: int(row.last_observed_ts),
+    },
+  ]));
+  const cells = [];
+  for (const direction of ['LONG', 'SHORT']) {
+    for (const horizonHours of HORIZONS) {
+      const value = observed.get(`${direction}:${horizonHours}`) || {};
+      const closedSamples = Number(value.closed_samples) || 0;
+      cells.push({
+        direction,
+        horizon_hours: horizonHours,
+        closed_samples: closedSamples,
+        missing_samples: Math.max(0, READINESS_REQUIRED_PER_CELL - closedSamples),
+        data_ready: closedSamples >= READINESS_REQUIRED_PER_CELL,
+        first_observed_ts: value.first_observed_ts ?? null,
+        last_observed_ts: value.last_observed_ts ?? null,
+      });
+    }
+  }
+  const readyCells = cells.filter(row => row.data_ready).length;
+  return base(readyCells === cells.length ? 'CALIBRATION_DATA_READY_NOT_VALIDATED' : 'NOT_VALIDATED_INSUFFICIENT_PROSPECTIVE_SAMPLE', {
+    activation_ts: activationTs,
+    elapsed_days: Number(((Number(now_ts) - activationTs) / (24 * HOUR)).toFixed(3)),
+    min_train_per_cell: READINESS_MIN_TRAIN,
+    min_holdout_per_cell: READINESS_MIN_HOLDOUT,
+    required_per_direction_horizon_cell: READINESS_REQUIRED_PER_CELL,
+    ready_cells: readyCells,
+    total_cells: cells.length,
+    signal_rows: signalRows,
+    outcome_cells: cells,
+    data_ready_for_separate_oos_validation: readyCells === cells.length,
+    validated_out_of_sample: false,
+  });
 }
 
 async function ensureActivation(db, nowTs) {
@@ -302,10 +367,11 @@ export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts,
       capture = await captureOneEntryAreaSample(db, { activation_ts: activation.activation_ts, now_ts });
       entryOutcome = await closeOneEntryAreaOutcome(db, { current_scan_ts, activation_ts: activation.activation_ts, now_ts });
     }
+    const readiness = await loadProspectiveReadinessSnapshot(db, { activation_ts: activation.activation_ts, now_ts });
     const after = typeof db.usageSnapshot === 'function' ? db.usageSnapshot() : null;
     const delta = usageDelta(before, after);
     if (delta && (delta.rows_read > R820_PROSPECTIVE_VALIDATION_BUDGET.rows_read || delta.rows_written > R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written || delta.requests > R820_PROSPECTIVE_VALIDATION_BUDGET.requests_soft_cap || delta.unknown_ops > 0)) {
-      return base('BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED', { source_run_id: common.source_run_id, activation, early, entry_sample: capture, entry_outcome: entryOutcome, usage_delta: delta });
+      return base('BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED', { source_run_id: common.source_run_id, activation, early, entry_sample: capture, entry_outcome: entryOutcome, readiness, usage_delta: delta });
     }
     return base('CLOSED', {
       source_run_id: common.source_run_id,
@@ -313,6 +379,7 @@ export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts,
       early_outcome: early,
       entry_sample: capture,
       entry_outcome: entryOutcome,
+      readiness,
       usage_delta: delta,
       prospective_only: true,
       retrospective_backfill: false,
@@ -332,4 +399,5 @@ export default {
   closeOneEarlyDiscoveryOutcome,
   captureOneEntryAreaSample,
   closeOneEntryAreaOutcome,
+  loadProspectiveReadinessSnapshot,
 };
