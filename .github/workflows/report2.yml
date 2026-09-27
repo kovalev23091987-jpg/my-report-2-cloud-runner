@@ -9,6 +9,10 @@ on:
         description: "manual validation"
         required: false
         default: "manual"
+      command:
+        description: "Russian command, for example: Найди ликвидационные монеты"
+        required: false
+        default: ""
       coin_contract:
         description: "optional exact HTX futures contract for a deep analysis, for example SOL-USDT"
         required: false
@@ -52,7 +56,7 @@ jobs:
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "b886545bbdfccd12e754757a3dbcfb54cd297d291cda7ae6feba075db2decacb"
+      REPORT2_EXPECTED_WORKER_SHA: "6784bff8c9f7f5535d67d48ed66b7cc9f09cfcd41ad9194e346b2fb75a99a6ca"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -79,6 +83,7 @@ jobs:
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
+      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
       REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"

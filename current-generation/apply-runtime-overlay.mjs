@@ -25,6 +25,7 @@ const files=[
  'src/schedule-quota-calculator.mjs',
  'src/supplemental-candidate-context.mjs',
  'src/dynamic-liquidation-panel.mjs',
+ 'src/liquidation-command-router.mjs',
  'src/oxarchive-cost-probe.mjs',
  'src/liquidation-extension/runner-extension.mjs',
  'src/liquidation-extension/htx-liquidation-route.mjs',
@@ -44,6 +45,7 @@ const files=[
  'src/liquidation-extension/core.mjs',
  'src/liquidation-extension/providers.mjs',
  'src/liquidation-extension/runtime-bridge.mjs',
+ 'src/liquidation-extension/native-liquidation-guard.mjs',
  'src/liquidation-extension/d1-source-admission.mjs'
  ,'src/liquidation-extension/install-source-allowances.mjs'
  ,'src/liquidation-extension/venue-catalog-cache.mjs'

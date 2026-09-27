@@ -19262,6 +19262,36 @@ const __REPORT2_ORIGINAL_HANDLER = {
   },
 };
 
+export async function scanLiquidationCandidates({env,max_candidates=5,exact_contract=null,freshness_sec=300}={}){
+  const exact=String(exact_contract||'').trim().toUpperCase();
+  if(exact&&!/^[A-Z0-9]{2,15}-USDT$/.test(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'INVALID_EXACT_CONTRACT',exact_contract:exact||null,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
+  if(['BTC-USDT','ETH-USDT'].includes(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'EXCLUDED_BY_USER_POLICY',exact_contract:exact,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
+  const limit=Math.min(10,Math.max(1,Math.round(Number(max_candidates)||5)));
+  const scan=await htxUniverseScan({freshness_sec},env,{persist:false});
+  const queue=buildDeepCheckQueue(scan);
+  const discovery=buildDiscoveryPrefilter(scan,queue,{liquidity_percentile:0.70,early_liquidity_percentile:0.45,anomaly_percentile:0.95,early_anomaly_percentile:0.80,funding_percentile:0.95,funding_tail_percentile:0.10,min_anomaly_flags:2,min_early_flags:2,max_shortlist:24});
+  const rows=new Map((Array.isArray(scan?.contracts)?scan.contracts:[]).map(row=>[String(row?.contract_code||'').trim().toUpperCase(),row]));
+  const technicallyEligible=new Set((Array.isArray(queue?.queue)?queue.queue:[]).map(row=>String(row?.contract||'').trim().toUpperCase()));
+  const shortlisted=new Map((Array.isArray(discovery?.shortlist)?discovery.shortlist:[]).map(row=>[String(row?.contract||'').trim().toUpperCase(),row]));
+  const telemetry=new Map((Array.isArray(discovery?.contract_telemetry)?discovery.contract_telemetry:[]).map(row=>[String(row?.contract||'').trim().toUpperCase(),row]));
+  const excluded=contract=>['BTC-USDT','ETH-USDT'].includes(contract);
+  let selected=[];
+  let exactStatus=null;
+  if(exact){
+    if(!rows.has(exact))exactStatus='EXACT_CONTRACT_NOT_ACTIVE_ON_HTX';
+    else if(!technicallyEligible.has(exact))exactStatus='EXACT_CONTRACT_DATA_NOT_CLOSED';
+    else selected=[shortlisted.get(exact)||{priority_rank:null,contract:exact,...(telemetry.get(exact)||{})}];
+  }else selected=(discovery?.shortlist||[]).filter(row=>!excluded(String(row?.contract||'').trim().toUpperCase())).slice(0,limit);
+  const metric=(row,window,field)=>{const value=row?.transitions?.[window]?.[field];return value===null||value===undefined||value===''||!Number.isFinite(Number(value))?null:Number(value);};
+  const candidates=selected.map(candidate=>{
+    const contract=String(candidate?.contract||'').trim().toUpperCase(),row=rows.get(contract)||{};
+    return{priority_rank:candidate?.priority_rank??null,contract,current_price:Number.isFinite(Number(row?.price))?Number(row.price):null,turnover_24h_usdt:Number.isFinite(Number(row?.turnover_24h_usdt))?Number(row.turnover_24h_usdt):null,open_interest_value_usdt:Number.isFinite(Number(row?.open_interest?.value_usdt))?Number(row.open_interest.value_usdt):null,funding_rate_pct:Number.isFinite(Number(row?.funding?.funding_rate_pct))?Number(row.funding.funding_rate_pct):null,price_change_pct:{'5m':metric(row,'5m','price_change_pct'),'15m':metric(row,'15m','price_change_pct'),'1h':metric(row,'1h','price_change_pct'),'4h':metric(row,'4h','price_change_pct')},oi_change_pct:{'15m':metric(row,'15m','oi_change_pct'),'1h':metric(row,'1h','oi_change_pct'),'4h':metric(row,'4h','oi_change_pct')},anomaly_flags_count:Number(candidate?.anomaly_flags_count||0),anomaly_flags:Array.isArray(candidate?.anomaly_flags)?candidate.anomaly_flags:[],direction_hint:candidate?.discovery_direction_hint||'NEUTRAL_ANOMALY',qualified_growth_candidate:shortlisted.has(contract),freshness_sec:Number.isFinite(Number(row?.freshness?.market_age_sec))?Number(row.freshness.market_age_sec):null,data_status:row?.data_status||null};
+  });
+  const sourceClosed=Number(scan?.counts?.errors||0)===0&&Number(scan?.counts?.universe_total||0)>0;
+  const status=!sourceClosed?'HTX_SCAN_NOT_CLOSED':exactStatus||(candidates.length?'CLOSED':'NO_LIQUIDATION_CANDIDATES');
+  return{schema:'LIQUIDATION_ONLY_SCAN_V1',status,exact_contract:exact||null,scan:{source:scan?.source||null,market:scan?.market||null,observed_ts:scan?.timestamp||null,universe_total:Number(scan?.counts?.universe_total||0),scanned:Number(scan?.counts?.scanned||0),errors:Number(scan?.counts?.errors||0),stale:Number(scan?.counts?.stale||0),technical_eligible:Number(queue?.counts?.eligible||0),shortlist_total:Number(discovery?.counts?.shortlist||0)},candidates,full_report_started:false,decision_generated:false,direction_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,persistence_requested:false};
+}
+
 /* REPORT2_GITHUB_BYK_PROXY_V4_1 — protected source proxy only. */
 async function __report2CloudByKProxy(request, env) {
  if(request.method!=="POST") return new Response(JSON.stringify({ok:false,error:"POST_REQUIRED"}),{status:405,headers:{"content-type":"application/json","cache-control":"no-store"}});

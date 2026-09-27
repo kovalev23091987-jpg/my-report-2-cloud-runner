@@ -8,7 +8,7 @@ const hash=v=>createHash('sha256').update(JSON.stringify(stable(v))).digest('hex
 export function nativeLiquidationSources(liq){
  const nested=[];
  if(liq?.native_extension?.schema==='NATIVE_LIQUIDATION_CONTEXT_V1')nested.push(liq.native_extension);
- for(const e of arr(liq?.independent_extensions))if(e?.schema==='GTRADE_LIQUIDATION_CONTEXT_V1')nested.push(e);
+ for(const e of arr(liq?.independent_extensions))if(['GTRADE_LIQUIDATION_CONTEXT_V1','SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1'].includes(e?.schema))nested.push(e);
  if(nested.length){
   const usable=nested.filter(e=>['USABLE_NATIVE_SAMPLE','USABLE_SCOPED_NATIVE_CONTEXT'].includes(e.status));
   return {present:true,kind:'NESTED',contexts:usable,sources:usable.map(e=>({provider:e.provider||'Hyperliquid official',venue:e.venue||'Hyperliquid',native_symbol:e.binding?.native_symbol,source_ts:e.source_ts,price_quote:e.price_quote,above:e.above,below:e.below,freshness_max_age_ms:e.freshness_max_age_ms}))};
