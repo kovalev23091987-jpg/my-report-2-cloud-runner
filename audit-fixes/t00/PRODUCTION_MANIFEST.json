@@ -1,0 +1,350 @@
+{
+  "schema": "my-report-2-production-manifest-v1",
+  "captured_at": "2026-09-28T02:35:00+03:00",
+  "production": {
+    "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+    "branch": "main",
+    "commit": "2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba",
+    "generation": "MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M",
+    "expected_worker_sha256": "c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97",
+    "observed_successful_run_id": 36358867282,
+    "observed_run_head_sha": "2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba"
+  },
+  "audit_branch": {
+    "name": "audit-fixes-20260928-internal-v1",
+    "head": "00f11fae6bc97a38a8b8fe5e26bc405fc64d5461"
+  },
+  "schedules": {
+    "github_analytics": "*/20 * * * *",
+    "github_keepalive": "17 3 1 * *",
+    "observed_live_hub_legacy": "*/5 * * * *"
+  },
+  "roles": {
+    "ANALYTICS": "GitHub Actions report2.yml",
+    "PUBLIC_COLLECTOR": "not separated in V4; legacy Hub schedule still active",
+    "RELAY": "my-report-2-hub /telegram-test binding",
+    "WATCHDOG": "not isolated in V4"
+  },
+  "workflow": {
+    "path": ".github/workflows/report2.yml",
+    "sha256": "138c12213a34282f48695fe74849cece4c7673550534ca9bfcec6a4fa526bce9",
+    "entrypoint": "runtime/runner-main.mjs",
+    "node": "24",
+    "timeout_minutes": 10,
+    "bindings_without_values": [
+      "BYKARANTELI_API_KEY",
+      "COINALYZE_API_KEY",
+      "LIQFLOW_API_KEY",
+      "OXARCHIVE_API_KEY",
+      "REPORT2_ANALYTICS_ACTOR",
+      "REPORT2_CROSS_EXCHANGE_VALIDATION_LANE",
+      "REPORT2_CURRENT_GENERATION",
+      "REPORT2_D1_BRIDGE_TOKEN",
+      "REPORT2_D1_BRIDGE_URL",
+      "REPORT2_D1_MAX_DAILY_READS",
+      "REPORT2_D1_MAX_DAILY_WRITES",
+      "REPORT2_D1_RUNS_PER_DAY",
+      "REPORT2_EXPECTED_WORKER_SHA",
+      "REPORT2_LIQUIDATION_EXTENSION_MODE",
+      "REPORT2_MANUAL_COIN_CONTRACT",
+      "REPORT2_MANUAL_COMMAND",
+      "REPORT2_OXARCHIVE_COST_PROBE",
+      "REPORT2_OXARCHIVE_PROBE_SYMBOL",
+      "REPORT2_PAYLOAD_KEY",
+      "REPORT2_POST_V7_UNIFIED_ENABLED",
+      "REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED",
+      "REPORT2_RUNNER_ENABLED",
+      "REPORT2_RUN_SOURCE",
+      "REPORT2_SOURCE_PROXY_TOKEN",
+      "REPORT2_SOURCE_PROXY_URL",
+      "REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON",
+      "REPORT2_TELEGRAM_INFO_ENABLED",
+      "REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED",
+      "REPORT2_TELEGRAM_INFO_TEST_ID",
+      "REPORT2_TELEGRAM_INSTALL_VALIDATION",
+      "REPORT2_TELEGRAM_OUTPUT_ENABLED",
+      "REPORT2_TELEGRAM_RELAY_KEY",
+      "REPORT2_TELEGRAM_RELAY_URL",
+      "REPORT2_TELEGRAM_REPORT_TEST",
+      "REPORT2_TELEGRAM_SHADOW_DECISION_AUTO",
+      "REPORT2_TELEGRAM_WATCH70_ENABLED",
+      "REPORT2_TELEGRAM_WATCH70_THRESHOLD",
+      "REPORT2_V3_TELEGRAM_JOURNAL_ENABLED",
+      "REPORT2_V3_TELEGRAM_NETWORK_ENABLED"
+    ]
+  },
+  "reconstruction": {
+    "base_runtime_commit": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+    "base_workflow_sha256": "fa9490aa77153688b622165fe792ca12eea415f8819ff54508a58209d93c115d",
+    "production_overlays": [
+      {
+        "order": 1,
+        "entrypoint": "runner/apply-telegram-runtime-overlay.mjs",
+        "argument": "runner/telegram-runtime-overlay.json",
+        "sha256": "cef3465a6e3769bec9791ae65dcc52720b81b6f548800af55dda1ec6995ac819"
+      },
+      {
+        "order": 2,
+        "entrypoint": "cross-venue-delta-overlay/apply-runtime-overlay.mjs",
+        "argument": null,
+        "sha256": "9756d725ff4045767ffd32be9d41e81dfbfc13c24114ca8137dc1b36619feafb"
+      },
+      {
+        "order": 3,
+        "entrypoint": "architecture-cleanup-delta/canonical-final-overlay/apply-canonical-final-overlay.mjs",
+        "argument": null,
+        "sha256": "81d8246c2dcf73a20b9e12b89b913a0e9ec6a67619afe7a71d3f2acdab2c636a"
+      },
+      {
+        "order": 4,
+        "entrypoint": "existing-source-consumer-delta/overlay/apply-existing-source-consumer-overlay.mjs",
+        "argument": null,
+        "sha256": "7f3d417ee7e0fc2bc12d08df9ccb88fd209d7b32a80a797ae388dd6235c64aed"
+      },
+      {
+        "order": 5,
+        "entrypoint": "existing-source-coverage-delta/overlay/apply-existing-source-coverage-overlay.mjs",
+        "argument": null,
+        "sha256": "b695dfad38d35c6b2f67dd098c1f8e768cdfbad158146b7c19a7dc2f42dd1746"
+      },
+      {
+        "order": 6,
+        "entrypoint": "existing-source-history-sequence-delta/overlay/apply-existing-source-history-sequence-overlay.mjs",
+        "argument": null,
+        "sha256": "133595e903922d6f281c86de8cf3e5573602f62912ae40a04a598e5fc75998f9"
+      },
+      {
+        "order": 7,
+        "entrypoint": "existing-source-closure-audit-delta/overlay/apply-existing-source-closure-audit-overlay.mjs",
+        "argument": null,
+        "sha256": "fe76a0be8358f0897816981e56a8a81c871ff6ccd185834092c0a0b9cdc16dda"
+      },
+      {
+        "order": 8,
+        "entrypoint": "existing-source-fact-contract-delta/overlay/apply-existing-source-fact-contract-overlay.mjs",
+        "argument": null,
+        "sha256": "a06d79e946498b1172101cd656f9f8baf7e60e4f4c26d5bd5888114a7e91f726"
+      },
+      {
+        "order": 9,
+        "entrypoint": "existing-source-hyperliquid-recorder-delta/overlay/apply-existing-source-hyperliquid-recorder-overlay.mjs",
+        "argument": null,
+        "sha256": "ea7505955134d2359a8c44e42d31b91aaebcf5f02e714b4401af890bd3615a4f"
+      },
+      {
+        "order": 10,
+        "entrypoint": "existing-source-preselection-router-delta/overlay/apply-existing-source-preselection-router-overlay.mjs",
+        "argument": null,
+        "sha256": "0c9d48442e412a8ddf2de64d08b8870fa6a264c091f004372cb40848150bc84d"
+      },
+      {
+        "order": 11,
+        "entrypoint": "output-surface-contract-delta/overlay/apply-output-surface-contract-overlay.mjs",
+        "argument": null,
+        "sha256": "3d3831bd99c5cb78f68c08463c0afcf68a97739ecb2349a7a8f2ce197a383956"
+      },
+      {
+        "order": 12,
+        "entrypoint": "snapshot-diff-delta/overlay/apply-snapshot-diff-overlay.mjs",
+        "argument": null,
+        "sha256": "94856a53f9d6c3b0529e5ca2f65f741f208600476a838d68660fd6d2828fe2ab"
+      },
+      {
+        "order": 13,
+        "entrypoint": "consolidated-remaining-delta/overlay/apply-consolidated-remaining-overlay.mjs",
+        "argument": null,
+        "sha256": "4eb2fd803092f0cac96f831b7bd2ec2af45b490c7dfb3f7290a9078673dc3eea"
+      },
+      {
+        "order": 14,
+        "entrypoint": "telegram-tz-reconciliation-fix/overlay/apply-telegram-tz-reconciliation-overlay.mjs",
+        "argument": null,
+        "sha256": "b0b960dfa5ce1003e5f4f410a3df9e452b455954e8dc103f6ae8a6e085ef79a3"
+      },
+      {
+        "order": 15,
+        "entrypoint": "early-surfacing-v7/apply-early-surfacing-v7-overlay.mjs",
+        "argument": null,
+        "sha256": "523c74929ce5ad66805893292e97dcf30bddfbdc9eaa4256aef07fa71b8df103"
+      }
+    ],
+    "final_overlays": [
+      {
+        "order": 16,
+        "entrypoint": "post-v7-consolidated/post-v7/overlay/apply-post-v7-unified-overlay.mjs",
+        "sha256": "3f10cd63d6410bfa899deac0a852f0e9d27ddab5b447bd8c51aece6d919e1a02"
+      },
+      {
+        "order": 17,
+        "entrypoint": "post-v7-consolidated/liquidation/liquidation-extension/integration/apply-after-unified.mjs",
+        "sha256": "bb56baebad3364b4ee5fcc1901617542f4bf6a182bd9c4e3ddc245d435b13578"
+      },
+      {
+        "order": 18,
+        "entrypoint": "post-v7-consolidated/final-reconciliation/apply-runtime-overlay.mjs",
+        "sha256": "e26747b5fb2aa499a1ee8312664f54df686d981e0c46efac3cf39e4cc8b417e4"
+      },
+      {
+        "order": 19,
+        "entrypoint": "current-generation/apply-runtime-overlay.mjs",
+        "sha256": "084f21ab2de3ce9b9f53559a2d0032b082c79afafd4cc36a0c354c53ab820c77"
+      }
+    ]
+  },
+  "repository_effective_override_modules": {
+    "current-generation/files/byk-quota-budget.mjs": "3d371bba14d35dfa87b6aac85e93b3c3668563e37f6b05c8d5528ecdc55e277c",
+    "current-generation/files/runner-main.mjs": "8f3eafbf4098d7fd663f01ca22158bf37eecdc378c8430e48cbb3d4efe85df15",
+    "current-generation/files/src/bound-telegram-delivery-sidecar.mjs": "96895e0789091dfef8c835370c9b96de71713ae85e36e9f024ac4bd666b68e2e",
+    "current-generation/files/src/canonical-display.mjs": "947c207c33bcd36b66d56b36d8bc454351a306ba31501bef854a50a5db7ba3cc",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "02430ce48f2360eccc82368a7ff7273b908b3986829a33a6b68c3907d9ea9edf",
+    "current-generation/files/src/cross-exchange-risk-context.mjs": "5122781c0d5260b566ec4e53e06c20ace8e2062dbb8447e7ee20b09a51db0b25",
+    "current-generation/files/src/dynamic-liquidation-panel.mjs": "38a953c62bdb1023348aae5a573f0c373d9287abbe1658465c68e8de2dc4dd82",
+    "current-generation/files/src/entry-area-rule-v2.mjs": "b11f64e15cd56733b5c1052653c8ed314ad43103bc3b5568797d247e638c2654",
+    "current-generation/files/src/global-market-context.mjs": "6b0704070478256e5020cbf5c94b527452ea98bce94add637df01e7df3c90e91",
+    "current-generation/files/src/liquidation-candidate-queue.mjs": "3beed10455ee2f2a190facf898da97ea3d8a911fc755db31207569efcc13050a",
+    "current-generation/files/src/liquidation-command-router.mjs": "3a8ffe47f68fef2605a7b25b31edd54d1ca8097dd657d91f079c4168c9cf5d3d",
+    "current-generation/files/src/liquidation-extension/canonical-capture.mjs": "b785f005cde27b6d5e8de55cc596bca1a5e1e0f7387cc571bf2e1bfea852920f",
+    "current-generation/files/src/liquidation-extension/combined-runner-service.mjs": "7aa83ad4701b7a92d78bde669407bbf1a21907aee29fcd65055e18e0e371b469",
+    "current-generation/files/src/liquidation-extension/compact-context.mjs": "3168a8595980029a85b7f6f396e70034f98867f597b76ec1d0160673a7294449",
+    "current-generation/files/src/liquidation-extension/core.mjs": "cc33fa69c4ba1504e09d8b87a0e875c0a7344f3cd976910887919929ec172bbb",
+    "current-generation/files/src/liquidation-extension/d1-source-admission.mjs": "cd4171ae06fc4094a7a1d163827f7735716cd6d0baee88d99153376d0c818e2e",
+    "current-generation/files/src/liquidation-extension/gmx-runtime-collector.mjs": "af168ce3e7874cc81a1c3700987a014ecad66a24df384ed116cf5981b225326b",
+    "current-generation/files/src/liquidation-extension/gtrade-runtime-bridge.mjs": "b3f3481912be33432af1262ed8db991a93caea6928c8f0835203af9b6eefccd8",
+    "current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs": "7e03300f3071e652bcf205b2199721d13369b0404253a76c796b0fcb60ecaee9",
+    "current-generation/files/src/liquidation-extension/gtrade.mjs": "d573bf207a591ffa0e248831a76b2c76a758f880ee289cfddf027cb31098780e",
+    "current-generation/files/src/liquidation-extension/htx-liquidation-route.mjs": "b73227d154aae31ad410c399b5f70de09d961a111f9a1b61704fb4b816dac05d",
+    "current-generation/files/src/liquidation-extension/install-source-allowances.mjs": "22c51f321ae856caf75360cd554cbb7baf60d7cd6fa4206b4f943ec058285040",
+    "current-generation/files/src/liquidation-extension/io.mjs": "5869caef3e00a94637848058dc7c48a316df1ddee4800c0f7c11622a652fba8b",
+    "current-generation/files/src/liquidation-extension/lighter-runtime-collector.mjs": "79f1637f32f41d692521f7690fa7747c58b44de03548618524abbcfbdbb3216a",
+    "current-generation/files/src/liquidation-extension/local-proof-store.mjs": "81995cadc7c49a4bc97a677499e2b5de6e1e00482b7de680d2635a670aafa4a7",
+    "current-generation/files/src/liquidation-extension/multi-runner-extension.mjs": "3d478d706e706f1f01049fbcd3529003e70610814a46782878bee303e25f54b5",
+    "current-generation/files/src/liquidation-extension/native-liquidation-guard.mjs": "e89b3a1d2f10ce1c48adcd863b7ae7aff0ebfeb8f6313761ab610c5da769a529",
+    "current-generation/files/src/liquidation-extension/native-verification.mjs": "ba075d520248a764a103e805bb39fe8d32bdc1983317d5cf1dcbab8eb9f3956a",
+    "current-generation/files/src/liquidation-extension/providers.mjs": "085ef024c22e494bbdaae900ffcb6798a6de2643150f7c39f617ffba4a766b56",
+    "current-generation/files/src/liquidation-extension/round2-providers.mjs": "8b66be5141a3decd5ecbf1f9d062a793814c5bf61c8297ae8d93fc1bd340fa0e",
+    "current-generation/files/src/liquidation-extension/run-source-budget.mjs": "a0cfbe68fc72c0f17cbde214e722264bf08a0ba60522b010e777ea47a6adcd47",
+    "current-generation/files/src/liquidation-extension/runner-extension.mjs": "80c0b13a30c6085afabdbfcb144419b93f8d493ba821d17b2cfd720d4ff2d7e4",
+    "current-generation/files/src/liquidation-extension/runtime-bridge.mjs": "84522fd3c250cbcfc3225f961d9815f2c97c33f611387997f5d833338abb1bf8",
+    "current-generation/files/src/liquidation-extension/scoped-provider-runtime-bridge.mjs": "6e1d6d84988ba8b90ce4fa35c3d2eebdfd6d4c08dc4951081f46a494004fc441",
+    "current-generation/files/src/liquidation-extension/select-native-account-sample.mjs": "608b10454b2bb5732b5e38318b59a022d328e9664290a8104568878e89c4fcdc",
+    "current-generation/files/src/liquidation-extension/source-policy.mjs": "5624567766250994b4ff0c29bf4ad8598e84734a9c2111da89e4ce26bc5887e9",
+    "current-generation/files/src/liquidation-extension/venue-catalog-cache.mjs": "fc16428d92853cc6e751af5e2609cf23645d43a4f5c7418ee349cee836e6985d",
+    "current-generation/files/src/liquidation-outcome-calibration.mjs": "d1433417120cadbf75ac9ddeaa1be79de76e3a2a44a1fd87369b23a59cb15d2f",
+    "current-generation/files/src/liquidation-source-weighting.mjs": "61608a266881e7bb44549d988328689ee86296a98fe96bab7fa7a4286e96a018",
+    "current-generation/files/src/manual-report-formatter.mjs": "184ecc16fb30da363b05ba16dfa4c38286565ca26cdd5a60aa6cb253b877c9c4",
+    "current-generation/files/src/native-liquidation-guard.mjs": "5e1ab4d76ef6e82bb9461748f6b881b83c9aec93cb2337f4f810bbbf0c8ce728",
+    "current-generation/files/src/oxarchive-cost-probe.mjs": "ff1fff55d88e358a2e7ee2a4a49d80542c0f93bf6526f2c65d344600914395ae",
+    "current-generation/files/src/publication-reconciler.mjs": "1c33cf7c26cabe72471391187c6208a8fe7eb628230c49526b11c8073c31136c",
+    "current-generation/files/src/pump-liquidation-zones.mjs": "b4204a7732c34345470bc1dd099bcf8af10b82c353d5540ec812e0e3bc0ff831",
+    "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
+    "current-generation/files/src/schedule-quota-calculator.mjs": "c6e7742d379c4816d6e5a8427cab5b824d80347da9d9c18eb4571bc4169c5307",
+    "current-generation/files/src/supplemental-candidate-context.mjs": "4d3a61191844a236d99ef63cac293aa9ea092380091405910dad95d9fa098d9b",
+    "current-generation/files/src/supplemental-score-evidence.mjs": "366ab81cb0e088f8dbeb7bd96a3b188f006c2127727ac1b7f8a9d37804e4a696",
+    "current-generation/files/src/supplemental-source-policy.mjs": "3e8d4eb17fea0e34fe8da54698e0eff6d432fb049c9ecb02ca653301d9a72923",
+    "current-generation/files/src/technical-move-potential.mjs": "07daee6258c7c9265f726bb9c3f80e10175f01315e0d507055ba668c5ddad875",
+    "current-generation/files/src/telegram-compact-formatter.mjs": "7befb551073370f876d80eb67a8f5f37079f6c851e669982e198cc9b0ebcd30f",
+    "current-generation/files/src/tz101-cost-assessment.mjs": "fa2d038a99715dbe6dd25d98d39f325cd5f089c216dff65b5ba96a6e9312eec8",
+    "current-generation/files/src/tz101-scenario-plan.mjs": "2a17ad7a0b6566c5aeb816e4875b94d29e94121c557caf4e40a7e563ca2a3c0e",
+    "current-generation/files/src/user-approved-publication-policy.mjs": "0aa7ce076a0255da7659569ada7078bbc20d536ad465dc3c60eb11c4db128182",
+    "current-generation/files/src/v3-adaptive-budget.mjs": "f53e6ddea99e119d4a356b3bf78649215a8e551407dcbc4621dc58acd8800428",
+    "current-generation/files/src/worker.js": "c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97",
+    "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a"
+  },
+  "migrations": {
+    "current-generation/migrations/001_byk_monthly_quota.sql": "7fa03fe0b93b87ce5ea18fadb463b99a00a0b786c0118e9b047361b83fb93432",
+    "post-v7-consolidated/liquidation/liquidation-extension/delivery/migrations.sql": "162f6373a70e405d72304db7d2233393c049e98ffed71d963ae828c68c437637",
+    "post-v7-consolidated/liquidation/liquidation-extension/integration/migrations/liq-quota-candidate.sql": "9e4793f5ece9e8cce26106c8832110c26830389062c43b89bbc8bf10e0c77d84",
+    "post-v7-consolidated/liquidation/liquidation-extension/integration/source-quota-shadow.sql": "45dac94dfc52829b964f295a39a7d871ff2b1c243caa5fe667575764d5698455",
+    "post-v7-consolidated/liquidation/unified-delivery-base/migrations.sql": "162f6373a70e405d72304db7d2233393c049e98ffed71d963ae828c68c437637",
+    "post-v7-consolidated/post-v7/migrations.sql": "162f6373a70e405d72304db7d2233393c049e98ffed71d963ae828c68c437637"
+  },
+  "dependencies": {
+    "lockfile": "post-v7-consolidated/liquidation/liquidation-extension/package-lock.json",
+    "lockfile_sha256": "cb11faea898605777c6392c80169b8de8b45224c7591b8a001a306857b51c770",
+    "lockfile_version": 3,
+    "packages": {
+      "@ethersproject/abi": "5.8.0",
+      "@ethersproject/abstract-provider": "5.8.0",
+      "@ethersproject/abstract-signer": "5.8.0",
+      "@ethersproject/address": "5.8.0",
+      "@ethersproject/base64": "5.8.0",
+      "@ethersproject/basex": "5.8.0",
+      "@ethersproject/bignumber": "5.8.0",
+      "@ethersproject/bytes": "5.8.0",
+      "@ethersproject/constants": "5.8.0",
+      "@ethersproject/contracts": "5.8.0",
+      "@ethersproject/hash": "5.8.0",
+      "@ethersproject/hdnode": "5.8.0",
+      "@ethersproject/json-wallets": "5.8.0",
+      "@ethersproject/keccak256": "5.8.0",
+      "@ethersproject/logger": "5.8.0",
+      "@ethersproject/networks": "5.8.0",
+      "@ethersproject/pbkdf2": "5.8.0",
+      "@ethersproject/properties": "5.8.0",
+      "@ethersproject/providers": "5.8.0",
+      "@ethersproject/random": "5.8.0",
+      "@ethersproject/rlp": "5.8.0",
+      "@ethersproject/sha2": "5.8.0",
+      "@ethersproject/signing-key": "5.8.0",
+      "@ethersproject/solidity": "5.8.0",
+      "@ethersproject/strings": "5.8.0",
+      "@ethersproject/transactions": "5.8.0",
+      "@ethersproject/units": "5.8.0",
+      "@ethersproject/wallet": "5.8.0",
+      "@ethersproject/web": "5.8.0",
+      "@ethersproject/wordlists": "5.8.0",
+      "@gainsnetwork/contests": "0.0.1",
+      "@gainsnetwork/sdk": "1.8.10",
+      "@types/node": "18.19.130",
+      "abi-coder": "4.1.1",
+      "aes-js": "3.0.0",
+      "bech32": "1.1.4",
+      "bn.js": "5.2.5",
+      "brorand": "1.1.0",
+      "elliptic": "6.6.1",
+      "elliptic/node_modules/bn.js": "4.12.5",
+      "ethcall": "4.8.13",
+      "ethers": "5.8.0",
+      "hash.js": "1.1.7",
+      "hmac-drbg": "1.0.1",
+      "inherits": "2.0.4",
+      "js-sha3": "0.8.0",
+      "luxon": "3.7.2",
+      "minimalistic-assert": "1.0.1",
+      "minimalistic-crypto-utils": "1.0.1",
+      "scrypt-js": "3.0.1",
+      "undici-types": "5.26.5",
+      "ws": "8.18.0"
+    }
+  },
+  "runtime_capture": {
+    "status": "BLOCKED_GITHUB_CONTENTS_WRITE_PERMISSION",
+    "files": {},
+    "tz101_entry_area_calibration_present": false
+  },
+  "cloud_inventory": {
+    "github_workflows": "READ_CONFIRMED",
+    "github_recent_runs": "READ_CONFIRMED",
+    "cloudflare_hub_bundle": "AUDIT_EVIDENCE_ONLY_FILE_NOT_PRESENT",
+    "cloudflare_bindings": "NAMES_PARTIAL_FROM_WORKFLOW; LIVE_LIST_NOT_AVAILABLE",
+    "d1_schema": "AUDIT_EVIDENCE_ONLY_EXACT_SCHEMA_EXPORT_NOT_PRESENT"
+  },
+  "required_historical_fixtures": {
+    "ETC": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
+    "ETHFI": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
+    "DOT": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
+    "LSK": "AUDIT_FACTS_ONLY_EXACT_ROW_NOT_PRESENT",
+    "HTX_TIMEOUT": "RUN_36350755672_LOG_AVAILABLE_EXACT_FIXTURE_NOT_CAPTURED",
+    "ETC_BINDING_FAILURE": "RUN_LOG_REFERENCES_AVAILABLE_EXACT_FIXTURE_NOT_CAPTURED"
+  },
+  "completeness": {
+    "status": "INCOMPLETE",
+    "blocking_missing": [
+      "effective live Hub bundle",
+      "exact live bindings list without values",
+      "exact D1 sqlite schema",
+      "six exact sanitized historical fixtures",
+      "authorized decrypted runtime including tz101-entry-area-calibration.mjs"
+    ]
+  }
+}
