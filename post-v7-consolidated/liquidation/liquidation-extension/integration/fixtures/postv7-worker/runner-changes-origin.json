@@ -1,0 +1,82 @@
+{
+  "origin": "VERIFIED_ORIGINAL_UNIFIED_PATCH_REPO_AST_LITERAL_EXTRACTION",
+  "source_patch_repo_sha256": "29f4d8aae7c7e48a148616d690e440d9d96896cc590cbdc0a387b7998e6fd6dc",
+  "base_runner_sha256": "05a9a428fc1b3acc9dc3e6e509cd5a2accedc1e9c1908be9d93302302d2a6f1b",
+  "changes": [
+    {
+      "old": "import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from \"./src/v3-telegram-delivery-sidecar.mjs\";",
+      "new": "import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } from \"./src/v3-telegram-delivery-sidecar.mjs\";\nimport { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from \"./src/bound-telegram-delivery-sidecar.mjs\";\nimport { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence } from \"./src/scheduler-control.mjs\";",
+      "count": 1
+    },
+    {
+      "old": "const RUNNER_VERSION = \"my-report-2-github-cloud-runner-v4.15.2-tz-reconciled-v4\";",
+      "new": "const RUNNER_VERSION = \"my-report-2-github-cloud-runner-v4.16.0-post-v7-unified\";",
+      "count": 1
+    },
+    {
+      "old": "    DATA_DB: new RemoteD1Database(envText(\"REPORT2_D1_BRIDGE_URL\"), envText(\"REPORT2_D1_BRIDGE_TOKEN\"), { fetchImpl: nativeFetch, timeoutMs: 45_000 }),\n    BYKARANTELI_API_KEY: envText(\"BYKARANTELI_API_KEY\"),",
+      "new": "    DATA_DB: new RemoteD1Database(envText(\"REPORT2_D1_BRIDGE_URL\"), envText(\"REPORT2_D1_BRIDGE_TOKEN\"), { fetchImpl: nativeFetch, timeoutMs: 45_000 }),\n    BYKARANTELI_API_KEY: envText(\"BYKARANTELI_API_KEY\"),\n    REPORT2_POST_V7_UNIFIED_ENABLED: envText(\"REPORT2_POST_V7_UNIFIED_ENABLED\", { required:false }),\n    REPORT2_ANALYTICS_ACTOR: envText(\"REPORT2_ANALYTICS_ACTOR\", { required:false }) || \"GITHUB_ACTIONS\",",
+      "count": 1
+    },
+    {
+      "old": "async function main() {\n  const source = envText(\"REPORT2_RUN_SOURCE\", { required: false }) || \"manual\";\n  const { worker, sha } = await loadWorker();\n  const env = buildEnv();",
+      "new": "async function main() {\n  const source = envText(\"REPORT2_RUN_SOURCE\", { required: false }) || \"manual\";\n  const postV7UnifiedEnabled = [\"1\",\"true\",\"yes\",\"on\"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || \"0\").trim().toLowerCase());\n  const { worker, sha } = await loadWorker();\n  const env = buildEnv();",
+      "count": 1
+    },
+    {
+      "old": "  const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;\n  const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});\n  await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"*/12 * * * *\" : \"manual\" }, env, ctx);",
+      "new": "  const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;\n  const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});\n  if (postV7UnifiedEnabled && source === \"schedule\") {\n    const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:\"GITHUB_ACTIONS\"});\n    if (!ownership.allowed) throw new Error(`PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:${ownership.status}`);\n  }\n  await worker.scheduled({ scheduledTime: started, cron: source === \"schedule\" ? \"*/12 * * * *\" : \"manual\" }, env, ctx);",
+      "count": 1
+    },
+    {
+      "old": "  const R88_DOWNSTREAM_RESERVE = Object.freeze({rows_read:4500,rows_written:50});\n  const r88Gate = (envelope) => evaluateWithinRunReservation({\n    reservation:d1RunReservation,\n    currentUsage:env.DATA_DB.usageSnapshot(),\n    extraRowsRead:R88_DOWNSTREAM_RESERVE.rows_read + envelope.rows_read,\n    extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written + envelope.rows_written,\n  });\n  const v3SidecarsPreactionBudget = evaluateWithinRunReservation({\n    reservation:d1RunReservation,\n    currentUsage:env.DATA_DB.usageSnapshot(),\n    extraRowsRead:R88_DOWNSTREAM_RESERVE.rows_read,\n    extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written,\n  });",
+      "new": "  const R88_DOWNSTREAM_RESERVE = Object.freeze({rows_read:4500,rows_written:50});\n  const postV7CriticalLaneReserve = postV7UnifiedEnabled ? Object.freeze({\n    rows_read:R88_DOWNSTREAM_RESERVE.rows_read + V3_EARLY_SIDECAR_BUDGET.rows_read + V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read + V3_LIQUIDATION_SIDECAR_BUDGET.rows_read + V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read + BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,\n    rows_written:R88_DOWNSTREAM_RESERVE.rows_written + V3_EARLY_SIDECAR_BUDGET.rows_written + V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written + V3_LIQUIDATION_SIDECAR_BUDGET.rows_written + V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written + BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written,\n  }) : R88_DOWNSTREAM_RESERVE;\n  const r88Gate = (envelope) => evaluateWithinRunReservation({\n    reservation:d1RunReservation,\n    currentUsage:env.DATA_DB.usageSnapshot(),\n    extraRowsRead:R88_DOWNSTREAM_RESERVE.rows_read + envelope.rows_read,\n    extraRowsWritten:R88_DOWNSTREAM_RESERVE.rows_written + envelope.rows_written,\n  });\n  const v3SidecarsPreactionBudget = evaluateWithinRunReservation({\n    reservation:d1RunReservation,\n    currentUsage:env.DATA_DB.usageSnapshot(),\n    extraRowsRead:postV7CriticalLaneReserve.rows_read,\n    extraRowsWritten:postV7CriticalLaneReserve.rows_written,\n  });",
+      "count": 1
+    },
+    {
+      "old": "const r88EarlyGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_EARLY_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;",
+      "new": "const r88EarlyGate = v3SidecarsPreactionBudget.allowed ? (postV7UnifiedEnabled ? v3SidecarsPreactionBudget : r88Gate(V3_EARLY_SIDECAR_BUDGET)) : v3SidecarsPreactionBudget;",
+      "count": 1
+    },
+    {
+      "old": "const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;",
+      "new": "const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? (postV7UnifiedEnabled ? v3SidecarsPreactionBudget : r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET)) : v3SidecarsPreactionBudget;",
+      "count": 1
+    },
+    {
+      "old": "const r88ProjectedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;",
+      "new": "const r88ProjectedGate = v3SidecarsPreactionBudget.allowed ? (postV7UnifiedEnabled ? v3SidecarsPreactionBudget : r88Gate(V3_LIQUIDATION_SIDECAR_BUDGET)) : v3SidecarsPreactionBudget;",
+      "count": 1
+    },
+    {
+      "old": "      infoEnabled: envText(\"REPORT2_TELEGRAM_INFO_ENABLED\", { required: false }),\n      infoTestId: envText(\"REPORT2_TELEGRAM_INFO_TEST_ID\", { required: false }),\n      infoObserveEnabled: envText(\"REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED\", { required: false }),",
+      "new": "      infoEnabled: postV7UnifiedEnabled ? \"0\" : envText(\"REPORT2_TELEGRAM_INFO_ENABLED\", { required: false }),\n      infoTestId: envText(\"REPORT2_TELEGRAM_INFO_TEST_ID\", { required: false }),\n      infoObserveEnabled: postV7UnifiedEnabled ? \"0\" : envText(\"REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED\", { required: false }),",
+      "count": 1
+    },
+    {
+      "old": "      enabled: v3TelegramNetworkEnabled ? \"0\" : envText(\"REPORT2_TELEGRAM_OUTPUT_ENABLED\", { required: false }),",
+      "new": "      enabled: postV7UnifiedEnabled ? \"0\" : (v3TelegramNetworkEnabled ? \"0\" : envText(\"REPORT2_TELEGRAM_OUTPUT_ENABLED\", { required: false })),",
+      "count": 1
+    },
+    {
+      "old": "  let v3TelegramDeliverySidecar;\n  if (!v3SidecarsPreactionBudget.allowed || !d1PreTelegramBudget.allowed) {\n    v3TelegramDeliverySidecar = {version:\"v3-telegram-delivery-sidecar-shadow-v1\",mode:\"SHADOW_GATED_DELIVERY\",status:\"BUDGET_BLOCKED_FAIL_CLOSED\",network_send:false,sent:0,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(d1PreTelegramBudget.reasons||[])]};\n  } else {\n    v3TelegramDeliverySidecar = await runV3TelegramDeliverySidecar(env.DATA_DB, {\n      enabled:v3TelegramNetworkEnabled,\n      relay_url:envText(\"REPORT2_TELEGRAM_RELAY_URL\", { required: false }),\n      relay_key:envText(\"REPORT2_TELEGRAM_RELAY_KEY\", { required: false }),\n      now_ts:Date.now(), fetch_impl:nativeFetch,\n    });\n  }",
+      "new": "  let v3TelegramDeliverySidecar;\n  const postV7DeliveryBudget = postV7UnifiedEnabled ? evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,extraRowsWritten:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written}) : d1PreTelegramBudget;\n  if (!v3SidecarsPreactionBudget.allowed || !postV7DeliveryBudget.allowed) {\n    v3TelegramDeliverySidecar = {version:postV7UnifiedEnabled?\"post-v7-bound-telegram-delivery-v1-20260926\":\"v3-telegram-delivery-sidecar-shadow-v1\",mode:postV7UnifiedEnabled?\"CANONICAL_BOUND_DELIVERY\":\"SHADOW_GATED_DELIVERY\",status:\"BUDGET_BLOCKED_FAIL_CLOSED\",network_send:false,sent:0,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(postV7DeliveryBudget.reasons||[])]};\n  } else {\n    const deliveryArgs={enabled:v3TelegramNetworkEnabled,relay_url:envText(\"REPORT2_TELEGRAM_RELAY_URL\", { required:false }),relay_key:envText(\"REPORT2_TELEGRAM_RELAY_KEY\", { required:false }),source_run_id:String(cron.run_id||\"\"),now_ts:Date.now(),fetch_impl:nativeFetch};\n    v3TelegramDeliverySidecar = postV7UnifiedEnabled\n      ? await runBoundTelegramDeliverySidecar(env.DATA_DB,deliveryArgs)\n      : await runV3TelegramDeliverySidecar(env.DATA_DB,deliveryArgs);\n  }",
+      "count": 1
+    },
+    {
+      "old": "  const scheduledMinuteUtc = new Date(started).getUTCMinutes();\n  const lowPriorityCadenceDue = source !== \"schedule\" || scheduledMinuteUtc === 2;",
+      "new": "  const scheduledMinuteUtc = new Date(started).getUTCMinutes();\n  let postV7MaintenanceClaim=null;\n  if (postV7UnifiedEnabled && source === \"schedule\") postV7MaintenanceClaim=await claimMaintenanceCadence(env.DATA_DB,{job_key:\"HOURLY_LOW_PRIORITY_STATS\",actor:\"GITHUB_ACTIONS\",now_ts:Date.now(),interval_ms:60*60_000});\n  const lowPriorityCadenceDue = source !== \"schedule\" || (postV7UnifiedEnabled ? postV7MaintenanceClaim?.claimed===true : scheduledMinuteUtc === 2);",
+      "count": 1
+    },
+    {
+      "old": "  console.log(\"R8_20_PROSPECTIVE_VALIDATION_SIDECAR\", JSON.stringify(r820ProspectiveValidationSidecar));\n  if (source !== \"schedule\" && r820ProspectiveValidationEnabled",
+      "new": "  console.log(\"R8_20_PROSPECTIVE_VALIDATION_SIDECAR\", JSON.stringify(r820ProspectiveValidationSidecar));\n  if (postV7UnifiedEnabled && postV7MaintenanceClaim?.claimed===true) {\n    const cadenceOk=discoveryRecallKpi?.status!==\"OBSERVER_ERROR_FAIL_CLOSED\" && !String(r820ProspectiveValidationSidecar?.status||\"\").includes(\"FAIL\");\n    await completeMaintenanceCadence(env.DATA_DB,{job_key:\"HOURLY_LOW_PRIORITY_STATS\",actor:\"GITHUB_ACTIONS\",success:cadenceOk,now_ts:Date.now(),result:cadenceOk?\"CLOSED\":\"NOT_CLOSED\"});\n  }\n  if (source !== \"schedule\" && r820ProspectiveValidationEnabled",
+      "count": 1
+    },
+    {
+      "old": "worker_sha256:sha, cron_run_id:cron.run_id,",
+      "new": "worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, cron_run_id:cron.run_id,",
+      "count": 1
+    }
+  ]
+}

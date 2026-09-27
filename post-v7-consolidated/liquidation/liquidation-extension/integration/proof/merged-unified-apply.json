@@ -1,0 +1,179 @@
+{
+  "schema": "POSTV7_LIQUIDATION_EXTENSION_V1",
+  "status": "APPLIED_TO_LOCAL_RUNTIME_ONLY",
+  "base_main": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+  "requires_preceding_unified_candidate": true,
+  "base_candidate_worker": "d4310484b937d26f1836e51228c53584a72a537bc42538dae869e7ec6a80b922",
+  "expected_worker_sha256": "056397dd2f6989f30d315b8ac3781503e2bba76a396f084096fad09a0fd3e328",
+  "files": [
+    {
+      "path": "src/worker.js",
+      "sha256": "056397dd2f6989f30d315b8ac3781503e2bba76a396f084096fad09a0fd3e328",
+      "bytes": 533045
+    },
+    {
+      "path": "src/canonical-runtime-adapter.mjs",
+      "sha256": "f4785b18f71006eb9f382739b90fca0a808b50a938d8b46a726904e8bd3ec1c9",
+      "bytes": 12444
+    },
+    {
+      "path": "runner-main.mjs",
+      "sha256": "19e73f81ba20f3e6fc5801f61e9aa2de31d37b8c1942a178c750db112f879e25",
+      "bytes": 47057
+    },
+    {
+      "path": "src/manual-report-formatter.mjs",
+      "sha256": "bf793b05e28cccaa27524cb1d0af96e8e8e88168b0d0b57d972f055231b81b5f",
+      "bytes": 7160
+    },
+    {
+      "path": "src/canonical-publication.mjs",
+      "sha256": "a3104dd0452a1b1e2c9923c0ac94f701e8efd8232e638634d8935a6ada66aee8",
+      "bytes": 29511
+    },
+    {
+      "path": "src/bound-telegram-delivery-sidecar.mjs",
+      "sha256": "0a9055b8e9ea86b2cd1993d98c0564facc481cc57c3233886fb81a156bebbf9d",
+      "bytes": 9171
+    },
+    {
+      "path": "src/publication-reconciler.mjs",
+      "sha256": "dde8b2f7d624b9788892002d2f064e62dfe88ecad5dc3e3104e053a8e19a734e",
+      "bytes": 10168
+    },
+    {
+      "path": "src/v3-telegram-delivery-sidecar.mjs",
+      "sha256": "620808636e68f0d74e7214391b03f25656ce0d0968e2edda5dddee7eca8304b6",
+      "bytes": 13898
+    },
+    {
+      "path": "src/v3-telegram-lifecycle.mjs",
+      "sha256": "797acfb53a9c7e3b030d088b03b75ae80554a1972d1476e6607642e1c2d3ac9b",
+      "bytes": 13408
+    },
+    {
+      "path": "src/bound-telegram-relay.mjs",
+      "sha256": "2c9af5acea9a7f07ebf5809b2ed1de4d462f5e0362285d04c3ad7d086a3b5008",
+      "bytes": 2181
+    },
+    {
+      "path": "src/native-liquidation-guard.mjs",
+      "sha256": "4e26d4ce40d4362bc01898e59dfdddb1a8f9e61f849aad8e1df3d3a6e9d75c21",
+      "bytes": 6478
+    },
+    {
+      "path": "src/liquidation-extension/canonical-capture.mjs",
+      "sha256": "b785f005cde27b6d5e8de55cc596bca1a5e1e0f7387cc571bf2e1bfea852920f",
+      "bytes": 1857
+    },
+    {
+      "path": "src/liquidation-extension/combined-runner-service.mjs",
+      "sha256": "bc2d25075b7b88305cf66f48a63903223d5e56a7a7d4e343767ac46a9d84c930",
+      "bytes": 2565
+    },
+    {
+      "path": "src/liquidation-extension/compact-context.mjs",
+      "sha256": "3168a8595980029a85b7f6f396e70034f98867f597b76ec1d0160673a7294449",
+      "bytes": 2900
+    },
+    {
+      "path": "src/liquidation-extension/core.mjs",
+      "sha256": "cc33fa69c4ba1504e09d8b87a0e875c0a7344f3cd976910887919929ec172bbb",
+      "bytes": 6712
+    },
+    {
+      "path": "src/liquidation-extension/d1-source-admission.mjs",
+      "sha256": "cd4171ae06fc4094a7a1d163827f7735716cd6d0baee88d99153376d0c818e2e",
+      "bytes": 5742
+    },
+    {
+      "path": "src/liquidation-extension/gtrade-runtime-bridge.mjs",
+      "sha256": "fb64367438f6dcd86e8ee069e0f02995687a8c4660af35af16eac23d8f9dae57",
+      "bytes": 5908
+    },
+    {
+      "path": "src/liquidation-extension/gtrade-runtime-collector.mjs",
+      "sha256": "7e03300f3071e652bcf205b2199721d13369b0404253a76c796b0fcb60ecaee9",
+      "bytes": 2066
+    },
+    {
+      "path": "src/liquidation-extension/gtrade.mjs",
+      "sha256": "d573bf207a591ffa0e248831a76b2c76a758f880ee289cfddf027cb31098780e",
+      "bytes": 4851
+    },
+    {
+      "path": "src/liquidation-extension/io.mjs",
+      "sha256": "ef75215ba7e1d345f962c9a1cd15e994348bef25bfffe463e20d56ecfa4da439",
+      "bytes": 4231
+    },
+    {
+      "path": "src/liquidation-extension/local-proof-store.mjs",
+      "sha256": "81995cadc7c49a4bc97a677499e2b5de6e1e00482b7de680d2635a670aafa4a7",
+      "bytes": 3897
+    },
+    {
+      "path": "src/liquidation-extension/multi-runner-extension.mjs",
+      "sha256": "3d478d706e706f1f01049fbcd3529003e70610814a46782878bee303e25f54b5",
+      "bytes": 5051
+    },
+    {
+      "path": "src/liquidation-extension/native-liquidation-guard.mjs",
+      "sha256": "4e26d4ce40d4362bc01898e59dfdddb1a8f9e61f849aad8e1df3d3a6e9d75c21",
+      "bytes": 6478
+    },
+    {
+      "path": "src/liquidation-extension/native-verification.mjs",
+      "sha256": "b3d5c610de848190509621bd5cb6a1f4df28f9ffe249228cd0b5246a02bde758",
+      "bytes": 3432
+    },
+    {
+      "path": "src/liquidation-extension/providers.mjs",
+      "sha256": "285c7e67446510ae539b7e989cee26e9f16262df826f0ee1c5056a6ca0f45edd",
+      "bytes": 9307
+    },
+    {
+      "path": "src/liquidation-extension/round2-providers.mjs",
+      "sha256": "8b66be5141a3decd5ecbf1f9d062a793814c5bf61c8297ae8d93fc1bd340fa0e",
+      "bytes": 8398
+    },
+    {
+      "path": "src/liquidation-extension/run-source-budget.mjs",
+      "sha256": "783935ae2a77f9c5743acdc0ed3911bd25a38392b57343f5f8f7db0a12b7a2b2",
+      "bytes": 7917
+    },
+    {
+      "path": "src/liquidation-extension/runner-extension.mjs",
+      "sha256": "a5de6d0c2c98d89e8f07a947674f58237aef4ccaa92d8fdb434cf9f3096dd9c8",
+      "bytes": 6107
+    },
+    {
+      "path": "src/liquidation-extension/runtime-bridge.mjs",
+      "sha256": "0f6c931e7e2886c83308c52f1477ca42dd459b3ac4c0345be75be2de6d1d6fe1",
+      "bytes": 6521
+    },
+    {
+      "path": "src/liquidation-extension/select-native-account-sample.mjs",
+      "sha256": "608b10454b2bb5732b5e38318b59a022d328e9664290a8104568878e89c4fcdc",
+      "bytes": 2259
+    },
+    {
+      "path": "src/liquidation-extension/source-policy.mjs",
+      "sha256": "9d706a073dfccc4679ebb30d446f2c45e033ed6bc93109a6f5f4e23470920905",
+      "bytes": 4551
+    },
+    {
+      "path": "src/liquidation-extension/package.json",
+      "sha256": "a1d85179fec2f8d2e75d3dfd3e1289074699ef54248b0d3f263a61c6ae548a5c",
+      "bytes": 377
+    },
+    {
+      "path": "src/liquidation-extension/package-lock.json",
+      "sha256": "cb11faea898605777c6392c80169b8de8b45224c7591b8a001a306857b51c770",
+      "bytes": 35519
+    }
+  ],
+  "production_changed": false,
+  "source_mode_default_off": true,
+  "actual_publication_path_preserved": true,
+  "trade_execution": false
+}

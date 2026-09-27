@@ -1,0 +1,151 @@
+{
+  "schema": "POSTV7_FULL_OFFLINE_VALIDATION_V1",
+  "node": "v24.19.0",
+  "started_at": "2026-09-27T12:30:32.980Z",
+  "runtime": "/workspace/scratch/814011e8af98/work/repository/runtime-clean",
+  "worker_sha256": "940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2",
+  "steps": [
+    {
+      "name": "prepare-inherited",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/prepare-inherited.log",
+      "sha256": "15f0d2527f608992caf8ff4147ea8e388744036333f27e6b39cb6aa2ef284bb7"
+    },
+    {
+      "name": "runtime-sdk",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/runtime-sdk.log",
+      "sha256": "23daa3e00f9eb8eeaf6f004ebab91c14df004cc4d0c40f9c8a34d60147f62081"
+    },
+    {
+      "name": "full-worker-import",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/full-worker-import.log",
+      "sha256": "1ccdfea4f3ae2337ca887f039fb8fe27a2c923ad237a80512006169879a501c5"
+    },
+    {
+      "name": "post-v7-retained",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/post-v7-retained.log",
+      "sha256": "7d4f847641e8a760fa40e38fc64ac33c8303bae5ece115e4f45b7adb3ea9a2ea",
+      "tests": {
+        "tests": 77,
+        "pass": 77,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "liquidation-sdk",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/liquidation-sdk.log",
+      "sha256": "757ddf31521097cf32b09433e9473a6ad684948c9277565de96e7231b6fbcc10"
+    },
+    {
+      "name": "liquidation-retained-204-and-33",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/liquidation-retained-204-and-33.log",
+      "sha256": "12292b90b73ca69bcf5dbe3da3f0eae041186cabd886d78808e86be31e2865c0"
+    },
+    {
+      "name": "final-reconciliation",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/final-reconciliation.log",
+      "sha256": "80215e062339ff30300b74646e5dd192c826670c7f12bb7ac5cb499e0d7587b6",
+      "tests": {
+        "tests": 28,
+        "pass": 28,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "v7-retained",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/v7-retained.log",
+      "sha256": "266f9c33411f9b2d0567b301a95611aca2c33988db2a1074159b210048544aa6",
+      "tests": {
+        "tests": 4,
+        "pass": 4,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "tz-retained",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/tz-retained.log",
+      "sha256": "382fa99d5cad95ada27269b7ae1b567269fe3ab52291d9e058937f5238a5be86",
+      "tests": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "telegram-retained",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/telegram-retained.log",
+      "sha256": "98ebe249709d413e98f14d97a4493f64ef835f6acd631be0c9ca1c2fbbfc29bf",
+      "tests": {
+        "tests": 69,
+        "pass": 69,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "entry-candles-liquidation-retained",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/entry-candles-liquidation-retained.log",
+      "sha256": "42afd32fd77e3d5790cf2f7964536b0211df28593d3f35a0bd9a0b1a148a4ed2",
+      "tests": {
+        "tests": 14,
+        "pass": 14,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    {
+      "name": "inherited-production-regression",
+      "exit": 0,
+      "signal": null,
+      "log": "proof/full-validation-20260927T123032979Z/inherited-production-regression.log",
+      "sha256": "ed44c6f8fd794c8896628787eee19a7fe938aef626ebb574877df7d77d5b70be",
+      "tests": {
+        "tests": 456,
+        "pass": 455,
+        "fail": 0,
+        "skip": 1
+      }
+    }
+  ],
+  "production_changed": false,
+  "actual_user_telegram": false,
+  "live_source_refresh": false,
+  "inherited_historical_exclusions": [
+    "deep-check-journal.CHECKPOINT-full-evidence-shadow-production.test.mjs",
+    "deep-check-journal.CHECKPOINT-shadow-decision-layer-production.test.mjs",
+    "deep-check-journal.CHECKPOINT-shadow-outcome-calibration-production.test.mjs",
+    "htx-liquidation-budget.test.mjs",
+    "v3-telegram-lifecycle-sidecar.test.mjs",
+    "v3-telegram-lifecycle-sidecar-sqlite.test.mjs",
+    "v3-early-sidecar-budget.test.mjs",
+    "v3-r88-adaptive-budget.test.mjs"
+  ],
+  "inherited_test_files": 100,
+  "status": "OFFLINE_FULL_CANDIDATE_VERIFIED_NOT_DEPLOYED",
+  "completed_at": "2026-09-27T12:31:31.322Z"
+}
