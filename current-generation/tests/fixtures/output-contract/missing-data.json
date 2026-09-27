@@ -1,0 +1,128 @@
+{
+  "id": "missing-data",
+  "mode": "FULL_MANUAL",
+  "event": "OBSERVE",
+  "canonical": {
+    "status": "NOT_CLOSED",
+    "snapshot_id": "S:AVNT-USDT:OBSERVE",
+    "run_id": "R:OUTPUT-CONTRACT-V4",
+    "observed_ts": 1790546400000,
+    "snapshot_time_utc": "2026-09-27T22:00:00.000Z",
+    "state": "OBSERVE",
+    "direction": "LONG",
+    "scores": {
+      "overall_0_100": null,
+      "coin_interest_0_100": null,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "candidates": [
+      {
+        "contract": "AVNT-USDT",
+        "ticker": "AVNT-USDT"
+      }
+    ],
+    "universe": [
+      {
+        "contract": "AVNT-USDT"
+      }
+    ],
+    "source_receipts": [
+      {
+        "status": "CLOSED",
+        "metric": "RELATIVE_STRENGTH",
+        "venue": "HTX",
+        "value": 2.4,
+        "unit": "PERCENT",
+        "window": "1h"
+      }
+    ],
+    "hard_gates": [
+      {
+        "gate": "FIXED_OUTPUT_CONTRACT",
+        "status": "CLOSED"
+      }
+    ],
+    "reasons": [
+      {
+        "label": "Объём подтверждает движение",
+        "value": "да"
+      }
+    ],
+    "entry": {
+      "min_price": 100,
+      "max_price": 101,
+      "area": "100–101 USDT"
+    },
+    "trigger": null,
+    "invalidation": "цена ниже 96 USDT",
+    "targets": [],
+    "liquidations": {
+      "status": "NOT_CLOSED"
+    },
+    "free_sources": {
+      "registry": {
+        "entries": [
+          {
+            "id": "HTX",
+            "decision_usable": true
+          }
+        ]
+      },
+      "entry_funnel": {
+        "blockers": [],
+        "blocker_details": [],
+        "has_unknown_reason": false
+      },
+      "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE",
+      "hot_cycle_external_request_delta": 0
+    },
+    "early_candidate": null,
+    "changes_from_previous": [],
+    "metadata": {
+      "contract": "AVNT-USDT",
+      "idea_basis": "MULTI_FACTOR",
+      "supporting_context": {
+        "facts": []
+      },
+      "source_role_view": {
+        "status": "CLOSED",
+        "classified": [
+          {
+            "source_key": "HTX_OFFICIAL",
+            "source_family": "HTX_OFFICIAL",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "registry_known": true
+          },
+          {
+            "source_key": "BINANCE_OFFICIAL",
+            "source_family": "BINANCE_OFFICIAL",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "registry_known": true
+          }
+        ]
+      }
+    }
+  },
+  "expected": {
+    "manual": {
+      "ok": false,
+      "status": "CANONICAL_NOT_CLOSED",
+      "text": null
+    },
+    "compact": {
+      "ok": false,
+      "status": "CANONICAL_NOT_CLOSED",
+      "message": null
+    },
+    "telegram": {
+      "ok": false,
+      "status": "CANONICAL_NOT_CLOSED",
+      "text": null
+    }
+  }
+}

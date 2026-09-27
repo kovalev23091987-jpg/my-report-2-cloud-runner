@@ -9,7 +9,7 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | Package | Status | Evidence |
 |---|---|---|
 | T00 | IN_PROGRESS | Production inventory and authorized runtime capture in progress |
-| T01 | PENDING | — |
+| T01 | COMPLETED_LOCAL | K01: 11/11 tests pass; immutable fixtures and module hashes captured |
 | T02 | PENDING | — |
 | T03 | PENDING | — |
 | T04 | PENDING | — |
@@ -48,7 +48,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 
 | Stage | Packages | Status |
 |---|---|---|
-| A | T00–T01 | IN_PROGRESS |
+| A | T00–T01 | IN_PROGRESS — T01 complete locally, T00 awaits authorized cloud inventory |
 | B | T02, T15, T17 frame | BLOCKED_BY_A |
 | C | T03–T05, T07 | BLOCKED_BY_B |
 | D | T06, T08–T10, T16 | BLOCKED_BY_C |
