@@ -1,0 +1,24 @@
+import {fingerprint,selectZones,timestamp} from './core.mjs';
+const text=v=>String(v??'').trim();
+const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
+
+export function createScopedProviderAcquisition({contract,native_symbol,run_id,acquisition_id,provider,venue,price_quote,collection_started_ts,collection_completed_ts,normalized_receipts,transport_receipts}={}){
+ if(!text(contract)||!text(native_symbol)||!text(run_id)||!text(acquisition_id)||!text(provider)||!text(venue)||!text(price_quote)||timestamp(collection_started_ts)===null||timestamp(collection_completed_ts)===null||collection_completed_ts<collection_started_ts)throw Error('SCOPED_ACQUISITION_IDENTITY_INVALID');
+ const receipts=(Array.isArray(normalized_receipts)?normalized_receipts:[]).filter(r=>r?.usable_for_context===true&&r.native_symbol===native_symbol&&r.run_id===run_id);
+ if(!receipts.length)throw Error('SCOPED_NORMALIZED_RECEIPT_REQUIRED');
+ for(const r of receipts){const {fingerprint:f,...body}=r;if(fingerprint(body)!==f)throw Error('SCOPED_RECEIPT_FINGERPRINT_INVALID');}
+ const zones=[];for(const r of receipts){const selected=selectZones(r);zones.push(...selected.above,...selected.below);}
+ const compact=z=>({native_price:z.native_price,side:z.liquidated_side,notional:z.notional,notional_unit:z.notional_unit,native_reference_price:z.native_reference_price,distance_pct:z.distance_pct,selection_roles:z.selection_roles,position_count:z.position_count,margin_mode:z.margin_mode??null,conditional_cross:z.conditional_on_other_positions===true,source_ts:collection_completed_ts,price_quote,price_semantics:z.price_semantics,position_key:z.position_key,provider,venue,entry_eligible:false,is_htx_price:false});
+ const body={schema:'SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1',contract,native_symbol,run_id,acquisition_id,provider,venue,price_quote,collection_started_ts,collection_completed_ts,above:zones.filter(z=>z.liquidated_side==='SHORT').map(compact),below:zones.filter(z=>z.liquidated_side==='LONG').map(compact),transport_sha256:(transport_receipts||[]).map(x=>x?.sha256).filter(Boolean),mode:'SHADOW_ONLY',automatic_execution:false,entry_eligible:false};
+ return {...body,acquisition_fingerprint:fingerprint(body)};
+}
+export function verifyScopedProviderAcquisition(raw){if(raw?.schema!=='SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1'||raw?.mode!=='SHADOW_ONLY')return false;const {acquisition_fingerprint:f,...body}=raw;return typeof f==='string'&&fingerprint(body)===f;}
+export function bindScopedProviderAcquisition(raw,{contract,run_id,snapshot_id,observed_ts,direction=null,max_age_ms=300000}={}){
+ const fail=reason=>({schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'NOT_CLOSED',reason,mode:'SHADOW_ONLY',above:[],below:[],entry_eligible:false,render_enabled:false});
+ if(!verifyScopedProviderAcquisition(raw))return fail('SCOPED_ACQUISITION_INVALID');
+ if(raw.contract!==contract||raw.run_id!==run_id||raw.native_symbol!==contract.replace(/-USDT$/,'')||!text(snapshot_id)||timestamp(observed_ts)===null||![null,'LONG','SHORT'].includes(direction))return fail('SCOPED_CANONICAL_BINDING_INVALID');
+ if(raw.collection_completed_ts>observed_ts||observed_ts-raw.collection_completed_ts>max_age_ms)return fail('SCOPED_SOURCE_CLOCK_NOT_CURRENT');
+ const zones=[...(raw.above||[]),...(raw.below||[])];if(zones.some(z=>finite(z.native_price)===null||finite(z.native_reference_price)===null||finite(z.notional)===null))return fail('SCOPED_ZONE_INVALID');
+ const body={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:zones.length?'USABLE_SCOPED_NATIVE_CONTEXT':'SCOPED_NO_NONZERO_ZONES',mode:'SHADOW_ONLY',freshness_max_age_ms:max_age_ms,binding:{contract,native_symbol:raw.native_symbol,run_id,snapshot_id,observed_ts,direction},acquisition_id:raw.acquisition_id,acquisition_fingerprint:raw.acquisition_fingerprint,source_ts:raw.collection_completed_ts,source_age_ms:observed_ts-raw.collection_completed_ts,venue:raw.venue,provider:raw.provider,price_quote:raw.price_quote,coverage:'DYNAMIC_REPRESENTATIVE_ACCOUNT_SAMPLE',above:raw.above||[],below:raw.below||[],notional_summed_across_providers:false,independent_vote_added:false,prices_converted_to_htx:false,automatic_execution:false,entry_eligible:false,render_enabled:zones.length>0};
+ const size=Buffer.byteLength(JSON.stringify(body));if(size>8192)return fail('SCOPED_CONTEXT_OVER_8KB');return {...body,body_bytes_before_fingerprint:size,fingerprint:fingerprint({...body,body_bytes_before_fingerprint:size})};
+}

@@ -24,9 +24,29 @@ const files=[
  'src/supplemental-score-evidence.mjs',
  'src/schedule-quota-calculator.mjs',
  'src/supplemental-candidate-context.mjs',
+ 'src/dynamic-liquidation-panel.mjs',
  'src/oxarchive-cost-probe.mjs',
  'src/liquidation-extension/runner-extension.mjs',
- 'src/liquidation-extension/htx-liquidation-route.mjs'
+ 'src/liquidation-extension/htx-liquidation-route.mjs',
+ 'src/liquidation-extension/native-verification.mjs',
+ 'src/liquidation-extension/select-native-account-sample.mjs',
+ 'src/liquidation-extension/run-source-budget.mjs',
+ 'src/liquidation-extension/combined-runner-service.mjs',
+ 'src/liquidation-extension/multi-runner-extension.mjs',
+ 'src/liquidation-extension/gtrade-runtime-collector.mjs',
+ 'src/liquidation-extension/gtrade-runtime-bridge.mjs',
+ 'src/liquidation-extension/gtrade.mjs',
+ 'src/liquidation-extension/lighter-runtime-collector.mjs',
+ 'src/liquidation-extension/gmx-runtime-collector.mjs',
+ 'src/liquidation-extension/scoped-provider-runtime-bridge.mjs',
+ 'src/liquidation-extension/round2-providers.mjs',
+ 'src/liquidation-extension/io.mjs',
+ 'src/liquidation-extension/core.mjs',
+ 'src/liquidation-extension/providers.mjs',
+ 'src/liquidation-extension/runtime-bridge.mjs',
+ 'src/liquidation-extension/d1-source-admission.mjs'
+ ,'src/liquidation-extension/install-source-allowances.mjs'
+ ,'src/liquidation-extension/venue-catalog-cache.mjs'
 ];
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260927_SUPPLEMENTAL_V2_20M',worker_sha256:sha(input),schedule_minutes:20,native_liquidation_extension:'OFF'}));
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M',worker_sha256:sha(input),schedule_minutes:20,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT'}));

@@ -15932,9 +15932,12 @@ async function buildDeepCheckInput(params, env) {
         .filter(row=>row?.status==='CLOSED'&&['FUTURES','PERP','SWAP','USDT_M_PERPETUAL'].includes(String(row?.market_type||'').toUpperCase()))
         .map(row=>String(row?.venue||row?.source||'').trim()).filter(Boolean));
       const conflict=Boolean(publicEvidence?.conflicts?.length)||String(publicEvidence?.dq_status||'').toUpperCase().includes('CONFLICT');
+      const moveForLiquidations=Number(params?.discovery_row?.rolling_24h_change_pct??params?.discovery_row?.move_pct);
+      const manualCoin=String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract;
+      const reserveForLiquidations=manualCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true;
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
-        critical_conflict:conflict,primary_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),
+        critical_conflict:conflict,primary_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
@@ -16019,14 +16022,15 @@ async function buildDeepCheckInput(params, env) {
    */
   // All new source facts finish before the analytical cutoff is fixed.
   let nativeLiquidationAcquisition = null;
-  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && /^[A-Z0-9]+-USDT$/.test(contract)) {
+  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && /^[A-Z0-9]+-USDT$/.test(contract)) {
     try {
       nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({
         contract, native_symbol: contract.slice(0,-5), run_id: String(params?.run_id || "").trim() || `manual-shadow-${cycleStartedTs}`,
         deep_started_ts: cycleStartedTs, max_deep_ms:45000,
         early_candidate_bridge:params?.discovery_row?.early_candidate_bridge===true,
         early_candidate_quality_0_100:params?.discovery_row?.early_candidate_quality_0_100??null,
-        manual_liquidation_request:!String(params?.run_id||"").trim(),
+        manual_liquidation_request:String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract,
+        source_identity:supplementalCandidateContext?.liquidation_identity||null,
       });
     } catch { /* Optional source fails closed; never refresh its old timestamps. */ }
   }

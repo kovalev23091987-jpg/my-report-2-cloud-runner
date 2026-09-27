@@ -5,7 +5,7 @@ import {resolveHtxLiquidationSources} from './htx-liquidation-route.mjs';
 const text=x=>typeof x==='string'?x.trim():'';
 // Dependency injection lets the existing runner own scheduler, quota and D1.
 // Without a durable quota admission callback the extension makes ZERO calls.
-export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=globalThis.fetch,clock=Date.now,accounts_per_deep=4,max_http_per_run=24,max_total_ms=45000}={}){
+export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=globalThis.fetch,clock=Date.now,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key=''}={}){
  if(!Number.isSafeInteger(accounts_per_deep)||accounts_per_deep<1||accounts_per_deep>8)throw Error('ACCOUNT_LIMIT_INVALID');
  if(!Number.isSafeInteger(max_http_per_run)||max_http_per_run<2||max_http_per_run>24)throw Error('RUN_HTTP_LIMIT_INVALID');
  let phaseStart=null;let calls=0;const records=[],inflight=new Map(),catalogByRun=new Map();
@@ -23,11 +23,12 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
   const baseRoute=resolveHtxLiquidationSources({contract});
   if(!baseRoute.ok||baseRoute.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
   if(baseRoute.external_liquidation_map_needed!==true){records.push({status:'SKIPPED_BTC_ETH_BY_USER_POLICY',contract,native_symbol});return null;}
-  if(clock()>=Date.parse('2026-10-27T00:00:00Z')){records.push({status:'SKIPPED_FREE_KEY_ROUTE_NOT_CONFIGURED',contract});return null;}
+  if(clock()>=Date.parse('2026-10-27T00:00:00Z')&&!text(liqflow_key)){records.push({status:'SKIPPED_FREE_KEY_ROUTE_NOT_CONFIGURED',contract});return null;}
   const collection_started_ts=clock(),transport=[],accounts=[];
   async function request(url,body){
    if(clock()>=deadline)return {ok:false,reason:'DEADLINE_REACHED'};
-   const r=await readJson(url,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(12000,deadline-clock())),max_bytes:2000000,...(body?{method:'POST',body}:{})});transport.push(r.receipt);return r;
+   const isLiqFlow=new URL(url).hostname==='node.liqflow.app';
+   const r=await readJson(url,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(12000,deadline-clock())),max_bytes:2000000,...(body?{method:'POST',body}:{}),...(isLiqFlow&&text(liqflow_key)?{headers:{'X-API-Key':text(liqflow_key)}}:{})});transport.push(r.receipt);return r;
   }
   try{
    let catalog=catalogByRun.get(run_id)??null;

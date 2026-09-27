@@ -1,6 +1,7 @@
 import {fingerprint,seal,timestamp,selectZones} from './core.mjs';
 import {normalizeNativeHL} from './providers.mjs';
 import {bindGTradeAcquisition,verifyMultiLiquidationAcquisition} from './gtrade-runtime-bridge.mjs';
+import {bindScopedProviderAcquisition,verifyScopedProviderAcquisition} from './scoped-provider-runtime-bridge.mjs';
 const exactText=x=>typeof x==='string'&&x.trim()===x&&x.length>0;
 const rawKeys=['schema','contract','native_symbol','run_id','acquisition_id','collection_started_ts','collection_completed_ts','mode','accounts','provenance'];
 export function createNativeAcquisition({contract,native_symbol,run_id,acquisition_id,collection_started_ts,collection_completed_ts,accounts,provenance}={}){
@@ -33,6 +34,7 @@ export function bindNativeAcquisition(raw,{contract,run_id,snapshot_id,observed_
   freshness_max_age_ms:max_age_ms,binding:{contract,native_symbol:raw.native_symbol,run_id,snapshot_id,observed_ts,direction},acquisition_fingerprint:raw.acquisition_fingerprint,acquisition_id:raw.acquisition_id,
   acquisition_completed_ts:raw.collection_completed_ts,source_ts:native.source_ts??null,source_age_ms:native.source_age_ms??null,native_receipt_fingerprint:native.fingerprint,
   source_count:1,price_quote:'USDC',upstream_groups:['HYPERLIQUID_MAINNET_PERPS'],coverage:'BOUNDED_ACCOUNT_SAMPLE_NOT_FULL_MARKET',sample_accounts:native.account_count??0,
+  provider:'Hyperliquid official',venue:'Hyperliquid',
   returned_positive_levels:native.zones.length,missing_native_liquidation_prices:native.omitted_positions?.length??null,
   above:(chosen.above??[]).map(compactRow),below:(chosen.below??[]).map(compactRow),
   realized_events:[],realized_projected_separate:true,requires_24h_pump:false,distance_cap_pct:null,
@@ -48,7 +50,9 @@ export function attachNativeContext(legacy,raw,identity){
    if(!verifyMultiLiquidationAcquisition(raw)||raw.contract!==identity?.contract||raw.run_id!==identity?.run_id)return {...(legacy??{}),multi_source_extension:{status:'NOT_CLOSED',reason:'MULTI_ACQUISITION_IDENTITY_OR_DIGEST_INVALID'}};
    const hyper=raw.hyperliquid?bindNativeAcquisition(raw.hyperliquid,identity):null;
    const gtrade=raw.gtrade?bindGTradeAcquisition(raw.gtrade,identity):null;
-   return {...(legacy??{}),native_extension:hyper,independent_extensions:[gtrade].filter(x=>x&&x.status==='USABLE_SCOPED_NATIVE_CONTEXT'),multi_source_extension:{status:'CLOSED',notional_summed_across_providers:false,independent_votes_generated:false,source_count:Number(Boolean(hyper&&hyper.status==='USABLE_NATIVE_SAMPLE'))+Number(Boolean(gtrade&&gtrade.status==='USABLE_SCOPED_NATIVE_CONTEXT'))}};
+   const scoped=(Array.isArray(raw.scoped)?raw.scoped:[]).filter(verifyScopedProviderAcquisition).map(x=>bindScopedProviderAcquisition(x,identity));
+   const extensions=[gtrade,...scoped].filter(x=>x&&x.status==='USABLE_SCOPED_NATIVE_CONTEXT');
+   return {...(legacy??{}),native_extension:hyper,independent_extensions:extensions,multi_source_extension:{status:'CLOSED',notional_summed_across_providers:false,independent_votes_generated:false,source_count:Number(Boolean(hyper&&hyper.status==='USABLE_NATIVE_SAMPLE'))+extensions.length}};
  }
  const context=bindNativeAcquisition(raw,identity);
  return {...(legacy??{}),native_extension:context};

@@ -45,12 +45,12 @@ test('supported HTX alt reserves sample requests only after exact catalog match'
   }
   return response({coin:'FIL',positions:[]});
  };
- const extension=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',clock:()=>now,accounts_per_deep:4,fetch_impl,
+ const extension=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',clock:()=>now,accounts_per_deep:3,max_http_per_run:5,fetch_impl,
   admit:async request=>(admitted.push(request),{allowed:true,new_reservation:true,reservation_id:request.reservation_id})});
  const result=await extension.collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'run-2',deep_started_ts:now,max_deep_ms:45000});
  assert.ok(result);
  assert.equal(admitted.length,2);
  assert.deepEqual(admitted[0].requests,{HYPERLIQUID:1});
- assert.deepEqual(admitted[1].requests,{HYPERLIQUID:4,LIQFLOW:1});
- assert.equal(extension.summary().reserved_http,6);
+ assert.deepEqual(admitted[1].requests,{HYPERLIQUID:3,LIQFLOW:1});
+ assert.equal(extension.summary().reserved_http,5);
 });

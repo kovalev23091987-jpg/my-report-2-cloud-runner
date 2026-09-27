@@ -13,6 +13,7 @@ import { buildSnapshotChanges } from './snapshot-diff.mjs';
 import { buildEvidenceDomainContract } from './evidence-domain-contract.mjs';
 import { liquidationMapPriority } from './liquidation-extension/htx-liquidation-route.mjs';
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from './supplemental-score-evidence.mjs';
+import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 
 export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v8-snapshot-diff-20260925';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
@@ -139,7 +140,10 @@ export function buildRuntimeCanonicalBundle({
  });
  const overall=finite(publication_shadow?.score_interval?.score_lower_bound);
  const baseInterest=direction?computeCanonicalInterestFromRuntime({direction,discovery_row,shadow_decision,public_evidence,opportunity}):null;
- const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context});
+ const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
+ const nativeContexts=[nativeLiquidationView?.native_extension,...arr(nativeLiquidationView?.independent_extensions)].filter(Boolean);
+ const liquidationPanel=buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts});
+ const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;
  const freeSources=free_source_summary?.status==='CLOSED'&&free_source_summary?.owner==='source-registry.mjs'?free_source_summary:{version:'free-source-runtime-summary-missing-owner-v1',status:'NOT_CLOSED',owner:null,registry:{status:'NOT_CLOSED',entries:[]},entry_funnel:{status:'NOT_CLOSED',blockers:['UNKNOWN_INTERNAL_REASON'],blocker_details:[{code:'UNKNOWN_INTERNAL_REASON',full_ru:'Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.',short_ru:'сводка источников не подтверждена; вывод не готов',known:false}],has_unknown_reason:true},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0};
@@ -160,7 +164,6 @@ export function buildRuntimeCanonicalBundle({
   max_lines:5,
  });
  const evidenceDomains=buildEvidenceDomainContract({opportunity,public_evidence,futures_component,liquidation_intelligence});
- const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
  const canonical=buildCanonicalAnalyticalResult({
   snapshot_id:text(snapshot_id)||`UNBOUND:${text(contract)||'UNKNOWN'}:${observed_ts}`,
   run_id:text(run_id)||`UNBOUND:${observed_ts}`,
@@ -174,7 +177,7 @@ export function buildRuntimeCanonicalBundle({
   early_candidate:earlyCandidate(discovery_row),opportunity:opportunityCompact(opportunity),microstructure:microCompact(discovery_row),
   liquidations:nativeLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
   changes_from_previous:snapshotChanges.lines,
-  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,supplemental_score_adjustment:supplementalScoreAdjustment,source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
+  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
  });
  const telegram=formatTelegramCompact(canonical,{facts:canonical?.reasons||[]});
  const manual=formatManualReport(canonical);

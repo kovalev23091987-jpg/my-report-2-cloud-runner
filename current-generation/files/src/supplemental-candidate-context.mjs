@@ -21,7 +21,9 @@ export function parseSupplementalIdentityRegistry(raw){
  for(const [symbol,value] of Object.entries(parsed)){
   const base=baseOf(symbol);if(!base||!value||typeof value!=='object')continue;
   const identity=exactIdentity(value);
-  entries[base]={base,identity,protocol_slug:clean(value.protocol_slug)||null,coinbase_product:clean(value.coinbase_product).toUpperCase()||null};
+  const lighterMarket=Number(value.lighter_market_id),gmxMarket=clean(value.gmx_market_address).toLowerCase();
+  entries[base]={base,identity,protocol_slug:clean(value.protocol_slug)||null,coinbase_product:clean(value.coinbase_product).toUpperCase()||null,
+   lighter_market_id:Number.isSafeInteger(lighterMarket)&&lighterMarket>=0?lighterMarket:null,gmx_market_address:EVM.test(gmxMarket)?gmxMarket:null};
  }
  return {status:Object.keys(entries).length?'CLOSED':'NOT_CLOSED',reason:Object.keys(entries).length?null:'REGISTRY_EMPTY',entries};
 }
@@ -93,11 +95,11 @@ function normalizeCoinbase(product,ticker,now,primaryPrice){
  const price=finite(ticker?.price);return {source:'COINBASE',status:exact&&price!==null?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:exact,product:id||null,base,quote,price,price_difference_vs_htx_pct:deviation(primaryPrice,price),volume_24h:finite(ticker?.volume)};
 }
 
-export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now()}={}){
+export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false}={}){
  if(!db)throw new Error('SUPPLEMENTAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_candidate_source_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
- const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),entry=parsed.entries[base]||null;
- const lane=chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
+ const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},entry=parsed.entries[base]||Object.keys(providerIds).length?{...(parsed.entries[base]||{base,identity:null,protocol_slug:null,coinbase_product:null}),...providerIds}:null;
+ const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
  const receipts=[],calls=[];const get=url=>requestJson(fetch_impl,url);const post=(url,body)=>requestJson(fetch_impl,url,{method:'POST',body});
  if(lane==='DEX_RISK'&&entry?.identity){
   const id=entry.identity,network=geckoNetwork(id.chain),cid=chainId(id.chain);
@@ -125,7 +127,7 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  }
  const cached=await db.prepare(`SELECT source,observed_ts,expires_ts,payload_json FROM report2_candidate_source_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all();
  const sources={};for(const row of cached?.results||[]){try{sources[row.source]={...JSON.parse(row.payload_json),cache_status:settled.some(x=>x.source===row.source)?'REFRESHED':'HIT'};}catch{}}
- return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,lane:lane||'NO_ELIGIBLE_LANE',network_calls:calls.length,receipts,sources,internal_only:true};
+ return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:calls.length,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:entry?{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address}:null,receipts,sources,internal_only:true};
 }
 
 export default{parseSupplementalIdentityRegistry,chooseSupplementalLane,collectSupplementalCandidateContext};

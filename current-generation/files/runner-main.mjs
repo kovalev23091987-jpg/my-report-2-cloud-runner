@@ -23,6 +23,8 @@ import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext} from './src/global-market-context.mjs';
 import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
 import {runOxArchiveCostProbe} from './src/oxarchive-cost-probe.mjs';
+import {installSourceAllowances} from './src/liquidation-extension/install-source-allowances.mjs';
+import {loadLiquidationVenueCatalog} from './src/liquidation-extension/venue-catalog-cache.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v1-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -406,7 +408,7 @@ function enforceD1Budget(db) {
 async function main() {
   const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260927_SUPPLEMENTAL_V2_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, sha } = await loadWorker();
   const env = buildEnv();
@@ -414,6 +416,7 @@ async function main() {
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
     registry:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{},
+    venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });
   await installBykQuotaLedger(env.DATA_DB);
@@ -447,6 +450,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     env.REPORT2_GLOBAL_MARKET_CONTEXT={status:'SOURCE_ERROR',observed_ts:started,internal_only:true,error:String(error?.message||error)};
   }
   console.log('GLOBAL_MARKET_CONTEXT_RECEIPT',JSON.stringify({status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status,deribit:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.status,deribit_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.deribit?.cache_status,coinlobster:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.status,coinlobster_cache:env.REPORT2_GLOBAL_MARKET_CONTEXT?.coinlobster?.cache_status,internal_only:true}));
+  try{env.REPORT2_LIQUIDATION_VENUE_REGISTRY=await loadLiquidationVenueCatalog({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started});}
+  catch(error){env.REPORT2_LIQUIDATION_VENUE_REGISTRY={status:'SOURCE_ERROR',entries:{},internal_only:true,error:String(error?.message||error)};}
+  console.log('LIQUIDATION_VENUE_CATALOG',JSON.stringify({status:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.status,network_calls:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.network_calls,entries:Object.keys(env.REPORT2_LIQUIDATION_VENUE_REGISTRY.entries||{}).length,receipts:env.REPORT2_LIQUIDATION_VENUE_REGISTRY.receipts||[]}));
   if(source!=='schedule'&&['1','true','yes','on'].includes(envText('REPORT2_OXARCHIVE_COST_PROBE',{required:false}).toLowerCase())){
     const probe=await runOxArchiveCostProbe({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:envText('OXARCHIVE_API_KEY',{required:false}),symbol:envText('REPORT2_OXARCHIVE_PROBE_SYMBOL',{required:false})||'SOL',now:started});
     console.log('OXARCHIVE_COST_PROBE_RECEIPT',JSON.stringify(probe));
@@ -457,13 +463,15 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
   let liquidationSources=null;
   if(postV7UnifiedEnabled && envText("REPORT2_LIQUIDATION_EXTENSION_MODE",{required:false})==='SHADOW_ONLY'){
-    let scopes=null;try{scopes=JSON.parse(envText("REPORT2_LIQUIDATION_SOURCE_SCOPES_JSON",{required:false})||'null');}catch{}
+    const allowanceSetup=await installSourceAllowances({db:env.DATA_DB,now:started,liqflow_key:envText('LIQFLOW_API_KEY',{required:false})});
+    const scopes=allowanceSetup.bindings;
+    console.log('LIQUIDATION_SOURCE_ALLOWANCES',JSON.stringify(allowanceSetup));
     const requiredDownstream={
       rows_read:4500+V3_EARLY_SIDECAR_BUDGET.rows_read+V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read+V3_LIQUIDATION_SIDECAR_BUDGET.rows_read+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,
       rows_written:50+V3_EARLY_SIDECAR_BUDGET.rows_written+V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written,
     };
     const providerAdmit=createD1SourceAdmission({db:env.DATA_DB,scope_bindings:scopes,within_run_budget:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:requiredDownstream.rows_read+e.extraRowsRead,extraRowsWritten:requiredDownstream.rows_written+e.extraRowsWritten})});
-    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:4,max_http_per_run:24,max_total_ms:45000});
+    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:5,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false})});
     env.REPORT2_LIQUIDATION_NATIVE_COLLECT=liquidationSources.collect;
   }
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);

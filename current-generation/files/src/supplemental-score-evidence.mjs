@@ -4,9 +4,11 @@ const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 const sideSign=(row,direction)=>{const side=String(row?.direction??row?.side??row?.lean??'').toUpperCase();if(!['BUY','SELL','LONG','SHORT','BULLISH','BEARISH'].includes(side))return null;const bullish=['BUY','LONG','BULLISH'].includes(side);return direction==='SHORT'?(bullish?-1:1):(bullish?1:-1);};
 
-export function buildSupplementalScoreEvidence({direction,internal_market_context=null}={}){
+export function buildSupplementalScoreEvidence({direction,internal_market_context=null,liquidation_panel=null}={}){
  const dir=String(direction||'').toUpperCase();if(!['LONG','SHORT'].includes(dir))return[];
  const out=[];const deribit=internal_market_context?.deribit;
+ const liq=liquidation_panel?.score_evidence;
+ if(liq?.fresh===true&&liq?.exact_identity===true){const bull=finite(liq.bullish_strength);if(bull!==null&&bull!==0)out.push({...liq,signed_strength:dir==='SHORT'?-bull:bull});}
  if(deribit?.status==='CLOSED'&&deribit?.internal_only===true){
   const regime=String(deribit.market_regime||'');
   const signed=regime==='RISK_OFF_ELEVATED'?-0.5:regime==='RISK_ON_SUPPORTIVE'?0.25:0;

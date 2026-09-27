@@ -20,6 +20,11 @@ test('supplemental influence is always bounded to ten points',()=>{
  assert.equal(applySupplementalScoreAdjustment(95,rows).final_score,100);
  assert.equal(applySupplementalScoreAdjustment(5,rows.map(x=>({...x,signed_strength:-1}))).final_score,0);
 });
+test('verified dynamic liquidation panel participates in the fixed derivatives block',()=>{
+ const rows=buildSupplementalScoreEvidence({direction:'LONG',liquidation_panel:{score_evidence:{source_id:'DYNAMIC_LIQUIDATION_PANEL',responsibility_group:'PROJECTED_LIQUIDATIONS',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',bullish_strength:0.6,quality:0.7,fresh:true,exact_identity:true}}});
+ const out=applySupplementalScoreAdjustment(50,rows);
+ assert.equal(out.receipts.length,1);assert.ok(out.adjustment>0);assert.ok(out.adjustment<=3.5);
+});
 test('every candidate-context provider has an explicit useful evidence path',()=>{
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{candidate_sources:{
   GOPLUS:{status:'CLOSED',exact_identity:true,flags:{is_honeypot:true}},

@@ -33,7 +33,8 @@ export const SUPPLEMENTAL_SOURCES = Object.freeze({
   LIGHTER: source('LIGHTER', {
     disposition: 'ROTATING_DEEP_CHECK',
     unique_value: 'NATIVE_LIQUIDATION_PRICES_AND_ACTIVE_ACCOUNT_DISCOVERY',
-    calls_per_assigned_run: 5,
+    calls_per_assigned_run: 4,
+    catalog_calls_per_day: 1,
     rotation_share: 0.25,
     provider_rate_per_minute: 60,
     provider_monthly_quota: null,
@@ -43,7 +44,8 @@ export const SUPPLEMENTAL_SOURCES = Object.freeze({
   GMX: source('GMX', {
     disposition: 'ROTATING_DEEP_CHECK',
     unique_value: 'ONCHAIN_FEE_AWARE_LIQUIDATION_PRICE_SAMPLE',
-    calls_per_assigned_run: 3,
+    calls_per_assigned_run: 4,
+    catalog_calls_per_day: 1,
     rotation_share: 0.25,
     provider_rate_per_minute: 4,
     provider_monthly_quota: null,
@@ -261,9 +263,10 @@ export function paidCoinLobsterMonthlyCredits({ callsPerReport = 0, creditsPerCa
 
 export function sourceBudgetView() {
   const rows = Object.values(SUPPLEMENTAL_SOURCES).map(s => {
-    const worst = s.calls_per_assigned_run !== undefined
+    const baseWorst = s.calls_per_assigned_run !== undefined
       ? monthlyDeepCheckCalls(s)
       : monthlyCacheCalls(s);
+    const worst=baseWorst+Number(s.catalog_calls_per_day||0)*MAX_DAYS_PER_MONTH;
     const quotaHeadroom = Number.isFinite(s.provider_monthly_quota)
       ? s.provider_monthly_quota - worst
       : null;

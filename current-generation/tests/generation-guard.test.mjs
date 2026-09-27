@@ -24,10 +24,11 @@ test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  assert.ok(y.includes('- cron: "*/20 * * * *"'));
  assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"80"/);
- assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260927_SUPPLEMENTAL_V2_20M"/);
+ assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260927_DYNAMIC_PANEL_V3_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
- assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"OFF"/);
+ assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"SHADOW_ONLY"/);
+ assert.match(y,/LIQFLOW_API_KEY:\s*\$\{\{ secrets\.LIQFLOW_API_KEY \}\}/);
 });
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');

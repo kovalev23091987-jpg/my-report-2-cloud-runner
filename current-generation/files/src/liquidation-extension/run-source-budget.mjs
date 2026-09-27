@@ -1,4 +1,4 @@
-const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,LIQFLOW:6,GTRADE:6});
+const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4});
 const providerOf=(url,init)=>{
  const u=new URL(String(url)),method=String(init?.method||'GET').toUpperCase();
  if(u.protocol!=='https:'||u.username||u.password)throw Error('READ_ONLY_SOURCE_URL_REQUIRED');
@@ -8,6 +8,8 @@ const providerOf=(url,init)=>{
  }
  if(u.hostname==='node.liqflow.app'&&/^\/api\/coin\/[^/]+\/positions$/.test(u.pathname)&&method==='GET')return 'LIQFLOW';
  if(method==='GET'&&((u.hostname==='backend-arbitrum.gains.trade'&&['/open-trades','/trading-variables'].includes(u.pathname))||(u.hostname==='backend-pricing.eu.gains.trade'&&u.pathname==='/charts')))return 'GTRADE';
+ if(u.hostname==='mainnet.zklighter.elliot.ai'&&method==='GET'&&['/api/v1/recentTrades','/api/v1/account'].includes(u.pathname))return 'LIGHTER';
+ if((u.hostname==='arbitrum.gmxapi.io'&&method==='GET'&&u.pathname==='/v1/positions')||(u.hostname==='gmx.squids.live'&&method==='POST'&&u.pathname==='/gmx-synthetics-arbitrum:prod/api/graphql'))return 'GMX';
  throw Error('SOURCE_OPERATION_NOT_ALLOWLISTED');
 };
 // Local ceilings are deliberately conservative operational policy, not a claim
