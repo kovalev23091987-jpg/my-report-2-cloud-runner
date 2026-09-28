@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='b6d821f4d4ec7c91184ff109bc86f42c0a0b9360114e48898510d9c25500d72b';
+const expectedWorker='3dace5eff4d02a0390b0199ba35335d3587732052c3a2a618291ea0b8dae6761';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);

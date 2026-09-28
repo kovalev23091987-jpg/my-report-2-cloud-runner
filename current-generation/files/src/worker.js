@@ -16612,7 +16612,7 @@ async function buildDeepCheckInput(params, env) {
     postV7CanonicalPersistence = await persistCanonicalSnapshot(env.DATA_DB,{
       canonical: canonicalAnalyticalBundle.canonical,
       presentation_inputs: {manual_text: canonicalAnalyticalBundle?.manual?.text ?? null},
-      wave_id: params?.discovery_row?.wave_id ?? null,
+      wave_id: params?.discovery_row?.early_candidate_wave_id ?? params?.discovery_row?.wave_id ?? null,
       decision_id: finalDecisionShadowPersistence?.decision_id ?? finalDecisionShadowPersistence?.decision_summary?.decision_id ?? null,
       now_ts: now,
     });

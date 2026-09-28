@@ -13,4 +13,5 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.ok((worker.match(/observed_ts: fullEvidenceObservedTs/g)||[]).length>=2);
  assert.match(worker,/FULL_EVIDENCE_PERSISTENCE_FAILED/);
  assert.match(worker,/outcome_classification/);
+ assert.match(worker,/wave_id: params\?\.discovery_row\?\.early_candidate_wave_id \?\? params\?\.discovery_row\?\.wave_id/);
 });
