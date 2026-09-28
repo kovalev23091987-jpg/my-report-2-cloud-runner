@@ -61,6 +61,7 @@ const files=[
  'src/deribit-alt-options-evidence.mjs',
  'src/chain-supply-evidence.mjs',
  'src/sourcify-abi-evidence.mjs',
+ 'src/bluesky-attention-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
