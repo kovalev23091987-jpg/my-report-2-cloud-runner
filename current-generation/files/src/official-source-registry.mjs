@@ -20,7 +20,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
  if(!Array.isArray(raw.entries))throw new Error('OFFICIAL_SOURCE_REGISTRY_ENTRIES_REQUIRED');
  const registry={},records=[];
  for(const [index,row] of raw.entries.entries()){
-  const contract=clean(row?.contract_code).toUpperCase(),base=baseOf(contract),identity=exactIdentity(row?.asset_id),name=clean(row?.official_name),domain=clean(row?.official_domain).toLowerCase(),canonical=clean(row?.canonical_url),evidence=clean(row?.evidence_link),format=clean(row?.format).toUpperCase(),status=clean(row?.status).toUpperCase(),verified=Date.parse(row?.verified_at),refresh=clean(row?.refresh_period),timezone=clean(row?.timezone),parser=row?.parser_id===null?null:clean(row?.parser_id);
+  const contract=clean(row?.contract_code).toUpperCase(),base=baseOf(contract),identity=exactIdentity(row?.asset_id),name=clean(row?.official_name),domain=clean(row?.official_domain).toLowerCase(),canonical=clean(row?.canonical_url),evidence=clean(row?.evidence_link),format=clean(row?.format).toUpperCase(),status=clean(row?.status).toUpperCase(),verified=Date.parse(row?.verified_at),refresh=clean(row?.refresh_period),timezone=clean(row?.timezone),parser=row?.parser_id===null?null:clean(row?.parser_id),snapshotSpace=clean(row?.snapshot_space),snapshotEvidence=clean(row?.snapshot_evidence_link);
   const fail=reason=>{throw new Error(`OFFICIAL_SOURCE_REGISTRY_INVALID:${index}:${reason}`);};
   if(!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||!base)fail('CONTRACT_CODE');
   if(!identity)fail('ASSET_ID');
@@ -34,6 +34,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   if(!['ENABLED','DISABLED'].includes(status))fail('STATUS');
   if(status==='ENABLED'&&(!['RSS','ATOM','ICS'].includes(format)||!['FIXED_RSS_V1','FIXED_ATOM_V1','FIXED_ICS_V1'].includes(parser)))fail('ENABLED_PARSER');
   if(status==='DISABLED'&&(!clean(row?.disabled_reason)||parser!==null))fail('DISABLED_REASON');
+  if(snapshotSpace&&(!/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(snapshotSpace)||!withinDomain(hostOf(snapshotEvidence),domain)))fail('SNAPSHOT_IDENTITY');
   const prior=registry[base];
   if(prior?.chain&&(`${prior.chain}:${prior.contract_or_mint}`!==`${identity.chain}:${identity.contract_or_mint}`))fail('ASSET_ID_CONFLICT');
   registry[base]={
@@ -41,8 +42,9 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
    official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone}]:[])],
+   snapshot_space:snapshotSpace||prior?.snapshot_space||null,
   };
-  records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null});
+  records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null});
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:records.length?'CLOSED':'NOT_CLOSED',registry,records};
 }

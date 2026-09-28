@@ -33,6 +33,7 @@ test('workflow schedule and generation binding are exact',()=>{
  assert.match(y,/BLOCKSCOUT_PRO_API_KEY:\s*\$\{\{ secrets\.BLOCKSCOUT_PRO_API_KEY \}\}/);
  assert.match(y,/T16_METADATA_SOURCES_SMOKE/);
  assert.match(y,/T16_OFFICIAL_FEED_SMOKE/);
+ assert.match(y,/T16_LIDO_SNAPSHOT_SMOKE/);
 });
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
