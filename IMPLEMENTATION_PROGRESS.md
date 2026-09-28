@@ -14,17 +14,17 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | T03 | CORE_COMPLETED_LOCAL_RUNTIME_BLOCKED | Immutable 64-contract/64-KiB shards, 72h retention and truthful actual-window reader pass 6/6 for 358/1,024 contracts, gaps and partial OI. Five-minute enablement remains `BLOCKED_RUNTIME_LIMIT` until measured Hub limits and exact bundle are available. |
 | T04 | CONTRACTS_COMPLETED_LOCAL_WIRING_PENDING | Strict direction candidate, final-route ENTRY separation, typed HTX reference price, execution status/receipt and real 24h semantics pass 6/6. Producer/consumer runtime wiring remains. |
 | T05 | CORE_COMPLETED_LOCAL_WIRING_PENDING | HTX-universe diff, BTC/ETH context-only, exact eligibility states, wave task keys, starvation rule, 4-light/8-HTTP plan and bounded burst pass 5/5. Runtime dispatcher migration remains. |
-| T06 | PENDING | — |
+| T06 | CORE_COMPLETED_RUNTIME_PARTIAL | Signed-hash fix, 2–5 lane reachability over 100k seeds, independent gTrade 3-call lane, exact source IDs, preplanned 5/8 request envelopes and source lifecycle receipts pass. Runtime rotation now separates HL/gTrade/Lighter/GMX/0xArchive; live receipts remain. |
 | T07 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Chain/address identity, Solana case, venue instruments, OKX units, timestamps, TTL/cache-before-fetch, one in-flight refresh and backoff pass 5/5. Source adapters still need migration. |
-| T08 | PENDING | — |
-| T09 | PENDING | — |
-| T10 | PENDING | — |
+| T08 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Closed/gap-safe candles, anomaly linkage, actual funding delta, money flow and BTC/ETH-relative semantics pass K08. |
+| T09 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Level provenance, geometry isolation, fresh-anchor/obstacle rules and symmetric gross/net costs pass K09. |
+| T10 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Explicit metric mapper (no fallback 58), upstream dedup and separated invisible diagnostic scores pass K10. |
 | T11 | PENDING | — |
 | T12 | PENDING | — |
 | T13 | PENDING | — |
 | T14 | PENDING | — |
 | T15 | IN_PROGRESS | K15 frame: exact 13,330/12,090 BYK proof, atomic provider-attempt ledger, conservative timeout accounting, 164 HTTP lane cap and 3.5m/70k D1 plan pass 5/5. Three measured full runs and complete consumer wiring remain. |
-| T16 | PENDING | — |
+| T16 | CORE_COMPLETED_LIVE_ADAPTERS_PENDING | EvidenceV2 validates and routes fixtures N01–N17 to concrete consumers; stale/wrong/error/empty, dedup, family caps, hotlist and quality admission pass. Individual live adapter smoke receipts and full canonical wiring remain. |
 | T17 | FRAME_COMPLETED_LOCAL | Terminal lifecycle, healthy-no-idea distinction, 45m/15m/12m watchdog rules and 500/2,000 KV admission pass 4/4. Live KV binding and Hub/GitHub cross-watch remain deployment blockers. |
 | T18 | PENDING | — |
 
@@ -58,7 +58,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 | A | T00–T01 | PARTIAL_ACCESS_BLOCKER — T01 complete locally; all obtainable T00 evidence is frozen, with the exact live Hub bundle/binding-name list explicitly blocked by Cloudflare dashboard access |
 | B | T02, T15, T17 frame | IN_PROGRESS_WITH_T00_ACCESS_BLOCKER — all locally verifiable T02 controls are implemented; T15 and T17 frame next |
 | C | T03–T05, T07 | IN_PROGRESS — all four core contracts pass locally; runtime wiring and measured Hub collector admission remain |
-| D | T06, T08–T10, T16 | BLOCKED_BY_C |
+| D | T06, T08–T10, T16 | IN_PROGRESS — core contracts and 17-block consumer map pass locally; remaining work is authoritative runtime wiring and bounded live adapter receipts |
 | E | T11–T12 | BLOCKED_BY_D |
 | F | T13–T14 | BLOCKED_BY_E |
 | G | T17–T18 | BLOCKED_BY_F |
