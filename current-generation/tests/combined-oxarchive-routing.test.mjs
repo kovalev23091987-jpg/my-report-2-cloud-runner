@@ -1,5 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createCombinedLiquidationService} from '../files/src/liquidation-extension/combined-runner-service.mjs';
+import {createCombinedLiquidationService,classifyOperationalSourceOutcome} from '../files/src/liquidation-extension/combined-runner-service.mjs';
+
+test('K23 internal scheduler skips do not penalize provider availability',()=>{
+ const skipped=classifyOperationalSourceOutcome({status:'SKIPPED_RUN_HTTP_BUDGET',result:false,actual_http:0});assert.equal(skipped.evaluated,false);assert.equal(skipped.failure_origin,'INTERNAL_SCHEDULER');
+ const unsupported=classifyOperationalSourceOutcome({status:'UNSUPPORTED_NATIVE_SYMBOL',result:false,actual_http:1});assert.equal(unsupported.evaluated,true);assert.equal(unsupported.operational_success,true);assert.equal(unsupported.coverage_status,'UNSUPPORTED');
+});
 
 test('configured 0xArchive participates in the same bounded liquidation rotation and returns report input',async()=>{
  const expected={schema:'MULTI_LIQUIDATION_ACQUISITION_V1'},seen=[],admissions=[];

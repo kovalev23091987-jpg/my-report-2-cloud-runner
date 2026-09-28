@@ -35,6 +35,7 @@ export function bindNativeAcquisition(raw,{contract,run_id,snapshot_id,observed_
   acquisition_completed_ts:raw.collection_completed_ts,source_ts:native.source_ts??null,source_age_ms:native.source_age_ms??null,native_receipt_fingerprint:native.fingerprint,
   source_count:1,price_quote:'USDC',upstream_groups:['HYPERLIQUID_MAINNET_PERPS'],coverage:'BOUNDED_ACCOUNT_SAMPLE_NOT_FULL_MARKET',sample_accounts:native.account_count??0,
   provider:'Hyperliquid official',venue:'Hyperliquid',
+  market_context:raw.provenance?.hyperliquid_market_context?.status==='CLOSED'?raw.provenance.hyperliquid_market_context:null,
   returned_positive_levels:native.zones.length,missing_native_liquidation_prices:native.omitted_positions?.length??null,
   above:(chosen.above??[]).map(compactRow),below:(chosen.below??[]).map(compactRow),
   realized_events:[],realized_projected_separate:true,requires_24h_pump:false,distance_cap_pct:null,

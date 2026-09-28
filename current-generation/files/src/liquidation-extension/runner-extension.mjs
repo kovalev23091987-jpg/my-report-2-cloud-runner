@@ -2,6 +2,7 @@ import {selectNativeAccountSample} from './select-native-account-sample.mjs';
 import {readJson} from './io.mjs';
 import {createNativeAcquisition} from './runtime-bridge.mjs';
 import {resolveHtxLiquidationSources} from './htx-liquidation-route.mjs';
+import {extractHyperliquidMarketContext} from './hyperliquid-market-context.mjs';
 const text=x=>typeof x==='string'?x.trim():'';
 // Dependency injection lets the existing runner own scheduler, quota and D1.
 // Without a durable quota admission callback the extension makes ZERO calls.
@@ -45,6 +46,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    const route=resolveHtxLiquidationSources({contract,hyperliquid_catalog:catalog.payload});
    if(route.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
    if(!route.native_routes.some(x=>x.provider==='HYPERLIQUID_LIQFLOW')){records.push({status:'UNSUPPORTED_NATIVE_SYMBOL',contract,native_symbol,catalog_checked:true,htx_factual_still_eligible:true});return null;}
+   const marketContext=extractHyperliquidMarketContext({payload:catalog.payload,receipt:catalog.receipt,native_symbol,observed_ts:clock()});
    const sampleRequests=1+accounts_per_deep;
    if(calls+sampleRequests>max_http_per_run){records.push({status:'SKIPPED_RUN_HTTP_BUDGET',contract,phase:'SAMPLE'});return null;}
    calls+=sampleRequests;
@@ -64,7 +66,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    await Promise.all([job(),job()]);
    const completed=clock();const acquisition=createNativeAcquisition({contract,native_symbol,run_id,acquisition_id:`LIQ_ACQ:${run_id}:${contract}:${collection_started_ts}`,collection_started_ts,collection_completed_ts:completed,accounts,
     provenance:{discovery_provider:'LiqFlow',discovery_total:list.payload.total??null,discovery_page:list.payload.page??null,selection_bias:'FIRST_PAGE_NEAR_HINT_AND_LARGE_POSITIONS_BALANCED; HINTS_ARE_NOT_EVIDENCE',sampling_policy:sample.policy,selected_reasons:sample.selected.map(x=>x.discovery_reason),visible_accounts:sample.eligible_visible_accounts,native_symbol_membership_verified:true,
-    execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:grant.reservation_id??null,transport_count:transport.length,quota_reserved_requests:1+sampleRequests}});
+    execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:grant.reservation_id??null,transport_count:transport.length,quota_reserved_requests:1+sampleRequests,hyperliquid_market_context:marketContext}});
    records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:accounts.length,sampling_policy:sample.policy,actual_requests:transport.length,reserved_requests:1+sampleRequests,elapsed_ms:completed-collection_started_ts,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
   }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}
  }

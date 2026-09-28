@@ -11,6 +11,14 @@ import {createOxArchiveCollector} from '../oxarchive-cost-probe.mjs';
 const require=createRequire(import.meta.url);
 export const PINNED_GTRADE_SDK_VERSION='1.8.10';
 function defaultSdkLoader(){return{version:require('@gainsnetwork/sdk/package.json').version,sdk:require('@gainsnetwork/sdk')};}
+export function classifyOperationalSourceOutcome({status,result=false,actual_http=null}={}){
+ const value=String(status||'UNKNOWN').toUpperCase(),knownActual=Number.isSafeInteger(actual_http)?actual_http:null;
+ if(/^(SKIPPED_|QUOTA_NOT_GRANTED|SOURCE_PHASE_DEADLINE|.*ALREADY_RESERVED)/.test(value))return{evaluated:false,attempted_http_count:knownActual??0,admission_status:'NOT_DISPATCHED',transport_status:'NOT_ATTEMPTED',schema_status:'NOT_EVALUATED',coverage_status:'NOT_EVALUATED',role_usable:false,failure_origin:'INTERNAL_SCHEDULER'};
+ if(value.includes('UNSUPPORTED'))return{evaluated:true,operational_success:true,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:'CLOSED',schema_status:'CLOSED',coverage_status:'UNSUPPORTED',role_usable:false,failure_origin:'COVERAGE'};
+ if(result)return{evaluated:true,operational_success:true,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:'CLOSED',schema_status:'CLOSED',coverage_status:'SUPPORTED',role_usable:true,failure_origin:null};
+ const quota=value.includes('429')||value.includes('RATE_LIMITED'),schema=value.includes('SCHEMA')||value.includes('IDENTITY')||value.includes('DIGEST');
+ return{evaluated:true,operational_success:false,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:quota?'PROVIDER_RATE_LIMITED':schema?'CLOSED':'FAILED',schema_status:schema?'INVALID':'NOT_CLOSED',coverage_status:'UNKNOWN',role_usable:false,failure_origin:quota?'PROVIDER_QUOTA':schema?'SCHEMA':'TRANSPORT'};
+}
 // This factory is the one called by generated runner code. OFF makes zero SDK,
 // D1 or HTTP calls. Both providers pass through the SAME request budget and
 // network concurrency limiter. No separate scheduler or trading path is added.
@@ -39,24 +47,25 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   const score=new Map(weighted.profile.map(row=>[row.source_id,row.selection_weight]));
   const first=weighted.lane||lanes[0],ordered=[first,...lanes.filter(lane=>lane!==first).sort((a,b)=>(score.get(b)||0)-(score.get(a)||0))];
   const deadline=Number(params.deep_started_ts)+Math.min(45000,Number(params.max_deep_ms)||45000);
-  const observe=async(lane,result,status,attempt,evaluated=true)=>{const usable=Boolean(result);let health={recorded:false,reason:'NOT_EVALUATED'};if(evaluated)try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,fallback:attempt>1,selection_profile:weighted.profile,health_update:health});return result;};
+  const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null)=>{const usable=Boolean(result),outcome=classifyOperationalSourceOutcome({status,result:usable,actual_http:actualHttp});if(evaluated===false)outcome.evaluated=false;let health={recorded:false,reason:'NOT_EVALUATED'};if(outcome.evaluated)try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable:outcome.operational_success===true,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,fallback:attempt>1,selection_profile:weighted.profile,source_outcome:outcome,health_update:health});return result;};
   async function attemptLane(lane,attempt){
    if(clock()>=deadline)return observe(lane,null,'SOURCE_PHASE_DEADLINE_REACHED',attempt,false);
-   const declaredCost=lane==='HYPERLIQUID_NATIVE'?5:lane==='GTRADE_NATIVE'?3:lane==='OXARCHIVE_HL_BUCKETS'?1:4;
+   const sharedGtrade=lane==='GTRADE_NATIVE'&&secondary?.hasRunSnapshot?.(params.run_id)===true;
+   const declaredCost=lane==='HYPERLIQUID_NATIVE'?5:lane==='GTRADE_NATIVE'?(sharedGtrade?0:3):lane==='OXARCHIVE_HL_BUCKETS'?1:4;
    if(budget.summary().reserved_http+declaredCost>max_http_per_run)return observe(lane,null,'QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET',attempt,false);
-   if(lane==='HYPERLIQUID_NATIVE'){try{const result=await primary.collect(params),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused('HYPERLIQUID');budget.releaseUnused('LIQFLOW');}}
+   if(lane==='HYPERLIQUID_NATIVE'){try{const result=await primary.collect(params),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt,true,Number.isSafeInteger(last?.actual_requests)?last.actual_requests:null);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused('HYPERLIQUID');budget.releaseUnused('LIQFLOW');}}
    if(lane==='OXARCHIVE_HL_BUCKETS'){
     const grant=await budget.admit({reservation_id:`LIQ_${lane}:${params.run_id}:${params.contract}`,contract:params.contract,run_id:params.run_id,requests:{OXARCHIVE:1},weights:{OXARCHIVE:1},max_requests:1,deadline_ts:deadline});
     if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt,false);
     try{const result=await oxarchive(params),last=oxarchive.summary?.()?.history?.at?.(-1),status=result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED';return observe(lane,result,status,attempt);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused('OXARCHIVE');}
    }
-   const provider=lane==='GTRADE_NATIVE'?'GTRADE':lane==='LIGHTER_NATIVE'?'LIGHTER':'GMX',cost=lane==='GTRADE_NATIVE'?3:4;
-   const grant=await budget.admit({reservation_id:`LIQ_${lane}:${params.run_id}:${params.contract}`,contract:params.contract,run_id:params.run_id,requests:{[provider]:cost},weights:{[provider]:cost},max_requests:cost,deadline_ts:deadline});
+   const provider=lane==='GTRADE_NATIVE'?'GTRADE':lane==='LIGHTER_NATIVE'?'LIGHTER':'GMX',cost=lane==='GTRADE_NATIVE'?(sharedGtrade?0:3):4;
+   const grant=cost===0?{allowed:true,new_reservation:true,shared_snapshot_reuse:true}:await budget.admit({reservation_id:lane==='GTRADE_NATIVE'?`LIQ_GTRADE_SNAPSHOT:${params.run_id}`:`LIQ_${lane}:${params.run_id}:${params.contract}`,contract:params.contract,run_id:params.run_id,requests:{[provider]:cost},weights:{[provider]:cost},max_requests:cost,deadline_ts:deadline});
    if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt,false);
    const acquisitionId=`${lane}:${params.run_id}:${params.contract}`;
    try{const result=lane==='GTRADE_NATIVE'?await secondary({...params,acquisition_id:acquisitionId,deadline_ts:deadline}):lane==='LIGHTER_NATIVE'?await lighter({...params,acquisition_id:acquisitionId,market_id:id.lighter_market_id,deadline_ts:deadline}):await gmx({...params,acquisition_id:acquisitionId,market_address:id.gmx_market_address,deadline_ts:deadline});
    const acquisition=result?.acquisition?createMultiLiquidationAcquisition({contract:params.contract,run_id:params.run_id,...(lane==='GTRADE_NATIVE'?{gtrade:result.acquisition}:{scoped:[result.acquisition]})}):null;
-   return observe(lane,acquisition,result?.status??'NOT_CLOSED',attempt);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused(provider);}
+   return observe(lane,acquisition,result?.status??'NOT_CLOSED',attempt,true,Number.isSafeInteger(result?.requests)?result.requests:null);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused(provider);}
   }
   const collected=[];
   for(let i=0;i<ordered.length;i++){const result=await attemptLane(ordered[i],i+1);if(result)collected.push(result);}
