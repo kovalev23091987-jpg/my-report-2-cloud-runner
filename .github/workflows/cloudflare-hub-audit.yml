@@ -1,0 +1,55 @@
+name: Cloudflare Hub Read-Only Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Checkout audit code
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify sanitizer
+        run: node --test audit-fixes/t00/capture-cloudflare-hub.test.mjs
+      - name: Capture Hub without changes
+        run: node audit-fixes/t00/capture-cloudflare-hub.mjs cloudflare-hub-audit
+      - name: Encrypt raw Hub material
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf cloudflare-hub-raw.tar.gz \
+            -C cloudflare-hub-audit \
+            cloudflare-hub-bundle.bin \
+            cloudflare-hub-settings.json
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in cloudflare-hub-raw.tar.gz \
+            -outform DER \
+            -out cloudflare-hub-raw.tar.gz.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f cloudflare-hub-raw.tar.gz \
+            cloudflare-hub-audit/cloudflare-hub-bundle.bin \
+            cloudflare-hub-audit/cloudflare-hub-settings.json
+      - name: Upload sanitized summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-hub-audit-summary
+          path: cloudflare-hub-audit/cloudflare-hub-audit-summary.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload encrypted raw Hub
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-hub-raw-encrypted
+          path: cloudflare-hub-raw.tar.gz.cms
+          if-no-files-found: error
+          retention-days: 1
