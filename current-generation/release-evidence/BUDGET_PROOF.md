@@ -15,3 +15,5 @@
 | Planned D1 reads/writes | 3,374,000 / 66,160 |
 
 Timeout/unknown attempts remain charged. Liquidation-only uses zero BYK units but shares the five daily manual-coin admissions. No optional source may bypass the whole-job counter.
+
+HTX public-risk evidence uses three sequential official requests only on a 60-minute cache miss. All three attempts are reserved atomically before transport under a hard 144-attempt UTC-day cap; a cache hit uses zero network calls.

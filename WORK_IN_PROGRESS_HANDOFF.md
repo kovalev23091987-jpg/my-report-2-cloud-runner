@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 00:58 UTC
+Updated: 2026-09-28 01:19 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -37,6 +37,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Controlled no-Telegram retry `36363772673` passed queue, gates, exact reconstruction and the full cycle. It scanned the 358-contract universe, selected PONS-USDT for one bounded deep check, ended truthfully as `HEALTHY_NO_IDEA/PARTIAL`, used 18,603 D1 reads and 208 writes within the 34,000/560 run cap, completed its durable command and sent zero Telegram messages. The sanitized receipt is stored under release evidence; this is one of three required measured runs, not natural acceptance.
 - Assigned the required new generation `MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M` instead of reusing V4. Durable commands now expire terminally after their deadline, and a scheduled executor can recover one aged queued command from the same exact generation after a two-minute ownership delay. Newly queued commands remain reserved for their own workflow first; completed duplicates return their pinned result identity without rerunning paid work.
 - First controlled V5 run `36364714573` passed exact reconstruction, V5 preflight, full 358/358 scan, durable claim/completion and all D1 guards with zero unknown operations. It ended truthfully as `HEALTHY_NO_IDEA/PARTIAL` on XLM-USDT and sent zero Telegram messages. The internal runner diagnostic label was then advanced from the stale V4 text to V5 so later receipts cannot mix generations by name.
+- Wired the first previously fixture-only EvidenceV2 source into the actual candidate path. Official HTX opening state plus isolated/cross risk ladders now use exact HTX contracts, three sequential calls at no more than one request per second, a 60-minute cache, atomic three-attempt reservation, the shared whole-job HTTP admission and a hard 144-attempt daily cap. Explicit opening restriction is adverse risk only and can never invent a Short direction. The new effective worker hash is `623c6417c701eb4ddf8e36360afaefff4bc3e6332f04f5e5132d655353790c92`; live sanitized smoke remains pending.
 
 ## Verified blockers
 

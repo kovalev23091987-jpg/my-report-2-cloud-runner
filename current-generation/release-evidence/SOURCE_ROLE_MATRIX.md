@@ -16,7 +16,8 @@
 | Solana RPC | exact mint/account facts | signature count is direction-neutral | ACTIVE_CONDITIONAL |
 | Bitget / Coinbase | conditional independent market validation | price coincidence is direction-neutral | ACTIVE_CONDITIONAL |
 | Deribit BTC/ETH | global market risk | risk-off may reduce suitability; no alt direction | ACTIVE_CACHED |
-| HTX public risk / Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
+| HTX public risk | N08/N09/N11/N16 execution state and isolated/cross risk ladders | restriction is adverse risk only; normal state is context | LIVE_CONSUMER_WIRED, 3 sequential calls, 60m cache, 144/day cap; sanitized smoke pending |
+| Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | ADAPTER_FIXTURE_VALIDATED; LIVE_TRANSPORT/SMOKE_PENDING |
 | GDELT / Bluesky | discovery/attention only | no headline/social direction | ADAPTER_FIXTURE_VALIDATED; SMOKE/BASELINE_PENDING |
 | Snapshot / Sourcify | governance dates / ABI validation | no market vote | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
 | BLS / Fed calendars | macro recheck timing | no universal direction | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |

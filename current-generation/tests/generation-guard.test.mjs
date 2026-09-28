@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 const generation=JSON.parse(fs.readFileSync(new URL('../GENERATION.json',import.meta.url),'utf8'));
 test('20-minute schedule plus three reports and five coin analyses fits 31-day quota with reserve',()=>{
  const scheduled=generation.scheduled_runs_per_day;
@@ -56,4 +57,11 @@ test('runtime diagnostic version cannot retain the prior V4 label',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
  assert.match(runner,/my-report-2-current-generation-v5-internal-audit-fixes-20260928/);
  assert.doesNotMatch(runner,/RUNNER_VERSION\s*=\s*["']my-report-2-current-generation-v4/);
+});
+test('workflow worker pin equals the effective V5 worker bytes',()=>{
+ const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
+ const hash=createHash('sha256').update(worker).digest('hex');
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ assert.equal(hash,'623c6417c701eb4ddf8e36360afaefff4bc3e6332f04f5e5132d655353790c92');
+ assert.match(workflow,new RegExp(hash));
 });
