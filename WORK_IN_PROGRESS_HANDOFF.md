@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 04:00 UTC
+Updated: 2026-09-28 06:28 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -57,6 +57,10 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Closed a parser-contract gap: each enabled versioned feed now carries its exact format/parser into the common candidate metadata, and the reader rejects a response whose actual RSS/Atom/ICS format differs from the registered parser. A mismatch emits no evidence and is not cached. Isolated no-Telegram run `36374990210` re-fetched Lido under `FIXED_RSS_V1` and closed with HTTP 200, one admitted call, zero Telegram calls and the same truthful `EMPTY_OR_STALE` result.
 - Proved Lido's exact `lido-snapshot.eth` space through Lido's own governance links, stored it in the versioned registry with its evidence link, and passed it through the same candidate metadata path. Isolated no-Telegram run `36375243163` closed Snapshot Hub with HTTP 200 and one admitted call. The returned proposals were outside the bounded freshness horizon, so status was truthfully `STALE_SOURCE` with zero evidence and zero Telegram calls.
 - Isolated no-Telegram run `36375513014` closed the Lighter native path for exact `SOL-USDT`. The exact Lighter market id came from the official cached catalog; recent trades plus three representative account reads used four network calls and produced `LIGHTER_ACQUIRED_SCOPED_CONTEXT` with a positive zone count. GitHub masked the numeric zone count, so the receipt records it only as positive rather than inventing the number. Telegram calls remained zero.
+- Official GitHub CLI authorization was restored with `repo` and `workflow` scopes; branch checkpoints through `a84394d` are pushed. Blockscout secret installation was visually confirmed and live run `36385987034` closed the exact LINK route with HTTP 200, one request, 30 measured credits, 99,970 credits remaining, 50 exact-token transfers and zero directional/risk strengths. Telegram calls remained zero.
+- Isolated gTrade run `36385863377` loaded the pinned official SDK 1.8.10, used exactly three requests for SOL, selected 22 open positions and produced five native liquidation zones with zero Telegram calls.
+- GMX runs exposed and fixed a real checksum-casing bug between the lowercased official catalog and Subsquid's stored market addresses. The collector now uses a full-address case-insensitive server filter and still verifies every returned address exactly after normalization. Run `36386584847` selected XRP from a live open-position census, excluded BTC/ETH, confirmed the contract is active on HTX Futures, used six total calls and produced three native liquidation zones with zero Telegram calls.
+- Delayed GDELT retry `36386110377` again received HTTP 429. It emitted no discovery/evidence, added no market vote and installed the shared backoff. No immediate retry or alternate host was attempted.
 
 ## Verified blockers
 

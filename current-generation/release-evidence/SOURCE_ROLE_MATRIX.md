@@ -10,7 +10,7 @@
 | Coinalyze | historical liquidation/OI/funding baseline | counts do not select direction | LIVE_HISTORY_CLOSED run 36369369843, AKE-USDT, 2 HTTP / 5 provider units |
 | Hyperliquid native | verified native positions/levels | observed levels only | ACTIVE_IF_EXACT_MARKET |
 | LiqFlow | discovery of relevant Hyperliquid accounts | no independent duplicate vote | PUBLIC_PILOT_OR_KEY |
-| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity required | ACTIVE_BOUNDED_ROTATION; Lighter exact SOL live acquisition closed in run 36375513014; GMX/gTrade live receipts remain pending |
+| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity required | LIVE_BOUNDED_ROTATION: Lighter SOL run 36375513014; gTrade SOL run 36385863377 (22 positions, 5 zones); GMX XRP run 36386584847 (HTX-active alt selected from open-position census, 3 zones) |
 | 0xArchive | bounded projected HL level buckets | one-credit route only | LIVE_READINESS_CLOSED run 36369369843; existing key, one-credit route, 5,000 monthly cap, no automatic top-up |
 | CoinLobster | cached whale/liquidation context | advisory, symbol sliced | ACTIVE_EXISTING |
 | DEX Screener / GeckoTerminal | exact address/pool identity and activity context | buy/sell counts are direction-neutral | ACTIVE_CONDITIONAL |
@@ -21,10 +21,10 @@
 | Deribit BTC/ETH | global market risk | risk-off may reduce suitability; no alt direction | ACTIVE_CACHED |
 | HTX public risk | N08/N09/N11/N16 execution state and isolated/cross risk ladders | restriction is adverse risk only; normal state is context | LIVE_SMOKE_CLOSED run 36365551502; 3 sequential HTTP 200 calls, 60m cache, 144/day cap |
 | Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | CHAIN LIVE; versioned LINK/LDO identities and domains active; LDO exact RSS HTTP 200 in run 36374604763; unsupported HTML pages remain explicitly disabled rather than guessed |
-| GDELT / Bluesky | discovery/attention only | no headline/social direction | GDELT exact-name/domain runtime wired with shared 429 backoff; Bluesky access blocked 403; successful GDELT transport and longitudinal baseline pending |
+| GDELT / Bluesky | discovery/attention only | no headline/social direction | GDELT exact-name/domain runtime wired but still externally rate-limited 429 in run 36386110377 after a delayed retry; Bluesky access blocked 403; neither fabricates evidence or retries during backoff |
 | Snapshot / Sourcify | governance dates / ABI validation | no market vote | BOTH LIVE_TRANSPORT_CLOSED: Sourcify LINK run 36370644221; exact Lido Snapshot run 36375243163 (HTTP 200, stale-only payload, zero evidence) |
 | Deribit alt options | exact active alt option liquidity context | context only; no directional bonus | LIVE_SMOKE_CLOSED run 36368924281; exact SOL catalog/summary HTTP 200 |
 | BLS / Fed calendars | macro recheck timing | no universal direction | LIVE_TRANSPORT_SMOKE_CLOSED run 36368211511; bounded-horizon correction local-closed |
-| Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote; provisional indexed rows trigger verification only | RUNTIME_WIRED_WAITING_FREE_KEY; 96 requests/5,000 internal credits per day |
+| Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote; provisional indexed rows trigger verification only | LIVE_CLOSED run 36385987034: LINK exact address, HTTP 200, 50 transfers, 30 credits, 99,970 remaining; 96 requests/5,000 internal credits per day |
 
 Unavailable, stale, wrong-identity or unmapped data contributes exactly zero and is never redistributed to remaining sources.
