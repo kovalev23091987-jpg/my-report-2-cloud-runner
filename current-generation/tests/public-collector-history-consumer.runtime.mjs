@@ -25,7 +25,7 @@ class HistoryDb{
   async batch(statements){return Promise.all(statements.map(statement=>this.all(statement.sql,statement.args)));}
 }
 
-const now=Date.UTC(2026,8,28,12,0),db=new HistoryDb(now),env={DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M'};
+const now=Date.UTC(2026,8,28,12,0),db=new HistoryDb(now),env={DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M'};
 const targets=await loadStage0HistoryTargetsForTest(env,now);
 assert.equal(targets.populated,true);
 assert.equal(targets.preferred_source,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');

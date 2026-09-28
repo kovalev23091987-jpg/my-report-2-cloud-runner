@@ -30,11 +30,19 @@ const uniq = (xs) => [...new Set((Array.isArray(xs) ? xs : []).map(text).filter(
 function factualEvidence(row, now) {
   const evidence = safeJson(row?.evidence_json, []);
   if (!Array.isArray(evidence) || evidence.length > 64) return [];
-  return evidence.filter((e) => e && e.status === 'CLOSED' && text(e.domain));
+  const featureObserved = finite(row?.feature_observed_ts ?? row?.observed_ts);
+  return evidence.filter((e) => {
+    if (!e || e.status !== 'CLOSED' || !text(e.domain)) return false;
+    const sourceTs = finite(e?.source_ts ?? e?.observed_ts ?? featureObserved);
+    const availableAt = finite(e?.available_at ?? e?.computed_at ?? featureObserved);
+    const maxAgeSec = finite(e?.max_age_sec) ?? (EARLY_BRIDGE_FRESH_MS / 1000);
+    return sourceTs !== null && availableAt !== null && sourceTs <= now && availableAt <= now &&
+      now - sourceTs <= maxAgeSec * 1000;
+  });
 }
 
-function microstructureEvidence(row) {
-  const evidence = factualEvidence(row);
+function microstructureEvidence(row, now) {
+  const evidence = factualEvidence(row, now);
   const domains = uniq(evidence.filter((e) => MICRO_DOMAINS.has(text(e.domain))).map((e) => e.domain));
   const feature = safeJson(row?.feature_json, {});
   const fusion = feature?.feature_fusion || null;
@@ -66,10 +74,12 @@ export function normalizeEarlyBridgeReceipt(row, { now = Date.now(), fresh_ms = 
     e?.evidence_id ?? e?.receipt_id ?? e?.id ?? (e?.domain ? `${waveId}:${text(e.domain)}:${text(e.side)||'BOTH'}` : null)
   ) : []);
   const direction = ['LONG','SHORT'].includes(text(row?.direction_hint).toUpperCase()) ? text(row.direction_hint).toUpperCase() : null;
-  const freshnessAnchor = Math.max(lastSeen ?? 0, featureObserved ?? 0) || null;
+  // Wave continuity may update last_seen_ts without producing new evidence.
+  // Only the immutable feature timestamp can establish evidence freshness.
+  const freshnessAnchor = featureObserved;
   const ageMs = freshnessAnchor === null ? null : now - freshnessAnchor;
   const fresh = ageMs !== null && ageMs >= -60_000 && ageMs <= fresh_ms;
-  const microstructure = microstructureEvidence(row);
+  const microstructure = microstructureEvidence(row, now);
   const active = Boolean(contract && waveId && !TERMINAL.has(stage) && fresh && row?.shadow_only !== 0);
   const domainCount = Math.max(longDomains, shortDomains, domains.length);
   const priorityEligible = active && quality !== null && quality >= 0 && quality <= 100 && domainCount >= 2;
@@ -91,6 +101,8 @@ export function normalizeEarlyBridgeReceipt(row, { now = Date.now(), fresh_ms = 
     microstructure,
     last_seen_ts: lastSeen,
     feature_observed_ts: featureObserved,
+    source_ts: featureObserved,
+    available_at: featureObserved,
     freshness_age_ms: ageMs,
     shadow_only: true,
     can_bypass_hard_gates: false,
@@ -199,6 +211,8 @@ export function applyEarlyCandidateBridge({
       early_candidate_direction_hint: receipt.direction_hint,
       early_candidate_evidence_domains: receipt.evidence_domains,
       early_candidate_receipt: receipt,
+      early_candidate_source_ts: receipt.source_ts,
+      early_candidate_available_at: receipt.available_at,
       htx_futures_turnover_gate: turnover,
       turnover_24h_usdt: turnover.turnover_usd_equivalent,
       rolling_24h_change_pct: move24,

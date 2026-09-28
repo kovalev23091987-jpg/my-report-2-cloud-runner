@@ -21,7 +21,7 @@ test('only actionable approved entries enter factual 1 4 12 24 hour statistics',
 
 test('WAIT and OBSERVE share the same internal technical move proof fallback',()=>{
  const adapter=fs.readFileSync(new URL('../files/src/canonical-runtime-adapter.mjs',import.meta.url),'utf8');
- assert.match(adapter,/\['OBSERVE','WAIT_FOR_TRIGGER'\]\.includes\(state\)/);
- assert.match(adapter,/needsTechnicalFallback&&!observation\?'REJECTED':state/);
+ assert.match(adapter,/\['REJECTED','OBSERVE','WAIT_FOR_TRIGGER'\]\.includes\(routedState\)/);
+ assert.match(adapter,/observe_contract_closed:existingPlanClosed\|\|observationPlanClosed/);
  assert.match(adapter,/route\?\.trigger\?\?fallbackTrigger/);
 });

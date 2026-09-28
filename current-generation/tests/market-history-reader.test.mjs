@@ -12,7 +12,7 @@ function shard(bucket,{generation=HISTORY_COMPATIBILITY.generations[0],badHash=f
 }
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async all(){if(this.sql.includes('report2_market_snapshot_batch_v1')){const [,start,end,cursorBucket,cursorShard,limit]=this.args;const rows=this.db.collector.filter(row=>row.bucket>=start&&row.bucket<=end&&(row.bucket>cursorBucket||(row.bucket===cursorBucket&&row.shard>cursorShard))).sort((a,b)=>a.bucket-b.bucket||a.shard-b.shard).slice(0,limit);return{results:rows};}if(this.sql.includes('FROM scan_runs'))return{results:this.db.scans};return{results:[]};}}
 class Db{constructor(collector=[],scans=[]){this.collector=collector;this.scans=scans;}prepare(sql){return new Statement(this,sql);}}
-const makeRows=count=>Array.from({length:count},(_,i)=>shard(LATEST-(count-1-i)*SLOT,{generation:i===0?HISTORY_COMPATIBILITY.generations[0]:HISTORY_COMPATIBILITY.generations[1]}));
+const makeRows=count=>Array.from({length:count},(_,i)=>shard(LATEST-(count-1-i)*SLOT,{generation:HISTORY_COMPATIBILITY.generations[i%HISTORY_COMPATIBILITY.generations.length]}));
 
 test('K04/K06 collector 72 of 72 closes across explicitly compatible generations',async()=>{
  const out=await readMarketHistoryForContract({db:new Db(makeRows(72)),contract:'QNT-USDT',now_ts:NOW,hours:6,preferred_generation:HISTORY_COMPATIBILITY.generations[1]});

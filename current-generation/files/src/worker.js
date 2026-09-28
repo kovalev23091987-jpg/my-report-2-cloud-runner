@@ -18848,6 +18848,41 @@ const __REPORT2_ORIGINAL_HANDLER = {
           }
         );
 
+      /*
+       * The early-feature owner must observe the scan that belongs to this
+       * run before shortlist selection and canonical assessment.  The runner
+       * supplies the existing persistence sidecar through this hook; no early
+       * formula, threshold or wave rule is duplicated here.
+       */
+      let currentCycleEarlyPersistence = {
+        status: "HOOK_NOT_CONFIGURED",
+        persisted: 0,
+      };
+      if (typeof env?.REPORT2_CURRENT_CYCLE_EARLY_PERSIST === "function") {
+        try {
+          currentCycleEarlyPersistence =
+            await env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST({
+              current_scan_ts:
+                Number(scan?.timestamp) ||
+                null,
+              source_run_id:
+                String(runId || ""),
+              now_ts:
+                Number(scan?.timestamp) ||
+                Date.now(),
+            });
+        } catch (error) {
+          currentCycleEarlyPersistence = {
+            status: "DATA_NOT_CLOSED",
+            reason: "CURRENT_CYCLE_EARLY_PERSISTENCE_FAILED",
+            error: String(error?.message || error).slice(0, 300),
+            persisted: 0,
+          };
+        }
+      }
+      env.REPORT2_CURRENT_CYCLE_EARLY_RESULT =
+        currentCycleEarlyPersistence;
+
       const deepCheckQueue =
         buildDeepCheckQueue(
           scan
@@ -18921,14 +18956,29 @@ const __REPORT2_ORIGINAL_HANDLER = {
             );
 
       const earlyBridgeInputs =
-        await loadEarlyBridgeInputs(
-          env,
-          {
-            now:
-              Number(scan?.timestamp) ||
-              Date.now(),
-          }
-        );
+        ["CLOSED", "PARTIAL"].includes(
+          String(currentCycleEarlyPersistence?.status || "").toUpperCase()
+        )
+          ? await loadEarlyBridgeInputs(
+              env,
+              {
+                now:
+                  Number(scan?.timestamp) ||
+                  Date.now(),
+              }
+            )
+          : {
+              status: "DATA_NOT_CLOSED",
+              reason:
+                currentCycleEarlyPersistence?.reason ||
+                currentCycleEarlyPersistence?.status ||
+                "CURRENT_CYCLE_EARLY_NOT_CLOSED",
+              early_rows: [],
+              full_evidence_rows: [],
+              d1_queries: 0,
+              network_calls: 0,
+              writes: 0,
+            };
 
       const discoveryPrefilter =
         applyEarlyCandidateBridge({
@@ -18999,6 +19049,10 @@ const __REPORT2_ORIGINAL_HANDLER = {
             earlyBridgeInputs?.network_calls ?? 0,
           writes:
             earlyBridgeInputs?.writes ?? 0,
+          current_cycle_early_status:
+            currentCycleEarlyPersistence?.status ?? null,
+          current_cycle_early_persisted:
+            currentCycleEarlyPersistence?.persisted ?? 0,
           loaded:
             discoveryPrefilter?.counts?.early_bridge_loaded ?? 0,
           accepted:

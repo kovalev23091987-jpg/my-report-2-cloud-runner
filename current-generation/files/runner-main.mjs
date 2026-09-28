@@ -43,7 +43,7 @@ import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v12-contract-integrity-20260928";
+const RUNNER_VERSION = "my-report-2-current-generation-v13-current-cycle-20260929";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -455,7 +455,7 @@ async function main() {
   process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
   let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
@@ -643,6 +643,28 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
   const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!leaseRenewal.allowed)throw new Error(`ANALYTICS_FENCE_LOST_BEFORE_WORKER:${leaseRenewal.status}`);
+  const CURRENT_CYCLE_DOWNSTREAM_RESERVE=Object.freeze({rows_read:4500,rows_written:50});
+  env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST=async({current_scan_ts,source_run_id,now_ts}={})=>{
+    const gate=evaluateWithinRunReservation({
+      reservation:d1RunReservation,
+      currentUsage:env.DATA_DB.usageSnapshot(),
+      extraRowsRead:CURRENT_CYCLE_DOWNSTREAM_RESERVE.rows_read+V3_EARLY_SIDECAR_BUDGET.rows_read,
+      extraRowsWritten:CURRENT_CYCLE_DOWNSTREAM_RESERVE.rows_written+V3_EARLY_SIDECAR_BUDGET.rows_written,
+    });
+    if(!gate.allowed){
+      const blocked={version:"v3-early-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",persisted:0,reasons:gate.reasons||[],capacity_lane:"CURRENT_CYCLE_EARLY_PERSISTENCE",capacity_gate:gate,probability:null,validated_signal:false,trading_execution:false};
+      env.REPORT2_CURRENT_CYCLE_EARLY_RESULT=blocked;
+      return blocked;
+    }
+    const result=await runV3EarlyPersistenceSidecar(env.DATA_DB,{
+      current_scan_ts:Number(current_scan_ts),
+      source_run_id:String(source_run_id||""),
+      now_ts:Number(now_ts)||Date.now(),
+      preferred_contracts:[],
+    });
+    env.REPORT2_CURRENT_CYCLE_EARLY_RESULT=result;
+    return result;
+  };
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
   const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);
@@ -734,20 +756,16 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     extraRowsWritten:postV7CriticalLaneReserve.rows_written,
   });
   const v3Blocked = (version, gate, lane) => ({version,mode:"SHADOW_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",persisted:0,reasons:gate?.reasons||[],capacity_lane:lane,capacity_gate:gate,probability:null,validated_signal:false,trading_execution:false});
-  const completedLifecycleHandoffs = v3SidecarsPreactionBudget.allowed
+  const completedHandoffBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read,extraRowsWritten:0});
+  const completedLifecycleHandoffs = completedHandoffBudget.allowed
     ? await loadCompletedLifecycleHandoffs(env.DATA_DB,{source_run_id:String(cron.run_id||""),now_ts:Date.now()})
     : {status:"BUDGET_BLOCKED_FAIL_CLOSED",handoffs:[]};
   console.log("TELEGRAM_COMPLETED_HANDOFFS",JSON.stringify({status:completedLifecycleHandoffs.status,contracts:completedLifecycleHandoffs.handoffs.map(h=>h.contract_code)}));
   let v3EarlySidecar;
   let v3RealizedLiquidationSidecar;
   let v3LiquidationSidecar;
-  const r88EarlyGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_EARLY_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
-  if (r88EarlyGate.allowed) {
-    v3EarlySidecar = await runV3EarlyPersistenceSidecar(env.DATA_DB, {
-      current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:started,
-      preferred_contracts:completedLifecycleHandoffs.status==="CLOSED"?completedLifecycleHandoffs.handoffs.map(h=>h.contract_code):[],
-    });
-  } else v3EarlySidecar = v3Blocked("v3-early-sidecar-shadow-v1",r88EarlyGate,"EARLY_PERSISTENCE");
+  const r88EarlyGate = env.REPORT2_CURRENT_CYCLE_EARLY_RESULT?.capacity_gate || {allowed:["CLOSED","PARTIAL"].includes(String(env.REPORT2_CURRENT_CYCLE_EARLY_RESULT?.status||"").toUpperCase()),status:"CURRENT_CYCLE_RESULT"};
+  v3EarlySidecar = env.REPORT2_CURRENT_CYCLE_EARLY_RESULT || v3Blocked("v3-early-sidecar-shadow-v1",r88EarlyGate,"CURRENT_CYCLE_EARLY_PERSISTENCE");
   const r88RealizedGate = v3SidecarsPreactionBudget.allowed ? r88Gate(V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET) : v3SidecarsPreactionBudget;
   if (r88RealizedGate.allowed) {
     v3RealizedLiquidationSidecar = await runV3RealizedLiquidationSidecar(env.DATA_DB, {
@@ -773,8 +791,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const lifecyclePreactionBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),
     extraRowsRead:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+INFO_D1_BUDGET.rowsRead+(postV7UnifiedEnabled?BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read:0),
     extraRowsWritten:V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+INFO_D1_BUDGET.rowsWritten+1+(postV7UnifiedEnabled?BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written:0)});
-  if (!v3SidecarsPreactionBudget.allowed || !lifecyclePreactionBudget.allowed) {
-    v3TelegramLifecycleSidecar = {version:"v3-telegram-lifecycle-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,dispatch_enabled:v3TelegramJournalEnabled,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(lifecyclePreactionBudget.reasons||[])]};
+  if (!lifecyclePreactionBudget.allowed) {
+    v3TelegramLifecycleSidecar = {version:"v3-telegram-lifecycle-sidecar-shadow-v1",mode:"SHADOW_ONLY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,dispatch_enabled:v3TelegramJournalEnabled,reasons:lifecyclePreactionBudget.reasons||[]};
   } else {
     v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {
       source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
@@ -801,8 +819,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("V3_PIPELINE_HEALTH_SIDECAR", JSON.stringify(v3PipelineHealthSidecar));
   let v3TelegramDeliverySidecar;
   const postV7DeliveryBudget = postV7UnifiedEnabled ? evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,extraRowsWritten:BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written+1}) : d1PreTelegramBudget;
-  if (!v3SidecarsPreactionBudget.allowed || !postV7DeliveryBudget.allowed) {
-    v3TelegramDeliverySidecar = {version:postV7UnifiedEnabled?"post-v7-bound-telegram-delivery-v1-20260926":"v3-telegram-delivery-sidecar-shadow-v1",mode:postV7UnifiedEnabled?"CANONICAL_BOUND_DELIVERY":"SHADOW_GATED_DELIVERY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,sent:0,reasons:[...(v3SidecarsPreactionBudget.reasons||[]),...(postV7DeliveryBudget.reasons||[])]};
+  if (!postV7DeliveryBudget.allowed) {
+    v3TelegramDeliverySidecar = {version:postV7UnifiedEnabled?"post-v7-bound-telegram-delivery-v1-20260926":"v3-telegram-delivery-sidecar-shadow-v1",mode:postV7UnifiedEnabled?"CANONICAL_BOUND_DELIVERY":"SHADOW_GATED_DELIVERY",status:"BUDGET_BLOCKED_FAIL_CLOSED",network_send:false,sent:0,reasons:postV7DeliveryBudget.reasons||[]};
   } else {
     const deliveryArgs={enabled:v3TelegramNetworkEnabled,relay_url:envText("REPORT2_TELEGRAM_RELAY_URL", { required:false }),relay_key:envText("REPORT2_TELEGRAM_RELAY_KEY", { required:false }),source_run_id:String(cron.run_id||""),now_ts:Date.now(),fetch_impl:nativeFetch};
     v3TelegramDeliverySidecar = postV7UnifiedEnabled
