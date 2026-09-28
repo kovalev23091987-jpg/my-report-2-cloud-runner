@@ -38,6 +38,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Assigned the required new generation `MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M` instead of reusing V4. Durable commands now expire terminally after their deadline, and a scheduled executor can recover one aged queued command from the same exact generation after a two-minute ownership delay. Newly queued commands remain reserved for their own workflow first; completed duplicates return their pinned result identity without rerunning paid work.
 - First controlled V5 run `36364714573` passed exact reconstruction, V5 preflight, full 358/358 scan, durable claim/completion and all D1 guards with zero unknown operations. It ended truthfully as `HEALTHY_NO_IDEA/PARTIAL` on XLM-USDT and sent zero Telegram messages. The internal runner diagnostic label was then advanced from the stale V4 text to V5 so later receipts cannot mix generations by name.
 - Wired the first previously fixture-only EvidenceV2 source into the actual candidate path. Official HTX opening state plus isolated/cross risk ladders now use exact HTX contracts, three sequential calls at no more than one request per second, a 60-minute cache, atomic three-attempt reservation, the shared whole-job HTTP admission and a hard 144-attempt daily cap. Explicit opening restriction is adverse risk only and can never invent a Short direction. Run `36365551502` closed the sanitized live smoke on NEAR-USDT: state/isolated/cross all returned HTTP 200, N09 context was valid and complete, both request admissions were reserved, the full cycle succeeded and Telegram sent zero messages. Current worker hash: `2db9471e47f6a1359b7e4732137740c215d126ddba8cb480df2d4cb5654cd9b0`.
+- Added the next two bounded EvidenceV2 runtime consumers without changing the frozen worker/output format. BLS/Fed calendars now provide N13 recheck timing from a shared six-hour cache with a 12-attempt daily cap and zero directional score. Deribit `currency=any` exact active option discovery plus per-currency summary provides N14 alt-option liquidity context with a 168-attempt cap, six-hour catalog cache and 20-minute summary cache; absent alt instruments are `NOT_APPLICABLE`, never copied from BTC/ETH. A cold candidate still uses at most five calls: three HTX plus two macro, while Deribit waits for the shared envelope; later cached candidates can use the Deribit lane. Focused tests pass 15/15 and the complete current-generation suite passes 245/245; validation and syntax checks pass.
 
 ## Verified blockers
 
@@ -46,7 +47,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Implement/verify the remaining live EvidenceV2 adapters with authorized sanitized smoke reads, then run the full assembled-runtime regression and three measured full runs.
+1. Run the full assembled-runtime regression, checkpoint the macro/Deribit wiring, then obtain authorized sanitized smoke reads for those two transports before continuing with the remaining live EvidenceV2 adapters and measured full runs.
 2. Obtain the exact live Hub configuration/bundle and KV binding through an authorized path before claiming T02/F01/T17 fully closed or performing the final cutover.
 
 ## Safety state

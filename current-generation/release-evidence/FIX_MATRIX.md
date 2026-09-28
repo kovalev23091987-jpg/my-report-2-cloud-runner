@@ -33,7 +33,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F27 | LOCAL_CLOSED | Upstream/event/dependency-family dedup precedes scoring. | None locally. |
 | F28 | PARTIAL_KEY_AND_PROBE | 0xArchive route/cost plan and atomic reservation fail closed on unknown cost. | Existing key plus one authorized idempotent cost probe. |
 | F29 | LOCAL_PARTIAL_COVERAGE | Short probes are explicitly `PARTIAL`; no module claims a continuous full liquidation stream. | Continuous completeness is intentionally unavailable without a permitted service. |
-| F30 | PARTIAL_SMOKE_PENDING | Source identities, lifecycle receipts and EvidenceV2 consumer contracts exist. HTX public-risk live smoke closed on run 36365551502. | Remaining selected adapters still require live wiring and sanitized smoke receipts. |
+| F30 | PARTIAL_SMOKE_PENDING | Source identities, lifecycle receipts and EvidenceV2 consumer contracts exist. HTX public-risk live smoke closed on run 36365551502; bounded BLS/Fed and Deribit-alt transports are runtime-wired locally. | The two newly wired transports and remaining selected adapters require sanitized live smoke receipts. |
 | F31 | LOCAL_CORE | `outcome-v2.mjs` admits only exact SENT receipts and anchors to the first fresh executable HTX quote. | Natural delivered cohort. |
 | F32 | LOCAL_CORE | Outcome path completeness uses closed one-minute history, not snapshot extrema. | Natural mature path. |
 | F33 | LOCAL_CLOSED | Due-settlement cursor skips unusable rows and terminates irrecoverable windows as censored. | Operational backlog receipt. |
@@ -53,7 +53,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F47 | LOCAL_CLOSED | Dependency freshness and whole-source deadlines are enforced; TTL is not stretched to force CLOSED. | Live receipt. |
 | F48 | LOCAL_CLOSED_RUNTIME | Commands persist before concurrency; aged queued work is recovered after two minutes; expired work is terminal; duplicates do not rerun paid work. | Operational recovery receipt after V5 cutover. |
 | F49 | PARTIAL | Release manifest, exact worker hash, rollback, cloud receipt and truthful blockers exist. | Hub evidence, remaining live receipts and natural gates. |
-| F50 | PARTIAL_SMOKE_PENDING | All N01–N17 have typed EvidenceV2 consumer contracts, caps and fixture tests; HTX public-risk now has a live consumer receipt. | Several other transports are not yet live-wired and still need smoke receipts. |
+| F50 | PARTIAL_SMOKE_PENDING | All N01–N17 have typed EvidenceV2 consumer contracts, caps and fixture tests; HTX public-risk has a live consumer receipt; N13 macro and N14 alt-options are now bounded runtime consumers locally. | Macro/Deribit and several remaining transports still need smoke receipts; no unavailable alt market is invented. |
 | F51 | LOCAL_CORE | Gross/net costs, remaining path, hold and invalidation are distinct; no automatic trading was added. | Natural outcome sample. |
 
 No `PARTIAL`, `BLOCKED`, `WAITING`, or `LOCAL_CORE` row may be represented as fully deployed or naturally accepted.

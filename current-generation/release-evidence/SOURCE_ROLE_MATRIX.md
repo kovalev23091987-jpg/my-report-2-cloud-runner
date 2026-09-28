@@ -20,7 +20,8 @@
 | Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | ADAPTER_FIXTURE_VALIDATED; LIVE_TRANSPORT/SMOKE_PENDING |
 | GDELT / Bluesky | discovery/attention only | no headline/social direction | ADAPTER_FIXTURE_VALIDATED; SMOKE/BASELINE_PENDING |
 | Snapshot / Sourcify | governance dates / ABI validation | no market vote | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
-| BLS / Fed calendars | macro recheck timing | no universal direction | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
+| Deribit alt options | exact active alt option liquidity context | context only; no directional bonus | RUNTIME_WIRED_BOUNDED; LIVE_SMOKE/MARKET_PENDING |
+| BLS / Fed calendars | macro recheck timing | no universal direction | RUNTIME_WIRED_BOUNDED; LIVE_SMOKE_PENDING |
 | Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote | WAITING_FREE_KEY |
 
 Unavailable, stale, wrong-identity or unmapped data contributes exactly zero and is never redistributed to remaining sources.

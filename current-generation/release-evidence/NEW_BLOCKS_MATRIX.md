@@ -14,8 +14,8 @@
 | N10 Stop scenario | target/path invalidation | VALIDATED, score cap 0 | existing technical engine |
 | N11 Liquidity durability | execution stress | VALIDATED, HTX rules context wired | partial existing books; HTX rules transport smoke closed |
 | N12 Real large trades | money-flow diagnostic | VALIDATED | WAITING_7D/100_TRADES |
-| N13 Calendar | recheck scheduler | VALIDATED, score cap 0 | WAITING_ADAPTER_SMOKE |
-| N14 Alt options | options risk context | VALIDATED, no new directional bonus | WAITING_AVAILABLE_MARKET |
+| N13 Calendar | recheck scheduler | VALIDATED, score cap 0, BLS/Fed runtime wired with shared 6h cache | WAITING_LIVE_SMOKE |
+| N14 Alt options | options risk context | VALIDATED, Deribit exact active-instrument runtime wired, no new directional bonus | WAITING_LIVE_SMOKE_AND_AVAILABLE_ALT_MARKET |
 | N15 Sector relative strength | sector benchmark | VALIDATED | WAITING_LIVE_PEER_SET |
 | N16 Execution/liquidity risk | execution cost gate | VALIDATED, HTX rules context wired | partial existing books; HTX rules transport smoke closed |
 | N17 Source deterioration | evidence admission | VALIDATED, score cap 0 | local quality logic; live history pending |

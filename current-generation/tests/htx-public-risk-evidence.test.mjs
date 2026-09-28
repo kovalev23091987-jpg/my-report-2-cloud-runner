@@ -39,7 +39,7 @@ test('K16 HTX risk: wrong or absent contract state fails closed with zero score 
 test('K16 HTX risk: authoritative runner and worker consume the live candidate evidence path',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
- assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=params=>collectHtxPublicRiskEvidence/);
+ assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2/);
  assert.match(worker,/await env\.REPORT2_EVIDENCE_V2_COLLECT/);
  assert.match(worker,/evidence_v2:candidateEvidenceV2\?\.evidence\?\.length\?candidateEvidenceV2/);
  assert.match(worker,/EVIDENCE_V2_CANDIDATE_RECEIPT/);
