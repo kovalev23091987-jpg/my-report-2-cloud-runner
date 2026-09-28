@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 07:10 UTC
+Updated: 2026-09-28 07:23 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -65,16 +65,18 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - The three canonical cloud state files were updated after that verified stage. They preserve V4 as the active production generation and record V5 only as `TECHNICALLY_VERIFIED_NOT_DEPLOYED`, with the exact branch, commit, worker hash, live-source smoke runs and Cloudflare Hub blocker. No old installer or pending handoff was reactivated.
 - Final liquidation-only run `36387775925` revealed that the separate command exposed only the native provider lines and did not fill a missing side with the already approved calculated map. Commit `065317e` connects the same `buildPumpLiquidationZones` policy used by the canonical report to the liquidation-only result without changing the frozen report/Telegram formatters. Retry `36388065447` closed 359/359 scanning on CASHCAT-USDT and returned four zones above plus four below: one exact Lighter provider zone and seven explicitly calculated fallback zones, with no invented exact amounts. It used four of five new-provider calls, stayed within all D1 gates with zero unknown operations, completed the durable command and sent zero Telegram messages.
 - Cloudflare authorization is now working through the GitHub secret without exposing its value. Read-only run `36390110554` captured the exact live `my-report-2-hub` module, stable module SHA-256 `10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af`, all seven binding names/types, and zero cron triggers. The live Hub therefore does not run the old scheduled analytics in parallel with GitHub and does not consume periodic analysis limits. Its D1, Telegram and source-proxy bindings are present. Raw code/settings were uploaded only as a one-day certificate-encrypted artifact; the committed proof contains no account identifiers or secret values. No report cycle, Telegram network request or Cloudflare mutation occurred.
+- Pull request 6 was merged to production `main` as `902f4d2c4cbf89d38528501cfd537121b3cc4f66`. The production schedule was paused during cutover. Telegram-disabled production acceptance run `36390942493` then closed 359/359 scanning, persistence, D1 burst gates and durable command completion with zero unknown operations and zero Telegram sends.
+- After acceptance, the schedule was re-enabled. Natural-path run `36391188150` closed another 359/359 cycle with the canonical bound Telegram sender and reconciliation enabled. No test message was requested or sent. XPL-USDT SHORT remained OBSERVE at score 64, so there was no final decision and the correct delivery count was zero. This proves the delivery path is armed, not that a natural signal was fabricated.
 
 ## Verified blockers
 
-- V5 is still not deployed to the production branch. The exact Hub inventory blocker is closed, but a Telegram-disabled production acceptance cycle and the first natural Telegram receipt are still required.
-- No production code, schedule, database, Hub worker, or Telegram delivery has been changed.
+- V5 is active in production. The first naturally eligible Telegram delivery and the long-horizon outcome/calibration samples have not occurred yet and cannot be fabricated.
+- GDELT remains externally rate-limited and Bluesky externally blocked; both remain zero-weight when unavailable.
 
 ## Exact next actions
 
-1. Deploy in the documented single-owner order while preserving the current Hub relay/bindings and zero-cron state.
-2. Run one Telegram-disabled production acceptance cycle, then enable the canonical sender and collect the first natural Telegram receipt. Do not retry Bluesky or GDELT before their shared backoffs expire and do not use bypasses.
+1. Continue the single 20-minute production schedule on V5 and record the first naturally eligible Telegram delivery.
+2. Accumulate real outcomes for calibration. Do not retry Bluesky or GDELT before their shared backoffs expire and do not use bypasses.
 
 ## Safety state
 
