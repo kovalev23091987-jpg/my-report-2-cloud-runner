@@ -35,7 +35,7 @@ import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
-import {claimCommand,claimNextCommand,completeCommand} from './src/durable-command-queue.mjs';
+import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
 import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 
@@ -829,6 +829,12 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const finalRenderedResult=JSON.stringify(finalRunResult);
   console.log(finalRenderedResult);
   if(source!=='schedule'){
+    if(expectedManualMode==='MANUAL_COIN'&&Number(cron.v3_live_deep_check_count||0)===0){
+      const commandDeferral=await deferCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,retry_at:Date.now()+2*60_000,reason:`MANUAL_COIN_DEEP_NOT_READY:${cron.v3_live_zero_reason||cron.v3_pipeline_health_reason||'UNKNOWN'}`,now:Date.now()});
+      if(!commandDeferral.deferred)throw new Error(`DURABLE_MANUAL_COMMAND_DEFERRAL_FAILED:${commandDeferral.status}`);
+      console.log('DURABLE_MANUAL_COMMAND_DEFERRED',JSON.stringify(commandDeferral));
+      return;
+    }
     const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:String(cron.run_id||`MANUAL:${started}`),rendered_text:finalRenderedResult,delivered_to_existing_channel:true,now:Date.now()});
     if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
     console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));

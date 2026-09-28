@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {commandId,enqueueCommand,claimCommand,claimNextCommand,completeCommand,savedResultFresh} from '../files/src/durable-command-queue.mjs';
+import {commandId,enqueueCommand,claimCommand,claimNextCommand,completeCommand,deferCommand,savedResultFresh} from '../files/src/durable-command-queue.mjs';
 import {buildPublicationDispatch,transitionRelayReceipt,reconcileExpiredDelivery,removalAllowed} from '../files/src/strict-delivery-binding.mjs';
 import fs from 'node:fs';
 class S{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new S(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
@@ -34,6 +34,14 @@ test('K12: recovery delay leaves a newly enqueued command to its own workflow',a
   await enqueueCommand(db,{...base,command_id:'NEW',mode:'FULL_MANUAL',received_at:4900,deadline:100000});
   assert.equal((await claimNextCommand(db,{actor:'RECOVERY',generation:'G',now:5000,recovery_delay_ms:2000})).claimed,false);
   assert.equal((await claimCommand(db,{command_id:'NEW',actor:'OWNER',now:5000})).claimed,true);
+});
+
+test('K12: manual coin without a deep result is deferred and recovered instead of falsely completed',async()=>{
+  const db=new D(),base={command_id:'COIN-DEFER',mode:'MANUAL_COIN',contract:'SUI-USDT',request_channel:'MANUAL',received_at:1000,deadline:100000,generation:'G'};
+  await enqueueCommand(db,base);assert.equal((await claimCommand(db,{command_id:base.command_id,actor:'OWNER',now:2000})).claimed,true);
+  const deferred=await deferCommand(db,{command_id:base.command_id,actor:'OWNER',retry_at:5000,reason:'MANUAL_COIN_DEEP_NOT_READY',now:2500});assert.equal(deferred.deferred,true);
+  assert.equal((await claimNextCommand(db,{actor:'EARLY',generation:'G',now:4999,recovery_delay_ms:0})).claimed,false);
+  const recovered=await claimNextCommand(db,{actor:'RECOVERY',generation:'G',now:5000,recovery_delay_ms:0});assert.equal(recovered.claimed,true);assert.equal(recovered.row.command_id,base.command_id);
 });
 
 test('K11: publication and dispatch share immutable exact IDs and hashes',()=>{
@@ -79,4 +87,6 @@ test('K12: full and coin manual commands complete only after the final existing 
   const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
   const resultAt=runner.indexOf('console.log(finalRenderedResult)'),completionAt=runner.lastIndexOf('await completeCommand(env.DATA_DB');
   assert.ok(resultAt>=0&&completionAt>resultAt);assert.match(runner,/if\(source!==['"]schedule['"]\)/);
+  assert.match(runner,/expectedManualMode==='MANUAL_COIN'&&Number\(cron\.v3_live_deep_check_count\|\|0\)===0/);
+  assert.match(runner,/DURABLE_MANUAL_COMMAND_DEFERRED/);
 });
