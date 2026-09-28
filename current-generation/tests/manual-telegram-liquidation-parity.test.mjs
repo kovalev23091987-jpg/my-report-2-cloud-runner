@@ -16,3 +16,10 @@ test('same verified liquidation levels are present in manual report and Telegram
  for(const price of ['110','90']){assert.match(manual.text,new RegExp(price));assert.match(telegram.message,new RegExp(price));}
  assert.match(manual.text,/ЛИКВИДАЦИИ/);assert.match(telegram.message,/Ликвидации:/);
 });
+test('ETC snapshot change presents settlement-rate unit before terminology validation',()=>{
+ const etc={...canonical,candidates:[{contract:'ETC-USDT'}],metadata:{...canonical.metadata,contract:'ETC-USDT'},changes_from_previous:['Ставка изменилась на 0,01 rate_per_settlement']};
+ const manual=formatManualReport(etc),telegram=formatTelegramCompact(etc);
+ assert.equal(manual.ok,true);assert.equal(telegram.ok,true);
+ assert.match(manual.text,/ставка за расчётный период/i);assert.match(telegram.message,/ставка за расчётный период/i);
+ assert.doesNotMatch(manual.text,/rate_per_settlement/i);assert.doesNotMatch(telegram.message,/rate_per_settlement/i);
+});

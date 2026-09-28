@@ -5,6 +5,13 @@ export function displayNumber(v){return typeof v==='number'&&Number.isFinite(v)?
 export function displayTime(ts){return typeof ts==='number'&&Number.isSafeInteger(ts)&&ts>=1e12?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(ts)).replace(',',''):null;}
 export function displayWindow(v){return text(v).replace(/^(\d+)m$/,'$1 мин').replace(/^(\d+)h$/,'$1 ч').replace(/^(\d+)d$/,'$1 д');}
 export function displayUnit(v){return ({CONTRACTS:'контракты',CONTRACT:'контракты',PERCENT:'%',BASE:'базовый актив'})[text(v).toUpperCase()]||text(v);}
+export function displaySnapshotChange(v){
+ const value=text(v);if(!value)return null;
+ return value
+  .replace(/\brate_per_settlement\b/giu,'ставка за расчётный период')
+  .replace(/\bCONTRACTS?\b/gu,'контракты')
+  .replace(/\bPERCENT\b/gu,'%');
+}
 export function displayCondition(v){return text(v).replace(/\b(?:price|close_price)\b/gi,'цена').replace(/\bmark_price\b/gi,'цена маркировки').replace(/\bvolume\b/gi,'объём').replace(/\boi_contracts\b/gi,'открытый интерес в контрактах');}
 export function displayTrigger(t){
  const metric=({price:'цена',close:'цена закрытия',close_price:'цена закрытия',mark_price:'цена маркировки',volume:'объём',oi_contracts:'открытый интерес'})[text(t?.metric).toLowerCase()];

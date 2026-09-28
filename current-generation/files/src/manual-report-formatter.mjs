@@ -1,4 +1,4 @@
-import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations} from './canonical-display.mjs';
+import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displaySnapshotChange} from './canonical-display.mjs';
 import {nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import { reasonDefinition, safeUserReason, sourceLabelRu, hasUnknownBlockerReasons } from './reason-registry.mjs';
 export const MANUAL_REPORT_FORMATTER_VERSION='manual-report-approved-layout-v1-20260927';
@@ -35,7 +35,7 @@ export function formatManualReport(result){
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
  if(result.free_sources)lines.push('','КАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ',`Статус непрерывного сбора: ${result.free_sources.continuous_collector_status==='PARTIAL_REALTIME_COVERAGE'?'частичное покрытие в реальном времени':'проверяется'}.`,`Новые внешние запросы горячего цикла: ${result.free_sources.hot_cycle_external_request_delta??0}.`);
  const sf=supportingFacts(result);if(sf.length){lines.push('','ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');for(const f of sf.slice(0,6)){const src=sourceLabelRu(f.source)||f.source;const v=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;lines.push(`- ${f.label}: ${v}${src?` — ${src}`:''}.`);}}
- if(result.changes_from_previous?.length)lines.push('','ИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА',...result.changes_from_previous.map(x=>`- ${safeUserReason(x)||'изменение зафиксировано'}`));
+ if(result.changes_from_previous?.length)lines.push('','ИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА',...result.changes_from_previous.map(x=>`- ${safeUserReason(displaySnapshotChange(x))||'изменение зафиксировано'}`));
  const out=lines.filter(Boolean).join('\n');const forbidden=/\b(?:LONG|SHORT|OI|Funding|Spot flow|Spread|Slippage|Data Quality|Source receipts|hard gates)\b|\b[A-Z]{2,}_[A-Z0-9_]{2,}\b/i;if(forbidden.test(out)||hasInternalTerminology(out))return{ok:false,status:'FORBIDDEN_USER_TERMINOLOGY',text:null};return{ok:true,status:unknown?'SAFE_FAIL_CLOSED_UNKNOWN_REASON':'READY',text:out,formatter:MANUAL_REPORT_FORMATTER_VERSION,analytical_fingerprint:result.analytical_fingerprint};
 }
 export default{MANUAL_REPORT_FORMATTER_VERSION,formatManualReport};
