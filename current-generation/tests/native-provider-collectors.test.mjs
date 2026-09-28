@@ -24,3 +24,8 @@ test('GMX uses exact market discovery and fee-aware account position endpoint',a
  const collect=createGmxRuntimeCollector({fetch_impl,clock:()=>T});const out=await collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'r',acquisition_id:'g',market_address:market,deadline_ts:T+30000});
  assert.equal(out.status,'GMX_ACQUIRED_SCOPED_CONTEXT');assert.ok(out.requests<=4);assert.equal(verifyScopedProviderAcquisition(out.acquisition),true);assert.ok(out.acquisition.above.length+out.acquisition.below.length>0);
 });
+
+test('GMX empty exact market exposes bounded diagnostics without inventing zones',async()=>{
+ const market='0x1111111111111111111111111111111111111111',fetch_impl=async()=>response({data:{positions:[]}}),collect=createGmxRuntimeCollector({fetch_impl,clock:()=>T}),out=await collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'r-empty',acquisition_id:'g-empty',market_address:market,deadline_ts:T+30000});
+ assert.equal(out.status,'GMX_NATIVE_SAMPLE_NOT_CLOSED');assert.equal(out.requests,1);assert.equal(out.discovery_positions,0);assert.equal(out.selected_accounts,0);assert.equal(out.account_http_closed,0);assert.deepEqual(out.normalization_statuses,[]);
+});
