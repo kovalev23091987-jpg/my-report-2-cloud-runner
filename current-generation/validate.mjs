@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97';
+const expectedWorker='725f13906d6d3af81a97a78d8b454d94951e22e696aeff2e86b438240c62b760';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -18,7 +18,7 @@ const checks=[
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
- 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs',
+ 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs','files/src/market-contracts.mjs','files/src/candidate-task-queue.mjs','files/src/durable-command-queue.mjs','files/src/evidence-v2.mjs','files/src/unified-budget.mjs',
  'files/src/canonical-display.mjs','files/src/native-liquidation-guard.mjs','files/src/reason-registry.mjs',
  'files/src/manual-report-formatter.mjs','files/src/telegram-compact-formatter.mjs',
  'files/src/global-market-context.mjs','files/src/supplemental-source-policy.mjs',
@@ -39,7 +39,7 @@ for(const rel of checks)run(['--check',path.join(here,rel)]);
 const tests=fs.readdirSync(path.join(here,'tests')).filter(x=>x.endsWith('.test.mjs')).sort().map(x=>path.join(here,'tests',x));
 run(['--test',...tests]);
 const generation=JSON.parse(fs.readFileSync(path.join(here,'GENERATION.json'),'utf8'));
-if(generation.schedule_minutes!==20||generation.scheduled_runs_per_day!==72||generation.manual_runs_reserved_per_day!==8||generation.worst_case_31_day_requests_with_eight_manual_runs_daily!==12400)throw Error('GENERATION_QUOTA_MATH_MISMATCH');
+if(generation.schedule_minutes!==20||generation.scheduled_runs_per_day!==72||generation.manual_runs_reserved_per_day!==8||generation.burst_deep_checks_reserved_per_day!==6||generation.worst_case_31_day_requests_with_eight_manual_runs_daily!==13330||generation.scheduled_plus_burst_31_day_requests!==12090)throw Error('GENERATION_QUOTA_MATH_MISMATCH');
 const sourceRuntime=process.argv[2]?path.resolve(process.argv[2]):null;
 let overlay=null;
 if(sourceRuntime){
@@ -59,4 +59,4 @@ if(sourceRuntime){
  run([path.join(here,'tests/approved-entry-performance.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
-console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,worst_case_31_day_requests:12400,overlay:overlay?'PASS':'NOT_REQUESTED'}));
+console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));

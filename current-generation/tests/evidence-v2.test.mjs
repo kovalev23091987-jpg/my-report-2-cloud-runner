@@ -26,6 +26,11 @@ test('K16: news and social retain separate 0.2 caps and missing families are not
   const result=consumeEvidenceV2([social,news],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<=.4);assert.equal(result.threshold_unchanged,70);
 });
 
+test('K16: risk strength can only reduce suitability and never becomes a bullish direction',()=>{
+  const risk={...make(templates.find(row=>row.block_id==='N01')),directional_strength:null,risk_strength:.8};
+  const result=consumeEvidenceV2([risk],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<0);assert.ok(result.final_interest<70);
+});
+
 test('K16: hotlist is bounded to 12 and quality does not punish an unattempted source',()=>{
   const hot=buildHotlist({active_publications:[{contract:'A-USDT',last_checked_ts:5}],manual_contract:'M-USDT',pending:Array.from({length:20},(_,i)=>({contract:`P${i}-USDT`,last_checked_ts:i}))});assert.equal(hot.length,12);assert.equal(hot[0].contract,'A-USDT');
   assert.deepEqual(nextSourceQuality({current:.8,attempted:false,response_usable:false}),{quality:.8,quarantined:false,invalid_streak:0,probe_success_streak:0});

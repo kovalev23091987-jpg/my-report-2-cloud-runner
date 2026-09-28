@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,normalizeExecutionStatus,buildHtxExecutionReceipt,rolling24hChange,traceFinalDecision} from '../files/src/market-contracts.mjs';
 
 test('K04: only exact directions and enumerated discovery suffixes are accepted',()=>{
@@ -34,4 +35,15 @@ test('K04: real 24h window is distinct and missing window stays unknown',()=>{
 
 test('K04: four historical V4 missing final decisions retain exact upstream reason',()=>{
   for(const contract of ['ETC-USDT','ETHFI-USDT','DOT-USDT','LSK-USDT'])assert.deepEqual({...traceFinalDecision(null),contract},{before:'CANDIDATE',after:'REJECTED',reason:'NO_FINAL_DECISION_ROW',contract});
+});
+
+test('K04: authoritative worker feeds the frozen adapter only a typed HTX price and strict route',()=>{
+ const source=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
+ assert.match(source,/const htxObservationReferencePrice = buildHtxReferencePrice/);
+ assert.match(source,/const entryDirectionAuthorization=authorizeEntryDirection/);
+ assert.match(source,/const htxExecutionReceipt=buildHtxExecutionReceipt/);
+ assert.match(source,/strictRouteState=entryState&&\(entryDirectionAuthorization\.authorized!==true\|\|htxExecutionReceipt\.status!==['"]CLOSED['"]\)\?['"]REJECTED['"]/);
+ assert.match(source,/mark_price:null,ticker:null,ticker_24h:null/);
+ assert.match(source,/provider_current_price:null/);
+ assert.match(source,/current_price:htxReferencePrice\.status===['"]CLOSED['"]\?htxReferencePrice\.value:null/);
 });

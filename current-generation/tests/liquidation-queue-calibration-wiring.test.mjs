@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-test('runner installs, settles and records the queue and one-hour outcome loop',()=>{
+test('runner installs the wave-scoped queue and keeps the one-hour outcome loop in shadow',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
- for(const pattern of [/createLiquidationCandidateQueue/,/createLiquidationOutcomeCalibration/,/liquidationQueue\.install\(\)/,/liquidationCalibration\.install\(\)/,/liquidationCalibration\.settle/,/liquidationCalibration\.record/,/liquidationQueue\.enqueue/,/liquidationQueue\.claim/,/liquidationQueue\.complete/])assert.match(runner,pattern);
+ for(const pattern of [/createCandidateTaskQueue/,/createLiquidationOutcomeCalibration/,/liquidationQueue\.install\(\)/,/liquidationCalibration\.install\(\)/,/liquidationCalibration\.settle/,/liquidationCalibration\.record/,/liquidationQueue\.enqueue/,/liquidationQueue\.claim/,/liquidationQueue\.complete/])assert.match(runner,pattern);
+ assert.doesNotMatch(runner,/createLiquidationCandidateQueue/);
 });
 
 test('scheduled queue cannot override a due factual recheck and shares the request envelope',()=>{

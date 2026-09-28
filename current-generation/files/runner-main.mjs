@@ -31,10 +31,11 @@ import {nativeLiquidationLines,nativeLiquidationSources} from './src/native-liqu
 import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
-import {createLiquidationCandidateQueue} from './src/liquidation-candidate-queue.mjs';
+import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
+import {claimCommand,completeCommand} from './src/durable-command-queue.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -434,6 +435,13 @@ async function main() {
   if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
   console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
   const commandIntent=source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_IGNORES_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
+  const expectedManualContract=commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null),expectedManualMode=commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
+  const manualCommandId=envText('REPORT2_COMMAND_ID',{required:false}),manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
+  const manualCommandClaim=source==='schedule'?{claimed:false,status:'SCHEDULE_HAS_NO_MANUAL_COMMAND'}:manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
+  if(source!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
+  if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
+  if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
+  console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null}));
   if(commandIntent.matched&&commandIntent.mode==='EXACT_COIN_LIQUIDATIONS')env.REPORT2_MANUAL_COIN_CONTRACT=commandIntent.contract;
   console.log('LIQUIDATION_COMMAND_INTENT',JSON.stringify(commandIntent));
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
@@ -449,7 +457,7 @@ async function main() {
   });
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
-  const liquidationQueue=createLiquidationCandidateQueue({db:env.DATA_DB});
+  const liquidationQueue=createCandidateTaskQueue({db:env.DATA_DB});
   const liquidationCalibration=createLiquidationOutcomeCalibration({db:env.DATA_DB,fetch_impl:globalThis.fetch});
   await Promise.all([liquidationQueue.install(),liquidationCalibration.install()]);
   env.REPORT2_LIQUIDATION_SIGNAL_RECORD=params=>liquidationCalibration.record(params);
@@ -517,7 +525,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if(commandIntent.matched){
     const sourceRunId=`LIQ_ONLY:${started}`;
     const scanResult=await scanLiquidationCandidates({env,max_candidates:5,exact_contract:commandIntent.contract||null,freshness_sec:300});
-    await liquidationQueue.enqueue(scanResult?.candidates||[],{now:started});
+    await liquidationQueue.enqueue(scanResult?.candidates||[],{wave_id:sourceRunId,now:started});
     const queueClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:scanResult?.candidates?.[0]?.contract||null,now:started});
     const candidate=Array.isArray(scanResult?.candidates)?scanResult.candidates.find(row=>row.contract===queueClaim.contract)||scanResult.candidates[0]:null;
     let acquisition=null;
@@ -544,7 +552,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const liquidationPanel=candidate?.current_price?buildDynamicLiquidationPanel({contexts,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_CLOSED',reason:'REFERENCE_PRICE_REQUIRED',clusters:[],score_evidence:null};
     const calibrationRecord=candidate?await liquidationCalibration.record({contract:candidate.contract,panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_RECORDED',rows:0};
     const predictiveSourceWeights=await liquidationCalibration.summary();
-    if(queueClaim.claimed&&candidate)await liquidationQueue.complete({contract:candidate.contract,run_id:sourceRunId,usable:Boolean(acquisition)||crossExchangeRisk.status==='CLOSED',result:{native:Boolean(acquisition),cross_exchange:crossExchangeRisk.status,panel:liquidationPanel.status},now:Date.now()});
+    if(queueClaim.claimed&&candidate)await liquidationQueue.complete({contract:candidate.contract,wave_id:queueClaim.wave_id,task_kind:queueClaim.task_kind,run_id:sourceRunId,usable:Boolean(acquisition)||crossExchangeRisk.status==='CLOSED',now:Date.now()});
     const liquidationQueueSummary=await liquidationQueue.summary({now:Date.now()});
     if(pending.length)await Promise.all(pending);
     const d1PostCycleBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
@@ -554,12 +562,16 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:5,cross_exchange_risk:3,total:8},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
     const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
-    console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify({...result,analytics_lease:leaseFinish}));
+    const renderedResult=JSON.stringify({...result,analytics_lease:leaseFinish});
+    console.log('LIQUIDATION_ONLY_RESULT',renderedResult);
+    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,rendered_text:renderedResult,delivered_to_existing_channel:true,now:Date.now()});
+    if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
     return;
   }
   const queueClaimRunId=`QUEUE:${started}`;
   const scheduledQueueClaim=source==='schedule'?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
-  if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,run_id:queueClaimRunId,usable:params?.usable===true,result:params?.result||null,now:Date.now()});}
+  if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,wave_id:scheduledQueueClaim.wave_id,task_kind:scheduledQueueClaim.task_kind,run_id:queueClaimRunId,usable:params?.usable===true,now:Date.now()});}
   console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
   const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!leaseRenewal.allowed)throw new Error(`ANALYTICS_FENCE_LOST_BEFORE_WORKER:${leaseRenewal.status}`);

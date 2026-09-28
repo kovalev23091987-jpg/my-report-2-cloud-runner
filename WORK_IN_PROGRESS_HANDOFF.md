@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 03:20 MSK
+Updated: 2026-09-28 04:05 MSK
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -30,6 +30,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Stage E core is added without Telegram network calls. Manual workflow requests are now durably enqueued before the analytics concurrency group. Publication/dispatch identity is immutable; success requires a positive Telegram message ID and matching recipient; ambiguous delivery becomes UNKNOWN without blind retry; removal is allowed only for a confirmed SENT entry. Live relay replacement still depends on the exact blocked Hub bundle.
 - Stage F core is added. Only exact SENT deliveries enter the delivered cohort; the outcome anchor is the first fresh side-specific HTX quote after delivery; 1/4/12/24h endpoints and MFE/MAE use closed minute candles, with TP+SL in one candle marked ambiguous. Calibration v2 requires exact zone touch and independent waves; factors stay 1 because the required future sample is not yet present (`INSUFFICIENT_CALIBRATION_DATA`).
 - Removed the last legacy auto-promotion path: twenty endpoint observations can no longer change any source weight. The legacy collector remains diagnostics-only with factor 1; future activation requires explicit `ACTIVE`/`T16_5` state and at least 200 observations. Supplemental weights now match the specification's 32/30/20/18 budget, while count-only and coincidence-only sources remain useful context with zero invented direction. The complete current-generation suite passes 208/208.
+- Wired strict T04/T05/T07/T12 paths into the authoritative runner without changing frozen formatters. ENTRY now requires an exact final direction, a side-specific typed HTX bid/ask reference and a closed execution handoff; fallback mark/last/provider prices are stripped before the frozen adapter. OKX depth contracts use catalog units. The old contract-lifetime liquidation queue was replaced by wave-scoped tasks. Manual jobs must claim their durable command; liquidation-only completes it only after emitting the existing result. The exact generation budget is now 13,330 total and 12,090 scheduled-plus-burst. Current-generation validation, syntax and all 215 tests pass.
 
 ## Verified blockers
 
@@ -38,7 +39,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Complete authoritative runtime wiring, full regression, deployment plan and T18 evidence matrices without claiming unavailable natural evidence.
+1. Complete the remaining full-report/manual-coin command completion binding, live EvidenceV2 adapter wiring, full regression, deployment plan and T18 evidence matrices without claiming unavailable natural evidence.
 2. Obtain the exact live Hub configuration/bundle and KV binding through an authorized path before claiming T02/F01/T17 fully closed or performing the final cutover.
 
 ## Safety state

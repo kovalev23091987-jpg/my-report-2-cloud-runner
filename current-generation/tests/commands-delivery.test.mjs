@@ -43,3 +43,10 @@ test('K12: manual enqueue job is outside analytics concurrency and must succeed 
   const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),enqueue=workflow.slice(workflow.indexOf('  enqueue-manual-command:'),workflow.indexOf('  run-report2:')),run=workflow.slice(workflow.indexOf('  run-report2:'));
   assert.doesNotMatch(enqueue,/concurrency:/);assert.match(run,/needs: \[execution-gate, enqueue-manual-command\]/);assert.match(run,/needs\.enqueue-manual-command\.result == 'success'/);
 });
+
+test('K12: authoritative runner claims the command and completes liquidation-only after its existing result consumer',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  assert.match(runner,/await claimCommand\(env\.DATA_DB/);assert.match(runner,/DURABLE_MANUAL_COMMAND_NOT_CLAIMED/);
+  const outputAt=runner.indexOf("console.log('LIQUIDATION_ONLY_RESULT',renderedResult)"),completeAt=runner.indexOf('await completeCommand(env.DATA_DB');
+  assert.ok(outputAt>=0&&completeAt>outputAt,'completion must happen only after the existing result consumer');
+});

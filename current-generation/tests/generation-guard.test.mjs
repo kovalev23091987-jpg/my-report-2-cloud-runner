@@ -4,11 +4,11 @@ import fs from 'node:fs';
 const generation=JSON.parse(fs.readFileSync(new URL('../GENERATION.json',import.meta.url),'utf8'));
 test('20-minute schedule plus three reports and five coin analyses fits 31-day quota with reserve',()=>{
  const scheduled=generation.scheduled_runs_per_day;
- const scheduledWorst=scheduled*31*generation.max_bykaranteli_requests_per_deep_check;
- const worst=(scheduled+generation.manual_runs_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
+ const scheduledWorst=(scheduled+generation.burst_deep_checks_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
+ const worst=(scheduled+generation.burst_deep_checks_reserved_per_day+generation.manual_runs_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
  assert.equal(generation.manual_report_runs_reserved_per_day,3);
  assert.equal(generation.manual_coin_analysis_runs_reserved_per_day,5);
- assert.equal(scheduled,72);assert.equal(scheduledWorst,11160);assert.equal(worst,12400);
+ assert.equal(scheduled,72);assert.equal(scheduledWorst,12090);assert.equal(worst,13330);
  assert(scheduledWorst<generation.bykaranteli_scheduled_monthly_cap);
  assert(worst<generation.bykaranteli_operational_monthly_cap);
  assert(generation.bykaranteli_scheduled_monthly_cap<generation.bykaranteli_operational_monthly_cap);

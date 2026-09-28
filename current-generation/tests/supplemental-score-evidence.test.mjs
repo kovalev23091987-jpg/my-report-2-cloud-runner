@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment,FIXED_DECISION_WEIGHTS} from '../files/src/supplemental-score-evidence.mjs';
 test('verified useful sources change the score inside existing fixed blocks',()=>{
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{deribit:{status:'CLOSED',internal_only:true,market_regime:'RISK_OFF_ELEVATED'},coinlobster:{status:'CLOSED',internal_only:true,whale_radar:[{coin:'FIL',direction:'BUY',multiple:5}]}}});
@@ -61,4 +62,9 @@ test('cross-exchange quality stays factor one until explicit T16.5 activation',(
  assert.equal(stillShadow[0].quality,0.6);assert.equal(stillShadow[0].predictive_weight_status,'SHADOW_FACTOR_ONE');
  const proven=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:200,eligible:1,predictive_weight_factor:1.25,activation_state:'ACTIVE',eligibility_protocol:'T16_5'}]}}});
  assert.equal(proven[0].base_quality,0.6);assert.equal(proven[0].quality,0.75);assert.equal(proven[0].predictive_weight_status,'ACTIVE_T16_5');
+});
+test('authoritative worker uses the same 32/30/20/18 supplemental budget',()=>{
+ const source=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/fixed_weights_35_30_20_15|Fixed 35\/30\/20\/15|CROSS_EXCHANGE_DERIVATIVES:\s*35|SUPPORTING_RISK:\s*15/);
+ assert.match(source,/CROSS_EXCHANGE_DERIVATIVES:\s*32/);assert.match(source,/SUPPORTING_RISK:\s*18/);
 });

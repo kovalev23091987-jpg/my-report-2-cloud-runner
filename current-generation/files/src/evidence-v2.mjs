@@ -18,7 +18,7 @@ export function evidenceDedupKey(row){if(row.chain&&row.tx_hash&&row.log_index!=
 export function consumeEvidenceV2(rows,{base_interest,decision_ts,base_evidence_ids=[]}={}){
   const seen=new Set(),families=new Map(),receipts=[];
   for(const row of rows||[]){const validation=validateEvidenceV2(row,{decision_ts}),config=BLOCKS[row.block_id],key=evidenceDedupKey(row);let contribution=0,reason=validation.status;
-    if(validation.usable&&!seen.has(key)&&!base_evidence_ids.includes(row.evidence_id)){seen.add(key);const strength=clamp(Number(row.directional_strength??row.risk_strength??0),-1,1),raw=config.cap*validation.quality*strength;contribution=clamp(raw,-config.cap,config.cap);families.set(config.family,(families.get(config.family)||0)+contribution);reason='CONSUMED';}
+    if(validation.usable&&!seen.has(key)&&!base_evidence_ids.includes(row.evidence_id)){seen.add(key);const hasDirectional=row.directional_strength!==null&&row.directional_strength!==undefined&&row.directional_strength!=='',strength=hasDirectional?clamp(Number(row.directional_strength),-1,1):-clamp(Number(row.risk_strength??0),0,1),raw=config.cap*validation.quality*strength;contribution=clamp(raw,-config.cap,config.cap);families.set(config.family,(families.get(config.family)||0)+contribution);reason='CONSUMED';}
     else if(seen.has(key))reason='DUPLICATE_UPSTREAM_EVENT';else if(base_evidence_ids.includes(row.evidence_id))reason='ALREADY_OWNED_BY_BASE_SCORER';
     receipts.push({evidence_id:row.evidence_id,block_id:row.block_id,family:config?.family||null,consumer:config?.consumer||null,raw_contribution:contribution,reason});
   }
