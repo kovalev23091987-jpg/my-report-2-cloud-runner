@@ -18,6 +18,6 @@
 | N14 Alt options | options risk context | VALIDATED, Deribit exact active-instrument runtime wired, no new directional bonus | LIVE_SMOKE_CLOSED run 36368924281; SOL market present but liquid count was truthfully zero |
 | N15 Sector relative strength | sector benchmark | VALIDATED | WAITING_LIVE_PEER_SET |
 | N16 Execution/liquidity risk | execution cost gate | VALIDATED, HTX rules context wired | partial existing books; HTX rules transport smoke closed |
-| N17 Source deterioration | evidence admission | VALIDATED, score cap 0 | local quality logic; live history pending |
+| N17 Source deterioration | evidence admission | RUNTIME_WIRED_SOURCIFY_SCHEMA_CONTEXT, score cap 0 | WAITING_SOURCIFY_LIVE_SMOKE_AND_HEALTH_SERIES |
 
 All blocks share the frozen canonical manual/Telegram path through `internal_market_context.evidence_v2`; none creates a new user-visible section or a second score owner.
