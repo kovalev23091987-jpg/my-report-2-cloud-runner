@@ -1,0 +1,43 @@
+{
+  "schema": "report2-production-v12-telegram-removal-diagnostic-v1",
+  "captured_at": "2026-09-28T18:49:00Z",
+  "github_run_id": 36467441921,
+  "github_run_number": 1370,
+  "event": "workflow_dispatch",
+  "production_main_sha": "1071d09dc3d1998a17a4d89e1986482505ddb61e",
+  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+  "conclusion": "SUCCESS",
+  "universe": {
+    "total": 359,
+    "scanned": 359
+  },
+  "deep_check": {
+    "contract": "LIT-USDT",
+    "canonical_state": "REJECTED",
+    "data_quality": "INSUFFICIENT",
+    "full_evidence_status": "CLOSED",
+    "full_evidence_insert_changes": 1
+  },
+  "telegram": {
+    "delivery_version": "post-v7-bound-telegram-delivery-v4-prior-visible-removal-20260928",
+    "network_enabled": true,
+    "sent": 0,
+    "pending_removals_examined": [
+      "LIT-USDT",
+      "XLM-USDT",
+      "TAO-USDT"
+    ],
+    "prior_positive_delivery_binding_found": false,
+    "safe_result": "NO_REMOVAL_SENT_WITHOUT_PRIOR_VISIBLE_IDEA"
+  },
+  "follow_up_fix": {
+    "publication_reconciler_version": "post-v7-publication-reconciler-v5-finalize-invisible-removal-20260928",
+    "delivery_version": "post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928",
+    "behavior": "REMOVAL_WITHOUT_PRIOR_DELIVERY becomes FAILED_FINAL immediately and is never retried or sent.",
+    "tests": {
+      "targeted": "8/8 PASS",
+      "current_generation": "PASS"
+    },
+    "status": "LOCAL_PASS_PENDING_PRODUCTION_RELEASE"
+  }
+}

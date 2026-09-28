@@ -160,6 +160,16 @@ test('removal after the binding grace period uses only its previously delivered 
  assert.equal(db.raw.prepare(`SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='REMOVE'`).get().state,'SENT');
 });
 
+test('removal without a previously delivered exact wave is finalized without network retry',async t=>{
+ const db=new DB();t.after(()=>db.close());
+ db.raw.prepare(`INSERT INTO v3_user_lifecycle_shadow VALUES(?,?,?,?,?,?,?,?,?,1)`).run('AAVE-USDT','SHORT','W-NEVER-SENT','v3','IDEA_REMOVED','DATA_UNUSABLE',NOW-1000,null,NOW-1000);
+ db.raw.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,created_ts,updated_ts,shadow_only) VALUES('D-NEVER-SENT','NEVER-SENT','AAVE-USDT','SHORT','W-NEVER-SENT','IDEA_REMOVED','v3','PENDING',?,?,1)`).run(NOW-1000,NOW-1000);
+ const result=await reconciler.reconcilePendingPublications(db,{now_ts:NOW,source_run_id:'RUN-REMOVE'});
+ assert.equal(result.results[0].status,'REMOVAL_WITHOUT_PRIOR_DELIVERY',JSON.stringify(result));
+ const row=db.raw.prepare(`SELECT state,last_error FROM v3_telegram_dispatch_shadow WHERE idempotency_key='NEVER-SENT'`).get();
+ assert.equal(row.state,'FAILED_FINAL');assert.equal(row.last_error,'REMOVAL_WITHOUT_PRIOR_DELIVERY');
+});
+
 test('two equally recent canonical publications fail closed instead of guessing',async t=>{
  const db=new DB();t.after(()=>db.close());
  const a=canonical({run:'RUN-A',snapshot:'SNAP-A',observed:NOW-5000});

@@ -1,7 +1,7 @@
 import {finalizePublication,bindDispatchToPublication,loadBoundTelegram,renderCanonicalTelegram,renderCanonicalManual} from './canonical-publication.mjs';
 import {enqueueRecheck} from './recheck-scheduler.mjs';
 
-export const PUBLICATION_RECONCILER_VERSION='post-v7-publication-reconciler-v4-prior-visible-removal-20260928';
+export const PUBLICATION_RECONCILER_VERSION='post-v7-publication-reconciler-v5-finalize-invisible-removal-20260928';
 export const PUBLICATION_BINDING_GRACE_MS=10*60_000;
 const text=v=>v==null?'':String(v).trim();
 const upper=v=>text(v).toUpperCase();
@@ -87,6 +87,7 @@ async function exactPublicationForDispatch(db,row,{executor_run_id=null,now_ts=D
  if(!candidates.length&&!isEntry&&upper(row.lifecycle_event)==='IDEA_REMOVED'){
   const priorVisible=await db.prepare(`SELECT p.publication_id,p.canonical_json,p.presentation_inputs_json,p.decision_id,p.actionability_status,p.run_id,p.snapshot_id,p.observed_ts,p.created_ts,p.wave_id FROM v3_telegram_dispatch_shadow d JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key JOIN canonical_publication_shadow p ON p.publication_id=b.publication_id WHERE d.contract=?1 AND d.direction=?2 AND d.wave_id=?3 AND d.rules_version=?4 AND d.lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.updated_ts<?5 AND p.contract_code=?1 AND p.direction=?2 AND p.wave_id=?3 ORDER BY d.updated_ts DESC,d.sent_ts DESC,d.idempotency_key ASC LIMIT 1`).bind(row.contract,upper(row.direction),row.wave_id,row.rules_version,Number(row.updated_ts||dispatchTs)).first();
   if(priorVisible)candidates=[priorVisible];
+  else return {status:'REMOVAL_WITHOUT_PRIOR_DELIVERY',life,matches:0,executor_run_id:text(executor_run_id)||null};
  }
  if(!candidates.length){
   const age=Math.max(0,now-dispatchTs);
@@ -113,7 +114,7 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
   const exact=await exactPublicationForDispatch(db,row,{executor_run_id:source_run_id,now_ts:now});
   if(exact.status!=='CLOSED'){
    if(exact.status==='EXPIRED_NOT_SENT')await mark(db,row.idempotency_key,'EXPIRED_NOT_SENT',exact.status,now);
-   else if(['LIFECYCLE_SUPERSEDED','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT','AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
+   else if(['LIFECYCLE_SUPERSEDED','REMOVAL_WITHOUT_PRIOR_DELIVERY','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT','AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
    out.push({key:row.idempotency_key,status:exact.status,matches:exact.matches??null,dispatch_age_ms:exact.dispatch_age_ms??null});
    continue;
   }
