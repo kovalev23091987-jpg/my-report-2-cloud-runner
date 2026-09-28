@@ -7,7 +7,8 @@ const here=path.dirname(new URL(import.meta.url).pathname);
 const db=new RemoteD1Database(required('REPORT2_D1_BRIDGE_URL'),required('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:45_000});
 for(const file of ['004_market_snapshot_batch.sql','009_public_collector_runtime.sql']){
   const sql=fs.readFileSync(path.resolve(here,'../../current-generation/migrations',file),'utf8');
-  await db.exec(sql);
+  const statements=sql.split(';').map(value=>value.trim()).filter(Boolean);
+  for(const statement of statements)await db.prepare(statement).run();
 }
 const result=await db.prepare(`SELECT name FROM sqlite_master WHERE type IN ('table','index') AND name IN (
   'report2_market_snapshot_batch_v1','idx_report2_market_snapshot_batch_v1_range',
