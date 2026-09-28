@@ -3,7 +3,7 @@ const here=path.dirname(fileURLToPath(import.meta.url));const runtime=path.resol
 const capability=path.join(src,'capability-registry.mjs'),early=path.join(src,'early-candidate-bridge.mjs'),canonical=path.join(src,'canonical-runtime-adapter.mjs');
 const routerSource=path.join(here,'src/preselection-metric-router.mjs'),routerTarget=path.join(src,'preselection-metric-router.mjs');
 const BEFORE_CAPABILITY='fd1f24dde8dc7d716859be443dc483ca960203e82e9e8d78d435ed5facb9c3f4';
-const BEFORE_EARLY='ec0fb287a5d83faeefbd179246a66a0bec673fc52067664f5522c5dda223d2b8';
+const BEFORE_EARLY='1592454f6037b2e77cd49856e93f583715bad9e1083f3e74e72ebab6c5e60844';
 const BEFORE_CANONICAL='d8fc61a37d829af382ab6e52eb73f3494aac791bbcd2ef1ba459482ce6e0f016';
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
 for(const p of [capability,early,canonical,routerSource])if(!fs.existsSync(p))throw new Error(`PRESELECTION_REQUIRED_FILE_MISSING:${p}`);
