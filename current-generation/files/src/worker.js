@@ -15965,6 +15965,7 @@ async function buildDeepCheckInput(params, env) {
   try{
     if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
   try{
     if(crossExchangeFamilyTurn&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
       contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),

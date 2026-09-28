@@ -42,4 +42,6 @@ test('K16 HTX risk: authoritative runner and worker consume the live candidate e
  assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=params=>collectHtxPublicRiskEvidence/);
  assert.match(worker,/await env\.REPORT2_EVIDENCE_V2_COLLECT/);
  assert.match(worker,/evidence_v2:candidateEvidenceV2\?\.evidence\?\.length\?candidateEvidenceV2/);
+ assert.match(worker,/EVIDENCE_V2_CANDIDATE_RECEIPT/);
+ assert.doesNotMatch(worker,/EVIDENCE_V2_CANDIDATE_RECEIPT[^\n]+payload_json/);
 });
