@@ -37,7 +37,7 @@ test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  assert.ok(y.includes('- cron: "*/20 * * * *"'));
  assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"80"/);
- assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"/);
+ assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V9_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
  assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"SHADOW_ONLY"/);
@@ -73,9 +73,9 @@ test('current overlay accepts only the clean base and the pinned deployed predec
  assert.match(overlay,/c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97/);
  assert.match(overlay,/expectedInputs\.has\(sha\(input\)\)/);
 });
-test('runtime diagnostic version is V7',()=>{
+test('runtime diagnostic version is V9',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
- assert.match(runner,/my-report-2-current-generation-v8-canonical-runtime-20260928/);
+ assert.match(runner,/my-report-2-current-generation-v9-canonical-runtime-20260928/);
 });
 test('workflow worker pin equals the effective V7 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));

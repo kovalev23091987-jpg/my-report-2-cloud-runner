@@ -66,6 +66,7 @@ if(sourceRuntime){
  run(['--input-type=module','--eval',"await import('./src/manual-report-formatter.mjs'); await import('./src/telegram-compact-formatter.mjs');"],{cwd:runtime});
  run([path.join(here,'tests/approved-entry-path.runtime.mjs'),runtime]);
  run([path.join(here,'tests/approved-entry-performance.runtime.mjs'),runtime]);
+ run([path.join(here,'tests/early-observation-state.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
 console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));

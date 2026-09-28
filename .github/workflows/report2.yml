@@ -102,7 +102,7 @@ jobs:
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}
       REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V9_20M"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -161,7 +161,7 @@ jobs:
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V9_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"

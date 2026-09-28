@@ -16,7 +16,7 @@ import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '.
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v9-user-strategy-20260927';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v10-early-observation-route-20260928';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -107,6 +107,14 @@ function normalizedDirection(route,discovery){
  for(const value of values){const d=text(value).toUpperCase().replace(/_(?:WATCH|CANDIDATE|BIAS)$/,'');if(['LONG','SHORT'].includes(d))return d;}
  return null;
 }
+export function selectCanonicalPublicationState({route_state,route_hard_veto=false,early_candidate=false,early_quality=null,direction=null}={}){
+ const routed=validState(route_state)?text(route_state):null;
+ if(routed&&routed!=='REJECTED')return routed;
+ const quality=finite(early_quality),dir=text(direction).toUpperCase();
+ const hardVeto=route_hard_veto===true||route_hard_veto===1||text(route_hard_veto)==='1';
+ if(early_candidate===true&&quality!==null&&quality>=70&&['LONG','SHORT'].includes(dir)&&!hardVeto)return 'OBSERVE';
+ return 'REJECTED';
+}
 function observationPlan({publication,route,direction,price,opportunity,observedTs,pump,discovery}={}){
  const scenario=publication?.scenario_plan;
  if(scenario?.entry_area_min_price!=null&&scenario?.entry_area_max_price!=null)return null;
@@ -143,8 +151,8 @@ export function buildRuntimeCanonicalBundle({
  const route=publication_shadow?.entry_signal||null;
  const early=discovery_row?.early_candidate_bridge===true;
  const earlyQuality=finite(discovery_row?.early_candidate_quality_0_100);
- const state=validState(route?.state)?route.state:(early&&earlyQuality!==null&&earlyQuality>=70?'OBSERVE':'REJECTED');
  const direction=normalizedDirection(route,discovery_row);
+ const state=selectCanonicalPublicationState({route_state:route?.state,route_hard_veto:route?.hard_veto,early_candidate:early,early_quality:earlyQuality,direction});
  const price=currentPrice({publication:publication_shadow,liquidations:liquidation_intelligence,futures:futures_component,discovery:discovery_row});
  const liqPriority=liquidationMapPriority({
   contract,
@@ -217,4 +225,4 @@ export function buildRuntimeCanonicalBundle({
  const surface_contract=buildOutputSurfaceContract({canonical,telegram,manual});
  return {version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,parity_fingerprint:canonical?.analytical_fingerprint??null};
 }
-export default{CANONICAL_RUNTIME_ADAPTER_VERSION,buildRuntimeCanonicalBundle};
+export default{CANONICAL_RUNTIME_ADAPTER_VERSION,selectCanonicalPublicationState,buildRuntimeCanonicalBundle};
