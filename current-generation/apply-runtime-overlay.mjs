@@ -6,7 +6,7 @@ import {applyRuntimePolicyPatches} from './runtime-policy-patches.mjs';
 const here=path.dirname(fileURLToPath(import.meta.url));
 const runtime=path.resolve(process.argv[2]||'runtime');
 const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex');
-const expectedInput='940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2';
+const expectedInput='c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97';
 const input=path.join(runtime,'src/worker.js');
 if(!fs.existsSync(input)||sha(input)!==expectedInput)throw Error('CURRENT_GENERATION_INPUT_RUNTIME_MISMATCH');
 const files=[

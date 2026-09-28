@@ -36,3 +36,7 @@ test('runtime overlay carries the complete formatter dependency set',()=>{
   assert.match(overlay,new RegExp(`['\"]${rel.replaceAll('/','\\/')}['\"]`));
  }
 });
+test('authoritative workflow applies the current generation after the legacy reconstruction and before hashing',()=>{
+ const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),legacy=y.indexOf('post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .'),current=y.indexOf('current-generation/apply-runtime-overlay.mjs runtime'),hash=y.indexOf('ACTUAL="$(sha256sum src/worker.js');
+ assert.ok(legacy>=0&&current>legacy&&hash>current);
+});

@@ -176,6 +176,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
+          node current-generation/apply-runtime-overlay.mjs runtime
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"

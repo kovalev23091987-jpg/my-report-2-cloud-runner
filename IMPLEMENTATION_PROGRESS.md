@@ -26,7 +26,7 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | T15 | IN_PROGRESS | K15 frame: exact 13,330/12,090 BYK proof, atomic provider-attempt ledger, conservative timeout accounting, 164 HTTP lane cap and 3.5m/70k D1 plan pass. The generation manifest and validator now use the same exact totals. Three measured full runs and complete consumer wiring remain. |
 | T16 | CORE_CONSUMER_AND_ADAPTER_CONTRACTS_COMPLETE_SMOKE_PENDING | EvidenceV2 routes N01–N17 through the same bounded canonical manual/Telegram path. Selected free-source adapters have fixed caps, identity/auth/cost/finality gates and fixture tests; provisional chain facts cannot contribute. Supplemental budget is exactly 32/30/20/18; risk can only reduce suitability. Authorized live smoke receipts remain. |
 | T17 | FRAME_COMPLETED_LOCAL | Terminal lifecycle, healthy-no-idea distinction, 45m/15m/12m watchdog rules and 500/2,000 KV admission pass 4/4. Live KV binding and Hub/GitHub cross-watch remain deployment blockers. |
-| T18 | PARTIAL_BLOCKED | Release manifest, fix/block/source matrices, output/budget/delivery proofs, natural-acceptance conditions and rollback document exist. Deployment/natural acceptance remains blocked by exact Hub access, live adapter smoke receipts and measured/natural runs. |
+| T18 | PARTIAL_BLOCKED | Release manifest, fix/block/source matrices, output/budget/delivery proofs, natural-acceptance conditions and rollback document exist. The overlay is now wired into the sole workflow and passes validation when assembled over the captured authoritative runtime. Deployment/natural acceptance remains blocked by exact Hub access, live adapter smoke receipts and measured/natural runs. |
 
 ## Audit findings
 
