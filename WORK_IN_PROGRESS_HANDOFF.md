@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 07:23 UTC
+Updated: 2026-09-28 07:33 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -67,6 +67,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Cloudflare authorization is now working through the GitHub secret without exposing its value. Read-only run `36390110554` captured the exact live `my-report-2-hub` module, stable module SHA-256 `10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af`, all seven binding names/types, and zero cron triggers. The live Hub therefore does not run the old scheduled analytics in parallel with GitHub and does not consume periodic analysis limits. Its D1, Telegram and source-proxy bindings are present. Raw code/settings were uploaded only as a one-day certificate-encrypted artifact; the committed proof contains no account identifiers or secret values. No report cycle, Telegram network request or Cloudflare mutation occurred.
 - Pull request 6 was merged to production `main` as `902f4d2c4cbf89d38528501cfd537121b3cc4f66`. The production schedule was paused during cutover. Telegram-disabled production acceptance run `36390942493` then closed 359/359 scanning, persistence, D1 burst gates and durable command completion with zero unknown operations and zero Telegram sends.
 - After acceptance, the schedule was re-enabled. Natural-path run `36391188150` closed another 359/359 cycle with the canonical bound Telegram sender and reconciliation enabled. No test message was requested or sent. XPL-USDT SHORT remained OBSERVE at score 64, so there was no final decision and the correct delivery count was zero. This proves the delivery path is armed, not that a natural signal was fabricated.
+- GitHub retained 31 deleted historical validation workflows as manually runnable metadata. All 31 were explicitly changed to `disabled_manually`. The only active workflows are the canonical V5 runner `.github/workflows/report2.yml` and the monthly schedule keepalive `.github/workflows/keepalive.yml`; no legacy report or Telegram workflow remains runnable.
 
 ## Verified blockers
 
