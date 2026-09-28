@@ -343,7 +343,7 @@ jobs:
           node cloudflare/public-collector/patch-worker.mjs cloudflare/public-collector/dist
           node --check cloudflare/public-collector/dist/worker.js
           REPORT2_HUB_MODULE_PATH=cloudflare/public-collector/dist/worker.js node --test cloudflare/public-collector/public-collector.test.mjs
-      - name: Apply additive public-collector schema
+      - name: Apply collector and exact-ACK contract schema
         run: node cloudflare/public-collector/apply-schema.mjs
       - name: Deploy exact bounded collector over legacy Hub schedule
         run: npx --yes wrangler@4 deploy --config cloudflare/public-collector/dist/wrangler.json --keep-vars
