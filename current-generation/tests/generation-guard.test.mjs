@@ -52,3 +52,8 @@ test('current overlay accepts only the clean base and the pinned deployed predec
  assert.match(overlay,/c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97/);
  assert.match(overlay,/expectedInputs\.has\(sha\(input\)\)/);
 });
+test('runtime diagnostic version cannot retain the prior V4 label',()=>{
+ const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(runner,/my-report-2-current-generation-v5-internal-audit-fixes-20260928/);
+ assert.doesNotMatch(runner,/RUNNER_VERSION\s*=\s*["']my-report-2-current-generation-v4/);
+});

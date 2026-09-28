@@ -37,7 +37,7 @@ import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 import {claimCommand,claimNextCommand,completeCommand} from './src/durable-command-queue.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
+const RUNNER_VERSION = "my-report-2-current-generation-v5-internal-audit-fixes-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
