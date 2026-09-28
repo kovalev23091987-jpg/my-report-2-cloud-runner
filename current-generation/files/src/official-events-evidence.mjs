@@ -1,0 +1,44 @@
+import crypto from 'node:crypto';
+import {normalizeOfficialEvent,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
+import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+
+export const OFFICIAL_EVENTS_EVIDENCE_VERSION='official-events-evidence-v1-20260928';
+const SOURCE='OFFICIAL_EVENTS',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap,MAX_BYTES=512*1024;
+const text=value=>String(value??'').trim(),digest=value=>crypto.createHash('sha256').update(String(value)).digest('hex');
+const decode=value=>text(value).replace(/^<!\[CDATA\[|\]\]>$/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
+const tag=(body,name)=>decode(body.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${name}>`,'i'))?.[1]||'');
+const stamp=value=>{const n=Date.parse(text(value));return Number.isFinite(n)?n:null;};
+const hostOf=value=>{try{const url=new URL(value);return url.protocol==='https:'?url.hostname.toLowerCase():null;}catch{return null;}};
+const hostAllowed=(host,domains)=>Boolean(host&&domains.some(domain=>host===domain||host.endsWith(`.${domain}`)));
+const exactUrl=(value,domains)=>{try{const url=new URL(decode(value));return url.protocol==='https:'&&hostAllowed(url.hostname.toLowerCase(),domains)?url.href:null;}catch{return null;}};
+const atomLink=body=>decode(body.match(/<link\b[^>]*\bhref=["']([^"']+)["'][^>]*>/i)?.[1]||'');
+const unfoldIcs=body=>text(body).replace(/\r\n[ \t]/g,'').replace(/\n[ \t]/g,'');
+const icsDate=value=>{const raw=text(value);if(/^\d{8}T\d{6}Z$/.test(raw))return Date.UTC(+raw.slice(0,4),+raw.slice(4,6)-1,+raw.slice(6,8),+raw.slice(9,11),+raw.slice(11,13),+raw.slice(13,15));if(/^\d{8}$/.test(raw))return Date.UTC(+raw.slice(0,4),+raw.slice(4,6)-1,+raw.slice(6,8));return stamp(raw);};
+
+export function parseOfficialFeed({body,content_type='',feed_url,official_domains=[],now=Date.now()}={}){
+ const domains=(official_domains||[]).map(x=>text(x).toLowerCase()).filter(Boolean),feed=exactUrl(feed_url,domains);if(!feed)return{status:'EXACT_OFFICIAL_FEED_REQUIRED',events:[]};
+ const raw=text(body);if(!raw||Buffer.byteLength(raw)>MAX_BYTES)return{status:raw?'RESPONSE_TOO_LARGE':'EMPTY',events:[]};const events=[];
+ if(/text\/calendar|BEGIN:VCALENDAR/i.test(`${content_type}\n${raw.slice(0,200)}`)){
+  for(const block of unfoldIcs(raw).match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/gi)||[]){const read=name=>decode(block.match(new RegExp(`(?:^|\\n)${name}(?:;[^:]*)?:([^\\n\\r]*)`,'i'))?.[1]||''),start=icsDate(read('DTSTART')),end=icsDate(read('DTEND')),updated=icsDate(read('LAST-MODIFIED'))||icsDate(read('DTSTAMP'))||start,url=exactUrl(read('URL'),domains)||feed,uid=read('UID')||digest(`${url}|${start}|${read('SUMMARY')}`);if(start===null||start<now-24*60*60_000||start>now+90*24*60*60_000)continue;events.push({event_id:uid,title:read('SUMMARY').slice(0,240),source_ts:Math.min(now,updated||start),effective_at:start,effective_to:end,official_url:url,format:'ICS'});}
+ }else{
+  const rows=[...(raw.match(/<item\b[\s\S]*?<\/item>/gi)||[]),...(raw.match(/<entry\b[\s\S]*?<\/entry>/gi)||[])];
+  for(const row of rows){const published=stamp(tag(row,'pubDate')||tag(row,'published')||tag(row,'updated')),url=exactUrl(tag(row,'link')||atomLink(row),domains),title=tag(row,'title').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();if(published===null||!url||published<now-7*24*60*60_000||published>now+24*60*60_000)continue;events.push({event_id:tag(row,'guid')||tag(row,'id')||digest(`${url}|${published}|${title}`),title:title.slice(0,240),source_ts:Math.min(now,published),effective_at:published,effective_to:null,official_url:url,format:/<entry\b/i.test(row)?'ATOM':'RSS'});}
+ }
+ const unique=[...new Map(events.map(row=>[row.event_id,row])).values()].sort((a,b)=>b.effective_at-a.effective_at).slice(0,16);return{status:unique.length?'CLOSED':'EMPTY_OR_STALE',events:unique};
+}
+
+export function normalizeOfficialFeed({contract,asset_identity,asset_metadata,feed_url,body,content_type,observed_ts=Date.now()}={}){
+ const htxContract=text(contract).toUpperCase(),domains=Array.isArray(asset_metadata?.official_domains)?asset_metadata.official_domains.map(x=>text(x).toLowerCase()):[],parsed=parseOfficialFeed({body,content_type,feed_url,official_domains:domains,now:observed_ts});if(parsed.status==='EXACT_OFFICIAL_FEED_REQUIRED')return{status:parsed.status,evidence:[],events:[],internal_only:true};
+ const assetId=asset_identity?.chain&&asset_identity?.contract_or_mint?`${text(asset_identity.chain).toLowerCase()}:${text(asset_identity.contract_or_mint)}`:`htx-futures:${htxContract}`,evidence=parsed.events.map(row=>{const event=normalizeOfficialEvent({asset_id:assetId,htx_contract:htxContract,event_id:row.event_id,event_type:'OFFICIAL_ANNOUNCEMENT',effective_at:row.effective_at,source_ts:row.source_ts,observed_ts,official_url:row.official_url,confirmed:true});Object.assign(event,{event_title:row.title,event_format:row.format,effective_to:row.effective_to,source_policy:'EXACT_MANUAL_OFFICIAL_FEED_ONLY',direction_policy:'CONTEXT_ONLY_NO_KEYWORD_SENTIMENT'});return event;});return{status:parsed.status,contract:htxContract,evidence,events:parsed.events,internal_only:true};
+}
+
+async function fetchText(fetchImpl,url){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const response=await fetchImpl(url,{headers:{accept:'application/rss+xml, application/atom+xml, text/calendar, application/xml, text/xml;q=0.9','user-agent':'My-Report-2/official-events-v1'},signal:controller.signal}),body=await response.text().catch(()=>''),finalUrl=text(response.url)||url;return{ok:response.ok,http_status:response.status,body,content_type:text(response.headers?.get?.('content-type')),final_url:finalUrl,error:response.ok?null:`HTTP_${response.status}`};}catch(error){return{ok:false,http_status:null,body:'',content_type:'',final_url:url,error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160)};}finally{clearTimeout(timer);}}
+
+export async function collectOfficialEventsEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now()}={}){
+ if(!db)throw new Error('OFFICIAL_EVENTS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),domains=Array.isArray(asset_metadata?.official_domains)?asset_metadata.official_domains.map(x=>text(x).toLowerCase()):[],feeds=(Array.isArray(asset_metadata?.official_feeds)?asset_metadata.official_feeds:[]).filter(url=>exactUrl(url,domains));if(!/^[^\s-]+-USDT$/u.test(htxContract)||!feeds.length)return{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,internal_only:true};
+ await installEvidenceSourceStore(db);const selected=feeds[parseInt(digest(`${run_id}:${htxContract}`).slice(0,8),16)%feeds.length],assetKey=`FEED:${digest(selected)}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,now});if(cached)return{...cached,contract:htxContract};
+ const reservationId=`EV2:${SOURCE}:${run_id}:${assetKey}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:1}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:1,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
+ const raw=await fetchText(fetch_impl,selected),redirectHost=hostOf(raw.final_url),redirectAllowed=hostAllowed(redirectHost,domains),normalized=raw.ok&&redirectAllowed?normalizeOfficialFeed({contract:htxContract,asset_identity,asset_metadata,feed_url:selected,body:raw.body,content_type:raw.content_type,observed_ts:now}):{status:raw.ok?'OFFICIAL_DOMAIN_REDIRECT_MISMATCH':'SOURCE_ERROR',contract:htxContract,evidence:[],events:[],internal_only:true},result={version:OFFICIAL_EVENTS_EVIDENCE_VERSION,...normalized,network_calls:1,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:[{route:'EXACT_OFFICIAL_FEED',status:raw.ok&&redirectAllowed?'CLOSED':'SOURCE_ERROR',http_status:raw.http_status,error:redirectAllowed?raw.error:'OFFICIAL_DOMAIN_REDIRECT_MISMATCH'}],internal_only:true};if(raw.ok&&redirectAllowed)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,observed_ts:now,expires_ts:now+TTL,payload:result});return result;
+}
+
+export default{parseOfficialFeed,normalizeOfficialFeed,collectOfficialEventsEvidence};
