@@ -37,26 +37,35 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   const score=new Map(weighted.profile.map(row=>[row.source_id,row.selection_weight]));
   const first=weighted.lane||lanes[0],ordered=[first,...lanes.filter(lane=>lane!==first).sort((a,b)=>(score.get(b)||0)-(score.get(a)||0))];
   const deadline=Number(params.deep_started_ts)+Math.min(45000,Number(params.max_deep_ms)||45000);
-  const observe=async(lane,result,status,attempt)=>{const usable=Boolean(result);let health=null;try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,fallback:attempt>1,selection_profile:weighted.profile,health_update:health});return result;};
+  const observe=async(lane,result,status,attempt,evaluated=true)=>{const usable=Boolean(result);let health={recorded:false,reason:'NOT_EVALUATED'};if(evaluated)try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,fallback:attempt>1,selection_profile:weighted.profile,health_update:health});return result;};
   async function attemptLane(lane,attempt){
-   if(clock()>=deadline)return observe(lane,null,'SOURCE_PHASE_DEADLINE_REACHED',attempt);
-   if(lane==='HYPERLIQUID_NATIVE'){const result=await primary.collect(params);return observe(lane,result,result?'ACQUISITION_RETURNED':'NOT_CLOSED',attempt);}
+   if(clock()>=deadline)return observe(lane,null,'SOURCE_PHASE_DEADLINE_REACHED',attempt,false);
+   if(lane==='HYPERLIQUID_NATIVE'){const result=await primary.collect(params),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt);}
    if(lane==='OXARCHIVE_HL_BUCKETS'){
     const result=await oxarchive_collect(params),last=oxarchive_collect.summary?.()?.history?.at?.(-1),status=result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED';
     return observe(lane,result,status,attempt);
    }
    const provider=lane==='GTRADE_NATIVE'?'GTRADE':lane==='LIGHTER_NATIVE'?'LIGHTER':'GMX',cost=lane==='GTRADE_NATIVE'?3:4;
    const grant=await budget.admit({reservation_id:`LIQ_${lane}:${params.run_id}:${params.contract}`,contract:params.contract,run_id:params.run_id,requests:{[provider]:cost},weights:{[provider]:cost},max_requests:cost,deadline_ts:deadline});
-   if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt);
+   if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt,false);
    const acquisitionId=`${lane}:${params.run_id}:${params.contract}`;
    const result=lane==='GTRADE_NATIVE'?await secondary({...params,acquisition_id:acquisitionId,deadline_ts:deadline}):lane==='LIGHTER_NATIVE'?await lighter({...params,acquisition_id:acquisitionId,market_id:id.lighter_market_id,deadline_ts:deadline}):await gmx({...params,acquisition_id:acquisitionId,market_address:id.gmx_market_address,deadline_ts:deadline});
    const acquisition=result?.acquisition?createMultiLiquidationAcquisition({contract:params.contract,run_id:params.run_id,...(lane==='GTRADE_NATIVE'?{gtrade:result.acquisition}:{scoped:[result.acquisition]})}):null;
    return observe(lane,acquisition,result?.status??'NOT_CLOSED',attempt);
   }
-  for(let i=0;i<ordered.length;i++){const result=await attemptLane(ordered[i],i+1);if(result)return result;}
-  return null;
+  const collected=[];
+  for(let i=0;i<ordered.length;i++){const result=await attemptLane(ordered[i],i+1);if(result)collected.push(result);}
+  if(!collected.length)return null;if(collected.length===1)return collected[0];
+  let hyperliquid=null,gtrade=null;const scoped=[],seen=new Set();
+  for(const raw of collected){
+   if(raw?.schema==='NATIVE_LIQUIDATION_ACQUISITION_V1'){hyperliquid??=raw;continue;}
+   if(raw?.schema!=='MULTI_LIQUIDATION_ACQUISITION_V1')continue;
+   hyperliquid??=raw.hyperliquid??null;gtrade??=raw.gtrade??null;
+   for(const item of Array.isArray(raw.scoped)?raw.scoped:[]){const key=item?.acquisition_fingerprint||item?.acquisition_id;if(scoped.length>=2||!key||seen.has(key))continue;seen.add(key);scoped.push(item);}
+  }
+  return createMultiLiquidationAcquisition({contract:params.contract,run_id:params.run_id,hyperliquid,gtrade,scoped});
  }
  return {collect,summary:()=>({mode:'SHADOW_ONLY',state:'DYNAMIC_REPRESENTATIVE_PANEL_DECISION_INPUT',same_admission_and_transport_for_all_sources:true,
   gtrade_sdk:{required_version:PINNED_GTRADE_SDK_VERSION,status:sdkStatus},primary:primary.summary(),secondary:combined.summary(),shared_budget:budget.summary(),
-  routed,rotating_lanes:['HYPERLIQUID_NATIVE','GTRADE_NATIVE_WHEN_CONFIGURED','LIGHTER_NATIVE_WHEN_EXACT','GMX_NATIVE_WHEN_EXACT','OXARCHIVE_HL_BUCKETS_WHEN_KEY'],fallback_policy:'WEIGHTED_FIRST_THEN_ELIGIBLE_SOURCES_WITHIN_EXISTING_DEADLINE_AND_BUDGET',source_weighting:{mode:'PERSISTENT_EWMA_AVAILABILITY_WITH_EXPLORATION_FLOOR',core_decision_weights_changed:false,profile:lastWeightProfile},oxarchive:typeof oxarchive_collect==='function'?oxarchive_collect.summary?.()||{enabled:true}:{enabled:false},output_mode:'CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION',production_enabled:true,automatic_execution:false})};
+  routed,rotating_lanes:['HYPERLIQUID_NATIVE','GTRADE_NATIVE_WHEN_CONFIGURED','LIGHTER_NATIVE_WHEN_EXACT','GMX_NATIVE_WHEN_EXACT','OXARCHIVE_HL_BUCKETS_WHEN_KEY'],fallback_policy:'WEIGHTED_FIRST_THEN_COLLECT_ALL_ELIGIBLE_WITHIN_EXISTING_DEADLINE_AND_BUDGET',cross_source_confirmation:true,notional_summed_across_providers:false,source_overlap_is_not_an_independent_vote:true,source_weighting:{mode:'PERSISTENT_EWMA_AVAILABILITY_WITH_EXPLORATION_FLOOR',core_decision_weights_changed:false,profile:lastWeightProfile},oxarchive:typeof oxarchive_collect==='function'?oxarchive_collect.summary?.()||{enabled:true}:{enabled:false},output_mode:'CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION',production_enabled:true,automatic_execution:false})};
 }
