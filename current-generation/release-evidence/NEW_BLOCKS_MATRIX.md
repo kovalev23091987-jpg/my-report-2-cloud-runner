@@ -8,7 +8,7 @@
 | N04 Transfers | transfer investigation | CHAIN RPC plus key-gated Blockscout exact-token runtime wired | BLOCKSCOUT WAITING_FREE_KEY/SMOKE; indexed rows remain provisional until primary finality check |
 | N05 Exchange flows | market-flow confirmation | VALIDATED | WAITING_VERIFIED_LABELS |
 | N06 Social activity | early-interest priority | RUNTIME_WIRED_EXACT_ADDRESS_BLUESKY, direction-neutral | ACCESS_BLOCKED_403 run 36371075809; global backoff active, then 7D/30 windows required |
-| N07 Official news | official-event risk | EXACT_DOMAIN_RSS_ATOM_ICS_RUNTIME_WIRED; versioned exact identity/domain registry active; unsupported HTML explicitly disabled; GDELT discovery cannot score | LINK/LDO registry inputs closed; GDELT HTTP 429 backoff active; fixed-feed adapter awaits a proved RSS/Atom/ICS URL |
+| N07 Official news | official-event risk | EXACT_DOMAIN_RSS_ATOM_ICS_RUNTIME_WIRED; versioned exact identity/domain registry active; unsupported HTML explicitly disabled; GDELT discovery cannot score | LDO exact RSS live transport closed in run 36374604763; LINK/LDO registry inputs closed; GDELT HTTP 429 backoff active |
 | N08 Listing/delisting | execution gate | VALIDATED, live HTX state path wired | HTX transport smoke closed; no adverse N08 event occurred naturally |
 | N09 Margin/risk limits | execution eligibility | VALIDATED, live HTX isolated/cross ladders wired | LIVE_SMOKE_CLOSED run 36365551502, NEAR-USDT, all three routes HTTP 200 |
 | N10 Stop scenario | target/path invalidation | VALIDATED, score cap 0 | existing technical engine |
