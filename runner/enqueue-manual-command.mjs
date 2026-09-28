@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import {RemoteD1Database} from './report2-d1-adapter.mjs';
+import {parseLiquidationCommand} from '../current-generation/files/src/liquidation-command-router.mjs';
+import {commandId,enqueueCommand} from '../current-generation/files/src/durable-command-queue.mjs';
+const value=name=>String(process.env[name]||'').trim();
+const now=Date.now(),raw=value('REPORT2_MANUAL_COMMAND'),coin=value('REPORT2_MANUAL_COIN_CONTRACT').toUpperCase(),intent=parseLiquidationCommand(raw);
+let mode='FULL_MANUAL',contract=coin||null;if(intent.matched){mode='LIQUIDATION_ONLY';contract=intent.contract||contract;}else if(contract)mode='MANUAL_COIN';
+const id=commandId({request_channel:'GITHUB_WORKFLOW_DISPATCH',received_at:now,mode,contract,request_nonce:value('GITHUB_RUN_ID')+':'+value('GITHUB_RUN_ATTEMPT')});
+const db=new RemoteD1Database(value('REPORT2_D1_BRIDGE_URL'),value('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:30000});
+await enqueueCommand(db,{command_id:id,mode,contract,request_channel:'GITHUB_WORKFLOW_DISPATCH',received_at:now,deadline:now+30*60_000,generation:value('REPORT2_CURRENT_GENERATION')});
+if(value('GITHUB_OUTPUT'))fs.appendFileSync(value('GITHUB_OUTPUT'),`command_id=${id}\n`);
+console.log('REPORT2_COMMAND_QUEUED',JSON.stringify({command_id:id,mode,contract,generation:value('REPORT2_CURRENT_GENERATION')}));

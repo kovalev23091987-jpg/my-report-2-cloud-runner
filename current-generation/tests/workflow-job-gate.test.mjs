@@ -7,10 +7,11 @@ const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url)
 
 test('K02: disabled execution gates the whole working job before checkout/decrypt',()=>{
   assert.match(workflow,/execution-gate:[\s\S]*outputs:[\s\S]*admitted:/);
-  assert.match(workflow,/run-report2:[\s\S]*needs: execution-gate[\s\S]*if:.*admitted == 'true'/);
+  assert.match(workflow,/run-report2:[\s\S]*needs: \[execution-gate, enqueue-manual-command\][\s\S]*if:.*admitted == 'true'/);
   assert.doesNotMatch(workflow,/name: Disabled schedule gate/);
-  const jobGate=workflow.indexOf('if: ${{ needs.execution-gate.outputs.admitted');
-  assert.ok(jobGate>=0&&jobGate<workflow.indexOf('uses: actions\/checkout@v4'));
+  const runJob=workflow.slice(workflow.indexOf('  run-report2:'));
+  const jobGate=runJob.indexOf("needs.execution-gate.outputs.admitted == 'true'");
+  assert.ok(jobGate>=0&&jobGate<runJob.indexOf('uses: actions/checkout@v4'));
 });
 
 test('K02: runtime preflight precedes decrypt and runner preflight precedes worker/network setup',()=>{

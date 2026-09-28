@@ -54,10 +54,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: my-report-2-production-cycle
-  cancel-in-progress: false
-
 jobs:
   execution-gate:
     runs-on: ubuntu-latest
@@ -85,11 +81,34 @@ jobs:
           echo "admitted=$admitted" >> "$GITHUB_OUTPUT"
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
+  enqueue-manual-command:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' }}
+    runs-on: ubuntu-latest
+    outputs:
+      command_id: ${{ steps.enqueue.outputs.command_id }}
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
+      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Durably enqueue command before analytics concurrency
+        id: enqueue
+        run: node runner/enqueue-manual-command.mjs
+
   run-report2:
-    needs: execution-gate
-    if: ${{ needs.execution-gate.outputs.admitted == 'true' }}
+    needs: [execution-gate, enqueue-manual-command]
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && (github.event_name == 'schedule' || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: my-report-2-production-cycle
+      cancel-in-progress: false
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       ANALYTICS_ENABLED: "1"
@@ -128,6 +147,7 @@ jobs:
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
+      REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
       REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"

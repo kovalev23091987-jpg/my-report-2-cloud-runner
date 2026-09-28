@@ -27,6 +27,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - T15 budget frame now proves the exact 13,330 monthly BYK worst case and 12,090 scheduled-plus-burst cost, keeps liquidation-only at zero BYK inside the five manual-coin admissions, uses atomic attempt-number reservations, never refunds an uncertain timeout, and enforces one 164-request total across hot/background/statistics lanes. T17 frame distinguishes terminal failure/degraded/healthy-no-idea and implements bounded independent heartbeat/watchdog logic. Focused Stage A/B suite passes 37/37.
 - Stage C core contracts are now present. T03 packs all HTX contracts into immutable bounded shards and refuses fake 5m/15m history; T04 separates discovery direction from final ENTRY and requires a typed HTX price; T05 keys work by wave and reports capacity loss explicitly; T07 requires exact chain/address/instrument identity, correct OKX units, truthful timestamps and cache-before-fetch. The focused cumulative suite passes 59/59; runtime wiring and live-limit measurements are not yet claimed complete.
 - Stage D core work is added. The signed source hash is fixed and every 2–5-way source branch is statistically reachable; Hyperliquid, gTrade, Lighter, GMX and 0xArchive now have separate source identities/rotation lanes. Candle/flow/target/score integrity contracts remove fake intervals, synthetic target proof and fallback 58. EvidenceV2 routes all N01–N17 fixtures into named existing consumers with dedup and fixed family caps. The focused cumulative suite passes 87/87; live adapter smoke receipts are still pending and are not claimed.
+- Stage E core is added without Telegram network calls. Manual workflow requests are now durably enqueued before the analytics concurrency group. Publication/dispatch identity is immutable; success requires a positive Telegram message ID and matching recipient; ambiguous delivery becomes UNKNOWN without blind retry; removal is allowed only for a confirmed SENT entry. Live relay replacement still depends on the exact blocked Hub bundle.
 
 ## Verified blockers
 
@@ -35,7 +36,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Wire completed Stage C/D contracts into the authoritative producer/adapter/dispatcher and collect bounded live receipts where authorization already exists.
+1. Implement T13/T14 outcomes and calibration gates, then wire completed contracts into the authoritative producer/adapter/dispatcher.
 2. Obtain the exact live Hub configuration/bundle and KV binding through an authorized path before claiming T02/F01/T17 fully closed or performing the final cutover.
 
 ## Safety state

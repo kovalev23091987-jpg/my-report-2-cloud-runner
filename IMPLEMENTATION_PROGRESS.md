@@ -19,8 +19,8 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | T08 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Closed/gap-safe candles, anomaly linkage, actual funding delta, money flow and BTC/ETH-relative semantics pass K08. |
 | T09 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Level provenance, geometry isolation, fresh-anchor/obstacle rules and symmetric gross/net costs pass K09. |
 | T10 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Explicit metric mapper (no fallback 58), upstream dedup and separated invisible diagnostic scores pass K10. |
-| T11 | PENDING | — |
-| T12 | PENDING | — |
+| T11 | CORE_COMPLETED_HUB_WIRING_BLOCKED | Immutable publication→dispatch binding, positive message_id/recipient ACK, SENT reuse, payload conflict, UNKNOWN_DELIVERY no-blind-retry and delivered ENTRY removal rules pass K11. Exact live relay replacement is blocked by the unavailable Hub bundle. |
+| T12 | QUEUE_COMPLETED_CONSUMER_WIRING_PENDING | Manual commands are durably enqueued in a short job outside analytics concurrency before the heavy job; immutable parameters, claim/idempotency, freshness and completion-only-after-existing-consumer pass K12. Runtime result handoff remains. |
 | T13 | PENDING | — |
 | T14 | PENDING | — |
 | T15 | IN_PROGRESS | K15 frame: exact 13,330/12,090 BYK proof, atomic provider-attempt ledger, conservative timeout accounting, 164 HTTP lane cap and 3.5m/70k D1 plan pass 5/5. Three measured full runs and complete consumer wiring remain. |
@@ -59,7 +59,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 | B | T02, T15, T17 frame | IN_PROGRESS_WITH_T00_ACCESS_BLOCKER — all locally verifiable T02 controls are implemented; T15 and T17 frame next |
 | C | T03–T05, T07 | IN_PROGRESS — all four core contracts pass locally; runtime wiring and measured Hub collector admission remain |
 | D | T06, T08–T10, T16 | IN_PROGRESS — core contracts and 17-block consumer map pass locally; remaining work is authoritative runtime wiring and bounded live adapter receipts |
-| E | T11–T12 | BLOCKED_BY_D |
+| E | T11–T12 | IN_PROGRESS_WITH_HUB_BLOCKER — durable command intake and strict delivery contract pass locally; live relay and result-consumer wiring remain |
 | F | T13–T14 | BLOCKED_BY_E |
 | G | T17–T18 | BLOCKED_BY_F |
 
