@@ -31,7 +31,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F25 | LOCAL_CLOSED | Cache-before-fetch, single in-flight refresh, timeout and backoff tests pass. | Live cache hit receipt. |
 | F26 | LOCAL_CLOSED | Counts/signatures are direction-neutral; liquidation presence cannot become an automatic bullish vote. | None locally. |
 | F27 | LOCAL_CLOSED | Upstream/event/dependency-family dedup precedes scoring. | None locally. |
-| F28 | PARTIAL_KEY_AND_PROBE | 0xArchive route/cost plan and atomic reservation fail closed on unknown cost. | Existing key plus one authorized idempotent cost probe. |
+| F28 | LIVE_READINESS_CLOSED | 0xArchive exact route cost is proven at one credit, the existing key is active, atomic reservation is enabled and run 36369369843 confirmed `ALREADY_PROBED` plus `production_enable_allowed=true` without a duplicate charge. | Natural routed bucket payload remains operational evidence, not a readiness blocker. |
 | F29 | LOCAL_PARTIAL_COVERAGE | Short probes are explicitly `PARTIAL`; no module claims a continuous full liquidation stream. | Continuous completeness is intentionally unavailable without a permitted service. |
 | F30 | PARTIAL_SMOKE_PENDING | Source identities, lifecycle receipts and EvidenceV2 consumer contracts exist. Live smokes are closed for HTX public risk (36365551502), BLS/Fed transport (36368211511) and Deribit alt options (36368924281). | Remaining selected adapters still require runtime wiring and sanitized live smoke receipts. |
 | F31 | LOCAL_CORE | `outcome-v2.mjs` admits only exact SENT receipts and anchors to the first fresh executable HTX quote. | Natural delivered cohort. |
