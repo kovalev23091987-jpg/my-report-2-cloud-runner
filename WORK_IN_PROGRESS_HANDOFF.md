@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 06:28 UTC
+Updated: 2026-09-28 06:36 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -61,6 +61,8 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Isolated gTrade run `36385863377` loaded the pinned official SDK 1.8.10, used exactly three requests for SOL, selected 22 open positions and produced five native liquidation zones with zero Telegram calls.
 - GMX runs exposed and fixed a real checksum-casing bug between the lowercased official catalog and Subsquid's stored market addresses. The collector now uses a full-address case-insensitive server filter and still verifies every returned address exactly after normalization. Run `36386584847` selected XRP from a live open-position census, excluded BTC/ETH, confirmed the contract is active on HTX Futures, used six total calls and produced three native liquidation zones with zero Telegram calls.
 - Delayed GDELT retry `36386110377` again received HTTP 429. It emitted no discovery/evidence, added no market vote and installed the shared backoff. No immediate retry or alternate host was attempted.
+- Final controlled full-report run `36387174153` completed successfully on the V5 branch. It claimed and completed the durable `FULL_MANUAL` command, scanned all 359/359 current HTX futures contracts, closed persistence and every D1 burst gate with zero unknown operations, ended truthfully as `HEALTHY_NO_IDEA`, and made zero Telegram network sends because delivery was deliberately disabled. The visible TIA-USDT observation remained OBSERVE at score 64, so no final publication decision was formed. GitHub masked digits in the final usage JSON; the proof therefore claims only the fixed 34,000/560 caps, closed gates and zero unknown operations, not invented exact usage counts.
+- The three canonical cloud state files were updated after that verified stage. They preserve V4 as the active production generation and record V5 only as `TECHNICALLY_VERIFIED_NOT_DEPLOYED`, with the exact branch, commit, worker hash, live-source smoke runs and Cloudflare Hub blocker. No old installer or pending handoff was reactivated.
 
 ## Verified blockers
 
@@ -69,8 +71,8 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Continue the remaining live EvidenceV2 adapters that have exact registry inputs; do not retry Bluesky before its global access backoff expires, do not bypass HTTP 403, and do not retry GDELT before its shared 429 backoff expires.
-2. Obtain the exact live Hub configuration/bundle and KV binding through an authorized path before claiming T02/F01/T17 fully closed or performing the final cutover.
+1. Obtain the exact live Hub configuration/bundle and binding list through an authorized Cloudflare path before claiming T02/F01/T17 fully closed or performing the final cutover.
+2. After Hub verification, deploy in the documented single-owner order, run one Telegram-disabled acceptance cycle, then enable the canonical sender and collect the first natural Telegram receipt. Do not retry Bluesky or GDELT before their shared backoffs expire and do not use bypasses.
 
 ## Safety state
 

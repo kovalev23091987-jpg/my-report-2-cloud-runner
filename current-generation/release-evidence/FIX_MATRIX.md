@@ -24,7 +24,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F18 | LOCAL_CLOSED | Explicit metric mapper replaces fallback 58; error/unknown contributes zero. | None locally. |
 | F19 | PARTIAL_NATURAL_DATA | Interest/readiness/completeness are separate; completeness is not predictive quality. | Predictive quality remains statistically unproven. |
 | F20 | LOCAL_CLOSED | Unsigned deterministic source distribution passes reachability tests over 100k seeds. | None locally. |
-| F21 | LOCAL_CLOSED | gTrade has an independent three-call lane admitted before transport. | Authorized live receipt. |
+| F21 | LIVE_SMOKE_CLOSED | gTrade has an independent three-call lane admitted before transport; run 36385863377 loaded pinned SDK 1.8.10, selected 22 SOL positions and produced five zones in three calls. | Natural routed use remains operational evidence. |
 | F22 | LOCAL_CLOSED | OKX depth requires exact catalog contract units and fails closed without them. | Authorized live receipt. |
 | F23 | LOCAL_CLOSED | Exact address/chain provenance, Solana case and venue instrument contracts pass. | Registry coverage remains partial. |
 | F24 | LOCAL_CLOSED | Source time, observation time and freshness are distinct; stale data is not relabelled fresh. | None locally. |
@@ -33,7 +33,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F27 | LOCAL_CLOSED | Upstream/event/dependency-family dedup precedes scoring. | None locally. |
 | F28 | LIVE_READINESS_CLOSED | 0xArchive exact route cost is proven at one credit, the existing key is active, atomic reservation is enabled and run 36369369843 confirmed `ALREADY_PROBED` plus `production_enable_allowed=true` without a duplicate charge. | Natural routed bucket payload remains operational evidence, not a readiness blocker. |
 | F29 | LOCAL_PARTIAL_COVERAGE | Short probes are explicitly `PARTIAL`; no module claims a continuous full liquidation stream. | Continuous completeness is intentionally unavailable without a permitted service. |
-| F30 | PARTIAL_SMOKE_PENDING | Source identities, lifecycle receipts and EvidenceV2 consumer contracts exist. Live smokes are closed for HTX public risk (36365551502), BLS/Fed transport (36368211511), Deribit alt options (36368924281), exact-address PublicNode supply (36370188170) and Sourcify ABI (36370644221). | Remaining selected adapters still require runtime wiring and sanitized live smoke receipts. |
+| F30 | PARTIAL_SMOKE_PENDING | Source identities, lifecycle receipts and EvidenceV2 consumer contracts exist. Live smokes are closed for HTX public risk (36365551502), BLS/Fed (36368211511), Deribit (36368924281), PublicNode (36370188170), Sourcify (36370644221), Lighter (36375513014), gTrade (36385863377), Blockscout (36385987034) and GMX (36386584847). | GDELT remains externally rate-limited and Bluesky externally blocked; natural routed receipts remain pending. |
 | F31 | LOCAL_CORE | `outcome-v2.mjs` admits only exact SENT receipts and anchors to the first fresh executable HTX quote. | Natural delivered cohort. |
 | F32 | LOCAL_CORE | Outcome path completeness uses closed one-minute history, not snapshot extrema. | Natural mature path. |
 | F33 | LOCAL_CLOSED | Due-settlement cursor skips unusable rows and terminates irrecoverable windows as censored. | Operational backlog receipt. |
