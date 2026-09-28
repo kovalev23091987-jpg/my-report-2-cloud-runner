@@ -11,7 +11,7 @@ const required=name=>{
   return value;
 };
 
-const cfFetch=async(token,pathname,accept='application/json')=>{
+const cfFetch=async(token,pathname,accept='application/json',operation='REQUEST')=>{
   const response=await fetch(`${API_ROOT}${pathname}`,{
     headers:{Authorization:`Bearer ${token}`,Accept:accept},
     signal:AbortSignal.timeout(45_000),
@@ -23,13 +23,13 @@ const cfFetch=async(token,pathname,accept='application/json')=>{
       const body=JSON.parse(bytes.toString('utf8'));
       detail=String(body?.errors?.[0]?.message||detail).slice(0,240);
     }catch{}
-    throw new Error(`CLOUDFLARE_API_${detail}`);
+    throw new Error(`CLOUDFLARE_API_${operation}_${detail}`);
   }
   return {bytes,contentType:response.headers.get('content-type')||'application/octet-stream'};
 };
 
-const cfJson=async(token,pathname)=>{
-  const {bytes}=await cfFetch(token,pathname);
+const cfJson=async(token,pathname,operation)=>{
+  const {bytes}=await cfFetch(token,pathname,'application/json',operation);
   const body=JSON.parse(bytes.toString('utf8'));
   if(body?.success===false)throw new Error('CLOUDFLARE_API_UNSUCCESSFUL');
   return body;
@@ -45,13 +45,13 @@ const main=async()=>{
   const outputDir=path.resolve(process.argv[2]||'cloudflare-hub-audit');
   fs.mkdirSync(outputDir,{recursive:true});
 
-  const verification=await cfJson(token,'/user/tokens/verify');
+  const verification=await cfJson(token,'/user/tokens/verify','VERIFY_TOKEN');
   if(String(verification?.result?.status||'').toLowerCase()!=='active')throw new Error('CLOUDFLARE_TOKEN_NOT_ACTIVE');
 
-  const accounts=await cfJson(token,'/accounts?per_page=50');
+  const accounts=await cfJson(token,'/accounts?per_page=50','LIST_ACCOUNTS');
   const matches=[];
   for(const account of accounts?.result||[]){
-    const scripts=await cfJson(token,`/accounts/${encodeURIComponent(account.id)}/workers/scripts`);
+    const scripts=await cfJson(token,`/accounts/${encodeURIComponent(account.id)}/workers/scripts`,'LIST_SCRIPTS');
     for(const script of scripts?.result||[]){
       const name=String(script?.id||script?.name||'');
       if(name===SCRIPT_NAME)matches.push({account,script});
@@ -62,8 +62,8 @@ const main=async()=>{
   const [{account,script}]=matches;
   const base=`/accounts/${encodeURIComponent(account.id)}/workers/scripts/${encodeURIComponent(SCRIPT_NAME)}`;
   const [content,settings]=await Promise.all([
-    cfFetch(token,`${base}/content`,'*/*'),
-    cfJson(token,`${base}/settings`),
+    cfFetch(token,`${base}/content`,'*/*','READ_CONTENT'),
+    cfJson(token,`${base}/settings`,'READ_SETTINGS'),
   ]);
 
   const rawSettings={
