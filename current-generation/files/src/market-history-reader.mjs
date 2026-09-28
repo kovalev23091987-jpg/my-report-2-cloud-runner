@@ -93,23 +93,29 @@ function chooseCompleteBucket(groups, contract, preferredGeneration) {
 }
 
 async function readCollectorPages(db, {actor, start, end}) {
-  const out = [];
-  let cursorBucket = start - 1, cursorShard = -1, pages = 0, bytes = 0;
-  while (out.length < MAX_SHARDS_6H) {
-    const result = await db.prepare(`SELECT bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes
-      FROM report2_market_snapshot_batch_v1
-      WHERE actor=?1 AND schema_version='report2-market-snapshot-batch-v1' AND bucket BETWEEN ?2 AND ?3
-        AND (bucket>?4 OR (bucket=?4 AND shard>?5))
-      ORDER BY bucket ASC,shard ASC LIMIT ?6`).bind(actor,start,end,cursorBucket,cursorShard,MAX_SHARDS_PER_PAGE).all();
-    const page = rowsOf(result);
-    if (!page.length) break;
-    const pageBytes = page.reduce((sum, row) => sum + new TextEncoder().encode(String(row?.payload ?? '')).byteLength, 0);
-    if (pageBytes > MAX_PAGE_BYTES) throw new Error('HISTORY_PAGE_BYTES_EXCEEDED');
-    out.push(...page); bytes += pageBytes; pages += 1;
-    const last = page.at(-1); cursorBucket = Number(last.bucket); cursorShard = Number(last.shard);
-    if (page.length < MAX_SHARDS_PER_PAGE) break;
+  const out = [];let pages = 0, bytes = 0, truncated = false;
+  // The existing production index starts with generation,bucket. Query each
+  // explicitly compatible generation so D1 does not scan every retained shard.
+  for (const generation of HISTORY_COMPATIBILITY.generations) {
+    let cursorBucket=start-1,cursorShard=-1;
+    while(out.length<MAX_SHARDS_6H){
+      const limit=Math.min(MAX_SHARDS_PER_PAGE,MAX_SHARDS_6H-out.length);
+      const result=await db.prepare(`SELECT bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes
+        FROM report2_market_snapshot_batch_v1
+        WHERE generation=?1 AND actor=?2 AND schema_version='report2-market-snapshot-batch-v1' AND bucket BETWEEN ?3 AND ?4
+          AND (bucket>?5 OR (bucket=?5 AND shard>?6))
+        ORDER BY bucket ASC,shard ASC LIMIT ?7`).bind(generation,actor,start,end,cursorBucket,cursorShard,limit).all();
+      const page=rowsOf(result);if(!page.length)break;
+      const pageBytes=page.reduce((sum,row)=>sum+new TextEncoder().encode(String(row?.payload??'')).byteLength,0);
+      if(pageBytes>MAX_PAGE_BYTES)throw new Error('HISTORY_PAGE_BYTES_EXCEEDED');
+      out.push(...page);bytes+=pageBytes;pages+=1;
+      const last=page.at(-1);cursorBucket=Number(last.bucket);cursorShard=Number(last.shard);
+      if(page.length<limit)break;
+    }
+    if(out.length>=MAX_SHARDS_6H){truncated=true;break;}
   }
-  return {rows:out.slice(0,MAX_SHARDS_6H),pages,bytes,truncated:out.length >= MAX_SHARDS_6H};
+  out.sort((a,b)=>Number(a.bucket)-Number(b.bucket)||String(a.generation).localeCompare(String(b.generation))||Number(a.shard)-Number(b.shard));
+  return {rows:out,pages,bytes,truncated};
 }
 
 const TARGETS=Object.freeze([['5m',5*60_000,1*60_000],['15m',15*60_000,2*60_000],['1h',60*60_000,5*60_000],['4h',4*60*60_000,5*60_000],['24h',24*60*60_000,5*60_000]]);
