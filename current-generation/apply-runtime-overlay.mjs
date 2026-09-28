@@ -35,6 +35,7 @@ const files=[
  'src/supplemental-score-evidence.mjs',
  'src/schedule-quota-calculator.mjs',
  'src/v3-adaptive-budget.mjs',
+ 'src/v3-pipeline-health-sidecar.mjs',
  'src/supplemental-candidate-context.mjs',
  'src/dynamic-liquidation-panel.mjs',
  'src/liquidation-source-weighting.mjs',
