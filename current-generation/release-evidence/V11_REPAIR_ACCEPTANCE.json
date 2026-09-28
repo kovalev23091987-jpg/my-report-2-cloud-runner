@@ -1,6 +1,6 @@
 {
   "schema": "report2-v11-repair-acceptance-v1",
-  "generated_at": "2026-09-28T16:55:00Z",
+  "generated_at": "2026-09-28T17:02:12Z",
   "baseline": {
     "commit": "63838b2ed875a9cc01e6c33252e95817afa31e4a",
     "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M",
@@ -8,12 +8,15 @@
   },
   "candidate": {
     "implementation_commit": "2d94568728ff95e580fb16fbbd2ff42d95d2fe91",
+    "production_main_commit": "2c809a5ca25eb18df040314537dfcc8c27a45c49",
     "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
     "worker_sha256": "111115737be2fa2c312206e4b3a7d12ae993203edb2175d3345dee8ba1190b4f",
     "assembled_executable_manifest_sha256": "4f3eafd62be85dd6c6a279069d12b2595917706906636d71864968e529174034",
     "frozen_output_manifest_sha256": "6859a2cb33dd8410d644c855e78a84759647a7bba4ff8c7dc77d9a5b8bce617c",
     "offline_full_validation": "post-v7-consolidated/proof/full-validation-20260928T165112668Z/VERIFICATION.json",
-    "offline_status": "OFFLINE_FULL_CANDIDATE_VERIFIED_NOT_DEPLOYED"
+    "offline_status": "OFFLINE_FULL_CANDIDATE_VERIFIED",
+    "collector_runtime_status": "PRODUCTION_DEPLOYED_FIRST_SAMPLE_VERIFIED",
+    "collector_release_run_id": 36454754263
   },
   "module_hashes": {
     "market_history_reader": "4b2f8a37dee089c407a397ae6104e0910e72336fc613649b3087ddcd28f4b71c",
@@ -34,8 +37,8 @@
       "before_result": "V11 was the only operational pointer and the repaired source had no release identity.",
       "after_result": "V12 is pinned by generation and exact worker hash; V11 is accepted only as historical data provenance.",
       "assembled_runtime_sha": "111115737be2fa2c312206e4b3a7d12ae993203edb2175d3345dee8ba1190b4f",
-      "status": "FIXED_AND_OFFLINE_VERIFIED",
-      "limitation": "Production deployment is recorded separately after the release workflow completes."
+      "status": "FIXED_DEPLOYED_COLLECTOR_VERIFIED",
+      "limitation": "Two normal V12 analytics cycles remain natural runtime evidence."
     },
     {
       "defect_id": "P05",
@@ -84,8 +87,8 @@
       "before_result": "Unicode, provider status:error, attempt counts and D1 write counts were not all closed by one contract.",
       "after_result": "The collector keeps the full active universe, rejects provider error bodies, accounts attempts before transport and sums actual D1 changes.",
       "assembled_runtime_sha": "111115737be2fa2c312206e4b3a7d12ae993203edb2175d3345dee8ba1190b4f",
-      "status": "FIXED_AND_OFFLINE_VERIFIED",
-      "limitation": "Live 5-minute accumulation is verified after Cloudflare deployment."
+      "status": "FIXED_AND_RUNTIME_VERIFIED",
+      "limitation": "A complete six-hour live window still needs 72 natural collector samples."
     },
     {
       "defect_id": "P06",
