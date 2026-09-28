@@ -1,7 +1,8 @@
 import {createHash} from 'node:crypto';
-export const LIQUIDATION_ALLOWANCE_GENERATION='DYNAMIC_PANEL_V3_20260927';
+export const LIQUIDATION_ALLOWANCE_GENERATION='DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS';
 export const LIQFLOW_PUBLIC_PILOT_END_TS=Date.parse('2026-10-27T00:00:00Z');
-const fingerprint=provider=>createHash('sha256').update(`${LIQUIDATION_ALLOWANCE_GENERATION}|${provider}|REQUEST|10000`).digest('hex');
+const providerCaps=Object.freeze({HYPERLIQUID:10000,GTRADE:4000,LIGHTER:10000,GMX:8000,LIQFLOW:10000});
+const fingerprint=provider=>createHash('sha256').update(`${LIQUIDATION_ALLOWANCE_GENERATION}|${provider}|REQUEST|${providerCaps[provider]}`).digest('hex');
 const providers=Object.freeze(['HYPERLIQUID','GTRADE','LIGHTER','GMX']);
 const monthWindow=now=>{const d=new Date(now),start=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1),end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1);return{start,end,key:new Date(start).toISOString().slice(0,7).replace('-','')};};
 
@@ -22,10 +23,10 @@ export async function installSourceAllowances({db,now=Date.now(),liqflow_key=''}
  await db.batch(ddl.map(sql=>db.prepare(sql)));
  const keyConfigured=Boolean(String(liqflow_key||'').trim()),publicPilot=now<LIQFLOW_PUBLIC_PILOT_END_TS;
  const window=monthWindow(now),active=[...providers,...(keyConfigured||publicPilot?['LIQFLOW']:[])],bindings={};
- const rows=active.map(provider=>{const scope_id=`${LIQUIDATION_ALLOWANCE_GENERATION}:${window.key}:${provider}`,config_fingerprint=fingerprint(provider);bindings[provider]={scope_id,config_fingerprint};return db.prepare(`INSERT INTO report2_liq_source_allowance_shadow
+ const rows=active.map(provider=>{const scope_id=`${LIQUIDATION_ALLOWANCE_GENERATION}:${window.key}:${provider}`,config_fingerprint=fingerprint(provider),allowance=providerCaps[provider];bindings[provider]={scope_id,config_fingerprint};return db.prepare(`INSERT INTO report2_liq_source_allowance_shadow
   (scope_id,provider,unit,window_start_ts,window_end_ts,allowance_units,used_units,version,last_reservation_id,config_fingerprint,shared_quota_reviewed,active,schema_version)
-  VALUES(?1,?2,'REQUEST',?3,?4,10000,0,0,NULL,?5,1,1,1) ON CONFLICT(scope_id) DO NOTHING`).bind(scope_id,provider,window.start,window.end,config_fingerprint);});
+  VALUES(?1,?2,'REQUEST',?3,?4,?5,0,0,NULL,?6,1,1,1) ON CONFLICT(scope_id) DO NOTHING`).bind(scope_id,provider,window.start,window.end,allowance,config_fingerprint);});
  await db.batch(rows);
- return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,automatic_topup:false,old_generation_scope_reuse:false};
+ return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,provider_operational_caps:Object.fromEntries(active.map(provider=>[provider,providerCaps[provider]])),combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,automatic_topup:false,old_generation_scope_reuse:false};
 }
 export default{installSourceAllowances,LIQFLOW_PUBLIC_PILOT_END_TS};

@@ -5,7 +5,8 @@ class DB{constructor(){this.statements=[];}prepare(sql){const self=this;return{b
 test('new generation receives isolated monthly scopes and time-bounded public LiqFlow pilot access',async()=>{
  const db=new DB(),out=await installSourceAllowances({db,now:Date.UTC(2026,8,27)});
  assert.equal(out.status,'CLOSED');assert.equal(out.generation,LIQUIDATION_ALLOWANCE_GENERATION);assert.ok(out.bindings.LIQFLOW);assert.equal(out.liqflow_access,'PUBLIC_PILOT_TIME_BOUNDED');
- for(const provider of ['HYPERLIQUID','GTRADE','LIGHTER','GMX']){assert.match(out.bindings[provider].scope_id,/DYNAMIC_PANEL_V3_20260927:202609:/);assert.equal(out.bindings[provider].config_fingerprint.length,64);}
+ for(const provider of ['HYPERLIQUID','GTRADE','LIGHTER','GMX']){assert.match(out.bindings[provider].scope_id,new RegExp(`${LIQUIDATION_ALLOWANCE_GENERATION}:202609:`));assert.equal(out.bindings[provider].config_fingerprint.length,64);}
+ assert.deepEqual(out.provider_operational_caps,{HYPERLIQUID:10000,GTRADE:4000,LIGHTER:10000,GMX:8000,LIQFLOW:10000});
  assert.equal(out.combined_run_http_cap,5);assert.equal(out.automatic_topup,false);assert.equal(out.old_generation_scope_reuse,false);
 });
 test('LiqFlow gets a bounded reviewed scope only when its key is configured',async()=>{
