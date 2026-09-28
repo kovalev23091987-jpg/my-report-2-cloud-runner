@@ -80,6 +80,22 @@ test('backlog dispatch binds its own publication when delivery executes in a lat
  assert.equal(binding.run_id,'RUN-A');assert.equal(binding.snapshot_id,'SNAP-A');
 });
 
+test('legacy early publication repairs its wave id from canonical evidence and binds',async t=>{
+ const db=new DB();t.after(()=>db.close());
+ const c=canonical({run:'RUN-LEGACY',snapshot:'SNAP-LEGACY'});
+ c.early_candidate={items:[{contract:'AAVE-USDT',wave_id:'W-EARLY'}]};
+ c.analytical_fingerprint=publication.canonicalFingerprint(c);
+ const p=await publication.persistCanonicalSnapshot(db,{canonical:c,wave_id:null,now_ts:NOW-4000});
+ assert.equal(p.persisted,true,JSON.stringify(p));
+ const created=NOW-2000;
+ db.raw.prepare(`INSERT INTO v3_user_lifecycle_shadow VALUES(?,?,?,?,?,?,?,?,?,1)`).run('AAVE-USDT','SHORT','W-EARLY','v3','WAIT','DIRECTION_CLOSED_ENTRY_WINDOW_NOT_READY',NOW-3000,NOW+600000,created);
+ db.raw.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,created_ts,updated_ts,shadow_only) VALUES('D-LEGACY','LEGACY','AAVE-USDT','SHORT','W-EARLY','WAIT','v3','PENDING',?,?,1)`).run(created,created);
+ const result=await reconciler.reconcilePendingPublications(db,{now_ts:NOW,source_run_id:'RUN-NEXT'});
+ assert.equal(result.results[0].status,'BOUND_ACTIONABLE',JSON.stringify(result));
+ assert.equal(db.raw.prepare(`SELECT wave_id FROM canonical_publication_shadow WHERE publication_id=?`).get(p.publication_id).wave_id,'W-EARLY');
+ assert.equal(db.raw.prepare(`SELECT count(*) n FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key='LEGACY'`).get().n,1);
+});
+
 test('fresh bound signal is sent before stale unbound backlog and stale row is never delivered',async t=>{
  const db=new DB();t.after(()=>db.close());
  seedExpiredBacklog(db);

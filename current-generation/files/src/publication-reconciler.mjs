@@ -28,7 +28,25 @@ async function exactPublicationForDispatch(db,row,{executor_run_id=null,now_ts=D
  const q=isEntry
   ? await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND wave_id=?3 AND decision_id=?4 AND created_ts BETWEEN ?5 AND ?6 ORDER BY created_ts DESC,publication_id ASC LIMIT 3`).bind(row.contract,upper(row.direction),row.wave_id,text(row.decision_id),lo,dispatchTs).all()
   : await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND wave_id=?3 AND created_ts BETWEEN ?4 AND ?5 ORDER BY created_ts DESC,publication_id ASC LIMIT 3`).bind(row.contract,upper(row.direction),row.wave_id,lo,dispatchTs).all();
- const candidates=rows(q);
+ let candidates=rows(q);
+ /*
+  * Legacy early-observation snapshots could be persisted before the discovery
+  * wave id was copied into the publication row. The immutable canonical JSON
+  * still contains that exact wave id, so repair only this proven one-to-one
+  * mismatch. ENTRY remains strict and never uses this recovery path.
+  */
+ if(!candidates.length&&!isEntry){
+  const fallback=await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publication_shadow WHERE contract_code=?1 AND direction=?2 AND created_ts BETWEEN ?3 AND ?4 ORDER BY created_ts DESC,publication_id ASC LIMIT 3`).bind(row.contract,upper(row.direction),lo,dispatchTs).all();
+  const exactWave=rows(fallback).filter(candidate=>{
+   try{return (JSON.parse(candidate.canonical_json)?.early_candidate?.items||[]).some(item=>text(item?.wave_id)===text(row.wave_id));}catch{return false;}
+  });
+  if(exactWave.length>1)return {status:'AMBIGUOUS_CANONICAL_SNAPSHOT',life,matches:exactWave.length,executor_run_id:text(executor_run_id)||null};
+  if(exactWave.length===1){
+   const repair=await db.prepare(`UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id!=?2)`).bind(exactWave[0].publication_id,text(row.wave_id)).run();
+   if(Number(repair?.meta?.changes??repair?.changes??0)!==1)return {status:'CANONICAL_WAVE_REPAIR_ACK_FAILED',life,matches:1,executor_run_id:text(executor_run_id)||null};
+   candidates=[{...exactWave[0],wave_id:text(row.wave_id)}];
+  }
+ }
  if(!candidates.length){
   const age=Math.max(0,now-dispatchTs);
   return {status:age>=PUBLICATION_BINDING_GRACE_MS?'CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL':'CANONICAL_SNAPSHOT_NOT_FOUND',life,matches:0,executor_run_id:text(executor_run_id)||null,dispatch_age_ms:age};
