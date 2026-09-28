@@ -141,6 +141,25 @@ test('fresh bound signal is sent before stale unbound backlog and stale row is n
  assert.equal(db.raw.prepare(`SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='OLD'`).get().state,'EXPIRED_NOT_SENT');
 });
 
+test('removal after the binding grace period uses only its previously delivered exact wave',async t=>{
+ const db=new DB();t.after(()=>db.close());
+ const priorCreated=NOW-30*60_000;
+ await seedFresh(db,{key:'VISIBLE-WAIT',created:priorCreated+60_000,run:'RUN-VISIBLE',snapshot:'SNAP-VISIBLE',publicationCreated:priorCreated});
+ const initial=await reconciler.reconcilePendingPublications(db,{now_ts:priorCreated+2*60_000,source_run_id:'RUN-VISIBLE'});
+ assert.equal(initial.results[0].status,'BOUND_ACTIONABLE',JSON.stringify(initial));
+ db.raw.prepare(`UPDATE v3_telegram_dispatch_shadow SET state='SENT',telegram_message_id='1700',sent_ts=?,updated_ts=? WHERE idempotency_key='VISIBLE-WAIT'`).run(priorCreated+3*60_000,priorCreated+3*60_000);
+ db.raw.prepare(`UPDATE v3_user_lifecycle_shadow SET status='IDEA_REMOVED',reason='DATA_UNUSABLE',observation_ts=?,valid_until_ts=NULL,updated_ts=? WHERE contract='AAVE-USDT' AND direction='SHORT' AND wave_id='W-AAVE' AND rules_version='v3'`).run(NOW-1000,NOW-1000);
+ db.raw.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,created_ts,updated_ts,shadow_only) VALUES('D-REMOVE','REMOVE','AAVE-USDT','SHORT','W-AAVE','IDEA_REMOVED','v3','PENDING',?,?,1)`).run(NOW-1000,NOW-1000);
+ const recovered=await reconciler.reconcilePendingPublications(db,{now_ts:NOW,source_run_id:'RUN-REMOVE'});
+ assert.equal(recovered.results[0].status,'BOUND_ACTIONABLE',JSON.stringify(recovered));
+ const binding=db.raw.prepare(`SELECT publication_id,lifecycle_event,wave_id FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key='REMOVE'`).get();
+ assert.equal(binding.lifecycle_event,'IDEA_REMOVED');assert.equal(binding.wave_id,'W-AAVE');
+ let calls=0;
+ const delivered=await sender.runBoundTelegramDeliverySidecar(db,{enabled:true,relay_url:'https://relay.invalid',relay_key:'TEST_ONLY',now_ts:NOW+1,source_run_id:'RUN-REMOVE',fetch_impl:async()=>{calls++;return {ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:1702})};}});
+ assert.equal(delivered.sent,1,JSON.stringify(delivered));assert.equal(calls,1);
+ assert.equal(db.raw.prepare(`SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='REMOVE'`).get().state,'SENT');
+});
+
 test('two equally recent canonical publications fail closed instead of guessing',async t=>{
  const db=new DB();t.after(()=>db.close());
  const a=canonical({run:'RUN-A',snapshot:'SNAP-A',observed:NOW-5000});
