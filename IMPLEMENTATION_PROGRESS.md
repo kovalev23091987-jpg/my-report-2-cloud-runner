@@ -36,12 +36,12 @@ All findings begin as `PENDING`. A finding may only be changed to `CLOSED` with 
 |---|---|
 | F01 | PARTIAL_ACCESS_BLOCKER — GitHub analytics owner is fenced; exact live legacy Hub removal awaits its blocked bundle |
 | F02 | CLOSED_LOCAL_K02 — disabled schedule performs no checkout/decrypt/runtime; runner has a second pre-decrypt/pre-network gate |
-| F03 | FRAME_CLOSED_LOCAL_K17 — final state model is derived after terminal events; runtime wiring remains |
-| F04–F41 | PENDING |
+| F03 | FRAME_CLOSED_LOCAL_K17 — final state model is derived after terminal events; live watchdog wiring remains blocked by Hub access |
+| F04–F41 | MIXED_LOCAL_PARTIAL — exact per-finding status, evidence and remaining condition are recorded in `current-generation/release-evidence/FIX_MATRIX.md` |
 | F42 | CLOSED_LOCAL_K15_PLAN — worst case is exactly 13,330 including manual and burst |
 | F43 | CLOSED_LOCAL_K15_LEDGER — concurrent/idempotent provider-attempt reservations tested |
 | F44 | IN_PROGRESS_T02_T15 — analytics fencing and atomic provider ledger exist; all actors/SQL measurement remain |
-| F45–F51 | PENDING |
+| F45–F51 | MIXED_LOCAL_PARTIAL — source plan/deadline contracts pass; adapter smoke, Hub evidence and natural outcomes remain exactly identified in `FIX_MATRIX.md` |
 
 ## New data blocks
 
@@ -49,19 +49,19 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 
 | Blocks | Status |
 |---|---|
-| N01–N17 | PENDING |
+| N01–N17 | CONSUMER_CONTRACTS_VALIDATED_LIVE_COVERAGE_PARTIAL — exact state by block is recorded in `current-generation/release-evidence/NEW_BLOCKS_MATRIX.md` |
 
 ## Stage gates
 
 | Stage | Packages | Status |
 |---|---|---|
 | A | T00–T01 | PARTIAL_ACCESS_BLOCKER — T01 complete locally; all obtainable T00 evidence is frozen, with the exact live Hub bundle/binding-name list explicitly blocked by Cloudflare dashboard access |
-| B | T02, T15, T17 frame | IN_PROGRESS_WITH_T00_ACCESS_BLOCKER — all locally verifiable T02 controls are implemented; T15 and T17 frame next |
+| B | T02, T15, T17 frame | IN_PROGRESS_WITH_T00_ACCESS_BLOCKER — local controls pass and one measured cloud cycle is stored; two measurements and live Hub ownership remain |
 | C | T03–T05, T07 | IN_PROGRESS — all four core contracts pass locally; runtime wiring and measured Hub collector admission remain |
 | D | T06, T08–T10, T16 | IN_PROGRESS — core contracts and 17-block consumer map pass locally; remaining work is authoritative runtime wiring and bounded live adapter receipts |
 | E | T11–T12 | IN_PROGRESS_WITH_HUB_BLOCKER — durable command intake and strict delivery contract pass locally; live relay and result-consumer wiring remain |
 | F | T13–T14 | CORE_COMPLETED_LOCAL — outcome/calibration contracts pass; production cohort wiring and future natural data accumulation remain |
-| G | T17–T18 | BLOCKED_BY_F |
+| G | T17–T18 | PARTIAL_BLOCKED_BY_HUB_SMOKE_AND_NATURAL_GATES |
 
 ## Immutable owner constraints
 
