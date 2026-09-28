@@ -4,12 +4,12 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 
 | ID | Status | Effective evidence | Remaining condition |
 |---|---|---|---|
-| F01 | PARTIAL_BLOCKED_HUB | `runtime-control.mjs`, `analytics-lease.mjs`, `analytics-lease.test.mjs` fence the GitHub analytics owner. | Exact live Hub bundle/bindings are required to prove and remove the legacy decision writer. |
+| F01 | LIVE_INVENTORY_CLOSED | `runtime-control.mjs`, `analytics-lease.mjs`, `analytics-lease.test.mjs` fence the GitHub analytics owner. Read-only run 36390110554 captured the exact live Hub module and proved zero Cloudflare cron triggers, so the legacy Hub code is not a competing scheduled analytics owner. | Production cutover only. |
 | F02 | LOCAL_CLOSED | `workflow-job-gate.test.mjs` and `runner/preflight-role-gate.mjs` prove stop before checkout/decrypt/network. | Production cutover only. |
-| F03 | PARTIAL_BLOCKED_HUB | `run-health.mjs` and `run-health.test.mjs` derive terminal health after final events. | Live Hub watchdog/KV binding is not available. |
-| F04 | PARTIAL_BLOCKED_HUB | `strict-delivery-binding.mjs` permits removal only after confirmed delivered ENTRY. | Exact relay/lifecycle replacement requires the live Hub bundle. |
+| F03 | PARTIAL_LIVE_INVENTORY | `run-health.mjs` and `run-health.test.mjs` derive terminal health after final events. Run 36390110554 confirms the live Hub has no cron or KV binding. | The GitHub/D1 watchdog remains the only available design; natural degraded/recovered receipt is pending. |
+| F04 | LOCAL_CLOSED_LIVE_RELAY_KNOWN | `strict-delivery-binding.mjs` permits removal only after confirmed delivered ENTRY. Run 36390110554 captured the exact relay routes and Telegram/D1 binding names. | Production cutover and natural delivery receipt. |
 | F05 | PARTIAL_BLOCKED_HUB | `commands-delivery.test.mjs` requires positive message ID and matching recipient; ambiguous timeout is not retried. | Natural Telegram receipt and live relay cutover. |
-| F06 | PARTIAL_BLOCKED_HUB | Immutable publication/dispatch/payload identities and expired-delivery reconciliation pass locally. | Live relay receipt lookup needs the exact Hub handler. |
+| F06 | LOCAL_CLOSED_LIVE_RELAY_KNOWN | Immutable publication/dispatch/payload identities and D1-backed expired-delivery reconciliation pass locally; the exact live relay handler is captured in run 36390110554. | Natural delivery/reconciliation receipt. |
 | F07 | LOCAL_CLOSED_RUNTIME | `candidate-task-queue.mjs` keys attempts by contract/wave/task; old terminal waves do not block a new wave. | Operational backlog measurement. |
 | F08 | PARTIAL_OUTPUT_CONTRACT | Durable manual result binding and completion are wired and tested. | A missing visible ticker cannot be added where the frozen approved format has no slot (`BLOCKED_OUTPUT_CONTRACT`). |
 | F09 | WAITING_NATURAL_EVIDENCE | Generation-specific publication/dispatch contracts exist. | First natural V5 WAIT/ENTRY/removal and exact Telegram receipt. |
@@ -47,12 +47,12 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F41 | PARTIAL_NATURAL_DATA | Prospective full/without-source paired attribution contract exists. | Required independent holdout sample is unavailable. |
 | F42 | LOCAL_CLOSED | `GENERATION.json` and quota tests prove 13,330 worst case and 12,090 scheduled-plus-burst requests. | None locally. |
 | F43 | LOCAL_CLOSED | Atomic provider/attempt/reservation keys and conservative timeout accounting pass concurrency tests. | None locally. |
-| F44 | PARTIAL_BLOCKED_HUB | GitHub analytics fencing and common run usage ledger are active; cloud run had zero unknown operations. | All Hub actors and migrations cannot be verified without the live bundle/bindings. |
+| F44 | LIVE_INVENTORY_CLOSED | GitHub analytics fencing and common run usage ledger are active; cloud runs had zero unknown operations. Run 36390110554 proves the Hub has zero cron triggers and therefore is not a second scheduled analytics actor. | Production cutover and longitudinal usage observation. |
 | F45 | LOCAL_CLOSED_PLAN | Catalog/retry calls are included in the same pre-admitted source plan. | Live receipt. |
 | F46 | LOCAL_CLOSED | Venue catalog cache has per-venue TTL, bounded timeout and cache-first behavior. | Live receipt. |
 | F47 | LOCAL_CLOSED | Dependency freshness and whole-source deadlines are enforced; TTL is not stretched to force CLOSED. | Live receipt. |
 | F48 | LOCAL_CLOSED_RUNTIME | Commands persist before concurrency; aged queued work is recovered after two minutes; expired work is terminal; duplicates do not rerun paid work. A manual coin with zero completed deep checks is now deferred for scheduled recovery instead of falsely completed. | Operational deferral/recovery receipt after V5 cutover. |
-| F49 | PARTIAL | Release manifest, exact worker hash, rollback, cloud receipt and truthful blockers exist. | Hub evidence, remaining live receipts and natural gates. |
+| F49 | PARTIAL_CUTOVER_PENDING | Release manifest, exact worker hash, rollback, cloud receipts and exact sanitized Hub inventory exist. | Production cutover, remaining live receipts and natural gates. |
 | F50 | PARTIAL_SMOKE_PENDING | All N01–N17 have typed EvidenceV2 consumer contracts, caps and fixture tests; HTX public-risk, N13 macro, N14 alt-options, N02 exact supply and N17 Sourcify schema transports now have live receipts. | Several remaining transports still need runtime wiring/smoke receipts; no unavailable market is invented. |
 | F51 | LOCAL_CORE | Gross/net costs, remaining path, hold and invalidation are distinct; no automatic trading was added. | Natural outcome sample. |
 

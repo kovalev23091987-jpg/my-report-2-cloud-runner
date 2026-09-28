@@ -1,9 +1,9 @@
 {
   "schema": "report2-release-manifest-v1",
-  "generated_at": "2026-09-28T06:47:00Z",
+  "generated_at": "2026-09-28T07:10:24Z",
   "branch": "audit-fixes-20260928-internal-v1",
   "production_base_commit": "2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba",
-  "last_pushed_checkpoint_before_manifest": "065317e",
+  "last_pushed_checkpoint_before_manifest": "91f8df2",
   "generation": "MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M",
   "worker_sha256": "1919d8db046c10b5ed6839ae4762ab310af183bf764aaccb32df5d475d3d5bfd",
   "switch_defaults": {
@@ -13,10 +13,9 @@
     "CALIBRATION_APPLY_ENABLED": false
   },
   "calibration_state": "INSUFFICIENT_CALIBRATION_DATA_FACTOR_ONE",
-  "deployment_state": "NOT_DEPLOYED_ACCESS_BLOCKED",
+  "deployment_state": "NOT_DEPLOYED_HUB_AUDIT_CLOSED_CUTOVER_PENDING",
   "blocked_evidence": [
-    "EXACT_LIVE_HUB_BUNDLE_AND_BINDINGS",
-    "AUTHORIZED_LIVE_ADAPTER_SMOKE_RECEIPTS",
+    "PRODUCTION_CUTOVER_AND_TELEGRAM_DISABLED_ACCEPTANCE",
     "NATURAL_TELEGRAM_DELIVERY",
     "T16_5_NATURAL_CALIBRATION_SAMPLE"
   ],
@@ -47,6 +46,7 @@
     "GDELT_RATE_LIMIT_36386110377.json",
     "FINAL_CONTROLLED_FULL_36387174153.json",
     "FINAL_LIQUIDATION_BLOCK_36388065447.json",
+    "CLOUDFLARE_HUB_AUDIT_36390110554.json",
     "T15_THREE_MEASURED_FULL_RUNS.json"
   ]
 }
