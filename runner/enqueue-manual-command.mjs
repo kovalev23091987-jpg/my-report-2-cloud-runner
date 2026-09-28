@@ -8,8 +8,12 @@ const requestFile=value('REPORT2_MANUAL_REQUEST_FILE');
 let request=null;
 if(requestFile){
  request=JSON.parse(fs.readFileSync(requestFile,'utf8'));
+ const pointer=JSON.parse(fs.readFileSync(value('REPORT2_CURRENT_POINTER_FILE')||'REPORT2_CURRENT_GENERATION.json','utf8'));
+ const pointerGeneration=String(pointer?.generation||'').trim();
+ if(pointer?.latest_only!==true||!pointerGeneration||pointerGeneration!==generation)throw new Error('CURRENT_GENERATION_POINTER_MISMATCH');
  if(request?.schema!=='my-report-2-manual-request-v1'||request?.authorized!==true)throw new Error('MANUAL_REQUEST_NOT_AUTHORIZED');
- if(String(request?.generation||'').trim()!==generation)throw new Error('MANUAL_REQUEST_GENERATION_MISMATCH');
+ const requestedGeneration=String(request?.generation||'').trim();
+ if(requestedGeneration!=='CURRENT'&&requestedGeneration!==pointerGeneration)throw new Error('MANUAL_REQUEST_GENERATION_MISMATCH');
  if(!String(request?.nonce||'').trim()||String(request.nonce).length>160)throw new Error('MANUAL_REQUEST_NONCE_INVALID');
  if(/[\r\n]/u.test(String(request?.command||''))||String(request?.command||'').length>240)throw new Error('MANUAL_REQUEST_COMMAND_INVALID');
  if(!/^(?:|[\p{L}\p{N}._-]+-USDT)$/u.test(String(request?.coin_contract||'').trim().toUpperCase()))throw new Error('MANUAL_REQUEST_CONTRACT_INVALID');

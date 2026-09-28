@@ -15,6 +15,9 @@ test('ordinary chat has one file-scoped launch path bound to main',()=>{
 
 test('file launch is fail-closed on authorization and exact generation',()=>{
  assert.match(enqueue,/request\?\.authorized!==true/u);
+ assert.match(enqueue,/REPORT2_CURRENT_GENERATION\.json/u);
+ assert.match(enqueue,/pointer\?\.latest_only!==true/u);
+ assert.match(enqueue,/requestedGeneration!=='CURRENT'/u);
  assert.match(enqueue,/MANUAL_REQUEST_GENERATION_MISMATCH/u);
  assert.match(enqueue,/MANUAL_REQUEST_EMPTY/u);
  assert.match(enqueue,/GITHUB_CONTENTS_TRIGGER/u);

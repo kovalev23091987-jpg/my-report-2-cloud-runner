@@ -101,6 +101,7 @@ jobs:
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}
+      REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"
       REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"
     steps:
       - uses: actions/checkout@v4
