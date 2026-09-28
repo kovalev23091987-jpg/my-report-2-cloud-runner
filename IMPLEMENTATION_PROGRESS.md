@@ -23,9 +23,9 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | T12 | PENDING | — |
 | T13 | PENDING | — |
 | T14 | PENDING | — |
-| T15 | PENDING | — |
+| T15 | IN_PROGRESS | K15 frame: exact 13,330/12,090 BYK proof, atomic provider-attempt ledger, conservative timeout accounting, 164 HTTP lane cap and 3.5m/70k D1 plan pass 5/5. Three measured full runs and complete consumer wiring remain. |
 | T16 | PENDING | — |
-| T17 | PENDING | — |
+| T17 | FRAME_COMPLETED_LOCAL | Terminal lifecycle, healthy-no-idea distinction, 45m/15m/12m watchdog rules and 500/2,000 KV admission pass 4/4. Live KV binding and Hub/GitHub cross-watch remain deployment blockers. |
 | T18 | PENDING | — |
 
 ## Audit findings
@@ -36,7 +36,12 @@ All findings begin as `PENDING`. A finding may only be changed to `CLOSED` with 
 |---|---|
 | F01 | PARTIAL_ACCESS_BLOCKER — GitHub analytics owner is fenced; exact live legacy Hub removal awaits its blocked bundle |
 | F02 | CLOSED_LOCAL_K02 — disabled schedule performs no checkout/decrypt/runtime; runner has a second pre-decrypt/pre-network gate |
-| F03–F51 | PENDING |
+| F03 | FRAME_CLOSED_LOCAL_K17 — final state model is derived after terminal events; runtime wiring remains |
+| F04–F41 | PENDING |
+| F42 | CLOSED_LOCAL_K15_PLAN — worst case is exactly 13,330 including manual and burst |
+| F43 | CLOSED_LOCAL_K15_LEDGER — concurrent/idempotent provider-attempt reservations tested |
+| F44 | IN_PROGRESS_T02_T15 — analytics fencing and atomic provider ledger exist; all actors/SQL measurement remain |
+| F45–F51 | PENDING |
 
 ## New data blocks
 

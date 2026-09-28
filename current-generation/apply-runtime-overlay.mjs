@@ -42,6 +42,8 @@ const files=[
  'src/oxarchive-cost-probe.mjs',
  'src/runtime-control.mjs',
  'src/analytics-lease.mjs',
+ 'src/unified-budget.mjs',
+ 'src/run-health.mjs',
  'src/liquidation-extension/runner-extension.mjs',
  'src/liquidation-extension/htx-liquidation-route.mjs',
  'src/liquidation-extension/native-verification.mjs',
