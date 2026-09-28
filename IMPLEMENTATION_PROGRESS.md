@@ -21,8 +21,8 @@ This file is an internal implementation ledger. It is not part of the user-visib
 | T10 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Explicit metric mapper (no fallback 58), upstream dedup and separated invisible diagnostic scores pass K10. |
 | T11 | CORE_COMPLETED_HUB_WIRING_BLOCKED | Immutable publication→dispatch binding, positive message_id/recipient ACK, SENT reuse, payload conflict, UNKNOWN_DELIVERY no-blind-retry and delivered ENTRY removal rules pass K11. Exact live relay replacement is blocked by the unavailable Hub bundle. |
 | T12 | QUEUE_COMPLETED_CONSUMER_WIRING_PENDING | Manual commands are durably enqueued in a short job outside analytics concurrency before the heavy job; immutable parameters, claim/idempotency, freshness and completion-only-after-existing-consumer pass K12. Runtime result handoff remains. |
-| T13 | PENDING | — |
-| T14 | PENDING | — |
+| T13 | CORE_COMPLETED_LOCAL_WIRING_PENDING | Exact SENT cohort, post-delivery HTX side anchor, 1/4/12/24h closed-minute endpoints, MFE/MAE ambiguity, costs and 8-item nonblocking settlement pass K13. |
+| T14 | CORE_COMPLETED_INSUFFICIENT_DATA | `liquidation_outcome_v2`, exact zone touch, independent forecast groups, chronological 60/20/20 and factor=1 fail-closed gates pass K14. Current state is honestly `INSUFFICIENT_CALIBRATION_DATA`. |
 | T15 | IN_PROGRESS | K15 frame: exact 13,330/12,090 BYK proof, atomic provider-attempt ledger, conservative timeout accounting, 164 HTTP lane cap and 3.5m/70k D1 plan pass 5/5. Three measured full runs and complete consumer wiring remain. |
 | T16 | CORE_COMPLETED_LIVE_ADAPTERS_PENDING | EvidenceV2 validates and routes fixtures N01–N17 to concrete consumers; stale/wrong/error/empty, dedup, family caps, hotlist and quality admission pass. Individual live adapter smoke receipts and full canonical wiring remain. |
 | T17 | FRAME_COMPLETED_LOCAL | Terminal lifecycle, healthy-no-idea distinction, 45m/15m/12m watchdog rules and 500/2,000 KV admission pass 4/4. Live KV binding and Hub/GitHub cross-watch remain deployment blockers. |
@@ -60,7 +60,7 @@ All blocks begin as `PENDING`. `WAITING_FREE_KEY` is permitted only where the sp
 | C | T03–T05, T07 | IN_PROGRESS — all four core contracts pass locally; runtime wiring and measured Hub collector admission remain |
 | D | T06, T08–T10, T16 | IN_PROGRESS — core contracts and 17-block consumer map pass locally; remaining work is authoritative runtime wiring and bounded live adapter receipts |
 | E | T11–T12 | IN_PROGRESS_WITH_HUB_BLOCKER — durable command intake and strict delivery contract pass locally; live relay and result-consumer wiring remain |
-| F | T13–T14 | BLOCKED_BY_E |
+| F | T13–T14 | CORE_COMPLETED_LOCAL — outcome/calibration contracts pass; production cohort wiring and future natural data accumulation remain |
 | G | T17–T18 | BLOCKED_BY_F |
 
 ## Immutable owner constraints

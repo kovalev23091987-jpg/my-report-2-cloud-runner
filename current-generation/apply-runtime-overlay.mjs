@@ -53,6 +53,8 @@ const files=[
  'src/evidence-v2.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
+ 'src/outcome-v2.mjs',
+ 'src/calibration-v2.mjs',
  'src/liquidation-extension/runner-extension.mjs',
  'src/liquidation-extension/htx-liquidation-route.mjs',
  'src/liquidation-extension/native-verification.mjs',
