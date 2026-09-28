@@ -8539,6 +8539,16 @@ async function runBoundedDeepCheckScheduler(
           manual_formatter_status:
             deep?.canonical_analytical_bundle?.manual?.status ??
             null,
+          direction_candidate:
+            deep?.direction_candidate ??
+            null,
+        },
+        full_evidence_persistence: {
+          stage: "FULL_EVIDENCE_PERSISTENCE",
+          status: deep?.stage392_shadow_integration?.full_evidence_persistence?.status ?? null,
+          persisted: deep?.stage392_shadow_integration?.full_evidence_persistence?.persisted === true,
+          insert_changes: Number(deep?.stage392_shadow_integration?.full_evidence_persistence?.insert_changes ?? 0),
+          error: deep?.stage392_shadow_integration?.full_evidence_persistence?.error ?? null,
         },
         opportunity_intelligence_shadow: {
           version:
@@ -11752,10 +11762,10 @@ if (!env?.DATA_DB) {
       contract_version: "full-evidence-v1",
       adapters_version: "public-evidence-adapters-v1",
       fixed_decision_weights: {
-        CROSS_EXCHANGE_DERIVATIVES: 32,
+        CROSS_EXCHANGE_DERIVATIVES: 35,
         MARKET_STRENGTH_SPOT: 30,
         SMART_MONEY_ONCHAIN: 20,
-        SUPPORTING_RISK: 18,
+        SUPPORTING_RISK: 15,
       },
       full_dc_promoted: false,
       full_decision_eligible: false,
@@ -13401,10 +13411,10 @@ const buildFullEvidenceEnvelope = (() => {
   const EVIDENCE_CONTRACT_VERSION = "full-evidence-v1";
 
   const FIXED_DECISION_WEIGHTS = Object.freeze({
-    CROSS_EXCHANGE_DERIVATIVES: 32,
+    CROSS_EXCHANGE_DERIVATIVES: 35,
     MARKET_STRENGTH_SPOT: 30,
     SMART_MONEY_ONCHAIN: 20,
-    SUPPORTING_RISK: 18,
+    SUPPORTING_RISK: 15,
   });
 
   const VALID_STATUS = new Set([
@@ -13681,7 +13691,7 @@ const buildFullEvidenceEnvelope = (() => {
         telegram_started: false,
         trading_execution: false,
         weights_changed: false,
-        note: "Evidence fusion only. Fixed 32/30/20/18 weights are the bounded supplemental budget, not a replacement overall score and not applied to synthetic or missing chain scores. Directional promotion remains disabled until evidence/scoring calibration gates are proven.",
+        note: "Evidence fusion only. Fixed 35/30/20/15 weights are the Full Evidence ownership split. The separate 32/30/20/18 supplemental block remains bounded to ±10. Directional promotion remains disabled until evidence/scoring calibration gates are proven.",
       },
     };
   }
@@ -14088,10 +14098,10 @@ function fullEvidenceRecordSafe(record) {
     record &&
     record.mode === "FULL_EVIDENCE_SHADOW_NO_EXECUTION" &&
     record.strategy_weights_changed === false &&
-    Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES) === 32 &&
+    Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES) === 35 &&
     Number(record?.fixed_decision_weights?.MARKET_STRENGTH_SPOT) === 30 &&
     Number(record?.fixed_decision_weights?.SMART_MONEY_ONCHAIN) === 20 &&
-    Number(record?.fixed_decision_weights?.SUPPORTING_RISK) === 18 &&
+    Number(record?.fixed_decision_weights?.SUPPORTING_RISK) === 15 &&
     record?.decision?.dc_long == null &&
     record?.decision?.dc_short == null &&
     record?.decision?.live_probability == null &&
@@ -16540,7 +16550,7 @@ async function buildDeepCheckInput(params, env) {
   const htxReferencePrice=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState)&&['LONG','SHORT'].includes(finalRouteDirection)
     ?buildHtxReferencePrice({contract,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
     :htxObservationReferencePrice;
-  const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts,confirmation_state:'DISCOVERY_ONLY'});
+  const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.discovery_direction_hint??params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.snapshot_ts??params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts??params?.discovery_row?.scan_ts,confirmation_state:'DISCOVERY_ONLY'});
   const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
   const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:executionHandoff?.ok===true?'SUCCESS':executionHandoff?.status,reason:executionHandoff?.reason},reference_price:htxReferencePrice});
   const entryState=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState),strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
@@ -16649,6 +16659,12 @@ return {
 
     free_sources_delta_summary:
       freeSourceRuntimeSummary,
+
+    direction_candidate:
+      directionCandidate,
+
+    entry_direction_authorization:
+      entryDirectionAuthorization,
 
     stage392_shadow_integration: {
       version: "stage392-shadow-integration-v2-tz101-execution-r3",
@@ -18754,10 +18770,16 @@ const __REPORT2_ORIGINAL_HANDLER = {
       const queuedLiquidationContract=String(env?.REPORT2_RUN_SOURCE||'')==='schedule'
         ? String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim().toUpperCase()
         : '';
-      if(queuedLiquidationContract&&!dueRecheckContract){
+      if(queuedLiquidationContract&&!dueRecheckContract&&!manualRequestedContract){
         const scopeConfirmed=confirmedScopeContracts.includes(queuedLiquidationContract);
         const telemetry=(Array.isArray(postV7DeepPrefilter?.contract_telemetry)?postV7DeepPrefilter.contract_telemetry:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
-        if(scopeConfirmed&&telemetry){const forced={priority_rank:0,...telemetry,contract:queuedLiquidationContract,liquidation_queue_analysis:true};postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==queuedLiquidationContract)]};liveHandoffPlan={lane:'LIQUIDATION_QUEUE',require_exact_contract:true,required_contract:queuedLiquidationContract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};}
+        if(scopeConfirmed&&telemetry){
+          const attempts=Number(env?.REPORT2_LIQUIDATION_QUEUE_ATTEMPTS||0),starved=attempts>=3;
+          const queued={...telemetry,contract:queuedLiquidationContract,liquidation_queue_analysis:true,liquidation_queue_attempts:attempts};
+          const ordinary=(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==queuedLiquidationContract);
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:starved?[{...queued,priority_rank:0},...ordinary]:[...ordinary,{...queued,priority_rank:Number(queued?.priority_rank??99)}]};
+          liveHandoffPlan={...liveHandoffPlan,liquidation_queue_pending:true,liquidation_queue_contract:queuedLiquidationContract,liquidation_queue_starved:starved};
+        }
       }
 
       const journalMaintenanceSelected =
@@ -18871,6 +18893,11 @@ const __REPORT2_ORIGINAL_HANDLER = {
           }
         );
 
+      if(queuedLiquidationContract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
+        const queueResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
+        if(!queueResult){try{await env.REPORT2_LIQUIDATION_QUEUE_COMPLETE({usable:false,result:{selection_status:'NOT_SELECTED_CAPACITY',stage:'DEEP_SELECTION',run_id:runId}});}catch{}}
+      }
+
       if (postV7RecheckClaim?.claimed === true) {
         const exactResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])
           .find(row=>String(row?.contract||'').trim()===String(postV7RecheckClaim.task.contract_code||'').trim());
@@ -18880,15 +18907,19 @@ const __REPORT2_ORIGINAL_HANDLER = {
         }
       }
 
-      const liveHandoffZeroReason =
+      const fullEvidenceFailure=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])
+        .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
+        .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
+      const baseLiveHandoffZeroReason =
         classifyV3LiveHandoffZeroReason({
           handoff_plan:
             liveHandoffPlan,
           bounded_deep_check:
             boundedDeepCheck,
         });
+      const liveHandoffZeroReason=fullEvidenceFailure?'FULL_EVIDENCE_PERSISTENCE_FAILED':baseLiveHandoffZeroReason;
 
-      const v3PipelineHealth =
+      const assessedV3PipelineHealth =
         assessV3PipelineHealth({
           handoff_plan:
             liveHandoffPlan,
@@ -18897,6 +18928,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
           zero_reason:
             liveHandoffZeroReason,
         });
+      const v3PipelineHealth=fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:assessedV3PipelineHealth;
+      const deepOutcomeClassification=fullEvidenceFailure?'TECHNICAL_FAILURE':Number(boundedDeepCheck?.plan?.counts?.selected??0)===0?'NOT_SELECTED_CAPACITY':(boundedDeepCheck?.results||[]).some(row=>String(row?.data_sufficiency||'').toUpperCase().includes('INSUFFICIENT'))?'INSUFFICIENT_DATA':boundedDeepCheck?.decision?.generated===true?'DECISION_GENERATED':'MARKET_REJECTED';
 
       console.log(
         "v3_live_handoff_health",
@@ -18926,6 +18959,9 @@ const __REPORT2_ORIGINAL_HANDLER = {
             0,
           zero_reason:
             liveHandoffZeroReason,
+          outcome_classification: deepOutcomeClassification,
+          failure_stage: v3PipelineHealth?.failure_stage ?? null,
+          diagnostic: v3PipelineHealth?.diagnostic ?? null,
           maintenance_available:
             liveHandoffPlan
               ?.maintenance_available ===
@@ -19032,6 +19068,9 @@ const __REPORT2_ORIGINAL_HANDLER = {
                       journal_status:
                         row
                           ?.journal_status ??
+                        null,
+                      full_evidence_persistence:
+                        row?.full_evidence_persistence ??
                         null,
                     })
                   )

@@ -46,4 +46,7 @@ test('K04: authoritative worker feeds the frozen adapter only a typed HTX price 
  assert.match(source,/mark_price:null,ticker:null,ticker_24h:null/);
  assert.match(source,/provider_current_price:null/);
  assert.match(source,/current_price:htxReferencePrice\.status===['"]CLOSED['"]\?htxReferencePrice\.value:null/);
+ assert.match(source,/discovery_direction_hint\?\?params\?\.discovery_row\?\.early_candidate_direction_hint/);
+ assert.match(source,/snapshot_ts\?\?params\?\.discovery_row\?\.observed_ts/);
+ assert.match(source,/confirmation_state:'DISCOVERY_ONLY'/);
 });

@@ -8,15 +8,24 @@ test('runner installs the wave-scoped queue and keeps the one-hour outcome loop 
  assert.doesNotMatch(runner,/createLiquidationCandidateQueue/);
 });
 
-test('scheduled queue cannot override a due factual recheck and shares the request envelope',()=>{
+test('scheduled queue joins common selection, cannot override recheck/manual, and has bounded starvation protection',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
- assert.match(worker,/if\(queuedLiquidationContract&&!dueRecheckContract\)/);
+ assert.match(worker,/if\(queuedLiquidationContract&&!dueRecheckContract&&!manualRequestedContract\)/);
+ assert.doesNotMatch(worker,/lane:'LIQUIDATION_QUEUE',require_exact_contract:true/);
+ assert.match(worker,/starved=attempts>=3/);
+ assert.match(worker,/selection_status:'NOT_SELECTED_CAPACITY'/);
  assert.match(worker,/crossExchangeFamilyTurn/);
  assert.match(worker,/!crossExchangeFamilyTurn&&\(manualCoin\|\|queuedCoin/);
  assert.match(worker,/DEFERRED_SHARED_REQUEST_ENVELOPE/);
  assert.match(worker,/predictive_source_health:env\?\.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH/);
  assert.match(worker,/cross_exchange_risk:crossExchangeRiskContext/);
  assert.match(worker,/REPORT2_LIQUIDATION_SIGNAL_RECORD/);
+});
+
+test('queue preserves explicit expiration and capacity audit outcomes',()=>{
+ const queue=fs.readFileSync(new URL('../files/src/liquidation-candidate-queue.mjs',import.meta.url),'utf8');
+ assert.match(queue,/EXPIRED_UNCHECKED/);
+ assert.match(queue,/last_result_json/);
 });
 
 test('the same canonical full-report path feeds supplemental liquidation evidence to report and Telegram publication',()=>{

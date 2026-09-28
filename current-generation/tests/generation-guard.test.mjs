@@ -25,7 +25,7 @@ test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  assert.ok(y.includes('- cron: "*/20 * * * *"'));
  assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"80"/);
- assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M"/);
+ assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260928_CANDIDATE_FLOW_FIX_V6_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
  assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"SHADOW_ONLY"/);
@@ -61,16 +61,15 @@ test('current overlay accepts only the clean base and the pinned deployed predec
  assert.match(overlay,/c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97/);
  assert.match(overlay,/expectedInputs\.has\(sha\(input\)\)/);
 });
-test('runtime diagnostic version cannot retain the prior V4 label',()=>{
+test('runtime diagnostic version is V6',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
- assert.match(runner,/my-report-2-current-generation-v5-internal-audit-fixes-20260928/);
- assert.doesNotMatch(runner,/RUNNER_VERSION\s*=\s*["']my-report-2-current-generation-v4/);
+ assert.match(runner,/my-report-2-current-generation-v6-candidate-flow-fix-20260928/);
 });
-test('workflow worker pin equals the effective V5 worker bytes',()=>{
+test('workflow worker pin equals the effective V6 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'1919d8db046c10b5ed6839ae4762ab310af183bf764aaccb32df5d475d3d5bfd');
+ assert.equal(hash,'38c49707a129ec77d3113fbd3c9a8a48f9da7a2e92b5735fe22c812c89027ace');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{

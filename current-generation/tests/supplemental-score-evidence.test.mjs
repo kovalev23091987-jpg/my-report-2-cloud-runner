@@ -63,10 +63,11 @@ test('cross-exchange quality stays factor one until explicit T16.5 activation',(
  const proven=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:200,eligible:1,predictive_weight_factor:1.25,activation_state:'ACTIVE',eligibility_protocol:'T16_5'}]}}});
  assert.equal(proven[0].base_quality,0.6);assert.equal(proven[0].quality,0.75);assert.equal(proven[0].predictive_weight_status,'ACTIVE_T16_5');
 });
-test('authoritative worker uses the same 32/30/20/18 supplemental budget',()=>{
+test('Full Evidence keeps 35/30/20/15 while supplemental scoring keeps 32/30/20/18',()=>{
  const source=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
- assert.doesNotMatch(source,/fixed_weights_35_30_20_15|Fixed 35\/30\/20\/15|CROSS_EXCHANGE_DERIVATIVES:\s*35|SUPPORTING_RISK:\s*15/);
- assert.match(source,/CROSS_EXCHANGE_DERIVATIVES:\s*32/);assert.match(source,/SUPPORTING_RISK:\s*18/);
+ const supplemental=fs.readFileSync(new URL('../files/src/supplemental-score-evidence.mjs',import.meta.url),'utf8');
+ assert.match(source,/CROSS_EXCHANGE_DERIVATIVES:\s*35/);assert.match(source,/SUPPORTING_RISK:\s*15/);
+ assert.match(supplemental,/DERIVATIVES:\s*32/);assert.match(supplemental,/SUPPORTING_RISK:\s*18/);assert.match(supplemental,/maximum_absolute_adjustment:10/);
 });
 test('EvidenceV2 reaches the same bounded manual and Telegram score path without a second scorer',()=>{
  const evidence={evidence_id:'E1',asset_id:'asset:sol',htx_contract:'SOL-USDT',block_id:'N01',metric_family:'unlock',provider_id:'OFFICIAL_EVENTS',upstream_id:'OFFICIAL',dependency_group:'EVENT',observed_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:3000,directional_strength:null,risk_strength:1,reliability:1};
