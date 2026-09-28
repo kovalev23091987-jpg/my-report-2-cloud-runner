@@ -101,7 +101,7 @@ jobs:
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -127,7 +127,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "e39f6242a09b964a222feb0c80c683f91b16908affda78c67b7dddf7851ebe83"
+      REPORT2_EXPECTED_WORKER_SHA: "6d2a5cb9882bdea64c91696d8a414d379bf86ea431b3450ba718352bb1dff39e"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -160,7 +160,7 @@ jobs:
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"

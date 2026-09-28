@@ -18795,10 +18795,17 @@ const __REPORT2_ORIGINAL_HANDLER = {
         const directional=directionalRows.find(row=>earlyFor(row))||directionalRows[0];
         if(directional){
           const contract=String(directional.contract).trim().toUpperCase();
-          const early=earlyFor(directional);
-          const selected={...directional,priority_rank:0,directional_discovery_priority:true,...(early?{early_candidate_bridge:true,early_candidate_wave_id:early.wave_id,early_candidate_quality_0_100:Number(early.early_detection_quality_0_100),early_candidate_direction_hint:early.direction_hint}: {})};
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[selected,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
-          liveHandoffPlan={...liveHandoffPlan,lane:'LIVE_DIRECTIONAL_DISCOVERY',require_exact_contract:true,required_contract:contract,directionless_fast_move_deferred:required||null};
+          const directionalCandidates=directionalRows.map(row=>{
+            const early=earlyFor(row);
+            return {...row,directional_discovery_priority:true,...(early?{early_candidate_bridge:true,early_candidate_wave_id:early.wave_id,early_candidate_quality_0_100:Number(early.early_detection_quality_0_100),early_candidate_direction_hint:early.direction_hint}: {})};
+          });
+          const selected=directionalCandidates.find(row=>String(row?.contract||'').trim().toUpperCase()===contract);
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[{...selected,priority_rank:0},...directionalCandidates.filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
+          /* The directionless Fast-Move lease is deliberately deferred. The
+           * directional lane is not a lease, so let the bounded scheduler pick
+           * the first non-cooled directional candidate instead of pinning one
+           * stale symbol and wasting every 20-minute slot. */
+          liveHandoffPlan={...liveHandoffPlan,lane:'LIVE_DIRECTIONAL_DISCOVERY',require_exact_contract:false,required_contract:null,live_shortlist_count:directionalCandidates.length,live_contracts:directionalCandidates.map(row=>String(row?.contract||'').trim().toUpperCase()),directionless_fast_move_deferred:required||null,reason:'READY_DIRECTIONAL_CANDIDATE_SELECTED_AFTER_COOLDOWN'};
         }
       }
 

@@ -42,7 +42,7 @@ import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mj
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v7-canonical-launch-telegram-fix-20260928";
+const RUNNER_VERSION = "my-report-2-current-generation-v8-canonical-runtime-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -453,7 +453,7 @@ async function main() {
   process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
   let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V8_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();

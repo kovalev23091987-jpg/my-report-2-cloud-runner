@@ -20,4 +20,7 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.match(worker,/LIVE_DIRECTIONAL_DISCOVERY/);
  assert.match(worker,/directionless_fast_move_deferred/);
  assert.match(worker,/early_candidate_wave_id:early\.wave_id/);
+ assert.match(worker,/const directionalCandidates=directionalRows\.map/);
+ assert.match(worker,/lane:'LIVE_DIRECTIONAL_DISCOVERY',require_exact_contract:false,required_contract:null/);
+ assert.match(worker,/READY_DIRECTIONAL_CANDIDATE_SELECTED_AFTER_COOLDOWN/);
 });
