@@ -41,8 +41,9 @@ import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/
 import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
+import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v11-canonical-runtime-20260928";
+const RUNNER_VERSION = "my-report-2-current-generation-v12-contract-integrity-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -454,7 +455,7 @@ async function main() {
   process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
   let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
@@ -464,6 +465,7 @@ async function main() {
   console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
   const unifiedHttpBudget=createUnifiedHttpBudget();
   await installRuntimeControl(env.DATA_DB);
+  await installProviderMinuteLedger(env.DATA_DB);
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
   if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
   console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
@@ -550,7 +552,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     console.log('OXARCHIVE_COST_PROBE_RECEIPT',JSON.stringify(probe));
   }
   const oxarchiveReadiness=await loadOxArchiveReadiness({db:env.DATA_DB,api_key:oxarchiveApiKey});
-  const oxarchiveCollector=createOxArchiveCollector({db:env.DATA_DB,fetch_impl:globalThis.fetch,api_key:oxarchiveApiKey,readiness:oxarchiveReadiness});
+  const oxarchiveConfig={db:env.DATA_DB,api_key:oxarchiveApiKey,readiness:oxarchiveReadiness};
   console.log('OXARCHIVE_RUNTIME_READINESS',JSON.stringify({status:oxarchiveReadiness.status,reason:oxarchiveReadiness.reason||null,enabled:oxarchiveReadiness.enabled===true,credit_cost:oxarchiveReadiness.credit_cost??null,monthly_credit_cap:oxarchiveReadiness.monthly_credit_cap,max_monthly_calls:oxarchiveReadiness.max_monthly_calls??0,automatic_topup:false}));
   if (postV7UnifiedEnabled && source === "schedule") {
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:"GITHUB_ACTIONS"});
@@ -567,8 +569,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     };
     const providerAdmit=createD1SourceAdmission({db:env.DATA_DB,scope_bindings:scopes,within_run_budget:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:requiredDownstream.rows_read+e.extraRowsRead,extraRowsWritten:requiredDownstream.rows_written+e.extraRowsWritten})});
     const sourceWeightStore=createLiquidationSourceWeightStore({db:env.DATA_DB});
-    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:5,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_collect:oxarchiveCollector,source_weight_store:sourceWeightStore});
-    manualLiquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:8,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_collect:oxarchiveCollector,source_weight_store:sourceWeightStore});
+    liquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:5,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_config:oxarchiveConfig,source_weight_store:sourceWeightStore});
+    manualLiquidationSources=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:providerAdmit,fetch_impl:globalThis.fetch,accounts_per_deep:3,max_http_per_run:8,max_total_ms:45000,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_config:oxarchiveConfig,source_weight_store:sourceWeightStore});
     env.REPORT2_LIQUIDATION_NATIVE_COLLECT=liquidationSources.collect;
   }
   if(commandIntent.matched){

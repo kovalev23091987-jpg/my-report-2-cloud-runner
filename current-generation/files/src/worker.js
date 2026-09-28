@@ -100,6 +100,7 @@ import {
   buildRuntimeCanonicalBundle,
 } from "./canonical-runtime-adapter.mjs";
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
+import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
 
 import {
   buildFreeSourceRuntimeSummary,
@@ -340,7 +341,8 @@ async function fetchJson(url) {
 
 function createPerDeepCheckFetchCache(
   fetcher = fetchJson,
-  maxUniqueRequests = DEEP_CHECK_EXTERNAL_REQUESTS
+  maxUniqueRequests = DEEP_CHECK_EXTERNAL_REQUESTS,
+  executionRefreshReserve = 2
 ) {
   const cache = new Map();
   let logicalRequests = 0;
@@ -351,33 +353,41 @@ function createPerDeepCheckFetchCache(
     DEEP_CHECK_EXTERNAL_REQUESTS,
     Number.isSafeInteger(maxUniqueRequests) ? maxUniqueRequests : DEEP_CHECK_EXTERNAL_REQUESTS
   ));
-  return {
-    fetch(url) {
+  const requestedRefreshReserve = arguments.length >= 3
+    ? executionRefreshReserve
+    : (requestCap === DEEP_CHECK_EXTERNAL_REQUESTS ? 2 : 0);
+  const refreshReserve = Math.max(0,Math.min(2,Number.isSafeInteger(requestedRefreshReserve)?requestedRefreshReserve:2,requestCap));
+  const start = (url,{bypassCache=false}={}) => {
       logicalRequests += 1;
-      const key = String(url);
-      if (cache.has(key)) {
+      const target = String(url);
+      const key = bypassCache ? `EXECUTION_REFRESH:${logicalRequests}:${target}` : target;
+      if (!bypassCache && cache.has(key)) {
         reusedRequests += 1;
         return cache.get(key);
       }
+      const laneCap=bypassCache?requestCap:Math.max(0,requestCap-refreshReserve);
       let pending;
-      if (uniqueExternalRequests >= requestCap) {
+      if (uniqueExternalRequests >= laneCap) {
         uniqueBlockedRequests += 1;
         pending = Promise.resolve({
           ok: false,
           status: null,
           data: null,
           error: "DEEP_CHECK_EXTERNAL_REQUEST_CAP_EXCEEDED_FAIL_CLOSED",
-          url: key,
+          url: target,
         });
       } else {
         uniqueExternalRequests += 1;
-        pending = Promise.resolve().then(() => fetcher(key));
+        pending = Promise.resolve().then(() => fetcher(target));
       }
       cache.set(key, pending);
       return pending;
-    },
+  };
+  return {
+    fetch(url) { return start(url); },
+    refresh(url) { return start(url,{bypassCache:true}); },
     stats() {
-      return {
+      const result = {
         logical_requests: logicalRequests,
         unique_request_keys: cache.size,
         unique_external_requests: uniqueExternalRequests,
@@ -385,6 +395,10 @@ function createPerDeepCheckFetchCache(
         unique_external_request_cap: requestCap,
         reused_requests: reusedRequests,
       };
+      // Additive diagnostic stays accessible to the new decision-timeline
+      // acceptance without changing the enumerable legacy stats contract.
+      Object.defineProperty(result,"execution_refresh_reserve",{value:refreshReserve,enumerable:false});
+      return result;
     },
   };
 }
@@ -1285,6 +1299,29 @@ async function futuresSnapshot(params) {
   return snapshot;
 }
 
+// A Deep Check can spend many seconds on independent enrichment. Reuse the
+// original factual execution quote while it is still valid; otherwise perform
+// one bounded two-request HTX refresh immediately before fixing decision_ts.
+// The refresh preserves provider timestamps and never extends an old quote.
+async function refreshHtxExecutionQuoteIfNeeded({contract,notional_usdt,current_quote,now_ts=Date.now(),request_json=fetchJson}={}) {
+  const validUntil = Number(current_quote?.facts?.valid_until_ts);
+  const received = Number(current_quote?.facts?.received_ts);
+  if (current_quote?.facts && Number.isSafeInteger(received) && received <= now_ts && Number.isSafeInteger(validUntil) && validUntil-now_ts >= 5_000) {
+    return {quote:current_quote,status:'ORIGINAL_QUOTE_STILL_FRESH',attempted_requests:0,available_ts:received};
+  }
+  const prior=current_quote?.facts||null,instrumentSource=Number(prior?.instrument_source_ts);
+  const needsInfo=!Number.isSafeInteger(instrumentSource)||instrumentSource>now_ts||now_ts-instrumentSource>=60_000;
+  const infoUrl=`${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info?contract_code=${encodeURIComponent(contract)}`;
+  const depthUrl=`${FUTURES_BASE}/linear-swap-ex/market/depth?contract_code=${encodeURIComponent(contract)}&type=step0`;
+  const requests=[...(needsInfo?[request_json(infoUrl)]:[]),request_json(depthUrl)],settled=await Promise.allSettled(requests);
+  const availableTs=Date.now();
+  if(settled.some(row=>row.status!=='fulfilled'))return{quote:null,status:'REFRESH_TRANSPORT_FAILED',attempted_requests:requests.length,available_ts:availableTs};
+  const infoResponse=needsInfo?settled[0].value:{ok:true,data:{status:'ok',ts:prior.instrument_source_ts,data:[{contract_code:contract,contract_size:prior.contract_size_base,price_tick:prior.price_tick,contract_status:prior.contract_status}]}};
+  const depthResponse=settled.at(-1).value;
+  const quote=prepareHtxExecutionFacts({contract_code:contract,requested_notional_usdt:notional_usdt,info_response:infoResponse,depth_response:depthResponse,received_ts:availableTs});
+  return {quote,status:quote?.facts?'REFRESHED':'REFRESH_NOT_CLOSED',attempted_requests:requests.length,contract_info_refreshed:needsInfo,available_ts:availableTs,reasons:quote?.reasons??[]};
+}
+
 /* =========================================================
    SPOT SNAPSHOT — существующий модуль
    ========================================================= */
@@ -1401,6 +1438,7 @@ async function spotSnapshot(params) {
     trades_requested: tradesRequested,
     timestamp: now,
     timestamp_utc: new Date(now).toISOString(),
+    provider_source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(tickerR.data?.ts),
     quality_status: qualityStatus,
     quality_rules: {
       freshness_sec: freshnessSec,
@@ -2965,6 +3003,9 @@ function buildTrajectoryWindow({
         now
       ).toISOString(),
 
+    provider_source_ts:
+      normalizeTs(latestClosedEnd),
+
     contract_info:
       contractInfo
         ? {
@@ -3759,6 +3800,13 @@ function stageState(
 }
 
 async function loadHistoryTargets(
+  env,
+  nowMs
+) {
+  return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,actor:'HUB_PUBLIC_COLLECTOR',preferred_generation:env?.REPORT2_CURRENT_GENERATION||null});
+}
+
+async function loadHistoryTargetsLegacy(
   env,
   nowMs
 ) {
@@ -9325,6 +9373,23 @@ async function htxStage0History(
   params,
   env
 ) {
+  return readMarketHistoryForContract({
+    db: env?.DATA_DB,
+    contract: normalizeFuturesContract(params?.contract || params?.contract_code || 'ETHFI-USDT'),
+    hours: clamp(params?.hours, 0.25, 168, 6),
+    now_ts: Date.now(),
+    actor: 'HUB_PUBLIC_COLLECTOR',
+    preferred_generation: env?.REPORT2_CURRENT_GENERATION || null,
+  });
+}
+
+// Retained only to keep the historical parser reproducible. Production deep
+// checks call the schema-compatible collector reader above; this function is
+// never routed as five-minute history.
+async function htxStage0HistoryLegacy(
+  params,
+  env
+) {
   const now =
     Date.now();
 
@@ -14542,6 +14607,7 @@ async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_
     // SHADOW persistence while preserving the proven 48/50 peak budget.
     const results = await env.DATA_DB.batch([insert]);
     const insertChanges = Number(results?.[0]?.meta?.changes ?? 0);
+    const committedTs = Date.now();
     if (insertChanges !== 1) {
       return {
         status: insertChanges === 0 ? "DEDUPLICATED_NO_FACTUAL_ACK" : "INSERT_ACK_INVALID",
@@ -14552,6 +14618,11 @@ async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_
         cleanup_changes: 0,
         cleanup_deferred: true,
         cleanup_policy: "BOUNDED_MAINTENANCE_ONLY_NOT_DEEP_CHECK",
+        committed_ts: committedTs,
+        full_evidence_id: record?.full_evidence_id ?? null,
+        contract_code: record?.contract ?? null,
+        snapshot_id: stage392_prepared_proof_bundle?.bundle?.snapshot_id ?? null,
+        observed_ts: record?.observed_ts ?? null,
         error: null,
       };
     }
@@ -14564,6 +14635,11 @@ async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_
       cleanup_changes: 0,
       cleanup_deferred: true,
       cleanup_policy: "BOUNDED_MAINTENANCE_ONLY_NOT_DEEP_CHECK",
+      committed_ts: committedTs,
+      full_evidence_id: record?.full_evidence_id ?? null,
+      contract_code: record?.contract ?? null,
+      snapshot_id: stage392_prepared_proof_bundle?.bundle?.snapshot_id ?? null,
+      observed_ts: record?.observed_ts ?? null,
       error: null,
     };
   } catch (error) {
@@ -16032,6 +16108,10 @@ async function buildDeepCheckInput(params, env) {
         "series_non_empty",
         historySeries.length > 0,
       ],
+      [
+        "complete_5m_window",
+        historyData?.coverage?.complete_5m_window === true,
+      ],
     ];
 
     const historyUsable =
@@ -16039,7 +16119,8 @@ async function buildDeepCheckInput(params, env) {
         "FULFILLED" &&
       historyData?.health
         ?.data_db === true &&
-      historySeries.length > 0;
+      historySeries.length > 0 &&
+      historyData?.coverage?.complete_5m_window === true;
 
     const components = {
       futures_snapshot:
@@ -16144,25 +16225,11 @@ async function buildDeepCheckInput(params, env) {
 
 
   
-  const shadowDecision =
-    buildShadowDecisionTelemetry({
-      contract,
-      now,
-      futures,
-      spot,
-      trajectory,
-      history,
-      dataSufficiency,
-    });
-
-  const shadowPersistence =
-    await persistShadowDecisionTelemetry(
-      env,
-      shadowDecision
-    );
-
-  shadowDecision.persistence =
-    shadowPersistence;
+  // The authoritative decision clock is fixed only after all enrichment and
+  // an optional bounded execution refresh. Do not persist an early decision
+  // whose own evidence is not available yet.
+  let shadowDecision = null;
+  let shadowPersistence = null;
 
   // One bounded Deep Check runs per invocation. Reserve every ByKaranteli
   // request for this contract before the first network call so scheduled and
@@ -16557,6 +16624,48 @@ async function buildDeepCheckInput(params, env) {
     };
   }
 
+  const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({
+    contract,
+    notional_usdt: futuresParams.notional_usdt,
+    current_quote: futures?.data?._tz101_execution_quote ?? null,
+    now_ts: Date.now(),
+    request_json: sharedFetch.refresh,
+  });
+  const finalExecutionQuote = executionRefresh.quote;
+  const decisionTs = Date.now();
+  now = decisionTs;
+  const stage392SnapshotId = `S392:${String(contract || "UNKNOWN").normalize("NFC")}:${decisionTs}`;
+  shadowDecision = buildShadowDecisionTelemetry({
+    contract,
+    now: decisionTs,
+    futures,
+    spot,
+    trajectory,
+    history,
+    dataSufficiency,
+  });
+  shadowDecision.cycle_started_ts = cycleStartedTs;
+  shadowDecision.source_clocks = {
+    execution: {
+      source_ts: Number(finalExecutionQuote?.facts?.book_source_ts) || null,
+      available_ts: Number(finalExecutionQuote?.facts?.received_ts) || executionRefresh.available_ts || null,
+    },
+    spot: {
+      source_ts: Number(spot?.data?.provider_source_ts) || null,
+      available_ts: Number(spot?.available_ts) || null,
+    },
+    trajectory: {
+      source_ts: Number(trajectory?.data?.provider_source_ts) || null,
+      available_ts: Number(trajectory?.available_ts) || null,
+    },
+    public_evidence: {
+      source_ts: Number(publicEvidence?.observed_ts) || null,
+      available_ts: publicEvidenceAvailableTs,
+    },
+  };
+  shadowPersistence = await persistShadowDecisionTelemetry(env,shadowDecision);
+  shadowDecision.persistence = shadowPersistence;
+
   let multiWaveCampaign;
   try {
     multiWaveCampaign =
@@ -16567,6 +16676,7 @@ async function buildDeepCheckInput(params, env) {
           opportunityIntelligence,
         input: {
           contract,
+          stage392_snapshot_id: stage392SnapshotId,
           primary:
             trajectory
               ?.data
@@ -16610,20 +16720,17 @@ async function buildDeepCheckInput(params, env) {
   const fullEvidenceShadow =
     buildFullEvidenceShadowRecordCrossVenue({
       shadow_decision: shadowDecision,
-      public_evidence: publicEvidence,
-      now,
+      public_evidence: {...(publicEvidence||{}),available_ts:publicEvidenceAvailableTs},
+      now: decisionTs,
+      decision_ts: decisionTs,
     });
-  const fullEvidenceObservedTs = Number(fullEvidenceShadow?.observed_ts) || now;
+  const fullEvidenceObservedTs = Number(fullEvidenceShadow?.observed_ts) || decisionTs;
 
   // Stage 3.9.2 SHADOW proof wiring. Proof material is prepared before the
   // existing Full Evidence INSERT, but it is not considered proven until D1
   // acknowledges exactly one factual insert. No adapter-side proof synthesis is
   // permitted. Final Decision remains a shadow sidecar and does not replace the
   // legacy externally visible NOT_EVALUATED decision below.
-  const stage392SnapshotId =
-    multiWaveCampaign?.stage392_proofs?.snapshot_id ||
-    `S392:${String(contract || "UNKNOWN").normalize("NFC")}:${fullEvidenceObservedTs}`;
-
   const tz101DecisionEvidence = prepareTz101DecisionEvidence({
     contract_code: contract,
     snapshot_id: stage392SnapshotId,
@@ -16654,8 +16761,8 @@ async function buildDeepCheckInput(params, env) {
       // decision. Missing/contrary data stay explicit; no funding/OI votes.
       decision_evidence: tz101DecisionEvidence.rows,
       decision_evidence_audit: tz101DecisionEvidence,
-      execution_snapshot: futures?.data?._tz101_execution_quote ?? null,
-      committed_ts: now,
+      execution_snapshot: finalExecutionQuote,
+      committed_ts: null,
     });
 
   const fullEvidencePersistence =
@@ -17011,7 +17118,16 @@ return {
     execution: {
       cycle_started_ts: cycleStartedTs,
       components_available_ts: componentsAvailableTs,
-      analysis_observed_ts: now,
+      analysis_observed_ts: decisionTs,
+      decision_ts: decisionTs,
+      evidence_committed_ts: fullEvidencePersistence?.committed_ts ?? null,
+      execution_checked_ts: executionHandoff?.checked_ts ?? null,
+      execution_refresh: {
+        status: executionRefresh?.status ?? null,
+        attempted_requests: Number(executionRefresh?.attempted_requests ?? 0),
+        available_ts: executionRefresh?.available_ts ?? null,
+        reasons: executionRefresh?.reasons ?? [],
+      },
       requested_components: 4,
       fulfilled_components:
         4 - failedComponents.length,
@@ -19814,7 +19930,12 @@ export async function scanLiquidationCandidates({env,max_candidates=5,exact_cont
   return{schema:'LIQUIDATION_ONLY_SCAN_V1',status,exact_contract:exact||null,scan:{source:scan?.source||null,market:scan?.market||null,observed_ts:scan?.timestamp||null,universe_total:Number(scan?.counts?.universe_total||0),scanned:Number(scan?.counts?.scanned||0),errors:Number(scan?.counts?.errors||0),stale:Number(scan?.counts?.stale||0),technical_eligible:Number(queue?.counts?.eligible||0),shortlist_total:Number(discovery?.counts?.shortlist||0)},candidates,full_report_started:false,decision_generated:false,direction_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,persistence_requested:false};
 }
 
-export {loadHistoryTargets as loadStage0HistoryTargetsForTest};
+export {
+  loadHistoryTargets as loadStage0HistoryTargetsForTest,
+  htxStage0History as htxStage0HistoryForTest,
+  refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,
+  createPerDeepCheckFetchCache as createPerDeepCheckFetchCacheForTest,
+};
 
 /* REPORT2_GITHUB_BYK_PROXY_V4_1 — protected source proxy only. */
 async function __report2CloudByKProxy(request, env) {

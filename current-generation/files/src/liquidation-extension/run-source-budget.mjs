@@ -1,4 +1,4 @@
-const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4});
+const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4,OXARCHIVE:6});
 const providerOf=(url,init)=>{
  const u=new URL(String(url)),method=String(init?.method||'GET').toUpperCase();
  if(u.protocol!=='https:'||u.username||u.password)throw Error('READ_ONLY_SOURCE_URL_REQUIRED');
@@ -10,6 +10,7 @@ const providerOf=(url,init)=>{
  if(method==='GET'&&((u.hostname==='backend-arbitrum.gains.trade'&&['/open-trades','/trading-variables'].includes(u.pathname))||(u.hostname==='backend-pricing.eu.gains.trade'&&u.pathname==='/charts')))return 'GTRADE';
  if(u.hostname==='mainnet.zklighter.elliot.ai'&&method==='GET'&&['/api/v1/recentTrades','/api/v1/account'].includes(u.pathname))return 'LIGHTER';
  if((u.hostname==='arbitrum.gmxapi.io'&&method==='GET'&&u.pathname==='/v1/positions')||(u.hostname==='gmx.squids.live'&&method==='POST'&&u.pathname==='/gmx-synthetics-arbitrum:prod/api/graphql'))return 'GMX';
+ if(u.hostname==='api.0xarchive.io'&&method==='GET'&&/^\/v1\/hyperliquid\/liquidations\/[A-Z0-9]{2,20}\/levels$/.test(u.pathname)&&u.searchParams.get('range_pct')==='50'&&u.searchParams.get('buckets')==='100')return 'OXARCHIVE';
  throw Error('SOURCE_OPERATION_NOT_ALLOWLISTED');
 };
 // Local ceilings are deliberately conservative operational policy, not a claim

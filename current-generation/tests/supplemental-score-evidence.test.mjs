@@ -17,10 +17,20 @@ test('stale, unidentified and duplicate-family facts cannot distort the result',
  ]);
  assert.equal(out.adjustment,3.2);assert.equal(out.receipts.length,1);assert.equal(out.final_score,63);
 });
-test('supplemental influence is always bounded to ten points',()=>{
+test('supplemental influence is bounded by every fixed chain and by ten points total',()=>{
  const rows=Object.entries(FIXED_DECISION_WEIGHTS).map(([chain],i)=>({source_id:String(i),responsibility_group:String(i),decision_chain:chain,signed_strength:1,quality:1,fresh:true,exact_identity:true}));
  assert.equal(applySupplementalScoreAdjustment(95,rows).final_score,100);
  assert.equal(applySupplementalScoreAdjustment(5,rows.map(x=>({...x,signed_strength:-1}))).final_score,0);
+});
+test('one physical fact copied into two groups is consumed once and cannot exceed its chain cap',()=>{
+ const root='BINANCE|FORCED_ORDER|QNT-USDT|1700000000000';
+ const rows=[
+  {source_id:'BINANCE',physical_root_key:root,responsibility_group:'LIVE',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',signed_strength:1,quality:1,fresh:true,exact_identity:true},
+  {source_id:'AGGREGATOR',physical_root_key:root,responsibility_group:'HISTORY',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',signed_strength:1,quality:1,fresh:true,exact_identity:true},
+  {source_id:'BYBIT',physical_root_key:'BYBIT|FORCED_ORDER|QNT-USDT|1700000000000',responsibility_group:'SECOND',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',signed_strength:1,quality:1,fresh:true,exact_identity:true},
+ ];
+ const out=applySupplementalScoreAdjustment(50,rows);
+ assert.equal(out.receipts.length,2);assert.equal(out.discarded.filter(row=>row.discard_reason==='DUPLICATE_PHYSICAL_ROOT').length,1);assert.ok(out.adjustment<=3.2);assert.equal(out.chain_contributions.CROSS_EXCHANGE_DERIVATIVES,3.2);
 });
 test('verified dynamic liquidation panel participates in the fixed derivatives block',()=>{
  const rows=buildSupplementalScoreEvidence({direction:'LONG',liquidation_panel:{score_evidence:{source_id:'DYNAMIC_LIQUIDATION_PANEL',responsibility_group:'PROJECTED_LIQUIDATIONS',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',bullish_strength:0.6,quality:0.7,fresh:true,exact_identity:true}}});
@@ -70,7 +80,11 @@ test('Full Evidence keeps 35/30/20/15 while supplemental scoring keeps 32/30/20/
  assert.match(supplemental,/DERIVATIVES:\s*32/);assert.match(supplemental,/SUPPORTING_RISK:\s*18/);assert.match(supplemental,/maximum_absolute_adjustment:10/);
 });
 test('EvidenceV2 reaches the same bounded manual and Telegram score path without a second scorer',()=>{
- const evidence={evidence_id:'E1',asset_id:'asset:sol',htx_contract:'SOL-USDT',block_id:'N01',metric_family:'unlock',provider_id:'OFFICIAL_EVENTS',upstream_id:'OFFICIAL',dependency_group:'EVENT',observed_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:3000,directional_strength:null,risk_strength:1,reliability:1};
+ const evidence={evidence_id:'E1',asset_id:'asset:sol',htx_contract:'SOL-USDT',block_id:'N01',metric_family:'unlock',provider_id:'OFFICIAL_EVENTS',upstream_id:'OFFICIAL',dependency_group:'EVENT',observed_ts:1000,source_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:3000,directional_strength:null,risk_strength:1,reliability:1};
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{decision_ts:2000,evidence_v2:{evidence:[evidence]}}});
  const receipt=applySupplementalScoreAdjustment(70,rows);assert.ok(receipt.adjustment<0);assert.ok(receipt.adjustment>=-1.8);assert.ok(rows.some(row=>row.source_id==='EVIDENCE_V2'));
+});
+test('legacy and EvidenceV2 copies sharing one physical root are consumed once',()=>{
+ const root='SOL|TX|7',legacy={source_id:'LEGACY',physical_root_key:root,responsibility_group:'LEGACY_GROUP',decision_chain:'SMART_MONEY_ONCHAIN',signed_strength:1,quality:1,fresh:true,exact_identity:true},v2={source_id:'EVIDENCE_V2',physical_root_key:root,responsibility_group:'EVIDENCE_GROUP',decision_chain:'SMART_MONEY_ONCHAIN',signed_strength:1,quality:1,fresh:true,exact_identity:true};
+ const out=applySupplementalScoreAdjustment(50,[legacy,v2]);assert.equal(out.receipts.length,1);assert.equal(out.discarded.filter(row=>row.discard_reason==='DUPLICATE_PHYSICAL_ROOT').length,1);assert.ok(out.adjustment<=2);
 });

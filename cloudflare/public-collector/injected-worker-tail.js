@@ -1,5 +1,5 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v2-20260928";
-var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v3-contract-integrity-20260928";
+var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
 var __REPORT2_PUBLIC_COLLECTOR_RETENTION_MS = 72 * 60 * 60 * 1e3;
@@ -57,7 +57,9 @@ async function __report2PublicCollectorJson(url) {
     throw new Error(`PUBLIC_COLLECTOR_INVALID_JSON_HTTP_${response.status}`);
   }
   if (!response.ok) throw new Error(`PUBLIC_COLLECTOR_HTTP_${response.status}`);
-  if (String(payload?.status ?? "ok").toLowerCase() !== "ok" && Number(payload?.code ?? 200) !== 200) {
+  var providerStatus = payload?.status == null ? null : String(payload.status).toLowerCase();
+  var providerCode = payload?.code == null ? null : Number(payload.code);
+  if ((providerStatus !== null && providerStatus !== "ok") || (providerCode !== null && providerCode !== 200)) {
     throw new Error(`PUBLIC_COLLECTOR_PROVIDER_STATUS_${String(payload?.status ?? payload?.code ?? "UNKNOWN")}`);
   }
   return { payload, elapsed_ms: Date.now() - started, source_ts: __report2PublicCollectorTimestamp(payload?.ts) };
@@ -67,12 +69,14 @@ async function __report2PublicCollectorHash(text) {
   return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 async function __report2PublicCollectorPriorSnapshot(db) {
-  var result = await db.prepare(`SELECT bucket,shard,source_timestamps_json,payload FROM report2_market_snapshot_batch_v1
-    WHERE actor=?1 AND generation=?2 AND status='COMPLETE'
-      AND bucket=(SELECT MAX(bucket) FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND generation=?2 AND status='COMPLETE')
-    ORDER BY shard ASC LIMIT 32`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION).all();
+  var result = await db.prepare(`SELECT bucket,generation,shard,source_timestamps_json,payload FROM report2_market_snapshot_batch_v1
+    WHERE actor=?1 AND schema_version='report2-market-snapshot-batch-v1' AND status='COMPLETE'
+      AND bucket=(SELECT MAX(bucket) FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND schema_version='report2-market-snapshot-batch-v1' AND status='COMPLETE')
+    ORDER BY generation DESC,shard ASC LIMIT 32`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR).all();
   var records = Array.isArray(result?.results) ? result.results : [];
   if (!records.length) return { status: "EMPTY", rows: [], catalog_ts: null };
+  var chosenGeneration = records.some(row => row.generation === __REPORT2_PUBLIC_COLLECTOR_GENERATION) ? __REPORT2_PUBLIC_COLLECTOR_GENERATION : records[0].generation;
+  records = records.filter(row => row.generation === chosenGeneration);
   var meta = null;
   try {
     meta = JSON.parse(records[0].source_timestamps_json || "{}");
@@ -90,7 +94,7 @@ async function __report2PublicCollectorPriorSnapshot(db) {
     return { status: "INVALID_PAYLOAD", rows: [], catalog_ts: null };
   }
   if (Number(meta?.universe_total) !== rows.length) return { status: "UNIVERSE_MISMATCH", rows: [], catalog_ts: null };
-  return { status: "CLOSED", rows, catalog_ts: __report2PublicCollectorTimestamp(meta?.contracts) };
+  return { status: "CLOSED", rows, catalog_ts: __report2PublicCollectorTimestamp(meta?.contracts), shard_rows_read: records.length, source_generation: chosenGeneration };
 }
 function __report2PublicCollectorCatalog(payload) {
   var map = /* @__PURE__ */ new Map();
@@ -157,39 +161,41 @@ async function __report2PublicCollectorClaim(db, bucket, now) {
   if (Number(daily?.slots ?? 0) >= 288 || Number(daily?.rows_written ?? 0) >= __REPORT2_PUBLIC_COLLECTOR_DAILY_WRITE_CAP) {
     return { claimed: false, status: "DAILY_BUDGET_BLOCKED", daily };
   }
-  await db.prepare(`INSERT OR IGNORE INTO report2_public_collector_usage_v1
+  var inserted = await db.prepare(`INSERT OR IGNORE INTO report2_public_collector_usage_v1
     (actor,generation,bucket,state,claim_token,lease_until,started_ts,completed_ts,external_requests,rows_read,rows_written,payload_bytes,status,error_text)
     VALUES(?1,?2,?3,'STARTED',?4,?5,?6,NULL,0,0,1,0,'STARTED',NULL)`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 24e4, now).run();
   var row = await db.prepare(`SELECT state,claim_token,lease_until,status FROM report2_public_collector_usage_v1
     WHERE actor=?1 AND generation=?2 AND bucket=?3 LIMIT 1`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket).first();
-  if (row?.claim_token === token) return { claimed: true, status: "CLAIMED", token, daily };
+  if (row?.claim_token === token) return { claimed: true, status: "CLAIMED", token, daily, rows_written: Number(inserted?.meta?.changes ?? 0) };
   if (row?.state === "CLOSED") return { claimed: false, status: "ALREADY_CLOSED", daily };
   if (Number(row?.lease_until ?? 0) > now) return { claimed: false, status: "ALREADY_RUNNING", daily };
   var stolen = await db.prepare(`UPDATE report2_public_collector_usage_v1 SET claim_token=?4,lease_until=?5,started_ts=?6,status='RECLAIMED',error_text=NULL
     WHERE actor=?1 AND generation=?2 AND bucket=?3 AND state='STARTED' AND lease_until<=?6`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 24e4, now).run();
-  return Number(stolen?.meta?.changes ?? 0) === 1 ? { claimed: true, status: "RECLAIMED", token, daily } : { claimed: false, status: "CLAIM_RACE_LOST", daily };
+  return Number(stolen?.meta?.changes ?? 0) === 1 ? { claimed: true, status: "RECLAIMED", token, daily, rows_written: 1 } : { claimed: false, status: "CLAIM_RACE_LOST", daily };
 }
 async function __report2PublicCollectorPersist(db, shards) {
   var statements = shards.map((row) => db.prepare(`INSERT INTO report2_market_snapshot_batch_v1
     (bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes)
     VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12)
     ON CONFLICT(actor,generation,bucket,shard) DO NOTHING`).bind(row.bucket, row.actor, row.generation, row.schema_version, row.shard, JSON.stringify(row.source_timestamps), row.received_ts, row.status, row.payload_hash, row.payload, row.contracts, row.payload_bytes));
-  await db.batch(statements);
+  var writes = await db.batch(statements);
   var check = await db.prepare(`SELECT shard,payload_hash,status FROM report2_market_snapshot_batch_v1
     WHERE actor=?1 AND generation=?2 AND bucket=?3 ORDER BY shard`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, shards[0].bucket).all();
   var rows = Array.isArray(check?.results) ? check.results : [];
   var ok = rows.length === shards.length && rows.every((row, index) => Number(row.shard) === index && row.payload_hash === shards[index].payload_hash && row.status === "COMPLETE");
   if (!ok) throw new Error("PUBLIC_COLLECTOR_IMMUTABLE_READBACK_FAILED");
-  return { rows_read: rows.length, rows_written: shards.length };
+  return { rows_read: rows.length, rows_written: writes.reduce((sum,row)=>sum+Number(row?.meta?.changes??0),0) };
 }
 async function __report2PublicCollectorFinalize(db, { bucket, claim_token, state, started_ts, completed_ts, external_requests, rows_read, rows_written, payload_bytes, status, error_text, contract_count, shard_count }) {
   var receipt = await db.prepare(`UPDATE report2_public_collector_usage_v1 SET state=?5,completed_ts=?6,external_requests=?7,rows_read=?8,rows_written=?9,payload_bytes=?10,status=?11,error_text=?12
     WHERE actor=?1 AND generation=?2 AND bucket=?3 AND claim_token=?4 AND state='STARTED'`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, claim_token, state, completed_ts, external_requests, rows_read, rows_written + 2, payload_bytes, status, error_text ?? null).run();
   if (Number(receipt?.meta?.changes ?? 0) !== 1) throw new Error("PUBLIC_COLLECTOR_FINALIZE_FENCE_FAILED");
-  await db.prepare(`INSERT INTO report2_public_collector_health_v1
+  var healthReceipt = await db.prepare(`INSERT INTO report2_public_collector_health_v1
     (actor,generation,last_bucket,last_started_ts,last_completed_ts,status,contract_count,shard_count,external_requests,rows_read,rows_written,payload_bytes,error_text,updated_ts)
     VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?5)
     ON CONFLICT(actor,generation) DO UPDATE SET last_bucket=excluded.last_bucket,last_started_ts=excluded.last_started_ts,last_completed_ts=excluded.last_completed_ts,status=excluded.status,contract_count=excluded.contract_count,shard_count=excluded.shard_count,external_requests=excluded.external_requests,rows_read=excluded.rows_read,rows_written=excluded.rows_written,payload_bytes=excluded.payload_bytes,error_text=excluded.error_text,updated_ts=excluded.updated_ts`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, started_ts, completed_ts, status, contract_count ?? 0, shard_count ?? 0, external_requests, rows_read, rows_written + 2, payload_bytes, error_text ?? null).run();
+  if (Number(healthReceipt?.meta?.changes ?? 0) !== 1) throw new Error("PUBLIC_COLLECTOR_HEALTH_ACK_FAILED");
+  return { rows_written: Number(receipt.meta.changes) + Number(healthReceipt.meta.changes) };
 }
 async function __report2PublicCollectorScheduled(controller, env) {
   var started = Date.now();
@@ -206,10 +212,10 @@ async function __report2PublicCollectorScheduled(controller, env) {
     console.log("REPORT2_PUBLIC_COLLECTOR_NOOP", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, status: claim.status }));
     return;
   }
-  var externalRequests = 0, rowsRead = 2, rowsWritten = 1, payloadBytes = 0, contractCount = 0, shardCount = 0;
+  var externalRequests = 0, rowsRead = 2, rowsWritten = Number(claim.rows_written ?? 0), payloadBytes = 0, contractCount = 0, shardCount = 0;
   try {
     var prior = await __report2PublicCollectorPriorSnapshot(env.DATA_DB);
-    rowsRead += prior.rows.length;
+    rowsRead += Number(prior.shard_rows_read ?? 0);
     var cachedCatalog = __report2PublicCollectorCachedCatalog(prior);
     var catalogDue = prior.status !== "CLOSED" || prior.catalog_ts === null || started - prior.catalog_ts >= 36e5;
     var endpoints = {
@@ -218,16 +224,15 @@ async function __report2PublicCollectorScheduled(controller, env) {
       funding: "https://api.hbdm.com/linear-swap-api/v1/swap_batch_funding_rate",
       contracts: "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info"
     };
-    var common = await Promise.all([__report2PublicCollectorJson(endpoints.market), __report2PublicCollectorJson(endpoints.oi), __report2PublicCollectorJson(endpoints.funding)]);
-    externalRequests += 3;
+    var attemptJson = (url) => { externalRequests += 1; return __report2PublicCollectorJson(url); };
+    var common = await Promise.all([attemptJson(endpoints.market), attemptJson(endpoints.oi), attemptJson(endpoints.funding)]);
     var marketResult = common[0], oiResult = common[1], fundingResult = common[2];
     var marketMap = __report2PublicCollectorMap(marketResult.payload);
     if (!marketMap.size) throw new Error("PUBLIC_COLLECTOR_MARKET_UNIVERSE_EMPTY");
     var unknownContract = [...marketMap.keys()].some((contract) => !cachedCatalog.has(contract));
     var catalogResult = null;
     if (catalogDue || unknownContract) {
-      catalogResult = await __report2PublicCollectorJson(endpoints.contracts);
-      externalRequests += 1;
+      catalogResult = await attemptJson(endpoints.contracts);
     }
     var catalogMap = catalogResult ? __report2PublicCollectorCatalog(catalogResult.payload) : cachedCatalog;
     if (!catalogMap.size) throw new Error("PUBLIC_COLLECTOR_CONTRACT_CATALOG_EMPTY");
@@ -236,7 +241,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
     var received = Date.now();
     var rows = [];
     for (var [contract, info] of catalogMap) {
-      if (!/^[A-Z0-9._:-]{1,64}-USDT$/u.test(contract)) continue;
+      if (!/^[^-\s]{1,64}-USDT$/u.test(contract)) continue;
       var market = marketMap.get(contract) ?? null;
       var oi = oiMap.get(contract) ?? null;
       var funding = fundingMap.get(contract) ?? null;

@@ -9,7 +9,8 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.match(worker,/fixed_decision_weights\?\.CROSS_EXCHANGE_DERIVATIVES\) === 35/);
  assert.match(worker,/fixed_decision_weights\?\.SUPPORTING_RISK\) === 15/);
  assert.match(worker,/insertChanges !== 1/);
- assert.match(worker,/fullEvidenceObservedTs = Number\(fullEvidenceShadow\?\.observed_ts\) \|\| now/);
+ assert.match(worker,/const decisionTs = Date\.now\(\)/);
+ assert.match(worker,/fullEvidenceObservedTs = Number\(fullEvidenceShadow\?\.observed_ts\) \|\| decisionTs/);
  assert.ok((worker.match(/observed_ts: fullEvidenceObservedTs/g)||[]).length>=2);
  assert.match(worker,/FULL_EVIDENCE_PERSISTENCE_FAILED/);
  assert.match(worker,/outcome_classification/);

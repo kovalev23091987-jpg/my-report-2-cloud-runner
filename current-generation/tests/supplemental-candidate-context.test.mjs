@@ -55,19 +55,19 @@ test('Gecko JSON:API relationship ids must bind the exact requested token',async
  const result=await collectSupplementalCandidateContext({db,fetch_impl,registry:{ABC:{chain:'ethereum',contract_or_mint:addr}},contract:'ABC-USDT',run_id:run,derivatives_venues:2,now:1_800_000_000_000});
  assert.equal(result.sources.GECKOTERMINAL.status,'CLOSED');assert.equal(result.sources.GECKOTERMINAL.pools[0].buys_24h,30);
 });
-test('automatic identity opens only when DEX Screener and GeckoTerminal agree on one dominant exact address',()=>{
+test('automatic discovery remains a candidate even when two providers agree',()=>{
  const dex={pairs:[{chainId:'ethereum',baseToken:{symbol:'ABC',address:addr},quoteToken:{symbol:'USDT',address:'0x2222222222222222222222222222222222222222'},liquidity:{usd:600000}}]};
  const gecko={included:[{type:'token',id:`eth_${addr}`,attributes:{symbol:'ABC'}},{type:'token',id:'eth_0x2222222222222222222222222222222222222222',attributes:{symbol:'USDT'}}],data:[{attributes:{reserve_in_usd:'550000'},relationships:{base_token:{data:{id:`eth_${addr}`}},quote_token:{data:{id:'eth_0x2222222222222222222222222222222222222222'}}}}]};
  const closed=resolveDiscoveredIdentity({base:'ABC',dex_payload:dex,gecko_payload:gecko,protocols_payload:[]});
- assert.equal(closed.status,'CLOSED');assert.equal(closed.identity.contract_or_mint,addr);assert.equal(closed.identity_method,'DUAL_PROVIDER_DOMINANT_ADDRESS');
+ assert.equal(closed.status,'CANDIDATE_ONLY');assert.equal(closed.identity,null);assert.equal(closed.identity_candidate.contract_or_mint,addr);assert.equal(closed.registry_confirmation_required,true);
  const mismatch=resolveDiscoveredIdentity({base:'ABC',dex_payload:dex,gecko_payload:{...gecko,included:[{type:'token',id:'eth_0x3333333333333333333333333333333333333333',attributes:{symbol:'ABC'}},{type:'token',id:'eth_0x2222222222222222222222222222222222222222',attributes:{symbol:'USDT'}}],data:[{attributes:{reserve_in_usd:'550000'},relationships:{base_token:{data:{id:'eth_0x3333333333333333333333333333333333333333'}},quote_token:{data:{id:'eth_0x2222222222222222222222222222222222222222'}}}}]}});
  assert.equal(mismatch.identity,null);assert.equal(mismatch.exact_identity,false);
 });
-test('missing manual registry performs one cached three-call identity discovery, then normal lanes use it',async()=>{
+test('missing manual registry caches a candidate but never upgrades it to exact identity',async()=>{
  const db=new DB(),urls=[];
  const fetch_impl=async url=>{urls.push(String(url));if(String(url).includes('dexscreener'))return{ok:true,status:200,json:async()=>({pairs:[{chainId:'ethereum',baseToken:{symbol:'ABC',address:addr},quoteToken:{symbol:'USDT'},liquidity:{usd:500000}}]})};if(String(url).includes('geckoterminal'))return{ok:true,status:200,json:async()=>({included:[{type:'token',id:`eth_${addr}`,attributes:{symbol:'ABC'}},{type:'token',id:'eth_0x2222222222222222222222222222222222222222',attributes:{symbol:'USDT'}}],data:[{attributes:{reserve_in_usd:'500000'},relationships:{base_token:{data:{id:`eth_${addr}`}},quote_token:{data:{id:'eth_0x2222222222222222222222222222222222222222'}}}}]})};if(String(url).includes('llama.fi'))return{ok:true,status:200,json:async()=>[]};return{ok:true,status:200,json:async()=>({})};};
  const first=await collectSupplementalCandidateContext({db,fetch_impl,registry:{},contract:'ABC-USDT',run_id:'r1',derivatives_venues:2,now:1_800_000_000_000});
- assert.equal(first.lane,'IDENTITY_DISCOVERY');assert.equal(first.network_calls,3);assert.equal(first.identity_status,'CLOSED');
+ assert.equal(first.lane,'IDENTITY_DISCOVERY');assert.equal(first.network_calls,3);assert.equal(first.identity_status,'CANDIDATE_ONLY');assert.equal(first.identity??null,null);
  const second=await collectSupplementalCandidateContext({db,fetch_impl,registry:{},contract:'ABC-USDT',run_id:'r2',derivatives_venues:2,now:1_800_000_001_000});
- assert.notEqual(second.lane,'IDENTITY_DISCOVERY');assert.ok(second.network_calls<=5);assert.equal(urls.filter(x=>x.includes('/search/pools?')).length,1);
+ assert.ok(second.network_calls<=3);assert.notEqual(second.identity_status,'CLOSED');assert.equal(second.identity??null,null);assert.equal(urls.filter(x=>x.includes('/search/pools?')).length,1);
 });

@@ -14,6 +14,11 @@ const exactIdentity=row=>{
  if(chain==='solana'?!BASE58.test(address):!EVM.test(address))return null;
  return {chain,contract_or_mint:chain==='solana'?address:address.toLowerCase()};
 };
+export function sameChainAssetIdentity(a,b){
+ const left=exactIdentity(a),right=exactIdentity(b);
+ if(!left||!right||left.chain!==right.chain)return false;
+ return left.chain==='solana'?left.contract_or_mint===right.contract_or_mint:left.contract_or_mint.toLowerCase()===right.contract_or_mint.toLowerCase();
+}
 
 export function parseSupplementalIdentityRegistry(raw){
  let parsed=raw;
@@ -23,7 +28,7 @@ export function parseSupplementalIdentityRegistry(raw){
  for(const [symbol,value] of Object.entries(parsed)){
   const base=baseOf(symbol);if(!base||!value||typeof value!=='object')continue;
   const identity=exactIdentity(value);
-  const lighterMarket=Number(value.lighter_market_id),gmxMarket=clean(value.gmx_market_address).toLowerCase();
+  const lighterMarket=value.lighter_market_id===null||value.lighter_market_id===undefined||value.lighter_market_id===''?null:Number(value.lighter_market_id),gmxMarket=clean(value.gmx_market_address).toLowerCase();
   const officialDomains=(Array.isArray(value.official_domains)?value.official_domains:[]).map(x=>clean(x).toLowerCase().replace(/^https?:\/\//,'').split('/')[0]).filter(x=>/^[a-z0-9.-]+$/.test(x)&&x.includes('.')).slice(0,4);
   const officialFeeds=(Array.isArray(value.official_feeds)?value.official_feeds:[]).map(clean).filter(x=>{try{return new URL(x).protocol==='https:';}catch{return false;}}).slice(0,4);
   const officialFeedSpecs=(Array.isArray(value.official_feed_specs)?value.official_feed_specs:[]).flatMap(spec=>{const url=clean(spec?.url),format=clean(spec?.format).toUpperCase(),parser_id=clean(spec?.parser_id),refresh_period=clean(spec?.refresh_period),timezone=clean(spec?.timezone);try{if(new URL(url).protocol!=='https:')return[];}catch{return[];}if(!['RSS','ATOM','ICS'].includes(format)||parser_id!==`FIXED_${format}_V1`)return[];return[{url,format,parser_id,refresh_period:/^\d+[mhd]$/.test(refresh_period)?refresh_period:null,timezone:timezone||null}];}).slice(0,4);
@@ -95,9 +100,9 @@ function uniqueProtocolSlug(payload,base,identity){
 }
 export function resolveDiscoveredIdentity({base,dex_payload,gecko_payload,protocols_payload,now=Date.now()}={}){
  const symbol=baseOf(base),dex=dominantIdentity(dexSearchIdentities(dex_payload,symbol)),gecko=dominantIdentity(geckoSearchIdentities(gecko_payload,symbol));
- const agrees=Boolean(dex&&gecko&&dex.identity.chain===gecko.identity.chain&&dex.identity.contract_or_mint.toLowerCase()===gecko.identity.contract_or_mint.toLowerCase());
+ const agrees=Boolean(dex&&gecko&&sameChainAssetIdentity(dex.identity,gecko.identity));
  const identity=agrees?dex.identity:null,protocol_slug=uniqueProtocolSlug(protocols_payload,symbol,identity);
- return {base:symbol,identity,protocol_slug,coinbase_product:`${symbol}-USD`,status:identity||protocol_slug?'CLOSED':'NOT_CLOSED',observed_ts:now,identity_method:identity?'DUAL_PROVIDER_DOMINANT_ADDRESS':null,identity_sources:identity?['DEX_SCREENER_SEARCH','GECKOTERMINAL_SEARCH']:[],dex_liquidity_usd:dex?.liquidity_usd??null,gecko_liquidity_usd:gecko?.liquidity_usd??null,exact_identity:Boolean(identity)};
+ return {base:symbol,identity_candidate:identity,identity:null,protocol_slug,coinbase_product:`${symbol}-USD`,status:identity||protocol_slug?'CANDIDATE_ONLY':'NOT_CLOSED',observed_ts:now,identity_method:identity?'DUAL_PROVIDER_DOMINANT_ADDRESS_CANDIDATE_ONLY':null,identity_sources:identity?['DEX_SCREENER_SEARCH','GECKOTERMINAL_SEARCH']:[],dex_liquidity_usd:dex?.liquidity_usd??null,gecko_liquidity_usd:gecko?.liquidity_usd??null,exact_identity:false,registry_confirmation_required:Boolean(identity)};
 }
 
 async function loadOrDiscoverIdentity({db,fetch_impl,base,now}={}){
@@ -125,15 +130,14 @@ async function loadCachedSources(db,contract,now,refreshed=[]){
 
 function normalizeDexScreener(payload,identity,now){
  const rows=Array.isArray(payload)?payload:Array.isArray(payload?.pairs)?payload.pairs:[];
- const exact=rows.filter(r=>clean(r?.chainId).toLowerCase()===identity.chain&&[r?.baseToken?.address,r?.quoteToken?.address].some(x=>clean(x).toLowerCase()===identity.contract_or_mint.toLowerCase()));
+ const exact=rows.filter(r=>[r?.baseToken?.address,r?.quoteToken?.address].some(address=>sameChainAssetIdentity(identity,{chain:r?.chainId,contract_or_mint:address})));
  return {source:'DEX_SCREENER',status:exact.length?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,pools:exact.slice(0,20).map(r=>({pool_key:`${identity.chain}|${clean(r?.pairAddress).toLowerCase()}`,liquidity_usd:finite(r?.liquidity?.usd),volume_24h_usd:finite(r?.volume?.h24),buys_24h:finite(r?.txns?.h24?.buys),sells_24h:finite(r?.txns?.h24?.sells)}))};
 }
 function normalizeGecko(payload,identity,now){
  const rows=Array.isArray(payload?.data)?payload.data:[];
- const wanted=identity.contract_or_mint.toLowerCase();
  const pools=rows.filter(row=>{
-  const relationIds=[row?.relationships?.base_token?.data?.id,row?.relationships?.quote_token?.data?.id].map(x=>clean(x).toLowerCase());
-  return relationIds.some(id=>id===wanted||id.endsWith(`_${wanted}`));
+  const relationIds=[row?.relationships?.base_token?.data?.id,row?.relationships?.quote_token?.data?.id].map(splitGeckoTokenId).filter(Boolean);
+  return relationIds.some(candidate=>sameChainAssetIdentity(identity,candidate));
  }).slice(0,20).map(row=>{const r=row?.attributes||{};return{pool_key:`${identity.chain}|${clean(r?.address||row?.id).toLowerCase()}`,liquidity_usd:finite(r?.reserve_in_usd),volume_24h_usd:finite(r?.volume_usd?.h24),buys_24h:finite(r?.transactions?.h24?.buys),sells_24h:finite(r?.transactions?.h24?.sells)};});
  return {source:'GECKOTERMINAL',status:pools.length?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,pools};
 }
@@ -177,10 +181,10 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  if(!reserve_for_liquidations&&manual?.identity==null&&manual?.protocol_slug==null){
   identityDiscovery=await loadOrDiscoverIdentity({db,fetch_impl,base,now});discovered=identityDiscovery.entry;
  }
- const entry={base,identity:manual?.identity||discovered?.identity||null,protocol_slug:manual?.protocol_slug||discovered?.protocol_slug||null,coinbase_product:manual?.coinbase_product||discovered?.coinbase_product||`${base}-USD`,lighter_market_id:manual?.lighter_market_id??providerIds?.lighter_market_id??null,gmx_market_address:manual?.gmx_market_address||providerIds?.gmx_market_address||null,official_name:manual?.official_name||null,official_domains:manual?.official_domains||[],official_feeds:manual?.official_feeds||[],official_feed_specs:manual?.official_feed_specs||[],snapshot_space:manual?.snapshot_space||null};
+ const entry={base,identity:manual?.identity||null,identity_candidate:discovered?.identity_candidate||null,protocol_slug:manual?.protocol_slug||discovered?.protocol_slug||null,coinbase_product:manual?.coinbase_product||discovered?.coinbase_product||`${base}-USD`,lighter_market_id:manual?.lighter_market_id??providerIds?.lighter_market_id??null,gmx_market_address:manual?.gmx_market_address||providerIds?.gmx_market_address||null,official_name:manual?.official_name||null,official_domains:manual?.official_domains||[],official_feeds:manual?.official_feeds||[],official_feed_specs:manual?.official_feed_specs||[],snapshot_space:manual?.snapshot_space||null};
  if(identityDiscovery.network_calls>0){
   const sources=await loadCachedSources(db,contract,now);
-  return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'IDENTITY_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:discovered?.status||'NOT_CLOSED',identity_method:discovered?.identity_method||null,asset_identity:entry.identity,asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
+  return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
  }
  const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
@@ -209,7 +213,7 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+sourceTtl(source),JSON.stringify(payload)).run();
  }
  const sources=await loadCachedSources(db,contract,now,settled.map(x=>x.source));
- return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity||discovered?.identity?'CLOSED':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
+ return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity?'CLOSED':entry.identity_candidate?'CANDIDATE_ONLY':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:!manual?.identity&&Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
 }
 
-export default{parseSupplementalIdentityRegistry,chooseSupplementalLane,collectSupplementalCandidateContext};
+export default{parseSupplementalIdentityRegistry,sameChainAssetIdentity,chooseSupplementalLane,collectSupplementalCandidateContext};

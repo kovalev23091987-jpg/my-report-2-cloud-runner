@@ -50,14 +50,20 @@ const files=[
  'src/unified-budget.mjs',
  'src/run-health.mjs',
  'src/market-snapshot-batch.mjs',
+ 'src/market-history-reader.mjs',
  'src/market-contracts.mjs',
  'src/candidate-task-queue.mjs',
  'src/asset-identity-cache.mjs',
  'src/liquidation-source-plan.mjs',
  'src/analytical-integrity.mjs',
+ 'src/stage392-proof-runtime.mjs',
+ 'src/tz101-execution-facts.mjs',
+ 'src/full-evidence-shadow-model.mjs',
  'src/evidence-v2.mjs',
  'src/evidence-source-adapters.mjs',
  'src/evidence-source-store.mjs',
+ 'src/provider-minute-ledger.mjs',
+ 'src/prospective-delivery-cohort.mjs',
  'src/htx-public-risk-evidence.mjs',
  'src/macro-calendar-evidence.mjs',
  'src/deribit-alt-options-evidence.mjs',
@@ -100,4 +106,4 @@ const files=[
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
 fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.mjs'),path.join(runtime,'r8-20-prospective-validation-sidecar.mjs'));
 const policyPatches=applyRuntimePolicyPatches(runtime);
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));

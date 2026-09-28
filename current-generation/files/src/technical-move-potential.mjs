@@ -1,4 +1,4 @@
-export const TECHNICAL_MOVE_POTENTIAL_VERSION='technical-move-potential-v1-20260927';
+export const TECHNICAL_MOVE_POTENTIAL_VERSION='technical-move-potential-v2-proof-separated-20260928';
 export const MINIMUM_TECHNICAL_MOVE_PCT=5;
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const arr=v=>Array.isArray(v)?v:[];
@@ -6,21 +6,24 @@ const text=v=>v===null||v===undefined?'':String(v).trim();
 const move=(direction,entry,target)=>direction==='LONG'?(target/entry-1)*100:(1-target/entry)*100;
 const correctSide=(direction,entry,target)=>direction==='LONG'?target>entry:target<entry;
 
-function liquidationCandidates({direction,entry,zones,oi,volume,funding,earlyAnomaly,move24}){
- const rows=direction==='LONG'?arr(zones?.above):arr(zones?.below),out=[];
+function liquidationCandidates({direction,entry,zones}){
+ const rows=direction==='LONG'?arr(zones?.above):arr(zones?.below),out=[],obstacles=[];
  for(const row of rows){
   const target=finite(row?.price??row?.level_price),potential=target===null?null:move(direction,entry,target);
-  if(target===null||!correctSide(direction,entry,target)||potential<MINIMUM_TECHNICAL_MOVE_PCT)continue;
+  if(target===null||!correctSide(direction,entry,target))continue;
   const observed=row?.kind!=='CALCULATED'&&(finite(row?.exact_notional_usdt)!==null||finite(row?.strength_score_0_100)!==null||finite(row?.relative_strength_value)!==null);
-  const calculatedSupport=[finite(oi)!==null&&Math.abs(oi)>=2,finite(volume)!==null&&volume>=1.5,finite(funding)!==null,earlyAnomaly===true,finite(move24)!==null&&Math.abs(move24)>=3].filter(Boolean).length;
-  if(!observed&&!(row?.kind==='CALCULATED'&&calculatedSupport>=3))continue;
-  out.push({target_price:target,potential_move_pct:potential,basis:observed?'OBSERVED_LIQUIDATION_ZONE':'CALCULATED_LIQUIDATION_ZONE_WITH_MARKET_CONFIRMATION',basis_ru:observed?'подтверждённая ликвидационная зона':'расчётная ликвидационная зона, подтверждённая рыночными показателями',strength_label_ru:text(row?.strength_label_ru)||null,exact_notional_usdt:finite(row?.exact_notional_usdt),technical_inputs:{oi_change_pct:oi,volume_ratio:volume,funding_rate_pct:funding,rolling_24h_change_pct:move24,early_anomaly:earlyAnomaly},evidence_count:observed?1:calculatedSupport});
+  if(observed&&row?.path_obstacle_eligible!==false)obstacles.push({price:target,move_pct:potential,kind:row.kind??null,source:row.source??null});
+  // Calculated display bands and generic OI/funding/volume confirmations never
+  // prove a tradable target. Only a separately admitted native/scenario level
+  // can enter the target set.
+  if(row?.decision_target_eligible!==true||potential<MINIMUM_TECHNICAL_MOVE_PCT)continue;
+  out.push({target_price:target,potential_move_pct:potential,basis:'FRESH_SCOPED_NATIVE_LEVEL',basis_ru:'свежий проверенный уровень позиции',strength_label_ru:text(row?.strength_label_ru)||null,exact_notional_usdt:finite(row?.exact_notional_usdt),source:text(row?.source)||null,source_ts:finite(row?.source_ts),evidence_count:1});
  }
- return out;
+ return {candidates:out,obstacles};
 }
 function candleCandidate({direction,entry,opportunity}){
  const event=opportunity?.newest_event,c=event?.candle||{},high=finite(c.high),low=finite(c.low);
- const classified=event?.minute_decomposition?.classification_allowed===true||Boolean(event?.early_anomaly_classification);
+ const classified=event?.minute_decomposition?.classification_allowed===true;
  if(!classified||high===null||low===null||low<=0||high<=low)return null;
  const width=high-low,target=direction==='LONG'?entry+width:entry-width;
  if(target<=0||!correctSide(direction,entry,target))return null;
@@ -32,11 +35,13 @@ export function evaluateTechnicalMovePotential({direction,current_price,trigger_
  const d=text(direction).toUpperCase(),current=finite(current_price),trigger=finite(trigger_price)??current;
  const base={version:TECHNICAL_MOVE_POTENTIAL_VERSION,status:'NOT_CLOSED',reason:'TECHNICAL_TARGET_AT_LEAST_5_NOT_PROVEN',direction:d||null,entry_reference_price:trigger,minimum_move_pct:MINIMUM_TECHNICAL_MOVE_PCT,target_price:null,potential_move_pct:null,basis:null,basis_ru:null,not_random_target:true};
  if(!['LONG','SHORT'].includes(d)||current===null||current<=0||trigger===null||trigger<=0)return {...base,reason:'DIRECTION_OR_PRICE_NOT_CLOSED'};
- const oi=finite(oi_change_pct),volume=finite(volume_ratio),funding=finite(funding_rate_pct),move24=finite(rolling_24h_change_pct);
- const candidates=[candleCandidate({direction:d,entry:trigger,opportunity}),...liquidationCandidates({direction:d,entry:trigger,zones:liquidation_zones,oi,volume,funding,earlyAnomaly:early_anomaly,move24})].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
+ const liquidation=liquidationCandidates({direction:d,entry:trigger,zones:liquidation_zones});
+ const candidates=[candleCandidate({direction:d,entry:trigger,opportunity}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
  if(!candidates.length)return base;
  const chosen=candidates[0];
- return {...base,...chosen,status:'CLOSED',reason:null,all_candidates:candidates.slice(0,8),begin_close_price:chosen.target_price,minimum_move_proven:true};
+ const obstacles=liquidation.obstacles.filter(row=>row.move_pct>0&&row.move_pct<chosen.potential_move_pct).sort((a,b)=>a.move_pct-b.move_pct);
+ if(obstacles.some(row=>row.move_pct<MINIMUM_TECHNICAL_MOVE_PCT))return{...base,reason:'NEAREST_CONFIRMED_OBSTACLE_BELOW_5PCT',nearest_obstacle:obstacles[0],path_obstacles:obstacles.slice(0,8)};
+ return {...base,...chosen,status:'CLOSED',reason:null,all_candidates:candidates.slice(0,8),path_obstacles:obstacles.slice(0,8),begin_close_price:chosen.target_price,minimum_move_proven:true};
 }
 
 export default{TECHNICAL_MOVE_POTENTIAL_VERSION,MINIMUM_TECHNICAL_MOVE_PCT,evaluateTechnicalMovePotential};

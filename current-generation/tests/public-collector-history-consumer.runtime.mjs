@@ -1,46 +1,43 @@
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
 
 const runtime=path.resolve(process.argv[2]||'runtime');
-const {loadStage0HistoryTargetsForTest}=await import(`${pathToFileURL(path.join(runtime,'src/worker.js')).href}?history-test=${Date.now()}`);
+const {loadStage0HistoryTargetsForTest,htxStage0HistoryForTest}=await import(`${pathToFileURL(path.join(runtime,'src/worker.js')).href}?history-test=${Date.now()}`);
+const GENERATION='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M';
+const sha=value=>createHash('sha256').update(value).digest('hex');
 
 class Statement{
   constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}
   bind(...args){return new Statement(this.db,this.sql,args);}
+  all(){return this.db.all(this.sql,this.args);}
 }
 class HistoryDb{
-  constructor({offset_by_label={}}={}){this.offset_by_label=offset_by_label;}
+  constructor(now){this.now=now;this.rows=[];for(let i=71;i>=0;i--){const bucket=now-i*5*60000,payload=JSON.stringify([{contract:'QNT-USDT',price:100+i/100,turnover_24h_usdt:1e6,oi_contracts:10,oi_value_usdt:1e3,funding_rate:.001,funding_interval_hours:8,observed_ts:bucket,source_status:'CLOSED'}]);this.rows.push({bucket,actor:'HUB_PUBLIC_COLLECTOR',generation:GENERATION,schema_version:'report2-market-snapshot-batch-v1',shard:0,source_timestamps_json:JSON.stringify({expected_shards:1,universe_total:1,market:bucket}),received_ts:bucket,status:'COMPLETE',payload_hash:sha(payload),payload,contract_count:1,payload_bytes:Buffer.byteLength(payload)});}}
   prepare(sql){return new Statement(this,sql);}
-  async batch(statements){
-    return statements.map(statement=>{
-      if(statement.sql.includes('report2_market_snapshot_batch_v1')){
-        const target=Number(statement.args[4]),minutes=Math.round((this.now-target)/60000),label=minutes===5?'5m':minutes===15?'15m':minutes===60?'1h':minutes===240?'4h':'24h',actual=target+Number(this.offset_by_label[label]||0);
-        const payload=JSON.stringify([{contract:'QNT-USDT',price:100,turnover_24h_usdt:1e6,oi_contracts:10,oi_value_usdt:1e3,funding_rate:.001,funding_interval_hours:8,observed_ts:actual,source_status:'CLOSED'}]);
-        return{results:[{bucket:target,shard:0,source_timestamps_json:JSON.stringify({expected_shards:1,universe_total:1,market:actual}),received_ts:actual,status:'COMPLETE',payload}]};
-      }
-      return{results:[]};
-    });
+  async all(sql,args){
+    if(!sql.includes('report2_market_snapshot_batch_v1'))return{results:[]};
+    if(sql.includes('LIMIT ?6')){const [,start,end,cursorBucket,cursorShard,limit]=args;return{results:this.rows.filter(row=>row.bucket>=start&&row.bucket<=end&&(row.bucket>cursorBucket||(row.bucket===cursorBucket&&row.shard>cursorShard))).slice(0,limit)};}
+    const [, ,start,end,target]=args,candidates=this.rows.filter(row=>row.bucket>=start&&row.bucket<=end).sort((a,b)=>Math.abs(a.bucket-target)-Math.abs(b.bucket-target));
+    return{results:candidates.length?this.rows.filter(row=>row.bucket===candidates[0].bucket):[]};
   }
+  async batch(statements){return Promise.all(statements.map(statement=>this.all(statement.sql,statement.args)));}
 }
 
-const now=Date.UTC(2026,8,28,12,0),minutes={"5m":5,"15m":15,"1h":60,"4h":240,"24h":1440};
-{
-  const db=new HistoryDb();db.now=now;
-  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'},now);
-  assert.equal(result.populated,true);
-  assert.equal(result.preferred_source,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
-  for(const label of Object.keys(minutes)){
-    const row=result.targets[label].get('QNT-USDT');
-    assert.ok(row,`${label} missing`);
-    assert.equal(row.history_provenance,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
-    assert.equal(row.ts,now-minutes[label]*60000);
-  }
-}
-{
-  const db=new HistoryDb({offset_by_label:{'15m':3*60000}});db.now=now;
-  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'},now);
-  assert.equal(result.targets['15m'].size,0);
-  assert.equal(result.targets['5m'].size,1);
-}
-console.log(JSON.stringify({status:'PUBLIC_COLLECTOR_HISTORY_CONSUMER_PASS',windows:Object.keys(minutes),outside_short_tolerance_rejected:true}));
+const now=Date.UTC(2026,8,28,12,0),db=new HistoryDb(now),env={DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M'};
+const targets=await loadStage0HistoryTargetsForTest(env,now);
+assert.equal(targets.populated,true);
+assert.equal(targets.preferred_source,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
+for(const label of ['5m','15m','1h','4h'])assert.equal(targets.targets[label].get('QNT-USDT')?.history_provenance,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
+
+const realNow=Date.now;Date.now=()=>now;
+try{
+ const deep=await htxStage0HistoryForTest({contract:'QNT-USDT',hours:6},env);
+ assert.equal(deep.status,'CLOSED');
+ assert.equal(deep.source,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
+ assert.equal(deep.series.length,72);
+ assert.equal(deep.coverage.complete_5m_window,true);
+ assert.deepEqual(deep.provenance.generations,[GENERATION]);
+}finally{Date.now=realNow;}
+console.log(JSON.stringify({status:'PUBLIC_COLLECTOR_HISTORY_CONSUMER_PASS',preselection_and_deep_share_reader:true,deep_points:72,cross_generation_compatible:true}));

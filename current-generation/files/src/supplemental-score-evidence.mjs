@@ -1,5 +1,5 @@
 import {consumeEvidenceV2} from './evidence-v2.mjs';
-export const SUPPLEMENTAL_SCORE_EVIDENCE_VERSION='supplemental-score-evidence-v1-20260927';
+export const SUPPLEMENTAL_SCORE_EVIDENCE_VERSION='supplemental-score-evidence-v2-physical-root-chain-caps-20260928';
 export const FIXED_DECISION_WEIGHTS=Object.freeze({CROSS_EXCHANGE_DERIVATIVES:32,MARKET_STRENGTH_SPOT:30,SMART_MONEY_ONCHAIN:20,SUPPORTING_RISK:18});
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
@@ -47,31 +47,29 @@ export function buildSupplementalScoreEvidence({direction,internal_market_contex
  const healthRows=Array.isArray(internal_market_context?.predictive_source_health?.sources)?internal_market_context.predictive_source_health.sources:[];
  const healthBySource=new Map(healthRows.map(row=>[String(row?.source_id||'').toUpperCase(),row]));
  const evidenceRows=Array.isArray(internal_market_context?.evidence_v2?.evidence)?internal_market_context.evidence_v2.evidence:[],decisionTs=finite(internal_market_context?.decision_ts)??Date.now();
- if(evidenceRows.length){const consumed=consumeEvidenceV2(evidenceRows,{base_interest:0,decision_ts:decisionTs,base_evidence_ids:Array.isArray(internal_market_context?.evidence_v2?.base_evidence_ids)?internal_market_context.evidence_v2.base_evidence_ids:[]}),chainByFamily={DERIVATIVES:'CROSS_EXCHANGE_DERIVATIVES',MARKET_DEMAND:'MARKET_STRENGTH_SPOT',ONCHAIN:'SMART_MONEY_ONCHAIN',RISK_EVENTS:'SUPPORTING_RISK'};for(const [family,contribution] of Object.entries(consumed.family_contributions||{})){const chain=chainByFamily[family],den=(FIXED_DECISION_WEIGHTS[chain]||0)*.1;if(!chain||!den||!contribution)continue;out.push({source_id:'EVIDENCE_V2',responsibility_group:`EVIDENCE_V2_${family}`,decision_chain:chain,signed_strength:clamp(contribution/den,-1,1),quality:1,asset_identity:'EXACT_EVIDENCE_V2',metric_family:`EVIDENCE_V2_${family}`,provider_object_id:'DEDUPED_FAMILY',fresh:true,exact_identity:true,evidence_v2_receipts:consumed.receipts});}}
+ if(evidenceRows.length){const consumed=consumeEvidenceV2(evidenceRows,{base_interest:0,decision_ts:decisionTs,base_evidence_ids:Array.isArray(internal_market_context?.evidence_v2?.base_evidence_ids)?internal_market_context.evidence_v2.base_evidence_ids:[],base_evidence_roots:Array.isArray(internal_market_context?.evidence_v2?.base_evidence_roots)?internal_market_context.evidence_v2.base_evidence_roots:[]}),chainByFamily={DERIVATIVES:'CROSS_EXCHANGE_DERIVATIVES',MARKET_DEMAND:'MARKET_STRENGTH_SPOT',ONCHAIN:'SMART_MONEY_ONCHAIN',RISK_EVENTS:'SUPPORTING_RISK'};const consumedReceipts=consumed.receipts.filter(item=>item.reason==='CONSUMED'&&item.physical_root_key);for(const [block,blockContribution] of Object.entries(consumed.block_contributions||{})){const members=consumedReceipts.filter(item=>item.block_id===block),rawTotal=members.reduce((sum,item)=>sum+Number(item.raw_contribution||0),0),scale=rawTotal===0?0:blockContribution/rawTotal;for(const item of members){const chain=chainByFamily[item.family],den=(FIXED_DECISION_WEIGHTS[chain]||0)*.1,contribution=Number(item.raw_contribution||0)*scale;if(!chain||!den||!contribution)continue;out.push({source_id:'EVIDENCE_V2',responsibility_group:`EVIDENCE_V2_${block}_${item.evidence_id}`,decision_chain:chain,signed_strength:clamp(contribution/den,-1,1),quality:1,asset_identity:'EXACT_EVIDENCE_V2',metric_family:`EVIDENCE_V2_${item.family}`,provider_object_id:item.evidence_id,physical_root_key:item.physical_root_key,fresh:true,exact_identity:true,evidence_v2_receipts:consumed.receipts});}}}
  return out.map(row=>{const health=healthBySource.get(String(row?.source_id||'').toUpperCase()),active=health?.activation_state==='ACTIVE'&&health?.eligibility_protocol==='T16_5'&&Number(health?.eligible)===1&&Number(health?.observations)>=200;const factor=active?clamp(finite(health.predictive_weight_factor)??1,0.75,1.25):1,baseQuality=clamp(finite(row.quality)??0,0,1);return{...row,quality:clamp(baseQuality*factor,0,1),base_quality:baseQuality,predictive_weight_factor:factor,predictive_weight_status:active?'ACTIVE_T16_5':'SHADOW_FACTOR_ONE',predictive_observations:Number(health?.observations||0)};});
 }
 
 export function applySupplementalScoreAdjustment(baseScore,evidence=[]){
  const base=finite(baseScore);if(base===null)return{status:'BASE_SCORE_MISSING',base_score:null,final_score:null,adjustment:0,receipts:[]};
- const byFamily=new Map();
+ const physicalRoot=row=>String(row?.physical_root_key||[row?.source_id,row?.provider_object_id??row?.origin_event_id??row?.metric_family,row?.metric_family,row?.asset_identity].join('|'));
+ const byRoot=new Map(),discarded=[];
  for(const row of Array.isArray(evidence)?evidence:[]){
   const chain=String(row?.decision_chain||'');const weight=FIXED_DECISION_WEIGHTS[chain];
   const signed=finite(row?.signed_strength),quality=finite(row?.quality);
   if(!weight||signed===null||quality===null||row?.fresh!==true||row?.exact_identity!==true)continue;
-  const family=String(row?.responsibility_group||row?.source_id||'');if(!family)continue;
-  const item={...row,signed_strength:clamp(signed,-1,1),quality:clamp(quality,0,1),chain_weight:weight};
-  const prior=byFamily.get(family);if(!prior||Math.abs(item.signed_strength*item.quality)>Math.abs(prior.signed_strength*prior.quality))byFamily.set(family,item);
+  const root=physicalRoot(row);if(!root)continue;
+  const item={...row,physical_root_key:root,signed_strength:clamp(signed,-1,1),quality:clamp(quality,0,1),chain_weight:weight};
+  const prior=byRoot.get(root);if(!prior||Math.abs(item.signed_strength*item.quality)>Math.abs(prior.signed_strength*prior.quality)){if(prior)discarded.push({...prior,discard_reason:'DUPLICATE_PHYSICAL_ROOT'});byRoot.set(root,item);}else discarded.push({...item,discard_reason:'DUPLICATE_PHYSICAL_ROOT'});
  }
- const receipts=[];let adjustment=0;
- for(const item of byFamily.values()){
-  // Supplemental sources may influence at most ten percent of the existing
-  // fixed block. This preserves 32/30/20/18 ownership and bounds the total to 10.
-  const effectiveMax=item.chain_weight*0.10*item.quality;
-  const contribution=effectiveMax*item.signed_strength;
-  adjustment+=contribution;receipts.push({...item,source_quality_factor:item.quality,effective_max_score_points:Number(effectiveMax.toFixed(4)),score_contribution:Number(contribution.toFixed(4)),weighting_mode:'PER_RUN_VERIFIED_QUALITY'});
+ const byFamily=new Map();for(const item of byRoot.values()){const family=String(item?.responsibility_group||item?.source_id||'');if(!family)continue;const prior=byFamily.get(family);if(!prior||Math.abs(item.signed_strength*item.quality)>Math.abs(prior.signed_strength*prior.quality)){if(prior)discarded.push({...prior,discard_reason:'DUPLICATE_RESPONSIBILITY_FAMILY'});byFamily.set(family,item);}else discarded.push({...item,discard_reason:'DUPLICATE_RESPONSIBILITY_FAMILY'});}
+ const pendingByChain=new Map();for(const item of byFamily.values()){const raw=item.chain_weight*0.10*item.quality*item.signed_strength;const list=pendingByChain.get(item.decision_chain)||[];list.push({item,raw});pendingByChain.set(item.decision_chain,list);}
+ const receipts=[];let adjustment=0;const chainContributions={};
+ for(const [chain,items] of pendingByChain){const cap=FIXED_DECISION_WEIGHTS[chain]*.1,rawTotal=items.reduce((sum,row)=>sum+row.raw,0),cappedTotal=clamp(rawTotal,-cap,cap),scale=rawTotal===0?0:Math.abs(cappedTotal/rawTotal);chainContributions[chain]=Number(cappedTotal.toFixed(4));adjustment+=cappedTotal;for(const {item,raw} of items){const contribution=raw*scale;receipts.push({...item,source_quality_factor:item.quality,effective_max_score_points:Number((item.chain_weight*.1*item.quality).toFixed(4)),score_contribution:Number(contribution.toFixed(4)),weighting_mode:'PHYSICAL_ROOT_DEDUP_THEN_FIXED_CHAIN_CAP'});}
  }
  adjustment=clamp(adjustment,-10,10);
- return{status:'CLOSED',base_score:base,final_score:Math.round(clamp(base+adjustment,0,100)),adjustment:Number(adjustment.toFixed(4)),receipts,weights:{...FIXED_DECISION_WEIGHTS},source_weighting:'T16_5_FAIL_CLOSED_FACTOR_ONE_UNLESS_ACTIVE',core_weights_automatically_changed:false,maximum_absolute_adjustment:10,missing_or_stale_is_zero:true,duplicate_family_counted_once:true};
+ return{status:'CLOSED',base_score:base,final_score:Math.round(clamp(base+adjustment,0,100)),adjustment:Number(adjustment.toFixed(4)),receipts,discarded,chain_contributions:chainContributions,weights:{...FIXED_DECISION_WEIGHTS},source_weighting:'T16_5_FAIL_CLOSED_FACTOR_ONE_UNLESS_ACTIVE',core_weights_automatically_changed:false,maximum_absolute_adjustment:10,missing_or_stale_is_zero:true,physical_root_counted_once:true,duplicate_family_counted_once:true,chain_caps_applied:true};
 }
 
 export default{SUPPLEMENTAL_SCORE_EVIDENCE_VERSION,FIXED_DECISION_WEIGHTS,buildSupplementalScoreEvidence,applySupplementalScoreAdjustment};

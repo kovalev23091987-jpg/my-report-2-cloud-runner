@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {BLOCKS,validateEvidenceV2,consumeEvidenceV2,buildHotlist,nextSourceQuality} from '../files/src/evidence-v2.mjs';
 
 const templates=JSON.parse(fs.readFileSync(new URL('./fixtures/evidence-v2/n01-n17.json',import.meta.url),'utf8'));
-const make=(row,i=0)=>({...row,evidence_id:`E-${row.block_id}-${i}`,asset_id:'asset:sol',htx_contract:'SOL-USDT',provider_id:'P',upstream_id:'U',origin_event_id:`O-${row.block_id}`,dependency_group:`D-${row.block_id}`,observed_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:2000,reliability:.8});
+const make=(row,i=0)=>({...row,evidence_id:`E-${row.block_id}-${i}`,asset_id:'asset:sol',htx_contract:'SOL-USDT',provider_id:'P',upstream_id:'U',origin_event_id:`O-${row.block_id}`,dependency_group:`D-${row.block_id}`,observed_ts:1000,source_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:2000,reliability:.8});
 
 test('K16: every N01-N17 fixture validates and reaches a concrete existing consumer',()=>{
   assert.equal(templates.length,17);for(const [i,row] of templates.entries()){const evidence=make(row,i);assert.equal(validateEvidenceV2(evidence,{decision_ts:1500}).usable,true);const result=consumeEvidenceV2([evidence],{base_interest:70,decision_ts:1500});assert.equal(result.receipts[0].consumer,BLOCKS[row.block_id].consumer);}
@@ -24,6 +24,16 @@ test('K16: one event through multiple transports owns one score family',()=>{
 test('K16: news and social retain separate 0.2 caps and missing families are not redistributed',()=>{
   const social=make({...templates.find(x=>x.block_id==='N06'),directional_strength:1}),news=make({...templates.find(x=>x.block_id==='N07'),directional_strength:1});
   const result=consumeEvidenceV2([social,news],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<=.4);assert.equal(result.threshold_unchanged,70);
+});
+test('K30: nine independent N07 events remain capped to 0.2 points',()=>{
+ const template=templates.find(x=>x.block_id==='N07'),rows=Array.from({length:9},(_,i)=>make({...template,directional_strength:1},i));
+ const result=consumeEvidenceV2(rows,{base_interest:70,decision_ts:1500});assert.ok(Math.abs(result.block_contributions.N07)<=.2);assert.ok(Math.abs(result.adjustment)<=.2);
+});
+test('K31-K33 base-owned roots, missing expiry and future source time never contribute',()=>{
+ const row=make(templates.find(x=>x.block_id==='N05')),root='ROOT:BASE';
+ assert.equal(consumeEvidenceV2([{...row,physical_root_key:root}],{base_interest:70,decision_ts:1500,base_evidence_roots:[root]}).adjustment,0);
+ assert.equal(consumeEvidenceV2([{...row,expires_at:null}],{base_interest:70,decision_ts:1500}).adjustment,0);
+ assert.equal(consumeEvidenceV2([{...row,source_ts:1500+3600000,expires_at:1500+7200000}],{base_interest:70,decision_ts:1500}).adjustment,0);
 });
 
 test('K16: risk strength can only reduce suitability and never becomes a bullish direction',()=>{

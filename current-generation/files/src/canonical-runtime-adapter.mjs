@@ -16,7 +16,7 @@ import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '.
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v11-early-score-continuity-20260928';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v12-contract-integrity-20260928';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -127,15 +127,17 @@ function observationPlan({publication,route,direction,price,opportunity,observed
  const candle=opportunity?.newest_event?.candle||{};
  const eventHigh=finite(candle.high),eventLow=finite(candle.low);
  const routedLevel=finite(route?.trigger?.value);
- const level=routedLevel??(direction==='LONG'?(eventHigh&&eventHigh>price?eventHigh:price*1.01):(eventLow&&eventLow<price?eventLow:price*.99));
- const cancel=direction==='LONG'?(eventLow&&eventLow<level?eventLow:price*.98):(eventHigh&&eventHigh>level?eventHigh:price*1.02);
+ const anomalyClosed=opportunity?.newest_event?.minute_decomposition?.classification_allowed===true;
+ const factualCandleLevel=anomalyClosed?(direction==='LONG'&&eventHigh>price?eventHigh:direction==='SHORT'&&eventLow<price?eventLow:null):null;
+ const level=routedLevel??factualCandleLevel;
+ const cancel=anomalyClosed?(direction==='LONG'&&eventLow<level?eventLow:direction==='SHORT'&&eventHigh>level?eventHigh:null):null;
+ if(level===null||cancel===null)return null;
  const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,opportunity,rolling_24h_change_pct:finite(discovery?.rolling_24h_change_pct),oi_change_pct:finite(discovery?.best_oi_build_pct),volume_ratio:finite(discovery?.volume_ratio),funding_rate_pct:finite(discovery?.funding_per_hour_pct??discovery?.funding_rate_pct),early_anomaly:pump?.pump?.early_anomaly===true});
  if(potential.status!=='CLOSED')return null;
- const band=.003;
- const entry={area:`${level*(1-band)}–${level*(1+band)} USDT`,min_price:level*(1-band),max_price:level*(1+band),basis:eventHigh!==null&&eventLow!==null?'ANOMALY_CANDLE_LEVEL':'CURRENT_STRUCTURE_LEVEL'};
+ const entry={area:`${level} USDT`,min_price:level,max_price:level,basis:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
  const targetPrice=potential.target_price;
  const expires=observedTs+30*60_000;
- const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`};
+ const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`,level_origin:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
  return {entry,trigger:route?.trigger??fallbackTrigger,invalidation:{condition:route?.trigger?.cancel_condition??`price${direction==='LONG'?'<':'>'}${cancel}`,price:cancel},targets:[{price:targetPrice,source:'technically_proven_move_potential',start_closing:true,potential_move_pct:potential.potential_move_pct,basis:potential.basis,basis_ru:potential.basis_ru}],technical_move_potential:potential};
 }
 function targetsFrom(publication,observation){
@@ -181,17 +183,19 @@ export function buildRuntimeCanonicalBundle({
    volume_ratio:finite(discovery_row?.volume_ratio),
   },
  });
+ const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
+ const nativeContexts=[nativeLiquidationView?.native_extension,...arr(nativeLiquidationView?.independent_extensions)].filter(Boolean);
+ const liquidationPanel=buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts});
+ const nativeTargets=arr(liquidationPanel?.clusters).filter(row=>row?.decision_target_eligible===true).map(row=>({kind:'NATIVE_SCOPED',price:row.center_price,exact_notional_usdt:row.largest_provider_position_usd,strength_score_0_100:null,strength_label_ru:null,source:arr(row.providers).join('+'),source_ts:row.source_ts,decision_target_eligible:true,path_obstacle_eligible:true}));
+ const proofZones={...pump,above:[...arr(pump?.above),...nativeTargets.filter(row=>row.price>price)],below:[...arr(pump?.below),...nativeTargets.filter(row=>row.price<price)]};
  const needsTechnicalFallback=['OBSERVE','WAIT_FOR_TRIGGER'].includes(state)&&finite(publication_shadow?.scenario_plan?.target_price)===null;
- const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,opportunity,observedTs:observed_ts,pump,discovery:discovery_row}):null;
+ const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,opportunity,observedTs:observed_ts,pump:proofZones,discovery:discovery_row}):null;
  const effectiveState=needsTechnicalFallback&&!observation?'REJECTED':state;
  const routedOverall=finite(publication_shadow?.score_interval?.score_lower_bound);
  const overall=effectiveState==='OBSERVE'?null:routedOverall;
  const deepInterest=direction?computeCanonicalInterestFromRuntime({direction,discovery_row,shadow_decision,public_evidence,opportunity}):null;
  const interestBasis=selectCanonicalInterestBasis({state:effectiveState,early_quality:earlyQuality,deep_interest:deepInterest});
  const baseInterest=interestBasis.score;
- const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
- const nativeContexts=[nativeLiquidationView?.native_extension,...arr(nativeLiquidationView?.independent_extensions)].filter(Boolean);
- const liquidationPanel=buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts});
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;

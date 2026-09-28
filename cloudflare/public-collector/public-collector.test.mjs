@@ -54,21 +54,28 @@ test('T03 Hub overlay replaces legacy scheduled analytics with bounded public co
   fs.writeFileSync(file,patched.source);
   const worker=(await import(`${pathToFileURL(file).href}?test=${Date.now()}`)).default;
   const db=new FakeD1(),scheduledTime=Date.UTC(2026,8,28,12,5,0);
+  const unicodeContracts=['币-USDT','測試-USDT','ТОКЕН-USDT','Δ-USDT'];
+  const contracts=['SOL-USDT','QNT-USDT',...unicodeContracts];
   const originalFetch=globalThis.fetch;
   globalThis.fetch=async url=>{
     const value=String(url),ts=scheduledTime;
-    if(value.includes('batch_merged'))return new Response(JSON.stringify({status:'ok',ts,ticks:[{contract_code:'SOL-USDT',close:100,trade_turnover:1e6,ts},{contract_code:'QNT-USDT',close:125,trade_turnover:5e5,ts}]}));
-    if(value.includes('swap_open_interest'))return new Response(JSON.stringify({status:'ok',ts,data:[{contract_code:'SOL-USDT',volume:10,value:1e3},{contract_code:'QNT-USDT',volume:20,value:2e3}]}));
-    if(value.includes('swap_batch_funding_rate'))return new Response(JSON.stringify({status:'ok',ts,data:[{contract_code:'SOL-USDT',funding_rate:.001},{contract_code:'QNT-USDT',funding_rate:-.001}]}));
-    if(value.includes('swap_contract_info'))return new Response(JSON.stringify({status:'ok',ts,data:[{contract_code:'SOL-USDT',contract_status:1,business_type:'swap',contract_size:1},{contract_code:'QNT-USDT',contract_status:1,business_type:'swap',contract_size:1}]}));
+    if(value.includes('batch_merged'))return new Response(JSON.stringify({status:'ok',ts,ticks:contracts.map((contract_code,i)=>({contract_code,close:100+i,trade_turnover:1e6,ts}))}));
+    if(value.includes('swap_open_interest'))return new Response(JSON.stringify({status:'ok',ts,data:contracts.map(contract_code=>({contract_code,volume:10,value:1e3}))}));
+    if(value.includes('swap_batch_funding_rate'))return new Response(JSON.stringify({status:'ok',ts,data:contracts.map(contract_code=>({contract_code,funding_rate:.001}))}));
+    if(value.includes('swap_contract_info'))return new Response(JSON.stringify({status:'ok',ts,data:contracts.map(contract_code=>({contract_code,contract_status:1,business_type:'swap',contract_size:1}))}));
     throw new Error(`UNEXPECTED_FETCH:${value}`);
   };
   try{
-    await worker.scheduled({scheduledTime},{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M',DATA_DB:db},{waitUntil(){}});
+    const env={PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M',DATA_DB:db};
+    await worker.scheduled({scheduledTime},env,{waitUntil(){}});
+    const failedDb=new FakeD1();globalThis.fetch=async()=>new Response(JSON.stringify({status:'error',message:'provider failure'}),{status:200});
+    await assert.rejects(worker.scheduled({scheduledTime:scheduledTime+300000},{...env,DATA_DB:failedDb},{waitUntil(){}}),/PUBLIC_COLLECTOR_PROVIDER_STATUS_error/);
+    assert.equal(failedDb.usage.state,'ERROR');assert.equal(failedDb.usage.status,'ERROR');assert.equal(failedDb.health.status,'ERROR');
   }finally{globalThis.fetch=originalFetch;fs.rmSync(dir,{recursive:true,force:true});}
   assert.equal(db.snapshots.length,1);
   const rows=JSON.parse(db.snapshots[0].payload);
-  assert.deepEqual(rows.map(row=>row.contract),['QNT-USDT','SOL-USDT']);
+  for(const contract of contracts)assert.ok(rows.some(row=>row.contract===contract),contract);
+  assert.equal(unicodeContracts.every(contract=>rows.some(row=>row.contract===contract)),true);
   assert.equal(db.health.status,'CLOSED');
   assert.equal(db.health.external_requests,4);
   assert.equal(db.usage.state,'CLOSED');
@@ -80,7 +87,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v2-20260928/);
+  assert.match(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });

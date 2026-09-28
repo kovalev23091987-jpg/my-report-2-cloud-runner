@@ -12,6 +12,7 @@ const api=await import('data:text/javascript;base64,'+Buffer.from(rawSource+'\ne
 function input(){return {contract_code:CONTRACT,requested_notional_usdt:1000,received_ts:NOW,
   info_response:{ok:true,data:{status:'ok',ts:NOW-2000,data:[{contract_code:CONTRACT,contract_size:1,price_tick:1,contract_status:1}]}},
   depth_response:{ok:true,data:{status:'ok',ch:`market.${CONTRACT}.depth.step0`,ts:NOW-600,tick:{ts:NOW-1000,bids:[[100,20],[99,30]],asks:[[101,20],[102,30]]}}}};}
+function exactAck(prepared,extra={}){const b=prepared.bundle;return {status:'CLOSED',persisted:true,changes:1,committed_ts:b.observed_ts+1,full_evidence_id:b.full_evidence.full_evidence_id,contract_code:b.contract_code,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts,...extra};}
 function safety(p,ts=NOW){return buildSafetyGateSnapshot({contract_code:CONTRACT,snapshot_id:SNAPSHOT,observed_ts:ts,committed_ts:ts,
   full_evidence_record:{htx_execution_gate_closed:true},shadow_decision:{eq:{status:'SHADOW_MEASURABLE'}},execution_snapshot:p});}
 function checkBad(f){const p=prepareHtxExecutionFacts(f);assert.notEqual(p.status,'PREPARED_UNACKNOWLEDGED');assert.ok(p.reasons.length);assert.notEqual(p.check,'CONFIRMED');return p;}
@@ -158,8 +159,8 @@ test('actual futuresSnapshot sources the quote from its six existing requests, n
 test('proof bundle may clear only producer-owned safety veto; other entry gates still block authorization',()=>{
  const prepared=prepareFullEvidenceProofBundle({record:fullEvidence(),contract_code:CONTRACT,snapshot_id:SNAPSHOT,
  observed_ts:NOW,committed_ts:NOW,execution_snapshot:prepareHtxExecutionFacts(input())});
- for(const ack of [{status:'CLOSED',persisted:true,changes:0},{status:'CLOSED',persisted:true,changes:2},{status:'CLOSED',persisted:false,changes:1}]) assert.equal(sealFullEvidenceProofBundleAfterAck(prepared,ack).status,'FAIL_CLOSED');
- const s=sealFullEvidenceProofBundleAfterAck(prepared,{status:'CLOSED',persisted:true,changes:1});assert.equal(s.status,'CLOSED');
+ for(const ack of [exactAck(prepared,{changes:0}),exactAck(prepared,{changes:2}),exactAck(prepared,{persisted:false})]) assert.equal(sealFullEvidenceProofBundleAfterAck(prepared,ack).status,'FAIL_CLOSED');
+ const s=sealFullEvidenceProofBundleAfterAck(prepared,exactAck(prepared));assert.equal(s.status,'CLOSED');
  assert.equal(s.bundle.execution_gate.status,'CLOSED');assert.equal(s.bundle.hard_veto.status,'CLEAR');
  assert.equal(s.bundle.hard_veto.authoritative,true);assert.equal(s.bundle.hard_veto.producer_owned_status,'CLEAR');
  assert.equal(s.bundle.hard_veto.partial_execution_assessment.full_hard_veto_assessment_complete,false);
@@ -175,13 +176,14 @@ test('slow database handoff is an explicit skip, not a timestamp renewal',()=>{
 });
 for(const value of [true,false,null,undefined,'1',[],[1],{},NaN,Infinity]) test(`ACK count type rejected: ${String(value)}`,()=>{
  const p=prepareFullEvidenceProofBundle({record:fullEvidence(),contract_code:CONTRACT,snapshot_id:SNAPSHOT,observed_ts:NOW,committed_ts:NOW});
- assert.equal(sealFullEvidenceProofBundleAfterAck(p,{status:'CLOSED',persisted:true,changes:value}).status,'FAIL_CLOSED');
+ assert.equal(sealFullEvidenceProofBundleAfterAck(p,exactAck(p,{changes:value})).status,'FAIL_CLOSED');
 });
 test('conflicting ACK counts cannot confirm persistence',()=>{
  const p=prepareFullEvidenceProofBundle({record:fullEvidence(),contract_code:CONTRACT,snapshot_id:SNAPSHOT,observed_ts:NOW,committed_ts:NOW});
- assert.equal(sealFullEvidenceProofBundleAfterAck(p,{status:'CLOSED',persisted:true,changes:1,insert_changes:0}).status,'FAIL_CLOSED');
- assert.equal(sealFullEvidenceProofBundleAfterAck(p,{status:'CLOSED',persisted:true,changes:null,insert_changes:1}).status,'FAIL_CLOSED');
- assert.equal(sealFullEvidenceProofBundleAfterAck(p,{status:'CLOSED',persisted:true,insert_changes:1}).status,'CLOSED');
+ assert.equal(sealFullEvidenceProofBundleAfterAck(p,exactAck(p,{changes:1,insert_changes:0})).status,'FAIL_CLOSED');
+ assert.equal(sealFullEvidenceProofBundleAfterAck(p,exactAck(p,{changes:null,insert_changes:1})).status,'FAIL_CLOSED');
+ const insertOnly=exactAck(p);delete insertOnly.changes;insertOnly.insert_changes=1;
+ assert.equal(sealFullEvidenceProofBundleAfterAck(p,insertOnly).status,'CLOSED');
 });
 
 for (const [name, ack] of Object.entries({null:null,array:[],boolean:true,string:"CLOSED",number:1})) {

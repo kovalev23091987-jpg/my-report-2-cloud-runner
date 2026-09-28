@@ -5,8 +5,9 @@ import {
   attachFactualEntryAreaOutcome,
 } from './src/tz101-entry-area-calibration.mjs';
 import {digest} from './src/upstream-proof-utils.mjs';
+import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-approved-entry-performance-v2-20260927';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-approved-entry-performance-v3-delivery-cohorts-20260928';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -87,7 +88,8 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
       GROUP BY direction ORDER BY direction`).bind(activationTs).all(),
     db.prepare(`WITH base AS (
         SELECT o.sample_id,o.direction,o.horizon_hours,o.observed_ts,o.outcome_json,s.sample_json,
-          COALESCE(json_extract(s.sample_json,'$.idea_basis'),'UNKNOWN') AS idea_basis
+          COALESCE(json_extract(s.sample_json,'$.idea_basis'),'UNKNOWN') AS idea_basis,
+          COALESCE(json_extract(s.sample_json,'$.cohort_type'),'ANALYTICAL_PROSPECTIVE') AS cohort_type
         FROM tz101_entry_area_calibration_outcome o
         JOIN tz101_entry_area_calibration_signal s ON s.sample_id=o.sample_id
         WHERE o.computed_ts>=?1 AND o.calibration_only=1 AND o.live_promotion_allowed=0
@@ -110,6 +112,15 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
         SUM(CASE WHEN json_extract(b.outcome_json,'$.invalidation_touched')=1 THEN 1 ELSE 0 END)
       FROM base b,json_each(b.sample_json,'$.source_ids') j
       GROUP BY CAST(j.value AS TEXT),b.direction,b.horizon_hours
+      UNION ALL
+      SELECT 'COHORT' AS dimension,cohort_type AS dimension_value,direction,horizon_hours,
+        COUNT(DISTINCT sample_id),MIN(observed_ts),MAX(observed_ts),
+        AVG(json_extract(outcome_json,'$.directional_return_pct')),
+        AVG(json_extract(outcome_json,'$.mfe_directional_pct_snapshot')),
+        AVG(json_extract(outcome_json,'$.mae_directional_pct_snapshot')),
+        SUM(CASE WHEN json_extract(outcome_json,'$.target_touched')=1 THEN 1 ELSE 0 END),
+        SUM(CASE WHEN json_extract(outcome_json,'$.invalidation_touched')=1 THEN 1 ELSE 0 END)
+      FROM base GROUP BY cohort_type,direction,horizon_hours
       ORDER BY dimension,direction,horizon_hours,dimension_value`).bind(activationTs).all(),
   ]);
   const signalRows = rowsOf(signalsResult).map(row => ({
@@ -154,7 +165,7 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     signal_rows: signalRows,
     outcome_cells: cells,
     approved_entry_performance: performance,
-    performance_dimensions:['BASIS','SOURCE'],
+    performance_dimensions:['BASIS','SOURCE','COHORT'],
     data_ready_for_separate_oos_validation: readyCells === cells.length,
     validated_out_of_sample: false,
   });
@@ -190,7 +201,6 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
         json_extract(j.value,'$.observed_ts') AS observed_ts,json_extract(j.value,'$.price') AS price
       FROM report2_market_snapshot_batch_v1 b,json_each(b.payload) j
       WHERE b.actor='HUB_PUBLIC_COLLECTOR'
-        AND b.generation='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'
         AND b.status='COMPLETE' AND b.bucket BETWEEN ?1 AND ?2
         AND json_extract(j.value,'$.contract')=?3
         AND json_extract(j.value,'$.source_status')='CLOSED'
@@ -268,7 +278,22 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
   const result = await db.prepare(`SELECT
       f.decision_id,f.snapshot_id,f.contract_code,f.direction,f.campaign_receipt_id,f.observation_ts,f.persisted_ts,
       f.decision_status,f.shadow_only,f.live_probability,f.validated_signal,f.execution_authorized,f.telegram_eligible,
-      j.receipt_json,p.publication_id,p.canonical_json
+      j.receipt_json,p.publication_id,p.wave_id AS publication_wave_id,p.canonical_json,
+      (SELECT td.dispatch_id FROM v3_dispatch_publication_binding_shadow b
+        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key
+        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'
+          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL
+        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_dispatch_id,
+      (SELECT td.telegram_message_id FROM v3_dispatch_publication_binding_shadow b
+        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key
+        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'
+          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL
+        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_message_id,
+      (SELECT td.sent_ts FROM v3_dispatch_publication_binding_shadow b
+        JOIN v3_telegram_dispatch_shadow td ON td.idempotency_key=b.idempotency_key
+        WHERE b.publication_id=p.publication_id AND b.lifecycle_event='ENTRY' AND td.lifecycle_event='ENTRY'
+          AND td.state='SENT' AND CAST(td.telegram_message_id AS INTEGER)>0 AND td.sent_ts IS NOT NULL
+        ORDER BY td.sent_ts ASC,td.dispatch_id ASC LIMIT 1) AS telegram_confirmed_ts
     FROM final_decision_integration_shadow f
     JOIN stage392_multi_wave_receipt_journal j ON j.receipt_id=f.campaign_receipt_id
     JOIN canonical_publication_shadow p ON p.decision_id=f.decision_id
@@ -300,7 +325,12 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
     const revised=structuredClone(sampleRecord.sample);
     revised.entry_trigger_price=entryPrice;revised.target_price=target;revised.target_move_pct=remaining;
     revised.features={...revised.features,target_distance_pct:remaining};
+    const deliveryCohort=classifyDeliveryCohort({publication_id:row.publication_id,wave_id:row.publication_wave_id,direction,telegram_dispatch_id:row.telegram_dispatch_id,telegram_message_id:row.telegram_message_id,telegram_confirmed_ts:row.telegram_confirmed_ts});
+    const telegramConfirmed=deliveryCohort.delivery_channels.telegram_confirmed;
     revised.approved_entry_only=true;revised.publication_id=text(row.publication_id);revised.idea_basis=text(canonical?.metadata?.idea_basis)||'MULTI_FACTOR';revised.source_ids=sourceIds;
+    revised.cohort_type=deliveryCohort.cohort_type;
+    revised.delivery_proof={telegram:{confirmed:telegramConfirmed,dispatch_id:telegramConfirmed?text(row.telegram_dispatch_id):null,message_id:telegramConfirmed?text(row.telegram_message_id):null,confirmed_ts:telegramConfirmed?int(row.telegram_confirmed_ts):null,publication_id:text(row.publication_id),wave_id:text(row.publication_wave_id)||null},manual:{confirmed:false,reason:'NO_EXACT_MANUAL_DELIVERY_ACK_BOUND_TO_PUBLICATION'}};
+    revised.outcome_wave_key=deliveryCohort.outcome_wave_key;revised.delivery_channels=deliveryCohort.delivery_channels;revised.one_wave_one_outcome=true;
     revised.begin_close_price=target;revised.minimum_reportable_move_pct=5;
     const revisedDigest=digest(revised);sampleRecord={...sampleRecord,sample_id:`EAC:${revisedDigest}`,material_digest:revisedDigest,sample:revised};
     const s = sampleRecord.sample;
@@ -461,6 +491,7 @@ export default {
   captureOneEntryAreaSample,
   closeOneEntryAreaOutcome,
   loadProspectiveReadinessSnapshot,
+  classifyDeliveryCohort,
 };
 
 export { loadFactualPath as loadProspectiveFactualPathForTest };

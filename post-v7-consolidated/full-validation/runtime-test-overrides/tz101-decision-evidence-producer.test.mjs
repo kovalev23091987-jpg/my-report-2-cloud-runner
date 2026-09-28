@@ -12,6 +12,7 @@ const source = fs.readFileSync(new URL('../src/worker.js', import.meta.url), 'ut
   .replace(/from ["'](\.\/[^"'\n]+\.mjs)["']/g, (_, p) => `from ${JSON.stringify(new URL('../src/' + p.slice(2), import.meta.url).href)}`);
 const api = await import('data:text/javascript;base64,' + Buffer.from(source + '\nexport {buildTrajectoryWindow, buildDeepCheckInput};').toString('base64'));
 const END = NOW - 60_000, START = END - 5 * 60_000;
+function exactAck(prepared,extra={}){const b=prepared.bundle;return {status:'CLOSED',persisted:true,changes:1,committed_ts:b.observed_ts+1,full_evidence_id:b.full_evidence.full_evidence_id,contract_code:b.contract_code,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts,...extra};}
 function fixture(side = 'LONG') {
   const rawAnalysis = structuredClone(opportunity(side));
   const event = structuredClone(rawAnalysis.newest_event);
@@ -45,8 +46,8 @@ for (const side of ['LONG','SHORT']) test(`actual worker aggregate + real opport
   const built=prepareFullEvidenceProofBundle({record:fullEvidence(),contract_code:CONTRACT,snapshot_id:SNAPSHOT,observed_ts:NOW,
     shadow_decision:{eq:{status:'OK'}},opportunity_proof:f.opportunity_proof,decision_evidence:r.rows,decision_evidence_audit:r,committed_ts:NOW});
   assert.equal(built.status,'PREPARED_UNACKNOWLEDGED');
-  for(const ack of [{status:'CLOSED',persisted:true,changes:0},{status:'CLOSED',persisted:true,changes:2},{status:'CLOSED',persisted:false,changes:1}]) assert.equal(sealFullEvidenceProofBundleAfterAck(built,ack).status,'FAIL_CLOSED');
-  const sealed=sealFullEvidenceProofBundleAfterAck(built,{status:'CLOSED',persisted:true,changes:1});
+  for(const ack of [exactAck(built,{changes:0}),exactAck(built,{changes:2}),exactAck(built,{persisted:false})]) assert.equal(sealFullEvidenceProofBundleAfterAck(built,ack).status,'FAIL_CLOSED');
+  const sealed=sealFullEvidenceProofBundleAfterAck(built,exactAck(built));
   assert.equal(sealed.status,'CLOSED');
   assert.equal(sealed.bundle.decision_evidence.length,1);
   assert.deepEqual(sealed.bundle.decision_evidence_audit,r);
@@ -143,7 +144,7 @@ for (const side of ['LONG','SHORT']) test(`fresh BTC+ETH relative strength close
   assert.equal(r.rows[1].stance,side);
   const built=prepareFullEvidenceProofBundle({record:fullEvidence(),contract_code:CONTRACT,snapshot_id:SNAPSHOT,observed_ts:NOW,
     shadow_decision:{eq:{status:'OK'}},opportunity_proof:f.opportunity_proof,decision_evidence:r.rows,decision_evidence_audit:r,committed_ts:NOW});
-  const sealed=sealFullEvidenceProofBundleAfterAck(built,{status:'CLOSED',persisted:true,changes:1});
+  const sealed=sealFullEvidenceProofBundleAfterAck(built,exactAck(built));
   assert.equal(sealed.status,'CLOSED');
   const engineInput={...completeInput(side),decision_evidence:sealed.bundle.decision_evidence,evidence_registry:sealed.bundle.evidence_registry,opportunity:f.opportunity_proof};
   engineInput.campaign=immutableReceipt(engineInput.campaign,engineInput.campaign.persistence.receipt_id,NOW-50);
