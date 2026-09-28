@@ -17,13 +17,13 @@ test('official source metadata is admitted only from the exact manual registry',
  assert.deepEqual(parsed.entries.ABC.official_domains,['abc.example']);
  assert.deepEqual(parsed.entries.ABC.official_feeds,['https://abc.example/events.xml']);
  assert.equal(parsed.entries.ABC.snapshot_space,'abc.eth');
- const db=new DB(),result=await collectSupplementalCandidateContext({db,fetch_impl:async()=>({ok:true,status:200,json:async()=>({})}),registry:{ABC:{official_name:'ABC Protocol',official_domains:['abc.example'],official_feeds:['https://abc.example/events.xml'],snapshot_space:'abc.eth'}},contract:'ABC-USDT',run_id:'manual-metadata',derivatives_venues:0,reserve_for_liquidations:true,now:1_800_000_000_000});
- assert.deepEqual(result.asset_metadata,{official_name:'ABC Protocol',official_domains:['abc.example'],official_feeds:['https://abc.example/events.xml'],snapshot_space:'abc.eth'});
+ const db=new DB(),result=await collectSupplementalCandidateContext({db,fetch_impl:async()=>({ok:true,status:200,json:async()=>({})}),registry:{ABC:{official_name:'ABC Protocol',official_domains:['abc.example'],official_feeds:['https://abc.example/events.xml'],official_feed_specs:[{url:'https://abc.example/events.xml',format:'RSS',parser_id:'FIXED_RSS_V1',refresh_period:'1h',timezone:'UTC'}],snapshot_space:'abc.eth'}},contract:'ABC-USDT',run_id:'manual-metadata',derivatives_venues:0,reserve_for_liquidations:true,now:1_800_000_000_000});
+ assert.deepEqual(result.asset_metadata,{official_name:'ABC Protocol',official_domains:['abc.example'],official_feeds:['https://abc.example/events.xml'],official_feed_specs:[{url:'https://abc.example/events.xml',format:'RSS',parser_id:'FIXED_RSS_V1',refresh_period:'1h',timezone:'UTC'}],snapshot_space:'abc.eth'});
 });
 test('automatic ticker identity discovery never invents official domains feeds or governance space',async()=>{
  const db=new DB(),fetch_impl=async url=>{if(String(url).includes('dexscreener'))return{ok:true,status:200,json:async()=>({pairs:[{chainId:'ethereum',baseToken:{symbol:'ABC',address:addr},quoteToken:{symbol:'USDT'},liquidity:{usd:500000}}]})};if(String(url).includes('geckoterminal'))return{ok:true,status:200,json:async()=>({included:[{type:'token',id:`eth_${addr}`,attributes:{symbol:'ABC'}},{type:'token',id:'eth_0x2222222222222222222222222222222222222222',attributes:{symbol:'USDT'}}],data:[{attributes:{reserve_in_usd:'500000'},relationships:{base_token:{data:{id:`eth_${addr}`}},quote_token:{data:{id:'eth_0x2222222222222222222222222222222222222222'}}}}]})};return{ok:true,status:200,json:async()=>[]};};
  const result=await collectSupplementalCandidateContext({db,fetch_impl,registry:{},contract:'ABC-USDT',run_id:'metadata-discovery',derivatives_venues:2,now:1_800_000_000_000});
- assert.deepEqual(result.asset_metadata,{official_name:null,official_domains:[],official_feeds:[],snapshot_space:null});
+ assert.deepEqual(result.asset_metadata,{official_name:null,official_domains:[],official_feeds:[],official_feed_specs:[],snapshot_space:null});
 });
 test('one selected lane never exceeds five network calls and caches exact identities',async()=>{
  const db=new DB(),seen=[];

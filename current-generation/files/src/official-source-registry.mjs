@@ -40,6 +40,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
    ...(prior||{}),chain:identity.chain,contract_or_mint:identity.contract_or_mint,official_name:name,
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
+   official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone}]:[])],
   };
   records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null});
  }
@@ -51,7 +52,7 @@ export function mergeOfficialAndConfiguredRegistries({official,configured}={}){
  for(const [base,row] of Object.entries(parsed.entries||{})){
   const prior=merged[base],a=prior?.chain&&prior?.contract_or_mint?`${prior.chain}:${prior.contract_or_mint}`:null,b=row?.identity?`${row.identity.chain}:${row.identity.contract_or_mint}`:null;
   if(a&&b&&a.toLowerCase()!==b.toLowerCase())throw new Error(`SUPPLEMENTAL_IDENTITY_REGISTRY_CONFLICT:${base}`);
-  merged[base]={...(prior||{}),...(row||{}),...(row?.identity||(!prior?.chain?{}:{chain:prior.chain,contract_or_mint:prior.contract_or_mint})),official_name:row?.official_name||prior?.official_name||null,official_domains:unique([...(prior?.official_domains||[]),...(row?.official_domains||[])]),official_feeds:unique([...(prior?.official_feeds||[]),...(row?.official_feeds||[])])};
+  merged[base]={...(prior||{}),...(row||{}),...(row?.identity||(!prior?.chain?{}:{chain:prior.chain,contract_or_mint:prior.contract_or_mint})),official_name:row?.official_name||prior?.official_name||null,official_domains:unique([...(prior?.official_domains||[]),...(row?.official_domains||[])]),official_feeds:unique([...(prior?.official_feeds||[]),...(row?.official_feeds||[])]),official_feed_specs:[...(prior?.official_feed_specs||[]),...(row?.official_feed_specs||[])]};
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:Object.keys(merged).length?'CLOSED':'NOT_CLOSED',registry:merged,versioned_records:compiled.records.length,configured_status:parsed.status};
 }

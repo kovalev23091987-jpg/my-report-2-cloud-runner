@@ -11,6 +11,7 @@ test('K16 versioned official registry exposes exact identity and domain but neve
  assert.equal(out.registry.LINK.chain,'ethereum');assert.equal(out.registry.LINK.contract_or_mint,'0x514910771af9ca656af840dff83e8264ecf986ca');
  assert.deepEqual(out.registry.LINK.official_domains,['chain.link']);assert.deepEqual(out.registry.LINK.official_feeds,[]);
  assert.deepEqual(out.registry.LDO.official_feeds,['https://blog.lido.fi/rss/']);
+ assert.deepEqual(out.registry.LDO.official_feed_specs,[{url:'https://blog.lido.fi/rss/',format:'RSS',parser_id:'FIXED_RSS_V1',refresh_period:'1h',timezone:'UTC'}]);
  assert.equal(out.records[0].status,'DISABLED');assert.equal(out.records[0].disabled_reason,'FIXED_HTML_PARSER_NOT_IMPLEMENTED');
 });
 
