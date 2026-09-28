@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='6d2a5cb9882bdea64c91696d8a414d379bf86ea431b3450ba718352bb1dff39e';
+const expectedWorker='d81b483386c66e11ec4fedfeb4fcbca7d16642e6d89976923129d7503cd6247e';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -67,6 +67,8 @@ if(sourceRuntime){
  run([path.join(here,'tests/approved-entry-path.runtime.mjs'),runtime]);
  run([path.join(here,'tests/approved-entry-performance.runtime.mjs'),runtime]);
  run([path.join(here,'tests/early-observation-state.runtime.mjs'),runtime]);
+ run([path.join(here,'tests/public-collector-history-consumer.runtime.mjs'),runtime]);
+ run([path.join(here,'tests/prospective-public-history.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
 console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));

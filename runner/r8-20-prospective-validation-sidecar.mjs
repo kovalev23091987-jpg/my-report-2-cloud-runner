@@ -185,6 +185,25 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
   const start = int(startTs), end = int(endTs);
   if (!text(contract) || start === null || end === null || end < start) return { status: 'INVALID_INPUT', points: [] };
   const upper = allowAfterTarget ? end + 15 * MINUTE : end;
+  try {
+    const batchResult = await db.prepare(`SELECT b.bucket AS snapshot_bucket,b.received_ts,
+        json_extract(j.value,'$.observed_ts') AS observed_ts,json_extract(j.value,'$.price') AS price
+      FROM report2_market_snapshot_batch_v1 b,json_each(b.payload) j
+      WHERE b.actor='HUB_PUBLIC_COLLECTOR'
+        AND b.generation='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M'
+        AND b.status='COMPLETE' AND b.bucket BETWEEN ?1 AND ?2
+        AND json_extract(j.value,'$.contract')=?3
+        AND json_extract(j.value,'$.source_status')='CLOSED'
+      ORDER BY b.bucket ASC LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path}`)
+      .bind(start, upper, text(contract)).all();
+    const batchPoints = rowsOf(batchResult).map(row => ({
+      ts: int(row.observed_ts) ?? int(row.snapshot_bucket),
+      price: finite(row.price),
+    })).filter(row => row.ts !== null && row.price !== null && row.price > 0 && row.ts >= start && row.ts <= upper);
+    if (batchPoints.length) return { status: 'CLOSED', points: batchPoints, rows_loaded: batchPoints.length, history_source: 'REPORT2_MARKET_SNAPSHOT_BATCH_V1' };
+  } catch {
+    // Additive deployment: fall back until the public-collector table exists.
+  }
   const result = await db.prepare(`SELECT ts,payload_json FROM scan_runs
     WHERE ts BETWEEN ?1 AND ?2 AND stage0_coverage_pct>=99.9 AND errors=0 AND stale=0
     ORDER BY ts ASC LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path}`)
@@ -195,7 +214,7 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
     const p = closedStage0Point(row, contract);
     if (p) points.push(p);
   }
-  return { status: points.length ? 'CLOSED' : 'NO_FACTUAL_PATH', points, rows_loaded: rows.length };
+  return { status: points.length ? 'CLOSED' : 'NO_FACTUAL_PATH', points, rows_loaded: rows.length, history_source: points.length ? 'SCAN_RUNS_FALLBACK' : null };
 }
 
 export async function closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_ts = Date.now() } = {}) {
@@ -228,6 +247,7 @@ export async function closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_t
     direction_hint: text(task.direction_hint) || null,
     horizon_hours: Number(task.horizon_hours),
     rows_loaded: path.rows_loaded || 0,
+    history_source: path.history_source || null,
   };
 }
 
@@ -338,7 +358,7 @@ function buildEntryAreaFactualOutcome({ sample, horizonHours, points, targetTs }
       mfe_directional_pct_snapshot: Math.max(...dirSeries),
       mae_directional_pct_snapshot: Math.min(...dirSeries),
       path_coverage_pct: pathCoveragePct(path, sample.observed_ts, outcomePoint.ts),
-      source: 'HTX_STAGE0_SCAN_RUNS_FACTUAL_NO_INTERPOLATION',
+      source: 'HTX_PUBLIC_HISTORY_FACTUAL_NO_INTERPOLATION',
       interpolation_used: false,
       calibration_only: true,
       live_promotion_allowed: false,
@@ -389,6 +409,7 @@ export async function closeOneEntryAreaOutcome(db, { current_scan_ts, activation
     horizon_hours: o.horizon_hours,
     path_order_status: o.path_order_status,
     rows_loaded: path.rows_loaded || 0,
+    history_source: path.history_source || null,
   };
 }
 
@@ -441,3 +462,5 @@ export default {
   closeOneEntryAreaOutcome,
   loadProspectiveReadinessSnapshot,
 };
+
+export { loadFactualPath as loadProspectiveFactualPathForTest };

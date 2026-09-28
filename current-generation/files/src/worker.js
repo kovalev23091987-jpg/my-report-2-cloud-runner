@@ -3771,22 +3771,27 @@ async function loadHistoryTargets(
     [
       "5m",
       5 * 60 * 1000,
-      3 * 60 * 1000,
+      1 * 60 * 1000,
     ],
     [
       "15m",
       15 * 60 * 1000,
-      5 * 60 * 1000,
+      2 * 60 * 1000,
     ],
     [
       "1h",
       60 * 60 * 1000,
-      10 * 60 * 1000,
+      5 * 60 * 1000,
     ],
     [
       "4h",
       4 * 60 * 60 * 1000,
-      20 * 60 * 1000,
+      5 * 60 * 1000,
+    ],
+    [
+      "24h",
+      24 * 60 * 60 * 1000,
+      5 * 60 * 1000,
     ],
   ];
 
@@ -3900,9 +3905,271 @@ async function loadHistoryTargets(
     return map;
   }
 
+  function collectorPayloadToMap(
+    records,
+    target,
+    tolerance
+  ) {
+    const map = new Map();
+
+    if (!Array.isArray(records) || !records.length) {
+      return map;
+    }
+
+    let metadata;
+
+    try {
+      metadata = JSON.parse(
+        records[0]
+          ?.source_timestamps_json ||
+          "{}"
+      );
+    } catch {
+      return map;
+    }
+
+    const expectedShards =
+      Number(
+        metadata?.expected_shards
+      );
+
+    if (
+      !Number.isInteger(
+        expectedShards
+      ) ||
+      expectedShards < 1 ||
+      records.length !==
+        expectedShards ||
+      records.some(
+        (record, index) =>
+          record?.status !==
+            "COMPLETE" ||
+          Number(
+            record?.shard
+          ) !== index
+      )
+    ) {
+      return map;
+    }
+
+    const normalized = [];
+
+    try {
+      for (const record of records) {
+        const rows = JSON.parse(
+          record?.payload ||
+          "[]"
+        );
+
+        if (!Array.isArray(rows)) {
+          return new Map();
+        }
+
+        normalized.push(
+          ...rows
+        );
+      }
+    } catch {
+      return map;
+    }
+
+    if (
+      Number(
+        metadata?.universe_total
+      ) !== normalized.length
+    ) {
+      return new Map();
+    }
+
+    for (const row of normalized) {
+      const key = contractKey(
+        row?.contract
+      );
+
+      const actualTs =
+        normalizeTs(
+          row?.observed_ts
+        ) ??
+        normalizeTs(
+          metadata?.market
+        ) ??
+        normalizeTs(
+          records[0]
+            ?.received_ts
+        ) ??
+        normalizeTs(
+          records[0]
+            ?.bucket
+        );
+
+      if (
+        !key ||
+        actualTs === null ||
+        Math.abs(
+          actualTs - target
+        ) > tolerance
+      ) {
+        continue;
+      }
+
+      map.set(
+        key,
+        {
+          ts: actualTs,
+          scheduled_bucket_ts:
+            normalizeTs(
+              records[0]
+                ?.bucket
+            ),
+          contract_code:
+            row?.contract,
+          price:
+            row?.price,
+          turnover_24h:
+            row
+              ?.turnover_24h_usdt,
+          oi_contracts:
+            row?.oi_contracts,
+          oi_value_usdt:
+            row?.oi_value_usdt,
+          funding_rate:
+            row?.funding_rate,
+          funding_interval_hours:
+            row
+              ?.funding_interval_hours,
+          market_age_sec:
+            row?.market_age_sec,
+          source_status:
+            row?.source_status,
+          prior_discovery: null,
+          history_provenance:
+            "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        }
+      );
+    }
+
+    return map;
+  }
+
   try {
+    const generation =
+      String(
+        env
+          ?.REPORT2_CURRENT_GENERATION ||
+        ""
+      ).trim();
+
+    const collectorMaps = {};
+
+    if (generation) {
+      try {
+        const collectorStatements =
+          targets.map(
+            (
+              [
+                label,
+                offset,
+                tolerance,
+              ]
+            ) => {
+              const target =
+                nowMs -
+                Number(offset);
+
+              const bucket =
+                Math.floor(
+                  target /
+                  300000
+                ) *
+                300000;
+
+              return env.DATA_DB
+                .prepare(`
+                  SELECT
+                    bucket,
+                    shard,
+                    source_timestamps_json,
+                    received_ts,
+                    status,
+                    payload
+                  FROM
+                    report2_market_snapshot_batch_v1
+                  WHERE
+                    actor = ?1 AND
+                    generation = ?2 AND
+                    status = 'COMPLETE' AND
+                    bucket = (
+                      SELECT bucket
+                      FROM report2_market_snapshot_batch_v1
+                      WHERE
+                        actor = ?1 AND
+                        generation = ?2 AND
+                        status = 'COMPLETE' AND
+                        bucket BETWEEN ?3 AND ?4
+                      ORDER BY
+                        ABS(bucket - ?5) ASC
+                      LIMIT 1
+                    )
+                  ORDER BY shard ASC
+                `)
+                .bind(
+                  "HUB_PUBLIC_COLLECTOR",
+                  generation,
+                  bucket -
+                    Number(
+                      tolerance
+                    ),
+                  bucket +
+                    Number(
+                      tolerance
+                    ),
+                  bucket
+                );
+            }
+          );
+
+        const collectorResults =
+          await env.DATA_DB.batch(
+            collectorStatements
+          );
+
+        targets.forEach(
+          (
+            [
+              label,
+              offset,
+              tolerance,
+            ],
+            index
+          ) => {
+            collectorMaps[label] =
+              collectorPayloadToMap(
+                asArray(
+                  collectorResults?.[
+                    index
+                  ]?.results
+                ),
+                nowMs -
+                  Number(offset),
+                Number(tolerance)
+              );
+          }
+        );
+      } catch {
+        for (const [label] of targets) {
+          collectorMaps[label] =
+            new Map();
+        }
+      }
+    }
+
     const statements =
-      targets.map(
+      targets.filter(
+        ([label]) =>
+          !collectorMaps[
+            label
+          ]?.size
+      ).map(
         (
           [
             label,
@@ -3953,23 +4220,46 @@ async function loadHistoryTargets(
       );
 
     const results =
-      await env.DATA_DB.batch(
-        statements
-      );
+      statements.length
+        ? await env.DATA_DB.batch(
+            statements
+          )
+        : [];
 
     const out = {};
 
     let snapshotRowsFound =
       0;
 
+    let fallbackIndex = 0;
+
     targets.forEach(
-      ([label], i) => {
+      ([label]) => {
+        const collectorMap =
+          collectorMaps[label];
+
+        if (
+          collectorMap?.size
+        ) {
+          out[label] =
+            collectorMap;
+
+          snapshotRowsFound +=
+            1;
+
+          return;
+        }
+
         const first =
           asArray(
-            results?.[i]
+            results?.[
+              fallbackIndex
+            ]
               ?.results
           )[0] ||
           null;
+
+        fallbackIndex += 1;
 
         const map =
           payloadToMap(
@@ -4003,6 +4293,12 @@ async function loadHistoryTargets(
         0
           ? null
           : "D1 is connected but no prior Stage-0 snapshots exist yet",
+
+      preferred_source:
+        "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+
+      fallback_source:
+        "SCAN_RUNS_COMPACT_V2",
 
       targets:
         out,
@@ -4633,6 +4929,16 @@ async function persistStage0(
               current,
               history.targets?.[
                 "4h"
+              ]?.get(
+                key
+              )
+            ),
+
+          "24h":
+            historyMetrics(
+              current,
+              history.targets?.[
+                "24h"
               ]?.get(
                 key
               )
@@ -19489,6 +19795,8 @@ export async function scanLiquidationCandidates({env,max_candidates=5,exact_cont
   const status=!sourceClosed?'HTX_SCAN_NOT_CLOSED':exactStatus||(candidates.length?'CLOSED':'NO_LIQUIDATION_CANDIDATES');
   return{schema:'LIQUIDATION_ONLY_SCAN_V1',status,exact_contract:exact||null,scan:{source:scan?.source||null,market:scan?.market||null,observed_ts:scan?.timestamp||null,universe_total:Number(scan?.counts?.universe_total||0),scanned:Number(scan?.counts?.scanned||0),errors:Number(scan?.counts?.errors||0),stale:Number(scan?.counts?.stale||0),technical_eligible:Number(queue?.counts?.eligible||0),shortlist_total:Number(discovery?.counts?.shortlist||0)},candidates,full_report_started:false,decision_generated:false,direction_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,persistence_requested:false};
 }
+
+export {loadHistoryTargets as loadStage0HistoryTargetsForTest};
 
 /* REPORT2_GITHUB_BYK_PROXY_V4_1 — protected source proxy only. */
 async function __report2CloudByKProxy(request, env) {

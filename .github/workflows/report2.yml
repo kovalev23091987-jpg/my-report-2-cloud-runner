@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - "manual-requests/run.json"
+      - "cloudflare/public-collector/release-request.json"
   workflow_dispatch:
     inputs:
       reason:
@@ -50,6 +51,11 @@ on:
         description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"
         required: false
         default: ""
+      public_collector_release:
+        description: "deploy the bounded five-minute HTX public collector"
+        required: false
+        type: boolean
+        default: false
       manual_run_authorized:
         description: "explicitly authorize this manual analytics run"
         required: true
@@ -89,7 +95,7 @@ jobs:
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
   enqueue-manual-command:
-    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ (github.event_name == 'push' && contains(toJSON(github.event.commits), 'manual-requests/run.json')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     outputs:
       command_id: ${{ steps.enqueue.outputs.command_id }}
@@ -102,7 +108,7 @@ jobs:
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}
       REPORT2_CURRENT_POINTER_FILE: "REPORT2_CURRENT_GENERATION.json"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V9_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -114,7 +120,7 @@ jobs:
 
   run-report2:
     needs: [execution-gate, enqueue-manual-command]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && (github.event_name == 'schedule' || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '*/20 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -128,7 +134,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "6d2a5cb9882bdea64c91696d8a414d379bf86ea431b3450ba718352bb1dff39e"
+      REPORT2_EXPECTED_WORKER_SHA: "d81b483386c66e11ec4fedfeb4fcbca7d16642e6d89976923129d7503cd6247e"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -161,7 +167,7 @@ jobs:
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V9_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
@@ -313,6 +319,48 @@ jobs:
           path: runtime/telegram-info-proof.json
           if-no-files-found: warn
           retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}
+
+  deploy-public-collector:
+    needs: [execution-gate]
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'push' && contains(toJSON(github.event.commits), 'cloudflare/public-collector/release-request.json')) || (github.event_name == 'workflow_dispatch' && inputs.public_collector_release == true)) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: my-report-2-public-collector-release
+      cancel-in-progress: false
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate collector and exact Hub overlay
+        run: |
+          node --test cloudflare/public-collector/public-collector.test.mjs current-generation/tests/market-snapshot-batch.test.mjs
+          node cloudflare/public-collector/patch-worker.mjs cloudflare/public-collector/dist
+          node --check cloudflare/public-collector/dist/worker.js
+          REPORT2_HUB_MODULE_PATH=cloudflare/public-collector/dist/worker.js node --test cloudflare/public-collector/public-collector.test.mjs
+      - name: Apply additive public-collector schema
+        run: |
+          npx --yes wrangler@4 d1 execute DATA_DB --remote --config cloudflare/public-collector/dist/wrangler.json --file current-generation/migrations/004_market_snapshot_batch.sql
+          npx --yes wrangler@4 d1 execute DATA_DB --remote --config cloudflare/public-collector/dist/wrangler.json --file current-generation/migrations/009_public_collector_runtime.sql
+      - name: Deploy exact bounded collector over legacy Hub schedule
+        run: npx --yes wrangler@4 deploy --config cloudflare/public-collector/dist/wrangler.json --keep-vars
+      - name: Verify code, bindings and exact five-minute cron
+        run: node cloudflare/public-collector/verify-deployment.mjs cloudflare/public-collector/dist
+      - name: Verify first real bounded five-minute sample
+        run: node cloudflare/public-collector/verify-first-sample.mjs cloudflare/public-collector/dist
+      - name: Upload sanitized collector release proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-public-collector-release-${{ github.run_id }}
+          path: |
+            cloudflare/public-collector/dist/prepare-proof.json
+            cloudflare/public-collector/dist/deployment-proof.json
+            cloudflare/public-collector/dist/first-live-sample-proof.json
+          if-no-files-found: error
+          retention-days: 30
 
   cloudflare-hub-read-only-audit:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.manual_run_authorized == true }}

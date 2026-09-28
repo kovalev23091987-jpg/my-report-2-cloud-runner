@@ -20,7 +20,9 @@ export function packSnapshotShards({bucket,actor,generation,source_timestamps={}
     if(current.length>=MAX_CONTRACTS_PER_SHARD||candidate.bytes>MAX_PAYLOAD_BYTES)flush();
     current.push(row);
   }
-  flush();return shards;
+  flush();
+  const snapshotMeta={...source_timestamps,expected_shards:shards.length,universe_total:ordered.length};
+  return shards.map(shard=>({...shard,source_timestamps:snapshotMeta}));
 }
 
 export async function installMarketSnapshotBatch(db){
@@ -60,6 +62,7 @@ export async function cleanupExpiredSnapshots(db,{now=Date.now(),limit=50}={}){
 export function admitFiveMinuteCollector(measurement={}){
   const required=['cpu_ms','memory_bytes','subrequests','rows_read','rows_written','db_bytes'];
   if(required.some(key=>!Number.isFinite(Number(measurement[key]))))return {enabled:false,status:'BLOCKED_RUNTIME_LIMIT',reason:'MEASUREMENT_REQUIRED'};
-  if(Number(measurement.subrequests)>3||Number(measurement.rows_written)>10000/288)return {enabled:false,status:'BLOCKED_RUNTIME_LIMIT',reason:'MEASURED_BUDGET_EXCEEDED'};
+  const allowedSubrequests=measurement.catalog_refresh===true?4:3;
+  if(Number(measurement.subrequests)>allowedSubrequests||Number(measurement.rows_written)>10000/288)return {enabled:false,status:'BLOCKED_RUNTIME_LIMIT',reason:'MEASURED_BUDGET_EXCEEDED'};
   return {enabled:true,status:'ADMITTED_MEASURED'};
 }

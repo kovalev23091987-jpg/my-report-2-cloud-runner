@@ -10,6 +10,7 @@ for(const count of [358,1024])test(`K03: ${count} contracts are completely shard
   assert.equal(shards.reduce((sum,x)=>sum+x.contracts,0),count);
   assert.ok(shards.every(x=>x.contracts<=MAX_CONTRACTS_PER_SHARD&&x.payload_bytes<=MAX_PAYLOAD_BYTES));
   assert.deepEqual(shards.map(x=>x.shard),Array.from({length:shards.length},(_,i)=>i));
+  assert.ok(shards.every(x=>x.source_timestamps.expected_shards===shards.length&&x.source_timestamps.universe_total===count));
 });
 
 test('K03: partial OI and a new contract remain explicit data, not a dropped universe member',()=>{
@@ -31,8 +32,9 @@ test('K03: STARTED/PARTIAL snapshots never become historical evidence',()=>{
   for(const status of ['STARTED','PARTIAL'])assert.equal(selectHistoricalWindows({contract:'X-USDT',now_ts:now,snapshots:[{bucket:point,status,rows:[{contract:'X-USDT'}]}]}).windows.m5.status,'UNKNOWN');
 });
 
-test('K03: five-minute collector remains blocked until real runtime measurements fit',()=>{
+test('K03: five-minute collector is admitted only with a complete bounded measurement',()=>{
   assert.equal(admitFiveMinuteCollector({}).status,'BLOCKED_RUNTIME_LIMIT');
   assert.equal(admitFiveMinuteCollector({cpu_ms:1,memory_bytes:1,subrequests:4,rows_read:1,rows_written:1,db_bytes:1}).status,'BLOCKED_RUNTIME_LIMIT');
+  assert.equal(admitFiveMinuteCollector({cpu_ms:1,memory_bytes:1,subrequests:4,rows_read:1,rows_written:15,db_bytes:1,catalog_refresh:true}).status,'ADMITTED_MEASURED');
   assert.equal(admitFiveMinuteCollector({cpu_ms:1,memory_bytes:1,subrequests:3,rows_read:1,rows_written:20,db_bytes:1}).status,'ADMITTED_MEASURED');
 });
