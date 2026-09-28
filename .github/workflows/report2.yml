@@ -322,7 +322,7 @@ jobs:
 
   deploy-public-collector:
     needs: [execution-gate]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'push' && contains(toJSON(github.event.commits), 'cloudflare/public-collector/release-request.json')) || (github.event_name == 'workflow_dispatch' && inputs.public_collector_release == true)) }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[public-collector-release]')) || (github.event_name == 'workflow_dispatch' && inputs.public_collector_release == true)) }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     concurrency:
