@@ -1,0 +1,49 @@
+{
+  "schema": "report2-cloudflare-hub-live-proof-v1",
+  "captured_at": "2026-09-28T07:09:38.243Z",
+  "github_run_id": 36390110554,
+  "github_head_sha": "91f8df2aa3855284e0840b3893c107072fed533a",
+  "operation": "READ_ONLY",
+  "cloudflare_changed": false,
+  "report_cycle_started": false,
+  "telegram_network_started": false,
+  "script": {
+    "name": "my-report-2-hub",
+    "created_on": "2026-09-11T11:02:15.740887Z",
+    "modified_on": "2026-09-16T10:25:16.963419Z",
+    "compatibility_date": "2026-09-11",
+    "main_module_filename": "worker.js",
+    "main_module_bytes": 1122879,
+    "main_module_sha256": "10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af"
+  },
+  "bindings": [
+    {"name": "ALERT_DISPATCH_KEY", "type": "secret_text"},
+    {"name": "BYKARANTELI_API_KEY", "type": "secret_text"},
+    {"name": "DATA_DB", "type": "d1"},
+    {"name": "REPORT2_CLOUD_SOURCE_PROXY_TOKEN", "type": "secret_text"},
+    {"name": "TELEGRAM_BOT_TOKEN", "type": "secret_text"},
+    {"name": "TELEGRAM_CHAT_ID", "type": "plain_text"},
+    {"name": "TELEGRAM_TEST_KEY", "type": "secret_text"}
+  ],
+  "cron_trigger_count": 0,
+  "cron_triggers": [],
+  "verified_routes": [
+    "/health",
+    "/healthz",
+    "/deep-check-input",
+    "/telegram-shadow-preview",
+    "/telegram-shadow-test",
+    "/alert-dispatch",
+    "/telegram-test",
+    "/cloud-bykaranteli-proxy"
+  ],
+  "conclusions": {
+    "legacy_scheduled_analytics_active": false,
+    "old_hub_competing_with_github_schedule": false,
+    "d1_binding_present": true,
+    "telegram_relay_bindings_present": true,
+    "source_proxy_bindings_present": true,
+    "secret_values_exported": false,
+    "production_v5_deployed": false
+  }
+}

@@ -1,10 +1,11 @@
+import {normalizeOkxDepthLevel} from './asset-identity-cache.mjs';
 export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v1-20260927';
 const CATALOG_TTL_MS=24*60*60*1000,DEPTH_TTL_MS=5*60*1000,REALIZED_TTL_MS=5*60*1000,HISTORY_TTL_MS=15*60*1000;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const baseOf=contract=>text(contract).toUpperCase().replace(/-USDT$/,'');
 const validContract=contract=>/^[^-\s]{1,32}-USDT$/u.test(text(contract).toUpperCase());
-const hash=value=>{let h=2166136261;for(const ch of String(value)){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return Math.abs(h)>>>0;};
+const hash=value=>{let h=2166136261;for(const ch of String(value)){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return h>>>0;};
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 
 async function requestJson(fetchImpl,url,{headers={},timeout_ms=9000}={}){
@@ -35,22 +36,23 @@ async function loadVenueCatalog({db,fetch_impl,now}={}){
  return{status:Object.keys(entries).length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:3,observed_ts:now,entries,receipts:[['BINANCE',binance],['BYBIT',bybit],['OKX',okx]].map(([source,row])=>({source,status:row.ok?'CLOSED':row.error}))};
 }
 
-function depthMetrics(rows,side,referencePrice){
+function depthMetrics(rows,side,referencePrice,{venue,instrument}={}){
  const ref=finite(referencePrice),clean=[];
- for(const row of Array.isArray(rows)?rows:[]){const price=finite(row?.[0]),qty=finite(row?.[1]);if(price&&qty&&price>0&&qty>0)clean.push({price,notional:price*qty});}
+ for(const row of Array.isArray(rows)?rows:[]){const price=finite(row?.[0]),qty=finite(row?.[1]);if(!price||!qty||price<=0||qty<=0)continue;if(venue==='OKX'){const normalized=normalizeOkxDepthLevel({price,contracts:qty,side,instrument});if(normalized.status==='CLOSED')clean.push({price,notional:normalized.quote_usd,raw_contracts:qty,base_quantity:normalized.base_quantity});}else clean.push({price,notional:price*qty});}
  clean.sort((a,b)=>side==='bid'?b.price-a.price:a.price-b.price);
  const within=pct=>clean.filter(row=>Math.abs((row.price/ref-1)*100)<=pct).reduce((sum,row)=>sum+row.notional,0);
  let cumulative=0,edge=null;for(const row of clean){cumulative+=row.notional;if(cumulative>=25000){edge=row.price;break;}}
  return{notional_1pct:within(1),notional_2pct:within(2),notional_5pct:within(5),usd_25000_slippage_pct:edge===null?null:Math.abs((edge/ref-1)*100),usd_25000_covered:edge!==null,levels:clean.length};
 }
-export function normalizeCrossExchangeDepth({venue,payload,reference_price,observed_ts}={}){
+export function normalizeCrossExchangeDepth({venue,payload,reference_price,observed_ts,instrument=null}={}){
  let bids=[],asks=[],symbol=null,source_ts=null;
  if(venue==='BINANCE'){bids=payload?.bids;asks=payload?.asks;symbol=payload?.symbol;source_ts=finite(payload?.T??payload?.E);}
  if(venue==='BYBIT'){bids=payload?.result?.b;asks=payload?.result?.a;symbol=payload?.result?.s;source_ts=finite(payload?.ts);}
  if(venue==='OKX'){const row=payload?.data?.[0];bids=row?.bids;asks=row?.asks;symbol=row?.instId;source_ts=finite(row?.ts);}
  const bestBid=finite(bids?.[0]?.[0]),bestAsk=finite(asks?.[0]?.[0]),ref=finite(reference_price),mid=bestBid&&bestAsk?(bestBid+bestAsk)/2:null;
  if(!ref||!mid||Math.abs((mid/ref-1)*100)>5)return{source:venue,status:'NOT_CLOSED',reason:'PRICE_IDENTITY_MISMATCH_OR_BOOK_EMPTY',symbol:symbol||null,observed_ts};
- const bid=depthMetrics(bids,'bid',ref),ask=depthMetrics(asks,'ask',ref),den=bid.notional_2pct+ask.notional_2pct;
+ const bid=depthMetrics(bids,'bid',ref,{venue,instrument}),ask=depthMetrics(asks,'ask',ref,{venue,instrument}),den=bid.notional_2pct+ask.notional_2pct;
+ if(venue==='OKX'&&(!bid.levels||!ask.levels))return{source:venue,status:'NOT_CLOSED',reason:'OKX_UNIT_METADATA_REQUIRED',symbol:symbol||null,observed_ts};
  return{source:venue,status:'CLOSED',symbol,observed_ts,source_ts,exact_market_symbol:true,chain_asset_identity:false,mid_price:mid,price_difference_vs_htx_pct:(mid/ref-1)*100,bid,ask,depth_imbalance_2pct:den?(bid.notional_2pct-ask.notional_2pct)/den:0};
 }
 
@@ -59,7 +61,7 @@ async function collectDepth({fetch_impl,entry,reference_price,now}={}){
  if(entry?.binance)calls.push(['BINANCE',requestJson(fetch_impl,`https://fapi.binance.com/fapi/v1/depth?symbol=${encodeURIComponent(entry.binance)}&limit=100`)]);
  if(entry?.bybit)calls.push(['BYBIT',requestJson(fetch_impl,`https://api.bybit.com/v5/market/orderbook?category=linear&symbol=${encodeURIComponent(entry.bybit)}&limit=50`)]);
  if(entry?.okx)calls.push(['OKX',requestJson(fetch_impl,`https://www.okx.com/api/v5/market/books?instId=${encodeURIComponent(entry.okx)}&sz=50`)]);
-  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:now}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
+  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:now,instrument:venue==='OKX'?{base:entry.base,contract_value:entry.okx_contract_value,contract_multiplier:entry.okx_contract_multiplier,contract_value_currency:entry.okx_contract_value_currency}:null}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
  const usable=settled.filter(row=>row.status==='CLOSED'),imbalance=usable.length?usable.reduce((s,row)=>s+row.depth_imbalance_2pct,0)/usable.length:null;
  return{source:'CROSS_EXCHANGE_DEPTH',status:usable.length?'CLOSED':'NOT_CLOSED',observed_ts:now,network_calls:calls.slice(0,3).length,venue_count:usable.length,venues:usable,aggregate_depth_imbalance_2pct:imbalance,independent_venues_notional_not_summed:true,advisory_only:true};
 }

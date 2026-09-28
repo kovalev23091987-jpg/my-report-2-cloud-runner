@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS asset_identity_registry_v2(htx_contract TEXT PRIMARY KEY,canonical_asset_id TEXT NOT NULL,chain_id TEXT NOT NULL,address_raw TEXT NOT NULL,address_normalized TEXT NOT NULL,decimals INTEGER,venue_instruments_json TEXT NOT NULL,contract_metadata_json TEXT NOT NULL,provenance_json TEXT NOT NULL,verified_at INTEGER NOT NULL,migration_status TEXT NOT NULL);

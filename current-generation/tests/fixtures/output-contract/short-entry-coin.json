@@ -1,0 +1,170 @@
+{
+  "id": "short-entry-coin",
+  "mode": "MANUAL_COIN",
+  "event": "ENTRY",
+  "canonical": {
+    "status": "CLOSED",
+    "snapshot_id": "S:DOT-USDT:ENTRY_NOW_VALIDATED",
+    "run_id": "R:OUTPUT-CONTRACT-V4",
+    "observed_ts": 1790546400000,
+    "snapshot_time_utc": "2026-09-27T22:00:00.000Z",
+    "state": "ENTRY_NOW_VALIDATED",
+    "direction": "SHORT",
+    "scores": {
+      "overall_0_100": 73,
+      "coin_interest_0_100": 74,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "candidates": [
+      {
+        "contract": "DOT-USDT",
+        "ticker": "DOT-USDT"
+      }
+    ],
+    "universe": [
+      {
+        "contract": "DOT-USDT"
+      }
+    ],
+    "source_receipts": [
+      {
+        "status": "CLOSED",
+        "metric": "RELATIVE_STRENGTH",
+        "venue": "HTX",
+        "value": 2.4,
+        "unit": "PERCENT",
+        "window": "1h"
+      }
+    ],
+    "hard_gates": [
+      {
+        "gate": "FIXED_OUTPUT_CONTRACT",
+        "status": "CLOSED"
+      }
+    ],
+    "reasons": [
+      {
+        "label": "Объём подтверждает движение",
+        "value": "да"
+      }
+    ],
+    "entry": {
+      "min_price": 100,
+      "max_price": 101,
+      "area": "100–101 USDT"
+    },
+    "trigger": {
+      "metric": "price",
+      "operator": "<=",
+      "value": 98,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1790548200000,
+      "next_recheck_ts": 1790546700000,
+      "cancel_condition": "цена выше 104 USDT"
+    },
+    "invalidation": "цена выше 104 USDT",
+    "targets": [
+      {
+        "price": 92
+      }
+    ],
+    "liquidations": {
+      "status": "CLOSED",
+      "pump": {
+        "is_pump": false
+      },
+      "above": [
+        {
+          "price": 112,
+          "distance_pct": 12,
+          "strength_label_ru": "крупная",
+          "kind": "CALCULATED"
+        }
+      ],
+      "below": [
+        {
+          "price": 88,
+          "distance_pct": -12,
+          "strength_label_ru": "крупная",
+          "kind": "CALCULATED"
+        }
+      ]
+    },
+    "free_sources": {
+      "registry": {
+        "entries": [
+          {
+            "id": "HTX",
+            "decision_usable": true
+          }
+        ]
+      },
+      "entry_funnel": {
+        "blockers": [],
+        "blocker_details": [],
+        "has_unknown_reason": false
+      },
+      "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE",
+      "hot_cycle_external_request_delta": 0
+    },
+    "early_candidate": null,
+    "changes_from_previous": [],
+    "metadata": {
+      "contract": "DOT-USDT",
+      "idea_basis": "MULTI_FACTOR",
+      "supporting_context": {
+        "facts": []
+      },
+      "source_role_view": {
+        "status": "CLOSED",
+        "classified": [
+          {
+            "source_key": "HTX_OFFICIAL",
+            "source_family": "HTX_OFFICIAL",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "registry_known": true
+          },
+          {
+            "source_key": "BINANCE_OFFICIAL",
+            "source_family": "BINANCE_OFFICIAL",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "registry_known": true
+          }
+        ]
+      }
+    },
+    "analytical_fingerprint": "f2942e838e851c659031f41e3236d2681f116501fc66acc9cc8ef7d79fcc7ef2"
+  },
+  "expected": {
+    "manual": {
+      "ok": true,
+      "status": "READY",
+      "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-09-27T22:00:00.000Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вход подтверждён после валидации\nНаправление: продажа\nОбщая оценка: 73 из 100\nМонета интересна: 74 из 100\nГотовность ко входу: подтверждена обязательными проверками\nПРИЧИНЫ\n- Объём подтверждает движение: да\n- Относительная сила HTX (1 ч): +2,4%.\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: ХТХ.\nЖёсткие проверки: 1.\nВход: 100–101 USDT\nУсловие входа: цена <= 98 USDT (5 мин).\nОтмена ожидания: цена выше 104 USDT.\nУсловие действительно до: 28.09 01:30 МСК.\nСледующая автоматическая проверка: 28.09 01:05 МСК.\nОтмена идеи: цена выше 104 USDT\nНачинать закрывать позицию: 92 USDT.\nДальнейшие цели: 92 USDT.\nОснова идеи: совокупность рыночных подтверждений.\nЛИКВИДАЦИИ\nСильные ликвидации выше: 112 USDT (+12%) — крупная; расчётная вероятная зона.\nСильные ликвидации ниже: 88 USDT (-12%) — крупная; расчётная вероятная зона.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+      "formatter": "manual-report-approved-layout-v1-20260927",
+      "analytical_fingerprint": "f2942e838e851c659031f41e3236d2681f116501fc66acc9cc8ef7d79fcc7ef2"
+    },
+    "compact": {
+      "ok": true,
+      "status": "READY",
+      "message": "DOT — ✅ ПРОДАЖА СЕЙЧАС\nСнимок: 2026-09-27T22:00:00.000Z\nОбщая оценка: 73 из 100\nМонета интересна: 74 из 100\nГотовность ко входу: не проверено\n• Объём подтверждает движение: да\nИсточники: ХТХ.\nВход: 100–101 USDT\nОтмена идеи: цена выше 104 USDT\nЦели: 92\nЛиквидации:\nВыше — продавцы: 112 (+12.0%) — сильная, ликвидации покупателей\nНиже — покупатели: 88 (-12.0%) — сильная, ликвидации покупателей",
+      "length": 392,
+      "max_length": 1100,
+      "formatter": "telegram-compact-formatter-v5-surface-contract-20260925",
+      "analytical_fingerprint": "f2942e838e851c659031f41e3236d2681f116501fc66acc9cc8ef7d79fcc7ef2"
+    },
+    "telegram": {
+      "ok": true,
+      "status": "READY",
+      "text": "DOT\n🔴 СНИЖЕНИЕ\n✅ ВХОД ОДОБРЕН\nОценка: 73%.\nОснова идеи: совокупность рыночных подтверждений.\nОтносительная слабость: при росте биткоина и эфира монета растёт слабее, а при снижении падает быстрее.\n• Относительная сила HTX (1 ч): +2,4%.\nЗона входа: 100–101 USDT.\nНачинать закрывать позицию: 92 USDT.\nОтмена идеи: цена выше 104 USDT.\nСильные зоны выше: 112 USDT (+12,0%) — крупная, расчётная вероятная зона.\nСильные зоны ниже: 88 USDT (-12,0%) — крупная, расчётная вероятная зона.\nСнимок рынка: 28.09 01:00 МСК.",
+      "length": 510,
+      "max_length": 1800,
+      "analytical_fingerprint": "f2942e838e851c659031f41e3236d2681f116501fc66acc9cc8ef7d79fcc7ef2"
+    }
+  }
+}

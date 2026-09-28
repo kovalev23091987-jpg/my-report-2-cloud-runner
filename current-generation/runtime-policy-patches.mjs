@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 function replaceOnce(source,before,after,label){
- const first=source.indexOf(before);if(first<0)throw new Error(`CURRENT_GENERATION_POLICY_PATCH_MISSING:${label}`);
+ const first=source.indexOf(before);if(first<0){const applied=source.indexOf(after);if(applied>=0&&source.indexOf(after,applied+after.length)<0)return source;throw new Error(`CURRENT_GENERATION_POLICY_PATCH_MISSING:${label}`);}
  if(source.indexOf(before,first+before.length)>=0)throw new Error(`CURRENT_GENERATION_POLICY_PATCH_AMBIGUOUS:${label}`);
  return source.slice(0,first)+after+source.slice(first+before.length);
 }

@@ -9,12 +9,14 @@ test('new sources start equal and every source retains an exploration floor',()=
  assert.equal(weak[0].selection_weight,0.5);
 });
 
-test('predictive accuracy cannot affect source weight before twenty settled observations',()=>{
- const early=buildLiquidationSourceWeightProfile(['LIGHTER'],[{source_id:'LIGHTER',attempts:20,reliability:0.5,predictive_observations:19,predictive_weight_factor:1.25,predictive_accuracy:1}])[0];
+test('predictive accuracy cannot affect source weight without the explicit future statistical gate',()=>{
+ const early=buildLiquidationSourceWeightProfile(['LIGHTER_NATIVE'],[{source_id:'LIGHTER_NATIVE',attempts:20,reliability:0.5,predictive_observations:199,predictive_weight_factor:1.25,predictive_accuracy:1,predictive_eligible:0}])[0];
  assert.equal(early.predictive_weight_eligible,false);assert.equal(early.predictive_weight_factor,1);assert.equal(early.selection_weight,1);
- const proven=buildLiquidationSourceWeightProfile(['LIGHTER'],[{source_id:'LIGHTER',attempts:20,reliability:0.5,predictive_observations:20,predictive_weight_factor:1.25,predictive_accuracy:1}])[0];
+ const stillShadow=buildLiquidationSourceWeightProfile(['LIGHTER_NATIVE'],[{source_id:'LIGHTER_NATIVE',attempts:200,reliability:0.5,predictive_observations:200,predictive_weight_factor:1.25,predictive_accuracy:1,predictive_eligible:1}])[0];
+ assert.equal(stillShadow.predictive_weight_eligible,false);assert.equal(stillShadow.selection_weight,1);
+ const proven=buildLiquidationSourceWeightProfile(['LIGHTER_NATIVE'],[{source_id:'LIGHTER_NATIVE',attempts:200,reliability:0.5,predictive_observations:200,predictive_weight_factor:1.25,predictive_accuracy:1,predictive_eligible:1,activation_state:'ACTIVE',eligibility_protocol:'T16_5'}])[0];
  assert.equal(proven.predictive_weight_eligible,true);assert.equal(proven.selection_weight,1.25);
- const poor=buildLiquidationSourceWeightProfile(['LIGHTER'],[{source_id:'LIGHTER',attempts:20,reliability:0,predictive_observations:20,predictive_weight_factor:0.75,predictive_accuracy:0}])[0];
+ const poor=buildLiquidationSourceWeightProfile(['LIGHTER_NATIVE'],[{source_id:'LIGHTER_NATIVE',attempts:200,reliability:0,predictive_observations:200,predictive_weight_factor:0.75,predictive_accuracy:0,predictive_eligible:1,activation_state:'ACTIVE',eligibility_protocol:'T16_5'}])[0];
  assert.equal(poor.selection_weight,0.5);
 });
 

@@ -45,22 +45,79 @@ on:
         description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"
         required: false
         default: ""
+      manual_run_authorized:
+        description: "explicitly authorize this manual analytics run"
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: read
 
-concurrency:
-  group: my-report-2-production-cycle
-  cancel-in-progress: false
-
 jobs:
+  execution-gate:
+    runs-on: ubuntu-latest
+    outputs:
+      admitted: ${{ steps.gate.outputs.admitted }}
+    env:
+      LEGACY_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      EVENT_NAME: ${{ github.event_name }}
+      MANUAL_AUTHORIZED: ${{ inputs.manual_run_authorized || 'false' }}
+    steps:
+      - name: Gate the entire working job
+        id: gate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          normalize_true() {
+            case "${1,,}" in 1|true|yes|on) return 0 ;; *) return 1 ;; esac
+          }
+          admitted=false
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            if normalize_true "$LEGACY_RUNNER_ENABLED"; then admitted=true; fi
+          elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            if normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi
+          fi
+          echo "admitted=$admitted" >> "$GITHUB_OUTPUT"
+          echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
+
+  enqueue-manual-command:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
+    runs-on: ubuntu-latest
+    outputs:
+      command_id: ${{ steps.enqueue.outputs.command_id }}
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
+      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Durably enqueue command before analytics concurrency
+        id: enqueue
+        run: node runner/enqueue-manual-command.mjs
+
   run-report2:
+    needs: [execution-gate, enqueue-manual-command]
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && (github.event_name == 'schedule' || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: my-report-2-production-cycle
+      cancel-in-progress: false
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      ANALYTICS_ENABLED: "1"
+      PUBLIC_COLLECTOR_ENABLED: "0"
+      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
+      CALIBRATION_APPLY_ENABLED: "0"
+      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97"
+      REPORT2_EXPECTED_WORKER_SHA: "1919d8db046c10b5ed6839ae4762ab310af183bf764aaccb32df5d475d3d5bfd"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -84,31 +141,32 @@ jobs:
       REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
       LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
       COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
       REPORT2_RUN_SOURCE: ${{ github.event_name }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
+      REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
       REPORT2_D1_MAX_DAILY_READS: "3500000"
       REPORT2_D1_MAX_DAILY_WRITES: "70000"
+      REPORT2_MEASUREMENT_ARTIFACT_ENABLED: ${{ startsWith(inputs.reason || '', 'T15_MEASURED_') && '1' || '0' }}
     steps:
-      - name: Disabled schedule gate
-        if: ${{ github.event_name == 'schedule' && env.REPORT2_RUNNER_ENABLED != '1' }}
-        run: |
-          echo "REPORT2_RUNNER_DISABLED"
-          exit 0
       - name: Checkout encrypted runner
         uses: actions/checkout@v4
       - name: Node 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Runtime preflight before decrypt and external access
+        shell: bash
+        run: node runner/preflight-role-gate.mjs
       - name: Decrypt authoritative runtime
         shell: bash
         run: |
@@ -120,16 +178,112 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
-          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ] && [ "${{ inputs.reason || '' }}" != "T00_D1_INVENTORY" ]; then
+            npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          fi
+      - name: Encrypt authoritative runtime for T00 audit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_RUNTIME_EXPORT' }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf report2-runtime-t00.tar.gz -C runtime .
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in report2-runtime-t00.tar.gz \
+            -outform DER \
+            -out report2-runtime-t00.tar.gz.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f report2-runtime-t00.tar.gz
+      - name: Upload encrypted T00 runtime
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_RUNTIME_EXPORT' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-runtime-t00-encrypted
+          path: report2-runtime-t00.tar.gz.cms
+          if-no-files-found: error
+          retention-days: 1
+      - name: Capture and encrypt read-only T00 D1 inventory
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_D1_INVENTORY' }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node audit-fixes/t00/capture-d1-inventory.mjs runtime report2-t00-d1-inventory.json
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in report2-t00-d1-inventory.json \
+            -outform DER \
+            -out report2-t00-d1-inventory.json.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f report2-t00-d1-inventory.json
+      - name: T16 Deribit alt-options live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-deribit-alt-options-smoke.mjs runtime
+      - name: T16 exact chain-supply live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-chain-supply-smoke.mjs runtime
+      - name: T16 exact Sourcify ABI live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-sourcify-abi-smoke.mjs runtime
+      - name: T16 exact-address Bluesky attention live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-bluesky-attention-smoke.mjs runtime
+      - name: T16 exact metadata source live smokes
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_METADATA_SOURCES_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-metadata-sources-smoke.mjs runtime
+      - name: T16 exact official feed live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-official-feed-smoke.mjs runtime
+      - name: T16 exact Lido Snapshot live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-lido-snapshot-smoke.mjs runtime
+      - name: T16 exact Lighter native live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-lighter-native-smoke.mjs runtime
+      - name: T16 exact GMX native live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_GMX_NATIVE_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-gmx-native-smoke.mjs runtime
+      - name: T16 pinned gTrade native live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-gtrade-native-smoke.mjs runtime
+      - name: T16 exact Blockscout index live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-blockscout-index-smoke.mjs runtime
+      - name: Upload encrypted T00 D1 inventory
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_D1_INVENTORY' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-t00-d1-inventory-encrypted
+          path: report2-t00-d1-inventory.json.cms
+          if-no-files-found: error
+          retention-days: 1
       - name: Full Report 2 cycle
+        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
         shell: bash
         run: |
           set -Eeuo pipefail
           cd runtime
           node runner-main.mjs
+
+      - name: Upload sanitized measured-run receipt
+        if: ${{ always() && startsWith(inputs.reason || '', 'T15_MEASURED_') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-measured-run-${{ github.run_id }}
+          path: runtime/report2-measurement.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Informational delivery proof
         if: ${{ always() }}
@@ -139,3 +293,51 @@ jobs:
           path: runtime/telegram-info-proof.json
           if-no-files-found: warn
           retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}
+
+  cloudflare-hub-read-only-audit:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.manual_run_authorized == true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    steps:
+      - name: Checkout audit code
+        uses: actions/checkout@v4
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify sanitizer
+        run: node --test audit-fixes/t00/capture-cloudflare-hub.test.mjs
+      - name: Capture Hub without changes
+        run: node audit-fixes/t00/capture-cloudflare-hub.mjs cloudflare-hub-audit
+      - name: Encrypt raw Hub material
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          tar -czf cloudflare-hub-raw.tar.gz \
+            -C cloudflare-hub-audit \
+            cloudflare-hub-bundle.bin \
+            cloudflare-hub-settings.json
+          openssl cms -encrypt -binary -aes-256-cbc \
+            -in cloudflare-hub-raw.tar.gz \
+            -outform DER \
+            -out cloudflare-hub-raw.tar.gz.cms \
+            audit-fixes/t00/runtime-export-cert.pem
+          rm -f cloudflare-hub-raw.tar.gz \
+            cloudflare-hub-audit/cloudflare-hub-bundle.bin \
+            cloudflare-hub-audit/cloudflare-hub-settings.json
+      - name: Upload sanitized summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-hub-audit-summary
+          path: cloudflare-hub-audit/cloudflare-hub-audit-summary.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload encrypted raw Hub
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-hub-raw-encrypted
+          path: cloudflare-hub-raw.tar.gz.cms
+          if-no-files-found: error
+          retention-days: 1

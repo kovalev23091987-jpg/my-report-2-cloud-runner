@@ -29,12 +29,20 @@ import {parseLiquidationCommand} from './src/liquidation-command-router.mjs';
 import {attachNativeContext} from './src/liquidation-extension/runtime-bridge.mjs';
 import {nativeLiquidationLines,nativeLiquidationSources} from './src/native-liquidation-guard.mjs';
 import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs';
+import {buildPumpLiquidationZones} from './src/pump-liquidation-zones.mjs';
+import {displayLegacyLiquidations} from './src/canonical-display.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
-import {createLiquidationCandidateQueue} from './src/liquidation-candidate-queue.mjs';
+import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
+import {evaluatePreflight} from './src/runtime-control.mjs';
+import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
+import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
+import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
+import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
+import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
+const RUNNER_VERSION = "my-report-2-current-generation-v5-internal-audit-fixes-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -416,19 +424,53 @@ function enforceD1Budget(db) {
   return report;
 }
 async function main() {
-  const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
+  const preflight=evaluatePreflight(process.env);
+  console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
+  if(!preflight.allowed)throw new Error(`REPORT2_RUNTIME_PREFLIGHT_BLOCKED:${preflight.status}`);
+  process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
+  let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
   const env = buildEnv();
-  const commandIntent=source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_IGNORES_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
+  const officialSourceRegistry=compileOfficialSourceRegistry(JSON.parse(await fs.readFile(resolve('./official-event-sources.json'),'utf8')));
+  const supplementalIdentityRegistry=mergeOfficialAndConfiguredRegistries({official:officialSourceRegistry,configured:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{}});
+  console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
+  const unifiedHttpBudget=createUnifiedHttpBudget();
+  await installRuntimeControl(env.DATA_DB);
+  const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
+  if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
+  console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
+  const requestedSource=source,manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
+  let manualCommandId=envText('REPORT2_COMMAND_ID',{required:false});
+  let manualCommandClaim=requestedSource==='schedule'
+    ?await claimNextCommand(env.DATA_DB,{actor:manualCommandActor,generation,now:started})
+    :manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
+  if(requestedSource!=='schedule'&&!manualCommandClaim.claimed&&manualCommandClaim.row?.state==='COMPLETED'){
+    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_ALREADY_COMPLETED',JSON.stringify({command_id:manualCommandId,result_snapshot_id:manualCommandClaim.row.result_snapshot_id,rendered_text_hash:manualCommandClaim.row.rendered_text_hash}));
+    return;
+  }
+  if(requestedSource!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
+  if(requestedSource==='schedule'&&manualCommandClaim.claimed){source='manual_recovery';manualCommandId=manualCommandClaim.row.command_id;env.REPORT2_MANUAL_COIN_CONTRACT=manualCommandClaim.row.contract||'';}
+  const recoveredMode=source==='manual_recovery'?manualCommandClaim.row.mode:null;
+  const commandIntent=recoveredMode==='LIQUIDATION_ONLY'
+    ?{version:'durable-command-recovery-v1',matched:true,mode:manualCommandClaim.row.contract?'EXACT_COIN_LIQUIDATIONS':'LIQUIDATION_CANDIDATES',contract:manualCommandClaim.row.contract||null,normalized:'durable queued liquidation command'}
+    :source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_HAS_NO_RECOVERABLE_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
+  const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null);
+  const expectedManualMode=source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
+  if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
+  if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
+  console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null,recovered_by_scheduled_executor:source==='manual_recovery'}));
   if(commandIntent.matched&&commandIntent.mode==='EXACT_COIN_LIQUIDATIONS')env.REPORT2_MANUAL_COIN_CONTRACT=commandIntent.contract;
   console.log('LIQUIDATION_COMMAND_INTENT',JSON.stringify(commandIntent));
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
-    registry:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{},
+    registry:supplementalIdentityRegistry.registry,
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });
@@ -436,15 +478,15 @@ async function main() {
     db:env.DATA_DB,fetch_impl:globalThis.fetch,coinalyze_api_key:envText('COINALYZE_API_KEY',{required:false}),...params,
     lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false}),
   });
+  env.REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),...params});
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
-  const liquidationQueue=createLiquidationCandidateQueue({db:env.DATA_DB});
+  const liquidationQueue=createCandidateTaskQueue({db:env.DATA_DB});
   const liquidationCalibration=createLiquidationOutcomeCalibration({db:env.DATA_DB,fetch_impl:globalThis.fetch});
   await Promise.all([liquidationQueue.install(),liquidationCalibration.install()]);
   env.REPORT2_LIQUIDATION_SIGNAL_RECORD=params=>liquidationCalibration.record(params);
   const pending = [];
   const ctx = { waitUntil(promise) { pending.push(Promise.resolve(promise)); }, passThroughOnException() {} };
-  const started = Date.now();
   const d1NominalReservation = deriveRunReservation({
   runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY", 288),
   maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
@@ -507,7 +549,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if(commandIntent.matched){
     const sourceRunId=`LIQ_ONLY:${started}`;
     const scanResult=await scanLiquidationCandidates({env,max_candidates:5,exact_contract:commandIntent.contract||null,freshness_sec:300});
-    await liquidationQueue.enqueue(scanResult?.candidates||[],{now:started});
+    await liquidationQueue.enqueue(scanResult?.candidates||[],{wave_id:sourceRunId,now:started});
     const queueClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:scanResult?.candidates?.[0]?.contract||null,now:started});
     const candidate=Array.isArray(scanResult?.candidates)?scanResult.candidates.find(row=>row.contract===queueClaim.contract)||scanResult.candidates[0]:null;
     let acquisition=null;
@@ -529,27 +571,54 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       try{crossExchangeRisk=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({contract,run_id:sourceRunId,reference_price:candidate.current_price,now:Date.now()});}
       catch(error){crossExchangeRisk={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
     }
-    const lines=candidate?(nativeLiquidationLines(liquidationContext,{manual:true})||['Ликвидации: свежие нативные уровни в проверенной выборке не подтверждены.']):[];
     const contexts=nativeLiquidationSources(liquidationContext).contexts;
     const liquidationPanel=candidate?.current_price?buildDynamicLiquidationPanel({contexts,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_CLOSED',reason:'REFERENCE_PRICE_REQUIRED',clusters:[],score_evidence:null};
+    const liquidationMap=candidate?buildPumpLiquidationZones({
+      contract:candidate.contract,
+      rolling_24h_change_pct:null,
+      current_price:candidate.current_price,
+      early_anomaly:candidate.qualified_growth_candidate===true,
+      priority_reason:candidate.qualified_growth_candidate===true?'EARLY_TECHNICAL_ANOMALY':'MANUAL_LIQUIDATION_REQUEST',
+      projected:(liquidationPanel.clusters||[]).map(row=>({...row,status:'CLOSED',source:(row.providers||[]).join(' + ')||'проверенная площадка'})),
+      calculation_context:{
+        oi_change_pct:candidate.oi_change_pct?.['4h']??candidate.oi_change_pct?.['1h']??null,
+        funding_rate_pct:candidate.funding_rate_pct,
+        volume_ratio:null,
+      },
+    }):{status:'NOT_CLOSED',above:[],below:[]};
+    const nativeLines=candidate?(nativeLiquidationLines(liquidationContext,{manual:true})||[]):[];
+    const lines=candidate?[
+      ...displayLegacyLiquidations(liquidationMap),
+      ...(nativeLines.length?['Фактическая ограниченная выборка площадок:',...nativeLines]:[]),
+    ]:[];
     const calibrationRecord=candidate?await liquidationCalibration.record({contract:candidate.contract,panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,reference_price:candidate.current_price,observed_ts:Date.now()}):{status:'NOT_RECORDED',rows:0};
     const predictiveSourceWeights=await liquidationCalibration.summary();
-    if(queueClaim.claimed&&candidate)await liquidationQueue.complete({contract:candidate.contract,run_id:sourceRunId,usable:Boolean(acquisition)||crossExchangeRisk.status==='CLOSED',result:{native:Boolean(acquisition),cross_exchange:crossExchangeRisk.status,panel:liquidationPanel.status},now:Date.now()});
+    if(queueClaim.claimed&&candidate)await liquidationQueue.complete({contract:candidate.contract,wave_id:queueClaim.wave_id,task_kind:queueClaim.task_kind,run_id:sourceRunId,usable:Boolean(acquisition)||crossExchangeRisk.status==='CLOSED',now:Date.now()});
     const liquidationQueueSummary=await liquidationQueue.summary({now:Date.now()});
     if(pending.length)await Promise.all(pending);
     const d1PostCycleBudget=evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
     if(!d1PostCycleBudget.allowed)throw new Error(`D1_LIQUIDATION_ONLY_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(',')}`);
     const d1Usage=enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
     const d1FinalizedUsage=await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
-    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,dynamic_liquidation_panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:5,cross_exchange_risk:3,total:8},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
-    console.log('LIQUIDATION_ONLY_RESULT',JSON.stringify(result));
+    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,liquidation_map:liquidationMap,dynamic_liquidation_panel:liquidationPanel,cross_exchange_risk:crossExchangeRisk,liquidation_sources:liquidationSources?liquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:5,cross_exchange_risk:3,total:8},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
+    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
+    const renderedResult=JSON.stringify({...result,analytics_lease:leaseFinish});
+    console.log('LIQUIDATION_ONLY_RESULT',renderedResult);
+    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,rendered_text:renderedResult,delivered_to_existing_channel:true,now:Date.now()});
+    if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
     return;
   }
   const queueClaimRunId=`QUEUE:${started}`;
   const scheduledQueueClaim=source==='schedule'?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
-  if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,run_id:queueClaimRunId,usable:params?.usable===true,result:params?.result||null,now:Date.now()});}
+  if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,wave_id:scheduledQueueClaim.wave_id,task_kind:scheduledQueueClaim.task_kind,run_id:queueClaimRunId,usable:params?.usable===true,now:Date.now()});}
   console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
+  const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!leaseRenewal.allowed)throw new Error(`ANALYTICS_FENCE_LOST_BEFORE_WORKER:${leaseRenewal.status}`);
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
+  const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);
   if(liquidationSources)console.log('LIQUIDATION_SOURCES_CANONICAL_RECEIPT',JSON.stringify(liquidationSources.summary()));
   console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS_FINAL',JSON.stringify(await liquidationCalibration.summary()));
   if (pending.length) await Promise.all(pending);
@@ -776,7 +845,23 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
   const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
+  const analyticsLeaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+  if(!analyticsLeaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${analyticsLeaseFinish.status}`);
   const completed = Date.now();
-  console.log(JSON.stringify({ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false }));
+  const finalRunResult={ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false };
+  if(envText('REPORT2_MEASUREMENT_ARTIFACT_ENABLED',{required:false})==='1')await fs.writeFile('report2-measurement.json',JSON.stringify({schema:'report2-measured-run-v1',generation,worker_sha256:sha,source,started_ts:started,completed_ts:completed,duration_ms:completed-started,cron_run_id:cron.run_id,universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),stage0_coverage_pct:Number(scan.stage0_coverage_pct),live_shortlist_count:Number(cron.live_shortlist_count||0),live_deep_check_count:Number(cron.v3_live_deep_check_count||0),pipeline_health_status:cron.v3_pipeline_health_status||null,telegram_network_enabled:v3TelegramNetworkEnabled,telegram_output_enabled:telegramOutput?.enabled===true,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage,unknown_ops:Number(d1Usage?.unknown_ops||0),secret_values_stored:false},null,2));
+  const finalRenderedResult=JSON.stringify(finalRunResult);
+  console.log(finalRenderedResult);
+  if(source!=='schedule'){
+    if(expectedManualMode==='MANUAL_COIN'&&Number(cron.v3_live_deep_check_count||0)===0){
+      const commandDeferral=await deferCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,retry_at:Date.now()+2*60_000,reason:`MANUAL_COIN_DEEP_NOT_READY:${cron.v3_live_zero_reason||cron.v3_pipeline_health_reason||'UNKNOWN'}`,now:Date.now()});
+      if(!commandDeferral.deferred)throw new Error(`DURABLE_MANUAL_COMMAND_DEFERRAL_FAILED:${commandDeferral.status}`);
+      console.log('DURABLE_MANUAL_COMMAND_DEFERRED',JSON.stringify(commandDeferral));
+      return;
+    }
+    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:String(cron.run_id||`MANUAL:${started}`),rendered_text:finalRenderedResult,delivered_to_existing_channel:true,now:Date.now()});
+    if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
+  }
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });

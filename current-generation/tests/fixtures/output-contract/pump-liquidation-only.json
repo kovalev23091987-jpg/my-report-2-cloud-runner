@@ -1,0 +1,206 @@
+{
+  "id": "pump-liquidation-only",
+  "mode": "LIQUIDATION_ONLY",
+  "event": "WAIT",
+  "canonical": {
+    "status": "CLOSED",
+    "snapshot_id": "S:ETHFI-USDT:WAIT_FOR_TRIGGER",
+    "run_id": "R:OUTPUT-CONTRACT-V4",
+    "observed_ts": 1790546400000,
+    "snapshot_time_utc": "2026-09-27T22:00:00.000Z",
+    "state": "WAIT_FOR_TRIGGER",
+    "direction": "LONG",
+    "scores": {
+      "overall_0_100": 73,
+      "coin_interest_0_100": 74,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "candidates": [
+      {
+        "contract": "ETHFI-USDT",
+        "ticker": "ETHFI-USDT"
+      }
+    ],
+    "universe": [
+      {
+        "contract": "ETHFI-USDT"
+      }
+    ],
+    "source_receipts": [
+      {
+        "status": "CLOSED",
+        "metric": "RELATIVE_STRENGTH",
+        "venue": "HTX",
+        "value": 2.4,
+        "unit": "PERCENT",
+        "window": "1h"
+      }
+    ],
+    "hard_gates": [
+      {
+        "gate": "FIXED_OUTPUT_CONTRACT",
+        "status": "CLOSED"
+      }
+    ],
+    "reasons": [
+      {
+        "label": "Объём подтверждает движение",
+        "value": "да"
+      }
+    ],
+    "entry": {
+      "min_price": 100,
+      "max_price": 101,
+      "area": "100–101 USDT"
+    },
+    "trigger": {
+      "metric": "price",
+      "operator": ">=",
+      "value": 102,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1790548200000,
+      "next_recheck_ts": 1790546700000,
+      "cancel_condition": "цена ниже 96 USDT"
+    },
+    "invalidation": "цена ниже 96 USDT",
+    "targets": [
+      {
+        "price": 108
+      }
+    ],
+    "liquidations": {
+      "status": "CLOSED",
+      "pump": {
+        "is_pump": true
+      },
+      "above": [
+        {
+          "price": 106,
+          "distance_pct": 6,
+          "strength_label_ru": "небольшая",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 118,
+          "distance_pct": 18,
+          "strength_label_ru": "средняя",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 142,
+          "distance_pct": 42,
+          "strength_label_ru": "крупная",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 178,
+          "distance_pct": 78,
+          "strength_label_ru": "огромная",
+          "kind": "CALCULATED"
+        }
+      ],
+      "below": [
+        {
+          "price": 94,
+          "distance_pct": -6,
+          "strength_label_ru": "средняя",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 82,
+          "distance_pct": -18,
+          "strength_label_ru": "крупная",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 58.00000000000001,
+          "distance_pct": -42,
+          "strength_label_ru": "огромная",
+          "kind": "CALCULATED"
+        },
+        {
+          "price": 21.999999999999996,
+          "distance_pct": -78,
+          "strength_label_ru": "небольшая",
+          "kind": "CALCULATED"
+        }
+      ]
+    },
+    "free_sources": {
+      "registry": {
+        "entries": [
+          {
+            "id": "HTX",
+            "decision_usable": true
+          }
+        ]
+      },
+      "entry_funnel": {
+        "blockers": [],
+        "blocker_details": [],
+        "has_unknown_reason": false
+      },
+      "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE",
+      "hot_cycle_external_request_delta": 0
+    },
+    "early_candidate": null,
+    "changes_from_previous": [],
+    "metadata": {
+      "contract": "ETHFI-USDT",
+      "idea_basis": "LIQUIDATION_PUMP",
+      "supporting_context": {
+        "facts": []
+      },
+      "source_role_view": {
+        "status": "CLOSED",
+        "classified": [
+          {
+            "source_key": "HTX_OFFICIAL",
+            "source_family": "HTX_OFFICIAL",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "registry_known": true
+          },
+          {
+            "source_key": "BINANCE_OFFICIAL",
+            "source_family": "BINANCE_OFFICIAL",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "registry_known": true
+          }
+        ]
+      }
+    },
+    "analytical_fingerprint": "4fce0a18b87c10137b8e963724a88b2984aaec9f939eee9cc9cafdb4f663ec93"
+  },
+  "expected": {
+    "manual": {
+      "ok": true,
+      "status": "READY",
+      "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-09-27T22:00:00.000Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: ждём условие входа\nНаправление: покупка\nОбщая оценка: 73 из 100\nМонета интересна: 74 из 100\nГотовность ко входу: условие входа сформировано, но ещё не выполнено\nПРИЧИНЫ\n- Объём подтверждает движение: да\n- Относительная сила HTX (1 ч): +2,4%.\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: ХТХ.\nЖёсткие проверки: 1.\nВход: 100–101 USDT\nУсловие входа: цена >= 102 USDT (5 мин).\nОтмена ожидания: цена ниже 96 USDT.\nУсловие действительно до: 28.09 01:30 МСК.\nСледующая автоматическая проверка: 28.09 01:05 МСК.\nОтмена идеи: цена ниже 96 USDT\nНачинать закрывать позицию: 108 USDT.\nДальнейшие цели: 108 USDT.\nОснова идеи: ликвидационные зоны и ускорение движения.\nПАМП И ЛИКВИДАЦИИ\nСильные ликвидации выше: 106 USDT (+6%) — небольшая; расчётная вероятная зона, 118 USDT (+18%) — средняя; расчётная вероятная зона, 142 USDT (+42%) — крупная; расчётная вероятная зона, 178 USDT (+78%) — огромная; расчётная вероятная зона.\nСильные ликвидации ниже: 94 USDT (-6%) — средняя; расчётная вероятная зона, 82 USDT (-18%) — крупная; расчётная вероятная зона, 58 USDT (-42%) — огромная; расчётная вероятная зона, 22 USDT (-78%) — небольшая; расчётная вероятная зона.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+      "formatter": "manual-report-approved-layout-v1-20260927",
+      "analytical_fingerprint": "4fce0a18b87c10137b8e963724a88b2984aaec9f939eee9cc9cafdb4f663ec93"
+    },
+    "compact": {
+      "ok": true,
+      "status": "READY",
+      "message": "ETHFI — 🟡 ПОКУПКА — ЖДЁМ УСЛОВИЕ\nСнимок: 2026-09-27T22:00:00.000Z\nОбщая оценка: 73 из 100\nМонета интересна: 74 из 100\nГотовность ко входу: не проверено\n• Объём подтверждает движение: да\nИсточники: ХТХ.\nУсловие входа: цена >= 102 на 5m\nДействует до: 2026-09-27T22:30:00.000Z\nОтмена ожидания: цена ниже 96 USDT\nСледующая проверка: 2026-09-27T22:05:00.000Z\nЛиквидации:\nВыше — продавцы: 106 (+6.0%) — сильная, ликвидации покупателей; 118 (+18.0%) — сильная, ликвидации покупателей; 142 (+42.0%) — сильная, ликвидации покупателей\nНиже — покупатели: 94 (-6.0%) — сильная, ликвидации покупателей; 82 (-18.0%) — сильная, ликвидации покупателей; 58 (-42.0%) — сильная, ликвидации покупателей",
+      "length": 683,
+      "max_length": 850,
+      "formatter": "telegram-compact-formatter-v5-surface-contract-20260925",
+      "analytical_fingerprint": "4fce0a18b87c10137b8e963724a88b2984aaec9f939eee9cc9cafdb4f663ec93"
+    },
+    "telegram": {
+      "ok": true,
+      "status": "READY",
+      "text": "ETHFI\n🟢 РОСТ\n🟡 ЖДЁМ ПОДТВЕРЖДЕНИЕ ВХОДА\nОценка: 73%.\nОснова идеи: ликвидационные зоны и ускорение движения.\nОтносительная сила: при снижении биткоина и эфира монета теряет меньше, а при росте растёт быстрее.\n• Относительная сила HTX (1 ч): +2,4%.\nДля входа ждём:\n• закрепления цены выше 102 USDT;\n• сохранения подтверждений при повторной проверке.\nИдея теряет интерес: цена ниже 96 USDT.\nНачинать закрывать позицию: 108 USDT.\nСледующая проверка: 28.09 01:05 МСК.\nСильные зоны выше: 106 USDT (+6,0%) — небольшая, расчётная вероятная зона; 118 USDT (+18,0%) — средняя, расчётная вероятная зона; 142 USDT (+42,0%) — крупная, расчётная вероятная зона; 178 USDT (+78,0%) — огромная, расчётная вероятная зона.\nСильные зоны ниже: 94 USDT (-6,0%) — средняя, расчётная вероятная зона; 82 USDT (-18,0%) — крупная, расчётная вероятная зона; 58 USDT (-42,0%) — огромная, расчётная вероятная зона; 22 USDT (-78,0%) — небольшая, расчётная вероятная зона.\nСнимок рынка: 28.09 01:00 МСК.",
+      "length": 973,
+      "max_length": 1800,
+      "analytical_fingerprint": "4fce0a18b87c10137b8e963724a88b2984aaec9f939eee9cc9cafdb4f663ec93"
+    }
+  }
+}

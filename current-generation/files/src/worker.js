@@ -95,6 +95,7 @@ import {
 import {
   buildRuntimeCanonicalBundle,
 } from "./canonical-runtime-adapter.mjs";
+import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
 
 import {
   buildFreeSourceRuntimeSummary,
@@ -10835,7 +10836,7 @@ async function dataPlaneStatus(env) {
   base.safety.opportunity_validated_signal_generated = false;
   base.safety.opportunity_decision_layer_changed = false;
   base.safety.opportunity_strategy_weights_changed = false;
-  base.safety.opportunity_fixed_weights_35_30_20_15_unchanged = true;
+  base.safety.opportunity_fixed_weights_32_30_20_18_applied = true;
   base.safety.opportunity_telegram_dispatch_allowed = false;
   base.safety.opportunity_trading_execution_allowed = false;
   base.safety.opportunity_automatic_weight_tuning = false;
@@ -11751,10 +11752,10 @@ if (!env?.DATA_DB) {
       contract_version: "full-evidence-v1",
       adapters_version: "public-evidence-adapters-v1",
       fixed_decision_weights: {
-        CROSS_EXCHANGE_DERIVATIVES: 35,
+        CROSS_EXCHANGE_DERIVATIVES: 32,
         MARKET_STRENGTH_SPOT: 30,
         SMART_MONEY_ONCHAIN: 20,
-        SUPPORTING_RISK: 15,
+        SUPPORTING_RISK: 18,
       },
       full_dc_promoted: false,
       full_decision_eligible: false,
@@ -12369,7 +12370,7 @@ const buildShadowDecisionTelemetry = (() => {
       },
       notes: [
         "Long and Short are evaluated separately as shadow telemetry.",
-        "No 35/30/20/15 full Decision Layer score is claimed because Chain 2/4/5 and broader relative-strength/regime context are not all present in this Worker.",
+        "No 32/30/20/18 supplemental adjustment is claimed because Chain 2/4/5 and broader relative-strength/regime context are not all present in this Worker.",
         "The 10-point direction-hint margin and feature normalizers are calibration-only heuristics, not promoted trading thresholds.",
         "This record exists to accumulate counterfactual evidence before any live decision or Telegram wiring is permitted.",
       ],
@@ -13400,10 +13401,10 @@ const buildFullEvidenceEnvelope = (() => {
   const EVIDENCE_CONTRACT_VERSION = "full-evidence-v1";
 
   const FIXED_DECISION_WEIGHTS = Object.freeze({
-    CROSS_EXCHANGE_DERIVATIVES: 35,
+    CROSS_EXCHANGE_DERIVATIVES: 32,
     MARKET_STRENGTH_SPOT: 30,
     SMART_MONEY_ONCHAIN: 20,
-    SUPPORTING_RISK: 15,
+    SUPPORTING_RISK: 18,
   });
 
   const VALID_STATUS = new Set([
@@ -13680,7 +13681,7 @@ const buildFullEvidenceEnvelope = (() => {
         telegram_started: false,
         trading_execution: false,
         weights_changed: false,
-        note: "Evidence fusion only. Fixed 35/30/20/15 weights are metadata, not applied to synthetic or missing chain scores. Directional promotion remains disabled until evidence/scoring calibration gates are proven.",
+        note: "Evidence fusion only. Fixed 32/30/20/18 weights are the bounded supplemental budget, not a replacement overall score and not applied to synthetic or missing chain scores. Directional promotion remains disabled until evidence/scoring calibration gates are proven.",
       },
     };
   }
@@ -14087,10 +14088,10 @@ function fullEvidenceRecordSafe(record) {
     record &&
     record.mode === "FULL_EVIDENCE_SHADOW_NO_EXECUTION" &&
     record.strategy_weights_changed === false &&
-    Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES) === 35 &&
+    Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES) === 32 &&
     Number(record?.fixed_decision_weights?.MARKET_STRENGTH_SPOT) === 30 &&
     Number(record?.fixed_decision_weights?.SMART_MONEY_ONCHAIN) === 20 &&
-    Number(record?.fixed_decision_weights?.SUPPORTING_RISK) === 15 &&
+    Number(record?.fixed_decision_weights?.SUPPORTING_RISK) === 18 &&
     record?.decision?.dc_long == null &&
     record?.decision?.dc_short == null &&
     record?.decision?.live_probability == null &&
@@ -15528,6 +15529,15 @@ async function buildDeepCheckInput(params, env) {
   const futures =
     settled(results[0]);
 
+  const htxObservationReferencePrice = buildHtxReferencePrice({
+    contract,
+    type: 'MID_OBSERVATION',
+    bid: futures?.data?.bbo?.best_bid,
+    ask: futures?.data?.bbo?.best_ask,
+    source_ts: Date.parse(futures?.data?.liquidity?.depth_timestamp || '') || futures?.data?.timestamp,
+    received_ts: futures?.available_ts ?? futures?.data?.timestamp,
+  });
+
   const spot =
     settled(results[1]);
 
@@ -15931,6 +15941,7 @@ async function buildDeepCheckInput(params, env) {
 
   let supplementalCandidateContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
   let crossExchangeRiskContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
+  let candidateEvidenceV2={status:'NOT_CONFIGURED',evidence:[],internal_only:true};
   // The established Deep Check has one five-request extension envelope.  The
   // new cross-exchange family shares that envelope with projected liquidation
   // sources instead of silently pushing the invocation above its proven cap.
@@ -15947,13 +15958,17 @@ async function buildDeepCheckInput(params, env) {
       const reserveForLiquidations=!crossExchangeFamilyTurn&&(manualCoin||queuedCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true);
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
-        critical_conflict:conflict,primary_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
+        critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
   try{
+    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,now:Date.now()});
+  }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
+  try{
     if(crossExchangeFamilyTurn&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
-      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:futures?.data?.mark_price??futures?.data?.ticker?.last_price??null,now:Date.now(),
+      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),
     });else if(!crossExchangeFamilyTurn)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},internal_only:true,next_family_rotation:true};
   }catch(error){crossExchangeRiskContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
 
@@ -16458,11 +16473,11 @@ async function buildDeepCheckInput(params, env) {
           : "NOT_CONFIRMED",
     short_above:
       liquidationIntelligence?.projected_clusters?.find?.(
-        (row) => Number(row?.level_price ?? row?.price) > Number(futures?.data?.mark_price)
+        (row) => Number(row?.level_price ?? row?.price) > Number(htxObservationReferencePrice?.value)
       )?.level_price ?? null,
     long_below:
       liquidationIntelligence?.projected_clusters?.find?.(
-        (row) => Number(row?.level_price ?? row?.price) < Number(futures?.data?.mark_price)
+        (row) => Number(row?.level_price ?? row?.price) < Number(htxObservationReferencePrice?.value)
       )?.level_price ?? null,
     note:
       "Контекст ликвидаций передан из того же снимка рынка; отсутствие точной суммы не превращается в выдуманную сумму.",
@@ -16521,7 +16536,19 @@ async function buildDeepCheckInput(params, env) {
         };
 
   const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,internal_only:true};
+  const finalRouteState=String(finalDecisionPublicationShadow?.entry_signal?.state||''),finalRouteDirection=String(finalDecisionPublicationShadow?.entry_signal?.direction||'').toUpperCase();
+  const htxReferencePrice=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState)&&['LONG','SHORT'].includes(finalRouteDirection)
+    ?buildHtxReferencePrice({contract,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
+    :htxObservationReferencePrice;
+  const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts,confirmation_state:'DISCOVERY_ONLY'});
+  const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
+  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:executionHandoff?.ok===true?'SUCCESS':executionHandoff?.status,reason:executionHandoff?.reason},reference_price:htxReferencePrice});
+  const entryState=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState),strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
+  const canonicalPublicationShadow={...finalDecisionPublicationShadow,entry_signal:{...(finalDecisionPublicationShadow?.entry_signal||{}),state:strictRouteState,direction:entryState?(entryDirectionAuthorization.authorized?entryDirectionAuthorization.direction:null):finalDecisionPublicationShadow?.entry_signal?.direction}};
+  const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
+  const canonicalFuturesComponent=futures?.data?{...futures,data:{...futures.data,mark_price:null,ticker:null,ticker_24h:null}}:futures;
+  const canonicalLiquidationIntelligence=liquidationIntelligence?{...liquidationIntelligence,provider_current_price:null}:liquidationIntelligence;
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.evidence?.length?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
@@ -16534,19 +16561,18 @@ async function buildDeepCheckInput(params, env) {
       observed_ts:
         now,
       discovery_row:
-        params?.discovery_row ||
-        null,
+        canonicalDiscoveryRow,
       publication_shadow:
-        finalDecisionPublicationShadow,
+        canonicalPublicationShadow,
       oi_window_receipts: shadowDecision?.evidence_flags?.oi_window_receipts ?? null,
       opportunity:
         opportunityIntelligence,
       public_evidence:
         publicEvidence,
       liquidation_intelligence:
-        liquidationIntelligence,
+        canonicalLiquidationIntelligence,
       futures_component:
-        futures,
+        canonicalFuturesComponent,
       execution_handoff:
         executionHandoff,
       data_sufficiency:

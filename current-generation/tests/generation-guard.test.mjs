@@ -1,14 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {createHash} from 'node:crypto';
 const generation=JSON.parse(fs.readFileSync(new URL('../GENERATION.json',import.meta.url),'utf8'));
 test('20-minute schedule plus three reports and five coin analyses fits 31-day quota with reserve',()=>{
  const scheduled=generation.scheduled_runs_per_day;
- const scheduledWorst=scheduled*31*generation.max_bykaranteli_requests_per_deep_check;
- const worst=(scheduled+generation.manual_runs_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
+ const scheduledWorst=(scheduled+generation.burst_deep_checks_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
+ const worst=(scheduled+generation.burst_deep_checks_reserved_per_day+generation.manual_runs_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
  assert.equal(generation.manual_report_runs_reserved_per_day,3);
  assert.equal(generation.manual_coin_analysis_runs_reserved_per_day,5);
- assert.equal(scheduled,72);assert.equal(scheduledWorst,11160);assert.equal(worst,12400);
+ assert.equal(scheduled,72);assert.equal(scheduledWorst,12090);assert.equal(worst,13330);
  assert(scheduledWorst<generation.bykaranteli_scheduled_monthly_cap);
  assert(worst<generation.bykaranteli_operational_monthly_cap);
  assert(generation.bykaranteli_scheduled_monthly_cap<generation.bykaranteli_operational_monthly_cap);
@@ -24,15 +25,55 @@ test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  assert.ok(y.includes('- cron: "*/20 * * * *"'));
  assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"80"/);
- assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M"/);
+ assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
  assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"SHADOW_ONLY"/);
  assert.match(y,/LIQFLOW_API_KEY:\s*\$\{\{ secrets\.LIQFLOW_API_KEY \}\}/);
+ assert.match(y,/BLOCKSCOUT_PRO_API_KEY:\s*\$\{\{ secrets\.BLOCKSCOUT_PRO_API_KEY \}\}/);
+ assert.match(y,/T16_METADATA_SOURCES_SMOKE/);
+ assert.match(y,/T16_OFFICIAL_FEED_SMOKE/);
+ assert.match(y,/T16_LIDO_SNAPSHOT_SMOKE/);
+ assert.match(y,/T16_LIGHTER_NATIVE_SMOKE/);
+ assert.match(y,/T16_GMX_NATIVE_SMOKE/);
+ assert.match(y,/T16_GTRADE_NATIVE_SMOKE/);
+ assert.match(y,/T16_BLOCKSCOUT_INDEX_SMOKE/);
 });
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
  for(const rel of ['src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs']){
   assert.match(overlay,new RegExp(`['\"]${rel.replaceAll('/','\\/')}['\"]`));
  }
+});
+test('authoritative workflow applies current generation exactly once through combined reconstruction',()=>{
+ const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ const combined='post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .';
+ const direct='node current-generation/apply-runtime-overlay.mjs runtime';
+ const hash='ACTUAL="$(sha256sum src/worker.js';
+ assert.ok(y.indexOf(combined)>=0&&y.indexOf(hash)>y.indexOf(combined));
+ assert.equal(y.includes(direct),false);
+ const applyAll=fs.readFileSync(new URL('../../post-v7-consolidated/full-validation/apply-all-runtime.mjs',import.meta.url),'utf8');
+ assert.equal(applyAll.split('current-generation/apply-runtime-overlay.mjs').length-1,1);
+});
+test('current overlay accepts only the clean base and the pinned deployed predecessor',()=>{
+ const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
+ assert.match(overlay,/940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2/);
+ assert.match(overlay,/c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97/);
+ assert.match(overlay,/expectedInputs\.has\(sha\(input\)\)/);
+});
+test('runtime diagnostic version cannot retain the prior V4 label',()=>{
+ const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(runner,/my-report-2-current-generation-v5-internal-audit-fixes-20260928/);
+ assert.doesNotMatch(runner,/RUNNER_VERSION\s*=\s*["']my-report-2-current-generation-v4/);
+});
+test('workflow worker pin equals the effective V5 worker bytes',()=>{
+ const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
+ const hash=createHash('sha256').update(worker).digest('hex');
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ assert.equal(hash,'1919d8db046c10b5ed6839ae4762ab310af183bf764aaccb32df5d475d3d5bfd');
+ assert.match(workflow,new RegExp(hash));
+});
+test('controlled T15 measurements upload an exact sanitized receipt',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(workflow,/REPORT2_MEASUREMENT_ARTIFACT_ENABLED/);assert.match(workflow,/report2-measured-run-/);assert.match(runner,/report2-measurement\.json/);assert.match(runner,/secret_values_stored:false/);
 });

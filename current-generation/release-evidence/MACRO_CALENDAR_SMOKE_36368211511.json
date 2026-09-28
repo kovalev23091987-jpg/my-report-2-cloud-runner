@@ -1,0 +1,16 @@
+{
+  "schema": "report2-evidence-adapter-smoke-v1",
+  "run_id": 36368211511,
+  "head_commit": "40f347308beef5bc9d828dae907533cdff9442f6",
+  "contract": "SOL-USDT",
+  "source": "MACRO_CALENDAR",
+  "routes": [
+    {"route": "BLS", "http_status": 200, "status": "CLOSED"},
+    {"route": "FED", "http_status": 200, "status": "CLOSED"}
+  ],
+  "whole_job_admission": "RESERVED",
+  "daily_admission": "RESERVED",
+  "directional_effect": null,
+  "telegram_network_enabled": false,
+  "note": "The first live payload exposed an excessive historical horizon. Commit 8f97c46 bounds and deduplicates it to at most 16 events from the prior 24 hours through the next 90 days; that correction is locally validated and safely filters the existing cached payload."
+}
