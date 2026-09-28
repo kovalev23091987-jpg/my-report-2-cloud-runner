@@ -82,7 +82,7 @@ jobs:
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
   enqueue-manual-command:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' }}
     runs-on: ubuntu-latest
     outputs:
       command_id: ${{ steps.enqueue.outputs.command_id }}
@@ -103,7 +103,7 @@ jobs:
 
   run-report2:
     needs: [execution-gate, enqueue-manual-command]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && (github.event_name == 'schedule' || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY') }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && (github.event_name == 'schedule' || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -214,6 +214,10 @@ jobs:
             -out report2-t00-d1-inventory.json.cms \
             audit-fixes/t00/runtime-export-cert.pem
           rm -f report2-t00-d1-inventory.json
+      - name: T16 Deribit alt-options live smoke
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' }}
+        shell: bash
+        run: node audit-fixes/t16/run-deribit-alt-options-smoke.mjs runtime
       - name: Upload encrypted T00 D1 inventory
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_D1_INVENTORY' }}
         uses: actions/upload-artifact@v4
@@ -223,7 +227,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: Full Report 2 cycle
-        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' }}
+        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' }}
         shell: bash
         run: |
           set -Eeuo pipefail
