@@ -17,7 +17,7 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F11 | LOCAL_CLOSED_RUNTIME | Typed side-specific HTX bid/ask reference and execution receipt reach canonical input; fallback price is stripped. | Natural decision evidence. |
 | F12 | PARTIAL_COLLECTOR_BLOCKED | Sharded history contracts and real 24h semantics pass. | Five-minute public collector and its live limit receipt require Hub deployment. |
 | F13 | LOCAL_CORE | Closed-candle/actual-window contracts reject synthetic 5m/15m windows. | Short-window completeness awaits the collector. |
-| F14 | PARTIAL_MEASURED | Wave queue, 4-light/8-total plan and bounded burst pass; controlled run 36363772673 measured one cycle. | Operational expiry/starvation measurements and two additional measured cycles. |
+| F14 | LIVE_MEASURED_CLOSED | Wave queue, 4-light/8-total plan and bounded burst pass; full runs 36363772673, 36371555641 and 36371701490 each scanned 358/358 within 34k/560 with zero unknown operations. | Operational expiry/starvation remains natural longitudinal evidence, not a run-budget blocker. |
 | F15 | LOCAL_CLOSED | Bounded enrichment treats missing OI as unknown, never zero or positive evidence. | Live source receipt. |
 | F16 | LOCAL_CLOSED | `analytical-integrity.mjs` and target tests separate calculated geometry from observed/proven levels. | None locally. |
 | F17 | LOCAL_CLOSED | Prospective anchor and measured minimum 5% move policy are wired; stale candle cannot create proof. | Natural prospective sample. |
