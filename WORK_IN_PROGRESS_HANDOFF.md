@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 06:36 UTC
+Updated: 2026-09-28 06:47 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -63,6 +63,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Delayed GDELT retry `36386110377` again received HTTP 429. It emitted no discovery/evidence, added no market vote and installed the shared backoff. No immediate retry or alternate host was attempted.
 - Final controlled full-report run `36387174153` completed successfully on the V5 branch. It claimed and completed the durable `FULL_MANUAL` command, scanned all 359/359 current HTX futures contracts, closed persistence and every D1 burst gate with zero unknown operations, ended truthfully as `HEALTHY_NO_IDEA`, and made zero Telegram network sends because delivery was deliberately disabled. The visible TIA-USDT observation remained OBSERVE at score 64, so no final publication decision was formed. GitHub masked digits in the final usage JSON; the proof therefore claims only the fixed 34,000/560 caps, closed gates and zero unknown operations, not invented exact usage counts.
 - The three canonical cloud state files were updated after that verified stage. They preserve V4 as the active production generation and record V5 only as `TECHNICALLY_VERIFIED_NOT_DEPLOYED`, with the exact branch, commit, worker hash, live-source smoke runs and Cloudflare Hub blocker. No old installer or pending handoff was reactivated.
+- Final liquidation-only run `36387775925` revealed that the separate command exposed only the native provider lines and did not fill a missing side with the already approved calculated map. Commit `065317e` connects the same `buildPumpLiquidationZones` policy used by the canonical report to the liquidation-only result without changing the frozen report/Telegram formatters. Retry `36388065447` closed 359/359 scanning on CASHCAT-USDT and returned four zones above plus four below: one exact Lighter provider zone and seven explicitly calculated fallback zones, with no invented exact amounts. It used four of five new-provider calls, stayed within all D1 gates with zero unknown operations, completed the durable command and sent zero Telegram messages.
 
 ## Verified blockers
 
