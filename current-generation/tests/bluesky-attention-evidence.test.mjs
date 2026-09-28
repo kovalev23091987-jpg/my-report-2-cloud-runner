@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeBlueskyAttention} from '../files/src/bluesky-attention-evidence.mjs';
+import {normalizeBlueskyAttention,blueskyFailureStatus} from '../files/src/bluesky-attention-evidence.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 
 const address='0x514910771af9ca656af840dff83e8264ecf986ca',identity={chain:'ethereum',contract_or_mint:address};
@@ -19,4 +19,8 @@ test('K16 Bluesky remains warming before thirty windows over seven days',()=>{
 test('K16 Bluesky rejects ticker-only identity and preserves Solana case',()=>{
  assert.equal(normalizeBlueskyAttention({contract:'LINK-USDT',identity:{chain:'ethereum',contract_or_mint:'LINK'},payload:{posts:[]},window_start:0,window_end:1,observed_ts:2}).status,'EXACT_ASSET_IDENTITY_REQUIRED');
  const mint='So11111111111111111111111111111111111111112',row=normalizeBlueskyAttention({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:mint},payload:{posts:[post('a','did:plc:1',mint.toLowerCase())]},window_start:0,window_end:1,observed_ts:2});assert.equal(row.summary.original_posts,0);
+});
+
+test('K16 Bluesky access denial is not misclassified as an empty valid sample',()=>{
+ assert.equal(blueskyFailureStatus(403),'ACCESS_BLOCKED_403');assert.equal(blueskyFailureStatus(401),'ACCESS_BLOCKED_401');assert.equal(blueskyFailureStatus(500),'SOURCE_ERROR');
 });

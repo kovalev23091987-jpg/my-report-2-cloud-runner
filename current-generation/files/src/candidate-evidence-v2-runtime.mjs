@@ -21,6 +21,7 @@ export async function collectCandidateEvidenceV2(params={}){
  else if(remaining>=2)deribit=await collectDeribitAltOptionsEvidence(params);
  else if(evmEligible&&remaining>=1)sourcify=await collectSourcifyAbiEvidence(params);
  else if(socialEligible&&remaining>=1)bluesky=await collectBlueskyAttentionEvidence(params);
+ if(Number(bluesky?.network_calls||0)===0&&String(bluesky?.status||'').startsWith('ACCESS_BLOCKED_')&&remaining>=2)deribit=await collectDeribitAltOptionsEvidence(params);
  const evidence=[...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(macro?.evidence)?macro.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chain?.evidence)?chain.evidence:[]),...(Array.isArray(sourcify?.evidence)?sourcify.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[])];
  const statuses=[htx?.status,macro?.status,deribit?.status,chain?.status,sourcify?.status,bluesky?.status],closed=statuses.some(value=>value==='CLOSED');
  return{
