@@ -117,7 +117,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "3dace5eff4d02a0390b0199ba35335d3587732052c3a2a618291ea0b8dae6761"
+      REPORT2_EXPECTED_WORKER_SHA: "a56b169c726e95ae2ff42dba8e85e641b51c0cac3cbb58f480dd452f7afcb7fb"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}

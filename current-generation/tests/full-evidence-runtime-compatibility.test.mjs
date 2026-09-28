@@ -14,4 +14,7 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.match(worker,/FULL_EVIDENCE_PERSISTENCE_FAILED/);
  assert.match(worker,/outcome_classification/);
  assert.match(worker,/wave_id: params\?\.discovery_row\?\.early_candidate_wave_id \?\? params\?\.discovery_row\?\.wave_id/);
+ assert.match(worker,/DEFERRED_FOR_TELEGRAM_BINDING_RECOVERY/);
+ assert.match(worker,/lane:'TELEGRAM_BINDING_RECOVERY'/);
+ assert.match(worker,/w\.early_detection_quality_0_100>=70/);
 });

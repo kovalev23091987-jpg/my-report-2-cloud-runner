@@ -18522,15 +18522,43 @@ const __REPORT2_ORIGINAL_HANDLER = {
             Date.now(),
         });
 
+      /*
+       * A user-visible early observation that already cleared 70 must not wait
+       * forever merely because its canonical publication was not yet bound.
+       * Recover only an exact, still-valid lifecycle/wave identity that is also
+       * present in this cycle's bridged shortlist. This is a one-slot technical
+       * repair, not a synthetic signal and never authorizes ENTRY.
+       */
+      let telegramBindingRecovery = null;
+      try {
+        const pending = await env.DATA_DB.prepare(`SELECT d.contract,d.direction,d.wave_id,d.created_ts,w.early_detection_quality_0_100
+          FROM v3_telegram_dispatch_shadow d
+          JOIN v3_user_lifecycle_shadow l ON l.contract=d.contract AND l.direction=d.direction AND l.wave_id=d.wave_id AND l.rules_version=d.rules_version
+          JOIN v3_early_candidate_wave w ON w.contract_code=d.contract AND w.wave_id=d.wave_id AND w.direction_hint=d.direction
+          LEFT JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key
+          WHERE d.state IN ('PENDING','FAILED_RETRYABLE') AND d.lifecycle_event IN ('OBSERVE','WAIT') AND b.idempotency_key IS NULL
+            AND l.status=d.lifecycle_event AND l.valid_until_ts>=?1 AND w.early_detection_quality_0_100>=70
+          ORDER BY d.created_ts ASC LIMIT 1`).bind(Date.now()).first();
+        const bridged=(discoveryPrefilter?.shortlist||[]).find(row=>
+          row?.early_candidate_bridge===true &&
+          String(row?.contract||'').trim()===String(pending?.contract||'').trim() &&
+          String(row?.early_candidate_wave_id||row?.wave_id||'').trim()===String(pending?.wave_id||'').trim() &&
+          Number(row?.early_candidate_quality_0_100)>=70
+        );
+        if(pending&&bridged)telegramBindingRecovery={...pending,candidate:bridged};
+      } catch { telegramBindingRecovery=null; }
+
       let postV7RecheckClaim = {status:'DISABLED',claimed:false};
       if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1') {
         await requeueExpiredLease(env.DATA_DB,{now_ts:Date.now()});
-        postV7RecheckClaim = await claimDueRecheck(env.DATA_DB,{
-          actor:String(env?.REPORT2_ANALYTICS_ACTOR || 'GITHUB_ACTIONS'),
-          configured_owner:'GITHUB_ACTIONS',
-          now_ts:Date.now(),
-          lease_ms:5*60_000,
-        });
+        postV7RecheckClaim = telegramBindingRecovery
+          ? {status:'DEFERRED_FOR_TELEGRAM_BINDING_RECOVERY',claimed:false,recovery_contract:telegramBindingRecovery.contract}
+          : await claimDueRecheck(env.DATA_DB,{
+              actor:String(env?.REPORT2_ANALYTICS_ACTOR || 'GITHUB_ACTIONS'),
+              configured_owner:'GITHUB_ACTIONS',
+              now_ts:Date.now(),
+              lease_ms:5*60_000,
+            });
       }
 
       console.log(
@@ -18751,6 +18779,13 @@ const __REPORT2_ORIGINAL_HANDLER = {
           opportunity_journal_plan:
             opportunityJournalPlan,
         });
+
+      const telegramRecoveryContract=String(telegramBindingRecovery?.contract||'').trim().toUpperCase();
+      if(telegramRecoveryContract){
+        const forced={...telegramBindingRecovery.candidate,priority_rank:0,contract:telegramRecoveryContract,telegram_binding_recovery:true};
+        postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==telegramRecoveryContract)]};
+        liveHandoffPlan={lane:'TELEGRAM_BINDING_RECOVERY',require_exact_contract:true,required_contract:telegramRecoveryContract,live_shortlist_count:1,maintenance_available:Boolean(opportunityJournalPlan?.candidate),maintenance_deferred:Boolean(opportunityJournalPlan?.candidate)};
+      }
 
       const manualRequestedContract=String(env?.REPORT2_RUN_SOURCE||'')!=='schedule'
         ? String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim().toUpperCase()
