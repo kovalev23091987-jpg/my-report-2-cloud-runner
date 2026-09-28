@@ -62,9 +62,9 @@ export function createOxArchiveCollector({db,fetch_impl=globalThis.fetch,api_key
   if(!symbol||contract!==`${symbol}-USDT`||!runId)return null;
   const started=clock(),reservationId=`OXARCHIVE:${runId}:${contract}`;
   const reserved=await reserveOxArchiveCredits({db,reservation_id:reservationId,credit_cost:readiness.credit_cost,now:started});
-  if(reserved.allowed!==true){history.push({contract,status:reserved.reason});return null;}
+  if(reserved.allowed!==true){history.push({contract,status:reserved.reason,http_status:null});return null;}
   const raw=await fetchOxArchive(symbol,{api_key,credit_cost_verified:true,fetch_impl,clock});
-  const completed=clock();if(raw?.ok!==true){history.push({contract,status:raw?.reason||'SOURCE_ERROR'});return null;}
+  const completed=clock();if(raw?.ok!==true){history.push({contract,status:raw?.reason||'SOURCE_ERROR',http_status:raw?.receipt?.http_status??null,retry_after:raw?.receipt?.retry_after??null});return null;}
   const normalized=normalizeOxArchive(raw.payload,{symbol,route_symbol:symbol,run_id:runId,snapshot_id:`OXARCHIVE:${runId}:${contract}`,as_of_ms:completed,received_at_ms:Math.min(completed,raw.receipt?.received_ts??completed),max_age_ms:300000,range_pct:50,buckets:100,execution_alias_verified:false});
   if(normalized?.usable_for_context!==true){history.push({contract,status:normalized?.status||'NORMALIZATION_NOT_CLOSED'});return null;}
   const scoped=createScopedProviderAcquisition({contract,native_symbol:symbol,run_id:runId,acquisition_id:reservationId,provider:'0xArchive',venue:'Hyperliquid',price_quote:'USD',collection_started_ts:started,collection_completed_ts:completed,normalized_receipts:[normalized],transport_receipts:[raw.receipt]});
