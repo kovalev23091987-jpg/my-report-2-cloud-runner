@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 07:33 UTC
+Updated: 2026-09-28 07:41 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -68,6 +68,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Pull request 6 was merged to production `main` as `902f4d2c4cbf89d38528501cfd537121b3cc4f66`. The production schedule was paused during cutover. Telegram-disabled production acceptance run `36390942493` then closed 359/359 scanning, persistence, D1 burst gates and durable command completion with zero unknown operations and zero Telegram sends.
 - After acceptance, the schedule was re-enabled. Natural-path run `36391188150` closed another 359/359 cycle with the canonical bound Telegram sender and reconciliation enabled. No test message was requested or sent. XPL-USDT SHORT remained OBSERVE at score 64, so there was no final decision and the correct delivery count was zero. This proves the delivery path is armed, not that a natural signal was fabricated.
 - GitHub retained 31 deleted historical validation workflows as manually runnable metadata. All 31 were explicitly changed to `disabled_manually`. The only active workflows are the canonical V5 runner `.github/workflows/report2.yml` and the monthly schedule keepalive `.github/workflows/keepalive.yml`; no legacy report or Telegram workflow remains runnable.
+- First automatic V5 schedule run `36392384105` completed successfully on generation `MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M`: 359/359 contracts, `HEALTHY_NO_IDEA`, closed D1 gates, zero unknown operations, analytics lease released and canonical Telegram network enabled. No final decision row existed, so the correct natural delivery count was zero and no synthetic test message was sent.
 
 ## Verified blockers
 
