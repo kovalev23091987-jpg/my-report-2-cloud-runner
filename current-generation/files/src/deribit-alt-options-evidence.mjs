@@ -31,16 +31,17 @@ export async function collectDeribitAltOptionsEvidence({db,fetch_impl=globalThis
  if(!db)throw new Error('DERIBIT_ALT_OPTIONS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),base=baseOf(htxContract);
  if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await installEvidenceSourceStore(db);const candidateCached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,now});if(candidateCached)return{...candidateCached,contract:htxContract};
- let catalog=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'CATALOG',now}),catalogReceipt=null,catalogNetwork=0;
+ let catalog=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,now}),catalogReceipt=null,catalogNetwork=0;
  const plannedAttempts=catalog?1:2,reservationId=`EV2:${SOURCE}:${run_id}:${base}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:plannedAttempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:plannedAttempts,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
  if(!catalog){
   catalogReceipt=await getJson(fetch_impl,`${BASE}/public/get_instruments?currency=any&kind=option&expired=false`);catalogNetwork=1;
-  catalog={payload:catalogReceipt.ok?catalogReceipt.payload:null};
-  if(catalogReceipt.ok)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:'CATALOG',observed_ts:now,expires_ts:now+CATALOG_TTL,payload:catalog});
+  const exactInstruments=selectExactAltOptionInstruments(catalogReceipt.ok?catalogReceipt.payload:null,base);
+  catalog={exact_instruments:exactInstruments};
+  if(catalogReceipt.ok)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,observed_ts:now,expires_ts:now+CATALOG_TTL,payload:catalog});
  }
- const instruments=selectExactAltOptionInstruments(catalog?.payload,base);
+ const instruments=Array.isArray(catalog?.exact_instruments)?catalog.exact_instruments:[];
  if(!instruments.length){
   const result={version:DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION,status:'NOT_APPLICABLE',contract:htxContract,evidence:[],network_calls:catalogNetwork,cache_status:catalogNetwork?'REFRESHED':'HIT',whole_job_admission:wholeJobAdmission,admission,receipts:catalogReceipt?[{route:'CATALOG',status:catalogReceipt.ok?'CLOSED':'SOURCE_ERROR',http_status:catalogReceipt.http_status,error:catalogReceipt.error}]:[],summary:{base_currency:base,open_instrument_count:0,liquid_instrument_count:0},internal_only:true};
   await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,observed_ts:now,expires_ts:now+TTL,payload:result});return result;

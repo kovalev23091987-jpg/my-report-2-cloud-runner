@@ -29,6 +29,7 @@ test('K16 Deribit alt: catalog and summary are bounded, cached and admitted befo
  const base={db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:1000};
  const first=await collectDeribitAltOptionsEvidence(base),second=await collectDeribitAltOptionsEvidence({...base,run_id:'R2',now:1001});
  assert.equal(first.status,'CLOSED');assert.equal(first.network_calls,2);assert.equal(second.network_calls,0);assert.equal(second.cache_status,'HIT');assert.equal(calls.length,2);
+ const stored=db.sqlite.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source='DERIBIT_ALT_OPTIONS' AND asset_key='CATALOG:SOL'`).get();assert.ok(stored.payload_json.length<2000);assert.doesNotMatch(stored.payload_json,/BTC-/);
  const usage=db.sqlite.prepare(`SELECT attempts FROM report2_evidence_source_daily WHERE source='DERIBIT_ALT_OPTIONS'`).get();assert.equal(usage.attempts,2);
 });
 
