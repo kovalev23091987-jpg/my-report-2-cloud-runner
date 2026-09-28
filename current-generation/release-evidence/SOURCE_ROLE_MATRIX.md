@@ -10,7 +10,7 @@
 | Coinalyze | historical liquidation/OI/funding baseline | counts do not select direction | LIVE_HISTORY_CLOSED run 36369369843, AKE-USDT, 2 HTTP / 5 provider units |
 | Hyperliquid native | verified native positions/levels | observed levels only | ACTIVE_IF_EXACT_MARKET |
 | LiqFlow | discovery of relevant Hyperliquid accounts | no independent duplicate vote | PUBLIC_PILOT_OR_KEY |
-| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity required | ACTIVE_BOUNDED_ROTATION |
+| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity required | ACTIVE_BOUNDED_ROTATION; Lighter exact SOL live acquisition closed in run 36375513014; GMX/gTrade live receipts remain pending |
 | 0xArchive | bounded projected HL level buckets | one-credit route only | LIVE_READINESS_CLOSED run 36369369843; existing key, one-credit route, 5,000 monthly cap, no automatic top-up |
 | CoinLobster | cached whale/liquidation context | advisory, symbol sliced | ACTIVE_EXISTING |
 | DEX Screener / GeckoTerminal | exact address/pool identity and activity context | buy/sell counts are direction-neutral | ACTIVE_CONDITIONAL |
