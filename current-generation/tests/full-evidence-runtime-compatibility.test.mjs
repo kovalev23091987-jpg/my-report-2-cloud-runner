@@ -19,4 +19,5 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.match(worker,/w\.early_detection_quality_0_100>=70/);
  assert.match(worker,/LIVE_DIRECTIONAL_DISCOVERY/);
  assert.match(worker,/directionless_fast_move_deferred/);
+ assert.match(worker,/early_candidate_wave_id:early\.wave_id/);
 });

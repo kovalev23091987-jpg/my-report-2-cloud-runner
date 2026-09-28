@@ -18786,14 +18786,18 @@ const __REPORT2_ORIGINAL_HANDLER = {
        * priority and this scheduling choice never authorizes ENTRY. */
       if (!dueRecheckContract && liveHandoffPlan?.lane === 'LIVE_FAST_MOVE_RECHECK') {
         const required=String(liveHandoffPlan?.required_contract||'').trim().toUpperCase();
-        const directional=(postV7DeepPrefilter?.shortlist||[]).find(row=>{
+        const directionalRows=(postV7DeepPrefilter?.shortlist||[]).filter(row=>{
           const contract=String(row?.contract||'').trim().toUpperCase();
           const hint=String(row?.discovery_direction_hint??row?.early_candidate_direction_hint??row?.direction_hint??'').trim().toUpperCase();
           return contract&&contract!==required&&['LONG','SHORT','LONG_WATCH','SHORT_WATCH'].includes(hint);
         });
+        const earlyFor=row=>(earlyBridgeInputs?.early_rows||[]).find(early=>String(early?.contract_code||early?.contract||'').trim().toUpperCase()===String(row?.contract||'').trim().toUpperCase()&&Number(early?.early_detection_quality_0_100)>=70);
+        const directional=directionalRows.find(row=>earlyFor(row))||directionalRows[0];
         if(directional){
           const contract=String(directional.contract).trim().toUpperCase();
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[{...directional,priority_rank:0,directional_discovery_priority:true},...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
+          const early=earlyFor(directional);
+          const selected={...directional,priority_rank:0,directional_discovery_priority:true,...(early?{early_candidate_bridge:true,early_candidate_wave_id:early.wave_id,early_candidate_quality_0_100:Number(early.early_detection_quality_0_100),early_candidate_direction_hint:early.direction_hint}: {})};
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[selected,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
           liveHandoffPlan={...liveHandoffPlan,lane:'LIVE_DIRECTIONAL_DISCOVERY',require_exact_contract:true,required_contract:contract,directionless_fast_move_deferred:required||null};
         }
       }
