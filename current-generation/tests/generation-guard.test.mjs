@@ -18,9 +18,10 @@ test('20-minute schedule plus three reports and five coin analyses fits 31-day q
 test('multi-source comparison remains bounded for schedule, burst checks and manual reserve',()=>{
  const deepRuns=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day+generation.manual_runs_reserved_per_day)*31;
  assert.equal(deepRuns,2666);
- assert.equal(deepRuns*generation.full_report_shared_extension_request_cap,13330);
+ const totalRequests=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day)*31*generation.full_report_shared_extension_request_cap+generation.manual_runs_reserved_per_day*31*generation.liquidation_only_max_additional_requests;
+ assert.equal(totalRequests,14074);
  assert.equal(generation.multi_source_max_deep_checks_per_31_days,deepRuns);
- assert.equal(generation.multi_source_max_shared_requests_per_31_days,13330);
+ assert.equal(generation.multi_source_max_shared_requests_per_31_days,14074);
  assert.equal(generation.multi_source_oxarchive_worst_case_credits_per_31_days,2666);
  assert.equal(generation.multi_source_provider_monthly_caps.OXARCHIVE-2666,2334);
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);

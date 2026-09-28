@@ -21,7 +21,8 @@ test('manual Russian command is wired to a bounded liquidation-only runner path'
   assert.match(runner.slice(branch,full),/cross_exchange_risk:crossExchangeRisk/);
   assert.match(runner.slice(branch,full),/liquidation_candidate_queue:liquidationQueueSummary/);
   assert.match(runner.slice(branch,full),/outcome_calibration:/);
-  assert.match(runner.slice(branch,full),/total:8/);
+  assert.match(runner.slice(branch,full),/projected_liquidation:8/);
+  assert.match(runner.slice(branch,full),/total:11/);
   assert.match(runner,/createLiquidationSourceWeightStore/);
   assert.match(runner.slice(branch,full),/return;/);
 });
