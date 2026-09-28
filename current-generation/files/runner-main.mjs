@@ -560,7 +560,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
   let liquidationSources=null,manualLiquidationSources=null;
   if(postV7UnifiedEnabled && envText("REPORT2_LIQUIDATION_EXTENSION_MODE",{required:false})==='SHADOW_ONLY'){
-    const allowanceSetup=await installSourceAllowances({db:env.DATA_DB,now:started,liqflow_key:envText('LIQFLOW_API_KEY',{required:false})});
+    const allowanceSetup=await installSourceAllowances({db:env.DATA_DB,now:started,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_key:oxarchiveApiKey});
     const scopes=allowanceSetup.bindings;
     console.log('LIQUIDATION_SOURCE_ALLOWANCES',JSON.stringify(allowanceSetup));
     const requiredDownstream={

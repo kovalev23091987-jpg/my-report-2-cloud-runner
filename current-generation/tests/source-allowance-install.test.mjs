@@ -18,3 +18,7 @@ test('after the public pilot LiqFlow is fail-closed until an API key is configur
  const out=await installSourceAllowances({db:new DB(),now:Date.UTC(2026,10,1),liqflow_key:''});
  assert.equal(out.bindings.LIQFLOW,undefined);assert.equal(out.liqflow_access,'DISABLED_API_KEY_REQUIRED');
 });
+test('0xArchive receives an exact request binding only when its existing key and credit scope are configured',async()=>{
+ const off=await installSourceAllowances({db:new DB(),now:Date.UTC(2026,8,27)});assert.equal(off.bindings.OXARCHIVE,undefined);assert.equal(off.oxarchive_access,'DISABLED_API_KEY_REQUIRED');
+ const on=await installSourceAllowances({db:new DB(),now:Date.UTC(2026,8,27),oxarchive_key:'configured'});assert.ok(on.bindings.OXARCHIVE);assert.equal(on.provider_operational_caps.OXARCHIVE,5000);assert.equal(on.oxarchive_access,'AUTHENTICATED_OWN_CREDIT_LEDGER');
+});
