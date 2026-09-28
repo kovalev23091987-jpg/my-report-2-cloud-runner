@@ -28,7 +28,7 @@ test('candidate queue carries remaining coins forward and fails closed after thr
  const summary=await queue.summary({now:1200});assert.equal(summary.counts.FAILED,1);assert.equal(summary.counts.DONE,1);db.close();
 });
 
-test('one-hour outcome calibration starts predictive weighting only after twenty settled HTX prices',async()=>{
+test('legacy one-hour outcomes remain shadow diagnostics and never activate predictive weighting',async()=>{
  const db=memoryD1(),fetch_impl=async()=>({ok:true,json:async()=>({ticks:[{contract_code:'AAA-USDT',close:10.1}]})}),calibration=createLiquidationOutcomeCalibration({db,fetch_impl,horizon_ms:1000,min_move_pct:0.5});
  for(let i=0;i<20;i++){
   const record=await calibration.record({contract:'AAA-USDT',observed_ts:1000+i,panel:{status:'CLOSED',reference_price:10,clusters:[{distance_pct:5,center_price:10.5,liquidated_side:'SHORT',providers:['Lighter']}],score_evidence:{quality:0.8}}});
@@ -36,7 +36,7 @@ test('one-hour outcome calibration starts predictive weighting only after twenty
  }
  const settled=await calibration.settle({now:3000});assert.equal(settled.settled,20);
  const summary=await calibration.summary(),lighter=summary.sources.find(row=>row.source_id==='LIGHTER');
- assert.equal(lighter.observations,20);assert.equal(lighter.hits,20);assert.equal(lighter.eligible,1);assert.ok(lighter.predictive_weight_factor>1);db.close();
+ assert.equal(lighter.observations,20);assert.equal(lighter.hits,20);assert.equal(lighter.eligible,0);assert.equal(lighter.predictive_weight_factor,1);assert.equal(summary.activation_disabled,true);db.close();
 });
 
 test('cross-exchange depth, Coinalyze and live liquidations enter the same factual outcome loop',async()=>{

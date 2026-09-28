@@ -5,7 +5,7 @@ test('verified useful sources change the score inside existing fixed blocks',()=
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{deribit:{status:'CLOSED',internal_only:true,market_regime:'RISK_OFF_ELEVATED'},coinlobster:{status:'CLOSED',internal_only:true,whale_radar:[{coin:'FIL',direction:'BUY',multiple:5}]}}});
  const out=applySupplementalScoreAdjustment(70,rows);
  assert.equal(out.status,'CLOSED');assert.notEqual(out.adjustment,0);assert.equal(out.final_score,71);assert.deepEqual(out.weights,FIXED_DECISION_WEIGHTS);assert.ok(out.receipts.some(x=>x.source_id==='DERIBIT'));assert.ok(out.receipts.some(x=>x.source_id==='COINLOBSTER'));
- assert.equal(out.source_weighting,'ADAPTIVE_PER_RUN_QUALITY_WITH_FIXED_DECISION_BLOCKS');assert.equal(out.core_weights_automatically_changed,false);assert.ok(out.receipts.every(x=>Number.isFinite(x.effective_max_score_points)));
+ assert.equal(out.source_weighting,'T16_5_FAIL_CLOSED_FACTOR_ONE_UNLESS_ACTIVE');assert.equal(out.core_weights_automatically_changed,false);assert.ok(out.receipts.every(x=>Number.isFinite(x.effective_max_score_points)));
 });
 test('stale, unidentified and duplicate-family facts cannot distort the result',()=>{
  const out=applySupplementalScoreAdjustment(60,[
@@ -14,7 +14,7 @@ test('stale, unidentified and duplicate-family facts cannot distort the result',
   {source_id:'C',responsibility_group:'THREE',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',signed_strength:1,quality:1,fresh:true,exact_identity:true},
   {source_id:'D',responsibility_group:'THREE',decision_chain:'CROSS_EXCHANGE_DERIVATIVES',signed_strength:0.5,quality:1,fresh:true,exact_identity:true},
  ]);
- assert.equal(out.adjustment,3.5);assert.equal(out.receipts.length,1);assert.equal(out.final_score,64);
+ assert.equal(out.adjustment,3.2);assert.equal(out.receipts.length,1);assert.equal(out.final_score,63);
 });
 test('supplemental influence is always bounded to ten points',()=>{
  const rows=Object.entries(FIXED_DECISION_WEIGHTS).map(([chain],i)=>({source_id:String(i),responsibility_group:String(i),decision_chain:chain,signed_strength:1,quality:1,fresh:true,exact_identity:true}));
@@ -41,7 +41,8 @@ test('every candidate-context provider has an explicit useful evidence path',()=
  const out=applySupplementalScoreAdjustment(50,rows);
  assert.equal(out.status,'CLOSED');
  assert.ok(Math.abs(out.adjustment)<=10);
- assert.ok(out.receipts.length<=4,'one strongest fact per responsibility family');
+ assert.ok(out.receipts.filter(row=>row.score_contribution!==0).length<=4,'one strongest directional fact per responsibility family');
+ assert.ok(out.receipts.filter(row=>row.direction_neutral_context).every(row=>row.score_contribution===0),'context-only providers cannot invent direction');
 });
 test('cross-exchange depth, live liquidations and history enter bounded evidence families',()=>{
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:{sources:{
@@ -52,10 +53,12 @@ test('cross-exchange depth, live liquidations and history enter bounded evidence
  const ids=new Set(rows.map(x=>x.source_id));for(const id of ['CROSS_EXCHANGE_DEPTH','CROSS_EXCHANGE_REALIZED','COINALYZE'])assert.ok(ids.has(id));
  const out=applySupplementalScoreAdjustment(50,rows);assert.ok(out.adjustment<=10);assert.ok(out.receipts.length<=3);
 });
-test('cross-exchange quality weight stays neutral before twenty outcomes and adapts afterwards',()=>{
+test('cross-exchange quality stays factor one until explicit T16.5 activation',()=>{
  const risk={sources:{CROSS_EXCHANGE_DEPTH:{status:'CLOSED',venue_count:3,aggregate_depth_imbalance_2pct:0.4}}};
  const early=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:19,eligible:0,predictive_weight_factor:1.25}]}}});
- assert.equal(early[0].quality,0.6);assert.equal(early[0].predictive_weight_status,'CALIBRATING');
- const proven=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:20,eligible:1,predictive_weight_factor:1.25}]}}});
- assert.equal(proven[0].base_quality,0.6);assert.equal(proven[0].quality,0.75);assert.equal(proven[0].predictive_weight_status,'ACTIVE_AFTER_20_OUTCOMES');
+ assert.equal(early[0].quality,0.6);assert.equal(early[0].predictive_weight_status,'SHADOW_FACTOR_ONE');
+ const stillShadow=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:200,eligible:1,predictive_weight_factor:1.25}]}}});
+ assert.equal(stillShadow[0].quality,0.6);assert.equal(stillShadow[0].predictive_weight_status,'SHADOW_FACTOR_ONE');
+ const proven=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{cross_exchange_risk:risk,predictive_source_health:{sources:[{source_id:'CROSS_EXCHANGE_DEPTH',observations:200,eligible:1,predictive_weight_factor:1.25,activation_state:'ACTIVE',eligibility_protocol:'T16_5'}]}}});
+ assert.equal(proven[0].base_quality,0.6);assert.equal(proven[0].quality,0.75);assert.equal(proven[0].predictive_weight_status,'ACTIVE_T16_5');
 });

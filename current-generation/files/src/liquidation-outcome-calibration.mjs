@@ -1,13 +1,13 @@
 import crypto from 'node:crypto';
-export const LIQUIDATION_OUTCOME_CALIBRATION_VERSION='liquidation-outcome-calibration-v2-20260927';
-export const MIN_PREDICTIVE_OBSERVATIONS=20;
+export const LIQUIDATION_OUTCOME_CALIBRATION_VERSION='liquidation-outcome-calibration-legacy-shadow-v3-20260928';
+export const MIN_PREDICTIVE_OBSERVATIONS=200;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 const sourceId=value=>{const s=text(value).toUpperCase();if(s.includes('CROSS_EXCHANGE_DEPTH'))return'CROSS_EXCHANGE_DEPTH';if(s.includes('CROSS_EXCHANGE_REALIZED'))return'CROSS_EXCHANGE_REALIZED';if(s.includes('COINALYZE'))return'COINALYZE';if(s.includes('LIGHTER'))return'LIGHTER';if(s.includes('GMX'))return'GMX';if(s.includes('GTRADE')||s.includes('GAINS'))return'GTRADE';if(s.includes('LIQFLOW')||s.includes('HYPERLIQUID'))return'LIQFLOW_HL_NATIVE';if(s.includes('0XARCHIVE'))return'OXARCHIVE';return'NATIVE';};
 const digest=value=>crypto.createHash('sha256').update(value).digest('hex');
 
-export function predictiveWeightFactor({observations,ewma_accuracy}={}){const n=Math.max(0,Number(observations)||0),parsed=finite(ewma_accuracy),accuracy=clamp(parsed===null?0.5:parsed,0,1);return n<MIN_PREDICTIVE_OBSERVATIONS?1:Number(clamp(0.75+accuracy*0.5,0.75,1.25).toFixed(4));}
+export function predictiveWeightFactor({observations,ewma_accuracy,activation_eligible=false}={}){const n=Math.max(0,Number(observations)||0),parsed=finite(ewma_accuracy),accuracy=clamp(parsed===null?0.5:parsed,0,1);return activation_eligible!==true||n<MIN_PREDICTIVE_OBSERVATIONS?1:Number(clamp(0.75+accuracy*0.5,0.75,1.25).toFixed(4));}
 
 export function createLiquidationOutcomeCalibration({db,fetch_impl=globalThis.fetch,clock=Date.now,horizon_ms=60*60*1000,max_distance_pct=15,min_move_pct=0.5}={}){
  if(!db)throw new Error('LIQUIDATION_CALIBRATION_DB_REQUIRED');let installed=false;
@@ -38,10 +38,10 @@ export function createLiquidationOutcomeCalibration({db,fetch_impl=globalThis.fe
   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);let payload=null;try{const response=await fetch_impl('https://api.hbdm.com/v2/linear-swap-ex/market/detail/batch_merged',{headers:{accept:'application/json','user-agent':'My-Report-2/liquidation-calibration-v1'},signal:controller.signal});if(response.ok)payload=await response.json();}catch{}finally{clearTimeout(timer);}
   const prices=new Map((Array.isArray(payload?.ticks)?payload.ticks:Array.isArray(payload?.data)?payload.data:[]).map(row=>[text(row?.contract_code).toUpperCase(),finite(row?.close??row?.price)]));if(!prices.size)return{status:'PRICE_SOURCE_NOT_CLOSED',network_calls:1,settled:0};let settled=0;
   for(const row of rows){const price=prices.get(text(row.contract_code).toUpperCase()),ref=finite(row.reference_price);if(!price||!ref)continue;const move=(price/ref-1)*100,hit=row.expected_direction==='UP'?move>=min_move_pct:move<=-min_move_pct,prior=await db.prepare(`SELECT observations,hits,ewma_accuracy FROM report2_liquidation_predictive_health WHERE source_id=?1 LIMIT 1`).bind(row.source_id).first(),observations=Number(prior?.observations||0)+1,hits=Number(prior?.hits||0)+(hit?1:0),ewma=Number(((finite(prior?.ewma_accuracy)??0.5)*0.9+(hit?1:0)*0.1).toFixed(6)),factor=predictiveWeightFactor({observations,ewma_accuracy:ewma});
-   await db.batch([db.prepare(`UPDATE report2_liquidation_signal_outcomes SET status='SETTLED',settled_ts=?2,outcome_price=?3,outcome_move_pct=?4,hit=?5 WHERE signal_id=?1 AND status='PENDING'`).bind(row.signal_id,now,price,move,hit?1:0),db.prepare(`INSERT INTO report2_liquidation_predictive_health(source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts) VALUES(?1,?2,?3,?4,?5,?6,?7) ON CONFLICT(source_id) DO UPDATE SET observations=excluded.observations,hits=excluded.hits,ewma_accuracy=excluded.ewma_accuracy,predictive_weight_factor=excluded.predictive_weight_factor,eligible=excluded.eligible,updated_ts=excluded.updated_ts`).bind(row.source_id,observations,hits,ewma,factor,observations>=MIN_PREDICTIVE_OBSERVATIONS?1:0,now)]);settled++;}
+   await db.batch([db.prepare(`UPDATE report2_liquidation_signal_outcomes SET status='SETTLED',settled_ts=?2,outcome_price=?3,outcome_move_pct=?4,hit=?5 WHERE signal_id=?1 AND status='PENDING'`).bind(row.signal_id,now,price,move,hit?1:0),db.prepare(`INSERT INTO report2_liquidation_predictive_health(source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts) VALUES(?1,?2,?3,?4,1,0,?5) ON CONFLICT(source_id) DO UPDATE SET observations=excluded.observations,hits=excluded.hits,ewma_accuracy=excluded.ewma_accuracy,predictive_weight_factor=1,eligible=0,updated_ts=excluded.updated_ts`).bind(row.source_id,observations,hits,ewma,now)]);settled++;}
   return{status:'CLOSED',network_calls:1,due:rows.length,settled,min_observations_before_weighting:MIN_PREDICTIVE_OBSERVATIONS};
  }
- async function summary(){await install();const result=await db.prepare(`SELECT source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts FROM report2_liquidation_predictive_health`).all();return{version:LIQUIDATION_OUTCOME_CALIBRATION_VERSION,min_observations_before_weighting:MIN_PREDICTIVE_OBSERVATIONS,sources:result?.results||[]};}
+ async function summary(){await install();const result=await db.prepare(`SELECT source_id,observations,hits,ewma_accuracy,predictive_weight_factor,eligible,updated_ts FROM report2_liquidation_predictive_health`).all();return{version:LIQUIDATION_OUTCOME_CALIBRATION_VERSION,min_observations_before_weighting:MIN_PREDICTIVE_OBSERVATIONS,legacy_metric:true,activation_disabled:true,activation_protocol_required:'T16_5',sources:result?.results||[]};}
  return{install,record,dueCount,settle,summary,version:LIQUIDATION_OUTCOME_CALIBRATION_VERSION};
 }
 

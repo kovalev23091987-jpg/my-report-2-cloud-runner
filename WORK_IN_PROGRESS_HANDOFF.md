@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 02:48 MSK
+Updated: 2026-09-28 03:20 MSK
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -29,6 +29,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Stage D core work is added. The signed source hash is fixed and every 2–5-way source branch is statistically reachable; Hyperliquid, gTrade, Lighter, GMX and 0xArchive now have separate source identities/rotation lanes. Candle/flow/target/score integrity contracts remove fake intervals, synthetic target proof and fallback 58. EvidenceV2 routes all N01–N17 fixtures into named existing consumers with dedup and fixed family caps. The focused cumulative suite passes 87/87; live adapter smoke receipts are still pending and are not claimed.
 - Stage E core is added without Telegram network calls. Manual workflow requests are now durably enqueued before the analytics concurrency group. Publication/dispatch identity is immutable; success requires a positive Telegram message ID and matching recipient; ambiguous delivery becomes UNKNOWN without blind retry; removal is allowed only for a confirmed SENT entry. Live relay replacement still depends on the exact blocked Hub bundle.
 - Stage F core is added. Only exact SENT deliveries enter the delivered cohort; the outcome anchor is the first fresh side-specific HTX quote after delivery; 1/4/12/24h endpoints and MFE/MAE use closed minute candles, with TP+SL in one candle marked ambiguous. Calibration v2 requires exact zone touch and independent waves; factors stay 1 because the required future sample is not yet present (`INSUFFICIENT_CALIBRATION_DATA`).
+- Removed the last legacy auto-promotion path: twenty endpoint observations can no longer change any source weight. The legacy collector remains diagnostics-only with factor 1; future activation requires explicit `ACTIVE`/`T16_5` state and at least 200 observations. Supplemental weights now match the specification's 32/30/20/18 budget, while count-only and coincidence-only sources remain useful context with zero invented direction. The complete current-generation suite passes 208/208.
 
 ## Verified blockers
 
