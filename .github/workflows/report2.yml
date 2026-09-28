@@ -297,6 +297,18 @@ jobs:
           path: report2-v13-p0-read-only.json
           if-no-files-found: error
           retention-days: 30
+      - name: V13 P0 historical replay of read-only slice
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
+        shell: bash
+        run: node audit-fixes/v13/p0-historical-replay.mjs report2-v13-p0-read-only.json report2-v13-p0-replay.json
+      - name: Upload V13 P0 historical replay
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v13-p0-replay-${{ github.run_id }}
+          path: report2-v13-p0-replay.json
+          if-no-files-found: error
+          retention-days: 30
       - name: V13 P0 exact assembled-runtime dry run
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_DRY_RUN' }}
         shell: bash
