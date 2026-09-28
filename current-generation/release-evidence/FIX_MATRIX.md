@@ -57,3 +57,9 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F51 | LOCAL_CORE | Gross/net costs, remaining path, hold and invalidation are distinct; no automatic trading was added. | Natural outcome sample. |
 
 No `PARTIAL`, `BLOCKED`, `WAITING`, or `LOCAL_CORE` row may be represented as fully deployed or naturally accepted.
+
+## V12 contract-integrity repair (implementation commit `2d94568728ff95e580fb16fbbd2ff42d95d2fe91`)
+
+The historical F01–F51 rows above remain unchanged. The V12 repair closes P00–P10 offline against the assembled authoritative runtime: 312/312 current tests, 2/2 collector tests, complete worker import, and 455/455 executed inherited tests passed (one historical test is intentionally skipped). The worker SHA is `111115737be2fa2c312206e4b3a7d12ae993203edb2175d3345dee8ba1190b4f`; the frozen output manifest remains `6859a2cb33dd8410d644c855e78a84759647a7bba4ff8c7dc77d9a5b8bce617c`.
+
+Production deployment, the first collector sample, two normal 20-minute analytics cycles, and natural Telegram delivery are recorded separately after release. Absence of a genuine market-qualified publication is not a Telegram transport failure.
