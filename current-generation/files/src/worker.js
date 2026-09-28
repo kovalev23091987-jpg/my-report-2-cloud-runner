@@ -16303,6 +16303,7 @@ async function buildDeepCheckInput(params, env) {
       public_evidence: publicEvidence,
       now,
     });
+  const fullEvidenceObservedTs = Number(fullEvidenceShadow?.observed_ts) || now;
 
   // Stage 3.9.2 SHADOW proof wiring. Proof material is prepared before the
   // existing Full Evidence INSERT, but it is not considered proven until D1
@@ -16311,12 +16312,12 @@ async function buildDeepCheckInput(params, env) {
   // legacy externally visible NOT_EVALUATED decision below.
   const stage392SnapshotId =
     multiWaveCampaign?.stage392_proofs?.snapshot_id ||
-    `S392:${String(contract || "UNKNOWN").normalize("NFC")}:${now}`;
+    `S392:${String(contract || "UNKNOWN").normalize("NFC")}:${fullEvidenceObservedTs}`;
 
   const tz101DecisionEvidence = prepareTz101DecisionEvidence({
     contract_code: contract,
     snapshot_id: stage392SnapshotId,
-    observed_ts: now,
+    observed_ts: fullEvidenceObservedTs,
     trajectory: trajectory?.data || null,
     available_ts: trajectory?.available_ts ?? null,
     opportunity_proof: multiWaveCampaign?.stage392_proofs?.opportunity || null,
@@ -16329,7 +16330,7 @@ async function buildDeepCheckInput(params, env) {
       record: fullEvidenceShadow,
       contract_code: contract,
       snapshot_id: stage392SnapshotId,
-      observed_ts: now,
+      observed_ts: fullEvidenceObservedTs,
       shadow_decision: shadowDecision,
       opportunity_proof:
         multiWaveCampaign?.stage392_proofs?.opportunity || null,
