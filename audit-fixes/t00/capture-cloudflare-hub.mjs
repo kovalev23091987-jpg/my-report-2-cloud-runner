@@ -46,6 +46,31 @@ export const sanitizeSchedules=schedules=>(Array.isArray(schedules)?schedules:[]
   modified_on:schedule?.modified_on||null,
 })).filter(schedule=>schedule.cron).sort((a,b)=>a.cron.localeCompare(b.cron));
 
+const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+
+export const summarizeWorkerContent=(bytes,contentType)=>{
+  const boundaryMatch=String(contentType||'').match(/boundary=(?:"([^"]+)"|([^;\s]+))/i);
+  if(!boundaryMatch)return {format:'RAW',parts:[{name:'worker',filename:null,content_type:String(contentType||'application/octet-stream'),bytes:bytes.length,sha256:digest(bytes)}]};
+  const boundary=`--${boundaryMatch[1]||boundaryMatch[2]}`;
+  const text=bytes.toString('utf8');
+  const parts=[];
+  for(const rawPart of text.split(boundary)){
+    const marker=rawPart.includes('\r\n\r\n')?'\r\n\r\n':rawPart.includes('\n\n')?'\n\n':null;
+    if(!marker)continue;
+    const at=rawPart.indexOf(marker);
+    const headers=rawPart.slice(0,at);
+    let body=rawPart.slice(at+marker.length).replace(/\r?\n--\s*$/,'').replace(/\r?\n$/,'');
+    const disposition=headers.match(/content-disposition:[^\r\n]+/i)?.[0]||'';
+    const name=disposition.match(/name="([^"]+)"/i)?.[1]||'unnamed';
+    const filename=disposition.match(/filename="([^"]+)"/i)?.[1]||null;
+    const partType=headers.match(/content-type:\s*([^\r\n]+)/i)?.[1]?.trim()||'application/octet-stream';
+    const bodyBytes=Buffer.from(body,'utf8');
+    parts.push({name,filename,content_type:partType,bytes:bodyBytes.length,sha256:digest(bodyBytes)});
+  }
+  if(!parts.length)throw new Error('CLOUDFLARE_MULTIPART_CONTENT_EMPTY');
+  return {format:'MULTIPART',parts};
+};
+
 const main=async()=>{
   const token=required('CLOUDFLARE_API_TOKEN');
   const outputDir=path.resolve(process.argv[2]||'cloudflare-hub-audit');
@@ -84,6 +109,7 @@ const main=async()=>{
   };
   const bindings=sanitizeBindings(settings?.result?.bindings);
   const cronTriggers=sanitizeSchedules(schedules?.result);
+  const contentSummary=summarizeWorkerContent(content.bytes,content.contentType);
   const summary={
     schema:'my-report-2-cloudflare-hub-read-only-audit-v1',
     captured_at:rawSettings.captured_at,
@@ -92,9 +118,11 @@ const main=async()=>{
     script_name:SCRIPT_NAME,
     script_created_on:script?.created_on||null,
     script_modified_on:script?.modified_on||null,
-    bundle_sha256:crypto.createHash('sha256').update(content.bytes).digest('hex'),
+    response_sha256:digest(content.bytes),
     bundle_bytes:content.bytes.length,
     bundle_content_type:content.contentType,
+    content_format:contentSummary.format,
+    content_parts:contentSummary.parts,
     compatibility_date:settings?.result?.compatibility_date||null,
     compatibility_flags:Array.isArray(settings?.result?.compatibility_flags)?settings.result.compatibility_flags:[],
     binding_count:bindings.length,
@@ -108,7 +136,7 @@ const main=async()=>{
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-bundle.bin'),content.bytes);
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-settings.json'),`${JSON.stringify(rawSettings,null,2)}\n`,'utf8');
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-audit-summary.json'),`${JSON.stringify(summary,null,2)}\n`,'utf8');
-  console.log(JSON.stringify({status:'CLOSED_READ_ONLY',script_name:SCRIPT_NAME,bundle_sha256:summary.bundle_sha256,bundle_bytes:summary.bundle_bytes,binding_count:summary.binding_count,cron_trigger_count:summary.cron_trigger_count,changed_cloudflare:false}));
+  console.log(JSON.stringify({status:'CLOSED_READ_ONLY',script_name:SCRIPT_NAME,main_module_sha256:summary.content_parts.find(part=>part.filename==='worker.js')?.sha256||summary.content_parts[0]?.sha256,bundle_bytes:summary.bundle_bytes,binding_count:summary.binding_count,cron_trigger_count:summary.cron_trigger_count,changed_cloudflare:false}));
 };
 
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){
