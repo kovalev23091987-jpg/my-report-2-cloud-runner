@@ -9,13 +9,15 @@ for(const row of accounts){const scripts=(await asJson(`/accounts/${row.id}/work
 if(!account)throw Error('CLOUDFLARE_HUB_NOT_FOUND');
 const base=`/accounts/${account.id}/workers/scripts/${SCRIPT}`,content=await request(`${base}/content/v2`,'*/*'),expected=fs.readFileSync(path.join(outDir,'worker.js'),'utf8');
 const text=content.bytes.toString('utf8');if(!text.includes('report2-public-collector-v1-20260928'))throw Error('PUBLIC_COLLECTOR_MARKER_NOT_DEPLOYED');
-const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));let schedules=[];
+const cronValues=value=>{const found=[];const visit=node=>{if(Array.isArray(node)){for(const item of node)visit(item);return;}if(!node||typeof node!=='object')return;for(const [key,item] of Object.entries(node)){if(key==='cron'&&typeof item==='string')found.push(item);else visit(item);}};visit(value);return found;};
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));let schedulesRaw=null,crons=[];
 for(let attempt=0;attempt<10;attempt++){
-  schedules=(await asJson(`${base}/schedules`)).result||[];
-  if(schedules.length===1&&String(schedules[0]?.cron)==='*/5 * * * *')break;
+  schedulesRaw=(await asJson(`${base}/schedules`)).result||[];
+  crons=cronValues(schedulesRaw);
+  if(crons.length===1&&crons[0]==='*/5 * * * *')break;
   if(attempt<9)await sleep(10_000);
 }
-if(schedules.length!==1||String(schedules[0]?.cron)!=='*/5 * * * *')throw Error(`PUBLIC_COLLECTOR_CRON_NOT_EXACT:${JSON.stringify(schedules.map(row=>row?.cron??null))}`);
+if(crons.length!==1||crons[0]!=='*/5 * * * *')throw Error(`PUBLIC_COLLECTOR_CRON_NOT_EXACT:${JSON.stringify(crons)}`);
 const settings=(await asJson(`${base}/settings`)).result||{},names=new Set((settings.bindings||[]).map(row=>String(row.name)));
 for(const name of ['DATA_DB','ALERT_DISPATCH_KEY','BYKARANTELI_API_KEY','REPORT2_CLOUD_SOURCE_PROXY_TOKEN','TELEGRAM_BOT_TOKEN','TELEGRAM_CHAT_ID','TELEGRAM_TEST_KEY','PUBLIC_COLLECTOR_ENABLED','ANALYTICS_ENABLED','DELIVERY_ENABLED','CALIBRATION_APPLY_ENABLED','REPORT2_CURRENT_GENERATION'])if(!names.has(name))throw Error(`CLOUDFLARE_BINDING_LOST:${name}`);
 const proof={status:'DEPLOYED_VERIFIED',script:SCRIPT,expected_module_sha256:sha(expected),response_sha256:sha(content.bytes),collector_marker:true,cron:'*/5 * * * *',binding_names:[...names].sort(),secret_values_exported:false,verified_at:new Date().toISOString()};
