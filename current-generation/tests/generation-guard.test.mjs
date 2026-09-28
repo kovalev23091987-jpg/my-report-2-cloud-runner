@@ -65,3 +65,7 @@ test('workflow worker pin equals the effective V5 worker bytes',()=>{
  assert.equal(hash,'6ac1b13d576e334e9fd67d7ae03ed70628bb6f5e2fd86a2fed5aa6ff236fc7b3');
  assert.match(workflow,new RegExp(hash));
 });
+test('controlled T15 measurements upload an exact sanitized receipt',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(workflow,/REPORT2_MEASUREMENT_ARTIFACT_ENABLED/);assert.match(workflow,/report2-measured-run-/);assert.match(runner,/report2-measurement\.json/);assert.match(runner,/secret_values_stored:false/);
+});
