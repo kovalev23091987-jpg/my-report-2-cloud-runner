@@ -4,7 +4,7 @@
 |---|---|---|---|
 | HTX | universe, execution truth, prices, book, OI, funding, candles, outcomes | authoritative for its market | ACTIVE_EXISTING |
 | PublicNode / Solana RPC | finalized exact-address total-supply observations and deltas | context only until a matching finalized mint/burn transaction closes the event; Solana address case is preserved | LIVE_PUBLICNODE_CLOSED run 36370188170; Solana transport remains pending |
-| Sourcify v2 | exact EVM contract ABI/schema verification | N17 quality context only; never a market-direction vote and never proof that a ticker owns an address | RUNTIME_WIRED, live smoke pending |
+| Sourcify v2 | exact EVM contract ABI/schema verification | N17 quality context only; never a market-direction vote and never proof that a ticker owns an address | LIVE_CLOSED run 36370644221, exact LINK ABI, HTTP 200 |
 | Binance / Bybit / OKX | independent depth/derivatives/live liquidation context | only mapped measured features; OKX units required | ACTIVE_EXISTING, bounded rotation |
 | Coinalyze | historical liquidation/OI/funding baseline | counts do not select direction | LIVE_HISTORY_CLOSED run 36369369843, AKE-USDT, 2 HTTP / 5 provider units |
 | Hyperliquid native | verified native positions/levels | observed levels only | ACTIVE_IF_EXACT_MARKET |
