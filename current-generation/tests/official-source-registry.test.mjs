@@ -6,10 +6,11 @@ import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from
 const source=JSON.parse(fs.readFileSync(new URL('../files/official-event-sources.json',import.meta.url),'utf8'));
 
 test('K16 versioned official registry exposes exact identity and domain but never unsupported HTML as a feed',()=>{
- const out=compileOfficialSourceRegistry(source,{now:Date.parse('2026-09-28T04:00:00Z')});
- assert.equal(out.status,'CLOSED');assert.equal(out.records.length,2);
+ const out=compileOfficialSourceRegistry(source,{now:Date.parse('2026-09-28T04:20:00Z')});
+ assert.equal(out.status,'CLOSED');assert.equal(out.records.length,3);
  assert.equal(out.registry.LINK.chain,'ethereum');assert.equal(out.registry.LINK.contract_or_mint,'0x514910771af9ca656af840dff83e8264ecf986ca');
  assert.deepEqual(out.registry.LINK.official_domains,['chain.link']);assert.deepEqual(out.registry.LINK.official_feeds,[]);
+ assert.deepEqual(out.registry.LDO.official_feeds,['https://blog.lido.fi/rss/']);
  assert.equal(out.records[0].status,'DISABLED');assert.equal(out.records[0].disabled_reason,'FIXED_HTML_PARSER_NOT_IMPLEMENTED');
 });
 
