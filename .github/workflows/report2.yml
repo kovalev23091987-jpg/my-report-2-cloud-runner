@@ -3,6 +3,11 @@ name: Report 2 Cloud Runner
 on:
   schedule:
     - cron: "*/20 * * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "manual-requests/run.json"
   workflow_dispatch:
     inputs:
       reason:
@@ -75,6 +80,8 @@ jobs:
           admitted=false
           if [ "$EVENT_NAME" = "schedule" ]; then
             if normalize_true "$LEGACY_RUNNER_ENABLED"; then admitted=true; fi
+          elif [ "$EVENT_NAME" = "push" ]; then
+            admitted=true
           elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             if normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi
           fi
@@ -82,16 +89,19 @@ jobs:
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
   enqueue-manual-command:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
+    if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     outputs:
       command_id: ${{ steps.enqueue.outputs.command_id }}
+      command: ${{ steps.enqueue.outputs.command }}
+      coin_contract: ${{ steps.enqueue.outputs.coin_contract }}
     env:
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANDIDATE_FLOW_FIX_V6_20M"
+      REPORT2_MANUAL_REQUEST_FILE: ${{ github.event_name == 'push' && 'manual-requests/run.json' || '' }}
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -115,9 +125,9 @@ jobs:
       PUBLIC_COLLECTOR_ENABLED: "0"
       DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
       CALIBRATION_APPLY_ENABLED: "0"
-      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && '1' || '0' }}
+      REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "8da9ef03c0b3346f4a09add198dbdb100ea402340f072196b28c66247352aa45"
+      REPORT2_EXPECTED_WORKER_SHA: "e39f6242a09b964a222feb0c80c683f91b16908affda78c67b7dddf7851ebe83"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -145,12 +155,12 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
-      REPORT2_RUN_SOURCE: ${{ github.event_name }}
-      REPORT2_MANUAL_COIN_CONTRACT: ${{ inputs.coin_contract || '' }}
-      REPORT2_MANUAL_COMMAND: ${{ inputs.command || '' }}
+      REPORT2_RUN_SOURCE: ${{ github.event_name == 'push' && 'manual' || github.event_name }}
+      REPORT2_MANUAL_COIN_CONTRACT: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.coin_contract || inputs.coin_contract || '' }}
+      REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
       REPORT2_D1_RUNS_PER_DAY: "80"
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANDIDATE_FLOW_FIX_V6_20M"
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
@@ -284,6 +294,15 @@ jobs:
           path: runtime/report2-measurement.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload canonical run result
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-run-result
+          path: runtime/report2-run-result.json
+          if-no-files-found: warn
+          retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}
 
       - name: Informational delivery proof
         if: ${{ always() }}

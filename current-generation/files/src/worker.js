@@ -19127,6 +19127,12 @@ const __REPORT2_ORIGINAL_HANDLER = {
                         row
                           ?.journal_status ??
                         null,
+                      canonical_persistence:
+                        row?.post_v7_canonical_persistence ??
+                        null,
+                      canonical_result:
+                        row?.canonical_analytical_result ??
+                        null,
                       full_evidence_persistence:
                         row?.full_evidence_persistence ??
                         null,

@@ -47,6 +47,36 @@ async function exactPublicationForDispatch(db,row,{executor_run_id=null,now_ts=D
    candidates=[{...exactWave[0],wave_id:text(row.wave_id)}];
   }
  }
+ /*
+  * A current Deep Check can close an OBSERVE/WAIT publication before the
+  * lifecycle row is persisted. Older runtimes sometimes omitted only the
+  * publication wave column even though contract, direction, run, state and
+  * timestamps were exact. Recover that single proven current-run publication;
+  * never cross runs, directions, non-empty conflicting waves or expired data.
+  */
+ if(!candidates.length&&!isEntry&&text(executor_run_id)&&Math.max(0,now-dispatchTs)<PUBLICATION_BINDING_GRACE_MS){
+  const currentRun=await db.prepare(`SELECT publication_id,canonical_json,presentation_inputs_json,decision_id,actionability_status,run_id,snapshot_id,observed_ts,created_ts,wave_id FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code=?2 AND direction=?3 AND created_ts BETWEEN ?4 AND ?5 ORDER BY created_ts DESC,publication_id ASC LIMIT 3`).bind(text(executor_run_id),row.contract,upper(row.direction),lo,dispatchTs).all();
+  const exactCurrent=rows(currentRun).filter(candidate=>{
+   if(text(candidate.wave_id)&&text(candidate.wave_id)!==text(row.wave_id))return false;
+   let canonical;try{canonical=JSON.parse(candidate.canonical_json);}catch{return false;}
+   if(text(canonical?.run_id)!==text(executor_run_id)||upper(canonical?.direction)!==upper(row.direction))return false;
+   const observed=Number(canonical?.observed_ts),lifeObserved=Number(life?.observation_ts||0);
+   if(!Number.isSafeInteger(observed)||observed>dispatchTs||observed<lo)return false;
+   if(Number.isSafeInteger(lifeObserved)&&lifeObserved>0&&Math.abs(observed-lifeObserved)>PUBLICATION_BINDING_GRACE_MS)return false;
+   const event=upper(row.lifecycle_event),state=upper(canonical?.state);
+   if(event==='OBSERVE'&&(state!=='OBSERVE'||Number(canonical?.scores?.coin_interest_0_100)<70))return false;
+   if(event==='WAIT'&&state!=='WAIT_FOR_TRIGGER')return false;
+   if(Number(canonical?.trigger?.expires_ts||0)<now)return false;
+   const waves=(canonical?.early_candidate?.items||[]).map(item=>text(item?.wave_id)).filter(Boolean);
+   return !waves.length||waves.every(wave=>wave===text(row.wave_id));
+  });
+  if(exactCurrent.length>1)return {status:'AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT',life,matches:exactCurrent.length,executor_run_id:text(executor_run_id)};
+  if(exactCurrent.length===1){
+   const repair=await db.prepare(`UPDATE canonical_publication_shadow SET wave_id=?2 WHERE publication_id=?1 AND (wave_id IS NULL OR wave_id='')`).bind(exactCurrent[0].publication_id,text(row.wave_id)).run();
+   if(Number(repair?.meta?.changes??repair?.changes??0)!==1)return {status:'CURRENT_RUN_CANONICAL_WAVE_REPAIR_ACK_FAILED',life,matches:1,executor_run_id:text(executor_run_id)};
+   candidates=[{...exactCurrent[0],wave_id:text(row.wave_id)}];
+  }
+ }
  if(!candidates.length){
   const age=Math.max(0,now-dispatchTs);
   return {status:age>=PUBLICATION_BINDING_GRACE_MS?'CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL':'CANONICAL_SNAPSHOT_NOT_FOUND',life,matches:0,executor_run_id:text(executor_run_id)||null,dispatch_age_ms:age};
@@ -72,7 +102,7 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
   const exact=await exactPublicationForDispatch(db,row,{executor_run_id:source_run_id,now_ts:now});
   if(exact.status!=='CLOSED'){
    if(exact.status==='EXPIRED_NOT_SENT')await mark(db,row.idempotency_key,'EXPIRED_NOT_SENT',exact.status,now);
-   else if(['LIFECYCLE_SUPERSEDED','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
+   else if(['LIFECYCLE_SUPERSEDED','CANONICAL_SNAPSHOT_NOT_FOUND_TERMINAL','AMBIGUOUS_CANONICAL_SNAPSHOT','AMBIGUOUS_CURRENT_RUN_CANONICAL_SNAPSHOT'].includes(exact.status))await mark(db,row.idempotency_key,'FAILED_FINAL',exact.status,now);
    out.push({key:row.idempotency_key,status:exact.status,matches:exact.matches??null,dispatch_age_ms:exact.dispatch_age_ms??null});
    continue;
   }

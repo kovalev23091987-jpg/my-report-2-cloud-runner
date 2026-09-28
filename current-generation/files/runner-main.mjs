@@ -42,7 +42,7 @@ import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mj
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 
-const RUNNER_VERSION = "my-report-2-current-generation-v6-candidate-flow-fix-20260928";
+const RUNNER_VERSION = "my-report-2-current-generation-v7-canonical-launch-telegram-fix-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
 let wrappedFetchInstalled = false;
 
@@ -168,6 +168,29 @@ async function observeNaturalTelegramDecision(db) {
     };
     console.log("TELEGRAM_NATURAL_DECISION_OBSERVER", JSON.stringify(report));
     return report;
+  }
+}
+
+async function loadCanonicalRunOutput(db,{runId,source,generation,head}={}){
+  try{
+    const response=await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
+      FROM canonical_publication_shadow WHERE run_id=?1 ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||'')).all();
+    const rows=Array.isArray(response?.results)?response.results:[];
+    return {
+      schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:rows.length?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',
+      candidates:rows.map(row=>{
+        let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
+        return {
+          publication_id:row.publication_id,contract:row.contract_code,direction:row.direction,run_id:row.run_id,snapshot_id:row.snapshot_id,wave_id:row.wave_id,
+          observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
+          actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||null,
+          canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
+        };
+      }),
+      generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,
+    };
+  }catch(error){
+    return {schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:'NOT_CLOSED',reason:'CANONICAL_RUN_OUTPUT_READ_FAILED',error:String(error?.message||error).slice(0,240),candidates:[],generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false};
   }
 }
 
@@ -430,7 +453,7 @@ async function main() {
   process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
   let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANDIDATE_FLOW_FIX_V6_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260928_CANONICAL_LAUNCH_TELEGRAM_FIX_V7_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
@@ -841,6 +864,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (source !== "schedule" && telegramReportTestRequested && telegramOutput?.morning?.sent !== true && telegramOutput?.morning?.delivery_confirmed !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
+  const canonicalRunOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null});
+  await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
+  console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
   const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
@@ -849,7 +875,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const analyticsLeaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!analyticsLeaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${analyticsLeaseFinish.status}`);
   const completed = Date.now();
-  const finalRunResult={ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false };
+  const finalRunResult={ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), canonical_run_output:{status:canonicalRunOutput.status,candidate_count:canonicalRunOutput.candidates.length,artifact:'report2-run-result.json'}, telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false };
   if(envText('REPORT2_MEASUREMENT_ARTIFACT_ENABLED',{required:false})==='1')await fs.writeFile('report2-measurement.json',JSON.stringify({schema:'report2-measured-run-v1',generation,worker_sha256:sha,source,started_ts:started,completed_ts:completed,duration_ms:completed-started,cron_run_id:cron.run_id,universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),stage0_coverage_pct:Number(scan.stage0_coverage_pct),live_shortlist_count:Number(cron.live_shortlist_count||0),live_deep_check_count:Number(cron.v3_live_deep_check_count||0),pipeline_health_status:cron.v3_pipeline_health_status||null,telegram_network_enabled:v3TelegramNetworkEnabled,telegram_output_enabled:telegramOutput?.enabled===true,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage,unknown_ops:Number(d1Usage?.unknown_ops||0),secret_values_stored:false},null,2));
   const finalRenderedResult=JSON.stringify(finalRunResult);
   console.log(finalRenderedResult);
