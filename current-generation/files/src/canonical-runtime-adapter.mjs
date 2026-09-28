@@ -16,7 +16,7 @@ import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '.
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v10-early-observation-route-20260928';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v11-early-score-continuity-20260928';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -115,6 +115,11 @@ export function selectCanonicalPublicationState({route_state,route_hard_veto=fal
  if(early_candidate===true&&quality!==null&&quality>=70&&['LONG','SHORT'].includes(dir)&&!hardVeto)return 'OBSERVE';
  return 'REJECTED';
 }
+export function selectCanonicalInterestBasis({state,early_quality=null,deep_interest=null}={}){
+ const early=finite(early_quality),deep=finite(deep_interest);
+ if(text(state)==='OBSERVE'&&early!==null&&early>=70)return{score:early,basis:'QUALIFIED_EARLY_DETECTION_SCORE'};
+ return{score:deep,basis:deep===null?'NOT_CLOSED':'DEEP_CANONICAL_INTEREST_SCORE'};
+}
 function observationPlan({publication,route,direction,price,opportunity,observedTs,pump,discovery}={}){
  const scenario=publication?.scenario_plan;
  if(scenario?.entry_area_min_price!=null&&scenario?.entry_area_max_price!=null)return null;
@@ -179,8 +184,11 @@ export function buildRuntimeCanonicalBundle({
  const needsTechnicalFallback=['OBSERVE','WAIT_FOR_TRIGGER'].includes(state)&&finite(publication_shadow?.scenario_plan?.target_price)===null;
  const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,opportunity,observedTs:observed_ts,pump,discovery:discovery_row}):null;
  const effectiveState=needsTechnicalFallback&&!observation?'REJECTED':state;
- const overall=finite(publication_shadow?.score_interval?.score_lower_bound);
- const baseInterest=direction?computeCanonicalInterestFromRuntime({direction,discovery_row,shadow_decision,public_evidence,opportunity}):null;
+ const routedOverall=finite(publication_shadow?.score_interval?.score_lower_bound);
+ const overall=effectiveState==='OBSERVE'?null:routedOverall;
+ const deepInterest=direction?computeCanonicalInterestFromRuntime({direction,discovery_row,shadow_decision,public_evidence,opportunity}):null;
+ const interestBasis=selectCanonicalInterestBasis({state:effectiveState,early_quality:earlyQuality,deep_interest:deepInterest});
+ const baseInterest=interestBasis.score;
  const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
  const nativeContexts=[nativeLiquidationView?.native_extension,...arr(nativeLiquidationView?.independent_extensions)].filter(Boolean);
  const liquidationPanel=buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts});
@@ -218,11 +226,11 @@ export function buildRuntimeCanonicalBundle({
   early_candidate:earlyCandidate(discovery_row),opportunity:opportunityCompact(opportunity),microstructure:microCompact(discovery_row),
   liquidations:nativeLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
   changes_from_previous:snapshotChanges.lines,
-  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
+  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,score_basis:{selected:interestBasis.basis,qualified_early_detection_0_100:earlyQuality,deep_canonical_interest_0_100:deepInterest,routed_overall_0_100:routedOverall},source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
  });
  const telegram=formatTelegramCompact(canonical,{facts:canonical?.reasons||[]});
  const manual=formatManualReport(canonical);
  const surface_contract=buildOutputSurfaceContract({canonical,telegram,manual});
  return {version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,parity_fingerprint:canonical?.analytical_fingerprint??null};
 }
-export default{CANONICAL_RUNTIME_ADAPTER_VERSION,selectCanonicalPublicationState,buildRuntimeCanonicalBundle};
+export default{CANONICAL_RUNTIME_ADAPTER_VERSION,selectCanonicalPublicationState,selectCanonicalInterestBasis,buildRuntimeCanonicalBundle};

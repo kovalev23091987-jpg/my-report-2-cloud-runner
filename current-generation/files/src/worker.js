@@ -93,6 +93,10 @@ import {
 } from "./early-candidate-bridge.mjs";
 
 import {
+  preserveQualifiedEarlyWaveContinuity,
+} from "./early-wave-continuity.mjs";
+
+import {
   buildRuntimeCanonicalBundle,
 } from "./canonical-runtime-adapter.mjs";
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
@@ -19157,14 +19161,28 @@ const __REPORT2_ORIGINAL_HANDLER = {
         liveHandoffPlan?.lane ===
         "MAINTENANCE";
 
+      const continuityDiscoveryPrefilter =
+        preserveQualifiedEarlyWaveContinuity(
+          postV7DeepPrefilter,
+          discoveryPrefilter
+        );
+
+      console.log(
+        "early_wave_continuity",
+        JSON.stringify({
+          run_id: runId,
+          ...(continuityDiscoveryPrefilter?.early_wave_continuity || {}),
+        })
+      );
+
       const adaptiveDiscoveryPrefilter =
         journalMaintenanceSelected
           ? buildOpportunityJournalPrefilter(
-              postV7DeepPrefilter,
+              continuityDiscoveryPrefilter,
               opportunityJournalPlan
                 ?.candidate
             )
-          : postV7DeepPrefilter;
+          : continuityDiscoveryPrefilter;
 
       console.log(
         "fast_move_watch_prepare",

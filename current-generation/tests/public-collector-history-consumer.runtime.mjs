@@ -27,7 +27,7 @@ class HistoryDb{
 const now=Date.UTC(2026,8,28,12,0),minutes={"5m":5,"15m":15,"1h":60,"4h":240,"24h":1440};
 {
   const db=new HistoryDb();db.now=now;
-  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M'},now);
+  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'},now);
   assert.equal(result.populated,true);
   assert.equal(result.preferred_source,'REPORT2_MARKET_SNAPSHOT_BATCH_V1');
   for(const label of Object.keys(minutes)){
@@ -39,7 +39,7 @@ const now=Date.UTC(2026,8,28,12,0),minutes={"5m":5,"15m":15,"1h":60,"4h":240,"24
 }
 {
   const db=new HistoryDb({offset_by_label:{'15m':3*60000}});db.now=now;
-  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M'},now);
+  const result=await loadStage0HistoryTargetsForTest({DATA_DB:db,REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'},now);
   assert.equal(result.targets['15m'].size,0);
   assert.equal(result.targets['5m'].size,1);
 }

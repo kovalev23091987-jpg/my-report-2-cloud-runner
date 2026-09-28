@@ -190,7 +190,7 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
         json_extract(j.value,'$.observed_ts') AS observed_ts,json_extract(j.value,'$.price') AS price
       FROM report2_market_snapshot_batch_v1 b,json_each(b.payload) j
       WHERE b.actor='HUB_PUBLIC_COLLECTOR'
-        AND b.generation='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M'
+        AND b.generation='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'
         AND b.status='COMPLETE' AND b.bucket BETWEEN ?1 AND ?2
         AND json_extract(j.value,'$.contract')=?3
         AND json_extract(j.value,'$.source_status')='CLOSED'

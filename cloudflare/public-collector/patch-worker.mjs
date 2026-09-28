@@ -5,7 +5,8 @@ import crypto from 'node:crypto';
 const API='https://api.cloudflare.com/client/v4';
 const SCRIPT='my-report-2-hub';
 const BASE_SHA='10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af';
-const VERSION='report2-public-collector-v1-20260928';
+const VERSION='report2-public-collector-v2-20260928';
+const PREVIOUS_VERSION='report2-public-collector-v1-20260928';
 const here=path.dirname(new URL(import.meta.url).pathname);
 const outDir=path.resolve(process.argv[2]||path.join(here,'dist'));
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
@@ -31,6 +32,13 @@ export function moduleFromMultipart(bytes,contentType){
 }
 export function patchWorker(source,injected){
   if(source.includes(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${VERSION}"`))return{source,status:'ALREADY_PATCHED'};
+  const previousStart=source.indexOf(`var __REPORT2_PUBLIC_COLLECTOR_VERSION = "${PREVIOUS_VERSION}"`);
+  if(previousStart>=0){
+    const previousExport='export {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+    const previousEnd=source.indexOf(previousExport,previousStart);
+    if(previousEnd<0)throw new Error('CLOUDFLARE_PREVIOUS_COLLECTOR_EXPORT_MISSING');
+    return{source:`${source.slice(0,previousStart)}${injected}\n${source.slice(previousEnd)}`,status:'UPGRADED'};
+  }
   if(sha(source)!==BASE_SHA)throw new Error(`CLOUDFLARE_HUB_BASE_SHA_MISMATCH:${sha(source)}`);
   const marker='export {\n  worker_default as default\n};';
   if(!source.includes(marker))throw new Error('CLOUDFLARE_HUB_EXPORT_MARKER_MISSING');
@@ -58,7 +66,7 @@ async function main(){
   fs.writeFileSync(path.join(outDir,'worker.js'),patched.source);
   const config={
     name:SCRIPT,main:'worker.js',account_id:account.id,compatibility_date:settings?.result?.compatibility_date||'2026-09-11',keep_vars:true,no_bundle:true,
-    vars:{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M'},
+    vars:{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M'},
     d1_databases:[{binding:'DATA_DB',database_id:d1.id||d1.database_id}],
     triggers:{crons:['*/5 * * * *']},
   };

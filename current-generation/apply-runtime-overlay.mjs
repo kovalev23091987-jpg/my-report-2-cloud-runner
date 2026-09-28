@@ -27,6 +27,7 @@ const files=[
  'src/reason-registry.mjs',
  'src/pump-liquidation-zones.mjs',
  'src/canonical-runtime-adapter.mjs',
+ 'src/early-wave-continuity.mjs',
  'src/telegram-compact-formatter.mjs',
  'src/manual-report-formatter.mjs',
  'src/global-market-context.mjs',
@@ -99,4 +100,4 @@ const files=[
 for(const rel of files){const from=path.join(here,'files',rel),to=path.join(runtime,rel);fs.mkdirSync(path.dirname(to),{recursive:true});fs.copyFileSync(from,to);}
 fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.mjs'),path.join(runtime,'r8-20-prospective-validation-sidecar.mjs'));
 const policyPatches=applyRuntimePolicyPatches(runtime);
-console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
+console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));

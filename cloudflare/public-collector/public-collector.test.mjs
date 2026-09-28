@@ -64,7 +64,7 @@ test('T03 Hub overlay replaces legacy scheduled analytics with bounded public co
     throw new Error(`UNEXPECTED_FETCH:${value}`);
   };
   try{
-    await worker.scheduled({scheduledTime},{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M',DATA_DB:db},{waitUntil(){}});
+    await worker.scheduled({scheduledTime},{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M',DATA_DB:db},{waitUntil(){}});
   }finally{globalThis.fetch=originalFetch;fs.rmSync(dir,{recursive:true,force:true});}
   assert.equal(db.snapshots.length,1);
   const rows=JSON.parse(db.snapshots[0].payload);
@@ -72,4 +72,15 @@ test('T03 Hub overlay replaces legacy scheduled analytics with bounded public co
   assert.equal(db.health.status,'CLOSED');
   assert.equal(db.health.external_requests,4);
   assert.equal(db.usage.state,'CLOSED');
+});
+
+test('T03 upgrades the already deployed V1 collector without touching the Hub prefix',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const previous='const hubPrefix=true;\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v1-20260928";\nconst oldTail=true;\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const upgraded=patchWorker(previous,injected);
+  assert.equal(upgraded.status,'UPGRADED');
+  assert.match(upgraded.source,/const hubPrefix=true/);
+  assert.match(upgraded.source,/report2-public-collector-v2-20260928/);
+  assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
+  assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });

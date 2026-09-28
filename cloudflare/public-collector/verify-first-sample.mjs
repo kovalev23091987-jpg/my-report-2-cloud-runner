@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 
-const GENERATION='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M';
+const GENERATION='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M';
 const ACTOR='HUB_PUBLIC_COLLECTOR';
 const outDir=path.resolve(process.argv[2]||new URL('./dist',import.meta.url).pathname);
 const required=name=>{const value=String(process.env[name]||'').trim();if(!value)throw new Error(`${name}_REQUIRED`);return value;};
