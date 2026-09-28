@@ -51,6 +51,7 @@ const files=[
  'src/liquidation-source-plan.mjs',
  'src/analytical-integrity.mjs',
  'src/evidence-v2.mjs',
+ 'src/evidence-source-adapters.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
  'src/outcome-v2.mjs',

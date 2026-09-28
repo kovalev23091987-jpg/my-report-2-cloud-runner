@@ -8,7 +8,7 @@ export function validateEvidenceV2(row,{decision_ts=Infinity}={}){
   const required=['evidence_id','asset_id','htx_contract','block_id','metric_family','provider_id','upstream_id','dependency_group','observed_ts','first_known_ts','coverage_status','schema_version','validation_status'];
   if(required.some(key=>row?.[key]===null||row?.[key]===undefined||row?.[key]===''))return {usable:false,status:'SCHEMA_INVALID'};
   if(!BLOCKS[row.block_id])return {usable:false,status:'BLOCK_UNKNOWN'};
-  if(row.validation_status!=='VALID'||row.identity_status!=='EXACT'||row.finality_status==='REORGED'||Number(row.first_known_ts)>decision_ts||Number(row.expires_at)<decision_ts)return {usable:false,status:'EVIDENCE_NOT_USABLE'};
+  if(row.validation_status!=='VALID'||row.identity_status!=='EXACT'||row.finality_status!=='FINAL'||Number(row.first_known_ts)>decision_ts||Number(row.expires_at)<decision_ts)return {usable:false,status:'EVIDENCE_NOT_USABLE'};
   const coverage=Number(row.coverage_fraction);if(!Number.isFinite(coverage)||coverage<0||coverage>1)return {usable:false,status:'COVERAGE_INVALID'};
   return {usable:true,status:'VALID',quality:coverage*clamp(Number(row.reliability??.8),0,1)};
 }

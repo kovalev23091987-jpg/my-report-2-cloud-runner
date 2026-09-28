@@ -18,7 +18,7 @@ const checks=[
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
- 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs','files/src/market-contracts.mjs','files/src/candidate-task-queue.mjs','files/src/durable-command-queue.mjs','files/src/evidence-v2.mjs','files/src/unified-budget.mjs',
+ 'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs','files/src/market-contracts.mjs','files/src/candidate-task-queue.mjs','files/src/durable-command-queue.mjs','files/src/evidence-v2.mjs','files/src/evidence-source-adapters.mjs','files/src/unified-budget.mjs',
  'files/src/canonical-display.mjs','files/src/native-liquidation-guard.mjs','files/src/reason-registry.mjs',
  'files/src/manual-report-formatter.mjs','files/src/telegram-compact-formatter.mjs',
  'files/src/global-market-context.mjs','files/src/supplemental-source-policy.mjs',

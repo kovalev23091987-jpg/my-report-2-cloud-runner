@@ -16,10 +16,10 @@
 | Solana RPC | exact mint/account facts | signature count is direction-neutral | ACTIVE_CONDITIONAL |
 | Bitget / Coinbase | conditional independent market validation | price coincidence is direction-neutral | ACTIVE_CONDITIONAL |
 | Deribit BTC/ETH | global market risk | risk-off may reduce suitability; no alt direction | ACTIVE_CACHED |
-| HTX public risk / Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | ADAPTER_SMOKE_PENDING |
-| GDELT / Bluesky | discovery/attention only | no headline/social direction | ADAPTER_SMOKE_OR_BASELINE_PENDING |
-| Snapshot / Sourcify | governance dates / ABI validation | no market vote | ADAPTER_SMOKE_PENDING |
-| BLS / Fed calendars | macro recheck timing | no universal direction | ADAPTER_SMOKE_PENDING |
+| HTX public risk / Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
+| GDELT / Bluesky | discovery/attention only | no headline/social direction | ADAPTER_FIXTURE_VALIDATED; SMOKE/BASELINE_PENDING |
+| Snapshot / Sourcify | governance dates / ABI validation | no market vote | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
+| BLS / Fed calendars | macro recheck timing | no universal direction | ADAPTER_FIXTURE_VALIDATED; SMOKE_PENDING |
 | Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote | WAITING_FREE_KEY |
 
 Unavailable, stale, wrong-identity or unmapped data contributes exactly zero and is never redistributed to remaining sources.
