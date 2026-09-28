@@ -17,4 +17,6 @@ test('Full Evidence producer, envelope and exact ACK validator use production sc
  assert.match(worker,/DEFERRED_FOR_TELEGRAM_BINDING_RECOVERY/);
  assert.match(worker,/lane:'TELEGRAM_BINDING_RECOVERY'/);
  assert.match(worker,/w\.early_detection_quality_0_100>=70/);
+ assert.match(worker,/LIVE_DIRECTIONAL_DISCOVERY/);
+ assert.match(worker,/directionless_fast_move_deferred/);
 });
