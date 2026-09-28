@@ -13,6 +13,7 @@ const expectedInputs=new Set([
 const input=path.join(runtime,'src/worker.js');
 if(!fs.existsSync(input)||!expectedInputs.has(sha(input)))throw Error('CURRENT_GENERATION_INPUT_RUNTIME_MISMATCH');
 const files=[
+ 'official-event-sources.json',
  'runner-main.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',
@@ -64,6 +65,7 @@ const files=[
  'src/bluesky-attention-evidence.mjs',
  'src/snapshot-governance-evidence.mjs',
  'src/official-events-evidence.mjs',
+ 'src/official-source-registry.mjs',
  'src/gdelt-official-discovery.mjs',
  'src/blockscout-index-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',

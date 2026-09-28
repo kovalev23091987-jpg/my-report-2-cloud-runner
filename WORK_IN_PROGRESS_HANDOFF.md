@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 03:04 UTC
+Updated: 2026-09-28 04:00 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -10,7 +10,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Required execution order: A → G.
 - Working branch: `audit-fixes-20260928-internal-v1`.
 - Production base commit: `2d0a80d93bc67b8a79b5d2609bdf83128be7a1ba`.
-- Local checkpoint commit: `dd157db`.
+- Local checkpoint commit before the official-source registry pass: `136b219`.
 
 ## Completed during this session
 
@@ -52,6 +52,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Prepared the complete Blockscout indexed fallback while keeping it inactive without `BLOCKSCOUT_PRO_API_KEY`. It accepts only exact supported EVM chain/address identities, calls the documented PRO token-transfer route, sends the key only in the authorization header, and requires the remaining-credit response header. One request reserves the documented 30 credits atomically under both 96-request and 5,000-credit daily internal caps; cache TTL is 20 minutes and only the first page is read. Exact-token transfers retain the provider's `next_page_params`, deduplicate against RPC by chain/transaction/log, and remain provisional investigation context until primary finality and address labels are verified. Missing key, unknown identity, missing credit header and cap exhaustion all perform zero unsafe fallback calls.
 - Isolated no-Telegram metadata smoke run `36373574391` confirmed Snapshot Hub and the official BLS ICS transport with HTTP 200, exact admissions and three total source attempts. Snapshot truthfully returned only stale `yam.eth` proposals and the calendar had no event inside the adapter horizon, so neither fabricated evidence. GDELT used its one admitted call but hit the original eight-second client timeout; no result was cached or substituted. The adapter timeout is now 20 seconds for a one-call retry, without adding pagination/retries or increasing its daily cap.
 - No-Telegram retry `36373733399` reused the two valid cached HTTP 200 receipts and made only the single GDELT request. GDELT returned HTTP 429. The adapter now records `RATE_LIMITED_429`, honors `Retry-After` with a bounded shared backoff (one hour when the header is absent), emits no evidence and performs zero calls during that pause. No alternate host, proxy or immediate retry is used; a successful GDELT transport remains pending after the source permits it.
+- Added the versioned `official-event-sources.json` registry and made the runner load it before the common supplemental collector. LINK and LDO now have exact Ethereum addresses, official names, domains, canonical pages, evidence links, verification timestamps and refresh metadata. Their current canonical pages are HTML, while the approved reader supports only fixed RSS/Atom/ICS, so both reader records are explicitly `DISABLED/FIXED_HTML_PARSER_NOT_IMPLEMENTED`; the verified identities and domains still support exact-address chain adapters and exact-domain GDELT discovery. A configured secret may extend the registry, but an address conflict aborts the run instead of mixing generations. The full suite and reconstruction overlay validation pass; production is unchanged.
 
 ## Verified blockers
 
@@ -60,7 +61,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 
 ## Exact next actions
 
-1. Continue the remaining live EvidenceV2 adapters that have exact registry inputs; do not retry Bluesky before its global access backoff expires and do not bypass HTTP 403.
+1. Continue the remaining live EvidenceV2 adapters that have exact registry inputs; do not retry Bluesky before its global access backoff expires, do not bypass HTTP 403, and do not retry GDELT before its shared 429 backoff expires.
 2. Obtain the exact live Hub configuration/bundle and KV binding through an authorized path before claiming T02/F01/T17 fully closed or performing the final cutover.
 
 ## Safety state

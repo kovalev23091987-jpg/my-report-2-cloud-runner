@@ -20,8 +20,8 @@
 | Bitget / Coinbase | conditional independent market validation | price coincidence is direction-neutral | ACTIVE_CONDITIONAL |
 | Deribit BTC/ETH | global market risk | risk-off may reduce suitability; no alt direction | ACTIVE_CACHED |
 | HTX public risk | N08/N09/N11/N16 execution state and isolated/cross risk ladders | restriction is adverse risk only; normal state is context | LIVE_SMOKE_CLOSED run 36365551502; 3 sequential HTTP 200 calls, 60m cache, 144/day cap |
-| Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | CHAIN LIVE; exact-domain RSS/Atom/ICS runtime wired, official registry/smoke pending |
-| GDELT / Bluesky | discovery/attention only | no headline/social direction | GDELT exact-name/domain runtime wired; Bluesky access blocked 403; smoke/baseline pending |
+| Chain RPC / Official events | N01–N05, N07–N09, N13 | typed risk/context rules only | CHAIN LIVE; exact-domain RSS/Atom/ICS runtime wired; versioned LINK/LDO identities and domains active; their unparsed HTML pages are explicitly disabled rather than guessed |
+| GDELT / Bluesky | discovery/attention only | no headline/social direction | GDELT exact-name/domain runtime wired with shared 429 backoff; Bluesky access blocked 403; successful GDELT transport and longitudinal baseline pending |
 | Snapshot / Sourcify | governance dates / ABI validation | no market vote | BOTH RUNTIME_WIRED; Sourcify live, Snapshot exact registry/smoke pending |
 | Deribit alt options | exact active alt option liquidity context | context only; no directional bonus | LIVE_SMOKE_CLOSED run 36368924281; exact SOL catalog/summary HTTP 200 |
 | BLS / Fed calendars | macro recheck timing | no universal direction | LIVE_TRANSPORT_SMOKE_CLOSED run 36368211511; bounded-horizon correction local-closed |

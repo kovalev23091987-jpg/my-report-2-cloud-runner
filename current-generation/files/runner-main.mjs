@@ -38,6 +38,7 @@ import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnal
 import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
 import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
+import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v5-internal-audit-fixes-20260928";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -432,6 +433,9 @@ async function main() {
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
   const env = buildEnv();
+  const officialSourceRegistry=compileOfficialSourceRegistry(JSON.parse(await fs.readFile(resolve('./official-event-sources.json'),'utf8')));
+  const supplementalIdentityRegistry=mergeOfficialAndConfiguredRegistries({official:officialSourceRegistry,configured:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{}});
+  console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
   const unifiedHttpBudget=createUnifiedHttpBudget();
   await installRuntimeControl(env.DATA_DB);
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
@@ -464,7 +468,7 @@ async function main() {
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
-    registry:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{},
+    registry:supplementalIdentityRegistry.registry,
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });
