@@ -40,6 +40,12 @@ export const sanitizeBindings=bindings=>(Array.isArray(bindings)?bindings:[]).ma
   type:String(binding?.type||'unknown'),
 })).filter(binding=>binding.name).sort((a,b)=>a.name.localeCompare(b.name));
 
+export const sanitizeSchedules=schedules=>(Array.isArray(schedules)?schedules:[]).map(schedule=>({
+  cron:String(schedule?.cron||''),
+  created_on:schedule?.created_on||null,
+  modified_on:schedule?.modified_on||null,
+})).filter(schedule=>schedule.cron).sort((a,b)=>a.cron.localeCompare(b.cron));
+
 const main=async()=>{
   const token=required('CLOUDFLARE_API_TOKEN');
   const outputDir=path.resolve(process.argv[2]||'cloudflare-hub-audit');
@@ -61,9 +67,10 @@ const main=async()=>{
 
   const [{account,script}]=matches;
   const base=`/accounts/${encodeURIComponent(account.id)}/workers/scripts/${encodeURIComponent(SCRIPT_NAME)}`;
-  const [content,settings]=await Promise.all([
+  const [content,settings,schedules]=await Promise.all([
     cfFetch(token,`${base}/content/v2`,'*/*','READ_CONTENT'),
     cfJson(token,`${base}/settings`,'READ_SETTINGS'),
+    cfJson(token,`${base}/schedules`,'READ_SCHEDULES'),
   ]);
 
   const rawSettings={
@@ -73,8 +80,10 @@ const main=async()=>{
     account_name:account.name,
     script_name:SCRIPT_NAME,
     settings,
+    schedules,
   };
   const bindings=sanitizeBindings(settings?.result?.bindings);
+  const cronTriggers=sanitizeSchedules(schedules?.result);
   const summary={
     schema:'my-report-2-cloudflare-hub-read-only-audit-v1',
     captured_at:rawSettings.captured_at,
@@ -90,6 +99,8 @@ const main=async()=>{
     compatibility_flags:Array.isArray(settings?.result?.compatibility_flags)?settings.result.compatibility_flags:[],
     binding_count:bindings.length,
     bindings,
+    cron_trigger_count:cronTriggers.length,
+    cron_triggers:cronTriggers,
     secret_values_exported:false,
     raw_material_encrypted_by_workflow:true,
   };
@@ -97,7 +108,7 @@ const main=async()=>{
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-bundle.bin'),content.bytes);
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-settings.json'),`${JSON.stringify(rawSettings,null,2)}\n`,'utf8');
   fs.writeFileSync(path.join(outputDir,'cloudflare-hub-audit-summary.json'),`${JSON.stringify(summary,null,2)}\n`,'utf8');
-  console.log(JSON.stringify({status:'CLOSED_READ_ONLY',script_name:SCRIPT_NAME,bundle_sha256:summary.bundle_sha256,bundle_bytes:summary.bundle_bytes,binding_count:summary.binding_count,changed_cloudflare:false}));
+  console.log(JSON.stringify({status:'CLOSED_READ_ONLY',script_name:SCRIPT_NAME,bundle_sha256:summary.bundle_sha256,bundle_bytes:summary.bundle_bytes,binding_count:summary.binding_count,cron_trigger_count:summary.cron_trigger_count,changed_cloudflare:false}));
 };
 
 if(process.argv[1]&&path.resolve(process.argv[1])===path.resolve(new URL(import.meta.url).pathname)){

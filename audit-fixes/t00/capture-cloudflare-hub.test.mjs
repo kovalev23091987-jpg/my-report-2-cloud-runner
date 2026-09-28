@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {sanitizeBindings} from './capture-cloudflare-hub.mjs';
+import {sanitizeBindings,sanitizeSchedules} from './capture-cloudflare-hub.mjs';
 
 test('sanitized binding inventory contains no values or identifiers',()=>{
   const actual=sanitizeBindings([
@@ -15,4 +15,10 @@ test('sanitized binding inventory contains no values or identifiers',()=>{
   ]);
   assert.equal(JSON.stringify(actual).includes('never-export-this'),false);
   assert.equal(JSON.stringify(actual).includes('private-account-resource-id'),false);
+});
+
+test('schedule inventory contains only public trigger metadata',()=>{
+  assert.deepEqual(sanitizeSchedules([{cron:'*/10 * * * *',created_on:'2026-01-01',modified_on:'2026-02-01',secret:'never'}]),[
+    {cron:'*/10 * * * *',created_on:'2026-01-01',modified_on:'2026-02-01'},
+  ]);
 });
