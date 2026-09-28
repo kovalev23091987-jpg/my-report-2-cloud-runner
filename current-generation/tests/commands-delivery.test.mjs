@@ -50,3 +50,9 @@ test('K12: authoritative runner claims the command and completes liquidation-onl
   const outputAt=runner.indexOf("console.log('LIQUIDATION_ONLY_RESULT',renderedResult)"),completeAt=runner.indexOf('await completeCommand(env.DATA_DB');
   assert.ok(outputAt>=0&&completeAt>outputAt,'completion must happen only after the existing result consumer');
 });
+
+test('K12: full and coin manual commands complete only after the final existing result is emitted',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  const resultAt=runner.indexOf('console.log(finalRenderedResult)'),completionAt=runner.lastIndexOf('await completeCommand(env.DATA_DB');
+  assert.ok(resultAt>=0&&completionAt>resultAt);assert.match(runner,/if\(source!==['"]schedule['"]\)/);
+});
