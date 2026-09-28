@@ -27,6 +27,10 @@ export async function installSourceAllowances({db,now=Date.now(),liqflow_key=''}
   (scope_id,provider,unit,window_start_ts,window_end_ts,allowance_units,used_units,version,last_reservation_id,config_fingerprint,shared_quota_reviewed,active,schema_version)
   VALUES(?1,?2,'REQUEST',?3,?4,?5,0,0,NULL,?6,1,1,1) ON CONFLICT(scope_id) DO NOTHING`).bind(scope_id,provider,window.start,window.end,allowance,config_fingerprint);});
  await db.batch(rows);
- return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,provider_operational_caps:Object.fromEntries(active.map(provider=>[provider,providerCaps[provider]])),combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,automatic_topup:false,old_generation_scope_reuse:false};
+ const priorUsage=active.map(provider=>db.prepare(`UPDATE report2_liq_source_allowance_shadow SET
+  used_units=MIN(allowance_units,COALESCE((SELECT SUM(reserved_units) FROM report2_liq_source_reservation_shadow WHERE provider=?2 AND created_ts>=?3 AND created_ts<?4),0)),version=version+1
+  WHERE scope_id=?1 AND used_units<COALESCE((SELECT SUM(reserved_units) FROM report2_liq_source_reservation_shadow WHERE provider=?2 AND created_ts>=?3 AND created_ts<?4),0)`).bind(bindings[provider].scope_id,provider,window.start,window.end));
+ await db.batch(priorUsage);
+ return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,provider_operational_caps:Object.fromEntries(active.map(provider=>[provider,providerCaps[provider]])),combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,automatic_topup:false,old_generation_scope_reuse:false,previous_generation_usage_reconciled:true};
 }
 export default{installSourceAllowances,LIQFLOW_PUBLIC_PILOT_END_TS};
