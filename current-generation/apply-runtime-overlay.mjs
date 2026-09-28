@@ -52,6 +52,7 @@ const files=[
  'src/run-health.mjs',
  'src/market-snapshot-batch.mjs',
  'src/market-history-reader.mjs',
+ 'src/deep-candidate-order.mjs',
  'src/market-contracts.mjs',
  'src/candidate-task-queue.mjs',
  'src/asset-identity-cache.mjs',

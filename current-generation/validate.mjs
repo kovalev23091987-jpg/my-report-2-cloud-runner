@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='68bd100ffb60704eeb2925a59a7ec0ffa0dca2429c8239f509e75e6e82716329';
+const expectedWorker='5bc4d7ddb72458e5f49c6735fcdda638934ef495b97a97a4b79bb3108ffc651d';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -36,7 +36,7 @@ const checks=[
  'files/src/v3-pipeline-health-sidecar.mjs',
  'files/src/supplemental-candidate-context.mjs','files/src/oxarchive-cost-probe.mjs',
  'files/src/dynamic-liquidation-panel.mjs',
- 'files/src/market-history-reader.mjs','files/src/provider-minute-ledger.mjs','files/src/prospective-delivery-cohort.mjs',
+ 'files/src/market-history-reader.mjs','files/src/deep-candidate-order.mjs','files/src/provider-minute-ledger.mjs','files/src/prospective-delivery-cohort.mjs',
  'files/src/stage392-proof-runtime.mjs','files/src/tz101-execution-facts.mjs','files/src/full-evidence-shadow-model.mjs',
  'files/src/liquidation-command-router.mjs',
  'files/src/publication-reconciler.mjs','files/src/bound-telegram-delivery-sidecar.mjs',
@@ -63,6 +63,7 @@ if(sourceRuntime){
  const actual=createHash('sha256').update(worker).digest('hex');
  if(actual!==expectedWorker||overlay.worker_sha256!==expectedWorker)throw Error(`OVERLAY_WORKER_HASH_MISMATCH:${actual}`);
  if(!fs.existsSync(path.join(runtime,'byk-quota-budget.mjs')))throw Error('OVERLAY_QUOTA_MODULE_MISSING');
+ run(['--check',path.join(runtime,'src/deep-candidate-order.mjs')]);
  for(const rel of ['runner-main.mjs','byk-quota-budget.mjs','src/worker.js','src/user-approved-publication-policy.mjs','src/entry-area-rule-v2.mjs','src/tz101-scenario-plan.mjs','src/tz101-cost-assessment.mjs','src/technical-move-potential.mjs','src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs','src/manual-report-formatter.mjs','src/telegram-compact-formatter.mjs','src/global-market-context.mjs','src/supplemental-source-policy.mjs','src/supplemental-score-evidence.mjs','src/schedule-quota-calculator.mjs','src/v3-adaptive-budget.mjs','src/v3-pipeline-health-sidecar.mjs','src/supplemental-candidate-context.mjs','src/official-source-registry.mjs','src/dynamic-liquidation-panel.mjs','src/liquidation-source-weighting.mjs','src/cross-exchange-risk-context.mjs','src/liquidation-candidate-queue.mjs','src/liquidation-outcome-calibration.mjs','src/evidence-v2.mjs','src/evidence-source-adapters.mjs','src/evidence-source-store.mjs','src/market-history-reader.mjs','src/provider-minute-ledger.mjs','src/prospective-delivery-cohort.mjs','src/stage392-proof-runtime.mjs','src/tz101-execution-facts.mjs','src/full-evidence-shadow-model.mjs','src/htx-public-risk-evidence.mjs','src/macro-calendar-evidence.mjs','src/deribit-alt-options-evidence.mjs','src/chain-supply-evidence.mjs','src/sourcify-abi-evidence.mjs','src/bluesky-attention-evidence.mjs','src/snapshot-governance-evidence.mjs','src/official-events-evidence.mjs','src/gdelt-official-discovery.mjs','src/blockscout-index-evidence.mjs','src/candidate-evidence-v2-runtime.mjs','src/early-wave-continuity.mjs','src/publication-reconciler.mjs','src/bound-telegram-delivery-sidecar.mjs','src/oxarchive-cost-probe.mjs','src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/runner-extension.mjs','src/liquidation-extension/native-liquidation-guard.mjs','src/liquidation-extension/lighter-runtime-collector.mjs','src/liquidation-extension/gmx-runtime-collector.mjs','src/liquidation-extension/scoped-provider-runtime-bridge.mjs'])run(['--check',path.join(runtime,rel)]);
  if(!fs.existsSync(path.join(runtime,'official-event-sources.json')))throw Error('OFFICIAL_SOURCE_REGISTRY_MISSING');
  const campaignEngine=fs.readFileSync(path.join(runtime,'src/multi-wave-campaign-engine.mjs'),'utf8');

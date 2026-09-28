@@ -101,6 +101,7 @@ import {
 } from "./canonical-runtime-adapter.mjs";
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
 import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
+import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
 
 import {
   buildFreeSourceRuntimeSummary,
@@ -7654,59 +7655,9 @@ function buildBoundedDeepCheckPlan(
     ready.push(readyRow);
   }
 
-  /*
-   * Fairness rule:
-   *
-   * never checked -> oldest checked ->
-   * prefilter priority.
-   *
-   * This prevents a permanently high
-   * ranked candidate from starving the
-   * rest of the shortlist.
-   */
-  ready.sort(
-    (a, b) => {
-      const aTs =
-        a.last_check_ts === null
-          ? -Infinity
-          : a.last_check_ts;
-
-      const bTs =
-        b.last_check_ts === null
-          ? -Infinity
-          : b.last_check_ts;
-
-      if (aTs !== bTs) {
-        return aTs - bTs;
-      }
-
-      const aRank =
-        Number.isFinite(
-          a.priority_rank
-        )
-          ? a.priority_rank
-          : Infinity;
-
-      const bRank =
-        Number.isFinite(
-          b.priority_rank
-        )
-          ? b.priority_rank
-          : Infinity;
-
-      if (aRank !== bRank) {
-        return aRank - bRank;
-      }
-
-      return String(
-        a.contract
-      ).localeCompare(
-        String(
-          b.contract
-        )
-      );
-    }
-  );
+  /* Ordinary discovery uses current factual quality first. Mandatory exact
+   * rechecks/manual jobs keep their separate lane and are unaffected. */
+  ready.sort(compareOrdinaryDeepCandidates);
 
   /*
    * A Fast-Move queue lease and the Deep Check must refer to exactly
