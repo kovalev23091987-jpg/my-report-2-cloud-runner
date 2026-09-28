@@ -19,6 +19,7 @@ const checks=[
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  '../audit-fixes/t16/run-official-feed-smoke.mjs',
  '../audit-fixes/t16/run-lido-snapshot-smoke.mjs',
+ '../audit-fixes/t16/run-lighter-native-smoke.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
  'files/src/official-source-registry.mjs',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
