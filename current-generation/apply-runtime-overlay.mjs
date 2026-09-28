@@ -65,6 +65,7 @@ const files=[
  'src/snapshot-governance-evidence.mjs',
  'src/official-events-evidence.mjs',
  'src/gdelt-official-discovery.mjs',
+ 'src/blockscout-index-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',

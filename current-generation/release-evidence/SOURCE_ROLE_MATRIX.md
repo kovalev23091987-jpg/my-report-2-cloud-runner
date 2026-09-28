@@ -25,6 +25,6 @@
 | Snapshot / Sourcify | governance dates / ABI validation | no market vote | BOTH RUNTIME_WIRED; Sourcify live, Snapshot exact registry/smoke pending |
 | Deribit alt options | exact active alt option liquidity context | context only; no directional bonus | LIVE_SMOKE_CLOSED run 36368924281; exact SOL catalog/summary HTTP 200 |
 | BLS / Fed calendars | macro recheck timing | no universal direction | LIVE_TRANSPORT_SMOKE_CLOSED run 36368211511; bounded-horizon correction local-closed |
-| Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote | WAITING_FREE_KEY |
+| Blockscout | indexed fallback for exact on-chain facts | same event as RPC is one vote; provisional indexed rows trigger verification only | RUNTIME_WIRED_WAITING_FREE_KEY; 96 requests/5,000 internal credits per day |
 
 Unavailable, stale, wrong-identity or unmapped data contributes exactly zero and is never redistributed to remaining sources.

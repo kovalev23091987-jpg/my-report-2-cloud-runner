@@ -472,7 +472,7 @@ async function main() {
     db:env.DATA_DB,fetch_impl:globalThis.fetch,coinalyze_api_key:envText('COINALYZE_API_KEY',{required:false}),...params,
     lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false}),
   });
-  env.REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,...params});
+  env.REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),...params});
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
   const liquidationQueue=createCandidateTaskQueue({db:env.DATA_DB});

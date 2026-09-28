@@ -5,7 +5,7 @@
 | N01 Unlocks | supporting risk / recheck | VALIDATED | WAITING_ADAPTER_SMOKE |
 | N02 Mint/supply | supply risk | LIVE_TRANSPORT_CLOSED_EXACT_SUPPLY_OBSERVATION | Run 36370188170 closed PublicNode; matched finalized mint tx remains required for directional/risk use |
 | N03 Buyback/burn | money-flow context | VALIDATED | WAITING_ADAPTER_SMOKE |
-| N04 Transfers | transfer investigation | VALIDATED | WAITING_ADAPTER_SMOKE |
+| N04 Transfers | transfer investigation | CHAIN RPC plus key-gated Blockscout exact-token runtime wired | BLOCKSCOUT WAITING_FREE_KEY/SMOKE; indexed rows remain provisional until primary finality check |
 | N05 Exchange flows | market-flow confirmation | VALIDATED | WAITING_VERIFIED_LABELS |
 | N06 Social activity | early-interest priority | RUNTIME_WIRED_EXACT_ADDRESS_BLUESKY, direction-neutral | ACCESS_BLOCKED_403 run 36371075809; global backoff active, then 7D/30 windows required |
 | N07 Official news | official-event risk | EXACT_DOMAIN_RSS_ATOM_ICS_RUNTIME_WIRED; GDELT discovery cannot score | WAITING_EXACT_REGISTRY_AND_ADAPTER_SMOKE |

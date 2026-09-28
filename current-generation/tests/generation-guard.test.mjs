@@ -30,6 +30,7 @@ test('workflow schedule and generation binding are exact',()=>{
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
  assert.match(y,/REPORT2_LIQUIDATION_EXTENSION_MODE:\s*"SHADOW_ONLY"/);
  assert.match(y,/LIQFLOW_API_KEY:\s*\$\{\{ secrets\.LIQFLOW_API_KEY \}\}/);
+ assert.match(y,/BLOCKSCOUT_PRO_API_KEY:\s*\$\{\{ secrets\.BLOCKSCOUT_PRO_API_KEY \}\}/);
 });
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
