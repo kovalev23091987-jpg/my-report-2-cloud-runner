@@ -1,23 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 
-const API='https://api.cloudflare.com/client/v4';
 const GENERATION='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V10_20M';
 const ACTOR='HUB_PUBLIC_COLLECTOR';
 const outDir=path.resolve(process.argv[2]||new URL('./dist',import.meta.url).pathname);
-const token=String(process.env.CLOUDFLARE_API_TOKEN||'').trim();
-if(!token)throw new Error('CLOUDFLARE_API_TOKEN_REQUIRED');
-const config=JSON.parse(fs.readFileSync(path.join(outDir,'wrangler.json'),'utf8'));
-const account=String(config.account_id||'').trim();
-const database=String(config.d1_databases?.find(row=>row.binding==='DATA_DB')?.database_id||'').trim();
-if(!account||!database)throw new Error('PUBLIC_COLLECTOR_D1_IDENTITY_REQUIRED');
-
-async function query(sql,params=[]){
-  const response=await fetch(`${API}/accounts/${account}/d1/database/${database}/query`,{method:'POST',headers:{Authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify({sql,params}),signal:AbortSignal.timeout(45_000)});
-  const payload=await response.json().catch(()=>null);
-  if(!response.ok||payload?.success!==true)throw new Error(`PUBLIC_COLLECTOR_D1_QUERY_HTTP_${response.status}`);
-  return payload?.result?.[0]?.results||[];
-}
+const required=name=>{const value=String(process.env[name]||'').trim();if(!value)throw new Error(`${name}_REQUIRED`);return value;};
+const db=new RemoteD1Database(required('REPORT2_D1_BRIDGE_URL'),required('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:45_000});
+async function query(sql,params=[]){return (await db.prepare(sql).bind(...params).all())?.results||[];}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const deployedAt=Date.now();
 const deadline=deployedAt+8*60_000;

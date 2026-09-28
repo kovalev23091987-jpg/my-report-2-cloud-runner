@@ -330,6 +330,8 @@ jobs:
       cancel-in-progress: false
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -342,9 +344,7 @@ jobs:
           node --check cloudflare/public-collector/dist/worker.js
           REPORT2_HUB_MODULE_PATH=cloudflare/public-collector/dist/worker.js node --test cloudflare/public-collector/public-collector.test.mjs
       - name: Apply additive public-collector schema
-        run: |
-          npx --yes wrangler@4 d1 execute DATA_DB --remote --config cloudflare/public-collector/dist/wrangler.json --file current-generation/migrations/004_market_snapshot_batch.sql
-          npx --yes wrangler@4 d1 execute DATA_DB --remote --config cloudflare/public-collector/dist/wrangler.json --file current-generation/migrations/009_public_collector_runtime.sql
+        run: node cloudflare/public-collector/apply-schema.mjs
       - name: Deploy exact bounded collector over legacy Hub schedule
         run: npx --yes wrangler@4 deploy --config cloudflare/public-collector/dist/wrangler.json --keep-vars
       - name: Verify code, bindings and exact five-minute cron
