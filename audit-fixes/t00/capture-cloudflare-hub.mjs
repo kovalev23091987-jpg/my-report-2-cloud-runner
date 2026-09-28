@@ -62,7 +62,7 @@ const main=async()=>{
   const [{account,script}]=matches;
   const base=`/accounts/${encodeURIComponent(account.id)}/workers/scripts/${encodeURIComponent(SCRIPT_NAME)}`;
   const [content,settings]=await Promise.all([
-    cfFetch(token,`${base}/content`,'*/*','READ_CONTENT'),
+    cfFetch(token,`${base}/content/v2`,'*/*','READ_CONTENT'),
     cfJson(token,`${base}/settings`,'READ_SETTINGS'),
   ]);
 
