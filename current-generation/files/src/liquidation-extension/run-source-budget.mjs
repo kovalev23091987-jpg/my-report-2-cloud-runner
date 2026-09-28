@@ -17,7 +17,7 @@ const providerOf=(url,init)=>{
 // mandatory and owns shared-account balances; this wrapper never provisions them.
 export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,max_requests=24,max_parallel=2,max_total_ms=45000,per_minute_limits=DEFAULT_RATE,max_response_bytes=8000000}={}){
  if(typeof provider_admit!=='function'||typeof fetch_impl!=='function'||!Number.isInteger(max_requests)||max_requests<1||max_requests>24||!Number.isInteger(max_parallel)||max_parallel<1||max_parallel>2||!Number.isInteger(max_total_ms)||max_total_ms<100||max_total_ms>45000)throw Error('EXPLICIT_BOUNDED_RUN_POLICY_REQUIRED');
- let phaseStart=null,reserved=0,claimed=0,actual=0,active=0,peak=0;
+ let phaseStart=null,reserved=0,grossReserved=0,claimed=0,actual=0,active=0,peak=0;
  const attempts=new Set(),granted=new Map(),claimedByProvider=new Map(),rates=new Map(),dispatchRates=new Map(),pending=[];
  const errors=[];const abort=()=>new DOMException('Source request aborted before or during execution','AbortError');
  const deadlineOk=()=>phaseStart!==null&&clock()-phaseStart<max_total_ms;
@@ -32,7 +32,7 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
   if(reserved+n>max_requests)return no('COMBINED_RUN_HTTP_BUDGET');
   const minute=Math.floor(clock()/60000);if(parts.some(([p,v])=>!reserveRate(p,v,minute)))return no('LOCAL_PROVIDER_RATE_CEILING');
   // Reserve synchronously before any await, including denied/ambiguous attempts.
-  attempts.add(request.reservation_id);reserved+=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,(rates.get(k)||0)+v);}
+  attempts.add(request.reservation_id);reserved+=n;grossReserved+=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,(rates.get(k)||0)+v);}
   let result;try{result=await provider_admit(request);}catch{errors.push('UPSTREAM_QUOTA_ACK_UNKNOWN');return no('UPSTREAM_QUOTA_ACK_UNKNOWN');}
   if(result?.allowed!==true||result?.new_reservation!==true)return no('UPSTREAM_QUOTA_NOT_GRANTED');
   if(!deadlineOk()||clock()>=request.deadline_ts)return no('SOURCE_PHASE_EXPIRED_AFTER_QUOTA_ACK');
@@ -75,6 +75,6 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
   }catch(e){if(reader){try{Promise.resolve(reader.cancel()).catch(()=>{});}catch{}}throw e;
   }finally{clearTimeout(timer);init.signal?.removeEventListener('abort',forward);if(acquired)release();}
  }
-
- return {admit,fetch:guardedFetch,summary:()=>({reserved_http:reserved,claimed_http:claimed,actual_http:actual,max_http:max_requests,active,peak_parallel:peak,max_parallel,queued:pending.length,phase_started_ts:phaseStart,max_total_ms,per_minute_limits:{...per_minute_limits},scope:'SAME_RUN_ALL_NEW_PROVIDERS',actual_dispatch_rate_enforced:true,phase_deadline_actively_enforced:true,provider_quota_provisioned:false,errors:[...errors]})};
+ function releaseUnused(provider){const p=String(provider||'').trim().toUpperCase(),grantedUnits=granted.get(p)||0,used=claimedByProvider.get(p)||0,unused=Math.max(0,grantedUnits-used);if(!unused)return 0;granted.set(p,used);reserved=Math.max(claimed,reserved-unused);return unused;}
+ return {admit,fetch:guardedFetch,releaseUnused,summary:()=>({reserved_http:reserved,gross_reserved_http:grossReserved,claimed_http:claimed,actual_http:actual,max_http:max_requests,active,peak_parallel:peak,max_parallel,queued:pending.length,phase_started_ts:phaseStart,max_total_ms,per_minute_limits:{...per_minute_limits},scope:'SAME_RUN_ALL_NEW_PROVIDERS',unused_local_capacity_released_after_completed_collector:true,monthly_provider_reservations_not_refunded:true,actual_dispatch_rate_enforced:true,phase_deadline_actively_enforced:true,provider_quota_provisioned:false,errors:[...errors]})};
 }

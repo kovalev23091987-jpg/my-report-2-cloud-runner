@@ -42,7 +42,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
    if(clock()>=deadline)return observe(lane,null,'SOURCE_PHASE_DEADLINE_REACHED',attempt,false);
    const declaredCost=lane==='HYPERLIQUID_NATIVE'?5:lane==='GTRADE_NATIVE'?3:lane==='OXARCHIVE_HL_BUCKETS'?1:4;
    if(budget.summary().reserved_http+outsideBudgetRequests+declaredCost>max_http_per_run)return observe(lane,null,'QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET',attempt,false);
-   if(lane==='HYPERLIQUID_NATIVE'){const result=await primary.collect(params),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt);}
+   if(lane==='HYPERLIQUID_NATIVE'){const result=await primary.collect(params),last=primary.summary()?.records?.at?.(-1);budget.releaseUnused('HYPERLIQUID');budget.releaseUnused('LIQFLOW');return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt);}
    if(lane==='OXARCHIVE_HL_BUCKETS'){
     outsideBudgetRequests+=1;
     const result=await oxarchive_collect(params),last=oxarchive_collect.summary?.()?.history?.at?.(-1),status=result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED';
@@ -53,6 +53,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
    if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt,false);
    const acquisitionId=`${lane}:${params.run_id}:${params.contract}`;
    const result=lane==='GTRADE_NATIVE'?await secondary({...params,acquisition_id:acquisitionId,deadline_ts:deadline}):lane==='LIGHTER_NATIVE'?await lighter({...params,acquisition_id:acquisitionId,market_id:id.lighter_market_id,deadline_ts:deadline}):await gmx({...params,acquisition_id:acquisitionId,market_address:id.gmx_market_address,deadline_ts:deadline});
+   budget.releaseUnused(provider);
    const acquisition=result?.acquisition?createMultiLiquidationAcquisition({contract:params.contract,run_id:params.run_id,...(lane==='GTRADE_NATIVE'?{gtrade:result.acquisition}:{scoped:[result.acquisition]})}):null;
    return observe(lane,acquisition,result?.status??'NOT_CLOSED',attempt);
   }
