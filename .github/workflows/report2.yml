@@ -297,30 +297,6 @@ jobs:
           path: report2-v13-p0-read-only.json
           if-no-files-found: error
           retention-days: 30
-      - name: Package exact V13 P0 runtime modules
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          mkdir -p report2-v13-runtime-modules/src
-          for file in \
-            src/v3-early-sidecar.mjs \
-            src/v3-telegram-lifecycle-sidecar.mjs \
-            src/v3-telegram-lifecycle.mjs \
-            src/canonical-publication.mjs \
-            src/publication-reconciler.mjs; do
-            test -f "runtime/$file"
-            cp "runtime/$file" "report2-v13-runtime-modules/$file"
-          done
-          cp runtime/runner-main.mjs report2-v13-runtime-modules/runner-main.mjs
-      - name: Upload exact V13 P0 runtime modules
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: report2-v13-runtime-modules-${{ github.run_id }}
-          path: report2-v13-runtime-modules
-          if-no-files-found: error
-          retention-days: 1
       - name: Full Report 2 cycle
         if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
         shell: bash
