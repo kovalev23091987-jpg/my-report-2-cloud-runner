@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 04:05 MSK
+Updated: 2026-09-28 04:32 MSK
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -33,7 +33,7 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Wired strict T04/T05/T07/T12 paths into the authoritative runner without changing frozen formatters. ENTRY now requires an exact final direction, a side-specific typed HTX bid/ask reference and a closed execution handoff; fallback mark/last/provider prices are stripped before the frozen adapter. OKX depth contracts use catalog units. The old contract-lifetime liquidation queue was replaced by wave-scoped tasks. Manual jobs must claim their durable command; liquidation-only completes it only after emitting the existing result. The exact generation budget is now 13,330 total and 12,090 scheduled-plus-burst. Current-generation validation, syntax and all 215 tests pass.
 - Full/manual-coin commands now also complete only after the final existing result is emitted. EvidenceV2 N01–N17 is connected to the same bounded supplemental path used by manual and Telegram output; risk strength cannot become a bullish vote. T18 proof/matrix/rollback artifacts are present and explicitly distinguish local, live, blocked and natural states.
 - Added fixture-tested adapter contracts for HTX public risk, chain RPC, official events, GDELT, Bluesky, Deribit alt options, Snapshot, Sourcify, Blockscout and macro calendars. Each has a fixed daily cap/TTL/role; Blockscout remains `WAITING_FREE_KEY`, unknown credit cost prevents transport, RPC is limited to four methods per refresh, and provisional chain events are rejected from scoring.
-- Found and fixed a critical deployment-chain omission before cutover: the sole workflow reconstructed the legacy runtime but did not apply `current-generation`. It now applies the current overlay after the legacy reconstruction and before the pinned worker hash check. Policy patching is idempotent for the already-patched captured runtime. Full validation assembled over the authoritative T00 runtime now reports `overlay: PASS`.
+- Confirmed that the combined reconstruction already applies `current-generation`. Controlled no-Telegram run `36363335818` exposed a duplicate second application in the workflow and stopped safely during assembly, before analysis or delivery. The duplicate was removed. The current overlay now accepts only the exact clean reconstructed predecessor (`940bb1…`) or the exact pinned deployed predecessor (`c25939…`), always producing worker `522e9e…`; both paths pass locally. The workflow hashes that result before any full cycle.
 
 ## Verified blockers
 

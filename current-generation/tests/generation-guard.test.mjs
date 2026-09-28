@@ -36,7 +36,19 @@ test('runtime overlay carries the complete formatter dependency set',()=>{
   assert.match(overlay,new RegExp(`['\"]${rel.replaceAll('/','\\/')}['\"]`));
  }
 });
-test('authoritative workflow applies the current generation after the legacy reconstruction and before hashing',()=>{
- const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),legacy=y.indexOf('post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .'),current=y.indexOf('current-generation/apply-runtime-overlay.mjs runtime'),hash=y.indexOf('ACTUAL="$(sha256sum src/worker.js');
- assert.ok(legacy>=0&&current>legacy&&hash>current);
+test('authoritative workflow applies current generation exactly once through combined reconstruction',()=>{
+ const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ const combined='post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .';
+ const direct='node current-generation/apply-runtime-overlay.mjs runtime';
+ const hash='ACTUAL="$(sha256sum src/worker.js';
+ assert.ok(y.indexOf(combined)>=0&&y.indexOf(hash)>y.indexOf(combined));
+ assert.equal(y.includes(direct),false);
+ const applyAll=fs.readFileSync(new URL('../../post-v7-consolidated/full-validation/apply-all-runtime.mjs',import.meta.url),'utf8');
+ assert.equal(applyAll.split('current-generation/apply-runtime-overlay.mjs').length-1,1);
+});
+test('current overlay accepts only the clean base and the pinned deployed predecessor',()=>{
+ const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
+ assert.match(overlay,/940bb12428f320bf248fadd2acd45399af705e144440750973551e5a935f7cc2/);
+ assert.match(overlay,/c25939859bbe3f02a7f3479d1f0f656b4877c06dd72f18e372e4927289ba5a97/);
+ assert.match(overlay,/expectedInputs\.has\(sha\(input\)\)/);
 });
