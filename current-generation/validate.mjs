@@ -16,6 +16,7 @@ const run=(args,{cwd=repo}={})=>{
 const checks=[
  'runtime-policy-patches.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
+ '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/canonical-runtime-adapter.mjs','files/src/pump-liquidation-zones.mjs','files/src/liquidation-source-weighting.mjs','files/src/cross-exchange-risk-context.mjs','files/src/liquidation-candidate-queue.mjs','files/src/liquidation-outcome-calibration.mjs','files/src/market-contracts.mjs','files/src/candidate-task-queue.mjs','files/src/durable-command-queue.mjs','files/src/evidence-v2.mjs','files/src/evidence-source-adapters.mjs','files/src/evidence-source-store.mjs','files/src/htx-public-risk-evidence.mjs','files/src/macro-calendar-evidence.mjs','files/src/deribit-alt-options-evidence.mjs','files/src/chain-supply-evidence.mjs','files/src/sourcify-abi-evidence.mjs','files/src/bluesky-attention-evidence.mjs','files/src/snapshot-governance-evidence.mjs','files/src/official-events-evidence.mjs','files/src/gdelt-official-discovery.mjs','files/src/blockscout-index-evidence.mjs','files/src/candidate-evidence-v2-runtime.mjs','files/src/unified-budget.mjs',
