@@ -16,6 +16,10 @@ function parseIcsDate(value){
 const BLS_TYPES=Object.freeze([
  ['Consumer Price Index','CPI'],['Employment Situation','EMPLOYMENT_SITUATION'],['Producer Price Index','PPI'],
 ]);
+function boundedEvents(events,observedTs){
+ const from=observedTs-24*60*60_000,to=observedTs+90*24*60*60_000,seen=new Set();
+ return events.filter(row=>Number(row.effective_at)>=from&&Number(row.effective_at)<=to).sort((a,b)=>a.effective_at-b.effective_at).filter(row=>{const key=`${row.provider_id}:${row.event_id}:${row.effective_at}`;if(seen.has(key))return false;seen.add(key);return true;}).slice(0,16);
+}
 export function parseBlsCalendar(raw,{observed_ts=Date.now()}={}){
  const events=[];let current=null;
  for(const line of unfoldIcs(raw)){
@@ -53,7 +57,7 @@ async function getText(fetchImpl,url){
 }
 
 export function normalizeMacroCalendar({contract,bls_raw='',fed_raw='',observed_ts=Date.now()}={}){
- const htxContract=text(contract).toUpperCase(),events=[...parseBlsCalendar(bls_raw,{observed_ts}),...parseFedCalendar(fed_raw,{observed_ts})];
+ const htxContract=text(contract).toUpperCase(),events=boundedEvents([...parseBlsCalendar(bls_raw,{observed_ts}),...parseFedCalendar(fed_raw,{observed_ts})],observed_ts);
  const evidence=events.map(event=>normalizeCalendarEvent({...event,asset_id:'GLOBAL_MACRO',htx_contract:htxContract}));
  return{status:evidence.length?'CLOSED':'PARTIAL',contract:htxContract,evidence,summary:{events:evidence.length,next_effective_at:evidence.filter(row=>Number(row.effective_from)>=observed_ts).sort((a,b)=>a.effective_from-b.effective_from)[0]?.effective_from??null,raw_fingerprint:hash(`${bls_raw}\n${fed_raw}`)},internal_only:true};
 }
@@ -62,7 +66,8 @@ export async function collectMacroCalendarEvidence({db,fetch_impl=globalThis.fet
  if(!db)throw new Error('MACRO_CALENDAR_DB_REQUIRED');const htxContract=text(contract).toUpperCase();
  if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'GLOBAL',now});if(cached){
-  const evidence=(cached.evidence||[]).map(row=>normalizeCalendarEvent({provider_id:row.provider_id,asset_id:'GLOBAL_MACRO',htx_contract:htxContract,event_id:row.origin_event_id,event_type:row.event_type||row.metric_family,effective_at:row.effective_at??row.effective_from,source_ts:row.source_ts,observed_ts:row.observed_ts,time_precision:row.time_precision||'DATE_ONLY'}));
+  const events=boundedEvents((cached.evidence||[]).map(row=>({provider_id:row.provider_id,event_id:row.origin_event_id,event_type:row.event_type||row.metric_family,effective_at:row.effective_at??row.effective_from,source_ts:row.source_ts,observed_ts:row.observed_ts,time_precision:row.time_precision||'DATE_ONLY'})),now);
+  const evidence=events.map(row=>normalizeCalendarEvent({...row,asset_id:'GLOBAL_MACRO',htx_contract:htxContract}));
   return{...cached,contract:htxContract,evidence};
  }
  const reservationId=`EV2:${SOURCE}:${run_id}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:2}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};

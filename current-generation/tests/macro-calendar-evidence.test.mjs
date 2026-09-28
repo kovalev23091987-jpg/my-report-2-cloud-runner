@@ -12,18 +12,18 @@ const BLS=`BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:cpi-1\nDTSTART:20261013T123000Z\nS
 const FED=`<html><body><h3>2026 FOMC Meetings</h3><div>September 15-16</div><div>October 27-28</div></body></html>`;
 
 test('K16 macro: only approved BLS releases and FOMC dates become context evidence',()=>{
- const bls=parseBlsCalendar(BLS,{observed_ts:1000}),fed=parseFedCalendar(FED,{observed_ts:1000});
+ const observedTs=Date.UTC(2026,8,1),bls=parseBlsCalendar(BLS,{observed_ts:observedTs}),fed=parseFedCalendar(FED,{observed_ts:observedTs});
  assert.deepEqual(bls.map(row=>row.event_type),['CPI']);assert.equal(bls[0].time_precision,'EXACT');
  assert.equal(fed.length,2);assert.ok(fed.every(row=>row.event_type==='FOMC'&&row.time_precision==='DATE_ONLY'));
- const out=normalizeMacroCalendar({contract:'SOL-USDT',bls_raw:BLS,fed_raw:FED,observed_ts:1000});
+ const out=normalizeMacroCalendar({contract:'SOL-USDT',bls_raw:BLS,fed_raw:FED,observed_ts:observedTs});
  assert.equal(out.status,'CLOSED');assert.ok(out.evidence.every(row=>row.block_id==='N13'&&row.directional_strength===null&&row.risk_strength===null));
- assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:1000}).adjustment,0);
+ assert.ok(out.evidence.length<=16);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:observedTs}).adjustment,0);
 });
 
 test('K16 macro: shared global cache prevents duplicate requests and rebuilds exact contract identity',async()=>{
  const db=new DB(),calls=[];const fetch_impl=async url=>{calls.push(url);return{ok:true,status:200,text:async()=>url.includes('bls.gov')?BLS:FED};};
- const base={db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),run_id:'R',now:10_000};
- const first=await collectMacroCalendarEvidence({...base,contract:'SOL-USDT'}),second=await collectMacroCalendarEvidence({...base,contract:'NEAR-USDT',run_id:'R2',now:10_001});
+ const base={db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),run_id:'R',now:Date.UTC(2026,8,1)};
+ const first=await collectMacroCalendarEvidence({...base,contract:'SOL-USDT'}),second=await collectMacroCalendarEvidence({...base,contract:'NEAR-USDT',run_id:'R2',now:base.now+1});
  assert.equal(first.network_calls,2);assert.equal(second.network_calls,0);assert.equal(second.cache_status,'HIT');assert.equal(calls.length,2);
  assert.ok(second.evidence.every(row=>row.htx_contract==='NEAR-USDT'));
  assert.notEqual(first.evidence[0].evidence_id,second.evidence[0].evidence_id);
@@ -36,8 +36,8 @@ test('K16 macro: transport cannot start without whole-job admission',async()=>{
 });
 
 test('K16 combined candidate path stays within five calls on cold cache',async()=>{
- const db=new DB(),calls=[];const fetch_impl=async url=>{calls.push(url);if(url.includes('bls.gov'))return{ok:true,status:200,text:async()=>BLS};if(url.includes('federalreserve.gov'))return{ok:true,status:200,text:async()=>FED};const body=url.includes('swap_api_state')?{status:'ok',ts:1000,data:[{contract_code:'SOL-USDT',open:1}]}:{status:'ok',ts:1000,data:[{contract_code:'SOL-USDT',lever_rate:20}]};return{ok:true,status:200,json:async()=>body};};
- const out=await collectCandidateEvidenceV2({db,fetch_impl,pause_impl:async()=>{},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:1000});
+ const db=new DB(),calls=[];const observedTs=Date.UTC(2026,8,1),fetch_impl=async url=>{calls.push(url);if(url.includes('bls.gov'))return{ok:true,status:200,text:async()=>BLS};if(url.includes('federalreserve.gov'))return{ok:true,status:200,text:async()=>FED};const body=url.includes('swap_api_state')?{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',open:1}]}:{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',lever_rate:20}]};return{ok:true,status:200,json:async()=>body};};
+ const out=await collectCandidateEvidenceV2({db,fetch_impl,pause_impl:async()=>{},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:observedTs});
  assert.equal(out.status,'CLOSED');assert.equal(out.network_calls,5);assert.equal(calls.length,5);assert.ok(out.evidence.some(row=>row.block_id==='N09'));assert.ok(out.evidence.some(row=>row.block_id==='N13'));
 });
 
