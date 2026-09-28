@@ -1,6 +1,6 @@
 # MY REPORT 2 — WORK IN PROGRESS HANDOFF
 
-Updated: 2026-09-28 04:32 MSK
+Updated: 2026-09-28 00:58 UTC
 
 This is an interruption-safe checkpoint. It contains factual work state only. Nothing below is marked deployed unless production verification exists.
 
@@ -34,6 +34,8 @@ This is an interruption-safe checkpoint. It contains factual work state only. No
 - Full/manual-coin commands now also complete only after the final existing result is emitted. EvidenceV2 N01–N17 is connected to the same bounded supplemental path used by manual and Telegram output; risk strength cannot become a bullish vote. T18 proof/matrix/rollback artifacts are present and explicitly distinguish local, live, blocked and natural states.
 - Added fixture-tested adapter contracts for HTX public risk, chain RPC, official events, GDELT, Bluesky, Deribit alt options, Snapshot, Sourcify, Blockscout and macro calendars. Each has a fixed daily cap/TTL/role; Blockscout remains `WAITING_FREE_KEY`, unknown credit cost prevents transport, RPC is limited to four methods per refresh, and provisional chain events are rejected from scoring.
 - Confirmed that the combined reconstruction already applies `current-generation`. Controlled no-Telegram run `36363335818` exposed a duplicate second application in the workflow and stopped safely during assembly, before analysis or delivery. The duplicate was removed. The current overlay now accepts only the exact clean reconstructed predecessor (`940bb1…`) or the exact pinned deployed predecessor (`c25939…`), always producing worker `522e9e…`; both paths pass locally. The workflow hashes that result before any full cycle.
+- Controlled no-Telegram retry `36363772673` passed queue, gates, exact reconstruction and the full cycle. It scanned the 358-contract universe, selected PONS-USDT for one bounded deep check, ended truthfully as `HEALTHY_NO_IDEA/PARTIAL`, used 18,603 D1 reads and 208 writes within the 34,000/560 run cap, completed its durable command and sent zero Telegram messages. The sanitized receipt is stored under release evidence; this is one of three required measured runs, not natural acceptance.
+- Assigned the required new generation `MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M` instead of reusing V4. Durable commands now expire terminally after their deadline, and a scheduled executor can recover one aged queued command from the same exact generation after a two-minute ownership delay. Newly queued commands remain reserved for their own workflow first; completed duplicates return their pinned result identity without rerunning paid work.
 
 ## Verified blockers
 

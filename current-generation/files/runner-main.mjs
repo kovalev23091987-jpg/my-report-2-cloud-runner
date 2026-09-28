@@ -35,7 +35,7 @@ import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
-import {claimCommand,completeCommand} from './src/durable-command-queue.mjs';
+import {claimCommand,claimNextCommand,completeCommand} from './src/durable-command-queue.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v4-technical-five-percent-entry-stats-20260927";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -423,9 +423,9 @@ async function main() {
   console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
   if(!preflight.allowed)throw new Error(`REPORT2_RUNTIME_PREFLIGHT_BLOCKED:${preflight.status}`);
   process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED=preflight.switches.delivery?'1':'0';
-  const source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
+  let source = envText("REPORT2_RUN_SOURCE", { required: false }) || "manual";
   const generation=envText("REPORT2_CURRENT_GENERATION");
-  if(generation!=="MY_REPORT_2_CURRENT_20260927_TECHNICAL_5PCT_ENTRY_STATS_V4_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
+  if(generation!=="MY_REPORT_2_CURRENT_20260928_INTERNAL_AUDIT_FIXES_V5_20M")throw new Error(`STALE_OR_UNKNOWN_GENERATION:${generation}`);
   const started = Date.now();
   const postV7UnifiedEnabled = ["1","true","yes","on"].includes(String(process.env.REPORT2_POST_V7_UNIFIED_ENABLED || "0").trim().toLowerCase());
   const { worker, scanLiquidationCandidates, sha } = await loadWorker();
@@ -434,14 +434,28 @@ async function main() {
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
   if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
   console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
-  const commandIntent=source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_IGNORES_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
-  const expectedManualContract=commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null),expectedManualMode=commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
-  const manualCommandId=envText('REPORT2_COMMAND_ID',{required:false}),manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
-  const manualCommandClaim=source==='schedule'?{claimed:false,status:'SCHEDULE_HAS_NO_MANUAL_COMMAND'}:manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
-  if(source!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
+  const requestedSource=source,manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
+  let manualCommandId=envText('REPORT2_COMMAND_ID',{required:false});
+  let manualCommandClaim=requestedSource==='schedule'
+    ?await claimNextCommand(env.DATA_DB,{actor:manualCommandActor,generation,now:started})
+    :manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
+  if(requestedSource!=='schedule'&&!manualCommandClaim.claimed&&manualCommandClaim.row?.state==='COMPLETED'){
+    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_ALREADY_COMPLETED',JSON.stringify({command_id:manualCommandId,result_snapshot_id:manualCommandClaim.row.result_snapshot_id,rendered_text_hash:manualCommandClaim.row.rendered_text_hash}));
+    return;
+  }
+  if(requestedSource!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
+  if(requestedSource==='schedule'&&manualCommandClaim.claimed){source='manual_recovery';manualCommandId=manualCommandClaim.row.command_id;env.REPORT2_MANUAL_COIN_CONTRACT=manualCommandClaim.row.contract||'';}
+  const recoveredMode=source==='manual_recovery'?manualCommandClaim.row.mode:null;
+  const commandIntent=recoveredMode==='LIQUIDATION_ONLY'
+    ?{version:'durable-command-recovery-v1',matched:true,mode:manualCommandClaim.row.contract?'EXACT_COIN_LIQUIDATIONS':'LIQUIDATION_CANDIDATES',contract:manualCommandClaim.row.contract||null,normalized:'durable queued liquidation command'}
+    :source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_HAS_NO_RECOVERABLE_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
+  const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null);
+  const expectedManualMode=source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
   if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
   if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
-  console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null}));
+  console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null,recovered_by_scheduled_executor:source==='manual_recovery'}));
   if(commandIntent.matched&&commandIntent.mode==='EXACT_COIN_LIQUIDATIONS')env.REPORT2_MANUAL_COIN_CONTRACT=commandIntent.contract;
   console.log('LIQUIDATION_COMMAND_INTENT',JSON.stringify(commandIntent));
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {commandId,enqueueCommand,claimCommand,completeCommand,savedResultFresh} from '../files/src/durable-command-queue.mjs';
+import {commandId,enqueueCommand,claimCommand,claimNextCommand,completeCommand,savedResultFresh} from '../files/src/durable-command-queue.mjs';
 import {buildPublicationDispatch,transitionRelayReceipt,reconcileExpiredDelivery,removalAllowed} from '../files/src/strict-delivery-binding.mjs';
 import fs from 'node:fs';
 class S{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new S(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
@@ -18,6 +18,22 @@ test('K12: command completion requires the existing consumer and stale result is
   assert.equal((await completeCommand(db,{command_id:id,actor:'A',snapshot_id:'S',rendered_text:'текст',delivered_to_existing_channel:false})).completed,false);
   assert.equal((await completeCommand(db,{command_id:id,actor:'A',snapshot_id:'S',rendered_text:'текст',delivered_to_existing_channel:true,now:3000})).completed,true);
   assert.equal(savedResultFresh({state:'COMPLETED',updated_at:3000},{now:10000,max_age_ms:1000}),false);
+});
+
+test('K12: next executor recovers an aged queued command and expired work is terminal',async()=>{
+  const db=new D(),base={request_channel:'MANUAL',generation:'G'};
+  await enqueueCommand(db,{...base,command_id:'EXPIRED',mode:'FULL_MANUAL',received_at:1000,deadline:1500});
+  await enqueueCommand(db,{...base,command_id:'FRESH',mode:'COIN',contract:'SOL-USDT',received_at:2000,deadline:100000});
+  const recovered=await claimNextCommand(db,{actor:'RECOVERY',generation:'G',now:5000,recovery_delay_ms:2000});
+  assert.equal(recovered.claimed,true);assert.equal(recovered.row.command_id,'FRESH');
+  assert.equal(db.sqlite.prepare(`SELECT state FROM report2_command_v2 WHERE command_id='EXPIRED'`).get().state,'EXPIRED');
+});
+
+test('K12: recovery delay leaves a newly enqueued command to its own workflow',async()=>{
+  const db=new D(),base={request_channel:'MANUAL',generation:'G'};
+  await enqueueCommand(db,{...base,command_id:'NEW',mode:'FULL_MANUAL',received_at:4900,deadline:100000});
+  assert.equal((await claimNextCommand(db,{actor:'RECOVERY',generation:'G',now:5000,recovery_delay_ms:2000})).claimed,false);
+  assert.equal((await claimCommand(db,{command_id:'NEW',actor:'OWNER',now:5000})).claimed,true);
 });
 
 test('K11: publication and dispatch share immutable exact IDs and hashes',()=>{
@@ -49,6 +65,14 @@ test('K12: authoritative runner claims the command and completes liquidation-onl
   assert.match(runner,/await claimCommand\(env\.DATA_DB/);assert.match(runner,/DURABLE_MANUAL_COMMAND_NOT_CLAIMED/);
   const outputAt=runner.indexOf("console.log('LIQUIDATION_ONLY_RESULT',renderedResult)"),completeAt=runner.indexOf('await completeCommand(env.DATA_DB');
   assert.ok(outputAt>=0&&completeAt>outputAt,'completion must happen only after the existing result consumer');
+});
+
+test('K12: scheduled executor recovers an aged durable command without guessing its inputs',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  assert.match(runner,/await claimNextCommand\(env\.DATA_DB/);
+  assert.match(runner,/source='manual_recovery'/);
+  assert.match(runner,/recovered_by_scheduled_executor/);
+  assert.match(runner,/manualCommandClaim\.row\.mode/);
 });
 
 test('K12: full and coin manual commands complete only after the final existing result is emitted',()=>{
