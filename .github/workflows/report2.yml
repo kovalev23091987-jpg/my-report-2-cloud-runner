@@ -95,7 +95,7 @@ jobs:
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
   enqueue-manual-command:
-    if: ${{ (github.event_name == 'push' && contains(toJSON(github.event.commits), 'manual-requests/run.json')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ (github.event_name == 'push' && contains(toJSON(github.event.commits), 'manual-requests/run.json')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     outputs:
       command_id: ${{ steps.enqueue.outputs.command_id }}
@@ -120,7 +120,7 @@ jobs:
 
   run-report2:
     needs: [execution-gate, enqueue-manual-command]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '*/20 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '*/20 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -198,7 +198,7 @@ jobs:
           cd runtime
           ACTUAL="$(sha256sum src/worker.js | awk '{print $1}')"
           test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
-          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ] && [ "${{ inputs.reason || '' }}" != "T00_D1_INVENTORY" ]; then
+          if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ] && [ "${{ inputs.reason || '' }}" != "T00_D1_INVENTORY" ] && [ "${{ inputs.reason || '' }}" != "V13_P0_READ_ONLY_DIAG" ]; then
             npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           fi
       - name: Encrypt authoritative runtime for T00 audit
@@ -285,8 +285,20 @@ jobs:
           path: report2-t00-d1-inventory.json.cms
           if-no-files-found: error
           retention-days: 1
+      - name: Capture V13 P0 read-only diagnostic
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
+        shell: bash
+        run: node audit-fixes/v13/capture-p0-read-only.mjs runtime report2-v13-p0-read-only.json
+      - name: Upload V13 P0 read-only diagnostic
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'V13_P0_READ_ONLY_DIAG' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-v13-p0-read-only-${{ github.run_id }}
+          path: report2-v13-p0-read-only.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Full Report 2 cycle
-        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
+        if: ${{ inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
         shell: bash
         run: |
           set -Eeuo pipefail
