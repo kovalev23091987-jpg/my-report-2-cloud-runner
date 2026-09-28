@@ -62,6 +62,6 @@ test('workflow worker pin equals the effective V5 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'2db9471e47f6a1359b7e4732137740c215d126ddba8cb480df2d4cb5654cd9b0');
+ assert.equal(hash,'6ac1b13d576e334e9fd67d7ae03ed70628bb6f5e2fd86a2fed5aa6ff236fc7b3');
  assert.match(workflow,new RegExp(hash));
 });

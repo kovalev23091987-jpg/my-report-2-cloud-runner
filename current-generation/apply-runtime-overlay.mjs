@@ -59,6 +59,7 @@ const files=[
  'src/htx-public-risk-evidence.mjs',
  'src/macro-calendar-evidence.mjs',
  'src/deribit-alt-options-evidence.mjs',
+ 'src/chain-supply-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',

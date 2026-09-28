@@ -3,7 +3,7 @@
 | Block | Existing consumer | Local state | Live state |
 |---|---|---|---|
 | N01 Unlocks | supporting risk / recheck | VALIDATED | WAITING_ADAPTER_SMOKE |
-| N02 Mint/supply | supply risk | VALIDATED | WAITING_ADAPTER_SMOKE |
+| N02 Mint/supply | supply risk | RUNTIME_WIRED_EXACT_SUPPLY_OBSERVATION | WAITING_CHAIN_SUPPLY_LIVE_SMOKE_AND_MATCHED_TX |
 | N03 Buyback/burn | money-flow context | VALIDATED | WAITING_ADAPTER_SMOKE |
 | N04 Transfers | transfer investigation | VALIDATED | WAITING_ADAPTER_SMOKE |
 | N05 Exchange flows | market-flow confirmation | VALIDATED | WAITING_VERIFIED_LABELS |

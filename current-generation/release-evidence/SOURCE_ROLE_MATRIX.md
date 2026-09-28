@@ -3,6 +3,7 @@
 | Source | Primary role | Direction policy | Runtime state |
 |---|---|---|---|
 | HTX | universe, execution truth, prices, book, OI, funding, candles, outcomes | authoritative for its market | ACTIVE_EXISTING |
+| PublicNode / Solana RPC | finalized exact-address total-supply observations and deltas | context only until a matching finalized mint/burn transaction closes the event; Solana address case is preserved | RUNTIME_WIRED, live smoke pending |
 | Binance / Bybit / OKX | independent depth/derivatives/live liquidation context | only mapped measured features; OKX units required | ACTIVE_EXISTING, bounded rotation |
 | Coinalyze | historical liquidation/OI/funding baseline | counts do not select direction | LIVE_HISTORY_CLOSED run 36369369843, AKE-USDT, 2 HTTP / 5 provider units |
 | Hyperliquid native | verified native positions/levels | observed levels only | ACTIVE_IF_EXACT_MARKET |
@@ -13,7 +14,7 @@
 | DEX Screener / GeckoTerminal | exact address/pool identity and activity context | buy/sell counts are direction-neutral | ACTIVE_CONDITIONAL |
 | DefiLlama | exact protocol TVL context | direction-neutral | ACTIVE_CONDITIONAL |
 | GoPlus | exact token risk | adverse risk only | ACTIVE_CONDITIONAL |
-| Solana RPC | exact mint/account facts | signature count is direction-neutral | ACTIVE_CONDITIONAL |
+| Solana RPC supplemental activity | exact mint/account activity context | signature count is direction-neutral and is not supply proof | ACTIVE_CONDITIONAL |
 | Bitget / Coinbase | conditional independent market validation | price coincidence is direction-neutral | ACTIVE_CONDITIONAL |
 | Deribit BTC/ETH | global market risk | risk-off may reduce suitability; no alt direction | ACTIVE_CACHED |
 | HTX public risk | N08/N09/N11/N16 execution state and isolated/cross risk ladders | restriction is adverse risk only; normal state is context | LIVE_SMOKE_CLOSED run 36365551502; 3 sequential HTTP 200 calls, 60m cache, 144/day cap |
