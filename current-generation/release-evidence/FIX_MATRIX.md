@@ -4,8 +4,8 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 
 | ID | Status | Effective evidence | Remaining condition |
 |---|---|---|---|
-| F01 | LIVE_INVENTORY_CLOSED | `runtime-control.mjs`, `analytics-lease.mjs`, `analytics-lease.test.mjs` fence the GitHub analytics owner. Read-only run 36390110554 captured the exact live Hub module and proved zero Cloudflare cron triggers, so the legacy Hub code is not a competing scheduled analytics owner. | Production cutover only. |
-| F02 | LOCAL_CLOSED | `workflow-job-gate.test.mjs` and `runner/preflight-role-gate.mjs` prove stop before checkout/decrypt/network. | Production cutover only. |
+| F01 | PRODUCTION_CLOSED | `runtime-control.mjs`, `analytics-lease.mjs`, `analytics-lease.test.mjs` fence the GitHub analytics owner. Read-only run 36390110554 proved zero Cloudflare cron triggers; production acceptance 36390942493 released the single lease cleanly. | Longitudinal monitoring only. |
+| F02 | PRODUCTION_CLOSED | `workflow-job-gate.test.mjs` and `runner/preflight-role-gate.mjs` prove stop before checkout/decrypt/network; production V5 runs passed the gate. | None. |
 | F03 | PARTIAL_LIVE_INVENTORY | `run-health.mjs` and `run-health.test.mjs` derive terminal health after final events. Run 36390110554 confirms the live Hub has no cron or KV binding. | The GitHub/D1 watchdog remains the only available design; natural degraded/recovered receipt is pending. |
 | F04 | LOCAL_CLOSED_LIVE_RELAY_KNOWN | `strict-delivery-binding.mjs` permits removal only after confirmed delivered ENTRY. Run 36390110554 captured the exact relay routes and Telegram/D1 binding names. | Production cutover and natural delivery receipt. |
 | F05 | PARTIAL_BLOCKED_HUB | `commands-delivery.test.mjs` requires positive message ID and matching recipient; ambiguous timeout is not retried. | Natural Telegram receipt and live relay cutover. |
@@ -47,12 +47,12 @@ Evidence date: 2026-09-28. `LOCAL_CLOSED` means the effective V5 overlay and its
 | F41 | PARTIAL_NATURAL_DATA | Prospective full/without-source paired attribution contract exists. | Required independent holdout sample is unavailable. |
 | F42 | LOCAL_CLOSED | `GENERATION.json` and quota tests prove 13,330 worst case and 12,090 scheduled-plus-burst requests. | None locally. |
 | F43 | LOCAL_CLOSED | Atomic provider/attempt/reservation keys and conservative timeout accounting pass concurrency tests. | None locally. |
-| F44 | LIVE_INVENTORY_CLOSED | GitHub analytics fencing and common run usage ledger are active; cloud runs had zero unknown operations. Run 36390110554 proves the Hub has zero cron triggers and therefore is not a second scheduled analytics actor. | Production cutover and longitudinal usage observation. |
+| F44 | PRODUCTION_CLOSED | GitHub analytics fencing and common run usage ledger are active; production runs 36390942493 and 36391188150 closed their D1 gates with zero unknown operations. Run 36390110554 proves the Hub has zero cron triggers. | Longitudinal usage observation only. |
 | F45 | LOCAL_CLOSED_PLAN | Catalog/retry calls are included in the same pre-admitted source plan. | Live receipt. |
 | F46 | LOCAL_CLOSED | Venue catalog cache has per-venue TTL, bounded timeout and cache-first behavior. | Live receipt. |
 | F47 | LOCAL_CLOSED | Dependency freshness and whole-source deadlines are enforced; TTL is not stretched to force CLOSED. | Live receipt. |
 | F48 | LOCAL_CLOSED_RUNTIME | Commands persist before concurrency; aged queued work is recovered after two minutes; expired work is terminal; duplicates do not rerun paid work. A manual coin with zero completed deep checks is now deferred for scheduled recovery instead of falsely completed. | Operational deferral/recovery receipt after V5 cutover. |
-| F49 | PARTIAL_CUTOVER_PENDING | Release manifest, exact worker hash, rollback, cloud receipts and exact sanitized Hub inventory exist. | Production cutover, remaining live receipts and natural gates. |
+| F49 | PRODUCTION_RELEASED_NATURAL_GATES_PENDING | Release manifest, exact worker hash, rollback, Hub inventory, production acceptance and Telegram-path receipts exist. | Remaining natural outcomes and external-source availability gates. |
 | F50 | PARTIAL_SMOKE_PENDING | All N01–N17 have typed EvidenceV2 consumer contracts, caps and fixture tests; HTX public-risk, N13 macro, N14 alt-options, N02 exact supply and N17 Sourcify schema transports now have live receipts. | Several remaining transports still need runtime wiring/smoke receipts; no unavailable market is invented. |
 | F51 | LOCAL_CORE | Gross/net costs, remaining path, hold and invalidation are distinct; no automatic trading was added. | Natural outcome sample. |
 
