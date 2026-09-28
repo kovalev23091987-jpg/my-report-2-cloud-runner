@@ -36,6 +36,7 @@ test('workflow schedule and generation binding are exact',()=>{
  assert.match(y,/T16_LIDO_SNAPSHOT_SMOKE/);
  assert.match(y,/T16_LIGHTER_NATIVE_SMOKE/);
  assert.match(y,/T16_GMX_NATIVE_SMOKE/);
+ assert.match(y,/T16_GTRADE_NATIVE_SMOKE/);
 });
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
