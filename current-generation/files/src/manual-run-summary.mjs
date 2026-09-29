@@ -51,4 +51,22 @@ export function formatManualRunSummary({status,candidates=[],generated_at}={}){
  }
  return lines.join('\n').trim();
 }
-export default {MANUAL_RUN_SUMMARY_VERSION,formatManualRunSummary};
+
+export function formatLiquidationRunSummary({status,scan,preliminary_candidates=[],verified_candidate,liquidation_lines=[]}={}){
+ if(status!=='CLOSED'||!Number.isSafeInteger(scan?.universe_total)||scan.universe_total<1||
+  scan.scanned!==scan.universe_total||scan.errors!==0||scan.stale!==0)return null;
+ const names=(Array.isArray(preliminary_candidates)?preliminary_candidates:[])
+  .map(row=>contract(row?.contract)).filter(Boolean).slice(0,5);
+ const selected=contract(verified_candidate);
+ if(verified_candidate&&!selected)return null;
+ const lines=['ЛИКВИДАЦИОННЫЙ БЛОК',''];
+ if(names.length)lines.push(`Монеты для наблюдения: ${names.join(', ')}.`);
+ if(!selected){lines.push('Монет для углублённой проверки сейчас нет.');return lines.join('\n').trim();}
+ lines.push(`Углублённая проверка: ${selected}.`);
+ if(Array.isArray(liquidation_lines)&&liquidation_lines.length)
+  lines.push(...liquidation_lines.filter(row=>typeof row==='string'&&row.trim()).slice(0,24));
+ else lines.push('Сильные зоны ликвидаций сейчас не подтверждены.');
+ lines.push('Уровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.');
+ return lines.join('\n').trim();
+}
+export default {MANUAL_RUN_SUMMARY_VERSION,formatManualRunSummary,formatLiquidationRunSummary};
