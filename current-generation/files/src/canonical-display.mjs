@@ -9,6 +9,10 @@ export function displaySnapshotChange(v){
  const value=text(v);if(!value)return null;
  return value
   .replace(/\brate_per_settlement\b/giu,'ставка за расчётный период')
+  .replace(/\bpct_long_minus_short_of_total\b/giu,'% перевеса покупателей над продавцами')
+  .replace(/\bpercentage_points\b/giu,'процентного пункта')
+  .replace(/\bGate Public Futures\b/giu,'Гейт срочный рынок')
+  .replace(/\bOKX Spot Public V5\b/giu,'ОКХ спотовый рынок')
   .replace(/\bCONTRACTS?\b/gu,'контракты')
   .replace(/\bPERCENT\b/gu,'%');
 }
