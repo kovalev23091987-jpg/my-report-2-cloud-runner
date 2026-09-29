@@ -1,4 +1,4 @@
-export const DYNAMIC_LIQUIDATION_PANEL_VERSION='dynamic-liquidation-panel-v2-receipt-freshness-20260929';
+export const DYNAMIC_LIQUIDATION_PANEL_VERSION='dynamic-liquidation-panel-v3-explicit-target-proof-20260930';
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 const text=v=>String(v??'').trim();
@@ -31,7 +31,12 @@ function canonicalZone(row,provider,referencePrice,{observed_ts,max_age_ms=12000
  const distance=(price/ref-1)*100;if(s==='LONG'?distance>=0:distance<=0)return null;
  const cross=row?.conditional_cross===true||row?.conditional_on_other_positions===true||text(row?.margin_mode).toUpperCase()==='CROSS';
  const sourceTs=finite(row?.source_ts),observed=finite(observed_ts),fresh=sourceTs!==null&&observed!==null&&sourceTs<=observed&&observed-sourceTs<=max_age_ms;
- return {provider,position_key:text(row?.position_key)||`${provider}|${text(row?.account_reference_fingerprint??row?.account)}|${s}|${price}`,native_price:price,notional_usd:notional,liquidated_side:s,distance_pct:distance,cross_margin:cross,weighted_notional:notional*(cross?0.5:1),source_ts:sourceTs,fresh,decision_target_eligible:fresh};
+ const semantics=text(row?.price_semantics).toUpperCase(),estimated=/BUCKET|CLUSTER_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(semantics);
+ // Fresh context is useful evidence, but it does not grant target admission.
+ // Preserve the source's limits instead of upgrading an estimate or a
+ // conditional cross-margin account price into an HTX technical target.
+ const targetEligible=fresh&&!estimated&&!cross&&row?.decision_target_eligible===true;
+ return {provider,position_key:text(row?.position_key)||`${provider}|${text(row?.account_reference_fingerprint??row?.account)}|${s}|${price}`,native_price:price,notional_usd:notional,liquidated_side:s,distance_pct:distance,cross_margin:cross,weighted_notional:notional*(cross?0.5:1),source_ts:sourceTs,fresh,price_semantics:semantics||null,estimated,decision_target_eligible:targetEligible,target_admission_reason:targetEligible?'EXPLICIT_TARGET_PROOF':estimated?'ESTIMATED_CONTEXT_ONLY':cross?'CONDITIONAL_CROSS_MARGIN_CONTEXT_ONLY':'SEPARATE_TARGET_PROOF_REQUIRED'};
 }
 
 // Agreement is clustered by price; notionals from different venues are never summed.
@@ -41,7 +46,7 @@ export function buildDynamicLiquidationPanel({contexts=[],reference_price,tolera
  for(const context of Array.isArray(contexts)?contexts:[]){if(!context||!['USABLE_NATIVE_SAMPLE','USABLE_SCOPED_NATIVE_CONTEXT','USABLE_SCOPED_CONTEXT'].includes(text(context.status)))continue;const provider=text(context.provider??context.venue)||'UNKNOWN',maxAge=finite(context?.freshness_max_age_ms)??120000;for(const row of [...(context.above||[]),...(context.below||[]),...(context.zones||[])]){const z=canonicalZone(row,provider,ref,{observed_ts,max_age_ms:maxAge});if(!z||seen.has(z.position_key))continue;seen.add(z.position_key);if(!z.fresh){staleZonesExcluded++;continue;}zones.push(z);}}
  zones.sort((a,b)=>a.native_price-b.native_price);const clusters=[];
  for(const z of zones){let c=clusters.find(x=>x.side===z.liquidated_side&&Math.abs((z.native_price/x.center_price-1)*100)<=tolerance_pct);if(!c){c={side:z.liquidated_side,center_price:z.native_price,zones:[],providers:new Set()};clusters.push(c);}c.zones.push(z);c.providers.add(z.provider);c.center_price=c.zones.reduce((s,x)=>s+x.native_price,0)/c.zones.length;}
- const output=clusters.map(c=>({liquidated_side:c.side,center_price:c.center_price,distance_pct:(c.center_price/ref-1)*100,provider_count:c.providers.size,providers:[...c.providers].sort(),position_count:c.zones.length,largest_provider_position_usd:Math.max(...c.zones.map(z=>z.weighted_notional)),source_ts:Math.max(...c.zones.map(z=>z.source_ts??0))||null,decision_target_eligible:c.zones.some(z=>z.decision_target_eligible===true),path_obstacle_eligible:true,identity_status:'EXACT_NATIVE_MARKET',notional_summed_across_providers:false,cross_margin_discount_applied:c.zones.some(z=>z.cross_margin),agreement:c.providers.size>=2?'MULTI_PROVIDER':'SINGLE_PROVIDER'}));
+ const output=clusters.map(c=>{const admitted=c.zones.filter(z=>z.decision_target_eligible===true);return {liquidated_side:c.side,center_price:c.center_price,distance_pct:(c.center_price/ref-1)*100,provider_count:c.providers.size,providers:[...c.providers].sort(),position_count:c.zones.length,largest_provider_position_usd:Math.max(...c.zones.map(z=>z.weighted_notional)),source_ts:Math.max(...c.zones.map(z=>z.source_ts??0))||null,decision_target_eligible:admitted.length>0,target_price:admitted.length?admitted.reduce((s,z)=>s+z.native_price,0)/admitted.length:null,path_obstacle_eligible:admitted.length>0,contains_estimates:c.zones.some(z=>z.estimated),price_semantics:[...new Set(c.zones.map(z=>z.price_semantics).filter(Boolean))],target_admission_reasons:[...new Set(c.zones.map(z=>z.target_admission_reason))],identity_status:'EXACT_NATIVE_MARKET',notional_summed_across_providers:false,cross_margin_discount_applied:c.zones.some(z=>z.cross_margin),agreement:c.providers.size>=2?'MULTI_PROVIDER':'SINGLE_PROVIDER'};});
  const strength=s=>output.filter(c=>c.liquidated_side===s&&Math.abs(c.distance_pct)<=10).reduce((m,c)=>Math.max(m,Math.log10(1+c.largest_provider_position_usd)*(c.provider_count>=2?1.2:1)),0);
  const above=strength('SHORT'),below=strength('LONG'),den=above+below,directional=den>0?clamp((above-below)/den,-1,1):0,providerCount=new Set(output.flatMap(c=>c.providers)).size;
  const quality=zones.length?clamp(0.35+0.1*Math.min(3,providerCount)+0.05*Math.min(4,zones.length),0,0.85):0;

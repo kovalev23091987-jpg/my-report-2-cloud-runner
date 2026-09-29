@@ -8,7 +8,7 @@ permissions:
 jobs:
   read-source-state:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
@@ -33,6 +33,14 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
           node -e "const fs=require('fs'),crypto=require('crypto');if(crypto.createHash('sha256').update(fs.readFileSync('runtime/src/worker.js')).digest('hex')!=='86fda51194316acf13a5f1a825fab2e9b347f78b648a23b0747ba159171f3377')throw Error('CURRENT_RUNTIME_MISMATCH')"
+      - name: Verify source proof fixes without external source requests
+        run: |
+          cd runtime
+          npm ci --ignore-scripts --no-audit --no-fund
+          cd ..
+          node current-generation/validate.mjs
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs
+          node audit-fixes/v13/final-integration-37.mjs runtime
       - name: Read bounded source quotas caches and weight statistics
         run: node audit-fixes/source-audit-20260930/read-source-state.mjs runtime source-state-read-only.json
       - uses: actions/upload-artifact@v4
