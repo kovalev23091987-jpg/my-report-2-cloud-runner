@@ -563,9 +563,13 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const allowanceSetup=await installSourceAllowances({db:env.DATA_DB,now:started,liqflow_key:envText('LIQFLOW_API_KEY',{required:false}),oxarchive_key:oxarchiveApiKey});
     const scopes=allowanceSetup.bindings;
     console.log('LIQUIDATION_SOURCE_ALLOWANCES',JSON.stringify(allowanceSetup));
+    // Source admission needs only its own bounded D1 reservation while the
+    // mandatory report completion and Telegram lanes retain protected room.
+    // Optional analytical sidecars are independently admitted later and must
+    // fail closed instead of pre-consuming the source lane's entire headroom.
     const requiredDownstream={
-      rows_read:4500+V3_EARLY_SIDECAR_BUDGET.rows_read+V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_read+V3_LIQUIDATION_SIDECAR_BUDGET.rows_read+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,
-      rows_written:50+V3_EARLY_SIDECAR_BUDGET.rows_written+V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_LIQUIDATION_SIDECAR_BUDGET.rows_written+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written,
+      rows_read:4500+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_read+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_read,
+      rows_written:50+V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET.rows_written+BOUND_TELEGRAM_DELIVERY_BUDGET.rows_written,
     };
     const providerAdmit=createD1SourceAdmission({db:env.DATA_DB,scope_bindings:scopes,within_run_budget:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:requiredDownstream.rows_read+e.extraRowsRead,extraRowsWritten:requiredDownstream.rows_written+e.extraRowsWritten})});
     const sourceWeightStore=createLiquidationSourceWeightStore({db:env.DATA_DB});

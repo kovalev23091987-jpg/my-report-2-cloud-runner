@@ -96,3 +96,12 @@ test('controlled T15 measurements upload an exact sanitized receipt',()=>{
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
  assert.match(workflow,/REPORT2_MEASUREMENT_ARTIFACT_ENABLED/);assert.match(workflow,/report2-measured-run-/);assert.match(runner,/report2-measurement\.json/);assert.match(runner,/secret_values_stored:false/);
 });
+test('source quota admission protects mandatory completion without reserving optional sidecars twice',()=>{
+ const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ const block=runner.match(/const requiredDownstream=\{([\s\S]*?)\n\s*\};/u)?.[1]||'';
+ assert.match(block,/V3_TELEGRAM_LIFECYCLE_SIDECAR_BUDGET/u);
+ assert.match(block,/BOUND_TELEGRAM_DELIVERY_BUDGET/u);
+ assert.doesNotMatch(block,/V3_EARLY_SIDECAR_BUDGET/u);
+ assert.doesNotMatch(block,/V3_REALIZED_LIQUIDATION_SIDECAR_BUDGET/u);
+ assert.doesNotMatch(block,/V3_LIQUIDATION_SIDECAR_BUDGET/u);
+});
