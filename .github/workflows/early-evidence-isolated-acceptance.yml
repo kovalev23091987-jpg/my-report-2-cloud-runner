@@ -16,6 +16,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  collector-invocations:
+    if: ${{ contains(github.event.head_commit.message, '[collector-invocation-diagnostic]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read bounded historical Worker invocation metrics
+        run: node audit-fixes/early-evidence-20260929/collector-invocations-diagnostic.mjs report2-collector-invocations.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report2-collector-invocations-${{ github.run_id }}
+          path: report2-collector-invocations.json
+          if-no-files-found: error
+          retention-days: 7
   collector-coverage:
     if: ${{ contains(github.event.head_commit.message, '[collector-coverage-diagnostic]') }}
     runs-on: ubuntu-latest
