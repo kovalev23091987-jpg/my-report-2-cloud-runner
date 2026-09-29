@@ -1,9 +1,11 @@
 name: Report 2 Early Evidence Isolated Acceptance
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - repair/early-evidence-20260929
+      - integrate/early-evidence-current-20260929
     paths:
       - "audit-fixes/early-evidence-20260929/acceptance-request.json"
 
@@ -16,7 +18,7 @@ concurrency:
 
 jobs:
   isolated-acceptance:
-    if: ${{ contains(github.event.head_commit.message, '[repair-isolated-acceptance]') }}
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[repair-isolated-acceptance]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
