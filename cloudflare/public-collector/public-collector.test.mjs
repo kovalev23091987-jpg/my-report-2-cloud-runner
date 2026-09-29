@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {patchWorker} from './patch-worker.mjs';
 
@@ -42,20 +43,18 @@ class FakeD1{
   }
 }
 
-test('T03 Hub overlay replaces legacy scheduled analytics with bounded public collector',async t=>{
-  if(!fs.existsSync(basePath))return t.skip('sanitized exact Hub module is not present in this workspace');
-  const base=fs.readFileSync(basePath,'utf8'),injected=fs.readFileSync(injectedPath,'utf8').trim();
-  const patched=base.includes('__REPORT2_PUBLIC_COLLECTOR_HANDLER as default')
-    ? {source:base,status:'ALREADY_PATCHED'}
-    : patchWorker(base,injected);
-  assert.ok(['PATCHED','ALREADY_PATCHED'].includes(patched.status));
+test('T03 Hub overlay replaces legacy scheduled analytics with bounded public collector',async()=>{
+  const fallback='const worker_default={fetch(){return new Response("ok")}};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v3-contract-integrity-20260928";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const base=fs.existsSync(basePath)?fs.readFileSync(basePath,'utf8'):fallback,injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const patched=patchWorker(base,injected);
+  assert.ok(['PATCHED','UPGRADED','ALREADY_PATCHED'].includes(patched.status));
   assert.match(patched.source,/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/);
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'report2-public-collector-')),file=path.join(dir,'worker.mjs');
   fs.writeFileSync(file,patched.source);
   const worker=(await import(`${pathToFileURL(file).href}?test=${Date.now()}`)).default;
   const db=new FakeD1(),scheduledTime=Date.UTC(2026,8,28,12,5,0);
   const unicodeContracts=['币-USDT','測試-USDT','ТОКЕН-USDT','Δ-USDT'];
-  const contracts=['SOL-USDT','QNT-USDT',...unicodeContracts];
+  const contracts=['SOL-USDT','QNT-USDT',...unicodeContracts,...Array.from({length:355},(_,i)=>`C${String(i).padStart(3,'0')}-USDT`)];
   const originalFetch=globalThis.fetch;
   globalThis.fetch=async url=>{
     const value=String(url),ts=scheduledTime;
@@ -72,8 +71,14 @@ test('T03 Hub overlay replaces legacy scheduled analytics with bounded public co
     await assert.rejects(worker.scheduled({scheduledTime:scheduledTime+300000},{...env,DATA_DB:failedDb},{waitUntil(){}}),/PUBLIC_COLLECTOR_PROVIDER_STATUS_error/);
     assert.equal(failedDb.usage.state,'ERROR');assert.equal(failedDb.usage.status,'ERROR');assert.equal(failedDb.health.status,'ERROR');
   }finally{globalThis.fetch=originalFetch;fs.rmSync(dir,{recursive:true,force:true});}
-  assert.equal(db.snapshots.length,1);
-  const rows=JSON.parse(db.snapshots[0].payload);
+  assert.equal(db.snapshots.length,6);
+  const rows=db.snapshots.flatMap(shard=>{
+    assert.equal(crypto.createHash('sha256').update(shard.payload).digest('hex'),shard.payload_hash);
+    assert.ok(Buffer.byteLength(shard.payload)<=64*1024);
+    return JSON.parse(shard.payload);
+  });
+  assert.equal(rows.length,361);
+  assert.equal(new Set(rows.map(row=>row.contract)).size,361);
   for(const contract of contracts)assert.ok(rows.some(row=>row.contract===contract),contract);
   assert.equal(unicodeContracts.every(contract=>rows.some(row=>row.contract===contract)),true);
   assert.equal(db.health.status,'CLOSED');
@@ -87,7 +92,17 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
+  assert.match(upgraded.source,/report2-public-collector-v4-linear-pack-20260929/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
+});
+
+test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const previous='const hubPrefix=true;\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v3-contract-integrity-20260928";\nconst oldTail=true;\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const upgraded=patchWorker(previous,injected);
+  assert.equal(upgraded.status,'UPGRADED');
+  assert.match(upgraded.source,/const hubPrefix=true/);
+  assert.match(upgraded.source,/report2-public-collector-v4-linear-pack-20260929/);
+  assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
 });
