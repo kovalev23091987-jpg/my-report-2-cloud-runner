@@ -9,7 +9,7 @@ const rejected={contract:'龙虾-USDT',direction:'SHORT',canonical_state:'REJECT
 test('rejected run has a ready Russian report without technical diagnostics',()=>{
  const text=formatManualRunSummary({status:'CLOSED',candidates:[rejected],generated_at});
  assert.match(text,/МОЙ ОТЧЁТ 2/u);
- assert.match(text,/ПОКУПКА[\s\S]*ПРОДАЖА/u);
+ assert.match(text,/ЛОНГ[\s\S]*ШОРТ/u);
  assert.match(text,/龙虾-USDT.*73 из 100.*отклонена/u);
  assert.match(text,/Действие сейчас: не входить/u);
  assert.doesNotMatch(text,/GitHub|CLOSED|HTX Futures|DEGRADED|источник|запуск|364|72 из 72/u);

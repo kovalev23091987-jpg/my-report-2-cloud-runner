@@ -35,7 +35,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at}={}){
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),''];
  let found=0;
  for(const direction of ['LONG','SHORT']){
-  lines.push(direction==='LONG'?'ПОКУПКА':'ПРОДАЖА');
+  lines.push(direction==='LONG'?'ЛОНГ':'ШОРТ');
   const ideas=candidates.filter(row=>row?.direction===direction&&proven(row,generated_at));
   if(!ideas.length)lines.push('Подтверждённых идей сейчас нет.');
   else for(const row of ideas){lines.push(...idea(row));found++;}
