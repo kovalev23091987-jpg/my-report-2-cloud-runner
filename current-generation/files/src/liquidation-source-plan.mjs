@@ -1,6 +1,17 @@
 import {chooseWeightedLiquidationLane} from './liquidation-source-weighting.mjs';
 
 export const SOURCE_IDS=Object.freeze(['HTX','BINANCE','BYBIT','OKX','GATE','COINALYZE','HYPERLIQUID_NATIVE','LIQFLOW_DISCOVERY','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS','COINLOBSTER','DEX_SCREENER','GECKOTERMINAL','DEFILLAMA','GOPLUS','SOLANA_RPC','BITGET','COINBASE','DERIBIT']);
+
+export function chooseMappedLiquidationFallback(candidates=[],entries={},excludedContract=null){
+ for(const row of Array.isArray(candidates)?candidates:[]){
+  const contract=String(row?.contract||'').toUpperCase();
+  if(!/^[A-Z0-9]{1,32}-USDT$/.test(contract)||contract===excludedContract||['BTC-USDT','ETH-USDT'].includes(contract))continue;
+  const identity=entries?.[contract.slice(0,-5)];
+  if((Number.isSafeInteger(identity?.lighter_market_id)&&identity.lighter_market_id>=0)||
+    /^0x[0-9a-f]{40}$/i.test(identity?.gmx_market_address||''))return row;
+ }
+ return null;
+}
 const COST=Object.freeze({HYPERLIQUID_NATIVE:5,GTRADE_NATIVE:3,LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1});
 
 export function buildLiquidationRequestPlan({mode='STANDARD',available=[],seed='',health_rows=[]}={}){
