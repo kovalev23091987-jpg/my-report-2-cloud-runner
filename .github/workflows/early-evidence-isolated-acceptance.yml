@@ -115,12 +115,12 @@ jobs:
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
-      REPORT2_CANDIDATE_BRANCH: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref_name }}
+      REPORT2_CANDIDATE_BRANCH: ${{ github.event_name == 'schedule' && 'main' || github.ref_name }}
     steps:
       - name: Checkout isolated repair branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref }}
+          ref: ${{ github.event_name == 'schedule' && 'main' || github.ref }}
           fetch-depth: 0
       - name: Bind exact candidate and refuse stale branch
         shell: bash
