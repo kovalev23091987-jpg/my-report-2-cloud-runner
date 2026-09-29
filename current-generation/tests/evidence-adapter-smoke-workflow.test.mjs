@@ -20,3 +20,10 @@ test('K16 live smoke is isolated from manual queue, full analytics and Telegram'
  assert.match(smoke,/collectDeribitAltOptionsEvidence/);assert.match(smoke,/telegram_network_calls:0/);
  assert.doesNotMatch(smoke,/TELEGRAM_RELAY|sendMessage|runTelegram/);
 });
+
+test('K21 Kraken/dYdX smoke is isolated from the report and copied into assembled runtime',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),smoke=fs.readFileSync(new URL('../../audit-fixes/v13/run-shadow-market-smoke.mjs',import.meta.url),'utf8'),overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
+ assert.match(workflow,/inputs\.reason == 'V13_SHADOW_MARKET_SMOKE'/);assert.match(workflow,/inputs\.reason != 'V13_SHADOW_MARKET_SMOKE'/);assert.match(workflow,/run-shadow-market-smoke\.mjs runtime/);
+ assert.match(smoke,/telegram_network_calls:0/);assert.match(smoke,/score_changed:false/);assert.match(smoke,/entry_authorization:false/);assert.doesNotMatch(smoke,/sendMessage|TELEGRAM_RELAY/);
+ assert.match(overlay,/shadow-market-pilot\.mjs/);assert.match(overlay,/hyperliquid-market-context\.mjs/);
+});
