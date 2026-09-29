@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v3-contract-integrity-20260928";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -117,18 +117,20 @@ async function __report2PublicCollectorPack({ bucket, received_ts, source_timest
   var ordered = [...rows].sort((a, b) => String(a.contract).localeCompare(String(b.contract)));
   var groups = [];
   var current = [];
+  var currentBytes = 2; // JSON array brackets; commas and UTF-8 row bytes are added once.
+  var encoder = new TextEncoder();
   var encoded = (value) => {
     var payload = JSON.stringify(value);
-    return { payload, bytes: new TextEncoder().encode(payload).length };
+    return { payload, bytes: encoder.encode(payload).length };
   };
   var flush = () => {
-    if (current.length) groups.push(current), current = [];
+    if (current.length) groups.push(current), current = [], currentBytes = 2;
   };
   for (var row of ordered) {
-    var single = encoded([row]);
-    if (single.bytes > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) throw new Error("PUBLIC_COLLECTOR_SINGLE_CONTRACT_TOO_LARGE");
-    var candidate = encoded([...current, row]);
-    if (current.length >= __REPORT2_PUBLIC_COLLECTOR_MAX_CONTRACTS_PER_SHARD || candidate.bytes > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) flush();
+    var rowBytes = encoder.encode(JSON.stringify(row)).length;
+    if (rowBytes + 2 > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) throw new Error("PUBLIC_COLLECTOR_SINGLE_CONTRACT_TOO_LARGE");
+    if (current.length >= __REPORT2_PUBLIC_COLLECTOR_MAX_CONTRACTS_PER_SHARD || currentBytes + rowBytes + (current.length ? 1 : 0) > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) flush();
+    currentBytes += rowBytes + (current.length ? 1 : 0);
     current.push(row);
   }
   flush();
