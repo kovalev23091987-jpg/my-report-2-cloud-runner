@@ -19439,6 +19439,16 @@ const __REPORT2_ORIGINAL_HANDLER = {
       const fullEvidenceFailure=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])
         .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
         .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
+      const scanPersistenceStatus=scan?.persistence?.status||null;
+      const scanCompleted=Boolean(scan?.health?.contracts&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
+      const scanFailure=scanCompleted?null:{
+        status:'DEGRADED_PIPELINE',
+        reason:(!scan?.health?.contracts||!(scan?.counts?.universe_total>0))?'STAGE0_SCAN_FAILED':'STAGE0_PERSISTENCE_FAILED',
+        failure_stage:'STAGE0_SCAN',
+        diagnostic:{endpoint_errors:scan?.endpoint_errors??null,persistence:scan?.persistence??null},
+      };
+      const insufficientDeepResult=(boundedDeepCheck?.results||[]).find(row=>
+        String(row?.data_sufficiency?.classification??row?.data_sufficiency??'').toUpperCase()==='INSUFFICIENT');
       const baseLiveHandoffZeroReason =
         classifyV3LiveHandoffZeroReason({
           handoff_plan:
@@ -19446,7 +19456,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
           bounded_deep_check:
             boundedDeepCheck,
         });
-      const liveHandoffZeroReason=fullEvidenceFailure?'FULL_EVIDENCE_PERSISTENCE_FAILED':baseLiveHandoffZeroReason;
+      const liveHandoffZeroReason=scanFailure?scanFailure.reason:fullEvidenceFailure?'FULL_EVIDENCE_PERSISTENCE_FAILED':baseLiveHandoffZeroReason;
 
       const assessedV3PipelineHealth =
         assessV3PipelineHealth({
@@ -19457,8 +19467,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
           zero_reason:
             liveHandoffZeroReason,
         });
-      const v3PipelineHealth=fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:assessedV3PipelineHealth;
-      const deepOutcomeClassification=fullEvidenceFailure?'TECHNICAL_FAILURE':Number(boundedDeepCheck?.plan?.counts?.selected??0)===0?'NOT_SELECTED_CAPACITY':(boundedDeepCheck?.results||[]).some(row=>String(row?.data_sufficiency||'').toUpperCase().includes('INSUFFICIENT'))?'INSUFFICIENT_DATA':boundedDeepCheck?.decision?.generated===true?'DECISION_GENERATED':'MARKET_REJECTED';
+      const v3PipelineHealth=scanFailure||(fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:insufficientDeepResult?{status:'DEGRADED_PIPELINE',reason:'DEEP_DATA_INSUFFICIENT',failure_stage:'DEEP_DATA_SUFFICIENCY',diagnostic:{contract:insufficientDeepResult.contract,gaps:insufficientDeepResult.data_sufficiency?.gaps??[]}}:assessedV3PipelineHealth);
+      const deepOutcomeClassification=scanFailure||fullEvidenceFailure?'TECHNICAL_FAILURE':insufficientDeepResult?'INSUFFICIENT_DATA':Number(boundedDeepCheck?.plan?.counts?.selected??0)===0?'NOT_SELECTED_CAPACITY':boundedDeepCheck?.decision?.generated===true?'DECISION_GENERATED':'MARKET_REJECTED';
 
       console.log(
         "v3_live_handoff_health",
@@ -19754,21 +19764,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
         "stage392_full_evidence_maintenance",
         JSON.stringify({ run_id: runId, ...stage392FullEvidenceMaintenance })
       );
-      const persistenceStatus =
-        scan?.persistence
-          ?.status ||
-        null;
-
-      const success =
-        Boolean(
-          scan?.health
-            ?.contracts &&
-          scan?.counts
-            ?.universe_total >
-            0 &&
-          persistenceStatus ===
-            "CLOSED"
-        );
+      const persistenceStatus=scanPersistenceStatus;
+      const success=scanCompleted;
 
       const completedTs =
         Date.now();
