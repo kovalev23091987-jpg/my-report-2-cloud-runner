@@ -152,6 +152,10 @@ function observationPlan({publication,route,direction,price,opportunity,observed
  const level=routedLevel??factualCandleLevel;
  const cancel=anomalyClosed?(direction==='LONG'&&eventLow<level?eventLow:direction==='SHORT'&&eventHigh>level?eventHigh:null):null;
  if(level===null||cancel===null)return null;
+ // The stated cancellation condition must still be false at this snapshot.
+ // An old candle can supply a target while its opposite boundary was already
+ // crossed; publishing that as a live watch would contradict its own plan.
+ if((direction==='LONG'&&price<cancel)||(direction==='SHORT'&&price>cancel))return null;
  const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,opportunity,rolling_24h_change_pct:finite(discovery?.rolling_24h_change_pct),oi_change_pct:finite(discovery?.best_oi_build_pct),volume_ratio:finite(discovery?.volume_ratio),funding_rate_pct:finite(discovery?.funding_per_hour_pct??discovery?.funding_rate_pct),early_anomaly:pump?.pump?.early_anomaly===true});
  if(potential.status!=='CLOSED')return null;
  const entry={area:`${level} USDT`,min_price:level,max_price:level,basis:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
