@@ -36,7 +36,7 @@ jobs:
       - name: Verify source proof fixes without external source requests
         run: |
           cd runtime
-          npm ci --ignore-scripts --no-audit --no-fund
+          npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cd ..
           node current-generation/validate.mjs
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs
