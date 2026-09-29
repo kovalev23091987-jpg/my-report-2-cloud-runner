@@ -35,7 +35,10 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
   // Reserve synchronously before any await, including denied/ambiguous attempts.
   attempts.add(request.reservation_id);reserved+=n;grossReserved+=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,(rates.get(k)||0)+v);}
   let result;try{result=await provider_admit(request);}catch{errors.push('UPSTREAM_QUOTA_ACK_UNKNOWN');return no('UPSTREAM_QUOTA_ACK_UNKNOWN');}
-  if(result?.allowed!==true||result?.new_reservation!==true)return no('UPSTREAM_QUOTA_NOT_GRANTED');
+  if(result?.allowed!==true||result?.new_reservation!==true){
+   const upstreamReason=String(result?.reason||'UNKNOWN').trim().slice(0,160)||'UNKNOWN';
+   return no(`UPSTREAM_QUOTA_NOT_GRANTED:${upstreamReason}`);
+  }
   if(!deadlineOk()||clock()>=request.deadline_ts)return no('SOURCE_PHASE_EXPIRED_AFTER_QUOTA_ACK');
   for(const [p,v]of parts)granted.set(p,(granted.get(p)||0)+v);
   return {...result,combined_local_reservation:true,local_rates_are_policy_not_provider_entitlement:true};
