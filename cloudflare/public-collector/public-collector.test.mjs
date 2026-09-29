@@ -34,7 +34,7 @@ class FakeD1{
     throw new Error(`UNEXPECTED_ALL:${sql}`);
   }
   async run(sql,args){
-    if(sql.includes('INSERT OR IGNORE INTO report2_public_collector_usage_v1')){this.usage={state:'STARTED',claim_token:args[3],lease_until:args[4],status:'STARTED'};return{meta:{changes:1}};}
+    if(sql.includes('INSERT OR IGNORE INTO report2_public_collector_usage_v1')){this.usage={state:'STARTED',claim_token:args[3],lease_until:args[4],started_ts:args[5],status:'STARTED'};return{meta:{changes:1}};}
     if(sql.includes('INSERT INTO report2_market_snapshot_batch_v1')){this.snapshots.push({shard:args[4],payload_hash:args[8],status:args[7],payload:args[9]});return{meta:{changes:1}};}
     if(sql.includes('UPDATE report2_public_collector_usage_v1 SET')){this.usage={...this.usage,state:args[4],status:args[10],rows_written:args[8]};return{meta:{changes:1}};}
     if(sql.includes('INSERT INTO report2_public_collector_health_v1')){this.health={status:args[5],contracts:args[6],shards:args[7],external_requests:args[8]};return{meta:{changes:1}};}
@@ -44,7 +44,7 @@ class FakeD1{
 }
 
 test('T03 Hub overlay replaces legacy scheduled analytics with bounded public collector',async()=>{
-  const fallback='const worker_default={fetch(){return new Response("ok")}};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v3-contract-integrity-20260928";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const fallback='const worker_default={fetch(){return new Response("ok")}};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
   const base=fs.existsSync(basePath)?fs.readFileSync(basePath,'utf8'):fallback,injected=fs.readFileSync(injectedPath,'utf8').trim();
   const patched=patchWorker(base,injected);
   assert.ok(['PATCHED','UPGRADED','ALREADY_PATCHED'].includes(patched.status));
@@ -84,6 +84,7 @@ test('T03 Hub overlay replaces legacy scheduled analytics with bounded public co
   assert.equal(db.health.status,'CLOSED');
   assert.equal(db.health.external_requests,4);
   assert.equal(db.usage.state,'CLOSED');
+  assert.equal(db.usage.lease_until-db.usage.started_ts,120_000);
 });
 
 test('T03 upgrades the already deployed V1 collector without touching the Hub prefix',()=>{
@@ -92,7 +93,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v4-linear-pack-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });
@@ -103,6 +104,16 @@ test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v4-linear-pack-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
+});
+
+test('T03 upgrades V4 while retaining exact bounded claims and a shorter backup lease',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const previous='const worker_default={};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const upgraded=patchWorker(previous,injected);
+  assert.equal(upgraded.status,'UPGRADED');
+  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
+  assert.doesNotMatch(upgraded.source,/now \+ 24e4/);
+  assert.equal((upgraded.source.match(/now \+ 12e4/g)||[]).length,2);
 });
