@@ -15,7 +15,9 @@ test('scheduled queue joins common selection, cannot override recheck/manual, an
  assert.match(worker,/starved=attempts>=3/);
  assert.match(worker,/selection_status:'NOT_SELECTED_CAPACITY'/);
  assert.match(worker,/crossExchangeFamilyTurn/);
- assert.match(worker,/!crossExchangeFamilyTurn&&\(manualCoin\|\|queuedCoin/);
+ assert.match(worker,/buildCandidateSourceRoutingPlan/);
+ assert.match(worker,/remainingLiquidationHttpCap/);
+ assert.match(worker,/CANDIDATE_SOURCE_CONFIRMATION_ROUTE/);
  assert.match(worker,/DEFERRED_SHARED_REQUEST_ENVELOPE/);
  assert.match(worker,/predictive_source_health:env\?\.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH/);
  assert.match(worker,/cross_exchange_risk:crossExchangeRiskContext/);

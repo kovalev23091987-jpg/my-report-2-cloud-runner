@@ -46,7 +46,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at}={}){
   const rejected=candidates.filter(row=>row?.canonical_state==='REJECTED'&&contract(row?.contract));
   if(rejected.length){
    const row=rejected[0],score=finite(row.canonical?.scores?.coin_interest_0_100);
-   lines.push(`${row.contract} ${row.direction==='LONG'?'на покупку':row.direction==='SHORT'?'на продажу':''}${score!==null?` получила оценку ${Math.round(score)} из 100,`:''} но подтверждённого плана входа нет. Идея отклонена.`);
+   lines.push(`${row.contract} ${row.direction==='LONG'?'на покупку':row.direction==='SHORT'?'на продажу':''}${score!==null?` получила раннюю оценку интереса ${Math.round(score)} из 100,`:''} но подтверждающая проверка не сформировала полный план входа. Идея отклонена.`);
   }
   lines.push('Действие сейчас: не входить.');
  }

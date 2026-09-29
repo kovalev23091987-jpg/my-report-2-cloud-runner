@@ -1,19971 +1,3455 @@
-import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
-import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
-import { persistCanonicalSnapshot } from './canonical-publication.mjs';
-import { claimDueRecheck, completeRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
-import {
-  FAST_MOVE_WATCH_VERSION,
-  FAST_MOVE_WATCH_STATUS,
-  buildFastMoveDeepObservation,
-  prepareFastMoveWatchCycle,
-  finalizeFastMoveWatchCycle,
-  fastMoveWatchDataPlaneSummary,
-} from "./fast-move-watch-runtime.mjs";
-
-import {
-  OPPORTUNITY_VERSION,
-  buildOpportunityJournalPrefilter,
-  opportunityDataPlaneSummary,
-  runOpportunityShadowCycle,
-  selectOpportunityJournalCandidate,
-} from "./opportunity-intelligence-runtime.mjs";
-
-import {
-  MULTI_WAVE_VERSION,
-  multiWaveCampaignDataPlaneSummary,
-  runMultiWaveCampaignShadowCycle,
-} from "./multi-wave-campaign-runtime.mjs";
-
-import {
-  prepareTz101DecisionEvidence,
-  prepareHtxExecutionFacts,
-  checkExecutionHandoff,
-  prepareFullEvidenceProofBundle,
-  sealFullEvidenceProofBundleAfterAck,
-  stage392ProofSafetyEnvelope,
-} from "./stage392-proof-runtime.mjs";
-
-import {
-  evaluateFinalDecisionUpstreamCompatibility,
-} from "./final-decision-upstream-compat-runtime.mjs";
-
-import {
-  buildV3LiveHandoffPlan,
-  buildDiscoveryHandoffEnvelope,
-  classifyV3LiveHandoffZeroReason,
-  assessV3PipelineHealth,
-} from "./v3-live-handoff.mjs";
-
-import {
-  adaptStage391ToFinalDecisionInput,
-} from "./final-decision-integration-adapter.mjs";
-
-import {
-  persistFinalDecisionIntegrationShadow,
-} from "./final-decision-integration-runtime.mjs";
-
-import {
-  runTz101PublicationShadow,
-} from "./tz101-publication-runtime.mjs";
-
-import {
-  buildApprovedPublicationInputs,
-} from "./user-approved-publication-policy.mjs";
-
-import {
-  validateByKaranteliProxyTarget,
-} from "./tz101-byk-proxy-policy.mjs";
-
-import {
-  fetchByKaranteliSmartMoneyRaw,
-  smartMoneyRawEvidenceRows,
-} from "./tz101-smart-money-evidence.mjs";
-
-import {
-  fetchExistingSmartMoneyRecorderRaw,
-  hyperliquidRegistryReceipt,
-  hyperliquidAdvisoryEvidenceRows,
-} from "./hyperliquid-recorder-extension.mjs";
-
-import {
-  collectPublicFullEvidence as collectPublicFullEvidenceCrossVenue,
-} from "./public-evidence-adapters.mjs";
-
-import {
-  buildFullEvidenceShadowRecord as buildFullEvidenceShadowRecordCrossVenue,
-} from "./full-evidence-shadow-model.mjs";
-
-import {
-  evaluateHtxFuturesTurnoverGate,
-} from "./htx-turnover-gate.mjs";
-
-import {
-  loadEarlyBridgeInputs,
-  applyEarlyCandidateBridge,
-} from "./early-candidate-bridge.mjs";
-
-import {
-  preserveQualifiedEarlyWaveContinuity,
-} from "./early-wave-continuity.mjs";
-
-import {
-  buildRuntimeCanonicalBundle,
-} from "./canonical-runtime-adapter.mjs";
-import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
-import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
-import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
-
-import {
-  buildFreeSourceRuntimeSummary,
-} from "./source-registry.mjs";
-
-import {contextForContract} from './global-market-context.mjs';
-
-const STAGE392_SHADOW_INTEGRATION_VERSION = "3.9.2-final-decision-shadow-lifecycle-hardening";
-const TELEGRAM_SHADOW_BRIDGE_VERSION = "3.9.3-telegram-shadow-bridge";
-const TELEGRAM_SHADOW_BODYFIX_VERSION = "3.9.3.1-telegram-shadow-bodyfix";
-
-const FUTURES_BASE = "https://api.hbdm.com";
-const SPOT_BASE = "https://api.htx.com";
-const STAGE0_EXTERNAL_REQUESTS = 4;
-const DEEP_CHECK_EXTERNAL_REQUESTS = 39;
-const SMART_MONEY_EXTERNAL_REQUESTS = 1;
-const WORKERS_FREE_EXTERNAL_LIMIT = 50;
-const EXTERNAL_REQUEST_RESERVE = 6;
-
-async function loadPreviousEvidenceSnapshotForCanonical(
-  db,
-  contractCode,
-  beforeTs
-) {
-  const contract =
-    String(contractCode || "")
-      .trim()
-      .toUpperCase();
-  const ts =
-    Number(beforeTs);
-
-  if (
-    !db?.prepare ||
-    !contract ||
-    !Number.isFinite(ts)
-  ) {
-    return {
-      status: "NOT_CLOSED",
-      reason:
-        "PREVIOUS_SNAPSHOT_INPUT_NOT_CLOSED",
-      row: null,
-    };
-  }
-
-  try {
-    const row =
-      await db
-        .prepare(`
-          SELECT
-            contract_code,
-            observed_ts,
-            dq_status,
-            evidence_compact_json,
-            conflicts_json
-          FROM full_evidence_shadow_log
-          WHERE
-            contract_code = ?1
-            AND observed_ts < ?2
-          ORDER BY
-            observed_ts DESC
-          LIMIT 1
-        `)
-        .bind(
-          contract,
-          ts
-        )
-        .first();
-
-    return {
-      status:
-        row
-          ? "CLOSED"
-          : "NO_PREVIOUS_SNAPSHOT",
-      reason:
-        row
-          ? null
-          : "NO_PREVIOUS_SNAPSHOT",
-      row:
-        row || null,
-    };
-  } catch (error) {
-    return {
-      status:
-        "READ_FAILED",
-      reason:
-        String(
-          error?.message ||
-          error
-        ).slice(
-          0,
-          240
-        ),
-      row:
-        null,
-    };
-  }
-}
-
-const JSON_HEADERS = {
-  "content-type": "application/json; charset=UTF-8",
-  "cache-control": "no-store",
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET,POST,OPTIONS",
-  "access-control-allow-headers": "Content-Type",
-};
-
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: JSON_HEADERS,
-  });
-}
-
-function num(value) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : null;
-}
-
-function nullableNum(value) {
-  if (value === null || value === undefined || value === "") return null;
-  return num(value);
-}
-
-function clamp(value, min, max, fallback) {
-  const n = Number(value);
-  if (!Number.isFinite(n)) return fallback;
-  return Math.min(max, Math.max(min, n));
-}
-
-function normalizeTs(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0) return null;
-  return n < 1e12 ? n * 1000 : n;
-}
-
-function iso(value) {
-  const ms = normalizeTs(value);
-  if (ms === null) return null;
-  try {
-    return new Date(ms).toISOString();
-  } catch {
-    return null;
-  }
-}
-
-function pctChange(start, end) {
-  const a = num(start);
-  const b = num(end);
-  if (a === null || b === null || a === 0) return null;
-  return (b / a - 1) * 100;
-}
-
-function normalizeFuturesContract(value) {
-  let s = String(value || "ETHFI-USDT")
-    .trim()
-    .toUpperCase()
-    .replace("/", "-")
-    .replace("_", "-");
-
-  if (!s.includes("-") && s.endsWith("USDT")) {
-    s = `${s.slice(0, -4)}-USDT`;
-  }
-  return s;
-}
-
-function normalizeSpotSymbol(value) {
-  return String(value || "ETHFI-USDT")
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "");
-}
-
-async function fetchJson(url) {
-  let timeout = null;
-  try {
-    const controller = new AbortController();
-    timeout = setTimeout(() => controller.abort(), 10000);
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "user-agent": "My-Report-2-HUB/2.2",
-      },
-      signal: controller.signal,
-    });
-
-    const text = await response.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      return {
-        ok: false,
-        url,
-        http_status: response.status,
-        error: "invalid_json",
-      };
-    }
-
-    const apiOk =
-      response.ok &&
-      (data?.status === "ok" ||
-        data?.code === 200 ||
-        data?.success === true ||
-        (data?.status === undefined &&
-          data?.code === undefined &&
-          data?.success === undefined));
-
-    return {
-      ok: apiOk,
-      url,
-      http_status: response.status,
-      data,
-      error: apiOk
-        ? null
-        : data?.["err-msg"] ||
-          data?.err_msg ||
-          data?.message ||
-          data?.msg ||
-          "api_error",
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      url,
-      http_status: null,
-      data: null,
-      error:
-        error?.name === "AbortError"
-          ? "timeout"
-          : String(error?.message || error),
-    };
-  } finally {
-    if (timeout) clearTimeout(timeout);
-  }
-}
-
-function createPerDeepCheckFetchCache(
-  fetcher = fetchJson,
-  maxUniqueRequests = DEEP_CHECK_EXTERNAL_REQUESTS,
-  executionRefreshReserve = 2
-) {
-  const cache = new Map();
-  let logicalRequests = 0;
-  let reusedRequests = 0;
-  let uniqueExternalRequests = 0;
-  let uniqueBlockedRequests = 0;
-  const requestCap = Math.max(0, Math.min(
-    DEEP_CHECK_EXTERNAL_REQUESTS,
-    Number.isSafeInteger(maxUniqueRequests) ? maxUniqueRequests : DEEP_CHECK_EXTERNAL_REQUESTS
-  ));
-  const requestedRefreshReserve = arguments.length >= 3
-    ? executionRefreshReserve
-    : (requestCap === DEEP_CHECK_EXTERNAL_REQUESTS ? 2 : 0);
-  const refreshReserve = Math.max(0,Math.min(2,Number.isSafeInteger(requestedRefreshReserve)?requestedRefreshReserve:2,requestCap));
-  const start = (url,{bypassCache=false}={}) => {
-      logicalRequests += 1;
-      const target = String(url);
-      const key = bypassCache ? `EXECUTION_REFRESH:${logicalRequests}:${target}` : target;
-      if (!bypassCache && cache.has(key)) {
-        reusedRequests += 1;
-        return cache.get(key);
-      }
-      const laneCap=bypassCache?requestCap:Math.max(0,requestCap-refreshReserve);
-      let pending;
-      if (uniqueExternalRequests >= laneCap) {
-        uniqueBlockedRequests += 1;
-        pending = Promise.resolve({
-          ok: false,
-          status: null,
-          data: null,
-          error: "DEEP_CHECK_EXTERNAL_REQUEST_CAP_EXCEEDED_FAIL_CLOSED",
-          url: target,
-        });
-      } else {
-        uniqueExternalRequests += 1;
-        pending = Promise.resolve().then(() => fetcher(target));
-      }
-      cache.set(key, pending);
-      return pending;
-  };
-  return {
-    fetch(url) { return start(url); },
-    refresh(url) { return start(url,{bypassCache:true}); },
-    stats() {
-      const result = {
-        logical_requests: logicalRequests,
-        unique_request_keys: cache.size,
-        unique_external_requests: uniqueExternalRequests,
-        unique_blocked_requests: uniqueBlockedRequests,
-        unique_external_request_cap: requestCap,
-        reused_requests: reusedRequests,
-      };
-      // Additive diagnostic stays accessible to the new decision-timeline
-      // acceptance without changing the enumerable legacy stats contract.
-      Object.defineProperty(result,"execution_refresh_reserve",{value:refreshReserve,enumerable:false});
-      return result;
-    },
-  };
-}
-
-function sumDepth(levels, count, unitBaseQty = 1) {
-  const slice = Array.isArray(levels) ? levels.slice(0, count) : [];
-  let rawQuantity = 0;
-  let baseQuantity = 0;
-  let notional = 0;
-
-  for (const level of slice) {
-    const price = num(level?.[0]);
-    const qty = num(level?.[1]);
-    if (price === null || qty === null) continue;
-
-    const base = qty * unitBaseQty;
-    rawQuantity += qty;
-    baseQuantity += base;
-    notional += price * base;
-  }
-
-  return {
-    levels: slice.length,
-    raw_quantity: rawQuantity,
-    base_quantity: baseQuantity,
-    notional_usdt: notional,
-  };
-}
-
-function orderBookImbalance(bids, asks, count, unitBaseQty = 1) {
-  const bid = sumDepth(bids, count, unitBaseQty);
-  const ask = sumDepth(asks, count, unitBaseQty);
-  const total = bid.notional_usdt + ask.notional_usdt;
-
-  return {
-    bid_notional_usdt: bid.notional_usdt,
-    ask_notional_usdt: ask.notional_usdt,
-    imbalance:
-      total > 0 ? (bid.notional_usdt - ask.notional_usdt) / total : null,
-    imbalance_pct:
-      total > 0
-        ? ((bid.notional_usdt - ask.notional_usdt) / total) * 100
-        : null,
-  };
-}
-
-function marketImpact(
-  levels,
-  targetNotional,
-  referencePrice,
-  side,
-  unitBaseQty = 1
-) {
-  if (
-    !Array.isArray(levels) ||
-    levels.length === 0 ||
-    !Number.isFinite(targetNotional) ||
-    targetNotional <= 0 ||
-    !Number.isFinite(referencePrice) ||
-    referencePrice <= 0
-  ) {
-    return null;
-  }
-
-  let quoteFilled = 0;
-  let baseFilled = 0;
-  let rawFilled = 0;
-  let levelsUsed = 0;
-
-  for (const level of levels) {
-    const price = num(level?.[0]);
-    const rawQty = num(level?.[1]);
-
-    if (
-      price === null ||
-      rawQty === null ||
-      price <= 0 ||
-      rawQty <= 0
-    ) {
-      continue;
-    }
-
-    const baseAvailable = rawQty * unitBaseQty;
-    const quoteAvailable = baseAvailable * price;
-    const quoteNeeded = targetNotional - quoteFilled;
-
-    if (quoteNeeded <= 0) break;
-
-    const quoteTake = Math.min(quoteAvailable, quoteNeeded);
-    const baseTake = quoteTake / price;
-
-    quoteFilled += quoteTake;
-    baseFilled += baseTake;
-    rawFilled += baseTake / unitBaseQty;
-    levelsUsed += 1;
-
-    if (quoteFilled >= targetNotional * 0.999999) break;
-  }
-
-  if (baseFilled <= 0) return null;
-
-  const vwap = quoteFilled / baseFilled;
-  const impactBps =
-    side === "buy"
-      ? (vwap / referencePrice - 1) * 10000
-      : (1 - vwap / referencePrice) * 10000;
-
-  return {
-    requested_notional_usdt: targetNotional,
-    filled_notional_usdt: quoteFilled,
-    fill_ratio_pct: (quoteFilled / targetNotional) * 100,
-    base_quantity: baseFilled,
-    raw_quantity: rawFilled,
-    vwap,
-    impact_bps: impactBps,
-    levels_used: levelsUsed,
-    fully_filled: quoteFilled >= targetNotional * 0.999,
-  };
-}
-
-const MAX_TRADE_CONTAINERS_SCANNED = 2500;
-const MAX_RAW_TRADES_FLATTENED = 10000;
-
-function tradeArrayWithScanMetadata(rows, metadata = {}) {
-  const output = Array.isArray(rows) ? rows : [];
-  Object.defineProperties(output, {
-    _source_truncated: { value: metadata.source_truncated === true, enumerable: false },
-    _containers_scanned: { value: Number(metadata.containers_scanned || 0), enumerable: false },
-    _raw_rows_scanned: { value: Number(metadata.raw_rows_scanned || output.length), enumerable: false },
-    _source_rows_dropped: { value: Number(metadata.source_rows_dropped || 0), enumerable: false },
-  });
-  return output;
-}
-
-function flattenTrades(raw) {
-  if (!raw) return tradeArrayWithScanMetadata([]);
-  const input = Array.isArray(raw)
-    ? raw
-    : Array.isArray(raw?.data)
-      ? raw.data
-      : Array.isArray(raw?.tick?.data)
-        ? raw.tick.data
-        : [];
-  const result = [];
-  const containerLimit = Math.min(input.length, MAX_TRADE_CONTAINERS_SCANNED);
-  let sourceTruncated = input.length > containerLimit;
-  let rawRowsScanned = 0;
-  let sourceRowsDropped = 0;
-
-  outer: for (let index = 0; index < containerLimit; index += 1) {
-    const item = input[index];
-    const rows = Array.isArray(item?.data) ? item.data : [item];
-    for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-      if (rawRowsScanned >= MAX_RAW_TRADES_FLATTENED) {
-        sourceTruncated = true;
-        break outer;
-      }
-      rawRowsScanned += 1;
-      const trade = rows[rowIndex];
-      if (trade && typeof trade === "object") result.push(trade);
-      else sourceRowsDropped += 1;
-    }
-  }
-
-  return tradeArrayWithScanMetadata(result, {
-    source_truncated: sourceTruncated,
-    containers_scanned: containerLimit,
-    raw_rows_scanned: rawRowsScanned,
-    source_rows_dropped: sourceRowsDropped,
-  });
-}
-
-function tradeTime(t) {
-  return normalizeTs(t?.ts);
-}
-
-function sortedTrades(trades) {
-  const sorted = [...trades].sort(
-    (a, b) => (tradeTime(a) || 0) - (tradeTime(b) || 0)
-  );
-  return tradeArrayWithScanMetadata(sorted, {
-    source_truncated: trades?._source_truncated === true,
-    containers_scanned: trades?._containers_scanned,
-    raw_rows_scanned: trades?._raw_rows_scanned,
-    source_rows_dropped: trades?._source_rows_dropped,
-  });
-}
-
-function tradeIdentity(trade) {
-  const value =
-    trade?.["trade-id"] ??
-    trade?.trade_id ??
-    trade?.id;
-  if (value === null || value === undefined) return null;
-  const normalized = String(value).trim();
-  return normalized ? normalized : null;
-}
-
-function rawTradeRecordIntegrity(
-  trades,
-  { market = "spot", contract_size = null } = {}
-) {
-  const rows = Array.isArray(trades) ? trades : [];
-  const ids = [];
-  let missingIdentity = 0;
-  let invalidPayload = 0;
-
-  for (const trade of rows) {
-    const id = tradeIdentity(trade);
-    if (id === null) missingIdentity += 1;
-    else ids.push(id);
-
-    const direction = String(trade?.direction || "").toLowerCase();
-    const price = nullableNum(trade?.price);
-    const amount = nullableNum(trade?.amount);
-    const ts = tradeTime(trade);
-    const validDirection = direction === "buy" || direction === "sell";
-    const validCommon = ts !== null && price !== null && price > 0 && validDirection;
-    const validSize = market === "futures"
-      ? amount !== null && amount > 0 && (
-          (nullableNum(trade?.trade_turnover) ?? 0) > 0 ||
-          (nullableNum(trade?.quantity) ?? 0) > 0 ||
-          (Number.isFinite(contract_size) && contract_size > 0)
-        )
-      : amount !== null && amount > 0;
-    if (!validCommon || !validSize) invalidPayload += 1;
-  }
-
-  const uniqueIds = new Set(ids);
-  const duplicateIdentityCount = Math.max(0, ids.length - uniqueIds.size);
-  const complete =
-    rows.length > 0 &&
-    rows?._source_truncated !== true &&
-    Number(rows?._source_rows_dropped || 0) === 0 &&
-    missingIdentity === 0 &&
-    invalidPayload === 0 &&
-    duplicateIdentityCount === 0;
-
-  return {
-    status: complete ? "COMPLETE" : "INCOMPLETE_OR_INVALID_RAW_RECORDS",
-    complete,
-    raw_records: rows.length,
-    unique_trade_ids: uniqueIds.size,
-    missing_trade_id_count: missingIdentity,
-    duplicate_trade_id_count: duplicateIdentityCount,
-    invalid_payload_count: invalidPayload,
-    source_truncated: rows?._source_truncated === true,
-    source_containers_scanned: Number(rows?._containers_scanned || 0),
-    source_raw_rows_scanned: Number(rows?._raw_rows_scanned || rows.length),
-    source_rows_dropped: Number(rows?._source_rows_dropped || 0),
-    rule:
-      "Every raw trade must have a unique factual trade id, timestamp, buy/sell taker direction, positive price and positive measurable size.",
-  };
-}
-
-/* =========================================================
-   SPOT FLOW
-   ========================================================= */
-
-function summarizeSpotTrades(trades) {
-  let buyTrades = 0;
-  let sellTrades = 0;
-  let buyBase = 0;
-  let sellBase = 0;
-  let buyQuote = 0;
-  let sellQuote = 0;
-
-  for (const trade of trades) {
-    const price = num(trade?.price);
-    const amount = num(trade?.amount);
-    const direction = String(
-      trade?.direction || ""
-    ).toLowerCase();
-
-    if (
-      price === null ||
-      amount === null ||
-      price <= 0 ||
-      amount < 0
-    ) {
-      continue;
-    }
-
-    const quote = price * amount;
-
-    if (direction === "buy") {
-      buyTrades += 1;
-      buyBase += amount;
-      buyQuote += quote;
-    }
-
-    if (direction === "sell") {
-      sellTrades += 1;
-      sellBase += amount;
-      sellQuote += quote;
-    }
-  }
-
-  const total = buyQuote + sellQuote;
-  const delta = buyQuote - sellQuote;
-
-  return {
-    trades: trades.length,
-    taker_buy_trades: buyTrades,
-    taker_sell_trades: sellTrades,
-    taker_buy_base: buyBase,
-    taker_sell_base: sellBase,
-    taker_buy_usdt: buyQuote,
-    taker_sell_usdt: sellQuote,
-    delta_base: buyBase - sellBase,
-    delta_usdt: delta,
-    sample_cvd_base: buyBase - sellBase,
-    sample_cvd_usdt: delta,
-    total_turnover_usdt: total,
-    buy_share_pct:
-      total > 0 ? (buyQuote / total) * 100 : null,
-    sell_share_pct:
-      total > 0 ? (sellQuote / total) * 100 : null,
-    delta_pct_of_turnover:
-      total > 0 ? (delta / total) * 100 : null,
-    buy_sell_ratio:
-      sellQuote > 0 ? buyQuote / sellQuote : null,
-  };
-}
-
-function tradesInWindow(trades, now, hours) {
-  const start = now - hours * 60 * 60 * 1000;
-
-  return trades.filter((trade) => {
-    const ts = tradeTime(trade);
-    return (
-      ts !== null &&
-      ts >= start &&
-      ts <= now + 60000
-    );
-  });
-}
-
-function spotFlowAnalysis(
-  trades,
-  now,
-  freshnessSec,
-  min1h,
-  min4h,
-  min24h,
-  factualMinuteKlines = []
-) {
-  const ordered = sortedTrades(trades);
-  const times = ordered
-    .map(tradeTime)
-    .filter((ts) => ts !== null);
-
-  const firstTs = times.length
-    ? times[0]
-    : null;
-
-  const lastTs = times.length
-    ? times[times.length - 1]
-    : null;
-
-  const latestAgeSec =
-    lastTs !== null
-      ? Math.max(0, now - lastTs) / 1000
-      : null;
-
-  const sampleSpanHours =
-    firstTs !== null && lastTs !== null
-      ? (lastTs - firstTs) / 3600000
-      : null;
-
-  const oneHour = tradesInWindow(
-    ordered,
-    now,
-    1
-  );
-
-  const fourHours = tradesInWindow(
-    ordered,
-    now,
-    4
-  );
-
-  const day = tradesInWindow(
-    ordered,
-    now,
-    24
-  );
-
-  function windowResult(
-    windowTrades,
-    hours,
-    minTrades
-  ) {
-    const start =
-      now - hours * 3600000;
-
-    const complete =
-      firstTs !== null &&
-      firstTs <= start;
-
-    const enoughTrades =
-      windowTrades.length >= minTrades;
-
-    const closedEnd = Math.floor(now / 60000) * 60000;
-    const closedStart = closedEnd - hours * 3600000;
-    const factualCvd = strictSpotCvdWindow(
-      ordered,
-      factualMinuteKlines,
-      closedStart,
-      closedEnd
-    );
-
-    const rawSummary = summarizeSpotTrades(windowTrades);
-    const transportUsable =
-      complete &&
-      enoughTrades &&
-      latestAgeSec !== null &&
-      latestAgeSec <= freshnessSec;
-
-    return {
-      ...rawSummary,
-      window_hours: hours,
-      window_start_time: iso(start),
-      history_covers_full_window: complete,
-      minimum_trades_required: minTrades,
-      enough_trades: enoughTrades,
-      usable: transportUsable && factualCvd.usable === true,
-      transport_window_usable: transportUsable,
-      legacy_transport_window_usable: transportUsable,
-      cvd_delta_usable:
-        factualCvd.usable === true,
-      cvd_delta_reliable:
-        factualCvd.usable === true,
-      cvd_delta_quality:
-        factualCvd.cvd_delta_quality,
-      raw_delta_is_diagnostic_only:
-        factualCvd.usable !== true,
-      raw_sample_diagnostic: rawSummary,
-      factual_cvd: factualCvd,
-    };
-  }
-
-  const flow1h = windowResult(
-    oneHour,
-    1,
-    min1h
-  );
-
-  const flow4h = windowResult(
-    fourHours,
-    4,
-    min4h
-  );
-
-  const flow24h = windowResult(
-    day,
-    24,
-    min24h
-  );
-
-  const latestFresh =
-    latestAgeSec !== null &&
-    latestAgeSec <= freshnessSec;
-
-  let activity = "no_data";
-
-  if (lastTs !== null) {
-    if (!latestFresh) {
-      activity = "stale";
-    } else if (
-      oneHour.length < min1h
-    ) {
-      activity = "low_activity";
-    } else {
-      activity = "active";
-    }
-  }
-
-  return {
-    ...summarizeSpotTrades(ordered),
-    sample_trades: ordered.length,
-    first_trade_ts: firstTs,
-    first_trade_time: iso(firstTs),
-    last_trade_ts: lastTs,
-    last_trade_time: iso(lastTs),
-    latest_trade_age_sec: latestAgeSec,
-    sample_span_hours: sampleSpanHours,
-
-    freshness: {
-      max_allowed_age_sec: freshnessSec,
-      latest_trade_fresh: latestFresh,
-      status:
-        lastTs === null
-          ? "no_data"
-          : latestFresh
-          ? "fresh"
-          : "stale",
-      activity_status: activity,
-    },
-
-    windows: {
-      "1h": flow1h,
-      "4h": flow4h,
-      "24h": flow24h,
-    },
-
-    quality: {
-      sample_usable:
-        ordered.length > 0 &&
-        latestFresh,
-      window_1h_usable:
-        flow1h.usable,
-      window_4h_usable:
-        flow4h.usable,
-      window_24h_usable:
-        flow24h.usable,
-    },
-  };
-}
-
-/* =========================================================
-   FUTURES FLOW
-   ========================================================= */
-
-function summarizeFuturesTrades(
-  trades,
-  contractSize
-) {
-  let buyContracts = 0;
-  let sellContracts = 0;
-  let buyBase = 0;
-  let sellBase = 0;
-  let buyQuote = 0;
-  let sellQuote = 0;
-  let firstTs = null;
-  let lastTs = null;
-
-  for (const trade of trades) {
-    const direction = String(
-      trade?.direction || ""
-    ).toLowerCase();
-
-    const contracts =
-      num(trade?.amount) || 0;
-
-    const price =
-      num(trade?.price) || 0;
-
-    let base =
-      num(trade?.quantity);
-
-    if (
-      base === null &&
-      Number.isFinite(contractSize) &&
-      contractSize > 0
-    ) {
-      base =
-        contracts *
-        contractSize;
-    }
-
-    if (base === null) {
-      base = 0;
-    }
-
-    let turnover =
-      num(trade?.trade_turnover);
-
-    if (
-      turnover === null &&
-      price > 0 &&
-      base > 0
-    ) {
-      turnover =
-        price * base;
-    }
-
-    if (turnover === null) {
-      turnover = 0;
-    }
-
-    if (direction === "buy") {
-      buyContracts += contracts;
-      buyBase += base;
-      buyQuote += turnover;
-    }
-
-    if (direction === "sell") {
-      sellContracts += contracts;
-      sellBase += base;
-      sellQuote += turnover;
-    }
-
-    const ts = tradeTime(trade);
-
-    if (ts !== null) {
-      if (
-        firstTs === null ||
-        ts < firstTs
-      ) {
-        firstTs = ts;
-      }
-
-      if (
-        lastTs === null ||
-        ts > lastTs
-      ) {
-        lastTs = ts;
-      }
-    }
-  }
-
-  return {
-    sample_trades: trades.length,
-    // Factual numeric bridge to existing flow consumers. Reliability still
-    // comes exclusively from the exact 1m trade-count/payload integrity gate.
-    total_turnover_usdt: buyQuote + sellQuote,
-    delta_pct_of_turnover: buyQuote + sellQuote > 0
-      ? ((buyQuote - sellQuote) / (buyQuote + sellQuote)) * 100
-      : null,
-    taker_buy_contracts: buyContracts,
-    taker_sell_contracts: sellContracts,
-    taker_buy_base: buyBase,
-    taker_sell_base: sellBase,
-    taker_buy_usdt: buyQuote,
-    taker_sell_usdt: sellQuote,
-    delta_contracts:
-      buyContracts - sellContracts,
-    delta_base:
-      buyBase - sellBase,
-    delta_usdt:
-      buyQuote - sellQuote,
-    sample_cvd_usdt:
-      buyQuote - sellQuote,
-    first_trade_ts: firstTs,
-    first_trade_time: iso(firstTs),
-    last_trade_ts: lastTs,
-    last_trade_time: iso(lastTs),
-  };
-}function findContractInfo(data, contract) {
-  const list = Array.isArray(data?.data) ? data.data : [];
-  return (
-    list.find(
-      (item) =>
-        String(item?.contract_code || "").toUpperCase() === contract.toUpperCase()
-    ) ||
-    list[0] ||
-    null
-  );
-}
-
-function findBbo(data, contract) {
-  const list = Array.isArray(data?.ticks)
-    ? data.ticks
-    : Array.isArray(data?.data)
-    ? data.data
-    : [];
-
-  return (
-    list.find(
-      (item) =>
-        String(item?.contract_code || "").toUpperCase() === contract.toUpperCase()
-    ) ||
-    list[0] ||
-    null
-  );
-}
-
-function findOi(data, contract) {
-  const list = Array.isArray(data?.data) ? data.data : data?.data ? [data.data] : [];
-  return (
-    list.find(
-      (item) =>
-        String(item?.contract_code || "").toUpperCase() === contract.toUpperCase()
-    ) ||
-    list[0] ||
-    null
-  );
-}
-
-/* =========================================================
-   FUTURES SNAPSHOT â€” ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ
-   ========================================================= */
-
-async function futuresSnapshot(params) {
-  const requestJson = typeof params?._fetch_json === "function" ? params._fetch_json : fetchJson;
-  const contract = normalizeFuturesContract(
-    params.contract || params.contract_code || params.symbol || "ETHFI-USDT"
-  );
-
-  const notional = clamp(params.notional_usdt ?? params.notional, 10, 1000000, 1000);
-  const tradesRequested = Math.round(clamp(params.trades ?? params.size, 1, 2000, 500));
-
-  const endpoints = {
-    info:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-    depth:
-      `${FUTURES_BASE}/linear-swap-ex/market/depth` +
-      `?contract_code=${encodeURIComponent(contract)}&type=step0`,
-    bbo:
-      `${FUTURES_BASE}/linear-swap-ex/market/bbo` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-    trades:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/trade` +
-      `?contract_code=${encodeURIComponent(contract)}&size=${tradesRequested}`,
-    oi:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_open_interest` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-    funding:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_funding_rate` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-  };
-
-  const [infoR, depthR, bboR, tradesR, oiR, fundingR] = await Promise.all([
-    requestJson(endpoints.info),
-    requestJson(endpoints.depth),
-    requestJson(endpoints.bbo),
-    requestJson(endpoints.trades),
-    requestJson(endpoints.oi),
-    requestJson(endpoints.funding),
-  ]);
-
-  const contractInfo = findContractInfo(infoR.data, contract);
-  let contractSize = num(contractInfo?.contract_size);
-  const tradeList = flattenTrades(tradesR.data?.data);
-
-  if ((contractSize === null || contractSize <= 0) && tradeList.length) {
-    const testTrade = tradeList.find(
-      (trade) => num(trade?.amount) > 0 && num(trade?.quantity) > 0
-    );
-    if (testTrade) {
-      contractSize = num(testTrade.quantity) / num(testTrade.amount);
-    }
-  }
-
-  const depthTick = depthR.data?.tick || null;
-  const bids = Array.isArray(depthTick?.bids) ? depthTick.bids : [];
-  const asks = Array.isArray(depthTick?.asks) ? depthTick.asks : [];
-  const bboTick = findBbo(bboR.data, contract);
-
-  const bestBid = num(bboTick?.bid?.[0]) ?? num(bids?.[0]?.[0]);
-  const bestAsk = num(bboTick?.ask?.[0]) ?? num(asks?.[0]?.[0]);
-  const spread = bestBid !== null && bestAsk !== null ? bestAsk - bestBid : null;
-  const mid = bestBid !== null && bestAsk !== null ? (bestBid + bestAsk) / 2 : null;
-  const spreadBps = spread !== null && mid > 0 ? (spread / mid) * 10000 : null;
-
-  const unitBaseQty = contractSize !== null && contractSize > 0 ? contractSize : 0;
-  const top1Bid = unitBaseQty > 0 ? sumDepth(bids, 1, unitBaseQty) : null;
-  const top1Ask = unitBaseQty > 0 ? sumDepth(asks, 1, unitBaseQty) : null;
-  const top20Bid = unitBaseQty > 0 ? sumDepth(bids, 20, unitBaseQty) : null;
-  const top20Ask = unitBaseQty > 0 ? sumDepth(asks, 20, unitBaseQty) : null;
-  const imbalance =
-    unitBaseQty > 0 ? orderBookImbalance(bids, asks, 20, unitBaseQty) : null;
-  const buyImpact =
-    unitBaseQty > 0 && bestAsk !== null
-      ? marketImpact(asks, notional, bestAsk, "buy", unitBaseQty)
-      : null;
-  const sellImpact =
-    unitBaseQty > 0 && bestBid !== null
-      ? marketImpact(bids, notional, bestBid, "sell", unitBaseQty)
-      : null;
-
-  const orderFlowRaw = summarizeFuturesTrades(tradeList, contractSize);
-  const orderFlow = {
-    ...orderFlowRaw,
-    usable: false,
-    cvd_delta_usable: false,
-    cvd_delta_reliable: false,
-    cvd_delta_quality: {
-      status: "UNVERIFIED_NO_EXACT_FACTUAL_1M_WINDOW",
-      reliable: false,
-      record_integrity: rawTradeRecordIntegrity(tradeList, {
-        market: "futures",
-        contract_size: contractSize,
-      }),
-    },
-    raw_delta_is_diagnostic_only: true,
-    raw_sample_diagnostic: orderFlowRaw,
-  };
-  const oiRaw = findOi(oiR.data, contract);
-  const openInterest = oiRaw
-    ? {
-        contracts: num(oiRaw.volume),
-        amount_base: num(oiRaw.amount),
-        value_usdt: num(oiRaw.value),
-        trade_volume_24h_contracts: num(oiRaw.trade_volume),
-        trade_amount_24h_base: num(oiRaw.trade_amount),
-        trade_turnover_24h_usdt: num(oiRaw.trade_turnover),
-        raw: oiRaw,
-      }
-    : null;
-
-  const fundingRaw = fundingR.data?.data || null;
-  const fundingRate = num(fundingRaw?.funding_rate);
-  const estimatedRate = num(fundingRaw?.estimated_rate);
-  const funding = fundingRaw
-    ? {
-        funding_rate: fundingRate,
-        funding_rate_pct: fundingRate !== null ? fundingRate * 100 : null,
-        estimated_rate: estimatedRate,
-        estimated_rate_pct: estimatedRate !== null ? estimatedRate * 100 : null,
-        funding_time: iso(fundingRaw?.funding_time),
-        next_funding_time: iso(fundingRaw?.next_funding_time),
-        raw: fundingRaw,
-      }
-    : null;
-
-  const health = {
-    info: Boolean(infoR.ok && contractInfo),
-    depth: Boolean(depthR.ok && bids.length && asks.length),
-    bbo: Boolean(bboR.ok && bestBid !== null && bestAsk !== null),
-    trades: Boolean(tradesR.ok && tradeList.length),
-    oi: Boolean(oiR.ok && oiRaw),
-    funding: Boolean(fundingR.ok && fundingRaw),
-  };
-
-  const coverage = {
-    htx_futures_liquidity:
-      health.info &&
-      health.depth &&
-      bestBid !== null &&
-      bestAsk !== null &&
-      buyImpact?.fully_filled === true &&
-      sellImpact?.fully_filled === true
-        ? "closed"
-        : "not_closed",
-    htx_futures_order_flow_sample: health.trades ? "closed" : "not_closed",
-    htx_futures_order_flow: "not_closed",
-    htx_open_interest: health.oi ? "closed" : "not_closed",
-    htx_funding: health.funding ? "closed" : "not_closed",
-  };
-
-  const factualExecution = prepareHtxExecutionFacts({
-    contract_code: contract, requested_notional_usdt: notional,
-    info_response: infoR, depth_response: depthR, received_ts: Date.now(),
-  });
-  const snapshot = {
-    source: "HTX official public API",
-    market: "HTX USDT-M Futures",
-    version: "2.1",
-    contract,
-    requested_notional_usdt: notional,
-    trades_requested: tradesRequested,
-    timestamp: Date.now(),
-    timestamp_utc: new Date().toISOString(),
-    contract_info: contractInfo
-      ? {
-          contract_code: contractInfo.contract_code,
-          symbol: contractInfo.symbol,
-          contract_size: contractSize,
-          price_tick: num(contractInfo.price_tick),
-          contract_status: contractInfo.contract_status,
-          support_margin_mode: contractInfo.support_margin_mode,
-        }
-      : null,
-    bbo: {
-      best_bid: bestBid,
-      best_ask: bestAsk,
-      spread,
-      spread_bps: spreadBps,
-    },
-    liquidity: {
-      best_bid: bestBid,
-      best_ask: bestAsk,
-      spread,
-      spread_bps: spreadBps,
-      top_1_depth_bid: top1Bid,
-      top_1_depth_ask: top1Ask,
-      top_20_depth_bid: top20Bid,
-      top_20_depth_ask: top20Ask,
-      order_book_imbalance: imbalance,
-      buy_market_impact: buyImpact,
-      sell_market_impact: sellImpact,
-      depth_timestamp: iso(depthTick?.ts) || iso(depthR.data?.ts),
-    },
-    order_flow: orderFlow,
-    htx_open_interest: openInterest,
-    open_interest: openInterest,
-    htx_funding: funding,
-    funding,
-    health,
-    endpoint_health: health,
-    coverage,
-    note: "Raw CVD/Delta ÑÑ‚Ð¾Ð¹ Ð½ÐµÐ¾Ð³Ñ€Ð°Ð½Ð¸Ñ‡ÐµÐ½Ð½Ð¾Ð¹ Ð¿Ð¾ Ñ‚Ð¾Ñ‡Ð½Ð¾Ð¼Ñƒ Ð¾ÐºÐ½Ñƒ Ð²Ñ‹Ð±Ð¾Ñ€ÐºÐ¸ â€” Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð´Ð¸Ð°Ð³Ð½Ð¾ÑÑ‚Ð¸ÐºÐ° Ð¸ Ð²ÑÐµÐ³Ð´Ð° fail-closed; Ð´Ð¾ÑÑ‚Ð¾Ð²ÐµÑ€Ð½Ñ‹Ð¹ CVD Ð¿ÑƒÐ±Ð»Ð¸ÐºÑƒÐµÑ‚ÑÑ Ð»Ð¸ÑˆÑŒ Ð² ÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ð¾ÐºÐ½Ð°Ñ… Ð¿Ñ€Ð¸ Ñ‚Ð¾Ñ‡Ð½Ð¾Ð¼ ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¸ factual 1m trade_count Ð¸ Ñ†ÐµÐ»Ð¾ÑÑ‚Ð½Ñ‹Ñ… ÑƒÐ½Ð¸ÐºÐ°Ð»ÑŒÐ½Ñ‹Ñ… trade id.",
-    endpoint_errors: {
-      info: infoR.ok ? null : infoR.error,
-      depth: depthR.ok ? null : depthR.error,
-      bbo: bboR.ok ? null : bboR.error,
-      trades: tradesR.ok ? null : tradesR.error,
-      oi: oiR.ok ? null : oiR.error,
-      funding: fundingR.ok ? null : fundingR.error,
-    },
-  };
-  // Internal factual source material is persisted inside the existing proof
-  // bundle, not duplicated in every public endpoint/scan serialization.
-  Object.defineProperty(snapshot, "_tz101_execution_quote", {value:factualExecution, enumerable:false});
-  return snapshot;
-}
-
-// A Deep Check can spend many seconds on independent enrichment. Reuse the
-// original factual execution quote while it is still valid; otherwise perform
-// one bounded two-request HTX refresh immediately before fixing decision_ts.
-// The refresh preserves provider timestamps and never extends an old quote.
-async function refreshHtxExecutionQuoteIfNeeded({contract,notional_usdt,current_quote,now_ts=Date.now(),request_json=fetchJson}={}) {
-  const validUntil = Number(current_quote?.facts?.valid_until_ts);
-  const received = Number(current_quote?.facts?.received_ts);
-  if (current_quote?.facts && Number.isSafeInteger(received) && received <= now_ts && Number.isSafeInteger(validUntil) && validUntil-now_ts >= 5_000) {
-    return {quote:current_quote,status:'ORIGINAL_QUOTE_STILL_FRESH',attempted_requests:0,available_ts:received};
-  }
-  const prior=current_quote?.facts||null,instrumentSource=Number(prior?.instrument_source_ts);
-  const needsInfo=!Number.isSafeInteger(instrumentSource)||instrumentSource>now_ts||now_ts-instrumentSource>=60_000;
-  const infoUrl=`${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info?contract_code=${encodeURIComponent(contract)}`;
-  const depthUrl=`${FUTURES_BASE}/linear-swap-ex/market/depth?contract_code=${encodeURIComponent(contract)}&type=step0`;
-  const requests=[...(needsInfo?[request_json(infoUrl)]:[]),request_json(depthUrl)],settled=await Promise.allSettled(requests);
-  const availableTs=Date.now();
-  if(settled.some(row=>row.status!=='fulfilled'))return{quote:null,status:'REFRESH_TRANSPORT_FAILED',attempted_requests:requests.length,available_ts:availableTs};
-  const infoResponse=needsInfo?settled[0].value:{ok:true,data:{status:'ok',ts:prior.instrument_source_ts,data:[{contract_code:contract,contract_size:prior.contract_size_base,price_tick:prior.price_tick,contract_status:prior.contract_status}]}};
-  const depthResponse=settled.at(-1).value;
-  const quote=prepareHtxExecutionFacts({contract_code:contract,requested_notional_usdt:notional_usdt,info_response:infoResponse,depth_response:depthResponse,received_ts:availableTs});
-  return {quote,status:quote?.facts?'REFRESHED':'REFRESH_NOT_CLOSED',attempted_requests:requests.length,contract_info_refreshed:needsInfo,available_ts:availableTs,reasons:quote?.reasons??[]};
-}
-
-/* =========================================================
-   SPOT SNAPSHOT â€” ÑÑƒÑ‰ÐµÑÑ‚Ð²ÑƒÑŽÑ‰Ð¸Ð¹ Ð¼Ð¾Ð´ÑƒÐ»ÑŒ
-   ========================================================= */
-
-async function spotSnapshot(params) {
-  const requestJson = typeof params?._fetch_json === "function" ? params._fetch_json : fetchJson;
-  const now = Date.now();
-  const inputSymbol = params.symbol || params.pair || params.contract || "ETHFI-USDT";
-  const symbol = normalizeSpotSymbol(inputSymbol);
-  const notional = clamp(params.notional_usdt ?? params.notional, 10, 1000000, 1000);
-  const tradesRequested = Math.round(clamp(params.trades ?? params.size, 1, 2000, 2000));
-  const freshnessSec = Math.round(clamp(params.freshness_sec, 60, 3600, 900));
-  const min1h = Math.round(clamp(params.min_trades_1h, 1, 10000, 20));
-  const min4h = Math.round(clamp(params.min_trades_4h, 1, 10000, 50));
-  const min24h = Math.round(clamp(params.min_trades_24h, 1, 100000, 100));
-
-  const endpoints = {
-    ticker: `${SPOT_BASE}/market/detail/merged?symbol=${encodeURIComponent(symbol)}`,
-    depth:
-      `${SPOT_BASE}/market/depth?symbol=${encodeURIComponent(symbol)}` +
-      `&type=step0&depth=20`,
-    trades:
-      `${SPOT_BASE}/market/history/trade?symbol=${encodeURIComponent(symbol)}` +
-      `&size=${tradesRequested}`,
-    kline_1m:
-      `${SPOT_BASE}/market/history/kline?symbol=${encodeURIComponent(symbol)}` +
-      `&period=1min&size=2000`,
-  };
-
-  const [tickerR, depthR, tradesR, kline1mR] = await Promise.all([
-    requestJson(endpoints.ticker),
-    requestJson(endpoints.depth),
-    requestJson(endpoints.trades),
-    requestJson(endpoints.kline_1m),
-  ]);
-
-  const ticker = tickerR.data?.tick || null;
-  const depthTick = depthR.data?.tick || null;
-  const bids = Array.isArray(depthTick?.bids) ? depthTick.bids : [];
-  const asks = Array.isArray(depthTick?.asks) ? depthTick.asks : [];
-
-  const bestBid = num(ticker?.bid?.[0]) ?? num(bids?.[0]?.[0]);
-  const bestAsk = num(ticker?.ask?.[0]) ?? num(asks?.[0]?.[0]);
-  const spread = bestBid !== null && bestAsk !== null ? bestAsk - bestBid : null;
-  const mid = bestBid !== null && bestAsk !== null ? (bestBid + bestAsk) / 2 : null;
-  const spreadBps = spread !== null && mid > 0 ? (spread / mid) * 10000 : null;
-
-  const top1Bid = sumDepth(bids, 1, 1);
-  const top1Ask = sumDepth(asks, 1, 1);
-  const top20Bid = sumDepth(bids, 20, 1);
-  const top20Ask = sumDepth(asks, 20, 1);
-  const imbalance = orderBookImbalance(bids, asks, 20, 1);
-  const buyImpact =
-    bestAsk !== null ? marketImpact(asks, notional, bestAsk, "buy", 1) : null;
-  const sellImpact =
-    bestBid !== null ? marketImpact(bids, notional, bestBid, "sell", 1) : null;
-
-  const tradeList = flattenTrades(tradesR.data?.data);
-  const closedSpotMinuteKlines = normalizeKlines(kline1mR.data).filter(
-    (row) => row.ts + 60000 <= now
-  );
-  const orderFlow = spotFlowAnalysis(
-    tradeList,
-    now,
-    freshnessSec,
-    min1h,
-    min4h,
-    min24h,
-    closedSpotMinuteKlines
-  );
-
-  const health = {
-    ticker: Boolean(tickerR.ok && ticker && num(ticker.close) !== null),
-    depth: Boolean(depthR.ok && bids.length && asks.length),
-    trades_endpoint: Boolean(tradesR.ok),
-    trades_received: Boolean(tradesR.ok && tradeList.length),
-    factual_1m_trade_count: Boolean(kline1mR.ok && closedSpotMinuteKlines.length),
-    latest_trade_fresh: Boolean(orderFlow.freshness.latest_trade_fresh),
-    order_flow_1h_usable: Boolean(orderFlow.quality.window_1h_usable),
-    order_flow_4h_usable: Boolean(orderFlow.quality.window_4h_usable),
-    order_flow_24h_usable: Boolean(orderFlow.quality.window_24h_usable),
-  };
-
-  const coverage = {
-    htx_spot_market: health.ticker ? "closed" : "not_closed",
-    htx_spot_liquidity:
-      health.ticker && health.depth && buyImpact && sellImpact ? "closed" : "not_closed",
-    htx_spot_order_flow_sample:
-      health.trades_received && health.latest_trade_fresh ? "closed" : "not_closed",
-    htx_spot_order_flow: health.order_flow_1h_usable ? "closed" : "not_closed",
-    htx_spot_order_flow_1h: health.order_flow_1h_usable ? "closed" : "not_closed",
-    htx_spot_order_flow_4h: health.order_flow_4h_usable ? "closed" : "not_closed",
-    htx_spot_order_flow_24h: health.order_flow_24h_usable ? "closed" : "not_closed",
-    htx_spot_cvd_delta_factual_1h:
-      orderFlow.windows?.["1h"]?.factual_cvd?.usable === true
-        ? "closed"
-        : "not_closed",
-  };
-
-  let qualityStatus = "RED";
-  if (health.ticker && health.depth && health.order_flow_1h_usable) {
-    qualityStatus = "GREEN";
-  } else if (health.ticker && health.depth && health.trades_received) {
-    qualityStatus = "YELLOW";
-  }
-
-  return {
-    source: "HTX official public API",
-    market: "HTX Spot",
-    version: "2.1",
-    requested_symbol: inputSymbol,
-    symbol,
-    requested_notional_usdt: notional,
-    trades_requested: tradesRequested,
-    timestamp: now,
-    timestamp_utc: new Date(now).toISOString(),
-    provider_source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(tickerR.data?.ts),
-    quality_status: qualityStatus,
-    quality_rules: {
-      freshness_sec: freshnessSec,
-      min_trades_1h: min1h,
-      min_trades_4h: min4h,
-      min_trades_24h: min24h,
-      rule:
-        "GREEN = ÑÐ²ÐµÐ¶Ð°Ñ Ð¿Ð¾ÑÐ»ÐµÐ´Ð½ÑÑ ÑÐ´ÐµÐ»ÐºÐ° + Ð´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ ÑÐ´ÐµÐ»Ð¾Ðº + Ð¿Ð¾Ð»Ð½Ð¾Ðµ Ð¿Ð¾ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ Ð¾ÐºÐ½Ð° 1Ñ‡. YELLOW = Ð´Ð°Ð½Ð½Ñ‹Ðµ ÐµÑÑ‚ÑŒ, Ð½Ð¾ Ñ‚ÐµÐºÑƒÑ‰Ð¸Ð¹ Ð¿Ð¾Ñ‚Ð¾Ðº Ð½ÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ ÐºÐ°Ñ‡ÐµÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹. RED = ÐºÑ€Ð¸Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð½ÐµÑ‚.",
-    },
-    ticker_24h: ticker
-      ? {
-          last_price: num(ticker.close),
-          open: num(ticker.open),
-          high: num(ticker.high),
-          low: num(ticker.low),
-          volume_base_24h: num(ticker.amount),
-          turnover_quote_24h: num(ticker.vol),
-          trade_count_24h: num(ticker.count),
-          timestamp: iso(tickerR.data?.ts),
-        }
-      : null,
-    bbo: {
-      best_bid: bestBid,
-      best_ask: bestAsk,
-      spread,
-      spread_bps: spreadBps,
-    },
-    liquidity: {
-      best_bid: bestBid,
-      best_ask: bestAsk,
-      spread,
-      spread_bps: spreadBps,
-      top_1_depth_bid: top1Bid,
-      top_1_depth_ask: top1Ask,
-      top_20_depth_bid: top20Bid,
-      top_20_depth_ask: top20Ask,
-      order_book_imbalance: imbalance,
-      buy_market_impact: buyImpact,
-      sell_market_impact: sellImpact,
-      depth_timestamp: iso(depthTick?.ts) || iso(depthR.data?.ts),
-    },
-    order_flow: orderFlow,
-    health,
-    endpoint_health: health,
-    coverage,
-    note:
-      "Spot taker buy/sell Ñ€Ð°ÑÑÑ‡Ð¸Ñ‚Ð°Ð½Ñ‹ Ð¸Ð· Ð¾Ñ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ñ‹Ñ… HTX raw trades. Delta/CVD ÑÑ‡Ð¸Ñ‚Ð°ÑŽÑ‚ÑÑ Ð´Ð¾ÑÑ‚Ð¾Ð²ÐµÑ€Ð½Ñ‹Ð¼Ð¸ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¿Ñ€Ð¸ Ñ‚Ð¾Ñ‡Ð½Ð¾Ð¼ ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¸ raw trade-records Ñ ÑÑƒÐ¼Ð¼Ð¾Ð¹ factual count Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ñ‹Ñ… 1m ÑÐ²ÐµÑ‡ÐµÐ¹ Ñ‚Ð¾Ð³Ð¾ Ð¶Ðµ Ð¾ÐºÐ½Ð°; Ð¸Ð½Ð°Ñ‡Ðµ ÑÑ‚Ð¾ Ð´Ð¸Ð°Ð³Ð½Ð¾ÑÑ‚Ð¸Ñ‡ÐµÑÐºÐ°Ñ Ð½ÐµÐ¿Ð¾Ð»Ð½Ð°Ñ Ð²Ñ‹Ð±Ð¾Ñ€ÐºÐ°.",
-    endpoint_errors: {
-      ticker: tickerR.ok ? null : tickerR.error,
-      depth: depthR.ok ? null : depthR.error,
-      trades: tradesR.ok ? null : tradesR.error,
-      kline_1m: kline1mR.ok ? null : kline1mR.error,
-    },
-  };
-}/* =========================================================
-   FUTURES TRAJECTORY â€” ÐÐžÐ’Ð«Ð™ ÐœÐžÐ”Ð£Ð›Ð¬ Ð”Ð›Ð¯ CHAIN 6
-   Ð¡Ð¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð¸Ñ€ÑƒÐµÑ‚ Ñ†ÐµÐ½Ñƒ, Ð¿Ð¾Ñ‚Ð¾Ðº Ð¸ OI Ð¿Ð¾ Ñ„Ð°ÐºÑ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ð¼ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ñ‹Ð¼ Ð¾ÐºÐ½Ð°Ð¼.
-   OI HTX Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ‡ÐµÑÐºÐ¸ Ð´Ð¾ÑÑ‚ÑƒÐ¿ÐµÐ½ Ñ Ð¼Ð¸Ð½Ð¸Ð¼Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ð³Ñ€Ð°Ð½ÑƒÐ»ÑÑ€Ð½Ð¾ÑÑ‚ÑŒÑŽ 60 Ð¼Ð¸Ð½ÑƒÑ‚,
-   Ð¿Ð¾ÑÑ‚Ð¾Ð¼Ñƒ 5Ð¼/15Ð¼ OI Ð½Ðµ Ð²Ñ‹Ð´ÑƒÐ¼Ñ‹Ð²Ð°ÐµÑ‚ÑÑ.
-   ========================================================= */
-
-function normalizeKlines(raw) {
-  const list = Array.isArray(raw?.data) ? raw.data : [];
-  return list
-    .map((k) => ({
-      ts: normalizeTs(k?.id),
-      open: num(k?.open),
-      high: num(k?.high),
-      low: num(k?.low),
-      close: num(k?.close),
-      volume_contracts: num(k?.vol),
-      volume_base: num(k?.amount),
-      turnover_usdt: num(k?.trade_turnover),
-      trade_count: nullableNum(k?.count),
-    }))
-    .filter(
-      (k) =>
-        k.ts !== null &&
-        k.open !== null &&
-        k.high !== null &&
-        k.low !== null &&
-        k.close !== null
-    )
-    .sort((a, b) => a.ts - b.ts);
-}
-
-function summarizePriceRange(klines, startMs, endMs) {
-  const bars = klines.filter((k) => k.ts >= startMs && k.ts < endMs);
-  const exactMinuteWindow = endMs > startMs && (endMs - startMs) % 60000 === 0;
-  const expectedBars = exactMinuteWindow ? (endMs - startMs) / 60000 : null;
-
-  if (!bars.length) {
-    return {
-      usable: false,
-      coverage: "not_closed",
-      window_start_time: iso(startMs),
-      window_end_time: iso(endMs),
-      expected_1m_bars: expectedBars,
-      received_1m_bars: 0,
-    };
-  }
-
-  const first = bars[0];
-  const last = bars[bars.length - 1];
-  const high = Math.max(...bars.map((k) => k.high));
-  const low = Math.min(...bars.map((k) => k.low));
-
-  const volumeContracts = bars.reduce(
-    (s, k) => s + (k.volume_contracts || 0),
-    0
-  );
-
-  const volumeBase = bars.reduce(
-    (s, k) => s + (k.volume_base || 0),
-    0
-  );
-
-  const turnover = bars.reduce(
-    (s, k) => s + (k.turnover_usdt || 0),
-    0
-  );
-
-  const tradeCounts = bars.map((k) => nullableNum(k.trade_count));
-  const tradeCountComplete = tradeCounts.every(
-    (value) => Number.isSafeInteger(value) && value >= 0
-  );
-  const exactBars =
-    exactMinuteWindow &&
-    bars.length === expectedBars &&
-    first.ts === startMs &&
-    last.ts + 60000 === endMs &&
-    new Set(bars.map((row) => row.ts)).size === bars.length &&
-    bars.every((row, index) => index === 0 || row.ts - bars[index - 1].ts === 60000);
-  const candidateTradeCount = tradeCountComplete
-    ? tradeCounts.reduce((sum, value) => sum + value, 0)
-    : null;
-  const tradeCount = Number.isSafeInteger(candidateTradeCount)
-    ? candidateTradeCount
-    : null;
-
-  const startsNearBoundary = first.ts <= startMs + 60000;
-  const endsNearBoundary = last.ts + 60000 >= endMs - 60000;
-  const enoughBars = bars.length >= Math.ceil(expectedBars * 0.95);
-
-  const usable =
-    startsNearBoundary &&
-    endsNearBoundary &&
-    enoughBars;
-
-  const range = high - low;
-
-  return {
-    usable,
-    coverage: usable ? "closed" : "not_closed",
-    window_start_ts: startMs,
-    window_start_time: iso(startMs),
-    window_end_ts: endMs,
-    window_end_time: iso(endMs),
-    expected_1m_bars: expectedBars,
-    received_1m_bars: bars.length,
-    open: first.open,
-    high,
-    low,
-    close: last.close,
-    change_pct: pctChange(first.open, last.close),
-    close_location_pct:
-      range > 0
-        ? ((last.close - low) / range) * 100
-        : null,
-    volume_contracts: volumeContracts,
-    volume_base: volumeBase,
-    turnover_usdt: turnover,
-    trade_count: tradeCount,
-    trade_count_complete: tradeCountComplete && tradeCount !== null,
-    exact_1m_bars: exactBars,
-    first_bar_time: iso(first.ts),
-    last_bar_time: iso(last.ts),
-  };
-}
-
-function tradesInRange(trades, startMs, endMs) {
-  const filtered = trades.filter((trade) => {
-    const ts = tradeTime(trade);
-    return ts !== null && ts >= startMs && ts < endMs;
-  });
-  return tradeArrayWithScanMetadata(filtered, {
-    source_truncated: trades?._source_truncated === true,
-    containers_scanned: trades?._containers_scanned,
-    raw_rows_scanned: trades?._raw_rows_scanned,
-    source_rows_dropped: trades?._source_rows_dropped,
-  });
-}
-
-function factualMinuteTradeCount(klines, startMs, endMs) {
-  const exactMinuteWindow = endMs > startMs && (endMs - startMs) % 60000 === 0;
-  const expectedBars = exactMinuteWindow ? (endMs - startMs) / 60000 : null;
-  const bars = (Array.isArray(klines) ? klines : [])
-    .filter((row) => row.ts >= startMs && row.ts < endMs)
-    .sort((a, b) => a.ts - b.ts);
-  const exactBars =
-    exactMinuteWindow &&
-    bars.length === expectedBars &&
-    bars[0]?.ts === startMs &&
-    bars.at(-1)?.ts + 60000 === endMs &&
-    bars.every((row, index) => index === 0 || row.ts - bars[index - 1].ts === 60000);
-  const counts = bars.map((row) => nullableNum(row?.trade_count));
-  const countFieldsComplete = counts.every(
-    (value) => Number.isSafeInteger(value) && value >= 0
-  );
-  const candidateTradeCount = countFieldsComplete
-    ? counts.reduce((sum, value) => sum + value, 0)
-    : null;
-  const factualTradeCount = Number.isSafeInteger(candidateTradeCount)
-    ? candidateTradeCount
-    : null;
-  return {
-    status: exactBars && countFieldsComplete && factualTradeCount !== null
-      ? "COMPLETE"
-      : "MISSING_OR_INCOMPLETE_FACTUAL_1M_COUNTS",
-    expected_1m_bars: expectedBars,
-    received_1m_bars: bars.length,
-    exact_1m_bars: exactBars,
-    trade_count_fields_complete: countFieldsComplete && factualTradeCount !== null,
-    factual_1m_trade_count: exactBars && countFieldsComplete && factualTradeCount !== null
-      ? factualTradeCount
-      : null,
-  };
-}
-
-function cvdDeltaQuality(rawTradeCount, factualCoverage, recordIntegrity = null) {
-  const rawCount = nullableNum(rawTradeCount);
-  const factualCount = nullableNum(factualCoverage?.factual_1m_trade_count);
-  const countExactMatch =
-    factualCoverage?.status === "COMPLETE" &&
-    rawCount !== null &&
-    factualCount !== null &&
-    rawCount === factualCount;
-  const payloadComplete = recordIntegrity?.complete === true;
-  const exactMatch = countExactMatch && payloadComplete;
-  return {
-    status: exactMatch ? "COMPLETE" : "INCOMPLETE_OR_UNVERIFIED",
-    reliable: exactMatch,
-    raw_trade_count: rawCount,
-    factual_1m_trade_count: factualCount,
-    trade_count_exact_match: countExactMatch,
-    raw_record_integrity_complete: payloadComplete,
-    record_integrity: recordIntegrity,
-    completeness_ratio:
-      rawCount !== null && factualCount !== null && factualCount > 0
-        ? rawCount / factualCount
-        : factualCount === 0 && rawCount === 0
-          ? 1
-          : null,
-    factual_coverage: factualCoverage,
-    rule: "Delta/CVD is reliable only when unique, structurally valid raw trade records exactly match factual closed 1m trade_count for the same timestamp window.",
-  };
-}
-
-function strictSpotCvdWindow(orderedTrades, factualMinuteKlines, startMs, endMs) {
-  const inRange = tradesInRange(orderedTrades, startMs, endMs);
-  const summary = summarizeSpotTrades(inRange);
-  const factual = factualMinuteTradeCount(factualMinuteKlines, startMs, endMs);
-  const quality = cvdDeltaQuality(
-    inRange.length,
-    factual,
-    rawTradeRecordIntegrity(inRange, { market: "spot" })
-  );
-  return {
-    ...summary,
-    raw_trade_count: inRange.length,
-    factual_1m_trade_count: factual.factual_1m_trade_count,
-    window_start_ts: startMs,
-    window_end_ts: endMs,
-    cvd_delta_quality: quality,
-    usable: quality.reliable,
-    coverage: quality.reliable ? "closed_factual_trade_count_match" : "not_closed_trade_count_mismatch",
-  };
-}
-
-function summarizeFuturesFlowRange(
-  orderedTrades,
-  startMs,
-  endMs,
-  contractSize,
-  minTrades,
-  boundaryToleranceMs = 120000,
-  factualPriceWindow = null
-) {
-  const times = orderedTrades
-    .map(tradeTime)
-    .filter((ts) => ts !== null);
-
-  const sampleFirst = times.length
-    ? times[0]
-    : null;
-
-  const sampleLast = times.length
-    ? times[times.length - 1]
-    : null;
-
-  const inRange = tradesInRange(
-    orderedTrades,
-    startMs,
-    endMs
-  );
-
-  const summary = summarizeFuturesTrades(
-    inRange,
-    contractSize
-  );
-
-  const coversStart =
-    sampleFirst !== null &&
-    sampleFirst <= startMs;
-
-  const coversEnd =
-    sampleLast !== null &&
-    sampleLast >= endMs - boundaryToleranceMs;
-
-  const enoughTrades =
-    inRange.length >= minTrades;
-
-  const usable =
-    coversStart &&
-    coversEnd &&
-    enoughTrades;
-
-  const factualCoverage = {
-    status:
-      factualPriceWindow?.usable === true &&
-      factualPriceWindow?.exact_1m_bars === true &&
-      factualPriceWindow?.trade_count_complete === true &&
-      num(factualPriceWindow?.trade_count) !== null
-        ? "COMPLETE"
-        : "MISSING_OR_INCOMPLETE_FACTUAL_1M_COUNTS",
-    expected_1m_bars: nullableNum(factualPriceWindow?.expected_1m_bars),
-    received_1m_bars: nullableNum(factualPriceWindow?.received_1m_bars),
-    exact_1m_bars: factualPriceWindow?.exact_1m_bars === true,
-    trade_count_fields_complete: factualPriceWindow?.trade_count_complete === true,
-    factual_1m_trade_count:
-      factualPriceWindow?.usable === true &&
-      factualPriceWindow?.exact_1m_bars === true &&
-      factualPriceWindow?.trade_count_complete === true
-        ? nullableNum(factualPriceWindow?.trade_count)
-        : null,
-  };
-  const quality = cvdDeltaQuality(
-    inRange.length,
-    factualCoverage,
-    rawTradeRecordIntegrity(inRange, {
-      market: "futures",
-      contract_size: contractSize,
-    })
-  );
-
-  return {
-    ...summary,
-    window_start_ts: startMs,
-    window_start_time: iso(startMs),
-    window_end_ts: endMs,
-    window_end_time: iso(endMs),
-    sample_first_trade_time: iso(sampleFirst),
-    sample_last_trade_time: iso(sampleLast),
-    history_covers_window_start: coversStart,
-    history_covers_window_end: coversEnd,
-    minimum_trades_required: minTrades,
-    enough_trades: enoughTrades,
-    usable: usable && quality.reliable,
-    transport_window_usable: usable,
-    legacy_transport_window_usable: usable,
-    coverage: usable && quality.reliable
-      ? "closed_factual_trade_count_and_payload_match"
-      : "not_closed_cvd_integrity",
-    cvd_delta_quality: quality,
-    cvd_delta_usable: quality.reliable,
-    cvd_delta_reliable: quality.reliable,
-    raw_delta_is_diagnostic_only: !quality.reliable,
-    raw_sample_diagnostic: summary,
-  };
-}
-
-function normalizeOiHistory(raw) {
-  const ticks = Array.isArray(raw?.data?.tick)
-    ? raw.data.tick
-    : [];
-
-  return ticks
-    .map((t) => ({
-      ts: normalizeTs(t?.ts),
-      volume: num(t?.volume),
-      value_usdt: num(t?.value),
-      amount_type: num(t?.amount_type),
-    }))
-    .filter(
-      (t) =>
-        t.ts !== null &&
-        t.volume !== null
-    )
-    .sort((a, b) => a.ts - b.ts);
-}
-
-function nearestPoint(
-  series,
-  targetTs,
-  toleranceMs = 5 * 60 * 1000
-) {
-  if (!Array.isArray(series) || !series.length) {
-    return null;
-  }
-
-  let best = null;
-  let bestDistance = Infinity;
-
-  for (const point of series) {
-    const distance = Math.abs(
-      point.ts - targetTs
-    );
-
-    if (distance < bestDistance) {
-      best = point;
-      bestDistance = distance;
-    }
-  }
-
-  return bestDistance <= toleranceMs
-    ? best
-    : null;
-}
-
-function oiAlignedWindow(
-  contractSeries,
-  baseSeries,
-  hours,
-  nowMs
-) {
-  // Freeze the factual source horizon. A replay must not read the following hour.
-  if (!Number.isFinite(nowMs) || !Number.isFinite(hours) || hours <= 0) return null;
-  const eligible = series => (Array.isArray(series) ? series : []).filter(p =>
-    p && Number.isFinite(p.ts) && p.ts > 0 && p.ts <= nowMs &&
-    Number.isFinite(p.volume) && p.volume >= 0).slice().sort((a,b)=>a.ts-b.ts);
-  contractSeries = eligible(contractSeries);
-  baseSeries = eligible(baseSeries);
-  if (!contractSeries.length) {
-    return null;
-  }
-
-  const endContracts =
-    contractSeries[
-      contractSeries.length - 1
-    ];
-
-  const startTarget =
-    endContracts.ts -
-    hours * 3600000;
-
-  const startContracts =
-    nearestPoint(
-      contractSeries,
-      startTarget
-    );
-
-  if (!startContracts) {
-    return null;
-  }
-
-  const startBase =
-    nearestPoint(
-      baseSeries,
-      startContracts.ts
-    );
-
-  const endBase =
-    nearestPoint(
-      baseSeries,
-      endContracts.ts
-    );
-
-  const actualHours =
-    (endContracts.ts -
-      startContracts.ts) /
-    3600000;
-
-  const exactDuration =
-    Math.abs(actualHours - hours) <= 0.1;
-
-  const recentStart =
-    endContracts.ts -
-    24 * 3600000;
-
-  const recent =
-    contractSeries.filter(
-      (p) =>
-        p.ts >= recentStart &&
-        p.ts <= endContracts.ts
-    );
-
-  const recentMaxContracts =
-    recent.length
-      ? Math.max(
-          ...recent
-            .map((p) => p.volume)
-            .filter((v) =>
-              Number.isFinite(v)
-            )
-        )
-      : null;
-
-  const endContractsValue =
-    endContracts.volume;
-
-  const endValueUsdt =
-    endContracts.value_usdt;
-
-  const startValueUsdt =
-    startContracts.value_usdt;
-
-  const contractsDelta =
-    endContractsValue -
-    startContracts.volume;
-
-  const baseDelta =
-    startBase && endBase
-      ? endBase.volume -
-        startBase.volume
-      : null;
-
-  const valueDelta =
-    endValueUsdt !== null &&
-    startValueUsdt !== null
-      ? endValueUsdt -
-        startValueUsdt
-      : null;
-
-  const endAgeSec =
-    Math.max(
-      0,
-      nowMs - endContracts.ts
-    ) / 1000;
-
-  const fresh =
-    endAgeSec <=
-    90 * 60;
-
-  const usable = Boolean(
-    exactDuration &&
-    startBase &&
-    endBase &&
-    fresh
-  );
-
-  return {
-    usable,
-    coverage:
-      usable
-        ? "closed"
-        : "not_closed",
-
-    source_period: "60min",
-    requested_hours: hours,
-    actual_hours: actualHours,
-    end_age_sec: endAgeSec,
-    fresh,
-    freshness_limit_sec:
-      90 * 60,
-
-    window_start_ts:
-      startContracts.ts,
-
-    window_start_time:
-      iso(startContracts.ts),
-
-    window_end_ts:
-      endContracts.ts,
-
-    window_end_time:
-      iso(endContracts.ts),
-
-    contracts: {
-      start:
-        startContracts.volume,
-      end:
-        endContractsValue,
-      delta:
-        contractsDelta,
-      change_pct:
-        pctChange(
-          startContracts.volume,
-          endContractsValue
-        ),
-    },
-
-    base: {
-      start:
-        startBase?.volume ?? null,
-      end:
-        endBase?.volume ?? null,
-      delta:
-        baseDelta,
-      change_pct:
-        startBase && endBase
-          ? pctChange(
-              startBase.volume,
-              endBase.volume
-            )
-          : null,
-    },
-
-    value_usdt: {
-      start:
-        startValueUsdt,
-      end:
-        endValueUsdt,
-      delta:
-        valueDelta,
-      change_pct:
-        pctChange(
-          startValueUsdt,
-          endValueUsdt
-        ),
-    },
-
-    recent_24h_max_contracts:
-      recentMaxContracts,
-
-    distance_from_recent_24h_max_pct:
-      recentMaxContracts &&
-      recentMaxContracts > 0
-        ? (
-            endContractsValue /
-              recentMaxContracts -
-            1
-          ) * 100
-        : null,
-  };
-}
-
-function normalizeFundingHistory(raw) {
-  const list = Array.isArray(
-    raw?.data?.data
-  )
-    ? raw.data.data
-    : [];
-
-  return list
-    .map((item) => ({
-      funding_time_ts:
-        normalizeTs(
-          item?.funding_time
-        ),
-
-      funding_time:
-        iso(
-          item?.funding_time
-        ),
-
-      funding_rate:
-        num(
-          item?.funding_rate
-        ),
-
-      funding_rate_pct:
-        num(
-          item?.funding_rate
-        ) !== null
-          ? num(
-              item?.funding_rate
-            ) * 100
-          : null,
-
-      realized_rate:
-        num(
-          item?.realized_rate
-        ),
-
-      realized_rate_pct:
-        num(
-          item?.realized_rate
-        ) !== null
-          ? num(
-              item?.realized_rate
-            ) * 100
-          : null,
-
-      avg_premium_index:
-        num(
-          item?.avg_premium_index
-        ),
-    }))
-    .filter(
-      (item) =>
-        item.funding_time_ts !== null
-    )
-    .sort(
-      (a, b) =>
-        a.funding_time_ts -
-        b.funding_time_ts
-    );
-}
-
-function median(values) {
-  const a = values
-    .filter(Number.isFinite)
-    .sort((x, y) => x - y);
-
-  if (!a.length) {
-    return null;
-  }
-
-  const mid =
-    Math.floor(
-      a.length / 2
-    );
-
-  return a.length % 2
-    ? a[mid]
-    : (
-        a[mid - 1] +
-        a[mid]
-      ) / 2;
-}
-
-function fundingTrajectory(
-  currentRaw,
-  history
-) {
-  const currentRate =
-    num(
-      currentRaw?.funding_rate
-    );
-
-  const estimatedRate =
-    num(
-      currentRaw?.estimated_rate
-    );
-
-  const fundingTimeTs =
-    normalizeTs(
-      currentRaw?.funding_time
-    );
-
-  const nextFundingTimeTs =
-    normalizeTs(
-      currentRaw?.next_funding_time
-    );
-
-  const intervals = [];
-
-  for (
-    let i = 1;
-    i < history.length;
-    i += 1
-  ) {
-    const diff =
-      history[i].funding_time_ts -
-      history[i - 1].funding_time_ts;
-
-    if (diff > 0) {
-      intervals.push(
-        diff / 3600000
-      );
-    }
-  }
-
-  const derivedIntervalHours =
-    fundingTimeTs !== null &&
-    nextFundingTimeTs !== null &&
-    nextFundingTimeTs >
-      fundingTimeTs
-      ? (
-          nextFundingTimeTs -
-          fundingTimeTs
-        ) / 3600000
-      : median(
-          intervals.slice(-10)
-        );
-
-  return {
-    current:
-      currentRaw
-        ? {
-            funding_rate:
-              currentRate,
-
-            funding_rate_pct:
-              currentRate !== null
-                ? currentRate * 100
-                : null,
-
-            estimated_rate:
-              estimatedRate,
-
-            estimated_rate_pct:
-              estimatedRate !== null
-                ? estimatedRate * 100
-                : null,
-
-            funding_time_ts:
-              fundingTimeTs,
-
-            funding_time:
-              iso(
-                fundingTimeTs
-              ),
-
-            next_funding_time_ts:
-              nextFundingTimeTs,
-
-            next_funding_time:
-              iso(
-                nextFundingTimeTs
-              ),
-          }
-        : null,
-
-    derived_settlement_interval_hours:
-      derivedIntervalHours,
-
-    history_count:
-      history.length,
-
-    recent_history:
-      history
-        .slice(-12)
-        .reverse(),
-  };
-}
-
-function priceFlowAlignment(
-  price,
-  flow
-) {
-  if (
-    !price?.usable ||
-    !flow?.usable ||
-    flow?.cvd_delta_reliable !== true
-  ) {
-    return "insufficient";
-  }
-
-  const p =
-    num(price.change_pct);
-
-  const d =
-    num(flow.delta_usdt);
-
-  if (
-    p === null ||
-    d === null
-  ) {
-    return "insufficient";
-  }
-
-  if (
-    d > 0 &&
-    p > 0
-  ) {
-    return "buying_confirms_price_up";
-  }
-
-  if (
-    d < 0 &&
-    p < 0
-  ) {
-    return "selling_confirms_price_down";
-  }
-
-  if (
-    d < 0 &&
-    p >= 0
-  ) {
-    return "negative_flow_price_resilient";
-  }
-
-  if (
-    d > 0 &&
-    p <= 0
-  ) {
-    return "positive_flow_price_weak";
-  }
-
-  return "neutral";
-}
-
-function oiPriceState(
-  price,
-  oi
-) {
-  if (
-    !price?.usable ||
-    !oi?.usable
-  ) {
-    return "insufficient";
-  }
-
-  const p =
-    num(price.change_pct);
-
-  const o =
-    num(
-      oi?.contracts?.change_pct
-    );
-
-  if (
-    p === null ||
-    o === null
-  ) {
-    return "insufficient";
-  }
-
-  if (
-    p > 0 &&
-    o > 0
-  ) {
-    return "price_up_oi_up";
-  }
-
-  if (
-    p > 0 &&
-    o < 0
-  ) {
-    return "price_up_oi_down";
-  }
-
-  if (
-    p < 0 &&
-    o > 0
-  ) {
-    return "price_down_oi_up";
-  }
-
-  if (
-    p < 0 &&
-    o < 0
-  ) {
-    return "price_down_oi_down";
-  }
-
-  return "flat_or_mixed";
-}
-
-function absorptionCandidate(
-  price,
-  flow
-) {
-  if (
-    !price?.usable ||
-    !flow?.usable ||
-    flow?.cvd_delta_reliable !== true
-  ) {
-    return {
-      value: "insufficient",
-      rule:
-        "ÐÑƒÐ¶Ð½Ñ‹ Ð¾Ð´Ð½Ð¾Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾ Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ñ‹Ðµ price Ð¸ order-flow Ð¾ÐºÐ½Ð°.",
-    };
-  }
-
-  const p =
-    num(price.change_pct);
-
-  const d =
-    num(flow.delta_usdt);
-
-  if (
-    p === null ||
-    d === null
-  ) {
-    return {
-      value: "insufficient",
-      rule:
-        "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ñ‡Ð¸ÑÐ»Ð¾Ð²Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ….",
-    };
-  }
-
-  return {
-    value:
-      d < 0 &&
-      p >= 0,
-
-    rule:
-      "ÐšÐ°Ð½Ð´Ð¸Ð´Ð°Ñ‚=true Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¿Ñ€Ð¸ Ð¾Ñ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾Ð¼ taker Delta Ð¸ Ð½ÐµÐ¾Ñ‚Ñ€Ð¸Ñ†Ð°Ñ‚ÐµÐ»ÑŒÐ½Ð¾Ð¼ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¸ Ñ†ÐµÐ½Ñ‹ Ð² Ñ‚Ð¾Ð¼ Ð¶Ðµ Ð¾ÐºÐ½Ðµ. Ð­Ñ‚Ð¾ ÐºÐ°Ð½Ð´Ð¸Ð´Ð°Ñ‚ Ð½Ð° Ð¿Ð¾Ð³Ð»Ð¾Ñ‰ÐµÐ½Ð¸Ðµ, Ð½Ðµ Ð´Ð¾ÐºÐ°Ð·Ð°Ñ‚ÐµÐ»ÑŒÑÑ‚Ð²Ð¾.",
-  };
-}
-
-function buildTrajectoryWindow({
-  label,
-  startMs,
-  endMs,
-  klines,
-  orderedTrades,
-  contractSize,
-  minTrades,
-  oi,
-}) {
-  const price =
-    summarizePriceRange(
-      klines,
-      startMs,
-      endMs
-    );
-
-  const flow =
-    summarizeFuturesFlowRange(
-      orderedTrades,
-      startMs,
-      endMs,
-      contractSize,
-      minTrades,
-      120000,
-      price
-    );
-
-  return {
-    label,
-
-    synchronized_window_start_ts:
-      startMs,
-
-    synchronized_window_start_time:
-      iso(startMs),
-
-    synchronized_window_end_ts:
-      endMs,
-
-    synchronized_window_end_time:
-      iso(endMs),
-
-    price,
-    order_flow: flow,
-    open_interest: oi,
-
-    derived: {
-      price_flow_alignment:
-        priceFlowAlignment(
-          price,
-          flow
-        ),
-
-      oi_price_state:
-        oi
-          ? oiPriceState(
-              price,
-              oi
-            )
-          : "insufficient",
-
-      absorption_candidate:
-        absorptionCandidate(
-          price,
-          flow
-        ),
-
-      failed_absorption_candidate: {
-        value:
-          "insufficient",
-
-        reason:
-          "ÐÐ²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸ Ð½Ðµ Ð·Ð°ÑÐ²Ð»ÑÐµÑ‚ÑÑ: Ð½ÑƒÐ¶ÐµÐ½ Ñ€Ð°Ð½ÐµÐµ Ð·Ð°Ñ„Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ ÑƒÑ€Ð¾Ð²ÐµÐ½ÑŒ Ð¿Ð¾Ð³Ð»Ð¾Ñ‰ÐµÐ½Ð¸Ñ Ð¸ Ð¿Ð¾ÑÐ»ÐµÐ´ÑƒÑŽÑ‰Ð°Ñ Ð¿Ð¾Ñ‚ÐµÑ€Ñ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹. Ð¡Ñ‹Ñ€Ñ‹Ðµ ÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¿ÐµÑ€ÐµÐ´Ð°ÑŽÑ‚ÑÑ Ð² Decision Layer.",
-      },
-    },
-  };
-}async function futuresTrajectory(params) {
-  const requestJson = typeof params?._fetch_json === "function" ? params._fetch_json : fetchJson;
-  const now = Date.now();
-  const contract = normalizeFuturesContract(
-    params.contract || params.contract_code || params.symbol || "ETHFI-USDT"
-  );
-
-  const tradesRequested = Math.round(
-    clamp(params.trades ?? params.size, 100, 2000, 2000)
-  );
-  const klineSize = Math.round(clamp(params.kline_size, 1500, 2000, 1600));
-  const min5m = Math.round(clamp(params.min_trades_5m, 1, 10000, 5));
-  const min15m = Math.round(clamp(params.min_trades_15m, 1, 10000, 10));
-  const min1h = Math.round(clamp(params.min_trades_1h, 1, 10000, 20));
-  const min4h = Math.round(clamp(params.min_trades_4h, 1, 10000, 50));
-  const min24h = Math.round(clamp(params.min_trades_24h, 1, 100000, 100));
-
-  const endpoints = {
-    info:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-
-    kline_1m:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/kline` +
-      `?contract_code=${encodeURIComponent(contract)}&period=1min&size=${klineSize}`,
-
-    kline_15m:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/kline` +
-      `?contract_code=${encodeURIComponent(contract)}&period=15min&size=2000`,
-
-    kline_1h:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/kline` +
-      `?contract_code=${encodeURIComponent(contract)}&period=60min&size=2000`,
-
-    kline_1d:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/kline` +
-      `?contract_code=${encodeURIComponent(contract)}&period=1day&size=200`,
-
-    trades:
-      `${FUTURES_BASE}/linear-swap-ex/market/history/trade` +
-      `?contract_code=${encodeURIComponent(contract)}&size=${tradesRequested}`,
-
-    oi_contracts:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_his_open_interest` +
-      `?contract_code=${encodeURIComponent(contract)}&period=60min&size=30&amount_type=1`,
-
-    oi_base:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_his_open_interest` +
-      `?contract_code=${encodeURIComponent(contract)}&period=60min&size=30&amount_type=2`,
-
-    oi_current:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_open_interest` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-
-    funding_current:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_funding_rate` +
-      `?contract_code=${encodeURIComponent(contract)}`,
-
-    funding_history:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_historical_funding_rate` +
-      `?contract_code=${encodeURIComponent(contract)}&page_index=1&page_size=50`,
-  };
-
-  const [
-    infoR,
-    klineR,
-    kline15mR,
-    kline1hR,
-    kline1dR,
-    tradesR,
-    oiContractsR,
-    oiBaseR,
-    oiCurrentR,
-    fundingCurrentR,
-    fundingHistoryR,
-  ] = await Promise.all([
-    requestJson(endpoints.info),
-    requestJson(endpoints.kline_1m),
-    requestJson(endpoints.kline_15m),
-    requestJson(endpoints.kline_1h),
-    requestJson(endpoints.kline_1d),
-    requestJson(endpoints.trades),
-    requestJson(endpoints.oi_contracts),
-    requestJson(endpoints.oi_base),
-    requestJson(endpoints.oi_current),
-    requestJson(endpoints.funding_current),
-    requestJson(endpoints.funding_history),
-  ]);
-
-  const contractInfo = findContractInfo(infoR.data, contract);
-  let contractSize = num(contractInfo?.contract_size);
-  const tradeList = flattenTrades(tradesR.data?.data);
-
-  if ((contractSize === null || contractSize <= 0) && tradeList.length) {
-    const testTrade = tradeList.find(
-      (trade) => num(trade?.amount) > 0 && num(trade?.quantity) > 0
-    );
-
-    if (testTrade) {
-      contractSize =
-        num(testTrade.quantity) /
-        num(testTrade.amount);
-    }
-  }
-
-  const klinesAll = normalizeKlines(klineR.data);
-
-  const closedKlines = klinesAll.filter(
-    (k) => k.ts + 60000 <= now
-  );
-
-  const closed1hKlines =
-    normalizeKlines(
-      kline1hR.data
-    ).filter(
-      (k) =>
-        k.ts +
-          60 * 60 * 1000 <=
-        now
-    );
-
-  const closed15mKlines =
-    normalizeKlines(
-      kline15mR.data
-    ).filter(
-      (k) =>
-        k.ts +
-          15 * 60 * 1000 <=
-        now
-    );
-
-  const closed1dKlines =
-    normalizeKlines(
-      kline1dR.data
-    ).filter(
-      (k) =>
-        k.ts +
-          24 * 60 * 60 * 1000 <=
-        now
-    );
-
-  const latestClosed =
-    closedKlines.length
-      ? closedKlines[closedKlines.length - 1]
-      : null;
-
-  const latestClosedEnd =
-    latestClosed
-      ? latestClosed.ts + 60000
-      : null;
-
-  const orderedTrades = sortedTrades(tradeList);
-
-  const oiContracts = normalizeOiHistory(oiContractsR.data);
-  const oiBase = normalizeOiHistory(oiBaseR.data);
-
-  const oi1h = oiAlignedWindow(
-    oiContracts,
-    oiBase,
-    1,
-    now
-  );
-
-  const oi4h = oiAlignedWindow(
-    oiContracts,
-    oiBase,
-    4,
-    now
-  );
-
-  const oi24h = oiAlignedWindow(
-    oiContracts,
-    oiBase,
-    24,
-    now
-  );
-
-  const windows = {};
-
-  if (latestClosedEnd !== null) {
-    windows["5m"] = buildTrajectoryWindow({
-      label: "5m",
-      startMs:
-        latestClosedEnd -
-        5 * 60 * 1000,
-      endMs: latestClosedEnd,
-      klines: closedKlines,
-      orderedTrades,
-      contractSize,
-      minTrades: min5m,
-      oi: {
-        usable: false,
-        coverage: "not_available",
-        reason:
-          "HTX historical OI minimum period is 60min; 5m OI is not invented.",
-      },
-    });
-
-    windows["15m"] = buildTrajectoryWindow({
-      label: "15m",
-      startMs:
-        latestClosedEnd -
-        15 * 60 * 1000,
-      endMs: latestClosedEnd,
-      klines: closedKlines,
-      orderedTrades,
-      contractSize,
-      minTrades: min15m,
-      oi: {
-        usable: false,
-        coverage: "not_available",
-        reason:
-          "HTX historical OI minimum period is 60min; 15m OI is not invented.",
-      },
-    });
-  }
-
-  function addOiAlignedWindow(
-    label,
-    oiWindow,
-    minTrades
-  ) {
-    if (!oiWindow) {
-      windows[label] = {
-        label,
-        coverage: "not_closed",
-        reason:
-          "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ‡ÐµÑÐºÐ¸Ñ… OI Ñ‚Ð¾Ñ‡ÐµÐº Ð´Ð»Ñ ÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð¾ÐºÐ½Ð°.",
-      };
-      return;
-    }
-
-    windows[label] = buildTrajectoryWindow({
-      label,
-      startMs:
-        oiWindow.window_start_ts,
-      endMs:
-        oiWindow.window_end_ts,
-      klines:
-        closedKlines,
-      orderedTrades,
-      contractSize,
-      minTrades,
-      oi:
-        oiWindow,
-    });
-  }
-
-  addOiAlignedWindow(
-    "1h",
-    oi1h,
-    min1h
-  );
-
-  addOiAlignedWindow(
-    "4h",
-    oi4h,
-    min4h
-  );
-
-  addOiAlignedWindow(
-    "24h",
-    oi24h,
-    min24h
-  );
-
-  const fundingHistory =
-    normalizeFundingHistory(
-      fundingHistoryR.data
-    );
-
-  const fundingRaw =
-    fundingCurrentR.data?.data ||
-    null;
-
-  const funding =
-    fundingTrajectory(
-      fundingRaw,
-      fundingHistory
-    );
-
-  const currentOiRaw =
-    findOi(
-      oiCurrentR.data,
-      contract
-    );
-
-  const currentOpenInterest =
-    currentOiRaw
-      ? {
-          contracts:
-            num(currentOiRaw.volume),
-
-          amount_base:
-            num(currentOiRaw.amount),
-
-          value_usdt:
-            num(currentOiRaw.value),
-
-          trade_volume_24h_contracts:
-            num(currentOiRaw.trade_volume),
-
-          trade_amount_24h_base:
-            num(currentOiRaw.trade_amount),
-
-          trade_turnover_24h_usdt:
-            num(currentOiRaw.trade_turnover),
-
-          response_timestamp:
-            iso(oiCurrentR.data?.ts),
-        }
-      : null;
-
-  const tradeTimes =
-    orderedTrades
-      .map(tradeTime)
-      .filter(
-        (ts) =>
-          ts !== null
-      );
-
-  const firstTradeTs =
-    tradeTimes.length
-      ? tradeTimes[0]
-      : null;
-
-  const lastTradeTs =
-    tradeTimes.length
-      ? tradeTimes[
-          tradeTimes.length - 1
-        ]
-      : null;
-
-  const health = {
-    info:
-      Boolean(
-        infoR.ok &&
-        contractInfo
-      ),
-
-    price_1m:
-      Boolean(
-        klineR.ok &&
-        closedKlines.length
-      ),
-
-    price_1h_native:
-      Boolean(
-        kline1hR.ok &&
-        closed1hKlines.length
-      ),
-
-    price_15m_native:
-      Boolean(
-        kline15mR.ok &&
-        closed15mKlines.length
-      ),
-
-    price_1d_native:
-      Boolean(
-        kline1dR.ok &&
-        closed1dKlines.length
-      ),
-
-    trades:
-      Boolean(
-        tradesR.ok &&
-        tradeList.length
-      ),
-
-    oi_contracts_history:
-      Boolean(
-        oiContractsR.ok &&
-        oiContracts.length
-      ),
-
-    oi_base_history:
-      Boolean(
-        oiBaseR.ok &&
-        oiBase.length
-      ),
-
-    oi_current:
-      Boolean(
-        oiCurrentR.ok &&
-        currentOiRaw
-      ),
-
-    funding_current:
-      Boolean(
-        fundingCurrentR.ok &&
-        fundingRaw
-      ),
-
-    funding_history:
-      Boolean(
-        fundingHistoryR.ok &&
-        fundingHistory.length
-      ),
-  };
-
-  const coverage = {
-    price_5m:
-      windows["5m"]?.price?.usable
-        ? "closed"
-        : "not_closed",
-
-    price_15m:
-      windows["15m"]?.price?.usable
-        ? "closed"
-        : "not_closed",
-
-    price_1h:
-      windows["1h"]?.price?.usable
-        ? "closed"
-        : "not_closed",
-
-    price_4h:
-      windows["4h"]?.price?.usable
-        ? "closed"
-        : "not_closed",
-
-    price_24h:
-      windows["24h"]?.price?.usable
-        ? "closed"
-        : "not_closed",
-
-    flow_5m:
-      windows["5m"]?.order_flow?.usable
-        ? "closed"
-        : "not_closed",
-
-    flow_15m:
-      windows["15m"]?.order_flow?.usable
-        ? "closed"
-        : "not_closed",
-
-    flow_1h:
-      windows["1h"]?.order_flow?.usable
-        ? "closed"
-        : "not_closed",
-
-    flow_4h:
-      windows["4h"]?.order_flow?.usable
-        ? "closed"
-        : "not_closed",
-
-    flow_24h:
-      windows["24h"]?.order_flow?.usable
-        ? "closed"
-        : "not_closed",
-
-    oi_5m: "not_available",
-    oi_15m: "not_available",
-
-    oi_1h:
-      oi1h?.usable
-        ? "closed"
-        : "not_closed",
-
-    oi_4h:
-      oi4h?.usable
-        ? "closed"
-        : "not_closed",
-
-    oi_24h:
-      oi24h?.usable
-        ? "closed"
-        : "not_closed",
-
-    funding_current:
-      health.funding_current
-        ? "closed"
-        : "not_closed",
-
-    funding_history:
-      health.funding_history
-        ? "closed"
-        : "not_closed",
-  };
-
-  const response = {
-    source:
-      "HTX official public API",
-
-    market:
-      "HTX USDT-M Futures",
-
-    tool:
-      "htx_futures_trajectory",
-
-    version:
-      "1.2-opportunity-integrity-inputs",
-
-    contract,
-
-    timestamp:
-      now,
-
-    timestamp_utc:
-      new Date(
-        now
-      ).toISOString(),
-
-    provider_source_ts:
-      normalizeTs(latestClosedEnd),
-
-    contract_info:
-      contractInfo
-        ? {
-            contract_code:
-              contractInfo.contract_code,
-
-            symbol:
-              contractInfo.symbol,
-
-            contract_size:
-              contractSize,
-
-            price_tick:
-              num(
-                contractInfo.price_tick
-              ),
-
-            contract_status:
-              contractInfo.contract_status,
-          }
-        : null,
-
-    source_rules: {
-      price:
-        "ÐžÑ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ñ‹Ðµ HTX 1m/15m/1h/1d Kline. Native 15m ÑÐ¾Ñ…Ñ€Ð°Ð½ÑÐµÑ‚ Ñ‚Ð¾Ñ‡Ð½Ñ‹Ðµ Ð³Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ 3d/7d outcome Ð´Ð»Ñ Ñ‡ÐµÑ‚Ð²ÐµÑ€Ñ‚ÑŒÑ‡Ð°ÑÐ¾Ð²Ñ‹Ñ… ÑÐ¾Ð±Ñ‹Ñ‚Ð¸Ð¹; 1Ñ‡/4Ñ‡/24Ñ‡ ÑÐ¸Ð½Ñ…Ñ€Ð¾Ð½Ð¸Ð·Ð¸Ñ€ÑƒÑŽÑ‚ÑÑ Ñ Ñ„Ð°ÐºÑ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ð¼Ð¸ Ñ‡Ð°ÑÐ¾Ð²Ñ‹Ð¼Ð¸ OI timestamp.",
-
-      open_interest:
-        "ÐžÑ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ñ‹Ð¹ HTX swap_his_open_interest. ÐœÐ¸Ð½Ð¸Ð¼Ð°Ð»ÑŒÐ½Ð°Ñ Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ‡ÐµÑÐºÐ°Ñ Ð³Ñ€Ð°Ð½ÑƒÐ»ÑÑ€Ð½Ð¾ÑÑ‚ÑŒ 60min; 5m/15m OI Ð½Ðµ Ñ€Ð°ÑÑÑ‡Ð¸Ñ‚Ñ‹Ð²Ð°ÐµÑ‚ÑÑ Ð¸ Ð½Ðµ Ð¸Ð½Ñ‚ÐµÑ€Ð¿Ð¾Ð»Ð¸Ñ€ÑƒÐµÑ‚ÑÑ.",
-
-      order_flow:
-        "ÐžÑ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ñ‹Ðµ HTX raw trades, Ð¼Ð°ÐºÑÐ¸Ð¼ÑƒÐ¼ 2000 Ð²Ð¾Ð·Ð²Ñ€Ð°Ñ‰Ñ‘Ð½Ð½Ñ‹Ñ… trade-records. Ð“Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð¸ Ð¼Ð¸Ð½Ð¸Ð¼ÑƒÐ¼ ÑÐ´ÐµÐ»Ð¾Ðº Ð¾Ð¿Ð¸ÑÑ‹Ð²Ð°ÑŽÑ‚ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ transport coverage; Delta/CVD Ð½Ð°Ð´Ñ‘Ð¶Ð½Ñ‹ Ð¸ÑÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ð¿Ñ€Ð¸ Ñ‚Ð¾Ñ‡Ð½Ð¾Ð¼ ÑÐ¾Ð²Ð¿Ð°Ð´ÐµÐ½Ð¸Ð¸ Ñ‡Ð¸ÑÐ»Ð° raw records Ñ ÑÑƒÐ¼Ð¼Ð¾Ð¹ factual count Ð²ÑÐµÑ… Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ñ‹Ñ… 1m ÑÐ²ÐµÑ‡ÐµÐ¹ Ñ‚Ð¾Ð³Ð¾ Ð¶Ðµ Ð¾ÐºÐ½Ð°.",
-
-      funding:
-        "Ð¢ÐµÐºÑƒÑ‰Ð¸Ð¹ funding + Ð¾Ñ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ð°Ñ Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ settlement. Ð˜Ð½Ñ‚ÐµÑ€Ð²Ð°Ð» funding Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ÑÑ Ð¸Ð· Ñ„Ð°ÐºÑ‚Ð¸Ñ‡ÐµÑÐºÐ¸Ñ… timestamp, Ð° Ð½Ðµ Ð¿Ñ€ÐµÐ´Ð¿Ð¾Ð»Ð°Ð³Ð°ÐµÑ‚ÑÑ.",
-    },
-
-    raw_sample_meta: {
-      klines_requested:
-        klineSize,
-
-      closed_1m_klines_received:
-        closedKlines.length,
-
-      closed_15m_klines_received:
-        closed15mKlines.length,
-
-      closed_1h_klines_received:
-        closed1hKlines.length,
-
-      closed_1d_klines_received:
-        closed1dKlines.length,
-
-      latest_closed_kline_end_time:
-        iso(
-          latestClosedEnd
-        ),
-
-      trades_requested:
-        tradesRequested,
-
-      flattened_trades_received:
-        orderedTrades.length,
-
-      first_trade_time:
-        iso(
-          firstTradeTs
-        ),
-
-      last_trade_time:
-        iso(
-          lastTradeTs
-        ),
-
-      oi_contract_points:
-        oiContracts.length,
-
-      oi_base_points:
-        oiBase.length,
-
-      funding_history_points:
-        fundingHistory.length,
-    },
-
-    current_open_interest:
-      currentOpenInterest,
-
-    funding,
-    windows,
-    health,
-    endpoint_health:
-      health,
-    coverage,
-
-    notes: [
-      "1Ñ‡/4Ñ‡/24Ñ‡ ÑÑ‚Ñ€Ð¾ÑÑ‚ÑÑ Ð½Ð° Ð¾Ð´Ð½Ð¾Ð¼ Ð¸ Ñ‚Ð¾Ð¼ Ð¶Ðµ Ñ„Ð°ÐºÑ‚Ð¸Ñ‡ÐµÑÐºÐ¾Ð¼ Ð¸Ð½Ñ‚ÐµÑ€Ð²Ð°Ð»Ðµ Ñ†ÐµÐ½Ñ‹, raw-trades Ð¸ Ð¸ÑÑ‚Ð¾Ñ€Ð¸Ñ‡ÐµÑÐºÐ¾Ð³Ð¾ OI.",
-      "5Ð¼/15Ð¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð°Ñ‚ Ñ†ÐµÐ½Ñƒ Ð¸ Ð¿Ð¾Ñ‚Ð¾Ðº; OI Ð½Ð° ÑÑ‚Ð¸Ñ… Ð¾ÐºÐ½Ð°Ñ… Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ñƒ Ð¾Ñ„Ð¸Ñ†Ð¸Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ REST-Ð¸ÑÑ‚Ð¾Ñ‡Ð½Ð¸ÐºÐ° HTX Ð¸ Ð½Ðµ Ð²Ñ‹Ð´ÑƒÐ¼Ñ‹Ð²Ð°ÐµÑ‚ÑÑ.",
-      "failed_absorption_candidate Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸ Ð½Ðµ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´Ð°ÐµÑ‚ÑÑ Ð±ÐµÐ· Ñ€Ð°Ð½ÐµÐµ Ð¸Ð´ÐµÐ½Ñ‚Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ð³Ð¾ ÑƒÑ€Ð¾Ð²Ð½Ñ Ð¿Ð¾Ð³Ð»Ð¾Ñ‰ÐµÐ½Ð¸Ñ Ð¸ Ð¿Ð¾ÑÐ»ÐµÐ´ÑƒÑŽÑ‰ÐµÐ¹ Ð¿Ð¾Ñ‚ÐµÑ€Ð¸ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ñ‹.",
-      "Ð•ÑÐ»Ð¸ history trade sample Ð½Ðµ Ð¿ÐµÑ€ÐµÐºÑ€Ñ‹Ð²Ð°ÐµÑ‚ Ð¾ÐºÐ½Ð¾ Ð¿Ð¾Ð»Ð½Ð¾ÑÑ‚ÑŒÑŽ Ð¸Ð»Ð¸ raw trade-record count Ð½Ðµ ÑÐ¾Ð²Ð¿Ð°Ð´Ð°ÐµÑ‚ Ñ factual 1m trade_count, Delta/CVD Ð¾ÑÑ‚Ð°ÑŽÑ‚ÑÑ Ð½ÐµÐ¿Ð¾Ð»Ð½Ð¾Ð¹ Ð´Ð¸Ð°Ð³Ð½Ð¾ÑÑ‚Ð¸Ñ‡ÐµÑÐºÐ¾Ð¹ Ð²Ñ‹Ð±Ð¾Ñ€ÐºÐ¾Ð¹ Ð½ÐµÐ·Ð°Ð²Ð¸ÑÐ¸Ð¼Ð¾ Ð¾Ñ‚ Ð¸Ñ… Ð²ÐµÐ»Ð¸Ñ‡Ð¸Ð½Ñ‹.",
-    ],
-
-    endpoint_errors: {
-      info:
-        infoR.ok
-          ? null
-          : infoR.error,
-
-      kline_1m:
-        klineR.ok
-          ? null
-          : klineR.error,
-
-      kline_15m:
-        kline15mR.ok
-          ? null
-          : kline15mR.error,
-
-      kline_1h:
-        kline1hR.ok
-          ? null
-          : kline1hR.error,
-
-      kline_1d:
-        kline1dR.ok
-          ? null
-          : kline1dR.error,
-
-      trades:
-        tradesR.ok
-          ? null
-          : tradesR.error,
-
-      oi_contracts:
-        oiContractsR.ok
-          ? null
-          : oiContractsR.error,
-
-      oi_base:
-        oiBaseR.ok
-          ? null
-          : oiBaseR.error,
-
-      oi_current:
-        oiCurrentR.ok
-          ? null
-          : oiCurrentR.error,
-
-      funding_current:
-        fundingCurrentR.ok
-          ? null
-          : fundingCurrentR.error,
-
-      funding_history:
-        fundingHistoryR.ok
-          ? null
-          : fundingHistoryR.error,
-    },
-  };
-
-  /*
-   * These factual source rows are private inputs for Stage 3.9. They
-   * are deliberately non-enumerable so the existing trajectory API
-   * and stored JSON do not grow without an explicit contract change.
-   */
-  Object.defineProperty(
-    response,
-    "_opportunity_shadow_inputs",
-    {
-      enumerable: false,
-      value: {
-        one_minute:
-          closedKlines,
-        fifteen_minute:
-          closed15mKlines,
-        one_hour:
-          closed1hKlines,
-        one_day:
-          closed1dKlines,
-        oi_contracts_hourly:
-          oiContracts,
-        oi_base_hourly:
-          oiBase,
-        current_open_interest:
-          currentOpenInterest,
-        funding,
-        windows,
-      },
-    }
-  );
-
-  return response;
-}/* =========================================================
-   DATA PLANE v3 â€” P0 INFRASTRUCTURE
-   Adds full-universe Stage-0 scanning, optional D1 persistence,
-   factual HTX liquidation polling, technical watch output and
-   infrastructure quality/status. Existing snapshot/spot/trajectory
-   behavior remains unchanged.
-   ========================================================= */
-
-function fetchJsonWithMethod(url, method = "GET") {
-  let timeout = null;
-
-  return (async () => {
-    try {
-      const controller =
-        new AbortController();
-
-      timeout = setTimeout(
-        () => controller.abort(),
-        10000
-      );
-
-      const response = await fetch(
-        url,
-        {
-          method,
-          headers: {
-            accept:
-              "application/json",
-
-            "content-type":
-              "application/json",
-
-            "user-agent":
-              "My-Report-2-HUB/3.1-data-plane",
-          },
-
-          signal:
-            controller.signal,
-        }
-      );
-
-      const text =
-        await response.text();
-
-      let data;
-
-      try {
-        data =
-          JSON.parse(text);
-      } catch {
-        return {
-          ok: false,
-          url,
-          http_status:
-            response.status,
-          data: null,
-          error:
-            "invalid_json",
-        };
-      }
-
-      const apiOk =
-        response.ok &&
-        (
-          data?.status === "ok" ||
-          data?.code === 200 ||
-          data?.success === true ||
-          (
-            data?.status === undefined &&
-            data?.code === undefined &&
-            data?.success === undefined
-          )
-        );
-
-      return {
-        ok: apiOk,
-        url,
-        http_status:
-          response.status,
-        data,
-
-        error:
-          apiOk
-            ? null
-            : data?.["err-msg"] ||
-              data?.err_msg ||
-              data?.message ||
-              data?.msg ||
-              "api_error",
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        url,
-        http_status: null,
-        data: null,
-
-        error:
-          error?.name ===
-          "AbortError"
-            ? "timeout"
-            : String(
-                error?.message ||
-                error
-              ),
-      };
-    } finally {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    }
-  })();
-}
-
-function asArray(value) {
-  return Array.isArray(value)
-    ? value
-    : [];
-}
-
-function contractKey(value) {
-  return String(value || "")
-    .normalize("NFC")
-    .trim()
-    .toUpperCase();
-}
-
-function isUnicodeContract(value) {
-  return /[^\x00-\x7F]/.test(
-    String(value || "")
-  );
-}
-
-function classifyHtxInstrumentScope(info) {
-  const labelsPresent =
-    Array.isArray(
-      info?.labels
-    );
-
-  const tradfiLabelsPresent =
-    Array.isArray(
-      info?.tradfi_labels
-    );
-
-  const labels =
-    labelsPresent
-      ? info.labels
-          .map(
-            (value) =>
-              String(
-                value || ""
-              )
-                .trim()
-                .toLowerCase()
-          )
-          .filter(Boolean)
-      : [];
-
-  const tradfiLabels =
-    tradfiLabelsPresent
-      ? info.tradfi_labels
-          .map(
-            (value) =>
-              String(
-                value || ""
-              ).trim()
-          )
-          .filter(Boolean)
-      : [];
-
-  const businessType =
-    String(
-      info?.business_type ||
-      ""
-    )
-      .trim()
-      .toLowerCase();
-
-  const contractType =
-    String(
-      info?.contract_type ||
-      ""
-    )
-      .trim()
-      .toLowerCase();
-
-  const tradePartition =
-    String(
-      info?.trade_partition ||
-      ""
-    )
-      .trim()
-      .toUpperCase();
-
-  const tradfiLabelSet =
-    new Set([
-      "tradfi",
-      "stock",
-      "indices",
-      "commodities",
-    ]);
-
-  const htxTradfiClassified =
-    tradfiLabels.length > 0 ||
-    labels.some(
-      (label) =>
-        tradfiLabelSet.has(
-          label
-        )
-    );
-
-  const evidenceComplete =
-    labelsPresent &&
-    tradfiLabelsPresent &&
-    Boolean(businessType) &&
-    Boolean(contractType) &&
-    Boolean(tradePartition);
-
-  const correctMarket =
-    businessType === "swap" &&
-    contractType === "swap" &&
-    tradePartition === "USDT";
-
-  let classification =
-    "UNKNOWN_FAIL_CLOSED";
-
-  const reasons = [];
-
-  if (!labelsPresent) {
-    reasons.push(
-      "HTX_LABELS_FIELD_MISSING"
-    );
-  }
-
-  if (!tradfiLabelsPresent) {
-    reasons.push(
-      "HTX_TRADFI_LABELS_FIELD_MISSING"
-    );
-  }
-
-  if (!correctMarket) {
-    reasons.push(
-      "NOT_ACTIVE_USDT_SWAP_SCOPE"
-    );
-  }
-
-  if (htxTradfiClassified) {
-    reasons.push(
-      "HTX_TRADFI_CLASSIFIED"
-    );
-  }
-
-  if (
-    evidenceComplete &&
-    correctMarket
-  ) {
-    classification =
-      htxTradfiClassified
-        ? "NON_CRYPTO_HTX_CLASSIFIED"
-        : "CRYPTO_CONFIRMED";
-  }
-
-  if (
-    classification ===
-      "CRYPTO_CONFIRMED" &&
-    !reasons.length
-  ) {
-    reasons.push(
-      "HTX_SCOPE_FIELDS_CONFIRM_CRYPTO"
-    );
-  }
-
-  return {
-    classification,
-
-    eligible_for_crypto_discovery:
-      classification ===
-      "CRYPTO_CONFIRMED",
-
-    source:
-      "HTX swap_contract_info labels/tradfi_labels",
-
-    source_fields_present: {
-      labels:
-        labelsPresent,
-
-      tradfi_labels:
-        tradfiLabelsPresent,
-
-      business_type:
-        Boolean(businessType),
-
-      contract_type:
-        Boolean(contractType),
-
-      trade_partition:
-        Boolean(tradePartition),
-    },
-
-    evidence: {
-      business_type:
-        businessType || null,
-
-      contract_type:
-        contractType || null,
-
-      trade_partition:
-        tradePartition || null,
-
-      labels,
-
-      tradfi_labels:
-        tradfiLabels,
-    },
-
-    reasons,
-  };
-}
-
-function symbolFingerprint(info) {
-  const exact =
-    String(
-      info?.contract_code ||
-      ""
-    );
-
-  const symbol =
-    String(
-      info?.symbol ||
-      ""
-    );
-
-  const multiplierMatch =
-    symbol.match(
-      /^(\d{2,})/
-    );
-
-  const codepoints =
-    [...exact].map(
-      (ch) =>
-        `U+${ch
-          .codePointAt(0)
-          .toString(16)
-          .toUpperCase()
-          .padStart(4, "0")}`
-    );
-
-  const hasZeroWidth =
-    /[\u200B-\u200D\uFEFF]/u.test(
-      exact
-    ) ||
-    /[\u200B-\u200D\uFEFF]/u.test(
-      symbol
-    );
-
-  const scripts = {
-    cjk:
-      /\p{Script=Han}/u.test(
-        exact
-      ) ||
-      /\p{Script=Han}/u.test(
-        symbol
-      ),
-
-    cyrillic:
-      /\p{Script=Cyrillic}/u.test(
-        exact
-      ) ||
-      /\p{Script=Cyrillic}/u.test(
-        symbol
-      ),
-
-    greek:
-      /\p{Script=Greek}/u.test(
-        exact
-      ) ||
-      /\p{Script=Greek}/u.test(
-        symbol
-      ),
-  };
-
-  return {
-    htx_contract_exact_utf8:
-      exact,
-
-    normalized_match_key:
-      contractKey(exact),
-
-    symbol_exact_utf8:
-      symbol,
-
-    unicode_codepoints:
-      codepoints,
-
-    has_non_ascii:
-      isUnicodeContract(exact) ||
-      isUnicodeContract(symbol),
-
-    has_zero_width:
-      hasZeroWidth,
-
-    script_flags:
-      scripts,
-
-    multiplier_prefix:
-      multiplierMatch
-        ? Number(
-            multiplierMatch[1]
-          )
-        : null,
-
-    business_type:
-      info?.business_type ||
-      "swap",
-
-    pair:
-      info?.pair ||
-      exact,
-
-    contract_type:
-      info?.contract_type ||
-      "swap",
-
-    project_identity:
-      null,
-
-    contract_address:
-      null,
-
-    resolution_status:
-      exact
-        ? "RESOLVED_HTX_EXACT"
-        : "SYMBOL_UNRESOLVED",
-
-    identity_confidence:
-      exact
-        ? "HTX_CONTRACT_EXACT"
-        : "UNRESOLVED",
-  };
-}
-
-function mapByContract(list) {
-  const m =
-    new Map();
-
-  for (
-    const item
-    of asArray(list)
-  ) {
-    const key =
-      contractKey(
-        item?.contract_code ||
-        item?.contract ||
-        item?.pair
-      );
-
-    if (key) {
-      m.set(
-        key,
-        item
-      );
-    }
-  }
-
-  return m;
-}
-
-function pctDelta(
-  current,
-  prior
-) {
-  const c =
-    num(current);
-
-  const p =
-    num(prior);
-
-  if (
-    c === null ||
-    p === null ||
-    p === 0
-  ) {
-    return null;
-  }
-
-  return (
-    c / p - 1
-  ) * 100;
-}
-
-function fundingIntervalHoursFromRaw(
-  funding,
-  info
-) {
-  const explicitCandidates = [
-    info?.funding_interval,
-    info?.funding_interval_hours,
-    info?.funding_interval_hour,
-    funding?.funding_interval,
-  ];
-
-  for (
-    const v
-    of explicitCandidates
-  ) {
-    const n =
-      num(v);
-
-    if (
-      n !== null &&
-      n > 0 &&
-      n <= 24
-    ) {
-      return {
-        hours: n,
-        source:
-          "explicit_field",
-      };
-    }
-  }
-
-  const a =
-    normalizeTs(
-      funding?.funding_time
-    );
-
-  const b =
-    normalizeTs(
-      funding?.next_funding_time
-    );
-
-  if (
-    a !== null &&
-    b !== null &&
-    b > a
-  ) {
-    return {
-      hours:
-        (
-          b - a
-        ) /
-        3600000,
-
-      source:
-        "funding_timestamps",
-    };
-  }
-
-  return {
-    hours: null,
-    source:
-      "not_available_in_batch_response",
-  };
-}
-
-function stageState(
-  priceChange,
-  oiChange
-) {
-  const p =
-    num(priceChange);
-
-  const o =
-    num(oiChange);
-
-  if (
-    p === null ||
-    o === null
-  ) {
-    return "insufficient";
-  }
-
-  if (
-    p > 0 &&
-    o > 0
-  ) {
-    return "price_up_oi_up";
-  }
-
-  if (
-    p > 0 &&
-    o < 0
-  ) {
-    return "price_up_oi_down";
-  }
-
-  if (
-    p < 0 &&
-    o > 0
-  ) {
-    return "price_down_oi_up";
-  }
-
-  if (
-    p < 0 &&
-    o < 0
-  ) {
-    return "price_down_oi_down";
-  }
-
-  return "flat_or_mixed";
-}
-
-async function loadHistoryTargets(
-  env,
-  nowMs
-) {
-  return readMarketHistoryTargets({db:env?.DATA_DB,now_ts:nowMs,actor:'HUB_PUBLIC_COLLECTOR',preferred_generation:env?.REPORT2_CURRENT_GENERATION||null});
-}
-
-async function loadHistoryTargetsLegacy(
-  env,
-  nowMs
-) {
-  if (!env?.DATA_DB) {
-    return {
-      available: false,
-      reason:
-        "D1 binding DATA_DB is not configured",
-      targets: {},
-    };
-  }
-
-  const targets = [
-    [
-      "5m",
-      5 * 60 * 1000,
-      1 * 60 * 1000,
-    ],
-    [
-      "15m",
-      15 * 60 * 1000,
-      2 * 60 * 1000,
-    ],
-    [
-      "1h",
-      60 * 60 * 1000,
-      5 * 60 * 1000,
-    ],
-    [
-      "4h",
-      4 * 60 * 60 * 1000,
-      5 * 60 * 1000,
-    ],
-    [
-      "24h",
-      24 * 60 * 60 * 1000,
-      5 * 60 * 1000,
-    ],
-  ];
-
-  function payloadToMap(
-    payloadText,
-    snapshotTs = null
-  ) {
-    const map =
-      new Map();
-
-    if (!payloadText) {
-      return map;
-    }
-
-    let payload;
-
-    try {
-      payload =
-        JSON.parse(
-          payloadText
-        );
-    } catch {
-      return map;
-    }
-
-    for (
-      const row
-      of asArray(
-        payload?.contracts
-      )
-    ) {
-      if (
-        !Array.isArray(row) ||
-        !row.length
-      ) {
-        continue;
-      }
-
-      const [
-        contract_code,
-        price,
-        turnover_24h,
-        oi_contracts,
-        oi_value_usdt,
-        funding_rate,
-        funding_interval_hours,
-        market_age_sec,
-        source_status,
-        prior_long_watch = null,
-        prior_short_watch = null,
-        prior_long_trigger_count = 0,
-        prior_short_trigger_count = 0,
-      ] = row;
-
-      const key =
-        contractKey(
-          contract_code
-        );
-
-      if (!key) {
-        continue;
-      }
-
-      map.set(
-        key,
-        {
-          ts:
-            snapshotTs,
-
-          contract_code,
-          price,
-          turnover_24h,
-          oi_contracts,
-          oi_value_usdt,
-          funding_rate,
-          funding_interval_hours,
-          market_age_sec,
-          source_status,
-          prior_discovery: {
-            long_watch:
-              prior_long_watch ===
-              true,
-            short_watch:
-              prior_short_watch ===
-              true,
-            long_trigger_count:
-              Number.isFinite(
-                Number(
-                  prior_long_trigger_count
-                )
-              )
-                ? Number(
-                    prior_long_trigger_count
-                  )
-                : 0,
-            short_trigger_count:
-              Number.isFinite(
-                Number(
-                  prior_short_trigger_count
-                )
-              )
-                ? Number(
-                    prior_short_trigger_count
-                  )
-                : 0,
-          },
-        }
-      );
-    }
-
-    return map;
-  }
-
-  function collectorPayloadToMap(
-    records,
-    target,
-    tolerance
-  ) {
-    const map = new Map();
-
-    if (!Array.isArray(records) || !records.length) {
-      return map;
-    }
-
-    let metadata;
-
-    try {
-      metadata = JSON.parse(
-        records[0]
-          ?.source_timestamps_json ||
-          "{}"
-      );
-    } catch {
-      return map;
-    }
-
-    const expectedShards =
-      Number(
-        metadata?.expected_shards
-      );
-
-    if (
-      !Number.isInteger(
-        expectedShards
-      ) ||
-      expectedShards < 1 ||
-      records.length !==
-        expectedShards ||
-      records.some(
-        (record, index) =>
-          record?.status !==
-            "COMPLETE" ||
-          Number(
-            record?.shard
-          ) !== index
-      )
-    ) {
-      return map;
-    }
-
-    const normalized = [];
-
-    try {
-      for (const record of records) {
-        const rows = JSON.parse(
-          record?.payload ||
-          "[]"
-        );
-
-        if (!Array.isArray(rows)) {
-          return new Map();
-        }
-
-        normalized.push(
-          ...rows
-        );
-      }
-    } catch {
-      return map;
-    }
-
-    if (
-      Number(
-        metadata?.universe_total
-      ) !== normalized.length
-    ) {
-      return new Map();
-    }
-
-    for (const row of normalized) {
-      const key = contractKey(
-        row?.contract
-      );
-
-      const actualTs =
-        normalizeTs(
-          row?.observed_ts
-        ) ??
-        normalizeTs(
-          metadata?.market
-        ) ??
-        normalizeTs(
-          records[0]
-            ?.received_ts
-        ) ??
-        normalizeTs(
-          records[0]
-            ?.bucket
-        );
-
-      if (
-        !key ||
-        actualTs === null ||
-        Math.abs(
-          actualTs - target
-        ) > tolerance
-      ) {
-        continue;
-      }
-
-      map.set(
-        key,
-        {
-          ts: actualTs,
-          scheduled_bucket_ts:
-            normalizeTs(
-              records[0]
-                ?.bucket
-            ),
-          contract_code:
-            row?.contract,
-          price:
-            row?.price,
-          turnover_24h:
-            row
-              ?.turnover_24h_usdt,
-          oi_contracts:
-            row?.oi_contracts,
-          oi_value_usdt:
-            row?.oi_value_usdt,
-          funding_rate:
-            row?.funding_rate,
-          funding_interval_hours:
-            row
-              ?.funding_interval_hours,
-          market_age_sec:
-            row?.market_age_sec,
-          source_status:
-            row?.source_status,
-          prior_discovery: null,
-          history_provenance:
-            "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
-        }
-      );
-    }
-
-    return map;
-  }
-
-  try {
-    const generation =
-      String(
-        env
-          ?.REPORT2_CURRENT_GENERATION ||
-        ""
-      ).trim();
-
-    const collectorMaps = {};
-
-    if (generation) {
-      try {
-        const collectorStatements =
-          targets.map(
-            (
-              [
-                label,
-                offset,
-                tolerance,
-              ]
-            ) => {
-              const target =
-                nowMs -
-                Number(offset);
-
-              const bucket =
-                Math.floor(
-                  target /
-                  300000
-                ) *
-                300000;
-
-              return env.DATA_DB
-                .prepare(`
-                  SELECT
-                    bucket,
-                    shard,
-                    source_timestamps_json,
-                    received_ts,
-                    status,
-                    payload
-                  FROM
-                    report2_market_snapshot_batch_v1
-                  WHERE
-                    actor = ?1 AND
-                    generation = ?2 AND
-                    status = 'COMPLETE' AND
-                    bucket = (
-                      SELECT bucket
-                      FROM report2_market_snapshot_batch_v1
-                      WHERE
-                        actor = ?1 AND
-                        generation = ?2 AND
-                        status = 'COMPLETE' AND
-                        bucket BETWEEN ?3 AND ?4
-                      ORDER BY
-                        ABS(bucket - ?5) ASC
-                      LIMIT 1
-                    )
-                  ORDER BY shard ASC
-                `)
-                .bind(
-                  "HUB_PUBLIC_COLLECTOR",
-                  generation,
-                  bucket -
-                    Number(
-                      tolerance
-                    ),
-                  bucket +
-                    Number(
-                      tolerance
-                    ),
-                  bucket
-                );
-            }
-          );
-
-        const collectorResults =
-          await env.DATA_DB.batch(
-            collectorStatements
-          );
-
-        targets.forEach(
-          (
-            [
-              label,
-              offset,
-              tolerance,
-            ],
-            index
-          ) => {
-            collectorMaps[label] =
-              collectorPayloadToMap(
-                asArray(
-                  collectorResults?.[
-                    index
-                  ]?.results
-                ),
-                nowMs -
-                  Number(offset),
-                Number(tolerance)
-              );
-          }
-        );
-      } catch {
-        for (const [label] of targets) {
-          collectorMaps[label] =
-            new Map();
-        }
-      }
-    }
-
-    const statements =
-      targets.filter(
-        ([label]) =>
-          !collectorMaps[
-            label
-          ]?.size
-      ).map(
-        (
-          [
-            label,
-            offset,
-            tolerance,
-          ]
-        ) => {
-          const target =
-            nowMs -
-            Number(offset);
-
-          const bucket =
-            Math.floor(
-              target /
-              300000
-            ) *
-            300000;
-
-          return env.DATA_DB
-            .prepare(`
-              SELECT
-                ts,
-                ts_bucket,
-                payload_json
-              FROM scan_runs
-              WHERE ts_bucket
-                BETWEEN ?1 AND ?2
-              ORDER BY
-                ABS(
-                  ts_bucket - ?3
-                ) ASC
-              LIMIT 1
-            `)
-            .bind(
-              bucket -
-                Number(
-                  tolerance
-                ),
-
-              bucket +
-                Number(
-                  tolerance
-                ),
-
-              bucket
-            );
-        }
-      );
-
-    const results =
-      statements.length
-        ? await env.DATA_DB.batch(
-            statements
-          )
-        : [];
-
-    const out = {};
-
-    let snapshotRowsFound =
-      0;
-
-    let fallbackIndex = 0;
-
-    targets.forEach(
-      ([label]) => {
-        const collectorMap =
-          collectorMaps[label];
-
-        if (
-          collectorMap?.size
-        ) {
-          out[label] =
-            collectorMap;
-
-          snapshotRowsFound +=
-            1;
-
-          return;
-        }
-
-        const first =
-          asArray(
-            results?.[
-              fallbackIndex
-            ]
-              ?.results
-          )[0] ||
-          null;
-
-        fallbackIndex += 1;
-
-        const map =
-          payloadToMap(
-            first?.payload_json,
-            first?.ts ??
-              null
-          );
-
-        if (first) {
-          snapshotRowsFound +=
-            1;
-        }
-
-        out[label] =
-          map;
-      }
-    );
-
-    return {
-      available: true,
-
-      populated:
-        snapshotRowsFound >
-        0,
-
-      snapshots_found:
-        snapshotRowsFound,
-
-      reason:
-        snapshotRowsFound >
-        0
-          ? null
-          : "D1 is connected but no prior Stage-0 snapshots exist yet",
-
-      preferred_source:
-        "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
-
-      fallback_source:
-        "SCAN_RUNS_COMPACT_V2",
-
-      targets:
-        out,
-    };
-  } catch (error) {
-    return {
-      available: false,
-
-      reason:
-        String(
-          error?.message ||
-          error
-        ),
-
-      targets: {},
-    };
-  }
-}
-
-function historyMetrics(
-  current,
-  row
-) {
-  if (!row) {
-    return {
-      available: false,
-      price_change_pct: null,
-      oi_change_pct: null,
-      funding_change_pct_points: null,
-      turnover_24h_change_pct: null,
-      state: "insufficient",
-    };
-  }
-
-  const priceChange =
-    pctDelta(
-      current.price,
-      row.price
-    );
-
-  const oiChange =
-    pctDelta(
-      current.oi_contracts,
-      row.oi_contracts
-    );
-
-  const fundingNow =
-    num(
-      current.funding_rate
-    );
-
-  const fundingPrior =
-    num(
-      row.funding_rate
-    );
-
-  const fundingDelta =
-    fundingNow !== null &&
-    fundingPrior !== null
-      ? (
-          fundingNow -
-          fundingPrior
-        ) * 100
-      : null;
-
-  return {
-    available: true,
-
-    reference_ts:
-      row.ts,
-
-    reference_time:
-      iso(row.ts),
-
-    price_change_pct:
-      priceChange,
-
-    oi_change_pct:
-      oiChange,
-
-    funding_change_pct_points:
-      fundingDelta,
-
-    turnover_24h_change_pct:
-      pctDelta(
-        current.turnover_24h,
-        row.turnover_24h
-      ),
-
-    prior_discovery:
-      row?.prior_discovery ||
-      null,
-
-    state:
-      stageState(
-        priceChange,
-        oiChange
-      ),
-  };
-}
-
-function accelerationFromWindows(
-  shorter,
-  longer,
-  shortMinutes,
-  longMinutes
-) {
-  if (
-    !shorter?.available ||
-    !longer?.available
-  ) {
-    return null;
-  }
-
-  function accel(
-    a,
-    b
-  ) {
-    const x =
-      num(a);
-
-    const y =
-      num(b);
-
-    if (
-      x === null ||
-      y === null
-    ) {
-      return null;
-    }
-
-    return (
-      x /
-      shortMinutes
-    ) -
-    (
-      y /
-      longMinutes
-    );
-  }
-
-  return {
-    short_window_minutes:
-      shortMinutes,
-
-    long_window_minutes:
-      longMinutes,
-
-    price_pct_per_min_delta:
-      accel(
-        shorter.price_change_pct,
-        longer.price_change_pct
-      ),
-
-    oi_pct_per_min_delta:
-      accel(
-        shorter.oi_change_pct,
-        longer.oi_change_pct
-      ),
-
-    funding_pct_points_per_min_delta:
-      accel(
-        shorter.funding_change_pct_points,
-        longer.funding_change_pct_points
-      ),
-
-    turnover_24h_pct_per_min_delta_proxy:
-      accel(
-        shorter.turnover_24h_change_pct,
-        longer.turnover_24h_change_pct
-      ),
-
-    turnover_note:
-      "Rolling-24h turnover change is only an activity-acceleration proxy, not exact interval volume.",
-  };
-}
-
-function compactStage0Payload(
-  scan
-) {
-  return {
-    schema:
-      "stage0-compact-v2",
-
-    timestamp:
-      scan.timestamp,
-
-    contracts:
-      scan.contracts.map(
-        (c) => [
-          c.contract_code,
-          c.price,
-          c.turnover_24h_usdt,
-          c.open_interest
-            ?.contracts ??
-            null,
-          c.open_interest
-            ?.value_usdt ??
-            null,
-          c.funding
-            ?.funding_rate ??
-            null,
-          c.funding
-            ?.interval_hours ??
-            null,
-          c.freshness
-            ?.market_age_sec ??
-            null,
-          c.data_status,
-          c.discovery_shadow
-            ?.long_watch ??
-            null,
-          c.discovery_shadow
-            ?.short_watch ??
-            null,
-          c.discovery_shadow
-            ?.long_trigger_count ??
-            0,
-          c.discovery_shadow
-            ?.short_trigger_count ??
-            0,
-        ]
-      ),
-  };
-}
-
-async function persistStage0(
-  env,
-  scan
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status:
-        "SOURCE_UNSUPPORTED",
-
-      reason:
-        "D1 binding DATA_DB is not configured",
-    };
-  }
-
-  try {
-    if (
-      !scan?.health
-        ?.contracts ||
-      !scan?.counts
-        ?.universe_total
-    ) {
-      return {
-        status:
-          "NOT_CLOSED",
-
-        reason:
-          "Universe contract list is unavailable/empty; refusing to persist an invalid baseline scan",
-      };
-    }
-
-    const tsBucket =
-      Math.floor(
-        scan.timestamp /
-        300000
-      ) *
-      300000;
-
-    const compactPayload =
-      compactStage0Payload(
-        scan
-      );
-
-    const payloadText =
-      JSON.stringify(
-        compactPayload
-      );
-
-    const payloadBytes =
-      new TextEncoder()
-        .encode(
-          payloadText
-        )
-        .length;
-
-    if (
-      payloadBytes >
-      1800000
-    ) {
-      return {
-        status:
-          "NOT_CLOSED",
-
-        reason:
-          `Compact universe payload is ${payloadBytes} bytes and exceeds the 1.8MB safety ceiling`,
-      };
-    }
-
-    await env.DATA_DB
-      .prepare(`
-        INSERT OR REPLACE
-        INTO scan_runs (
-          ts_bucket,
-          ts,
-          universe_total,
-          scanned,
-          missing,
-          errors,
-          stale,
-          stage0_coverage_pct,
-          payload_json
-        )
-        VALUES (
-          ?1,
-          ?2,
-          ?3,
-          ?4,
-          ?5,
-          ?6,
-          ?7,
-          ?8,
-          ?9
-        )
-      `)
-      .bind(
-        tsBucket,
-        scan.timestamp,
-        scan.counts
-          .universe_total,
-        scan.counts
-          .scanned,
-        scan.counts
-          .missing,
-        scan.counts
-          .errors,
-        scan.counts
-          .stale,
-        scan.coverage
-          .stage0_coverage_pct,
-        payloadText
-      )
-      .run();
-
-    const retentionBefore =
-      scan.timestamp -
-      7 *
-      24 *
-      60 *
-      60 *
-      1000;
-
-    await env.DATA_DB
-      .prepare(`
-        DELETE FROM
-          scan_runs
-        WHERE
-          ts_bucket < ?1
-      `)
-      .bind(
-        retentionBefore
-      )
-      .run();
-
-    return {
-      status:
-        "CLOSED",
-
-      rows_written:
-        1,
-
-      storage_model:
-        "ONE_COMPACT_UNIVERSE_ROW_PER_SCAN",
-
-      ts_bucket:
-        tsBucket,
-
-      payload_bytes:
-        payloadBytes,
-
-      retention_days:
-        7,
-    };
-  } catch (error) {
-    return {
-      status:
-        "PARTIAL",
-
-      reason:
-        String(
-          error?.message ||
-          error
-        ),
-    };
-  }
-}async function htxUniverseScan(params, env, options = {}) {
-  const now = Date.now();
-
-  const freshnessSec = Math.round(
-    clamp(
-      params.freshness_sec,
-      30,
-      3600,
-      300
-    )
-  );
-
-  const endpoints = {
-    contracts:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info`,
-
-    market:
-      `${FUTURES_BASE}/v2/linear-swap-ex/market/detail/batch_merged`,
-
-    oi:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_open_interest`,
-
-    funding:
-      `${FUTURES_BASE}/linear-swap-api/v1/swap_batch_funding_rate`,
-  };
-
-  const [
-    contractsR,
-    marketR,
-    oiR,
-    fundingR,
-    history,
-  ] = await Promise.all([
-    fetchJson(
-      endpoints.contracts
-    ),
-
-    fetchJson(
-      endpoints.market
-    ),
-
-    fetchJson(
-      endpoints.oi
-    ),
-
-    fetchJson(
-      endpoints.funding
-    ),
-
-    loadHistoryTargets(
-      env,
-      now
-    ),
-  ]);
-
-  const allInfo =
-    asArray(
-      contractsR.data?.data
-    );
-
-  const active =
-    allInfo.filter(
-      (x) => {
-        const business =
-          String(
-            x?.business_type ||
-            "swap"
-          ).toLowerCase();
-
-        return (
-          Number(
-            x?.contract_status
-          ) === 1 &&
-          business === "swap"
-        );
-      }
-    );
-
-  const marketMap =
-    mapByContract(
-      marketR.data?.ticks ||
-      marketR.data?.data
-    );
-
-  const oiMap =
-    mapByContract(
-      oiR.data?.data
-    );
-
-  const fundingMap =
-    mapByContract(
-      fundingR.data?.data
-    );
-
-  const apiTimes = {
-    contracts:
-      normalizeTs(
-        contractsR.data?.ts
-      ),
-
-    market:
-      normalizeTs(
-        marketR.data?.ts
-      ),
-
-    oi:
-      normalizeTs(
-        oiR.data?.ts
-      ),
-
-    funding:
-      normalizeTs(
-        fundingR.data?.ts
-      ),
-  };
-
-  const contracts =
-    active.map(
-      (info) => {
-        const code =
-          String(
-            info.contract_code ||
-            ""
-          );
-
-        const key =
-          contractKey(
-            code
-          );
-
-        const market =
-          marketMap.get(
-            key
-          ) ||
-          null;
-
-        const oi =
-          oiMap.get(
-            key
-          ) ||
-          null;
-
-        const funding =
-          fundingMap.get(
-            key
-          ) ||
-          null;
-
-        const price =
-          num(
-            market?.close ??
-            market?.last_price ??
-            market?.price
-          );
-
-        const turnover =
-          num(
-            market?.trade_turnover ??
-            market?.vol ??
-            oi?.trade_turnover
-          );
-
-        const marketTs =
-          normalizeTs(
-            market?.ts
-          ) ??
-          apiTimes.market;
-
-        const marketAgeSec =
-          marketTs !== null
-            ? Math.max(
-                0,
-                now - marketTs
-              ) /
-              1000
-            : null;
-
-        const fundingInterval =
-          fundingIntervalHoursFromRaw(
-            funding,
-            info
-          );
-
-        const instrumentScope =
-          classifyHtxInstrumentScope(
-            info
-          );
-
-        const current = {
-          price,
-
-          turnover_24h:
-            turnover,
-
-          oi_contracts:
-            num(
-              oi?.volume
-            ),
-
-          funding_rate:
-            num(
-              funding?.funding_rate
-            ),
-        };
-
-        const transitions = {
-          "5m":
-            historyMetrics(
-              current,
-              history.targets?.[
-                "5m"
-              ]?.get(
-                key
-              )
-            ),
-
-          "15m":
-            historyMetrics(
-              current,
-              history.targets?.[
-                "15m"
-              ]?.get(
-                key
-              )
-            ),
-
-          "1h":
-            historyMetrics(
-              current,
-              history.targets?.[
-                "1h"
-              ]?.get(
-                key
-              )
-            ),
-
-          "4h":
-            historyMetrics(
-              current,
-              history.targets?.[
-                "4h"
-              ]?.get(
-                key
-              )
-            ),
-
-          "24h":
-            historyMetrics(
-              current,
-              history.targets?.[
-                "24h"
-              ]?.get(
-                key
-              )
-            ),
-        };
-
-        const missing =
-          [];
-
-        if (!market) {
-          missing.push(
-            "market"
-          );
-        }
-
-        if (!oi) {
-          missing.push(
-            "oi"
-          );
-        }
-
-        if (!funding) {
-          missing.push(
-            "funding"
-          );
-        }
-
-        if (
-          price === null
-        ) {
-          missing.push(
-            "price"
-          );
-        }
-
-        const stale =
-          marketAgeSec !== null
-            ? marketAgeSec >
-              freshnessSec
-            : true;
-
-        const dataStatus =
-          missing.length
-            ? "PARTIAL"
-            : stale
-            ? "STALE"
-            : "CLOSED";
-
-        return {
-          contract_code:
-            code,
-
-          symbol:
-            info?.symbol ||
-            null,
-
-          symbol_fingerprint:
-            symbolFingerprint(
-              info
-            ),
-
-          instrument_scope:
-            instrumentScope,
-
-          contract_size:
-            num(
-              info?.contract_size
-            ),
-
-          price_tick:
-            num(
-              info?.price_tick
-            ),
-
-          price,
-
-          volume_24h_contracts:
-            num(
-              market?.vol
-            ),
-
-          amount_24h_base:
-            num(
-              market?.amount
-            ),
-
-          turnover_24h_usdt:
-            turnover,
-
-          open_interest:
-            oi
-              ? {
-                  contracts:
-                    num(
-                      oi.volume
-                    ),
-
-                  amount_base:
-                    num(
-                      oi.amount
-                    ),
-
-                  value_usdt:
-                    num(
-                      oi.value
-                    ),
-
-                  trade_volume_24h_contracts:
-                    num(
-                      oi.trade_volume
-                    ),
-
-                  trade_turnover_24h_usdt:
-                    num(
-                      oi.trade_turnover
-                    ),
-                }
-              : null,
-
-          funding:
-            funding
-              ? {
-                  funding_rate:
-                    num(
-                      funding.funding_rate
-                    ),
-
-                  funding_rate_pct:
-                    num(
-                      funding.funding_rate
-                    ) !== null
-                      ? num(
-                          funding.funding_rate
-                        ) *
-                        100
-                      : null,
-
-                  funding_time:
-                    iso(
-                      funding.funding_time
-                    ),
-
-                  interval_hours:
-                    fundingInterval.hours,
-
-                  interval_source:
-                    fundingInterval.source,
-                }
-              : null,
-
-          transitions,
-
-          acceleration: {
-            "5m_vs_15m":
-              accelerationFromWindows(
-                transitions["5m"],
-                transitions["15m"],
-                5,
-                15
-              ),
-
-            "15m_vs_1h":
-              accelerationFromWindows(
-                transitions["15m"],
-                transitions["1h"],
-                15,
-                60
-              ),
-          },
-
-          freshness: {
-            market_timestamp:
-              iso(
-                marketTs
-              ),
-
-            market_age_sec:
-              marketAgeSec,
-
-            freshness_limit_sec:
-              freshnessSec,
-
-            stale,
-          },
-
-          quality: {
-            market_present:
-              Boolean(
-                market
-              ),
-
-            oi_present:
-              Boolean(
-                oi
-              ),
-
-            funding_present:
-              Boolean(
-                funding
-              ),
-
-            history_available:
-              Boolean(
-                history.available &&
-                history.populated
-              ),
-
-            crypto_scope_confirmed:
-              instrumentScope
-                .eligible_for_crypto_discovery,
-
-            missing,
-          },
-
-          data_status:
-            dataStatus,
-        };
-      }
-    );
-
-  const scanned =
-    contracts.filter(
-      (c) =>
-        c.data_status ===
-          "CLOSED" ||
-        c.data_status ===
-          "STALE"
-    ).length;
-
-  const stale =
-    contracts.filter(
-      (c) =>
-        c.data_status ===
-        "STALE"
-    ).length;
-
-  const missing =
-    contracts.filter(
-      (c) =>
-        c.data_status ===
-        "PARTIAL"
-    ).length;
-
-  const unicodeTotal =
-    contracts.filter(
-      (c) =>
-        c.symbol_fingerprint
-          .has_non_ascii
-    ).length;
-
-  const unicodeResolved =
-    contracts.filter(
-      (c) =>
-        c.symbol_fingerprint
-          .has_non_ascii &&
-        c.symbol_fingerprint
-          .resolution_status ===
-          "RESOLVED_HTX_EXACT"
-    ).length;
-
-  const universeTotal =
-    contracts.length;
-
-  const cryptoScopeConfirmed =
-    contracts.filter(
-      (c) =>
-        c?.instrument_scope
-          ?.classification ===
-        "CRYPTO_CONFIRMED"
-    ).length;
-
-  const nonCryptoHtxClassified =
-    contracts.filter(
-      (c) =>
-        c?.instrument_scope
-          ?.classification ===
-        "NON_CRYPTO_HTX_CLASSIFIED"
-    ).length;
-
-  const instrumentScopeUnknown =
-    contracts.filter(
-      (c) =>
-        c?.instrument_scope
-          ?.classification ===
-        "UNKNOWN_FAIL_CLOSED"
-    ).length;
-
-  const stage0CoveragePct =
-    universeTotal
-      ? (
-          scanned /
-          universeTotal
-        ) *
-        100
-      : 0;
-
-  const ages =
-    contracts
-      .map(
-        (c) =>
-          c.freshness
-            .market_age_sec
-      )
-      .filter(
-        Number.isFinite
-      )
-      .sort(
-        (a, b) =>
-          a - b
-      );
-
-  const p50 =
-    ages.length
-      ? ages[
-          Math.floor(
-            (
-              ages.length - 1
-            ) *
-              0.5
-          )
-        ]
-      : null;
-
-  const p95 =
-    ages.length
-      ? ages[
-          Math.floor(
-            (
-              ages.length - 1
-            ) *
-              0.95
-          )
-        ]
-      : null;
-
-  const output = {
-    source:
-      "HTX official public API",
-
-    market:
-      "HTX USDT-M Futures",
-
-    tool:
-      "htx_universe_scan",
-
-    version:
-      FAST_MOVE_WATCH_VERSION,
-
-    timestamp:
-      now,
-
-    timestamp_utc:
-      new Date(
-        now
-      ).toISOString(),
-
-    counts: {
-      universe_total:
-        universeTotal,
-
-      scanned,
-      missing,
-
-      crypto_scope_confirmed:
-        cryptoScopeConfirmed,
-
-      non_crypto_htx_classified:
-        nonCryptoHtxClassified,
-
-      instrument_scope_unknown:
-        instrumentScopeUnknown,
-
-      errors:
-        [
-          contractsR,
-          marketR,
-          oiR,
-          fundingR,
-        ].filter(
-          (r) =>
-            !r.ok
-        ).length,
-
-      stale,
-
-      unicode_contracts:
-        unicodeTotal,
-
-      unicode_resolved:
-        unicodeResolved,
-    },
-
-    coverage: {
-      htx_universe:
-        contractsR.ok
-          ? "closed"
-          : "not_closed",
-
-      batch_market:
-        marketR.ok
-          ? "closed"
-          : "not_closed",
-
-      batch_open_interest:
-        oiR.ok
-          ? "closed"
-          : "not_closed",
-
-      batch_funding:
-        fundingR.ok
-          ? "closed"
-          : "not_closed",
-
-      persistent_history:
-        !history.available
-          ? "SOURCE_UNSUPPORTED"
-          : history.populated
-          ? "closed"
-          : "NO_DATA",
-
-      stage0_coverage_pct:
-        stage0CoveragePct,
-
-      crypto_instrument_scope:
-        instrumentScopeUnknown === 0
-          ? "closed"
-          : "not_closed",
-
-      crypto_instrument_scope_pct:
-        universeTotal
-          ? (
-              (
-                universeTotal -
-                instrumentScopeUnknown
-              ) /
-              universeTotal
-            ) *
-            100
-          : 0,
-
-      unicode_resolution_pct:
-        unicodeTotal
-          ? (
-              unicodeResolved /
-              unicodeTotal
-            ) *
-            100
-          : 100,
-    },
-
-    health: {
-      contracts:
-        contractsR.ok,
-
-      market:
-        marketR.ok,
-
-      oi:
-        oiR.ok,
-
-      funding:
-        fundingR.ok,
-
-      data_db:
-        Boolean(
-          env?.DATA_DB
-        ),
-    },
-
-    infrastructure_quality: {
-      median_market_age_sec:
-        p50,
-
-      p95_market_age_sec:
-        p95,
-
-      endpoint_failure_rate_pct:
-        25 *
-        [
-          contractsR,
-          marketR,
-          oiR,
-          fundingR,
-        ].filter(
-          (r) =>
-            !r.ok
-        ).length,
-
-      symbol_resolution_success_pct:
-        universeTotal
-          ? (
-              contracts.filter(
-                (c) =>
-                  c
-                    .symbol_fingerprint
-                    .resolution_status ===
-                  "RESOLVED_HTX_EXACT"
-              ).length /
-              universeTotal
-            ) *
-            100
-          : 0,
-
-      exotic_unicode_resolution_pct:
-        unicodeTotal
-          ? (
-              unicodeResolved /
-              unicodeTotal
-            ) *
-            100
-          : 100,
-    },
-
-    history_status: {
-      available:
-        history.available,
-
-      populated:
-        Boolean(
-          history.populated
-        ),
-
-      snapshots_found:
-        history.snapshots_found ??
-        0,
-
-      reason:
-        history.reason,
-
-      note:
-        history.available &&
-        history.populated
-          ? "Transitions use nearest persisted Stage-0 snapshots."
-          : history.available
-          ? "D1 is connected, but temporal transitions remain insufficient until prior scans accumulate."
-          : "Current scan remains usable, but temporal transitions are insufficient until D1 persistence is configured and populated.",
-    },
-
-    contracts,
-
-    endpoint_errors: {
-      contracts:
-        contractsR.ok
-          ? null
-          : contractsR.error,
-
-      market:
-        marketR.ok
-          ? null
-          : marketR.error,
-
-      oi:
-        oiR.ok
-          ? null
-          : oiR.error,
-
-      funding:
-        fundingR.ok
-          ? null
-          : fundingR.error,
-
-      history:
-        history.available
-          ? null
-          : history.reason,
-    },
-
-    rules: [
-      "Exact HTX UTF-8 contract_code is the canonical identity; no translation is used.",
-      "Automatic crypto discovery requires current HTX labels and tradfi_labels; TradFi or unknown scope fails closed.",
-      "Missing values are never converted to zero.",
-      "Transitions are calculated only from persisted historical observations; they are not reconstructed from current snapshots.",
-      "Rolling-24h turnover change is labeled as a proxy and is not treated as exact interval volume.",
-      "Stage-0 is a data/discovery layer, not a trade-entry decision.",
-    ],
-  };
-
-  /*
-   * Shadow discovery telemetry is computed
-   * from the same in-memory Stage-0 scan
-   * before persistence. This adds zero HTTP
-   * and zero D1 reads/writes. The four tiny
-   * compact fields let the next factual scan
-   * identify false negatives prospectively.
-   */
-  const discoveryRecall =
-    buildDiscoveryPrefilter(
-      output,
-      buildDeepCheckQueue(
-        output
-      ),
-      {
-        liquidity_percentile:
-          0.70,
-        early_liquidity_percentile:
-          0.45,
-        anomaly_percentile:
-          0.95,
-        early_anomaly_percentile:
-          0.80,
-        funding_percentile:
-          0.95,
-        funding_tail_percentile:
-          0.10,
-        min_anomaly_flags:
-          2,
-        min_early_flags:
-          2,
-        max_shortlist:
-          24,
-      }
-    );
-
-  const discoveryTelemetryMap =
-    new Map(
-      Array.isArray(
-        discoveryRecall
-          ?.contract_telemetry
-      )
-        ? discoveryRecall
-            .contract_telemetry
-            .map(
-              (row) => [
-                String(
-                  row?.contract ||
-                  ""
-                ).trim(),
-                row,
-              ]
-            )
-        : []
-    );
-
-  for (const row of output.contracts) {
-    const telemetry =
-      discoveryTelemetryMap.get(
-        String(
-          row?.contract_code ||
-          ""
-        ).trim()
-      );
-
-    if (!telemetry) {
-      row.discovery_shadow =
-        null;
-      continue;
-    }
-
-    row.discovery_shadow = {
-      semantics:
-        "DISCOVERY_ONLY_NOT_PROBABILITY_NOT_TRADE_SIGNAL",
-      long_watch:
-        telemetry.long_watch ===
-        true,
-      short_watch:
-        telemetry.short_watch ===
-        true,
-      long_trigger_count:
-        Array.isArray(
-          telemetry.model_routes
-        )
-          ? telemetry.model_routes
-              .filter(
-                (route) =>
-                  String(route)
-                    .startsWith(
-                      "LONG_"
-                    )
-              ).length
-          : 0,
-      short_trigger_count:
-        Array.isArray(
-          telemetry.model_routes
-        )
-          ? telemetry.model_routes
-              .filter(
-                (route) =>
-                  String(route)
-                    .startsWith(
-                      "SHORT_"
-                    )
-              ).length
-          : 0,
-    };
-  }
-
-  output.discovery_recall = {
-    mode:
-      discoveryRecall?.mode ||
-      null,
-    semantics:
-      discoveryRecall
-        ?.semantics ||
-      null,
-    counts:
-      discoveryRecall?.counts ||
-      null,
-    shortlist:
-      Array.isArray(
-        discoveryRecall
-          ?.shortlist
-      )
-        ? discoveryRecall
-            .shortlist
-            .map(
-              (row) => ({
-                priority_rank:
-                  row
-                    ?.priority_rank ??
-                  null,
-                contract:
-                  row?.contract ??
-                  null,
-                discovery_direction_hint:
-                  row
-                    ?.discovery_direction_hint ??
-                  null,
-                snapshot_ts:
-                  row?.snapshot_ts ??
-                  null,
-                model_routes:
-                  row
-                    ?.model_routes ??
-                  [],
-                anomaly_flags_count:
-                  row
-                    ?.anomaly_flags_count ??
-                  0,
-              })
-            )
-        : [],
-    false_negative_audit:
-      discoveryRecall
-        ?.false_negative_audit ||
-      [],
-    safety: {
-      network_calls_generated: 0,
-      d1_calls_generated: 0,
-      live_probability: false,
-      live_signal: false,
-      validated_signal: false,
-      trading_execution: false,
-      decision_layer_weights_changed: false,
-    },
-  };
-
-  if (
-    options.persist ||
-    String(
-      params.persist ||
-      ""
-    ).toLowerCase() ===
-      "true"
-  ) {
-    output.persistence =
-      await persistStage0(
-        env,
-        output
-      );
-  } else {
-    output.persistence = {
-      status:
-        env?.DATA_DB
-          ? "NOT_REQUESTED"
-          : "SOURCE_UNSUPPORTED",
-
-      reason:
-        env?.DATA_DB
-          ? null
-          : "D1 binding DATA_DB is not configured",
-    };
-  }
-
-  return output;
-}
-
-function buildDeepCheckQueue(scan) {
-  const contracts =
-    Array.isArray(scan?.contracts)
-      ? scan.contracts
-      : [];
-
-  const queue = [];
-  const excluded = [];
-
-  for (const row of contracts) {
-    const reasons = [];
-    const softDataGaps = [];
-
-    const contract =
-      String(
-        row?.contract_code || ""
-      ).trim();
-
-    if (!contract) {
-      reasons.push(
-        "CONTRACT_MISSING"
-      );
-    }
-
-    if (
-      !["CLOSED", "PARTIAL"].includes(
-        String(row?.data_status || "")
-      )
-    ) {
-      reasons.push(
-        "STAGE0_NOT_USABLE"
-      );
-    }
-
-    if (
-      row?.freshness?.stale !==
-      false
-    ) {
-      reasons.push(
-        "MARKET_DATA_NOT_FRESH"
-      );
-    }
-
-    if (
-      row?.quality
-        ?.market_present !== true
-    ) {
-      reasons.push(
-        "MARKET_MISSING"
-      );
-    }
-
-    if (
-      row?.quality
-        ?.oi_present !== true
-    ) {
-      softDataGaps.push(
-        "OPEN_INTEREST_UNKNOWN"
-      );
-    }
-
-    if (
-      row?.quality
-        ?.funding_present !== true
-    ) {
-      softDataGaps.push(
-        "FUNDING_UNKNOWN"
-      );
-    }
-
-    if (
-      row?.quality
-        ?.history_available !== true
-    ) {
-      softDataGaps.push(
-        "STAGE0_HISTORY_LIMITED"
-      );
-    }
-
-    const declaredMissing =
-      Array.isArray(row?.quality?.missing)
-        ? row.quality.missing.map(
-            (value) =>
-              String(value || "")
-                .trim()
-                .toLowerCase()
-          )
-        : [];
-
-    if (
-      declaredMissing.some(
-        (value) =>
-          value === "market" ||
-          value === "price"
-      )
-    ) {
-      reasons.push(
-        "ENTRY_DISCOVERY_CRITICAL_MARKET_DATA_MISSING"
-      );
-    }
-
-    if (
-      String(row?.data_status || "") ===
-        "PARTIAL" &&
-      !softDataGaps.length &&
-      !declaredMissing.length &&
-      !reasons.length
-    ) {
-      reasons.push(
-        "STAGE0_PARTIAL_UNEXPLAINED"
-      );
-    }
-
-    if (
-      row?.symbol_fingerprint
-        ?.resolution_status !==
-      "RESOLVED_HTX_EXACT"
-    ) {
-      reasons.push(
-        "SYMBOL_NOT_EXACTLY_RESOLVED"
-      );
-    }
-
-    if (
-      row?.instrument_scope
-        ?.classification !==
-      "CRYPTO_CONFIRMED"
-    ) {
-      reasons.push(
-        "INSTRUMENT_SCOPE_NOT_CRYPTO_CONFIRMED"
-      );
-    }
-
-    const htxTurnoverGate =
-      evaluateHtxFuturesTurnoverGate(
-        row
-      );
-
-    if (htxTurnoverGate.allowed !== true) {
-      reasons.push(
-        htxTurnoverGate.reason ||
-        "HTX_FUTURES_24H_TURNOVER_NOT_CLOSED"
-      );
-    }
-
-    if (!reasons.length) {
-      queue.push({
-        contract,
-        htx_futures_turnover_gate:
-          htxTurnoverGate,
-        stage0_status:
-          row.data_status,
-        freshness_sec:
-          row?.freshness
-            ?.market_age_sec ??
-          null,
-        history_available:
-          row?.quality
-            ?.history_available === true,
-        data_readiness:
-          softDataGaps.length
-            ? "PARTIAL_NEEDS_ENRICHMENT"
-            : "CLOSED",
-        soft_data_gaps:
-          softDataGaps,
-      });
-    } else {
-      excluded.push({
-        contract:
-          contract || null,
-        htx_futures_turnover_gate:
-          htxTurnoverGate,
-        reasons,
-        soft_data_gaps:
-          softDataGaps,
-      });
-    }
-  }
-
-  return {
-    layer:
-      "DEEP_CHECK_QUEUE",
-    mode:
-      "TECHNICAL_ELIGIBILITY_ONLY",
-
-    counts: {
-      universe_total:
-        contracts.length,
-      eligible:
-        queue.length,
-      excluded:
-        excluded.length,
-    },
-
-    queue,
-    excluded,
-
-    decision: {
-      generated: false,
-      direction: null,
-      probability: null,
-      validated: false,
-    },
-
-    rules: [
-      "No LONG/SHORT direction is generated.",
-      "No trading probability or score is generated.",
-      "No validated=true signal is generated.",
-      "No strategy weights or Hard Veto rules are changed.",
-      "Eligibility means only that Stage-0 evidence is technically suitable for Deep Check.",
-      "Missing or stale data excludes a contract from this queue and is never converted to zero.",
-    ],
-  };
-}
-
-
-function discoveryQuantile(values, percentile) {
-  const clean =
-    Array.isArray(values)
-      ? values
-          .filter(
-            (value) =>
-              Number.isFinite(value)
-          )
-          .slice()
-          .sort(
-            (a, b) =>
-              a - b
-          )
-      : [];
-
-  if (!clean.length) {
-    return null;
-  }
-
-  const p =
-    Math.min(
-      1,
-      Math.max(
-        0,
-        Number(percentile)
-      )
-    );
-
-  const position =
-    (clean.length - 1) *
-    p;
-
-  const lower =
-    Math.floor(position);
-
-  const upper =
-    Math.ceil(position);
-
-  if (lower === upper) {
-    return clean[lower];
-  }
-
-  return (
-    clean[lower] *
-      (upper - position) +
-    clean[upper] *
-      (position - lower)
-  );
-}
-
-function buildDiscoveryPrefilter(
-  scan,
-  deepCheckQueue,
-  options = {}
-) {
-  const discoverySnapshotTs =
-    Number.isFinite(
-      Number(scan?.timestamp)
-    )
-      ? Number(scan.timestamp)
-      : null;
-
-  const contracts =
-    Array.isArray(scan?.contracts)
-      ? scan.contracts
-      : [];
-
-  const technicalQueue =
-    Array.isArray(
-      deepCheckQueue?.queue
-    )
-      ? deepCheckQueue.queue
-      : [];
-
-  const eligibleContracts =
-    new Set(
-      technicalQueue
-        .map(
-          (row) =>
-            String(
-              row?.contract || ""
-            ).trim()
-        )
-        .filter(Boolean)
-    );
-
-  const liquidityPercentile =
-    Math.min(
-      0.95,
-      Math.max(
-        0.5,
-        Number(
-          options
-            ?.liquidity_percentile ??
-          0.70
-        )
-      )
-    );
-
-  /*
-   * Recall lane: preserve the existing
-   * p70 core-liquidity lane, but permit
-   * earlier factual anomalies to reach
-   * the same existing Deep Check / Fast
-   * Move fairness pipeline when turnover
-   * is alive and all technical evidence
-   * is CLOSED/fresh/HTX-exact.
-   *
-   * This is NOT a lower execution gate.
-   * HTX Execution remains mandatory in
-   * Deep Check / Final Decision.
-   */
-  const earlyLiquidityPercentile =
-    Math.min(
-      0.70,
-      Math.max(
-        0.20,
-        Number(
-          options
-            ?.early_liquidity_percentile ??
-          0.45
-        )
-      )
-    );
-
-  const anomalyPercentile =
-    Math.min(
-      0.995,
-      Math.max(
-        0.80,
-        Number(
-          options
-            ?.anomaly_percentile ??
-          0.95
-        )
-      )
-    );
-
-  const earlyAnomalyPercentile =
-    Math.min(
-      anomalyPercentile,
-      Math.max(
-        0.65,
-        Number(
-          options
-            ?.early_anomaly_percentile ??
-          0.80
-        )
-      )
-    );
-
-  const fundingPercentile =
-    Math.min(
-      0.995,
-      Math.max(
-        0.80,
-        Number(
-          options
-            ?.funding_percentile ??
-          0.95
-        )
-      )
-    );
-
-  const fundingTailPercentile =
-    Math.min(
-      0.25,
-      Math.max(
-        0.02,
-        Number(
-          options
-            ?.funding_tail_percentile ??
-          0.10
-        )
-      )
-    );
-
-  const minAnomalyFlags =
-    Math.min(
-      8,
-      Math.max(
-        1,
-        Math.round(
-          Number(
-            options
-              ?.min_anomaly_flags ??
-            2
-          )
-        )
-      )
-    );
-
-  const minEarlyFlags =
-    Math.min(
-      8,
-      Math.max(
-        2,
-        Math.round(
-          Number(
-            options
-              ?.min_early_flags ??
-            2
-          )
-        )
-      )
-    );
-
-  const maxShortlist =
-    Math.min(
-      50,
-      Math.max(
-        1,
-        Math.round(
-          Number(
-            options
-              ?.max_shortlist ??
-            24
-          )
-        )
-      )
-    );
-
-  const eligibleRows =
-    contracts.filter(
-      (row) =>
-        eligibleContracts.has(
-          String(
-            row?.contract_code ||
-            ""
-          ).trim()
-        )
-    );
-
-  const finite =
-    (value) =>
-      Number.isFinite(value);
-
-  const factualNumber =
-    (raw) => {
-      if (
-        raw === null ||
-        raw === undefined ||
-        raw === ""
-      ) {
-        return null;
-      }
-
-      const value =
-        Number(raw);
-
-      return finite(value)
-        ? value
-        : null;
-    };
-
-  const turnoverOf =
-    (row) =>
-      factualNumber(
-        row?.turnover_24h_usdt
-      );
-
-  const oiOf =
-    (row) =>
-      factualNumber(
-        row?.open_interest
-          ?.value_usdt
-      );
-
-  const fundingPctOf =
-    (row) =>
-      factualNumber(
-        row?.funding
-          ?.funding_rate_pct
-      );
-
-  const fundingIntervalHoursOf =
-    (row) =>
-      factualNumber(
-        row?.funding
-          ?.interval_hours
-      );
-
-  const fundingPerHourOf =
-    (row) => {
-      const funding =
-        fundingPctOf(row);
-
-      const interval =
-        fundingIntervalHoursOf(
-          row
-        );
-
-      if (!finite(funding)) {
-        return null;
-      }
-
-      if (
-        finite(interval) &&
-        interval > 0
-      ) {
-        return funding / interval;
-      }
-
-      /*
-       * Missing interval is not silently
-       * assumed. Such a row may still use
-       * raw funding for the neutral absolute-
-       * extreme context flag. Funding sign or
-       * interval never creates a LONG/SHORT
-       * route; this only affects review priority.
-       */
-      return null;
-    };
-
-  const transitionMetric =
-    (
-      row,
-      window,
-      field
-    ) =>
-      factualNumber(
-        row?.transitions
-          ?.[window]
-          ?.[field]
-      );
-
-  const turnoverValues =
-    eligibleRows
-      .map(turnoverOf)
-      .filter(finite);
-
-  const oiValues =
-    eligibleRows
-      .map(oiOf)
-      .filter(finite);
-
-  const turnoverFloor =
-    discoveryQuantile(
-      turnoverValues,
-      liquidityPercentile
-    );
-
-  const oiFloor =
-    discoveryQuantile(
-      oiValues,
-      liquidityPercentile
-    );
-
-  const earlyTurnoverFloor =
-    discoveryQuantile(
-      turnoverValues,
-      earlyLiquidityPercentile
-    );
-
-  const earlyOiFloor =
-    discoveryQuantile(
-      oiValues,
-      Math.min(
-        earlyLiquidityPercentile,
-        0.40
-      )
-    );
-
-  const features = [
-    ["5m", "price_change_pct"],
-    ["5m", "oi_change_pct"],
-    ["15m", "price_change_pct"],
-    ["15m", "oi_change_pct"],
-    ["1h", "price_change_pct"],
-    ["1h", "oi_change_pct"],
-    ["4h", "price_change_pct"],
-    ["4h", "oi_change_pct"],
-  ];
-
-  const anomalyThresholds = {};
-  const earlyAnomalyThresholds = {};
-
-  for (
-    const [
-      window,
-      field
-    ] of features
-  ) {
-    const values =
-      eligibleRows
-        .map(
-          (row) =>
-            transitionMetric(
-              row,
-              window,
-              field
-            )
-        )
-        .filter(finite)
-        .map(Math.abs);
-
-    anomalyThresholds[
-      `${window}:${field}`
-    ] =
-      discoveryQuantile(
-        values,
-        anomalyPercentile
-      );
-
-    earlyAnomalyThresholds[
-      `${window}:${field}`
-    ] =
-      discoveryQuantile(
-        values,
-        earlyAnomalyPercentile
-      );
-  }
-
-  const nonZeroFundingAbs =
-    eligibleRows
-      .map(fundingPctOf)
-      .filter(
-        (value) =>
-          finite(value) &&
-          value !== 0
-      )
-      .map(Math.abs);
-
-  const fundingAbsThreshold =
-    discoveryQuantile(
-      nonZeroFundingAbs,
-      fundingPercentile
-    );
-
-  const fundingHourlyValues =
-    eligibleRows
-      .map(fundingPerHourOf)
-      .filter(
-        (value) =>
-          finite(value) &&
-          value !== 0
-      )
-      .sort(
-        (a, b) => a - b
-      );
-
-  const negativeFundingHourly =
-    fundingHourlyValues.filter(
-      (value) => value < 0
-    );
-
-  const positiveFundingHourly =
-    fundingHourlyValues.filter(
-      (value) => value > 0
-    );
-
-  const negativeFundingTailThreshold =
-    negativeFundingHourly.length
-      ? discoveryQuantile(
-          negativeFundingHourly,
-          fundingTailPercentile
-        )
-      : null;
-
-  const positiveFundingTailThreshold =
-    positiveFundingHourly.length
-      ? discoveryQuantile(
-          positiveFundingHourly,
-          1 - fundingTailPercentile
-        )
-      : null;
-
-  const benchmarkFor =
-    (window) => {
-      const benchmarkRows =
-        ["BTC-USDT", "ETH-USDT"]
-          .map(
-            (contract) =>
-              contracts.find(
-                (row) =>
-                  String(
-                    row?.contract_code ||
-                    ""
-                  ).trim() ===
-                  contract
-              )
-          )
-          .filter(Boolean)
-          .filter(
-            (row) =>
-              ["CLOSED", "PARTIAL"].includes(
-                String(row?.data_status || "")
-              ) &&
-              row?.quality?.market_present ===
-                true &&
-              row?.freshness?.stale ===
-                false
-          );
-
-      const values =
-        benchmarkRows
-          .map(
-            (row) =>
-              transitionMetric(
-                row,
-                window,
-                "price_change_pct"
-              )
-          )
-          .filter(finite);
-
-      return {
-        coverage:
-          values.length,
-
-        mean:
-          values.length
-            ? values.reduce(
-                (sum, value) =>
-                  sum + value,
-                0
-              ) /
-              values.length
-            : null,
-      };
-    };
-
-  const benchmark1h =
-    benchmarkFor("1h");
-
-  const benchmark4h =
-    benchmarkFor("4h");
-
-  const relativeStrength =
-    (
-      row,
-      window,
-      benchmark
-    ) => {
-      const move =
-        transitionMetric(
-          row,
-          window,
-          "price_change_pct"
-        );
-
-      if (
-        !finite(move) ||
-        !finite(benchmark?.mean)
-      ) {
-        return null;
-      }
-
-      return move -
-        benchmark.mean;
-    };
-
-  const anomalyPool = [];
-  const contractTelemetry = [];
-  const belowLiquidity = [];
-  const insufficientLiquidityData = [];
-  const falseNegativeCandidates = [];
-
-  for (const row of eligibleRows) {
-    const contract =
-      String(
-        row?.contract_code || ""
-      ).trim();
-
-    const turnover =
-      turnoverOf(row);
-
-    const oiValue =
-      oiOf(row);
-
-    if (
-      !finite(turnover) ||
-      !finite(oiValue) ||
-      !finite(turnoverFloor) ||
-      !finite(oiFloor) ||
-      !finite(earlyTurnoverFloor) ||
-      !finite(earlyOiFloor)
-    ) {
-      insufficientLiquidityData.push(
-        contract
-      );
-
-      continue;
-    }
-
-    const coreLiquidity =
-      turnover >= turnoverFloor &&
-      oiValue >= oiFloor;
-
-    const earlyLiquidity =
-      (
-        turnover >= earlyTurnoverFloor &&
-        oiValue >= earlyOiFloor
-      ) ||
-      (
-        turnover >= 100000 &&
-        oiValue > 0
-      );
-
-    const liveTurnoverFloor =
-      Math.max(
-        100000,
-        Number(
-          options
-            ?.minimum_live_turnover_usdt ??
-          100000
-        )
-      );
-
-    const funding =
-      fundingPctOf(row);
-
-    const fundingPerHour =
-      fundingPerHourOf(row);
-
-    const negativeFundingTail =
-      finite(fundingPerHour) &&
-      fundingPerHour < 0 &&
-      finite(
-        negativeFundingTailThreshold
-      ) &&
-      fundingPerHour <=
-        negativeFundingTailThreshold;
-
-    const positiveFundingTail =
-      finite(fundingPerHour) &&
-      fundingPerHour > 0 &&
-      finite(
-        positiveFundingTailThreshold
-      ) &&
-      fundingPerHour >=
-        positiveFundingTailThreshold;
-
-    const legacyFundingExtreme =
-      finite(funding) &&
-      funding !== 0 &&
-      finite(
-        fundingAbsThreshold
-      ) &&
-      Math.abs(funding) >=
-        fundingAbsThreshold;
-
-    const fundingExtremeContextRecall =
-      (
-        negativeFundingTail ||
-        positiveFundingTail ||
-        legacyFundingExtreme
-      ) &&
-      turnover >=
-        liveTurnoverFloor;
-
-    const strictFlags = [];
-    const earlyFlags = [];
-
-    for (
-      const [
-        window,
-        field
-      ] of features
-    ) {
-      const value =
-        transitionMetric(
-          row,
-          window,
-          field
-        );
-
-      const strictThreshold =
-        anomalyThresholds[
-          `${window}:${field}`
-        ];
-
-      const earlyThreshold =
-        earlyAnomalyThresholds[
-          `${window}:${field}`
-        ];
-
-      if (
-        finite(value) &&
-        finite(strictThreshold) &&
-        strictThreshold > 0 &&
-        Math.abs(value) >=
-          strictThreshold
-      ) {
-        strictFlags.push(
-          `${window}:${field}`
-        );
-      }
-
-      if (
-        finite(value) &&
-        finite(earlyThreshold) &&
-        earlyThreshold > 0 &&
-        Math.abs(value) >=
-          earlyThreshold
-      ) {
-        earlyFlags.push(
-          `${window}:${field}`
-        );
-      }
-    }
-
-    if (legacyFundingExtreme) {
-      strictFlags.push(
-        "funding:absolute_extreme"
-      );
-    }
-
-    if (negativeFundingTail) {
-      earlyFlags.push(
-        "funding:negative_hourly_tail"
-      );
-    }
-
-    if (positiveFundingTail) {
-      earlyFlags.push(
-        "funding:positive_hourly_tail"
-      );
-    }
-
-    const price1h =
-      transitionMetric(
-        row,
-        "1h",
-        "price_change_pct"
-      );
-
-    const price4h =
-      transitionMetric(
-        row,
-        "4h",
-        "price_change_pct"
-      );
-
-    const oi15m =
-      transitionMetric(
-        row,
-        "15m",
-        "oi_change_pct"
-      );
-
-    const oi1h =
-      transitionMetric(
-        row,
-        "1h",
-        "oi_change_pct"
-      );
-
-    const oi4h =
-      transitionMetric(
-        row,
-        "4h",
-        "oi_change_pct"
-      );
-
-    const bestOiBuild =
-      [
-        oi15m,
-        oi1h,
-        oi4h,
-      ]
-        .filter(finite)
-        .reduce(
-          (best, value) =>
-            best === null ||
-            value > best
-              ? value
-              : best,
-          null
-        );
-
-    const rs1h =
-      relativeStrength(
-        row,
-        "1h",
-        benchmark1h
-      );
-
-    const rs4h =
-      relativeStrength(
-        row,
-        "4h",
-        benchmark4h
-      );
-
-    const oiBuilding =
-      finite(bestOiBuild) &&
-      bestOiBuild >= 0.50;
-
-    const strongRelativeLong =
-      (
-        finite(rs1h) &&
-        rs1h >= 0.75
-      ) ||
-      (
-        finite(rs4h) &&
-        rs4h >= 1.50
-      );
-
-    const strongRelativeShort =
-      (
-        finite(rs1h) &&
-        rs1h <= -0.75
-      ) ||
-      (
-        finite(rs4h) &&
-        rs4h <= -1.50
-      );
-
-    const positiveMomentum =
-      (
-        finite(price1h) &&
-        price1h >= 0.75
-      ) ||
-      (
-        finite(price4h) &&
-        price4h >= 2.00
-      );
-
-    const negativeMomentum =
-      (
-        finite(price1h) &&
-        price1h <= -0.75
-      ) ||
-      (
-        finite(price4h) &&
-        price4h <= -2.00
-      );
-
-    const longRoutes = [];
-    const shortRoutes = [];
-
-    if (
-      earlyLiquidity &&
-      oiBuilding &&
-      strongRelativeLong
-    ) {
-      longRoutes.push(
-        "LONG_RELATIVE_STRENGTH_OI_WATCH"
-      );
-    }
-
-    if (
-      earlyLiquidity &&
-      oiBuilding &&
-      strongRelativeShort
-    ) {
-      shortRoutes.push(
-        "SHORT_RELATIVE_WEAKNESS_OI_WATCH"
-      );
-    }
-
-    const strictLegacyRoute =
-      coreLiquidity &&
-      strictFlags.length >=
-        minAnomalyFlags;
-
-    const multiEngineRecallRoute =
-      earlyLiquidity &&
-      earlyFlags.length >=
-        minEarlyFlags;
-
-    const longWatch =
-      longRoutes.length > 0;
-
-    const shortWatch =
-      shortRoutes.length > 0;
-
-    const queueForDeepCheck =
-      strictLegacyRoute ||
-      multiEngineRecallRoute ||
-      fundingExtremeContextRecall ||
-      longWatch ||
-      shortWatch;
-
-    const priorDiscovery =
-      row?.transitions
-        ?.["1h"]
-        ?.prior_discovery ||
-      null;
-
-    const prior4hDiscovery =
-      row?.transitions
-        ?.["4h"]
-        ?.prior_discovery ||
-      null;
-
-    const falseNegativeEvents = [];
-
-    const captureFalseNegative =
-      (
-        window,
-        move,
-        prior
-      ) => {
-        if (!finite(move)) {
-          return;
-        }
-
-        const threshold =
-          window === "1h"
-            ? 3
-            : 6;
-
-        if (
-          Math.abs(move) <
-          threshold
-        ) {
-          return;
-        }
-
-        const expectedSide =
-          move > 0
-            ? "LONG"
-            : "SHORT";
-
-        const wasQueued =
-          expectedSide === "LONG"
-            ? prior?.long_watch ===
-              true
-            : prior?.short_watch ===
-              true;
-
-        if (
-          prior &&
-          wasQueued !== true
-        ) {
-          falseNegativeEvents.push({
-            window,
-            direction:
-              expectedSide,
-            realized_move_pct:
-              move,
-            label:
-              "FALSE_NEGATIVE_CANDIDATE",
-          });
-        }
-      };
-
-    captureFalseNegative(
-      "1h",
-      price1h,
-      priorDiscovery
-    );
-
-    captureFalseNegative(
-      "4h",
-      price4h,
-      prior4hDiscovery
-    );
-
-    if (
-      falseNegativeEvents.length
-    ) {
-      falseNegativeCandidates.push({
-        contract,
-        events:
-          falseNegativeEvents,
-      });
-    }
-
-    const allFlags =
-      Array.from(
-        new Set([
-          ...strictFlags,
-          ...earlyFlags,
-        ])
-      );
-
-    const directionHint =
-      longWatch &&
-      !shortWatch
-        ? "LONG_WATCH"
-        : shortWatch &&
-          !longWatch
-        ? "SHORT_WATCH"
-        : longWatch &&
-          shortWatch
-        ? "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION"
-        : "NEUTRAL_ANOMALY";
-
-    const telemetry = {
-      contract,
-      core_liquidity:
-        coreLiquidity,
-      early_liquidity:
-        earlyLiquidity,
-      queue_for_deep_check:
-        queueForDeepCheck,
-      long_watch:
-        longWatch,
-      short_watch:
-        shortWatch,
-      discovery_direction_hint:
-        directionHint,
-      snapshot_ts:
-        discoverySnapshotTs,
-      model_routes: [
-        ...longRoutes,
-        ...shortRoutes,
-      ],
-      strict_flags_count:
-        strictFlags.length,
-      early_flags_count:
-        earlyFlags.length,
-      anomaly_flags_count:
-        allFlags.length,
-      funding_per_hour_pct:
-        fundingPerHour,
-      funding_directional_vote: false,
-      funding_context_only: true,
-      relative_strength_1h_pct_points:
-        rs1h,
-      relative_strength_4h_pct_points:
-        rs4h,
-      best_oi_build_pct:
-        bestOiBuild,
-      false_negative_events:
-        falseNegativeEvents,
-    };
-
-    contractTelemetry.push(
-      telemetry
-    );
-
-    if (!queueForDeepCheck) {
-      if (
-        !coreLiquidity &&
-        !earlyLiquidity &&
-        !fundingExtremeContextRecall
-      ) {
-        belowLiquidity.push(
-          contract
-        );
-      }
-
-      continue;
-    }
-
-    anomalyPool.push({
-      contract,
-      anomaly_flags_count:
-        allFlags.length,
-      anomaly_flags:
-        allFlags,
-      strict_anomaly_flags_count:
-        strictFlags.length,
-      early_anomaly_flags_count:
-        earlyFlags.length,
-      discovery_direction_hint:
-        directionHint,
-      snapshot_ts:
-        discoverySnapshotTs,
-      long_watch:
-        longWatch,
-      short_watch:
-        shortWatch,
-      model_routes: [
-        ...longRoutes,
-        ...shortRoutes,
-      ],
-      discovery_semantics:
-        "DISCOVERY_ONLY_NOT_PROBABILITY_NOT_TRADE_SIGNAL",
-      core_liquidity:
-        coreLiquidity,
-      early_liquidity:
-        earlyLiquidity,
-      turnover_24h_usdt:
-        turnover,
-      htx_futures_turnover_gate:
-        evaluateHtxFuturesTurnoverGate(row),
-      rolling_24h_change_pct:
-        transitionMetric(
-          row,
-          "24h",
-          "price_change_pct"
-        ),
-      open_interest_value_usdt:
-        oiValue,
-      funding_rate_pct:
-        funding,
-      funding_per_hour_pct:
-        fundingPerHour,
-      funding_directional_vote: false,
-      funding_context_only: true,
-      relative_strength_1h_pct_points:
-        rs1h,
-      relative_strength_4h_pct_points:
-        rs4h,
-      best_oi_build_pct:
-        bestOiBuild,
-      freshness_sec:
-        Number.isFinite(
-          Number(
-            row?.freshness
-              ?.market_age_sec
-          )
-        )
-          ? Number(
-              row.freshness
-                .market_age_sec
-            )
-          : null,
-      false_negative_events:
-        falseNegativeEvents,
-    });
-  }
-
-  /*
-   * Operational scheduling rank only:
-   * model-aware discovery watches first,
-   * then more independent flags, then
-   * factual turnover. Existing Fast-Move
-   * fairness/cooldown still decides which
-   * one gets the single Deep Check slot.
-   */
-  anomalyPool.sort(
-    (a, b) => {
-      const watchDelta =
-        Number(
-          b.long_watch ||
-          b.short_watch
-        ) -
-        Number(
-          a.long_watch ||
-          a.short_watch
-        );
-
-      if (watchDelta) {
-        return watchDelta;
-      }
-
-      const modelDelta =
-        (
-          b.model_routes?.length ||
-          0
-        ) -
-        (
-          a.model_routes?.length ||
-          0
-        );
-
-      if (modelDelta) {
-        return modelDelta;
-      }
-
-      const flagDelta =
-        b.anomaly_flags_count -
-        a.anomaly_flags_count;
-
-      if (flagDelta) {
-        return flagDelta;
-      }
-
-      const turnoverDelta =
-        (
-          b.turnover_24h_usdt ??
-          -Infinity
-        ) -
-        (
-          a.turnover_24h_usdt ??
-          -Infinity
-        );
-
-      if (turnoverDelta) {
-        return turnoverDelta;
-      }
-
-      return String(
-        a.contract
-      ).localeCompare(
-        String(
-          b.contract
-        )
-      );
-    }
-  );
-
-  const shortlist =
-    anomalyPool
-      .slice(
-        0,
-        maxShortlist
-      )
-      .map(
-        (
-          row,
-          index
-        ) => ({
-          priority_rank:
-            index + 1,
-          ...row,
-        })
-      );
-
-  return {
-    layer:
-      "DISCOVERY_PREFILTER",
-
-    mode:
-      "MULTI_ENGINE_RECALL_SHADOW_V1",
-
-    semantics:
-      "DISCOVERY_ONLY_NOT_PROBABILITY_NOT_TRADE_SIGNAL",
-
-    parameters: {
-      liquidity_percentile:
-        liquidityPercentile,
-      early_liquidity_percentile:
-        earlyLiquidityPercentile,
-      anomaly_percentile:
-        anomalyPercentile,
-      early_anomaly_percentile:
-        earlyAnomalyPercentile,
-      funding_percentile_nonzero:
-        fundingPercentile,
-      funding_tail_percentile:
-        fundingTailPercentile,
-      min_anomaly_flags:
-        minAnomalyFlags,
-      min_early_flags:
-        minEarlyFlags,
-      max_shortlist:
-        maxShortlist,
-    },
-
-    thresholds: {
-      turnover_24h_usdt_floor:
-        turnoverFloor,
-      open_interest_value_usdt_floor:
-        oiFloor,
-      early_turnover_24h_usdt_floor:
-        earlyTurnoverFloor,
-      early_open_interest_value_usdt_floor:
-        earlyOiFloor,
-      funding_abs_nonzero_threshold:
-        fundingAbsThreshold,
-      negative_funding_hourly_tail_threshold_pct:
-        negativeFundingTailThreshold,
-      positive_funding_hourly_tail_threshold_pct:
-        positiveFundingTailThreshold,
-      anomaly:
-        anomalyThresholds,
-      early_anomaly:
-        earlyAnomalyThresholds,
-    },
-
-    benchmark: {
-      btc_eth_1h:
-        benchmark1h,
-      btc_eth_4h:
-        benchmark4h,
-    },
-
-    counts: {
-      universe_total:
-        contracts.length,
-      technical_eligible:
-        eligibleRows.length,
-      liquidity_pool:
-        contractTelemetry.filter(
-          (row) =>
-            row.core_liquidity
-        ).length,
-      early_liquidity_pool:
-        contractTelemetry.filter(
-          (row) =>
-            row.early_liquidity
-        ).length,
-      long_watch:
-        contractTelemetry.filter(
-          (row) =>
-            row.long_watch
-        ).length,
-      short_watch:
-        contractTelemetry.filter(
-          (row) =>
-            row.short_watch
-        ).length,
-      anomaly_pool:
-        anomalyPool.length,
-      shortlist:
-        shortlist.length,
-      false_negative_candidates:
-        falseNegativeCandidates.length,
-      below_liquidity:
-        belowLiquidity.length,
-      insufficient_liquidity_data:
-        insufficientLiquidityData.length,
-    },
-
-    shortlist,
-    contract_telemetry:
-      contractTelemetry,
-    insufficient_liquidity_contracts:
-      insufficientLiquidityData,
-    false_negative_audit:
-      falseNegativeCandidates,
-
-    decision: {
-      generated: false,
-      direction: null,
-      probability: null,
-      validated: false,
-    },
-
-    execution: {
-      network_calls_generated:
-        0,
-      d1_calls_generated:
-        0,
-      deep_check_started:
-        false,
-      telegram_started:
-        false,
-    },
-
-    rules: [
-      "Discovery Recall uses only factual Stage-0 data already present in memory.",
-      "Initial technical admission is HTX-futures-first: fresh market, current price, exact HTX identity and confirmed crypto scope are mandatory; missing OI/funding/history stay explicit UNKNOWN gaps to be enriched and cannot authorize entry.",
-      "The existing p70 turnover/OI lane is preserved; the added early lane is discovery-only and never bypasses HTX Execution in Deep Check / Final Decision.",
-      "Funding is context only: sign/interval never creates or blocks a LONG/SHORT discovery route; extremes may only affect neutral review priority.",
-      "BTC/ETH relative strength uses the same Stage-0 scan/windows; missing benchmark evidence creates no RS flag.",
-      "No external HTTP request is generated by this layer.",
-      "No D1 request is generated by this layer.",
-      "LONG_WATCH/SHORT_WATCH are discovery routing hints only, not trade directions or signals.",
-      "No trading probability or Decision Layer score is generated.",
-      "No validated=true signal is generated.",
-      "No strategy weights or Hard Veto rules are changed.",
-      "Priority rank is operational scheduling order only and is not a trade recommendation.",
-      "Fast-Move fairness/cooldown remains active; current one-full-Deep-Check-per-invocation capacity is resource-derived, not a permanent strategy rule.",
-    ],
-  };
-}
-
-function schedulerNumber(raw) {
-  if (
-    raw === null ||
-    raw === undefined ||
-    raw === ""
-  ) {
-    return null;
-  }
-
-  const value =
-    Number(raw);
-
-  return Number.isFinite(value)
-    ? value
-    : null;
-}
-
-function buildBoundedDeepCheckPlan(
-  discoveryPrefilter,
-  stateRows = [],
-  nowMs = Date.now(),
-  options = {}
-) {
-  const HARD_MAX_PER_RUN = 2;
-
-  /*
-   * External-request budget is calculated from the actual Deep Check:
-   * 6 futures snapshot + 4 spot + 11 trajectory, minus 4 identical HTX
-   * requests reused by the per-Deep-Check promise cache, plus 16 public
-   * cross-venue + 2 HTX liquidation + 4 projected-map provider = 39. The
-   * separate bounded raw Smart Money observation adds 1 more request. Stage-0
-   * uses 4 and a 6-call reserve is retained, so the known worst-case envelope
-   * remains exactly 4 + 39 + 1 + 6 = 50.
-   */
-  const DEEP_CHECK_TOTAL_EXTERNAL_REQUESTS =
-    DEEP_CHECK_EXTERNAL_REQUESTS + SMART_MONEY_EXTERNAL_REQUESTS;
-
-  const RESOURCE_MAX_PER_RUN =
-    Math.max(
-      0,
-      Math.floor(
-        (
-          WORKERS_FREE_EXTERNAL_LIMIT -
-          STAGE0_EXTERNAL_REQUESTS -
-          EXTERNAL_REQUEST_RESERVE
-        ) /
-          DEEP_CHECK_TOTAL_EXTERNAL_REQUESTS
-      )
-    );
-
-  const configuredMax =
-    Math.round(
-      schedulerNumber(
-        options?.max_per_run
-      ) ?? 1
-    );
-
-  const maxPerRun =
-    Math.min(
-      HARD_MAX_PER_RUN,
-      RESOURCE_MAX_PER_RUN,
-      Math.max(
-        0,
-        configuredMax
-      )
-    );
-
-  const requiredContract =
-    String(
-      options?.required_contract ||
-      ""
-    ).trim();
-
-  const requireExactContract =
-    options
-      ?.require_exact_contract ===
-    true;
-
-  const cooldownSec =
-    Math.min(
-      86400,
-      Math.max(
-        300,
-        Math.round(
-          schedulerNumber(
-            options?.cooldown_sec
-          ) ?? 1800
-        )
-      )
-    );
-
-  const leaseSec =
-    Math.min(
-      3600,
-      Math.max(
-        120,
-        Math.round(
-          schedulerNumber(
-            options?.lease_sec
-          ) ?? 600
-        )
-      )
-    );
-
-  const shortlist =
-    Array.isArray(
-      discoveryPrefilter
-        ?.shortlist
-    )
-      ? discoveryPrefilter.shortlist
-      : [];
-
-  const confirmedScope =
-    Array.isArray(
-      options
-        ?.confirmed_scope_contracts
-    )
-      ? new Set(
-          options
-            .confirmed_scope_contracts
-            .map(
-              (value) =>
-                String(
-                  value || ""
-                ).trim()
-            )
-            .filter(Boolean)
-        )
-      : null;
-
-  /*
-   * Automatic execution MUST fail closed
-   * until factual instrument scope has
-   * been supplied.
-   *
-   * HTX futures currently contains both
-   * crypto and synthetic/non-crypto
-   * contracts. Discovery rank alone is
-   * therefore not permission to spend
-   * Deep Check budget.
-   */
-  const scopeConfirmed =
-    confirmedScope !== null;
-
-  const stateMap =
-    new Map();
-
-  for (
-    const row
-    of Array.isArray(stateRows)
-      ? stateRows
-      : []
-  ) {
-    const contract =
-      String(
-        row?.contract_code || ""
-      ).trim();
-
-    if (!contract) {
-      continue;
-    }
-
-    stateMap.set(
-      contract,
-      row
-    );
-  }
-
-  const seen =
-    new Set();
-
-  const ready = [];
-  const blocked = [];
-
-  for (
-    const row
-    of shortlist
-  ) {
-    const contract =
-      String(
-        row?.contract || ""
-      ).trim();
-
-    if (
-      !contract ||
-      seen.has(contract)
-    ) {
-      continue;
-    }
-
-    seen.add(contract);
-
-    const priorityRank =
-      schedulerNumber(
-        row?.priority_rank
-      );
-
-    const flags =
-      schedulerNumber(
-        row
-          ?.anomaly_flags_count
-      ) ?? 0;
-
-    if (
-      !scopeConfirmed ||
-      !confirmedScope.has(
-        contract
-      )
-    ) {
-      blocked.push({
-        contract,
-        priority_rank:
-          priorityRank,
-        anomaly_flags_count:
-          flags,
-        reason:
-          scopeConfirmed
-            ? "INSTRUMENT_SCOPE_NOT_CONFIRMED"
-            : "INSTRUMENT_SCOPE_SOURCE_MISSING",
-      });
-
-      continue;
-    }
-
-    const state =
-      stateMap.get(
-        contract
-      ) || null;
-
-    const lastStartedTs =
-      schedulerNumber(
-        state?.last_started_ts
-      );
-
-    const lastCompletedTs =
-      schedulerNumber(
-        state
-          ?.last_completed_ts
-      );
-
-    const lastCheckTs =
-      lastCompletedTs ??
-      lastStartedTs;
-
-    const ageSec =
-      lastCheckTs === null
-        ? null
-        : Math.max(
-            0,
-            (
-              nowMs -
-              lastCheckTs
-            ) /
-              1000
-          );
-
-    const leaseAgeSec =
-      lastStartedTs === null
-        ? null
-        : Math.max(
-            0,
-            (
-              nowMs -
-              lastStartedTs
-            ) /
-              1000
-          );
-
-    const lastStatus =
-      String(
-        state?.last_status ||
-        ""
-      ).toUpperCase();
-
-    const activeLease =
-      lastStatus ===
-        "RUNNING" &&
-      leaseAgeSec !== null &&
-      leaseAgeSec <
-        leaseSec;
-
-    if (activeLease) {
-      blocked.push({
-        contract,
-        priority_rank:
-          priorityRank,
-        anomaly_flags_count:
-          flags,
-        reason:
-          "ACTIVE_LEASE",
-        last_started_ts:
-          lastStartedTs,
-        lease_age_sec:
-          leaseAgeSec,
-      });
-
-      continue;
-    }
-
-    const cooldownActive =
-      ageSec !== null &&
-      ageSec <
-        cooldownSec;
-
-    if (cooldownActive) {
-      blocked.push({
-        contract,
-        priority_rank:
-          priorityRank,
-        anomaly_flags_count:
-          flags,
-        reason:
-          "COOLDOWN",
-        last_check_ts:
-          lastCheckTs,
-        age_sec:
-          ageSec,
-      });
-
-      continue;
-    }
-
-    const readyRow = {
-      contract,
-      priority_rank:
-        priorityRank,
-      anomaly_flags_count:
-        flags,
-      last_check_ts:
-        lastCheckTs,
-      age_sec:
-        ageSec,
-    };
-
-    // V3 handoff metadata must survive scheduler fairness selection without
-    // inflating logs/serialized plans. The source row is deliberately hidden.
-    Object.defineProperty(
-      readyRow,
-      "_v3_discovery_source",
-      {
-        value: row,
-        enumerable: false,
-        configurable: false,
-        writable: false,
-      }
-    );
-
-    ready.push(readyRow);
-  }
-
-  /* Ordinary discovery uses current factual quality first. Mandatory exact
-   * rechecks/manual jobs keep their separate lane and are unaffected. */
-  ready.sort(compareOrdinaryDeepCandidates);
-
-  /*
-   * A Fast-Move queue lease and the Deep Check must refer to exactly
-   * the same contract. Independent scheduler fairness may never
-   * substitute another symbol after a lease has been claimed.
-   */
-  const eligibleForSelection =
-    requireExactContract
-      ? ready.filter(
-          (row) =>
-            requiredContract &&
-            row.contract ===
-              requiredContract
-        )
-      : ready;
-
-  const selected =
-    eligibleForSelection.slice(
-      0,
-      maxPerRun
-    );
-
-  const requiredContractStatus =
-    !requireExactContract
-      ? "NOT_REQUIRED"
-      : !requiredContract
-        ? "MISSING_FAIL_CLOSED"
-        : selected.length === 1
-          ? "READY_EXACT_MATCH"
-          : "NOT_READY_FAIL_CLOSED";
-
-  const stage0External =
-    STAGE0_EXTERNAL_REQUESTS;
-
-  const deepCheckExternal =
-    DEEP_CHECK_EXTERNAL_REQUESTS;
-
-  const smartMoneyExternal =
-    SMART_MONEY_EXTERNAL_REQUESTS;
-
-  const deepCheckTotalExternal =
-    deepCheckExternal +
-    smartMoneyExternal;
-
-  const estimatedExternal =
-    stage0External +
-    selected.length *
-      deepCheckTotalExternal;
-
-  return {
-    layer:
-      "BOUNDED_DEEP_CHECK_SCHEDULER",
-
-    mode:
-      "CRON_WIRED_BOUNDED_EXECUTION",
-
-    parameters: {
-      hard_max_per_run:
-        HARD_MAX_PER_RUN,
-
-      resource_max_per_run:
-        RESOURCE_MAX_PER_RUN,
-
-      configured_max_per_run:
-        maxPerRun,
-
-      cooldown_sec:
-        cooldownSec,
-
-      lease_sec:
-        leaseSec,
-
-      scope_required:
-        true,
-
-      require_exact_contract:
-        requireExactContract,
-
-      required_contract:
-        requiredContract ||
-        null,
-
-      required_contract_status:
-        requiredContractStatus,
-    },
-
-    scope_status:
-      scopeConfirmed
-        ? "CONFIRMED_SET_SUPPLIED"
-        : "UNCONFIRMED_FAIL_CLOSED",
-
-    counts: {
-      shortlist:
-        shortlist.length,
-
-      scope_confirmed:
-        scopeConfirmed
-          ? shortlist.filter(
-              (row) =>
-                confirmedScope.has(
-                  String(
-                    row?.contract ||
-                    ""
-                  ).trim()
-                )
-            ).length
-          : 0,
-
-      ready:
-        ready.length,
-
-      blocked:
-        blocked.length,
-
-      selected:
-        selected.length,
-    },
-
-    selected,
-    blocked,
-
-    budget: {
-      stage0_external_requests:
-        stage0External,
-
-      deep_check_external_requests_each:
-        deepCheckExternal,
-
-      smart_money_external_requests_each:
-        smartMoneyExternal,
-
-      deep_check_total_external_requests_each:
-        deepCheckTotalExternal,
-
-      estimated_external_requests_this_run:
-        estimatedExternal,
-
-      workers_free_external_limit:
-        WORKERS_FREE_EXTERNAL_LIMIT,
-
-      external_request_reserve:
-        EXTERNAL_REQUEST_RESERVE,
-
-      within_known_external_limit:
-        estimatedExternal <=
-          WORKERS_FREE_EXTERNAL_LIMIT -
-            EXTERNAL_REQUEST_RESERVE,
-
-      three_deep_checks_would_estimate:
-        stage0External +
-        3 *
-          deepCheckTotalExternal,
-    },
-
-    decision: {
-      generated: false,
-      direction: null,
-      probability: null,
-      validated: false,
-    },
-
-    execution: {
-      started: false,
-      deep_checks_started: 0,
-      telegram_started: false,
-    },
-
-    rules: [
-      "Hard execution cap is 2 Deep Checks per cron invocation.",
-      "Resource-derived execution cap is 1 Deep Check per cron invocation.",
-      "The Fast-Move lease owner supplies the only contract eligible for the matching Deep Check.",
-      "Cooldown and active lease are operational resource controls, not trading signals.",
-      "Oldest or never-checked eligible candidate is preferred before prefilter priority.",
-      "Instrument scope must be factually confirmed before automatic Deep Check execution.",
-      "Unknown instrument scope fails closed.",
-      "No LONG/SHORT direction is generated here.",
-      "No probability is generated here.",
-      "No validated=true signal is generated here.",
-      "No Telegram call is generated here.",
-    ],
-  };
-}
-
-async function loadDeepCheckSchedulerState(
-  env,
-  contracts
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status:
-        "SOURCE_UNSUPPORTED",
-      rows: [],
-      error:
-        "DATA_DB_NOT_CONFIGURED",
-    };
-  }
-
-  const clean =
-    Array.from(
-      new Set(
-        (
-          Array.isArray(
-            contracts
-          )
-            ? contracts
-            : []
-        )
-          .map(
-            (value) =>
-              String(
-                value || ""
-              ).trim()
-          )
-          .filter(Boolean)
-      )
-    )
-      .slice(
-        0,
-        50
-      );
-
-  if (!clean.length) {
-    return {
-      status: "CLOSED",
-      rows: [],
-      error: null,
-    };
-  }
-
-  const placeholders =
-    clean
-      .map(
-        (_, index) =>
-          `?${index + 1}`
-      )
-      .join(", ");
-
-  try {
-    const result =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            contract_code,
-            last_started_ts,
-            last_completed_ts,
-            last_status,
-            last_run_id,
-            last_sufficiency,
-            last_error,
-            updated_ts,
-            v3_handoff_id,
-            v3_handoff_logical_key,
-            v3_scan_ts,
-            v3_base_ticker,
-            v3_discovery_rank,
-            v3_detectors_json,
-            v3_evidence_ids_json,
-            v3_first_seen_state_json,
-            v3_current_state_json,
-            v3_direction,
-            v3_wave_id,
-            v3_dedup_reentry_key
-          FROM deep_check_scheduler_state
-          WHERE contract_code IN (
-            ${placeholders}
-          )
-        `)
-        .bind(
-          ...clean
-        )
-        .all();
-
-    return {
-      status: "CLOSED",
-      rows:
-        Array.isArray(
-          result?.results
-        )
-          ? result.results
-          : [],
-      error: null,
-    };
-  } catch (error) {
-    const message =
-      String(
-        error?.message ||
-        error
-      );
-
-    return {
-      status:
-        /no such table/i.test(
-          message
-        )
-          ? "MIGRATION_REQUIRED"
-          : "PARTIAL",
-      rows: [],
-      error: message,
-    };
-  }
-}
-
-async function reserveDeepCheckSchedulerSlot(
-  env,
-  {
-    contract,
-    run_id,
-    now_ms,
-    cooldown_sec,
-    lease_sec,
-    handoff = null,
-  }
-) {
-  if (!env?.DATA_DB) {
-    return {
-      ok: false,
-      reserved: false,
-      status:
-        "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  const contractCode =
-    String(
-      contract || ""
-    ).trim();
-
-  const runId =
-    String(
-      run_id || ""
-    ).trim();
-
-  const nowMs =
-    schedulerNumber(
-      now_ms
-    );
-
-  const cooldownSec =
-    schedulerNumber(
-      cooldown_sec
-    );
-
-  const leaseSec =
-    schedulerNumber(
-      lease_sec
-    );
-
-  if (
-    !contractCode ||
-    !runId ||
-    nowMs === null ||
-    cooldownSec === null ||
-    leaseSec === null
-  ) {
-    return {
-      ok: false,
-      reserved: false,
-      status:
-        "INVALID_INPUT",
-    };
-  }
-
-  const cooldownCutoff =
-    nowMs -
-    cooldownSec *
-      1000;
-
-  const leaseCutoff =
-    nowMs -
-    leaseSec *
-      1000;
-
-  const h =
-    handoff &&
-    handoff.version &&
-    handoff.handoff_id &&
-    handoff.logical_key
-      ? handoff
-      : null;
-
-  try {
-    const result =
-      await env.DATA_DB
-        .prepare(`
-          INSERT INTO
-            deep_check_scheduler_state
-          (
-            contract_code,
-            last_started_ts,
-            last_completed_ts,
-            last_status,
-            last_run_id,
-            last_sufficiency,
-            last_error,
-            updated_ts,
-            v3_handoff_id,
-            v3_handoff_logical_key,
-            v3_scan_ts,
-            v3_base_ticker,
-            v3_discovery_rank,
-            v3_detectors_json,
-            v3_evidence_ids_json,
-            v3_first_seen_state_json,
-            v3_current_state_json,
-            v3_direction,
-            v3_wave_id,
-            v3_dedup_reentry_key
-          )
-          VALUES
-          (
-            ?1, ?2, NULL, 'RUNNING', ?3, NULL, NULL, ?2,
-            ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17
-          )
-          ON CONFLICT(contract_code)
-          DO UPDATE SET
-            last_started_ts = excluded.last_started_ts,
-            last_status = 'RUNNING',
-            last_run_id = excluded.last_run_id,
-            last_sufficiency = NULL,
-            last_error = NULL,
-            updated_ts = excluded.updated_ts,
-            v3_handoff_id = excluded.v3_handoff_id,
-            v3_handoff_logical_key = excluded.v3_handoff_logical_key,
-            v3_scan_ts = excluded.v3_scan_ts,
-            v3_base_ticker = excluded.v3_base_ticker,
-            v3_discovery_rank = excluded.v3_discovery_rank,
-            v3_detectors_json = excluded.v3_detectors_json,
-            v3_evidence_ids_json = excluded.v3_evidence_ids_json,
-            v3_first_seen_state_json = excluded.v3_first_seen_state_json,
-            v3_current_state_json = excluded.v3_current_state_json,
-            v3_direction = excluded.v3_direction,
-            v3_wave_id = excluded.v3_wave_id,
-            v3_dedup_reentry_key = excluded.v3_dedup_reentry_key
-          WHERE
-            (
-              deep_check_scheduler_state.last_status != 'RUNNING'
-              OR deep_check_scheduler_state.last_started_ts IS NULL
-              OR deep_check_scheduler_state.last_started_ts <= ?4
-            )
-            AND
-            (
-              COALESCE(deep_check_scheduler_state.last_completed_ts,
-                       deep_check_scheduler_state.last_started_ts) IS NULL
-              OR COALESCE(deep_check_scheduler_state.last_completed_ts,
-                          deep_check_scheduler_state.last_started_ts) <= ?5
-            )
-        `)
-        .bind(
-          contractCode,
-          nowMs,
-          runId,
-          leaseCutoff,
-          cooldownCutoff,
-          h?.handoff_id ?? null,
-          h?.logical_key ?? null,
-          h?.scan_ts ?? null,
-          h?.base_ticker ?? null,
-          h?.discovery_rank ?? null,
-          JSON.stringify(h?.detectors ?? []),
-          JSON.stringify(h?.evidence_ids ?? []),
-          h?.first_seen_state == null ? null : JSON.stringify(h.first_seen_state),
-          h?.current_state == null ? null : JSON.stringify(h.current_state),
-          h?.direction ?? null,
-          h?.wave_id ?? null,
-          h?.dedup_reentry_key ?? null
-        )
-        .run();
-
-    const changes =
-      Number(
-        result?.meta
-          ?.changes ??
-        0
-      );
-
-    return {
-      ok: true,
-      reserved:
-        changes > 0,
-      status:
-        changes > 0
-          ? "RESERVED"
-          : "COOLDOWN_OR_ACTIVE_LEASE",
-      started_ts:
-        changes > 0
-          ? nowMs
-          : null,
-      handoff:
-        changes > 0
-          ? h
-          : null,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      reserved: false,
-      status:
-        "D1_ERROR",
-      error:
-        String(
-          error?.message ||
-          error
-        ),
-    };
-  }
-}
-
-async function finalizeDeepCheckSchedulerSlot(
-  env,
-  {
-    contract,
-    run_id,
-    started_ts,
-    completed_ts,
-    status,
-    sufficiency,
-    error,
-    details = {},
-  }
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status:
-        "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  const contractCode =
-    String(
-      contract || ""
-    ).trim();
-
-  const runId =
-    String(
-      run_id || ""
-    ).trim();
-
-  const completedTs =
-    schedulerNumber(
-      completed_ts
-    );
-
-  const startedTs =
-    schedulerNumber(
-      started_ts
-    );
-
-  if (
-    !contractCode ||
-    !runId ||
-    completedTs === null
-  ) {
-    return {
-      status:
-        "INVALID_INPUT",
-    };
-  }
-
-  const finalStatus =
-    String(
-      status ||
-      "COMPLETED"
-    );
-
-  const finalError =
-    error === null ||
-    error === undefined
-      ? null
-      : String(error)
-          .slice(0, 600);
-
-  const gaps =
-    Array.isArray(
-      details?.gaps
-    )
-      ? details.gaps
-          .map(
-            (value) =>
-              String(
-                value || ""
-              ).slice(0, 160)
-          )
-          .filter(Boolean)
-          .slice(0, 100)
-      : [];
-
-  const failedComponents =
-    Array.isArray(
-      details
-        ?.failed_components
-    )
-      ? details
-          .failed_components
-          .map(
-            (value) =>
-              String(
-                value || ""
-              ).slice(0, 120)
-          )
-          .filter(Boolean)
-          .slice(0, 20)
-      : [];
-
-  const fulfilledComponents =
-    schedulerNumber(
-      details
-        ?.fulfilled_components
-    );
-
-  const decisionGenerated =
-    details
-      ?.decision_generated ===
-    true;
-
-  const validated =
-    details?.validated ===
-    true;
-
-  const telegramStarted =
-    details
-      ?.telegram_started ===
-    true;
-
-  const retentionBefore =
-    completedTs -
-    7 *
-      24 *
-      60 *
-      60 *
-      1000;
-
-  try {
-    const results =
-      await env.DATA_DB.batch([
-        env.DATA_DB
-          .prepare(`
-          UPDATE
-            deep_check_scheduler_state
-          SET
-            last_completed_ts = ?3,
-            last_status = ?4,
-            last_sufficiency = ?5,
-            last_error = ?6,
-            updated_ts = ?3
-          WHERE
-            contract_code = ?1
-            AND
-            last_run_id = ?2
-        `)
-          .bind(
-            contractCode,
-            runId,
-            completedTs,
-            finalStatus,
-            sufficiency ??
-              null,
-            finalError
-          ),
-
-        env.DATA_DB
-          .prepare(`
-            INSERT OR REPLACE INTO
-              deep_check_run_log
-            (
-              run_id,
-              contract_code,
-              started_ts,
-              completed_ts,
-              execution_status,
-              data_sufficiency,
-              gaps_json,
-              fulfilled_components,
-              failed_components_json,
-              decision_generated,
-              validated,
-              telegram_started,
-              error_text,
-              created_ts,
-              v3_handoff_id,
-              v3_handoff_logical_key,
-              v3_scan_ts,
-              v3_base_ticker,
-              v3_discovery_rank,
-              v3_detectors_json,
-              v3_evidence_ids_json,
-              v3_first_seen_state_json,
-              v3_current_state_json,
-              v3_direction,
-              v3_wave_id,
-              v3_dedup_reentry_key
-            )
-            VALUES
-            (
-              ?1, ?2, ?3, ?4,
-              ?5, ?6, ?7, ?8,
-              ?9, ?10, ?11, ?12,
-              ?13, ?14,
-              ?15, ?16, ?17, ?18,
-              ?19, ?20, ?21, ?22,
-              ?23, ?24, ?25, ?26
-            )
-          `)
-          .bind(
-            runId,
-            contractCode,
-            startedTs,
-            completedTs,
-            finalStatus,
-            sufficiency ??
-              null,
-            JSON.stringify(
-              gaps
-            ),
-            fulfilledComponents,
-            JSON.stringify(
-              failedComponents
-            ),
-            decisionGenerated
-              ? 1
-              : 0,
-            validated
-              ? 1
-              : 0,
-            telegramStarted
-              ? 1
-              : 0,
-            finalError,
-            completedTs,
-            details?.handoff?.handoff_id ?? null,
-            details?.handoff?.logical_key ?? null,
-            details?.handoff?.scan_ts ?? null,
-            details?.handoff?.base_ticker ?? null,
-            details?.handoff?.discovery_rank ?? null,
-            JSON.stringify(details?.handoff?.detectors ?? []),
-            JSON.stringify(details?.handoff?.evidence_ids ?? []),
-            details?.handoff?.first_seen_state == null ? null : JSON.stringify(details.handoff.first_seen_state),
-            details?.handoff?.current_state == null ? null : JSON.stringify(details.handoff.current_state),
-            details?.handoff?.direction ?? null,
-            details?.handoff?.wave_id ?? null,
-            details?.handoff?.dedup_reentry_key ?? null
-          ),
-
-        env.DATA_DB
-          .prepare(`
-            DELETE FROM
-              deep_check_run_log
-            WHERE
-              completed_ts < ?1
-          `)
-          .bind(
-            retentionBefore
-          ),
-      ]);
-
-    return {
-      status: "CLOSED",
-      state_changes:
-        Number(
-          results?.[0]
-            ?.meta
-            ?.changes ??
-          0
-        ),
-
-      journal_changes:
-        Number(
-          results?.[1]
-            ?.meta
-            ?.changes ??
-          0
-        ),
-
-      retention_rows_deleted:
-        Number(
-          results?.[2]
-            ?.meta
-            ?.changes ??
-          0
-        ),
-    };
-  } catch (caught) {
-    return {
-      status: "PARTIAL",
-      error:
-        String(
-          caught?.message ||
-          caught
-        ),
-    };
-  }
-}
-
-async function runBoundedDeepCheckScheduler(
-  discoveryPrefilter,
-  env,
-  runId,
-  options = {}
-) {
-  const requiredContract =
-    String(
-      options?.required_contract ||
-      ""
-    ).trim();
-
-  const requireExactContract =
-    options
-      ?.require_exact_contract ===
-    true;
-
-  const requiredSkipResult =
-    (reason) =>
-      requireExactContract &&
-      requiredContract
-        ? [
-            {
-              contract:
-                requiredContract,
-              run_id:
-                runId,
-              execution_status:
-                "SKIPPED",
-              reason,
-            },
-          ]
-        : [];
-
-  const shortlist =
-    Array.isArray(
-      discoveryPrefilter
-        ?.shortlist
-    )
-      ? discoveryPrefilter.shortlist
-      : [];
-
-  const contracts =
-    shortlist
-      .map(
-        (row) =>
-          String(
-            row?.contract ||
-            ""
-          ).trim()
-      )
-      .filter(Boolean);
-
-  if (!env?.DATA_DB) {
-    return {
-      layer:
-        "BOUNDED_DEEP_CHECK_EXECUTOR",
-      status:
-        "SOURCE_UNSUPPORTED_FAIL_CLOSED",
-      plan:
-        buildBoundedDeepCheckPlan(
-          discoveryPrefilter,
-          [],
-          Date.now(),
-          options
-        ),
-      results:
-        requiredSkipResult(
-          "DATA_DB_NOT_CONFIGURED"
-        ),
-      decision: {
-        generated: false,
-        direction: null,
-        probability: null,
-        validated: false,
-      },
-      telegram_started:
-        false,
-    };
-  }
-
-  const state =
-    await loadDeepCheckSchedulerState(
-      env,
-      contracts
-    );
-
-  if (
-    state.status !==
-    "CLOSED"
-  ) {
-    return {
-      layer:
-        "BOUNDED_DEEP_CHECK_EXECUTOR",
-      status:
-        `${state.status}_FAIL_CLOSED`,
-      scheduler_state:
-        state,
-      results:
-        requiredSkipResult(
-          "SCHEDULER_STATE_NOT_CLOSED"
-        ),
-      decision: {
-        generated: false,
-        direction: null,
-        probability: null,
-        validated: false,
-      },
-      telegram_started:
-        false,
-    };
-  }
-
-  const now =
-    Date.now();
-
-  const plan =
-    buildBoundedDeepCheckPlan(
-      discoveryPrefilter,
-      state.rows,
-      now,
-      options
-    );
-
-  if (
-    plan.scope_status !==
-      "CONFIRMED_SET_SUPPLIED" ||
-    plan.parameters
-      ?.required_contract_status ===
-      "MISSING_FAIL_CLOSED" ||
-    !plan.selected.length
-  ) {
-    const noTargetReason =
-      plan.scope_status !==
-        "CONFIRMED_SET_SUPPLIED"
-        ? "INSTRUMENT_SCOPE_NOT_CONFIRMED"
-        : plan.parameters
-            ?.required_contract_status ===
-            "MISSING_FAIL_CLOSED"
-          ? "REQUIRED_CONTRACT_NOT_SUPPLIED"
-          : plan.parameters
-              ?.required_contract_status ===
-              "NOT_READY_FAIL_CLOSED"
-            ? "REQUIRED_CONTRACT_NOT_READY"
-            : "NO_READY_TARGETS";
-
-    return {
-      layer:
-        "BOUNDED_DEEP_CHECK_EXECUTOR",
-      status:
-        noTargetReason,
-      plan,
-      results:
-        requiredSkipResult(
-          noTargetReason
-        ),
-      decision: {
-        generated: false,
-        direction: null,
-        probability: null,
-        validated: false,
-      },
-      telegram_started:
-        false,
-    };
-  }
-
-  const results = [];
-
-  /*
-   * Deep Checks are deliberately
-   * sequential. Never Promise.all()
-   * multiple buildDeepCheckInput calls.
-   */
-  for (
-    const target
-    of plan.selected
-  ) {
-    const selectedEarly=await bindSelectedEarlyEvidence({target,env,scan:options?.early_scan,run_id:runId,now_ts:Date.now()});
-    const selectedDiscoverySource=selectedEarly.candidate||target?._v3_discovery_source||null;
-    const liveLane =
-      String(options?.live_handoff_lane || "")
-        .startsWith("LIVE_");
-
-    let v3Handoff = null;
-    if (liveLane) {
-      const handoffBuild =
-        buildDiscoveryHandoffEnvelope(
-          selectedDiscoverySource || { contract: target?.contract, discovery_rank: target?.priority_rank },
-          {
-            source_run_id: runId,
-            scan_ts: options?.scan_ts,
-            first_seen_state: selectedDiscoverySource?.first_seen_state ?? null,
-            current_state: selectedDiscoverySource?.current_state ?? null,
-            wave_id: selectedDiscoverySource?.wave_id ?? null,
-            dedup_reentry_key: selectedDiscoverySource?.dedup_reentry_key ?? null,
-            evidence_ids: selectedDiscoverySource?.evidence_ids ?? [],
-            now_ts: Date.now(),
-          }
-        );
-
-      if (handoffBuild?.status !== "CLOSED" || !handoffBuild?.envelope) {
-        results.push({
-          contract: target?.contract ?? null,
-          run_id: runId,
-          execution_status: "SKIPPED",
-          reason: `V3_HANDOFF_${handoffBuild?.status || "NOT_CLOSED"}`,
-        });
-        continue;
-      }
-      v3Handoff = handoffBuild.envelope;
-    }
-
-    const reservation =
-      await reserveDeepCheckSchedulerSlot(
-        env,
-        {
-          contract:
-            target.contract,
-          run_id:
-            runId,
-          now_ms:
-            Date.now(),
-          cooldown_sec:
-            plan.parameters
-              .cooldown_sec,
-          lease_sec:
-            plan.parameters
-              .lease_sec,
-          handoff:
-            v3Handoff,
-        }
-      );
-
-    if (
-      !reservation
-        ?.reserved
-    ) {
-      results.push({
-        contract:
-          target.contract,
-        run_id:
-          runId,
-        execution_status:
-          "SKIPPED",
-        reason:
-          reservation
-            ?.status ||
-          "NOT_RESERVED",
-      });
-
-      continue;
-    }
-
-    try {
-      const deep =
-        await buildDeepCheckInput(
-          {
-            contract:
-              target.contract,
-            run_id:
-              runId,
-            discovery_row:
-              selectedDiscoverySource ||
-              null,
-            capacity_drop_reasons:
-              plan.blocked
-                .map(
-                  (row) =>
-                    row?.reason ||
-                    null
-                )
-                .filter(Boolean)
-                .slice(0, 12),
-            queue_starvation:
-              options
-                ?.queue_starvation ===
-              true,
-          },
-          env
-        );
-
-      const sufficiency =
-        deep
-          ?.data_sufficiency
-          ?.classification ??
-        null;
-
-      const decisionGenerated =
-        deep
-          ?.decision
-          ?.validated === true ||
-        deep
-          ?.decision
-          ?.direction != null ||
-        deep
-          ?.decision
-          ?.probability != null;
-
-      const validated =
-        deep
-          ?.decision
-          ?.validated === true;
-
-      const finalization =
-        await finalizeDeepCheckSchedulerSlot(
-          env,
-          {
-          contract:
-            target.contract,
-          run_id:
-            runId,
-          started_ts:
-            reservation
-              ?.started_ts ??
-            null,
-          completed_ts:
-            Date.now(),
-          status:
-            "COMPLETED",
-          sufficiency,
-          error:
-            null,
-          details: {
-            gaps:
-              deep
-                ?.data_sufficiency
-                ?.gaps ??
-              [],
-
-            fulfilled_components:
-              deep
-                ?.execution
-                ?.fulfilled_components ??
-              null,
-
-            failed_components:
-              deep
-                ?.execution
-                ?.failed_components ??
-              [],
-
-            decision_generated:
-              decisionGenerated,
-
-            validated,
-
-            telegram_started:
-              false,
-            handoff:
-              reservation?.handoff ?? null,
-          },
-          }
-        );
-
-      const fastMoveWatchObservation =
-        buildFastMoveDeepObservation({
-          deep,
-          discovery_row:
-            target,
-          now:
-            Date.now(),
-        });
-
-      results.push({
-        contract:
-          target.contract,
-        run_id:
-          runId,
-        execution_status:
-          "FULFILLED",
-        data_sufficiency:
-          sufficiency,
-        decision_generated:
-          decisionGenerated,
-        validated:
-          validated,
-        journal_status:
-          finalization
-            ?.status ??
-          null,
-        fast_move_watch_observation:
-          fastMoveWatchObservation,
-        post_v7_canonical_persistence: deep?.post_v7_canonical_persistence ?? null,
-        canonical_analytical_result: {
-          status:
-            deep?.canonical_analytical_bundle?.status ??
-            null,
-          state:
-            deep?.canonical_analytical_bundle?.canonical?.state ??
-            null,
-          analytical_fingerprint:
-            deep?.canonical_analytical_bundle?.parity_fingerprint ??
-            null,
-          telegram_formatter_status:
-            deep?.canonical_analytical_bundle?.telegram?.status ??
-            null,
-          manual_formatter_status:
-            deep?.canonical_analytical_bundle?.manual?.status ??
-            null,
-          direction_candidate:
-            deep?.direction_candidate ??
-            null,
-        },
-        full_evidence_persistence: {
-          stage: "FULL_EVIDENCE_PERSISTENCE",
-          status: deep?.stage392_shadow_integration?.full_evidence_persistence?.status ?? null,
-          persisted: deep?.stage392_shadow_integration?.full_evidence_persistence?.persisted === true,
-          insert_changes: Number(deep?.stage392_shadow_integration?.full_evidence_persistence?.insert_changes ?? 0),
-          error: deep?.stage392_shadow_integration?.full_evidence_persistence?.error ?? null,
-        },
-        opportunity_intelligence_shadow: {
-          version:
-            deep
-              ?.opportunity_intelligence_shadow
-              ?.version ??
-            null,
-          status:
-            deep
-              ?.opportunity_intelligence_shadow
-              ?.status ??
-            null,
-          anomaly_count:
-            deep
-              ?.opportunity_intelligence_shadow
-              ?.counts
-              ?.anomalies ??
-            0,
-          funnel_stage:
-            deep
-              ?.opportunity_intelligence_shadow
-              ?.newest_event
-              ?.funnel
-              ?.stage ??
-            null,
-          persistence_status:
-            deep
-              ?.opportunity_intelligence_shadow
-              ?.persistence
-              ?.status ??
-            null,
-        },
-        multi_wave_campaign_shadow: {
-          version:
-            deep
-              ?.multi_wave_campaign_shadow
-              ?.version ??
-            null,
-          status:
-            deep
-              ?.multi_wave_campaign_shadow
-              ?.status ??
-            null,
-          phase:
-            deep
-              ?.multi_wave_campaign_shadow
-              ?.campaign
-              ?.current_phase ??
-            null,
-          wave_index:
-            deep
-              ?.multi_wave_campaign_shadow
-              ?.campaign
-              ?.wave_index ??
-            0,
-          persistence_status:
-            deep
-              ?.multi_wave_campaign_shadow
-              ?.persistence
-              ?.status ??
-            null,
-        },
-      });
-    } catch (error) {
-      const message =
-        String(
-          error?.message ||
-          error
-        );
-
-      const finalization =
-        await finalizeDeepCheckSchedulerSlot(
-          env,
-          {
-          contract:
-            target.contract,
-          run_id:
-            runId,
-          started_ts:
-            reservation
-              ?.started_ts ??
-            null,
-          completed_ts:
-            Date.now(),
-          status:
-            "ERROR",
-          sufficiency:
-            null,
-          error:
-            message.slice(
-              0,
-              600
-            ),
-          details: {
-            gaps: [],
-            fulfilled_components:
-              0,
-            failed_components: [
-              "deep_check_execution",
-            ],
-            decision_generated:
-              false,
-            validated:
-              false,
-            telegram_started:
-              false,
-            handoff:
-              reservation?.handoff ?? null,
-          },
-          }
-        );
-
-      results.push({
-        contract:
-          target.contract,
-        run_id:
-          runId,
-        execution_status:
-          "REJECTED",
-        error:
-          message,
-        journal_status:
-          finalization
-            ?.status ??
-          null,
-      });
-    }
-  }
-
-  return {
-    layer:
-      "BOUNDED_DEEP_CHECK_EXECUTOR",
-
-    status:
-      "COMPLETED",
-
-    plan,
-
-    results,
-
-    decision: {
-      generated: false,
-      direction: null,
-      probability: null,
-      validated: false,
-    },
-
-    telegram_started:
-      false,
-  };
-}
-
-async function htxSymbolResolve(params) {
-  const now = Date.now();
-
-  const requestedRaw = String(
-    params.contract ||
-    params.symbol ||
-    params.query ||
-    ""
-  ).trim();
-
-  const normalizedContract =
-    normalizeFuturesContract(
-      requestedRaw ||
-      "ETHFI-USDT"
-    );
-
-  const requestedNfc =
-    requestedRaw.normalize(
-      "NFC"
-    );
-
-  const requestedNfkc =
-    requestedRaw.normalize(
-      "NFKC"
-    );
-
-  const endpoint =
-    `${FUTURES_BASE}/linear-swap-api/v1/swap_contract_info`;
-
-  const infoR =
-    await fetchJson(
-      endpoint
-    );
-
-  const active =
-    asArray(
-      infoR.data?.data
-    ).filter(
-      (x) =>
-        Number(
-          x?.contract_status
-        ) === 1 &&
-        String(
-          x?.business_type ||
-          "swap"
-        ).toLowerCase() ===
-          "swap"
-    );
-
-  const normalizedKey =
-    contractKey(
-      normalizedContract
-    );
-
-  const exactCandidates =
-    active.filter(
-      (x) =>
-        contractKey(
-          x?.contract_code
-        ) ===
-        normalizedKey
-    );
-
-  const rawExactCandidates =
-    active.filter(
-      (x) =>
-        String(
-          x?.contract_code ||
-          ""
-        ) ===
-        requestedRaw
-    );
-
-  const symbolCandidates =
-    active.filter(
-      (x) =>
-        String(
-          x?.symbol ||
-          ""
-        )
-          .normalize("NFC")
-          .toUpperCase() ===
-        requestedNfc
-          .toUpperCase()
-    );
-
-  const nfkcDiagnosticCandidates =
-    active.filter(
-      (x) => {
-        const c =
-          String(
-            x?.contract_code ||
-            ""
-          )
-            .normalize("NFKC")
-            .toUpperCase();
-
-        const sym =
-          String(
-            x?.symbol ||
-            ""
-          )
-            .normalize("NFKC")
-            .toUpperCase();
-
-        return (
-          c ===
-            requestedNfkc.toUpperCase() ||
-          sym ===
-            requestedNfkc.toUpperCase()
-        );
-      }
-    );
-
-  const combined =
-    new Map();
-
-  for (
-    const x of [
-      ...rawExactCandidates,
-      ...exactCandidates,
-      ...symbolCandidates,
-    ]
-  ) {
-    const code =
-      String(
-        x?.contract_code ||
-        ""
-      );
-
-    if (code) {
-      combined.set(
-        code,
-        x
-      );
-    }
-  }
-
-  const candidates =
-    [...combined.values()].map(
-      (x) => ({
-        contract_code:
-          x.contract_code,
-
-        symbol:
-          x.symbol,
-
-        fingerprint:
-          symbolFingerprint(
-            x
-          ),
-
-        contract_status:
-          x.contract_status,
-
-        contract_size:
-          num(
-            x.contract_size
-          ),
-
-        price_tick:
-          num(
-            x.price_tick
-          ),
-
-        create_date:
-          x.create_date ??
-          null,
-      })
-    );
-
-  let resolutionStatus =
-    "SYMBOL_UNRESOLVED";
-
-  let resolved =
-    null;
-
-  if (
-    rawExactCandidates.length ===
-    1
-  ) {
-    resolutionStatus =
-      "RESOLVED_HTX_EXACT_RAW";
-
-    resolved =
-      candidates.find(
-        (x) =>
-          x.contract_code ===
-          rawExactCandidates[0]
-            .contract_code
-      ) ||
-      null;
-  } else if (
-    candidates.length ===
-    1
-  ) {
-    resolutionStatus =
-      "RESOLVED_HTX_NORMALIZED_INPUT";
-
-    resolved =
-      candidates[0];
-  } else if (
-    candidates.length >
-    1
-  ) {
-    resolutionStatus =
-      "AMBIGUOUS";
-  }
-
-  return {
-    source:
-      "HTX official public API",
-
-    tool:
-      "htx_symbol_resolve",
-
-    version:
-      "1.0",
-
-    timestamp_utc:
-      new Date(
-        now
-      ).toISOString(),
-
-    requested: {
-      raw:
-        requestedRaw,
-
-      normalized_contract_input:
-        normalizedContract,
-
-      nfc:
-        requestedNfc,
-
-      nfkc_diagnostic_only:
-        requestedNfkc,
-
-      raw_codepoints:
-        [...requestedRaw].map(
-          (ch) =>
-            `U+${ch
-              .codePointAt(0)
-              .toString(16)
-              .toUpperCase()
-              .padStart(
-                4,
-                "0"
-              )}`
-        ),
-    },
-
-    resolution_status:
-      resolutionStatus,
-
-    resolved,
-    candidates,
-
-    diagnostics: {
-      active_universe_total:
-        active.length,
-
-      raw_exact_matches:
-        rawExactCandidates.length,
-
-      normalized_matches:
-        exactCandidates.length,
-
-      symbol_matches:
-        symbolCandidates.length,
-
-      nfkc_diagnostic_matches:
-        nfkcDiagnosticCandidates.map(
-          (x) =>
-            x.contract_code
-        ),
-
-      nfkc_is_not_auto_accepted:
-        true,
-
-      translation_or_alias_guessing_used:
-        false,
-    },
-
-    health: {
-      contract_info:
-        infoR.ok,
-    },
-
-    coverage: {
-      htx_symbol_resolution:
-        infoR.ok
-          ? "closed"
-          : "not_closed",
-    },
-
-    endpoint_errors: {
-      contract_info:
-        infoR.ok
-          ? null
-          : infoR.error,
-    },
-
-    rules: [
-      "Exact HTX UTF-8 contract_code is canonical.",
-      "NFC normalization may be used for matching; NFKC is diagnostic only and never auto-accepted.",
-      "No translation of CJK names and no visual-confusable alias guess is used.",
-    ],
-  };
-}
-
-async function htxStage0History(
-  params,
-  env
-) {
-  return readMarketHistoryForContract({
-    db: env?.DATA_DB,
-    contract: normalizeFuturesContract(params?.contract || params?.contract_code || 'ETHFI-USDT'),
-    hours: clamp(params?.hours, 0.25, 168, 6),
-    now_ts: Date.now(),
-    actor: 'HUB_PUBLIC_COLLECTOR',
-    preferred_generation: env?.REPORT2_CURRENT_GENERATION || null,
-  });
-}
-
-// Retained only to keep the historical parser reproducible. Production deep
-// checks call the schema-compatible collector reader above; this function is
-// never routed as five-minute history.
-async function htxStage0HistoryLegacy(
-  params,
-  env
-) {
-  const now =
-    Date.now();
-
-  const contract =
-    normalizeFuturesContract(
-      params.contract ||
-      params.contract_code ||
-      "ETHFI-USDT"
-    );
-
-  const hours =
-    clamp(
-      params.hours,
-      0.25,
-      168,
-      6
-    );
-
-  const start =
-    now -
-    hours *
-      60 *
-      60 *
-      1000;
-
-  if (!env?.DATA_DB) {
-    return {
-      source:
-        "My Report 2 D1 compact Stage-0 store",
-
-      tool:
-        "htx_stage0_history",
-
-      version:
-        "1.0",
-
-      contract,
-
-      timestamp_utc:
-        new Date(
-          now
-        ).toISOString(),
-
-      health: {
-        data_db:
-          false,
-      },
-
-      coverage: {
-        persistent_history:
-          "SOURCE_UNSUPPORTED",
-      },
-
-      series: [],
-
-      endpoint_errors: {
-        data_db:
-          "D1 binding DATA_DB is not configured",
-      },
-    };
-  }
-
-  try {
-    const query =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            ts,
-            ts_bucket,
-            universe_total,
-            scanned,
-            missing,
-            errors,
-            stale,
-            stage0_coverage_pct,
-            payload_json
-          FROM scan_runs
-          WHERE ts_bucket
-            BETWEEN ?1 AND ?2
-          ORDER BY
-            ts_bucket ASC
-          LIMIT 2500
-        `)
-        .bind(
-          start,
-          now
-        )
-        .all();
-
-    const key =
-      contractKey(
-        contract
-      );
-
-    const series = [];
-
-    let scanRows =
-      0;
-
-    let parseErrors =
-      0;
-
-    for (
-      const scan
-      of asArray(
-        query?.results
-      )
-    ) {
-      scanRows +=
-        1;
-
-      let payload;
-
-      try {
-        payload =
-          JSON.parse(
-            scan.payload_json ||
-            "{}"
-          );
-      } catch {
-        parseErrors +=
-          1;
-
-        continue;
-      }
-
-      const row =
-        asArray(
-          payload?.contracts
-        ).find(
-          (r) =>
-            Array.isArray(
-              r
-            ) &&
-            contractKey(
-              r[0]
-            ) ===
-              key
-        );
-
-      if (!row) {
-        continue;
-      }
-
-      const [
-        contract_code,
-        price,
-        turnover_24h,
-        oi_contracts,
-        oi_value_usdt,
-        funding_rate,
-        funding_interval_hours,
-        market_age_sec,
-        source_status,
-      ] = row;
-
-      series.push({
-        ts:
-          scan.ts,
-
-        ts_bucket:
-          scan.ts_bucket,
-
-        timestamp_utc:
-          iso(
-            scan.ts
-          ),
-
-        contract_code,
-
-        price:
-          num(
-            price
-          ),
-
-        turnover_24h_usdt:
-          num(
-            turnover_24h
-          ),
-
-        oi_contracts:
-          num(
-            oi_contracts
-          ),
-
-        oi_value_usdt:
-          num(
-            oi_value_usdt
-          ),
-
-        funding_rate:
-          num(
-            funding_rate
-          ),
-
-        funding_rate_pct:
-          num(
-            funding_rate
-          ) !== null
-            ? num(
-                funding_rate
-              ) *
-              100
-            : null,
-
-        funding_interval_hours:
-          num(
-            funding_interval_hours
-          ),
-
-        market_age_sec:
-          num(
-            market_age_sec
-          ),
-
-        source_status:
-          source_status ||
-          null,
-
-        scan_stage0_coverage_pct:
-          num(
-            scan
-              .stage0_coverage_pct
-          ),
-      });
-    }
-
-    const expected =
-      Math.max(
-        1,
-        Math.floor(
-          (
-            hours *
-            60
-          ) /
-            5
-        )
-      );
-
-    const coveragePct =
-      Math.min(
-        100,
-        (
-          series.length /
-          expected
-        ) *
-          100
-      );
-
-    return {
-      source:
-        "My Report 2 D1 compact Stage-0 store",
-
-      tool:
-        "htx_stage0_history",
-
-      version:
-        "1.0",
-
-      contract,
-
-      requested_hours:
-        hours,
-
-      window_start_utc:
-        iso(
-          start
-        ),
-
-      window_end_utc:
-        iso(
-          now
-        ),
-
-      timestamp_utc:
-        new Date(
-          now
-        ).toISOString(),
-
-      health: {
-        data_db:
-          true,
-
-        payload_parse:
-          parseErrors ===
-          0,
-      },
-
-      coverage: {
-        persistent_history:
-          "closed",
-
-        expected_5m_points:
-          expected,
-
-        received_points:
-          series.length,
-
-        approximate_5m_coverage_pct:
-          coveragePct,
-      },
-
-      scan_rows_read:
-        scanRows,
-
-      parse_errors:
-        parseErrors,
-
-      series,
-
-      endpoint_errors: {
-        data_db:
-          null,
-      },
-
-      note:
-        "Series contains only factual persisted Stage-0 snapshots. Missing scans remain missing; no interpolation is performed.",
-    };
-  } catch (error) {
-    return {
-      source:
-        "My Report 2 D1 compact Stage-0 store",
-
-      tool:
-        "htx_stage0_history",
-
-      version:
-        "1.0",
-
-      contract,
-
-      timestamp_utc:
-        new Date(
-          now
-        ).toISOString(),
-
-      health: {
-        data_db:
-          false,
-      },
-
-      coverage: {
-        persistent_history:
-          "not_closed",
-      },
-
-      series: [],
-
-      endpoint_errors: {
-        data_db:
-          String(
-            error?.message ||
-            error
-          ),
-      },
-    };
-  }
-}
-
-const MAX_HTX_LIQUIDATION_ROWS_PER_SIDE = 250;
-const MAX_HTX_LIQUIDATION_ROWS_PERSISTED = 500;
-
-function normalizeLiquidationRow(row, requestedType) {
-  const created = normalizeTs(row?.created_at);
-  const turnover = num(row?.trade_turnover);
-
-  return {
-    event_id:
-      row?.query_id !== undefined &&
-      row?.query_id !== null
-        ? String(row.query_id)
-        : [
-            row?.contract_code ||
-              row?.contract ||
-              "",
-            created || "",
-            row?.price || "",
-            row?.volume || "",
-            row?.direction || "",
-          ].join(":"),
-
-    contract_code:
-      row?.contract_code ||
-      row?.contract ||
-      null,
-
-    symbol:
-      row?.symbol ||
-      null,
-
-    side:
-      requestedType === 5
-        ? "LONG_LIQUIDATED"
-        : requestedType === 6
-        ? "SHORT_LIQUIDATED"
-        : "UNKNOWN",
-
-    direction:
-      row?.direction ||
-      null,
-
-    price:
-      num(
-        row?.price
-      ),
-
-    volume_contracts:
-      num(
-        row?.volume
-      ),
-
-    amount_base:
-      num(
-        row?.amount
-      ),
-
-    notional_usdt:
-      turnover,
-
-    created_at:
-      created,
-
-    created_at_utc:
-      iso(
-        created
-      ),
-
-    source:
-      "HTX official public liquidation REST",
-
-    raw_trade_type:
-      requestedType,
-  };
-}
-
-async function persistLiquidations(
-  env,
-  events,
-  eligibleCount = null
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status:
-        "SOURCE_UNSUPPORTED",
-
-      reason:
-        "D1 binding DATA_DB is not configured",
-    };
-  }
-
-  const input = Array.isArray(events) ? events : [];
-  const attempted = input.slice(0, MAX_HTX_LIQUIDATION_ROWS_PERSISTED);
-  const eligible = Number.isFinite(Number(eligibleCount))
-    ? Math.max(attempted.length, Math.trunc(Number(eligibleCount)))
-    : input.length;
-
-  if (!attempted.length) {
-    return {
-      status:
-        "CLOSED",
-
-      rows_written:
-        0,
-
-      rows_eligible:
-        eligible,
-
-      rows_attempted:
-        0,
-
-      rows_capacity_dropped:
-        Math.max(0, eligible),
-
-      d1_statements:
-        0,
-    };
-  }
-
-  try {
-    const payload = attempted.map((event) => ({
-      source: event?.source ?? null,
-      event_id: event?.event_id ?? null,
-      contract_code: event?.contract_code ?? null,
-      ts: event?.created_at ?? null,
-      side: event?.side ?? null,
-      price: event?.price ?? null,
-      volume_contracts: event?.volume_contracts ?? null,
-      amount_base: event?.amount_base ?? null,
-      notional_usdt: event?.notional_usdt ?? null,
-      raw_json: JSON.stringify(event ?? {}),
-    }));
-    const result = await env.DATA_DB.prepare(`
-      INSERT OR IGNORE INTO liquidation_events
-      (
-        source,
-        event_id,
-        contract_code,
-        ts,
-        side,
-        price,
-        volume_contracts,
-        amount_base,
-        notional_usdt,
-        raw_json
-      )
-      SELECT
-        json_extract(value,'$.source'),
-        json_extract(value,'$.event_id'),
-        json_extract(value,'$.contract_code'),
-        json_extract(value,'$.ts'),
-        json_extract(value,'$.side'),
-        json_extract(value,'$.price'),
-        json_extract(value,'$.volume_contracts'),
-        json_extract(value,'$.amount_base'),
-        json_extract(value,'$.notional_usdt'),
-        json_extract(value,'$.raw_json')
-      FROM json_each(?1)
-    `).bind(JSON.stringify(payload)).run();
-
-    const dropped = Math.max(0, eligible - attempted.length);
-
-    return {
-      status:
-        dropped > 0 ? "PARTIAL_BOUNDED" : "CLOSED",
-
-      rows_written:
-        Number(result?.meta?.changes ?? 0),
-
-      rows_eligible:
-        eligible,
-
-      rows_attempted:
-        attempted.length,
-
-      rows_capacity_dropped:
-        dropped,
-
-      d1_statements:
-        1,
-    };
-  } catch (error) {
-    return {
-      status:
-        "PARTIAL",
-
-      reason:
-        String(
-          error?.message ||
-          error
-        ),
-    };
-  }
-}
-
-async function fetchLiquidationJson(
-  url
-) {
-  const getResult =
-    await fetchJsonWithMethod(
-      url,
-      "GET"
-    );
-
-  if (getResult.ok) {
-    return {
-      ...getResult,
-
-      method_used:
-        "GET",
-
-      fallback_used:
-        false,
-    };
-  }
-
-  const postResult =
-    await fetchJsonWithMethod(
-      url,
-      "POST"
-    );
-
-  if (postResult.ok) {
-    return {
-      ...postResult,
-
-      method_used:
-        "POST",
-
-      fallback_used:
-        true,
-
-      primary_get_error:
-        getResult.error,
-
-      primary_get_http_status:
-        getResult.http_status,
-    };
-  }
-
-  return {
-    ...postResult,
-
-    method_used:
-      "GET_THEN_POST_FAILED",
-
-    fallback_used:
-      true,
-
-    primary_get_error:
-      getResult.error,
-
-    primary_get_http_status:
-      getResult.http_status,
-
-    fallback_post_error:
-      postResult.error,
-
-    fallback_post_http_status:
-      postResult.http_status,
-  };
-}
-
-async function htxLiquidationTape(
-  params,
-  env,
-  options = {}
-) {
-  const now =
-    Date.now();
-
-  const contract =
-    normalizeFuturesContract(
-      params.contract ||
-      params.contract_code ||
-      "BTC-USDT"
-    );
-
-  const lookbackMin =
-    Math.round(
-      clamp(
-        params.lookback_minutes,
-        1,
-        120,
-        120
-      )
-    );
-
-  const start =
-    now -
-    lookbackMin *
-      60 *
-      1000;
-
-  const base =
-    `${FUTURES_BASE}/linear-swap-api/v3/swap_liquidation_orders`;
-
-  const makeUrl =
-    (type) =>
-      `${base}` +
-      `?contract=${encodeURIComponent(
-        contract
-      )}` +
-      `&trade_type=${type}` +
-      `&start_time=${start}` +
-      `&end_time=${now}` +
-      `&direct=prev`;
-
-  const [
-    longR,
-    shortR,
-  ] =
-    await Promise.all([
-      fetchLiquidationJson(
-        makeUrl(
-          5
-        )
-      ),
-
-      fetchLiquidationJson(
-        makeUrl(
-          6
-        )
-      ),
-    ]);
-
-  const longRawRows =
-    asArray(
-      longR.data?.data
-    );
-
-  const shortRawRows =
-    asArray(
-      shortR.data?.data
-    );
-
-  const longRowsTruncated =
-    longRawRows.length >
-    MAX_HTX_LIQUIDATION_ROWS_PER_SIDE;
-
-  const shortRowsTruncated =
-    shortRawRows.length >
-    MAX_HTX_LIQUIDATION_ROWS_PER_SIDE;
-
-  const longEvents =
-    longRawRows
-      .slice(0, MAX_HTX_LIQUIDATION_ROWS_PER_SIDE)
-      .map(
-      (x) =>
-        normalizeLiquidationRow(
-          x,
-          5
-        )
-    );
-
-  const shortEvents =
-    shortRawRows
-      .slice(0, MAX_HTX_LIQUIDATION_ROWS_PER_SIDE)
-      .map(
-      (x) =>
-        normalizeLiquidationRow(
-          x,
-          6
-        )
-    );
-
-  const events = [
-    ...longEvents,
-    ...shortEvents,
-  ].sort(
-    (
-      a,
-      b
-    ) =>
-      (
-        a.created_at ||
-        0
-      ) -
-      (
-        b.created_at ||
-        0
-      )
-  );
-
-  const latestTs =
-    events.length
-      ? events[
-          events.length -
-          1
-        ].created_at
-      : null;
-
-  const summarize =
-    (side) => {
-      const rows =
-        events.filter(
-          (e) =>
-            e.side ===
-            side
-        );
-
-      return {
-        events:
-          rows.length,
-
-        notional_usdt:
-          rows.reduce(
-            (
-              s,
-              e
-            ) =>
-              s +
-              (
-                num(
-                  e.notional_usdt
-                ) ||
-                0
-              ),
-            0
-          ),
-
-        amount_base:
-          rows.reduce(
-            (
-              s,
-              e
-            ) =>
-              s +
-              (
-                num(
-                  e.amount_base
-                ) ||
-                0
-              ),
-            0
-          ),
-      };
-    };
-
-  const output = {
-    source:
-      "HTX official public API",
-
-    tool:
-      "htx_liquidation_tape",
-
-    version:
-      "1.0",
-
-    contract,
-
-    lookback_minutes:
-      lookbackMin,
-
-    window_start_utc:
-      iso(
-        start
-      ),
-
-    window_end_utc:
-      iso(
-        now
-      ),
-
-    timestamp:
-      now,
-
-    timestamp_utc:
-      new Date(
-        now
-      ).toISOString(),
-
-    factual_only:
-      true,
-
-    projected_levels_included:
-      false,
-
-    order_book_liquidity_included:
-      false,
-
-    summary: {
-      long_liquidations:
-        summarize(
-          "LONG_LIQUIDATED"
-        ),
-
-      short_liquidations:
-        summarize(
-          "SHORT_LIQUIDATED"
-        ),
-
-      total_events:
-        events.length,
-
-      payload_total_events:
-        longRawRows.length +
-        shortRawRows.length,
-
-      rows_capacity_dropped:
-        Math.max(
-          0,
-          longRawRows.length +
-          shortRawRows.length -
-          events.length
-        ),
-    },
-
-    freshness: {
-      latest_event_time:
-        iso(
-          latestTs
-        ),
-
-      latest_event_age_sec:
-        latestTs !== null
-          ? Math.max(
-              0,
-              now -
-              latestTs
-            ) /
-            1000
-          : null,
-
-      no_event_is_not_an_error:
-        events.length ===
-        0,
-    },
-
-    transport: {
-      long_liquidations_method:
-        longR.method_used ||
-        null,
-
-      short_liquidations_method:
-        shortR.method_used ||
-        null,
-
-      long_fallback_used:
-        Boolean(
-          longR.fallback_used
-        ),
-
-      short_fallback_used:
-        Boolean(
-          shortR.fallback_used
-        ),
-    },
-
-    health: {
-      long_liquidations:
-        longR.ok,
-
-      short_liquidations:
-        shortR.ok,
-
-      bounded_scan_truncated:
-        longRowsTruncated ||
-        shortRowsTruncated,
-    },
-
-    coverage: {
-      htx_factual_long_liquidations:
-        longR.ok
-          ? longRowsTruncated
-            ? "partial_bounded"
-            : "closed"
-          : "not_closed",
-
-      htx_factual_short_liquidations:
-        shortR.ok
-          ? shortRowsTruncated
-            ? "partial_bounded"
-            : "closed"
-          : "not_closed",
-    },
-
-    events,
-
-    endpoint_errors: {
-      long_liquidations:
-        longR.ok
-          ? null
-          : longR.error,
-
-      short_liquidations:
-        shortR.ok
-          ? null
-          : shortR.error,
-    },
-  };
-
-  if (
-    options.persist ||
-    String(
-      params.persist ||
-      ""
-    ).toLowerCase() ===
-      "true"
-  ) {
-    output.persistence =
-      await persistLiquidations(
-        env,
-        events,
-        longRawRows.length +
-          shortRawRows.length
-      );
-  } else {
-    output.persistence = {
-      status:
-        env?.DATA_DB
-          ? "NOT_REQUESTED"
-          : "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  return output;
-}async function recordCronRun(env, row) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  try {
-    await env.DATA_DB
-      .prepare(`
-        INSERT OR REPLACE INTO cron_runs
-        (
-          run_id,
-          scheduled_time,
-          started_ts,
-          completed_ts,
-          status,
-          universe_total,
-          scanned,
-          persistence_status,
-          error_text,
-          v3_discovery_shortlist_count,
-          v3_live_shortlist_count,
-          v3_live_deep_check_count,
-          v3_live_zero_reason,
-          v3_pipeline_health_status,
-          v3_pipeline_health_reason,
-          v3_live_lane,
-          v3_maintenance_deferred
-        )
-        VALUES (
-          ?1,
-          ?2,
-          ?3,
-          ?4,
-          ?5,
-          ?6,
-          ?7,
-          ?8,
-          ?9,
-          ?10,
-          ?11,
-          ?12,
-          ?13,
-          ?14,
-          ?15,
-          ?16,
-          ?17
-        )
-      `)
-      .bind(
-        row.run_id,
-        row.scheduled_time,
-        row.started_ts,
-        row.completed_ts ?? null,
-        row.status,
-        row.universe_total ?? null,
-        row.scanned ?? null,
-        row.persistence_status ?? null,
-        row.error_text ?? null,
-        row.v3_discovery_shortlist_count ?? null,
-        row.v3_live_shortlist_count ?? null,
-        row.v3_live_deep_check_count ?? null,
-        row.v3_live_zero_reason ?? null,
-        row.v3_pipeline_health_status ?? null,
-        row.v3_pipeline_health_reason ?? null,
-        row.v3_live_lane ?? null,
-        row.v3_maintenance_deferred == null ? null : (row.v3_maintenance_deferred === true ? 1 : 0)
-      )
-      .run();
-
-    return {
-      status: "CLOSED",
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      error: String(
-        error?.message ||
-        error
-      ),
-    };
-  }
-}
-
-/* MY_REPORT_2_SHADOW_OUTCOME_MODEL_INLINE_V1 â€” embedded for Worker/test compatibility. */
-const buildShadowOutcomeRecord = (() => {
-  const OUTCOME_RULES_VERSION = "shadow-outcome-v1";
-
-  function finite(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function round4(value) {
-    return Number.isFinite(value) ? Math.round(value * 10000) / 10000 : null;
-  }
-
-  function upper(value) {
-    return String(value ?? "").trim().toUpperCase();
-  }
-
-  function latestAtOrBefore(points, targetTs, toleranceMs) {
-    let best = null;
-    for (const point of points) {
-      const ts = finite(point?.ts);
-      const price = finite(point?.price);
-      if (ts === null || price === null || price <= 0) continue;
-      if (ts > targetTs) continue;
-      if (targetTs - ts > toleranceMs) continue;
-      if (!best || ts > best.ts) best = { ts, price, distance_ms: targetTs - ts };
-    }
-    return best;
-  }
-
-  function earliestAtOrAfter(points, targetTs, toleranceMs) {
-    let best = null;
-    for (const point of points) {
-      const ts = finite(point?.ts);
-      const price = finite(point?.price);
-      if (ts === null || price === null || price <= 0) continue;
-      if (ts < targetTs) continue;
-      if (ts - targetTs > toleranceMs) continue;
-      if (!best || ts < best.ts) best = { ts, price, distance_ms: ts - targetTs };
-    }
-    return best;
-  }
-
-  function pctFrom(referencePrice, price) {
-    const a = finite(referencePrice);
-    const b = finite(price);
-    if (a === null || b === null || a <= 0) return null;
-    return ((b / a) - 1) * 100;
-  }
-
-  function buildShadowOutcomeRecord({
-    candidate,
-    horizon_hours,
-    points,
-    computed_ts = Date.now(),
-    reference_tolerance_ms = 7.5 * 60 * 1000,
-    target_tolerance_ms = 7.5 * 60 * 1000,
-    expected_interval_ms = 5 * 60 * 1000,
-  } = {}) {
-    const shadowId = String(candidate?.shadow_id || "").trim();
-    const contract = String(candidate?.contract_code || candidate?.contract || "").trim();
-    const observedTs = finite(candidate?.observed_ts);
-    const direction = upper(candidate?.direction_hint);
-    const horizonHours = finite(horizon_hours);
-    const computedTs = finite(computed_ts) ?? Date.now();
-    const safePoints = Array.isArray(points)
-      ? points
-          .map((p) => ({ ts: finite(p?.ts), price: finite(p?.price) }))
-          .filter((p) => p.ts !== null && p.price !== null && p.price > 0)
-          .sort((a, b) => a.ts - b.ts)
-      : [];
-
-    const base = {
-      outcome_rules_version: OUTCOME_RULES_VERSION,
-      shadow_id: shadowId || null,
-      contract,
-      observed_ts: observedTs,
-      rules_version: String(candidate?.rules_version || "").slice(0, 120) || null,
-      direction_hint: direction || null,
-      dc_shadow_long: finite(candidate?.dc_long ?? candidate?.dc_shadow_long),
-      dc_shadow_short: finite(candidate?.dc_short ?? candidate?.dc_shadow_short),
-      eq_status: String(candidate?.eq_status || "").slice(0, 80) || null,
-      dq_status: String(candidate?.dq_status || "").slice(0, 80) || null,
-      stage: String(candidate?.stage || "").slice(0, 100) || null,
-      horizon_hours: horizonHours,
-      target_ts:
-        observedTs !== null && horizonHours !== null
-          ? observedTs + horizonHours * 60 * 60 * 1000
-          : null,
-      source: "STAGE0_COMPACT_FACTUAL_5M_SNAPSHOTS",
-      reference_selection: "LATEST_AT_OR_BEFORE_SIGNAL",
-      target_selection: "EARLIEST_AT_OR_AFTER_HORIZON",
-      interpolation_used: false,
-      calibration_only: true,
-      live_promotion_allowed: false,
-      automatic_weight_tuning_enabled: false,
-      computed_ts: computedTs,
-    };
-
-    if (!shadowId || !contract || observedTs === null || horizonHours === null || horizonHours <= 0) {
-      return {
-        ...base,
-        status: "INVALID_INPUT",
-        reason: "shadow_id, contract, observed_ts and positive horizon_hours are required",
-      };
-    }
-
-    if (direction !== "LONG" && direction !== "SHORT") {
-      return {
-        ...base,
-        status: "SKIPPED_NON_DIRECTIONAL",
-        reason: "Only LONG/SHORT shadow hints receive directional outcome calibration",
-      };
-    }
-
-    const targetTs = base.target_ts;
-    const reference = latestAtOrBefore(safePoints, observedTs, reference_tolerance_ms);
-    const outcome = earliestAtOrAfter(safePoints, targetTs, target_tolerance_ms);
-
-    if (!reference || !outcome) {
-      return {
-        ...base,
-        status: "INSUFFICIENT_FACTUAL_HISTORY",
-        reason: !reference && !outcome
-          ? "reference_and_target_snapshots_missing"
-          : !reference
-            ? "reference_snapshot_missing"
-            : "target_snapshot_missing",
-        reference_scan_ts: reference?.ts ?? null,
-        reference_price: reference?.price ?? null,
-        reference_offset_sec: reference ? round4((reference.ts - observedTs) / 1000) : null,
-        outcome_scan_ts: outcome?.ts ?? null,
-        outcome_price: outcome?.price ?? null,
-        target_offset_sec: outcome ? round4((outcome.ts - targetTs) / 1000) : null,
-        path_points: 0,
-        expected_points: null,
-        path_coverage_pct: null,
-        raw_return_pct: null,
-        directional_return_pct: null,
-        mfe_directional_pct_snapshot: null,
-        mae_directional_pct_snapshot: null,
-        direction_correct: null,
-      };
-    }
-
-    const startTs = Math.min(reference.ts, outcome.ts);
-    const endTs = Math.max(reference.ts, outcome.ts);
-    const path = safePoints.filter((p) => p.ts >= startTs && p.ts <= endTs);
-    const expectedPoints = Math.max(1, Math.floor((endTs - startTs) / expected_interval_ms) + 1);
-    const coveragePct = Math.min(100, (path.length / expectedPoints) * 100);
-    const factor = direction === "LONG" ? 1 : -1;
-    const directionalPath = path
-      .map((p) => pctFrom(reference.price, p.price))
-      .filter((v) => v !== null)
-      .map((v) => v * factor);
-    const rawReturn = pctFrom(reference.price, outcome.price);
-    const directionalReturn = rawReturn === null ? null : rawReturn * factor;
-
-    const mfe = directionalPath.length ? Math.max(...directionalPath) : null;
-    const mae = directionalPath.length ? Math.min(...directionalPath) : null;
-
-    return {
-      ...base,
-      status: "CLOSED_FACTUAL",
-      reason: null,
-      reference_scan_ts: reference.ts,
-      reference_price: round4(reference.price),
-      reference_offset_sec: round4((reference.ts - observedTs) / 1000),
-      outcome_scan_ts: outcome.ts,
-      outcome_price: round4(outcome.price),
-      target_offset_sec: round4((outcome.ts - targetTs) / 1000),
-      path_points: path.length,
-      expected_points: expectedPoints,
-      path_coverage_pct: round4(coveragePct),
-      raw_return_pct: round4(rawReturn),
-      directional_return_pct: round4(directionalReturn),
-      mfe_directional_pct_snapshot: round4(mfe),
-      mae_directional_pct_snapshot: round4(mae),
-      direction_correct:
-        directionalReturn === null || directionalReturn === 0
-          ? null
-          : directionalReturn > 0,
-      quality_note:
-        "MFE/MAE are extrema of factual persisted ~5m Stage-0 snapshots, not intrabar candle highs/lows. Missing scans remain missing; no interpolation is used.",
-    };
-  }
-
-  return buildShadowOutcomeRecord;
-})();
-
-
-/* =========================================================
-   MY_REPORT_2_SHADOW_OUTCOME_CALIBRATION_V1
-   Counterfactual outcome journal for shadow telemetry only.
-   Uses factual persisted Stage-0 snapshots; no interpolation,
-   no live signal promotion, no automatic weight tuning.
-   ========================================================= */
-function shadowOutcomeContractKey(value) {
-  return String(value || "")
-    .normalize("NFC")
-    .trim()
-    .toUpperCase();
-}
-
-function shadowOutcomePointFromPayload(payloadText, contractCode, scanTs) {
-  let payload;
-  try {
-    payload = JSON.parse(payloadText || "{}");
-  } catch {
-    return null;
-  }
-  const key = shadowOutcomeContractKey(contractCode);
-  const rows = Array.isArray(payload?.contracts) ? payload.contracts : [];
-  for (const row of rows) {
-    if (!Array.isArray(row) || row.length < 2) continue;
-    if (shadowOutcomeContractKey(row[0]) !== key) continue;
-    const price = row[1] === null || row[1] === undefined || row[1] === ""
-      ? null
-      : Number(row[1]);
-    if (!Number.isFinite(price) || price <= 0) return null;
-    return {
-      ts: Number(scanTs),
-      price,
-    };
-  }
-  return null;
-}
-
-async function archiveNewShadowCalibrationSignals(env, nowMs = Date.now()) {
-  const now = Number(nowMs) || Date.now();
-  const sourceSince = now - 7 * 24 * 60 * 60 * 1000;
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-      source_signals_seen: 0,
-      signals_archived: 0,
-      error: "D1 binding DATA_DB is not configured",
-    };
-  }
-  try {
-    const result = await env.DATA_DB
-      .prepare(`
-        INSERT OR IGNORE INTO shadow_calibration_signal
-        (
-          shadow_id, contract_code, observed_ts, rules_version,
-          source, mode, direction_hint, dc_long, dc_short,
-          eq_status, dq_status, stage, data_sufficiency,
-          missing_chains_json, evidence_flags_json,
-          calibration_only, live_promotion_allowed, archived_ts
-        )
-        SELECT
-          sd.shadow_id, sd.contract_code, sd.observed_ts, sd.rules_version,
-          sd.source, sd.mode, sd.direction_hint, sd.dc_long, sd.dc_short,
-          sd.eq_status, sd.dq_status, sd.stage, sd.data_sufficiency,
-          sd.missing_chains_json, sd.evidence_flags_json,
-          1, 0, ?2
-        FROM shadow_decision_log sd
-        WHERE sd.observed_ts >= ?1
-          AND sd.direction_hint IN ('LONG', 'SHORT')
-          AND NOT EXISTS (
-            SELECT 1
-            FROM shadow_calibration_signal sc
-            WHERE sc.shadow_id = sd.shadow_id
-          )
-        ORDER BY sd.observed_ts ASC
-        LIMIT 40
-      `)
-      .bind(sourceSince, now)
-      .run();
-    const changes = Number(result?.meta?.changes ?? 0);
-    return {
-      status: "CLOSED",
-      source_signals_seen: changes,
-      signals_archived: changes,
-      error: null,
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      source_signals_seen: 0,
-      signals_archived: 0,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-}
-
-async function loadShadowOutcomePath(env, candidate, horizonHours) {
-  const observedTs = Number(candidate?.observed_ts);
-  const horizon = Number(horizonHours);
-  if (!env?.DATA_DB || !Number.isFinite(observedTs) || !Number.isFinite(horizon)) {
-    return {
-      ok: false,
-      points: [],
-      error: "invalid_stage0_path_request",
-    };
-  }
-  const targetTs = observedTs + horizon * 60 * 60 * 1000;
-  const padMs = 10 * 60 * 1000;
-  const fromBucket = Math.floor((observedTs - padMs) / 300000) * 300000;
-  const toBucket = Math.floor((targetTs + padMs) / 300000) * 300000;
-  try {
-    const result = await env.DATA_DB
-      .prepare(`
-        SELECT ts, payload_json
-        FROM scan_runs
-        WHERE ts_bucket BETWEEN ?1 AND ?2
-        ORDER BY ts_bucket ASC
-        LIMIT 500
-      `)
-      .bind(fromBucket, toBucket)
-      .all();
-    const rows = Array.isArray(result?.results) ? result.results : [];
-    const points = [];
-    for (const row of rows) {
-      const point = shadowOutcomePointFromPayload(
-        row?.payload_json,
-        candidate?.contract_code,
-        row?.ts
-      );
-      if (point) points.push(point);
-    }
-    return { ok: true, points, error: null };
-  } catch (error) {
-    return {
-      ok: false,
-      points: [],
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-}
-
-async function persistShadowOutcomeRecord(env, record) {
-  if (!env?.DATA_DB) {
-    return { status: "SOURCE_UNSUPPORTED" };
-  }
-  const directionCorrect =
-    record?.direction_correct === true
-      ? 1
-      : record?.direction_correct === false
-        ? 0
-        : null;
-  try {
-    const result = await env.DATA_DB
-      .prepare(`
-        INSERT OR REPLACE INTO shadow_outcome_log
-        (
-          shadow_id, contract_code, observed_ts, rules_version,
-          outcome_rules_version, direction_hint, dc_long, dc_short,
-          eq_status, dq_status, stage, horizon_hours, target_ts,
-          reference_selection, target_selection,
-          reference_scan_ts, reference_price, reference_offset_sec,
-          outcome_scan_ts, outcome_price, target_offset_sec,
-          raw_return_pct, directional_return_pct,
-          mfe_directional_pct_snapshot, mae_directional_pct_snapshot,
-          direction_correct, path_points, expected_points, path_coverage_pct,
-          status, reason, source, interpolation_used, calibration_only,
-          live_promotion_allowed, automatic_weight_tuning_enabled, computed_ts
-        )
-        VALUES
-        (
-          ?1, ?2, ?3, ?4,
-          ?5, ?6, ?7, ?8,
-          ?9, ?10, ?11, ?12, ?13,
-          ?14, ?15,
-          ?16, ?17, ?18,
-          ?19, ?20, ?21,
-          ?22, ?23,
-          ?24, ?25,
-          ?26, ?27, ?28, ?29,
-          ?30, ?31, ?32, 0, 1, 0, 0, ?33
-        )
-      `)
-      .bind(
-        record?.shadow_id,
-        record?.contract,
-        record?.observed_ts,
-        record?.rules_version,
-        record?.outcome_rules_version || "shadow-outcome-v1",
-        record?.direction_hint,
-        record?.dc_shadow_long,
-        record?.dc_shadow_short,
-        record?.eq_status,
-        record?.dq_status,
-        record?.stage,
-        record?.horizon_hours,
-        record?.target_ts,
-        String(record?.reference_selection || "LATEST_AT_OR_BEFORE_SIGNAL").slice(0, 80),
-        String(record?.target_selection || "EARLIEST_AT_OR_AFTER_HORIZON").slice(0, 80),
-        record?.reference_scan_ts ?? null,
-        record?.reference_price ?? null,
-        record?.reference_offset_sec ?? null,
-        record?.outcome_scan_ts ?? null,
-        record?.outcome_price ?? null,
-        record?.target_offset_sec ?? null,
-        record?.raw_return_pct ?? null,
-        record?.directional_return_pct ?? null,
-        record?.mfe_directional_pct_snapshot ?? null,
-        record?.mae_directional_pct_snapshot ?? null,
-        directionCorrect,
-        Number(record?.path_points || 0),
-        record?.expected_points ?? null,
-        record?.path_coverage_pct ?? null,
-        String(record?.status || "UNKNOWN").slice(0, 80),
-        record?.reason ? String(record.reason).slice(0, 300) : null,
-        String(record?.source || "STAGE0_COMPACT_FACTUAL_5M_SNAPSHOTS").slice(0, 100),
-        Number(record?.computed_ts) || Date.now()
-      )
-      .run();
-    return {
-      status: "CLOSED",
-      changes: Number(result?.meta?.changes ?? 0),
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-}
-
-async function recordShadowOutcomeSweepState(env, payload) {
-  if (!env?.DATA_DB) return;
-  try {
-    await env.DATA_DB
-      .prepare(`
-        INSERT OR REPLACE INTO shadow_outcome_state
-        (
-          state_key, last_sweep_ts, source_signals_seen, signals_archived,
-          candidates_seen, tasks_due, tasks_processed, closed_written,
-          insufficient_written, last_status, last_error
-        )
-        VALUES ('main', ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)
-      `)
-      .bind(
-        Number(payload?.last_sweep_ts) || Date.now(),
-        Number(payload?.source_signals_seen || 0),
-        Number(payload?.signals_archived || 0),
-        Number(payload?.candidates_seen || 0),
-        Number(payload?.tasks_due || 0),
-        Number(payload?.tasks_processed || 0),
-        Number(payload?.closed_written || 0),
-        Number(payload?.insufficient_written || 0),
-        String(payload?.last_status || "UNKNOWN").slice(0, 80),
-        payload?.last_error ? String(payload.last_error).slice(0, 600) : null
-      )
-      .run();
-  } catch {}
-}
-
-const D1_FREE_QUERY_LIMIT = 50;
-const CONSERVATIVE_DEEP_CHECK_D1_QUERY_BUDGET = 48;
-const LEGACY_OUTCOME_SWEEP_MAX_D1_QUERIES = 14;
-
-async function runShadowOutcomeCalibrationSweep(env, nowMs = Date.now(), maxTasks = 4) {
-  const now = Number(nowMs) || Date.now();
-  const horizons = [1, 4, 12, 24];
-  const sourceSince = now - 6 * 24 * 60 * 60 * 1000;
-  const maturityGraceMs = 10 * 60 * 1000;
-  const summary = {
-    mode: "CALIBRATION_ONLY_NO_LIVE_PROMOTION",
-    source: "STAGE0_COMPACT_FACTUAL_5M_SNAPSHOTS",
-    last_sweep_ts: now,
-    source_signals_seen: 0,
-    signals_archived: 0,
-    candidates_seen: 0,
-    tasks_due: 0,
-    tasks_processed: 0,
-    closed_written: 0,
-    insufficient_written: 0,
-    last_status: "CLOSED",
-    last_error: null,
-    automatic_weight_tuning_enabled: false,
-    live_promotion_allowed: false,
-  };
-
-  if (!env?.DATA_DB) {
-    summary.last_status = "SOURCE_UNSUPPORTED";
-    return summary;
-  }
-
-  try {
-    const archived = await archiveNewShadowCalibrationSignals(env, now);
-    summary.source_signals_seen = Number(archived?.source_signals_seen || 0);
-    summary.signals_archived = Number(archived?.signals_archived || 0);
-    if (archived?.status !== "CLOSED") {
-      summary.last_status = "PARTIAL";
-      summary.last_error = archived?.error || "shadow_signal_archive_failed";
-    }
-
-    const [candidateResult, existingResult] = await Promise.all([
-      env.DATA_DB
-        .prepare(`
-          SELECT
-            shadow_id, contract_code, observed_ts, rules_version,
-            direction_hint, dc_long, dc_short, eq_status, dq_status, stage
-          FROM shadow_calibration_signal
-          WHERE observed_ts >= ?1
-            AND direction_hint IN ('LONG', 'SHORT')
-          ORDER BY observed_ts ASC
-          LIMIT 160
-        `)
-        .bind(sourceSince)
-        .all(),
-      env.DATA_DB
-        .prepare(`
-          SELECT shadow_id, horizon_hours
-          FROM shadow_outcome_log
-          WHERE observed_ts >= ?1
-        `)
-        .bind(sourceSince)
-        .all(),
-    ]);
-
-    const candidates = Array.isArray(candidateResult?.results) ? candidateResult.results : [];
-    const existing = new Set(
-      (Array.isArray(existingResult?.results) ? existingResult.results : [])
-        .map((row) => `${row?.shadow_id}:${Number(row?.horizon_hours)}`)
-    );
-    summary.candidates_seen = candidates.length;
-
-    const due = [];
-    for (const candidate of candidates) {
-      const observedTs = Number(candidate?.observed_ts);
-      if (!Number.isFinite(observedTs)) continue;
-      for (const horizon of horizons) {
-        const key = `${candidate?.shadow_id}:${horizon}`;
-        if (existing.has(key)) continue;
-        const targetTs = observedTs + horizon * 60 * 60 * 1000;
-        if (now >= targetTs + maturityGraceMs) {
-          due.push({ candidate, horizon, target_ts: targetTs });
-        }
-      }
-    }
-    due.sort((a, b) => a.target_ts - b.target_ts);
-    summary.tasks_due = due.length;
-
-    for (const task of due.slice(0, Math.max(1, Math.min(8, Number(maxTasks) || 4)))) {
-      const loaded = await loadShadowOutcomePath(env, task.candidate, task.horizon);
-      summary.tasks_processed += 1;
-      if (!loaded?.ok) {
-        summary.last_status = "PARTIAL";
-        summary.last_error = loaded?.error || "stage0_path_load_failed";
-        continue;
-      }
-      const record = buildShadowOutcomeRecord({
-        candidate: task.candidate,
-        horizon_hours: task.horizon,
-        points: loaded.points,
-        computed_ts: now,
-      });
-      const persisted = await persistShadowOutcomeRecord(env, record);
-      if (persisted?.status !== "CLOSED") {
-        summary.last_status = "PARTIAL";
-        summary.last_error = persisted?.error || "outcome_persist_failed";
-        continue;
-      }
-      if (record?.status === "CLOSED_FACTUAL") summary.closed_written += 1;
-      if (record?.status === "INSUFFICIENT_FACTUAL_HISTORY") summary.insufficient_written += 1;
-    }
-
-    const retentionBefore = now - 180 * 24 * 60 * 60 * 1000;
-    try {
-      await env.DATA_DB.batch([
-        env.DATA_DB
-          .prepare(`DELETE FROM shadow_outcome_log WHERE computed_ts < ?1`)
-          .bind(retentionBefore),
-        env.DATA_DB
-          .prepare(`DELETE FROM shadow_calibration_signal WHERE observed_ts < ?1`)
-          .bind(retentionBefore),
-      ]);
-    } catch (error) {
-      summary.last_status = "PARTIAL";
-      summary.last_error = String(error?.message || error).slice(0, 600);
-    }
-  } catch (error) {
-    summary.last_status = "PARTIAL";
-    summary.last_error = String(error?.message || error).slice(0, 600);
-  }
-
-  await recordShadowOutcomeSweepState(env, summary);
-  return summary;
-}
-
-function deepCheckAttemptedForD1Budget(boundedDeepCheck) {
-  return Array.isArray(boundedDeepCheck?.results) &&
-    boundedDeepCheck.results.some((row) =>
-      ["FULFILLED", "ERROR"].includes(String(row?.execution_status || ""))
-    );
-}
-
-async function dataPlaneStatus(env) {
-  const now = Date.now();
-
-  const base = {
-    tool:
-      "data_plane_status",
-
-    version:
-      FAST_MOVE_WATCH_VERSION,
-
-    timestamp_utc:
-      new Date(
-        now
-      ).toISOString(),
-
-    modules: {
-      htx_futures_snapshot:
-        "ACTIVE_BACKWARD_COMPATIBLE",
-
-      htx_spot_snapshot:
-        "ACTIVE_BACKWARD_COMPATIBLE",
-
-      htx_futures_trajectory:
-        "ACTIVE_BACKWARD_COMPATIBLE",
-
-      htx_universe_scan:
-        "IMPLEMENTED",
-
-      htx_crypto_instrument_scope:
-        "ACTIVE_FAIL_CLOSED_FROM_HTX_LABELS",
-
-      bounded_deep_check_scheduler:
-        env?.DATA_DB
-          ? "CRON_WIRED_MAX_ONE_PER_RUN"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      deep_check_run_journal:
-        env?.DATA_DB
-          ? "ACTIVE_COMPACT_7D_RETENTION"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      htx_symbol_resolve:
-        "IMPLEMENTED",
-
-      htx_stage0_history:
-        env?.DATA_DB
-          ? "ACTIVE"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      persistent_trajectory_store:
-        env?.DATA_DB
-          ? "BOUND"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      htx_liquidation_tape_rest:
-        "IMPLEMENTED",
-
-      htx_liquidation_ws_ingest:
-        "NOT_DEPLOYED_REQUIRES_LONG_LIVED_INGEST_ARCHITECTURE",
-
-      liquidation_consensus:
-        "SHADOW_ONLY_SINGLE_PROJECTED_PROVIDER_NO_CROSS_SOURCE_CONSENSUS",
-
-      cross_venue_liquidation_intelligence:
-        env?.BYKARANTELI_API_KEY
-          ? "ACTIVE_SHADOW_BYKARANTELI_PLUS_HTX_REALIZED"
-          : "CODE_READY_FREE_API_KEY_REQUIRED",
-
-      fast_move_watch:
-        FAST_MOVE_WATCH_STATUS,
-
-      opportunity_intelligence_shadow:
-        env?.DATA_DB
-          ? "ACTIVE_SHADOW_DATA_COLLECTION_AND_OUTCOMES"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      multi_wave_campaign_shadow:
-        env?.DATA_DB
-          ? "ACTIVE_SHADOW_MULTI_WAVE_CAMPAIGN_LIFECYCLE"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      missed_move_recall:
-        env?.DATA_DB
-          ? "DATA_MODEL_READY"
-          : "CODE_READY_BINDING_REQUIRED",
-
-      cron_observability:
-        "IMPLEMENTED_DIAGNOSTIC_HEARTBEAT",
-    },
-
-    safety: {
-      strategy_rules_changed:
-        false,
-
-      weights_changed:
-        false,
-
-      hard_veto_changed:
-        false,
-
-      missing_data_coerced_to_zero:
-        false,
-
-      service_binding_hub_changed:
-        false,
-    },
-
-    storage: {
-      d1_binding:
-        Boolean(
-          env?.DATA_DB
-        ),
-
-      binding_name:
-        "DATA_DB",
-
-      model:
-        "ONE_COMPACT_UNIVERSE_ROW_PER_5M_SCAN",
-
-      retention_days:
-        7,
-
-      free_tier_write_design:
-        "~1 insert + bounded retention delete per scan; avoids per-contract D1 writes",
-    },
-  };
-
-  
-  base.modules.shadow_decision_layer =
-    "ACTIVE_SHADOW_UNCALIBRATED_NO_EXECUTION";
-  base.safety.shadow_decision_only = true;
-  base.safety.shadow_live_probability_generated = false;
-  base.safety.shadow_live_signal_generated = false;
-  base.safety.shadow_telegram_dispatch_allowed = false;
-
-
-  base.modules.shadow_outcome_calibration =
-    "ACTIVE_CALIBRATION_ONLY_NO_LIVE_PROMOTION";
-  base.safety.shadow_outcome_automatic_weight_tuning = false;
-  base.safety.shadow_outcome_live_promotion_allowed = false;
-  base.safety.shadow_outcome_interpolation_used = false;
-
-
-  base.modules.full_evidence_shadow =
-    "ACTIVE_EVIDENCE_FUSION_NO_LIVE_PROMOTION";
-  base.safety.full_evidence_strategy_weights_changed = false;
-  base.safety.full_evidence_automatic_weight_tuning = false;
-  base.safety.full_evidence_live_probability_generated = false;
-  base.safety.full_evidence_live_signal_generated = false;
-  base.safety.full_evidence_validated = false;
-  base.safety.full_evidence_telegram_dispatch_allowed = false;
-  base.safety.full_evidence_trading_execution_allowed = false;
-
-  base.safety.liquidation_intelligence_shadow_only = true;
-  base.safety.liquidation_intelligence_changes_strategy_weights = false;
-  base.safety.liquidation_intelligence_new_percentage_weight = false;
-  base.safety.liquidation_intelligence_live_probability_generated = false;
-  base.safety.liquidation_intelligence_live_signal_generated = false;
-  base.safety.liquidation_intelligence_validated = false;
-  base.safety.liquidation_intelligence_telegram_dispatch_allowed = false;
-  base.safety.liquidation_intelligence_trading_execution_allowed = false;
-  base.safety.liquidation_intelligence_guaranteed_tp_generated = false;
-  base.safety.liquidation_intelligence_synthetic_heatmap_generated = false;
-  base.safety.fast_move_watch_shadow_only = true;
-  base.safety.fast_move_watch_scheduler_priority_is_probability = false;
-  base.safety.fast_move_watch_changes_strategy_weights = false;
-  base.safety.fast_move_watch_new_percentage_weight = false;
-  base.safety.fast_move_watch_live_probability_generated = false;
-  base.safety.fast_move_watch_live_signal_generated = false;
-  base.safety.fast_move_watch_validated_signal_generated = false;
-  base.safety.fast_move_watch_telegram_dispatch_allowed = false;
-  base.safety.fast_move_watch_trading_execution_allowed = false;
-  base.safety.fast_move_watch_automatic_weight_tuning = false;
-  base.safety.opportunity_shadow_only = true;
-  base.safety.opportunity_live_probability_generated = false;
-  base.safety.opportunity_live_signal_generated = false;
-  base.safety.opportunity_validated_signal_generated = false;
-  base.safety.opportunity_decision_layer_changed = false;
-  base.safety.opportunity_strategy_weights_changed = false;
-  base.safety.opportunity_fixed_weights_32_30_20_18_applied = true;
-  base.safety.opportunity_telegram_dispatch_allowed = false;
-  base.safety.opportunity_trading_execution_allowed = false;
-  base.safety.opportunity_automatic_weight_tuning = false;
-  base.safety.multi_wave_campaign_shadow_only = true;
-  base.safety.multi_wave_campaign_live_probability_generated = false;
-  base.safety.multi_wave_campaign_live_signal_generated = false;
-  base.safety.multi_wave_campaign_validated_signal_generated = false;
-  base.safety.multi_wave_campaign_decision_layer_changed = false;
-  base.safety.multi_wave_campaign_strategy_weights_changed = false;
-  base.safety.multi_wave_campaign_telegram_dispatch_allowed = false;
-  base.safety.multi_wave_campaign_trading_execution_allowed = false;
-  base.safety.multi_wave_campaign_automatic_weight_tuning = false;
-
-if (!env?.DATA_DB) {
-    return base;
-  }
-
-  try {
-    const latest =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            ts,
-            universe_total,
-            scanned,
-            missing,
-            errors,
-            stale,
-            stage0_coverage_pct
-          FROM scan_runs
-          ORDER BY ts DESC
-          LIMIT 1
-        `)
-        .first();
-
-    base.storage.latest_scan =
-      latest ||
-      null;
-
-    base.storage.latest_scan_age_sec =
-      latest?.ts
-        ? Math.max(
-            0,
-            now -
-              Number(
-                latest.ts
-              )
-          ) /
-          1000
-        : null;
-
-    base.storage.health =
-      "closed";
-  } catch (error) {
-    base.storage.health =
-      "not_closed";
-
-    base.storage.error =
-      String(
-        error?.message ||
-        error
-      );
-  }
-
-  try {
-    const cron =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            run_id,
-            scheduled_time,
-            started_ts,
-            completed_ts,
-            status,
-            universe_total,
-            scanned,
-            persistence_status,
-            error_text
-          FROM cron_runs
-          ORDER BY started_ts DESC
-          LIMIT 1
-        `)
-        .first();
-
-    base.cron = {
-      table_available:
-        true,
-
-      latest_run:
-        cron ||
-        null,
-
-      latest_run_age_sec:
-        cron?.started_ts
-          ? Math.max(
-              0,
-              now -
-                Number(
-                  cron.started_ts
-                )
-            ) /
-            1000
-          : null,
-    };
-  } catch (error) {
-    base.cron = {
-      table_available:
-        false,
-
-      latest_run:
-        null,
-
-      error:
-        String(
-          error?.message ||
-          error
-        ),
-
-      note:
-        "Apply the cron_runs diagnostic table migration before relying on cron heartbeat status.",
-    };
-  }
-
-  try {
-    const scheduler =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            COUNT(*) AS state_rows,
-            MAX(updated_ts) AS latest_updated_ts,
-            SUM(
-              CASE
-                WHEN last_status = 'RUNNING'
-                THEN 1
-                ELSE 0
-              END
-            ) AS running_rows
-          FROM deep_check_scheduler_state
-        `)
-        .first();
-
-    base.deep_check_scheduler = {
-      table_available:
-        true,
-
-      state_rows:
-        Number(
-          scheduler?.state_rows ||
-          0
-        ),
-
-      running_rows:
-        Number(
-          scheduler?.running_rows ||
-          0
-        ),
-
-      latest_updated_ts:
-        scheduler
-          ?.latest_updated_ts ??
-        null,
-
-      latest_update_age_sec:
-        scheduler
-          ?.latest_updated_ts
-          ? Math.max(
-              0,
-              now -
-                Number(
-                  scheduler
-                    .latest_updated_ts
-                )
-            ) /
-            1000
-          : null,
-    };
-  } catch (error) {
-    base.deep_check_scheduler = {
-      table_available:
-        false,
-
-      state_rows:
-        0,
-
-      running_rows:
-        0,
-
-      error:
-        String(
-          error?.message ||
-          error
-        ),
-
-      note:
-        "Apply report2_deep_check_scheduler_state.sql before enabling bounded Deep Check cron execution.",
-    };
-  }
-
-  try {
-    const since24h =
-      now -
-      24 *
-        60 *
-        60 *
-        1000;
-
-    const journalResults =
-      await env.DATA_DB.batch([
-        env.DATA_DB
-          .prepare(`
-            SELECT
-              run_id,
-              contract_code,
-              started_ts,
-              completed_ts,
-              execution_status,
-              data_sufficiency,
-              gaps_json,
-              fulfilled_components,
-              failed_components_json,
-              decision_generated,
-              validated,
-              telegram_started,
-              error_text
-            FROM deep_check_run_log
-            ORDER BY completed_ts DESC
-            LIMIT 12
-          `),
-
-        env.DATA_DB
-          .prepare(`
-            SELECT
-              COUNT(*) AS total_24h,
-              SUM(
-                CASE
-                  WHEN execution_status = 'COMPLETED'
-                  THEN 1
-                  ELSE 0
-                END
-              ) AS completed_24h,
-              SUM(
-                CASE
-                  WHEN execution_status = 'ERROR'
-                  THEN 1
-                  ELSE 0
-                END
-              ) AS errors_24h,
-              SUM(
-                CASE
-                  WHEN data_sufficiency = 'SUFFICIENT'
-                  THEN 1
-                  ELSE 0
-                END
-              ) AS sufficient_24h,
-              SUM(
-                CASE
-                  WHEN data_sufficiency = 'PARTIAL'
-                  THEN 1
-                  ELSE 0
-                END
-              ) AS partial_24h,
-              SUM(
-                CASE
-                  WHEN data_sufficiency = 'INSUFFICIENT'
-                  THEN 1
-                  ELSE 0
-                END
-              ) AS insufficient_24h,
-              SUM(decision_generated) AS decisions_24h,
-              SUM(validated) AS validated_24h,
-              SUM(telegram_started) AS telegram_started_24h
-            FROM deep_check_run_log
-            WHERE completed_ts >= ?1
-          `)
-          .bind(
-            since24h
-          ),
-      ]);
-
-    const recentRows =
-      Array.isArray(
-        journalResults?.[0]
-          ?.results
-      )
-        ? journalResults[0]
-            .results
-        : [];
-
-    const summary =
-      Array.isArray(
-        journalResults?.[1]
-          ?.results
-      )
-        ? journalResults[1]
-            .results[0] ||
-          {}
-        : {};
-
-    function parseJournalArray(
-      value
-    ) {
-      try {
-        const parsed =
-          JSON.parse(
-            String(
-              value || "[]"
-            )
-          );
-
-        return Array.isArray(
-          parsed
-        )
-          ? parsed
-          : [];
-      } catch {
-        return [];
-      }
-    }
-
-    base.deep_check_journal = {
-      table_available:
-        true,
-
-      retention_days:
-        7,
-
-      summary_24h: {
-        total:
-          Number(
-            summary?.total_24h ||
-            0
-          ),
-
-        completed:
-          Number(
-            summary
-              ?.completed_24h ||
-            0
-          ),
-
-        errors:
-          Number(
-            summary?.errors_24h ||
-            0
-          ),
-
-        sufficient:
-          Number(
-            summary
-              ?.sufficient_24h ||
-            0
-          ),
-
-        partial:
-          Number(
-            summary?.partial_24h ||
-            0
-          ),
-
-        insufficient:
-          Number(
-            summary
-              ?.insufficient_24h ||
-            0
-          ),
-
-        decisions_generated:
-          Number(
-            summary
-              ?.decisions_24h ||
-            0
-          ),
-
-        validated:
-          Number(
-            summary
-              ?.validated_24h ||
-            0
-          ),
-
-        telegram_started:
-          Number(
-            summary
-              ?.telegram_started_24h ||
-            0
-          ),
-      },
-
-      recent:
-        recentRows.map(
-          (row) => ({
-            run_id:
-              row?.run_id ||
-              null,
-
-            contract:
-              row
-                ?.contract_code ||
-              null,
-
-            started_ts:
-              row
-                ?.started_ts ??
-              null,
-
-            completed_ts:
-              row
-                ?.completed_ts ??
-              null,
-
-            completed_age_sec:
-              row?.completed_ts
-                ? Math.max(
-                    0,
-                    now -
-                      Number(
-                        row
-                          .completed_ts
-                      )
-                  ) /
-                  1000
-                : null,
-
-            execution_status:
-              row
-                ?.execution_status ||
-              null,
-
-            data_sufficiency:
-              row
-                ?.data_sufficiency ||
-              null,
-
-            gaps:
-              parseJournalArray(
-                row?.gaps_json
-              ),
-
-            fulfilled_components:
-              schedulerNumber(
-                row
-                  ?.fulfilled_components
-              ),
-
-            failed_components:
-              parseJournalArray(
-                row
-                  ?.failed_components_json
-              ),
-
-            decision_generated:
-              Number(
-                row
-                  ?.decision_generated ||
-                0
-              ) === 1,
-
-            validated:
-              Number(
-                row?.validated ||
-                0
-              ) === 1,
-
-            telegram_started:
-              Number(
-                row
-                  ?.telegram_started ||
-                0
-              ) === 1,
-
-            error:
-              row?.error_text ||
-              null,
-          })
-        ),
-    };
-  } catch (error) {
-    base.deep_check_journal = {
-      table_available:
-        false,
-
-      retention_days:
-        7,
-
-      summary_24h:
-        null,
-
-      recent: [],
-
-      error:
-        String(
-          error?.message ||
-          error
-        ),
-
-      note:
-        "Apply report2_deep_check_run_log.sql before relying on Deep Check journal status.",
-    };
-  }
-
-  
-  try {
-    const shadowSince =
-      now - 24 * 60 * 60 * 1000;
-
-    const shadowSummary =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            COUNT(*) AS total,
-            SUM(CASE WHEN direction_hint = 'LONG' THEN 1 ELSE 0 END) AS long_hints,
-            SUM(CASE WHEN direction_hint = 'SHORT' THEN 1 ELSE 0 END) AS short_hints,
-            SUM(CASE WHEN direction_hint = 'NEUTRAL' THEN 1 ELSE 0 END) AS neutral_hints,
-            SUM(CASE WHEN dq_status = 'INSUFFICIENT' THEN 1 ELSE 0 END) AS insufficient,
-            SUM(actual_decision_generated) AS actual_decisions_generated,
-            SUM(validated) AS validated,
-            SUM(telegram_started) AS telegram_started
-          FROM shadow_decision_log
-          WHERE observed_ts >= ?1
-        `)
-        .bind(shadowSince)
-        .first();
-
-    const shadowRecentResult =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            shadow_id,
-            contract_code,
-            observed_ts,
-            rules_version,
-            source,
-            mode,
-            direction_hint,
-            dc_long,
-            dc_short,
-            eq_status,
-            dq_status,
-            stage,
-            data_sufficiency,
-            missing_chains_json,
-            evidence_flags_json,
-            calibrated,
-            full_decision_eligible,
-            actual_decision_generated,
-            validated,
-            telegram_started
-          FROM shadow_decision_log
-          ORDER BY observed_ts DESC
-          LIMIT 10
-        `)
-        .all();
-
-    const shadowRecent =
-      Array.isArray(shadowRecentResult?.results)
-        ? shadowRecentResult.results.map(
-            (row) => {
-              let missingChains = [];
-              let evidenceFlags = {};
-              try {
-                missingChains = JSON.parse(
-                  row?.missing_chains_json || "[]"
-                );
-              } catch {}
-              try {
-                evidenceFlags = JSON.parse(
-                  row?.evidence_flags_json || "{}"
-                );
-              } catch {}
-              return {
-                shadow_id: row?.shadow_id || null,
-                contract: row?.contract_code || null,
-                observed_ts: Number(row?.observed_ts) || null,
-                observed_age_sec:
-                  Number.isFinite(Number(row?.observed_ts))
-                    ? Math.max(0, now - Number(row.observed_ts)) / 1000
-                    : null,
-                rules_version: row?.rules_version || null,
-                source: row?.source || null,
-                mode: row?.mode || null,
-                direction_hint: row?.direction_hint || null,
-                dc_shadow_long:
-                  Number.isFinite(Number(row?.dc_long))
-                    ? Number(row.dc_long)
-                    : null,
-                dc_shadow_short:
-                  Number.isFinite(Number(row?.dc_short))
-                    ? Number(row.dc_short)
-                    : null,
-                eq_status: row?.eq_status || null,
-                dq_status: row?.dq_status || null,
-                stage: row?.stage || null,
-                data_sufficiency: row?.data_sufficiency || null,
-                required_missing_chains: missingChains,
-                evidence_flags: evidenceFlags,
-                calibrated: Number(row?.calibrated) === 1,
-                full_decision_eligible:
-                  Number(row?.full_decision_eligible) === 1,
-                actual_decision_generated:
-                  Number(row?.actual_decision_generated) === 1,
-                validated: Number(row?.validated) === 1,
-                telegram_started:
-                  Number(row?.telegram_started) === 1,
-              };
-            }
-          )
-        : [];
-
-    base.shadow_decision_journal = {
-      table_available: true,
-      retention_days: 7,
-      rules_version:
-        "shadow-dc-eq-dq-v1",
-      mode:
-        "SHADOW_ONLY_NO_EXECUTION",
-      calibrated: false,
-      full_decision_eligible: false,
-      summary_24h: {
-        total: Number(shadowSummary?.total ?? 0),
-        long_hints: Number(shadowSummary?.long_hints ?? 0),
-        short_hints: Number(shadowSummary?.short_hints ?? 0),
-        neutral_hints: Number(shadowSummary?.neutral_hints ?? 0),
-        insufficient: Number(shadowSummary?.insufficient ?? 0),
-        actual_decisions_generated:
-          Number(shadowSummary?.actual_decisions_generated ?? 0),
-        validated: Number(shadowSummary?.validated ?? 0),
-        telegram_started:
-          Number(shadowSummary?.telegram_started ?? 0),
-      },
-      recent: shadowRecent,
-      safety: {
-        probability_is_live: false,
-        signal_is_live: false,
-        telegram_wired: false,
-      },
-    };
-  } catch (error) {
-    base.shadow_decision_journal = {
-      table_available: false,
-      retention_days: 7,
-      error: String(error?.message || error).slice(0, 600),
-      safety: {
-        probability_is_live: false,
-        signal_is_live: false,
-        telegram_wired: false,
-      },
-    };
-  }
-
-
-  try {
-    const outcomeSummary =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            COUNT(*) AS total_rows,
-            COUNT(DISTINCT shadow_id) AS unique_shadow_signals,
-            SUM(CASE WHEN status = 'CLOSED_FACTUAL' THEN 1 ELSE 0 END) AS closed_factual,
-            SUM(CASE WHEN status = 'INSUFFICIENT_FACTUAL_HISTORY' THEN 1 ELSE 0 END) AS insufficient,
-            SUM(CASE WHEN direction_correct = 1 THEN 1 ELSE 0 END) AS direction_correct_rows,
-            SUM(CASE WHEN horizon_hours = 1 AND status = 'CLOSED_FACTUAL' THEN 1 ELSE 0 END) AS h1_closed,
-            SUM(CASE WHEN horizon_hours = 4 AND status = 'CLOSED_FACTUAL' THEN 1 ELSE 0 END) AS h4_closed,
-            SUM(CASE WHEN horizon_hours = 12 AND status = 'CLOSED_FACTUAL' THEN 1 ELSE 0 END) AS h12_closed,
-            SUM(CASE WHEN horizon_hours = 24 AND status = 'CLOSED_FACTUAL' THEN 1 ELSE 0 END) AS h24_closed
-          FROM shadow_outcome_log
-        `)
-        .first();
-
-    const outcomeState =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            last_sweep_ts, source_signals_seen, signals_archived,
-            candidates_seen, tasks_due, tasks_processed,
-            closed_written, insufficient_written, last_status, last_error
-          FROM shadow_outcome_state
-          WHERE state_key = 'main'
-        `)
-        .first();
-
-    const outcomeRecentResult =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            shadow_id, contract_code, observed_ts, rules_version,
-            outcome_rules_version, direction_hint, dc_long, dc_short,
-            eq_status, dq_status, stage, horizon_hours, target_ts,
-            reference_scan_ts, reference_price, reference_offset_sec,
-            outcome_scan_ts, outcome_price, target_offset_sec,
-            raw_return_pct, directional_return_pct,
-            mfe_directional_pct_snapshot, mae_directional_pct_snapshot,
-            direction_correct, path_points, expected_points, path_coverage_pct,
-            status, reason, source, interpolation_used, calibration_only,
-            live_promotion_allowed, automatic_weight_tuning_enabled, computed_ts
-          FROM shadow_outcome_log
-          ORDER BY computed_ts DESC
-          LIMIT 20
-        `)
-        .all();
-
-    const outcomeRecent =
-      Array.isArray(outcomeRecentResult?.results)
-        ? outcomeRecentResult.results.map((row) => ({
-            ...row,
-            direction_correct:
-              row?.direction_correct === null || row?.direction_correct === undefined
-                ? null
-                : Number(row.direction_correct) === 1,
-            interpolation_used: Number(row?.interpolation_used) === 1,
-            calibration_only: Number(row?.calibration_only) === 1,
-            live_promotion_allowed: Number(row?.live_promotion_allowed) === 1,
-            automatic_weight_tuning_enabled:
-              Number(row?.automatic_weight_tuning_enabled) === 1,
-          }))
-        : [];
-
-    base.shadow_outcome_calibration = {
-      table_available: true,
-      state_available: Boolean(outcomeState),
-      mode: "CALIBRATION_ONLY_NO_LIVE_PROMOTION",
-      outcome_rules_version: "shadow-outcome-v1",
-      horizons_hours: [1, 4, 12, 24],
-      source: "STAGE0_COMPACT_FACTUAL_5M_SNAPSHOTS",
-      interpolation_used: false,
-      snapshot_extrema_note:
-        "MFE/MAE use factual persisted ~5m Stage-0 snapshots, not intrabar candle highs/lows.",
-      retention_days: 180,
-      automatic_weight_tuning_enabled: false,
-      live_promotion_allowed: false,
-      summary: {
-        total_rows: Number(outcomeSummary?.total_rows ?? 0),
-        unique_shadow_signals: Number(outcomeSummary?.unique_shadow_signals ?? 0),
-        closed_factual: Number(outcomeSummary?.closed_factual ?? 0),
-        insufficient: Number(outcomeSummary?.insufficient ?? 0),
-        direction_correct_rows: Number(outcomeSummary?.direction_correct_rows ?? 0),
-        h1_closed: Number(outcomeSummary?.h1_closed ?? 0),
-        h4_closed: Number(outcomeSummary?.h4_closed ?? 0),
-        h12_closed: Number(outcomeSummary?.h12_closed ?? 0),
-        h24_closed: Number(outcomeSummary?.h24_closed ?? 0),
-      },
-      last_sweep: outcomeState
-        ? {
-            last_sweep_ts: Number(outcomeState?.last_sweep_ts) || null,
-            last_sweep_age_sec:
-              Number.isFinite(Number(outcomeState?.last_sweep_ts))
-                ? Math.max(0, now - Number(outcomeState.last_sweep_ts)) / 1000
-                : null,
-            source_signals_seen: Number(outcomeState?.source_signals_seen ?? 0),
-            signals_archived: Number(outcomeState?.signals_archived ?? 0),
-            candidates_seen: Number(outcomeState?.candidates_seen ?? 0),
-            tasks_due: Number(outcomeState?.tasks_due ?? 0),
-            tasks_processed: Number(outcomeState?.tasks_processed ?? 0),
-            closed_written: Number(outcomeState?.closed_written ?? 0),
-            insufficient_written: Number(outcomeState?.insufficient_written ?? 0),
-            status: outcomeState?.last_status || null,
-            error: outcomeState?.last_error || null,
-          }
-        : null,
-      recent: outcomeRecent,
-      safety: {
-        changes_strategy_weights: false,
-        promotes_live_signal: false,
-        triggers_telegram: false,
-        permits_execution: false,
-      },
-    };
-  } catch (error) {
-    base.shadow_outcome_calibration = {
-      table_available: false,
-      state_available: false,
-      mode: "CALIBRATION_ONLY_NO_LIVE_PROMOTION",
-      automatic_weight_tuning_enabled: false,
-      live_promotion_allowed: false,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-
-
-  try {
-    const fullEvidenceSince =
-      now - 24 * 60 * 60 * 1000;
-
-    const fullEvidenceSummary =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            COUNT(*) AS total,
-            SUM(CASE WHEN htx_execution_gate_closed = 1 THEN 1 ELSE 0 END) AS htx_gate_closed,
-            SUM(CASE WHEN dq_status = 'CLOSED' THEN 1 ELSE 0 END) AS dq_closed,
-            SUM(CASE WHEN dq_status = 'PARTIAL' THEN 1 ELSE 0 END) AS dq_partial,
-            SUM(CASE WHEN full_dc_long IS NOT NULL THEN 1 ELSE 0 END) AS nonnull_dc_long,
-            SUM(CASE WHEN full_dc_short IS NOT NULL THEN 1 ELSE 0 END) AS nonnull_dc_short,
-            SUM(CASE WHEN live_probability IS NOT NULL THEN 1 ELSE 0 END) AS nonnull_live_probability,
-            SUM(full_decision_eligible) AS full_decision_eligible,
-            SUM(live_signal) AS live_signals,
-            SUM(validated) AS validated,
-            SUM(telegram_started) AS telegram_started,
-            SUM(trading_execution) AS trading_execution,
-            SUM(strategy_weights_changed) AS strategy_weights_changed,
-            SUM(automatic_weight_tuning_enabled) AS automatic_weight_tuning_enabled
-          FROM full_evidence_shadow_log
-          WHERE observed_ts >= ?1
-        `)
-        .bind(fullEvidenceSince)
-        .first();
-
-    const fullEvidenceRecentResult =
-      await env.DATA_DB
-        .prepare(`
-          SELECT
-            full_evidence_id, shadow_id, contract_code, observed_ts,
-            rules_version, contract_version, adapters_version, mode,
-            fixed_weights_json, htx_execution_gate_closed, dq_status,
-            dq_usable_items, dq_total_items, dq_independent_groups,
-            dq_observed_weight_pct, uncertainty_count,
-            missing_weighted_chains_json, chain_status_json,
-            conflicts_json, alias_verification_json, evidence_compact_json,
-            relative_strength_json, prior_htx_shadow_json,
-            full_dc_long, full_dc_short, live_probability,
-            full_decision_eligible, live_signal, validated,
-            telegram_started, trading_execution,
-            strategy_weights_changed, automatic_weight_tuning_enabled,
-            missing_data_coerced_to_zero,
-            cross_venue_dispersion_called_conflict,
-            shadow_only, retention_days, persisted_ts
-          FROM full_evidence_shadow_log
-          ORDER BY observed_ts DESC
-          LIMIT 5
-        `)
-        .all();
-
-    const parseFullEvidenceJson = (value, fallback) => {
-      try {
-        return JSON.parse(value || JSON.stringify(fallback));
-      } catch {
-        return fallback;
-      }
-    };
-
-    const fullEvidenceRecent =
-      Array.isArray(fullEvidenceRecentResult?.results)
-        ? fullEvidenceRecentResult.results.map((row) => ({
-            full_evidence_id: row?.full_evidence_id || null,
-            shadow_id: row?.shadow_id || null,
-            contract: row?.contract_code || null,
-            observed_ts: Number(row?.observed_ts) || null,
-            observed_age_sec:
-              Number.isFinite(Number(row?.observed_ts))
-                ? Math.max(0, now - Number(row.observed_ts)) / 1000
-                : null,
-            rules_version: row?.rules_version || null,
-            contract_version: row?.contract_version || null,
-            adapters_version: row?.adapters_version || null,
-            mode: row?.mode || null,
-            fixed_decision_weights:
-              parseFullEvidenceJson(row?.fixed_weights_json, {}),
-            htx_execution_gate_closed:
-              Number(row?.htx_execution_gate_closed) === 1,
-            data_quality: {
-              status: row?.dq_status || null,
-              usable_items: Number(row?.dq_usable_items ?? 0),
-              total_items: Number(row?.dq_total_items ?? 0),
-              independent_groups: Number(row?.dq_independent_groups ?? 0),
-              observed_weight_pct:
-                row?.dq_observed_weight_pct === null || row?.dq_observed_weight_pct === undefined
-                  ? null
-                  : Number(row.dq_observed_weight_pct),
-              uncertainty_count: Number(row?.uncertainty_count ?? 0),
-            },
-            missing_weighted_chains:
-              parseFullEvidenceJson(row?.missing_weighted_chains_json, []),
-            chain_status:
-              parseFullEvidenceJson(row?.chain_status_json, {}),
-            conflicts:
-              parseFullEvidenceJson(row?.conflicts_json, []),
-            alias_verification:
-              parseFullEvidenceJson(row?.alias_verification_json, {}),
-            evidence_compact:
-              parseFullEvidenceJson(row?.evidence_compact_json, []),
-            detail:
-              parseFullEvidenceJson(row?.relative_strength_json, {}),
-            prior_htx_shadow:
-              parseFullEvidenceJson(row?.prior_htx_shadow_json, {}),
-            decision: {
-              dc_long: row?.full_dc_long ?? null,
-              dc_short: row?.full_dc_short ?? null,
-              live_probability: row?.live_probability ?? null,
-              full_decision_eligible: Number(row?.full_decision_eligible) === 1,
-              live_signal: Number(row?.live_signal) === 1,
-              validated: Number(row?.validated) === 1,
-              telegram_started: Number(row?.telegram_started) === 1,
-              trading_execution: Number(row?.trading_execution) === 1,
-            },
-            safety: {
-              strategy_weights_changed:
-                Number(row?.strategy_weights_changed) === 1,
-              automatic_weight_tuning_enabled:
-                Number(row?.automatic_weight_tuning_enabled) === 1,
-              missing_data_coerced_to_zero:
-                Number(row?.missing_data_coerced_to_zero) === 1,
-              cross_venue_dispersion_called_conflict:
-                Number(row?.cross_venue_dispersion_called_conflict) === 1,
-              shadow_only: Number(row?.shadow_only) === 1,
-              retention_days: Number(row?.retention_days ?? 0),
-            },
-          }))
-        : [];
-
-    base.full_evidence_shadow = {
-      table_available: true,
-      mode: "FULL_EVIDENCE_SHADOW_NO_EXECUTION",
-      rules_version: "full-evidence-shadow-v1",
-      contract_version: "full-evidence-v1",
-      adapters_version: "public-evidence-adapters-v1",
-      fixed_decision_weights: {
-        CROSS_EXCHANGE_DERIVATIVES: 35,
-        MARKET_STRENGTH_SPOT: 30,
-        SMART_MONEY_ONCHAIN: 20,
-        SUPPORTING_RISK: 15,
-      },
-      full_dc_promoted: false,
-      full_decision_eligible: false,
-      live_probability_generated: false,
-      live_signal_generated: false,
-      validated: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning_enabled: false,
-      retention_days: 180,
-      summary_24h: {
-        total: Number(fullEvidenceSummary?.total ?? 0),
-        htx_gate_closed: Number(fullEvidenceSummary?.htx_gate_closed ?? 0),
-        dq_closed: Number(fullEvidenceSummary?.dq_closed ?? 0),
-        dq_partial: Number(fullEvidenceSummary?.dq_partial ?? 0),
-        nonnull_dc_long: Number(fullEvidenceSummary?.nonnull_dc_long ?? 0),
-        nonnull_dc_short: Number(fullEvidenceSummary?.nonnull_dc_short ?? 0),
-        nonnull_live_probability: Number(fullEvidenceSummary?.nonnull_live_probability ?? 0),
-        full_decision_eligible: Number(fullEvidenceSummary?.full_decision_eligible ?? 0),
-        live_signals: Number(fullEvidenceSummary?.live_signals ?? 0),
-        validated: Number(fullEvidenceSummary?.validated ?? 0),
-        telegram_started: Number(fullEvidenceSummary?.telegram_started ?? 0),
-        trading_execution: Number(fullEvidenceSummary?.trading_execution ?? 0),
-        strategy_weights_changed: Number(fullEvidenceSummary?.strategy_weights_changed ?? 0),
-        automatic_weight_tuning_enabled: Number(fullEvidenceSummary?.automatic_weight_tuning_enabled ?? 0),
-      },
-      recent: fullEvidenceRecent,
-      safety: {
-        missing_data_is_directional_penalty: false,
-        changes_strategy_weights: false,
-        promotes_live_probability: false,
-        promotes_live_signal: false,
-        validates_signal: false,
-        triggers_telegram: false,
-        permits_execution: false,
-      },
-    };
-  } catch (error) {
-    base.full_evidence_shadow = {
-      table_available: false,
-      mode: "FULL_EVIDENCE_SHADOW_NO_EXECUTION",
-      full_dc_promoted: false,
-      full_decision_eligible: false,
-      live_probability_generated: false,
-      live_signal_generated: false,
-      validated: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning_enabled: false,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-
-  try {
-    base.cross_venue_liquidation_intelligence =
-      await LIQUIDATION_INTELLIGENCE_API.dataPlaneSummary(env, now);
-  } catch (error) {
-    base.cross_venue_liquidation_intelligence = {
-      table_available: false,
-      mode: "LIQUIDATION_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      shadow_only: true,
-      live_probability_generated: false,
-      live_signal_generated: false,
-      validated_signal_generated: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning_enabled: false,
-      guaranteed_tp_generated: false,
-      synthetic_leverage_heatmap_generated: false,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-
-  try {
-    base.fast_move_watch =
-      await fastMoveWatchDataPlaneSummary(env, now);
-  } catch (error) {
-    base.fast_move_watch = {
-      table_available: false,
-      version: FAST_MOVE_WATCH_VERSION,
-      status: "PARTIAL_FAIL_CLOSED",
-      mode: "FAST_MOVE_WATCH_SHADOW_NO_EXECUTION",
-      scheduler_priority_is_probability: false,
-      live_probability_generated: false,
-      live_signal_generated: false,
-      validated_signal_generated: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning_enabled: false,
-      shadow_only: true,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-
-  try {
-    base.opportunity_intelligence_shadow =
-      await opportunityDataPlaneSummary(
-        env,
-        now
-      );
-  } catch (error) {
-    base.opportunity_intelligence_shadow = {
-      table_available: false,
-      version:
-        OPPORTUNITY_VERSION,
-      status:
-        "PARTIAL_FAIL_CLOSED",
-      mode:
-        "OPPORTUNITY_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      live_probability:
-        null,
-      live_signal:
-        false,
-      validated_signal:
-        false,
-      decision_layer_changed:
-        false,
-      strategy_weights_changed:
-        false,
-      telegram_started:
-        false,
-      trading_execution:
-        false,
-      automatic_weight_tuning:
-        false,
-      shadow_only:
-        true,
-      error:
-        String(
-          error?.message ||
-          error
-        ).slice(0, 600),
-    };
-  }
-
-  try {
-    base.multi_wave_campaign_shadow =
-      await multiWaveCampaignDataPlaneSummary(env, now);
-  } catch (error) {
-    base.multi_wave_campaign_shadow = {
-      table_available: false,
-      version: MULTI_WAVE_VERSION,
-      status: "PARTIAL_FAIL_CLOSED",
-      mode: "MULTI_WAVE_CAMPAIGN_SHADOW_NO_EXECUTION",
-      live_probability: null,
-      live_signal: false,
-      validated_signal: false,
-      decision_layer_changed: false,
-      strategy_weights_changed: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning: false,
-      shadow_only: true,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-
-return base;
-}/* =========================================================
-   REQUEST ROUTING
-   ========================================================= */
-
-async function parseInput(request) {
-  const url = new URL(request.url);
-  let body = {};
-
-  if (request.method === "POST") {
-    try {
-      body = await request.json();
-    } catch {
-      body = {};
-    }
-  }
-
-  return {
-    url,
-    params: {
-      ...Object.fromEntries(
-        url.searchParams.entries()
-      ),
-      ...(body &&
-      typeof body === "object"
-        ? body
-        : {}),
-    },
-  };
-}
-
-
-async function sendTelegramMessage(env, text) {
-  const botToken = String(env?.TELEGRAM_BOT_TOKEN || "").trim();
-  const chatId = String(env?.TELEGRAM_CHAT_ID || "").trim();
-  const message = String(text ?? "").trim();
-
-  if (!botToken || !chatId) {
-    return {
-      ok: false,
-      status: "NOT_CONFIGURED",
-      error: "TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing",
-      timestamp_utc: new Date().toISOString(),
-    };
-  }
-
-  if (!message) {
-    return {
-      ok: false,
-      status: "INVALID_MESSAGE",
-      error: "Telegram message is empty",
-      timestamp_utc: new Date().toISOString(),
-    };
-  }
-
-  if (message.length > 4096) {
-    return {
-      ok: false,
-      status: "MESSAGE_TOO_LONG",
-      error: "Telegram text exceeds 4096 characters",
-      timestamp_utc: new Date().toISOString(),
-    };
-  }
-
-  try {
-    const response = await fetch(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json; charset=UTF-8",
-        },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          disable_web_page_preview: true,
-        }),
-      }
-    );
-
-    let payload = null;
-
-    try {
-      payload = await response.json();
-    } catch (_) {
-      payload = null;
-    }
-
-    const ok = response.ok && payload?.ok === true;
-
-    return {
-      ok,
-      status: ok ? "SENT" : "TELEGRAM_ERROR",
-      http_status: response.status,
-      telegram_description: payload?.description ?? null,
-      message_id: payload?.result?.message_id ?? null,
-      timestamp_utc: new Date().toISOString(),
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      status: "NETWORK_ERROR",
-      error: String(error?.message || error),
-      timestamp_utc: new Date().toISOString(),
-    };
-  }
-}
-
-
-
-/* MY_REPORT_2_SHADOW_DECISION_MODEL_INLINE_V1 â€” embedded to preserve data: URL test compatibility. */
-const buildShadowDecisionTelemetry = (() => {
-  const RULES_VERSION = "shadow-dc-eq-dq-v1.3-funding-context-only";
-
-  function finite(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
-  function round2(value) {
-    return Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
-  }
-
-  function unwrap(result) {
-    if (!result || typeof result !== "object") return {};
-    if (result.status === "fulfilled" && result.data && typeof result.data === "object") {
-      return result.data;
-    }
-    if (result.data && typeof result.data === "object" && result.status !== "rejected") {
-      return result.data;
-    }
-    return result;
-  }
-
-  function upper(value) {
-    return String(value ?? "").trim().toUpperCase();
-  }
-
-  function closed(value) {
-    return String(value ?? "").trim().toLowerCase() === "closed";
-  }
-
-  function verifiedCvdQuality(flow) {
-    const quality = flow?.cvd_delta_quality;
-    return Boolean(
-      flow?.cvd_delta_reliable === true &&
-      quality?.status === "COMPLETE" &&
-      quality?.reliable === true &&
-      quality?.trade_count_exact_match === true &&
-      quality?.raw_record_integrity_complete === true &&
-      quality?.record_integrity?.complete === true
-    );
-  }
-
-  function extractSpotDelta(spotData) {
-    const candidates = [
-      spotData?.order_flow?.windows?.["1h"],
-      spotData?.windows?.["1h"]?.order_flow,
-      spotData?.flow_windows?.["1h"],
-    ];
-    for (const flow of candidates) {
-      if (!verifiedCvdQuality(flow)) continue;
-      const n = finite(
-        flow?.factual_cvd?.delta_pct_of_turnover ??
-        flow?.delta_pct_of_turnover
-      );
-      if (n !== null) return n;
-    }
-    return null;
-  }
-
-  function extractReliableFuturesDelta(window) {
-    const flow = window?.order_flow;
-    return verifiedCvdQuality(flow) ? finite(flow?.delta_pct_of_turnover) : null;
-  }
-
-  function extractFundingPct(futuresData) {
-    const direct = finite(futuresData?.funding?.funding_rate_pct ?? futuresData?.htx_funding?.funding_rate_pct);
-    if (direct !== null) return direct;
-    const rate = finite(futuresData?.funding?.funding_rate ?? futuresData?.htx_funding?.funding_rate);
-    return rate === null ? null : rate * 100;
-  }
-
-  function extractOiChange(window) {
-    return finite(
-      window?.open_interest?.contracts?.change_pct ??
-        window?.open_interest?.value_usdt?.change_pct ??
-        window?.open_interest?.change_pct
-    );
-  }
-
-  function addSignedFeature(state, label, rawValue, normalizer, weight, invert = false) {
-    const value = finite(rawValue);
-    if (value === null) {
-      state.features[label] = { available: false, value: null, weight };
-      return;
-    }
-    const signed = invert ? -value : value;
-    const intensity = clamp(Math.abs(signed) / normalizer, 0, 1);
-    const contribution = weight * intensity;
-    state.availableWeight += weight;
-    if (signed > 0) state.longSupport += contribution;
-    if (signed < 0) state.shortSupport += contribution;
-    state.features[label] = {
-      available: true,
-      value: round2(value),
-      normalizer,
-      weight,
-      intensity: round2(intensity),
-      contribution_long: signed > 0 ? round2(contribution) : 0,
-      contribution_short: signed < 0 ? round2(contribution) : 0,
-      interpretation: invert ? "contrarian_sign_only" : "directional_sign_only",
-    };
-  }
-
-  function buildShadowDecisionTelemetry({
-    contract,
-    now = Date.now(),
-    futures,
-    spot,
-    trajectory,
-    history,
-    dataSufficiency,
-  } = {}) {
-    const futuresData = unwrap(futures);
-    const spotData = unwrap(spot);
-    const trajectoryData = unwrap(trajectory);
-    const historyData = unwrap(history);
-    const windows = trajectoryData?.windows || {};
-    const futureCoverage = futuresData?.coverage || {};
-    const trajectoryCoverage = trajectoryData?.coverage || {};
-    const spotQuality = upper(spotData?.quality_status || "UNKNOWN");
-
-    const state = {
-      longSupport: 0,
-      shortSupport: 0,
-      availableWeight: 0,
-      features: {},
-    };
-
-    addSignedFeature(state, "price_1h_pct", windows?.["1h"]?.price?.change_pct, 2, 16);
-    addSignedFeature(state, "price_4h_pct", windows?.["4h"]?.price?.change_pct, 5, 12);
-    addSignedFeature(state, "price_24h_pct", windows?.["24h"]?.price?.change_pct, 12, 6);
-    addSignedFeature(state, "futures_flow_1h_delta_pct", extractReliableFuturesDelta(windows?.["1h"]), 20, 14);
-    addSignedFeature(state, "futures_flow_4h_delta_pct", extractReliableFuturesDelta(windows?.["4h"]), 20, 10);
-    addSignedFeature(state, "spot_flow_delta_pct", extractSpotDelta(spotData), 20, 10);
-    const fundingContext = extractFundingPct(futuresData);
-    state.features.funding_pct_contrarian = fundingContext === null
-      ? { available: false, value: null, weight: 0, interpretation: "context_only_not_directional" }
-      : {
-          available: true,
-          value: round2(fundingContext),
-          normalizer: null,
-          weight: 0,
-          intensity: null,
-          contribution_long: 0,
-          contribution_short: 0,
-          interpretation: "context_only_not_directional",
-        };
-
-    const dcLong = state.availableWeight > 0
-      ? (state.longSupport / state.availableWeight) * 100
-      : null;
-    const dcShort = state.availableWeight > 0
-      ? (state.shortSupport / state.availableWeight) * 100
-      : null;
-
-    const sampleCoverageValue =
-      futureCoverage?.htx_futures_order_flow_sample;
-    const sampleCoverageForExecution =
-      sampleCoverageValue === null || sampleCoverageValue === undefined
-        ? futureCoverage?.htx_futures_order_flow
-        : sampleCoverageValue;
-    const executionFutureChecks = [
-      ["htx_futures_liquidity", closed(futureCoverage?.htx_futures_liquidity)],
-      ["htx_futures_order_flow_sample", closed(sampleCoverageForExecution)],
-      ["htx_open_interest", closed(futureCoverage?.htx_open_interest)],
-      ["htx_funding", closed(futureCoverage?.htx_funding)],
-    ];
-    const directionalFutureKeys = [
-      "htx_futures_order_flow",
-    ];
-    const coreTrajectoryKeys = [
-      "price_1h",
-      "price_4h",
-      "oi_1h",
-      "oi_4h",
-      "funding_current",
-      "funding_history",
-    ];
-    const extendedTrajectoryKeys = ["flow_1h", "flow_4h", "flow_24h", "price_24h", "oi_24h"];
-    const coverageChecks = [
-      ...executionFutureChecks.map(([key, ok]) => ["futures." + key, ok]),
-      ...directionalFutureKeys.map((key) => ["futures." + key, closed(futureCoverage?.[key])]),
-      ...coreTrajectoryKeys.map((key) => ["trajectory." + key, closed(trajectoryCoverage?.[key])]),
-      ...extendedTrajectoryKeys.map((key) => ["trajectory." + key, closed(trajectoryCoverage?.[key])]),
-      ["spot.quality_GREEN", spotQuality === "GREEN"],
-    ];
-    const closedCount = coverageChecks.filter(([, ok]) => ok).length;
-    const htxCoveragePct = coverageChecks.length ? (closedCount / coverageChecks.length) * 100 : 0;
-
-    const sufficiency = upper(
-      dataSufficiency?.classification ??
-        dataSufficiency?.core_classification ??
-        dataSufficiency?.overall ??
-        dataSufficiency?.status ??
-        dataSufficiency?.data_sufficiency ??
-        "UNKNOWN"
-    );
-    const coreFuturesClosed = executionFutureChecks.every(([, ok]) => ok);
-    const coreTrajectoryClosed = coreTrajectoryKeys.every((key) => closed(trajectoryCoverage?.[key]));
-    const coreFlowClosed = closed(trajectoryCoverage?.flow_1h) && closed(trajectoryCoverage?.flow_4h);
-
-    let dqStatus = "PARTIAL";
-    if (sufficiency === "INSUFFICIENT" || !coreFuturesClosed || !coreTrajectoryClosed) {
-      dqStatus = "INSUFFICIENT";
-    } else if (spotQuality === "GREEN" && coreFlowClosed) {
-      dqStatus = "HTX_CLOSED_EXTERNAL_CHAINS_MISSING";
-    }
-
-    const liquidityClosed = closed(futureCoverage?.htx_futures_liquidity);
-    const tradesSampleClosed = closed(sampleCoverageForExecution);
-    const timingMeasurable = closed(trajectoryCoverage?.price_5m) && closed(trajectoryCoverage?.price_15m);
-
-    const spreadBps = finite(futuresData?.liquidity?.spread_bps ?? futuresData?.bbo?.spread_bps);
-    const buyImpactBps = finite(futuresData?.liquidity?.buy_market_impact?.impact_bps);
-    const sellImpactBps = finite(futuresData?.liquidity?.sell_market_impact?.impact_bps);
-    const buyFillPct = finite(futuresData?.liquidity?.buy_market_impact?.fill_ratio_pct);
-    const sellFillPct = finite(futuresData?.liquidity?.sell_market_impact?.fill_ratio_pct);
-    const htxExecutionGateClosed = Boolean(
-      coreFuturesClosed &&
-      liquidityClosed &&
-      tradesSampleClosed &&
-      spreadBps !== null &&
-      buyImpactBps !== null &&
-      sellImpactBps !== null &&
-      buyFillPct !== null && buyFillPct >= 99.9 &&
-      sellFillPct !== null && sellFillPct >= 99.9
-    );
-    const eqStatus = htxExecutionGateClosed && timingMeasurable ? "SHADOW_MEASURABLE" : "NOT_CLOSED";
-
-    let directionHint = "NEUTRAL";
-    if (dcLong !== null && dcShort !== null) {
-      if (dcLong - dcShort >= 10) directionHint = "LONG";
-      if (dcShort - dcLong >= 10) directionHint = "SHORT";
-    }
-
-    const stage = dqStatus === "INSUFFICIENT"
-      ? "OBSERVE_DATA_INSUFFICIENT"
-      : directionHint === "LONG"
-        ? "SHADOW_OBSERVE_LONG_BIAS"
-        : directionHint === "SHORT"
-          ? "SHADOW_OBSERVE_SHORT_BIAS"
-          : "SHADOW_OBSERVE_NEUTRAL";
-
-    const requiredMissingChains = [
-      "cross_exchange_derivatives",
-      "btc_eth_and_sector_relative_strength",
-      "smart_money_onchain",
-      "supporting_risk_supply_social_fundamentals",
-      "external_market_regime_timing",
-      "portfolio_risk_if_positions_known",
-    ];
-
-    const observedTs = finite(now) ?? Date.now();
-    const contractCode = String(contract || futuresData?.contract || trajectoryData?.contract || "").trim();
-    const evidenceFlags = {
-      funding_pct: round2(extractFundingPct(futuresData)),
-      funding_interval_hours: round2(trajectoryData?.funding?.derived_settlement_interval_hours),
-      price_1h_pct: round2(windows?.["1h"]?.price?.change_pct),
-      price_4h_pct: round2(windows?.["4h"]?.price?.change_pct),
-      price_24h_pct: round2(windows?.["24h"]?.price?.change_pct),
-      futures_flow_1h_delta_pct: round2(extractReliableFuturesDelta(windows?.["1h"])),
-      futures_flow_4h_delta_pct: round2(extractReliableFuturesDelta(windows?.["4h"])),
-      spot_flow_delta_pct: round2(extractSpotDelta(spotData)),
-      oi_1h_change_pct: round2(extractOiChange(windows?.["1h"])),
-      oi_4h_change_pct: round2(extractOiChange(windows?.["4h"])),
-      oi_window_receipts: {
-        "1h": buildHtxOiWindowReceipt({window:windows?.["1h"]?.open_interest,contract_code:contractCode,as_of_ts:observedTs}),
-        "4h": buildHtxOiWindowReceipt({window:windows?.["4h"]?.open_interest,contract_code:contractCode,as_of_ts:observedTs}),
-      },
-      absorption_1h: windows?.["1h"]?.derived?.absorption_candidate?.value ?? null,
-      absorption_4h: windows?.["4h"]?.derived?.absorption_candidate?.value ?? null,
-      spot_quality: spotQuality,
-      stage0_history_available: Boolean(historyData && Object.keys(historyData).length),
-      htx_coverage_pct: round2(htxCoveragePct),
-    };
-
-    return {
-      shadow_id: `${observedTs}:${contractCode || "UNKNOWN"}`,
-      contract: contractCode,
-      observed_ts: observedTs,
-      observed_time_utc: new Date(observedTs).toISOString(),
-      source: "DEEP_CHECK_INPUT",
-      mode: "SHADOW_ONLY_NO_EXECUTION",
-      rules_version: RULES_VERSION,
-      calibrated: false,
-      probability: null,
-      score_semantics:
-        "dc_shadow_* are uncalibrated HTX-only directional evidence-support proxies, NOT proven win probabilities and NOT live trading scores.",
-      dc_shadow_long: round2(dcLong),
-      dc_shadow_short: round2(dcShort),
-      direction_hint: directionHint,
-      direction_hint_semantics: "Calibration-only heuristic; never authorizes an entry or alert.",
-      htx_execution_gate_closed: htxExecutionGateClosed,
-      htx_execution_gate_semantics:
-        "Factual HTX execution-data closure only: contract/liquidity/recent-trade sample/OI/funding plus full requested-notional fill are measurable. Exact-window CVD remains a separate directional-data-quality lane and is never synthesized. This flag alone never authorizes a trade.",
-      eq: {
-        status: eqStatus,
-        score: null,
-        calibrated: false,
-        spread_bps: round2(spreadBps),
-        buy_impact_bps: round2(buyImpactBps),
-        sell_impact_bps: round2(sellImpactBps),
-        buy_fill_ratio_pct: round2(buyFillPct),
-        sell_fill_ratio_pct: round2(sellFillPct),
-        recent_trades_sample_closed: tradesSampleClosed,
-        exact_window_cvd_closed: closed(futureCoverage?.htx_futures_order_flow),
-        price_5m_closed: closed(trajectoryCoverage?.price_5m),
-        price_15m_closed: closed(trajectoryCoverage?.price_15m),
-        note: "No good/bad execution threshold is promoted before calibration; raw execution telemetry is retained.",
-      },
-      dq: {
-        status: dqStatus,
-        full_score: null,
-        htx_coverage_pct: round2(htxCoveragePct),
-        htx_checks_closed: closedCount,
-        htx_checks_total: coverageChecks.length,
-        spot_quality: spotQuality,
-        full_decision_sufficient: false,
-        note: "HTX data quality can be measured, but full Decision Layer DQ cannot close while required external chains are absent from this Worker.",
-      },
-      stage,
-      data_sufficiency: sufficiency || "UNKNOWN",
-      required_missing_chains: requiredMissingChains,
-      full_decision_eligible: false,
-      actual_decision_generated: false,
-      validated: false,
-      telegram_started: false,
-      live_execution_allowed: false,
-      evidence_flags: evidenceFlags,
-      feature_contributions: state.features,
-      safety: {
-        strategy_weights_changed: false,
-        hard_veto_promoted: false,
-        missing_data_coerced_to_zero: false,
-        live_probability_generated: false,
-        live_signal_generated: false,
-        telegram_dispatch_allowed: false,
-      },
-      notes: [
-        "Long and Short are evaluated separately as shadow telemetry.",
-        "No 32/30/20/18 supplemental adjustment is claimed because Chain 2/4/5 and broader relative-strength/regime context are not all present in this Worker.",
-        "The 10-point direction-hint margin and feature normalizers are calibration-only heuristics, not promoted trading thresholds.",
-        "This record exists to accumulate counterfactual evidence before any live decision or Telegram wiring is permitted.",
-      ],
-    };
-  }
-
-  return buildShadowDecisionTelemetry;
-})();
-
-
-/* =========================================================
-   MY_REPORT_2_SHADOW_DECISION_LAYER_V1
-   Shadow-only calibration telemetry. No live decision, no
-   validation, no Telegram dispatch and no trade execution.
-   ========================================================= */
-async function persistShadowDecisionTelemetry(env, shadow) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-      reason: "D1 binding DATA_DB is not configured",
-    };
-  }
-
-  const contractCode = String(shadow?.contract || "").trim();
-  const observedTs = Number(shadow?.observed_ts);
-  if (!contractCode || !Number.isFinite(observedTs)) {
-    return {
-      status: "INVALID_INPUT",
-      reason: "contract and observed_ts are required",
-    };
-  }
-
-  const shadowId = String(
-    shadow?.shadow_id || `${observedTs}:${contractCode}`
-  );
-  const retentionBefore = observedTs - 7 * 24 * 60 * 60 * 1000;
-
-  try {
-    const results = await env.DATA_DB.batch([
-      env.DATA_DB
-        .prepare(`
-          INSERT OR REPLACE INTO shadow_decision_log
-          (
-            shadow_id,
-            contract_code,
-            observed_ts,
-            rules_version,
-            source,
-            mode,
-            direction_hint,
-            dc_long,
-            dc_short,
-            eq_status,
-            dq_status,
-            stage,
-            data_sufficiency,
-            missing_chains_json,
-            evidence_flags_json,
-            calibrated,
-            full_decision_eligible,
-            actual_decision_generated,
-            validated,
-            telegram_started,
-            created_ts
-          )
-          VALUES
-          (
-            ?1, ?2, ?3, ?4, ?5,
-            ?6, ?7, ?8, ?9, ?10,
-            ?11, ?12, ?13, ?14, ?15,
-            0, 0, 0, 0, 0, ?16
-          )
-        `)
-        .bind(
-          shadowId,
-          contractCode,
-          observedTs,
-          String(shadow?.rules_version || "shadow-unknown").slice(0, 120),
-          String(shadow?.source || "DEEP_CHECK_INPUT").slice(0, 80),
-          String(shadow?.mode || "SHADOW_ONLY_NO_EXECUTION").slice(0, 80),
-          String(shadow?.direction_hint || "NEUTRAL").slice(0, 24),
-          Number.isFinite(Number(shadow?.dc_shadow_long))
-            ? Number(shadow.dc_shadow_long)
-            : null,
-          Number.isFinite(Number(shadow?.dc_shadow_short))
-            ? Number(shadow.dc_shadow_short)
-            : null,
-          String(shadow?.eq?.status || "NOT_CLOSED").slice(0, 80),
-          String(shadow?.dq?.status || "INSUFFICIENT").slice(0, 80),
-          String(shadow?.stage || "SHADOW_OBSERVE").slice(0, 100),
-          String(shadow?.data_sufficiency || "UNKNOWN").slice(0, 80),
-          JSON.stringify(
-            Array.isArray(shadow?.required_missing_chains)
-              ? shadow.required_missing_chains.slice(0, 40)
-              : []
-          ).slice(0, 8000),
-          JSON.stringify(shadow?.evidence_flags || {}).slice(0, 12000),
-          observedTs
-        ),
-      env.DATA_DB
-        .prepare(`
-          DELETE FROM shadow_decision_log
-          WHERE observed_ts < ?1
-        `)
-        .bind(retentionBefore),
-    ]);
-
-    return {
-      status: "CLOSED",
-      shadow_id: shadowId,
-      insert_changes: Number(results?.[0]?.meta?.changes ?? 0),
-      retention_rows_deleted: Number(results?.[1]?.meta?.changes ?? 0),
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-}
-
-/* MY_REPORT_2_PUBLIC_EVIDENCE_ADAPTERS_INLINE_V1 â€” embedded to preserve data:-URL test compatibility. */
-const collectPublicFullEvidence = (() => {
-  const PUBLIC_EVIDENCE_ADAPTERS_VERSION = "public-evidence-adapters-v1";
-
-  const HOUR_MS = 60 * 60 * 1000;
-  const FETCH_TIMEOUT_MS = 6500;
-
-  function finiteOrNull(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function text(value) {
-    if (value === null || value === undefined) return "";
-    return String(value).trim();
-  }
-
-  function nfcUpper(value) {
-    return text(value).normalize("NFC").toUpperCase();
-  }
-
-  function asciiOnly(value) {
-    return /^[\x20-\x7E]+$/.test(String(value || ""));
-  }
-
-  function pctChange(from, to) {
-    const a = finiteOrNull(from);
-    const b = finiteOrNull(to);
-    if (a === null || b === null || a === 0) return null;
-    return ((b / a) - 1) * 100;
-  }
-
-  function safeMedian(values) {
-    const xs = values.filter(Number.isFinite).sort((a, b) => a - b);
-    if (!xs.length) return null;
-    const m = Math.floor(xs.length / 2);
-    return xs.length % 2 ? xs[m] : (xs[m - 1] + xs[m]) / 2;
-  }
-
-  function parseHtxUsdtContract(contractCode) {
-    const exact = text(contractCode).normalize("NFC");
-    const m = exact.match(/^(.+)-USDT$/u);
-    if (!m) {
-      return {
-        ok: false,
-        contract_code: exact || null,
-        base: null,
-        quote: null,
-        ascii_base: false,
-        reason: "NOT_USDT_CONTRACT_SHAPE",
-      };
-    }
-    const base = m[1];
-    return {
-      ok: Boolean(base),
-      contract_code: exact,
-      base,
-      quote: "USDT",
-      ascii_base: asciiOnly(base),
-      reason: base ? null : "EMPTY_BASE",
-    };
-  }
-
-  function candidateVenueAliases(contractCode) {
-    const p = parseHtxUsdtContract(contractCode);
-    if (!p.ok || !p.ascii_base) {
-      return {
-        contract_code: p.contract_code,
-        alias_candidate_safe: false,
-        reason: p.ok ? "NON_ASCII_REQUIRES_VERIFIED_ALIAS" : p.reason,
-        bybit: null,
-        okx_swap: null,
-        okx_spot: null,
-        gate_futures: null,
-        binance_futures: null,
-        binance_spot: null,
-      };
-    }
-    const base = nfcUpper(p.base);
-    return {
-      contract_code: p.contract_code,
-      alias_candidate_safe: true,
-      reason: null,
-      bybit: `${base}USDT`,
-      okx_swap: `${base}-USDT-SWAP`,
-      okx_spot: `${base}-USDT`,
-      gate_futures: `${base}_USDT`,
-      binance_futures: `${base}USDT`,
-      binance_spot: `${base}USDT`,
-    };
-  }
-
-  async function fetchJson(fetchImpl, url, timeoutMs = FETCH_TIMEOUT_MS) {
-    const f = fetchImpl || globalThis.fetch;
-    if (typeof f !== "function") {
-      return { ok: false, status: null, data: null, error: "FETCH_UNAVAILABLE", url };
-    }
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-    try {
-      const response = await f(url, {
-        method: "GET",
-        headers: { accept: "application/json" },
-        signal: controller?.signal,
-      });
-      const status = Number(response?.status) || null;
-      let data = null;
-      try {
-        data = await response.json();
-      } catch (error) {
-        return { ok: false, status, data: null, error: `JSON_PARSE:${String(error?.message || error)}`.slice(0, 240), url };
-      }
-      return {
-        ok: Boolean(response?.ok),
-        status,
-        data,
-        error: response?.ok ? null : `HTTP_${status ?? "UNKNOWN"}`,
-        url,
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        status: null,
-        data: null,
-        error: String(error?.name === "AbortError" ? "TIMEOUT" : (error?.message || error)).slice(0, 240),
-        url,
-      };
-    } finally {
-      if (timer) clearTimeout(timer);
-    }
-  }
-
-  function bybitApiError(raw) {
-    if (!raw?.ok) return raw?.error || "BYBIT_HTTP_ERROR";
-    if (Number(raw?.data?.retCode) !== 0) return `BYBIT_API_${raw?.data?.retCode ?? "UNKNOWN"}:${text(raw?.data?.retMsg) || "ERROR"}`;
-    return null;
-  }
-
-  function okxApiError(raw) {
-    if (!raw?.ok) return raw?.error || "OKX_HTTP_ERROR";
-    if (text(raw?.data?.code) !== "0") return `OKX_API_${text(raw?.data?.code) || "UNKNOWN"}:${text(raw?.data?.msg) || "ERROR"}`;
-    return null;
-  }
-
-  function binanceApiError(raw) {
-    if (!raw?.ok) return raw?.error || "BINANCE_HTTP_ERROR";
-    if (raw?.data && !Array.isArray(raw.data) && raw.data.code !== undefined) {
-      return `BINANCE_API_${raw.data.code}:${text(raw.data.msg) || "ERROR"}`;
-    }
-    return null;
-  }
-
-  function gateApiError(raw) {
-    if (!raw?.ok) return raw?.error || "GATE_HTTP_ERROR";
-    if (raw?.data && !Array.isArray(raw.data) && raw.data.label) {
-      return `GATE_API_${text(raw.data.label) || "UNKNOWN"}:${text(raw.data.message) || "ERROR"}`;
-    }
-    return null;
-  }
-
-  function externalEvidenceBase({ contractCode, chain, metric, source, venue, marketType, nowTs, sourceTs, maxAgeSec, status, value, unit, coveragePct, historyCoveragePct, window, aliasRequired, aliasVerified, sourceCompatible, primaryMarketId, settlementPeriod, note, error }) {
-    const venueObservationStatus = status;
-    const identityBlocked = Boolean(aliasRequired && !aliasVerified);
-    return {
-      contract_code: contractCode,
-      chain,
-      metric,
-      source,
-      venue,
-      market_type: marketType,
-      value: value ?? null,
-      unit: unit ?? null,
-      observed_ts: nowTs,
-      source_ts: sourceTs ?? null,
-      max_age_sec: finiteOrNull(maxAgeSec),
-      now_ts: nowTs,
-      status: identityBlocked ? "SOURCE_INCOMPATIBLE" : status,
-      venue_observation_status: venueObservationStatus,
-      eligible_for_chain_closure: !identityBlocked && status === "CLOSED" && !aliasRequired,
-      coverage_pct: coveragePct ?? null,
-      history_coverage_pct: historyCoveragePct ?? null,
-      window: window ?? null,
-      source_health: error ? "ERROR" : (status === "CLOSED" ? "OK" : "DEGRADED"),
-      symbol_verified: true,
-      alias_required: Boolean(aliasRequired),
-      alias_verified: Boolean(aliasVerified),
-      alias_verification_scope: aliasRequired ? "VENUE_MARKET_SYMBOL_ONLY" : "NOT_REQUIRED",
-      asset_identity_verified: false,
-      source_compatible: sourceCompatible !== false,
-      independence_group: `${venue}_OFFICIAL_PUBLIC`,
-      primary_market_id: primaryMarketId ?? null,
-      settlement_period: settlementPeriod ?? null,
-      note: note ?? null,
-      error: error ?? null,
-    };
-  }
-
-  function parseBybitInstrumentVerification(payload, expectedSymbol) {
-    const rows = Array.isArray(payload?.result?.list) ? payload.result.list : [];
-    const expected = nfcUpper(expectedSymbol);
-    const row = rows.find(r => nfcUpper(r?.symbol) === expected) || null;
-    const apiOk = Number(payload?.retCode) === 0;
-    const ok = apiOk && Boolean(row) &&
-      nfcUpper(row?.quoteCoin) === "USDT" &&
-      nfcUpper(row?.settleCoin) === "USDT" &&
-      nfcUpper(row?.contractType) === "LINEARPERPETUAL" &&
-      nfcUpper(row?.status) === "TRADING" &&
-      row?.isPreListing !== true;
-    return {
-      api_ok: apiOk,
-      verified: ok,
-      exact_symbol: row?.symbol || null,
-      base_coin: row?.baseCoin || null,
-      quote_coin: row?.quoteCoin || null,
-      settle_coin: row?.settleCoin || null,
-      contract_type: row?.contractType || null,
-      funding_interval_minutes: finiteOrNull(row?.fundingInterval),
-      status: row?.status || null,
-      error: ok ? null : (!apiOk ? `BYBIT_API_${payload?.retCode ?? "UNKNOWN"}:${text(payload?.retMsg) || "ERROR"}` : "BYBIT_ACTIVE_USDT_PERPETUAL_NOT_VERIFIED"),
-    };
-  }
-
-  function parseOkxInstrumentVerification(payload, expectedInstId, expectedType) {
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
-    const expected = nfcUpper(expectedInstId);
-    const row = rows.find(r => nfcUpper(r?.instId) === expected) || null;
-    const type = nfcUpper(expectedType);
-    const apiOk = text(payload?.code) === "0";
-    const baseExpected = expected.replace(/-USDT(?:-SWAP)?$/u, "");
-    const baseGot = nfcUpper(row?.baseCcy || row?.ctValCcy);
-    const quoteOk = type === "SPOT" ? nfcUpper(row?.quoteCcy) === "USDT" : nfcUpper(row?.settleCcy) === "USDT";
-    const ok = apiOk && Boolean(row) && nfcUpper(row?.instType) === type &&
-      nfcUpper(row?.state) === "LIVE" && baseGot === baseExpected && quoteOk;
-    return {
-      api_ok: apiOk,
-      verified: ok,
-      exact_symbol: row?.instId || null,
-      base_coin: row?.baseCcy || row?.ctValCcy || null,
-      quote_coin: row?.quoteCcy || null,
-      settle_coin: row?.settleCcy || null,
-      instrument_type: row?.instType || null,
-      state: row?.state || null,
-      error: ok ? null : (!apiOk ? `OKX_API_${text(payload?.code) || "UNKNOWN"}:${text(payload?.msg) || "ERROR"}` : "OKX_ACTIVE_USDT_MARKET_NOT_VERIFIED"),
-    };
-  }
-
-  function parseBinanceEchoVerification(payload, expectedSymbol) {
-    const expected = nfcUpper(expectedSymbol);
-    const rows = Array.isArray(payload?.symbols) ? payload.symbols : [];
-    const row = rows.find(r => nfcUpper(r?.symbol) === expected) || null;
-    const apiOk = !payload?.code && Array.isArray(payload?.symbols);
-    const ok = apiOk && Boolean(row) && nfcUpper(row?.contractType) === "PERPETUAL" &&
-      nfcUpper(row?.status) === "TRADING" && nfcUpper(row?.quoteAsset) === "USDT" &&
-      nfcUpper(row?.marginAsset) === "USDT";
-    return {
-      api_ok: apiOk,
-      verified: ok,
-      exact_symbol: row?.symbol || null,
-      base_coin: row?.baseAsset || null,
-      quote_coin: row?.quoteAsset || null,
-      settle_coin: row?.marginAsset || null,
-      contract_type: row?.contractType || null,
-      status: row?.status || null,
-      error: ok ? null : (!apiOk ? `BINANCE_API_${payload?.code ?? "UNKNOWN"}:${text(payload?.msg) || "ERROR"}` : "BINANCE_ACTIVE_USDT_PERPETUAL_NOT_VERIFIED"),
-    };
-  }
-
-
-  function parseGateInstrumentVerification(payload, expectedContract) {
-    const expected = nfcUpper(expectedContract);
-    const exact = nfcUpper(payload?.name);
-    const apiOk = Boolean(payload && typeof payload === "object" && !Array.isArray(payload) && !payload?.label && text(payload?.name));
-    const quoteOk = exact.endsWith("_USDT");
-    const ok = apiOk && exact === expected && quoteOk && payload?.in_delisting !== true;
-    const fundingIntervalSec = finiteOrNull(payload?.funding_interval);
-    return {
-      api_ok: apiOk,
-      verified: ok,
-      exact_symbol: payload?.name || null,
-      base_coin: exact ? exact.replace(/_USDT$/u, "") : null,
-      quote_coin: quoteOk ? "USDT" : null,
-      settle_coin: quoteOk ? "USDT" : null,
-      contract_type: quoteOk ? "USDT_PERPETUAL" : null,
-      funding_interval_minutes: fundingIntervalSec === null ? null : fundingIntervalSec / 60,
-      status: payload?.in_delisting === true ? "DELISTING" : (ok ? "TRADING" : null),
-      error: ok ? null : (!apiOk ? `GATE_API_${text(payload?.label) || "UNKNOWN"}:${text(payload?.message) || "ERROR"}` : "GATE_ACTIVE_USDT_PERPETUAL_NOT_VERIFIED"),
-    };
-  }
-
-  function parseBybitFunding(payload) {
-    const rows = Array.isArray(payload?.result?.list) ? payload.result.list : [];
-    const series = rows.map(r => ({ ts: finiteOrNull(r?.fundingRateTimestamp), rate: finiteOrNull(r?.fundingRate) }))
-      .filter(r => r.ts !== null && r.rate !== null)
-      .sort((a, b) => a.ts - b.ts);
-    return fundingSeriesSummary(series);
-  }
-
-  function parseOkxFunding(payload) {
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
-    const series = rows.map(r => {
-      const realized = finiteOrNull(r?.realizedRate);
-      return { ts: finiteOrNull(r?.fundingTime), rate: realized };
-    })
-      .filter(r => r.ts !== null && r.rate !== null)
-      .sort((a, b) => a.ts - b.ts);
-    return fundingSeriesSummary(series);
-  }
-
-  function parseBinanceFunding(payload) {
-    const rows = Array.isArray(payload) ? payload : [];
-    const series = rows.map(r => ({ ts: finiteOrNull(r?.fundingTime), rate: finiteOrNull(r?.fundingRate) }))
-      .filter(r => r.ts !== null && r.rate !== null)
-      .sort((a, b) => a.ts - b.ts);
-    return fundingSeriesSummary(series);
-  }
-
-  function fundingSeriesSummary(series) {
-    const duplicates = Math.max(0, series.length - new Set(series.map(r=>r.ts)).size);
-    const deltas = [];
-    for (let i = 1; i < series.length; i++) {
-      const delta = (series[i].ts - series[i - 1].ts) / HOUR_MS;
-      if (delta > 0) deltas.push(delta);
-    }
-    const latestInterval = deltas.at(-1) ?? null;
-    const recent = deltas.slice(-3);
-    const intervalConsistent = recent.length > 0 && latestInterval !== null && recent.every(x=>Math.abs(x-latestInterval)<=0.01);
-    return {
-      series,
-      latest: series.at(-1) || null,
-      inferred_interval_hours: latestInterval,
-      median_interval_hours: safeMedian(deltas),
-      duplicate_settlements: duplicates,
-      interval_consistent: intervalConsistent,
-    };
-  }
-
-  function parseBybitOi(payload) {
-    const rows = Array.isArray(payload?.result?.list) ? payload.result.list : [];
-    const series = rows.map(r => ({ ts: finiteOrNull(r?.timestamp), oi: finiteOrNull(r?.openInterest) }))
-      .filter(r => r.ts !== null && r.oi !== null)
-      .sort((a, b) => a.ts - b.ts);
-    return { series, latest: series.at(-1) || null };
-  }
-
-  function parseOkxOi(payload) {
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
-    const series = rows.map(r => ({ ts: finiteOrNull(r?.ts), oi: finiteOrNull(r?.oi), oi_ccy: finiteOrNull(r?.oiCcy), oi_usd: finiteOrNull(r?.oiUsd) }))
-      .filter(r => r.ts !== null && (r.oi !== null || r.oi_usd !== null))
-      .sort((a, b) => a.ts - b.ts);
-    return { series, latest: series.at(-1) || null };
-  }
-
-  function parseBinanceOi(payload) {
-    const rows = Array.isArray(payload) ? payload : [];
-    const series = rows.map(r => ({ ts: finiteOrNull(r?.timestamp), oi: finiteOrNull(r?.sumOpenInterest), oi_value: finiteOrNull(r?.sumOpenInterestValue) }))
-      .filter(r => r.ts !== null && (r.oi !== null || r.oi_value !== null))
-      .sort((a, b) => a.ts - b.ts);
-    return { series, latest: series.at(-1) || null };
-  }
-
-
-  function parseGateContractStats(payload) {
-    const rows = Array.isArray(payload) ? payload : [];
-    const series = rows.map(r => ({
-      ts: finiteOrNull(r?.time) === null ? null : finiteOrNull(r?.time) * 1000,
-      oi: finiteOrNull(r?.open_interest),
-      oi_usd: finiteOrNull(r?.open_interest_usd),
-      mark_price: finiteOrNull(r?.mark_price),
-      funding_rate: finiteOrNull(r?.last_funding_rate),
-      long_taker_size: finiteOrNull(r?.long_taker_size),
-      short_taker_size: finiteOrNull(r?.short_taker_size),
-      long_liq_usd: finiteOrNull(r?.long_liq_usd_new ?? r?.long_liq_usd),
-      short_liq_usd: finiteOrNull(r?.short_liq_usd_new ?? r?.short_liq_usd),
-    })).filter(r => r.ts !== null).sort((a,b)=>a.ts-b.ts);
-    return { series, latest: series.at(-1) || null };
-  }
-
-  function parseGateHourlyCandles(payload, nowTs = Date.now()) {
-    const rows = Array.isArray(payload) ? payload : [];
-    return rows.map(r => {
-      const openTsSec = finiteOrNull(r?.t);
-      const openTs = openTsSec === null ? null : openTsSec * 1000;
-      return normalizedCandle(openTs, r?.o, r?.h, r?.l, r?.c, r?.v, openTs !== null && openTs + HOUR_MS <= nowTs);
-    }).filter(Boolean).filter(r => r.closed).sort((a,b)=>a.ts-b.ts);
-  }
-
-  function exactHourlyCoverage(series, endTs, hours) {
-    const targetTs = endTs - Number(hours) * HOUR_MS;
-    const expectedPoints = Number(hours) + 1;
-    const inWindow = (Array.isArray(series) ? series : [])
-      .filter(r => Number.isFinite(r?.ts) && r.ts >= targetTs && r.ts <= endTs)
-      .sort((a,b)=>a.ts-b.ts);
-    const timestamps = inWindow.map(r=>r.ts);
-    const unique = new Set(timestamps);
-    let maxGapMs = null;
-    for (let i=1;i<timestamps.length;i++) {
-      const gap=timestamps[i]-timestamps[i-1];
-      maxGapMs=maxGapMs===null?gap:Math.max(maxGapMs,gap);
-    }
-    const targetPresent = unique.has(targetTs);
-    const endPresent = unique.has(endTs);
-    const exactCadence = timestamps.length >= 2 && timestamps.every((ts,i)=>i===0 || ts-timestamps[i-1]===HOUR_MS);
-    const closed = targetPresent && endPresent && unique.size === expectedPoints && timestamps.length === expectedPoints && exactCadence;
-    return {
-      target_ts: targetTs,
-      expected_points: expectedPoints,
-      received_points: timestamps.length,
-      unique_points: unique.size,
-      max_gap_ms: maxGapMs,
-      target_present: targetPresent,
-      end_present: endPresent,
-      exact_cadence: exactCadence,
-      coverage_pct: expectedPoints ? Math.min(100, unique.size / expectedPoints * 100) : 0,
-      closed,
-    };
-  }
-
-  function oiWindowChange(series, hours) {
-    const xs = Array.isArray(series) ? series.filter(r => Number.isFinite(r?.ts) && Number.isFinite(r?.oi)).sort((a,b)=>a.ts-b.ts) : [];
-    if (xs.length < 2) return null;
-    const end = xs.at(-1);
-    const target = end.ts - Number(hours) * HOUR_MS;
-    const coverage = exactHourlyCoverage(xs, end.ts, hours);
-    let ref = null;
-    for (const row of xs) {
-      if (row.ts <= target) ref = row;
-      else break;
-    }
-    if (!ref) ref = xs[0];
-    return {
-      hours: Number(hours),
-      from_ts: ref.ts,
-      to_ts: end.ts,
-      from_oi: ref.oi,
-      to_oi: end.oi,
-      change_pct: pctChange(ref.oi, end.oi),
-      actual_window_hours: (end.ts - ref.ts) / HOUR_MS,
-      ...coverage,
-      window_target_closed: coverage.closed,
-    };
-  }
-
-  function candleWindowChange(series, hours) {
-    const xs = Array.isArray(series) ? series.filter(r => Number.isFinite(r?.ts) && Number.isFinite(r?.close)).sort((a,b)=>a.ts-b.ts) : [];
-    if (xs.length < 2) return null;
-    const end = xs.at(-1);
-    const target = end.ts - Number(hours) * HOUR_MS;
-    const coverage = exactHourlyCoverage(xs, end.ts, hours);
-    let ref = null;
-    for (const row of xs) {
-      if (row.ts <= target) ref = row;
-      else break;
-    }
-    if (!ref) ref = xs[0];
-    return {
-      hours: Number(hours),
-      from_ts: ref.ts,
-      to_ts: end.ts,
-      from_close: ref.close,
-      to_close: end.close,
-      change_pct: pctChange(ref.close, end.close),
-      actual_window_hours: (end.ts - ref.ts) / HOUR_MS,
-      ...coverage,
-      window_target_closed: coverage.closed,
-    };
-  }
-
-  function targetWindowClosed(actualHours, targetHours, toleranceHours = 0.25) {
-    const actual = finiteOrNull(actualHours);
-    const target = finiteOrNull(targetHours);
-    if (actual === null || target === null) return false;
-    return Math.abs(actual - target) <= Number(toleranceHours);
-  }
-
-  function normalizedCandle(ts, open, high, low, close, volume, closed) {
-    const row = {
-      ts: finiteOrNull(ts),
-      open: finiteOrNull(open),
-      high: finiteOrNull(high),
-      low: finiteOrNull(low),
-      close: finiteOrNull(close),
-      volume: finiteOrNull(volume),
-      closed: Boolean(closed),
-    };
-    return row.ts !== null && row.close !== null ? row : null;
-  }
-
-  function parseBybitHourlyCandles(payload, nowTs = Date.now()) {
-    const rows = Array.isArray(payload?.result?.list) ? payload.result.list : [];
-    return rows.map(r => normalizedCandle(r?.[0], r?.[1], r?.[2], r?.[3], r?.[4], r?.[5], finiteOrNull(r?.[0]) + HOUR_MS <= nowTs))
-      .filter(Boolean).filter(r => r.closed).sort((a,b)=>a.ts-b.ts);
-  }
-
-  function parseOkxHourlyCandles(payload) {
-    const rows = Array.isArray(payload?.data) ? payload.data : [];
-    return rows.map(r => normalizedCandle(r?.[0], r?.[1], r?.[2], r?.[3], r?.[4], r?.[5], String(r?.[8]) === "1"))
-      .filter(Boolean).filter(r => r.closed).sort((a,b)=>a.ts-b.ts);
-  }
-
-  function parseBinanceHourlyCandles(payload, nowTs = Date.now()) {
-    const rows = Array.isArray(payload) ? payload : [];
-    return rows.map(r => {
-      const openTs = finiteOrNull(r?.[0]);
-      const closeTs = finiteOrNull(r?.[6]);
-      return normalizedCandle(openTs, r?.[1], r?.[2], r?.[3], r?.[4], r?.[5], closeTs !== null ? closeTs < nowTs : openTs + HOUR_MS <= nowTs);
-    }).filter(Boolean).filter(r => r.closed).sort((a,b)=>a.ts-b.ts);
-  }
-
-  function attachOpportunityHourlyCandles(evidence, candles) {
-    Object.defineProperty(evidence, "_opportunity_hourly_candles", {
-      enumerable: false,
-      value: Array.isArray(candles) ? candles : [],
-    });
-    return evidence;
-  }
-
-  function synchronizedReturns(candidateCandles, btcCandles, ethCandles, windows = [1,4,24]) {
-    const maps = [candidateCandles, btcCandles, ethCandles].map(rows => new Map((rows || []).map(r => [Number(r.ts), r])));
-    const common = [...maps[0].keys()].filter(ts => maps[1].has(ts) && maps[2].has(ts)).sort((a,b)=>a-b);
-    if (common.length < 2) {
-      return { common_points: common.length, latest_common_ts: common.at(-1) ?? null, windows: {} };
-    }
-    const latestTs = common.at(-1);
-    const latest = maps.map(m => m.get(latestTs));
-    const out = {};
-    for (const h of windows) {
-      const target = latestTs - Number(h) * HOUR_MS;
-      const refTs = common.includes(target) ? target : (common.filter(ts => ts <= target).at(-1) ?? null);
-      if (refTs === null) {
-        out[`${h}h`] = { status: "NOT_CLOSED", target_ts: target, reference_ts: null };
-        continue;
-      }
-      const refs = maps.map(m => m.get(refTs));
-      const c = pctChange(refs[0]?.close, latest[0]?.close);
-      const b = pctChange(refs[1]?.close, latest[1]?.close);
-      const e = pctChange(refs[2]?.close, latest[2]?.close);
-      const actualWindowHours = (latestTs - refTs) / HOUR_MS;
-      const coverage = exactHourlyCoverage(common.map(ts=>({ts})), latestTs, Number(h));
-      const windowClosed = targetWindowClosed(actualWindowHours, Number(h)) && coverage.closed;
-      out[`${h}h`] = {
-        status: c === null || b === null || e === null || !windowClosed ? "NOT_CLOSED" : "CLOSED",
-        target_ts: target,
-        reference_ts: refTs,
-        latest_ts: latestTs,
-        actual_window_hours: actualWindowHours,
-        window_target_closed: windowClosed,
-        expected_points: coverage.expected_points,
-        received_points: coverage.received_points,
-        max_gap_ms: coverage.max_gap_ms,
-        coverage_pct: coverage.coverage_pct,
-        candidate_pct: c,
-        btc_pct: b,
-        eth_pct: e,
-        vs_btc_pp: c === null || b === null ? null : c - b,
-        vs_eth_pp: c === null || e === null ? null : c - e,
-      };
-    }
-    return { common_points: common.length, latest_common_ts: latestTs, windows: out };
-  }
-
-  function downMarketRelativeObservations(candidateCandles, benchmarkCandles) {
-    const c = new Map((candidateCandles || []).map(r => [Number(r.ts), r]));
-    const b = new Map((benchmarkCandles || []).map(r => [Number(r.ts), r]));
-    const common = [...c.keys()].filter(ts => b.has(ts)).sort((a,b)=>a-b);
-    const rows = [];
-    for (let i = 1; i < common.length; i++) {
-      const prevTs = common[i-1];
-      const ts = common[i];
-      if (ts - prevTs !== HOUR_MS) continue;
-      const cr = pctChange(c.get(prevTs)?.close, c.get(ts)?.close);
-      const br = pctChange(b.get(prevTs)?.close, b.get(ts)?.close);
-      if (cr === null || br === null || br >= 0) continue;
-      rows.push({ ts, candidate_pct: cr, benchmark_pct: br, relative_pp: cr - br });
-    }
-    const avg = rows.length ? rows.reduce((s,r)=>s+r.relative_pp,0)/rows.length : null;
-    const betterCount = rows.filter(r => r.relative_pp > 0).length;
-    return {
-      negative_benchmark_hours: rows.length,
-      candidate_better_hours: betterCount,
-      better_share_pct: rows.length ? (betterCount / rows.length) * 100 : null,
-      average_relative_pp: avg,
-      rows: rows.slice(-24),
-    };
-  }
-
-  function buildCrossVenueAssetIdentityProof(contractCode, verification = {}) {
-    const aliases = candidateVenueAliases(contractCode);
-    const canonicalBase = aliases.alias_candidate_safe
-      ? nfcUpper(String(contractCode).replace(/-USDT$/u, ""))
-      : null;
-    if (!aliases.alias_candidate_safe || !canonicalBase) {
-      return {
-        verified: false,
-        method: "UNSAFE_OR_NON_ASCII_ALIAS_FAIL_CLOSED",
-        canonical_base: canonicalBase,
-        corroborators: [],
-      };
-    }
-
-    const matchesBase = (row) =>
-      row?.verified === true && nfcUpper(row?.base_coin) === canonicalBase;
-    const bybit = matchesBase(verification?.bybit);
-    const okxSwap = matchesBase(verification?.okx_swap);
-    const okxSpot = matchesBase(verification?.okx_spot);
-    const gate = matchesBase(verification?.gate_futures);
-    const binance = matchesBase(verification?.binance_futures);
-    const corroborators = [];
-    if (bybit) corroborators.push("BYBIT_LINEAR_PERP");
-    if (okxSwap) corroborators.push("OKX_SWAP");
-    if (okxSpot) corroborators.push("OKX_SPOT");
-    if (gate) corroborators.push("GATE_USDT_PERP");
-    if (binance) corroborators.push("BINANCE_USDT_PERP");
-
-    let verified = false;
-    let method = "VENUE_MARKET_SYMBOL_ONLY";
-    if (okxSpot && okxSwap) {
-      verified = true;
-      method = "HTX_CANONICAL_PLUS_OKX_SPOT_SWAP_EXACT_BASE";
-    } else if (okxSpot && (bybit || gate || binance)) {
-      verified = true;
-      method = "HTX_CANONICAL_PLUS_OKX_SPOT_PLUS_EXTERNAL_PERP_EXACT_BASE";
-    } else if ((bybit && gate) || (bybit && binance) || (gate && okxSwap)) {
-      verified = true;
-      method = gate ? "HTX_CANONICAL_PLUS_TWO_EXTERNAL_EXACT_BASE_WITH_GATE" : "HTX_CANONICAL_PLUS_BYBIT_BINANCE_EXACT_BASE";
-    }
-    return { verified, method, canonical_base: canonicalBase, corroborators };
-  }
-
-  function promoteCorroboratedAssetIdentity(evidence, proof) {
-    return (Array.isArray(evidence) ? evidence : []).map((row) => {
-      if (
-        proof?.verified !== true ||
-        row?.alias_required !== true ||
-        row?.alias_verified !== true ||
-        row?.venue_observation_status !== "CLOSED" ||
-        row?.source_compatible === false ||
-        row?.error
-      ) {
-        return row;
-      }
-      return {
-        ...row,
-        status: "CLOSED",
-        eligible_for_chain_closure: true,
-        alias_verification_scope: proof.method,
-        asset_identity_verified: true,
-        note: [row?.note, `asset_identity=${proof.method}`].filter(Boolean).join("; "),
-      };
-    });
-  }
-
-  async function verifyAliases(contractCode, fetchImpl, nowTs) {
-    const aliases = candidateVenueAliases(contractCode);
-    if (!aliases.alias_candidate_safe) {
-      return {
-        aliases,
-        bybit: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-        okx_swap: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-        okx_spot: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-        gate_futures: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-        binance_futures: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-        binance_spot: { verified: false, status: "SOURCE_INCOMPATIBLE", reason: aliases.reason },
-      };
-    }
-
-    const urls = {
-      bybit: `https://api.bybit.com/v5/market/instruments-info?category=linear&status=Trading&symbol=${encodeURIComponent(aliases.bybit)}`,
-      okx_swap: `https://www.okx.com/api/v5/public/instruments?instType=SWAP&instId=${encodeURIComponent(aliases.okx_swap)}`,
-      okx_spot: `https://www.okx.com/api/v5/public/instruments?instType=SPOT&instId=${encodeURIComponent(aliases.okx_spot)}`,
-      gate_futures: `https://api.gateio.ws/api/v4/futures/usdt/contracts/${encodeURIComponent(aliases.gate_futures)}`,
-    };
-    const [bybitRaw, okxSwapRaw, okxSpotRaw, gateFutRaw] = await Promise.all([
-      fetchJson(fetchImpl, urls.bybit),
-      fetchJson(fetchImpl, urls.okx_swap),
-      fetchJson(fetchImpl, urls.okx_spot),
-      fetchJson(fetchImpl, urls.gate_futures),
-    ]);
-    const wrap = (raw, parsed) => ({ ...parsed, status: parsed.verified ? "CLOSED" : (parsed.api_ok ? "SOURCE_INCOMPATIBLE" : "NOT_CLOSED"), http_status: raw.status, fetched_ts: nowTs, fetch_error: raw.error || (parsed.api_ok ? null : parsed.error) });
-    const result = {
-      aliases,
-      bybit: wrap(bybitRaw, parseBybitInstrumentVerification(bybitRaw.data, aliases.bybit)),
-      okx_swap: wrap(okxSwapRaw, parseOkxInstrumentVerification(okxSwapRaw.data, aliases.okx_swap, "SWAP")),
-      okx_spot: wrap(okxSpotRaw, parseOkxInstrumentVerification(okxSpotRaw.data, aliases.okx_spot, "SPOT")),
-      gate_futures: wrap(gateFutRaw, parseGateInstrumentVerification(gateFutRaw.data, aliases.gate_futures)),
-      binance_futures: { verified: false, status: "REPLACED_BY_GATE", reason: "Gate is the active public fallback for this production path." },
-      binance_spot: { verified: false, status: "UNUSED_IN_3_7", reason: "No Binance Spot adapter is promoted in 3.7." },
-    };
-    result.asset_identity = buildCrossVenueAssetIdentityProof(contractCode, result);
-    return result;
-  }
-
-  async function collectBybitDerivatives(contractCode, alias, verification, fetchImpl, nowTs) {
-    const venue = "BYBIT";
-    if (!verification?.verified) {
-      return [externalEvidenceBase({ contractCode, chain:"CROSS_EXCHANGE_DERIVATIVES", metric:"venue_status", source:"Bybit Public V5", venue, marketType:"LINEAR_PERP", nowTs, status: verification?.status || "NOT_CLOSED", value:null, unit:null, coveragePct:0, aliasRequired:true, aliasVerified:false, sourceCompatible:verification?.status !== "SOURCE_INCOMPATIBLE", primaryMarketId:null, note:verification?.reason || verification?.error, error:verification?.fetch_error || null })];
-    }
-    const fundUrl = `https://api.bybit.com/v5/market/funding/history?category=linear&symbol=${encodeURIComponent(alias)}&limit=12`;
-    const oiUrl = `https://api.bybit.com/v5/market/open-interest?category=linear&symbol=${encodeURIComponent(alias)}&intervalTime=1h&limit=30`;
-    const klineUrl = `https://api.bybit.com/v5/market/kline?category=linear&symbol=${encodeURIComponent(alias)}&interval=60&limit=30`;
-    const [fundRaw, oiRaw, candleRaw] = await Promise.all([fetchJson(fetchImpl,fundUrl),fetchJson(fetchImpl,oiUrl),fetchJson(fetchImpl,klineUrl)]);
-    const fundError = bybitApiError(fundRaw);
-    const oiError = bybitApiError(oiRaw);
-    const candleError = bybitApiError(candleRaw);
-    const fund = parseBybitFunding(fundRaw.data);
-    const oi = parseBybitOi(oiRaw.data);
-    const oi1h = oiWindowChange(oi.series, 1);
-    const oi1hClosed = Boolean(!oiError && oi1h?.window_target_closed);
-    const candles = parseBybitHourlyCandles(candleRaw.data, nowTs);
-    const price4h = candleWindowChange(candles, 4);
-    const price4hClosed = Boolean(!candleError && price4h?.window_target_closed);
-    const latestCandle = candles.at(-1) || null;
-    const sourceTs = Math.max(fund.latest?.ts || 0, oi.latest?.ts || 0, latestCandle?.ts || 0) || null;
-    const settlement = fund.inferred_interval_hours ? `${fund.inferred_interval_hours}h` : (verification.funding_interval_minutes ? `${verification.funding_interval_minutes/60}h` : null);
-    const instrumentFundingHours = finiteOrNull(verification.funding_interval_minutes) === null ? null : finiteOrNull(verification.funding_interval_minutes) / 60;
-    const fundingPeriodMatchesInstrument = instrumentFundingHours === null || fund.inferred_interval_hours === null || Math.abs(instrumentFundingHours-fund.inferred_interval_hours) <= 0.01;
-    const fundingClosed = Boolean(!fundError && fund.latest && fund.series.length >= 2 && settlement && fund.interval_consistent && fund.duplicate_settlements === 0 && fundingPeriodMatchesInstrument);
-    return attachOpportunityHourlyCandles([
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"funding_rate",source:"Bybit Public V5",venue,marketType:"LINEAR_PERP",nowTs,sourceTs:fund.latest?.ts,maxAgeSec:Math.max(7200,(fund.inferred_interval_hours||verification.funding_interval_minutes/60||8)*5400),status:fundingClosed?"CLOSED":"NOT_CLOSED",value:fund.latest?.rate,unit:"rate_per_settlement",coveragePct:fundingClosed?100:0,historyCoveragePct:fund.series.length>=2?100:0,window:"FUNDING_HISTORY",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BYBIT:LINEAR_PERP`,settlementPeriod:settlement,note:`history_points=${fund.series.length}; interval_consistent=${fund.interval_consistent}; duplicate_settlements=${fund.duplicate_settlements}; period_matches_instrument=${fundingPeriodMatchesInstrument}`,error:fundError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"oi_change_1h",source:"Bybit Public V5",venue,marketType:"LINEAR_PERP",nowTs,sourceTs:oi.latest?.ts,maxAgeSec:3*60*60,status:oi1hClosed?"CLOSED":"NOT_CLOSED",value:oi1h?.change_pct,unit:"pct",coveragePct:oi1h?.coverage_pct??0,historyCoveragePct:oi1h?.coverage_pct??0,window:"1h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BYBIT:LINEAR_PERP`,note:`oi_points=${oi.series.length}; actual_window_hours=${oi1h?.actual_window_hours ?? "NA"}; expected_points=${oi1h?.expected_points??"NA"}; received_points=${oi1h?.received_points??"NA"}; max_gap_ms=${oi1h?.max_gap_ms??"NA"}`,error:oiError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"price_change_4h",source:"Bybit Public V5",venue,marketType:"LINEAR_PERP",nowTs,sourceTs:latestCandle?.ts,maxAgeSec:2*60*60,status:price4hClosed?"CLOSED":"NOT_CLOSED",value:price4h?.change_pct,unit:"pct",coveragePct:price4h?.coverage_pct??0,historyCoveragePct:price4h?.coverage_pct??0,window:"4h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:BYBIT:LINEAR_PERP`,note:`closed_hourly_candles=${candles.length}; actual_window_hours=${price4h?.actual_window_hours ?? "NA"}; expected_points=${price4h?.expected_points??"NA"}; received_points=${price4h?.received_points??"NA"}; max_gap_ms=${price4h?.max_gap_ms??"NA"}`,error:candleError}),
-    ], candles);
-  }
-
-  async function collectOkxDerivatives(contractCode, alias, verification, fetchImpl, nowTs) {
-    const venue = "OKX";
-    if (!verification?.verified) {
-      return [externalEvidenceBase({ contractCode, chain:"CROSS_EXCHANGE_DERIVATIVES", metric:"venue_status", source:"OKX Public V5", venue, marketType:"SWAP", nowTs, status: verification?.status || "NOT_CLOSED", value:null, coveragePct:0, aliasRequired:true, aliasVerified:false, sourceCompatible:verification?.status !== "SOURCE_INCOMPATIBLE", note:verification?.reason || verification?.error, error:verification?.fetch_error || null })];
-    }
-    const fundUrl = `https://www.okx.com/api/v5/public/funding-rate-history?instId=${encodeURIComponent(alias)}&limit=12`;
-    const oiUrl = `https://www.okx.com/api/v5/public/open-interest?instType=SWAP&instId=${encodeURIComponent(alias)}`;
-    const klineUrl = `https://www.okx.com/api/v5/market/candles?instId=${encodeURIComponent(alias)}&bar=1H&limit=30`;
-    const [fundRaw, oiRaw, candleRaw] = await Promise.all([fetchJson(fetchImpl,fundUrl),fetchJson(fetchImpl,oiUrl),fetchJson(fetchImpl,klineUrl)]);
-    const fundError = okxApiError(fundRaw);
-    const oiError = okxApiError(oiRaw);
-    const candleError = okxApiError(candleRaw);
-    const fund = parseOkxFunding(fundRaw.data);
-    const oi = parseOkxOi(oiRaw.data);
-    const candles = parseOkxHourlyCandles(candleRaw.data);
-    const price4h = candleWindowChange(candles, 4);
-    const price4hClosed = Boolean(!candleError && price4h?.window_target_closed);
-    const latestCandle = candles.at(-1) || null;
-    const settlement = fund.inferred_interval_hours ? `${fund.inferred_interval_hours}h` : null;
-    const fundingClosed = Boolean(!fundError && fund.latest && fund.series.length >= 2 && settlement && fund.interval_consistent && fund.duplicate_settlements === 0);
-    return attachOpportunityHourlyCandles([
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"funding_rate",source:"OKX Public V5",venue,marketType:"SWAP",nowTs,sourceTs:fund.latest?.ts,maxAgeSec:Math.max(7200,(fund.inferred_interval_hours||8)*5400),status:fundingClosed?"CLOSED":"NOT_CLOSED",value:fund.latest?.rate,unit:"rate_per_settlement",coveragePct:fundingClosed?100:0,historyCoveragePct:fund.series.length>=2?100:0,window:"FUNDING_HISTORY",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SWAP`,settlementPeriod:settlement,note:`realized_history_points=${fund.series.length}; announced_rate_fallback=DISABLED; interval_consistent=${fund.interval_consistent}; duplicate_settlements=${fund.duplicate_settlements}`,error:fundError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"open_interest_current",source:"OKX Public V5",venue,marketType:"SWAP",nowTs,sourceTs:oi.latest?.ts,maxAgeSec:15*60,status:!oiError&&oi.latest?"CLOSED":"NOT_CLOSED",value:oi.latest?.oi_usd ?? oi.latest?.oi,unit:oi.latest?.oi_usd!==null?"usd":"contracts",coveragePct:!oiError&&oi.latest?100:0,window:"CURRENT",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SWAP`,note:"current OI only; not promoted as OI trajectory",error:oiError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"price_change_4h",source:"OKX Public V5",venue,marketType:"SWAP",nowTs,sourceTs:latestCandle?.ts,maxAgeSec:2*60*60,status:price4hClosed?"CLOSED":"NOT_CLOSED",value:price4h?.change_pct,unit:"pct",coveragePct:price4h?.coverage_pct??0,historyCoveragePct:price4h?.coverage_pct??0,window:"4h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SWAP`,note:`closed_hourly_candles=${candles.length}; actual_window_hours=${price4h?.actual_window_hours ?? "NA"}; expected_points=${price4h?.expected_points??"NA"}; received_points=${price4h?.received_points??"NA"}; max_gap_ms=${price4h?.max_gap_ms??"NA"}`,error:candleError}),
-    ], candles);
-  }
-
-  async function collectGateDerivatives(contractCode, alias, verification, fetchImpl, nowTs) {
-    const venue = "GATE";
-    if (!verification?.verified) {
-      return [externalEvidenceBase({ contractCode, chain:"CROSS_EXCHANGE_DERIVATIVES", metric:"venue_status", source:"Gate Public Futures", venue, marketType:"USDT_PERP", nowTs, status: verification?.status || "NOT_CLOSED", value:null, coveragePct:0, aliasRequired:true, aliasVerified:false, sourceCompatible:verification?.status !== "SOURCE_INCOMPATIBLE", note:verification?.reason || verification?.error, error:verification?.fetch_error || null })];
-    }
-    const statsUrl = `https://api.gateio.ws/api/v4/futures/usdt/contract_stats?contract=${encodeURIComponent(alias)}&interval=1h&limit=30`;
-    const candleUrl = `https://api.gateio.ws/api/v4/futures/usdt/candlesticks?contract=${encodeURIComponent(alias)}&interval=1h&limit=30`;
-    const [statsRaw, candleRaw] = await Promise.all([fetchJson(fetchImpl,statsUrl), fetchJson(fetchImpl,candleUrl)]);
-    const statsError = gateApiError(statsRaw);
-    const candleError = gateApiError(candleRaw);
-    const stats = parseGateContractStats(statsRaw.data);
-    const oiSeries = stats.series.filter(r => r.oi !== null).map(r => ({ts:r.ts,oi:r.oi}));
-    const oi1h = oiWindowChange(oiSeries, 1);
-    const oi1hClosed = Boolean(!statsError && oi1h?.window_target_closed);
-    const candles = parseGateHourlyCandles(candleRaw.data, nowTs);
-    const price4h = candleWindowChange(candles, 4);
-    const price4hClosed = Boolean(!candleError && price4h?.window_target_closed);
-    const latest = stats.latest || null;
-    const latestCandle = candles.at(-1) || null;
-    const fundingHours = finiteOrNull(verification?.funding_interval_minutes) === null ? null : finiteOrNull(verification.funding_interval_minutes) / 60;
-    const settlement = fundingHours && fundingHours > 0 ? `${fundingHours}h` : null;
-    const fundingClosed = Boolean(!statsError && latest && latest.funding_rate !== null && settlement);
-    const takerDen = latest && latest.long_taker_size !== null && latest.short_taker_size !== null ? latest.long_taker_size + latest.short_taker_size : null;
-    const takerDeltaPct = takerDen && takerDen > 0 ? ((latest.long_taker_size - latest.short_taker_size) / takerDen) * 100 : null;
-    return attachOpportunityHourlyCandles([
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"funding_rate",source:"Gate Public Futures",venue,marketType:"USDT_PERP",nowTs,sourceTs:latest?.ts,maxAgeSec:2*60*60,status:fundingClosed?"CLOSED":"NOT_CLOSED",value:latest?.funding_rate,unit:"rate_per_settlement",coveragePct:fundingClosed?100:0,historyCoveragePct:stats.series.length>=2?100:0,window:"CURRENT_HOURLY_STATS",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:GATE:USDT_PERP`,settlementPeriod:settlement,note:`stats_points=${stats.series.length}; settlement_period_from_verified_contract=${settlement||"NA"}`,error:statsError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"oi_change_1h",source:"Gate Public Futures",venue,marketType:"USDT_PERP",nowTs,sourceTs:latest?.ts,maxAgeSec:2*60*60,status:oi1hClosed?"CLOSED":"NOT_CLOSED",value:oi1h?.change_pct,unit:"pct",coveragePct:oi1h?.coverage_pct??0,historyCoveragePct:oi1h?.coverage_pct??0,window:"1h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:GATE:USDT_PERP`,note:`oi_points=${oiSeries.length}; actual_window_hours=${oi1h?.actual_window_hours??"NA"}; expected_points=${oi1h?.expected_points??"NA"}; received_points=${oi1h?.received_points??"NA"}`,error:statsError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"price_change_4h",source:"Gate Public Futures",venue,marketType:"USDT_PERP",nowTs,sourceTs:latestCandle?.ts,maxAgeSec:2*60*60,status:price4hClosed?"CLOSED":"NOT_CLOSED",value:price4h?.change_pct,unit:"pct",coveragePct:price4h?.coverage_pct??0,historyCoveragePct:price4h?.coverage_pct??0,window:"4h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:GATE:USDT_PERP`,note:`closed_hourly_candles=${candles.length}; actual_window_hours=${price4h?.actual_window_hours??"NA"}; expected_points=${price4h?.expected_points??"NA"}; received_points=${price4h?.received_points??"NA"}`,error:candleError}),
-      externalEvidenceBase({contractCode,chain:"CROSS_EXCHANGE_DERIVATIVES",metric:"taker_balance_1h_raw",source:"Gate Public Futures",venue,marketType:"USDT_PERP",nowTs,sourceTs:latest?.ts,maxAgeSec:2*60*60,status:!statsError&&takerDeltaPct!==null?"CLOSED":"NOT_CLOSED",value:takerDeltaPct,unit:"pct_long_minus_short_of_total",coveragePct:!statsError&&takerDeltaPct!==null?100:0,window:"1h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:GATE:USDT_PERP`,note:"Descriptive taker-flow evidence only; no new decision weight.",error:statsError}),
-    ], candles);
-  }
-
-  async function collectOkxRelativeStrength(contractCode, alias, verification, fetchImpl, nowTs) {
-    if (!verification?.verified) {
-      return {
-        evidence: [externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"relative_strength_status",source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,status:verification?.status||"NOT_CLOSED",value:null,coveragePct:0,aliasRequired:true,aliasVerified:false,sourceCompatible:verification?.status!=="SOURCE_INCOMPATIBLE",note:verification?.reason||verification?.error,error:verification?.fetch_error||null})],
-        detail: null,
-      };
-    }
-    const urls = [alias, "BTC-USDT", "ETH-USDT"].map(inst => `https://www.okx.com/api/v5/market/candles?instId=${encodeURIComponent(inst)}&bar=1H&limit=30`);
-    const [candidateRaw, btcRaw, ethRaw] = await Promise.all(urls.map(u=>fetchJson(fetchImpl,u)));
-    const candidateError = okxApiError(candidateRaw);
-    const btcError = okxApiError(btcRaw);
-    const ethError = okxApiError(ethRaw);
-    const rsError = candidateError || btcError || ethError;
-    const candidate = parseOkxHourlyCandles(candidateRaw.data);
-    const btc = parseOkxHourlyCandles(btcRaw.data);
-    const eth = parseOkxHourlyCandles(ethRaw.data);
-    const sync = synchronizedReturns(candidate, btc, eth, [1,4,24]);
-    const downBtc = downMarketRelativeObservations(candidate, btc);
-    const downEth = downMarketRelativeObservations(candidate, eth);
-    const evidence = [];
-    if (rsError || Object.keys(sync.windows).length === 0) {
-      evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"relative_strength_status",source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:"NOT_CLOSED",value:null,coveragePct:0,historyCoveragePct:0,window:"1h/4h/24h",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SPOT`,note:"Synchronized candidate/BTC/ETH closed-hourly evidence unavailable.",error:rsError || "INSUFFICIENT_SYNCHRONIZED_CANDLES"}));
-    }
-    for (const [window, row] of Object.entries(sync.windows)) {
-      const status = !rsError && row.status === "CLOSED" ? "CLOSED" : "NOT_CLOSED";
-      const note = `synchronized_closed_hourly_points=${sync.common_points}; expected_points=${row.expected_points??"NA"}; received_points=${row.received_points??"NA"}; max_gap_ms=${row.max_gap_ms??"NA"}`;
-      evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:`rs_vs_btc_${window}`,source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,sourceTs:row.latest_ts??sync.latest_common_ts,maxAgeSec:2*60*60,status,value:row.vs_btc_pp,unit:"percentage_points",coveragePct:row.coverage_pct??0,historyCoveragePct:row.coverage_pct??0,window,aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SPOT`,note,error:rsError}));
-      evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:`rs_vs_eth_${window}`,source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,sourceTs:row.latest_ts??sync.latest_common_ts,maxAgeSec:2*60*60,status,value:row.vs_eth_pp,unit:"percentage_points",coveragePct:row.coverage_pct??0,historyCoveragePct:row.coverage_pct??0,window,aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SPOT`,note,error:rsError}));
-    }
-    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"down_market_rs_vs_btc_raw",source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:!rsError&&downBtc.negative_benchmark_hours?"CLOSED":"NOT_CLOSED",value:downBtc.average_relative_pp,unit:"average_percentage_points",coveragePct:!rsError&&downBtc.negative_benchmark_hours?100:0,window:"LAST_24_CONTIGUOUS_HOURS",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SPOT`,note:`negative_btc_hours=${downBtc.negative_benchmark_hours}; uncalibrated raw feature`,error:rsError}));
-    evidence.push(externalEvidenceBase({contractCode,chain:"MARKET_STRENGTH_SPOT",metric:"down_market_rs_vs_eth_raw",source:"OKX Spot Public V5",venue:"OKX",marketType:"SPOT",nowTs,sourceTs:sync.latest_common_ts,maxAgeSec:2*60*60,status:!rsError&&downEth.negative_benchmark_hours?"CLOSED":"NOT_CLOSED",value:downEth.average_relative_pp,unit:"average_percentage_points",coveragePct:!rsError&&downEth.negative_benchmark_hours?100:0,window:"LAST_24_CONTIGUOUS_HOURS",aliasRequired:true,aliasVerified:true,sourceCompatible:true,primaryMarketId:`${alias}:OKX:SPOT`,note:`negative_eth_hours=${downEth.negative_benchmark_hours}; uncalibrated raw feature`,error:rsError}));
-    return {
-      evidence,
-      detail: {
-        synchronized_returns: sync,
-        down_market_vs_btc: downBtc,
-        down_market_vs_eth: downEth,
-        hourly_candles: { candidate, btc, eth },
-      },
-    };
-  }
-
-  function fundingPerHourDetail(evidence) {
-    const rows = (Array.isArray(evidence) ? evidence : [])
-      .filter(r => r?.chain === "CROSS_EXCHANGE_DERIVATIVES" && r?.metric === "funding_rate" && r?.venue_observation_status === "CLOSED" && !r?.error)
-      .map(r => {
-        const hours = Number(String(r?.settlement_period || "").replace(/h$/i, ""));
-        const rate = finiteOrNull(r?.value);
-        return {
-          venue: r?.venue || null,
-          funding_rate: rate,
-          settlement_hours: Number.isFinite(hours) && hours > 0 ? hours : null,
-          funding_rate_per_hour: rate !== null && Number.isFinite(hours) && hours > 0 ? rate / hours : null,
-          source_ts: r?.source_ts ?? null,
-          asset_identity_verified: r?.asset_identity_verified === true,
-          eligible_for_chain_closure: r?.eligible_for_chain_closure === true,
-        };
-      });
-    const normalized = rows.map(r => r.funding_rate_per_hour).filter(Number.isFinite);
-    return {
-      rows,
-      comparable_venues: normalized.length,
-      min_per_hour: normalized.length ? Math.min(...normalized) : null,
-      max_per_hour: normalized.length ? Math.max(...normalized) : null,
-      spread_per_hour: normalized.length >= 2 ? Math.max(...normalized) - Math.min(...normalized) : null,
-      note: "Cross-venue funding dispersion is descriptive evidence, not a same-market source conflict and not a promoted threshold.",
-    };
-  }
-
-  async function collectPublicFullEvidence({ contract_code, fetch_impl, now_ts = Date.now() } = {}) {
-    const contractCode = text(contract_code).normalize("NFC");
-    const nowTs = finiteOrNull(now_ts) ?? Date.now();
-    const verification = await verifyAliases(contractCode, fetch_impl, nowTs);
-
-    const [bybit, okx, gate, rs] = await Promise.all([
-      collectBybitDerivatives(contractCode, verification.aliases.bybit, verification.bybit, fetch_impl, nowTs),
-      collectOkxDerivatives(contractCode, verification.aliases.okx_swap, verification.okx_swap, fetch_impl, nowTs),
-      collectGateDerivatives(contractCode, verification.aliases.gate_futures, verification.gate_futures, fetch_impl, nowTs),
-      collectOkxRelativeStrength(contractCode, verification.aliases.okx_spot, verification.okx_spot, fetch_impl, nowTs),
-    ]);
-
-    const externalRequired = [
-      externalEvidenceBase({contractCode,chain:"SMART_MONEY_ONCHAIN",metric:"chain_status",source:"EXTERNAL_EVIDENCE_REQUIRED",venue:null,marketType:null,nowTs,status:"NOT_CLOSED",value:null,coveragePct:0,aliasRequired:false,aliasVerified:true,sourceCompatible:true,note:"No autonomous first-party Smart Money/on-chain source is configured inside Worker. Missing data is DQ uncertainty, not directional evidence.",error:null}),
-      externalEvidenceBase({contractCode,chain:"SUPPORTING_RISK",metric:"chain_status",source:"EXTERNAL_EVIDENCE_REQUIRED",venue:null,marketType:null,nowTs,status:"NOT_CLOSED",value:null,coveragePct:0,aliasRequired:false,aliasVerified:true,sourceCompatible:true,note:"Supply/social/fundamental evidence remains not_closed unless a factual autonomous source is configured. No synthetic penalty is applied.",error:null}),
-      externalEvidenceBase({contractCode,chain:"MARKET_REGIME_TIMING",metric:"chain_status",source:"HTX_TIMING_EXISTING_ONLY",venue:"HTX",marketType:"PERP",nowTs,status:"PARTIAL",value:null,coveragePct:null,aliasRequired:false,aliasVerified:true,sourceCompatible:true,note:"Timing remains a gate/layer without new weight; full promotion disabled in 3.7.",error:null}),
-    ];
-
-    const rawEvidence = [...bybit, ...okx, ...gate, ...rs.evidence, ...externalRequired];
-    const allEvidence = promoteCorroboratedAssetIdentity(rawEvidence, verification.asset_identity);
-    const response = {
-      version: PUBLIC_EVIDENCE_ADAPTERS_VERSION,
-      contract_code: contractCode,
-      observed_ts: nowTs,
-      alias_verification: verification,
-      evidence: allEvidence,
-      cross_venue_derivatives_detail: { funding: fundingPerHourDetail(allEvidence) },
-      relative_strength_detail: rs.detail,
-      safety: {
-        strategy_weights_changed: false,
-        missing_data_directional_penalty: false,
-        live_promotion: false,
-        telegram: false,
-        execution: false,
-      },
-    };
-    Object.defineProperty(response, "_opportunity_hourly_candles", {
-      enumerable: false,
-      value: {
-        BYBIT_PERP: bybit._opportunity_hourly_candles || [],
-        OKX_PERP: okx._opportunity_hourly_candles || [],
-        GATE_PERP: gate._opportunity_hourly_candles || [],
-        OKX_SPOT: rs.detail?.hourly_candles?.candidate || [],
-        BTC_SPOT: rs.detail?.hourly_candles?.btc || [],
-        ETH_SPOT: rs.detail?.hourly_candles?.eth || [],
-      },
-    });
-    return response;
-  }
-  return collectPublicFullEvidence;
-})();
-
-/* MY_REPORT_2_FULL_EVIDENCE_CONTRACT_INLINE_V1 â€” embedded to preserve data:-URL test compatibility. */
-const buildFullEvidenceEnvelope = (() => {
-  const EVIDENCE_CONTRACT_VERSION = "full-evidence-v1";
-
-  const FIXED_DECISION_WEIGHTS = Object.freeze({
-    CROSS_EXCHANGE_DERIVATIVES: 35,
-    MARKET_STRENGTH_SPOT: 30,
-    SMART_MONEY_ONCHAIN: 20,
-    SUPPORTING_RISK: 15,
-  });
-
-  const VALID_STATUS = new Set([
-    "CLOSED",
-    "PARTIAL",
-    "NOT_CLOSED",
-    "STALE",
-    "FUTURE",
-    "CONFLICT",
-    "SOURCE_INCOMPATIBLE",
-    "UNSUPPORTED",
-  ]);
-
-  const VALID_CHAINS = new Set([
-    "HTX_EXECUTION",
-    "CROSS_EXCHANGE_DERIVATIVES",
-    "MARKET_STRENGTH_SPOT",
-    "SMART_MONEY_ONCHAIN",
-    "SUPPORTING_RISK",
-    "MARKET_REGIME_TIMING",
-    "PORTFOLIO_RISK",
-  ]);
-
-  function finiteOrNull(v) {
-    if (v === null || v === undefined || v === "") return null;
-    const n = Number(v);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function textOrNull(v) {
-    if (v === null || v === undefined) return null;
-    const s = String(v).trim();
-    return s || null;
-  }
-
-  function asBool(v) {
-    return v === true;
-  }
-
-  function normalizeStatus(v) {
-    const s = String(v || "NOT_CLOSED").toUpperCase();
-    return VALID_STATUS.has(s) ? s : "NOT_CLOSED";
-  }
-
-  function normalizeEvidenceItem(raw = {}) {
-    const chain = String(raw.chain || "").toUpperCase();
-    const observedTs = finiteOrNull(raw.observed_ts);
-    const sourceTs = finiteOrNull(raw.source_ts);
-    const maxAgeSec = finiteOrNull(raw.max_age_sec);
-    const maxFutureSec = finiteOrNull(raw.max_future_sec) ?? 60;
-    const nowTs = finiteOrNull(raw.now_ts) ?? Date.now();
-    const effectiveTs = sourceTs;
-    const ageSec = effectiveTs === null ? null : (nowTs - effectiveTs) / 1000;
-    const staleByAge = maxAgeSec !== null && ageSec !== null && ageSec > maxAgeSec;
-    const futureByAge = ageSec !== null && ageSec < -maxFutureSec;
-    const symbolVerified = asBool(raw.symbol_verified);
-    const aliasRequired = asBool(raw.alias_required);
-    const aliasVerified = !aliasRequired || asBool(raw.alias_verified);
-    const sourceCompatible = raw.source_compatible !== false;
-
-    let status = normalizeStatus(raw.status);
-    if (!sourceCompatible || !aliasVerified) status = "SOURCE_INCOMPATIBLE";
-    else if (status === "CLOSED" && sourceTs === null) status = "NOT_CLOSED";
-    else if (futureByAge && status === "CLOSED") status = "FUTURE";
-    else if (staleByAge && status === "CLOSED") status = "STALE";
-
-    const coveragePct = finiteOrNull(raw.coverage_pct);
-    if (status === "CLOSED" && (coveragePct === null || coveragePct <= 0 || coveragePct > 100)) {
-      status = "NOT_CLOSED";
-    }
-    if (status === "CLOSED" && (raw.value === null || raw.value === undefined)) status = "NOT_CLOSED";
-    if (status === "CLOSED" && aliasRequired && !asBool(raw.asset_identity_verified)) {
-      status = "SOURCE_INCOMPATIBLE";
-    }
-
-    return {
-      contract_code: textOrNull(raw.contract_code),
-      chain: VALID_CHAINS.has(chain) ? chain : null,
-      metric: textOrNull(raw.metric),
-      source: textOrNull(raw.source),
-      venue: textOrNull(raw.venue),
-      market_type: textOrNull(raw.market_type),
-      value: raw.value ?? null,
-      unit: textOrNull(raw.unit),
-      observed_ts: observedTs,
-      source_ts: sourceTs,
-      now_ts: nowTs,
-      age_sec: ageSec,
-      max_age_sec: maxAgeSec,
-      max_future_sec: maxFutureSec,
-      status,
-      venue_observation_status: textOrNull(raw.venue_observation_status),
-      eligible_for_chain_closure: asBool(raw.eligible_for_chain_closure),
-      coverage_pct: coveragePct,
-      history_coverage_pct: finiteOrNull(raw.history_coverage_pct),
-      window: textOrNull(raw.window),
-      source_health: textOrNull(raw.source_health),
-      symbol_verified: symbolVerified,
-      alias_required: aliasRequired,
-      alias_verified: aliasVerified,
-      alias_verification_scope: textOrNull(raw.alias_verification_scope),
-      asset_identity_verified: asBool(raw.asset_identity_verified),
-      source_compatible: sourceCompatible,
-      independence_group: textOrNull(raw.independence_group),
-      primary_market_id: textOrNull(raw.primary_market_id),
-      settlement_period: textOrNull(raw.settlement_period),
-      note: textOrNull(raw.note),
-      error: textOrNull(raw.error),
-    };
-  }
-
-  function evidenceUsable(item) {
-    const e = normalizeEvidenceItem(item);
-    return Boolean(
-      e.chain &&
-      e.metric &&
-      e.source &&
-      e.contract_code &&
-      e.symbol_verified &&
-      e.source_compatible &&
-      e.alias_verified &&
-      (!e.alias_required || e.asset_identity_verified) &&
-      e.primary_market_id &&
-      e.source_ts !== null &&
-      e.max_age_sec !== null && e.max_age_sec > 0 &&
-      e.coverage_pct !== null && e.coverage_pct > 0 && e.coverage_pct <= 100 &&
-      e.value !== null &&
-      e.status === "CLOSED" &&
-      e.error === null
-    );
-  }
-
-  // Deliberately compare only evidence claiming to describe the SAME primary market.
-  // Cross-venue differences (e.g. HTX vs Bybit funding) are market dispersion, not a
-  // data-source conflict. Same-venue independent sources can conflict and must not
-  // be silently averaged.
-  function comparisonKey(e) {
-    return [e.metric, e.venue || "", e.market_type || "", e.unit || "", e.settlement_period || ""].join("|");
-  }
-
-  function detectEvidenceConflicts(items = [], options = {}) {
-    const normalized = items.map(normalizeEvidenceItem);
-    const timestampToleranceMs = finiteOrNull(options.timestamp_tolerance_ms) ?? 5 * 60 * 1000;
-    const relativeTolerance = finiteOrNull(options.relative_tolerance) ?? 0.01;
-    const absoluteTolerance = finiteOrNull(options.absolute_tolerance) ?? null;
-    const groups = new Map();
-
-    for (const e of normalized) {
-      if (!e.metric || !e.contract_code) continue;
-      const key = `${e.contract_code}|${comparisonKey(e)}`;
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(e);
-    }
-
-    const conflicts = [];
-    for (const [key, rows] of groups) {
-      const usable = rows.filter(evidenceUsable);
-      for (let i = 0; i < usable.length; i++) {
-        for (let j = i + 1; j < usable.length; j++) {
-          const a = usable[i], b = usable[j];
-          if (a.independence_group && b.independence_group && a.independence_group === b.independence_group) continue;
-          if (a.primary_market_id && b.primary_market_id && a.primary_market_id !== b.primary_market_id) continue;
-          const ta = a.source_ts ?? a.observed_ts;
-          const tb = b.source_ts ?? b.observed_ts;
-          if (ta !== null && tb !== null && Math.abs(ta - tb) > timestampToleranceMs) continue;
-          const av = finiteOrNull(a.value), bv = finiteOrNull(b.value);
-          if (av === null || bv === null) continue;
-          const absDiff = Math.abs(av - bv);
-          const denom = Math.max(Math.abs(av), Math.abs(bv), 1e-12);
-          const relDiff = absDiff / denom;
-          const material =
-            (absoluteTolerance !== null && absDiff > absoluteTolerance) ||
-            (relativeTolerance !== null && relDiff > relativeTolerance);
-          if (material) {
-            conflicts.push({
-              key,
-              metric: a.metric,
-              venue: a.venue,
-              source_a: a.source,
-              source_b: b.source,
-              value_a: av,
-              value_b: bv,
-              abs_diff: absDiff,
-              rel_diff: relDiff,
-              timestamp_delta_ms: ta !== null && tb !== null ? Math.abs(ta - tb) : null,
-              unresolved: true,
-            });
-          }
-        }
-      }
-    }
-    return conflicts;
-  }
-
-  function summarizeDataQuality(items = [], conflicts = []) {
-    const normalized = items.map(normalizeEvidenceItem);
-    const critical = normalized.filter(e => e.chain && e.chain !== "PORTFOLIO_RISK");
-    const usable = critical.filter(evidenceUsable);
-    const independent = new Set(usable.map(e => e.independence_group || e.source).filter(Boolean));
-    const chainsObserved = new Set(critical.map(e => e.chain));
-    const chainsWithUsableEvidence = new Set(usable.map(e => e.chain));
-    const stale = critical.filter(e => e.status === "STALE").length;
-    const incompatible = critical.filter(e => e.status === "SOURCE_INCOMPATIBLE").length;
-    const future = critical.filter(e => e.status === "FUTURE").length;
-    const notClosed = critical.filter(e => ["NOT_CLOSED","UNSUPPORTED","PARTIAL","FUTURE"].includes(e.status)).length;
-    const unresolvedConflicts = conflicts.filter(c => c.unresolved).length;
-    const coverageValues = usable.map(e => e.coverage_pct).filter(v => v !== null);
-    const coveragePct = coverageValues.length ? coverageValues.reduce((a,b)=>a+b,0)/coverageValues.length : null;
-
-    let status = "NOT_CLOSED";
-    const weightedChainsComplete = Object.keys(FIXED_DECISION_WEIGHTS).every(chain => chainsWithUsableEvidence.has(chain));
-    if (usable.length && weightedChainsComplete && independent.size >= 2 && unresolvedConflicts === 0 && stale === 0 && incompatible === 0 && notClosed === 0) status = "CLOSED";
-    else if (usable.length) status = "PARTIAL";
-
-    const weightedEvidenceAvailability = {};
-    let observedWeightPct = 0;
-    for (const [chain, weight] of Object.entries(FIXED_DECISION_WEIGHTS)) {
-      const available = chainsWithUsableEvidence.has(chain);
-      weightedEvidenceAvailability[chain] = { weight_pct: weight, has_usable_evidence: available };
-      if (available) observedWeightPct += weight;
-    }
-
-    return {
-      status,
-      items_total: critical.length,
-      usable_items: usable.length,
-      independent_evidence_groups: independent.size,
-      chains_observed: [...chainsObserved].sort(),
-      chains_with_usable_evidence: [...chainsWithUsableEvidence].sort(),
-      weighted_evidence_availability: weightedEvidenceAvailability,
-      observed_weight_pct: observedWeightPct,
-      average_coverage_pct: coveragePct,
-      stale_items: stale,
-      future_items: future,
-      incompatible_items: incompatible,
-      not_closed_items: notClosed,
-      unresolved_conflicts: unresolvedConflicts,
-      uncertainty_flags: [
-        ...(stale ? ["STALE_EVIDENCE"] : []),
-        ...(future ? ["FUTURE_EVIDENCE"] : []),
-        ...(incompatible ? ["SOURCE_OR_SYMBOL_INCOMPATIBLE"] : []),
-        ...(notClosed ? ["NOT_CLOSED_EVIDENCE"] : []),
-        ...(unresolvedConflicts ? ["UNRESOLVED_CONFLICT"] : []),
-        ...(independent.size < 2 ? ["LOW_EVIDENCE_INDEPENDENCE"] : []),
-      ],
-    };
-  }
-
-  function buildFullEvidenceEnvelope({ contract_code, observed_ts, evidence = [], conflict_options = {} } = {}) {
-    const rows = evidence.map(row => normalizeEvidenceItem({ ...row, contract_code: row.contract_code ?? contract_code, observed_ts: row.observed_ts ?? observed_ts, now_ts: row.now_ts ?? observed_ts }));
-    const conflicts = detectEvidenceConflicts(rows, conflict_options);
-    const dq = summarizeDataQuality(rows, conflicts);
-    const htxGateRows = rows.filter(e => e.chain === "HTX_EXECUTION" && e.metric === "execution_gate_status");
-    const htxExecutionClosed = htxGateRows.length === 1 && htxGateRows.some(e => evidenceUsable(e) && Number(e.value) === 1);
-
-    return {
-      contract_version: EVIDENCE_CONTRACT_VERSION,
-      contract_code: textOrNull(contract_code),
-      observed_ts: finiteOrNull(observed_ts),
-      mode: "FULL_EVIDENCE_SHADOW_NO_EXECUTION",
-      fixed_decision_weights: { ...FIXED_DECISION_WEIGHTS },
-      htx_execution_gate_closed: htxExecutionClosed,
-      evidence: rows,
-      conflicts,
-      data_quality: dq,
-      decision: {
-        dc_long: null,
-        dc_short: null,
-        eq: null,
-        dq_status: dq.status,
-        full_decision_eligible: false,
-        live_probability: null,
-        validated: false,
-        telegram_started: false,
-        trading_execution: false,
-        weights_changed: false,
-        note: "Evidence fusion only. Fixed 35/30/20/15 weights are the Full Evidence ownership split. The separate 32/30/20/18 supplemental block remains bounded to Â±10. Directional promotion remains disabled until evidence/scoring calibration gates are proven.",
-      },
-    };
-  }
-  return buildFullEvidenceEnvelope;
-})();
-
-/* MY_REPORT_2_FULL_EVIDENCE_MODEL_INLINE_V1 â€” embedded to preserve data:-URL test compatibility. */
-const buildFullEvidenceShadowRecord = (() => {
-  const FULL_EVIDENCE_RULES_VERSION = "full-evidence-shadow-v1";
-
-  function finiteOrNull(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function textOrNull(value) {
-    if (value === null || value === undefined) return null;
-    const s = String(value).trim();
-    return s || null;
-  }
-
-  function compactEvidenceRow(row) {
-    return {
-      contract_code: row?.contract_code || null,
-      chain: row?.chain || null,
-      metric: row?.metric || null,
-      source: row?.source || null,
-      venue: row?.venue || null,
-      market_type: row?.market_type || null,
-      value: row?.value ?? null,
-      unit: row?.unit || null,
-      observed_ts: row?.observed_ts ?? null,
-      source_ts: row?.source_ts ?? null,
-      age_sec: row?.age_sec ?? null,
-      max_age_sec: row?.max_age_sec ?? null,
-      max_future_sec: row?.max_future_sec ?? null,
-      status: row?.status || null,
-      venue_observation_status: row?.venue_observation_status || null,
-      eligible_for_chain_closure: row?.eligible_for_chain_closure === true,
-      freshness_status: row?.status === "STALE" ? "STALE" : (row?.status === "FUTURE" ? "FUTURE" : (row?.source_ts == null ? "MISSING_SOURCE_TIMESTAMP" : "CURRENT")),
-      coverage_pct: row?.coverage_pct ?? null,
-      history_coverage_pct: row?.history_coverage_pct ?? null,
-      window: row?.window || null,
-      symbol_verified: row?.symbol_verified === true,
-      alias_required: row?.alias_required === true,
-      alias_verified: row?.alias_verified === true,
-      alias_verification_scope: row?.alias_verification_scope || null,
-      asset_identity_verified: row?.asset_identity_verified === true,
-      source_compatible: row?.source_compatible !== false,
-      independence_group: row?.independence_group || null,
-      primary_market_id: row?.primary_market_id || null,
-      settlement_period: row?.settlement_period || null,
-      conflict_status: row?.status === "CONFLICT" ? "CONFLICT" : null,
-      source_incompatible: row?.status === "SOURCE_INCOMPATIBLE" || row?.source_compatible === false,
-      not_closed: row?.status !== "CLOSED",
-      error: row?.error ? String(row.error).slice(0, 180) : null,
-      note: row?.note ? String(row.note).slice(0, 240) : null,
-    };
-  }
-
-  function htxEvidenceFromShadow(shadowDecision, nowTs) {
-    const contract = textOrNull(shadowDecision?.contract) || "UNKNOWN";
-    const flags = shadowDecision?.evidence_flags || {};
-    const htxCoverage = finiteOrNull(shadowDecision?.dq?.htx_coverage_pct ?? flags?.htx_coverage_pct);
-    const eqStatus = String(shadowDecision?.eq?.status || "").toUpperCase();
-    const dqStatus = String(shadowDecision?.dq?.status || "").toUpperCase();
-    const explicitExecutionGate = shadowDecision?.htx_execution_gate_closed === true;
-    const htxDqClosed = dqStatus === "CLOSED" || dqStatus.startsWith("HTX_CLOSED");
-    // Execution closure and directional-data closure are deliberately separate.
-    // Exact-window CVD / spot / trajectory gaps stay visible in DQ but must not
-    // turn a factually measurable HTX execution lane into a synthetic failure.
-    const executionClosed = explicitExecutionGate && eqStatus === "SHADOW_MEASURABLE" && htxCoverage !== null && htxCoverage > 0;
-    const base = {
-      contract_code: contract,
-      chain: "HTX_EXECUTION",
-      source: "HTX_OFFICIAL_VIA_REPORT2_HUB",
-      venue: "HTX",
-      market_type: "USDT_PERP",
-      observed_ts: nowTs,
-      source_ts: nowTs,
-      max_age_sec: 15 * 60,
-      now_ts: nowTs,
-      coverage_pct: htxCoverage,
-      symbol_verified: true,
-      alias_required: false,
-      alias_verified: true,
-      source_compatible: true,
-      independence_group: "HTX_OFFICIAL",
-      primary_market_id: `${contract}:HTX:USDT_PERP`,
-      settlement_period: null,
-      error: null,
-    };
-    const rows = [
-      {
-        ...base,
-        metric: "execution_gate_status",
-        value: executionClosed ? 1 : null,
-        unit: "boolean",
-        status: executionClosed ? "CLOSED" : "NOT_CLOSED",
-        note: `explicit_htx_execution_gate=${explicitExecutionGate}; eq_status=${eqStatus || "UNKNOWN"}; dq_status=${dqStatus || "UNKNOWN"}; htx_dq_closed=${htxDqClosed}; htx_coverage_pct=${htxCoverage ?? "UNKNOWN"}; execution closure does not synthesize missing CVD`,
-      },
-    ];
-    const metrics = [
-      ["htx_funding_pct", flags?.funding_pct, "pct"],
-      ["htx_price_1h_pct", flags?.price_1h_pct, "pct"],
-      ["htx_price_4h_pct", flags?.price_4h_pct, "pct"],
-      ["htx_price_24h_pct", flags?.price_24h_pct, "pct"],
-      ["htx_oi_1h_change_pct", flags?.oi_1h_change_pct, "pct"],
-      ["htx_oi_4h_change_pct", flags?.oi_4h_change_pct, "pct"],
-      ["htx_futures_flow_1h_delta_pct", flags?.futures_flow_1h_delta_pct, "pct_of_turnover"],
-      ["htx_futures_flow_4h_delta_pct", flags?.futures_flow_4h_delta_pct, "pct_of_turnover"],
-      ["htx_spot_flow_delta_pct", flags?.spot_flow_delta_pct, "pct_of_turnover"],
-      ["htx_spread_bps", shadowDecision?.eq?.spread_bps, "bps"],
-      ["htx_buy_impact_bps", shadowDecision?.eq?.buy_impact_bps, "bps"],
-      ["htx_sell_impact_bps", shadowDecision?.eq?.sell_impact_bps, "bps"],
-    ];
-    for (const [metric, rawValue, unit] of metrics) {
-      const value = finiteOrNull(rawValue);
-      rows.push({
-        ...base,
-        metric,
-        value,
-        unit,
-        status: value === null ? "NOT_CLOSED" : "CLOSED",
-        note: value === null ? "Metric absent in factual HTX shadow telemetry; not coerced to zero." : null,
-      });
-    }
-
-    const fundingPct = finiteOrNull(flags?.funding_pct);
-    const fundingIntervalHours = finiteOrNull(flags?.funding_interval_hours);
-    const fundingRate = fundingPct === null ? null : fundingPct / 100;
-    const oi1hChange = finiteOrNull(flags?.oi_1h_change_pct);
-    const price4hChange = finiteOrNull(flags?.price_4h_pct);
-    const chain2Base = {
-      ...base,
-      chain: "CROSS_EXCHANGE_DERIVATIVES",
-      note: null,
-    };
-    rows.push({
-      ...chain2Base,
-      metric: "funding_rate",
-      value: fundingRate,
-      unit: "rate_per_settlement",
-      status: fundingRate !== null && fundingIntervalHours !== null && fundingIntervalHours > 0 ? "CLOSED" : "NOT_CLOSED",
-      settlement_period: fundingIntervalHours !== null && fundingIntervalHours > 0 ? `${fundingIntervalHours}h` : null,
-      note: fundingRate === null || fundingIntervalHours === null || fundingIntervalHours <= 0
-        ? "HTX funding or factual settlement interval is missing; not eligible for cross-venue funding closure."
-        : "HTX is the primary execution venue and counts as one factual venue in cross-exchange funding verification.",
-    });
-    rows.push({
-      ...chain2Base,
-      metric: "oi_change_1h",
-      value: oi1hChange,
-      unit: "pct",
-      status: oi1hChange === null ? "NOT_CLOSED" : "CLOSED",
-      window: "1h",
-      note: oi1hChange === null ? "HTX 1h OI trajectory unavailable." : "Factual synchronized HTX 1h OI trajectory reused; no extra fetch.",
-    });
-    rows.push({
-      ...chain2Base,
-      metric: "price_change_4h",
-      value: price4hChange,
-      unit: "pct",
-      status: price4hChange === null ? "NOT_CLOSED" : "CLOSED",
-      window: "4h",
-      note: price4hChange === null ? "HTX 4h price trajectory unavailable." : "Factual synchronized HTX 4h price trajectory reused; no extra fetch.",
-    });
-
-    const spotFlow = finiteOrNull(flags?.spot_flow_delta_pct);
-    rows.push({
-      ...base,
-      chain: "MARKET_STRENGTH_SPOT",
-      metric: "htx_spot_flow_delta_pct",
-      market_type: "SPOT",
-      value: spotFlow,
-      unit: "pct_of_turnover",
-      status: spotFlow === null ? "NOT_CLOSED" : "CLOSED",
-      independence_group: "HTX_OFFICIAL_SPOT",
-      primary_market_id: `${contract}:HTX:SPOT`,
-      note: spotFlow === null
-        ? "HTX Spot factual flow is unavailable for this observation; Chain 3 cannot be fully closed from RS alone."
-        : "Factual HTX Spot flow carried from shadow telemetry; no directional interpretation is applied here.",
-    });
-
-    return rows;
-  }
-
-  function chainStatus(envelope) {
-    const result = {};
-    const chains = [
-      "HTX_EXECUTION",
-      "CROSS_EXCHANGE_DERIVATIVES",
-      "MARKET_STRENGTH_SPOT",
-      "SMART_MONEY_ONCHAIN",
-      "SUPPORTING_RISK",
-      "MARKET_REGIME_TIMING",
-      "PORTFOLIO_RISK",
-    ];
-
-    const usableRow = (row) =>
-      row?.status === "CLOSED" &&
-      row?.error === null &&
-      row?.symbol_verified === true &&
-      row?.source_compatible !== false &&
-      row?.alias_verified !== false &&
-      (row?.alias_required !== true || row?.asset_identity_verified === true) &&
-      row?.primary_market_id &&
-      row?.source_ts != null &&
-      Number(row?.max_age_sec) > 0 &&
-      Number(row?.coverage_pct) > 0 &&
-      Number(row?.coverage_pct) <= 100 &&
-      row?.value != null;
-
-    for (const chain of chains) {
-      const rows = (envelope?.evidence || []).filter(row => row?.chain === chain);
-      const usable = rows.filter(usableRow);
-      const groups = new Set(usable.map(row => row?.independence_group || row?.source).filter(Boolean));
-      const metrics = new Set(usable.map(row => row?.metric).filter(Boolean));
-      const venues = new Set(usable.map(row => row?.venue).filter(Boolean));
-      const reasons = [];
-      let chainClosed = false;
-
-      if (chain === "HTX_EXECUTION") {
-        const gate = usable.find(row => row?.metric === "execution_gate_status" && Number(row?.value) === 1);
-        chainClosed = Boolean(gate);
-        if (!chainClosed) reasons.push("HTX_EXECUTION_GATE_NOT_CLOSED");
-      } else if (chain === "CROSS_EXCHANGE_DERIVATIVES") {
-        const fundingVenues = new Set(usable.filter(row => row?.metric === "funding_rate").map(row => row?.venue).filter(Boolean));
-        const fundingWithoutPeriod = usable.filter(row => row?.metric === "funding_rate" && !row?.settlement_period);
-        const oiTrajectory = usable.some(row => /^oi_change_/i.test(String(row?.metric || "")));
-        const priceTrajectory = usable.some(row => /^price_change_/i.test(String(row?.metric || "")));
-        if (fundingVenues.size < 2) reasons.push("NEED_FUNDING_FROM_2_INDEPENDENT_VENUES");
-        if (fundingWithoutPeriod.length) reasons.push("FUNDING_PERIOD_NOT_VERIFIED");
-        if (!oiTrajectory) reasons.push("OI_TRAJECTORY_NOT_CLOSED");
-        if (!priceTrajectory) reasons.push("PRICE_TRAJECTORY_NOT_CLOSED");
-        if (groups.size < 2) reasons.push("LOW_DERIVATIVES_SOURCE_INDEPENDENCE");
-        chainClosed = reasons.length === 0;
-      } else if (chain === "MARKET_STRENGTH_SPOT") {
-        const requiredRs = [
-          "rs_vs_btc_1h", "rs_vs_eth_1h",
-          "rs_vs_btc_4h", "rs_vs_eth_4h",
-          "rs_vs_btc_24h", "rs_vs_eth_24h",
-        ];
-        const missingRs = requiredRs.filter(metric => !metrics.has(metric));
-        const spotConfirmation = usable.some(row =>
-          /^htx_spot_/i.test(String(row?.metric || "")) ||
-          /^spot_(?:turnover|spread|depth|flow|delta|confirmation)/i.test(String(row?.metric || ""))
-        );
-        if (missingRs.length) reasons.push(`RS_WINDOWS_MISSING:${missingRs.join(",")}`);
-        if (!spotConfirmation) reasons.push("SPOT_CONFIRMATION_NOT_CLOSED");
-        chainClosed = reasons.length === 0;
-      } else {
-        // Chain 4/5 and gate/layer chains remain explicitly not closed unless a
-        // later calibrated implementation defines their own minimum closure set.
-        chainClosed = false;
-        if (usable.length === 0) reasons.push("NO_USABLE_EVIDENCE");
-        else reasons.push("NO_PROMOTED_CHAIN_CLOSURE_RULE_IN_3_7");
-      }
-
-      result[chain] = {
-        items: rows.length,
-        usable_items: usable.length,
-        independent_groups: groups.size,
-        venues: [...venues].sort(),
-        usable_metrics: [...metrics].sort(),
-        statuses: [...new Set(rows.map(row => row?.status).filter(Boolean))].sort(),
-        has_usable_evidence: usable.length > 0,
-        closure_status: chainClosed ? "CLOSED" : (usable.length ? "PARTIAL" : "NOT_CLOSED"),
-        chain_closed: chainClosed,
-        closure_reasons: reasons,
-      };
-    }
-    return result;
-  }
-
-  function compactAliasVerification(publicEvidence) {
-    const v = publicEvidence?.alias_verification || {};
-    const take = (x) => x ? {
-      verified: x?.verified === true,
-      status: x?.status || null,
-      exact_symbol: x?.exact_symbol || null,
-      contract_type: x?.contract_type || x?.instrument_type || null,
-      settle_coin: x?.settle_coin || null,
-      funding_interval_minutes: finiteOrNull(x?.funding_interval_minutes),
-      http_status: finiteOrNull(x?.http_status),
-      fetch_error: x?.fetch_error || null,
-    } : null;
-    return {
-      alias_candidate_safe: v?.aliases?.alias_candidate_safe === true,
-      reason: v?.aliases?.reason || null,
-      bybit: take(v?.bybit),
-      okx_swap: take(v?.okx_swap),
-      okx_spot: take(v?.okx_spot),
-      gate_futures: take(v?.gate_futures),
-      binance_futures: take(v?.binance_futures),
-    };
-  }
-
-  function buildFullEvidenceShadowRecord({ shadow_decision, public_evidence, now = Date.now() } = {}) {
-    const shadow = shadow_decision || {};
-    const publicEvidence = public_evidence || {};
-    const observedTs = finiteOrNull(shadow?.observed_ts) ?? finiteOrNull(publicEvidence?.observed_ts) ?? finiteOrNull(now) ?? Date.now();
-    const contract = textOrNull(shadow?.contract) || textOrNull(publicEvidence?.contract_code) || "UNKNOWN";
-    const htxEvidence = htxEvidenceFromShadow({ ...shadow, contract }, observedTs);
-    const external = Array.isArray(publicEvidence?.evidence) ? publicEvidence.evidence : [];
-    const envelope = buildFullEvidenceEnvelope({
-      contract_code: contract,
-      observed_ts: observedTs,
-      evidence: [...htxEvidence, ...external],
-    });
-    const status = chainStatus(envelope);
-    const weightedChains = Object.keys(envelope?.fixed_decision_weights || {});
-    const missingWeightedChains = weightedChains.filter(chain => status?.[chain]?.chain_closed !== true);
-    const compactEvidence = (envelope?.evidence || []).map(compactEvidenceRow);
-    const fullId = `${observedTs}:${contract}:full-evidence-v1`;
-
-    return {
-      full_evidence_id: fullId,
-      shadow_id: shadow?.shadow_id || `${observedTs}:${contract}`,
-      contract,
-      observed_ts: observedTs,
-      observed_time_utc: new Date(observedTs).toISOString(),
-      mode: "FULL_EVIDENCE_SHADOW_NO_EXECUTION",
-      rules_version: FULL_EVIDENCE_RULES_VERSION,
-      contract_version: envelope?.contract_version || null,
-      adapters_version: publicEvidence?.version || null,
-      fixed_decision_weights: envelope?.fixed_decision_weights || null,
-      strategy_weights_changed: false,
-      htx_execution_gate_closed: envelope?.htx_execution_gate_closed === true,
-      chain_status: status,
-      missing_weighted_chains: missingWeightedChains,
-      data_quality: envelope?.data_quality || null,
-      conflicts: envelope?.conflicts || [],
-      alias_verification: compactAliasVerification(publicEvidence),
-      evidence_compact: compactEvidence,
-      cross_venue_derivatives_detail: publicEvidence?.cross_venue_derivatives_detail || null,
-      relative_strength_detail: publicEvidence?.relative_strength_detail || null,
-      prior_htx_shadow: {
-        dc_shadow_long: finiteOrNull(shadow?.dc_shadow_long),
-        dc_shadow_short: finiteOrNull(shadow?.dc_shadow_short),
-        direction_hint: shadow?.direction_hint || null,
-        eq_status: shadow?.eq?.status || null,
-        dq_status: shadow?.dq?.status || null,
-        stage: shadow?.stage || null,
-        spread_bps: finiteOrNull(shadow?.eq?.spread_bps),
-        buy_impact_bps: finiteOrNull(shadow?.eq?.buy_impact_bps),
-        sell_impact_bps: finiteOrNull(shadow?.eq?.sell_impact_bps),
-      },
-      decision: {
-        dc_long: null,
-        dc_short: null,
-        directional_confidence_semantics: "NOT_PROMOTED_IN_3_7",
-        eq: null,
-        dq_status: envelope?.data_quality?.status || "NOT_CLOSED",
-        full_decision_eligible: false,
-        live_probability: null,
-        live_signal: false,
-        validated: false,
-        telegram_started: false,
-        trading_execution: false,
-        note: "3.7 collects/fuses factual evidence and DQ. It does not invent chain scores for missing/unconfigured sources and does not promote a live decision.",
-      },
-      calibration_link: {
-        shadow_outcome_rules_version: "shadow-outcome-v1",
-        outcome_horizons_hours: [1,4,12,24],
-        automatic_weight_tuning_enabled: false,
-      },
-      safety: {
-        missing_data_coerced_to_zero: false,
-        cross_venue_dispersion_called_conflict: false,
-        strategy_weights_changed: false,
-        full_decision_eligible: false,
-        live_probability_generated: false,
-        live_signal_generated: false,
-        validated: false,
-        telegram_dispatch_allowed: false,
-        trading_execution_allowed: false,
-      },
-    };
-  }
-
-  const FULL_EVIDENCE_SHADOW_RULES_VERSION = FULL_EVIDENCE_RULES_VERSION;
-  return buildFullEvidenceShadowRecord;
-})();
-
-
-/* =========================================================
-   MY_REPORT_2_FULL_EVIDENCE_SHADOW_V1
-   Full-evidence shadow fusion journal.
-   Evidence/DQ only: no live probability, validation, Telegram,
-   execution, automatic weight tuning or synthetic missing-data score.
-   ========================================================= */
-function fullEvidenceJson(value, fallback) {
-  try {
-    return JSON.stringify(value ?? fallback);
-  } catch {
-    return JSON.stringify(fallback);
-  }
-}
-
-function fullEvidenceRecordSafe(record) {
-  return Boolean(
-    record &&
-    record.mode === "FULL_EVIDENCE_SHADOW_NO_EXECUTION" &&
-    record.strategy_weights_changed === false &&
-    Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES) === 35 &&
-    Number(record?.fixed_decision_weights?.MARKET_STRENGTH_SPOT) === 30 &&
-    Number(record?.fixed_decision_weights?.SMART_MONEY_ONCHAIN) === 20 &&
-    Number(record?.fixed_decision_weights?.SUPPORTING_RISK) === 15 &&
-    record?.decision?.dc_long == null &&
-    record?.decision?.dc_short == null &&
-    record?.decision?.live_probability == null &&
-    record?.decision?.full_decision_eligible === false &&
-    record?.decision?.live_signal === false &&
-    record?.decision?.validated === false &&
-    record?.decision?.telegram_started === false &&
-    record?.decision?.trading_execution === false &&
-    record?.calibration_link?.automatic_weight_tuning_enabled === false &&
-    record?.safety?.missing_data_coerced_to_zero === false &&
-    record?.safety?.cross_venue_dispersion_called_conflict === false
-  );
-}
-
-async function persistFullEvidenceShadowRecord(env, record, { stage392_prepared_proof_bundle = null } = {}) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-      persisted: false,
-      insert_changes: 0,
-      hot_path_statements: 0,
-      cleanup_deferred: true,
-      error: "D1 binding DATA_DB is not configured",
-    };
-  }
-
-  if (!fullEvidenceRecordSafe(record)) {
-    return {
-      status: "REFUSED_UNSAFE_RECORD",
-      persisted: false,
-      insert_changes: 0,
-      hot_path_statements: 0,
-      cleanup_deferred: true,
-      error: "Full-evidence record violated 3.7 shadow safety invariants",
-    };
-  }
-
-  const now = Date.now();
-  const dq = record?.data_quality || {};
-  const proofBundleJson = stage392_prepared_proof_bundle?.bundle
-    ? fullEvidenceJson(stage392_prepared_proof_bundle.bundle, null)
-    : null;
-
-  try {
-    const insert = env.DATA_DB
-      .prepare(`
-        INSERT INTO full_evidence_shadow_log
-        (
-          full_evidence_id, shadow_id, contract_code, observed_ts,
-          rules_version, contract_version, adapters_version, mode,
-          fixed_weights_json, weight_derivatives,
-          weight_market_strength_spot, weight_smart_money_onchain,
-          weight_supporting_risk, strategy_weights_changed,
-          automatic_weight_tuning_enabled,
-          htx_execution_gate_closed, dq_status, dq_usable_items,
-          dq_total_items, dq_independent_groups, dq_observed_weight_pct,
-          uncertainty_count, missing_weighted_chains_json,
-          chain_status_json, conflicts_json, alias_verification_json,
-          evidence_compact_json, relative_strength_json,
-          prior_htx_shadow_json, full_dc_long, full_dc_short,
-          live_probability, full_decision_eligible, live_signal,
-          validated, telegram_started, trading_execution,
-          missing_data_coerced_to_zero,
-          cross_venue_dispersion_called_conflict,
-          shadow_only, retention_days, persisted_ts, stage392_proof_bundle_json
-        )
-        VALUES
-        (
-          ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8,
-          ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18,
-          ?19, ?20, ?21, ?22, ?23, ?24, ?25, ?26, ?27, ?28, ?29,
-          ?30, ?31, ?32, ?33, ?34, ?35, ?36, ?37, ?38, ?39,
-          ?40, ?41, ?42, ?43
-        )
-        ON CONFLICT(full_evidence_id) DO NOTHING
-      `)
-      .bind(
-        record?.full_evidence_id,
-        record?.shadow_id,
-        record?.contract,
-        record?.observed_ts,
-        record?.rules_version,
-        record?.contract_version,
-        record?.adapters_version,
-        record?.mode,
-        fullEvidenceJson(record?.fixed_decision_weights, {}),
-        Number(record?.fixed_decision_weights?.CROSS_EXCHANGE_DERIVATIVES),
-        Number(record?.fixed_decision_weights?.MARKET_STRENGTH_SPOT),
-        Number(record?.fixed_decision_weights?.SMART_MONEY_ONCHAIN),
-        Number(record?.fixed_decision_weights?.SUPPORTING_RISK),
-        record?.strategy_weights_changed ? 1 : 0,
-        record?.calibration_link?.automatic_weight_tuning_enabled ? 1 : 0,
-        record?.htx_execution_gate_closed ? 1 : 0,
-        record?.decision?.dq_status || dq?.status || "NOT_CLOSED",
-        Number(dq?.usable_items ?? 0),
-        Number(dq?.items_total ?? 0),
-        Number(dq?.independent_evidence_groups ?? 0),
-        dq?.observed_weight_pct ?? null,
-        Array.isArray(dq?.uncertainty_flags) ? dq.uncertainty_flags.length : 0,
-        fullEvidenceJson(record?.missing_weighted_chains, []),
-        fullEvidenceJson(record?.chain_status, {}),
-        fullEvidenceJson(record?.conflicts, []),
-        fullEvidenceJson(record?.alias_verification, {}),
-        fullEvidenceJson(record?.evidence_compact, []),
-        fullEvidenceJson({
-          relative_strength: record?.relative_strength_detail || null,
-          cross_venue_derivatives: record?.cross_venue_derivatives_detail || null,
-        }, {}),
-        fullEvidenceJson(record?.prior_htx_shadow, {}),
-        record?.decision?.dc_long ?? null,
-        record?.decision?.dc_short ?? null,
-        record?.decision?.live_probability ?? null,
-        record?.decision?.full_decision_eligible ? 1 : 0,
-        record?.decision?.live_signal ? 1 : 0,
-        record?.decision?.validated ? 1 : 0,
-        record?.decision?.telegram_started ? 1 : 0,
-        record?.decision?.trading_execution ? 1 : 0,
-        record?.safety?.missing_data_coerced_to_zero ? 1 : 0,
-        record?.safety?.cross_venue_dispersion_called_conflict ? 1 : 0,
-        1,
-        180,
-        now,
-        proofBundleJson
-      );
-
-    // Stage 3.9.2 deliberately removes Full Evidence retention DELETE from the
-    // hot Deep Check. This frees exactly one D1 statement for Final Decision
-    // SHADOW persistence while preserving the proven 48/50 peak budget.
-    const results = await env.DATA_DB.batch([insert]);
-    const insertChanges = Number(results?.[0]?.meta?.changes ?? 0);
-    const committedTs = Date.now();
-    if (insertChanges !== 1) {
-      return {
-        status: insertChanges === 0 ? "DEDUPLICATED_NO_FACTUAL_ACK" : "INSERT_ACK_INVALID",
-        persisted: false,
-        insert_changes: insertChanges,
-        changes: insertChanges,
-        hot_path_statements: 1,
-        cleanup_changes: 0,
-        cleanup_deferred: true,
-        cleanup_policy: "BOUNDED_MAINTENANCE_ONLY_NOT_DEEP_CHECK",
-        committed_ts: committedTs,
-        full_evidence_id: record?.full_evidence_id ?? null,
-        contract_code: record?.contract ?? null,
-        snapshot_id: stage392_prepared_proof_bundle?.bundle?.snapshot_id ?? null,
-        observed_ts: record?.observed_ts ?? null,
-        error: null,
-      };
-    }
-    return {
-      status: "CLOSED",
-      persisted: true,
-      insert_changes: insertChanges,
-      changes: insertChanges,
-      hot_path_statements: 1,
-      cleanup_changes: 0,
-      cleanup_deferred: true,
-      cleanup_policy: "BOUNDED_MAINTENANCE_ONLY_NOT_DEEP_CHECK",
-      committed_ts: committedTs,
-      full_evidence_id: record?.full_evidence_id ?? null,
-      contract_code: record?.contract ?? null,
-      snapshot_id: stage392_prepared_proof_bundle?.bundle?.snapshot_id ?? null,
-      observed_ts: record?.observed_ts ?? null,
-      error: null,
-    };
-  } catch (error) {
-    return {
-      status: /no such column|has no column|no such table/i.test(String(error?.message || error))
-        ? "MIGRATION_REQUIRED"
-        : "PARTIAL",
-      persisted: false,
-      insert_changes: 0,
-      hot_path_statements: 1,
-      cleanup_deferred: true,
-      error: String(error?.message || error).slice(0, 600),
-    };
-  }
-}
-
-async function runStage392FullEvidenceMaintenance(env, now = Date.now()) {
-  if (!env?.DATA_DB) return { status: "SOURCE_UNSUPPORTED", statements: 0, deleted: 0 };
-  const cutoff = now - 180 * 24 * 60 * 60 * 1000;
-  try {
-    const result = await env.DATA_DB.prepare(`
-      DELETE FROM full_evidence_shadow_log
-      WHERE full_evidence_id IN (
-        SELECT full_evidence_id FROM full_evidence_shadow_log
-        WHERE observed_ts < ?1
-        ORDER BY observed_ts ASC, full_evidence_id ASC
-        LIMIT 100
-      )
-    `).bind(cutoff).run();
-    return {
-      status: "CLOSED",
-      statements: 1,
-      deleted: Number(result?.meta?.changes ?? 0),
-      batch_cap: 100,
-      hot_path: false,
-    };
-  } catch (error) {
-    return {
-      status: /no such table|no such column|has no column/i.test(String(error?.message || error)) ? "MIGRATION_REQUIRED" : "PARTIAL_FAIL_CLOSED",
-      statements: 1,
-      deleted: 0,
-      batch_cap: 100,
-      hot_path: false,
-      error: String(error?.message || error).slice(0, 400),
-    };
-  }
-}
-
-/* STAGE371_CROSS_VENUE_LIQUIDATION_INTELLIGENCE */
-const LIQUIDATION_INTELLIGENCE_API = (() => {
-  const RULES_VERSION = "cross-venue-liquidation-shadow-v1";
-  const CONTRACT_VERSION = "liquidation-evidence-v1";
-  const PROVIDER = "ByKaranteli LiqMap Public API";
-  const PROVIDER_BASE = "https://bykaranteli.com";
-  const PUBLIC_MAP_MAX_AGE_SEC = 30 * 60;
-  const REALIZED_MAX_AGE_SEC = 30 * 60;
-  const RETENTION_DAYS = 180;
-  const FETCH_TIMEOUT_MS = 8000;
-  const MAX_LIFECYCLE_STATE_ROWS = 32;
-  const MAX_PROVIDER_GRAPH_NODES_SCANNED = 5000;
-  const MAX_PROJECTED_RAW_ROWS_SCANNED = 2000;
-  const MAX_PROJECTED_CLUSTERS_RETURNED = 500;
-  const MAX_REALIZED_ROWS_RETURNED = 100;
-  const MAX_COVERAGE_ROWS_SCANNED = 1000;
-  const MAX_SYMBOL_REGISTRY_ROWS_SCANNED = 1000;
-  const MAX_EXPLICIT_VENUES = 200;
-
-  function finite(value) {
-    if (value === null || value === undefined || value === "") return null;
-    const n = Number(value);
-    return Number.isFinite(n) ? n : null;
-  }
-
-  function txt(value) {
-    if (value === null || value === undefined) return "";
-    return String(value).trim();
-  }
-
-  function normalizeTs(value) {
-    if (value === null || value === undefined || value === "") return null;
-    if (typeof value === "string" && !/^\d+(?:\.\d+)?$/.test(value.trim())) {
-      const parsed = Date.parse(value);
-      return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
-    }
-    const n = Number(value);
-    if (!Number.isFinite(n) || n <= 0) return null;
-    if (n < 1e11) return Math.round(n * 1000);
-    if (n > 1e15) return Math.round(n / 1000);
-    return Math.round(n);
-  }
-
-  function ageStatus(sourceTs, nowTs, maxAgeSec) {
-    const ts = normalizeTs(sourceTs);
-    if (ts === null) return { status: "MISSING_SOURCE_TIMESTAMP", age_sec: null };
-    const skewSec = (ts - nowTs) / 1000;
-    if (skewSec > 60) return { status: "FUTURE", age_sec: -skewSec };
-    const ageSec = Math.max(0, (nowTs - ts) / 1000);
-    if (ageSec > maxAgeSec) return { status: "STALE", age_sec: ageSec };
-    return { status: "CURRENT", age_sec: ageSec };
-  }
-
-  function parseHtxUsdtContract(contractCode) {
-    const exact = txt(contractCode).normalize("NFC").toUpperCase();
-    const m = exact.match(/^([\p{L}\p{N}]+)-USDT$/u);
-    if (!m) {
-      return { exact, base: null, ascii: false, compatible: false, reason: "HTX_USDT_CONTRACT_FORMAT_NOT_VERIFIED" };
-    }
-    const base = m[1];
-    const ascii = /^[A-Z0-9]+$/.test(base);
-    return {
-      exact,
-      base,
-      ascii,
-      compatible: true,
-      reason: ascii ? null : "NONASCII_REQUIRES_PROVIDER_REGISTRY_EXACT_MATCH",
-    };
-  }
-
-  function providerSymbolFromContract(contractCode) {
-    const p = parseHtxUsdtContract(contractCode);
-    if (!p.compatible) {
-      return {
-        ...p,
-        provider_symbol: null,
-        alias_verified: false,
-        alias_verification_scope: "NONE_ZERO_GUESSED_FETCH",
-        asset_identity_verified: false,
-      };
-    }
-    return {
-      ...p,
-      provider_symbol: p.base,
-      alias_verified: false,
-      alias_verification_scope: p.ascii ? "DERIVED_FROM_EXACT_HTX_ASCII_BASE_UNCONFIRMED" : "HTX_UNICODE_BASE_PENDING_PROVIDER_REGISTRY_EXACT_MATCH",
-      asset_identity_verified: false,
-    };
-  }
-
-  async function fetchJson(fetchImpl, url, apiKey, timeoutMs = FETCH_TIMEOUT_MS) {
-    const f = fetchImpl || globalThis.fetch;
-    if (typeof f !== "function") {
-      return { ok: false, http_status: null, data: null, error: "FETCH_UNAVAILABLE", retry_after_sec: null, url };
-    }
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-    try {
-      const headers = { accept: "application/json" };
-      if (txt(apiKey)) headers.authorization = `Bearer ${txt(apiKey)}`;
-      const response = await f(url, { method: "GET", headers, signal: controller?.signal });
-      const status = Number(response?.status) || null;
-      const retryRaw = response?.headers?.get?.("retry-after");
-      const retryAfterSec = finite(retryRaw);
-      let data = null;
-      try {
-        data = await response.json();
-      } catch (error) {
-        return {
-          ok: false,
-          http_status: status,
-          data: null,
-          error: `INVALID_JSON:${txt(error?.message || error)}`.slice(0, 300),
-          retry_after_sec: retryAfterSec,
-          url,
-        };
-      }
-      const explicitFailure =
-        data?.ok === false || data?.success === false ||
-        ["error", "failed", "failure"].includes(txt(data?.status).toLowerCase()) ||
-        (data?.error && typeof data.error !== "object") ||
-        (finite(data?.code) !== null && finite(data?.code) !== 0 && finite(data?.code) !== 200);
-      const ok = Boolean(response?.ok) && !explicitFailure;
-      return {
-        ok,
-        http_status: status,
-        data,
-        error: ok ? null : (
-          txt(data?.error?.message || data?.error || data?.message || data?.msg) ||
-          (status === 401 || status === 403 ? "AUTH_REQUIRED_OR_INVALID" : `HTTP_OR_API_${status ?? "UNKNOWN"}`)
-        ).slice(0, 300),
-        retry_after_sec: retryAfterSec,
-        url,
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        http_status: null,
-        data: null,
-        error: error?.name === "AbortError" ? "TIMEOUT" : txt(error?.message || error).slice(0, 300),
-        retry_after_sec: null,
-        url,
-      };
-    } finally {
-      if (timer) clearTimeout(timer);
-    }
-  }
-
-  function rootSourceTimestamp(payload) {
-    const objects = [payload, payload?.meta, payload?.data?.meta, payload?.snapshot, payload?.data];
-    const keys = ["generatedAt", "generated_at", "updatedAt", "updated_at", "asOf", "as_of", "timestamp", "ts", "time"];
-    for (const obj of objects) {
-      if (!obj || typeof obj !== "object" || Array.isArray(obj)) continue;
-      for (const key of keys) {
-        const ts = normalizeTs(obj[key]);
-        if (ts !== null) return ts;
-      }
-    }
-    return null;
-  }
-
-  function currentPriceFrom(payload) {
-    const objects = [payload, payload?.data, payload?.snapshot, payload?.summary, payload?.market];
-    const keys = ["current_price", "currentPrice", "last_price", "lastPrice", "price", "mark_price", "markPrice"];
-    for (const obj of objects) {
-      if (!obj || typeof obj !== "object" || Array.isArray(obj)) continue;
-      for (const key of keys) {
-        const n = finite(obj[key]);
-        if (n !== null && n > 0) return n;
-      }
-    }
-    return null;
-  }
-
-  function explicitVenues(payload) {
-    const candidates = [payload?.venues, payload?.venues_covered, payload?.sources, payload?.data?.venues, payload?.data?.sources, payload?.meta?.venues];
-    for (const v of candidates) {
-      if (Array.isArray(v)) {
-        const xs = [...new Set(v.slice(0, MAX_EXPLICIT_VENUES).map(x => txt(typeof x === "object" ? (x?.venue || x?.exchange || x?.name || x?.id) : x)).filter(Boolean))];
-        if (xs.length) return xs;
-      }
-      if (typeof v === "string") {
-        const xs = [...new Set(v.slice(0, 20_000).split(/[,;+|]/).slice(0, MAX_EXPLICIT_VENUES).map(txt).filter(Boolean))];
-        if (xs.length) return xs;
-      }
-    }
-    return [];
-  }
-
-  function normalizeSide(rawSide, levelPrice, currentPrice) {
-    const s = txt(rawSide).toUpperCase().replace(/[\s-]+/g, "_");
-    if (/LONG/.test(s) && !/SHORT/.test(s)) return "LONG_LIQUIDATION_BELOW";
-    if (/SHORT/.test(s) && !/LONG/.test(s)) return "SHORT_LIQUIDATION_ABOVE";
-    // Price geometry is context only. It may never invent the liquidated side.
-    return "UNKNOWN";
-  }
-
-  function projectedContainerEntries(payload) {
-    const found = [];
-    const seen = new Set();
-    const visited = new WeakSet();
-    let graphNodesScanned = 0;
-    let graphScanTruncated = false;
-    function walk(node, path = "root", depth = 0) {
-      if (depth > 5 || node === null || node === undefined) return;
-      if (graphNodesScanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-        graphScanTruncated = true;
-        return;
-      }
-      graphNodesScanned += 1;
-      if (typeof node === "object") {
-        if (visited.has(node)) return;
-        visited.add(node);
-      }
-      if (Array.isArray(node)) {
-        const lower = path.toLowerCase();
-        const projectedName = /(level|cluster|band|heatmap|zone)/.test(lower);
-        const forbidden = /(real|recorded|actual|event|print|executed)/.test(lower);
-        if (projectedName && !forbidden && node.length) {
-          const key = path + ":" + node.length;
-          if (!seen.has(key)) {
-            seen.add(key);
-            found.push({ path, rows: node });
-          }
-        }
-        for (let i = 0; i < Math.min(node.length, 5); i++) {
-          if (graphNodesScanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-            graphScanTruncated = true;
-            break;
-          }
-          walk(node[i], `${path}[${i}]`, depth + 1);
-        }
-        return;
-      }
-      if (typeof node !== "object") return;
-      for (const [k, v] of Object.entries(node)) {
-        if (graphNodesScanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-          graphScanTruncated = true;
-          break;
-        }
-        const lower = k.toLowerCase();
-        if (/(real|recorded|actual|events?|prints?|liquidated)/.test(lower)) continue;
-        walk(v, `${path}.${k}`, depth + 1);
-      }
-    }
-    walk(payload);
-    return { entries: found, graph_nodes_scanned: graphNodesScanned, graph_scan_truncated: graphScanTruncated };
-  }
-
-  function rowLevel(row, containerPath, currentPrice, sourceTs, observedTs) {
-    if (row === null || row === undefined) return null;
-    let obj = row;
-    // Undocumented heatmap matrices are fail-closed. Provider-specific array
-    // schemas must be normalized upstream under an explicit versioned contract.
-    if (Array.isArray(row)) return null;
-    if (typeof obj !== "object") return null;
-    const low = finite(obj.price_low ?? obj.low ?? obj.lower ?? obj.from_price ?? obj.from);
-    const high = finite(obj.price_high ?? obj.high ?? obj.upper ?? obj.to_price ?? obj.to);
-    const single = finite(obj.level_price ?? obj.price_level ?? obj.liquidation_price ?? obj.price ?? obj.level ?? obj.center ?? obj.mid);
-    const price = single ?? (low !== null && high !== null ? (low + high) / 2 : null);
-    if (price === null || price <= 0) return null;
-
-    const sizePairs = [
-      ["notional_usd", obj.notional_usd], ["notionalUsd", obj.notionalUsd], ["size_usd", obj.size_usd],
-      ["sizeUsd", obj.sizeUsd], ["usd_notional", obj.usd_notional], ["quote_qty", obj.quote_qty],
-      ["quoteQty", obj.quoteQty], ["notional", obj.notional], ["usd", obj.usd]
-    ];
-    let rawSize = null;
-    let sourceUnit = null;
-    for (const [key, value] of sizePairs) {
-      const n = finite(value);
-      if (n !== null) { rawSize = n; sourceUnit = /usd|quote|notional/i.test(key) ? "USD_NOTIONAL_PROVIDER" : null; break; }
-    }
-    const strength = finite(obj.normalized_strength ?? obj.normalizedStrength ?? obj.strength ?? obj.density ?? obj.score ?? obj.intensity ?? obj.intensityUsd);
-    const rawSide = obj.side ?? obj.position_side ?? obj.positionSide ?? obj.liquidation_side ?? obj.liquidationSide ?? obj.type ?? obj.direction ?? obj.provider_raw_side ?? null;
-    const side = normalizeSide(rawSide, price, currentPrice);
-    if (side === "UNKNOWN" || (rawSize === null && strength === null)) return null;
-    const distancePct = currentPrice && currentPrice > 0 ? ((price / currentPrice) - 1) * 100 : null;
-    const leverage = finite(obj.leverage ?? obj.leverage_x ?? obj.leverageX);
-    const explicitMajor = obj.major === true || obj.is_major === true || obj.isMajor === true || txt(obj.classification).toUpperCase() === "MAJOR" || txt(obj.tier).toUpperCase() === "MAJOR";
-    return {
-      evidence_type: "PROJECTED_LIQUIDATION_CLUSTER",
-      provider: PROVIDER,
-      source_path: containerPath,
-      source_ts: sourceTs,
-      observed_ts: observedTs,
-      raw_side: rawSide === null ? null : txt(rawSide),
-      side,
-      level_price: price,
-      price_low: low,
-      price_high: high,
-      raw_size: rawSize,
-      source_unit: sourceUnit,
-      normalized_strength: strength,
-      current_price: currentPrice,
-      distance_pct: distancePct,
-      leverage_bucket: leverage,
-      explicit_major: explicitMajor,
-      provider_raw: {
-        id: txt(obj.id || obj.cluster_id || obj.clusterId) || null,
-        label: txt(obj.label || obj.name) || null,
-      },
-    };
-  }
-
-  function summaryClusters(payload, currentPrice, sourceTs, observedTs) {
-    const out = [];
-    const specs = [
-      ["nearest_cluster_below", "LONG_LIQUIDATION_BELOW", false], ["nearestClusterBelow", "LONG_LIQUIDATION_BELOW", false],
-      ["nearest_cluster_above", "SHORT_LIQUIDATION_ABOVE", false], ["nearestClusterAbove", "SHORT_LIQUIDATION_ABOVE", false],
-      ["largest_long_cluster", "LONG_LIQUIDATION_BELOW", true], ["largestLongCluster", "LONG_LIQUIDATION_BELOW", true],
-      ["largest_short_cluster", "SHORT_LIQUIDATION_ABOVE", true], ["largestShortCluster", "SHORT_LIQUIDATION_ABOVE", true],
-    ];
-    const objects = [payload, payload?.data, payload?.summary, payload?.clusters_summary, payload?.cluster_summary];
-    for (const obj of objects) {
-      if (!obj || typeof obj !== "object" || Array.isArray(obj)) continue;
-      for (const [key, side, major] of specs) {
-        if (!(key in obj)) continue;
-        const v = obj[key];
-        const row = typeof v === "object" && v !== null ? v : { price: v };
-        const parsed = rowLevel({ ...row, side, major: row.major ?? major }, `summary.${key}`, currentPrice, sourceTs, observedTs);
-        if (parsed) out.push(parsed);
-      }
-    }
-    return out;
-  }
-
-  function dedupeClusters(rows) {
-    const out = [];
-    const seen = new Set();
-    for (const r of rows) {
-      const price = finite(r?.level_price);
-      if (price === null) continue;
-      const key = `${r.side}|${price.toPrecision(12)}|${r.source_path}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      out.push(r);
-    }
-    return out;
-  }
-
-  function parseProviderSymbolRegistry(payload, expectedSymbol) {
-    const target = `${txt(expectedSymbol).toUpperCase()}USDT`;
-    const sourceTs = rootSourceTimestamp(payload);
-    const rows = Array.isArray(payload?.symbols) ? payload.symbols : [];
-    const scanned = rows.slice(0, MAX_SYMBOL_REGISTRY_ROWS_SCANNED);
-    const exact = scanned.find((row) => txt(row?.symbol).toUpperCase() === target) || null;
-    return {
-      source_ts: sourceTs,
-      target_symbol: target || null,
-      exact_match: Boolean(exact),
-      matched_symbol: exact ? txt(exact.symbol).toUpperCase() : null,
-      registry_size: rows.length,
-      rows_scanned: scanned.length,
-      scan_truncated: rows.length > scanned.length,
-    };
-  }
-
-  function parseProjectedMap(payload, { observedTs, expectedSymbol } = {}) {
-    const sourceTs = rootSourceTimestamp(payload);
-    const currentPrice = currentPriceFrom(payload);
-    const venues = explicitVenues(payload);
-    const rows = [];
-    const discovered = projectedContainerEntries(payload);
-    let rawRowsScanned = 0;
-    let unsupportedArrayRows = 0;
-    let rawRowsTruncated = discovered.graph_scan_truncated;
-    outer: for (const c of discovered.entries) {
-      for (const row of c.rows) {
-        if (rawRowsScanned >= MAX_PROJECTED_RAW_ROWS_SCANNED) {
-          rawRowsTruncated = true;
-          break outer;
-        }
-        rawRowsScanned += 1;
-        if (Array.isArray(row)) { unsupportedArrayRows += 1; continue; }
-        const parsed = rowLevel(row, c.path, currentPrice, sourceTs, observedTs);
-        if (parsed) rows.push(parsed);
-      }
-    }
-    rows.push(...summaryClusters(payload, currentPrice, sourceTs, observedTs));
-    const allClusters = dedupeClusters(rows);
-    const clusters = allClusters.slice(0, MAX_PROJECTED_CLUSTERS_RETURNED);
-    const clusterOutputTruncated = allClusters.length > clusters.length;
-    const responseSymbol = txt(payload?.symbol || payload?.data?.symbol || payload?.market?.symbol || payload?.instrument || payload?.data?.instrument).toUpperCase();
-    const symbolMatch = !responseSymbol || !expectedSymbol ? null : (
-      responseSymbol === expectedSymbol.toUpperCase() || responseSymbol === `${expectedSymbol.toUpperCase()}USDT`
-    );
-    return {
-      source_ts: sourceTs,
-      current_price: currentPrice,
-      venues_covered: venues,
-      clusters,
-      response_symbol: responseSymbol || null,
-      response_symbol_match: symbolMatch,
-      graph_nodes_scanned: discovered.graph_nodes_scanned,
-      raw_rows_scanned: rawRowsScanned,
-      unsupported_array_rows: unsupportedArrayRows,
-      schema_closed: unsupportedArrayRows === 0,
-      scan_truncated: rawRowsTruncated || clusterOutputTruncated,
-      cluster_output_truncated: clusterOutputTruncated,
-    };
-  }
-
-  function findSymbolRows(node, symbol, out = [], depth = 0, path = "root", state = null) {
-    const scan = state || { nodes_scanned: 0, scan_truncated: false, matched_rows: 0, output_truncated: false, visited: new WeakSet() };
-    if (depth > 6 || node === null || node === undefined) return out;
-    if (scan.nodes_scanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-      scan.scan_truncated = true;
-      return out;
-    }
-    scan.nodes_scanned += 1;
-    if (typeof node === "object") {
-      if (scan.visited.has(node)) return out;
-      scan.visited.add(node);
-    }
-    if (Array.isArray(node)) {
-      for (let i = 0; i < node.length; i++) {
-        if (scan.nodes_scanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-          scan.scan_truncated = true;
-          break;
-        }
-        findSymbolRows(node[i], symbol, out, depth + 1, `${path}[${i}]`, scan);
-      }
-      return out;
-    }
-    if (typeof node !== "object") return out;
-    const sym = txt(node.symbol || node.contract || node.instrument || node.instId || node.market).toUpperCase();
-    const target = txt(symbol).toUpperCase();
-    if (sym && target && (sym === target || sym === `${target}USDT` || sym.replace(/[-_/]/g, "") === `${target}USDT`)) {
-      scan.matched_rows += 1;
-      if (out.length < MAX_REALIZED_ROWS_RETURNED) out.push({ path, row: node });
-      else scan.output_truncated = true;
-    }
-    for (const [k, v] of Object.entries(node)) {
-      if (scan.nodes_scanned >= MAX_PROVIDER_GRAPH_NODES_SCANNED) {
-        scan.scan_truncated = true;
-        break;
-      }
-      if (typeof v === "object" && v !== null) findSymbolRows(v, symbol, out, depth + 1, `${path}.${k}`, scan);
-    }
-    return out;
-  }
-
-  function longShortFromObject(obj) {
-    if (!obj || typeof obj !== "object") return { longs: null, shorts: null, total: null, unit: null };
-    const longKeys = ["long_usd", "longUsd", "longs_usd", "longsUsd", "long_liquidations_usd", "longLiquidationsUsd", "long", "longs"];
-    const shortKeys = ["short_usd", "shortUsd", "shorts_usd", "shortsUsd", "short_liquidations_usd", "shortLiquidationsUsd", "short", "shorts"];
-    let longs = null, shorts = null;
-    for (const k of longKeys) { const n = finite(obj[k]); if (n !== null) { longs = n; break; } }
-    for (const k of shortKeys) { const n = finite(obj[k]); if (n !== null) { shorts = n; break; } }
-    const total = finite(obj.total_usd ?? obj.totalUsd ?? obj.total ?? obj.recorded_usd ?? obj.recordedUsd);
-    const unit = (longs !== null || shorts !== null || total !== null) ? "PROVIDER_REPORTED_NOTIONAL_UNVERIFIED_UNIT" : null;
-    return { longs, shorts, total, unit };
-  }
-
-  function parseRealizedSummary(payload, expectedSymbol, observedTs) {
-    const sourceTs = rootSourceTimestamp(payload);
-    const scan = { nodes_scanned: 0, scan_truncated: false, matched_rows: 0, output_truncated: false, visited: new WeakSet() };
-    const rows = findSymbolRows(payload, expectedSymbol, [], 0, "root", scan);
-    const compact = [];
-    for (const item of rows) {
-      const ls = longShortFromObject(item.row);
-      const venue = txt(item.row.venue || item.row.exchange || item.row.source) || null;
-      const eventTs = normalizeTs(item.row.event_time || item.row.timestamp || item.row.ts || item.row.time || sourceTs);
-      const price = finite(item.row.price || item.row.bankruptcy_price || item.row.bankruptcyPrice);
-      const size = finite(item.row.quote_qty || item.row.quoteQty || item.row.notional_usd || item.row.notionalUsd || item.row.size_usd || item.row.sizeUsd);
-      if (ls.longs === null && ls.shorts === null && ls.total === null && price === null && size === null) continue;
-      compact.push({
-        evidence_type: "REALIZED_LIQUIDATION_AGGREGATE",
-        provider: PROVIDER,
-        source_path: item.path,
-        venue,
-        source_ts: eventTs,
-        observed_ts: observedTs,
-        long_notional: ls.longs,
-        short_notional: ls.shorts,
-        total_notional: ls.total,
-        source_unit: ls.unit,
-        event_price: price,
-        event_notional: size,
-      });
-    }
-    const topReal = payload?.real_levels?.totals || payload?.data?.real_levels?.totals || null;
-    if (topReal && typeof topReal === "object") {
-      const ls = longShortFromObject(topReal);
-      if (ls.longs !== null || ls.shorts !== null || ls.total !== null) {
-        compact.push({
-          evidence_type: "REALIZED_LIQUIDATION_AGGREGATE",
-          provider: PROVIDER,
-          source_path: "real_levels.totals",
-          venue: "MULTI_VENUE_RECORDED",
-          source_ts: sourceTs,
-          observed_ts: observedTs,
-          long_notional: ls.longs,
-          short_notional: ls.shorts,
-          total_notional: ls.total,
-          source_unit: ls.unit,
-          event_price: null,
-          event_notional: null,
-        });
-      }
-    }
-    return {
-      source_ts: sourceTs,
-      rows: compact,
-      graph_nodes_scanned: scan.nodes_scanned,
-      matched_rows_within_scan: scan.matched_rows,
-      scan_truncated: scan.scan_truncated || scan.output_truncated,
-    };
-  }
-
-  function parseCoverage(payload, observedTs) {
-    const sourceTs = rootSourceTimestamp(payload);
-    const raw = Array.isArray(payload?.liquidations) ? payload.liquidations : (Array.isArray(payload?.data?.liquidations) ? payload.data.liquidations : []);
-    const scanned = raw.slice(0, MAX_COVERAGE_ROWS_SCANNED);
-    const venues = scanned.map(r => ({
-      venue: txt(r?.venue || r?.exchange || r?.name || r?.id) || null,
-      coverage_kind: txt(r?.kind || r?.coverage_kind || r?.coverage || r?.status) || null,
-      since: txt(r?.since || r?.since_date) || null,
-      events_24h: finite(r?.events_24h ?? r?.events24h ?? r?.count_24h),
-      last_record_ts: normalizeTs(r?.last_record || r?.lastRecord || r?.last_ts || r?.lastTs),
-    })).filter(r => r.venue);
-    return {
-      evidence_type: "MULTI_VENUE_MODEL_COVERAGE",
-      provider: PROVIDER,
-      source_ts: sourceTs,
-      observed_ts: observedTs,
-      venues,
-      rows_scanned: scanned.length,
-      scan_truncated: raw.length > scanned.length,
-    };
-  }
-
-  function explicitUnsupported(payload) {
-    const status = txt(payload?.status || payload?.data?.status).toUpperCase();
-    const msg = txt(payload?.error?.message || payload?.error || payload?.message || payload?.msg).toUpperCase();
-    const combined = status + " " + msg;
-    // Only symbol/data semantics count as unsupported. A generic HTTP/route
-    // "not found" must remain SOURCE_ERROR rather than being silently accepted.
-    return /UNSUPPORTED(?:[_ ]+SYMBOL)?|UNKNOWN[_ ]?SYMBOL|SYMBOL[^\n]{0,80}NOT[_ ]?FOUND|NO[_ ]?DATA/.test(combined);
-  }
-
-  function rankClusters(clusters, currentPrice) {
-    const above = clusters.filter(r => r.side === "SHORT_LIQUIDATION_ABOVE" && finite(r.level_price) !== null).sort((a,b)=>a.level_price-b.level_price);
-    const below = clusters.filter(r => r.side === "LONG_LIQUIDATION_BELOW" && finite(r.level_price) !== null).sort((a,b)=>b.level_price-a.level_price);
-    const explicitMajorAbove = above.filter(r => r.explicit_major);
-    const explicitMajorBelow = below.filter(r => r.explicit_major);
-    const byNotional = rows => rows.filter(r => finite(r.raw_size) !== null && r.source_unit === "USD_NOTIONAL_PROVIDER").sort((a,b)=>b.raw_size-a.raw_size);
-    const byStrength = rows => rows.filter(r => finite(r.normalized_strength) !== null).sort((a,b)=>b.normalized_strength-a.normalized_strength);
-    const largestAbove = byNotional(above)[0] || null;
-    const largestBelow = byNotional(below)[0] || null;
-    const strongestAbove = byStrength(above)[0] || null;
-    const strongestBelow = byStrength(below)[0] || null;
-    function compact(r) {
-      if (!r) return null;
-      return {
-        side: r.side,
-        level_price: r.level_price,
-        price_low: r.price_low,
-        price_high: r.price_high,
-        raw_size: r.raw_size,
-        source_unit: r.source_unit,
-        normalized_strength: r.normalized_strength,
-        distance_pct: r.distance_pct,
-        leverage_bucket: r.leverage_bucket,
-        explicit_major: r.explicit_major,
-      };
-    }
-    function gap(rows) {
-      if (rows.length < 2 || !currentPrice) return null;
-      return Math.abs((rows[1].level_price / currentPrice - rows[0].level_price / currentPrice) * 100);
-    }
-    return {
-      nearest_projected_cluster_above: compact(above[0] || null),
-      nearest_projected_cluster_below: compact(below[0] || null),
-      nearest_major_cluster_above: compact(explicitMajorAbove[0] || null),
-      nearest_major_cluster_below: compact(explicitMajorBelow[0] || null),
-      largest_cluster_above: compact(largestAbove),
-      largest_cluster_below: compact(largestBelow),
-      strongest_cluster_above: compact(strongestAbove),
-      strongest_cluster_below: compact(strongestBelow),
-      secondary_cascade_zone_above: compact(above[1] || null),
-      secondary_cascade_zone_below: compact(below[1] || null),
-      gap_to_next_cluster_above_pct: gap(above),
-      gap_to_next_cluster_below_pct: gap(below),
-    };
-  }
-
-  function htxRealizedCompact(htxTape) {
-    if (!htxTape || typeof htxTape !== "object") return null;
-    const summary = htxTape.summary || {};
-    return {
-      evidence_type: "REALIZED_LIQUIDATION_AGGREGATE",
-      provider: "HTX official public API",
-      venue: "HTX",
-      coverage_long: htxTape?.coverage?.htx_factual_long_liquidations || "not_closed",
-      coverage_short: htxTape?.coverage?.htx_factual_short_liquidations || "not_closed",
-      long_events: finite(summary?.long_liquidations?.events),
-      long_notional_usdt: finite(summary?.long_liquidations?.notional_usdt),
-      short_events: finite(summary?.short_liquidations?.events),
-      short_notional_usdt: finite(summary?.short_liquidations?.notional_usdt),
-      total_events: finite(summary?.total_events),
-      latest_event_time: htxTape?.freshness?.latest_event_time || null,
-      source_ts: normalizeTs(htxTape?.timestamp),
-    };
-  }
-
-  function clusterKey(contract, cluster) {
-    const p = finite(cluster?.level_price);
-    if (p === null) return null;
-    const normalized = Number(p.toPrecision(10));
-    return `${PROVIDER}|${contract}|${cluster.side}|${normalized}`;
-  }
-
-  function lifecycleFor(cluster, currentPrice) {
-    const p = finite(cluster?.level_price);
-    const c = finite(currentPrice);
-    if (p === null || c === null || c <= 0) return "ACTIVE";
-    const dist = Math.abs((p / c - 1) * 100);
-    if (cluster.side === "LONG_LIQUIDATION_BELOW" && c <= p) return "SWEPT";
-    if (cluster.side === "SHORT_LIQUIDATION_ABOVE" && c >= p) return "SWEPT";
-    if (dist <= 0.15) return "TOUCHED";
-    if (dist <= 1.0) return "APPROACHING";
-    return "ACTIVE";
-  }
-
-  async function collectCrossVenueLiquidationIntelligence({ contract_code, fetch_impl, api_key, now_ts = Date.now(), htx_liquidation_tape = null, asset_identity_proof = null } = {}) {
-    const nowTs = finite(now_ts) ?? Date.now();
-    const contract = txt(contract_code).normalize("NFC").toUpperCase();
-    const alias = providerSymbolFromContract(contract);
-    const proofBase = txt(asset_identity_proof?.canonical_base).normalize("NFC").toUpperCase();
-    const providerBase = txt(alias?.provider_symbol).normalize("NFC").toUpperCase();
-    const separateAssetIdentityVerified = Boolean(
-      asset_identity_proof?.verified === true &&
-      proofBase && providerBase && proofBase === providerBase
-    );
-    const separateAssetIdentityMethod = separateAssetIdentityVerified ? txt(asset_identity_proof?.method) : null;
-    const baseOutput = {
-      version: RULES_VERSION,
-      contract_version: CONTRACT_VERSION,
-      mode: "LIQUIDATION_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      contract_code: contract,
-      observed_ts: nowTs,
-      provider: PROVIDER,
-      provider_symbol: alias.provider_symbol,
-      alias_verified: alias.alias_verified,
-      alias_verification_scope: alias.alias_verification_scope,
-      asset_identity_verified: separateAssetIdentityVerified,
-      asset_identity_verification_method: separateAssetIdentityMethod,
-      cross_source_consensus: "NOT_AVAILABLE_SINGLE_PROJECTED_PROVIDER",
-      projected_map_status: "NOT_CLOSED",
-      realized_status: "NOT_CLOSED",
-      liquidation_dq_status: "NOT_CLOSED",
-      projected_clusters: [],
-      realized: { provider: [], htx: htxRealizedCompact(htx_liquidation_tape) },
-      coverage: null,
-      derived: {},
-      source_health: {},
-      errors: [],
-      safety: {
-        strategy_weights_changed: false,
-        new_percentage_weight: false,
-        direction_generated: false,
-        live_probability_generated: false,
-        live_signal_generated: false,
-        validated_signal_generated: false,
-        telegram_started: false,
-        trading_execution: false,
-        automatic_weight_tuning: false,
-        guaranteed_tp_generated: false,
-        synthetic_leverage_heatmap_generated: false,
-        shadow_only: true,
-      },
-    };
-
-    if (!alias.compatible || !alias.provider_symbol) {
-      return {
-        ...baseOutput,
-        projected_map_status: "SOURCE_INCOMPATIBLE",
-        realized_status: baseOutput.realized.htx ? "PARTIAL_HTX_ONLY" : "NOT_CLOSED",
-        liquidation_dq_status: "SOURCE_INCOMPATIBLE",
-        errors: [alias.reason || "ALIAS_NOT_SAFE"],
-        source_health: { external_fetches: 0, key_configured: Boolean(txt(api_key)) },
-      };
-    }
-
-    if (!txt(api_key)) {
-      return {
-        ...baseOutput,
-        projected_map_status: "CONFIG_REQUIRED_FREE_API_KEY",
-        realized_status: baseOutput.realized.htx ? "PARTIAL_HTX_ONLY" : "CONFIG_REQUIRED_FREE_API_KEY",
-        liquidation_dq_status: "CONFIG_REQUIRED",
-        errors: ["BYKARANTELI_API_KEY_MISSING"],
-        source_health: { external_fetches: 0, key_configured: false },
-      };
-    }
-
-    // User policy: projected liquidation maps are intentionally not collected
-    // for BTC or ETH. Every other valid HTX Futures contract uses the same
-    // routing rules; market-cap labels are never part of eligibility.
-    if (["BTC", "ETH"].includes(providerBase)) {
-      return {
-        ...baseOutput,
-        projected_map_status: "BTC_ETH_SKIPPED_BY_USER_POLICY",
-        realized_status: baseOutput.realized.htx ? "PARTIAL_HTX_ONLY" : "NOT_CLOSED",
-        liquidation_dq_status: "BTC_ETH_SKIPPED_BY_USER_POLICY",
-        errors: [],
-        source_health: { external_fetches: 0, key_configured: true, no_upper_move_cap: true },
-      };
-    }
-
-    const q = encodeURIComponent(alias.provider_symbol);
-    const urls = {
-      liqmap: `${PROVIDER_BASE}/api/liqmap/public?symbol=${q}`,
-      liquidations: `${PROVIDER_BASE}/api/public/liquidations?symbol=${q}USDT`,
-      coverage: `${PROVIDER_BASE}/api/public/coverage`,
-      symbols: `${PROVIDER_BASE}/api/public/symbols?top=1000`,
-    };
-    // The provider-owned symbol registry is the exact identity gate. It runs
-    // first so unsupported HTX contracts spend one request instead of four.
-    // Unicode bases are allowed only when this registry contains an exact NFC
-    // symbol; aliases and multiplier conversions are never guessed.
-    const symbolsRaw = await fetchJson(fetch_impl, urls.symbols, api_key);
-    const symbolRegistry = symbolsRaw.ok
-      ? parseProviderSymbolRegistry(symbolsRaw.data, alias.provider_symbol)
-      : {
-          source_ts: null, target_symbol: `${alias.provider_symbol}USDT`, exact_match: false,
-          matched_symbol: null, registry_size: 0, rows_scanned: 0, scan_truncated: false,
-        };
-    if (!symbolsRaw.ok || symbolRegistry.exact_match !== true) {
-      return {
-        ...baseOutput,
-        projected_map_status: symbolsRaw.ok ? "SOURCE_UNSUPPORTED" : "SOURCE_REGISTRY_ERROR",
-        realized_status: baseOutput.realized.htx ? "PARTIAL_HTX_ONLY" : "NOT_CLOSED",
-        liquidation_dq_status: symbolsRaw.ok ? "SOURCE_UNSUPPORTED" : "SOURCE_REGISTRY_ERROR",
-        alias_verification_scope: symbolsRaw.ok ? "PROVIDER_SYMBOL_REGISTRY_NO_EXACT_MATCH" : alias.alias_verification_scope,
-        errors: symbolsRaw.ok ? ["PROVIDER_SYMBOL_REGISTRY_NO_EXACT_MATCH"] : [`symbols:${symbolsRaw.error || "ERROR"}`],
-        source_health: {
-          external_fetches: 1, key_configured: true, symbols_http_status: symbolsRaw.http_status,
-          symbols_ok: symbolsRaw.ok, provider_symbol_registry_exact_match: false,
-          provider_symbol_registry_size: symbolRegistry.registry_size,
-          provider_symbol_registry_rows_scanned: symbolRegistry.rows_scanned,
-          provider_symbol_registry_scan_truncated: symbolRegistry.scan_truncated,
-          retry_after_sec: Number.isFinite(symbolsRaw.retry_after_sec) ? symbolsRaw.retry_after_sec : 0,
-          no_upper_move_cap: true,
-        },
-      };
-    }
-    const [mapRaw, realizedRaw, coverageRaw] = await Promise.all([
-      fetchJson(fetch_impl, urls.liqmap, api_key),
-      fetchJson(fetch_impl, urls.liquidations, api_key),
-      fetchJson(fetch_impl, urls.coverage, api_key),
-    ]);
-
-    const errors = [];
-    for (const [name, raw] of Object.entries({ liqmap: mapRaw, liquidations: realizedRaw, coverage: coverageRaw, symbols: symbolsRaw })) {
-      if (!raw.ok) errors.push(`${name}:${raw.error || "ERROR"}`);
-      if (raw.retry_after_sec !== null) errors.push(`${name}:RETRY_AFTER_${raw.retry_after_sec}`);
-    }
-
-    let projected = {
-      source_ts: null, current_price: null, venues_covered: [], clusters: [],
-      response_symbol: null, response_symbol_match: null, graph_nodes_scanned: 0,
-      raw_rows_scanned: 0, unsupported_array_rows: 0, schema_closed: true, scan_truncated: false, cluster_output_truncated: false,
-    };
-    if (mapRaw.ok) projected = parseProjectedMap(mapRaw.data, { observedTs: nowTs, expectedSymbol: alias.provider_symbol });
-    const mapFresh = ageStatus(projected.source_ts, nowTs, PUBLIC_MAP_MAX_AGE_SEC);
-    // A provider may return an explicit "unsupported symbol" payload with a non-2xx
-    // status. Classify that semantic result before generic transport/source errors.
-    // This keeps unsupported assets fail-closed without mislabelling them as outages.
-    const unsupported = explicitUnsupported(mapRaw.data) || /UNSUPPORTED(?:[_ ]+SYMBOL)?|UNKNOWN[_ ]?SYMBOL|SYMBOL[^\n]{0,80}NOT[_ ]?FOUND|NO[_ ]?DATA/i.test(txt(mapRaw.error));
-    const responseMismatch = projected.response_symbol_match === false;
-    const providerAliasVerified = !responseMismatch && (projected.response_symbol_match === true || symbolRegistry.exact_match === true);
-    const aliasVerificationScope = projected.response_symbol_match === true
-      ? "PROVIDER_RESPONSE_SYMBOL_EXACT_MATCH"
-      : (symbolRegistry.exact_match === true ? "PROVIDER_SYMBOL_REGISTRY_EXACT_MATCH" : alias.alias_verification_scope);
-
-    let projectedStatus = "NOT_CLOSED";
-    if (unsupported) projectedStatus = "SOURCE_UNSUPPORTED";
-    else if (!mapRaw.ok) projectedStatus = mapRaw.http_status === 401 || mapRaw.http_status === 403 ? "AUTH_ERROR" : "SOURCE_ERROR";
-    else if (responseMismatch) projectedStatus = "SOURCE_INCOMPATIBLE";
-    else if (mapFresh.status !== "CURRENT") projectedStatus = mapFresh.status;
-    else if (projected.schema_closed !== true) projectedStatus = "SCHEMA_NOT_CLOSED";
-    else if (projected.scan_truncated) projectedStatus = "SOURCE_PAYLOAD_TRUNCATED";
-    else if (projected.clusters.length === 0) projectedStatus = "CLOSED_NO_SIGNIFICANT_ZONES";
-    else if (!providerAliasVerified) projectedStatus = "OBSERVATION_ONLY_ALIAS_UNVERIFIED";
-    else if (!separateAssetIdentityVerified) projectedStatus = "OBSERVATION_ONLY_IDENTITY_UNVERIFIED";
-    else projectedStatus = "CLOSED_SHADOW";
-
-    const realizedParsed = realizedRaw.ok
-      ? parseRealizedSummary(realizedRaw.data, alias.provider_symbol, nowTs)
-      : { source_ts: null, rows: [], graph_nodes_scanned: 0, matched_rows_within_scan: 0, scan_truncated: false };
-    const realizedFresh = ageStatus(realizedParsed.source_ts, nowTs, REALIZED_MAX_AGE_SEC);
-    let realizedStatus = baseOutput.realized.htx ? "PARTIAL_HTX_ONLY" : "NOT_CLOSED";
-    if (realizedRaw.ok && realizedParsed.scan_truncated) realizedStatus = "SOURCE_PAYLOAD_TRUNCATED";
-    else if (realizedRaw.ok && realizedParsed.rows.length && realizedFresh.status === "CURRENT") realizedStatus = "OBSERVATION_ONLY_IDENTITY_UNVERIFIED";
-    else if (!realizedRaw.ok && baseOutput.realized.htx) realizedStatus = "PARTIAL_HTX_ONLY";
-    else if (!realizedRaw.ok) realizedStatus = "SOURCE_ERROR";
-    else if (realizedFresh.status !== "CURRENT" && realizedParsed.rows.length) realizedStatus = realizedFresh.status;
-
-    const coverage = coverageRaw.ok ? parseCoverage(coverageRaw.data, nowTs) : null;
-    const currentPrice = projected.current_price;
-    const clusters = projected.clusters.map(c => ({
-      ...c,
-      canonical_htx_contract: contract,
-      provider_symbol: alias.provider_symbol,
-      alias_verified: providerAliasVerified,
-      alias_verification_scope: aliasVerificationScope,
-      asset_identity_verified: separateAssetIdentityVerified,
-      asset_identity_verification_method: separateAssetIdentityMethod,
-      lifecycle: lifecycleFor(c, currentPrice),
-      cluster_key: clusterKey(contract, c),
-      first_seen: nowTs,
-      last_seen: nowTs,
-      persistence_observations: 1,
-      realized_confirmation_after_touch: null,
-      disagreement: null,
-      uncertainty: [
-        ...(separateAssetIdentityVerified ? [] : ["ASSET_IDENTITY_NOT_SEPARATELY_VERIFIED"]),
-        "SINGLE_PROJECTED_MODEL_NO_CROSS_SOURCE_CONSENSUS",
-      ],
-    }));
-    const derived = rankClusters(clusters, currentPrice);
-    const coveredVenues = projected.venues_covered;
-
-    let dq = "NOT_CLOSED";
-    if (["OBSERVATION_ONLY_IDENTITY_UNVERIFIED", "OBSERVATION_ONLY_ALIAS_UNVERIFIED"].includes(projectedStatus)) dq = projectedStatus;
-    else if (["SOURCE_UNSUPPORTED", "SOURCE_INCOMPATIBLE", "AUTH_ERROR", "SOURCE_ERROR", "SOURCE_PAYLOAD_TRUNCATED", "STALE", "FUTURE", "MISSING_SOURCE_TIMESTAMP"].includes(projectedStatus)) dq = projectedStatus;
-
-    return {
-      ...baseOutput,
-      provider_symbol: alias.provider_symbol,
-      alias_verified: providerAliasVerified,
-      alias_verification_scope: aliasVerificationScope,
-      asset_identity_verified: separateAssetIdentityVerified,
-      asset_identity_verification_method: separateAssetIdentityMethod,
-      projected_map_status: projectedStatus,
-      realized_status: realizedStatus,
-      liquidation_dq_status: dq,
-      projected_source_ts: projected.source_ts,
-      projected_source_age_sec: mapFresh.age_sec,
-      projected_freshness: mapFresh.status,
-      provider_current_price: currentPrice,
-      projected_clusters: clusters,
-      realized: { provider: realizedParsed.rows, htx: baseOutput.realized.htx },
-      coverage,
-      derived: {
-        ...derived,
-        covered_venue_count: coveredVenues.length || null,
-        venues_covered: coveredVenues,
-        covered_oi_share: null,
-        cross_venue_max_cluster: null,
-        cross_venue_max_cluster_reason: "Provider is one aggregated multi-venue model; per-venue contribution was not proven by this adapter.",
-        cross_source_consensus: "NOT_AVAILABLE",
-      },
-      source_health: {
-        external_fetches: 4,
-        key_configured: true,
-        liqmap_http_status: mapRaw.http_status,
-        realized_http_status: realizedRaw.http_status,
-        coverage_http_status: coverageRaw.http_status,
-        symbols_http_status: symbolsRaw.http_status,
-        liqmap_ok: mapRaw.ok,
-        realized_ok: realizedRaw.ok,
-        coverage_ok: coverageRaw.ok,
-        symbols_ok: symbolsRaw.ok,
-        provider_symbol_registry_exact_match: symbolRegistry.exact_match,
-        provider_symbol_registry_size: symbolRegistry.registry_size,
-        provider_symbol_registry_rows_scanned: symbolRegistry.rows_scanned,
-        provider_symbol_registry_scan_truncated: symbolRegistry.scan_truncated,
-        asset_identity_separately_verified: separateAssetIdentityVerified,
-        asset_identity_verification_method: separateAssetIdentityMethod,
-        asset_identity_corroborators: Array.isArray(asset_identity_proof?.corroborators) ? asset_identity_proof.corroborators.slice(0, 8) : [],
-        projected_graph_nodes_scanned: projected.graph_nodes_scanned,
-        projected_raw_rows_scanned: projected.raw_rows_scanned,
-        projected_scan_truncated: projected.scan_truncated,
-        projected_cluster_output_truncated: projected.cluster_output_truncated,
-        realized_graph_nodes_scanned: realizedParsed.graph_nodes_scanned,
-        realized_matched_rows_within_scan: realizedParsed.matched_rows_within_scan,
-        realized_scan_truncated: realizedParsed.scan_truncated,
-        coverage_rows_scanned: coverage?.rows_scanned ?? 0,
-        coverage_scan_truncated: coverage?.scan_truncated ?? false,
-        retry_after_sec: Math.max(0, ...[mapRaw.retry_after_sec, realizedRaw.retry_after_sec, coverageRaw.retry_after_sec, symbolsRaw.retry_after_sec].filter(Number.isFinite)),
-      },
-      errors,
-    };
-  }
-
-  function jsonCompact(value, fallback) {
-    try { return JSON.stringify(value ?? fallback); } catch { return JSON.stringify(fallback); }
-  }
-
-  function boundedLifecycleRows(record, observedTs, contract, observationId) {
-    const eligible =
-      record?.projected_map_status === "CLOSED_SHADOW" &&
-      record?.alias_verified === true &&
-      record?.asset_identity_verified === true &&
-      record?.projected_freshness === "CURRENT";
-    const candidates = (eligible && Array.isArray(record?.projected_clusters)
-      ? record.projected_clusters
-      : [])
-      .filter((cluster) => cluster?.cluster_key && finite(cluster?.level_price) !== null)
-      .sort((left, right) =>
-        Number(right?.explicit_major === true) - Number(left?.explicit_major === true) ||
-        Math.abs(finite(left?.distance_pct) ?? Infinity) - Math.abs(finite(right?.distance_pct) ?? Infinity) ||
-        txt(left?.cluster_key).localeCompare(txt(right?.cluster_key))
-      );
-    return {
-      eligible_total: candidates.length,
-      rows: candidates.slice(0, MAX_LIFECYCLE_STATE_ROWS).map((cluster) => ({
-        cluster_key: cluster.cluster_key,
-        provider: record?.provider || PROVIDER,
-        contract_code: contract,
-        side: cluster.side || "UNKNOWN",
-        level_price: cluster.level_price,
-        price_low: cluster.price_low ?? null,
-        price_high: cluster.price_high ?? null,
-        source_unit: cluster.source_unit ?? null,
-        first_seen_ts: observedTs,
-        last_seen_ts: observedTs,
-        lifecycle: cluster.lifecycle || "ACTIVE",
-        last_distance_pct: cluster.distance_pct ?? null,
-        explicit_major: cluster.explicit_major ? 1 : 0,
-        last_raw_size: cluster.raw_size ?? null,
-        last_strength: cluster.normalized_strength ?? null,
-        source_model_version: RULES_VERSION,
-        last_observation_id: observationId,
-      })),
-    };
-  }
-
-  function lifecycleStateStatement(env, rows) {
-    if (!rows.length) return null;
-    return env.DATA_DB.prepare(`
-      INSERT INTO liquidation_cluster_state
-      (cluster_key,provider,contract_code,side,level_price,price_low,price_high,source_unit,
-       first_seen_ts,last_seen_ts,persistence_observations,lifecycle,last_distance_pct,
-       explicit_major,last_raw_size,last_strength,source_model_version,last_observation_id)
-      SELECT
-        json_extract(value,'$.cluster_key'),json_extract(value,'$.provider'),
-        json_extract(value,'$.contract_code'),json_extract(value,'$.side'),
-        json_extract(value,'$.level_price'),json_extract(value,'$.price_low'),
-        json_extract(value,'$.price_high'),json_extract(value,'$.source_unit'),
-        json_extract(value,'$.first_seen_ts'),json_extract(value,'$.last_seen_ts'),1,
-        json_extract(value,'$.lifecycle'),json_extract(value,'$.last_distance_pct'),
-        json_extract(value,'$.explicit_major'),json_extract(value,'$.last_raw_size'),
-        json_extract(value,'$.last_strength'),json_extract(value,'$.source_model_version'),
-        json_extract(value,'$.last_observation_id')
-      FROM json_each(?1)
-      WHERE 1
-      ON CONFLICT(cluster_key) DO UPDATE SET
-        last_seen_ts=excluded.last_seen_ts,
-        persistence_observations=liquidation_cluster_state.persistence_observations+1,
-        lifecycle=excluded.lifecycle,
-        last_distance_pct=excluded.last_distance_pct,
-        explicit_major=excluded.explicit_major,
-        last_raw_size=excluded.last_raw_size,
-        last_strength=excluded.last_strength,
-        source_model_version=excluded.source_model_version,
-        last_observation_id=excluded.last_observation_id
-        /* REPORT2_D1_CLUSTER_WRITE_SHARD_V1: raw liquidation observation remains per-cycle.
-           Unchanged cluster-state summary rows are spread across 3 scanner buckets;
-           lifecycle / explicit-major changes still persist immediately.
-           No schema, signal, Decision Layer, Telegram or trading change. */
-        WHERE
-          liquidation_cluster_state.last_seen_ts IS NULL
-          OR liquidation_cluster_state.lifecycle IS NOT excluded.lifecycle
-          OR liquidation_cluster_state.explicit_major IS NOT excluded.explicit_major
-          OR (
-            excluded.last_seen_ts - liquidation_cluster_state.last_seen_ts >= 300000
-            AND (liquidation_cluster_state.rowid % 3) =
-                (CAST(excluded.last_seen_ts / 300000 AS INTEGER) % 3)
-          )
-    `).bind(jsonCompact(rows, []));
-  }
-
-  async function persistShadow(env, record, now = Date.now()) {
-    if (!env?.DATA_DB) return { status: "SOURCE_UNSUPPORTED", persisted: false, error: "DATA_DB_NOT_CONFIGURED" };
-    const observedTs = finite(record?.observed_ts) ?? now;
-    const contract = txt(record?.contract_code) || "UNKNOWN";
-    const observationId = `${observedTs}:${contract}:liq371`;
-    const cutoff = now - RETENTION_DAYS * 24 * 60 * 60 * 1000;
-    try {
-      const insert = env.DATA_DB.prepare(`
-        INSERT OR IGNORE INTO liquidation_shadow_observation
-        (
-          observation_id, contract_code, observed_ts, rules_version, contract_version, mode,
-          provider, provider_symbol, alias_verified, alias_verification_scope, asset_identity_verified,
-          projected_map_status, realized_status, dq_status, source_ts, source_age_sec, freshness_status,
-          projected_clusters_json, realized_json, coverage_json, derived_json, source_health_json, errors_json,
-          live_probability, live_signal, validated_signal, telegram_started, trading_execution,
-          strategy_weights_changed, automatic_weight_tuning_enabled, guaranteed_tp_generated,
-          synthetic_leverage_heatmap_generated, shadow_only, persisted_ts
-        ) VALUES (
-          ?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,
-          ?18,?19,?20,?21,?22,?23,NULL,0,0,0,0,0,0,0,0,1,?24
-        )
-      `).bind(
-        observationId, contract, observedTs, RULES_VERSION, CONTRACT_VERSION,
-        "LIQUIDATION_INTELLIGENCE_SHADOW_NO_EXECUTION", record?.provider || PROVIDER,
-        record?.provider_symbol || null, record?.alias_verified ? 1 : 0,
-        record?.alias_verification_scope || null, record?.asset_identity_verified ? 1 : 0,
-        record?.projected_map_status || "NOT_CLOSED", record?.realized_status || "NOT_CLOSED",
-        record?.liquidation_dq_status || "NOT_CLOSED", record?.projected_source_ts ?? null,
-        record?.projected_source_age_sec ?? null, record?.projected_freshness || null,
-        jsonCompact(record?.projected_clusters, []), jsonCompact(record?.realized, {}),
-        jsonCompact(record?.coverage, {}), jsonCompact(record?.derived, {}),
-        jsonCompact(record?.source_health, {}), jsonCompact(record?.errors, []), now
-      );
-
-      const lifecycle = boundedLifecycleRows(record, observedTs, contract, observationId);
-      const stateStatement = lifecycleStateStatement(env, lifecycle.rows);
-      const cleanupObs = env.DATA_DB.prepare(`DELETE FROM liquidation_shadow_observation WHERE observed_ts < ?1`).bind(cutoff);
-      const expireState = env.DATA_DB.prepare(`UPDATE liquidation_cluster_state SET lifecycle='EXPIRED' WHERE last_seen_ts < ?1 AND lifecycle NOT IN ('SWEPT','INVALIDATED','EXPIRED')`).bind(now - 24 * 60 * 60 * 1000);
-      const deleteState = env.DATA_DB.prepare(`DELETE FROM liquidation_cluster_state WHERE last_seen_ts < ?1`).bind(cutoff);
-      const statements = [insert, ...(stateStatement ? [stateStatement] : []), cleanupObs, expireState, deleteState];
-      const results = await env.DATA_DB.batch(statements);
-      return {
-        status: "CLOSED",
-        persisted: true,
-        insert_changes: Number(results?.[0]?.meta?.changes ?? 0),
-        state_rows_eligible: lifecycle.eligible_total,
-        state_rows_attempted: lifecycle.rows.length,
-        state_rows_capacity_dropped: Math.max(0, lifecycle.eligible_total - lifecycle.rows.length),
-        d1_statements: statements.length,
-        d1_statement_cap: 5,
-        error: null,
-      };
-    } catch (error) {
-      return { status: "PARTIAL", persisted: false, error: txt(error?.message || error).slice(0, 600) };
-    }
-  }
-
-  async function dataPlaneSummary(env, now = Date.now()) {
-    const safe = {
-      table_available: false,
-      mode: "LIQUIDATION_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      rules_version: RULES_VERSION,
-      contract_version: CONTRACT_VERSION,
-      projected_model_provider: PROVIDER,
-      cross_source_consensus: "NOT_AVAILABLE_SINGLE_PROJECTED_PROVIDER",
-      changes_strategy_weights: false,
-      new_percentage_weight: false,
-      live_probability_generated: false,
-      live_signal_generated: false,
-      validated_signal_generated: false,
-      telegram_started: false,
-      trading_execution: false,
-      automatic_weight_tuning_enabled: false,
-      guaranteed_tp_generated: false,
-      synthetic_leverage_heatmap_generated: false,
-      shadow_only: true,
-      retention_days: RETENTION_DAYS,
-    };
-    if (!env?.DATA_DB) return { ...safe, error: "DATA_DB_NOT_CONFIGURED" };
-    try {
-      const since = now - 24 * 60 * 60 * 1000;
-      const summary = await env.DATA_DB.prepare(`
-        SELECT COUNT(*) total,
-          SUM(CASE WHEN projected_map_status='OBSERVATION_ONLY_IDENTITY_UNVERIFIED' THEN 1 ELSE 0 END) projected_observations,
-          SUM(CASE WHEN projected_map_status='SOURCE_UNSUPPORTED' THEN 1 ELSE 0 END) source_unsupported,
-          SUM(CASE WHEN projected_map_status='SOURCE_INCOMPATIBLE' THEN 1 ELSE 0 END) source_incompatible,
-          SUM(CASE WHEN projected_map_status='CONFIG_REQUIRED_FREE_API_KEY' THEN 1 ELSE 0 END) config_required,
-          SUM(CASE WHEN live_probability IS NOT NULL THEN 1 ELSE 0 END) nonnull_live_probability,
-          SUM(live_signal) live_signals, SUM(validated_signal) validated_signals,
-          SUM(telegram_started) telegram_started, SUM(trading_execution) trading_execution,
-          SUM(strategy_weights_changed) strategy_weights_changed,
-          SUM(automatic_weight_tuning_enabled) automatic_weight_tuning_enabled,
-          SUM(guaranteed_tp_generated) guaranteed_tp_generated,
-          SUM(synthetic_leverage_heatmap_generated) synthetic_heatmap_generated
-        FROM liquidation_shadow_observation WHERE observed_ts >= ?1
-      `).bind(since).first();
-      const recentResult = await env.DATA_DB.prepare(`
-        SELECT observation_id,contract_code,observed_ts,provider,provider_symbol,alias_verified,
-          alias_verification_scope,asset_identity_verified,projected_map_status,realized_status,dq_status,
-          source_ts,source_age_sec,freshness_status,derived_json,source_health_json,errors_json,
-          live_probability,live_signal,validated_signal,telegram_started,trading_execution,
-          strategy_weights_changed,automatic_weight_tuning_enabled,guaranteed_tp_generated,
-          synthetic_leverage_heatmap_generated,shadow_only
-        FROM liquidation_shadow_observation ORDER BY observed_ts DESC LIMIT 8
-      `).all();
-      const states = await env.DATA_DB.prepare(`SELECT COUNT(*) total, SUM(CASE WHEN lifecycle='ACTIVE' THEN 1 ELSE 0 END) active, SUM(CASE WHEN lifecycle='APPROACHING' THEN 1 ELSE 0 END) approaching, SUM(CASE WHEN lifecycle='TOUCHED' THEN 1 ELSE 0 END) touched, SUM(CASE WHEN lifecycle='SWEPT' THEN 1 ELSE 0 END) swept FROM liquidation_cluster_state`).first();
-      const parse = (v, fallback) => { try { return JSON.parse(v || JSON.stringify(fallback)); } catch { return fallback; } };
-      const recent = Array.isArray(recentResult?.results) ? recentResult.results.map(r => ({
-        observation_id: r.observation_id,
-        contract: r.contract_code,
-        observed_ts: Number(r.observed_ts) || null,
-        observed_age_sec: Number.isFinite(Number(r.observed_ts)) ? Math.max(0, now - Number(r.observed_ts))/1000 : null,
-        provider: r.provider,
-        provider_symbol: r.provider_symbol,
-        alias_verified: Number(r.alias_verified) === 1,
-        alias_verification_scope: r.alias_verification_scope,
-        asset_identity_verified: Number(r.asset_identity_verified) === 1,
-        projected_map_status: r.projected_map_status,
-        realized_status: r.realized_status,
-        liquidation_dq_status: r.dq_status,
-        source_ts: Number(r.source_ts) || null,
-        source_age_sec: r.source_age_sec === null ? null : Number(r.source_age_sec),
-        freshness_status: r.freshness_status,
-        derived: parse(r.derived_json, {}),
-        source_health: parse(r.source_health_json, {}),
-        errors: parse(r.errors_json, []),
-        safety: {
-          live_probability: r.live_probability ?? null,
-          live_signal: Number(r.live_signal) === 1,
-          validated_signal: Number(r.validated_signal) === 1,
-          telegram_started: Number(r.telegram_started) === 1,
-          trading_execution: Number(r.trading_execution) === 1,
-          strategy_weights_changed: Number(r.strategy_weights_changed) === 1,
-          automatic_weight_tuning_enabled: Number(r.automatic_weight_tuning_enabled) === 1,
-          guaranteed_tp_generated: Number(r.guaranteed_tp_generated) === 1,
-          synthetic_leverage_heatmap_generated: Number(r.synthetic_leverage_heatmap_generated) === 1,
-          shadow_only: Number(r.shadow_only) === 1,
-        },
-      })) : [];
-      return {
-        ...safe,
-        table_available: true,
-        summary_24h: {
-          total: Number(summary?.total ?? 0),
-          projected_observations: Number(summary?.projected_observations ?? 0),
-          source_unsupported: Number(summary?.source_unsupported ?? 0),
-          source_incompatible: Number(summary?.source_incompatible ?? 0),
-          config_required: Number(summary?.config_required ?? 0),
-          nonnull_live_probability: Number(summary?.nonnull_live_probability ?? 0),
-          live_signals: Number(summary?.live_signals ?? 0),
-          validated_signals: Number(summary?.validated_signals ?? 0),
-          telegram_started: Number(summary?.telegram_started ?? 0),
-          trading_execution: Number(summary?.trading_execution ?? 0),
-          strategy_weights_changed: Number(summary?.strategy_weights_changed ?? 0),
-          automatic_weight_tuning_enabled: Number(summary?.automatic_weight_tuning_enabled ?? 0),
-          guaranteed_tp_generated: Number(summary?.guaranteed_tp_generated ?? 0),
-          synthetic_heatmap_generated: Number(summary?.synthetic_heatmap_generated ?? 0),
-        },
-        cluster_state: {
-          total: Number(states?.total ?? 0), active: Number(states?.active ?? 0), approaching: Number(states?.approaching ?? 0), touched: Number(states?.touched ?? 0), swept: Number(states?.swept ?? 0),
-        },
-        recent,
-      };
-    } catch (error) {
-      return { ...safe, error: txt(error?.message || error).slice(0, 600) };
-    }
-  }
-
-  return {
-    RULES_VERSION,
-    CONTRACT_VERSION,
-    providerSymbolFromContract,
-    parseProviderSymbolRegistry,
-    parseProjectedMap,
-    parseRealizedSummary,
-    parseCoverage,
-    collectCrossVenueLiquidationIntelligence,
-    persistShadow,
-    dataPlaneSummary,
-  };
-})();
-
-async function buildDeepCheckInput(params, env) {
-  const cycleStartedTs = Date.now();
-  let now = cycleStartedTs;
-  const sharedFetch = createPerDeepCheckFetchCache();
-
-  const contract =
-    normalizeFuturesContract(
-      params?.contract ||
-      params?.contract_code ||
-      params?.symbol ||
-      "ETHFI-USDT"
-    );
-
-  const futuresParams = {
-    contract,
-    notional_usdt: 1000,
-    trades: 2000,
-    _fetch_json: sharedFetch.fetch,
-  };
-
-  const spotParams = {
-    symbol: contract,
-    notional_usdt: 1000,
-    trades: 2000,
-    freshness_sec: 900,
-    _fetch_json: sharedFetch.fetch,
-  };
-
-  const trajectoryParams = {
-    contract,
-    trades: 2000,
-    kline_size: 1600,
-    _fetch_json: sharedFetch.fetch,
-  };
-
-  const historyParams = {
-    contract,
-    hours: 6,
-  };
-
-  const results =
-    await Promise.allSettled([
-      futuresSnapshot(futuresParams),
-      spotSnapshot(spotParams),
-      futuresTrajectory(trajectoryParams),
-      htxStage0History(
-        historyParams,
-        env
-      ),
-    ]);
-
-  // Conservative factual availability bound: all four promises have settled.
-  // Keep provider timestamps unchanged; collection time is a different field.
-  const componentsAvailableTs = Date.now();
-
-  function settled(result) {
-    if (result.status === "fulfilled") {
-      return {
-        available_ts: componentsAvailableTs,
-        execution_status: "FULFILLED",
-        data: result.value,
-        error: null,
-      };
-    }
-
-    return {
-      execution_status: "REJECTED",
-      data: null,
-      error: String(
-        result.reason?.message ||
-        result.reason ||
-        "UNKNOWN_ERROR"
-      ),
-    };
-  }
-
-  const futures =
-    settled(results[0]);
-
-  const htxObservationReferencePrice = buildHtxReferencePrice({
-    contract,
-    type: 'MID_OBSERVATION',
-    bid: futures?.data?.bbo?.best_bid,
-    ask: futures?.data?.bbo?.best_ask,
-    source_ts: Date.parse(futures?.data?.liquidity?.depth_timestamp || '') || futures?.data?.timestamp,
-    received_ts: futures?.available_ts ?? futures?.data?.timestamp,
-  });
-
-  const spot =
-    settled(results[1]);
-
-  const trajectory =
-    settled(results[2]);
-
-  const history =
-    settled(results[3]);
-
-  const failedComponents = [
-    ["futures_snapshot", futures],
-    ["spot_snapshot", spot],
-    ["futures_trajectory", trajectory],
-    ["stage0_history", history],
-  ]
-    .filter(
-      ([, component]) =>
-        component.execution_status !==
-        "FULFILLED"
-    )
-    .map(([name]) => name);
-
-
-  const dataSufficiency = (() => {
-    const closed = (value) =>
-      value === "closed";
-
-    const makeComponent = (
-      component,
-      usable,
-      checks
-    ) => {
-      const gaps =
-        checks
-          .filter(([, ok]) => !ok)
-          .map(([name]) => name);
-
-      let sufficiency =
-        "SUFFICIENT";
-
-      if (
-        component?.execution_status !==
-          "FULFILLED" ||
-        !component?.data ||
-        !usable
-      ) {
-        sufficiency =
-          "INSUFFICIENT";
-      } else if (gaps.length) {
-        sufficiency =
-          "PARTIAL";
-      }
-
-      return {
-        execution_status:
-          component?.execution_status ??
-          "UNKNOWN",
-        sufficiency,
-        gaps,
-      };
-    };
-
-    const futuresCoverage =
-      futures?.data?.coverage || {};
-
-    const futuresChecks = [
-      [
-        "htx_futures_liquidity",
-        closed(
-          futuresCoverage
-            .htx_futures_liquidity
-        ),
-      ],
-      [
-        "htx_futures_order_flow",
-        closed(
-          futuresCoverage
-            .htx_futures_order_flow
-        ),
-      ],
-      [
-        "htx_open_interest",
-        closed(
-          futuresCoverage
-            .htx_open_interest
-        ),
-      ],
-      [
-        "htx_funding",
-        closed(
-          futuresCoverage
-            .htx_funding
-        ),
-      ],
-    ];
-
-    const futuresUsable =
-      futuresChecks.some(([, ok]) => ok);
-
-    const spotQuality =
-      spot?.data?.quality_status ?? null;
-
-    const spotChecks = [
-      [
-        "quality_status_GREEN",
-        spotQuality === "GREEN",
-      ],
-    ];
-
-    const spotUsable =
-      spotQuality === "GREEN" ||
-      spotQuality === "YELLOW";
-
-    const trajectoryCoverage =
-      trajectory?.data?.coverage || {};
-
-    const trajectoryRequired = [
-      "price_5m",
-      "price_15m",
-      "price_1h",
-      "price_4h",
-      "price_24h",
-      "flow_5m",
-      "flow_15m",
-      "flow_1h",
-      "flow_4h",
-      "flow_24h",
-      "oi_1h",
-      "oi_4h",
-      "oi_24h",
-      "funding_current",
-      "funding_history",
-    ];
-
-    const trajectoryChecks =
-      trajectoryRequired.map(
-        (name) => [
-          name,
-          closed(
-            trajectoryCoverage[name]
-          ),
-        ]
-      );
-
-    const trajectoryUsable =
-      trajectoryChecks.some(
-        ([, ok]) => ok
-      );
-
-    const historyData =
-      history?.data || null;
-
-    const historySeries =
-      Array.isArray(historyData?.series)
-        ? historyData.series
-        : [];
-
-    const historyChecks = [
-      [
-        "data_db",
-        historyData?.health
-          ?.data_db === true,
-      ],
-      [
-        "persistent_history",
-        closed(
-          historyData?.coverage
-            ?.persistent_history
-        ),
-      ],
-      [
-        "series_non_empty",
-        historySeries.length > 0,
-      ],
-      [
-        "complete_5m_window",
-        historyData?.coverage?.complete_5m_window === true,
-      ],
-    ];
-
-    const historyUsable =
-      history?.execution_status ===
-        "FULFILLED" &&
-      historyData?.health
-        ?.data_db === true &&
-      historySeries.length > 0 &&
-      historyData?.coverage?.complete_5m_window === true;
-
-    const components = {
-      futures_snapshot:
-        makeComponent(
-          futures,
-          futuresUsable,
-          futuresChecks
-        ),
-
-      spot_snapshot:
-        makeComponent(
-          spot,
-          spotUsable,
-          spotChecks
-        ),
-
-      futures_trajectory:
-        makeComponent(
-          trajectory,
-          trajectoryUsable,
-          trajectoryChecks
-        ),
-
-      stage0_history:
-        makeComponent(
-          history,
-          historyUsable,
-          historyChecks
-        ),
-    };
-
-    const states =
-      Object.values(components)
-        .map(
-          (component) =>
-            component.sufficiency
-        );
-
-    let classification =
-      "SUFFICIENT";
-
-    if (
-      states.includes(
-        "INSUFFICIENT"
-      )
-    ) {
-      classification =
-        "INSUFFICIENT";
-    } else if (
-      states.includes("PARTIAL")
-    ) {
-      classification =
-        "PARTIAL";
-    }
-
-    const gaps =
-      Object.entries(components)
-        .flatMap(
-          ([name, component]) =>
-            component.gaps.map(
-              (gap) =>
-                name + "." + gap
-            )
-        );
-
-    return {
-      classification,
-      sufficient:
-        classification ===
-        "SUFFICIENT",
-
-      components,
-
-      gaps,
-
-      unavailable_by_design: [
-        "futures_trajectory.coverage.oi_5m",
-        "futures_trajectory.coverage.oi_15m",
-      ],
-
-      history_observed: {
-        expected_5m_points:
-          historyData?.coverage
-            ?.expected_5m_points ??
-          null,
-
-        received_points:
-          historyData?.coverage
-            ?.received_points ??
-          null,
-
-        approximate_5m_coverage_pct:
-          historyData?.coverage
-            ?.approximate_5m_coverage_pct ??
-          null,
-      },
-
-      decision_effect:
-        "NONE_EVIDENCE_CLASSIFICATION_ONLY",
-    };
-  })();
-
-
-  
-  // The authoritative decision clock is fixed only after all enrichment and
-  // an optional bounded execution refresh. Do not persist an early decision
-  // whose own evidence is not available yet.
-  let shadowDecision = null;
-  let shadowPersistence = null;
-
-  // One bounded Deep Check runs per invocation. Reserve every ByKaranteli
-  // request for this contract before the first network call so scheduled and
-  // manual "Create report" runs share one atomic monthly allowance. BTC/ETH
-  // need no liquidation map and reserve only the existing smart-money call;
-  // every other HTX Futures contract reserves four map-quality calls plus it.
-  const bykRequestedUnits = ["BTC-USDT", "ETH-USDT"].includes(contract) ? 1 : 5;
-  let bykAdmission = { allowed: false, status: "ADMISSION_CALLBACK_NOT_CONFIGURED", reserved_units: 0 };
-  try {
-    if (typeof env?.REPORT2_BYKARANTELI_RESERVE === "function") {
-      bykAdmission = await env.REPORT2_BYKARANTELI_RESERVE({
-        contract,
-        run_id: String(params?.run_id || "").trim() || `manual-${cycleStartedTs}`,
-        units: bykRequestedUnits,
-      });
-    }
-  } catch (error) {
-    bykAdmission = { allowed: false, status: "ADMISSION_FAILED_CLOSED", reserved_units: 0, error: String(error?.message || error).slice(0, 200) };
-  }
-  const admittedBykApiKey = bykAdmission?.allowed === true ? (env?.BYKARANTELI_API_KEY || "") : "";
-
-  let publicEvidence;
-  let publicEvidenceAvailableTs = null;
-  try {
-    publicEvidence =
-      await collectPublicFullEvidenceCrossVenue({
-        contract_code: contract,
-        fetch_impl: fetch,
-        now_ts: now,
-      });
-    publicEvidenceAvailableTs = Date.now();
-  } catch (error) {
-    publicEvidence = {
-      version: "public-evidence-adapters-v1",
-      contract_code: contract,
-      observed_ts: now,
-      alias_verification: null,
-      evidence: [],
-      relative_strength_detail: null,
-      cross_venue_derivatives_detail: null,
-      collection_error:
-        String(error?.message || error).slice(0, 600),
-      safety: {
-        strategy_weights_changed: false,
-        missing_data_directional_penalty: false,
-        live_promotion: false,
-        telegram: false,
-        execution: false,
-      },
-    };
-  }
-
-  let smartMoneyRaw;
-  try {
-    smartMoneyRaw = await fetchExistingSmartMoneyRecorderRaw({
-      fetch_impl: fetch,
-      bykaranteli_fetcher: fetchByKaranteliSmartMoneyRaw,
-      contract_code: contract,
-      bykaranteli_api_key: admittedBykApiKey,
-      hyperliquid_sample_address: env?.REPORT2_HYPERLIQUID_SAMPLE_ADDRESS || "",
-      observed_ts: now,
-    });
-  } catch (error) {
-    smartMoneyRaw = {
-      version: "tz101-smart-money-raw-r8+hyperliquid-existing-recorder-v1",
-      status: "NOT_CLOSED",
-      reason: "SOURCE_FETCH_ERROR",
-      score_eligible: false,
-      directional_vote_eligible: false,
-      calibration_required: true,
-      external_fetches: 1,
-      hyperliquid_context: null,
-      recorder_extension: {
-        mode: "FAIL_CLOSED",
-        second_recorder_added: false,
-        smart_money_external_requests_each: 1,
-        hot_cycle_external_request_delta: 0,
-      },
-      error: String(error?.message || error).slice(0, 300),
-    };
-  }
-  // R8/TZ10.1: raw Smart Money is supporting/advisory until calibrated.
-  // Keep it observable without contaminating entry-critical Full Evidence DQ.
-  // The score interval receives smartMoneyRaw separately; no raw PARTIAL row is
-  // injected into publicEvidence.evidence before calibration/promotion.
-  if (publicEvidence) {
-    publicEvidence.advisory_evidence = [
-      ...(Array.isArray(publicEvidence.advisory_evidence) ? publicEvidence.advisory_evidence : []),
-      ...smartMoneyRawEvidenceRows(smartMoneyRaw, now),
-      ...hyperliquidAdvisoryEvidenceRows(
-        smartMoneyRaw?.hyperliquid_context,
-        { contract_code: contract }
-      ),
-    ];
-  }
-
-  let supplementalCandidateContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
-  let crossExchangeRiskContext={status:'NOT_CONFIGURED',sources:{},internal_only:true};
-  let candidateEvidenceV2={status:'NOT_CONFIGURED',evidence:[],internal_only:true};
-  // The established Deep Check has one five-request extension envelope.  The
-  // new cross-exchange family shares that envelope with projected liquidation
-  // sources instead of silently pushing the invocation above its proven cap.
-  const crossExchangeFamilyTurn=Math.floor(Number(params?.cycle_started_ts??cycleStartedTs)/(20*60*1000))%3===0;
-  try{
-    if(typeof env?.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT==='function'){
-      const derivativeVenues=new Set((Array.isArray(publicEvidence?.evidence)?publicEvidence.evidence:[])
-        .filter(row=>row?.status==='CLOSED'&&['FUTURES','PERP','SWAP','USDT_M_PERPETUAL'].includes(String(row?.market_type||'').toUpperCase()))
-        .map(row=>String(row?.venue||row?.source||'').trim()).filter(Boolean));
-      const conflict=Boolean(publicEvidence?.conflicts?.length)||String(publicEvidence?.dq_status||'').toUpperCase().includes('CONFLICT');
-      const moveForLiquidations=Number(params?.discovery_row?.rolling_24h_change_pct??params?.discovery_row?.move_pct);
-      const manualCoin=String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract;
-      const queuedCoin=String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract;
-      const reserveForLiquidations=!crossExchangeFamilyTurn&&(manualCoin||queuedCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true);
-      supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
-        contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
-        critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
-      });
-    }
-  }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
-  try{
-    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,now:Date.now()});
-  }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
-  console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
-  try{
-    if(crossExchangeFamilyTurn&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
-      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),
-    });else if(!crossExchangeFamilyTurn)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},internal_only:true,next_family_rotation:true};
-  }catch(error){crossExchangeRiskContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
-
-  let htxLiquidationShadow;
-  try {
-    htxLiquidationShadow = await htxLiquidationTape(
-      { contract, lookback_minutes: 120, persist: true },
-      env,
-      { persist: true }
-    );
-  } catch (error) {
-    htxLiquidationShadow = {
-      source: "HTX official public API",
-      tool: "htx_liquidation_tape",
-      contract,
-      factual_only: true,
-      projected_levels_included: false,
-      coverage: {
-        htx_factual_long_liquidations: "not_closed",
-        htx_factual_short_liquidations: "not_closed",
-      },
-      endpoint_errors: {
-        stage371: String(error?.message || error).slice(0, 600),
-      },
-    };
-  }
-
-  let liquidationIntelligence;
-  try {
-    liquidationIntelligence =
-      await LIQUIDATION_INTELLIGENCE_API.collectCrossVenueLiquidationIntelligence({
-        contract_code: contract,
-        fetch_impl: fetch,
-        api_key: admittedBykApiKey,
-        now_ts: now,
-        htx_liquidation_tape: htxLiquidationShadow,
-        asset_identity_proof: publicEvidence?.alias_verification?.asset_identity || null,
-      });
-  } catch (error) {
-    liquidationIntelligence = {
-      version: "cross-venue-liquidation-shadow-v1",
-      contract_version: "liquidation-evidence-v1",
-      mode: "LIQUIDATION_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      contract_code: contract,
-      observed_ts: now,
-      projected_map_status: "NOT_CLOSED",
-      realized_status: "PARTIAL_HTX_ONLY",
-      liquidation_dq_status: "NOT_CLOSED",
-      projected_clusters: [],
-      realized: { provider: [], htx: htxLiquidationShadow },
-      errors: [String(error?.message || error).slice(0, 600)],
-      safety: {
-        strategy_weights_changed: false,
-        new_percentage_weight: false,
-        direction_generated: false,
-        live_probability_generated: false,
-        live_signal_generated: false,
-        validated_signal_generated: false,
-        telegram_started: false,
-        trading_execution: false,
-        automatic_weight_tuning: false,
-        guaranteed_tp_generated: false,
-        synthetic_leverage_heatmap_generated: false,
-        shadow_only: true,
-      },
-    };
-  }
-
-  liquidationIntelligence.persistence =
-    await LIQUIDATION_INTELLIGENCE_API.persistShadow(
-      env,
-      liquidationIntelligence,
-      now
-    );
-  liquidationIntelligence.quota_admission = bykAdmission;
-
-  /*
-   * Opportunity Intelligence runs only inside an already bounded Deep
-   * Check and consumes the factual data collected above. It does not
-   * feed the Decision Layer, Telegram or any execution path.
-   */
-  // All new source facts finish before the analytical cutoff is fixed.
-  let nativeLiquidationAcquisition = null;
-  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && /^[^-\s]+-USDT$/u.test(contract)) {
-    try {
-      nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({
-        contract, native_symbol: contract.slice(0,-5), run_id: String(params?.run_id || "").trim() || `manual-shadow-${cycleStartedTs}`,
-        deep_started_ts: cycleStartedTs, max_deep_ms:45000,
-        early_candidate_bridge:params?.discovery_row?.early_candidate_bridge===true,
-        early_candidate_quality_0_100:params?.discovery_row?.early_candidate_quality_0_100??null,
-        manual_liquidation_request:String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract,
-        source_identity:supplementalCandidateContext?.liquidation_identity||null,
-      });
-    } catch { /* Optional source fails closed; never refresh its old timestamps. */ }
-  }
-  if(String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
-    try{await env.REPORT2_LIQUIDATION_QUEUE_COMPLETE({usable:Boolean(nativeLiquidationAcquisition)||crossExchangeRiskContext?.status==='CLOSED',result:{native:Boolean(nativeLiquidationAcquisition),cross_exchange:crossExchangeRiskContext?.status||'NOT_CLOSED'}});}catch{}
-  }
-  // Receipt observation cannot predate completion of its market inputs.
-  now = Date.now();
-  let opportunityIntelligence;
-  try {
-    const primaryOpportunityInputs =
-      trajectory
-        ?.data
-        ?._opportunity_shadow_inputs ||
-      {};
-
-    const externalHourly =
-      publicEvidence
-        ?._opportunity_hourly_candles ||
-      {};
-
-    const providerClusters =
-      [
-        ...(
-          Array.isArray(
-            liquidationIntelligence
-              ?.projected_clusters
-          )
-            ? liquidationIntelligence
-                .projected_clusters
-            : []
-        ),
-        ...(
-          Array.isArray(
-            liquidationIntelligence
-              ?.clusters
-          )
-            ? liquidationIntelligence
-                .clusters
-            : []
-        ),
-      ]
-        .filter(
-          (row) =>
-            num(
-              row?.level_price ??
-              row?.price ??
-              row?.level
-            ) !== null
-        )
-        .map(
-          (row) => ({
-            ...row,
-            projected_map_status:
-              liquidationIntelligence
-                ?.projected_map_status ??
-              null,
-            provider_evidence_eligible:
-              liquidationIntelligence
-                ?.asset_identity_verified ===
-                true &&
-              liquidationIntelligence
-                ?.alias_verified ===
-                true &&
-              liquidationIntelligence
-                ?.projected_map_status ===
-                "CLOSED_SHADOW" &&
-              liquidationIntelligence
-                ?.projected_freshness ===
-                "CURRENT",
-          })
-        );
-
-    opportunityIntelligence =
-      await runOpportunityShadowCycle({
-        env,
-        run_id:
-          String(
-            params?.run_id ||
-            ""
-          ).trim() ||
-          `manual-shadow-${now}`,
-        now,
-        operational: {
-          capacity_drop_reasons:
-            Array.isArray(
-              params
-                ?.capacity_drop_reasons
-            )
-              ? params
-                  .capacity_drop_reasons
-                  .slice(0, 12)
-              : [],
-          queue_starvation:
-            params
-              ?.queue_starvation ===
-            true,
-        },
-        input: {
-          contract,
-          primary:
-            primaryOpportunityInputs,
-          futures_snapshot:
-            futures?.data ||
-            null,
-          spot_snapshot:
-            spot?.data ||
-            null,
-          external_hourly:
-            externalHourly,
-          funding:
-            primaryOpportunityInputs
-              ?.funding ||
-            trajectory
-              ?.data
-              ?.funding ||
-            null,
-          liquidation_clusters:
-            providerClusters,
-          liquidation_summary: {
-            projected_map_status:
-              liquidationIntelligence
-                ?.projected_map_status ??
-              null,
-            realized_status:
-              liquidationIntelligence
-                ?.realized_status ??
-              null,
-            liquidation_dq_status:
-              liquidationIntelligence
-                ?.liquidation_dq_status ??
-              null,
-            projected_cluster_count:
-              providerClusters.length,
-            source_timestamp:
-              liquidationIntelligence
-                ?.observed_ts ??
-              null,
-          },
-        },
-      });
-  } catch (error) {
-    opportunityIntelligence = {
-      version:
-        OPPORTUNITY_VERSION,
-      mode:
-        "OPPORTUNITY_INTELLIGENCE_SHADOW_NO_EXECUTION",
-      status:
-        "RUNTIME_FAIL_CLOSED",
-      error:
-        String(
-          error?.message ||
-          error
-        ).slice(0, 600),
-      safety: {
-        shadow_only: true,
-        live_probability:
-          null,
-        live_signal:
-          false,
-        validated_signal:
-          false,
-        decision_layer_changed:
-          false,
-        strategy_weights_changed:
-          false,
-        telegram_started:
-          false,
-        trading_execution:
-          false,
-        automatic_weight_tuning:
-          false,
-      },
-    };
-  }
-
-  const executionRefresh = await refreshHtxExecutionQuoteIfNeeded({
-    contract,
-    notional_usdt: futuresParams.notional_usdt,
-    current_quote: futures?.data?._tz101_execution_quote ?? null,
-    now_ts: Date.now(),
-    request_json: sharedFetch.refresh,
-  });
-  const finalExecutionQuote = executionRefresh.quote;
-  const decisionTs = Date.now();
-  now = decisionTs;
-  const stage392SnapshotId = `S392:${String(contract || "UNKNOWN").normalize("NFC")}:${decisionTs}`;
-  shadowDecision = buildShadowDecisionTelemetry({
-    contract,
-    now: decisionTs,
-    futures,
-    spot,
-    trajectory,
-    history,
-    dataSufficiency,
-  });
-  shadowDecision.cycle_started_ts = cycleStartedTs;
-  shadowDecision.source_clocks = {
-    execution: {
-      source_ts: Number(finalExecutionQuote?.facts?.book_source_ts) || null,
-      available_ts: Number(finalExecutionQuote?.facts?.received_ts) || executionRefresh.available_ts || null,
-    },
-    spot: {
-      source_ts: Number(spot?.data?.provider_source_ts) || null,
-      available_ts: Number(spot?.available_ts) || null,
-    },
-    trajectory: {
-      source_ts: Number(trajectory?.data?.provider_source_ts) || null,
-      available_ts: Number(trajectory?.available_ts) || null,
-    },
-    public_evidence: {
-      source_ts: Number(publicEvidence?.observed_ts) || null,
-      available_ts: publicEvidenceAvailableTs,
-    },
-  };
-  shadowPersistence = await persistShadowDecisionTelemetry(env,shadowDecision);
-  shadowDecision.persistence = shadowPersistence;
-
-  let multiWaveCampaign;
-  try {
-    multiWaveCampaign =
-      await runMultiWaveCampaignShadowCycle({
-        env,
-        now,
-        opportunity:
-          opportunityIntelligence,
-        input: {
-          contract,
-          stage392_snapshot_id: stage392SnapshotId,
-          primary:
-            trajectory
-              ?.data
-              ?._opportunity_shadow_inputs ||
-            {},
-          external_hourly:
-            publicEvidence
-              ?._opportunity_hourly_candles ||
-            {},
-          funding:
-            trajectory
-              ?.data
-              ?._opportunity_shadow_inputs
-              ?.funding ||
-            trajectory
-              ?.data
-              ?.funding ||
-            null,
-        },
-      });
-  } catch (error) {
-    multiWaveCampaign = {
-      version: MULTI_WAVE_VERSION,
-      mode: "MULTI_WAVE_CAMPAIGN_SHADOW_NO_EXECUTION",
-      status: "RUNTIME_FAIL_CLOSED",
-      error: String(error?.message || error).slice(0, 600),
-      safety: {
-        shadow_only: true,
-        live_probability: null,
-        live_signal: false,
-        validated_signal: false,
-        decision_layer_changed: false,
-        strategy_weights_changed: false,
-        telegram_started: false,
-        trading_execution: false,
-        automatic_weight_tuning: false,
-      },
-    };
-  }
-
-  const fullEvidenceShadow =
-    buildFullEvidenceShadowRecordCrossVenue({
-      shadow_decision: shadowDecision,
-      public_evidence: {...(publicEvidence||{}),available_ts:publicEvidenceAvailableTs},
-      now: decisionTs,
-      decision_ts: decisionTs,
-    });
-  const fullEvidenceObservedTs = Number(fullEvidenceShadow?.observed_ts) || decisionTs;
-
-  // Stage 3.9.2 SHADOW proof wiring. Proof material is prepared before the
-  // existing Full Evidence INSERT, but it is not considered proven until D1
-  // acknowledges exactly one factual insert. No adapter-side proof synthesis is
-  // permitted. Final Decision remains a shadow sidecar and does not replace the
-  // legacy externally visible NOT_EVALUATED decision below.
-  const tz101DecisionEvidence = prepareTz101DecisionEvidence({
-    contract_code: contract,
-    snapshot_id: stage392SnapshotId,
-    observed_ts: fullEvidenceObservedTs,
-    trajectory: trajectory?.data || null,
-    available_ts: trajectory?.available_ts ?? null,
-    opportunity_proof: multiWaveCampaign?.stage392_proofs?.opportunity || null,
-    public_evidence: publicEvidence || null,
-    public_evidence_available_ts: publicEvidenceAvailableTs,
-  });
-
-  const preparedFullEvidenceProof =
-    prepareFullEvidenceProofBundle({
-      record: fullEvidenceShadow,
-      contract_code: contract,
-      snapshot_id: stage392SnapshotId,
-      observed_ts: fullEvidenceObservedTs,
-      shadow_decision: shadowDecision,
-      opportunity_proof:
-        multiWaveCampaign?.stage392_proofs?.opportunity || null,
-      campaign_proof:
-        multiWaveCampaign?.stage392_proofs?.campaign || null,
-      position_proof:
-        multiWaveCampaign?.stage392_proofs?.position || null,
-      position_origin_campaign:
-        multiWaveCampaign?.stage392_proofs?.position_origin_campaign || null,
-      // Factual producer: one PRICE_ACTION domain at most, never a full entry
-      // decision. Missing/contrary data stay explicit; no funding/OI votes.
-      decision_evidence: tz101DecisionEvidence.rows,
-      decision_evidence_audit: tz101DecisionEvidence,
-      execution_snapshot: finalExecutionQuote,
-      committed_ts: null,
-    });
-
-  const fullEvidencePersistence =
-    await persistFullEvidenceShadowRecord(
-      env,
-      fullEvidenceShadow,
-      {
-        stage392_prepared_proof_bundle:
-          preparedFullEvidenceProof?.status === "PREPARED_UNACKNOWLEDGED"
-            ? preparedFullEvidenceProof
-            : null,
-      }
-    );
-
-  fullEvidenceShadow.persistence =
-    fullEvidencePersistence;
-
-  const sealedFullEvidenceProof =
-    sealFullEvidenceProofBundleAfterAck(
-      preparedFullEvidenceProof,
-      fullEvidencePersistence
-    );
-
-  // Original snapshot time is never renewed by a slow D1 ACK or later handoff.
-  // This checks freshness only; it does not authorize a signal or a trade.
-  const executionHandoff = sealedFullEvidenceProof?.status === "CLOSED"
-    ? checkExecutionHandoff(sealedFullEvidenceProof?.bundle?.execution_gate, {contract_code:contract, checked_ts:Date.now()})
-    : {ok:false, reason:sealedFullEvidenceProof?.reason || "FULL_EVIDENCE_RECEIPT_NOT_CLOSED"};
-
-  let finalDecisionShadowCompatibility = {
-    status: "SKIPPED_FAIL_CLOSED",
-    ready: false,
-    reason:
-      sealedFullEvidenceProof?.status === "CLOSED"
-        ? "NOT_EVALUATED"
-        : sealedFullEvidenceProof?.reason || "FULL_EVIDENCE_RECEIPT_NOT_CLOSED",
-    safety: stage392ProofSafetyEnvelope(),
-  };
-
-  let finalDecisionShadowPersistence = {
-    status: "SKIPPED_FAIL_CLOSED",
-    statements: 0,
-    reason:
-      sealedFullEvidenceProof?.status === "CLOSED"
-        ? "NOT_EVALUATED"
-        : sealedFullEvidenceProof?.reason || "FULL_EVIDENCE_RECEIPT_NOT_CLOSED",
-    safety: stage392ProofSafetyEnvelope(),
-  };
-
-  if (!executionHandoff.ok && sealedFullEvidenceProof?.status === "CLOSED") {
-    finalDecisionShadowCompatibility.reason = executionHandoff.reason;
-    finalDecisionShadowPersistence.reason = executionHandoff.reason;
-  }
-  if (sealedFullEvidenceProof?.status === "CLOSED" && sealedFullEvidenceProof?.bundle && executionHandoff.ok) {
-    const bundle = sealedFullEvidenceProof.bundle;
-    const stage391AdapterArgs = {
-      shadow_decision: shadowDecision,
-      full_evidence: bundle.full_evidence,
-      opportunity: bundle.opportunity,
-      multi_wave: bundle.campaign,
-      decision_evidence: bundle.decision_evidence,
-      evidence_registry: bundle.evidence_registry,
-      hard_veto: bundle.hard_veto,
-      execution_gate: bundle.execution_gate,
-      safety_gate_receipt: bundle.safety_gate_receipt,
-      position: bundle.position,
-      position_origin_campaign: bundle.position_origin_campaign,
-      position_management_context: bundle.position_management_context,
-      observed_ts: bundle.observed_ts,
-      contract_code: bundle.contract_code,
-      snapshot_id: bundle.snapshot_id,
-    };
-
-    finalDecisionShadowCompatibility =
-      evaluateFinalDecisionUpstreamCompatibility(stage391AdapterArgs);
-
-    const adaptedFinalDecisionInput =
-      adaptStage391ToFinalDecisionInput(stage391AdapterArgs);
-
-    const positionCasState =
-      String(adaptedFinalDecisionInput?.position?.state || "").toUpperCase();
-    const positionCasRevision =
-      Number(adaptedFinalDecisionInput?.position?.state_revision);
-    const positionCasClosed = Boolean(
-      adaptedFinalDecisionInput?.position?.persistence?.status === "CLOSED" &&
-      ["FLAT", "OPEN_LONG", "OPEN_SHORT"].includes(positionCasState) &&
-      Number.isSafeInteger(positionCasRevision) && positionCasRevision >= 1
-    );
-
-    // The Final Decision shadow write is the one D1 statement that replaces
-    // the old hot-path Full Evidence retention DELETE. It is never invoked
-    // unless the immutable upstream proof bundle has a factual exact-insert ACK
-    // AND an authoritative virtual-position receipt that can be CAS-bound in
-    // the same INSERT. A zero-row ACK is not called a dedupe in this path.
-    if (positionCasClosed) {
-      finalDecisionShadowPersistence =
-        await persistFinalDecisionIntegrationShadow({
-          env,
-          input: adaptedFinalDecisionInput,
-          require_exact_insert_ack: true,
-          expected_position_cas: {
-            contract_code: bundle.contract_code,
-            state: positionCasState,
-            state_revision: positionCasRevision,
-          },
-        });
-    } else {
-      finalDecisionShadowPersistence = {
-        status: "SKIPPED_FAIL_CLOSED",
-        statements: 0,
-        reason: "AUTHORITATIVE_POSITION_CAS_RECEIPT_REQUIRED",
-        safety: stage392ProofSafetyEnvelope(),
-      };
-    }
-  }
-
-  // The owner-approved analytical policy supplies the previously missing entry
-  // band, conservative fee reserve and maximum holding horizon. Hard vetoes,
-  // evidence identity and execution freshness remain unchanged and fail closed.
-  const approvedPublicationInputs =
-    buildApprovedPublicationInputs({
-      decision_summary:
-        finalDecisionShadowPersistence?.decision_summary ||
-        null,
-      observed_ts: now,
-    });
-
-  const publicationLiquidationContext = {
-    status:
-      Array.isArray(liquidationIntelligence?.projected_clusters) &&
-      liquidationIntelligence.projected_clusters.length
-        ? "CONFIRMED"
-        : Array.isArray(liquidationIntelligence?.realized?.provider) &&
-            liquidationIntelligence.realized.provider.length
-          ? "PARTIAL"
-          : "NOT_CONFIRMED",
-    short_above:
-      liquidationIntelligence?.projected_clusters?.find?.(
-        (row) => Number(row?.level_price ?? row?.price) > Number(htxObservationReferencePrice?.value)
-      )?.level_price ?? null,
-    long_below:
-      liquidationIntelligence?.projected_clusters?.find?.(
-        (row) => Number(row?.level_price ?? row?.price) < Number(htxObservationReferencePrice?.value)
-      )?.level_price ?? null,
-    note:
-      "ÐšÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ Ð»Ð¸ÐºÐ²Ð¸Ð´Ð°Ñ†Ð¸Ð¹ Ð¿ÐµÑ€ÐµÐ´Ð°Ð½ Ð¸Ð· Ñ‚Ð¾Ð³Ð¾ Ð¶Ðµ ÑÐ½Ð¸Ð¼ÐºÐ° Ñ€Ñ‹Ð½ÐºÐ°; Ð¾Ñ‚ÑÑƒÑ‚ÑÑ‚Ð²Ð¸Ðµ Ñ‚Ð¾Ñ‡Ð½Ð¾Ð¹ ÑÑƒÐ¼Ð¼Ñ‹ Ð½Ðµ Ð¿Ñ€ÐµÐ²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ÑÑ Ð² Ð²Ñ‹Ð´ÑƒÐ¼Ð°Ð½Ð½ÑƒÑŽ ÑÑƒÐ¼Ð¼Ñƒ.",
-  };
-
-  // TZ 10.1 publication stays separate from analytical Final Decision.
-  const finalDecisionPublicationShadow = await runTz101PublicationShadow({
-    env,
-    final_decision_persistence: finalDecisionShadowPersistence,
-    decision_evidence: sealedFullEvidenceProof?.bundle?.decision_evidence || [],
-    campaign_proof: sealedFullEvidenceProof?.bundle?.campaign || null,
-    execution_gate: sealedFullEvidenceProof?.bundle?.execution_gate || null,
-    trajectory: trajectory?.data || null,
-    trajectory_available_ts: trajectory?.available_ts ?? null,
-    entry_area_rule:
-      approvedPublicationInputs.entry_area_rule,
-    fee_schedule:
-      approvedPublicationInputs.fee_schedule,
-    holding_plan:
-      approvedPublicationInputs.holding_plan,
-    scenario_plan: null,
-    cost_assessment: null,
-    liquidation_context:
-      publicationLiquidationContext,
-    smart_money_raw: smartMoneyRaw,
-    daily_candles:
-      trajectory?.data?._opportunity_shadow_inputs?.one_day || [],
-    observed_ts: now,
-  });
-
-  const freeSourceRuntimeSummary =
-    buildFreeSourceRuntimeSummary({
-      public_evidence: publicEvidence,
-      smart_money_raw: smartMoneyRaw,
-      publication_shadow: finalDecisionPublicationShadow,
-      extra_receipts: [
-        hyperliquidRegistryReceipt(
-          smartMoneyRaw?.hyperliquid_context
-        ),
-      ].filter(Boolean),
-      now,
-    });
-
-  const previousSnapshotContext =
-    Array.isArray(publicEvidence?.evidence) &&
-    publicEvidence.evidence.length
-      ? await loadPreviousEvidenceSnapshotForCanonical(
-          env?.DATA_DB,
-          contract,
-          now
-        )
-      : {
-          status: "NOT_CLOSED",
-          reason: "CURRENT_PUBLIC_EVIDENCE_EMPTY",
-          row: null,
-        };
-
-  const globalInternalContext=contextForContract(env?.REPORT2_GLOBAL_MARKET_CONTEXT || null,contract);
-  const finalRouteState=String(finalDecisionPublicationShadow?.entry_signal?.state||''),finalRouteDirection=String(finalDecisionPublicationShadow?.entry_signal?.direction||'').toUpperCase();
-  const htxReferencePrice=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState)&&['LONG','SHORT'].includes(finalRouteDirection)
-    ?buildHtxReferencePrice({contract,type:finalRouteDirection==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',bid:futures?.data?.bbo?.best_bid,ask:futures?.data?.bbo?.best_ask,source_ts:htxObservationReferencePrice?.source_ts,received_ts:htxObservationReferencePrice?.received_ts})
-    :htxObservationReferencePrice;
-  const directionCandidate=normalizeDirectionCandidate(params?.discovery_row?.discovery_direction_hint??params?.discovery_row?.early_candidate_direction_hint??params?.discovery_row?.direction_hint,{origin:'DISCOVERY',source_ts:params?.discovery_row?.snapshot_ts??params?.discovery_row?.observed_ts??params?.discovery_row?.source_ts??params?.discovery_row?.scan_ts,confirmation_state:'DISCOVERY_ONLY'});
-  const entryDirectionAuthorization=authorizeEntryDirection({candidate:directionCandidate,final_route_state:finalRouteState,final_direction:finalRouteDirection,hard_veto:finalDecisionPublicationShadow?.entry_signal?.hard_veto===true});
-  const htxExecutionReceipt=buildHtxExecutionReceipt({component:{execution_status:executionHandoff?.ok===true?'SUCCESS':executionHandoff?.status,reason:executionHandoff?.reason},reference_price:htxReferencePrice});
-  const entryState=['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(finalRouteState),strictRouteState=entryState&&(entryDirectionAuthorization.authorized!==true||htxExecutionReceipt.status!=='CLOSED')?'REJECTED':finalRouteState;
-  const canonicalPublicationShadow={...finalDecisionPublicationShadow,entry_signal:{...(finalDecisionPublicationShadow?.entry_signal||{}),state:strictRouteState,direction:entryState?(entryDirectionAuthorization.authorized?entryDirectionAuthorization.direction:null):finalDecisionPublicationShadow?.entry_signal?.direction}};
-  const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
-  const canonicalFuturesComponent=futures?.data?{...futures,data:{...futures.data,mark_price:null,ticker:null,ticker_24h:null}}:futures;
-  const canonicalLiquidationIntelligence=liquidationIntelligence?{...liquidationIntelligence,provider_current_price:null}:liquidationIntelligence;
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
-  const canonicalAnalyticalBundle =
-    buildRuntimeCanonicalBundle({
-      native_liquidation_acquisition:nativeLiquidationAcquisition,
-      contract,
-      run_id:
-        String(params?.run_id || "").trim() ||
-        nativeLiquidationAcquisition?.run_id || `manual-shadow-${now}`,
-      snapshot_id:
-        stage392SnapshotId,
-      observed_ts:
-        now,
-      discovery_row:
-        canonicalDiscoveryRow,
-      publication_shadow:
-        canonicalPublicationShadow,
-      oi_window_receipts: shadowDecision?.evidence_flags?.oi_window_receipts ?? null,
-      opportunity:
-        opportunityIntelligence,
-      public_evidence:
-        publicEvidence,
-      liquidation_intelligence:
-        canonicalLiquidationIntelligence,
-      futures_component:
-        canonicalFuturesComponent,
-      execution_handoff:
-        executionHandoff,
-      data_sufficiency:
-        dataSufficiency,
-      free_source_summary:
-        freeSourceRuntimeSummary,
-      smart_money_raw:
-        smartMoneyRaw,
-      shadow_decision:
-        shadowDecision,
-      existing_source_receipts:
-        smartMoneyRaw?.hyperliquid_context
-          ? { hyperliquid: smartMoneyRaw.hyperliquid_context }
-          : null,
-      internal_market_context:internalMarketContext,
-      previous_snapshot_context:
-        previousSnapshotContext,
-    });
-  console.log('SUPPLEMENTAL_SCORE_RECEIPT',JSON.stringify({contract,run_id:String(params?.run_id||''),status:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.status,base_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.base_score,adjustment:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.adjustment,final_score:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.final_score,receipts:canonicalAnalyticalBundle?.canonical?.metadata?.supplemental_score_adjustment?.receipts||[]}));
-  if(typeof env?.REPORT2_LIQUIDATION_SIGNAL_RECORD==='function'){
-    try{console.log('LIQUIDATION_SIGNAL_CALIBRATION_RECORD',JSON.stringify(await env.REPORT2_LIQUIDATION_SIGNAL_RECORD({contract,panel:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel,cross_exchange_risk:crossExchangeRiskContext,reference_price:canonicalAnalyticalBundle?.canonical?.metadata?.dynamic_liquidation_panel?.reference_price??params?.discovery_row?.current_price??null,observed_ts:now})));}catch{}
-  }
-
-  let postV7CanonicalPersistence = {status:'DISABLED',persisted:false};
-  if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1' && canonicalAnalyticalBundle?.canonical?.status === 'CLOSED') {
-    postV7CanonicalPersistence = await persistCanonicalSnapshot(env.DATA_DB,{
-      canonical: canonicalAnalyticalBundle.canonical,
-      presentation_inputs: {manual_text: canonicalAnalyticalBundle?.manual?.text ?? null},
-      wave_id: params?.discovery_row?.early_candidate_wave_id ?? params?.discovery_row?.wave_id ?? null,
-      decision_id: finalDecisionShadowPersistence?.decision_id ?? finalDecisionShadowPersistence?.decision_summary?.decision_id ?? null,
-      now_ts: now,
-    });
-  }
-
-return {
-    tool: "deep_check_input",
-    version: "0.1-evidence-only",
-
-    contract,
-
-    discovery_context:
-      params?.discovery_row ||
-      null,
-
-    timestamp:
-      now,
-
-    timestamp_utc:
-      new Date(now).toISOString(),
-
-    mode:
-      "EVIDENCE_ONLY_NO_DECISION",
-
-    shadow_decision:
-      shadowDecision,
-
-    full_evidence_shadow:
-      fullEvidenceShadow,
-
-    liquidation_intelligence_shadow:
-      liquidationIntelligence,
-
-    opportunity_intelligence_shadow:
-      opportunityIntelligence,
-
-    multi_wave_campaign_shadow:
-      multiWaveCampaign,
-
-    canonical_analytical_bundle:
-      canonicalAnalyticalBundle,
-
-    post_v7_canonical_persistence:
-      postV7CanonicalPersistence,
-
-    free_sources_delta_summary:
-      freeSourceRuntimeSummary,
-
-    direction_candidate:
-      directionCandidate,
-
-    entry_direction_authorization:
-      entryDirectionAuthorization,
-
-    stage392_shadow_integration: {
-      version: "stage392-shadow-integration-v2-tz101-execution-r3",
-      decision_evidence_producer: tz101DecisionEvidence,
-      execution_handoff: executionHandoff,
-      mode: "SHADOW_ONLY_NO_EXECUTION",
-      proof_status:
-        sealedFullEvidenceProof?.status || "FAIL_CLOSED",
-      proof_reason:
-        sealedFullEvidenceProof?.reason || null,
-      full_evidence_persistence:
-        fullEvidencePersistence,
-      final_decision_compatibility:
-        finalDecisionShadowCompatibility,
-      final_decision_persistence:
-        finalDecisionShadowPersistence,
-      publication_shadow:
-        finalDecisionPublicationShadow,
-      safety:
-        stage392ProofSafetyEnvelope(),
-    },
-
-    decision: {
-      validated: false,
-      probability: null,
-      direction: null,
-      status:
-        "NOT_EVALUATED",
-      reason:
-        "This layer only aggregates factual evidence. Decision scoring is intentionally not implemented here.",
-    },
-
-    execution: {
-      cycle_started_ts: cycleStartedTs,
-      components_available_ts: componentsAvailableTs,
-      analysis_observed_ts: decisionTs,
-      decision_ts: decisionTs,
-      evidence_committed_ts: fullEvidencePersistence?.committed_ts ?? null,
-      execution_checked_ts: executionHandoff?.checked_ts ?? null,
-      execution_refresh: {
-        status: executionRefresh?.status ?? null,
-        attempted_requests: Number(executionRefresh?.attempted_requests ?? 0),
-        available_ts: executionRefresh?.available_ts ?? null,
-        reasons: executionRefresh?.reasons ?? [],
-      },
-      requested_components: 4,
-      fulfilled_components:
-        4 - failedComponents.length,
-      failed_components:
-        failedComponents,
-      complete:
-        failedComponents.length === 0,
-      shared_fetch_cache:
-        sharedFetch.stats(),
-    },
-
-    data_sufficiency:
-      dataSufficiency,
-
-    evidence: {
-      futures_snapshot:
-        futures,
-      spot_snapshot:
-        spot,
-      futures_trajectory:
-        trajectory,
-      stage0_history:
-        history,
-      htx_liquidation_tape:
-        htxLiquidationShadow,
-      smart_money_raw:
-        smartMoneyRaw,
-    },
-
-    safety: {
-      strategy_rules_changed:
-        false,
-      weights_changed:
-        false,
-      hard_veto_changed:
-        false,
-      probability_generated:
-        false,
-      alert_dispatch_triggered:
-        false,
-    },
-
-    notes: [
-      "No trading probability is generated.",
-      "No validated=true signal is generated.",
-      "No Telegram alert is triggered.",
-      "Missing or failed evidence remains explicit.",
-      "This output is intended as factual input for a future Decision Layer.",
-      "Stage 3.7.1 keeps projected liquidation clusters, factual realized liquidations and cross-source consensus physically/logically separate.",
-      "No leverage arithmetic is promoted as a vendor heatmap, and unsupported symbols remain NOT_CLOSED.",
-      "Stage 3.9 opportunity telemetry is shadow-only and cannot modify the Decision Layer, weights, alerts or execution.",
-    ],
-  };
-}
-
-function normalizeAlertTimestamp(value) {
-  if (value === null || value === undefined || value === "") {
-    return null;
-  }
-
-  const text = String(value).trim();
-  const numeric = Number(text);
-
-  if (Number.isFinite(numeric)) {
-    let n = numeric;
-
-    if (n < 1e12) {
-      n *= 1000;
-    }
-
-    return n;
-  }
-
-  const parsed = Date.parse(text);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
-function moscowClock(nowMs = Date.now()) {
-  const d = new Date(nowMs + 3 * 60 * 60 * 1000);
-
-  return {
-    hour: d.getUTCHours(),
-    minute: d.getUTCMinutes(),
-    timestamp_msk:
-      d.getUTCFullYear() +
-      "-" +
-      String(d.getUTCMonth() + 1).padStart(2, "0") +
-      "-" +
-      String(d.getUTCDate()).padStart(2, "0") +
-      " " +
-      String(d.getUTCHours()).padStart(2, "0") +
-      ":" +
-      String(d.getUTCMinutes()).padStart(2, "0") +
-      ":" +
-      String(d.getUTCSeconds()).padStart(2, "0") +
-      " MSK",
-  };
-}
-
-
-function telegramShadowAuthOk(request, env) {
-  const expectedKey = String(env?.TELEGRAM_TEST_KEY || "").trim();
-  const auth = String(request.headers.get("authorization") || "");
-  const providedKey = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
-  return {
-    configured: Boolean(expectedKey),
-    authorized: Boolean(expectedKey && providedKey && providedKey === expectedKey),
-  };
-}
-
-async function loadStage392TelegramShadowDecision(env, decisionId = "") {
-  if (!env?.DATA_DB) {
-    return { ok: false, status: "SOURCE_UNSUPPORTED", error: "DATA_DB_NOT_CONFIGURED", row: null };
-  }
-  const id = String(decisionId || "").trim().slice(0, 320);
-  try {
-    const sql = id
-      ? `SELECT decision_id, mode, decision_status, contract_code, observation_ts, direction,
-                directional_quality, entry_action, entry_quality, data_quality, execution_quality,
-                campaign_phase, timing_state, risk_state, position_state, management_action,
-                management_intent, management_quality, hard_veto, hard_veto_state, shadow_only,
-                live_probability, validated_signal, execution_authorized, telegram_eligible, persisted_ts
-           FROM final_decision_integration_shadow
-          WHERE decision_id=?1 LIMIT 1`
-      : `SELECT decision_id, mode, decision_status, contract_code, observation_ts, direction,
-                directional_quality, entry_action, entry_quality, data_quality, execution_quality,
-                campaign_phase, timing_state, risk_state, position_state, management_action,
-                management_intent, management_quality, hard_veto, hard_veto_state, shadow_only,
-                live_probability, validated_signal, execution_authorized, telegram_eligible, persisted_ts
-           FROM final_decision_integration_shadow
-          ORDER BY persisted_ts DESC LIMIT 1`;
-    const row = id
-      ? await env.DATA_DB.prepare(sql).bind(id).first()
-      : await env.DATA_DB.prepare(sql).first();
-    if (!row) return { ok: true, status: "NO_FINAL_DECISION_ROW", row: null };
-    return { ok: true, status: "FOUND", row };
-  } catch (error) {
-    return { ok: false, status: "READ_FAILED", error: String(error?.message || error), row: null };
-  }
-}
-
-function buildStage392TelegramShadowMessage(row) {
-  const reasons = [];
-  if (!row || typeof row !== "object") reasons.push("ROW_MISSING");
-  if (row?.mode !== "SHADOW_ONLY_NO_EXECUTION") reasons.push("NOT_SHADOW_ONLY");
-  if (Number(row?.shadow_only) !== 1) reasons.push("SHADOW_FLAG_NOT_ONE");
-  if (row?.live_probability !== null && row?.live_probability !== undefined) reasons.push("LIVE_PROBABILITY_PRESENT");
-  if (Number(row?.validated_signal || 0) !== 0) reasons.push("VALIDATED_SIGNAL_PRESENT");
-  if (Number(row?.execution_authorized || 0) !== 0) reasons.push("EXECUTION_AUTHORIZED");
-  if (Number(row?.telegram_eligible || 0) !== 0) reasons.push("TELEGRAM_ELIGIBLE_UNEXPECTED");
-  if (reasons.length) {
-    return { ok: false, status: "REJECTED_FAIL_CLOSED", reasons, message: null };
-  }
-
-  const direction = ["LONG", "SHORT"].includes(String(row.direction || "").toUpperCase())
-    ? String(row.direction).toUpperCase()
-    : "ÐÐ• ÐžÐŸÐ Ð•Ð”Ð•Ð›Ð•ÐÐž";
-  const entryMap = {
-    SHADOW_ENTRY_ELIGIBLE: "Ð¢ÐµÐ½ÐµÐ²Ð¾Ð¹ ÐºÐ°Ð½Ð´Ð¸Ð´Ð°Ñ‚ Ð½Ð° Ð²Ñ…Ð¾Ð´",
-    WAIT: "ÐžÐ¶Ð¸Ð´Ð°Ð½Ð¸Ðµ",
-    REJECT: "ÐžÑ‚ÐºÐ»Ð¾Ð½ÐµÐ½Ð¾",
-    NOT_EVALUATED: "ÐÐµ Ð¾Ñ†ÐµÐ½ÐµÐ½Ð¾",
-  };
-  const managementMap = {
-    HOLD: "Ð£Ð´ÐµÑ€Ð¶Ð¸Ð²Ð°Ñ‚ÑŒ (Ñ‚ÐµÐ½ÐµÐ²Ð°Ñ Ð¾Ñ†ÐµÐ½ÐºÐ°)",
-    EXIT: "Ð’Ñ‹Ñ…Ð¾Ð´ (Ñ‚ÐµÐ½ÐµÐ²Ð°Ñ Ð¾Ñ†ÐµÐ½ÐºÐ°)",
-    NOT_EVALUATED: "ÐÐµ Ð¾Ñ†ÐµÐ½ÐµÐ½Ð¾",
-  };
-  const isManagement = ["HOLD", "EXIT"].includes(String(row.management_action || ""));
-  const action = isManagement
-    ? (managementMap[row.management_action] || String(row.management_action || ""))
-    : (entryMap[row.entry_action] || String(row.entry_action || ""));
-  const ts = Number(row.observation_ts);
-  const observed = Number.isFinite(ts) && ts > 0 ? new Date(ts).toISOString() : "Ð½ÐµÑ‚ Ð´Ð°Ð½Ð½Ñ‹Ñ…";
-  const lines = [
-    "ðŸ§ª ÐœÐ¾Ð¹ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚ 2 â€” Ð¢Ð•ÐÐ•Ð’ÐžÐ• Ð Ð•Ð¨Ð•ÐÐ˜Ð•",
-    "ÐÐ• Ð¢ÐžÐ Ð“ÐžÐ’Ð«Ð™ Ð¡Ð˜Ð“ÐÐÐ›",
-    "",
-    `${String(row.contract_code || "UNKNOWN")} â€¢ ${direction}`,
-    `Ð ÐµÑˆÐµÐ½Ð¸Ðµ: ${action}`,
-    `Ð¤Ð°Ð·Ð°: ${String(row.campaign_phase || "UNKNOWN")}`,
-    `ÐšÐ°Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð½Ð°Ð¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ: ${String(row.directional_quality || "NOT_EVALUATED")}`,
-    `ÐšÐ°Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð²Ñ…Ð¾Ð´Ð°: ${String(row.entry_quality || "NOT_EVALUATED")}`,
-    `ÐšÐ°Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð´Ð°Ð½Ð½Ñ‹Ñ…: ${String(row.data_quality || "NOT_EVALUATED")}`,
-    `Ð Ð¸ÑÐº: ${String(row.risk_state || "UNKNOWN")}`,
-    `Ð–Ñ‘ÑÑ‚ÐºÐ¸Ð¹ Ð·Ð°Ð¿Ñ€ÐµÑ‚: ${Number(row.hard_veto || 0) === 1 ? "Ð”Ð" : "ÐÐ•Ð¢"}`,
-    `ÐŸÐ¾Ð·Ð¸Ñ†Ð¸Ñ: ${String(row.position_state || "UNKNOWN")}`,
-    `Ð’Ñ€ÐµÐ¼Ñ Ñ€ÐµÑˆÐµÐ½Ð¸Ñ: ${observed}`,
-    "",
-    "Ð ÐµÐ¶Ð¸Ð¼: Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð½Ð°Ð±Ð»ÑŽÐ´ÐµÐ½Ð¸Ðµ. ÐÐ²Ñ‚Ð¾Ñ‚Ð¾Ñ€Ð³Ð¾Ð²Ð»Ñ Ð¸ Ñ€Ð°Ð±Ð¾Ñ‡Ð¸Ð¹ ÑÐ¸Ð³Ð½Ð°Ð» Ð²Ñ‹ÐºÐ»ÑŽÑ‡ÐµÐ½Ñ‹.",
-  ];
-  const message = lines.join("\n");
-  return {
-    ok: message.length <= 4096,
-    status: message.length <= 4096 ? "READY" : "MESSAGE_TOO_LONG",
-    reasons: message.length <= 4096 ? [] : ["MESSAGE_TOO_LONG"],
-    message: message.length <= 4096 ? message : null,
-  };
-}
-
-function validateAlertDispatch(params) {
-  const reasons = [];
-  const nowMs = Date.now();
-
-  const contract = String(
-    params?.contract ||
-    params?.symbol ||
-    ""
-  ).trim();
-
-  const direction = String(
-    params?.direction ||
-    params?.side ||
-    ""
-  ).trim().toUpperCase();
-
-  const validated = params?.validated === true;
-  const probability = Number(params?.probability);
-  const freshnessSec = Number(params?.freshness_sec);
-
-  const signalTs = normalizeAlertTimestamp(
-    params?.signal_timestamp_utc ??
-    params?.timestamp_utc ??
-    params?.signal_timestamp
-  );
-
-  const clock = moscowClock(nowMs);
-
-  const inMoscowWindow =
-    clock.hour >= 9 &&
-    clock.hour < 23;
-
-  let signalAgeSec = null;
-  let futureSkewSec = null;
-
-  if (signalTs !== null) {
-    signalAgeSec = Math.max(
-      0,
-      (nowMs - signalTs) / 1000
-    );
-
-    futureSkewSec = Math.max(
-      0,
-      (signalTs - nowMs) / 1000
-    );
-  }
-
-  if (!contract) {
-    reasons.push("CONTRACT_MISSING");
-  }
-
-  if (!["LONG", "SHORT"].includes(direction)) {
-    reasons.push("DIRECTION_INVALID");
-  }
-
-  if (!validated) {
-    reasons.push("NOT_VALIDATED");
-  }
-
-  if (
-    !Number.isFinite(probability) ||
-    probability < 70 ||
-    probability > 100
-  ) {
-    reasons.push("PROBABILITY_BELOW_70_OR_INVALID");
-  }
-
-  if (
-    !Number.isFinite(freshnessSec) ||
-    freshnessSec < 0 ||
-    freshnessSec > 300
-  ) {
-    reasons.push("FRESHNESS_MISSING_OR_STALE");
-  }
-
-  if (signalTs === null) {
-    reasons.push("SIGNAL_TIMESTAMP_MISSING_OR_INVALID");
-  } else {
-    if (signalAgeSec > 300) {
-      reasons.push("SIGNAL_TIMESTAMP_STALE");
-    }
-
-    if (futureSkewSec > 60) {
-      reasons.push("SIGNAL_TIMESTAMP_IN_FUTURE");
-    }
-  }
-
-  return {
-    allowed:
-      reasons.length === 0 &&
-      inMoscowWindow,
-
-    reasons,
-    contract,
-    direction,
-    validated,
-
-    probability:
-      Number.isFinite(probability)
-        ? probability
-        : null,
-
-    freshness_sec:
-      Number.isFinite(freshnessSec)
-        ? freshnessSec
-        : null,
-
-    signal_timestamp_utc:
-      signalTs !== null
-        ? new Date(signalTs).toISOString()
-        : null,
-
-    signal_age_sec: signalAgeSec,
-    in_moscow_window: inMoscowWindow,
-    moscow_time: clock.timestamp_msk,
-  };
-}
-
-
-function alertDispatchFingerprint(params, gate) {
-  const explicitId = String(
-    params?.event_id ||
-    params?.signal_id ||
-    params?.alert_id ||
-    ""
-  )
-    .trim()
-    .slice(0, 200);
-
-  if (explicitId) {
-    return "id:v1:" + explicitId;
-  }
-
-  return [
-    "sig:v1",
-    gate?.contract || "",
-    gate?.direction || "",
-    gate?.signal_timestamp_utc || "",
-  ].join("|");
-}
-
-async function reserveAlertDispatch(env, params, gate) {
-  if (!env?.DATA_DB) {
-    return {
-      ok: false,
-      reserved: false,
-      status: "SOURCE_UNSUPPORTED",
-      error: "DATA_DB_NOT_CONFIGURED",
-    };
-  }
-
-  const fingerprint =
-    alertDispatchFingerprint(params, gate);
-
-  const signalTs =
-    gate?.signal_timestamp_utc
-      ? Date.parse(gate.signal_timestamp_utc)
-      : NaN;
-
-  if (
-    !fingerprint ||
-    !Number.isFinite(signalTs)
-  ) {
-    return {
-      ok: false,
-      reserved: false,
-      status: "INVALID_EVENT_IDENTITY",
-      error: "Cannot build stable alert identity",
-    };
-  }
-
-  const now = Date.now();
-
-  const reasonJson = JSON.stringify({
-    summary: String(
-      params?.summary ||
-      params?.reason ||
-      ""
-    )
-      .trim()
-      .slice(0, 600),
-
-    upstream_event_id: String(
-      params?.event_id ||
-      params?.signal_id ||
-      params?.alert_id ||
-      ""
-    )
-      .trim()
-      .slice(0, 200),
-  });
-
-  try {
-    const inserted = await env.DATA_DB.prepare(`
-      INSERT OR IGNORE INTO alert_dispatch_log
-      (
-        event_fingerprint,
-        contract_code,
-        direction,
-        probability,
-        signal_ts,
-        freshness_sec,
-        validated,
-        dispatch_status,
-        reason_json,
-        created_ts
-      )
-      VALUES
-      (?1, ?2, ?3, ?4, ?5, ?6, 1, 'PENDING', ?7, ?8)
-    `)
-      .bind(
-        fingerprint,
-        gate.contract,
-        gate.direction,
-        gate.probability,
-        signalTs,
-        gate.freshness_sec,
-        reasonJson,
-        now
-      )
-      .run();
-
-    const insertedChanges =
-      Number(inserted?.meta?.changes || 0);
-
-    if (insertedChanges > 0) {
-      return {
-        ok: true,
-        reserved: true,
-        status: "RESERVED",
-        fingerprint,
-        retry: false,
-      };
-    }
-
-    const existing = await env.DATA_DB.prepare(`
-      SELECT
-        id,
-        dispatch_status,
-        telegram_message_id,
-        telegram_http_status,
-        created_ts,
-        sent_ts
-      FROM alert_dispatch_log
-      WHERE event_fingerprint = ?1
-      LIMIT 1
-    `)
-      .bind(fingerprint)
-      .first();
-
-    if (!existing) {
-      return {
-        ok: false,
-        reserved: false,
-        status: "D1_INCONSISTENT",
-        error:
-          "INSERT OR IGNORE changed 0 rows but duplicate row was not found",
-        fingerprint,
-      };
-    }
-
-    /*
-      A failed Telegram transmission may be retried.
-      SENT or PENDING events are never transmitted again.
-    */
-    if (
-      String(existing.dispatch_status) ===
-      "SEND_FAILED"
-    ) {
-      const retryReservation =
-        await env.DATA_DB.prepare(`
-          UPDATE alert_dispatch_log
-          SET
-            dispatch_status = 'PENDING',
-            reason_json = ?2
-          WHERE
-            event_fingerprint = ?1
-            AND dispatch_status = 'SEND_FAILED'
-        `)
-          .bind(
-            fingerprint,
-            reasonJson
-          )
-          .run();
-
-      const retryChanges =
-        Number(
-          retryReservation?.meta?.changes || 0
-        );
-
-      if (retryChanges > 0) {
-        return {
-          ok: true,
-          reserved: true,
-          status: "RESERVED_RETRY",
-          fingerprint,
-          retry: true,
-        };
-      }
-    }
-
-    return {
-      ok: true,
-      reserved: false,
-      status: "DUPLICATE",
-      fingerprint,
-      existing_status:
-        existing.dispatch_status || null,
-      existing_message_id:
-        existing.telegram_message_id ?? null,
-      existing_sent_ts:
-        existing.sent_ts ?? null,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      reserved: false,
-      status: "D1_ERROR",
-      fingerprint,
-      error: String(
-        error?.message || error
-      ),
-    };
-  }
-}
-
-async function finalizeAlertDispatch(
-  env,
-  fingerprint,
-  telegram
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  const sent =
-    telegram?.ok === true;
-
-  const finalStatus =
-    sent
-      ? "SENT"
-      : "SEND_FAILED";
-
-  const sentTs =
-    sent
-      ? Date.now()
-      : null;
-
-  try {
-    const result =
-      await env.DATA_DB.prepare(`
-        UPDATE alert_dispatch_log
-        SET
-          dispatch_status = ?2,
-          telegram_message_id = ?3,
-          telegram_http_status = ?4,
-          sent_ts = ?5
-        WHERE
-          event_fingerprint = ?1
-          AND dispatch_status = 'PENDING'
-      `)
-        .bind(
-          fingerprint,
-          finalStatus,
-          telegram?.message_id ?? null,
-          telegram?.http_status ?? null,
-          sentTs
-        )
-        .run();
-
-    return {
-      status: "CLOSED",
-      dispatch_status: finalStatus,
-      rows_updated:
-        Number(result?.meta?.changes || 0),
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      dispatch_status: finalStatus,
-      error: String(
-        error?.message || error
-      ),
-    };
-  }
-}
-
-
-const ALERT_COOLDOWN_SEC = 30 * 60;
-
-async function reserveAlertCooldown(
-  env,
-  gate,
-  fingerprint
-) {
-  if (!env?.DATA_DB) {
-    return {
-      ok: false,
-      acquired: false,
-      status: "SOURCE_UNSUPPORTED",
-      error: "DATA_DB_NOT_CONFIGURED",
-    };
-  }
-
-  const cooldownKey =
-    String(gate.contract) +
-    "|" +
-    String(gate.direction);
-
-  const now = Date.now();
-  const threshold =
-    now - ALERT_COOLDOWN_SEC * 1000;
-
-  try {
-    const result =
-      await env.DATA_DB.prepare(`
-        INSERT INTO alert_dispatch_cooldown
-        (
-          cooldown_key,
-          contract_code,
-          direction,
-          event_fingerprint,
-          reserved_ts,
-          sent_ts
-        )
-        VALUES
-        (?1, ?2, ?3, ?4, ?5, NULL)
-
-        ON CONFLICT(cooldown_key)
-        DO UPDATE SET
-          contract_code = excluded.contract_code,
-          direction = excluded.direction,
-          event_fingerprint = excluded.event_fingerprint,
-          reserved_ts = excluded.reserved_ts,
-          sent_ts = NULL
-
-        WHERE
-          alert_dispatch_cooldown.reserved_ts <= ?6
-      `)
-        .bind(
-          cooldownKey,
-          gate.contract,
-          gate.direction,
-          fingerprint,
-          now,
-          threshold
-        )
-        .run();
-
-    const changes =
-      Number(result?.meta?.changes || 0);
-
-    if (changes > 0) {
-      return {
-        ok: true,
-        acquired: true,
-        status: "ACQUIRED",
-        cooldown_key: cooldownKey,
-        cooldown_sec:
-          ALERT_COOLDOWN_SEC,
-        reserved_ts: now,
-      };
-    }
-
-    const current =
-      await env.DATA_DB.prepare(`
-        SELECT
-          event_fingerprint,
-          reserved_ts,
-          sent_ts
-        FROM alert_dispatch_cooldown
-        WHERE cooldown_key = ?1
-        LIMIT 1
-      `)
-        .bind(cooldownKey)
-        .first();
-
-    const baseTs =
-      Number(current?.reserved_ts || 0);
-
-    const remainingSec =
-      Math.max(
-        0,
-        Math.ceil(
-          (
-            baseTs +
-            ALERT_COOLDOWN_SEC * 1000 -
-            now
-          ) / 1000
-        )
-      );
-
-    return {
-      ok: true,
-      acquired: false,
-      status: "COOLDOWN_ACTIVE",
-      cooldown_key: cooldownKey,
-      cooldown_sec:
-        ALERT_COOLDOWN_SEC,
-      remaining_sec: remainingSec,
-      previous_event_fingerprint:
-        current?.event_fingerprint || null,
-      previous_sent_ts:
-        current?.sent_ts ?? null,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      acquired: false,
-      status: "D1_ERROR",
-      error: String(
-        error?.message || error
-      ),
-    };
-  }
-}
-
-async function setAlertDispatchStatus(
-  env,
-  fingerprint,
-  status
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  try {
-    const result =
-      await env.DATA_DB.prepare(`
-        UPDATE alert_dispatch_log
-        SET dispatch_status = ?2
-        WHERE
-          event_fingerprint = ?1
-          AND dispatch_status = 'PENDING'
-      `)
-        .bind(
-          fingerprint,
-          status
-        )
-        .run();
-
-    return {
-      status: "CLOSED",
-      rows_updated:
-        Number(result?.meta?.changes || 0),
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      error: String(
-        error?.message || error
-      ),
-    };
-  }
-}
-
-async function finalizeAlertCooldown(
-  env,
-  cooldown,
-  fingerprint,
-  telegram
-) {
-  if (!env?.DATA_DB) {
-    return {
-      status: "SOURCE_UNSUPPORTED",
-    };
-  }
-
-  try {
-    if (telegram?.ok === true) {
-      const sentTs = Date.now();
-
-      const result =
-        await env.DATA_DB.prepare(`
-          UPDATE alert_dispatch_cooldown
-          SET
-            reserved_ts = ?3,
-            sent_ts = ?3
-          WHERE
-            cooldown_key = ?1
-            AND event_fingerprint = ?2
-        `)
-          .bind(
-            cooldown.cooldown_key,
-            fingerprint,
-            sentTs
-          )
-          .run();
-
-      return {
-        status: "CLOSED",
-        action: "COOLDOWN_STARTED",
-        sent_ts: sentTs,
-        rows_updated:
-          Number(result?.meta?.changes || 0),
-      };
-    }
-
-    const result =
-      await env.DATA_DB.prepare(`
-        DELETE FROM alert_dispatch_cooldown
-        WHERE
-          cooldown_key = ?1
-          AND event_fingerprint = ?2
-      `)
-        .bind(
-          cooldown.cooldown_key,
-          fingerprint
-        )
-        .run();
-
-    return {
-      status: "CLOSED",
-      action:
-        "COOLDOWN_RELEASED_AFTER_SEND_FAILURE",
-      rows_deleted:
-        Number(result?.meta?.changes || 0),
-    };
-  } catch (error) {
-    return {
-      status: "PARTIAL",
-      error: String(
-        error?.message || error
-      ),
-    };
-  }
-}
-
-function detectMode(
-  url,
-  params
-) {
-  const path =
-    url.pathname.toLowerCase();
-
-  const requested =
-    String(
-      params.market ||
-      params.mode ||
-      params.tool ||
-      params.action ||
-      ""
-    ).toLowerCase();
-
-  if (
-    path.includes(
-      "symbol-resolve"
-    ) ||
-    path.includes(
-      "symbol_resolve"
-    ) ||
-    requested.includes(
-      "symbol_resolve"
-    )
-  ) {
-    return "symbol_resolve";
-  }
-
-  if (
-    path.includes(
-      "stage0-history"
-    ) ||
-    path.includes(
-      "stage0_history"
-    ) ||
-    requested.includes(
-      "stage0_history"
-    )
-  ) {
-    return "stage0_history";
-  }
-
-  if (
-    path.includes(
-      "universe"
-    ) ||
-    requested.includes(
-      "universe_scan"
-    )
-  ) {
-    return "universe";
-  }
-
-  if (
-    path.includes(
-      "liquidation"
-    ) ||
-    requested.includes(
-      "liquidation_tape"
-    )
-  ) {
-    return "liquidations";
-  }
-
-  if (
-    path.includes(
-      "data-plane"
-    ) ||
-    path.includes(
-      "dataplane"
-    ) ||
-    requested.includes(
-      "data_plane_status"
-    )
-  ) {
-    return "data_plane_status";
-  }
-
-  if (
-    path.includes(
-      "trajectory"
-    ) ||
-    requested.includes(
-      "trajectory"
-    )
-  ) {
-    return "trajectory";
-  }
-
-  if (
-    path.includes(
-      "spot"
-    ) ||
-    requested.includes(
-      "spot"
-    )
-  ) {
-    return "spot";
-  }
-
-  return "futures";
-}
-
-const __REPORT2_ORIGINAL_HANDLER = {
-  async fetch(
-    request,
-    env,
-    ctx
-  ) {
-    if (
-      request.method ===
-      "OPTIONS"
-    ) {
-      return new Response(
-        null,
-        {
-          status: 204,
-          headers:
-            JSON_HEADERS,
-        }
-      );
-    }
-
-    try {
-      const {
-        url,
-        params,
-      } =
-        await parseInput(
-          request
-        );
-
-      if (
-        url.pathname ===
-          "/health" ||
-        url.pathname ===
-          "/healthz"
-      ) {
-        return jsonResponse({
-          ok: true,
-
-          service:
-            "my-report-2-hub",
-
-          version:
-            FAST_MOVE_WATCH_VERSION,
-
-          candidate_version:
-            OPPORTUNITY_VERSION,
-
-          stage392_shadow_integration_version:
-            STAGE392_SHADOW_INTEGRATION_VERSION,
-
-          telegram_shadow_bridge_version:
-            TELEGRAM_SHADOW_BRIDGE_VERSION,
-
-          telegram_shadow_bodyfix_version:
-            TELEGRAM_SHADOW_BODYFIX_VERSION,
-
-          modules: {
-            telegram_shadow_preview: true,
-            telegram_shadow_manual_test: true,
-            telegram_shadow_auto_dispatch: false,
-
-            htx_futures_snapshot:
-              true,
-
-            htx_spot_snapshot:
-              true,
-
-            htx_futures_trajectory:
-              true,
-
-            spot_flow_windows_1h_4h_24h:
-              true,
-
-            spot_freshness_control:
-              true,
-
-            trajectory_price_windows_5m_15m_1h_4h_24h:
-              true,
-
-            trajectory_oi_windows_1h_4h_24h:
-              true,
-
-            trajectory_funding_history:
-              true,
-
-            trajectory_strict_flow_coverage:
-              true,
-
-            htx_universe_scan:
-              true,
-
-            htx_crypto_instrument_scope:
-              true,
-
-            bounded_deep_check_scheduler:
-              true,
-
-            deep_check_run_journal:
-              true,
-      shadow_decision_layer: true,
-      shadow_outcome_calibration: true,
-      full_evidence_shadow: true,
-      cross_venue_liquidation_intelligence: true,
-      fast_move_watch: true,
-      opportunity_intelligence_shadow: true,
-      multi_wave_campaign_shadow: true,
-
-            htx_symbol_resolve:
-              true,
-
-            htx_stage0_history:
-              true,
-
-            htx_liquidation_tape_rest:
-              true,
-
-            persistent_store_code_ready:
-              true,
-
-            data_plane_status:
-              true,
-
-            cron_observability:
-              true,
-          },
-
-          timestamp_utc:
-            new Date()
-              .toISOString(),
-        });
-      }
-
-
-
-      if (url.pathname === "/deep-check-input") {
-        if (
-          request.method !== "GET" &&
-          request.method !== "POST"
-        ) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint:
-                "deep-check-input",
-              error:
-                "METHOD_NOT_ALLOWED",
-              allowed_methods: [
-                "GET",
-                "POST",
-              ],
-            },
-            405
-          );
-        }
-
-        const expectedKey =
-          String(
-            env?.ALERT_DISPATCH_KEY ||
-            ""
-          ).trim();
-
-        const auth =
-          String(
-            request.headers.get(
-              "authorization"
-            ) || ""
-          );
-
-        const providedKey =
-          auth.startsWith("Bearer ")
-            ? auth.slice(7).trim()
-            : "";
-
-        if (!expectedKey) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint:
-                "deep-check-input",
-              error:
-                "INTERNAL_KEY_NOT_CONFIGURED",
-            },
-            503
-          );
-        }
-
-        if (
-          !providedKey ||
-          providedKey !== expectedKey
-        ) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint:
-                "deep-check-input",
-              error:
-                "UNAUTHORIZED",
-            },
-            401
-          );
-        }
-
-        let params = {};
-
-        if (request.method === "POST") {
-          try {
-            params =
-              await request.json();
-          } catch {
-            params = {};
-          }
-        } else {
-          params =
-            Object.fromEntries(
-              url.searchParams.entries()
-            );
-        }
-
-        const result =
-          await buildDeepCheckInput(
-            params,
-            env
-          );
-
-        return jsonResponse(result);
-      }
-
-
-      if (url.pathname === "/telegram-shadow-preview") {
-        if (request.method !== "POST") {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-preview", error: "METHOD_NOT_ALLOWED", allowed_method: "POST" }, 405);
-        }
-        const authState = telegramShadowAuthOk(request, env);
-        if (!authState.configured) {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-preview", error: "TELEGRAM_TEST_KEY_NOT_CONFIGURED" }, 503);
-        }
-        if (!authState.authorized) {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-preview", error: "UNAUTHORIZED" }, 401);
-        }
-        const body = params && typeof params === "object" ? params : {};
-        const loaded = await loadStage392TelegramShadowDecision(env, body?.decision_id);
-        if (!loaded.ok) return jsonResponse({ endpoint: "telegram-shadow-preview", sent: false, ...loaded }, 503);
-        if (!loaded.row) return jsonResponse({ endpoint: "telegram-shadow-preview", sent: false, ...loaded }, 200);
-        const preview = buildStage392TelegramShadowMessage(loaded.row);
-        return jsonResponse({
-          ok: preview.ok,
-          endpoint: "telegram-shadow-preview",
-          mode: "STAGE392_SHADOW_PREVIEW_NO_SEND",
-          sent: false,
-          telegram_api_called: false,
-          decision_id: loaded.row.decision_id,
-          preview,
-          safety: { live_probability: false, live_signal: false, validated_signal: false, trading_execution: false, automatic_dispatch: false },
-        }, preview.ok ? 200 : 422);
-      }
-
-      if (url.pathname === "/telegram-shadow-test") {
-        if (request.method !== "POST") {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-test", error: "METHOD_NOT_ALLOWED", allowed_method: "POST" }, 405);
-        }
-        const authState = telegramShadowAuthOk(request, env);
-        if (!authState.configured) {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-test", error: "TELEGRAM_TEST_KEY_NOT_CONFIGURED" }, 503);
-        }
-        if (!authState.authorized) {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-test", error: "UNAUTHORIZED" }, 401);
-        }
-        const body = params && typeof params === "object" ? params : {};
-        if (String(body?.confirm || "") !== "SEND_SHADOW_TEST") {
-          return jsonResponse({ ok: false, endpoint: "telegram-shadow-test", sent: false, error: "EXPLICIT_CONFIRMATION_REQUIRED", required_confirm: "SEND_SHADOW_TEST" }, 422);
-        }
-        const loaded = await loadStage392TelegramShadowDecision(env, body?.decision_id);
-        if (!loaded.ok) return jsonResponse({ endpoint: "telegram-shadow-test", sent: false, ...loaded }, 503);
-        if (!loaded.row) return jsonResponse({ endpoint: "telegram-shadow-test", sent: false, ...loaded }, 200);
-        const preview = buildStage392TelegramShadowMessage(loaded.row);
-        if (!preview.ok) return jsonResponse({ ok: false, endpoint: "telegram-shadow-test", sent: false, decision_id: loaded.row.decision_id, preview }, 422);
-        const telegram = await sendTelegramMessage(env, preview.message);
-        return jsonResponse({
-          endpoint: "telegram-shadow-test",
-          mode: "MANUAL_SHADOW_TEST_ONLY",
-          decision_id: loaded.row.decision_id,
-          sent: telegram.ok === true,
-          safety: { live_probability: false, live_signal: false, validated_signal: false, trading_execution: false, automatic_dispatch: false },
-          ...telegram,
-        }, telegram.ok ? 200 : 502);
-      }
-
-      if (url.pathname === "/alert-dispatch") {
-        if (request.method !== "POST") {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              error: "METHOD_NOT_ALLOWED",
-              allowed_method: "POST",
-            },
-            405
-          );
-        }
-
-        const expectedKey = String(
-          env?.ALERT_DISPATCH_KEY || ""
-        ).trim();
-
-        const auth = String(
-          request.headers.get("authorization") || ""
-        );
-
-        const providedKey = auth.startsWith("Bearer ")
-          ? auth.slice(7).trim()
-          : "";
-
-        if (!expectedKey) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              error: "ALERT_DISPATCH_KEY_NOT_CONFIGURED",
-            },
-            503
-          );
-        }
-
-        if (
-          !providedKey ||
-          providedKey !== expectedKey
-        ) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              error: "UNAUTHORIZED",
-            },
-            401
-          );
-        }
-
-        const gate = validateAlertDispatch(params);
-
-        if (gate.reasons.length) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              status: "REJECTED_FAIL_CLOSED",
-              sent: false,
-              gate,
-            },
-            422
-          );
-        }
-
-        if (!gate.in_moscow_window) {
-          return jsonResponse({
-            ok: true,
-            endpoint: "alert-dispatch",
-            status: "SKIPPED_OUTSIDE_MSK_WINDOW",
-            sent: false,
-            gate,
-          });
-        }
-
-        const summary = String(
-          params?.summary ||
-          params?.reason ||
-          ""
-        )
-          .trim()
-          .slice(0, 600);
-
-        const message = [
-          "ðŸš¨ ÐœÐ¾Ð¹ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚ 2 â€” VALIDATED ALERT",
-          "",
-          gate.direction +
-            " " +
-            gate.contract +
-            " â€” " +
-            gate.probability.toFixed(0) +
-            "%",
-          "Ð¡Ð²ÐµÐ¶ÐµÑÑ‚ÑŒ: " +
-            Math.round(gate.freshness_sec) +
-            " ÑÐµÐº.",
-          "Ð¡Ð¸Ð³Ð½Ð°Ð»: " +
-            gate.signal_timestamp_utc,
-          summary
-            ? "ÐŸÑ€Ð¸Ñ‡Ð¸Ð½Ð°: " + summary
-            : null,
-        ]
-          .filter(Boolean)
-          .join("\n");
-
-
-        const dispatchReservation =
-          await reserveAlertDispatch(
-            env,
-            params,
-            gate
-          );
-
-        if (!dispatchReservation.ok) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              status:
-                "REJECTED_FAIL_CLOSED_D1",
-              sent: false,
-              gate,
-              dispatch:
-                dispatchReservation,
-            },
-            503
-          );
-        }
-
-        if (!dispatchReservation.reserved) {
-          return jsonResponse({
-            ok: true,
-            endpoint: "alert-dispatch",
-            status: "SKIPPED_DUPLICATE",
-            sent: false,
-            gate,
-            dispatch:
-              dispatchReservation,
-          });
-        }
-
-        const cooldown =
-          await reserveAlertCooldown(
-            env,
-            gate,
-            dispatchReservation.fingerprint
-          );
-
-        if (!cooldown.ok) {
-          const journal =
-            await setAlertDispatchStatus(
-              env,
-              dispatchReservation.fingerprint,
-              "SEND_FAILED"
-            );
-
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "alert-dispatch",
-              status:
-                "REJECTED_FAIL_CLOSED_COOLDOWN",
-              sent: false,
-              gate,
-              dispatch: {
-                ...dispatchReservation,
-                cooldown,
-                journal,
-              },
-            },
-            503
-          );
-        }
-
-        if (!cooldown.acquired) {
-          const journal =
-            await setAlertDispatchStatus(
-              env,
-              dispatchReservation.fingerprint,
-              "SKIPPED_COOLDOWN"
-            );
-
-          return jsonResponse({
-            ok: true,
-            endpoint: "alert-dispatch",
-            status: "SKIPPED_COOLDOWN",
-            sent: false,
-            gate,
-            dispatch: {
-              ...dispatchReservation,
-              cooldown,
-              journal,
-            },
-          });
-        }
-
-        const telegram =
-          await sendTelegramMessage(
-            env,
-            message
-          );
-
-        const dispatchJournal =
-          await finalizeAlertDispatch(
-            env,
-            dispatchReservation.fingerprint,
-            telegram
-          );
-
-        const cooldownJournal =
-          await finalizeAlertCooldown(
-            env,
-            cooldown,
-            dispatchReservation.fingerprint,
-            telegram
-          );
-
-        return jsonResponse(
-          {
-            endpoint: "alert-dispatch",
-            sent: telegram.ok === true,
-            gate,
-            dispatch: {
-              ...dispatchReservation,
-              journal: dispatchJournal,
-              cooldown,
-              cooldown_journal:
-                cooldownJournal,
-            },
-            ...telegram,
-          },
-          telegram.ok ? 200 : 502
-        );
-      }
-
-      if (url.pathname === "/telegram-test") {
-        if (request.method !== "POST") {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "telegram-test",
-              error: "METHOD_NOT_ALLOWED",
-              allowed_method: "POST",
-            },
-            405
-          );
-        }
-
-        const expectedKey = String(env?.TELEGRAM_TEST_KEY || "").trim();
-        const auth = String(
-          request.headers.get("authorization") || ""
-        );
-
-        const providedKey = auth.startsWith("Bearer ")
-          ? auth.slice(7).trim()
-          : "";
-
-        if (!expectedKey) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "telegram-test",
-              error: "TELEGRAM_TEST_KEY_NOT_CONFIGURED",
-            },
-            503
-          );
-        }
-
-        if (!providedKey || providedKey !== expectedKey) {
-          return jsonResponse(
-            {
-              ok: false,
-              endpoint: "telegram-test",
-              error: "UNAUTHORIZED",
-            },
-            401
-          );
-        }
-
-        const testText =
-          typeof params.text === "string" && params.text.trim()
-            ? params.text.trim()
-            : "âœ… ÐœÐ¾Ð¹ Ð¾Ñ‚Ñ‡Ñ‘Ñ‚ 2 â€” Telegram Sender Ð¸Ð· HUB Ñ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÑ‚.";
-
-        const telegram = await sendTelegramMessage(
-          env,
-          testText
-        );
-
-        return jsonResponse(
-          {
-            endpoint: "telegram-test",
-            ...telegram,
-          },
-          telegram.ok ? 200 : 502
-        );
-      }
-
-
-      const mode =
-        detectMode(
-          url,
-          params
-        );
-
-      if (
-        mode ===
-        "symbol_resolve"
-      ) {
-        const output =
-          await htxSymbolResolve(
-            params
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "stage0_history"
-      ) {
-        const output =
-          await htxStage0History(
-            params,
-            env
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "universe"
-      ) {
-        const output =
-          await htxUniverseScan(
-            params,
-            env
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "liquidations"
-      ) {
-        const output =
-          await htxLiquidationTape(
-            params,
-            env
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "data_plane_status"
-      ) {
-        const output =
-          await dataPlaneStatus(
-            env
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "trajectory"
-      ) {
-        const output =
-          await futuresTrajectory(
-            params
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      if (
-        mode ===
-        "spot"
-      ) {
-        const output =
-          await spotSnapshot(
-            params
-          );
-
-        return jsonResponse(
-          output
-        );
-      }
-
-      const output =
-        await futuresSnapshot(
-          params
-        );
-
-      return jsonResponse(
-        output
-      );
-    } catch (error) {
-      return jsonResponse(
-        {
-          ok: false,
-
-          error:
-            String(
-              error?.message ||
-              error
-            ),
-
-          timestamp_utc:
-            new Date()
-              .toISOString(),
-        },
-        500
-      );
-    }
-  },
-
-  async scheduled(
-    controller,
-    env,
-    ctx
-  ) {
-    const startedTs =
-      Date.now();
-
-    const scheduledTime =
-      num(
-        controller
-          ?.scheduledTime
-      ) ??
-      startedTs;
-
-    const runId =
-      `${scheduledTime}-${startedTs}`;
-
-    console.log(
-      "cron_start",
-      JSON.stringify({
-        run_id:
-          runId,
-
-        scheduled_time:
-          scheduledTime,
-
-        started_ts:
-          startedTs,
-      })
-    );
-
-    await recordCronRun(
-      env,
-      {
-        run_id:
-          runId,
-
-        scheduled_time:
-          scheduledTime,
-
-        started_ts:
-          startedTs,
-
-        status:
-          "STARTED",
-      }
-    );
-
-    try {
-      const scan =
-        await htxUniverseScan(
-          {
-            freshness_sec:
-              300,
-          },
-          env,
-          {
-            persist:
-              true,
-          }
-        );
-
-      /*
-       * The early-feature owner must observe the scan that belongs to this
-       * run before shortlist selection and canonical assessment.  The runner
-       * supplies the existing persistence sidecar through this hook; no early
-       * formula, threshold or wave rule is duplicated here.
-       */
-      let currentCycleEarlyPersistence = {
-        status: "HOOK_NOT_CONFIGURED",
-        persisted: 0,
-      };
-      if (typeof env?.REPORT2_CURRENT_CYCLE_EARLY_PERSIST === "function") {
-        try {
-          currentCycleEarlyPersistence =
-            await env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST({
-              current_scan_ts:
-                Number(scan?.timestamp) ||
-                null,
-              source_run_id:
-                String(runId || ""),
-              now_ts:
-                Number(scan?.timestamp) ||
-                Date.now(),
-            });
-        } catch (error) {
-          currentCycleEarlyPersistence = {
-            status: "DATA_NOT_CLOSED",
-            reason: "CURRENT_CYCLE_EARLY_PERSISTENCE_FAILED",
-            error: String(error?.message || error).slice(0, 300),
-            persisted: 0,
-          };
-        }
-      }
-      env.REPORT2_CURRENT_CYCLE_EARLY_RESULT =
-        currentCycleEarlyPersistence;
-
-      const deepCheckQueue =
-        buildDeepCheckQueue(
-          scan
-        );
-
-      console.log(
-        "deep_check_queue",
-        JSON.stringify({
-          run_id:
-            runId,
-          universe_total:
-            deepCheckQueue
-              ?.counts
-              ?.universe_total ??
-            0,
-          eligible:
-            deepCheckQueue
-              ?.counts
-              ?.eligible ??
-            0,
-          excluded:
-            deepCheckQueue
-              ?.counts
-              ?.excluded ??
-            0,
-          mode:
-            deepCheckQueue
-              ?.mode ??
-            null,
-          decision_generated:
-            deepCheckQueue
-              ?.decision
-              ?.generated === true,
-          validated:
-            deepCheckQueue
-              ?.decision
-              ?.validated === true,
-        })
-      );
-
-      const baseDiscoveryPrefilter =
-        scan?.discovery_recall
-          ?.shortlist
-          ? buildDiscoveryPrefilter(
-              scan,
-              deepCheckQueue,
-              {
-                liquidity_percentile:
-                  0.70,
-                early_liquidity_percentile:
-                  0.45,
-                anomaly_percentile:
-                  0.95,
-                early_anomaly_percentile:
-                  0.80,
-                funding_percentile:
-                  0.95,
-                funding_tail_percentile:
-                  0.10,
-                min_anomaly_flags:
-                  2,
-                min_early_flags:
-                  2,
-                max_shortlist:
-                  24,
-              }
-            )
-          : buildDiscoveryPrefilter(
-              scan,
-              deepCheckQueue
-            );
-
-      const earlyBridgeInputs =
-        ["CLOSED", "PARTIAL"].includes(
-          String(currentCycleEarlyPersistence?.status || "").toUpperCase()
-        )
-          ? await loadEarlyBridgeInputs(
-              env,
-              {
-                now:
-                  Number(scan?.timestamp) ||
-                  Date.now(),
-              }
-            )
-          : {
-              status: "DATA_NOT_CLOSED",
-              reason:
-                currentCycleEarlyPersistence?.reason ||
-                currentCycleEarlyPersistence?.status ||
-                "CURRENT_CYCLE_EARLY_NOT_CLOSED",
-              early_rows: [],
-              full_evidence_rows: [],
-              d1_queries: 0,
-              network_calls: 0,
-              writes: 0,
-            };
-
-      const discoveryPrefilter =
-        applyEarlyCandidateBridge({
-          discovery_prefilter:
-            baseDiscoveryPrefilter,
-          scan,
-          deep_check_queue:
-            deepCheckQueue,
-          early_rows:
-            earlyBridgeInputs
-              ?.early_rows || [],
-          full_evidence_rows:
-            earlyBridgeInputs
-              ?.full_evidence_rows || [],
-          now:
-            Number(scan?.timestamp) ||
-            Date.now(),
-        });
-
-      /*
-       * A user-visible early observation that already cleared 70 must not wait
-       * forever merely because its canonical publication was not yet bound.
-       * Recover only an exact, still-valid lifecycle/wave identity that is also
-       * present in this cycle's bridged shortlist. This is a one-slot technical
-       * repair, not a synthetic signal and never authorizes ENTRY.
-       */
-      let telegramBindingRecovery = null;
-      try {
-        const pending = await env.DATA_DB.prepare(`SELECT d.contract,d.direction,d.wave_id,d.created_ts,w.early_detection_quality_0_100
-          FROM v3_telegram_dispatch_shadow d
-          JOIN v3_user_lifecycle_shadow l ON l.contract=d.contract AND l.direction=d.direction AND l.wave_id=d.wave_id AND l.rules_version=d.rules_version
-          JOIN v3_early_candidate_wave w ON w.contract_code=d.contract AND w.wave_id=d.wave_id AND w.direction_hint=d.direction
-          LEFT JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key
-          WHERE d.state IN ('PENDING','FAILED_RETRYABLE') AND d.lifecycle_event IN ('OBSERVE','WAIT') AND b.idempotency_key IS NULL
-            AND l.status=d.lifecycle_event AND l.valid_until_ts>=?1 AND w.early_detection_quality_0_100>=70
-          ORDER BY d.created_ts ASC LIMIT 1`).bind(Date.now()).first();
-        const bridged=(discoveryPrefilter?.shortlist||[]).find(row=>
-          row?.early_candidate_bridge===true &&
-          String(row?.contract||'').trim()===String(pending?.contract||'').trim() &&
-          String(row?.early_candidate_wave_id||row?.wave_id||'').trim()===String(pending?.wave_id||'').trim() &&
-          Number(row?.early_candidate_quality_0_100)>=70
-        );
-        if(pending&&bridged)telegramBindingRecovery={...pending,candidate:bridged};
-      } catch { telegramBindingRecovery=null; }
-
-      let postV7RecheckClaim = {status:'DISABLED',claimed:false};
-      if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1') {
-        await requeueExpiredLease(env.DATA_DB,{now_ts:Date.now()});
-        postV7RecheckClaim = telegramBindingRecovery
-          ? {status:'DEFERRED_FOR_TELEGRAM_BINDING_RECOVERY',claimed:false,recovery_contract:telegramBindingRecovery.contract}
-          : await claimDueRecheck(env.DATA_DB,{
-              actor:String(env?.REPORT2_ANALYTICS_ACTOR || 'GITHUB_ACTIONS'),
-              configured_owner:'GITHUB_ACTIONS',
-              now_ts:Date.now(),
-              lease_ms:5*60_000,
-            });
-      }
-
-      console.log(
-        "early_candidate_bridge",
-        JSON.stringify({
-          run_id: runId,
-          input_status:
-            earlyBridgeInputs?.status ?? null,
-          d1_queries:
-            earlyBridgeInputs?.d1_queries ?? 0,
-          network_calls:
-            earlyBridgeInputs?.network_calls ?? 0,
-          writes:
-            earlyBridgeInputs?.writes ?? 0,
-          current_cycle_early_status:
-            currentCycleEarlyPersistence?.status ?? null,
-          current_cycle_early_persisted:
-            currentCycleEarlyPersistence?.persisted ?? 0,
-          loaded:
-            discoveryPrefilter?.counts?.early_bridge_loaded ?? 0,
-          accepted:
-            discoveryPrefilter?.counts?.early_bridge_accepted ?? 0,
-          microstructure_confirmed:
-            discoveryPrefilter?.counts?.early_bridge_microstructure_confirmed ?? 0,
-          cross_venue_confirmed:
-            discoveryPrefilter?.counts?.early_bridge_cross_venue_confirmed ?? 0,
-        })
-      );
-
-      console.log(
-        "discovery_prefilter",
-        JSON.stringify({
-          run_id:
-            runId,
-
-          mode:
-            discoveryPrefilter
-              ?.mode ??
-            null,
-
-          universe_total:
-            discoveryPrefilter
-              ?.counts
-              ?.universe_total ??
-            0,
-
-          technical_eligible:
-            discoveryPrefilter
-              ?.counts
-              ?.technical_eligible ??
-            0,
-
-          liquidity_pool:
-            discoveryPrefilter
-              ?.counts
-              ?.liquidity_pool ??
-            0,
-
-          anomaly_pool:
-            discoveryPrefilter
-              ?.counts
-              ?.anomaly_pool ??
-            0,
-
-          shortlist_count:
-            discoveryPrefilter
-              ?.counts
-              ?.shortlist ??
-            0,
-
-          shortlist:
-            Array.isArray(
-              discoveryPrefilter
-                ?.shortlist
-            )
-              ? discoveryPrefilter
-                  .shortlist
-                  .map(
-                    (row) => ({
-                      rank:
-                        row
-                          ?.priority_rank ??
-                        null,
-
-                      contract:
-                        row
-                          ?.contract ??
-                        null,
-
-                      flags:
-                        row
-                          ?.anomaly_flags_count ??
-                        0,
-                    })
-                  )
-              : [],
-
-          decision_generated:
-            discoveryPrefilter
-              ?.decision
-              ?.generated === true,
-
-          direction:
-            discoveryPrefilter
-              ?.decision
-              ?.direction ??
-            null,
-
-          probability:
-            discoveryPrefilter
-              ?.decision
-              ?.probability ??
-            null,
-
-          validated:
-            discoveryPrefilter
-              ?.decision
-              ?.validated === true,
-
-          network_calls_generated:
-            discoveryPrefilter
-              ?.execution
-              ?.network_calls_generated ??
-            null,
-
-          d1_calls_generated:
-            discoveryPrefilter
-              ?.execution
-              ?.d1_calls_generated ??
-            null,
-
-          deep_check_started:
-            discoveryPrefilter
-              ?.execution
-              ?.deep_check_started === true,
-
-          telegram_started:
-            discoveryPrefilter
-              ?.execution
-              ?.telegram_started === true,
-        })
-      );
-
-      const confirmedScopeContracts =
-        Array.isArray(
-          scan?.contracts
-        )
-          ? scan.contracts
-              .filter(
-                (row) =>
-                  row
-                    ?.instrument_scope
-                    ?.classification ===
-                  "CRYPTO_CONFIRMED"
-              )
-              .map(
-                (row) =>
-                  String(
-                    row
-                      ?.contract_code ||
-                    ""
-                  ).trim()
-              )
-              .filter(Boolean)
-          : [];
-
-      const cycleNow =
-        Date.now();
-
-      const opportunityJournalPlan =
-        await selectOpportunityJournalCandidate({
-          env,
-          confirmed_contracts:
-            confirmedScopeContracts,
-          now:
-            cycleNow,
-        });
-
-      /*
-       * V3: LIVE always outranks maintenance. Fast-Move keeps its independent
-       * recheck cadence, while a fresh Discovery shortlist receives its own
-       * bounded Deep Check lane immediately. The bounded scheduler still owns
-       * cooldown/lease/exact instrument safety; no direction is invented here.
-       */
-      const fastMoveWatchCycle =
-        await prepareFastMoveWatchCycle({
-          env,
-          scan,
-          discovery_prefilter:
-            discoveryPrefilter,
-          run_id:
-            runId,
-          now:
-            cycleNow,
-        });
-
-      const fastMoveAdaptivePrefilter =
-        fastMoveWatchCycle
-          ?.adaptive_discovery_prefilter ||
-        discoveryPrefilter;
-
-      let postV7DeepPrefilter = fastMoveAdaptivePrefilter;
-      const dueRecheckContract = postV7RecheckClaim?.claimed === true
-        ? String(postV7RecheckClaim?.task?.contract_code || '').trim()
-        : '';
-      if (dueRecheckContract) {
-        const telemetry=(Array.isArray(fastMoveAdaptivePrefilter?.contract_telemetry)?fastMoveAdaptivePrefilter.contract_telemetry:[])
-          .find(row=>String(row?.contract||'').trim()===dueRecheckContract);
-        if (telemetry) {
-          const forced={priority_rank:0,...telemetry,contract:dueRecheckContract,recheck_task_id:postV7RecheckClaim.task.task_id,recheck_forced:true};
-          postV7DeepPrefilter={...fastMoveAdaptivePrefilter,shortlist:[forced,...(fastMoveAdaptivePrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim()!==dueRecheckContract)]};
-        }
-      }
-
-      let liveHandoffPlan = dueRecheckContract
-        ? {lane:'LIVE_RECHECK',require_exact_contract:true,required_contract:dueRecheckContract,live_shortlist_count:1,maintenance_available:Boolean(opportunityJournalPlan?.candidate),maintenance_deferred:Boolean(opportunityJournalPlan?.candidate)}
-        : buildV3LiveHandoffPlan({
-          discovery_prefilter:
-            postV7DeepPrefilter,
-          fast_move_watch_cycle:
-            fastMoveWatchCycle,
-          opportunity_journal_plan:
-            opportunityJournalPlan,
-        });
-
-      /* A directionless Fast-Move retry cannot form a LONG/SHORT early notice.
-       * Do not let it repeatedly consume the only Deep Check slot while a
-       * fresh directional Discovery candidate exists. Due rechecks retain
-       * priority and this scheduling choice never authorizes ENTRY. */
-      if (!dueRecheckContract && liveHandoffPlan?.lane === 'LIVE_FAST_MOVE_RECHECK') {
-        const required=String(liveHandoffPlan?.required_contract||'').trim().toUpperCase();
-        const directionalRows=(postV7DeepPrefilter?.shortlist||[]).filter(row=>{
-          const contract=String(row?.contract||'').trim().toUpperCase();
-          const hint=String(row?.discovery_direction_hint??row?.early_candidate_direction_hint??row?.direction_hint??'').trim().toUpperCase();
-          return contract&&contract!==required&&['LONG','SHORT','LONG_WATCH','SHORT_WATCH'].includes(hint);
-        });
-        const earlyFor=row=>(earlyBridgeInputs?.early_rows||[]).find(early=>String(early?.contract_code||early?.contract||'').trim().toUpperCase()===String(row?.contract||'').trim().toUpperCase()&&Number(early?.early_detection_quality_0_100)>=70);
-        const directional=directionalRows.find(row=>earlyFor(row))||directionalRows[0];
-        if(directional){
-          const contract=String(directional.contract).trim().toUpperCase();
-          const directionalCandidates=directionalRows.map(row=>{
-            const early=earlyFor(row);
-            return {...row,directional_discovery_priority:true,...(early?{early_candidate_bridge:true,early_candidate_wave_id:early.wave_id,early_candidate_quality_0_100:Number(early.early_detection_quality_0_100),early_candidate_direction_hint:early.direction_hint}: {})};
-          });
-          const selected=directionalCandidates.find(row=>String(row?.contract||'').trim().toUpperCase()===contract);
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[{...selected,priority_rank:0},...directionalCandidates.filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
-          /* The directionless Fast-Move lease is deliberately deferred. The
-           * directional lane is not a lease, so let the bounded scheduler pick
-           * the first non-cooled directional candidate instead of pinning one
-           * stale symbol and wasting every 20-minute slot. */
-          liveHandoffPlan={...liveHandoffPlan,lane:'LIVE_DIRECTIONAL_DISCOVERY',require_exact_contract:false,required_contract:null,live_shortlist_count:directionalCandidates.length,live_contracts:directionalCandidates.map(row=>String(row?.contract||'').trim().toUpperCase()),directionless_fast_move_deferred:required||null,reason:'READY_DIRECTIONAL_CANDIDATE_SELECTED_AFTER_COOLDOWN'};
-        }
-      }
-
-      const telegramRecoveryContract=String(telegramBindingRecovery?.contract||'').trim().toUpperCase();
-      if(telegramRecoveryContract){
-        const forced={...telegramBindingRecovery.candidate,priority_rank:0,contract:telegramRecoveryContract,telegram_binding_recovery:true};
-        postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==telegramRecoveryContract)]};
-        liveHandoffPlan={lane:'TELEGRAM_BINDING_RECOVERY',require_exact_contract:true,required_contract:telegramRecoveryContract,live_shortlist_count:1,maintenance_available:Boolean(opportunityJournalPlan?.candidate),maintenance_deferred:Boolean(opportunityJournalPlan?.candidate)};
-      }
-
-      const manualRequestedContract=String(env?.REPORT2_RUN_SOURCE||'')!=='schedule'
-        ? String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim().toUpperCase()
-        : '';
-      if(manualRequestedContract){
-        const scopeConfirmed=confirmedScopeContracts.includes(manualRequestedContract);
-        const telemetry=(Array.isArray(postV7DeepPrefilter?.contract_telemetry)?postV7DeepPrefilter.contract_telemetry:[])
-          .find(row=>String(row?.contract||'').trim().toUpperCase()===manualRequestedContract);
-        if(scopeConfirmed&&telemetry){
-          const forced={priority_rank:0,...telemetry,contract:manualRequestedContract,manual_coin_analysis:true};
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==manualRequestedContract)]};
-          liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};
-        }else{
-          liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS_REJECTED',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false};
-        }
-      }
-
-      const queuedLiquidationContract=String(env?.REPORT2_RUN_SOURCE||'')==='schedule'
-        ? String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim().toUpperCase()
-        : '';
-      if(queuedLiquidationContract&&!dueRecheckContract&&!manualRequestedContract){
-        const scopeConfirmed=confirmedScopeContracts.includes(queuedLiquidationContract);
-        const telemetry=(Array.isArray(postV7DeepPrefilter?.contract_telemetry)?postV7DeepPrefilter.contract_telemetry:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
-        if(scopeConfirmed&&telemetry){
-          const attempts=Number(env?.REPORT2_LIQUIDATION_QUEUE_ATTEMPTS||0),starved=attempts>=3;
-          const queued={...telemetry,contract:queuedLiquidationContract,liquidation_queue_analysis:true,liquidation_queue_attempts:attempts};
-          const ordinary=(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==queuedLiquidationContract);
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:starved?[{...queued,priority_rank:0},...ordinary]:[...ordinary,{...queued,priority_rank:Number(queued?.priority_rank??99)}]};
-          liveHandoffPlan={...liveHandoffPlan,liquidation_queue_pending:true,liquidation_queue_contract:queuedLiquidationContract,liquidation_queue_starved:starved};
-        }
-      }
-
-      const journalMaintenanceSelected =
-        liveHandoffPlan?.lane ===
-        "MAINTENANCE";
-
-      const continuityDiscoveryPrefilter =
-        preserveQualifiedEarlyWaveContinuity(
-          postV7DeepPrefilter,
-          discoveryPrefilter
-        );
-
-      console.log(
-        "early_wave_continuity",
-        JSON.stringify({
-          run_id: runId,
-          ...(continuityDiscoveryPrefilter?.early_wave_continuity || {}),
-        })
-      );
-
-      const adaptiveDiscoveryPrefilter =
-        journalMaintenanceSelected
-          ? buildOpportunityJournalPrefilter(
-              continuityDiscoveryPrefilter,
-              opportunityJournalPlan
-                ?.candidate
-            )
-          : continuityDiscoveryPrefilter;
-
-      console.log(
-        "fast_move_watch_prepare",
-        JSON.stringify({
-          run_id: runId,
-          status:
-            fastMoveWatchCycle
-              ?.status ??
-            null,
-          selected_contracts:
-            fastMoveWatchCycle
-              ?.selected_contracts ??
-            [],
-          adaptive_cooldown_sec:
-            fastMoveWatchCycle
-              ?.adaptive_cooldown_sec ??
-            1800,
-          writes_used:
-            fastMoveWatchCycle
-              ?.writes_used ??
-            0,
-          queue_depth:
-            fastMoveWatchCycle
-              ?.plan
-              ?.queue_depth ??
-            0,
-          decision_generated:
-            false,
-          validated:
-            false,
-          telegram_started:
-            false,
-          trading_execution:
-            false,
-          opportunity_journal_slot:
-            opportunityJournalPlan
-              ?.status ??
-            null,
-          live_handoff_lane:
-            liveHandoffPlan
-              ?.lane ??
-            null,
-          live_shortlist_count:
-            liveHandoffPlan
-              ?.live_shortlist_count ??
-            0,
-          maintenance_deferred:
-            liveHandoffPlan
-              ?.maintenance_deferred ===
-            true,
-        })
-      );
-
-      const boundedDeepCheck =
-        await runBoundedDeepCheckScheduler(
-          adaptiveDiscoveryPrefilter,
-          env,
-          runId,
-          {
-            max_per_run:
-              1,
-
-            cooldown_sec:
-              fastMoveWatchCycle
-                ?.adaptive_cooldown_sec ??
-              1800,
-
-            lease_sec:
-              600,
-
-            require_exact_contract:
-              liveHandoffPlan
-                ?.require_exact_contract ===
-              true,
-
-            required_contract:
-              liveHandoffPlan
-                ?.required_contract ??
-              null,
-
-            queue_starvation:
-              fastMoveWatchCycle
-                ?.plan
-                ?.starvation_indicator ===
-              true,
-
-            confirmed_scope_contracts:
-              confirmedScopeContracts,
-
-            scan_ts:
-              scan?.timestamp ??
-              null,
-
-            early_scan: scan,
-
-            live_handoff_lane:
-              liveHandoffPlan?.lane ??
-              null,
-          }
-        );
-
-      if(queuedLiquidationContract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
-        const queueResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);
-        if(!queueResult){try{await env.REPORT2_LIQUIDATION_QUEUE_COMPLETE({usable:false,result:{selection_status:'NOT_SELECTED_CAPACITY',stage:'DEEP_SELECTION',run_id:runId}});}catch{}}
-      }
-
-      if (postV7RecheckClaim?.claimed === true) {
-        const exactResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])
-          .find(row=>String(row?.contract||'').trim()===String(postV7RecheckClaim.task.contract_code||'').trim());
-        const receipt=exactResult?.post_v7_canonical_persistence;
-        if (exactResult?.execution_status === 'FULFILLED' && exactResult?.canonical_analytical_result?.status === 'CLOSED' && ['CLOSED','DEDUPLICATED'].includes(receipt?.status) && receipt?.publication_id) {
-          await completeRecheck(env.DATA_DB,{task_id:postV7RecheckClaim.task.task_id,actor:postV7RecheckClaim.task.lease_owner,lease_started_ts:postV7RecheckClaim.task.lease_started_ts,result:'DONE',new_publication_id:receipt.publication_id,now_ts:Date.now()});
-        }
-      }
-
-      const fullEvidenceFailure=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[])
-        .map(row=>({contract:row?.contract??null,...(row?.full_evidence_persistence||{})}))
-        .find(row=>row?.status&&!(row.persisted===true&&row.status==='CLOSED'&&Number(row.insert_changes)===1));
-      const scanPersistenceStatus=scan?.persistence?.status||null;
-      const scanCompleted=Boolean(scan?.health?.contracts&&scan?.counts?.universe_total>0&&scanPersistenceStatus==='CLOSED');
-      const scanFailure=scanCompleted?null:{
-        status:'DEGRADED_PIPELINE',
-        reason:(!scan?.health?.contracts||!(scan?.counts?.universe_total>0))?'STAGE0_SCAN_FAILED':'STAGE0_PERSISTENCE_FAILED',
-        failure_stage:'STAGE0_SCAN',
-        diagnostic:{endpoint_errors:scan?.endpoint_errors??null,persistence:scan?.persistence??null},
-      };
-      const insufficientDeepResult=(boundedDeepCheck?.results||[]).find(row=>
-        String(row?.data_sufficiency?.classification??row?.data_sufficiency??'').toUpperCase()==='INSUFFICIENT');
-      const baseLiveHandoffZeroReason =
-        classifyV3LiveHandoffZeroReason({
-          handoff_plan:
-            liveHandoffPlan,
-          bounded_deep_check:
-            boundedDeepCheck,
-        });
-      const liveHandoffZeroReason=scanFailure?scanFailure.reason:fullEvidenceFailure?'FULL_EVIDENCE_PERSISTENCE_FAILED':baseLiveHandoffZeroReason;
-
-      const assessedV3PipelineHealth =
-        assessV3PipelineHealth({
-          handoff_plan:
-            liveHandoffPlan,
-          bounded_deep_check:
-            boundedDeepCheck,
-          zero_reason:
-            liveHandoffZeroReason,
-        });
-      const v3PipelineHealth=scanFailure||(fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:insufficientDeepResult?{status:'DEGRADED_PIPELINE',reason:'DEEP_DATA_INSUFFICIENT',failure_stage:'DEEP_DATA_SUFFICIENCY',diagnostic:{contract:insufficientDeepResult.contract,gaps:insufficientDeepResult.data_sufficiency?.gaps??[]}}:assessedV3PipelineHealth);
-      const deepOutcomeClassification=scanFailure||fullEvidenceFailure?'TECHNICAL_FAILURE':insufficientDeepResult?'INSUFFICIENT_DATA':Number(boundedDeepCheck?.plan?.counts?.selected??0)===0?'NOT_SELECTED_CAPACITY':boundedDeepCheck?.decision?.generated===true?'DECISION_GENERATED':'MARKET_REJECTED';
-
-      console.log(
-        "v3_live_handoff_health",
-        JSON.stringify({
-          run_id: runId,
-          status:
-            v3PipelineHealth
-              ?.status ??
-            "DEGRADED_PIPELINE",
-          reason:
-            v3PipelineHealth
-              ?.reason ??
-            null,
-          lane:
-            liveHandoffPlan
-              ?.lane ??
-            null,
-          live_shortlist_count:
-            liveHandoffPlan
-              ?.live_shortlist_count ??
-            0,
-          selected:
-            boundedDeepCheck
-              ?.plan
-              ?.counts
-              ?.selected ??
-            0,
-          zero_reason:
-            liveHandoffZeroReason,
-          outcome_classification: deepOutcomeClassification,
-          failure_stage: v3PipelineHealth?.failure_stage ?? null,
-          diagnostic: v3PipelineHealth?.diagnostic ?? null,
-          maintenance_available:
-            liveHandoffPlan
-              ?.maintenance_available ===
-            true,
-          maintenance_deferred:
-            liveHandoffPlan
-              ?.maintenance_deferred ===
-            true,
-          decision_generated: false,
-          validated: false,
-          telegram_started: false,
-          trading_execution: false,
-        })
-      );
-
-      console.log(
-        "bounded_deep_check_scheduler",
-        JSON.stringify({
-          run_id:
-            runId,
-
-          status:
-            boundedDeepCheck
-              ?.status ??
-            null,
-
-          scope_status:
-            boundedDeepCheck
-              ?.plan
-              ?.scope_status ??
-            null,
-
-          confirmed_crypto_contracts:
-            confirmedScopeContracts
-              .length,
-
-          execution_lane:
-            liveHandoffPlan
-              ?.lane ??
-            null,
-
-          opportunity_journal_plan: {
-            status:
-              opportunityJournalPlan
-                ?.status ??
-              null,
-            selected_contract:
-              opportunityJournalPlan
-                ?.selected_contract ??
-              null,
-            due_outcome_count:
-              opportunityJournalPlan
-                ?.candidate
-                ?.due_outcome_count ??
-              0,
-            oldest_target_ts:
-              opportunityJournalPlan
-                ?.candidate
-                ?.oldest_target_ts ??
-              null,
-          },
-
-          selected:
-            boundedDeepCheck
-              ?.plan
-              ?.counts
-              ?.selected ??
-            0,
-
-          estimated_external_requests:
-            boundedDeepCheck
-              ?.plan
-              ?.budget
-              ?.estimated_external_requests_this_run ??
-            null,
-
-          results:
-            Array.isArray(
-              boundedDeepCheck
-                ?.results
-            )
-              ? boundedDeepCheck
-                  .results
-                  .map(
-                    (row) => ({
-                      contract:
-                        row?.contract ??
-                        null,
-                      execution_status:
-                        row
-                          ?.execution_status ??
-                        null,
-                      data_sufficiency:
-                        row
-                          ?.data_sufficiency ??
-                        null,
-                      decision_generated:
-                        row
-                          ?.decision_generated ===
-                        true,
-                      validated:
-                        row?.validated ===
-                        true,
-                      journal_status:
-                        row
-                          ?.journal_status ??
-                        null,
-                      canonical_persistence:
-                        row?.post_v7_canonical_persistence ??
-                        null,
-                      canonical_result:
-                        row?.canonical_analytical_result ??
-                        null,
-                      full_evidence_persistence:
-                        row?.full_evidence_persistence ??
-                        null,
-                    })
-                  )
-              : [],
-
-          decision_generated:
-            boundedDeepCheck
-              ?.decision
-              ?.generated === true,
-
-          validated:
-            boundedDeepCheck
-              ?.decision
-              ?.validated === true,
-
-          telegram_started:
-            boundedDeepCheck
-              ?.telegram_started === true,
-        })
-      );
-
-      const fastMoveWatchFinal =
-        journalMaintenanceSelected
-          ? {
-              version:
-                FAST_MOVE_WATCH_VERSION,
-              status:
-                "NOT_APPLICABLE_OPPORTUNITY_JOURNAL_MAINTENANCE",
-              finalized: [],
-              writes_used: 0,
-            }
-          : await finalizeFastMoveWatchCycle({
-              env,
-              cycle:
-                fastMoveWatchCycle,
-              deep_check_results:
-                boundedDeepCheck
-                  ?.results ??
-                [],
-              discovery_prefilter:
-                adaptiveDiscoveryPrefilter,
-              now:
-                Date.now(),
-            });
-
-      console.log(
-        "fast_move_watch_finalize",
-        JSON.stringify({
-          run_id: runId,
-          status:
-            fastMoveWatchFinal
-              ?.status ??
-            null,
-          finalized:
-            fastMoveWatchFinal
-              ?.finalized ??
-            [],
-          writes_used:
-            fastMoveWatchFinal
-              ?.writes_used ??
-            0,
-          total_stage38_writes:
-            Number(
-              fastMoveWatchCycle
-                ?.writes_used ??
-              0
-            ) +
-            Number(
-              fastMoveWatchFinal
-                ?.writes_used ??
-              0
-            ),
-          decision_generated:
-            false,
-          validated:
-            false,
-          telegram_started:
-            false,
-          trading_execution:
-            false,
-        })
-      );
-
-
-      /*
-       * D1 Free allows 50 queries per Worker invocation. The conservative
-       * full Deep-Check path uses at most 48 after the JSON1 compaction in
-       * Stage 3.9.1. The older calibration sweep can use another 14 queries,
-       * so it is deferred whenever a Deep Check was attempted. On idle cron
-       * ticks it keeps its existing bounded four-task behavior.
-       */
-      const deepCheckAttempted =
-        deepCheckAttemptedForD1Budget(
-          boundedDeepCheck
-        );
-
-      const shadowOutcomeSweep =
-        deepCheckAttempted
-          ? {
-              mode:
-                "CALIBRATION_ONLY_NO_LIVE_PROMOTION",
-              last_status:
-                "DEFERRED_D1_FREE_QUERY_BUDGET",
-              tasks_processed:
-                0,
-              closed_written:
-                0,
-              insufficient_written:
-                0,
-              d1_queries_used:
-                0,
-              d1_free_query_limit:
-                D1_FREE_QUERY_LIMIT,
-              conservative_deep_check_path_queries:
-                CONSERVATIVE_DEEP_CHECK_D1_QUERY_BUDGET,
-              deferred_legacy_sweep_max_queries:
-                LEGACY_OUTCOME_SWEEP_MAX_D1_QUERIES,
-              deferred_reason:
-                "LEGACY_SHADOW_OUTCOME_SWEEP_WOULD_EXCEED_CONSERVATIVE_D1_FREE_ENVELOPE",
-              automatic_weight_tuning_enabled:
-                false,
-              live_promotion_allowed:
-                false,
-            }
-          : await runShadowOutcomeCalibrationSweep(
-              env,
-              Date.now(),
-              4
-            );
-
-      console.log(
-        "shadow_outcome_calibration",
-        JSON.stringify({
-          run_id: runId,
-          ...shadowOutcomeSweep,
-        })
-      );
-
-      // Stage 3.9.2 Full Evidence retention is deliberately outside the hot
-      // Deep Check. On idle cron ticks it uses one bounded maintenance query.
-      const stage392FullEvidenceMaintenance = deepCheckAttempted
-        ? { status: "DEFERRED_D1_FREE_QUERY_BUDGET", statements: 0, deleted: 0, hot_path: false }
-        : await runStage392FullEvidenceMaintenance(env, Date.now());
-
-      console.log(
-        "stage392_full_evidence_maintenance",
-        JSON.stringify({ run_id: runId, ...stage392FullEvidenceMaintenance })
-      );
-      const persistenceStatus=scanPersistenceStatus;
-      const success=scanCompleted;
-
-      const completedTs =
-        Date.now();
-
-      await recordCronRun(
-        env,
-        {
-          run_id:
-            runId,
-
-          scheduled_time:
-            scheduledTime,
-
-          started_ts:
-            startedTs,
-
-          completed_ts:
-            completedTs,
-
-          status:
-            success
-              ? "SUCCESS"
-              : "PARTIAL",
-
-          universe_total:
-            scan?.counts
-              ?.universe_total ??
-            null,
-
-          scanned:
-            scan?.counts
-              ?.scanned ??
-            null,
-
-          persistence_status:
-            persistenceStatus,
-
-          error_text:
-            success
-              ? null
-              : JSON.stringify(
-                  scan?.endpoint_errors ||
-                  scan?.persistence ||
-                  {}
-                ),
-
-          v3_discovery_shortlist_count:
-            discoveryPrefilter?.counts?.shortlist ?? 0,
-
-          v3_live_shortlist_count:
-            liveHandoffPlan?.live_shortlist_count ?? 0,
-
-          v3_live_deep_check_count:
-            Array.isArray(boundedDeepCheck?.results)
-              ? boundedDeepCheck.results.filter((row) => row?.execution_status === "FULFILLED").length
-              : 0,
-
-          v3_live_zero_reason:
-            liveHandoffZeroReason ?? null,
-
-          v3_pipeline_health_status:
-            v3PipelineHealth?.status ?? "DEGRADED_PIPELINE",
-
-          v3_pipeline_health_reason:
-            v3PipelineHealth?.reason ?? null,
-
-          v3_live_lane:
-            liveHandoffPlan?.lane ?? null,
-
-          v3_maintenance_deferred:
-            liveHandoffPlan?.maintenance_deferred === true,
-        }
-      );
-
-      console.log(
-        success
-          ? "cron_success"
-          : "cron_partial",
-
-        JSON.stringify({
-          run_id:
-            runId,
-
-          completed_ts:
-            completedTs,
-
-          universe_total:
-            scan?.counts
-              ?.universe_total ??
-            null,
-
-          scanned:
-            scan?.counts
-              ?.scanned ??
-            null,
-
-          persistence_status:
-            persistenceStatus,
-        })
-      );
-    } catch (error) {
-      const completedTs =
-        Date.now();
-
-      const message =
-        String(
-          error?.message ||
-          error
-        );
-
-      await recordCronRun(
-        env,
-        {
-          run_id:
-            runId,
-
-          scheduled_time:
-            scheduledTime,
-
-          started_ts:
-            startedTs,
-
-          completed_ts:
-            completedTs,
-
-          status:
-            "ERROR",
-
-          error_text:
-            message,
-
-          v3_pipeline_health_status:
-            "DEGRADED_PIPELINE",
-
-          v3_pipeline_health_reason:
-            "WORKER_CRON_ERROR",
-        }
-      );
-
-      console.error(
-        "cron_error",
-        JSON.stringify({
-          run_id:
-            runId,
-
-          error:
-            message,
-        })
-      );
-
-      throw error;
-    }
-  },
-};
-
-export async function scanLiquidationCandidates({env,max_candidates=5,exact_contract=null,freshness_sec=300}={}){
-  const exact=String(exact_contract||'').trim().toUpperCase();
-  if(exact&&!/^[A-Z0-9]{2,15}-USDT$/.test(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'INVALID_EXACT_CONTRACT',exact_contract:exact||null,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
-  if(['BTC-USDT','ETH-USDT'].includes(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'EXCLUDED_BY_USER_POLICY',exact_contract:exact,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
-  const limit=Math.min(10,Math.max(1,Math.round(Number(max_candidates)||5)));
-  const scan=await htxUniverseScan({freshness_sec},env,{persist:false});
-  const queue=buildDeepCheckQueue(scan);
-  const discovery=buildDiscoveryPrefilter(scan,queue,{liquidity_percentile:0.70,early_liquidity_percentile:0.45,anomaly_percentile:0.95,early_anomaly_percentile:0.80,funding_percentile:0.95,funding_tail_percentile:0.10,min_anomaly_flags:2,min_early_flags:2,max_shortlist:24});
-  const rows=new Map((Array.isArray(scan?.contracts)?scan.contracts:[]).map(row=>[String(row?.contract_code||'').trim().toUpperCase(),row]));
-  const technicallyEligible=new Set((Array.isArray(queue?.queue)?queue.queue:[]).map(row=>String(row?.contract||'').trim().toUpperCase()));
-  const shortlisted=new Map((Array.isArray(discovery?.shortlist)?discovery.shortlist:[]).map(row=>[String(row?.contract||'').trim().toUpperCase(),row]));
-  const telemetry=new Map((Array.isArray(discovery?.contract_telemetry)?discovery.contract_telemetry:[]).map(row=>[String(row?.contract||'').trim().toUpperCase(),row]));
-  const excluded=contract=>['BTC-USDT','ETH-USDT'].includes(contract);
-  let selected=[];
-  let exactStatus=null;
-  if(exact){
-    if(!rows.has(exact))exactStatus='EXACT_CONTRACT_NOT_ACTIVE_ON_HTX';
-    else if(!technicallyEligible.has(exact))exactStatus='EXACT_CONTRACT_DATA_NOT_CLOSED';
-    else selected=[shortlisted.get(exact)||{priority_rank:null,contract:exact,...(telemetry.get(exact)||{})}];
-  }else selected=(discovery?.shortlist||[]).filter(row=>!excluded(String(row?.contract||'').trim().toUpperCase())).slice(0,limit);
-  const metric=(row,window,field)=>{const value=row?.transitions?.[window]?.[field];return value===null||value===undefined||value===''||!Number.isFinite(Number(value))?null:Number(value);};
-  const candidates=selected.map(candidate=>{
-    const contract=String(candidate?.contract||'').trim().toUpperCase(),row=rows.get(contract)||{};
-    return{priority_rank:candidate?.priority_rank??null,contract,current_price:Number.isFinite(Number(row?.price))?Number(row.price):null,turnover_24h_usdt:Number.isFinite(Number(row?.turnover_24h_usdt))?Number(row.turnover_24h_usdt):null,open_interest_value_usdt:Number.isFinite(Number(row?.open_interest?.value_usdt))?Number(row.open_interest.value_usdt):null,funding_rate_pct:Number.isFinite(Number(row?.funding?.funding_rate_pct))?Number(row.funding.funding_rate_pct):null,price_change_pct:{'5m':metric(row,'5m','price_change_pct'),'15m':metric(row,'15m','price_change_pct'),'1h':metric(row,'1h','price_change_pct'),'4h':metric(row,'4h','price_change_pct')},oi_change_pct:{'15m':metric(row,'15m','oi_change_pct'),'1h':metric(row,'1h','oi_change_pct'),'4h':metric(row,'4h','oi_change_pct')},anomaly_flags_count:Number(candidate?.anomaly_flags_count||0),anomaly_flags:Array.isArray(candidate?.anomaly_flags)?candidate.anomaly_flags:[],direction_hint:candidate?.discovery_direction_hint||'NEUTRAL_ANOMALY',qualified_growth_candidate:shortlisted.has(contract),freshness_sec:Number.isFinite(Number(row?.freshness?.market_age_sec))?Number(row.freshness.market_age_sec):null,data_status:row?.data_status||null};
-  });
-  const sourceClosed=Number(scan?.counts?.errors||0)===0&&Number(scan?.counts?.universe_total||0)>0;
-  const status=!sourceClosed?'HTX_SCAN_NOT_CLOSED':exactStatus||(candidates.length?'CLOSED':'NO_LIQUIDATION_CANDIDATES');
-  return{schema:'LIQUIDATION_ONLY_SCAN_V1',status,exact_contract:exact||null,scan:{source:scan?.source||null,market:scan?.market||null,observed_ts:scan?.timestamp||null,universe_total:Number(scan?.counts?.universe_total||0),scanned:Number(scan?.counts?.scanned||0),errors:Number(scan?.counts?.errors||0),stale:Number(scan?.counts?.stale||0),technical_eligible:Number(queue?.counts?.eligible||0),shortlist_total:Number(discovery?.counts?.shortlist||0)},candidates,full_report_started:false,decision_generated:false,direction_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,persistence_requested:false};
-}
-
-export {
-  loadHistoryTargets as loadStage0HistoryTargetsForTest,
-  htxStage0History as htxStage0HistoryForTest,
-  refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,
-  createPerDeepCheckFetchCache as createPerDeepCheckFetchCacheForTest,
-};
-
-/* REPORT2_GITHUB_BYK_PROXY_V4_1 â€” protected source proxy only. */
-async function __report2CloudByKProxy(request, env) {
- if(request.method!=="POST") return new Response(JSON.stringify({ok:false,error:"POST_REQUIRED"}),{status:405,headers:{"content-type":"application/json","cache-control":"no-store"}});
- const token=String(env?.REPORT2_CLOUD_SOURCE_PROXY_TOKEN||""); if(!token||request.headers.get("authorization")!==`Bearer ${token}`) return new Response(JSON.stringify({ok:false,error:"UNAUTHORIZED"}),{status:401,headers:{"content-type":"application/json","cache-control":"no-store"}});
- const apiKey=String(env?.BYKARANTELI_API_KEY||""); if(!apiKey) return new Response(JSON.stringify({ok:false,error:"PROVIDER_SECRET_MISSING"}),{status:503,headers:{"content-type":"application/json","cache-control":"no-store"}});
- let body; try{const text=await request.text(); if(text.length>8192) throw new Error("BODY_TOO_LARGE"); body=JSON.parse(text||"{}");}catch(e){return new Response(JSON.stringify({ok:false,error:String(e?.message||"INVALID_JSON")}),{status:400,headers:{"content-type":"application/json","cache-control":"no-store"}});}
- let target; try{target=new URL(String(body?.url||""));}catch{return new Response(JSON.stringify({ok:false,error:"INVALID_URL"}),{status:400,headers:{"content-type":"application/json","cache-control":"no-store"}});}
- const policy=validateByKaranteliProxyTarget(target); if(!policy.allowed) return new Response(JSON.stringify({ok:false,error:"URL_NOT_ALLOWED",reason:policy.reason}),{status:403,headers:{"content-type":"application/json","cache-control":"no-store"}});
- const provider=await fetch(target.toString(),{method:"GET",headers:{accept:"application/json",authorization:`Bearer ${apiKey}`,"user-agent":"My-Report-2-HUB/4.1-github-proxy"}}); return new Response(provider.body,{status:provider.status,headers:{"content-type":provider.headers.get("content-type")||"application/json","cache-control":"no-store"}});
-}
-export default {...__REPORT2_ORIGINAL_HANDLER,async fetch(request,env,ctx){const url=new URL(request.url);if(url.pathname==="/cloud-bykaranteli-proxy")return __report2CloudByKProxy(request,env);if(typeof __REPORT2_ORIGINAL_HANDLER.fetch!=="function")return new Response("Not Found",{status:404});return __REPORT2_ORIGINAL_HANDLER.fetch(request,env,ctx);}};
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éí×Þ5ßÔèµ©hºÚn¶X§zÍZ[\ÜØš[™Ù[XÝYX\›Q]šY[˜Ù_Hœ›ÛH	Ë‹ÜÙ[XÝYYX\›KY]šY[˜ÙK›ZœÉÎÂš[\ÜØZ[Ø[™Y]TÛÝ\˜ÙT›Ý][™Ô[‹™[XZ[š[™Ó\]ZY][Û’Ø\Hœ›ÛH	Ë‹ØØ[™Y]K\ÛÝ\˜ÙK\›Ý][™Ë›ZœÉÎÂš[\ÜÈZ[ÚUÚ[™ÝÔ™XÙZ\Hœ›ÛH	Ë‹ÛÚK]Ú[™ÝË\™XÙZ\›ZœÉÎÂš[\ÜÈ\œÚ\ÝØ[›ÛšXØ[Û˜\ÚÝHœ›ÛH	Ë‹ØØ[›ÛšXØ[\X›XØ][Û‹›ZœÉÎÂš[\ÜÈÛZ[QYT™XÚXÚËÛÛ\]T™XÚXÚË™\]Y]YQ^\™YX\ÙHHœ›ÛH	Ë‹Ü™XÚXÚË\ØÚY[\‹›ZœÉÎÂš[\ÜÂˆTÕÓSÕ‘WÕÐUÒÕ‘T”ÒSÓ‹ˆTÕÓSÕ‘WÕÐUÒÔÕUTËˆZ[˜\Ý[Ý™QY\ØœÙ\˜][Û‹ˆ™\\™Q˜\Ý[Ý™UØ]ÚÞXÛKˆš[˜[^™Q˜\Ý[Ý™UØ]ÚÞXÛKˆ˜\Ý[Ý™UØ]Ú]T[™TÝ[[X\žKŸHœ›ÛH‹‹Ù˜\Ý[[Ý™K]Ø]Ú\[[YK›ZœÈŽÂ‚š[\ÜÂˆÔÔ•S’UWÕ‘T”ÒSÓ‹ˆZ[ÜÜ[š]R›Ý\›˜[™Yš[\‹ˆÜÜ[š]Q]T[™TÝ[[X\žKˆ[“ÜÜ[š]TÚYÝÐÞXÛKˆÙ[XÝÜÜ[š]R›Ý\›˜[Ø[™Y]KŸHœ›ÛH‹‹ÛÜÜ[š]KZ[[YÙ[˜ÙK\[[YK›ZœÈŽÂ‚š[\ÜÂˆUSWÕÐU‘WÕ‘T”ÒSÓ‹ˆ][UØ]™PØ[\ZYÛ‘]T[™TÝ[[X\žKˆ[“][UØ]™PØ[\ZYÛ”ÚYÝÐÞXÛKŸHœ›ÛH‹‹Û][K]Ø]™KXØ[\ZYÛ‹\[[YK›ZœÈŽÂ‚š[\ÜÂˆ™\\™UŒLQXÚ\Ú[Û‘]šY[˜ÙKˆ™\\™R^XÝ][Û‘˜XÝËˆÚXÚÑ^XÝ][Û’[™Ù™‹ˆ™\\™Q[]šY[˜ÙT›ÛÙ[™KˆÙX[[]šY[˜ÙT›ÛÙ[™PY\XÚËˆÝYÙLÎL”›ÛÙ”ØY™]Q[™[ÜKŸHœ›ÛH‹‹ÜÝYÙLÎL‹\›ÛÙ‹\[[YK›ZœÈŽÂ‚š[\ÜÂˆ]˜[X]Qš[˜[XÚ\Ú[Û•\Ý™X[PÛÛ\]Xš[]KŸHœ›ÛH‹‹Ùš[˜[YXÚ\Ú[Û‹]\Ý™X[KXÛÛ\]\[[YK›ZœÈŽÂ‚š[\ÜÂˆZ[ŒÓ]™R[™Ù™”[‹ˆZ[\ØÛÝ™\žR[™Ù™‘[™[ÜKˆÛ\ÜÚYžUŒÓ]™R[™Ù™–™\›Ô™X\ÛÛ‹ˆ\ÜÙ\ÜÕŒÔ\[[™RX[ŸHœ›ÛH‹‹ÝŒË[]™KZ[™Ù™‹›ZœÈŽÂ‚š[\ÜÂˆY\ÝYÙLÎLUÑš[˜[XÚ\Ú[Û’[œ]ŸHœ›ÛH‹‹Ùš[˜[YXÚ\Ú[Û‹Z[YÜ˜][Û‹XY\\‹›ZœÈŽÂ‚š[\ÜÂˆ\œÚ\Ýš[˜[XÚ\Ú[Û’[YÜ˜][Û”ÚYÝËŸHœ›ÛH‹‹Ùš[˜[YXÚ\Ú[Û‹Z[YÜ˜][Û‹\[[YK›ZœÈŽÂ‚š[\ÜÂˆ[•ŒLTX›XØ][Û”ÚYÝËŸHœ›ÛH‹‹ÝŒLK\X›XØ][Û‹\[[YK›ZœÈŽÂ‚š[\ÜÂˆZ[\›Ý™YX›XØ][Û’[œ]ËŸHœ›ÛH‹‹Ý\Ù\‹X\›Ý™Y\X›XØ][Û‹\ÛXÞK›ZœÈŽÂ‚š[\ÜÂˆ˜[Y]PžRØ\˜[[T›ÞU\™Ù]ŸHœ›ÛH‹‹ÝŒLKXžZË\›ÞK\ÛXÞK›ZœÈŽÂ‚š[\ÜÂˆ™]ÚžRØ\˜[[TÛX\[Û™^T˜]ËˆÛX\[Û™^T˜]Ñ]šY[˜ÙT›ÝÜËŸHœ›ÛH‹‹ÝŒLK\ÛX\[[Û™^KY]šY[˜ÙK›ZœÈŽÂ‚š[\ÜÂˆ™]Ú^\Ý[™ÔÛX\[Û™^T™XÛÜ™\”˜]Ëˆ\\›\]ZY™YÚ\ÝžT™XÙZ\ˆ\\›\]ZYYš\ÛÜžQ]šY[˜ÙT›ÝÜËŸHœ›ÛH‹‹Ú\\›\]ZY\™XÛÜ™\‹Y^[œÚ[Û‹›ZœÈŽÂ‚š[\ÜÂˆÛÛXÝX›XÑ[]šY[˜ÙH\ÈÛÛXÝX›XÑ[]šY[˜ÙPÜ›ÜÜÕ™[YKŸHœ›ÛH‹‹ÜX›XËY]šY[˜ÙKXY\\œË›ZœÈŽÂ‚š[\ÜÂˆZ[[]šY[˜ÙTÚYÝÔ™XÛÜ™\ÈZ[[]šY[˜ÙTÚYÝÔ™XÛÜ™Ü›ÜÜÕ™[YKŸHœ›ÛH‹‹Ù[Y]šY[˜ÙK\ÚYÝË[[Ù[›ZœÈŽÂ‚š[\ÜÂˆ]˜[X]R]\™\Õ\››Ý™\‘Ø]KŸHœ›ÛH‹‹Ú]\››Ý™\‹YØ]K›ZœÈŽÂ‚š[\ÜÂˆØYX\›PœšYÙR[œ]Ëˆ\QX\›PØ[™Y]PœšYÙKŸHœ›ÛH‹‹ÙX\›KXØ[™Y]KXœšYÙK›ZœÈŽÂ‚š[\ÜÂˆ™\Ù\™T]X[YšYYX\›UØ]™PÛÛ[Z]KŸHœ›ÛH‹‹ÙX\›K]Ø]™KXÛÛ[Z]K›ZœÈŽÂ‚š[\ÜÂˆZ[[[YPØ[›ÛšXØ[[™KŸHœ›ÛH‹‹ØØ[›ÛšXØ[\[[YKXY\\‹›ZœÈŽÂš[\ÜÛ›Ü›X[^™Q\™XÝ[ÛØ[™Y]K]]Üš^™Q[žQ\™XÝ[Û‹Z[™Y™\™[˜ÙTšXÙKZ[^XÝ][Û”™XÙZ\Hœ›ÛH	Ë‹ÛX\šÙ]XÛÛ˜XÝË›ZœÉÎÂš[\ÜÜ™XYX\šÙ]\ÝÜžQ›ÜÛÛ˜XÝ™XYX\šÙ]\ÝÜžU\™Ù]ßHœ›ÛH	Ë‹ÛX\šÙ]Z\ÝÜžK\™XY\‹›ZœÉÎÂš[\ÜØÛÛ\\™SÜ™[˜\žQY\Ø[™Y]\ßHœ›ÛH	Ë‹ÙY\XØ[™Y]K[Ü™\‹›ZœÉÎÂ‚š[\ÜÂˆZ[œ™YTÛÝ\˜ÙT[[YTÝ[[X\žKŸHœ›ÛH‹‹ÜÛÝ\˜ÙK\™YÚ\ÝžK›ZœÈŽÂ‚š[\ÜØÛÛ^›ÜÛÛ˜XÝHœ›ÛH	Ë‹ÙÛØ˜[[X\šÙ]XÛÛ^›ZœÉÎÂ‚˜ÛÛœÝÕQÑLÎL—ÔÒQÕ×ÒS•QÔUSÓ—Õ‘T”ÒSÓˆHŒËŽKŒ‹Yš[˜[YXÚ\Ú[Û‹\ÚYÝË[Y™XÞXÛKZ\™[š[™ÈŽÂ˜ÛÛœÝSQÔSWÔÒQÕ×Ð”’QÑWÕ‘T”ÒSÓˆHŒËŽKŒË][YÜ˜[K\ÚYÝËXœšYÙHŽÂ˜ÛÛœÝSQÔSWÔÒQÕ×Ð“ÑQ’VÕ‘T”ÒSÓˆHŒËŽKŒËŒK][YÜ˜[K\ÚYÝËX›ÙYš^ŽÂ‚˜ÛÛœÝ•UT‘T×ÐTÑHHšÎ‹ËØ\Kš™K˜ÛÛHŽÂ˜ÛÛœÝÔÕÐTÑHHšÎ‹ËØ\Kš˜ÛÛHŽÂ˜ÛÛœÝÕQÑLÑVT“SÔ‘TUQTÕÈHÂ˜ÛÛœÝQTÐÒPÒ×ÑVT“SÔ‘TUQTÕÈHÎNÂ˜ÛÛœÝÓPT•ÓSÓ‘VWÑVT“SÔ‘TUQTÕÈHNÂ˜ÛÛœÝÓÔ’ÑT”×Ñ”‘QWÑVT“SÓSRUHLÂ˜ÛÛœÝVT“SÔ‘TUQTÕÔ‘TÑT•‘HHŽÂ‚˜\Þ[˜È[˜Ý[ÛˆØY™]š[Ý\Ñ]šY[˜ÙTÛ˜\ÚÝ›ÜØ[›ÛšXØ[
+ˆ‹ˆÛÛ˜XÝÛÙKˆ™Y›Ü™UÂŠHÂˆÛÛœÝÛÛ˜XÝBˆÝš[™ÊÛÛ˜XÝÛÙHˆŠBˆš[J
+BˆÕ\\Ø\ÙJ
+NÂˆÛÛœÝÈBˆ[X™\Š™Y›Ü™UÊNÂ‚ˆYˆ
+ˆYËœ™\\™HˆXÛÛ˜XÝˆS[X™\‹š\Ñš[š]JÊBˆ
+HÂˆ™]\›ˆÂˆÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ™X\ÛÛŽ‚ˆ”‘U’SÕT×ÔÓTÒÕÒS”UÓ“ÕÐÓÔÑQ‹ˆ›ÝÎˆ[ˆNÂˆB‚ˆžHÂˆÛÛœÝ›ÝÈBˆ]ØZ]‚ˆœ™\\™JˆÑSPÕˆÛÛ˜XÝØÛÙKˆØœÙ\™YÝËˆWÜÝ]\Ëˆ]šY[˜ÙWØÛÛ\XÝÚœÛÛ‹ˆÛÛ™›XÝ×ÚœÛÛ‚ˆ”“ÓH[Ù]šY[˜ÙWÜÚYÝ×ÛÙÂˆÒT‘BˆÛÛ˜XÝØÛÙHHÌBˆS‘ØœÙ\™YÝÈÌ‚ˆÔ‘Tˆ–BˆØœÙ\™YÝÈTÐÂˆSRUBˆ
+Bˆ˜š[™
+ˆÛÛ˜XÝˆÂˆ
+Bˆ™š\œÝ
+
+NÂ‚ˆ™]\›ˆÂˆÝ]\Î‚ˆ›ÝÂˆÈÓÔÑQ‚ˆˆ““×Ô‘U’SÕT×ÔÓTÒÕ‹ˆ™X\ÛÛŽ‚ˆ›ÝÂˆÈ[ˆˆ““×Ô‘U’SÕT×ÔÓTÒÕ‹ˆ›ÝÎ‚ˆ›ÝÈ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÝ]\Î‚ˆ”‘PQÑRSQ‹ˆ™X\ÛÛŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+KœÛXÙJˆˆˆ
+Kˆ›ÝÎ‚ˆ[ˆNÂˆBŸB‚˜ÛÛœÝ”ÓÓ—ÒPQT”ÈHÂˆ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛŽÈÚ\œÙ]UU‹N‹ˆ˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™H‹ˆ˜XØÙ\ÜËXÛÛ›ÛX[ÝË[ÜšYÚ[ˆŽˆŠˆ‹ˆ˜XØÙ\ÜËXÛÛ›ÛX[ÝË[Y]ÙÈŽˆ‘ÑUÔÕÔSÓ”È‹ˆ˜XØÙ\ÜËXÛÛ›ÛX[ÝËZXY\œÈŽˆÛÛ[U\H‹ŸNÂ‚™[˜Ý[ÛˆœÛÛ”™\ÜÛœÙJ]KÝ]\ÈHŒ
+HÂˆ™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJ]K[ŠKÂˆÝ]\ËˆXY\œÎˆ”ÓÓ—ÒPQT”ËˆJNÂŸB‚™[˜Ý[Ûˆ[J˜[YJHÂˆÛÛœÝˆH[X™\Š˜[YJNÂˆ™]\›ˆ[X™\‹š\Ñš[š]JŠHÈˆˆ[ÂŸB‚™[˜Ý[Ûˆ[X›S[J˜[YJHÂˆYˆ
+˜[YHOOH[˜[YHOOH[™Yš[™Y˜[YHOOHˆŠH™]\›ˆ[Âˆ™]\›ˆ[J˜[YJNÂŸB‚™[˜Ý[ÛˆÛ[\
+˜[YKZ[‹X^˜[˜XÚÊHÂˆÛÛœÝˆH[X™\Š˜[YJNÂˆYˆ
+S[X™\‹š\Ñš[š]JŠJH™]\›ˆ˜[˜XÚÎÂˆ™]\›ˆX]›Z[ŠX^X]›X^
+Z[‹ŠJNÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™UÊ˜[YJHÂˆÛÛœÝˆH[X™\Š˜[YJNÂˆYˆ
+S[X™\‹š\Ñš[š]JŠHˆH
+H™]\›ˆ[Âˆ™]\›ˆˆYLLˆÈˆ
+ˆLˆŽÂŸB‚™[˜Ý[Ûˆ\ÛÊ˜[YJHÂˆÛÛœÝ\ÈH›Ü›X[^™UÊ˜[YJNÂˆYˆ
+\ÈOOH[
+H™]\›ˆ[ÂˆžHÂˆ™]\›ˆ™]È]J\ÊKÒTÓÔÝš[™Ê
+NÂˆHØ]ÚÂˆ™]\›ˆ[ÂˆBŸB‚™[˜Ý[ÛˆÝÚ[™ÙJÝ\[™
+HÂˆÛÛœÝHH[JÝ\
+NÂˆÛÛœÝˆH[J[™
+NÂˆYˆ
+HOOH[ˆOOH[HOOH
+H™]\›ˆ[Âˆ™]\›ˆ
+ˆÈHHJH
+ˆLÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™Q]\™\ÐÛÛ˜XÝ
+˜[YJHÂˆ]ÈHÝš[™Ê˜[YH‘U’KUTÑŠBˆš[J
+BˆÕ\\Ø\ÙJ
+Bˆœ™\XÙJ‹È‹‹HŠBˆœ™\XÙJ—È‹‹HŠNÂ‚ˆYˆ
+\Ëš[˜ÛY\Ê‹HŠH	‰ˆË™[™ÕÚ]
+•TÑŠJHÂˆÈH	ÜËœÛXÙJM
+_KUTÑÂˆBˆ™]\›ˆÎÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™TÜÝÞ[X›Û
+˜[YJHÂˆ™]\›ˆÝš[™Ê˜[YH‘U’KUTÑŠBˆš[J
+BˆÓÝÙ\Ø\ÙJ
+Bˆœ™\XÙJÖ×˜K^ŒNWKÙËˆŠNÂŸB‚˜\Þ[˜È[˜Ý[Ûˆ™]ÚœÛÛŠ\›
+HÂˆ][Y[Ý]H[ÂˆžHÂˆÛÛœÝÛÛ›Û\ˆH™]ÈX›ÜÛÛ›Û\Š
+NÂˆ[Y[Ý]HÙ][Y[Ý]
+
+
+HOˆÛÛ›Û\‹˜X›Ü
+
+KL
+NÂ‚ˆÛÛœÝ™\ÜÛœÙHH]ØZ]™]Ú
+\›ÂˆY]Ùˆ‘ÑU‹ˆXY\œÎˆÂˆXØÙ\ˆ˜\XØ][Û‹ÚœÛÛˆ‹ˆ\Ù\‹XYÙ[Žˆ“^KT™\ÜL‹RP‹Ì‹Œˆ‹ˆKˆÚYÛ˜[ˆÛÛ›Û\‹œÚYÛ˜[ˆJNÂ‚ˆÛÛœÝ^H]ØZ]™\ÜÛœÙK^
+
+NÂˆ]]NÂˆžHÂˆ]HH”ÓÓ‹œ\œÙJ^
+NÂˆHØ]ÚÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ\›ˆÜÝ]\Îˆ™\ÜÛœÙKœÝ]\Ëˆ\œ›ÜŽˆš[˜[YÚœÛÛˆ‹ˆNÂˆB‚ˆÛÛœÝ\SÚÈBˆ™\ÜÛœÙK›ÚÈ	‰‚ˆ
+]OËœÝ]\ÈOOH›ÚÈˆˆ]OË˜ÛÙHOOHŒˆ]OËœÝXØÙ\ÜÈOOHYHˆ
+]OËœÝ]\ÈOOH[™Yš[™Y	‰‚ˆ]OË˜ÛÙHOOH[™Yš[™Y	‰‚ˆ]OËœÝXØÙ\ÜÈOOH[™Yš[™Y
+JNÂ‚ˆ™]\›ˆÂˆÚÎˆ\SÚËˆ\›ˆÜÝ]\Îˆ™\ÜÛœÙKœÝ]\Ëˆ]Kˆ\œ›ÜŽˆ\SÚÂˆÈ[ˆˆ]OË–È™\œ‹[\ÙÈ—Hˆ]OË™\œ—Û\ÙÈˆ]OË›Y\ÜØYÙHˆ]OË›\ÙÈˆ˜\WÙ\œ›Üˆ‹ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ\›ˆÜÝ]\Îˆ[ˆ]Nˆ[ˆ\œ›ÜŽ‚ˆ\œ›ÜË›˜[YHOOHX›Ü\œ›Üˆ‚ˆÈ[Y[Ý]‚ˆˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKˆNÂˆHš[˜[HÂˆYˆ
+[Y[Ý]
+HÛX\•[Y[Ý]
+[Y[Ý]
+NÂˆBŸB‚™[˜Ý[ÛˆÜ™X]T\‘Y\ÚXÚÑ™]ÚØXÚJˆ™]Ú\ˆH™]ÚœÛÛ‹ˆX^[š\]YT™\]Y\ÝÈHQTÐÒPÒ×ÑVT“SÔ‘TUQTÕËˆ^XÝ][Û”™Yœ™\Ú™\Ù\™HH‚ŠHÂˆÛÛœÝØXÚHH™]ÈX\
+
+NÂˆ]ÙÚXØ[™\]Y\ÝÈHÂˆ]™]\ÙY™\]Y\ÝÈHÂˆ][š\]YQ^\›˜[™\]Y\ÝÈHÂˆ][š\]YP›ØÚÙY™\]Y\ÝÈHÂˆÛÛœÝ™\]Y\ÝØ\HX]›X^
+X]›Z[ŠˆQTÐÒPÒ×ÑVT“SÔ‘TUQTÕËˆ[X™\‹š\ÔØY™R[YÙ\ŠX^[š\]YT™\]Y\ÝÊHÈX^[š\]YT™\]Y\ÝÈˆQTÐÒPÒ×ÑVT“SÔ‘TUQTÕÂˆ
+JNÂˆÛÛœÝ™\]Y\ÝY™Yœ™\Ú™\Ù\™HH\™Ý[Y[Ë›[™ÝHÂˆÈ^XÝ][Û”™Yœ™\Ú™\Ù\™Bˆˆ
+™\]Y\ÝØ\OOHQTÐÒPÒ×ÑVT“SÔ‘TUQTÕÈÈˆˆ
+NÂˆÛÛœÝ™Yœ™\Ú™\Ù\™HHX]›X^
+X]›Z[Š‹[X™\‹š\ÔØY™R[YÙ\Š™\]Y\ÝY™Yœ™\Ú™\Ù\™JOÜ™\]Y\ÝY™Yœ™\Ú™\Ù\™NŒ‹™\]Y\ÝØ\
+JNÂˆÛÛœÝÝ\H
+\›Øž\\ÜÐØXÚOY˜[Ù_O^ßJHOˆÂˆÙÚXØ[™\]Y\ÝÈ
+ÏHNÂˆÛÛœÝ\™Ù]HÝš[™Ê\›
+NÂˆÛÛœÝÙ^HHž\\ÜÐØXÚHÈVPÕUSÓ—Ô‘Q”‘TÒ‰ÛÙÚXØ[™\]Y\ÝßN‰Ý\™Ù]Xˆ\™Ù]ÂˆYˆ
+Xž\\ÜÐØXÚH	‰ˆØXÚKš\ÊÙ^JJHÂˆ™]\ÙY™\]Y\ÝÈ
+ÏHNÂˆ™]\›ˆØXÚK™Ù]
+Ù^JNÂˆBˆÛÛœÝ[™PØ\Xž\\ÜÐØXÚOÜ™\]Y\ÝØ\“X]›X^
+™\]Y\ÝØ\\™Yœ™\Ú™\Ù\™JNÂˆ][™[™ÎÂˆYˆ
+[š\]YQ^\›˜[™\]Y\ÝÈH[™PØ\
+HÂˆ[š\]YP›ØÚÙY™\]Y\ÝÈ
+ÏHNÂˆ[™[™ÈH›ÛZ\ÙKœ™\ÛÛ™JÂˆÚÎˆ˜[ÙKˆÝ]\Îˆ[ˆ]Nˆ[ˆ\œ›ÜŽˆ‘QTÐÒPÒ×ÑVT“SÔ‘TUQTÕÐÐTÑVÑQQQÑRSÐÓÔÑQ‹ˆ\›ˆ\™Ù]ˆJNÂˆH[ÙHÂˆ[š\]YQ^\›˜[™\]Y\ÝÈ
+ÏHNÂˆ[™[™ÈH›ÛZ\ÙKœ™\ÛÛ™J
+K[Š
+
+HOˆ™]Ú\Š\™Ù]
+JNÂˆBˆØXÚKœÙ]
+Ù^K[™[™ÊNÂˆ™]\›ˆ[™[™ÎÂˆNÂˆ™]\›ˆÂˆ™]Ú
+\›
+HÈ™]\›ˆÝ\
+\›
+NÈKˆ™Yœ™\Ú
+\›
+HÈ™]\›ˆÝ\
+\›Øž\\ÜÐØXÚNY_JNÈKˆÝ]Ê
+HÂˆÛÛœÝ™\Ý[HÂˆÙÚXØ[Ü™\]Y\ÝÎˆÙÚXØ[™\]Y\ÝËˆ[š\]YWÜ™\]Y\ÝÚÙ^\ÎˆØXÚKœÚ^™Kˆ[š\]YWÙ^\›˜[Ü™\]Y\ÝÎˆ[š\]YQ^\›˜[™\]Y\ÝËˆ[š\]YWØ›ØÚÙYÜ™\]Y\ÝÎˆ[š\]YP›ØÚÙY™\]Y\ÝËˆ[š\]YWÙ^\›˜[Ü™\]Y\ÝØØ\ˆ™\]Y\ÝØ\ˆ™]\ÙYÜ™\]Y\ÝÎˆ™]\ÙY™\]Y\ÝËˆNÂˆËÈY]]™HXYÛ›ÜÝXÈÝ^\ÈXØÙ\ÜÚX›HÈH™]ÈXÚ\Ú[Û‹][Y[[™BˆËÈXØÙ\[˜ÙHÚ]Ý]Ú[™Ú[™ÈH[[Y\˜X›HYØXÞHÝ]ÈÛÛ˜XÝ‚ˆØš™XÝ™Yš[™T›Ü\J™\Ý[™^XÝ][Û—Ü™Yœ™\ÚÜ™\Ù\™H‹Ý˜[YNœ™Yœ™\Ú™\Ù\™K[[Y\˜X›N™˜[Ù_JNÂˆ™]\›ˆ™\Ý[ÂˆKˆNÂŸB‚™[˜Ý[ÛˆÝ[Q\
+]™[ËÛÝ[[š]˜\ÙT]HHJHÂˆÛÛœÝÛXÙHH\œ˜^Kš\Ð\œ˜^J]™[ÊHÈ]™[ËœÛXÙJÛÝ[
+Hˆ×NÂˆ]˜]Ô]X[]HHÂˆ]˜\ÙT]X[]HHÂˆ]›Ý[Û˜[HÂ‚ˆ›Üˆ
+ÛÛœÝ]™[ÙˆÛXÙJHÂˆÛÛœÝšXÙHH[J]™[Ë–ÌJNÂˆÛÛœÝ]HH[J]™[Ë–ÌWJNÂˆYˆ
+šXÙHOOH[]HOOH[
+HÛÛ[YNÂ‚ˆÛÛœÝ˜\ÙHH]H
+ˆ[š]˜\ÙT]NÂˆ˜]Ô]X[]H
+ÏH]NÂˆ˜\ÙT]X[]H
+ÏH˜\ÙNÂˆ›Ý[Û˜[
+ÏHšXÙH
+ˆ˜\ÙNÂˆB‚ˆ™]\›ˆÂˆ]™[ÎˆÛXÙK›[™Ýˆ˜]×Ü]X[]Nˆ˜]Ô]X[]Kˆ˜\ÙWÜ]X[]Nˆ˜\ÙT]X[]Kˆ›Ý[Û˜[Ý\Ùˆ›Ý[Û˜[ˆNÂŸB‚™[˜Ý[ÛˆÜ™\›ÛÚÒ[X˜[[˜ÙJšYË\ÚÜËÛÝ[[š]˜\ÙT]HHJHÂˆÛÛœÝšYHÝ[Q\
+šYËÛÝ[[š]˜\ÙT]JNÂˆÛÛœÝ\ÚÈHÝ[Q\
+\ÚÜËÛÝ[[š]˜\ÙT]JNÂˆÛÛœÝÝ[HšY››Ý[Û˜[Ý\Ù
+È\ÚË››Ý[Û˜[Ý\ÙÂ‚ˆ™]\›ˆÂˆšYÛ›Ý[Û˜[Ý\ÙˆšY››Ý[Û˜[Ý\Ùˆ\Ú×Û›Ý[Û˜[Ý\Ùˆ\ÚË››Ý[Û˜[Ý\Ùˆ[X˜[[˜ÙN‚ˆÝ[ˆÈ
+šY››Ý[Û˜[Ý\ÙH\ÚË››Ý[Û˜[Ý\Ù
+HÈÝ[ˆ[ˆ[X˜[[˜ÙWÜÝ‚ˆÝ[ˆˆÈ
+
+šY››Ý[Û˜[Ý\ÙH\ÚË››Ý[Û˜[Ý\Ù
+HÈÝ[
+H
+ˆLˆˆ[ˆNÂŸB‚™[˜Ý[ÛˆX\šÙ][\XÝ
+ˆ]™[Ëˆ\™Ù]›Ý[Û˜[ˆ™Y™\™[˜ÙTšXÙKˆÚYKˆ[š]˜\ÙT]HHBŠHÂˆYˆ
+ˆP\œ˜^Kš\Ð\œ˜^J]™[ÊHˆ]™[Ë›[™ÝOOHˆS[X™\‹š\Ñš[š]J\™Ù]›Ý[Û˜[
+Hˆ\™Ù]›Ý[Û˜[HˆS[X™\‹š\Ñš[š]J™Y™\™[˜ÙTšXÙJHˆ™Y™\™[˜ÙTšXÙHHˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆ]][ÝQš[YHÂˆ]˜\ÙQš[YHÂˆ]˜]Ñš[YHÂˆ]]™[Õ\ÙYHÂ‚ˆ›Üˆ
+ÛÛœÝ]™[Ùˆ]™[ÊHÂˆÛÛœÝšXÙHH[J]™[Ë–ÌJNÂˆÛÛœÝ˜]Ô]HH[J]™[Ë–ÌWJNÂ‚ˆYˆ
+ˆšXÙHOOH[ˆ˜]Ô]HOOH[ˆšXÙHHˆ˜]Ô]HHˆ
+HÂˆÛÛ[YNÂˆB‚ˆÛÛœÝ˜\ÙP]˜Z[X›HH˜]Ô]H
+ˆ[š]˜\ÙT]NÂˆÛÛœÝ][ÝP]˜Z[X›HH˜\ÙP]˜Z[X›H
+ˆšXÙNÂˆÛÛœÝ][ÝS™YYYH\™Ù]›Ý[Û˜[H][ÝQš[YÂ‚ˆYˆ
+][ÝS™YYYH
+Hœ™XZÎÂ‚ˆÛÛœÝ][ÝUZÙHHX]›Z[Š][ÝP]˜Z[X›K][ÝS™YYY
+NÂˆÛÛœÝ˜\ÙUZÙHH][ÝUZÙHÈšXÙNÂ‚ˆ][ÝQš[Y
+ÏH][ÝUZÙNÂˆ˜\ÙQš[Y
+ÏH˜\ÙUZÙNÂˆ˜]Ñš[Y
+ÏH˜\ÙUZÙHÈ[š]˜\ÙT]NÂˆ]™[Õ\ÙY
+ÏHNÂ‚ˆYˆ
+][ÝQš[YH\™Ù]›Ý[Û˜[
+ˆŽNNNNNJHœ™XZÎÂˆB‚ˆYˆ
+˜\ÙQš[YH
+H™]\›ˆ[Â‚ˆÛÛœÝØ\H][ÝQš[YÈ˜\ÙQš[YÂˆÛÛœÝ[\XÝœÈBˆÚYHOOH˜^H‚ˆÈ
+Ø\È™Y™\™[˜ÙTšXÙHHJH
+ˆLˆˆ
+HHØ\È™Y™\™[˜ÙTšXÙJH
+ˆLÂ‚ˆ™]\›ˆÂˆ™\]Y\ÝYÛ›Ý[Û˜[Ý\Ùˆ\™Ù]›Ý[Û˜[ˆš[YÛ›Ý[Û˜[Ý\Ùˆ][ÝQš[Yˆš[Ü˜][×ÜÝˆ
+][ÝQš[YÈ\™Ù]›Ý[Û˜[
+H
+ˆLˆ˜\ÙWÜ]X[]Nˆ˜\ÙQš[Yˆ˜]×Ü]X[]Nˆ˜]Ñš[YˆØ\ˆ[\XÝØœÎˆ[\XÝœËˆ]™[×Ý\ÙYˆ]™[Õ\ÙYˆ[WÙš[Yˆ][ÝQš[YH\™Ù]›Ý[Û˜[
+ˆŽNNKˆNÂŸB‚˜ÛÛœÝPVÕQWÐÓÓ•RS‘T”×ÔÐÐS“‘QHLÂ˜ÛÛœÝPVÔU×ÕQT×Ñ“US‘QHLÂ‚™[˜Ý[Ûˆ˜YP\œ˜^UÚ]ØØ[“Y]Y]J›ÝÜËY]Y]HHßJHÂˆÛÛœÝÝ]]H\œ˜^Kš\Ð\œ˜^J›ÝÜÊHÈ›ÝÜÈˆ×NÂˆØš™XÝ™Yš[™T›Ü\Y\ÊÝ]]ÂˆÜÛÝ\˜ÙWÝ[˜Ø]YˆÈ˜[YNˆY]Y]KœÛÝ\˜ÙWÝ[˜Ø]YOOHYK[[Y\˜X›Nˆ˜[ÙHKˆØÛÛZ[™\œ×ÜØØ[›™YˆÈ˜[YNˆ[X™\ŠY]Y]K˜ÛÛZ[™\œ×ÜØØ[›™Y
+K[[Y\˜X›Nˆ˜[ÙHKˆÜ˜]×Ü›ÝÜ×ÜØØ[›™YˆÈ˜[YNˆ[X™\ŠY]Y]Kœ˜]×Ü›ÝÜ×ÜØØ[›™YÝ]]›[™Ý
+K[[Y\˜X›Nˆ˜[ÙHKˆÜÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆÈ˜[YNˆ[X™\ŠY]Y]KœÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜY
+K[[Y\˜X›Nˆ˜[ÙHKˆJNÂˆ™]\›ˆÝ]]ÂŸB‚™[˜Ý[Ûˆ›][•˜Y\Ê˜]ÊHÂˆYˆ
+\˜]ÊH™]\›ˆ˜YP\œ˜^UÚ]ØØ[“Y]Y]J×JNÂˆÛÛœÝ[œ]H\œ˜^Kš\Ð\œ˜^J˜]ÊBˆÈ˜]Âˆˆ\œ˜^Kš\Ð\œ˜^J˜]ÏË™]JBˆÈ˜]Ë™]Bˆˆ\œ˜^Kš\Ð\œ˜^J˜]ÏËXÚÏË™]JBˆÈ˜]ËXÚË™]Bˆˆ×NÂˆÛÛœÝ™\Ý[H×NÂˆÛÛœÝÛÛZ[™\“[Z]HX]›Z[Š[œ]›[™ÝPVÕQWÐÓÓ•RS‘T”×ÔÐÐS“‘Q
+NÂˆ]ÛÝ\˜ÙU[˜Ø]YH[œ]›[™ÝˆÛÛZ[™\“[Z]Âˆ]˜]Ô›ÝÜÔØØ[›™YHÂˆ]ÛÝ\˜ÙT›ÝÜÑ›ÜYHÂ‚ˆÝ]\Žˆ›Üˆ
+][™^HÈ[™^ÛÛZ[™\“[Z]È[™^
+ÏHJHÂˆÛÛœÝ][HH[œ]Ú[™^NÂˆÛÛœÝ›ÝÜÈH\œ˜^Kš\Ð\œ˜^J][OË™]JHÈ][K™]HˆÚ][WNÂˆ›Üˆ
+]›ÝÒ[™^HÈ›ÝÒ[™^›ÝÜË›[™ÝÈ›ÝÒ[™^
+ÏHJHÂˆYˆ
+˜]Ô›ÝÜÔØØ[›™YHPVÔU×ÕQT×Ñ“US‘Q
+HÂˆÛÝ\˜ÙU[˜Ø]YHYNÂˆœ™XZÈÝ]\ŽÂˆBˆ˜]Ô›ÝÜÔØØ[›™Y
+ÏHNÂˆÛÛœÝ˜YHH›ÝÜÖÜ›ÝÒ[™^NÂˆYˆ
+˜YH	‰ˆ\[Ùˆ˜YHOOH›Øš™XÝŠH™\Ý[œ\Ú
+˜YJNÂˆ[ÙHÛÝ\˜ÙT›ÝÜÑ›ÜY
+ÏHNÂˆBˆB‚ˆ™]\›ˆ˜YP\œ˜^UÚ]ØØ[“Y]Y]J™\Ý[ÂˆÛÝ\˜ÙWÝ[˜Ø]YˆÛÝ\˜ÙU[˜Ø]YˆÛÛZ[™\œ×ÜØØ[›™YˆÛÛZ[™\“[Z]ˆ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ˜]Ô›ÝÜÔØØ[›™YˆÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆÛÝ\˜ÙT›ÝÜÑ›ÜYˆJNÂŸB‚™[˜Ý[Ûˆ˜YU[YJ
+HÂˆ™]\›ˆ›Ü›X[^™UÊËÊNÂŸB‚™[˜Ý[ÛˆÛÜY˜Y\Ê˜Y\ÊHÂˆÛÛœÝÛÜYHË‹‹˜Y\×KœÛÜ
+ˆ
+KŠHOˆ
+˜YU[YJJH
+HH
+˜YU[YJŠH
+Bˆ
+NÂˆ™]\›ˆ˜YP\œ˜^UÚ]ØØ[“Y]Y]JÛÜYÂˆÛÝ\˜ÙWÝ[˜Ø]Yˆ˜Y\ÏË—ÜÛÝ\˜ÙWÝ[˜Ø]YOOHYKˆÛÛZ[™\œ×ÜØØ[›™Yˆ˜Y\ÏË—ØÛÛZ[™\œ×ÜØØ[›™Yˆ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ˜Y\ÏË—Ü˜]×Ü›ÝÜ×ÜØØ[›™YˆÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆ˜Y\ÏË—ÜÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆJNÂŸB‚™[˜Ý[Ûˆ˜YRY[]J˜YJHÂˆÛÛœÝ˜[YHBˆ˜YOË–È˜YKZY—HÏÂˆ˜YOË˜YWÚYÏÂˆ˜YOËšYÂˆYˆ
+˜[YHOOH[˜[YHOOH[™Yš[™Y
+H™]\›ˆ[ÂˆÛÛœÝ›Ü›X[^™YHÝš[™Ê˜[YJKš[J
+NÂˆ™]\›ˆ›Ü›X[^™YÈ›Ü›X[^™Yˆ[ÂŸB‚™[˜Ý[Ûˆ˜]Õ˜YT™XÛÜ™[YÜš]Jˆ˜Y\ËˆÈX\šÙ]HœÜÝ‹ÛÛ˜XÝÜÚ^™HH[HHßBŠHÂˆÛÛœÝ›ÝÜÈH\œ˜^Kš\Ð\œ˜^J˜Y\ÊHÈ˜Y\Èˆ×NÂˆÛÛœÝYÈH×NÂˆ]Z\ÜÚ[™ÒY[]HHÂˆ][˜[Y^[ØYHÂ‚ˆ›Üˆ
+ÛÛœÝ˜YHÙˆ›ÝÜÊHÂˆÛÛœÝYH˜YRY[]J˜YJNÂˆYˆ
+YOOH[
+HZ\ÜÚ[™ÒY[]H
+ÏHNÂˆ[ÙHYËœ\Ú
+Y
+NÂ‚ˆÛÛœÝ\™XÝ[ÛˆHÝš[™Ê˜YOË™\™XÝ[ÛˆˆŠKÓÝÙ\Ø\ÙJ
+NÂˆÛÛœÝšXÙHH[X›S[J˜YOËœšXÙJNÂˆÛÛœÝ[[Ý[H[X›S[J˜YOË˜[[Ý[
+NÂˆÛÛœÝÈH˜YU[YJ˜YJNÂˆÛÛœÝ˜[Y\™XÝ[ÛˆH\™XÝ[ÛˆOOH˜^Hˆ\™XÝ[ÛˆOOHœÙ[ŽÂˆÛÛœÝ˜[YÛÛ[[ÛˆHÈOOH[	‰ˆšXÙHOOH[	‰ˆšXÙHˆ	‰ˆ˜[Y\™XÝ[ÛŽÂˆÛÛœÝ˜[YÚ^™HHX\šÙ]OOH™]\™\È‚ˆÈ[[Ý[OOH[	‰ˆ[[Ý[ˆ	‰ˆ
+ˆ
+[X›S[J˜YOË˜YWÝ\››Ý™\ŠHÏÈ
+Hˆˆ
+[X›S[J˜YOËœ]X[]JHÏÈ
+Hˆˆ
+[X™\‹š\Ñš[š]JÛÛ˜XÝÜÚ^™JH	‰ˆÛÛ˜XÝÜÚ^™Hˆ
+Bˆ
+Bˆˆ[[Ý[OOH[	‰ˆ[[Ý[ˆÂˆYˆ
+]˜[YÛÛ[[Ûˆ]˜[YÚ^™JH[˜[Y^[ØY
+ÏHNÂˆB‚ˆÛÛœÝ[š\]YRYÈH™]ÈÙ]
+YÊNÂˆÛÛœÝ\XØ]RY[]PÛÝ[HX]›X^
+YË›[™ÝH[š\]YRYËœÚ^™JNÂˆÛÛœÝÛÛ\]HBˆ›ÝÜË›[™Ýˆ	‰‚ˆ›ÝÜÏË—ÜÛÝ\˜ÙWÝ[˜Ø]YOOHYH	‰‚ˆ[X™\Š›ÝÜÏË—ÜÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜY
+HOOH	‰‚ˆZ\ÜÚ[™ÒY[]HOOH	‰‚ˆ[˜[Y^[ØYOOH	‰‚ˆ\XØ]RY[]PÛÝ[OOHÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÛÛ\]HÈÓÓTUHˆˆ’SÓÓTUWÓÔ—ÒS•SQÔU×Ô‘PÓÔ‘È‹ˆÛÛ\]Kˆ˜]×Ü™XÛÜ™Îˆ›ÝÜË›[™Ýˆ[š\]YWÝ˜YWÚYÎˆ[š\]YRYËœÚ^™KˆZ\ÜÚ[™×Ý˜YWÚYØÛÝ[ˆZ\ÜÚ[™ÒY[]Kˆ\XØ]WÝ˜YWÚYØÛÝ[ˆ\XØ]RY[]PÛÝ[ˆ[˜[YÜ^[ØYØÛÝ[ˆ[˜[Y^[ØYˆÛÝ\˜ÙWÝ[˜Ø]Yˆ›ÝÜÏË—ÜÛÝ\˜ÙWÝ[˜Ø]YOOHYKˆÛÝ\˜ÙWØÛÛZ[™\œ×ÜØØ[›™Yˆ[X™\Š›ÝÜÏË—ØÛÛZ[™\œ×ÜØØ[›™Y
+KˆÛÝ\˜ÙWÜ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ[X™\Š›ÝÜÏË—Ü˜]×Ü›ÝÜ×ÜØØ[›™Y›ÝÜË›[™Ý
+KˆÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆ[X™\Š›ÝÜÏË—ÜÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜY
+Kˆ[N‚ˆ‘]™\žH˜]È˜YH]\Ý]™HH[š\]YH˜XÝX[˜YHY[Y\Ý[\^KÜÙ[ZÙ\ˆ\™XÝ[Û‹ÜÚ]]™HšXÙH[™ÜÚ]]™HYX\Ý\˜X›HÚ^™Kˆ‹ˆNÂŸB‚‹ÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆÔÕ“ÕÂˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚™[˜Ý[ÛˆÝ[[X\š^™TÜÝ˜Y\Ê˜Y\ÊHÂˆ]^U˜Y\ÈHÂˆ]Ù[˜Y\ÈHÂˆ]^P˜\ÙHHÂˆ]Ù[˜\ÙHHÂˆ]^T][ÝHHÂˆ]Ù[][ÝHHÂ‚ˆ›Üˆ
+ÛÛœÝ˜YHÙˆ˜Y\ÊHÂˆÛÛœÝšXÙHH[J˜YOËœšXÙJNÂˆÛÛœÝ[[Ý[H[J˜YOË˜[[Ý[
+NÂˆÛÛœÝ\™XÝ[ÛˆHÝš[™Êˆ˜YOË™\™XÝ[Ûˆˆ‚ˆ
+KÓÝÙ\Ø\ÙJ
+NÂ‚ˆYˆ
+ˆšXÙHOOH[ˆ[[Ý[OOH[ˆšXÙHHˆ[[Ý[ˆ
+HÂˆÛÛ[YNÂˆB‚ˆÛÛœÝ][ÝHHšXÙH
+ˆ[[Ý[Â‚ˆYˆ
+\™XÝ[ÛˆOOH˜^HŠHÂˆ^U˜Y\È
+ÏHNÂˆ^P˜\ÙH
+ÏH[[Ý[Âˆ^T][ÝH
+ÏH][ÝNÂˆB‚ˆYˆ
+\™XÝ[ÛˆOOHœÙ[ŠHÂˆÙ[˜Y\È
+ÏHNÂˆÙ[˜\ÙH
+ÏH[[Ý[ÂˆÙ[][ÝH
+ÏH][ÝNÂˆBˆB‚ˆÛÛœÝÝ[H^T][ÝH
+ÈÙ[][ÝNÂˆÛÛœÝ[HH^T][ÝHHÙ[][ÝNÂ‚ˆ™]\›ˆÂˆ˜Y\Îˆ˜Y\Ë›[™ÝˆZÙ\—Ø^WÝ˜Y\Îˆ^U˜Y\ËˆZÙ\—ÜÙ[Ý˜Y\ÎˆÙ[˜Y\ËˆZÙ\—Ø^WØ˜\ÙNˆ^P˜\ÙKˆZÙ\—ÜÙ[Ø˜\ÙNˆÙ[˜\ÙKˆZÙ\—Ø^WÝ\Ùˆ^T][ÝKˆZÙ\—ÜÙ[Ý\ÙˆÙ[][ÝKˆ[WØ˜\ÙNˆ^P˜\ÙHHÙ[˜\ÙKˆ[WÝ\Ùˆ[KˆØ[\WØÝ™Ø˜\ÙNˆ^P˜\ÙHHÙ[˜\ÙKˆØ[\WØÝ™Ý\Ùˆ[KˆÝ[Ý\››Ý™\—Ý\ÙˆÝ[ˆ^WÜÚ\™WÜÝ‚ˆÝ[ˆÈ
+^T][ÝHÈÝ[
+H
+ˆLˆ[ˆÙ[ÜÚ\™WÜÝ‚ˆÝ[ˆÈ
+Ù[][ÝHÈÝ[
+H
+ˆLˆ[ˆ[WÜÝÛÙ—Ý\››Ý™\Ž‚ˆÝ[ˆÈ
+[HÈÝ[
+H
+ˆLˆ[ˆ^WÜÙ[Ü˜][Î‚ˆÙ[][ÝHˆÈ^T][ÝHÈÙ[][ÝHˆ[ˆNÂŸB‚™[˜Ý[Ûˆ˜Y\Ò[•Ú[™ÝÊ˜Y\Ë›ÝËÝ\œÊHÂˆÛÛœÝÝ\H›ÝÈHÝ\œÈ
+ˆŒ
+ˆŒ
+ˆLÂ‚ˆ™]\›ˆ˜Y\Ë™š[\Š
+˜YJHOˆÂˆÛÛœÝÈH˜YU[YJ˜YJNÂˆ™]\›ˆ
+ˆÈOOH[	‰‚ˆÈHÝ\	‰‚ˆÈH›ÝÈ
+ÈŒˆ
+NÂˆJNÂŸB‚™[˜Ý[ÛˆÜÝ›ÝÐ[˜[\Ú\Êˆ˜Y\Ëˆ›ÝËˆœ™\Ú™\ÜÔÙXËˆZ[ŒZˆZ[ˆZ[Œˆ˜XÝX[Z[]RÛ[™\ÈH×BŠHÂˆÛÛœÝÜ™\™YHÛÜY˜Y\Ê˜Y\ÊNÂˆÛÛœÝ[Y\ÈHÜ™\™Yˆ›X\
+˜YU[YJBˆ™š[\Š
+ÊHOˆÈOOH[
+NÂ‚ˆÛÛœÝš\œÝÈH[Y\Ë›[™ÝˆÈ[Y\ÖÌBˆˆ[Â‚ˆÛÛœÝ\ÝÈH[Y\Ë›[™ÝˆÈ[Y\ÖÝ[Y\Ë›[™ÝHWBˆˆ[Â‚ˆÛÛœÝ]\ÝYÙTÙXÈBˆ\ÝÈOOH[ˆÈX]›X^
+›ÝÈH\ÝÊHÈLˆˆ[Â‚ˆÛÛœÝØ[\TÜ[’Ý\œÈBˆš\œÝÈOOH[	‰ˆ\ÝÈOOH[ˆÈ
+\ÝÈHš\œÝÊHÈÍŒˆˆ[Â‚ˆÛÛœÝÛ™RÝ\ˆH˜Y\Ò[•Ú[™ÝÊˆÜ™\™Yˆ›ÝËˆBˆ
+NÂ‚ˆÛÛœÝ›Ý\’Ý\œÈH˜Y\Ò[•Ú[™ÝÊˆÜ™\™Yˆ›ÝËˆˆ
+NÂ‚ˆÛÛœÝ^HH˜Y\Ò[•Ú[™ÝÊˆÜ™\™Yˆ›ÝËˆˆ
+NÂ‚ˆ[˜Ý[ÛˆÚ[™ÝÔ™\Ý[
+ˆÚ[™ÝÕ˜Y\ËˆÝ\œËˆZ[•˜Y\Âˆ
+HÂˆÛÛœÝÝ\Bˆ›ÝÈHÝ\œÈ
+ˆÍŒÂ‚ˆÛÛœÝÛÛ\]HBˆš\œÝÈOOH[	‰‚ˆš\œÝÈHÝ\Â‚ˆÛÛœÝ[›ÝYÚ˜Y\ÈBˆÚ[™ÝÕ˜Y\Ë›[™ÝHZ[•˜Y\ÎÂ‚ˆÛÛœÝÛÜÙY[™HX]™›ÛÜŠ›ÝÈÈŒ
+H
+ˆŒÂˆÛÛœÝÛÜÙYÝ\HÛÜÙY[™HÝ\œÈ
+ˆÍŒÂˆÛÛœÝ˜XÝX[Ý™HÝšXÝÜÝÝ™Ú[™ÝÊˆÜ™\™Yˆ˜XÝX[Z[]RÛ[™\ËˆÛÜÙYÝ\ˆÛÜÙY[™ˆ
+NÂ‚ˆÛÛœÝ˜]ÔÝ[[X\žHHÝ[[X\š^™TÜÝ˜Y\ÊÚ[™ÝÕ˜Y\ÊNÂˆÛÛœÝ˜[œÜÜ\ØX›HBˆÛÛ\]H	‰‚ˆ[›ÝYÚ˜Y\È	‰‚ˆ]\ÝYÙTÙXÈOOH[	‰‚ˆ]\ÝYÙTÙXÈHœ™\Ú™\ÜÔÙXÎÂ‚ˆ™]\›ˆÂˆ‹‹œ˜]ÔÝ[[X\žKˆÚ[™Ý×ÚÝ\œÎˆÝ\œËˆÚ[™Ý×ÜÝ\Ý[YNˆ\ÛÊÝ\
+Kˆ\ÝÜžWØÛÝ™\œ×Ù[ÝÚ[™ÝÎˆÛÛ\]KˆZ[š[][WÝ˜Y\×Ü™\]Z\™YˆZ[•˜Y\Ëˆ[›ÝYÚÝ˜Y\Îˆ[›ÝYÚ˜Y\Ëˆ\ØX›Nˆ˜[œÜÜ\ØX›H	‰ˆ˜XÝX[Ý™\ØX›HOOHYKˆ˜[œÜÜÝÚ[™Ý×Ý\ØX›Nˆ˜[œÜÜ\ØX›KˆYØXÞWÝ˜[œÜÜÝÚ[™Ý×Ý\ØX›Nˆ˜[œÜÜ\ØX›KˆÝ™Ù[WÝ\ØX›N‚ˆ˜XÝX[Ý™\ØX›HOOHYKˆÝ™Ù[WÜ™[XX›N‚ˆ˜XÝX[Ý™\ØX›HOOHYKˆÝ™Ù[WÜ]X[]N‚ˆ˜XÝX[Ý™˜Ý™Ù[WÜ]X[]Kˆ˜]×Ù[WÚ\×ÙXYÛ›ÜÝX×ÛÛ›N‚ˆ˜XÝX[Ý™\ØX›HOOHYKˆ˜]×ÜØ[\WÙXYÛ›ÜÝXÎˆ˜]ÔÝ[[X\žKˆ˜XÝX[ØÝ™ˆ˜XÝX[Ý™ˆNÂˆB‚ˆÛÛœÝ›ÝÌZHÚ[™ÝÔ™\Ý[
+ˆÛ™RÝ\‹ˆKˆZ[ŒZˆ
+NÂ‚ˆÛÛœÝ›ÝÍHÚ[™ÝÔ™\Ý[
+ˆ›Ý\’Ý\œËˆˆZ[ˆ
+NÂ‚ˆÛÛœÝ›ÝÌHÚ[™ÝÔ™\Ý[
+ˆ^KˆˆZ[Œˆ
+NÂ‚ˆÛÛœÝ]\Ýœ™\ÚBˆ]\ÝYÙTÙXÈOOH[	‰‚ˆ]\ÝYÙTÙXÈHœ™\Ú™\ÜÔÙXÎÂ‚ˆ]XÝ]š]HH››×Ù]HŽÂ‚ˆYˆ
+\ÝÈOOH[
+HÂˆYˆ
+[]\Ýœ™\Ú
+HÂˆXÝ]š]HHœÝ[HŽÂˆH[ÙHYˆ
+ˆÛ™RÝ\‹›[™ÝZ[ŒZˆ
+HÂˆXÝ]š]HH›Ý×ØXÝ]š]HŽÂˆH[ÙHÂˆXÝ]š]HH˜XÝ]™HŽÂˆBˆB‚ˆ™]\›ˆÂˆ‹‹œÝ[[X\š^™TÜÝ˜Y\ÊÜ™\™Y
+KˆØ[\WÝ˜Y\ÎˆÜ™\™Y›[™Ýˆš\œÝÝ˜YWÝÎˆš\œÝËˆš\œÝÝ˜YWÝ[YNˆ\ÛÊš\œÝÊKˆ\ÝÝ˜YWÝÎˆ\ÝËˆ\ÝÝ˜YWÝ[YNˆ\ÛÊ\ÝÊKˆ]\ÝÝ˜YWØYÙWÜÙXÎˆ]\ÝYÙTÙXËˆØ[\WÜÜ[—ÚÝ\œÎˆØ[\TÜ[’Ý\œË‚ˆœ™\Ú™\ÜÎˆÂˆX^Ø[ÝÙYØYÙWÜÙXÎˆœ™\Ú™\ÜÔÙXËˆ]\ÝÝ˜YWÙœ™\Úˆ]\Ýœ™\ÚˆÝ]\Î‚ˆ\ÝÈOOH[ˆÈ››×Ù]H‚ˆˆ]\Ýœ™\ÚˆÈ™œ™\Ú‚ˆˆœÝ[H‹ˆXÝ]š]WÜÝ]\ÎˆXÝ]š]KˆK‚ˆÚ[™ÝÜÎˆÂˆŒZŽˆ›ÝÌZˆŽˆ›ÝÍˆŒŽˆ›ÝÌˆK‚ˆ]X[]NˆÂˆØ[\WÝ\ØX›N‚ˆÜ™\™Y›[™Ýˆ	‰‚ˆ]\Ýœ™\ÚˆÚ[™Ý×ÌZÝ\ØX›N‚ˆ›ÝÌZ\ØX›KˆÚ[™Ý×ÍÝ\ØX›N‚ˆ›ÝÍ\ØX›KˆÚ[™Ý×ÌÝ\ØX›N‚ˆ›ÝÌ\ØX›KˆKˆNÂŸB‚‹ÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆ•UT‘TÈ“ÕÂˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚™[˜Ý[ÛˆÝ[[X\š^™Q]\™\Õ˜Y\Êˆ˜Y\ËˆÛÛ˜XÝÚ^™BŠHÂˆ]^PÛÛ˜XÝÈHÂˆ]Ù[ÛÛ˜XÝÈHÂˆ]^P˜\ÙHHÂˆ]Ù[˜\ÙHHÂˆ]^T][ÝHHÂˆ]Ù[][ÝHHÂˆ]š\œÝÈH[Âˆ]\ÝÈH[Â‚ˆ›Üˆ
+ÛÛœÝ˜YHÙˆ˜Y\ÊHÂˆÛÛœÝ\™XÝ[ÛˆHÝš[™Êˆ˜YOË™\™XÝ[Ûˆˆ‚ˆ
+KÓÝÙ\Ø\ÙJ
+NÂ‚ˆÛÛœÝÛÛ˜XÝÈBˆ[J˜YOË˜[[Ý[
+HÂ‚ˆÛÛœÝšXÙHBˆ[J˜YOËœšXÙJHÂ‚ˆ]˜\ÙHBˆ[J˜YOËœ]X[]JNÂ‚ˆYˆ
+ˆ˜\ÙHOOH[	‰‚ˆ[X™\‹š\Ñš[š]JÛÛ˜XÝÚ^™JH	‰‚ˆÛÛ˜XÝÚ^™Hˆˆ
+HÂˆ˜\ÙHBˆÛÛ˜XÝÈ
+‚ˆÛÛ˜XÝÚ^™NÂˆB‚ˆYˆ
+˜\ÙHOOH[
+HÂˆ˜\ÙHHÂˆB‚ˆ]\››Ý™\ˆBˆ[J˜YOË˜YWÝ\››Ý™\ŠNÂ‚ˆYˆ
+ˆ\››Ý™\ˆOOH[	‰‚ˆšXÙHˆ	‰‚ˆ˜\ÙHˆˆ
+HÂˆ\››Ý™\ˆBˆšXÙH
+ˆ˜\ÙNÂˆB‚ˆYˆ
+\››Ý™\ˆOOH[
+HÂˆ\››Ý™\ˆHÂˆB‚ˆYˆ
+\™XÝ[ÛˆOOH˜^HŠHÂˆ^PÛÛ˜XÝÈ
+ÏHÛÛ˜XÝÎÂˆ^P˜\ÙH
+ÏH˜\ÙNÂˆ^T][ÝH
+ÏH\››Ý™\ŽÂˆB‚ˆYˆ
+\™XÝ[ÛˆOOHœÙ[ŠHÂˆÙ[ÛÛ˜XÝÈ
+ÏHÛÛ˜XÝÎÂˆÙ[˜\ÙH
+ÏH˜\ÙNÂˆÙ[][ÝH
+ÏH\››Ý™\ŽÂˆB‚ˆÛÛœÝÈH˜YU[YJ˜YJNÂ‚ˆYˆ
+ÈOOH[
+HÂˆYˆ
+ˆš\œÝÈOOH[ˆÈš\œÝÂˆ
+HÂˆš\œÝÈHÎÂˆB‚ˆYˆ
+ˆ\ÝÈOOH[ˆÈˆ\ÝÂˆ
+HÂˆ\ÝÈHÎÂˆBˆBˆB‚ˆ™]\›ˆÂˆØ[\WÝ˜Y\Îˆ˜Y\Ë›[™ÝˆËÈ˜XÝX[[Y\šXÈœšYÙHÈ^\Ý[™È›ÝÈÛÛœÝ[Y\œËˆ™[XXš[]HÝ[ˆËÈÛÛY\È^Û\Ú]™[Hœ›ÛHH^XÝ[H˜YKXÛÝ[Ü^[ØY[YÜš]HØ]K‚ˆÝ[Ý\››Ý™\—Ý\Ùˆ^T][ÝH
+ÈÙ[][ÝKˆ[WÜÝÛÙ—Ý\››Ý™\Žˆ^T][ÝH
+ÈÙ[][ÝHˆˆÈ
+
+^T][ÝHHÙ[][ÝJHÈ
+^T][ÝH
+ÈÙ[][ÝJJH
+ˆLˆˆ[ˆZÙ\—Ø^WØÛÛ˜XÝÎˆ^PÛÛ˜XÝËˆZÙ\—ÜÙ[ØÛÛ˜XÝÎˆÙ[ÛÛ˜XÝËˆZÙ\—Ø^WØ˜\ÙNˆ^P˜\ÙKˆZÙ\—ÜÙ[Ø˜\ÙNˆÙ[˜\ÙKˆZÙ\—Ø^WÝ\Ùˆ^T][ÝKˆZÙ\—ÜÙ[Ý\ÙˆÙ[][ÝKˆ[WØÛÛ˜XÝÎ‚ˆ^PÛÛ˜XÝÈHÙ[ÛÛ˜XÝËˆ[WØ˜\ÙN‚ˆ^P˜\ÙHHÙ[˜\ÙKˆ[WÝ\Ù‚ˆ^T][ÝHHÙ[][ÝKˆØ[\WØÝ™Ý\Ù‚ˆ^T][ÝHHÙ[][ÝKˆš\œÝÝ˜YWÝÎˆš\œÝËˆš\œÝÝ˜YWÝ[YNˆ\ÛÊš\œÝÊKˆ\ÝÝ˜YWÝÎˆ\ÝËˆ\ÝÝ˜YWÝ[YNˆ\ÛÊ\ÝÊKˆNÂŸY[˜Ý[Ûˆš[™ÛÛ˜XÝ[™›Ê]KÛÛ˜XÝ
+HÂˆÛÛœÝ\ÝH\œ˜^Kš\Ð\œ˜^J]OË™]JHÈ]K™]Hˆ×NÂˆ™]\›ˆ
+ˆ\Ý™š[™
+ˆ
+][JHO‚ˆÝš[™Ê][OË˜ÛÛ˜XÝØÛÙHˆŠKÕ\\Ø\ÙJ
+HOOHÛÛ˜XÝÕ\\Ø\ÙJ
+Bˆ
+Hˆ\ÝÌHˆ[ˆ
+NÂŸB‚™[˜Ý[Ûˆš[™˜›Ê]KÛÛ˜XÝ
+HÂˆÛÛœÝ\ÝH\œ˜^Kš\Ð\œ˜^J]OËXÚÜÊBˆÈ]KXÚÜÂˆˆ\œ˜^Kš\Ð\œ˜^J]OË™]JBˆÈ]K™]Bˆˆ×NÂ‚ˆ™]\›ˆ
+ˆ\Ý™š[™
+ˆ
+][JHO‚ˆÝš[™Ê][OË˜ÛÛ˜XÝØÛÙHˆŠKÕ\\Ø\ÙJ
+HOOHÛÛ˜XÝÕ\\Ø\ÙJ
+Bˆ
+Hˆ\ÝÌHˆ[ˆ
+NÂŸB‚™[˜Ý[Ûˆš[™ÚJ]KÛÛ˜XÝ
+HÂˆÛÛœÝ\ÝH\œ˜^Kš\Ð\œ˜^J]OË™]JHÈ]K™]Hˆ]OË™]HÈÙ]K™]WHˆ×NÂˆ™]\›ˆ
+ˆ\Ý™š[™
+ˆ
+][JHO‚ˆÝš[™Ê][OË˜ÛÛ˜XÝØÛÙHˆŠKÕ\\Ø\ÙJ
+HOOHÛÛ˜XÝÕ\\Ø\ÙJ
+Bˆ
+Hˆ\ÝÌHˆ[ˆ
+NÂŸB‚‹ÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆ•UT‘TÈÓTÒÕ8 %4`t`ôbt-t`t`´,´`ôc´bt.4.H4/4/´-4`ô.ôcˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚˜\Þ[˜È[˜Ý[Ûˆ]\™\ÔÛ˜\ÚÝ
+\˜[\ÊHÂˆÛÛœÝ™\]Y\ÝœÛÛˆH\[Ùˆ\˜[\ÏË—Ù™]ÚÚœÛÛˆOOH™[˜Ý[ÛˆˆÈ\˜[\Ë—Ù™]ÚÚœÛÛˆˆ™]ÚœÛÛŽÂˆÛÛœÝÛÛ˜XÝH›Ü›X[^™Q]\™\ÐÛÛ˜XÝ
+ˆ\˜[\Ë˜ÛÛ˜XÝ\˜[\Ë˜ÛÛ˜XÝØÛÙH\˜[\ËœÞ[X›Û‘U’KUTÑ‚ˆ
+NÂ‚ˆÛÛœÝ›Ý[Û˜[HÛ[\
+\˜[\Ë››Ý[Û˜[Ý\ÙÏÈ\˜[\Ë››Ý[Û˜[LLL
+NÂˆÛÛœÝ˜Y\Ô™\]Y\ÝYHX]œ›Ý[™
+Û[\
+\˜[\Ë˜Y\ÈÏÈ\˜[\ËœÚ^™KKŒL
+JNÂ‚ˆÛÛœÝ[™Ú[ÈHÂˆ[™›Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ØÛÛ˜XÝÚ[™›Ø
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Xˆ\‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ù\
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_I\O\Ý\ˆ˜›Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ø˜›Ø
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Xˆ˜Y\Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÝ˜YX
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_IœÚ^™OIÝ˜Y\Ô™\]Y\ÝYXˆÚN‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ÛÜ[—Ú[\™\Ý
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Xˆ[™[™Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ù[™[™×Ü˜]X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_XˆNÂ‚ˆÛÛœÝÚ[™›Ô‹\‹˜›Ô‹˜Y\Ô‹ÚT‹[™[™Ô—HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™\]Y\ÝœÛÛŠ[™Ú[Ëš[™›ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë™\
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[Ë˜˜›ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë˜Y\ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë›ÚJKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë™[™[™ÊKˆJNÂ‚ˆÛÛœÝÛÛ˜XÝ[™›ÈHš[™ÛÛ˜XÝ[™›Ê[™›Ô‹™]KÛÛ˜XÝ
+NÂˆ]ÛÛ˜XÝÚ^™HH[JÛÛ˜XÝ[™›ÏË˜ÛÛ˜XÝÜÚ^™JNÂˆÛÛœÝ˜YS\ÝH›][•˜Y\Ê˜Y\Ô‹™]OË™]JNÂ‚ˆYˆ
+
+ÛÛ˜XÝÚ^™HOOH[ÛÛ˜XÝÚ^™HH
+H	‰ˆ˜YS\Ý›[™Ý
+HÂˆÛÛœÝ\Ý˜YHH˜YS\Ý™š[™
+ˆ
+˜YJHOˆ[J˜YOË˜[[Ý[
+Hˆ	‰ˆ[J˜YOËœ]X[]JHˆˆ
+NÂˆYˆ
+\Ý˜YJHÂˆÛÛ˜XÝÚ^™HH[J\Ý˜YKœ]X[]JHÈ[J\Ý˜YK˜[[Ý[
+NÂˆBˆB‚ˆÛÛœÝ\XÚÈH\‹™]OËXÚÈ[ÂˆÛÛœÝšYÈH\œ˜^Kš\Ð\œ˜^J\XÚÏË˜šYÊHÈ\XÚË˜šYÈˆ×NÂˆÛÛœÝ\ÚÜÈH\œ˜^Kš\Ð\œ˜^J\XÚÏË˜\ÚÜÊHÈ\XÚË˜\ÚÜÈˆ×NÂˆÛÛœÝ˜›ÕXÚÈHš[™˜›Ê˜›Ô‹™]KÛÛ˜XÝ
+NÂ‚ˆÛÛœÝ™\ÝšYH[J˜›ÕXÚÏË˜šYË–ÌJHÏÈ[JšYÏË–ÌOË–ÌJNÂˆÛÛœÝ™\Ý\ÚÈH[J˜›ÕXÚÏË˜\ÚÏË–ÌJHÏÈ[J\ÚÜÏË–ÌOË–ÌJNÂˆÛÛœÝÜ™XYH™\ÝšYOOH[	‰ˆ™\Ý\ÚÈOOH[È™\Ý\ÚÈH™\ÝšYˆ[ÂˆÛÛœÝZYH™\ÝšYOOH[	‰ˆ™\Ý\ÚÈOOH[È
+™\ÝšY
+È™\Ý\ÚÊHÈˆˆ[ÂˆÛÛœÝÜ™XYœÈHÜ™XYOOH[	‰ˆZYˆÈ
+Ü™XYÈZY
+H
+ˆLˆ[Â‚ˆÛÛœÝ[š]˜\ÙT]HHÛÛ˜XÝÚ^™HOOH[	‰ˆÛÛ˜XÝÚ^™HˆÈÛÛ˜XÝÚ^™HˆÂˆÛÛœÝÜPšYH[š]˜\ÙT]HˆÈÝ[Q\
+šYËK[š]˜\ÙT]JHˆ[ÂˆÛÛœÝÜP\ÚÈH[š]˜\ÙT]HˆÈÝ[Q\
+\ÚÜËK[š]˜\ÙT]JHˆ[ÂˆÛÛœÝÜŒšYH[š]˜\ÙT]HˆÈÝ[Q\
+šYËŒ[š]˜\ÙT]JHˆ[ÂˆÛÛœÝÜŒ\ÚÈH[š]˜\ÙT]HˆÈÝ[Q\
+\ÚÜËŒ[š]˜\ÙT]JHˆ[ÂˆÛÛœÝ[X˜[[˜ÙHBˆ[š]˜\ÙT]HˆÈÜ™\›ÛÚÒ[X˜[[˜ÙJšYË\ÚÜËŒ[š]˜\ÙT]JHˆ[ÂˆÛÛœÝ^R[\XÝBˆ[š]˜\ÙT]Hˆ	‰ˆ™\Ý\ÚÈOOH[ˆÈX\šÙ][\XÝ
+\ÚÜË›Ý[Û˜[™\Ý\ÚË˜^H‹[š]˜\ÙT]JBˆˆ[ÂˆÛÛœÝÙ[[\XÝBˆ[š]˜\ÙT]Hˆ	‰ˆ™\ÝšYOOH[ˆÈX\šÙ][\XÝ
+šYË›Ý[Û˜[™\ÝšYœÙ[‹[š]˜\ÙT]JBˆˆ[Â‚ˆÛÛœÝÜ™\‘›ÝÔ˜]ÈHÝ[[X\š^™Q]\™\Õ˜Y\Ê˜YS\ÝÛÛ˜XÝÚ^™JNÂˆÛÛœÝÜ™\‘›ÝÈHÂˆ‹‹›Ü™\‘›ÝÔ˜]Ëˆ\ØX›Nˆ˜[ÙKˆÝ™Ù[WÝ\ØX›Nˆ˜[ÙKˆÝ™Ù[WÜ™[XX›Nˆ˜[ÙKˆÝ™Ù[WÜ]X[]NˆÂˆÝ]\Îˆ•S•‘T’Q’QQÓ“×ÑVPÕÑPÕPSÌSWÕÒS‘ÕÈ‹ˆ™[XX›Nˆ˜[ÙKˆ™XÛÜ™Ú[YÜš]Nˆ˜]Õ˜YT™XÛÜ™[YÜš]J˜YS\ÝÂˆX\šÙ]ˆ™]\™\È‹ˆÛÛ˜XÝÜÚ^™NˆÛÛ˜XÝÚ^™KˆJKˆKˆ˜]×Ù[WÚ\×ÙXYÛ›ÜÝX×ÛÛ›NˆYKˆ˜]×ÜØ[\WÙXYÛ›ÜÝXÎˆÜ™\‘›ÝÔ˜]ËˆNÂˆÛÛœÝÚT˜]ÈHš[™ÚJÚT‹™]KÛÛ˜XÝ
+NÂˆÛÛœÝÜ[’[\™\ÝHÚT˜]ÂˆÈÂˆÛÛ˜XÝÎˆ[JÚT˜]Ë›Û[YJKˆ[[Ý[Ø˜\ÙNˆ[JÚT˜]Ë˜[[Ý[
+Kˆ˜[YWÝ\Ùˆ[JÚT˜]Ë˜[YJKˆ˜YWÝ›Û[YWÌØÛÛ˜XÝÎˆ[JÚT˜]Ë˜YWÝ›Û[YJKˆ˜YWØ[[Ý[ÌØ˜\ÙNˆ[JÚT˜]Ë˜YWØ[[Ý[
+Kˆ˜YWÝ\››Ý™\—ÌÝ\Ùˆ[JÚT˜]Ë˜YWÝ\››Ý™\ŠKˆ˜]ÎˆÚT˜]ËˆBˆˆ[Â‚ˆÛÛœÝ[™[™Ô˜]ÈH[™[™Ô‹™]OË™]H[ÂˆÛÛœÝ[™[™Ô˜]HH[J[™[™Ô˜]ÏË™[™[™×Ü˜]JNÂˆÛÛœÝ\Ý[X]Y˜]HH[J[™[™Ô˜]ÏË™\Ý[X]YÜ˜]JNÂˆÛÛœÝ[™[™ÈH[™[™Ô˜]ÂˆÈÂˆ[™[™×Ü˜]Nˆ[™[™Ô˜]Kˆ[™[™×Ü˜]WÜÝˆ[™[™Ô˜]HOOH[È[™[™Ô˜]H
+ˆLˆ[ˆ\Ý[X]YÜ˜]Nˆ\Ý[X]Y˜]Kˆ\Ý[X]YÜ˜]WÜÝˆ\Ý[X]Y˜]HOOH[È\Ý[X]Y˜]H
+ˆLˆ[ˆ[™[™×Ý[YNˆ\ÛÊ[™[™Ô˜]ÏË™[™[™×Ý[YJKˆ™^Ù[™[™×Ý[YNˆ\ÛÊ[™[™Ô˜]ÏË›™^Ù[™[™×Ý[YJKˆ˜]Îˆ[™[™Ô˜]ËˆBˆˆ[Â‚ˆÛÛœÝX[HÂˆ[™›Îˆ›ÛÛX[Š[™›Ô‹›ÚÈ	‰ˆÛÛ˜XÝ[™›ÊKˆ\ˆ›ÛÛX[Š\‹›ÚÈ	‰ˆšYË›[™Ý	‰ˆ\ÚÜË›[™Ý
+Kˆ˜›Îˆ›ÛÛX[Š˜›Ô‹›ÚÈ	‰ˆ™\ÝšYOOH[	‰ˆ™\Ý\ÚÈOOH[
+Kˆ˜Y\Îˆ›ÛÛX[Š˜Y\Ô‹›ÚÈ	‰ˆ˜YS\Ý›[™Ý
+KˆÚNˆ›ÛÛX[ŠÚT‹›ÚÈ	‰ˆÚT˜]ÊKˆ[™[™Îˆ›ÛÛX[Š[™[™Ô‹›ÚÈ	‰ˆ[™[™Ô˜]ÊKˆNÂ‚ˆÛÛœÝÛÝ™\˜YÙHHÂˆÙ]\™\×Û\]ZY]N‚ˆX[š[™›È	‰‚ˆX[™\	‰‚ˆ™\ÝšYOOH[	‰‚ˆ™\Ý\ÚÈOOH[	‰‚ˆ^R[\XÝË™[WÙš[YOOHYH	‰‚ˆÙ[[\XÝË™[WÙš[YOOHYBˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹ˆÙ]\™\×ÛÜ™\—Ù›Ý×ÜØ[\NˆX[˜Y\ÈÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÙ]\™\×ÛÜ™\—Ù›ÝÎˆ››ÝØÛÜÙY‹ˆÛÜ[—Ú[\™\ÝˆX[›ÚHÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÙ[™[™ÎˆX[™[™[™ÈÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆNÂ‚ˆÛÛœÝ˜XÝX[^XÝ][ÛˆH™\\™R^XÝ][Û‘˜XÝÊÂˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝ™\]Y\ÝYÛ›Ý[Û˜[Ý\Ùˆ›Ý[Û˜[ˆ[™›×Ü™\ÜÛœÙNˆ[™›Ô‹\Ü™\ÜÛœÙNˆ\‹™XÙZ]™YÝÎˆ]K››ÝÊ
+KˆJNÂˆÛÛœÝÛ˜\ÚÝHÂˆÛÝ\˜ÙNˆ’Ù™šXÚX[X›XÈTH‹ˆX\šÙ]ˆ’TÑSH]\™\È‹ˆ™\œÚ[ÛŽˆŒ‹ŒH‹ˆÛÛ˜XÝˆ™\]Y\ÝYÛ›Ý[Û˜[Ý\Ùˆ›Ý[Û˜[ˆ˜Y\×Ü™\]Y\ÝYˆ˜Y\Ô™\]Y\ÝYˆ[Y\Ý[\ˆ]K››ÝÊ
+Kˆ[Y\Ý[\Ý]Îˆ™]È]J
+KÒTÓÔÝš[™Ê
+KˆÛÛ˜XÝÚ[™›ÎˆÛÛ˜XÝ[™›ÂˆÈÂˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝ[™›Ë˜ÛÛ˜XÝØÛÙKˆÞ[X›ÛˆÛÛ˜XÝ[™›ËœÞ[X›ÛˆÛÛ˜XÝÜÚ^™NˆÛÛ˜XÝÚ^™KˆšXÙWÝXÚÎˆ[JÛÛ˜XÝ[™›ËœšXÙWÝXÚÊKˆÛÛ˜XÝÜÝ]\ÎˆÛÛ˜XÝ[™›Ë˜ÛÛ˜XÝÜÝ]\ËˆÝ\ÜÛX\™Ú[—Û[ÙNˆÛÛ˜XÝ[™›ËœÝ\ÜÛX\™Ú[—Û[ÙKˆBˆˆ[ˆ˜›ÎˆÂˆ™\ÝØšYˆ™\ÝšYˆ™\ÝØ\ÚÎˆ™\Ý\ÚËˆÜ™XYˆÜ™XYØœÎˆÜ™XYœËˆKˆ\]ZY]NˆÂˆ™\ÝØšYˆ™\ÝšYˆ™\ÝØ\ÚÎˆ™\Ý\ÚËˆÜ™XYˆÜ™XYØœÎˆÜ™XYœËˆÜÌWÙ\ØšYˆÜPšYˆÜÌWÙ\Ø\ÚÎˆÜP\ÚËˆÜÌŒÙ\ØšYˆÜŒšYˆÜÌŒÙ\Ø\ÚÎˆÜŒ\ÚËˆÜ™\—Ø›ÛÚ×Ú[X˜[[˜ÙNˆ[X˜[[˜ÙKˆ^WÛX\šÙ]Ú[\XÝˆ^R[\XÝˆÙ[ÛX\šÙ]Ú[\XÝˆÙ[[\XÝˆ\Ý[Y\Ý[\ˆ\ÛÊ\XÚÏËÊH\ÛÊ\‹™]OËÊKˆKˆÜ™\—Ù›ÝÎˆÜ™\‘›ÝËˆÛÜ[—Ú[\™\ÝˆÜ[’[\™\ÝˆÜ[—Ú[\™\ÝˆÜ[’[\™\ÝˆÙ[™[™Îˆ[™[™Ëˆ[™[™ËˆX[ˆ[™Ú[ÚX[ˆX[ˆÛÝ™\˜YÙKˆ›ÝNˆ”˜]ÈÕ‘Ñ[H4ct`´/´.H4/t-t/´,ô`4,4/t.4aô-t/t/t/´.H4/ô/ˆ4`´/´aô/t/´/4`È4/´.´/t`È4,´bô,t/´`4.´.8 %4`´/´.ôc4.´/ˆ4-4.4,4,ô/t/´`t`´.4.´,4.4,´`t-t,ô-4,˜Z[XÛÜÙYÈ4-4/´`t`´/´,´-t`4/tbô.HÕ‘4/ô`ô,t.ô.4.´`ô-t`´`tcÈ4.ô.4b4c4,ˆ4`t.4/tat`4/´/t.4-ô.4`4/´,´,4/t/tbôaH4/´.´/t,4aH4/ô`4.4`´/´aô/t/´/4`t/´,´/ô,4-4-t/t.4.˜XÝX[[H˜YWØÛÝ[4.4a´-t.ô/´`t`´/tbôaH4`ô/t.4.´,4.ôc4/tbôaH˜YHYˆ‹ˆ[™Ú[Ù\œ›ÜœÎˆÂˆ[™›Îˆ[™›Ô‹›ÚÈÈ[ˆ[™›Ô‹™\œ›Ü‹ˆ\ˆ\‹›ÚÈÈ[ˆ\‹™\œ›Ü‹ˆ˜›Îˆ˜›Ô‹›ÚÈÈ[ˆ˜›Ô‹™\œ›Ü‹ˆ˜Y\Îˆ˜Y\Ô‹›ÚÈÈ[ˆ˜Y\Ô‹™\œ›Ü‹ˆÚNˆÚT‹›ÚÈÈ[ˆÚT‹™\œ›Ü‹ˆ[™[™Îˆ[™[™Ô‹›ÚÈÈ[ˆ[™[™Ô‹™\œ›Ü‹ˆKˆNÂˆËÈ[\›˜[˜XÝX[ÛÝ\˜ÙHX]\šX[\È\œÚ\ÝY[œÚYHH^\Ý[™È›ÛÙ‚ˆËÈ[™K›Ý\XØ]Y[ˆ]™\žHX›XÈ[™Ú[ÜØØ[ˆÙ\šX[^˜][Û‹‚ˆØš™XÝ™Yš[™T›Ü\JÛ˜\ÚÝ—ÝŒLWÙ^XÝ][Û—Ü][ÝH‹Ý˜[YN™˜XÝX[^XÝ][Û‹[[Y\˜X›N™˜[Ù_JNÂˆ™]\›ˆÛ˜\ÚÝÂŸB‚‹ËÈHY\ÚXÚÈØ[ˆÜ[™X[žHÙXÛÛ™ÈÛˆ[™\[™[[œšXÚY[ˆ™]\ÙHB‹ËÈÜšYÚ[˜[˜XÝX[^XÝ][Ûˆ][ÝHÚ[H]\ÈÝ[˜[YÈÝ\Ú\ÙH\™›Ü›B‹ËÈÛ™H›Ý[™YÛË\™\]Y\Ý™Yœ™\Ú[[YYX][H™Y›Ü™Hš^[™ÈXÚ\Ú[Û—ÝË‚‹ËÈH™Yœ™\Ú™\Ù\™\È›ÝšY\ˆ[Y\Ý[\È[™™]™\ˆ^[™È[ˆÛ][ÝK‚˜\Þ[˜È[˜Ý[Ûˆ™Yœ™\Ú^XÝ][Û”][ÝRY“™YYY
+ØÛÛ˜XÝ›Ý[Û˜[Ý\ÙÝ\œ™[Ü][ÝK›Ý×ÝÏQ]K››ÝÊ
+K™\]Y\ÝÚœÛÛY™]ÚœÛÛŸO^ßJHÂˆÛÛœÝ˜[Y[[H[X™\ŠÝ\œ™[Ü][ÝOË™˜XÝÏË˜[YÝ[[ÝÊNÂˆÛÛœÝ™XÙZ]™YH[X™\ŠÝ\œ™[Ü][ÝOË™˜XÝÏËœ™XÙZ]™YÝÊNÂˆYˆ
+Ý\œ™[Ü][ÝOË™˜XÝÈ	‰ˆ[X™\‹š\ÔØY™R[YÙ\Š™XÙZ]™Y
+H	‰ˆ™XÙZ]™YH›Ý×ÝÈ	‰ˆ[X™\‹š\ÔØY™R[YÙ\Š˜[Y[[
+H	‰ˆ˜[Y[[[›Ý×ÝÈHWÌ
+HÂˆ™]\›ˆÜ][ÝN˜Ý\œ™[Ü][ÝKÝ]\Î‰ÓÔ’QÒSSÔUSÕWÔÕSÑ”‘TÒ	Ë][\YÜ™\]Y\ÝÎŒ]˜Z[X›WÝÎœ™XÙZ]™YNÂˆBˆÛÛœÝš[ÜXÝ\œ™[Ü][ÝOË™˜XÝß[[œÝ[Y[ÛÝ\˜ÙOS[X™\Šš[ÜËš[œÝ[Y[ÜÛÝ\˜ÙWÝÊNÂˆÛÛœÝ™YYÒ[™›ÏHS[X™\‹š\ÔØY™R[YÙ\Š[œÝ[Y[ÛÝ\˜ÙJ_[œÝ[Y[ÛÝ\˜ÙO››Ý×Ýß›Ý×ÝËZ[œÝ[Y[ÛÝ\˜ÙOMŒÌÂˆÛÛœÝ[™›Õ\›X	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ØÛÛ˜XÝÚ[™›ÏØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_XÂˆÛÛœÝ\\›X	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ù\ØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_I\O\Ý\ÂˆÛÛœÝ™\]Y\ÝÏVË‹‹Š™YYÒ[™›ÏÖÜ™\]Y\ÝÚœÛÛŠ[™›Õ\›
+WN–×JK™\]Y\ÝÚœÛÛŠ\\›
+WKÙ]YX]ØZ]›ÛZ\ÙK˜[Ù]Y
+™\]Y\ÝÊNÂˆÛÛœÝ]˜Z[X›UÏQ]K››ÝÊ
+NÂˆYŠÙ]YœÛÛYJ›ÝÏOœ›ÝËœÝ]\ÈOOIÙ[š[Y	ÊJ\™]\›žÜ][ÝN›[Ý]\Î‰Ô‘Q”‘TÒÕS”ÔÔ•ÑRSQ	Ë][\YÜ™\]Y\ÝÎœ™\]Y\ÝË›[™Ý]˜Z[X›WÝÎ˜]˜Z[X›UßNÂˆÛÛœÝ[™›Ô™\ÜÛœÙO[™YYÒ[™›ÏÜÙ]YÌK˜[YNžÛÚÎYK]NžÜÝ]\Î‰ÛÚÉËÎœš[Ü‹š[œÝ[Y[ÜÛÝ\˜ÙWÝË]N–ÞØÛÛ˜XÝØÛÙN˜ÛÛ˜XÝÛÛ˜XÝÜÚ^™Nœš[Ü‹˜ÛÛ˜XÝÜÚ^™WØ˜\ÙKšXÙWÝXÚÎœš[Ü‹œšXÙWÝXÚËÛÛ˜XÝÜÝ]\Îœš[Ü‹˜ÛÛ˜XÝÜÝ]\ßW__NÂˆÛÛœÝ\™\ÜÛœÙO\Ù]Y˜]
+LJK˜[YNÂˆÛÛœÝ][ÝO\™\\™R^XÝ][Û‘˜XÝÊØÛÛ˜XÝØÛÙN˜ÛÛ˜XÝ™\]Y\ÝYÛ›Ý[Û˜[Ý\Ù››Ý[Û˜[Ý\Ù[™›×Ü™\ÜÛœÙNš[™›Ô™\ÜÛœÙK\Ü™\ÜÛœÙN™\™\ÜÛœÙK™XÙZ]™YÝÎ˜]˜Z[X›UßJNÂˆ™]\›ˆÜ][ÝKÝ]\Îœ][ÝOË™˜XÝÏÉÔ‘Q”‘TÒQ	Î‰Ô‘Q”‘TÒÓ“ÕÐÓÔÑQ	Ë][\YÜ™\]Y\ÝÎœ™\]Y\ÝË›[™ÝÛÛ˜XÝÚ[™›×Ü™Yœ™\ÚY›™YYÒ[™›Ë]˜Z[X›WÝÎ˜]˜Z[X›UË™X\ÛÛœÎœ][ÝOËœ™X\ÛÛœÏÏÖ×_NÂŸB‚‹ÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆÔÕÓTÒÕ8 %4`t`ôbt-t`t`´,´`ôc´bt.4.H4/4/´-4`ô.ôcˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚˜\Þ[˜È[˜Ý[ÛˆÜÝÛ˜\ÚÝ
+\˜[\ÊHÂˆÛÛœÝ™\]Y\ÝœÛÛˆH\[Ùˆ\˜[\ÏË—Ù™]ÚÚœÛÛˆOOH™[˜Ý[ÛˆˆÈ\˜[\Ë—Ù™]ÚÚœÛÛˆˆ™]ÚœÛÛŽÂˆÛÛœÝ›ÝÈH]K››ÝÊ
+NÂˆÛÛœÝ[œ]Þ[X›ÛH\˜[\ËœÞ[X›Û\˜[\ËœZ\ˆ\˜[\Ë˜ÛÛ˜XÝ‘U’KUTÑŽÂˆÛÛœÝÞ[X›ÛH›Ü›X[^™TÜÝÞ[X›Û
+[œ]Þ[X›Û
+NÂˆÛÛœÝ›Ý[Û˜[HÛ[\
+\˜[\Ë››Ý[Û˜[Ý\ÙÏÈ\˜[\Ë››Ý[Û˜[LLL
+NÂˆÛÛœÝ˜Y\Ô™\]Y\ÝYHX]œ›Ý[™
+Û[\
+\˜[\Ë˜Y\ÈÏÈ\˜[\ËœÚ^™KKŒŒ
+JNÂˆÛÛœÝœ™\Ú™\ÜÔÙXÈHX]œ›Ý[™
+Û[\
+\˜[\Ë™œ™\Ú™\Ü×ÜÙXËŒÍŒL
+JNÂˆÛÛœÝZ[ŒZHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÌZKLŒ
+JNÂˆÛÛœÝZ[HX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÍKLL
+JNÂˆÛÛœÝZ[ŒHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÌKLL
+JNÂ‚ˆÛÛœÝ[™Ú[ÈHÂˆXÚÙ\Žˆ	ÔÔÕÐTÑ_KÛX\šÙ]Ù]Z[ÛY\™ÙYÜÞ[X›ÛIÙ[˜ÛÙUT’PÛÛ\Û™[
+Þ[X›Û
+_Xˆ\‚ˆ	ÔÔÕÐTÑ_KÛX\šÙ]Ù\ÜÞ[X›ÛIÙ[˜ÛÙUT’PÛÛ\Û™[
+Þ[X›Û
+_X
+Âˆ	\O\Ý\	™\LŒˆ˜Y\Î‚ˆ	ÔÔÕÐTÑ_KÛX\šÙ]Ú\ÝÜžKÝ˜YOÜÞ[X›ÛIÙ[˜ÛÙUT’PÛÛ\Û™[
+Þ[X›Û
+_X
+Âˆ	œÚ^™OIÝ˜Y\Ô™\]Y\ÝYXˆÛ[™WÌ[N‚ˆ	ÔÔÕÐTÑ_KÛX\šÙ]Ú\ÝÜžKÚÛ[™OÜÞ[X›ÛIÙ[˜ÛÙUT’PÛÛ\Û™[
+Þ[X›Û
+_X
+Âˆ	œ\š[ÙL[Z[‰œÚ^™OLŒˆNÂ‚ˆÛÛœÝÝXÚÙ\”‹\‹˜Y\Ô‹Û[™L[T—HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™\]Y\ÝœÛÛŠ[™Ú[ËXÚÙ\ŠKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë™\
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[Ë˜Y\ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[ËšÛ[™WÌ[JKˆJNÂ‚ˆÛÛœÝXÚÙ\ˆHXÚÙ\”‹™]OËXÚÈ[ÂˆÛÛœÝ\XÚÈH\‹™]OËXÚÈ[ÂˆÛÛœÝšYÈH\œ˜^Kš\Ð\œ˜^J\XÚÏË˜šYÊHÈ\XÚË˜šYÈˆ×NÂˆÛÛœÝ\ÚÜÈH\œ˜^Kš\Ð\œ˜^J\XÚÏË˜\ÚÜÊHÈ\XÚË˜\ÚÜÈˆ×NÂ‚ˆÛÛœÝ™\ÝšYH[JXÚÙ\Ë˜šYË–ÌJHÏÈ[JšYÏË–ÌOË–ÌJNÂˆÛÛœÝ™\Ý\ÚÈH[JXÚÙ\Ë˜\ÚÏË–ÌJHÏÈ[J\ÚÜÏË–ÌOË–ÌJNÂˆÛÛœÝÜ™XYH™\ÝšYOOH[	‰ˆ™\Ý\ÚÈOOH[È™\Ý\ÚÈH™\ÝšYˆ[ÂˆÛÛœÝZYH™\ÝšYOOH[	‰ˆ™\Ý\ÚÈOOH[È
+™\ÝšY
+È™\Ý\ÚÊHÈˆˆ[ÂˆÛÛœÝÜ™XYœÈHÜ™XYOOH[	‰ˆZYˆÈ
+Ü™XYÈZY
+H
+ˆLˆ[Â‚ˆÛÛœÝÜPšYHÝ[Q\
+šYËKJNÂˆÛÛœÝÜP\ÚÈHÝ[Q\
+\ÚÜËKJNÂˆÛÛœÝÜŒšYHÝ[Q\
+šYËŒJNÂˆÛÛœÝÜŒ\ÚÈHÝ[Q\
+\ÚÜËŒJNÂˆÛÛœÝ[X˜[[˜ÙHHÜ™\›ÛÚÒ[X˜[[˜ÙJšYË\ÚÜËŒJNÂˆÛÛœÝ^R[\XÝBˆ™\Ý\ÚÈOOH[ÈX\šÙ][\XÝ
+\ÚÜË›Ý[Û˜[™\Ý\ÚË˜^H‹JHˆ[ÂˆÛÛœÝÙ[[\XÝBˆ™\ÝšYOOH[ÈX\šÙ][\XÝ
+šYË›Ý[Û˜[™\ÝšYœÙ[‹JHˆ[Â‚ˆÛÛœÝ˜YS\ÝH›][•˜Y\Ê˜Y\Ô‹™]OË™]JNÂˆÛÛœÝÛÜÙYÜÝZ[]RÛ[™\ÈH›Ü›X[^™RÛ[™\ÊÛ[™L[T‹™]JK™š[\Šˆ
+›ÝÊHOˆ›ÝËÈ
+ÈŒH›ÝÂˆ
+NÂˆÛÛœÝÜ™\‘›ÝÈHÜÝ›ÝÐ[˜[\Ú\Êˆ˜YS\Ýˆ›ÝËˆœ™\Ú™\ÜÔÙXËˆZ[ŒZˆZ[ˆZ[ŒˆÛÜÙYÜÝZ[]RÛ[™\Âˆ
+NÂ‚ˆÛÛœÝX[HÂˆXÚÙ\Žˆ›ÛÛX[ŠXÚÙ\”‹›ÚÈ	‰ˆXÚÙ\ˆ	‰ˆ[JXÚÙ\‹˜ÛÜÙJHOOH[
+Kˆ\ˆ›ÛÛX[Š\‹›ÚÈ	‰ˆšYË›[™Ý	‰ˆ\ÚÜË›[™Ý
+Kˆ˜Y\×Ù[™Ú[ˆ›ÛÛX[Š˜Y\Ô‹›ÚÊKˆ˜Y\×Ü™XÙZ]™Yˆ›ÛÛX[Š˜Y\Ô‹›ÚÈ	‰ˆ˜YS\Ý›[™Ý
+Kˆ˜XÝX[Ì[WÝ˜YWØÛÝ[ˆ›ÛÛX[ŠÛ[™L[T‹›ÚÈ	‰ˆÛÜÙYÜÝZ[]RÛ[™\Ë›[™Ý
+Kˆ]\ÝÝ˜YWÙœ™\Úˆ›ÛÛX[ŠÜ™\‘›ÝË™œ™\Ú™\ÜË›]\ÝÝ˜YWÙœ™\Ú
+KˆÜ™\—Ù›Ý×ÌZÝ\ØX›Nˆ›ÛÛX[ŠÜ™\‘›ÝËœ]X[]KÚ[™Ý×ÌZÝ\ØX›JKˆÜ™\—Ù›Ý×ÍÝ\ØX›Nˆ›ÛÛX[ŠÜ™\‘›ÝËœ]X[]KÚ[™Ý×ÍÝ\ØX›JKˆÜ™\—Ù›Ý×ÌÝ\ØX›Nˆ›ÛÛX[ŠÜ™\‘›ÝËœ]X[]KÚ[™Ý×ÌÝ\ØX›JKˆNÂ‚ˆÛÛœÝÛÝ™\˜YÙHHÂˆÜÜÝÛX\šÙ]ˆX[XÚÙ\ˆÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛ\]ZY]N‚ˆX[XÚÙ\ˆ	‰ˆX[™\	‰ˆ^R[\XÝ	‰ˆÙ[[\XÝÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛÜ™\—Ù›Ý×ÜØ[\N‚ˆX[˜Y\×Ü™XÙZ]™Y	‰ˆX[›]\ÝÝ˜YWÙœ™\ÚÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛÜ™\—Ù›ÝÎˆX[›Ü™\—Ù›Ý×ÌZÝ\ØX›HÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛÜ™\—Ù›Ý×ÌZˆX[›Ü™\—Ù›Ý×ÌZÝ\ØX›HÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛÜ™\—Ù›Ý×ÍˆX[›Ü™\—Ù›Ý×ÍÝ\ØX›HÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝÛÜ™\—Ù›Ý×ÌˆX[›Ü™\—Ù›Ý×ÌÝ\ØX›HÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÜÜÝØÝ™Ù[WÙ˜XÝX[ÌZ‚ˆÜ™\‘›ÝËÚ[™ÝÜÏË–ÈŒZ—OË™˜XÝX[ØÝ™Ë\ØX›HOOHYBˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹ˆNÂ‚ˆ]]X[]TÝ]\ÈH”‘QŽÂˆYˆ
+X[XÚÙ\ˆ	‰ˆX[™\	‰ˆX[›Ü™\—Ù›Ý×ÌZÝ\ØX›JHÂˆ]X[]TÝ]\ÈH‘Ô‘QSˆŽÂˆH[ÙHYˆ
+X[XÚÙ\ˆ	‰ˆX[™\	‰ˆX[˜Y\×Ü™XÙZ]™Y
+HÂˆ]X[]TÝ]\ÈH–QSÕÈŽÂˆB‚ˆ™]\›ˆÂˆÛÝ\˜ÙNˆ’Ù™šXÚX[X›XÈTH‹ˆX\šÙ]ˆ’ÜÝ‹ˆ™\œÚ[ÛŽˆŒ‹ŒH‹ˆ™\]Y\ÝYÜÞ[X›Ûˆ[œ]Þ[X›ÛˆÞ[X›Ûˆ™\]Y\ÝYÛ›Ý[Û˜[Ý\Ùˆ›Ý[Û˜[ˆ˜Y\×Ü™\]Y\ÝYˆ˜Y\Ô™\]Y\ÝYˆ[Y\Ý[\ˆ›ÝËˆ[Y\Ý[\Ý]Îˆ™]È]J›ÝÊKÒTÓÔÝš[™Ê
+Kˆ›ÝšY\—ÜÛÝ\˜ÙWÝÎˆ›Ü›X[^™UÊ\XÚÏËÊHÏÈ›Ü›X[^™UÊXÚÙ\”‹™]OËÊKˆ]X[]WÜÝ]\Îˆ]X[]TÝ]\Ëˆ]X[]WÜ[\ÎˆÂˆœ™\Ú™\Ü×ÜÙXÎˆœ™\Ú™\ÜÔÙXËˆZ[—Ý˜Y\×ÌZˆZ[ŒZˆZ[—Ý˜Y\×ÍˆZ[ˆZ[—Ý˜Y\×ÌˆZ[Œˆ[N‚ˆ‘Ô‘QSˆH4`t,´-t-´,4cÈ4/ô/´`t.ô-t-4/tcôcÈ4`t-4-t.ô.´,
+È4-4/´`t`´,4`´/´aô/t/ˆ4`t-4-t.ô/´.ˆ
+È4/ô/´.ô/t/´-H4/ô/´.´`4bô`´.4-H4/´.´/t,taËˆQSÕÈH4-4,4/t/tbô-H4-t`t`´c4/t/ˆ4`´-t.´`ôbt.4.H4/ô/´`´/´.ˆ4/t-t-4/´`t`´,4`´/´aô/t/ˆ4.´,4aô-t`t`´,´-t/t/tbô.Kˆ‘QH4.´`4.4`´.4aô-t`t.´.4aH4-4,4/t/tbôaH4/t-t`‹ˆ‹ˆKˆXÚÙ\—ÌˆXÚÙ\‚ˆÈÂˆ\ÝÜšXÙNˆ[JXÚÙ\‹˜ÛÜÙJKˆÜ[Žˆ[JXÚÙ\‹›Ü[ŠKˆYÚˆ[JXÚÙ\‹šYÚ
+KˆÝÎˆ[JXÚÙ\‹›ÝÊKˆ›Û[YWØ˜\ÙWÌˆ[JXÚÙ\‹˜[[Ý[
+Kˆ\››Ý™\—Ü][ÝWÌˆ[JXÚÙ\‹›Û
+Kˆ˜YWØÛÝ[Ìˆ[JXÚÙ\‹˜ÛÝ[
+Kˆ[Y\Ý[\ˆ\ÛÊXÚÙ\”‹™]OËÊKˆBˆˆ[ˆ˜›ÎˆÂˆ™\ÝØšYˆ™\ÝšYˆ™\ÝØ\ÚÎˆ™\Ý\ÚËˆÜ™XYˆÜ™XYØœÎˆÜ™XYœËˆKˆ\]ZY]NˆÂˆ™\ÝØšYˆ™\ÝšYˆ™\ÝØ\ÚÎˆ™\Ý\ÚËˆÜ™XYˆÜ™XYØœÎˆÜ™XYœËˆÜÌWÙ\ØšYˆÜPšYˆÜÌWÙ\Ø\ÚÎˆÜP\ÚËˆÜÌŒÙ\ØšYˆÜŒšYˆÜÌŒÙ\Ø\ÚÎˆÜŒ\ÚËˆÜ™\—Ø›ÛÚ×Ú[X˜[[˜ÙNˆ[X˜[[˜ÙKˆ^WÛX\šÙ]Ú[\XÝˆ^R[\XÝˆÙ[ÛX\šÙ]Ú[\XÝˆÙ[[\XÝˆ\Ý[Y\Ý[\ˆ\ÛÊ\XÚÏËÊH\ÛÊ\‹™]OËÊKˆKˆÜ™\—Ù›ÝÎˆÜ™\‘›ÝËˆX[ˆ[™Ú[ÚX[ˆX[ˆÛÝ™\˜YÙKˆ›ÝN‚ˆ”ÜÝZÙ\ˆ^KÜÙ[4`4,4`t`taô.4`´,4/tbÈ4.4-È4/´a4.4a´.4,4.ôc4/tbôaH˜]È˜Y\Ëˆ[KÐÕ‘4`taô.4`´,4c´`´`tcÈ4-4/´`t`´/´,´-t`4/tbô/4.4`´/´.ôc4.´/ˆ4/ô`4.4`´/´aô/t/´/4`t/´,´/ô,4-4-t/t.4.˜]È˜YK\™XÛÜ™È4`H4`t`ô/4/4/´.H˜XÝX[ÛÝ[4-ô,4.´`4bô`´bôaH[H4`t,´-taô-t.H4`´/´,ô/ˆ4-´-H4/´.´/t,È4.4/t,4aô-H4ct`´/ˆ4-4.4,4,ô/t/´`t`´.4aô-t`t.´,4cÈ4/t-t/ô/´.ô/t,4cÈ4,´bô,t/´`4.´,ˆ‹ˆ[™Ú[Ù\œ›ÜœÎˆÂˆXÚÙ\ŽˆXÚÙ\”‹›ÚÈÈ[ˆXÚÙ\”‹™\œ›Ü‹ˆ\ˆ\‹›ÚÈÈ[ˆ\‹™\œ›Ü‹ˆ˜Y\Îˆ˜Y\Ô‹›ÚÈÈ[ˆ˜Y\Ô‹™\œ›Ü‹ˆÛ[™WÌ[NˆÛ[™L[T‹›ÚÈÈ[ˆÛ[™L[T‹™\œ›Ü‹ˆKˆNÂŸKÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆ•UT‘TÈR‘PÕÔ–H8 %4't'´$´*ô&H4'4'´%4(ô&ô+4%4&ô+ÈÒRSˆ‚ˆ4(t.4/tat`4/´/t.4-ô.4`4`ô-t`ˆ4a´-t/t`Ë4/ô/´`´/´.ˆ4.ÒH4/ô/ˆ4a4,4.´`´.4aô-t`t.´.4/4,´`4-t/4-t/t/tbô/4/´.´/t,4/‚ˆÒH4.4`t`´/´`4.4aô-t`t.´.4-4/´`t`´`ô/ô-t/H4`H4/4.4/t.4/4,4.ôc4/t/´.H4,ô`4,4/t`ô.ôcô`4/t/´`t`´c4cˆŒ4/4.4/t`ô`‹ˆ4/ô/´ct`´/´/4`Èt/ÌMt/ÒH4/t-H4,´bô-4`ô/4bô,´,4-t`´`tcË‚ˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚™[˜Ý[Ûˆ›Ü›X[^™RÛ[™\Ê˜]ÊHÂˆÛÛœÝ\ÝH\œ˜^Kš\Ð\œ˜^J˜]ÏË™]JHÈ˜]Ë™]Hˆ×NÂˆ™]\›ˆ\Ýˆ›X\
+
+ÊHOˆ
+ÂˆÎˆ›Ü›X[^™UÊÏËšY
+KˆÜ[Žˆ[JÏË›Ü[ŠKˆYÚˆ[JÏËšYÚ
+KˆÝÎˆ[JÏË›ÝÊKˆÛÜÙNˆ[JÏË˜ÛÜÙJKˆ›Û[YWØÛÛ˜XÝÎˆ[JÏË›Û
+Kˆ›Û[YWØ˜\ÙNˆ[JÏË˜[[Ý[
+Kˆ\››Ý™\—Ý\Ùˆ[JÏË˜YWÝ\››Ý™\ŠKˆ˜YWØÛÝ[ˆ[X›S[JÏË˜ÛÝ[
+KˆJJBˆ™š[\Šˆ
+ÊHO‚ˆËÈOOH[	‰‚ˆË›Ü[ˆOOH[	‰‚ˆËšYÚOOH[	‰‚ˆË›ÝÈOOH[	‰‚ˆË˜ÛÜÙHOOH[ˆ
+BˆœÛÜ
+
+KŠHOˆKÈH‹ÊNÂŸB‚™[˜Ý[ÛˆÝ[[X\š^™TšXÙT˜[™ÙJÛ[™\ËÝ\\Ë[™\ÊHÂˆÛÛœÝ˜\œÈHÛ[™\Ë™š[\Š
+ÊHOˆËÈHÝ\\È	‰ˆËÈ[™\ÊNÂˆÛÛœÝ^XÝZ[]UÚ[™ÝÈH[™\ÈˆÝ\\È	‰ˆ
+[™\ÈHÝ\\ÊH	HŒOOHÂˆÛÛœÝ^XÝY˜\œÈH^XÝZ[]UÚ[™ÝÈÈ
+[™\ÈHÝ\\ÊHÈŒˆ[Â‚ˆYˆ
+X˜\œË›[™Ý
+HÂˆ™]\›ˆÂˆ\ØX›Nˆ˜[ÙKˆÛÝ™\˜YÙNˆ››ÝØÛÜÙY‹ˆÚ[™Ý×ÜÝ\Ý[YNˆ\ÛÊÝ\\ÊKˆÚ[™Ý×Ù[™Ý[YNˆ\ÛÊ[™\ÊKˆ^XÝYÌ[WØ˜\œÎˆ^XÝY˜\œËˆ™XÙZ]™YÌ[WØ˜\œÎˆˆNÂˆB‚ˆÛÛœÝš\œÝH˜\œÖÌNÂˆÛÛœÝ\ÝH˜\œÖØ˜\œË›[™ÝHWNÂˆÛÛœÝYÚHX]›X^
+‹‹˜˜\œË›X\
+
+ÊHOˆËšYÚ
+JNÂˆÛÛœÝÝÈHX]›Z[Š‹‹˜˜\œË›X\
+
+ÊHOˆË›ÝÊJNÂ‚ˆÛÛœÝ›Û[YPÛÛ˜XÝÈH˜\œËœ™YXÙJˆ
+ËÊHOˆÈ
+È
+Ë›Û[YWØÛÛ˜XÝÈ
+Kˆˆ
+NÂ‚ˆÛÛœÝ›Û[YP˜\ÙHH˜\œËœ™YXÙJˆ
+ËÊHOˆÈ
+È
+Ë›Û[YWØ˜\ÙH
+Kˆˆ
+NÂ‚ˆÛÛœÝ\››Ý™\ˆH˜\œËœ™YXÙJˆ
+ËÊHOˆÈ
+È
+Ë\››Ý™\—Ý\Ù
+Kˆˆ
+NÂ‚ˆÛÛœÝ˜YPÛÝ[ÈH˜\œË›X\
+
+ÊHOˆ[X›S[JË˜YWØÛÝ[
+JNÂˆÛÛœÝ˜YPÛÝ[ÛÛ\]HH˜YPÛÝ[Ë™]™\žJˆ
+˜[YJHOˆ[X™\‹š\ÔØY™R[YÙ\Š˜[YJH	‰ˆ˜[YHHˆ
+NÂˆÛÛœÝ^XÝ˜\œÈBˆ^XÝZ[]UÚ[™ÝÈ	‰‚ˆ˜\œË›[™ÝOOH^XÝY˜\œÈ	‰‚ˆš\œÝÈOOHÝ\\È	‰‚ˆ\ÝÈ
+ÈŒOOH[™\È	‰‚ˆ™]ÈÙ]
+˜\œË›X\
+
+›ÝÊHOˆ›ÝËÊJKœÚ^™HOOH˜\œË›[™Ý	‰‚ˆ˜\œË™]™\žJ
+›ÝË[™^
+HOˆ[™^OOH›ÝËÈH˜\œÖÚ[™^HWKÈOOHŒ
+NÂˆÛÛœÝØ[™Y]U˜YPÛÝ[H˜YPÛÝ[ÛÛ\]BˆÈ˜YPÛÝ[Ëœ™YXÙJ
+Ý[K˜[YJHOˆÝ[H
+È˜[YK
+Bˆˆ[ÂˆÛÛœÝ˜YPÛÝ[H[X™\‹š\ÔØY™R[YÙ\ŠØ[™Y]U˜YPÛÝ[
+BˆÈØ[™Y]U˜YPÛÝ[ˆˆ[Â‚ˆÛÛœÝÝ\Ó™X\›Ý[™\žHHš\œÝÈHÝ\\È
+ÈŒÂˆÛÛœÝ[™Ó™X\›Ý[™\žHH\ÝÈ
+ÈŒH[™\ÈHŒÂˆÛÛœÝ[›ÝYÚ˜\œÈH˜\œË›[™ÝHX]˜ÙZ[
+^XÝY˜\œÈ
+ˆŽMJNÂ‚ˆÛÛœÝ\ØX›HBˆÝ\Ó™X\›Ý[™\žH	‰‚ˆ[™Ó™X\›Ý[™\žH	‰‚ˆ[›ÝYÚ˜\œÎÂ‚ˆÛÛœÝ˜[™ÙHHYÚHÝÎÂ‚ˆ™]\›ˆÂˆ\ØX›KˆÛÝ™\˜YÙNˆ\ØX›HÈ˜ÛÜÙYˆˆ››ÝØÛÜÙY‹ˆÚ[™Ý×ÜÝ\ÝÎˆÝ\\ËˆÚ[™Ý×ÜÝ\Ý[YNˆ\ÛÊÝ\\ÊKˆÚ[™Ý×Ù[™ÝÎˆ[™\ËˆÚ[™Ý×Ù[™Ý[YNˆ\ÛÊ[™\ÊKˆ^XÝYÌ[WØ˜\œÎˆ^XÝY˜\œËˆ™XÙZ]™YÌ[WØ˜\œÎˆ˜\œË›[™ÝˆÜ[Žˆš\œÝ›Ü[‹ˆYÚˆÝËˆÛÜÙNˆ\Ý˜ÛÜÙKˆÚ[™ÙWÜÝˆÝÚ[™ÙJš\œÝ›Ü[‹\Ý˜ÛÜÙJKˆÛÜÙWÛØØ][Û—ÜÝ‚ˆ˜[™ÙHˆˆÈ
+
+\Ý˜ÛÜÙHHÝÊHÈ˜[™ÙJH
+ˆLˆˆ[ˆ›Û[YWØÛÛ˜XÝÎˆ›Û[YPÛÛ˜XÝËˆ›Û[YWØ˜\ÙNˆ›Û[YP˜\ÙKˆ\››Ý™\—Ý\Ùˆ\››Ý™\‹ˆ˜YWØÛÝ[ˆ˜YPÛÝ[ˆ˜YWØÛÝ[ØÛÛ\]Nˆ˜YPÛÝ[ÛÛ\]H	‰ˆ˜YPÛÝ[OOH[ˆ^XÝÌ[WØ˜\œÎˆ^XÝ˜\œËˆš\œÝØ˜\—Ý[YNˆ\ÛÊš\œÝÊKˆ\ÝØ˜\—Ý[YNˆ\ÛÊ\ÝÊKˆNÂŸB‚™[˜Ý[Ûˆ˜Y\Ò[”˜[™ÙJ˜Y\ËÝ\\Ë[™\ÊHÂˆÛÛœÝš[\™YH˜Y\Ë™š[\Š
+˜YJHOˆÂˆÛÛœÝÈH˜YU[YJ˜YJNÂˆ™]\›ˆÈOOH[	‰ˆÈHÝ\\È	‰ˆÈ[™\ÎÂˆJNÂˆ™]\›ˆ˜YP\œ˜^UÚ]ØØ[“Y]Y]Jš[\™YÂˆÛÝ\˜ÙWÝ[˜Ø]Yˆ˜Y\ÏË—ÜÛÝ\˜ÙWÝ[˜Ø]YOOHYKˆÛÛZ[™\œ×ÜØØ[›™Yˆ˜Y\ÏË—ØÛÛZ[™\œ×ÜØØ[›™Yˆ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ˜Y\ÏË—Ü˜]×Ü›ÝÜ×ÜØØ[›™YˆÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆ˜Y\ÏË—ÜÛÝ\˜ÙWÜ›ÝÜ×Ù›ÜYˆJNÂŸB‚™[˜Ý[Ûˆ˜XÝX[Z[]U˜YPÛÝ[
+Û[™\ËÝ\\Ë[™\ÊHÂˆÛÛœÝ^XÝZ[]UÚ[™ÝÈH[™\ÈˆÝ\\È	‰ˆ
+[™\ÈHÝ\\ÊH	HŒOOHÂˆÛÛœÝ^XÝY˜\œÈH^XÝZ[]UÚ[™ÝÈÈ
+[™\ÈHÝ\\ÊHÈŒˆ[ÂˆÛÛœÝ˜\œÈH
+\œ˜^Kš\Ð\œ˜^JÛ[™\ÊHÈÛ[™\Èˆ×JBˆ™š[\Š
+›ÝÊHOˆ›ÝËÈHÝ\\È	‰ˆ›ÝËÈ[™\ÊBˆœÛÜ
+
+KŠHOˆKÈH‹ÊNÂˆÛÛœÝ^XÝ˜\œÈBˆ^XÝZ[]UÚ[™ÝÈ	‰‚ˆ˜\œË›[™ÝOOH^XÝY˜\œÈ	‰‚ˆ˜\œÖÌOËÈOOHÝ\\È	‰‚ˆ˜\œË˜]
+LJOËÈ
+ÈŒOOH[™\È	‰‚ˆ˜\œË™]™\žJ
+›ÝË[™^
+HOˆ[™^OOH›ÝËÈH˜\œÖÚ[™^HWKÈOOHŒ
+NÂˆÛÛœÝÛÝ[ÈH˜\œË›X\
+
+›ÝÊHOˆ[X›S[J›ÝÏË˜YWØÛÝ[
+JNÂˆÛÛœÝÛÝ[šY[ÐÛÛ\]HHÛÝ[Ë™]™\žJˆ
+˜[YJHOˆ[X™\‹š\ÔØY™R[YÙ\Š˜[YJH	‰ˆ˜[YHHˆ
+NÂˆÛÛœÝØ[™Y]U˜YPÛÝ[HÛÝ[šY[ÐÛÛ\]BˆÈÛÝ[Ëœ™YXÙJ
+Ý[K˜[YJHOˆÝ[H
+È˜[YK
+Bˆˆ[ÂˆÛÛœÝ˜XÝX[˜YPÛÝ[H[X™\‹š\ÔØY™R[YÙ\ŠØ[™Y]U˜YPÛÝ[
+BˆÈØ[™Y]U˜YPÛÝ[ˆˆ[Âˆ™]\›ˆÂˆÝ]\Îˆ^XÝ˜\œÈ	‰ˆÛÝ[šY[ÐÛÛ\]H	‰ˆ˜XÝX[˜YPÛÝ[OOH[ˆÈÓÓTUH‚ˆˆ“RTÔÒS‘×ÓÔ—ÒSÓÓTUWÑPÕPSÌSWÐÓÕS•È‹ˆ^XÝYÌ[WØ˜\œÎˆ^XÝY˜\œËˆ™XÙZ]™YÌ[WØ˜\œÎˆ˜\œË›[™Ýˆ^XÝÌ[WØ˜\œÎˆ^XÝ˜\œËˆ˜YWØÛÝ[ÙšY[×ØÛÛ\]NˆÛÝ[šY[ÐÛÛ\]H	‰ˆ˜XÝX[˜YPÛÝ[OOH[ˆ˜XÝX[Ì[WÝ˜YWØÛÝ[ˆ^XÝ˜\œÈ	‰ˆÛÝ[šY[ÐÛÛ\]H	‰ˆ˜XÝX[˜YPÛÝ[OOH[ˆÈ˜XÝX[˜YPÛÝ[ˆˆ[ˆNÂŸB‚™[˜Ý[ÛˆÝ™[T]X[]J˜]Õ˜YPÛÝ[˜XÝX[ÛÝ™\˜YÙK™XÛÜ™[YÜš]HH[
+HÂˆÛÛœÝ˜]ÐÛÝ[H[X›S[J˜]Õ˜YPÛÝ[
+NÂˆÛÛœÝ˜XÝX[ÛÝ[H[X›S[J˜XÝX[ÛÝ™\˜YÙOË™˜XÝX[Ì[WÝ˜YWØÛÝ[
+NÂˆÛÛœÝÛÝ[^XÝX]ÚBˆ˜XÝX[ÛÝ™\˜YÙOËœÝ]\ÈOOHÓÓTUHˆ	‰‚ˆ˜]ÐÛÝ[OOH[	‰‚ˆ˜XÝX[ÛÝ[OOH[	‰‚ˆ˜]ÐÛÝ[OOH˜XÝX[ÛÝ[ÂˆÛÛœÝ^[ØYÛÛ\]HH™XÛÜ™[YÜš]OË˜ÛÛ\]HOOHYNÂˆÛÛœÝ^XÝX]ÚHÛÝ[^XÝX]Ú	‰ˆ^[ØYÛÛ\]NÂˆ™]\›ˆÂˆÝ]\Îˆ^XÝX]ÚÈÓÓTUHˆˆ’SÓÓTUWÓÔ—ÕS•‘T’Q’QQ‹ˆ™[XX›Nˆ^XÝX]Úˆ˜]×Ý˜YWØÛÝ[ˆ˜]ÐÛÝ[ˆ˜XÝX[Ì[WÝ˜YWØÛÝ[ˆ˜XÝX[ÛÝ[ˆ˜YWØÛÝ[Ù^XÝÛX]ÚˆÛÝ[^XÝX]Úˆ˜]×Ü™XÛÜ™Ú[YÜš]WØÛÛ\]Nˆ^[ØYÛÛ\]Kˆ™XÛÜ™Ú[YÜš]Nˆ™XÛÜ™[YÜš]KˆÛÛ\][™\Ü×Ü˜][Î‚ˆ˜]ÐÛÝ[OOH[	‰ˆ˜XÝX[ÛÝ[OOH[	‰ˆ˜XÝX[ÛÝ[ˆˆÈ˜]ÐÛÝ[È˜XÝX[ÛÝ[ˆˆ˜XÝX[ÛÝ[OOH	‰ˆ˜]ÐÛÝ[OOHˆÈBˆˆ[ˆ˜XÝX[ØÛÝ™\˜YÙNˆ˜XÝX[ÛÝ™\˜YÙKˆ[Nˆ‘[KÐÕ‘\È™[XX›HÛ›HÚ[ˆ[š\]YKÝXÝ\˜[H˜[Y˜]È˜YH™XÛÜ™È^XÝHX]Ú˜XÝX[ÛÜÙY[H˜YWØÛÝ[›ÜˆHØ[YH[Y\Ý[\Ú[™ÝËˆ‹ˆNÂŸB‚™[˜Ý[ÛˆÝšXÝÜÝÝ™Ú[™ÝÊÜ™\™Y˜Y\Ë˜XÝX[Z[]RÛ[™\ËÝ\\Ë[™\ÊHÂˆÛÛœÝ[”˜[™ÙHH˜Y\Ò[”˜[™ÙJÜ™\™Y˜Y\ËÝ\\Ë[™\ÊNÂˆÛÛœÝÝ[[X\žHHÝ[[X\š^™TÜÝ˜Y\Ê[”˜[™ÙJNÂˆÛÛœÝ˜XÝX[H˜XÝX[Z[]U˜YPÛÝ[
+˜XÝX[Z[]RÛ[™\ËÝ\\Ë[™\ÊNÂˆÛÛœÝ]X[]HHÝ™[T]X[]Jˆ[”˜[™ÙK›[™Ýˆ˜XÝX[ˆ˜]Õ˜YT™XÛÜ™[YÜš]J[”˜[™ÙKÈX\šÙ]ˆœÜÝˆJBˆ
+NÂˆ™]\›ˆÂˆ‹‹œÝ[[X\žKˆ˜]×Ý˜YWØÛÝ[ˆ[”˜[™ÙK›[™Ýˆ˜XÝX[Ì[WÝ˜YWØÛÝ[ˆ˜XÝX[™˜XÝX[Ì[WÝ˜YWØÛÝ[ˆÚ[™Ý×ÜÝ\ÝÎˆÝ\\ËˆÚ[™Ý×Ù[™ÝÎˆ[™\ËˆÝ™Ù[WÜ]X[]Nˆ]X[]Kˆ\ØX›Nˆ]X[]Kœ™[XX›KˆÛÝ™\˜YÙNˆ]X[]Kœ™[XX›HÈ˜ÛÜÙYÙ˜XÝX[Ý˜YWØÛÝ[ÛX]Úˆˆ››ÝØÛÜÙYÝ˜YWØÛÝ[ÛZ\ÛX]Ú‹ˆNÂŸB‚™[˜Ý[ÛˆÝ[[X\š^™Q]\™\Ñ›ÝÔ˜[™ÙJˆÜ™\™Y˜Y\ËˆÝ\\Ëˆ[™\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\Ëˆ›Ý[™\žUÛ\˜[˜ÙS\ÈHLŒˆ˜XÝX[šXÙUÚ[™ÝÈH[ŠHÂˆÛÛœÝ[Y\ÈHÜ™\™Y˜Y\Âˆ›X\
+˜YU[YJBˆ™š[\Š
+ÊHOˆÈOOH[
+NÂ‚ˆÛÛœÝØ[\Qš\œÝH[Y\Ë›[™ÝˆÈ[Y\ÖÌBˆˆ[Â‚ˆÛÛœÝØ[\S\ÝH[Y\Ë›[™ÝˆÈ[Y\ÖÝ[Y\Ë›[™ÝHWBˆˆ[Â‚ˆÛÛœÝ[”˜[™ÙHH˜Y\Ò[”˜[™ÙJˆÜ™\™Y˜Y\ËˆÝ\\Ëˆ[™\Âˆ
+NÂ‚ˆÛÛœÝÝ[[X\žHHÝ[[X\š^™Q]\™\Õ˜Y\Êˆ[”˜[™ÙKˆÛÛ˜XÝÚ^™Bˆ
+NÂ‚ˆÛÛœÝÛÝ™\œÔÝ\BˆØ[\Qš\œÝOOH[	‰‚ˆØ[\Qš\œÝHÝ\\ÎÂ‚ˆÛÛœÝÛÝ™\œÑ[™BˆØ[\S\ÝOOH[	‰‚ˆØ[\S\ÝH[™\ÈH›Ý[™\žUÛ\˜[˜ÙS\ÎÂ‚ˆÛÛœÝ[›ÝYÚ˜Y\ÈBˆ[”˜[™ÙK›[™ÝHZ[•˜Y\ÎÂ‚ˆÛÛœÝ\ØX›HBˆÛÝ™\œÔÝ\	‰‚ˆÛÝ™\œÑ[™	‰‚ˆ[›ÝYÚ˜Y\ÎÂ‚ˆÛÛœÝ˜XÝX[ÛÝ™\˜YÙHHÂˆÝ]\Î‚ˆ˜XÝX[šXÙUÚ[™ÝÏË\ØX›HOOHYH	‰‚ˆ˜XÝX[šXÙUÚ[™ÝÏË™^XÝÌ[WØ˜\œÈOOHYH	‰‚ˆ˜XÝX[šXÙUÚ[™ÝÏË˜YWØÛÝ[ØÛÛ\]HOOHYH	‰‚ˆ[J˜XÝX[šXÙUÚ[™ÝÏË˜YWØÛÝ[
+HOOH[ˆÈÓÓTUH‚ˆˆ“RTÔÒS‘×ÓÔ—ÒSÓÓTUWÑPÕPSÌSWÐÓÕS•È‹ˆ^XÝYÌ[WØ˜\œÎˆ[X›S[J˜XÝX[šXÙUÚ[™ÝÏË™^XÝYÌ[WØ˜\œÊKˆ™XÙZ]™YÌ[WØ˜\œÎˆ[X›S[J˜XÝX[šXÙUÚ[™ÝÏËœ™XÙZ]™YÌ[WØ˜\œÊKˆ^XÝÌ[WØ˜\œÎˆ˜XÝX[šXÙUÚ[™ÝÏË™^XÝÌ[WØ˜\œÈOOHYKˆ˜YWØÛÝ[ÙšY[×ØÛÛ\]Nˆ˜XÝX[šXÙUÚ[™ÝÏË˜YWØÛÝ[ØÛÛ\]HOOHYKˆ˜XÝX[Ì[WÝ˜YWØÛÝ[‚ˆ˜XÝX[šXÙUÚ[™ÝÏË\ØX›HOOHYH	‰‚ˆ˜XÝX[šXÙUÚ[™ÝÏË™^XÝÌ[WØ˜\œÈOOHYH	‰‚ˆ˜XÝX[šXÙUÚ[™ÝÏË˜YWØÛÝ[ØÛÛ\]HOOHYBˆÈ[X›S[J˜XÝX[šXÙUÚ[™ÝÏË˜YWØÛÝ[
+Bˆˆ[ˆNÂˆÛÛœÝ]X[]HHÝ™[T]X[]Jˆ[”˜[™ÙK›[™Ýˆ˜XÝX[ÛÝ™\˜YÙKˆ˜]Õ˜YT™XÛÜ™[YÜš]J[”˜[™ÙKÂˆX\šÙ]ˆ™]\™\È‹ˆÛÛ˜XÝÜÚ^™NˆÛÛ˜XÝÚ^™KˆJBˆ
+NÂ‚ˆ™]\›ˆÂˆ‹‹œÝ[[X\žKˆÚ[™Ý×ÜÝ\ÝÎˆÝ\\ËˆÚ[™Ý×ÜÝ\Ý[YNˆ\ÛÊÝ\\ÊKˆÚ[™Ý×Ù[™ÝÎˆ[™\ËˆÚ[™Ý×Ù[™Ý[YNˆ\ÛÊ[™\ÊKˆØ[\WÙš\œÝÝ˜YWÝ[YNˆ\ÛÊØ[\Qš\œÝ
+KˆØ[\WÛ\ÝÝ˜YWÝ[YNˆ\ÛÊØ[\S\Ý
+Kˆ\ÝÜžWØÛÝ™\œ×ÝÚ[™Ý×ÜÝ\ˆÛÝ™\œÔÝ\ˆ\ÝÜžWØÛÝ™\œ×ÝÚ[™Ý×Ù[™ˆÛÝ™\œÑ[™ˆZ[š[][WÝ˜Y\×Ü™\]Z\™YˆZ[•˜Y\Ëˆ[›ÝYÚÝ˜Y\Îˆ[›ÝYÚ˜Y\Ëˆ\ØX›Nˆ\ØX›H	‰ˆ]X[]Kœ™[XX›Kˆ˜[œÜÜÝÚ[™Ý×Ý\ØX›Nˆ\ØX›KˆYØXÞWÝ˜[œÜÜÝÚ[™Ý×Ý\ØX›Nˆ\ØX›KˆÛÝ™\˜YÙNˆ\ØX›H	‰ˆ]X[]Kœ™[XX›BˆÈ˜ÛÜÙYÙ˜XÝX[Ý˜YWØÛÝ[Ø[™Ü^[ØYÛX]Ú‚ˆˆ››ÝØÛÜÙYØÝ™Ú[YÜš]H‹ˆÝ™Ù[WÜ]X[]Nˆ]X[]KˆÝ™Ù[WÝ\ØX›Nˆ]X[]Kœ™[XX›KˆÝ™Ù[WÜ™[XX›Nˆ]X[]Kœ™[XX›Kˆ˜]×Ù[WÚ\×ÙXYÛ›ÜÝX×ÛÛ›Nˆ\]X[]Kœ™[XX›Kˆ˜]×ÜØ[\WÙXYÛ›ÜÝXÎˆÝ[[X\žKˆNÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™SÚR\ÝÜžJ˜]ÊHÂˆÛÛœÝXÚÜÈH\œ˜^Kš\Ð\œ˜^J˜]ÏË™]OËXÚÊBˆÈ˜]Ë™]KXÚÂˆˆ×NÂ‚ˆ™]\›ˆXÚÜÂˆ›X\
+
+
+HOˆ
+ÂˆÎˆ›Ü›X[^™UÊËÊKˆ›Û[YNˆ[JË›Û[YJKˆ˜[YWÝ\Ùˆ[JË˜[YJKˆ[[Ý[Ý\Nˆ[JË˜[[Ý[Ý\JKˆJJBˆ™š[\Šˆ
+
+HO‚ˆÈOOH[	‰‚ˆ›Û[YHOOH[ˆ
+BˆœÛÜ
+
+KŠHOˆKÈH‹ÊNÂŸB‚™[˜Ý[Ûˆ™X\™\ÝÚ[
+ˆÙ\šY\Ëˆ\™Ù]ËˆÛ\˜[˜ÙS\ÈHH
+ˆŒ
+ˆLŠHÂˆYˆ
+P\œ˜^Kš\Ð\œ˜^JÙ\šY\ÊH\Ù\šY\Ë›[™Ý
+HÂˆ™]\›ˆ[ÂˆB‚ˆ]™\ÝH[Âˆ]™\Ý\Ý[˜ÙHH[™š[š]NÂ‚ˆ›Üˆ
+ÛÛœÝÚ[ÙˆÙ\šY\ÊHÂˆÛÛœÝ\Ý[˜ÙHHX]˜XœÊˆÚ[ÈH\™Ù]Âˆ
+NÂ‚ˆYˆ
+\Ý[˜ÙH™\Ý\Ý[˜ÙJHÂˆ™\ÝHÚ[Âˆ™\Ý\Ý[˜ÙHH\Ý[˜ÙNÂˆBˆB‚ˆ™]\›ˆ™\Ý\Ý[˜ÙHHÛ\˜[˜ÙS\ÂˆÈ™\Ýˆˆ[ÂŸB‚™[˜Ý[ÛˆÚP[YÛ™YÚ[™ÝÊˆÛÛ˜XÝÙ\šY\Ëˆ˜\ÙTÙ\šY\ËˆÝ\œËˆ›ÝÓ\ÂŠHÂˆËÈœ™Y^™HH˜XÝX[ÛÝ\˜ÙHÜš^›Û‹ˆH™\^H]\Ý›Ý™XYH›ÛÝÚ[™ÈÝ\‹‚ˆYˆ
+S[X™\‹š\Ñš[š]J›ÝÓ\ÊHS[X™\‹š\Ñš[š]JÝ\œÊHÝ\œÈH
+H™]\›ˆ[ÂˆÛÛœÝ[YÚX›HHÙ\šY\ÈOˆ
+\œ˜^Kš\Ð\œ˜^JÙ\šY\ÊHÈÙ\šY\Èˆ×JK™š[\ŠO‚ˆ	‰ˆ[X™\‹š\Ñš[š]JÊH	‰ˆÈˆ	‰ˆÈH›ÝÓ\È	‰‚ˆ[X™\‹š\Ñš[š]J›Û[YJH	‰ˆ›Û[YHH
+KœÛXÙJ
+KœÛÜ
+
+KŠOO˜KËX‹ÊNÂˆÛÛ˜XÝÙ\šY\ÈH[YÚX›JÛÛ˜XÝÙ\šY\ÊNÂˆ˜\ÙTÙ\šY\ÈH[YÚX›J˜\ÙTÙ\šY\ÊNÂˆYˆ
+XÛÛ˜XÝÙ\šY\Ë›[™Ý
+HÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝ[™ÛÛ˜XÝÈBˆÛÛ˜XÝÙ\šY\ÖÂˆÛÛ˜XÝÙ\šY\Ë›[™ÝHBˆNÂ‚ˆÛÛœÝÝ\\™Ù]Bˆ[™ÛÛ˜XÝËÈBˆÝ\œÈ
+ˆÍŒÂ‚ˆÛÛœÝÝ\ÛÛ˜XÝÈBˆ™X\™\ÝÚ[
+ˆÛÛ˜XÝÙ\šY\ËˆÝ\\™Ù]ˆ
+NÂ‚ˆYˆ
+\Ý\ÛÛ˜XÝÊHÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝÝ\˜\ÙHBˆ™X\™\ÝÚ[
+ˆ˜\ÙTÙ\šY\ËˆÝ\ÛÛ˜XÝËÂˆ
+NÂ‚ˆÛÛœÝ[™˜\ÙHBˆ™X\™\ÝÚ[
+ˆ˜\ÙTÙ\šY\Ëˆ[™ÛÛ˜XÝËÂˆ
+NÂ‚ˆÛÛœÝXÝX[Ý\œÈBˆ
+[™ÛÛ˜XÝËÈBˆÝ\ÛÛ˜XÝËÊHÂˆÍŒÂ‚ˆÛÛœÝ^XÝ\˜][ÛˆBˆX]˜XœÊXÝX[Ý\œÈHÝ\œÊHHŒNÂ‚ˆÛÛœÝ™XÙ[Ý\Bˆ[™ÛÛ˜XÝËÈBˆ
+ˆÍŒÂ‚ˆÛÛœÝ™XÙ[BˆÛÛ˜XÝÙ\šY\Ë™š[\Šˆ
+
+HO‚ˆÈH™XÙ[Ý\	‰‚ˆÈH[™ÛÛ˜XÝËÂˆ
+NÂ‚ˆÛÛœÝ™XÙ[X^ÛÛ˜XÝÈBˆ™XÙ[›[™ÝˆÈX]›X^
+ˆ‹‹œ™XÙ[ˆ›X\
+
+
+HOˆ›Û[YJBˆ™š[\Š
+ŠHO‚ˆ[X™\‹š\Ñš[š]JŠBˆ
+Bˆ
+Bˆˆ[Â‚ˆÛÛœÝ[™ÛÛ˜XÝÕ˜[YHBˆ[™ÛÛ˜XÝË›Û[YNÂ‚ˆÛÛœÝ[™˜[YU\ÙBˆ[™ÛÛ˜XÝË˜[YWÝ\ÙÂ‚ˆÛÛœÝÝ\˜[YU\ÙBˆÝ\ÛÛ˜XÝË˜[YWÝ\ÙÂ‚ˆÛÛœÝÛÛ˜XÝÑ[HBˆ[™ÛÛ˜XÝÕ˜[YHBˆÝ\ÛÛ˜XÝË›Û[YNÂ‚ˆÛÛœÝ˜\ÙQ[HBˆÝ\˜\ÙH	‰ˆ[™˜\ÙBˆÈ[™˜\ÙK›Û[YHBˆÝ\˜\ÙK›Û[YBˆˆ[Â‚ˆÛÛœÝ˜[YQ[HBˆ[™˜[YU\ÙOOH[	‰‚ˆÝ\˜[YU\ÙOOH[ˆÈ[™˜[YU\ÙBˆÝ\˜[YU\Ùˆˆ[Â‚ˆÛÛœÝ[™YÙTÙXÈBˆX]›X^
+ˆˆ›ÝÓ\ÈH[™ÛÛ˜XÝËÂˆ
+HÈLÂ‚ˆÛÛœÝœ™\ÚBˆ[™YÙTÙXÈBˆL
+ˆŒÂ‚ˆÛÛœÝ\ØX›HH›ÛÛX[Šˆ^XÝ\˜][Ûˆ	‰‚ˆÝ\˜\ÙH	‰‚ˆ[™˜\ÙH	‰‚ˆœ™\Úˆ
+NÂ‚ˆ™]\›ˆÂˆ\ØX›KˆÛÝ™\˜YÙN‚ˆ\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆÛÝ\˜ÙWÜ\š[ÙˆŒZ[ˆ‹ˆ™\]Y\ÝYÚÝ\œÎˆÝ\œËˆXÝX[ÚÝ\œÎˆXÝX[Ý\œËˆ[™ØYÙWÜÙXÎˆ[™YÙTÙXËˆœ™\Úˆœ™\Ú™\Ü×Û[Z]ÜÙXÎ‚ˆL
+ˆŒ‚ˆÚ[™Ý×ÜÝ\ÝÎ‚ˆÝ\ÛÛ˜XÝËË‚ˆÚ[™Ý×ÜÝ\Ý[YN‚ˆ\ÛÊÝ\ÛÛ˜XÝËÊK‚ˆÚ[™Ý×Ù[™ÝÎ‚ˆ[™ÛÛ˜XÝËË‚ˆÚ[™Ý×Ù[™Ý[YN‚ˆ\ÛÊ[™ÛÛ˜XÝËÊK‚ˆÛÛ˜XÝÎˆÂˆÝ\‚ˆÝ\ÛÛ˜XÝË›Û[YKˆ[™‚ˆ[™ÛÛ˜XÝÕ˜[YKˆ[N‚ˆÛÛ˜XÝÑ[KˆÚ[™ÙWÜÝ‚ˆÝÚ[™ÙJˆÝ\ÛÛ˜XÝË›Û[YKˆ[™ÛÛ˜XÝÕ˜[YBˆ
+KˆK‚ˆ˜\ÙNˆÂˆÝ\‚ˆÝ\˜\ÙOË›Û[YHÏÈ[ˆ[™‚ˆ[™˜\ÙOË›Û[YHÏÈ[ˆ[N‚ˆ˜\ÙQ[KˆÚ[™ÙWÜÝ‚ˆÝ\˜\ÙH	‰ˆ[™˜\ÙBˆÈÝÚ[™ÙJˆÝ\˜\ÙK›Û[YKˆ[™˜\ÙK›Û[YBˆ
+Bˆˆ[ˆK‚ˆ˜[YWÝ\ÙˆÂˆÝ\‚ˆÝ\˜[YU\Ùˆ[™‚ˆ[™˜[YU\Ùˆ[N‚ˆ˜[YQ[KˆÚ[™ÙWÜÝ‚ˆÝÚ[™ÙJˆÝ\˜[YU\Ùˆ[™˜[YU\Ùˆ
+KˆK‚ˆ™XÙ[ÌÛX^ØÛÛ˜XÝÎ‚ˆ™XÙ[X^ÛÛ˜XÝË‚ˆ\Ý[˜ÙWÙœ›ÛWÜ™XÙ[ÌÛX^ÜÝ‚ˆ™XÙ[X^ÛÛ˜XÝÈ	‰‚ˆ™XÙ[X^ÛÛ˜XÝÈˆˆÈ
+ˆ[™ÛÛ˜XÝÕ˜[YHÂˆ™XÙ[X^ÛÛ˜XÝÈBˆBˆ
+H
+ˆLˆˆ[ˆNÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™Q[™[™Ò\ÝÜžJ˜]ÊHÂˆÛÛœÝ\ÝH\œ˜^Kš\Ð\œ˜^Jˆ˜]ÏË™]OË™]Bˆ
+BˆÈ˜]Ë™]K™]Bˆˆ×NÂ‚ˆ™]\›ˆ\Ýˆ›X\
+
+][JHOˆ
+Âˆ[™[™×Ý[YWÝÎ‚ˆ›Ü›X[^™UÊˆ][OË™[™[™×Ý[YBˆ
+K‚ˆ[™[™×Ý[YN‚ˆ\ÛÊˆ][OË™[™[™×Ý[YBˆ
+K‚ˆ[™[™×Ü˜]N‚ˆ[Jˆ][OË™[™[™×Ü˜]Bˆ
+K‚ˆ[™[™×Ü˜]WÜÝ‚ˆ[Jˆ][OË™[™[™×Ü˜]Bˆ
+HOOH[ˆÈ[Jˆ][OË™[™[™×Ü˜]Bˆ
+H
+ˆLˆˆ[‚ˆ™X[^™YÜ˜]N‚ˆ[Jˆ][OËœ™X[^™YÜ˜]Bˆ
+K‚ˆ™X[^™YÜ˜]WÜÝ‚ˆ[Jˆ][OËœ™X[^™YÜ˜]Bˆ
+HOOH[ˆÈ[Jˆ][OËœ™X[^™YÜ˜]Bˆ
+H
+ˆLˆˆ[‚ˆ]™×Ü™[Z][WÚ[™^‚ˆ[Jˆ][OË˜]™×Ü™[Z][WÚ[™^ˆ
+KˆJJBˆ™š[\Šˆ
+][JHO‚ˆ][K™[™[™×Ý[YWÝÈOOH[ˆ
+BˆœÛÜ
+ˆ
+KŠHO‚ˆK™[™[™×Ý[YWÝÈBˆ‹™[™[™×Ý[YWÝÂˆ
+NÂŸB‚™[˜Ý[ÛˆYYX[Š˜[Y\ÊHÂˆÛÛœÝHH˜[Y\Âˆ™š[\Š[X™\‹š\Ñš[š]JBˆœÛÜ
+
+JHOˆHJNÂ‚ˆYˆ
+XK›[™Ý
+HÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝZYBˆX]™›ÛÜŠˆK›[™ÝÈ‚ˆ
+NÂ‚ˆ™]\›ˆK›[™Ý	H‚ˆÈVÛZYBˆˆ
+ˆVÛZYHWH
+ÂˆVÛZYBˆ
+HÈŽÂŸB‚™[˜Ý[Ûˆ[™[™Õ˜Z™XÝÜžJˆÝ\œ™[˜]Ëˆ\ÝÜžBŠHÂˆÛÛœÝÝ\œ™[˜]HBˆ[JˆÝ\œ™[˜]ÏË™[™[™×Ü˜]Bˆ
+NÂ‚ˆÛÛœÝ\Ý[X]Y˜]HBˆ[JˆÝ\œ™[˜]ÏË™\Ý[X]YÜ˜]Bˆ
+NÂ‚ˆÛÛœÝ[™[™Õ[YUÈBˆ›Ü›X[^™UÊˆÝ\œ™[˜]ÏË™[™[™×Ý[YBˆ
+NÂ‚ˆÛÛœÝ™^[™[™Õ[YUÈBˆ›Ü›X[^™UÊˆÝ\œ™[˜]ÏË›™^Ù[™[™×Ý[YBˆ
+NÂ‚ˆÛÛœÝ[\˜[ÈH×NÂ‚ˆ›Üˆ
+ˆ]HHNÂˆH\ÝÜžK›[™ÝÂˆH
+ÏHBˆ
+HÂˆÛÛœÝY™ˆBˆ\ÝÜžVÚWK™[™[™×Ý[YWÝÈBˆ\ÝÜžVÚHHWK™[™[™×Ý[YWÝÎÂ‚ˆYˆ
+Y™ˆˆ
+HÂˆ[\˜[Ëœ\Ú
+ˆY™ˆÈÍŒˆ
+NÂˆBˆB‚ˆÛÛœÝ\š]™Y[\˜[Ý\œÈBˆ[™[™Õ[YUÈOOH[	‰‚ˆ™^[™[™Õ[YUÈOOH[	‰‚ˆ™^[™[™Õ[YUÈ‚ˆ[™[™Õ[YUÂˆÈ
+ˆ™^[™[™Õ[YUÈBˆ[™[™Õ[YUÂˆ
+HÈÍŒˆˆYYX[Šˆ[\˜[ËœÛXÙJLL
+Bˆ
+NÂ‚ˆ™]\›ˆÂˆÝ\œ™[‚ˆÝ\œ™[˜]ÂˆÈÂˆ[™[™×Ü˜]N‚ˆÝ\œ™[˜]K‚ˆ[™[™×Ü˜]WÜÝ‚ˆÝ\œ™[˜]HOOH[ˆÈÝ\œ™[˜]H
+ˆLˆˆ[‚ˆ\Ý[X]YÜ˜]N‚ˆ\Ý[X]Y˜]K‚ˆ\Ý[X]YÜ˜]WÜÝ‚ˆ\Ý[X]Y˜]HOOH[ˆÈ\Ý[X]Y˜]H
+ˆLˆˆ[‚ˆ[™[™×Ý[YWÝÎ‚ˆ[™[™Õ[YUË‚ˆ[™[™×Ý[YN‚ˆ\ÛÊˆ[™[™Õ[YUÂˆ
+K‚ˆ™^Ù[™[™×Ý[YWÝÎ‚ˆ™^[™[™Õ[YUË‚ˆ™^Ù[™[™×Ý[YN‚ˆ\ÛÊˆ™^[™[™Õ[YUÂˆ
+KˆBˆˆ[‚ˆ\š]™YÜÙ][Y[Ú[\˜[ÚÝ\œÎ‚ˆ\š]™Y[\˜[Ý\œË‚ˆ\ÝÜžWØÛÝ[‚ˆ\ÝÜžK›[™Ý‚ˆ™XÙ[Ú\ÝÜžN‚ˆ\ÝÜžBˆœÛXÙJLLŠBˆœ™]™\œÙJ
+KˆNÂŸB‚™[˜Ý[ÛˆšXÙQ›ÝÐ[YÛ›Y[
+ˆšXÙKˆ›ÝÂŠHÂˆYˆ
+ˆ\šXÙOË\ØX›HˆY›ÝÏË\ØX›Hˆ›ÝÏË˜Ý™Ù[WÜ™[XX›HOOHYBˆ
+HÂˆ™]\›ˆš[œÝY™šXÚY[ŽÂˆB‚ˆÛÛœÝBˆ[JšXÙK˜Ú[™ÙWÜÝ
+NÂ‚ˆÛÛœÝBˆ[J›ÝË™[WÝ\Ù
+NÂ‚ˆYˆ
+ˆOOH[ˆOOH[ˆ
+HÂˆ™]\›ˆš[œÝY™šXÚY[ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆˆˆ
+HÂˆ™]\›ˆ˜^Z[™×ØÛÛ™š\›\×ÜšXÙWÝ\ŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆˆ
+HÂˆ™]\›ˆœÙ[[™×ØÛÛ™š\›\×ÜšXÙWÙÝÛˆŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆHˆ
+HÂˆ™]\›ˆ›™YØ]]™WÙ›Ý×ÜšXÙWÜ™\Ú[Y[ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆHˆ
+HÂˆ™]\›ˆœÜÚ]]™WÙ›Ý×ÜšXÙWÝÙXZÈŽÂˆB‚ˆ™]\›ˆ›™]]˜[ŽÂŸB‚™[˜Ý[ÛˆÚTšXÙTÝ]JˆšXÙKˆÚBŠHÂˆYˆ
+ˆ\šXÙOË\ØX›Hˆ[ÚOË\ØX›Bˆ
+HÂˆ™]\›ˆš[œÝY™šXÚY[ŽÂˆB‚ˆÛÛœÝBˆ[JšXÙK˜Ú[™ÙWÜÝ
+NÂ‚ˆÛÛœÝÈBˆ[JˆÚOË˜ÛÛ˜XÝÏË˜Ú[™ÙWÜÝˆ
+NÂ‚ˆYˆ
+ˆOOH[ˆÈOOH[ˆ
+HÂˆ™]\›ˆš[œÝY™šXÚY[ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆÈˆˆ
+HÂˆ™]\›ˆœšXÙWÝ\ÛÚWÝ\ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆÈˆ
+HÂˆ™]\›ˆœšXÙWÝ\ÛÚWÙÝÛˆŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆÈˆˆ
+HÂˆ™]\›ˆœšXÙWÙÝÛ—ÛÚWÝ\ŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆÈˆ
+HÂˆ™]\›ˆœšXÙWÙÝÛ—ÛÚWÙÝÛˆŽÂˆB‚ˆ™]\›ˆ™›]ÛÜ—ÛZ^YŽÂŸB‚™[˜Ý[ÛˆXœÛÜœ[ÛØ[™Y]JˆšXÙKˆ›ÝÂŠHÂˆYˆ
+ˆ\šXÙOË\ØX›HˆY›ÝÏË\ØX›Hˆ›ÝÏË˜Ý™Ù[WÜ™[XX›HOOHYBˆ
+HÂˆ™]\›ˆÂˆ˜[YNˆš[œÝY™šXÚY[‹ˆ[N‚ˆ´'t`ô-´/tbÈ4/´-4/t/´,´`4-t/4-t/t/t/ˆ4-ô,4.´`4bô`´bô-HšXÙH4.Ü™\‹Y›ÝÈ4/´.´/t,ˆ‹ˆNÂˆB‚ˆÛÛœÝBˆ[JšXÙK˜Ú[™ÙWÜÝ
+NÂ‚ˆÛÛœÝBˆ[J›ÝË™[WÝ\Ù
+NÂ‚ˆYˆ
+ˆOOH[ˆOOH[ˆ
+HÂˆ™]\›ˆÂˆ˜[YNˆš[œÝY™šXÚY[‹ˆ[N‚ˆ´'t-t-4/´`t`´,4`´/´aô/t/ˆ4aô.4`t.ô/´,´bôaH4-4,4/t/tbôaKˆ‹ˆNÂˆB‚ˆ™]\›ˆÂˆ˜[YN‚ˆ	‰‚ˆH‚ˆ[N‚ˆ´&´,4/t-4.4-4,4`]YH4`´/´.ôc4.´/ˆ4/ô`4.4/´`´`4.4a´,4`´-t.ôc4/t/´/ZÙ\ˆ[H4.4/t-t/´`´`4.4a´,4`´-t.ôc4/t/´/4.4-ô/4-t/t-t/t.4.4a´-t/tbÈ4,ˆ4`´/´/4-´-H4/´.´/t-Kˆ4+t`´/ˆ4.´,4/t-4.4-4,4`ˆ4/t,4/ô/´,ô.ô/´bt-t/t.4-K4/t-H4-4/´.´,4-ô,4`´-t.ôc4`t`´,´/‹ˆ‹ˆNÂŸB‚™[˜Ý[ÛˆZ[˜Z™XÝÜžUÚ[™ÝÊÂˆX™[ˆÝ\\Ëˆ[™\ËˆÛ[™\ËˆÜ™\™Y˜Y\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\ËˆÚKŸJHÂˆÛÛœÝšXÙHBˆÝ[[X\š^™TšXÙT˜[™ÙJˆÛ[™\ËˆÝ\\Ëˆ[™\Âˆ
+NÂ‚ˆÛÛœÝ›ÝÈBˆÝ[[X\š^™Q]\™\Ñ›ÝÔ˜[™ÙJˆÜ™\™Y˜Y\ËˆÝ\\Ëˆ[™\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\ËˆLŒˆšXÙBˆ
+NÂ‚ˆ™]\›ˆÂˆX™[‚ˆÞ[˜Ú›Ûš^™YÝÚ[™Ý×ÜÝ\ÝÎ‚ˆÝ\\Ë‚ˆÞ[˜Ú›Ûš^™YÝÚ[™Ý×ÜÝ\Ý[YN‚ˆ\ÛÊÝ\\ÊK‚ˆÞ[˜Ú›Ûš^™YÝÚ[™Ý×Ù[™ÝÎ‚ˆ[™\Ë‚ˆÞ[˜Ú›Ûš^™YÝÚ[™Ý×Ù[™Ý[YN‚ˆ\ÛÊ[™\ÊK‚ˆšXÙKˆÜ™\—Ù›ÝÎˆ›ÝËˆÜ[—Ú[\™\ÝˆÚK‚ˆ\š]™YˆÂˆšXÙWÙ›Ý×Ø[YÛ›Y[‚ˆšXÙQ›ÝÐ[YÛ›Y[
+ˆšXÙKˆ›ÝÂˆ
+K‚ˆÚWÜšXÙWÜÝ]N‚ˆÚBˆÈÚTšXÙTÝ]JˆšXÙKˆÚBˆ
+Bˆˆš[œÝY™šXÚY[‹‚ˆXœÛÜœ[Û—ØØ[™Y]N‚ˆXœÛÜœ[ÛØ[™Y]JˆšXÙKˆ›ÝÂˆ
+K‚ˆ˜Z[YØXœÛÜœ[Û—ØØ[™Y]NˆÂˆ˜[YN‚ˆš[œÝY™šXÚY[‹‚ˆ™X\ÛÛŽ‚ˆ´$4,´`´/´/4,4`´.4aô-t`t.´.4/t-H4-ô,4cô,´.ôcô-t`´`tcÎˆ4/t`ô-´-t/H4`4,4/t-t-H4-ô,4a4.4.´`t.4`4/´,´,4/t/tbô.H4`ô`4/´,´-t/tc4/ô/´,ô.ô/´bt-t/t.4cÈ4.4/ô/´`t.ô-t-4`ôc´bt,4cÈ4/ô/´`´-t`4cÈ4`t`´`4`ô.´`´`ô`4bËˆ4(tbô`4bô-H4`t.4/tat`4/´/t.4-ô.4`4/´,´,4/t/tbô-H4-4,4/t/tbô-H4/ô-t`4-t-4,4c´`´`tcÈ4,ˆXÚ\Ú[Ûˆ^Y\‹ˆ‹ˆKˆKˆNÂŸX\Þ[˜È[˜Ý[Ûˆ]\™\Õ˜Z™XÝÜžJ\˜[\ÊHÂˆÛÛœÝ™\]Y\ÝœÛÛˆH\[Ùˆ\˜[\ÏË—Ù™]ÚÚœÛÛˆOOH™[˜Ý[ÛˆˆÈ\˜[\Ë—Ù™]ÚÚœÛÛˆˆ™]ÚœÛÛŽÂˆÛÛœÝ›ÝÈH]K››ÝÊ
+NÂˆÛÛœÝÛÛ˜XÝH›Ü›X[^™Q]\™\ÐÛÛ˜XÝ
+ˆ\˜[\Ë˜ÛÛ˜XÝ\˜[\Ë˜ÛÛ˜XÝØÛÙH\˜[\ËœÞ[X›Û‘U’KUTÑ‚ˆ
+NÂ‚ˆÛÛœÝ˜Y\Ô™\]Y\ÝYHX]œ›Ý[™
+ˆÛ[\
+\˜[\Ë˜Y\ÈÏÈ\˜[\ËœÚ^™KLŒŒ
+Bˆ
+NÂˆÛÛœÝÛ[™TÚ^™HHX]œ›Ý[™
+Û[\
+\˜[\ËšÛ[™WÜÚ^™KMLŒMŒ
+JNÂˆÛÛœÝZ[[HHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×Í[KKLJJNÂˆÛÛœÝZ[ŒM[HHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÌM[KKLL
+JNÂˆÛÛœÝZ[ŒZHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÌZKLŒ
+JNÂˆÛÛœÝZ[HX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÍKLL
+JNÂˆÛÛœÝZ[ŒHX]œ›Ý[™
+Û[\
+\˜[\Ë›Z[—Ý˜Y\×ÌKLL
+JNÂ‚ˆÛÛœÝ[™Ú[ÈHÂˆ[™›Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ØÛÛ˜XÝÚ[™›Ø
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_X‚ˆÛ[™WÌ[N‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÚÛ[™X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙL[Z[‰œÚ^™OIÚÛ[™TÚ^™_X‚ˆÛ[™WÌM[N‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÚÛ[™X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙLM[Z[‰œÚ^™OLŒ‚ˆÛ[™WÌZ‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÚÛ[™X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙMŒZ[‰œÚ^™OLŒ‚ˆÛ[™WÌY‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÚÛ[™X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙLY^IœÚ^™OLŒ‚ˆ˜Y\Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\Y^ÛX\šÙ]Ú\ÝÜžKÝ˜YX
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_IœÚ^™OIÝ˜Y\Ô™\]Y\ÝYX‚ˆÚWØÛÛ˜XÝÎ‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ú\×ÛÜ[—Ú[\™\Ý
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙMŒZ[‰œÚ^™OLÌ	˜[[Ý[Ý\OLX‚ˆÚWØ˜\ÙN‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ú\×ÛÜ[—Ú[\™\Ý
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_Iœ\š[ÙMŒZ[‰œÚ^™OLÌ	˜[[Ý[Ý\OL˜‚ˆÚWØÝ\œ™[‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ÛÜ[—Ú[\™\Ý
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_X‚ˆ[™[™×ØÝ\œ™[‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ù[™[™×Ü˜]X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_X‚ˆ[™[™×Ú\ÝÜžN‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ú\ÝÜšXØ[Ù[™[™×Ü˜]X
+ÂˆØÛÛ˜XÝØÛÙOIÙ[˜ÛÙUT’PÛÛ\Û™[
+ÛÛ˜XÝ
+_IœYÙWÚ[™^LIœYÙWÜÚ^™OMLˆNÂ‚ˆÛÛœÝÂˆ[™›Ô‹ˆÛ[™T‹ˆÛ[™LM[T‹ˆÛ[™LZ‹ˆÛ[™LY‹ˆ˜Y\Ô‹ˆÚPÛÛ˜XÝÔ‹ˆÚP˜\ÙT‹ˆÚPÝ\œ™[‹ˆ[™[™ÐÝ\œ™[‹ˆ[™[™Ò\ÝÜžT‹ˆHH]ØZ]›ÛZ\ÙK˜[
+Âˆ™\]Y\ÝœÛÛŠ[™Ú[Ëš[™›ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[ËšÛ[™WÌ[JKˆ™\]Y\ÝœÛÛŠ[™Ú[ËšÛ[™WÌM[JKˆ™\]Y\ÝœÛÛŠ[™Ú[ËšÛ[™WÌZ
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[ËšÛ[™WÌY
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[Ë˜Y\ÊKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë›ÚWØÛÛ˜XÝÊKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë›ÚWØ˜\ÙJKˆ™\]Y\ÝœÛÛŠ[™Ú[Ë›ÚWØÝ\œ™[
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[Ë™[™[™×ØÝ\œ™[
+Kˆ™\]Y\ÝœÛÛŠ[™Ú[Ë™[™[™×Ú\ÝÜžJKˆJNÂ‚ˆÛÛœÝÛÛ˜XÝ[™›ÈHš[™ÛÛ˜XÝ[™›Ê[™›Ô‹™]KÛÛ˜XÝ
+NÂˆ]ÛÛ˜XÝÚ^™HH[JÛÛ˜XÝ[™›ÏË˜ÛÛ˜XÝÜÚ^™JNÂˆÛÛœÝ˜YS\ÝH›][•˜Y\Ê˜Y\Ô‹™]OË™]JNÂ‚ˆYˆ
+
+ÛÛ˜XÝÚ^™HOOH[ÛÛ˜XÝÚ^™HH
+H	‰ˆ˜YS\Ý›[™Ý
+HÂˆÛÛœÝ\Ý˜YHH˜YS\Ý™š[™
+ˆ
+˜YJHOˆ[J˜YOË˜[[Ý[
+Hˆ	‰ˆ[J˜YOËœ]X[]JHˆˆ
+NÂ‚ˆYˆ
+\Ý˜YJHÂˆÛÛ˜XÝÚ^™HBˆ[J\Ý˜YKœ]X[]JHÂˆ[J\Ý˜YK˜[[Ý[
+NÂˆBˆB‚ˆÛÛœÝÛ[™\Ð[H›Ü›X[^™RÛ[™\ÊÛ[™T‹™]JNÂ‚ˆÛÛœÝÛÜÙYÛ[™\ÈHÛ[™\Ð[™š[\Šˆ
+ÊHOˆËÈ
+ÈŒH›ÝÂˆ
+NÂ‚ˆÛÛœÝÛÜÙYZÛ[™\ÈBˆ›Ü›X[^™RÛ[™\ÊˆÛ[™LZ‹™]Bˆ
+K™š[\Šˆ
+ÊHO‚ˆËÈ
+ÂˆŒ
+ˆŒ
+ˆLBˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝÛÜÙYM[RÛ[™\ÈBˆ›Ü›X[^™RÛ[™\ÊˆÛ[™LM[T‹™]Bˆ
+K™š[\Šˆ
+ÊHO‚ˆËÈ
+ÂˆMH
+ˆŒ
+ˆLBˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝÛÜÙYYÛ[™\ÈBˆ›Ü›X[^™RÛ[™\ÊˆÛ[™LY‹™]Bˆ
+K™š[\Šˆ
+ÊHO‚ˆËÈ
+Âˆ
+ˆŒ
+ˆŒ
+ˆLBˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝ]\ÝÛÜÙYBˆÛÜÙYÛ[™\Ë›[™ÝˆÈÛÜÙYÛ[™\ÖØÛÜÙYÛ[™\Ë›[™ÝHWBˆˆ[Â‚ˆÛÛœÝ]\ÝÛÜÙY[™Bˆ]\ÝÛÜÙYˆÈ]\ÝÛÜÙYÈ
+ÈŒˆˆ[Â‚ˆÛÛœÝÜ™\™Y˜Y\ÈHÛÜY˜Y\Ê˜YS\Ý
+NÂ‚ˆÛÛœÝÚPÛÛ˜XÝÈH›Ü›X[^™SÚR\ÝÜžJÚPÛÛ˜XÝÔ‹™]JNÂˆÛÛœÝÚP˜\ÙHH›Ü›X[^™SÚR\ÝÜžJÚP˜\ÙT‹™]JNÂ‚ˆÛÛœÝÚLZHÚP[YÛ™YÚ[™ÝÊˆÚPÛÛ˜XÝËˆÚP˜\ÙKˆKˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝÚMHÚP[YÛ™YÚ[™ÝÊˆÚPÛÛ˜XÝËˆÚP˜\ÙKˆˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝÚLHÚP[YÛ™YÚ[™ÝÊˆÚPÛÛ˜XÝËˆÚP˜\ÙKˆˆ›ÝÂˆ
+NÂ‚ˆÛÛœÝÚ[™ÝÜÈHßNÂ‚ˆYˆ
+]\ÝÛÜÙY[™OOH[
+HÂˆÚ[™ÝÜÖÈ[H—HHZ[˜Z™XÝÜžUÚ[™ÝÊÂˆX™[ˆ[H‹ˆÝ\\Î‚ˆ]\ÝÛÜÙY[™BˆH
+ˆŒ
+ˆLˆ[™\Îˆ]\ÝÛÜÙY[™ˆÛ[™\ÎˆÛÜÙYÛ[™\ËˆÜ™\™Y˜Y\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\ÎˆZ[[KˆÚNˆÂˆ\ØX›Nˆ˜[ÙKˆÛÝ™\˜YÙNˆ››ÝØ]˜Z[X›H‹ˆ™X\ÛÛŽ‚ˆ’\ÝÜšXØ[ÒHZ[š[][H\š[Ù\ÈŒZ[ŽÈ[HÒH\È›Ý[™[Yˆ‹ˆKˆJNÂ‚ˆÚ[™ÝÜÖÈŒM[H—HHZ[˜Z™XÝÜžUÚ[™ÝÊÂˆX™[ˆŒM[H‹ˆÝ\\Î‚ˆ]\ÝÛÜÙY[™BˆMH
+ˆŒ
+ˆLˆ[™\Îˆ]\ÝÛÜÙY[™ˆÛ[™\ÎˆÛÜÙYÛ[™\ËˆÜ™\™Y˜Y\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\ÎˆZ[ŒM[KˆÚNˆÂˆ\ØX›Nˆ˜[ÙKˆÛÝ™\˜YÙNˆ››ÝØ]˜Z[X›H‹ˆ™X\ÛÛŽ‚ˆ’\ÝÜšXØ[ÒHZ[š[][H\š[Ù\ÈŒZ[ŽÈM[HÒH\È›Ý[™[Yˆ‹ˆKˆJNÂˆB‚ˆ[˜Ý[ÛˆYÚP[YÛ™YÚ[™ÝÊˆX™[ˆÚUÚ[™ÝËˆZ[•˜Y\Âˆ
+HÂˆYˆ
+[ÚUÚ[™ÝÊHÂˆÚ[™ÝÜÖÛX™[HHÂˆX™[ˆÛÝ™\˜YÙNˆ››ÝØÛÜÙY‹ˆ™X\ÛÛŽ‚ˆ´'t-t-4/´`t`´,4`´/´aô/t/ˆ4.4`t`´/´`4.4aô-t`t.´.4aHÒH4`´/´aô-t.ˆ4-4.ôcÈ4`t.4/tat`4/´/t.4-ô,4a´.4.4/´.´/t,ˆ‹ˆNÂˆ™]\›ŽÂˆB‚ˆÚ[™ÝÜÖÛX™[HHZ[˜Z™XÝÜžUÚ[™ÝÊÂˆX™[ˆÝ\\Î‚ˆÚUÚ[™ÝËÚ[™Ý×ÜÝ\ÝËˆ[™\Î‚ˆÚUÚ[™ÝËÚ[™Ý×Ù[™ÝËˆÛ[™\Î‚ˆÛÜÙYÛ[™\ËˆÜ™\™Y˜Y\ËˆÛÛ˜XÝÚ^™KˆZ[•˜Y\ËˆÚN‚ˆÚUÚ[™ÝËˆJNÂˆB‚ˆYÚP[YÛ™YÚ[™ÝÊˆŒZ‹ˆÚLZˆZ[ŒZˆ
+NÂ‚ˆYÚP[YÛ™YÚ[™ÝÊˆ‹ˆÚMˆZ[ˆ
+NÂ‚ˆYÚP[YÛ™YÚ[™ÝÊˆŒ‹ˆÚLˆZ[Œˆ
+NÂ‚ˆÛÛœÝ[™[™Ò\ÝÜžHBˆ›Ü›X[^™Q[™[™Ò\ÝÜžJˆ[™[™Ò\ÝÜžT‹™]Bˆ
+NÂ‚ˆÛÛœÝ[™[™Ô˜]ÈBˆ[™[™ÐÝ\œ™[‹™]OË™]Hˆ[Â‚ˆÛÛœÝ[™[™ÈBˆ[™[™Õ˜Z™XÝÜžJˆ[™[™Ô˜]Ëˆ[™[™Ò\ÝÜžBˆ
+NÂ‚ˆÛÛœÝÝ\œ™[ÚT˜]ÈBˆš[™ÚJˆÚPÝ\œ™[‹™]KˆÛÛ˜XÝˆ
+NÂ‚ˆÛÛœÝÝ\œ™[Ü[’[\™\ÝBˆÝ\œ™[ÚT˜]ÂˆÈÂˆÛÛ˜XÝÎ‚ˆ[JÝ\œ™[ÚT˜]Ë›Û[YJK‚ˆ[[Ý[Ø˜\ÙN‚ˆ[JÝ\œ™[ÚT˜]Ë˜[[Ý[
+K‚ˆ˜[YWÝ\Ù‚ˆ[JÝ\œ™[ÚT˜]Ë˜[YJK‚ˆ˜YWÝ›Û[YWÌØÛÛ˜XÝÎ‚ˆ[JÝ\œ™[ÚT˜]Ë˜YWÝ›Û[YJK‚ˆ˜YWØ[[Ý[ÌØ˜\ÙN‚ˆ[JÝ\œ™[ÚT˜]Ë˜YWØ[[Ý[
+K‚ˆ˜YWÝ\››Ý™\—ÌÝ\Ù‚ˆ[JÝ\œ™[ÚT˜]Ë˜YWÝ\››Ý™\ŠK‚ˆ™\ÜÛœÙWÝ[Y\Ý[\‚ˆ\ÛÊÚPÝ\œ™[‹™]OËÊKˆBˆˆ[Â‚ˆÛÛœÝ˜YU[Y\ÈBˆÜ™\™Y˜Y\Âˆ›X\
+˜YU[YJBˆ™š[\Šˆ
+ÊHO‚ˆÈOOH[ˆ
+NÂ‚ˆÛÛœÝš\œÝ˜YUÈBˆ˜YU[Y\Ë›[™ÝˆÈ˜YU[Y\ÖÌBˆˆ[Â‚ˆÛÛœÝ\Ý˜YUÈBˆ˜YU[Y\Ë›[™ÝˆÈ˜YU[Y\ÖÂˆ˜YU[Y\Ë›[™ÝHBˆBˆˆ[Â‚ˆÛÛœÝX[HÂˆ[™›Î‚ˆ›ÛÛX[Šˆ[™›Ô‹›ÚÈ	‰‚ˆÛÛ˜XÝ[™›Âˆ
+K‚ˆšXÙWÌ[N‚ˆ›ÛÛX[ŠˆÛ[™T‹›ÚÈ	‰‚ˆÛÜÙYÛ[™\Ë›[™Ýˆ
+K‚ˆšXÙWÌZÛ˜]]™N‚ˆ›ÛÛX[ŠˆÛ[™LZ‹›ÚÈ	‰‚ˆÛÜÙYZÛ[™\Ë›[™Ýˆ
+K‚ˆšXÙWÌM[WÛ˜]]™N‚ˆ›ÛÛX[ŠˆÛ[™LM[T‹›ÚÈ	‰‚ˆÛÜÙYM[RÛ[™\Ë›[™Ýˆ
+K‚ˆšXÙWÌYÛ˜]]™N‚ˆ›ÛÛX[ŠˆÛ[™LY‹›ÚÈ	‰‚ˆÛÜÙYYÛ[™\Ë›[™Ýˆ
+K‚ˆ˜Y\Î‚ˆ›ÛÛX[Šˆ˜Y\Ô‹›ÚÈ	‰‚ˆ˜YS\Ý›[™Ýˆ
+K‚ˆÚWØÛÛ˜XÝ×Ú\ÝÜžN‚ˆ›ÛÛX[ŠˆÚPÛÛ˜XÝÔ‹›ÚÈ	‰‚ˆÚPÛÛ˜XÝË›[™Ýˆ
+K‚ˆÚWØ˜\ÙWÚ\ÝÜžN‚ˆ›ÛÛX[ŠˆÚP˜\ÙT‹›ÚÈ	‰‚ˆÚP˜\ÙK›[™Ýˆ
+K‚ˆÚWØÝ\œ™[‚ˆ›ÛÛX[ŠˆÚPÝ\œ™[‹›ÚÈ	‰‚ˆÝ\œ™[ÚT˜]Âˆ
+K‚ˆ[™[™×ØÝ\œ™[‚ˆ›ÛÛX[Šˆ[™[™ÐÝ\œ™[‹›ÚÈ	‰‚ˆ[™[™Ô˜]Âˆ
+K‚ˆ[™[™×Ú\ÝÜžN‚ˆ›ÛÛX[Šˆ[™[™Ò\ÝÜžT‹›ÚÈ	‰‚ˆ[™[™Ò\ÝÜžK›[™Ýˆ
+KˆNÂ‚ˆÛÛœÝÛÝ™\˜YÙHHÂˆšXÙWÍ[N‚ˆÚ[™ÝÜÖÈ[H—OËœšXÙOË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆšXÙWÌM[N‚ˆÚ[™ÝÜÖÈŒM[H—OËœšXÙOË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆšXÙWÌZ‚ˆÚ[™ÝÜÖÈŒZ—OËœšXÙOË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆšXÙWÍ‚ˆÚ[™ÝÜÖÈ—OËœšXÙOË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆšXÙWÌ‚ˆÚ[™ÝÜÖÈŒ—OËœšXÙOË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ›Ý×Í[N‚ˆÚ[™ÝÜÖÈ[H—OË›Ü™\—Ù›ÝÏË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ›Ý×ÌM[N‚ˆÚ[™ÝÜÖÈŒM[H—OË›Ü™\—Ù›ÝÏË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ›Ý×ÌZ‚ˆÚ[™ÝÜÖÈŒZ—OË›Ü™\—Ù›ÝÏË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ›Ý×Í‚ˆÚ[™ÝÜÖÈ—OË›Ü™\—Ù›ÝÏË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ›Ý×Ì‚ˆÚ[™ÝÜÖÈŒ—OË›Ü™\—Ù›ÝÏË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆÚWÍ[Nˆ››ÝØ]˜Z[X›H‹ˆÚWÌM[Nˆ››ÝØ]˜Z[X›H‹‚ˆÚWÌZ‚ˆÚLZË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆÚWÍ‚ˆÚMË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆÚWÌ‚ˆÚLË\ØX›BˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ[™[™×ØÝ\œ™[‚ˆX[™[™[™×ØÝ\œ™[ˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ[™[™×Ú\ÝÜžN‚ˆX[™[™[™×Ú\ÝÜžBˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹ˆNÂ‚ˆÛÛœÝ™\ÜÛœÙHHÂˆÛÝ\˜ÙN‚ˆ’Ù™šXÚX[X›XÈTH‹‚ˆX\šÙ]‚ˆ’TÑSH]\™\È‹‚ˆÛÛ‚ˆšÙ]\™\×Ý˜Z™XÝÜžH‹‚ˆ™\œÚ[ÛŽ‚ˆŒKŒ‹[ÜÜ[š]KZ[YÜš]KZ[œ]È‹‚ˆÛÛ˜XÝ‚ˆ[Y\Ý[\‚ˆ›ÝË‚ˆ[Y\Ý[\Ý]Î‚ˆ™]È]Jˆ›ÝÂˆ
+KÒTÓÔÝš[™Ê
+K‚ˆ›ÝšY\—ÜÛÝ\˜ÙWÝÎ‚ˆ›Ü›X[^™UÊ]\ÝÛÜÙY[™
+K‚ˆÛÛ˜XÝÚ[™›Î‚ˆÛÛ˜XÝ[™›ÂˆÈÂˆÛÛ˜XÝØÛÙN‚ˆÛÛ˜XÝ[™›Ë˜ÛÛ˜XÝØÛÙK‚ˆÞ[X›Û‚ˆÛÛ˜XÝ[™›ËœÞ[X›Û‚ˆÛÛ˜XÝÜÚ^™N‚ˆÛÛ˜XÝÚ^™K‚ˆšXÙWÝXÚÎ‚ˆ[JˆÛÛ˜XÝ[™›ËœšXÙWÝXÚÂˆ
+K‚ˆÛÛ˜XÝÜÝ]\Î‚ˆÛÛ˜XÝ[™›Ë˜ÛÛ˜XÝÜÝ]\ËˆBˆˆ[‚ˆÛÝ\˜ÙWÜ[\ÎˆÂˆšXÙN‚ˆ´'´a4.4a´.4,4.ôc4/tbô-H[KÌM[KÌZÌYÛ[™Kˆ˜]]™HM[H4`t/´at`4,4/tcô-t`ˆ4`´/´aô/tbô-H4,ô`4,4/t.4a´bÈÙÍÙÝ]ÛÛYH4-4.ôcÈ4aô-t`´,´-t`4`´c4aô,4`t/´,´bôaH4`t/´,tbô`´.4.NÈtaËÍ4aËÌ4aÈ4`t.4/tat`4/´/t.4-ô.4`4`ôc´`´`tcÈ4`H4a4,4.´`´.4aô-t`t.´.4/4.4aô,4`t/´,´bô/4.ÒH[Y\Ý[\ˆ‹‚ˆÜ[—Ú[\™\Ý‚ˆ´'´a4.4a´.4,4.ôc4/tbô.HÝØ\Ú\×ÛÜ[—Ú[\™\Ýˆ4'4.4/t.4/4,4.ôc4/t,4cÈ4.4`t`´/´`4.4aô-t`t.´,4cÈ4,ô`4,4/t`ô.ôcô`4/t/´`t`´cŒZ[ŽÈ[KÌM[HÒH4/t-H4`4,4`t`taô.4`´bô,´,4-t`´`tcÈ4.4/t-H4.4/t`´-t`4/ô/´.ô.4`4`ô-t`´`tcËˆ‹‚ˆÜ™\—Ù›ÝÎ‚ˆ´'´a4.4a´.4,4.ôc4/tbô-H˜]È˜Y\Ë4/4,4.´`t.4/4`ô/Œ4,´/´-ô,´`4,4btdt/t/tbôaH˜YK\™XÛÜ™Ëˆ4$ô`4,4/t.4a´bÈ4.4/4.4/t.4/4`ô/4`t-4-t.ô/´.ˆ4/´/ô.4`tbô,´,4c´`ˆ4`´/´.ôc4.´/ˆ˜[œÜÜÛÝ™\˜YÙNÈ[KÐÕ‘4/t,4-4dt-´/tbÈ4.4`t.´.ôc´aô.4`´-t.ôc4/t/ˆ4/ô`4.4`´/´aô/t/´/4`t/´,´/ô,4-4-t/t.4.4aô.4`t.ô,˜]È™XÛÜ™È4`H4`t`ô/4/4/´.H˜XÝX[ÛÝ[4,´`t-taH4-ô,4.´`4bô`´bôaH[H4`t,´-taô-t.H4`´/´,ô/ˆ4-´-H4/´.´/t,ˆ‹‚ˆ[™[™Î‚ˆ´(´-t.´`ôbt.4.H[™[™È
+È4/´a4.4a´.4,4.ôc4/t,4cÈ4.4`t`´/´`4.4cÈÙ][Y[ˆ4&4/t`´-t`4,´,4.È[™[™È4,´bô,´/´-4.4`´`tcÈ4.4-È4a4,4.´`´.4aô-t`t.´.4aH[Y\Ý[\4,4/t-H4/ô`4-t-4/ô/´.ô,4,ô,4-t`´`tcËˆ‹ˆK‚ˆ˜]×ÜØ[\WÛY]NˆÂˆÛ[™\×Ü™\]Y\ÝY‚ˆÛ[™TÚ^™K‚ˆÛÜÙYÌ[WÚÛ[™\×Ü™XÙZ]™Y‚ˆÛÜÙYÛ[™\Ë›[™Ý‚ˆÛÜÙYÌM[WÚÛ[™\×Ü™XÙZ]™Y‚ˆÛÜÙYM[RÛ[™\Ë›[™Ý‚ˆÛÜÙYÌZÚÛ[™\×Ü™XÙZ]™Y‚ˆÛÜÙYZÛ[™\Ë›[™Ý‚ˆÛÜÙYÌYÚÛ[™\×Ü™XÙZ]™Y‚ˆÛÜÙYYÛ[™\Ë›[™Ý‚ˆ]\ÝØÛÜÙYÚÛ[™WÙ[™Ý[YN‚ˆ\ÛÊˆ]\ÝÛÜÙY[™ˆ
+K‚ˆ˜Y\×Ü™\]Y\ÝY‚ˆ˜Y\Ô™\]Y\ÝY‚ˆ›][™YÝ˜Y\×Ü™XÙZ]™Y‚ˆÜ™\™Y˜Y\Ë›[™Ý‚ˆš\œÝÝ˜YWÝ[YN‚ˆ\ÛÊˆš\œÝ˜YUÂˆ
+K‚ˆ\ÝÝ˜YWÝ[YN‚ˆ\ÛÊˆ\Ý˜YUÂˆ
+K‚ˆÚWØÛÛ˜XÝÜÚ[Î‚ˆÚPÛÛ˜XÝË›[™Ý‚ˆÚWØ˜\ÙWÜÚ[Î‚ˆÚP˜\ÙK›[™Ý‚ˆ[™[™×Ú\ÝÜžWÜÚ[Î‚ˆ[™[™Ò\ÝÜžK›[™ÝˆK‚ˆÝ\œ™[ÛÜ[—Ú[\™\Ý‚ˆÝ\œ™[Ü[’[\™\Ý‚ˆ[™[™ËˆÚ[™ÝÜËˆX[ˆ[™Ú[ÚX[‚ˆX[ˆÛÝ™\˜YÙK‚ˆ›Ý\ÎˆÂˆŒtaËÍ4aËÌ4aÈ4`t`´`4/´cô`´`tcÈ4/t,4/´-4/t/´/4.4`´/´/4-´-H4a4,4.´`´.4aô-t`t.´/´/4.4/t`´-t`4,´,4.ô-H4a´-t/tbË˜]Ë]˜Y\È4.4.4`t`´/´`4.4aô-t`t.´/´,ô/ˆÒKˆ‹ˆt/ÌMt/4`t/´-4-t`4-´,4`ˆ4a´-t/t`È4.4/ô/´`´/´.ŽÈÒH4/t,4ct`´.4aH4/´.´/t,4aH4/´`´`t`ô`´`t`´,´`ô-t`ˆ4`È4/´a4.4a´.4,4.ôc4/t/´,ô/ˆ‘TÕt.4`t`´/´aô/t.4.´,4.4/t-H4,´bô-4`ô/4bô,´,4-t`´`tcËˆ‹ˆ™˜Z[YØXœÛÜœ[Û—ØØ[™Y]H4,4,´`´/´/4,4`´.4aô-t`t.´.4/t-H4/ô/´-4`´,´-t`4-´-4,4-t`´`tcÈ4,t-t-È4`4,4/t-t-H4.4-4-t/t`´.4a4.4a´.4`4/´,´,4/t/t/´,ô/ˆ4`ô`4/´,´/tcÈ4/ô/´,ô.ô/´bt-t/t.4cÈ4.4/ô/´`t.ô-t-4`ôc´bt-t.H4/ô/´`´-t`4.4`t`´`4`ô.´`´`ô`4bËˆ‹ˆ´%t`t.ô.\ÝÜžH˜YHØ[\H4/t-H4/ô-t`4-t.´`4bô,´,4-t`ˆ4/´.´/t/ˆ4/ô/´.ô/t/´`t`´c4cˆ4.4.ô.˜]È˜YK\™XÛÜ™ÛÝ[4/t-H4`t/´,´/ô,4-4,4-t`ˆ4`H˜XÝX[[H˜YWØÛÝ[[KÐÕ‘4/´`t`´,4c´`´`tcÈ4/t-t/ô/´.ô/t/´.H4-4.4,4,ô/t/´`t`´.4aô-t`t.´/´.H4,´bô,t/´`4.´/´.H4/t-t-ô,4,´.4`t.4/4/ˆ4/´`ˆ4.4aH4,´-t.ô.4aô.4/tbËˆ‹ˆK‚ˆ[™Ú[Ù\œ›ÜœÎˆÂˆ[™›Î‚ˆ[™›Ô‹›ÚÂˆÈ[ˆˆ[™›Ô‹™\œ›Ü‹‚ˆÛ[™WÌ[N‚ˆÛ[™T‹›ÚÂˆÈ[ˆˆÛ[™T‹™\œ›Ü‹‚ˆÛ[™WÌM[N‚ˆÛ[™LM[T‹›ÚÂˆÈ[ˆˆÛ[™LM[T‹™\œ›Ü‹‚ˆÛ[™WÌZ‚ˆÛ[™LZ‹›ÚÂˆÈ[ˆˆÛ[™LZ‹™\œ›Ü‹‚ˆÛ[™WÌY‚ˆÛ[™LY‹›ÚÂˆÈ[ˆˆÛ[™LY‹™\œ›Ü‹‚ˆ˜Y\Î‚ˆ˜Y\Ô‹›ÚÂˆÈ[ˆˆ˜Y\Ô‹™\œ›Ü‹‚ˆÚWØÛÛ˜XÝÎ‚ˆÚPÛÛ˜XÝÔ‹›ÚÂˆÈ[ˆˆÚPÛÛ˜XÝÔ‹™\œ›Ü‹‚ˆÚWØ˜\ÙN‚ˆÚP˜\ÙT‹›ÚÂˆÈ[ˆˆÚP˜\ÙT‹™\œ›Ü‹‚ˆÚWØÝ\œ™[‚ˆÚPÝ\œ™[‹›ÚÂˆÈ[ˆˆÚPÝ\œ™[‹™\œ›Ü‹‚ˆ[™[™×ØÝ\œ™[‚ˆ[™[™ÐÝ\œ™[‹›ÚÂˆÈ[ˆˆ[™[™ÐÝ\œ™[‹™\œ›Ü‹‚ˆ[™[™×Ú\ÝÜžN‚ˆ[™[™Ò\ÝÜžT‹›ÚÂˆÈ[ˆˆ[™[™Ò\ÝÜžT‹™\œ›Ü‹ˆKˆNÂ‚ˆÊ‚ˆ
+ˆ\ÙH˜XÝX[ÛÝ\˜ÙH›ÝÜÈ\™Hš]˜]H[œ]È›ÜˆÝYÙHËŽKˆ^Bˆ
+ˆ\™H[X™\˜][H›Û‹Y[[Y\˜X›HÛÈH^\Ý[™È˜Z™XÝÜžHTBˆ
+ˆ[™ÝÜ™Y”ÓÓˆÈ›ÝÜ›ÝÈÚ]Ý][ˆ^XÚ]ÛÛ˜XÝÚ[™ÙK‚ˆ
+‹ÂˆØš™XÝ™Yš[™T›Ü\Jˆ™\ÜÛœÙKˆ—ÛÜÜ[š]WÜÚYÝ×Ú[œ]È‹ˆÂˆ[[Y\˜X›Nˆ˜[ÙKˆ˜[YNˆÂˆÛ™WÛZ[]N‚ˆÛÜÙYÛ[™\ËˆšYY[—ÛZ[]N‚ˆÛÜÙYM[RÛ[™\ËˆÛ™WÚÝ\Ž‚ˆÛÜÙYZÛ[™\ËˆÛ™WÙ^N‚ˆÛÜÙYYÛ[™\ËˆÚWØÛÛ˜XÝ×ÚÝ\›N‚ˆÚPÛÛ˜XÝËˆÚWØ˜\ÙWÚÝ\›N‚ˆÚP˜\ÙKˆÝ\œ™[ÛÜ[—Ú[\™\Ý‚ˆÝ\œ™[Ü[’[\™\Ýˆ[™[™ËˆÚ[™ÝÜËˆKˆBˆ
+NÂ‚ˆ™]\›ˆ™\ÜÛœÙNÂŸKÊˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOBˆUHS‘HŒÈ8 %S‘”TÕ•PÕT‘BˆYÈ[][š]™\œÙHÝYÙKLØØ[›š[™ËÜ[Û˜[H\œÚ\Ý[˜ÙKˆ˜XÝX[\]ZY][ÛˆÛ[™ËXÚšXØ[Ø]ÚÝ]][™ˆ[™œ˜\ÝXÝ\™H]X[]KÜÝ]\Ëˆ^\Ý[™ÈÛ˜\ÚÝÜÜÝÝ˜Z™XÝÜžBˆ™Z]š[Üˆ™[XZ[œÈ[˜Ú[™ÙY‚ˆOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOH
+‹Â‚™[˜Ý[Ûˆ™]ÚœÛÛ•Ú]Y]Ù
+\›Y]ÙH‘ÑUŠHÂˆ][Y[Ý]H[Â‚ˆ™]\›ˆ
+\Þ[˜È
+
+HOˆÂˆžHÂˆÛÛœÝÛÛ›Û\ˆBˆ™]ÈX›ÜÛÛ›Û\Š
+NÂ‚ˆ[Y[Ý]HÙ][Y[Ý]
+ˆ
+
+HOˆÛÛ›Û\‹˜X›Ü
+
+KˆLˆ
+NÂ‚ˆÛÛœÝ™\ÜÛœÙHH]ØZ]™]Ú
+ˆ\›ˆÂˆY]ÙˆXY\œÎˆÂˆXØÙ\‚ˆ˜\XØ][Û‹ÚœÛÛˆ‹‚ˆ˜ÛÛ[]\HŽ‚ˆ˜\XØ][Û‹ÚœÛÛˆ‹‚ˆ\Ù\‹XYÙ[Ž‚ˆ“^KT™\ÜL‹RP‹ÌËŒKY]K\[™H‹ˆK‚ˆÚYÛ˜[‚ˆÛÛ›Û\‹œÚYÛ˜[ˆBˆ
+NÂ‚ˆÛÛœÝ^Bˆ]ØZ]™\ÜÛœÙK^
+
+NÂ‚ˆ]]NÂ‚ˆžHÂˆ]HBˆ”ÓÓ‹œ\œÙJ^
+NÂˆHØ]ÚÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ\›ˆÜÝ]\Î‚ˆ™\ÜÛœÙKœÝ]\Ëˆ]Nˆ[ˆ\œ›ÜŽ‚ˆš[˜[YÚœÛÛˆ‹ˆNÂˆB‚ˆÛÛœÝ\SÚÈBˆ™\ÜÛœÙK›ÚÈ	‰‚ˆ
+ˆ]OËœÝ]\ÈOOH›ÚÈˆˆ]OË˜ÛÙHOOHŒˆ]OËœÝXØÙ\ÜÈOOHYHˆ
+ˆ]OËœÝ]\ÈOOH[™Yš[™Y	‰‚ˆ]OË˜ÛÙHOOH[™Yš[™Y	‰‚ˆ]OËœÝXØÙ\ÜÈOOH[™Yš[™Yˆ
+Bˆ
+NÂ‚ˆ™]\›ˆÂˆÚÎˆ\SÚËˆ\›ˆÜÝ]\Î‚ˆ™\ÜÛœÙKœÝ]\Ëˆ]K‚ˆ\œ›ÜŽ‚ˆ\SÚÂˆÈ[ˆˆ]OË–È™\œ‹[\ÙÈ—Hˆ]OË™\œ—Û\ÙÈˆ]OË›Y\ÜØYÙHˆ]OË›\ÙÈˆ˜\WÙ\œ›Üˆ‹ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ\›ˆÜÝ]\Îˆ[ˆ]Nˆ[‚ˆ\œ›ÜŽ‚ˆ\œ›ÜË›˜[YHOOBˆX›Ü\œ›Üˆ‚ˆÈ[Y[Ý]‚ˆˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+KˆNÂˆHš[˜[HÂˆYˆ
+[Y[Ý]
+HÂˆÛX\•[Y[Ý]
+[Y[Ý]
+NÂˆBˆBˆJJ
+NÂŸB‚™[˜Ý[Ûˆ\Ð\œ˜^J˜[YJHÂˆ™]\›ˆ\œ˜^Kš\Ð\œ˜^J˜[YJBˆÈ˜[YBˆˆ×NÂŸB‚™[˜Ý[ÛˆÛÛ˜XÝÙ^J˜[YJHÂˆ™]\›ˆÝš[™Ê˜[YHˆŠBˆ››Ü›X[^™J“‘ÈŠBˆš[J
+BˆÕ\\Ø\ÙJ
+NÂŸB‚™[˜Ý[Ûˆ\Õ[šXÛÙPÛÛ˜XÝ
+˜[YJHÂˆ™]\›ˆÖ×—WÑ—KË\Ý
+ˆÝš[™Ê˜[YHˆŠBˆ
+NÂŸB‚™[˜Ý[ÛˆÛ\ÜÚYžR[œÝ[Y[ØÛÜJ[™›ÊHÂˆÛÛœÝX™[Ô™\Ù[Bˆ\œ˜^Kš\Ð\œ˜^Jˆ[™›ÏË›X™[Âˆ
+NÂ‚ˆÛÛœÝ˜YšSX™[Ô™\Ù[Bˆ\œ˜^Kš\Ð\œ˜^Jˆ[™›ÏË˜YšWÛX™[Âˆ
+NÂ‚ˆÛÛœÝX™[ÈBˆX™[Ô™\Ù[ˆÈ[™›Ë›X™[Âˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+Bˆš[J
+BˆÓÝÙ\Ø\ÙJ
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆˆ×NÂ‚ˆÛÛœÝ˜YšSX™[ÈBˆ˜YšSX™[Ô™\Ù[ˆÈ[™›Ë˜YšWÛX™[Âˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆˆ×NÂ‚ˆÛÛœÝ\Ú[™\ÜÕ\HBˆÝš[™Êˆ[™›ÏË˜\Ú[™\Ü×Ý\Hˆˆ‚ˆ
+Bˆš[J
+BˆÓÝÙ\Ø\ÙJ
+NÂ‚ˆÛÛœÝÛÛ˜XÝ\HBˆÝš[™Êˆ[™›ÏË˜ÛÛ˜XÝÝ\Hˆˆ‚ˆ
+Bˆš[J
+BˆÓÝÙ\Ø\ÙJ
+NÂ‚ˆÛÛœÝ˜YT\][ÛˆBˆÝš[™Êˆ[™›ÏË˜YWÜ\][Ûˆˆˆ‚ˆ
+Bˆš[J
+BˆÕ\\Ø\ÙJ
+NÂ‚ˆÛÛœÝ˜YšSX™[Ù]Bˆ™]ÈÙ]
+Âˆ˜YšH‹ˆœÝØÚÈ‹ˆš[™XÙ\È‹ˆ˜ÛÛ[[Ù]Y\È‹ˆJNÂ‚ˆÛÛœÝ˜YšPÛ\ÜÚYšYYBˆ˜YšSX™[Ë›[™ÝˆˆX™[ËœÛÛYJˆ
+X™[
+HO‚ˆ˜YšSX™[Ù]š\ÊˆX™[ˆ
+Bˆ
+NÂ‚ˆÛÛœÝ]šY[˜ÙPÛÛ\]HBˆX™[Ô™\Ù[	‰‚ˆ˜YšSX™[Ô™\Ù[	‰‚ˆ›ÛÛX[Š\Ú[™\ÜÕ\JH	‰‚ˆ›ÛÛX[ŠÛÛ˜XÝ\JH	‰‚ˆ›ÛÛX[Š˜YT\][ÛŠNÂ‚ˆÛÛœÝÛÜœ™XÝX\šÙ]Bˆ\Ú[™\ÜÕ\HOOHœÝØ\ˆ	‰‚ˆÛÛ˜XÝ\HOOHœÝØ\ˆ	‰‚ˆ˜YT\][ÛˆOOH•TÑŽÂ‚ˆ]Û\ÜÚYšXØ][ÛˆBˆ•S’Ó“ÕÓ—ÑRSÐÓÔÑQŽÂ‚ˆÛÛœÝ™X\ÛÛœÈH×NÂ‚ˆYˆ
+[X™[Ô™\Ù[
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ’ÓP‘S×Ñ’QSÓRTÔÒS‘È‚ˆ
+NÂˆB‚ˆYˆ
+]˜YšSX™[Ô™\Ù[
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ’ÕQ’WÓP‘S×Ñ’QSÓRTÔÒS‘È‚ˆ
+NÂˆB‚ˆYˆ
+XÛÜœ™XÝX\šÙ]
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ““ÕÐPÕU‘WÕTÑÔÕÐTÔÐÓÔH‚ˆ
+NÂˆB‚ˆYˆ
+˜YšPÛ\ÜÚYšYY
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ’ÕQ’WÐÓTÔÒQ’QQ‚ˆ
+NÂˆB‚ˆYˆ
+ˆ]šY[˜ÙPÛÛ\]H	‰‚ˆÛÜœ™XÝX\šÙ]ˆ
+HÂˆÛ\ÜÚYšXØ][ÛˆBˆ˜YšPÛ\ÜÚYšYYˆÈ““Ó—ÐÔ–T×ÒÐÓTÔÒQ’QQ‚ˆˆÔ–T×ÐÓÓ‘’T“QQŽÂˆB‚ˆYˆ
+ˆÛ\ÜÚYšXØ][ÛˆOOBˆÔ–T×ÐÓÓ‘’T“QQˆ	‰‚ˆ\™X\ÛÛœË›[™Ýˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ’ÔÐÓÔWÑ’QS×ÐÓÓ‘’T“WÐÔ–TÈ‚ˆ
+NÂˆB‚ˆ™]\›ˆÂˆÛ\ÜÚYšXØ][Û‹‚ˆ[YÚX›WÙ›Ü—ØÜž\×Ù\ØÛÝ™\žN‚ˆÛ\ÜÚYšXØ][ÛˆOOBˆÔ–T×ÐÓÓ‘’T“QQ‹‚ˆÛÝ\˜ÙN‚ˆ’ÝØ\ØÛÛ˜XÝÚ[™›ÈX™[ËÝ˜YšWÛX™[È‹‚ˆÛÝ\˜ÙWÙšY[×Ü™\Ù[ˆÂˆX™[Î‚ˆX™[Ô™\Ù[‚ˆ˜YšWÛX™[Î‚ˆ˜YšSX™[Ô™\Ù[‚ˆ\Ú[™\Ü×Ý\N‚ˆ›ÛÛX[Š\Ú[™\ÜÕ\JK‚ˆÛÛ˜XÝÝ\N‚ˆ›ÛÛX[ŠÛÛ˜XÝ\JK‚ˆ˜YWÜ\][ÛŽ‚ˆ›ÛÛX[Š˜YT\][ÛŠKˆK‚ˆ]šY[˜ÙNˆÂˆ\Ú[™\Ü×Ý\N‚ˆ\Ú[™\ÜÕ\H[‚ˆÛÛ˜XÝÝ\N‚ˆÛÛ˜XÝ\H[‚ˆ˜YWÜ\][ÛŽ‚ˆ˜YT\][Ûˆ[‚ˆX™[Ë‚ˆ˜YšWÛX™[Î‚ˆ˜YšSX™[ËˆK‚ˆ™X\ÛÛœËˆNÂŸB‚™[˜Ý[ÛˆÞ[X›Ûš[™Ù\œš[
+[™›ÊHÂˆÛÛœÝ^XÝBˆÝš[™Êˆ[™›ÏË˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+NÂ‚ˆÛÛœÝÞ[X›ÛBˆÝš[™Êˆ[™›ÏËœÞ[X›Ûˆˆ‚ˆ
+NÂ‚ˆÛÛœÝ][\Y\“X]ÚBˆÞ[X›Û›X]Ú
+ˆ×ŠÌ‹JKÂˆ
+NÂ‚ˆÛÛœÝÛÙ\Ú[ÈBˆË‹‹™^XÝK›X\
+ˆ
+Ú
+HO‚ˆJÉØÚˆ˜ÛÙTÚ[]
+
+BˆÔÝš[™ÊMŠBˆÕ\\Ø\ÙJ
+BˆœYÝ\
+ŒŠ_Xˆ
+NÂ‚ˆÛÛœÝ\Ö™\›ÕÚYBˆÖ×LŒ‹WLŒQ‘Q‘—KÝK\Ý
+ˆ^XÝˆ
+HˆÖ×LŒ‹WLŒQ‘Q‘—KÝK\Ý
+ˆÞ[X›Ûˆ
+NÂ‚ˆÛÛœÝØÜš\ÈHÂˆÚšÎ‚ˆ×ÔØÜš\R[ŸKÝK\Ý
+ˆ^XÝˆ
+Hˆ×ÔØÜš\R[ŸKÝK\Ý
+ˆÞ[X›Ûˆ
+K‚ˆÞ\š[XÎ‚ˆ×ÔØÜš\PÞ\š[XßKÝK\Ý
+ˆ^XÝˆ
+Hˆ×ÔØÜš\PÞ\š[XßKÝK\Ý
+ˆÞ[X›Ûˆ
+K‚ˆÜ™YZÎ‚ˆ×ÔØÜš\QÜ™YZßKÝK\Ý
+ˆ^XÝˆ
+Hˆ×ÔØÜš\QÜ™YZßKÝK\Ý
+ˆÞ[X›Ûˆ
+KˆNÂ‚ˆ™]\›ˆÂˆØÛÛ˜XÝÙ^XÝÝ]Ž‚ˆ^XÝ‚ˆ›Ü›X[^™YÛX]ÚÚÙ^N‚ˆÛÛ˜XÝÙ^J^XÝ
+K‚ˆÞ[X›ÛÙ^XÝÝ]Ž‚ˆÞ[X›Û‚ˆ[šXÛÙWØÛÙ\Ú[Î‚ˆÛÙ\Ú[Ë‚ˆ\×Û›Û—Ø\ØÚZN‚ˆ\Õ[šXÛÙPÛÛ˜XÝ
+^XÝ
+Hˆ\Õ[šXÛÙPÛÛ˜XÝ
+Þ[X›Û
+K‚ˆ\×Þ™\›×ÝÚY‚ˆ\Ö™\›ÕÚY‚ˆØÜš\Ù›YÜÎ‚ˆØÜš\Ë‚ˆ][\Y\—Ü™Yš^‚ˆ][\Y\“X]ÚˆÈ[X™\Šˆ][\Y\“X]ÚÌWBˆ
+Bˆˆ[‚ˆ\Ú[™\Ü×Ý\N‚ˆ[™›ÏË˜\Ú[™\Ü×Ý\HˆœÝØ\‹‚ˆZ\Ž‚ˆ[™›ÏËœZ\ˆˆ^XÝ‚ˆÛÛ˜XÝÝ\N‚ˆ[™›ÏË˜ÛÛ˜XÝÝ\HˆœÝØ\‹‚ˆ›Ú™XÝÚY[]N‚ˆ[‚ˆÛÛ˜XÝØY™\ÜÎ‚ˆ[‚ˆ™\ÛÛ][Û—ÜÝ]\Î‚ˆ^XÝˆÈ”‘TÓÓ‘QÒÑVPÕ‚ˆˆ”ÖSP“ÓÕS”‘TÓÓ‘Q‹‚ˆY[]WØÛÛ™šY[˜ÙN‚ˆ^XÝˆÈ’ÐÓÓ•PÕÑVPÕ‚ˆˆ•S”‘TÓÓ‘Q‹ˆNÂŸB‚™[˜Ý[ÛˆX\žPÛÛ˜XÝ
+\Ý
+HÂˆÛÛœÝHBˆ™]ÈX\
+
+NÂ‚ˆ›Üˆ
+ˆÛÛœÝ][BˆÙˆ\Ð\œ˜^J\Ý
+Bˆ
+HÂˆÛÛœÝÙ^HBˆÛÛ˜XÝÙ^Jˆ][OË˜ÛÛ˜XÝØÛÙHˆ][OË˜ÛÛ˜XÝˆ][OËœZ\‚ˆ
+NÂ‚ˆYˆ
+Ù^JHÂˆKœÙ]
+ˆÙ^Kˆ][Bˆ
+NÂˆBˆB‚ˆ™]\›ˆNÂŸB‚™[˜Ý[ÛˆÝ[JˆÝ\œ™[ˆš[Ü‚ŠHÂˆÛÛœÝÈBˆ[JÝ\œ™[
+NÂ‚ˆÛÛœÝBˆ[Jš[ÜŠNÂ‚ˆYˆ
+ˆÈOOH[ˆOOH[ˆOOHˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆ™]\›ˆ
+ˆÈÈHBˆ
+H
+ˆLÂŸB‚™[˜Ý[Ûˆ[™[™Ò[\˜[Ý\œÑœ›ÛT˜]Êˆ[™[™Ëˆ[™›ÂŠHÂˆÛÛœÝ^XÚ]Ø[™Y]\ÈHÂˆ[™›ÏË™[™[™×Ú[\˜[ˆ[™›ÏË™[™[™×Ú[\˜[ÚÝ\œËˆ[™›ÏË™[™[™×Ú[\˜[ÚÝ\‹ˆ[™[™ÏË™[™[™×Ú[\˜[ˆNÂ‚ˆ›Üˆ
+ˆÛÛœÝ‚ˆÙˆ^XÚ]Ø[™Y]\Âˆ
+HÂˆÛÛœÝˆBˆ[JŠNÂ‚ˆYˆ
+ˆˆOOH[	‰‚ˆˆˆ	‰‚ˆˆHˆ
+HÂˆ™]\›ˆÂˆÝ\œÎˆ‹ˆÛÝ\˜ÙN‚ˆ™^XÚ]ÙšY[‹ˆNÂˆBˆB‚ˆÛÛœÝHBˆ›Ü›X[^™UÊˆ[™[™ÏË™[™[™×Ý[YBˆ
+NÂ‚ˆÛÛœÝˆBˆ›Ü›X[^™UÊˆ[™[™ÏË›™^Ù[™[™×Ý[YBˆ
+NÂ‚ˆYˆ
+ˆHOOH[	‰‚ˆˆOOH[	‰‚ˆˆˆBˆ
+HÂˆ™]\›ˆÂˆÝ\œÎ‚ˆ
+ˆˆHBˆ
+HÂˆÍŒ‚ˆÛÝ\˜ÙN‚ˆ™[™[™×Ý[Y\Ý[\È‹ˆNÂˆB‚ˆ™]\›ˆÂˆÝ\œÎˆ[ˆÛÝ\˜ÙN‚ˆ››ÝØ]˜Z[X›WÚ[—Ø˜]ÚÜ™\ÜÛœÙH‹ˆNÂŸB‚™[˜Ý[ÛˆÝYÙTÝ]JˆšXÙPÚ[™ÙKˆÚPÚ[™ÙBŠHÂˆÛÛœÝBˆ[JšXÙPÚ[™ÙJNÂ‚ˆÛÛœÝÈBˆ[JÚPÚ[™ÙJNÂ‚ˆYˆ
+ˆOOH[ˆÈOOH[ˆ
+HÂˆ™]\›ˆš[œÝY™šXÚY[ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆÈˆˆ
+HÂˆ™]\›ˆœšXÙWÝ\ÛÚWÝ\ŽÂˆB‚ˆYˆ
+ˆˆ	‰‚ˆÈˆ
+HÂˆ™]\›ˆœšXÙWÝ\ÛÚWÙÝÛˆŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆÈˆˆ
+HÂˆ™]\›ˆœšXÙWÙÝÛ—ÛÚWÝ\ŽÂˆB‚ˆYˆ
+ˆ	‰‚ˆÈˆ
+HÂˆ™]\›ˆœšXÙWÙÝÛ—ÛÚWÙÝÛˆŽÂˆB‚ˆ™]\›ˆ™›]ÛÜ—ÛZ^YŽÂŸB‚˜\Þ[˜È[˜Ý[ÛˆØY\ÝÜžU\™Ù]Êˆ[‹ˆ›ÝÓ\ÂŠHÂˆ™]\›ˆ™XYX\šÙ]\ÝÜžU\™Ù]ÊÙŽ™[Ë‘UWÑ‹›Ý×ÝÎ››ÝÓ\ËXÝÜŽ‰ÒP—ÔP“P×ÐÓÓPÕÔ‰Ë™Y™\œ™YÙÙ[™\˜][ÛŽ™[Ë”‘TÔ•—ÐÕT”‘S•ÑÑS‘TUSÓŸ[JNÂŸB‚˜\Þ[˜È[˜Ý[ÛˆØY\ÝÜžU\™Ù]ÓYØXÞJˆ[‹ˆ›ÝÓ\ÂŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆ]˜Z[X›Nˆ˜[ÙKˆ™X\ÛÛŽ‚ˆ‘Hš[™[™ÈUWÑˆ\È›ÝÛÛ™šYÝ\™Y‹ˆ\™Ù]ÎˆßKˆNÂˆB‚ˆÛÛœÝ\™Ù]ÈHÂˆÂˆ[H‹ˆH
+ˆŒ
+ˆLˆH
+ˆŒ
+ˆLˆKˆÂˆŒM[H‹ˆMH
+ˆŒ
+ˆLˆˆ
+ˆŒ
+ˆLˆKˆÂˆŒZ‹ˆŒ
+ˆŒ
+ˆLˆH
+ˆŒ
+ˆLˆKˆÂˆ‹ˆ
+ˆŒ
+ˆŒ
+ˆLˆH
+ˆŒ
+ˆLˆKˆÂˆŒ‹ˆ
+ˆŒ
+ˆŒ
+ˆLˆH
+ˆŒ
+ˆLˆKˆNÂ‚ˆ[˜Ý[Ûˆ^[ØYÓX\
+ˆ^[ØY^ˆÛ˜\ÚÝÈH[ˆ
+HÂˆÛÛœÝX\Bˆ™]ÈX\
+
+NÂ‚ˆYˆ
+\^[ØY^
+HÂˆ™]\›ˆX\ÂˆB‚ˆ]^[ØYÂ‚ˆžHÂˆ^[ØYBˆ”ÓÓ‹œ\œÙJˆ^[ØY^ˆ
+NÂˆHØ]ÚÂˆ™]\›ˆX\ÂˆB‚ˆ›Üˆ
+ˆÛÛœÝ›ÝÂˆÙˆ\Ð\œ˜^Jˆ^[ØYË˜ÛÛ˜XÝÂˆ
+Bˆ
+HÂˆYˆ
+ˆP\œ˜^Kš\Ð\œ˜^J›ÝÊHˆ\›ÝË›[™Ýˆ
+HÂˆÛÛ[YNÂˆB‚ˆÛÛœÝÂˆÛÛ˜XÝØÛÙKˆšXÙKˆ\››Ý™\—ÌˆÚWØÛÛ˜XÝËˆÚWÝ˜[YWÝ\Ùˆ[™[™×Ü˜]Kˆ[™[™×Ú[\˜[ÚÝ\œËˆX\šÙ]ØYÙWÜÙXËˆÛÝ\˜ÙWÜÝ]\Ëˆš[Ü—ÛÛ™×ÝØ]ÚH[ˆš[Ü—ÜÚÜÝØ]ÚH[ˆš[Ü—ÛÛ™×ÝšYÙÙ\—ØÛÝ[Hˆš[Ü—ÜÚÜÝšYÙÙ\—ØÛÝ[HˆHH›ÝÎÂ‚ˆÛÛœÝÙ^HBˆÛÛ˜XÝÙ^JˆÛÛ˜XÝØÛÙBˆ
+NÂ‚ˆYˆ
+ZÙ^JHÂˆÛÛ[YNÂˆB‚ˆX\œÙ]
+ˆÙ^KˆÂˆÎ‚ˆÛ˜\ÚÝË‚ˆÛÛ˜XÝØÛÙKˆšXÙKˆ\››Ý™\—ÌˆÚWØÛÛ˜XÝËˆÚWÝ˜[YWÝ\Ùˆ[™[™×Ü˜]Kˆ[™[™×Ú[\˜[ÚÝ\œËˆX\šÙ]ØYÙWÜÙXËˆÛÝ\˜ÙWÜÝ]\Ëˆš[Ü—Ù\ØÛÝ™\žNˆÂˆÛ™×ÝØ]Ú‚ˆš[Ü—ÛÛ™×ÝØ]ÚOOBˆYKˆÚÜÝØ]Ú‚ˆš[Ü—ÜÚÜÝØ]ÚOOBˆYKˆÛ™×ÝšYÙÙ\—ØÛÝ[‚ˆ[X™\‹š\Ñš[š]Jˆ[X™\Šˆš[Ü—ÛÛ™×ÝšYÙÙ\—ØÛÝ[ˆ
+Bˆ
+BˆÈ[X™\Šˆš[Ü—ÛÛ™×ÝšYÙÙ\—ØÛÝ[ˆ
+BˆˆˆÚÜÝšYÙÙ\—ØÛÝ[‚ˆ[X™\‹š\Ñš[š]Jˆ[X™\Šˆš[Ü—ÜÚÜÝšYÙÙ\—ØÛÝ[ˆ
+Bˆ
+BˆÈ[X™\Šˆš[Ü—ÜÚÜÝšYÙÙ\—ØÛÝ[ˆ
+BˆˆˆKˆBˆ
+NÂˆB‚ˆ™]\›ˆX\ÂˆB‚ˆ[˜Ý[ÛˆÛÛXÝÜ”^[ØYÓX\
+ˆ™XÛÜ™Ëˆ\™Ù]ˆÛ\˜[˜ÙBˆ
+HÂˆÛÛœÝX\H™]ÈX\
+
+NÂ‚ˆYˆ
+P\œ˜^Kš\Ð\œ˜^J™XÛÜ™ÊH\™XÛÜ™Ë›[™Ý
+HÂˆ™]\›ˆX\ÂˆB‚ˆ]Y]Y]NÂ‚ˆžHÂˆY]Y]HH”ÓÓ‹œ\œÙJˆ™XÛÜ™ÖÌBˆËœÛÝ\˜ÙWÝ[Y\Ý[\×ÚœÛÛˆˆžßH‚ˆ
+NÂˆHØ]ÚÂˆ™]\›ˆX\ÂˆB‚ˆÛÛœÝ^XÝYÚ\™ÈBˆ[X™\ŠˆY]Y]OË™^XÝYÜÚ\™Âˆ
+NÂ‚ˆYˆ
+ˆS[X™\‹š\Ò[YÙ\Šˆ^XÝYÚ\™Âˆ
+Hˆ^XÝYÚ\™ÈHˆ™XÛÜ™Ë›[™ÝOOBˆ^XÝYÚ\™Èˆ™XÛÜ™ËœÛÛYJˆ
+™XÛÜ™[™^
+HO‚ˆ™XÛÜ™ËœÝ]\ÈOOBˆÓÓTUHˆˆ[X™\Šˆ™XÛÜ™ËœÚ\™ˆ
+HOOH[™^ˆ
+Bˆ
+HÂˆ™]\›ˆX\ÂˆB‚ˆÛÛœÝ›Ü›X[^™YH×NÂ‚ˆžHÂˆ›Üˆ
+ÛÛœÝ™XÛÜ™Ùˆ™XÛÜ™ÊHÂˆÛÛœÝ›ÝÜÈH”ÓÓ‹œ\œÙJˆ™XÛÜ™Ëœ^[ØYˆ–×H‚ˆ
+NÂ‚ˆYˆ
+P\œ˜^Kš\Ð\œ˜^J›ÝÜÊJHÂˆ™]\›ˆ™]ÈX\
+
+NÂˆB‚ˆ›Ü›X[^™Yœ\Ú
+ˆ‹‹œ›ÝÜÂˆ
+NÂˆBˆHØ]ÚÂˆ™]\›ˆX\ÂˆB‚ˆYˆ
+ˆ[X™\ŠˆY]Y]OË[š]™\œÙWÝÝ[ˆ
+HOOH›Ü›X[^™Y›[™Ýˆ
+HÂˆ™]\›ˆ™]ÈX\
+
+NÂˆB‚ˆ›Üˆ
+ÛÛœÝ›ÝÈÙˆ›Ü›X[^™Y
+HÂˆÛÛœÝÙ^HHÛÛ˜XÝÙ^Jˆ›ÝÏË˜ÛÛ˜XÝˆ
+NÂ‚ˆÛÛœÝXÝX[ÈBˆ›Ü›X[^™UÊˆ›ÝÏË›ØœÙ\™YÝÂˆ
+HÏÂˆ›Ü›X[^™UÊˆY]Y]OË›X\šÙ]ˆ
+HÏÂˆ›Ü›X[^™UÊˆ™XÛÜ™ÖÌBˆËœ™XÙZ]™YÝÂˆ
+HÏÂˆ›Ü›X[^™UÊˆ™XÛÜ™ÖÌBˆË˜XÚÙ]ˆ
+NÂ‚ˆYˆ
+ˆZÙ^HˆXÝX[ÈOOH[ˆX]˜XœÊˆXÝX[ÈH\™Ù]ˆ
+HˆÛ\˜[˜ÙBˆ
+HÂˆÛÛ[YNÂˆB‚ˆX\œÙ]
+ˆÙ^KˆÂˆÎˆXÝX[ËˆØÚY[YØXÚÙ]ÝÎ‚ˆ›Ü›X[^™UÊˆ™XÛÜ™ÖÌBˆË˜XÚÙ]ˆ
+KˆÛÛ˜XÝØÛÙN‚ˆ›ÝÏË˜ÛÛ˜XÝˆšXÙN‚ˆ›ÝÏËœšXÙKˆ\››Ý™\—Ì‚ˆ›ÝÂˆË\››Ý™\—ÌÝ\ÙˆÚWØÛÛ˜XÝÎ‚ˆ›ÝÏË›ÚWØÛÛ˜XÝËˆÚWÝ˜[YWÝ\Ù‚ˆ›ÝÏË›ÚWÝ˜[YWÝ\Ùˆ[™[™×Ü˜]N‚ˆ›ÝÏË™[™[™×Ü˜]Kˆ[™[™×Ú[\˜[ÚÝ\œÎ‚ˆ›ÝÂˆË™[™[™×Ú[\˜[ÚÝ\œËˆX\šÙ]ØYÙWÜÙXÎ‚ˆ›ÝÏË›X\šÙ]ØYÙWÜÙXËˆÛÝ\˜ÙWÜÝ]\Î‚ˆ›ÝÏËœÛÝ\˜ÙWÜÝ]\Ëˆš[Ü—Ù\ØÛÝ™\žNˆ[ˆ\ÝÜžWÜ›Ý™[˜[˜ÙN‚ˆ”‘TÔ•—ÓPT’ÑUÔÓTÒÕÐUÒÕŒH‹ˆBˆ
+NÂˆB‚ˆ™]\›ˆX\ÂˆB‚ˆžHÂˆÛÛœÝÙ[™\˜][ÛˆBˆÝš[™Êˆ[‚ˆË”‘TÔ•—ÐÕT”‘S•ÑÑS‘TUSÓˆˆˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝÛÛXÝÜ“X\ÈHßNÂ‚ˆYˆ
+Ù[™\˜][ÛŠHÂˆžHÂˆÛÛœÝÛÛXÝÜ”Ý][Y[ÈBˆ\™Ù]Ë›X\
+ˆ
+ˆÂˆX™[ˆÙ™œÙ]ˆÛ\˜[˜ÙKˆBˆ
+HOˆÂˆÛÛœÝ\™Ù]Bˆ›ÝÓ\ÈBˆ[X™\ŠÙ™œÙ]
+NÂ‚ˆÛÛœÝXÚÙ]BˆX]™›ÛÜŠˆ\™Ù]ÂˆÌˆ
+H
+‚ˆÌÂ‚ˆ™]\›ˆ[‹‘UWÑ‚ˆœ™\\™JˆÑSPÕˆXÚÙ]ˆÚ\™ˆÛÝ\˜ÙWÝ[Y\Ý[\×ÚœÛÛ‹ˆ™XÙZ]™YÝËˆÝ]\Ëˆ^[ØYˆ”“ÓBˆ™\Ü—ÛX\šÙ]ÜÛ˜\ÚÝØ˜]ÚÝŒBˆÒT‘BˆXÝÜˆHÌHS‘ˆÙ[™\˜][ÛˆHÌˆS‘ˆÝ]\ÈH	ÐÓÓTUIÈS‘ˆXÚÙ]H
+ˆÑSPÕXÚÙ]ˆ”“ÓH™\Ü—ÛX\šÙ]ÜÛ˜\ÚÝØ˜]ÚÝŒBˆÒT‘BˆXÝÜˆHÌHS‘ˆÙ[™\˜][ÛˆHÌˆS‘ˆÝ]\ÈH	ÐÓÓTUIÈS‘ˆXÚÙ]‘UÑQSˆÌÈS‘ÍˆÔ‘Tˆ–BˆP”ÊXÚÙ]HÍJHTÐÂˆSRUBˆ
+BˆÔ‘Tˆ–HÚ\™TÐÂˆ
+Bˆ˜š[™
+ˆ’P—ÔP“P×ÐÓÓPÕÔˆ‹ˆÙ[™\˜][Û‹ˆXÚÙ]Bˆ[X™\ŠˆÛ\˜[˜ÙBˆ
+KˆXÚÙ]
+Âˆ[X™\ŠˆÛ\˜[˜ÙBˆ
+KˆXÚÙ]ˆ
+NÂˆBˆ
+NÂ‚ˆÛÛœÝÛÛXÝÜ”™\Ý[ÈBˆ]ØZ][‹‘UWÑ‹˜˜]Ú
+ˆÛÛXÝÜ”Ý][Y[Âˆ
+NÂ‚ˆ\™Ù]Ë™›Ü‘XXÚ
+ˆ
+ˆÂˆX™[ˆÙ™œÙ]ˆÛ\˜[˜ÙKˆKˆ[™^ˆ
+HOˆÂˆÛÛXÝÜ“X\ÖÛX™[HBˆÛÛXÝÜ”^[ØYÓX\
+ˆ\Ð\œ˜^JˆÛÛXÝÜ”™\Ý[ÏË–Âˆ[™^ˆOËœ™\Ý[Âˆ
+Kˆ›ÝÓ\ÈBˆ[X™\ŠÙ™œÙ]
+Kˆ[X™\ŠÛ\˜[˜ÙJBˆ
+NÂˆBˆ
+NÂˆHØ]ÚÂˆ›Üˆ
+ÛÛœÝÛX™[HÙˆ\™Ù]ÊHÂˆÛÛXÝÜ“X\ÖÛX™[HBˆ™]ÈX\
+
+NÂˆBˆBˆB‚ˆÛÛœÝÝ][Y[ÈBˆ\™Ù]Ë™š[\Šˆ
+ÛX™[JHO‚ˆXÛÛXÝÜ“X\ÖÂˆX™[ˆOËœÚ^™Bˆ
+K›X\
+ˆ
+ˆÂˆX™[ˆÙ™œÙ]ˆÛ\˜[˜ÙKˆBˆ
+HOˆÂˆÛÛœÝ\™Ù]Bˆ›ÝÓ\ÈBˆ[X™\ŠÙ™œÙ]
+NÂ‚ˆÛÛœÝXÚÙ]BˆX]™›ÛÜŠˆ\™Ù]ÂˆÌˆ
+H
+‚ˆÌÂ‚ˆ™]\›ˆ[‹‘UWÑ‚ˆœ™\\™JˆÑSPÕˆËˆ×ØXÚÙ]ˆ^[ØYÚœÛÛ‚ˆ”“ÓHØØ[—Ü[œÂˆÒT‘H×ØXÚÙ]ˆ‘UÑQSˆÌHS‘Ì‚ˆÔ‘Tˆ–BˆP”Êˆ×ØXÚÙ]HÌÂˆ
+HTÐÂˆSRUBˆ
+Bˆ˜š[™
+ˆXÚÙ]Bˆ[X™\ŠˆÛ\˜[˜ÙBˆ
+K‚ˆXÚÙ]
+Âˆ[X™\ŠˆÛ\˜[˜ÙBˆ
+K‚ˆXÚÙ]ˆ
+NÂˆBˆ
+NÂ‚ˆÛÛœÝ™\Ý[ÈBˆÝ][Y[Ë›[™ÝˆÈ]ØZ][‹‘UWÑ‹˜˜]Ú
+ˆÝ][Y[Âˆ
+Bˆˆ×NÂ‚ˆÛÛœÝÝ]HßNÂ‚ˆ]Û˜\ÚÝ›ÝÜÑ›Ý[™BˆÂ‚ˆ]˜[˜XÚÒ[™^HÂ‚ˆ\™Ù]Ë™›Ü‘XXÚ
+ˆ
+ÛX™[JHOˆÂˆÛÛœÝÛÛXÝÜ“X\BˆÛÛXÝÜ“X\ÖÛX™[NÂ‚ˆYˆ
+ˆÛÛXÝÜ“X\ËœÚ^™Bˆ
+HÂˆÝ]ÛX™[HBˆÛÛXÝÜ“X\Â‚ˆÛ˜\ÚÝ›ÝÜÑ›Ý[™
+ÏBˆNÂ‚ˆ™]\›ŽÂˆB‚ˆÛÛœÝš\œÝBˆ\Ð\œ˜^Jˆ™\Ý[ÏË–Âˆ˜[˜XÚÒ[™^ˆBˆËœ™\Ý[Âˆ
+VÌHˆ[Â‚ˆ˜[˜XÚÒ[™^
+ÏHNÂ‚ˆÛÛœÝX\Bˆ^[ØYÓX\
+ˆš\œÝËœ^[ØYÚœÛÛ‹ˆš\œÝËÈÏÂˆ[ˆ
+NÂ‚ˆYˆ
+š\œÝ
+HÂˆÛ˜\ÚÝ›ÝÜÑ›Ý[™
+ÏBˆNÂˆB‚ˆÝ]ÛX™[HBˆX\ÂˆBˆ
+NÂ‚ˆ™]\›ˆÂˆ]˜Z[X›NˆYK‚ˆÜ[]Y‚ˆÛ˜\ÚÝ›ÝÜÑ›Ý[™‚ˆ‚ˆÛ˜\ÚÝ×Ù›Ý[™‚ˆÛ˜\ÚÝ›ÝÜÑ›Ý[™‚ˆ™X\ÛÛŽ‚ˆÛ˜\ÚÝ›ÝÜÑ›Ý[™‚ˆˆÈ[ˆˆ‘H\ÈÛÛ›™XÝY]›Èš[ÜˆÝYÙKLÛ˜\ÚÝÈ^\ÝY]‹‚ˆ™Y™\œ™YÜÛÝ\˜ÙN‚ˆ”‘TÔ•—ÓPT’ÑUÔÓTÒÕÐUÒÕŒH‹‚ˆ˜[˜XÚ×ÜÛÝ\˜ÙN‚ˆ”ÐÐS—Ô•S”×ÐÓÓTPÕÕŒˆ‹‚ˆ\™Ù]Î‚ˆÝ]ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆ]˜Z[X›Nˆ˜[ÙK‚ˆ™X\ÛÛŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+K‚ˆ\™Ù]ÎˆßKˆNÂˆBŸB‚™[˜Ý[Ûˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ›ÝÂŠHÂˆYˆ
+\›ÝÊHÂˆ™]\›ˆÂˆ]˜Z[X›Nˆ˜[ÙKˆšXÙWØÚ[™ÙWÜÝˆ[ˆÚWØÚ[™ÙWÜÝˆ[ˆ[™[™×ØÚ[™ÙWÜÝÜÚ[Îˆ[ˆ\››Ý™\—ÌØÚ[™ÙWÜÝˆ[ˆÝ]Nˆš[œÝY™šXÚY[‹ˆNÂˆB‚ˆÛÛœÝšXÙPÚ[™ÙHBˆÝ[JˆÝ\œ™[œšXÙKˆ›ÝËœšXÙBˆ
+NÂ‚ˆÛÛœÝÚPÚ[™ÙHBˆÝ[JˆÝ\œ™[›ÚWØÛÛ˜XÝËˆ›ÝË›ÚWØÛÛ˜XÝÂˆ
+NÂ‚ˆÛÛœÝ[™[™Ó›ÝÈBˆ[JˆÝ\œ™[™[™[™×Ü˜]Bˆ
+NÂ‚ˆÛÛœÝ[™[™Ôš[ÜˆBˆ[Jˆ›ÝË™[™[™×Ü˜]Bˆ
+NÂ‚ˆÛÛœÝ[™[™Ñ[HBˆ[™[™Ó›ÝÈOOH[	‰‚ˆ[™[™Ôš[ÜˆOOH[ˆÈ
+ˆ[™[™Ó›ÝÈBˆ[™[™Ôš[Ü‚ˆ
+H
+ˆLˆˆ[Â‚ˆ™]\›ˆÂˆ]˜Z[X›NˆYK‚ˆ™Y™\™[˜ÙWÝÎ‚ˆ›ÝËË‚ˆ™Y™\™[˜ÙWÝ[YN‚ˆ\ÛÊ›ÝËÊK‚ˆšXÙWØÚ[™ÙWÜÝ‚ˆšXÙPÚ[™ÙK‚ˆÚWØÚ[™ÙWÜÝ‚ˆÚPÚ[™ÙK‚ˆ[™[™×ØÚ[™ÙWÜÝÜÚ[Î‚ˆ[™[™Ñ[K‚ˆ\››Ý™\—ÌØÚ[™ÙWÜÝ‚ˆÝ[JˆÝ\œ™[\››Ý™\—Ìˆ›ÝË\››Ý™\—Ìˆ
+K‚ˆš[Ü—Ù\ØÛÝ™\žN‚ˆ›ÝÏËœš[Ü—Ù\ØÛÝ™\žHˆ[‚ˆÝ]N‚ˆÝYÙTÝ]JˆšXÙPÚ[™ÙKˆÚPÚ[™ÙBˆ
+KˆNÂŸB‚™[˜Ý[ÛˆXØÙ[\˜][Û‘œ›ÛUÚ[™ÝÜÊˆÚÜ\‹ˆÛ™Ù\‹ˆÚÜZ[]\ËˆÛ™ÓZ[]\ÂŠHÂˆYˆ
+ˆ\ÚÜ\Ë˜]˜Z[X›Hˆ[Û™Ù\Ë˜]˜Z[X›Bˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆ[˜Ý[ÛˆXØÙ[
+ˆKˆ‚ˆ
+HÂˆÛÛœÝBˆ[JJNÂ‚ˆÛÛœÝHBˆ[JŠNÂ‚ˆYˆ
+ˆOOH[ˆHOOH[ˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆ™]\›ˆ
+ˆÂˆÚÜZ[]\Âˆ
+HBˆ
+ˆHÂˆÛ™ÓZ[]\Âˆ
+NÂˆB‚ˆ™]\›ˆÂˆÚÜÝÚ[™Ý×ÛZ[]\Î‚ˆÚÜZ[]\Ë‚ˆÛ™×ÝÚ[™Ý×ÛZ[]\Î‚ˆÛ™ÓZ[]\Ë‚ˆšXÙWÜÝÜ\—ÛZ[—Ù[N‚ˆXØÙ[
+ˆÚÜ\‹œšXÙWØÚ[™ÙWÜÝˆÛ™Ù\‹œšXÙWØÚ[™ÙWÜÝˆ
+K‚ˆÚWÜÝÜ\—ÛZ[—Ù[N‚ˆXØÙ[
+ˆÚÜ\‹›ÚWØÚ[™ÙWÜÝˆÛ™Ù\‹›ÚWØÚ[™ÙWÜÝˆ
+K‚ˆ[™[™×ÜÝÜÚ[×Ü\—ÛZ[—Ù[N‚ˆXØÙ[
+ˆÚÜ\‹™[™[™×ØÚ[™ÙWÜÝÜÚ[ËˆÛ™Ù\‹™[™[™×ØÚ[™ÙWÜÝÜÚ[Âˆ
+K‚ˆ\››Ý™\—ÌÜÝÜ\—ÛZ[—Ù[WÜ›ÞN‚ˆXØÙ[
+ˆÚÜ\‹\››Ý™\—ÌØÚ[™ÙWÜÝˆÛ™Ù\‹\››Ý™\—ÌØÚ[™ÙWÜÝˆ
+K‚ˆ\››Ý™\—Û›ÝN‚ˆ”›Û[™ËL\››Ý™\ˆÚ[™ÙH\ÈÛ›H[ˆXÝ]š]KXXØÙ[\˜][Ûˆ›ÞK›Ý^XÝ[\˜[›Û[YKˆ‹ˆNÂŸB‚™[˜Ý[ÛˆÛÛ\XÝÝYÙL^[ØY
+ˆØØ[‚ŠHÂˆ™]\›ˆÂˆØÚ[XN‚ˆœÝYÙLXÛÛ\XÝ]Œˆ‹‚ˆ[Y\Ý[\‚ˆØØ[‹[Y\Ý[\‚ˆÛÛ˜XÝÎ‚ˆØØ[‹˜ÛÛ˜XÝË›X\
+ˆ
+ÊHOˆÂˆË˜ÛÛ˜XÝØÛÙKˆËœšXÙKˆË\››Ý™\—ÌÝ\ÙˆË›Ü[—Ú[\™\ÝˆË˜ÛÛ˜XÝÈÏÂˆ[ˆË›Ü[—Ú[\™\ÝˆË˜[YWÝ\ÙÏÂˆ[ˆË™[™[™ÂˆË™[™[™×Ü˜]HÏÂˆ[ˆË™[™[™ÂˆËš[\˜[ÚÝ\œÈÏÂˆ[ˆË™œ™\Ú™\ÜÂˆË›X\šÙ]ØYÙWÜÙXÈÏÂˆ[ˆË™]WÜÝ]\ËˆË™\ØÛÝ™\žWÜÚYÝÂˆË›Û™×ÝØ]ÚÏÂˆ[ˆË™\ØÛÝ™\žWÜÚYÝÂˆËœÚÜÝØ]ÚÏÂˆ[ˆË™\ØÛÝ™\žWÜÚYÝÂˆË›Û™×ÝšYÙÙ\—ØÛÝ[ÏÂˆˆË™\ØÛÝ™\žWÜÚYÝÂˆËœÚÜÝšYÙÙ\—ØÛÝ[ÏÂˆˆBˆ
+KˆNÂŸB‚˜\Þ[˜È[˜Ý[Ûˆ\œÚ\ÝÝYÙL
+ˆ[‹ˆØØ[‚ŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Î‚ˆ”ÓÕTÑWÕS”ÕTÔ•Q‹‚ˆ™X\ÛÛŽ‚ˆ‘Hš[™[™ÈUWÑˆ\È›ÝÛÛ™šYÝ\™Y‹ˆNÂˆB‚ˆžHÂˆYˆ
+ˆ\ØØ[ËšX[ˆË˜ÛÛ˜XÝÈˆ\ØØ[Ë˜ÛÝ[ÂˆË[š]™\œÙWÝÝ[ˆ
+HÂˆ™]\›ˆÂˆÝ]\Î‚ˆ““ÕÐÓÔÑQ‹‚ˆ™X\ÛÛŽ‚ˆ•[š]™\œÙHÛÛ˜XÝ\Ý\È[˜]˜Z[X›KÙ[\NÈ™Y\Ú[™ÈÈ\œÚ\Ý[ˆ[˜[Y˜\Ù[[™HØØ[ˆ‹ˆNÂˆB‚ˆÛÛœÝÐXÚÙ]BˆX]™›ÛÜŠˆØØ[‹[Y\Ý[\ÂˆÌˆ
+H
+‚ˆÌÂ‚ˆÛÛœÝÛÛ\XÝ^[ØYBˆÛÛ\XÝÝYÙL^[ØY
+ˆØØ[‚ˆ
+NÂ‚ˆÛÛœÝ^[ØY^Bˆ”ÓÓ‹œÝš[™ÚYžJˆÛÛ\XÝ^[ØYˆ
+NÂ‚ˆÛÛœÝ^[ØYž]\ÈBˆ™]È^[˜ÛÙ\Š
+Bˆ™[˜ÛÙJˆ^[ØY^ˆ
+Bˆ›[™ÝÂ‚ˆYˆ
+ˆ^[ØYž]\È‚ˆNˆ
+HÂˆ™]\›ˆÂˆÝ]\Î‚ˆ““ÕÐÓÔÑQ‹‚ˆ™X\ÛÛŽ‚ˆÛÛ\XÝ[š]™\œÙH^[ØY\È	Ü^[ØYž]\ßHž]\È[™^ÙYYÈHKŽPˆØY™]HÙZ[[™ØˆNÂˆB‚ˆ]ØZ][‹‘UWÑ‚ˆœ™\\™JˆS”ÑT•Ôˆ‘TPÑBˆS•ÈØØ[—Ü[œÈ
+ˆ×ØXÚÙ]ˆËˆ[š]™\œÙWÝÝ[ˆØØ[›™YˆZ\ÜÚ[™Ëˆ\œ›ÜœËˆÝ[KˆÝYÙLØÛÝ™\˜YÙWÜÝˆ^[ØYÚœÛÛ‚ˆ
+BˆSQTÈ
+ˆÌKˆÌ‹ˆÌËˆÍˆÍKˆÍ‹ˆÍËˆÎˆÎBˆ
+Bˆ
+Bˆ˜š[™
+ˆÐXÚÙ]ˆØØ[‹[Y\Ý[\ˆØØ[‹˜ÛÝ[Âˆ[š]™\œÙWÝÝ[ˆØØ[‹˜ÛÝ[ÂˆœØØ[›™YˆØØ[‹˜ÛÝ[Âˆ›Z\ÜÚ[™ËˆØØ[‹˜ÛÝ[Âˆ™\œ›ÜœËˆØØ[‹˜ÛÝ[ÂˆœÝ[KˆØØ[‹˜ÛÝ™\˜YÙBˆœÝYÙLØÛÝ™\˜YÙWÜÝˆ^[ØY^ˆ
+Bˆœ[Š
+NÂ‚ˆÛÛœÝ™][[Û™Y›Ü™HBˆØØ[‹[Y\Ý[\BˆÈ
+‚ˆ
+‚ˆŒ
+‚ˆŒ
+‚ˆLÂ‚ˆ]ØZ][‹‘UWÑ‚ˆœ™\\™JˆSUH”“ÓBˆØØ[—Ü[œÂˆÒT‘Bˆ×ØXÚÙ]ÌBˆ
+Bˆ˜š[™
+ˆ™][[Û™Y›Ü™Bˆ
+Bˆœ[Š
+NÂ‚ˆ™]\›ˆÂˆÝ]\Î‚ˆÓÔÑQ‹‚ˆ›ÝÜ×ÝÜš][Ž‚ˆK‚ˆÝÜ˜YÙWÛ[Ù[‚ˆ“Ó‘WÐÓÓTPÕÕS’U‘T”ÑWÔ“Õ×ÔT—ÔÐÐSˆ‹‚ˆ×ØXÚÙ]‚ˆÐXÚÙ]‚ˆ^[ØYØž]\Î‚ˆ^[ØYž]\Ë‚ˆ™][[Û—Ù^\Î‚ˆËˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÝ]\Î‚ˆ”T•PS‹‚ˆ™X\ÛÛŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+KˆNÂˆBŸX\Þ[˜È[˜Ý[Ûˆ[š]™\œÙTØØ[Š\˜[\Ë[‹Ü[ÛœÈHßJHÂˆÛÛœÝ›ÝÈH]K››ÝÊ
+NÂ‚ˆÛÛœÝœ™\Ú™\ÜÔÙXÈHX]œ›Ý[™
+ˆÛ[\
+ˆ\˜[\Ë™œ™\Ú™\Ü×ÜÙXËˆÌˆÍŒˆÌˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[™Ú[ÈHÂˆÛÛ˜XÝÎ‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ØÛÛ˜XÝÚ[™›Ø‚ˆX\šÙ]‚ˆ	Ñ•UT‘T×ÐTÑ_KÝŒ‹Û[™X\‹\ÝØ\Y^ÛX\šÙ]Ù]Z[Ø˜]ÚÛY\™ÙY‚ˆÚN‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\ÛÜ[—Ú[\™\Ý‚ˆ[™[™Î‚ˆ	Ñ•UT‘T×ÐTÑ_KÛ[™X\‹\ÝØ\X\KÝŒKÜÝØ\Ø˜]ÚÙ[™[™×Ü˜]XˆNÂ‚ˆÛÛœÝÂˆÛÛ˜XÝÔ‹ˆX\šÙ]‹ˆÚT‹ˆ[™[™Ô‹ˆ\ÝÜžKˆHH]ØZ]›ÛZ\ÙK˜[
+Âˆ™]ÚœÛÛŠˆ[™Ú[Ë˜ÛÛ˜XÝÂˆ
+K‚ˆ™]ÚœÛÛŠˆ[™Ú[Ë›X\šÙ]ˆ
+K‚ˆ™]ÚœÛÛŠˆ[™Ú[Ë›ÚBˆ
+K‚ˆ™]ÚœÛÛŠˆ[™Ú[Ë™[™[™Âˆ
+K‚ˆØY\ÝÜžU\™Ù]Êˆ[‹ˆ›ÝÂˆ
+KˆJNÂ‚ˆÛÛœÝ[[™›ÈBˆ\Ð\œ˜^JˆÛÛ˜XÝÔ‹™]OË™]Bˆ
+NÂ‚ˆÛÛœÝXÝ]™HBˆ[[™›Ë™š[\Šˆ
+
+HOˆÂˆÛÛœÝ\Ú[™\ÜÈBˆÝš[™ÊˆË˜\Ú[™\Ü×Ý\HˆœÝØ\‚ˆ
+KÓÝÙ\Ø\ÙJ
+NÂ‚ˆ™]\›ˆ
+ˆ[X™\ŠˆË˜ÛÛ˜XÝÜÝ]\Âˆ
+HOOHH	‰‚ˆ\Ú[™\ÜÈOOHœÝØ\‚ˆ
+NÂˆBˆ
+NÂ‚ˆÛÛœÝX\šÙ]X\BˆX\žPÛÛ˜XÝ
+ˆX\šÙ]‹™]OËXÚÜÈˆX\šÙ]‹™]OË™]Bˆ
+NÂ‚ˆÛÛœÝÚSX\BˆX\žPÛÛ˜XÝ
+ˆÚT‹™]OË™]Bˆ
+NÂ‚ˆÛÛœÝ[™[™ÓX\BˆX\žPÛÛ˜XÝ
+ˆ[™[™Ô‹™]OË™]Bˆ
+NÂ‚ˆÛÛœÝ\U[Y\ÈHÂˆÛÛ˜XÝÎ‚ˆ›Ü›X[^™UÊˆÛÛ˜XÝÔ‹™]OËÂˆ
+K‚ˆX\šÙ]‚ˆ›Ü›X[^™UÊˆX\šÙ]‹™]OËÂˆ
+K‚ˆÚN‚ˆ›Ü›X[^™UÊˆÚT‹™]OËÂˆ
+K‚ˆ[™[™Î‚ˆ›Ü›X[^™UÊˆ[™[™Ô‹™]OËÂˆ
+KˆNÂ‚ˆÛÛœÝÛÛ˜XÝÈBˆXÝ]™K›X\
+ˆ
+[™›ÊHOˆÂˆÛÛœÝÛÙHBˆÝš[™Êˆ[™›Ë˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+NÂ‚ˆÛÛœÝÙ^HBˆÛÛ˜XÝÙ^JˆÛÙBˆ
+NÂ‚ˆÛÛœÝX\šÙ]BˆX\šÙ]X\™Ù]
+ˆÙ^Bˆ
+Hˆ[Â‚ˆÛÛœÝÚHBˆÚSX\™Ù]
+ˆÙ^Bˆ
+Hˆ[Â‚ˆÛÛœÝ[™[™ÈBˆ[™[™ÓX\™Ù]
+ˆÙ^Bˆ
+Hˆ[Â‚ˆÛÛœÝšXÙHBˆ[JˆX\šÙ]Ë˜ÛÜÙHÏÂˆX\šÙ]Ë›\ÝÜšXÙHÏÂˆX\šÙ]ËœšXÙBˆ
+NÂ‚ˆÛÛœÝ\››Ý™\ˆBˆ[JˆX\šÙ]Ë˜YWÝ\››Ý™\ˆÏÂˆX\šÙ]Ë›ÛÏÂˆÚOË˜YWÝ\››Ý™\‚ˆ
+NÂ‚ˆÛÛœÝX\šÙ]ÈBˆ›Ü›X[^™UÊˆX\šÙ]ËÂˆ
+HÏÂˆ\U[Y\Ë›X\šÙ]Â‚ˆÛÛœÝX\šÙ]YÙTÙXÈBˆX\šÙ]ÈOOH[ˆÈX]›X^
+ˆˆ›ÝÈHX\šÙ]Âˆ
+HÂˆLˆˆ[Â‚ˆÛÛœÝ[™[™Ò[\˜[Bˆ[™[™Ò[\˜[Ý\œÑœ›ÛT˜]Êˆ[™[™Ëˆ[™›Âˆ
+NÂ‚ˆÛÛœÝ[œÝ[Y[ØÛÜHBˆÛ\ÜÚYžR[œÝ[Y[ØÛÜJˆ[™›Âˆ
+NÂ‚ˆÛÛœÝÝ\œ™[HÂˆšXÙK‚ˆ\››Ý™\—Ì‚ˆ\››Ý™\‹‚ˆÚWØÛÛ˜XÝÎ‚ˆ[JˆÚOË›Û[YBˆ
+K‚ˆ[™[™×Ü˜]N‚ˆ[Jˆ[™[™ÏË™[™[™×Ü˜]Bˆ
+KˆNÂ‚ˆÛÛœÝ˜[œÚ][ÛœÈHÂˆ[HŽ‚ˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ\ÝÜžK\™Ù]ÏË–Âˆ[H‚ˆOË™Ù]
+ˆÙ^Bˆ
+Bˆ
+K‚ˆŒM[HŽ‚ˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ\ÝÜžK\™Ù]ÏË–ÂˆŒM[H‚ˆOË™Ù]
+ˆÙ^Bˆ
+Bˆ
+K‚ˆŒZŽ‚ˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ\ÝÜžK\™Ù]ÏË–ÂˆŒZ‚ˆOË™Ù]
+ˆÙ^Bˆ
+Bˆ
+K‚ˆŽ‚ˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ\ÝÜžK\™Ù]ÏË–Âˆ‚ˆOË™Ù]
+ˆÙ^Bˆ
+Bˆ
+K‚ˆŒŽ‚ˆ\ÝÜžSY]šXÜÊˆÝ\œ™[ˆ\ÝÜžK\™Ù]ÏË–ÂˆŒ‚ˆOË™Ù]
+ˆÙ^Bˆ
+Bˆ
+KˆNÂ‚ˆÛÛœÝZ\ÜÚ[™ÈBˆ×NÂ‚ˆYˆ
+[X\šÙ]
+HÂˆZ\ÜÚ[™Ëœ\Ú
+ˆ›X\šÙ]‚ˆ
+NÂˆB‚ˆYˆ
+[ÚJHÂˆZ\ÜÚ[™Ëœ\Ú
+ˆ›ÚH‚ˆ
+NÂˆB‚ˆYˆ
+Y[™[™ÊHÂˆZ\ÜÚ[™Ëœ\Ú
+ˆ™[™[™È‚ˆ
+NÂˆB‚ˆYˆ
+ˆšXÙHOOH[ˆ
+HÂˆZ\ÜÚ[™Ëœ\Ú
+ˆœšXÙH‚ˆ
+NÂˆB‚ˆÛÛœÝÝ[HBˆX\šÙ]YÙTÙXÈOOH[ˆÈX\šÙ]YÙTÙXÈ‚ˆœ™\Ú™\ÜÔÙXÂˆˆYNÂ‚ˆÛÛœÝ]TÝ]\ÈBˆZ\ÜÚ[™Ë›[™ÝˆÈ”T•PS‚ˆˆÝ[BˆÈ”ÕSH‚ˆˆÓÔÑQŽÂ‚ˆ™]\›ˆÂˆÛÛ˜XÝØÛÙN‚ˆÛÙK‚ˆÞ[X›Û‚ˆ[™›ÏËœÞ[X›Ûˆ[‚ˆÞ[X›ÛÙš[™Ù\œš[‚ˆÞ[X›Ûš[™Ù\œš[
+ˆ[™›Âˆ
+K‚ˆ[œÝ[Y[ÜØÛÜN‚ˆ[œÝ[Y[ØÛÜK‚ˆÛÛ˜XÝÜÚ^™N‚ˆ[Jˆ[™›ÏË˜ÛÛ˜XÝÜÚ^™Bˆ
+K‚ˆšXÙWÝXÚÎ‚ˆ[Jˆ[™›ÏËœšXÙWÝXÚÂˆ
+K‚ˆšXÙK‚ˆ›Û[YWÌØÛÛ˜XÝÎ‚ˆ[JˆX\šÙ]Ë›Ûˆ
+K‚ˆ[[Ý[ÌØ˜\ÙN‚ˆ[JˆX\šÙ]Ë˜[[Ý[ˆ
+K‚ˆ\››Ý™\—ÌÝ\Ù‚ˆ\››Ý™\‹‚ˆÜ[—Ú[\™\Ý‚ˆÚBˆÈÂˆÛÛ˜XÝÎ‚ˆ[JˆÚK›Û[YBˆ
+K‚ˆ[[Ý[Ø˜\ÙN‚ˆ[JˆÚK˜[[Ý[ˆ
+K‚ˆ˜[YWÝ\Ù‚ˆ[JˆÚK˜[YBˆ
+K‚ˆ˜YWÝ›Û[YWÌØÛÛ˜XÝÎ‚ˆ[JˆÚK˜YWÝ›Û[YBˆ
+K‚ˆ˜YWÝ\››Ý™\—ÌÝ\Ù‚ˆ[JˆÚK˜YWÝ\››Ý™\‚ˆ
+KˆBˆˆ[‚ˆ[™[™Î‚ˆ[™[™ÂˆÈÂˆ[™[™×Ü˜]N‚ˆ[Jˆ[™[™Ë™[™[™×Ü˜]Bˆ
+K‚ˆ[™[™×Ü˜]WÜÝ‚ˆ[Jˆ[™[™Ë™[™[™×Ü˜]Bˆ
+HOOH[ˆÈ[Jˆ[™[™Ë™[™[™×Ü˜]Bˆ
+H
+‚ˆLˆˆ[‚ˆ[™[™×Ý[YN‚ˆ\ÛÊˆ[™[™Ë™[™[™×Ý[YBˆ
+K‚ˆ[\˜[ÚÝ\œÎ‚ˆ[™[™Ò[\˜[šÝ\œË‚ˆ[\˜[ÜÛÝ\˜ÙN‚ˆ[™[™Ò[\˜[œÛÝ\˜ÙKˆBˆˆ[‚ˆ˜[œÚ][ÛœË‚ˆXØÙ[\˜][ÛŽˆÂˆ[WÝœ×ÌM[HŽ‚ˆXØÙ[\˜][Û‘œ›ÛUÚ[™ÝÜÊˆ˜[œÚ][ÛœÖÈ[H—Kˆ˜[œÚ][ÛœÖÈŒM[H—KˆKˆMBˆ
+K‚ˆŒM[WÝœ×ÌZŽ‚ˆXØÙ[\˜][Û‘œ›ÛUÚ[™ÝÜÊˆ˜[œÚ][ÛœÖÈŒM[H—Kˆ˜[œÚ][ÛœÖÈŒZ—KˆMKˆŒˆ
+KˆK‚ˆœ™\Ú™\ÜÎˆÂˆX\šÙ]Ý[Y\Ý[\‚ˆ\ÛÊˆX\šÙ]Âˆ
+K‚ˆX\šÙ]ØYÙWÜÙXÎ‚ˆX\šÙ]YÙTÙXË‚ˆœ™\Ú™\Ü×Û[Z]ÜÙXÎ‚ˆœ™\Ú™\ÜÔÙXË‚ˆÝ[KˆK‚ˆ]X[]NˆÂˆX\šÙ]Ü™\Ù[‚ˆ›ÛÛX[ŠˆX\šÙ]ˆ
+K‚ˆÚWÜ™\Ù[‚ˆ›ÛÛX[ŠˆÚBˆ
+K‚ˆ[™[™×Ü™\Ù[‚ˆ›ÛÛX[Šˆ[™[™Âˆ
+K‚ˆ\ÝÜžWØ]˜Z[X›N‚ˆ›ÛÛX[Šˆ\ÝÜžK˜]˜Z[X›H	‰‚ˆ\ÝÜžKœÜ[]Yˆ
+K‚ˆÜž\×ÜØÛÜWØÛÛ™š\›YY‚ˆ[œÝ[Y[ØÛÜBˆ™[YÚX›WÙ›Ü—ØÜž\×Ù\ØÛÝ™\žK‚ˆZ\ÜÚ[™ËˆK‚ˆ]WÜÝ]\Î‚ˆ]TÝ]\ËˆNÂˆBˆ
+NÂ‚ˆÛÛœÝØØ[›™YBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆË™]WÜÝ]\ÈOOBˆÓÔÑQˆˆË™]WÜÝ]\ÈOOBˆ”ÕSH‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝÝ[HBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆË™]WÜÝ]\ÈOOBˆ”ÕSH‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝZ\ÜÚ[™ÈBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆË™]WÜÝ]\ÈOOBˆ”T•PS‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝ[šXÛÙUÝ[BˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆËœÞ[X›ÛÙš[™Ù\œš[ˆš\×Û›Û—Ø\ØÚZBˆ
+K›[™ÝÂ‚ˆÛÛœÝ[šXÛÙT™\ÛÛ™YBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆËœÞ[X›ÛÙš[™Ù\œš[ˆš\×Û›Û—Ø\ØÚZH	‰‚ˆËœÞ[X›ÛÙš[™Ù\œš[ˆœ™\ÛÛ][Û—ÜÝ]\ÈOOBˆ”‘TÓÓ‘QÒÑVPÕ‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝ[š]™\œÙUÝ[BˆÛÛ˜XÝË›[™ÝÂ‚ˆÛÛœÝÜž\ÔØÛÜPÛÛ™š\›YYBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆÏËš[œÝ[Y[ÜØÛÜBˆË˜Û\ÜÚYšXØ][ÛˆOOBˆÔ–T×ÐÓÓ‘’T“QQ‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝ›ÛÜž\ÒÛ\ÜÚYšYYBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆÏËš[œÝ[Y[ÜØÛÜBˆË˜Û\ÜÚYšXØ][ÛˆOOBˆ““Ó—ÐÔ–T×ÒÐÓTÔÒQ’QQ‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝ[œÝ[Y[ØÛÜU[šÛ›ÝÛˆBˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆÏËš[œÝ[Y[ÜØÛÜBˆË˜Û\ÜÚYšXØ][ÛˆOOBˆ•S’Ó“ÕÓ—ÑRSÐÓÔÑQ‚ˆ
+K›[™ÝÂ‚ˆÛÛœÝÝYÙLÛÝ™\˜YÙTÝBˆ[š]™\œÙUÝ[ˆÈ
+ˆØØ[›™YÂˆ[š]™\œÙUÝ[ˆ
+H
+‚ˆLˆˆÂ‚ˆÛÛœÝYÙ\ÈBˆÛÛ˜XÝÂˆ›X\
+ˆ
+ÊHO‚ˆË™œ™\Ú™\ÜÂˆ›X\šÙ]ØYÙWÜÙXÂˆ
+Bˆ™š[\Šˆ[X™\‹š\Ñš[š]Bˆ
+BˆœÛÜ
+ˆ
+KŠHO‚ˆHH‚ˆ
+NÂ‚ˆÛÛœÝLBˆYÙ\Ë›[™ÝˆÈYÙ\ÖÂˆX]™›ÛÜŠˆ
+ˆYÙ\Ë›[™ÝHBˆ
+H
+‚ˆBˆ
+BˆBˆˆ[Â‚ˆÛÛœÝMHBˆYÙ\Ë›[™ÝˆÈYÙ\ÖÂˆX]™›ÛÜŠˆ
+ˆYÙ\Ë›[™ÝHBˆ
+H
+‚ˆŽMBˆ
+BˆBˆˆ[Â‚ˆÛÛœÝÝ]]HÂˆÛÝ\˜ÙN‚ˆ’Ù™šXÚX[X›XÈTH‹‚ˆX\šÙ]‚ˆ’TÑSH]\™\È‹‚ˆÛÛ‚ˆšÝ[š]™\œÙWÜØØ[ˆ‹‚ˆ™\œÚ[ÛŽ‚ˆTÕÓSÕ‘WÕÐUÒÕ‘T”ÒSÓ‹‚ˆ[Y\Ý[\‚ˆ›ÝË‚ˆ[Y\Ý[\Ý]Î‚ˆ™]È]Jˆ›ÝÂˆ
+KÒTÓÔÝš[™Ê
+K‚ˆÛÝ[ÎˆÂˆ[š]™\œÙWÝÝ[‚ˆ[š]™\œÙUÝ[‚ˆØØ[›™YˆZ\ÜÚ[™Ë‚ˆÜž\×ÜØÛÜWØÛÛ™š\›YY‚ˆÜž\ÔØÛÜPÛÛ™š\›YY‚ˆ›Û—ØÜž\×ÚØÛ\ÜÚYšYY‚ˆ›ÛÜž\ÒÛ\ÜÚYšYY‚ˆ[œÝ[Y[ÜØÛÜWÝ[šÛ›ÝÛŽ‚ˆ[œÝ[Y[ØÛÜU[šÛ›ÝÛ‹‚ˆ\œ›ÜœÎ‚ˆÂˆÛÛ˜XÝÔ‹ˆX\šÙ]‹ˆÚT‹ˆ[™[™Ô‹ˆK™š[\Šˆ
+ŠHO‚ˆ\‹›ÚÂˆ
+K›[™Ý‚ˆÝ[K‚ˆ[šXÛÙWØÛÛ˜XÝÎ‚ˆ[šXÛÙUÝ[‚ˆ[šXÛÙWÜ™\ÛÛ™Y‚ˆ[šXÛÙT™\ÛÛ™YˆK‚ˆÛÝ™\˜YÙNˆÂˆÝ[š]™\œÙN‚ˆÛÛ˜XÝÔ‹›ÚÂˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ˜]ÚÛX\šÙ]‚ˆX\šÙ]‹›ÚÂˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ˜]ÚÛÜ[—Ú[\™\Ý‚ˆÚT‹›ÚÂˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ˜]ÚÙ[™[™Î‚ˆ[™[™Ô‹›ÚÂˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆ\œÚ\Ý[Ú\ÝÜžN‚ˆZ\ÝÜžK˜]˜Z[X›BˆÈ”ÓÕTÑWÕS”ÕTÔ•Q‚ˆˆ\ÝÜžKœÜ[]YˆÈ˜ÛÜÙY‚ˆˆ““×ÑUH‹‚ˆÝYÙLØÛÝ™\˜YÙWÜÝ‚ˆÝYÙLÛÝ™\˜YÙTÝ‚ˆÜž\×Ú[œÝ[Y[ÜØÛÜN‚ˆ[œÝ[Y[ØÛÜU[šÛ›ÝÛˆOOHˆÈ˜ÛÜÙY‚ˆˆ››ÝØÛÜÙY‹‚ˆÜž\×Ú[œÝ[Y[ÜØÛÜWÜÝ‚ˆ[š]™\œÙUÝ[ˆÈ
+ˆ
+ˆ[š]™\œÙUÝ[Bˆ[œÝ[Y[ØÛÜU[šÛ›ÝÛ‚ˆ
+HÂˆ[š]™\œÙUÝ[ˆ
+H
+‚ˆLˆˆ‚ˆ[šXÛÙWÜ™\ÛÛ][Û—ÜÝ‚ˆ[šXÛÙUÝ[ˆÈ
+ˆ[šXÛÙT™\ÛÛ™YÂˆ[šXÛÙUÝ[ˆ
+H
+‚ˆLˆˆLˆK‚ˆX[ˆÂˆÛÛ˜XÝÎ‚ˆÛÛ˜XÝÔ‹›ÚË‚ˆX\šÙ]‚ˆX\šÙ]‹›ÚË‚ˆÚN‚ˆÚT‹›ÚË‚ˆ[™[™Î‚ˆ[™[™Ô‹›ÚË‚ˆ]WÙŽ‚ˆ›ÛÛX[Šˆ[Ë‘UWÑ‚ˆ
+KˆK‚ˆ[™œ˜\ÝXÝ\™WÜ]X[]NˆÂˆYYX[—ÛX\šÙ]ØYÙWÜÙXÎ‚ˆL‚ˆMWÛX\šÙ]ØYÙWÜÙXÎ‚ˆMK‚ˆ[™Ú[Ù˜Z[\™WÜ˜]WÜÝ‚ˆH
+‚ˆÂˆÛÛ˜XÝÔ‹ˆX\šÙ]‹ˆÚT‹ˆ[™[™Ô‹ˆK™š[\Šˆ
+ŠHO‚ˆ\‹›ÚÂˆ
+K›[™Ý‚ˆÞ[X›ÛÜ™\ÛÛ][Û—ÜÝXØÙ\Ü×ÜÝ‚ˆ[š]™\œÙUÝ[ˆÈ
+ˆÛÛ˜XÝË™š[\Šˆ
+ÊHO‚ˆÂˆœÞ[X›ÛÙš[™Ù\œš[ˆœ™\ÛÛ][Û—ÜÝ]\ÈOOBˆ”‘TÓÓ‘QÒÑVPÕ‚ˆ
+K›[™ÝÂˆ[š]™\œÙUÝ[ˆ
+H
+‚ˆLˆˆ‚ˆ^ÝX×Ý[šXÛÙWÜ™\ÛÛ][Û—ÜÝ‚ˆ[šXÛÙUÝ[ˆÈ
+ˆ[šXÛÙT™\ÛÛ™YÂˆ[šXÛÙUÝ[ˆ
+H
+‚ˆLˆˆLˆK‚ˆ\ÝÜžWÜÝ]\ÎˆÂˆ]˜Z[X›N‚ˆ\ÝÜžK˜]˜Z[X›K‚ˆÜ[]Y‚ˆ›ÛÛX[Šˆ\ÝÜžKœÜ[]Yˆ
+K‚ˆÛ˜\ÚÝ×Ù›Ý[™‚ˆ\ÝÜžKœÛ˜\ÚÝ×Ù›Ý[™ÏÂˆ‚ˆ™X\ÛÛŽ‚ˆ\ÝÜžKœ™X\ÛÛ‹‚ˆ›ÝN‚ˆ\ÝÜžK˜]˜Z[X›H	‰‚ˆ\ÝÜžKœÜ[]YˆÈ•˜[œÚ][ÛœÈ\ÙH™X\™\Ý\œÚ\ÝYÝYÙKLÛ˜\ÚÝËˆ‚ˆˆ\ÝÜžK˜]˜Z[X›BˆÈ‘H\ÈÛÛ›™XÝY][\Ü˜[˜[œÚ][ÛœÈ™[XZ[ˆ[œÝY™šXÚY[[[š[ÜˆØØ[œÈXØÝ[][]Kˆ‚ˆˆÝ\œ™[ØØ[ˆ™[XZ[œÈ\ØX›K][\Ü˜[˜[œÚ][ÛœÈ\™H[œÝY™šXÚY[[[H\œÚ\Ý[˜ÙH\ÈÛÛ™šYÝ\™Y[™Ü[]Yˆ‹ˆK‚ˆÛÛ˜XÝË‚ˆ[™Ú[Ù\œ›ÜœÎˆÂˆÛÛ˜XÝÎ‚ˆÛÛ˜XÝÔ‹›ÚÂˆÈ[ˆˆÛÛ˜XÝÔ‹™\œ›Ü‹‚ˆX\šÙ]‚ˆX\šÙ]‹›ÚÂˆÈ[ˆˆX\šÙ]‹™\œ›Ü‹‚ˆÚN‚ˆÚT‹›ÚÂˆÈ[ˆˆÚT‹™\œ›Ü‹‚ˆ[™[™Î‚ˆ[™[™Ô‹›ÚÂˆÈ[ˆˆ[™[™Ô‹™\œ›Ü‹‚ˆ\ÝÜžN‚ˆ\ÝÜžK˜]˜Z[X›BˆÈ[ˆˆ\ÝÜžKœ™X\ÛÛ‹ˆK‚ˆ[\ÎˆÂˆ‘^XÝU‹NÛÛ˜XÝØÛÙH\ÈHØ[›ÛšXØ[Y[]NÈ›È˜[œÛ][Ûˆ\È\ÙYˆ‹ˆ]]ÛX]XÈÜž\È\ØÛÝ™\žH™\]Z\™\ÈÝ\œ™[X™[È[™˜YšWÛX™[ÎÈ˜YšHÜˆ[šÛ›ÝÛˆØÛÜH˜Z[ÈÛÜÙYˆ‹ˆ“Z\ÜÚ[™È˜[Y\È\™H™]™\ˆÛÛ™\YÈ™\›Ëˆ‹ˆ•˜[œÚ][ÛœÈ\™HØ[Ý[]YÛ›Hœ›ÛH\œÚ\ÝY\ÝÜšXØ[ØœÙ\˜][ÛœÎÈ^H\™H›Ý™XÛÛœÝXÝYœ›ÛHÝ\œ™[Û˜\ÚÝËˆ‹ˆ”›Û[™ËL\››Ý™\ˆÚ[™ÙH\ÈX™[Y\ÈH›ÞH[™\È›Ý™X]Y\È^XÝ[\˜[›Û[YKˆ‹ˆ”ÝYÙKL\ÈH]KÙ\ØÛÝ™\žH^Y\‹›ÝH˜YKY[žHXÚ\Ú[Û‹ˆ‹ˆKˆNÂ‚ˆÊ‚ˆ
+ˆÚYÝÈ\ØÛÝ™\žH[[Y]žH\ÈÛÛ\]Yˆ
+ˆœ›ÛHHØ[YH[‹[Y[[ÜžHÝYÙKLØØ[‚ˆ
+ˆ™Y›Ü™H\œÚ\Ý[˜ÙKˆ\ÈYÈ™\›Èˆ
+ˆ[™™\›ÈH™XYËÝÜš]\ËˆH›Ý\ˆ[žBˆ
+ˆÛÛ\XÝšY[È]H™^˜XÝX[ØØ[‚ˆ
+ˆY[YžH˜[ÙH™YØ]]™\È›ÜÜXÝ]™[K‚ˆ
+‹ÂˆÛÛœÝ\ØÛÝ™\žT™XØ[BˆZ[\ØÛÝ™\žT™Yš[\ŠˆÝ]]ˆZ[Y\ÚXÚÔ]Y]YJˆÝ]]ˆ
+KˆÂˆ\]ZY]WÜ\˜Ù[[N‚ˆÌˆX\›WÛ\]ZY]WÜ\˜Ù[[N‚ˆKˆ[›ÛX[WÜ\˜Ù[[N‚ˆŽMKˆX\›WØ[›ÛX[WÜ\˜Ù[[N‚ˆŽˆ[™[™×Ü\˜Ù[[N‚ˆŽMKˆ[™[™×ÝZ[Ü\˜Ù[[N‚ˆŒLˆZ[—Ø[›ÛX[WÙ›YÜÎ‚ˆ‹ˆZ[—ÙX\›WÙ›YÜÎ‚ˆ‹ˆX^ÜÚÜ\Ý‚ˆˆBˆ
+NÂ‚ˆÛÛœÝ\ØÛÝ™\žU[[Y]žSX\Bˆ™]ÈX\
+ˆ\œ˜^Kš\Ð\œ˜^Jˆ\ØÛÝ™\žT™XØ[ˆË˜ÛÛ˜XÝÝ[[Y]žBˆ
+BˆÈ\ØÛÝ™\žT™XØ[ˆ˜ÛÛ˜XÝÝ[[Y]žBˆ›X\
+ˆ
+›ÝÊHOˆÂˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝˆˆ‚ˆ
+Kš[J
+Kˆ›ÝËˆBˆ
+Bˆˆ×Bˆ
+NÂ‚ˆ›Üˆ
+ÛÛœÝ›ÝÈÙˆÝ]]˜ÛÛ˜XÝÊHÂˆÛÛœÝ[[Y]žHBˆ\ØÛÝ™\žU[[Y]žSX\™Ù]
+ˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+Kš[J
+Bˆ
+NÂ‚ˆYˆ
+][[Y]žJHÂˆ›ÝË™\ØÛÝ™\žWÜÚYÝÈBˆ[ÂˆÛÛ[YNÂˆB‚ˆ›ÝË™\ØÛÝ™\žWÜÚYÝÈHÂˆÙ[X[XÜÎ‚ˆ‘TÐÓÕ‘T–WÓÓ“WÓ“ÕÔ“ÐP’SUWÓ“ÕÕQWÔÒQÓS‹ˆÛ™×ÝØ]Ú‚ˆ[[Y]žK›Û™×ÝØ]ÚOOBˆYKˆÚÜÝØ]Ú‚ˆ[[Y]žKœÚÜÝØ]ÚOOBˆYKˆÛ™×ÝšYÙÙ\—ØÛÝ[‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ[[Y]žK›[Ù[Ü›Ý]\Âˆ
+BˆÈ[[Y]žK›[Ù[Ü›Ý]\Âˆ™š[\Šˆ
+›Ý]JHO‚ˆÝš[™Ê›Ý]JBˆœÝ\ÕÚ]
+ˆ“Ó‘×È‚ˆ
+Bˆ
+K›[™ÝˆˆˆÚÜÝšYÙÙ\—ØÛÝ[‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ[[Y]žK›[Ù[Ü›Ý]\Âˆ
+BˆÈ[[Y]žK›[Ù[Ü›Ý]\Âˆ™š[\Šˆ
+›Ý]JHO‚ˆÝš[™Ê›Ý]JBˆœÝ\ÕÚ]
+ˆ”ÒÔ•È‚ˆ
+Bˆ
+K›[™ÝˆˆˆNÂˆB‚ˆÝ]]™\ØÛÝ™\žWÜ™XØ[HÂˆ[ÙN‚ˆ\ØÛÝ™\žT™XØ[Ë›[ÙHˆ[ˆÙ[X[XÜÎ‚ˆ\ØÛÝ™\žT™XØ[ˆËœÙ[X[XÜÈˆ[ˆÛÝ[Î‚ˆ\ØÛÝ™\žT™XØ[Ë˜ÛÝ[Èˆ[ˆÚÜ\Ý‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ\ØÛÝ™\žT™XØ[ˆËœÚÜ\Ýˆ
+BˆÈ\ØÛÝ™\žT™XØ[ˆœÚÜ\Ýˆ›X\
+ˆ
+›ÝÊHOˆ
+Âˆš[Üš]WÜ˜[šÎ‚ˆ›ÝÂˆËœš[Üš]WÜ˜[šÈÏÂˆ[ˆÛÛ˜XÝ‚ˆ›ÝÏË˜ÛÛ˜XÝÏÂˆ[ˆ\ØÛÝ™\žWÙ\™XÝ[Û—Ú[‚ˆ›ÝÂˆË™\ØÛÝ™\žWÙ\™XÝ[Û—Ú[ÏÂˆ[ˆÛ˜\ÚÝÝÎ‚ˆ›ÝÏËœÛ˜\ÚÝÝÈÏÂˆ[ˆ[Ù[Ü›Ý]\Î‚ˆ›ÝÂˆË›[Ù[Ü›Ý]\ÈÏÂˆ×Kˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ›ÝÂˆË˜[›ÛX[WÙ›YÜ×ØÛÝ[ÏÂˆˆJBˆ
+Bˆˆ×Kˆ˜[ÙWÛ™YØ]]™WØ]Y]‚ˆ\ØÛÝ™\žT™XØ[ˆË™˜[ÙWÛ™YØ]]™WØ]Y]ˆ×KˆØY™]NˆÂˆ™]ÛÜš×ØØ[×ÙÙ[™\˜]YˆˆWØØ[×ÙÙ[™\˜]Yˆˆ]™WÜ›Ø˜Xš[]Nˆ˜[ÙKˆ]™WÜÚYÛ˜[ˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[ˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆXÚ\Ú[Û—Û^Y\—ÝÙZYÚ×ØÚ[™ÙYˆ˜[ÙKˆKˆNÂ‚ˆYˆ
+ˆÜ[ÛœËœ\œÚ\ÝˆÝš[™Êˆ\˜[\Ëœ\œÚ\Ýˆˆ‚ˆ
+KÓÝÙ\Ø\ÙJ
+HOOBˆYH‚ˆ
+HÂˆÝ]]œ\œÚ\Ý[˜ÙHBˆ]ØZ]\œÚ\ÝÝYÙL
+ˆ[‹ˆÝ]]ˆ
+NÂˆH[ÙHÂˆÝ]]œ\œÚ\Ý[˜ÙHHÂˆÝ]\Î‚ˆ[Ë‘UWÑ‚ˆÈ““ÕÔ‘TUQTÕQ‚ˆˆ”ÓÕTÑWÕS”ÕTÔ•Q‹‚ˆ™X\ÛÛŽ‚ˆ[Ë‘UWÑ‚ˆÈ[ˆˆ‘Hš[™[™ÈUWÑˆ\È›ÝÛÛ™šYÝ\™Y‹ˆNÂˆB‚ˆ™]\›ˆÝ]]ÂŸB‚™[˜Ý[ÛˆZ[Y\ÚXÚÔ]Y]YJØØ[ŠHÂˆÛÛœÝÛÛ˜XÝÈBˆ\œ˜^Kš\Ð\œ˜^JØØ[Ë˜ÛÛ˜XÝÊBˆÈØØ[‹˜ÛÛ˜XÝÂˆˆ×NÂ‚ˆÛÛœÝ]Y]YHH×NÂˆÛÛœÝ^ÛYYH×NÂ‚ˆ›Üˆ
+ÛÛœÝ›ÝÈÙˆÛÛ˜XÝÊHÂˆÛÛœÝ™X\ÛÛœÈH×NÂˆÛÛœÝÛÙ]QØ\ÈH×NÂ‚ˆÛÛœÝÛÛ˜XÝBˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆ‚ˆ
+Kš[J
+NÂ‚ˆYˆ
+XÛÛ˜XÝ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆÓÓ•PÕÓRTÔÒS‘È‚ˆ
+NÂˆB‚ˆYˆ
+ˆVÈÓÔÑQ‹”T•PS—Kš[˜ÛY\ÊˆÝš[™Ê›ÝÏË™]WÜÝ]\ÈˆŠBˆ
+Bˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ”ÕQÑLÓ“ÕÕTÐP“H‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏË™œ™\Ú™\ÜÏËœÝ[HOOBˆ˜[ÙBˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ“PT’ÑUÑUWÓ“ÕÑ”‘TÒ‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËœ]X[]BˆË›X\šÙ]Ü™\Ù[OOHYBˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ“PT’ÑUÓRTÔÒS‘È‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËœ]X[]BˆË›ÚWÜ™\Ù[OOHYBˆ
+HÂˆÛÙ]QØ\Ëœ\Ú
+ˆ“ÔS—ÒS•T‘TÕÕS’Ó“ÕÓˆ‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËœ]X[]BˆË™[™[™×Ü™\Ù[OOHYBˆ
+HÂˆÛÙ]QØ\Ëœ\Ú
+ˆ‘•S‘S‘×ÕS’Ó“ÕÓˆ‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËœ]X[]BˆËš\ÝÜžWØ]˜Z[X›HOOHYBˆ
+HÂˆÛÙ]QØ\Ëœ\Ú
+ˆ”ÕQÑLÒTÕÔ–WÓSRUQ‚ˆ
+NÂˆB‚ˆÛÛœÝXÛ\™YZ\ÜÚ[™ÈBˆ\œ˜^Kš\Ð\œ˜^J›ÝÏËœ]X[]OË›Z\ÜÚ[™ÊBˆÈ›ÝËœ]X[]K›Z\ÜÚ[™Ë›X\
+ˆ
+˜[YJHO‚ˆÝš[™Ê˜[YHˆŠBˆš[J
+BˆÓÝÙ\Ø\ÙJ
+Bˆ
+Bˆˆ×NÂ‚ˆYˆ
+ˆXÛ\™YZ\ÜÚ[™ËœÛÛYJˆ
+˜[YJHO‚ˆ˜[YHOOH›X\šÙ]ˆˆ˜[YHOOHœšXÙH‚ˆ
+Bˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ‘S•–WÑTÐÓÕ‘T–WÐÔ’UPÐSÓPT’ÑUÑUWÓRTÔÒS‘È‚ˆ
+NÂˆB‚ˆYˆ
+ˆÝš[™Ê›ÝÏË™]WÜÝ]\ÈˆŠHOOBˆ”T•PSˆ	‰‚ˆ\ÛÙ]QØ\Ë›[™Ý	‰‚ˆYXÛ\™YZ\ÜÚ[™Ë›[™Ý	‰‚ˆ\™X\ÛÛœË›[™Ýˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ”ÕQÑLÔT•PSÕS‘VRS‘Q‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËœÞ[X›ÛÙš[™Ù\œš[ˆËœ™\ÛÛ][Û—ÜÝ]\ÈOOBˆ”‘TÓÓ‘QÒÑVPÕ‚ˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ”ÖSP“ÓÓ“ÕÑVPÕWÔ‘TÓÓ‘Q‚ˆ
+NÂˆB‚ˆYˆ
+ˆ›ÝÏËš[œÝ[Y[ÜØÛÜBˆË˜Û\ÜÚYšXØ][ÛˆOOBˆÔ–T×ÐÓÓ‘’T“QQ‚ˆ
+HÂˆ™X\ÛÛœËœ\Ú
+ˆ’S”Õ•SQS•ÔÐÓÔWÓ“ÕÐÔ–T×ÐÓÓ‘’T“QQ‚ˆ
+NÂˆB‚ˆÛÛœÝ\››Ý™\‘Ø]HBˆ]˜[X]R]\™\Õ\››Ý™\‘Ø]Jˆ›ÝÂˆ
+NÂ‚ˆYˆ
+\››Ý™\‘Ø]K˜[ÝÙYOOHYJHÂˆ™X\ÛÛœËœ\Ú
+ˆ\››Ý™\‘Ø]Kœ™X\ÛÛˆˆ’Ñ•UT‘T×ÌÕT““Õ‘T—Ó“ÕÐÓÔÑQ‚ˆ
+NÂˆB‚ˆYˆ
+\™X\ÛÛœË›[™Ý
+HÂˆ]Y]YKœ\Ú
+ÂˆÛÛ˜XÝˆÙ]\™\×Ý\››Ý™\—ÙØ]N‚ˆ\››Ý™\‘Ø]KˆÝYÙLÜÝ]\Î‚ˆ›ÝË™]WÜÝ]\Ëˆœ™\Ú™\Ü×ÜÙXÎ‚ˆ›ÝÏË™œ™\Ú™\ÜÂˆË›X\šÙ]ØYÙWÜÙXÈÏÂˆ[ˆ\ÝÜžWØ]˜Z[X›N‚ˆ›ÝÏËœ]X[]BˆËš\ÝÜžWØ]˜Z[X›HOOHYKˆ]WÜ™XY[™\ÜÎ‚ˆÛÙ]QØ\Ë›[™ÝˆÈ”T•PSÓ‘QQ×ÑS”’PÒQS•‚ˆˆÓÔÑQ‹ˆÛÙÙ]WÙØ\Î‚ˆÛÙ]QØ\ËˆJNÂˆH[ÙHÂˆ^ÛYYœ\Ú
+ÂˆÛÛ˜XÝ‚ˆÛÛ˜XÝ[ˆÙ]\™\×Ý\››Ý™\—ÙØ]N‚ˆ\››Ý™\‘Ø]Kˆ™X\ÛÛœËˆÛÙÙ]WÙØ\Î‚ˆÛÙ]QØ\ËˆJNÂˆBˆB‚ˆ™]\›ˆÂˆ^Y\Ž‚ˆ‘QTÐÒPÒ×ÔUQUQH‹ˆ[ÙN‚ˆ•PÒ’PÐSÑSQÒP’SUWÓÓ“H‹‚ˆÛÝ[ÎˆÂˆ[š]™\œÙWÝÝ[‚ˆÛÛ˜XÝË›[™Ýˆ[YÚX›N‚ˆ]Y]YK›[™Ýˆ^ÛYY‚ˆ^ÛYY›[™ÝˆK‚ˆ]Y]YKˆ^ÛYY‚ˆXÚ\Ú[ÛŽˆÂˆÙ[™\˜]Yˆ˜[ÙKˆ\™XÝ[ÛŽˆ[ˆ›Ø˜Xš[]Nˆ[ˆ˜[Y]Yˆ˜[ÙKˆK‚ˆ[\ÎˆÂˆ“›ÈÓ‘ËÔÒÔ•\™XÝ[Ûˆ\ÈÙ[™\˜]Yˆ‹ˆ“›È˜Y[™È›Ø˜Xš[]HÜˆØÛÜ™H\ÈÙ[™\˜]Yˆ‹ˆ“›È˜[Y]Y]YHÚYÛ˜[\ÈÙ[™\˜]Yˆ‹ˆ“›ÈÝ˜]YÞHÙZYÚÈÜˆ\™™]È[\È\™HÚ[™ÙYˆ‹ˆ‘[YÚXš[]HYX[œÈÛ›H]ÝYÙKL]šY[˜ÙH\ÈXÚšXØ[HÝZ]X›H›ÜˆY\ÚXÚËˆ‹ˆ“Z\ÜÚ[™ÈÜˆÝ[H]H^ÛY\ÈHÛÛ˜XÝœ›ÛH\È]Y]YH[™\È™]™\ˆÛÛ™\YÈ™\›Ëˆ‹ˆKˆNÂŸB‚‚™[˜Ý[Ûˆ\ØÛÝ™\žT]X[[J˜[Y\Ë\˜Ù[[JHÂˆÛÛœÝÛX[ˆBˆ\œ˜^Kš\Ð\œ˜^J˜[Y\ÊBˆÈ˜[Y\Âˆ™š[\Šˆ
+˜[YJHO‚ˆ[X™\‹š\Ñš[š]J˜[YJBˆ
+BˆœÛXÙJ
+BˆœÛÜ
+ˆ
+KŠHO‚ˆHH‚ˆ
+Bˆˆ×NÂ‚ˆYˆ
+XÛX[‹›[™Ý
+HÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝBˆX]›Z[ŠˆKˆX]›X^
+ˆˆ[X™\Š\˜Ù[[JBˆ
+Bˆ
+NÂ‚ˆÛÛœÝÜÚ][ÛˆBˆ
+ÛX[‹›[™ÝHJH
+‚ˆÂ‚ˆÛÛœÝÝÙ\ˆBˆX]™›ÛÜŠÜÚ][ÛŠNÂ‚ˆÛÛœÝ\\ˆBˆX]˜ÙZ[
+ÜÚ][ÛŠNÂ‚ˆYˆ
+ÝÙ\ˆOOH\\ŠHÂˆ™]\›ˆÛX[–ÛÝÙ\—NÂˆB‚ˆ™]\›ˆ
+ˆÛX[–ÛÝÙ\—H
+‚ˆ
+\\ˆHÜÚ][ÛŠH
+ÂˆÛX[–Ý\\—H
+‚ˆ
+ÜÚ][ÛˆHÝÙ\ŠBˆ
+NÂŸB‚™[˜Ý[ÛˆZ[\ØÛÝ™\žT™Yš[\ŠˆØØ[‹ˆY\ÚXÚÔ]Y]YKˆÜ[ÛœÈHßBŠHÂˆÛÛœÝ\ØÛÝ™\žTÛ˜\ÚÝÈBˆ[X™\‹š\Ñš[š]Jˆ[X™\ŠØØ[Ë[Y\Ý[\
+Bˆ
+BˆÈ[X™\ŠØØ[‹[Y\Ý[\
+Bˆˆ[Â‚ˆÛÛœÝÛÛ˜XÝÈBˆ\œ˜^Kš\Ð\œ˜^JØØ[Ë˜ÛÛ˜XÝÊBˆÈØØ[‹˜ÛÛ˜XÝÂˆˆ×NÂ‚ˆÛÛœÝXÚšXØ[]Y]YHBˆ\œ˜^Kš\Ð\œ˜^JˆY\ÚXÚÔ]Y]YOËœ]Y]YBˆ
+BˆÈY\ÚXÚÔ]Y]YKœ]Y]YBˆˆ×NÂ‚ˆÛÛœÝ[YÚX›PÛÛ˜XÝÈBˆ™]ÈÙ]
+ˆXÚšXØ[]Y]YBˆ›X\
+ˆ
+›ÝÊHO‚ˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆ
+NÂ‚ˆÛÛœÝ\]ZY]T\˜Ù[[HBˆX]›Z[ŠˆŽMKˆX]›X^
+ˆKˆ[X™\ŠˆÜ[ÛœÂˆË›\]ZY]WÜ\˜Ù[[HÏÂˆÌˆ
+Bˆ
+Bˆ
+NÂ‚ˆÊ‚ˆ
+ˆ™XØ[[™Nˆ™\Ù\™HH^\Ý[™Âˆ
+ˆÌÛÜ™K[\]ZY]H[™K]\›Z]ˆ
+ˆX\›Y\ˆ˜XÝX[[›ÛX[Y\ÈÈ™XXÚˆ
+ˆHØ[YH^\Ý[™ÈY\ÚXÚÈÈ˜\Ýˆ
+ˆ[Ý™H˜Z\›™\ÜÈ\[[™HÚ[ˆ\››Ý™\‚ˆ
+ˆ\È[]™H[™[XÚšXØ[]šY[˜ÙBˆ
+ˆ\ÈÓÔÑQÙœ™\ÚÒY^XÝ‚ˆ
+‚ˆ
+ˆ\È\È“ÕHÝÙ\ˆ^XÝ][ÛˆØ]K‚ˆ
+ˆ^XÝ][Ûˆ™[XZ[œÈX[™]ÜžH[‚ˆ
+ˆY\ÚXÚÈÈš[˜[XÚ\Ú[Û‹‚ˆ
+‹ÂˆÛÛœÝX\›S\]ZY]T\˜Ù[[HBˆX]›Z[ŠˆÌˆX]›X^
+ˆŒŒˆ[X™\ŠˆÜ[ÛœÂˆË™X\›WÛ\]ZY]WÜ\˜Ù[[HÏÂˆBˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[›ÛX[T\˜Ù[[HBˆX]›Z[ŠˆŽNMKˆX]›X^
+ˆŽˆ[X™\ŠˆÜ[ÛœÂˆË˜[›ÛX[WÜ\˜Ù[[HÏÂˆŽMBˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝX\›P[›ÛX[T\˜Ù[[HBˆX]›Z[Šˆ[›ÛX[T\˜Ù[[KˆX]›X^
+ˆKˆ[X™\ŠˆÜ[ÛœÂˆË™X\›WØ[›ÛX[WÜ\˜Ù[[HÏÂˆŽˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[™[™Ô\˜Ù[[HBˆX]›Z[ŠˆŽNMKˆX]›X^
+ˆŽˆ[X™\ŠˆÜ[ÛœÂˆË™[™[™×Ü\˜Ù[[HÏÂˆŽMBˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[™[™ÕZ[\˜Ù[[HBˆX]›Z[ŠˆŒKˆX]›X^
+ˆŒ‹ˆ[X™\ŠˆÜ[ÛœÂˆË™[™[™×ÝZ[Ü\˜Ù[[HÏÂˆŒLˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝZ[[›ÛX[Q›YÜÈBˆX]›Z[ŠˆˆX]›X^
+ˆKˆX]œ›Ý[™
+ˆ[X™\ŠˆÜ[ÛœÂˆË›Z[—Ø[›ÛX[WÙ›YÜÈÏÂˆ‚ˆ
+Bˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝZ[‘X\›Q›YÜÈBˆX]›Z[ŠˆˆX]›X^
+ˆ‹ˆX]œ›Ý[™
+ˆ[X™\ŠˆÜ[ÛœÂˆË›Z[—ÙX\›WÙ›YÜÈÏÂˆ‚ˆ
+Bˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝX^ÚÜ\ÝBˆX]›Z[ŠˆLˆX]›X^
+ˆKˆX]œ›Ý[™
+ˆ[X™\ŠˆÜ[ÛœÂˆË›X^ÜÚÜ\ÝÏÂˆˆ
+Bˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[YÚX›T›ÝÜÈBˆÛÛ˜XÝË™š[\Šˆ
+›ÝÊHO‚ˆ[YÚX›PÛÛ˜XÝËš\ÊˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝš[š]HBˆ
+˜[YJHO‚ˆ[X™\‹š\Ñš[š]J˜[YJNÂ‚ˆÛÛœÝ˜XÝX[[X™\ˆBˆ
+˜]ÊHOˆÂˆYˆ
+ˆ˜]ÈOOH[ˆ˜]ÈOOH[™Yš[™Yˆ˜]ÈOOHˆ‚ˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝ˜[YHBˆ[X™\Š˜]ÊNÂ‚ˆ™]\›ˆš[š]J˜[YJBˆÈ˜[YBˆˆ[ÂˆNÂ‚ˆÛÛœÝ\››Ý™\“ÙˆBˆ
+›ÝÊHO‚ˆ˜XÝX[[X™\Šˆ›ÝÏË\››Ý™\—ÌÝ\Ùˆ
+NÂ‚ˆÛÛœÝÚSÙˆBˆ
+›ÝÊHO‚ˆ˜XÝX[[X™\Šˆ›ÝÏË›Ü[—Ú[\™\ÝˆË˜[YWÝ\Ùˆ
+NÂ‚ˆÛÛœÝ[™[™ÔÝÙˆBˆ
+›ÝÊHO‚ˆ˜XÝX[[X™\Šˆ›ÝÏË™[™[™ÂˆË™[™[™×Ü˜]WÜÝˆ
+NÂ‚ˆÛÛœÝ[™[™Ò[\˜[Ý\œÓÙˆBˆ
+›ÝÊHO‚ˆ˜XÝX[[X™\Šˆ›ÝÏË™[™[™ÂˆËš[\˜[ÚÝ\œÂˆ
+NÂ‚ˆÛÛœÝ[™[™Ô\’Ý\“ÙˆBˆ
+›ÝÊHOˆÂˆÛÛœÝ[™[™ÈBˆ[™[™ÔÝÙŠ›ÝÊNÂ‚ˆÛÛœÝ[\˜[Bˆ[™[™Ò[\˜[Ý\œÓÙŠˆ›ÝÂˆ
+NÂ‚ˆYˆ
+Yš[š]J[™[™ÊJHÂˆ™]\›ˆ[ÂˆB‚ˆYˆ
+ˆš[š]J[\˜[
+H	‰‚ˆ[\˜[ˆˆ
+HÂˆ™]\›ˆ[™[™ÈÈ[\˜[ÂˆB‚ˆÊ‚ˆ
+ˆZ\ÜÚ[™È[\˜[\È›ÝÚ[[Bˆ
+ˆ\ÜÝ[YYˆÝXÚH›ÝÈX^HÝ[\ÙBˆ
+ˆ˜]È[™[™È›ÜˆH™]]˜[XœÛÛ]KBˆ
+ˆ^™[YHÛÛ^›YËˆ[™[™ÈÚYÛˆÜ‚ˆ
+ˆ[\˜[™]™\ˆÜ™X]\ÈHÓ‘ËÔÒÔ•ˆ
+ˆ›Ý]NÈ\ÈÛ›HY™™XÝÈ™]šY]Èš[Üš]K‚ˆ
+‹Âˆ™]\›ˆ[ÂˆNÂ‚ˆÛÛœÝ˜[œÚ][Û“Y]šXÈBˆ
+ˆ›ÝËˆÚ[™ÝËˆšY[ˆ
+HO‚ˆ˜XÝX[[X™\Šˆ›ÝÏË˜[œÚ][ÛœÂˆË–ÝÚ[™Ý×BˆË–ÙšY[Bˆ
+NÂ‚ˆÛÛœÝ\››Ý™\•˜[Y\ÈBˆ[YÚX›T›ÝÜÂˆ›X\
+\››Ý™\“ÙŠBˆ™š[\Šš[š]JNÂ‚ˆÛÛœÝÚU˜[Y\ÈBˆ[YÚX›T›ÝÜÂˆ›X\
+ÚSÙŠBˆ™š[\Šš[š]JNÂ‚ˆÛÛœÝ\››Ý™\‘›ÛÜˆBˆ\ØÛÝ™\žT]X[[Jˆ\››Ý™\•˜[Y\Ëˆ\]ZY]T\˜Ù[[Bˆ
+NÂ‚ˆÛÛœÝÚQ›ÛÜˆBˆ\ØÛÝ™\žT]X[[JˆÚU˜[Y\Ëˆ\]ZY]T\˜Ù[[Bˆ
+NÂ‚ˆÛÛœÝX\›U\››Ý™\‘›ÛÜˆBˆ\ØÛÝ™\žT]X[[Jˆ\››Ý™\•˜[Y\ËˆX\›S\]ZY]T\˜Ù[[Bˆ
+NÂ‚ˆÛÛœÝX\›SÚQ›ÛÜˆBˆ\ØÛÝ™\žT]X[[JˆÚU˜[Y\ËˆX]›Z[ŠˆX\›S\]ZY]T\˜Ù[[Kˆˆ
+Bˆ
+NÂ‚ˆÛÛœÝ™X]\™\ÈHÂˆÈ[H‹œšXÙWØÚ[™ÙWÜÝ—KˆÈ[H‹›ÚWØÚ[™ÙWÜÝ—KˆÈŒM[H‹œšXÙWØÚ[™ÙWÜÝ—KˆÈŒM[H‹›ÚWØÚ[™ÙWÜÝ—KˆÈŒZ‹œšXÙWØÚ[™ÙWÜÝ—KˆÈŒZ‹›ÚWØÚ[™ÙWÜÝ—KˆÈ‹œšXÙWØÚ[™ÙWÜÝ—KˆÈ‹›ÚWØÚ[™ÙWÜÝ—KˆNÂ‚ˆÛÛœÝ[›ÛX[U™\ÚÛÈHßNÂˆÛÛœÝX\›P[›ÛX[U™\ÚÛÈHßNÂ‚ˆ›Üˆ
+ˆÛÛœÝÂˆÚ[™ÝËˆšY[ˆHÙˆ™X]\™\Âˆ
+HÂˆÛÛœÝ˜[Y\ÈBˆ[YÚX›T›ÝÜÂˆ›X\
+ˆ
+›ÝÊHO‚ˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆÚ[™ÝËˆšY[ˆ
+Bˆ
+Bˆ™š[\Šš[š]JBˆ›X\
+X]˜XœÊNÂ‚ˆ[›ÛX[U™\ÚÛÖÂˆ	ÝÚ[™ÝßN‰ÙšY[XˆHBˆ\ØÛÝ™\žT]X[[Jˆ˜[Y\Ëˆ[›ÛX[T\˜Ù[[Bˆ
+NÂ‚ˆX\›P[›ÛX[U™\ÚÛÖÂˆ	ÝÚ[™ÝßN‰ÙšY[XˆHBˆ\ØÛÝ™\žT]X[[Jˆ˜[Y\ËˆX\›P[›ÛX[T\˜Ù[[Bˆ
+NÂˆB‚ˆÛÛœÝ›Û–™\›Ñ[™[™ÐXœÈBˆ[YÚX›T›ÝÜÂˆ›X\
+[™[™ÔÝÙŠBˆ™š[\Šˆ
+˜[YJHO‚ˆš[š]J˜[YJH	‰‚ˆ˜[YHOOHˆ
+Bˆ›X\
+X]˜XœÊNÂ‚ˆÛÛœÝ[™[™ÐXœÕ™\ÚÛBˆ\ØÛÝ™\žT]X[[Jˆ›Û–™\›Ñ[™[™ÐXœËˆ[™[™Ô\˜Ù[[Bˆ
+NÂ‚ˆÛÛœÝ[™[™ÒÝ\›U˜[Y\ÈBˆ[YÚX›T›ÝÜÂˆ›X\
+[™[™Ô\’Ý\“ÙŠBˆ™š[\Šˆ
+˜[YJHO‚ˆš[š]J˜[YJH	‰‚ˆ˜[YHOOHˆ
+BˆœÛÜ
+ˆ
+KŠHOˆHH‚ˆ
+NÂ‚ˆÛÛœÝ™YØ]]™Q[™[™ÒÝ\›HBˆ[™[™ÒÝ\›U˜[Y\Ë™š[\Šˆ
+˜[YJHOˆ˜[YHˆ
+NÂ‚ˆÛÛœÝÜÚ]]™Q[™[™ÒÝ\›HBˆ[™[™ÒÝ\›U˜[Y\Ë™š[\Šˆ
+˜[YJHOˆ˜[YHˆˆ
+NÂ‚ˆÛÛœÝ™YØ]]™Q[™[™ÕZ[™\ÚÛBˆ™YØ]]™Q[™[™ÒÝ\›K›[™ÝˆÈ\ØÛÝ™\žT]X[[Jˆ™YØ]]™Q[™[™ÒÝ\›Kˆ[™[™ÕZ[\˜Ù[[Bˆ
+Bˆˆ[Â‚ˆÛÛœÝÜÚ]]™Q[™[™ÕZ[™\ÚÛBˆÜÚ]]™Q[™[™ÒÝ\›K›[™ÝˆÈ\ØÛÝ™\žT]X[[JˆÜÚ]]™Q[™[™ÒÝ\›KˆHH[™[™ÕZ[\˜Ù[[Bˆ
+Bˆˆ[Â‚ˆÛÛœÝ™[˜ÚX\šÑ›ÜˆBˆ
+Ú[™ÝÊHOˆÂˆÛÛœÝ™[˜ÚX\šÔ›ÝÜÈBˆÈ•ËUTÑ‹‘UUTÑ—Bˆ›X\
+ˆ
+ÛÛ˜XÝ
+HO‚ˆÛÛ˜XÝË™š[™
+ˆ
+›ÝÊHO‚ˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+Kš[J
+HOOBˆÛÛ˜XÝˆ
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆ™š[\Šˆ
+›ÝÊHO‚ˆÈÓÔÑQ‹”T•PS—Kš[˜ÛY\ÊˆÝš[™Ê›ÝÏË™]WÜÝ]\ÈˆŠBˆ
+H	‰‚ˆ›ÝÏËœ]X[]OË›X\šÙ]Ü™\Ù[OOBˆYH	‰‚ˆ›ÝÏË™œ™\Ú™\ÜÏËœÝ[HOOBˆ˜[ÙBˆ
+NÂ‚ˆÛÛœÝ˜[Y\ÈBˆ™[˜ÚX\šÔ›ÝÜÂˆ›X\
+ˆ
+›ÝÊHO‚ˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆÚ[™ÝËˆœšXÙWØÚ[™ÙWÜÝ‚ˆ
+Bˆ
+Bˆ™š[\Šš[š]JNÂ‚ˆ™]\›ˆÂˆÛÝ™\˜YÙN‚ˆ˜[Y\Ë›[™Ý‚ˆYX[Ž‚ˆ˜[Y\Ë›[™ÝˆÈ˜[Y\Ëœ™YXÙJˆ
+Ý[K˜[YJHO‚ˆÝ[H
+È˜[YKˆˆ
+HÂˆ˜[Y\Ë›[™Ýˆˆ[ˆNÂˆNÂ‚ˆÛÛœÝ™[˜ÚX\šÌZBˆ™[˜ÚX\šÑ›ÜŠŒZŠNÂ‚ˆÛÛœÝ™[˜ÚX\šÍBˆ™[˜ÚX\šÑ›ÜŠŠNÂ‚ˆÛÛœÝ™[]]™TÝ™[™ÝBˆ
+ˆ›ÝËˆÚ[™ÝËˆ™[˜ÚX\šÂˆ
+HOˆÂˆÛÛœÝ[Ý™HBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆÚ[™ÝËˆœšXÙWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆYˆ
+ˆYš[š]J[Ý™JHˆYš[š]J™[˜ÚX\šÏË›YX[ŠBˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆ™]\›ˆ[Ý™HBˆ™[˜ÚX\šË›YX[ŽÂˆNÂ‚ˆÛÛœÝ[›ÛX[TÛÛH×NÂˆÛÛœÝÛÛ˜XÝ[[Y]žHH×NÂˆÛÛœÝ™[ÝÓ\]ZY]HH×NÂˆÛÛœÝ[œÝY™šXÚY[\]ZY]Q]HH×NÂˆÛÛœÝ˜[ÙS™YØ]]™PØ[™Y]\ÈH×NÂ‚ˆ›Üˆ
+ÛÛœÝ›ÝÈÙˆ[YÚX›T›ÝÜÊHÂˆÛÛœÝÛÛ˜XÝBˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ\››Ý™\ˆBˆ\››Ý™\“ÙŠ›ÝÊNÂ‚ˆÛÛœÝÚU˜[YHBˆÚSÙŠ›ÝÊNÂ‚ˆYˆ
+ˆYš[š]J\››Ý™\ŠHˆYš[š]JÚU˜[YJHˆYš[š]J\››Ý™\‘›ÛÜŠHˆYš[š]JÚQ›ÛÜŠHˆYš[š]JX\›U\››Ý™\‘›ÛÜŠHˆYš[š]JX\›SÚQ›ÛÜŠBˆ
+HÂˆ[œÝY™šXÚY[\]ZY]Q]Kœ\Ú
+ˆÛÛ˜XÝˆ
+NÂ‚ˆÛÛ[YNÂˆB‚ˆÛÛœÝÛÜ™S\]ZY]HBˆ\››Ý™\ˆH\››Ý™\‘›ÛÜˆ	‰‚ˆÚU˜[YHHÚQ›ÛÜŽÂ‚ˆÛÛœÝX\›S\]ZY]HBˆ
+ˆ\››Ý™\ˆHX\›U\››Ý™\‘›ÛÜˆ	‰‚ˆÚU˜[YHHX\›SÚQ›ÛÜ‚ˆ
+Hˆ
+ˆ\››Ý™\ˆHL	‰‚ˆÚU˜[YHˆˆ
+NÂ‚ˆÛÛœÝ]™U\››Ý™\‘›ÛÜˆBˆX]›X^
+ˆLˆ[X™\ŠˆÜ[ÛœÂˆË›Z[š[][WÛ]™WÝ\››Ý™\—Ý\ÙÏÂˆLˆ
+Bˆ
+NÂ‚ˆÛÛœÝ[™[™ÈBˆ[™[™ÔÝÙŠ›ÝÊNÂ‚ˆÛÛœÝ[™[™Ô\’Ý\ˆBˆ[™[™Ô\’Ý\“ÙŠ›ÝÊNÂ‚ˆÛÛœÝ™YØ]]™Q[™[™ÕZ[Bˆš[š]J[™[™Ô\’Ý\ŠH	‰‚ˆ[™[™Ô\’Ý\ˆ	‰‚ˆš[š]Jˆ™YØ]]™Q[™[™ÕZ[™\ÚÛˆ
+H	‰‚ˆ[™[™Ô\’Ý\ˆBˆ™YØ]]™Q[™[™ÕZ[™\ÚÛÂ‚ˆÛÛœÝÜÚ]]™Q[™[™ÕZ[Bˆš[š]J[™[™Ô\’Ý\ŠH	‰‚ˆ[™[™Ô\’Ý\ˆˆ	‰‚ˆš[š]JˆÜÚ]]™Q[™[™ÕZ[™\ÚÛˆ
+H	‰‚ˆ[™[™Ô\’Ý\ˆBˆÜÚ]]™Q[™[™ÕZ[™\ÚÛÂ‚ˆÛÛœÝYØXÞQ[™[™Ñ^™[YHBˆš[š]J[™[™ÊH	‰‚ˆ[™[™ÈOOH	‰‚ˆš[š]Jˆ[™[™ÐXœÕ™\ÚÛˆ
+H	‰‚ˆX]˜XœÊ[™[™ÊHBˆ[™[™ÐXœÕ™\ÚÛÂ‚ˆÛÛœÝ[™[™Ñ^™[YPÛÛ^™XØ[Bˆ
+ˆ™YØ]]™Q[™[™ÕZ[ˆÜÚ]]™Q[™[™ÕZ[ˆYØXÞQ[™[™Ñ^™[YBˆ
+H	‰‚ˆ\››Ý™\ˆBˆ]™U\››Ý™\‘›ÛÜŽÂ‚ˆÛÛœÝÝšXÝ›YÜÈH×NÂˆÛÛœÝX\›Q›YÜÈH×NÂ‚ˆ›Üˆ
+ˆÛÛœÝÂˆÚ[™ÝËˆšY[ˆHÙˆ™X]\™\Âˆ
+HÂˆÛÛœÝ˜[YHBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆÚ[™ÝËˆšY[ˆ
+NÂ‚ˆÛÛœÝÝšXÝ™\ÚÛBˆ[›ÛX[U™\ÚÛÖÂˆ	ÝÚ[™ÝßN‰ÙšY[XˆNÂ‚ˆÛÛœÝX\›U™\ÚÛBˆX\›P[›ÛX[U™\ÚÛÖÂˆ	ÝÚ[™ÝßN‰ÙšY[XˆNÂ‚ˆYˆ
+ˆš[š]J˜[YJH	‰‚ˆš[š]JÝšXÝ™\ÚÛ
+H	‰‚ˆÝšXÝ™\ÚÛˆ	‰‚ˆX]˜XœÊ˜[YJHBˆÝšXÝ™\ÚÛˆ
+HÂˆÝšXÝ›YÜËœ\Ú
+ˆ	ÝÚ[™ÝßN‰ÙšY[Xˆ
+NÂˆB‚ˆYˆ
+ˆš[š]J˜[YJH	‰‚ˆš[š]JX\›U™\ÚÛ
+H	‰‚ˆX\›U™\ÚÛˆ	‰‚ˆX]˜XœÊ˜[YJHBˆX\›U™\ÚÛˆ
+HÂˆX\›Q›YÜËœ\Ú
+ˆ	ÝÚ[™ÝßN‰ÙšY[Xˆ
+NÂˆBˆB‚ˆYˆ
+YØXÞQ[™[™Ñ^™[YJHÂˆÝšXÝ›YÜËœ\Ú
+ˆ™[™[™Î˜XœÛÛ]WÙ^™[YH‚ˆ
+NÂˆB‚ˆYˆ
+™YØ]]™Q[™[™ÕZ[
+HÂˆX\›Q›YÜËœ\Ú
+ˆ™[™[™Î›™YØ]]™WÚÝ\›WÝZ[‚ˆ
+NÂˆB‚ˆYˆ
+ÜÚ]]™Q[™[™ÕZ[
+HÂˆX\›Q›YÜËœ\Ú
+ˆ™[™[™ÎœÜÚ]]™WÚÝ\›WÝZ[‚ˆ
+NÂˆB‚ˆÛÛœÝšXÙLZBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆŒZ‹ˆœšXÙWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆÛÛœÝšXÙMBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆ‹ˆœšXÙWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆÛÛœÝÚLM[HBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆŒM[H‹ˆ›ÚWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆÛÛœÝÚLZBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆŒZ‹ˆ›ÚWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆÛÛœÝÚMBˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆ‹ˆ›ÚWØÚ[™ÙWÜÝ‚ˆ
+NÂ‚ˆÛÛœÝ™\ÝÚPZ[BˆÂˆÚLM[KˆÚLZˆÚMˆBˆ™š[\Šš[š]JBˆœ™YXÙJˆ
+™\Ý˜[YJHO‚ˆ™\ÝOOH[ˆ˜[YHˆ™\ÝˆÈ˜[YBˆˆ™\Ýˆ[ˆ
+NÂ‚ˆÛÛœÝœÌZBˆ™[]]™TÝ™[™Ý
+ˆ›ÝËˆŒZ‹ˆ™[˜ÚX\šÌZˆ
+NÂ‚ˆÛÛœÝœÍBˆ™[]]™TÝ™[™Ý
+ˆ›ÝËˆ‹ˆ™[˜ÚX\šÍˆ
+NÂ‚ˆÛÛœÝÚPZ[[™ÈBˆš[š]J™\ÝÚPZ[
+H	‰‚ˆ™\ÝÚPZ[HLÂ‚ˆÛÛœÝÝ›Û™Ô™[]]™SÛ™ÈBˆ
+ˆš[š]JœÌZ
+H	‰‚ˆœÌZHÍBˆ
+Hˆ
+ˆš[š]JœÍ
+H	‰‚ˆœÍHKLˆ
+NÂ‚ˆÛÛœÝÝ›Û™Ô™[]]™TÚÜBˆ
+ˆš[š]JœÌZ
+H	‰‚ˆœÌZHLÍBˆ
+Hˆ
+ˆš[š]JœÍ
+H	‰‚ˆœÍHLKLˆ
+NÂ‚ˆÛÛœÝÜÚ]]™S[ÛY[[HBˆ
+ˆš[š]JšXÙLZ
+H	‰‚ˆšXÙLZHÍBˆ
+Hˆ
+ˆš[š]JšXÙM
+H	‰‚ˆšXÙMH‹Œˆ
+NÂ‚ˆÛÛœÝ™YØ]]™S[ÛY[[HBˆ
+ˆš[š]JšXÙLZ
+H	‰‚ˆšXÙLZHLÍBˆ
+Hˆ
+ˆš[š]JšXÙM
+H	‰‚ˆšXÙMHL‹Œˆ
+NÂ‚ˆÛÛœÝÛ™Ô›Ý]\ÈH×NÂˆÛÛœÝÚÜ›Ý]\ÈH×NÂ‚ˆYˆ
+ˆX\›S\]ZY]H	‰‚ˆÚPZ[[™È	‰‚ˆÝ›Û™Ô™[]]™SÛ™Âˆ
+HÂˆÛ™Ô›Ý]\Ëœ\Ú
+ˆ“Ó‘×Ô‘SUU‘WÔÕ‘S‘ÕÓÒWÕÐUÒ‚ˆ
+NÂˆB‚ˆYˆ
+ˆX\›S\]ZY]H	‰‚ˆÚPZ[[™È	‰‚ˆÝ›Û™Ô™[]]™TÚÜˆ
+HÂˆÚÜ›Ý]\Ëœ\Ú
+ˆ”ÒÔ•Ô‘SUU‘WÕÑPRÓ‘TÔ×ÓÒWÕÐUÒ‚ˆ
+NÂˆB‚ˆÛÛœÝÝšXÝYØXÞT›Ý]HBˆÛÜ™S\]ZY]H	‰‚ˆÝšXÝ›YÜË›[™ÝBˆZ[[›ÛX[Q›YÜÎÂ‚ˆÛÛœÝ][Q[™Ú[™T™XØ[›Ý]HBˆX\›S\]ZY]H	‰‚ˆX\›Q›YÜË›[™ÝBˆZ[‘X\›Q›YÜÎÂ‚ˆÛÛœÝÛ™ÕØ]ÚBˆÛ™Ô›Ý]\Ë›[™ÝˆÂ‚ˆÛÛœÝÚÜØ]ÚBˆÚÜ›Ý]\Ë›[™ÝˆÂ‚ˆÛÛœÝ]Y]YQ›Ü‘Y\ÚXÚÈBˆÝšXÝYØXÞT›Ý]Hˆ][Q[™Ú[™T™XØ[›Ý]Hˆ[™[™Ñ^™[YPÛÛ^™XØ[ˆÛ™ÕØ]ÚˆÚÜØ]ÚÂ‚ˆÛÛœÝš[Ü‘\ØÛÝ™\žHBˆ›ÝÏË˜[œÚ][ÛœÂˆË–ÈŒZ—BˆËœš[Ü—Ù\ØÛÝ™\žHˆ[Â‚ˆÛÛœÝš[Ü\ØÛÝ™\žHBˆ›ÝÏË˜[œÚ][ÛœÂˆË–È—BˆËœš[Ü—Ù\ØÛÝ™\žHˆ[Â‚ˆÛÛœÝ˜[ÙS™YØ]]™Q]™[ÈH×NÂ‚ˆÛÛœÝØ\\™Q˜[ÙS™YØ]]™HBˆ
+ˆÚ[™ÝËˆ[Ý™Kˆš[Ü‚ˆ
+HOˆÂˆYˆ
+Yš[š]J[Ý™JJHÂˆ™]\›ŽÂˆB‚ˆÛÛœÝ™\ÚÛBˆÚ[™ÝÈOOHŒZ‚ˆÈÂˆˆŽÂ‚ˆYˆ
+ˆX]˜XœÊ[Ý™JHˆ™\ÚÛˆ
+HÂˆ™]\›ŽÂˆB‚ˆÛÛœÝ^XÝYÚYHBˆ[Ý™HˆˆÈ“Ó‘È‚ˆˆ”ÒÔ•ŽÂ‚ˆÛÛœÝØ\Ô]Y]YYBˆ^XÝYÚYHOOH“Ó‘È‚ˆÈš[ÜË›Û™×ÝØ]ÚOOBˆYBˆˆš[ÜËœÚÜÝØ]ÚOOBˆYNÂ‚ˆYˆ
+ˆš[Üˆ	‰‚ˆØ\Ô]Y]YYOOHYBˆ
+HÂˆ˜[ÙS™YØ]]™Q]™[Ëœ\Ú
+ÂˆÚ[™ÝËˆ\™XÝ[ÛŽ‚ˆ^XÝYÚYKˆ™X[^™YÛ[Ý™WÜÝ‚ˆ[Ý™KˆX™[‚ˆ‘SÑWÓ‘QÐUU‘WÐÐS‘QUH‹ˆJNÂˆBˆNÂ‚ˆØ\\™Q˜[ÙS™YØ]]™JˆŒZ‹ˆšXÙLZˆš[Ü‘\ØÛÝ™\žBˆ
+NÂ‚ˆØ\\™Q˜[ÙS™YØ]]™Jˆ‹ˆšXÙMˆš[Ü\ØÛÝ™\žBˆ
+NÂ‚ˆYˆ
+ˆ˜[ÙS™YØ]]™Q]™[Ë›[™Ýˆ
+HÂˆ˜[ÙS™YØ]]™PØ[™Y]\Ëœ\Ú
+ÂˆÛÛ˜XÝˆ]™[Î‚ˆ˜[ÙS™YØ]]™Q]™[ËˆJNÂˆB‚ˆÛÛœÝ[›YÜÈBˆ\œ˜^K™œ›ÛJˆ™]ÈÙ]
+Âˆ‹‹œÝšXÝ›YÜËˆ‹‹™X\›Q›YÜËˆJBˆ
+NÂ‚ˆÛÛœÝ\™XÝ[Û’[BˆÛ™ÕØ]Ú	‰‚ˆ\ÚÜØ]ÚˆÈ“Ó‘×ÕÐUÒ‚ˆˆÚÜØ]Ú	‰‚ˆ[Û™ÕØ]ÚˆÈ”ÒÔ•ÕÐUÒ‚ˆˆÛ™ÕØ]Ú	‰‚ˆÚÜØ]ÚˆÈ’QT‘PÕSÓSÔ‘TURT‘T×ÑQTÔ‘TÓÓUSÓˆ‚ˆˆ“‘UUSÐS“ÓPSHŽÂ‚ˆÛÛœÝ[[Y]žHHÂˆÛÛ˜XÝˆÛÜ™WÛ\]ZY]N‚ˆÛÜ™S\]ZY]KˆX\›WÛ\]ZY]N‚ˆX\›S\]ZY]Kˆ]Y]YWÙ›Ü—ÙY\ØÚXÚÎ‚ˆ]Y]YQ›Ü‘Y\ÚXÚËˆÛ™×ÝØ]Ú‚ˆÛ™ÕØ]ÚˆÚÜÝØ]Ú‚ˆÚÜØ]Úˆ\ØÛÝ™\žWÙ\™XÝ[Û—Ú[‚ˆ\™XÝ[Û’[ˆÛ˜\ÚÝÝÎ‚ˆ\ØÛÝ™\žTÛ˜\ÚÝËˆ[Ù[Ü›Ý]\ÎˆÂˆ‹‹›Û™Ô›Ý]\Ëˆ‹‹œÚÜ›Ý]\ËˆKˆÝšXÝÙ›YÜ×ØÛÝ[‚ˆÝšXÝ›YÜË›[™ÝˆX\›WÙ›YÜ×ØÛÝ[‚ˆX\›Q›YÜË›[™Ýˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ[›YÜË›[™Ýˆ[™[™×Ü\—ÚÝ\—ÜÝ‚ˆ[™[™Ô\’Ý\‹ˆ[™[™×Ù\™XÝ[Û˜[Ý›ÝNˆ˜[ÙKˆ[™[™×ØÛÛ^ÛÛ›NˆYKˆ™[]]™WÜÝ™[™ÝÌZÜÝÜÚ[Î‚ˆœÌZˆ™[]]™WÜÝ™[™ÝÍÜÝÜÚ[Î‚ˆœÍˆ™\ÝÛÚWØZ[ÜÝ‚ˆ™\ÝÚPZ[ˆ˜[ÙWÛ™YØ]]™WÙ]™[Î‚ˆ˜[ÙS™YØ]]™Q]™[ËˆNÂ‚ˆÛÛ˜XÝ[[Y]žKœ\Ú
+ˆ[[Y]žBˆ
+NÂ‚ˆYˆ
+\]Y]YQ›Ü‘Y\ÚXÚÊHÂˆYˆ
+ˆXÛÜ™S\]ZY]H	‰‚ˆYX\›S\]ZY]H	‰‚ˆY[™[™Ñ^™[YPÛÛ^™XØ[ˆ
+HÂˆ™[ÝÓ\]ZY]Kœ\Ú
+ˆÛÛ˜XÝˆ
+NÂˆB‚ˆÛÛ[YNÂˆB‚ˆ[›ÛX[TÛÛœ\Ú
+ÂˆÛÛ˜XÝˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ[›YÜË›[™Ýˆ[›ÛX[WÙ›YÜÎ‚ˆ[›YÜËˆÝšXÝØ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆÝšXÝ›YÜË›[™ÝˆX\›WØ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆX\›Q›YÜË›[™Ýˆ\ØÛÝ™\žWÙ\™XÝ[Û—Ú[‚ˆ\™XÝ[Û’[ˆÛ˜\ÚÝÝÎ‚ˆ\ØÛÝ™\žTÛ˜\ÚÝËˆÛ™×ÝØ]Ú‚ˆÛ™ÕØ]ÚˆÚÜÝØ]Ú‚ˆÚÜØ]Úˆ[Ù[Ü›Ý]\ÎˆÂˆ‹‹›Û™Ô›Ý]\Ëˆ‹‹œÚÜ›Ý]\ËˆKˆ\ØÛÝ™\žWÜÙ[X[XÜÎ‚ˆ‘TÐÓÕ‘T–WÓÓ“WÓ“ÕÔ“ÐP’SUWÓ“ÕÕQWÔÒQÓS‹ˆÛÜ™WÛ\]ZY]N‚ˆÛÜ™S\]ZY]KˆX\›WÛ\]ZY]N‚ˆX\›S\]ZY]Kˆ\››Ý™\—ÌÝ\Ù‚ˆ\››Ý™\‹ˆÙ]\™\×Ý\››Ý™\—ÙØ]N‚ˆ]˜[X]R]\™\Õ\››Ý™\‘Ø]J›ÝÊKˆ›Û[™×ÌØÚ[™ÙWÜÝ‚ˆ˜[œÚ][Û“Y]šXÊˆ›ÝËˆŒ‹ˆœšXÙWØÚ[™ÙWÜÝ‚ˆ
+KˆÜ[—Ú[\™\ÝÝ˜[YWÝ\Ù‚ˆÚU˜[YKˆ[™[™×Ü˜]WÜÝ‚ˆ[™[™Ëˆ[™[™×Ü\—ÚÝ\—ÜÝ‚ˆ[™[™Ô\’Ý\‹ˆ[™[™×Ù\™XÝ[Û˜[Ý›ÝNˆ˜[ÙKˆ[™[™×ØÛÛ^ÛÛ›NˆYKˆ™[]]™WÜÝ™[™ÝÌZÜÝÜÚ[Î‚ˆœÌZˆ™[]]™WÜÝ™[™ÝÍÜÝÜÚ[Î‚ˆœÍˆ™\ÝÛÚWØZ[ÜÝ‚ˆ™\ÝÚPZ[ˆœ™\Ú™\Ü×ÜÙXÎ‚ˆ[X™\‹š\Ñš[š]Jˆ[X™\Šˆ›ÝÏË™œ™\Ú™\ÜÂˆË›X\šÙ]ØYÙWÜÙXÂˆ
+Bˆ
+BˆÈ[X™\Šˆ›ÝË™œ™\Ú™\ÜÂˆ›X\šÙ]ØYÙWÜÙXÂˆ
+Bˆˆ[ˆ˜[ÙWÛ™YØ]]™WÙ]™[Î‚ˆ˜[ÙS™YØ]]™Q]™[ËˆJNÂˆB‚ˆÊ‚ˆ
+ˆÜ\˜][Û˜[ØÚY[[™È˜[šÈÛ›N‚ˆ
+ˆ[Ù[X]Ø\™H\ØÛÝ™\žHØ]Ú\Èš\œÝˆ
+ˆ[ˆ[Ü™H[™\[™[›YÜË[‚ˆ
+ˆ˜XÝX[\››Ý™\‹ˆ^\Ý[™È˜\ÝS[Ý™Bˆ
+ˆ˜Z\›™\ÜËØÛÛÛÝÛˆÝ[XÚY\ÈÚXÚˆ
+ˆÛ™HÙ]ÈHÚ[™ÛHY\ÚXÚÈÛÝ‚ˆ
+‹Âˆ[›ÛX[TÛÛœÛÜ
+ˆ
+KŠHOˆÂˆÛÛœÝØ]Ú[HBˆ[X™\Šˆ‹›Û™×ÝØ]Úˆ‹œÚÜÝØ]Úˆ
+HBˆ[X™\ŠˆK›Û™×ÝØ]ÚˆKœÚÜÝØ]Úˆ
+NÂ‚ˆYˆ
+Ø]Ú[JHÂˆ™]\›ˆØ]Ú[NÂˆB‚ˆÛÛœÝ[Ù[[HBˆ
+ˆ‹›[Ù[Ü›Ý]\ÏË›[™Ýˆˆ
+HBˆ
+ˆK›[Ù[Ü›Ý]\ÏË›[™Ýˆˆ
+NÂ‚ˆYˆ
+[Ù[[JHÂˆ™]\›ˆ[Ù[[NÂˆB‚ˆÛÛœÝ›YÑ[HBˆ‹˜[›ÛX[WÙ›YÜ×ØÛÝ[BˆK˜[›ÛX[WÙ›YÜ×ØÛÝ[Â‚ˆYˆ
+›YÑ[JHÂˆ™]\›ˆ›YÑ[NÂˆB‚ˆÛÛœÝ\››Ý™\‘[HBˆ
+ˆ‹\››Ý™\—ÌÝ\ÙÏÂˆR[™š[š]Bˆ
+HBˆ
+ˆK\››Ý™\—ÌÝ\ÙÏÂˆR[™š[š]Bˆ
+NÂ‚ˆYˆ
+\››Ý™\‘[JHÂˆ™]\›ˆ\››Ý™\‘[NÂˆB‚ˆ™]\›ˆÝš[™ÊˆK˜ÛÛ˜XÝˆ
+K›ØØ[PÛÛ\\™JˆÝš[™Êˆ‹˜ÛÛ˜XÝˆ
+Bˆ
+NÂˆBˆ
+NÂ‚ˆÛÛœÝÚÜ\ÝBˆ[›ÛX[TÛÛˆœÛXÙJˆˆX^ÚÜ\Ýˆ
+Bˆ›X\
+ˆ
+ˆ›ÝËˆ[™^ˆ
+HOˆ
+Âˆš[Üš]WÜ˜[šÎ‚ˆ[™^
+ÈKˆ‹‹œ›ÝËˆJBˆ
+NÂ‚ˆ™]\›ˆÂˆ^Y\Ž‚ˆ‘TÐÓÕ‘T–WÔ‘Q’STˆ‹‚ˆ[ÙN‚ˆ“USWÑS‘ÒS‘WÔ‘PÐSÔÒQÕ×ÕŒH‹‚ˆÙ[X[XÜÎ‚ˆ‘TÐÓÕ‘T–WÓÓ“WÓ“ÕÔ“ÐP’SUWÓ“ÕÕQWÔÒQÓS‹‚ˆ\˜[Y]\œÎˆÂˆ\]ZY]WÜ\˜Ù[[N‚ˆ\]ZY]T\˜Ù[[KˆX\›WÛ\]ZY]WÜ\˜Ù[[N‚ˆX\›S\]ZY]T\˜Ù[[Kˆ[›ÛX[WÜ\˜Ù[[N‚ˆ[›ÛX[T\˜Ù[[KˆX\›WØ[›ÛX[WÜ\˜Ù[[N‚ˆX\›P[›ÛX[T\˜Ù[[Kˆ[™[™×Ü\˜Ù[[WÛ›Ûž™\›Î‚ˆ[™[™Ô\˜Ù[[Kˆ[™[™×ÝZ[Ü\˜Ù[[N‚ˆ[™[™ÕZ[\˜Ù[[KˆZ[—Ø[›ÛX[WÙ›YÜÎ‚ˆZ[[›ÛX[Q›YÜËˆZ[—ÙX\›WÙ›YÜÎ‚ˆZ[‘X\›Q›YÜËˆX^ÜÚÜ\Ý‚ˆX^ÚÜ\ÝˆK‚ˆ™\ÚÛÎˆÂˆ\››Ý™\—ÌÝ\ÙÙ›ÛÜŽ‚ˆ\››Ý™\‘›ÛÜ‹ˆÜ[—Ú[\™\ÝÝ˜[YWÝ\ÙÙ›ÛÜŽ‚ˆÚQ›ÛÜ‹ˆX\›WÝ\››Ý™\—ÌÝ\ÙÙ›ÛÜŽ‚ˆX\›U\››Ý™\‘›ÛÜ‹ˆX\›WÛÜ[—Ú[\™\ÝÝ˜[YWÝ\ÙÙ›ÛÜŽ‚ˆX\›SÚQ›ÛÜ‹ˆ[™[™×ØXœ×Û›Ûž™\›×Ý™\ÚÛ‚ˆ[™[™ÐXœÕ™\ÚÛˆ™YØ]]™WÙ[™[™×ÚÝ\›WÝZ[Ý™\ÚÛÜÝ‚ˆ™YØ]]™Q[™[™ÕZ[™\ÚÛˆÜÚ]]™WÙ[™[™×ÚÝ\›WÝZ[Ý™\ÚÛÜÝ‚ˆÜÚ]]™Q[™[™ÕZ[™\ÚÛˆ[›ÛX[N‚ˆ[›ÛX[U™\ÚÛËˆX\›WØ[›ÛX[N‚ˆX\›P[›ÛX[U™\ÚÛËˆK‚ˆ™[˜ÚX\šÎˆÂˆ×Ù]ÌZ‚ˆ™[˜ÚX\šÌZˆ×Ù]Í‚ˆ™[˜ÚX\šÍˆK‚ˆÛÝ[ÎˆÂˆ[š]™\œÙWÝÝ[‚ˆÛÛ˜XÝË›[™ÝˆXÚšXØ[Ù[YÚX›N‚ˆ[YÚX›T›ÝÜË›[™Ýˆ\]ZY]WÜÛÛ‚ˆÛÛ˜XÝ[[Y]žK™š[\Šˆ
+›ÝÊHO‚ˆ›ÝË˜ÛÜ™WÛ\]ZY]Bˆ
+K›[™ÝˆX\›WÛ\]ZY]WÜÛÛ‚ˆÛÛ˜XÝ[[Y]žK™š[\Šˆ
+›ÝÊHO‚ˆ›ÝË™X\›WÛ\]ZY]Bˆ
+K›[™ÝˆÛ™×ÝØ]Ú‚ˆÛÛ˜XÝ[[Y]žK™š[\Šˆ
+›ÝÊHO‚ˆ›ÝË›Û™×ÝØ]Úˆ
+K›[™ÝˆÚÜÝØ]Ú‚ˆÛÛ˜XÝ[[Y]žK™š[\Šˆ
+›ÝÊHO‚ˆ›ÝËœÚÜÝØ]Úˆ
+K›[™Ýˆ[›ÛX[WÜÛÛ‚ˆ[›ÛX[TÛÛ›[™ÝˆÚÜ\Ý‚ˆÚÜ\Ý›[™Ýˆ˜[ÙWÛ™YØ]]™WØØ[™Y]\Î‚ˆ˜[ÙS™YØ]]™PØ[™Y]\Ë›[™Ýˆ™[Ý×Û\]ZY]N‚ˆ™[ÝÓ\]ZY]K›[™Ýˆ[œÝY™šXÚY[Û\]ZY]WÙ]N‚ˆ[œÝY™šXÚY[\]ZY]Q]K›[™ÝˆK‚ˆÚÜ\ÝˆÛÛ˜XÝÝ[[Y]žN‚ˆÛÛ˜XÝ[[Y]žKˆ[œÝY™šXÚY[Û\]ZY]WØÛÛ˜XÝÎ‚ˆ[œÝY™šXÚY[\]ZY]Q]Kˆ˜[ÙWÛ™YØ]]™WØ]Y]‚ˆ˜[ÙS™YØ]]™PØ[™Y]\Ë‚ˆXÚ\Ú[ÛŽˆÂˆÙ[™\˜]Yˆ˜[ÙKˆ\™XÝ[ÛŽˆ[ˆ›Ø˜Xš[]Nˆ[ˆ˜[Y]Yˆ˜[ÙKˆK‚ˆ^XÝ][ÛŽˆÂˆ™]ÛÜš×ØØ[×ÙÙ[™\˜]Y‚ˆˆWØØ[×ÙÙ[™\˜]Y‚ˆˆY\ØÚXÚ×ÜÝ\Y‚ˆ˜[ÙKˆ[YÜ˜[WÜÝ\Y‚ˆ˜[ÙKˆK‚ˆ[\ÎˆÂˆ‘\ØÛÝ™\žH™XØ[\Ù\ÈÛ›H˜XÝX[ÝYÙKL]H[™XYH™\Ù[[ˆY[[ÜžKˆ‹ˆ’[š]X[XÚšXØ[YZ\ÜÚ[Ûˆ\ÈY]\™\ËYš\œÝˆœ™\ÚX\šÙ]Ý\œ™[šXÙK^XÝY[]H[™ÛÛ™š\›YYÜž\ÈØÛÜH\™HX[™]ÜžNÈZ\ÜÚ[™ÈÒKÙ[™[™ËÚ\ÝÜžHÝ^H^XÚ]S’Ó“ÕÓˆØ\ÈÈ™H[œšXÚY[™Ø[››Ý]]Üš^™H[žKˆ‹ˆ•H^\Ý[™ÈÌ\››Ý™\‹ÓÒH[™H\È™\Ù\™YÈHYYX\›H[™H\È\ØÛÝ™\žK[Û›H[™™]™\ˆž\\ÜÙ\È^XÝ][Ûˆ[ˆY\ÚXÚÈÈš[˜[XÚ\Ú[Û‹ˆ‹ˆ‘[™[™È\ÈÛÛ^Û›NˆÚYÛ‹Ú[\˜[™]™\ˆÜ™X]\ÈÜˆ›ØÚÜÈHÓ‘ËÔÒÔ•\ØÛÝ™\žH›Ý]NÈ^™[Y\ÈX^HÛ›HY™™XÝ™]]˜[™]šY]Èš[Üš]Kˆ‹ˆ•ËÑU™[]]™HÝ™[™Ý\Ù\ÈHØ[YHÝYÙKLØØ[‹ÝÚ[™ÝÜÎÈZ\ÜÚ[™È™[˜ÚX\šÈ]šY[˜ÙHÜ™X]\È›È”È›YËˆ‹ˆ“›È^\›˜[™\]Y\Ý\ÈÙ[™\˜]YžH\È^Y\‹ˆ‹ˆ“›ÈH™\]Y\Ý\ÈÙ[™\˜]YžH\È^Y\‹ˆ‹ˆ“Ó‘×ÕÐUÒÔÒÔ•ÕÐUÒ\™H\ØÛÝ™\žH›Ý][™È[ÈÛ›K›Ý˜YH\™XÝ[ÛœÈÜˆÚYÛ˜[Ëˆ‹ˆ“›È˜Y[™È›Ø˜Xš[]HÜˆXÚ\Ú[Ûˆ^Y\ˆØÛÜ™H\ÈÙ[™\˜]Yˆ‹ˆ“›È˜[Y]Y]YHÚYÛ˜[\ÈÙ[™\˜]Yˆ‹ˆ“›ÈÝ˜]YÞHÙZYÚÈÜˆ\™™]È[\È\™HÚ[™ÙYˆ‹ˆ”š[Üš]H˜[šÈ\ÈÜ\˜][Û˜[ØÚY[[™ÈÜ™\ˆÛ›H[™\È›ÝH˜YH™XÛÛ[Y[™][Û‹ˆ‹ˆ‘˜\ÝS[Ý™H˜Z\›™\ÜËØÛÛÛÝÛˆ™[XZ[œÈXÝ]™NÈÝ\œ™[Û™KY[QY\PÚXÚË\\‹Z[›ØØ][ÛˆØ\XÚ]H\È™\ÛÝ\˜ÙKY\š]™Y›ÝH\›X[™[Ý˜]YÞH[Kˆ‹ˆKˆNÂŸB‚™[˜Ý[ÛˆØÚY[\“[X™\Š˜]ÊHÂˆYˆ
+ˆ˜]ÈOOH[ˆ˜]ÈOOH[™Yš[™Yˆ˜]ÈOOHˆ‚ˆ
+HÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝ˜[YHBˆ[X™\Š˜]ÊNÂ‚ˆ™]\›ˆ[X™\‹š\Ñš[š]J˜[YJBˆÈ˜[YBˆˆ[ÂŸB‚™[˜Ý[ÛˆZ[›Ý[™YY\ÚXÚÔ[Šˆ\ØÛÝ™\žT™Yš[\‹ˆÝ]T›ÝÜÈH×Kˆ›ÝÓ\ÈH]K››ÝÊ
+KˆÜ[ÛœÈHßBŠHÂˆÛÛœÝT‘ÓPVÔT—Ô•SˆHŽÂ‚ˆÊ‚ˆ
+ˆ^\›˜[\™\]Y\ÝYÙ]\ÈØ[Ý[]Yœ›ÛHHXÝX[Y\ÚXÚÎ‚ˆ
+ˆˆ]\™\ÈÛ˜\ÚÝ
+ÈÜÝ
+ÈLH˜Z™XÝÜžKZ[\ÈY[XØ[ˆ
+ˆ™\]Y\ÝÈ™]\ÙYžHH\‹QY\PÚXÚÈ›ÛZ\ÙHØXÚK\ÈMˆX›XÂˆ
+ˆÜ›ÜÜË]™[YH
+Èˆ\]ZY][Ûˆ
+È›Ú™XÝY[X\›ÝšY\ˆHÎKˆBˆ
+ˆÙ\\˜]H›Ý[™Y˜]ÈÛX\[Û™^HØœÙ\˜][ÛˆYÈH[Ü™H™\]Y\ÝˆÝYÙKLˆ
+ˆ\Ù\È[™H‹XØ[™\Ù\™H\È™]Z[™YÛÈHÛ›ÝÛˆÛÜœÝXØ\ÙH[™[ÜBˆ
+ˆ™[XZ[œÈ^XÝH
+ÈÎH
+ÈH
+ÈˆHL‚ˆ
+‹ÂˆÛÛœÝQTÐÒPÒ×ÕÕSÑVT“SÔ‘TUQTÕÈBˆQTÐÒPÒ×ÑVT“SÔ‘TUQTÕÈ
+ÈÓPT•ÓSÓ‘VWÑVT“SÔ‘TUQTÕÎÂ‚ˆÛÛœÝ‘TÓÕTÑWÓPVÔT—Ô•SˆBˆX]›X^
+ˆˆX]™›ÛÜŠˆ
+ˆÓÔ’ÑT”×Ñ”‘QWÑVT“SÓSRUBˆÕQÑLÑVT“SÔ‘TUQTÕÈBˆVT“SÔ‘TUQTÕÔ‘TÑT•‘Bˆ
+HÂˆQTÐÒPÒ×ÕÕSÑVT“SÔ‘TUQTÕÂˆ
+Bˆ
+NÂ‚ˆÛÛœÝÛÛ™šYÝ\™YX^BˆX]œ›Ý[™
+ˆØÚY[\“[X™\ŠˆÜ[ÛœÏË›X^Ü\—Ü[‚ˆ
+HÏÈBˆ
+NÂ‚ˆÛÛœÝX^\”[ˆBˆX]›Z[ŠˆT‘ÓPVÔT—Ô•S‹ˆ‘TÓÕTÑWÓPVÔT—Ô•S‹ˆX]›X^
+ˆˆÛÛ™šYÝ\™YX^ˆ
+Bˆ
+NÂ‚ˆÛÛœÝ™\]Z\™YÛÛ˜XÝBˆÝš[™ÊˆÜ[ÛœÏËœ™\]Z\™YØÛÛ˜XÝˆˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ™\]Z\™Q^XÝÛÛ˜XÝBˆÜ[ÛœÂˆËœ™\]Z\™WÙ^XÝØÛÛ˜XÝOOBˆYNÂ‚ˆÛÛœÝÛÛÛÝÛ”ÙXÈBˆX]›Z[ŠˆˆX]›X^
+ˆÌˆX]œ›Ý[™
+ˆØÚY[\“[X™\ŠˆÜ[ÛœÏË˜ÛÛÛÝÛ—ÜÙXÂˆ
+HÏÈNˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝX\ÙTÙXÈBˆX]›Z[ŠˆÍŒˆX]›X^
+ˆLŒˆX]œ›Ý[™
+ˆØÚY[\“[X™\ŠˆÜ[ÛœÏË›X\ÙWÜÙXÂˆ
+HÏÈŒˆ
+Bˆ
+Bˆ
+NÂ‚ˆÛÛœÝÚÜ\ÝBˆ\œ˜^Kš\Ð\œ˜^Jˆ\ØÛÝ™\žT™Yš[\‚ˆËœÚÜ\Ýˆ
+BˆÈ\ØÛÝ™\žT™Yš[\‹œÚÜ\Ýˆˆ×NÂ‚ˆÛÛœÝÛÛ™š\›YYØÛÜHBˆ\œ˜^Kš\Ð\œ˜^JˆÜ[ÛœÂˆË˜ÛÛ™š\›YYÜØÛÜWØÛÛ˜XÝÂˆ
+BˆÈ™]ÈÙ]
+ˆÜ[ÛœÂˆ˜ÛÛ™š\›YYÜØÛÜWØÛÛ˜XÝÂˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆ
+Bˆˆ[Â‚ˆÊ‚ˆ
+ˆ]]ÛX]XÈ^XÝ][ÛˆUTÕ˜Z[ÛÜÙYˆ
+ˆ[[˜XÝX[[œÝ[Y[ØÛÜH\Âˆ
+ˆ™Y[ˆÝ\YY‚ˆ
+‚ˆ
+ˆ]\™\ÈÝ\œ™[HÛÛZ[œÈ›Ýˆ
+ˆÜž\È[™Þ[]XËÛ›Û‹XÜž\Âˆ
+ˆÛÛ˜XÝËˆ\ØÛÝ™\žH˜[šÈ[Û™H\Âˆ
+ˆ\™Y›Ü™H›Ý\›Z\ÜÚ[ÛˆÈÜ[™ˆ
+ˆY\ÚXÚÈYÙ]‚ˆ
+‹ÂˆÛÛœÝØÛÜPÛÛ™š\›YYBˆÛÛ™š\›YYØÛÜHOOH[Â‚ˆÛÛœÝÝ]SX\Bˆ™]ÈX\
+
+NÂ‚ˆ›Üˆ
+ˆÛÛœÝ›ÝÂˆÙˆ\œ˜^Kš\Ð\œ˜^JÝ]T›ÝÜÊBˆÈÝ]T›ÝÜÂˆˆ×Bˆ
+HÂˆÛÛœÝÛÛ˜XÝBˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝØÛÙHˆ‚ˆ
+Kš[J
+NÂ‚ˆYˆ
+XÛÛ˜XÝ
+HÂˆÛÛ[YNÂˆB‚ˆÝ]SX\œÙ]
+ˆÛÛ˜XÝˆ›ÝÂˆ
+NÂˆB‚ˆÛÛœÝÙY[ˆBˆ™]ÈÙ]
+
+NÂ‚ˆÛÛœÝ™XYHH×NÂˆÛÛœÝ›ØÚÙYH×NÂ‚ˆ›Üˆ
+ˆÛÛœÝ›ÝÂˆÙˆÚÜ\Ýˆ
+HÂˆÛÛœÝÛÛ˜XÝBˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝˆ‚ˆ
+Kš[J
+NÂ‚ˆYˆ
+ˆXÛÛ˜XÝˆÙY[‹š\ÊÛÛ˜XÝ
+Bˆ
+HÂˆÛÛ[YNÂˆB‚ˆÙY[‹˜Y
+ÛÛ˜XÝ
+NÂ‚ˆÛÛœÝš[Üš]T˜[šÈBˆØÚY[\“[X™\Šˆ›ÝÏËœš[Üš]WÜ˜[šÂˆ
+NÂ‚ˆÛÛœÝ›YÜÈBˆØÚY[\“[X™\Šˆ›ÝÂˆË˜[›ÛX[WÙ›YÜ×ØÛÝ[ˆ
+HÏÈÂ‚ˆYˆ
+ˆ\ØÛÜPÛÛ™š\›YYˆXÛÛ™š\›YYØÛÜKš\ÊˆÛÛ˜XÝˆ
+Bˆ
+HÂˆ›ØÚÙYœ\Ú
+ÂˆÛÛ˜XÝˆš[Üš]WÜ˜[šÎ‚ˆš[Üš]T˜[šËˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ›YÜËˆ™X\ÛÛŽ‚ˆØÛÜPÛÛ™š\›YYˆÈ’S”Õ•SQS•ÔÐÓÔWÓ“ÕÐÓÓ‘’T“QQ‚ˆˆ’S”Õ•SQS•ÔÐÓÔWÔÓÕTÑWÓRTÔÒS‘È‹ˆJNÂ‚ˆÛÛ[YNÂˆB‚ˆÛÛœÝÝ]HBˆÝ]SX\™Ù]
+ˆÛÛ˜XÝˆ
+H[Â‚ˆÛÛœÝ\ÝÝ\YÈBˆØÚY[\“[X™\ŠˆÝ]OË›\ÝÜÝ\YÝÂˆ
+NÂ‚ˆÛÛœÝ\ÝÛÛ\]YÈBˆØÚY[\“[X™\ŠˆÝ]BˆË›\ÝØÛÛ\]YÝÂˆ
+NÂ‚ˆÛÛœÝ\ÝÚXÚÕÈBˆ\ÝÛÛ\]YÈÏÂˆ\ÝÝ\YÎÂ‚ˆÛÛœÝYÙTÙXÈBˆ\ÝÚXÚÕÈOOH[ˆÈ[ˆˆX]›X^
+ˆˆ
+ˆ›ÝÓ\ÈBˆ\ÝÚXÚÕÂˆ
+HÂˆLˆ
+NÂ‚ˆÛÛœÝX\ÙPYÙTÙXÈBˆ\ÝÝ\YÈOOH[ˆÈ[ˆˆX]›X^
+ˆˆ
+ˆ›ÝÓ\ÈBˆ\ÝÝ\YÂˆ
+HÂˆLˆ
+NÂ‚ˆÛÛœÝ\ÝÝ]\ÈBˆÝš[™ÊˆÝ]OË›\ÝÜÝ]\Èˆˆ‚ˆ
+KÕ\\Ø\ÙJ
+NÂ‚ˆÛÛœÝXÝ]™SX\ÙHBˆ\ÝÝ]\ÈOOBˆ”•S“’S‘Èˆ	‰‚ˆX\ÙPYÙTÙXÈOOH[	‰‚ˆX\ÙPYÙTÙXÈˆX\ÙTÙXÎÂ‚ˆYˆ
+XÝ]™SX\ÙJHÂˆ›ØÚÙYœ\Ú
+ÂˆÛÛ˜XÝˆš[Üš]WÜ˜[šÎ‚ˆš[Üš]T˜[šËˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ›YÜËˆ™X\ÛÛŽ‚ˆPÕU‘WÓPTÑH‹ˆ\ÝÜÝ\YÝÎ‚ˆ\ÝÝ\YËˆX\ÙWØYÙWÜÙXÎ‚ˆX\ÙPYÙTÙXËˆJNÂ‚ˆÛÛ[YNÂˆB‚ˆÛÛœÝÛÛÛÝÛXÝ]™HBˆYÙTÙXÈOOH[	‰‚ˆYÙTÙXÈˆÛÛÛÝÛ”ÙXÎÂ‚ˆYˆ
+ÛÛÛÝÛXÝ]™JHÂˆ›ØÚÙYœ\Ú
+ÂˆÛÛ˜XÝˆš[Üš]WÜ˜[šÎ‚ˆš[Üš]T˜[šËˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ›YÜËˆ™X\ÛÛŽ‚ˆÓÓÓÕÓˆ‹ˆ\ÝØÚXÚ×ÝÎ‚ˆ\ÝÚXÚÕËˆYÙWÜÙXÎ‚ˆYÙTÙXËˆJNÂ‚ˆÛÛ[YNÂˆB‚ˆÛÛœÝ™XYT›ÝÈHÂˆÛÛ˜XÝˆš[Üš]WÜ˜[šÎ‚ˆš[Üš]T˜[šËˆ[›ÛX[WÙ›YÜ×ØÛÝ[‚ˆ›YÜËˆ\ÝØÚXÚ×ÝÎ‚ˆ\ÝÚXÚÕËˆYÙWÜÙXÎ‚ˆYÙTÙXËˆNÂ‚ˆËÈŒÈ[™Ù™ˆY]Y]H]\ÝÝ\š]™HØÚY[\ˆ˜Z\›™\ÜÈÙ[XÝ[ÛˆÚ]Ý]ˆËÈ[™›][™ÈÙÜËÜÙ\šX[^™Y[œËˆHÛÝ\˜ÙH›ÝÈ\È[X™\˜][HY[‹‚ˆØš™XÝ™Yš[™T›Ü\Jˆ™XYT›ÝËˆ—ÝŒ×Ù\ØÛÝ™\žWÜÛÝ\˜ÙH‹ˆÂˆ˜[YNˆ›ÝËˆ[[Y\˜X›Nˆ˜[ÙKˆÛÛ™šYÝ\˜X›Nˆ˜[ÙKˆÜš]X›Nˆ˜[ÙKˆBˆ
+NÂ‚ˆ™XYKœ\Ú
+™XYT›ÝÊNÂˆB‚ˆÊˆÜ™[˜\žH\ØÛÝ™\žH\Ù\ÈÝ\œ™[˜XÝX[]X[]Hš\œÝˆX[™]ÜžH^XÝˆ
+ˆ™XÚXÚÜËÛX[X[›ØœÈÙY\Z\ˆÙ\\˜]H[™H[™\™H[˜Y™™XÝYˆ
+‹Âˆ™XYKœÛÜ
+ÛÛ\\™SÜ™[˜\žQY\Ø[™Y]\ÊNÂ‚ˆÊ‚ˆ
+ˆH˜\ÝS[Ý™H]Y]YHX\ÙH[™HY\ÚXÚÈ]\Ý™Y™\ˆÈ^XÝBˆ
+ˆHØ[YHÛÛ˜XÝˆ[™\[™[ØÚY[\ˆ˜Z\›™\ÜÈX^H™]™\‚ˆ
+ˆÝXœÝ]]H[›Ý\ˆÞ[X›ÛY\ˆHX\ÙH\È™Y[ˆÛZ[YY‚ˆ
+‹ÂˆÛÛœÝ[YÚX›Q›Ü”Ù[XÝ[ÛˆBˆ™\]Z\™Q^XÝÛÛ˜XÝˆÈ™XYK™š[\Šˆ
+›ÝÊHO‚ˆ™\]Z\™YÛÛ˜XÝ	‰‚ˆ›ÝË˜ÛÛ˜XÝOOBˆ™\]Z\™YÛÛ˜XÝˆ
+Bˆˆ™XYNÂ‚ˆÛÛœÝÙ[XÝYBˆ[YÚX›Q›Ü”Ù[XÝ[Û‹œÛXÙJˆˆX^\”[‚ˆ
+NÂ‚ˆÛÛœÝ™\]Z\™YÛÛ˜XÝÝ]\ÈBˆ\™\]Z\™Q^XÝÛÛ˜XÝˆÈ““ÕÔ‘TURT‘Q‚ˆˆ\™\]Z\™YÛÛ˜XÝˆÈ“RTÔÒS‘×ÑRSÐÓÔÑQ‚ˆˆÙ[XÝY›[™ÝOOHBˆÈ”‘PQWÑVPÕÓPUÒ‚ˆˆ““ÕÔ‘PQWÑRSÐÓÔÑQŽÂ‚ˆÛÛœÝÝYÙL^\›˜[BˆÕQÑLÑVT“SÔ‘TUQTÕÎÂ‚ˆÛÛœÝY\ÚXÚÑ^\›˜[BˆQTÐÒPÒ×ÑVT“SÔ‘TUQTÕÎÂ‚ˆÛÛœÝÛX\[Û™^Q^\›˜[BˆÓPT•ÓSÓ‘VWÑVT“SÔ‘TUQTÕÎÂ‚ˆÛÛœÝY\ÚXÚÕÝ[^\›˜[BˆY\ÚXÚÑ^\›˜[
+ÂˆÛX\[Û™^Q^\›˜[Â‚ˆÛÛœÝ\Ý[X]Y^\›˜[BˆÝYÙL^\›˜[
+ÂˆÙ[XÝY›[™Ý
+‚ˆY\ÚXÚÕÝ[^\›˜[Â‚ˆ™]\›ˆÂˆ^Y\Ž‚ˆ“ÕS‘QÑQTÐÒPÒ×ÔÐÒQSTˆ‹‚ˆ[ÙN‚ˆÔ“Ó—ÕÒT‘QÐ“ÕS‘QÑVPÕUSÓˆ‹‚ˆ\˜[Y]\œÎˆÂˆ\™ÛX^Ü\—Ü[Ž‚ˆT‘ÓPVÔT—Ô•S‹‚ˆ™\ÛÝ\˜ÙWÛX^Ü\—Ü[Ž‚ˆ‘TÓÕTÑWÓPVÔT—Ô•S‹‚ˆÛÛ™šYÝ\™YÛX^Ü\—Ü[Ž‚ˆX^\”[‹‚ˆÛÛÛÝÛ—ÜÙXÎ‚ˆÛÛÛÝÛ”ÙXË‚ˆX\ÙWÜÙXÎ‚ˆX\ÙTÙXË‚ˆØÛÜWÜ™\]Z\™Y‚ˆYK‚ˆ™\]Z\™WÙ^XÝØÛÛ˜XÝ‚ˆ™\]Z\™Q^XÝÛÛ˜XÝ‚ˆ™\]Z\™YØÛÛ˜XÝ‚ˆ™\]Z\™YÛÛ˜XÝˆ[‚ˆ™\]Z\™YØÛÛ˜XÝÜÝ]\Î‚ˆ™\]Z\™YÛÛ˜XÝÝ]\ËˆK‚ˆØÛÜWÜÝ]\Î‚ˆØÛÜPÛÛ™š\›YYˆÈÓÓ‘’T“QQÔÑUÔÕTQQ‚ˆˆ•SÓÓ‘’T“QQÑRSÐÓÔÑQ‹‚ˆÛÝ[ÎˆÂˆÚÜ\Ý‚ˆÚÜ\Ý›[™Ý‚ˆØÛÜWØÛÛ™š\›YY‚ˆØÛÜPÛÛ™š\›YYˆÈÚÜ\Ý™š[\Šˆ
+›ÝÊHO‚ˆÛÛ™š\›YYØÛÜKš\ÊˆÝš[™Êˆ›ÝÏË˜ÛÛ˜XÝˆˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ
+K›[™Ýˆˆ‚ˆ™XYN‚ˆ™XYK›[™Ý‚ˆ›ØÚÙY‚ˆ›ØÚÙY›[™Ý‚ˆÙ[XÝY‚ˆÙ[XÝY›[™ÝˆK‚ˆÙ[XÝYˆ›ØÚÙY‚ˆYÙ]ˆÂˆÝYÙLÙ^\›˜[Ü™\]Y\ÝÎ‚ˆÝYÙL^\›˜[‚ˆY\ØÚXÚ×Ù^\›˜[Ü™\]Y\Ý×ÙXXÚ‚ˆY\ÚXÚÑ^\›˜[‚ˆÛX\Û[Û™^WÙ^\›˜[Ü™\]Y\Ý×ÙXXÚ‚ˆÛX\[Û™^Q^\›˜[‚ˆY\ØÚXÚ×ÝÝ[Ù^\›˜[Ü™\]Y\Ý×ÙXXÚ‚ˆY\ÚXÚÕÝ[^\›˜[‚ˆ\Ý[X]YÙ^\›˜[Ü™\]Y\Ý×Ý\×Ü[Ž‚ˆ\Ý[X]Y^\›˜[‚ˆÛÜšÙ\œ×Ùœ™YWÙ^\›˜[Û[Z]‚ˆÓÔ’ÑT”×Ñ”‘QWÑVT“SÓSRU‚ˆ^\›˜[Ü™\]Y\ÝÜ™\Ù\™N‚ˆVT“SÔ‘TUQTÕÔ‘TÑT•‘K‚ˆÚ][—ÚÛ›ÝÛ—Ù^\›˜[Û[Z]‚ˆ\Ý[X]Y^\›˜[BˆÓÔ’ÑT”×Ñ”‘QWÑVT“SÓSRUBˆVT“SÔ‘TUQTÕÔ‘TÑT•‘K‚ˆ™YWÙY\ØÚXÚÜ×ÝÛÝ[Ù\Ý[X]N‚ˆÝYÙL^\›˜[
+ÂˆÈ
+‚ˆY\ÚXÚÕÝ[^\›˜[ˆK‚ˆXÚ\Ú[ÛŽˆÂˆÙ[™\˜]Yˆ˜[ÙKˆ\™XÝ[ÛŽˆ[ˆ›Ø˜Xš[]Nˆ[ˆ˜[Y]Yˆ˜[ÙKˆK‚ˆ^XÝ][ÛŽˆÂˆÝ\Yˆ˜[ÙKˆY\ØÚXÚÜ×ÜÝ\Yˆˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆK‚ˆ[\ÎˆÂˆ’\™^XÝ][ÛˆØ\\ÈˆY\ÚXÚÜÈ\ˆÜ›Ûˆ[›ØØ][Û‹ˆ‹ˆ”™\ÛÝ\˜ÙKY\š]™Y^XÝ][ÛˆØ\\ÈHY\ÚXÚÈ\ˆÜ›Ûˆ[›ØØ][Û‹ˆ‹ˆ•H˜\ÝS[Ý™HX\ÙHÝÛ™\ˆÝ\Y\ÈHÛ›HÛÛ˜XÝ[YÚX›H›ÜˆHX]Ú[™ÈY\ÚXÚËˆ‹ˆÛÛÛÝÛˆ[™XÝ]™HX\ÙH\™HÜ\˜][Û˜[™\ÛÝ\˜ÙHÛÛ›ÛË›Ý˜Y[™ÈÚYÛ˜[Ëˆ‹ˆ“Û\ÝÜˆ™]™\‹XÚXÚÙY[YÚX›HØ[™Y]H\È™Y™\œ™Y™Y›Ü™H™Yš[\ˆš[Üš]Kˆ‹ˆ’[œÝ[Y[ØÛÜH]\Ý™H˜XÝX[HÛÛ™š\›YY™Y›Ü™H]]ÛX]XÈY\ÚXÚÈ^XÝ][Û‹ˆ‹ˆ•[šÛ›ÝÛˆ[œÝ[Y[ØÛÜH˜Z[ÈÛÜÙYˆ‹ˆ“›ÈÓ‘ËÔÒÔ•\™XÝ[Ûˆ\ÈÙ[™\˜]Y\™Kˆ‹ˆ“›È›Ø˜Xš[]H\ÈÙ[™\˜]Y\™Kˆ‹ˆ“›È˜[Y]Y]YHÚYÛ˜[\ÈÙ[™\˜]Y\™Kˆ‹ˆ“›È[YÜ˜[HØ[\ÈÙ[™\˜]Y\™Kˆ‹ˆKˆNÂŸB‚˜\Þ[˜È[˜Ý[ÛˆØYY\ÚXÚÔØÚY[\”Ý]Jˆ[‹ˆÛÛ˜XÝÂŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Î‚ˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆ›ÝÜÎˆ×Kˆ\œ›ÜŽ‚ˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘Q‹ˆNÂˆB‚ˆÛÛœÝÛX[ˆBˆ\œ˜^K™œ›ÛJˆ™]ÈÙ]
+ˆ
+ˆ\œ˜^Kš\Ð\œ˜^JˆÛÛ˜XÝÂˆ
+BˆÈÛÛ˜XÝÂˆˆ×Bˆ
+Bˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆ
+Bˆ
+BˆœÛXÙJˆˆLˆ
+NÂ‚ˆYˆ
+XÛX[‹›[™Ý
+HÂˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆ›ÝÜÎˆ×Kˆ\œ›ÜŽˆ[ˆNÂˆB‚ˆÛÛœÝXÙZÛ\œÈBˆÛX[‚ˆ›X\
+ˆ
+Ë[™^
+HO‚ˆÉÚ[™^
+È_Xˆ
+Bˆš›Ú[Š‹ŠNÂ‚ˆžHÂˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‚ˆœ™\\™JˆÑSPÕˆÛÛ˜XÝØÛÙKˆ\ÝÜÝ\YÝËˆ\ÝØÛÛ\]YÝËˆ\ÝÜÝ]\Ëˆ\ÝÜ[—ÚYˆ\ÝÜÝY™šXÚY[˜ÞKˆ\ÝÙ\œ›Ü‹ˆ\]YÝËˆŒ×Ú[™Ù™—ÚYˆŒ×Ú[™Ù™—ÛÙÚXØ[ÚÙ^KˆŒ×ÜØØ[—ÝËˆŒ×Ø˜\ÙWÝXÚÙ\‹ˆŒ×Ù\ØÛÝ™\žWÜ˜[šËˆŒ×Ù]XÝÜœ×ÚœÛÛ‹ˆŒ×Ù]šY[˜ÙWÚY×ÚœÛÛ‹ˆŒ×Ùš\œÝÜÙY[—ÜÝ]WÚœÛÛ‹ˆŒ×ØÝ\œ™[ÜÝ]WÚœÛÛ‹ˆŒ×Ù\™XÝ[Û‹ˆŒ×ÝØ]™WÚYˆŒ×ÙY\Ü™Y[žWÚÙ^Bˆ”“ÓHY\ØÚXÚ×ÜØÚY[\—ÜÝ]BˆÒT‘HÛÛ˜XÝØÛÙHSˆ
+ˆ	ÜXÙZÛ\œßBˆ
+Bˆ
+Bˆ˜š[™
+ˆ‹‹˜ÛX[‚ˆ
+Bˆ˜[
+
+NÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆ›ÝÜÎ‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ™\Ý[Ëœ™\Ý[Âˆ
+BˆÈ™\Ý[œ™\Ý[Âˆˆ×Kˆ\œ›ÜŽˆ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆÛÛœÝY\ÜØYÙHBˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+NÂ‚ˆ™]\›ˆÂˆÝ]\Î‚ˆÛ›ÈÝXÚX›KÚK\Ý
+ˆY\ÜØYÙBˆ
+BˆÈ“RQÔUSÓ—Ô‘TURT‘Q‚ˆˆ”T•PS‹ˆ›ÝÜÎˆ×Kˆ\œ›ÜŽˆY\ÜØYÙKˆNÂˆBŸB‚˜\Þ[˜È[˜Ý[Ûˆ™\Ù\™QY\ÚXÚÔØÚY[\”ÛÝ
+ˆ[‹ˆÂˆÛÛ˜XÝˆ[—ÚYˆ›Ý×Û\ËˆÛÛÛÝÛ—ÜÙXËˆX\ÙWÜÙXËˆ[™Ù™ˆH[ˆBŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Î‚ˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆNÂˆB‚ˆÛÛœÝÛÛ˜XÝÛÙHBˆÝš[™ÊˆÛÛ˜XÝˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ[’YBˆÝš[™Êˆ[—ÚYˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ›ÝÓ\ÈBˆØÚY[\“[X™\Šˆ›Ý×Û\Âˆ
+NÂ‚ˆÛÛœÝÛÛÛÝÛ”ÙXÈBˆØÚY[\“[X™\ŠˆÛÛÛÝÛ—ÜÙXÂˆ
+NÂ‚ˆÛÛœÝX\ÙTÙXÈBˆØÚY[\“[X™\ŠˆX\ÙWÜÙXÂˆ
+NÂ‚ˆYˆ
+ˆXÛÛ˜XÝÛÙHˆ\[’Yˆ›ÝÓ\ÈOOH[ˆÛÛÛÝÛ”ÙXÈOOH[ˆX\ÙTÙXÈOOH[ˆ
+HÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Î‚ˆ’S•SQÒS”U‹ˆNÂˆB‚ˆÛÛœÝÛÛÛÝÛÝ]Ù™ˆBˆ›ÝÓ\ÈBˆÛÛÛÝÛ”ÙXÈ
+‚ˆLÂ‚ˆÛÛœÝX\ÙPÝ]Ù™ˆBˆ›ÝÓ\ÈBˆX\ÙTÙXÈ
+‚ˆLÂ‚ˆÛÛœÝBˆ[™Ù™ˆ	‰‚ˆ[™Ù™‹™\œÚ[Ûˆ	‰‚ˆ[™Ù™‹š[™Ù™—ÚY	‰‚ˆ[™Ù™‹›ÙÚXØ[ÚÙ^BˆÈ[™Ù™‚ˆˆ[Â‚ˆžHÂˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‚ˆœ™\\™JˆS”ÑT•S•ÂˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]Bˆ
+ˆÛÛ˜XÝØÛÙKˆ\ÝÜÝ\YÝËˆ\ÝØÛÛ\]YÝËˆ\ÝÜÝ]\Ëˆ\ÝÜ[—ÚYˆ\ÝÜÝY™šXÚY[˜ÞKˆ\ÝÙ\œ›Ü‹ˆ\]YÝËˆŒ×Ú[™Ù™—ÚYˆŒ×Ú[™Ù™—ÛÙÚXØ[ÚÙ^KˆŒ×ÜØØ[—ÝËˆŒ×Ø˜\ÙWÝXÚÙ\‹ˆŒ×Ù\ØÛÝ™\žWÜ˜[šËˆŒ×Ù]XÝÜœ×ÚœÛÛ‹ˆŒ×Ù]šY[˜ÙWÚY×ÚœÛÛ‹ˆŒ×Ùš\œÝÜÙY[—ÜÝ]WÚœÛÛ‹ˆŒ×ØÝ\œ™[ÜÝ]WÚœÛÛ‹ˆŒ×Ù\™XÝ[Û‹ˆŒ×ÝØ]™WÚYˆŒ×ÙY\Ü™Y[žWÚÙ^Bˆ
+BˆSQTÂˆ
+ˆÌKÌ‹•S	Ô•S“’S‘ÉËÌË•S•SÌ‹ˆÍ‹ÍËÎÎKÌLÌLKÌL‹ÌLËÌMÌMKÌM‹ÌMÂˆ
+BˆÓˆÓÓ‘“PÕ
+ÛÛ˜XÝØÛÙJBˆÈTUHÑUˆ\ÝÜÝ\YÝÈH^ÛYY›\ÝÜÝ\YÝËˆ\ÝÜÝ]\ÈH	Ô•S“’S‘ÉËˆ\ÝÜ[—ÚYH^ÛYY›\ÝÜ[—ÚYˆ\ÝÜÝY™šXÚY[˜ÞHH•Sˆ\ÝÙ\œ›ÜˆH•Sˆ\]YÝÈH^ÛYY\]YÝËˆŒ×Ú[™Ù™—ÚYH^ÛYYŒ×Ú[™Ù™—ÚYˆŒ×Ú[™Ù™—ÛÙÚXØ[ÚÙ^HH^ÛYYŒ×Ú[™Ù™—ÛÙÚXØ[ÚÙ^KˆŒ×ÜØØ[—ÝÈH^ÛYYŒ×ÜØØ[—ÝËˆŒ×Ø˜\ÙWÝXÚÙ\ˆH^ÛYYŒ×Ø˜\ÙWÝXÚÙ\‹ˆŒ×Ù\ØÛÝ™\žWÜ˜[šÈH^ÛYYŒ×Ù\ØÛÝ™\žWÜ˜[šËˆŒ×Ù]XÝÜœ×ÚœÛÛˆH^ÛYYŒ×Ù]XÝÜœ×ÚœÛÛ‹ˆŒ×Ù]šY[˜ÙWÚY×ÚœÛÛˆH^ÛYYŒ×Ù]šY[˜ÙWÚY×ÚœÛÛ‹ˆŒ×Ùš\œÝÜÙY[—ÜÝ]WÚœÛÛˆH^ÛYYŒ×Ùš\œÝÜÙY[—ÜÝ]WÚœÛÛ‹ˆŒ×ØÝ\œ™[ÜÝ]WÚœÛÛˆH^ÛYYŒ×ØÝ\œ™[ÜÝ]WÚœÛÛ‹ˆŒ×Ù\™XÝ[ÛˆH^ÛYYŒ×Ù\™XÝ[Û‹ˆŒ×ÝØ]™WÚYH^ÛYYŒ×ÝØ]™WÚYˆŒ×ÙY\Ü™Y[žWÚÙ^HH^ÛYYŒ×ÙY\Ü™Y[žWÚÙ^BˆÒT‘Bˆ
+ˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝÜÝ]\ÈOH	Ô•S“’S‘ÉÂˆÔˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝÜÝ\YÝÈTÈ•SˆÔˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝÜÝ\YÝÈHÍˆ
+BˆS‘ˆ
+ˆÓÐSTÐÑJY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝØÛÛ\]YÝËˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝÜÝ\YÝÊHTÈ•SˆÔˆÓÐSTÐÑJY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝØÛÛ\]YÝËˆY\ØÚXÚ×ÜØÚY[\—ÜÝ]K›\ÝÜÝ\YÝÊHHÍBˆ
+Bˆ
+Bˆ˜š[™
+ˆÛÛ˜XÝÛÙKˆ›ÝÓ\Ëˆ[’YˆX\ÙPÝ]Ù™‹ˆÛÛÛÝÛÝ]Ù™‹ˆËš[™Ù™—ÚYÏÈ[ˆË›ÙÚXØ[ÚÙ^HÏÈ[ˆËœØØ[—ÝÈÏÈ[ˆË˜˜\ÙWÝXÚÙ\ˆÏÈ[ˆË™\ØÛÝ™\žWÜ˜[šÈÏÈ[ˆ”ÓÓ‹œÝš[™ÚYžJË™]XÝÜœÈÏÈ×JKˆ”ÓÓ‹œÝš[™ÚYžJË™]šY[˜ÙWÚYÈÏÈ×JKˆË™š\œÝÜÙY[—ÜÝ]HOH[È[ˆ”ÓÓ‹œÝš[™ÚYžJ™š\œÝÜÙY[—ÜÝ]JKˆË˜Ý\œ™[ÜÝ]HOH[È[ˆ”ÓÓ‹œÝš[™ÚYžJ˜Ý\œ™[ÜÝ]JKˆË™\™XÝ[ÛˆÏÈ[ˆËØ]™WÚYÏÈ[ˆË™Y\Ü™Y[žWÚÙ^HÏÈ[ˆ
+Bˆœ[Š
+NÂ‚ˆÛÛœÝÚ[™Ù\ÈBˆ[X™\Šˆ™\Ý[Ë›Y]BˆË˜Ú[™Ù\ÈÏÂˆˆ
+NÂ‚ˆ™]\›ˆÂˆÚÎˆYKˆ™\Ù\™Y‚ˆÚ[™Ù\ÈˆˆÝ]\Î‚ˆÚ[™Ù\ÈˆˆÈ”‘TÑT•‘Q‚ˆˆÓÓÓÕÓ—ÓÔ—ÐPÕU‘WÓPTÑH‹ˆÝ\YÝÎ‚ˆÚ[™Ù\ÈˆˆÈ›ÝÓ\Âˆˆ[ˆ[™Ù™Ž‚ˆÚ[™Ù\ÈˆˆÈˆˆ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Î‚ˆ‘WÑT”“Ôˆ‹ˆ\œ›ÜŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+KˆNÂˆBŸB‚˜\Þ[˜È[˜Ý[Ûˆš[˜[^™QY\ÚXÚÔØÚY[\”ÛÝ
+ˆ[‹ˆÂˆÛÛ˜XÝˆ[—ÚYˆÝ\YÝËˆÛÛ\]YÝËˆÝ]\ËˆÝY™šXÚY[˜ÞKˆ\œ›Ü‹ˆ]Z[ÈHßKˆBŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Î‚ˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆNÂˆB‚ˆÛÛœÝÛÛ˜XÝÛÙHBˆÝš[™ÊˆÛÛ˜XÝˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ[’YBˆÝš[™Êˆ[—ÚYˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝÛÛ\]YÈBˆØÚY[\“[X™\ŠˆÛÛ\]YÝÂˆ
+NÂ‚ˆÛÛœÝÝ\YÈBˆØÚY[\“[X™\ŠˆÝ\YÝÂˆ
+NÂ‚ˆYˆ
+ˆXÛÛ˜XÝÛÙHˆ\[’YˆÛÛ\]YÈOOH[ˆ
+HÂˆ™]\›ˆÂˆÝ]\Î‚ˆ’S•SQÒS”U‹ˆNÂˆB‚ˆÛÛœÝš[˜[Ý]\ÈBˆÝš[™ÊˆÝ]\ÈˆÓÓTUQ‚ˆ
+NÂ‚ˆÛÛœÝš[˜[\œ›ÜˆBˆ\œ›ÜˆOOH[ˆ\œ›ÜˆOOH[™Yš[™YˆÈ[ˆˆÝš[™Ê\œ›ÜŠBˆœÛXÙJŒ
+NÂ‚ˆÛÛœÝØ\ÈBˆ\œ˜^Kš\Ð\œ˜^Jˆ]Z[ÏË™Ø\Âˆ
+BˆÈ]Z[Ë™Ø\Âˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+KœÛXÙJMŒ
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆœÛXÙJL
+Bˆˆ×NÂ‚ˆÛÛœÝ˜Z[YÛÛ\Û™[ÈBˆ\œ˜^Kš\Ð\œ˜^Jˆ]Z[ÂˆË™˜Z[YØÛÛ\Û™[Âˆ
+BˆÈ]Z[Âˆ™˜Z[YØÛÛ\Û™[Âˆ›X\
+ˆ
+˜[YJHO‚ˆÝš[™Êˆ˜[YHˆ‚ˆ
+KœÛXÙJLŒ
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆœÛXÙJŒ
+Bˆˆ×NÂ‚ˆÛÛœÝ[š[YÛÛ\Û™[ÈBˆØÚY[\“[X™\Šˆ]Z[ÂˆË™[š[YØÛÛ\Û™[Âˆ
+NÂ‚ˆÛÛœÝXÚ\Ú[Û‘Ù[™\˜]YBˆ]Z[ÂˆË™XÚ\Ú[Û—ÙÙ[™\˜]YOOBˆYNÂ‚ˆÛÛœÝ˜[Y]Y{ã]ý¶‰žËkºwµçHYˆ
+Ê™X[™XÛÜ™YXÝX[]™[Ïßš[Ïß\]ZY]Y
+KË\Ý
+ÝÙ\ŠJHÛÛ[YNÂˆØ[Ê‹	Ü]K‰ÚßX\
+ÈJNÂˆBˆBˆØ[Ê^[ØY
+NÂˆ™]\›ˆÈ[šY\Îˆ›Ý[™Ü˜\Û›Ù\×ÜØØ[›™YˆÜ˜\›Ù\ÔØØ[›™YÜ˜\ÜØØ[—Ý[˜Ø]YˆÜ˜\ØØ[•[˜Ø]YNÂˆB‚ˆ[˜Ý[Ûˆ›ÝÓ]™[
+›ÝËÛÛZ[™\”]Ý\œ™[šXÙKÛÝ\˜ÙUËØœÙ\™YÊHÂˆYˆ
+›ÝÈOOH[›ÝÈOOH[™Yš[™Y
+H™]\›ˆ[Âˆ]ØšˆH›ÝÎÂˆËÈ[™ØÝ[Y[YX]X\X]šXÙ\È\™H˜Z[XÛÜÙYˆ›ÝšY\‹\ÜXÚYšXÈ\œ˜^BˆËÈØÚ[X\È]\Ý™H›Ü›X[^™Y\Ý™X[H[™\ˆ[ˆ^XÚ]™\œÚ[Û™YÛÛ˜XÝ‚ˆYˆ
+\œ˜^Kš\Ð\œ˜^J›ÝÊJH™]\›ˆ[ÂˆYˆ
+\[ÙˆØšˆOOH›Øš™XÝŠH™]\›ˆ[ÂˆÛÛœÝÝÈHš[š]JØš‹œšXÙWÛÝÈÏÈØš‹›ÝÈÏÈØš‹›ÝÙ\ˆÏÈØš‹™œ›ÛWÜšXÙHÏÈØš‹™œ›ÛJNÂˆÛÛœÝYÚHš[š]JØš‹œšXÙWÚYÚÏÈØš‹šYÚÏÈØš‹\\ˆÏÈØš‹×ÜšXÙHÏÈØš‹ÊNÂˆÛÛœÝÚ[™ÛHHš[š]JØš‹›]™[ÜšXÙHÏÈØš‹œšXÙWÛ]™[ÏÈØš‹›\]ZY][Û—ÜšXÙHÏÈØš‹œšXÙHÏÈØš‹›]™[ÏÈØš‹˜Ù[\ˆÏÈØš‹›ZY
+NÂˆÛÛœÝšXÙHHÚ[™ÛHÏÈ
+ÝÈOOH[	‰ˆYÚOOH[È
+ÝÈ
+ÈYÚ
+HÈˆˆ[
+NÂˆYˆ
+šXÙHOOH[šXÙHH
+H™]\›ˆ[Â‚ˆÛÛœÝÚ^™TZ\œÈHÂˆÈ››Ý[Û˜[Ý\Ù‹Øš‹››Ý[Û˜[Ý\ÙKÈ››Ý[Û˜[\Ù‹Øš‹››Ý[Û˜[\ÙKÈœÚ^™WÝ\Ù‹Øš‹œÚ^™WÝ\ÙKˆÈœÚ^™U\Ù‹Øš‹œÚ^™U\ÙKÈ\ÙÛ›Ý[Û˜[‹Øš‹\ÙÛ›Ý[Û˜[KÈœ][ÝWÜ]H‹Øš‹œ][ÝWÜ]WKˆÈœ][ÝT]H‹Øš‹œ][ÝT]WKÈ››Ý[Û˜[‹Øš‹››Ý[Û˜[KÈ\Ù‹Øš‹\ÙBˆNÂˆ]˜]ÔÚ^™HH[Âˆ]ÛÝ\˜ÙU[š]H[Âˆ›Üˆ
+ÛÛœÝÚÙ^K˜[YWHÙˆÚ^™TZ\œÊHÂˆÛÛœÝˆHš[š]J˜[YJNÂˆYˆ
+ˆOOH[
+HÈ˜]ÔÚ^™HHŽÈÛÝ\˜ÙU[š]HÝ\Ù][Ý_›Ý[Û˜[ÚK\Ý
+Ù^JHÈ•TÑÓ“ÕSÓSÔ“Õ’QTˆˆˆ[Èœ™XZÎÈBˆBˆÛÛœÝÝ™[™ÝHš[š]JØš‹››Ü›X[^™YÜÝ™[™ÝÏÈØš‹››Ü›X[^™YÝ™[™ÝÏÈØš‹œÝ™[™ÝÏÈØš‹™[œÚ]HÏÈØš‹œØÛÜ™HÏÈØš‹š[[œÚ]HÏÈØš‹š[[œÚ]U\Ù
+NÂˆÛÛœÝ˜]ÔÚYHHØš‹œÚYHÏÈØš‹œÜÚ][Û—ÜÚYHÏÈØš‹œÜÚ][Û”ÚYHÏÈØš‹›\]ZY][Û—ÜÚYHÏÈØš‹›\]ZY][Û”ÚYHÏÈØš‹\HÏÈØš‹™\™XÝ[ÛˆÏÈØš‹œ›ÝšY\—Ü˜]×ÜÚYHÏÈ[ÂˆÛÛœÝÚYHH›Ü›X[^™TÚYJ˜]ÔÚYKšXÙKÝ\œ™[šXÙJNÂˆYˆ
+ÚYHOOH•S’Ó“ÕÓˆˆ
+˜]ÔÚ^™HOOH[	‰ˆÝ™[™ÝOOH[
+JH™]\›ˆ[ÂˆÛÛœÝ\Ý[˜ÙTÝHÝ\œ™[šXÙH	‰ˆÝ\œ™[šXÙHˆÈ
+
+šXÙHÈÝ\œ™[šXÙJHHJH
+ˆLˆ[ÂˆÛÛœÝ]™\˜YÙHHš[š]JØš‹›]™\˜YÙHÏÈØš‹›]™\˜YÙWÞÏÈØš‹›]™\˜YÙV
+NÂˆÛÛœÝ^XÚ]XZ›ÜˆHØš‹›XZ›ÜˆOOHYHØš‹š\×ÛXZ›ÜˆOOHYHØš‹š\ÓXZ›ÜˆOOHYH
+Øš‹˜Û\ÜÚYšXØ][ÛŠKÕ\\Ø\ÙJ
+HOOH“PR“Ôˆˆ
+Øš‹Y\ŠKÕ\\Ø\ÙJ
+HOOH“PR“ÔˆŽÂˆ™]\›ˆÂˆ]šY[˜ÙWÝ\Nˆ”“Ò‘PÕQÓTURQUSÓ—ÐÓTÕTˆ‹ˆ›ÝšY\Žˆ“Õ’QT‹ˆÛÝ\˜ÙWÜ]ˆÛÛZ[™\”]ˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆØœÙ\™YÝÎˆØœÙ\™YËˆ˜]×ÜÚYNˆ˜]ÔÚYHOOH[È[ˆ
+˜]ÔÚYJKˆÚYKˆ]™[ÜšXÙNˆšXÙKˆšXÙWÛÝÎˆÝËˆšXÙWÚYÚˆYÚˆ˜]×ÜÚ^™Nˆ˜]ÔÚ^™KˆÛÝ\˜ÙWÝ[š]ˆÛÝ\˜ÙU[š]ˆ›Ü›X[^™YÜÝ™[™ÝˆÝ™[™ÝˆÝ\œ™[ÜšXÙNˆÝ\œ™[šXÙKˆ\Ý[˜ÙWÜÝˆ\Ý[˜ÙTÝˆ]™\˜YÙWØXÚÙ]ˆ]™\˜YÙKˆ^XÚ]ÛXZ›ÜŽˆ^XÚ]XZ›Ü‹ˆ›ÝšY\—Ü˜]ÎˆÂˆYˆ
+Øš‹šYØš‹˜Û\Ý\—ÚYØš‹˜Û\Ý\’Y
+H[ˆX™[ˆ
+Øš‹›X™[Øš‹›˜[YJH[ˆKˆNÂˆB‚ˆ[˜Ý[ÛˆÝ[[X\žPÛ\Ý\œÊ^[ØYÝ\œ™[šXÙKÛÝ\˜ÙUËØœÙ\™YÊHÂˆÛÛœÝÝ]H×NÂˆÛÛœÝÜXÜÈHÂˆÈ›™X\™\ÝØÛ\Ý\—Ø™[ÝÈ‹“Ó‘×ÓTURQUSÓ—Ð‘SÕÈ‹˜[ÙWKÈ›™X\™\ÝÛ\Ý\™[ÝÈ‹“Ó‘×ÓTURQUSÓ—Ð‘SÕÈ‹˜[ÙWKˆÈ›™X\™\ÝØÛ\Ý\—ØX›Ý™H‹”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘H‹˜[ÙWKÈ›™X\™\ÝÛ\Ý\X›Ý™H‹”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘H‹˜[ÙWKˆÈ›\™Ù\ÝÛÛ™×ØÛ\Ý\ˆ‹“Ó‘×ÓTURQUSÓ—Ð‘SÕÈ‹YWKÈ›\™Ù\ÝÛ™ÐÛ\Ý\ˆ‹“Ó‘×ÓTURQUSÓ—Ð‘SÕÈ‹YWKˆÈ›\™Ù\ÝÜÚÜØÛ\Ý\ˆ‹”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘H‹YWKÈ›\™Ù\ÝÚÜÛ\Ý\ˆ‹”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘H‹YWKˆNÂˆÛÛœÝØš™XÝÈHÜ^[ØY^[ØYË™]K^[ØYËœÝ[[X\žK^[ØYË˜Û\Ý\œ×ÜÝ[[X\žK^[ØYË˜Û\Ý\—ÜÝ[[X\žWNÂˆ›Üˆ
+ÛÛœÝØšˆÙˆØš™XÝÊHÂˆYˆ
+[Øšˆ\[ÙˆØšˆOOH›Øš™XÝˆ\œ˜^Kš\Ð\œ˜^JØšŠJHÛÛ[YNÂˆ›Üˆ
+ÛÛœÝÚÙ^KÚYKXZ›Ü—HÙˆÜXÜÊHÂˆYˆ
+JÙ^H[ˆØšŠJHÛÛ[YNÂˆÛÛœÝˆHØš–ÚÙ^WNÂˆÛÛœÝ›ÝÈH\[ÙˆˆOOH›Øš™XÝˆ	‰ˆˆOOH[ÈˆˆÈšXÙNˆˆNÂˆÛÛœÝ\œÙYH›ÝÓ]™[
+È‹‹œ›ÝËÚYKXZ›ÜŽˆ›ÝË›XZ›ÜˆÏÈXZ›ÜˆKÝ[[X\žK‰ÚÙ^_XÝ\œ™[šXÙKÛÝ\˜ÙUËØœÙ\™YÊNÂˆYˆ
+\œÙY
+HÝ]œ\Ú
+\œÙY
+NÂˆBˆBˆ™]\›ˆÝ]ÂˆB‚ˆ[˜Ý[ÛˆY\PÛ\Ý\œÊ›ÝÜÊHÂˆÛÛœÝÝ]H×NÂˆÛÛœÝÙY[ˆH™]ÈÙ]
+
+NÂˆ›Üˆ
+ÛÛœÝˆÙˆ›ÝÜÊHÂˆÛÛœÝšXÙHHš[š]JË›]™[ÜšXÙJNÂˆYˆ
+šXÙHOOH[
+HÛÛ[YNÂˆÛÛœÝÙ^HH	Ü‹œÚY__	ÜšXÙKÔ™XÚ\Ú[ÛŠLŠ__	Ü‹œÛÝ\˜ÙWÜ]XÂˆYˆ
+ÙY[‹š\ÊÙ^JJHÛÛ[YNÂˆÙY[‹˜Y
+Ù^JNÂˆÝ]œ\Ú
+ŠNÂˆBˆ™]\›ˆÝ]ÂˆB‚ˆ[˜Ý[Ûˆ\œÙT›ÝšY\”Þ[X›Û™YÚ\ÝžJ^[ØY^XÝYÞ[X›Û
+HÂˆÛÛœÝ\™Ù]H	Ý
+^XÝYÞ[X›Û
+KÕ\\Ø\ÙJ
+_UTÑÂˆÛÛœÝÛÝ\˜ÙUÈH›ÛÝÛÝ\˜ÙU[Y\Ý[\
+^[ØY
+NÂˆÛÛœÝ›ÝÜÈH\œ˜^Kš\Ð\œ˜^J^[ØYËœÞ[X›ÛÊHÈ^[ØYœÞ[X›ÛÈˆ×NÂˆÛÛœÝØØ[›™YH›ÝÜËœÛXÙJPVÔÖSP“ÓÔ‘QÒTÕ–WÔ“ÕÔ×ÔÐÐS“‘Q
+NÂˆÛÛœÝ^XÝHØØ[›™Y™š[™
+
+›ÝÊHOˆ
+›ÝÏËœÞ[X›Û
+KÕ\\Ø\ÙJ
+HOOH\™Ù]
+H[Âˆ™]\›ˆÂˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆ\™Ù]ÜÞ[X›Ûˆ\™Ù][ˆ^XÝÛX]Úˆ›ÛÛX[Š^XÝ
+KˆX]ÚYÜÞ[X›Ûˆ^XÝÈ
+^XÝœÞ[X›Û
+KÕ\\Ø\ÙJ
+Hˆ[ˆ™YÚ\ÝžWÜÚ^™Nˆ›ÝÜË›[™Ýˆ›ÝÜ×ÜØØ[›™YˆØØ[›™Y›[™ÝˆØØ[—Ý[˜Ø]Yˆ›ÝÜË›[™ÝˆØØ[›™Y›[™ÝˆNÂˆB‚ˆ[˜Ý[Ûˆ\œÙT›Ú™XÝYX\
+^[ØYÈØœÙ\™YË^XÝYÞ[X›ÛHHßJHÂˆÛÛœÝÛÝ\˜ÙUÈH›ÛÝÛÝ\˜ÙU[Y\Ý[\
+^[ØY
+NÂˆÛÛœÝÝ\œ™[šXÙHHÝ\œ™[šXÙQœ›ÛJ^[ØY
+NÂˆÛÛœÝ™[Y\ÈH^XÚ]™[Y\Ê^[ØY
+NÂˆÛÛœÝ›ÝÜÈH×NÂˆÛÛœÝ\ØÛÝ™\™YH›Ú™XÝYÛÛZ[™\‘[šY\Ê^[ØY
+NÂˆ]˜]Ô›ÝÜÔØØ[›™YHÂˆ][œÝ\ÜY\œ˜^T›ÝÜÈHÂˆ]˜]Ô›ÝÜÕ[˜Ø]YH\ØÛÝ™\™Y™Ü˜\ÜØØ[—Ý[˜Ø]YÂˆÝ]\Žˆ›Üˆ
+ÛÛœÝÈÙˆ\ØÛÝ™\™Y™[šY\ÊHÂˆ›Üˆ
+ÛÛœÝ›ÝÈÙˆËœ›ÝÜÊHÂˆYˆ
+˜]Ô›ÝÜÔØØ[›™YHPVÔ“Ò‘PÕQÔU×Ô“ÕÔ×ÔÐÐS“‘Q
+HÂˆ˜]Ô›ÝÜÕ[˜Ø]YHYNÂˆœ™XZÈÝ]\ŽÂˆBˆ˜]Ô›ÝÜÔØØ[›™Y
+ÏHNÂˆYˆ
+\œ˜^Kš\Ð\œ˜^J›ÝÊJHÈ[œÝ\ÜY\œ˜^T›ÝÜÈ
+ÏHNÈÛÛ[YNÈBˆÛÛœÝ\œÙYH›ÝÓ]™[
+›ÝËËœ]Ý\œ™[šXÙKÛÝ\˜ÙUËØœÙ\™YÊNÂˆYˆ
+\œÙY
+H›ÝÜËœ\Ú
+\œÙY
+NÂˆBˆBˆ›ÝÜËœ\Ú
+‹‹œÝ[[X\žPÛ\Ý\œÊ^[ØYÝ\œ™[šXÙKÛÝ\˜ÙUËØœÙ\™YÊJNÂˆÛÛœÝ[Û\Ý\œÈHY\PÛ\Ý\œÊ›ÝÜÊNÂˆÛÛœÝÛ\Ý\œÈH[Û\Ý\œËœÛXÙJPVÔ“Ò‘PÕQÐÓTÕT”×Ô‘UT“‘Q
+NÂˆÛÛœÝÛ\Ý\“Ý]][˜Ø]YH[Û\Ý\œË›[™ÝˆÛ\Ý\œË›[™ÝÂˆÛÛœÝ™\ÜÛœÙTÞ[X›ÛH
+^[ØYËœÞ[X›Û^[ØYË™]OËœÞ[X›Û^[ØYË›X\šÙ]ËœÞ[X›Û^[ØYËš[œÝ[Y[^[ØYË™]OËš[œÝ[Y[
+KÕ\\Ø\ÙJ
+NÂˆÛÛœÝÞ[X›ÛX]ÚH\™\ÜÛœÙTÞ[X›ÛY^XÝYÞ[X›ÛÈ[ˆ
+ˆ™\ÜÛœÙTÞ[X›ÛOOH^XÝYÞ[X›ÛÕ\\Ø\ÙJ
+H™\ÜÛœÙTÞ[X›ÛOOH	Ù^XÝYÞ[X›ÛÕ\\Ø\ÙJ
+_UTÑˆ
+NÂˆ™]\›ˆÂˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆÝ\œ™[ÜšXÙNˆÝ\œ™[šXÙKˆ™[Y\×ØÛÝ™\™Yˆ™[Y\ËˆÛ\Ý\œËˆ™\ÜÛœÙWÜÞ[X›Ûˆ™\ÜÛœÙTÞ[X›Û[ˆ™\ÜÛœÙWÜÞ[X›ÛÛX]ÚˆÞ[X›ÛX]ÚˆÜ˜\Û›Ù\×ÜØØ[›™Yˆ\ØÛÝ™\™Y™Ü˜\Û›Ù\×ÜØØ[›™Yˆ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ˜]Ô›ÝÜÔØØ[›™Yˆ[œÝ\ÜYØ\œ˜^WÜ›ÝÜÎˆ[œÝ\ÜY\œ˜^T›ÝÜËˆØÚ[XWØÛÜÙYˆ[œÝ\ÜY\œ˜^T›ÝÜÈOOHˆØØ[—Ý[˜Ø]Yˆ˜]Ô›ÝÜÕ[˜Ø]YÛ\Ý\“Ý]][˜Ø]YˆÛ\Ý\—ÛÝ]]Ý[˜Ø]YˆÛ\Ý\“Ý]][˜Ø]YˆNÂˆB‚ˆ[˜Ý[Ûˆš[™Þ[X›Û›ÝÜÊ›ÙKÞ[X›ÛÝ]H×K\H]Hœ›ÛÝ‹Ý]HH[
+HÂˆÛÛœÝØØ[ˆHÝ]HÈ›Ù\×ÜØØ[›™YˆØØ[—Ý[˜Ø]Yˆ˜[ÙKX]ÚYÜ›ÝÜÎˆÝ]]Ý[˜Ø]Yˆ˜[ÙKš\Ú]Yˆ™]ÈÙXZÔÙ]
+
+HNÂˆYˆ
+\ˆˆ›ÙHOOH[›ÙHOOH[™Yš[™Y
+H™]\›ˆÝ]ÂˆYˆ
+ØØ[‹››Ù\×ÜØØ[›™YHPVÔ“Õ’QT—ÑÔTÓ“ÑT×ÔÐÐS“‘Q
+HÂˆØØ[‹œØØ[—Ý[˜Ø]YHYNÂˆ™]\›ˆÝ]ÂˆBˆØØ[‹››Ù\×ÜØØ[›™Y
+ÏHNÂˆYˆ
+\[Ùˆ›ÙHOOH›Øš™XÝŠHÂˆYˆ
+ØØ[‹š\Ú]Yš\Ê›ÙJJH™]\›ˆÝ]ÂˆØØ[‹š\Ú]Y˜Y
+›ÙJNÂˆBˆYˆ
+\œ˜^Kš\Ð\œ˜^J›ÙJJHÂˆ›Üˆ
+]HHÈH›ÙK›[™ÝÈJÊÊHÂˆYˆ
+ØØ[‹››Ù\×ÜØØ[›™YHPVÔ“Õ’QT—ÑÔTÓ“ÑT×ÔÐÐS“‘Q
+HÂˆØØ[‹œØØ[—Ý[˜Ø]YHYNÂˆœ™XZÎÂˆBˆš[™Þ[X›Û›ÝÜÊ›ÙVÚWKÞ[X›ÛÝ]\
+ÈK	Ü]VÉÚ_WXØØ[ŠNÂˆBˆ™]\›ˆÝ]ÂˆBˆYˆ
+\[Ùˆ›ÙHOOH›Øš™XÝŠH™]\›ˆÝ]ÂˆÛÛœÝÞ[HH
+›ÙKœÞ[X›Û›ÙK˜ÛÛ˜XÝ›ÙKš[œÝ[Y[›ÙKš[œÝY›ÙK›X\šÙ]
+KÕ\\Ø\ÙJ
+NÂˆÛÛœÝ\™Ù]H
+Þ[X›Û
+KÕ\\Ø\ÙJ
+NÂˆYˆ
+Þ[H	‰ˆ\™Ù]	‰ˆ
+Þ[HOOH\™Ù]Þ[HOOH	Ý\™Ù]UTÑÞ[Kœ™\XÙJÖËWË×KÙËˆŠHOOH	Ý\™Ù]UTÑ
+JHÂˆØØ[‹›X]ÚYÜ›ÝÜÈ
+ÏHNÂˆYˆ
+Ý]›[™ÝPVÔ‘PSV‘QÔ“ÕÔ×Ô‘UT“‘Q
+HÝ]œ\Ú
+È]›ÝÎˆ›ÙHJNÂˆ[ÙHØØ[‹›Ý]]Ý[˜Ø]YHYNÂˆBˆ›Üˆ
+ÛÛœÝÚË—HÙˆØš™XÝ™[šY\Ê›ÙJJHÂˆYˆ
+ØØ[‹››Ù\×ÜØØ[›™YHPVÔ“Õ’QT—ÑÔTÓ“ÑT×ÔÐÐS“‘Q
+HÂˆØØ[‹œØØ[—Ý[˜Ø]YHYNÂˆœ™XZÎÂˆBˆYˆ
+\[ÙˆˆOOH›Øš™XÝˆ	‰ˆˆOOH[
+Hš[™Þ[X›Û›ÝÜÊ‹Þ[X›ÛÝ]\
+ÈK	Ü]K‰ÚßXØØ[ŠNÂˆBˆ™]\›ˆÝ]ÂˆB‚ˆ[˜Ý[ÛˆÛ™ÔÚÜœ›ÛSØš™XÝ
+ØšŠHÂˆYˆ
+[Øšˆ\[ÙˆØšˆOOH›Øš™XÝŠH™]\›ˆÈÛ™ÜÎˆ[ÚÜÎˆ[Ý[ˆ[[š]ˆ[NÂˆÛÛœÝÛ™ÒÙ^\ÈHÈ›Û™×Ý\Ù‹›Û™Õ\Ù‹›Û™Ü×Ý\Ù‹›Û™ÜÕ\Ù‹›Û™×Û\]ZY][Ûœ×Ý\Ù‹›Û™Ó\]ZY][ÛœÕ\Ù‹›Û™È‹›Û™ÜÈ—NÂˆÛÛœÝÚÜÙ^\ÈHÈœÚÜÝ\Ù‹œÚÜ\Ù‹œÚÜ×Ý\Ù‹œÚÜÕ\Ù‹œÚÜÛ\]ZY][Ûœ×Ý\Ù‹œÚÜ\]ZY][ÛœÕ\Ù‹œÚÜ‹œÚÜÈ—NÂˆ]Û™ÜÈH[ÚÜÈH[Âˆ›Üˆ
+ÛÛœÝÈÙˆÛ™ÒÙ^\ÊHÈÛÛœÝˆHš[š]JØš–Ú×JNÈYˆ
+ˆOOH[
+HÈÛ™ÜÈHŽÈœ™XZÎÈHBˆ›Üˆ
+ÛÛœÝÈÙˆÚÜÙ^\ÊHÈÛÛœÝˆHš[š]JØš–Ú×JNÈYˆ
+ˆOOH[
+HÈÚÜÈHŽÈœ™XZÎÈHBˆÛÛœÝÝ[Hš[š]JØš‹Ý[Ý\ÙÏÈØš‹Ý[\ÙÏÈØš‹Ý[ÏÈØš‹œ™XÛÜ™YÝ\ÙÏÈØš‹œ™XÛÜ™Y\Ù
+NÂˆÛÛœÝ[š]H
+Û™ÜÈOOH[ÚÜÈOOH[Ý[OOH[
+HÈ”“Õ’QT—Ô‘TÔ•QÓ“ÕSÓSÕS•‘T’Q’QQÕS’Uˆˆ[Âˆ™]\›ˆÈÛ™ÜËÚÜËÝ[[š]NÂˆB‚ˆ[˜Ý[Ûˆ\œÙT™X[^™YÝ[[X\žJ^[ØY^XÝYÞ[X›ÛØœÙ\™YÊHÂˆÛÛœÝÛÝ\˜ÙUÈH›ÛÝÛÝ\˜ÙU[Y\Ý[\
+^[ØY
+NÂˆÛÛœÝØØ[ˆHÈ›Ù\×ÜØØ[›™YˆØØ[—Ý[˜Ø]Yˆ˜[ÙKX]ÚYÜ›ÝÜÎˆÝ]]Ý[˜Ø]Yˆ˜[ÙKš\Ú]Yˆ™]ÈÙXZÔÙ]
+
+HNÂˆÛÛœÝ›ÝÜÈHš[™Þ[X›Û›ÝÜÊ^[ØY^XÝYÞ[X›Û×Kœ›ÛÝ‹ØØ[ŠNÂˆÛÛœÝÛÛ\XÝH×NÂˆ›Üˆ
+ÛÛœÝ][HÙˆ›ÝÜÊHÂˆÛÛœÝÈHÛ™ÔÚÜœ›ÛSØš™XÝ
+][Kœ›ÝÊNÂˆÛÛœÝ™[YHH
+][Kœ›ÝË™[YH][Kœ›ÝË™^Ú[™ÙH][Kœ›ÝËœÛÝ\˜ÙJH[ÂˆÛÛœÝ]™[ÈH›Ü›X[^™UÊ][Kœ›ÝË™]™[Ý[YH][Kœ›ÝË[Y\Ý[\][Kœ›ÝËÈ][Kœ›ÝË[YHÛÝ\˜ÙUÊNÂˆÛÛœÝšXÙHHš[š]J][Kœ›ÝËœšXÙH][Kœ›ÝË˜˜[šÜ\ÞWÜšXÙH][Kœ›ÝË˜˜[šÜ\ÞTšXÙJNÂˆÛÛœÝÚ^™HHš[š]J][Kœ›ÝËœ][ÝWÜ]H][Kœ›ÝËœ][ÝT]H][Kœ›ÝË››Ý[Û˜[Ý\Ù][Kœ›ÝË››Ý[Û˜[\Ù][Kœ›ÝËœÚ^™WÝ\Ù][Kœ›ÝËœÚ^™U\Ù
+NÂˆYˆ
+Ë›Û™ÜÈOOH[	‰ˆËœÚÜÈOOH[	‰ˆËÝ[OOH[	‰ˆšXÙHOOH[	‰ˆÚ^™HOOH[
+HÛÛ[YNÂˆÛÛ\XÝœ\Ú
+Âˆ]šY[˜ÙWÝ\Nˆ”‘PSV‘QÓTURQUSÓ—ÐQÑÔ‘QÐUH‹ˆ›ÝšY\Žˆ“Õ’QT‹ˆÛÝ\˜ÙWÜ]ˆ][Kœ]ˆ™[YKˆÛÝ\˜ÙWÝÎˆ]™[ËˆØœÙ\™YÝÎˆØœÙ\™YËˆÛ™×Û›Ý[Û˜[ˆË›Û™ÜËˆÚÜÛ›Ý[Û˜[ˆËœÚÜËˆÝ[Û›Ý[Û˜[ˆËÝ[ˆÛÝ\˜ÙWÝ[š]ˆË[š]ˆ]™[ÜšXÙNˆšXÙKˆ]™[Û›Ý[Û˜[ˆÚ^™KˆJNÂˆBˆÛÛœÝÜ™X[H^[ØYËœ™X[Û]™[ÏËÝ[È^[ØYË™]OËœ™X[Û]™[ÏËÝ[È[ÂˆYˆ
+Ü™X[	‰ˆ\[ÙˆÜ™X[OOH›Øš™XÝŠHÂˆÛÛœÝÈHÛ™ÔÚÜœ›ÛSØš™XÝ
+Ü™X[
+NÂˆYˆ
+Ë›Û™ÜÈOOH[ËœÚÜÈOOH[ËÝ[OOH[
+HÂˆÛÛ\XÝœ\Ú
+Âˆ]šY[˜ÙWÝ\Nˆ”‘PSV‘QÓTURQUSÓ—ÐQÑÔ‘QÐUH‹ˆ›ÝšY\Žˆ“Õ’QT‹ˆÛÝ\˜ÙWÜ]ˆœ™X[Û]™[ËÝ[È‹ˆ™[YNˆ“USWÕ‘S•QWÔ‘PÓÔ‘Q‹ˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆØœÙ\™YÝÎˆØœÙ\™YËˆÛ™×Û›Ý[Û˜[ˆË›Û™ÜËˆÚÜÛ›Ý[Û˜[ˆËœÚÜËˆÝ[Û›Ý[Û˜[ˆËÝ[ˆÛÝ\˜ÙWÝ[š]ˆË[š]ˆ]™[ÜšXÙNˆ[ˆ]™[Û›Ý[Û˜[ˆ[ˆJNÂˆBˆBˆ™]\›ˆÂˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆ›ÝÜÎˆÛÛ\XÝˆÜ˜\Û›Ù\×ÜØØ[›™YˆØØ[‹››Ù\×ÜØØ[›™YˆX]ÚYÜ›ÝÜ×ÝÚ][—ÜØØ[ŽˆØØ[‹›X]ÚYÜ›ÝÜËˆØØ[—Ý[˜Ø]YˆØØ[‹œØØ[—Ý[˜Ø]YØØ[‹›Ý]]Ý[˜Ø]YˆNÂˆB‚ˆ[˜Ý[Ûˆ\œÙPÛÝ™\˜YÙJ^[ØYØœÙ\™YÊHÂˆÛÛœÝÛÝ\˜ÙUÈH›ÛÝÛÝ\˜ÙU[Y\Ý[\
+^[ØY
+NÂˆÛÛœÝ˜]ÈH\œ˜^Kš\Ð\œ˜^J^[ØYË›\]ZY][ÛœÊHÈ^[ØY›\]ZY][ÛœÈˆ
+\œ˜^Kš\Ð\œ˜^J^[ØYË™]OË›\]ZY][ÛœÊHÈ^[ØY™]K›\]ZY][ÛœÈˆ×JNÂˆÛÛœÝØØ[›™YH˜]ËœÛXÙJPVÐÓÕ‘TQÑWÔ“ÕÔ×ÔÐÐS“‘Q
+NÂˆÛÛœÝ™[Y\ÈHØØ[›™Y›X\
+ˆOˆ
+Âˆ™[YNˆ
+Ë™[YHË™^Ú[™ÙHË›˜[YHËšY
+H[ˆÛÝ™\˜YÙWÚÚ[™ˆ
+ËšÚ[™Ë˜ÛÝ™\˜YÙWÚÚ[™Ë˜ÛÝ™\˜YÙHËœÝ]\ÊH[ˆÚ[˜ÙNˆ
+ËœÚ[˜ÙHËœÚ[˜ÙWÙ]JH[ˆ]™[×Ìˆš[š]JË™]™[×ÌÏÈË™]™[ÌÏÈË˜ÛÝ[Ì
+Kˆ\ÝÜ™XÛÜ™ÝÎˆ›Ü›X[^™UÊË›\ÝÜ™XÛÜ™Ë›\Ý™XÛÜ™Ë›\ÝÝÈË›\ÝÊKˆJJK™š[\ŠˆOˆ‹™[YJNÂˆ™]\›ˆÂˆ]šY[˜ÙWÝ\Nˆ“USWÕ‘S•QWÓSÑSÐÓÕ‘TQÑH‹ˆ›ÝšY\Žˆ“Õ’QT‹ˆÛÝ\˜ÙWÝÎˆÛÝ\˜ÙUËˆØœÙ\™YÝÎˆØœÙ\™YËˆ™[Y\Ëˆ›ÝÜ×ÜØØ[›™YˆØØ[›™Y›[™ÝˆØØ[—Ý[˜Ø]Yˆ˜]Ë›[™ÝˆØØ[›™Y›[™ÝˆNÂˆB‚ˆ[˜Ý[Ûˆ^XÚ][œÝ\ÜY
+^[ØY
+HÂˆÛÛœÝÝ]\ÈH
+^[ØYËœÝ]\È^[ØYË™]OËœÝ]\ÊKÕ\\Ø\ÙJ
+NÂˆÛÛœÝ\ÙÈH
+^[ØYË™\œ›ÜË›Y\ÜØYÙH^[ØYË™\œ›Üˆ^[ØYË›Y\ÜØYÙH^[ØYË›\ÙÊKÕ\\Ø\ÙJ
+NÂˆÛÛœÝÛÛXš[™YHÝ]\È
+Èˆˆ
+È\ÙÎÂˆËÈÛ›HÞ[X›ÛÙ]HÙ[X[XÜÈÛÝ[\È[œÝ\ÜYˆHÙ[™\šXÈÜ›Ý]BˆËÈ››Ý›Ý[™ˆ]\Ý™[XZ[ˆÓÕTÑWÑT”“Ôˆ˜]\ˆ[ˆ™Z[™ÈÚ[[HXØÙ\Y‚ˆ™]\›ˆÕS”ÕTÔ•Q
+Î–×ÈJÔÖSP“Ó
+OßS’Ó“ÕÓ–×ÈOÔÖSP“ÓÖSP“Ó×——^ÌS“Õ×ÈOÑ“ÕS‘“Ö×ÈOÑUKË\Ý
+ÛÛXš[™Y
+NÂˆB‚ˆ[˜Ý[Ûˆ˜[šÐÛ\Ý\œÊÛ\Ý\œËÝ\œ™[šXÙJHÂˆÛÛœÝX›Ý™HHÛ\Ý\œË™š[\ŠˆOˆ‹œÚYHOOH”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘Hˆ	‰ˆš[š]J‹›]™[ÜšXÙJHOOH[
+KœÛÜ
+
+KŠOO˜K›]™[ÜšXÙKX‹›]™[ÜšXÙJNÂˆÛÛœÝ™[ÝÈHÛ\Ý\œË™š[\ŠˆOˆ‹œÚYHOOH“Ó‘×ÓTURQUSÓ—Ð‘SÕÈˆ	‰ˆš[š]J‹›]™[ÜšXÙJHOOH[
+KœÛÜ
+
+KŠOO˜‹›]™[ÜšXÙKXK›]™[ÜšXÙJNÂˆÛÛœÝ^XÚ]XZ›ÜX›Ý™HHX›Ý™K™š[\ŠˆOˆ‹™^XÚ]ÛXZ›ÜŠNÂˆÛÛœÝ^XÚ]XZ›Ü™[ÝÈH™[ÝË™š[\ŠˆOˆ‹™^XÚ]ÛXZ›ÜŠNÂˆÛÛœÝžS›Ý[Û˜[H›ÝÜÈOˆ›ÝÜË™š[\ŠˆOˆš[š]J‹œ˜]×ÜÚ^™JHOOH[	‰ˆ‹œÛÝ\˜ÙWÝ[š]OOH•TÑÓ“ÕSÓSÔ“Õ’QTˆŠKœÛÜ
+
+KŠOO˜‹œ˜]×ÜÚ^™KXKœ˜]×ÜÚ^™JNÂˆÛÛœÝžTÝ™[™ÝH›ÝÜÈOˆ›ÝÜË™š[\ŠˆOˆš[š]J‹››Ü›X[^™YÜÝ™[™Ý
+HOOH[
+KœÛÜ
+
+KŠOO˜‹››Ü›X[^™YÜÝ™[™ÝXK››Ü›X[^™YÜÝ™[™Ý
+NÂˆÛÛœÝ\™Ù\ÝX›Ý™HHžS›Ý[Û˜[
+X›Ý™JVÌH[ÂˆÛÛœÝ\™Ù\Ý™[ÝÈHžS›Ý[Û˜[
+™[ÝÊVÌH[ÂˆÛÛœÝÝ›Û™Ù\ÝX›Ý™HHžTÝ™[™Ý
+X›Ý™JVÌH[ÂˆÛÛœÝÝ›Û™Ù\Ý™[ÝÈHžTÝ™[™Ý
+™[ÝÊVÌH[Âˆ[˜Ý[ÛˆÛÛ\XÝ
+ŠHÂˆYˆ
+\ŠH™]\›ˆ[Âˆ™]\›ˆÂˆÚYNˆ‹œÚYKˆ]™[ÜšXÙNˆ‹›]™[ÜšXÙKˆšXÙWÛÝÎˆ‹œšXÙWÛÝËˆšXÙWÚYÚˆ‹œšXÙWÚYÚˆ˜]×ÜÚ^™Nˆ‹œ˜]×ÜÚ^™KˆÛÝ\˜ÙWÝ[š]ˆ‹œÛÝ\˜ÙWÝ[š]ˆ›Ü›X[^™YÜÝ™[™Ýˆ‹››Ü›X[^™YÜÝ™[™Ýˆ\Ý[˜ÙWÜÝˆ‹™\Ý[˜ÙWÜÝˆ]™\˜YÙWØXÚÙ]ˆ‹›]™\˜YÙWØXÚÙ]ˆ^XÚ]ÛXZ›ÜŽˆ‹™^XÚ]ÛXZ›Ü‹ˆNÂˆBˆ[˜Ý[ÛˆØ\
+›ÝÜÊHÂˆYˆ
+›ÝÜË›[™ÝˆXÝ\œ™[šXÙJH™]\›ˆ[Âˆ™]\›ˆX]˜XœÊ
+›ÝÜÖÌWK›]™[ÜšXÙHÈÝ\œ™[šXÙHH›ÝÜÖÌK›]™[ÜšXÙHÈÝ\œ™[šXÙJH
+ˆL
+NÂˆBˆ™]\›ˆÂˆ™X\™\ÝÜ›Ú™XÝYØÛ\Ý\—ØX›Ý™NˆÛÛ\XÝ
+X›Ý™VÌH[
+Kˆ™X\™\ÝÜ›Ú™XÝYØÛ\Ý\—Ø™[ÝÎˆÛÛ\XÝ
+™[ÝÖÌH[
+Kˆ™X\™\ÝÛXZ›Ü—ØÛ\Ý\—ØX›Ý™NˆÛÛ\XÝ
+^XÚ]XZ›ÜX›Ý™VÌH[
+Kˆ™X\™\ÝÛXZ›Ü—ØÛ\Ý\—Ø™[ÝÎˆÛÛ\XÝ
+^XÚ]XZ›Ü™[ÝÖÌH[
+Kˆ\™Ù\ÝØÛ\Ý\—ØX›Ý™NˆÛÛ\XÝ
+\™Ù\ÝX›Ý™JKˆ\™Ù\ÝØÛ\Ý\—Ø™[ÝÎˆÛÛ\XÝ
+\™Ù\Ý™[ÝÊKˆÝ›Û™Ù\ÝØÛ\Ý\—ØX›Ý™NˆÛÛ\XÝ
+Ý›Û™Ù\ÝX›Ý™JKˆÝ›Û™Ù\ÝØÛ\Ý\—Ø™[ÝÎˆÛÛ\XÝ
+Ý›Û™Ù\Ý™[ÝÊKˆÙXÛÛ™\žWØØ\ØØYWÞ›Û™WØX›Ý™NˆÛÛ\XÝ
+X›Ý™VÌWH[
+KˆÙXÛÛ™\žWØØ\ØØYWÞ›Û™WØ™[ÝÎˆÛÛ\XÝ
+™[ÝÖÌWH[
+KˆØ\Ý×Û™^ØÛ\Ý\—ØX›Ý™WÜÝˆØ\
+X›Ý™JKˆØ\Ý×Û™^ØÛ\Ý\—Ø™[Ý×ÜÝˆØ\
+™[ÝÊKˆNÂˆB‚ˆ[˜Ý[Ûˆ™X[^™YÛÛ\XÝ
+\JHÂˆYˆ
+Z\H\[Ùˆ\HOOH›Øš™XÝŠH™]\›ˆ[ÂˆÛÛœÝÝ[[X\žHH\KœÝ[[X\žHßNÂˆ™]\›ˆÂˆ]šY[˜ÙWÝ\Nˆ”‘PSV‘QÓTURQUSÓ—ÐQÑÔ‘QÐUH‹ˆ›ÝšY\Žˆ’Ù™šXÚX[X›XÈTH‹ˆ™[YNˆ’‹ˆÛÝ™\˜YÙWÛÛ™Îˆ\OË˜ÛÝ™\˜YÙOËšÙ˜XÝX[ÛÛ™×Û\]ZY][ÛœÈ››ÝØÛÜÙY‹ˆÛÝ™\˜YÙWÜÚÜˆ\OË˜ÛÝ™\˜YÙOËšÙ˜XÝX[ÜÚÜÛ\]ZY][ÛœÈ››ÝØÛÜÙY‹ˆÛ™×Ù]™[Îˆš[š]JÝ[[X\žOË›Û™×Û\]ZY][ÛœÏË™]™[ÊKˆÛ™×Û›Ý[Û˜[Ý\Ùˆš[š]JÝ[[X\žOË›Û™×Û\]ZY][ÛœÏË››Ý[Û˜[Ý\Ù
+KˆÚÜÙ]™[Îˆš[š]JÝ[[X\žOËœÚÜÛ\]ZY][ÛœÏË™]™[ÊKˆÚÜÛ›Ý[Û˜[Ý\Ùˆš[š]JÝ[[X\žOËœÚÜÛ\]ZY][ÛœÏË››Ý[Û˜[Ý\Ù
+KˆÝ[Ù]™[Îˆš[š]JÝ[[X\žOËÝ[Ù]™[ÊKˆ]\ÝÙ]™[Ý[YNˆ\OË™œ™\Ú™\ÜÏË›]\ÝÙ]™[Ý[YH[ˆÛÝ\˜ÙWÝÎˆ›Ü›X[^™UÊ\OË[Y\Ý[\
+KˆNÂˆB‚ˆ[˜Ý[ÛˆÛ\Ý\’Ù^JÛÛ˜XÝÛ\Ý\ŠHÂˆÛÛœÝHš[š]JÛ\Ý\Ë›]™[ÜšXÙJNÂˆYˆ
+OOH[
+H™]\›ˆ[ÂˆÛÛœÝ›Ü›X[^™YH[X™\ŠÔ™XÚ\Ú[ÛŠL
+JNÂˆ™]\›ˆ	Ô“Õ’QTŸ_	ØÛÛ˜XÝ_	ØÛ\Ý\‹œÚY__	Û›Ü›X[^™YXÂˆB‚ˆ[˜Ý[ÛˆY™XÞXÛQ›ÜŠÛ\Ý\‹Ý\œ™[šXÙJHÂˆÛÛœÝHš[š]JÛ\Ý\Ë›]™[ÜšXÙJNÂˆÛÛœÝÈHš[š]JÝ\œ™[šXÙJNÂˆYˆ
+OOH[ÈOOH[ÈH
+H™]\›ˆPÕU‘HŽÂˆÛÛœÝ\ÝHX]˜XœÊ
+ÈÈHJH
+ˆL
+NÂˆYˆ
+Û\Ý\‹œÚYHOOH“Ó‘×ÓTURQUSÓ—Ð‘SÕÈˆ	‰ˆÈH
+H™]\›ˆ”ÕÑTŽÂˆYˆ
+Û\Ý\‹œÚYHOOH”ÒÔ•ÓTURQUSÓ—ÐP“Õ‘Hˆ	‰ˆÈH
+H™]\›ˆ”ÕÑTŽÂˆYˆ
+\ÝHŒMJH™]\›ˆ•ÕPÒQŽÂˆYˆ
+\ÝHKŒ
+H™]\›ˆT“ÐPÒS‘ÈŽÂˆ™]\›ˆPÕU‘HŽÂˆB‚ˆ\Þ[˜È[˜Ý[ÛˆÛÛXÝÜ›ÜÜÕ™[YS\]ZY][Û’[[YÙ[˜ÙJÈÛÛ˜XÝØÛÙK™]ÚÚ[\\WÚÙ^K›Ý×ÝÈH]K››ÝÊ
+KÛ\]ZY][Û—Ý\HH[\ÜÙ]ÚY[]WÜ›ÛÙˆH[HHßJHÂˆÛÛœÝ›ÝÕÈHš[š]J›Ý×ÝÊHÏÈ]K››ÝÊ
+NÂˆÛÛœÝÛÛ˜XÝH
+ÛÛ˜XÝØÛÙJK››Ü›X[^™J“‘ÈŠKÕ\\Ø\ÙJ
+NÂˆÛÛœÝ[X\ÈH›ÝšY\”Þ[X›Ûœ›ÛPÛÛ˜XÝ
+ÛÛ˜XÝ
+NÂˆÛÛœÝ›ÛÙ˜\ÙHH
+\ÜÙ]ÚY[]WÜ›ÛÙË˜Ø[›ÛšXØ[Ø˜\ÙJK››Ü›X[^™J“‘ÈŠKÕ\\Ø\ÙJ
+NÂˆÛÛœÝ›ÝšY\˜\ÙHH
+[X\ÏËœ›ÝšY\—ÜÞ[X›Û
+K››Ü›X[^™J“‘ÈŠKÕ\\Ø\ÙJ
+NÂˆÛÛœÝÙ\\˜]P\ÜÙ]Y[]U™\šYšYYH›ÛÛX[Šˆ\ÜÙ]ÚY[]WÜ›ÛÙË™\šYšYYOOHYH	‰‚ˆ›ÛÙ˜\ÙH	‰ˆ›ÝšY\˜\ÙH	‰ˆ›ÛÙ˜\ÙHOOH›ÝšY\˜\ÙBˆ
+NÂˆÛÛœÝÙ\\˜]P\ÜÙ]Y[]SY]ÙHÙ\\˜]P\ÜÙ]Y[]U™\šYšYYÈ
+\ÜÙ]ÚY[]WÜ›ÛÙË›Y]Ù
+Hˆ[ÂˆÛÛœÝ˜\ÙSÝ]]HÂˆ™\œÚ[ÛŽˆ•ST×Õ‘T”ÒSÓ‹ˆÛÛ˜XÝÝ™\œÚ[ÛŽˆÓÓ•PÕÕ‘T”ÒSÓ‹ˆ[ÙNˆ“TURQUSÓ—ÒS•SQÑSÑWÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹ˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆØœÙ\™YÝÎˆ›ÝÕËˆ›ÝšY\Žˆ“Õ’QT‹ˆ›ÝšY\—ÜÞ[X›Ûˆ[X\Ëœ›ÝšY\—ÜÞ[X›Ûˆ[X\×Ý™\šYšYYˆ[X\Ë˜[X\×Ý™\šYšYYˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜNˆ[X\Ë˜[X\×Ý™\šYšXØ][Û—ÜØÛÜKˆ\ÜÙ]ÚY[]WÝ™\šYšYYˆÙ\\˜]P\ÜÙ]Y[]U™\šYšYYˆ\ÜÙ]ÚY[]WÝ™\šYšXØ][Û—ÛY]ÙˆÙ\\˜]P\ÜÙ]Y[]SY]ÙˆÜ›ÜÜ×ÜÛÝ\˜ÙWØÛÛœÙ[œÝ\Îˆ““ÕÐURSP“WÔÒS‘ÓWÔ“Ò‘PÕQÔ“Õ’QTˆ‹ˆ›Ú™XÝYÛX\ÜÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ™X[^™YÜÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ\]ZY][Û—ÙWÜÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ›Ú™XÝYØÛ\Ý\œÎˆ×Kˆ™X[^™YˆÈ›ÝšY\Žˆ×Kˆ™X[^™YÛÛ\XÝ
+Û\]ZY][Û—Ý\JHKˆÛÝ™\˜YÙNˆ[ˆ\š]™YˆßKˆÛÝ\˜ÙWÚX[ˆßKˆ\œ›ÜœÎˆ×KˆØY™]NˆÂˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ˜[ÙKˆ™]×Ü\˜Ù[YÙWÝÙZYÚˆ˜[ÙKˆ\™XÝ[Û—ÙÙ[™\˜]Yˆ˜[ÙKˆ]™WÜ›Ø˜Xš[]WÙÙ[™\˜]Yˆ˜[ÙKˆ]™WÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆ]]ÛX]X×ÝÙZYÚÝ[š[™Îˆ˜[ÙKˆÝX\˜[YYÝÙÙ[™\˜]Yˆ˜[ÙKˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Yˆ˜[ÙKˆÚYÝ×ÛÛ›NˆYKˆKˆNÂ‚ˆYˆ
+X[X\Ë˜ÛÛ\]X›HX[X\Ëœ›ÝšY\—ÜÞ[X›Û
+HÂˆ™]\›ˆÂˆ‹‹˜˜\ÙSÝ]]ˆ›Ú™XÝYÛX\ÜÝ]\Îˆ”ÓÕTÑWÒSÓÓTUP“H‹ˆ™X[^™YÜÝ]\Îˆ˜\ÙSÝ]]œ™X[^™YšÈ”T•PSÒÓÓ“Hˆˆ““ÕÐÓÔÑQ‹ˆ\]ZY][Û—ÙWÜÝ]\Îˆ”ÓÕTÑWÒSÓÓTUP“H‹ˆ\œ›ÜœÎˆØ[X\Ëœ™X\ÛÛˆSPT×Ó“ÕÔÐQ‘H—KˆÛÝ\˜ÙWÚX[ˆÈ^\›˜[Ù™]Ú\ÎˆÙ^WØÛÛ™šYÝ\™Yˆ›ÛÛX[Š
+\WÚÙ^JJHKˆNÂˆB‚ˆYˆ
+]
+\WÚÙ^JJHÂˆ™]\›ˆÂˆ‹‹˜˜\ÙSÝ]]ˆ›Ú™XÝYÛX\ÜÝ]\ÎˆÓÓ‘’Q×Ô‘TURT‘QÑ”‘QWÐTWÒÑVH‹ˆ™X[^™YÜÝ]\Îˆ˜\ÙSÝ]]œ™X[^™YšÈ”T•PSÒÓÓ“HˆˆÓÓ‘’Q×Ô‘TURT‘QÑ”‘QWÐTWÒÑVH‹ˆ\]ZY][Û—ÙWÜÝ]\ÎˆÓÓ‘’Q×Ô‘TURT‘Q‹ˆ\œ›ÜœÎˆÈ–RÐTS•SWÐTWÒÑVWÓRTÔÒS‘È—KˆÛÝ\˜ÙWÚX[ˆÈ^\›˜[Ù™]Ú\ÎˆÙ^WØÛÛ™šYÝ\™Yˆ˜[ÙHKˆNÂˆB‚ˆËÈ\Ù\ˆÛXÞNˆ›Ú™XÝY\]ZY][ÛˆX\È\™H[[[Û˜[H›ÝÛÛXÝYˆËÈ›Üˆ•ÈÜˆUˆ]™\žHÝ\ˆ˜[Y]\™\ÈÛÛ˜XÝ\Ù\ÈHØ[YBˆËÈ›Ý][™È[\ÎÈX\šÙ]XØ\X™[È\™H™]™\ˆ\Ùˆ[YÚXš[]K‚ˆYˆ
+È•È‹‘U—Kš[˜ÛY\Ê›ÝšY\˜\ÙJJHÂˆ™]\›ˆÂˆ‹‹˜˜\ÙSÝ]]ˆ›Ú™XÝYÛX\ÜÝ]\Îˆ•×ÑUÔÒÒTQÐ–WÕTÑT—ÔÓPÖH‹ˆ™X[^™YÜÝ]\Îˆ˜\ÙSÝ]]œ™X[^™YšÈ”T•PSÒÓÓ“Hˆˆ““ÕÐÓÔÑQ‹ˆ\]ZY][Û—ÙWÜÝ]\Îˆ•×ÑUÔÒÒTQÐ–WÕTÑT—ÔÓPÖH‹ˆ\œ›ÜœÎˆ×KˆÛÝ\˜ÙWÚX[ˆÈ^\›˜[Ù™]Ú\ÎˆÙ^WØÛÛ™šYÝ\™YˆYK›×Ý\\—Û[Ý™WØØ\ˆYHKˆNÂˆB‚ˆÛÛœÝHH[˜ÛÙUT’PÛÛ\Û™[
+[X\Ëœ›ÝšY\—ÜÞ[X›Û
+NÂˆÛÛœÝ\›ÈHÂˆ\[X\ˆ	Ô“Õ’QT—ÐTÑ_KØ\KÛ\[X\ÜX›XÏÜÞ[X›ÛIÜ_Xˆ\]ZY][ÛœÎˆ	Ô“Õ’QT—ÐTÑ_KØ\KÜX›XËÛ\]ZY][ÛœÏÜÞ[X›ÛIÜ_UTÑˆÛÝ™\˜YÙNˆ	Ô“Õ’QT—ÐTÑ_KØ\KÜX›XËØÛÝ™\˜YÙXˆÞ[X›ÛÎˆ	Ô“Õ’QT—ÐTÑ_KØ\KÜX›XËÜÞ[X›ÛÏÝÜLLˆNÂˆËÈH›ÝšY\‹[ÝÛ™YÞ[X›Û™YÚ\ÝžH\ÈH^XÝY[]HØ]Kˆ][œÂˆËÈš\œÝÛÈ[œÝ\ÜYÛÛ˜XÝÈÜ[™Û™H™\]Y\Ý[œÝXYÙˆ›Ý\‹‚ˆËÈ[šXÛÙH˜\Ù\È\™H[ÝÙYÛ›HÚ[ˆ\È™YÚ\ÝžHÛÛZ[œÈ[ˆ^XÝ‘ÂˆËÈÞ[X›ÛÈ[X\Ù\È[™][\Y\ˆÛÛ™\œÚ[ÛœÈ\™H™]™\ˆÝY\ÜÙY‚ˆÛÛœÝÞ[X›ÛÔ˜]ÈH]ØZ]™]ÚœÛÛŠ™]ÚÚ[\\›ËœÞ[X›ÛË\WÚÙ^JNÂˆÛÛœÝÞ[X›Û™YÚ\ÝžHHÞ[X›ÛÔ˜]Ë›ÚÂˆÈ\œÙT›ÝšY\”Þ[X›Û™YÚ\ÝžJÞ[X›ÛÔ˜]Ë™]K[X\Ëœ›ÝšY\—ÜÞ[X›Û
+BˆˆÂˆÛÝ\˜ÙWÝÎˆ[\™Ù]ÜÞ[X›Ûˆ	Ø[X\Ëœ›ÝšY\—ÜÞ[X›ÛUTÑ^XÝÛX]Úˆ˜[ÙKˆX]ÚYÜÞ[X›Ûˆ[™YÚ\ÝžWÜÚ^™Nˆ›ÝÜ×ÜØØ[›™YˆØØ[—Ý[˜Ø]Yˆ˜[ÙKˆNÂˆYˆ
+\Þ[X›ÛÔ˜]Ë›ÚÈÞ[X›Û™YÚ\ÝžK™^XÝÛX]ÚOOHYJHÂˆ™]\›ˆÂˆ‹‹˜˜\ÙSÝ]]ˆ›Ú™XÝYÛX\ÜÝ]\ÎˆÞ[X›ÛÔ˜]Ë›ÚÈÈ”ÓÕTÑWÕS”ÕTÔ•Qˆˆ”ÓÕTÑWÔ‘QÒTÕ–WÑT”“Ôˆ‹ˆ™X[^™YÜÝ]\Îˆ˜\ÙSÝ]]œ™X[^™YšÈ”T•PSÒÓÓ“Hˆˆ““ÕÐÓÔÑQ‹ˆ\]ZY][Û—ÙWÜÝ]\ÎˆÞ[X›ÛÔ˜]Ë›ÚÈÈ”ÓÕTÑWÕS”ÕTÔ•Qˆˆ”ÓÕTÑWÔ‘QÒTÕ–WÑT”“Ôˆ‹ˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜNˆÞ[X›ÛÔ˜]Ë›ÚÈÈ”“Õ’QT—ÔÖSP“ÓÔ‘QÒTÕ–WÓ“×ÑVPÕÓPUÒˆˆ[X\Ë˜[X\×Ý™\šYšXØ][Û—ÜØÛÜKˆ\œ›ÜœÎˆÞ[X›ÛÔ˜]Ë›ÚÈÈÈ”“Õ’QT—ÔÖSP“ÓÔ‘QÒTÕ–WÓ“×ÑVPÕÓPUÒ—HˆØÞ[X›ÛÎ‰ÜÞ[X›ÛÔ˜]Ë™\œ›Üˆ‘T”“ÔˆŸXKˆÛÝ\˜ÙWÚX[ˆÂˆ^\›˜[Ù™]Ú\ÎˆKÙ^WØÛÛ™šYÝ\™YˆYKÞ[X›Û×ÚÜÝ]\ÎˆÞ[X›ÛÔ˜]ËšÜÝ]\ËˆÞ[X›Û×ÛÚÎˆÞ[X›ÛÔ˜]Ë›ÚË›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÙ^XÝÛX]Úˆ˜[ÙKˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜÚ^™NˆÞ[X›Û™YÚ\ÝžKœ™YÚ\ÝžWÜÚ^™Kˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜ›ÝÜ×ÜØØ[›™YˆÞ[X›Û™YÚ\ÝžKœ›ÝÜ×ÜØØ[›™Yˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜØØ[—Ý[˜Ø]YˆÞ[X›Û™YÚ\ÝžKœØØ[—Ý[˜Ø]Yˆ™]žWØY\—ÜÙXÎˆ[X™\‹š\Ñš[š]JÞ[X›ÛÔ˜]Ëœ™]žWØY\—ÜÙXÊHÈÞ[X›ÛÔ˜]Ëœ™]žWØY\—ÜÙXÈˆˆ›×Ý\\—Û[Ý™WØØ\ˆYKˆKˆNÂˆBˆÛÛœÝÛX\˜]Ë™X[^™Y˜]ËÛÝ™\˜YÙT˜]×HH]ØZ]›ÛZ\ÙK˜[
+Âˆ™]ÚœÛÛŠ™]ÚÚ[\\›Ë›\[X\\WÚÙ^JKˆ™]ÚœÛÛŠ™]ÚÚ[\\›Ë›\]ZY][ÛœË\WÚÙ^JKˆ™]ÚœÛÛŠ™]ÚÚ[\\›Ë˜ÛÝ™\˜YÙK\WÚÙ^JKˆJNÂ‚ˆÛÛœÝ\œ›ÜœÈH×NÂˆ›Üˆ
+ÛÛœÝÛ˜[YK˜]×HÙˆØš™XÝ™[šY\ÊÈ\[X\ˆX\˜]Ë\]ZY][ÛœÎˆ™X[^™Y˜]ËÛÝ™\˜YÙNˆÛÝ™\˜YÙT˜]ËÞ[X›ÛÎˆÞ[X›ÛÔ˜]ÈJJHÂˆYˆ
+\˜]Ë›ÚÊH\œ›ÜœËœ\Ú
+	Û˜[Y_N‰Ü˜]Ë™\œ›Üˆ‘T”“ÔˆŸX
+NÂˆYˆ
+˜]Ëœ™]žWØY\—ÜÙXÈOOH[
+H\œ›ÜœËœ\Ú
+	Û˜[Y_N”‘U–WÐQ•T—ÉÜ˜]Ëœ™]žWØY\—ÜÙXßX
+NÂˆB‚ˆ]›Ú™XÝYHÂˆÛÝ\˜ÙWÝÎˆ[Ý\œ™[ÜšXÙNˆ[™[Y\×ØÛÝ™\™Yˆ×KÛ\Ý\œÎˆ×Kˆ™\ÜÛœÙWÜÞ[X›Ûˆ[™\ÜÛœÙWÜÞ[X›ÛÛX]Úˆ[Ü˜\Û›Ù\×ÜØØ[›™Yˆˆ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ[œÝ\ÜYØ\œ˜^WÜ›ÝÜÎˆØÚ[XWØÛÜÙYˆYKØØ[—Ý[˜Ø]Yˆ˜[ÙKÛ\Ý\—ÛÝ]]Ý[˜Ø]Yˆ˜[ÙKˆNÂˆYˆ
+X\˜]Ë›ÚÊH›Ú™XÝYH\œÙT›Ú™XÝYX\
+X\˜]Ë™]KÈØœÙ\™YÎˆ›ÝÕË^XÝYÞ[X›Ûˆ[X\Ëœ›ÝšY\—ÜÞ[X›ÛJNÂˆÛÛœÝX\œ™\ÚHYÙTÝ]\Ê›Ú™XÝYœÛÝ\˜ÙWÝË›ÝÕËP“P×ÓPTÓPVÐQÑWÔÑPÊNÂˆËÈH›ÝšY\ˆX^H™]\›ˆ[ˆ^XÚ][œÝ\ÜYÞ[X›Ûˆ^[ØYÚ]H›Û‹LžˆËÈÝ]\ËˆÛ\ÜÚYžH]Ù[X[XÈ™\Ý[™Y›Ü™HÙ[™\šXÈ˜[œÜÜÜÛÝ\˜ÙH\œ›ÜœË‚ˆËÈ\ÈÙY\È[œÝ\ÜY\ÜÙ]È˜Z[XÛÜÙYÚ]Ý]Z\ÛX™[[™È[H\ÈÝ]YÙ\Ë‚ˆÛÛœÝ[œÝ\ÜYH^XÚ][œÝ\ÜY
+X\˜]Ë™]JHÕS”ÕTÔ•Q
+Î–×ÈJÔÖSP“Ó
+OßS’Ó“ÕÓ–×ÈOÔÖSP“ÓÖSP“Ó×——^ÌS“Õ×ÈOÑ“ÕS‘“Ö×ÈOÑUKÚK\Ý
+
+X\˜]Ë™\œ›ÜŠJNÂˆÛÛœÝ™\ÜÛœÙSZ\ÛX]ÚH›Ú™XÝYœ™\ÜÛœÙWÜÞ[X›ÛÛX]ÚOOH˜[ÙNÂˆÛÛœÝ›ÝšY\[X\Õ™\šYšYYH\™\ÜÛœÙSZ\ÛX]Ú	‰ˆ
+›Ú™XÝYœ™\ÜÛœÙWÜÞ[X›ÛÛX]ÚOOHYHÞ[X›Û™YÚ\ÝžK™^XÝÛX]ÚOOHYJNÂˆÛÛœÝ[X\Õ™\šYšXØ][Û”ØÛÜHH›Ú™XÝYœ™\ÜÛœÙWÜÞ[X›ÛÛX]ÚOOHYBˆÈ”“Õ’QT—Ô‘TÔÓ”ÑWÔÖSP“ÓÑVPÕÓPUÒ‚ˆˆ
+Þ[X›Û™YÚ\ÝžK™^XÝÛX]ÚOOHYHÈ”“Õ’QT—ÔÖSP“ÓÔ‘QÒTÕ–WÑVPÕÓPUÒˆˆ[X\Ë˜[X\×Ý™\šYšXØ][Û—ÜØÛÜJNÂ‚ˆ]›Ú™XÝYÝ]\ÈH““ÕÐÓÔÑQŽÂˆYˆ
+[œÝ\ÜY
+H›Ú™XÝYÝ]\ÈH”ÓÕTÑWÕS”ÕTÔ•QŽÂˆ[ÙHYˆ
+[X\˜]Ë›ÚÊH›Ú™XÝYÝ]\ÈHX\˜]ËšÜÝ]\ÈOOHHX\˜]ËšÜÝ]\ÈOOHÈÈUUÑT”“Ôˆˆˆ”ÓÕTÑWÑT”“ÔˆŽÂˆ[ÙHYˆ
+™\ÜÛœÙSZ\ÛX]Ú
+H›Ú™XÝYÝ]\ÈH”ÓÕTÑWÒSÓÓTUP“HŽÂˆ[ÙHYˆ
+X\œ™\ÚœÝ]\ÈOOHÕT”‘S•ŠH›Ú™XÝYÝ]\ÈHX\œ™\ÚœÝ]\ÎÂˆ[ÙHYˆ
+›Ú™XÝYœØÚ[XWØÛÜÙYOOHYJH›Ú™XÝYÝ]\ÈH”ÐÒSPWÓ“ÕÐÓÔÑQŽÂˆ[ÙHYˆ
+›Ú™XÝYœØØ[—Ý[˜Ø]Y
+H›Ú™XÝYÝ]\ÈH”ÓÕTÑWÔVSÐQÕ•SÐUQŽÂˆ[ÙHYˆ
+›Ú™XÝY˜Û\Ý\œË›[™ÝOOH
+H›Ú™XÝYÝ]\ÈHÓÔÑQÓ“×ÔÒQÓ’Q’PÐS•Ö“Ó‘TÈŽÂˆ[ÙHYˆ
+\›ÝšY\[X\Õ™\šYšYY
+H›Ú™XÝYÝ]\ÈH“Ð”ÑT•USÓ—ÓÓ“WÐSPT×ÕS•‘T’Q’QQŽÂˆ[ÙHYˆ
+\Ù\\˜]P\ÜÙ]Y[]U™\šYšYY
+H›Ú™XÝYÝ]\ÈH“Ð”ÑT•USÓ—ÓÓ“WÒQS•UWÕS•‘T’Q’QQŽÂˆ[ÙH›Ú™XÝYÝ]\ÈHÓÔÑQÔÒQÕÈŽÂ‚ˆÛÛœÝ™X[^™Y\œÙYH™X[^™Y˜]Ë›ÚÂˆÈ\œÙT™X[^™YÝ[[X\žJ™X[^™Y˜]Ë™]K[X\Ëœ›ÝšY\—ÜÞ[X›Û›ÝÕÊBˆˆÈÛÝ\˜ÙWÝÎˆ[›ÝÜÎˆ×KÜ˜\Û›Ù\×ÜØØ[›™YˆX]ÚYÜ›ÝÜ×ÝÚ][—ÜØØ[ŽˆØØ[—Ý[˜Ø]Yˆ˜[ÙHNÂˆÛÛœÝ™X[^™Yœ™\ÚHYÙTÝ]\Ê™X[^™Y\œÙYœÛÝ\˜ÙWÝË›ÝÕË‘PSV‘QÓPVÐQÑWÔÑPÊNÂˆ]™X[^™YÝ]\ÈH˜\ÙSÝ]]œ™X[^™YšÈ”T•PSÒÓÓ“Hˆˆ““ÕÐÓÔÑQŽÂˆYˆ
+™X[^™Y˜]Ë›ÚÈ	‰ˆ™X[^™Y\œÙYœØØ[—Ý[˜Ø]Y
+H™X[^™YÝ]\ÈH”ÓÕTÑWÔVSÐQÕ•SÐUQŽÂˆ[ÙHYˆ
+™X[^™Y˜]Ë›ÚÈ	‰ˆ™X[^™Y\œÙYœ›ÝÜË›[™Ý	‰ˆ™X[^™Yœ™\ÚœÝ]\ÈOOHÕT”‘S•ŠH™X[^™YÝ]\ÈH“Ð”ÑT•USÓ—ÓÓ“WÒQS•UWÕS•‘T’Q’QQŽÂˆ[ÙHYˆ
+\™X[^™Y˜]Ë›ÚÈ	‰ˆ˜\ÙSÝ]]œ™X[^™Yš
+H™X[^™YÝ]\ÈH”T•PSÒÓÓ“HŽÂˆ[ÙHYˆ
+\™X[^™Y˜]Ë›ÚÊH™X[^™YÝ]\ÈH”ÓÕTÑWÑT”“ÔˆŽÂˆ[ÙHYˆ
+™X[^™Yœ™\ÚœÝ]\ÈOOHÕT”‘S•ˆ	‰ˆ™X[^™Y\œÙYœ›ÝÜË›[™Ý
+H™X[^™YÝ]\ÈH™X[^™Yœ™\ÚœÝ]\ÎÂ‚ˆÛÛœÝÛÝ™\˜YÙHHÛÝ™\˜YÙT˜]Ë›ÚÈÈ\œÙPÛÝ™\˜YÙJÛÝ™\˜YÙT˜]Ë™]K›ÝÕÊHˆ[ÂˆÛÛœÝÝ\œ™[šXÙHH›Ú™XÝY˜Ý\œ™[ÜšXÙNÂˆÛÛœÝÛ\Ý\œÈH›Ú™XÝY˜Û\Ý\œË›X\
+ÈOˆ
+Âˆ‹‹˜ËˆØ[›ÛšXØ[ÚØÛÛ˜XÝˆÛÛ˜XÝˆ›ÝšY\—ÜÞ[X›Ûˆ[X\Ëœ›ÝšY\—ÜÞ[X›Ûˆ[X\×Ý™\šYšYYˆ›ÝšY\[X\Õ™\šYšYYˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜNˆ[X\Õ™\šYšXØ][Û”ØÛÜKˆ\ÜÙ]ÚY[]WÝ™\šYšYYˆÙ\\˜]P\ÜÙ]Y[]U™\šYšYYˆ\ÜÙ]ÚY[]WÝ™\šYšXØ][Û—ÛY]ÙˆÙ\\˜]P\ÜÙ]Y[]SY]ÙˆY™XÞXÛNˆY™XÞXÛQ›ÜŠËÝ\œ™[šXÙJKˆÛ\Ý\—ÚÙ^NˆÛ\Ý\’Ù^JÛÛ˜XÝÊKˆš\œÝÜÙY[Žˆ›ÝÕËˆ\ÝÜÙY[Žˆ›ÝÕËˆ\œÚ\Ý[˜ÙWÛØœÙ\˜][ÛœÎˆKˆ™X[^™YØÛÛ™š\›X][Û—ØY\—ÝÝXÚˆ[ˆ\ØYÜ™Y[Y[ˆ[ˆ[˜Ù\Z[NˆÂˆ‹‹ŠÙ\\˜]P\ÜÙ]Y[]U™\šYšYYÈ×HˆÈTÔÑUÒQS•UWÓ“ÕÔÑTTUSWÕ‘T’Q’QQ—JKˆ”ÒS‘ÓWÔ“Ò‘PÕQÓSÑSÓ“×ÐÔ“ÔÔ×ÔÓÕTÑWÐÓÓ”ÑS”ÕTÈ‹ˆKˆJJNÂˆÛÛœÝ\š]™YH˜[šÐÛ\Ý\œÊÛ\Ý\œËÝ\œ™[šXÙJNÂˆÛÛœÝÛÝ™\™Y™[Y\ÈH›Ú™XÝY™[Y\×ØÛÝ™\™YÂ‚ˆ]HH““ÕÐÓÔÑQŽÂˆYˆ
+È“Ð”ÑT•USÓ—ÓÓ“WÒQS•UWÕS•‘T’Q’QQ‹“Ð”ÑT•USÓ—ÓÓ“WÐSPT×ÕS•‘T’Q’QQ—Kš[˜ÛY\Ê›Ú™XÝYÝ]\ÊJHHH›Ú™XÝYÝ]\ÎÂˆ[ÙHYˆ
+È”ÓÕTÑWÕS”ÕTÔ•Q‹”ÓÕTÑWÒSÓÓTUP“H‹UUÑT”“Ôˆ‹”ÓÕTÑWÑT”“Ôˆ‹”ÓÕTÑWÔVSÐQÕ•SÐUQ‹”ÕSH‹‘•UT‘H‹“RTÔÒS‘×ÔÓÕTÑWÕSQTÕST—Kš[˜ÛY\Ê›Ú™XÝYÝ]\ÊJHHH›Ú™XÝYÝ]\ÎÂ‚ˆ™]\›ˆÂˆ‹‹˜˜\ÙSÝ]]ˆ›ÝšY\—ÜÞ[X›Ûˆ[X\Ëœ›ÝšY\—ÜÞ[X›Ûˆ[X\×Ý™\šYšYYˆ›ÝšY\[X\Õ™\šYšYYˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜNˆ[X\Õ™\šYšXØ][Û”ØÛÜKˆ\ÜÙ]ÚY[]WÝ™\šYšYYˆÙ\\˜]P\ÜÙ]Y[]U™\šYšYYˆ\ÜÙ]ÚY[]WÝ™\šYšXØ][Û—ÛY]ÙˆÙ\\˜]P\ÜÙ]Y[]SY]Ùˆ›Ú™XÝYÛX\ÜÝ]\Îˆ›Ú™XÝYÝ]\Ëˆ™X[^™YÜÝ]\Îˆ™X[^™YÝ]\Ëˆ\]ZY][Û—ÙWÜÝ]\ÎˆKˆ›Ú™XÝYÜÛÝ\˜ÙWÝÎˆ›Ú™XÝYœÛÝ\˜ÙWÝËˆ›Ú™XÝYÜÛÝ\˜ÙWØYÙWÜÙXÎˆX\œ™\Ú˜YÙWÜÙXËˆ›Ú™XÝYÙœ™\Ú™\ÜÎˆX\œ™\ÚœÝ]\Ëˆ›ÝšY\—ØÝ\œ™[ÜšXÙNˆÝ\œ™[šXÙKˆ›Ú™XÝYØÛ\Ý\œÎˆÛ\Ý\œËˆ™X[^™YˆÈ›ÝšY\Žˆ™X[^™Y\œÙYœ›ÝÜËˆ˜\ÙSÝ]]œ™X[^™YšKˆÛÝ™\˜YÙKˆ\š]™YˆÂˆ‹‹™\š]™YˆÛÝ™\™YÝ™[YWØÛÝ[ˆÛÝ™\™Y™[Y\Ë›[™Ý[ˆ™[Y\×ØÛÝ™\™YˆÛÝ™\™Y™[Y\ËˆÛÝ™\™YÛÚWÜÚ\™Nˆ[ˆÜ›ÜÜ×Ý™[YWÛX^ØÛ\Ý\Žˆ[ˆÜ›ÜÜ×Ý™[YWÛX^ØÛ\Ý\—Ü™X\ÛÛŽˆ”›ÝšY\ˆ\ÈÛ™HYÙÜ™YØ]Y][K]™[YH[Ù[È\‹]™[YHÛÛšX][ÛˆØ\È›Ý›Ý™[ˆžH\ÈY\\‹ˆ‹ˆÜ›ÜÜ×ÜÛÝ\˜ÙWØÛÛœÙ[œÝ\Îˆ““ÕÐURSP“H‹ˆKˆÛÝ\˜ÙWÚX[ˆÂˆ^\›˜[Ù™]Ú\ÎˆˆÙ^WØÛÛ™šYÝ\™YˆYKˆ\[X\ÚÜÝ]\ÎˆX\˜]ËšÜÝ]\Ëˆ™X[^™YÚÜÝ]\Îˆ™X[^™Y˜]ËšÜÝ]\ËˆÛÝ™\˜YÙWÚÜÝ]\ÎˆÛÝ™\˜YÙT˜]ËšÜÝ]\ËˆÞ[X›Û×ÚÜÝ]\ÎˆÞ[X›ÛÔ˜]ËšÜÝ]\Ëˆ\[X\ÛÚÎˆX\˜]Ë›ÚËˆ™X[^™YÛÚÎˆ™X[^™Y˜]Ë›ÚËˆÛÝ™\˜YÙWÛÚÎˆÛÝ™\˜YÙT˜]Ë›ÚËˆÞ[X›Û×ÛÚÎˆÞ[X›ÛÔ˜]Ë›ÚËˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÙ^XÝÛX]ÚˆÞ[X›Û™YÚ\ÝžK™^XÝÛX]Úˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜÚ^™NˆÞ[X›Û™YÚ\ÝžKœ™YÚ\ÝžWÜÚ^™Kˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜ›ÝÜ×ÜØØ[›™YˆÞ[X›Û™YÚ\ÝžKœ›ÝÜ×ÜØØ[›™Yˆ›ÝšY\—ÜÞ[X›ÛÜ™YÚ\ÝžWÜØØ[—Ý[˜Ø]YˆÞ[X›Û™YÚ\ÝžKœØØ[—Ý[˜Ø]Yˆ\ÜÙ]ÚY[]WÜÙ\\˜][WÝ™\šYšYYˆÙ\\˜]P\ÜÙ]Y[]U™\šYšYYˆ\ÜÙ]ÚY[]WÝ™\šYšXØ][Û—ÛY]ÙˆÙ\\˜]P\ÜÙ]Y[]SY]Ùˆ\ÜÙ]ÚY[]WØÛÜœ›Ø›Ü˜]ÜœÎˆ\œ˜^Kš\Ð\œ˜^J\ÜÙ]ÚY[]WÜ›ÛÙË˜ÛÜœ›Ø›Ü˜]ÜœÊHÈ\ÜÙ]ÚY[]WÜ›ÛÙ‹˜ÛÜœ›Ø›Ü˜]ÜœËœÛXÙJ
+Hˆ×Kˆ›Ú™XÝYÙÜ˜\Û›Ù\×ÜØØ[›™Yˆ›Ú™XÝY™Ü˜\Û›Ù\×ÜØØ[›™Yˆ›Ú™XÝYÜ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ›Ú™XÝYœ˜]×Ü›ÝÜ×ÜØØ[›™Yˆ›Ú™XÝYÜØØ[—Ý[˜Ø]Yˆ›Ú™XÝYœØØ[—Ý[˜Ø]Yˆ›Ú™XÝYØÛ\Ý\—ÛÝ]]Ý[˜Ø]Yˆ›Ú™XÝY˜Û\Ý\—ÛÝ]]Ý[˜Ø]Yˆ™X[^™YÙÜ˜\Û›Ù\×ÜØØ[›™Yˆ™X[^™Y\œÙY™Ü˜\Û›Ù\×ÜØØ[›™Yˆ™X[^™YÛX]ÚYÜ›ÝÜ×ÝÚ][—ÜØØ[Žˆ™X[^™Y\œÙY›X]ÚYÜ›ÝÜ×ÝÚ][—ÜØØ[‹ˆ™X[^™YÜØØ[—Ý[˜Ø]Yˆ™X[^™Y\œÙYœØØ[—Ý[˜Ø]YˆÛÝ™\˜YÙWÜ›ÝÜ×ÜØØ[›™YˆÛÝ™\˜YÙOËœ›ÝÜ×ÜØØ[›™YÏÈˆÛÝ™\˜YÙWÜØØ[—Ý[˜Ø]YˆÛÝ™\˜YÙOËœØØ[—Ý[˜Ø]YÏÈ˜[ÙKˆ™]žWØY\—ÜÙXÎˆX]›X^
+‹‹–ÛX\˜]Ëœ™]žWØY\—ÜÙXË™X[^™Y˜]Ëœ™]žWØY\—ÜÙXËÛÝ™\˜YÙT˜]Ëœ™]žWØY\—ÜÙXËÞ[X›ÛÔ˜]Ëœ™]žWØY\—ÜÙX×K™š[\Š[X™\‹š\Ñš[š]JJKˆKˆ\œ›ÜœËˆNÂˆB‚ˆ[˜Ý[ÛˆœÛÛÛÛ\XÝ
+˜[YK˜[˜XÚÊHÂˆžHÈ™]\›ˆ”ÓÓ‹œÝš[™ÚYžJ˜[YHÏÈ˜[˜XÚÊNÈHØ]ÚÈ™]\›ˆ”ÓÓ‹œÝš[™ÚYžJ˜[˜XÚÊNÈBˆB‚ˆ[˜Ý[Ûˆ›Ý[™YY™XÞXÛT›ÝÜÊ™XÛÜ™ØœÙ\™YËÛÛ˜XÝØœÙ\˜][Û’Y
+HÂˆÛÛœÝ[YÚX›HBˆ™XÛÜ™Ëœ›Ú™XÝYÛX\ÜÝ]\ÈOOHÓÔÑQÔÒQÕÈˆ	‰‚ˆ™XÛÜ™Ë˜[X\×Ý™\šYšYYOOHYH	‰‚ˆ™XÛÜ™Ë˜\ÜÙ]ÚY[]WÝ™\šYšYYOOHYH	‰‚ˆ™XÛÜ™Ëœ›Ú™XÝYÙœ™\Ú™\ÜÈOOHÕT”‘S•ŽÂˆÛÛœÝØ[™Y]\ÈH
+[YÚX›H	‰ˆ\œ˜^Kš\Ð\œ˜^J™XÛÜ™Ëœ›Ú™XÝYØÛ\Ý\œÊBˆÈ™XÛÜ™œ›Ú™XÝYØÛ\Ý\œÂˆˆ×JBˆ™š[\Š
+Û\Ý\ŠHOˆÛ\Ý\Ë˜Û\Ý\—ÚÙ^H	‰ˆš[š]JÛ\Ý\Ë›]™[ÜšXÙJHOOH[
+BˆœÛÜ
+
+YšYÚ
+HO‚ˆ[X™\ŠšYÚË™^XÚ]ÛXZ›ÜˆOOHYJHH[X™\ŠYË™^XÚ]ÛXZ›ÜˆOOHYJHˆX]˜XœÊš[š]JYË™\Ý[˜ÙWÜÝ
+HÏÈ[™š[š]JHHX]˜XœÊš[š]JšYÚË™\Ý[˜ÙWÜÝ
+HÏÈ[™š[š]JHˆ
+YË˜Û\Ý\—ÚÙ^JK›ØØ[PÛÛ\\™J
+šYÚË˜Û\Ý\—ÚÙ^JJBˆ
+NÂˆ™]\›ˆÂˆ[YÚX›WÝÝ[ˆØ[™Y]\Ë›[™Ýˆ›ÝÜÎˆØ[™Y]\ËœÛXÙJPVÓQ‘PÖPÓWÔÕUWÔ“ÕÔÊK›X\
+
+Û\Ý\ŠHOˆ
+ÂˆÛ\Ý\—ÚÙ^NˆÛ\Ý\‹˜Û\Ý\—ÚÙ^Kˆ›ÝšY\Žˆ™XÛÜ™Ëœ›ÝšY\ˆ“Õ’QT‹ˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆÚYNˆÛ\Ý\‹œÚYH•S’Ó“ÕÓˆ‹ˆ]™[ÜšXÙNˆÛ\Ý\‹›]™[ÜšXÙKˆšXÙWÛÝÎˆÛ\Ý\‹œšXÙWÛÝÈÏÈ[ˆšXÙWÚYÚˆÛ\Ý\‹œšXÙWÚYÚÏÈ[ˆÛÝ\˜ÙWÝ[š]ˆÛ\Ý\‹œÛÝ\˜ÙWÝ[š]ÏÈ[ˆš\œÝÜÙY[—ÝÎˆØœÙ\™YËˆ\ÝÜÙY[—ÝÎˆØœÙ\™YËˆY™XÞXÛNˆÛ\Ý\‹›Y™XÞXÛHPÕU‘H‹ˆ\ÝÙ\Ý[˜ÙWÜÝˆÛ\Ý\‹™\Ý[˜ÙWÜÝÏÈ[ˆ^XÚ]ÛXZ›ÜŽˆÛ\Ý\‹™^XÚ]ÛXZ›ÜˆÈHˆˆ\ÝÜ˜]×ÜÚ^™NˆÛ\Ý\‹œ˜]×ÜÚ^™HÏÈ[ˆ\ÝÜÝ™[™ÝˆÛ\Ý\‹››Ü›X[^™YÜÝ™[™ÝÏÈ[ˆÛÝ\˜ÙWÛ[Ù[Ý™\œÚ[ÛŽˆ•ST×Õ‘T”ÒSÓ‹ˆ\ÝÛØœÙ\˜][Û—ÚYˆØœÙ\˜][Û’YˆJJKˆNÂˆB‚ˆ[˜Ý[ÛˆY™XÞXÛTÝ]TÝ][Y[
+[‹›ÝÜÊHÂˆYˆ
+\›ÝÜË›[™Ý
+H™]\›ˆ[Âˆ™]\›ˆ[‹‘UWÑ‹œ™\\™JˆS”ÑT•S•È\]ZY][Û—ØÛ\Ý\—ÜÝ]Bˆ
+Û\Ý\—ÚÙ^K›ÝšY\‹ÛÛ˜XÝØÛÙKÚYK]™[ÜšXÙKšXÙWÛÝËšXÙWÚYÚÛÝ\˜ÙWÝ[š]ˆš\œÝÜÙY[—ÝË\ÝÜÙY[—ÝË\œÚ\Ý[˜ÙWÛØœÙ\˜][ÛœËY™XÞXÛK\ÝÙ\Ý[˜ÙWÜÝˆ^XÚ]ÛXZ›Ü‹\ÝÜ˜]×ÜÚ^™K\ÝÜÝ™[™ÝÛÝ\˜ÙWÛ[Ù[Ý™\œÚ[Û‹\ÝÛØœÙ\˜][Û—ÚY
+BˆÑSPÕˆœÛÛ—Ù^˜XÝ
+˜[YK	É˜Û\Ý\—ÚÙ^IÊKœÛÛ—Ù^˜XÝ
+˜[YK	Éœ›ÝšY\‰ÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É˜ÛÛ˜XÝØÛÙIÊKœÛÛ—Ù^˜XÝ
+˜[YK	ÉœÚYIÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É›]™[ÜšXÙIÊKœÛÛ—Ù^˜XÝ
+˜[YK	ÉœšXÙWÛÝÉÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	ÉœšXÙWÚYÚ	ÊKœÛÛ—Ù^˜XÝ
+˜[YK	ÉœÛÝ\˜ÙWÝ[š]	ÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É™š\œÝÜÙY[—ÝÉÊKœÛÛ—Ù^˜XÝ
+˜[YK	É›\ÝÜÙY[—ÝÉÊKKˆœÛÛ—Ù^˜XÝ
+˜[YK	É›Y™XÞXÛIÊKœÛÛ—Ù^˜XÝ
+˜[YK	É›\ÝÙ\Ý[˜ÙWÜÝ	ÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É™^XÚ]ÛXZ›Ü‰ÊKœÛÛ—Ù^˜XÝ
+˜[YK	É›\ÝÜ˜]×ÜÚ^™IÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É›\ÝÜÝ™[™Ý	ÊKœÛÛ—Ù^˜XÝ
+˜[YK	ÉœÛÝ\˜ÙWÛ[Ù[Ý™\œÚ[Û‰ÊKˆœÛÛ—Ù^˜XÝ
+˜[YK	É›\ÝÛØœÙ\˜][Û—ÚY	ÊBˆ”“ÓHœÛÛ—ÙXXÚ
+ÌJBˆÒT‘HBˆÓˆÓÓ‘“PÕ
+Û\Ý\—ÚÙ^JHÈTUHÑUˆ\ÝÜÙY[—ÝÏY^ÛYY›\ÝÜÙY[—ÝËˆ\œÚ\Ý[˜ÙWÛØœÙ\˜][ÛœÏ[\]ZY][Û—ØÛ\Ý\—ÜÝ]Kœ\œÚ\Ý[˜ÙWÛØœÙ\˜][ÛœÊÌKˆY™XÞXÛOY^ÛYY›Y™XÞXÛKˆ\ÝÙ\Ý[˜ÙWÜÝY^ÛYY›\ÝÙ\Ý[˜ÙWÜÝˆ^XÚ]ÛXZ›ÜY^ÛYY™^XÚ]ÛXZ›Ü‹ˆ\ÝÜ˜]×ÜÚ^™OY^ÛYY›\ÝÜ˜]×ÜÚ^™Kˆ\ÝÜÝ™[™ÝY^ÛYY›\ÝÜÝ™[™ÝˆÛÝ\˜ÙWÛ[Ù[Ý™\œÚ[ÛY^ÛYYœÛÝ\˜ÙWÛ[Ù[Ý™\œÚ[Û‹ˆ\ÝÛØœÙ\˜][Û—ÚYY^ÛYY›\ÝÛØœÙ\˜][Û—ÚYˆÊˆ‘TÔ•—ÑWÐÓTÕT—ÕÔ’UWÔÒT‘ÕŒNˆ˜]È\]ZY][ÛˆØœÙ\˜][Ûˆ™[XZ[œÈ\‹XÞXÛK‚ˆ[˜Ú[™ÙYÛ\Ý\‹\Ý]HÝ[[X\žH›ÝÜÈ\™HÜ™XYXÜ›ÜÜÈÈØØ[›™\ˆXÚÙ]ÎÂˆY™XÞXÛHÈ^XÚ][XZ›ÜˆÚ[™Ù\ÈÝ[\œÚ\Ý[[YYX][K‚ˆ›ÈØÚ[XKÚYÛ˜[XÚ\Ú[Ûˆ^Y\‹[YÜ˜[HÜˆ˜Y[™ÈÚ[™ÙKˆ
+‹ÂˆÒT‘Bˆ\]ZY][Û—ØÛ\Ý\—ÜÝ]K›\ÝÜÙY[—ÝÈTÈ•SˆÔˆ\]ZY][Û—ØÛ\Ý\—ÜÝ]K›Y™XÞXÛHTÈ“Õ^ÛYY›Y™XÞXÛBˆÔˆ\]ZY][Û—ØÛ\Ý\—ÜÝ]K™^XÚ]ÛXZ›ÜˆTÈ“Õ^ÛYY™^XÚ]ÛXZ›Ü‚ˆÔˆ
+ˆ^ÛYY›\ÝÜÙY[—ÝÈH\]ZY][Û—ØÛ\Ý\—ÜÝ]K›\ÝÜÙY[—ÝÈHÌˆS‘
+\]ZY][Û—ØÛ\Ý\—ÜÝ]Kœ›ÝÚY	HÊHBˆ
+ÐTÕ
+^ÛYY›\ÝÜÙY[—ÝÈÈÌTÈS•QÑTŠH	HÊBˆ
+Bˆ
+K˜š[™
+œÛÛÛÛ\XÝ
+›ÝÜË×JJNÂˆB‚ˆ\Þ[˜È[˜Ý[Ûˆ\œÚ\ÝÚYÝÊ[‹™XÛÜ™›ÝÈH]K››ÝÊ
+JHÂˆYˆ
+Y[Ë‘UWÑŠH™]\›ˆÈÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹\œÚ\ÝYˆ˜[ÙK\œ›ÜŽˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘QˆNÂˆÛÛœÝØœÙ\™YÈHš[š]J™XÛÜ™Ë›ØœÙ\™YÝÊHÏÈ›ÝÎÂˆÛÛœÝÛÛ˜XÝH
+™XÛÜ™Ë˜ÛÛ˜XÝØÛÙJH•S’Ó“ÕÓˆŽÂˆÛÛœÝØœÙ\˜][Û’YH	ÛØœÙ\™YßN‰ØÛÛ˜XÝN›\LÍÌXÂˆÛÛœÝÝ]Ù™ˆH›ÝÈH‘US•SÓ—ÑVTÈ
+ˆ
+ˆŒ
+ˆŒ
+ˆLÂˆžHÂˆÛÛœÝ[œÙ\H[‹‘UWÑ‹œ™\\™JˆS”ÑT•ÔˆQÓ“Ô‘HS•È\]ZY][Û—ÜÚYÝ×ÛØœÙ\˜][Û‚ˆ
+ˆØœÙ\˜][Û—ÚYÛÛ˜XÝØÛÙKØœÙ\™YÝË[\×Ý™\œÚ[Û‹ÛÛ˜XÝÝ™\œÚ[Û‹[ÙKˆ›ÝšY\‹›ÝšY\—ÜÞ[X›Û[X\×Ý™\šYšYY[X\×Ý™\šYšXØ][Û—ÜØÛÜK\ÜÙ]ÚY[]WÝ™\šYšYYˆ›Ú™XÝYÛX\ÜÝ]\Ë™X[^™YÜÝ]\ËWÜÝ]\ËÛÝ\˜ÙWÝËÛÝ\˜ÙWØYÙWÜÙXËœ™\Ú™\Ü×ÜÝ]\Ëˆ›Ú™XÝYØÛ\Ý\œ×ÚœÛÛ‹™X[^™YÚœÛÛ‹ÛÝ™\˜YÙWÚœÛÛ‹\š]™YÚœÛÛ‹ÛÝ\˜ÙWÚX[ÚœÛÛ‹\œ›Üœ×ÚœÛÛ‹ˆ]™WÜ›Ø˜Xš[]K]™WÜÚYÛ˜[˜[Y]YÜÚYÛ˜[[YÜ˜[WÜÝ\Y˜Y[™×Ù^XÝ][Û‹ˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙY]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›YÝX\˜[YYÝÙÙ[™\˜]YˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]YÚYÝ×ÛÛ›K\œÚ\ÝYÝÂˆ
+HSQTÈ
+ˆÌKÌ‹ÌËÍÍKÍ‹ÍËÎÎKÌLÌLKÌL‹ÌLËÌMÌMKÌM‹ÌMËˆÌNÌNKÌŒÌŒKÌŒ‹ÌŒË•SKÌˆ
+Bˆ
+K˜š[™
+ˆØœÙ\˜][Û’YÛÛ˜XÝØœÙ\™YË•ST×Õ‘T”ÒSÓ‹ÓÓ•PÕÕ‘T”ÒSÓ‹ˆ“TURQUSÓ—ÒS•SQÑSÑWÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹™XÛÜ™Ëœ›ÝšY\ˆ“Õ’QT‹ˆ™XÛÜ™Ëœ›ÝšY\—ÜÞ[X›Û[™XÛÜ™Ë˜[X\×Ý™\šYšYYÈHˆˆ™XÛÜ™Ë˜[X\×Ý™\šYšXØ][Û—ÜØÛÜH[™XÛÜ™Ë˜\ÜÙ]ÚY[]WÝ™\šYšYYÈHˆˆ™XÛÜ™Ëœ›Ú™XÝYÛX\ÜÝ]\È““ÕÐÓÔÑQ‹™XÛÜ™Ëœ™X[^™YÜÝ]\È““ÕÐÓÔÑQ‹ˆ™XÛÜ™Ë›\]ZY][Û—ÙWÜÝ]\È““ÕÐÓÔÑQ‹™XÛÜ™Ëœ›Ú™XÝYÜÛÝ\˜ÙWÝÈÏÈ[ˆ™XÛÜ™Ëœ›Ú™XÝYÜÛÝ\˜ÙWØYÙWÜÙXÈÏÈ[™XÛÜ™Ëœ›Ú™XÝYÙœ™\Ú™\ÜÈ[ˆœÛÛÛÛ\XÝ
+™XÛÜ™Ëœ›Ú™XÝYØÛ\Ý\œË×JKœÛÛÛÛ\XÝ
+™XÛÜ™Ëœ™X[^™YßJKˆœÛÛÛÛ\XÝ
+™XÛÜ™Ë˜ÛÝ™\˜YÙKßJKœÛÛÛÛ\XÝ
+™XÛÜ™Ë™\š]™YßJKˆœÛÛÛÛ\XÝ
+™XÛÜ™ËœÛÝ\˜ÙWÚX[ßJKœÛÛÛÛ\XÝ
+™XÛÜ™Ë™\œ›ÜœË×JK›ÝÂˆ
+NÂ‚ˆÛÛœÝY™XÞXÛHH›Ý[™YY™XÞXÛT›ÝÜÊ™XÛÜ™ØœÙ\™YËÛÛ˜XÝØœÙ\˜][Û’Y
+NÂˆÛÛœÝÝ]TÝ][Y[HY™XÞXÛTÝ]TÝ][Y[
+[‹Y™XÞXÛKœ›ÝÜÊNÂˆÛÛœÝÛX[\ØœÈH[‹‘UWÑ‹œ™\\™JSUH”“ÓH\]ZY][Û—ÜÚYÝ×ÛØœÙ\˜][ÛˆÒT‘HØœÙ\™YÝÈÌX
+K˜š[™
+Ý]Ù™ŠNÂˆÛÛœÝ^\™TÝ]HH[‹‘UWÑ‹œ™\\™JTUH\]ZY][Û—ØÛ\Ý\—ÜÝ]HÑUY™XÞXÛOIÑVT‘Q	ÈÒT‘H\ÝÜÙY[—ÝÈÌHS‘Y™XÞXÛH“ÕSˆ
+	ÔÕÑT	Ë	ÒS•SQUQ	Ë	ÑVT‘Q	ÊX
+K˜š[™
+›ÝÈH
+ˆŒ
+ˆŒ
+ˆL
+NÂˆÛÛœÝ[]TÝ]HH[‹‘UWÑ‹œ™\\™JSUH”“ÓH\]ZY][Û—ØÛ\Ý\—ÜÝ]HÒT‘H\ÝÜÙY[—ÝÈÌX
+K˜š[™
+Ý]Ù™ŠNÂˆÛÛœÝÝ][Y[ÈHÚ[œÙ\‹‹ŠÝ]TÝ][Y[ÈÜÝ]TÝ][Y[Hˆ×JKÛX[\ØœË^\™TÝ]K[]TÝ]WNÂˆÛÛœÝ™\Ý[ÈH]ØZ][‹‘UWÑ‹˜˜]Ú
+Ý][Y[ÊNÂˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆ\œÚ\ÝYˆYKˆ[œÙ\ØÚ[™Ù\Îˆ[X™\Š™\Ý[ÏË–ÌOË›Y]OË˜Ú[™Ù\ÈÏÈ
+KˆÝ]WÜ›ÝÜ×Ù[YÚX›NˆY™XÞXÛK™[YÚX›WÝÝ[ˆÝ]WÜ›ÝÜ×Ø][\YˆY™XÞXÛKœ›ÝÜË›[™ÝˆÝ]WÜ›ÝÜ×ØØ\XÚ]WÙ›ÜYˆX]›X^
+Y™XÞXÛK™[YÚX›WÝÝ[HY™XÞXÛKœ›ÝÜË›[™Ý
+KˆWÜÝ][Y[ÎˆÝ][Y[Ë›[™ÝˆWÜÝ][Y[ØØ\ˆKˆ\œ›ÜŽˆ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÈÝ]\Îˆ”T•PS‹\œÚ\ÝYˆ˜[ÙK\œ›ÜŽˆ
+\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+HNÂˆBˆB‚ˆ\Þ[˜È[˜Ý[Ûˆ]T[™TÝ[[X\žJ[‹›ÝÈH]K››ÝÊ
+JHÂˆÛÛœÝØY™HHÂˆX›WØ]˜Z[X›Nˆ˜[ÙKˆ[ÙNˆ“TURQUSÓ—ÒS•SQÑSÑWÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹ˆ[\×Ý™\œÚ[ÛŽˆ•ST×Õ‘T”ÒSÓ‹ˆÛÛ˜XÝÝ™\œÚ[ÛŽˆÓÓ•PÕÕ‘T”ÒSÓ‹ˆ›Ú™XÝYÛ[Ù[Ü›ÝšY\Žˆ“Õ’QT‹ˆÜ›ÜÜ×ÜÛÝ\˜ÙWØÛÛœÙ[œÝ\Îˆ““ÕÐURSP“WÔÒS‘ÓWÔ“Ò‘PÕQÔ“Õ’QTˆ‹ˆÚ[™Ù\×ÜÝ˜]YÞWÝÙZYÚÎˆ˜[ÙKˆ™]×Ü\˜Ù[YÙWÝÙZYÚˆ˜[ÙKˆ]™WÜ›Ø˜Xš[]WÙÙ[™\˜]Yˆ˜[ÙKˆ]™WÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆ]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Yˆ˜[ÙKˆÝX\˜[YYÝÙÙ[™\˜]Yˆ˜[ÙKˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Yˆ˜[ÙKˆÚYÝ×ÛÛ›NˆYKˆ™][[Û—Ù^\Îˆ‘US•SÓ—ÑVTËˆNÂˆYˆ
+Y[Ë‘UWÑŠH™]\›ˆÈ‹‹œØY™K\œ›ÜŽˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘QˆNÂˆžHÂˆÛÛœÝÚ[˜ÙHH›ÝÈH
+ˆŒ
+ˆŒ
+ˆLÂˆÛÛœÝÝ[[X\žHH]ØZ][‹‘UWÑ‹œ™\\™JˆÑSPÕÓÕS•
+
+ŠHÝ[ˆÕSJÐTÑHÒSˆ›Ú™XÝYÛX\ÜÝ]\ÏIÓÐ”ÑT•USÓ—ÓÓ“WÒQS•UWÕS•‘T’Q’QQ	ÈSˆHSÑHS‘
+H›Ú™XÝYÛØœÙ\˜][ÛœËˆÕSJÐTÑHÒSˆ›Ú™XÝYÛX\ÜÝ]\ÏIÔÓÕTÑWÕS”ÕTÔ•Q	ÈSˆHSÑHS‘
+HÛÝ\˜ÙWÝ[œÝ\ÜYˆÕSJÐTÑHÒSˆ›Ú™XÝYÛX\ÜÝ]\ÏIÔÓÕTÑWÒSÓÓTUP“IÈSˆHSÑHS‘
+HÛÝ\˜ÙWÚ[˜ÛÛ\]X›KˆÕSJÐTÑHÒSˆ›Ú™XÝYÛX\ÜÝ]\ÏIÐÓÓ‘’Q×Ô‘TURT‘QÑ”‘QWÐTWÒÑVIÈSˆHSÑHS‘
+HÛÛ™šY×Ü™\]Z\™YˆÕSJÐTÑHÒSˆ]™WÜ›Ø˜Xš[]HTÈ“Õ•SSˆHSÑHS‘
+H›Û›[Û]™WÜ›Ø˜Xš[]KˆÕSJ]™WÜÚYÛ˜[
+H]™WÜÚYÛ˜[ËÕSJ˜[Y]YÜÚYÛ˜[
+H˜[Y]YÜÚYÛ˜[ËˆÕSJ[YÜ˜[WÜÝ\Y
+H[YÜ˜[WÜÝ\YÕSJ˜Y[™×Ù^XÝ][ÛŠH˜Y[™×Ù^XÝ][Û‹ˆÕSJÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙY
+HÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆÕSJ]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Y
+H]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›YˆÕSJÝX\˜[YYÝÙÙ[™\˜]Y
+HÝX\˜[YYÝÙÙ[™\˜]YˆÕSJÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Y
+HÞ[]X×ÚX]X\ÙÙ[™\˜]Yˆ”“ÓH\]ZY][Û—ÜÚYÝ×ÛØœÙ\˜][ÛˆÒT‘HØœÙ\™YÝÈHÌBˆ
+K˜š[™
+Ú[˜ÙJK™š\œÝ
+
+NÂˆÛÛœÝ™XÙ[™\Ý[H]ØZ][‹‘UWÑ‹œ™\\™JˆÑSPÕØœÙ\˜][Û—ÚYÛÛ˜XÝØÛÙKØœÙ\™YÝË›ÝšY\‹›ÝšY\—ÜÞ[X›Û[X\×Ý™\šYšYYˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜK\ÜÙ]ÚY[]WÝ™\šYšYY›Ú™XÝYÛX\ÜÝ]\Ë™X[^™YÜÝ]\ËWÜÝ]\ËˆÛÝ\˜ÙWÝËÛÝ\˜ÙWØYÙWÜÙXËœ™\Ú™\Ü×ÜÝ]\Ë\š]™YÚœÛÛ‹ÛÝ\˜ÙWÚX[ÚœÛÛ‹\œ›Üœ×ÚœÛÛ‹ˆ]™WÜ›Ø˜Xš[]K]™WÜÚYÛ˜[˜[Y]YÜÚYÛ˜[[YÜ˜[WÜÝ\Y˜Y[™×Ù^XÝ][Û‹ˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙY]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›YÝX\˜[YYÝÙÙ[™\˜]YˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]YÚYÝ×ÛÛ›Bˆ”“ÓH\]ZY][Û—ÜÚYÝ×ÛØœÙ\˜][ÛˆÔ‘Tˆ–HØœÙ\™YÝÈTÐÈSRUˆ
+K˜[
+
+NÂˆÛÛœÝÝ]\ÈH]ØZ][‹‘UWÑ‹œ™\\™JÑSPÕÓÕS•
+
+ŠHÝ[ÕSJÐTÑHÒSˆY™XÞXÛOIÐPÕU‘IÈSˆHSÑHS‘
+HXÝ]™KÕSJÐTÑHÒSˆY™XÞXÛOIÐT“ÐPÒS‘ÉÈSˆHSÑHS‘
+H\›ØXÚ[™ËÕSJÐTÑHÒSˆY™XÞXÛOIÕÕPÒQ	ÈSˆHSÑHS‘
+HÝXÚYÕSJÐTÑHÒSˆY™XÞXÛOIÔÕÑT	ÈSˆHSÑHS‘
+HÝÙ\”“ÓH\]ZY][Û—ØÛ\Ý\—ÜÝ]X
+K™š\œÝ
+
+NÂˆÛÛœÝ\œÙHH
+‹˜[˜XÚÊHOˆÈžHÈ™]\›ˆ”ÓÓ‹œ\œÙJˆ”ÓÓ‹œÝš[™ÚYžJ˜[˜XÚÊJNÈHØ]ÚÈ™]\›ˆ˜[˜XÚÎÈHNÂˆÛÛœÝ™XÙ[H\œ˜^Kš\Ð\œ˜^J™XÙ[™\Ý[Ëœ™\Ý[ÊHÈ™XÙ[™\Ý[œ™\Ý[Ë›X\
+ˆOˆ
+ÂˆØœÙ\˜][Û—ÚYˆ‹›ØœÙ\˜][Û—ÚYˆÛÛ˜XÝˆ‹˜ÛÛ˜XÝØÛÙKˆØœÙ\™YÝÎˆ[X™\Š‹›ØœÙ\™YÝÊH[ˆØœÙ\™YØYÙWÜÙXÎˆ[X™\‹š\Ñš[š]J[X™\Š‹›ØœÙ\™YÝÊJHÈX]›X^
+›ÝÈH[X™\Š‹›ØœÙ\™YÝÊJKÌLˆ[ˆ›ÝšY\Žˆ‹œ›ÝšY\‹ˆ›ÝšY\—ÜÞ[X›Ûˆ‹œ›ÝšY\—ÜÞ[X›Ûˆ[X\×Ý™\šYšYYˆ[X™\Š‹˜[X\×Ý™\šYšYY
+HOOHKˆ[X\×Ý™\šYšXØ][Û—ÜØÛÜNˆ‹˜[X\×Ý™\šYšXØ][Û—ÜØÛÜKˆ\ÜÙ]ÚY[]WÝ™\šYšYYˆ[X™\Š‹˜\ÜÙ]ÚY[]WÝ™\šYšYY
+HOOHKˆ›Ú™XÝYÛX\ÜÝ]\Îˆ‹œ›Ú™XÝYÛX\ÜÝ]\Ëˆ™X[^™YÜÝ]\Îˆ‹œ™X[^™YÜÝ]\Ëˆ\]ZY][Û—ÙWÜÝ]\Îˆ‹™WÜÝ]\ËˆÛÝ\˜ÙWÝÎˆ[X™\Š‹œÛÝ\˜ÙWÝÊH[ˆÛÝ\˜ÙWØYÙWÜÙXÎˆ‹œÛÝ\˜ÙWØYÙWÜÙXÈOOH[È[ˆ[X™\Š‹œÛÝ\˜ÙWØYÙWÜÙXÊKˆœ™\Ú™\Ü×ÜÝ]\Îˆ‹™œ™\Ú™\Ü×ÜÝ]\Ëˆ\š]™Yˆ\œÙJ‹™\š]™YÚœÛÛ‹ßJKˆÛÝ\˜ÙWÚX[ˆ\œÙJ‹œÛÝ\˜ÙWÚX[ÚœÛÛ‹ßJKˆ\œ›ÜœÎˆ\œÙJ‹™\œ›Üœ×ÚœÛÛ‹×JKˆØY™]NˆÂˆ]™WÜ›Ø˜Xš[]Nˆ‹›]™WÜ›Ø˜Xš[]HÏÈ[ˆ]™WÜÚYÛ˜[ˆ[X™\Š‹›]™WÜÚYÛ˜[
+HOOHKˆ˜[Y]YÜÚYÛ˜[ˆ[X™\Š‹˜[Y]YÜÚYÛ˜[
+HOOHKˆ[YÜ˜[WÜÝ\Yˆ[X™\Š‹[YÜ˜[WÜÝ\Y
+HOOHKˆ˜Y[™×Ù^XÝ][ÛŽˆ[X™\Š‹˜Y[™×Ù^XÝ][ÛŠHOOHKˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ[X™\Š‹œÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙY
+HOOHKˆ]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Yˆ[X™\Š‹˜]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Y
+HOOHKˆÝX\˜[YYÝÙÙ[™\˜]Yˆ[X™\Š‹™ÝX\˜[YYÝÙÙ[™\˜]Y
+HOOHKˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Yˆ[X™\Š‹œÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Y
+HOOHKˆÚYÝ×ÛÛ›Nˆ[X™\Š‹œÚYÝ×ÛÛ›JHOOHKˆKˆJJHˆ×NÂˆ™]\›ˆÂˆ‹‹œØY™KˆX›WØ]˜Z[X›NˆYKˆÝ[[X\žWÌˆÂˆÝ[ˆ[X™\ŠÝ[[X\žOËÝ[ÏÈ
+Kˆ›Ú™XÝYÛØœÙ\˜][ÛœÎˆ[X™\ŠÝ[[X\žOËœ›Ú™XÝYÛØœÙ\˜][ÛœÈÏÈ
+KˆÛÝ\˜ÙWÝ[œÝ\ÜYˆ[X™\ŠÝ[[X\žOËœÛÝ\˜ÙWÝ[œÝ\ÜYÏÈ
+KˆÛÝ\˜ÙWÚ[˜ÛÛ\]X›Nˆ[X™\ŠÝ[[X\žOËœÛÝ\˜ÙWÚ[˜ÛÛ\]X›HÏÈ
+KˆÛÛ™šY×Ü™\]Z\™Yˆ[X™\ŠÝ[[X\žOË˜ÛÛ™šY×Ü™\]Z\™YÏÈ
+Kˆ›Û›[Û]™WÜ›Ø˜Xš[]Nˆ[X™\ŠÝ[[X\žOË››Û›[Û]™WÜ›Ø˜Xš[]HÏÈ
+Kˆ]™WÜÚYÛ˜[Îˆ[X™\ŠÝ[[X\žOË›]™WÜÚYÛ˜[ÈÏÈ
+Kˆ˜[Y]YÜÚYÛ˜[Îˆ[X™\ŠÝ[[X\žOË˜[Y]YÜÚYÛ˜[ÈÏÈ
+Kˆ[YÜ˜[WÜÝ\Yˆ[X™\ŠÝ[[X\žOË[YÜ˜[WÜÝ\YÏÈ
+Kˆ˜Y[™×Ù^XÝ][ÛŽˆ[X™\ŠÝ[[X\žOË˜Y[™×Ù^XÝ][ÛˆÏÈ
+KˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ[X™\ŠÝ[[X\žOËœÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYÏÈ
+Kˆ]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Yˆ[X™\ŠÝ[[X\žOË˜]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›YÏÈ
+KˆÝX\˜[YYÝÙÙ[™\˜]Yˆ[X™\ŠÝ[[X\žOË™ÝX\˜[YYÝÙÙ[™\˜]YÏÈ
+KˆÞ[]X×ÚX]X\ÙÙ[™\˜]Yˆ[X™\ŠÝ[[X\žOËœÞ[]X×ÚX]X\ÙÙ[™\˜]YÏÈ
+KˆKˆÛ\Ý\—ÜÝ]NˆÂˆÝ[ˆ[X™\ŠÝ]\ÏËÝ[ÏÈ
+KXÝ]™Nˆ[X™\ŠÝ]\ÏË˜XÝ]™HÏÈ
+K\›ØXÚ[™Îˆ[X™\ŠÝ]\ÏË˜\›ØXÚ[™ÈÏÈ
+KÝXÚYˆ[X™\ŠÝ]\ÏËÝXÚYÏÈ
+KÝÙ\ˆ[X™\ŠÝ]\ÏËœÝÙ\ÏÈ
+KˆKˆ™XÙ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÈ‹‹œØY™K\œ›ÜŽˆ
+\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+HNÂˆBˆB‚ˆ™]\›ˆÂˆ•ST×Õ‘T”ÒSÓ‹ˆÓÓ•PÕÕ‘T”ÒSÓ‹ˆ›ÝšY\”Þ[X›Ûœ›ÛPÛÛ˜XÝˆ\œÙT›ÝšY\”Þ[X›Û™YÚ\ÝžKˆ\œÙT›Ú™XÝYX\ˆ\œÙT™X[^™YÝ[[X\žKˆ\œÙPÛÝ™\˜YÙKˆÛÛXÝÜ›ÜÜÕ™[YS\]ZY][Û’[[YÙ[˜ÙKˆ\œÚ\ÝÚYÝËˆ]T[™TÝ[[X\žKˆNÂŸJJ
+NÂ‚˜\Þ[˜È[˜Ý[ÛˆZ[Y\ÚXÚÒ[œ]
+\˜[\Ë[ŠHÂˆÛÛœÝÞXÛTÝ\YÈH]K››ÝÊ
+NÂˆ]›ÝÈHÞXÛTÝ\YÎÂˆÛÛœÝÚ\™Y™]ÚHÜ™X]T\‘Y\ÚXÚÑ™]ÚØXÚJ
+NÂ‚ˆÛÛœÝÛÛ˜XÝBˆ›Ü›X[^™Q]\™\ÐÛÛ˜XÝ
+ˆ\˜[\ÏË˜ÛÛ˜XÝˆ\˜[\ÏË˜ÛÛ˜XÝØÛÙHˆ\˜[\ÏËœÞ[X›Ûˆ‘U’KUTÑ‚ˆ
+NÂ‚ˆÛÛœÝ]\™\Ô\˜[\ÈHÂˆÛÛ˜XÝˆ›Ý[Û˜[Ý\ÙˆLˆ˜Y\ÎˆŒˆÙ™]ÚÚœÛÛŽˆÚ\™Y™]Ú™™]ÚˆNÂ‚ˆÛÛœÝÜÝ\˜[\ÈHÂˆÞ[X›ÛˆÛÛ˜XÝˆ›Ý[Û˜[Ý\ÙˆLˆ˜Y\ÎˆŒˆœ™\Ú™\Ü×ÜÙXÎˆLˆÙ™]ÚÚœÛÛŽˆÚ\™Y™]Ú™™]ÚˆNÂ‚ˆÛÛœÝ˜Z™XÝÜžT\˜[\ÈHÂˆÛÛ˜XÝˆ˜Y\ÎˆŒˆÛ[™WÜÚ^™NˆMŒˆÙ™]ÚÚœÛÛŽˆÚ\™Y™]Ú™™]ÚˆNÂ‚ˆÛÛœÝ\ÝÜžT\˜[\ÈHÂˆÛÛ˜XÝˆÝ\œÎˆ‹ˆNÂ‚ˆÛÛœÝ™\Ý[ÈBˆ]ØZ]›ÛZ\ÙK˜[Ù]Y
+Âˆ]\™\ÔÛ˜\ÚÝ
+]\™\Ô\˜[\ÊKˆÜÝÛ˜\ÚÝ
+ÜÝ\˜[\ÊKˆ]\™\Õ˜Z™XÝÜžJ˜Z™XÝÜžT\˜[\ÊKˆÝYÙL\ÝÜžJˆ\ÝÜžT\˜[\Ëˆ[‚ˆ
+KˆJNÂ‚ˆËÈÛÛœÙ\˜]]™H˜XÝX[]˜Z[Xš[]H›Ý[™ˆ[›Ý\ˆ›ÛZ\Ù\È]™HÙ]Y‚ˆËÈÙY\›ÝšY\ˆ[Y\Ý[\È[˜Ú[™ÙYÈÛÛXÝ[Ûˆ[YH\ÈHY™™\™[šY[‚ˆÛÛœÝÛÛ\Û™[Ð]˜Z[X›UÈH]K››ÝÊ
+NÂ‚ˆ[˜Ý[ÛˆÙ]Y
+™\Ý[
+HÂˆYˆ
+™\Ý[œÝ]\ÈOOH™[š[YŠHÂˆ™]\›ˆÂˆ]˜Z[X›WÝÎˆÛÛ\Û™[Ð]˜Z[X›UËˆ^XÝ][Û—ÜÝ]\Îˆ‘•S’SQ‹ˆ]Nˆ™\Ý[˜[YKˆ\œ›ÜŽˆ[ˆNÂˆB‚ˆ™]\›ˆÂˆ^XÝ][Û—ÜÝ]\Îˆ”‘R‘PÕQ‹ˆ]Nˆ[ˆ\œ›ÜŽˆÝš[™Êˆ™\Ý[œ™X\ÛÛË›Y\ÜØYÙHˆ™\Ý[œ™X\ÛÛˆˆ•S’Ó“ÕÓ—ÑT”“Ôˆ‚ˆ
+KˆNÂˆB‚ˆÛÛœÝ]\™\ÈBˆÙ]Y
+™\Ý[ÖÌJNÂ‚ˆÛÛœÝØœÙ\˜][Û”™Y™\™[˜ÙTšXÙHHZ[™Y™\™[˜ÙTšXÙJÂˆÛÛ˜XÝˆ\Nˆ	ÓRQÓÐ”ÑT•USÓ‰ËˆšYˆ]\™\ÏË™]OË˜˜›ÏË˜™\ÝØšYˆ\ÚÎˆ]\™\ÏË™]OË˜˜›ÏË˜™\ÝØ\ÚËˆÛÝ\˜ÙWÝÎˆ]Kœ\œÙJ]\™\ÏË™]OË›\]ZY]OË™\Ý[Y\Ý[\	ÉÊH]\™\ÏË™]OË[Y\Ý[\ˆ™XÙZ]™YÝÎˆ]\™\ÏË˜]˜Z[X›WÝÈÏÈ]\™\ÏË™]OË[Y\Ý[\ˆJNÂ‚ˆÛÛœÝÜÝBˆÙ]Y
+™\Ý[ÖÌWJNÂ‚ˆÛÛœÝ˜Z™XÝÜžHBˆÙ]Y
+™\Ý[ÖÌ—JNÂ‚ˆÛÛœÝ\ÝÜžHBˆÙ]Y
+™\Ý[ÖÌ×JNÂ‚ˆÛÛœÝ˜Z[YÛÛ\Û™[ÈHÂˆÈ™]\™\×ÜÛ˜\ÚÝ‹]\™\×KˆÈœÜÝÜÛ˜\ÚÝ‹ÜÝKˆÈ™]\™\×Ý˜Z™XÝÜžH‹˜Z™XÝÜžWKˆÈœÝYÙLÚ\ÝÜžH‹\ÝÜžWKˆBˆ™š[\Šˆ
+ËÛÛ\Û™[JHO‚ˆÛÛ\Û™[™^XÝ][Û—ÜÝ]\ÈOOBˆ‘•S’SQ‚ˆ
+Bˆ›X\
+
+Û˜[YWJHOˆ˜[YJNÂ‚‚ˆÛÛœÝ]TÝY™šXÚY[˜ÞHH
+
+
+HOˆÂˆÛÛœÝÛÜÙYH
+˜[YJHO‚ˆ˜[YHOOH˜ÛÜÙYŽÂ‚ˆÛÛœÝXZÙPÛÛ\Û™[H
+ˆÛÛ\Û™[ˆ\ØX›KˆÚXÚÜÂˆ
+HOˆÂˆÛÛœÝØ\ÈBˆÚXÚÜÂˆ™š[\Š
+ËÚ×JHOˆ[ÚÊBˆ›X\
+
+Û˜[YWJHOˆ˜[YJNÂ‚ˆ]ÝY™šXÚY[˜ÞHBˆ”ÕQ‘’PÒQS•ŽÂ‚ˆYˆ
+ˆÛÛ\Û™[Ë™^XÝ][Û—ÜÝ]\ÈOOBˆ‘•S’SQˆˆXÛÛ\Û™[Ë™]Hˆ]\ØX›Bˆ
+HÂˆÝY™šXÚY[˜ÞHBˆ’S”ÕQ‘’PÒQS•ŽÂˆH[ÙHYˆ
+Ø\Ë›[™Ý
+HÂˆÝY™šXÚY[˜ÞHBˆ”T•PSŽÂˆB‚ˆ™]\›ˆÂˆ^XÝ][Û—ÜÝ]\Î‚ˆÛÛ\Û™[Ë™^XÝ][Û—ÜÝ]\ÈÏÂˆ•S’Ó“ÕÓˆ‹ˆÝY™šXÚY[˜ÞKˆØ\ËˆNÂˆNÂ‚ˆÛÛœÝ]\™\ÐÛÝ™\˜YÙHBˆ]\™\ÏË™]OË˜ÛÝ™\˜YÙHßNÂ‚ˆÛÛœÝ]\™\ÐÚXÚÜÈHÂˆÂˆšÙ]\™\×Û\]ZY]H‹ˆÛÜÙY
+ˆ]\™\ÐÛÝ™\˜YÙBˆšÙ]\™\×Û\]ZY]Bˆ
+KˆKˆÂˆšÙ]\™\×ÛÜ™\—Ù›ÝÈ‹ˆÛÜÙY
+ˆ]\™\ÐÛÝ™\˜YÙBˆšÙ]\™\×ÛÜ™\—Ù›ÝÂˆ
+KˆKˆÂˆšÛÜ[—Ú[\™\Ý‹ˆÛÜÙY
+ˆ]\™\ÐÛÝ™\˜YÙBˆšÛÜ[—Ú[\™\Ýˆ
+KˆKˆÂˆšÙ[™[™È‹ˆÛÜÙY
+ˆ]\™\ÐÛÝ™\˜YÙBˆšÙ[™[™Âˆ
+KˆKˆNÂ‚ˆÛÛœÝ]\™\Õ\ØX›HBˆ]\™\ÐÚXÚÜËœÛÛYJ
+ËÚ×JHOˆÚÊNÂ‚ˆÛÛœÝÜÝ]X[]HBˆÜÝË™]OËœ]X[]WÜÝ]\ÈÏÈ[Â‚ˆÛÛœÝÜÝÚXÚÜÈHÂˆÂˆœ]X[]WÜÝ]\×ÑÔ‘QSˆ‹ˆÜÝ]X[]HOOH‘Ô‘QSˆ‹ˆKˆNÂ‚ˆÛÛœÝÜÝ\ØX›HBˆÜÝ]X[]HOOH‘Ô‘QSˆˆˆÜÝ]X[]HOOH–QSÕÈŽÂ‚ˆÛÛœÝ˜Z™XÝÜžPÛÝ™\˜YÙHBˆ˜Z™XÝÜžOË™]OË˜ÛÝ™\˜YÙHßNÂ‚ˆÛÛœÝ˜Z™XÝÜžT™\]Z\™YHÂˆœšXÙWÍ[H‹ˆœšXÙWÌM[H‹ˆœšXÙWÌZ‹ˆœšXÙWÍ‹ˆœšXÙWÌ‹ˆ™›Ý×Í[H‹ˆ™›Ý×ÌM[H‹ˆ™›Ý×ÌZ‹ˆ™›Ý×Í‹ˆ™›Ý×Ì‹ˆ›ÚWÌZ‹ˆ›ÚWÍ‹ˆ›ÚWÌ‹ˆ™[™[™×ØÝ\œ™[‹ˆ™[™[™×Ú\ÝÜžH‹ˆNÂ‚ˆÛÛœÝ˜Z™XÝÜžPÚXÚÜÈBˆ˜Z™XÝÜžT™\]Z\™Y›X\
+ˆ
+˜[YJHOˆÂˆ˜[YKˆÛÜÙY
+ˆ˜Z™XÝÜžPÛÝ™\˜YÙVÛ˜[YWBˆ
+KˆBˆ
+NÂ‚ˆÛÛœÝ˜Z™XÝÜžU\ØX›HBˆ˜Z™XÝÜžPÚXÚÜËœÛÛYJˆ
+ËÚ×JHOˆÚÂˆ
+NÂ‚ˆÛÛœÝ\ÝÜžQ]HBˆ\ÝÜžOË™]H[Â‚ˆÛÛœÝ\ÝÜžTÙ\šY\ÈBˆ\œ˜^Kš\Ð\œ˜^J\ÝÜžQ]OËœÙ\šY\ÊBˆÈ\ÝÜžQ]KœÙ\šY\Âˆˆ×NÂ‚ˆÛÛœÝ\ÝÜžPÚXÚÜÈHÂˆÂˆ™]WÙˆ‹ˆ\ÝÜžQ]OËšX[ˆË™]WÙˆOOHYKˆKˆÂˆœ\œÚ\Ý[Ú\ÝÜžH‹ˆÛÜÙY
+ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙBˆËœ\œÚ\Ý[Ú\ÝÜžBˆ
+KˆKˆÂˆœÙ\šY\×Û›Û—Ù[\H‹ˆ\ÝÜžTÙ\šY\Ë›[™ÝˆˆKˆÂˆ˜ÛÛ\]WÍ[WÝÚ[™ÝÈ‹ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙOË˜ÛÛ\]WÍ[WÝÚ[™ÝÈOOHYKˆKˆNÂ‚ˆÛÛœÝ\ÝÜžU\ØX›HBˆ\ÝÜžOË™^XÝ][Û—ÜÝ]\ÈOOBˆ‘•S’SQˆ	‰‚ˆ\ÝÜžQ]OËšX[ˆË™]WÙˆOOHYH	‰‚ˆ\ÝÜžTÙ\šY\Ë›[™Ýˆ	‰‚ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙOË˜ÛÛ\]WÍ[WÝÚ[™ÝÈOOHYNÂ‚ˆÛÛœÝÛÛ\Û™[ÈHÂˆ]\™\×ÜÛ˜\ÚÝ‚ˆXZÙPÛÛ\Û™[
+ˆ]\™\Ëˆ]\™\Õ\ØX›Kˆ]\™\ÐÚXÚÜÂˆ
+K‚ˆÜÝÜÛ˜\ÚÝ‚ˆXZÙPÛÛ\Û™[
+ˆÜÝˆÜÝ\ØX›KˆÜÝÚXÚÜÂˆ
+K‚ˆ]\™\×Ý˜Z™XÝÜžN‚ˆXZÙPÛÛ\Û™[
+ˆ˜Z™XÝÜžKˆ˜Z™XÝÜžU\ØX›Kˆ˜Z™XÝÜžPÚXÚÜÂˆ
+K‚ˆÝYÙLÚ\ÝÜžN‚ˆXZÙPÛÛ\Û™[
+ˆ\ÝÜžKˆ\ÝÜžU\ØX›Kˆ\ÝÜžPÚXÚÜÂˆ
+KˆNÂ‚ˆÛÛœÝÝ]\ÈBˆØš™XÝ˜[Y\ÊÛÛ\Û™[ÊBˆ›X\
+ˆ
+ÛÛ\Û™[
+HO‚ˆÛÛ\Û™[œÝY™šXÚY[˜ÞBˆ
+NÂ‚ˆ]Û\ÜÚYšXØ][ÛˆBˆ”ÕQ‘’PÒQS•ŽÂ‚ˆYˆ
+ˆÝ]\Ëš[˜ÛY\Êˆ’S”ÕQ‘’PÒQS•‚ˆ
+Bˆ
+HÂˆÛ\ÜÚYšXØ][ÛˆBˆ’S”ÕQ‘’PÒQS•ŽÂˆH[ÙHYˆ
+ˆÝ]\Ëš[˜ÛY\Ê”T•PSŠBˆ
+HÂˆÛ\ÜÚYšXØ][ÛˆBˆ”T•PSŽÂˆB‚ˆÛÛœÝØ\ÈBˆØš™XÝ™[šY\ÊÛÛ\Û™[ÊBˆ™›]X\
+ˆ
+Û˜[YKÛÛ\Û™[JHO‚ˆÛÛ\Û™[™Ø\Ë›X\
+ˆ
+Ø\
+HO‚ˆ˜[YH
+È‹ˆˆ
+ÈØ\ˆ
+Bˆ
+NÂ‚ˆ™]\›ˆÂˆÛ\ÜÚYšXØ][Û‹ˆÝY™šXÚY[‚ˆÛ\ÜÚYšXØ][ÛˆOOBˆ”ÕQ‘’PÒQS•‹‚ˆÛÛ\Û™[Ë‚ˆØ\Ë‚ˆ[˜]˜Z[X›WØžWÙ\ÚYÛŽˆÂˆ™]\™\×Ý˜Z™XÝÜžK˜ÛÝ™\˜YÙK›ÚWÍ[H‹ˆ™]\™\×Ý˜Z™XÝÜžK˜ÛÝ™\˜YÙK›ÚWÌM[H‹ˆK‚ˆ\ÝÜžWÛØœÙ\™YˆÂˆ^XÝYÍ[WÜÚ[Î‚ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙBˆË™^XÝYÍ[WÜÚ[ÈÏÂˆ[‚ˆ™XÙZ]™YÜÚ[Î‚ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙBˆËœ™XÙZ]™YÜÚ[ÈÏÂˆ[‚ˆ\›Þ[X]WÍ[WØÛÝ™\˜YÙWÜÝ‚ˆ\ÝÜžQ]OË˜ÛÝ™\˜YÙBˆË˜\›Þ[X]WÍ[WØÛÝ™\˜YÙWÜÝÏÂˆ[ˆK‚ˆXÚ\Ú[Û—ÙY™™XÝ‚ˆ““Ó‘WÑU’QSÑWÐÓTÔÒQ’PÐUSÓ—ÓÓ“H‹ˆNÂˆJJ
+NÂ‚‚ˆˆËÈH]]Üš]]]™HXÚ\Ú[ÛˆÛØÚÈ\Èš^YÛ›HY\ˆ[[œšXÚY[[™ˆËÈ[ˆÜ[Û˜[›Ý[™Y^XÝ][Ûˆ™Yœ™\ÚˆÈ›Ý\œÚ\Ý[ˆX\›HXÚ\Ú[Û‚ˆËÈÚÜÙHÝÛˆ]šY[˜ÙH\È›Ý]˜Z[X›HY]‚ˆ]ÚYÝÑXÚ\Ú[ÛˆH[Âˆ]ÚYÝÔ\œÚ\Ý[˜ÙHH[Â‚ˆËÈÛ™H›Ý[™YY\ÚXÚÈ[œÈ\ˆ[›ØØ][Û‹ˆ™\Ù\™H]™\žHžRØ\˜[[BˆËÈ™\]Y\Ý›Üˆ\ÈÛÛ˜XÝ™Y›Ü™HHš\œÝ™]ÛÜšÈØ[ÛÈØÚY[Y[™ˆËÈX[X[Ü™X]H™\Üˆ[œÈÚ\™HÛ™H]ÛZXÈ[ÛH[ÝØ[˜ÙKˆ•ËÑUˆËÈ™YY›È\]ZY][ÛˆX\[™™\Ù\™HÛ›HH^\Ý[™ÈÛX\[[Û™^HØ[ÂˆËÈ]™\žHÝ\ˆ]\™\ÈÛÛ˜XÝ™\Ù\™\È›Ý\ˆX\\]X[]HØ[È\È]‚ˆÛÛœÝžZÔ™\]Y\ÝY[š]ÈHÈ•ËUTÑ‹‘UUTÑ—Kš[˜ÛY\ÊÛÛ˜XÝ
+HÈHˆNÂˆ]žZÐYZ\ÜÚ[ÛˆHÈ[ÝÙYˆ˜[ÙKÝ]\ÎˆQRTÔÒSÓ—ÐÐSPÒ×Ó“ÕÐÓÓ‘’QÕT‘Q‹™\Ù\™YÝ[š]ÎˆNÂˆžHÂˆYˆ
+\[Ùˆ[Ë”‘TÔ•—Ð–RÐTS•SWÔ‘TÑT•‘HOOH™[˜Ý[ÛˆŠHÂˆžZÐYZ\ÜÚ[ÛˆH]ØZ][‹”‘TÔ•—Ð–RÐTS•SWÔ‘TÑT•‘JÂˆÛÛ˜XÝˆ[—ÚYˆÝš[™Ê\˜[\ÏËœ[—ÚYˆŠKš[J
+HX[X[IØÞXÛTÝ\YßXˆ[š]ÎˆžZÔ™\]Y\ÝY[š]ËˆJNÂˆBˆHØ]Ú
+\œ›ÜŠHÂˆžZÐYZ\ÜÚ[ÛˆHÈ[ÝÙYˆ˜[ÙKÝ]\ÎˆQRTÔÒSÓ—ÑRSQÐÓÔÑQ‹™\Ù\™YÝ[š]Îˆ\œ›ÜŽˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+HNÂˆBˆÛÛœÝYZ]YžZÐ\RÙ^HHžZÐYZ\ÜÚ[ÛË˜[ÝÙYOOHYHÈ
+[Ë–RÐTS•SWÐTWÒÑVHˆŠHˆˆŽÂ‚ˆ]X›XÑ]šY[˜ÙNÂˆ]X›XÑ]šY[˜ÙP]˜Z[X›UÈH[ÂˆžHÂˆX›XÑ]šY[˜ÙHBˆ]ØZ]ÛÛXÝX›XÑ[]šY[˜ÙPÜ›ÜÜÕ™[YJÂˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆ™]ÚÚ[\ˆ™]Úˆ›Ý×ÝÎˆ›ÝËˆJNÂˆX›XÑ]šY[˜ÙP]˜Z[X›UÈH]K››ÝÊ
+NÂˆHØ]Ú
+\œ›ÜŠHÂˆX›XÑ]šY[˜ÙHHÂˆ™\œÚ[ÛŽˆœX›XËY]šY[˜ÙKXY\\œË]ŒH‹ˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆØœÙ\™YÝÎˆ›ÝËˆ[X\×Ý™\šYšXØ][ÛŽˆ[ˆ]šY[˜ÙNˆ×Kˆ™[]]™WÜÝ™[™ÝÙ]Z[ˆ[ˆÜ›ÜÜ×Ý™[YWÙ\š]˜]]™\×Ù]Z[ˆ[ˆÛÛXÝ[Û—Ù\œ›ÜŽ‚ˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+KˆØY™]NˆÂˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ˜[ÙKˆZ\ÜÚ[™×Ù]WÙ\™XÝ[Û˜[Ü[˜[Nˆ˜[ÙKˆ]™WÜ›Û[Ý[ÛŽˆ˜[ÙKˆ[YÜ˜[Nˆ˜[ÙKˆ^XÝ][ÛŽˆ˜[ÙKˆKˆNÂˆB‚ˆ]ÛX\[Û™^T˜]ÎÂˆžHÂˆÛX\[Û™^T˜]ÈH]ØZ]™]Ú^\Ý[™ÔÛX\[Û™^T™XÛÜ™\”˜]ÊÂˆ™]ÚÚ[\ˆ™]ÚˆžZØ\˜[[WÙ™]Ú\Žˆ™]ÚžRØ\˜[[TÛX\[Û™^T˜]ËˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆžZØ\˜[[WØ\WÚÙ^NˆYZ]YžZÐ\RÙ^Kˆ\\›\]ZYÜØ[\WØY™\ÜÎˆ[Ë”‘TÔ•—ÒTT“TURQÔÐSTWÐQ‘TÔÈˆ‹ˆØœÙ\™YÝÎˆ›ÝËˆJNÂˆHØ]Ú
+\œ›ÜŠHÂˆÛX\[Û™^T˜]ÈHÂˆ™\œÚ[ÛŽˆŒLK\ÛX\[[Û™^K\˜]Ë\Ž
+Ú\\›\]ZYY^\Ý[™Ë\™XÛÜ™\‹]ŒH‹ˆÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ™X\ÛÛŽˆ”ÓÕTÑWÑ‘UÒÑT”“Ôˆ‹ˆØÛÜ™WÙ[YÚX›Nˆ˜[ÙKˆ\™XÝ[Û˜[Ý›ÝWÙ[YÚX›Nˆ˜[ÙKˆØ[Xœ˜][Û—Ü™\]Z\™YˆYKˆ^\›˜[Ù™]Ú\ÎˆKˆ\\›\]ZYØÛÛ^ˆ[ˆ™XÛÜ™\—Ù^[œÚ[ÛŽˆÂˆ[ÙNˆ‘RSÐÓÔÑQ‹ˆÙXÛÛ™Ü™XÛÜ™\—ØYYˆ˜[ÙKˆÛX\Û[Û™^WÙ^\›˜[Ü™\]Y\Ý×ÙXXÚˆKˆÝØÞXÛWÙ^\›˜[Ü™\]Y\ÝÙ[NˆˆKˆ\œ›ÜŽˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJÌ
+KˆNÂˆBˆËÈŽÕŒLŒNˆ˜]ÈÛX\[Û™^H\ÈÝ\Ü[™ËØYš\ÛÜžH[[Ø[Xœ˜]Y‚ˆËÈÙY\]ØœÙ\˜X›HÚ]Ý]ÛÛ[Z[˜][™È[žKXÜš]XØ[[]šY[˜ÙHK‚ˆËÈHØÛÜ™H[\˜[™XÙZ]™\ÈÛX\[Û™^T˜]ÈÙ\\˜][NÈ›È˜]ÈT•PS›ÝÈ\ÂˆËÈ[š™XÝY[ÈX›XÑ]šY[˜ÙK™]šY[˜ÙH™Y›Ü™HØ[Xœ˜][Û‹Ü›Û[Ý[Û‹‚ˆYˆ
+X›XÑ]šY[˜ÙJHÂˆX›XÑ]šY[˜ÙK˜Yš\ÛÜžWÙ]šY[˜ÙHHÂˆ‹‹Š\œ˜^Kš\Ð\œ˜^JX›XÑ]šY[˜ÙK˜Yš\ÛÜžWÙ]šY[˜ÙJHÈX›XÑ]šY[˜ÙK˜Yš\ÛÜžWÙ]šY[˜ÙHˆ×JKˆ‹‹œÛX\[Û™^T˜]Ñ]šY[˜ÙT›ÝÜÊÛX\[Û™^T˜]Ë›ÝÊKˆ‹‹š\\›\]ZYYš\ÛÜžQ]šY[˜ÙT›ÝÜÊˆÛX\[Û™^T˜]ÏËš\\›\]ZYØÛÛ^ˆÈÛÛ˜XÝØÛÙNˆÛÛ˜XÝBˆ
+KˆNÂˆB‚ˆ]Ý\[Y[[Ø[™Y]PÛÛ^^ÜÝ]\Î‰Ó“ÕÐÓÓ‘’QÕT‘Q	ËÛÝ\˜Ù\ÎžßK[\›˜[ÛÛ›NY_NÂˆ]Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^^ÜÝ]\Î‰Ó“ÕÐÓÓ‘’QÕT‘Q	ËÛÝ\˜Ù\ÎžßK[\›˜[ÛÛ›NY_NÂˆ]Ø[™Y]Q]šY[˜ÙUŒ^ÜÝ]\Î‰Ó“ÕÐÓÓ‘’QÕT‘Q	Ë]šY[˜ÙN–×K[\›˜[ÛÛ›NY_NÂˆËÈH\ÝX›\ÚYY\ÚXÚÈ\ÈÛ™Hš]™K\™\]Y\Ý^[œÚ[Ûˆ[™[ÜKˆBˆËÈ™]ÈÜ›ÜÜËY^Ú[™ÙH˜[Z[HÚ\™\È][™[ÜHÚ]›Ú™XÝY\]ZY][Û‚ˆËÈÛÝ\˜Ù\È[œÝXYÙˆÚ[[H\Ú[™ÈH[›ØØ][ÛˆX›Ý™H]È›Ý™[ˆØ\‚ˆÛÛœÝÜ›ÜÜÑ^Ú[™ÙQ˜[Z[U\›SX]™›ÛÜŠ[X™\Š\˜[\ÏË˜ÞXÛWÜÝ\YÝÏÏØÞXÛTÝ\YÊKÊŒ
+Œ
+ŒL
+JILÏOOLÂˆÛÛœÝÛÝ\˜ÙT›Ý][™Ô[XZ[Ø[™Y]TÛÝ\˜ÙT›Ý][™Ô[ŠÂˆ\ØÛÝ™\žWÜ›ÝÎœ\˜[\ÏË™\ØÛÝ™\žWÜ›Ýß[ˆÜ›ÜÜ×Ù^Ú[™ÙWÝ\›Ž˜Ü›ÜÜÑ^Ú[™ÙQ˜[Z[U\›‹ˆX[X[ØÛÚ[Ž”Ýš[™Ê[Ë”‘TÔ•—ÓPS•PSÐÓÒS—ÐÓÓ•PÕ	ÉÊKš[J
+OOOXÛÛ˜XÝˆ]Y]YYØÛÚ[Ž”Ýš[™Ê[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓ•PÕ	ÉÊKš[J
+OOOXÛÛ˜XÝˆJNÂˆž^ÂˆYŠ\[Ùˆ[Ë”‘TÔ•—ÔÕTSQS•SÐÐS‘QUWÐÓÓPÕOOIÙ[˜Ý[Û‰Ê^ÂˆÛÛœÝ\š]˜]]™U™[Y\Ï[™]ÈÙ]
+
+\œ˜^Kš\Ð\œ˜^JX›XÑ]šY[˜ÙOË™]šY[˜ÙJOÜX›XÑ]šY[˜ÙK™]šY[˜ÙN–×JBˆ™š[\Š›ÝÏOœ›ÝÏËœÝ]\ÏOOIÐÓÔÑQ	É‰–ÉÑ•UT‘TÉË	ÔT”	Ë	ÔÕÐT	Ë	ÕTÑÓWÔT”UPS	×Kš[˜ÛY\ÊÝš[™Ê›ÝÏË›X\šÙ]Ý\_	ÉÊKÕ\\Ø\ÙJ
+JJBˆ›X\
+›ÝÏO”Ýš[™Ê›ÝÏË™[Y_›ÝÏËœÛÝ\˜Ù_	ÉÊKš[J
+JK™š[\Š›ÛÛX[ŠJNÂˆÛÛœÝÛÛ™›XÝP›ÛÛX[ŠX›XÑ]šY[˜ÙOË˜ÛÛ™›XÝÏË›[™Ý
+_Ýš[™ÊX›XÑ]šY[˜ÙOË™WÜÝ]\ß	ÉÊKÕ\\Ø\ÙJ
+Kš[˜ÛY\Ê	ÐÓÓ‘“PÕ	ÊNÂˆÝ\[Y[[Ø[™Y]PÛÛ^X]ØZ][‹”‘TÔ•—ÔÕTSQS•SÐÐS‘QUWÐÓÓPÕ
+ÂˆÛÛ˜XÝ[—ÚY”Ýš[™Ê\˜[\ÏËœ[—ÚYX[X[IØÞXÛTÝ\YßX
+K\š]˜]]™\×Ý™[Y\Î™\š]˜]]™U™[Y\ËœÚ^™KˆÜš]XØ[ØÛÛ™›XÝ˜ÛÛ™›XÝš[X\žWÜšXÙNšØœÙ\˜][Û”™Y™\™[˜ÙTšXÙKœÝ]\ÏOOIÐÓÔÑQ	ÏÚØœÙ\˜][Û”™Y™\™[˜ÙTšXÙK˜[YN›[›ÝÎ‘]K››ÝÊ
+K™\Ù\™WÙ›Ü—Û\]ZY][ÛœÎœÛÝ\˜ÙT›Ý][™Ô[‹œ™\Ù\™WÛ\]ZY][Û—Û[™KˆJNÂˆBˆXØ]Ú
+\œ›ÜŠ^ÜÝ\[Y[[Ø[™Y]PÛÛ^^ÜÝ]\Î‰ÔÓÕTÑWÑT”“Ô‰ËÛÝ\˜Ù\ÎžßK[\›˜[ÛÛ›NYK\œ›ÜŽ”Ýš[™Ê\œ›ÜË›Y\ÜØYÙ_\œ›ÜŠKœÛXÙJŒ
+_NßBˆž^ÂˆYŠ\[Ùˆ[Ë”‘TÔ•—ÑU’QSÑWÕŒ—ÐÓÓPÕOOIÙ[˜Ý[Û‰ÊXØ[™Y]Q]šY[˜ÙUŒX]ØZ][‹”‘TÔ•—ÑU’QSÑWÕŒ—ÐÓÓPÕ
+ØÛÛ˜XÝ[—ÚY”Ýš[™Ê\˜[\ÏËœ[—ÚYX[X[IØÞXÛTÝ\YßX
+K\ÜÙ]ÚY[]NœÝ\[Y[[Ø[™Y]PÛÛ^Ë˜\ÜÙ]ÚY[]_[\ÜÙ]ÛY]Y]NœÝ\[Y[[Ø[™Y]PÛÛ^Ë˜\ÜÙ]ÛY]Y]_[Y[]WÛY]ÙœÝ\[Y[[Ø[™Y]PÛÛ^ËšY[]WÛY]Ù[›ÝÎ‘]K››ÝÊ
+_JNÂˆXØ]Ú
+\œ›ÜŠ^ØØ[™Y]Q]šY[˜ÙUŒ^ÜÝ]\Î‰ÔÓÕTÑWÑT”“Ô‰Ë]šY[˜ÙN–×K[\›˜[ÛÛ›NYK\œ›ÜŽ”Ýš[™Ê\œ›ÜË›Y\ÜØYÙ_\œ›ÜŠKœÛXÙJŒ
+_NßBˆÛÛœÛÛK›ÙÊ	ÑU’QSÑWÕŒ—ÐÐS‘QUWÔ‘PÑRT	Ë”ÓÓ‹œÝš[™ÚYžJØÛÛ˜XÝÝ]\Î˜Ø[™Y]Q]šY[˜ÙUŒËœÝ]\ß	ÕS’Ó“ÕÓ‰ËØXÚWÜÝ]\Î˜Ø[™Y]Q]šY[˜ÙUŒË˜ØXÚWÜÝ]\ß[™]ÛÜš×ØØ[Î“[X™\ŠØ[™Y]Q]šY[˜ÙUŒË›™]ÛÜš×ØØ[ß
+K›ØÚ×ØÛÝ™\˜YÙN˜Ø[™Y]Q]šY[˜ÙUŒË˜›ØÚ×ØÛÝ™\˜YÙ_[ÚÛWÚ›Ø—ØYZ\ÜÚ[ÛŽ˜Ø[™Y]Q]šY[˜ÙUŒËÚÛWÚ›Ø—ØYZ\ÜÚ[ÛËœÝ]\ß[Z[WØYZ\ÜÚ[ÛŽ˜Ø[™Y]Q]šY[˜ÙUŒË˜YZ\ÜÚ[ÛËœÝ]\ß[]šY[˜ÙNŠØ[™Y]Q]šY[˜ÙUŒË™]šY[˜Ù_×JK›X\
+›ÝÏOŠØ›ØÚ×ÚYœ›ÝË˜›ØÚ×ÚYY]šX×Ù˜[Z[Nœ›ÝË›Y]šX×Ù˜[Z[K˜[Y][Û—ÜÝ]\Îœ›ÝË˜[Y][Û—ÜÝ]\ËÛÝ™\˜YÙWÜÝ]\Îœ›ÝË˜ÛÝ™\˜YÙWÜÝ]\Ë\™XÝ[Û˜[ÜÝ™[™Ýœ›ÝË™\™XÝ[Û˜[ÜÝ™[™Ýš\Ú×ÜÝ™[™Ýœ›ÝËœš\Ú×ÜÝ™[™ÝJJK™XÙZ\ÎŠØ[™Y]Q]šY[˜ÙUŒËœ™XÙZ\ß×JK›X\
+›ÝÏOŠÜ›Ý]Nœ›ÝËœ›Ý]KÝ]\Îœ›ÝËœÝ]\ËÜÝ]\Îœ›ÝËšÜÝ]\ßJJ_JJNÂˆž^ÂˆYŠÛÝ\˜ÙT›Ý][™Ô[‹œ[—ØÜ›ÜÜ×Ù^Ú[™ÙI‰\[Ùˆ[Ë”‘TÔ•—ÐÔ“ÔÔ×ÑVÒS‘ÑWÔ’TÒ×ÐÓÓPÕOOIÙ[˜Ý[Û‰ÊXÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^X]ØZ][‹”‘TÔ•—ÐÔ“ÔÔ×ÑVÒS‘ÑWÔ’TÒ×ÐÓÓPÕ
+ÂˆÛÛ˜XÝ[—ÚY”Ýš[™Ê\˜[\ÏËœ[—ÚYX[X[IØÞXÛTÝ\YßX
+K™Y™\™[˜ÙWÜšXÙNšØœÙ\˜][Û”™Y™\™[˜ÙTšXÙKœÝ]\ÏOOIÐÓÔÑQ	ÏÚØœÙ\˜][Û”™Y™\™[˜ÙTšXÙK˜[YN›[›ÝÎ‘]K››ÝÊ
+KˆJNÙ[ÙHYŠ\ÛÝ\˜ÙT›Ý][™Ô[‹œ[—ØÜ›ÜÜ×Ù^Ú[™ÙJXÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^^ÜÝ]\Î‰ÑQ‘T”‘QÔÒT‘QÔ‘TUQTÕÑS•‘SÔIËÛÝ\˜Ù\ÎžßK™]ÛÜš×ØØ[ÎŒ[\›˜[ÛÛ›NYK™^Ù˜[Z[WÜ›Ý][ÛŽY_NÂˆXØ]Ú
+\œ›ÜŠ^ØÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^^ÜÝ]\Î‰ÔÓÕTÑWÑT”“Ô‰ËÛÝ\˜Ù\ÎžßK[\›˜[ÛÛ›NYK\œ›ÜŽ”Ýš[™Ê\œ›ÜË›Y\ÜØYÙ_\œ›ÜŠKœÛXÙJŒ
+_NßB‚ˆ]\]ZY][Û”ÚYÝÎÂˆžHÂˆ\]ZY][Û”ÚYÝÈH]ØZ]\]ZY][Û•\JˆÈÛÛ˜XÝÛÚØ˜XÚ×ÛZ[]\ÎˆLŒ\œÚ\ÝˆYHKˆ[‹ˆÈ\œÚ\ÝˆYHBˆ
+NÂˆHØ]Ú
+\œ›ÜŠHÂˆ\]ZY][Û”ÚYÝÈHÂˆÛÝ\˜ÙNˆ’Ù™šXÚX[X›XÈTH‹ˆÛÛˆšÛ\]ZY][Û—Ý\H‹ˆÛÛ˜XÝˆ˜XÝX[ÛÛ›NˆYKˆ›Ú™XÝYÛ]™[×Ú[˜ÛYYˆ˜[ÙKˆÛÝ™\˜YÙNˆÂˆÙ˜XÝX[ÛÛ™×Û\]ZY][ÛœÎˆ››ÝØÛÜÙY‹ˆÙ˜XÝX[ÜÚÜÛ\]ZY][ÛœÎˆ››ÝØÛÜÙY‹ˆKˆ[™Ú[Ù\œ›ÜœÎˆÂˆÝYÙLÍÌNˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+KˆKˆNÂˆB‚ˆ]\]ZY][Û’[[YÙ[˜ÙNÂˆžHÂˆ\]ZY][Û’[[YÙ[˜ÙHBˆ]ØZ]TURQUSÓ—ÒS•SQÑSÑWÐTK˜ÛÛXÝÜ›ÜÜÕ™[YS\]ZY][Û’[[YÙ[˜ÙJÂˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆ™]ÚÚ[\ˆ™]Úˆ\WÚÙ^NˆYZ]YžZÐ\RÙ^Kˆ›Ý×ÝÎˆ›ÝËˆÛ\]ZY][Û—Ý\Nˆ\]ZY][Û”ÚYÝËˆ\ÜÙ]ÚY[]WÜ›ÛÙŽˆX›XÑ]šY[˜ÙOË˜[X\×Ý™\šYšXØ][ÛË˜\ÜÙ]ÚY[]H[ˆJNÂˆHØ]Ú
+\œ›ÜŠHÂˆ\]ZY][Û’[[YÙ[˜ÙHHÂˆ™\œÚ[ÛŽˆ˜Ü›ÜÜË]™[YK[\]ZY][Û‹\ÚYÝË]ŒH‹ˆÛÛ˜XÝÝ™\œÚ[ÛŽˆ›\]ZY][Û‹Y]šY[˜ÙK]ŒH‹ˆ[ÙNˆ“TURQUSÓ—ÒS•SQÑSÑWÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹ˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆØœÙ\™YÝÎˆ›ÝËˆ›Ú™XÝYÛX\ÜÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ™X[^™YÜÝ]\Îˆ”T•PSÒÓÓ“H‹ˆ\]ZY][Û—ÙWÜÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ›Ú™XÝYØÛ\Ý\œÎˆ×Kˆ™X[^™YˆÈ›ÝšY\Žˆ×Kˆ\]ZY][Û”ÚYÝÈKˆ\œ›ÜœÎˆÔÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+WKˆØY™]NˆÂˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ˜[ÙKˆ™]×Ü\˜Ù[YÙWÝÙZYÚˆ˜[ÙKˆ\™XÝ[Û—ÙÙ[™\˜]Yˆ˜[ÙKˆ]™WÜ›Ø˜Xš[]WÙÙ[™\˜]Yˆ˜[ÙKˆ]™WÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[ÙÙ[™\˜]Yˆ˜[ÙKˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆ]]ÛX]X×ÝÙZYÚÝ[š[™Îˆ˜[ÙKˆÝX\˜[YYÝÙÙ[™\˜]Yˆ˜[ÙKˆÞ[]X×Û]™\˜YÙWÚX]X\ÙÙ[™\˜]Yˆ˜[ÙKˆÚYÝ×ÛÛ›NˆYKˆKˆNÂˆB‚ˆ\]ZY][Û’[[YÙ[˜ÙKœ\œÚ\Ý[˜ÙHBˆ]ØZ]TURQUSÓ—ÒS•SQÑSÑWÐTKœ\œÚ\ÝÚYÝÊˆ[‹ˆ\]ZY][Û’[[YÙ[˜ÙKˆ›ÝÂˆ
+NÂˆ\]ZY][Û’[[YÙ[˜ÙKœ][ÝWØYZ\ÜÚ[ÛˆHžZÐYZ\ÜÚ[ÛŽÂ‚ˆÊ‚ˆ
+ˆÜÜ[š]H[[YÙ[˜ÙH[œÈÛ›H[œÚYH[ˆ[™XYH›Ý[™YY\ˆ
+ˆÚXÚÈ[™ÛÛœÝ[Y\ÈH˜XÝX[]HÛÛXÝYX›Ý™Kˆ]Ù\È›Ýˆ
+ˆ™YYHXÚ\Ú[Ûˆ^Y\‹[YÜ˜[HÜˆ[žH^XÝ][Ûˆ]‚ˆ
+‹ÂˆËÈ[™]ÈÛÝ\˜ÙH˜XÝÈš[š\Ú™Y›Ü™HH[˜[]XØ[Ý]Ù™ˆ\Èš^Y‚ˆ]˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛˆH[ÂˆÛÛœÝ\]ZY][ÛØ[™Y]RØ\\™[XZ[š[™Ó\]ZY][Û’Ø\
+Ü[ŽœÛÝ\˜ÙT›Ý][™Ô[‹Ü›ÜÜ×Ù^Ú[™ÙWØÛÛ^˜Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^JNÂˆ]˜]]™S\]ZY][ÛÛÛXÝ[Û‘\œ›Ü[[ÂˆYˆ
+\[Ùˆ[Ë”‘TÔ•—ÓTURQUSÓ—ÓUU‘WÐÓÓPÕOOH™[˜Ý[Ûˆˆ	‰ˆÝ\[Y[[Ø[™Y]PÛÛ^Ë›\]ZY][Û—Û[™WÜ™\Ù\™YOOHYH	‰ˆ\]ZY][ÛØ[™Y]RØ\Œ	‰ˆ×–×‹W×JËUTÑ	ÝK\Ý
+ÛÛ˜XÝ
+JHÂˆžHÂˆ˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛˆH]ØZ][‹”‘TÔ•—ÓTURQUSÓ—ÓUU‘WÐÓÓPÕ
+ÂˆÛÛ˜XÝ˜]]™WÜÞ[X›ÛˆÛÛ˜XÝœÛXÙJMJK[—ÚYˆÝš[™Ê\˜[\ÏËœ[—ÚYˆŠKš[J
+HX[X[\ÚYÝËIØÞXÛTÝ\YßXˆY\ÜÝ\YÝÎˆÞXÛTÝ\YËX^ÙY\Û\ÎLˆX\›WØØ[™Y]WØœšYÙNœ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™X\›WØØ[™Y]WØœšYÙOOO]YKˆX\›WØØ[™Y]WÜ]X[]WÌÌLœ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™X\›WØØ[™Y]WÜ]X[]WÌÌLÏÛ[ˆX[X[Û\]ZY][Û—Ü™\]Y\Ý”Ýš[™Ê[Ë”‘TÔ•—ÓPS•PSÐÓÒS—ÐÓÓ•PÕ	ÉÊKš[J
+OOOXÛÛ˜XÝˆÛÝ\˜ÙWÚY[]NœÝ\[Y[[Ø[™Y]PÛÛ^Ë›\]ZY][Û—ÚY[]_[ˆX^ÚÙ›Ü—ØØ[™Y]N›\]ZY][ÛØ[™Y]RØ\ˆJNÂˆHØ]Ú
+\œ›ÜŠHÈ˜]]™S\]ZY][ÛÛÛXÝ[Û‘\œ›ÜTÝš[™Ê\œ›ÜË›Y\ÜØYÙ_\œ›ÜŠKœÛXÙJŒ
+NÈÊˆÜ[Û˜[ÛÝ\˜ÙH˜Z[ÈÛÜÙYÈ™]™\ˆ™Yœ™\Ú]ÈÛ[Y\Ý[\Ëˆ
+‹ÈBˆBˆÛÛœÝÛÝ\˜ÙPÛÛ™š\›X][Û”™XÙZ\^Âˆ‹‹œÛÝ\˜ÙT›Ý][™Ô[‹ˆÜ›ÜÜ×Ù^Ú[™ÙWÜÝ]\Î˜Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^ËœÝ]\ß	Ó“ÕÐÓÔÑQ	ËˆÜ›ÜÜ×Ù^Ú[™ÙWÛ™]ÛÜš×ØØ[Î“[X™\‹š\ÔØY™R[YÙ\Š[X™\ŠÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^Ë›™]ÛÜš×ØØ[ÊJOÓ[X™\ŠÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^›™]ÛÜš×ØØ[ÊN›[ˆ\]ZY][Û—ÚØØ\›\]ZY][ÛØ[™Y]RØ\ˆ\]ZY][Û—Û[™WÜ™\Ù\™YœÝ\[Y[[Ø[™Y]PÛÛ^Ë›\]ZY][Û—Û[™WÜ™\Ù\™YOO]YKˆ\]ZY][Û—ØÛÛXÝ[Û—ÜÝ\Y›\]ZY][ÛØ[™Y]RØ\Œ	‰œÝ\[Y[[Ø[™Y]PÛÛ^Ë›\]ZY][Û—Û[™WÜ™\Ù\™YOO]YI‰\[Ùˆ[Ë”‘TÔ•—ÓTURQUSÓ—ÓUU‘WÐÓÓPÕOOIÙ[˜Ý[Û‰Ëˆ\]ZY][Û—ØÛÛ^Ü™]\›™Y›ÛÛX[Š˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛŠKˆ\]ZY][Û—ØÛÛXÝ[Û—Ù\œ›ÜŽ›˜]]™S\]ZY][ÛÛÛXÝ[Û‘\œ›Ü‹ˆÛÝ™\˜YÙWØÛÜÙY›ÛÛX[ŠÜ›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^ËœÝ]\ÏOOIÐÓÔÑQ	ß˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛŠKˆNÂˆÛÛœÛÛK›ÙÊ	ÐÐS‘QUWÔÓÕTÑWÐÓÓ‘’T“PUSÓ—Ô“ÕUIË”ÓÓ‹œÝš[™ÚYžJØÛÛ˜XÝ[—ÚY”Ýš[™Ê\˜[\ÏËœ[—ÚY	ÉÊK‹‹œÛÝ\˜ÙPÛÛ™š\›X][Û”™XÙZ\JJNÂˆYŠÝš[™Ê[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓ•PÕ	ÉÊKš[J
+OOOXÛÛ˜XÝ	‰\[Ùˆ[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓTUOOOIÙ[˜Ý[Û‰Ê^Âˆž^Ø]ØZ][‹”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓTUJÝ\ØX›N›ÛÛX[Š˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛŠ_Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^ËœÝ]\ÏOOIÐÓÔÑQ	Ë™\Ý[žÛ˜]]™N›ÛÛX[Š˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛŠKÜ›ÜÜ×Ù^Ú[™ÙN˜Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^ËœÝ]\ß	Ó“ÕÐÓÔÑQ	ß_JNßXØ]ÚßBˆBˆËÈ™XÙZ\ØœÙ\˜][ÛˆØ[››Ý™Y]HÛÛ\][ÛˆÙˆ]ÈX\šÙ][œ]Ë‚ˆ›ÝÈH]K››ÝÊ
+NÂˆ]ÜÜ[š]R[[YÙ[˜ÙNÂˆžHÂˆÛÛœÝš[X\žSÜÜ[š]R[œ]ÈBˆ˜Z™XÝÜžBˆË™]BˆË—ÛÜÜ[š]WÜÚYÝ×Ú[œ]ÈˆßNÂ‚ˆÛÛœÝ^\›˜[Ý\›HBˆX›XÑ]šY[˜ÙBˆË—ÛÜÜ[š]WÚÝ\›WØØ[™\ÈˆßNÂ‚ˆÛÛœÝ›ÝšY\Û\Ý\œÈBˆÂˆ‹‹Šˆ\œ˜^Kš\Ð\œ˜^Jˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ›Ú™XÝYØÛ\Ý\œÂˆ
+BˆÈ\]ZY][Û’[[YÙ[˜ÙBˆœ›Ú™XÝYØÛ\Ý\œÂˆˆ×Bˆ
+Kˆ‹‹Šˆ\œ˜^Kš\Ð\œ˜^Jˆ\]ZY][Û’[[YÙ[˜ÙBˆË˜Û\Ý\œÂˆ
+BˆÈ\]ZY][Û’[[YÙ[˜ÙBˆ˜Û\Ý\œÂˆˆ×Bˆ
+KˆBˆ™š[\Šˆ
+›ÝÊHO‚ˆ[Jˆ›ÝÏË›]™[ÜšXÙHÏÂˆ›ÝÏËœšXÙHÏÂˆ›ÝÏË›]™[ˆ
+HOOH[ˆ
+Bˆ›X\
+ˆ
+›ÝÊHOˆ
+Âˆ‹‹œ›ÝËˆ›Ú™XÝYÛX\ÜÝ]\Î‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ›Ú™XÝYÛX\ÜÝ]\ÈÏÂˆ[ˆ›ÝšY\—Ù]šY[˜ÙWÙ[YÚX›N‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆË˜\ÜÙ]ÚY[]WÝ™\šYšYYOOBˆYH	‰‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆË˜[X\×Ý™\šYšYYOOBˆYH	‰‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ›Ú™XÝYÛX\ÜÝ]\ÈOOBˆÓÔÑQÔÒQÕÈˆ	‰‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ›Ú™XÝYÙœ™\Ú™\ÜÈOOBˆÕT”‘S•‹ˆJBˆ
+NÂ‚ˆÜÜ[š]R[[YÙ[˜ÙHBˆ]ØZ][“ÜÜ[š]TÚYÝÐÞXÛJÂˆ[‹ˆ[—ÚY‚ˆÝš[™Êˆ\˜[\ÏËœ[—ÚYˆˆ‚ˆ
+Kš[J
+HˆX[X[\ÚYÝËIÛ›ÝßXˆ›ÝËˆÜ\˜][Û˜[ˆÂˆØ\XÚ]WÙ›ÜÜ™X\ÛÛœÎ‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ\˜[\ÂˆË˜Ø\XÚ]WÙ›ÜÜ™X\ÛÛœÂˆ
+BˆÈ\˜[\Âˆ˜Ø\XÚ]WÙ›ÜÜ™X\ÛÛœÂˆœÛXÙJLŠBˆˆ×Kˆ]Y]YWÜÝ\˜][ÛŽ‚ˆ\˜[\ÂˆËœ]Y]YWÜÝ\˜][ÛˆOOBˆYKˆKˆ[œ]ˆÂˆÛÛ˜XÝˆš[X\žN‚ˆš[X\žSÜÜ[š]R[œ]Ëˆ]\™\×ÜÛ˜\ÚÝ‚ˆ]\™\ÏË™]Hˆ[ˆÜÝÜÛ˜\ÚÝ‚ˆÜÝË™]Hˆ[ˆ^\›˜[ÚÝ\›N‚ˆ^\›˜[Ý\›Kˆ[™[™Î‚ˆš[X\žSÜÜ[š]R[œ]ÂˆË™[™[™Èˆ˜Z™XÝÜžBˆË™]BˆË™[™[™Èˆ[ˆ\]ZY][Û—ØÛ\Ý\œÎ‚ˆ›ÝšY\Û\Ý\œËˆ\]ZY][Û—ÜÝ[[X\žNˆÂˆ›Ú™XÝYÛX\ÜÝ]\Î‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ›Ú™XÝYÛX\ÜÝ]\ÈÏÂˆ[ˆ™X[^™YÜÝ]\Î‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆËœ™X[^™YÜÝ]\ÈÏÂˆ[ˆ\]ZY][Û—ÙWÜÝ]\Î‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆË›\]ZY][Û—ÙWÜÝ]\ÈÏÂˆ[ˆ›Ú™XÝYØÛ\Ý\—ØÛÝ[‚ˆ›ÝšY\Û\Ý\œË›[™ÝˆÛÝ\˜ÙWÝ[Y\Ý[\‚ˆ\]ZY][Û’[[YÙ[˜ÙBˆË›ØœÙ\™YÝÈÏÂˆ[ˆKˆKˆJNÂˆHØ]Ú
+\œ›ÜŠHÂˆÜÜ[š]R[[YÙ[˜ÙHHÂˆ™\œÚ[ÛŽ‚ˆÔÔ•S’UWÕ‘T”ÒSÓ‹ˆ[ÙN‚ˆ“ÔÔ•S’UWÒS•SQÑSÑWÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹ˆÝ]\Î‚ˆ”•S•SQWÑRSÐÓÔÑQ‹ˆ\œ›ÜŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+KœÛXÙJŒ
+KˆØY™]NˆÂˆÚYÝ×ÛÛ›NˆYKˆ]™WÜ›Ø˜Xš[]N‚ˆ[ˆ]™WÜÚYÛ˜[‚ˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[‚ˆ˜[ÙKˆXÚ\Ú[Û—Û^Y\—ØÚ[™ÙY‚ˆ˜[ÙKˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙY‚ˆ˜[ÙKˆ[YÜ˜[WÜÝ\Y‚ˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽ‚ˆ˜[ÙKˆ]]ÛX]X×ÝÙZYÚÝ[š[™Î‚ˆ˜[ÙKˆKˆNÂˆB‚ˆÛÛœÝ^XÝ][Û”™Yœ™\ÚH]ØZ]™Yœ™\Ú^XÝ][Û”][ÝRY“™YYY
+ÂˆÛÛ˜XÝˆ›Ý[Û˜[Ý\Ùˆ]\™\Ô\˜[\Ë››Ý[Û˜[Ý\ÙˆÝ\œ™[Ü][ÝNˆ]\™\ÏË™]OË—ÝŒLWÙ^XÝ][Û—Ü][ÝHÏÈ[ˆ›Ý×ÝÎˆ]K››ÝÊ
+Kˆ™\]Y\ÝÚœÛÛŽˆÚ\™Y™]Úœ™Yœ™\ÚˆJNÂˆÛÛœÝš[˜[^XÝ][Û”][ÝHH^XÝ][Û”™Yœ™\Úœ][ÝNÂˆÛÛœÝXÚ\Ú[Û•ÈH]K››ÝÊ
+NÂˆ›ÝÈHXÚ\Ú[Û•ÎÂˆÛÛœÝÝYÙLÎL”Û˜\ÚÝYHÌÎLŽ‰ÔÝš[™ÊÛÛ˜XÝ•S’Ó“ÕÓˆŠK››Ü›X[^™J“‘ÈŠ_N‰ÙXÚ\Ú[Û•ßXÂˆÚYÝÑXÚ\Ú[ÛˆHZ[ÚYÝÑXÚ\Ú[Û•[[Y]žJÂˆÛÛ˜XÝˆ›ÝÎˆXÚ\Ú[Û•Ëˆ]\™\ËˆÜÝˆ˜Z™XÝÜžKˆ\ÝÜžKˆ]TÝY™šXÚY[˜ÞKˆJNÂˆÚYÝÑXÚ\Ú[Û‹˜ÞXÛWÜÝ\YÝÈHÞXÛTÝ\YÎÂˆÚYÝÑXÚ\Ú[Û‹œÛÝ\˜ÙWØÛØÚÜÈHÂˆ^XÝ][ÛŽˆÂˆÛÝ\˜ÙWÝÎˆ[X™\Šš[˜[^XÝ][Û”][ÝOË™˜XÝÏË˜›ÛÚ×ÜÛÝ\˜ÙWÝÊH[ˆ]˜Z[X›WÝÎˆ[X™\Šš[˜[^XÝ][Û”][ÝOË™˜XÝÏËœ™XÙZ]™YÝÊH^XÝ][Û”™Yœ™\Ú˜]˜Z[X›WÝÈ[ˆKˆÜÝˆÂˆÛÝ\˜ÙWÝÎˆ[X™\ŠÜÝË™]OËœ›ÝšY\—ÜÛÝ\˜ÙWÝÊH[ˆ]˜Z[X›WÝÎˆ[X™\ŠÜÝË˜]˜Z[X›WÝÊH[ˆKˆ˜Z™XÝÜžNˆÂˆÛÝ\˜ÙWÝÎˆ[X™\Š˜Z™XÝÜžOË™]OËœ›ÝšY\—ÜÛÝ\˜ÙWÝÊH[ˆ]˜Z[X›WÝÎˆ[X™\Š˜Z™XÝÜžOË˜]˜Z[X›WÝÊH[ˆKˆX›X×Ù]šY[˜ÙNˆÂˆÛÝ\˜ÙWÝÎˆ[X™\ŠX›XÑ]šY[˜ÙOË›ØœÙ\™YÝÊH[ˆ]˜Z[X›WÝÎˆX›XÑ]šY[˜ÙP]˜Z[X›UËˆKˆNÂˆÚYÝÔ\œÚ\Ý[˜ÙHH]ØZ]\œÚ\ÝÚYÝÑXÚ\Ú[Û•[[Y]žJ[‹ÚYÝÑXÚ\Ú[ÛŠNÂˆÚYÝÑXÚ\Ú[Û‹œ\œÚ\Ý[˜ÙHHÚYÝÔ\œÚ\Ý[˜ÙNÂ‚ˆ]][UØ]™PØ[\ZYÛŽÂˆžHÂˆ][UØ]™PØ[\ZYÛˆBˆ]ØZ][“][UØ]™PØ[\ZYÛ”ÚYÝÐÞXÛJÂˆ[‹ˆ›ÝËˆÜÜ[š]N‚ˆÜÜ[š]R[[YÙ[˜ÙKˆ[œ]ˆÂˆÛÛ˜XÝˆÝYÙLÎL—ÜÛ˜\ÚÝÚYˆÝYÙLÎL”Û˜\ÚÝYˆš[X\žN‚ˆ˜Z™XÝÜžBˆË™]BˆË—ÛÜÜ[š]WÜÚYÝ×Ú[œ]ÈˆßKˆ^\›˜[ÚÝ\›N‚ˆX›XÑ]šY[˜ÙBˆË—ÛÜÜ[š]WÚÝ\›WØØ[™\ÈˆßKˆ[™[™Î‚ˆ˜Z™XÝÜžBˆË™]BˆË—ÛÜÜ[š]WÜÚYÝ×Ú[œ]ÂˆË™[™[™Èˆ˜Z™XÝÜžBˆË™]BˆË™[™[™Èˆ[ˆKˆJNÂˆHØ]Ú
+\œ›ÜŠHÂˆ][UØ]™PØ[\ZYÛˆHÂˆ™\œÚ[ÛŽˆUSWÕÐU‘WÕ‘T”ÒSÓ‹ˆ[ÙNˆ“USWÕÐU‘WÐÐSTRQÓ—ÔÒQÕ×Ó“×ÑVPÕUSÓˆ‹ˆÝ]\Îˆ”•S•SQWÑRSÐÓÔÑQ‹ˆ\œ›ÜŽˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJŒ
+KˆØY™]NˆÂˆÚYÝ×ÛÛ›NˆYKˆ]™WÜ›Ø˜Xš[]Nˆ[ˆ]™WÜÚYÛ˜[ˆ˜[ÙKˆ˜[Y]YÜÚYÛ˜[ˆ˜[ÙKˆXÚ\Ú[Û—Û^Y\—ØÚ[™ÙYˆ˜[ÙKˆÝ˜]YÞWÝÙZYÚ×ØÚ[™ÙYˆ˜[ÙKˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆ]]ÛX]X×ÝÙZYÚÝ[š[™Îˆ˜[ÙKˆKˆNÂˆB‚ˆÛÛœÝ[]šY[˜ÙTÚYÝÈBˆZ[[]šY[˜ÙTÚYÝÔ™XÛÜ™Ü›ÜÜÕ™[YJÂˆÚYÝ×ÙXÚ\Ú[ÛŽˆÚYÝÑXÚ\Ú[Û‹ˆX›X×Ù]šY[˜ÙNˆË‹‹ŠX›XÑ]šY[˜Ù_ßJK]˜Z[X›WÝÎœX›XÑ]šY[˜ÙP]˜Z[X›UßKˆ›ÝÎˆXÚ\Ú[Û•ËˆXÚ\Ú[Û—ÝÎˆXÚ\Ú[Û•ËˆJNÂˆÛÛœÝ[]šY[˜ÙSØœÙ\™YÈH[X™\Š[]šY[˜ÙTÚYÝÏË›ØœÙ\™YÝÊHXÚ\Ú[Û•ÎÂ‚ˆËÈÝYÙHËŽKŒˆÒQÕÈ›ÛÙˆÚ\š[™Ëˆ›ÛÙˆX]\šX[\È™\\™Y™Y›Ü™HBˆËÈ^\Ý[™È[]šY[˜ÙHS”ÑT•]]\È›ÝÛÛœÚY\™Y›Ý™[ˆ[[BˆËÈXÚÛ›ÝÛYÙ\È^XÝHÛ™H˜XÝX[[œÙ\ˆ›ÈY\\‹\ÚYH›ÛÙˆÞ[\Ú\È\ÂˆËÈ\›Z]Yˆš[˜[XÚ\Ú[Ûˆ™[XZ[œÈHÚYÝÈÚYXØ\ˆ[™Ù\È›Ý™\XÙHBˆËÈYØXÞH^\›˜[Hš\ÚX›H“ÕÑUSPUQXÚ\Ú[Ûˆ™[ÝË‚ˆÛÛœÝŒLQXÚ\Ú[Û‘]šY[˜ÙHH™\\™UŒLQXÚ\Ú[Û‘]šY[˜ÙJÂˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆÛ˜\ÚÝÚYˆÝYÙLÎL”Û˜\ÚÝYˆØœÙ\™YÝÎˆ[]šY[˜ÙSØœÙ\™YËˆ˜Z™XÝÜžNˆ˜Z™XÝÜžOË™]H[ˆ]˜Z[X›WÝÎˆ˜Z™XÝÜžOË˜]˜Z[X›WÝÈÏÈ[ˆÜÜ[š]WÜ›ÛÙŽˆ][UØ]™PØ[\ZYÛËœÝYÙLÎL—Ü›ÛÙœÏË›ÜÜ[š]H[ˆX›X×Ù]šY[˜ÙNˆX›XÑ]šY[˜ÙH[ˆX›X×Ù]šY[˜ÙWØ]˜Z[X›WÝÎˆX›XÑ]šY[˜ÙP]˜Z[X›UËˆJNÂ‚ˆÛÛœÝ™\\™Y[]šY[˜ÙT›ÛÙˆBˆ™\\™Q[]šY[˜ÙT›ÛÙ[™JÂˆ™XÛÜ™ˆ[]šY[˜ÙTÚYÝËˆÛÛ˜XÝØÛÙNˆÛÛ˜XÝˆÛ˜\ÚÝÚYˆÝYÙLÎL”Û˜\ÚÝYˆØœÙ\™YÝÎˆ[]šY[˜ÙSØœÙ\™YËˆÚYÝ×ÙXÚ\Ú[ÛŽˆÚYÝÑXÚ\Ú[Û‹ˆÜÜ[š]WÜ›ÛÙŽ‚ˆ][UØ]™PØ[\ZYÛËœÝYÙLÎL—Ü›ÛÙœÏË›ÜÜ[š]H[ˆØ[\ZYÛ—Ü›ÛÙŽ‚ˆ][UØ]™PØ[\ZYÛËœÝYÙLÎL—Ü›ÛÙœÏË˜Ø[\ZYÛˆ[ˆÜÚ][Û—Ü›ÛÙŽ‚ˆ][UØ]™PØ[\ZYÛËœÝYÙLÎL—Ü›ÛÙœÏËœÜÚ][Ûˆ[ˆÜÚ][Û—ÛÜšYÚ[—ØØ[\ZYÛŽ‚ˆ][UØ]™PØ[\ZYÛËœÝYÙLÎL—Ü›ÛÙœÏËœÜÚ][Û—ÛÜšYÚ[—ØØ[\ZYÛˆ[ˆËÈ˜XÝX[›ÙXÙ\ŽˆÛ™H’PÑWÐPÕSÓˆÛXZ[ˆ][ÜÝ™]™\ˆH[[žBˆËÈXÚ\Ú[Û‹ˆZ\ÜÚ[™ËØÛÛ˜\žH]HÝ^H^XÚ]È›È[™[™ËÓÒH›Ý\Ë‚ˆXÚ\Ú[Û—Ù]šY[˜ÙNˆŒLQXÚ\Ú[Û‘]šY[˜ÙKœ›ÝÜËˆXÚ\Ú[Û—Ù]šY[˜ÙWØ]Y]ˆŒLQXÚ\Ú[Û‘]šY[˜ÙKˆ^XÝ][Û—ÜÛ˜\ÚÝˆš[˜[^XÝ][Û”][ÝKˆÛÛ[Z]YÝÎˆ[ˆJNÂ‚ˆÛÛœÝ[]šY[˜ÙT\œÚ\Ý[˜ÙHBˆ]ØZ]\œÚ\Ý[]šY[˜ÙTÚYÝÔ™XÛÜ™
+ˆ[‹ˆ[]šY[˜ÙTÚYÝËˆÂˆÝYÙLÎL—Ü™\\™YÜ›ÛÙ—Ø[™N‚ˆ™\\™Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOH”‘TT‘QÕSPÒÓ“ÕÓQÑQ‚ˆÈ™\\™Y[]šY[˜ÙT›ÛÙ‚ˆˆ[ˆBˆ
+NÂ‚ˆ[]šY[˜ÙTÚYÝËœ\œÚ\Ý[˜ÙHBˆ[]šY[˜ÙT\œÚ\Ý[˜ÙNÂ‚ˆÛÛœÝÙX[Y[]šY[˜ÙT›ÛÙˆBˆÙX[[]šY[˜ÙT›ÛÙ[™PY\XÚÊˆ™\\™Y[]šY[˜ÙT›ÛÙ‹ˆ[]šY[˜ÙT\œÚ\Ý[˜ÙBˆ
+NÂ‚ˆËÈÜšYÚ[˜[Û˜\ÚÝ[YH\È™]™\ˆ™[™]ÙYžHHÛÝÈHPÒÈÜˆ]\ˆ[™Ù™‹‚ˆËÈ\ÈÚXÚÜÈœ™\Ú™\ÜÈÛ›NÈ]Ù\È›Ý]]Üš^™HHÚYÛ˜[ÜˆH˜YK‚ˆÛÛœÝ^XÝ][Û’[™Ù™ˆHÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOHÓÔÑQ‚ˆÈÚXÚÑ^XÝ][Û’[™Ù™ŠÙX[Y[]šY[˜ÙT›ÛÙË˜[™OË™^XÝ][Û—ÙØ]KØÛÛ˜XÝØÛÙN˜ÛÛ˜XÝÚXÚÙYÝÎ‘]K››ÝÊ
+_JBˆˆÛÚÎ™˜[ÙK™X\ÛÛŽœÙX[Y[]šY[˜ÙT›ÛÙËœ™X\ÛÛˆ‘•SÑU’QSÑWÔ‘PÑRTÓ“ÕÐÓÔÑQŸNÂ‚ˆ]š[˜[XÚ\Ú[Û”ÚYÝÐÛÛ\]Xš[]HHÂˆÝ]\Îˆ”ÒÒTQÑRSÐÓÔÑQ‹ˆ™XYNˆ˜[ÙKˆ™X\ÛÛŽ‚ˆÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOHÓÔÑQ‚ˆÈ““ÕÑUSPUQ‚ˆˆÙX[Y[]šY[˜ÙT›ÛÙËœ™X\ÛÛˆ‘•SÑU’QSÑWÔ‘PÑRTÓ“ÕÐÓÔÑQ‹ˆØY™]NˆÝYÙLÎL”›ÛÙ”ØY™]Q[™[ÜJ
+KˆNÂ‚ˆ]š[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙHHÂˆÝ]\Îˆ”ÒÒTQÑRSÐÓÔÑQ‹ˆÝ][Y[Îˆˆ™X\ÛÛŽ‚ˆÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOHÓÔÑQ‚ˆÈ““ÕÑUSPUQ‚ˆˆÙX[Y[]šY[˜ÙT›ÛÙËœ™X\ÛÛˆ‘•SÑU’QSÑWÔ‘PÑRTÓ“ÕÐÓÔÑQ‹ˆØY™]NˆÝYÙLÎL”›ÛÙ”ØY™]Q[™[ÜJ
+KˆNÂ‚ˆYˆ
+Y^XÝ][Û’[™Ù™‹›ÚÈ	‰ˆÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOHÓÔÑQŠHÂˆš[˜[XÚ\Ú[Û”ÚYÝÐÛÛ\]Xš[]Kœ™X\ÛÛˆH^XÝ][Û’[™Ù™‹œ™X\ÛÛŽÂˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙKœ™X\ÛÛˆH^XÝ][Û’[™Ù™‹œ™X\ÛÛŽÂˆBˆYˆ
+ÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\ÈOOHÓÔÑQˆ	‰ˆÙX[Y[]šY[˜ÙT›ÛÙË˜[™H	‰ˆ^XÝ][Û’[™Ù™‹›ÚÊHÂˆÛÛœÝ[™HHÙX[Y[]šY[˜ÙT›ÛÙ‹˜[™NÂˆÛÛœÝÝYÙLÎLPY\\\™ÜÈHÂˆÚYÝ×ÙXÚ\Ú[ÛŽˆÚYÝÑXÚ\Ú[Û‹ˆ[Ù]šY[˜ÙNˆ[™K™[Ù]šY[˜ÙKˆÜÜ[š]Nˆ[™K›ÜÜ[š]Kˆ][WÝØ]™Nˆ[™K˜Ø[\ZYÛ‹ˆXÚ\Ú[Û—Ù]šY[˜ÙNˆ[™K™XÚ\Ú[Û—Ù]šY[˜ÙKˆ]šY[˜ÙWÜ™YÚ\ÝžNˆ[™K™]šY[˜ÙWÜ™YÚ\ÝžKˆ\™Ý™]Îˆ[™Kš\™Ý™]Ëˆ^XÝ][Û—ÙØ]Nˆ[™K™^XÝ][Û—ÙØ]KˆØY™]WÙØ]WÜ™XÙZ\ˆ[™KœØY™]WÙØ]WÜ™XÙZ\ˆÜÚ][ÛŽˆ[™KœÜÚ][Û‹ˆÜÚ][Û—ÛÜšYÚ[—ØØ[\ZYÛŽˆ[™KœÜÚ][Û—ÛÜšYÚ[—ØØ[\ZYÛ‹ˆÜÚ][Û—ÛX[˜YÙ[Y[ØÛÛ^ˆ[™KœÜÚ][Û—ÛX[˜YÙ[Y[ØÛÛ^ˆØœÙ\™YÝÎˆ[™K›ØœÙ\™YÝËˆÛÛ˜XÝØÛÙNˆ[™K˜ÛÛ˜XÝØÛÙKˆÛ˜\ÚÝÚYˆ[™KœÛ˜\ÚÝÚYˆNÂ‚ˆš[˜[XÚ\Ú[Û”ÚYÝÐÛÛ\]Xš[]HBˆ]˜[X]Qš[˜[XÚ\Ú[Û•\Ý™X[PÛÛ\]Xš[]JÝYÙLÎLPY\\\™ÜÊNÂ‚ˆÛÛœÝY\Yš[˜[XÚ\Ú[Û’[œ]BˆY\ÝYÙLÎLUÑš[˜[XÚ\Ú[Û’[œ]
+ÝYÙLÎLPY\\\™ÜÊNÂ‚ˆÛÛœÝÜÚ][ÛØ\ÔÝ]HBˆÝš[™ÊY\Yš[˜[XÚ\Ú[Û’[œ]ËœÜÚ][ÛËœÝ]HˆŠKÕ\\Ø\ÙJ
+NÂˆÛÛœÝÜÚ][ÛØ\Ô™]š\Ú[ÛˆBˆ[X™\ŠY\Yš[˜[XÚ\Ú[Û’[œ]ËœÜÚ][ÛËœÝ]WÜ™]š\Ú[ÛŠNÂˆÛÛœÝÜÚ][ÛØ\ÐÛÜÙYH›ÛÛX[ŠˆY\Yš[˜[XÚ\Ú[Û’[œ]ËœÜÚ][ÛËœ\œÚ\Ý[˜ÙOËœÝ]\ÈOOHÓÔÑQˆ	‰‚ˆÈ‘“U‹“ÔS—ÓÓ‘È‹“ÔS—ÔÒÔ•—Kš[˜ÛY\ÊÜÚ][ÛØ\ÔÝ]JH	‰‚ˆ[X™\‹š\ÔØY™R[YÙ\ŠÜÚ][ÛØ\Ô™]š\Ú[ÛŠH	‰ˆÜÚ][ÛØ\Ô™]š\Ú[ÛˆHBˆ
+NÂ‚ˆËÈHš[˜[XÚ\Ú[ÛˆÚYÝÈÜš]H\ÈHÛ™HHÝ][Y[]™\XÙ\ÂˆËÈHÛÝ\][]šY[˜ÙH™][[ÛˆSUKˆ]\È™]™\ˆ[›ÚÙYˆËÈ[›\ÜÈH[[]]X›H\Ý™X[H›ÛÙˆ[™H\ÈH˜XÝX[^XÝZ[œÙ\PÒÂˆËÈS‘[ˆ]]Üš]]]™Hš\X[\ÜÚ][Ûˆ™XÙZ\]Ø[ˆ™HÐTËX›Ý[™[‚ˆËÈHØ[YHS”ÑT•ˆH™\›Ë\›ÝÈPÒÈ\È›ÝØ[YHY\H[ˆ\È]‚ˆYˆ
+ÜÚ][ÛØ\ÐÛÜÙY
+HÂˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙHBˆ]ØZ]\œÚ\Ýš[˜[XÚ\Ú[Û’[YÜ˜][Û”ÚYÝÊÂˆ[‹ˆ[œ]ˆY\Yš[˜[XÚ\Ú[Û’[œ]ˆ™\]Z\™WÙ^XÝÚ[œÙ\ØXÚÎˆYKˆ^XÝYÜÜÚ][Û—ØØ\ÎˆÂˆÛÛ˜XÝØÛÙNˆ[™K˜ÛÛ˜XÝØÛÙKˆÝ]NˆÜÚ][ÛØ\ÔÝ]KˆÝ]WÜ™]š\Ú[ÛŽˆÜÚ][ÛØ\Ô™]š\Ú[Û‹ˆKˆJNÂˆH[ÙHÂˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙHHÂˆÝ]\Îˆ”ÒÒTQÑRSÐÓÔÑQ‹ˆÝ][Y[Îˆˆ™X\ÛÛŽˆUUÔ’UUU‘WÔÔÒUSÓ—ÐÐT×Ô‘PÑRTÔ‘TURT‘Q‹ˆØY™]NˆÝYÙLÎL”›ÛÙ”ØY™]Q[™[ÜJ
+KˆNÂˆBˆB‚ˆËÈHÝÛ™\‹X\›Ý™Y[˜[]XØ[ÛXÞHÝ\Y\ÈH™]š[Ý\ÛHZ\ÜÚ[™È[žBˆËÈ˜[™ÛÛœÙ\˜]]™H™YH™\Ù\™H[™X^[][HÛ[™ÈÜš^›Û‹ˆ\™™]Ù\ËˆËÈ]šY[˜ÙHY[]H[™^XÝ][Ûˆœ™\Ú™\ÜÈ™[XZ[ˆ[˜Ú[™ÙY[™˜Z[ÛÜÙY‚ˆÛÛœÝ\›Ý™YX›XØ][Û’[œ]ÈBˆZ[\›Ý™YX›XØ][Û’[œ]ÊÂˆXÚ\Ú[Û—ÜÝ[[X\žN‚ˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙOË™XÚ\Ú[Û—ÜÝ[[X\žHˆ[ˆØœÙ\™YÝÎˆ›ÝËˆJNÂ‚ˆÛÛœÝX›XØ][Û“\]ZY][ÛÛÛ^HÂˆÝ]\Î‚ˆ\œ˜^Kš\Ð\œ˜^J\]ZY][Û’[[YÙ[˜ÙOËœ›Ú™XÝYØÛ\Ý\œÊH	‰‚ˆ\]ZY][Û’[[YÙ[˜ÙKœ›Ú™XÝYØÛ\Ý\œË›[™ÝˆÈÓÓ‘’T“QQ‚ˆˆ\œ˜^Kš\Ð\œ˜^J\]ZY][Û’[[YÙ[˜ÙOËœ™X[^™YËœ›ÝšY\ŠH	‰‚ˆ\]ZY][Û’[[YÙ[˜ÙKœ™X[^™Yœ›ÝšY\‹›[™ÝˆÈ”T•PS‚ˆˆ““ÕÐÓÓ‘’T“QQ‹ˆÚÜØX›Ý™N‚ˆ\]ZY][Û’[[YÙ[˜ÙOËœ›Ú™XÝYØÛ\Ý\œÏË™š[™ËŠˆ
+›ÝÊHOˆ[X™\Š›ÝÏË›]™[ÜšXÙHÏÈ›ÝÏËœšXÙJHˆ[X™\ŠØœÙ\˜][Û”™Y™\™[˜ÙTšXÙOË˜[YJBˆ
+OË›]™[ÜšXÙHÏÈ[ˆÛ™×Ø™[ÝÎ‚ˆ\]ZY][Û’[[YÙ[˜ÙOËœ›Ú™XÝYØÛ\Ý\œÏË™š[™ËŠˆ
+›ÝÊHOˆ[X™\Š›ÝÏË›]™[ÜšXÙHÏÈ›ÝÏËœšXÙJH[X™\ŠØœÙ\˜][Û”™Y™\™[˜ÙTšXÙOË˜[YJBˆ
+OË›]™[ÜšXÙHÏÈ[ˆ›ÝN‚ˆ´&´/´/t`´-t.´`t`ˆ4.ô.4.´,´.4-4,4a´.4.H4/ô-t`4-t-4,4/H4.4-È4`´/´,ô/ˆ4-´-H4`t/t.4/4.´,4`4bô/t.´,È4/´`´`t`ô`´`t`´,´.4-H4`´/´aô/t/´.H4`t`ô/4/4bÈ4/t-H4/ô`4-t,´`4,4bt,4-t`´`tcÈ4,ˆ4,´bô-4`ô/4,4/t/t`ôcˆ4`t`ô/4/4`Ëˆ‹ˆNÂ‚ˆËÈˆLŒHX›XØ][ÛˆÝ^\ÈÙ\\˜]Hœ›ÛH[˜[]XØ[š[˜[XÚ\Ú[Û‹‚ˆÛÛœÝš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÈH]ØZ][•ŒLTX›XØ][Û”ÚYÝÊÂˆ[‹ˆš[˜[ÙXÚ\Ú[Û—Ü\œÚ\Ý[˜ÙNˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙKˆXÚ\Ú[Û—Ù]šY[˜ÙNˆÙX[Y[]šY[˜ÙT›ÛÙË˜[™OË™XÚ\Ú[Û—Ù]šY[˜ÙH×KˆØ[\ZYÛ—Ü›ÛÙŽˆÙX[Y[]šY[˜ÙT›ÛÙË˜[™OË˜Ø[\ZYÛˆ[ˆ^XÝ][Û—ÙØ]NˆÙX[Y[]šY[˜ÙT›ÛÙË˜[™OË™^XÝ][Û—ÙØ]H[ˆ˜Z™XÝÜžNˆ˜Z™XÝÜžOË™]H[ˆ˜Z™XÝÜžWØ]˜Z[X›WÝÎˆ˜Z™XÝÜžOË˜]˜Z[X›WÝÈÏÈ[ˆ[žWØ\™XWÜ[N‚ˆ\›Ý™YX›XØ][Û’[œ]Ë™[žWØ\™XWÜ[Kˆ™YWÜØÚY[N‚ˆ\›Ý™YX›XØ][Û’[œ]Ë™™YWÜØÚY[KˆÛ[™×Ü[Ž‚ˆ\›Ý™YX›XØ][Û’[œ]ËšÛ[™×Ü[‹ˆØÙ[˜\š[×Ü[Žˆ[ˆÛÜÝØ\ÜÙ\ÜÛY[ˆ[ˆ\]ZY][Û—ØÛÛ^‚ˆX›XØ][Û“\]ZY][ÛÛÛ^ˆÛX\Û[Û™^WÜ˜]ÎˆÛX\[Û™^T˜]ËˆZ[WØØ[™\Î‚ˆ˜Z™XÝÜžOË™]OË—ÛÜÜ[š]WÜÚYÝ×Ú[œ]ÏË›Û™WÙ^H×KˆØœÙ\™YÝÎˆ›ÝËˆJNÂ‚ˆÛÛœÝœ™YTÛÝ\˜ÙT[[YTÝ[[X\žHBˆZ[œ™YTÛÝ\˜ÙT[[YTÝ[[X\žJÂˆX›X×Ù]šY[˜ÙNˆX›XÑ]šY[˜ÙKˆÛX\Û[Û™^WÜ˜]ÎˆÛX\[Û™^T˜]ËˆX›XØ][Û—ÜÚYÝÎˆš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝËˆ^˜WÜ™XÙZ\ÎˆÂˆ\\›\]ZY™YÚ\ÝžT™XÙZ\
+ˆÛX\[Û™^T˜]ÏËš\\›\]ZYØÛÛ^ˆ
+KˆK™š[\Š›ÛÛX[ŠKˆ›ÝËˆJNÂ‚ˆÛÛœÝ™]š[Ý\ÔÛ˜\ÚÝÛÛ^Bˆ\œ˜^Kš\Ð\œ˜^JX›XÑ]šY[˜ÙOË™]šY[˜ÙJH	‰‚ˆX›XÑ]šY[˜ÙK™]šY[˜ÙK›[™ÝˆÈ]ØZ]ØY™]š[Ý\Ñ]šY[˜ÙTÛ˜\ÚÝ›ÜØ[›ÛšXØ[
+ˆ[Ë‘UWÑ‹ˆÛÛ˜XÝˆ›ÝÂˆ
+BˆˆÂˆÝ]\Îˆ““ÕÐÓÔÑQ‹ˆ™X\ÛÛŽˆÕT”‘S•ÔP“P×ÑU’QSÑWÑSTH‹ˆ›ÝÎˆ[ˆNÂ‚ˆÛÛœÝÛØ˜[[\›˜[ÛÛ^XÛÛ^›ÜÛÛ˜XÝ
+[Ë”‘TÔ•—ÑÓÐSÓPT’ÑUÐÓÓ•V[ÛÛ˜XÝ
+NÂˆÛÛœÝš[˜[›Ý]TÝ]OTÝš[™Êš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÏË™[žWÜÚYÛ˜[ËœÝ]_	ÉÊKš[˜[›Ý]Q\™XÝ[ÛTÝš[™Êš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÏË™[žWÜÚYÛ˜[Ë™\™XÝ[ÛŸ	ÉÊKÕ\\Ø\ÙJ
+NÂˆÛÛœÝ™Y™\™[˜ÙTšXÙOVÉÑS•–WÓ“Õ×ÐSSUPÐS	Ë	ÑS•–WÓ“Õ×ÕSQUQ	×Kš[˜ÛY\Êš[˜[›Ý]TÝ]JI‰–ÉÓÓ‘ÉË	ÔÒÔ•	×Kš[˜ÛY\Êš[˜[›Ý]Q\™XÝ[ÛŠBˆØZ[™Y™\™[˜ÙTšXÙJØÛÛ˜XÝ\N™š[˜[›Ý]Q\™XÝ[ÛOOIÓÓ‘ÉÏÉÑVPÕUP“WÐTÒÉÎ‰ÑVPÕUP“WÐ’Q	ËšY™]\™\ÏË™]OË˜˜›ÏË˜™\ÝØšY\ÚÎ™]\™\ÏË™]OË˜˜›ÏË˜™\ÝØ\ÚËÛÝ\˜ÙWÝÎšØœÙ\˜][Û”™Y™\™[˜ÙTšXÙOËœÛÝ\˜ÙWÝË™XÙZ]™YÝÎšØœÙ\˜][Û”™Y™\™[˜ÙTšXÙOËœ™XÙZ]™YÝßJBˆšØœÙ\˜][Û”™Y™\™[˜ÙTšXÙNÂˆÛÛœÝ\™XÝ[ÛØ[™Y]O[›Ü›X[^™Q\™XÝ[ÛØ[™Y]J\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™\ØÛÝ™\žWÙ\™XÝ[Û—Ú[ÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™X\›WØØ[™Y]WÙ\™XÝ[Û—Ú[ÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™\™XÝ[Û—Ú[ÛÜšYÚ[Ž‰ÑTÐÓÕ‘T–IËÛÝ\˜ÙWÝÎœ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏËœÛ˜\ÚÝÝÏÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË›ØœÙ\™YÝÏÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏËœÛÝ\˜ÙWÝÏÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏËœØØ[—ÝËÛÛ™š\›X][Û—ÜÝ]N‰ÑTÐÓÕ‘T–WÓÓ“IßJNÂˆÛÛœÝ[žQ\™XÝ[Û]]Üš^˜][ÛX]]Üš^™Q[žQ\™XÝ[ÛŠØØ[™Y]N™\™XÝ[ÛØ[™Y]Kš[˜[Ü›Ý]WÜÝ]N™š[˜[›Ý]TÝ]Kš[˜[Ù\™XÝ[ÛŽ™š[˜[›Ý]Q\™XÝ[Û‹\™Ý™]Î™š[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÏË™[žWÜÚYÛ˜[Ëš\™Ý™]ÏOO]Y_JNÂˆÛÛœÝ^XÝ][Û”™XÙZ\XZ[^XÝ][Û”™XÙZ\
+ØÛÛ\Û™[žÙ^XÝ][Û—ÜÝ]\Î™^XÝ][Û’[™Ù™Ë›ÚÏOO]YOÉÔÕPÐÑTÔÉÎ™^XÝ][Û’[™Ù™ËœÝ]\Ë™X\ÛÛŽ™^XÝ][Û’[™Ù™Ëœ™X\ÛÛŸK™Y™\™[˜ÙWÜšXÙNš™Y™\™[˜ÙTšXÙ_JNÂˆÛÛœÝ[žTÝ]OVÉÑS•–WÓ“Õ×ÐSSUPÐS	Ë	ÑS•–WÓ“Õ×ÕSQUQ	×Kš[˜ÛY\Êš[˜[›Ý]TÝ]JKÝšXÝ›Ý]TÝ]OY[žTÝ]I‰Š[žQ\™XÝ[Û]]Üš^˜][Û‹˜]]Üš^™YOO]Y_^XÝ][Û”™XÙZ\œÝ]\ÈOOIÐÓÔÑQ	ÊOÉÔ‘R‘PÕQ	Î™š[˜[›Ý]TÝ]NÂˆÛÛœÝØ[›ÛšXØ[X›XØ][Û”ÚYÝÏ^Ë‹‹™š[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝË[žWÜÚYÛ˜[žË‹‹Šš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÏË™[žWÜÚYÛ˜[ßJKÝ]NœÝšXÝ›Ý]TÝ]K\™XÝ[ÛŽ™[žTÝ]OÊ[žQ\™XÝ[Û]]Üš^˜][Û‹˜]]Üš^™YÙ[žQ\™XÝ[Û]]Üš^˜][Û‹™\™XÝ[ÛŽ›[
+N™š[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝÏË™[žWÜÚYÛ˜[Ë™\™XÝ[ÛŸ_NÂˆÛÛœÝØ[›ÛšXØ[\ØÛÝ™\žT›ÝÏ\\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏÞË‹‹œ\˜[\Ë™\ØÛÝ™\žWÜ›ÝËÝ\œ™[ÜšXÙNš™Y™\™[˜ÙTšXÙKœÝ]\ÏOOIÐÓÔÑQ	ÏÚ™Y™\™[˜ÙTšXÙK˜[YN›[X\›WØØ[™Y]WÙ\™XÝ[Û—Ú[™\™XÝ[ÛØ[™Y]K™\™XÝ[ÛOOIÕS’Ó“ÕÓ‰ÏÛ[™\™XÝ[ÛØ[™Y]K™\™XÝ[Û‹\™XÝ[Û—Ú[™\™XÝ[ÛØ[™Y]K™\™XÝ[ÛOOIÕS’Ó“ÕÓ‰ÏÛ[™\™XÝ[ÛØ[™Y]K™\™XÝ[ÛŸN›[ÂˆÛÛœÝØ[›ÛšXØ[]\™\ÐÛÛ\Û™[Y]\™\ÏË™]OÞË‹‹™]\™\Ë]NžË‹‹™]\™\Ë™]KX\š×ÜšXÙN›[XÚÙ\Ž›[XÚÙ\—Ì›[_N™]\™\ÎÂˆÛÛœÝØ[›ÛšXØ[\]ZY][Û’[[YÙ[˜ÙO[\]ZY][Û’[[YÙ[˜ÙOÞË‹‹›\]ZY][Û’[[YÙ[˜ÙK›ÝšY\—ØÝ\œ™[ÜšXÙN›[N›\]ZY][Û’[[YÙ[˜ÙNÂˆÛÛœÝ[\›˜[X\šÙ]ÛÛ^^Ë‹‹™ÛØ˜[[\›˜[ÛÛ^Ø[™Y]WØÛÛ^œÝ\[Y[[Ø[™Y]PÛÛ^Ø[™Y]WÜÛÝ\˜Ù\ÎœÝ\[Y[[Ø[™Y]PÛÛ^ËœÛÝ\˜Ù\ßßKÛÝ\˜ÙWØÛÛ™š\›X][Û—Ü›Ý]NœÛÝ\˜ÙPÛÛ™š\›X][Û”™XÙZ\Ü›ÜÜ×Ù^Ú[™ÙWÜš\ÚÎ˜Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^™YXÝ]™WÜÛÝ\˜ÙWÚX[™[Ë”‘TÔ•—ÓTURQUSÓ—Ô‘QPÕU‘WÒPS[]šY[˜ÙWÝŒŽ˜Ø[™Y]Q]šY[˜ÙUŒË˜›ØÚ×ØÛÝ™\˜YÙOØØ[™Y]Q]šY[˜ÙUŒŽŠ[Ë”‘TÔ•—ÑU’QSÑWÕŒŸ[
+KXÚ\Ú[Û—ÝÎ››ÝËÜ™Y™\™[˜ÙWÜšXÙNš™Y™\™[˜ÙTšXÙKÙ^XÝ][Û—Ü™XÙZ\š^XÝ][Û”™XÙZ\\™XÝ[Û—ØØ[™Y]N™\™XÝ[ÛØ[™Y]K[žWÙ\™XÝ[Û—Ø]]Üš^˜][ÛŽ™[žQ\™XÝ[Û]]Üš^˜][Û‹[\›˜[ÛÛ›NY_NÂˆÛÛœÝØ[›ÛšXØ[[˜[]XØ[[™HBˆZ[[[YPØ[›ÛšXØ[[™JÂˆ˜]]™WÛ\]ZY][Û—ØXÜ]Z\Ú][ÛŽ›˜]]™S\]ZY][ÛXÜ]Z\Ú][Û‹ˆÛÛ˜XÝˆ[—ÚY‚ˆÝš[™Ê\˜[\ÏËœ[—ÚYˆŠKš[J
+Hˆ˜]]™S\]ZY][ÛXÜ]Z\Ú][ÛËœ[—ÚYX[X[\ÚYÝËIÛ›ÝßXˆÛ˜\ÚÝÚY‚ˆÝYÙLÎL”Û˜\ÚÝYˆØœÙ\™YÝÎ‚ˆ›ÝËˆ\ØÛÝ™\žWÜ›ÝÎ‚ˆØ[›ÛšXØ[\ØÛÝ™\žT›ÝËˆX›XØ][Û—ÜÚYÝÎ‚ˆØ[›ÛšXØ[X›XØ][Û”ÚYÝËˆÚWÝÚ[™Ý×Ü™XÙZ\ÎˆÚYÝÑXÚ\Ú[ÛË™]šY[˜ÙWÙ›YÜÏË›ÚWÝÚ[™Ý×Ü™XÙZ\ÈÏÈ[ˆÜÜ[š]N‚ˆÜÜ[š]R[[YÙ[˜ÙKˆX›X×Ù]šY[˜ÙN‚ˆX›XÑ]šY[˜ÙKˆ\]ZY][Û—Ú[[YÙ[˜ÙN‚ˆØ[›ÛšXØ[\]ZY][Û’[[YÙ[˜ÙKˆ]\™\×ØÛÛ\Û™[‚ˆØ[›ÛšXØ[]\™\ÐÛÛ\Û™[ˆ^XÝ][Û—Ú[™Ù™Ž‚ˆ^XÝ][Û’[™Ù™‹ˆ]WÜÝY™šXÚY[˜ÞN‚ˆ]TÝY™šXÚY[˜ÞKˆœ™YWÜÛÝ\˜ÙWÜÝ[[X\žN‚ˆœ™YTÛÝ\˜ÙT[[YTÝ[[X\žKˆÛX\Û[Û™^WÜ˜]Î‚ˆÛX\[Û™^T˜]ËˆÚYÝ×ÙXÚ\Ú[ÛŽ‚ˆÚYÝÑXÚ\Ú[Û‹ˆ^\Ý[™×ÜÛÝ\˜ÙWÜ™XÙZ\Î‚ˆÛX\[Û™^T˜]ÏËš\\›\]ZYØÛÛ^ˆÈÈ\\›\]ZYˆÛX\[Û™^T˜]Ëš\\›\]ZYØÛÛ^Bˆˆ[ˆ[\›˜[ÛX\šÙ]ØÛÛ^š[\›˜[X\šÙ]ÛÛ^ˆ™]š[Ý\×ÜÛ˜\ÚÝØÛÛ^‚ˆ™]š[Ý\ÔÛ˜\ÚÝÛÛ^ˆJNÂˆÛÛœÛÛK›ÙÊ	ÔÕTSQS•SÔÐÓÔ‘WÔ‘PÑRT	Ë”ÓÓ‹œÝš[™ÚYžJØÛÛ˜XÝ[—ÚY”Ýš[™Ê\˜[\ÏËœ[—ÚY	ÉÊKÝ]\Î˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OËœÝ\[Y[[ÜØÛÜ™WØY\ÝY[ËœÝ]\Ë˜\ÙWÜØÛÜ™N˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OËœÝ\[Y[[ÜØÛÜ™WØY\ÝY[Ë˜˜\ÙWÜØÛÜ™KY\ÝY[˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OËœÝ\[Y[[ÜØÛÜ™WØY\ÝY[Ë˜Y\ÝY[š[˜[ÜØÛÜ™N˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OËœÝ\[Y[[ÜØÛÜ™WØY\ÝY[Ë™š[˜[ÜØÛÜ™K™XÙZ\Î˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OËœÝ\[Y[[ÜØÛÜ™WØY\ÝY[Ëœ™XÙZ\ß×_JJNÂˆYŠ\[Ùˆ[Ë”‘TÔ•—ÓTURQUSÓ—ÔÒQÓSÔ‘PÓÔ‘OOIÙ[˜Ý[Û‰Ê^Âˆž^ØÛÛœÛÛK›ÙÊ	ÓTURQUSÓ—ÔÒQÓSÐÐSP”USÓ—Ô‘PÓÔ‘	Ë”ÓÓ‹œÝš[™ÚYžJ]ØZ][‹”‘TÔ•—ÓTURQUSÓ—ÔÒQÓSÔ‘PÓÔ‘
+ØÛÛ˜XÝ[™[˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OË™[˜[ZX×Û\]ZY][Û—Ü[™[Ü›ÜÜ×Ù^Ú[™ÙWÜš\ÚÎ˜Ü›ÜÜÑ^Ú[™ÙTš\ÚÐÛÛ^™Y™\™[˜ÙWÜšXÙN˜Ø[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[Ë›Y]Y]OË™[˜[ZX×Û\]ZY][Û—Ü[™[Ëœ™Y™\™[˜ÙWÜšXÙOÏÜ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË˜Ý\œ™[ÜšXÙOÏÛ[ØœÙ\™YÝÎ››ÝßJJJNßXØ]ÚßBˆB‚ˆ]ÜÝÐØ[›ÛšXØ[\œÚ\Ý[˜ÙHHÜÝ]\Î‰ÑTÐP“Q	Ë\œÚ\ÝY™˜[Ù_NÂˆYˆ
+Ýš[™Ê[Ë”‘TÔ•—ÔÔÕÕ×ÕS’Q’QQÑSP“Q	ÉÊHOOH	ÌIÈ	‰ˆØ[›ÛšXØ[[˜[]XØ[[™OË˜Ø[›ÛšXØ[ËœÝ]\ÈOOH	ÐÓÔÑQ	ÊHÂˆÜÝÐØ[›ÛšXØ[\œÚ\Ý[˜ÙHH]ØZ]\œÚ\ÝØ[›ÛšXØ[Û˜\ÚÝ
+[‹‘UWÑ‹ÂˆØ[›ÛšXØ[ˆØ[›ÛšXØ[[˜[]XØ[[™K˜Ø[›ÛšXØ[ˆ™\Ù[][Û—Ú[œ]ÎˆÛX[X[Ý^ˆØ[›ÛšXØ[[˜[]XØ[[™OË›X[X[Ë^ÏÈ[KˆØ]™WÚYˆ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏË™X\›WØØ[™Y]WÝØ]™WÚYÏÈ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÏËØ]™WÚYÏÈ[ˆXÚ\Ú[Û—ÚYˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙOË™XÚ\Ú[Û—ÚYÏÈš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙOË™XÚ\Ú[Û—ÜÝ[[X\žOË™XÚ\Ú[Û—ÚYÏÈ[ˆ›Ý×ÝÎˆ›ÝËˆJNÂˆB‚œ™]\›ˆÂˆÛÛˆ™Y\ØÚXÚ×Ú[œ]‹ˆ™\œÚ[ÛŽˆŒŒKY]šY[˜ÙK[Û›H‹‚ˆÛÛ˜XÝ‚ˆ\ØÛÝ™\žWØÛÛ^‚ˆ\˜[\ÏË™\ØÛÝ™\žWÜ›ÝÈˆ[‚ˆ[Y\Ý[\‚ˆ›ÝË‚ˆ[Y\Ý[\Ý]Î‚ˆ™]È]J›ÝÊKÒTÓÔÝš[™Ê
+K‚ˆ[ÙN‚ˆ‘U’QSÑWÓÓ“WÓ“×ÑPÒTÒSÓˆ‹‚ˆÚYÝ×ÙXÚ\Ú[ÛŽ‚ˆÚYÝÑXÚ\Ú[Û‹‚ˆ[Ù]šY[˜ÙWÜÚYÝÎ‚ˆ[]šY[˜ÙTÚYÝË‚ˆ\]ZY][Û—Ú[[YÙ[˜ÙWÜÚYÝÎ‚ˆ\]ZY][Û’[[YÙ[˜ÙK‚ˆÜÜ[š]WÚ[[YÙ[˜ÙWÜÚYÝÎ‚ˆÜÜ[š]R[[YÙ[˜ÙK‚ˆ][WÝØ]™WØØ[\ZYÛ—ÜÚYÝÎ‚ˆ][UØ]™PØ[\ZYÛ‹‚ˆØ[›ÛšXØ[Ø[˜[]XØ[Ø[™N‚ˆØ[›ÛšXØ[[˜[]XØ[[™K‚ˆÜÝÝ×ØØ[›ÛšXØ[Ü\œÚ\Ý[˜ÙN‚ˆÜÝÐØ[›ÛšXØ[\œÚ\Ý[˜ÙK‚ˆœ™YWÜÛÝ\˜Ù\×Ù[WÜÝ[[X\žN‚ˆœ™YTÛÝ\˜ÙT[[YTÝ[[X\žK‚ˆ\™XÝ[Û—ØØ[™Y]N‚ˆ\™XÝ[ÛØ[™Y]K‚ˆ[žWÙ\™XÝ[Û—Ø]]Üš^˜][ÛŽ‚ˆ[žQ\™XÝ[Û]]Üš^˜][Û‹‚ˆÝYÙLÎL—ÜÚYÝ×Ú[YÜ˜][ÛŽˆÂˆ™\œÚ[ÛŽˆœÝYÙLÎL‹\ÚYÝËZ[YÜ˜][Û‹]Œ‹]ŒLKY^XÝ][Û‹\ŒÈ‹ˆXÚ\Ú[Û—Ù]šY[˜ÙWÜ›ÙXÙ\ŽˆŒLQXÚ\Ú[Û‘]šY[˜ÙKˆ^XÝ][Û—Ú[™Ù™Žˆ^XÝ][Û’[™Ù™‹ˆ[ÙNˆ”ÒQÕ×ÓÓ“WÓ“×ÑVPÕUSÓˆ‹ˆ›ÛÙ—ÜÝ]\Î‚ˆÙX[Y[]šY[˜ÙT›ÛÙËœÝ]\È‘RSÐÓÔÑQ‹ˆ›ÛÙ—Ü™X\ÛÛŽ‚ˆÙX[Y[]šY[˜ÙT›ÛÙËœ™X\ÛÛˆ[ˆ[Ù]šY[˜ÙWÜ\œÚ\Ý[˜ÙN‚ˆ[]šY[˜ÙT\œÚ\Ý[˜ÙKˆš[˜[ÙXÚ\Ú[Û—ØÛÛ\]Xš[]N‚ˆš[˜[XÚ\Ú[Û”ÚYÝÐÛÛ\]Xš[]Kˆš[˜[ÙXÚ\Ú[Û—Ü\œÚ\Ý[˜ÙN‚ˆš[˜[XÚ\Ú[Û”ÚYÝÔ\œÚ\Ý[˜ÙKˆX›XØ][Û—ÜÚYÝÎ‚ˆš[˜[XÚ\Ú[Û”X›XØ][Û”ÚYÝËˆØY™]N‚ˆÝYÙLÎL”›ÛÙ”ØY™]Q[™[ÜJ
+KˆK‚ˆXÚ\Ú[ÛŽˆÂˆ˜[Y]Yˆ˜[ÙKˆ›Ø˜Xš[]Nˆ[ˆ\™XÝ[ÛŽˆ[ˆÝ]\Î‚ˆ““ÕÑUSPUQ‹ˆ™X\ÛÛŽ‚ˆ•\È^Y\ˆÛ›HYÙÜ™YØ]\È˜XÝX[]šY[˜ÙKˆXÚ\Ú[ÛˆØÛÜš[™È\È[[[Û˜[H›Ý[\[Y[Y\™Kˆ‹ˆK‚ˆ^XÝ][ÛŽˆÂˆÞXÛWÜÝ\YÝÎˆÞXÛTÝ\YËˆÛÛ\Û™[×Ø]˜Z[X›WÝÎˆÛÛ\Û™[Ð]˜Z[X›UËˆ[˜[\Ú\×ÛØœÙ\™YÝÎˆXÚ\Ú[Û•ËˆXÚ\Ú[Û—ÝÎˆXÚ\Ú[Û•Ëˆ]šY[˜ÙWØÛÛ[Z]YÝÎˆ[]šY[˜ÙT\œÚ\Ý[˜ÙOË˜ÛÛ[Z]YÝÈÏÈ[ˆ^XÝ][Û—ØÚXÚÙYÝÎˆ^XÝ][Û’[™Ù™Ë˜ÚXÚÙYÝÈÏÈ[ˆ^XÝ][Û—Ü™Yœ™\ÚˆÂˆÝ]\Îˆ^XÝ][Û”™Yœ™\ÚËœÝ]\ÈÏÈ[ˆ][\YÜ™\]Y\ÝÎˆ[X™\Š^XÝ][Û”™Yœ™\ÚË˜][\YÜ™\]Y\ÝÈÏÈ
+Kˆ]˜Z[X›WÝÎˆ^XÝ][Û”™Yœ™\ÚË˜]˜Z[X›WÝÈÏÈ[ˆ™X\ÛÛœÎˆ^XÝ][Û”™Yœ™\ÚËœ™X\ÛÛœÈÏÈ×KˆKˆ™\]Y\ÝYØÛÛ\Û™[Îˆˆ[š[YØÛÛ\Û™[Î‚ˆH˜Z[YÛÛ\Û™[Ë›[™Ýˆ˜Z[YØÛÛ\Û™[Î‚ˆ˜Z[YÛÛ\Û™[ËˆÛÛ\]N‚ˆ˜Z[YÛÛ\Û™[Ë›[™ÝOOHˆÚ\™YÙ™]ÚØØXÚN‚ˆÚ\™Y™]ÚœÝ]Ê
+KˆK‚ˆ]WÜÝY™šXÚY[˜ÞN‚ˆ]TÝY™šXÚY[˜ÞK‚ˆ]šY[˜ÙNˆÂˆ]\™\×ÜÛ˜\ÚÝ‚ˆ]\™\ËˆÜÝÜÛ˜\ÚÝ‚ˆÜÝˆ]\™\×Ý˜Z™XÝÜžN‚ˆ˜Z™XÝÜžKˆÝYÙLÚ\ÝÜžN‚ˆ\ÝÜžKˆÛ\]ZY][Û—Ý\N‚ˆ\]ZY][Û”ÚYÝËˆÛX\Û[Û™^WÜ˜]Î‚ˆÛX\[Û™^T˜]ËˆK‚ˆØY™]NˆÂˆÝ˜]YÞWÜ[\×ØÚ[™ÙY‚ˆ˜[ÙKˆÙZYÚ×ØÚ[™ÙY‚ˆ˜[ÙKˆ\™Ý™]×ØÚ[™ÙY‚ˆ˜[ÙKˆ›Ø˜Xš[]WÙÙ[™\˜]Y‚ˆ˜[ÙKˆ[\Ù\Ü]ÚÝšYÙÙ\™Y‚ˆ˜[ÙKˆK‚ˆ›Ý\ÎˆÂˆ“›È˜Y[™È›Ø˜Xš[]H\ÈÙ[™\˜]Yˆ‹ˆ“›È˜[Y]Y]YHÚYÛ˜[\ÈÙ[™\˜]Yˆ‹ˆ“›È[YÜ˜[H[\\ÈšYÙÙ\™Yˆ‹ˆ“Z\ÜÚ[™ÈÜˆ˜Z[Y]šY[˜ÙH™[XZ[œÈ^XÚ]ˆ‹ˆ•\ÈÝ]]\È[[™Y\È˜XÝX[[œ]›ÜˆH]\™HXÚ\Ú[Ûˆ^Y\‹ˆ‹ˆ”ÝYÙHËËŒHÙY\È›Ú™XÝY\]ZY][ÛˆÛ\Ý\œË˜XÝX[™X[^™Y\]ZY][ÛœÈ[™Ü›ÜÜË\ÛÝ\˜ÙHÛÛœÙ[œÝ\È\ÚXØ[KÛÙÚXØ[HÙ\\˜]Kˆ‹ˆ“›È]™\˜YÙH\š]Y]XÈ\È›Û[ÝY\ÈH™[™ÜˆX]X\[™[œÝ\ÜYÞ[X›ÛÈ™[XZ[ˆ“ÕÐÓÔÑQˆ‹ˆ”ÝYÙHËŽHÜÜ[š]H[[Y]žH\ÈÚYÝË[Û›H[™Ø[››Ý[ÙYžHHXÚ\Ú[Ûˆ^Y\‹ÙZYÚË[\ÈÜˆ^XÝ][Û‹ˆ‹ˆKˆNÂŸB‚™[˜Ý[Ûˆ›Ü›X[^™P[\[Y\Ý[\
+˜[YJHÂˆYˆ
+˜[YHOOH[˜[YHOOH[™Yš[™Y˜[YHOOHˆŠHÂˆ™]\›ˆ[ÂˆB‚ˆÛÛœÝ^HÝš[™Ê˜[YJKš[J
+NÂˆÛÛœÝ[Y\šXÈH[X™\Š^
+NÂ‚ˆYˆ
+[X™\‹š\Ñš[š]J[Y\šXÊJHÂˆ]ˆH[Y\šXÎÂ‚ˆYˆ
+ˆYLLŠHÂˆˆ
+HLÂˆB‚ˆ™]\›ˆŽÂˆB‚ˆÛÛœÝ\œÙYH]Kœ\œÙJ^
+NÂˆ™]\›ˆ[X™\‹š\Ñš[š]J\œÙY
+HÈ\œÙYˆ[ÂŸB‚™[˜Ý[Ûˆ[ÜØÛÝÐÛØÚÊ›ÝÓ\ÈH]K››ÝÊ
+JHÂˆÛÛœÝH™]È]J›ÝÓ\È
+ÈÈ
+ˆŒ
+ˆŒ
+ˆL
+NÂ‚ˆ™]\›ˆÂˆÝ\Žˆ™Ù]UÒÝ\œÊ
+KˆZ[]Nˆ™Ù]UÓZ[]\Ê
+Kˆ[Y\Ý[\Û\ÚÎ‚ˆ™Ù]UÑ[YX\Š
+H
+Âˆ‹Hˆ
+ÂˆÝš[™Ê™Ù]UÓ[Û
+
+H
+ÈJKœYÝ\
+‹ŒŠH
+Âˆ‹Hˆ
+ÂˆÝš[™Ê™Ù]UÑ]J
+JKœYÝ\
+‹ŒŠH
+Âˆˆˆ
+ÂˆÝš[™Ê™Ù]UÒÝ\œÊ
+JKœYÝ\
+‹ŒŠH
+ÂˆŽˆˆ
+ÂˆÝš[™Ê™Ù]UÓZ[]\Ê
+JKœYÝ\
+‹ŒŠH
+ÂˆŽˆˆ
+ÂˆÝš[™Ê™Ù]UÔÙXÛÛ™Ê
+JKœYÝ\
+‹ŒŠH
+ÂˆˆTÒÈ‹ˆNÂŸB‚‚™[˜Ý[Ûˆ[YÜ˜[TÚYÝÐ]]ÚÊ™\]Y\Ý[ŠHÂˆÛÛœÝ^XÝYÙ^HHÝš[™Ê[Ë•SQÔSWÕTÕÒÑVHˆŠKš[J
+NÂˆÛÛœÝ]]HÝš[™Ê™\]Y\ÝšXY\œË™Ù]
+˜]]Üš^˜][ÛˆŠHˆŠNÂˆÛÛœÝ›ÝšYYÙ^HH]]œÝ\ÕÚ]
+™X\™\ˆŠHÈ]]œÛXÙJÊKš[J
+HˆˆŽÂˆ™]\›ˆÂˆÛÛ™šYÝ\™Yˆ›ÛÛX[Š^XÝYÙ^JKˆ]]Üš^™Yˆ›ÛÛX[Š^XÝYÙ^H	‰ˆ›ÝšYYÙ^H	‰ˆ›ÝšYYÙ^HOOH^XÝYÙ^JKˆNÂŸB‚˜\Þ[˜È[˜Ý[ÛˆØYÝYÙLÎL•[YÜ˜[TÚYÝÑXÚ\Ú[ÛŠ[‹XÚ\Ú[Û’YHˆŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÈÚÎˆ˜[ÙKÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹\œ›ÜŽˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘Q‹›ÝÎˆ[NÂˆBˆÛÛœÝYHÝš[™ÊXÚ\Ú[Û’YˆŠKš[J
+KœÛXÙJÌŒ
+NÂˆžHÂˆÛÛœÝÜ[HYˆÈÑSPÕXÚ\Ú[Û—ÚY[ÙKXÚ\Ú[Û—ÜÝ]\ËÛÛ˜XÝØÛÙKØœÙ\˜][Û—ÝË\™XÝ[Û‹ˆ\™XÝ[Û˜[Ü]X[]K[žWØXÝ[Û‹[žWÜ]X[]K]WÜ]X[]K^XÝ][Û—Ü]X[]KˆØ[\ZYÛ—Ü\ÙK[Z[™×ÜÝ]Kš\Ú×ÜÝ]KÜÚ][Û—ÜÝ]KX[˜YÙ[Y[ØXÝ[Û‹ˆX[˜YÙ[Y[Ú[[X[˜YÙ[Y[Ü]X[]K\™Ý™]Ë\™Ý™]×ÜÝ]KÚYÝ×ÛÛ›Kˆ]™WÜ›Ø˜Xš[]K˜[Y]YÜÚYÛ˜[^XÝ][Û—Ø]]Üš^™Y[YÜ˜[WÙ[YÚX›K\œÚ\ÝYÝÂˆ”“ÓHš[˜[ÙXÚ\Ú[Û—Ú[YÜ˜][Û—ÜÚYÝÂˆÒT‘HXÚ\Ú[Û—ÚYOÌHSRUXˆˆÑSPÕXÚ\Ú[Û—ÚY[ÙKXÚ\Ú[Û—ÜÝ]\ËÛÛ˜XÝØÛÙKØœÙ\˜][Û—ÝË\™XÝ[Û‹ˆ\™XÝ[Û˜[Ü]X[]K[žWØXÝ[Û‹[žWÜ]X[]K]WÜ]X[]K^XÝ][Û—Ü]X[]KˆØ[\ZYÛ—Ü\ÙK[Z[™×ÜÝ]Kš\Ú×ÜÝ]KÜÚ][Û—ÜÝ]KX[˜YÙ[Y[ØXÝ[Û‹ˆX[˜YÙ[Y[Ú[[X[˜YÙ[Y[Ü]X[]K\™Ý™]Ë\™Ý™]×ÜÝ]KÚYÝ×ÛÛ›Kˆ]™WÜ›Ø˜Xš[]K˜[Y]YÜÚYÛ˜[^XÝ][Û—Ø]]Üš^™Y[YÜ˜[WÙ[YÚX›K\œÚ\ÝYÝÂˆ”“ÓHš[˜[ÙXÚ\Ú[Û—Ú[YÜ˜][Û—ÜÚYÝÂˆÔ‘Tˆ–H\œÚ\ÝYÝÈTÐÈSRUXÂˆÛÛœÝ›ÝÈHYˆÈ]ØZ][‹‘UWÑ‹œ™\\™JÜ[
+K˜š[™
+Y
+K™š\œÝ
+
+Bˆˆ]ØZ][‹‘UWÑ‹œ™\\™JÜ[
+K™š\œÝ
+
+NÂˆYˆ
+\›ÝÊH™]\›ˆÈÚÎˆYKÝ]\Îˆ““×Ñ’SSÑPÒTÒSÓ—Ô“ÕÈ‹›ÝÎˆ[NÂˆ™]\›ˆÈÚÎˆYKÝ]\Îˆ‘“ÕS‘‹›ÝÈNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÈÚÎˆ˜[ÙKÝ]\Îˆ”‘PQÑRSQ‹\œ›ÜŽˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠK›ÝÎˆ[NÂˆBŸB‚™[˜Ý[ÛˆZ[ÝYÙLÎL•[YÜ˜[TÚYÝÓY\ÜØYÙJ›ÝÊHÂˆÛÛœÝ™X\ÛÛœÈH×NÂˆYˆ
+\›ÝÈ\[Ùˆ›ÝÈOOH›Øš™XÝŠH™X\ÛÛœËœ\Ú
+”“Õ×ÓRTÔÒS‘ÈŠNÂˆYˆ
+›ÝÏË›[ÙHOOH”ÒQÕ×ÓÓ“WÓ“×ÑVPÕUSÓˆŠH™X\ÛÛœËœ\Ú
+““ÕÔÒQÕ×ÓÓ“HŠNÂˆYˆ
+[X™\Š›ÝÏËœÚYÝ×ÛÛ›JHOOHJH™X\ÛÛœËœ\Ú
+”ÒQÕ×Ñ“Q×Ó“ÕÓÓ‘HŠNÂˆYˆ
+›ÝÏË›]™WÜ›Ø˜Xš[]HOOH[	‰ˆ›ÝÏË›]™WÜ›Ø˜Xš[]HOOH[™Yš[™Y
+H™X\ÛÛœËœ\Ú
+“U‘WÔ“ÐP’SUWÔ‘TÑS•ŠNÂˆYˆ
+[X™\Š›ÝÏË˜[Y]YÜÚYÛ˜[
+HOOH
+H™X\ÛÛœËœ\Ú
+•SQUQÔÒQÓSÔ‘TÑS•ŠNÂˆYˆ
+[X™\Š›ÝÏË™^XÝ][Û—Ø]]Üš^™Y
+HOOH
+H™X\ÛÛœËœ\Ú
+‘VPÕUSÓ—ÐUUÔ’V‘QŠNÂˆYˆ
+[X™\Š›ÝÏË[YÜ˜[WÙ[YÚX›H
+HOOH
+H™X\ÛÛœËœ\Ú
+•SQÔSWÑSQÒP“WÕS‘VPÕQŠNÂˆYˆ
+™X\ÛÛœË›[™Ý
+HÂˆ™]\›ˆÈÚÎˆ˜[ÙKÝ]\Îˆ”‘R‘PÕQÑRSÐÓÔÑQ‹™X\ÛÛœËY\ÜØYÙNˆ[NÂˆB‚ˆÛÛœÝ\™XÝ[ÛˆHÈ“Ó‘È‹”ÒÔ•—Kš[˜ÛY\ÊÝš[™Ê›ÝË™\™XÝ[ÛˆˆŠKÕ\\Ø\ÙJ
+JBˆÈÝš[™Ê›ÝË™\™XÝ[ÛŠKÕ\\Ø\ÙJ
+Bˆˆ´'t%H4'´'ô(4%t%4%t&ô%t't'ˆŽÂˆÛÛœÝ[žSX\HÂˆÒQÕ×ÑS•–WÑSQÒP“Nˆ´(´-t/t-t,´/´.H4.´,4/t-4.4-4,4`ˆ4/t,4,´at/´-‹ˆÐRUˆ´'´-´.4-4,4/t.4-H‹ˆ‘R‘PÕˆ´'´`´.´.ô/´/t-t/t/ˆ‹ˆ“ÕÑUSPUQˆ´'t-H4/´a´-t/t-t/t/ˆ‹ˆNÂˆÛÛœÝX[˜YÙ[Y[X\HÂˆÓˆ´(ô-4-t`4-´.4,´,4`´c
+4`´-t/t-t,´,4cÈ4/´a´-t/t.´,
+H‹ˆVUˆ´$´bôat/´-
+4`´-t/t-t,´,4cÈ4/´a´-t/t.´,
+H‹ˆ“ÕÑUSPUQˆ´'t-H4/´a´-t/t-t/t/ˆ‹ˆNÂˆÛÛœÝ\ÓX[˜YÙ[Y[HÈ’Ó‹‘VU—Kš[˜ÛY\ÊÝš[™Ê›ÝË›X[˜YÙ[Y[ØXÝ[ÛˆˆŠJNÂˆÛÛœÝXÝ[ÛˆH\ÓX[˜YÙ[Y[ˆÈ
+X[˜YÙ[Y[X\Ü›ÝË›X[˜YÙ[Y[ØXÝ[Û—HÝš[™Ê›ÝË›X[˜YÙ[Y[ØXÝ[ÛˆˆŠJBˆˆ
+[žSX\Ü›ÝË™[žWØXÝ[Û—HÝš[™Ê›ÝË™[žWØXÝ[ÛˆˆŠJNÂˆÛÛœÝÈH[X™\Š›ÝË›ØœÙ\˜][Û—ÝÊNÂˆÛÛœÝØœÙ\™YH[X™\‹š\Ñš[š]JÊH	‰ˆÈˆÈ™]È]JÊKÒTÓÔÝš[™Ê
+Hˆ´/t-t`ˆ4-4,4/t/tbôaHŽÂˆÛÛœÝ[™\ÈHÂˆ¼'éêˆ4'4/´.H4/´`´aôdt`ˆˆ8 %4(´%t't%t$´'´%H4(4%t*4%t't&4%H‹ˆ´'t%H4(´'´(4$ô'´$´*ô&H4(t&4$ô't$4&È‹ˆˆ‹ˆ	ÔÝš[™Ê›ÝË˜ÛÛ˜XÝØÛÙH•S’Ó“ÕÓˆŠ_H8 (ˆ	Ù\™XÝ[ÛŸXˆ4(4-tb4-t/t.4-Nˆ	ØXÝ[ÛŸXˆ4)4,4-ô,ˆ	ÔÝš[™Ê›ÝË˜Ø[\ZYÛ—Ü\ÙH•S’Ó“ÕÓˆŠ_Xˆ4&´,4aô-t`t`´,´/ˆ4/t,4/ô`4,4,´.ô-t/t.4cÎˆ	ÔÝš[™Ê›ÝË™\™XÝ[Û˜[Ü]X[]H““ÕÑUSPUQŠ_Xˆ4&´,4aô-t`t`´,´/ˆ4,´at/´-4,ˆ	ÔÝš[™Ê›ÝË™[žWÜ]X[]H““ÕÑUSPUQŠ_Xˆ4&´,4aô-t`t`´,´/ˆ4-4,4/t/tbôaNˆ	ÔÝš[™Ê›ÝË™]WÜ]X[]H““ÕÑUSPUQŠ_Xˆ4(4.4`t.Žˆ	ÔÝš[™Ê›ÝËœš\Ú×ÜÝ]H•S’Ó“ÕÓˆŠ_Xˆ4%´dt`t`´.´.4.H4-ô,4/ô`4-t`Žˆ	Ó[X™\Š›ÝËš\™Ý™]È
+HOOHHÈ´%4$ˆˆ´'t%t(ˆŸXˆ4'ô/´-ô.4a´.4cÎˆ	ÔÝš[™Ê›ÝËœÜÚ][Û—ÜÝ]H•S’Ó“ÕÓˆŠ_Xˆ4$´`4-t/4cÈ4`4-tb4-t/t.4cÎˆ	ÛØœÙ\™YXˆˆ‹ˆ´(4-t-´.4/ˆ4`´/´.ôc4.´/ˆ4/t,4,t.ôc´-4-t/t.4-Kˆ4$4,´`´/´`´/´`4,ô/´,´.ôcÈ4.4`4,4,t/´aô.4.H4`t.4,ô/t,4.È4,´bô.´.ôc´aô-t/tbËˆ‹ˆNÂˆÛÛœÝY\ÜØYÙHH[™\Ëš›Ú[Š—ˆŠNÂˆ™]\›ˆÂˆÚÎˆY\ÜØYÙK›[™ÝHM‹ˆÝ]\ÎˆY\ÜØYÙK›[™ÝHMˆÈ”‘PQHˆˆ“QTÔÐQÑWÕÓ×ÓÓ‘È‹ˆ™X\ÛÛœÎˆY\ÜØYÙK›[™ÝHMˆÈ×HˆÈ“QTÔÐQÑWÕÓ×ÓÓ‘È—KˆY\ÜØYÙNˆY\ÜØYÙK›[™ÝHMˆÈY\ÜØYÙHˆ[ˆNÂŸB‚™[˜Ý[Ûˆ˜[Y]P[\\Ü]Ú
+\˜[\ÊHÂˆÛÛœÝ™X\ÛÛœÈH×NÂˆÛÛœÝ›ÝÓ\ÈH]K››ÝÊ
+NÂ‚ˆÛÛœÝÛÛ˜XÝHÝš[™Êˆ\˜[\ÏË˜ÛÛ˜XÝˆ\˜[\ÏËœÞ[X›Ûˆˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ\™XÝ[ÛˆHÝš[™Êˆ\˜[\ÏË™\™XÝ[Ûˆˆ\˜[\ÏËœÚYHˆˆ‚ˆ
+Kš[J
+KÕ\\Ø\ÙJ
+NÂ‚ˆÛÛœÝ˜[Y]YH\˜[\ÏË˜[Y]YOOHYNÂˆÛÛœÝ›Ø˜Xš[]HH[X™\Š\˜[\ÏËœ›Ø˜Xš[]JNÂˆÛÛœÝœ™\Ú™\ÜÔÙXÈH[X™\Š\˜[\ÏË™œ™\Ú™\Ü×ÜÙXÊNÂ‚ˆÛÛœÝÚYÛ˜[ÈH›Ü›X[^™P[\[Y\Ý[\
+ˆ\˜[\ÏËœÚYÛ˜[Ý[Y\Ý[\Ý]ÈÏÂˆ\˜[\ÏË[Y\Ý[\Ý]ÈÏÂˆ\˜[\ÏËœÚYÛ˜[Ý[Y\Ý[\ˆ
+NÂ‚ˆÛÛœÝÛØÚÈH[ÜØÛÝÐÛØÚÊ›ÝÓ\ÊNÂ‚ˆÛÛœÝ[“[ÜØÛÝÕÚ[™ÝÈBˆÛØÚËšÝ\ˆHH	‰‚ˆÛØÚËšÝ\ˆŒÎÂ‚ˆ]ÚYÛ˜[YÙTÙXÈH[Âˆ]]\™TÚÙ]ÔÙXÈH[Â‚ˆYˆ
+ÚYÛ˜[ÈOOH[
+HÂˆÚYÛ˜[YÙTÙXÈHX]›X^
+ˆˆ
+›ÝÓ\ÈHÚYÛ˜[ÊHÈLˆ
+NÂ‚ˆ]\™TÚÙ]ÔÙXÈHX]›X^
+ˆˆ
+ÚYÛ˜[ÈH›ÝÓ\ÊHÈLˆ
+NÂˆB‚ˆYˆ
+XÛÛ˜XÝ
+HÂˆ™X\ÛÛœËœ\Ú
+ÓÓ•PÕÓRTÔÒS‘ÈŠNÂˆB‚ˆYˆ
+VÈ“Ó‘È‹”ÒÔ•—Kš[˜ÛY\Ê\™XÝ[ÛŠJHÂˆ™X\ÛÛœËœ\Ú
+‘T‘PÕSÓ—ÒS•SQŠNÂˆB‚ˆYˆ
+]˜[Y]Y
+HÂˆ™X\ÛÛœËœ\Ú
+““ÕÕSQUQŠNÂˆB‚ˆYˆ
+ˆS[X™\‹š\Ñš[š]J›Ø˜Xš[]JHˆ›Ø˜Xš[]HÌˆ›Ø˜Xš[]HˆLˆ
+HÂˆ™X\ÛÛœËœ\Ú
+”“ÐP’SUWÐ‘SÕ×ÍÌÓÔ—ÒS•SQŠNÂˆB‚ˆYˆ
+ˆS[X™\‹š\Ñš[š]Jœ™\Ú™\ÜÔÙXÊHˆœ™\Ú™\ÜÔÙXÈˆœ™\Ú™\ÜÔÙXÈˆÌˆ
+HÂˆ™X\ÛÛœËœ\Ú
+‘”‘TÒ‘TÔ×ÓRTÔÒS‘×ÓÔ—ÔÕSHŠNÂˆB‚ˆYˆ
+ÚYÛ˜[ÈOOH[
+HÂˆ™X\ÛÛœËœ\Ú
+”ÒQÓSÕSQTÕSTÓRTÔÒS‘×ÓÔ—ÒS•SQŠNÂˆH[ÙHÂˆYˆ
+ÚYÛ˜[YÙTÙXÈˆÌ
+HÂˆ™X\ÛÛœËœ\Ú
+”ÒQÓSÕSQTÕSTÔÕSHŠNÂˆB‚ˆYˆ
+]\™TÚÙ]ÔÙXÈˆŒ
+HÂˆ™X\ÛÛœËœ\Ú
+”ÒQÓSÕSQTÕSTÒS—Ñ•UT‘HŠNÂˆBˆB‚ˆ™]\›ˆÂˆ[ÝÙY‚ˆ™X\ÛÛœË›[™ÝOOH	‰‚ˆ[“[ÜØÛÝÕÚ[™ÝË‚ˆ™X\ÛÛœËˆÛÛ˜XÝˆ\™XÝ[Û‹ˆ˜[Y]Y‚ˆ›Ø˜Xš[]N‚ˆ[X™\‹š\Ñš[š]J›Ø˜Xš[]JBˆÈ›Ø˜Xš[]Bˆˆ[‚ˆœ™\Ú™\Ü×ÜÙXÎ‚ˆ[X™\‹š\Ñš[š]Jœ™\Ú™\ÜÔÙXÊBˆÈœ™\Ú™\ÜÔÙXÂˆˆ[‚ˆÚYÛ˜[Ý[Y\Ý[\Ý]Î‚ˆÚYÛ˜[ÈOOH[ˆÈ™]È]JÚYÛ˜[ÊKÒTÓÔÝš[™Ê
+Bˆˆ[‚ˆÚYÛ˜[ØYÙWÜÙXÎˆÚYÛ˜[YÙTÙXËˆ[—Û[ÜØÛÝ×ÝÚ[™ÝÎˆ[“[ÜØÛÝÕÚ[™ÝËˆ[ÜØÛÝ×Ý[YNˆÛØÚË[Y\Ý[\Û\ÚËˆNÂŸB‚‚™[˜Ý[Ûˆ[\\Ü]Úš[™Ù\œš[
+\˜[\ËØ]JHÂˆÛÛœÝ^XÚ]YHÝš[™Êˆ\˜[\ÏË™]™[ÚYˆ\˜[\ÏËœÚYÛ˜[ÚYˆ\˜[\ÏË˜[\ÚYˆˆ‚ˆ
+Bˆš[J
+BˆœÛXÙJŒ
+NÂ‚ˆYˆ
+^XÚ]Y
+HÂˆ™]\›ˆšYŒNˆˆ
+È^XÚ]YÂˆB‚ˆ™]\›ˆÂˆœÚYÎŒH‹ˆØ]OË˜ÛÛ˜XÝˆ‹ˆØ]OË™\™XÝ[Ûˆˆ‹ˆØ]OËœÚYÛ˜[Ý[Y\Ý[\Ý]Èˆ‹ˆKš›Ú[ŠŸŠNÂŸB‚˜\Þ[˜È[˜Ý[Ûˆ™\Ù\™P[\\Ü]Ú
+[‹\˜[\ËØ]JHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆ\œ›ÜŽˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘Q‹ˆNÂˆB‚ˆÛÛœÝš[™Ù\œš[Bˆ[\\Ü]Úš[™Ù\œš[
+\˜[\ËØ]JNÂ‚ˆÛÛœÝÚYÛ˜[ÈBˆØ]OËœÚYÛ˜[Ý[Y\Ý[\Ý]ÂˆÈ]Kœ\œÙJØ]KœÚYÛ˜[Ý[Y\Ý[\Ý]ÊBˆˆ˜SŽÂ‚ˆYˆ
+ˆYš[™Ù\œš[ˆS[X™\‹š\Ñš[š]JÚYÛ˜[ÊBˆ
+HÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Îˆ’S•SQÑU‘S•ÒQS•UH‹ˆ\œ›ÜŽˆØ[››ÝZ[ÝX›H[\Y[]H‹ˆNÂˆB‚ˆÛÛœÝ›ÝÈH]K››ÝÊ
+NÂ‚ˆÛÛœÝ™X\ÛÛ’œÛÛˆH”ÓÓ‹œÝš[™ÚYžJÂˆÝ[[X\žNˆÝš[™Êˆ\˜[\ÏËœÝ[[X\žHˆ\˜[\ÏËœ™X\ÛÛˆˆˆ‚ˆ
+Bˆš[J
+BˆœÛXÙJŒ
+K‚ˆ\Ý™X[WÙ]™[ÚYˆÝš[™Êˆ\˜[\ÏË™]™[ÚYˆ\˜[\ÏËœÚYÛ˜[ÚYˆ\˜[\ÏË˜[\ÚYˆˆ‚ˆ
+Bˆš[J
+BˆœÛXÙJŒ
+KˆJNÂ‚ˆžHÂˆÛÛœÝ[œÙ\YH]ØZ][‹‘UWÑ‹œ™\\™JˆS”ÑT•ÔˆQÓ“Ô‘HS•È[\Ù\Ü]ÚÛÙÂˆ
+ˆ]™[Ùš[™Ù\œš[ˆÛÛ˜XÝØÛÙKˆ\™XÝ[Û‹ˆ›Ø˜Xš[]KˆÚYÛ˜[ÝËˆœ™\Ú™\Ü×ÜÙXËˆ˜[Y]Yˆ\Ü]ÚÜÝ]\Ëˆ™X\ÛÛ—ÚœÛÛ‹ˆÜ™X]YÝÂˆ
+BˆSQTÂˆ
+ÌKÌ‹ÌËÍÍKÍ‹K	ÔS‘S‘ÉËÍËÎ
+Bˆ
+Bˆ˜š[™
+ˆš[™Ù\œš[ˆØ]K˜ÛÛ˜XÝˆØ]K™\™XÝ[Û‹ˆØ]Kœ›Ø˜Xš[]KˆÚYÛ˜[ËˆØ]K™œ™\Ú™\Ü×ÜÙXËˆ™X\ÛÛ’œÛÛ‹ˆ›ÝÂˆ
+Bˆœ[Š
+NÂ‚ˆÛÛœÝ[œÙ\YÚ[™Ù\ÈBˆ[X™\Š[œÙ\YË›Y]OË˜Ú[™Ù\È
+NÂ‚ˆYˆ
+[œÙ\YÚ[™Ù\Èˆ
+HÂˆ™]\›ˆÂˆÚÎˆYKˆ™\Ù\™YˆYKˆÝ]\Îˆ”‘TÑT•‘Q‹ˆš[™Ù\œš[ˆ™]žNˆ˜[ÙKˆNÂˆB‚ˆÛÛœÝ^\Ý[™ÈH]ØZ][‹‘UWÑ‹œ™\\™JˆÑSPÕˆYˆ\Ü]ÚÜÝ]\Ëˆ[YÜ˜[WÛY\ÜØYÙWÚYˆ[YÜ˜[WÚÜÝ]\ËˆÜ™X]YÝËˆÙ[ÝÂˆ”“ÓH[\Ù\Ü]ÚÛÙÂˆÒT‘H]™[Ùš[™Ù\œš[HÌBˆSRUBˆ
+Bˆ˜š[™
+š[™Ù\œš[
+Bˆ™š\œÝ
+
+NÂ‚ˆYˆ
+Y^\Ý[™ÊHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Îˆ‘WÒSÓÓ”ÒTÕS•‹ˆ\œ›ÜŽ‚ˆ’S”ÑT•ÔˆQÓ“Ô‘HÚ[™ÙY›ÝÜÈ]\XØ]H›ÝÈØ\È›Ý›Ý[™‹ˆš[™Ù\œš[ˆNÂˆB‚ˆÊ‚ˆH˜Z[Y[YÜ˜[H˜[œÛZ\ÜÚ[ÛˆX^H™H™]šYY‚ˆÑS•ÜˆS‘S‘È]™[È\™H™]™\ˆ˜[œÛZ]YYØZ[‹‚ˆ
+‹ÂˆYˆ
+ˆÝš[™Ê^\Ý[™Ë™\Ü]ÚÜÝ]\ÊHOOBˆ”ÑS‘ÑRSQ‚ˆ
+HÂˆÛÛœÝ™]žT™\Ù\˜][ÛˆBˆ]ØZ][‹‘UWÑ‹œ™\\™JˆTUH[\Ù\Ü]ÚÛÙÂˆÑUˆ\Ü]ÚÜÝ]\ÈH	ÔS‘S‘ÉËˆ™X\ÛÛ—ÚœÛÛˆHÌ‚ˆÒT‘Bˆ]™[Ùš[™Ù\œš[HÌBˆS‘\Ü]ÚÜÝ]\ÈH	ÔÑS‘ÑRSQ	Âˆ
+Bˆ˜š[™
+ˆš[™Ù\œš[ˆ™X\ÛÛ’œÛÛ‚ˆ
+Bˆœ[Š
+NÂ‚ˆÛÛœÝ™]žPÚ[™Ù\ÈBˆ[X™\Šˆ™]žT™\Ù\˜][ÛË›Y]OË˜Ú[™Ù\Èˆ
+NÂ‚ˆYˆ
+™]žPÚ[™Ù\Èˆ
+HÂˆ™]\›ˆÂˆÚÎˆYKˆ™\Ù\™YˆYKˆÝ]\Îˆ”‘TÑT•‘QÔ‘U–H‹ˆš[™Ù\œš[ˆ™]žNˆYKˆNÂˆBˆB‚ˆ™]\›ˆÂˆÚÎˆYKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Îˆ‘TPÐUH‹ˆš[™Ù\œš[ˆ^\Ý[™×ÜÝ]\Î‚ˆ^\Ý[™Ë™\Ü]ÚÜÝ]\È[ˆ^\Ý[™×ÛY\ÜØYÙWÚY‚ˆ^\Ý[™Ë[YÜ˜[WÛY\ÜØYÙWÚYÏÈ[ˆ^\Ý[™×ÜÙ[ÝÎ‚ˆ^\Ý[™ËœÙ[ÝÈÏÈ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆ™\Ù\™Yˆ˜[ÙKˆÝ]\Îˆ‘WÑT”“Ôˆ‹ˆš[™Ù\œš[ˆ\œ›ÜŽˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙH\œ›Ü‚ˆ
+KˆNÂˆBŸB‚˜\Þ[˜È[˜Ý[Ûˆš[˜[^™P[\\Ü]Ú
+ˆ[‹ˆš[™Ù\œš[ˆ[YÜ˜[BŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆNÂˆB‚ˆÛÛœÝÙ[Bˆ[YÜ˜[OË›ÚÈOOHYNÂ‚ˆÛÛœÝš[˜[Ý]\ÈBˆÙ[ˆÈ”ÑS•‚ˆˆ”ÑS‘ÑRSQŽÂ‚ˆÛÛœÝÙ[ÈBˆÙ[ˆÈ]K››ÝÊ
+Bˆˆ[Â‚ˆžHÂˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆTUH[\Ù\Ü]ÚÛÙÂˆÑUˆ\Ü]ÚÜÝ]\ÈHÌ‹ˆ[YÜ˜[WÛY\ÜØYÙWÚYHÌËˆ[YÜ˜[WÚÜÝ]\ÈHÍˆÙ[ÝÈHÍBˆÒT‘Bˆ]™[Ùš[™Ù\œš[HÌBˆS‘\Ü]ÚÜÝ]\ÈH	ÔS‘S‘ÉÂˆ
+Bˆ˜š[™
+ˆš[™Ù\œš[ˆš[˜[Ý]\Ëˆ[YÜ˜[OË›Y\ÜØYÙWÚYÏÈ[ˆ[YÜ˜[OËšÜÝ]\ÈÏÈ[ˆÙ[Âˆ
+Bˆœ[Š
+NÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆ\Ü]ÚÜÝ]\Îˆš[˜[Ý]\Ëˆ›ÝÜ×Ý\]Y‚ˆ[X™\Š™\Ý[Ë›Y]OË˜Ú[™Ù\È
+KˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”T•PS‹ˆ\Ü]ÚÜÝ]\Îˆš[˜[Ý]\Ëˆ\œ›ÜŽˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙH\œ›Ü‚ˆ
+KˆNÂˆBŸB‚‚˜ÛÛœÝST•ÐÓÓÓÕÓ—ÔÑPÈHÌ
+ˆŒÂ‚˜\Þ[˜È[˜Ý[Ûˆ™\Ù\™P[\ÛÛÛÝÛŠˆ[‹ˆØ]Kˆš[™Ù\œš[ŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆXÜ]Z\™Yˆ˜[ÙKˆÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆ\œ›ÜŽˆ‘UWÑ—Ó“ÕÐÓÓ‘’QÕT‘Q‹ˆNÂˆB‚ˆÛÛœÝÛÛÛÝÛ’Ù^HBˆÝš[™ÊØ]K˜ÛÛ˜XÝ
+H
+ÂˆŸˆ
+ÂˆÝš[™ÊØ]K™\™XÝ[ÛŠNÂ‚ˆÛÛœÝ›ÝÈH]K››ÝÊ
+NÂˆÛÛœÝ™\ÚÛBˆ›ÝÈHST•ÐÓÓÓÕÓ—ÔÑPÈ
+ˆLÂ‚ˆžHÂˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆS”ÑT•S•È[\Ù\Ü]ÚØÛÛÛÝÛ‚ˆ
+ˆÛÛÛÝÛ—ÚÙ^KˆÛÛ˜XÝØÛÙKˆ\™XÝ[Û‹ˆ]™[Ùš[™Ù\œš[ˆ™\Ù\™YÝËˆÙ[ÝÂˆ
+BˆSQTÂˆ
+ÌKÌ‹ÌËÍÍK•S
+B‚ˆÓˆÓÓ‘“PÕ
+ÛÛÛÝÛ—ÚÙ^JBˆÈTUHÑUˆÛÛ˜XÝØÛÙHH^ÛYY˜ÛÛ˜XÝØÛÙKˆ\™XÝ[ÛˆH^ÛYY™\™XÝ[Û‹ˆ]™[Ùš[™Ù\œš[H^ÛYY™]™[Ùš[™Ù\œš[ˆ™\Ù\™YÝÈH^ÛYYœ™\Ù\™YÝËˆÙ[ÝÈH•S‚ˆÒT‘Bˆ[\Ù\Ü]ÚØÛÛÛÝÛ‹œ™\Ù\™YÝÈHÍ‚ˆ
+Bˆ˜š[™
+ˆÛÛÛÝÛ’Ù^KˆØ]K˜ÛÛ˜XÝˆØ]K™\™XÝ[Û‹ˆš[™Ù\œš[ˆ›ÝËˆ™\ÚÛˆ
+Bˆœ[Š
+NÂ‚ˆÛÛœÝÚ[™Ù\ÈBˆ[X™\Š™\Ý[Ë›Y]OË˜Ú[™Ù\È
+NÂ‚ˆYˆ
+Ú[™Ù\Èˆ
+HÂˆ™]\›ˆÂˆÚÎˆYKˆXÜ]Z\™YˆYKˆÝ]\ÎˆPÔURT‘Q‹ˆÛÛÛÝÛ—ÚÙ^NˆÛÛÛÝÛ’Ù^KˆÛÛÛÝÛ—ÜÙXÎ‚ˆST•ÐÓÓÓÕÓ—ÔÑPËˆ™\Ù\™YÝÎˆ›ÝËˆNÂˆB‚ˆÛÛœÝÝ\œ™[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆÑSPÕˆ]™[Ùš[™Ù\œš[ˆ™\Ù\™YÝËˆÙ[ÝÂˆ”“ÓH[\Ù\Ü]ÚØÛÛÛÝÛ‚ˆÒT‘HÛÛÛÝÛ—ÚÙ^HHÌBˆSRUBˆ
+Bˆ˜š[™
+ÛÛÛÝÛ’Ù^JBˆ™š\œÝ
+
+NÂ‚ˆÛÛœÝ˜\ÙUÈBˆ[X™\ŠÝ\œ™[Ëœ™\Ù\™YÝÈ
+NÂ‚ˆÛÛœÝ™[XZ[š[™ÔÙXÈBˆX]›X^
+ˆˆX]˜ÙZ[
+ˆ
+ˆ˜\ÙUÈ
+ÂˆST•ÐÓÓÓÕÓ—ÔÑPÈ
+ˆLBˆ›ÝÂˆ
+HÈLˆ
+Bˆ
+NÂ‚ˆ™]\›ˆÂˆÚÎˆYKˆXÜ]Z\™Yˆ˜[ÙKˆÝ]\ÎˆÓÓÓÕÓ—ÐPÕU‘H‹ˆÛÛÛÝÛ—ÚÙ^NˆÛÛÛÝÛ’Ù^KˆÛÛÛÝÛ—ÜÙXÎ‚ˆST•ÐÓÓÓÕÓ—ÔÑPËˆ™[XZ[š[™×ÜÙXÎˆ™[XZ[š[™ÔÙXËˆ™]š[Ý\×Ù]™[Ùš[™Ù\œš[‚ˆÝ\œ™[Ë™]™[Ùš[™Ù\œš[[ˆ™]š[Ý\×ÜÙ[ÝÎ‚ˆÝ\œ™[ËœÙ[ÝÈÏÈ[ˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÚÎˆ˜[ÙKˆXÜ]Z\™Yˆ˜[ÙKˆÝ]\Îˆ‘WÑT”“Ôˆ‹ˆ\œ›ÜŽˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙH\œ›Ü‚ˆ
+KˆNÂˆBŸB‚˜\Þ[˜È[˜Ý[ÛˆÙ][\\Ü]ÚÝ]\Êˆ[‹ˆš[™Ù\œš[ˆÝ]\ÂŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆNÂˆB‚ˆžHÂˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆTUH[\Ù\Ü]ÚÛÙÂˆÑU\Ü]ÚÜÝ]\ÈHÌ‚ˆÒT‘Bˆ]™[Ùš[™Ù\œš[HÌBˆS‘\Ü]ÚÜÝ]\ÈH	ÔS‘S‘ÉÂˆ
+Bˆ˜š[™
+ˆš[™Ù\œš[ˆÝ]\Âˆ
+Bˆœ[Š
+NÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆ›ÝÜ×Ý\]Y‚ˆ[X™\Š™\Ý[Ë›Y]OË˜Ú[™Ù\È
+KˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”T•PS‹ˆ\œ›ÜŽˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙH\œ›Ü‚ˆ
+KˆNÂˆBŸB‚˜\Þ[˜È[˜Ý[Ûˆš[˜[^™P[\ÛÛÛÝÛŠˆ[‹ˆÛÛÛÝÛ‹ˆš[™Ù\œš[ˆ[YÜ˜[BŠHÂˆYˆ
+Y[Ë‘UWÑŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”ÓÕTÑWÕS”ÕTÔ•Q‹ˆNÂˆB‚ˆžHÂˆYˆ
+[YÜ˜[OË›ÚÈOOHYJHÂˆÛÛœÝÙ[ÈH]K››ÝÊ
+NÂ‚ˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆTUH[\Ù\Ü]ÚØÛÛÛÝÛ‚ˆÑUˆ™\Ù\™YÝÈHÌËˆÙ[ÝÈHÌÂˆÒT‘BˆÛÛÛÝÛ—ÚÙ^HHÌBˆS‘]™[Ùš[™Ù\œš[HÌ‚ˆ
+Bˆ˜š[™
+ˆÛÛÛÝÛ‹˜ÛÛÛÝÛ—ÚÙ^Kˆš[™Ù\œš[ˆÙ[Âˆ
+Bˆœ[Š
+NÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆXÝ[ÛŽˆÓÓÓÕÓ—ÔÕT•Q‹ˆÙ[ÝÎˆÙ[Ëˆ›ÝÜ×Ý\]Y‚ˆ[X™\Š™\Ý[Ë›Y]OË˜Ú[™Ù\È
+KˆNÂˆB‚ˆÛÛœÝ™\Ý[Bˆ]ØZ][‹‘UWÑ‹œ™\\™JˆSUH”“ÓH[\Ù\Ü]ÚØÛÛÛÝÛ‚ˆÒT‘BˆÛÛÛÝÛ—ÚÙ^HHÌBˆS‘]™[Ùš[™Ù\œš[HÌ‚ˆ
+Bˆ˜š[™
+ˆÛÛÛÝÛ‹˜ÛÛÛÝÛ—ÚÙ^Kˆš[™Ù\œš[ˆ
+Bˆœ[Š
+NÂ‚ˆ™]\›ˆÂˆÝ]\ÎˆÓÔÑQ‹ˆXÝ[ÛŽ‚ˆÓÓÓÕÓ—Ô‘SPTÑQÐQ•T—ÔÑS‘ÑRST‘H‹ˆ›ÝÜ×Ù[]Y‚ˆ[X™\Š™\Ý[Ë›Y]OË˜Ú[™Ù\È
+KˆNÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆÂˆÝ]\Îˆ”T•PS‹ˆ\œ›ÜŽˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙH\œ›Ü‚ˆ
+KˆNÂˆBŸB‚™[˜Ý[Ûˆ]XÝ[ÙJˆ\›ˆ\˜[\ÂŠHÂˆÛÛœÝ]Bˆ\›œ]˜[YKÓÝÙ\Ø\ÙJ
+NÂ‚ˆÛÛœÝ™\]Y\ÝYBˆÝš[™Êˆ\˜[\Ë›X\šÙ]ˆ\˜[\Ë›[ÙHˆ\˜[\ËÛÛˆ\˜[\Ë˜XÝ[Ûˆˆˆ‚ˆ
+KÓÝÙ\Ø\ÙJ
+NÂ‚ˆYˆ
+ˆ]š[˜ÛY\ÊˆœÞ[X›Û\™\ÛÛ™H‚ˆ
+Hˆ]š[˜ÛY\ÊˆœÞ[X›ÛÜ™\ÛÛ™H‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\ÊˆœÞ[X›ÛÜ™\ÛÛ™H‚ˆ
+Bˆ
+HÂˆ™]\›ˆœÞ[X›ÛÜ™\ÛÛ™HŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\ÊˆœÝYÙLZ\ÝÜžH‚ˆ
+Hˆ]š[˜ÛY\ÊˆœÝYÙLÚ\ÝÜžH‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\ÊˆœÝYÙLÚ\ÝÜžH‚ˆ
+Bˆ
+HÂˆ™]\›ˆœÝYÙLÚ\ÝÜžHŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\Êˆ[š]™\œÙH‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\Êˆ[š]™\œÙWÜØØ[ˆ‚ˆ
+Bˆ
+HÂˆ™]\›ˆ[š]™\œÙHŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\Êˆ›\]ZY][Ûˆ‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\Êˆ›\]ZY][Û—Ý\H‚ˆ
+Bˆ
+HÂˆ™]\›ˆ›\]ZY][ÛœÈŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\Êˆ™]K\[™H‚ˆ
+Hˆ]š[˜ÛY\Êˆ™]\[™H‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\Êˆ™]WÜ[™WÜÝ]\È‚ˆ
+Bˆ
+HÂˆ™]\›ˆ™]WÜ[™WÜÝ]\ÈŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\Êˆ˜Z™XÝÜžH‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\Êˆ˜Z™XÝÜžH‚ˆ
+Bˆ
+HÂˆ™]\›ˆ˜Z™XÝÜžHŽÂˆB‚ˆYˆ
+ˆ]š[˜ÛY\ÊˆœÜÝ‚ˆ
+Hˆ™\]Y\ÝYš[˜ÛY\ÊˆœÜÝ‚ˆ
+Bˆ
+HÂˆ™]\›ˆœÜÝŽÂˆB‚ˆ™]\›ˆ™]\™\ÈŽÂŸB‚˜ÛÛœÝ×Ô‘TÔ•—ÓÔ’QÒSSÒS‘TˆHÂˆ\Þ[˜È™]Ú
+ˆ™\]Y\Ýˆ[‹ˆÝˆ
+HÂˆYˆ
+ˆ™\]Y\Ý›Y]ÙOOBˆ“ÔSÓ”È‚ˆ
+HÂˆ™]\›ˆ™]È™\ÜÛœÙJˆ[ˆÂˆÝ]\ÎˆŒˆXY\œÎ‚ˆ”ÓÓ—ÒPQT”ËˆBˆ
+NÂˆB‚ˆžHÂˆÛÛœÝÂˆ\›ˆ\˜[\ËˆHBˆ]ØZ]\œÙR[œ]
+ˆ™\]Y\Ýˆ
+NÂ‚ˆYˆ
+ˆ\›œ]˜[YHOOBˆ‹ÚX[ˆˆ\›œ]˜[YHOOBˆ‹ÚX[ˆ‚ˆ
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆÚÎˆYK‚ˆÙ\šXÙN‚ˆ›^K\™\ÜL‹ZXˆ‹‚ˆ™\œÚ[ÛŽ‚ˆTÕÓSÕ‘WÕÐUÒÕ‘T”ÒSÓ‹‚ˆØ[™Y]WÝ™\œÚ[ÛŽ‚ˆÔÔ•S’UWÕ‘T”ÒSÓ‹‚ˆÝYÙLÎL—ÜÚYÝ×Ú[YÜ˜][Û—Ý™\œÚ[ÛŽ‚ˆÕQÑLÎL—ÔÒQÕ×ÒS•QÔUSÓ—Õ‘T”ÒSÓ‹‚ˆ[YÜ˜[WÜÚYÝ×ØœšYÙWÝ™\œÚ[ÛŽ‚ˆSQÔSWÔÒQÕ×Ð”’QÑWÕ‘T”ÒSÓ‹‚ˆ[YÜ˜[WÜÚYÝ×Ø›ÙYš^Ý™\œÚ[ÛŽ‚ˆSQÔSWÔÒQÕ×Ð“ÑQ’VÕ‘T”ÒSÓ‹‚ˆ[Ù[\ÎˆÂˆ[YÜ˜[WÜÚYÝ×Ü™]šY]ÎˆYKˆ[YÜ˜[WÜÚYÝ×ÛX[X[Ý\ÝˆYKˆ[YÜ˜[WÜÚYÝ×Ø]]×Ù\Ü]Úˆ˜[ÙK‚ˆÙ]\™\×ÜÛ˜\ÚÝ‚ˆYK‚ˆÜÜÝÜÛ˜\ÚÝ‚ˆYK‚ˆÙ]\™\×Ý˜Z™XÝÜžN‚ˆYK‚ˆÜÝÙ›Ý×ÝÚ[™ÝÜ×ÌZÍÌ‚ˆYK‚ˆÜÝÙœ™\Ú™\Ü×ØÛÛ›Û‚ˆYK‚ˆ˜Z™XÝÜžWÜšXÙWÝÚ[™ÝÜ×Í[WÌM[WÌZÍÌ‚ˆYK‚ˆ˜Z™XÝÜžWÛÚWÝÚ[™ÝÜ×ÌZÍÌ‚ˆYK‚ˆ˜Z™XÝÜžWÙ[™[™×Ú\ÝÜžN‚ˆYK‚ˆ˜Z™XÝÜžWÜÝšXÝÙ›Ý×ØÛÝ™\˜YÙN‚ˆYK‚ˆÝ[š]™\œÙWÜØØ[Ž‚ˆYK‚ˆØÜž\×Ú[œÝ[Y[ÜØÛÜN‚ˆYK‚ˆ›Ý[™YÙY\ØÚXÚ×ÜØÚY[\Ž‚ˆYK‚ˆY\ØÚXÚ×Ü[—Ú›Ý\›˜[‚ˆYKˆÚYÝ×ÙXÚ\Ú[Û—Û^Y\ŽˆYKˆÚYÝ×ÛÝ]ÛÛYWØØ[Xœ˜][ÛŽˆYKˆ[Ù]šY[˜ÙWÜÚYÝÎˆYKˆÜ›ÜÜ×Ý™[YWÛ\]ZY][Û—Ú[[YÙ[˜ÙNˆYKˆ˜\ÝÛ[Ý™WÝØ]ÚˆYKˆÜÜ[š]WÚ[[YÙ[˜ÙWÜÚYÝÎˆYKˆ][WÝØ]™WØØ[\ZYÛ—ÜÚYÝÎˆYK‚ˆÜÞ[X›ÛÜ™\ÛÛ™N‚ˆYK‚ˆÜÝYÙLÚ\ÝÜžN‚ˆYK‚ˆÛ\]ZY][Û—Ý\WÜ™\Ý‚ˆYK‚ˆ\œÚ\Ý[ÜÝÜ™WØÛÙWÜ™XYN‚ˆYK‚ˆ]WÜ[™WÜÝ]\Î‚ˆYK‚ˆÜ›Û—ÛØœÙ\˜Xš[]N‚ˆYKˆK‚ˆ[Y\Ý[\Ý]Î‚ˆ™]È]J
+BˆÒTÓÔÝš[™Ê
+KˆJNÂˆB‚‚‚ˆYˆ
+\›œ]˜[YHOOH‹ÙY\XÚXÚËZ[œ]ŠHÂˆYˆ
+ˆ™\]Y\Ý›Y]ÙOOH‘ÑUˆ	‰‚ˆ™\]Y\Ý›Y]ÙOOH”ÔÕ‚ˆ
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[‚ˆ™Y\XÚXÚËZ[œ]‹ˆ\œ›ÜŽ‚ˆ“QUÑÓ“ÕÐSÕÑQ‹ˆ[ÝÙYÛY]ÙÎˆÂˆ‘ÑU‹ˆ”ÔÕ‹ˆKˆKˆBˆ
+NÂˆB‚ˆÛÛœÝ^XÝYÙ^HBˆÝš[™Êˆ[ËST•ÑTÔUÒÒÑVHˆˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ]]BˆÝš[™Êˆ™\]Y\ÝšXY\œË™Ù]
+ˆ˜]]Üš^˜][Ûˆ‚ˆ
+Hˆ‚ˆ
+NÂ‚ˆÛÛœÝ›ÝšYYÙ^HBˆ]]œÝ\ÕÚ]
+™X\™\ˆŠBˆÈ]]œÛXÙJÊKš[J
+BˆˆˆŽÂ‚ˆYˆ
+Y^XÝYÙ^JHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[‚ˆ™Y\XÚXÚËZ[œ]‹ˆ\œ›ÜŽ‚ˆ’S•T“SÒÑVWÓ“ÕÐÓÓ‘’QÕT‘Q‹ˆKˆLÂˆ
+NÂˆB‚ˆYˆ
+ˆ\›ÝšYYÙ^Hˆ›ÝšYYÙ^HOOH^XÝYÙ^Bˆ
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[‚ˆ™Y\XÚXÚËZ[œ]‹ˆ\œ›ÜŽ‚ˆ•SUUÔ’V‘Q‹ˆKˆBˆ
+NÂˆB‚ˆ]\˜[\ÈHßNÂ‚ˆYˆ
+™\]Y\Ý›Y]ÙOOH”ÔÕŠHÂˆžHÂˆ\˜[\ÈBˆ]ØZ]™\]Y\ÝšœÛÛŠ
+NÂˆHØ]ÚÂˆ\˜[\ÈHßNÂˆBˆH[ÙHÂˆ\˜[\ÈBˆØš™XÝ™œ›ÛQ[šY\Êˆ\›œÙX\˜Ú\˜[\Ë™[šY\Ê
+Bˆ
+NÂˆB‚ˆÛÛœÝ™\Ý[Bˆ]ØZ]Z[Y\ÚXÚÒ[œ]
+ˆ\˜[\Ëˆ[‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJ™\Ý[
+NÂˆB‚‚ˆYˆ
+\›œ]˜[YHOOH‹Ý[YÜ˜[K\ÚYÝË\™]šY]ÈŠHÂˆYˆ
+™\]Y\Ý›Y]ÙOOH”ÔÕŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹\œ›ÜŽˆ“QUÑÓ“ÕÐSÕÑQ‹[ÝÙYÛY]Ùˆ”ÔÕˆKJNÂˆBˆÛÛœÝ]]Ý]HH[YÜ˜[TÚYÝÐ]]ÚÊ™\]Y\Ý[ŠNÂˆYˆ
+X]]Ý]K˜ÛÛ™šYÝ\™Y
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹\œ›ÜŽˆ•SQÔSWÕTÕÒÑVWÓ“ÕÐÓÓ‘’QÕT‘QˆKLÊNÂˆBˆYˆ
+X]]Ý]K˜]]Üš^™Y
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹\œ›ÜŽˆ•SUUÔ’V‘QˆKJNÂˆBˆÛÛœÝ›ÙHH\˜[\È	‰ˆ\[Ùˆ\˜[\ÈOOH›Øš™XÝˆÈ\˜[\ÈˆßNÂˆÛÛœÝØYYH]ØZ]ØYÝYÙLÎL•[YÜ˜[TÚYÝÑXÚ\Ú[ÛŠ[‹›ÙOË™XÚ\Ú[Û—ÚY
+NÂˆYˆ
+[ØYY›ÚÊH™]\›ˆœÛÛ”™\ÜÛœÙJÈ[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹Ù[ˆ˜[ÙK‹‹›ØYYKLÊNÂˆYˆ
+[ØYYœ›ÝÊH™]\›ˆœÛÛ”™\ÜÛœÙJÈ[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹Ù[ˆ˜[ÙK‹‹›ØYYKŒ
+NÂˆÛÛœÝ™]šY]ÈHZ[ÝYÙLÎL•[YÜ˜[TÚYÝÓY\ÜØYÙJØYYœ›ÝÊNÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆÚÎˆ™]šY]Ë›ÚËˆ[™Ú[ˆ[YÜ˜[K\ÚYÝË\™]šY]È‹ˆ[ÙNˆ”ÕQÑLÎL—ÔÒQÕ×Ô‘U’QU×Ó“×ÔÑS‘‹ˆÙ[ˆ˜[ÙKˆ[YÜ˜[WØ\WØØ[Yˆ˜[ÙKˆXÚ\Ú[Û—ÚYˆØYYœ›ÝË™XÚ\Ú[Û—ÚYˆ™]šY]ËˆØY™]NˆÈ]™WÜ›Ø˜Xš[]Nˆ˜[ÙK]™WÜÚYÛ˜[ˆ˜[ÙK˜[Y]YÜÚYÛ˜[ˆ˜[ÙK˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙK]]ÛX]X×Ù\Ü]Úˆ˜[ÙHKˆK™]šY]Ë›ÚÈÈŒˆŒŠNÂˆB‚ˆYˆ
+\›œ]˜[YHOOH‹Ý[YÜ˜[K\ÚYÝË]\ÝŠHÂˆYˆ
+™\]Y\Ý›Y]ÙOOH”ÔÕŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹\œ›ÜŽˆ“QUÑÓ“ÕÐSÕÑQ‹[ÝÙYÛY]Ùˆ”ÔÕˆKJNÂˆBˆÛÛœÝ]]Ý]HH[YÜ˜[TÚYÝÐ]]ÚÊ™\]Y\Ý[ŠNÂˆYˆ
+X]]Ý]K˜ÛÛ™šYÝ\™Y
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹\œ›ÜŽˆ•SQÔSWÕTÕÒÑVWÓ“ÕÐÓÓ‘’QÕT‘QˆKLÊNÂˆBˆYˆ
+X]]Ý]K˜]]Üš^™Y
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹\œ›ÜŽˆ•SUUÔ’V‘QˆKJNÂˆBˆÛÛœÝ›ÙHH\˜[\È	‰ˆ\[Ùˆ\˜[\ÈOOH›Øš™XÝˆÈ\˜[\ÈˆßNÂˆYˆ
+Ýš[™Ê›ÙOË˜ÛÛ™š\›HˆŠHOOH”ÑS‘ÔÒQÕ×ÕTÕŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹Ù[ˆ˜[ÙK\œ›ÜŽˆ‘VPÒUÐÓÓ‘’T“PUSÓ—Ô‘TURT‘Q‹™\]Z\™YØÛÛ™š\›Nˆ”ÑS‘ÔÒQÕ×ÕTÕˆKŒŠNÂˆBˆÛÛœÝØYYH]ØZ]ØYÝYÙLÎL•[YÜ˜[TÚYÝÑXÚ\Ú[ÛŠ[‹›ÙOË™XÚ\Ú[Û—ÚY
+NÂˆYˆ
+[ØYY›ÚÊH™]\›ˆœÛÛ”™\ÜÛœÙJÈ[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹Ù[ˆ˜[ÙK‹‹›ØYYKLÊNÂˆYˆ
+[ØYYœ›ÝÊH™]\›ˆœÛÛ”™\ÜÛœÙJÈ[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹Ù[ˆ˜[ÙK‹‹›ØYYKŒ
+NÂˆÛÛœÝ™]šY]ÈHZ[ÝYÙLÎL•[YÜ˜[TÚYÝÓY\ÜØYÙJØYYœ›ÝÊNÂˆYˆ
+\™]šY]Ë›ÚÊH™]\›ˆœÛÛ”™\ÜÛœÙJÈÚÎˆ˜[ÙK[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹Ù[ˆ˜[ÙKXÚ\Ú[Û—ÚYˆØYYœ›ÝË™XÚ\Ú[Û—ÚY™]šY]ÈKŒŠNÂˆÛÛœÝ[YÜ˜[HH]ØZ]Ù[™[YÜ˜[SY\ÜØYÙJ[‹™]šY]Ë›Y\ÜØYÙJNÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆ[™Ú[ˆ[YÜ˜[K\ÚYÝË]\Ý‹ˆ[ÙNˆ“PS•PSÔÒQÕ×ÕTÕÓÓ“H‹ˆXÚ\Ú[Û—ÚYˆØYYœ›ÝË™XÚ\Ú[Û—ÚYˆÙ[ˆ[YÜ˜[K›ÚÈOOHYKˆØY™]NˆÈ]™WÜ›Ø˜Xš[]Nˆ˜[ÙK]™WÜÚYÛ˜[ˆ˜[ÙK˜[Y]YÜÚYÛ˜[ˆ˜[ÙK˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙK]]ÛX]X×Ù\Ü]Úˆ˜[ÙHKˆ‹‹[YÜ˜[KˆK[YÜ˜[K›ÚÈÈŒˆLŠNÂˆB‚ˆYˆ
+\›œ]˜[YHOOH‹Ø[\Y\Ü]ÚŠHÂˆYˆ
+™\]Y\Ý›Y]ÙOOH”ÔÕŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆ\œ›ÜŽˆ“QUÑÓ“ÕÐSÕÑQ‹ˆ[ÝÙYÛY]Ùˆ”ÔÕ‹ˆKˆBˆ
+NÂˆB‚ˆÛÛœÝ^XÝYÙ^HHÝš[™Êˆ[ËST•ÑTÔUÒÒÑVHˆ‚ˆ
+Kš[J
+NÂ‚ˆÛÛœÝ]]HÝš[™Êˆ™\]Y\ÝšXY\œË™Ù]
+˜]]Üš^˜][ÛˆŠHˆ‚ˆ
+NÂ‚ˆÛÛœÝ›ÝšYYÙ^HH]]œÝ\ÕÚ]
+™X\™\ˆŠBˆÈ]]œÛXÙJÊKš[J
+BˆˆˆŽÂ‚ˆYˆ
+Y^XÝYÙ^JHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆ\œ›ÜŽˆST•ÑTÔUÒÒÑVWÓ“ÕÐÓÓ‘’QÕT‘Q‹ˆKˆLÂˆ
+NÂˆB‚ˆYˆ
+ˆ\›ÝšYYÙ^Hˆ›ÝšYYÙ^HOOH^XÝYÙ^Bˆ
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆ\œ›ÜŽˆ•SUUÔ’V‘Q‹ˆKˆBˆ
+NÂˆB‚ˆÛÛœÝØ]HH˜[Y]P[\\Ü]Ú
+\˜[\ÊNÂ‚ˆYˆ
+Ø]Kœ™X\ÛÛœË›[™Ý
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Îˆ”‘R‘PÕQÑRSÐÓÔÑQ‹ˆÙ[ˆ˜[ÙKˆØ]KˆKˆŒ‚ˆ
+NÂˆB‚ˆYˆ
+YØ]Kš[—Û[ÜØÛÝ×ÝÚ[™ÝÊHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆÚÎˆYKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Îˆ”ÒÒTQÓÕUÒQWÓTÒ×ÕÒS‘ÕÈ‹ˆÙ[ˆ˜[ÙKˆØ]KˆJNÂˆB‚ˆÛÛœÝÝ[[X\žHHÝš[™Êˆ\˜[\ÏËœÝ[[X\žHˆ\˜[\ÏËœ™X\ÛÛˆˆˆ‚ˆ
+Bˆš[J
+BˆœÛXÙJŒ
+NÂ‚ˆÛÛœÝY\ÜØYÙHHÂˆ¼'æª4'4/´.H4/´`´aôdt`ˆˆ8 %SQUQST•‹ˆˆ‹ˆØ]K™\™XÝ[Ûˆ
+Âˆˆˆ
+ÂˆØ]K˜ÛÛ˜XÝ
+Âˆˆ8 %ˆ
+ÂˆØ]Kœ›Ø˜Xš[]KÑš^Y
+
+H
+Âˆ‰H‹ˆ´(t,´-t-´-t`t`´cˆˆ
+ÂˆX]œ›Ý[™
+Ø]K™œ™\Ú™\Ü×ÜÙXÊH
+Âˆˆ4`t-t.‹ˆ‹ˆ´(t.4,ô/t,4.Îˆˆ
+ÂˆØ]KœÚYÛ˜[Ý[Y\Ý[\Ý]ËˆÝ[[X\žBˆÈ´'ô`4.4aô.4/t,ˆˆ
+ÈÝ[[X\žBˆˆ[ˆBˆ™š[\Š›ÛÛX[ŠBˆš›Ú[Š—ˆŠNÂ‚‚ˆÛÛœÝ\Ü]Ú™\Ù\˜][ÛˆBˆ]ØZ]™\Ù\™P[\\Ü]Ú
+ˆ[‹ˆ\˜[\ËˆØ]Bˆ
+NÂ‚ˆYˆ
+Y\Ü]Ú™\Ù\˜][Û‹›ÚÊHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Î‚ˆ”‘R‘PÕQÑRSÐÓÔÑQÑH‹ˆÙ[ˆ˜[ÙKˆØ]Kˆ\Ü]Ú‚ˆ\Ü]Ú™\Ù\˜][Û‹ˆKˆLÂˆ
+NÂˆB‚ˆYˆ
+Y\Ü]Ú™\Ù\˜][Û‹œ™\Ù\™Y
+HÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆÚÎˆYKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Îˆ”ÒÒTQÑTPÐUH‹ˆÙ[ˆ˜[ÙKˆØ]Kˆ\Ü]Ú‚ˆ\Ü]Ú™\Ù\˜][Û‹ˆJNÂˆB‚ˆÛÛœÝÛÛÛÝÛˆBˆ]ØZ]™\Ù\™P[\ÛÛÛÝÛŠˆ[‹ˆØ]Kˆ\Ü]Ú™\Ù\˜][Û‹™š[™Ù\œš[ˆ
+NÂ‚ˆYˆ
+XÛÛÛÝÛ‹›ÚÊHÂˆÛÛœÝ›Ý\›˜[Bˆ]ØZ]Ù][\\Ü]ÚÝ]\Êˆ[‹ˆ\Ü]Ú™\Ù\˜][Û‹™š[™Ù\œš[ˆ”ÑS‘ÑRSQ‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Î‚ˆ”‘R‘PÕQÑRSÐÓÔÑQÐÓÓÓÕÓˆ‹ˆÙ[ˆ˜[ÙKˆØ]Kˆ\Ü]ÚˆÂˆ‹‹™\Ü]Ú™\Ù\˜][Û‹ˆÛÛÛÝÛ‹ˆ›Ý\›˜[ˆKˆKˆLÂˆ
+NÂˆB‚ˆYˆ
+XÛÛÛÝÛ‹˜XÜ]Z\™Y
+HÂˆÛÛœÝ›Ý\›˜[Bˆ]ØZ]Ù][\\Ü]ÚÝ]\Êˆ[‹ˆ\Ü]Ú™\Ù\˜][Û‹™š[™Ù\œš[ˆ”ÒÒTQÐÓÓÓÕÓˆ‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJÂˆÚÎˆYKˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÝ]\Îˆ”ÒÒTQÐÓÓÓÕÓˆ‹ˆÙ[ˆ˜[ÙKˆØ]Kˆ\Ü]ÚˆÂˆ‹‹™\Ü]Ú™\Ù\˜][Û‹ˆÛÛÛÝÛ‹ˆ›Ý\›˜[ˆKˆJNÂˆB‚ˆÛÛœÝ[YÜ˜[HBˆ]ØZ]Ù[™[YÜ˜[SY\ÜØYÙJˆ[‹ˆY\ÜØYÙBˆ
+NÂ‚ˆÛÛœÝ\Ü]Ú›Ý\›˜[Bˆ]ØZ]š[˜[^™P[\\Ü]Ú
+ˆ[‹ˆ\Ü]Ú™\Ù\˜][Û‹™š[™Ù\œš[ˆ[YÜ˜[Bˆ
+NÂ‚ˆÛÛœÝÛÛÛÝÛ’›Ý\›˜[Bˆ]ØZ]š[˜[^™P[\ÛÛÛÝÛŠˆ[‹ˆÛÛÛÝÛ‹ˆ\Ü]Ú™\Ù\˜][Û‹™š[™Ù\œš[ˆ[YÜ˜[Bˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆ[™Ú[ˆ˜[\Y\Ü]Ú‹ˆÙ[ˆ[YÜ˜[K›ÚÈOOHYKˆØ]Kˆ\Ü]ÚˆÂˆ‹‹™\Ü]Ú™\Ù\˜][Û‹ˆ›Ý\›˜[ˆ\Ü]Ú›Ý\›˜[ˆÛÛÛÝÛ‹ˆÛÛÛÝÛ—Ú›Ý\›˜[‚ˆÛÛÛÝÛ’›Ý\›˜[ˆKˆ‹‹[YÜ˜[KˆKˆ[YÜ˜[K›ÚÈÈŒˆL‚ˆ
+NÂˆB‚ˆYˆ
+\›œ]˜[YHOOH‹Ý[YÜ˜[K]\ÝŠHÂˆYˆ
+™\]Y\Ý›Y]ÙOOH”ÔÕŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ[YÜ˜[K]\Ý‹ˆ\œ›ÜŽˆ“QUÑÓ“ÕÐSÕÑQ‹ˆ[ÝÙYÛY]Ùˆ”ÔÕ‹ˆKˆBˆ
+NÂˆB‚ˆÛÛœÝ^XÝYÙ^HHÝš[™Ê[Ë•SQÔSWÕTÕÒÑVHˆŠKš[J
+NÂˆÛÛœÝ]]HÝš[™Êˆ™\]Y\ÝšXY\œË™Ù]
+˜]]Üš^˜][ÛˆŠHˆ‚ˆ
+NÂ‚ˆÛÛœÝ›ÝšYYÙ^HH]]œÝ\ÕÚ]
+™X\™\ˆŠBˆÈ]]œÛXÙJÊKš[J
+BˆˆˆŽÂ‚ˆYˆ
+Y^XÝYÙ^JHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ[YÜ˜[K]\Ý‹ˆ\œ›ÜŽˆ•SQÔSWÕTÕÒÑVWÓ“ÕÐÓÓ‘’QÕT‘Q‹ˆKˆLÂˆ
+NÂˆB‚ˆYˆ
+\›ÝšYYÙ^H›ÝšYYÙ^HOOH^XÝYÙ^JHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙKˆ[™Ú[ˆ[YÜ˜[K]\Ý‹ˆ\œ›ÜŽˆ•SUUÔ’V‘Q‹ˆKˆBˆ
+NÂˆB‚ˆÛÛœÝ\Ý^Bˆ\[Ùˆ\˜[\Ë^OOHœÝš[™Èˆ	‰ˆ\˜[\Ë^š[J
+BˆÈ\˜[\Ë^š[J
+Bˆˆ¸§!H4'4/´.H4/´`´aôdt`ˆˆ8 %[YÜ˜[HÙ[™\ˆ4.4-ÈPˆ4`4,4,t/´`´,4-t`‹ˆŽÂ‚ˆÛÛœÝ[YÜ˜[HH]ØZ]Ù[™[YÜ˜[SY\ÜØYÙJˆ[‹ˆ\Ý^ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆ[™Ú[ˆ[YÜ˜[K]\Ý‹ˆ‹‹[YÜ˜[KˆKˆ[YÜ˜[K›ÚÈÈŒˆL‚ˆ
+NÂˆB‚‚ˆÛÛœÝ[ÙHBˆ]XÝ[ÙJˆ\›ˆ\˜[\Âˆ
+NÂ‚ˆYˆ
+ˆ[ÙHOOBˆœÞ[X›ÛÜ™\ÛÛ™H‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]Þ[X›Û™\ÛÛ™Jˆ\˜[\Âˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆœÝYÙLÚ\ÝÜžH‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]ÝYÙL\ÝÜžJˆ\˜[\Ëˆ[‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆ[š]™\œÙH‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ][š]™\œÙTØØ[Šˆ\˜[\Ëˆ[‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆ›\]ZY][ÛœÈ‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]\]ZY][Û•\Jˆ\˜[\Ëˆ[‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆ™]WÜ[™WÜÝ]\È‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]]T[™TÝ]\Êˆ[‚ˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆ˜Z™XÝÜžH‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]]\™\Õ˜Z™XÝÜžJˆ\˜[\Âˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆYˆ
+ˆ[ÙHOOBˆœÜÝ‚ˆ
+HÂˆÛÛœÝÝ]]Bˆ]ØZ]ÜÝÛ˜\ÚÝ
+ˆ\˜[\Âˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆB‚ˆÛÛœÝÝ]]Bˆ]ØZ]]\™\ÔÛ˜\ÚÝ
+ˆ\˜[\Âˆ
+NÂ‚ˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÝ]]ˆ
+NÂˆHØ]Ú
+\œ›ÜŠHÂˆ™]\›ˆœÛÛ”™\ÜÛœÙJˆÂˆÚÎˆ˜[ÙK‚ˆ\œ›ÜŽ‚ˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+K‚ˆ[Y\Ý[\Ý]Î‚ˆ™]È]J
+BˆÒTÓÔÝš[™Ê
+KˆKˆLˆ
+NÂˆBˆK‚ˆ\Þ[˜ÈØÚY[Y
+ˆÛÛ›Û\‹ˆ[‹ˆÝˆ
+HÂˆÛÛœÝÝ\YÈBˆ]K››ÝÊ
+NÂ‚ˆÛÛœÝØÚY[Y[YHBˆ[JˆÛÛ›Û\‚ˆËœØÚY[Y[YBˆ
+HÏÂˆÝ\YÎÂ‚ˆÛÛœÝ[’YBˆ	ÜØÚY[Y[Y_KIÜÝ\YßXÂ‚ˆÛÛœÛÛK›ÙÊˆ˜Ü›Û—ÜÝ\‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Y‚ˆØÚY[YÝ[YN‚ˆØÚY[Y[YK‚ˆÝ\YÝÎ‚ˆÝ\YËˆJBˆ
+NÂ‚ˆ]ØZ]™XÛÜ™Ü›Û”[Šˆ[‹ˆÂˆ[—ÚY‚ˆ[’Y‚ˆØÚY[YÝ[YN‚ˆØÚY[Y[YK‚ˆÝ\YÝÎ‚ˆÝ\YË‚ˆÝ]\Î‚ˆ”ÕT•Q‹ˆBˆ
+NÂ‚ˆžHÂˆÛÛœÝØØ[ˆBˆ]ØZ][š]™\œÙTØØ[ŠˆÂˆœ™\Ú™\Ü×ÜÙXÎ‚ˆÌˆKˆ[‹ˆÂˆ\œÚ\Ý‚ˆYKˆBˆ
+NÂ‚ˆÊ‚ˆ
+ˆHX\›KY™X]\™HÝÛ™\ˆ]\ÝØœÙ\™HHØØ[ˆ]™[Û™ÜÈÈ\Âˆ
+ˆ[ˆ™Y›Ü™HÚÜ\ÝÙ[XÝ[Ûˆ[™Ø[›ÛšXØ[\ÜÙ\ÜÛY[ˆH[›™\‚ˆ
+ˆÝ\Y\ÈH^\Ý[™È\œÚ\Ý[˜ÙHÚYXØ\ˆ›ÝYÚ\ÈÛÚÎÈ›ÈX\›Bˆ
+ˆ›Ü›][K™\ÚÛÜˆØ]™H[H\È\XØ]Y\™K‚ˆ
+‹Âˆ]Ý\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙHHÂˆÝ]\Îˆ’ÓÒ×Ó“ÕÐÓÓ‘’QÕT‘Q‹ˆ\œÚ\ÝYˆˆNÂˆYˆ
+\[Ùˆ[Ë”‘TÔ•—ÐÕT”‘S•ÐÖPÓWÑPT“WÔT”ÒTÕOOH™[˜Ý[ÛˆŠHÂˆžHÂˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙHBˆ]ØZ][‹”‘TÔ•—ÐÕT”‘S•ÐÖPÓWÑPT“WÔT”ÒTÕ
+ÂˆÝ\œ™[ÜØØ[—ÝÎ‚ˆ[X™\ŠØØ[Ë[Y\Ý[\
+Hˆ[ˆÛÝ\˜ÙWÜ[—ÚY‚ˆÝš[™Ê[’YˆŠKˆ›Ý×ÝÎ‚ˆ[X™\ŠØØ[Ë[Y\Ý[\
+Hˆ]K››ÝÊ
+KˆJNÂˆHØ]Ú
+\œ›ÜŠHÂˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙHHÂˆÝ]\Îˆ‘UWÓ“ÕÐÓÔÑQ‹ˆ™X\ÛÛŽˆÕT”‘S•ÐÖPÓWÑPT“WÔT”ÒTÕSÑWÑRSQ‹ˆ\œ›ÜŽˆÝš[™Ê\œ›ÜË›Y\ÜØYÙH\œ›ÜŠKœÛXÙJÌ
+Kˆ\œÚ\ÝYˆˆNÂˆBˆBˆ[‹”‘TÔ•—ÐÕT”‘S•ÐÖPÓWÑPT“WÔ‘TÕSBˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙNÂ‚ˆÛÛœÝY\ÚXÚÔ]Y]YHBˆZ[Y\ÚXÚÔ]Y]YJˆØØ[‚ˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆ™Y\ØÚXÚ×Ü]Y]YH‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Yˆ[š]™\œÙWÝÝ[‚ˆY\ÚXÚÔ]Y]YBˆË˜ÛÝ[ÂˆË[š]™\œÙWÝÝ[ÏÂˆˆ[YÚX›N‚ˆY\ÚXÚÔ]Y]YBˆË˜ÛÝ[ÂˆË™[YÚX›HÏÂˆˆ^ÛYY‚ˆY\ÚXÚÔ]Y]YBˆË˜ÛÝ[ÂˆË™^ÛYYÏÂˆˆ[ÙN‚ˆY\ÚXÚÔ]Y]YBˆË›[ÙHÏÂˆ[ˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆY\ÚXÚÔ]Y]YBˆË™XÚ\Ú[Û‚ˆË™Ù[™\˜]YOOHYKˆ˜[Y]Y‚ˆY\ÚXÚÔ]Y]YBˆË™XÚ\Ú[Û‚ˆË˜[Y]YOOHYKˆJBˆ
+NÂ‚ˆÛÛœÝ˜\ÙQ\ØÛÝ™\žT™Yš[\ˆBˆØØ[Ë™\ØÛÝ™\žWÜ™XØ[ˆËœÚÜ\ÝˆÈZ[\ØÛÝ™\žT™Yš[\ŠˆØØ[‹ˆY\ÚXÚÔ]Y]YKˆÂˆ\]ZY]WÜ\˜Ù[[N‚ˆÌˆX\›WÛ\]ZY]WÜ\˜Ù[[N‚ˆKˆ[›ÛX[WÜ\˜Ù[[N‚ˆŽMKˆX\›WØ[›ÛX[WÜ\˜Ù[[N‚ˆŽˆ[™[™×Ü\˜Ù[[N‚ˆŽMKˆ[™[™×ÝZ[Ü\˜Ù[[N‚ˆŒLˆZ[—Ø[›ÛX[WÙ›YÜÎ‚ˆ‹ˆZ[—ÙX\›WÙ›YÜÎ‚ˆ‹ˆX^ÜÚÜ\Ý‚ˆˆBˆ
+BˆˆZ[\ØÛÝ™\žT™Yš[\ŠˆØØ[‹ˆY\ÚXÚÔ]Y]YBˆ
+NÂ‚ˆÛÛœÝX\›PœšYÙR[œ]ÈBˆÈÓÔÑQ‹”T•PS—Kš[˜ÛY\ÊˆÝš[™ÊÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙOËœÝ]\ÈˆŠKÕ\\Ø\ÙJ
+Bˆ
+BˆÈ]ØZ]ØYX\›PœšYÙR[œ]Êˆ[‹ˆÂˆ›ÝÎ‚ˆ[X™\ŠØØ[Ë[Y\Ý[\
+Hˆ]K››ÝÊ
+KˆBˆ
+BˆˆÂˆÝ]\Îˆ‘UWÓ“ÕÐÓÔÑQ‹ˆ™X\ÛÛŽ‚ˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙOËœ™X\ÛÛˆˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙOËœÝ]\ÈˆÕT”‘S•ÐÖPÓWÑPT“WÓ“ÕÐÓÔÑQ‹ˆX\›WÜ›ÝÜÎˆ×Kˆ[Ù]šY[˜ÙWÜ›ÝÜÎˆ×KˆWÜ]Y\šY\Îˆˆ™]ÛÜš×ØØ[ÎˆˆÜš]\ÎˆˆNÂ‚ˆÛÛœÝ\ØÛÝ™\žT™Yš[\ˆBˆ\QX\›PØ[™Y]PœšYÙJÂˆ\ØÛÝ™\žWÜ™Yš[\Ž‚ˆ˜\ÙQ\ØÛÝ™\žT™Yš[\‹ˆØØ[‹ˆY\ØÚXÚ×Ü]Y]YN‚ˆY\ÚXÚÔ]Y]YKˆX\›WÜ›ÝÜÎ‚ˆX\›PœšYÙR[œ]ÂˆË™X\›WÜ›ÝÜÈ×Kˆ[Ù]šY[˜ÙWÜ›ÝÜÎ‚ˆX\›PœšYÙR[œ]ÂˆË™[Ù]šY[˜ÙWÜ›ÝÜÈ×Kˆ›ÝÎ‚ˆ[X™\ŠØØ[Ë[Y\Ý[\
+Hˆ]K››ÝÊ
+KˆJNÂ‚ˆÊ‚ˆ
+ˆH\Ù\‹]š\ÚX›HX\›HØœÙ\˜][Ûˆ][™XYHÛX\™YÌ]\Ý›ÝØZ]ˆ
+ˆ›Ü™]™\ˆY\™[H™XØ]\ÙH]ÈØ[›ÛšXØ[X›XØ][ÛˆØ\È›ÝY]›Ý[™‚ˆ
+ˆ™XÛÝ™\ˆÛ›H[ˆ^XÝÝ[]˜[YY™XÞXÛKÝØ]™HY[]H]\È[ÛÂˆ
+ˆ™\Ù[[ˆ\ÈÞXÛIÜÈœšYÙYÚÜ\Ýˆ\È\ÈHÛ™K\ÛÝXÚšXØ[ˆ
+ˆ™\Z\‹›ÝHÞ[]XÈÚYÛ˜[[™™]™\ˆ]]Üš^™\ÈS•–K‚ˆ
+‹Âˆ][YÜ˜[Pš[™[™Ô™XÛÝ™\žHH[ÂˆžHÂˆÛÛœÝ[™[™ÈH]ØZ][‹‘UWÑ‹œ™\\™JÑSPÕ˜ÛÛ˜XÝ™\™XÝ[Û‹Ø]™WÚY˜Ü™X]YÝËË™X\›WÙ]XÝ[Û—Ü]X[]WÌÌLˆ”“ÓHŒ×Ý[YÜ˜[WÙ\Ü]ÚÜÚYÝÈˆ“ÒSˆŒ×Ý\Ù\—ÛY™XÞXÛWÜÚYÝÈÓˆ˜ÛÛ˜XÝY˜ÛÛ˜XÝS‘™\™XÝ[ÛY™\™XÝ[ÛˆS‘Ø]™WÚYYØ]™WÚYS‘œ[\×Ý™\œÚ[ÛYœ[\×Ý™\œÚ[Û‚ˆ“ÒSˆŒ×ÙX\›WØØ[™Y]WÝØ]™HÈÓˆË˜ÛÛ˜XÝØÛÙOY˜ÛÛ˜XÝS‘ËØ]™WÚYYØ]™WÚYS‘Ë™\™XÝ[Û—Ú[Y™\™XÝ[Û‚ˆQ•“ÒSˆŒ×Ù\Ü]ÚÜX›XØ][Û—Øš[™[™×ÜÚYÝÈˆÓˆ‹šY[\Ý[˜ÞWÚÙ^OYšY[\Ý[˜ÞWÚÙ^BˆÒT‘HœÝ]HSˆ
+	ÔS‘S‘ÉË	ÑRSQÔ‘U–PP“IÊHS‘›Y™XÞXÛWÙ]™[Sˆ
+	ÓÐ”ÑT•‘IË	ÕÐRU	ÊHS‘‹šY[\Ý[˜ÞWÚÙ^HTÈ•SˆS‘œÝ]\ÏY›Y™XÞXÛWÙ]™[S‘˜[YÝ[[ÝÏOÌHS‘Ë™X\›WÙ]XÝ[Û—Ü]X[]WÌÌLMÌˆÔ‘Tˆ–H˜Ü™X]YÝÈTÐÈSRUX
+K˜š[™
+]K››ÝÊ
+JK™š\œÝ
+
+NÂˆÛÛœÝœšYÙYJ\ØÛÝ™\žT™Yš[\ËœÚÜ\Ý×JK™š[™
+›ÝÏO‚ˆ›ÝÏË™X\›WØØ[™Y]WØœšYÙOOO]YH	‰‚ˆÝš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+OOOTÝš[™Ê[™[™ÏË˜ÛÛ˜XÝ	ÉÊKš[J
+H	‰‚ˆÝš[™Ê›ÝÏË™X\›WØØ[™Y]WÝØ]™WÚY›ÝÏËØ]™WÚY	ÉÊKš[J
+OOOTÝš[™Ê[™[™ÏËØ]™WÚY	ÉÊKš[J
+H	‰‚ˆ[X™\Š›ÝÏË™X\›WØØ[™Y]WÜ]X[]WÌÌL
+OMÌˆ
+NÂˆYŠ[™[™É‰˜œšYÙY
+][YÜ˜[Pš[™[™Ô™XÛÝ™\žO^Ë‹‹œ[™[™ËØ[™Y]N˜œšYÙYNÂˆHØ]ÚÈ[YÜ˜[Pš[™[™Ô™XÛÝ™\žO[[ÈB‚ˆ]ÜÝÔ™XÚXÚÐÛZ[HHÜÝ]\Î‰ÑTÐP“Q	ËÛZ[YY™˜[Ù_NÂˆYˆ
+Ýš[™Ê[Ë”‘TÔ•—ÔÔÕÕ×ÕS’Q’QQÑSP“Q	ÉÊHOOH	ÌIÊHÂˆ]ØZ]™\]Y]YQ^\™YX\ÙJ[‹‘UWÑ‹Û›Ý×ÝÎ‘]K››ÝÊ
+_JNÂˆÜÝÔ™XÚXÚÐÛZ[HH[YÜ˜[Pš[™[™Ô™XÛÝ™\žBˆÈÜÝ]\Î‰ÑQ‘T”‘QÑ“Ô—ÕSQÔSWÐ’S‘S‘×Ô‘PÓÕ‘T–IËÛZ[YY™˜[ÙK™XÛÝ™\žWØÛÛ˜XÝ[YÜ˜[Pš[™[™Ô™XÛÝ™\žK˜ÛÛ˜XÝBˆˆ]ØZ]ÛZ[QYT™XÚXÚÊ[‹‘UWÑ‹ÂˆXÝÜŽ”Ýš[™Ê[Ë”‘TÔ•—ÐSSUPÔ×ÐPÕÔˆ	ÑÒUP—ÐPÕSÓ”ÉÊKˆÛÛ™šYÝ\™YÛÝÛ™\Ž‰ÑÒUP—ÐPÕSÓ”ÉËˆ›Ý×ÝÎ‘]K››ÝÊ
+KˆX\ÙWÛ\ÎJŒÌˆJNÂˆB‚ˆÛÛœÛÛK›ÙÊˆ™X\›WØØ[™Y]WØœšYÙH‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’Yˆ[œ]ÜÝ]\Î‚ˆX\›PœšYÙR[œ]ÏËœÝ]\ÈÏÈ[ˆWÜ]Y\šY\Î‚ˆX\›PœšYÙR[œ]ÏË™WÜ]Y\šY\ÈÏÈˆ™]ÛÜš×ØØ[Î‚ˆX\›PœšYÙR[œ]ÏË›™]ÛÜš×ØØ[ÈÏÈˆÜš]\Î‚ˆX\›PœšYÙR[œ]ÏËÜš]\ÈÏÈˆÝ\œ™[ØÞXÛWÙX\›WÜÝ]\Î‚ˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙOËœÝ]\ÈÏÈ[ˆÝ\œ™[ØÞXÛWÙX\›WÜ\œÚ\ÝY‚ˆÝ\œ™[ÞXÛQX\›T\œÚ\Ý[˜ÙOËœ\œÚ\ÝYÏÈˆØYY‚ˆ\ØÛÝ™\žT™Yš[\Ë˜ÛÝ[ÏË™X\›WØœšYÙWÛØYYÏÈˆXØÙ\Y‚ˆ\ØÛÝ™\žT™Yš[\Ë˜ÛÝ[ÏË™X\›WØœšYÙWØXØÙ\YÏÈˆZXÜ›ÜÝXÝ\™WØÛÛ™š\›YY‚ˆ\ØÛÝ™\žT™Yš[\Ë˜ÛÝ[ÏË™X\›WØœšYÙWÛZXÜ›ÜÝXÝ\™WØÛÛ™š\›YYÏÈˆÜ›ÜÜ×Ý™[YWØÛÛ™š\›YY‚ˆ\ØÛÝ™\žT™Yš[\Ë˜ÛÝ[ÏË™X\›WØœšYÙWØÜ›ÜÜ×Ý™[YWØÛÛ™š\›YYÏÈˆJBˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆ™\ØÛÝ™\žWÜ™Yš[\ˆ‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Y‚ˆ[ÙN‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË›[ÙHÏÂˆ[‚ˆ[š]™\œÙWÝÝ[‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË˜ÛÝ[ÂˆË[š]™\œÙWÝÝ[ÏÂˆ‚ˆXÚšXØ[Ù[YÚX›N‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË˜ÛÝ[ÂˆËXÚšXØ[Ù[YÚX›HÏÂˆ‚ˆ\]ZY]WÜÛÛ‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË˜ÛÝ[ÂˆË›\]ZY]WÜÛÛÏÂˆ‚ˆ[›ÛX[WÜÛÛ‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË˜ÛÝ[ÂˆË˜[›ÛX[WÜÛÛÏÂˆ‚ˆÚÜ\ÝØÛÝ[‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË˜ÛÝ[ÂˆËœÚÜ\ÝÏÂˆ‚ˆÚÜ\Ý‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ\ØÛÝ™\žT™Yš[\‚ˆËœÚÜ\Ýˆ
+BˆÈ\ØÛÝ™\žT™Yš[\‚ˆœÚÜ\Ýˆ›X\
+ˆ
+›ÝÊHOˆ
+Âˆ˜[šÎ‚ˆ›ÝÂˆËœš[Üš]WÜ˜[šÈÏÂˆ[‚ˆÛÛ˜XÝ‚ˆ›ÝÂˆË˜ÛÛ˜XÝÏÂˆ[‚ˆ›YÜÎ‚ˆ›ÝÂˆË˜[›ÛX[WÙ›YÜ×ØÛÝ[ÏÂˆˆJBˆ
+Bˆˆ×K‚ˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™XÚ\Ú[Û‚ˆË™Ù[™\˜]YOOHYK‚ˆ\™XÝ[ÛŽ‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™XÚ\Ú[Û‚ˆË™\™XÝ[ÛˆÏÂˆ[‚ˆ›Ø˜Xš[]N‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™XÚ\Ú[Û‚ˆËœ›Ø˜Xš[]HÏÂˆ[‚ˆ˜[Y]Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™XÚ\Ú[Û‚ˆË˜[Y]YOOHYK‚ˆ™]ÛÜš×ØØ[×ÙÙ[™\˜]Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™^XÝ][Û‚ˆË›™]ÛÜš×ØØ[×ÙÙ[™\˜]YÏÂˆ[‚ˆWØØ[×ÙÙ[™\˜]Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™^XÝ][Û‚ˆË™WØØ[×ÙÙ[™\˜]YÏÂˆ[‚ˆY\ØÚXÚ×ÜÝ\Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™^XÝ][Û‚ˆË™Y\ØÚXÚ×ÜÝ\YOOHYK‚ˆ[YÜ˜[WÜÝ\Y‚ˆ\ØÛÝ™\žT™Yš[\‚ˆË™^XÝ][Û‚ˆË[YÜ˜[WÜÝ\YOOHYKˆJBˆ
+NÂ‚ˆÛÛœÝÛÛ™š\›YYØÛÜPÛÛ˜XÝÈBˆ\œ˜^Kš\Ð\œ˜^JˆØØ[Ë˜ÛÛ˜XÝÂˆ
+BˆÈØØ[‹˜ÛÛ˜XÝÂˆ™š[\Šˆ
+›ÝÊHO‚ˆ›ÝÂˆËš[œÝ[Y[ÜØÛÜBˆË˜Û\ÜÚYšXØ][ÛˆOOBˆÔ–T×ÐÓÓ‘’T“QQ‚ˆ
+Bˆ›X\
+ˆ
+›ÝÊHO‚ˆÝš[™Êˆ›ÝÂˆË˜ÛÛ˜XÝØÛÙHˆˆ‚ˆ
+Kš[J
+Bˆ
+Bˆ™š[\Š›ÛÛX[ŠBˆˆ×NÂ‚ˆÛÛœÝÞXÛS›ÝÈBˆ]K››ÝÊ
+NÂ‚ˆÛÛœÝÜÜ[š]R›Ý\›˜[[ˆBˆ]ØZ]Ù[XÝÜÜ[š]R›Ý\›˜[Ø[™Y]JÂˆ[‹ˆÛÛ™š\›YYØÛÛ˜XÝÎ‚ˆÛÛ™š\›YYØÛÜPÛÛ˜XÝËˆ›ÝÎ‚ˆÞXÛS›ÝËˆJNÂ‚ˆÊ‚ˆ
+ˆŒÎˆU‘H[Ø^\ÈÝ]˜[šÜÈXZ[[˜[˜ÙKˆ˜\ÝS[Ý™HÙY\È]È[™\[™[ˆ
+ˆ™XÚXÚÈØY[˜ÙKÚ[HHœ™\Ú\ØÛÝ™\žHÚÜ\Ý™XÙZ]™\È]ÈÝÛ‚ˆ
+ˆ›Ý[™YY\ÚXÚÈ[™H[[YYX][KˆH›Ý[™YØÚY[\ˆÝ[ÝÛœÂˆ
+ˆÛÛÛÝÛ‹ÛX\ÙKÙ^XÝ[œÝ[Y[ØY™]NÈ›È\™XÝ[Ûˆ\È[™[Y\™K‚ˆ
+‹ÂˆÛÛœÝ˜\Ý[Ý™UØ]ÚÞXÛHBˆ]ØZ]™\\™Q˜\Ý[Ý™UØ]ÚÞXÛJÂˆ[‹ˆØØ[‹ˆ\ØÛÝ™\žWÜ™Yš[\Ž‚ˆ\ØÛÝ™\žT™Yš[\‹ˆ[—ÚY‚ˆ[’Yˆ›ÝÎ‚ˆÞXÛS›ÝËˆJNÂ‚ˆÛÛœÝ˜\Ý[Ý™PY\]™T™Yš[\ˆBˆ˜\Ý[Ý™UØ]ÚÞXÛBˆË˜Y\]™WÙ\ØÛÝ™\žWÜ™Yš[\ˆˆ\ØÛÝ™\žT™Yš[\ŽÂ‚ˆ]ÜÝÑY\™Yš[\ˆH˜\Ý[Ý™PY\]™T™Yš[\ŽÂˆÛÛœÝYT™XÚXÚÐÛÛ˜XÝHÜÝÔ™XÚXÚÐÛZ[OË˜ÛZ[YYOOHYBˆÈÝš[™ÊÜÝÔ™XÚXÚÐÛZ[OË\ÚÏË˜ÛÛ˜XÝØÛÙH	ÉÊKš[J
+Bˆˆ	ÉÎÂˆYˆ
+YT™XÚXÚÐÛÛ˜XÝ
+HÂˆÛÛœÝ[[Y]žOJ\œ˜^Kš\Ð\œ˜^J˜\Ý[Ý™PY\]™T™Yš[\Ë˜ÛÛ˜XÝÝ[[Y]žJOÙ˜\Ý[Ý™PY\]™T™Yš[\‹˜ÛÛ˜XÝÝ[[Y]žN–×JBˆ™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+OOOYYT™XÚXÚÐÛÛ˜XÝ
+NÂˆYˆ
+[[Y]žJHÂˆÛÛœÝ›Ü˜ÙY^Üš[Üš]WÜ˜[šÎŒ‹‹[[Y]žKÛÛ˜XÝ™YT™XÚXÚÐÛÛ˜XÝ™XÚXÚ×Ý\Ú×ÚYœÜÝÔ™XÚXÚÐÛZ[K\ÚË\Ú×ÚY™XÚXÚ×Ù›Ü˜ÙYY_NÂˆÜÝÑY\™Yš[\^Ë‹‹™˜\Ý[Ý™PY\]™T™Yš[\‹ÚÜ\Ý–Ù›Ü˜ÙY‹‹Š˜\Ý[Ý™PY\]™T™Yš[\‹œÚÜ\Ý×JK™š[\Š›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+HOOYYT™XÚXÚÐÛÛ˜XÝ
+W_NÂˆBˆB‚ˆ]]™R[™Ù™”[ˆHYT™XÚXÚÐÛÛ˜XÝˆÈÛ[™N‰ÓU‘WÔ‘PÒPÒÉË™\]Z\™WÙ^XÝØÛÛ˜XÝYK™\]Z\™YØÛÛ˜XÝ™YT™XÚXÚÐÛÛ˜XÝ]™WÜÚÜ\ÝØÛÝ[ŒKXZ[[˜[˜ÙWØ]˜Z[X›N›ÛÛX[ŠÜÜ[š]R›Ý\›˜[[Ë˜Ø[™Y]JKXZ[[˜[˜ÙWÙY™\œ™Y›ÛÛX[ŠÜÜ[š]R›Ý\›˜[[Ë˜Ø[™Y]J_BˆˆZ[ŒÓ]™R[™Ù™”[ŠÂˆ\ØÛÝ™\žWÜ™Yš[\Ž‚ˆÜÝÑY\™Yš[\‹ˆ˜\ÝÛ[Ý™WÝØ]ÚØÞXÛN‚ˆ˜\Ý[Ý™UØ]ÚÞXÛKˆÜÜ[š]WÚ›Ý\›˜[Ü[Ž‚ˆÜÜ[š]R›Ý\›˜[[‹ˆJNÂ‚ˆÊˆH\™XÝ[Û›\ÜÈ˜\ÝS[Ý™H™]žHØ[››Ý›Ü›HHÓ‘ËÔÒÔ•X\›H›ÝXÙK‚ˆ
+ˆÈ›Ý]]™\X]YHÛÛœÝ[YHHÛ›HY\ÚXÚÈÛÝÚ[HBˆ
+ˆœ™\Ú\™XÝ[Û˜[\ØÛÝ™\žHØ[™Y]H^\ÝËˆYH™XÚXÚÜÈ™]Z[‚ˆ
+ˆš[Üš]H[™\ÈØÚY[[™ÈÚÚXÙH™]™\ˆ]]Üš^™\ÈS•–Kˆ
+‹ÂˆYˆ
+YYT™XÚXÚÐÛÛ˜XÝ	‰ˆ]™R[™Ù™”[Ë›[™HOOH	ÓU‘WÑTÕÓSÕ‘WÔ‘PÒPÒÉÊHÂˆÛÛœÝ™\]Z\™YTÝš[™Ê]™R[™Ù™”[Ëœ™\]Z\™YØÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+NÂˆÛÛœÝ\™XÝ[Û˜[›ÝÜÏJÜÝÑY\™Yš[\ËœÚÜ\Ý×JK™š[\Š›ÝÏOžÂˆÛÛœÝÛÛ˜XÝTÝš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+NÂˆÛÛœÝ[TÝš[™Ê›ÝÏË™\ØÛÝ™\žWÙ\™XÝ[Û—Ú[ÏÜ›ÝÏË™X\›WØØ[™Y]WÙ\™XÝ[Û—Ú[ÏÜ›ÝÏË™\™XÝ[Û—Ú[ÏÉÉÊKš[J
+KÕ\\Ø\ÙJ
+NÂˆ™]\›ˆÛÛ˜XÝ	‰˜ÛÛ˜XÝOO\™\]Z\™Y	‰–ÉÓÓ‘ÉË	ÔÒÔ•	Ë	ÓÓ‘×ÕÐUÒ	Ë	ÔÒÔ•ÕÐUÒ	×Kš[˜ÛY\Ê[
+NÂˆJNÂˆÛÛœÝX\›Q›Ü\›ÝÏOŠX\›PœšYÙR[œ]ÏË™X\›WÜ›ÝÜß×JK™š[™
+X\›OO”Ýš[™ÊX\›OË˜ÛÛ˜XÝØÛÙ_X\›OË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+OOOTÝš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+I‰“[X™\ŠX\›OË™X\›WÙ]XÝ[Û—Ü]X[]WÌÌL
+OMÌ
+NÂˆÛÛœÝ\™XÝ[Û˜[Y\™XÝ[Û˜[›ÝÜË™š[™
+›ÝÏO™X\›Q›ÜŠ›ÝÊJ_\™XÝ[Û˜[›ÝÜÖÌNÂˆYŠ\™XÝ[Û˜[
+^ÂˆÛÛœÝÛÛ˜XÝTÝš[™Ê\™XÝ[Û˜[˜ÛÛ˜XÝ
+Kš[J
+KÕ\\Ø\ÙJ
+NÂˆÛÛœÝ\™XÝ[Û˜[Ø[™Y]\ÏY\™XÝ[Û˜[›ÝÜË›X\
+›ÝÏOžÂˆÛÛœÝX\›OYX\›Q›ÜŠ›ÝÊNÂˆ™]\›ˆË‹‹œ›ÝË\™XÝ[Û˜[Ù\ØÛÝ™\žWÜš[Üš]NYK‹‹ŠX\›OÞÙX\›WØØ[™Y]WØœšYÙNYKX\›WØØ[™Y]WÝØ]™WÚY™X\›KØ]™WÚYX\›WØØ[™Y]WÜ]X[]WÌÌL“[X™\ŠX\›K™X\›WÙ]XÝ[Û—Ü]X[]WÌÌL
+KX\›WØØ[™Y]WÙ\™XÝ[Û—Ú[™X\›K™\™XÝ[Û—Ú[NˆßJ_NÂˆJNÂˆÛÛœÝÙ[XÝYY\™XÝ[Û˜[Ø[™Y]\Ë™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+OOOXÛÛ˜XÝ
+NÂˆÜÝÑY\™Yš[\^Ë‹‹œÜÝÑY\™Yš[\‹ÚÜ\Ý–ÞË‹‹œÙ[XÝYš[Üš]WÜ˜[šÎŒK‹‹™\™XÝ[Û˜[Ø[™Y]\Ë™š[\Š›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+HOOXÛÛ˜XÝ
+W_NÂˆÊˆH\™XÝ[Û›\ÜÈ˜\ÝS[Ý™HX\ÙH\È[X™\˜][HY™\œ™YˆBˆ
+ˆ\™XÝ[Û˜[[™H\È›ÝHX\ÙKÛÈ]H›Ý[™YØÚY[\ˆXÚÂˆ
+ˆHš\œÝ›Û‹XÛÛÛY\™XÝ[Û˜[Ø[™Y]H[œÝXYÙˆ[›š[™ÈÛ™Bˆ
+ˆÝ[HÞ[X›Û[™Ø\Ý[™È]™\žHŒ[Z[]HÛÝˆ
+‹Âˆ]™R[™Ù™”[^Ë‹‹›]™R[™Ù™”[‹[™N‰ÓU‘WÑT‘PÕSÓSÑTÐÓÕ‘T–IË™\]Z\™WÙ^XÝØÛÛ˜XÝ™˜[ÙK™\]Z\™YØÛÛ˜XÝ›[]™WÜÚÜ\ÝØÛÝ[™\™XÝ[Û˜[Ø[™Y]\Ë›[™Ý]™WØÛÛ˜XÝÎ™\™XÝ[Û˜[Ø[™Y]\Ë›X\
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+JK\™XÝ[Û›\Ü×Ù˜\ÝÛ[Ý™WÙY™\œ™Yœ™\]Z\™Y[™X\ÛÛŽ‰Ô‘PQWÑT‘PÕSÓSÐÐS‘QUWÔÑSPÕQÐQ•T—ÐÓÓÓÕÓ‰ßNÂˆBˆB‚ˆÛÛœÝ[YÜ˜[T™XÛÝ™\žPÛÛ˜XÝTÝš[™Ê[YÜ˜[Pš[™[™Ô™XÛÝ™\žOË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+NÂˆYŠ[YÜ˜[T™XÛÝ™\žPÛÛ˜XÝ
+^ÂˆÛÛœÝ›Ü˜ÙY^Ë‹‹[YÜ˜[Pš[™[™Ô™XÛÝ™\žK˜Ø[™Y]Kš[Üš]WÜ˜[šÎŒÛÛ˜XÝ[YÜ˜[T™XÛÝ™\žPÛÛ˜XÝ[YÜ˜[WØš[™[™×Ü™XÛÝ™\žNY_NÂˆÜÝÑY\™Yš[\^Ë‹‹œÜÝÑY\™Yš[\‹ÚÜ\Ý–Ù›Ü˜ÙY‹‹ŠÜÝÑY\™Yš[\‹œÚÜ\Ý×JK™š[\Š›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+HOO][YÜ˜[T™XÛÝ™\žPÛÛ˜XÝ
+W_NÂˆ]™R[™Ù™”[^Û[™N‰ÕSQÔSWÐ’S‘S‘×Ô‘PÓÕ‘T–IË™\]Z\™WÙ^XÝØÛÛ˜XÝYK™\]Z\™YØÛÛ˜XÝ[YÜ˜[T™XÛÝ™\žPÛÛ˜XÝ]™WÜÚÜ\ÝØÛÝ[ŒKXZ[[˜[˜ÙWØ]˜Z[X›N›ÛÛX[ŠÜÜ[š]R›Ý\›˜[[Ë˜Ø[™Y]JKXZ[[˜[˜ÙWÙY™\œ™Y›ÛÛX[ŠÜÜ[š]R›Ý\›˜[[Ë˜Ø[™Y]J_NÂˆB‚ˆÛÛœÝX[X[™\]Y\ÝYÛÛ˜XÝTÝš[™Ê[Ë”‘TÔ•—Ô•S—ÔÓÕTÑ_	ÉÊHOOIÜØÚY[IÂˆÈÝš[™Ê[Ë”‘TÔ•—ÓPS•PSÐÓÒS—ÐÓÓ•PÕ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+Bˆˆ	ÉÎÂˆYŠX[X[™\]Y\ÝYÛÛ˜XÝ
+^ÂˆÛÛœÝØÛÜPÛÛ™š\›YYXÛÛ™š\›YYØÛÜPÛÛ˜XÝËš[˜ÛY\ÊX[X[™\]Y\ÝYÛÛ˜XÝ
+NÂˆÛÛœÝ[[Y]žOJ\œ˜^Kš\Ð\œ˜^JÜÝÑY\™Yš[\Ë˜ÛÛ˜XÝÝ[[Y]žJOÜÜÝÑY\™Yš[\‹˜ÛÛ˜XÝÝ[[Y]žN–×JBˆ™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+OOO[X[X[™\]Y\ÝYÛÛ˜XÝ
+NÂˆYŠØÛÜPÛÛ™š\›YY	‰[[Y]žJ^ÂˆÛÛœÝ›Ü˜ÙY^Üš[Üš]WÜ˜[šÎŒ‹‹[[Y]žKÛÛ˜XÝ›X[X[™\]Y\ÝYÛÛ˜XÝX[X[ØÛÚ[—Ø[˜[\Ú\ÎY_NÂˆÜÝÑY\™Yš[\^Ë‹‹œÜÝÑY\™Yš[\‹ÚÜ\Ý–Ù›Ü˜ÙY‹‹ŠÜÝÑY\™Yš[\‹œÚÜ\Ý×JK™š[\Š›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+HOO[X[X[™\]Y\ÝYÛÛ˜XÝ
+W_NÂˆ]™R[™Ù™”[^Û[™N‰ÓPS•PSÐÓÒS—ÐSSTÒTÉË™\]Z\™WÙ^XÝØÛÛ˜XÝYK™\]Z\™YØÛÛ˜XÝ›X[X[™\]Y\ÝYÛÛ˜XÝ]™WÜÚÜ\ÝØÛÝ[ŒKXZ[[˜[˜ÙWØ]˜Z[X›N™˜[ÙKXZ[[˜[˜ÙWÙY™\œ™Y™˜[Ù_NÂˆY[Ù^Âˆ]™R[™Ù™”[^Û[™N‰ÓPS•PSÐÓÒS—ÐSSTÒT×Ô‘R‘PÕQ	Ë™\]Z\™WÙ^XÝØÛÛ˜XÝYK™\]Z\™YØÛÛ˜XÝ›X[X[™\]Y\ÝYÛÛ˜XÝ]™WÜÚÜ\ÝØÛÝ[ŒXZ[[˜[˜ÙWØ]˜Z[X›N™˜[ÙKXZ[[˜[˜ÙWÙY™\œ™Y™˜[Ù_NÂˆBˆB‚ˆÛÛœÝ]Y]YY\]ZY][ÛÛÛ˜XÝTÝš[™Ê[Ë”‘TÔ•—Ô•S—ÔÓÕTÑ_	ÉÊOOOIÜØÚY[IÂˆÈÝš[™Ê[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓ•PÕ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+Bˆˆ	ÉÎÂˆYŠ]Y]YY\]ZY][ÛÛÛ˜XÝ	‰ˆYYT™XÚXÚÐÛÛ˜XÝ	‰ˆ[X[X[™\]Y\ÝYÛÛ˜XÝ
+^ÂˆÛÛœÝØÛÜPÛÛ™š\›YYXÛÛ™š\›YYØÛÜPÛÛ˜XÝËš[˜ÛY\Ê]Y]YY\]ZY][ÛÛÛ˜XÝ
+NÂˆÛÛœÝ[[Y]žOJ\œ˜^Kš\Ð\œ˜^JÜÝÑY\™Yš[\Ë˜ÛÛ˜XÝÝ[[Y]žJOÜÜÝÑY\™Yš[\‹˜ÛÛ˜XÝÝ[[Y]žN–×JK™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+OOO\]Y]YY\]ZY][ÛÛÛ˜XÝ
+NÂˆYŠØÛÜPÛÛ™š\›YY	‰[[Y]žJ^ÂˆÛÛœÝ][\ÏS[X™\Š[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐUSTß
+KÝ\™YX][\ÏLÎÂˆÛÛœÝ]Y]YY^Ë‹‹[[Y]žKÛÛ˜XÝœ]Y]YY\]ZY][ÛÛÛ˜XÝ\]ZY][Û—Ü]Y]YWØ[˜[\Ú\ÎYK\]ZY][Û—Ü]Y]YWØ][\Î˜][\ßNÂˆÛÛœÝÜ™[˜\žOJÜÝÑY\™Yš[\‹œÚÜ\Ý×JK™š[\Š›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+HOO\]Y]YY\]ZY][ÛÛÛ˜XÝ
+NÂˆÜÝÑY\™Yš[\^Ë‹‹œÜÝÑY\™Yš[\‹ÚÜ\ÝœÝ\™YÖÞË‹‹œ]Y]YYš[Üš]WÜ˜[šÎŒK‹‹›Ü™[˜\žWN–Ë‹‹›Ü™[˜\žKË‹‹œ]Y]YYš[Üš]WÜ˜[šÎ“[X™\Š]Y]YYËœš[Üš]WÜ˜[šÏÏÎNJ_W_NÂˆ]™R[™Ù™”[^Ë‹‹›]™R[™Ù™”[‹\]ZY][Û—Ü]Y]YWÜ[™[™ÎYK\]ZY][Û—Ü]Y]YWØÛÛ˜XÝœ]Y]YY\]ZY][ÛÛÛ˜XÝ\]ZY][Û—Ü]Y]YWÜÝ\™YœÝ\™YNÂˆBˆB‚ˆÛÛœÝ›Ý\›˜[XZ[[˜[˜ÙTÙ[XÝYBˆ]™R[™Ù™”[Ë›[™HOOBˆ“PRS•SSÑHŽÂ‚ˆÛÛœÝÛÛ[Z]Q\ØÛÝ™\žT™Yš[\ˆBˆ™\Ù\™T]X[YšYYX\›UØ]™PÛÛ[Z]JˆÜÝÑY\™Yš[\‹ˆ\ØÛÝ™\žT™Yš[\‚ˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆ™X\›WÝØ]™WØÛÛ[Z]H‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’Yˆ‹‹ŠÛÛ[Z]Q\ØÛÝ™\žT™Yš[\Ë™X\›WÝØ]™WØÛÛ[Z]HßJKˆJBˆ
+NÂ‚ˆÛÛœÝY\]™Q\ØÛÝ™\žT™Yš[\ˆBˆ›Ý\›˜[XZ[[˜[˜ÙTÙ[XÝYˆÈZ[ÜÜ[š]R›Ý\›˜[™Yš[\ŠˆÛÛ[Z]Q\ØÛÝ™\žT™Yš[\‹ˆÜÜ[š]R›Ý\›˜[[‚ˆË˜Ø[™Y]Bˆ
+BˆˆÛÛ[Z]Q\ØÛÝ™\žT™Yš[\ŽÂ‚ˆÛÛœÛÛK›ÙÊˆ™˜\ÝÛ[Ý™WÝØ]ÚÜ™\\™H‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’YˆÝ]\Î‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËœÝ]\ÈÏÂˆ[ˆÙ[XÝYØÛÛ˜XÝÎ‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËœÙ[XÝYØÛÛ˜XÝÈÏÂˆ×KˆY\]™WØÛÛÛÝÛ—ÜÙXÎ‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆË˜Y\]™WØÛÛÛÝÛ—ÜÙXÈÏÂˆNˆÜš]\×Ý\ÙY‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËÜš]\×Ý\ÙYÏÂˆˆ]Y]YWÙ\‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËœ[‚ˆËœ]Y]YWÙ\ÏÂˆˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆ˜[ÙKˆ˜[Y]Y‚ˆ˜[ÙKˆ[YÜ˜[WÜÝ\Y‚ˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽ‚ˆ˜[ÙKˆÜÜ[š]WÚ›Ý\›˜[ÜÛÝ‚ˆÜÜ[š]R›Ý\›˜[[‚ˆËœÝ]\ÈÏÂˆ[ˆ]™WÚ[™Ù™—Û[™N‚ˆ]™R[™Ù™”[‚ˆË›[™HÏÂˆ[ˆ]™WÜÚÜ\ÝØÛÝ[‚ˆ]™R[™Ù™”[‚ˆË›]™WÜÚÜ\ÝØÛÝ[ÏÂˆˆXZ[[˜[˜ÙWÙY™\œ™Y‚ˆ]™R[™Ù™”[‚ˆË›XZ[[˜[˜ÙWÙY™\œ™YOOBˆYKˆJBˆ
+NÂ‚ˆÛÛœÝ›Ý[™YY\ÚXÚÈBˆ]ØZ][›Ý[™YY\ÚXÚÔØÚY[\ŠˆY\]™Q\ØÛÝ™\žT™Yš[\‹ˆ[‹ˆ[’YˆÂˆX^Ü\—Ü[Ž‚ˆK‚ˆÛÛÛÝÛ—ÜÙXÎ‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆË˜Y\]™WØÛÛÛÝÛ—ÜÙXÈÏÂˆN‚ˆX\ÙWÜÙXÎ‚ˆŒ‚ˆ™\]Z\™WÙ^XÝØÛÛ˜XÝ‚ˆ]™R[™Ù™”[‚ˆËœ™\]Z\™WÙ^XÝØÛÛ˜XÝOOBˆYK‚ˆ™\]Z\™YØÛÛ˜XÝ‚ˆ]™R[™Ù™”[‚ˆËœ™\]Z\™YØÛÛ˜XÝÏÂˆ[‚ˆ]Y]YWÜÝ\˜][ÛŽ‚ˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËœ[‚ˆËœÝ\˜][Û—Ú[™XØ]ÜˆOOBˆYK‚ˆÛÛ™š\›YYÜØÛÜWØÛÛ˜XÝÎ‚ˆÛÛ™š\›YYØÛÜPÛÛ˜XÝË‚ˆØØ[—ÝÎ‚ˆØØ[Ë[Y\Ý[\ÏÂˆ[‚ˆX\›WÜØØ[ŽˆØØ[‹‚ˆ]™WÚ[™Ù™—Û[™N‚ˆ]™R[™Ù™”[Ë›[™HÏÂˆ[ˆBˆ
+NÂ‚ˆYŠ]Y]YY\]ZY][ÛÛÛ˜XÝ	‰\[Ùˆ[Ë”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓTUOOOIÙ[˜Ý[Û‰Ê^ÂˆÛÛœÝ]Y]YT™\Ý[J\œ˜^Kš\Ð\œ˜^J›Ý[™YY\ÚXÚÏËœ™\Ý[ÊOØ›Ý[™YY\ÚXÚËœ™\Ý[Î–×JK™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+OOO\]Y]YY\]ZY][ÛÛÛ˜XÝ
+NÂˆYŠ\]Y]YT™\Ý[
+^Ýž^Ø]ØZ][‹”‘TÔ•—ÓTURQUSÓ—ÔUQUQWÐÓÓTUJÝ\ØX›N™˜[ÙK™\Ý[žÜÙ[XÝ[Û—ÜÝ]\Î‰Ó“ÕÔÑSPÕQÐÐTPÒUIËÝYÙN‰ÑQTÔÑSPÕSÓ‰Ë[—ÚYœ[’Y_JNßXØ]Úß_BˆB‚ˆYˆ
+ÜÝÔ™XÚXÚÐÛZ[OË˜ÛZ[YYOOHYJHÂˆÛÛœÝ^XÝ™\Ý[J\œ˜^Kš\Ð\œ˜^J›Ý[™YY\ÚXÚÏËœ™\Ý[ÊOØ›Ý[™YY\ÚXÚËœ™\Ý[Î–×JBˆ™š[™
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+OOOTÝš[™ÊÜÝÔ™XÚXÚÐÛZ[K\ÚË˜ÛÛ˜XÝØÛÙ_	ÉÊKš[J
+JNÂˆÛÛœÝ™XÙZ\Y^XÝ™\Ý[ËœÜÝÝ×ØØ[›ÛšXØ[Ü\œÚ\Ý[˜ÙNÂˆYˆ
+^XÝ™\Ý[Ë™^XÝ][Û—ÜÝ]\ÈOOH	Ñ•S’SQ	È	‰ˆ^XÝ™\Ý[Ë˜Ø[›ÛšXØ[Ø[˜[]XØ[Ü™\Ý[ËœÝ]\ÈOOH	ÐÓÔÑQ	È	‰ˆÉÐÓÔÑQ	Ë	ÑQTPÐUQ	×Kš[˜ÛY\Ê™XÙZ\ËœÝ]\ÊH	‰ˆ™XÙZ\ËœX›XØ][Û—ÚY
+HÂˆ]ØZ]ÛÛ\]T™XÚXÚÊ[‹‘UWÑ‹Ý\Ú×ÚYœÜÝÔ™XÚXÚÐÛZ[K\ÚË\Ú×ÚYXÝÜŽœÜÝÔ™XÚXÚÐÛZ[K\ÚË›X\ÙWÛÝÛ™\‹X\ÙWÜÝ\YÝÎœÜÝÔ™XÚXÚÐÛZ[K\ÚË›X\ÙWÜÝ\YÝË™\Ý[‰ÑÓ‘IË™]×ÜX›XØ][Û—ÚYœ™XÙZ\œX›XØ][Û—ÚY›Ý×ÝÎ‘]K››ÝÊ
+_JNÂˆBˆB‚ˆÛÛœÝ[]šY[˜ÙQ˜Z[\™OJ\œ˜^Kš\Ð\œ˜^J›Ý[™YY\ÚXÚÏËœ™\Ý[ÊOØ›Ý[™YY\ÚXÚËœ™\Ý[Î–×JBˆ›X\
+›ÝÏOŠØÛÛ˜XÝœ›ÝÏË˜ÛÛ˜XÝÏÛ[‹‹Š›ÝÏË™[Ù]šY[˜ÙWÜ\œÚ\Ý[˜Ù_ßJ_JJBˆ™š[™
+›ÝÏOœ›ÝÏËœÝ]\É‰ˆJ›ÝËœ\œÚ\ÝYOO]YI‰œ›ÝËœÝ]\ÏOOIÐÓÔÑQ	É‰“[X™\Š›ÝËš[œÙ\ØÚ[™Ù\ÊOOOLJJNÂˆÛÛœÝØØ[”\œÚ\Ý[˜ÙTÝ]\Ï\ØØ[Ëœ\œÚ\Ý[˜ÙOËœÝ]\ß[ÂˆÛÛœÝØØ[ÛÛ\]YP›ÛÛX[ŠØØ[ËšX[Ë˜ÛÛ˜XÝÉ‰œØØ[Ë˜ÛÝ[ÏË[š]™\œÙWÝÝ[Œ	‰œØØ[”\œÚ\Ý[˜ÙTÝ]\ÏOOIÐÓÔÑQ	ÊNÂˆÛÛœÝØØ[‘˜Z[\™O\ØØ[ÛÛ\]YÛ[žÂˆÝ]\Î‰ÑQÔQQÔTSS‘IËˆ™X\ÛÛŽŠ\ØØ[ËšX[Ë˜ÛÛ˜XÝßJØØ[Ë˜ÛÝ[ÏË[š]™\œÙWÝÝ[Œ
+JOÉÔÕQÑLÔÐÐS—ÑRSQ	Î‰ÔÕQÑLÔT”ÒTÕSÑWÑRSQ	Ëˆ˜Z[\™WÜÝYÙN‰ÔÕQÑLÔÐÐS‰ËˆXYÛ›ÜÝXÎžÙ[™Ú[Ù\œ›ÜœÎœØØ[Ë™[™Ú[Ù\œ›ÜœÏÏÛ[\œÚ\Ý[˜ÙNœØØ[Ëœ\œÚ\Ý[˜ÙOÏÛ[KˆNÂˆÛÛœÝ[œÝY™šXÚY[Y\™\Ý[J›Ý[™YY\ÚXÚÏËœ™\Ý[ß×JK™š[™
+›ÝÏO‚ˆÝš[™Ê›ÝÏË™]WÜÝY™šXÚY[˜ÞOË˜Û\ÜÚYšXØ][ÛÏÜ›ÝÏË™]WÜÝY™šXÚY[˜ÞOÏÉÉÊKÕ\\Ø\ÙJ
+OOOIÒS”ÕQ‘’PÒQS•	ÊNÂˆÛÛœÝ˜\ÙS]™R[™Ù™–™\›Ô™X\ÛÛˆBˆÛ\ÜÚYžUŒÓ]™R[™Ù™–™\›Ô™X\ÛÛŠÂˆ[™Ù™—Ü[Ž‚ˆ]™R[™Ù™”[‹ˆ›Ý[™YÙY\ØÚXÚÎ‚ˆ›Ý[™YY\ÚXÚËˆJNÂˆÛÛœÝ]™R[™Ù™–™\›Ô™X\ÛÛ\ØØ[‘˜Z[\™OÜØØ[‘˜Z[\™Kœ™X\ÛÛŽ™[]šY[˜ÙQ˜Z[\™OÉÑ•SÑU’QSÑWÔT”ÒTÕSÑWÑRSQ	Î˜˜\ÙS]™R[™Ù™–™\›Ô™X\ÛÛŽÂ‚ˆÛÛœÝ\ÜÙ\ÜÙYŒÔ\[[™RX[Bˆ\ÜÙ\ÜÕŒÔ\[[™RX[
+Âˆ[™Ù™—Ü[Ž‚ˆ]™R[™Ù™”[‹ˆ›Ý[™YÙY\ØÚXÚÎ‚ˆ›Ý[™YY\ÚXÚËˆ™\›×Ü™X\ÛÛŽ‚ˆ]™R[™Ù™–™\›Ô™X\ÛÛ‹ˆJNÂˆÛÛœÝŒÔ\[[™RX[\ØØ[‘˜Z[\™_
+[]šY[˜ÙQ˜Z[\™OÞÜÝ]\Î‰ÑQÔQQÔTSS‘IË™X\ÛÛŽ‰Ñ•SÑU’QSÑWÔT”ÒTÕSÑWÑRSQ	Ë˜Z[\™WÜÝYÙN‰Ñ•SÑU’QSÑWÔT”ÒTÕSÑIËXYÛ›ÜÝXÎ™[]šY[˜ÙQ˜Z[\™_Nš[œÝY™šXÚY[Y\™\Ý[ÞÜÝ]\Î‰ÑQÔQQÔTSS‘IË™X\ÛÛŽ‰ÑQTÑUWÒS”ÕQ‘’PÒQS•	Ë˜Z[\™WÜÝYÙN‰ÑQTÑUWÔÕQ‘’PÒQSÖIËXYÛ›ÜÝXÎžØÛÛ˜XÝš[œÝY™šXÚY[Y\™\Ý[˜ÛÛ˜XÝØ\Îš[œÝY™šXÚY[Y\™\Ý[™]WÜÝY™šXÚY[˜ÞOË™Ø\ÏÏÖ×__N˜\ÜÙ\ÜÙYŒÔ\[[™RX[
+NÂˆÛÛœÝY\Ý]ÛÛYPÛ\ÜÚYšXØ][Û\ØØ[‘˜Z[\™_[]šY[˜ÙQ˜Z[\™OÉÕPÒ’PÐSÑRST‘IÎš[œÝY™šXÚY[Y\™\Ý[ÉÒS”ÕQ‘’PÒQS•ÑUIÎ“[X™\Š›Ý[™YY\ÚXÚÏËœ[Ë˜ÛÝ[ÏËœÙ[XÝYÏÌ
+OOOLÉÓ“ÕÔÑSPÕQÐÐTPÒUIÎ˜›Ý[™YY\ÚXÚÏË™XÚ\Ú[ÛË™Ù[™\˜]YOO]YOÉÑPÒTÒSÓ—ÑÑS‘TUQ	Î‰ÓPT’ÑUÔ‘R‘PÕQ	ÎÂ‚ˆÛÛœÛÛK›ÙÊˆŒ×Û]™WÚ[™Ù™—ÚX[‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’YˆÝ]\Î‚ˆŒÔ\[[™RX[ˆËœÝ]\ÈÏÂˆ‘QÔQQÔTSS‘H‹ˆ™X\ÛÛŽ‚ˆŒÔ\[[™RX[ˆËœ™X\ÛÛˆÏÂˆ[ˆ[™N‚ˆ]™R[™Ù™”[‚ˆË›[™HÏÂˆ[ˆ]™WÜÚÜ\ÝØÛÝ[‚ˆ]™R[™Ù™”[‚ˆË›]™WÜÚÜ\ÝØÛÝ[ÏÂˆˆÙ[XÝY‚ˆ›Ý[™YY\ÚXÚÂˆËœ[‚ˆË˜ÛÝ[ÂˆËœÙ[XÝYÏÂˆˆ™\›×Ü™X\ÛÛŽ‚ˆ]™R[™Ù™–™\›Ô™X\ÛÛ‹ˆÝ]ÛÛYWØÛ\ÜÚYšXØ][ÛŽˆY\Ý]ÛÛYPÛ\ÜÚYšXØ][Û‹ˆ˜Z[\™WÜÝYÙNˆŒÔ\[[™RX[Ë™˜Z[\™WÜÝYÙHÏÈ[ˆXYÛ›ÜÝXÎˆŒÔ\[[™RX[Ë™XYÛ›ÜÝXÈÏÈ[ˆXZ[[˜[˜ÙWØ]˜Z[X›N‚ˆ]™R[™Ù™”[‚ˆË›XZ[[˜[˜ÙWØ]˜Z[X›HOOBˆYKˆXZ[[˜[˜ÙWÙY™\œ™Y‚ˆ]™R[™Ù™”[‚ˆË›XZ[[˜[˜ÙWÙY™\œ™YOOBˆYKˆXÚ\Ú[Û—ÙÙ[™\˜]Yˆ˜[ÙKˆ˜[Y]Yˆ˜[ÙKˆ[YÜ˜[WÜÝ\Yˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽˆ˜[ÙKˆJBˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆ˜›Ý[™YÙY\ØÚXÚ×ÜØÚY[\ˆ‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Y‚ˆÝ]\Î‚ˆ›Ý[™YY\ÚXÚÂˆËœÝ]\ÈÏÂˆ[‚ˆØÛÜWÜÝ]\Î‚ˆ›Ý[™YY\ÚXÚÂˆËœ[‚ˆËœØÛÜWÜÝ]\ÈÏÂˆ[‚ˆÛÛ™š\›YYØÜž\×ØÛÛ˜XÝÎ‚ˆÛÛ™š\›YYØÛÜPÛÛ˜XÝÂˆ›[™Ý‚ˆ^XÝ][Û—Û[™N‚ˆ]™R[™Ù™”[‚ˆË›[™HÏÂˆ[‚ˆÜÜ[š]WÚ›Ý\›˜[Ü[ŽˆÂˆÝ]\Î‚ˆÜÜ[š]R›Ý\›˜[[‚ˆËœÝ]\ÈÏÂˆ[ˆÙ[XÝYØÛÛ˜XÝ‚ˆÜÜ[š]R›Ý\›˜[[‚ˆËœÙ[XÝYØÛÛ˜XÝÏÂˆ[ˆYWÛÝ]ÛÛYWØÛÝ[‚ˆÜÜ[š]R›Ý\›˜[[‚ˆË˜Ø[™Y]BˆË™YWÛÝ]ÛÛYWØÛÝ[ÏÂˆˆÛ\ÝÝ\™Ù]ÝÎ‚ˆÜÜ[š]R›Ý\›˜[[‚ˆË˜Ø[™Y]BˆË›Û\ÝÝ\™Ù]ÝÈÏÂˆ[ˆK‚ˆÙ[XÝY‚ˆ›Ý[™YY\ÚXÚÂˆËœ[‚ˆË˜ÛÝ[ÂˆËœÙ[XÝYÏÂˆ‚ˆ\Ý[X]YÙ^\›˜[Ü™\]Y\ÝÎ‚ˆ›Ý[™YY\ÚXÚÂˆËœ[‚ˆË˜YÙ]ˆË™\Ý[X]YÙ^\›˜[Ü™\]Y\Ý×Ý\×Ü[ˆÏÂˆ[‚ˆ™\Ý[Î‚ˆ\œ˜^Kš\Ð\œ˜^Jˆ›Ý[™YY\ÚXÚÂˆËœ™\Ý[Âˆ
+BˆÈ›Ý[™YY\ÚXÚÂˆœ™\Ý[Âˆ›X\
+ˆ
+›ÝÊHOˆ
+ÂˆÛÛ˜XÝ‚ˆ›ÝÏË˜ÛÛ˜XÝÏÂˆ[ˆ^XÝ][Û—ÜÝ]\Î‚ˆ›ÝÂˆË™^XÝ][Û—ÜÝ]\ÈÏÂˆ[ˆ]WÜÝY™šXÚY[˜ÞN‚ˆ›ÝÂˆË™]WÜÝY™šXÚY[˜ÞHÏÂˆ[ˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆ›ÝÂˆË™XÚ\Ú[Û—ÙÙ[™\˜]YOOBˆYKˆ˜[Y]Y‚ˆ›ÝÏË˜[Y]YOOBˆYKˆ›Ý\›˜[ÜÝ]\Î‚ˆ›ÝÂˆËš›Ý\›˜[ÜÝ]\ÈÏÂˆ[ˆØ[›ÛšXØ[Ü\œÚ\Ý[˜ÙN‚ˆ›ÝÏËœÜÝÝ×ØØ[›ÛšXØ[Ü\œÚ\Ý[˜ÙHÏÂˆ[ˆØ[›ÛšXØ[Ü™\Ý[‚ˆ›ÝÏË˜Ø[›ÛšXØ[Ø[˜[]XØ[Ü™\Ý[ÏÂˆ[ˆ[Ù]šY[˜ÙWÜ\œÚ\Ý[˜ÙN‚ˆ›ÝÏË™[Ù]šY[˜ÙWÜ\œÚ\Ý[˜ÙHÏÂˆ[ˆJBˆ
+Bˆˆ×K‚ˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆ›Ý[™YY\ÚXÚÂˆË™XÚ\Ú[Û‚ˆË™Ù[™\˜]YOOHYK‚ˆ˜[Y]Y‚ˆ›Ý[™YY\ÚXÚÂˆË™XÚ\Ú[Û‚ˆË˜[Y]YOOHYK‚ˆ[YÜ˜[WÜÝ\Y‚ˆ›Ý[™YY\ÚXÚÂˆË[YÜ˜[WÜÝ\YOOHYKˆJBˆ
+NÂ‚ˆÛÛœÝ˜\Ý[Ý™UØ]Úš[˜[Bˆ›Ý\›˜[XZ[[˜[˜ÙTÙ[XÝYˆÈÂˆ™\œÚ[ÛŽ‚ˆTÕÓSÕ‘WÕÐUÒÕ‘T”ÒSÓ‹ˆÝ]\Î‚ˆ““ÕÐTPÐP“WÓÔÔ•S’UWÒ“ÕT“SÓPRS•SSÑH‹ˆš[˜[^™Yˆ×KˆÜš]\×Ý\ÙYˆˆBˆˆ]ØZ]š[˜[^™Q˜\Ý[Ý™UØ]ÚÞXÛJÂˆ[‹ˆÞXÛN‚ˆ˜\Ý[Ý™UØ]ÚÞXÛKˆY\ØÚXÚ×Ü™\Ý[Î‚ˆ›Ý[™YY\ÚXÚÂˆËœ™\Ý[ÈÏÂˆ×Kˆ\ØÛÝ™\žWÜ™Yš[\Ž‚ˆY\]™Q\ØÛÝ™\žT™Yš[\‹ˆ›ÝÎ‚ˆ]K››ÝÊ
+KˆJNÂ‚ˆÛÛœÛÛK›ÙÊˆ™˜\ÝÛ[Ý™WÝØ]ÚÙš[˜[^™H‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’YˆÝ]\Î‚ˆ˜\Ý[Ý™UØ]Úš[˜[ˆËœÝ]\ÈÏÂˆ[ˆš[˜[^™Y‚ˆ˜\Ý[Ý™UØ]Úš[˜[ˆË™š[˜[^™YÏÂˆ×KˆÜš]\×Ý\ÙY‚ˆ˜\Ý[Ý™UØ]Úš[˜[ˆËÜš]\×Ý\ÙYÏÂˆˆÝ[ÜÝYÙLÎÝÜš]\Î‚ˆ[X™\Šˆ˜\Ý[Ý™UØ]ÚÞXÛBˆËÜš]\×Ý\ÙYÏÂˆˆ
+H
+Âˆ[X™\Šˆ˜\Ý[Ý™UØ]Úš[˜[ˆËÜš]\×Ý\ÙYÏÂˆˆ
+KˆXÚ\Ú[Û—ÙÙ[™\˜]Y‚ˆ˜[ÙKˆ˜[Y]Y‚ˆ˜[ÙKˆ[YÜ˜[WÜÝ\Y‚ˆ˜[ÙKˆ˜Y[™×Ù^XÝ][ÛŽ‚ˆ˜[ÙKˆJBˆ
+NÂ‚‚ˆÊ‚ˆ
+ˆHœ™YH[ÝÜÈL]Y\šY\È\ˆÛÜšÙ\ˆ[›ØØ][Û‹ˆHÛÛœÙ\˜]]™Bˆ
+ˆ[Y\PÚXÚÈ]\Ù\È][ÜÝY\ˆH”ÓÓŒHÛÛ\XÝ[Ûˆ[‚ˆ
+ˆÝYÙHËŽKŒKˆHÛ\ˆØ[Xœ˜][ÛˆÝÙY\Ø[ˆ\ÙH[›Ý\ˆM]Y\šY\Ëˆ
+ˆÛÈ]\ÈY™\œ™YÚ[™]™\ˆHY\ÚXÚÈØ\È][\YˆÛˆYHÜ›Û‚ˆ
+ˆXÚÜÈ]ÙY\È]È^\Ý[™È›Ý[™Y›Ý\‹]\ÚÈ™Z]š[Ü‹‚ˆ
+‹ÂˆÛÛœÝY\ÚXÚÐ][\YBˆY\ÚXÚÐ][\Y›Ü‘PYÙ]
+ˆ›Ý[™YY\ÚXÚÂˆ
+NÂ‚ˆÛÛœÝÚYÝÓÝ]ÛÛYTÝÙY\BˆY\ÚXÚÐ][\YˆÈÂˆ[ÙN‚ˆÐSP”USÓ—ÓÓ“WÓ“×ÓU‘WÔ“ÓSÕSÓˆ‹ˆ\ÝÜÝ]\Î‚ˆ‘Q‘T”‘QÑWÑ”‘QWÔUQT–WÐ•QÑU‹ˆ\ÚÜ×Ü›ØÙ\ÜÙY‚ˆˆÛÜÙYÝÜš][Ž‚ˆˆ[œÝY™šXÚY[ÝÜš][Ž‚ˆˆWÜ]Y\šY\×Ý\ÙY‚ˆˆWÙœ™YWÜ]Y\žWÛ[Z]‚ˆWÑ”‘QWÔUQT–WÓSRUˆÛÛœÙ\˜]]™WÙY\ØÚXÚ×Ü]Ü]Y\šY\Î‚ˆÓÓ”ÑT•UU‘WÑQTÐÒPÒ×ÑWÔUQT–WÐ•QÑUˆY™\œ™YÛYØXÞWÜÝÙY\ÛX^Ü]Y\šY\Î‚ˆQÐPÖWÓÕUÓÓQWÔÕÑQTÓPVÑWÔUQT’QTËˆY™\œ™YÜ™X\ÛÛŽ‚ˆ“QÐPÖWÔÒQÕ×ÓÕUÓÓQWÔÕÑQTÕÓÕSÑVÑQQÐÓÓ”ÑT•UU‘WÑWÑ”‘QWÑS•‘SÔH‹ˆ]]ÛX]X×ÝÙZYÚÝ[š[™×Ù[˜X›Y‚ˆ˜[ÙKˆ]™WÜ›Û[Ý[Û—Ø[ÝÙY‚ˆ˜[ÙKˆBˆˆ]ØZ][”ÚYÝÓÝ]ÛÛYPØ[Xœ˜][Û”ÝÙY\
+ˆ[‹ˆ]K››ÝÊ
+Kˆˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆœÚYÝ×ÛÝ]ÛÛYWØØ[Xœ˜][Ûˆ‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚYˆ[’Yˆ‹‹œÚYÝÓÝ]ÛÛYTÝÙY\ˆJBˆ
+NÂ‚ˆËÈÝYÙHËŽKŒˆ[]šY[˜ÙH™][[Ûˆ\È[X™\˜][HÝ]ÚYHHÝˆËÈY\ÚXÚËˆÛˆYHÜ›ÛˆXÚÜÈ]\Ù\ÈÛ™H›Ý[™YXZ[[˜[˜ÙH]Y\žK‚ˆÛÛœÝÝYÙLÎL‘[]šY[˜ÙSXZ[[˜[˜ÙHHY\ÚXÚÐ][\YˆÈÈÝ]\Îˆ‘Q‘T”‘QÑWÑ”‘QWÔUQT–WÐ•QÑU‹Ý][Y[Îˆ[]YˆÝÜ]ˆ˜[ÙHBˆˆ]ØZ][”ÝYÙLÎL‘[]šY[˜ÙSXZ[[˜[˜ÙJ[‹]K››ÝÊ
+JNÂ‚ˆÛÛœÛÛK›ÙÊˆœÝYÙLÎL—Ù[Ù]šY[˜ÙWÛXZ[[˜[˜ÙH‹ˆ”ÓÓ‹œÝš[™ÚYžJÈ[—ÚYˆ[’Y‹‹œÝYÙLÎL‘[]šY[˜ÙSXZ[[˜[˜ÙHJBˆ
+NÂˆÛÛœÝ\œÚ\Ý[˜ÙTÝ]\Ï\ØØ[”\œÚ\Ý[˜ÙTÝ]\ÎÂˆÛÛœÝÝXØÙ\ÜÏ\ØØ[ÛÛ\]YÂ‚ˆÛÛœÝÛÛ\]YÈBˆ]K››ÝÊ
+NÂ‚ˆ]ØZ]™XÛÜ™Ü›Û”[Šˆ[‹ˆÂˆ[—ÚY‚ˆ[’Y‚ˆØÚY[YÝ[YN‚ˆØÚY[Y[YK‚ˆÝ\YÝÎ‚ˆÝ\YË‚ˆÛÛ\]YÝÎ‚ˆÛÛ\]YË‚ˆÝ]\Î‚ˆÝXØÙ\ÜÂˆÈ”ÕPÐÑTÔÈ‚ˆˆ”T•PS‹‚ˆ[š]™\œÙWÝÝ[‚ˆØØ[Ë˜ÛÝ[ÂˆË[š]™\œÙWÝÝ[ÏÂˆ[‚ˆØØ[›™Y‚ˆØØ[Ë˜ÛÝ[ÂˆËœØØ[›™YÏÂˆ[‚ˆ\œÚ\Ý[˜ÙWÜÝ]\Î‚ˆ\œÚ\Ý[˜ÙTÝ]\Ë‚ˆ\œ›Ü—Ý^‚ˆÝXØÙ\ÜÂˆÈ[ˆˆ”ÓÓ‹œÝš[™ÚYžJˆØØ[Ë™[™Ú[Ù\œ›ÜœÈˆØØ[Ëœ\œÚ\Ý[˜ÙHˆßBˆ
+K‚ˆŒ×Ù\ØÛÝ™\žWÜÚÜ\ÝØÛÝ[‚ˆ\ØÛÝ™\žT™Yš[\Ë˜ÛÝ[ÏËœÚÜ\ÝÏÈ‚ˆŒ×Û]™WÜÚÜ\ÝØÛÝ[‚ˆ]™R[™Ù™”[Ë›]™WÜÚÜ\ÝØÛÝ[ÏÈ‚ˆŒ×Û]™WÙY\ØÚXÚ×ØÛÝ[‚ˆ\œ˜^Kš\Ð\œ˜^J›Ý[™YY\ÚXÚÏËœ™\Ý[ÊBˆÈ›Ý[™YY\ÚXÚËœ™\Ý[Ë™š[\Š
+›ÝÊHOˆ›ÝÏË™^XÝ][Û—ÜÝ]\ÈOOH‘•S’SQŠK›[™Ýˆˆ‚ˆŒ×Û]™WÞ™\›×Ü™X\ÛÛŽ‚ˆ]™R[™Ù™–™\›Ô™X\ÛÛˆÏÈ[‚ˆŒ×Ü\[[™WÚX[ÜÝ]\Î‚ˆŒÔ\[[™RX[ËœÝ]\ÈÏÈ‘QÔQQÔTSS‘H‹‚ˆŒ×Ü\[[™WÚX[Ü™X\ÛÛŽ‚ˆŒÔ\[[™RX[Ëœ™X\ÛÛˆÏÈ[‚ˆŒ×Û]™WÛ[™N‚ˆ]™R[™Ù™”[Ë›[™HÏÈ[‚ˆŒ×ÛXZ[[˜[˜ÙWÙY™\œ™Y‚ˆ]™R[™Ù™”[Ë›XZ[[˜[˜ÙWÙY™\œ™YOOHYKˆBˆ
+NÂ‚ˆÛÛœÛÛK›ÙÊˆÝXØÙ\ÜÂˆÈ˜Ü›Û—ÜÝXØÙ\ÜÈ‚ˆˆ˜Ü›Û—Ü\X[‹‚ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Y‚ˆÛÛ\]YÝÎ‚ˆÛÛ\]YË‚ˆ[š]™\œÙWÝÝ[‚ˆØØ[Ë˜ÛÝ[ÂˆË[š]™\œÙWÝÝ[ÏÂˆ[‚ˆØØ[›™Y‚ˆØØ[Ë˜ÛÝ[ÂˆËœØØ[›™YÏÂˆ[‚ˆ\œÚ\Ý[˜ÙWÜÝ]\Î‚ˆ\œÚ\Ý[˜ÙTÝ]\ËˆJBˆ
+NÂˆHØ]Ú
+\œ›ÜŠHÂˆÛÛœÝÛÛ\]YÈBˆ]K››ÝÊ
+NÂ‚ˆÛÛœÝY\ÜØYÙHBˆÝš[™Êˆ\œ›ÜË›Y\ÜØYÙHˆ\œ›Ü‚ˆ
+NÂ‚ˆ]ØZ]™XÛÜ™Ü›Û”[Šˆ[‹ˆÂˆ[—ÚY‚ˆ[’Y‚ˆØÚY[YÝ[YN‚ˆØÚY[Y[YK‚ˆÝ\YÝÎ‚ˆÝ\YË‚ˆÛÛ\]YÝÎ‚ˆÛÛ\]YË‚ˆÝ]\Î‚ˆ‘T”“Ôˆ‹‚ˆ\œ›Ü—Ý^‚ˆY\ÜØYÙK‚ˆŒ×Ü\[[™WÚX[ÜÝ]\Î‚ˆ‘QÔQQÔTSS‘H‹‚ˆŒ×Ü\[[™WÚX[Ü™X\ÛÛŽ‚ˆ•ÓÔ’ÑT—ÐÔ“Ó—ÑT”“Ôˆ‹ˆBˆ
+NÂ‚ˆÛÛœÛÛK™\œ›ÜŠˆ˜Ü›Û—Ù\œ›Üˆ‹ˆ”ÓÓ‹œÝš[™ÚYžJÂˆ[—ÚY‚ˆ[’Y‚ˆ\œ›ÜŽ‚ˆY\ÜØYÙKˆJBˆ
+NÂ‚ˆ›ÝÈ\œ›ÜŽÂˆBˆKŸNÂ‚™^Ü\Þ[˜È[˜Ý[ÛˆØØ[“\]ZY][ÛØ[™Y]\ÊÙ[‹X^ØØ[™Y]\ÏMK^XÝØÛÛ˜XÝ[[œ™\Ú™\Ü×ÜÙXÏLÌO^ßJ^ÂˆÛÛœÝ^XÝTÝš[™Ê^XÝØÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+NÂˆYŠ^XÝ	‰ˆK×–ÐKVŒNW^Ì‹M_KUTÑ	Ë\Ý
+^XÝ
+J\™]\›žÜØÚ[XN‰ÓTURQUSÓ—ÓÓ“WÔÐÐS—ÕŒIËÝ]\Î‰ÒS•SQÑVPÕÐÓÓ•PÕ	Ë^XÝØÛÛ˜XÝ™^XÝ[Ø[™Y]\Î–×K[Ü™\ÜÜÝ\Y™˜[ÙKXÚ\Ú[Û—ÙÙ[™\˜]Y™˜[ÙK›Ø˜Xš[]N›[^XÝ][ÛŽ™˜[Ù_NÂˆYŠÉÐ•ËUTÑ	Ë	ÑUUTÑ	×Kš[˜ÛY\Ê^XÝ
+J\™]\›žÜØÚ[XN‰ÓTURQUSÓ—ÓÓ“WÔÐÐS—ÕŒIËÝ]\Î‰ÑVÓQQÐ–WÕTÑT—ÔÓPÖIË^XÝØÛÛ˜XÝ™^XÝØ[™Y]\Î–×K[Ü™\ÜÜÝ\Y™˜[ÙKXÚ\Ú[Û—ÙÙ[™\˜]Y™˜[ÙK›Ø˜Xš[]N›[^XÝ][ÛŽ™˜[Ù_NÂˆÛÛœÝ[Z]SX]›Z[ŠLX]›X^
+KX]œ›Ý[™
+[X™\ŠX^ØØ[™Y]\Ê_JJJNÂˆÛÛœÝØØ[X]ØZ][š]™\œÙTØØ[ŠÙœ™\Ú™\Ü×ÜÙXßK[‹Ü\œÚ\Ý™˜[Ù_JNÂˆÛÛœÝ]Y]YOXZ[Y\ÚXÚÔ]Y]YJØØ[ŠNÂˆÛÛœÝ\ØÛÝ™\žOXZ[\ØÛÝ™\žT™Yš[\ŠØØ[‹]Y]YKÛ\]ZY]WÜ\˜Ù[[NŒÌX\›WÛ\]ZY]WÜ\˜Ù[[NŒK[›ÛX[WÜ\˜Ù[[NŒŽMKX\›WØ[›ÛX[WÜ\˜Ù[[NŒŽ[™[™×Ü\˜Ù[[NŒŽMK[™[™×ÝZ[Ü\˜Ù[[NŒŒLZ[—Ø[›ÛX[WÙ›YÜÎŒ‹Z[—ÙX\›WÙ›YÜÎŒ‹X^ÜÚÜ\ÝŒJNÂˆÛÛœÝ›ÝÜÏ[™]ÈX\
+
+\œ˜^Kš\Ð\œ˜^JØØ[Ë˜ÛÛ˜XÝÊOÜØØ[‹˜ÛÛ˜XÝÎ–×JK›X\
+›ÝÏO–ÔÝš[™Ê›ÝÏË˜ÛÛ˜XÝØÛÙ_	ÉÊKš[J
+KÕ\\Ø\ÙJ
+K›Ý×JJNÂˆÛÛœÝXÚšXØ[Q[YÚX›O[™]ÈÙ]
+
+\œ˜^Kš\Ð\œ˜^J]Y]YOËœ]Y]YJOÜ]Y]YKœ]Y]YN–×JK›X\
+›ÝÏO”Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+JJNÂˆÛÛœÝÚÜ\ÝY[™]ÈX\
+
+\œ˜^Kš\Ð\œ˜^J\ØÛÝ™\žOËœÚÜ\Ý
+OÙ\ØÛÝ™\žKœÚÜ\Ý–×JK›X\
+›ÝÏO–ÔÝš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+K›Ý×JJNÂˆÛÛœÝ[[Y]žO[™]ÈX\
+
+\œ˜^Kš\Ð\œ˜^J\ØÛÝ™\žOË˜ÛÛ˜XÝÝ[[Y]žJOÙ\ØÛÝ™\žK˜ÛÛ˜XÝÝ[[Y]žN–×JK›X\
+›ÝÏO–ÔÝš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+K›Ý×JJNÂˆÛÛœÝ^ÛYYXÛÛ˜XÝO–ÉÐ•ËUTÑ	Ë	ÑUUTÑ	×Kš[˜ÛY\ÊÛÛ˜XÝ
+NÂˆ]Ù[XÝYV×NÂˆ]^XÝÝ]\Ï[[ÂˆYŠ^XÝ
+^ÂˆYŠ\›ÝÜËš\Ê^XÝ
+JY^XÝÝ]\ÏIÑVPÕÐÓÓ•PÕÓ“ÕÐPÕU‘WÓÓ—Ò	ÎÂˆ[ÙHYŠ]XÚšXØ[Q[YÚX›Kš\Ê^XÝ
+JY^XÝÝ]\ÏIÑVPÕÐÓÓ•PÕÑUWÓ“ÕÐÓÔÑQ	ÎÂˆ[ÙHÙ[XÝYVÜÚÜ\ÝY™Ù]
+^XÝ
+_Üš[Üš]WÜ˜[šÎ›[ÛÛ˜XÝ™^XÝ‹‹Š[[Y]žK™Ù]
+^XÝ
+_ßJ_WNÂˆY[ÙHÙ[XÝYJ\ØÛÝ™\žOËœÚÜ\Ý×JK™š[\Š›ÝÏOˆY^ÛYY
+Ýš[™Ê›ÝÏË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+JJKœÛXÙJ[Z]
+NÂˆÛÛœÝY]šXÏJ›ÝËÚ[™ÝËšY[
+OOžØÛÛœÝ˜[YO\›ÝÏË˜[œÚ][ÛœÏË–ÝÚ[™Ý×OË–ÙšY[NÜ™]\›ˆ˜[YOOO[[˜[YOOO][™Yš[™Y˜[YOOOIÉßS[X™\‹š\Ñš[š]J[X™\Š˜[YJJOÛ[“[X™\Š˜[YJNßNÂˆÛÛœÝØ[™Y]\Ï\Ù[XÝY›X\
+Ø[™Y]OOžÂˆÛÛœÝÛÛ˜XÝTÝš[™ÊØ[™Y]OË˜ÛÛ˜XÝ	ÉÊKš[J
+KÕ\\Ø\ÙJ
+K›ÝÏ\›ÝÜË™Ù]
+ÛÛ˜XÝ
+_ßNÂˆ™]\›žÜš[Üš]WÜ˜[šÎ˜Ø[™Y]OËœš[Üš]WÜ˜[šÏÏÛ[ÛÛ˜XÝÝ\œ™[ÜšXÙN“[X™\‹š\Ñš[š]J[X™\Š›ÝÏËœšXÙJJOÓ[X™\Š›ÝËœšXÙJN›[\››Ý™\—ÌÝ\Ù“[X™\‹š\Ñš[š]J[X™\Š›ÝÏË\››Ý™\—ÌÝ\Ù
+JOÓ[X™\Š›ÝË\››Ý™\—ÌÝ\Ù
+N›[Ü[—Ú[\™\ÝÝ˜[YWÝ\Ù“[X™\‹š\Ñš[š]J[X™\Š›ÝÏË›Ü[—Ú[\™\ÝË˜[YWÝ\Ù
+JOÓ[X™\Š›ÝË›Ü[—Ú[\™\Ý˜[YWÝ\Ù
+N›[[™[™×Ü˜]WÜÝ“[X™\‹š\Ñš[š]J[X™\Š›ÝÏË™[™[™ÏË™[™[™×Ü˜]WÜÝ
+JOÓ[X™\Š›ÝË™[™[™Ë™[™[™×Ü˜]WÜÝ
+N›[šXÙWØÚ[™ÙWÜÝžÉÍ[IÎ›Y]šXÊ›ÝË	Í[IË	ÜšXÙWØÚ[™ÙWÜÝ	ÊK	ÌM[IÎ›Y]šXÊ›ÝË	ÌM[IË	ÜšXÙWØÚ[™ÙWÜÝ	ÊK	ÌZ	Î›Y]šXÊ›ÝË	ÌZ	Ë	ÜšXÙWØÚ[™ÙWÜÝ	ÊK	Í	Î›Y]šXÊ›ÝË	Í	Ë	ÜšXÙWØÚ[™ÙWÜÝ	Ê_KÚWØÚ[™ÙWÜÝžÉÌM[IÎ›Y]šXÊ›ÝË	ÌM[IË	ÛÚWØÚ[™ÙWÜÝ	ÊK	ÌZ	Î›Y]šXÊ›ÝË	ÌZ	Ë	ÛÚWØÚ[™ÙWÜÝ	ÊK	Í	Î›Y]šXÊ›ÝË	Í	Ë	ÛÚWØÚ[™ÙWÜÝ	Ê_K[›ÛX[WÙ›YÜ×ØÛÝ[“[X™\ŠØ[™Y]OË˜[›ÛX[WÙ›YÜ×ØÛÝ[
+K[›ÛX[WÙ›YÜÎ\œ˜^Kš\Ð\œ˜^JØ[™Y]OË˜[›ÛX[WÙ›YÜÊOØØ[™Y]K˜[›ÛX[WÙ›YÜÎ–×K\™XÝ[Û—Ú[˜Ø[™Y]OË™\ØÛÝ™\žWÙ\™XÝ[Û—Ú[	Ó‘UUSÐS“ÓPSIË]X[YšYYÙÜ›ÝÝØØ[™Y]NœÚÜ\ÝYš\ÊÛÛ˜XÝ
+Kœ™\Ú™\Ü×ÜÙXÎ“[X™\‹š\Ñš[š]J[X™\Š›ÝÏË™œ™\Ú™\ÜÏË›X\šÙ]ØYÙWÜÙXÊJOÓ[X™\Š›ÝË™œ™\Ú™\ÜË›X\šÙ]ØYÙWÜÙXÊN›[]WÜÝ]\Îœ›ÝÏË™]WÜÝ]\ß[NÂˆJNÂˆÛÛœÝÛÝ\˜ÙPÛÜÙYS[X™\ŠØØ[Ë˜ÛÝ[ÏË™\œ›Üœß
+OOOL	‰“[X™\ŠØØ[Ë˜ÛÝ[ÏË[š]™\œÙWÝÝ[
+OŒÂˆÛÛœÝÝ]\ÏH\ÛÝ\˜ÙPÛÜÙYÉÒÔÐÐS—Ó“ÕÐÓÔÑQ	Î™^XÝÝ]\ß
+Ø[™Y]\Ë›[™ÝÉÐÓÔÑQ	Î‰Ó“×ÓTURQUSÓ—ÐÐS‘QUTÉÊNÂˆ™]\›žÜØÚ[XN‰ÓTURQUSÓ—ÓÓ“WÔÐÐS—ÕŒIËÝ]\Ë^XÝØÛÛ˜XÝ™^XÝ[ØØ[ŽžÜÛÝ\˜ÙNœØØ[ËœÛÝ\˜Ù_[X\šÙ]œØØ[Ë›X\šÙ][ØœÙ\™YÝÎœØØ[Ë[Y\Ý[\[[š]™\œÙWÝÝ[“[X™\ŠØØ[Ë˜ÛÝ[ÏË[š]™\œÙWÝÝ[
+KØØ[›™Y“[X™\ŠØØ[Ë˜ÛÝ[ÏËœØØ[›™Y
+K\œ›ÜœÎ“[X™\ŠØØ[Ë˜ÛÝ[ÏË™\œ›Üœß
+KÝ[N“[X™\ŠØØ[Ë˜ÛÝ[ÏËœÝ[_
+KXÚšXØ[Ù[YÚX›N“[X™\Š]Y]YOË˜ÛÝ[ÏË™[YÚX›_
+KÚÜ\ÝÝÝ[“[X™\Š\ØÛÝ™\žOË˜ÛÝ[ÏËœÚÜ\Ý
+_KØ[™Y]\Ë[Ü™\ÜÜÝ\Y™˜[ÙKXÚ\Ú[Û—ÙÙ[™\˜]Y™˜[ÙK\™XÝ[Û—ÙÙ[™\˜]Y™˜[ÙK›Ø˜Xš[]N›[˜[Y]YÜÚYÛ˜[™˜[ÙK[YÜ˜[WÜÝ\Y™˜[ÙK^XÝ][ÛŽ™˜[ÙK\œÚ\Ý[˜ÙWÜ™\]Y\ÝY™˜[Ù_NÂŸB‚™^ÜÂˆØY\ÝÜžU\™Ù]È\ÈØYÝYÙL\ÝÜžU\™Ù]Ñ›Ü•\ÝˆÝYÙL\ÝÜžH\ÈÝYÙL\ÝÜžQ›Ü•\Ýˆ™Yœ™\Ú^XÝ][Û”][ÝRY“™YYY\È™Yœ™\Ú^XÝ][Û”][ÝRY“™YYY›Ü•\ÝˆÜ™X]T\‘Y\ÚXÚÑ™]ÚØXÚH\ÈÜ™X]T\‘Y\ÚXÚÑ™]ÚØXÚQ›Ü•\ÝŸNÂ‚‹Êˆ‘TÔ•—ÑÒUP—Ð–R×Ô“ÖWÕÌH8 %›ÝXÝYÛÝ\˜ÙH›ÞHÛ›Kˆ
+‹Â˜\Þ[˜È[˜Ý[Ûˆ×Ü™\ÜÛÝYžRÔ›ÞJ™\]Y\Ý[ŠHÂˆYŠ™\]Y\Ý›Y]ÙOOH”ÔÕŠH™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽˆ”ÔÕÔ‘TURT‘QŸJKÜÝ]\ÎKXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNÂˆÛÛœÝÚÙ[TÝš[™Ê[Ë”‘TÔ•—ÐÓÕQÔÓÕTÑWÔ“ÖWÕÒÑSŸˆŠNÈYŠ]ÚÙ[Ÿ™\]Y\ÝšXY\œË™Ù]
+˜]]Üš^˜][ÛˆŠHOOX™X\™\ˆ	ÝÚÙ[ŸX
+H™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽˆ•SUUÔ’V‘QŸJKÜÝ]\ÎKXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNÂˆÛÛœÝ\RÙ^OTÝš[™Ê[Ë–RÐTS•SWÐTWÒÑV_ˆŠNÈYŠX\RÙ^JH™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽˆ”“Õ’QT—ÔÑPÔ‘UÓRTÔÒS‘ÈŸJKÜÝ]\ÎLËXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNÂˆ]›ÙNÈž^ØÛÛœÝ^X]ØZ]™\]Y\Ý^
+
+NÈYŠ^›[™ÝŽNLŠH›ÝÈ™]È\œ›ÜŠ“ÑWÕÓ×ÓT‘ÑHŠNÈ›ÙOR”ÓÓ‹œ\œÙJ^žßHŠNßXØ]Ú
+J^Ü™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽ”Ýš[™ÊOË›Y\ÜØYÙ_’S•SQÒ”ÓÓˆŠ_JKÜÝ]\ÎXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNßBˆ]\™Ù]Èž^Ý\™Ù][™]ÈT“
+Ýš[™Ê›ÙOË\›ˆŠJNßXØ]ÚÜ™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽˆ’S•SQÕT“ŸJKÜÝ]\ÎXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNßBˆÛÛœÝÛXÞO]˜[Y]PžRØ\˜[[T›ÞU\™Ù]
+\™Ù]
+NÈYŠ\ÛXÞK˜[ÝÙY
+H™]\›ˆ™]È™\ÜÛœÙJ”ÓÓ‹œÝš[™ÚYžJÛÚÎ™˜[ÙK\œ›ÜŽˆ•T“Ó“ÕÐSÕÑQ‹™X\ÛÛŽœÛXÞKœ™X\ÛÛŸJKÜÝ]\ÎËXY\œÎžÈ˜ÛÛ[]\HŽˆ˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNÂˆÛÛœÝ›ÝšY\X]ØZ]™]Ú
+\™Ù]ÔÝš[™Ê
+KÛY]Ùˆ‘ÑU‹XY\œÎžØXØÙ\ˆ˜\XØ][Û‹ÚœÛÛˆ‹]]Üš^˜][ÛŽ˜™X\™\ˆ	Ø\RÙ^_X\Ù\‹XYÙ[Žˆ“^KT™\ÜL‹RP‹ÍŒKYÚ]X‹\›ÞHŸ_JNÈ™]\›ˆ™]È™\ÜÛœÙJ›ÝšY\‹˜›ÙKÜÝ]\Îœ›ÝšY\‹œÝ]\ËXY\œÎžÈ˜ÛÛ[]\HŽœ›ÝšY\‹šXY\œË™Ù]
+˜ÛÛ[]\HŠ_˜\XØ][Û‹ÚœÛÛˆ‹˜ØXÚKXÛÛ›ÛŽˆ››Ë\ÝÜ™HŸ_JNÂŸB™^ÜY˜][Ë‹‹—×Ô‘TÔ•—ÓÔ’QÒSSÒS‘T‹\Þ[˜È™]Ú
+™\]Y\Ý[‹Ý
+^ØÛÛœÝ\›[™]ÈT“
+™\]Y\Ý\›
+NÚYŠ\›œ]˜[YOOOH‹ØÛÝYXžZØ\˜[[K\›ÞHŠ\™]\›ˆ×Ü™\ÜÛÝYžRÔ›ÞJ™\]Y\Ý[ŠNÚYŠ\[Ùˆ×Ô‘TÔ•—ÓÔ’QÒSSÒS‘T‹™™]ÚOOH™[˜Ý[ÛˆŠ\™]\›ˆ™]È™\ÜÛœÙJ“›Ý›Ý[™‹ÜÝ]\ÎJNÜ™]\›ˆ×Ô‘TÔ•—ÓÔ’QÒSSÒS‘T‹™™]Ú
+™\]Y\Ý[‹Ý
+Nß_NÂ
