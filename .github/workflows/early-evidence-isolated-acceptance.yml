@@ -1,0 +1,168 @@
+name: Report 2 Early Evidence Isolated Acceptance
+
+on:
+  schedule:
+    # One isolated natural-market check after the old six-hour gaps age out.
+    - cron: "35 14 * * *"
+  push:
+    branches:
+      - repair/early-evidence-20260929
+      - integrate/early-evidence-current-20260929
+    paths:
+      - "audit-fixes/early-evidence-20260929/acceptance-request.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-early-evidence-isolated-acceptance
+  cancel-in-progress: false
+
+jobs:
+  collector-invocations:
+    if: ${{ contains(github.event.head_commit.message, '[collector-invocation-diagnostic]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read bounded historical Worker invocation metrics
+        run: node audit-fixes/early-evidence-20260929/collector-invocations-diagnostic.mjs report2-collector-invocations.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report2-collector-invocations-${{ github.run_id }}
+          path: report2-collector-invocations.json
+          if-no-files-found: error
+          retention-days: 7
+  collector-coverage:
+    if: ${{ contains(github.event.head_commit.message, '[collector-coverage-diagnostic]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read bounded collector coverage without market calls or writes
+        run: node audit-fixes/early-evidence-20260929/collector-coverage-diagnostic.mjs report2-collector-coverage.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report2-collector-coverage-${{ github.run_id }}
+          path: report2-collector-coverage.json
+          if-no-files-found: error
+          retention-days: 7
+  isolated-acceptance:
+    if: ${{ github.event_name == 'schedule' || contains(github.event.head_commit.message, '[repair-isolated-acceptance]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      REPORT2_RUN_SOURCE: "schedule"
+      ANALYTICS_ENABLED: "1"
+      PUBLIC_COLLECTOR_ENABLED: "0"
+      DELIVERY_ENABLED: "0"
+      CALIBRATION_APPLY_ENABLED: "0"
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_EXPECTED_WORKER_SHA: "59a68f1ce95554f0bd14d7f5561c5664bda35f92fe27862f514268ee6abc527d"
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
+      REPORT2_POST_V7_UNIFIED_ENABLED: "1"
+      REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
+      REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
+      REPORT2_D1_RUNS_PER_DAY: "80"
+      REPORT2_D1_MAX_DAILY_READS: "3500000"
+      REPORT2_D1_MAX_DAILY_WRITES: "70000"
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: "1"
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_CANDIDATE_BRANCH: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref_name }}
+    steps:
+      - name: Checkout isolated repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref }}
+          fetch-depth: 0
+      - name: Bind exact candidate and refuse stale branch
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch --quiet origin main
+          git merge-base --is-ancestor origin/main HEAD
+          echo "REPORT2_CANDIDATE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build exact candidate runtime
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node runner/preflight-role-gate.mjs
+          test -n "$REPORT2_PAYLOAD_KEY"
+          rm -rf runtime
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm -f runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
+          ACTUAL="$(sha256sum runtime/src/worker.js | awk '{print $1}')"
+          test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Run complete offline repair gate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test \
+            current-generation/tests/early-evidence-repair/repair.test.mjs \
+            telegram-repair-tests/v3-early-sidecar.test.mjs
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test \
+            current-generation/tests/*.test.mjs
+          for suite in \
+            approved-entry-path.runtime.mjs \
+            approved-entry-performance.runtime.mjs \
+            decision-timeline.runtime.mjs \
+            early-observation-state.runtime.mjs \
+            prospective-public-history.runtime.mjs \
+            public-collector-history-consumer.runtime.mjs \
+            stage392-persistence-contract.runtime.mjs; do
+            node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
+              "current-generation/tests/$suite" runtime
+          done
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
+            audit-fixes/v13/final-integration-37.mjs runtime
+      - name: Run real-market isolated full cycle
+        shell: bash
+        run: node audit-fixes/early-evidence-20260929/run-isolated-acceptance.mjs runtime report2-early-evidence-isolated-acceptance.json report2-early-evidence-isolated-run.log
+      - name: Upload isolated acceptance evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-early-evidence-isolated-acceptance-${{ github.run_id }}
+          path: |
+            report2-early-evidence-isolated-acceptance.json
+            report2-early-evidence-isolated-run.log
+            runtime/report2-measurement.json
+            runtime/report2-run-result.json
+            runtime/report2-external-http-count.json
+          if-no-files-found: warn
+          retention-days: 30
