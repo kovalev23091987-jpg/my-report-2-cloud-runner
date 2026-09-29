@@ -184,3 +184,15 @@ test('two equally recent canonical publications fail closed instead of guessing'
  assert.equal(db.raw.prepare(`SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='AMB'`).get().state,'FAILED_FINAL');
  assert.equal(db.raw.prepare(`SELECT count(*) n FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key='AMB'`).get().n,0);
 });
+
+test('technical health remains in the journal and never reaches owner Telegram',async t=>{
+ const db=new DB();t.after(()=>db.close());
+ db.raw.prepare(`INSERT INTO v3_pipeline_health_shadow VALUES(?,?,?,?,?,1)`).run('PIPELINE','DEGRADED_PIPELINE','["CRITICAL_FEED_DEGRADED"]',NOW-3600000,NOW);
+ db.raw.prepare(`INSERT INTO v3_pipeline_health_event_shadow VALUES(?,?,?,?,?,?,?,?,?,?,?,1)`).run('H-TECH','DEGRADED','HEALTHY_NO_IDEA','DEGRADED_PIPELINE','["CRITICAL_FEED_DEGRADED"]','PENDING',null,null,NOW-3600000,NOW-3600000,null);
+ let calls=0;
+ const result=await sender.runBoundTelegramDeliverySidecar(db,{enabled:true,relay_url:'https://relay.invalid',relay_key:'TEST_ONLY',now_ts:NOW,fetch_impl:async()=>{calls++;throw Error('TECHNICAL_NETWORK_FORBIDDEN');}});
+ assert.equal(result.status,'CLOSED',JSON.stringify(result));
+ assert.equal(result.sent,0);assert.equal(calls,0);
+ assert.deepEqual(result.health,[]);
+ assert.equal(db.raw.prepare(`SELECT state FROM v3_pipeline_health_event_shadow WHERE event_id='H-TECH'`).get().state,'PENDING');
+});

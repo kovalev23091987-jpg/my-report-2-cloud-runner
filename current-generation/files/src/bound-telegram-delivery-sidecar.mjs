@@ -3,7 +3,9 @@ import {sendLifecycleRelay} from './v3-telegram-delivery-sidecar.mjs';
 import {renderPipelineHealthMessage,classifyHealthDelivery} from './v3-pipeline-health-runtime.mjs';
 import {loadBoundDispatchForNetwork,reconcilePendingPublications,PUBLICATION_BINDING_GRACE_MS} from './publication-reconciler.mjs';
 export const BOUND_TELEGRAM_DELIVERY_VERSION='post-v7-bound-telegram-delivery-v5-finalize-invisible-removal-20260928';
-export const BOUND_TELEGRAM_DELIVERY_BUDGET=Object.freeze({rows_read:288,rows_written:32,requests_soft_cap:56,max_reconcile_dispatches:4,max_lifecycle_dispatches:2,max_health_dispatches:1});
+// Technical health is an internal journal only; the user Telegram is reserved
+// for canonical market ideas and their lifecycle.
+export const BOUND_TELEGRAM_DELIVERY_BUDGET=Object.freeze({rows_read:288,rows_written:32,requests_soft_cap:56,max_reconcile_dispatches:4,max_lifecycle_dispatches:2,max_health_dispatches:0});
 export const HEALTH_ALERT_CONFIRM_MS=20*60_000;
 const text=v=>v==null?'':String(v).trim();const upper=v=>text(v).toUpperCase();const rows=x=>Array.isArray(x?.results)?x.results:[];const parse=(v,fb)=>{try{return JSON.parse(v??JSON.stringify(fb));}catch{return fb;}};
 function usageDelta(before,after){if(!before||!after)return null;return {rows_read:Math.max(0,Number(after.rows_read||0)-Number(before.rows_read||0)),rows_written:Math.max(0,Number(after.rows_written||0)-Number(before.rows_written||0)),requests:Math.max(0,Number(after.requests||0)-Number(before.requests||0)),unknown_ops:Math.max(0,Number(after.unknown_ops||0)-Number(before.unknown_ops||0))};}
