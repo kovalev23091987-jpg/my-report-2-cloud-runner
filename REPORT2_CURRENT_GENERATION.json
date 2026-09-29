@@ -1,5 +1,5 @@
 {
-  "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
   "authoritative_workflow": ".github/workflows/report2.yml",
   "authoritative_runtime_overlay": "current-generation/apply-runtime-overlay.mjs",
   "obsolete_workflow_dispatch_files_allowed": 0,
@@ -13,9 +13,12 @@
   "directional_deep_slot": "FIRST_READY_DIRECTIONAL_CANDIDATE_AFTER_COOLDOWN",
   "public_market_history": "HUB_PUBLIC_COLLECTOR_FIVE_MINUTE_BATCH_V1",
   "public_market_history_consumer": "ONE_VERIFIED_READER_FOR_PRESELECTION_AND_DEEP_WITH_PARTIAL_SCAN_FALLBACK",
-  "history_compatibility": "REPORT2_HISTORY_COMPATIBILITY_V1_V11_V12",
+  "history_compatibility": "REPORT2_HISTORY_COMPATIBILITY_V1_V11_V12_V13",
   "full_evidence_weights": [35, 30, 20, 15],
   "supplemental_adjustment_weights": [32, 30, 20, 18],
   "delivery_statistics_cohorts": ["ANALYTICAL_PROSPECTIVE", "TELEGRAM_CONFIRMED", "MANUAL_CONFIRMED"],
-  "latest_only": true
+  "latest_only": true,
+  "discovery_direction_policy": "DISCOVERY_ONLY_NEVER_ENTRY",
+  "deep_selection_policy": "COMMON_PRIORITY_QUEUE_NO_LIQUIDATION_MONOPOLY",
+  "technical_silence_policy": "PRESERVE_ORIGINAL_FAILURE_NEVER_HEALTHY_NO_IDEA"
 }

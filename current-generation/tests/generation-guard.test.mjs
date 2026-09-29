@@ -51,6 +51,14 @@ test('workflow schedule and generation binding are exact',()=>{
  assert.match(y,/T16_GTRADE_NATIVE_SMOKE/);
  assert.match(y,/T16_BLOCKSCOUT_INDEX_SMOKE/);
 });
+test('root pointer and workflow resolve the same current generation',()=>{
+ const pointer=JSON.parse(fs.readFileSync(new URL('../../REPORT2_CURRENT_GENERATION.json',import.meta.url),'utf8'));
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ assert.equal(pointer.latest_only,true);
+ assert.equal(pointer.generation,generation.generation);
+ assert.match(workflow,new RegExp(`REPORT2_CURRENT_GENERATION:\\s*"${pointer.generation}"`));
+ assert.deepEqual(pointer.full_evidence_weights,[35,30,20,15]);
+});
 test('runtime overlay carries the complete formatter dependency set',()=>{
  const overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
  for(const rel of ['src/canonical-display.mjs','src/native-liquidation-guard.mjs','src/reason-registry.mjs']){
