@@ -21,6 +21,7 @@ jobs:
     timeout-minutes: 15
     env:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      REPORT2_RUN_SOURCE: "schedule"
       ANALYTICS_ENABLED: "1"
       PUBLIC_COLLECTOR_ENABLED: "0"
       DELIVERY_ENABLED: "0"
