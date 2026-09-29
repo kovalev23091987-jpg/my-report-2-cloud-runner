@@ -84,8 +84,9 @@ async function productionAll(sql,...params){
 async function applySchema(schemaRows){
   const priority={table:0,index:1,trigger:2,view:3};
   const rows=schemaRows.filter(row=>text(row.sql)&&priority[row.type]!==undefined).sort((a,b)=>priority[a.type]-priority[b.type]||text(a.name).localeCompare(text(b.name)));
-  for(let index=0;index<rows.length;index+=10){
-    await d1Query({batch:rows.slice(index,index+10).map(row=>({sql:row.sql,params:[]}))});
+  for(const row of rows){
+    try{await d1Query({sql:row.sql,params:[]});}
+    catch(error){throw new Error(`ISOLATED_SCHEMA_COPY_FAILED:${row.type}:${row.name}:${text(error?.message||error)}`);}
   }
 }
 
