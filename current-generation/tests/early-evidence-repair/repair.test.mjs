@@ -1,0 +1,67 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+import {fixtureDb,NOW} from './fixture-db.mjs';
+import {runV3EarlyPersistenceSidecar as run,chooseEarlyPersistenceTargets} from '../../../runtime/src/v3-early-sidecar.mjs';
+import {runV3EarlyPersistenceSidecar as oldRun} from './baseline-v3-early-sidecar.mjs';
+import {readEarlyMarketSnapshots} from '../../../runtime/src/market-history-reader.mjs';
+import {bindSelectedEarlyEvidence} from '../../../runtime/src/selected-early-evidence.mjs';
+import {resolveCanonicalDirection,buildRuntimeCanonicalBundle} from '../../../runtime/src/canonical-runtime-adapter.mjs';
+import {FixtureDB} from '../../../post-v7-consolidated/liquidation/liquidation-extension/delivery/tests/db-fixture.mjs';
+import * as publication from '../../../runtime/src/canonical-publication.mjs';
+import {runBoundTelegramDeliverySidecar} from '../../../runtime/src/bound-telegram-delivery-sidecar.mjs';
+const args={current_scan_ts:NOW,now_ts:NOW,source_run_id:'REPLAY'};
+const feature=db=>db.sql.prepare('SELECT * FROM v3_early_feature_snapshot ORDER BY contract_code').all();
+function setup(){const db=fixtureDb(),context={};const env={DATA_DB:db,REPORT2_CURRENT_CYCLE_EARLY_PERSIST:a=>run(db,{...a,cycle_context:context})};
+ const current=JSON.parse(fs.readFileSync(new URL('./real_scans.json',import.meta.url))).find(s=>s.ts===NOW);
+ // Identity/liquidity gate states below are controlled fixture assertions,
+ // market price/turnover/OI/funding are the retained production observations.
+ const scan={timestamp:NOW,contracts:current.contracts.map(r=>({contract_code:r[0],price:r[1],turnover_24h_usdt:r[2],symbol_fingerprint:{resolution_status:'RESOLVED_HTX_EXACT'},quality:{market_present:true},instrument_scope:{classification:'CRYPTO_CONFIRMED'},freshness:{stale:false,market_age_sec:r[7]}}))};
+ return {db,context,env,scan};}
+test('real market inputs reproduce old empty history and new qualifying QNT',async()=>{const db=fixtureDb();await oldRun(db,args);assert.equal(feature(db)[0].early_detection_quality_0_100,55);assert.equal(JSON.parse(feature(db)[0].feature_json).self_normalized.price_5m.sample_size,0);const fresh=fixtureDb();await run(fresh,args);const row=feature(fresh)[0];assert.equal(row.contract_code,'QNT-USDT');assert.equal(row.direction_hint,'LONG');assert.equal(row.early_detection_quality_0_100,82);assert.equal(JSON.parse(row.feature_json).self_normalized.price_5m.sample_size,71);});
+test('missing microstructure does not disable independent price/OI features',async()=>{const db=fixtureDb();const r=await run(db,args);assert.equal(r.microstructure_rows_loaded,0);const f=JSON.parse(feature(db)[0].feature_json);assert.equal(f.feature_fusion.status,'CLOSED');assert.equal(f.feature_fusion.features.orderflow.status,'NO_DATA');});
+test('tampered collector payload is rejected',async()=>{const r=await readEarlyMarketSnapshots({db:fixtureDb({corrupt:true}),now_ts:NOW});assert.equal(r.snapshots.length,0);assert.ok(r.rejections.every(r=>r.reason==='PAYLOAD_HASH_MISMATCH'));});
+test('data received after decision is rejected',async()=>{const r=await readEarlyMarketSnapshots({db:fixtureDb({future:true}),now_ts:NOW});assert.equal(r.snapshots.length,0);assert.ok(r.rejections.every(r=>r.reason==='RECEIVED_AFTER_DECISION'));});
+test('incomplete multi-shard envelope is rejected',async()=>{const db=fixtureDb();db.sql.exec(`UPDATE report2_market_snapshot_batch_v1 SET source_timestamps_json='{"expected_shards":2,"universe_total":8}'`);assert.equal((await readEarlyMarketSnapshots({db,now_ts:NOW})).snapshots.length,0);});
+test('absent collector stays sparse; it does not invent history',async()=>{const db=fixtureDb({collector:false});await run(db,args);for(const r of feature(db))assert.equal(JSON.parse(r.feature_json).self_normalized.price_5m.sample_size,0);});
+test('strong new candidate beats weak old candidate without increasing initial slots',()=>{const old={contract_code:'OLD',wave_id:'OLDW',lifecycle_stage:'DISCOVERY',last_seen_ts:NOW-1000};const obs=(contract,n)=>({contract,current_row:{},observation:{status:'CLOSED',long_evidence_domain_count:n,short_evidence_domain_count:0,early_detection_quality_0_100:55+9*n}});const selected=chooseEarlyPersistenceTargets({active_candidates:[old],observations:[obs('OLD',0),obs('NEW',3)]});assert.equal(selected.length,1);assert.equal(selected[0].contract,'NEW');});
+test('selected exact candidate reaches canonical direction with its persisted wave',async()=>{const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});const bound=await bindSelectedEarlyEvidence({target:{contract:'QNT-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+2000});assert.equal(bound.status,'CLOSED');const resolution=resolveCanonicalDirection({discovery:bound.candidate,decision_ts:NOW+2000});assert.equal(resolution.direction,'LONG');assert.equal(resolution.early_receipt.same_wave,true);assert.equal(bound.candidate.early_candidate_quality_0_100,82);});
+test('different scheduler choice gets its own evidence, not QNT data',async()=>{const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});const bound=await bindSelectedEarlyEvidence({target:{contract:'ADA-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+2000});assert.equal(bound.status,'CLOSED');assert.equal(bound.candidate.early_candidate_receipt.contract,'ADA-USDT');assert.notEqual(bound.candidate.early_candidate_wave_id,feature(db).find(r=>r.contract_code==='QNT-USDT')?.wave_id);assert.equal(db.sql.prepare('SELECT count(*) n FROM v3_early_candidate_wave').get().n,2);assert.ok(db.usageSnapshot().rows_written<=12);});
+test('same-cycle refresh reuses history and never duplicates candidate writes',async()=>{const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});const queries=db.queries.filter(q=>q.includes('FROM report2_market_snapshot_batch_v1')).length;const writes=db.usageSnapshot().rows_written;for(let i=0;i<2;i++)await bindSelectedEarlyEvidence({target:{contract:'QNT-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+2000});assert.equal(db.usageSnapshot().rows_written,writes);assert.equal(db.queries.filter(q=>q.includes('FROM report2_market_snapshot_batch_v1')).length,queries);});
+test('stale early record cannot become an authorized direction',async()=>{const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});const b=await bindSelectedEarlyEvidence({target:{contract:'QNT-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+16*60000});assert.equal(b.candidate,null);});
+test('recovered early score alone cannot bypass missing technical target',async()=>{const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});const b=await bindSelectedEarlyEvidence({target:{contract:'QNT-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+2000});const c=buildRuntimeCanonicalBundle({contract:'QNT-USDT',run_id:'REPLAY',snapshot_id:'S',observed_ts:NOW+2000,discovery_row:b.candidate}).canonical;assert.equal(c.direction,'LONG');assert.equal(c.scores.coin_interest_0_100,82);assert.equal(c.state,'REJECTED');});
+test('actual scheduler invokes exact refresh before building handoff',()=>{const worker=fs.readFileSync(new URL('../../../runtime/src/worker.js',import.meta.url),'utf8');const start=worker.indexOf('async function runBoundedDeepCheckScheduler(');const body=worker.slice(start);assert.ok(body.indexOf('await bindSelectedEarlyEvidence')<body.indexOf('buildDiscoveryHandoffEnvelope('));assert.match(worker,/early_scan: scan/);});
+test('strategy and presentation modules retain frozen hashes',()=>{
+ const expected={'canonical-runtime-adapter.mjs':'fcc5b0239d9730b4d307e97652f75dd674406ecc4aa835fc47f0be0270fa13c9','canonical-interest-score.mjs':'73ea06f009fad6739ea67c1f6b22db29852a88231bab49a207d3847ce3407332','technical-move-potential.mjs':'a2b39c3d2be09174db75ecb93dcc9656a8a7afc238ae632f147fea239780d3b0','telegram-compact-formatter.mjs':'ca30d45b004dd0c517bbf90c6c837a7cbda295535bbe8ce90a9c2863740a8a92','manual-report-formatter.mjs':'fbb985509bb86adc5e0fa2655f64cf9d4cb8801cb0c557008de96bbf6f062af9','v3-early-discovery.mjs':'9dceeb5cb9c41ee936864cda4575e2c08e2668b41e5ff728bc09d491f7fc1f18','v3-early-feature-fusion.mjs':'df76eeec6100bfc82e7be71d96c9c99ed714fdb6bf354d91c4f3d0d924586d93'};
+ for(const [file,hash] of Object.entries(expected)){const bytes=fs.readFileSync(new URL('../../../runtime/src/'+file,import.meta.url));assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),hash,file);}
+});
+test('real-derived candidate through publication and mocked transport; technical plan is a separate synthetic control',async()=>{
+ const {db,context,env,scan}=setup();await run(db,{...args,cycle_context:context});
+ const bound=await bindSelectedEarlyEvidence({target:{contract:'QNT-USDT'},env,scan,run_id:'REPLAY',now_ts:NOW+2000});
+ const price=scan.contracts.find(r=>r.contract_code==='QNT-USDT').price;
+ const c=buildRuntimeCanonicalBundle({contract:'QNT-USDT',run_id:'REPLAY',snapshot_id:'CONTROL_PLAN',observed_ts:NOW+2000,discovery_row:bound.candidate,
+  publication_shadow:{entry_signal:{state:'REJECTED',direction:'LONG',hard_veto:false,trigger:{metric:'price',operator:'>=',value:price,unit:'USDT',timeframe:'5m',expires_ts:NOW+600000,next_recheck_ts:NOW+300000,cancel_condition:'контрольный тестовый уровень отмены'}},scenario_plan:{entry_area_min_price:price,entry_area_max_price:price,entry_area:`${price} USDT`,execution_reference_price:price,invalidation:{condition:'контрольный тестовый уровень отмены',price:price*.96},target_price:price*1.06,remaining_move_pct:6},publication_gate:{status:'NOT_CLOSED'}},
+  // Synthetic external role receipt belongs only to this transport control.
+  public_evidence:{contract_code:'QNT-USDT',observed_ts:NOW,evidence:[{metric:'OPEN_INTEREST_CHANGE',source:'BINANCE',venue:'BINANCE',status:'CLOSED',source_ts:NOW-10000,observed_ts:NOW,max_age_sec:300,value:3,unit:'PERCENT',coverage_pct:100,source_compatible:true}]},
+  futures_component:{ok:true,available_ts:NOW,data:{ts:NOW}},
+ }).canonical;
+ assert.equal(c.state,'OBSERVE');assert.equal(c.scores.coin_interest_0_100,82);
+ const delivery=new FixtureDB();try{
+  const wave=bound.candidate.wave_id;
+  const saved=await publication.persistCanonicalSnapshot(delivery,{canonical:c,wave_id:wave,now_ts:NOW+2000});assert.equal(saved.status,'CLOSED');
+  delivery.raw.prepare('INSERT INTO v3_user_lifecycle_shadow VALUES(?,?,?,?,?,?,?,?,?,1)').run('QNT-USDT','LONG',wave,'test','OBSERVE','offline-only',NOW+2000,NOW+600000,NOW+2000);
+  delivery.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,created_ts,updated_ts,shadow_only) VALUES(?,?,?,?,?,?,?,'PENDING',?,?,1)").run('D','K','QNT-USDT','LONG',wave,'OBSERVE','test',NOW+2000,NOW+2000);
+  let calls=0;const options={enabled:true,relay_url:'https://relay.invalid/test',relay_key:'OFFLINE',source_run_id:'REPLAY',now_ts:NOW+3000,fetch_impl:async()=>{calls++;return new Response(JSON.stringify({ok:true,message_id:123}),{status:200});}};
+  const result=await runBoundTelegramDeliverySidecar(delivery,options);assert.equal(result.sent,1,JSON.stringify(result));assert.equal(calls,1);
+  await runBoundTelegramDeliverySidecar(delivery,options);assert.equal(calls,1);
+ }finally{delivery.close();}
+});
+test('technical health events never reach transport even when delivery is enabled',async()=>{
+ const db=new FixtureDB();try{db.raw.prepare('INSERT INTO v3_pipeline_health_event_shadow VALUES(?,?,?,?,?,?,?,?,?,?,?,1)').run('H','DEGRADED','HEALTHY_NO_IDEA','DEGRADED_PIPELINE','["CRITICAL_FEED_DEGRADED"]','PENDING',null,null,NOW-3600000,NOW-3600000,null);
+ db.raw.prepare('INSERT INTO v3_pipeline_health_shadow VALUES(?,?,?,?,?,1)').run('PIPELINE','DEGRADED_PIPELINE','["CRITICAL_FEED_DEGRADED"]',NOW-3600000,NOW);
+ let calls=0;const r=await runBoundTelegramDeliverySidecar(db,{enabled:true,now_ts:NOW,relay_url:'https://relay.invalid/test',relay_key:'OFFLINE',fetch_impl:async()=>{calls++;throw Error('FORBIDDEN');}});assert.equal(calls,0);assert.equal(r.sent,0);assert.equal(db.raw.prepare('SELECT count(*) n FROM v3_pipeline_health_event_shadow').get().n,1);
+ }finally{db.close();}
+});
+test('a cycle cannot write a third candidate',async()=>{const {db,context}=setup();await run(db,{...args,cycle_context:context});await run(db,{...args,cycle_context:context,preferred_contracts:['ADA-USDT'],selected_only:true});const r=await run(db,{...args,cycle_context:context,preferred_contracts:['GPS-USDT'],selected_only:true});assert.equal(r.status,'CYCLE_EARLY_WRITE_LIMIT');assert.equal(db.sql.prepare('SELECT count(*) n FROM v3_early_candidate_wave').get().n,2);});
+test('terminal wave outside active sample is not recreated by initial discovery',async()=>{const db=fixtureDb();await run(db,args);db.sql.prepare("UPDATE v3_early_candidate_wave SET lifecycle_stage='EXIT' WHERE contract_code='QNT-USDT'").run();const r=await run(db,args);assert.equal(r.targets[0].status,'TERMINAL_WAVE_NOT_REOPENED');assert.equal(db.sql.prepare("SELECT lifecycle_stage FROM v3_early_candidate_wave WHERE contract_code='QNT-USDT'").get().lifecycle_stage,'EXIT');});

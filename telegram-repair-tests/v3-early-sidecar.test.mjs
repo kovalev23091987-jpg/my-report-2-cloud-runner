@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {runV3EarlyPersistenceSidecar,V3_EARLY_SIDECAR_BUDGET,chooseEarlyPersistenceTargets} from '../src/v3-early-sidecar.mjs';
+import {runV3EarlyPersistenceSidecar,V3_EARLY_SIDECAR_BUDGET,chooseEarlyPersistenceTargets} from '../runtime/src/v3-early-sidecar.mjs';
 
 const NOW=1_800_000_000_000;
 function payload(ts,{altPrice=100,altOi=1000,altFunding=-0.0001,altTurnover=1_000_000}={}){
@@ -65,10 +65,10 @@ test('V3 early sidecar persists bounded first-seen wave without probability',asy
   assert.ok(db.persistSql.some(s=>s.includes('v3_early_outcome_journal')));
 });
 
-test('V3 sidecar target selection keeps an active candidate and does not exceed cap',()=>{
+test('V3 sidecar target selection prioritizes stronger factual evidence and does not exceed cap',()=>{
   const obs=(contract,q=50)=>({contract,current_row:{market_age_sec:1,prior_discovery:{long_watch:false,short_watch:false,long_trigger_count:0,short_trigger_count:0}},observation:{status:'CLOSED',contract,long_evidence_domain_count:2,short_evidence_domain_count:0,early_detection_quality_0_100:q}});
   const active=[{contract_code:'A-USDT',wave_id:'w1',generation:1,last_seen_ts:1,lifecycle_stage:'DISCOVERY',first_seen_detectors_json:'[]',remaining_edge_json:'{}',evidence_refs_json:'[]'}];
   const selected=chooseEarlyPersistenceTargets({observations:[obs('A-USDT',10),obs('B-USDT',90),obs('C-USDT',80),obs('D-USDT',70)],active_candidates:active});
   assert.equal(selected.length,1);
-  assert.equal(selected[0].contract,'A-USDT');
+  assert.equal(selected[0].contract,'B-USDT');
 });

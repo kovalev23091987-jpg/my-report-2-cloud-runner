@@ -206,3 +206,34 @@ export async function readMarketHistoryForContract({db,contract,now_ts=Date.now(
 }
 
 export default {MARKET_HISTORY_READER_VERSION,HISTORY_COMPATIBILITY,readMarketHistoryForContract,readMarketHistoryTargets};
+
+// Shared, verified five-minute input for early discovery. One universe read,
+// never one database scan per coin. No interpolated points or invented history.
+export async function readEarlyMarketSnapshots({db,now_ts,preferred_generation=null}={}) {
+  const now=finite(now_ts);
+  if(!db?.prepare||!Number.isSafeInteger(now))return {status:'NOT_CLOSED',snapshots:[],reason:'HISTORY_INPUT_INVALID'};
+  try {
+    const page=await readCollectorPages(db,{actor:'HUB_PUBLIC_COLLECTOR',start:now-6*60*60_000-SLOT_MS,end:now});
+    const verified=await verifiedCollectorRows(page.rows,{decisionTs:now});
+    const groups=new Map();
+    for(const row of verified.accepted){const key=`${row.bucket}|${row.generation}`;const a=groups.get(key)||[];a.push(row);groups.set(key,a);}
+    const chosen=new Map();
+    for(const shards of groups.values()){
+      shards.sort((a,b)=>a.shard-b.shard);
+      const head=shards[0],meta=parseJson(head.source_timestamps_json,null),expected=finite(meta?.expected_shards);
+      if(!Number.isSafeInteger(expected)||expected<1||shards.length!==expected||shards.some((r,i)=>r.shard!==i||r.source_timestamps_json!==head.source_timestamps_json))continue;
+      const all=shards.flatMap(r=>parseJson(r.payload,[]));
+      if(all.length!==finite(meta?.universe_total)||new Set(all.map(r=>normalizedContract(r.contract))).size!==all.length)continue;
+      const rows=new Map();
+      for(const r of all){const c=normalizedContract(r.contract),point=compactCollectorPoint(r,head.bucket,head.generation);if(!c)continue;
+        rows.set(c,{...point,contract:c,data_status:point.source_status,prior_discovery:{}});
+      }
+      if(!rows.size)continue;
+      const snapshot={status:'CLOSED',ts:Math.max(...[...rows.values()].map(r=>r.ts)),rows,source:'REPORT2_MARKET_SNAPSHOT_BATCH_V1',source_generation:head.generation};
+      const prior=chosen.get(head.bucket);
+      if(!prior||head.generation===preferred_generation||(prior.source_generation!==preferred_generation&&head.generation>prior.source_generation))chosen.set(head.bucket,snapshot);
+    }
+    const snapshots=[...chosen.values()].sort((a,b)=>a.ts-b.ts);
+    return {status:snapshots.length?'CLOSED':'NOT_CLOSED',snapshots,rejections:verified.rejected,truncated:page.truncated,shard_rows_read:page.rows.length};
+  }catch(error){return {status:'NOT_CLOSED',snapshots:[],reason:'EARLY_COLLECTOR_READ_FAILED',error:String(error?.message||error).slice(0,160)};}
+}

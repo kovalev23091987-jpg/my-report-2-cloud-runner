@@ -1,3 +1,4 @@
+import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
 import { claimDueRecheck, completeRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
@@ -8642,6 +8643,8 @@ async function runBoundedDeepCheckScheduler(
     const target
     of plan.selected
   ) {
+    const selectedEarly=await bindSelectedEarlyEvidence({target,env,scan:options?.early_scan,run_id:runId,now_ts:Date.now()});
+    if(selectedEarly.candidate)target._v3_discovery_source=selectedEarly.candidate;
     const liveLane =
       String(options?.live_handoff_lane || "")
         .startsWith("LIVE_");
@@ -19410,6 +19413,8 @@ const __REPORT2_ORIGINAL_HANDLER = {
             scan_ts:
               scan?.timestamp ??
               null,
+
+            early_scan: scan,
 
             live_handoff_lane:
               liveHandoffPlan?.lane ??
