@@ -1,4 +1,5 @@
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
+import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
 import { claimDueRecheck, completeRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
@@ -16301,19 +16302,21 @@ async function buildDeepCheckInput(params, env) {
   // new cross-exchange family shares that envelope with projected liquidation
   // sources instead of silently pushing the invocation above its proven cap.
   const crossExchangeFamilyTurn=Math.floor(Number(params?.cycle_started_ts??cycleStartedTs)/(20*60*1000))%3===0;
+  const sourceRoutingPlan=buildCandidateSourceRoutingPlan({
+    discovery_row:params?.discovery_row||null,
+    cross_exchange_turn:crossExchangeFamilyTurn,
+    manual_coin:String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract,
+    queued_coin:String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract,
+  });
   try{
     if(typeof env?.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT==='function'){
       const derivativeVenues=new Set((Array.isArray(publicEvidence?.evidence)?publicEvidence.evidence:[])
         .filter(row=>row?.status==='CLOSED'&&['FUTURES','PERP','SWAP','USDT_M_PERPETUAL'].includes(String(row?.market_type||'').toUpperCase()))
         .map(row=>String(row?.venue||row?.source||'').trim()).filter(Boolean));
       const conflict=Boolean(publicEvidence?.conflicts?.length)||String(publicEvidence?.dq_status||'').toUpperCase().includes('CONFLICT');
-      const moveForLiquidations=Number(params?.discovery_row?.rolling_24h_change_pct??params?.discovery_row?.move_pct);
-      const manualCoin=String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract;
-      const queuedCoin=String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract;
-      const reserveForLiquidations=!crossExchangeFamilyTurn&&(manualCoin||queuedCoin||(Number.isFinite(moveForLiquidations)&&Math.abs(moveForLiquidations)>=5)||params?.discovery_row?.early_candidate_bridge===true);
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
-        critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:reserveForLiquidations,
+        critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:sourceRoutingPlan.reserve_liquidation_lane,
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
@@ -16322,9 +16325,9 @@ async function buildDeepCheckInput(params, env) {
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
   try{
-    if(crossExchangeFamilyTurn&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
+    if(sourceRoutingPlan.run_cross_exchange&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
       contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),
-    });else if(!crossExchangeFamilyTurn)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},internal_only:true,next_family_rotation:true};
+    });else if(!sourceRoutingPlan.run_cross_exchange)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},network_calls:0,internal_only:true,next_family_rotation:true};
   }catch(error){crossExchangeRiskContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
 
   let htxLiquidationShadow;
@@ -16407,7 +16410,9 @@ async function buildDeepCheckInput(params, env) {
    */
   // All new source facts finish before the analytical cutoff is fixed.
   let nativeLiquidationAcquisition = null;
-  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && /^[^-\s]+-USDT$/u.test(contract)) {
+  const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:crossExchangeRiskContext});
+  let nativeLiquidationCollectionError=null;
+  if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && liquidationCandidateHttpCap>0 && /^[^-\s]+-USDT$/u.test(contract)) {
     try {
       nativeLiquidationAcquisition = await env.REPORT2_LIQUIDATION_NATIVE_COLLECT({
         contract, native_symbol: contract.slice(0,-5), run_id: String(params?.run_id || "").trim() || `manual-shadow-${cycleStartedTs}`,
@@ -16416,9 +16421,22 @@ async function buildDeepCheckInput(params, env) {
         early_candidate_quality_0_100:params?.discovery_row?.early_candidate_quality_0_100??null,
         manual_liquidation_request:String(env?.REPORT2_MANUAL_COIN_CONTRACT||'').trim()===contract,
         source_identity:supplementalCandidateContext?.liquidation_identity||null,
+        max_http_for_candidate:liquidationCandidateHttpCap,
       });
-    } catch { /* Optional source fails closed; never refresh its old timestamps. */ }
+    } catch(error) { nativeLiquidationCollectionError=String(error?.message||error).slice(0,200); /* Optional source fails closed; never refresh its old timestamps. */ }
   }
+  const sourceConfirmationReceipt={
+    ...sourceRoutingPlan,
+    cross_exchange_status:crossExchangeRiskContext?.status||'NOT_CLOSED',
+    cross_exchange_network_calls:Number.isSafeInteger(Number(crossExchangeRiskContext?.network_calls))?Number(crossExchangeRiskContext.network_calls):null,
+    liquidation_http_cap:liquidationCandidateHttpCap,
+    liquidation_lane_reserved:supplementalCandidateContext?.liquidation_lane_reserved===true,
+    liquidation_collection_started:liquidationCandidateHttpCap>0&&supplementalCandidateContext?.liquidation_lane_reserved===true&&typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT==='function',
+    liquidation_context_returned:Boolean(nativeLiquidationAcquisition),
+    liquidation_collection_error:nativeLiquidationCollectionError,
+    coverage_closed:Boolean(crossExchangeRiskContext?.status==='CLOSED'||nativeLiquidationAcquisition),
+  };
+  console.log('CANDIDATE_SOURCE_CONFIRMATION_ROUTE',JSON.stringify({contract,run_id:String(params?.run_id||''),...sourceConfirmationReceipt}));
   if(String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
     try{await env.REPORT2_LIQUIDATION_QUEUE_COMPLETE({usable:Boolean(nativeLiquidationAcquisition)||crossExchangeRiskContext?.status==='CLOSED',result:{native:Boolean(nativeLiquidationAcquisition),cross_exchange:crossExchangeRiskContext?.status||'NOT_CLOSED'}});}catch{}
   }
@@ -16944,7 +16962,7 @@ async function buildDeepCheckInput(params, env) {
   const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
   const canonicalFuturesComponent=futures?.data?{...futures,data:{...futures.data,mark_price:null,ticker:null,ticker_24h:null}}:futures;
   const canonicalLiquidationIntelligence=liquidationIntelligence?{...liquidationIntelligence,provider_current_price:null}:liquidationIntelligence;
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
