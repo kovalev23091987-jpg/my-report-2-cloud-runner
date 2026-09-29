@@ -1,0 +1,51 @@
+name: Report 2 Current Source Audit
+on:
+  push:
+    branches: [source-audit-20260930]
+    paths: ['audit-fixes/source-audit-20260930/request.json']
+permissions:
+  contents: read
+jobs:
+  read-source-state:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble exact current runtime without source access
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
+          node -e "const fs=require('fs'),crypto=require('crypto');if(crypto.createHash('sha256').update(fs.readFileSync('runtime/src/worker.js')).digest('hex')!=='86fda51194316acf13a5f1a825fab2e9b347f78b648a23b0747ba159171f3377')throw Error('CURRENT_RUNTIME_MISMATCH')"
+      - name: Verify source proof fixes without external source requests
+        run: |
+          cd runtime
+          npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          cd ..
+          node current-generation/validate.mjs
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs
+          node audit-fixes/v13/final-integration-37.mjs runtime
+      - name: Read bounded source quotas caches and weight statistics
+        run: node audit-fixes/source-audit-20260930/read-source-state.mjs runtime source-state-read-only.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-state-read-only-${{ github.run_id }}
+          path: source-state-read-only.json
+          if-no-files-found: error
+          retention-days: 30

@@ -1,7 +1,8 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 
-export const HTX_PUBLIC_RISK_EVIDENCE_VERSION='htx-public-risk-evidence-v1-20260928';
+export const HTX_PUBLIC_RISK_EVIDENCE_VERSION='htx-public-risk-evidence-v2-shared-source-clock-20260930';
 const SOURCE='HTX_PUBLIC_RISK',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
+const GLOBAL_KEY='ALL_HTX_LINEAR_SWAPS_V2';
 const text=value=>String(value??'').trim();
 const contractOf=value=>text(value).toUpperCase();
 const finite=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
@@ -23,39 +24,52 @@ async function reserve(db,{reservation_id,attempts,now}){
  return{allowed:Number(row?.attempts)===attempts,status:Number(row?.attempts)===attempts?'RESERVED':'DAILY_CAP_OR_DUPLICATE',day_utc:day,attempts:Number(row?.attempts||0)};
 }
 
-async function getJson(fetchImpl,url){
+async function getJson(fetchImpl,url,clock){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
- try{const response=await fetchImpl(url,{headers:{accept:'application/json','user-agent':'My-Report-2/htx-risk-v1'},signal:controller.signal});const payload=await response.json().catch(()=>null);return{ok:response.ok&&payload?.status==='ok',http_status:response.status,payload};}
+ try{const response=await fetchImpl(url,{headers:{accept:'application/json','user-agent':'My-Report-2/htx-risk-v1'},signal:controller.signal});const payload=await response.json().catch(()=>null);return{ok:response.ok&&payload?.status==='ok',http_status:response.status,payload,received_ts:clock()};}
  catch(error){return{ok:false,http_status:null,error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160),payload:null};}
  finally{clearTimeout(timer);}
 }
 
 const rows=payload=>Array.isArray(payload?.data)?payload.data:payload?.data&&typeof payload.data==='object'?[payload.data]:[];
-const matching=(payload,contract)=>rows(payload).filter(row=>!row?.contract_code||contractOf(row.contract_code)===contract);
+const matching=(payload,contract)=>rows(payload).filter(row=>contractOf(row?.contract_code)===contract);
+const ladderCount=row=>Number.isSafeInteger(row?.ladder_count)?row.ladder_count:Array.isArray(row?.list)?row.list.reduce((n,x)=>n+(Array.isArray(x?.ladders)?x.ladders.length:0),0):1;
+// The official endpoints accept an omitted contract_code. Cache one compact
+// all-contract response and extract only the exact requested contract. The
+// existing consumer needs counts, not the full multi-megabyte ladder arrays.
+const compactPayload=(payload,state)=>({status:payload?.status,ts:payload?.ts,data:rows(payload).map(row=>state?{contract_code:row?.contract_code,margin_mode:row?.margin_mode,open:row?.open,open_order:row?.open_order,open_position:row?.open_position}:{contract_code:row?.contract_code,margin_mode:row?.margin_mode,ladder_count:ladderCount(row)})});
 export function normalizeHtxPublicRisk({contract,state_payload,isolated_payload,cross_payload,observed_ts=Date.now()}={}){
  const htxContract=contractOf(contract),stateRows=matching(state_payload,htxContract),isolatedRows=matching(isolated_payload,htxContract),crossRows=matching(cross_payload,htxContract);
  const openValues=stateRows.flatMap(row=>['open','open_order','open_position'].map(key=>finite(row?.[key])).filter(value=>value!==null));
- const explicitlyClosed=openValues.some(value=>value===0),sourceTs=Math.max(0,...[state_payload?.ts,isolated_payload?.ts,cross_payload?.ts].map(finite).filter(value=>value!==null),observed_ts);
- const evidence=buildEvidenceV2({provider_id:SOURCE,upstream_id:'HTX_OFFICIAL_LINEAR_SWAP',asset_id:`htx-futures:${htxContract}`,htx_contract:htxContract,block_id:explicitlyClosed?'N08':'N09',metric_family:explicitlyClosed?'HTX_OPENING_RESTRICTED':'HTX_MARGIN_RISK_CONTEXT',origin_event_id:`${htxContract}:${sourceTs}`,dependency_group:`HTX_EXECUTION_RULES:${htxContract}:${sourceTs}`,source_ts:sourceTs,observed_ts,expires_at:observed_ts+TTL,directional_strength:null,risk_strength:explicitlyClosed?1:null,coverage_status:stateRows.length?'COMPLETE':'PARTIAL',coverage_fraction:stateRows.length?1:0,validation_status:stateRows.length?'VALID':'ERROR',validation_reason:stateRows.length?null:'HTX_STATE_ROW_REQUIRED',extra:{execution_open_allowed:stateRows.length&&!explicitlyClosed,isolated_ladder_count:isolatedRows.length,cross_ladder_count:crossRows.length,official_units_preserved:true}});
- return{status:stateRows.length?'CLOSED':'PARTIAL',contract:htxContract,evidence:[evidence],summary:{execution_open_allowed:evidence.execution_open_allowed,isolated_ladder_count:isolatedRows.length,cross_ladder_count:crossRows.length},internal_only:true};
+ const explicitlyClosed=openValues.some(value=>value===0),sourceTs=finite(state_payload?.ts),clockClosed=sourceTs!==null&&sourceTs<=observed_ts&&observed_ts-sourceTs<=TTL,stateClosed=stateRows.length===1&&openValues.length>0&&clockClosed;
+ const evidence=buildEvidenceV2({provider_id:SOURCE,upstream_id:'HTX_OFFICIAL_LINEAR_SWAP',asset_id:`htx-futures:${htxContract}`,htx_contract:htxContract,block_id:explicitlyClosed?'N08':'N09',metric_family:explicitlyClosed?'HTX_OPENING_RESTRICTED':'HTX_MARGIN_RISK_CONTEXT',origin_event_id:`${htxContract}:${sourceTs}`,dependency_group:`HTX_EXECUTION_RULES:${htxContract}:${sourceTs}`,source_ts:sourceTs,observed_ts,expires_at:clockClosed?sourceTs+TTL:observed_ts,directional_strength:null,risk_strength:stateClosed&&explicitlyClosed?1:null,coverage_status:stateClosed?'COMPLETE':'PARTIAL',coverage_fraction:stateClosed?1:0,validation_status:stateClosed?'VALID':'ERROR',validation_reason:stateClosed?null:!clockClosed?'HTX_SOURCE_CLOCK_NOT_CURRENT':'EXACT_UNIQUE_HTX_STATE_WITH_OPEN_VALUE_REQUIRED',extra:{execution_open_allowed:stateClosed?!explicitlyClosed:null,execution_open_scope:'HTX_ISOLATED_MARGIN',isolated_ladder_count:isolatedRows.reduce((n,r)=>n+ladderCount(r),0),cross_ladder_count:crossRows.reduce((n,r)=>n+ladderCount(r),0),official_units_preserved:true,source_clock_closed:clockClosed,margin_context_complete:isolatedRows.length>0&&crossRows.length>0}});
+ return{status:stateClosed?'CLOSED':'PARTIAL',contract:htxContract,evidence:[evidence],summary:{execution_open_allowed:evidence.execution_open_allowed,isolated_ladder_count:isolatedRows.length,cross_ladder_count:crossRows.length,margin_context_complete:evidence.margin_context_complete},internal_only:true};
 }
 
-export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fetch,pause_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms)),request_admit,contract,run_id,now=Date.now()}={}){
+export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fetch,pause_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms)),clock=Date.now,request_admit,contract,run_id,now=Date.now()}={}){
  if(!db)throw new Error('HTX_PUBLIC_RISK_DB_REQUIRED');const htxContract=contractOf(contract);if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await install(db);const cached=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,htxContract,now).first();
- if(cached){try{return{...JSON.parse(cached.payload_json),cache_status:'HIT',network_calls:0};}catch{}}
- const reservationId=`EV2:${SOURCE}:${run_id}:${htxContract}:${Math.floor(now/TTL)}`;
+ if(cached){try{const p=JSON.parse(cached.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{...p,cache_status:'HIT',network_calls:0};}catch{}}
+ const shared=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,GLOBAL_KEY,now).first();
+ if(shared){try{const p=JSON.parse(shared.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalizeHtxPublicRisk({contract:htxContract,...p.payloads,observed_ts:now}),cache_status:'SHARED_HIT',network_calls:0,receipts:p.receipts,shared_catalog_source_ts:p.source_ts,internal_only:true};}catch{}}
+ const reservationId=`EV2:${SOURCE}:${run_id}:${GLOBAL_KEY}:${Math.floor(now/TTL)}`;
  const wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:3}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserve(db,{reservation_id:reservationId,attempts:3,now});
  if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
- const encoded=encodeURIComponent(htxContract),base='https://api.hbdm.com/linear-swap-api/v1';
- const state=await getJson(fetch_impl,`${base}/swap_api_state?contract_code=${encoded}`);await pause_impl(1000);
- const isolated=await getJson(fetch_impl,`${base}/swap_adjustfactor?contract_code=${encoded}`);await pause_impl(1000);
- const cross=await getJson(fetch_impl,`${base}/swap_cross_adjustfactor?contract_code=${encoded}`);
- const normalized=normalizeHtxPublicRisk({contract:htxContract,state_payload:state.ok?state.payload:null,isolated_payload:isolated.ok?isolated.payload:null,cross_payload:cross.ok?cross.payload:null,observed_ts:now});
- const result={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalized,network_calls:3,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:[state,isolated,cross].map((row,index)=>({route:['STATE','ISOLATED','CROSS'][index],status:row.ok?'CLOSED':'SOURCE_ERROR',http_status:row.http_status??null,error:row.error??null})),internal_only:true};
- await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(SOURCE,htxContract,now,now+TTL,JSON.stringify(result)).run();
+ const base='https://api.hbdm.com/linear-swap-api/v1';
+ const state=await getJson(fetch_impl,`${base}/swap_api_state`,clock);await pause_impl(1000);
+ const isolated=await getJson(fetch_impl,`${base}/swap_adjustfactor`,clock);await pause_impl(1000);
+ const cross=await getJson(fetch_impl,`${base}/swap_cross_adjustfactor`,clock);
+ const observedTs=Math.max(now,...[state,isolated,cross].map(row=>finite(row.received_ts)??now));
+ const normalized=normalizeHtxPublicRisk({contract:htxContract,state_payload:state.ok?state.payload:null,isolated_payload:isolated.ok?isolated.payload:null,cross_payload:cross.ok?cross.payload:null,observed_ts:observedTs});
+ const result={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalized,network_calls:3,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:[state,isolated,cross].map((row,index)=>({route:['STATE','ISOLATED','CROSS'][index],status:row.ok?'CLOSED':'SOURCE_ERROR',http_status:row.http_status??null,error:row.error??null,received_ts:row.received_ts??null})),internal_only:true};
+ const clocks=[state,isolated,cross].map(r=>finite(r.payload?.ts));
+ if([state,isolated,cross].every(r=>r.ok&&Array.isArray(r.payload?.data))&&clocks.every(ts=>ts!==null&&ts<=observedTs&&observedTs-ts<TTL)){
+  const sourceTs=Math.min(...clocks),bundle={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,source_ts:sourceTs,receipts:result.receipts,payloads:{state_payload:compactPayload(state.payload,true),isolated_payload:compactPayload(isolated.payload,false),cross_payload:compactPayload(cross.payload,false)}};
+  await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(SOURCE,GLOBAL_KEY,observedTs,sourceTs+TTL,JSON.stringify(bundle)).run();
+ }
+ if(normalized.status==='CLOSED')await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(SOURCE,htxContract,observedTs,normalized.evidence[0].expires_at,JSON.stringify(result)).run();
  return result;
 }
 

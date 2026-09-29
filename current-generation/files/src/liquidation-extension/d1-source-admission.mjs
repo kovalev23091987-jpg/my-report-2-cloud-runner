@@ -5,28 +5,28 @@ const exactText=v=>typeof v==='string'&&v.trim()===v&&v.length>0;
 // No UPDATE after an ambiguous HTTP result is interpreted as free retry credit.
 export function createD1SourceAdmission({db,scope_bindings,within_run_budget,clock=Date.now}={}){
  return async function admit(request){
-  const deny=reason=>({allowed:false,new_reservation:false,reason});
-  if(!db?.prepare||!db?.batch||!scope_bindings||typeof within_run_budget!=='function')return deny('DURABLE_QUOTA_NOT_CONFIGURED');
-  if(!request||timestamp(request.deadline_ts)===null||!['reservation_id','contract','run_id'].every(k=>exactText(request[k]))||!request.requests||Array.isArray(request.requests))return deny('REQUEST_IDENTITY_OR_DEADLINE_INVALID');
-  const counts=Object.values(request.requests);if(!counts.length||counts.some(v=>!safeInt(v)||v<1)||!safeInt(request.max_requests)||request.max_requests<1||request.max_requests>24||counts.reduce((a,b)=>a+b,0)!==request.max_requests)return deny('REQUEST_COST_NOT_EXACT');
+  const deny=(reason,reservation_not_created=false)=>({allowed:false,new_reservation:false,reason,reservation_not_created});
+  if(!db?.prepare||!db?.batch||!scope_bindings||typeof within_run_budget!=='function')return deny('DURABLE_QUOTA_NOT_CONFIGURED',true);
+  if(!request||timestamp(request.deadline_ts)===null||!['reservation_id','contract','run_id'].every(k=>exactText(request[k]))||!request.requests||Array.isArray(request.requests))return deny('REQUEST_IDENTITY_OR_DEADLINE_INVALID',true);
+  const counts=Object.values(request.requests);if(!counts.length||counts.some(v=>!safeInt(v)||v<1)||!safeInt(request.max_requests)||request.max_requests<1||request.max_requests>24||counts.reduce((a,b)=>a+b,0)!==request.max_requests)return deny('REQUEST_COST_NOT_EXACT',true);
   const host=within_run_budget({extraRowsRead:64,extraRowsWritten:16});
-  if(host?.allowed!==true)return deny('EXISTING_D1_RESERVATION_HAS_NO_EXTENSION_HEADROOM');
-  const now=clock();if(timestamp(now)===null||request.deadline_ts<=now||!request.run_id||!request.contract||!request.reservation_id)return deny('REQUEST_IDENTITY_OR_DEADLINE_INVALID');
+  if(host?.allowed!==true)return deny('EXISTING_D1_RESERVATION_HAS_NO_EXTENSION_HEADROOM',true);
+  const now=clock();if(timestamp(now)===null||request.deadline_ts<=now||!request.run_id||!request.contract||!request.reservation_id)return deny('REQUEST_IDENTITY_OR_DEADLINE_INVALID',true);
   const specs=[];
   for(const [provider,count] of Object.entries(request.requests??{})){
    const binding=scope_bindings[provider];
-   if(!binding?.scope_id||!binding?.config_fingerprint||!safeInt(count)||count===0)return deny('EXACT_PROVIDER_SCOPE_REQUIRED');
+   if(!binding?.scope_id||!binding?.config_fingerprint||!safeInt(count)||count===0)return deny('EXACT_PROVIDER_SCOPE_REQUIRED',true);
    specs.push({provider,units:count,scope_id:binding.scope_id,config_fingerprint:binding.config_fingerprint});
   }
-  if(!specs.length||specs.length>4)return deny('BOUNDED_PROVIDER_SET_REQUIRED');
+  if(!specs.length||specs.length>4)return deny('BOUNDED_PROVIDER_SET_REQUIRED',true);
   try{
    const rows=await db.batch(specs.map(s=>db.prepare('SELECT * FROM report2_liq_source_allowance_shadow WHERE scope_id=?1').bind(s.scope_id)));
-   if(!Array.isArray(rows)||rows.length!==specs.length||rows.some(r=>r?.success!==true||!Array.isArray(r.results)||r.results.length!==1))return deny('ALLOWANCE_READBACK_SHAPE_INVALID');
+   if(!Array.isArray(rows)||rows.length!==specs.length||rows.some(r=>r?.success!==true||!Array.isArray(r.results)||r.results.length!==1))return deny('ALLOWANCE_READBACK_SHAPE_INVALID',true);
    const statements=[],prepared=[];
    for(let i=0;i<specs.length;i++){
     const s=specs[i],cfg=rows[i]?.results?.[0];
-    if(!cfg||cfg.active!==1||cfg.schema_version!==1||cfg.shared_quota_reviewed!==1||cfg.provider!==s.provider||cfg.unit!=='REQUEST'||cfg.config_fingerprint!==s.config_fingerprint||!(cfg.window_start_ts<=now&&now<cfg.window_end_ts)||![cfg.used_units,cfg.allowance_units,cfg.version].every(safeInt))return deny('PROVIDER_ALLOWANCE_NOT_CLOSED');
-    if(cfg.used_units+s.units>cfg.allowance_units)return deny('FREE_QUOTA_EXHAUSTED');
+    if(!cfg||cfg.active!==1||cfg.schema_version!==1||cfg.shared_quota_reviewed!==1||cfg.provider!==s.provider||cfg.unit!=='REQUEST'||cfg.config_fingerprint!==s.config_fingerprint||!(cfg.window_start_ts<=now&&now<cfg.window_end_ts)||![cfg.used_units,cfg.allowance_units,cfg.version].every(safeInt))return deny('PROVIDER_ALLOWANCE_NOT_CLOSED',true);
+    if(cfg.used_units+s.units>cfg.allowance_units)return deny('FREE_QUOTA_EXHAUSTED',true);
     const id=request.reservation_id+':'+s.provider;
     const rf=fingerprint({id,scope_id:s.scope_id,units:s.units,provider:s.provider,contract:request.contract,run_id:request.run_id});
     statements.push(db.prepare(`UPDATE report2_liq_source_allowance_shadow

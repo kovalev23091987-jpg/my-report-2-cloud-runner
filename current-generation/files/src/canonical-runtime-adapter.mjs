@@ -216,7 +216,7 @@ export function buildRuntimeCanonicalBundle({
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;
- const nativeTargets=arr(liquidationPanel?.clusters).filter(row=>row?.decision_target_eligible===true).map(row=>({kind:'NATIVE_SCOPED',price:row.center_price,exact_notional_usdt:row.largest_provider_position_usd,strength_score_0_100:null,strength_label_ru:null,source:arr(row.providers).join('+'),source_ts:row.source_ts,decision_target_eligible:true,path_obstacle_eligible:true}));
+ const nativeTargets=arr(liquidationPanel?.clusters).filter(row=>row?.decision_target_eligible===true&&finite(row.target_price)!==null).map(row=>({kind:'NATIVE_SCOPED',price:row.target_price,exact_notional_usdt:row.contains_estimates?null:row.largest_provider_position_usd,strength_score_0_100:null,strength_label_ru:null,source:arr(row.providers).join('+'),source_ts:row.source_ts,decision_target_eligible:true,path_obstacle_eligible:row.path_obstacle_eligible===true}));
  const proofZones={...pump,above:[...arr(pump?.above),...nativeTargets.filter(row=>row.price>price)],below:[...arr(pump?.below),...nativeTargets.filter(row=>row.price<price)]};
  const routedState=validState(route?.state)?text(route.state):null;
  const needsTechnicalFallback=(!routedState||['REJECTED','OBSERVE','WAIT_FOR_TRIGGER'].includes(routedState))&&finite(publication_shadow?.scenario_plan?.target_price)===null;
