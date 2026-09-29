@@ -27,3 +27,15 @@ test('liquidation-only CoinLobster request never fetches the whale radar',async(
  assert.deepEqual(urls,['https://coinlobster.com/api/public/liquidations']);
  assert.equal(result.realized_liquidations.length,1);assert.deepEqual(result.whale_radar,[]);
 });
+test('CoinLobster current nested perp totals and named events remain distinct and exact-coin scoped',()=>{
+ const payload={available:true,stale:false,perp_liquidations:{top_coins:[{base:'FIL',usd:900,longUsd:600,shortUsd:300},{base:'BTC',usd:9900}]},named_liquidations:[{base:'FIL',usd:300,side:'long'},{base:'BTC',usd:700,side:'short'}]};
+ const context=normalizeCoinLobsterContext({liquidations:payload,observed_ts:6});
+ assert.equal(context.status,'CLOSED');assert.equal(context.liquidations_array_path,'perp_liquidations.top_coins');assert.equal(context.realized_liquidations.length,2);assert.equal(context.named_liquidations.length,2);
+ const scoped=contextForContract({observed_ts:6,coinlobster:context},'FIL-USDT').coinlobster;
+ assert.equal(scoped.realized_liquidations.length,1);assert.equal(scoped.named_liquidations.length,1);
+ assert.equal(scoped.realized_liquidations[0].usd,900);
+});
+test('CoinLobster stale liquidation response cannot provide current liquidation rows',()=>{
+ const context=normalizeCoinLobsterContext({liquidations:{available:true,stale:true,perp_liquidations:{top_coins:[{base:'FIL',usd:900}]},named_liquidations:[{base:'FIL',usd:300}]},observed_ts:7});
+ assert.equal(context.status,'NOT_CLOSED');assert.deepEqual(context.realized_liquidations,[]);assert.deepEqual(context.named_liquidations,[]);
+});
