@@ -8644,7 +8644,7 @@ async function runBoundedDeepCheckScheduler(
     of plan.selected
   ) {
     const selectedEarly=await bindSelectedEarlyEvidence({target,env,scan:options?.early_scan,run_id:runId,now_ts:Date.now()});
-    if(selectedEarly.candidate)target._v3_discovery_source=selectedEarly.candidate;
+    const selectedDiscoverySource=selectedEarly.candidate||target?._v3_discovery_source||null;
     const liveLane =
       String(options?.live_handoff_lane || "")
         .startsWith("LIVE_");
@@ -8653,15 +8653,15 @@ async function runBoundedDeepCheckScheduler(
     if (liveLane) {
       const handoffBuild =
         buildDiscoveryHandoffEnvelope(
-          target?._v3_discovery_source || { contract: target?.contract, discovery_rank: target?.priority_rank },
+          selectedDiscoverySource || { contract: target?.contract, discovery_rank: target?.priority_rank },
           {
             source_run_id: runId,
             scan_ts: options?.scan_ts,
-            first_seen_state: target?._v3_discovery_source?.first_seen_state ?? null,
-            current_state: target?._v3_discovery_source?.current_state ?? null,
-            wave_id: target?._v3_discovery_source?.wave_id ?? null,
-            dedup_reentry_key: target?._v3_discovery_source?.dedup_reentry_key ?? null,
-            evidence_ids: target?._v3_discovery_source?.evidence_ids ?? [],
+            first_seen_state: selectedDiscoverySource?.first_seen_state ?? null,
+            current_state: selectedDiscoverySource?.current_state ?? null,
+            wave_id: selectedDiscoverySource?.wave_id ?? null,
+            dedup_reentry_key: selectedDiscoverySource?.dedup_reentry_key ?? null,
+            evidence_ids: selectedDiscoverySource?.evidence_ids ?? [],
             now_ts: Date.now(),
           }
         );
@@ -8728,7 +8728,7 @@ async function runBoundedDeepCheckScheduler(
             run_id:
               runId,
             discovery_row:
-              target?._v3_discovery_source ||
+              selectedDiscoverySource ||
               null,
             capacity_drop_reasons:
               plan.blocked
