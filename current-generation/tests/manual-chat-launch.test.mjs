@@ -11,6 +11,8 @@ test('ordinary chat has one file-scoped launch path bound to main',()=>{
  assert.match(workflow,/github\.event_name == 'push' \|\| \(github\.event_name == 'workflow_dispatch'/u);
  assert.match(workflow,/REPORT2_RUN_SOURCE: \$\{\{ github\.event_name == 'push' && 'manual'/u);
  assert.match(workflow,/needs\.enqueue-manual-command\.outputs\.command/u);
+ assert.match(workflow,/startsWith\(github\.event\.head_commit\.message, '\[manual-request\]'\)/u);
+ assert.match(workflow,/!contains\(github\.event\.head_commit\.message, '\[public-collector-release\]'\)/u);
 });
 
 test('file launch is fail-closed on authorization and exact generation',()=>{
