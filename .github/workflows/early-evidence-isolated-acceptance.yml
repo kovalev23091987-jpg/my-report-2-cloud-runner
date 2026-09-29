@@ -19,6 +19,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  idea-chain-diagnostic:
+    if: ${{ contains(github.event.head_commit.message, '[idea-chain-diagnostic]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Inspect factual publication boundary without writes
+        run: node audit-fixes/early-evidence-20260929/idea-chain-diagnostic.mjs report2-idea-chain-diagnostic.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: report2-idea-chain-diagnostic-${{ github.run_id }}
+          path: report2-idea-chain-diagnostic.json
+          if-no-files-found: error
+          retention-days: 7
   collector-invocations:
     if: ${{ contains(github.event.head_commit.message, '[collector-invocation-diagnostic]') }}
     runs-on: ubuntu-latest

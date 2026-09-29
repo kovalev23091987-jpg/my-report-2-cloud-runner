@@ -134,7 +134,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "938b841852d92fa6ae0878eaa888d100cfb738ba276b7735e374ef7ea4a9817f"
+      REPORT2_EXPECTED_WORKER_SHA: "59a68f1ce95554f0bd14d7f5561c5664bda35f92fe27862f514268ee6abc527d"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -201,6 +201,28 @@ jobs:
           if [ "${{ inputs.reason || '' }}" != "T00_RUNTIME_EXPORT" ] && [ "${{ inputs.reason || '' }}" != "T00_D1_INVENTORY" ] && [ "${{ inputs.reason || '' }}" != "V13_P0_READ_ONLY_DIAG" ]; then
             npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           fi
+      - name: Verify early evidence repair and frozen policy
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test \
+            current-generation/tests/early-evidence-repair/repair.test.mjs \
+            telegram-repair-tests/v3-early-sidecar.test.mjs
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test \
+            current-generation/tests/*.test.mjs
+          for suite in \
+            approved-entry-path.runtime.mjs \
+            approved-entry-performance.runtime.mjs \
+            decision-timeline.runtime.mjs \
+            early-observation-state.runtime.mjs \
+            prospective-public-history.runtime.mjs \
+            public-collector-history-consumer.runtime.mjs \
+            stage392-persistence-contract.runtime.mjs; do
+            node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
+              "current-generation/tests/$suite" runtime
+          done
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
+            audit-fixes/v13/final-integration-37.mjs runtime
       - name: Encrypt authoritative runtime for T00 audit
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reason == 'T00_RUNTIME_EXPORT' }}
         shell: bash

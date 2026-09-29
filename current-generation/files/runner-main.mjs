@@ -648,11 +648,12 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!leaseRenewal.allowed)throw new Error(`ANALYTICS_FENCE_LOST_BEFORE_WORKER:${leaseRenewal.status}`);
   const CURRENT_CYCLE_DOWNSTREAM_RESERVE=Object.freeze({rows_read:4500,rows_written:50});
-  env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST=async({current_scan_ts,source_run_id,now_ts}={})=>{
+  const earlyCycleContext={};
+  env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST=async({current_scan_ts,source_run_id,now_ts,preferred_contracts=[],selected_only=false}={})=>{
     const gate=evaluateWithinRunReservation({
       reservation:d1RunReservation,
       currentUsage:env.DATA_DB.usageSnapshot(),
-      extraRowsRead:CURRENT_CYCLE_DOWNSTREAM_RESERVE.rows_read+V3_EARLY_SIDECAR_BUDGET.rows_read,
+      extraRowsRead:CURRENT_CYCLE_DOWNSTREAM_RESERVE.rows_read+(selected_only&&earlyCycleContext.loaded?64:V3_EARLY_SIDECAR_BUDGET.rows_read),
       extraRowsWritten:CURRENT_CYCLE_DOWNSTREAM_RESERVE.rows_written+V3_EARLY_SIDECAR_BUDGET.rows_written,
     });
     if(!gate.allowed){
@@ -664,7 +665,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       current_scan_ts:Number(current_scan_ts),
       source_run_id:String(source_run_id||""),
       now_ts:Number(now_ts)||Date.now(),
-      preferred_contracts:[],
+      preferred_contracts,selected_only,cycle_context:earlyCycleContext,
     });
     env.REPORT2_CURRENT_CYCLE_EARLY_RESULT=result;
     return result;
