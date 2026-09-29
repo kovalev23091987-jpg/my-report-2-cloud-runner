@@ -1,6 +1,7 @@
+import {collectGateLiquidationHistory} from './gate-liquidation-history.mjs';
 import {normalizeOkxDepthLevel} from './asset-identity-cache.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v2-time-coverage-20260928';
+export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v3-shared-market-catalog-20260930';
 const CATALOG_TTL_MS=24*60*60*1000,DEPTH_TTL_MS=30_000,REALIZED_TTL_MS=5*60*1000,HISTORY_TTL_MS=15*60*1000;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -101,18 +102,18 @@ export function normalizeCoinalyzeLiquidationHistory(payload,now,{requested_symb
  const amounts=set=>set.reduce((a,r)=>({long:a.long+r.l,short:a.short+r.s}),{long:0,short:0}),recent=values(comparable,recentBuckets),baseline=values(comparable,baselineBuckets),a=amounts(recent),b=amounts(baseline),baselinePerBucket=(b.long+b.short)/baselineBuckets.length,expectedRecent=baselinePerBucket*recentBuckets.length,current=a.long+a.short,complete=comparable.length===requested.length&&!conflicts.length;
  return{source:'COINALYZE',status:complete?'CLOSED':'PARTIAL',reason:complete?null:'PARTIAL_MARKET_COVERAGE',observed_ts:now,market_count:rows.length,requested_symbols:requested,comparable_symbols:comparable,datapoints:recent.length+baseline.length,long_liquidated_recent:a.long,short_liquidated_recent:a.short,recent_total:current,baseline_total:b.long+b.short,baseline_bucket_mean:baselinePerBucket,expected_recent_total:expectedRecent,intensity_ratio:expectedRecent>0?current/expectedRecent:null,history_window_minutes:120,recent_window_minutes:15,closed_intervals_only:true,conflicting_duplicates:conflicts,coverage_fraction:comparable.length/requested.length,advisory_only:true};
 }
-export function compactCoinalyzeMarkets(payload,base){return (Array.isArray(payload)?payload:[]).filter(r=>text(r?.base_asset).toUpperCase()===text(base).toUpperCase()&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).map(r=>({symbol:text(r?.symbol),base_asset:text(r?.base_asset).toUpperCase(),quote_asset:text(r?.quote_asset).toUpperCase(),exchange:text(r?.exchange).toUpperCase(),is_perpetual:true})).filter(r=>r.symbol);}
-async function loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now,run_id}={}){
+export function compactCoinalyzeMarkets(payload,base){return (Array.isArray(payload)?payload:[]).filter(r=>(!text(base)||text(r?.base_asset).toUpperCase()===text(base).toUpperCase())&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).map(r=>({symbol:text(r?.symbol),base_asset:text(r?.base_asset).toUpperCase(),quote_asset:text(r?.quote_asset).toUpperCase(),exchange:text(r?.exchange).toUpperCase(),is_perpetual:true})).filter(r=>r.symbol);}
+export async function loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now,run_id}={}){
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinalyze_catalog (catalog_id TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
- const catalogId=`FUTURES_V2:${text(base).toUpperCase()}`;
- const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>=?2 LIMIT 1`).bind(catalogId,now).first();if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:JSON.parse(prior.payload_json)};}catch{}}
+ const catalogId='FUTURES_V3_ALL';
+ const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>=?2 LIMIT 1`).bind(catalogId,now).first();if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:compactCoinalyzeMarkets(JSON.parse(prior.payload_json),base)};}catch{}}
  const admission=await reserveProviderMinuteUnits(db,{provider:'COINALYZE',reservation_id:`${run_id}:CATALOG:${base}`,units:1,now,cap:30});
  if(!admission.allowed)return{status:'DEFERRED_RATE_LIMIT',cache_status:'MISS',network_calls:0,rows:[],error:admission.status,admission};
- const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),rows=raw.ok?compactCoinalyzeMarkets(raw.payload,base):[];
- if(rows.length)await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(catalogId,now,now+CATALOG_TTL_MS,JSON.stringify(rows)).run();
+ const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),allRows=raw.ok?compactCoinalyzeMarkets(raw.payload):[],rows=compactCoinalyzeMarkets(allRows,base);
+ if(allRows.length)await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(catalogId,now,now+CATALOG_TTL_MS,JSON.stringify(allRows)).run();
  return{status:rows.length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:1,rows,error:raw.error,admission};
 }
-async function collectHistory({db,fetch_impl,api_key,base,now,run_id}={}){
+async function collectCoinalyzeHistory({db,fetch_impl,api_key,base,now,run_id}={}){
  if(!text(api_key))return{source:'COINALYZE',status:'DISABLED',reason:'API_KEY_REQUIRED',network_calls:0,observed_ts:now};
  const catalog=await loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now,run_id});
  const preferred=['HUOBI','BINANCE','BYBIT','OKX','GATE'],rank=exchange=>{const i=preferred.indexOf(text(exchange).toUpperCase());return i<0?preferred.length:i;},markets=catalog.rows.filter(r=>text(r?.base_asset).toUpperCase()===base&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).sort((a,b)=>rank(a.exchange)-rank(b.exchange)).slice(0,4),symbols=markets.map(r=>r.symbol).filter(Boolean);
@@ -124,15 +125,22 @@ async function collectHistory({db,fetch_impl,api_key,base,now,run_id}={}){
  return raw.ok?{...normalizeCoinalyzeLiquidationHistory(raw.payload,now,{requested_symbols:symbols}),network_calls:networkCalls,provider_call_units:providerUnits,symbols,catalog_cache_status:catalog.cache_status,admission}:{source:'COINALYZE',status:'SOURCE_ERROR',error:raw.error,network_calls:networkCalls,provider_call_units:providerUnits,observed_ts:now,admission};
 }
 
+async function collectHistory(params={}){
+ const first=await collectCoinalyzeHistory(params),used=Number(first.network_calls)||0;
+ if(first.status==='CLOSED')return first;
+ const fallback=await collectGateLiquidationHistory({...params,contract:`${params.base}-USDT`,max_http:Math.max(0,3-used)});
+ return {...fallback,network_calls:used+Number(fallback.network_calls||0),fallback_from:{source:'COINALYZE',status:first.status,reason:first.reason??first.error??null,network_calls:used},equivalent_baseline_replacement:false};
+}
+
 async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{sources[row.source]=JSON.parse(row.payload_json);}catch{}}return sources;}
-async function loadPermittedCached(db,contract,now,allowed_lanes){const sources=await loadCached(db,contract,now);if(!Array.isArray(allowed_lanes))return sources;const allowed=new Set(allowed_lanes.map(lane=>lane==='REALIZED'?'CROSS_EXCHANGE_REALIZED':lane==='HISTORY'?'COINALYZE':lane==='DEPTH'?'CROSS_EXCHANGE_DEPTH':null));return Object.fromEntries(Object.entries(sources).filter(([source])=>allowed.has(source)));}
+async function loadPermittedCached(db,contract,now,allowed_lanes){const sources=await loadCached(db,contract,now);if(!Array.isArray(allowed_lanes))return sources;const allowed=new Set(allowed_lanes.flatMap(lane=>lane==='REALIZED'?['CROSS_EXCHANGE_REALIZED']:lane==='HISTORY'?['COINALYZE','GATE_LIQUIDATION_HISTORY']:lane==='DEPTH'?['CROSS_EXCHANGE_DEPTH']:[]));return Object.fromEntries(Object.entries(sources).filter(([source])=>allowed.has(source)));}
 async function saveCached(db,contract,source,payload,now,ttl){await db.prepare(`INSERT INTO report2_cross_exchange_risk_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+ttl,JSON.stringify(payload)).run();}
 
 export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.fetch,WebSocketImpl=globalThis.WebSocket,contract,run_id,reference_price,coinalyze_api_key='',lane_override='',allowed_lanes=null,now=Date.now(),realized_sample_ms=6000}={}){
  if(!db)throw new Error('CROSS_EXCHANGE_DB_REQUIRED');const normalized=text(contract).toUpperCase(),base=baseOf(normalized);if(!validContract(normalized))return{version:CROSS_EXCHANGE_RISK_VERSION,status:'NOT_CLOSED',reason:'CONTRACT_INVALID',sources:{},network_calls:0};
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_cross_exchange_risk_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
  const catalog=await loadVenueCatalog({db,fetch_impl,now}),entry=catalog.entries?.[base]||null;if(catalog.network_calls>0)return{version:CROSS_EXCHANGE_RISK_VERSION,status:'CATALOG_REFRESHED',contract:normalized,lane:'VENUE_CATALOG',network_calls:catalog.network_calls,sources:await loadPermittedCached(db,normalized,now,allowed_lanes),receipts:catalog.receipts||[],internal_only:true};
- const availableLanes=['DEPTH','REALIZED'];if(text(coinalyze_api_key))availableLanes.push('HISTORY');
+ const availableLanes=['DEPTH','REALIZED'];availableLanes.push('HISTORY');
  const lanes=Array.isArray(allowed_lanes)?availableLanes.filter(name=>allowed_lanes.includes(name)):availableLanes;
  if(!lanes.length)return{version:CROSS_EXCHANGE_RISK_VERSION,status:'NO_LIQUIDATION_LANE',contract:normalized,network_calls:0,sources:await loadPermittedCached(db,normalized,now,allowed_lanes),internal_only:true};
  const requestedLane=text(lane_override).toUpperCase(),lane=lanes.includes(requestedLane)?requestedLane:lanes[hash(`${run_id}:${normalized}:CEX_V1`)%lanes.length];let payload,ttl;

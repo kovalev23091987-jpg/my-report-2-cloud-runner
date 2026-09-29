@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets} from '../files/src/cross-exchange-risk-context.mjs';
+import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets,loadCoinalyzeMarkets} from '../files/src/cross-exchange-risk-context.mjs';
+import {DatabaseSync} from 'node:sqlite';
+import {installProviderMinuteLedger} from '../files/src/provider-minute-ledger.mjs';
 
 test('only active exact USDT perpetual markets enter the cross-exchange catalog',()=>{
  const entries=normalizeCrossExchangeCatalogs({
@@ -75,4 +77,15 @@ test('workflow wires the optional free Coinalyze key without embedding a value',
  const source=fs.readFileSync(new URL('../files/src/cross-exchange-risk-context.mjs',import.meta.url),'utf8');
  assert.match(source,/lanes\.includes\(requestedLane\)\?requestedLane:/);
  assert.match(source,/lane_forced:lanes\.includes\(requestedLane\)/);
+});
+
+test('one Coinalyze catalog refresh serves two exact assets and unsupported assets without new API units',async()=>{
+ const sqlite=new DatabaseSync(':memory:'),db={prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};}};
+ await installProviderMinuteLedger(db);let calls=0;
+ const payload=['SOL','TAO'].map(base=>({symbol:`${base}.A`,base_asset:base,quote_asset:'USDT',exchange:'BINANCE',is_perpetual:true,ignored:'large'}));
+ const fetch_impl=async()=>{calls++;return new Response(JSON.stringify(payload),{status:200});};
+ const common={db,fetch_impl,api_key:'TEST_NOT_SECRET',now:1_800_000_000_000,run_id:'r'};
+ const a=await loadCoinalyzeMarkets({...common,base:'SOL'}),b=await loadCoinalyzeMarkets({...common,base:'TAO'}),c=await loadCoinalyzeMarkets({...common,base:'MISSING'});
+ assert.equal(calls,1);assert.equal(a.network_calls,1);assert.equal(b.network_calls,0);assert.equal(c.network_calls,0);assert.equal(b.rows[0].symbol,'TAO.A');assert.deepEqual(c.rows,[]);
+ assert.equal(sqlite.prepare('SELECT SUM(units) AS units FROM report2_provider_minute_ledger_v1').get().units,1);sqlite.close();
 });

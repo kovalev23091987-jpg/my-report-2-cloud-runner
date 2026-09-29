@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createLighterRuntimeCollector} from '../files/src/liquidation-extension/lighter-runtime-collector.mjs';
 import {createGmxRuntimeCollector} from '../files/src/liquidation-extension/gmx-runtime-collector.mjs';
-import {verifyScopedProviderAcquisition} from '../files/src/liquidation-extension/scoped-provider-runtime-bridge.mjs';
+import {verifyScopedProviderAcquisition,bindScopedProviderAcquisition} from '../files/src/liquidation-extension/scoped-provider-runtime-bridge.mjs';
 import {createMultiLiquidationAcquisition} from '../files/src/liquidation-extension/gtrade-runtime-bridge.mjs';
 import {attachNativeContext} from '../files/src/liquidation-extension/runtime-bridge.mjs';
 import {nativeLiquidationLines} from '../files/src/native-liquidation-guard.mjs';
@@ -13,6 +13,9 @@ test('Lighter discovers active accounts then accepts only native account liquida
  const fetch_impl=async url=>{if(String(url).includes('recentTrades'))return response(trades);const id=Number(new URL(String(url)).searchParams.get('value')),isLong=id%2===0;return response({code:200,accounts:[{account_index:id,transaction_time:T*1000,positions:[{market_id:103,symbol:'FIL',position:'1000',position_value:'1000',sign:isLong?1:-1,margin_mode:id===2?0:1,liquidation_price:isLong?'0.8':'1.2'}]}]});};
  const collect=createLighterRuntimeCollector({fetch_impl,clock:()=>T});const out=await collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'r',acquisition_id:'a',market_id:103,deadline_ts:T+30000});
  assert.equal(out.status,'LIGHTER_ACQUIRED_SCOPED_CONTEXT');assert.ok(out.requests<=4);assert.equal(verifyScopedProviderAcquisition(out.acquisition),true);assert.ok(out.acquisition.above.length+out.acquisition.below.length>0);
+ assert.equal(out.acquisition.source_ts,null);assert.equal(out.acquisition.source_clock_closed,false);
+ assert.ok([...out.acquisition.above,...out.acquisition.below].every(row=>row.source_ts===null&&row.source_clock_closed===false));
+ const scoped=bindScopedProviderAcquisition(out.acquisition,{contract:'FIL-USDT',run_id:'r',snapshot_id:'s',observed_ts:T});assert.equal(scoped.source_age_ms,null);assert.equal(scoped.receipt_age_ms,0);assert.equal(scoped.freshness_basis,'CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN');
  const multi=createMultiLiquidationAcquisition({contract:'FIL-USDT',run_id:'r',scoped:[out.acquisition]});
  const context=attachNativeContext({},multi,{contract:'FIL-USDT',run_id:'r',snapshot_id:'s',observed_ts:T,direction:null});
  const lines=nativeLiquidationLines(context,{manual:true});assert.ok(lines.some(line=>line.includes('Lighter FIL')));

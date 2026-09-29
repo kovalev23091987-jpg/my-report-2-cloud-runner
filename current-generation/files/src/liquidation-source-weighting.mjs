@@ -1,4 +1,4 @@
-export const LIQUIDATION_SOURCE_WEIGHTING_VERSION='liquidation-source-weighting-v1-20260927';
+export const LIQUIDATION_SOURCE_WEIGHTING_VERSION='liquidation-source-weighting-v2-role-cost-20260930';
 
 export const LIQUIDATION_SOURCE_ROLES=Object.freeze({
  HYPERLIQUID_NATIVE:'Hyperliquid: verified native position liquidation prices',
@@ -31,6 +31,22 @@ export function chooseWeightedLiquidationLane({lanes,seed,rows=[]}={}){
  return{lane:profile.at(-1).source_id,profile,total_weight:Number(total.toFixed(4))};
 }
 
+// Availability is an operational statistic, never predictive accuracy. An exact
+// native route and a projected bucket are different roles, not substitutes.
+export function planLiquidationSourceOrder({lanes=[],rows=[],costs={},exact=[],cached=[]}={}){
+ const profile=buildLiquidationSourceWeightProfile(lanes,rows),known=new Set(exact),reuse=new Set(cached);
+ const plan=profile.map(row=>{
+  const projected=row.source_id==='OXARCHIVE_HL_BUCKETS',cost=Number(costs[row.source_id]);
+  const role=projected?'PROJECTED_BUCKET_CONTEXT':'NATIVE_POSITION_CONTEXT';
+  const coverage=known.has(row.source_id)?'EXACT_ROUTE_PROVEN':'CATALOG_DISCOVERY_REQUIRED';
+  return {...row,role,coverage,cached_snapshot:reuse.has(row.source_id),declared_http:Number.isSafeInteger(cost)&&cost>=0?cost:null,
+   priority:projected?0:reuse.has(row.source_id)?3:known.has(row.source_id)?2:1,
+   utility_basis:row.predictive_weight_eligible?'QUALIFIED_PREDICTIVE_FACTOR_WITHIN_ROLE':'OPERATIONAL_AVAILABILITY_ONLY',
+   utility_per_reserved_http:row.selection_weight/Math.max(1,Number.isSafeInteger(cost)?cost:999)};
+ }).sort((a,b)=>b.priority-a.priority||b.utility_per_reserved_http-a.utility_per_reserved_http||a.source_id.localeCompare(b.source_id));
+ return {ordered:plan.map(row=>row.source_id),profile:plan,policy:'EXACT_NATIVE_ROLE_THEN_AVAILABILITY_PER_COST_WITH_PROJECTED_CONTEXT_SEPARATE'};
+}
+
 export function nextLiquidationSourceReliability(current,outcome){
  const prior=clamp(Number.isFinite(Number(current))?Number(current):0.5,0,1),result=outcome===true?1:0;
  return Number((prior*0.85+result*0.15).toFixed(6));
@@ -42,6 +58,7 @@ export function createLiquidationSourceWeightStore({db,clock=Date.now}={}){
  async function install(){if(installed)return;await db.batch([
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_source_health (source_id TEXT PRIMARY KEY, attempts INTEGER NOT NULL, usable_runs INTEGER NOT NULL, not_closed_runs INTEGER NOT NULL, reliability REAL NOT NULL, last_status TEXT, updated_ts INTEGER NOT NULL)`),
   db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_predictive_health (source_id TEXT PRIMARY KEY, observations INTEGER NOT NULL, hits INTEGER NOT NULL, ewma_accuracy REAL NOT NULL, predictive_weight_factor REAL NOT NULL, eligible INTEGER NOT NULL, updated_ts INTEGER NOT NULL)`),
+  db.prepare(`CREATE TABLE IF NOT EXISTS report2_liquidation_role_observation (run_id TEXT NOT NULL,contract TEXT NOT NULL,source_id TEXT NOT NULL,role TEXT NOT NULL,status TEXT NOT NULL,role_usable INTEGER NOT NULL,actual_http INTEGER,observed_ts INTEGER NOT NULL,PRIMARY KEY(run_id,contract,source_id))`),
  ]);installed=true;}
  async function load(lanes=[]){
   await install();const wanted=new Set(lanes.map(sourceId));
@@ -55,7 +72,13 @@ export function createLiquidationSourceWeightStore({db,clock=Date.now}={}){
   await db.prepare(`INSERT INTO report2_liquidation_source_health(source_id,attempts,usable_runs,not_closed_runs,reliability,last_status,updated_ts) VALUES(?1,1,?2,?3,?4,?5,?6) ON CONFLICT(source_id) DO UPDATE SET attempts=attempts+1,usable_runs=usable_runs+excluded.usable_runs,not_closed_runs=not_closed_runs+excluded.not_closed_runs,reliability=excluded.reliability,last_status=excluded.last_status,updated_ts=excluded.updated_ts`).bind(id,usable?1:0,usable?0:1,reliability,String(status||'UNKNOWN').slice(0,80),now).run();
   return{recorded:true,source_id:id,reliability,usable,status:String(status||'UNKNOWN')};
  }
- return{load,record,version:LIQUIDATION_SOURCE_WEIGHTING_VERSION};
+ async function recordRole({source_id,contract,run_id,role,status,role_usable,actual_http=null,now=clock()}={}){
+  await install();if(!sourceId(source_id)||!contract||!run_id||typeof role_usable!=='boolean')return{recorded:false,reason:'ROLE_IDENTITY_REQUIRED'};
+  const http=Number.isSafeInteger(actual_http)&&actual_http>=0?actual_http:null;
+  await db.prepare(`INSERT INTO report2_liquidation_role_observation(run_id,contract,source_id,role,status,role_usable,actual_http,observed_ts) VALUES(?1,?2,?3,?4,?5,?6,?7,?8) ON CONFLICT DO NOTHING`).bind(run_id,contract,sourceId(source_id),role,String(status||'UNKNOWN').slice(0,80),role_usable?1:0,http,now).run();
+  return{recorded:true,source_id:sourceId(source_id),role,role_usable,actual_http:http,predictive_weight_changed:false};
+ }
+ return{load,record,recordRole,version:LIQUIDATION_SOURCE_WEIGHTING_VERSION};
 }
 
-export default{LIQUIDATION_SOURCE_WEIGHTING_VERSION,LIQUIDATION_SOURCE_ROLES,buildLiquidationSourceWeightProfile,chooseWeightedLiquidationLane,nextLiquidationSourceReliability,createLiquidationSourceWeightStore};
+export default{LIQUIDATION_SOURCE_WEIGHTING_VERSION,LIQUIDATION_SOURCE_ROLES,buildLiquidationSourceWeightProfile,chooseWeightedLiquidationLane,planLiquidationSourceOrder,nextLiquidationSourceReliability,createLiquidationSourceWeightStore};
