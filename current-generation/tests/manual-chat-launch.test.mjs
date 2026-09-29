@@ -34,6 +34,6 @@ test('every successful run emits a canonical artifact instead of a chat reconstr
 });
 
 test('low-priority prospective statistics cannot cancel an otherwise complete manual report when capacity is reserved elsewhere',()=>{
- assert.match(runner,/r820ManualNonFatalStatuses=new Set\(\["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE"\]\)/u);
+ assert.match(runner,/r820ManualNonFatalStatuses=new Set\(\["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE"\]\)/u);
  assert.match(runner,/!r820ManualNonFatalStatuses\.has\(r820ProspectiveValidationSidecar\?\.status\)/u);
 });

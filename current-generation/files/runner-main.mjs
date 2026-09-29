@@ -904,7 +904,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const cadenceOk=maintenanceSucceeded({recall:discoveryRecallKpi,prospective:r820ProspectiveValidationSidecar,prospective_enabled:r820ProspectiveValidationConfigured});
     await completeMaintenanceCadence(env.DATA_DB,{job_key:"HOURLY_LOW_PRIORITY_STATS",actor:"GITHUB_ACTIONS",lease_started_ts:postV7MaintenanceClaim.lease_started_ts,success:cadenceOk,now_ts:Date.now(),result:cadenceOk?"CLOSED":"NOT_CLOSED"});
   }
-  const r820ManualNonFatalStatuses=new Set(["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE"]);
+  const r820ManualNonFatalStatuses=new Set(["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE"]);
   if (source !== "schedule" && r820ProspectiveValidationEnabled && !r820ManualNonFatalStatuses.has(r820ProspectiveValidationSidecar?.status)) {
     throw new Error(`R8_20_PROSPECTIVE_VALIDATION_SMOKE_FAIL_CLOSED:${r820ProspectiveValidationSidecar?.status || "UNKNOWN"}`);
   }
