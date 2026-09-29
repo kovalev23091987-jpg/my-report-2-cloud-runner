@@ -33,6 +33,7 @@ import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs'
 import {buildPumpLiquidationZones} from './src/pump-liquidation-zones.mjs';
 import {displayLegacyLiquidations} from './src/canonical-display.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
+import {chooseMappedLiquidationFallback} from './src/liquidation-source-plan.mjs';
 import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
 import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
@@ -584,20 +585,30 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const sourceRunId=`LIQ_ONLY:${started}`;
     const scanResult=await scanLiquidationCandidates({env,max_candidates:5,exact_contract:commandIntent.contract||null,freshness_sec:300});
     await liquidationQueue.enqueue(scanResult?.candidates||[],{wave_id:sourceRunId,now:started});
-    const queueClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:scanResult?.candidates?.[0]?.contract||null,now:started});
-    const candidate=Array.isArray(scanResult?.candidates)?scanResult.candidates.find(row=>row.contract===queueClaim.contract)||scanResult.candidates[0]:null;
+    let queueClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:scanResult?.candidates?.[0]?.contract||null,now:started});
+    let candidate=queueClaim.claimed&&Array.isArray(scanResult?.candidates)?scanResult.candidates.find(row=>row.contract===queueClaim.contract)||null:null;
     let acquisition=null;
     let liquidationContext={};
     let crossExchangeRisk={status:'NOT_RUN',sources:{},internal_only:true};
     if(candidate&&manualLiquidationSources){
-      const contract=String(candidate.contract||'').trim().toUpperCase();
-      const nativeSymbol=contract.replace(/-USDT$/,'');
-      const sourceIdentity=env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries?.[nativeSymbol]||null;
-      try{
-        acquisition=await manualLiquidationSources.collect({contract,native_symbol:nativeSymbol,run_id:sourceRunId,deep_started_ts:started,max_deep_ms:45000,early_candidate_bridge:candidate.qualified_growth_candidate===true,early_candidate_quality_0_100:candidate.qualified_growth_candidate===true?Math.min(100,60+Number(candidate.anomaly_flags_count||0)*5):null,manual_liquidation_request:true,source_identity:sourceIdentity});
-      }catch(error){
-        console.log('LIQUIDATION_ONLY_SOURCE_ERROR',JSON.stringify({contract,error:String(error?.message||error)}));
+      const collectFor=async row=>{
+        const contract=String(row.contract||'').trim().toUpperCase(),nativeSymbol=contract.replace(/-USDT$/,'');
+        const sourceIdentity=env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries?.[nativeSymbol]||null;
+        try{return await manualLiquidationSources.collect({contract,native_symbol:nativeSymbol,run_id:sourceRunId,deep_started_ts:started,max_deep_ms:45000,early_candidate_bridge:row.qualified_growth_candidate===true,early_candidate_quality_0_100:row.qualified_growth_candidate===true?Math.min(100,60+Number(row.anomaly_flags_count||0)*5):null,manual_liquidation_request:true,source_identity:sourceIdentity});}
+        catch(error){console.log('LIQUIDATION_ONLY_SOURCE_ERROR',JSON.stringify({contract,error:String(error?.message||error)}));return null;}
+      };
+      acquisition=await collectFor(candidate);
+      // Keep the leading coin first. If it yields no provider zones, try one
+      // shortlisted coin with an exact venue identity in the remaining budget.
+      const remaining=8-Number(manualLiquidationSources.summary()?.shared_budget?.reserved_http??8);
+      const fallback=!commandIntent.contract&&!acquisition&&remaining>0&&Date.now()-started<45000?
+        chooseMappedLiquidationFallback(scanResult.candidates,env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries||{},candidate.contract):null;
+      if(fallback){
+        await liquidationQueue.complete({contract:candidate.contract,wave_id:queueClaim.wave_id,task_kind:queueClaim.task_kind,run_id:sourceRunId,usable:false,now:Date.now()});
+        const nextClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:fallback.contract,now:Date.now()});
+        if(nextClaim.claimed){queueClaim=nextClaim;candidate=fallback;acquisition=await collectFor(candidate);}
       }
+      const contract=String(candidate.contract||'').trim().toUpperCase();
       if(acquisition){
         const observedTs=Date.now();
         liquidationContext=attachNativeContext({},acquisition,{contract,run_id:sourceRunId,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,observed_ts:observedTs,direction:null});
