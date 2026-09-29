@@ -8,10 +8,27 @@ import {collectSnapshotGovernanceEvidence} from './snapshot-governance-evidence.
 import {collectOfficialEventsEvidence} from './official-events-evidence.mjs';
 import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
+import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v7-20260928';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v8-block-coverage-20260929';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
+// Only name producers that actually emit a row for this block in this collector.
+// Existing technical/market blocks are owned outside this supplementary lane.
+const BLOCK_SOURCE={N02:['CHAIN_RPC'],N03:['CHAIN_RPC'],N04:['BLOCKSCOUT_INDEX'],N06:['BLUESKY_PUBLIC'],N07:['OFFICIAL_EVENTS'],N08:['HTX_PUBLIC_RISK'],N09:['HTX_PUBLIC_RISK'],N13:['MACRO_CALENDAR','SNAPSHOT_GOVERNANCE'],N14:['DERIBIT_ALT_OPTIONS'],N17:['SOURCIFY_ABI']};
+
+export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.now()}={}){
+ const result={};
+ for(const block of Object.keys(BLOCKS)){
+  const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
+  const usable=rows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable&&Number(row.coverage_fraction)>0).length;
+  const owners=BLOCK_SOURCE[block]||[];
+  result[block]={status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':owners.length?'NO_FACTUAL_EVIDENCE':'NOT_IMPLEMENTED_IN_THIS_COLLECTOR',
+   observed_facts:rows.length,usable_facts:usable,
+   source_statuses:Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]))};
+ }
+ return {status:'CLOSED_ACCOUNTING_ONLY',blocks:result,coverage_count:Object.keys(result).length,usable_block_count:Object.values(result).filter(row=>row.usable_facts>0).length,all_blocks_have_useful_data:Object.values(result).every(row=>row.usable_facts>0),internal_only:true};
+}
 
 export async function collectCandidateEvidenceV2(params={}){
  const htx=await collectHtxPublicRiskEvidence(params);
@@ -31,6 +48,7 @@ export async function collectCandidateEvidenceV2(params={}){
  if(Number(bluesky?.network_calls||0)===0&&String(bluesky?.status||'').startsWith('ACCESS_BLOCKED_')&&remaining>=2)deribit=await collectDeribitAltOptionsEvidence(params);
  const evidence=[...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(macro?.evidence)?macro.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chain?.evidence)?chain.evidence:[]),...(Array.isArray(sourcify?.evidence)?sourcify.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(snapshot?.evidence)?snapshot.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[])];
  const statuses=[htx?.status,macro?.status,deribit?.status,chain?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED');
+ const sources={HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_RPC:chain,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout};
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
@@ -51,7 +69,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources:{HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_RPC:chain,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout},
+  sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()}),
   internal_only:true,
  };
 }
