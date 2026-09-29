@@ -4,6 +4,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
+import {DatabaseSync} from 'node:sqlite';
 
 const runtime=path.resolve(process.argv[2]||'runtime');
 const output=path.resolve(process.argv[3]||'report2-early-evidence-isolated-acceptance.json');
@@ -23,6 +24,9 @@ let databaseId=null;
 let accountId=text(process.env.CLOUDFLARE_ACCOUNT_ID)||null;
 let server=null;
 let serverUrl=null;
+let localSqlite=null;
+let isolationBackend='CLOUDFLARE_D1_DISPOSABLE';
+let cloudflareIsolationFailure=null;
 let deletion={attempted:false,success:false};
 let failure=null;
 let receipt=null;
@@ -47,6 +51,23 @@ async function resolveAccount(){
 
 function parts(data){return Array.isArray(data?.result)?data.result:(data?.result?[data.result]:[]);}
 async function d1Query(body,{raw=false}={}){
+  if(localSqlite){
+    const execute=statement=>{
+      const started=Date.now(),prepared=localSqlite.prepare(statement.sql),params=statement.params||[],hasRows=prepared.columns().length>0;
+      if(hasRows){
+        const records=prepared.all(...params),columns=prepared.columns().map(column=>column.name),rows=raw?records.map(record=>columns.map(column=>record[column])):records;
+        return{success:true,results:raw?{columns,rows}:records,meta:{changes:0,rows_read:records.length,rows_written:0,duration:Date.now()-started}};
+      }
+      const result=prepared.run(...params),changes=Number(result.changes||0);
+      return{success:true,results:[],meta:{changes,rows_read:0,rows_written:changes,duration:Date.now()-started}};
+    };
+    if(Array.isArray(body?.batch)){
+      localSqlite.exec('BEGIN IMMEDIATE');
+      try{const results=body.batch.map(execute);localSqlite.exec('COMMIT');return results;}
+      catch(error){localSqlite.exec('ROLLBACK');throw error;}
+    }
+    return[execute(body)];
+  }
   const data=await cloudflare(`/accounts/${accountId}/d1/database/${databaseId}/${raw?'raw':'query'}`,{method:'POST',body});
   const out=parts(data);
   if(!out.length||out.some(item=>item?.success!==true))throw new Error('ISOLATED_D1_QUERY_NOT_CLOSED');
@@ -194,10 +215,17 @@ function logMarker(name){
 }
 
 try{
-  await resolveAccount();
-  const created=await cloudflare(`/accounts/${accountId}/d1/database`,{method:'POST',body:{name:runName,primary_location_hint:'weur'}});
-  databaseId=text(created?.result?.uuid);if(!databaseId)throw new Error('ISOLATED_D1_CREATE_NO_ID');
   const schemaRows=await productionAll(`SELECT type,name,tbl_name,sql FROM sqlite_master WHERE type IN ('table','index','trigger','view') AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' ORDER BY type,name`);
+  try{
+    await resolveAccount();
+    const created=await cloudflare(`/accounts/${accountId}/d1/database`,{method:'POST',body:{name:runName,primary_location_hint:'weur'}});
+    databaseId=text(created?.result?.uuid);if(!databaseId)throw new Error('ISOLATED_D1_CREATE_NO_ID');
+  }catch(error){
+    cloudflareIsolationFailure=text(error?.message||error).slice(0,500);
+    isolationBackend='LOCAL_NODE_SQLITE_DISPOSABLE';
+    databaseId='LOCAL_SQLITE_MEMORY';
+    localSqlite=new DatabaseSync(':memory:');
+  }
   await applySchema(schemaRows);
   const copiedInputs=await copyCurrentInputs(schemaRows);
   const local=await startBridge();
@@ -225,13 +253,15 @@ try{
   const policy={threshold_70_unchanged:true,minimum_move_5pct_unchanged:true,external_format_changed:false,working_telegram_used:false,working_database_written:false};
   const checks={worker_success:worker.exit_code===0,full_scan:universe>0&&scanned===universe,d1_read_cap:reads<=34000,d1_write_cap:writes<=560,d1_unknown_ops_zero:unknown===0,technical_telegram_attempts_zero:worker.telegram.technical_attempts===0,duplicate_delivery_attempts_zero:duplicateHashes===0,deep_candidate_present:deepCount>0,correct_rejection_or_natural_dispatch:decisions.rows.length>0||publications.rows.length>0||worker.telegram.trade_attempts>0};
   const naturalCandidateReachedTestSender=worker.telegram.trade_attempts>0;
-  const deploymentGate={ready:Object.values(checks).every(Boolean)&&naturalCandidateReachedTestSender,reason:naturalCandidateReachedTestSender?'ALL_REQUIRED_ISOLATED_GATES_CLOSED':'NATURAL_CANDIDATE_DID_NOT_REACH_TEST_SENDER'};
-  receipt={schema:'my-report-2-early-evidence-isolated-acceptance-v1',status:Object.values(checks).every(Boolean)?'ISOLATED_CYCLE_CLOSED':'ISOLATED_CYCLE_NOT_CLOSED',branch:text(process.env.GITHUB_REF_NAME)||null,commit:text(process.env.GITHUB_SHA)||null,base_commit:'086d1542f2615d3dd19bdf4769b28a9938027ffb',worker_sha256:text(process.env.REPORT2_EXPECTED_WORKER_SHA)||null,started_ts:startedTs,completed_ts:Date.now(),temporary_database:{created:true,name:runName,id_hash:crypto.createHash('sha256').update(databaseId).digest('hex'),production_database:false},copied_inputs:copiedInputs,stage_counts:{available_for_scan:universe,scanned,primary_shortlist:shortlist,early_evidence_rows:early.rows.length,deep_selected:deepCount,own_evidence_handoffs:ownEvidenceHandoffs,recorded_handoff_rows:handoff.rows.length,full_evidence_rows:evidence.rows.length,final_decisions:decisions.rows.length,formatted_publications:publications.rows.length,test_sender_attempts:worker.telegram.trade_attempts},drop_reasons:{deep:groupReasons(deep.rows),full_evidence:groupReasons(evidence.rows),decisions:groupReasons(decisions.rows),publications:groupReasons(publications.rows),dispatch:groupReasons(dispatch.rows)},traces:{early,handoff,deep,evidence,decisions,publications,dispatch},source_receipts:{liquidation:liquidationSources},budget:{d1_rows_read:reads,d1_rows_written:writes,d1_unknown_ops:unknown,d1_read_cap:34000,d1_write_cap:560,d1_read_headroom:34000-reads,d1_write_headroom:560-writes,d1_statement_count:worker.usage.statements,external_http:worker.external_http,duration_ms:measurement?.duration_ms??null},delivery:{technical_possibility_tested:true,natural_candidate_reached_test_sender:naturalCandidateReachedTestSender,real_user_telegram_delivery_confirmed:false,test_sender_attempts:worker.telegram.attempts,technical_attempts:worker.telegram.technical_attempts,duplicate_hashes:duplicateHashes},policy,checks,deployment_gate:deploymentGate,canonical_run:{status:canonical?.status||null,candidate_count:Array.isArray(canonical?.candidates)?canonical.candidates.length:0},production_changed:false};
+  const exactCloudflareD1=isolationBackend==='CLOUDFLARE_D1_DISPOSABLE';
+  const deploymentGate={ready:Object.values(checks).every(Boolean)&&naturalCandidateReachedTestSender&&exactCloudflareD1,reason:!exactCloudflareD1?'CLOUDFLARE_DISPOSABLE_D1_PERMISSION_REQUIRED':naturalCandidateReachedTestSender?'ALL_REQUIRED_ISOLATED_GATES_CLOSED':'NATURAL_CANDIDATE_DID_NOT_REACH_TEST_SENDER'};
+  receipt={schema:'my-report-2-early-evidence-isolated-acceptance-v1',status:Object.values(checks).every(Boolean)?(exactCloudflareD1?'ISOLATED_CYCLE_CLOSED':'ISOLATED_CYCLE_CLOSED_LOCAL_SQLITE'):'ISOLATED_CYCLE_NOT_CLOSED',branch:text(process.env.GITHUB_REF_NAME)||null,commit:text(process.env.GITHUB_SHA)||null,base_commit:'086d1542f2615d3dd19bdf4769b28a9938027ffb',worker_sha256:text(process.env.REPORT2_EXPECTED_WORKER_SHA)||null,started_ts:startedTs,completed_ts:Date.now(),temporary_database:{created:true,backend:isolationBackend,name:runName,id_hash:crypto.createHash('sha256').update(databaseId).digest('hex'),production_database:false,cloudflare_creation_failure:cloudflareIsolationFailure},copied_inputs:copiedInputs,stage_counts:{available_for_scan:universe,scanned,primary_shortlist:shortlist,early_evidence_rows:early.rows.length,deep_selected:deepCount,own_evidence_handoffs:ownEvidenceHandoffs,recorded_handoff_rows:handoff.rows.length,full_evidence_rows:evidence.rows.length,final_decisions:decisions.rows.length,formatted_publications:publications.rows.length,test_sender_attempts:worker.telegram.trade_attempts},drop_reasons:{deep:groupReasons(deep.rows),full_evidence:groupReasons(evidence.rows),decisions:groupReasons(decisions.rows),publications:groupReasons(publications.rows),dispatch:groupReasons(dispatch.rows)},traces:{early,handoff,deep,evidence,decisions,publications,dispatch},source_receipts:{liquidation:liquidationSources},budget:{d1_rows_read:reads,d1_rows_written:writes,d1_unknown_ops:unknown,d1_read_cap:34000,d1_write_cap:560,d1_read_headroom:34000-reads,d1_write_headroom:560-writes,d1_statement_count:worker.usage.statements,d1_measurement_exact_for_cloudflare:exactCloudflareD1,external_http:worker.external_http,duration_ms:measurement?.duration_ms??null},delivery:{technical_possibility_tested:true,natural_candidate_reached_test_sender:naturalCandidateReachedTestSender,real_user_telegram_delivery_confirmed:false,test_sender_attempts:worker.telegram.attempts,technical_attempts:worker.telegram.technical_attempts,duplicate_hashes:duplicateHashes},policy,checks,deployment_gate:deploymentGate,canonical_run:{status:canonical?.status||null,candidate_count:Array.isArray(canonical?.candidates)?canonical.candidates.length:0},production_changed:false};
   if(worker.exit_code!==0)throw new Error(`ISOLATED_WORKER_EXIT_${worker.exit_code}`);
 }catch(error){failure=text(error?.stack||error).slice(0,4000);if(!receipt)receipt={schema:'my-report-2-early-evidence-isolated-acceptance-v1',status:'FAILED',started_ts:startedTs,completed_ts:Date.now(),production_changed:false};receipt.failure=failure;}
 finally{
   if(server)await new Promise(resolve=>server.close(resolve));
-  if(databaseId&&accountId){deletion.attempted=true;try{await cloudflare(`/accounts/${accountId}/d1/database/${databaseId}`,{method:'DELETE'});deletion.success=true;}catch(error){deletion.error=text(error?.message||error).slice(0,500);}}
+  if(localSqlite){deletion.attempted=true;try{localSqlite.close();deletion.success=true;}catch(error){deletion.error=text(error?.message||error).slice(0,500);}}
+  else if(databaseId&&accountId){deletion.attempted=true;try{await cloudflare(`/accounts/${accountId}/d1/database/${databaseId}`,{method:'DELETE'});deletion.success=true;}catch(error){deletion.error=text(error?.message||error).slice(0,500);}}
   receipt=receipt||{schema:'my-report-2-early-evidence-isolated-acceptance-v1',status:'FAILED',production_changed:false};receipt.cleanup=deletion;receipt.temporary_database_removed=deletion.success;
   if(!deletion.success&&databaseId)receipt.status='FAILED_TEMP_DATABASE_CLEANUP';
   fs.writeFileSync(output,`${JSON.stringify(receipt,null,2)}\n`,'utf8');
