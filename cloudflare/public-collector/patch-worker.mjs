@@ -5,8 +5,8 @@ import crypto from 'node:crypto';
 const API='https://api.cloudflare.com/client/v4';
 const SCRIPT='my-report-2-hub';
 const BASE_SHA='10da12a72dff2bbbdc18aba7273056c7cd894899c4949f2cbe67cfe38462f3af';
-const VERSION='report2-public-collector-v5-backup-lease-20260929';
-const PREVIOUS_VERSIONS=['report2-public-collector-v4-linear-pack-20260929','report2-public-collector-v3-contract-integrity-20260928','report2-public-collector-v2-20260928','report2-public-collector-v1-20260928'];
+const VERSION='report2-public-collector-v6-once-pack-retry-20260929';
+const PREVIOUS_VERSIONS=['report2-public-collector-v5-backup-lease-20260929','report2-public-collector-v4-linear-pack-20260929','report2-public-collector-v3-contract-integrity-20260928','report2-public-collector-v2-20260928','report2-public-collector-v1-20260928'];
 const here=path.dirname(new URL(import.meta.url).pathname);
 const outDir=path.resolve(process.argv[2]||path.join(here,'dist'));
 const sha=value=>crypto.createHash('sha256').update(value).digest('hex');
@@ -69,7 +69,7 @@ async function main(){
     name:SCRIPT,main:'worker.js',account_id:account.id,compatibility_date:settings?.result?.compatibility_date||'2026-09-11',keep_vars:true,no_bundle:true,
     vars:{PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M'},
     d1_databases:[{binding:'DATA_DB',database_id:d1.id||d1.database_id}],
-    triggers:{crons:['*/5 * * * *']},
+    triggers:{crons:['*/5 * * * *','3-58/5 * * * *']},
   };
   fs.writeFileSync(path.join(outDir,'wrangler.json'),`${JSON.stringify(config,null,2)}\n`);
   fs.writeFileSync(path.join(outDir,'prepare-proof.json'),`${JSON.stringify({status:patched.status,script:SCRIPT,base_sha256:sha(original),output_sha256:sha(patched.source),collector_version:VERSION,binding_names:bindings.map(row=>String(row.name)).sort(),secret_values_exported:false},null,2)}\n`);
