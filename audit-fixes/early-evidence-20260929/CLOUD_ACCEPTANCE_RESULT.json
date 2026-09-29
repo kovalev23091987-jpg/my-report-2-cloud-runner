@@ -1,0 +1,71 @@
+{
+  "schema": "my-report-2-early-evidence-repair-result-v1",
+  "status": "ISOLATED_FULL_CYCLE_CLOSED_NOT_DEPLOYED",
+  "production_changed": false,
+  "production_main_sha": "086d1542f2615d3dd19bdf4769b28a9938027ffb",
+  "candidate_branch": "repair/early-evidence-20260929",
+  "candidate_commit": "41ddc23638b4f553d39a5aac8ed24c074a925f8a",
+  "candidate_worker_sha256": "59a68f1ce95554f0bd14d7f5561c5664bda35f92fe27862f514268ee6abc527d",
+  "source_archive": {
+    "name": "MY_REPORT_2_REPAIR_NOT_DEPLOYED_20260929.zip",
+    "library_file_id": "libfile_b3da74bcd458819187492c0d637f6cb7",
+    "hash_entries_verified": 1506
+  },
+  "offline_checks": {
+    "repair_and_telegram": {"passed": 20, "failed": 0},
+    "current_generation": {"passed": 345, "failed": 0},
+    "runtime_suites": {"passed": 7, "failed": 0},
+    "final_integration": {"passed": 37, "failed": 0},
+    "synthetic_signal_created": false,
+    "telegram_network_calls": 0,
+    "strategy_changed": false,
+    "external_format_changed": false
+  },
+  "isolated_full_cycle": {
+    "github_run_id": 36535688570,
+    "status": "ISOLATED_CYCLE_CLOSED_LOCAL_SQLITE",
+    "contracts_available": 361,
+    "contracts_scanned": 361,
+    "deep_selected": 1,
+    "deep_contract": "MARSCOIN-USDT",
+    "selected_early_quality": 64,
+    "selected_early_direction": null,
+    "full_evidence_status": "CLOSED",
+    "full_evidence_insert_changes": 1,
+    "canonical_state": "REJECTED",
+    "canonical_direction_hypothesis": "LONG_DISCOVERY_ONLY",
+    "canonical_interest_score": 36,
+    "data_quality": "PARTIAL",
+    "rejection_reason": "DATA_UNUSABLE",
+    "natural_test_sender_attempts": 0,
+    "technical_sender_attempts": 0,
+    "duplicate_sender_attempts": 0,
+    "external_http_calls_observed": 52,
+    "duration_ms": 16090,
+    "temporary_database_removed": true
+  },
+  "defect_found_during_acceptance": {
+    "status": "FIXED_AND_RETESTED",
+    "reason": "SELECTED_EARLY_BINDING_MUTATED_IMMUTABLE_SCHEDULER_TARGET",
+    "first_failing_run_id": 36535349161,
+    "fix": "PASS_SELECTED_DISCOVERY_SOURCE_WITHOUT_MUTATING_TARGET"
+  },
+  "budget_observation": {
+    "measurement_backend": "LOCAL_NODE_SQLITE_DISPOSABLE",
+    "cloudflare_d1_measurement_exact": false,
+    "observed_rows_read": 1006,
+    "observed_rows_written": 89,
+    "unknown_operations": 0,
+    "read_cap": 34000,
+    "write_cap": 560
+  },
+  "deployment_gate": {
+    "ready": false,
+    "reason": "CLOUDFLARE_DISPOSABLE_D1_PERMISSION_REQUIRED_AND_NO_NATURAL_TEST_SENDER_DELIVERY",
+    "cloudflare_error": "10000 Authentication error",
+    "required_next_evidence": [
+      "exact disposable Cloudflare D1 full-cycle measurement",
+      "natural eligible candidate reaching the isolated test sender"
+    ]
+  }
+}
