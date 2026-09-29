@@ -38,9 +38,11 @@ export function normalizeDeribitMarketContext({btc_dvol,eth_dvol,btc_options,eth
 export function normalizeCoinLobsterContext({whale_radar,liquidations,observed_ts=Date.now()}={}){
  const pick=(payload,paths)=>{for(const path of paths){let value=payload;for(const key of path.split('.'))value=value?.[key];if(Array.isArray(value))return{rows:value,path};}return{rows:[],path:null};};
  const radar=pick(whale_radar,['data','data.coins','data.rows','data.items','data.radar','coins','rows','items','radar','results']);
- const liq=pick(liquidations,['data','data.top_coins','data.topCoins','data.coins','data.rows','data.items','data.liquidations','top_coins','topCoins','coins','rows','items','liquidations','results']);
+ const liq=pick(liquidations,['perp_liquidations.top_coins','data','data.top_coins','data.topCoins','data.coins','data.rows','data.items','data.liquidations','top_coins','topCoins','coins','rows','items','liquidations','results']);
+ const named=pick(liquidations,['named_liquidations']);
+ const liquidationCurrent=liquidations?.available!==false&&liquidations?.stale!==true;
  const response_shapes={whale_radar_keys:whale_radar&&typeof whale_radar==='object'?Object.keys(whale_radar).slice(0,20):[],whale_radar_data_keys:whale_radar?.data&&typeof whale_radar.data==='object'&&!Array.isArray(whale_radar.data)?Object.keys(whale_radar.data).slice(0,20):[],liquidations_keys:liquidations&&typeof liquidations==='object'?Object.keys(liquidations).slice(0,20):[],liquidations_data_keys:liquidations?.data&&typeof liquidations.data==='object'&&!Array.isArray(liquidations.data)?Object.keys(liquidations.data).slice(0,20):[]};
- return {source:'COINLOBSTER',version:GLOBAL_MARKET_CONTEXT_VERSION,status:(radar.rows.length||liq.rows.length)?'CLOSED':'NOT_CLOSED',observed_ts,ttl_ms:COINLOBSTER_TTL_MS,whale_radar:radar.rows.slice(0,250),realized_liquidations:liq.rows.slice(0,250),radar_array_path:radar.path,liquidations_array_path:liq.path,response_shapes,advisory_only:true,directional_vote:false,hard_gate:false,internal_only:true};
+ return {source:'COINLOBSTER',version:GLOBAL_MARKET_CONTEXT_VERSION,status:(radar.rows.length||liquidationCurrent&&(liq.rows.length||named.rows.length))?'CLOSED':'NOT_CLOSED',observed_ts,ttl_ms:COINLOBSTER_TTL_MS,whale_radar:radar.rows.slice(0,250),realized_liquidations:liquidationCurrent?liq.rows.slice(0,250):[],named_liquidations:liquidationCurrent?named.rows.slice(0,250):[],radar_array_path:radar.path,liquidations_array_path:liq.path,named_liquidations_array_path:named.path,liquidations_current:liquidationCurrent,response_shapes,advisory_only:true,directional_vote:false,hard_gate:false,internal_only:true};
 }
 
 async function jsonFetch(fetchImpl,url,init={},timeoutMs=12000){
@@ -73,9 +75,9 @@ export async function fetchCoinLobsterLiquidations({fetch_impl=globalThis.fetch,
 
 export function contextForContract(context,contract){
  const base=String(contract||'').toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'');
- const matches=row=>String(row?.coin??row?.symbol??row?.asset??row?.ticker??'').toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'')===base;
+ const matches=row=>String(row?.base??row?.coin??row?.symbol??row?.asset??row?.ticker??'').toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'')===base;
  const coinlobster=context?.coinlobster;
- return {version:GLOBAL_MARKET_CONTEXT_VERSION,observed_ts:context?.observed_ts??null,deribit:context?.deribit??null,coinlobster:coinlobster?{...coinlobster,whale_radar:(coinlobster.whale_radar||[]).filter(matches).slice(0,8),realized_liquidations:(coinlobster.realized_liquidations||[]).filter(matches).slice(0,8)}:null,internal_only:true};
+ return {version:GLOBAL_MARKET_CONTEXT_VERSION,observed_ts:context?.observed_ts??null,deribit:context?.deribit??null,coinlobster:coinlobster?{...coinlobster,whale_radar:(coinlobster.whale_radar||[]).filter(matches).slice(0,8),realized_liquidations:(coinlobster.realized_liquidations||[]).filter(matches).slice(0,8),named_liquidations:(coinlobster.named_liquidations||[]).filter(matches).slice(0,8)}:null,internal_only:true};
 }
 
 export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,now=Date.now(),liquidation_only=false}={}){
@@ -89,7 +91,7 @@ export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,no
  }
  const deribit=liquidation_only?{status:'NOT_APPLICABLE_LIQUIDATION_ONLY',internal_only:true}:await cached('DERIBIT',DERIBIT_TTL_MS,()=>fetchDeribitMarketContext({fetch_impl,now}));
  const coinlobster=liquidation_only
-  ?await cached('COINLOBSTER_LIQUIDATIONS',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterLiquidations({fetch_impl,now}))
+  ?await cached('COINLOBSTER_LIQUIDATIONS_V2',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterLiquidations({fetch_impl,now}))
   :await cached('COINLOBSTER',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterContext({fetch_impl,now}));
  return {version:GLOBAL_MARKET_CONTEXT_VERSION,status:[deribit,coinlobster].some(x=>x.status==='CLOSED')?'CLOSED':'NOT_CLOSED',observed_ts:now,deribit,coinlobster,internal_only:true};
 }
