@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v5-backup-lease-20260929";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v6-once-pack-retry-20260929";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -119,25 +119,22 @@ async function __report2PublicCollectorPack({ bucket, received_ts, source_timest
   var current = [];
   var currentBytes = 2; // JSON array brackets; commas and UTF-8 row bytes are added once.
   var encoder = new TextEncoder();
-  var encoded = (value) => {
-    var payload = JSON.stringify(value);
-    return { payload, bytes: encoder.encode(payload).length };
-  };
   var flush = () => {
-    if (current.length) groups.push(current), current = [], currentBytes = 2;
+    if (current.length) groups.push({ payload: `[${current.join(",")}]`, bytes: currentBytes, contracts: current.length }), current = [], currentBytes = 2;
   };
   for (var row of ordered) {
-    var rowBytes = encoder.encode(JSON.stringify(row)).length;
+    var serialized = JSON.stringify(row);
+    var rowBytes = encoder.encode(serialized).length;
     if (rowBytes + 2 > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) throw new Error("PUBLIC_COLLECTOR_SINGLE_CONTRACT_TOO_LARGE");
     if (current.length >= __REPORT2_PUBLIC_COLLECTOR_MAX_CONTRACTS_PER_SHARD || currentBytes + rowBytes + (current.length ? 1 : 0) > __REPORT2_PUBLIC_COLLECTOR_MAX_PAYLOAD_BYTES) flush();
     currentBytes += rowBytes + (current.length ? 1 : 0);
-    current.push(row);
+    current.push(serialized);
   }
   flush();
   var metadata = { ...source_timestamps, expected_shards: groups.length, universe_total: ordered.length };
   var shards = [];
   for (var shard = 0; shard < groups.length; shard++) {
-    var body = encoded(groups[shard]);
+    var body = groups[shard];
     shards.push({
       bucket,
       actor: __REPORT2_PUBLIC_COLLECTOR_ACTOR,
@@ -149,7 +146,7 @@ async function __report2PublicCollectorPack({ bucket, received_ts, source_timest
       status: "COMPLETE",
       payload_hash: await __report2PublicCollectorHash(body.payload),
       payload: body.payload,
-      contracts: groups[shard].length,
+      contracts: body.contracts,
       payload_bytes: body.bytes
     });
   }

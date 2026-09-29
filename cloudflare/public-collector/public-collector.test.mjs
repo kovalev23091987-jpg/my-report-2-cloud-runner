@@ -93,7 +93,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });
@@ -104,7 +104,7 @@ test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
 });
 
@@ -113,7 +113,29 @@ test('T03 upgrades V4 while retaining exact bounded claims and a shorter backup 
   const previous='const worker_default={};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
-  assert.match(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
   assert.doesNotMatch(upgraded.source,/now \+ 24e4/);
   assert.equal((upgraded.source.match(/now \+ 12e4/g)||[]).length,2);
+});
+
+test('T03 upgrades deployed V5 and preserves exact JSON bytes in the faster packer',async()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const previous='const hubPrefix=true;\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v5-backup-lease-20260929";\nconst oldTail=true;\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const upgraded=patchWorker(previous,injected);
+  assert.equal(upgraded.status,'UPGRADED');
+  assert.match(upgraded.source,/const hubPrefix=true/);
+  assert.doesNotMatch(upgraded.source,/report2-public-collector-v5-backup-lease-20260929/);
+  const pack=Function('worker_default',`${injected}\nreturn __report2PublicCollectorPack;`)({});
+  const rows=Array.from({length:145},(_,i)=>({contract:`${['币','Δ','C'][i%3]}${i}-USDT`,price:i,missing:i%7===0?['funding']:[],note:i===0?'тест'.repeat(6000):null}));
+  const shards=await pack({bucket:1,received_ts:2,source_timestamps:{market:2},rows});
+  const sorted=[...rows].sort((a,b)=>String(a.contract).localeCompare(String(b.contract)));
+  const expected=[];let current=[];
+  for(const row of sorted){
+    const next=[...current,row];
+    if(current.length&&(current.length>=64||Buffer.byteLength(JSON.stringify(next))>64*1024)){expected.push(JSON.stringify(current));current=[];}
+    current.push(row);
+  }
+  if(current.length)expected.push(JSON.stringify(current));
+  assert.deepEqual(shards.map(row=>row.payload),expected);
+  for(const shard of shards)assert.equal(shard.payload_bytes,Buffer.byteLength(shard.payload));
 });
