@@ -27,3 +27,9 @@ test('K21 Kraken/dYdX smoke is isolated from the report and copied into assemble
  assert.match(smoke,/telegram_network_calls:0/);assert.match(smoke,/score_changed:false/);assert.match(smoke,/entry_authorization:false/);assert.doesNotMatch(smoke,/sendMessage|TELEGRAM_RELAY/);
  assert.match(overlay,/shadow-market-pilot\.mjs/);assert.match(overlay,/hyperliquid-market-context\.mjs/);
 });
+
+test('K37 final assembled-runtime receipt runs exactly scenarios 1 through 37 without Telegram',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8'),final=fs.readFileSync(new URL('../../audit-fixes/v13/final-integration-37.mjs',import.meta.url),'utf8');
+ assert.match(workflow,/inputs\.reason == 'V13_FINAL_37'/);assert.match(workflow,/inputs\.reason != 'V13_FINAL_37'/);assert.match(workflow,/final-integration-37\.mjs runtime/);
+ assert.match(final,/Array\.from\(\{length:37\}/);assert.match(final,/telegram_network_calls:0/);assert.match(final,/synthetic_signal_created:false/);
+});
