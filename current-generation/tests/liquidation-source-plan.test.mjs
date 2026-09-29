@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {unsignedSourceHash,chooseWeightedLiquidationLane,buildLiquidationSourceWeightProfile} from '../files/src/liquidation-source-weighting.mjs';
-import {SOURCE_IDS,buildLiquidationRequestPlan,buildSourceReceipt,sourceHealthOutcome} from '../files/src/liquidation-source-plan.mjs';
+import {SOURCE_IDS,buildLiquidationRequestPlan,buildSourceReceipt,sourceHealthOutcome,chooseMappedLiquidationFallback} from '../files/src/liquidation-source-plan.mjs';
 
 test('K06: signed hash is converted directly to uint32',()=>{
   for(const seed of ['a','b','generation:run:SOL-USDT','\uffff']){const value=unsignedSourceHash(seed);assert.ok(Number.isInteger(value)&&value>=0&&value<2**32);}
@@ -28,4 +28,13 @@ test('K06: configured/present is not usable and non-attempts do not lower health
 test('K06: predictive factor remains one without an explicit future statistical gate',()=>{
   const [row]=buildLiquidationSourceWeightProfile(['GTRADE_NATIVE'],[{source_id:'GTRADE_NATIVE',attempts:500,reliability:0.9,predictive_observations:500,predictive_weight_factor:1.25,predictive_eligible:0}]);
   assert.equal(row.predictive_weight_factor,1);assert.equal(row.predictive_weight_eligible,false);
+});
+
+test('standalone fallback keeps shortlist order but requires an exact official venue identity',()=>{
+ const shortlist=[{contract:'MARSCOIN-USDT'},{contract:'ENA-USDT'},{contract:'WLD-USDT'}];
+ const catalog={ENA:{lighter_market_id:41},WLD:{gmx_market_address:'0x1111111111111111111111111111111111111111'}};
+ assert.equal(chooseMappedLiquidationFallback(shortlist,catalog,'MARSCOIN-USDT')?.contract,'ENA-USDT');
+ assert.equal(chooseMappedLiquidationFallback(shortlist,{WLD:catalog.WLD},'MARSCOIN-USDT')?.contract,'WLD-USDT');
+ assert.equal(chooseMappedLiquidationFallback(shortlist,{},'MARSCOIN-USDT'),null);
+ assert.equal(chooseMappedLiquidationFallback([{contract:'BTC-USDT'}],{BTC:catalog.ENA}),null);
 });
