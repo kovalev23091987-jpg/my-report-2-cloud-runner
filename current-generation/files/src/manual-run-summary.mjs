@@ -4,10 +4,14 @@ const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.t
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;
 const actionable=new Set(['OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED']);
 
-function proven(row){
+function proven(row,generatedAt){
  const c=row?.canonical;
  if(c?.status!=='CLOSED'||!actionable.has(c?.state)||c?.direction!==row?.direction||!contract(row?.contract)||
   !['LONG','SHORT'].includes(row?.direction)||!c?.entry||!c?.trigger||!c?.invalidation||!Array.isArray(c?.targets)||!c.targets.length)return false;
+ if(c.state==='OBSERVE'&&finite(c.scores?.coin_interest_0_100)<70)return false;
+ if(!price(c.trigger.value)||!price(c.invalidation.price))return false;
+ const deadline=finite(row.valid_until_ts??c.trigger.expires_ts);
+ if(deadline!==null&&Number.isFinite(Date.parse(generatedAt))&&deadline<Date.parse(generatedAt))return false;
  const entry=finite(c.entry.min_price??c.entry.max_price),target=finite(c.targets[0]?.price);
  if(entry===null||entry<=0||target===null||target<=0)return false;
  return (c.direction==='LONG'?(target/entry-1)*100:(1-target/entry)*100)>=5;
@@ -32,7 +36,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at}={}){
  let found=0;
  for(const direction of ['LONG','SHORT']){
   lines.push(direction==='LONG'?'ПОКУПКА':'ПРОДАЖА');
-  const ideas=candidates.filter(row=>row?.direction===direction&&proven(row));
+  const ideas=candidates.filter(row=>row?.direction===direction&&proven(row,generated_at));
   if(!ideas.length)lines.push('Подтверждённых идей сейчас нет.');
   else for(const row of ideas){lines.push(...idea(row));found++;}
   lines.push('');

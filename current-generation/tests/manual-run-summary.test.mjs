@@ -28,6 +28,8 @@ test('watch is presented only with a complete 5 percent plan',()=>{
  assert.doesNotMatch(text,/Действие сейчас: не входить/u);
  const unproven=structuredClone(watch);unproven.canonical.targets[0].price=102;
  assert.doesNotMatch(formatManualRunSummary({status:'CLOSED',candidates:[unproven],generated_at}),/Наблюдение/u);
+ const expired=structuredClone(watch);expired.valid_until_ts=Date.parse(generated_at)-1000;
+ assert.doesNotMatch(formatManualRunSummary({status:'CLOSED',candidates:[expired],generated_at}),/Наблюдение/u);
 });
 
 test('failed source status never masquerades as healthy absence of ideas',()=>{
