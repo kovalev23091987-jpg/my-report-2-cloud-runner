@@ -19,6 +19,7 @@ import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } fro
 import { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from "./src/bound-telegram-delivery-sidecar.mjs";
 import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from "./src/scheduler-control.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET, R820_PROSPECTIVE_VALIDATION_VERSION } from "./r8-20-prospective-validation-sidecar.mjs";
+import { formatManualRunSummary } from "./src/manual-run-summary.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext} from './src/global-market-context.mjs';
 import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
@@ -178,7 +179,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head}={}){
     const response=await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
       FROM canonical_publication_shadow WHERE run_id=?1 ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||'')).all();
     const rows=Array.isArray(response?.results)?response.results:[];
-    return {
+    const output={
       schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:rows.length?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',
       candidates:rows.map(row=>{
         let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
@@ -191,6 +192,8 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head}={}){
       }),
       generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,
     };
+    output.report_text=formatManualRunSummary(output);
+    return output;
   }catch(error){
     return {schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:'NOT_CLOSED',reason:'CANONICAL_RUN_OUTPUT_READ_FAILED',error:String(error?.message||error).slice(0,240),candidates:[],generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false};
   }
