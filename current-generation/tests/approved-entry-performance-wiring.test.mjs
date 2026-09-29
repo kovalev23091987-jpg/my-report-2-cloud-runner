@@ -19,9 +19,10 @@ test('only actionable approved entries enter factual 1 4 12 24 hour statistics',
  assert.match(sidecar,/NO_EXACT_MANUAL_DELIVERY_ACK_BOUND_TO_PUBLICATION/);
 });
 
-test('WAIT and OBSERVE share the same internal technical move proof fallback',()=>{
+test('WAIT and OBSERVE share the fresh minute structure proof fallback',()=>{
  const adapter=fs.readFileSync(new URL('../files/src/canonical-runtime-adapter.mjs',import.meta.url),'utf8');
  assert.match(adapter,/\['REJECTED','OBSERVE','WAIT_FOR_TRIGGER'\]\.includes\(routedState\)/);
  assert.match(adapter,/observe_contract_closed:existingPlanClosed\|\|observationPlanClosed/);
- assert.match(adapter,/route\?\.trigger\?\?fallbackTrigger/);
+ assert.match(adapter,/deriveFreshStructure\(/);
+ assert.match(adapter,/trigger:observation\?\.trigger\?\?route\?\.trigger/);
 });

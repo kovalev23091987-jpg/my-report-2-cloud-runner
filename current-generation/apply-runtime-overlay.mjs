@@ -22,6 +22,7 @@ const files=[
  'src/tz101-scenario-plan.mjs',
  'src/tz101-cost-assessment.mjs',
  'src/technical-move-potential.mjs',
+ 'src/fresh-structure-plan.mjs',
  'src/canonical-display.mjs',
  'src/native-liquidation-guard.mjs',
  'src/reason-registry.mjs',

@@ -16965,6 +16965,8 @@ async function buildDeepCheckInput(params, env) {
         opportunityIntelligence,
       public_evidence:
         publicEvidence,
+      minute_candles:
+        trajectory?.data?._opportunity_shadow_inputs?.one_minute || null,
       liquidation_intelligence:
         canonicalLiquidationIntelligence,
       futures_component:

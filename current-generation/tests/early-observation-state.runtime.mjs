@@ -20,7 +20,8 @@ assert.deepEqual(selectCanonicalInterestBasis({state:'WAIT_FOR_TRIGGER',early_qu
 // Factual QNT prices: the cancellation condition was already true at 248.225.
 const ts=1790692600000,contract='QNT-USDT';
 const discovery={contract,early_candidate_bridge:true,early_candidate_wave_id:'W',wave_id:'W',early_candidate_quality_0_100:75,early_candidate_direction_hint:'SHORT',early_candidate_receipt:{status:'CLOSED',contract,wave_id:'W',source_ts:ts-1000,available_at:ts-1000,direction_hint:'SHORT',direction_state:'SHORT_WATCH',evidence:[{status:'CLOSED',side:'SHORT'}]}};
-const assess=price=>buildRuntimeCanonicalBundle({contract,run_id:'risk-check',snapshot_id:'risk-check',observed_ts:ts,discovery_row:{...discovery,current_price:price},publication_shadow:{entry_signal:{state:'REJECTED',direction:'SHORT'}},opportunity:{newest_event:{candle:{high:247.85,low:228.38},minute_decomposition:{classification_allowed:true}}}}).canonical;
+const minute_candles=Array.from({length:100},(_,i)=>({ts:Math.floor(ts/60000)*60000-(101-i)*60000,open:240,close:240,high:i>=85?247.85:251,low:i===40?213.9:i>=85?228.38:220}));
+const assess=price=>buildRuntimeCanonicalBundle({contract,run_id:'risk-check',snapshot_id:'risk-check',observed_ts:ts,discovery_row:{...discovery,current_price:price},publication_shadow:{entry_signal:{state:'REJECTED',direction:'SHORT'}},minute_candles,opportunity:{newest_event:{candle:{high:300,low:280},minute_decomposition:{classification_allowed:true}}}}).canonical;
 const invalidated=assess(248.225),valid=assess(240);
 assert.equal(invalidated.state,'REJECTED');
 assert.equal(invalidated.entry,null);

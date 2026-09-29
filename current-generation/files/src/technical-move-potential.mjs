@@ -31,12 +31,23 @@ function candleCandidate({direction,entry,opportunity}){
  return {target_price:target,potential_move_pct:potential,basis:'MEASURED_ANOMALY_CANDLE_RANGE',basis_ru:'измеренная ширина подтверждаемой свечной аномалии',evidence_count:1,technical_inputs:{anomaly_high:high,anomaly_low:low,measured_range_pct:width/entry*100,event_id:event?.event_id??null}};
 }
 
-export function evaluateTechnicalMovePotential({direction,current_price,trigger_price=null,liquidation_zones=null,opportunity=null,rolling_24h_change_pct=null,oi_change_pct=null,volume_ratio=null,funding_rate_pct=null,early_anomaly=false}={}){
+function verifiedStructure({direction,entry,structure}){
+ if(structure?.basis!=='VERIFIED_HTX_MINUTE_PIVOT'||structure?.venue!=='HTX'||structure?.market_type!=='USDT_PERP'||
+  !String(structure?.contract||'').endsWith('-USDT')||!Number.isSafeInteger(Number(structure?.source_ts))||
+  !Number.isSafeInteger(Number(structure?.observed_ts))||Number(structure.source_ts)>Number(structure.observed_ts))return null;
+ const price=finite(structure.price);if(price===null||!correctSide(direction,entry,price))return null;
+ return {target_price:price,potential_move_pct:move(direction,entry,price),basis:'VERIFIED_HTX_MINUTE_PIVOT',
+  basis_ru:'измеренный уровень прошлой цены на HTX',source_ts:structure.source_ts,evidence_count:1};
+}
+
+export function evaluateTechnicalMovePotential({direction,current_price,trigger_price=null,liquidation_zones=null,opportunity=null,structure_target=null,rolling_24h_change_pct=null,oi_change_pct=null,volume_ratio=null,funding_rate_pct=null,early_anomaly=false}={}){
  const d=text(direction).toUpperCase(),current=finite(current_price),trigger=finite(trigger_price)??current;
  const base={version:TECHNICAL_MOVE_POTENTIAL_VERSION,status:'NOT_CLOSED',reason:'TECHNICAL_TARGET_AT_LEAST_5_NOT_PROVEN',direction:d||null,entry_reference_price:trigger,minimum_move_pct:MINIMUM_TECHNICAL_MOVE_PCT,target_price:null,potential_move_pct:null,basis:null,basis_ru:null,not_random_target:true};
  if(!['LONG','SHORT'].includes(d)||current===null||current<=0||trigger===null||trigger<=0)return {...base,reason:'DIRECTION_OR_PRICE_NOT_CLOSED'};
  const liquidation=liquidationCandidates({direction:d,entry:trigger,zones:liquidation_zones});
- const candidates=[candleCandidate({direction:d,entry:trigger,opportunity}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
+ const structure=verifiedStructure({direction:d,entry:trigger,structure:structure_target});
+ if(structure&&structure.potential_move_pct<MINIMUM_TECHNICAL_MOVE_PCT)return {...base,reason:'NEAREST_CONFIRMED_STRUCTURE_BELOW_5PCT',nearest_obstacle:structure};
+ const candidates=[structure?.potential_move_pct>=MINIMUM_TECHNICAL_MOVE_PCT?structure:null,candleCandidate({direction:d,entry:trigger,opportunity}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
  if(!candidates.length)return base;
  const chosen=candidates[0];
  const obstacles=liquidation.obstacles.filter(row=>row.move_pct>0&&row.move_pct<chosen.potential_move_pct).sort((a,b)=>a.move_pct-b.move_pct);

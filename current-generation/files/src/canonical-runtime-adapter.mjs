@@ -15,6 +15,7 @@ import { liquidationMapPriority } from './liquidation-extension/htx-liquidation-
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from './supplemental-score-evidence.mjs';
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
+import {deriveFreshStructure} from './fresh-structure-plan.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
 
 export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v13-current-cycle-20260929';
@@ -113,8 +114,13 @@ function qualifiedEarlyReceipt(discovery,decisionTs){
  const fresh=sourceTs!==null&&availableAt!==null&&sourceTs<=decisionTs&&availableAt<=decisionTs&&decisionTs-sourceTs<=15*60_000;
  const evidence=arr(receipt?.evidence);
  const directed=evidence.some(row=>{const side=text(row?.side).toUpperCase();return row?.status==='CLOSED'&&(side===candidate.direction||side==='BOTH');});
- const closed=discovery?.early_candidate_bridge===true&&receipt?.status==='CLOSED'&&sameContract&&sameWave&&fresh&&directed&&['LONG','SHORT'].includes(candidate.direction);
- return {closed,direction:closed?candidate.direction:null,candidate,source_ts:sourceTs,available_at:availableAt,same_contract:sameContract,same_wave:sameWave,fresh,directed,evidence_ids:arr(receipt?.evidence_ids)};
+ const opposite=candidate.direction==='LONG'?'SHORT':'LONG';
+ const conflicting=evidence.some(row=>row?.status==='CLOSED'&&text(row?.side).toUpperCase()===opposite)||
+  arr(receipt?.evidence_refs).some(row=>text(row?.side).toUpperCase()===opposite)||
+  arr(receipt?.evidence_ids).some(id=>text(id).toUpperCase().endsWith(`:${opposite}`));
+ const directionStateClosed=text(receipt?.direction_state).toUpperCase()===`${candidate.direction}_WATCH`;
+ const closed=discovery?.early_candidate_bridge===true&&receipt?.status==='CLOSED'&&sameContract&&sameWave&&fresh&&directed&&directionStateClosed&&!conflicting&&['LONG','SHORT'].includes(candidate.direction);
+ return {closed,direction:closed?candidate.direction:null,candidate,source_ts:sourceTs,available_at:availableAt,same_contract:sameContract,same_wave:sameWave,fresh,directed,direction_state_closed:directionStateClosed,conflicting,evidence_ids:arr(receipt?.evidence_ids)};
 }
 export function resolveCanonicalDirection({route=null,discovery=null,decision_ts=Date.now()}={}){
  const facts=[];
@@ -140,29 +146,20 @@ export function selectCanonicalInterestBasis({state,early_quality=null,deep_inte
  if((early_qualified===true||(early_qualified===null&&text(state)==='OBSERVE'))&&early!==null&&early>=70)return{score:early,basis:'QUALIFIED_EARLY_DETECTION_SCORE'};
  return{score:deep,basis:deep===null?'NOT_CLOSED':'DEEP_CANONICAL_INTEREST_SCORE'};
 }
-function observationPlan({publication,route,direction,price,opportunity,observedTs,pump,discovery}={}){
+function observationPlan({publication,route,direction,price,observedTs,pump,contract,minute_candles}={}){
  const scenario=publication?.scenario_plan;
  if(scenario?.entry_area_min_price!=null&&scenario?.entry_area_max_price!=null)return null;
  if(!['LONG','SHORT'].includes(direction)||finite(price)===null||price<=0)return null;
- const candle=opportunity?.newest_event?.candle||{};
- const eventHigh=finite(candle.high),eventLow=finite(candle.low);
- const routedLevel=finite(route?.trigger?.value);
- const anomalyClosed=opportunity?.newest_event?.minute_decomposition?.classification_allowed===true;
- const factualCandleLevel=anomalyClosed?(direction==='LONG'&&eventHigh>price?eventHigh:direction==='SHORT'&&eventLow<price?eventLow:null):null;
- const level=routedLevel??factualCandleLevel;
- const cancel=anomalyClosed?(direction==='LONG'&&eventLow<level?eventLow:direction==='SHORT'&&eventHigh>level?eventHigh:null):null;
- if(level===null||cancel===null)return null;
- // The stated cancellation condition must still be false at this snapshot.
- // An old candle can supply a target while its opposite boundary was already
- // crossed; publishing that as a live watch would contradict its own plan.
- if((direction==='LONG'&&price<cancel)||(direction==='SHORT'&&price>cancel))return null;
- const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,opportunity,rolling_24h_change_pct:finite(discovery?.rolling_24h_change_pct),oi_change_pct:finite(discovery?.best_oi_build_pct),volume_ratio:finite(discovery?.volume_ratio),funding_rate_pct:finite(discovery?.funding_per_hour_pct??discovery?.funding_rate_pct),early_anomaly:pump?.pump?.early_anomaly===true});
+ const structure=deriveFreshStructure({contract,direction,current_price:price,observed_ts:observedTs,one_minute:minute_candles});
+ if(structure.status!=='CLOSED')return null;
+ const level=structure.entry_price,cancel=structure.invalidation_price;
+ const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,structure_target:structure.target});
  if(potential.status!=='CLOSED')return null;
- const entry={area:`${level} USDT`,min_price:level,max_price:level,basis:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
+ const entry={area:`${level} USDT`,min_price:level,max_price:level,basis:'FRESH_HTX_MINUTE_STRUCTURE'};
  const targetPrice=potential.target_price;
  const expires=observedTs+30*60_000;
- const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`,level_origin:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
- return {entry,trigger:route?.trigger??fallbackTrigger,invalidation:{condition:route?.trigger?.cancel_condition??`price${direction==='LONG'?'<':'>'}${cancel}`,price:cancel},targets:[{price:targetPrice,source:'technically_proven_move_potential',start_closing:true,potential_move_pct:potential.potential_move_pct,basis:potential.basis,basis_ru:potential.basis_ru}],technical_move_potential:potential};
+ const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`,level_origin:'FRESH_HTX_MINUTE_STRUCTURE'};
+ return {entry,trigger:fallbackTrigger,invalidation:{condition:fallbackTrigger.cancel_condition,price:cancel},targets:[{price:targetPrice,source:'technically_proven_move_potential',start_closing:true,potential_move_pct:potential.potential_move_pct,basis:potential.basis,basis_ru:potential.basis_ru}],technical_move_potential:potential,fresh_structure:structure};
 }
 function targetsFrom(publication,observation){
  const p=finite(publication?.scenario_plan?.target_price);return p===null?(observation?.targets??[]):[{price:p,source:'scenario_plan',start_closing:true,potential_move_pct:finite(publication?.scenario_plan?.remaining_move_pct)}];
@@ -177,7 +174,7 @@ export function buildRuntimeCanonicalBundle({
  contract,run_id,snapshot_id,observed_ts,discovery_row=null,publication_shadow=null,opportunity=null,
  public_evidence=null,liquidation_intelligence=null,futures_component=null,execution_handoff=null,data_sufficiency=null,free_source_summary=null,smart_money_raw=null,shadow_decision=null,
  existing_source_receipts=null,previous_snapshot_context=null,oi_window_receipts=null,native_liquidation_acquisition=null,
- internal_market_context=null,
+ internal_market_context=null,minute_candles=null,
 }={}){
  const route=publication_shadow?.entry_signal||null;
  const directionResolution=resolveCanonicalDirection({route,discovery:discovery_row,decision_ts:observed_ts});
@@ -220,7 +217,7 @@ export function buildRuntimeCanonicalBundle({
  const proofZones={...pump,above:[...arr(pump?.above),...nativeTargets.filter(row=>row.price>price)],below:[...arr(pump?.below),...nativeTargets.filter(row=>row.price<price)]};
  const routedState=validState(route?.state)?text(route.state):null;
  const needsTechnicalFallback=(!routedState||['REJECTED','OBSERVE','WAIT_FOR_TRIGGER'].includes(routedState))&&finite(publication_shadow?.scenario_plan?.target_price)===null;
- const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,opportunity,observedTs:observed_ts,pump:proofZones,discovery:discovery_row}):null;
+ const observation=needsTechnicalFallback?observationPlan({publication:publication_shadow,route,direction,price,observedTs:observed_ts,pump:proofZones,contract,minute_candles}):null;
  const scenario=publication_shadow?.scenario_plan;
  const existingPlanClosed=Boolean(
   entryFrom(publication_shadow,null)&&
@@ -259,12 +256,12 @@ export function buildRuntimeCanonicalBundle({
   source_receipts:runtimeSourceReceipts,hard_gates:hardGates({discovery:discovery_row,publication:publication_shadow,executionHandoff:execution_handoff}),
   state:effectiveState,direction,overall_score_0_100:overall,coin_interest_score_0_100:interest,entry_readiness_score_0_100:null,
   reasons:reasonFacts({discovery:discovery_row,opportunity,publication:publication_shadow}),current_price:price,
-  entry:entryFrom(publication_shadow,observation)??observation?.entry??null,trigger:route?.trigger??observation?.trigger??null,invalidation:publication_shadow?.scenario_plan?.invalidation??observation?.invalidation??null,
+  entry:observation?.entry??entryFrom(publication_shadow,observation)??null,trigger:observation?.trigger??route?.trigger??null,invalidation:observation?.invalidation??publication_shadow?.scenario_plan?.invalidation??null,
   targets:targetsFrom(publication_shadow,observation),costs:publication_shadow?.cost_assessment??null,
   early_candidate:earlyCandidate(discovery_row,directionResolution.early_receipt),opportunity:opportunityCompact(opportunity),microstructure:microCompact(discovery_row),
   liquidations:nativeLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
   changes_from_previous:snapshotChanges.lines,
-  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,score_basis:{selected:interestBasis.basis,qualified_early_detection_0_100:earlyQuality,deep_canonical_interest_0_100:deepInterest,routed_overall_0_100:routedOverall},direction_resolution:directionResolution,scenario_plan_transfer:{existing_plan_closed:existingPlanClosed,fallback_plan_closed:observationPlanClosed,reason:effectiveState==='REJECTED'&&!existingPlanClosed&&!observationPlanClosed?(observation?.entry&&!observation?.targets?.length?'TARGET_NOT_PROVEN':'PLAN_NOT_CLOSED'):null},source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
+  metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),fresh_structure_proof:observation?.fresh_structure??null,start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,score_basis:{selected:interestBasis.basis,qualified_early_detection_0_100:earlyQuality,deep_canonical_interest_0_100:deepInterest,routed_overall_0_100:routedOverall},direction_resolution:directionResolution,scenario_plan_transfer:{existing_plan_closed:existingPlanClosed,fallback_plan_closed:observationPlanClosed,reason:effectiveState==='REJECTED'&&!existingPlanClosed&&!observationPlanClosed?(observation?.entry&&!observation?.targets?.length?'TARGET_NOT_PROVEN':'PLAN_NOT_CLOSED'):null},source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
  });
  const telegram=formatTelegramCompact(canonical,{facts:canonical?.reasons||[]});
  const manual=formatManualReport(canonical);

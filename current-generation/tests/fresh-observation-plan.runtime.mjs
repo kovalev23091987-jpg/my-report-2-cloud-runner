@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const runtime=path.resolve(process.argv[2]||'runtime');
+const load=async name=>import(pathToFileURL(path.join(runtime,'src',name)).href);
+const {deriveFreshStructure}=await load('fresh-structure-plan.mjs');
+const {buildRuntimeCanonicalBundle,resolveCanonicalDirection}=await load('canonical-runtime-adapter.mjs');
+const step=60_000,ts=1790696400000;
+function candles({short=false}={}){
+ const start=ts-101*step;
+ return Array.from({length:100},(_,i)=>{
+  const recent=i>=85;
+  const high=recent?(short?102:100):(short?104:101);
+  const low=recent?(short?100:98):(short?99:96);
+  return {ts:start+i*step,open:short?101:99,close:short?101:99,high:short&&i===48?105:high,low:short&&i===48?90:!short&&i===48?95:low};
+ });
+}
+const shortBars=candles({short:true});
+const plan=deriveFreshStructure({contract:'TEST-USDT',direction:'SHORT',current_price:101,observed_ts:ts,one_minute:shortBars});
+assert.equal(plan.status,'CLOSED');
+assert.equal(plan.entry_price,100);assert.equal(plan.invalidation_price,102);assert.equal(plan.target?.price,90);
+const longBars=candles();longBars[48].high=107;
+const longPlan=deriveFreshStructure({contract:'TEST-USDT',direction:'LONG',current_price:99,observed_ts:ts,one_minute:longBars});
+assert.equal(longPlan.status,'CLOSED');assert.equal(longPlan.entry_price,100);assert.equal(longPlan.target?.price,107);
+assert.equal(deriveFreshStructure({contract:'TEST-USDT',direction:'SHORT',current_price:99,observed_ts:ts,one_minute:shortBars}).status,'NOT_CLOSED');
+const gapped=shortBars.filter((_,i)=>i!==93);
+assert.equal(deriveFreshStructure({contract:'TEST-USDT',direction:'SHORT',current_price:101,observed_ts:ts,one_minute:gapped}).reason,'FRESH_MINUTE_BARS_GAP');
+const receipt={status:'CLOSED',contract:'TEST-USDT',wave_id:'W',source_ts:ts-1000,available_at:ts-1000,direction_hint:'SHORT',direction_state:'SHORT_WATCH',evidence:[{status:'CLOSED',side:'SHORT'}],evidence_ids:['W:RS:SHORT']};
+const discovery={contract:'TEST-USDT',current_price:101,early_candidate_bridge:true,early_candidate_wave_id:'W',wave_id:'W',early_candidate_quality_0_100:73,early_candidate_receipt:receipt};
+const base={contract:'TEST-USDT',run_id:'R',snapshot_id:'S',observed_ts:ts,discovery_row:discovery,publication_shadow:{entry_signal:{state:'REJECTED',direction:'SHORT'}},minute_candles:shortBars,opportunity:{newest_event:{candle:{high:140,low:130},minute_decomposition:{classification_allowed:true}}}};
+const valid=buildRuntimeCanonicalBundle(base).canonical;
+assert.equal(valid.state,'OBSERVE');assert.equal(valid.entry.min_price,100);assert.equal(valid.invalidation.price,102);
+assert.equal(valid.targets[0].price,90);assert.equal(valid.targets[0].basis,'VERIFIED_HTX_MINUTE_PIVOT');
+assert.ok(valid.targets[0].potential_move_pct>=5);
+assert.equal(buildRuntimeCanonicalBundle({...base,minute_candles:null}).canonical.state,'REJECTED');
+assert.equal(buildRuntimeCanonicalBundle({...base,discovery_row:{...discovery,current_price:99}}).canonical.state,'REJECTED');
+const undecided={...receipt,direction_state:'DIRECTION_NOT_CLOSED',evidence_ids:['W:RS:SHORT','W:PRICE:LONG']};
+assert.equal(resolveCanonicalDirection({discovery:{...discovery,early_candidate_receipt:undecided},decision_ts:ts}).status,'UNKNOWN');
+assert.equal(buildRuntimeCanonicalBundle({...base,discovery_row:{...discovery,early_candidate_receipt:undecided}}).canonical.state,'REJECTED');
+const opposing={...receipt,evidence:[{status:'CLOSED',side:'SHORT'},{status:'CLOSED',side:'LONG'}]};
+assert.equal(resolveCanonicalDirection({discovery:{...discovery,early_candidate_receipt:opposing},decision_ts:ts}).status,'UNKNOWN');
+console.log(JSON.stringify({status:'FRESH_PLAN_AND_DIRECTION_PROOF_PASS',entry:plan.entry_price,target:plan.target.price}));
