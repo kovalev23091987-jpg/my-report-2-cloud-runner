@@ -84,6 +84,25 @@ async function productionAll(sql,...params){
 async function applySchema(schemaRows){
   const priority={table:0,index:1,trigger:2,view:3};
   const rows=schemaRows.filter(row=>text(row.sql)&&priority[row.type]!==undefined).sort((a,b)=>priority[a.type]-priority[b.type]||text(a.name).localeCompare(text(b.name)));
+  if(!localSqlite){
+    const sql=rows.map(row=>`${row.sql};`).join('\n');
+    const etag=crypto.createHash('md5').update(sql).digest('hex');
+    const endpoint=`/accounts/${accountId}/d1/database/${databaseId}/import`;
+    const initiated=(await cloudflare(endpoint,{method:'POST',body:{action:'init',etag}})).result;
+    if(!initiated?.upload_url||!initiated?.filename)throw new Error('ISOLATED_SCHEMA_IMPORT_INIT_INCOMPLETE');
+    const uploaded=await fetch(initiated.upload_url,{method:'PUT',body:sql});
+    const uploadedEtag=text(uploaded.headers.get('etag')).replaceAll('"','');
+    if(!uploaded.ok||uploadedEtag!==etag)throw new Error(`ISOLATED_SCHEMA_IMPORT_UPLOAD_FAILED:${uploaded.status}`);
+    let state=(await cloudflare(endpoint,{method:'POST',body:{action:'ingest',etag,filename:initiated.filename}})).result;
+    for(let attempt=0;attempt<90&&state?.status!=='complete'&&state?.status!=='error';attempt++){
+      await new Promise(resolve=>setTimeout(resolve,1000));
+      state=(await cloudflare(endpoint,{method:'POST',body:{action:'poll',current_bookmark:state?.at_bookmark}})).result;
+    }
+    if(state?.status!=='complete'||state?.success!==true)throw new Error(`ISOLATED_SCHEMA_IMPORT_FAILED:${text(state?.status)}:${text(state?.error).slice(0,200)}`);
+    const actual=await isolatedAll(`SELECT type,name,sql FROM sqlite_master WHERE type IN ('table','index','trigger','view') AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'`);
+    if(actual.length!==rows.length)throw new Error(`ISOLATED_SCHEMA_COUNT_MISMATCH:${actual.length}:${rows.length}`);
+    return;
+  }
   for(const row of rows){
     try{await d1Query({sql:row.sql,params:[]});}
     catch(error){throw new Error(`ISOLATED_SCHEMA_COPY_FAILED:${row.type}:${row.name}:${text(error?.message||error)}`);}
