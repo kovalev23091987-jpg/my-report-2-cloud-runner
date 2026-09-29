@@ -41,7 +41,7 @@ test('K16 HTX risk: authoritative runner and worker consume the live candidate e
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
  assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2/);
  assert.match(worker,/await env\.REPORT2_EVIDENCE_V2_COLLECT/);
- assert.match(worker,/evidence_v2:candidateEvidenceV2\?\.evidence\?\.length\?candidateEvidenceV2/);
+ assert.match(worker,/evidence_v2:candidateEvidenceV2\?\.block_coverage\?candidateEvidenceV2/);
  assert.match(worker,/EVIDENCE_V2_CANDIDATE_RECEIPT/);
  assert.doesNotMatch(worker,/EVIDENCE_V2_CANDIDATE_RECEIPT[^\n]+payload_json/);
 });
