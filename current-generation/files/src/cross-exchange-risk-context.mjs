@@ -125,18 +125,22 @@ async function collectHistory({db,fetch_impl,api_key,base,now,run_id}={}){
 }
 
 async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{sources[row.source]=JSON.parse(row.payload_json);}catch{}}return sources;}
+async function loadPermittedCached(db,contract,now,allowed_lanes){const sources=await loadCached(db,contract,now);if(!Array.isArray(allowed_lanes))return sources;const allowed=new Set(allowed_lanes.map(lane=>lane==='REALIZED'?'CROSS_EXCHANGE_REALIZED':lane==='HISTORY'?'COINALYZE':lane==='DEPTH'?'CROSS_EXCHANGE_DEPTH':null));return Object.fromEntries(Object.entries(sources).filter(([source])=>allowed.has(source)));}
 async function saveCached(db,contract,source,payload,now,ttl){await db.prepare(`INSERT INTO report2_cross_exchange_risk_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+ttl,JSON.stringify(payload)).run();}
 
-export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.fetch,WebSocketImpl=globalThis.WebSocket,contract,run_id,reference_price,coinalyze_api_key='',lane_override='',now=Date.now(),realized_sample_ms=6000}={}){
+export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.fetch,WebSocketImpl=globalThis.WebSocket,contract,run_id,reference_price,coinalyze_api_key='',lane_override='',allowed_lanes=null,now=Date.now(),realized_sample_ms=6000}={}){
  if(!db)throw new Error('CROSS_EXCHANGE_DB_REQUIRED');const normalized=text(contract).toUpperCase(),base=baseOf(normalized);if(!validContract(normalized))return{version:CROSS_EXCHANGE_RISK_VERSION,status:'NOT_CLOSED',reason:'CONTRACT_INVALID',sources:{},network_calls:0};
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_cross_exchange_risk_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
- const catalog=await loadVenueCatalog({db,fetch_impl,now}),entry=catalog.entries?.[base]||null;if(catalog.network_calls>0)return{version:CROSS_EXCHANGE_RISK_VERSION,status:'CATALOG_REFRESHED',contract:normalized,lane:'VENUE_CATALOG',network_calls:catalog.network_calls,sources:await loadCached(db,normalized,now),receipts:catalog.receipts||[],internal_only:true};
- const lanes=['DEPTH','REALIZED'];if(text(coinalyze_api_key))lanes.push('HISTORY');const requestedLane=text(lane_override).toUpperCase(),lane=lanes.includes(requestedLane)?requestedLane:lanes[hash(`${run_id}:${normalized}:CEX_V1`)%lanes.length];let payload,ttl;
+ const catalog=await loadVenueCatalog({db,fetch_impl,now}),entry=catalog.entries?.[base]||null;if(catalog.network_calls>0)return{version:CROSS_EXCHANGE_RISK_VERSION,status:'CATALOG_REFRESHED',contract:normalized,lane:'VENUE_CATALOG',network_calls:catalog.network_calls,sources:await loadPermittedCached(db,normalized,now,allowed_lanes),receipts:catalog.receipts||[],internal_only:true};
+ const availableLanes=['DEPTH','REALIZED'];if(text(coinalyze_api_key))availableLanes.push('HISTORY');
+ const lanes=Array.isArray(allowed_lanes)?availableLanes.filter(name=>allowed_lanes.includes(name)):availableLanes;
+ if(!lanes.length)return{version:CROSS_EXCHANGE_RISK_VERSION,status:'NO_LIQUIDATION_LANE',contract:normalized,network_calls:0,sources:await loadPermittedCached(db,normalized,now,allowed_lanes),internal_only:true};
+ const requestedLane=text(lane_override).toUpperCase(),lane=lanes.includes(requestedLane)?requestedLane:lanes[hash(`${run_id}:${normalized}:CEX_V1`)%lanes.length];let payload,ttl;
  if(lane==='DEPTH'){payload=await collectDepth({fetch_impl,entry,reference_price,now});ttl=DEPTH_TTL_MS;}
  if(lane==='REALIZED'){payload=await collectRealized({entry,now,WebSocketImpl,duration_ms:realized_sample_ms});ttl=REALIZED_TTL_MS;}
  if(lane==='HISTORY'){payload=await collectHistory({db,fetch_impl,api_key:coinalyze_api_key,base,now,run_id});ttl=HISTORY_TTL_MS;}
  if(payload&&payload.source&&payload.status==='CLOSED')await saveCached(db,normalized,payload.source,payload,now,ttl);
- const sources=await loadCached(db,normalized,now),statuses=Object.values(sources).map(x=>x.status);
+ const sources=await loadPermittedCached(db,normalized,now,allowed_lanes),statuses=Object.values(sources).map(x=>x.status);
  return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,receipts:[{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED'}],internal_only:true,automatic_execution:false};
 }
 

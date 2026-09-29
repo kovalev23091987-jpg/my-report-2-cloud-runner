@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {formatManualRunSummary} from '../files/src/manual-run-summary.mjs';
+import {formatManualRunSummary,formatStandaloneLiquidationSourceLines} from '../files/src/manual-run-summary.mjs';
 
 const generated_at='2026-09-29T16:20:34.866Z';
 const rejected={contract:'龙虾-USDT',direction:'SHORT',canonical_state:'REJECTED',manual_text:null,
@@ -34,4 +34,11 @@ test('watch is presented only with a complete 5 percent plan',()=>{
 
 test('failed source status never masquerades as healthy absence of ideas',()=>{
  assert.equal(formatManualRunSummary({status:'NOT_CLOSED',candidates:[],generated_at}),null);
+});
+test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
+ const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
+ const lines=formatStandaloneLiquidationSourceLines({independent_extensions:[context]});
+ assert.ok(lines.some(line=>line.includes('0xArchive FIL (оценочные зоны Hyperliquid)')));
+ assert.ok(lines.some(line=>line.includes('оценочный объём 42000 USD')));
+ assert.ok(lines.every(line=>!line.startsWith('Hyperliquid FIL')));
 });

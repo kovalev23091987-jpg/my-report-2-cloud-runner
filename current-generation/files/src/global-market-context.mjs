@@ -66,6 +66,11 @@ export async function fetchCoinLobsterContext({fetch_impl=globalThis.fetch,now=D
  return normalizeCoinLobsterContext({whale_radar,liquidations,observed_ts:now});
 }
 
+export async function fetchCoinLobsterLiquidations({fetch_impl=globalThis.fetch,now=Date.now()}={}){
+ const liquidations=await jsonFetch(fetch_impl,`${COINLOBSTER_URL}/api/public/liquidations`);
+ return normalizeCoinLobsterContext({liquidations,observed_ts:now});
+}
+
 export function contextForContract(context,contract){
  const base=String(contract||'').toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'');
  const matches=row=>String(row?.coin??row?.symbol??row?.asset??row?.ticker??'').toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'')===base;
@@ -73,7 +78,7 @@ export function contextForContract(context,contract){
  return {version:GLOBAL_MARKET_CONTEXT_VERSION,observed_ts:context?.observed_ts??null,deribit:context?.deribit??null,coinlobster:coinlobster?{...coinlobster,whale_radar:(coinlobster.whale_radar||[]).filter(matches).slice(0,8),realized_liquidations:(coinlobster.realized_liquidations||[]).filter(matches).slice(0,8)}:null,internal_only:true};
 }
 
-export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,now=Date.now()}={}){
+export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,now=Date.now(),liquidation_only=false}={}){
  if(!db)throw new Error('GLOBAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_global_source_cache (source TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, status TEXT NOT NULL)`).run();
  async function cached(source,ttl,loader){
@@ -82,8 +87,10 @@ export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,no
   try{const payload=await loader();await db.prepare(`INSERT INTO report2_global_source_cache(source,observed_ts,expires_ts,payload_json,status) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json,status=excluded.status`).bind(source,now,now+ttl,JSON.stringify(payload),payload.status||'CLOSED').run();return {...payload,cache_status:'REFRESHED'};}
   catch(error){if(row){try{return {...JSON.parse(row.payload_json),status:'STALE_FALLBACK',cache_status:'STALE_FALLBACK',refresh_error:String(error?.message||error)};}catch{}}return {source,status:'SOURCE_ERROR',observed_ts:now,cache_status:'MISS_FAILED',error:String(error?.message||error),internal_only:true};}
  }
- const deribit=await cached('DERIBIT',DERIBIT_TTL_MS,()=>fetchDeribitMarketContext({fetch_impl,now}));
- const coinlobster=await cached('COINLOBSTER',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterContext({fetch_impl,now}));
+ const deribit=liquidation_only?{status:'NOT_APPLICABLE_LIQUIDATION_ONLY',internal_only:true}:await cached('DERIBIT',DERIBIT_TTL_MS,()=>fetchDeribitMarketContext({fetch_impl,now}));
+ const coinlobster=liquidation_only
+  ?await cached('COINLOBSTER_LIQUIDATIONS',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterLiquidations({fetch_impl,now}))
+  :await cached('COINLOBSTER',COINLOBSTER_TTL_MS,()=>fetchCoinLobsterContext({fetch_impl,now}));
  return {version:GLOBAL_MARKET_CONTEXT_VERSION,status:[deribit,coinlobster].some(x=>x.status==='CLOSED')?'CLOSED':'NOT_CLOSED',observed_ts:now,deribit,coinlobster,internal_only:true};
 }
 

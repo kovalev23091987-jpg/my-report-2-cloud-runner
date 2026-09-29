@@ -1,3 +1,4 @@
+import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v1-20260929';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
@@ -68,5 +69,22 @@ export function formatLiquidationRunSummary({status,scan,preliminary_candidates=
  else lines.push('Сильные зоны ликвидаций сейчас не подтверждены.');
  lines.push('Уровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.');
  return lines.join('\n').trim();
+}
+export function formatStandaloneLiquidationSourceLines(liq){
+ const info=nativeLiquidationSources(liq);
+ if(!info.present)return [];
+ if(info.kind!=='NESTED')return nativeLiquidationLines(liq,{manual:true})||[];
+ const lines=[];
+ for(const context of info.contexts){
+  const scoped=context.schema==='NATIVE_LIQUIDATION_CONTEXT_V1'?{native_extension:context}:{independent_extensions:[context]};
+  const segment=nativeLiquidationLines(scoped,{manual:true})||[];
+  for(const line of segment.filter(value=>!value.startsWith('Это уровни указанных площадок'))){
+   if(context.provider!=='0xArchive'){lines.push(line);continue;}
+   lines.push(line.replace(/^Hyperliquid ([A-Z0-9]+)(?=[, —])/, '0xArchive $1 (оценочные зоны Hyperliquid)')
+    .replace(/; ([\d,.]+) (USD|USDT|USDC)(?=\.|,)/g,'; оценочный объём $1 $2'));
+  }
+ }
+ if(lines.length)lines.push('Это уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.');
+ return lines;
 }
 export default {MANUAL_RUN_SUMMARY_VERSION,formatManualRunSummary,formatLiquidationRunSummary};

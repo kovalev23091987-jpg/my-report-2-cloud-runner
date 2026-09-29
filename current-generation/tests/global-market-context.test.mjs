@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeDeribitMarketContext,normalizeCoinLobsterContext,contextForContract,COINLOBSTER_TTL_MS} from '../files/src/global-market-context.mjs';
+import {normalizeDeribitMarketContext,normalizeCoinLobsterContext,contextForContract,fetchCoinLobsterLiquidations,COINLOBSTER_TTL_MS} from '../files/src/global-market-context.mjs';
 const dvol=(a,b)=>({result:{data:[[1,a,a,a,a],[2,b,b,b,b]]}});
 const options=(currency)=>({result:[
  {instrument_name:`${currency}-27SEP26-100-C`,open_interest:100,volume:20},
@@ -21,4 +21,9 @@ test('CoinLobster accepts current nested rows while retaining only harmless sche
 });
 test('CoinLobster has a 30 minute shared cache because its public IP quota is unpublished',()=>{
  assert.equal(COINLOBSTER_TTL_MS,30*60*1000);
+});
+test('liquidation-only CoinLobster request never fetches the whale radar',async()=>{
+ const urls=[];const result=await fetchCoinLobsterLiquidations({fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify({top_coins:[{symbol:'FILUSDT',total:10}]}),{status:200});},now:1_800_000_000_000});
+ assert.deepEqual(urls,['https://coinlobster.com/api/public/liquidations']);
+ assert.equal(result.realized_liquidations.length,1);assert.deepEqual(result.whale_radar,[]);
 });
