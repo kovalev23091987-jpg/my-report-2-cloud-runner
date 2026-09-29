@@ -5709,6 +5709,9 @@ async function persistStage0(
                   row
                     ?.discovery_direction_hint ??
                   null,
+                snapshot_ts:
+                  row?.snapshot_ts ??
+                  null,
                 model_routes:
                   row
                     ?.model_routes ??
@@ -6036,6 +6039,13 @@ function buildDiscoveryPrefilter(
   deepCheckQueue,
   options = {}
 ) {
+  const discoverySnapshotTs =
+    Number.isFinite(
+      Number(scan?.timestamp)
+    )
+      ? Number(scan.timestamp)
+      : null;
+
   const contracts =
     Array.isArray(scan?.contracts)
       ? scan.contracts
@@ -6969,6 +6979,8 @@ function buildDiscoveryPrefilter(
         shortWatch,
       discovery_direction_hint:
         directionHint,
+      snapshot_ts:
+        discoverySnapshotTs,
       model_routes: [
         ...longRoutes,
         ...shortRoutes,
@@ -7023,6 +7035,8 @@ function buildDiscoveryPrefilter(
         earlyFlags.length,
       discovery_direction_hint:
         directionHint,
+      snapshot_ts:
+        discoverySnapshotTs,
       long_watch:
         longWatch,
       short_watch:
