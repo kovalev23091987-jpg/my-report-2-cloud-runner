@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v5-backup-lease-20260929";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -165,14 +165,14 @@ async function __report2PublicCollectorClaim(db, bucket, now) {
   }
   var inserted = await db.prepare(`INSERT OR IGNORE INTO report2_public_collector_usage_v1
     (actor,generation,bucket,state,claim_token,lease_until,started_ts,completed_ts,external_requests,rows_read,rows_written,payload_bytes,status,error_text)
-    VALUES(?1,?2,?3,'STARTED',?4,?5,?6,NULL,0,0,1,0,'STARTED',NULL)`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 24e4, now).run();
+    VALUES(?1,?2,?3,'STARTED',?4,?5,?6,NULL,0,0,1,0,'STARTED',NULL)`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 12e4, now).run();
   var row = await db.prepare(`SELECT state,claim_token,lease_until,status FROM report2_public_collector_usage_v1
     WHERE actor=?1 AND generation=?2 AND bucket=?3 LIMIT 1`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket).first();
   if (row?.claim_token === token) return { claimed: true, status: "CLAIMED", token, daily, rows_written: Number(inserted?.meta?.changes ?? 0) };
   if (row?.state === "CLOSED") return { claimed: false, status: "ALREADY_CLOSED", daily };
   if (Number(row?.lease_until ?? 0) > now) return { claimed: false, status: "ALREADY_RUNNING", daily };
   var stolen = await db.prepare(`UPDATE report2_public_collector_usage_v1 SET claim_token=?4,lease_until=?5,started_ts=?6,status='RECLAIMED',error_text=NULL
-    WHERE actor=?1 AND generation=?2 AND bucket=?3 AND state='STARTED' AND lease_until<=?6`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 24e4, now).run();
+    WHERE actor=?1 AND generation=?2 AND bucket=?3 AND state='STARTED' AND lease_until<=?6`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 12e4, now).run();
   return Number(stolen?.meta?.changes ?? 0) === 1 ? { claimed: true, status: "RECLAIMED", token, daily, rows_written: 1 } : { claimed: false, status: "CLAIM_RACE_LOST", daily };
 }
 async function __report2PublicCollectorPersist(db, shards) {

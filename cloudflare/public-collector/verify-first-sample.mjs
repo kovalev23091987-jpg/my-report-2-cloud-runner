@@ -10,11 +10,12 @@ const db=new RemoteD1Database(required('REPORT2_D1_BRIDGE_URL'),required('REPORT
 async function query(sql,params=[]){return (await db.prepare(sql).bind(...params).all())?.results||[];}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const deployedAt=Date.now();
+const firstNewBucket=Math.ceil(deployedAt/(5*60_000))*(5*60_000);
 const deadline=deployedAt+8*60_000;
 let health=null,usage=null,batch=null,lastReason='NO_HEALTH_ROW';
 while(Date.now()<deadline){
   health=(await query(`SELECT last_bucket,last_completed_ts,status,contract_count,shard_count,external_requests,rows_read,rows_written,payload_bytes,error_text,updated_ts FROM report2_public_collector_health_v1 WHERE actor=?1 AND generation=?2 LIMIT 1`,[ACTOR,GENERATION]))[0]||null;
-  if(health&&Number(health.updated_ts)>=deployedAt-60_000&&health.status==='CLOSED'){
+  if(health&&Number(health.last_bucket)>=firstNewBucket&&Number(health.last_completed_ts)>=deployedAt&&health.status==='CLOSED'){
     usage=(await query(`SELECT state,status,external_requests,rows_read,rows_written,payload_bytes,error_text FROM report2_public_collector_usage_v1 WHERE actor=?1 AND generation=?2 AND bucket=?3 LIMIT 1`,[ACTOR,GENERATION,Number(health.last_bucket)]))[0]||null;
     batch=(await query(`SELECT COUNT(*) AS shards,COALESCE(SUM(contract_count),0) AS contracts,COALESCE(SUM(payload_bytes),0) AS payload_bytes,MIN(status) AS min_status,MAX(status) AS max_status FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND generation=?2 AND bucket=?3`,[ACTOR,GENERATION,Number(health.last_bucket)]))[0]||null;
     const closed=usage?.state==='CLOSED'&&usage?.status==='CLOSED'&&batch?.min_status==='COMPLETE'&&batch?.max_status==='COMPLETE';

@@ -1,0 +1,35 @@
+name: Report 2 Public Collector Backup
+
+on:
+  schedule:
+    - cron: "2-57/5 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report2-public-collector-backup
+  cancel-in-progress: false
+
+jobs:
+  reclaim-unclosed-current-slot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Recheck the exact current bucket and collect only when primary failed
+        run: node cloudflare/public-collector/github-backup.mjs
+      - name: Save bounded backup receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: report2-collector-backup-${{ github.run_id }}
+          path: report2-collector-backup-proof.json
+          if-no-files-found: warn
+          retention-days: 7
