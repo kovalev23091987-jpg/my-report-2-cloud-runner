@@ -1,6 +1,9 @@
 name: Report 2 Early Evidence Isolated Acceptance
 
 on:
+  schedule:
+    # One isolated natural-market check after the old six-hour gaps age out.
+    - cron: "35 14 * * *"
   push:
     branches:
       - repair/early-evidence-20260929
@@ -57,7 +60,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
   isolated-acceptance:
-    if: ${{ contains(github.event.head_commit.message, '[repair-isolated-acceptance]') }}
+    if: ${{ github.event_name == 'schedule' || contains(github.event.head_commit.message, '[repair-isolated-acceptance]') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -92,9 +95,20 @@ jobs:
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
+      REPORT2_CANDIDATE_BRANCH: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref_name }}
     steps:
       - name: Checkout isolated repair branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'schedule' && 'integrate/early-evidence-current-20260929' || github.ref }}
+          fetch-depth: 0
+      - name: Bind exact candidate and refuse stale branch
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git fetch --quiet origin main
+          git merge-base --is-ancestor origin/main HEAD
+          echo "REPORT2_CANDIDATE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - name: Node 24
         uses: actions/setup-node@v4
         with:
