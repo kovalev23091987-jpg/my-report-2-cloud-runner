@@ -28,3 +28,14 @@ test('a verified scoped native level can support waiting entry when candle width
  const r=evaluateTechnicalMovePotential({direction:'LONG',current_price:100,trigger_price:102,opportunity:{newest_event:{minute_decomposition:{classification_allowed:true},candle:{high:102,low:99}}},liquidation_zones:{above:[{kind:'NATIVE',price:109,strength_score_0_100:72,strength_label_ru:'крупная',decision_target_eligible:true,source:'GMX',source_ts:1000}]}});
  assert.equal(r.status,'CLOSED');assert.equal(r.basis,'FRESH_SCOPED_NATIVE_LEVEL');assert.equal(r.target_price,109);assert.ok(r.potential_move_pct>=5);
 });
+
+test('estimated or conditional account levels cannot override the target proof gate',()=>{
+ for(const row of [
+  {price:202.84495,price_semantics:'BUCKET_CENTER'},
+  {price:14.4718582272,price_semantics:'EXCHANGE_ACCOUNT_REPORTED_PRICE',conditional_cross:true},
+  {price:280,kind:'CALCULATED'},
+ ]){
+  const r=evaluateTechnicalMovePotential({direction:'SHORT',current_price:304.8,trigger_price:302.05,liquidation_zones:{below:[{kind:'NATIVE_SCOPED',decision_target_eligible:true,...row}]}});
+  assert.equal(r.status,'NOT_CLOSED');assert.equal(r.target_price,null);
+ }
+});

@@ -1,0 +1,60 @@
+name: Report 2 Source Optimization Verification
+on:
+  push:
+    branches: [fix/source-proof-and-fallback-20260930]
+    paths:
+      - current-generation/**
+      - audit-fixes/source-optimization-20260930/**
+      - audit-fixes/v13/p1-integration-17.mjs
+      - .github/workflows/source-optimization-20260930.yml
+permissions:
+  contents: read
+concurrency:
+  group: report2-source-optimization-verification
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      REPORT2_V3_TELEGRAM_NETWORK: '0'
+      REPORT2_DISABLE_TELEGRAM: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble the current candidate from the working encrypted payload
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          cd runtime
+          npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run the complete change block and source proof regressions
+        run: |
+          node current-generation/validate.mjs > audit-output/current-validation.json
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early-validation.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration-37.json
+          node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Read the bounded current quotas caches and source evidence
+        run: node audit-fixes/source-optimization-20260930/read-source-state.mjs runtime audit-output/source-state-read-only.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report2-source-optimization-${{ github.run_id }}
+          path: audit-output/
+          if-no-files-found: error
+          retention-days: 30

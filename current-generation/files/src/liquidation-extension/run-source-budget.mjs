@@ -32,10 +32,14 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
   if(phaseStart===null)phaseStart=clock();if(!deadlineOk())return no('WHOLE_SOURCE_PHASE_EXPIRED');
   if(reserved+n>max_requests)return no('COMBINED_RUN_HTTP_BUDGET');
   const minute=Math.floor(clock()/60000);if(parts.some(([p,v])=>!reserveRate(p,v,minute)))return no('LOCAL_PROVIDER_RATE_CEILING');
-  // Reserve synchronously before any await, including denied/ambiguous attempts.
+  // Reserve synchronously before await. Release only an explicit acknowledgement
+  // that no durable reservation was created; ambiguous writes remain reserved.
   attempts.add(request.reservation_id);reserved+=n;grossReserved+=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,(rates.get(k)||0)+v);}
   let result;try{result=await provider_admit(request);}catch{errors.push('UPSTREAM_QUOTA_ACK_UNKNOWN');return no('UPSTREAM_QUOTA_ACK_UNKNOWN');}
   if(result?.allowed!==true||result?.new_reservation!==true){
+   if(result?.allowed===false&&result?.new_reservation===false&&result?.reservation_not_created===true){
+    reserved-=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,Math.max(0,(rates.get(k)||0)-v));}
+   }
    const upstreamReason=String(result?.reason||'UNKNOWN').trim().slice(0,160)||'UNKNOWN';
    return no(`UPSTREAM_QUOTA_NOT_GRANTED:${upstreamReason}`);
   }
@@ -80,5 +84,5 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
   }finally{clearTimeout(timer);init.signal?.removeEventListener('abort',forward);if(acquired)release();}
  }
  function releaseUnused(provider){const p=String(provider||'').trim().toUpperCase(),grantedUnits=granted.get(p)||0,used=claimedByProvider.get(p)||0,unused=Math.max(0,grantedUnits-used);if(!unused)return 0;granted.set(p,used);reserved=Math.max(claimed,reserved-unused);return unused;}
- return {admit,fetch:guardedFetch,releaseUnused,summary:()=>({reserved_http:reserved,gross_reserved_http:grossReserved,claimed_http:claimed,actual_http:actual,max_http:max_requests,active,peak_parallel:peak,max_parallel,queued:pending.length,phase_started_ts:phaseStart,max_total_ms,per_minute_limits:{...per_minute_limits},scope:'SAME_RUN_ALL_NEW_PROVIDERS',unused_local_capacity_released_after_completed_collector:true,monthly_provider_reservations_not_refunded:true,actual_dispatch_rate_enforced:true,phase_deadline_actively_enforced:true,provider_quota_provisioned:false,errors:[...errors]})};
+ return {admit,fetch:guardedFetch,releaseUnused,summary:()=>({reserved_http:reserved,gross_reserved_http:grossReserved,claimed_http:claimed,actual_http:actual,max_http:max_requests,active,peak_parallel:peak,max_parallel,queued:pending.length,phase_started_ts:phaseStart,max_total_ms,per_minute_limits:{...per_minute_limits},scope:'SAME_RUN_ALL_NEW_PROVIDERS',unused_local_capacity_released_after_completed_collector:true,monthly_provider_reservations_not_refunded:true,actual_dispatch_rate_enforced:true,phase_deadline_actively_enforced:true,provider_quota_provisioned:false,known_unspent_denials_release_local_capacity:true,unknown_reservation_ack_keeps_local_capacity:true,errors:[...errors]})};
 }

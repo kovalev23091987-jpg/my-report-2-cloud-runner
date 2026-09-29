@@ -18,3 +18,19 @@ test('source admission preserves the exact upstream denial reason',async()=>{
  assert.equal(receipt.reason,'UPSTREAM_QUOTA_NOT_GRANTED:PROVIDER_ALLOWANCE_NOT_CLOSED');
  assert.equal(budget.summary().actual_http,0);
 });
+
+const request=(id,provider,n=4)=>({reservation_id:id,contract:'TAO-USDT',run_id:'RUN',requests:{[provider]:n},max_requests:n,deadline_ts:1010000});
+test('explicit unspent provider denial leaves room for the next source',async()=>{
+ const b=createSharedSourceBudget({clock:()=>1000000,max_requests:5,provider_admit:async r=>r.requests.GMX?{allowed:false,new_reservation:false,reason:'FREE_QUOTA_EXHAUSTED',reservation_not_created:true}:{allowed:true,new_reservation:true}});
+ assert.equal((await b.admit(request('gmx','GMX'))).allowed,false);
+ assert.equal(b.summary().reserved_http,0);
+ assert.equal((await b.admit(request('lighter','LIGHTER'))).allowed,true);
+ assert.equal(b.summary().reserved_http,4);assert.equal(b.summary().actual_http,0);
+});
+test('unknown reservation acknowledgement cannot release room for another source',async()=>{
+ for(const provider_admit of [async()=>{throw Error('lost acknowledgement');},async()=>({allowed:false,new_reservation:false,reason:'RESERVATION_READBACK_MISMATCH'})]){
+  const b=createSharedSourceBudget({clock:()=>1000000,max_requests:5,provider_admit});
+  await b.admit(request('gmx','GMX'));assert.equal(b.summary().reserved_http,4);
+  assert.equal((await b.admit(request('lighter','LIGHTER'))).reason,'COMBINED_RUN_HTTP_BUDGET');
+ }
+});
