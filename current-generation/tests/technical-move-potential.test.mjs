@@ -34,8 +34,15 @@ test('estimated or conditional account levels cannot override the target proof g
   {price:202.84495,price_semantics:'BUCKET_CENTER'},
   {price:14.4718582272,price_semantics:'EXCHANGE_ACCOUNT_REPORTED_PRICE',conditional_cross:true},
   {price:280,kind:'CALCULATED'},
+  {price:280,entry_eligible:false},
+  {price:280,is_htx_price:false},
  ]){
   const r=evaluateTechnicalMovePotential({direction:'SHORT',current_price:304.8,trigger_price:302.05,liquidation_zones:{below:[{kind:'NATIVE_SCOPED',decision_target_eligible:true,...row}]}});
   assert.equal(r.status,'NOT_CLOSED');assert.equal(r.target_price,null);
  }
+});
+
+test('an estimated nearby bucket cannot veto a measured five-percent target',()=>{
+ const r=evaluateTechnicalMovePotential({direction:'LONG',current_price:100,trigger_price:100,opportunity:{newest_event:{minute_decomposition:{classification_allowed:true},candle:{high:101,low:94}}},liquidation_zones:{above:[{kind:'NATIVE_SCOPED',price:102,exact_notional_usdt:10000,price_semantics:'BUCKET_CENTER'}]}});
+ assert.equal(r.status,'CLOSED');assert.equal(r.target_price,107);assert.deepEqual(r.path_obstacles,[]);
 });

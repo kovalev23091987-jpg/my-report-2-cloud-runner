@@ -59,4 +59,22 @@ test('an admitted target cannot move to the center of a nearby estimated bucket'
  ]});
  assert.equal(out.clusters.length,1);assert.equal(out.clusters[0].decision_target_eligible,true);
  assert.equal(out.clusters[0].target_price,110);assert.equal(out.clusters[0].center_price,110.25);
+ assert.equal(out.clusters[0].target_proof.provider,'A');assert.equal(out.clusters[0].target_proof.notional_usd,100);
+});
+
+test('two admitted positions retain an actual nearest price and its own timestamp',()=>{
+ const out=buildDynamicLiquidationPanel({reference_price:100,observed_ts:1000,contexts:[
+  {status:'USABLE_NATIVE_SAMPLE',provider:'A',above:[{native_price:110,side:'SHORT',notional:100,source_ts:998,decision_target_eligible:true}]},
+  {status:'USABLE_NATIVE_SAMPLE',provider:'B',above:[{native_price:110.5,side:'SHORT',notional:10000,source_ts:999,decision_target_eligible:true}]},
+ ]});
+ const c=out.clusters[0];assert.equal(c.center_price,110.25);assert.equal(c.target_price,110);
+ assert.equal(c.target_proof.provider,'A');assert.equal(c.target_proof.source_ts,998);assert.equal(c.target_proof.notional_usd,100);
+});
+
+test('explicit non-entry and non-HTX source roles survive clustering',()=>{
+ const out=buildDynamicLiquidationPanel({reference_price:100,observed_ts:1000,contexts:[
+  {status:'USABLE_NATIVE_SAMPLE',provider:'A',above:[{native_price:110,side:'SHORT',notional:100,source_ts:999,decision_target_eligible:true,entry_eligible:false,is_htx_price:false}]},
+ ]});
+ assert.equal(out.status,'CLOSED');assert.equal(out.clusters[0].target_price,null);
+ assert.deepEqual(out.clusters[0].entry_eligible_values,[false]);assert.deepEqual(out.clusters[0].is_htx_price_values,[false]);
 });

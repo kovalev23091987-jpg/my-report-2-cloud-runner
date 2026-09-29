@@ -11,14 +11,15 @@ function liquidationCandidates({direction,entry,zones}){
  for(const row of rows){
   const target=finite(row?.price??row?.level_price),potential=target===null?null:move(direction,entry,target);
   if(target===null||!correctSide(direction,entry,target))continue;
-  const observed=row?.kind!=='CALCULATED'&&(finite(row?.exact_notional_usdt)!==null||finite(row?.strength_score_0_100)!==null||finite(row?.relative_strength_value)!==null);
+  const estimated=/BUCKET|CLUSTER_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(text(row?.price_semantics).toUpperCase());
+  const conditional=row?.conditional_cross===true||row?.conditional_on_other_positions===true||text(row?.margin_mode).toUpperCase()==='CROSS';
+  const forbidden=estimated||conditional||row?.entry_eligible===false||row?.is_htx_price===false;
+  const observed=!forbidden&&row?.kind!=='CALCULATED'&&(finite(row?.exact_notional_usdt)!==null||finite(row?.strength_score_0_100)!==null||finite(row?.relative_strength_value)!==null);
   if(observed&&row?.path_obstacle_eligible!==false)obstacles.push({price:target,move_pct:potential,kind:row.kind??null,source:row.source??null});
   // Calculated display bands and generic OI/funding/volume confirmations never
   // prove a tradable target. Only a separately admitted native/scenario level
   // can enter the target set.
-  const estimated=/BUCKET|CLUSTER_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(text(row?.price_semantics).toUpperCase());
-  const conditional=row?.conditional_cross===true||row?.conditional_on_other_positions===true||text(row?.margin_mode).toUpperCase()==='CROSS';
-  if(row?.decision_target_eligible!==true||row?.kind==='CALCULATED'||estimated||conditional||potential<MINIMUM_TECHNICAL_MOVE_PCT)continue;
+  if(row?.decision_target_eligible!==true||row?.kind==='CALCULATED'||forbidden||potential<MINIMUM_TECHNICAL_MOVE_PCT)continue;
   out.push({target_price:target,potential_move_pct:potential,basis:'FRESH_SCOPED_NATIVE_LEVEL',basis_ru:'свежий проверенный уровень позиции',target_proof_admitted:true,strength_label_ru:text(row?.strength_label_ru)||null,exact_notional_usdt:finite(row?.exact_notional_usdt),source:text(row?.source)||null,source_ts:finite(row?.source_ts),evidence_count:1});
  }
  return {candidates:out,obstacles};

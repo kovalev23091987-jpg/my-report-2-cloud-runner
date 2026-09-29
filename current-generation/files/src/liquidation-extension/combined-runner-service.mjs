@@ -48,7 +48,8 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   let healthRows=[];try{healthRows=source_weight_store?await source_weight_store.load(lanes):[];}catch{healthRows=[];}
   const weighted=chooseWeightedLiquidationLane({lanes,seed:`${params.run_id}:${params.contract}`,rows:healthRows});lastWeightProfile=weighted.profile;
   const score=new Map(weighted.profile.map(row=>[row.source_id,row.selection_weight]));
-  const first=weighted.lane||lanes[0],ordered=[first,...lanes.filter(lane=>lane!==first).sort((a,b)=>(score.get(b)||0)-(score.get(a)||0))];
+  const mapped=lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE').sort((a,b)=>(score.get(b)||0)-(score.get(a)||0));
+  const first=mapped[0]||weighted.lane||lanes[0],ordered=[first,...lanes.filter(lane=>lane!==first).sort((a,b)=>(score.get(b)||0)-(score.get(a)||0))];
   const deadline=Number(params.deep_started_ts)+Math.min(45000,Number(params.max_deep_ms)||45000);
   const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null)=>{const usable=Boolean(result),outcome=classifyOperationalSourceOutcome({status,result:usable,actual_http:actualHttp});if(evaluated===false)outcome.evaluated=false;let health={recorded:false,reason:'NOT_EVALUATED'};if(outcome.evaluated)try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable:outcome.operational_success===true,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,fallback:attempt>1,candidate_http_cap:candidateHttpCap,selection_profile:weighted.profile,source_outcome:outcome,health_update:health});return result;};
   async function attemptLane(lane,attempt){

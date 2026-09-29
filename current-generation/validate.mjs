@@ -10,7 +10,7 @@ const repo=path.resolve(here,'..');
 const expectedWorker='86fda51194316acf13a5f1a825fab2e9b347f78b648a23b0747ba159171f3377';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
- if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
+ if(result.error||result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.error?.message||''}\n${result.stdout}\n${result.stderr}`);
  return result.stdout.trim();
 };
 const checks=[
@@ -50,7 +50,9 @@ const checks=[
 ];
 for(const rel of checks)run(['--check',path.join(here,rel)]);
 const tests=fs.readdirSync(path.join(here,'tests')).filter(x=>x.endsWith('.test.mjs')).sort().map(x=>path.join(here,'tests',x));
-run(['--test',...tests]);
+const testOutput=run(['--test','--test-reporter=tap',...tests]);
+if(!/# tests [1-9][0-9]*/.test(testOutput)||!/# fail 0\b/.test(testOutput))throw Error('TEST_RESULT_EVIDENCE_MISSING');
+const testCount=Number(testOutput.match(/# tests ([0-9]+)/)?.[1]);
 const generation=JSON.parse(fs.readFileSync(path.join(here,'GENERATION.json'),'utf8'));
 if(generation.schedule_minutes!==20||generation.scheduled_runs_per_day!==72||generation.manual_runs_reserved_per_day!==8||generation.burst_deep_checks_reserved_per_day!==6||generation.worst_case_31_day_requests_with_eight_manual_runs_daily!==13330||generation.scheduled_plus_burst_31_day_requests!==12090)throw Error('GENERATION_QUOTA_MATH_MISMATCH');
 const sourceRuntime=process.argv[2]?path.resolve(process.argv[2]):null;
@@ -79,4 +81,4 @@ if(sourceRuntime){
  run([path.join(here,'tests/stage392-persistence-contract.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
-console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));
+console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',test_count:testCount,syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));

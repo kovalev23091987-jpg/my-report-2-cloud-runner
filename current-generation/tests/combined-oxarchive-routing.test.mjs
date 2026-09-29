@@ -26,3 +26,13 @@ test('a failed selected source falls through to another eligible source without 
  assert.equal(result,null);assert.ok(admissions.some(id=>id.startsWith('LIQ_NATIVE_CATALOG:')));
  const routed=service.summary().routed;assert.deepEqual(routed.map(x=>x.lane),['OXARCHIVE_HL_BUCKETS','HYPERLIQUID_NATIVE']);assert.equal(routed[0].status,'HTTP_ERROR');assert.equal(routed[1].fallback,true);
 });
+
+test('exact mapped native venue is tried before an estimate and an unspent denial preserves fallback',async()=>{
+ const expected={schema:'MULTI_LIQUIDATION_ACQUISITION_V1'},admissions=[];
+ const ox=async()=>expected;ox.summary=()=>({enabled:true});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',clock:()=>1000,secondary_enabled:false,oxarchive_collect:ox,provider_admit:async request=>{admissions.push(request);return request.requests.LIGHTER?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'PROVIDER_QUOTA_EXHAUSTED'}:{allowed:true,new_reservation:true};},source_weight_store:{load:async()=>[{source_id:'OXARCHIVE_HL_BUCKETS',reliability:1},{source_id:'HYPERLIQUID_NATIVE',reliability:0}],record:async()=>({recorded:true})},fetch_impl:async()=>{throw Error('unexpected transport');},max_http_per_run:5});
+ const out=await service.collect({contract:'TAO-USDT',native_symbol:'TAO',run_id:'R',deep_started_ts:1000,max_deep_ms:45000,source_identity:{lighter_market_id:23}});
+ assert.equal(out,expected);assert.ok(admissions[0].requests.LIGHTER);
+ assert.equal(service.summary().routed[0].lane,'LIGHTER_NATIVE');assert.equal(service.summary().routed[0].source_outcome.evaluated,false);
+ assert.equal(service.summary().shared_budget.reserved_http,1);
+});

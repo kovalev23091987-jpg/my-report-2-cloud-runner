@@ -591,18 +591,23 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     let liquidationContext={};
     let crossExchangeRisk={status:'NOT_RUN',sources:{},internal_only:true};
     if(candidate&&manualLiquidationSources){
-      const collectFor=async row=>{
+      const collectFor=async (row,maxHttp=8)=>{
         const contract=String(row.contract||'').trim().toUpperCase(),nativeSymbol=contract.replace(/-USDT$/,'');
         const sourceIdentity=env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries?.[nativeSymbol]||null;
-        try{return await manualLiquidationSources.collect({contract,native_symbol:nativeSymbol,run_id:sourceRunId,deep_started_ts:started,max_deep_ms:45000,early_candidate_bridge:row.qualified_growth_candidate===true,early_candidate_quality_0_100:row.qualified_growth_candidate===true?Math.min(100,60+Number(row.anomaly_flags_count||0)*5):null,manual_liquidation_request:true,source_identity:sourceIdentity});}
+        try{return await manualLiquidationSources.collect({contract,native_symbol:nativeSymbol,run_id:sourceRunId,deep_started_ts:started,max_deep_ms:45000,max_http_for_candidate:maxHttp,early_candidate_bridge:row.qualified_growth_candidate===true,early_candidate_quality_0_100:row.qualified_growth_candidate===true?Math.min(100,60+Number(row.anomaly_flags_count||0)*5):null,manual_liquidation_request:true,source_identity:sourceIdentity});}
         catch(error){console.log('LIQUIDATION_ONLY_SOURCE_ERROR',JSON.stringify({contract,error:String(error?.message||error)}));return null;}
       };
-      acquisition=await collectFor(candidate);
+      const mappedFallback=!commandIntent.contract?chooseMappedLiquidationFallback(scanResult.candidates,env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries||{},candidate.contract):null;
+      const leadingIdentity=env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries?.[String(candidate.contract).replace(/-USDT$/,'')]||{};
+      const leadingMapped=Number.isSafeInteger(leadingIdentity.lighter_market_id)||/^0x[0-9a-f]{40}$/i.test(leadingIdentity.gmx_market_address||'');
+      // Preserve shortlist order, but keep four calls for the exact mapped
+      // alternative when the leading candidate lacks a native venue identity.
+      acquisition=await collectFor(candidate,mappedFallback&&!leadingMapped?4:8);
       // Keep the leading coin first. If it yields no provider zones, try one
       // shortlisted coin with an exact venue identity in the remaining budget.
       const remaining=8-Number(manualLiquidationSources.summary()?.shared_budget?.reserved_http??8);
       const fallback=!commandIntent.contract&&!acquisition&&remaining>0&&Date.now()-started<45000?
-        chooseMappedLiquidationFallback(scanResult.candidates,env.REPORT2_LIQUIDATION_VENUE_REGISTRY?.entries||{},candidate.contract):null;
+        mappedFallback:null;
       if(fallback){
         await liquidationQueue.complete({contract:candidate.contract,wave_id:queueClaim.wave_id,task_kind:queueClaim.task_kind,run_id:sourceRunId,usable:false,now:Date.now()});
         const nextClaim=await liquidationQueue.claim({run_id:sourceRunId,preferred_contract:fallback.contract,now:Date.now()});

@@ -41,12 +41,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
-          cd runtime
-          if [ -f package-lock.json ]; then
-            npm ci --ignore-scripts --no-audit --no-fund
-          else
-            npm install --ignore-scripts --no-audit --no-fund
-          fi
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
       - name: Run the complete change block and source proof regressions
         run: |
           node current-generation/validate.mjs > audit-output/current-validation.json
