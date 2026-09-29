@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildPumpLiquidationZones,classifyPump24h} from '../files/src/pump-liquidation-zones.mjs';
+import {displayLegacyLiquidations} from '../files/src/canonical-display.mjs';
 const zones=[
  {price:110,status:'CLOSED',source:'ByKaranteli',notional_usdt:1000},
  {price:121,status:'CLOSED',source:'ByKaranteli',notional_usdt:15000},
@@ -37,6 +38,12 @@ test('provider holes are filled by calculated bands without inventing exact amou
  assert.equal(x.status,'CLOSED');assert.equal(x.coverage_status,'MIXED_PROVIDER_AND_CALCULATED');
  assert.equal(x.above.length,4);assert.equal(x.below.length,4);
  assert.equal(x.above[0].exact_amount_available,true);assert.ok(x.above.slice(1).every(row=>row.exact_notional_usdt===null));
+});
+test('0xArchive projected buckets never masquerade as an exact liquidation amount',()=>{
+ const map=buildPumpLiquidationZones({contract:'FIL-USDT',rolling_24h_change_pct:8,current_price:100,projected:[{status:'CLOSED',source:'0xArchive',providers:['0xArchive'],center_price:110,largest_provider_position_usd:42000,position_count:3}]});
+ assert.equal(map.above[0].kind,'PROJECTED');assert.equal(map.above[0].exact_amount_available,false);
+ const rendered=displayLegacyLiquidations(map).join(' ');
+ assert.doesNotMatch(rendered,/точная сумма 42000/);
 });
 test('BTC and ETH never show liquidation maps',()=>{
  for(const contract of ['BTC-USDT','ETH-USDT'])assert.equal(buildPumpLiquidationZones({contract,rolling_24h_change_pct:200,current_price:100,projected:zones}).status,'EXCLUDED_BY_USER_POLICY');
