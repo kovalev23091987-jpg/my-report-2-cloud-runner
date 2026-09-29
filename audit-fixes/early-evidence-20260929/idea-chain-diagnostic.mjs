@@ -12,16 +12,15 @@ const result=await db.prepare(`SELECT contract_code,observed_ts,canonical_state,
 if(result?.success===false||!Array.isArray(result?.results))throw new Error('READ_NOT_CLOSED');
 const rows=result.results.map(row=>{
   let c;try{c=JSON.parse(row.canonical_json);}catch{c={};}
-  const m=c.metadata||{},e=c.opportunity?.newest_event||{},s=m.scenario_plan_transfer||{},p=m.technical_move_potential||{};
+  const m=c.metadata||{},e=c.opportunity||{},s=m.scenario_plan_transfer||{},p=m.technical_move_potential||{};
   return {contract:row.contract_code,observed_ts:row.observed_ts,state:row.canonical_state,
     actionability:row.actionability_status,actionability_reason:row.actionability_reason,
     interest:c.scores?.coin_interest_0_100,overall:c.scores?.overall_0_100,direction:c.direction,
     early:m.direction_resolution?.early_receipt?.closed===true,early_reason:m.direction_resolution?.early_receipt?.candidate?.reason??null,
     route:m.direction_resolution?.facts?.filter(x=>x.origin==='FINAL_ROUTE').length||0,
     event_status:c.opportunity?.status,event_type:e.event_type,minute_classified:e.minute_decomposition?.classification_allowed===true,
-    opportunity_counts:c.opportunity?.counts??null,
-    timeframe_quality:c.opportunity?.timeframe_quality?Object.fromEntries(Object.entries(c.opportunity.timeframe_quality).map(([key,v])=>[key,{status:v?.status,count:v?.count,missing_fields:v?.missing_fields}])):null,
-    source_roles:{status:m.source_role_view?.status,classified:m.source_role_view?.classified?.map(x=>({source:x.source_key,family:x.source_family,roles:x.assigned_roles,known:x.registry_known}))??[]},
+    event_id:e.event_id??null,event_close_ts:e.event_close_ts??null,event_timeframe:e.timeframe??null,
+    source_roles:{status:m.source_role_view?.status,families:[...new Set((m.source_role_view?.classified??[]).filter(x=>x.registry_known).map(x=>x.source_family))],htx_execution:(m.source_role_view?.classified??[]).some(x=>x.source_key==='HTX_OFFICIAL'&&x.assigned_roles?.includes('EXECUTION_TRUTH'))},
     candle:e.candle?{high:e.candle.high,low:e.candle.low,close:e.candle.close}:null,
     current_price:c.current_price,trigger:c.trigger?.value??null,entry:c.entry?.min_price??null,
     invalidation:c.invalidation?.price??null,target:c.targets?.[0]?.price??null,
@@ -36,5 +35,5 @@ const eventResult=await db.prepare(`SELECT contract_code,event_ts,event_close_ts
 if(eventResult?.success===false||!Array.isArray(eventResult?.results))throw new Error('EVENT_READ_NOT_CLOSED');
 const usage=db.usageSnapshot();
 if(usage.rows_written!==0||usage.unknown_ops!==0||usage.rows_read>3000)throw new Error('READ_ONLY_BUDGET_VIOLATION');
-await fs.writeFile(process.argv[2]||'report2-idea-chain-diagnostic.json',JSON.stringify({schema:'report2-idea-chain-read-only-v2',from,now,rows,events:eventResult.results,usage,network_send:false},null,2));
+await fs.writeFile(process.argv[2]||'report2-idea-chain-diagnostic.json',JSON.stringify({schema:'report2-idea-chain-read-only-v3',from,now,rows,events:eventResult.results,usage,network_send:false},null,2));
 console.log(JSON.stringify({status:'READ_ONLY',rows:rows.length,high70:rows.filter(r=>r.interest>=70).length,events:eventResult.results.length,usage}));
