@@ -18,6 +18,7 @@ class HistoryDb{
   prepare(sql){return new Statement(this,sql);}
   async all(sql,args){
     if(!sql.includes('report2_market_snapshot_batch_v1'))return{results:[]};
+    if(sql.includes('LIMIT ?7')){const [generation,actor,start,end,cursorBucket,cursorShard,limit]=args;return{results:this.rows.filter(row=>row.generation===generation&&row.actor===actor&&row.bucket>=start&&row.bucket<=end&&(row.bucket>cursorBucket||(row.bucket===cursorBucket&&row.shard>cursorShard))).slice(0,limit)};}
     if(sql.includes('LIMIT ?6')){const [,start,end,cursorBucket,cursorShard,limit]=args;return{results:this.rows.filter(row=>row.bucket>=start&&row.bucket<=end&&(row.bucket>cursorBucket||(row.bucket===cursorBucket&&row.shard>cursorShard))).slice(0,limit)};}
     const [, ,start,end,target]=args,candidates=this.rows.filter(row=>row.bucket>=start&&row.bucket<=end).sort((a,b)=>Math.abs(a.bucket-target)-Math.abs(b.bucket-target));
     return{results:candidates.length?this.rows.filter(row=>row.bucket===candidates[0].bucket):[]};
