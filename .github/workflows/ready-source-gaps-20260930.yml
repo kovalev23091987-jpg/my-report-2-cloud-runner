@@ -1,0 +1,26 @@
+name: Ready source gaps bounded check
+on:
+  push:
+    branches: [autonomous/ready-source-gaps-20260930]
+    paths:
+      - audit-fixes/ready-source-gaps-20260930/**
+      - .github/workflows/ready-source-gaps-20260930.yml
+permissions:
+  contents: read
+jobs:
+  ready-inputs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Resolve known identity and ready sector inputs once
+        run: node audit-fixes/ready-source-gaps-20260930/check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ready-source-gaps-${{ github.run_id }}
+          path: ready-source-gaps-output/
+          retention-days: 30
