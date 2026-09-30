@@ -15411,6 +15411,7 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
 
     const errors = [];
     for (const [name, raw] of Object.entries({ liqmap: mapRaw, liquidations: realizedRaw, coverage: coverageRaw, symbols: symbolsRaw })) {
+      if (future_only && name === "liquidations") continue;
       if (!raw.ok) errors.push(`${name}:${raw.error || "ERROR"}`);
       if (raw.retry_after_sec !== null) errors.push(`${name}:RETRY_AFTER_${raw.retry_after_sec}`);
     }
@@ -15455,6 +15456,7 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
     else if (!realizedRaw.ok) realizedStatus = "SOURCE_ERROR";
     else if (realizedFresh.status !== "CURRENT" && realizedParsed.rows.length) realizedStatus = realizedFresh.status;
 
+    if(future_only)realizedStatus="NOT_REQUESTED_FUTURE_ONLY";
     const coverage = coverageRaw.ok ? parseCoverage(coverageRaw.data, nowTs) : null;
     const currentPrice = projected.current_price;
     const clusters = projected.clusters.map(c => ({
@@ -16343,7 +16345,7 @@ async function buildDeepCheckInput(params, env) {
         now_ts: Date.now(),
         htx_liquidation_tape: null,
         future_only: true,
-        asset_identity_proof: publicEvidence?.alias_verification?.asset_identity || null,
+        asset_identity_proof: publicEvidence?.alias_verification?.asset_identity || (supplementalCandidateContext?.identity_status==='CLOSED'&&supplementalCandidateContext?.asset_identity?{verified:true,canonical_base:contract.slice(0,-5),method:supplementalCandidateContext.identity_method,asset_identity:supplementalCandidateContext.asset_identity}:null),
       });
   } catch (error) {
     liquidationIntelligence = {

@@ -25,7 +25,7 @@ import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET
 import { classifyCanonicalRunCompletion, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext,contextForContract} from './src/global-market-context.mjs';
-import {collectSupplementalCandidateContext} from './src/supplemental-candidate-context.mjs';
+import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './src/supplemental-candidate-context.mjs';
 import {runOxArchiveCostProbe,loadOxArchiveReadiness,createOxArchiveCollector} from './src/oxarchive-cost-probe.mjs';
 import {installSourceAllowances} from './src/liquidation-extension/install-source-allowances.mjs';
 import {loadLiquidationVenueCatalog} from './src/liquidation-extension/venue-catalog-cache.mjs';
@@ -606,7 +606,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       const grant=await env.REPORT2_BYKARANTELI_RESERVE({contract:candidate.contract,run_id:sourceRunId,units:3,now:Date.now()});
       if(grant.allowed){
         let dispatched=0;
-        try{bykFuture=await liquidationIntelligenceApi.collectCrossVenueLiquidationIntelligence({contract_code:candidate.contract,fetch_impl:(...args)=>{if(dispatched>=3)throw Error('FUTURE_BYK_HTTP_CAP');dispatched++;return globalThis.fetch(...args);},api_key:env.BYKARANTELI_API_KEY,now_ts:Date.now(),future_only:true});}
+        try{bykFuture=await liquidationIntelligenceApi.collectCrossVenueLiquidationIntelligence({contract_code:candidate.contract,fetch_impl:(...args)=>{if(dispatched>=3)throw Error('FUTURE_BYK_HTTP_CAP');dispatched++;return globalThis.fetch(...args);},api_key:env.BYKARANTELI_API_KEY,now_ts:Date.now(),future_only:true,asset_identity_proof:parseSupplementalIdentityRegistry(supplementalIdentityRegistry.registry).entries[candidate.contract.replace(/-USDT$/,'')]?.identity?{verified:true,canonical_base:candidate.contract.replace(/-USDT$/,''),method:'VERSIONED_OFFICIAL_OR_CONFIGURED_EXACT_ASSET_REGISTRY'}:null});}
         catch(error){bykFuture={projected_map_status:'SOURCE_ERROR',projected_clusters:[],errors:[String(error?.message||error).slice(0,180)]};}
         bykFutureCalls=dispatched;
       }else bykFuture={projected_map_status:'QUOTA_NOT_GRANTED',projected_clusters:[],quota_admission:grant};
