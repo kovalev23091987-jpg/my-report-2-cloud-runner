@@ -20,7 +20,6 @@ import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '.
 import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
-import {sealedFullEvidenceSourceReceipts} from './full-evidence-source-binding.mjs';
 
 export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v13-current-cycle-20260929';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
@@ -182,7 +181,7 @@ export function buildRuntimeCanonicalBundle({
  contract,run_id,snapshot_id,observed_ts,discovery_row=null,publication_shadow=null,opportunity=null,
  public_evidence=null,liquidation_intelligence=null,futures_component=null,execution_handoff=null,data_sufficiency=null,free_source_summary=null,smart_money_raw=null,shadow_decision=null,
  existing_source_receipts=null,previous_snapshot_context=null,oi_window_receipts=null,native_liquidation_acquisition=null,
- internal_market_context=null,full_evidence_proof=null,
+ internal_market_context=null,
 }={}){
  const route=publication_shadow?.entry_signal||null;
  const directionResolution=resolveCanonicalDirection({route,discovery:discovery_row,decision_ts:observed_ts});
@@ -251,7 +250,6 @@ export function buildRuntimeCanonicalBundle({
  supportingContext.specialist_context_status=specialistContext.status;
  if(specialistContext.facts.length||profileFacts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
-  ...sealedFullEvidenceSourceReceipts(full_evidence_proof,{contract,snapshot_id,observed_ts}),
   ...sourceReceipts(public_evidence),
   ...(futures_component?.ok===true&&futures_component?.data?[{
     metric:'HTX_EXECUTION_SNAPSHOT',source:'HTX',venue:'HTX',status:'CLOSED',market_type:'USDT_M_PERPETUAL',

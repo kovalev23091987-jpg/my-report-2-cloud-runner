@@ -1,13 +1,16 @@
-# Factual candle reconfirmation candidate — 2026-09-30
+# Мой отчёт 2 — source-to-Telegram binding
 
-Status: PREPARED, NOT DEPLOYED. Based on production code from 36aeac2b048edb39b9fc6603cce32331ad849574 (PR41 plus an existing manual-request commit). PR42 remains separate and unmerged.
+## Текущий статус: кандидат, рабочая версия не изменена
 
-The observation adapter currently discards an already crossed factual anomaly boundary. This candidate retains that boundary for a fresh observation and a scheduled recheck. It requires the current price to remain on the valid side of cancellation and at least 5% to remain to the existing measured target. It does not create an approved entry.
+Production main: `36aeac2b048edb39b9fc6603cce32331ad849574` (PR41 runtime; последующий коммит только ручная команда).
+PR43: `repair/factual-retest-observe-20260930`.
 
-No changes to publication checks, source proof, direction qualification, source freshness, entry approval, scoring, Telegram text, formatters, schedules, D1 schema or provider quotas.
+Последнее указание владельца: **стратегию и согласованную цепочку не менять**, исправлять только воронку передачи уже полученных данных к Telegram. Поэтому раннее предложение повторного подтверждения пересечённого уровня полностью исключено из кандидата. Observation plan, direction resolution, state selection, scores, thresholds, entries, targets, invalidation and format retain production rules.
 
-Bounded replay of 83 preserved candidate snapshots is a plan-level check only. Five snapshots scoring at least 70 acquire plans through the reconfirmation change (QNT twice, 龙虾 twice, NIL once). Current source-role revalidation does not establish publication eligibility for these snapshots: usable independent source receipts are missing. Therefore additional Telegram deliveries are NOT proven. Do not merge as a completed solution to notification silence.
+Исправляется обнаруженный разрыв: canonical adapter не получает ACK-sealed Full Evidence bundle, а читает преимущественно public_evidence статусы. Worker передаёт существующий sealed bundle; новый конвертер проверяет exact contract/snapshot, registry digest и observation lineage, freshness, asset identity, alias and source health. HTX execution допускается только после повторной проверки измеренного factual orderbook. ACK не выдумывается. Старые OKX алиасы без явного crypto asset class не допускаются.
 
-The next change must correctly carry actually verified, exact-contract, source-timed numeric HTX and independent market evidence into publication receipts. Existing status-only source wrappers are not usable market confirmations. Do not invent receipts, substitute current quotations into old snapshots, or waive this gate.
+Локальные отдельные проверки: 24 PASS, синтетические unit-fixtures отмечены явно, Telegram network calls 0. Это не историческая приёмка и не внедрение.
 
-Validation: exact observation-plan function exercised with LONG/SHORT reconfirmation, remaining-move, cancellation, malformed-candle and classification controls. Full assembled runtime CI and full historical delivery acceptance remain NOT VERIFIED. Historical messages must not be resent.
+Порядок обязательной приёмки: полный exact-runtime CI; одинаковая четырёхдневная D1 история 1790449221000..1790794821000 через реальные publication/binding/sender functions с транспортом-перехватчиком без сети; затем реальный отчёт кандидата в облаке с проверкой готовности цепочки Telegram; только после успеха merge/deploy. Исторический PREPARED bundle проверяется как фактический D1 readback, не как придуманный insert ACK. Ни один dry-run не получает фиктивный Telegram SENT/message id.
+
+Следом автономно продолжить незавершённое ТЗ из `MY_REPORT_2_UNIFIED_EXECUTION_TZ_20260930.md` и `MY_REPORT_2_REMAINING_WORK_20260930.md`, не повторяя завершённые PR31–41. PR42 отдельный кандидат; не смешивать автоматически. Все этапы с проверками до внедрения. Новых команд и действий владельца не ждать.

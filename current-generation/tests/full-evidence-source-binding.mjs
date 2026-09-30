@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.argv[2]||'runtime');
+const module=async name=>import(pathToFileURL(path.join(root,'src',name)).href);
+const {collectFullEvidenceSourceFacts:collect,sealedFullEvidenceSourceReceipts:sealed}=await module('full-evidence-source-binding.mjs');
+const {prepareHtxExecutionFacts}=await module('tz101-execution-facts.mjs');
+const {buildRoleEvidenceView}=await module('source-role-consumer.mjs');
+const {digest}=await module('upstream-proof-utils.mjs');
+const T=1790705748582,contract='QNT-USDT',snapshot_id=`S392:${contract}:${T}`,context={contract,snapshot_id,observed_ts:T};
+const execution=prepareHtxExecutionFacts({contract_code:contract,received_ts:T-100,requested_notional_usdt:1000,info_response:{ok:true,data:{status:'ok',ts:T-200,data:[{contract_code:contract,contract_size:1,price_tick:.01,contract_status:1}]}},depth_response:{ok:true,data:{status:'ok',ch:`market.${contract}.depth.step0`,ts:T-100,tick:{ts:T-150,bids:[[250,100]],asks:[[250.01,100]]}}}});
+assert.equal(execution.status,'PREPARED_UNACKNOWLEDGED');
+const projection=r=>({chain:r.chain,source_observation_id:r.source_observation_id,source_payload_digest:r.source_payload_digest,source:r.source,venue:r.venue,metric:r.metric,source_ts:r.source_ts,available_ts:r.available_ts,valid_until_ts:r.valid_until_ts,max_age_sec:r.max_age_sec,producer_rules_version:r.producer_rules_version,safety_gate_receipt_id:r.safety_gate_receipt_id});
+const base=(venue,metric,value)=>({contract_code:contract,snapshot_id,chain:venue==='HTX'?'HTX_EXECUTION':'CROSS_EXCHANGE_DERIVATIVES',source:venue,venue,metric,value,unit:venue==='HTX'?'boolean':'pct',market_type:'USDT_PERP',source_ts:T-150,available_ts:T-100,observed_ts:T-100,max_age_sec:900,valid_until_ts:T-150+900000,status:'CLOSED',coverage_pct:100,symbol_verified:true,source_compatible:true,asset_identity_verified:true,alias_required:false,alias_verified:true,primary_market_id:`${contract}:${venue}:USDT_PERP`,source_kind:venue==='HTX'?'HTX_EXECUTION_GATE':'DERIVATIVES_VENUE_API',source_health:venue==='HTX'?null:'OK',source_receipt_id:'FER:fixture',safety_gate_receipt_id:venue==='HTX'?'SGR:fixture':null,producer_rules_version:'full-evidence-source-producer-v1'});
+function bundle(patch=()=>{}){
+ const rows=[base('HTX','execution_gate_status',1),base('GATE','price_change_4h',2)];patch(rows);
+ for(const r of rows){const d=digest([contract,snapshot_id,r.source,r.venue,r.metric,r.source_ts,r.available_ts,r.valid_until_ts,r.max_age_sec,r.value,r.coverage_pct]);r.source_payload_digest=d;r.source_observation_id=`FSO:${d}`;}
+ const entries=rows.map(projection),persistence={status:'CLOSED',immutable:true,verification_method:'D1_IMMUTABLE_RECEIPT',committed_ts:T+1};
+ return {contract_code:contract,snapshot_id,observed_ts:T,committed_ts:T+1,full_evidence:{contract_code:contract,snapshot_id,observed_ts:T,evidence_compact:rows,persistence,source_registry:{status:'CLOSED',authoritative:true,receipt_id:'FER:fixture',entries,content_digest:digest(entries),persistence}},safety_gate_receipt:{receipt_id:'SGR:fixture',persistence},execution_gate:{contract_code:contract,factual_basis:execution}};
+}
+let checks=0;
+const check=(name,fn)=>{fn();checks++;};
+check('measured data supplies execution and independent venue roles',()=>{const rows=sealed({status:'CLOSED',bundle:bundle()},context),v=buildRoleEvidenceView(rows,context);assert.equal(rows.length,2);assert.equal(v.roles.EXECUTION_TRUTH.length,1);assert.equal(v.roles.PRICE_CROSS_VENUE.length,1);assert.equal(new Set(v.classified.map(r=>r.independence_group)).size,2);});
+for(const status of ['PREPARED_UNACKNOWLEDGED','FAIL_CLOSED',null])check(`unsealed ${status}`,()=>assert.deepEqual(sealed({status,bundle:bundle()},context),[]));
+for(const [name,patch] of Object.entries({missing_quality:r=>r[1].source_health=null,quota:r=>r[1].status='BUDGET_EXHAUSTED',wrong_contract:r=>r[1].contract_code='OTHER-USDT',no_symbol:r=>r[1].symbol_verified=false,no_asset:r=>r[1].asset_identity_verified=false,bad_alias:r=>{r[1].alias_required=true;r[1].alias_verified=false;},incompatible:r=>r[1].source_compatible=false,stale:r=>{r[1].source_ts=T-1000000;r[1].valid_until_ts=r[1].source_ts+900000;},future:r=>r[1].available_ts=T+1,null_value:r=>r[1].value=null,zero_coverage:r=>r[1].coverage_pct=0,old_stock_alias:r=>{r[1].venue='OKX';r[1].source='OKX';}}))check(name,()=>{const rows=collect(bundle(patch),context),v=buildRoleEvidenceView(rows,context);assert.equal(v.classified.filter(r=>r.role_evidence_usable&&r.source_key!=='HTX_OFFICIAL').length,0);});
+check('tampered value fails lineage digest',()=>{const b=bundle();b.full_evidence.evidence_compact[1].value=999;assert.equal(collect(b,context).length,1);});
+check('tampered registry fails entirely',()=>{const b=bundle();b.full_evidence.source_registry.entries[0].metric='different';assert.deepEqual(collect(b,context),[]);});
+check('execution status without factual orderbook cannot supply execution',()=>{const b=bundle();delete b.execution_gate.factual_basis;assert.equal(buildRoleEvidenceView(collect(b,context),context).roles.EXECUTION_TRUTH,undefined);});
+check('foreign snapshot is rejected',()=>assert.deepEqual(collect(bundle(),{...context,snapshot_id:'OTHER'}),[]));
+check('ACK state remains required',()=>{const b=bundle();b.full_evidence.persistence.status='PREPARED_UNACKNOWLEDGED';assert.deepEqual(sealed({status:'CLOSED',bundle:b},context),[]);});
+const before=fs.readFileSync('audit-fixes/factual-retest-20260930/adapter-before.mjs','utf8'),after=fs.readFileSync(path.join(root,'src/canonical-runtime-adapter.mjs'),'utf8');
+for(const [start,end] of [['function observationPlan(','function targetsFrom('],['export function selectCanonicalPublicationState(','export function selectCanonicalInterestBasis('],['export function resolveCanonicalDirection(','export function selectCanonicalPublicationState(']])check(`unchanged strategy: ${start}`,()=>assert.equal(after.slice(after.indexOf(start),after.indexOf(end,after.indexOf(start))),before.slice(before.indexOf(start),before.indexOf(end,before.indexOf(start)))));
+console.log(JSON.stringify({status:'PASS',checks,synthetic_fixture:true,historical_ack_fabricated:false,strategy_changed:false,telegram_calls:0}));

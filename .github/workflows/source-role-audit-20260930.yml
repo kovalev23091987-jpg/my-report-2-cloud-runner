@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
+    branches: [repair/factual-retest-observe-20260930, autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
     paths:
       - current-generation/**
       - runner/current-runtime-binding.mjs
@@ -62,6 +62,15 @@ jobs:
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Verify source binding without changing strategy
+        if: github.ref == 'refs/heads/repair/factual-retest-observe-20260930'
+        run: node current-generation/tests/full-evidence-source-binding.mjs runtime > audit-output/full-evidence-source-binding.json
+      - name: Replay exact historical publications through the bound Telegram chain
+        if: github.ref == 'refs/heads/repair/factual-retest-observe-20260930'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/factual-retest-20260930/historical-source-binding.mjs runtime audit-output/historical-source-binding.json
       - name: Verify ready sector producers with six public requests at most
         if: github.ref == 'refs/heads/autonomous/sector-integration-20260930'
         run: node audit-fixes/sector-integration-20260930/live-acceptance.mjs runtime
@@ -78,7 +87,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
+    if: github.ref != 'refs/heads/repair/factual-retest-observe-20260930' && github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15

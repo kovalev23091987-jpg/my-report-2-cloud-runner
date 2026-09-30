@@ -16988,6 +16988,8 @@ async function buildDeepCheckInput(params, env) {
         opportunityIntelligence,
       public_evidence:
         publicEvidence,
+      full_evidence_proof:
+        sealedFullEvidenceProof,
       liquidation_intelligence:
         canonicalLiquidationIntelligence,
       futures_component:
