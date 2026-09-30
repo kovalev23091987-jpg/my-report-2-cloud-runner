@@ -42,8 +42,8 @@ test('real-derived candidate through publication and mocked transport; technical
  const price=scan.contracts.find(r=>r.contract_code==='QNT-USDT').price;
  const c=buildRuntimeCanonicalBundle({contract:'QNT-USDT',run_id:'REPLAY',snapshot_id:'CONTROL_PLAN',observed_ts:NOW+2000,discovery_row:bound.candidate,
   publication_shadow:{entry_signal:{state:'REJECTED',direction:'LONG',hard_veto:false,trigger:{metric:'price',operator:'>=',value:price,unit:'USDT',timeframe:'5m',expires_ts:NOW+600000,next_recheck_ts:NOW+300000,cancel_condition:'контрольный тестовый уровень отмены'}},scenario_plan:{entry_area_min_price:price,entry_area_max_price:price,entry_area:`${price} USDT`,execution_reference_price:price,invalidation:{condition:'контрольный тестовый уровень отмены',price:price*.96},target_price:price*1.06,remaining_move_pct:6},publication_gate:{status:'NOT_CLOSED'}},
-  // Synthetic external role receipt belongs only to this transport control.
-  public_evidence:{contract_code:'QNT-USDT',observed_ts:NOW,evidence:[{metric:'OPEN_INTEREST_CHANGE',source:'BINANCE',venue:'BINANCE',status:'CLOSED',source_ts:NOW-10000,observed_ts:NOW,max_age_sec:300,value:3,unit:'PERCENT',coverage_pct:100,source_compatible:true}]},
+  // Synthetic exact-identity measured receipts belong only to this transport control.
+  public_evidence:{contract_code:'QNT-USDT',observed_ts:NOW,evidence:['HTX','BINANCE'].map(venue=>({contract_code:'QNT-USDT',metric:venue==='HTX'?'execution_gate_status':'oi_change_1h',source:venue,venue,market_type:'PERP',primary_market_id:`QNT-USDT:${venue}:PERP`,symbol:'QNT-USDT',symbol_verified:true,asset_identity_verified:true,status:'CLOSED',source_health:'OK',source_ts:NOW-10000,observed_ts:NOW,max_age_sec:300,value:venue==='HTX'?1:3,unit:venue==='HTX'?'boolean':'pct',coverage_pct:100,source_compatible:true,window:'1h'}))},
   futures_component:{ok:true,available_ts:NOW,data:{ts:NOW}},
  }).canonical;
  assert.equal(c.state,'OBSERVE');assert.equal(c.scores.coin_interest_0_100,82);

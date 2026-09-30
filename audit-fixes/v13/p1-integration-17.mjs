@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
+import {verifiedRoleView} from '../../current-generation/tests/source-role-fixtures.mjs';
 
 const runtime=path.resolve(process.argv[2]||'runtime'),repo=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..'),url=rel=>pathToFileURL(path.join(runtime,rel)).href;
 const [shadow,gtrade,hl,combined,gdelt,publication,manual,compact,outputSupport]=await Promise.all([
@@ -11,7 +12,7 @@ const [shadow,gtrade,hl,combined,gdelt,publication,manual,compact,outputSupport]
 const T=1_800_000_000_000,results=[],check=async(number,name,fn)=>{try{await fn();results.push({number,name,status:'PASS'});}catch(error){results.push({number,name,status:'FAIL',error:String(error?.message||error)});}};
 const response=value=>new Response(typeof value==='string'?value:JSON.stringify(value),{status:200,headers:{'content-type':'application/json'}}),sdk={getLiquidationPrice(){},buildLiquidationPriceContext(){}};
 const krakenInstruments={result:'success',instruments:[{symbol:'PF_QNTUSD',type:'flexible_futures',tradeable:true,suspended:false}]},krakenTickers={result:'success',serverTime:'2027-01-15T08:00:00.000Z',tickers:[{symbol:'PF_QNTUSD',suspended:false,openInterest:'10',fundingRate:'0.001',fundingRatePrediction:'0.002',markPrice:'100',indexPrice:'100.1',volumeQuote:'5000'}]},dydx={markets:{'QNT-USD':{ticker:'QNT-USD',status:'ACTIVE',openInterest:'12',oraclePrice:'100',volume24H:'4000',nextFundingRate:'0.0001'}}};
-const baseCanonical=()=>structuredClone(outputSupport.outputContractScenarios()[0].canonical);
+const baseCanonical=()=>{const c=structuredClone(outputSupport.outputContractScenarios()[0].canonical);c.metadata.source_role_view=verifiedRoleView(c.metadata.contract,c.observed_ts);return c;};
 
 await check(21,'new sources OFF or timeout leave old report result unchanged',()=>{const a=baseCanonical(),b=structuredClone(a);b.metadata.internal_market_context={kraken:{status:'TIMEOUT'},dydx:{status:'OFF'},internal_only:true};assert.equal(manual.formatManualReport(a).text,manual.formatManualReport(b).text);assert.equal(compact.formatTelegramCompact(a).message,compact.formatTelegramCompact(b).message);});
 await check(22,'same upstream cannot add an independent vote',()=>{const a=shadow.parseKrakenShadowSnapshot({tickers_payload:krakenTickers,instruments_payload:krakenInstruments,received_at:T,identity_map:{QNT:'PF_QNTUSD'}});assert.equal(a.independent_vote_added,false);assert.equal(a.entry_eligible,false);});

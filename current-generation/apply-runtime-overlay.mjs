@@ -29,6 +29,8 @@ const files=[
  'src/reason-registry.mjs',
  'src/pump-liquidation-zones.mjs',
  'src/canonical-runtime-adapter.mjs',
+ 'src/source-role-registry.mjs',
+ 'src/source-role-consumer.mjs',
  'src/canonical-publication.mjs',
  'src/early-wave-continuity.mjs',
  'src/telegram-compact-formatter.mjs',

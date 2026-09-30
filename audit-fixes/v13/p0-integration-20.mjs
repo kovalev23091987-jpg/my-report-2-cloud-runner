@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {FixtureDB} from '../../post-v7-consolidated/liquidation/liquidation-extension/delivery/tests/db-fixture.mjs';
+import {rawRoleFact} from '../../current-generation/tests/source-role-fixtures.mjs';
 
 const runtime=path.resolve(process.argv[2]||'runtime');
 const adapter=await import(pathToFileURL(path.join(runtime,'src/canonical-runtime-adapter.mjs')));
@@ -26,7 +27,7 @@ const trigger=({direction='LONG'}={})=>({metric:'price',operator:direction==='LO
 const inputs=({quality=82,direction='LONG',remaining=6,target=106,overall=null,hard=false,early=true,sourceTs=NOW-20_000,wave='W1',contract='ABC-USDT',routeState='REJECTED'}={})=>({
  contract,run_id:'R1',snapshot_id:'S1',observed_ts:NOW,discovery_row:discovery({quality,direction,sourceTs,wave,contract,early}),
  publication_shadow:{entry_signal:{state:routeState,direction,hard_veto:hard,trigger:trigger({direction})},score_interval:{score_lower_bound:overall},scenario_plan:plan({remaining,target}),publication_gate:{status:'NOT_CLOSED'}},
- public_evidence:{contract_code:contract,observed_ts:NOW,evidence:[{metric:'OPEN_INTEREST_CHANGE',source:'BINANCE',venue:'BINANCE',status:'CLOSED',source_ts:NOW-10_000,observed_ts:NOW,max_age_sec:300,value:3,unit:'PERCENT',coverage_pct:100,source_compatible:true}]},
+ public_evidence:{contract_code:contract,observed_ts:NOW,evidence:[rawRoleFact({venue:'HTX',metric:'execution_gate_status',contract,ts:NOW}),rawRoleFact({venue:'BINANCE',contract,ts:NOW})]},
  futures_component:{ok:true,available_ts:NOW,data:{ts:NOW}},liquidation_intelligence:{projected_clusters:[],projected_map_status:'NOT_CLOSED'},
  free_source_summary:{status:'CLOSED',owner:'source-registry.mjs',registry:{status:'CLOSED',entries:[]},entry_funnel:{status:'CLOSED',blockers:[],blocker_details:[]},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0},
 });
