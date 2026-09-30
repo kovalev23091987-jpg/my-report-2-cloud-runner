@@ -1,4 +1,4 @@
-export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v3-official-parser-contract-20260928';
+export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v4-source-clock-identity-20260930';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -124,7 +124,7 @@ async function loadOrDiscoverIdentity({db,fetch_impl,base,now}={}){
 const sourceTtl=source=>({OXARCHIVE:5*60*1000,BITGET:5*60*1000,COINBASE:5*60*1000,DEFILLAMA:6*60*60*1000,GOPLUS:24*60*60*1000}[source]||TTL_MS);
 async function loadCachedSources(db,contract,now,refreshed=[]){
  const cached=await db.prepare(`SELECT source,observed_ts,expires_ts,payload_json FROM report2_candidate_source_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all();
- const sources={};for(const row of cached?.results||[]){try{sources[row.source]={...JSON.parse(row.payload_json),cache_status:refreshed.includes(row.source)?'REFRESHED':'HIT'};}catch{}}
+ const sources={};for(const row of cached?.results||[]){try{const payload=JSON.parse(row.payload_json);if(['DEFILLAMA','SOLANA_RPC','COINBASE'].includes(row.source)&&payload.context_version!==SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION)continue;sources[row.source]={...payload,cache_status:refreshed.includes(row.source)?'REFRESHED':'HIT'};}catch{}}
  return sources;
 }
 
@@ -147,17 +147,19 @@ function normalizeGoPlus(payload,identity,now){
  const flags={};for(const k of keys)flags[k]=row?.[k]===undefined||row?.[k]===null||row?.[k]===''?null:String(row[k])==='1'||row[k]===true;
  return {source:'GOPLUS',status:row?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,flags,unknown_is_safe:false};
 }
-function normalizeSolana(payload,identity,now){
- const rows=Array.isArray(payload?.result)?payload.result:[],hour=3600000;
- const current=rows.filter(r=>finite(r?.blockTime)!==null&&now-finite(r.blockTime)*1000<=hour).length;
- const prior=rows.filter(r=>finite(r?.blockTime)!==null&&now-finite(r.blockTime)*1000>hour&&now-finite(r.blockTime)*1000<=2*hour).length;
- return {source:'SOLANA_RPC',status:Array.isArray(payload?.result)?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,mint:identity.contract_or_mint,recent_signature_count_1h:current,prior_signature_count_1h:prior,sample_capped:rows.length>=100};
+export function normalizeSolana(payload,identity,now){
+ const rows=Array.isArray(payload?.result)?payload.result:[],valid=rows.filter(r=>r?.err===null&&finite(r?.blockTime)!==null&&finite(r.blockTime)*1000<=now),hour=3600000;
+ const current=valid.filter(r=>now-finite(r.blockTime)*1000<=hour).length,prior=valid.filter(r=>now-finite(r.blockTime)*1000>hour&&now-finite(r.blockTime)*1000<=2*hour).length;
+ const source_ts=valid.length?Math.max(...valid.map(r=>finite(r.blockTime)*1000)):null,oldest=valid.length?Math.min(...valid.map(r=>finite(r.blockTime)*1000)):null;
+ const capped=rows.length>=100,complete=!capped||oldest!==null&&oldest<=now-2*hour;
+ return {source:'SOLANA_RPC',status:Array.isArray(payload?.result)?'CLOSED':'NOT_CLOSED',observed_ts:now,source_ts,exact_identity:true,mint:identity.contract_or_mint,recent_signature_count_1h:current,prior_signature_count_1h:prior,sample_capped:capped,comparable_windows:complete,coverage_fraction:complete?1:0,activity_is_not_supply:true,direction_neutral:true,signature_success_required:true};
 }
-function normalizeDefiLlama(payload,slug,now){
- const rows=Array.isArray(payload?.tvl)?payload.tvl:[];const latest=rows.at(-1),target=now/1000-7*86400;
- const prior=[...rows].reverse().find(r=>finite(r?.date)!==null&&finite(r.date)<=target);
- const a=finite(prior?.totalLiquidityUSD),b=finite(latest?.totalLiquidityUSD);
- return {source:'DEFILLAMA',status:a!==null&&b!==null?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,protocol_slug:slug,tvl_usd:b,tvl_change_7d_pct:a&&b!==null?((b/a)-1)*100:null};
+export function normalizeDefiLlama(payload,slug,now,{identity=null,expected_symbol=null}={}){
+ const rows=(Array.isArray(payload?.tvl)?payload.tvl:[]).filter(r=>finite(r?.date)!==null&&finite(r.date)*1000<=now&&finite(r?.totalLiquidityUSD)!==null).sort((a,b)=>a.date-b.date),latest=rows.at(-1),source_ts=latest?finite(latest.date)*1000:null,target=source_ts===null?null:source_ts/1000-7*86400,prior=target===null?null:[...rows].reverse().find(r=>finite(r.date)<=target),a=finite(prior?.totalLiquidityUSD),b=finite(latest?.totalLiquidityUSD);
+ const address=clean(payload?.address).replace(/^ethereum:/,'');const asset_match=identity?.chain==='ethereum'&&sameChainAssetIdentity(identity,{chain:'ethereum',contract_or_mint:address});
+ const symbol_match=expected_symbol&&clean(payload?.symbol).toUpperCase()===clean(expected_symbol).toUpperCase(),fresh=source_ts!==null&&now-source_ts<=48*3600000,baseline_close=prior&&target-finite(prior.date)<=86400;
+ const exact=Boolean(asset_match&&symbol_match),usable=exact&&fresh&&baseline_close&&a!==null&&a>0&&b!==null;
+ return {source:'DEFILLAMA',status:usable?'CLOSED':'NOT_CLOSED',reason:!exact?'PROTOCOL_TOKEN_IDENTITY_NOT_CLOSED':!fresh?'PROTOCOL_TVL_STALE':!baseline_close?'COMPARABLE_SEVEN_DAY_BASELINE_REQUIRED':null,observed_ts:now,source_ts,exact_identity:exact,protocol_slug:slug,tvl_usd:b,tvl_change_7d_pct:usable?((b/a)-1)*100:null,baseline_ts:prior?finite(prior.date)*1000:null,direction_neutral:true};
 }
 function firstData(payload){return Array.isArray(payload?.data)?payload.data[0]:payload?.data??null;}
 function deviation(primary,secondary){const a=finite(primary),b=finite(secondary);return a!==null&&b!==null&&a>0?((b/a)-1)*100:null;}
@@ -166,10 +168,10 @@ function normalizeBitget(ticker,oi,funding,symbol,now,primaryPrice){
  const exact=[t,o,f].filter(Boolean).every(r=>!r?.symbol||clean(r.symbol).toUpperCase()===symbol);
  const price=finite(t?.lastPr??t?.last);return {source:'BITGET',status:exact&&t?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:exact,symbol,price,price_difference_vs_htx_pct:deviation(primaryPrice,price),mark_price:finite(t?.markPrice),open_interest:finite(o?.openInterestList?.[0]?.size??o?.openInterest??o?.size),funding_rate:finite(f?.fundingRate)};
 }
-function normalizeCoinbase(product,ticker,now,primaryPrice){
+export function normalizeCoinbase(product,ticker,now,primaryPrice,requestedProduct=null){
  const id=clean(product?.id).toUpperCase(),base=clean(product?.base_currency).toUpperCase(),quote=clean(product?.quote_currency).toUpperCase();
  const expected=`${base}-${quote}`;
- const exact=id&&id===expected&&['USD','USDT'].includes(quote);
+ const exact=id&&id===expected&&id===clean(requestedProduct).toUpperCase()&&['USD','USDT'].includes(quote);
  const price=finite(ticker?.price);return {source:'COINBASE',status:exact&&price!==null?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:exact,product:id||null,base,quote,price,price_difference_vs_htx_pct:deviation(primaryPrice,price),volume_24h:finite(ticker?.volume)};
 }
 
@@ -184,7 +186,7 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  const entry={base,identity:manual?.identity||null,identity_candidate:discovered?.identity_candidate||null,protocol_slug:manual?.protocol_slug||discovered?.protocol_slug||null,coinbase_product:manual?.coinbase_product||discovered?.coinbase_product||`${base}-USD`,lighter_market_id:manual?.lighter_market_id??providerIds?.lighter_market_id??null,gmx_market_address:manual?.gmx_market_address||providerIds?.gmx_market_address||null,official_name:manual?.official_name||null,official_domains:manual?.official_domains||[],official_feeds:manual?.official_feeds||[],official_feed_specs:manual?.official_feed_specs||[],snapshot_space:manual?.snapshot_space||null};
  if(identityDiscovery.network_calls>0){
   const sources=await loadCachedSources(db,contract,now);
-  return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
+  return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
  }
  const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
@@ -193,9 +195,9 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   calls.push(['DEX_SCREENER',get(`https://api.dexscreener.com/tokens/v1/${encodeURIComponent(id.chain)}/${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeDexScreener(p,id,now)]);
   if(network)calls.push(['GECKOTERMINAL',get(`https://api.geckoterminal.com/api/v2/networks/${encodeURIComponent(network)}/tokens/${encodeURIComponent(id.contract_or_mint)}/pools?page=1`),p=>normalizeGecko(p,id,now)]);
   if(cid)calls.push(['GOPLUS',get(`https://api.gopluslabs.io/api/v1/token_security/${cid}?contract_addresses=${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeGoPlus(p,id,now)]);
-  if(id.chain==='solana')calls.push(['SOLANA_RPC',post('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[id.contract_or_mint,{limit:100}]}),p=>normalizeSolana(p,id,now)]);
+  if(id.chain==='solana')calls.push(['SOLANA_RPC',post('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[id.contract_or_mint,{limit:100,commitment:'finalized'}]}),p=>normalizeSolana(p,id,now)]);
  }else if(lane==='PROTOCOL'&&entry?.protocol_slug){
-  calls.push(['DEFILLAMA',get(`https://api.llama.fi/protocol/${encodeURIComponent(entry.protocol_slug)}`),p=>normalizeDefiLlama(p,entry.protocol_slug,now)]);
+  calls.push(['DEFILLAMA',get(`https://api.llama.fi/protocol/${encodeURIComponent(entry.protocol_slug)}`),p=>normalizeDefiLlama(p,entry.protocol_slug,now,{identity:entry.identity,expected_symbol:base})]);
  }else if(lane==='BITGET_FALLBACK'){
   const symbol=`${base}USDT`;const [ticker,oi,funding]=await Promise.all([
    get(`https://api.bitget.com/api/v2/mix/market/ticker?symbol=${encodeURIComponent(symbol)}&productType=USDT-FUTURES`),
@@ -204,16 +206,16 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   ]);calls.push(['BITGET',Promise.resolve({ok:ticker.ok&&oi.ok&&funding.ok,payload:[ticker.payload,oi.payload,funding.payload],error:[ticker.error,oi.error,funding.error].filter(Boolean).join(',')}),p=>normalizeBitget(p[0],p[1],p[2],symbol,now,primary_price)]);
  }else if(lane==='COINBASE_SPOT'&&entry?.coinbase_product){
   const productId=entry.coinbase_product;const [product,ticker]=await Promise.all([get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}`),get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}/ticker`)]);
-  calls.push(['COINBASE',Promise.resolve({ok:product.ok&&ticker.ok,payload:[product.payload,ticker.payload],error:[product.error,ticker.error].filter(Boolean).join(',')}),p=>normalizeCoinbase(p[0],p[1],now,primary_price)]);
+  calls.push(['COINBASE',Promise.resolve({ok:product.ok&&ticker.ok,payload:[product.payload,ticker.payload],error:[product.error,ticker.error].filter(Boolean).join(',')}),p=>normalizeCoinbase(p[0],p[1],now,primary_price,productId)]);
  }
  if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
  for(const {source,payload} of settled){
-  receipts.push({source,status:payload.status});
+  payload.context_version=SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION;receipts.push({source,status:payload.status});
   await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+sourceTtl(source),JSON.stringify(payload)).run();
  }
  const sources=await loadCachedSources(db,contract,now,settled.map(x=>x.source));
- return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.keys(sources).length?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity?'CLOSED':entry.identity_candidate?'CANDIDATE_ONLY':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:!manual?.identity&&Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
+ return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity?'CLOSED':entry.identity_candidate?'CANDIDATE_ONLY':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:!manual?.identity&&Boolean(entry.identity_candidate),asset_metadata:{official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
 }
 
 export default{parseSupplementalIdentityRegistry,sameChainAssetIdentity,chooseSupplementalLane,collectSupplementalCandidateContext};

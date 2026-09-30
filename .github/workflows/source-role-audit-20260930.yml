@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/source-audit-labels-20260930]
+    branches: [autonomous/max-now-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -31,6 +31,8 @@ jobs:
           current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
           expected=$(node -p "JSON.parse(require('fs').readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json')).expected_main")
           test "$current" = "$expected"
+          gh api repos/${{ github.repository }}/contents/audit-fixes/source-optimization-20260930/execution-lock.json?ref=report2-execution-lock --jq .content | base64 --decode > /tmp/shared-lock.json
+          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json'));if(!l.active||l.owner!=='autonomous/max-now-20260930'||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
       - name: Assemble exact runtime and pinned SDK
         run: |
           mkdir -p runtime audit-output
@@ -59,7 +61,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        phase: [supplemental]
+        phase: [chain-events, supplemental, market-coverage, native-roles]
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
