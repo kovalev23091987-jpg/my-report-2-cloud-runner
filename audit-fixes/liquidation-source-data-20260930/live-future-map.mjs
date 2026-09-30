@@ -25,3 +25,8 @@ console.log('LIVE_FUTURE_MAP_CONTROL',JSON.stringify(controlReceipt));
 for(const suffix of ['/llms.txt','/api/public/liq-zones?pair=BTW%2FUSDT']){
  try{const response=await fetch('https://coinlobster.com'+suffix,{signal:AbortSignal.timeout(12000),headers:{accept:'application/json'}});const body=await response.text();await fs.writeFile(path.join(out,suffix==='/llms.txt'?'coinlobster-api-docs.txt':'coinlobster-forward-response.json'),body.slice(0,120000));console.log('COINLOBSTER_FORWARD_PROBE',JSON.stringify({path:suffix,http_status:response.status,body_start:body.slice(0,500)}));}catch(e){console.log('COINLOBSTER_FORWARD_PROBE',JSON.stringify({path:suffix,error:e.message}));}
 }
+
+try{
+ const response=await fetch('https://coinlobster.com/mcp',{method:'POST',headers:{'content-type':'application/json',accept:'application/json, text/event-stream','mcp-protocol-version':'2025-03-26'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'liq_zones',arguments:{pair:'BTW/USDT'}}}),signal:AbortSignal.timeout(12000)});
+ const body=await response.text();await fs.writeFile(path.join(out,'coinlobster-future-mcp-response.txt'),body.slice(0,120000));console.log('COINLOBSTER_MCP_FUTURE_PROBE',JSON.stringify({http_status:response.status,body_start:body.slice(0,1000)}));
+}catch(e){console.log('COINLOBSTER_MCP_FUTURE_PROBE',JSON.stringify({error:e.message}));}

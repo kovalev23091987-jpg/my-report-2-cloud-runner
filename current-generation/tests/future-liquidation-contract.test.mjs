@@ -10,7 +10,7 @@ const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 function database(){const sql=new DatabaseSync(':memory:');return{sql,prepare(query){return{args:[],bind(...args){this.args=args;return this;},async run(){return sql.prepare(query).run(...this.args);},async first(){return sql.prepare(query).get(...this.args)||null;},async all(){return{results:sql.prepare(query).all(...this.args)};}};}};}
 test('every coin reports future levels above and below; executed events and fixed bands cannot satisfy the contract',()=>{
  for(const contract of ['BTW-USDT','FIL-USDT','DOG-USDT','龙虾-USDT']){
-  const map=buildPumpLiquidationZones({contract,current_price:100,realized:[{price:110,source:'HTX',size_usd:900000,status:'CLOSED'}],projected:[{price:80,source:'history adapter',role:'REALIZED_EVENTS',size_usd:900000,status:'CLOSED'}]});
+  const map=buildPumpLiquidationZones({contract,current_price:100,realized:[{price:110,source:'HTX',size_usd:900000,status:'CLOSED'}],projected:[{price:80,source:'history adapter',role:'REALIZED_HISTORY',kind:'PROJECTED',size_usd:900000,status:'CLOSED'}]});
   assert.equal(map.provider_zone_count,0);assert.equal(map.future_levels_status,'NOT_AVAILABLE');
   const out=displayLegacyLiquidations(map).join('\n');assert.match(out,/Сильные ликвидации выше: уровни будущих ликвидаций не получены/);assert.match(out,/Сильные ликвидации ниже: уровни будущих ликвидаций не получены/);assert.doesNotMatch(out,/900000|109|121|175/);
  }
@@ -38,4 +38,14 @@ test('main and standalone production consumers call future maps before realized 
 test('historical source success does not close the future-map receipt',()=>{
  const chain=buildLiquidationSourceChain({contract:'BTW-USDT',risk:{chain_attempts:[{source:'GATE_LIQUIDATION_HISTORY',status:'CLOSED'}]}});
  assert.equal(chain.useful_future_source_count,0);assert.equal(chain.useful_history_source_count,1);assert.match(chain.policy,/FUTURE_LEVELS_FIRST/);
+});
+
+test('the actual ByK real_v1_multi snapshot yields future long/short prices and never realized totals',()=>{
+ const source=read('../files/src/worker.js'),start=source.indexOf('const LIQUIDATION_INTELLIGENCE_API = (() => {'),end=source.indexOf('\nasync function buildDeepCheckInput',start);
+ const api=new Function(source.slice(start,end)+'; return LIQUIDATION_INTELLIGENCE_API;')();
+ const payload=JSON.parse(read('./fixtures/byk-forward-model-live-hype-20261001.json'));
+ const map=api.parseProjectedMap(payload,{observedTs:Date.parse(payload.as_of)+1000,expectedSymbol:'HYPE'});
+ assert.equal(map.schema_closed,true);assert.ok(map.clusters.length>50);assert.ok(map.clusters.some(r=>r.side==='LONG_LIQUIDATION_BELOW'&&r.level_price<map.current_price));assert.ok(map.clusters.some(r=>r.side==='SHORT_LIQUIDATION_ABOVE'&&r.level_price>map.current_price));assert.ok(map.clusters.every(r=>r.raw_size>0&&r.source_unit==='USD_NOTIONAL_PROVIDER'));assert.deepEqual(api.parseRealizedSummary(payload,'HYPE',Date.parse(payload.as_of)).rows,[]);
+ assert.equal(api.parseProjectedMap({...payload,real_levels:{...payload.real_levels,model_version:'unknown'}},{observedTs:Date.parse(payload.as_of),expectedSymbol:'HYPE'}).schema_closed,false);
+ assert.equal(api.parseProjectedMap(payload,{observedTs:Date.parse(payload.as_of),expectedSymbol:'BTW'}).schema_closed,false);
 });

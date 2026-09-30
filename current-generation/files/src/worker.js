@@ -15014,6 +15014,21 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
   }
 
   function parseProjectedMap(payload, { observedTs, expectedSymbol } = {}) {
+    // ByK's documented real_v1_multi is a FORWARD provider model despite
+    // the name real_levels. Its explicit price/side/USD fields are usable;
+    // heatmap matrices and real_liquidations are never interpreted as levels.
+    const model=payload?.real_levels;
+    if(model!==undefined){
+      const symbol=txt(payload?.symbol).toUpperCase(),match=symbol===txt(expectedSymbol).toUpperCase()||symbol===`${txt(expectedSymbol).toUpperCase()}USDT`;
+      const known=new Set(['binance','bybit','okx','gate','htx','hyperliquid']);
+      const reference=finite(model?.reference_price),sourceTs=normalizeTs(payload?.as_of);
+      const valid=model?.model_version==='real_v1_multi'&&Array.isArray(model.levels)&&model.levels.length<=MAX_PROJECTED_RAW_ROWS_SCANNED&&reference>0&&sourceTs!==null&&match&&Array.isArray(model.sources)&&model.sources.length>0&&model.sources.every(v=>known.has(v));
+      const levels=valid?model.levels.filter(row=>finite(row?.notional_usd)>0):[];
+      const sideValid=levels.every(row=>finite(row?.price)>0&&(row.side==='long'&&row.price<reference||row.side==='short'&&row.price>reference));
+      const clusters=sideValid?levels.map(row=>rowLevel(row,'root.real_levels.levels',reference,sourceTs,observedTs)).filter(Boolean):[];
+      const truncated=clusters.length>MAX_PROJECTED_CLUSTERS_RETURNED;
+      return{source_ts:sourceTs,current_price:reference,venues_covered:valid?model.sources:[],clusters:clusters.slice(0,MAX_PROJECTED_CLUSTERS_RETURNED),response_symbol:symbol||null,response_symbol_match:match,graph_nodes_scanned:0,raw_rows_scanned:valid?model.levels.length:0,unsupported_array_rows:0,schema_closed:valid&&sideValid,scan_truncated:truncated,cluster_output_truncated:truncated,model_version:model?.model_version??null,price_semantics:'PROVIDER_MODEL_PRICE_BIN',provider_model_not_position_census:true,provider_max_stale_age_ms:finite(payload?.meta?.max_stale_age_ms)};
+    }
     const sourceTs = rootSourceTimestamp(payload);
     const currentPrice = currentPriceFrom(payload);
     const venues = explicitVenues(payload);
@@ -15136,26 +15151,6 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
         event_price: price,
         event_notional: size,
       });
-    }
-    const topReal = payload?.real_levels?.totals || payload?.data?.real_levels?.totals || null;
-    if (topReal && typeof topReal === "object") {
-      const ls = longShortFromObject(topReal);
-      if (ls.longs !== null || ls.shorts !== null || ls.total !== null) {
-        compact.push({
-          evidence_type: "REALIZED_LIQUIDATION_AGGREGATE",
-          provider: PROVIDER,
-          source_path: "real_levels.totals",
-          venue: "MULTI_VENUE_RECORDED",
-          source_ts: sourceTs,
-          observed_ts: observedTs,
-          long_notional: ls.longs,
-          short_notional: ls.shorts,
-          total_notional: ls.total,
-          source_unit: ls.unit,
-          event_price: null,
-          event_notional: null,
-        });
-      }
     }
     return {
       source_ts: sourceTs,
@@ -15438,6 +15433,7 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
     else if (!mapRaw.ok) projectedStatus = mapRaw.http_status === 401 || mapRaw.http_status === 403 ? "AUTH_ERROR" : "SOURCE_ERROR";
     else if (responseMismatch) projectedStatus = "SOURCE_INCOMPATIBLE";
     else if (mapFresh.status !== "CURRENT") projectedStatus = mapFresh.status;
+    else if (projected.provider_max_stale_age_ms>PUBLIC_MAP_MAX_AGE_SEC*1000) projectedStatus="STALE_UPSTREAM_MODEL_INPUTS";
     else if (projected.schema_closed !== true) projectedStatus = "SCHEMA_NOT_CLOSED";
     else if (projected.scan_truncated) projectedStatus = "SOURCE_PAYLOAD_TRUNCATED";
     else if (projected.clusters.length === 0) projectedStatus = "CLOSED_NO_SIGNIFICANT_ZONES";

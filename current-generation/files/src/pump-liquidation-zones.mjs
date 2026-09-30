@@ -140,7 +140,7 @@ export function buildPumpLiquidationZones({
  const pump=classifyPump24h(rolling_24h_change_pct,{early_anomaly});
  if(['BTC','ETH'].includes(base))return{version:PUMP_LIQUIDATION_ZONES_VERSION,status:'EXCLUDED_BY_USER_POLICY',pump,current_price:px,above:[],below:[],reason:'BTC_ETH_EXCLUDED_BY_USER_POLICY'};
  if(!base||px===null||px<=0)return{version:PUMP_LIQUIDATION_ZONES_VERSION,status:'TECHNICAL_FAILURE',pump,current_price:px,above:[],below:[],reason:'HTX_CONTRACT_OR_CURRENT_PRICE_REQUIRED'};
- const rows=normalize(projected,'PROJECTED',px).filter(row=>!['REALIZED','REALIZED_EVENTS','REALIZED_LIQUIDATION_EVENT','REALIZED_LIQUIDATION_AGGREGATE'].includes(String(row.raw?.evidence_type??row.raw?.role??row.raw?.kind??'').toUpperCase()));
+ const rows=normalize(projected,'PROJECTED',px).filter(row=>![row.raw?.evidence_type,row.raw?.role,row.raw?.kind,row.raw?.data_kind].some(value=>/REALIZED|EXECUTED|HISTOR/.test(String(value??'').toUpperCase())));
  const move=finite(rolling_24h_change_pct)??0;
  const context={current:px,moveSigned:move,oi:finite(calculation_context?.oi_change_pct),funding:finite(calculation_context?.funding_rate_pct),volume:finite(calculation_context?.volume_ratio),early_anomaly};
  const above=pickSide(rows,'ABOVE',context),below=pickSide(rows,'BELOW',context);

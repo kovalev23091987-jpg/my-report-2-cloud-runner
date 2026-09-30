@@ -89,7 +89,7 @@ test('workflow worker pin equals the effective V13 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'a9b28937b1081a06ba84b4a01b8c6f94ea88925613852c29d6a3aea2a7e45572');
+ assert.equal(hash,'72e91be4ef28e1fd46c38d37ef2179d804e309cdc5895f2464de0ad63123be2b');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{
