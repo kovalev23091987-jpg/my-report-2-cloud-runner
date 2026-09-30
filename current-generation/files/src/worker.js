@@ -1,4 +1,5 @@
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
+import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
@@ -294,13 +295,13 @@ async function fetchJson(url) {
     const text = await response.text();
     let data;
     try {
-      data = JSON.parse(text);
-    } catch {
+      data = parseHtxMarketJson(text, url);
+    } catch (error) {
       return {
         ok: false,
         url,
         http_status: response.status,
-        error: "invalid_json",
+        error: error?.code === 'HTX_TRADE_CHANNEL_MISMATCH' ? error.code : "invalid_json",
       };
     }
 
@@ -591,13 +592,7 @@ function sortedTrades(trades) {
 }
 
 function tradeIdentity(trade) {
-  const value =
-    trade?.["trade-id"] ??
-    trade?.trade_id ??
-    trade?.id;
-  if (value === null || value === undefined) return null;
-  const normalized = String(value).trim();
-  return normalized ? normalized : null;
+  return exactTradeIdentity(trade);
 }
 
 function rawTradeRecordIntegrity(
@@ -8839,6 +8834,8 @@ async function runBoundedDeepCheckScheduler(
           "FULFILLED",
         data_sufficiency:
           sufficiency,
+        data_sufficiency_gaps:
+          deep?.data_sufficiency?.gaps ?? [],
         decision_generated:
           decisionGenerated,
         validated:
@@ -19485,7 +19482,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
           zero_reason:
             liveHandoffZeroReason,
         });
-      const v3PipelineHealth=scanFailure||(fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:insufficientDeepResult?{status:'DEGRADED_PIPELINE',reason:'DEEP_DATA_INSUFFICIENT',failure_stage:'DEEP_DATA_SUFFICIENCY',diagnostic:{contract:insufficientDeepResult.contract,gaps:insufficientDeepResult.data_sufficiency?.gaps??[]}}:assessedV3PipelineHealth);
+      const v3PipelineHealth=scanFailure||(fullEvidenceFailure?{status:'DEGRADED_PIPELINE',reason:'FULL_EVIDENCE_PERSISTENCE_FAILED',failure_stage:'FULL_EVIDENCE_PERSISTENCE',diagnostic:fullEvidenceFailure}:insufficientDeepResult?{status:'DEGRADED_PIPELINE',reason:'DEEP_DATA_INSUFFICIENT',failure_stage:'DEEP_DATA_SUFFICIENCY',diagnostic:{contract:insufficientDeepResult.contract,gaps:insufficientDeepResult.data_sufficiency_gaps??insufficientDeepResult.data_sufficiency?.gaps??[]}}:assessedV3PipelineHealth);
       const deepOutcomeClassification=scanFailure||fullEvidenceFailure?'TECHNICAL_FAILURE':insufficientDeepResult?'INSUFFICIENT_DATA':Number(boundedDeepCheck?.plan?.counts?.selected??0)===0?'NOT_SELECTED_CAPACITY':boundedDeepCheck?.decision?.generated===true?'DECISION_GENERATED':'MARKET_REJECTED';
 
       console.log(

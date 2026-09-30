@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -46,6 +46,7 @@ jobs:
           node current-generation/validate.mjs > audit-output/validation.json
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node current-generation/tests/htx-trade-json.runtime.mjs runtime > audit-output/htx-trade-runtime.json
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - uses: actions/upload-artifact@v4
         if: always()
@@ -62,7 +63,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        phase: [source-health]
+        phase: [htx-flow]
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
