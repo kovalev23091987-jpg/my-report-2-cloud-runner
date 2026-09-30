@@ -50,3 +50,5 @@ const result={schema:'report2-prospective-chain-read-only-v1',captured_at:new Da
 fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({status:results.audit_error?'PARTIAL_READ_ONLY':'CLOSED_READ_ONLY',error:results.audit_error||null,queries:queries.length,database_usage:usage,head_contract:results.early_due?.[0]?.contract_code,head_path:results.head_factual_path?.status,telegram_calls:0,source_http_calls:0}));
 if(usage.rows_written||usage.unknown_ops||usage.rows_read>34000)throw Error('READ_AUDIT_ENVELOPE_NOT_CLOSED');
+
+// Explicit bounded read-only audit request: 2026-09-30T11:19:26Z.
