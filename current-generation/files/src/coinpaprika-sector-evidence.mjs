@@ -1,10 +1,10 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
-export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v1-20260930';
+export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v2-20260930';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}={}){
  const platform=PLATFORMS[identity?.chain],address=clean(identity?.contract_or_mint);if(!platform||!address||metadata?.id!==coin_id||metadata?.symbol!==base||metadata?.is_active!==true)return false;
- const contracts=Array.isArray(metadata.contracts)?metadata.contracts:[];return contracts.some(r=>r?.platform===platform&&(identity.chain==='solana'?r.contract===address:clean(r.contract).toLowerCase()===address.toLowerCase()))&&(metadata.tags||[]).some(t=>t.id===tag_id);
+ const contracts=Array.isArray(metadata.contracts)?metadata.contracts:[];return contracts.some(r=>r?.platform===platform&&(identity.chain==='solana'?r.contract===address:clean(r.contract).toLowerCase()===address.toLowerCase()));
 }
 export function normalizeCoinpaprikaSector({metadata,tag,tickers,identity,contract,coin_id,tag_id,observed_ts=Date.now()}={}){
  const base=clean(contract).replace(/-USDT$/,'');if(!verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id})||tag?.id!==tag_id||tag?.type!=='functional'||!Array.isArray(tag?.coins)||!tag.coins.includes(coin_id)||!Array.isArray(tickers))return{status:'EXACT_ASSET_AND_FUNCTIONAL_SECTOR_REQUIRED',evidence:[],summary:null};
@@ -26,7 +26,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  const receipts=[];let calls=0;const request=async(route,url)=>{calls++;const r=await get(fetch_impl,url);receipts.push({route,http_status:r.http_status,status:r.ok?'RECEIVED':r.error});return r;};
  const metadata=await request('EXACT_COIN_METADATA',`https://api.coinpaprika.com/v1/coins/${encodeURIComponent(coin_id)}`);if(!metadata.ok||!verifyCoinpaprikaIdentity(metadata.payload,{identity:asset_identity,base,coin_id,tag_id})){const result={version:COINPAPRIKA_SECTOR_VERSION,status:'EXACT_ASSET_AND_SECTOR_IDENTITY_NOT_CLOSED',evidence:[],network_calls:calls,receipts,admission,whole_job_admission,summary:{declared_id:coin_id,returned_id:metadata.payload?.id,returned_symbol:metadata.payload?.symbol,tags:metadata.payload?.tags?.map(t=>t.id),contracts:metadata.payload?.contracts}};await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:now+15*60000,payload:result});return result;}
  const tag=await request('FUNCTIONAL_SECTOR_MEMBERS',`https://api.coinpaprika.com/v1/tags/${encodeURIComponent(tag_id)}?additional_fields=coins`),tickers=await request('FREE_AGGREGATED_QUOTES','https://api.coinpaprika.com/v1/tickers?quotes=USD');
- const normalized=tag.ok&&tickers.ok?normalizeCoinpaprikaSector({metadata:metadata.payload,tag:tag.payload,tickers:tickers.payload,identity:asset_identity,contract,coin_id,tag_id,observed_ts:Date.now()}):{status:'SOURCE_NOT_CLOSED',evidence:[]};
+ const normalized=tag.ok&&tickers.ok?normalizeCoinpaprikaSector({metadata:metadata.payload,tag:tag.payload,tickers:tickers.payload,identity:asset_identity,contract,coin_id,tag_id,observed_ts:Date.now()}):{status:'SOURCE_NOT_CLOSED',evidence:[],summary:{tag_id:tag.payload?.id,tag_type:tag.payload?.type,tag_members:tag.payload?.coins?.length,received_quote_rows:Array.isArray(tickers.payload)?tickers.payload.length:0}};
  const result={version:COINPAPRIKA_SECTOR_VERSION,...normalized,network_calls:calls,receipts,admission,whole_job_admission,internal_only:true,free_only:true,monthly_module_bound:48*31,official_free_monthly_requests:20000};
  const ttl=normalized.status==='CLOSED'?Math.max(0,normalized.evidence[0].expires_at-now):15*60000;await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:now+ttl,payload:result});return result;
 }
