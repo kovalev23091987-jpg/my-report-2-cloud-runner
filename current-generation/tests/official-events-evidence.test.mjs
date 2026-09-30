@@ -14,7 +14,7 @@ test('K16 official events accepts only exact-domain dated feed entries and adds 
  const out=normalizeOfficialFeed({contract:'ABC-USDT',asset_metadata:META,feed_url:META.official_feeds[0],body:rss,content_type:'application/rss+xml',observed_ts:NOW});assert.equal(out.evidence[0].block_id,'N07');assert.equal(out.evidence[0].directional_strength,null);assert.equal(out.evidence[0].risk_strength,null);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
 });
 test('K16 official events parses bounded future ICS and rejects stale or nonofficial feeds',()=>{
- const ics=`BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:gov-1\r\nSUMMARY:Governance call\r\nDTSTART:20260929T120000Z\r\nDTEND:20260929T130000Z\r\nURL:https://abc.example/events/gov-1\r\nEND:VEVENT\r\nEND:VCALENDAR`,parsed=parseOfficialFeed({body:ics,content_type:'text/calendar',feed_url:'https://abc.example/calendar.ics',official_domains:['abc.example'],now:NOW});assert.equal(parsed.events.length,1);assert.equal(parsed.events[0].format,'ICS');assert.equal(parseOfficialFeed({body:rss,feed_url:'https://wrong.example/feed',official_domains:['abc.example'],now:NOW}).status,'EXACT_OFFICIAL_FEED_REQUIRED');
+ const ics=`BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nUID:gov-1\r\nDTSTAMP:20260928T010000Z\r\nSUMMARY:Governance call\r\nDTSTART:20260929T120000Z\r\nDTEND:20260929T130000Z\r\nURL:https://abc.example/events/gov-1\r\nEND:VEVENT\r\nEND:VCALENDAR`,parsed=parseOfficialFeed({body:ics,content_type:'text/calendar',feed_url:'https://abc.example/calendar.ics',official_domains:['abc.example'],now:NOW});assert.equal(parsed.events.length,1);assert.equal(parsed.events[0].format,'ICS');assert.equal(parseOfficialFeed({body:rss,feed_url:'https://wrong.example/feed',official_domains:['abc.example'],now:NOW}).status,'EXACT_OFFICIAL_FEED_REQUIRED');
 });
 test('K16 official events enforces the registered fixed parser format',()=>{
  assert.equal(parseOfficialFeed({body:rss,content_type:'application/rss+xml',feed_url:META.official_feeds[0],official_domains:META.official_domains,expected_format:'ATOM',now:NOW}).status,'PARSER_FORMAT_MISMATCH');
@@ -26,4 +26,19 @@ test('K16 official events uses one admitted request, caches it and blocks redire
 });
 test('K16 official events performs no request without exact registry metadata or admission',async()=>{
  let calls=0;const out=await collectOfficialEventsEvidence({db:new DB(),fetch_impl:async()=>{calls++;throw Error('no');},contract:'ABC-USDT',run_id:'R',asset_metadata:META,now:NOW});assert.equal(out.status,'WHOLE_JOB_HTTP_ADMISSION_REQUIRED');assert.equal(calls,0);const missing=await collectOfficialEventsEvidence({db:new DB(),contract:'ABC-USDT',run_id:'R',asset_metadata:{official_feeds:META.official_feeds},now:NOW});assert.equal(missing.status,'EXACT_OFFICIAL_FEED_REQUIRED');
+});
+test('future publication dates are not clipped into current factual evidence',()=>{
+ const future=rss.replaceAll('02:30:00','04:30:00');assert.equal(parseOfficialFeed({body:future,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).events.length,0);
+ const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:F\nDTSTART:20260929T120000Z\nDTSTAMP:20260929T010000Z\nURL:https://abc.example/e\nEND:VEVENT\nEND:VCALENDAR';
+ for(const body of [ics,ics.replace('DTSTAMP:20260929T010000Z\n','')])assert.equal(parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).events.length,0);
+ const good=parseOfficialFeed({body:ics.replace('20260929T010000Z','20260928T010000Z'),feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW});assert.equal(good.events[0].source_ts,Date.parse('2026-09-28T01:00:00Z'));assert.ok(good.events[0].effective_at>NOW);
+});
+test('same feed cannot carry one asset identity into another asset cache',async()=>{
+ const db=new DB();let calls=0;const p={db,fetch_impl:async()=>{calls++;return new Response(rss,{headers:{'content-type':'application/rss+xml'}});},request_admit:()=>({allowed:true}),asset_metadata:META,now:NOW};
+ for(const [contract,address] of [['ABC-USDT','0x'+'1'.repeat(40)],['DEF-USDT','0x'+'2'.repeat(40)]]){const r=await collectOfficialEventsEvidence({...p,contract,run_id:contract,asset_identity:{chain:'ethereum',contract_or_mint:address}});assert.equal(r.evidence[0].htx_contract,contract);assert.equal(r.evidence[0].asset_id,'ethereum:'+address);}
+ assert.equal(calls,2);
+});
+test('failed feed requests respect backoff without repeated network calls',async()=>{
+ const p={db:new DB(),contract:'ABC-USDT',run_id:'A',asset_metadata:META,now:NOW,request_admit:()=>({allowed:true})};let calls=0;p.fetch_impl=async()=>{calls++;return new Response('limited',{status:429});};
+ const a=await collectOfficialEventsEvidence(p),b=await collectOfficialEventsEvidence({...p,run_id:'B',now:NOW+1000});assert.equal(a.status,'SOURCE_ERROR');assert.equal(b.status,'SOURCE_ERROR');assert.equal(b.network_calls,0);assert.equal(calls,1);
 });
