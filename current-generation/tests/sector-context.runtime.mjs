@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.argv[2]||'runtime');
+const {buildRuntimeCanonicalBundle}=await import(pathToFileURL(path.join(root,'src/canonical-runtime-adapter.mjs')));
+const {normalizeCoingeckoSector}=await import(pathToFileURL(path.join(root,'src/coingecko-sector-evidence.mjs')));
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/ready-sector-36745185948.json',import.meta.url)));
+const now=fixture.provenance.observed_ts,identity={chain:'ethereum',contract_or_mint:'0x514910771af9ca656af840dff83e8264ecf986ca'};
+const sector=normalizeCoingeckoSector({...fixture.coingecko,identity,contract:'LINK-USDT',coin_id:'chainlink',category_id:'oracle',category_name:'Oracle',observed_ts:now});
+const input={contract:'LINK-USDT',run_id:'sector-fixture',snapshot_id:'sector-fixture',observed_ts:now,discovery_row:{current_price:10},publication_shadow:{entry_signal:{state:'REJECTED',direction:'LONG'}}};
+const before=buildRuntimeCanonicalBundle(input),after=buildRuntimeCanonicalBundle({...input,internal_market_context:{internal_only:true,evidence_v2:sector,candidate_context:{asset_identity:identity}}});
+assert.equal(after.canonical.metadata.supporting_context.blocks.sector_comparison.status,'CLOSED');
+assert.match(after.manual.text,/CoinGecko/);assert.match(after.manual.text,/Сектор/);assert.match(after.manual.text,/оракулы/);assert.deepEqual(after.canonical.scores,before.canonical.scores);assert.equal(after.canonical.state,before.canonical.state);
+assert.doesNotMatch(buildRuntimeCanonicalBundle({...input,observed_ts:now+900001,internal_market_context:{evidence_v2:sector,candidate_context:{asset_identity:identity}}}).manual.text,/CoinGecko/);
+console.log(JSON.stringify({status:'SECTOR_RUNTIME_PASS',ready_proof_run:36745185948,consumer:'MANUAL_REPORT',live_calls:0,new_history:0,scores_unchanged:true,sector:sector.summary}));

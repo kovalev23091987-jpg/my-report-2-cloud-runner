@@ -9,6 +9,7 @@ import { formatTelegramCompact } from './telegram-compact-formatter.mjs';
 import { formatManualReport } from './manual-report-formatter.mjs';
 import { safeUserReason } from './reason-registry.mjs';
 import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
+import {consumeSectorContext} from './sector-context.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
 import { buildOutputSurfaceContract } from './output-surface-contract.mjs';
@@ -241,12 +242,13 @@ export function buildRuntimeCanonicalBundle({
  const freeSources=free_source_summary?.status==='CLOSED'&&free_source_summary?.owner==='source-registry.mjs'?free_source_summary:{version:'free-source-runtime-summary-missing-owner-v1',status:'NOT_CLOSED',owner:null,registry:{status:'NOT_CLOSED',entries:[]},entry_funnel:{status:'NOT_CLOSED',blockers:['UNKNOWN_INTERNAL_REASON'],blocker_details:[{code:'UNKNOWN_INTERNAL_REASON',full_ru:'Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.',short_ru:'сводка источников не подтверждена; вывод не готов',known:false}],has_unknown_reason:true},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0};
  const supportingContext=consumeExistingSourceReceipts(existing_source_receipts||{});
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
- supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus};
+ const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});
+ supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus};
  const profileFacts=volumeProfileFacts(volumeProfile,{contract,now:observed_ts,reference_price:price,direction}).slice(0,1);
  if(profileFacts.length){const vpReceipt=supplementalScoreAdjustment.receipts.find(r=>r.source_id==='HTX_VOLUME_PROFILE');const state=volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?`совпадение HTX+${volumeConsensus.confirmations.map(r=>r.source).join('+')}`:volumeConsensus.status==='CONFLICT'?'расхождение; вес 0':'одна площадка';profileFacts[0].value+=`; ${vpReceipt?.score_contribution??0} балла; ${state}`;profileFacts[0].unit='';}
- supportingContext.facts=[...profileFacts,...specialistContext.facts,...supportingContext.facts];
+ supportingContext.facts=[...profileFacts,...specialistContext.facts,...sectorContext.facts,...supportingContext.facts];
  supportingContext.specialist_context_status=specialistContext.status;
- if(specialistContext.facts.length||profileFacts.length)supportingContext.status='CLOSED';
+ if(specialistContext.facts.length||profileFacts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
   ...sourceReceipts(public_evidence),
   ...(futures_component?.ok===true&&futures_component?.data?[{

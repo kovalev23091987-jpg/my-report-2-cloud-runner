@@ -2,6 +2,7 @@ import crypto from 'node:crypto';
 export const EVIDENCE_SOURCE_ADAPTERS_VERSION='evidence-source-adapters-v1-20260928';
 export const SOURCE_POLICIES=Object.freeze({
  HTX_LARGE_TRADES:{daily_cap:144,ttl_ms:60_000,auth:'PUBLIC',blocks:['N12']},
+ COINGECKO_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488},
  COINPAPRIKA_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488,official_free_monthly_requests:20000},
  HTX_PUBLIC_RISK:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N08','N09','N11','N16']},
  CHAIN_RPC:{daily_cap:720,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03','N04','N05']},

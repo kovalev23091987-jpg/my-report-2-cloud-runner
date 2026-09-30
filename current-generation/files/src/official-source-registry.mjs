@@ -42,7 +42,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
    official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone}]:[])],
-   coinpaprika_id:clean(row?.coinpaprika_id)||prior?.coinpaprika_id||null,sector_tag:clean(row?.sector_tag)||prior?.sector_tag||null,snapshot_space:snapshotSpace||prior?.snapshot_space||null,protocol_slug:clean(row?.protocol_slug)||prior?.protocol_slug||null,
+   coingecko_id:clean(row?.coingecko_id)||prior?.coingecko_id||null,coingecko_category_id:clean(row?.coingecko_category_id)||prior?.coingecko_category_id||null,coingecko_category_name:clean(row?.coingecko_category_name)||prior?.coingecko_category_name||null,coinpaprika_id:clean(row?.coinpaprika_id)||prior?.coinpaprika_id||null,sector_tag:clean(row?.sector_tag)||prior?.sector_tag||null,snapshot_space:snapshotSpace||prior?.snapshot_space||null,protocol_slug:clean(row?.protocol_slug)||prior?.protocol_slug||null,
   };
   records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null});
  }
