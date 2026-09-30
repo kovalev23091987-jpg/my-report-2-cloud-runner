@@ -10,3 +10,7 @@ test('transport counts attempts even when a collector throws after a failed requ
  let attempted=0;const out=await collectEvidenceRouteBlock({routes:[{name:'FAIL'}],max_requests:1,params:{request_admit:()=>({allowed:true}),fetch_impl:async()=>{attempted++;throw Error('TIMEOUT');}},collectors:{FAIL:async({request_admit,fetch_impl})=>{request_admit({attempts:1});await fetch_impl('https://source.example');}}});
  assert.equal(attempted,1);assert.equal(out.network_calls,1);assert.equal(out.results.FAIL.network_calls,1);assert.equal(out.reserved_requests,1);
 });
+test('a later collector cannot spend an earlier unknown reservation',async()=>{
+ let calls=0;const out=await collectEvidenceRouteBlock({routes:[{name:'UNKNOWN'},{name:'UNADMITTED'},{name:'OWN'}],max_requests:4,params:{request_admit:()=>({allowed:true}),fetch_impl:async()=>{calls++;return new Response('{}');}},collectors:{UNKNOWN:async({request_admit})=>{request_admit({attempts:3});throw Error('ACK_UNKNOWN');},UNADMITTED:async({fetch_impl})=>{await fetch_impl('https://source.example');return{status:'CLOSED'};},OWN:async({request_admit,fetch_impl})=>{request_admit({attempts:1});await fetch_impl('https://source.example');return{status:'CLOSED'};}}});
+ assert.equal(calls,1);assert.equal(out.reserved_requests,4);assert.equal(out.results.UNADMITTED.status,'CODE_OR_STORE_ERROR');assert.equal(out.results.OWN.status,'CLOSED');
+});
