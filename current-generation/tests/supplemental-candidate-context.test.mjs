@@ -1,7 +1,37 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {parseSupplementalIdentityRegistry,chooseSupplementalLane,collectSupplementalCandidateContext,resolveDiscoveredIdentity} from '../files/src/supplemental-candidate-context.mjs';
+import {parseSupplementalIdentityRegistry,chooseSupplementalLane,collectSupplementalCandidateContext,resolveDiscoveredIdentity,SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION} from '../files/src/supplemental-candidate-context.mjs';
 class DB{constructor(){this.rows=new Map();this.identities=new Map();}prepare(sql){const self=this;return{bind(...args){return{async first(){const row=self.identities.get(args[0]);return row&&row.expires_ts>=args[1]?row:null;},async run(){if(sql.includes('INSERT INTO report2_candidate_source_cache'))self.rows.set(`${args[0]}|${args[1]}`,{source:args[1],observed_ts:args[2],expires_ts:args[3],payload_json:args[4]});if(sql.includes('INSERT INTO report2_supplemental_identity_cache'))self.identities.set(args[0],{observed_ts:args[1],expires_ts:args[2],payload_json:args[3]});return{};},async all(){return{results:[...self.rows.entries()].filter(([k,v])=>k.startsWith(`${args[0]}|`)&&v.expires_ts>=args[1]).map(([,v])=>v)}}};},async run(){return{};}}}}
 const addr='0x1111111111111111111111111111111111111111';
+test('needed futures confirmation always precedes optional DEX protocol and spot context',()=>{
+ const entry={identity:{chain:'ethereum',contract_or_mint:addr},protocol_slug:'abc',coinbase_product:'ABC-USD'};
+ for(let i=0;i<100;i++)for(const missing of [true,false])assert.equal(chooseSupplementalLane({run_id:String(i),contract:'ABC-USDT',entry,derivatives_venues:missing?1:3,critical_conflict:!missing}),'BITGET_FALLBACK');
+ assert.notEqual(chooseSupplementalLane({entry,derivatives_venues:1,cached_sources:{BITGET:{status:'SOURCE_ERROR'}}}),'BITGET_FALLBACK');
+ assert.equal(chooseSupplementalLane({entry:{protocol_slug:'abc'},derivatives_venues:2}),null);
+});
+test('all retained source responses suppress repeat HTTP until their existing TTL',async()=>{
+ const db=new DB(),now=1_800_000_000_000;
+ for(const source of ['BITGET','COINBASE','DEX_SCREENER','GECKOTERMINAL','GOPLUS','DEFILLAMA'])db.rows.set(`ABC-USDT|${source}`,{source,observed_ts:now-1000,expires_ts:now+60000,payload_json:JSON.stringify({source,status:'CLOSED',price:110,context_version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION})});
+ let calls=0;const result=await collectSupplementalCandidateContext({db,registry:{ABC:{chain:'ethereum',contract_or_mint:addr,protocol_slug:'abc',coinbase_product:'ABC-USD'}},contract:'ABC-USDT',run_id:'cached',derivatives_venues:1,primary_price:100,now,fetch_impl:async()=>{calls++;throw Error('unexpected HTTP');}});
+ assert.equal(calls,0);assert.equal(result.network_calls,0);assert.equal(result.sources.BITGET.price_difference_vs_htx_pct,10.000000000000009);assert.equal(result.sources.COINBASE.cache_status,'HIT');
+});
+test('DEX refresh reuses the longer token-security cache',async()=>{
+ const db=new DB(),now=1_800_000_000_000;
+ for(const source of ['GOPLUS','COINBASE'])db.rows.set(`ABC-USDT|${source}`,{source,observed_ts:now-1000,expires_ts:now+60000,payload_json:JSON.stringify({source,status:'CLOSED',context_version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION})});
+ const urls=[];const result=await collectSupplementalCandidateContext({db,registry:{ABC:{chain:'ethereum',contract_or_mint:addr}},contract:'ABC-USDT',run_id:'refresh',derivatives_venues:2,now,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify(String(url).includes('geckoterminal')?{data:[]}:[]));}});
+ assert.equal(result.lane,'DEX_RISK');assert.equal(result.network_calls,2);assert.equal(urls.some(u=>u.includes('goplus')),false);assert.equal(result.sources.GOPLUS.cache_status,'HIT');
+});
+test('missing derivative confirmation is collected before unrelated asset discovery',async()=>{
+ const db=new DB(),urls=[];const result=await collectSupplementalCandidateContext({db,registry:{},contract:'ABC-USDT',run_id:'gap',derivatives_venues:1,now:1_800_000_000_000,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify({data:[{symbol:'ABCUSDT',lastPr:'100',fundingRate:'0.001'}]}));}});
+ assert.equal(result.lane,'BITGET_FALLBACK');assert.ok(result.network_calls<=5);assert.ok(urls.slice(0,3).every(u=>u.includes('api.bitget.com')));assert.equal(urls.some(u=>u.includes('/search')),false);assert.equal(result.identity_status,'NOT_CLOSED');
+});
+test('required futures confirmation leaves bounded room for unique DEX and security facts',async()=>{
+ const db=new DB(),now=1_800_000_000_000,urls=[];
+ db.rows.set('ABC-USDT|COINBASE',{source:'COINBASE',observed_ts:now,expires_ts:now+7200000,payload_json:JSON.stringify({source:'COINBASE',status:'CLOSED',context_version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION})});
+ const params={db,registry:{ABC:{chain:'ethereum',contract_or_mint:addr}},contract:'ABC-USDT',derivatives_venues:1,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify(String(url).includes('bitget')?{data:[{symbol:'ABCUSDT',lastPr:'100'}]}:String(url).includes('geckoterminal')?{data:[]}:String(url).includes('goplus')?{result:{[addr]:{is_honeypot:'0'}}}:[]));}};
+ const first=await collectSupplementalCandidateContext({...params,run_id:'one',now}),second=await collectSupplementalCandidateContext({...params,run_id:'two',now:now+20*60000});
+ assert.equal(first.network_calls,5);assert.equal(second.network_calls,4);assert.equal(second.sources.GOPLUS.status,'CLOSED');
+ assert.equal(urls.filter(u=>u.includes('dexscreener')).length,1);assert.equal(urls.filter(u=>u.includes('geckoterminal')).length,1);assert.equal(urls.filter(u=>u.includes('goplus')).length,1);
+});
 test('bad or missing contract identity never opens DEX lane',()=>{
  const registry=parseSupplementalIdentityRegistry({ABC:{chain:'ethereum',contract_or_mint:'ABC'}});
  assert.equal(registry.entries.ABC.identity,null);
