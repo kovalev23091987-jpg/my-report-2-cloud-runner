@@ -3,12 +3,12 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "ac99007772237cfda1f2662de4cbce84b2a4996c4143fe5b8edd21ddd5cd0363",
+    "current-generation/files/src/manual-report-formatter.mjs": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
-    "current-generation/files/src/canonical-display.mjs": "a54dc9b0731c8bd2428dd0c57d4ada18582b1d73c8895d06ac03d5a0cb8b5dd7",
+    "current-generation/files/src/canonical-display.mjs": "d32b85b5e08eff3b36e0a7790f9d579a814caa2539b921dee03d2c07dbfae5a7",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "9f107fe185e2d37363082a9cccd4976514eed9be2549fcacc7aade42d187ccb7",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
     "current-generation/files/src/canonical-publication.mjs": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074"
   },
   "fixtures": {
@@ -52,12 +52,31 @@
     },
     {
       "date": "2026-10-01",
+      "requirement": "Future liquidation levels take priority for every coin in both reports; history cannot become a future cluster",
+      "authorization": "Explicit owner: это не только для этой монеты; ты это закрепи; в основном отчете ... сначала на будущие ликвидации потом на те что уже случились",
+      "changes": [
+        {
+          "file": "current-generation/files/src/canonical-display.mjs",
+          "previous_sha256": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
+          "new_sha256": "abedc8c35c9d55ab830e0025f21efd64805a4f7d29210e612c20a4366fce3c96"
+        },
+        {
+          "file": "current-generation/files/src/manual-report-formatter.mjs",
+          "previous_sha256": "d372ec3c309f83449418ad9558b0e0f716f16ef5d288ddeff7bccc6ae3100fec",
+          "new_sha256": "5a128173d48483a22f96db0a6490435fe8970f66eae57704999f73d0c8b13a9c"
+        }
+      ],
+      "golden_fixtures_changed": false,
+      "telegram_format_changed": false
+    },
+    {
+      "date": "2026-10-01",
       "requirement": "Owner explicitly corrects task to future liquidation levels, volume size classes and all useful sources, independently of distance, in standalone and main report",
       "changes": [
         {
           "file": "current-generation/files/src/manual-report-formatter.mjs",
           "previous_sha256": "d372ec3c309f83449418ad9558b0e0f716f16ef5d288ddeff7bccc6ae3100fec",
-          "new_sha256": "ac99007772237cfda1f2662de4cbce84b2a4996c4143fe5b8edd21ddd5cd0363"
+          "new_sha256": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68"
         },
         {
           "file": "current-generation/files/src/telegram-compact-formatter.mjs",
@@ -67,11 +86,11 @@
         {
           "file": "current-generation/files/src/canonical-display.mjs",
           "previous_sha256": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
-          "new_sha256": "a54dc9b0731c8bd2428dd0c57d4ada18582b1d73c8895d06ac03d5a0cb8b5dd7"
+          "new_sha256": "d32b85b5e08eff3b36e0a7790f9d579a814caa2539b921dee03d2c07dbfae5a7"
         },
         {
           "file": "current-generation/files/src/canonical-runtime-adapter.mjs",
-          "new_sha256": "9f107fe185e2d37363082a9cccd4976514eed9be2549fcacc7aade42d187ccb7",
+          "new_sha256": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
           "scope": "Future map acquisition and display only; direction, interest and entry policy retained"
         },
         {

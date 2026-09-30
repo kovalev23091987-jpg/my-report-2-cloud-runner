@@ -1,7 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {captureBykFutureMap,capturedFutureMap,collectStandaloneFutureMap,normalizeCoinLobsterFutureHint,collectCoinLobsterFutureHint} from '../files/src/future-liquidation-map-source.mjs';
+import {captureBykFutureMap,capturedFutureMap,collectStandaloneFutureMap,normalizeCoinLobsterFutureHint,collectCoinLobsterFutureHint,captureNativeFutureMap,capturedNativeFutureMaps} from '../files/src/future-liquidation-map-source.mjs';
+import {seal} from '../files/src/liquidation-extension/core.mjs';
+import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
 const T=1800000000000;
+test('full source position map retains unselected huge distant levels and cannot cross runs or store account addresses',()=>{
+ const receipt=seal({provider:'Hyperliquid official',native_symbol:'SUI',run_id:'FULL-NATIVE',source_ts:T,status:'USABLE_SCOPED_CONTEXT',usable_for_context:true,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',zones:Array.from({length:10},(_,i)=>({native_price:101+i*100,liquidated_side:'SHORT',notional:1000000+i*1000,notional_unit:'USDC',native_reference_price:100,source_ts:T,account:'private-account-address'}))});
+ assert.equal(captureNativeFutureMap(receipt,{contract:'SUI-USDT',run_id:'OTHER',price_quote:'USDC'}),false);
+ assert.equal(captureNativeFutureMap({...receipt,zones:[]},{contract:'SUI-USDT',run_id:'FULL-NATIVE',price_quote:'USDC'}),false);
+ assert.equal(captureNativeFutureMap(receipt,{contract:'SUI-USDT',run_id:'FULL-NATIVE',price_quote:'USDC'}),true);
+ assert.deepEqual(capturedNativeFutureMaps({contract:'SUI-USDT',run_id:'OTHER'}),[]);
+ const maps=capturedNativeFutureMaps({contract:'SUI-USDT',run_id:'FULL-NATIVE'});assert.doesNotMatch(JSON.stringify(maps),/private-account-address/);
+ const out=buildPumpLiquidationZones({contract:'SUI-USDT',current_price:100,observed_ts:T,provider_maps:maps});assert.equal(out.all_zones.length,10);assert.equal(out.above[0].price,1001);assert.equal(out.above[0].price_quote,'USDC');assert.equal(out.above[0].notional,1009000);assert.equal(out.above[0].estimated,false);
+});
 test('protected structured map capture is exact-symbol and source-clock bound without another request',()=>{
  const p={symbol:'SUI',as_of:new Date(T).toISOString(),real_levels:{model_version:'real_v1_multi',reference_price:100,sources:['gate','htx'],levels:[{price:110,notional_usd:2000000,side:'short'}]}};
  captureBykFutureMap({url:'https://bykaranteli.com/api/liqmap/public?symbol=SUI',payload:p,received_ts:T});

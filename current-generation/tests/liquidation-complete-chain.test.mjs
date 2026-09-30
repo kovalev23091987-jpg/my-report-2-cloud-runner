@@ -25,8 +25,8 @@ test('the shared native chain checks gTrade before Hyperliquid and unsupported c
  await service.collect({contract:'BTW-USDT',native_symbol:'BTW',run_id:'TAIL',deep_started_ts:T,max_deep_ms:45000});
  assert.equal(urls.length,2);assert.match(urls[0],/trading-variables/);assert.match(urls[1],/hyperliquid/);assert.deepEqual(service.summary().routed.map(r=>r.lane),['GTRADE_NATIVE','HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS']);assert.equal(service.summary().shared_budget.actual_http,2);
 });
-test('main-report candidates reserve the same factual history chain before the remaining native budget',()=>{
- const plan=buildCandidateSourceRoutingPlan({discovery_row:{early_candidate_quality_0_100:85},cross_exchange_turn:false});assert.equal(plan.run_cross_exchange,true);assert.equal(remainingLiquidationHttpCap({plan,cross_exchange_context:{network_calls:4}}),1);
+test('main-report priority candidates receive the complete forward-map envelope before history',()=>{
+ const plan=buildCandidateSourceRoutingPlan({discovery_row:{early_candidate_quality_0_100:85},cross_exchange_turn:false});assert.equal(plan.run_cross_exchange,true);assert.equal(remainingLiquidationHttpCap({plan,cross_exchange_context:{network_calls:0}}),5);
 });
 test('the main manual report displays factual history while the Telegram rendering stays unchanged',async t=>{
  const modules=await loadEffectivePresentationModules();t.after(modules.cleanup);const scenario=outputContractScenarios()[0],before=await renderScenario(modules,scenario);

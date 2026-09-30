@@ -47,8 +47,8 @@ export function displayFutureLiquidations(liq,{compact=false}={}){
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).slice(0,compact?2:6).map(z=>{
    const px=displayNumber(z.price),d=displayNumber(Number(z.distance_pct.toFixed(2))),n=displayNumber(z.notional);
-   return `${px} USDT (${z.distance_pct>0?'+':''}${d}%) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
-  });lines.push(`${label}: ${parts.length?parts.join('; '):'будущие уровни и объёмы не получены'}.`);
+   return `${px} ${z.price_quote||'USD'} (${z.distance_pct>0?'+':''}${d}%) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+  });lines.push(`${label}: ${parts.length?parts.join('; '):'уровни будущих ликвидаций не получены'}.`);
  }
  if(!compact&&liq?.provider_zone_count){
   lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
@@ -60,13 +60,14 @@ export function displayLegacyLiquidations(liq){
  if(liq?.future_only===true)return displayFutureLiquidations(liq);
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
-  const parts=(Array.isArray(rows)?rows:[]).slice(0,4).map(z=>{
+  const parts=(Array.isArray(rows)?rows:[]).filter(z=>liq?.future_levels_required!==true||z?.kind==='PROJECTED').slice(0,4).map(z=>{
    const price=displayNumber(z?.price??z?.level_price);if(price===null)return null;
    const d=z?.distance_pct,strength=text(z?.strength_label_ru)||'сила не определена';
-   const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; точная сумма ${displayNumber(z.exact_notional_usdt)} USDT`:'';
-   const kind=z?.kind==='CALCULATED'?'; расчётная вероятная зона':'';
-   return `${price} USDT${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''} — ${strength}${amount}${kind}`;
-  }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
+   const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; ${liq?.future_levels_required===true?'объём источника':'точная сумма'} ${displayNumber(z.exact_notional_usdt)} ${liq?.future_levels_required===true?text(z?.notional_quote)||'USDT':'USDT'}`:'';
+   const kind=z?.kind==='CALCULATED'?'; расчётная вероятная зона':z?.raw?.price_semantics==='PROVIDER_MODEL_PRICE_BIN'?'; модельная оценка источника':'';
+   const source=liq?.future_levels_required===true&&text(z?.source)?`; источник ${text(z.source)}`:'';
+   return `${price} ${liq?.future_levels_required===true?text(z?.price_quote)||'USDT':'USDT'}${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''} — ${strength}${amount}${kind}${source}`;
+  }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);else if(liq?.future_levels_required===true)lines.push(`${label}: уровни будущих ликвидаций не получены.`);
  }
  return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
 }

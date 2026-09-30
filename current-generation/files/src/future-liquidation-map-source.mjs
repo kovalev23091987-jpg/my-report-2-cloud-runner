@@ -1,3 +1,4 @@
+import {fingerprint,seal} from './liquidation-extension/core.mjs';
 import {normalizeBykStructured} from './liquidation-extension/providers.mjs';
 import {fetchByk} from './liquidation-extension/io.mjs';
 const captured=new Map();
@@ -49,3 +50,15 @@ export async function collectCoinLobsterFutureHint({contract,fetch_impl=globalTh
  lobster.set(contract,{...result,network_calls:1});return lobster.get(contract);
 }
 export function capturedCoinLobsterHint(contract){return lobster.get(contract)||{source:'COINLOBSTER_FUTURE_HINT',contract,role:'FUTURE_MODEL_DIRECTION_ONLY',status:'NOT_REQUESTED',data_available:false,network_calls:0};}
+
+const nativeMaps=new Map();
+export function captureNativeFutureMap(receipt,{contract,run_id,price_quote}={}){
+ const {fingerprint:proof,...body}=receipt||{};
+ if(!proof||fingerprint(body)!==proof||receipt?.usable_for_context!==true||receipt.run_id!==run_id||receipt.native_symbol!==String(contract).replace(/-USDT$/,'')||!Array.isArray(receipt.zones)||receipt.zones.length>500)return false;
+ const zones=receipt.zones.map(({account,address,...z})=>({...z,price_quote:z.price_quote??price_quote,position_key:z.position_key??(account?fingerprint(account):null)}));
+ const map=seal({provider:receipt.provider,venue:receipt.venue,native_symbol:receipt.native_symbol,run_id,snapshot_id:receipt.snapshot_id,source_ts:receipt.source_ts,status:receipt.status,usable_for_context:true,evidence_class:receipt.evidence_class,coverage:receipt.coverage??'RETURNED_SOURCE_POSITIONS_ONLY',zones,upstream_receipt_fingerprint:proof});
+ if(Buffer.byteLength(JSON.stringify(map))>2000000)return false;
+ const key=`${run_id}:${contract}:${receipt.provider}`;if(nativeMaps.size>=8&&!nativeMaps.has(key))nativeMaps.delete(nativeMaps.keys().next().value);
+ nativeMaps.set(key,map);return true;
+}
+export function capturedNativeFutureMaps({contract,run_id}={}){return [...nativeMaps.entries()].filter(([key])=>key.startsWith(`${run_id}:${contract}:`)).map(([,value])=>value);}

@@ -1,3 +1,4 @@
+import {captureNativeFutureMap} from '../future-liquidation-map-source.mjs';
 import {fingerprint,selectZones,timestamp} from './core.mjs';
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -7,6 +8,7 @@ export function createScopedProviderAcquisition({contract,native_symbol,run_id,a
  const receipts=(Array.isArray(normalized_receipts)?normalized_receipts:[]).filter(r=>r?.usable_for_context===true&&r.native_symbol===native_symbol&&r.run_id===run_id);
  if(!receipts.length)throw Error('SCOPED_NORMALIZED_RECEIPT_REQUIRED');
  for(const r of receipts){const {fingerprint:f,...body}=r;if(fingerprint(body)!==f)throw Error('SCOPED_RECEIPT_FINGERPRINT_INVALID');}
+ for(const r of receipts)captureNativeFutureMap(r,{contract,run_id,price_quote});
  const zones=[];for(const r of receipts){const selected=selectZones(r);zones.push(...[...selected.above,...selected.below].map(z=>({...z,source_ts:r.source_clock_closed===true?timestamp(r.source_ts):null,source_clock_closed:r.source_clock_closed===true&&timestamp(r.source_ts)!==null,observed_at_ms:r.observed_at_ms??null,freshness_basis:r.freshness_basis??'PROVIDER_SOURCE_CLOCK_REQUIRED'})));}
  const compact=z=>({native_price:z.native_price,side:z.liquidated_side,notional:z.notional,notional_unit:z.notional_unit,native_reference_price:z.native_reference_price,distance_pct:z.distance_pct,selection_roles:z.selection_roles,position_count:z.position_count,margin_mode:z.margin_mode??null,conditional_cross:z.conditional_on_other_positions===true,source_ts:z.source_ts,source_clock_closed:z.source_clock_closed,observed_at_ms:z.observed_at_ms,freshness_basis:z.freshness_basis,price_quote,price_semantics:z.price_semantics,position_key:z.position_key,provider,venue,entry_eligible:false,is_htx_price:false});
  const closed=receipts.every(r=>r.source_clock_closed===true&&timestamp(r.source_ts)!==null),sourceTs=closed?Math.min(...receipts.map(r=>timestamp(r.source_ts))):null;
