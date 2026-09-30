@@ -1,5 +1,76 @@
 # Source role matrix
 
+## Operational assignment — owner simplification, 30 September 2026
+
+This section supersedes historical task priorities below. Use the capabilities and scoped receipts already available; do not wait for new statistical research, generate more market reports, or repeat provider probes to assign responsibilities. These are practical operating priorities, NOT a claim of measured predictive superiority. A named capability is not a newly enabled connector.
+
+Order means: primary exact-field source, useful complementary field, then same-field reserve when available. Complementary data must not silently replace a missing required field. Use current valid cache first; preserve upstream identity, units and time. Quota exhaustion changes availability, not intrinsic source rank or forecast weights.
+
+### Core report and liquidation responsibilities
+
+| Field / block | Primary | Complement / reserve | Boundary |
+|---|---|---|---|
+| HTX prices, candles, OI, funding, trades, spot and execution | HTX official / existing HTX history | Binance, Bybit, OKX, Gate for independent exact-market context; Bitget only when coverage is missing or conflicting | Another venue cannot replace HTX execution truth; spot cannot replace perpetual |
+| Cross-venue liquidation history | Coinalyze comparable closed windows | Gate contract_stats as explicitly narrower single-venue reserve; CoinLobster cached realized/whale context | No complete baseline claim from partial history |
+| Modelled liquidation map | Existing Bykaranteli map | CoinLobster validation where the specific metric is present; 0xArchive bounded HL buckets as a separate model | Different models are not additive; modelled levels are not observed HTX liquidations |
+| Native liquidation positions | Exact supported native venue: GMX / Lighter / gTrade / Hyperliquid | Choose an available exact route within the existing cap; LiqFlow discovers Hyperliquid accounts; 0xArchive is separate context, not an equivalent native reserve | No universal winner across assets. Foreign venue positions never become HTX execution targets |
+| Realized liquidations | HTX realized events for HTX; official Binance/Bybit/OKX events for their own venues | Coinalyze history and CoinLobster cross-check | A short empty sample does not mean zero market liquidations |
+| Order-flow specialists | HTX trades/book remain the market reference | Depth Radar: CVD/footprint/walls; VYX: OFI/imbalance/microprice; CoinLobster: large-flow context | Specialist roles are declared, not newly proven active feeds; no new polling or independent votes from duplicated upstreams |
+| Positioning / derivatives context | Official venue fields and existing Bykaranteli fields | Trader.pro: history/positioning; Coinfuty: sanity check | Advisory declared capabilities, not forced calls in every report |
+| DEX / protocol context | DEX Screener exact pools, DefiLlama exact protocol TVL | GeckoTerminal pool cross-check; Solana RPC exact mint; GoPlus adverse token risk | Pool metrics, TVL, signature counts and security checks have different roles |
+| Labels / identity / fundamentals | Verified asset registry and exact chain/address | Nansen: labelled smart-money context; CoinGecko: identity/sector; CMC: market/narrative context; Token Terminal: protocol fundamentals | Declared specialists require actual available matched data. Labels and fundamental ratios do not manufacture exchange flows or transaction causes |
+| Extra venue context | Bitget futures if needed; Coinbase supported spot only | Kraken Futures and dYdX remain shadow until comparable units/time are admitted | Do not spend quota merely to increase provider count |
+| Volume profile | Reuse existing exact HTX executed trades for their covered interval | Candles only as explicitly approximate profile; DexPaprika aggregate DEX data is not volume-at-price | No new TradingView dependency; existing research remains non-scoring, not new implementation |
+
+### N01–N17 assignment
+
+| Block | Main responsibility | Complement / reserve | Operational disposition |
+|---|---|---|---|
+| N01 Unlocks | Official project vesting schedule bound to exact contract | Finalized chain verification; Snapshot only for the approved decision | No verified current feed in existing registry: keep missing, do not use paid unlock API or invent a reserve |
+| N02 Mint / supply | PublicNode EVM / Solana RPC finalized supply and events | Blockscout discovery; Sourcify ABI interpretation | Primary chain facts; supply change alone does not prove a mint event |
+| N03 Buyback / burn | Finalized chain transaction plus official causal context | Blockscout discovery; Token Terminal only fundamental context | No buyback conclusion from supply delta alone |
+| N04 Transfers | Finalized chain RPC | Blockscout indexed discovery / bounded fallback | Provisional index rows require primary verification |
+| N05 Exchange flows | Verified exchange address labels plus finalized transfers | Nansen labelled-wallet context when actually available; Blockscout discovery | Verified labels still missing for current automatic path; no arbitrary transfer substitution |
+| N06 Attention | Bluesky exact-address attention where access and window permit | GDELT discovery and CMC narratives are separate qualitative context, not equivalent social-series reserves | Low-frequency supplementary lane; preserve 403/429 backoff; no directional vote |
+| N07 Official news | Exact official RSS/Atom/ICS feed | GDELT discovery; Snapshot for governance | Official feed before search; stale news is not a current event |
+| N08 Listing / delisting | HTX official contract state | Official HTX event context | HTX-specific gate; another venue cannot authorize HTX trading |
+| N09 Margin / risk | HTX isolated/cross risk ladders | Cached exact HTX rules | No equivalent foreign-venue substitute |
+| N10 Stop scenario | Existing HTX technical engine / candles | Exact HTX trade profile only as non-scoring context when available | Existing owner unchanged; no extra score |
+| N11 Liquidity durability | HTX book, spread, depth and rules | Exact OKX/Binance/Bybit/Gate book; Bitget conditional; Depth Radar/VYX only if actual compatible field exists | Cross-venue confirmation, never substitute HTX execution cost |
+| N12 Large trades / money flow | HTX actual trades and covered windows | CoinLobster whale context; Depth Radar/VYX specialized flow if available | High collection priority; incomplete 24h is still missing |
+| N13 Calendar | BLS / Fed cached macro calendar | Official project calendar and exact Snapshot dates | Shared cache, recheck timing only; no directional bonus |
+| N14 Options | Deribit exact active liquid options | Deribit BTC/ETH cached risk background | BTC/ETH background cannot fill missing liquid alt options |
+| N15 Sector strength | Verified sector membership plus HTX peer returns | CoinGecko first metadata role; CMC supplementary metadata; CoinPaprika only after exact membership proof | Current CoinPaprika registry stays disabled; no arbitrary peers |
+| N16 Execution risk / cost | HTX spread, impact, rules | Independent venue depth; GoPlus token risk is a separate adverse-risk input | No foreign price becomes an HTX fill assumption |
+| N17 Source quality | Existing receipt/health journal, quota ledger and admission validator | Sourcify exact ABI / schema context | Distinguish quota, access, stale, empty and malformed data; no forecast-weight learning from availability |
+
+### Limits and fallback rules — existing caps, not new provider-limit research
+
+| Source / pool | Retained constraint | Behavior |
+|---|---|---|
+| Whole job / supplemental | Existing hot budget44 of50; supplemental5; error reserve1 | New priority only orders admitted calls; it does not expand the envelope |
+| Evidence N collector | At most5 admitted HTTP; HTX rules/calendar core remains first | Useful cached facts reused; quota/backoff denial allows later routes; unknown spent reservations are not refunded |
+| Native liquidation lane | Full5, standalone8 HTTP | Use exact supported route that fits; do not claim projected buckets equal native positions |
+| Bykaranteli | Configured provider quota15000/month; internal13500 total and12900 scheduled; max5/deep check | Preserve manual/reserve headroom; ledger uses UTC month. Provider billing reset must not be inferred from ledger alone |
+| Coinalyze | Existing40 provider units/minute; planned history4 units | Respect shared Retry-After; Gate only narrower context, not equivalent history |
+| 0xArchive | Existing internal5000 credits/month; one-credit route | No top-up, no expensive route substitution |
+| CoinLobster | Public shared cache30min, up to48 refreshes/day,2 calls/refresh | Do not switch automatically to paid endpoints; paid call cost10–50 credits is separate from public access |
+| Deribit background | Shared1h cache, max24 refreshes/day,4 calls/refresh | Reuse across all coins; not per candidate |
+| DEX pair / DefiLlama / GoPlus | Existing1h /6h /24h caches;24 /4 /1 refreshes/day respectively | Exact pool/protocol/token first; reuse response rather than duplicate per block |
+| HTX risk / macro | Existing60min HTX risk cache and144 requests/day;6h macro cache | Same snapshot services several blocks |
+| Blockscout | Existing96 requests/day and5000 internal credits/day | Indexed discovery secondary to finalized chain evidence |
+| PublicNode / Solana / official feeds / search | Existing collector/provider ledgers and backoff unchanged | No universal monthly reset assumption; denied source retains its assigned role |
+
+Reset times are source-specific. 1 October00:00 UTC is03:00 Europe/Simferopol and resets the internal UTC-month ledger, not automatically every provider entitlement. Exhaustion does not mean broken. If no same-field reserve exists, report the missing field rather than strengthen unrelated evidence.
+
+### Implementation boundary
+
+The v14 change is limited to the existing EvidenceV2 request ordering: HTX actual trades and official feeds get4 scheduling tickets, finalized chain3, indexed transfers/governance/verified sector2, options/ABI/attention/search1. These deliberately chosen operating priorities are NOT statistical weights or guaranteed call percentages. Every eligible route remains once in the request order; caches and original quota guards remain authoritative. HTX execution and macro core stay unchanged. All other assignments above identify existing ownership or explicit gaps; they do not assert that new adapters or all reserves have been deployed. Core35/30/20/15 and supplementary32/30/20/18 scoring weights are unchanged.
+
+Release status: candidate pending one integrated no-provider-network verification. No new market reports requested.
+
+---
+
 2026-09-30 final stage: PR25 release764f0aae36225d452ce73cae25b927c14c2cac82 after exact CI36697924721. PR24 full36696678060 exposed an unknown-source-clock canonical failure; this is a failed acceptance observation, not a healthy no-idea proof. PR25 full36698165774 persists a rejected candidate and reports insufficient data honestly. Standalone36698380288 is CLOSED with explicit GMX/Lighter unknown-state-time labels. Telegram verification sends0. The historical table below preserves earlier scoped evidence only.
 
 | Source / role | Latest scoped result | Admission |
