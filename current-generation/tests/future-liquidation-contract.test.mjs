@@ -35,7 +35,9 @@ test('main and standalone production consumers call future maps before realized 
  const runner=read('../files/runner-main.mjs'),solo=runner.slice(runner.indexOf('  if(commandIntent.matched){'));
  assert.ok(solo.indexOf('future_only:true')<solo.indexOf('crossExchangeRisk=await'));
  assert.ok(solo.indexOf('acquisition=await collectFor(candidate)')<solo.indexOf('crossExchangeRisk=await'));
- assert.match(solo,/max_http_for_candidate:Math.max\(0,8-bykFutureCalls-\(coinFuture\?\.network_calls\?\?0\)\)/);
+ assert.match(solo,/max_http_for_candidate:Math.max\(0,8-bykFutureCalls\)/);
+ assert.ok(solo.indexOf('acquisition=await collectFor(candidate)')<solo.indexOf('coinFuture=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT'));
+ assert.ok(main.indexOf('await env.REPORT2_LIQUIDATION_NATIVE_COLLECT')<main.indexOf('await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT'));
  assert.match(runner,/5-\(futureHttpByContract.get\(params.contract\)\?\?5\)/);
  const formatter=read('../files/src/manual-report-formatter.mjs');assert.ok(formatter.indexOf('...nativeLines')<formatter.indexOf('lines.push(...formatLiquidationHistoryFacts'));
 });
