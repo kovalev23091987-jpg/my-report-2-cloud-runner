@@ -4,11 +4,18 @@ const M=60000,TTL=180000,n=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(N
 const near=(a,b)=>Math.abs(a-b)<=Math.max(1e-7,Math.max(Math.abs(a),Math.abs(b))*1e-6);
 const missing=(venue,reason)=>({source:venue,status:'NOT_CLOSED',reason,profiles:[],new_history_accumulated:false});
 export function normalizeVenueVolumeProfiles({venue,contract,symbol,catalog_entry,trades,candles,now,window_end}={}){
- const base=String(contract||'').replace('-USDT','');if(!['BINANCE','BYBIT'].includes(venue)||symbol!==`${base}USDT`||catalog_entry?.base!==base||catalog_entry?.[venue.toLowerCase()]!==symbol)return missing(venue,'EXACT_LISTED_USDT_PERPETUAL_REQUIRED');
+ const base=String(contract||'').replace('-USDT','');if(!['BINANCE','BYBIT','OKX'].includes(venue)||symbol!==(venue==='OKX'?`${base}-USDT-SWAP`:`${base}USDT`)||catalog_entry?.base!==base||catalog_entry?.[venue.toLowerCase()]!==symbol)return missing(venue,'EXACT_LISTED_USDT_PERPETUAL_REQUIRED');
  const end=window_end;if(!Number.isSafeInteger(end)||end%M||end>now||now-end>TTL)return missing(venue,'FRESH_CLOSED_WINDOW_REQUIRED');
  let raw,klines,sourceTs;
  if(venue==='BINANCE'){if(!Array.isArray(trades)||!Array.isArray(candles))return missing(venue,'BINANCE_SCHEMA_REQUIRED');raw=trades.map(r=>({id:r.a,ts:n(r.T),price:n(r.p),quantity:n(r.q)}));klines=candles.map(r=>({ts:n(r[0]),open:n(r[1]),high:n(r[2]),low:n(r[3]),close:n(r[4]),base:n(r[5]),quote:n(r[7]),closed:n(r[6])<now}));sourceTs=raw.length?Math.max(...raw.map(r=>r.ts??0)):null;}
- else{if(trades?.retCode!==0||candles?.retCode!==0||trades.result?.category!=='linear'||candles.result?.category!=='linear'||candles.result?.symbol!==symbol||!Array.isArray(trades.result?.list)||!Array.isArray(candles.result?.list)||trades.result.list.some(r=>r.symbol!==symbol))return missing(venue,'BYBIT_EXACT_LINEAR_SCHEMA_REQUIRED');raw=trades.result.list.map(r=>({id:r.execId,ts:n(r.time),price:n(r.price),quantity:n(r.size)}));klines=candles.result.list.map(r=>({ts:n(r[0]),open:n(r[1]),high:n(r[2]),low:n(r[3]),close:n(r[4]),base:n(r[5]),quote:n(r[6]),closed:n(r[0])+M<=now}));sourceTs=Math.min(n(trades.time)??0,n(candles.time)??0);}
+ else if(venue==='BYBIT'){if(trades?.retCode!==0||candles?.retCode!==0||trades.result?.category!=='linear'||candles.result?.category!=='linear'||candles.result?.symbol!==symbol||!Array.isArray(trades.result?.list)||!Array.isArray(candles.result?.list)||trades.result.list.some(r=>r.symbol!==symbol))return missing(venue,'BYBIT_EXACT_LINEAR_SCHEMA_REQUIRED');raw=trades.result.list.map(r=>({id:r.execId,ts:n(r.time),price:n(r.price),quantity:n(r.size)}));klines=candles.result.list.map(r=>({ts:n(r[0]),open:n(r[1]),high:n(r[2]),low:n(r[3]),close:n(r[4]),base:n(r[5]),quote:n(r[6]),closed:n(r[0])+M<=now}));sourceTs=Math.min(n(trades.time)??0,n(candles.time)??0);}
+ else{
+  const size=n(catalog_entry?.okx_contract_value),mult=n(catalog_entry?.okx_contract_multiplier);
+  if(trades?.code!=='0'||candles?.code!=='0'||!Array.isArray(trades.data)||!Array.isArray(candles.data)||!(size>0&&mult>0)||catalog_entry?.okx_contract_value_currency!==base||trades.data.some(r=>r.instId!==symbol))return missing(venue,'EXACT_OKX_CONTRACT_UNITS_REQUIRED');
+  raw=trades.data.map(r=>({id:r.tradeId,ts:n(r.ts),price:n(r.px),quantity:n(r.sz)===null?null:n(r.sz)*size*mult}));
+  klines=candles.data.map(r=>({ts:n(r[0]),open:n(r[1]),high:n(r[2]),low:n(r[3]),close:n(r[4]),base:n(r[6]),quote:n(r[7]),closed:String(r[8])==='1'}));
+  sourceTs=raw.length?Math.max(...raw.map(r=>r.ts??0)):null;
+ }
  if(sourceTs===null||sourceTs>now||now-sourceTs>TTL||raw.some(r=>!Number.isSafeInteger(r.ts)))return missing(venue,'FRESH_SOURCE_TIME_REQUIRED');
  const profiles=[],failures=[];
  for(const duration of [240,60,15]){
@@ -25,7 +32,7 @@ export function normalizeVenueVolumeProfiles({venue,contract,symbol,catalog_entr
 export function compareVolumeProfiles({primary,peers=[],contract,now,reference_price,direction}={}){
  const baseline=volumeProfileSignal(primary,{contract,now,reference_price,direction});if(baseline.status!=='CLOSED')return {status:'NOT_CLOSED',factor:0,primary,confirmations:[],conflicts:[],skipped:[]};
  const confirmations=[],conflicts=[],skipped=[],seen=new Set(['HTX_OFFICIAL']);
- for(const p of peers){if(!['BINANCE','BYBIT'].includes(p?.source)||seen.has(p.source))continue;seen.add(p.source);const s=volumeProfileSignal(p,{contract,now,reference_price,direction});if(s.status!=='CLOSED'||p.window_start!==primary.window_start||p.window_end!==primary.window_end){skipped.push({source:p.source,reason:'NON_COMPARABLE_WINDOW_OR_PRICE'});continue;}
+ for(const p of peers){if(!['BINANCE','BYBIT','OKX'].includes(p?.source)||seen.has(p.source))continue;seen.add(p.source);const s=volumeProfileSignal(p,{contract,now,reference_price,direction});if(s.status!=='CLOSED'||p.window_start!==primary.window_start||p.window_end!==primary.window_end){skipped.push({source:p.source,reason:'NON_COMPARABLE_WINDOW_OR_PRICE'});continue;}
   // Compare raw price levels; do not align them by an invented basis shift.
   const tolerance=Math.min(.005,Math.max(.001,2*Math.max(primary.bin_width,p.bin_width)/reference_price));
   const pocMatch=Math.abs(p.poc/primary.poc-1)<=tolerance,overlap=Math.max(0,Math.min(p.vah,primary.vah)-Math.max(p.val,primary.val)),union=Math.max(p.vah,primary.vah)-Math.min(p.val,primary.val),areaMatch=union>0&&overlap/union>=.6;
@@ -50,13 +57,15 @@ export async function collectCrossVenueVolumeProfiles({db,fetch_impl=globalThis.
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_volume_profile_cache(contract TEXT NOT NULL,source TEXT NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(contract,source))`).run();
  let cat;try{cat=await db.prepare(`SELECT payload_json FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V2' AND expires_ts>=?1 LIMIT 1`).bind(now).first();}catch{}
  let entry;try{entry=JSON.parse(cat?.payload_json).entries?.[base];}catch{}
- for(const venue of ['BINANCE','BYBIT']){
+ for(const venue of ['BINANCE','BYBIT','OKX']){
   const cached=await db.prepare(`SELECT payload_json FROM report2_volume_profile_cache WHERE contract=?1 AND source=?2 AND expires_ts>?3 LIMIT 1`).bind(contract,venue,now).first();if(cached){try{sources[venue]=JSON.parse(cached.payload_json);continue;}catch{}}
-  const symbol=entry?.[venue.toLowerCase()];if(symbol!==`${base}USDT`){sources[venue]=missing(venue,'EXACT_CACHED_MARKET_REQUIRED');continue;}
+  const symbol=entry?.[venue.toLowerCase()];if(symbol!==(venue==='OKX'?`${base}-USDT-SWAP`:`${base}USDT`)){sources[venue]=missing(venue,'EXACT_CACHED_MARKET_REQUIRED');continue;}
+  if(network_calls+2>4){sources[venue]=missing(venue,'SHARED_HTTP_BUDGET_EXHAUSTED');continue;}
   const backoff=await db.prepare(`SELECT expires_ts FROM report2_volume_profile_cache WHERE contract='*' AND source=?1 AND expires_ts>?2 LIMIT 1`).bind(venue,now).first();if(backoff){sources[venue]=missing(venue,'TEMPORARY_RATE_LIMIT');continue;}
   const grant=request_admit?.({logical_request_id:`VOLUME_PEER:${run_id}:${contract}:${venue}`,lane:'background',attempts:2});if(!grant?.allowed||grant.duplicate){sources[venue]=missing(venue,'HTTP_ADMISSION_REQUIRED');continue;}
   const rate=await reserveProviderMinuteUnits(db,{provider:venue,reservation_id:`VOLUME_PEER:${run_id}:${contract}:${venue}`,units:venue==='BINANCE'?22:2,now,cap:venue==='BINANCE'?1200:100});if(!rate.allowed){sources[venue]=missing(venue,'TEMPORARY_RATE_LIMIT');continue;}
   const end=Math.floor(now/M)*M-M,q=encodeURIComponent(symbol),urls=venue==='BINANCE'?[`https://fapi.binance.com/fapi/v1/aggTrades?symbol=${q}&limit=1000`,`https://fapi.binance.com/fapi/v1/klines?symbol=${q}&interval=1m&limit=241&endTime=${end-1}`]:[`https://api.bybit.com/v5/market/recent-trade?category=linear&symbol=${q}&limit=1000`,`https://api.bybit.com/v5/market/kline?category=linear&symbol=${q}&interval=1&limit=241&end=${end-1}`];
+  if(venue==='OKX')urls.splice(0,urls.length,`https://www.okx.com/api/v5/market/trades?instId=${q}&limit=500`,`https://www.okx.com/api/v5/market/candles?instId=${q}&bar=1m&limit=241`);
   const results=await Promise.all(urls.map(async url=>{network_calls++;const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);try{const r=await fetch_impl(url,{signal:c.signal,headers:{accept:'application/json'},redirect:'error'});const raw=await r.text();return {ok:r.ok,status:r.status,payload:raw.length<=4*1024*1024?JSON.parse(raw):null,retry_after:r.headers?.get?.('retry-after')};}catch{return {ok:false,status:null};}finally{clearTimeout(t);}}));
   const limited=results.find(r=>r.status===429||r.payload?.retCode===10006);let result;
   if(limited){result=missing(venue,'TEMPORARY_RATE_LIMIT');const retry=Number(limited.retry_after),until=now+Math.max(300000,Number.isFinite(retry)?retry*1000:0);await db.prepare(`INSERT INTO report2_volume_profile_cache(contract,source,expires_ts,payload_json) VALUES('*',?1,?2,?3) ON CONFLICT(contract,source) DO UPDATE SET expires_ts=MAX(expires_ts,excluded.expires_ts),payload_json=excluded.payload_json`).bind(venue,until,JSON.stringify(result)).run();}

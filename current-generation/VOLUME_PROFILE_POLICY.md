@@ -6,7 +6,7 @@ User removed the empirical usefulness prerequisite and explicitly requested infl
 
 HTX existing futures HTTP responses → lossless trade parser → replacement-only in-memory endpoint snapshots → per-minute reconciliation → exact 60-bin profile → MARKET_STRENGTH_SPOT supplemental score → existing canonical state/publication gates → manual and Telegram formatters. Worker core and formatter layout remain unchanged.
 
-HTX local venue profile is not an all-market profile. Confirmations use separate Binance and Bybit USDT linear perpetual profiles, exact cached listed symbols, own trades and candles, equal closed periods and USDT price units. No volumes are added across venues and no peer level is relabelled as an HTX target. Multiplier symbols (1000...) and inverse/spot markets are not silently substituted.
+HTX local venue profile is not an all-market profile. Confirmations use separate Binance, Bybit and OKX USDT linear perpetual profiles, exact cached listed symbols, own trades and candles, equal closed periods and USDT price units. No volumes are added across venues and no peer level is relabelled as an HTX target. Multiplier symbols (1000...) and inverse/spot markets are not silently substituted.
 
 Full reports reuse HTX responses (0 additional HTX calls). The runner's existing cross-exchange callback also collects peer snapshots, at most 2 HTTP per venue, 4 total, reserved in the existing 28-background/164-whole-job budget. Peer failure preserves the prior cross-exchange risk result. Standalone liquidation requests can read the 3 ready HTX endpoints; disclosed supplemental cap becomes 8 projected + 3 risk + 3 profile + 4 peer = 18. Existing paid budgets and 5-call specialist lane do not change. No additional polling or history accumulation. Normalized cache replaces its prior snapshot; raw endpoint snapshots are process-local and replaced, never merged.
 
@@ -28,7 +28,7 @@ Liquidation panels retain original notional, prices and target eligibility. POC/
 
 ## Source choice
 
-HTX is the execution-venue anchor, not established as globally best. Binance/Bybit direct ready histories supplement it. TradingView documents calculation from lower-timeframe bars; its newer official MCP (Essential+; trials excluded) documents OHLCV, screeners, news/calendars but no Volume Profile endpoint. CMC public endpoint catalogs and exposed technical tools document market totals/OHLCV/technical levels, not volume-at-price. They cannot honestly be treated as confirmed profile feeds. No subscription purchase, screen scraping or undocumented connector.
+HTX is the execution-venue anchor, not established as globally best. Binance/Bybit/OKX direct ready histories supplement it. TradingView documents calculation from lower-timeframe bars; its newer official MCP (Essential+; trials excluded) documents OHLCV, screeners, news/calendars but no Volume Profile endpoint. CMC public endpoint catalogs and exposed technical tools document market totals/OHLCV/technical levels, not volume-at-price. They cannot honestly be treated as confirmed profile feeds. No subscription purchase, screen scraping or undocumented connector.
 
 Official documentation checked 2026-09-30:
 - https://www.tradingview.com/mcp/docs
@@ -41,3 +41,7 @@ Official documentation checked 2026-09-30:
 ## Verification boundaries
 
 Existing QNT wire, GitHub run 36704685645, replays to 1257 unique trades / 240 minutes / 967.36 QNT for the rolling 4h window ending 10:49 UTC. POC 284.9975 is historical evidence, not a current recommendation. One confirming minute has zero trades, so that snapshot is correctly neutral. A separately labelled controlled peer-agreement scenario validates actual canonical score changes and preserved veto; it is not an observed historical multi-venue agreement or a backtest. Bounded live acceptance checks ready endpoints once, no production DB writes, Telegram, trades, or new statistical campaign.
+
+## Observed cloud access and legitimate fallback
+
+First bounded acceptance run 36739805083 returned all three HTX endpoints HTTP 200 and a complete 240-minute / 1593-trade QNT profile. Binance catalog returned HTTP 451, Bybit HTTP 403 from this cloud region. These are access restrictions, not monthly quota exhaustion, and were not bypassed. OKX is an independent permitted fallback, using the existing exact catalog and native contract-size conversion. At most two peer venues can consume the same four-request envelope. OKX recent-trades supports 500 records in one response; candle base/quote volume must still reconcile fully. If coverage is shorter than 15 minutes it is unavailable, not promoted.
