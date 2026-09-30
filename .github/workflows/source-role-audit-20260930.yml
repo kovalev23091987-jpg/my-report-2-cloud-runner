@@ -1,9 +1,10 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930]
     paths:
       - current-generation/**
+      - runner/r8-20-prospective-validation-sidecar.mjs
       - audit-fixes/source-optimization-20260930/**
       - audit-fixes/v13/p1-integration-17.mjs
       - .github/workflows/source-role-audit-20260930.yml
@@ -47,6 +48,8 @@ jobs:
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node current-generation/tests/htx-trade-json.runtime.mjs runtime > audit-output/htx-trade-runtime.json
+          node current-generation/tests/prospective-public-history.runtime.mjs runtime > audit-output/prospective-runtime.tap
+          node current-generation/tests/approved-entry-performance.runtime.mjs runtime > audit-output/prospective-performance.json
           REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-fallback-runtime.tap
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
@@ -58,7 +61,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930'
+    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
