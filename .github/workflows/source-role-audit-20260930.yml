@@ -55,6 +55,12 @@ jobs:
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Explain failed offline checks
+        if: failure()
+        run: |
+          for file in audit-output/*.tap audit-output/specialist-consumers.json; do
+            if [ -f "$file" ]; then tail -80 "$file"; fi
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
