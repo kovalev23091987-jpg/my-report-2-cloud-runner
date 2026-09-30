@@ -46,18 +46,23 @@ function depthMetrics(rows,side,referencePrice,{venue,instrument}={}){
  let cumulative=0,edge=null;for(const row of clean){cumulative+=row.notional;if(cumulative>=25000){edge=row.price;break;}}
  return{notional_1pct:within(1),notional_2pct:within(2),notional_5pct:within(5),usd_25000_slippage_pct:edge===null?null:Math.abs((edge/ref-1)*100),usd_25000_covered:edge!==null,levels:clean.length};
 }
-export function normalizeCrossExchangeDepth({venue,payload,reference_price,observed_ts,instrument=null,expected_symbol=null}={}){
+export function normalizeCrossExchangeDepth({venue,payload,reference_price,observed_ts,instrument=null,expected_symbol=null,request_symbol=null}={}){
  let bids=[],asks=[],symbol=null,source_ts=null;
  if(venue==='BINANCE'){bids=payload?.bids;asks=payload?.asks;symbol=payload?.symbol;source_ts=finite(payload?.T??payload?.E);}
  if(venue==='BYBIT'){bids=payload?.result?.b;asks=payload?.result?.a;symbol=payload?.result?.s;source_ts=finite(payload?.ts);}
  if(venue==='OKX'){const row=payload?.data?.[0];bids=row?.bids;asks=row?.asks;symbol=row?.instId;source_ts=finite(row?.ts);}
  const bestBid=finite(bids?.[0]?.[0]),bestAsk=finite(asks?.[0]?.[0]),ref=finite(reference_price),observed=finite(observed_ts),mid=bestBid&&bestAsk?(bestBid+bestAsk)/2:null;
  if(!ref||!mid||!bestBid||!bestAsk||bestBid>=bestAsk||Math.abs((mid/ref-1)*100)>5)return{source:venue,status:'NOT_CLOSED',reason:'PRICE_IDENTITY_MISMATCH_OR_BOOK_EMPTY_OR_CROSSED',symbol:symbol||null,observed_ts};
+ // Binance REST depth and OKX REST books omit the instrument in their body.
+ // Bind only a successfully received response to the exact request instrument;
+ // an explicit contradictory response symbol still fails closed.
+ const requestBound=!symbol&&['BINANCE','OKX'].includes(venue)&&request_symbol&&text(request_symbol).toUpperCase()===text(expected_symbol).toUpperCase();
+ if(requestBound)symbol=request_symbol;
  if(!symbol||!expected_symbol||text(symbol).toUpperCase()!==text(expected_symbol).toUpperCase())return{source:venue,status:'NOT_CLOSED',reason:'EXACT_MARKET_SYMBOL_MISMATCH',symbol:symbol||null,observed_ts};
  if(source_ts===null||observed===null||source_ts>observed||observed-source_ts>DEPTH_TTL_MS)return{source:venue,status:'NOT_CLOSED',reason:'BOOK_TIMESTAMP_MISSING_STALE_OR_FUTURE',symbol,observed_ts,source_ts};
  const bid=depthMetrics(bids,'bid',ref,{venue,instrument}),ask=depthMetrics(asks,'ask',ref,{venue,instrument}),den=bid.notional_2pct+ask.notional_2pct;
  if(venue==='OKX'&&(!bid.levels||!ask.levels))return{source:venue,status:'NOT_CLOSED',reason:'OKX_UNIT_METADATA_REQUIRED',symbol:symbol||null,observed_ts};
- return{source:venue,status:'CLOSED',symbol,observed_ts,source_ts,valid_until_ts:source_ts+DEPTH_TTL_MS,exact_market_symbol:true,chain_asset_identity:false,mid_price:mid,price_difference_vs_htx_pct:(mid/ref-1)*100,bid,ask,depth_imbalance_2pct:den?(bid.notional_2pct-ask.notional_2pct)/den:0};
+ return{source:venue,status:'CLOSED',symbol,observed_ts,source_ts,valid_until_ts:source_ts+DEPTH_TTL_MS,exact_market_symbol:true,symbol_binding:requestBound?'EXACT_TRANSPORT_REQUEST':'RESPONSE_SYMBOL',chain_asset_identity:false,mid_price:mid,price_difference_vs_htx_pct:(mid/ref-1)*100,bid,ask,depth_imbalance_2pct:den?(bid.notional_2pct-ask.notional_2pct)/den:0};
 }
 
 async function collectDepth({fetch_impl,entry,reference_price,now}={}){
@@ -65,7 +70,7 @@ async function collectDepth({fetch_impl,entry,reference_price,now}={}){
  if(entry?.binance)calls.push(['BINANCE',requestJson(fetch_impl,`https://fapi.binance.com/fapi/v1/depth?symbol=${encodeURIComponent(entry.binance)}&limit=100`)]);
  if(entry?.bybit)calls.push(['BYBIT',requestJson(fetch_impl,`https://api.bybit.com/v5/market/orderbook?category=linear&symbol=${encodeURIComponent(entry.bybit)}&limit=50`)]);
  if(entry?.okx)calls.push(['OKX',requestJson(fetch_impl,`https://www.okx.com/api/v5/market/books?instId=${encodeURIComponent(entry.okx)}&sz=50`)]);
-  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;const key=venue.toLowerCase();return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:now,expected_symbol:entry?.[key],instrument:venue==='OKX'?{base:entry.base,contract_value:entry.okx_contract_value,contract_multiplier:entry.okx_contract_multiplier,contract_value_currency:entry.okx_contract_value_currency}:null}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
+  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;const key=venue.toLowerCase();return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:Math.max(now,Date.now()),expected_symbol:entry?.[key],request_symbol:entry?.[key],instrument:venue==='OKX'?{base:entry.base,contract_value:entry.okx_contract_value,contract_multiplier:entry.okx_contract_multiplier,contract_value_currency:entry.okx_contract_value_currency}:null}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
  const usable=settled.filter(row=>row.status==='CLOSED'),imbalance=usable.length?usable.reduce((s,row)=>s+row.depth_imbalance_2pct,0)/usable.length:null;
  return{source:'CROSS_EXCHANGE_DEPTH',status:usable.length?'CLOSED':'NOT_CLOSED',observed_ts:now,network_calls:calls.slice(0,3).length,venue_count:usable.length,venues:usable,aggregate_depth_imbalance_2pct:imbalance,independent_venues_notional_not_summed:true,advisory_only:true};
 }
@@ -149,7 +154,7 @@ export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.
  if(lane==='HISTORY'){payload=await collectHistory({db,fetch_impl,api_key:coinalyze_api_key,base,now,run_id});ttl=HISTORY_TTL_MS;}
  if(payload&&payload.source&&payload.status==='CLOSED')await saveCached(db,normalized,payload.source,payload,now,ttl);
  const sources=await loadPermittedCached(db,normalized,now,allowed_lanes),statuses=Object.values(sources).map(x=>x.status);
- return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,receipts:[{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED'}],internal_only:true,automatic_execution:false};
+ return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,receipts:[...(payload?.fallback_from?[{...payload.fallback_from,fallback:true}]:[]),{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED',reason:payload?.reason??payload?.error??null,transport:payload?.receipts??null,venues:payload?.venues??null}],internal_only:true,automatic_execution:false};
 }
 
 export default{CROSS_EXCHANGE_RISK_VERSION,normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets,collectCrossExchangeRiskContext};

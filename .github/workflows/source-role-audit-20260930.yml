@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [source-role-fallback-20260930]
+    branches: [source-role-fallback-20260930, autonomous/source-audit-completion-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -23,6 +23,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Fence the candidate to its expected production commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
+          expected=$(node -p "JSON.parse(require('fs').readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json')).expected_main")
+          test "$current" = "$expected"
       - name: Assemble exact runtime and pinned SDK
         run: |
           mkdir -p runtime audit-output
@@ -84,3 +92,4 @@ jobs:
           name: source-role-${{ matrix.phase }}-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
+

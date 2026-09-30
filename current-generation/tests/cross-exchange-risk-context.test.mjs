@@ -21,6 +21,16 @@ test('depth metrics close only when the independent market price matches HTX',()
  assert.equal(wrong.status,'NOT_CLOSED');
 });
 
+test('official REST books without response symbol require an exact transport request binding',()=>{
+ const args={venue:'BINANCE',reference_price:10,observed_ts:1001,expected_symbol:'TAOUSDT',payload:{T:1000,bids:[['9.95','3']],asks:[['10.05','1']]}};
+ assert.equal(normalizeCrossExchangeDepth(args).status,'NOT_CLOSED');
+ const bound=normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT'});assert.equal(bound.status,'CLOSED');assert.equal(bound.symbol_binding,'EXACT_TRANSPORT_REQUEST');
+ assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'OTHERUSDT'}).status,'NOT_CLOSED');
+ assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT',payload:{...args.payload,symbol:'OTHERUSDT'}}).status,'NOT_CLOSED');
+ const okx=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'TAO-USDT-SWAP',request_symbol:'TAO-USDT-SWAP',payload:{data:[{ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]},instrument:{base:'TAO',contract_value:0.1,contract_multiplier:1,contract_value_currency:'TAO'}});
+ assert.equal(okx.status,'CLOSED');assert.equal(okx.bid.notional_2pct,99.5);
+});
+
 test('OKX depth converts contracts with catalog units and fails closed without metadata',()=>{
  const payload={data:[{instId:'FIL-USDT-SWAP',ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]};
  const missing=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'FIL-USDT-SWAP',payload});
