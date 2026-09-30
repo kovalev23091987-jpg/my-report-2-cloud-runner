@@ -1,7 +1,7 @@
 name: Liquidation Source Data Acceptance
 on:
   push:
-    branches: [repair/liquidation-source-data-20260930]
+    branches: [repair/liquidation-source-data-20260930, repair/future-liquidation-priority-20261001]
     paths:
       - current-generation/**
       - audit-fixes/liquidation-source-data-20260930/**
@@ -19,6 +19,8 @@ jobs:
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
@@ -42,6 +44,10 @@ jobs:
           REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test --test-reporter=tap current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-runtime.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Verify future-first contract and authenticated BTW map
+        run: |
+          node --test current-generation/tests/future-liquidation-contract.test.mjs > audit-output/future-contract.tap
+          node audit-fixes/liquidation-source-data-20260930/live-future-map.mjs runtime audit-output
       - name: Verify exact BTW history with bounded public requests and isolated SQLite
         run: node audit-fixes/liquidation-source-data-20260930/live-acceptance.mjs runtime audit-output
       - name: Explain failed validation

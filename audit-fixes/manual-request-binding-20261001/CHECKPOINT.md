@@ -1,3 +1,9 @@
+# PR45 integration on released PR47 — acceptance pending
+
+Accepted manual binding head3b0f5df / workflow36782630683 BOTH_REAL_MANUAL_MODES_BOUND_VERIFIED preserved. This candidate integrates the complete actual PR47 production base 7b0c164286b52f41250562e6cefd4517e99b0220 (release17f58be38242c1031cfab859e925fb8478b823c1; workerb852d386) and preserves PR44 sources/factual history, future-first/CoinLobster/ByK/native-map fields and approved manual formatter manifest. Exact3-way runner and overlay merge CLEAN; runner syntax checked. The workflow's old worker pin is updated to the actual released b852d386, not to the uninstalled PR43 candidate worker. No queue schema, strategy, Telegram format, thresholds or source-chain changes. Reaccept exact assembled runtime +37 integration +16 manual SQLite cases and BOTH fresh manual modes with genuine GitHub completed/success external resolver before release. Existing shared fence is owned by this same executor's PR43 stage; no second lock or production merge here. Source43 strict identity real retest awaits native cooldown and must not be bypassed; PR45 remains separately gated.
+
+Prior checkpoints below are historical.
+
 # PR45 — real request/result binding
 
 Accepted immutable head4016e99ee02240311998a9f597c7f444550f4fa9: run36781587442 completed/success; full regression,37 integration and16 manual-binding SQLite scenarios PASS. Genuine fresh FULL_MANUAL source report and external verification of downloaded artifact11128530681 against actual GitHub API run metadata returned BOUND_MANUAL_REPORT_VERIFIED. Exact command/result/content hash are preserved in the proof artifact and PR description. Report CLOSED/HEALTHY_NO_IDEA, NEAR rejected under unchanged strategy. Telegram network/SENT0, production replacementfalse, isolated command/publication rows, genuine source ACKs.
