@@ -1,4 +1,4 @@
-export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v5-source-clock-pool-identity-20260930';
+export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v6-role-cache-priority-20260930';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -40,12 +40,18 @@ export function parseSupplementalIdentityRegistry(raw){
 }
 
 function hashLane(value){let h=2166136261;for(const ch of clean(value)){h^=ch.codePointAt(0);h=Math.imul(h,16777619);}return Math.abs(h)>>>0;}
-export function chooseSupplementalLane({run_id,contract,entry,derivatives_venues=0,critical_conflict=false}={}){
+export function chooseSupplementalLane({run_id,contract,entry,derivatives_venues=0,critical_conflict=false,cached_sources={}}={}){
+ // A required futures cross-check is not interchangeable with protocol TVL
+ // or spot context. A retained response (including backoff/error context)
+ // suppresses another request until its existing cache expires.
+ if((Number(derivatives_venues)<2||critical_conflict===true)&&!cached_sources.BITGET)return 'BITGET_FALLBACK';
  const available=[];
- if(entry?.identity)available.push('DEX_RISK');
- if(entry?.protocol_slug)available.push('PROTOCOL');
- if(Number(derivatives_venues)<2||critical_conflict===true)available.push('BITGET_FALLBACK');
- if(entry?.coinbase_product)available.push('COINBASE_SPOT');
+ if(entry?.identity){
+  const expected=['DEX_SCREENER',...(geckoNetwork(entry.identity.chain)?['GECKOTERMINAL']:[]),...(chainId(entry.identity.chain)?['GOPLUS']:[]),...(entry.identity.chain==='solana'?['SOLANA_RPC']:[])];
+  if(expected.some(source=>!cached_sources[source]))available.push('DEX_RISK','DEX_RISK','DEX_RISK');
+ }
+ if(entry?.identity&&entry?.protocol_slug&&!cached_sources.DEFILLAMA)available.push('PROTOCOL','PROTOCOL');
+ if(entry?.coinbase_product&&!cached_sources.COINBASE)available.push('COINBASE_SPOT');
  if(!available.length)return null;
  return available[hashLane(`${run_id}:${contract}`)%available.length];
 }
@@ -180,7 +186,7 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_candidate_source_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
  const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},manual=parsed.entries[base]||null;
  let discovered=null,identityDiscovery={network_calls:0,cache_status:'NOT_NEEDED'};
- if(!reserve_for_liquidations&&manual?.identity==null&&manual?.protocol_slug==null){
+ if(!reserve_for_liquidations&&Number(derivatives_venues)>=2&&!critical_conflict&&manual?.identity==null&&manual?.protocol_slug==null){
   identityDiscovery=await loadOrDiscoverIdentity({db,fetch_impl,base,now});discovered=identityDiscovery.entry;
  }
  const entry={base,coinpaprika_id:manual?.coinpaprika_id||null,sector_tag:manual?.sector_tag||null,identity:manual?.identity||null,identity_candidate:discovered?.identity_candidate||null,protocol_slug:manual?.protocol_slug||discovered?.protocol_slug||null,coinbase_product:manual?.coinbase_product||discovered?.coinbase_product||`${base}-USD`,lighter_market_id:manual?.lighter_market_id??providerIds?.lighter_market_id??null,gmx_market_address:manual?.gmx_market_address||providerIds?.gmx_market_address||null,official_name:manual?.official_name||null,official_domains:manual?.official_domains||[],official_feeds:manual?.official_feeds||[],official_feed_specs:manual?.official_feed_specs||[],snapshot_space:manual?.snapshot_space||null};
@@ -188,16 +194,18 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   const sources=await loadCachedSources(db,contract,now);
   return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{...(entry.coinpaprika_id&&entry.sector_tag?{coinpaprika_id:entry.coinpaprika_id,sector_tag:entry.sector_tag}:{}),official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
  }
- const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict});
+ const cachedSources=await loadCachedSources(db,contract,now);
+ const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict,cached_sources:cachedSources});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
+ const queue=(source,request,normalize)=>{if(cachedSources[source]){receipts.push({source,status:cachedSources[source].status,cache_status:'HIT',actual_http:0});return;}calls.push([source,request(),normalize]);};
  if(lane==='DEX_RISK'&&entry?.identity){
   const id=entry.identity,network=geckoNetwork(id.chain),cid=chainId(id.chain);
-  calls.push(['DEX_SCREENER',get(`https://api.dexscreener.com/tokens/v1/${encodeURIComponent(id.chain)}/${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeDexScreener(p,id,now)]);
-  if(network)calls.push(['GECKOTERMINAL',get(`https://api.geckoterminal.com/api/v2/networks/${encodeURIComponent(network)}/tokens/${encodeURIComponent(id.contract_or_mint)}/pools?page=1`),p=>normalizeGecko(p,id,now)]);
-  if(cid)calls.push(['GOPLUS',get(`https://api.gopluslabs.io/api/v1/token_security/${cid}?contract_addresses=${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeGoPlus(p,id,now)]);
-  if(id.chain==='solana')calls.push(['SOLANA_RPC',post('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[id.contract_or_mint,{limit:100,commitment:'finalized'}]}),p=>normalizeSolana(p,id,now)]);
+  queue('DEX_SCREENER',()=>get(`https://api.dexscreener.com/tokens/v1/${encodeURIComponent(id.chain)}/${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeDexScreener(p,id,now));
+  if(network)queue('GECKOTERMINAL',()=>get(`https://api.geckoterminal.com/api/v2/networks/${encodeURIComponent(network)}/tokens/${encodeURIComponent(id.contract_or_mint)}/pools?page=1`),p=>normalizeGecko(p,id,now));
+  if(cid)queue('GOPLUS',()=>get(`https://api.gopluslabs.io/api/v1/token_security/${cid}?contract_addresses=${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeGoPlus(p,id,now));
+  if(id.chain==='solana')queue('SOLANA_RPC',()=>post('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[id.contract_or_mint,{limit:100,commitment:'finalized'}]}),p=>normalizeSolana(p,id,now));
  }else if(lane==='PROTOCOL'&&entry?.protocol_slug){
-  calls.push(['DEFILLAMA',get(`https://api.llama.fi/protocol/${encodeURIComponent(entry.protocol_slug)}`),p=>normalizeDefiLlama(p,entry.protocol_slug,now,{identity:entry.identity,expected_symbol:base})]);
+  queue('DEFILLAMA',()=>get(`https://api.llama.fi/protocol/${encodeURIComponent(entry.protocol_slug)}`),p=>normalizeDefiLlama(p,entry.protocol_slug,now,{identity:entry.identity,expected_symbol:base}));
  }else if(lane==='BITGET_FALLBACK'){
   const symbol=`${base}USDT`;const [ticker,oi,funding]=await Promise.all([
    get(`https://api.bitget.com/api/v2/mix/market/ticker?symbol=${encodeURIComponent(symbol)}&productType=USDT-FUTURES`),
@@ -215,7 +223,9 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+sourceTtl(source),JSON.stringify(payload)).run();
  }
  const sources=await loadCachedSources(db,contract,now,settled.map(x=>x.source));
- return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity?'CLOSED':entry.identity_candidate?'CANDIDATE_ONLY':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:!manual?.identity&&Boolean(entry.identity_candidate),asset_metadata:{...(entry.coinpaprika_id&&entry.sector_tag?{coinpaprika_id:entry.coinpaprika_id,sector_tag:entry.sector_tag}:{}),official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
+ // Cached venue prices may be reused, but their old HTX comparison may not.
+ for(const source of ['BITGET','COINBASE'])if(sources[source])sources[source]={...sources[source],price_difference_vs_htx_pct:deviation(primary_price,sources[source].price)};
+ return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'NOT_CLOSED',contract,base,registry_status:parsed.status,identity_status:manual?.identity?'CLOSED':entry.identity_candidate?'CANDIDATE_ONLY':'NOT_CLOSED',identity_method:manual?.identity?'MANUAL_EXACT_REGISTRY':discovered?.identity_method||null,asset_identity:entry.identity,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:!manual?.identity&&Boolean(entry.identity_candidate),asset_metadata:{...(entry.coinpaprika_id&&entry.sector_tag?{coinpaprika_id:entry.coinpaprika_id,sector_tag:entry.sector_tag}:{}),official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:lane||(reserve_for_liquidations?'RESERVED_FOR_LIQUIDATION_PANEL':Object.keys(sources).length?'CACHED_RESPONSES_REUSED':'NO_ELIGIBLE_LANE'),network_calls:httpCalls,collection_policy:'NEEDED_FUTURES_FIRST_THEN_ROLE_PRIORITY_WITH_CACHE_REUSE',liquidation_lane_reserved:reserve_for_liquidations===true,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts,sources,internal_only:true};
 }
 
 export default{parseSupplementalIdentityRegistry,sameChainAssetIdentity,chooseSupplementalLane,collectSupplementalCandidateContext};

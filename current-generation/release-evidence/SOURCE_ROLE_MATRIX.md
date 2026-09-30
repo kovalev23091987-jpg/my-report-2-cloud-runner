@@ -1,5 +1,14 @@
 # Source role matrix
 
+## Continuation: supplemental request selection and cache economy
+
+Candidate change after PR31: when fewer than two derivative venues are present or a critical conflict exists, Bitget futures confirmation precedes unrelated DEX/protocol/spot work and token discovery. Coinbase remains spot-only and never substitutes that missing futures field. When the required response is already cached, the next eligible complementary role can use the available request allowance. Optional scheduling tickets are DEX3, protocol2, spot1; these are operational choices, not predictive weights.
+
+The existing per-source cache now suppresses repeated HTTP before collection, including partial DEX batches: GoPlus keeps its longer24h cache while pool/activity data refresh at their own TTL. Protocol calls require a verified asset identity as well as a protocol slug; a ticker discovery alone cannot normalize a valid protocol fact. Cached Bitget/Coinbase prices are compared against this run's HTX reference, not the old cached reference. Error responses remain errors and suppress repeats only within their existing cache TTL; no new claim of universal provider-wide backoff is made.
+
+In native liquidations, explicitly classified429/rate-limit/quota-exhaustion responses retain diagnostic role records but no longer lower operational source reliability. The already implemented exact-native-before-discovery-before-projected ordering and bounded fallback remain unchanged. Source quotas, trading weights, HTTP caps and HTX execution truth are unchanged. One integrated check, no new provider probes or manual market reports.
+
+
 ## Operational assignment — owner simplification, 30 September 2026
 
 This section supersedes historical task priorities below. Use the capabilities and scoped receipts already available; do not wait for new statistical research, generate more market reports, or repeat provider probes to assign responsibilities. These are practical operating priorities, NOT a claim of measured predictive superiority. A named capability is not a newly enabled connector.

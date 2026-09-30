@@ -5,6 +5,14 @@ test('K23 internal scheduler skips do not penalize provider availability',()=>{
  const skipped=classifyOperationalSourceOutcome({status:'SKIPPED_RUN_HTTP_BUDGET',result:false,actual_http:0});assert.equal(skipped.evaluated,false);assert.equal(skipped.failure_origin,'INTERNAL_SCHEDULER');
  const unsupported=classifyOperationalSourceOutcome({status:'UNSUPPORTED_NATIVE_SYMBOL',result:false,actual_http:1});assert.equal(unsupported.evaluated,true);assert.equal(unsupported.operational_success,true);assert.equal(unsupported.coverage_status,'UNSUPPORTED');
 });
+test('explicit provider quota failures are recorded without lowering source reliability',async()=>{
+ const updates=[],roles=[];const ox=async()=>null;ox.summary=()=>({history:[{status:'HTTP_429'}]});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,oxarchive_collect:ox,provider_admit:async()=>({allowed:true,new_reservation:true}),fetch_impl:async()=>new Response(JSON.stringify([[{name:'OTHER'}],[]])),source_weight_store:{load:async()=>[],record:async row=>{updates.push(row);return{recorded:true};},recordRole:async row=>{roles.push(row);return{recorded:true};}}});
+ await service.collect({contract:'ABC-USDT',native_symbol:'ABC',run_id:'quota',deep_started_ts:Date.now(),max_deep_ms:45000});
+ assert.equal(updates.some(row=>row.source_id==='OXARCHIVE_HL_BUCKETS'),false);
+ assert.equal(roles.find(row=>row.source_id==='OXARCHIVE_HL_BUCKETS').status,'HTTP_429');
+ assert.equal(service.summary().routed.find(row=>row.lane==='OXARCHIVE_HL_BUCKETS').source_outcome.failure_origin,'PROVIDER_QUOTA');
+});
 
 test('configured 0xArchive participates in the same bounded liquidation rotation and returns report input',async()=>{
  const expected={schema:'MULTI_LIQUIDATION_ACQUISITION_V1'},seen=[],admissions=[];
