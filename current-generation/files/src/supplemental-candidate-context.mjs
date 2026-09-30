@@ -197,25 +197,32 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  const cachedSources=await loadCachedSources(db,contract,now);
  const lane=reserve_for_liquidations?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict,cached_sources:cachedSources});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
- const queue=(source,request,normalize)=>{if(cachedSources[source]){receipts.push({source,status:cachedSources[source].status,cache_status:'HIT',actual_http:0});return;}calls.push([source,request(),normalize]);};
- if(lane==='DEX_RISK'&&entry?.identity){
+ const queue=(source,request,normalize)=>{if(cachedSources[source]){receipts.push({source,status:cachedSources[source].status,cache_status:'HIT',actual_http:0});return;}if(httpCalls>=5){receipts.push({source,status:'DEFERRED_SHARED_REQUEST_ENVELOPE',actual_http:0});return;}calls.push([source,request(),normalize]);};
+ const collectLane=async selected=>{
+ if(selected==='DEX_RISK'&&entry?.identity){
   const id=entry.identity,network=geckoNetwork(id.chain),cid=chainId(id.chain);
   queue('DEX_SCREENER',()=>get(`https://api.dexscreener.com/tokens/v1/${encodeURIComponent(id.chain)}/${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeDexScreener(p,id,now));
   if(network)queue('GECKOTERMINAL',()=>get(`https://api.geckoterminal.com/api/v2/networks/${encodeURIComponent(network)}/tokens/${encodeURIComponent(id.contract_or_mint)}/pools?page=1`),p=>normalizeGecko(p,id,now));
   if(cid)queue('GOPLUS',()=>get(`https://api.gopluslabs.io/api/v1/token_security/${cid}?contract_addresses=${encodeURIComponent(id.contract_or_mint)}`),p=>normalizeGoPlus(p,id,now));
   if(id.chain==='solana')queue('SOLANA_RPC',()=>post('https://api.mainnet-beta.solana.com',{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[id.contract_or_mint,{limit:100,commitment:'finalized'}]}),p=>normalizeSolana(p,id,now));
- }else if(lane==='PROTOCOL'&&entry?.protocol_slug){
+ }else if(selected==='PROTOCOL'&&entry?.protocol_slug){
   queue('DEFILLAMA',()=>get(`https://api.llama.fi/protocol/${encodeURIComponent(entry.protocol_slug)}`),p=>normalizeDefiLlama(p,entry.protocol_slug,now,{identity:entry.identity,expected_symbol:base}));
- }else if(lane==='BITGET_FALLBACK'){
+ }else if(selected==='BITGET_FALLBACK'){
   const symbol=`${base}USDT`;const [ticker,oi,funding]=await Promise.all([
    get(`https://api.bitget.com/api/v2/mix/market/ticker?symbol=${encodeURIComponent(symbol)}&productType=USDT-FUTURES`),
    get(`https://api.bitget.com/api/v2/mix/market/open-interest?symbol=${encodeURIComponent(symbol)}&productType=USDT-FUTURES`),
    get(`https://api.bitget.com/api/v2/mix/market/current-fund-rate?symbol=${encodeURIComponent(symbol)}&productType=USDT-FUTURES`),
   ]);calls.push(['BITGET',Promise.resolve({ok:ticker.ok&&oi.ok&&funding.ok,payload:[ticker.payload,oi.payload,funding.payload],error:[ticker.error,oi.error,funding.error].filter(Boolean).join(',')}),p=>normalizeBitget(p[0],p[1],p[2],symbol,now,primary_price)]);
- }else if(lane==='COINBASE_SPOT'&&entry?.coinbase_product){
+ }else if(selected==='COINBASE_SPOT'&&entry?.coinbase_product&&httpCalls+2<=5){
   const productId=entry.coinbase_product;const [product,ticker]=await Promise.all([get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}`),get(`https://api.exchange.coinbase.com/products/${encodeURIComponent(productId)}/ticker`)]);
   calls.push(['COINBASE',Promise.resolve({ok:product.ok&&ticker.ok,payload:[product.payload,ticker.payload],error:[product.error,ticker.error].filter(Boolean).join(',')}),p=>normalizeCoinbase(p[0],p[1],now,primary_price,productId)]);
  }
+ };
+ await collectLane(lane);
+ // Primary confirmation must not permanently starve a unique complementary
+ // role. Use only the remaining part of the SAME five-request envelope.
+ const complementaryLane=lane==='BITGET_FALLBACK'&&httpCalls<5?chooseSupplementalLane({run_id,contract,entry,derivatives_venues:2,critical_conflict:false,cached_sources:{...cachedSources,BITGET:{status:'ATTEMPTED'}}}):null;
+ if(complementaryLane)await collectLane(complementaryLane);
  if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
  for(const {source,payload} of settled){

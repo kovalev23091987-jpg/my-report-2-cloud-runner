@@ -22,7 +22,15 @@ test('DEX refresh reuses the longer token-security cache',async()=>{
 });
 test('missing derivative confirmation is collected before unrelated asset discovery',async()=>{
  const db=new DB(),urls=[];const result=await collectSupplementalCandidateContext({db,registry:{},contract:'ABC-USDT',run_id:'gap',derivatives_venues:1,now:1_800_000_000_000,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify({data:[{symbol:'ABCUSDT',lastPr:'100',fundingRate:'0.001'}]}));}});
- assert.equal(result.lane,'BITGET_FALLBACK');assert.equal(result.network_calls,3);assert.ok(urls.every(u=>u.includes('api.bitget.com')));assert.equal(result.identity_status,'NOT_CLOSED');
+ assert.equal(result.lane,'BITGET_FALLBACK');assert.ok(result.network_calls<=5);assert.ok(urls.slice(0,3).every(u=>u.includes('api.bitget.com')));assert.equal(urls.some(u=>u.includes('/search')),false);assert.equal(result.identity_status,'NOT_CLOSED');
+});
+test('required futures confirmation leaves bounded room for unique DEX and security facts',async()=>{
+ const db=new DB(),now=1_800_000_000_000,urls=[];
+ db.rows.set('ABC-USDT|COINBASE',{source:'COINBASE',observed_ts:now,expires_ts:now+7200000,payload_json:JSON.stringify({source:'COINBASE',status:'CLOSED',context_version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION})});
+ const params={db,registry:{ABC:{chain:'ethereum',contract_or_mint:addr}},contract:'ABC-USDT',derivatives_venues:1,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify(String(url).includes('bitget')?{data:[{symbol:'ABCUSDT',lastPr:'100'}]}:String(url).includes('geckoterminal')?{data:[]}:String(url).includes('goplus')?{result:{[addr]:{is_honeypot:'0'}}}:[]));}};
+ const first=await collectSupplementalCandidateContext({...params,run_id:'one',now}),second=await collectSupplementalCandidateContext({...params,run_id:'two',now:now+20*60000});
+ assert.equal(first.network_calls,5);assert.equal(second.network_calls,4);assert.equal(second.sources.GOPLUS.status,'CLOSED');
+ assert.equal(urls.filter(u=>u.includes('dexscreener')).length,1);assert.equal(urls.filter(u=>u.includes('geckoterminal')).length,1);assert.equal(urls.filter(u=>u.includes('goplus')).length,1);
 });
 test('bad or missing contract identity never opens DEX lane',()=>{
  const registry=parseSupplementalIdentityRegistry({ABC:{chain:'ethereum',contract_or_mint:'ABC'}});

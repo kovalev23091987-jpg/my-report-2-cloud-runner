@@ -2,6 +2,8 @@
 
 ## Continuation: supplemental request selection and cache economy
 
+Owner clarification16:33: every useful connected source retains its smallest unique field; allocation is per field, not a winner-takes-all block. After the needed Bitget check, one eligible complementary lane may use only the remaining space in the SAME5HTTP envelope. Partial DEX batches defer uncached fields without losing them; the next collection reuses existing pool data and can fill security/activity fields. Sources not actually available or identity-verified are not invented. Duplicated upstream facts still count once.
+
 Candidate change after PR31: when fewer than two derivative venues are present or a critical conflict exists, Bitget futures confirmation precedes unrelated DEX/protocol/spot work and token discovery. Coinbase remains spot-only and never substitutes that missing futures field. When the required response is already cached, the next eligible complementary role can use the available request allowance. Optional scheduling tickets are DEX3, protocol2, spot1; these are operational choices, not predictive weights.
 
 The existing per-source cache now suppresses repeated HTTP before collection, including partial DEX batches: GoPlus keeps its longer24h cache while pool/activity data refresh at their own TTL. Protocol calls require a verified asset identity as well as a protocol slug; a ticker discovery alone cannot normalize a valid protocol fact. Cached Bitget/Coinbase prices are compared against this run's HTX reference, not the old cached reference. Error responses remain errors and suppress repeats only within their existing cache TTL; no new claim of universal provider-wide backoff is made.
