@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {RemoteD1Database} from './report2-d1-adapter.mjs';
 import {parseLiquidationCommand} from '../current-generation/files/src/liquidation-command-router.mjs';
-import {commandId,enqueueCommand} from '../current-generation/files/src/durable-command-queue.mjs';
+import {enqueueIdempotentManualRequest} from '../current-generation/files/src/manual-result-binding.mjs';
 const value=name=>String(process.env[name]||'').trim();
 const generation=value('REPORT2_CURRENT_GENERATION');
 const requestFile=value('REPORT2_MANUAL_REQUEST_FILE');
@@ -22,9 +22,10 @@ const now=Date.now(),raw=String(request?.command??value('REPORT2_MANUAL_COMMAND'
 if(!raw&&!coin)throw new Error('MANUAL_REQUEST_EMPTY');
 let mode='FULL_MANUAL',contract=coin||null;if(intent.matched){mode='LIQUIDATION_ONLY';contract=intent.contract||contract;}else if(contract)mode='MANUAL_COIN';
 const requestChannel=requestFile?'GITHUB_CONTENTS_TRIGGER':'GITHUB_WORKFLOW_DISPATCH';
-const requestNonce=requestFile?`${String(request.nonce).trim()}:${value('GITHUB_SHA')}`:value('GITHUB_RUN_ID')+':'+value('GITHUB_RUN_ATTEMPT');
-const id=commandId({request_channel:requestChannel,received_at:now,mode,contract,request_nonce:requestNonce});
+const requestNonce=requestFile?String(request.nonce).trim():value('GITHUB_RUN_ID');
 const db=new RemoteD1Database(value('REPORT2_D1_BRIDGE_URL'),value('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:30000});
-await enqueueCommand(db,{command_id:id,mode,contract,request_channel:requestChannel,received_at:now,deadline:now+30*60_000,generation});
+const queued=await enqueueIdempotentManualRequest(db,{request_nonce:requestNonce,mode,contract,request_channel:requestChannel,received_at:now,deadline:now+30*60_000,generation});
+const id=queued.command_id;
 if(value('GITHUB_OUTPUT'))fs.appendFileSync(value('GITHUB_OUTPUT'),`command_id=${id}\ncommand=${raw}\ncoin_contract=${coin}\nrequest_channel=${requestChannel}\n`);
 console.log('REPORT2_COMMAND_QUEUED',JSON.stringify({command_id:id,mode,contract,generation,request_channel:requestChannel}));
+
