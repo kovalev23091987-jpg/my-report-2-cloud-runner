@@ -1,0 +1,22 @@
+name: Verify one exchange-flow response
+on:
+  push:
+    branches: [autonomous/verify-exchange-flows-20260930]
+    paths:
+      - .github/workflows/verify-exchange-flows.yml
+      - audit-fixes/specialist-access-20260930/check-exchange-flows.mjs
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: One exact-token endpoint check
+        env:
+          NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+        run: node audit-fixes/specialist-access-20260930/check-exchange-flows.mjs
