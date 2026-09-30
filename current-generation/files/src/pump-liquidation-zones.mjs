@@ -39,7 +39,7 @@ function normalize(rows,kind,current){
    if(side==='AT_PRICE'||!band)return null;
    const providers=Array.isArray(row?.providers)?row.providers.filter(Boolean):[];
    return {
-     kind,price,range:row?.range??null,distance_pct:distance,side,band,
+     kind,price,price_quote:text(row?.price_quote)||'USDT',notional_quote:text(row?.notional_quote)||'USDT',range:row?.range??null,distance_pct:distance,side,band,
      exact_notional_usdt:providers.includes('0xArchive')?null:exactNotional(row),
      relative_strength_value:positiveMetric(row?.strength_score,row?.strength,row?.last_strength,row?.raw_size),
      position_count:positiveMetric(row?.position_count,row?.positions_count,row?.account_count,row?.density_count),
@@ -140,14 +140,14 @@ export function buildPumpLiquidationZones({
  const pump=classifyPump24h(rolling_24h_change_pct,{early_anomaly});
  if(['BTC','ETH'].includes(base))return{version:PUMP_LIQUIDATION_ZONES_VERSION,status:'EXCLUDED_BY_USER_POLICY',pump,current_price:px,above:[],below:[],reason:'BTC_ETH_EXCLUDED_BY_USER_POLICY'};
  if(!base||px===null||px<=0)return{version:PUMP_LIQUIDATION_ZONES_VERSION,status:'TECHNICAL_FAILURE',pump,current_price:px,above:[],below:[],reason:'HTX_CONTRACT_OR_CURRENT_PRICE_REQUIRED'};
- const rows=[...normalize(realized,'REALIZED',px),...normalize(projected,'PROJECTED',px)];
+ const rows=normalize(projected,'PROJECTED',px).filter(row=>![row.raw?.evidence_type,row.raw?.role,row.raw?.kind,row.raw?.data_kind].some(value=>/REALIZED|EXECUTED|HISTOR/.test(String(value??'').toUpperCase())));
  const move=finite(rolling_24h_change_pct)??0;
  const context={current:px,moveSigned:move,oi:finite(calculation_context?.oi_change_pct),funding:finite(calculation_context?.funding_rate_pct),volume:finite(calculation_context?.volume_ratio),early_anomaly};
  const above=pickSide(rows,'ABOVE',context),below=pickSide(rows,'BELOW',context);
  const providerZones=above.concat(below).filter(row=>row.kind!=='CALCULATED').length;
  return {
    version:PUMP_LIQUIDATION_ZONES_VERSION,status:'CLOSED',pump,current_price:px,priority_reason:text(priority_reason)||null,
-   above,below,realized_projected_separate:true,distance_cap_pct:null,max_per_side:4,no_invented_exact_amounts:true,
+   above,below,future_levels_required:true,future_levels_status:providerZones?'SOURCE_LEVELS_AVAILABLE':'NOT_AVAILABLE',historical_events:realized,realized_projected_separate:true,distance_cap_pct:null,max_per_side:4,no_invented_exact_amounts:true,
    calculated_fallback_enabled:true,calculated_zones_are_not_observed_positions:true,upper_move_ceiling_pct:null,
    coverage_scope:'ALL_HTX_FUTURES_EXCEPT_BTC_ETH',coverage_status:providerZones===8?'PROVIDER_ZONES_ALL_BANDS':providerZones?'MIXED_PROVIDER_AND_CALCULATED':'CALCULATED_FOR_ALL_BANDS',
    provider_zone_count:providerZones,above_status:'CLOSED',below_status:'CLOSED',

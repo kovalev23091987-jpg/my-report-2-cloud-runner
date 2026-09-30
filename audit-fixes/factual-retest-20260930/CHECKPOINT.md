@@ -1,3 +1,9 @@
+# Current PR43 integration — released PR47 base
+
+Expected main 7b0c164286b52f41250562e6cefd4517e99b0220; preserved actual PR47 release 17f58be38242c1031cfab859e925fb8478b823c1 / worker b852d386dad5d40778284ba036075b940dc944dbe56e21c6bf7de67d2d5534d9. Exact3-way source43 8c6c548 + accepted47 e344 + base21cc; worker and overlay clean, only worker pin conflicts resolved to freshly computed 18119653e58a5abea9c85e0cf885f5ae46562bc0006d12c9101b8012bfc9c26f. Manual45 3b0f5df remains separately accepted BOTH_REAL_MANUAL_MODES_BOUND_VERIFIED at36782630683; NOT installed by this candidate. No strategy, crossed observation trigger, source independence/identity/freshness or Telegram formatting change. Same4day263-selection replay and current real payload capture are required on THIS head; prior5e345 proof cannot accept this changed base. No test Telegram or production replacement before real acceptance. Genuine source ACK only; do not fabricate actionability/message id. Shared own fence expected_main=7b0c164286b52f41250562e6cefd4517e99b0220; foreign PR47 was released before acquisition.
+
+Prior evidence below is historical.
+
 # Мой отчёт 2 — source-to-Telegram binding
 
 Статус: интегрированный кандидат PR43, НЕ выпущен. Production PR44 release 7b24215c83e8c5eaec485219d8c92eb5b093673c, main после ручного запроса bc864ba9dfbcf6fff20f1fc50daa230281482a4d. Действующий shared lock принадлежит repair/liquidation-source-data-20260930; не перезаписывать. Кандидат сохраняет все27 файлов PR44 и добавляет только ранее проверенную привязку sealed Full Evidence к source-role consumer. Общие overlay/validate объединены по конкретным независимым изменениям. Стратегия, цепочка, пороги, direction/state/entry/targets/invalidation и Telegram formatter неизменны.
