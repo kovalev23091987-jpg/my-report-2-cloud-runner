@@ -39,7 +39,7 @@ function normalize(rows,kind,current){
    if(side==='AT_PRICE'||!band)return null;
    const providers=Array.isArray(row?.providers)?row.providers.filter(Boolean):[];
    return {
-     kind,price,range:row?.range??null,distance_pct:distance,side,band,
+     kind,price,price_quote:text(row?.price_quote)||'USDT',notional_quote:text(row?.notional_quote)||'USDT',range:row?.range??null,distance_pct:distance,side,band,
      exact_notional_usdt:providers.includes('0xArchive')?null:exactNotional(row),
      relative_strength_value:positiveMetric(row?.strength_score,row?.strength,row?.last_strength,row?.raw_size),
      position_count:positiveMetric(row?.position_count,row?.positions_count,row?.account_count,row?.density_count),

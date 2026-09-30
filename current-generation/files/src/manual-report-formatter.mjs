@@ -1,3 +1,4 @@
+import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
 import {formatLiquidationHistoryFacts} from './gate-liquidation-history.mjs';
 import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displaySnapshotChange} from './canonical-display.mjs';
 import {nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
@@ -31,8 +32,9 @@ export function formatManualReport(result){
  if(basis==='LIQUIDATION_PUMP')lines.push('Основа идеи: ликвидационные зоны и ускорение движения.');
  else if(basis==='CANDLE_ANOMALY')lines.push('Основа идеи: более ранняя свечная аномалия, которая сейчас получает подтверждение.');
  else lines.push('Основа идеи: совокупность рыночных подтверждений.');
+ const forwardModelLines=formatCoinLobsterFutureLines(result.metadata?.internal_market_context?.cross_exchange_risk?.future_provider_models);
  const nativeLines=nativeLiquidationLines(result.liquidations,{manual:true});
- lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations));
+ lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations),...forwardModelLines);
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
  lines.push(...formatLiquidationHistoryFacts(result.metadata?.internal_market_context?.cross_exchange_risk,{user_ru:true}));
  if(result.free_sources)lines.push('','КАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ',`Статус непрерывного сбора: ${result.free_sources.continuous_collector_status==='PARTIAL_REALTIME_COVERAGE'?'частичное покрытие в реальном времени':'проверяется'}.`,`Новые внешние запросы горячего цикла: ${result.free_sources.hot_cycle_external_request_delta??0}.`);

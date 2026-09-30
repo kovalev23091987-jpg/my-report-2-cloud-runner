@@ -14948,6 +14948,7 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
       price_high: high,
       raw_size: rawSize,
       source_unit: sourceUnit,
+      price_quote: "USD",notional_quote:"USD",price_semantics:"PROVIDER_MODEL_PRICE_BIN",
       normalized_strength: strength,
       current_price: currentPrice,
       distance_pct: distancePct,
@@ -16329,6 +16330,8 @@ async function buildDeepCheckInput(params, env) {
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
 
+  let futureProviderModels=null;
+  if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
   let htxLiquidationShadow=null;
 
   let liquidationIntelligence;
@@ -16375,7 +16378,7 @@ async function buildDeepCheckInput(params, env) {
 
   // Owner contract: open-position liquidation levels are collected before history.
   let nativeLiquidationAcquisition = null;
-  const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:0}});
+  const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:futureProviderModels?.network_calls??0}});
   let nativeLiquidationCollectionError=null;
   if (typeof env?.REPORT2_LIQUIDATION_NATIVE_COLLECT === "function" && supplementalCandidateContext?.liquidation_lane_reserved === true && liquidationCandidateHttpCap>0 && /^[^-\s]+-USDT$/u.test(contract)) {
     try {
@@ -16434,7 +16437,7 @@ async function buildDeepCheckInput(params, env) {
   // All new source facts finish before the analytical cutoff is fixed.
   try{
     if(sourceRoutingPlan.run_cross_exchange&&typeof env?.REPORT2_CROSS_EXCHANGE_RISK_COLLECT==='function')crossExchangeRiskContext=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({
-      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),byk_future:liquidationIntelligence,
+      contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),reference_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),byk_future:liquidationIntelligence,future_provider_models:futureProviderModels,
     });else if(!sourceRoutingPlan.run_cross_exchange)crossExchangeRiskContext={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',sources:{},network_calls:0,internal_only:true,next_family_rotation:true};
   }catch(error){crossExchangeRiskContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
 
@@ -16449,7 +16452,7 @@ async function buildDeepCheckInput(params, env) {
     liquidation_collection_error:nativeLiquidationCollectionError,
     future_levels_first:true,
     historical_context_closed:crossExchangeRiskContext?.status==='CLOSED',
-    coverage_closed:Boolean(nativeLiquidationAcquisition||liquidationIntelligence?.projected_map_status==='CLOSED_SHADOW'),
+    coverage_closed:Boolean(nativeLiquidationAcquisition||liquidationIntelligence?.projected_map_status==='CLOSED_SHADOW'||futureProviderModels?.status==='CLOSED'&&futureProviderModels?.levels?.length),
   };
   console.log('CANDIDATE_SOURCE_CONFIRMATION_ROUTE',JSON.stringify({contract,run_id:String(params?.run_id||''),...sourceConfirmationReceipt}));
   if(String(env?.REPORT2_LIQUIDATION_QUEUE_CONTRACT||'').trim()===contract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
