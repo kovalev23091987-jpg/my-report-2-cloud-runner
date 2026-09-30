@@ -39,7 +39,9 @@ function currentPrice({publication,liquidations,futures,discovery}={}){
  );
 }
 function sourceReceipts(publicEvidence){
- const rows=arr(publicEvidence?.evidence).slice(0,48);
+ // The same crypto-class admission applies to both sealed and legacy facts.
+ // A ticker-derived CLOSED label cannot revive an OKX stock/unknown contract.
+ const rows=arr(publicEvidence?.evidence).slice(0,48).filter(row=>text(row?.venue).toUpperCase()!=='OKX'||row.asset_class==='CRYPTO');
  return normalizeInheritedFactEnvelope(rows,{
   default_contract_code:publicEvidence?.contract_code??null,
   default_observed_ts:publicEvidence?.observed_ts??null,
