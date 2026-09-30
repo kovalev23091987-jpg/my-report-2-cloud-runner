@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -54,6 +54,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
+    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -43,6 +43,6 @@ test('K16 combined candidate path stays within five calls on cold cache',async()
 
 test('K16 macro: runtime overlay and authoritative runner include combined live collector',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8'),overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
- assert.match(runner,/collectCandidateEvidenceV2/);assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=params=>collectCandidateEvidenceV2/);
+ assert.match(runner,/collectCandidateEvidenceV2/);assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=async params=>\{const result=await collectCandidateEvidenceV2/);
  assert.match(overlay,/src\/macro-calendar-evidence\.mjs/);assert.match(overlay,/src\/candidate-evidence-v2-runtime\.mjs/);
 });

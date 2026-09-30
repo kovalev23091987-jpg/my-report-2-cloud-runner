@@ -7,7 +7,7 @@
     "current-generation/files/src/telegram-compact-formatter.mjs": "ca30d45b004dd0c517bbf90c6c837a7cbda295535bbe8ce90a9c2863740a8a92",
     "current-generation/files/src/canonical-display.mjs": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
-    "current-generation/files/src/native-liquidation-guard.mjs": "5e1ab4d76ef6e82bb9461748f6b881b83c9aec93cb2337f4f810bbbf0c8ce728"
+    "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -19,5 +19,20 @@
     "pump-liquidation-only.json": "add2e33d053fad5a7a8cb37fff29cb8b51d79a058ccfc231401200a13ea31b12",
     "missing-data.json": "14c7851efc2bffb9318142d8d0ba81ceb8a4d9a326ea10fe57ed9fe766179371"
   },
-  "automatic_golden_update": false
+  "automatic_golden_update": false,
+  "authorized_maintenance_history": [
+    {
+      "date": "2026-09-30",
+      "requirement": "QNT post-release canonical receipt-only failure; incomplete check must not appear as no market ideas",
+      "changes": [
+        {
+          "file": "current-generation/files/src/native-liquidation-guard.mjs",
+          "previous_sha256": "5e1ab4d76ef6e82bb9461748f6b881b83c9aec93cb2337f4f810bbbf0c8ce728",
+          "new_sha256": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997"
+        }
+      ],
+      "golden_fixtures_changed": false,
+      "authorization": "Owner autonomous repair instruction and unchanged output contract for identical prior inputs"
+    }
+  ]
 }

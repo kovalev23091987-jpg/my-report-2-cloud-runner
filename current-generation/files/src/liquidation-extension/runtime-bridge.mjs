@@ -52,7 +52,7 @@ export function attachNativeContext(legacy,raw,identity){
    const hyper=raw.hyperliquid?bindNativeAcquisition(raw.hyperliquid,identity):null;
    const gtrade=raw.gtrade?bindGTradeAcquisition(raw.gtrade,identity):null;
    const scoped=(Array.isArray(raw.scoped)?raw.scoped:[]).filter(verifyScopedProviderAcquisition).map(x=>bindScopedProviderAcquisition(x,identity));
-   const extensions=[gtrade,...scoped].filter(x=>x&&x.status==='USABLE_SCOPED_NATIVE_CONTEXT');
+   const extensions=[gtrade,...scoped].filter(x=>x&&['USABLE_SCOPED_NATIVE_CONTEXT','USABLE_RECEIPT_ONLY_CONTEXT'].includes(x.status));
    return {...(legacy??{}),native_extension:hyper,independent_extensions:extensions,multi_source_extension:{status:'CLOSED',notional_summed_across_providers:false,independent_votes_generated:false,source_count:Number(Boolean(hyper&&hyper.status==='USABLE_NATIVE_SAMPLE'))+extensions.length}};
  }
  const context=bindNativeAcquisition(raw,identity);
