@@ -1,7 +1,7 @@
 import {collectGateLiquidationHistory} from './gate-liquidation-history.mjs';
 import {normalizeOkxDepthLevel} from './asset-identity-cache.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v5-coinalyze-quota-fallback-20260930';
+export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v6-crypto-asset-class-20260930';
 const CATALOG_TTL_MS=24*60*60*1000,DEPTH_TTL_MS=30_000,REALIZED_TTL_MS=5*60*1000,HISTORY_TTL_MS=15*60*1000;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -20,14 +20,14 @@ export function normalizeCrossExchangeCatalogs({binance,bybit,okx}={}){
  const entries={};const put=(base,venue,symbol,metadata={})=>{if(!base||!symbol)return;Object.assign((entries[base]??={base}),{[venue]:symbol},metadata);};
  for(const row of Array.isArray(binance?.symbols)?binance.symbols:[])if(row?.status==='TRADING'&&row?.contractType==='PERPETUAL'&&row?.quoteAsset==='USDT')put(text(row.baseAsset).toUpperCase(),'binance',text(row.symbol).toUpperCase());
  for(const row of Array.isArray(bybit?.result?.list)?bybit.result.list:[])if(row?.status==='Trading'&&row?.quoteCoin==='USDT'&&String(row?.contractType||'').includes('Perpetual'))put(text(row.baseCoin).toUpperCase(),'bybit',text(row.symbol).toUpperCase());
- for(const row of Array.isArray(okx?.data)?okx.data:[])if(row?.state==='live'&&row?.instType==='SWAP'&&row?.settleCcy==='USDT')put(text(row.ctValCcy||row.instId?.split('-')?.[0]).toUpperCase(),'okx',text(row.instId).toUpperCase(),{okx_contract_value:finite(row.ctVal),okx_contract_multiplier:finite(row.ctMult)??1,okx_contract_value_currency:text(row.ctValCcy).toUpperCase()||null});
+ for(const row of Array.isArray(okx?.data)?okx.data:[])if(row?.state==='live'&&row?.instType==='SWAP'&&row?.settleCcy==='USDT'&&String(row?.instCategory)==='1')put(text(row.ctValCcy||row.instId?.split('-')?.[0]).toUpperCase(),'okx',text(row.instId).toUpperCase(),{okx_asset_category:'1',okx_contract_value:finite(row.ctVal),okx_contract_multiplier:finite(row.ctMult)??1,okx_contract_value_currency:text(row.ctValCcy).toUpperCase()||null});
  return entries;
 }
 
 export async function loadVenueCatalog({db,fetch_impl,now}={}){
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_cross_exchange_catalog (catalog_id TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
- const prior=await db.prepare(`SELECT payload_json,observed_ts FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V2' AND expires_ts>=?1 LIMIT 1`).bind(now).first();
- if(prior){try{const saved=JSON.parse(prior.payload_json);if(saved?.schema==='CEX_CATALOG_V2')return{...saved,status:Object.keys(saved.entries||{}).length?'CLOSED':'NOT_CLOSED',cache_status:'HIT',network_calls:0,observed_ts:Number(prior.observed_ts)};}catch{}}
+ const prior=await db.prepare(`SELECT payload_json,observed_ts FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V3' AND expires_ts>=?1 LIMIT 1`).bind(now).first();
+ if(prior){try{const saved=JSON.parse(prior.payload_json);if(saved?.schema==='CEX_CATALOG_V3')return{...saved,status:Object.keys(saved.entries||{}).length?'CLOSED':'NOT_CLOSED',cache_status:'HIT',network_calls:0,observed_ts:Number(prior.observed_ts)};}catch{}}
  const [binance,bybit,okx]=await Promise.all([
   requestJson(fetch_impl,'https://fapi.binance.com/fapi/v1/exchangeInfo',{timeout_ms:12000}),
   requestJson(fetch_impl,'https://api.bybit.com/v5/market/instruments-info?category=linear&limit=1000',{timeout_ms:12000}),
@@ -35,8 +35,8 @@ export async function loadVenueCatalog({db,fetch_impl,now}={}){
  ]);
  const entries=normalizeCrossExchangeCatalogs({binance:binance.ok?binance.payload:null,bybit:bybit.ok?bybit.payload:null,okx:okx.ok?okx.payload:null});
  const inputs=[['BINANCE',binance],['BYBIT',bybit],['OKX',okx]],receipts=inputs.map(([source,row])=>{const schema_ok=source==='BINANCE'?Array.isArray(row.payload?.symbols):source==='BYBIT'?Number(row.payload?.retCode)===0&&Array.isArray(row.payload?.result?.list):row.payload?.code==='0'&&Array.isArray(row.payload?.data),incomplete=source==='BYBIT'&&Boolean(row.payload?.result?.nextPageCursor);return{source,status:row.ok&&schema_ok?incomplete?'PARTIAL_CATALOG':'CLOSED':row.error||'CATALOG_SCHEMA_NOT_CLOSED',http_status:row.status,catalog_complete:row.ok&&schema_ok&&!incomplete};});
- const saved={schema:'CEX_CATALOG_V2',entries,receipts},complete=receipts.every(r=>r.catalog_complete),ttl=complete?CATALOG_TTL_MS:6*60*60*1000;
- await db.prepare(`INSERT INTO report2_cross_exchange_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES('CEX_V2',?1,?2,?3) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(now,now+ttl,JSON.stringify(saved)).run();
+ const saved={schema:'CEX_CATALOG_V3',entries,receipts},complete=receipts.every(r=>r.catalog_complete),ttl=complete?CATALOG_TTL_MS:6*60*60*1000;
+ await db.prepare(`INSERT INTO report2_cross_exchange_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES('CEX_V3',?1,?2,?3) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(now,now+ttl,JSON.stringify(saved)).run();
  return{...saved,status:Object.keys(entries).length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:3,observed_ts:now};
 }
 
@@ -49,6 +49,7 @@ function depthMetrics(rows,side,referencePrice,{venue,instrument}={}){
  return{notional_1pct:within(1),notional_2pct:within(2),notional_5pct:within(5),usd_25000_slippage_pct:edge===null?null:Math.abs((edge/ref-1)*100),usd_25000_covered:edge!==null,levels:clean.length};
 }
 export function normalizeCrossExchangeDepth({venue,payload,reference_price,observed_ts,instrument=null,expected_symbol=null,request_symbol=null}={}){
+ if(venue==='OKX'&&instrument&&String(instrument.asset_category)!=='1')return{source:venue,status:'NOT_CLOSED',reason:'OKX_CRYPTO_ASSET_CATEGORY_REQUIRED',observed_ts};
  let bids=[],asks=[],symbol=null,source_ts=null;
  if(venue==='BINANCE'){bids=payload?.bids;asks=payload?.asks;symbol=payload?.symbol;source_ts=finite(payload?.T??payload?.E);}
  if(venue==='BYBIT'){bids=payload?.result?.b;asks=payload?.result?.a;symbol=payload?.result?.s;source_ts=finite(payload?.ts);}
@@ -72,7 +73,7 @@ async function collectDepth({fetch_impl,entry,reference_price,now}={}){
  if(entry?.binance)calls.push(['BINANCE',requestJson(fetch_impl,`https://fapi.binance.com/fapi/v1/depth?symbol=${encodeURIComponent(entry.binance)}&limit=100`)]);
  if(entry?.bybit)calls.push(['BYBIT',requestJson(fetch_impl,`https://api.bybit.com/v5/market/orderbook?category=linear&symbol=${encodeURIComponent(entry.bybit)}&limit=50`)]);
  if(entry?.okx)calls.push(['OKX',requestJson(fetch_impl,`https://www.okx.com/api/v5/market/books?instId=${encodeURIComponent(entry.okx)}&sz=50`)]);
-  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;const key=venue.toLowerCase();return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:Math.max(now,Date.now()),expected_symbol:entry?.[key],request_symbol:entry?.[key],instrument:venue==='OKX'?{base:entry.base,contract_value:entry.okx_contract_value,contract_multiplier:entry.okx_contract_multiplier,contract_value_currency:entry.okx_contract_value_currency}:null}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
+  const settled=await Promise.all(calls.slice(0,3).map(async([venue,promise])=>{const raw=await promise;const key=venue.toLowerCase();return raw.ok?normalizeCrossExchangeDepth({venue,payload:raw.payload,reference_price,observed_ts:Math.max(now,Date.now()),expected_symbol:entry?.[key],request_symbol:entry?.[key],instrument:venue==='OKX'?{asset_category:entry.okx_asset_category,base:entry.base,contract_value:entry.okx_contract_value,contract_multiplier:entry.okx_contract_multiplier,contract_value_currency:entry.okx_contract_value_currency}:null}):{source:venue,status:'SOURCE_ERROR',error:raw.error,observed_ts:now};}));
  const usable=settled.filter(row=>row.status==='CLOSED'),imbalance=usable.length?usable.reduce((s,row)=>s+row.depth_imbalance_2pct,0)/usable.length:null;
  return{source:'CROSS_EXCHANGE_DEPTH',status:usable.length?'CLOSED':'NOT_CLOSED',observed_ts:now,network_calls:calls.slice(0,3).length,venue_count:usable.length,venues:usable,venue_receipts:settled,aggregate_depth_imbalance_2pct:imbalance,independent_venues_notional_not_summed:true,advisory_only:true};
 }
@@ -85,7 +86,7 @@ function websocketSample({WebSocketImpl,url,subscribe=null,parse,duration_ms}){
 const liqRow=(venue,symbol,side,price,quantity,ts)=>{const p=finite(price),q=finite(quantity);return p&&q?{venue,symbol,liquidated_side:side,price:p,quantity:q,notional_usd:p*q,source_ts:finite(ts)}:null;};
 function parseBinance(payload,wanted){const o=payload?.o;if(text(o?.s).toUpperCase()!==wanted)return[];const row=liqRow('BINANCE',wanted,text(o?.S).toUpperCase()==='SELL'?'LONG':'SHORT',o?.ap??o?.p,o?.z??o?.q,o?.T??payload?.E);return row?[row]:[];}
 function parseBybit(payload,wanted){return (Array.isArray(payload?.data)?payload.data:[]).filter(r=>text(r?.s).toUpperCase()===wanted).map(r=>liqRow('BYBIT',wanted,text(r?.S).toUpperCase()==='BUY'?'LONG':'SHORT',r?.p,r?.v,r?.T??payload?.ts)).filter(Boolean);}
-export function normalizeOkxLiquidationEvents(payload,wanted,entry){const out=[],base=text(wanted).toUpperCase().split('-')[0],ctVal=finite(entry?.okx_contract_value),ctMult=finite(entry?.okx_contract_multiplier)??1,ctCcy=text(entry?.okx_contract_value_currency).toUpperCase();for(const row of Array.isArray(payload?.data)?payload.data:[]){if(text(row?.instId).toUpperCase()!==wanted)continue;for(const d of Array.isArray(row?.details)?row.details:[row]){const position=text(d?.posSide??row?.posSide).toLowerCase(),orderSide=text(d?.side??row?.side).toLowerCase(),side=position==='long'?'LONG':position==='short'?'SHORT':orderSide==='sell'?'LONG':orderSide==='buy'?'SHORT':null,price=finite(d?.bkPx??d?.px??row?.bkPx),contracts=finite(d?.sz??row?.sz);if(!side||!price||!contracts||!ctVal)continue;const value=contracts*ctVal*ctMult,quantity=ctCcy===base?value:['USDT','USDC','USD'].includes(ctCcy)?value/price:null,x=liqRow('OKX',wanted,side,price,quantity,d?.ts??row?.ts);if(x)out.push(x);}}return out;}
+export function normalizeOkxLiquidationEvents(payload,wanted,entry){if(String(entry?.okx_asset_category)!=='1')return[];const out=[],base=text(wanted).toUpperCase().split('-')[0],ctVal=finite(entry?.okx_contract_value),ctMult=finite(entry?.okx_contract_multiplier)??1,ctCcy=text(entry?.okx_contract_value_currency).toUpperCase();for(const row of Array.isArray(payload?.data)?payload.data:[]){if(text(row?.instId).toUpperCase()!==wanted)continue;for(const d of Array.isArray(row?.details)?row.details:[row]){const position=text(d?.posSide??row?.posSide).toLowerCase(),orderSide=text(d?.side??row?.side).toLowerCase(),side=position==='long'?'LONG':position==='short'?'SHORT':orderSide==='sell'?'LONG':orderSide==='buy'?'SHORT':null,price=finite(d?.bkPx??d?.px??row?.bkPx),contracts=finite(d?.sz??row?.sz);if(!side||!price||!contracts||!ctVal)continue;const value=contracts*ctVal*ctMult,quantity=ctCcy===base?value:['USDT','USDC','USD'].includes(ctCcy)?value/price:null,x=liqRow('OKX',wanted,side,price,quantity,d?.ts??row?.ts);if(x)out.push(x);}}return out;}
 
 async function collectRealized({entry,now,WebSocketImpl=globalThis.WebSocket,duration_ms=6000}={}){
  if(typeof WebSocketImpl!=='function')return{source:'CROSS_EXCHANGE_REALIZED',status:'NOT_CLOSED',reason:'WEBSOCKET_UNAVAILABLE',observed_ts:now,network_connections:0,events:[]};
@@ -157,9 +158,9 @@ async function collectHistory(params={}){
  return {...fallback,network_calls:used+Number(fallback.network_calls||0),fallback_from:{source:'COINALYZE',status:first.status,reason:first.reason??first.error??null,network_calls:used,provider_call_units:first.provider_call_units??0,http_status:first.http_status??null,next_allowed_at:first.next_allowed_at??null},equivalent_baseline_replacement:false};
 }
 
-async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{sources[row.source]=JSON.parse(row.payload_json);}catch{}}return sources;}
+async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{const value=JSON.parse(row.payload_json);if(['CROSS_EXCHANGE_DEPTH','CROSS_EXCHANGE_REALIZED'].includes(row.source)&&value.asset_class_validation!=='CRYPTO_ASSET_CLASS_V1')continue;sources[row.source]=value;}catch{}}return sources;}
 async function loadPermittedCached(db,contract,now,allowed_lanes){const sources=await loadCached(db,contract,now);if(!Array.isArray(allowed_lanes))return sources;const allowed=new Set(allowed_lanes.flatMap(lane=>lane==='REALIZED'?['CROSS_EXCHANGE_REALIZED']:lane==='HISTORY'?['COINALYZE','GATE_LIQUIDATION_HISTORY']:lane==='DEPTH'?['CROSS_EXCHANGE_DEPTH']:[]));return Object.fromEntries(Object.entries(sources).filter(([source])=>allowed.has(source)));}
-async function saveCached(db,contract,source,payload,now,ttl){await db.prepare(`INSERT INTO report2_cross_exchange_risk_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+ttl,JSON.stringify(payload)).run();}
+async function saveCached(db,contract,source,payload,now,ttl){await db.prepare(`INSERT INTO report2_cross_exchange_risk_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+ttl,JSON.stringify(['CROSS_EXCHANGE_DEPTH','CROSS_EXCHANGE_REALIZED'].includes(source)?{...payload,asset_class_validation:'CRYPTO_ASSET_CLASS_V1'}:payload)).run();}
 
 export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.fetch,WebSocketImpl=globalThis.WebSocket,contract,run_id,reference_price,coinalyze_api_key='',lane_override='',allowed_lanes=null,now=Date.now(),realized_sample_ms=6000}={}){
  if(!db)throw new Error('CROSS_EXCHANGE_DB_REQUIRED');const normalized=text(contract).toUpperCase(),base=baseOf(normalized);if(!validContract(normalized))return{version:CROSS_EXCHANGE_RISK_VERSION,status:'NOT_CLOSED',reason:'CONTRACT_INVALID',sources:{},network_calls:0};

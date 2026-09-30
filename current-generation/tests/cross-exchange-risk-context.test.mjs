@@ -9,9 +9,9 @@ test('only active exact USDT perpetual markets enter the cross-exchange catalog'
  const entries=normalizeCrossExchangeCatalogs({
   binance:{symbols:[{status:'TRADING',contractType:'PERPETUAL',quoteAsset:'USDT',baseAsset:'FIL',symbol:'FILUSDT'},{status:'BREAK',contractType:'PERPETUAL',quoteAsset:'USDT',baseAsset:'BAD',symbol:'BADUSDT'}]},
   bybit:{result:{list:[{status:'Trading',quoteCoin:'USDT',contractType:'LinearPerpetual',baseCoin:'FIL',symbol:'FILUSDT'}]}},
-  okx:{data:[{state:'live',instType:'SWAP',settleCcy:'USDT',ctValCcy:'FIL',ctVal:'0.1',ctMult:'1',instId:'FIL-USDT-SWAP'}]},
+  okx:{data:[{state:'live',instType:'SWAP',instCategory:'1',settleCcy:'USDT',ctValCcy:'FIL',ctVal:'0.1',ctMult:'1',instId:'FIL-USDT-SWAP'}]},
  });
- assert.deepEqual(entries.FIL,{base:'FIL',binance:'FILUSDT',bybit:'FILUSDT',okx:'FIL-USDT-SWAP',okx_contract_value:0.1,okx_contract_multiplier:1,okx_contract_value_currency:'FIL'});assert.equal(entries.BAD,undefined);
+ assert.deepEqual(entries.FIL,{base:'FIL',binance:'FILUSDT',bybit:'FILUSDT',okx:'FIL-USDT-SWAP',okx_asset_category:'1',okx_contract_value:0.1,okx_contract_multiplier:1,okx_contract_value_currency:'FIL'});assert.equal(entries.BAD,undefined);
 });
 
 test('depth metrics close only when the independent market price matches HTX',()=>{
@@ -27,7 +27,7 @@ test('official REST books without response symbol require an exact transport req
  const bound=normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT'});assert.equal(bound.status,'CLOSED');assert.equal(bound.symbol_binding,'EXACT_TRANSPORT_REQUEST');
  assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'OTHERUSDT'}).status,'NOT_CLOSED');
  assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT',payload:{...args.payload,symbol:'OTHERUSDT'}}).status,'NOT_CLOSED');
- const okx=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'TAO-USDT-SWAP',request_symbol:'TAO-USDT-SWAP',payload:{data:[{ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]},instrument:{base:'TAO',contract_value:0.1,contract_multiplier:1,contract_value_currency:'TAO'}});
+ const okx=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'TAO-USDT-SWAP',request_symbol:'TAO-USDT-SWAP',payload:{data:[{ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]},instrument:{asset_category:'1',base:'TAO',contract_value:0.1,contract_multiplier:1,contract_value_currency:'TAO'}});
  assert.equal(okx.status,'CLOSED');assert.equal(okx.bid.notional_2pct,99.5);
 });
 
@@ -35,12 +35,12 @@ test('OKX depth converts contracts with catalog units and fails closed without m
  const payload={data:[{instId:'FIL-USDT-SWAP',ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]};
  const missing=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'FIL-USDT-SWAP',payload});
  assert.equal(missing.status,'NOT_CLOSED');assert.equal(missing.reason,'OKX_UNIT_METADATA_REQUIRED');
- const good=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'FIL-USDT-SWAP',payload,instrument:{base:'FIL',contract_value:0.1,contract_multiplier:1,contract_value_currency:'FIL'}});
+ const good=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'FIL-USDT-SWAP',payload,instrument:{asset_category:'1',base:'FIL',contract_value:0.1,contract_multiplier:1,contract_value_currency:'FIL'}});
  assert.equal(good.status,'CLOSED');assert.equal(good.bid.notional_2pct,99.5);assert.equal(good.ask.notional_2pct,100.5);
 });
 
 test('OKX liquidation contracts become base quantity before USD notional is calculated',()=>{
- const rows=normalizeOkxLiquidationEvents({data:[{instId:'FIL-USDT-SWAP',details:[{posSide:'short',side:'buy',bkPx:'5',sz:'13',ts:'1000'}]}]},'FIL-USDT-SWAP',{okx_contract_value:0.1,okx_contract_multiplier:1,okx_contract_value_currency:'FIL'});
+ const rows=normalizeOkxLiquidationEvents({data:[{instId:'FIL-USDT-SWAP',details:[{posSide:'short',side:'buy',bkPx:'5',sz:'13',ts:'1000'}]}]},'FIL-USDT-SWAP',{okx_asset_category:'1',okx_contract_value:0.1,okx_contract_multiplier:1,okx_contract_value_currency:'FIL'});
  assert.equal(rows.length,1);assert.equal(rows[0].liquidated_side,'SHORT');assert.equal(rows[0].quantity,1.3);assert.equal(rows[0].notional_usd,6.5);
 });
 
