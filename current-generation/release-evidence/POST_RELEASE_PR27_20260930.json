@@ -1,0 +1,108 @@
+{
+  "schema": "report2-pr27-quota-role-acceptance-v1",
+  "updated_at": "2026-09-30T12:03:00Z",
+  "runtime_release": "ca7f3be003ba33d3bf0249c98be5649fdd8a3533",
+  "main_after_acceptance": "707f6dd78df4a179935f855c41eeac241ca1ed6c",
+  "tested_head": "022ee822e906500bf9a54c11d9f0967f79c5cf53",
+  "worker_sha256": "85aeb64cc2898f7066b22f27abdccec0ead0cb3fa8165260b59f76c4629ad55f",
+  "scope": "VERIFIED_SUBSET_OF_SOPT_04_05_06_08_NOT_ALL_SOURCE_OPTIMIZATION",
+  "changes": [
+    "Preserve Coinalyze catalog failure instead of false unsupported-market classification",
+    "Persist provider-wide HTTP429 Retry-After across assets and catalog/history",
+    "Retain bounded Gate exact-market context fallback without multi-venue-baseline equivalence",
+    "Separate provider quota/access/internal/content/external failures in N17"
+  ],
+  "ci": {
+    "run": 36710994905,
+    "status": "PASS",
+    "early_cases": 20,
+    "integration_cases": 37,
+    "worker_parser_runtime": "PASS",
+    "exact_runtime_quota_cases": 11,
+    "quota_boundary_and_health_cases": 9,
+    "all_three_modified_module_hashes_match_runtime": true,
+    "live_phase": "INTENTIONALLY_SKIPPED_NO_FORCED_PROVIDER_429"
+  },
+  "regression": {
+    "baseline_blob": "8bda5baaa2d98647ea086537b2bf4519cbf119cd",
+    "before": {
+      "tests": 11,
+      "pass": 0,
+      "fail": 11
+    },
+    "after": {
+      "tests": 11,
+      "pass": 11,
+      "fail": 0
+    },
+    "controlled_fixtures_not_live_provider_balance": true
+  },
+  "full": {
+    "run": 36711267241,
+    "head": "adc4701e84e6f71ebaa4e6f17bf9b0161537a104",
+    "workflow_conclusion": "success",
+    "generated_at": "2026-09-30T11:54:13.364Z",
+    "status": "PARTIAL_DATA_UNAVAILABLE",
+    "reason": "DEEP_DATA_INSUFFICIENT",
+    "contract": "QNT-USDT",
+    "state": "REJECTED",
+    "direction": null,
+    "entry": null,
+    "targets": [],
+    "gaps": [
+      "futures_snapshot.htx_futures_order_flow",
+      "spot_snapshot.quality_status_GREEN",
+      "futures_trajectory.flow_24h"
+    ],
+    "history_samples": 72,
+    "history_expected": 72,
+    "telegram_started": false,
+    "trading_execution": false
+  },
+  "standalone": {
+    "run": 36711478771,
+    "head": "707f6dd78df4a179935f855c41eeac241ca1ed6c",
+    "workflow_conclusion": "success",
+    "generated_at": "2026-09-30T11:55:45.385Z",
+    "status": "CLOSED",
+    "contract": "SOL-USDT",
+    "foreign_levels_not_htx_targets": true,
+    "unknown_source_time_explicit": true,
+    "telegram_started": false,
+    "decision_generated": false,
+    "validated_signal": false
+  },
+  "artifacts": {
+    "ci": {
+      "id": 11093408600,
+      "sha256": "b7623f8ac421917541f1c6d9ff9c9056f25826f589c4c2fd7e1162d6dfe3dec9"
+    },
+    "full": {
+      "id": 11093369187,
+      "sha256": "fa3ef20917addca20a3d83b57774d718f19620b86780b8d6e72c2c3d186c9c4f"
+    },
+    "standalone": {
+      "id": 11094143222,
+      "sha256": "ac6e70e1d779f96bdc895d4ed46c8c026876b24272b6295edb718757ceed2ed5"
+    }
+  },
+  "telegram_test_sends": 0,
+  "trade_orders_requested_or_added": false,
+  "weights_changed": false,
+  "quotas_changed": false,
+  "schedule_changed": false,
+  "whole_tz_complete": false,
+  "t16_5_validated": false,
+  "volume_profile_predictive_enabled": false,
+  "progress_estimate": {
+    "approximate_percent": 60,
+    "method": "SUBJECTIVE_ENGINEERING_ESTIMATE_NOT_WEIGHTED_REQUIREMENT_COUNT",
+    "fully_accepted_requirement_ratio": null
+  },
+  "next_findings": {
+    "source_role_consumer": "Confirmed exact runtime assigns all provider capabilities to every receipt without per-metric usability filtering; metadata-only consumer, not a proven score/entry fault. Fix and test separately.",
+    "prospective": "Read-only audit36707975711 confirms oldest CASHCAT pending and unindexed expensive history paths. Queue/read-budget fix still open.",
+    "source_role_registry_count": 14,
+    "registry_presence_is_not_connection_proof": true
+  }
+}
