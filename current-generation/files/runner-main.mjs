@@ -37,6 +37,7 @@ import {buildPumpLiquidationZones} from './src/pump-liquidation-zones.mjs';
 import {displayLegacyLiquidations} from './src/canonical-display.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 import {chooseMappedLiquidationFallback} from './src/liquidation-source-plan.mjs';
+import {formatLiquidationHistoryFacts} from './src/gate-liquidation-history.mjs';
 import {collectCrossExchangeRiskContext} from './src/cross-exchange-risk-context.mjs';
 import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
 import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-calibration.mjs';
@@ -511,7 +512,7 @@ async function main() {
   });
   env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=async params=>{const risk=await collectCrossExchangeRiskContext({
     db:env.DATA_DB,fetch_impl:globalThis.fetch,coinalyze_api_key:envText('COINALYZE_API_KEY',{required:false}),...params,
-    lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false}),
+    lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false})||params.lane_override||'',
   });let volume;try{volume=await collectCrossVenueVolumeProfiles({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,contract:params.contract,run_id:params.run_id});}catch{volume={status:'NOT_CLOSED',reason:'PROFILE_COLLECTOR_UNAVAILABLE',sources:{},network_calls:null};}return {...risk,volume_profiles:volume,volume_profile_network_calls:volume.network_calls};};
   env.REPORT2_EVIDENCE_V2_COLLECT=async params=>{const result=await collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,source_health_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),...params});console.log('EVIDENCE_SOURCE_HEALTH_RECEIPT',JSON.stringify({contract:params.contract,run_id:params.run_id,source_health:result.source_health,shared_http_envelope:result.shared_http_envelope}));return result;};
   await installBykQuotaLedger(env.DATA_DB);
@@ -618,7 +619,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
         const observedTs=Date.now();
         liquidationContext=attachNativeContext({},acquisition,{contract,run_id:sourceRunId,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,observed_ts:observedTs,direction:null});
       }
-      try{crossExchangeRisk=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({contract,run_id:sourceRunId,reference_price:candidate.current_price,now:Date.now(),allowed_lanes:['REALIZED','HISTORY']});}
+      try{crossExchangeRisk=await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT({contract,run_id:sourceRunId,reference_price:candidate.current_price,now:Date.now(),allowed_lanes:['REALIZED','HISTORY'],lane_override:'HISTORY'});}
       catch(error){crossExchangeRisk={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
     }
     const contexts=nativeLiquidationSources(liquidationContext).contexts;
@@ -643,6 +644,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext):[];
     const lines=candidate?[
       ...displayLegacyLiquidations(liquidationMap),
+      ...formatLiquidationHistoryFacts(crossExchangeRisk),
       ...volumeProfileFacts(effectiveVolumeProfile,{contract:candidate.contract,now:Date.now(),reference_price:candidate.current_price}).slice(0,1).map(f=>`${f.label}: ${f.value} ${f.unit}.`),
       ...(volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?[`Профиль объёма: совпадение HTX + ${volumeConsensus.confirmations.map(p=>p.source).join(' + ')}.`]:volumeConsensus.status==='CONFLICT'?['Профили площадок расходятся: вклад объёма в итоговый балл нейтрализован.']:[]),
       ...(liquidationPanel.clusters||[]).filter(c=>c.volume_profile_confluence?.length).map(c=>`Зона ${c.center_price} USDT совпадает с ${c.volume_profile_confluence.map(x=>x.name).join(' / ')} профиля HTX; дополнительный приоритет проверки.`),

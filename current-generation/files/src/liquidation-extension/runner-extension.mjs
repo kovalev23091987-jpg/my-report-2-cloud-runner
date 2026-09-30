@@ -71,5 +71,6 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
   }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}finally{calls-=Math.max(0,admittedReserved-transport.length);}
  }
  function estimateHttpCost({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 2+accounts_per_deep;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?1+accounts_per_deep:0;}
- return {collect,estimateHttpCost,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
+ function nativeMarketCoverage({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok||!Array.isArray(catalog.payload?.[0]?.universe)||!text(native_symbol))return{status:'UNKNOWN'};return{status:catalog.payload[0].universe.some(row=>row?.name===native_symbol&&row?.isDelisted!==true)?'SUPPORTED':'UNSUPPORTED',native_symbol,catalog_verified:true};}
+ return {collect,estimateHttpCost,nativeMarketCoverage,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
 }

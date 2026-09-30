@@ -1,0 +1,55 @@
+name: Liquidation Source Data Acceptance
+on:
+  push:
+    branches: [repair/liquidation-source-data-20260930]
+    paths:
+      - current-generation/**
+      - audit-fixes/liquidation-source-data-20260930/**
+      - .github/workflows/liquidation-source-data-acceptance.yml
+permissions:
+  contents: read
+concurrency:
+  group: report2-liquidation-source-data-acceptance
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble production runtime with candidate source changes
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Validate source and assembled consumers
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/current-runtime-binding.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node --test --test-reporter=tap current-generation/tests/liquidation-history-coverage.test.mjs > audit-output/history-coverage.tap
+          REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test --test-reporter=tap current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-runtime.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Verify exact BTW history with bounded public requests and isolated SQLite
+        run: node audit-fixes/liquidation-source-data-20260930/live-acceptance.mjs runtime audit-output
+      - name: Explain failed validation
+        if: failure()
+        run: |
+          for file in audit-output/*.tap; do
+            if [ -f "$file" ]; then tail -60 "$file"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: liquidation-source-data-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

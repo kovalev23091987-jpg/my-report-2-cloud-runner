@@ -7,7 +7,7 @@ test('K23 internal scheduler skips do not penalize provider availability',()=>{
 });
 test('explicit provider quota failures are recorded without lowering source reliability',async()=>{
  const updates=[],roles=[];const ox=async()=>null;ox.summary=()=>({history:[{status:'HTTP_429'}]});
- const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,oxarchive_collect:ox,provider_admit:async()=>({allowed:true,new_reservation:true}),fetch_impl:async()=>new Response(JSON.stringify([[{name:'OTHER'}],[]])),source_weight_store:{load:async()=>[],record:async row=>{updates.push(row);return{recorded:true};},recordRole:async row=>{roles.push(row);return{recorded:true};}}});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,oxarchive_collect:ox,provider_admit:async()=>({allowed:true,new_reservation:true}),fetch_impl:async()=>new Response(JSON.stringify([{universe:[{name:'ABC'}]},[]])),source_weight_store:{load:async()=>[],record:async row=>{updates.push(row);return{recorded:true};},recordRole:async row=>{roles.push(row);return{recorded:true};}}});
  await service.collect({contract:'ABC-USDT',native_symbol:'ABC',run_id:'quota',deep_started_ts:Date.now(),max_deep_ms:45000});
  assert.equal(updates.some(row=>row.source_id==='OXARCHIVE_HL_BUCKETS'),false);
  assert.equal(roles.find(row=>row.source_id==='OXARCHIVE_HL_BUCKETS').status,'HTTP_429');
@@ -29,7 +29,7 @@ test('a failed selected source falls through to another eligible source without 
  const ox=async()=>null;ox.summary=()=>({enabled:true,history:[{status:'HTTP_ERROR',http_status:404}]});
  const admissions=[];
  const source_weight_store={load:async()=>[{source_id:'HYPERLIQUID_NATIVE',attempts:10,reliability:0},{source_id:'OXARCHIVE_HL_BUCKETS',attempts:10,reliability:1}],record:async row=>({recorded:true,...row})};
- const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:async request=>{admissions.push(request.reservation_id);return{allowed:true,new_reservation:true};},fetch_impl:async()=>new Response(JSON.stringify([[{name:'OTHER'}],[]]),{status:200,headers:{'content-type':'application/json'}}),secondary_enabled:false,oxarchive_collect:ox,source_weight_store,max_http_per_run:6});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:async request=>{admissions.push(request.reservation_id);return{allowed:true,new_reservation:true};},fetch_impl:async()=>new Response(JSON.stringify([{universe:[{name:'ABC'}]},[]]),{status:200,headers:{'content-type':'application/json'}}),secondary_enabled:false,oxarchive_collect:ox,source_weight_store,max_http_per_run:6});
  const result=await service.collect({contract:'ABC-USDT',native_symbol:'ABC',run_id:'r2',deep_started_ts:Date.now(),max_deep_ms:45000});
  assert.equal(result,null);assert.ok(admissions.some(id=>id.startsWith('LIQ_NATIVE_CATALOG:')));
  const routed=service.summary().routed;assert.deepEqual(routed.map(x=>x.lane),['HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS']);assert.equal(routed[1].status,'HTTP_ERROR');assert.equal(routed[1].fallback,true);
