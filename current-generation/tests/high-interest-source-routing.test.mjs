@@ -24,13 +24,13 @@ test('remaining candidate envelope skips costly lanes and still admits a fitting
  const ox=async()=>expected;ox.summary=()=>({enabled:true,credit_cost:1});
  const admissions=[];
  const sourceWeightStore={load:async()=>[{source_id:'HYPERLIQUID_NATIVE',attempts:10,reliability:1},{source_id:'OXARCHIVE_HL_BUCKETS',attempts:10,reliability:.5}],record:async row=>({recorded:true,...row})};
- const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:async request=>{admissions.push(request.reservation_id);return{allowed:true,new_reservation:true};},fetch_impl:async()=>{throw Error('high-cost source must be skipped');},secondary_enabled:false,oxarchive_collect:ox,source_weight_store:sourceWeightStore,max_http_per_run:5});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',provider_admit:async request=>{admissions.push(request.reservation_id);return{allowed:true,new_reservation:true};},fetch_impl:async()=>new Response(JSON.stringify([{universe:[{name:'HYPE'}]},[]]),{status:200}),secondary_enabled:false,oxarchive_collect:ox,source_weight_store:sourceWeightStore,max_http_per_run:5});
  const result=await service.collect({contract:'HYPE-USDT',native_symbol:'HYPE',run_id:'high-interest',deep_started_ts:Date.now(),max_deep_ms:45000,max_http_for_candidate:2});
  assert.equal(result,expected);
- assert.deepEqual(admissions,['LIQ_OXARCHIVE_HL_BUCKETS:high-interest:HYPE-USDT']);
+ assert.deepEqual(admissions,['LIQ_NATIVE_CATALOG:high-interest','LIQ_OXARCHIVE_HL_BUCKETS:high-interest:HYPE-USDT']);
  const routed=service.summary().routed;
  assert.equal(routed[0].lane,'HYPERLIQUID_NATIVE');
  assert.equal(routed[0].status,'SKIPPED_CANDIDATE_HTTP_ENVELOPE');
  assert.equal(routed.at(-1).lane,'OXARCHIVE_HL_BUCKETS');
- assert.equal(service.summary().shared_budget.gross_reserved_http,1);
+ assert.equal(service.summary().shared_budget.gross_reserved_http,2);
 });
