@@ -41,3 +41,8 @@ acceptance must be recorded separately before claiming production completion.
 No strategy weights, provider quotas, worker, trading thresholds or report layout
 changes. This closes a technical collection defect, not T16.5 statistical proof,
 not optimal provider weighting, and not all SOPT-ALL requirements.
+
+Owner execution policy (30 September 2026, 15:41 MSK): work in cohesive blocks,
+then run the integrated tests. Do not repeatedly survey unchanged providers or
+test after each small edit. A reproduced integration defect or release acceptance
+is a valid new reason to verify; repetition alone is not project progress.
