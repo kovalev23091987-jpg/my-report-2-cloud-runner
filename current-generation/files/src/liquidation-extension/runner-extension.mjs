@@ -42,10 +42,10 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
     admittedReserved+=1;catalogReserved=1;catalog=await request('https://api.hyperliquid.xyz/info',{type:'metaAndAssetCtxs'});
     if(catalog.ok)catalogByRun.set(run_id,catalog);
    }
-   if(!catalog.ok||!Array.isArray(catalog.payload?.[0]?.universe)){records.push({status:'NATIVE_CATALOG_NOT_CLOSED',contract});return null;}
+   if(!catalog.ok||!Array.isArray(catalog.payload?.[0]?.universe)){records.push({status:'NATIVE_CATALOG_NOT_CLOSED',contract,actual_requests:transport.length});return null;}
    const route=resolveHtxLiquidationSources({contract,hyperliquid_catalog:catalog.payload});
    if(route.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
-   if(!route.native_routes.some(x=>x.provider==='HYPERLIQUID_LIQFLOW')){records.push({status:'UNSUPPORTED_NATIVE_SYMBOL',contract,native_symbol,catalog_checked:true,htx_factual_still_eligible:true});return null;}
+   if(!route.native_routes.some(x=>x.provider==='HYPERLIQUID_LIQFLOW')){records.push({status:'UNSUPPORTED_NATIVE_SYMBOL',contract,native_symbol,catalog_checked:true,actual_requests:transport.length,htx_factual_still_eligible:true});return null;}
    const marketContext=extractHyperliquidMarketContext({payload:catalog.payload,receipt:catalog.receipt,native_symbol,observed_ts:clock()});
    const sampleRequests=1+accounts_per_deep;
    if(calls+sampleRequests>max_http_per_run){records.push({status:'SKIPPED_RUN_HTTP_BUDGET',contract,phase:'SAMPLE'});return null;}

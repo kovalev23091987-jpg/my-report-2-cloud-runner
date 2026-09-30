@@ -36,7 +36,8 @@ export async function collectGateLiquidationHistory({db,fetch_impl=globalThis.fe
  return {...(raw.ok?normalizeGateLiquidationStatistics(raw.payload,{contract,now:observed}):{source,status:'EXTERNAL_FAILURE',reason:`HTTP_${raw.status??'UNKNOWN'}`}),exact_identity:identity.symbol===symbol,native_symbol:symbol,identity,network_calls,receipts,admission:grant,per_minute_operational_cap:6,free_keyless:true};
 }
 export function formatLiquidationHistoryFacts(risk={}){
- const lines=[],gate=risk.sources?.GATE_LIQUIDATION_HISTORY,coinalyze=risk.sources?.COINALYZE;
+ const lines=[],htx=risk.sources?.HTX_REALIZED_LIQUIDATIONS,gate=risk.sources?.GATE_LIQUIDATION_HISTORY,coinalyze=risk.sources?.COINALYZE;
+ if(htx?.status==='CLOSED'){const amount=v=>Number(v).toLocaleString('ru-RU',{maximumFractionDigits:2});lines.push(`HTX ${htx.contract}: ${htx.observed_event_count} фактических ликвидаций в публичной выборке за запрошенные 120 минут; Long ${amount(htx.long_liquidated_observed_usd)} / Short ${amount(htx.short_liquidated_observed_usd)} USDT.`);if(htx.events?.length)lines.push(`HTX: цены последних ликвидаций ${htx.events.slice(0,3).map(e=>`${e.price} (${e.liquidated_side})`).join(', ')} USDT; события уже произошли.`);}
  if(gate?.status==='CLOSED'&&gate.exact_identity){const h=gate.history,p=gate.positioning,amount=v=>Number(v).toLocaleString('ru-RU',{maximumFractionDigits:2});
   if(h?.complete_window)lines.push(`Gate ${gate.native_symbol}: за 120 закрытых минут ликвидации Long ${amount(h.long_liquidated_observed_usd)} / Short ${amount(h.short_liquidated_observed_usd)} USDT; 24/24 интервала, только эта площадка.`);
   else if(h?.observed_buckets)lines.push(`Gate ${gate.native_symbol}: получено ${h.observed_buckets}/24 закрытых интервала; наблюдаемые ликвидации Long ${amount(h.long_liquidated_observed_usd)} / Short ${amount(h.short_liquidated_observed_usd)} USDT, история неполная.`);
