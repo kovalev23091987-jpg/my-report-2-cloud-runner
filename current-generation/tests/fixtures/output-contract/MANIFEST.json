@@ -3,9 +3,9 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "d372ec3c309f83449418ad9558b0e0f716f16ef5d288ddeff7bccc6ae3100fec",
+    "current-generation/files/src/manual-report-formatter.mjs": "9478a177e137160d9df273571d27308e9e478de696df75cbc3edd6ae3b01f65b",
     "current-generation/files/src/telegram-compact-formatter.mjs": "ca30d45b004dd0c517bbf90c6c837a7cbda295535bbe8ce90a9c2863740a8a92",
-    "current-generation/files/src/canonical-display.mjs": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
+    "current-generation/files/src/canonical-display.mjs": "e1d832f807e61559d044c2187b308fca3779373ff6e95cb25856dce24a42eb63",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997"
   },
@@ -47,6 +47,25 @@
       "golden_fixtures_changed": false,
       "telegram_format_changed": false,
       "authorization": "Explicit owner instruction: не забудь что в основном отчете тоже эти изменения должны происходить так же как и в нашем отдельном блоке"
+    },
+    {
+      "date": "2026-10-01",
+      "requirement": "Future liquidation levels take priority for every coin in both reports; history cannot become a future cluster",
+      "authorization": "Explicit owner: это не только для этой монеты; ты это закрепи; в основном отчете ... сначала на будущие ликвидации потом на те что уже случились",
+      "changes": [
+        {
+          "file": "current-generation/files/src/canonical-display.mjs",
+          "previous_sha256": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
+          "new_sha256": "e1d832f807e61559d044c2187b308fca3779373ff6e95cb25856dce24a42eb63"
+        },
+        {
+          "file": "current-generation/files/src/manual-report-formatter.mjs",
+          "previous_sha256": "d372ec3c309f83449418ad9558b0e0f716f16ef5d288ddeff7bccc6ae3100fec",
+          "new_sha256": "9478a177e137160d9df273571d27308e9e478de696df75cbc3edd6ae3b01f65b"
+        }
+      ],
+      "golden_fixtures_changed": false,
+      "telegram_format_changed": false
     }
   ]
 }

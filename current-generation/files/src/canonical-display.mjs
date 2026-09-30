@@ -45,13 +45,14 @@ export function displayMarketFacts(c){
 export function displayLegacyLiquidations(liq){
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
-  const parts=(Array.isArray(rows)?rows:[]).slice(0,4).map(z=>{
+  const parts=(Array.isArray(rows)?rows:[]).filter(z=>liq?.future_levels_required!==true||z?.kind==='PROJECTED').slice(0,4).map(z=>{
    const price=displayNumber(z?.price??z?.level_price);if(price===null)return null;
    const d=z?.distance_pct,strength=text(z?.strength_label_ru)||'сила не определена';
-   const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; точная сумма ${displayNumber(z.exact_notional_usdt)} USDT`:'';
-   const kind=z?.kind==='CALCULATED'?'; расчётная вероятная зона':'';
-   return `${price} USDT${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''} — ${strength}${amount}${kind}`;
-  }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
+   const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; ${liq?.future_levels_required===true?'объём источника':'точная сумма'} ${displayNumber(z.exact_notional_usdt)} USDT`:'';
+   const kind=z?.kind==='CALCULATED'?'; расчётная вероятная зона':z?.raw?.price_semantics==='PROVIDER_MODEL_PRICE_BIN'?'; модельная оценка источника':'';
+   const source=liq?.future_levels_required===true&&text(z?.source)?`; источник ${text(z.source)}`:'';
+   return `${price} USDT${typeof d==='number'&&Number.isFinite(d)?` (${d>0?'+':''}${displayNumber(Number(d.toFixed(1)))}%)`:''} — ${strength}${amount}${kind}${source}`;
+  }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);else if(liq?.future_levels_required===true)lines.push(`${label}: уровни будущих ликвидаций не получены.`);
  }
  return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
 }
