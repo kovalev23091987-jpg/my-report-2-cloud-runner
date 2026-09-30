@@ -36,6 +36,7 @@ jobs:
       - name: Validate source and assembled consumers
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/current-runtime-binding.json
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/production-freeze.tap
           node current-generation/validate.mjs > audit-output/validation.json
           node --test --test-reporter=tap current-generation/tests/liquidation-history-coverage.test.mjs current-generation/tests/liquidation-complete-chain.test.mjs > audit-output/history-coverage.tap
           REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test --test-reporter=tap current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-runtime.tap
