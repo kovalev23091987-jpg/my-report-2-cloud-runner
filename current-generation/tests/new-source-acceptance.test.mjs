@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';import {Dat
 import {normalizeSolana,normalizeDefiLlama,normalizeCoinbase} from '../files/src/supplemental-candidate-context.mjs';
 import {collectChainSupplyEvidence} from '../files/src/chain-supply-evidence.mjs';
 import {decodeFinalizedChainEvent,collectFinalizedChainEvents,TRANSFER_TOPIC,AAVE_TOPIC,AAVE_POOL} from '../files/src/finalized-chain-events.mjs';
-import {rotateEvidenceRoleRoutes} from '../files/src/candidate-evidence-v2-runtime.mjs';
+import {rotateEvidenceRoleRoutes,EVIDENCE_ROUTE_PRIORITY,collectEvidenceRouteBlock} from '../files/src/candidate-evidence-v2-runtime.mjs';
 import {loadVenueCatalog} from '../files/src/cross-exchange-risk-context.mjs';
 import {collectSupplementalCandidateContext} from '../files/src/supplemental-candidate-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
@@ -16,6 +16,21 @@ test('finalized event caches preserve exact HTX market across shared token alias
  assert.equal(a.evidence[0].htx_contract,'ABC-USDT');assert.equal(b.evidence[0].htx_contract,'OTHER-USDT');assert.equal(again.evidence[0].htx_contract,'ABC-USDT');assert.equal(again.network_calls,0);assert.equal(calls,6);database.sqlite.close();
 });
 test('all eligible roles reach first place over distinct report rotations',()=>{const routes=['CHAIN','OFFICIAL','SNAPSHOT','SOURCIFY','DERIBIT'].map(name=>({name})),seen=new Set();for(let i=0;i<100;i++){const rotated=rotateEvidenceRoleRoutes(routes,'REPORT:'+i);assert.deepEqual(new Set(rotated.map(r=>r.name)),new Set(routes.map(r=>r.name)));seen.add(rotated[0].name);}assert.equal(seen.size,5);});
+test('useful primary roles get more scheduling opportunities without removing complementary routes',()=>{
+ const routes=Object.keys(EVIDENCE_ROUTE_PRIORITY).map(name=>({name})),counts={};
+ for(let i=0;i<4096;i++){const ordered=rotateEvidenceRoleRoutes(routes,`UTILITY:${i}`);assert.equal(ordered.length,routes.length);assert.equal(new Set(ordered.map(r=>r.name)).size,routes.length);counts[ordered[0].name]=(counts[ordered[0].name]||0)+1;}
+ assert.ok(counts.LARGE_TRADES>counts.DERIBIT*2);assert.ok(counts.OFFICIAL>counts.GDELT*2);assert.ok(counts.CHAIN>counts.SOURCIFY*1.5);
+ assert.deepEqual(rotateEvidenceRoleRoutes([], 'EMPTY'),[]);assert.deepEqual(rotateEvidenceRoleRoutes([{name:'CHAIN'}],'ONLY'),[{name:'CHAIN'}]);
+});
+test('quota-exhausted primary does not block the next route or cached complements',async()=>{
+ const called=[];let http=0;
+ const result=await collectEvidenceRouteBlock({routes:[{name:'PRIMARY'},{name:'RESERVE'},{name:'CACHE'}],max_requests:1,params:{request_admit:()=>({allowed:true}),fetch_impl:async()=>{http++;return new Response('{}');}},collectors:{
+  PRIMARY:async p=>{called.push('PRIMARY');p.request_admit({attempts:1});return{status:'PROVIDER_QUOTA_EXHAUSTED',admission:{allowed:false},evidence:[]};},
+  RESERVE:async p=>{called.push('RESERVE');assert.equal(p.request_admit({attempts:1}).allowed,true);await p.fetch_impl('https://synthetic.invalid');return{status:'CLOSED',evidence:[]};},
+  CACHE:async()=>{called.push('CACHE');return{status:'CLOSED',cache_status:'HIT',evidence:[]};},
+ }});
+ assert.deepEqual(called,['PRIMARY','RESERVE','CACHE']);assert.equal(http,1);assert.equal(result.network_calls,1);assert.equal(result.reserved_requests,1);
+});
 test('Solana excludes failed and future signatures and cannot compare a saturated short sample',()=>{const out=normalizeSolana({result:[...Array(98).fill({err:null,blockTime:NOW/1000-10}),{err:{InstructionError:1},blockTime:NOW/1000-20},{err:null,blockTime:NOW/1000+1}]},{contract_or_mint:mint},NOW);assert.equal(out.recent_signature_count_1h,98);assert.equal(out.source_ts,NOW-10000);assert.equal(out.comparable_windows,false);assert.equal(out.coverage_fraction,0);});
 test('TVL requires exact token, actual source freshness and a relative seven day baseline',()=>{const payload={address:asset,symbol:'ABC',tvl:[{date:NOW/1000-7*86400,totalLiquidityUSD:100},{date:NOW/1000,totalLiquidityUSD:120}]};const run=p=>normalizeDefiLlama(p,'abc',NOW,{identity,expected_symbol:'ABC'});assert.equal(run(payload).status,'CLOSED');assert.ok(Math.abs(run(payload).tvl_change_7d_pct-20)<1e-10);assert.equal(run({...payload,address:word(2)}).tvl_change_7d_pct,null);assert.equal(run({...payload,tvl:payload.tvl.map(x=>({...x,date:x.date-3*86400}))}).status,'NOT_CLOSED');assert.equal(run({...payload,tvl:[payload.tvl[1]]}).tvl_change_7d_pct,null);});
 test('Coinbase self-consistent wrong market cannot satisfy the requested identity',()=>{const product={id:'XYZ-USD',base_currency:'XYZ',quote_currency:'USD'};assert.equal(normalizeCoinbase(product,{price:1},NOW,1,'ABC-USD').status,'NOT_CLOSED');assert.equal(normalizeCoinbase(product,{price:1},NOW,1,'XYZ-USD').status,'CLOSED');});

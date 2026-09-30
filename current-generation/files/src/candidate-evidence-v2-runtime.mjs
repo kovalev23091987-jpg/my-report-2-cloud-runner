@@ -14,12 +14,28 @@ import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v13-quota-health-20260930';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v14-role-priority-20260930';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 // Only name producers that actually emit a row for this block in this collector.
 // Existing technical/market blocks are owned outside this supplementary lane.
-export function rotateEvidenceRoleRoutes(routes,key){if(!routes.length)return [];const at=rotation(key,routes.length);return [...routes.slice(at),...routes.slice(0,at)];}
+// Scheduling tickets express the current operational assignment, not measured
+// trading accuracy or a share of provider quota. Eligibility, caches and every
+// existing durable quota remain inside their original collectors.
+export const EVIDENCE_ROUTE_PRIORITY=Object.freeze({
+ LARGE_TRADES:4,OFFICIAL:4,CHAIN:3,
+ BLOCKSCOUT:2,SNAPSHOT:2,SECTOR:2,
+ DERIBIT:1,SOURCIFY:1,BLUESKY:1,GDELT:1,
+});
+export function rotateEvidenceRoleRoutes(routes,key){
+ if(!routes.length)return [];
+ const eligible=routes.map((route,index)=>({route,index,tickets:EVIDENCE_ROUTE_PRIORITY[route.name]??1}));
+ const tickets=eligible.flatMap(row=>Array(row.tickets).fill(row.index));
+ const first=tickets[rotation(key,tickets.length)];
+ // Each eligible route remains present exactly once: a cached fact costs no
+// additional HTTP, and a quota/backoff skip must not suppress the next route.
+ return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
+}
 const BLOCK_SOURCE={N02:['CHAIN_RPC'],N03:['CHAIN_RPC'],N04:['CHAIN_RPC','BLOCKSCOUT_INDEX'],N06:['BLUESKY_PUBLIC'],N07:['OFFICIAL_EVENTS'],N08:['HTX_PUBLIC_RISK'],N09:['HTX_PUBLIC_RISK'],N13:['MACRO_CALENDAR','SNAPSHOT_GOVERNANCE'],N14:['DERIBIT_ALT_OPTIONS'],N12:['HTX_LARGE_TRADES'],N15:['COINPAPRIKA_SECTOR'],N17:['SOURCIFY_ABI']};
 
 export function classifyEvidenceSourceHealth(result={},valid_rows=0){
@@ -119,7 +135,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:5,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'USE_ALL_VALID_CACHES_AND_COMPLEMENTARY_ROLES_WITHIN_FIVE_REQUESTS',block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()}),
+  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:5,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()}),
   internal_only:true,
  };
 }
