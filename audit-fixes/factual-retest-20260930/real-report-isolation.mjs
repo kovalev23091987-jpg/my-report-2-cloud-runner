@@ -58,11 +58,24 @@ process.on('beforeExit',async()=>{
  const rows=local.prepare('SELECT * FROM canonical_publication_shadow ORDER BY observed_ts').all();
  const pub=await mod('src/canonical-publication.mjs'),sender=await mod('src/bound-telegram-delivery-sidecar.mjs');
  const assessments=rows.map(row=>({publication_id:row.publication_id,contract:row.contract_code,...pub.assessActionability({canonical:JSON.parse(row.canonical_json),lifecycle_event:row.canonical_state==='OBSERVE'?'OBSERVE':row.canonical_state==='WAIT_FOR_TRIGGER'?'WAIT':'ENTRY'})}));
- const captured=[];
+ const captured=[];let dispatchSeeded=0;
+ // A manual report intentionally has no scheduled Telegram event. For this
+ // acceptance check only, derive a local PENDING event from its actual
+ // actionable canonical wave. No source/score/plan or production queue changes.
+ for(const assessment of assessments.filter(x=>x.deliver)){
+  const row=rows.find(x=>x.publication_id===assessment.publication_id),c=JSON.parse(row.canonical_json);
+  const wave=row.wave_id||c.early_candidate?.items?.[0]?.wave_id;
+  assert.ok(wave,'actual canonical analytical wave required');
+  const existing=local.prepare("SELECT 1 FROM v3_telegram_dispatch_shadow WHERE contract=? AND direction=? AND wave_id=? AND lifecycle_event='OBSERVE' LIMIT 1").get(row.contract_code,c.direction,wave);
+  if(existing)continue;
+  local.prepare(`INSERT INTO v3_user_lifecycle_shadow(contract,direction,wave_id,rules_version,status,reason,observation_ts,valid_until_ts,updated_ts,shadow_only) VALUES(?,?,?,?,?,?,?,?,?,1) ON CONFLICT(contract,direction,wave_id,rules_version) DO NOTHING`).run(row.contract_code,c.direction,wave,'v3','OBSERVE','ISOLATED_ACTUAL_CANONICAL_TRANSPORT_CHECK',c.observed_ts,c.trigger.expires_ts,Date.now());
+  local.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,created_ts,updated_ts,shadow_only) VALUES(?,?,?,?,?,?,?,'PENDING',?,?,1)`).run(`ACCEPTANCE:${row.publication_id}`,`ACCEPTANCE:${row.publication_id}`,row.contract_code,c.direction,wave,'OBSERVE','v3',Date.now(),Date.now());
+  dispatchSeeded++;
+ }
  if(!process.exitCode&&assessments.some(x=>x.deliver))await sender.runBoundTelegramDeliverySidecar(remote,{enabled:true,relay_url:'https://transport-capture.invalid/no-network',relay_key:'ISOLATED_CAPTURE_ONLY',source_run_id:rows.at(-1)?.run_id,now_ts:Date.now(),fetch_impl:async(url,options)=>{captured.push(JSON.parse(options.body));return new Response(JSON.stringify({ok:false,error:'ISOLATED_DRY_RUN_NO_TELEGRAM'}),{status:503,headers:{'content-type':'application/json'}});}});
  const comparisons=globalThis.__report2AcceptanceComparisons;
  const passed=!process.exitCode&&rows.length>0&&comparisons.length>0&&comparisons.every(x=>x.strategy_unchanged)&&captured.length>0&&telegramNetworkCalls===0;
- const receipt={schema:'real-cloud-report-source-binding-acceptance-v1',status:passed?'PASS':process.exitCode?'REAL_REPORT_FAILED':'NO_CURRENT_PAYLOAD_PROVEN',head:process.env.GITHUB_SHA,worker_sha256:process.env.REPORT2_EXPECTED_WORKER_SHA,command_id,canonical_count:rows.length,comparisons,assessments,captured,telegram_network_calls:telegramNetworkCalls,telegram_sent:0,fabricated_ack:false,isolated_publication_rows:true,isolated_command:true,isolated_reads:isolatedReads,isolated_writes:isolatedWrites,production_replaced:false};
+ const receipt={schema:'real-cloud-report-source-binding-acceptance-v1',status:passed?'PASS':process.exitCode?'REAL_REPORT_FAILED':'NO_CURRENT_PAYLOAD_PROVEN',head:process.env.GITHUB_SHA,worker_sha256:process.env.REPORT2_EXPECTED_WORKER_SHA,command_id,canonical_count:rows.length,comparisons,assessments,captured,telegram_network_calls:telegramNetworkCalls,telegram_sent:0,fabricated_ack:false,isolated_publication_rows:true,isolated_command:true,dispatch_seeded_for_transport_check:dispatchSeeded,automatic_scheduled_enqueue_proven:false,isolated_reads:isolatedReads,isolated_writes:isolatedWrites,production_replaced:false};
  fs.writeFileSync(path.join(output,'real-report-source-binding.json'),JSON.stringify(receipt,null,2));
  console.log('REAL_REPORT_SOURCE_BINDING_ACCEPTANCE',JSON.stringify(receipt));
  if(!passed)process.exitCode=process.exitCode||2;
