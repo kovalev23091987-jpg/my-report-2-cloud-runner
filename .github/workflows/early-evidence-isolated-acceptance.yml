@@ -91,7 +91,6 @@ jobs:
       DELIVERY_ENABLED: "0"
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "59a68f1ce95554f0bd14d7f5561c5664bda35f92fe27862f514268ee6abc527d"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.REPORT2_ISOLATED_D1_API_TOKEN }}
@@ -103,8 +102,9 @@ jobs:
       REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
       LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
       COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+      VYX_API_KEY: ${{ secrets.VYX_API_KEY }}
       BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
-      REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"
       REPORT2_ANALYTICS_ACTOR: "GITHUB_ACTIONS"
@@ -129,10 +129,13 @@ jobs:
           git fetch --quiet origin main
           git merge-base --is-ancestor origin/main HEAD
           echo "REPORT2_CANDIDATE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          echo "REPORT2_CANDIDATE_BASE_SHA=$(git rev-parse origin/main)" >> "$GITHUB_ENV"
       - name: Node 24
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Bind current generation and worker from the authoritative workflow
+        run: node runner/current-runtime-binding.mjs --github-env
       - name: Build exact candidate runtime
         shell: bash
         run: |
@@ -145,8 +148,7 @@ jobs:
           tar -xzf runtime/payload.tar.gz -C runtime
           rm -f runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
-          ACTUAL="$(sha256sum runtime/src/worker.js | awk '{print $1}')"
-          test "$ACTUAL" = "$REPORT2_EXPECTED_WORKER_SHA"
+          node runner/current-runtime-binding.mjs --runtime runtime
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
       - name: Run complete offline repair gate
         shell: bash

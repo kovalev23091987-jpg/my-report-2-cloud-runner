@@ -14,6 +14,7 @@ const run=(args,{cwd=repo}={})=>{
  return result.stdout.trim();
 };
 const checks=[
+ '../runner/current-runtime-binding.mjs',
  'runtime-policy-patches.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
