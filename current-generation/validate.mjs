@@ -23,7 +23,7 @@ const checks=[
  '../audit-fixes/t16/run-gmx-native-smoke.mjs',
  '../audit-fixes/t16/run-gtrade-native-smoke.mjs',
  '../audit-fixes/t16/run-blockscout-index-smoke.mjs',
- 'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs',
+ 'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs','files/src/htx-volume-profile.mjs','files/src/cross-venue-volume-profile.mjs','files/src/htx-volume-profile-collector.mjs',
  'files/src/official-source-registry.mjs',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/manual-run-summary.mjs',

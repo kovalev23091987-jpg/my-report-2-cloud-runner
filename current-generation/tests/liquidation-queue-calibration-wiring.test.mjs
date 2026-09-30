@@ -35,7 +35,7 @@ test('the same canonical full-report path feeds supplemental liquidation evidenc
  const adapter=fs.readFileSync(new URL('../files/src/canonical-runtime-adapter.mjs',import.meta.url),'utf8');
  assert.match(worker,/internal_market_context:internalMarketContext/);
  assert.match(worker,/SUPPLEMENTAL_SCORE_RECEIPT/);
- assert.match(adapter,/buildSupplementalScoreEvidence\(\{direction,internal_market_context,liquidation_panel:liquidationPanel\}\)/);
+ assert.match(adapter,/buildSupplementalScoreEvidence\(\{direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile/);
  assert.match(adapter,/const telegram=formatTelegramCompact\(canonical/);
  assert.match(adapter,/const manual=formatManualReport\(canonical\)/);
 });
