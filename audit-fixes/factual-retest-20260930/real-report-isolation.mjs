@@ -56,6 +56,9 @@ let finishing=false;
 process.on('beforeExit',async()=>{
  if(finishing)return;finishing=true;
  const rows=local.prepare('SELECT * FROM canonical_publication_shadow ORDER BY observed_ts').all();
+ // Preserve the genuine runtime rows even when the market is not actionable.
+ // Their original times and canonical bytes are retained for exact audit.
+ fs.writeFileSync(path.join(output,'real-canonical-snapshots.json'),JSON.stringify({schema:'actual-candidate-canonical-readback-v1',head:process.env.GITHUB_SHA,worker_sha256:process.env.REPORT2_EXPECTED_WORKER_SHA,isolated_publication_rows:true,rows},null,2));
  const pub=await mod('src/canonical-publication.mjs'),sender=await mod('src/bound-telegram-delivery-sidecar.mjs');
  const assessments=rows.map(row=>({publication_id:row.publication_id,contract:row.contract_code,...pub.assessActionability({canonical:JSON.parse(row.canonical_json),lifecycle_event:row.canonical_state==='OBSERVE'?'OBSERVE':row.canonical_state==='WAIT_FOR_TRIGGER'?'WAIT':'ENTRY'})}));
  const captured=[];let dispatchSeeded=0;
