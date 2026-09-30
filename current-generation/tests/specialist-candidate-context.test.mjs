@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {collectSpecialistContext,normalizeVyx,normalizeNansen} from '../files/src/specialist-candidate-context.mjs';
+import {collectSpecialistContext,normalizeVyx,normalizeNansen,consumeSpecialistContext} from '../files/src/specialist-candidate-context.mjs';
 import {collectSupplementalCandidateContext} from '../files/src/supplemental-candidate-context.mjs';
 const now=Date.parse('2026-09-30T14:12:00Z');
 const vyx={symbol_name:'SOL',symbol_id:123,candles:[{timestamp:'2026-09-30T14:11:00Z',interval:'1m',close:120,ofi:3,microprice:120.01,imb_cum_l10:-12}]};
@@ -19,6 +19,17 @@ class DB{
 }
 const ok=p=>({ok:true,status:200,json:async()=>p,headers:new Headers()});
 const params=()=>({db:new DB(),fetch_impl:async url=>ok(url.includes('vyx')?vyx:nansen),base:'SOL',now,primary_price:120,remaining:2,vyx_api_key:'secret-v',nansen_api_key:'secret-n'});
+test('publication consumer assigns fields to their blocks and rechecks cache freshness and price',()=>{
+ const sources={VYX:normalizeVyx(vyx,{base:'SOL',now,primary_price:120}),NANSEN:normalizeNansen(nansen,{base:'SOL',now})};
+ const input={sources,contract:'SOL-USDT',now,primary_price:120};
+ const r=consumeSpecialistContext(input);
+ assert.equal(r.blocks.order_flow.decision_block,'MARKET_STRENGTH_SPOT');assert.equal(r.blocks.cohort_positions.decision_block,'SMART_MONEY_ONCHAIN');assert.equal(r.blocks.cohort_positions.not_exchange_netflows,true);
+ assert.equal(r.facts.length,2);assert.ok(r.facts.every(x=>x.directional_vote===false&&x.score_contribution===0));assert.match(r.blocks.cohort_positions.facts[0].label,/время состояния неизвестно/);
+ assert.equal(consumeSpecialistContext({...input,now:now+200000}).blocks.order_flow.status,'NOT_CLOSED');
+ assert.equal(consumeSpecialistContext({...input,primary_price:80}).blocks.order_flow.status,'NOT_CLOSED');
+ assert.equal(consumeSpecialistContext({...input,contract:'OTHER-USDT'}).facts.length,0);
+ assert.equal(consumeSpecialistContext({...input,now:now+21600001}).facts.length,0);
+});
 test('closed minute, exact symbol and price checks; null is not zero',()=>{
  assert.equal(normalizeVyx(vyx,{base:'SOL',now,primary_price:120}).status,'CLOSED');
  for(const ctx of [{base:'OTHER',now,primary_price:120},{base:'SOL',now:now-30000,primary_price:120},{base:'SOL',now:now+200000,primary_price:120},{base:'SOL',now,primary_price:80}])assert.equal(normalizeVyx(vyx,ctx).status,'NOT_CLOSED');

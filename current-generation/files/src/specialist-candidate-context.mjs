@@ -1,5 +1,34 @@
 // Read-only additions. These receipts never authorize an HTX trade or alter score.
 export const SPECIALIST_CONTEXT_VERSION='specialist-context-v1-20260930';
+// Consumers recheck time and market binding at publication, not merely at fetch.
+export function consumeSpecialistContext({sources={},contract,now,primary_price}={}){
+ const base=String(contract||'').replace(/-USDT$/,''),facts=[],blocks={};
+ const common={advisory_only:true,directional_vote:false,hard_gate:false,score_contribution:0};
+ const v=sources.VYX,n=sources.NANSEN,ref=num(primary_price);
+ const validVyx=v?.version===SPECIALIST_CONTEXT_VERSION&&v.status==='CLOSED'&&v.venue==='HYPERLIQUID'&&v.symbol===base&&num(now)!==null&&num(v.source_ts)!==null&&v.source_ts+60000<=now&&now-v.source_ts<=180000&&num(v.observed_ts)!==null&&v.source_ts<=v.observed_ts&&v.observed_ts<=now&&v.valid_until_ts>=now&&ref>0&&num(v.price)>0&&Math.abs(v.price/ref-1)<=0.03;
+ if(validVyx){
+  const local=[];
+  if(num(v.microprice)>0)local.push({...common,source:'VYX',decision_block:'MARKET_STRENGTH_SPOT',field:'HL_MICROPRICE',label:'Расчётная цена по заявкам Hyperliquid, не цена входа HTX',value:v.microprice,unit:'USD',source_ts:v.source_ts});
+  if(num(v.depth_imbalance_10_levels_pct)!==null&&Math.abs(v.depth_imbalance_10_levels_pct)<=100)local.push({...common,source:'VYX',decision_block:'MARKET_STRENGTH_SPOT',field:'HL_DEPTH_10_LEVELS',label:'Перевес заявок Hyperliquid на десяти уровнях',value:v.depth_imbalance_10_levels_pct,unit:'%',source_ts:v.source_ts});
+  blocks.order_flow={status:local.length?'CLOSED':'NOT_CLOSED',decision_block:'MARKET_STRENGTH_SPOT',facts:local,ofi_raw:num(v.ofi_raw),ofi_unit:v.ofi_unit,source_ts:v.source_ts,not_htx_execution:true,...common};facts.push(...local);
+ }else if(v)blocks.order_flow={status:'NOT_CLOSED',reason:'SPECIALIST_TIME_OR_MARKET_NOT_VERIFIED',...common};
+ const validNansen=n?.version===SPECIALIST_CONTEXT_VERSION&&n.status==='CONTEXT_UNTIMED'&&n.source_ts===null&&n.venue==='HYPERLIQUID'&&n.symbol===base&&n.request_bound_symbol===true&&num(n.observed_ts)!==null&&num(now)!==null&&n.observed_ts<=now&&now-n.observed_ts<=21600000;
+ if(validNansen){
+  const retained={},parts=[],labels={smart_trader:'успешные трейдеры',whale:'крупные держатели',public_figure:'публичные лица'};
+  for(const [name,label] of Object.entries(labels)){
+   const c=n.cohorts?.[name],l=num(c?.long_usd),s=num(c?.short_usd),t=num(c?.total_usd);
+   if(l===null||s===null||t===null||Math.min(l,s,t)<0||Math.abs(l+s-t)>Math.max(.01,t*1e-6))continue;
+   retained[name]={long_usd:l,short_usd:s,total_usd:t};parts.push(`${label}: длинные ${Math.round(l)}, короткие ${Math.round(s)} USD`);
+  }
+  if(parts.length){
+   const f={...common,source:'NANSEN',decision_block:'SMART_MONEY_ONCHAIN',field:'HL_COHORT_POSITIONS_UNTIMED',label:'Позиции групп Hyperliquid; время состояния неизвестно, не сигнал входа',value:parts.join('; '),unit:null,source_ts:null,observed_ts:n.observed_ts,context_only:true,freshness_unverified:true};
+   // The approved visible section promises confirmed context. Untimed data
+   // remains in its assigned block and never enters that visible fact list.
+   blocks.cohort_positions={status:'CONTEXT_UNTIMED',decision_block:'SMART_MONEY_ONCHAIN',cohorts:retained,facts:[f],cohorts_summed:false,not_exchange_netflows:true,...common};
+  }
+ }else if(n)blocks.cohort_positions={status:'NOT_CLOSED',reason:'COHORT_REQUEST_BINDING_OR_RETENTION_INVALID',...common};
+ return {status:facts.length?'CONTEXT_AVAILABLE':'NOT_CLOSED',blocks,facts,no_new_hard_gate:true,no_directional_vote:true,score_contribution:0};
+}
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const spec={VYX:{cap:144,ttl:120000},NANSEN:{cap:5,ttl:21600000}};
 export function normalizeVyx(p,{base,now,primary_price}){

@@ -1,3 +1,11 @@
+## 2026-09-30: finish field consumers without new statistical accumulation
+
+VYX microprice and ten-level imbalance now reach MARKET_STRENGTH_SPOT context and the existing report context section after publication-time symbol, price and source-time checks. Raw OFI remains in order_flow with provider-native units, not compared across venues. Nansen cohort positions reach SMART_MONEY_ONCHAIN context with unknown-state-time warning; these are positions, not N05 exchange netflows. No directional vote, hard gate, score change or new training collection.
+
+Fallback boundaries: existing equivalent derivative/history/native routes remain active; provider-wide specialist quota cooldown does not disable the old sources. No honest interchangeable substitute exists in the verified inventory for Nansen cohort labels or VYX same-venue microprice. On their absence the corresponding field stays missing, while the existing block continues on its own verified facts. Cross-exchange depth is complementary and must not be relabeled as Hyperliquid ten-level depth. Do not insert unverified sources merely to lengthen a chain.
+
+Remaining unavailable capabilities (bounded closure, not another research queue): complete current unlock schedules; causal buyback/burn evidence; verified exchange-labeled flows; full trade-history windows; liquid alt-option coverage; exact sector peers; full HTX volume-at-price. Existing partial sources continue; these gaps are not zeros and are not solved by cohort positions. No request to wait for new statistics. Trading efficacy remains unproven and is not an engineering completion gate.
+
 ## 2026-09-30: Nansen / VYX specialist context
 
 Server credentials confirmed by run 36726772228. Bounded SOL samples confirmed by run 36727071528; Nansen quoted and used one credit. VYX closed-minute OFI/microprice/depth fields are retained in candidate_sources inside the existing five HTTP request envelope. Nansen retains separate cohort long/short/total values, never summed across overlapping cohorts. No source-state time: CONTEXT_UNTIMED, decision_usable=false. No score, entry gate or report-layout change. Internal context integration is not demonstrated trading benefit or complete 17-block acceptance.
