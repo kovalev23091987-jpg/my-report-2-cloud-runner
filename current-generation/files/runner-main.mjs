@@ -673,7 +673,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const liquidationRunOutput={schema:'my-report-2-liquidation-run-output-v1',generation,head:process.env.GITHUB_SHA||null,worker_sha256:sha,source,run_id:sourceRunId,mode:'LIQUIDATION_ONLY',status:reportText?'CLOSED':'NOT_CLOSED',
       verified_candidate:candidate?.contract||null,preliminary_candidates:(scanResult.candidates||[]).map(row=>row.contract).slice(0,5),
       liquidation_lines:lines,source_chain:sourceChain,factual_history:crossExchangeRisk.sources,report_text:reportText,generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,telegram_started:false};
-    await fs.writeFile('report2-run-result.json',JSON.stringify(bindManualReport(liquidationRunOutput,{command:manualCommandClaim.row,workflow_run_id:process.env.GITHUB_RUN_ID,commit_sha:process.env.GITHUB_SHA}),null,2));
+    await fs.writeFile('report2-run-result.json',JSON.stringify(liquidationRunOutput,null,2));
     const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:sourceRunId,rendered_text:JSON.stringify(liquidationRunOutput),delivered_to_existing_channel:true,now:Date.now()});
     if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
     console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
