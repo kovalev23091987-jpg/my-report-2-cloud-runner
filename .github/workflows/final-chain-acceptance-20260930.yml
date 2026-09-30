@@ -1,0 +1,126 @@
+name: Report 2 Final Current Chain Acceptance
+on:
+  push:
+    branches: [autonomous/final-chain-acceptance-20260930]
+    paths: [.github/workflows/final-chain-acceptance-20260930.yml]
+permissions:
+  contents: read
+concurrency:
+  group: report2-final-current-chain-acceptance
+  cancel-in-progress: false
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - mode: FULL
+            command: Создать отчёт
+          - mode: LIQUIDATION
+            command: Найди ликвидационные монеты
+    concurrency:
+      group: my-report-2-production-cycle
+      cancel-in-progress: false
+    env:
+      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      ANALYTICS_ENABLED: '1'
+      PUBLIC_COLLECTOR_ENABLED: '0'
+      DELIVERY_ENABLED: '0'
+      CALIBRATION_APPLY_ENABLED: '0'
+      REPORT2_MANUAL_RUN_AUTHORIZED: '1'
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: '0'
+      REPORT2_TELEGRAM_WATCH70_ENABLED: '0'
+      REPORT2_TELEGRAM_WATCH70_THRESHOLD: '70'
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: '0'
+      REPORT2_TELEGRAM_INFO_ENABLED: '0'
+      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: '0'
+      REPORT2_TELEGRAM_REPORT_TEST: 'false'
+      REPORT2_TELEGRAM_INSTALL_VALIDATION: '0'
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: '1'
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: '0'
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: '0'
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+      VYX_API_KEY: ${{ secrets.VYX_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_OXARCHIVE_COST_PROBE: 'false'
+      REPORT2_RUN_SOURCE: manual
+      REPORT2_MANUAL_COMMAND: ${{ matrix.command }}
+      REPORT2_MANUAL_COIN_CONTRACT: ''
+      REPORT2_D1_RUNS_PER_DAY: '80'
+      REPORT2_POST_V7_UNIFIED_ENABLED: '1'
+      REPORT2_LIQUIDATION_EXTENSION_MODE: SHADOW_ONLY
+      REPORT2_ANALYTICS_ACTOR: GITHUB_ACTIONS
+      REPORT2_D1_MAX_DAILY_READS: '3500000'
+      REPORT2_D1_MAX_DAILY_WRITES: '70000'
+      REPORT2_MEASUREMENT_ARTIFACT_ENABLED: '1'
+      REPORT2_ACCEPTANCE_HTTP_COUNTER_PATH: /tmp/report2-external-http-count.json
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 5e8e58501844a047c75d09b3971dfefb1b995d37
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fence to the verified current production commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
+          test "$current" = '5e8e58501844a047c75d09b3971dfefb1b995d37'
+          gh api repos/${{ github.repository }}/contents/audit-fixes/source-optimization-20260930/execution-lock.json?ref=report2-execution-lock --jq .content | base64 --decode > /tmp/shared-lock.json
+          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json'));if(!l.active||l.owner!=='autonomous/final-chain-acceptance-20260930'||l.expected_main!=='5e8e58501844a047c75d09b3971dfefb1b995d37'||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
+          node runner/current-runtime-binding.mjs --github-env
+      - name: Runtime admission
+        run: node runner/preflight-role-gate.mjs
+      - name: Assemble exact previously verified runtime
+        run: |
+          set -Eeuo pipefail
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Queue one authorized manual command
+        id: enqueue
+        run: node runner/enqueue-manual-command.mjs
+      - name: Run the complete current report without Telegram or statistics settlement
+        env:
+          REPORT2_COMMAND_ID: ${{ steps.enqueue.outputs.command_id }}
+        working-directory: runtime
+        run: |
+          set -Eeuo pipefail
+          node --import ../audit-fixes/early-evidence-20260929/count-external-http.mjs runner-main.mjs > ../audit-output/report-run.log 2>&1
+        # Normal report state writes retain the authoritative quotas and admission.
+        # No public collector, forecast statistics processing or user message is run.
+      - name: Collect result and acceptance settings
+        if: always()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';fs.mkdirSync('audit-output',{recursive:true});const result={mode:process.env.MODE,source_main:'5e8e58501844a047c75d09b3971dfefb1b995d37',workflow_commit:process.env.GITHUB_SHA,telegram_enabled:false,collector_enabled:false,prospective_statistics_enabled:false,weights_changed:false};fs.writeFileSync('audit-output/acceptance-settings.json',JSON.stringify(result,null,2));if(fs.existsSync('/tmp/report2-external-http-count.json'))fs.copyFileSync('/tmp/report2-external-http-count.json','audit-output/report2-external-http-count.json');for(const f of ['report2-run-result.json','report2-measurement.json','report2-external-http-count.json'])if(fs.existsSync('runtime/'+f))fs.copyFileSync('runtime/'+f,'audit-output/'+f)"
+        env:
+          MODE: ${{ matrix.mode }}
+      - name: Explain report execution failure
+        if: failure()
+        run: |
+          if [ -f audit-output/report-run.log ]; then tail -60 audit-output/report-run.log; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report2-final-${{ matrix.mode }}-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
