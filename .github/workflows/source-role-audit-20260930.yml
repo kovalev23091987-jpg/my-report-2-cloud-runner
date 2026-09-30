@@ -230,6 +230,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: real-report-source-binding-${{ github.run_id }}
+          name: real-report-source-binding-${{ github.run_id }}-${{ github.run_attempt }}
           path: audit-output/
           retention-days: 30
