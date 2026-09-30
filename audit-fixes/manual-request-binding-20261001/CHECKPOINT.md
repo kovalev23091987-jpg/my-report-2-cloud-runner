@@ -1,0 +1,9 @@
+# PR45 — real request/result binding
+
+Accepted immutable head4016e99ee02240311998a9f597c7f444550f4fa9: run36781587442 completed/success; full regression,37 integration and16 manual-binding SQLite scenarios PASS. Genuine fresh FULL_MANUAL source report and external verification of downloaded artifact11128530681 against actual GitHub API run metadata returned BOUND_MANUAL_REPORT_VERIFIED. Exact command/result/content hash are preserved in the proof artifact and PR description. Report CLOSED/HEALTHY_NO_IDEA, NEAR rejected under unchanged strategy. Telegram network/SENT0, production replacementfalse, isolated command/publication rows, genuine source ACKs.
+
+This follow-up adds the corresponding real LIQUIDATION_ONLY acceptance as a sequential matrix job, preserving full acceptance on the same new head. The command is parsed by the delivered runtime router; no simulated market input or completion. After the new workflow genuinely completes/succeeds, externally verify each artifact with its own command/result and actual GitHub run metadata. READY_FOR_EXTERNAL_RUN_VERIFICATION alone is not PASS.
+
+Working baseline21ccad02a6357390a2b1ca5388f3022cb9f8cf9e; active foreign fence PR43 until22:40UTC must not be overwritten. PR43 real payload readiness remains prerequisite to release. After it releases, integrate exact latest main and reaccept before deploying PR45. Strategy/Telegram layout unchanged; PR42 separate.
+
+Canonical Library replacement attempts of MASTER/CHECKPOINT/CHANGELOG (observed versions166/172/157) and one new acceptance file failed byte transfer; helper returned transfer_failed for all4, no successful save claimed. Do not blindly retry uncertain writes; reread versions before future guarded writeback. This GitHub checkpoint plus immutable artifact proofs are durable continuation evidence. Automation6abd7056e60c819191dd4723398e975b retains the accepted stage and dependencies; its schedule does not guarantee continuous execution.

@@ -43,8 +43,12 @@ assert.equal(process.env.DELIVERY_ENABLED,'0');
 assert.equal(process.env.REPORT2_V3_TELEGRAM_NETWORK_ENABLED,'0');
 assert.equal(process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED,'0');
 const {enqueueIdempotentManualRequest}=await mod('src/manual-result-binding.mjs');
+const {parseLiquidationCommand}=await mod('src/liquidation-command-router.mjs');
+const intent=parseLiquidationCommand(process.env.REPORT2_MANUAL_COMMAND);
+const contract=intent.matched?(intent.contract||null):(process.env.REPORT2_MANUAL_COIN_CONTRACT||null);
+const mode=intent.matched?'LIQUIDATION_ONLY':contract?'MANUAL_COIN':'FULL_MANUAL';
 const received_at=Date.now();
-const command=await enqueueIdempotentManualRequest(remote,{request_nonce:`MANUAL_BINDING_ACCEPTANCE:${process.env.GITHUB_RUN_ID}`,request_channel:'ISOLATED_CLOUD_ACCEPTANCE',mode:'FULL_MANUAL',contract:null,received_at,deadline:received_at+10*60000,generation:process.env.REPORT2_CURRENT_GENERATION});
+const command=await enqueueIdempotentManualRequest(remote,{request_nonce:`MANUAL_BINDING_ACCEPTANCE:${process.env.GITHUB_RUN_ID}:${mode}`,request_channel:'ISOLATED_CLOUD_ACCEPTANCE',mode,contract,received_at,deadline:received_at+10*60000,generation:process.env.REPORT2_CURRENT_GENERATION});
 process.env.REPORT2_COMMAND_ID=command.command_id;
 let finishing=false;
 process.on('beforeExit',()=>{
@@ -55,7 +59,7 @@ process.on('beforeExit',()=>{
  const binding=report?.manual_request_binding;
  const ready=!process.exitCode&&report&&report.source==='manual'&&report.report_text&&row?.state==='COMPLETED'&&binding?.state==='COMPLETED'&&binding.command_id===row.command_id&&binding.result_run_id===row.result_snapshot_id&&row.result_snapshot_id===report.run_id&&binding.output_sha256===row.rendered_text_hash&&telegramNetworkCalls===0;
  const proof={schema:'report2-live-manual-binding-acceptance-v1',status:ready?'READY_FOR_EXTERNAL_RUN_VERIFICATION':'NOT_CLOSED',
-  head:process.env.GITHUB_SHA,command:row,report_status:report?.status??null,report_run_id:report?.run_id??null,
+  head:process.env.GITHUB_SHA,requested_mode:mode,requested_contract:contract,command:row,report_status:report?.status??null,report_run_id:report?.run_id??null,
   workflow_run_verification:'PENDING_EXTERNAL_GITHUB_API',isolated_command_queue:true,isolated_publications:true,
   fabricated_source_ack:false,telegram_network_calls:telegramNetworkCalls,telegram_sent:0,production_replaced:false,
   isolated_reads:isolatedReads,isolated_writes:isolatedWrites};

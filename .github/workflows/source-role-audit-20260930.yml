@@ -164,6 +164,15 @@ jobs:
   real-manual-binding-acceptance:
     if: github.ref == 'refs/heads/repair/manual-request-result-binding-v2-20261001'
     needs: verify
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - mode: full
+            command: 'Создать отчёт'
+          - mode: liquidation
+            command: 'Проверь ликвидации по NEAR'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
@@ -192,7 +201,7 @@ jobs:
       BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
       REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
       REPORT2_RUN_SOURCE: manual
-      REPORT2_MANUAL_COMMAND: 'Создать отчёт'
+      REPORT2_MANUAL_COMMAND: ${{ matrix.command }}
       REPORT2_MANUAL_COIN_CONTRACT: ''
       REPORT2_CURRENT_GENERATION: MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M
       REPORT2_POST_V7_UNIFIED_ENABLED: '1'
@@ -247,6 +256,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: real-manual-result-binding-${{ github.run_id }}
+          name: real-manual-result-binding-${{ matrix.mode }}-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
