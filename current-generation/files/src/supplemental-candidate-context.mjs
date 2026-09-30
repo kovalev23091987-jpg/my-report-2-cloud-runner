@@ -1,4 +1,4 @@
-export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v4-source-clock-identity-20260930';
+export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v5-source-clock-pool-identity-20260930';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -124,21 +124,21 @@ async function loadOrDiscoverIdentity({db,fetch_impl,base,now}={}){
 const sourceTtl=source=>({OXARCHIVE:5*60*1000,BITGET:5*60*1000,COINBASE:5*60*1000,DEFILLAMA:6*60*60*1000,GOPLUS:24*60*60*1000}[source]||TTL_MS);
 async function loadCachedSources(db,contract,now,refreshed=[]){
  const cached=await db.prepare(`SELECT source,observed_ts,expires_ts,payload_json FROM report2_candidate_source_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all();
- const sources={};for(const row of cached?.results||[]){try{const payload=JSON.parse(row.payload_json);if(['DEFILLAMA','SOLANA_RPC','COINBASE'].includes(row.source)&&payload.context_version!==SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION)continue;sources[row.source]={...payload,cache_status:refreshed.includes(row.source)?'REFRESHED':'HIT'};}catch{}}
+ const sources={};for(const row of cached?.results||[]){try{const payload=JSON.parse(row.payload_json);if(['DEFILLAMA','SOLANA_RPC','COINBASE','DEX_SCREENER','GECKOTERMINAL'].includes(row.source)&&payload.context_version!==SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION)continue;sources[row.source]={...payload,cache_status:refreshed.includes(row.source)?'REFRESHED':'HIT'};}catch{}}
  return sources;
 }
 
 function normalizeDexScreener(payload,identity,now){
  const rows=Array.isArray(payload)?payload:Array.isArray(payload?.pairs)?payload.pairs:[];
  const exact=rows.filter(r=>[r?.baseToken?.address,r?.quoteToken?.address].some(address=>sameChainAssetIdentity(identity,{chain:r?.chainId,contract_or_mint:address})));
- return {source:'DEX_SCREENER',status:exact.length?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,pools:exact.slice(0,20).map(r=>({pool_key:`${identity.chain}|${clean(r?.pairAddress).toLowerCase()}`,liquidity_usd:finite(r?.liquidity?.usd),volume_24h_usd:finite(r?.volume?.h24),buys_24h:finite(r?.txns?.h24?.buys),sells_24h:finite(r?.txns?.h24?.sells)}))};
+ return {source:'DEX_SCREENER',status:exact.length?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,pools:exact.slice(0,20).map(r=>({pool_key:`${identity.chain}|${identity.chain==='solana'?clean(r?.pairAddress):clean(r?.pairAddress).toLowerCase()}`,liquidity_usd:finite(r?.liquidity?.usd),volume_24h_usd:finite(r?.volume?.h24),buys_24h:finite(r?.txns?.h24?.buys),sells_24h:finite(r?.txns?.h24?.sells)}))};
 }
 function normalizeGecko(payload,identity,now){
  const rows=Array.isArray(payload?.data)?payload.data:[];
  const pools=rows.filter(row=>{
   const relationIds=[row?.relationships?.base_token?.data?.id,row?.relationships?.quote_token?.data?.id].map(splitGeckoTokenId).filter(Boolean);
   return relationIds.some(candidate=>sameChainAssetIdentity(identity,candidate));
- }).slice(0,20).map(row=>{const r=row?.attributes||{};return{pool_key:`${identity.chain}|${clean(r?.address||row?.id).toLowerCase()}`,liquidity_usd:finite(r?.reserve_in_usd),volume_24h_usd:finite(r?.volume_usd?.h24),buys_24h:finite(r?.transactions?.h24?.buys),sells_24h:finite(r?.transactions?.h24?.sells)};});
+ }).slice(0,20).map(row=>{const r=row?.attributes||{};return{pool_key:`${identity.chain}|${identity.chain==='solana'?clean(r?.address||row?.id):clean(r?.address||row?.id).toLowerCase()}`,liquidity_usd:finite(r?.reserve_in_usd),volume_24h_usd:finite(r?.volume_usd?.h24),buys_24h:finite(r?.transactions?.h24?.buys),sells_24h:finite(r?.transactions?.h24?.sells)};});
  return {source:'GECKOTERMINAL',status:pools.length?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:true,pools};
 }
 function normalizeGoPlus(payload,identity,now){

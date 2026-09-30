@@ -1,7 +1,7 @@
 import {collectGateLiquidationHistory} from './gate-liquidation-history.mjs';
 import {normalizeOkxDepthLevel} from './asset-identity-cache.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v3-shared-market-catalog-20260930';
+export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v4-catalog-failure-receipts-20260930';
 const CATALOG_TTL_MS=24*60*60*1000,DEPTH_TTL_MS=30_000,REALIZED_TTL_MS=5*60*1000,HISTORY_TTL_MS=15*60*1000;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -24,18 +24,20 @@ export function normalizeCrossExchangeCatalogs({binance,bybit,okx}={}){
  return entries;
 }
 
-async function loadVenueCatalog({db,fetch_impl,now}={}){
+export async function loadVenueCatalog({db,fetch_impl,now}={}){
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_cross_exchange_catalog (catalog_id TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
- const prior=await db.prepare(`SELECT payload_json,observed_ts FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V1' AND expires_ts>=?1 LIMIT 1`).bind(now).first();
- if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,observed_ts:Number(prior.observed_ts),entries:JSON.parse(prior.payload_json)};}catch{}}
+ const prior=await db.prepare(`SELECT payload_json,observed_ts FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V2' AND expires_ts>=?1 LIMIT 1`).bind(now).first();
+ if(prior){try{const saved=JSON.parse(prior.payload_json);if(saved?.schema==='CEX_CATALOG_V2')return{...saved,status:Object.keys(saved.entries||{}).length?'CLOSED':'NOT_CLOSED',cache_status:'HIT',network_calls:0,observed_ts:Number(prior.observed_ts)};}catch{}}
  const [binance,bybit,okx]=await Promise.all([
   requestJson(fetch_impl,'https://fapi.binance.com/fapi/v1/exchangeInfo',{timeout_ms:12000}),
   requestJson(fetch_impl,'https://api.bybit.com/v5/market/instruments-info?category=linear&limit=1000',{timeout_ms:12000}),
   requestJson(fetch_impl,'https://www.okx.com/api/v5/public/instruments?instType=SWAP',{timeout_ms:12000}),
  ]);
  const entries=normalizeCrossExchangeCatalogs({binance:binance.ok?binance.payload:null,bybit:bybit.ok?bybit.payload:null,okx:okx.ok?okx.payload:null});
- if(Object.keys(entries).length)await db.prepare(`INSERT INTO report2_cross_exchange_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES('CEX_V1',?1,?2,?3) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(now,now+CATALOG_TTL_MS,JSON.stringify(entries)).run();
- return{status:Object.keys(entries).length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:3,observed_ts:now,entries,receipts:[['BINANCE',binance],['BYBIT',bybit],['OKX',okx]].map(([source,row])=>({source,status:row.ok?'CLOSED':row.error}))};
+ const inputs=[['BINANCE',binance],['BYBIT',bybit],['OKX',okx]],receipts=inputs.map(([source,row])=>{const schema_ok=source==='BINANCE'?Array.isArray(row.payload?.symbols):source==='BYBIT'?Number(row.payload?.retCode)===0&&Array.isArray(row.payload?.result?.list):row.payload?.code==='0'&&Array.isArray(row.payload?.data),incomplete=source==='BYBIT'&&Boolean(row.payload?.result?.nextPageCursor);return{source,status:row.ok&&schema_ok?incomplete?'PARTIAL_CATALOG':'CLOSED':row.error||'CATALOG_SCHEMA_NOT_CLOSED',http_status:row.status,catalog_complete:row.ok&&schema_ok&&!incomplete};});
+ const saved={schema:'CEX_CATALOG_V2',entries,receipts},complete=receipts.every(r=>r.catalog_complete),ttl=complete?CATALOG_TTL_MS:6*60*60*1000;
+ await db.prepare(`INSERT INTO report2_cross_exchange_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES('CEX_V2',?1,?2,?3) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(now,now+ttl,JSON.stringify(saved)).run();
+ return{...saved,status:Object.keys(entries).length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:3,observed_ts:now};
 }
 
 function depthMetrics(rows,side,referencePrice,{venue,instrument}={}){
@@ -154,7 +156,7 @@ export async function collectCrossExchangeRiskContext({db,fetch_impl=globalThis.
  if(lane==='HISTORY'){payload=await collectHistory({db,fetch_impl,api_key:coinalyze_api_key,base,now,run_id});ttl=HISTORY_TTL_MS;}
  if(payload&&payload.source&&payload.status==='CLOSED')await saveCached(db,normalized,payload.source,payload,now,ttl);
  const sources=await loadPermittedCached(db,normalized,now,allowed_lanes),statuses=Object.values(sources).map(x=>x.status);
- return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,receipts:[...(payload?.fallback_from?[{...payload.fallback_from,fallback:true}]:[]),{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED',reason:payload?.reason??payload?.error??null,transport:payload?.venue_receipts??payload?.receipts??null,venues:payload?.venues??null}],internal_only:true,automatic_execution:false};
+ return{version:CROSS_EXCHANGE_RISK_VERSION,status:statuses.includes('CLOSED')?'CLOSED':'NOT_CLOSED',contract:normalized,identity:'EXACT_LISTED_MARKET_SYMBOL_WITH_PRICE_CROSSCHECK',lane,lane_forced:lanes.includes(requestedLane),network_calls:Number(payload?.network_calls??payload?.network_connections??0),provider_call_units:payload?.provider_call_units??null,sources,catalog_receipts:catalog.receipts||[],receipts:[...(catalog.receipts||[]).filter(r=>!entry?.[r.source.toLowerCase()]).map(r=>({...r,reason:r.catalog_complete?'EXACT_MARKET_ABSENT_FROM_COMPLETE_CATALOG':'CATALOG_UNAVAILABLE_OR_INCOMPLETE_NOT_UNSUPPORTED'})),...(payload?.fallback_from?[{...payload.fallback_from,fallback:true}]:[]),{source:payload?.source||lane,status:payload?.status||'NOT_CLOSED',reason:payload?.reason??payload?.error??null,transport:payload?.venue_receipts??payload?.receipts??null,venues:payload?.venues??null}],internal_only:true,automatic_execution:false};
 }
 
 export default{CROSS_EXCHANGE_RISK_VERSION,normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets,collectCrossExchangeRiskContext};
