@@ -224,7 +224,9 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  // role. Use only the remaining part of the SAME five-request envelope.
  const complementaryLane=lane==='BITGET_FALLBACK'&&httpCalls<5?chooseSupplementalLane({run_id,contract,entry,derivatives_venues:2,critical_conflict:false,cached_sources:{...cachedSources,BITGET:{status:'ATTEMPTED'}}}):null;
  if(complementaryLane)await collectLane(complementaryLane);
- const specialist=!reserve_for_liquidations?await collectSpecialistContext({db,fetch_impl,base,now,primary_price,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key}):{network_calls:0,payloads:[],receipts:[]};
+ // A changed registry binding must never reuse an old token's flow receipt.
+ if(cachedSources.NANSEN_FLOWS?.identity&&!sameChainAssetIdentity({...cachedSources.NANSEN_FLOWS.identity,chain:cachedSources.NANSEN_FLOWS.identity.chain==='bnb'?'bsc':cachedSources.NANSEN_FLOWS.identity.chain},entry.identity))delete cachedSources.NANSEN_FLOWS;
+ const specialist=!reserve_for_liquidations?await collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity:entry.identity,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key}):{network_calls:0,payloads:[],receipts:[]};
  httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);
  if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
