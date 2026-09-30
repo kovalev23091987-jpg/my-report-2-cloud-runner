@@ -1,6 +1,6 @@
 # Source role matrix
 
-2026-09-30 acceptance update: PR23 is deployed; CI36692544063 and both full36693403092 / standalone36693640555 are verified. Current scoped findings supersede historical success rows below.
+2026-09-30 final stage: PR25 release764f0aae36225d452ce73cae25b927c14c2cac82 after exact CI36697924721. PR24 full36696678060 exposed an unknown-source-clock canonical failure; this is a failed acceptance observation, not a healthy no-idea proof. PR25 full36698165774 persists a rejected candidate and reports insufficient data honestly. Standalone36698380288 is CLOSED with explicit GMX/Lighter unknown-state-time labels. Telegram verification sends0. The historical table below preserves earlier scoped evidence only.
 
 | Source / role | Latest scoped result | Admission |
 |---|---|---|
@@ -12,8 +12,12 @@
 | HTX daily trade archive | Legacy host transport failed; current official host returned404 for SOL-USDT2026-09-28 in36694848271 | Not admitted to volume profile |
 | HTX minute candles | Exact1440 minutes for2026-09-28 after correcting size/from/to exclusivity | Valid OHLCV; intraminute volume-at-price remains unknown |
 | DexPaprika free | Exact JUP mint/chain and fresh aggregate DEX metrics, two bounded probes | Research only; does not provide HTX executed volume-at-price |
-| Source operational health | PR24 candidate writes and reads bounded actual-attempt observations; cache/quotas excluded from successful-attempt counts | Diagnostics only; predictive activation remains T16.5 gated |
+| Source operational health | PR24 live journal36695962137 and PR25 production36698165774 persist/read actual-attempt observations; cached reuse and quota skips are excluded | Diagnostics only; predictive activation remains T16.5 gated |
 
+
+## Historical and scoped role inventory
+
+Rows retain their original run IDs; newer scoped findings above supersede earlier pending statuses.
 
 | Source | Primary role | Direction policy | Runtime state |
 |---|---|---|---|
@@ -25,7 +29,7 @@
 | Coinalyze | historical liquidation/OI/funding baseline | counts do not select direction | LIVE_HISTORY_CLOSED run 36369369843, AKE-USDT, 2 HTTP / 5 provider units |
 | Hyperliquid native | verified native positions/levels | observed levels only | ACTIVE_IF_EXACT_MARKET |
 | LiqFlow | discovery of relevant Hyperliquid accounts | no independent duplicate vote | PUBLIC_PILOT_OR_KEY |
-| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity required | LIVE_BOUNDED_ROTATION: Lighter SOL run 36375513014; gTrade SOL run 36385863377 (22 positions, 5 zones); GMX XRP run 36386584847 (HTX-active alt selected from open-position census, 3 zones) |
+| Lighter / GMX / gTrade | native positions/fees/levels | exact venue identity; receipt-only contexts cannot score or supply targets | LIVE_BOUNDED_ROTATION: Lighter SOL run 36375513014; gTrade SOL run 36385863377 (22 positions, 5 zones); GMX XRP run 36386584847 (HTX-active alt selected from open-position census, 3 zones) |
 | 0xArchive | bounded projected HL level buckets | one-credit route only | LIVE_READINESS_CLOSED run 36369369843; existing key, one-credit route, 5,000 monthly cap, no automatic top-up |
 | CoinLobster | cached whale/liquidation context | advisory, symbol sliced | ACTIVE_EXISTING |
 | DEX Screener / GeckoTerminal | exact address/pool identity and activity context | buy/sell counts are direction-neutral | ACTIVE_CONDITIONAL |

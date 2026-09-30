@@ -1,6 +1,8 @@
 # N01–N17 block matrix
 
-Updated 2026-09-30: PR23 production verified by full36693403092 and standalone36693640555. PR24 remains candidate until its exact-head release receipt. Historical live rows below are dated evidence, not an all-sources-current-success claim. Volume-profile research is additional and has zero score/entry/target permission.
+Updated 2026-09-30 09:50 UTC. PR23, PR24 and PR25 are deployed. Runtime release 764f0aae36225d452ce73cae25b927c14c2cac82; exact PR25 CI 36697924721 passed all current-generation tests/syntax, 20 early and 37 integration cases. Full report 36698165774 correctly returns PARTIAL_DATA_UNAVAILABLE for DEEP_DATA_INSUFFICIENT, while its rejected canonical candidate is persisted. Standalone SOL 36698380288 is CLOSED and explicitly labels unknown source-state times. Both verification modes had Telegram disabled. These are engineering acceptance receipts, not all-data/all-sources acceptance. See POST_RELEASE_20260930.json.
+
+Volume-profile research has zero score/entry/target permission. One exact day of minute OHLCV and exploratory sensitivity are verified; complete executed volume-at-price and incremental predictive usefulness remain unproven.
 
 | Block | Existing consumer | Local state | Live state |
 |---|---|---|---|
@@ -20,6 +22,6 @@ Updated 2026-09-30: PR23 production verified by full36693403092 and standalone36
 | N14 Alt options | options risk context | VALIDATED, Deribit exact active-instrument runtime wired, no new directional bonus | LIVE_SMOKE_CLOSED run 36368924281; SOL market present but liquid count was truthfully zero |
 | N15 Sector relative strength | sector benchmark | PR23 exact CoinPaprika adapter; registry disabled | LINK functional membership not closed; UMA peers valid but UMA absent HTX universe; JUP ambiguous provider IDs |
 | N16 Execution/liquidity risk | execution cost gate | VALIDATED, HTX rules context wired | partial existing books; HTX rules transport smoke closed |
-| N17 Source deterioration | evidence admission | Exact ABI context plus bounded operational observation journal in PR24 candidate | Journal separates transport outages, invalid bindings, empty valid windows and usable facts; no prediction weights or quarantine activation. Exact cloud acceptance required |
+| N17 Source deterioration | evidence admission | Exact ABI context plus PR24 bounded operational journal, production readback logged by PR25 | Live storage/readback36695962137 and production36698165774 verified. Last10 attempted responses per exact market; score0. Longitudinal deterioration, predictive weights and quarantine remain unactivated |
 
-All blocks share the frozen canonical manual/Telegram path through `internal_market_context.evidence_v2`; none creates a new user-visible section or a second score owner.
+Applicable full-report EvidenceV2 roles enter the existing canonical path through `internal_market_context.evidence_v2`. Standalone liquidation collection has its own existing scoped source lanes; this does not prove every N block is called in both modes. Receipt-only foreign-venue samples are displayed with unknown source-state time and excluded from dynamic score/target evidence. No second score owner is introduced.
