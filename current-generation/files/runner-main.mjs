@@ -501,6 +501,8 @@ async function main() {
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
     registry:supplementalIdentityRegistry.registry,
+    vyx_api_key:envText('VYX_API_KEY',{required:false}),
+    nansen_api_key:envText('NANSEN_API_KEY',{required:false}),
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });

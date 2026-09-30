@@ -1,3 +1,4 @@
+import {collectSpecialistContext} from './specialist-candidate-context.mjs';
 export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v6-role-cache-priority-20260930';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
 const clean=v=>String(v??'').trim();
@@ -181,7 +182,7 @@ export function normalizeCoinbase(product,ticker,now,primaryPrice,requestedProdu
  const price=finite(ticker?.price);return {source:'COINBASE',status:exact&&price!==null?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:exact,product:id||null,base,quote,price,price_difference_vs_htx_pct:deviation(primaryPrice,price),volume_24h:finite(ticker?.volume)};
 }
 
-export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false}={}){
+export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false,vyx_api_key='',nansen_api_key=''}={}){
  if(!db)throw new Error('SUPPLEMENTAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_candidate_source_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
  const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},manual=parsed.entries[base]||null;
@@ -223,11 +224,14 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  // role. Use only the remaining part of the SAME five-request envelope.
  const complementaryLane=lane==='BITGET_FALLBACK'&&httpCalls<5?chooseSupplementalLane({run_id,contract,entry,derivatives_venues:2,critical_conflict:false,cached_sources:{...cachedSources,BITGET:{status:'ATTEMPTED'}}}):null;
  if(complementaryLane)await collectLane(complementaryLane);
+ const specialist=!reserve_for_liquidations?await collectSpecialistContext({db,fetch_impl,base,now,primary_price,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key}):{network_calls:0,payloads:[],receipts:[]};
+ httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);
  if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
- for(const {source,payload} of settled){
+ settled.push(...specialist.payloads);
+ for(const {source,payload,ttl} of settled){
   payload.context_version=SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION;receipts.push({source,status:payload.status});
-  await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+sourceTtl(source),JSON.stringify(payload)).run();
+  await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+(ttl??sourceTtl(source)),JSON.stringify(payload)).run();
  }
  const sources=await loadCachedSources(db,contract,now,settled.map(x=>x.source));
  // Cached venue prices may be reused, but their old HTX comparison may not.
