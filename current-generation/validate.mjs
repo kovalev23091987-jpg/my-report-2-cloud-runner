@@ -7,7 +7,7 @@ import {createHash} from 'node:crypto';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='86fda51194316acf13a5f1a825fab2e9b347f78b648a23b0747ba159171f3377';
+const expectedWorker='85aeb64cc2898f7066b22f27abdccec0ead0cb3fa8165260b59f76c4629ad55f';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -23,7 +23,7 @@ const checks=[
  '../audit-fixes/t16/run-gmx-native-smoke.mjs',
  '../audit-fixes/t16/run-gtrade-native-smoke.mjs',
  '../audit-fixes/t16/run-blockscout-index-smoke.mjs',
- 'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js',
+ 'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs',
  'files/src/official-source-registry.mjs',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/manual-run-summary.mjs',
@@ -80,4 +80,3 @@ if(sourceRuntime){
  fs.rmSync(temp,{recursive:true,force:true});
 }
 console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));
-

@@ -1,8 +1,9 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {parseHtxTradePayload} from './htx-trade-json.mjs';
+export {parseHtxTradePayload} from './htx-trade-json.mjs';
 export const HTX_LARGE_TRADES_VERSION='htx-large-trades-v3-20260930';
 const SOURCE='HTX_LARGE_TRADES',LIMIT=2000,WINDOW=5*60000,TTL=60000,MIN_QUOTE=100000,finite=x=>x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x))?Number(x):null;
-export function parseHtxTradePayload(raw){return JSON.parse(raw.replace(/("id"\s*:\s*)(\d+)(?=\s*[,}])/g,(_,prefix,digits)=>prefix+JSON.stringify(digits)));}
 const exactId=x=>typeof x==='string'&&/^\d{1,32}$/.test(x)?x:typeof x==='number'&&Number.isSafeInteger(x)&&x>0?String(x):null;
 export function normalizeHtxLargeTrades(payload,{contract,observed_ts=Date.now(),min_quote_usdt=MIN_QUOTE}={}){
  if(!/^[^-\s]{1,32}-USDT$/.test(contract)||payload?.status!=='ok'||payload?.ch!==`market.${contract}.trade.detail`||!Array.isArray(payload?.data)||finite(payload.ts)===null||payload.ts>observed_ts||observed_ts-payload.ts>TTL)return{status:'EXACT_FRESH_HTX_TRADE_BATCH_REQUIRED',evidence:[],summary:null};
