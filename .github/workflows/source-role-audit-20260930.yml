@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930]
     paths:
       - current-generation/**
       - runner/r8-20-prospective-validation-sidecar.mjs
@@ -68,7 +68,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
+    if: github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15

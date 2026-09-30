@@ -1,3 +1,11 @@
+## 2026-09-30: bounded Nansen exchange-flow consumer
+
+NANSEN_FLOWS now has a concrete collector → existing candidate cache → SMART_MONEY_ONCHAIN.exchange_flows → existing report-context path. Exact approved chain/contract is required; native tickers are excluded rather than silently queried as wrapped tokens. The collector requests label=exchange for two hourly buckets; normalization requires both contiguous full buckets and complete pagination. CEX inflows/outflows remain token quantities, with a derived net amount. The consumer rechecks the current asset binding, window and one-hour retention. This is provider-labelled aggregate context, not individually verified exchange addresses, a sell signal or independent profitability evidence. No N05 full-closure claim before real accepted coverage.
+
+Both Nansen endpoints share the SAME five attempts/day project budget and provider cooldown; flows take priority when exact-token eligible, then VYX and the previous Hyperliquid cohort context use available slots. The shared five-HTTP supplemental envelope and liquidation reservation remain intact. No added history/training collection or market probe. Empty, partial, unsupported or exhausted responses remain gaps; cohort positions and arbitrary transfers are not equivalent flow fallbacks. Existing block sources continue unchanged.
+
+Official contract checked: https://docs.nansen.ai/api/token-god-mode/flows and https://docs.nansen.ai/getting-started/credits . The API documents hour boundaries, completeness and token-amount units. A complete bucket may still be revised. Endpoint integration is tested offline; a live accepted response from this new endpoint has not yet been verified.
+
 ## 2026-09-30: finish field consumers without new statistical accumulation
 
 VYX microprice and ten-level imbalance now reach MARKET_STRENGTH_SPOT context and the existing report context section after publication-time symbol, price and source-time checks. Raw OFI remains in order_flow with provider-native units, not compared across venues. Nansen cohort positions reach SMART_MONEY_ONCHAIN context with unknown-state-time warning; these are positions, not N05 exchange netflows. No directional vote, hard gate, score change or new training collection.
