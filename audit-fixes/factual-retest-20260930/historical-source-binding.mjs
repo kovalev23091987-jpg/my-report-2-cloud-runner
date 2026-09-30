@@ -11,7 +11,7 @@ const {buildRoleEvidenceView}=await mod('source-role-consumer.mjs');
 const {collectFullEvidenceSourceFacts}=await mod('full-evidence-source-binding.mjs');
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
 const start=1790449221000,end=1790794821000;
-const result=await db.prepare(`SELECT c.publication_id,c.wave_id,c.decision_id,c.canonical_json,f.stage392_proof_bundle_json FROM canonical_publication_shadow c LEFT JOIN full_evidence_shadow_log f ON f.contract_code=c.contract_code AND f.observed_ts=c.observed_ts WHERE c.observed_ts>=?1 AND c.observed_ts<=?2 ORDER BY c.observed_ts,c.publication_id LIMIT 401`).bind(start,end).all();
+const result=await db.prepare(`SELECT publication_id,wave_id,decision_id,contract_code,observed_ts,canonical_state FROM canonical_publication_shadow WHERE observed_ts>=?1 AND observed_ts<=?2 ORDER BY observed_ts,publication_id LIMIT 401`).bind(start,end).all();
 const rows=result.results;assert.ok(rows.length>0&&rows.length<=400,'bounded exact four-day archive');
 const output=[];
 async function chain(c,wave_id,decision_id){
@@ -30,6 +30,13 @@ async function chain(c,wave_id,decision_id){
  }finally{local.close();}
 }
 for(const row of rows){
+ if(row.canonical_state!=='OBSERVE'){
+  output.push({publication_id:row.publication_id,contract:row.contract_code,wave_id:row.wave_id,observed_ts:row.observed_ts,state:row.canonical_state,before:{would_attempt:false,reason:'UNCHANGED_NON_OBSERVE_STATE'},after:{would_attempt:false,reason:'UNCHANGED_NON_OBSERVE_STATE'}});
+  continue;
+ }
+ const detail=await db.prepare(`SELECT c.canonical_json,f.stage392_proof_bundle_json FROM canonical_publication_shadow c LEFT JOIN full_evidence_shadow_log f ON f.contract_code=c.contract_code AND f.observed_ts=c.observed_ts WHERE c.publication_id=?1 LIMIT 1`).bind(row.publication_id).first();
+ assert.ok(detail?.canonical_json,'exact archived canonical readback');
+ Object.assign(row,detail);
  const old=JSON.parse(row.canonical_json),next=structuredClone(old),contract=old.metadata?.contract;
  if(!['LONG','SHORT'].includes(old.direction)||['BTC-USDT','ETH-USDT'].includes(contract))continue;
  const bundle=row.stage392_proof_bundle_json?JSON.parse(row.stage392_proof_bundle_json):null;
