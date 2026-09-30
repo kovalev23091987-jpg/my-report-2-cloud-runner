@@ -1,3 +1,9 @@
+## 2026-09-30: Nansen / VYX specialist context
+
+Server credentials confirmed by run 36726772228. Bounded SOL samples confirmed by run 36727071528; Nansen quoted and used one credit. VYX closed-minute OFI/microprice/depth fields are retained in candidate_sources inside the existing five HTTP request envelope. Nansen retains separate cohort long/short/total values, never summed across overlapping cohorts. No source-state time: CONTEXT_UNTIMED, decision_usable=false. No score, entry gate or report-layout change. Internal context integration is not demonstrated trading benefit or complete 17-block acceptance.
+
+Daily project attempt caps: VYX144, Nansen5, UTC day; not provider reset claims. Quota/auth cooldown is provider-wide, cache per contract, attempts reserved before network. Full native liquidation reservation remains unchanged. Specialists use remaining supplemental slots. Missing unique cohorts remain an explicit gap, not a synthetic replacement.
+
 # Source role matrix
 
 ## Continuation: supplemental request selection and cache economy

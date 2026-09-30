@@ -36,7 +36,7 @@ const checks=[
  'files/src/supplemental-score-evidence.mjs','files/src/schedule-quota-calculator.mjs',
  'files/src/v3-adaptive-budget.mjs',
  'files/src/v3-pipeline-health-sidecar.mjs',
- 'files/src/supplemental-candidate-context.mjs','files/src/candidate-source-routing.mjs','files/src/oxarchive-cost-probe.mjs',
+ 'files/src/specialist-candidate-context.mjs','files/src/supplemental-candidate-context.mjs','files/src/candidate-source-routing.mjs','files/src/oxarchive-cost-probe.mjs',
  'files/src/dynamic-liquidation-panel.mjs',
  'files/src/market-history-reader.mjs','files/src/deep-candidate-order.mjs','files/src/provider-minute-ledger.mjs','files/src/prospective-delivery-cohort.mjs',
  'files/src/stage392-proof-runtime.mjs','files/src/tz101-execution-facts.mjs','files/src/full-evidence-shadow-model.mjs',
