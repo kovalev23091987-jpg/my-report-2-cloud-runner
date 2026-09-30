@@ -59,11 +59,13 @@ export function normalizeNansenFlows(p,{base,now,identity,window_end}={}){
  let incoming=0,outgoing=0;
  for(let i=0;i<2;i++){
   const r=rows[i],a=num(r.total_inflows_cex),b=num(r.total_outflows_cex);
-  if(Date.parse(r.date)!==start+i*3600000||Date.parse(r.bucket_end)!==start+(i+1)*3600000||r.is_complete!==true||a===null||b===null||a<0||b<0)return fail('INCOMPLETE_OR_INVALID_HOURLY_BUCKET');
-  incoming+=a;outgoing+=b;
+  if(Date.parse(r.date)!==start+i*3600000||Date.parse(r.bucket_end)!==start+(i+1)*3600000||r.is_complete!==true||a===null||b===null||a<0)return fail('INCOMPLETE_OR_INVALID_HOURLY_BUCKET');
+  // The live Nansen response uses negative outflows. Retain its raw sign
+  // below, but represent outgoing quantity as magnitude for net=in-out.
+  incoming+=a;outgoing+=Math.abs(b);
  }
  if(!Number.isFinite(incoming)||!Number.isFinite(outgoing))return fail('FLOW_AMOUNT_OVERFLOW');
- return {...root,status:'CLOSED',source_ts:end,window_start_ts:start,window_end_ts:end,inflow_cex_tokens:incoming,outflow_cex_tokens:outgoing,net_cex_tokens:incoming-outgoing,unit:'TOKEN_AMOUNT',label:'exchange',label_authority:'NANSEN',pagination_complete:true,buckets:rows.map(r=>({date:r.date,bucket_end:r.bucket_end,is_complete:true,total_inflows_cex:num(r.total_inflows_cex),total_outflows_cex:num(r.total_outflows_cex)})),individual_addresses_verified:false,data_may_be_revised:true};
+ return {...root,status:'CLOSED',source_ts:end,window_start_ts:start,window_end_ts:end,inflow_cex_tokens:incoming,outflow_cex_tokens:outgoing,net_cex_tokens:incoming-outgoing,outflow_normalization:'ABSOLUTE_OUTGOING_QUANTITY_RAW_SIGN_RETAINED',unit:'TOKEN_AMOUNT',label:'exchange',label_authority:'NANSEN',pagination_complete:true,buckets:rows.map(r=>({date:r.date,bucket_end:r.bucket_end,is_complete:true,total_inflows_cex:num(r.total_inflows_cex),total_outflows_cex:num(r.total_outflows_cex)})),individual_addresses_verified:false,data_may_be_revised:true};
 }
 export function normalizeVyx(p,{base,now,primary_price}){
  const root={source:'VYX',venue:'HYPERLIQUID',observed_ts:now,advisory_only:true,decision_usable:false,version:SPECIALIST_CONTEXT_VERSION};
@@ -111,7 +113,9 @@ export async function collectSpecialistContext({db,fetch_impl,base,now,primary_p
   let payload,ttl=spec[source].ttl;
   try{
    const url=source==='VYX'?`https://api.vyx.app/v1/symbols/${encodeURIComponent(base)}/candles?interval=1m&limit=2`:`https://api.nansen.ai/api/v1/tgm/${source==='NANSEN_FLOWS'?'flows':'position-intelligence'}`;
-   const requestBody=source==='NANSEN_FLOWS'?{chain:identity.chain,token_address:identity.contract_or_mint,label:'exchange',date:{from:new Date(windowEnd-7200000).toISOString(),to:new Date(windowEnd).toISOString()},pagination:{page:1,per_page:10},order_by:[{field:'date',direction:'ASC'}]}:{token_address:base};
+   // One extra boundary bucket is requested in the SAME call. Only the
+   // exact final two completed hours are admitted by the normalizer.
+   const requestBody=source==='NANSEN_FLOWS'?{chain:identity.chain,token_address:identity.contract_or_mint,label:'exchange',date:{from:new Date(windowEnd-10800000).toISOString(),to:new Date(windowEnd).toISOString()},pagination:{page:1,per_page:10},order_by:[{field:'date',direction:'ASC'}]}:{token_address:base};
    const response=await fetch_impl(url,{method:source==='VYX'?'GET':'POST',headers:source==='VYX'?{Authorization:'Bearer '+key,Accept:'application/json'}:{apikey:key,'Content-Type':'application/json'},...(source!=='VYX'?{body:JSON.stringify(requestBody)}:{}),redirect:'error',signal:AbortSignal.timeout(12000)});
    let body;try{body=await response.json();}catch{}
    if(response.ok){payload=source==='VYX'?normalizeVyx(body,{base,now,primary_price}):source==='NANSEN_FLOWS'?normalizeNansenFlows(body,{base,now,identity:asset_identity,window_end:windowEnd}):normalizeNansen(body,{base,now});}
