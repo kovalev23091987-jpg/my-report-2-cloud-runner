@@ -152,7 +152,7 @@ function observationPlan({publication,route,direction,price,opportunity,observed
  const eventHigh=finite(candle.high),eventLow=finite(candle.low);
  const routedLevel=finite(route?.trigger?.value);
  const anomalyClosed=opportunity?.newest_event?.minute_decomposition?.classification_allowed===true;
- const factualCandleLevel=anomalyClosed?(direction==='LONG'&&eventHigh>price?eventHigh:direction==='SHORT'&&eventLow<price?eventLow:null):null;
+ const factualCandleLevel=anomalyClosed&&eventHigh!==null&&eventLow!==null&&eventHigh>eventLow&&eventLow>0?(direction==='LONG'?eventHigh:eventLow):null;
  const level=routedLevel??factualCandleLevel;
  const cancel=anomalyClosed?(direction==='LONG'&&eventLow<level?eventLow:direction==='SHORT'&&eventHigh>level?eventHigh:null):null;
  if(level===null||cancel===null)return null;
@@ -162,10 +162,15 @@ function observationPlan({publication,route,direction,price,opportunity,observed
  if((direction==='LONG'&&price<cancel)||(direction==='SHORT'&&price>cancel))return null;
  const potential=evaluateTechnicalMovePotential({direction,current_price:price,trigger_price:level,liquidation_zones:pump,opportunity,rolling_24h_change_pct:finite(discovery?.rolling_24h_change_pct),oi_change_pct:finite(discovery?.best_oi_build_pct),volume_ratio:finite(discovery?.volume_ratio),funding_rate_pct:finite(discovery?.funding_per_hour_pct??discovery?.funding_rate_pct),early_anomaly:pump?.pump?.early_anomaly===true});
  if(potential.status!=='CLOSED')return null;
+ // A crossed factual level remains a watch for renewed confirmation, never
+ // an approved entry. Do not revive a move already spent at this snapshot.
+ const crossed=direction==='LONG'?price>=level:price<=level;
+ const remaining=direction==='LONG'?(potential.target_price/price-1)*100:(1-potential.target_price/price)*100;
+ if(crossed&&(!Number.isFinite(remaining)||remaining<5))return null;
  const entry={area:`${level} USDT`,min_price:level,max_price:level,basis:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
  const targetPrice=potential.target_price;
  const expires=observedTs+30*60_000;
- const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`,level_origin:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
+ const fallbackTrigger={trigger_type:'PRICE_CONFIRMATION',confirmation_mode:crossed?'RECONFIRM_AT_RECHECK':'FIRST_CONFIRMATION',metric:'price',operator:direction==='LONG'?'>=':'<=',value:level,unit:'USDT',timeframe:'5m',expires_ts:expires,next_recheck_ts:observedTs+5*60_000,cancel_condition:`price${direction==='LONG'?'<':'>'}${cancel}`,level_origin:routedLevel!==null?'ROUTED_FACTUAL_LEVEL':'VERIFIED_ANOMALY_CANDLE_LEVEL'};
  return {entry,trigger:route?.trigger??fallbackTrigger,invalidation:{condition:route?.trigger?.cancel_condition??`price${direction==='LONG'?'<':'>'}${cancel}`,price:cancel},targets:[{price:targetPrice,source:'technically_proven_move_potential',start_closing:true,potential_move_pct:potential.potential_move_pct,basis:potential.basis,basis_ru:potential.basis_ru}],technical_move_potential:potential};
 }
 function targetsFrom(publication,observation){
