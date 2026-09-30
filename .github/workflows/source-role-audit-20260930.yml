@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -49,6 +49,7 @@ jobs:
           node current-generation/tests/htx-trade-json.runtime.mjs runtime > audit-output/htx-trade-runtime.json
           REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-fallback-runtime.tap
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
+          REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - uses: actions/upload-artifact@v4
         if: always()
@@ -57,7 +58,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930'
+    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
