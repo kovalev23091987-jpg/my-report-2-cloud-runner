@@ -11,9 +11,10 @@ collector 3259 reads and scan fallback 842 reads. No repeated provider research.
   a win/loss, or a closed observation. Preserve original task and null metrics.
 - Retry old unresolved work in later sweeps with a 24-hour sweep cooldown;
   newly due work beyond cursor is considered during cooldown. No deletion.
-- Alternate early/entry outcome processing on existing 20-minute cycle slots
-  (each queue normally every 40 minutes). Entry capture remains every cycle.
-  This trades processing throughput for compliance with existing request caps.
+- Alternate early/entry outcome processing by a durable turn key on admitted
+  statistical invocations. Existing low-priority maintenance is hourly and may
+  be delayed; no claim of forty-minute statistical processing. Entry capture
+  remains each admitted invocation. This trades throughput for existing caps.
 - Raw collector query uses generation/bucket/shard index and 321-row sentinel
   before JSON parsing. Scan fallback uses ts_bucket primary key, not unindexed ts.
 - Shared existing SHA/schema/generation/shard checks; exact contract, source age,
@@ -22,6 +23,9 @@ collector 3259 reads and scan fallback 842 reads. No repeated provider research.
 - Guard checks usage before every new statement and reserves history read headroom.
   It is NOT a hard database-engine per-statement billed-row cap. Entry selection
   and readiness aggregates still require longitudinal cost monitoring.
+- DEFERRED_BUDGET_ADMISSION is nonfatal to an otherwise complete manual report.
+  Genuine errors remain failures. This integration correction follows PR29's
+  successful full report and does not repeat provider research.
 - Factual extrema are sampled observations, not proven intrabar extremes.
 
 ## Verification / limits
