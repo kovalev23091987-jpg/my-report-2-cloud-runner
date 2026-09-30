@@ -1,4 +1,4 @@
-name: Report 2 Final Current Chain Acceptance
+name: Report 2 Verified NIL Flow Acceptance
 on:
   push:
     branches: [autonomous/final-chain-acceptance-20260930]
@@ -19,8 +19,6 @@ jobs:
         include:
           - mode: FULL
             command: Создать отчёт
-          - mode: LIQUIDATION
-            command: Найди ликвидационные монеты
     concurrency:
       group: my-report-2-production-cycle
       cancel-in-progress: false
@@ -58,7 +56,7 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: 'false'
       REPORT2_RUN_SOURCE: manual
       REPORT2_MANUAL_COMMAND: ${{ matrix.command }}
-      REPORT2_MANUAL_COIN_CONTRACT: ''
+      REPORT2_MANUAL_COIN_CONTRACT: 'NIL-USDT'
       REPORT2_D1_RUNS_PER_DAY: '80'
       REPORT2_POST_V7_UNIFIED_ENABLED: '1'
       REPORT2_LIQUIDATION_EXTENSION_MODE: SHADOW_ONLY
@@ -70,7 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 5e8e58501844a047c75d09b3971dfefb1b995d37
+          ref: f5e50883df0778e02ece3fbc66fd631841ee0adb
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -80,9 +78,9 @@ jobs:
         run: |
           set -Eeuo pipefail
           current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
-          test "$current" = '5e8e58501844a047c75d09b3971dfefb1b995d37'
+          test "$current" = 'f5e50883df0778e02ece3fbc66fd631841ee0adb'
           gh api repos/${{ github.repository }}/contents/audit-fixes/source-optimization-20260930/execution-lock.json?ref=report2-execution-lock --jq .content | base64 --decode > /tmp/shared-lock.json
-          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json'));if(!l.active||l.owner!=='autonomous/final-chain-acceptance-20260930'||l.expected_main!=='5e8e58501844a047c75d09b3971dfefb1b995d37'||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
+          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json'));if(!l.active||l.owner!=='autonomous/final-chain-acceptance-20260930'||l.expected_main!=='f5e50883df0778e02ece3fbc66fd631841ee0adb'||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
           node runner/current-runtime-binding.mjs --github-env
       - name: Runtime admission
         run: node runner/preflight-role-gate.mjs
@@ -111,7 +109,7 @@ jobs:
       - name: Collect result and acceptance settings
         if: always()
         run: |
-          node --input-type=module -e "import fs from 'node:fs';fs.mkdirSync('audit-output',{recursive:true});const result={mode:process.env.MODE,source_main:'5e8e58501844a047c75d09b3971dfefb1b995d37',workflow_commit:process.env.GITHUB_SHA,telegram_enabled:false,collector_enabled:false,prospective_statistics_enabled:false,weights_changed:false};fs.writeFileSync('audit-output/acceptance-settings.json',JSON.stringify(result,null,2));if(fs.existsSync('/tmp/report2-external-http-count.json'))fs.copyFileSync('/tmp/report2-external-http-count.json','audit-output/report2-external-http-count.json');for(const f of ['report2-run-result.json','report2-measurement.json','report2-external-http-count.json'])if(fs.existsSync('runtime/'+f))fs.copyFileSync('runtime/'+f,'audit-output/'+f)"
+          node --input-type=module -e "import fs from 'node:fs';fs.mkdirSync('audit-output',{recursive:true});const result={mode:process.env.MODE,source_main:'f5e50883df0778e02ece3fbc66fd631841ee0adb',workflow_commit:process.env.GITHUB_SHA,telegram_enabled:false,collector_enabled:false,prospective_statistics_enabled:false,weights_changed:false};fs.writeFileSync('audit-output/acceptance-settings.json',JSON.stringify(result,null,2));if(fs.existsSync('/tmp/report2-external-http-count.json'))fs.copyFileSync('/tmp/report2-external-http-count.json','audit-output/report2-external-http-count.json');for(const f of ['report2-run-result.json','report2-measurement.json','report2-external-http-count.json'])if(fs.existsSync('runtime/'+f))fs.copyFileSync('runtime/'+f,'audit-output/'+f)"
         env:
           MODE: ${{ matrix.mode }}
       - name: Explain report execution failure
