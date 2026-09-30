@@ -1,7 +1,7 @@
 import {collectGateLiquidationHistory} from './gate-liquidation-history.mjs';
 import {normalizeOkxDepthLevel} from './asset-identity-cache.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v4-catalog-failure-receipts-20260930';
+export const CROSS_EXCHANGE_RISK_VERSION='cross-exchange-risk-v5-coinalyze-quota-fallback-20260930';
 const CATALOG_TTL_MS=24*60*60*1000,DEPTH_TTL_MS=30_000,REALIZED_TTL_MS=5*60*1000,HISTORY_TTL_MS=15*60*1000;
 const text=v=>String(v??'').trim();
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -12,7 +12,7 @@ const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 
 async function requestJson(fetchImpl,url,{headers={},timeout_ms=9000}={}){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout_ms);
- try{const response=await fetchImpl(url,{headers:{accept:'application/json','user-agent':'My-Report-2/cross-exchange-risk-v1',...headers},signal:controller.signal});const payload=await response.json().catch(()=>null);return{ok:response.ok,status:response.status,payload,error:response.ok?null:`HTTP_${response.status}`};}
+ try{const response=await fetchImpl(url,{headers:{accept:'application/json','user-agent':'My-Report-2/cross-exchange-risk-v1',...headers},signal:controller.signal});const payload=await response.json().catch(()=>null);return{ok:response.ok,status:response.status,payload,received_ts:Date.now(),retry_after:response.headers?.get?.('retry-after')??null,error:response.ok?null:`HTTP_${response.status}`};}
  catch(error){return{ok:false,status:null,payload:null,error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160)};}finally{clearTimeout(timer);}
 }
 
@@ -110,25 +110,43 @@ export function normalizeCoinalyzeLiquidationHistory(payload,now,{requested_symb
  return{source:'COINALYZE',status:complete?'CLOSED':'PARTIAL',reason:complete?null:'PARTIAL_MARKET_COVERAGE',observed_ts:now,market_count:rows.length,requested_symbols:requested,comparable_symbols:comparable,datapoints:recent.length+baseline.length,long_liquidated_recent:a.long,short_liquidated_recent:a.short,recent_total:current,baseline_total:b.long+b.short,baseline_bucket_mean:baselinePerBucket,expected_recent_total:expectedRecent,intensity_ratio:expectedRecent>0?current/expectedRecent:null,history_window_minutes:120,recent_window_minutes:15,closed_intervals_only:true,conflicting_duplicates:conflicts,coverage_fraction:comparable.length/requested.length,advisory_only:true};
 }
 export function compactCoinalyzeMarkets(payload,base){return (Array.isArray(payload)?payload:[]).filter(r=>(!text(base)||text(r?.base_asset).toUpperCase()===text(base).toUpperCase())&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).map(r=>({symbol:text(r?.symbol),base_asset:text(r?.base_asset).toUpperCase(),quote_asset:text(r?.quote_asset).toUpperCase(),exchange:text(r?.exchange).toUpperCase(),is_perpetual:true})).filter(r=>r.symbol);}
+// Provider cooldown is shared across exact assets and catalog/history routes.
+// This is a temporary admission state, never an unsupported-market finding.
+const COINALYZE_BACKOFF_ID='COINALYZE_RATE_BACKOFF_V1';
+async function recordCoinalyzeRateLimit(db,raw,now){
+ if(raw.status!==429)return null;
+ now=Math.max(now,Number(raw.received_ts)||now);
+ const value=text(raw.retry_after),seconds=value?Number(value):NaN,parsedDate=Date.parse(value);
+ const requested=Number.isFinite(seconds)&&seconds>=0?seconds*1000:Number.isFinite(parsedDate)?parsedDate-now:60_000;
+ const retry_after_ms=Math.max(1000,Number.isFinite(requested)?requested:60_000),next_allowed_at=now+retry_after_ms;
+ if(!Number.isSafeInteger(next_allowed_at))throw Error('COINALYZE_RETRY_AFTER_NOT_CLOSED');
+ const result={status:'RATE_LIMITED_429',reason:'HTTP_429',http_status:429,retry_after_ms,next_allowed_at,provider_quota:true,source_unsupported:false};
+ await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=MAX(report2_coinalyze_catalog.expires_ts,excluded.expires_ts),payload_json=CASE WHEN excluded.expires_ts>=report2_coinalyze_catalog.expires_ts THEN excluded.payload_json ELSE report2_coinalyze_catalog.payload_json END`).bind(COINALYZE_BACKOFF_ID,now,next_allowed_at,JSON.stringify(result)).run();
+ return result;
+}
 export async function loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now,run_id}={}){
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinalyze_catalog (catalog_id TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL)`).run();
+ const backoff=await db.prepare(`SELECT payload_json,expires_ts FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>?2 LIMIT 1`).bind(COINALYZE_BACKOFF_ID,now).first();
+ if(backoff)return{status:'RATE_LIMITED_429',reason:'HTTP_429',http_status:429,next_allowed_at:Number(backoff.expires_ts),cache_status:'GLOBAL_RATE_BACKOFF',network_calls:0,rows:[],catalog_complete:false,source_unsupported:false};
  const catalogId='FUTURES_V3_ALL';
- const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>=?2 LIMIT 1`).bind(catalogId,now).first();if(prior){try{return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:compactCoinalyzeMarkets(JSON.parse(prior.payload_json),base)};}catch{}}
+ const prior=await db.prepare(`SELECT payload_json FROM report2_coinalyze_catalog WHERE catalog_id=?1 AND expires_ts>=?2 LIMIT 1`).bind(catalogId,now).first();if(prior){try{const all=compactCoinalyzeMarkets(JSON.parse(prior.payload_json));if(all.length)return{status:'CLOSED',cache_status:'HIT',network_calls:0,rows:compactCoinalyzeMarkets(all,base),catalog_complete:true};}catch{}}
  const admission=await reserveProviderMinuteUnits(db,{provider:'COINALYZE',reservation_id:`${run_id}:CATALOG:${base}`,units:1,now,cap:30});
  if(!admission.allowed)return{status:'DEFERRED_RATE_LIMIT',cache_status:'MISS',network_calls:0,rows:[],error:admission.status,admission};
  const raw=await requestJson(fetch_impl,'https://api.coinalyze.net/v1/future-markets',{headers:{api_key},timeout_ms:12000}),allRows=raw.ok?compactCoinalyzeMarkets(raw.payload):[],rows=compactCoinalyzeMarkets(allRows,base);
+ const rate=await recordCoinalyzeRateLimit(db,raw,now);if(rate)return{...rate,cache_status:'REFRESHED',network_calls:1,rows:[],catalog_complete:false,admission};
  if(allRows.length)await db.prepare(`INSERT INTO report2_coinalyze_catalog(catalog_id,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(catalog_id) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(catalogId,now,now+CATALOG_TTL_MS,JSON.stringify(allRows)).run();
- return{status:rows.length?'CLOSED':'NOT_CLOSED',cache_status:'REFRESHED',network_calls:1,rows,error:raw.error,admission};
+ return{status:raw.ok?(allRows.length?'CLOSED':'INVALID_RESPONSE'):'SOURCE_ERROR',cache_status:'REFRESHED',network_calls:1,rows,catalog_complete:raw.ok&&allRows.length>0,http_status:raw.status,error:raw.error||(!allRows.length?'CATALOG_SCHEMA_OR_COVERAGE_NOT_CLOSED':null),admission};
 }
 async function collectCoinalyzeHistory({db,fetch_impl,api_key,base,now,run_id}={}){
  if(!text(api_key))return{source:'COINALYZE',status:'DISABLED',reason:'API_KEY_REQUIRED',network_calls:0,observed_ts:now};
  const catalog=await loadCoinalyzeMarkets({db,fetch_impl,api_key,base,now,run_id});
  const preferred=['HUOBI','BINANCE','BYBIT','OKX','GATE'],rank=exchange=>{const i=preferred.indexOf(text(exchange).toUpperCase());return i<0?preferred.length:i;},markets=catalog.rows.filter(r=>text(r?.base_asset).toUpperCase()===base&&['USDT','USD','USDC'].includes(text(r?.quote_asset).toUpperCase())&&r?.is_perpetual===true).sort((a,b)=>rank(a.exchange)-rank(b.exchange)).slice(0,4),symbols=markets.map(r=>r.symbol).filter(Boolean);
- if(!symbols.length)return{source:'COINALYZE',status:'NOT_CLOSED',reason:'NO_EXACT_FUTURES_MARKETS',network_calls:catalog.network_calls,provider_call_units:catalog.network_calls,observed_ts:now};
+ if(!symbols.length)return{source:'COINALYZE',status:catalog.catalog_complete?'SOURCE_UNSUPPORTED':catalog.status,reason:catalog.catalog_complete?'NO_EXACT_FUTURES_MARKETS':catalog.reason??catalog.error??catalog.admission?.status??'CATALOG_NOT_CLOSED',network_calls:catalog.network_calls,provider_call_units:catalog.network_calls,observed_ts:now,catalog_complete:catalog.catalog_complete===true,http_status:catalog.http_status??null,next_allowed_at:catalog.next_allowed_at??null,admission:catalog.admission};
  const admission=await reserveProviderMinuteUnits(db,{provider:'COINALYZE',reservation_id:`${run_id}:HISTORY:${base}:${symbols.join(',')}`,units:symbols.length,now,cap:30});
  if(!admission.allowed)return{source:'COINALYZE',status:'DEFERRED_RATE_LIMIT',reason:admission.status,network_calls:catalog.network_calls,provider_call_units:catalog.network_calls,observed_ts:now,admission};
  const to=Math.floor(now/(5*60_000))*5*60,from=to-24*5*60,url=`https://api.coinalyze.net/v1/liquidation-history?symbols=${encodeURIComponent(symbols.join(','))}&interval=5min&from=${from}&to=${to}&convert_to_usd=true`,raw=await requestJson(fetch_impl,url,{headers:{api_key},timeout_ms:12000});
  const networkCalls=catalog.network_calls+1,providerUnits=symbols.length+catalog.network_calls;
+ const rate=await recordCoinalyzeRateLimit(db,raw,now);if(rate)return{source:'COINALYZE',...rate,network_calls:networkCalls,provider_call_units:providerUnits,observed_ts:now,admission};
  return raw.ok?{...normalizeCoinalyzeLiquidationHistory(raw.payload,now,{requested_symbols:symbols}),network_calls:networkCalls,provider_call_units:providerUnits,symbols,catalog_cache_status:catalog.cache_status,admission}:{source:'COINALYZE',status:'SOURCE_ERROR',error:raw.error,network_calls:networkCalls,provider_call_units:providerUnits,observed_ts:now,admission};
 }
 
@@ -136,7 +154,7 @@ async function collectHistory(params={}){
  const first=await collectCoinalyzeHistory(params),used=Number(first.network_calls)||0;
  if(first.status==='CLOSED')return first;
  const fallback=await collectGateLiquidationHistory({...params,contract:`${params.base}-USDT`,max_http:Math.max(0,3-used)});
- return {...fallback,network_calls:used+Number(fallback.network_calls||0),fallback_from:{source:'COINALYZE',status:first.status,reason:first.reason??first.error??null,network_calls:used},equivalent_baseline_replacement:false};
+ return {...fallback,network_calls:used+Number(fallback.network_calls||0),fallback_from:{source:'COINALYZE',status:first.status,reason:first.reason??first.error??null,network_calls:used,provider_call_units:first.provider_call_units??0,http_status:first.http_status??null,next_allowed_at:first.next_allowed_at??null},equivalent_baseline_replacement:false};
 }
 
 async function loadCached(db,contract,now){const result=await db.prepare(`SELECT source,payload_json FROM report2_cross_exchange_risk_cache WHERE contract_code=?1 AND expires_ts>=?2`).bind(contract,now).all(),sources={};for(const row of result?.results||[]){try{sources[row.source]=JSON.parse(row.payload_json);}catch{}}return sources;}

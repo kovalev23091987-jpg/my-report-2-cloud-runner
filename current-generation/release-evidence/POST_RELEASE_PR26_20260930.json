@@ -1,0 +1,110 @@
+{
+  "schema": "report2-pr26-exact-trade-integrity-acceptance-v1",
+  "updated_at": "2026-09-30T11:20:00Z",
+  "runtime_release": "89da71ddb2e7cc06781367e41a88ff4ff889bfae",
+  "main": "2c1b121a96e6fb406d61715327083da1be034702",
+  "tested_head": "fd3fa8e3d379af41e0355ce06690ce6e51439daf",
+  "worker_sha256": "85aeb64cc2898f7066b22f27abdccec0ead0cb3fa8165260b59f76c4629ad55f",
+  "ci": {
+    "run": 36704685645,
+    "status": "PASS",
+    "early_cases": 20,
+    "integration_cases": 37,
+    "actual_worker_parser_runtime_test": "PASS"
+  },
+  "same_body_flow": {
+    "contract": "QNT-USDT",
+    "raw_trades": 2120,
+    "old_unique_ids": 2007,
+    "new_unique_ids": 2120,
+    "false_duplicates_before": 113,
+    "false_duplicates_after": 0,
+    "closed_windows_before": [
+      "5m"
+    ],
+    "closed_windows_after": [
+      "5m",
+      "15m",
+      "1h",
+      "4h"
+    ],
+    "window_24h_closed": false,
+    "actual_source_http": 20,
+    "d1": {
+      "rows_read": 57,
+      "rows_written": 57,
+      "requests": 81,
+      "unknown_ops": 0
+    }
+  },
+  "full": {
+    "run": 36705003379,
+    "head": "2c211588ce9d877ed33c29f1df2bc4ca6b451217",
+    "status": "PARTIAL_DATA_UNAVAILABLE",
+    "reason": "DEEP_DATA_INSUFFICIENT",
+    "contract": "QNT-USDT",
+    "state": "REJECTED",
+    "entry": null,
+    "targets": [],
+    "gaps_before": 7,
+    "gaps_after": 3,
+    "gaps": [
+      "futures_snapshot.htx_futures_order_flow",
+      "spot_snapshot.quality_status_GREEN",
+      "futures_trajectory.flow_24h"
+    ],
+    "canonical_persisted": true,
+    "health_gaps_match_actual": true
+  },
+  "standalone": {
+    "run": 36705233641,
+    "head": "2c1b121a96e6fb406d61715327083da1be034702",
+    "workflow_conclusion": "success",
+    "status": "CLOSED",
+    "contract": "SOL-USDT",
+    "foreign_levels_not_htx_targets": true,
+    "unknown_source_time_explicit": true
+  },
+  "volume": {
+    "source_run": 36704685645,
+    "contract": "QNT-USDT",
+    "market": "HTX_LINEAR_USDT_PERPETUAL",
+    "start_utc": "2026-09-30T06:00:00Z",
+    "end_utc_exclusive": "2026-09-30T10:00:00Z",
+    "minutes": 240,
+    "unique_trades": 1187,
+    "per_minute_count_contracts_base_quote_mismatches": 0,
+    "contracts": 80822,
+    "base_QNT": 808.22,
+    "quote_USDT": 231118.6676,
+    "exact_for_this_window": true,
+    "complete_all_markets_or_24h": false,
+    "independent_profitability_samples": 0,
+    "production_score_entry_target_enabled": false
+  },
+  "artifacts": {
+    "ci": {
+      "id": 11090749738,
+      "sha256": "af9e9721893021d5c418b4600e31bab6ee1d9b2addbe0ef597b1ca27cf4182b9"
+    },
+    "flow": {
+      "id": 11091770384,
+      "sha256": "466f22a018269bd9ff2ce41873c6c0e9fe52f8223cbeff06372ba9d30f63a324"
+    },
+    "full": {
+      "id": 11091567488,
+      "sha256": "67864848614ee8aae85b055a6ea401bc4cf0685ae01c523b8c4c0bbd66934134"
+    },
+    "standalone": {
+      "id": 11091607706,
+      "sha256": "387e85de36dd48270be07df39bf71c8f39a8c64302f8dfdf42955cc8ef72752b"
+    }
+  },
+  "telegram_test_sends": 0,
+  "trade_calls": 0,
+  "weights_changed": false,
+  "quotas_changed": false,
+  "whole_tz_complete": false,
+  "t16_5_validated": false,
+  "next_priority": "READ_ONLY_PROSPECTIVE_QUEUE_AND_PER_QUERY_BUDGET_AUDIT"
+}
