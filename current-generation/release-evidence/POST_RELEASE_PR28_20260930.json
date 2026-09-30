@@ -1,0 +1,113 @@
+{
+  "schema": "report2-pr28-per-metric-source-proof-acceptance-v1",
+  "updated_at": "2026-09-30T12:27:00Z",
+  "runtime_release": "108ba077dc840714b44d6393b7c4916da9250f7b",
+  "main_after_reports": "8ca1a86736d8604711ccccfc99f9ffdc865d791b",
+  "tested_head": "604bdc1615a86ff1845cce8af2d85f19654b72b1",
+  "worker_sha256": "85aeb64cc2898f7066b22f27abdccec0ead0cb3fa8165260b59f76c4629ad55f",
+  "scope": "SOPT_06_SUBSET_NOT_ALL_SOURCE_OPTIMIZATION",
+  "ci": {
+    "run": 36713732125,
+    "status": "PASS",
+    "all_current_generation_tests": "PASS",
+    "early_cases": 20,
+    "integration_cases": 37,
+    "per_metric_role_runtime_cases": 23,
+    "quota_fallback_runtime_cases": 11,
+    "quota_boundary_health_cases": 9,
+    "actual_worker_parser": "PASS",
+    "changed_module_manifest_matches": 3,
+    "extra_live_provider_probes": 0
+  },
+  "before_after": {
+    "baseline_role_module_sha256": "03f40361a45bd164c2a18f617264a2e12d1165526e1bb2942004c9e21bcfaf4f",
+    "baseline_publication_git_blob": "a575e73eae08bd2fde53303deeb52fe8acefbeb8",
+    "baseline": {
+      "tests": 23,
+      "pass": 3,
+      "fail": 20
+    },
+    "candidate": {
+      "tests": 23,
+      "pass": 23,
+      "fail": 0
+    },
+    "synthetic_regression_controls_not_market_performance": true
+  },
+  "changes": [
+    "Declared capabilities separated from observed per-metric usable evidence",
+    "Exact provider aliases, exact identity, quality, value, coverage and source-clock/SLA gates",
+    "OI current level separated from OI trajectory; incompatible windows, endpoints and unproven funding periods not combined",
+    "Repeated provider wrappers with same known origin add no confirmation",
+    "OBSERVE publication and already-bound delivery revalidate exact receipt fields",
+    "Actual inherited OKX paths recognized; Bybit and Gate OI roles reflected without new predictive weights"
+  ],
+  "scope_correction_to_pr27": "source_role_view is not metadata-only: canonical-publication.earlySourceRolesClosed uses it for OBSERVE admission. Earlier note incomplete. No claim that a bad live message or trade was caused.",
+  "full": {
+    "run": 36713921339,
+    "head": "b9ad10bbad636b0867951010546f20140fdc98d7",
+    "generated_at": "2026-09-30T12:21:54.205Z",
+    "status": "PARTIAL_DATA_UNAVAILABLE",
+    "reason": "DEEP_DATA_INSUFFICIENT",
+    "contract": "龙虾-USDT",
+    "direction": "SHORT",
+    "state": "REJECTED",
+    "entry": null,
+    "targets": [],
+    "gaps": [
+      "futures_snapshot.htx_futures_order_flow",
+      "spot_snapshot.quality_status_GREEN",
+      "futures_trajectory.flow_24h"
+    ],
+    "telegram_started": false,
+    "trading_execution": false,
+    "source_role_context_not_in_sanitized_artifact": true
+  },
+  "standalone": {
+    "run": 36714307150,
+    "head": "8ca1a86736d8604711ccccfc99f9ffdc865d791b",
+    "generated_at": "2026-09-30T12:25:13.913Z",
+    "workflow_conclusion": "success",
+    "status": "CLOSED",
+    "contract": "SOL-USDT",
+    "foreign_levels_not_htx_targets": true,
+    "unknown_source_time_explicit": true,
+    "telegram_started": false,
+    "decision_generated": false,
+    "validated_signal": false
+  },
+  "artifacts": {
+    "ci": {
+      "id": 11095361701,
+      "sha256": "2d9ca753e48d7e8e3f972c649ad6655f2cab535e5591f8de642ec9f1a3ef4f4a"
+    },
+    "full": {
+      "id": 11095012955,
+      "sha256": "a851a25859a7c240af1a6eed1c77bbcce397cf1a6e65dd80d4d8a88927ab847f"
+    },
+    "standalone": {
+      "id": 11095708506,
+      "sha256": "b7e10d61c4a7222afe6a96c7f5271a0d663ad161c9e2da3c2fba1f62c95ad38a"
+    }
+  },
+  "telegram_test_sends": 0,
+  "trade_orders_requested_or_added": false,
+  "weights_changed": false,
+  "quotas_changed": false,
+  "schedule_changed": false,
+  "whole_tz_complete": false,
+  "t16_5_validated": false,
+  "volume_profile_predictive_enabled": false,
+  "owner_stopping_rule": "Do not repeat unchanged research. State scoped unavailability and concrete reopening conditions; do not declare still-fixable engineering work impossible.",
+  "progress_estimate": {
+    "approximate_percent": 60,
+    "method": "SUBJECTIVE_ENGINEERING_ESTIMATE_NOT_WEIGHTED_REQUIREMENT_COUNT"
+  },
+  "remaining": [
+    "Per-field source effectiveness and strongest verified assignment across all blocks",
+    "Uncovered source metric paths and inherited worker-derived source clock provenance",
+    "Prospective queue starvation and expensive/unverified history reads already diagnosed in audit36707975711",
+    "Previously listed N01-N17 factual coverage gaps",
+    "Independent volume-profile utility and mature T16.5 validation"
+  ]
+}
