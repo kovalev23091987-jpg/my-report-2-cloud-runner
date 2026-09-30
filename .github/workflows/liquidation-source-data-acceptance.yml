@@ -38,7 +38,9 @@ jobs:
           REPORT2_FUTURE_PROBE_SYMBOL: SOL
         run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output/sol-control
       - name: Verify tracked future native price bands for exact BTW and supported SOL
-        run: node audit-fixes/liquidation-source-data-20260930/byk-hl-bands-probe.mjs
+        run: |
+          node --test audit-fixes/liquidation-source-data-20260930/prepared-byk-tracked-future-map.test.mjs
+          node audit-fixes/liquidation-source-data-20260930/byk-hl-bands-probe.mjs
       - name: Assemble production runtime with candidate source changes
         run: |
           mkdir -p runtime audit-output

@@ -1,0 +1,45 @@
+// Prepared against the published schema. Not installed in production before a
+// successful exact cloud payload/schema check through the existing proxy.
+import {seal} from '../../current-generation/files/src/liquidation-extension/core.mjs';
+import {readJson} from '../../current-generation/files/src/liquidation-extension/io.mjs';
+const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
+const sourceClock=v=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=1e12?v:typeof v==='string'?Date.parse(v):null;
+export function normalizeTrackedBands(payload,{contract,run_id,observed_ts=Date.now()}={}){
+ const symbol=String(contract??'').replace(/-USDT$/,'').toUpperCase();
+ const result={source:'BYK_TRACKED_HL_BANDS',contract,run_id,role:'NATIVE_POSITION_CONTEXT',upstream_family:'HYPERLIQUID',independent_of_other_hl_sources:false,entry_eligible:false,score_eligible:false,status:'SOURCE_SCHEMA_NOT_CLOSED',data_available:false,maps:[],network_calls:0};
+ const reject=status=>({...result,status});
+ if(!symbol||['BTC','ETH'].includes(symbol))return reject('EXCLUDED_OR_INVALID_CONTRACT');
+ if(String(payload?.coin??'').toUpperCase()!==symbol)return reject('EXACT_SYMBOL_MISMATCH');
+ const source_ts=sourceClock(payload?.as_of_ms??payload?.as_of??payload?.coverage?.as_of_ms??payload?.coverage?.as_of);
+ if(!Number.isSafeInteger(source_ts))return reject('SOURCE_TIMESTAMP_MISSING');
+ if(source_ts>observed_ts)return reject('FUTURE_SOURCE_TIMESTAMP');
+ if(observed_ts-source_ts>300000)return reject('STALE_SOURCE');
+ const mark=finite(payload?.mark);
+ if(!(mark>0)||!Array.isArray(payload?.long)||!Array.isArray(payload?.short))return reject('SOURCE_SCHEMA_NOT_CLOSED');
+ const row_count=payload.long.length+payload.short.length;
+ if(row_count>2000)return reject('SOURCE_ROWS_SIZE_LIMIT');
+ const zones=[];
+ let invalid_rows=0;
+ for(const [side,rows] of [['LONG',payload.long],['SHORT',payload.short]])for(const row of rows){
+  const price=finite(row?.price),notional=finite(row?.notional_usd),positions=finite(row?.positions);
+  if(!(price>0&&notional>0&&Number.isSafeInteger(positions)&&positions>0)||side==='LONG'&&price>=mark||side==='SHORT'&&price<=mark){invalid_rows++;continue;}
+  zones.push({native_price:price,native_reference_price:mark,price_quote:'USD',liquidated_side:side,notional,notional_unit:'USD',position_count:positions,price_semantics:'NATIVE_LIQUIDATION_PRICE_BUCKET_CENTER',conditional_cross:true,source_ts,venue:'HYPERLIQUID',status:'USABLE_SCOPED_CONTEXT'});
+ }
+ const coverage={kind:'TRACKED_ACCOUNT_SAMPLE_ONLY',account_population_limit:1000,provider_coverage:payload.coverage??null,provider_totals:payload.totals??null,bucket_width_pct_of_mark:0.25,returned_bands:row_count,accepted_bands:zones.length,rejected_bands:invalid_rows,full_market_census:false,distance_limit_pct:null};
+ // Keep the provider clock, sample totals and band semantics. Do not use the
+ // model_comparison or historical hourly rows as future open-position levels.
+ const map=seal({provider:result.source,venue:'HYPERLIQUID',native_symbol:symbol,run_id,source_ts,status:zones.length?'USABLE_SCOPED_CONTEXT':'NO_VALID_BANDS_IN_TRACKED_SAMPLE',usable_for_context:zones.length>0,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',coverage,zones});
+ if(Buffer.byteLength(JSON.stringify(map))>2000000)return reject('SOURCE_RESPONSE_SIZE_LIMIT');
+ return{...result,status:map.status,data_available:zones.length>0,source_ts,zone_count:zones.length,coverage,maps:zones.length?[map]:[]};
+}
+export async function collectTrackedBands({contract,run_id,byk_admission,request_admit,fetch_impl=globalThis.fetch,now=Date.now()}={}){
+ const symbol=String(contract??'').replace(/-USDT$/,'').toUpperCase(),base={source:'BYK_TRACKED_HL_BANDS',contract,run_id,data_available:false,network_calls:0,maps:[]};
+ if(!/^[A-Z0-9_:.-]{1,40}$/.test(symbol)||['BTC','ETH'].includes(symbol))return{...base,status:'EXCLUDED_OR_INVALID_CONTRACT'};
+ // Reuse one unused unit of the existing protected monthly reservation.
+ if(byk_admission?.allowed!==true||!(Number(byk_admission.reserved_units)>=4))return{...base,status:'EXISTING_BYK_MONTHLY_RESERVATION_NOT_GRANTED'};
+ const grant=typeof request_admit==='function'?request_admit({logical_request_id:`BYK_TRACKED_HL:${run_id}:${contract}`,lane:'background',attempts:1}):null;
+ if(!grant?.allowed||grant.duplicate)return{...base,status:'HTTP_BUDGET_NOT_GRANTED'};
+ const r=await readJson(`https://bykaranteli.com/api/public/hyperliquid-positions?coin=${encodeURIComponent(symbol)}`,{fetch_impl,max_bytes:8000000,timeout_ms:12000});
+ if(!r.ok)return{...base,status:r.provider_error?.message==='URL_NOT_ALLOWED'?'CLOUD_PROXY_ROUTE_NOT_ALLOWED':r.reason,network_calls:1,http_status:r.receipt?.http_status??null,source_error:r.provider_error??null};
+ return{...normalizeTrackedBands(r.payload,{contract,run_id,observed_ts:r.receipt?.received_ts??now}),network_calls:1,http_status:r.receipt?.http_status,receipt_sha256:r.receipt?.sha256};
+}
