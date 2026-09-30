@@ -52,7 +52,8 @@ export async function recordEvidenceSourceHealth(db,{contract,run_id,observation
  const rows=observations.filter(r=>Number.isSafeInteger(r.actual_http)&&r.actual_http>0);
  if(!rows.length)return{status:'NO_NEW_TRANSPORT_OBSERVATION',observations:[],predictive_weight_changed:false};
  if(!contract||!run_id||rows.length>5)return{status:'HEALTH_SCOPE_NOT_CLOSED',observations:[],predictive_weight_changed:false};
- const grant=admit?.({rows_read:rows.length*16,rows_written:rows.length*2});
+ // D1 counts the table row plus both indexes (measured: 3 writes/observation).
+ const grant=admit?.({rows_read:rows.length*16,rows_written:rows.length*3+4});
  if(grant?.allowed!==true)return{status:grant?.status||'HEALTH_DB_ADMISSION_REQUIRED',observations:[],predictive_weight_changed:false};
  try{
   await db.batch([
