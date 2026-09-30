@@ -85,7 +85,7 @@ const files=[
  'src/shadow-market-pilot.mjs',
  'src/blockscout-index-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',
- 'src/finalized-chain-events.mjs',
+ 'src/coinpaprika-sector-evidence.mjs','src/finalized-chain-events.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
  'src/outcome-v2.mjs',
