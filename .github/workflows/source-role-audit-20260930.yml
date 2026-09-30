@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
+    branches: [repair/manual-request-result-binding-v2-20261001, autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
     paths:
       - current-generation/**
       - runner/current-runtime-binding.mjs
@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: '24'
       - name: Fence the candidate to its expected production commit
+        if: github.ref != 'refs/heads/repair/manual-request-result-binding-v2-20261001'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -65,6 +66,18 @@ jobs:
       - name: Verify ready sector producers with six public requests at most
         if: github.ref == 'refs/heads/autonomous/sector-integration-20260930'
         run: node audit-fixes/sector-integration-20260930/live-acceptance.mjs runtime
+      - name: Verify isolated manual request and actual assembled result binding
+        if: github.ref == 'refs/heads/repair/manual-request-result-binding-v2-20261001'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
+          expected=$(node -p "JSON.parse(require('fs').readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json')).expected_main")
+          test "$current" = "$expected"
+          node --check runtime/runner-main.mjs
+          node --check runner/enqueue-manual-command.mjs
+          REPORT2_MANUAL_BINDING_MODULE="file://$(realpath runtime/src/manual-result-binding.mjs)" node --test current-generation/tests/manual-result-binding.test.mjs > audit-output/manual-result-binding.tap
       - name: Explain failed offline checks
         if: failure()
         run: |
@@ -78,7 +91,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
+    if: github.ref != 'refs/heads/repair/manual-request-result-binding-v2-20261001' && github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
