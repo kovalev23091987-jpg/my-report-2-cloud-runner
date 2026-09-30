@@ -1,5 +1,11 @@
 import {createHash} from 'node:crypto';
 const ALLOWED=new Set(['trade.hyperperps.app','api.hyperliquid.xyz','api.0xarchive.io','bykaranteli.com','backend-arbitrum.gains.trade','backend-pricing.eu.gains.trade','xoomar.com','node.liqflow.app','mainnet.zklighter.elliot.ai','arbitrum.gmxapi.io','gmx.squids.live']);
+export function providerErrorDetails(payload,{headers={},request_id=null}={}){
+ const token=v=>typeof v==='number'?String(v):typeof v==='string'&&/^[A-Za-z0-9_.:-]{1,100}$/.test(v)?v:null;
+ let message=payload?.error?.message??payload?.message??(typeof payload?.error==='string'?payload.error:null);
+ if(typeof message==='string'){for(const [name,value]of Object.entries(headers))if(/authorization|api[-_]key/i.test(name)&&typeof value==='string'&&value){message=message.split(value).join('[REDACTED]');const bearer=value.replace(/^Bearer\s+/i,'');if(bearer!==value)message=message.split(bearer).join('[REDACTED]');}message=message.replace(/[\r\n\x00-\x1f]/g,' ').slice(0,240);}else message=null;
+ return{code:token(payload?.error?.code??payload?.error_code??payload?.code),param:token(payload?.param),message,request_id:token(payload?.meta?.request_id??payload?.request_id??request_id)};
+}
 export async function readJson(url,{method='GET',body,headers={},fetch_impl=globalThis.fetch,timeout_ms=15000,max_bytes=8000000,clock=Date.now}={}){
  const u=new URL(url);
  if(u.protocol!=='https:'||u.username||u.password||!ALLOWED.has(u.hostname))throw Error('SOURCE_URL_NOT_ALLOWLISTED');
@@ -20,7 +26,7 @@ export async function readJson(url,{method='GET',body,headers={},fetch_impl=glob
   else{const t=await r.text();parts.push(Buffer.from(t));size=parts[0].length;if(size>max_bytes)throw Error('RESPONSE_SIZE_LIMIT');}
   const bytes=Buffer.concat(parts);receipt.bytes=bytes.length;receipt.sha256=createHash('sha256').update(bytes).digest('hex');
   receipt.received_ts=clock();
-  if(!r.ok)return {ok:false,reason:r.status===401||r.status===403?'ACCESS_REQUIRED':r.status===429?'RATE_LIMITED':'HTTP_ERROR',receipt,payload:null};
+  if(!r.ok){let errorBody=null;try{errorBody=JSON.parse(bytes.toString('utf8'));}catch{}const provider_error=providerErrorDetails(errorBody,{headers,request_id:r.headers?.get?.('x-request-id')});receipt.provider_error=provider_error;return {ok:false,reason:r.status===401||r.status===403?'ACCESS_REQUIRED':r.status===429?'RATE_LIMITED':'HTTP_ERROR',receipt,provider_error,payload:null};}
   let payload;try{payload=JSON.parse(bytes.toString('utf8'));}catch{return {ok:false,reason:'JSON_INVALID',receipt,payload:null};}
   return {ok:true,receipt,payload,raw_bytes:bytes};
  }catch(e){return {ok:false,reason:e?.name==='AbortError'?'TIMEOUT':e?.message==='RESPONSE_SIZE_LIMIT'?'RESPONSE_SIZE_LIMIT':'NETWORK_OR_TRANSPORT_ERROR',receipt:{...receipt,received_ts:clock()},payload:null};}

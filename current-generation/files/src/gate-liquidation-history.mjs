@@ -35,7 +35,7 @@ export async function collectGateLiquidationHistory({db,fetch_impl=globalThis.fe
  const raw=await get(`contract_stats?contract=${encodeURIComponent(symbol)}&interval=5m&limit=26`),observed=Math.max(now,...receipts.map(r=>Number(r.received_ts)||now));
  return {...(raw.ok?normalizeGateLiquidationStatistics(raw.payload,{contract,now:observed}):{source,status:'EXTERNAL_FAILURE',reason:`HTTP_${raw.status??'UNKNOWN'}`}),exact_identity:identity.symbol===symbol,native_symbol:symbol,identity,network_calls,receipts,admission:grant,per_minute_operational_cap:6,free_keyless:true};
 }
-export function formatLiquidationHistoryFacts(risk={}){
+export function formatLiquidationHistoryFacts(risk={}, {user_ru=false}={}){
  const lines=[],htx=risk.sources?.HTX_REALIZED_LIQUIDATIONS,gate=risk.sources?.GATE_LIQUIDATION_HISTORY,coinalyze=risk.sources?.COINALYZE;
  if(htx?.status==='CLOSED'){const amount=v=>Number(v).toLocaleString('ru-RU',{maximumFractionDigits:2});lines.push(`HTX ${htx.contract}: ${htx.observed_event_count} фактических ликвидаций в публичной выборке за запрошенные 120 минут; Long ${amount(htx.long_liquidated_observed_usd)} / Short ${amount(htx.short_liquidated_observed_usd)} USDT.`);if(htx.events?.length)lines.push(`HTX: цены последних ликвидаций ${htx.events.slice(0,3).map(e=>`${e.price} (${e.liquidated_side})`).join(', ')} USDT; события уже произошли.`);}
  if(gate?.status==='CLOSED'&&gate.exact_identity){const h=gate.history,p=gate.positioning,amount=v=>Number(v).toLocaleString('ru-RU',{maximumFractionDigits:2});
@@ -44,6 +44,6 @@ export function formatLiquidationHistoryFacts(risk={}){
   if(p?.open_interest_usd!==null&&p?.open_interest_usd!==undefined)lines.push(`Gate: OI ${amount(p.open_interest_usd)} USDT${p.long_users!==null&&p.short_users!==null?`; пользователей Long ${p.long_users} / Short ${p.short_users}`:''}.`);
  }
  if(coinalyze?.status==='CLOSED')lines.push(`Coinalyze: за 15 закрытых минут ликвидации Long ${coinalyze.long_liquidated_recent} / Short ${coinalyze.short_liquidated_recent} USD; ${coinalyze.comparable_symbols.length} проверенных рынков.`);
- else if(coinalyze?.partial_observation?.datapoints)lines.push(`Coinalyze: сохранено ${coinalyze.partial_observation.datapoints} закрытых наблюдений; сопоставимая история неполная.`);
- return lines;
+ else if(coinalyze?.partial_observation?.datapoints)for(const market of coinalyze.partial_observation.markets.filter(row=>row.observed_buckets).slice(0,2))lines.push(`Coinalyze ${market.symbol}: ${market.observed_buckets}/24 закрытых интервала; наблюдаемые Long ${Number(market.long_liquidated_observed_usd).toLocaleString('ru-RU',{maximumFractionDigits:2})} / Short ${Number(market.short_liquidated_observed_usd).toLocaleString('ru-RU',{maximumFractionDigits:2})} USD, история неполная.`);
+ return user_ru?lines.map(line=>line.replace(/\bLONG\b/gi,'длинные').replace(/\bSHORT\b/gi,'короткие').replace(/\bOI\b/g,'открытый интерес').replace(/\b([A-Z0-9]+)_([A-Z0-9]+)\b/g,'$1-$2')):lines;
 }

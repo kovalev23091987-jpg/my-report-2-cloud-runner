@@ -10,15 +10,15 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
  if(!Number.isSafeInteger(accounts_per_deep)||accounts_per_deep<1||accounts_per_deep>8)throw Error('ACCOUNT_LIMIT_INVALID');
  if(!Number.isSafeInteger(max_http_per_run)||max_http_per_run<2||max_http_per_run>24)throw Error('RUN_HTTP_LIMIT_INVALID');
  let phaseStart=null;let calls=0;const records=[],inflight=new Map(),catalogByRun=new Map();
- async function collect({contract,run_id,native_symbol,deep_started_ts,max_deep_ms=45000}={}){
+ async function collect({contract,run_id,native_symbol,deep_started_ts,max_deep_ms=45000,max_http_for_candidate=max_http_per_run}={}){
   if(mode!=='SHADOW_ONLY')return null;
   if(typeof admit!=='function'){records.push({status:'SKIPPED_DURABLE_ADMISSION_NOT_CONFIGURED',contract});return null;}
   if(!text(contract)||contract!==text(contract)||!text(run_id)||!text(native_symbol)){records.push({status:'SKIPPED_IDENTITY_MISSING',contract});return null;}
   const key=run_id+':'+contract;
   if(inflight.has(key))return inflight.get(key);
-  const promise=collectOnce({contract,run_id,native_symbol,deep_started_ts,max_deep_ms});inflight.set(key,promise);return promise;
+  const promise=collectOnce({contract,run_id,native_symbol,deep_started_ts,max_deep_ms,max_http_for_candidate});inflight.set(key,promise);return promise;
  }
- async function collectOnce({contract,run_id,native_symbol,deep_started_ts,max_deep_ms}){
+ async function collectOnce({contract,run_id,native_symbol,deep_started_ts,max_deep_ms,max_http_for_candidate}){
   const now=clock();if(phaseStart===null)phaseStart=now;const deadline=Math.min(phaseStart+max_total_ms,Number(deep_started_ts)+max_deep_ms);
   if(!Number.isFinite(deadline)||deadline-now<250){records.push({status:'SKIPPED_DEADLINE',contract});return null;}
   const baseRoute=resolveHtxLiquidationSources({contract});
@@ -48,6 +48,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    if(!route.native_routes.some(x=>x.provider==='HYPERLIQUID_LIQFLOW')){records.push({status:'UNSUPPORTED_NATIVE_SYMBOL',contract,native_symbol,catalog_checked:true,actual_requests:transport.length,htx_factual_still_eligible:true});return null;}
    const marketContext=extractHyperliquidMarketContext({payload:catalog.payload,receipt:catalog.receipt,native_symbol,observed_ts:clock()});
    const sampleRequests=1+accounts_per_deep;
+   if(transport.length+sampleRequests>max_http_for_candidate){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'SAMPLE',actual_requests:transport.length});return null;}
    if(calls+sampleRequests>max_http_per_run){records.push({status:'SKIPPED_RUN_HTTP_BUDGET',contract,phase:'SAMPLE'});return null;}
    calls+=sampleRequests;
    const grant=await admit({reservation_id:`LIQ_NATIVE_SAMPLE:${run_id}:${contract}`,contract,run_id,
@@ -70,7 +71,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:accounts.length,sampling_policy:sample.policy,actual_requests:transport.length,reserved_requests:catalogReserved+sampleRequests,elapsed_ms:completed-collection_started_ts,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
   }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}finally{calls-=Math.max(0,admittedReserved-transport.length);}
  }
- function estimateHttpCost({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 2+accounts_per_deep;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?1+accounts_per_deep:0;}
+ function estimateHttpCost({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 1;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?1+accounts_per_deep:0;}
  function nativeMarketCoverage({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok||!Array.isArray(catalog.payload?.[0]?.universe)||!text(native_symbol))return{status:'UNKNOWN'};return{status:catalog.payload[0].universe.some(row=>row?.name===native_symbol&&row?.isDelisted!==true)?'SUPPORTED':'UNSUPPORTED',native_symbol,catalog_verified:true};}
  return {collect,estimateHttpCost,nativeMarketCoverage,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
 }

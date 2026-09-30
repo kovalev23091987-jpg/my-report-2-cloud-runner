@@ -51,7 +51,7 @@ const files=[
  'src/dynamic-liquidation-panel.mjs',
  'src/liquidation-source-weighting.mjs',
  'src/cross-exchange-risk-context.mjs',
- 'src/gate-liquidation-history.mjs','src/htx-realized-liquidations.mjs',
+ 'src/gate-liquidation-history.mjs','src/htx-realized-liquidations.mjs','src/liquidation-source-chain.mjs',
  'src/liquidation-candidate-queue.mjs',
  'src/liquidation-outcome-calibration.mjs',
  'src/liquidation-command-router.mjs',

@@ -26,7 +26,7 @@ export function buildCandidateSourceRoutingPlan({
   high_interest_threshold:HIGH_INTEREST_SOURCE_THRESHOLD,
   explicit_priority:explicitPriority,
   cross_exchange_turn:cross_exchange_turn===true,
-  run_cross_exchange:cross_exchange_turn===true,
+  run_cross_exchange:cross_exchange_turn===true||reserveLiquidation,
   reserve_liquidation_lane:reserveLiquidation,
   total_http_envelope:envelope,
   reason:highInterest?'HIGH_INTEREST_REQUIRES_CONFIRMATION':explicitPriority?'EXPLICIT_OR_QUEUED_CANDIDATE_REQUIRES_CONFIRMATION':ordinaryLiquidationPriority?'EARLY_OR_FAST_MOVE_LIQUIDATION_PRIORITY':'ORDINARY_ROTATION',
