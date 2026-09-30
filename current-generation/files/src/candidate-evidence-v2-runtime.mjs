@@ -12,8 +12,9 @@ import {collectOfficialEventsEvidence} from './official-events-evidence.mjs';
 import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
+import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v11-market-binding-20260930';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v12-health-journal-20260930';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 // Only name producers that actually emit a row for this block in this collector.
@@ -77,6 +78,12 @@ export async function collectCandidateEvidenceV2(params={}){
  const evidence=[...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(macro?.evidence)?macro.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chain?.evidence)?chain.evidence:[]),...(Array.isArray(sourcify?.evidence)?sourcify.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(snapshot?.evidence)?snapshot.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[])];
  const statuses=[largeTrades?.status,sector?.status,htx?.status,macro?.status,deribit?.status,chain?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
  const sources={HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_RPC:chain,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout};
+ const healthRows=Object.entries(sources).map(([source_id,r])=>{
+  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:params.now??Date.now()}).usable),status=String(r?.status||'NOT_EVALUATED'),schemaClosed=status==='CLOSED'||status.startsWith('CLOSED_');
+  const operational_class=Number(r?.market_binding?.rejected_rows)>0?'INVALID_RESPONSE':schemaClosed?(valid.length?'CONTEXT_AVAILABLE':'VALID_RESPONSE_NO_EVENT'):/SOURCE_ERROR|HTTP_(403|429|451|5\d\d)|TIMEOUT|SOURCE_NOT_CLOSED/.test(status)?'EXTERNAL_FAILURE':/SCHEMA|VALIDATION|IDENTITY|BINDING/.test(status)?'INVALID_RESPONSE':'NOT_CLOSED';
+  return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class,evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
+ });
+ const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
@@ -99,7 +106,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:5,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'USE_ALL_VALID_CACHES_AND_COMPLEMENTARY_ROLES_WITHIN_FIVE_REQUESTS',block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()}),
+  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:5,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'USE_ALL_VALID_CACHES_AND_COMPLEMENTARY_ROLES_WITHIN_FIVE_REQUESTS',block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()}),
   internal_only:true,
  };
 }

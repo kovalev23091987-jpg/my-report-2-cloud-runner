@@ -61,7 +61,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        phase: [volume-feasibility, chain-events]
+        phase: [source-health]
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
