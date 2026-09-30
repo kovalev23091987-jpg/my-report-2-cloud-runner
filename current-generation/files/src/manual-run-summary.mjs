@@ -30,7 +30,13 @@ function idea(row){
  return lines;
 }
 
+export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
+ if(cron?.v3_pipeline_health_status==='DEGRADED_PIPELINE')return {status:'PARTIAL_DATA_UNAVAILABLE',reason:cron.v3_pipeline_health_reason||'PIPELINE_NOT_CLOSED'};
+ if(candidate_count===0&&Number(cron?.v3_live_deep_check_count)>0)return {status:'PARTIAL_DATA_UNAVAILABLE',reason:'CANONICAL_CANDIDATE_NOT_PERSISTED'};
+ return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
+}
 export function formatManualRunSummary({status,candidates=[],generated_at}={}){
+ if(status==='PARTIAL_DATA_UNAVAILABLE')return 'МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена. Сделать полный вывод о наличии идей сейчас нельзя.\n\nДействие сейчас: не входить, дождаться следующей проверки.';
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),''];
