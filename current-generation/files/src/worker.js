@@ -1,3 +1,4 @@
+import {applyCandidateDataRequirements,buildHtxSpotMarketConfirmation} from './candidate-data-requirements.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
@@ -1439,6 +1440,9 @@ async function spotSnapshot(params) {
     timestamp_utc: new Date(now).toISOString(),
     provider_source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(tickerR.data?.ts),
     quality_status: qualityStatus,
+    market_identity_verified: tickerR.data?.ch === `market.${symbol}.detail.merged` && depthR.data?.ch === `market.${symbol}.depth.step0`,
+    depth_source_ts: normalizeTs(depthTick?.ts) ?? normalizeTs(depthR.data?.ts),
+    depth_bbo: {best_bid:num(bids?.[0]?.[0]),best_ask:num(asks?.[0]?.[0])},
     quality_rules: {
       freshness_sec: freshnessSec,
       min_trades_1h: min1h,
@@ -12572,6 +12576,7 @@ const buildShadowDecisionTelemetry = (() => {
     const htxCoveragePct = coverageChecks.length ? (closedCount / coverageChecks.length) * 100 : 0;
 
     const sufficiency = upper(
+      dataSufficiency?.core_classification ??
       dataSufficiency?.classification ??
         dataSufficiency?.core_classification ??
         dataSufficiency?.overall ??
@@ -12645,6 +12650,7 @@ const buildShadowDecisionTelemetry = (() => {
       futures_flow_1h_delta_pct: round2(extractReliableFuturesDelta(windows?.["1h"])),
       futures_flow_4h_delta_pct: round2(extractReliableFuturesDelta(windows?.["4h"])),
       spot_flow_delta_pct: round2(extractSpotDelta(spotData)),
+      spot_market_confirmation: buildHtxSpotMarketConfirmation({contract,spot:spotData,available_ts:spot?.available_ts,now}),
       oi_1h_change_pct: round2(extractOiChange(windows?.["1h"])),
       oi_4h_change_pct: round2(extractOiChange(windows?.["4h"])),
       oi_window_receipts: {
@@ -16160,7 +16166,7 @@ async function buildDeepCheckInput(params, env) {
             )
         );
 
-    return {
+    const receipt = {
       classification,
       sufficient:
         classification ===
@@ -16195,6 +16201,7 @@ async function buildDeepCheckInput(params, env) {
       decision_effect:
         "NONE_EVIDENCE_CLASSIFICATION_ONLY",
     };
+    return applyCandidateDataRequirements({receipt,futures,trajectory,history});
   })();
 
 

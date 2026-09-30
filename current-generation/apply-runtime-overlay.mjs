@@ -19,6 +19,7 @@ const files=[
  'src/worker.js',
  'src/htx-trade-json.mjs',
  'src/verified-futures-flow-binding.mjs',
+ 'src/candidate-data-requirements.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',
  'src/htx-volume-profile-collector.mjs',

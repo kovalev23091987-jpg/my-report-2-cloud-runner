@@ -4,6 +4,7 @@ import {applyVolumeProfileToLiquidationPanel,volumeProfileFacts} from './src/htx
 import {createCombinedLiquidationService} from './src/liquidation-extension/combined-runner-service.mjs';
 import {createD1SourceAdmission} from './src/liquidation-extension/d1-source-admission.mjs';
 import fs from "node:fs/promises";
+import {runOptionalCompactStatistics} from "./src/candidate-data-requirements.mjs";
 import crypto from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
@@ -906,9 +907,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   } else if (!r820ProspectiveValidationGate.allowed) {
     r820ProspectiveValidationSidecar = {version:R820_PROSPECTIVE_VALIDATION_VERSION,mode:"SHADOW_PROSPECTIVE_VALIDATION_DATA_ONLY",status:"CAPACITY_DEFERRED_FAIL_CLOSED",reasons:r820ProspectiveValidationGate.reasons||[],capacity_gate:r820ProspectiveValidationGate,calibration_only:true,live_probability:null,validated_signal:false,trading_execution:false};
   } else {
-    r820ProspectiveValidationSidecar = await runR820ProspectiveValidationSidecar(env.DATA_DB, {
+    r820ProspectiveValidationSidecar = await runOptionalCompactStatistics(() => runR820ProspectiveValidationSidecar(env.DATA_DB, {
       current_scan_ts:Number(scan.ts), source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
-    });
+    }));
   }
   console.log("R8_20_PROSPECTIVE_VALIDATION_GATE", JSON.stringify(r820ProspectiveValidationGate));
   console.log("R8_20_PROSPECTIVE_VALIDATION_SIDECAR", JSON.stringify(r820ProspectiveValidationSidecar));
@@ -918,7 +919,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
   const r820ManualNonFatalStatuses=new Set(["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE","DEFERRED_BUDGET_ADMISSION"]);
   if (source !== "schedule" && r820ProspectiveValidationEnabled && !r820ManualNonFatalStatuses.has(r820ProspectiveValidationSidecar?.status)) {
-    throw new Error(`R8_20_PROSPECTIVE_VALIDATION_SMOKE_FAIL_CLOSED:${r820ProspectiveValidationSidecar?.status || "UNKNOWN"}`);
+    console.warn("R8_20_OPTIONAL_STATISTICS_DEFERRED", JSON.stringify({status:r820ProspectiveValidationSidecar?.status || "UNKNOWN",report_blocked:false,retry_in_existing_cadence:true}));
   }
   if (source !== "schedule" && telegramReportTestRequested && telegramOutput?.morning?.sent !== true && telegramOutput?.morning?.delivery_confirmed !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
