@@ -18,6 +18,7 @@ const files=[
  'byk-quota-budget.mjs',
  'src/worker.js',
  'src/htx-trade-json.mjs',
+ 'src/verified-futures-flow-binding.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',
  'src/htx-volume-profile-collector.mjs',

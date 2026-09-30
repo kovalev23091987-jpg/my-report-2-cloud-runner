@@ -1,3 +1,4 @@
+import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
@@ -15906,6 +15907,10 @@ async function buildDeepCheckInput(params, env) {
   const trajectory =
     settled(results[2]);
 
+  if (futures.execution_status === "FULFILLED" && trajectory.execution_status === "FULFILLED") {
+    futures.data = bindVerifiedFuturesFlow(futures.data, trajectory.data, componentsAvailableTs);
+  }
+
   const history =
     settled(results[3]);
 
@@ -16117,6 +16122,9 @@ async function buildDeepCheckInput(params, env) {
           historyChecks
         ),
     };
+
+    components.futures_snapshot.factual_order_flow_window =
+      futures?.data?.verified_order_flow?.binding ?? null;
 
     const states =
       Object.values(components)
