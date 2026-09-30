@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets} from '../files/src/cross-exchange-risk-context.mjs';
+import {normalizeCrossExchangeCatalogs,normalizeCrossExchangeDepth,normalizeOkxLiquidationEvents,normalizeCoinalyzeLiquidationHistory,compactCoinalyzeMarkets,loadCoinalyzeMarkets} from '../files/src/cross-exchange-risk-context.mjs';
+import {DatabaseSync} from 'node:sqlite';
+import {installProviderMinuteLedger} from '../files/src/provider-minute-ledger.mjs';
 
 test('only active exact USDT perpetual markets enter the cross-exchange catalog',()=>{
  const entries=normalizeCrossExchangeCatalogs({
@@ -17,6 +19,16 @@ test('depth metrics close only when the independent market price matches HTX',()
  assert.equal(good.status,'CLOSED');assert.ok(good.bid.notional_2pct>good.ask.notional_2pct);assert.ok(good.depth_imbalance_2pct>0);
  const wrong=normalizeCrossExchangeDepth({venue:'BINANCE',reference_price:10,observed_ts:1001,expected_symbol:'FILUSDT',payload:{symbol:'FILUSDT',T:1000,bids:[['1','10']],asks:[['1.1','10']]}});
  assert.equal(wrong.status,'NOT_CLOSED');
+});
+
+test('official REST books without response symbol require an exact transport request binding',()=>{
+ const args={venue:'BINANCE',reference_price:10,observed_ts:1001,expected_symbol:'TAOUSDT',payload:{T:1000,bids:[['9.95','3']],asks:[['10.05','1']]}};
+ assert.equal(normalizeCrossExchangeDepth(args).status,'NOT_CLOSED');
+ const bound=normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT'});assert.equal(bound.status,'CLOSED');assert.equal(bound.symbol_binding,'EXACT_TRANSPORT_REQUEST');
+ assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'OTHERUSDT'}).status,'NOT_CLOSED');
+ assert.equal(normalizeCrossExchangeDepth({...args,request_symbol:'TAOUSDT',payload:{...args.payload,symbol:'OTHERUSDT'}}).status,'NOT_CLOSED');
+ const okx=normalizeCrossExchangeDepth({venue:'OKX',reference_price:10,observed_ts:1001,expected_symbol:'TAO-USDT-SWAP',request_symbol:'TAO-USDT-SWAP',payload:{data:[{ts:'1000',bids:[['9.95','100']],asks:[['10.05','100']]}]},instrument:{base:'TAO',contract_value:0.1,contract_multiplier:1,contract_value_currency:'TAO'}});
+ assert.equal(okx.status,'CLOSED');assert.equal(okx.bid.notional_2pct,99.5);
 });
 
 test('OKX depth converts contracts with catalog units and fails closed without metadata',()=>{
@@ -75,4 +87,15 @@ test('workflow wires the optional free Coinalyze key without embedding a value',
  const source=fs.readFileSync(new URL('../files/src/cross-exchange-risk-context.mjs',import.meta.url),'utf8');
  assert.match(source,/lanes\.includes\(requestedLane\)\?requestedLane:/);
  assert.match(source,/lane_forced:lanes\.includes\(requestedLane\)/);
+});
+
+test('one Coinalyze catalog refresh serves two exact assets and unsupported assets without new API units',async()=>{
+ const sqlite=new DatabaseSync(':memory:'),db={prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};}};
+ await installProviderMinuteLedger(db);let calls=0;
+ const payload=['SOL','TAO'].map(base=>({symbol:`${base}.A`,base_asset:base,quote_asset:'USDT',exchange:'BINANCE',is_perpetual:true,ignored:'large'}));
+ const fetch_impl=async()=>{calls++;return new Response(JSON.stringify(payload),{status:200});};
+ const common={db,fetch_impl,api_key:'TEST_NOT_SECRET',now:1_800_000_000_000,run_id:'r'};
+ const a=await loadCoinalyzeMarkets({...common,base:'SOL'}),b=await loadCoinalyzeMarkets({...common,base:'TAO'}),c=await loadCoinalyzeMarkets({...common,base:'MISSING'});
+ assert.equal(calls,1);assert.equal(a.network_calls,1);assert.equal(b.network_calls,0);assert.equal(c.network_calls,0);assert.equal(b.rows[0].symbol,'TAO.A');assert.deepEqual(c.rows,[]);
+ assert.equal(sqlite.prepare('SELECT SUM(units) AS units FROM report2_provider_minute_ledger_v1').get().units,1);sqlite.close();
 });

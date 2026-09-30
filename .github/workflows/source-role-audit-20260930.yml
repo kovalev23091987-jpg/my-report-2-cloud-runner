@@ -1,0 +1,95 @@
+name: Report 2 Source Role Audit
+on:
+  push:
+    branches: [source-role-fallback-20260930, autonomous/source-audit-completion-20260930]
+    paths:
+      - current-generation/**
+      - audit-fixes/source-optimization-20260930/**
+      - audit-fixes/v13/p1-integration-17.mjs
+      - .github/workflows/source-role-audit-20260930.yml
+permissions:
+  contents: read
+concurrency:
+  group: report2-source-role-audit
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fence the candidate to its expected production commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -Eeuo pipefail
+          current=$(gh api repos/${{ github.repository }}/branches/main --jq .commit.sha)
+          expected=$(node -p "JSON.parse(require('fs').readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json')).expected_main")
+          test "$current" = "$expected"
+      - name: Assemble exact runtime and pinned SDK
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Validate the complete change block
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-role-validation-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+  live:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        phase: [evidence, liquidation, markets, supplemental]
+    env:
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      REPORT2_V3_TELEGRAM_NETWORK: '0'
+      REPORT2_DISABLE_TELEGRAM: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble exact verified runtime
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Audit bounded sources with Telegram disabled
+        run: node audit-fixes/source-optimization-20260930/live-audit.mjs runtime '${{ matrix.phase }}' 'audit-output/${{ matrix.phase }}.json'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-role-${{ matrix.phase }}-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+

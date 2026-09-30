@@ -25,7 +25,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
   if(!baseRoute.ok||baseRoute.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
   if(baseRoute.external_liquidation_map_needed!==true){records.push({status:'SKIPPED_BTC_ETH_BY_USER_POLICY',contract,native_symbol});return null;}
   if(clock()>=Date.parse('2026-10-27T00:00:00Z')&&!text(liqflow_key)){records.push({status:'SKIPPED_FREE_KEY_ROUTE_NOT_CONFIGURED',contract});return null;}
-  const collection_started_ts=clock(),transport=[],accounts=[];
+  const collection_started_ts=clock(),transport=[],accounts=[];let admittedReserved=0,catalogReserved=0;
   async function request(url,body){
    if(clock()>=deadline)return {ok:false,reason:'DEADLINE_REACHED'};
    const isLiqFlow=new URL(url).hostname==='node.liqflow.app';
@@ -38,8 +38,8 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
     calls+=1;
     const catalogGrant=await admit({reservation_id:`LIQ_NATIVE_CATALOG:${run_id}`,contract,run_id,
      requests:{HYPERLIQUID:1},weights:{HYPERLIQUID:22},max_requests:1,deadline_ts:deadline});
-    if(catalogGrant?.allowed!==true||catalogGrant?.new_reservation!==true){records.push({status:'SKIPPED_CATALOG_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
-    catalog=await request('https://api.hyperliquid.xyz/info',{type:'metaAndAssetCtxs'});
+    if(catalogGrant?.allowed!==true||catalogGrant?.new_reservation!==true){if(catalogGrant?.reservation_not_created===true)calls-=1;records.push({status:'SKIPPED_CATALOG_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
+    admittedReserved+=1;catalogReserved=1;catalog=await request('https://api.hyperliquid.xyz/info',{type:'metaAndAssetCtxs'});
     if(catalog.ok)catalogByRun.set(run_id,catalog);
    }
    if(!catalog.ok||!Array.isArray(catalog.payload?.[0]?.universe)){records.push({status:'NATIVE_CATALOG_NOT_CLOSED',contract});return null;}
@@ -52,8 +52,8 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    calls+=sampleRequests;
    const grant=await admit({reservation_id:`LIQ_NATIVE_SAMPLE:${run_id}:${contract}`,contract,run_id,
     requests:{HYPERLIQUID:accounts_per_deep,LIQFLOW:1},weights:{HYPERLIQUID:accounts_per_deep*2},max_requests:sampleRequests,deadline_ts:deadline});
-   if(grant?.allowed!==true||grant?.new_reservation!==true){records.push({status:'SKIPPED_SAMPLE_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
-   const list=await request(`https://node.liqflow.app/api/coin/${encodeURIComponent(native_symbol)}/positions`);
+   if(grant?.allowed!==true||grant?.new_reservation!==true){if(grant?.reservation_not_created===true)calls-=sampleRequests;records.push({status:'SKIPPED_SAMPLE_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
+   admittedReserved+=sampleRequests;const list=await request(`https://node.liqflow.app/api/coin/${encodeURIComponent(native_symbol)}/positions`);
    if(!list.ok||list.payload?.coin!==native_symbol||!Array.isArray(list.payload.positions)){records.push({status:'DISCOVERY_NOT_CLOSED',contract});return null;}
    // Deterministic diversity among visible longs and shorts. Discovery prices are
    // NOT used as liquidation evidence, nor labelled native exchange prices.
@@ -66,9 +66,10 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    await Promise.all([job(),job()]);
    const completed=clock();const acquisition=createNativeAcquisition({contract,native_symbol,run_id,acquisition_id:`LIQ_ACQ:${run_id}:${contract}:${collection_started_ts}`,collection_started_ts,collection_completed_ts:completed,accounts,
     provenance:{discovery_provider:'LiqFlow',discovery_total:list.payload.total??null,discovery_page:list.payload.page??null,selection_bias:'FIRST_PAGE_NEAR_HINT_AND_LARGE_POSITIONS_BALANCED; HINTS_ARE_NOT_EVIDENCE',sampling_policy:sample.policy,selected_reasons:sample.selected.map(x=>x.discovery_reason),visible_accounts:sample.eligible_visible_accounts,native_symbol_membership_verified:true,
-    execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:grant.reservation_id??null,transport_count:transport.length,quota_reserved_requests:1+sampleRequests,hyperliquid_market_context:marketContext}});
-   records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:accounts.length,sampling_policy:sample.policy,actual_requests:transport.length,reserved_requests:1+sampleRequests,elapsed_ms:completed-collection_started_ts,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
-  }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}
+    execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:grant.reservation_id??null,transport_count:transport.length,quota_reserved_requests:catalogReserved+sampleRequests,hyperliquid_market_context:marketContext}});
+   records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:accounts.length,sampling_policy:sample.policy,actual_requests:transport.length,reserved_requests:catalogReserved+sampleRequests,elapsed_ms:completed-collection_started_ts,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
+  }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}finally{calls-=Math.max(0,admittedReserved-transport.length);}
  }
- return {collect,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
+ function estimateHttpCost({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 2+accounts_per_deep;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?1+accounts_per_deep:0;}
+ return {collect,estimateHttpCost,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
 }
