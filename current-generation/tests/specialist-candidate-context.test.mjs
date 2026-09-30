@@ -63,6 +63,10 @@ const flowPayload={pagination:{is_last_page:true},data:[12,13].map(h=>({date:`20
 test('exchange flows require exact token and complete contiguous hours; amounts stay in tokens',()=>{
  const ctx={base:'TEST',identity:flowIdentity,now,window_end:windowEnd};
  const r=normalizeNansenFlows(flowPayload,ctx);assert.equal(r.status,'CLOSED');assert.equal(r.net_cex_tokens,12);assert.equal(r.unit,'TOKEN_AMOUNT');assert.equal(r.individual_addresses_verified,false);
+ const signed=normalizeNansenFlows({...flowPayload,data:flowPayload.data.map(x=>({...x,total_outflows_cex:-4}))},ctx);assert.equal(signed.net_cex_tokens,12);assert.equal(signed.outflow_cex_tokens,8);assert.equal(signed.buckets[0].total_outflows_cex,-4);
+ const boundary={date:'2026-09-30T14:00:00Z',bucket_end:'2026-09-30T15:00:00Z',is_complete:false,total_inflows_cex:433567.6137469989,total_outflows_cex:-200013.47151900252};
+ assert.equal(normalizeNansenFlows({...flowPayload,data:[flowPayload.data[1],boundary]},ctx).status,'NOT_CLOSED');
+ assert.equal(normalizeNansenFlows({...flowPayload,data:[...flowPayload.data,boundary]},ctx).net_cex_tokens,12);
  for(const p of [{...flowPayload,pagination:{is_last_page:false}},{...flowPayload,data:[]},{...flowPayload,data:[flowPayload.data[0],flowPayload.data[0]]},...['is_complete','total_inflows_cex','bucket_end'].map(key=>({...flowPayload,data:[{...flowPayload.data[0],[key]:null},flowPayload.data[1]]}))])assert.equal(normalizeNansenFlows(p,ctx).status,'NOT_CLOSED');
  for(const extra of [{identity:null},{base:'ETH'},{now:windowEnd-1},{now:windowEnd+7200001}])assert.equal(normalizeNansenFlows(flowPayload,{...ctx,...extra}).status,'NOT_CLOSED');
  const input={sources:{NANSEN_FLOWS:r},contract:'TEST-USDT',now,asset_identity:flowIdentity};
@@ -74,6 +78,7 @@ test('flows and positions share Nansen daily cap and provider-wide quota cooldow
  p.fetch_impl=async(url,opts)=>{requests.push({url,body:opts.body?JSON.parse(opts.body):null});return ok(url.endsWith('/flows')?flowPayload:url.includes('vyx')?{...vyx,symbol_name:'TEST'}:nansen);};
  assert.equal((await collectSpecialistContext(p)).network_calls,3);
  assert.equal(requests[0].body.label,'exchange');assert.equal(requests[0].body.token_address,flowIdentity.contract_or_mint);
+ assert.equal(requests[0].body.date.from,'2026-09-30T11:00:00.000Z');
  assert.equal((await collectSpecialistContext(p)).network_calls,3);
  assert.equal((await collectSpecialistContext(p)).network_calls,2);
  assert.equal((await collectSpecialistContext(p)).network_calls,1);
