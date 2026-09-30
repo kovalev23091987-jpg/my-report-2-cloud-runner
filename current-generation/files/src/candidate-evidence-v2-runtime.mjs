@@ -14,13 +14,26 @@ import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v12-health-journal-20260930';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v13-quota-health-20260930';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 // Only name producers that actually emit a row for this block in this collector.
 // Existing technical/market blocks are owned outside this supplementary lane.
 export function rotateEvidenceRoleRoutes(routes,key){if(!routes.length)return [];const at=rotation(key,routes.length);return [...routes.slice(at),...routes.slice(0,at)];}
 const BLOCK_SOURCE={N02:['CHAIN_RPC'],N03:['CHAIN_RPC'],N04:['CHAIN_RPC','BLOCKSCOUT_INDEX'],N06:['BLUESKY_PUBLIC'],N07:['OFFICIAL_EVENTS'],N08:['HTX_PUBLIC_RISK'],N09:['HTX_PUBLIC_RISK'],N13:['MACRO_CALENDAR','SNAPSHOT_GOVERNANCE'],N14:['DERIBIT_ALT_OPTIONS'],N12:['HTX_LARGE_TRADES'],N15:['COINPAPRIKA_SECTOR'],N17:['SOURCIFY_ABI']};
+
+export function classifyEvidenceSourceHealth(result={},valid_rows=0){
+ const status=String(result?.status||'NOT_EVALUATED').toUpperCase(),calls=Number(result?.network_calls||0),http=(Array.isArray(result?.receipts)?result.receipts:[]).map(r=>Number(r?.http_status));
+ if(Number(result?.market_binding?.rejected_rows)>0)return'INVALID_RESPONSE';
+ if(/429|RATE_LIMIT/.test(status)||http.includes(429))return calls>0?'PROVIDER_RATE_LIMITED':'SKIPPED_QUOTA';
+ if(/ACCESS_BLOCKED|HTTP_(401|403|451)/.test(status)||http.some(n=>[401,403,451].includes(n)))return calls>0?'ACCESS_BLOCKED':'SKIPPED_ACCESS_BACKOFF';
+ if(calls===0&&/QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|REQUEST_ENVELOPE/.test(status))return'SKIPPED_QUOTA';
+ if(/CODE_OR_STORE_ERROR|LEDGER_UNAVAILABLE|DB_ADMISSION/.test(status))return'INTERNAL_FAILURE';
+ if(status==='CLOSED'||status.startsWith('CLOSED_'))return valid_rows>0?'CONTEXT_AVAILABLE':'VALID_RESPONSE_NO_EVENT';
+ if(/INVALID_RESPONSE|SCHEMA|VALIDATION|IDENTITY|BINDING/.test(status))return calls>0?'INVALID_RESPONSE':'NOT_EVALUATED';
+ if(/SOURCE_ERROR|HTTP_5\d\d|TIMEOUT|SOURCE_NOT_CLOSED/.test(status))return'EXTERNAL_FAILURE';
+ return'NOT_CLOSED';
+}
 
 export async function collectEvidenceRouteBlock({routes=[],collectors={},params={},max_requests=5}={}){
  let reserved=0,actual=0,routeReserved=0;const results={},receipts=[];
@@ -79,8 +92,8 @@ export async function collectCandidateEvidenceV2(params={}){
  const statuses=[largeTrades?.status,sector?.status,htx?.status,macro?.status,deribit?.status,chain?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
  const sources={HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_RPC:chain,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout};
  const healthRows=Object.entries(sources).map(([source_id,r])=>{
-  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:params.now??Date.now()}).usable),status=String(r?.status||'NOT_EVALUATED'),schemaClosed=status==='CLOSED'||status.startsWith('CLOSED_');
-  const operational_class=Number(r?.market_binding?.rejected_rows)>0?'INVALID_RESPONSE':schemaClosed?(valid.length?'CONTEXT_AVAILABLE':'VALID_RESPONSE_NO_EVENT'):/SOURCE_ERROR|HTTP_(403|429|451|5\d\d)|TIMEOUT|SOURCE_NOT_CLOSED/.test(status)?'EXTERNAL_FAILURE':/SCHEMA|VALIDATION|IDENTITY|BINDING/.test(status)?'INVALID_RESPONSE':'NOT_CLOSED';
+  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:params.now??Date.now()}).usable),status=String(r?.status||'NOT_EVALUATED');
+  const operational_class=classifyEvidenceSourceHealth(r,valid.length);
   return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class,evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
  });
  const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});

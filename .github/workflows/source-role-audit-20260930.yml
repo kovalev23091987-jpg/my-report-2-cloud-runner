@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -32,7 +32,7 @@ jobs:
           expected=$(node -p "JSON.parse(require('fs').readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json')).expected_main")
           test "$current" = "$expected"
           gh api repos/${{ github.repository }}/contents/audit-fixes/source-optimization-20260930/execution-lock.json?ref=report2-execution-lock --jq .content | base64 --decode > /tmp/shared-lock.json
-          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json'));if(!l.active||l.owner!=='autonomous/max-now-20260930'||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
+          node --input-type=module -e "import fs from 'node:fs';const l=JSON.parse(fs.readFileSync('/tmp/shared-lock.json')),candidate=JSON.parse(fs.readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json'));if(!l.active||l.owner!==candidate.owner||l.expected_main!==candidate.expected_main||Date.parse(l.expires_at)<=Date.now())throw Error('SHARED_RELEASE_LOCK_REQUIRED')"
       - name: Assemble exact runtime and pinned SDK
         run: |
           mkdir -p runtime audit-output
@@ -47,6 +47,8 @@ jobs:
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node current-generation/tests/htx-trade-json.runtime.mjs runtime > audit-output/htx-trade-runtime.json
+          REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-fallback-runtime.tap
+          node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - uses: actions/upload-artifact@v4
         if: always()
@@ -55,7 +57,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930'
+    if: github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
