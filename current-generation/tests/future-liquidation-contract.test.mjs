@@ -20,7 +20,7 @@ test('every coin reports future levels above and below; executed events and fixe
  }
 });
 test('future provider levels retain side, price, source and provider amount without guaranteeing the future',()=>{
- const map=buildPumpLiquidationZones({contract:'BTW-USDT',current_price:100,observed_ts:1790806000000,projected:[{price:112,source:'Provider',source_ts:1790806000000,side:'SHORT',notional_usd:250000,status:'CLOSED',price_quote:'USD'},{price:89,source:'Provider',source_ts:1790806000000,side:'LONG',notional_usd:310000,status:'CLOSED',price_quote:'USD',price_semantics:'PROVIDER_MODEL_PRICE_BIN'}]});
+ const map=buildPumpLiquidationZones({contract:'BTW-USDT',current_price:100,observed_ts:1790806000000,projected:[{price:112,source:'Provider',source_ts:1790806000000,native_reference_price:100,side:'SHORT',notional_usd:250000,status:'CLOSED',price_quote:'USD'},{price:89,source:'Provider',source_ts:1790806000000,native_reference_price:100,side:'LONG',notional_usd:310000,status:'CLOSED',price_quote:'USD',price_semantics:'PROVIDER_MODEL_PRICE_BIN'}]});
  const out=displayLegacyLiquidations(map).join('\n');assert.equal(map.provider_zone_count,2);assert.match(out,/выше: 112 USD/);assert.match(out,/ниже: 89 USD/);assert.match(out,/Provider/);assert.match(out,/оценка 310000 USD/);assert.doesNotMatch(out,/точная сумма|гарант/);
 });
 test('zero remaining history allowance makes no HTTP call and preserves cached observations',async()=>{
@@ -58,7 +58,7 @@ test('the actual ByK real_v1_multi snapshot yields future long/short prices and 
 
 test('positive future volumes render in main manual, compact and actual publication without historical substitution',()=>{
  const c=outputContractScenarios()[1].canonical,T=c.observed_ts;
- c.liquidations=buildPumpLiquidationZones({contract:c.metadata.contract,current_price:100,observed_ts:T,projected:[101,102,105,110,500,90,89,85,75,2].map(price=>({price,notional_usd:2200000,source:'Verified provider',source_ts:T,side:price>100?'SHORT':'LONG',price_quote:'USD',status:'CLOSED'}))});
+ c.liquidations=buildPumpLiquidationZones({contract:c.metadata.contract,current_price:100,observed_ts:T,projected:[101,102,105,110,500,90,89,85,75,2].map(price=>({price,notional_usd:2200000,source:'Verified provider',source_ts:T,native_reference_price:100,side:price>100?'SHORT':'LONG',price_quote:'USD',status:'CLOSED'}))});
  const manual=formatManualReport(c),compact=formatTelegramCompact(c),telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'});
  for(const r of [manual,compact,telegram])assert.equal(r.ok,true,JSON.stringify(r));
  for(const out of [manual.text,compact.message,telegram.text]){assert.match(out,/огромная/);assert.match(out,/2200000 USD/);assert.doesNotMatch(out,/точная сумма|произошедших|расчётная вероятная зона/);}

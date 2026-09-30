@@ -13,17 +13,19 @@ function normalize(row,{current,observed,source=null,source_ts=null,unit=null,es
  if(/REALIZED|CALCULATED|LEVERAGE_STRESS/.test([row?.kind,row?.evidence_class,row?.role].map(text).join(' '))||['SWEPT','INVALIDATED','EXPIRED'].includes(text(row?.lifecycle).toUpperCase()))return null;
  const side=text(row?.liquidated_side??row?.side??liquidated_side).toUpperCase(),ref=finite(row?.native_reference_price);
  if(!['LONG','SHORT'].includes(side)||ref!==null&&(side==='SHORT'&&price<=ref||side==='LONG'&&price>=ref))return null;
- const d=(price/current-1)*100;if(d===0||side==='SHORT'&&d<0||side==='LONG'&&d>0)return null;
+ const quote=text(row?.price_quote??price_quote)||(u==='USDT'?'USDT':'USD'),reference=quote==='USDT'?current:ref;
+ const d=reference>0?(price/reference-1)*100:null;if(d===0||d!==null&&(side==='SHORT'&&d<0||side==='LONG'&&d>0))return null;
  const money=amount!==null&&amount>0&&['USD','USDT','USDC'].includes(u)?amount:null;
- return{kind:'PROJECTED',price,price_quote:row?.price_quote??price_quote??'USD',distance_pct:d,side:d>0?'ABOVE':'BELOW',liquidated_side:d>0?'SELLERS':'BUYERS',notional:money,notional_unit:money!==null?u:null,exact_notional_usdt:!estimated&&u==='USDT'?money:null,exact_amount_available:!estimated&&money!==null,amount_semantics:estimated?'PROVIDER_ESTIMATE':'REPORTED_OPEN_POSITION_NOTIONAL',strength_label_ru:liquidationVolumeTier(money),strength_score_0_100:null,strength_basis:money!==null?['REPORTED_VOLUME_TIER']:[],source:provider,venue:row?.venue??null,source_ts:clock,coverage:row?.coverage??coverage,price_semantics:row?.price_semantics??null,native_reference_price:ref,conditional_cross:row?.conditional_cross===true||row?.conditional_on_other_positions===true,position_count:finite(row?.position_count),position_key:row?.position_key??row?.account??null,decision_target_eligible:false,estimated};
+ return{kind:'PROJECTED',price,price_quote:quote,distance_pct:d,distance_reference_basis:quote==='USDT'?'HTX_CURRENT_SAME_QUOTE':ref>0?'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE':'UNKNOWN_SOURCE_REFERENCE_NO_FX_CONVERSION',side:side==='SHORT'?'ABOVE':'BELOW',liquidated_side:side==='SHORT'?'SELLERS':'BUYERS',notional:money,notional_unit:money!==null?u:null,exact_notional_usdt:!estimated&&u==='USDT'?money:null,exact_amount_available:!estimated&&money!==null,amount_semantics:estimated?'PROVIDER_ESTIMATE':'REPORTED_OPEN_POSITION_NOTIONAL',strength_label_ru:liquidationVolumeTier(money),strength_score_0_100:null,strength_basis:money!==null?['REPORTED_VOLUME_TIER']:[],source:provider,venue:row?.venue??null,source_ts:clock,coverage:row?.coverage??coverage,price_semantics:row?.price_semantics??null,native_reference_price:ref,conditional_cross:row?.conditional_cross===true||row?.conditional_on_other_positions===true,position_count:finite(row?.position_count),position_key:row?.position_key??row?.account??null,decision_target_eligible:false,estimated};
 }
+const absDistance=z=>typeof z.distance_pct==='number'?Math.abs(z.distance_pct):Infinity;
 function selectSide(rows,side){
- const all=rows.filter(z=>z.side===side),sorted=[...all].sort((a,b)=>(b.notional??-1)-(a.notional??-1)||Math.abs(a.distance_pct)-Math.abs(b.distance_pct)),selected=new Map();
+ const all=rows.filter(z=>z.side===side),sorted=[...all].sort((a,b)=>(b.notional??-1)-(a.notional??-1)||absDistance(a)-absDistance(b)),selected=new Map();
  const add=(z,role)=>{if(!z)return;const key=[z.source,z.venue,z.price,z.notional_unit,z.position_key].join(':');const old=selected.get(key);selected.set(key,{...z,selection_roles:[...new Set([...(old?.selection_roles||[]),role])]});};
  for(const z of sorted.slice(0,4))add(z,'LARGEST_VISIBLE');
- add([...all].sort((a,b)=>Math.abs(a.distance_pct)-Math.abs(b.distance_pct))[0],'NEAREST_NONZERO');
- add([...all].sort((a,b)=>Math.abs(b.distance_pct)-Math.abs(a.distance_pct))[0],'FARTHEST_VISIBLE');
- return [...selected.values()].sort((a,b)=>(b.notional??-1)-(a.notional??-1)||Math.abs(a.distance_pct)-Math.abs(b.distance_pct));
+ add(all.filter(z=>typeof z.distance_pct==='number').sort((a,b)=>absDistance(a)-absDistance(b))[0],'NEAREST_NONZERO');
+ add(all.filter(z=>typeof z.distance_pct==='number').sort((a,b)=>absDistance(b)-absDistance(a))[0],'FARTHEST_VISIBLE');
+ return [...selected.values()].sort((a,b)=>(b.notional??-1)-(a.notional??-1)||absDistance(a)-absDistance(b));
 }
 export function buildPumpLiquidationZones({contract=null,rolling_24h_change_pct,current_price,early_anomaly=false,priority_reason=null,realized=[],projected=[],provider_maps=[],native_contexts=[],observed_ts=Date.now()}={}){
  const base=text(contract).normalize('NFC').toUpperCase().replace(/-USDT$/,''),px=finite(current_price),pump=classifyPump24h(rolling_24h_change_pct,{early_anomaly});

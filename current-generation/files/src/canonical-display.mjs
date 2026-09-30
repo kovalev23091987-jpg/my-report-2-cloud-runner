@@ -46,8 +46,8 @@ export function displayFutureLiquidations(liq,{compact=false}={}){
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).slice(0,compact?2:6).map(z=>{
-   const px=displayNumber(z.price),d=displayNumber(Number(z.distance_pct.toFixed(2))),n=displayNumber(z.notional);
-   return `${px} ${z.price_quote||'USD'} (${z.distance_pct>0?'+':''}${d}%) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   const px=displayNumber(z.price),d=typeof z.distance_pct==='number'?displayNumber(Number(z.distance_pct.toFixed(2))):null,n=displayNumber(z.notional);
+   return `${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${z.distance_pct>0?'+':''}${d}%${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
   });lines.push(`${label}: ${parts.length?parts.join('; '):'уровни будущих ликвидаций не получены'}.`);
  }
  if(!compact&&liq?.provider_zone_count){
