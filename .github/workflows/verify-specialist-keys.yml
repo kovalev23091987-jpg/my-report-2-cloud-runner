@@ -1,0 +1,24 @@
+name: Verify specialist keys
+on:
+  push:
+    branches:
+      - autonomous/verify-specialist-keys-20260930
+    paths:
+      - ".github/workflows/verify-specialist-keys.yml"
+      - "audit-fixes/specialist-access-20260930/check.mjs"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read-only access check
+        env:
+          NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+          VYX_API_KEY: ${{ secrets.VYX_API_KEY }}
+        run: node audit-fixes/specialist-access-20260930/check.mjs
