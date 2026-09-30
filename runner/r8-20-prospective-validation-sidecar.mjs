@@ -8,7 +8,7 @@ import {digest} from './src/upstream-proof-utils.mjs';
 import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
 import {HISTORY_COMPATIBILITY, verifiedCollectorRows, chooseCompleteBucket} from './src/market-history-reader.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v4-fair-queue-verified-history-20260930';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v5-durable-turn-verified-history-20260930';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -524,6 +524,17 @@ export function prospectiveBudgetGuard(db, before) {
   return {prepare(sql){return wrap(db.prepare(sql),sql);},usageSnapshot:()=>db.usageSnapshot()};
 }
 
+export async function claimProspectiveQueueTurn(db, nowTs) {
+  const key='R8_20_OUTCOME_QUEUE_TURN_V1';
+  const state=await db.prepare(`SELECT status FROM tz101_entry_area_calibration_state WHERE state_key=?1 LIMIT 1`).bind(key).first();
+  const turn=state?.status==='ENTRY'?'ENTRY':'EARLY';
+  await db.prepare(`INSERT INTO tz101_entry_area_calibration_state
+    (state_key,status,closed_samples,train_samples,holdout_samples,validated_out_of_sample,live_promotion_allowed,automatic_rule_promotion,updated_ts)
+    VALUES(?1,?2,0,0,0,0,0,0,?3) ON CONFLICT(state_key) DO UPDATE SET status=excluded.status,updated_ts=excluded.updated_ts`)
+    .bind(key,turn==='EARLY'?'ENTRY':'EARLY',Number(nowTs)).run();
+  return turn;
+}
+
 export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts, source_run_id = null, now_ts = Date.now() } = {}) {
   const common = base('STARTED', { source_run_id: text(source_run_id) || null });
   if (!db?.prepare) return base('SOURCE_UNSUPPORTED', { source_run_id: common.source_run_id });
@@ -534,9 +545,10 @@ export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts,
     const activation = await ensureActivation(db, now_ts);
     if (activation.status !== 'CLOSED') return base('MIGRATION_REQUIRED_OR_ACTIVATION_FAILED', { source_run_id: common.source_run_id, activation });
 
-    // Rotate the two outcome queues to keep the existing 14-request envelope.
-    // Capture is still attempted every cycle. No trading cadence is changed.
-    const earlyTurn=Math.floor(Number(current_scan_ts)/(20*MINUTE))%2===0;
+    // Durable alternation: hourly maintenance can be delayed by admission and
+    // is not the trading cadence. Timestamp parity could starve an entire queue.
+    // Capture is still attempted each admitted invocation. Caps are unchanged.
+    const earlyTurn=(await claimProspectiveQueueTurn(db,now_ts))==='EARLY';
     const early = earlyTurn?await closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_ts }):{status:'DEFERRED_FAIR_QUEUE_ROTATION',closed:0};
     let capture = { status: activation.created ? 'ACTIVATED_NO_RETROSPECTIVE_BACKFILL' : 'NOT_RUN', captured: 0 };
     let entryOutcome = { status: activation.created ? 'ACTIVATED_NO_RETROSPECTIVE_BACKFILL' : 'NOT_RUN', closed: 0 };
