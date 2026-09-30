@@ -10,6 +10,8 @@ export async function loadEffectivePresentationModules(){
   const copies={
     'canonical-publication.mjs':'post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs',
     'manual-report-formatter.mjs':'current-generation/files/src/manual-report-formatter.mjs',
+    'gate-liquidation-history.mjs':'current-generation/files/src/gate-liquidation-history.mjs',
+    'provider-minute-ledger.mjs':'current-generation/files/src/provider-minute-ledger.mjs',
     'telegram-compact-formatter.mjs':'current-generation/files/src/telegram-compact-formatter.mjs',
     'canonical-display.mjs':'current-generation/files/src/canonical-display.mjs',
     'native-liquidation-guard.mjs':'current-generation/files/src/native-liquidation-guard.mjs',
