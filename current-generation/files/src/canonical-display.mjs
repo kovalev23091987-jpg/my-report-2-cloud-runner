@@ -42,7 +42,22 @@ export function displayMarketFacts(c){
  }
  return facts;
 }
+export function displayFutureLiquidations(liq,{compact=false}={}){
+ const lines=[];
+ for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
+  const parts=(Array.isArray(rows)?rows:[]).slice(0,compact?2:6).map(z=>{
+   const px=displayNumber(z.price),d=displayNumber(Number(z.distance_pct.toFixed(2))),n=displayNumber(z.notional);
+   return `${px} USDT (${z.distance_pct>0?'+':''}${d}%) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+  });lines.push(`${label}: ${parts.length?parts.join('; '):'будущие уровни и объёмы не получены'}.`);
+ }
+ if(!compact&&liq?.provider_zone_count){
+  lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
+  lines.push(`Покрытие: только доступные площадки и диапазон источника; время снимка ${displayTime(Math.min(...[...liq.above,...liq.below].map(z=>z.source_ts)))} МСК.${liq.omitted_zone_count?` Ещё ${liq.omitted_zone_count} уровней сохранено в полной карте.`:''}`);
+ }
+ return lines;
+}
 export function displayLegacyLiquidations(liq){
+ if(liq?.future_only===true)return displayFutureLiquidations(liq);
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).slice(0,4).map(z=>{
@@ -54,4 +69,10 @@ export function displayLegacyLiquidations(liq){
   }).filter(Boolean);if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
  }
  return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
+}
+
+export function displayCoinLobsterHint(hint){
+ if(!hint?.data_available)return [];
+ const age=Math.ceil(hint.source_age_ms/60000),time=new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit'}).format(new Date(hint.source_ts));
+ return[`CoinLobster (${time} МСК${age>5?`, задержка ${age} мин`:''}): крупнейшая модельная зона в пределах 15% ${hint.direction==='above'?'выше':'ниже'} цены; уровень и объём недоступны в бесплатном ответе.`];
 }

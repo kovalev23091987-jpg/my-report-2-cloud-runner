@@ -1,5 +1,5 @@
 import {formatManualReport} from './manual-report-formatter.mjs';
-import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations} from './canonical-display.mjs';
+import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
 import {buildRoleEvidenceView} from './source-role-consumer.mjs';
@@ -98,7 +98,8 @@ function fmtPct(v,d=2){const n=finite(v);if(n===null)return null;const x=Math.ab
 function fmtMsk(ts){const n=stamp(ts);if(n===null)return null;return new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(n)).replace(',','');}
 function strength(z){return text(z?.strength_label_ru)||'сила не определена';}
 function liquidationLines(c,{manual=false}={}){
- const liq=c?.liquidations||{},pump=liq?.pump?.is_pump===true,max=pump?4:2,lines=[];
+ const liq=c?.liquidations||{};if(liq.future_only===true)return displayFutureLiquidations(liq,{compact:!manual});
+ const pump=liq?.pump?.is_pump===true,max=pump?4:2,lines=[];
  for(const [rows,label] of [[liq.above,'Сильные зоны выше'],[liq.below,'Сильные зоны ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).slice(0,max).map(z=>{const p=fmtPrice(z?.price??z?.level_price),d=finite(z?.distance_pct);if(!p)return null;const amount=finite(z?.exact_notional_usdt);return `${p} USDT${d!==null?` (${fmtPct(d,1)})`:''} — ${strength(z)}${amount!==null?`, точная сумма ${fmtPrice(amount)} USDT`:z?.kind==='CALCULATED'?', расчётная вероятная зона':''}`;}).filter(Boolean);
   if(parts.length)lines.push(`${label}: ${parts.join('; ')}.`);

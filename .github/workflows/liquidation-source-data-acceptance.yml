@@ -33,6 +33,10 @@ jobs:
         run: node audit-fixes/liquidation-source-data-20260930/coinlobster-future-probe.mjs
       - name: Probe existing protected future liquidation map for BTW
         run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output
+      - name: Verify supported future-map control through the same protected route
+        env:
+          REPORT2_FUTURE_PROBE_SYMBOL: SOL
+        run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output/sol-control
       - name: Assemble production runtime with candidate source changes
         run: |
           mkdir -p runtime audit-output
@@ -52,6 +56,8 @@ jobs:
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Verify exact BTW history with bounded public requests and isolated SQLite
         run: node audit-fixes/liquidation-source-data-20260930/live-acceptance.mjs runtime audit-output
+      - name: Verify future liquidation consumers on exact BTW inputs
+        run: node audit-fixes/liquidation-source-data-20260930/future-render-acceptance.mjs runtime audit-output
       - name: Explain failed validation
         if: failure()
         run: |
