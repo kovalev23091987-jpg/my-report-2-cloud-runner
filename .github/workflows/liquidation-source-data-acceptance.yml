@@ -1,7 +1,7 @@
 name: Liquidation Source Data Acceptance
 on:
   push:
-    branches: [repair/liquidation-source-data-20260930]
+    branches: [repair/liquidation-source-data-20260930, repair/future-liquidation-map-20261001]
     paths:
       - current-generation/**
       - audit-fixes/liquidation-source-data-20260930/**
@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
@@ -25,6 +29,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Probe existing protected future liquidation map for BTW
+        run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output
       - name: Assemble production runtime with candidate source changes
         run: |
           mkdir -p runtime audit-output
