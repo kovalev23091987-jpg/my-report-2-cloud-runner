@@ -1,9 +1,9 @@
 {
   "schema": "report2-autonomous-release-fence-v1",
   "owner": "repair/future-liquidation-priority-20261001",
-  "expected_main": "21ccad02a6357390a2b1ca5388f3022cb9f8cf9e",
-  "active": true,
-  "status": "FUTURE_FIRST_READY_FOR_RELEASE",
+  "expected_main": "7b0c164286b52f41250562e6cefd4517e99b0220",
+  "active": false,
+  "status": "RELEASED_AFTER_FUTURE_FIRST_CANONICAL_VERIFIED",
   "acquired_at": "2026-09-30T22:00:22.987Z",
   "expires_at": "2026-09-30T22:45:22.987Z",
   "no_concurrent_release": true,
@@ -49,5 +49,26 @@
   },
   "acceptance_run": 36784831851,
   "acceptance_status": "SUCCESS",
-  "real_forward_control_nonzero_levels": 88
+  "real_forward_control_nonzero_levels": 88,
+  "current_main": "7b0c164286b52f41250562e6cefd4517e99b0220",
+  "released_at": "2026-09-30T22:29:34.318Z",
+  "merged_main": "17f58be38242c1031cfab859e925fb8478b823c1",
+  "production_changed": true,
+  "worker_sha256": "b852d386dad5d40778284ba036075b940dc944dbe56e21c6bf7de67d2d5534d9",
+  "canonical_run": 36785063002,
+  "canonical_status": "SUCCESS_CLOSED",
+  "canonical_contract": "BTW-USDT",
+  "canonical_scanned": 370,
+  "canonical_scan_errors": 0,
+  "canonical_future_level_count": 0,
+  "canonical_useful_history_source_count": 3,
+  "future_first_rule_scope": "ALL_CONTRACTS_MAIN_AND_STANDALONE",
+  "canonical_report_file": "BTW-USDT_2026-10-01_report.md",
+  "telegram_test_messages_sent": 0,
+  "btw_forward_blockers": [
+    "BYK_MAP_EXACT_SYMBOL_UNSUPPORTED",
+    "COINLOBSTER_CURRENT_ACCESS_NUMERIC_LEVELS_WITHHELD",
+    "NATIVE_EXACT_MARKETS_UNSUPPORTED_OR_NOT_ROUTED"
+  ],
+  "next_release_requires": "REBASE_ON_CURRENT_MAIN_AND_RETAIN_NEW_WORKER_PIN_AND_FUTURE_FIRST_CONTRACT"
 }
