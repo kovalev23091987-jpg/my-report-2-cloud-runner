@@ -1,3 +1,13 @@
+# Correction: OKX stock/crypto ticker collision — 2026-09-30
+
+Read-only run 36742614541 established that OKX QNT-USDT-SWAP returns instCategory=3 (stocks). OKX identifies QNT as Quantinuum Inc.; it is not a valid peer of the HTX crypto contract. Earlier OKX profile receipts below prove internal window reconciliation only; their claimed eligibility as crypto confirmation is withdrawn. The discrepancy has an identified instrument-class cause, not established false exchange volume.
+
+OKX crypto catalog admission now requires instCategory=1. Missing/unknown/stock/commodity/forex/bond categories are excluded. Catalog schema CEX_V3 refreshes old symbol-only mappings within the existing three-call budget. Cached depth/realized aggregates and normalized OKX profiles without the new class proof cannot re-enter decisions. Depth, realized liquidation events and profiles reject non-crypto metadata even when prices accidentally agree. Wrong-class peers are unavailable, not dissenting votes against the actual crypto profile; legitimate same-class price conflicts retain zero weight.
+
+Official references: https://tr.okx.com/docs-v5/ (instCategory 1=Crypto, 3=Stocks); https://www.okx.com/docs-v5/log_zh/ (2026-03-02); https://www.okx.com/en-eu/how-to-buy/quantinuum-inc--qnt .
+
+## Historical PR37 methodology and receipts (class-admission correction above takes precedence)
+
 # Executed volume profile — explicitly authorized 2026-09-30
 
 User removed the empirical usefulness prerequisite and explicitly requested influence on the block score and decisions, then cross-exchange confirmation. This supersedes earlier research-only gates for this feature. No profitability or superiority claim is made.
