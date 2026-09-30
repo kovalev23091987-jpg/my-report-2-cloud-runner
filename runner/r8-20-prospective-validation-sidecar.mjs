@@ -6,8 +6,9 @@ import {
 } from './src/tz101-entry-area-calibration.mjs';
 import {digest} from './src/upstream-proof-utils.mjs';
 import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
+import {HISTORY_COMPATIBILITY, verifiedCollectorRows, chooseCompleteBucket} from './src/market-history-reader.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-approved-entry-performance-v3-delivery-cohorts-20260928';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v4-fair-queue-verified-history-20260930';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -33,6 +34,7 @@ function finite(v) {
   return Number.isFinite(n) ? n : null;
 }
 function int(v) {
+  if (v === null || v === undefined || v === '') return null;
   const n = Number(v);
   return Number.isSafeInteger(n) ? n : null;
 }
@@ -71,7 +73,7 @@ function closedStage0Point(row, contract) {
   if (parsed.status !== 'CLOSED') return null;
   const point = parsed.rows.get(contract);
   if (!point || point.data_status !== 'CLOSED') return null;
-  if (finite(point.market_age_sec) === null || Number(point.market_age_sec) > 300) return null;
+  if (finite(point.market_age_sec) === null || Number(point.market_age_sec) < 0 || Number(point.market_age_sec) > 300) return null;
   if (finite(point.price) === null || Number(point.price) <= 0) return null;
   return { ts: Number(point.ts), price: Number(point.price) };
 }
@@ -192,54 +194,96 @@ async function ensureActivation(db, nowTs) {
   return { status: 'CLOSED', activation_ts: activationTs, created: true };
 }
 
-async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget = false } = {}) {
+function coveredPath(points, start, end, cadence) {
+  const ordered = [...points].sort((a,b)=>a.ts-b.ts);
+  return ordered.length > 0 && ordered[0].ts <= start + cadence &&
+    ordered.at(-1).ts >= end - 15 * MINUTE &&
+    ordered.every((p,i)=>!i || p.ts-ordered[i-1].ts <= cadence + MINUTE);
+}
+
+async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget = false, nowTs = Date.now() } = {}) {
   const start = int(startTs), end = int(endTs);
   if (!text(contract) || start === null || end === null || end < start) return { status: 'INVALID_INPUT', points: [] };
-  const upper = allowAfterTarget ? end + 15 * MINUTE : end;
+  const upper = Math.min(nowTs, allowAfterTarget ? end + 15 * MINUTE : end);
+  const limit = R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path;
+  let collectorReason = 'NO_FACTUAL_PATH';
   try {
-    const batchResult = await db.prepare(`SELECT b.bucket AS snapshot_bucket,b.received_ts,
-        json_extract(j.value,'$.observed_ts') AS observed_ts,json_extract(j.value,'$.price') AS price
-      FROM report2_market_snapshot_batch_v1 b,json_each(b.payload) j
-      WHERE b.actor='HUB_PUBLIC_COLLECTOR'
-        AND b.status='COMPLETE' AND b.bucket BETWEEN ?1 AND ?2
-        AND json_extract(j.value,'$.contract')=?3
-        AND json_extract(j.value,'$.source_status')='CLOSED'
-      ORDER BY b.bucket ASC LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path}`)
-      .bind(start, upper, text(contract)).all();
-    const batchPoints = rowsOf(batchResult).map(row => ({
-      ts: int(row.observed_ts) ?? int(row.snapshot_bucket),
-      price: finite(row.price),
-    })).filter(row => row.ts !== null && row.price !== null && row.price > 0 && row.ts >= start && row.ts <= upper);
-    if (batchPoints.length) return { status: 'CLOSED', points: batchPoints, rows_loaded: batchPoints.length, history_source: 'REPORT2_MARKET_SNAPSHOT_BATCH_V1' };
-  } catch {
-    // Additive deployment: fall back until the public-collector table exists.
+    // Index order matches generation,bucket,shard. Bound raw rows BEFORE parsing
+    // JSON; LIMIT after json_each used to conceal thousands of billed reads.
+    const batchResult = await db.prepare(`SELECT bucket,actor,generation,schema_version,shard,
+        source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes
+      FROM report2_market_snapshot_batch_v1
+      WHERE generation IN (?1,?2,?3) AND bucket BETWEEN ?4 AND ?5
+      ORDER BY generation,bucket,shard LIMIT ?6`)
+      .bind(...HISTORY_COMPATIBILITY.generations, Math.floor(start/(5*MINUTE))*5*MINUTE, upper, limit+1).all();
+    const raw = rowsOf(batchResult);
+    if (raw.length <= limit) {
+      const verified = await verifiedCollectorRows(raw.filter(r=>r.actor==='HUB_PUBLIC_COLLECTOR'), {decisionTs:nowTs});
+      const buckets = new Map();
+      for (const row of verified.accepted) {
+        const groups = buckets.get(row.bucket) || new Map();
+        groups.set(row.generation,[...(groups.get(row.generation)||[]),row]);
+        buckets.set(row.bucket,groups);
+      }
+      const points=[];
+      for (const [bucket,groups] of buckets) {
+        const selected=chooseCompleteBucket(groups,text(contract),HISTORY_COMPATIBILITY.generations.at(-1));
+        const row=selected?.row, ts=int(row?.observed_ts), price=finite(row?.price), age=finite(row?.market_age_sec);
+        if (row?.contract===text(contract) && row.source_status==='CLOSED' && ts!==null && ts>=start && ts<=upper &&
+            Math.abs(ts-Number(bucket))<=5*MINUTE && age!==null && age>=0 && age<=300 && price!==null && price>0) points.push({ts,price});
+      }
+      points.sort((a,b)=>a.ts-b.ts);
+      if (coveredPath(points,start,end,5*MINUTE)) return {status:'CLOSED',points,rows_loaded:raw.length,history_source:'REPORT2_MARKET_SNAPSHOT_BATCH_V1',sampling_minutes:5,extrema_scope:'OBSERVED_SNAPSHOTS_ONLY'};
+      collectorReason=verified.rejected.length?'COLLECTOR_INTEGRITY_OR_COVERAGE_GAP':'COLLECTOR_COVERAGE_GAP';
+    } else collectorReason='COLLECTOR_RAW_ROW_CAP';
+  } catch (error) {
+    if (!/no such table/i.test(String(error?.message||error))) throw error;
+    collectorReason='COLLECTOR_TABLE_UNAVAILABLE';
   }
-  const result = await db.prepare(`SELECT ts,payload_json FROM scan_runs
-    WHERE ts BETWEEN ?1 AND ?2 AND stage0_coverage_pct>=99.9 AND errors=0 AND stale=0
-    ORDER BY ts ASC LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path}`)
-    .bind(start, upper).all();
+  const result = await db.prepare(`SELECT ts_bucket,ts,payload_json,stage0_coverage_pct,errors,stale FROM scan_runs
+    WHERE ts_bucket BETWEEN ?1 AND ?2 ORDER BY ts_bucket ASC LIMIT ?3`)
+    .bind(Math.floor(start/(5*MINUTE))*5*MINUTE, upper, limit+1).all();
   const rows = rowsOf(result);
+  if (rows.length>limit) return {status:'SCAN_RAW_ROW_CAP',points:[],rows_loaded:rows.length,collector_reason:collectorReason};
   const points = [];
   for (const row of rows) {
+    if (finite(row.stage0_coverage_pct)<99.9 || finite(row.stage0_coverage_pct)===null || row.errors!==0 || row.stale!==0 || int(row.ts)===null || row.ts>nowTs || Math.abs(row.ts-row.ts_bucket)>5*MINUTE) continue;
     const p = closedStage0Point(row, contract);
-    if (p) points.push(p);
+    if (p && p.ts===Number(row.ts) && p.ts>=start && p.ts<=upper) points.push(p);
   }
-  return { status: points.length ? 'CLOSED' : 'NO_FACTUAL_PATH', points, rows_loaded: rows.length, history_source: points.length ? 'SCAN_RUNS_FALLBACK' : null };
+  const complete=coveredPath(points,start,end,20*MINUTE);
+  return { status: complete?'CLOSED':points.length?'PARTIAL_FACTUAL_PATH':'NO_FACTUAL_PATH', points, rows_loaded: rows.length, history_source: complete?'SCAN_RUNS_FALLBACK':null, collector_reason:collectorReason, sampling_minutes:20,extrema_scope:'OBSERVED_SNAPSHOTS_ONLY' };
 }
 
 export async function closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_ts = Date.now() } = {}) {
   const currentTs = int(current_scan_ts);
   if (currentTs === null) return { status: 'NOT_CLOSED', reason: 'CURRENT_SCAN_TS_INVALID' };
-  const task = await db.prepare(`SELECT outcome_id,wave_id,contract_code,direction_hint,first_seen_ts,horizon_hours,target_ts,
+  const queueKey='R8_20_EARLY_OUTCOME_CURSOR_V1';
+  const state=await db.prepare(`SELECT status FROM tz101_entry_area_calibration_state WHERE state_key=?1 LIMIT 1`).bind(queueKey).first();
+  const cursor=parseJson(state?.status,{});
+  const select=async (target,id)=>db.prepare(`SELECT outcome_id,wave_id,contract_code,direction_hint,first_seen_ts,horizon_hours,target_ts,
       outcome_status,first_seen_context_json,computed_ts,shadow_only
     FROM v3_early_outcome_journal
-    WHERE shadow_only=1 AND computed_ts IS NULL AND outcome_status='PENDING' AND target_ts<=?1
-    ORDER BY target_ts ASC,outcome_id ASC LIMIT 1`).bind(currentTs).first();
+    WHERE shadow_only=1 AND computed_ts IS NULL AND outcome_status='PENDING' AND target_ts BETWEEN ?1 AND ?2
+      AND (target_ts>?1 OR outcome_id>?3)
+    ORDER BY target_ts ASC,outcome_id ASC LIMIT 1`).bind(target,currentTs,id).first();
+  let task=await select(int(cursor.target_ts)??0,text(cursor.outcome_id));
+  let retryAfter=int(cursor.retry_after_ts)??0;
+  if (!task && cursor.outcome_id && now_ts>=retryAfter) {task=await select(0,'');retryAfter=0;}
+  if (!task && cursor.outcome_id && now_ts<retryAfter) return {status:'DEFERRED_EARLY_RETRY_COOLDOWN',closed:0,retry_after_ts:retryAfter};
   if (!task) return { status: 'CLOSED_NO_DUE_EARLY_OUTCOME', closed: 0 };
+  // Advance before attempting history. Failed/missing observations stay PENDING,
+  // with null results, and are revisited on a later sweep. New due tasks are not
+  // held behind an old hole. The queue key never modifies activation/readiness.
+  const next={target_ts:Number(task.target_ts),outcome_id:text(task.outcome_id),retry_after_ts:retryAfter||Number(now_ts)+24*HOUR};
+  await db.prepare(`INSERT INTO tz101_entry_area_calibration_state
+    (state_key,status,closed_samples,train_samples,holdout_samples,validated_out_of_sample,live_promotion_allowed,automatic_rule_promotion,updated_ts)
+    VALUES(?1,?2,0,0,0,0,0,0,?3) ON CONFLICT(state_key) DO UPDATE SET status=excluded.status,updated_ts=excluded.updated_ts`)
+    .bind(queueKey,JSON.stringify(next),Number(now_ts)).run();
   const context = parseJson(task.first_seen_context_json, {});
   const firstPrice = finite(context?.first_seen_price);
   if (firstPrice === null || firstPrice <= 0) return { status: 'NOT_CLOSED', reason: 'FIRST_SEEN_PRICE_MISSING', outcome_id: task.outcome_id };
-  const path = await loadFactualPath(db, { contract: text(task.contract_code), startTs: Number(task.first_seen_ts), endTs: Number(task.target_ts), allowAfterTarget: false });
+  const path = await loadFactualPath(db, { contract: text(task.contract_code), startTs: Number(task.first_seen_ts), endTs: Number(task.target_ts), allowAfterTarget: false, nowTs:now_ts });
   if (path.status !== 'CLOSED') return { status: 'NOT_CLOSED', reason: path.status, outcome_id: task.outcome_id, rows_loaded: path.rows_loaded || 0 };
   const resolved = resolveEarlyOutcome({ task, first_seen_price: firstPrice, price_path: path.points, computed_ts: now_ts });
   if (resolved.status !== 'CLOSED') return { status: 'NOT_CLOSED', reason: resolved.reason || resolved.status, outcome_id: task.outcome_id, rows_loaded: path.rows_loaded || 0 };
@@ -399,16 +443,28 @@ function buildEntryAreaFactualOutcome({ sample, horizonHours, points, targetTs }
 export async function closeOneEntryAreaOutcome(db, { current_scan_ts, activation_ts, now_ts = Date.now() } = {}) {
   const currentTs = int(current_scan_ts), activationTs = int(activation_ts);
   if (currentTs === null || activationTs === null) return { status: 'NOT_CLOSED', reason: 'TIMESTAMP_INVALID' };
-  const result = await db.prepare(`WITH horizons(horizon_hours) AS (VALUES(1),(4),(12),(24))
+  const queueKey='R8_20_ENTRY_OUTCOME_CURSOR_V1';
+  const state=await db.prepare(`SELECT status FROM tz101_entry_area_calibration_state WHERE state_key=?1 LIMIT 1`).bind(queueKey).first();
+  const cursor=parseJson(state?.status,{});
+  const select=async (target,id)=>db.prepare(`WITH horizons(horizon_hours) AS (VALUES(1),(4),(12),(24))
     SELECT s.sample_id,s.decision_id,s.contract_code,s.direction,s.observed_ts,s.sample_json,s.material_digest,
            h.horizon_hours,(s.observed_ts + h.horizon_hours*3600000) AS target_ts
     FROM tz101_entry_area_calibration_signal s
     CROSS JOIN horizons h
     LEFT JOIN tz101_entry_area_calibration_outcome o ON o.sample_id=s.sample_id AND o.horizon_hours=h.horizon_hours
     WHERE s.created_ts>=?1 AND o.sample_id IS NULL AND (s.observed_ts + h.horizon_hours*3600000)<=?2
-    ORDER BY target_ts ASC,s.sample_id ASC LIMIT 1`).bind(activationTs, currentTs).all();
-  const row = rowsOf(result)[0] || null;
+      AND ((s.observed_ts + h.horizon_hours*3600000)>?3 OR
+        ((s.observed_ts + h.horizon_hours*3600000)=?3 AND s.sample_id>?4))
+    ORDER BY target_ts ASC,s.sample_id ASC LIMIT 1`).bind(activationTs,currentTs,target,id).all();
+  let row=rowsOf(await select(int(cursor.target_ts)??0,text(cursor.sample_id)))[0]||null;
+  let retryAfter=int(cursor.retry_after_ts)??0;
+  if (!row && cursor.sample_id && now_ts>=retryAfter) {row=rowsOf(await select(0,''))[0]||null;retryAfter=0;}
+  if (!row && cursor.sample_id && now_ts<retryAfter) return {status:'DEFERRED_ENTRY_RETRY_COOLDOWN',closed:0,retry_after_ts:retryAfter};
   if (!row) return { status: 'CLOSED_NO_DUE_ENTRY_OUTCOME', closed: 0 };
+  await db.prepare(`INSERT INTO tz101_entry_area_calibration_state
+    (state_key,status,closed_samples,train_samples,holdout_samples,validated_out_of_sample,live_promotion_allowed,automatic_rule_promotion,updated_ts)
+    VALUES(?1,?2,0,0,0,0,0,0,?3) ON CONFLICT(state_key) DO UPDATE SET status=excluded.status,updated_ts=excluded.updated_ts`)
+    .bind(queueKey,JSON.stringify({target_ts:Number(row.target_ts),sample_id:text(row.sample_id),retry_after_ts:retryAfter||Number(now_ts)+24*HOUR}),Number(now_ts)).run();
   const sample = parseJson(row.sample_json, null);
   const sampleRecord = {
     status: 'CAPTURED_PROSPECTIVE',
@@ -416,7 +472,7 @@ export async function closeOneEntryAreaOutcome(db, { current_scan_ts, activation
     material_digest: text(row.material_digest),
     sample,
   };
-  const path = await loadFactualPath(db, { contract: text(row.contract_code), startTs: Number(row.observed_ts), endTs: Number(row.target_ts), allowAfterTarget: true });
+  const path = await loadFactualPath(db, { contract: text(row.contract_code), startTs: Number(row.observed_ts), endTs: Number(row.target_ts), allowAfterTarget: true, nowTs:now_ts });
   if (path.status !== 'CLOSED') return { status: 'NOT_CLOSED', reason: path.status, sample_id: row.sample_id, horizon_hours: Number(row.horizon_hours), rows_loaded: path.rows_loaded || 0 };
   const factual = buildEntryAreaFactualOutcome({ sample, horizonHours: Number(row.horizon_hours), points: path.points, targetTs: Number(row.target_ts) });
   if (factual.status !== 'CLOSED_FACTUAL') return { status: 'NOT_CLOSED', reason: factual.reason, sample_id: row.sample_id, horizon_hours: Number(row.horizon_hours), rows_loaded: path.rows_loaded || 0 };
@@ -443,20 +499,50 @@ export async function closeOneEntryAreaOutcome(db, { current_scan_ts, activation
   };
 }
 
+// This admission guard prevents launching the NEXT statement after quota is
+// exhausted. Indexed/raw-row-bounded history queries address the measured large
+// read. It is not a database-engine hard cap on rows billed by one statement.
+export function prospectiveBudgetGuard(db, before) {
+  let pendingRequests=0,pendingReads=0,pendingWrites=0;
+  const wrap=(statement,sql)=>({
+    bind(...args){return wrap(statement.bind(...args),sql);},
+    ...Object.fromEntries(['all','first','run'].map(method=>[method,async (...args)=>{
+      const delta=usageDelta(before,db.usageSnapshot());
+      const writes=/^\s*(INSERT|UPDATE|DELETE)/i.test(sql)?1:0;
+      const history=/FROM\s+(report2_market_snapshot_batch_v1|scan_runs)\b/i.test(sql);
+      const readReserve=history?2*(R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path+1)+8:1;
+      if (!delta || delta.unknown_ops || delta.requests+pendingRequests+1>R820_PROSPECTIVE_VALIDATION_BUDGET.requests_soft_cap ||
+          delta.rows_read+pendingReads+readReserve>R820_PROSPECTIVE_VALIDATION_BUDGET.rows_read ||
+          delta.rows_written+pendingWrites+writes>R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written) {
+        throw new Error('PROSPECTIVE_BUDGET_ADMISSION_DEFERRED');
+      }
+      pendingRequests++;pendingReads+=readReserve;pendingWrites+=writes;
+      try {return await statement[method](...args);}
+      finally {pendingRequests--;pendingReads-=readReserve;pendingWrites-=writes;}
+    }]))
+  });
+  return {prepare(sql){return wrap(db.prepare(sql),sql);},usageSnapshot:()=>db.usageSnapshot()};
+}
+
 export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts, source_run_id = null, now_ts = Date.now() } = {}) {
   const common = base('STARTED', { source_run_id: text(source_run_id) || null });
   if (!db?.prepare) return base('SOURCE_UNSUPPORTED', { source_run_id: common.source_run_id });
   const before = typeof db.usageSnapshot === 'function' ? db.usageSnapshot() : null;
+  if (!before) return base('USAGE_ACCOUNTING_REQUIRED',{source_run_id:common.source_run_id});
+  db=prospectiveBudgetGuard(db,before);
   try {
     const activation = await ensureActivation(db, now_ts);
     if (activation.status !== 'CLOSED') return base('MIGRATION_REQUIRED_OR_ACTIVATION_FAILED', { source_run_id: common.source_run_id, activation });
 
-    const early = await closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_ts });
+    // Rotate the two outcome queues to keep the existing 14-request envelope.
+    // Capture is still attempted every cycle. No trading cadence is changed.
+    const earlyTurn=Math.floor(Number(current_scan_ts)/(20*MINUTE))%2===0;
+    const early = earlyTurn?await closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_ts }):{status:'DEFERRED_FAIR_QUEUE_ROTATION',closed:0};
     let capture = { status: activation.created ? 'ACTIVATED_NO_RETROSPECTIVE_BACKFILL' : 'NOT_RUN', captured: 0 };
     let entryOutcome = { status: activation.created ? 'ACTIVATED_NO_RETROSPECTIVE_BACKFILL' : 'NOT_RUN', closed: 0 };
     if (!activation.created) {
       capture = await captureOneEntryAreaSample(db, { activation_ts: activation.activation_ts, now_ts });
-      entryOutcome = await closeOneEntryAreaOutcome(db, { current_scan_ts, activation_ts: activation.activation_ts, now_ts });
+      entryOutcome = earlyTurn?{status:'DEFERRED_FAIR_QUEUE_ROTATION',closed:0}:await closeOneEntryAreaOutcome(db, { current_scan_ts, activation_ts: activation.activation_ts, now_ts });
     }
     const readiness = await loadProspectiveReadinessSnapshot(db, { activation_ts: activation.activation_ts, now_ts });
     const after = typeof db.usageSnapshot === 'function' ? db.usageSnapshot() : null;
@@ -479,7 +565,7 @@ export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts,
     const msg = String(error?.message || error);
     const migration = /no such table|no such column/i.test(msg);
     const after = typeof db.usageSnapshot === 'function' ? db.usageSnapshot() : null;
-    return base(migration ? 'MIGRATION_REQUIRED' : 'ERROR_FAIL_CLOSED', { source_run_id: common.source_run_id, error: msg, usage_delta: usageDelta(before, after) });
+    return base(msg==='PROSPECTIVE_BUDGET_ADMISSION_DEFERRED'?'DEFERRED_BUDGET_ADMISSION':migration ? 'MIGRATION_REQUIRED' : 'ERROR_FAIL_CLOSED', { source_run_id: common.source_run_id, error: msg, usage_delta: usageDelta(before, after) });
   }
 }
 

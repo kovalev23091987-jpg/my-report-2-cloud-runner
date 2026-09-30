@@ -33,7 +33,7 @@ async function sha256(value) {
   return [...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('');
 }
 
-async function verifiedCollectorRows(rows,{decisionTs}={}) {
+export async function verifiedCollectorRows(rows,{decisionTs}={}) {
   const accepted=[],rejected=[];
   for(const row of rows||[]){
     const received=finite(row?.received_ts),payload=String(row?.payload??''),schema=text(row?.schema_version),generation=text(row?.generation);
@@ -69,7 +69,7 @@ function compactCollectorPoint(row, bucket, generation) {
   };
 }
 
-function chooseCompleteBucket(groups, contract, preferredGeneration) {
+export function chooseCompleteBucket(groups, contract, preferredGeneration) {
   const candidates = [];
   for (const [generation, shards] of groups) {
     shards.sort((a, b) => Number(a.shard) - Number(b.shard));
