@@ -38,6 +38,9 @@ if(phase==='evidence'){
  const {collectGateLiquidationHistory}=await load('src/gate-liquidation-history.mjs');await capture('GATE_LIQUIDATION_HISTORY_DIRECT','TAO-USDT',()=>collectGateLiquidationHistory({db,fetch_impl,contract:'TAO-USDT',run_id:`${run_id}:GATE_DIRECT`,now:Date.now(),max_http:2}),r=>({status:r.status,exact_identity:r.exact_identity,original_source_ts:r.source_ts,unit:r.unit,entry_authorization:false}));
  const pilot=createShadowMarketPilot({fetch_impl,admit:({provider_id,requests})=>budget.reserve({logical_request_id:`${run_id}:${provider_id}`,lane:'background',attempts:requests})});
  for(const [provider_id,identity_map] of [['KRAKEN_FUTURES',{BTC:'PF_XBTUSD',ETH:'PF_ETHUSD'}],['DYDX_INDEXER',{BTC:'BTC-USD',ETH:'ETH-USD'}]])await capture(provider_id,'BTC_ETH_BACKGROUND',()=>pilot.collect({provider_id,run_id,identity_map}),r=>({schema_status:r.schema_status,coverage_status:r.coverage_status,mapped_markets:r.markets,mode:'SHADOW',score_changed:false}));
+}else if(phase==='large-trades'){
+ const {collectHtxLargeTradesEvidence}=await load('src/htx-large-trades-evidence.mjs'),{consumeEvidenceV2}=await load('src/evidence-v2.mjs');
+ for(const contract of ['SOL-USDT','LINK-USDT'])await capture('HTX_LARGE_TRADES',contract,()=>collectHtxLargeTradesEvidence({db,fetch_impl,request_admit:budget.reserve,contract,run_id,now:Date.now()}),r=>({current_htx_market_present:prices.has(contract),actual_score_consumer:consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:Date.now()}),entry_authorization:false}));
 }else if(phase==='sector'){
  const {compileOfficialSourceRegistry}=await load('src/official-source-registry.mjs'),official=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(path.join(root,'official-event-sources.json'))));const entry=official.registry.LINK;
  const {collectCoinpaprikaSectorEvidence}=await load('src/coinpaprika-sector-evidence.mjs'),{consumeEvidenceV2}=await load('src/evidence-v2.mjs');
