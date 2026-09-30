@@ -43,7 +43,7 @@ test('every candidate-context provider has an explicit useful evidence path',()=
   DEX_SCREENER:{pools:[{pool_key:'eth|one',buys_24h:80,sells_24h:20}]},
   GECKOTERMINAL:{pools:[{pool_key:'eth|two',buys_24h:70,sells_24h:30}]},
   DEFILLAMA:{status:'CLOSED',exact_identity:true,protocol_slug:'example',tvl_change_7d_pct:12},
-  SOLANA_RPC:{status:'CLOSED',exact_identity:true,mint:'Mint',recent_signature_count_1h:40,prior_signature_count_1h:10,sample_capped:false},
+  SOLANA_RPC:{status:'CLOSED',exact_identity:true,mint:'Mint',recent_signature_count_1h:40,prior_signature_count_1h:10,sample_capped:false,comparable_windows:true},
   BITGET:{status:'CLOSED',exact_identity:true,symbol:'FILUSDT',price_difference_vs_htx_pct:0.2},
   COINBASE:{status:'CLOSED',exact_identity:true,product:'FIL-USD',price_difference_vs_htx_pct:0.3},
  }}});
