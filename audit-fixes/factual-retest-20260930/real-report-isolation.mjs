@@ -44,7 +44,8 @@ assert.equal(process.env.REPORT2_V3_TELEGRAM_NETWORK_ENABLED,'0');
 assert.equal(process.env.REPORT2_TELEGRAM_OUTPUT_ENABLED,'0');
 const {enqueueCommand}=await mod('src/durable-command-queue.mjs');
 const now=Date.now(),command_id=`CMD:SOURCE_BINDING_ACCEPTANCE:${process.env.GITHUB_RUN_ID}:${now}`;
-await enqueueCommand(remote,{command_id,mode:'FULL_MANUAL',request_channel:'ISOLATED_CLOUD_ACCEPTANCE',received_at:now,deadline:now+10*60000,generation:process.env.REPORT2_CURRENT_GENERATION});
+const contract=process.env.REPORT2_MANUAL_COIN_CONTRACT||null;
+await enqueueCommand(remote,{command_id,mode:contract?'MANUAL_COIN':'FULL_MANUAL',contract,request_channel:'ISOLATED_CLOUD_ACCEPTANCE',received_at:now,deadline:now+10*60000,generation:process.env.REPORT2_CURRENT_GENERATION});
 process.env.REPORT2_COMMAND_ID=command_id;
 // Compare both adapters on the SAME genuine inputs from this real report.
 fs.copyFileSync(path.join(root,'src/canonical-runtime-adapter.mjs'),path.join(root,'src/canonical-runtime-adapter.accepted.mjs'));
