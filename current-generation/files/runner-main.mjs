@@ -43,6 +43,7 @@ import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-cal
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
+import {bindManualReport} from './src/manual-result-binding.mjs';
 import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
@@ -663,14 +664,15 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
     const renderedResult=JSON.stringify({...result,analytics_lease:leaseFinish});
     console.log('LIQUIDATION_ONLY_RESULT',renderedResult);
-    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,rendered_text:renderedResult,delivered_to_existing_channel:true,now:Date.now()});
-    if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
-    console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
     const reportText=formatLiquidationRunSummary({status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines});
-    const liquidationRunOutput={schema:'my-report-2-liquidation-run-output-v1',generation,head:sha,source,run_id:sourceRunId,mode:'LIQUIDATION_ONLY',status:reportText?'CLOSED':'NOT_CLOSED',
+    const liquidationRunOutput={schema:'my-report-2-liquidation-run-output-v1',generation,head:process.env.GITHUB_SHA||null,worker_sha256:sha,source,run_id:sourceRunId,mode:'LIQUIDATION_ONLY',status:reportText?'CLOSED':'NOT_CLOSED',
       verified_candidate:candidate?.contract||null,preliminary_candidates:(scanResult.candidates||[]).map(row=>row.contract).slice(0,5),
       liquidation_lines:lines,report_text:reportText,generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,telegram_started:false};
-    await fs.writeFile('report2-run-result.json',JSON.stringify(liquidationRunOutput,null,2));
+    await fs.writeFile('report2-run-result.json',JSON.stringify(bindManualReport(liquidationRunOutput,{command:manualCommandClaim.row,workflow_run_id:process.env.GITHUB_RUN_ID,commit_sha:process.env.GITHUB_SHA}),null,2));
+    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:sourceRunId,rendered_text:JSON.stringify(liquidationRunOutput),delivered_to_existing_channel:true,now:Date.now()});
+    if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
+    console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
+    await fs.writeFile('report2-run-result.json',JSON.stringify(bindManualReport(liquidationRunOutput,{command:manualCommandClaim.row,completion:commandCompletion,workflow_run_id:process.env.GITHUB_RUN_ID,commit_sha:process.env.GITHUB_SHA}),null,2));
     return;
   }
   const queueClaimRunId=`QUEUE:${started}`;
@@ -924,7 +926,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
   const canonicalRunOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron});
-  await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
+  await fs.writeFile('report2-run-result.json',JSON.stringify(source==='schedule'?canonicalRunOutput:bindManualReport(canonicalRunOutput,{command:manualCommandClaim.row,workflow_run_id:process.env.GITHUB_RUN_ID,commit_sha:process.env.GITHUB_SHA}),null,2));
   console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
   const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
@@ -945,9 +947,11 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       console.log('DURABLE_MANUAL_COMMAND_DEFERRED',JSON.stringify(commandDeferral));
       return;
     }
-    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:String(cron.run_id||`MANUAL:${started}`),rendered_text:finalRenderedResult,delivered_to_existing_channel:true,now:Date.now()});
+    const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:canonicalRunOutput.run_id,rendered_text:JSON.stringify(canonicalRunOutput),delivered_to_existing_channel:true,now:Date.now()});
     if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
     console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
+    await fs.writeFile('report2-run-result.json',JSON.stringify(bindManualReport(canonicalRunOutput,{command:manualCommandClaim.row,completion:commandCompletion,workflow_run_id:process.env.GITHUB_RUN_ID,commit_sha:process.env.GITHUB_SHA}),null,2));
   }
 }
 main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
+
