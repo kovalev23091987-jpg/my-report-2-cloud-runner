@@ -11,7 +11,13 @@ const compact=result=>({status:result?.status??'NOT_CLOSED',reason:result?.reaso
 async function capture(source,contract,action,consumer=null){checkDb();const start=Date.now(),before=sourceCalls;let result;try{result=await action();}catch(error){result={status:'CODE_OR_STORE_ERROR',error:String(error?.message||error).slice(0,240),network_calls:sourceCalls-before};}
  const row={source,contract,started_ts:start,completed_ts:Date.now(),actual_http:sourceCalls-before,result:compact(result),consumer:consumer?await consumer(result):null};records.push(row);console.log(JSON.stringify({source,contract,status:row.result.status,actual_http:row.actual_http,consumer:row.consumer}));return result;}
 const refResponse=await fetch_impl('https://api.hbdm.com/v2/linear-swap-ex/market/detail/batch_merged'),refPayload=refResponse.ok?await refResponse.json():null;const priceRows=Array.isArray(refPayload?.ticks)?refPayload.ticks:[];const prices=new Map(priceRows.filter(r=>typeof r.contract_code==='string'&&Number(r.close)>0).map(r=>[r.contract_code,Number(r.close)]));
-if(phase==='evidence'){
+if(phase==='source-health'){
+ const {collectCandidateEvidenceV2}=await load('src/candidate-evidence-v2-runtime.mjs'),{compileOfficialSourceRegistry}=await load('src/official-source-registry.mjs'),entry=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(path.join(root,'official-event-sources.json')))).registry.LINK;
+ await capture('CANDIDATE_SOURCE_HEALTH_CONSUMER','LINK-USDT',()=>collectCandidateEvidenceV2({db,fetch_impl,request_admit:budget.reserve,source_health_admit:e=>({allowed:db.usageSnapshot().rows_read+e.rows_read<30000&&db.usageSnapshot().rows_written+e.rows_written<480}),contract:'LINK-USDT',run_id,asset_identity:{chain:entry.chain,contract_or_mint:entry.contract_or_mint},asset_metadata:entry,now:Date.now()}),r=>({source_health:r.source_health,shared_http_envelope:r.shared_http_envelope,score_adjustment:0,entry_authorization:false}));
+}else if(phase==='volume-feasibility'){
+ const {probeVolumeFeasibility}=await import('./volume-feasibility.mjs');
+ await capture('VOLUME_PROFILE_SOURCE_FEASIBILITY','SOL-USDT',()=>probeVolumeFeasibility({db,load,fetch_impl,budget,run_id,output_dir:path.dirname(output),registry_path:path.join(root,'official-event-sources.json')}),()=>({status:'RESEARCH_ONLY_NOT_CONNECTED_TO_REPORT',score_adjustment:0,entry_authorization:false,target_authorization:false}));
+}else if(phase==='evidence'){
  const {compileOfficialSourceRegistry}=await load('src/official-source-registry.mjs'),compiled=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(path.join(root,'official-event-sources.json')))),entry=compiled.registry.LDO;
  if(!entry)throw Error('EXACT_LDO_REGISTRY_REQUIRED');
  const common={db,fetch_impl,request_admit:budget.reserve,run_id,now,contract:'LDO-USDT',asset_identity:{chain:entry.chain,contract_or_mint:entry.contract_or_mint},asset_metadata:entry}, {validateEvidenceV2}=await load('src/evidence-v2.mjs');
@@ -76,4 +82,3 @@ if(phase==='evidence'){
 }else throw Error('AUDIT_PHASE_UNKNOWN');
 const usage=db.usageSnapshot(),result={schema:'report2-bounded-live-source-audit-v1',captured_at:new Date().toISOString(),run_id,phase,github_head:process.env.GITHUB_SHA,records,actual_source_http:sourceCalls,max_source_http:28,whole_job_budget:budget.summary(),database_usage:usage,telegram_calls:0,trade_calls:0,secrets_included:false,all_sources_working:false};
 fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n');if(usage.rows_written>560||usage.rows_read>34000||usage.unknown_ops>0||sourceCalls>28)throw Error('AUDIT_ENVELOPE_NOT_CLOSED');
-

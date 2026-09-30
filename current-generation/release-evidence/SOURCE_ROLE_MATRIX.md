@@ -1,5 +1,20 @@
 # Source role matrix
 
+2026-09-30 acceptance update: PR23 is deployed; CI36692544063 and both full36693403092 / standalone36693640555 are verified. Current scoped findings supersede historical success rows below.
+
+| Source / role | Latest scoped result | Admission |
+|---|---|---|
+| HTX actual taker trades | Bounded exact SOL/LINK samples, lossless IDs, actual quote turnover | Context only; not full CVD, no independent extra direction vote |
+| CoinPaprika sector | LINK membership failed; UMA peers usable but no current HTX market; JUP ambiguous IDs | Registry remains disabled |
+| Chainlink RSS | Transport fetch failed in36692544063 | Not a working feed claim |
+| Ethereum finalized events / Aave | LDO126 logs with1 timed event; LINK Aave0 in last256 finalized blocks in36694180827 | Neutral bounded context; empty sample is not whole-market zero |
+| Solana finalized supply | Exact JUP source clock, supply delta -35539 raw units in36694180827 | Context; no verified burn transaction/price direction |
+| HTX daily trade archive | Legacy host transport failed; current official host returned404 for SOL-USDT2026-09-28 in36694848271 | Not admitted to volume profile |
+| HTX minute candles | Exact1440 minutes for2026-09-28 after correcting size/from/to exclusivity | Valid OHLCV; intraminute volume-at-price remains unknown |
+| DexPaprika free | Exact JUP mint/chain and fresh aggregate DEX metrics, two bounded probes | Research only; does not provide HTX executed volume-at-price |
+| Source operational health | PR24 candidate writes and reads bounded actual-attempt observations; cache/quotas excluded from successful-attempt counts | Diagnostics only; predictive activation remains T16.5 gated |
+
+
 | Source | Primary role | Direction policy | Runtime state |
 |---|---|---|---|
 | HTX | universe, execution truth, prices, book, OI, funding, candles, outcomes | authoritative for its market | ACTIVE_EXISTING |
