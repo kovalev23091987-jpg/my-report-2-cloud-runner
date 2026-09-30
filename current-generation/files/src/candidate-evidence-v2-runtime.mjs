@@ -13,7 +13,7 @@ import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v10-route-ownership-20260930';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v11-market-binding-20260930';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 // Only name producers that actually emit a row for this block in this collector.
@@ -35,6 +35,11 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
   const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
   try{result=await collect({...params,request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
   const calls=actual-beforeActual,reported=Number(result?.network_calls);result={...result,network_calls:calls};
+  // A shared upstream or cache never authorizes evidence for another market.
+  if(params.contract&&Array.isArray(result.evidence)){
+   const rows=result.evidence,accepted=rows.filter(row=>row?.htx_contract===params.contract);
+   result={...result,evidence:accepted,market_binding:{requested_contract:params.contract,accepted_rows:accepted.length,rejected_rows:rows.length-accepted.length,status:accepted.length===rows.length?'CLOSED':'FOREIGN_OR_MISSING_MARKET_REJECTED'}};
+  }
   // A denied durable provider reservation occurs before transport. Keep the
   // whole-job reservation conservative; release only this local phase slot.
   if(calls===0&&result?.admission?.allowed===false)reserved=before;

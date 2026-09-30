@@ -1,6 +1,6 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
-export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v1-20260930';
+export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v2-market-cache-20260930';
 export const AAVE_POOL='0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2';
 export const AAVE_TOPIC='0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286';
 export const TRANSFER_TOPIC='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
@@ -23,9 +23,9 @@ export function decodeFinalizedChainEvent({log,mode,asset,block,observed_ts,cont
 async function rpc(fetch_impl,body){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const r=await fetch_impl('https://ethereum-rpc.publicnode.com',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:controller.signal}),p=await r.json();return{ok:r.ok,payload:p,http_status:r.status};}catch(e){return{ok:false,error:String(e.message).slice(0,100)};}finally{clearTimeout(timer);}}
 const exactResult=(payload,id)=>{const rows=Array.isArray(payload)?payload:[payload],hits=rows.filter(x=>x?.id===id&&!x.error);return hits.length===1?hits[0].result:null;};
 export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,now=Date.now(),event_mode='TOKEN_TRANSFER'}={}){
- const token=clean(asset_identity?.contract_or_mint),mode=event_mode==='AAVE_CREDIT'?'AAVE_CREDIT':'TOKEN_TRANSFER';if(asset_identity?.chain!=='ethereum'||!ADDR.test(token))return{status:'EXACT_ETHEREUM_IDENTITY_REQUIRED',evidence:[],network_calls:0};
- await installEvidenceSourceStore(db);const key=`FINAL_EVENTS:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
- const reservation_id=`EV2:CHAIN_EVENTS:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:3});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
+ const token=clean(asset_identity?.contract_or_mint),mode=event_mode==='AAVE_CREDIT'?'AAVE_CREDIT':'TOKEN_TRANSFER';if(!/^[^-\s]{1,32}-USDT$/.test(contract)||asset_identity?.chain!=='ethereum'||!ADDR.test(token))return{status:'EXACT_ETHEREUM_IDENTITY_REQUIRED',evidence:[],network_calls:0};
+ await installEvidenceSourceStore(db);const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:ethereum:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:3});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:3,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
  let calls=0;const send=body=>{calls++;return rpc(fetch_impl,body);},receipts=[],evidence=[];let status='SOURCE_SCHEMA_NOT_CLOSED',summary={mode,scope:'LAST_256_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK',quantity_units:'RAW_BASE_UNITS',direction_neutral:true};
  const head=await send([{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['finalized',false]}]);receipts.push({route:'CHAIN_AND_FINALIZED_HEADER',http_status:head.http_status});

@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/free-sources-20260930]
+    branches: [autonomous/free-sources-20260930, autonomous/volume-research-20260930]
     paths:
       - current-generation/**
       - audit-fixes/source-optimization-20260930/**
@@ -61,7 +61,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        phase: [large-trades, free-discovery]
+        phase: [volume-feasibility, chain-events]
     env:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
@@ -94,4 +94,3 @@ jobs:
           name: source-role-${{ matrix.phase }}-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
-
