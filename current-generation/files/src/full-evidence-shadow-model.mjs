@@ -183,6 +183,23 @@ function htxEvidenceFromShadow(shadowDecision, nowTs, { externalSpotFallback = f
     note: price4hChange === null ? "HTX 4h price trajectory unavailable." : "Factual synchronized HTX 4h price trajectory reused; no extra fetch.",
   });
 
+  // Native two-sided depth is factual spot-market confirmation, not signed
+  // flow or a second directional vote. Require the exact producer receipt.
+  const spotMarket = flags?.spot_market_confirmation;
+  if (spotMarket?.status === "CLOSED" && spotMarket?.version === "htx-native-spot-depth-confirmation-v1" &&
+      spotMarket.contract_code === contract && spotMarket.identity_scope === "EXACT_NATIVE_HTX_REQUEST_AND_RESPONSE_CHANNEL" &&
+      spotMarket.metric === "spot_depth_two_sided_usdt" && spotMarket.max_age_sec === 300 &&
+      finiteOrNull(spotMarket.value) > 0 && spotMarket.directional_votes === 0 && spotMarket.flow_window_closed === false &&
+      Number.isSafeInteger(spotMarket.source_ts) && Number.isSafeInteger(spotMarket.available_ts) &&
+      spotMarket.source_ts <= spotMarket.available_ts && spotMarket.available_ts <= nowTs &&
+      spotMarket.valid_until_ts === spotMarket.source_ts + 300000 && nowTs <= spotMarket.valid_until_ts) {
+    rows.push({...base,chain:"MARKET_STRENGTH_SPOT",metric:spotMarket.metric,market_type:"SPOT",
+      value:spotMarket.value,unit:"USDT",source_ts:spotMarket.source_ts,available_ts:spotMarket.available_ts,
+      max_age_sec:300,coverage_pct:100,status:"CLOSED",eligible_for_chain_closure:true,
+      independence_group:"HTX_OFFICIAL_SPOT",primary_market_id:`${contract}:HTX:SPOT`,
+      note:"Exact fresh native HTX two-sided spot depth; no buy/sell flow, directional vote or 24h completeness is inferred."});
+  }
+
   const spotFlow = finiteOrNull(flags?.spot_flow_delta_pct);
   rows.push({
     ...base,
