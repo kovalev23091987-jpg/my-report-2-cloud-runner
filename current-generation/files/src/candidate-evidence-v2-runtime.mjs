@@ -157,7 +157,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage:auditCandidateBlocks({evidence,sources,primary_checks,decision_ts:params?.now??Date.now()}),
+  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage:auditCandidateBlocks({evidence,sources,primary_checks:primaryChecks,decision_ts:params?.now??Date.now()}),
   internal_only:true,
  };
 }

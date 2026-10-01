@@ -122,7 +122,7 @@ jobs:
     needs: [execution-gate, enqueue-manual-command]
     if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '*/20 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     concurrency:
       group: my-report-2-production-cycle
       cancel-in-progress: false
@@ -134,7 +134,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "7aba5cab58dd9e4387c8af06b5368a8d56fc21c31e6c42aa0e0de9eb4bc7c8c2"
+      REPORT2_EXPECTED_WORKER_SHA: "8daf4b30a2ca7970bb9aea714e014de6766b1f45f5d5d6f14f6f10bd96db67bf"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -143,11 +143,12 @@ jobs:
       REPORT2_TELEGRAM_RELAY_KEY: ${{ secrets.REPORT2_TELEGRAM_RELAY_KEY }}
       REPORT2_TELEGRAM_REPORT_TEST: ${{ inputs.telegram_report_test || 'false' }}
       REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: "0"
-      REPORT2_TELEGRAM_WATCH70_ENABLED: "0"
+      REPORT2_TELEGRAM_WATCH70_ENABLED: "1"
       REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"
       REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
-      REPORT2_TELEGRAM_INFO_ENABLED: "0"
-      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "0"
+      REPORT2_TELEGRAM_INFO_ENABLED: "1"
+      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"
+      REPORT2_EVIDENCE_HTTP_CAP: ${{ github.event_name == 'schedule' && '10' || '24' }}
       REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f"
       REPORT2_TELEGRAM_INSTALL_VALIDATION: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '1' || '0' }}
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
