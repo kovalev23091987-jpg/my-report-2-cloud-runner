@@ -5,7 +5,7 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
-    "current-generation/files/src/canonical-display.mjs": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
+    "current-generation/files/src/canonical-display.mjs": "20efe70018c9f9feac78e74fcc3b20d6e85b0f17023045606a5bf7903bff1da5",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "4b5991e3c319abb6126d30292559fcda59090d648f01153c950f9b9aa2ba2d8c",
@@ -23,6 +23,25 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-01",
+      "scope": "OWNER_REQUESTED_DISTINCT_LIQUIDATION_DISPLAY_CLUSTERS",
+      "reason": "Merge user-visible levels whose full span is within three percentage points, sum only adjacent bins of the same HTX model, never sum across providers, and show at most four distinct zones per side without the hidden-level count.",
+      "module_changes": {
+        "current-generation/files/src/canonical-display.mjs": {
+          "before": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
+          "after": "20efe70018c9f9feac78e74fcc3b20d6e85b0f17023045606a5bf7903bff1da5"
+        },
+        "current-generation/files/src/pump-liquidation-zones.mjs": {
+          "after": "bd1b567ca3bbe4a20c14867140a4c76a05e0e3af9cfc53a9bbfac11648044258"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "strategy_weights_changed": false,
+      "entry_rules_changed": false,
+      "authorization": "Explicit owner instruction: Исправляй, сохраняй, закрепляй, чтобы это всегда работало без моих подсказок и в других чатах"
+    },
     {
       "date": "2026-10-01",
       "requirement": "All eligible HTX candidate futures need source-backed calculated liquidation zones, while realized history remains secondary and unused vendors spend no quota",
