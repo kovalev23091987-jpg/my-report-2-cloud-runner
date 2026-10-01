@@ -40,7 +40,7 @@ import {buildPumpLiquidationZones,coinLobsterFutureRows} from './src/pump-liquid
 import {displayLegacyLiquidations} from './src/canonical-display.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 import {chooseMappedLiquidationFallback} from './src/liquidation-source-plan.mjs';
-import {buildLiquidationSourceChain,formatLiquidationChainSummary} from './src/liquidation-source-chain.mjs';
+import {buildLiquidationSourceChain,buildLiquidationFreshnessAudit,formatLiquidationChainSummary} from './src/liquidation-source-chain.mjs';
 import {formatLiquidationHistoryFacts} from './src/gate-liquidation-history.mjs';
 import {collectCrossExchangeRiskContext,probeLiquidationVenueCoverage} from './src/cross-exchange-risk-context.mjs';
 import {createCandidateTaskQueue} from './src/candidate-task-queue.mjs';
@@ -466,6 +466,7 @@ function enforceD1Budget(db) {
   if (projectedWrites > maxDailyWrites) throw new Error(`D1_FREE_TIER_WRITE_BUDGET_UNSAFE:${projectedWrites}>${maxDailyWrites}`);
   return report;
 }
+let cleanupClaimedAnalyticsLease=null;
 async function main() {
   const preflight=evaluatePreflight(process.env);
   console.log('REPORT2_RUNTIME_PREFLIGHT',JSON.stringify(preflight));
@@ -489,6 +490,14 @@ async function main() {
   await installProviderMinuteLedger(env.DATA_DB);
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
   if(!analyticsLease.claimed)throw new Error(`ANALYTICS_LEASE_NOT_CLAIMED:${analyticsLease.status}`);
+  let analyticsLeaseReleased=false;
+  const releaseAnalyticsLease=async()=>{
+    if(analyticsLeaseReleased)return {finished:true,status:'ALREADY_RELEASED'};
+    const result=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(result.finished)analyticsLeaseReleased=true;
+    return result;
+  };
+  cleanupClaimedAnalyticsLease=releaseAnalyticsLease;
   console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
   const requestedSource=source,manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
   let manualCommandId=envText('REPORT2_COMMAND_ID',{required:false});
@@ -496,7 +505,7 @@ async function main() {
     ?await claimNextCommand(env.DATA_DB,{actor:manualCommandActor,generation,now:started})
     :manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
   if(requestedSource!=='schedule'&&!manualCommandClaim.claimed&&manualCommandClaim.row?.state==='COMPLETED'){
-    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    const leaseFinish=await releaseAnalyticsLease();
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
     console.log('DURABLE_MANUAL_COMMAND_ALREADY_COMPLETED',JSON.stringify({command_id:manualCommandId,result_snapshot_id:manualCommandClaim.row.result_snapshot_id,rendered_text_hash:manualCommandClaim.row.rendered_text_hash}));
     return;
@@ -528,7 +537,7 @@ async function main() {
     await fs.writeFile('report2-run-result.json',JSON.stringify(savedOutput,null,2));
     const completion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:savedRunId,rendered_text:JSON.stringify(savedOutput),delivered_to_existing_channel:true,now:Date.now()});
     if(!completion.completed)throw new Error(`DURABLE_SAVED_RUN_COMPLETION_FAILED:${completion.status}`);
-    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    const leaseFinish=await releaseAnalyticsLease();
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
     console.log('SAVED_CANONICAL_RUN_OUTPUT',JSON.stringify({status:savedOutput.status,run_id:savedRunId,candidates:savedOutput.candidates.length,block_audit:savedOutput.block_audit||null,report_text_present:Boolean(savedOutput.report_text)}));
     return;
@@ -543,7 +552,7 @@ async function main() {
     ...params,
   });
   const liquidationRiskByContract=new Map(),futureHttpByContract=new Map();
-  env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT=async params=>{const result=await collectCoinLobsterFutureModel({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,max_http:Math.max(0,5-(futureHttpByContract.get(params.contract)??0)),...params});futureHttpByContract.set(params.contract,(futureHttpByContract.get(params.contract)??0)+result.network_calls);return result;};
+  env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT=async params=>{const result=await collectCoinLobsterFutureModel({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,max_http:Math.max(0,5-(futureHttpByContract.get(params.contract)??0)),strict_fresh_manual:source!=='schedule'&&commandIntent.matched,...params});futureHttpByContract.set(params.contract,(futureHttpByContract.get(params.contract)??0)+result.network_calls);return result;};
   env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=async params=>{const risk=await collectCrossExchangeRiskContext({
     db:env.DATA_DB,fetch_impl:globalThis.fetch,include_htx_realized:true,max_http:Array.isArray(params.allowed_lanes)?3:Math.max(0,Math.min(3,5-(futureHttpByContract.get(params.contract)??5))),coinalyze_api_key:envText('COINALYZE_API_KEY',{required:false}),...params,
     lane_override:envText('REPORT2_CROSS_EXCHANGE_VALIDATION_LANE',{required:false})||params.lane_override||'HISTORY',
@@ -587,7 +596,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   env.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH=await liquidationCalibration.summary();
   console.log('LIQUIDATION_PREDICTIVE_SOURCE_WEIGHTS',JSON.stringify(env.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH));
   try{
-    env.REPORT2_GLOBAL_MARKET_CONTEXT=await loadGlobalMarketContext({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started,liquidation_only:commandIntent.matched});
+    env.REPORT2_GLOBAL_MARKET_CONTEXT=await loadGlobalMarketContext({db:env.DATA_DB,fetch_impl:globalThis.fetch,now:started,liquidation_only:commandIntent.matched,strict_fresh_manual:source!=='schedule'&&commandIntent.matched});
   }catch(error){
     env.REPORT2_GLOBAL_MARKET_CONTEXT={status:'SOURCE_ERROR',observed_ts:started,internal_only:true,error:String(error?.message||error)};
   }
@@ -700,6 +709,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     }):{status:'NOT_CLOSED',above:[],below:[]};
     const scopedCoinLobster=candidate?contextForContract(env.REPORT2_GLOBAL_MARKET_CONTEXT,candidate.contract)?.coinlobster:null;
     const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,htx_model:liquidationMap.htx_source_backed_model,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
+    const freshnessAudit=buildLiquidationFreshnessAudit(sourceChain);
     const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext):[];
     const lines=candidate?[
       ...displayLegacyLiquidations(liquidationMap),
@@ -719,18 +729,18 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     if(!d1PostCycleBudget.allowed)throw new Error(`D1_LIQUIDATION_ONLY_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(',')}`);
     const d1Usage=enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
     const d1FinalizedUsage=await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
-    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,liquidation_map:liquidationMap,future_map_source:futureMapSource,future_provider_models:coinFuture,byk_future:bykFuture,tracked_hl_future:trackedHlView,future_levels_status:liquidationMap.future_levels_status,dynamic_liquidation_panel:liquidationPanel,volume_profile:effectiveVolumeProfile,volume_profile_consensus:volumeConsensus,cross_exchange_risk:crossExchangeRisk,source_chain:sourceChain,liquidation_venue_coverage:liquidationVenueCoverage,liquidation_sources:manualLiquidationSources?manualLiquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',coinlobster_liquidation_status:scopedCoinLobster?.status||'NOT_CLOSED',coinlobster_matching_liquidation_rows:scopedCoinLobster?.realized_liquidations?.length||0,coinlobster_matching_named_events:scopedCoinLobster?.named_liquidations?.length||0,deribit:'NOT_APPLICABLE_LIQUIDATION_ONLY',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:8,cross_exchange_risk:3,volume_profile:3,volume_profile_peers:4,total:18},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
-    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    const result={ok:true,version:RUNNER_VERSION,mode:commandIntent.mode,command:commandIntent.normalized,exact_contract:commandIntent.contract||null,status:freshnessAudit.complete?scanResult.status:'PARTIAL_SOURCE_COVERAGE',scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines,liquidation_map:liquidationMap,future_map_source:futureMapSource,future_provider_models:coinFuture,byk_future:bykFuture,tracked_hl_future:trackedHlView,future_levels_status:liquidationMap.future_levels_status,dynamic_liquidation_panel:liquidationPanel,volume_profile:effectiveVolumeProfile,volume_profile_consensus:volumeConsensus,cross_exchange_risk:crossExchangeRisk,source_chain:sourceChain,freshness_audit:freshnessAudit,liquidation_venue_coverage:liquidationVenueCoverage,liquidation_sources:manualLiquidationSources?manualLiquidationSources.summary():{status:'NOT_CONFIGURED_FAIL_CLOSED'},liquidation_candidate_queue:liquidationQueueSummary,outcome_calibration:{settlement:liquidationCalibrationSettlement,record:calibrationRecord,predictive_source_weights:predictiveSourceWeights},global_market_context:{status:env.REPORT2_GLOBAL_MARKET_CONTEXT?.status||'NOT_CLOSED',coinlobster_liquidation_status:scopedCoinLobster?.status||'NOT_CLOSED',coinlobster_cache_status:scopedCoinLobster?.cache_status||null,coinlobster_network_calls:scopedCoinLobster?.network_calls??0,coinlobster_matching_liquidation_rows:scopedCoinLobster?.realized_liquidations?.length||0,coinlobster_matching_named_events:scopedCoinLobster?.named_liquidations?.length||0,deribit:'NOT_APPLICABLE_LIQUIDATION_ONLY',internal_only:true},full_report_started:false,decision_generated:false,probability:null,validated_signal:false,telegram_started:false,execution:false,request_caps:{projected_liquidation:8,cross_exchange_risk:3,volume_profile:3,volume_profile_peers:4,total:18},d1_post_cycle_budget:d1PostCycleBudget,d1_finalized_usage:d1FinalizedUsage,d1_usage:d1Usage};
+    const leaseFinish=await releaseAnalyticsLease();
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
     const renderedResult=JSON.stringify({...result,analytics_lease:leaseFinish});
     console.log('LIQUIDATION_ONLY_RESULT',renderedResult);
     const commandCompletion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:`LIQ_ONLY_SNAPSHOT:${started}`,rendered_text:renderedResult,delivered_to_existing_channel:true,now:Date.now()});
     if(!commandCompletion.completed)throw new Error(`DURABLE_MANUAL_COMMAND_COMPLETION_FAILED:${commandCompletion.status}`);
     console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
-    const reportText=formatLiquidationRunSummary({status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:lines});
-    const liquidationRunOutput={schema:'my-report-2-liquidation-run-output-v1',generation,head:sha,source,run_id:sourceRunId,mode:'LIQUIDATION_ONLY',status:reportText?'CLOSED':'NOT_CLOSED',
+    const reportText=formatLiquidationRunSummary({status:scanResult.status,scan:scanResult.scan,preliminary_candidates:scanResult.candidates,verified_candidate:candidate?.contract||null,liquidation_lines:[`Свежая проверка источников: ${freshnessAudit.fresh_data_used_count} из ${freshnessAudit.required_source_count}; источники без новых пригодных данных перечислены в квитанции.`,...lines]});
+    const liquidationRunOutput={schema:'my-report-2-liquidation-run-output-v1',generation,head:sha,source,run_id:sourceRunId,mode:'LIQUIDATION_ONLY',status:reportText?(freshnessAudit.complete?'CLOSED':'PARTIAL_SOURCE_COVERAGE'):'NOT_CLOSED',
       verified_candidate:candidate?.contract||null,preliminary_candidates:(scanResult.candidates||[]).map(row=>row.contract).slice(0,5),
-      liquidation_lines:lines,liquidation_map:liquidationMap,future_map_source:futureMapSource,future_provider_models:coinFuture,byk_future:bykFuture,tracked_hl_future:trackedHlView,future_levels_status:liquidationMap.future_levels_status,future_level_count:liquidationMap.provider_zone_count,source_chain:sourceChain,factual_history:crossExchangeRisk.sources,report_text:reportText,generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,telegram_started:false};
+      liquidation_lines:lines,liquidation_map:liquidationMap,future_map_source:futureMapSource,future_provider_models:coinFuture,byk_future:bykFuture,tracked_hl_future:trackedHlView,future_levels_status:liquidationMap.future_levels_status,future_level_count:liquidationMap.provider_zone_count,source_chain:sourceChain,freshness_audit:freshnessAudit,factual_history:crossExchangeRisk.sources,report_text:reportText,generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,telegram_started:false};
     await fs.writeFile('report2-run-result.json',JSON.stringify(liquidationRunOutput,null,2));
     return;
   }
@@ -992,7 +1002,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);
   const d1Usage = enforceR88RunBudget(env.DATA_DB,{reservation:d1RunReservation,dayAdmission:d1DayAdmission,runsPerDay:envNumber("REPORT2_D1_RUNS_PER_DAY",288),maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS",3500000),maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES",70000)});
   const d1FinalizedUsage = await finalizeRunUsage(env.DATA_DB,{reservationId:d1ReservationId,sourceRunId:cron.run_id,now:Date.now(),usage:env.DATA_DB.usageSnapshot()});
-  const analyticsLeaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+  const analyticsLeaseFinish=await releaseAnalyticsLease();
   if(!analyticsLeaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${analyticsLeaseFinish.status}`);
   const completed = Date.now();
   const finalRunResult={ ok:true, version:RUNNER_VERSION, source, started_ts:started, completed_ts:completed, duration_ms:completed-started, worker_sha256:sha, post_v7_unified_enabled:postV7UnifiedEnabled, analytics_lease:analyticsLeaseFinish, cron_run_id:cron.run_id, universe_total:Number(cron.universe_total), scanned:Number(cron.scanned), stage0_coverage_pct:Number(scan.stage0_coverage_pct), canonical_run_output:{status:canonicalRunOutput.status,candidate_count:canonicalRunOutput.candidates.length,artifact:'report2-run-result.json'}, telegram_observer:telegramObserver, v3_sidecars_preaction_budget:v3SidecarsPreactionBudget, v3_early_sidecar:v3EarlySidecar, v3_realized_liquidation_sidecar:v3RealizedLiquidationSidecar, v3_liquidation_sidecar:v3LiquidationSidecar, v3_critical_feed_state:v3CriticalFeedState, v3_pipeline_health_sidecar:v3PipelineHealthSidecar, v3_telegram_lifecycle_sidecar:v3TelegramLifecycleSidecar, v3_telegram_delivery_sidecar:v3TelegramDeliverySidecar, v3_telegram_journal_enabled:v3TelegramJournalEnabled, v3_telegram_network_enabled:v3TelegramNetworkEnabled, r8_20_prospective_validation_gate:r820ProspectiveValidationGate, r8_20_prospective_validation_sidecar:r820ProspectiveValidationSidecar, discovery_recall_kpi:discoveryRecallKpi, telegram_output:telegramOutput, telegram_zero_reason:telegramZeroReason, d1_run_reservation:d1RunReservation, d1_day_admission:d1DayAdmission, d1_reservation_receipt:d1ReservationReceipt, d1_pretelegram_budget:d1PreTelegramBudget, d1_post_cycle_budget:d1PostCycleBudget, d1_finalized_usage:d1FinalizedUsage, d1_usage:d1Usage, bykaranteli_secret_exported:false };
@@ -1011,4 +1021,15 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     console.log('DURABLE_MANUAL_COMMAND_COMPLETION',JSON.stringify(commandCompletion));
   }
 }
-main().catch((error) => { console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error)); process.exit(1); });
+main().catch(async(error) => {
+  if(cleanupClaimedAnalyticsLease){
+    try{
+      const cleanup=await cleanupClaimedAnalyticsLease();
+      console.error('REPORT2_FATAL_ANALYTICS_LEASE_CLEANUP',JSON.stringify(cleanup));
+    }catch(cleanupError){
+      console.error('REPORT2_FATAL_ANALYTICS_LEASE_CLEANUP_FAILED',String(cleanupError?.stack||cleanupError));
+    }
+  }
+  console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error));
+  process.exitCode=1;
+});

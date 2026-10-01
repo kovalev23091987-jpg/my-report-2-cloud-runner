@@ -20,13 +20,13 @@ export function normalizeCoinLobsterFuture(payload,{contract,now=Date.now()}={})
  if(!rows.every(r=>num(r.price)>0&&(r.side==='long'&&r.price<reference||r.side==='short'&&r.price>reference)))return{...common,status:'SCHEMA_NOT_CLOSED',reason:'FORWARD_SIDE_GEOMETRY_NOT_CLOSED'};
  return{...common,status:'CLOSED',reference_price:reference,levels:rows.map(r=>({price:Number(r.price),side:r.side,notional_usd:Number(r.notional_usd),distance_pct:(Number(r.price)/reference-1)*100,price_quote:'USD',price_semantics:'PROVIDER_MODEL_PRICE_BIN'}))};
 }
-export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fetch,contract,run_id,now=Date.now(),request_admit=null,max_http=1}={}){
+export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fetch,contract,run_id,now=Date.now(),request_admit=null,max_http=1,strict_fresh_manual=false}={}){
  const normalized=clean(contract).normalize('NFC').toUpperCase(),base=normalized.replace(/-USDT$/,'');
  const no=(status,reason)=>({source:'COINLOBSTER_FUTURE_MODEL',contract:normalized,role:'PROJECTED_PROVIDER_MODEL',status,reason,network_calls:0,levels:[],internal_only:true});
  if(!/^[\p{L}\p{N}]+-USDT$/u.test(normalized)||['BTC','ETH'].includes(base))return no('EXCLUDED_BY_USER_POLICY','NO_FORWARD_MAP_FOR_BTC_ETH_OR_INVALID_CONTRACT');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinlobster_future_cache(contract TEXT PRIMARY KEY,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL)`).run();
  const cached=await db.prepare(`SELECT payload_json FROM report2_coinlobster_future_cache WHERE contract=?1 AND expires_ts>?2`).bind(normalized,now).first();
- if(cached){try{return{...JSON.parse(cached.payload_json),cache_status:'HIT',network_calls:0};}catch{}}
+ if(!strict_fresh_manual&&cached){try{return{...JSON.parse(cached.payload_json),cache_status:'HIT',network_calls:0};}catch{}}
  if(!(Number(max_http)>0))return no('DEFERRED_HTTP_ENVELOPE','NATIVE_FUTURE_LEVELS_USED_PROTECTED_ENVELOPE');
  if(request_admit){const grant=request_admit({logical_request_id:`COINLOBSTER_FUTURE:${run_id}:${normalized}`,lane:'background',attempts:1});if(!grant.allowed||grant.duplicate)return no('DEFERRED_HTTP_ENVELOPE','UNIFIED_HTTP_NOT_ADMITTED');}
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinlobster_future_requests(request_id TEXT PRIMARY KEY,day_start_ts INTEGER NOT NULL,created_ts INTEGER NOT NULL)`).run();

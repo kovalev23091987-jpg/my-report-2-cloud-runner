@@ -9,6 +9,20 @@ export const LIQUIDATION_FUTURE_CONNECTIONS=Object.freeze([
  'COINLOBSTER_FUTURE_MODEL',
  'OXARCHIVE_HL_BUCKETS',
 ]);
+export const LIQUIDATION_REQUIRED_FRESH_EXTERNAL_CONNECTIONS=Object.freeze(
+ LIQUIDATION_FUTURE_CONNECTIONS.filter(source=>source!=='HTX_SOURCE_BACKED_MODEL')
+);
+
+export function buildLiquidationFreshnessAudit(chain){
+ const bySource=new Map((chain?.future_level_stages||[]).map(row=>[row.source,row]));
+ const receipts=LIQUIDATION_REQUIRED_FRESH_EXTERNAL_CONNECTIONS.map(source=>{
+  const row=bySource.get(source)||{},networkCalls=Math.max(0,Number(row.network_calls)||0);
+  const freshNetworkCheck=networkCalls>0,freshDataUsed=freshNetworkCheck&&row.data_available===true;
+  return{source,status:row.status||'NOT_RUN',network_calls:networkCalls,fresh_network_check:freshNetworkCheck,fresh_data_used:freshDataUsed,reason:row.reason??(!freshNetworkCheck?'NO_FRESH_NETWORK_CALL':'FRESH_RESPONSE_NOT_USABLE')};
+ });
+ const freshChecks=receipts.filter(row=>row.fresh_network_check).length,freshUsed=receipts.filter(row=>row.fresh_data_used).length;
+ return{schema:'report2-liquidation-freshness-audit-v1',strict_fresh_required:true,required_source_count:receipts.length,fresh_network_check_count:freshChecks,fresh_data_used_count:freshUsed,complete:freshUsed===receipts.length,status:freshUsed===receipts.length?'CLOSED':'PARTIAL_SOURCE_COVERAGE',receipts};
+}
 
 export function buildLiquidationSourceChain({contract,risk={},native={},coverage={},coinlobster=null,byk_future=null,tracked_hl=null,future_models=null,htx_model=null,venue_registry=null,external_readiness={}}={}){
  const history=(risk.chain_attempts??[]).map(row=>({...row,role:'REALIZED_HISTORY',data_available:row.status==='CLOSED'||row.status==='PARTIAL'&&Boolean(risk.sources?.[row.source]?.partial_observation?.datapoints)}));
