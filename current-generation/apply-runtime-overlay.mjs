@@ -70,6 +70,7 @@ const files=[
  'src/v3-early-sidecar.mjs',
  'src/selected-early-evidence.mjs',
  'src/deep-candidate-order.mjs',
+ 'src/discovery-candidate-score.mjs',
  'src/market-contracts.mjs',
  'src/candidate-task-queue.mjs',
  'src/asset-identity-cache.mjs',

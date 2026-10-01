@@ -999,7 +999,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const canonicalRunOutput={...canonicalRunOutputBase,market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
-  }};
+  },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
   console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
