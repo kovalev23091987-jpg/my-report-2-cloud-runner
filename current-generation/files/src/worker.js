@@ -19512,9 +19512,11 @@ const __REPORT2_ORIGINAL_HANDLER = {
               1,
 
             cooldown_sec:
-              fastMoveWatchCycle
-                ?.adaptive_cooldown_sec ??
-              1800,
+              String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'
+                ? 0
+                : fastMoveWatchCycle
+                    ?.adaptive_cooldown_sec ??
+                  1800,
 
             lease_sec:
               600,
