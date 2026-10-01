@@ -48,3 +48,9 @@ test('exact Unicode HTX contract reaches the market scan instead of failing vali
   assert.match(worker,/\^\[\\p\{L\}\\p\{N\}\]\{1,15\}-USDT\$\/u/);
   assert.doesNotMatch(worker,/\^\[A-Z0-9\]\{2,15\}-USDT\$/);
 });
+
+test('explicit Unicode coin field closes liquidation command identity when free text cannot extract it',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  assert.match(runner,/parsedCommandIntent\.matched&&!parsedCommandIntent\.contract&&explicitManualContract/);
+  assert.match(runner,/mode:'EXACT_COIN_LIQUIDATIONS',contract:explicitManualContract,contract_source:'EXPLICIT_MANUAL_FIELD'/);
+});
