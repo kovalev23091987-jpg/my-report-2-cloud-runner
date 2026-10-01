@@ -17038,12 +17038,13 @@ async function buildDeepCheckInput(params, env) {
   const depthClosed=futures?.data?.health?.depth===true&&bboClosed;
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
-  const technicalClosed=Boolean(technicalState&&finalDecisionPublicationShadow?.entry_signal&&typeof finalDecisionPublicationShadow.entry_signal==='object');
+  const technicalPipelineStates=[futures?.execution_status,trajectory?.execution_status].map(value=>String(value||'').toUpperCase());
+  const technicalClosed=technicalPipelineStates.every(value=>value==='FULFILLED')&&htxObservationReferencePrice?.status==='CLOSED';
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
       evidence_result:candidateEvidenceV2,
       primary_sources:{
-        PRIMARY_TECHNICAL_CONTEXT:{status:technicalClosed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:technicalClosed,network_calls:0,receipts:[{check_completed:technicalClosed,status:technicalState||'NOT_EVALUATED'}]},
+        PRIMARY_TECHNICAL_CONTEXT:{status:technicalClosed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:technicalClosed,network_calls:0,receipts:[{check_completed:technicalClosed,status:technicalState||'NO_ENTRY_STATE',futures_status:technicalPipelineStates[0]||'NOT_EVALUATED',trajectory_status:technicalPipelineStates[1]||'NOT_EVALUATED',reference_price_status:htxObservationReferencePrice?.status||'NOT_EVALUATED'}]},
         PRIMARY_EXECUTION_STRESS:{status:depthClosed?'CHECKED_HTX_ORDERBOOK_STRESS':'HTX_ORDERBOOK_NOT_CLOSED',check_completed:depthClosed,network_calls:0,receipts:[{check_completed:depthClosed,status:depthClosed?'CLOSED':'NOT_CLOSED',bid:Number.isFinite(bboBid)?bboBid:null,ask:Number.isFinite(bboAsk)?bboAsk:null,depth:futures?.data?.health?.depth===true}]},
         PRIMARY_EXECUTION_COST:{status:executionCostClosed?'CHECKED_HTX_EXECUTION_COST':'HTX_EXECUTION_COST_NOT_CLOSED',check_completed:executionCostClosed,network_calls:0,receipts:[{check_completed:executionCostClosed,status:executionCostClosed?'CLOSED':'NOT_CLOSED',buy_impact_filled:futures?.data?.liquidity?.buy_market_impact?.fully_filled===true,sell_impact_filled:futures?.data?.liquidity?.sell_market_impact?.fully_filled===true}]},
       },
@@ -19383,6 +19384,27 @@ const __REPORT2_ORIGINAL_HANDLER = {
           liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};
         }else{
           liveHandoffPlan={lane:'MANUAL_COIN_ANALYSIS_REJECTED',require_exact_contract:true,required_contract:manualRequestedContract,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false};
+        }
+      }
+
+      /* A full owner report promises an honest N01-N17 audit. Do not spend its
+       * only Deep Check slot on an asset that lacks the pre-verified identity,
+       * official-feed and sector bindings required by those blocks. Prefer an
+       * already shortlisted eligible asset, otherwise inspect the first active
+       * eligible registry asset without inventing a directional signal. */
+      if(String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'){
+        const strictEligible=new Set((Array.isArray(env?.REPORT2_STRICT17_ELIGIBLE_CONTRACTS)?env.REPORT2_STRICT17_ELIGIBLE_CONTRACTS:[])
+          .map(value=>String(value||'').trim().toUpperCase()).filter(value=>confirmedScopeContracts.includes(value)));
+        const shortlisted=(postV7DeepPrefilter?.shortlist||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
+        const telemetry=(postV7DeepPrefilter?.contract_telemetry||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
+        const selected=shortlisted||telemetry||null;
+        if(selected){
+          const contract=String(selected.contract).trim().toUpperCase();
+          const forced={...selected,priority_rank:0,contract,strict17_manual_audit:true};
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
+          liveHandoffPlan={lane:'MANUAL_STRICT17_AUDIT',require_exact_contract:true,required_contract:contract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};
+        }else{
+          liveHandoffPlan={lane:'MANUAL_STRICT17_AUDIT_REJECTED',require_exact_contract:true,required_contract:null,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false,reason:'NO_ACTIVE_STRICT17_REGISTRY_ASSET'};
         }
       }
 

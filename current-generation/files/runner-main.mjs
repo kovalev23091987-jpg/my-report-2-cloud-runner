@@ -480,6 +480,9 @@ async function main() {
   const env = buildEnv();
   const officialSourceRegistry=compileOfficialSourceRegistry(JSON.parse(await fs.readFile(resolve('./official-event-sources.json'),'utf8')));
   const supplementalIdentityRegistry=mergeOfficialAndConfiguredRegistries({official:officialSourceRegistry,configured:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{}});
+  env.REPORT2_STRICT17_ELIGIBLE_CONTRACTS=Object.entries(supplementalIdentityRegistry.registry||{})
+    .filter(([,row])=>Boolean(row?.chain&&row?.contract_or_mint&&row?.official_feeds?.length&&row?.official_domains?.length&&row?.coinpaprika_id&&row?.sector_tag))
+    .map(([base])=>`${String(base).toUpperCase()}-USDT`);
   console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
   const unifiedHttpBudget=createUnifiedHttpBudget();
   await installRuntimeControl(env.DATA_DB);
@@ -506,6 +509,7 @@ async function main() {
     :source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_HAS_NO_RECOVERABLE_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
   const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null);
   const expectedManualMode=source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
+  env.REPORT2_MANUAL_MODE=expectedManualMode;
   if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
   if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
   console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null,recovered_by_scheduled_executor:source==='manual_recovery'}));
