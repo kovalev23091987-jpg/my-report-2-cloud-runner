@@ -14,6 +14,9 @@ test('every N01–N17 block is checked without equating a checked source to a us
  assert.equal(result.checked_block_count,17);
  assert.equal(result.all_blocks_checked,true);
  assert.equal(result.blocks.N02.status,'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE');
+ assert.equal(result.blocks.N02.decision_path,'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE');
+ assert.deepEqual(result.blocks.N02.evidence_rejection_reasons,{ZERO_DECISION_COVERAGE:1});
+ assert.equal(result.all_blocks_decision_accounted,true);
  assert.equal(result.blocks.N02.source_statuses.CHAIN_SUPPLY,'CLOSED');
  assert.deepEqual(result.blocks.N02.source_checks.CHAIN_SUPPLY,{status:'CLOSED',attempted:true,checked:true,network_calls:1,cache_status:null,receipt_count:0});
  assert.equal(result.blocks.N06.status,'CHECKED_NO_USABLE_FACTS');
