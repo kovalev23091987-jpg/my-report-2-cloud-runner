@@ -62,9 +62,9 @@ test('runtime target uses measured structure and rejects sub-five-percent struct
   const result=applyRuntimePolicyPatches(temp);assert.equal(result.status,'CLOSED');
   const patched=fs.readFileSync(file,'utf8');
   assert.match(patched,/const thresholdPct = measuredBaseMovePct;/);
-  assert.match(patched,/if \(thresholdPct < 5\) return null;/);
+  assert.match(patched,/if \(thresholdPct <= 0\) return null;/);
   assert.doesNotMatch(patched,/Math\.max\(configuredThresholdPct, measuredBaseMovePct\)/);
-  assert.match(patched,/PRECOMMITTED_BASE_MEASURED_MOVE_AT_LEAST_5_PERCENT/);
+  assert.match(patched,/PRECOMMITTED_BASE_MEASURED_FAVORABLE_MOVE/);
   const decision=fs.readFileSync(path.join(src,'final-decision-integration-engine.mjs'),'utf8');
   assert.match(decision,/DECISION_THEN_EXACT_D1_ACK_V1/);
   assert.match(decision,/registryPostDecisionAck/);

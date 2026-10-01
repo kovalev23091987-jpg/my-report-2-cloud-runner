@@ -24,10 +24,11 @@ test('K08: counts are not money and incomplete flow remains partial',()=>{
   const flow=normalizeMoneyFlow({quantity:100,price:2,initiator_side:'BUY',coverage:'PARTIAL'});assert.equal(flow.notional_usd,200);assert.equal(flow.status,'PARTIAL');
 });
 
-test('K09: geometry cannot become factual and old candle cannot create a fresh target',()=>{
+test('K09: geometry cannot become factual and a nearer obstacle is retained without a fixed percentage gate',()=>{
   assert.deepEqual(evaluateTargetProof({level_type:'SCENARIO_GEOMETRY'}),{status:'RESEARCH_ONLY',minimum_move_proven:false,factual_cluster:false,measured_notional:null});
   assert.equal(evaluateTargetProof({level_type:'MEASURED_STRUCTURE_TARGET',fresh_anchor:false,gross_move_pct:10}).status,'WATCH_INTERNAL');
-  assert.equal(evaluateTargetProof({level_type:'OBSERVED_POSITION_LEVEL',fresh_anchor:true,identity_ok:true,fresh_reference:true,path_clear:true,gross_move_pct:10,nearest_obstacle_move_pct:3}).status,'NOT_CLOSED');
+  const target=evaluateTargetProof({level_type:'OBSERVED_POSITION_LEVEL',fresh_anchor:true,identity_ok:true,fresh_reference:true,path_clear:true,gross_move_pct:10,nearest_obstacle_move_pct:3});
+  assert.equal(target.status,'CLOSED');assert.equal(target.nearest_obstacle_move_pct,3);
 });
 
 test('K09: net costs are symmetric for Long and Short and unknown funding blocks entry closure',()=>{

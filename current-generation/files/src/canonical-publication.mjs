@@ -3,7 +3,7 @@ import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasIntern
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
 import {buildRoleEvidenceView} from './source-role-consumer.mjs';
-export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v3-per-metric-source-proof-20260930';
+export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v4-early-observation-without-proven-target-20261001';
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const upper=v=>text(v).toUpperCase();
 const finite=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
@@ -29,7 +29,7 @@ function earlySourceRolesClosed(c){
 function referenceEntry(c){const e=c?.entry||{};const lo=finite(e.min_price),hi=finite(e.max_price);if(lo!==null&&hi!==null)return(lo+hi)/2;const trigger=finite(c?.trigger?.value);return trigger;}
 function remainingMove(c,target){const entry=referenceEntry(c),price=finite(target?.price??target),d=upper(c?.direction);if(entry===null||entry<=0||price===null||!['LONG','SHORT'].includes(d))return null;return d==='LONG'?(price/entry-1)*100:(1-price/entry)*100;}
 function reportableTarget(c){return(Array.isArray(c?.targets)?c.targets:[]).find(t=>{
- if((remainingMove(c,t)??-Infinity)<5-1e-7)return false;
+ if((remainingMove(c,t)??-Infinity)<=0)return false;
  const proof=c?.metadata?.technical_move_potential;
  if(upper(t?.basis??proof?.basis)!=='FRESH_SCOPED_NATIVE_LEVEL')return true;
  // Previously stored snapshots may contain a bucket/cross-margin context that
@@ -62,26 +62,23 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
  const overall=score(canonical?.scores?.overall_0_100),interest=score(canonical?.scores?.coin_interest_0_100);
  if(canonical?.scores?.is_probability!==false)return {...base,reason:'CANONICAL_SCORE_SEMANTICS_NOT_CLOSED'};
  if(event==='OBSERVE'){
-   // Early surfacing must not depend on a fabricated or partial final score.
-   // The canonical interest score is required and must clear the user threshold;
-   // overall may remain missing until a real canonical overall exists. If overall
-   // is factual, it must also clear the same threshold.
+   // Early surfacing uses one explicit user threshold: the canonical interest
+   // score. The overall score may be absent or lower because it belongs to the
+   // later, fully confirmed decision path.
    if(interest===null)return {...base,reason:'CANONICAL_INTEREST_NOT_CLOSED'};
    if(interest<70)return {...base,reason:'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
-   if(overall!==null&&overall<70)return {...base,reason:'CANONICAL_OVERALL_BELOW_USER_THRESHOLD'};
    if(canonical.state!=='OBSERVE')return {...base,reason:'OBSERVE_STATE_MISMATCH'};
    if(!observationAreaClosed(canonical))return {...base,reason:'OBSERVE_WORKING_AREA_NOT_CLOSED'};
    if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'OBSERVE_TRIGGER_NOT_CLOSED'};
-   if(!reportableTarget(canonical))return {...base,reason:'POTENTIAL_MOVE_BELOW_USER_MINIMUM'};
    if(!earlySourceRolesClosed(canonical))return {...base,reason:'OBSERVE_SOURCE_ROLES_NOT_CLOSED'};
-   return {deliver:true,status:'ACTIONABLE',reason:'EARLY_ACTIONABLE_OBSERVE',create_recheck:true};
+   return {deliver:true,status:'ACTIONABLE',reason:reportableTarget(canonical)?'EARLY_ACTIONABLE_OBSERVE':'EARLY_ACTIONABLE_OBSERVE_TARGET_PENDING',create_recheck:true};
  }
  if(!scoresClosed(canonical))return {...base,reason:'CANONICAL_SCORES_NOT_CLOSED'};
  if(overall<70||interest<70)return {...base,reason:overall<70?'CANONICAL_OVERALL_BELOW_USER_THRESHOLD':'CANONICAL_INTEREST_BELOW_USER_THRESHOLD'};
  if(event==='WAIT'){
    if(canonical.state!=='WAIT_FOR_TRIGGER')return {...base,reason:'WAIT_STATE_MISMATCH'};
    if(!exactTrigger(canonical.trigger,observed))return {...base,reason:'WAIT_TRIGGER_NOT_CLOSED'};
-   if(!reportableTarget(canonical))return {...base,reason:'POTENTIAL_MOVE_BELOW_USER_MINIMUM'};
+   if(!reportableTarget(canonical))return {...base,reason:'FAVORABLE_TARGET_NOT_PROVEN'};
    return {deliver:true,status:'ACTIONABLE',reason:'WAIT_TRIGGER_CONTRACT_CLOSED',create_recheck:true};
  }
  if(!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(canonical.state))return {...base,reason:'ENTRY_STATE_MISMATCH'};
@@ -116,12 +113,12 @@ export function renderCanonicalTelegram({canonical,lifecycle_event}={}){
  if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
  const dir=d==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 ЖДЁМ ПОДТВЕРЖДЕНИЕ ВХОДА':event==='ENTRY'?'✅ ВХОД ОДОБРЕН':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
  const shownScore=score(canonical.scores?.overall_0_100)??score(canonical.scores?.coin_interest_0_100);
- if(event!=='IDEA_REMOVED'&&!reportableTarget(canonical))return{ok:false,status:'REPORTABLE_TARGET_PROOF_NOT_CLOSED',text:null};
+ if(['WAIT','ENTRY'].includes(event)&&!reportableTarget(canonical))return{ok:false,status:'REPORTABLE_TARGET_PROOF_NOT_CLOSED',text:null};
  const lines=[ticker,dir,title,'',`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,`Основа идеи: ${basisLabel(canonical)}.`];
  lines.push(relativeLine(d,relativeConfirmed(canonical)));
  for(const fact of displayMarketFacts(canonical).slice(0,event==='WAIT'?1:3))lines.push(`• ${fact}`);
  if(event==='OBSERVE'){
-   const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,`• повторного подтверждения объёма, открытого интереса и ликвидаций.`,`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Цель после подтверждения входа: ${fmtPrice(target?.price??target)} USDT.`:null,`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
+   const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,`• повторного подтверждения объёма, открытого интереса и ликвидаций.`,`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Цель после подтверждения входа: ${fmtPrice(target?.price??target)} USDT.`:'Цель после подтверждения входа: пока не подтверждена.',`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
  } else if(event==='WAIT'){
    const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,'• сохранения подтверждений при повторной проверке.',`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Цель после подтверждения входа: ${fmtPrice(target?.price??target)} USDT.`:null,`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
  } else if(event==='ENTRY'){

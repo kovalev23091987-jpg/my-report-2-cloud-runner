@@ -9,25 +9,27 @@ const actionable=new Set(['OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','E
 function proven(row,generatedAt){
  const c=row?.canonical;
  if(c?.status!=='CLOSED'||!actionable.has(c?.state)||c?.direction!==row?.direction||!contract(row?.contract)||
-  !['LONG','SHORT'].includes(row?.direction)||!c?.entry||!c?.trigger||!c?.invalidation||!Array.isArray(c?.targets)||!c.targets.length)return false;
+  !['LONG','SHORT'].includes(row?.direction)||!c?.entry||!c?.trigger||!c?.invalidation||!Array.isArray(c?.targets))return false;
  if(c.state==='OBSERVE'&&finite(c.scores?.coin_interest_0_100)<70)return false;
  if(!price(c.trigger.value)||!price(c.invalidation.price))return false;
  const deadline=finite(row.valid_until_ts??c.trigger.expires_ts);
  if(deadline!==null&&Number.isFinite(Date.parse(generatedAt))&&deadline<Date.parse(generatedAt))return false;
+ if(c.state==='OBSERVE'&&!c.targets.length)return true;
+ if(!c.targets.length)return false;
  const entry=finite(c.entry.min_price??c.entry.max_price),target=finite(c.targets[0]?.price);
  if(entry===null||entry<=0||target===null||target<=0)return false;
- return (c.direction==='LONG'?(target/entry-1)*100:(1-target/entry)*100)>=5;
+ return (c.direction==='LONG'?(target/entry-1)*100:(1-target/entry)*100)>0;
 }
 
 function idea(row){
- const c=row.canonical,entry=price(c.entry.min_price??c.entry.max_price),target=price(c.targets[0].price);
+ const c=row.canonical,entry=price(c.entry.min_price??c.entry.max_price),target=c.targets.length?price(c.targets[0].price):null;
  const trigger=price(c.trigger.value),cancel=price(c.invalidation.price),score=finite(c.scores?.coin_interest_0_100);
  const state=c.state==='OBSERVE'?'Наблюдение':c.state==='WAIT_FOR_TRIGGER'?'Ждём условие':'Вход подтверждён';
  const lines=[`${row.contract} — ${state}${score!==null?`; оценка ${Math.round(score)} из 100`:''}.`];
  if(trigger)lines.push(`Условие: цена ${c.direction==='LONG'?'выше':'ниже'} ${trigger} USDT.`);
  lines.push(`Уровень входа: ${entry} USDT.`);
  if(cancel)lines.push(`Отмена идеи: цена ${c.direction==='LONG'?'ниже':'выше'} ${cancel} USDT.`);
- lines.push(`Первая цель: ${target} USDT.`);
+ lines.push(target?`Первая цель: ${target} USDT.`:'Первая цель: пока не подтверждена.');
  return lines;
 }
 

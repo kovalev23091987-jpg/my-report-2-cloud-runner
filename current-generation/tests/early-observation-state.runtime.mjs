@@ -27,6 +27,7 @@ assert.equal(invalidated.entry,null);
 assert.equal(invalidated.scores.coin_interest_0_100,75);
 assert.equal(valid.state,'OBSERVE');
 assert.equal(valid.entry.min_price,228.38);
-assert.ok(valid.targets[0].potential_move_pct>=5);
+assert.equal(valid.targets.length,0);
+assert.equal(valid.metadata.scenario_plan_transfer.target_proof_status,'PENDING_FOR_EARLY_OBSERVATION');
 
 console.log(JSON.stringify({status:'EARLY_OBSERVATION_STATE_POLICY_PASS'}));

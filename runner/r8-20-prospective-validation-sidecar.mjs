@@ -360,7 +360,7 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
     if (sampleRecord.status !== 'CAPTURED_PROSPECTIVE') continue;
     const canonical=parseJson(row.canonical_json,null),entryPrice=finite(canonical?.current_price),target=finite(canonical?.targets?.find?.(item=>finite(item?.price??item)!==null)?.price??canonical?.targets?.[0]),direction=text(decision.direction);
     const remaining=entryPrice&&target?(direction==='LONG'?(target/entryPrice-1)*100:(1-target/entryPrice)*100):null;
-    if(!canonical||!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(text(canonical.state))||entryPrice===null||entryPrice<=0||target===null||target<=0||remaining===null||remaining<5-1e-7)continue;
+    if(!canonical||!['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(text(canonical.state))||entryPrice===null||entryPrice<=0||target===null||target<=0||remaining===null||remaining<=0)continue;
     const sourceIds=[...new Set([
       ...(Array.isArray(canonical?.source_receipts)?canonical.source_receipts:[]).flatMap(item=>[text(item?.source),text(item?.venue)]),
       ...(Array.isArray(canonical?.metadata?.supplemental_score_adjustment?.receipts)?canonical.metadata.supplemental_score_adjustment.receipts:[]).map(item=>text(item?.source_id)),
@@ -375,7 +375,7 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
     revised.cohort_type=deliveryCohort.cohort_type;
     revised.delivery_proof={telegram:{confirmed:telegramConfirmed,dispatch_id:telegramConfirmed?text(row.telegram_dispatch_id):null,message_id:telegramConfirmed?text(row.telegram_message_id):null,confirmed_ts:telegramConfirmed?int(row.telegram_confirmed_ts):null,publication_id:text(row.publication_id),wave_id:text(row.publication_wave_id)||null},manual:{confirmed:false,reason:'NO_EXACT_MANUAL_DELIVERY_ACK_BOUND_TO_PUBLICATION'}};
     revised.outcome_wave_key=deliveryCohort.outcome_wave_key;revised.delivery_channels=deliveryCohort.delivery_channels;revised.one_wave_one_outcome=true;
-    revised.begin_close_price=target;revised.minimum_reportable_move_pct=5;
+    revised.begin_close_price=target;revised.minimum_reportable_move_pct=null;
     const revisedDigest=digest(revised);sampleRecord={...sampleRecord,sample_id:`EAC:${revisedDigest}`,material_digest:revisedDigest,sample:revised};
     const s = sampleRecord.sample;
     const ack = await db.prepare(`INSERT OR IGNORE INTO tz101_entry_area_calibration_signal(
