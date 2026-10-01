@@ -9,7 +9,13 @@ export function validateEvidenceV2(row,{decision_ts=Infinity}={}){
   if(required.some(key=>row?.[key]===null||row?.[key]===undefined||row?.[key]===''))return {usable:false,status:'SCHEMA_INVALID'};
   if(!BLOCKS[row.block_id])return {usable:false,status:'BLOCK_UNKNOWN'};
   const sourceTs=Number(row.source_ts),knownTs=Number(row.first_known_ts),expires=Number(row.expires_at),decision=Number(decision_ts);
-  if(![sourceTs,knownTs,expires,decision].every(Number.isFinite)||row.validation_status!=='VALID'||row.identity_status!=='EXACT'||row.finality_status!=='FINAL'||sourceTs>decision||knownTs>decision||expires<decision)return {usable:false,status:'EVIDENCE_NOT_USABLE'};
+  if(![sourceTs,knownTs,expires,decision].every(Number.isFinite))return {usable:false,status:'EVIDENCE_TIME_INVALID'};
+  if(row.validation_status!=='VALID')return {usable:false,status:`VALIDATION_${String(row.validation_status||'MISSING').toUpperCase()}`};
+  if(row.identity_status!=='EXACT')return {usable:false,status:'IDENTITY_NOT_EXACT'};
+  if(row.finality_status!=='FINAL')return {usable:false,status:'FINALITY_NOT_FINAL'};
+  if(sourceTs>decision)return {usable:false,status:'SOURCE_TIME_AFTER_DECISION'};
+  if(knownTs>decision)return {usable:false,status:'FIRST_KNOWN_AFTER_DECISION'};
+  if(expires<decision)return {usable:false,status:'EVIDENCE_EXPIRED'};
   const coverage=Number(row.coverage_fraction);if(!Number.isFinite(coverage)||coverage<0||coverage>1)return {usable:false,status:'COVERAGE_INVALID'};
   return {usable:true,status:'VALID',quality:coverage*clamp(Number(row.reliability??.8),0,1)};
 }

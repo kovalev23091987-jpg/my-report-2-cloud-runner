@@ -194,15 +194,18 @@ export async function collectCandidateEvidenceV2(params={}){
  const statuses=[cgSector?.status,largeTrades?.status,sector?.status,htx?.status,macro?.status,deribit?.status,chainSupply?.status,chainEvents?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
  const supplementalSources=params?.supplemental_context?.sources||{};
  const sources={COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_SUPPLY:chainSupply,CHAIN_EVENTS:chainEvents,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0}};
+ // Fix the decision clock only after every asynchronous collector returns.
+ // Responses received after params.now must not be rejected as future-known.
+ const auditDecisionTs=Date.now();
  const healthRows=Object.entries(sources).map(([source_id,r])=>{
-  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:params.now??Date.now()}).usable),status=String(r?.status||'NOT_EVALUATED');
+  const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:auditDecisionTs}).usable),status=String(r?.status||'NOT_EVALUATED');
   const operational_class=classifyEvidenceSourceHealth(r,valid.length);
   return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class,evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
  });
  const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});
  const sourceHealthChecked=['CLOSED_OPERATIONAL_JOURNAL','CLOSED_OPERATIONAL_JOURNAL_CACHE'].includes(source_health.status);
  sources.SOURCE_HEALTH_JOURNAL={status:source_health.status,check_completed:sourceHealthChecked,evidence:source_health.observations||[],network_calls:0,receipts:[{check_completed:sourceHealthChecked,status:source_health.status}]};
- const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now(),strict_fresh:params?.strict_fresh_manual===true});
+ const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:auditDecisionTs,strict_fresh:params?.strict_fresh_manual===true});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
@@ -227,7 +230,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources,source_health,decision_ts:params?.now??Date.now(),route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage,
+  sources,source_health,decision_ts:auditDecisionTs,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage,
   strict_fresh_required:params?.strict_fresh_manual===true,
   internal_only:true,
  };
