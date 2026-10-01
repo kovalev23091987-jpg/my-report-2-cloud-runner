@@ -182,7 +182,7 @@ export function normalizeCoinbase(product,ticker,now,primaryPrice,requestedProdu
  const price=finite(ticker?.price);return {source:'COINBASE',status:exact&&price!==null?'CLOSED':'NOT_CLOSED',observed_ts:now,exact_identity:exact,product:id||null,base,quote,price,price_difference_vs_htx_pct:deviation(primaryPrice,price),volume_24h:finite(ticker?.volume)};
 }
 
-export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false,strict17_required=false,vyx_api_key='',nansen_api_key=''}={}){
+export async function collectSupplementalCandidateContext({db,fetch_impl=globalThis.fetch,registry,venue_registry=null,contract,run_id,derivatives_venues=0,critical_conflict=false,primary_price=null,now=Date.now(),reserve_for_liquidations=false,strict17_required=false,force_fresh_manual=false,vyx_api_key='',nansen_api_key=''}={}){
  if(!db)throw new Error('SUPPLEMENTAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_candidate_source_cache (contract_code TEXT NOT NULL, source TEXT NOT NULL, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, PRIMARY KEY(contract_code,source))`).run();
  const parsed=parseSupplementalIdentityRegistry(registry),base=baseOf(contract),providerIds=venue_registry?.entries?.[base]||{},manual=parsed.entries[base]||null,effectiveReserve=reserve_for_liquidations&&!strict17_required;
@@ -196,6 +196,7 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{...(entry.coinpaprika_id&&entry.sector_tag?{coinpaprika_id:entry.coinpaprika_id,sector_tag:entry.sector_tag}:{}),...(entry.coingecko_id&&entry.coingecko_category_id?{coingecko_id:entry.coingecko_id,coingecko_category_id:entry.coingecko_category_id,coingecko_category_name:entry.coingecko_category_name}:{}),official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
  }
  const cachedSources=await loadCachedSources(db,contract,now);
+ if(force_fresh_manual)delete cachedSources.NANSEN_FLOWS;
  const lane=effectiveReserve?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict,cached_sources:cachedSources});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
  const queue=(source,request,normalize)=>{if(cachedSources[source]){receipts.push({source,status:cachedSources[source].status,cache_status:'HIT',actual_http:0});return;}if(httpCalls>=5){receipts.push({source,status:'DEFERRED_SHARED_REQUEST_ENVELOPE',actual_http:0});return;}calls.push([source,request(),normalize]);};
@@ -235,6 +236,8 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
  settled.push(...specialist.payloads);
  for(const {source,payload,ttl} of settled){
+  const freshReceipt=specialist.receipts.find(row=>row.source===source&&Number(row.actual_http)>0);
+  if(freshReceipt){payload.network_calls=Number(freshReceipt.actual_http);payload.cache_status='REFRESHED';}
   payload.context_version=SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION;receipts.push({source,status:payload.status});
   await db.prepare(`INSERT INTO report2_candidate_source_cache(contract_code,source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(contract_code,source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(contract,source,now,now+(ttl??sourceTtl(source)),JSON.stringify(payload)).run();
  }

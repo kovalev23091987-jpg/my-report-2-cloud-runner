@@ -27,11 +27,11 @@ export function normalizeDeribitAltOptions({contract,instruments=[],summary_payl
  return{status:instruments.length?'CLOSED':'NOT_APPLICABLE',contract:htxContract,evidence:instruments.length?[evidence]:[],summary:{base_currency:base,open_instrument_count:instruments.length,liquid_instrument_count:liquid.length},internal_only:true};
 }
 
-export async function collectDeribitAltOptionsEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now()}={}){
+export async function collectDeribitAltOptionsEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false}={}){
  if(!db)throw new Error('DERIBIT_ALT_OPTIONS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),base=baseOf(htxContract);
  if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
- await installEvidenceSourceStore(db);const candidateCached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,now});if(candidateCached)return{...candidateCached,contract:htxContract};
- let catalog=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,now}),catalogReceipt=null,catalogNetwork=0;
+ await installEvidenceSourceStore(db);const candidateCached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,now});if(!strict_fresh_manual&&candidateCached)return{...candidateCached,contract:htxContract};
+ let catalog=strict_fresh_manual?null:await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,now}),catalogReceipt=null,catalogNetwork=0;
  const plannedAttempts=catalog?1:2,reservationId=`EV2:${SOURCE}:${run_id}:${base}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:plannedAttempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:plannedAttempts,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};

@@ -62,10 +62,10 @@ export function normalizeMacroCalendar({contract,bls_raw='',fed_raw='',observed_
  return{status:evidence.length?'CLOSED':'PARTIAL',contract:htxContract,evidence,summary:{events:evidence.length,next_effective_at:evidence.filter(row=>Number(row.effective_from)>=observed_ts).sort((a,b)=>a.effective_from-b.effective_from)[0]?.effective_from??null,raw_fingerprint:hash(`${bls_raw}\n${fed_raw}`)},internal_only:true};
 }
 
-export async function collectMacroCalendarEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now()}={}){
+export async function collectMacroCalendarEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false}={}){
  if(!db)throw new Error('MACRO_CALENDAR_DB_REQUIRED');const htxContract=text(contract).toUpperCase();
  if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
- await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'GLOBAL',now});if(cached){
+ await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'GLOBAL',now});if(!strict_fresh_manual&&cached){
   const events=boundedEvents((cached.evidence||[]).map(row=>({provider_id:row.provider_id,event_id:row.origin_event_id,event_type:row.event_type||row.metric_family,effective_at:row.effective_at??row.effective_from,source_ts:row.source_ts,observed_ts:row.observed_ts,time_precision:row.time_precision||'DATE_ONLY'})),now);
   const evidence=events.map(row=>normalizeCalendarEvent({...row,asset_id:'GLOBAL_MACRO',htx_contract:htxContract}));
   return{...cached,contract:htxContract,evidence};
