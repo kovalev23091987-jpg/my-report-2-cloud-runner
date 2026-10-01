@@ -24,9 +24,9 @@ const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'
 // trading accuracy or a share of provider quota. Eligibility, caches and every
 // existing durable quota remain inside their original collectors.
 export const EVIDENCE_ROUTE_PRIORITY=Object.freeze({
- LARGE_TRADES:4,OFFICIAL:4,CHAIN:3,
- BLOCKSCOUT:2,SNAPSHOT:2,SECTOR:2,SECTOR_COINGECKO:2,
- DERIBIT:1,SOURCIFY:1,BLUESKY:1,GDELT:1,
+ LARGE_TRADES:5,OFFICIAL:5,CHAIN_SUPPLY:5,CHAIN_EVENTS:5,
+ DERIBIT:5,BLUESKY:5,SECTOR:4,SECTOR_COINGECKO:4,
+ BLOCKSCOUT:1,SNAPSHOT:1,SOURCIFY:1,GDELT:1,
 });
 export function rotateEvidenceRoleRoutes(routes,key){
  if(!routes.length)return [];
@@ -37,7 +37,28 @@ export function rotateEvidenceRoleRoutes(routes,key){
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
  return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
 }
-const BLOCK_SOURCE={N01:['PRIMARY_RISK_CONTEXT'],N02:['CHAIN_RPC'],N03:['CHAIN_RPC'],N04:['CHAIN_RPC','BLOCKSCOUT_INDEX'],N05:['PRIMARY_MARKET_FLOW'],N06:['BLUESKY_PUBLIC'],N07:['OFFICIAL_EVENTS','GDELT_NEWS_DISCOVERY'],N08:['HTX_PUBLIC_RISK'],N09:['HTX_PUBLIC_RISK'],N10:['PRIMARY_TECHNICAL_CONTEXT'],N11:['PRIMARY_EXECUTION_STRESS'],N12:['HTX_LARGE_TRADES'],N13:['MACRO_CALENDAR','SNAPSHOT_GOVERNANCE'],N14:['DERIBIT_ALT_OPTIONS'],N15:['COINPAPRIKA_SECTOR','COINGECKO_SECTOR'],N16:['PRIMARY_EXECUTION_COST'],N17:['SOURCIFY_ABI']};
+// A block is complete only when its assigned primary owner was actually
+// evaluated.  Supplemental and discovery routes remain visible, but they may
+// not close a block on behalf of a missing primary route.
+export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
+ N01:{all:['OFFICIAL_EVENTS'],supplemental:[]},
+ N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','SOURCIFY_ABI']},
+ N03:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX','SOURCIFY_ABI']},
+ N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
+ N05:{all:['NANSEN_FLOWS'],supplemental:['CHAIN_EVENTS']},
+ N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY']},
+ N07:{all:['OFFICIAL_EVENTS'],supplemental:['GDELT_NEWS_DISCOVERY','SNAPSHOT_GOVERNANCE']},
+ N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
+ N09:{all:['HTX_PUBLIC_RISK'],supplemental:[]},
+ N10:{all:['PRIMARY_TECHNICAL_CONTEXT'],supplemental:[]},
+ N11:{all:['PRIMARY_EXECUTION_STRESS'],supplemental:[]},
+ N12:{all:['HTX_LARGE_TRADES'],supplemental:[]},
+ N13:{all:['MACRO_CALENDAR'],supplemental:['SNAPSHOT_GOVERNANCE']},
+ N14:{all:['DERIBIT_ALT_OPTIONS'],supplemental:[]},
+ N15:{any:['COINGECKO_SECTOR','COINPAPRIKA_SECTOR'],supplemental:[]},
+ N16:{all:['PRIMARY_EXECUTION_COST'],supplemental:[]},
+ N17:{all:['SOURCE_HEALTH_JOURNAL'],supplemental:['SOURCIFY_ABI']},
+});
 
 export function classifyEvidenceSourceHealth(result={},valid_rows=0){
  const status=String(result?.status||'NOT_EVALUATED').toUpperCase(),calls=Number(result?.network_calls||0),http=(Array.isArray(result?.receipts)?result.receipts:[]).map(r=>Number(r?.http_status));
@@ -79,74 +100,91 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
  return{results,receipts,network_calls:actual,reserved_requests:reserved,max_requests};
 }
 
-export function auditCandidateBlocks({evidence=[],sources={},primary_checks={},decision_ts=Date.now()}={}){
+export function sourceWasActuallyChecked(source){
+ if(!source||typeof source!=='object')return false;
+ const status=String(source.status||'NOT_EVALUATED').toUpperCase();
+ if(/(?:^|_)(?:EXACT_.+_REQUIRED|REQUIRED|DEFERRED|WAITING|NOT_EVALUATED|NOT_RUN|NOT_CLOSED|SOURCE_ERROR|INVALID(?:_|$)|SCHEMA|TIMEOUT|ACCESS_BLOCKED|RATE_LIMIT|QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|UNSUPPORTED|PARSER_FORMAT_MISMATCH)(?:_|$)/.test(status))return false;
+ if(source.check_completed===true)return true;
+ if(Number(source.network_calls)>0)return true;
+ if(Array.isArray(source.evidence)&&source.evidence.length>0)return true;
+ if(Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.cache_hit===true||row?.check_completed===true))return true;
+ const cache=String(source.cache_status||'').toUpperCase();
+ return /(^|_)(HIT|SHARED_HIT|REUSED|REFRESHED|FRESH|VALID_CACHE|CACHE_VALID)(_|$)/.test(cache);
+}
+export function sourceWasAttempted(source){
+ if(!source||typeof source!=='object')return false;
+ return Number(source.network_calls)>0||source.check_completed===true||Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.check_completed===true)||sourceWasActuallyChecked(source);
+}
+
+function proofForRequirement(requirement,sources){
+ const all=Array.isArray(requirement?.all)?requirement.all:[],any=Array.isArray(requirement?.any)?requirement.any:[];
+ const allClosed=all.every(name=>sourceWasActuallyChecked(sources?.[name]));
+ const anyClosed=!any.length||any.some(name=>sourceWasActuallyChecked(sources?.[name]));
+ return {checked:allClosed&&anyClosed,required_all:all,required_any:any,missing_required:[...all.filter(name=>!sourceWasActuallyChecked(sources?.[name])),...(any.length&&!any.some(name=>sourceWasActuallyChecked(sources?.[name]))?[`ANY:${any.join('|')}`]:[])]};
+}
+
+export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.now()}={}){
  const result={};
- const sourceWasActuallyChecked=source=>{
-  if(!source||typeof source!=='object')return false;
-  if(Number(source.network_calls)>0)return true;
-  if(Array.isArray(source.evidence)&&source.evidence.length>0)return true;
-  if(Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.cache_hit===true))return true;
-  const cache=String(source.cache_status||'').toUpperCase();
-  return /(^|_)(HIT|REUSED|FRESH|VALID_CACHE|CACHE_VALID)(_|$)/.test(cache);
- };
  for(const block of Object.keys(BLOCKS)){
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
   const usable=rows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable&&Number(row.coverage_fraction)>0).length;
-  const owners=BLOCK_SOURCE[block]||[];
-  const primary=primary_checks?.[block]||null;
-  const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||primary?.status||'NOT_EVALUATED')]));
-  const checked=primary?.checked===true||owners.some(name=>sourceWasActuallyChecked(sources?.[name]));
+  const requirement=BLOCK_SOURCE_REQUIREMENTS[block]||{all:[],any:[],supplemental:[]};
+  const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
+  const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
+  const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0}];}));
+  const proof=proofForRequirement(requirement,sources),checked=proof.checked;
   result[block]={
    status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
-   checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,
-   primary_pipeline:primary?{status:String(primary.status||'CHECKED'),facts:Number(primary.facts||0),decision_usable:Boolean(primary.decision_usable)}:null,
+   checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
+   required_all:proof.required_all,required_any:proof.required_any,missing_required:proof.missing_required,
   };
  }
  const values=Object.values(result);
- return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0||row.primary_pipeline?.decision_usable===true).length,all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0||row.primary_pipeline?.decision_usable===true),internal_only:true};
+ return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),internal_only:true};
+}
+
+export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={}}={}){
+ const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
+ return {...evidence_result,sources,block_coverage:auditCandidateBlocks({evidence:evidence_result?.evidence||[],sources,decision_ts:evidence_result?.decision_ts??Date.now()})};
 }
 
 export async function collectCandidateEvidenceV2(params={}){
  const requestedCap=Number(params.max_requests??process.env.REPORT2_EVIDENCE_HTTP_CAP);const evidenceCap=Number.isSafeInteger(requestedCap)?Math.max(5,Math.min(28,requestedCap)):5;
- const publicRows=Array.isArray(params?.public_evidence?.evidence)?params.public_evidence.evidence:[];
- const primaryChecks={
-  N01:{checked:true,status:'CHECKED_PRIMARY_RISK_CONTEXT',facts:publicRows.filter(row=>/RISK|REGIME|EVENT/i.test(String(row?.chain||row?.metric||''))).length,decision_usable:true},
-  N05:{checked:true,status:'CHECKED_PRIMARY_MARKET_FLOW',facts:publicRows.filter(row=>/FLOW|SPOT|DEX|ONCHAIN/i.test(String(row?.chain||row?.metric||''))).length,decision_usable:true},
-  N10:{checked:true,status:'CHECKED_PRIMARY_TECHNICAL_CONTEXT',facts:1,decision_usable:true},
-  N11:{checked:true,status:'CHECKED_PRIMARY_EXECUTION_STRESS',facts:publicRows.filter(row=>/DEPTH|SPREAD|IMPACT|ORDERBOOK|LIQUID/i.test(String(row?.metric||''))).length,decision_usable:true},
-  N16:{checked:true,status:'CHECKED_PRIMARY_EXECUTION_COST',facts:publicRows.filter(row=>/SPREAD|IMPACT|FEE|SLIPPAGE/i.test(String(row?.metric||''))).length,decision_usable:true},
- };
  // One transport guard also covers the compulsory sources and exceptions.
  const core=await collectEvidenceRouteBlock({routes:[{name:'HTX',role:'HTX_EXECUTION_RULES'},{name:'MACRO',role:'CALENDAR_CONTEXT'}],collectors:{HTX:collectHtxPublicRiskEvidence,MACRO:collectMacroCalendarEvidence},params,max_requests:evidenceCap});
  const htx=core.results.HTX,macro=core.results.MACRO;
- const used=Number(htx?.network_calls||0)+Number(macro?.network_calls||0),remaining=Math.max(0,evidenceCap-used),chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address),evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),socialEligible=chainEligible&&(evmEligible||chainName==='solana'),snapshotEligible=/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(String(params?.asset_metadata?.snapshot_space||'')),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
+ const chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address),evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),socialEligible=chainEligible&&(evmEligible||chainName==='solana'),snapshotEligible=/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(String(params?.asset_metadata?.snapshot_space||'')),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
  const deferred={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0,receipts:[],internal_only:true};
- let deribit=deferred,chain=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},sourcify=evmEligible?deferred:{status:'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},snapshot=snapshotEligible?deferred:{status:'EXACT_SNAPSHOT_SPACE_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(snapshotEligible?[{name:'SNAPSHOT',role:'GOVERNANCE_CONTEXT'}]:[]),...(evmEligible?[{name:'SOURCIFY',role:'ABI_IDENTITY_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
+ let deribit=deferred,chainSupply=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},sourcify=evmEligible?deferred:{status:'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},snapshot=snapshotEligible?deferred:{status:'EXACT_SNAPSHOT_SPACE_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
+ const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'},{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(snapshotEligible?[{name:'SNAPSHOT',role:'GOVERNANCE_CONTEXT'}]:[]),...(evmEligible?[{name:'SOURCIFY',role:'ABI_IDENTITY_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(params?.asset_metadata?.coinpaprika_id&&params?.asset_metadata?.sector_tag)routes.push({name:'SECTOR',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  if(chainEligible&&['ethereum','solana'].includes(chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
- const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN:async p=>chainName==='ethereum'&&rotation(key+':CHAIN_ROLE',3)!==0?collectFinalizedChainEvents({...p,event_mode:rotation(key+':CHAIN_ROLE',3)===1?'TOKEN_TRANSFER':'AAVE_CREDIT'}):collectChainSupplyEvidence(p),SOURCIFY:collectSourcifyAbiEvidence,BLUESKY:collectBlueskyAttentionEvidence,SNAPSHOT:collectSnapshotGovernanceEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});
- ({CHAIN:chain=chain,SOURCIFY:sourcify=sourcify,BLUESKY:bluesky=bluesky,SNAPSHOT:snapshot=snapshot,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
+ const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),SOURCIFY:collectSourcifyAbiEvidence,BLUESKY:collectBlueskyAttentionEvidence,SNAPSHOT:collectSnapshotGovernanceEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});
+ ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,SOURCIFY:sourcify=sourcify,BLUESKY:bluesky=bluesky,SNAPSHOT:snapshot=snapshot,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const largeTrades=routeBlock.results.LARGE_TRADES||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
  const sector=routeBlock.results.SECTOR||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  const cgSector=routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
- const evidence=[...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(macro?.evidence)?macro.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chain?.evidence)?chain.evidence:[]),...(Array.isArray(sourcify?.evidence)?sourcify.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(snapshot?.evidence)?snapshot.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[])];
- const statuses=[cgSector?.status,largeTrades?.status,sector?.status,htx?.status,macro?.status,deribit?.status,chain?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
- const sources={COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_RPC:chain,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout};
+ const evidence=[...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(macro?.evidence)?macro.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(sourcify?.evidence)?sourcify.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(snapshot?.evidence)?snapshot.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[])];
+ const statuses=[cgSector?.status,largeTrades?.status,sector?.status,htx?.status,macro?.status,deribit?.status,chainSupply?.status,chainEvents?.status,sourcify?.status,bluesky?.status,snapshot?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
+ const supplementalSources=params?.supplemental_context?.sources||{};
+ const sources={COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,MACRO_CALENDAR:macro,DERIBIT_ALT_OPTIONS:deribit,CHAIN_SUPPLY:chainSupply,CHAIN_EVENTS:chainEvents,SOURCIFY_ABI:sourcify,BLUESKY_PUBLIC:bluesky,SNAPSHOT_GOVERNANCE:snapshot,OFFICIAL_EVENTS:official,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0}};
  const healthRows=Object.entries(sources).map(([source_id,r])=>{
   const rows=Array.isArray(r?.evidence)?r.evidence:[],valid=rows.filter(row=>validateEvidenceV2(row,{decision_ts:params.now??Date.now()}).usable),status=String(r?.status||'NOT_EVALUATED');
   const operational_class=classifyEvidenceSourceHealth(r,valid.length);
   return{source_id,status,actual_http:Number(r?.network_calls||0),operational_class,evidence_rows:rows.length,valid_rows:valid.length,decision_usable_rows:valid.filter(x=>Number(x.coverage_fraction)>0).length};
  });
  const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});
+ const sourceHealthChecked=['CLOSED_OPERATIONAL_JOURNAL','CLOSED_OPERATIONAL_JOURNAL_CACHE'].includes(source_health.status);
+ sources.SOURCE_HEALTH_JOURNAL={status:source_health.status,check_completed:sourceHealthChecked,evidence:source_health.observations||[],network_calls:0,receipts:[{check_completed:sourceHealthChecked,status:source_health.status}]};
+ const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
   evidence,
-  network_calls:Number(cgSector.network_calls||0)+Number(largeTrades.network_calls||0)+Number(sector.network_calls||0)+Number(htx?.network_calls||0)+Number(macro?.network_calls||0)+Number(deribit?.network_calls||0)+Number(chain?.network_calls||0)+Number(sourcify?.network_calls||0)+Number(bluesky?.network_calls||0)+Number(snapshot?.network_calls||0)+Number(official?.network_calls||0)+Number(gdelt?.network_calls||0)+Number(blockscout?.network_calls||0),
-  cache_status:[cgSector.cache_status,largeTrades.cache_status,sector.cache_status,htx?.cache_status,macro?.cache_status,deribit?.cache_status,chain?.cache_status,sourcify?.cache_status,bluesky?.cache_status,snapshot?.cache_status,official?.cache_status,gdelt?.cache_status,blockscout?.cache_status].filter(Boolean).join('+')||null,
-  whole_job_admission:{status:[htx?.whole_job_admission?.status,macro?.whole_job_admission?.status,deribit?.whole_job_admission?.status,chain?.whole_job_admission?.status,sourcify?.whole_job_admission?.status,bluesky?.whole_job_admission?.status,snapshot?.whole_job_admission?.status,official?.whole_job_admission?.status,gdelt?.whole_job_admission?.status,blockscout?.whole_job_admission?.status].filter(Boolean).join('+')||null},
-  admission:{status:[htx?.admission?.status,macro?.admission?.status,deribit?.admission?.status,chain?.admission?.status,sourcify?.admission?.status,bluesky?.admission?.status,snapshot?.admission?.status,official?.admission?.status,gdelt?.admission?.status,blockscout?.admission?.status].filter(Boolean).join('+')||null},
+  network_calls:Number(cgSector.network_calls||0)+Number(largeTrades.network_calls||0)+Number(sector.network_calls||0)+Number(htx?.network_calls||0)+Number(macro?.network_calls||0)+Number(deribit?.network_calls||0)+Number(chainSupply?.network_calls||0)+Number(chainEvents?.network_calls||0)+Number(sourcify?.network_calls||0)+Number(bluesky?.network_calls||0)+Number(snapshot?.network_calls||0)+Number(official?.network_calls||0)+Number(gdelt?.network_calls||0)+Number(blockscout?.network_calls||0),
+  cache_status:[cgSector.cache_status,largeTrades.cache_status,sector.cache_status,htx?.cache_status,macro?.cache_status,deribit?.cache_status,chainSupply?.cache_status,chainEvents?.cache_status,sourcify?.cache_status,bluesky?.cache_status,snapshot?.cache_status,official?.cache_status,gdelt?.cache_status,blockscout?.cache_status].filter(Boolean).join('+')||null,
+  whole_job_admission:{status:[htx?.whole_job_admission?.status,macro?.whole_job_admission?.status,deribit?.whole_job_admission?.status,chainSupply?.whole_job_admission?.status,chainEvents?.whole_job_admission?.status,sourcify?.whole_job_admission?.status,bluesky?.whole_job_admission?.status,snapshot?.whole_job_admission?.status,official?.whole_job_admission?.status,gdelt?.whole_job_admission?.status,blockscout?.whole_job_admission?.status].filter(Boolean).join('+')||null},
+  admission:{status:[htx?.admission?.status,macro?.admission?.status,deribit?.admission?.status,chainSupply?.admission?.status,chainEvents?.admission?.status,sourcify?.admission?.status,bluesky?.admission?.status,snapshot?.admission?.status,official?.admission?.status,gdelt?.admission?.status,blockscout?.admission?.status].filter(Boolean).join('+')||null},
   receipts:[
    ...(cgSector.receipts||[]).map(row=>({...row,source:'COINGECKO_SECTOR'})),
    ...(largeTrades.receipts||[]).map(row=>({...row,source:'HTX_LARGE_TRADES'})),
@@ -154,7 +192,8 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(htx?.receipts||[]).map(row=>({...row,source:'HTX_PUBLIC_RISK'})),
    ...(macro?.receipts||[]).map(row=>({...row,source:'MACRO_CALENDAR'})),
    ...(deribit?.receipts||[]).map(row=>({...row,source:'DERIBIT_ALT_OPTIONS'})),
-   ...(chain?.receipts||[]).map(row=>({...row,source:'CHAIN_RPC'})),
+   ...(chainSupply?.receipts||[]).map(row=>({...row,source:'CHAIN_SUPPLY'})),
+   ...(chainEvents?.receipts||[]).map(row=>({...row,source:'CHAIN_EVENTS'})),
    ...(sourcify?.receipts||[]).map(row=>({...row,source:'SOURCIFY_ABI'})),
    ...(bluesky?.receipts||[]).map(row=>({...row,source:'BLUESKY_PUBLIC'})),
    ...(snapshot?.receipts||[]).map(row=>({...row,source:'SNAPSHOT_GOVERNANCE'})),
@@ -162,9 +201,9 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(gdelt?.receipts||[]).map(row=>({...row,source:'GDELT_NEWS_DISCOVERY'})),
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
-  sources,source_health,route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage:auditCandidateBlocks({evidence,sources,primary_checks:primaryChecks,decision_ts:params?.now??Date.now()}),
+  sources,source_health,decision_ts:params?.now??Date.now(),route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage,
   internal_only:true,
  };
 }
 
-export default{collectCandidateEvidenceV2};
+export default{collectCandidateEvidenceV2,finalizeCandidateBlockCoverage,auditCandidateBlocks};

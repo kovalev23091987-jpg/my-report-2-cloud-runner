@@ -48,7 +48,7 @@ import {createLiquidationOutcomeCalibration} from './src/liquidation-outcome-cal
 import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
-import {collectCandidateEvidenceV2} from './src/candidate-evidence-v2-runtime.mjs';
+import {collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
@@ -544,6 +544,7 @@ async function main() {
     risk.future_provider_models=params.future_provider_models??null;risk.liquidation_history_facts=formatLiquidationHistoryFacts(risk);risk.source_chain=buildLiquidationSourceChain({contract:params.contract,risk,future_models:params.future_provider_models,byk_future:params.byk_future,tracked_hl:capturedTrackedBands({contract:params.contract,run_id:params.run_id,observed_ts:Date.now()}),native:liquidationSources?.summary()??{},coverage:risk.liquidation_venue_coverage,coinlobster:contextForContract(env.REPORT2_GLOBAL_MARKET_CONTEXT,params.contract)?.coinlobster,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
     let volume;try{volume=await collectCrossVenueVolumeProfiles({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,contract:params.contract,run_id:params.run_id});}catch{volume={status:'NOT_CLOSED',reason:'PROFILE_COLLECTOR_UNAVAILABLE',sources:{},network_calls:null};}const result={...risk,volume_profiles:volume,volume_profile_network_calls:volume.network_calls};liquidationRiskByContract.set(params.contract,result);return result;};
   env.REPORT2_EVIDENCE_V2_COLLECT=async params=>{const result=await collectCandidateEvidenceV2({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,source_health_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),blockscout_api_key:envText('BLOCKSCOUT_PRO_API_KEY',{required:false}),...params});console.log('EVIDENCE_SOURCE_HEALTH_RECEIPT',JSON.stringify({contract:params.contract,run_id:params.run_id,source_health:result.source_health,shared_http_envelope:result.shared_http_envelope}));return result;};
+  env.REPORT2_EVIDENCE_V2_FINALIZE=params=>finalizeCandidateBlockCoverage(params);
   await installBykQuotaLedger(env.DATA_DB);
   env.REPORT2_BYKARANTELI_RESERVE=makeBykReserve(env.DATA_DB,{source});
   env.REPORT2_TRACKED_HL_FUTURE_COLLECT=params=>collectTrackedBands({fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,...params});

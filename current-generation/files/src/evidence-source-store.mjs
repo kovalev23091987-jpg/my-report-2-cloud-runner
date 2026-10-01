@@ -50,8 +50,15 @@ export async function writeEvidenceSourceCache(db,{source,asset_key,observed_ts,
 // The caller must reserve DB headroom before this optional diagnostic work.
 export async function recordEvidenceSourceHealth(db,{contract,run_id,observations=[],admit,now=Date.now()}={}){
  const rows=observations.filter(r=>Number.isSafeInteger(r.actual_http)&&r.actual_http>0);
- if(!rows.length)return{status:'NO_NEW_TRANSPORT_OBSERVATION',observations:[],predictive_weight_changed:false};
- if(!contract||!run_id||rows.length>5)return{status:'HEALTH_SCOPE_NOT_CLOSED',observations:[],predictive_weight_changed:false};
+ if(!rows.length){
+  if(!contract||!run_id||!db?.prepare)return{status:'NO_NEW_TRANSPORT_OBSERVATION',observations:[],predictive_weight_changed:false};
+  const grant=admit?.({rows_read:24,rows_written:0});if(grant?.allowed!==true)return{status:grant?.status||'HEALTH_DB_ADMISSION_REQUIRED',observations:[],predictive_weight_changed:false};
+  try{const q=await db.prepare(`SELECT source_id,run_id,operational_class,valid_rows,decision_usable_rows,observed_ts FROM report2_evidence_source_health_observation WHERE contract=?1 AND observed_ts>=?2 ORDER BY observed_ts DESC LIMIT 24`).bind(contract,now-24*60*60_000).all(),history=q?.results||[];return{status:history.length?'CLOSED_OPERATIONAL_JOURNAL_CACHE':'NO_NEW_TRANSPORT_OBSERVATION',contract,observations:history,scope:'RECENT_EXACT_MARKET_READBACK_24H',score_cap:0,predictive_weight_changed:false,quarantine_activated:false};}catch{return{status:'NO_NEW_TRANSPORT_OBSERVATION',observations:[],predictive_weight_changed:false};}
+ }
+ // One strict 17-block audit can attempt more than five independent owners.
+ // Keep a hard bound, but journal every actually attempted owner instead of
+ // silently dropping the whole quality block once the fifth source is passed.
+ if(!contract||!run_id||rows.length>24)return{status:'HEALTH_SCOPE_NOT_CLOSED',observations:[],predictive_weight_changed:false};
  // D1 counts the table row plus both indexes (measured: 3 writes/observation).
  const grant=admit?.({rows_read:rows.length*16,rows_written:rows.length*3+4});
  if(grant?.allowed!==true)return{status:grant?.status||'HEALTH_DB_ADMISSION_REQUIRED',observations:[],predictive_weight_changed:false};

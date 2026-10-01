@@ -1,6 +1,6 @@
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
-export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v2-approved-layout-20261001';
+export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v3-owner-layout-strict17-20261001';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;
@@ -51,15 +51,11 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
  if(status==='PARTIAL_DATA_UNAVAILABLE'){
   const checked=Number(block_audit?.minimum_checked_block_count);
   const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из 17.`:'';
-  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress} Сделать полный вывод о наличии идей сейчас нельзя.\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
+  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
- if(['manual','manual_recovery'].includes(source)){
-  const approved=candidates.map(row=>typeof row?.manual_text==='string'?row.manual_text.trim():'').filter(Boolean);
-  if(approved.length)return approved.join('\n\n');
- }
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
- const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),''];
+ const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...(['manual','manual_recovery'].includes(source)?['Проверка: 17 из 17 блоков.']:[]),''];
  let found=0;
  for(const direction of ['LONG','SHORT']){
   lines.push(direction==='LONG'?'ЛОНГ':'ШОРТ');

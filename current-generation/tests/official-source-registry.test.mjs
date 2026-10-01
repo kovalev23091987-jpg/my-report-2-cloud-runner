@@ -5,15 +5,15 @@ import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from
 
 const source=JSON.parse(fs.readFileSync(new URL('../files/official-event-sources.json',import.meta.url),'utf8'));
 
-test('K16 versioned official registry exposes exact identity and domain but never unsupported HTML as a feed',()=>{
+test('K16 versioned official registry exposes exact identity and the fixed Chainlink HTML feed',()=>{
  const out=compileOfficialSourceRegistry(source,{now:Date.parse('2026-09-30T12:00:00Z')});
  assert.equal(out.status,'CLOSED');assert.equal(out.records.length,5);
  assert.equal(out.registry.UMA.contract_or_mint,'0x04fa0d235c4abf4bcf4787af4cf447de572ef828');assert.deepEqual(out.registry.UMA.official_feeds,[]);assert.equal(out.registry.LINK.chain,'ethereum');assert.equal(out.registry.LINK.contract_or_mint,'0x514910771af9ca656af840dff83e8264ecf986ca');
- assert.deepEqual(out.registry.LINK.official_domains,['chain.link']);assert.deepEqual(out.registry.LINK.official_feeds,[]);
+ assert.deepEqual(out.registry.LINK.official_domains,['chain.link']);assert.deepEqual(out.registry.LINK.official_feeds,['https://chain.link/newsroom']);assert.deepEqual(out.registry.LINK.official_feed_specs,[{url:'https://chain.link/newsroom',format:'HTML',parser_id:'FIXED_HTML_JSONLD_V1',refresh_period:'24h',timezone:'UTC'}]);
  assert.deepEqual(out.registry.LDO.official_feeds,['https://blog.lido.fi/rss/']);
  assert.deepEqual(out.registry.LDO.official_feed_specs,[{url:'https://blog.lido.fi/rss/',format:'RSS',parser_id:'FIXED_RSS_V1',refresh_period:'1h',timezone:'UTC'}]);
  assert.equal(out.registry.LDO.snapshot_space,'lido-snapshot.eth');
- assert.equal(out.records[0].status,'DISABLED');assert.equal(out.records[0].disabled_reason,'FIXED_HTML_PARSER_NOT_IMPLEMENTED');
+ assert.equal(out.records[0].status,'ENABLED');assert.equal(out.records[0].disabled_reason,null);
 });
 
 test('K16 official registry rejects guessed, conflicting or unsupported enabled sources',()=>{
@@ -27,7 +27,7 @@ test('K16 official registry rejects guessed, conflicting or unsupported enabled 
 
 test('K16 configured exact metadata extends versioned entries without losing verified identity',()=>{
  const out=mergeOfficialAndConfiguredRegistries({official:compileOfficialSourceRegistry(source),configured:{LINK:{chain:'ethereum',contract_or_mint:'0x514910771af9ca656af840dff83e8264ecf986ca',snapshot_space:'chainlink.eth',official_feeds:['https://chain.link/events.xml']}}});
- assert.equal(out.registry.LINK.snapshot_space,'chainlink.eth');assert.deepEqual(out.registry.LINK.official_feeds,['https://chain.link/events.xml']);assert.equal(out.registry.LINK.contract_or_mint,'0x514910771af9ca656af840dff83e8264ecf986ca');
+ assert.equal(out.registry.LINK.snapshot_space,'chainlink.eth');assert.deepEqual(out.registry.LINK.official_feeds,['https://chain.link/newsroom','https://chain.link/events.xml']);assert.equal(out.registry.LINK.contract_or_mint,'0x514910771af9ca656af840dff83e8264ecf986ca');
 });
 
 test('K16 runtime loads the versioned registry and overlay carries both registry files',()=>{
