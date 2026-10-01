@@ -33,6 +33,8 @@ test('every successful run emits a canonical artifact instead of a chat reconstr
  assert.match(runner,/const checkedOutput=enforceManualBlockCoverage\(output\)/u);
  assert.match(runner,/checkedOutput\.report_text=formatManualRunSummary\(checkedOutput\)/u);
  assert.match(runner,/row\.manual_text\|\|presentationInputs\?\.manual_text\|\|null/u);
+ assert.match(runner,/saved_canonical_retrieval=true/u);
+ assert.match(runner,/RUN_ID=/u);
 });
 
 test('low-priority prospective statistics cannot cancel an otherwise complete manual report when capacity is reserved elsewhere',()=>{
