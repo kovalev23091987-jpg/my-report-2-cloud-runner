@@ -14,8 +14,9 @@ test('delivered TAO bucket and cross-margin observations stay useful context and
  assert.ok(panel.clusters.every(row=>row.decision_target_eligible===false&&row.target_price===null));
  const proof=evaluateTechnicalMovePotential({direction:'SHORT',current_price:304.8,trigger_price:302.05,opportunity:fixture.opportunity,liquidation_zones:c.liquidations});
  assert.equal(proof.status,'NOT_CLOSED');assert.equal(proof.target_price,null);
- assert.equal(renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).ok,false);
- assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,false);
+ const rendered=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+ assert.equal(rendered.ok,true);assert.match(rendered.text,/Цель после подтверждения входа: пока не подтверждена/);
+ assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).reason,'OBSERVE_SOURCE_ROLES_NOT_CLOSED');
 });
 test('valid observation score is a score out of 100 and target is conditional on entry',()=>{
  const c=structuredClone(fixture.canonical_subset);

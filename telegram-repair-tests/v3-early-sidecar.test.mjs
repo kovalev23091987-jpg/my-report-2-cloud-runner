@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {runV3EarlyPersistenceSidecar,V3_EARLY_SIDECAR_BUDGET,chooseEarlyPersistenceTargets} from '../runtime/src/v3-early-sidecar.mjs';
+import {runV3EarlyPersistenceSidecar,V3_EARLY_NEW_WAVE_PAUSE_MS,V3_EARLY_SIDECAR_BUDGET,chooseEarlyPersistenceTargets,shouldOpenNewWave} from '../runtime/src/v3-early-sidecar.mjs';
 
 const NOW=1_800_000_000_000;
 function payload(ts,{altPrice=100,altOi=1000,altFunding=-0.0001,altTurnover=1_000_000}={}){
@@ -71,4 +71,10 @@ test('V3 sidecar target selection prioritizes stronger factual evidence and does
   const selected=chooseEarlyPersistenceTargets({observations:[obs('A-USDT',10),obs('B-USDT',90),obs('C-USDT',80),obs('D-USDT',70)],active_candidates:active});
   assert.equal(selected.length,1);
   assert.equal(selected[0].contract,'B-USDT');
+});
+
+test('a recurrence after a real pause opens a new wave while an ordinary repeat stays in the same wave',()=>{
+  const prior={contract_code:'TEST-USDT',wave_id:'old-wave',generation:1,last_seen_ts:NOW-V3_EARLY_NEW_WAVE_PAUSE_MS-1,lifecycle_stage:'DISCOVERY'};
+  assert.equal(shouldOpenNewWave({prior,observation_ts:NOW}),true);
+  assert.equal(shouldOpenNewWave({prior:{...prior,last_seen_ts:NOW-V3_EARLY_NEW_WAVE_PAUSE_MS},observation_ts:NOW}),false);
 });

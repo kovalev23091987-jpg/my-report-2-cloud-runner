@@ -12,6 +12,7 @@ import {
 import { loadMicrostructureForContracts, featureInputsFromMicrostructureRows } from './v3-market-microstructure-persistence.mjs';
 
 export const V3_EARLY_SIDECAR_VERSION = 'v3-early-sidecar-shadow-v1';
+export const V3_EARLY_NEW_WAVE_PAUSE_MS = 6*60*60_000;
 export const V3_EARLY_SIDECAR_BUDGET = Object.freeze({
   rows_read: 4096,
   rows_written: 32,
@@ -35,6 +36,12 @@ function usageDelta(before,after){
     requests:Math.max(0,Number(after.requests||0)-Number(before.requests||0)),
     unknown_ops:Math.max(0,Number(after.unknown_ops||0)-Number(before.unknown_ops||0)),
   };
+}
+
+export function shouldOpenNewWave({prior,observation_ts}={}){
+  const last=finite(prior?.last_seen_ts),current=finite(observation_ts);
+  if(!prior||last===null||current===null||current<=last)return false;
+  return current-last>V3_EARLY_NEW_WAVE_PAUSE_MS;
 }
 
 function decodeSnapshotRow(row){
@@ -195,7 +202,11 @@ export async function runV3EarlyPersistenceSidecar(db,{current_scan_ts,source_ru
     const exactPrior=await db.prepare('SELECT * FROM v3_early_candidate_wave WHERE contract_code=?1 ORDER BY generation DESC,last_seen_ts DESC LIMIT 1').bind(target.contract).first();
     const prior=exactPrior?decodeEarlyCandidateRow(exactPrior):target.prior;
     if(prior&&TERMINAL.has(text(prior.lifecycle_stage))){persisted.push({contract:target.contract,status:'TERMINAL_WAVE_NOT_REOPENED'});continue;}
-    const memory=advanceEarlyCandidateMemory({prior,observation:target.observation,new_wave:false});
+    // A materially separated recurrence is a new market wave. Its new wave_id
+    // makes the existing per-wave duplicate key sendable while same-wave
+    // repeats remain suppressed.
+    const newWave=shouldOpenNewWave({prior,observation_ts:loaded.currentTs});
+    const memory=advanceEarlyCandidateMemory({prior,observation:target.observation,new_wave:newWave});
     if(memory.status!=='CLOSED') { persisted.push({contract:target.contract,status:memory.status}); continue; }
     const write=await persistEarlyCandidateShadow(db,{observation:target.observation,candidate:memory.candidate,new_wave_opened:memory.new_wave_opened});
     persisted.push({contract:target.contract,status:write.status,new_wave_opened:memory.new_wave_opened,wave_id:memory.candidate.wave_id,lifecycle_stage:memory.candidate.lifecycle_stage,direction_hint:memory.candidate.direction_hint,statements:write.statements});
@@ -223,4 +234,4 @@ export async function runV3EarlyPersistenceSidecar(db,{current_scan_ts,source_ru
   };
 }
 
-export default {V3_EARLY_SIDECAR_VERSION,V3_EARLY_SIDECAR_BUDGET,chooseEarlyPersistenceTargets,runV3EarlyPersistenceSidecar};
+export default {V3_EARLY_SIDECAR_VERSION,V3_EARLY_NEW_WAVE_PAUSE_MS,V3_EARLY_SIDECAR_BUDGET,shouldOpenNewWave,chooseEarlyPersistenceTargets,runV3EarlyPersistenceSidecar};

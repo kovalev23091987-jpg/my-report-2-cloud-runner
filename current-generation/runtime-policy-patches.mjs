@@ -21,16 +21,16 @@ export function applyRuntimePolicyPatches(runtime){
     : finite(config?.next_impulse_move_pct);
   const measuredBaseMovePct = (baseHigh - baseLow) / entryPrice * 100;
   if (configuredThresholdPct === null || configuredThresholdPct <= 0 || !Number.isFinite(measuredBaseMovePct)) return null;
-  // Five percent is a reportability filter, never a fabricated target. The
-  // target exists only when the prospectively measured base itself supports it.
+  // The target exists only when the prospectively measured base itself supports
+  // a favorable move. No fixed percentage is imposed on that measured target.
   // The configured impulse threshold still controls phase transitions, but it
   // cannot stretch the displayed target beyond measured market structure.
   const thresholdPct = measuredBaseMovePct;
-  if (thresholdPct < 5) return null;
+  if (thresholdPct <= 0) return null;
   const targetPrice = direction === 'LONG'
     ? entryPrice * (1 + thresholdPct / 100)
     : entryPrice * (1 - thresholdPct / 100);`,'MEASURED_BASE_TARGET');
- source=replaceOnce(source,`    target_basis: 'PRECOMMITTED_MULTI_WAVE_IMPULSE_THRESHOLD',`,`    target_basis: 'PRECOMMITTED_BASE_MEASURED_MOVE_AT_LEAST_5_PERCENT',`,'MEASURED_BASE_TARGET_BASIS');
+ source=replaceOnce(source,`    target_basis: 'PRECOMMITTED_MULTI_WAVE_IMPULSE_THRESHOLD',`,`    target_basis: 'PRECOMMITTED_BASE_MEASURED_FAVORABLE_MOVE',`,'MEASURED_BASE_TARGET_BASIS');
  fs.writeFileSync(file,source);
 
  const decisionFile=path.join(runtime,'src/final-decision-integration-engine.mjs');
@@ -75,7 +75,7 @@ export function applyRuntimePolicyPatches(runtime){
  ];
  for(const [before,after,label] of lineageReplacements)decision=replaceOnce(decision,before,after,label);
  fs.writeFileSync(decisionFile,decision);
- return {status:'CLOSED',patched:['src/multi-wave-campaign-engine.mjs','src/final-decision-integration-engine.mjs'],minimum_reportable_move_pct:5,target_basis:'PRECOMMITTED_MEASURED_BASE',persistence_timeline:'DECISION_THEN_EXACT_D1_ACK'};
+ return {status:'CLOSED',patched:['src/multi-wave-campaign-engine.mjs','src/final-decision-integration-engine.mjs'],minimum_reportable_move_pct:null,target_basis:'PRECOMMITTED_MEASURED_BASE_NO_FIXED_MINIMUM',persistence_timeline:'DECISION_THEN_EXACT_D1_ACK'};
 }
 
 export default{applyRuntimePolicyPatches};

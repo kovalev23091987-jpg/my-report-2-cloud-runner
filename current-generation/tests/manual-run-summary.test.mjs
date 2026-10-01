@@ -15,7 +15,7 @@ test('rejected run has a ready Russian report without technical diagnostics',()=
  assert.doesNotMatch(text,/GitHub|CLOSED|HTX Futures|DEGRADED|источник|запуск|364|72 из 72/u);
 });
 
-test('watch is presented only with a complete 5 percent plan',()=>{
+test('watch is presented with a favorable measured target without a fixed percentage',()=>{
  const watch={...rejected,contract:'QNT-USDT',direction:'LONG',canonical_state:'OBSERVE',canonical:{
   status:'CLOSED',state:'OBSERVE',direction:'LONG',scores:{coin_interest_0_100:73},
   entry:{min_price:100},trigger:{value:100},invalidation:{price:97},targets:[{price:106}],
@@ -26,8 +26,10 @@ test('watch is presented only with a complete 5 percent plan',()=>{
  assert.match(text,/Отмена идеи: цена ниже 97 USDT/u);
  assert.match(text,/Первая цель: 106 USDT/u);
  assert.doesNotMatch(text,/Действие сейчас: не входить/u);
- const unproven=structuredClone(watch);unproven.canonical.targets[0].price=102;
- assert.doesNotMatch(formatManualRunSummary({status:'CLOSED',candidates:[unproven],generated_at}),/Наблюдение/u);
+ const smaller=structuredClone(watch);smaller.canonical.targets[0].price=102;
+ assert.match(formatManualRunSummary({status:'CLOSED',candidates:[smaller],generated_at}),/Наблюдение[\s\S]*Первая цель: 102 USDT/u);
+ const pending=structuredClone(watch);pending.canonical.targets=[];
+ assert.match(formatManualRunSummary({status:'CLOSED',candidates:[pending],generated_at}),/Наблюдение[\s\S]*Первая цель: пока не подтверждена/u);
  const expired=structuredClone(watch);expired.valid_until_ts=Date.parse(generated_at)-1000;
  assert.doesNotMatch(formatManualRunSummary({status:'CLOSED',candidates:[expired],generated_at}),/Наблюдение/u);
 });

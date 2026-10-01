@@ -270,7 +270,7 @@ try{
     const direction=text(row.direction).toUpperCase(),earlyDirection=text(source?.direction_hint||source?.direction_state).toUpperCase();
     return Boolean(source)&&(/LONG|SHORT/.test(earlyDirection))&&(!direction||earlyDirection.includes(direction));
   }).length;
-  const policy={threshold_70_unchanged:true,minimum_move_5pct_unchanged:true,external_format_changed:false,working_telegram_used:false,working_database_written:false};
+  const policy={single_early_score_threshold_70:true,fixed_minimum_move_removed:true,confirmed_entry_still_requires_favorable_target:true,early_target_may_be_pending:true,new_wave_after_six_hour_pause:true,same_wave_dedup_retained:true,external_format_changed:false,working_telegram_used:false,working_database_written:false};
   const checks={worker_success:worker.exit_code===0,full_scan:universe>0&&scanned===universe,d1_read_cap:reads<=34000,d1_write_cap:writes<=560,d1_unknown_ops_zero:unknown===0,technical_telegram_attempts_zero:worker.telegram.technical_attempts===0,duplicate_delivery_attempts_zero:duplicateHashes===0,deep_candidate_present:deepCount>0,correct_rejection_or_natural_dispatch:decisions.rows.length>0||publications.rows.length>0||worker.telegram.trade_attempts>0};
   const naturalCandidateReachedTestSender=worker.telegram.trade_attempts>0;
   const exactCloudflareD1=isolationBackend==='CLOUDFLARE_D1_DISPOSABLE';

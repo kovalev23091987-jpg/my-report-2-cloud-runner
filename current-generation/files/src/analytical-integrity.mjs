@@ -40,9 +40,8 @@ export function evaluateTargetProof({level_type,level_price,current_price,direct
   if(level_type==='SCENARIO_GEOMETRY')return {status:'RESEARCH_ONLY',minimum_move_proven:false,factual_cluster:false,measured_notional:null};
   if(fresh_anchor!==true)return {status:'WATCH_INTERNAL',reason:'FRESH_PROSPECTIVE_ANCHOR_REQUIRED',publishable:false};
   if(identity_ok!==true||fresh_reference!==true||path_clear!==true)return {status:'NOT_CLOSED',reason:'TARGET_PATH_OR_IDENTITY_NOT_CLOSED'};
-  if(finite(nearest_obstacle_move_pct)!==null&&nearest_obstacle_move_pct<5)return {status:'NOT_CLOSED',reason:'NEAREST_CONFIRMED_OBSTACLE_BELOW_5PCT'};
-  if(finite(gross_move_pct)<5)return {status:'WATCH_INTERNAL',reason:'GROSS_REMAINING_MOVE_BELOW_5PCT',publishable:false};
-  return {status:'CLOSED',level_type,level_price,current_price,direction,minimum_move_proven:true,publishable:true};
+  if(finite(gross_move_pct)===null||gross_move_pct<=0)return {status:'WATCH_INTERNAL',reason:'FAVORABLE_REMAINING_MOVE_NOT_PROVEN',publishable:false};
+  return {status:'CLOSED',level_type,level_price,current_price,direction,favorable_move_proven:true,nearest_obstacle_move_pct:finite(nearest_obstacle_move_pct),publishable:true};
 }
 
 export function calculateNetScenario({direction,entry,target,invalidation,spread_pct=0,slippage_pct=0,fees_pct=0,funding_pct=null,max_hold_hours=24}={}){

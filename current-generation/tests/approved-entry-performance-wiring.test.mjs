@@ -7,7 +7,7 @@ test('only actionable approved entries enter factual 1 4 12 24 hour statistics',
  const cohort=fs.readFileSync(new URL('../files/src/prospective-delivery-cohort.mjs',import.meta.url),'utf8');
  assert.match(sidecar,/p\.lifecycle_event='ENTRY' AND p\.actionability_status='ACTIONABLE'/);
  assert.match(sidecar,/\['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'\]/);
- assert.match(sidecar,/remaining<5-1e-7/);
+ assert.match(sidecar,/remaining<=0/);
  assert.match(sidecar,/const HORIZONS = Object\.freeze\(\[1, 4, 12, 24\]\)/);
  assert.match(sidecar,/target_touched/);
  assert.match(sidecar,/invalidation_touched/);

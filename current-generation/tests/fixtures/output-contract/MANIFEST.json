@@ -8,8 +8,8 @@
     "current-generation/files/src/canonical-display.mjs": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
-    "current-generation/files/src/canonical-publication.mjs": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074"
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "81fae20fa789d37431a80051365dc844442cef933abfa27e0e7277748a44059f",
+    "current-generation/files/src/canonical-publication.mjs": "6eed73583edd255ac928cb2377cb6b04279a5a41c39900aeb95fd1cdc900127a"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -126,6 +126,42 @@
         }
       },
       "worker_sha256": "38e45208b75a064ada89f0a90c4bdce393497319a709e35c5f94717cc0ebd3e3"
+    },
+    {
+      "date": "2026-10-01",
+      "scope": "OWNER_REQUESTED_REMOVE_FIXED_FIVE_PERCENT_AND_SURFACE_EARLY_OBSERVATIONS",
+      "reason": "Remove the fixed five-percent reportability barrier, keep favorable factual targets for WAIT and ENTRY, allow OBSERVE with score 70 plus exact trigger, cancellation, HTX execution truth and independent fresh evidence. Existing frozen outputs for identical prior inputs remain byte-for-byte unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
+          "after": "81fae20fa789d37431a80051365dc844442cef933abfa27e0e7277748a44059f"
+        },
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074",
+          "after": "6eed73583edd255ac928cb2377cb6b04279a5a41c39900aeb95fd1cdc900127a"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "telegram_layout_changed": false,
+      "authorization": "Explicit owner instructions: Убирай 5 процентов; Хорошо меняй и внедряй"
+    },
+    {
+      "date": "2026-10-01",
+      "scope": "OWNER_REQUESTED_SOURCE_CONFIRMATION_BINDING_AND_NEW_WAVE_REENTRY",
+      "reason": "Bind source confirmations to the exact contract and observation clock, and open a new wave after a six-hour absence while retaining same-wave duplicate protection.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "c63ea5d680d9f0d8882c3e30f37903b5b762c533d07645b4a042e418a198cecd",
+          "after": "81fae20fa789d37431a80051365dc844442cef933abfa27e0e7277748a44059f"
+        },
+        "current-generation/files/src/v3-early-sidecar.mjs": {
+          "after": "8f9ca96fc31887044539ad8512e57e9e95c4b74304172df990d3ff1be2728c8b"
+        }
+      },
+      "same_wave_dedup_retained": true,
+      "telegram_layout_changed": false,
+      "authorization": "Explicit owner instructions: исправить передачу подтверждений источников; разрешить повторную отправку новой волны после паузы; Хорошо меняй и внедряй"
     }
   ]
 }

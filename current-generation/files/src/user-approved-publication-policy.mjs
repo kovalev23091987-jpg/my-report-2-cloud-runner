@@ -1,7 +1,7 @@
 import {digest} from './upstream-proof-utils.mjs';
 
-export const USER_APPROVED_PUBLICATION_POLICY_VERSION='user-approved-publication-policy-v1-20260927';
-export const MINIMUM_REPORTABLE_MOVE_PCT=5;
+export const USER_APPROVED_PUBLICATION_POLICY_VERSION='user-approved-publication-policy-v2-no-fixed-minimum-20261001';
+export const MINIMUM_REPORTABLE_MOVE_PCT=null;
 export const ENTRY_BAND_BPS=50;
 export const MAX_HOLDING_HOURS=24;
 export const CONSERVATIVE_TAKER_FEE_RATE=0.001;
@@ -60,7 +60,7 @@ export function buildApprovedHoldingPlan({decision_summary:decision,observed_ts=
  return sealed({
   schema_version:'tz101-holding-plan-v1',status:'CLOSED',contract_code:contract,
   decision_id:decisionId,direction,source_kind:'OWNER_APPROVED_ANALYTICAL_POLICY',
-  source_receipt_id:'HOLDING:MAX_24H:MIN_MOVE_5PCT:20260927',source_ts:APPROVED_TS,
+  source_receipt_id:'HOLDING:MAX_24H:NO_FIXED_MIN_MOVE:20261001',source_ts:APPROVED_TS,
   entry_ts:entryTs,planned_exit_no_later_than_ts:entryTs+MAX_HOLDING_HOURS*60*60_000,
   maximum_holding_hours:MAX_HOLDING_HOURS,minimum_remaining_move_pct:MINIMUM_REPORTABLE_MOVE_PCT,
   conservative_funding_floor_pct:CONSERVATIVE_FUNDING_FLOOR_PCT,
