@@ -7445,6 +7445,11 @@ function buildBoundedDeepCheckPlan(
       ?.require_exact_contract ===
     true;
 
+  const bypassCooldown =
+    options
+      ?.bypass_cooldown ===
+    true;
+
   const cooldownSec =
     Math.min(
       86400,
@@ -7667,6 +7672,7 @@ function buildBoundedDeepCheckPlan(
     }
 
     const cooldownActive =
+      !bypassCooldown &&
       ageSec !== null &&
       ageSec <
         cooldownSec;
@@ -19518,6 +19524,9 @@ const __REPORT2_ORIGINAL_HANDLER = {
                 : fastMoveWatchCycle
                     ?.adaptive_cooldown_sec ??
                   1800,
+
+            bypass_cooldown:
+              String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL',
 
             lease_sec:
               600,
