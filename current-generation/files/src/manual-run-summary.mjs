@@ -39,7 +39,8 @@ export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
  return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
 }
 export function enforceManualBlockCoverage(output={}){
- if(!['manual','manual_recovery'].includes(output?.source)||!Array.isArray(output?.candidates)||!output.candidates.length)return output;
+ if(!['manual','manual_recovery'].includes(output?.source)||!Array.isArray(output?.candidates))return output;
+ if(!output.candidates.length)return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_17_BLOCKS_NOT_CONFIRMED',block_audit:{required_block_count:17,candidate_count:0,fully_checked_candidate_count:0,minimum_checked_block_count:0,all_candidates_fully_checked:false}};
  const audits=output.candidates.map(row=>row?.block_coverage||null);
  const fullyChecked=audits.filter(audit=>audit?.coverage_count===17&&audit?.checked_block_count===17&&audit?.all_blocks_checked===true).length;
  const checkedCounts=audits.map(audit=>Number(audit?.checked_block_count)).filter(Number.isFinite);

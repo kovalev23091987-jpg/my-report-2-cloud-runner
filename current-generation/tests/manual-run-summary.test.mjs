@@ -55,6 +55,14 @@ test('manual run fails closed when any candidate lacks a real 17 block check',()
  assert.match(formatManualRunSummary(checked),/12 из 17/u);
  assert.doesNotMatch(formatManualRunSummary(checked),/НЕ ПОКАЗЫВАТЬ/u);
 });
+test('empty manual run cannot claim a vacuous 17 of 17 check',()=>{
+ const checked=enforceManualBlockCoverage({status:'CLOSED_NO_CANONICAL_CANDIDATE',source:'manual',candidates:[],generated_at});
+ assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
+ assert.equal(checked.block_audit.candidate_count,0);
+ assert.equal(checked.block_audit.all_candidates_fully_checked,false);
+ assert.match(formatManualRunSummary(checked),/0 из 17/u);
+ assert.doesNotMatch(formatManualRunSummary(checked),/Проверка: 17 из 17/u);
+});
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
  const lines=formatStandaloneLiquidationSourceLines({independent_extensions:[context]});

@@ -49,6 +49,7 @@ test('full manual report reserves its deep check for a strict-17 registry asset'
  assert.match(worker,/MANUAL_STRICT17_AUDIT/u);
  assert.match(worker,/strict17_manual_audit:true/u);
  assert.match(worker,/require_exact_contract:true,required_contract:contract/u);
+ assert.match(worker,/REPORT2_MANUAL_MODE\|\|''\)\.toUpperCase\(\)==='FULL_MANUAL'\s*\n\s*\? 0/u);
 });
 
 test('N10 closes from completed technical inputs without requiring an entry signal',()=>{
