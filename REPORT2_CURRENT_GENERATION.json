@@ -26,5 +26,12 @@
   "missing_identity_key_or_budget_status_counts_as_checked": false,
   "discovery_direction_policy": "DISCOVERY_ONLY_NEVER_ENTRY",
   "deep_selection_policy": "COMMON_PRIORITY_QUEUE_NO_LIQUIDATION_MONOPOLY",
-  "technical_silence_policy": "PRESERVE_ORIGINAL_FAILURE_NEVER_HEALTHY_NO_IDEA"
+  "technical_silence_policy": "PRESERVE_ORIGINAL_FAILURE_NEVER_HEALTHY_NO_IDEA",
+  "liquidation_future_chain_version": "LIQUIDATION_FUTURE_CONNECTIONS_V9_20261001",
+  "liquidation_future_chain_required_in": ["MAIN_REPORT", "LIQUIDATION_ONLY"],
+  "liquidation_future_connection_count": 9,
+  "liquidation_future_connections": ["HTX_SOURCE_BACKED_MODEL", "HYPERLIQUID_NATIVE", "BYK_TRACKED_HL_BANDS", "LIGHTER_NATIVE", "GMX_NATIVE", "GTRADE_NATIVE", "BYKARANTELI_FUTURE_MAP", "COINLOBSTER_FUTURE_MODEL", "OXARCHIVE_HL_BUCKETS"],
+  "liquidation_future_policy": "HTX_SOURCE_MODEL_BASELINE_THEN_EXACT_NATIVE_AND_PROVIDER_CROSSCHECKS;ADAPTIVE_FAILOVER_WITHOUT_SUMMING_OVERLAP",
+  "liquidation_history_role": "SECONDARY_STATISTICS_ONLY_NEVER_CLOSES_FUTURE_MAP",
+  "liquidation_candidate_sources_not_enabled": ["COINGLASS_LIQUIDATION_MAP", "HYBLOCK_LIQUIDATION_LEVELS", "COINANK_LIQUIDATION_MAP"]
 }
