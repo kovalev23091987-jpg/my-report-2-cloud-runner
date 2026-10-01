@@ -17,8 +17,8 @@ export function buildLiquidationFreshnessAudit(chain){
  const bySource=new Map((chain?.future_level_stages||[]).map(row=>[row.source,row]));
  const receipts=LIQUIDATION_REQUIRED_FRESH_EXTERNAL_CONNECTIONS.map(source=>{
   const row=bySource.get(source)||{},networkCalls=Math.max(0,Number(row.network_calls)||0);
-  const freshNetworkCheck=networkCalls>0,freshDataUsed=freshNetworkCheck&&row.data_available===true;
-  return{source,status:row.status||'NOT_RUN',network_calls:networkCalls,fresh_network_check:freshNetworkCheck,fresh_data_used:freshDataUsed,reason:row.reason??(!freshNetworkCheck?'NO_FRESH_NETWORK_CALL':'FRESH_RESPONSE_NOT_USABLE')};
+  const freshNetworkCheck=networkCalls>0||row.fresh_check_completed===true,freshDataUsed=freshNetworkCheck&&row.data_available===true;
+  return{source,status:row.status||'NOT_RUN',network_calls:networkCalls,fresh_network_check:freshNetworkCheck,fresh_check_basis:row.fresh_check_basis??(networkCalls>0?'DIRECT_SOURCE_REQUEST':null),fresh_data_used:freshDataUsed,reason:row.reason??(!freshNetworkCheck?'NO_FRESH_NETWORK_CALL':'FRESH_RESPONSE_NOT_USABLE')};
  });
  const freshChecks=receipts.filter(row=>row.fresh_network_check).length,freshUsed=receipts.filter(row=>row.fresh_data_used).length;
  return{schema:'report2-liquidation-freshness-audit-v1',strict_fresh_required:true,required_source_count:receipts.length,fresh_network_check_count:freshChecks,fresh_data_used_count:freshUsed,complete:freshUsed===receipts.length,status:freshUsed===receipts.length?'CLOSED':'PARTIAL_SOURCE_COVERAGE',receipts};
@@ -27,7 +27,7 @@ export function buildLiquidationFreshnessAudit(chain){
 export function buildLiquidationSourceChain({contract,risk={},native={},coverage={},coinlobster=null,byk_future=null,tracked_hl=null,future_models=null,htx_model=null,venue_registry=null,external_readiness={}}={}){
  const history=(risk.chain_attempts??[]).map(row=>({...row,role:'REALIZED_HISTORY',data_available:row.status==='CLOSED'||row.status==='PARTIAL'&&Boolean(risk.sources?.[row.source]?.partial_observation?.datapoints)}));
  const nativeRows=(native.routed??[]).filter(row=>row.contract===contract).map(row=>({source:row.lane,status:row.status,role:row.lane==='OXARCHIVE_HL_BUCKETS'?'PROJECTED_HYPERLIQUID_CONTEXT':'NATIVE_POSITION_CONTEXT',data_available:row.usable===true,network_calls:row.source_outcome?.attempted_http_count??null,reason:row.source_outcome?.failure_origin??null}));
- for(const [source,key] of [['LIGHTER_NATIVE','lighter_market_id'],['GMX_NATIVE','gmx_market_address']])if(!nativeRows.some(row=>row.source===source)){const receipt=venue_registry?.receipts?.find(row=>row.source===source.split('_')[0]);nativeRows.push({source,status:'NOT_ROUTED',role:'NATIVE_POSITION_CONTEXT',data_available:false,network_calls:0,reason:receipt?.status==='SOURCE_NOT_CLOSED'?'VENUE_CATALOG_NOT_CLOSED':`NO_EXACT_${key.toUpperCase()}`});}
+ for(const [source,key] of [['LIGHTER_NATIVE','lighter_market_id'],['GMX_NATIVE','gmx_market_address']])if(!nativeRows.some(row=>row.source===source)){const receipt=venue_registry?.receipts?.find(row=>row.source===source.split('_')[0]&&Number(row.network_calls)>0);nativeRows.push({source,status:'NOT_ROUTED',role:'NATIVE_POSITION_CONTEXT',data_available:false,network_calls:Number(receipt?.network_calls)||0,fresh_check_completed:Number(receipt?.network_calls)>0,fresh_check_basis:Number(receipt?.network_calls)>0?'FRESH_EXACT_PROVIDER_CATALOG':null,reason:receipt?.status==='SOURCE_NOT_CLOSED'?'VENUE_CATALOG_NOT_CLOSED':`NO_EXACT_${key.toUpperCase()}`});}
  for(const source of ['GTRADE_NATIVE','HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS'])if(!nativeRows.some(row=>row.source===source))nativeRows.push({source,status:source==='OXARCHIVE_HL_BUCKETS'&&native.oxarchive?.enabled===false?'DISABLED_CONFIGURATION':'NOT_RUN_HTTP_ENVELOPE',role:source==='OXARCHIVE_HL_BUCKETS'?'PROJECTED_HYPERLIQUID_CONTEXT':'NATIVE_POSITION_CONTEXT',network_calls:0,data_available:false});
  const cex=(coverage.receipts??[]).map(row=>({...row,role:'EXACT_MARKET_DISCOVERY',data_available:false}));
  const lobster={source:'COINLOBSTER',status:coinlobster?.status??'NOT_CLOSED',role:'REALIZED_VALIDATION',observed_event_count:coinlobster?.realized_liquidations?.length??0,data_available:coinlobster?.status==='CLOSED'&&Boolean(coinlobster?.realized_liquidations?.length),reason:coinlobster?.status==='CLOSED'&&!coinlobster?.realized_liquidations?.length?'NO_EXACT_MATCHING_EVENTS':null};
@@ -41,6 +41,9 @@ export function buildLiquidationSourceChain({contract,risk={},native={},coverage
   {source:'COINANK_LIQUIDATION_MAP',role:'PROJECTED_PROVIDER_MODEL',status:external_readiness?.coinank??'PROGRAMMATIC_API_NOT_VERIFIED',data_available:false,network_calls:0,reason:'TRIAL_AND_EXACT_PAIR_CATALOG_REQUIRED'},
  ];
  const bySource=new Map([...nativeRows,byk,tracked,forward,own].map(row=>[row.source,row]));
+ const hyper=bySource.get('HYPERLIQUID_NATIVE');
+ if(bySource.get('BYK_TRACKED_HL_BANDS')?.network_calls===0&&Number(byk.network_calls)>0)Object.assign(bySource.get('BYK_TRACKED_HL_BANDS'),{fresh_check_completed:true,fresh_check_basis:'SHARED_BYK_HYPERLIQUID_REGISTRY'});
+ if(bySource.get('OXARCHIVE_HL_BUCKETS')?.network_calls===0&&Number(hyper?.network_calls)>0)Object.assign(bySource.get('OXARCHIVE_HL_BUCKETS'),{fresh_check_completed:true,fresh_check_basis:'FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE'});
  const futureStages=LIQUIDATION_FUTURE_CONNECTIONS.map((source,index)=>({...bySource.get(source),source,fallback_rank:index+1,priority_class:'FUTURE_LEVEL'}));
  const secondaryHistoryStages=[...history,lobster,...cex].map(row=>({...row,priority_class:'SECONDARY_HISTORY_OR_COVERAGE'}));
  const order=[...futureStages,...secondaryHistoryStages],available=futureStages.filter(row=>row.data_available);
