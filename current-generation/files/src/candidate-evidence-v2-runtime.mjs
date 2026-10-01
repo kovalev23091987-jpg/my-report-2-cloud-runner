@@ -138,20 +138,35 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
  const result={};
  for(const block of Object.keys(BLOCKS)){
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
-  const usable=rows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable&&Number(row.coverage_fraction)>0).length;
+  const evaluated=rows.map(row=>({row,validation:validateEvidenceV2(row,{decision_ts})}));
+  const usable=evaluated.filter(({row,validation})=>validation.usable&&Number(row.coverage_fraction)>0).length;
+  const rejectionReasons=evaluated.filter(({row,validation})=>!validation.usable||!(Number(row.coverage_fraction)>0)).reduce((acc,{row,validation})=>{
+   const reason=!validation.usable?validation.status:'ZERO_DECISION_COVERAGE';acc[reason]=(acc[reason]||0)+1;return acc;
+  },{});
   const requirement=BLOCK_SOURCE_REQUIREMENTS[block]||{all:[],any:[],supplemental:[]};
+  const policy=BLOCKS[block]||{};
   const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
   const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0}];}));
   const proof=strict_fresh?proofForFreshRequirement(requirement,sources):proofForRequirement(requirement,sources),checked=proof.checked;
+  const decisionPath=!checked?'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED':usable>0?(Number(policy.cap)>0?'ADMITTED_SCORE_OR_RISK_INPUT':'ADMITTED_CONTROL_CONTEXT'):rows.length?'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE':'CHECKED_NEUTRAL_NO_EVENT';
   result[block]={
    status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
    checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
+   decision_consumer:policy.consumer||null,maximum_score_points:Number(policy.cap)||0,decision_path:decisionPath,evidence_rejection_reasons:rejectionReasons,
    required_all:proof.required_all,required_any:proof.required_any,missing_required:proof.missing_required,
   };
  }
  const values=Object.values(result);
- return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
+ return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,
+  checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,
+  score_or_risk_input_block_count:values.filter(row=>row.decision_path==='ADMITTED_SCORE_OR_RISK_INPUT').length,
+  admitted_control_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_CONTROL_CONTEXT').length,
+  observed_context_not_score_eligible_block_count:values.filter(row=>row.decision_path==='OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE').length,
+  checked_neutral_no_event_block_count:values.filter(row=>row.decision_path==='CHECKED_NEUTRAL_NO_EVENT').length,
+  blocked_required_source_block_count:values.filter(row=>row.decision_path==='BLOCKED_REQUIRED_SOURCE_NOT_CHECKED').length,
+  all_blocks_decision_accounted:values.every(row=>Boolean(row.decision_consumer)&&Boolean(row.decision_path)),
+  all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
 }
 
 export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={}}={}){
