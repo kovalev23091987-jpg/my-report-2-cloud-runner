@@ -14,6 +14,11 @@ test('real rejected BTW manual output retains its future-liquidation context wit
  assert.doesNotMatch(text,/Уровень входа:|Первая цель:/u);
 });
 
+test('a durably recovered manual command retains the same current-run liquidation block',()=>{
+ const recovered={...captured,source:'manual_recovery'};
+ assert.match(formatManualRunSummary(recovered),/ЛИКВИДАЦИОННЫЙ БЛОК/u);
+});
+
 test('manual context requires the exact current run and cannot borrow a scheduled or foreign result',()=>{
  for(const mutate of [d=>d.source='schedule',d=>d.run_id='OTHER_RUN',d=>d.candidates[0].run_id='OTHER_RUN',d=>d.candidates[0].canonical.run_id='OTHER_RUN',d=>d.candidates[0].canonical.status='NOT_CLOSED',d=>d.candidates[0].contract='BTC-USDT']){
   const d=structuredClone(captured);mutate(d);assert.doesNotMatch(formatManualRunSummary(d),/ЛИКВИДАЦИОННЫЙ БЛОК/u);
