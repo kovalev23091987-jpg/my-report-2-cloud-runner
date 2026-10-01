@@ -1,0 +1,203 @@
+{
+  "schema": "my-report-2-canonical-run-output-v1",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "head": "02708a9ae09ddaad2c4f30151d3b1e628f1455d8",
+  "source": "manual",
+  "run_id": "1790814388138-1790814394409",
+  "status": "CLOSED",
+  "reason": null,
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "candidates": [
+    {
+      "publication_id": "PUB:8c5f4b668bcea8bed142a7224961e699d313383e",
+      "contract": "BTW-USDT",
+      "direction": "SHORT",
+      "run_id": "1790814388138-1790814394409",
+      "snapshot_id": "S392:BTW-USDT:1790814434367",
+      "wave_id": "EDW:BTW-USDT:1790074622613:G1",
+      "observed_ts": 1790814434367,
+      "valid_until_ts": null,
+      "lifecycle_event": null,
+      "canonical_state": "REJECTED",
+      "actionability_status": "UNASSESSED",
+      "actionability_reason": null,
+      "manual_text": null,
+      "canonical": {
+        "status": "CLOSED",
+        "state": "REJECTED",
+        "direction": "SHORT",
+        "scores": {
+          "overall_0_100": null,
+          "coin_interest_0_100": 82,
+          "entry_readiness_0_100": null,
+          "is_probability": false
+        },
+        "reasons": [
+          {
+            "label": "Качество раннего сигнала",
+            "value": 82,
+            "unit": "из 100",
+            "source": "V3 early"
+          },
+          {
+            "label": "Закрытые минутные свечи",
+            "value": 15,
+            "unit": "1м",
+            "source": "HTX"
+          }
+        ],
+        "entry": null,
+        "trigger": null,
+        "invalidation": null,
+        "targets": [],
+        "liquidations": {
+          "version": "liquidation-zones-v4-source-backed-future-volumes-20261001",
+          "pump": {
+            "status": "CLOSED",
+            "rolling_24h_change_pct": -5.033172647741468,
+            "absolute_move_pct": 5.033172647741468,
+            "is_pump": true,
+            "is_strong_move": true,
+            "early_anomaly": false,
+            "threshold_pct": 5,
+            "inclusive": true,
+            "upper_ceiling_pct": null
+          },
+          "current_price": 1.3319215,
+          "priority_reason": "ABS_MOVE_AT_LEAST_5_PERCENT",
+          "above": [],
+          "below": [],
+          "future_only": true,
+          "future_levels_required": true,
+          "future_levels_status": "NOT_AVAILABLE",
+          "distance_cap_pct": null,
+          "minimum_distance_pct": 0,
+          "max_per_side": 6,
+          "calculated_fallback_enabled": false,
+          "no_invented_exact_amounts": true,
+          "notional_summed_across_providers": false,
+          "volume_tiers": {
+            "small_below": 10000,
+            "medium_below": 100000,
+            "large_below": 1000000,
+            "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+            "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+          },
+          "realized_events_excluded": 0,
+          "status": "NOT_CLOSED",
+          "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+          "all_zones": [],
+          "provider_zone_count": 0,
+          "displayed_zone_count": 0,
+          "omitted_zone_count": 0,
+          "source_receipts": [],
+          "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+          "coverage_status": "FUTURE_MAP_NOT_AVAILABLE",
+          "above_status": "NOT_CLOSED",
+          "below_status": "NOT_CLOSED",
+          "future_hint": {
+            "source": "COINLOBSTER_FUTURE_HINT",
+            "contract": "BTW-USDT",
+            "role": "FUTURE_MODEL_DIRECTION_ONLY",
+            "status": "NOT_REQUESTED",
+            "data_available": false,
+            "network_calls": 0
+          },
+          "future_source_status": {
+            "source": "BYKARANTELI_FUTURE_MAP",
+            "status": "EXACT_SYMBOL_UNSUPPORTED",
+            "role": "FUTURE_MODELED_LEVELS",
+            "data_available": false,
+            "network_calls": 1,
+            "tracked_hl": {
+              "source": "BYK_TRACKED_HL_BANDS",
+              "contract": "BTW-USDT",
+              "run_id": "1790814388138-1790814394409",
+              "role": "NATIVE_POSITION_CONTEXT",
+              "upstream_family": "HYPERLIQUID",
+              "independent_of_other_hl_sources": false,
+              "entry_eligible": false,
+              "score_eligible": false,
+              "status": "NO_EXACT_TRACKED_MARKET_REFERENCE",
+              "data_available": false,
+              "network_calls": 1,
+              "http_status": 200,
+              "receipt_sha256": "31d62f96769ba704910f0298c0ab5ff2a9d3a87e73c8475ae7ccecda5fd17ed3"
+            }
+          }
+        },
+        "data_quality": {
+          "classification": "PARTIAL",
+          "sufficient": false,
+          "components": {
+            "futures_snapshot": {
+              "execution_status": "FULFILLED",
+              "sufficiency": "SUFFICIENT",
+              "gaps": [],
+              "factual_order_flow_window": {
+                "schema": "VERIFIED_HTX_FUTURES_FLOW_BINDING_V1",
+                "contract": "BTW-USDT",
+                "window": "15m",
+                "window_start_ts": 1790813460000,
+                "window_end_ts": 1790814360000,
+                "raw_trade_count": 27,
+                "factual_1m_trade_count": 27,
+                "source": "HTX official public API",
+                "market": "HTX USDT-M Futures",
+                "available_ts": 1790814412192,
+                "basis": "EXISTING_TRAJECTORY_EXACT_FACTUAL_COUNT_AND_UNIQUE_PAYLOAD",
+                "full_24h_coverage_claimed": false,
+                "additional_http_requests": 0,
+                "additional_directional_votes": 0
+              }
+            },
+            "spot_snapshot": {
+              "execution_status": "FULFILLED",
+              "sufficiency": "SUFFICIENT",
+              "gaps": []
+            },
+            "futures_trajectory": {
+              "execution_status": "FULFILLED",
+              "sufficiency": "PARTIAL",
+              "gaps": [
+                "flow_24h"
+              ]
+            },
+            "stage0_history": {
+              "execution_status": "FULFILLED",
+              "sufficiency": "SUFFICIENT",
+              "gaps": []
+            }
+          },
+          "gaps": [
+            "futures_trajectory.flow_24h"
+          ],
+          "unavailable_by_design": [
+            "futures_trajectory.coverage.oi_5m",
+            "futures_trajectory.coverage.oi_15m"
+          ],
+          "history_observed": {
+            "expected_5m_points": 72,
+            "received_points": 72,
+            "approximate_5m_coverage_pct": 100
+          },
+          "decision_effect": "NONE_EVIDENCE_CLASSIFICATION_ONLY"
+        },
+        "changes_from_previous": [
+          "С 2026-09-30T23:49:47.515Z по 2026-10-01T00:26:47.233Z: состав свежих подтверждённых фактов изменился — добавлено 4, перестало быть текущими 16."
+        ],
+        "observed_ts": 1790814434367,
+        "snapshot_id": "S392:BTW-USDT:1790814434367",
+        "run_id": "1790814388138-1790814394409",
+        "analytical_fingerprint": "7c2dc94b6e6c72ede959576076b27c4161eb553a5d8a8884a7b898997d48128b"
+      }
+    }
+  ],
+  "generated_at": "2026-10-01T00:27:21.490Z",
+  "secrets_included": false,
+  "alternative_manual_recalculation": false,
+  "report_text": "МОЙ ОТЧЁТ 2\n1 октября в 03:27 МСК\n\nЛОНГ\nПодтверждённых идей сейчас нет.\n\nШОРТ\nПодтверждённых идей сейчас нет.\n\nBTW-USDT на продажу получила раннюю оценку интереса 82 из 100, но подтверждающая проверка не сформировала полный план входа. Идея отклонена.\nДействие сейчас: не входить."
+}

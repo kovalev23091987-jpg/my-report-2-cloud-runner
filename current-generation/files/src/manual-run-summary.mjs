@@ -1,4 +1,5 @@
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
+import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
 export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v1-20260929';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
@@ -35,7 +36,7 @@ export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
  if(candidate_count===0&&Number(cron?.v3_live_deep_check_count)>0)return {status:'PARTIAL_DATA_UNAVAILABLE',reason:'CANONICAL_CANDIDATE_NOT_PERSISTED'};
  return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
 }
-export function formatManualRunSummary({status,candidates=[],generated_at}={}){
+export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id}={}){
  if(status==='PARTIAL_DATA_UNAVAILABLE')return 'МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена. Сделать полный вывод о наличии идей сейчас нельзя.\n\nДействие сейчас: не входить, дождаться следующей проверки.';
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
@@ -55,6 +56,24 @@ export function formatManualRunSummary({status,candidates=[],generated_at}={}){
    lines.push(`${row.contract} ${row.direction==='LONG'?'на покупку':row.direction==='SHORT'?'на продажу':''}${score!==null?` получила раннюю оценку интереса ${Math.round(score)} из 100,`:''} но подтверждающая проверка не сформировала полный план входа. Идея отклонена.`);
   }
   lines.push('Действие сейчас: не входить.');
+ }
+ if(source==='manual'&&typeof run_id==='string'&&run_id){
+  const context=candidates.filter(row=>contract(row?.contract)&&!['BTC-USDT','ETH-USDT'].includes(row.contract)&&
+   row.run_id===run_id&&row.canonical?.run_id===run_id&&row.canonical?.status==='CLOSED'&&
+   row.canonical.liquidations?.future_only===true).slice(0,6);
+  if(context.length){
+   lines.push('','ЛИКВИДАЦИОННЫЙ БЛОК','');
+   for(const row of context){
+    const liq=row.canonical.liquidations,px=price(liq.current_price);
+    lines.push(`Углублённая проверка: ${row.contract}.`);
+    if(px)lines.push(`Цена HTX в снимке: ${px} USDT.`);
+    lines.push(...displayFutureLiquidations(liq),...displayCoinLobsterHint(liq.future_hint));
+    if(liq.future_levels_status==='NOT_AVAILABLE')lines.push('Будущие уровни и объёмы не получены; это отсутствие данных, а не нулевые ликвидации.');
+    if(liq.future_source_status?.tracked_hl?.status==='NO_EXACT_TRACKED_MARKET_REFERENCE')
+     lines.push('Hyperliquid: опорная цена и отслеживаемые позиции для этой монеты не получены.');
+   }
+   lines.push('Уровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.');
+  }
  }
  return lines.join('\n').trim();
 }
