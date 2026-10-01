@@ -66,6 +66,11 @@ test('empty manual run cannot claim a vacuous 15 of 15 check',()=>{
  assert.match(formatManualRunSummary(checked),/0 из 15/u);
  assert.doesNotMatch(formatManualRunSummary(checked),/Проверка дополнительных блоков: 15 из 15/u);
 });
+test('workflow dispatch is treated as a manual owner run and fails closed on partial coverage',()=>{
+ const checked=enforceManualBlockCoverage({status:'CLOSED',source:'workflow_dispatch',candidates:[{block_coverage:{coverage_count:15,checked_block_count:14,all_blocks_checked:false}}],generated_at});
+ assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
+ assert.match(formatManualRunSummary(checked),/14 из 15/u);
+});
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
  const lines=formatStandaloneLiquidationSourceLines({independent_extensions:[context]});

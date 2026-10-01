@@ -165,7 +165,7 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
-      REPORT2_RUN_SOURCE: ${{ github.event_name == 'push' && 'manual' || github.event_name }}
+      REPORT2_RUN_SOURCE: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.coin_contract || inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}

@@ -40,7 +40,7 @@ export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
  return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
 }
 export function enforceManualBlockCoverage(output={}){
- if(!['manual','manual_recovery'].includes(output?.source)||!Array.isArray(output?.candidates))return output;
+ if(!['manual','manual_recovery','workflow_dispatch'].includes(output?.source)||!Array.isArray(output?.candidates))return output;
  if(!output.candidates.length)return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_15_BLOCKS_NOT_CONFIRMED',block_audit:{required_block_count:15,candidate_count:0,fully_checked_candidate_count:0,minimum_checked_block_count:0,all_candidates_fully_checked:false}};
  const audits=output.candidates.map(row=>row?.block_coverage||null);
  const fullyChecked=audits.filter(audit=>audit?.coverage_count===15&&audit?.checked_block_count===15&&audit?.all_blocks_checked===true).length;
@@ -68,7 +68,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
- const auditLines=['manual','manual_recovery'].includes(source)?[
+ const auditLines=['manual','manual_recovery','workflow_dispatch'].includes(source)?[
   `Проверка дополнительных блоков: 15 из 15; обязательных сбоев: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
   `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
  ]:[];
@@ -89,7 +89,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
   }
   lines.push('Действие сейчас: не входить.');
  }
- if(['manual','manual_recovery'].includes(source)&&typeof run_id==='string'&&run_id){
+ if(['manual','manual_recovery','workflow_dispatch'].includes(source)&&typeof run_id==='string'&&run_id){
   const context=candidates.filter(row=>contract(row?.contract)&&!['BTC-USDT','ETH-USDT'].includes(row.contract)&&
    row.run_id===run_id&&row.canonical?.run_id===run_id&&row.canonical?.status==='CLOSED'&&
    row.canonical.liquidations?.future_only===true).slice(0,6);

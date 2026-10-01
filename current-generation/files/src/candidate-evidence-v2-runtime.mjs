@@ -52,7 +52,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX']},
  N03:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
- N05:{all:['NANSEN_FLOWS'],supplemental:['CHAIN_EVENTS']},
+ N05:{any:['NANSEN_FLOWS','CHAIN_EVENTS'],supplemental:[]},
  N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N07:{all:['OFFICIAL_EVENTS'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
@@ -155,9 +155,10 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
   const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0}];}));
   const proof=strict_fresh?proofForFreshRequirement(requirement,sources):proofForRequirement(requirement,sources),checked=proof.checked;
-  const decisionPath=!checked?'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED':usable>0?'ADMITTED_SCORE_OR_RISK_INPUT':controlConsumers.has(policy.consumer)?'ADMITTED_CONTROL_CONTEXT':rows.length?'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE':'CHECKED_NEUTRAL_NO_EVENT';
+  const validNeutral=rows.length>0&&evaluated.every(({validation})=>validation.usable)&&evaluated.every(({row})=>Number(row.coverage_fraction)===0);
+  const decisionPath=!checked?'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED':usable>0?'ADMITTED_SCORE_OR_RISK_INPUT':controlConsumers.has(policy.consumer)?'ADMITTED_CONTROL_CONTEXT':validNeutral?'ADMITTED_NEUTRAL_CONTEXT':rows.length?'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE':'CHECKED_NEUTRAL_NO_EVENT';
   result[block]={
-   status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
+   status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':validNeutral?'CHECKED_NEUTRAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
    checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
    decision_consumer:policy.consumer||null,maximum_score_points:Number(policy.cap)||0,decision_path:decisionPath,evidence_rejection_reasons:rejectionReasons,
    required_all:proof.required_all,required_any:proof.required_any,missing_required:proof.missing_required,
@@ -168,6 +169,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,
   score_or_risk_input_block_count:values.filter(row=>row.decision_path==='ADMITTED_SCORE_OR_RISK_INPUT').length,
   admitted_control_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_CONTROL_CONTEXT').length,
+  admitted_neutral_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_NEUTRAL_CONTEXT').length,
   observed_context_not_score_eligible_block_count:values.filter(row=>row.decision_path==='OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE').length,
   checked_neutral_no_event_block_count:values.filter(row=>row.decision_path==='CHECKED_NEUTRAL_NO_EVENT').length,
   blocked_required_source_block_count:values.filter(row=>row.decision_path==='BLOCKED_REQUIRED_SOURCE_NOT_CHECKED').length,
