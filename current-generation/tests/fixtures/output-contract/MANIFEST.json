@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "403b8c34833ee5e5d53fbf30540f7abe33d25fb79b5af4970889d31b236180d8",
     "current-generation/files/src/canonical-publication.mjs": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074"
   },
   "fixtures": {
@@ -126,6 +126,21 @@
         }
       },
       "worker_sha256": "38e45208b75a064ada89f0a90c4bdce393497319a709e35c5f94717cc0ebd3e3"
+    },
+    {
+      "date": "2026-10-01",
+      "scope": "SOURCE_RECEIPT_TO_CANONICAL_BINDING_ON_RELEASED_FUTURE_MAP_RUNTIME",
+      "reason": "Pass the existing sealed Full Evidence proof into the canonical adapter while preserving the released future-liquidation maps, strategy, thresholds and Telegram presentation.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
+          "after": "403b8c34833ee5e5d53fbf30540f7abe33d25fb79b5af4970889d31b236180d8"
+        }
+      },
+      "worker_sha256": "664bcb6236f23d950bb172c114200ee92334e1ed444a27553adeb150d5b1bc87",
+      "strategy_weights_changed": false,
+      "entry_rules_changed": false,
+      "telegram_presentation_changed": false
     }
   ]
 }

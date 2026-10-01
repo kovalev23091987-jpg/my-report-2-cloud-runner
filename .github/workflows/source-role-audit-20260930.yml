@@ -1,9 +1,10 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
+    branches: [repair/factual-retest-observe-20260930, autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
     paths:
       - current-generation/**
+      - audit-fixes/factual-retest-20260930/**
       - runner/current-runtime-binding.mjs
       - .github/workflows/early-evidence-isolated-acceptance.yml
       - runner/r8-20-prospective-validation-sidecar.mjs
@@ -62,6 +63,15 @@ jobs:
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Verify source binding without changing strategy
+        if: github.ref == 'refs/heads/repair/factual-retest-observe-20260930'
+        run: node current-generation/tests/full-evidence-source-binding.mjs runtime > audit-output/full-evidence-source-binding.json
+      - name: Replay exact historical publications through the bound Telegram chain
+        if: github.ref == 'refs/heads/repair/factual-retest-observe-20260930'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/factual-retest-20260930/historical-source-binding.mjs runtime audit-output/historical-source-binding.json
       - name: Verify ready sector producers with six public requests at most
         if: github.ref == 'refs/heads/autonomous/sector-integration-20260930'
         run: node audit-fixes/sector-integration-20260930/live-acceptance.mjs runtime
@@ -78,7 +88,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
+    if: github.ref != 'refs/heads/repair/factual-retest-observe-20260930' && github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -147,3 +157,79 @@ jobs:
           node-version: '24'
       - name: Check ready public history without accumulating or writing production data
         run: node audit-fixes/volume-profile-20260930/live-acceptance.mjs
+
+  real-report-acceptance:
+    if: github.ref == 'refs/heads/repair/factual-retest-observe-20260930'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: my-report-2-production-cycle
+      cancel-in-progress: false
+    env:
+      REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
+      ANALYTICS_ENABLED: '1'
+      PUBLIC_COLLECTOR_ENABLED: '0'
+      DELIVERY_ENABLED: '0'
+      CALIBRATION_APPLY_ENABLED: '0'
+      REPORT2_MANUAL_RUN_AUTHORIZED: '1'
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      REPORT2_EXPECTED_WORKER_SHA: '664bcb6236f23d950bb172c114200ee92334e1ed444a27553adeb150d5b1bc87'
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
+      REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
+      OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
+      LIQFLOW_API_KEY: ${{ secrets.LIQFLOW_API_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
+      NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+      VYX_API_KEY: ${{ secrets.VYX_API_KEY }}
+      BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+      REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+      REPORT2_RUN_SOURCE: manual
+      REPORT2_MANUAL_COMMAND: 'проверь QNT-USDT'
+      REPORT2_MANUAL_COIN_CONTRACT: QNT-USDT
+      REPORT2_CURRENT_GENERATION: MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M
+      REPORT2_POST_V7_UNIFIED_ENABLED: '1'
+      REPORT2_LIQUIDATION_EXTENSION_MODE: SHADOW_ONLY
+      REPORT2_ANALYTICS_ACTOR: GITHUB_ACTIONS
+      REPORT2_D1_RUNS_PER_DAY: '80'
+      REPORT2_D1_MAX_DAILY_READS: '3500000'
+      REPORT2_D1_MAX_DAILY_WRITES: '70000'
+      REPORT2_TELEGRAM_OUTPUT_ENABLED: '0'
+      REPORT2_TELEGRAM_SHADOW_DECISION_AUTO: '0'
+      REPORT2_TELEGRAM_WATCH70_ENABLED: '0'
+      REPORT2_TELEGRAM_INFO_ENABLED: '0'
+      REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: '0'
+      REPORT2_TELEGRAM_INSTALL_VALIDATION: '0'
+      REPORT2_TELEGRAM_REPORT_TEST: '0'
+      REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: '1'
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: '0'
+      REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble exactly validated candidate
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/real-assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/real-runtime-binding.json
+      - name: Real report with isolated publication and zero Telegram network
+        working-directory: runtime
+        run: node --import ../audit-fixes/factual-retest-20260930/real-report-isolation.mjs runner-main.mjs > ../audit-output/real-report.log 2>&1
+      - name: Explain acceptance failure
+        if: failure()
+        run: tail -50 audit-output/real-report.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: real-report-source-binding-${{ github.run_id }}-${{ github.run_attempt }}
+          path: audit-output/
+          retention-days: 30
