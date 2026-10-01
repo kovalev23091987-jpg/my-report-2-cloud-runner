@@ -5,7 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {buildPumpLiquidationZones} from '../files/src/pump-liquidation-zones.mjs';
 import {displayLegacyLiquidations} from '../files/src/canonical-display.mjs';
 import {collectCrossExchangeRiskContext} from '../files/src/cross-exchange-risk-context.mjs';
-import {buildLiquidationSourceChain} from '../files/src/liquidation-source-chain.mjs';
+import {buildLiquidationSourceChain,buildLiquidationFreshnessAudit} from '../files/src/liquidation-source-chain.mjs';
 import {outputContractScenarios} from './output-contract-support.mjs';
 import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 import {formatTelegramCompact} from '../files/src/telegram-compact-formatter.mjs';
@@ -44,6 +44,14 @@ test('main and standalone production consumers call future maps before realized 
 test('historical source success does not close the future-map receipt',()=>{
  const chain=buildLiquidationSourceChain({contract:'BTW-USDT',risk:{chain_attempts:[{source:'GATE_LIQUIDATION_HISTORY',status:'CLOSED'}]}});
  assert.equal(chain.configured_future_connection_count,9);assert.equal(chain.useful_future_source_count,0);assert.equal(chain.useful_history_source_count,1);assert.match(chain.policy,/HTX_SOURCE_MODEL_BASELINE/);assert.equal(chain.evaluated_not_enabled.length,3);assert.ok(chain.evaluated_not_enabled.every(row=>row.network_calls===0));
+});
+
+test('manual liquidation freshness audit requires new usable data from all eight external future sources',()=>{
+ const empty=buildLiquidationFreshnessAudit(buildLiquidationSourceChain({contract:'BTW-USDT'}));
+ assert.equal(empty.required_source_count,8);assert.equal(empty.complete,false);assert.equal(empty.status,'PARTIAL_SOURCE_COVERAGE');
+ const native={routed:['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS'].map(lane=>({contract:'BTW-USDT',lane,status:'CLOSED',usable:true,source_outcome:{attempted_http_count:1}}))};
+ const closed=buildLiquidationFreshnessAudit(buildLiquidationSourceChain({contract:'BTW-USDT',native,byk_future:{projected_map_status:'CLOSED_SHADOW',projected_clusters:[{}],source_health:{external_fetches:1}},tracked_hl:{status:'CLOSED',data_available:true,network_calls:1},future_models:{status:'CLOSED',levels:[{}],network_calls:1}}));
+ assert.equal(closed.required_source_count,8);assert.equal(closed.fresh_network_check_count,8);assert.equal(closed.fresh_data_used_count,8);assert.equal(closed.complete,true);
 });
 
 test('the actual ByK real_v1_multi snapshot yields future long/short prices and never realized totals',()=>{

@@ -80,13 +80,13 @@ export function contextForContract(context,contract){
  return {version:GLOBAL_MARKET_CONTEXT_VERSION,observed_ts:context?.observed_ts??null,deribit:context?.deribit??null,coinlobster:coinlobster?{...coinlobster,whale_radar:(coinlobster.whale_radar||[]).filter(matches).slice(0,8),realized_liquidations:(coinlobster.realized_liquidations||[]).filter(matches).slice(0,8),named_liquidations:(coinlobster.named_liquidations||[]).filter(matches).slice(0,8)}:null,internal_only:true};
 }
 
-export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,now=Date.now(),liquidation_only=false}={}){
+export async function loadGlobalMarketContext({db,fetch_impl=globalThis.fetch,now=Date.now(),liquidation_only=false,strict_fresh_manual=false}={}){
  if(!db)throw new Error('GLOBAL_CONTEXT_DB_REQUIRED');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_global_source_cache (source TEXT PRIMARY KEY, observed_ts INTEGER NOT NULL, expires_ts INTEGER NOT NULL, payload_json TEXT NOT NULL, status TEXT NOT NULL)`).run();
  async function cached(source,ttl,loader){
   const row=await db.prepare(`SELECT observed_ts,expires_ts,payload_json,status FROM report2_global_source_cache WHERE source=?1 LIMIT 1`).bind(source).first();
-  if(row&&Number(row.expires_ts)>now){try{return {...JSON.parse(row.payload_json),cache_status:'HIT'};}catch{}}
-  try{const payload=await loader();await db.prepare(`INSERT INTO report2_global_source_cache(source,observed_ts,expires_ts,payload_json,status) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json,status=excluded.status`).bind(source,now,now+ttl,JSON.stringify(payload),payload.status||'CLOSED').run();return {...payload,cache_status:'REFRESHED'};}
+  if(!strict_fresh_manual&&row&&Number(row.expires_ts)>now){try{return {...JSON.parse(row.payload_json),cache_status:'HIT',network_calls:0};}catch{}}
+  try{const payload=await loader();await db.prepare(`INSERT INTO report2_global_source_cache(source,observed_ts,expires_ts,payload_json,status) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json,status=excluded.status`).bind(source,now,now+ttl,JSON.stringify(payload),payload.status||'CLOSED').run();return {...payload,cache_status:'REFRESHED',network_calls:Math.max(1,Number(payload?.network_calls)||0)};}
   catch(error){if(row){try{return {...JSON.parse(row.payload_json),status:'STALE_FALLBACK',cache_status:'STALE_FALLBACK',refresh_error:String(error?.message||error)};}catch{}}return {source,status:'SOURCE_ERROR',observed_ts:now,cache_status:'MISS_FAILED',error:String(error?.message||error),internal_only:true};}
  }
  const deribit=liquidation_only?{status:'NOT_APPLICABLE_LIQUIDATION_ONLY',internal_only:true}:await cached('DERIBIT',DERIBIT_TTL_MS,()=>fetchDeribitMarketContext({fetch_impl,now}));

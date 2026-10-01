@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease,putImmutableSnapshot} from '../files/src/analytics-lease.mjs';
 
@@ -37,4 +38,15 @@ test('K02: immutable snapshot repeats are no-op and changed payload conflicts',a
   assert.equal((await putImmutableSnapshot(db,{...key,payload_hash:'aaa'})).status,'STORED_OR_IDENTICAL_NOOP');
   assert.equal((await putImmutableSnapshot(db,{...key,payload_hash:'aaa'})).status,'STORED_OR_IDENTICAL_NOOP');
   assert.equal((await putImmutableSnapshot(db,{...key,payload_hash:'bbb'})).status,'IMMUTABLE_SNAPSHOT_CONFLICT');
+});
+
+test('K02: runner releases a claimed analytics lease before fatal exit',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  const catchStart=runner.indexOf('main().catch(async(error) =>');
+  const cleanupAwait=runner.indexOf('await cleanupClaimedAnalyticsLease()',catchStart);
+  const exitCode=runner.indexOf('process.exitCode=1',catchStart);
+  assert.ok(catchStart>0,'fatal handler must be asynchronous');
+  assert.ok(cleanupAwait>catchStart,'fatal handler must await analytics lease cleanup');
+  assert.ok(exitCode>cleanupAwait,'failure status must be set only after cleanup');
+  assert.equal(runner.includes('process.exit(1)'),false,'runner must not terminate before asynchronous cleanup');
 });
