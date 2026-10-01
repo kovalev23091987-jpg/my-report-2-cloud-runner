@@ -15,6 +15,15 @@ test('manual Russian command is wired to a bounded liquidation-only runner path'
   assert.match(runner.slice(branch,full),/LIQUIDATION_ONLY_RESULT/);
   assert.match(runner.slice(branch,full),/dynamic_liquidation_panel:liquidationPanel/);
   assert.match(runner.slice(branch,full),/buildPumpLiquidationZones/);
+  assert.match(runner.slice(branch,full),/source_ts:candidate\.source_ts/);
+  assert.match(runner.slice(branch,full),/open_interest_value_usdt:candidate\.open_interest_value_usdt/);
+  assert.match(runner.slice(branch,full),/turnover_24h_usdt:candidate\.turnover_24h_usdt/);
+  assert.match(runner.slice(branch,full),/price_change_pct:candidate\.price_change_pct\?\?\{\}/);
+  assert.match(runner.slice(branch,full),/oi_change_pct:candidate\.oi_change_pct\?\?\{\}/);
+  assert.match(runner.slice(branch,full),/market_24h:candidate\.market_24h\?\?null/);
+  assert.match(runner.slice(branch,full),/price_tick:candidate\.price_tick/);
+  assert.match(runner.slice(branch,full),/volume_profile:effectiveVolumeProfile/);
+  assert.match(runner.slice(branch,full),/htx_model:liquidationMap\.htx_source_backed_model/);
   assert.match(runner.slice(branch,full),/displayLegacyLiquidations\(liquidationMap\)/);
   assert.match(runner.slice(branch,full),/liquidation_map:liquidationMap/);
   assert.match(runner.slice(branch,full),/Ограниченная выборка площадок и оценочные зоны источников/);
