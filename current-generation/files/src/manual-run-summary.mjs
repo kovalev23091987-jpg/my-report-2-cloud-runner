@@ -46,9 +46,15 @@ export function enforceManualBlockCoverage(output={}){
  const fullyChecked=audits.filter(audit=>audit?.coverage_count===17&&audit?.checked_block_count===17&&audit?.all_blocks_checked===true).length;
  const checkedCounts=audits.map(audit=>Number(audit?.checked_block_count)).filter(Number.isFinite);
  const usefulCounts=audits.map(audit=>Number(audit?.usable_block_count)).filter(Number.isFinite);
+ const auditStatusCounts=audits.map(audit=>Object.values(audit?.blocks||{}).reduce((acc,row)=>{acc[String(row?.status||'NOT_CHECKED')]=(acc[String(row?.status||'NOT_CHECKED')]||0)+1;return acc;},{}));
+ const minimumStatusCount=status=>auditStatusCounts.length?Math.min(...auditStatusCounts.map(counts=>Number(counts[status]||0))):0;
  const sufficientCandidates=output.candidates.filter(row=>row?.canonical?.data_quality?.sufficient!==false).length;
  const block_audit={required_block_count:17,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,
   minimum_checked_block_count:checkedCounts.length?Math.min(...checkedCounts):0,minimum_usable_block_count:usefulCounts.length?Math.min(...usefulCounts):0,
+  minimum_admissible_fact_block_count:minimumStatusCount('ADMISSIBLE_FACTUAL_CONTEXT'),
+  minimum_filtered_fact_block_count:minimumStatusCount('FACTS_PRESENT_NOT_DECISION_ADMISSIBLE'),
+  minimum_checked_no_event_block_count:minimumStatusCount('CHECKED_NO_USABLE_FACTS'),
+  maximum_not_checked_block_count:auditStatusCounts.length?Math.max(...auditStatusCounts.map(counts=>Number(counts.NOT_CHECKED||0))):17,
   data_sufficient_candidate_count:sufficientCandidates,all_candidates_data_sufficient:sufficientCandidates===output.candidates.length,
   all_candidates_fully_checked:fullyChecked===audits.length};
  if(block_audit.all_candidates_fully_checked)return {...output,block_audit};
@@ -63,8 +69,8 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
  const auditLines=['manual','manual_recovery'].includes(source)?[
-  'Проверка источников: 17 из 17 блоков.',
-  `Пригодные фактические сведения: ${Number(block_audit?.minimum_usable_block_count||0)} из 17 блоков.`,
+  `Проверка блоков: 17 из 17; обязательных сбоев: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
+  `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
  ]:[];
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
  let found=0;
