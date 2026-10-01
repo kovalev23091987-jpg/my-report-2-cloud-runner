@@ -45,11 +45,15 @@ export function displayMarketFacts(c){
 export function displayFutureLiquidations(liq,{compact=false}={}){
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
-  const parts=(Array.isArray(rows)?rows:[]).slice(0,compact?2:6).map(z=>{
+  const available=Array.isArray(rows)?rows:[],farHuge=available.find(z=>z.selection_roles?.includes('FARTHEST_HUGE_VISIBLE'));
+  const shown=compact&&farHuge&&farHuge!==available[0]?[available[0],farHuge]:available.slice(0,compact?2:6);
+  const parts=shown.filter(Boolean).map(z=>{
    const px=displayNumber(z.price),d=typeof z.distance_pct==='number'?displayNumber(Number(z.distance_pct.toFixed(2))):null,n=displayNumber(z.notional);
-   return `${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${z.distance_pct>0?'+':''}${d}%${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   return `${/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${z.distance_pct>0?'+':''}${d}%${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
   });lines.push(`${label}: ${parts.length?parts.join('; '):'уровни будущих ликвидаций не получены'}.`);
  }
+ const sample=(liq?.source_receipts||[]).find(r=>r.coverage?.kind==='TRACKED_ACCOUNT_SAMPLE_ONLY')?.coverage;
+ if(sample)lines.push(`Hyperliquid: выборка до ${sample.account_population_limit} аккаунтов${compact?'':`; проверено ${sample.provider_coverage?.scanned??'не указано'}; без цены ликвидации ${sample.provider_totals?.without_liq_px??'не указано'} позиций`}.`);
  if(!compact&&liq?.provider_zone_count){
   lines.push('Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.');
   lines.push(`Покрытие: только доступные площадки и диапазон источника; время снимка ${displayTime(Math.min(...[...liq.above,...liq.below].map(z=>z.source_ts)))} МСК.${liq.omitted_zone_count?` Ещё ${liq.omitted_zone_count} уровней сохранено в полной карте.`:''}`);

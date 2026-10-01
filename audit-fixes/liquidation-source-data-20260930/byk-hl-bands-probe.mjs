@@ -12,7 +12,7 @@ for(const coin of ['BTW','SOL']){
  const row={coin,quota_status:grant.status,actual_http:0};
  if(grant.allowed){
   const proxy=async(url,init={})=>{row.actual_http++;return fetch(process.env.REPORT2_SOURCE_PROXY_URL,{method:'POST',headers:{'content-type':'application/json',accept:'application/json',authorization:`Bearer ${process.env.REPORT2_SOURCE_PROXY_TOKEN}`},body:JSON.stringify({url:String(url)}),signal:init.signal});};
-  const r=await readJson(`https://bykaranteli.com/api/public/hyperliquid-positions?coin=${coin}`,{fetch_impl:proxy,max_bytes:8000000,timeout_ms:12000});
+  const r=await readJson(`https://bykaranteli.com/api/public/hyperliquid-positions?coin=${coin}&hours=1`,{fetch_impl:proxy,max_bytes:8000000,timeout_ms:12000});
   row.transport={ok:r.ok,status:r.receipt?.http_status,sha256:r.receipt?.sha256,reason:r.reason,provider_error:r.provider_error};
   if(r.ok){row.payload=sanitize(r.payload);row.normalization=normalizeTrackedBands(row.payload,{contract,run_id,observed_ts:r.receipt.received_ts});}
  }

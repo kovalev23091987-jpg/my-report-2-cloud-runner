@@ -1,3 +1,4 @@
+import {capturedTrackedBands} from './byk-tracked-future-map.mjs';
 import {capturedFutureMap,capturedNativeFutureMaps,capturedCoinLobsterHint} from './future-liquidation-map-source.mjs';
 import {selectComparableVolumeProfiles} from './cross-venue-volume-profile.mjs';
 import {volumeProfileFacts,applyVolumeProfileToLiquidationPanel} from './htx-volume-profile.mjs';
@@ -221,7 +222,8 @@ export function buildRuntimeCanonicalBundle({
  const volumeProfile=volumeConsensus.primary;
  const liquidationPanel=applyVolumeProfileToLiquidationPanel(buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts}),volumeProfile,{contract,now:observed_ts,reference_price:price,consensus_factor:volumeConsensus.factor});
  const futureMapSource=capturedFutureMap({contract,run_id,snapshot_id,observed_ts});
- const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...capturedNativeFutureMaps({contract,run_id})],native_contexts:nativeContexts,projected:coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models),observed_ts}),future_hint:capturedCoinLobsterHint(contract),future_source_status:{...futureMapSource,maps:undefined}};
+ const trackedHlView=capturedTrackedBands({contract,run_id,observed_ts});
+ const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...capturedNativeFutureMaps({contract,run_id})],native_contexts:nativeContexts,projected:coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models),observed_ts}),future_hint:capturedCoinLobsterHint(contract),future_source_status:{...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile,volume_consensus:volumeConsensus,contract,observed_ts,reference_price:price});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;

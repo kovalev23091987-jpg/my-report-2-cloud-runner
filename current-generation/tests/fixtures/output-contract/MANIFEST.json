@@ -5,10 +5,10 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
-    "current-generation/files/src/canonical-display.mjs": "65535f0626959e10ccaf7cf6303cf06fcb3b4edc39d7d2ebde474820f2bc13ff",
+    "current-generation/files/src/canonical-display.mjs": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
     "current-generation/files/src/canonical-publication.mjs": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074"
   },
   "fixtures": {
@@ -110,6 +110,22 @@
         "entry_rules_changed": false,
         "request_caps_changed": false
       }
+    },
+    {
+      "date": "2026-10-01",
+      "scope": "OWNER_REQUESTED_FUTURE_LIQUIDATION_TRACKED_NATIVE_BANDS",
+      "reason": "Connect verified ByK tracked native source in both report paths within existing monthly/HTTP envelopes; show far huge band before a dust farthest level; preserve original currencies, scan clock and sampled scope. Strategy and golden fixture bytes unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-display.mjs": {
+          "before": "65535f0626959e10ccaf7cf6303cf06fcb3b4edc39d7d2ebde474820f2bc13ff",
+          "after": "4a9a25f26bfe4ba73a9baf6f8808c48735276e1aaad588444048fa6ba42ae8ae"
+        },
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
+          "after": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0"
+        }
+      },
+      "worker_sha256": "38e45208b75a064ada89f0a90c4bdce393497319a709e35c5f94717cc0ebd3e3"
     }
   ]
 }

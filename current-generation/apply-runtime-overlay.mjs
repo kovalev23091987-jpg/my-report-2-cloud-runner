@@ -32,7 +32,7 @@ const files=[
  'src/native-liquidation-guard.mjs',
  'src/reason-registry.mjs',
  'src/pump-liquidation-zones.mjs',
- 'src/future-liquidation-map-source.mjs',
+ 'src/future-liquidation-map-source.mjs','src/byk-tracked-future-map.mjs',
  'src/canonical-runtime-adapter.mjs',
  'src/source-role-registry.mjs',
  'src/source-role-consumer.mjs',

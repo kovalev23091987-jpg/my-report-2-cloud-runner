@@ -16375,6 +16375,8 @@ async function buildDeepCheckInput(params, env) {
     };
   }
 
+  if(typeof env?.REPORT2_TRACKED_HL_FUTURE_COLLECT==='function')try{await env.REPORT2_TRACKED_HL_FUTURE_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),byk_admission:bykAdmission,now:Date.now()});}catch{/* Optional future sample remains unavailable; do not synthesize levels. */}
+
   // Owner contract: open-position liquidation levels are collected before history.
   let nativeLiquidationAcquisition = null;
   const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:futureProviderModels?.network_calls??0}});
