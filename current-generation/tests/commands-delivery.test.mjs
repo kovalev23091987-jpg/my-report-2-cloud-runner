@@ -71,8 +71,14 @@ test('K12: manual enqueue job is outside analytics concurrency and must succeed 
 test('K12: authoritative runner claims the command and completes liquidation-only after its existing result consumer',()=>{
   const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
   assert.match(runner,/await claimCommand\(env\.DATA_DB/);assert.match(runner,/DURABLE_MANUAL_COMMAND_NOT_CLAIMED/);
-  const outputAt=runner.indexOf("console.log('LIQUIDATION_ONLY_RESULT',renderedResult)"),completeAt=runner.indexOf('await completeCommand(env.DATA_DB');
+  const outputAt=runner.indexOf("console.log('LIQUIDATION_ONLY_RESULT',renderedResult)"),completeAt=runner.indexOf('await completeCommand(env.DATA_DB',outputAt);
   assert.ok(outputAt>=0&&completeAt>outputAt,'completion must happen only after the existing result consumer');
+});
+
+test('K12: saved canonical run is materialized before its durable command completes',()=>{
+  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+  const branchAt=runner.indexOf('if(savedRunRequest)'),writeAt=runner.indexOf("await fs.writeFile('report2-run-result.json'",branchAt),completeAt=runner.indexOf('await completeCommand(env.DATA_DB',branchAt);
+  assert.ok(branchAt>=0&&writeAt>branchAt&&completeAt>writeAt,'saved canonical output must exist before command completion');
 });
 
 test('K12: scheduled executor recovers an aged durable command without guessing its inputs',()=>{
