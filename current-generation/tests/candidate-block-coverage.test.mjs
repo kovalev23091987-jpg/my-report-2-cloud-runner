@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {auditCandidateBlocks} from '../files/src/candidate-evidence-v2-runtime.mjs';
-const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','SOURCE_HEALTH_JOURNAL','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','MACRO_CALENDAR','SNAPSHOT_GOVERNANCE','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
+const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
 const completeSources=()=>Object.fromEntries(SOURCE_NAMES.map(source=>[source,{status:'VALID_RESPONSE_NO_EVENT',network_calls:1}]));
 
-test('every N01–N17 block is checked without equating a checked source to a useful fact',()=>{
+test('all 15 configured additional blocks are checked without equating a check to a score',()=>{
  const now=1_800_000_000_000;
  const evidence=[{evidence_id:'supply',asset_id:'ethereum:0x1',htx_contract:'ABC-USDT',block_id:'N02',metric_family:'TOTAL_SUPPLY_OBSERVATION',provider_id:'CHAIN_RPC',upstream_id:'PUBLICNODE_RPC',dependency_group:'supply',observed_ts:now,source_ts:now,first_known_ts:now,expires_at:now+60_000,coverage_status:'CONTEXT_ONLY',coverage_fraction:0,schema_version:'v2',validation_status:'VALID',identity_status:'EXACT',finality_status:'FINAL'}];
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,17);
- assert.equal(result.checked_block_count,17);
+ assert.equal(result.coverage_count,15);
+ assert.equal(result.checked_block_count,15);
  assert.equal(result.all_blocks_checked,true);
  assert.equal(result.blocks.N02.status,'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE');
  assert.equal(result.blocks.N02.decision_path,'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE');
@@ -23,7 +23,9 @@ test('every N01–N17 block is checked without equating a checked source to a us
  assert.equal(result.blocks.N06.source_statuses.BLUESKY_PUBLIC,'CLOSED');
  assert.equal(result.blocks.N10.status,'CHECKED_NO_USABLE_FACTS');
  assert.deepEqual(result.blocks.N10.missing_required,[]);
- assert.equal(result.blocks.N13.source_statuses.SNAPSHOT_GOVERNANCE,'VALID_RESPONSE_NO_EVENT');
+ assert.equal(result.blocks.N10.decision_path,'ADMITTED_CONTROL_CONTEXT');
+ assert.equal(result.blocks.N13,undefined);
+ assert.equal(result.blocks.N17,undefined);
  assert.equal(result.all_blocks_have_useful_data,false);
 });
 
@@ -42,14 +44,12 @@ test('missing identity, missing key and deferred routes are not counted as check
  assert.equal(result.blocks.N04.checked,false);
  assert.equal(result.blocks.N06.checked,false);
  assert.equal(result.blocks.N14.checked,false);
- assert.equal(result.blocks.N17.checked,false);
  assert.equal(result.status,'PARTIAL_BLOCK_CHECK');
 });
 
 test('a supplemental route cannot close a missing primary block owner',()=>{
  const sources={
   GDELT_NEWS_DISCOVERY:{status:'CLOSED',network_calls:1},
-  SNAPSHOT_GOVERNANCE:{status:'CLOSED',network_calls:1},
   BLOCKSCOUT_INDEX:{status:'CLOSED',network_calls:1},
   SOURCIFY_ABI:{status:'CLOSED',network_calls:1},
  };
@@ -59,7 +59,8 @@ test('a supplemental route cannot close a missing primary block owner',()=>{
  assert.equal(result.blocks.N02.checked,false);
  assert.equal(result.blocks.N03.checked,false);
  assert.equal(result.blocks.N07.checked,false);
- assert.equal(result.blocks.N17.checked,false);
+ assert.equal(result.blocks.N13,undefined);
+ assert.equal(result.blocks.N17,undefined);
 });
 test('an attempted provider error is recorded but cannot close its block',()=>{
  const sources=completeSources();sources.BLUESKY_PUBLIC={status:'ACCESS_BLOCKED_403',network_calls:1,receipts:[{http_status:403,status:'SOURCE_ERROR'}]};

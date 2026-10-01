@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
 import {parseBlsCalendar,parseFedCalendar,normalizeMacroCalendar,collectMacroCalendarEvidence} from '../files/src/macro-calendar-evidence.mjs';
-import {collectCandidateEvidenceV2} from '../files/src/candidate-evidence-v2-runtime.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
@@ -35,14 +34,8 @@ test('K16 macro: transport cannot start without whole-job admission',async()=>{
  assert.equal(out.status,'WHOLE_JOB_HTTP_ADMISSION_REQUIRED');assert.equal(out.network_calls,0);assert.equal(calls,0);
 });
 
-test('K16 combined candidate path stays within five calls on cold cache',async()=>{
- const db=new DB(),calls=[];const observedTs=Date.UTC(2026,8,1),fetch_impl=async url=>{calls.push(url);if(url.includes('bls.gov'))return{ok:true,status:200,text:async()=>BLS};if(url.includes('federalreserve.gov'))return{ok:true,status:200,text:async()=>FED};const body=url.includes('swap_api_state')?{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',open:1}]}:{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',lever_rate:20}]};return{ok:true,status:200,json:async()=>body};};
- const out=await collectCandidateEvidenceV2({db,fetch_impl,pause_impl:async()=>{},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:observedTs,max_requests:5});
- assert.equal(out.status,'CLOSED');assert.equal(out.network_calls,5);assert.equal(calls.length,5);assert.ok(out.evidence.some(row=>row.block_id==='N09'));assert.ok(out.evidence.some(row=>row.block_id==='N13'));
-});
-
-test('K16 macro: runtime overlay and authoritative runner include combined live collector',()=>{
+test('removed N13 macro collector is not wired into the active runtime',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8'),overlay=fs.readFileSync(new URL('../apply-runtime-overlay.mjs',import.meta.url),'utf8');
  assert.match(runner,/collectCandidateEvidenceV2/);assert.match(runner,/REPORT2_EVIDENCE_V2_COLLECT=async params=>\{const result=await collectCandidateEvidenceV2/);
- assert.match(overlay,/src\/macro-calendar-evidence\.mjs/);assert.match(overlay,/src\/candidate-evidence-v2-runtime\.mjs/);
+ assert.doesNotMatch(overlay,/src\/macro-calendar-evidence\.mjs/);assert.match(overlay,/src\/candidate-evidence-v2-runtime\.mjs/);
 });

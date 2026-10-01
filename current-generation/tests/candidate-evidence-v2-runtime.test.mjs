@@ -21,7 +21,7 @@ const NOW=Date.parse('2026-09-29T22:00:00Z');
 const rss='<rss><channel><item><guid>update-1</guid><title>Protocol update</title><link>https://abc.example/news/update</link><pubDate>Tue, 29 Sep 2026 21:30:00 GMT</pubDate></item></channel></rss>';
 async function cachedCore(db){
  await installEvidenceSourceStore(db);
- for(const [source,asset_key] of [['HTX_PUBLIC_RISK','ABC-USDT'],['MACRO_CALENDAR','GLOBAL']])await writeEvidenceSourceCache(db,{source,asset_key,observed_ts:NOW,expires_ts:NOW+60000,payload:{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,status:'CLOSED',evidence:[],network_calls:0}});
+ await writeEvidenceSourceCache(db,{source:'HTX_PUBLIC_RISK',asset_key:'ABC-USDT',observed_ts:NOW,expires_ts:NOW+60000,payload:{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,status:'CLOSED',evidence:[],network_calls:0}});
 }
 
 test('provider quota denial cannot hide the next useful official block',async()=>{
@@ -35,9 +35,9 @@ test('provider quota denial cannot hide the next useful official block',async()=
  assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
 });
 
-test('cold HTX and macro refresh share five calls, no supplementary overrun',async()=>{
+test('cold HTX and remaining supplementary routes stay inside the five-call envelope',async()=>{
  const db=new DB();let calls=0;
  const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,max_requests:5,clock:()=>NOW,pause_impl:async()=>{},request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return String(url).includes('hbdm.com')?new Response(JSON.stringify({status:'ok',ts:NOW,data:[{contract_code:'ABC-USDT',open:1}]})):new Response('');}});
- assert.equal(calls,5);assert.equal(out.network_calls,5);assert.equal(out.shared_http_envelope.reserved_attempts,5);
+ assert.equal(calls,4);assert.equal(out.network_calls,4);assert.equal(out.shared_http_envelope.reserved_attempts,4);
  assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'DEFERRED_SHARED_REQUEST_ENVELOPE');
 });

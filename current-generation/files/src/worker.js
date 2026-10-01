@@ -1,4 +1,5 @@
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
+import {fundingDirectionalRoutes} from './funding-directional-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
@@ -6293,14 +6294,8 @@ function buildDiscoveryPrefilter(
         return funding / interval;
       }
 
-      /*
-       * Missing interval is not silently
-       * assumed. Such a row may still use
-       * raw funding for the neutral absolute-
-       * extreme context flag. Funding sign or
-       * interval never creates a LONG/SHORT
-       * route; this only affects review priority.
-       */
+      /* Missing interval is never guessed. Only a verified hourly rate may
+       * support a direction, and only together with price/OI confirmation. */
       return null;
     };
 
@@ -6842,6 +6837,10 @@ function buildDiscoveryPrefilter(
       );
     }
 
+    const fundingRoutes=fundingDirectionalRoutes({early_liquidity:earlyLiquidity,negative_funding_tail:negativeFundingTail,positive_funding_tail:positiveFundingTail,oi_building:oiBuilding,positive_momentum:positiveMomentum,negative_momentum:negativeMomentum,strong_relative_long:strongRelativeLong,strong_relative_short:strongRelativeShort});
+    longRoutes.push(...fundingRoutes.long_routes);
+    shortRoutes.push(...fundingRoutes.short_routes);
+
     const strictLegacyRoute =
       coreLiquidity &&
       strictFlags.length >=
@@ -6999,8 +6998,12 @@ function buildDiscoveryPrefilter(
         allFlags.length,
       funding_per_hour_pct:
         fundingPerHour,
-      funding_directional_vote: false,
-      funding_context_only: true,
+      funding_directional_vote:
+        negativeFundingTail ||
+        positiveFundingTail,
+      funding_context_only:
+        !negativeFundingTail &&
+        !positiveFundingTail,
       relative_strength_1h_pct_points:
         rs1h,
       relative_strength_4h_pct_points:
@@ -7096,8 +7099,12 @@ function buildDiscoveryPrefilter(
         funding,
       funding_per_hour_pct:
         fundingPerHour,
-      funding_directional_vote: false,
-      funding_context_only: true,
+      funding_directional_vote:
+        negativeFundingTail ||
+        positiveFundingTail,
+      funding_context_only:
+        !negativeFundingTail &&
+        !positiveFundingTail,
       relative_strength_1h_pct_points:
         rs1h,
       relative_strength_4h_pct_points:
