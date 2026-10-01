@@ -37,7 +37,7 @@ test('K16 macro: transport cannot start without whole-job admission',async()=>{
 
 test('K16 combined candidate path stays within five calls on cold cache',async()=>{
  const db=new DB(),calls=[];const observedTs=Date.UTC(2026,8,1),fetch_impl=async url=>{calls.push(url);if(url.includes('bls.gov'))return{ok:true,status:200,text:async()=>BLS};if(url.includes('federalreserve.gov'))return{ok:true,status:200,text:async()=>FED};const body=url.includes('swap_api_state')?{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',open:1}]}:{status:'ok',ts:observedTs,data:[{contract_code:'SOL-USDT',lever_rate:20}]};return{ok:true,status:200,json:async()=>body};};
- const out=await collectCandidateEvidenceV2({db,fetch_impl,pause_impl:async()=>{},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:observedTs});
+ const out=await collectCandidateEvidenceV2({db,fetch_impl,pause_impl:async()=>{},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:observedTs,max_requests:5});
  assert.equal(out.status,'CLOSED');assert.equal(out.network_calls,5);assert.equal(calls.length,5);assert.ok(out.evidence.some(row=>row.block_id==='N09'));assert.ok(out.evidence.some(row=>row.block_id==='N13'));
 });
 

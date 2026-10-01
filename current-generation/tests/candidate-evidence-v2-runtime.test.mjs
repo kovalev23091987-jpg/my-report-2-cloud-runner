@@ -37,7 +37,7 @@ test('provider quota denial cannot hide the next useful official block',async()=
 
 test('cold HTX and macro refresh share five calls, no supplementary overrun',async()=>{
  const db=new DB();let calls=0;
- const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,clock:()=>NOW,pause_impl:async()=>{},request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return String(url).includes('hbdm.com')?new Response(JSON.stringify({status:'ok',ts:NOW,data:[{contract_code:'ABC-USDT',open:1}]})):new Response('');}});
+ const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,max_requests:5,clock:()=>NOW,pause_impl:async()=>{},request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return String(url).includes('hbdm.com')?new Response(JSON.stringify({status:'ok',ts:NOW,data:[{contract_code:'ABC-USDT',open:1}]})):new Response('');}});
  assert.equal(calls,5);assert.equal(out.network_calls,5);assert.equal(out.shared_http_envelope.reserved_attempts,5);
  assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'DEFERRED_SHARED_REQUEST_ENVELOPE');
 });
