@@ -54,6 +54,15 @@ test('manual liquidation freshness audit requires new usable data from all eight
  assert.equal(closed.required_source_count,8);assert.equal(closed.fresh_network_check_count,8);assert.equal(closed.fresh_data_used_count,8);assert.equal(closed.complete,true);
 });
 
+test('shared coverage prerequisites never masquerade as direct source requests',()=>{
+ const chain=buildLiquidationSourceChain({contract:'BTW-USDT',native:{routed:[{contract:'BTW-USDT',lane:'HYPERLIQUID_NATIVE',status:'UNSUPPORTED',usable:false,source_outcome:{attempted_http_count:1}}]},byk_future:{projected_map_status:'SOURCE_UNSUPPORTED',projected_clusters:[],source_health:{external_fetches:1}},tracked_hl:{status:'NOT_REQUESTED',data_available:false,network_calls:0}});
+ const audit=buildLiquidationFreshnessAudit(chain);
+ assert.equal(audit.fresh_coverage_check_count,4);
+ assert.equal(audit.direct_network_check_count,2);
+ assert.equal(audit.receipts.find(row=>row.source==='BYK_TRACKED_HL_BANDS').direct_network_check,false);
+ assert.equal(audit.receipts.find(row=>row.source==='OXARCHIVE_HL_BUCKETS').direct_network_check,false);
+});
+
 test('the actual ByK real_v1_multi snapshot yields future long/short prices and never realized totals',()=>{
  const source=read('../files/src/worker.js'),start=source.indexOf('const LIQUIDATION_INTELLIGENCE_API = (() => {'),end=source.indexOf('\nasync function buildDeepCheckInput',start);
  const api=new Function(source.slice(start,end)+'; return LIQUIDATION_INTELLIGENCE_API;')();
