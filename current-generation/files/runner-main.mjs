@@ -187,18 +187,19 @@ async function observeNaturalTelegramDecision(db) {
 
 async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron}={}){
   try{
-    const response=await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
+    const response=await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
       FROM canonical_publication_shadow WHERE run_id=?1 ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||'')).all();
     const rows=Array.isArray(response?.results)?response.results:[];
     const output={
       schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...classifyCanonicalRunCompletion({candidate_count:rows.length,cron}),pipeline_health:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
       candidates:rows.map(row=>{
         let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
+        let presentationInputs=null;try{presentationInputs=JSON.parse(row.presentation_inputs_json);}catch{}
         const blockCoverage=canonical?.metadata?.internal_market_context?.evidence_v2?.block_coverage||null;
         return {
           publication_id:row.publication_id,contract:row.contract_code,direction:row.direction,run_id:row.run_id,snapshot_id:row.snapshot_id,wave_id:row.wave_id,
           observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
-          actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||null,
+          actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
           block_coverage:blockCoverage,
           canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
         };
@@ -661,21 +662,13 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       priority_reason:candidate.qualified_growth_candidate===true?'EARLY_TECHNICAL_ANOMALY':'MANUAL_LIQUIDATION_REQUEST',
       projected:coinLobsterFutureRows(coinFuture),
       calculation_context:{
-        source_ts:candidate.source_ts,
-        market_source_ts:candidate.source_ts,
-        open_interest_value_usdt:candidate.open_interest_value_usdt,
-        turnover_24h_usdt:candidate.turnover_24h_usdt,
-        oi_change_pct:candidate.oi_change_pct,
-        price_change_pct:candidate.price_change_pct,
+        oi_change_pct:candidate.oi_change_pct?.['4h']??candidate.oi_change_pct?.['1h']??null,
         funding_rate_pct:candidate.funding_rate_pct,
-        market_24h:candidate.market_24h,
-        price_tick:candidate.price_tick,
         volume_ratio:null,
       },
-      volume_profile:effectiveVolumeProfile,
     }):{status:'NOT_CLOSED',above:[],below:[]};
     const scopedCoinLobster=candidate?contextForContract(env.REPORT2_GLOBAL_MARKET_CONTEXT,candidate.contract)?.coinlobster:null;
-    const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,htx_model:liquidationMap.htx_source_backed_model,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
+    const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
     const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext):[];
     const lines=candidate?[
       ...displayLegacyLiquidations(liquidationMap),
