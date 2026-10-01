@@ -495,7 +495,7 @@ async function main() {
     return;
   }
   if(requestedSource!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
-  if(requestedSource==='schedule'&&manualCommandClaim.claimed){source='manual_recovery';manualCommandId=manualCommandClaim.row.command_id;env.REPORT2_MANUAL_COIN_CONTRACT=manualCommandClaim.row.contract||'';}
+  if(requestedSource==='schedule'&&manualCommandClaim.claimed){source='manual_recovery';env.REPORT2_RUN_SOURCE=source;manualCommandId=manualCommandClaim.row.command_id;env.REPORT2_MANUAL_COIN_CONTRACT=manualCommandClaim.row.contract||'';}
   const recoveredMode=source==='manual_recovery'?manualCommandClaim.row.mode:null;
   const commandIntent=recoveredMode==='LIQUIDATION_ONLY'
     ?{version:'durable-command-recovery-v1',matched:true,mode:manualCommandClaim.row.contract?'EXACT_COIN_LIQUIDATIONS':'LIQUIDATION_CANDIDATES',contract:manualCommandClaim.row.contract||null,normalized:'durable queued liquidation command'}
