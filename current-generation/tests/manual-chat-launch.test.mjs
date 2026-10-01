@@ -10,7 +10,7 @@ const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'
 test('ordinary chat has one file-scoped launch path bound to main',()=>{
  assert.match(workflow,/push:\s*\n\s*branches:\s*\n\s*- main\s*\n\s*paths:\s*\n\s*- "manual-requests\/run\.json"/u);
  assert.match(workflow,/github\.event_name == 'push' \|\| \(github\.event_name == 'workflow_dispatch'/u);
- assert.match(workflow,/REPORT2_RUN_SOURCE: \$\{\{ github\.event_name == 'push' && 'manual'/u);
+ assert.match(workflow,/REPORT2_RUN_SOURCE: \$\{\{ github\.event_name == 'schedule' && 'schedule' \|\| 'manual'/u);
  assert.match(workflow,/needs\.enqueue-manual-command\.outputs\.command/u);
  assert.match(workflow,/startsWith\(github\.event\.head_commit\.message, '\[manual-request\]'\)/u);
  assert.match(workflow,/!contains\(github\.event\.head_commit\.message, '\[public-collector-release\]'\)/u);

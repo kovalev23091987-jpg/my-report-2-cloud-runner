@@ -220,11 +220,12 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   calls.push(['COINBASE',Promise.resolve({ok:product.ok&&ticker.ok,payload:[product.payload,ticker.payload],error:[product.error,ticker.error].filter(Boolean).join(',')}),p=>normalizeCoinbase(p[0],p[1],now,primary_price,productId)]);
  }
  };
- await collectLane(lane);
- // A strict manual report must spend one remaining slot on the mandatory
- // exact-identity Nansen flow chain before optional complementary context.
  let specialist={network_calls:0,payloads:[],receipts:[]};
- if(strict17_required&&!effectiveReserve){specialist=await collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity:entry.identity,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key});httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);}
+ // A strict manual report reserves the first available request for the
+ // exact-identity flow chain. Scheduled runs do not spend the scarce Nansen
+ // allowance, so they cannot starve an owner-triggered report later that day.
+ if(strict17_required&&!effectiveReserve){specialist=await collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity:entry.identity,cached:cachedSources,remaining:5-httpCalls,vyx_api_key:'',nansen_api_key});httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);}
+ await collectLane(lane);
  // Primary confirmation must not permanently starve a unique complementary
  // role. Use only the remaining part of the SAME five-request envelope.
  const complementaryLane=lane==='BITGET_FALLBACK'&&httpCalls<5?chooseSupplementalLane({run_id,contract,entry,derivatives_venues:2,critical_conflict:false,cached_sources:{...cachedSources,BITGET:{status:'ATTEMPTED'}}}):null;
