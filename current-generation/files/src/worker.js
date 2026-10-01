@@ -19962,7 +19962,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
 
 export async function scanLiquidationCandidates({env,max_candidates=5,exact_contract=null,freshness_sec=300}={}){
   const exact=String(exact_contract||'').trim().toUpperCase();
-  if(exact&&!/^[A-Z0-9]{2,15}-USDT$/.test(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'INVALID_EXACT_CONTRACT',exact_contract:exact||null,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
+  if(exact&&!/^[\p{L}\p{N}]{1,15}-USDT$/u.test(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'INVALID_EXACT_CONTRACT',exact_contract:exact||null,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
   if(['BTC-USDT','ETH-USDT'].includes(exact))return{schema:'LIQUIDATION_ONLY_SCAN_V1',status:'EXCLUDED_BY_USER_POLICY',exact_contract:exact,candidates:[],full_report_started:false,decision_generated:false,probability:null,execution:false};
   const limit=Math.min(10,Math.max(1,Math.round(Number(max_candidates)||5)));
   const scan=await htxUniverseScan({freshness_sec},env,{persist:false});
