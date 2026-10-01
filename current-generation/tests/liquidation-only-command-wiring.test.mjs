@@ -33,3 +33,9 @@ test('GitHub manual input passes the natural-language command into runtime',()=>
   assert.match(workflow,/REPORT2_MANUAL_COMMAND: \$\{\{ inputs\.command \|\| '' \}\}/);
   assert.match(workflow,/COINALYZE_API_KEY: \$\{\{ secrets\.COINALYZE_API_KEY \}\}/);
 });
+
+test('exact Unicode HTX contract reaches the market scan instead of failing validation',()=>{
+  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
+  assert.match(worker,/\^\[\\p\{L\}\\p\{N\}\]\{1,15\}-USDT\$\/u/);
+  assert.doesNotMatch(worker,/\^\[A-Z0-9\]\{2,15\}-USDT\$/);
+});
