@@ -1,6 +1,6 @@
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
-export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v3-owner-layout-strict17-20261001';
+export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v4-owner-layout-15-blocks-20261001';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;
@@ -41,35 +41,35 @@ export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
 }
 export function enforceManualBlockCoverage(output={}){
  if(!['manual','manual_recovery'].includes(output?.source)||!Array.isArray(output?.candidates))return output;
- if(!output.candidates.length)return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_17_BLOCKS_NOT_CONFIRMED',block_audit:{required_block_count:17,candidate_count:0,fully_checked_candidate_count:0,minimum_checked_block_count:0,all_candidates_fully_checked:false}};
+ if(!output.candidates.length)return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_15_BLOCKS_NOT_CONFIRMED',block_audit:{required_block_count:15,candidate_count:0,fully_checked_candidate_count:0,minimum_checked_block_count:0,all_candidates_fully_checked:false}};
  const audits=output.candidates.map(row=>row?.block_coverage||null);
- const fullyChecked=audits.filter(audit=>audit?.coverage_count===17&&audit?.checked_block_count===17&&audit?.all_blocks_checked===true).length;
+ const fullyChecked=audits.filter(audit=>audit?.coverage_count===15&&audit?.checked_block_count===15&&audit?.all_blocks_checked===true).length;
  const checkedCounts=audits.map(audit=>Number(audit?.checked_block_count)).filter(Number.isFinite);
  const usefulCounts=audits.map(audit=>Number(audit?.usable_block_count)).filter(Number.isFinite);
  const auditStatusCounts=audits.map(audit=>Object.values(audit?.blocks||{}).reduce((acc,row)=>{acc[String(row?.status||'NOT_CHECKED')]=(acc[String(row?.status||'NOT_CHECKED')]||0)+1;return acc;},{}));
  const minimumStatusCount=status=>auditStatusCounts.length?Math.min(...auditStatusCounts.map(counts=>Number(counts[status]||0))):0;
  const sufficientCandidates=output.candidates.filter(row=>row?.canonical?.data_quality?.sufficient!==false).length;
- const block_audit={required_block_count:17,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,
+ const block_audit={required_block_count:15,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,
   minimum_checked_block_count:checkedCounts.length?Math.min(...checkedCounts):0,minimum_usable_block_count:usefulCounts.length?Math.min(...usefulCounts):0,
   minimum_admissible_fact_block_count:minimumStatusCount('ADMISSIBLE_FACTUAL_CONTEXT'),
   minimum_filtered_fact_block_count:minimumStatusCount('FACTS_PRESENT_NOT_DECISION_ADMISSIBLE'),
   minimum_checked_no_event_block_count:minimumStatusCount('CHECKED_NO_USABLE_FACTS'),
-  maximum_not_checked_block_count:auditStatusCounts.length?Math.max(...auditStatusCounts.map(counts=>Number(counts.NOT_CHECKED||0))):17,
+  maximum_not_checked_block_count:auditStatusCounts.length?Math.max(...auditStatusCounts.map(counts=>Number(counts.NOT_CHECKED||0))):15,
   data_sufficient_candidate_count:sufficientCandidates,all_candidates_data_sufficient:sufficientCandidates===output.candidates.length,
   all_candidates_fully_checked:fullyChecked===audits.length};
  if(block_audit.all_candidates_fully_checked)return {...output,block_audit};
- return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_17_BLOCKS_NOT_CONFIRMED',block_audit};
+ return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_15_BLOCKS_NOT_CONFIRMED',block_audit};
 }
 export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit}={}){
  if(status==='PARTIAL_DATA_UNAVAILABLE'){
   const checked=Number(block_audit?.minimum_checked_block_count);
-  const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из 17.`:'';
+  const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из 15.`:'';
   return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
  const auditLines=['manual','manual_recovery'].includes(source)?[
-  `Проверка блоков: 17 из 17; обязательных сбоев: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
+  `Проверка дополнительных блоков: 15 из 15; обязательных сбоев: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
   `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
  ]:[];
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];

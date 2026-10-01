@@ -19,10 +19,10 @@ function db(){const sqlite=new DatabaseSync(':memory:');return{sqlite,prepare(sq
 function readyFetch(now,urls){return async url=>{urls.push(url);let data=url.includes('/categories/list')?params.categories:url.includes('/markets?')?params.quotes.map(r=>({...r,last_updated:new Date(now-60000).toISOString()})):params.metadata;return new Response(JSON.stringify(data));};}
 function options(database,now,urls=[]){return{db:database,contract:'LINK-USDT',asset_identity:identity,asset_metadata:metadata,run_id:'sector-test',now,request_admit:()=>({allowed:true}),fetch_impl:readyFetch(now,urls)};}
 
-test('replay ready public LINK sector data through strict evidence and consumer with zero directional score',()=>{
+test('replay ready public LINK sector data through strict evidence and bounded directional weight',()=>{
  const r=normalizeCoingeckoSector(params);assert.equal(r.status,'CLOSED');assert.ok(r.summary.eligible_peers>=3);assert.equal(r.summary.full_sector_coverage,false);
  const context=consumeSectorContext({evidence:r.evidence,contract:'LINK-USDT',asset_identity:identity,now:oldNow});
- assert.equal(context.status,'CLOSED');assert.match(context.facts[0].label,/оракулы/);assert.equal(context.score_contribution,0);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:oldNow}).adjustment,0);
+ assert.equal(context.status,'CLOSED');assert.match(context.facts[0].label,/оракулы/);assert.equal(context.score_contribution,0);const adjustment=consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:oldNow}).adjustment;assert.ok(adjustment<0&&adjustment>=-.6);
 });
 test('JUP is resolved by Solana mint, and duplicate DYDX and QUICK representations cannot inflate the basket',()=>{
  const jup={chain:'solana',contract_or_mint:'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN'},r=normalizeCoinpaprikaSector({...fixture.coinpaprika,identity:jup,contract:'JUP-USDT',coin_id:'jup-jupiter-exchange-token',tag_id:'exchange',observed_ts:oldNow});

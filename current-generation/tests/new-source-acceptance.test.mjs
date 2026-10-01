@@ -19,7 +19,7 @@ test('all eligible roles reach first place over distinct report rotations',()=>{
 test('useful primary roles get more scheduling opportunities without removing complementary routes',()=>{
  const routes=Object.keys(EVIDENCE_ROUTE_PRIORITY).map(name=>({name})),counts={};
  for(let i=0;i<4096;i++){const ordered=rotateEvidenceRoleRoutes(routes,`UTILITY:${i}`);assert.equal(ordered.length,routes.length);assert.equal(new Set(ordered.map(r=>r.name)).size,routes.length);counts[ordered[0].name]=(counts[ordered[0].name]||0)+1;}
- assert.ok(counts.LARGE_TRADES>counts.GDELT*2);assert.ok(counts.OFFICIAL>counts.SOURCIFY*2);assert.ok(counts.CHAIN_SUPPLY>counts.BLOCKSCOUT*2);assert.ok(counts.CHAIN_EVENTS>counts.SNAPSHOT*2);assert.ok(counts.DERIBIT>counts.GDELT*2);assert.ok(counts.BLUESKY>counts.SOURCIFY*2);
+ assert.ok(counts.LARGE_TRADES>counts.GDELT*2);assert.ok(counts.OFFICIAL>counts.GDELT*2);assert.ok(counts.CHAIN_SUPPLY>counts.BLOCKSCOUT*2);assert.ok(counts.CHAIN_EVENTS>counts.BLOCKSCOUT*2);assert.ok(counts.DERIBIT>counts.GDELT*2);assert.ok(counts.BLUESKY>counts.GDELT*2);assert.equal('SNAPSHOT' in EVIDENCE_ROUTE_PRIORITY,false);assert.equal('SOURCIFY' in EVIDENCE_ROUTE_PRIORITY,false);
  assert.deepEqual(rotateEvidenceRoleRoutes([], 'EMPTY'),[]);assert.deepEqual(rotateEvidenceRoleRoutes([{name:'CHAIN'}],'ONLY'),[{name:'CHAIN'}]);
 });
 test('quota-exhausted primary does not block the next route or cached complements',async()=>{
