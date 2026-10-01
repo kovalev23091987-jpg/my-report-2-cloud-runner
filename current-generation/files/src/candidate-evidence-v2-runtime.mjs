@@ -15,7 +15,7 @@ import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v16-all-17-checked-20261001';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v17-strict-check-accounting-20261001';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 // Only name producers that actually emit a row for this block in this collector.
@@ -81,16 +81,21 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
 
 export function auditCandidateBlocks({evidence=[],sources={},primary_checks={},decision_ts=Date.now()}={}){
  const result={};
+ const sourceWasActuallyChecked=source=>{
+  if(!source||typeof source!=='object')return false;
+  if(Number(source.network_calls)>0)return true;
+  if(Array.isArray(source.evidence)&&source.evidence.length>0)return true;
+  if(Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.cache_hit===true))return true;
+  const cache=String(source.cache_status||'').toUpperCase();
+  return /(^|_)(HIT|REUSED|FRESH|VALID_CACHE|CACHE_VALID)(_|$)/.test(cache);
+ };
  for(const block of Object.keys(BLOCKS)){
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
   const usable=rows.filter(row=>validateEvidenceV2(row,{decision_ts}).usable&&Number(row.coverage_fraction)>0).length;
   const owners=BLOCK_SOURCE[block]||[];
   const primary=primary_checks?.[block]||null;
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||primary?.status||'NOT_EVALUATED')]));
-  const checked=primary?.checked===true||owners.some(name=>{
-   const status=String(sources?.[name]?.status||'').toUpperCase();
-   return Boolean(status)&&!['NOT_EVALUATED','NOT_IMPLEMENTED_IN_THIS_COLLECTOR'].includes(status);
-  });
+  const checked=primary?.checked===true||owners.some(name=>sourceWasActuallyChecked(sources?.[name]));
   result[block]={
    status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
    checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,

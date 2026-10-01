@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {formatManualRunSummary,formatStandaloneLiquidationSourceLines} from '../files/src/manual-run-summary.mjs';
+import {enforceManualBlockCoverage,formatManualRunSummary,formatStandaloneLiquidationSourceLines} from '../files/src/manual-run-summary.mjs';
 
 const generated_at='2026-09-29T16:20:34.866Z';
 const rejected={contract:'龙虾-USDT',direction:'SHORT',canonical_state:'REJECTED',manual_text:null,
@@ -36,6 +36,21 @@ test('watch is presented with a favorable measured target without a fixed percen
 
 test('failed source status never masquerades as healthy absence of ideas',()=>{
  assert.equal(formatManualRunSummary({status:'NOT_CLOSED',candidates:[],generated_at}),null);
+});
+test('manual run returns the already approved full report text unchanged',()=>{
+ const approved='МОЙ ОТЧЁТ 2\n\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nНаблюдение по QNT-USDT.';
+ const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:17,checked_block_count:17,all_blocks_checked:true}}],generated_at};
+ const checked=enforceManualBlockCoverage(output);
+ assert.equal(checked.status,'CLOSED');
+ assert.equal(formatManualRunSummary(checked),approved);
+});
+test('manual run fails closed when any candidate lacks a real 17 block check',()=>{
+ const output={status:'CLOSED',source:'manual',candidates:[{manual_text:'НЕ ПОКАЗЫВАТЬ',block_coverage:{coverage_count:17,checked_block_count:12,all_blocks_checked:false}}],generated_at};
+ const checked=enforceManualBlockCoverage(output);
+ assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
+ assert.equal(checked.reason,'ALL_17_BLOCKS_NOT_CONFIRMED');
+ assert.match(formatManualRunSummary(checked),/12 из 17/u);
+ assert.doesNotMatch(formatManualRunSummary(checked),/НЕ ПОКАЗЫВАТЬ/u);
 });
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
