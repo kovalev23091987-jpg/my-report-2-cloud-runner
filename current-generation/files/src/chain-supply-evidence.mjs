@@ -61,10 +61,10 @@ async function fetchSupply(fetchImpl,id){
  return{receipts:[{route:'EVM_CHAIN_ID',...chainRow},{route:'EVM_FINALIZED_BLOCK',...blockRow},{route:'EVM_TOTAL_SUPPLY',...supplyRow}],attempts:chainRow.network_calls+blockRow.network_calls+supplyRow.network_calls,current:supplyRow.ok&&supply!==null?{supply,decimals:supplyRow.decimals,block_ref:blockRef,source_ts:Number.parseInt(text(blockRow?.payload?.result?.timestamp),16)*1000,finalized:true}:null};
 }
 
-export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,identity_method=null,now=Date.now()}={}){
+export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,identity_method=null,now=Date.now(),strict_fresh_manual=false}={}){
  if(!db)throw new Error('CHAIN_SUPPLY_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),id=exactIdentity(asset_identity);
  if(!/^[^\s-]+-USDT$/u.test(htxContract)||!id)return{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
- await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,now});if(cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION)return{...cached,contract:htxContract};
+ await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION)return{...cached,contract:htxContract};
  const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(SOURCE,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');previous=prior?.version===CHAIN_SUPPLY_EVIDENCE_VERSION?prior.current_observation||null:null;}catch{}
  const attempts=id.chain==='solana'?2:3,reservationId=`EV2:${SOURCE}:${run_id}:${assetKey}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};

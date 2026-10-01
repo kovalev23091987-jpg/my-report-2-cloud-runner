@@ -27,13 +27,13 @@ export function normalizeCoingeckoSector({metadata,categories,quotes,identity,co
  return{status:'CLOSED',evidence:[evidence],summary};
 }
 
-export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now()}={}){
+export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
  const pinned=Boolean(coin_id||category_id||category_name),validAddress=identity?.chain==='ethereum'?/^0x[0-9a-f]{40}$/i.test(identity.contract_or_mint):identity?.chain==='solana'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(identity.contract_or_mint);
  if(!validAddress||!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!SUPPORTED_SECTOR_NAMES[category_name])))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  const key=`${contract}:${identity.chain}:${identity.contract_or_mint}:${coin_id}:${category_id}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
- if(cached?.version===COINGECKO_SECTOR_VERSION)return cached;
+ if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION)return cached;
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reservation_id=`EV2:${SOURCE}:${run_id}:${key}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:3});

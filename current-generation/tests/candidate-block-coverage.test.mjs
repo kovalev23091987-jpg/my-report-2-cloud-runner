@@ -74,3 +74,15 @@ test('zero-fact primary blocks require explicit completed receipts',()=>{
  const present=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000});
  for(const block of ['N10','N11','N16'])assert.equal(present.blocks[block].checked,true);
 });
+
+test('strict fresh manual audit rejects cache-only external owners but accepts fresh internal checks',()=>{
+ const sources=completeSources();
+ sources.OFFICIAL_EVENTS={status:'CLOSED',network_calls:0,cache_status:'HIT'};
+ sources.PRIMARY_TECHNICAL_CONTEXT={status:'CHECKED_PRIMARY_TECHNICAL_CONTEXT',check_completed:true,network_calls:0};
+ const result=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000,strict_fresh:true});
+ assert.equal(result.strict_fresh_required,true);
+ assert.equal(result.blocks.N01.checked,false);
+ assert.deepEqual(result.blocks.N01.missing_required,['OFFICIAL_EVENTS']);
+ assert.equal(result.blocks.N10.checked,true);
+ assert.equal(result.all_blocks_checked,false);
+});

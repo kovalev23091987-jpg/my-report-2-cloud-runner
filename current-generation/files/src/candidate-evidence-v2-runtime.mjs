@@ -123,7 +123,18 @@ function proofForRequirement(requirement,sources){
  return {checked:allClosed&&anyClosed,required_all:all,required_any:any,missing_required:[...all.filter(name=>!sourceWasActuallyChecked(sources?.[name])),...(any.length&&!any.some(name=>sourceWasActuallyChecked(sources?.[name]))?[`ANY:${any.join('|')}`]:[])]};
 }
 
-export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.now()}={}){
+function sourceWasFreshlyChecked(source){
+ return sourceWasActuallyChecked(source)&&(source?.check_completed===true||Number(source?.network_calls)>0);
+}
+
+function proofForFreshRequirement(requirement,sources){
+ const all=Array.isArray(requirement?.all)?requirement.all:[],any=Array.isArray(requirement?.any)?requirement.any:[];
+ const allClosed=all.every(name=>sourceWasFreshlyChecked(sources?.[name]));
+ const anyClosed=!any.length||any.some(name=>sourceWasFreshlyChecked(sources?.[name]));
+ return {checked:allClosed&&anyClosed,required_all:all,required_any:any,missing_required:[...all.filter(name=>!sourceWasFreshlyChecked(sources?.[name])),...(any.length&&!any.some(name=>sourceWasFreshlyChecked(sources?.[name]))?[`ANY:${any.join('|')}`]:[])]};
+}
+
+export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.now(),strict_fresh=false}={}){
  const result={};
  for(const block of Object.keys(BLOCKS)){
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
@@ -132,7 +143,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
   const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0}];}));
-  const proof=proofForRequirement(requirement,sources),checked=proof.checked;
+  const proof=strict_fresh?proofForFreshRequirement(requirement,sources):proofForRequirement(requirement,sources),checked=proof.checked;
   result[block]={
    status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
    checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
@@ -140,12 +151,12 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   };
  }
  const values=Object.values(result);
- return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),internal_only:true};
+ return {status:values.every(row=>row.checked)?'CLOSED_ALL_17_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
 }
 
 export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={}}={}){
  const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
- return {...evidence_result,sources,block_coverage:auditCandidateBlocks({evidence:evidence_result?.evidence||[],sources,decision_ts:evidence_result?.decision_ts??Date.now()})};
+ return {...evidence_result,sources,block_coverage:auditCandidateBlocks({evidence:evidence_result?.evidence||[],sources,decision_ts:evidence_result?.decision_ts??Date.now(),strict_fresh:evidence_result?.strict_fresh_required===true})};
 }
 
 export async function collectCandidateEvidenceV2(params={}){
@@ -176,7 +187,7 @@ export async function collectCandidateEvidenceV2(params={}){
  const source_health=await recordEvidenceSourceHealth(params.db,{contract:params.contract,run_id:params.run_id,observations:healthRows,admit:params.source_health_admit,now:params.now??Date.now()});
  const sourceHealthChecked=['CLOSED_OPERATIONAL_JOURNAL','CLOSED_OPERATIONAL_JOURNAL_CACHE'].includes(source_health.status);
  sources.SOURCE_HEALTH_JOURNAL={status:source_health.status,check_completed:sourceHealthChecked,evidence:source_health.observations||[],network_calls:0,receipts:[{check_completed:sourceHealthChecked,status:source_health.status}]};
- const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now()});
+ const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:params?.now??Date.now(),strict_fresh:params?.strict_fresh_manual===true});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
@@ -202,6 +213,7 @@ export async function collectCandidateEvidenceV2(params={}){
    ...(blockscout?.receipts||[]).map(row=>({...row,source:'BLOCKSCOUT_INDEX'})),
   ],
   sources,source_health,decision_ts:params?.now??Date.now(),route_accounting:[...core.receipts,...routeBlock.receipts],shared_http_envelope:{cap:evidenceCap,reserved_attempts:core.reserved_requests+routeBlock.reserved_requests,actual_http:core.network_calls+routeBlock.network_calls,unknown_reservations_not_released:true},role_policy:'UTILITY_PRIORITY_WITH_ALL_VALID_CACHES_AND_EXISTING_QUOTAS',route_priority:{tickets:EVIDENCE_ROUTE_PRIORITY,semantics:'OPERATIONAL_SCHEDULING_NOT_PREDICTIVE_WEIGHT',executed_order:routeBlock.receipts.map(row=>row.route)},block_coverage,
+  strict_fresh_required:params?.strict_fresh_manual===true,
   internal_only:true,
  };
 }

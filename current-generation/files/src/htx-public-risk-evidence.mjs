@@ -46,12 +46,12 @@ export function normalizeHtxPublicRisk({contract,state_payload,isolated_payload,
  return{status:stateClosed?'CLOSED':'PARTIAL',contract:htxContract,evidence:[evidence],summary:{execution_open_allowed:evidence.execution_open_allowed,isolated_ladder_count:isolatedRows.length,cross_ladder_count:crossRows.length,margin_context_complete:evidence.margin_context_complete},internal_only:true};
 }
 
-export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fetch,pause_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms)),clock=Date.now,request_admit,contract,run_id,now=Date.now()}={}){
+export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fetch,pause_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms)),clock=Date.now,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false}={}){
  if(!db)throw new Error('HTX_PUBLIC_RISK_DB_REQUIRED');const htxContract=contractOf(contract);if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await install(db);const cached=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,htxContract,now).first();
- if(cached){try{const p=JSON.parse(cached.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{...p,cache_status:'HIT',network_calls:0};}catch{}}
+ if(!strict_fresh_manual&&cached){try{const p=JSON.parse(cached.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{...p,cache_status:'HIT',network_calls:0};}catch{}}
  const shared=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,GLOBAL_KEY,now).first();
- if(shared){try{const p=JSON.parse(shared.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalizeHtxPublicRisk({contract:htxContract,...p.payloads,observed_ts:now}),cache_status:'SHARED_HIT',network_calls:0,receipts:p.receipts,shared_catalog_source_ts:p.source_ts,internal_only:true};}catch{}}
+ if(!strict_fresh_manual&&shared){try{const p=JSON.parse(shared.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalizeHtxPublicRisk({contract:htxContract,...p.payloads,observed_ts:now}),cache_status:'SHARED_HIT',network_calls:0,receipts:p.receipts,shared_catalog_source_ts:p.source_ts,internal_only:true};}catch{}}
  const reservationId=`EV2:${SOURCE}:${run_id}:${GLOBAL_KEY}:${Math.floor(now/TTL)}`;
  const wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:3}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
