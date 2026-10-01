@@ -511,6 +511,20 @@ async function main() {
   console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null,recovered_by_scheduled_executor:source==='manual_recovery'}));
   if(commandIntent.matched&&commandIntent.mode==='EXACT_COIN_LIQUIDATIONS')env.REPORT2_MANUAL_COIN_CONTRACT=commandIntent.contract;
   console.log('LIQUIDATION_COMMAND_INTENT',JSON.stringify(commandIntent));
+  const savedRunRequest=source!=='schedule'?String(env.REPORT2_MANUAL_COMMAND||'').match(/\bRUN_ID=(\d{10,}-\d{10,})\b/iu):null;
+  if(savedRunRequest){
+    const savedRunId=savedRunRequest[1];
+    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null});
+    savedOutput.requested_saved_run_id=savedRunId;
+    savedOutput.saved_canonical_retrieval=true;
+    await fs.writeFile('report2-run-result.json',JSON.stringify(savedOutput,null,2));
+    const completion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:savedRunId,rendered_text:JSON.stringify(savedOutput),delivered_to_existing_channel:true,now:Date.now()});
+    if(!completion.completed)throw new Error(`DURABLE_SAVED_RUN_COMPLETION_FAILED:${completion.status}`);
+    const leaseFinish=await finishAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
+    if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
+    console.log('SAVED_CANONICAL_RUN_OUTPUT',JSON.stringify({status:savedOutput.status,run_id:savedRunId,candidates:savedOutput.candidates.length,block_audit:savedOutput.block_audit||null,report_text_present:Boolean(savedOutput.report_text)}));
+    return;
+  }
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
