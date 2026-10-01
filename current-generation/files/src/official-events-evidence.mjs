@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import {normalizeOfficialEvent,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const OFFICIAL_EVENTS_EVIDENCE_VERSION='official-events-evidence-v4-fixed-html-20261001';
+export const OFFICIAL_EVENTS_EVIDENCE_VERSION='official-events-evidence-v5-chainlink-webflow-20261001';
 const SOURCE='OFFICIAL_EVENTS',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap,MAX_BYTES=512*1024;
 const text=value=>String(value??'').trim(),digest=value=>crypto.createHash('sha256').update(String(value)).digest('hex');
 const decode=value=>text(value).replace(/^<!\[CDATA\[|\]\]>$/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
@@ -15,6 +15,18 @@ const atomLink=body=>decode(body.match(/<link\b[^>]*\bhref=["']([^"']+)["'][^>]*
 const unfoldIcs=body=>text(body).replace(/\r\n[ \t]/g,'').replace(/\n[ \t]/g,'');
 const icsDate=value=>{const raw=text(value);if(/^\d{8}T\d{6}Z$/.test(raw))return Date.UTC(+raw.slice(0,4),+raw.slice(4,6)-1,+raw.slice(6,8),+raw.slice(9,11),+raw.slice(11,13),+raw.slice(13,15));if(/^\d{8}$/.test(raw))return Date.UTC(+raw.slice(0,4),+raw.slice(4,6)-1,+raw.slice(6,8));return stamp(raw);};
 const flattenJson=value=>Array.isArray(value)?value.flatMap(flattenJson):value&&typeof value==='object'?[value,...Object.values(value).flatMap(flattenJson)]:[];
+function chainlinkWebflowEvents(raw,domains,feed,now){
+ let feedPath='';try{feedPath=new URL(feed).pathname;}catch{}
+ if(!domains.includes('chain.link')||feedPath!=='/newsroom')return[];
+ const events=[];
+ const cards=raw.matchAll(/<a\b(?=[^>]*\bdata-wf-cms-context=["'][^"']+["'])(?=[^>]*\bclass=["'][^"']*(?:media-card-5|media-card)[^"']*["'])[^>]*\bhref=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi);
+ for(const match of cards){
+  const url=exactUrl(match[1],domains),body=match[2],title=decode(body.match(/<h[1-6]\b(?=[^>]*\bfs-list-field=["']title["'])[^>]*>([\s\S]*?)<\/h[1-6]>/i)?.[1]||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(),dateText=decode(body.match(/<div\b[^>]*class=["'][^"']*eyebrow[^"']*["'][^>]*>\s*((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},\s+\d{4})\s*<\/div>/i)?.[1]||''),published=stamp(dateText);
+  if(!url||!title||published===null||published>now||published<now-7*24*60*60_000)continue;
+  events.push({event_id:digest(`${url}|${published}|${title}`),title:title.slice(0,240),source_ts:published,effective_at:published,effective_to:null,official_url:url,format:'HTML'});
+ }
+ return events;
+}
 function htmlStructuredEvents(raw,domains,feed,now){
  const events=[];
  for(const match of raw.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){
@@ -26,8 +38,9 @@ function htmlStructuredEvents(raw,domains,feed,now){
    events.push({event_id:text(row.identifier?.value||row.identifier)||digest(`${url}|${published}|${title}`),title:title.slice(0,240),source_ts:published,effective_at:published,effective_to:null,official_url:url,format:'HTML'});
   }
  }
+ events.push(...chainlinkWebflowEvents(raw,domains,feed,now));
  const unique=[...new Map(events.map(row=>[row.event_id,row])).values()].sort((a,b)=>b.effective_at-a.effective_at).slice(0,16);
- return{status:unique.length?'CLOSED':raw.includes('application/ld+json')?'EMPTY_OR_STALE':'HTML_SCHEMA_NOT_CLOSED',events:unique,feed_url:feed};
+ return{status:unique.length?'CLOSED':raw.includes('application/ld+json')||raw.includes('data-wf-cms-context')?'EMPTY_OR_STALE':'HTML_SCHEMA_NOT_CLOSED',events:unique,feed_url:feed};
 }
 
 export function parseOfficialFeed({body,content_type='',feed_url,official_domains=[],expected_format=null,now=Date.now()}={}){
@@ -51,7 +64,7 @@ export function normalizeOfficialFeed({contract,asset_identity,asset_metadata,fe
 async function fetchText(fetchImpl,url){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const response=await fetchImpl(url,{headers:{accept:'application/rss+xml, application/atom+xml, text/calendar, text/html, application/xml, text/xml;q=0.9','user-agent':'My-Report-2/official-events-v1'},signal:controller.signal,redirect:'error'}),body=await response.text().catch(()=>''),finalUrl=text(response.url)||url;return{ok:response.ok,http_status:response.status,body,content_type:text(response.headers?.get?.('content-type')),final_url:finalUrl,error:response.ok?null:`HTTP_${response.status}`};}catch(error){return{ok:false,http_status:null,body:'',content_type:'',final_url:url,error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160)};}finally{clearTimeout(timer);}}
 
 export async function collectOfficialEventsEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now()}={}){
- if(!db)throw new Error('OFFICIAL_EVENTS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),domains=Array.isArray(asset_metadata?.official_domains)?asset_metadata.official_domains.map(x=>text(x).toLowerCase()):[],feeds=(Array.isArray(asset_metadata?.official_feeds)?asset_metadata.official_feeds:[]).filter(url=>exactUrl(url,domains)),specs=(Array.isArray(asset_metadata?.official_feed_specs)?asset_metadata.official_feed_specs:[]).filter(spec=>{const format=text(spec?.format).toUpperCase(),parser=text(spec?.parser_id);return feeds.includes(text(spec?.url))&&(['RSS','ATOM','ICS'].includes(format)&&parser===`FIXED_${format}_V1`||format==='HTML'&&parser==='FIXED_HTML_JSONLD_V1');}),registered=feeds.every(url=>specs.some(spec=>text(spec.url)===url)||/\.(?:xml|rss|atom|ics)(?:$|[?#])/i.test(new URL(url).pathname));if(!/^[^\s-]+-USDT$/u.test(htxContract)||!feeds.length||!registered)return{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,internal_only:true};
+ if(!db)throw new Error('OFFICIAL_EVENTS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),domains=Array.isArray(asset_metadata?.official_domains)?asset_metadata.official_domains.map(x=>text(x).toLowerCase()):[],feeds=(Array.isArray(asset_metadata?.official_feeds)?asset_metadata.official_feeds:[]).filter(url=>exactUrl(url,domains)),specs=(Array.isArray(asset_metadata?.official_feed_specs)?asset_metadata.official_feed_specs:[]).filter(spec=>{const format=text(spec?.format).toUpperCase(),parser=text(spec?.parser_id);return feeds.includes(text(spec?.url))&&(['RSS','ATOM','ICS'].includes(format)&&parser===`FIXED_${format}_V1`||format==='HTML'&&['FIXED_HTML_JSONLD_V1','FIXED_HTML_CHAINLINK_NEWSROOM_V1'].includes(parser));}),registered=feeds.every(url=>specs.some(spec=>text(spec.url)===url)||/\.(?:xml|rss|atom|ics)(?:$|[?#])/i.test(new URL(url).pathname));if(!/^[^\s-]+-USDT$/u.test(htxContract)||!feeds.length||!registered)return{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await installEvidenceSourceStore(db);const selected=feeds[parseInt(digest(`${run_id}:${htxContract}`).slice(0,8),16)%feeds.length],selectedSpec=specs.find(spec=>text(spec.url)===selected)||null,assetKey=`FEED:${digest(`${OFFICIAL_EVENTS_EVIDENCE_VERSION}|${htxContract}|${asset_identity?.chain||''}:${asset_identity?.contract_or_mint||''}|${domains.slice().sort().join(',')}|${selected}|${selectedSpec?.parser_id||'LEGACY_FIXED_XML'}`)}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,now});if(cached?.version===OFFICIAL_EVENTS_EVIDENCE_VERSION)return cached;
  const reservationId=`EV2:${SOURCE}:${run_id}:${assetKey}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:1}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:1,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
  const raw=await fetchText(fetch_impl,selected),redirectHost=hostOf(raw.final_url),redirectAllowed=hostAllowed(redirectHost,domains),normalized=raw.ok&&redirectAllowed?normalizeOfficialFeed({contract:htxContract,asset_identity,asset_metadata,feed_url:selected,body:raw.body,content_type:raw.content_type,expected_format:selectedSpec?.format||null,observed_ts:now}):{status:raw.ok?'OFFICIAL_DOMAIN_REDIRECT_MISMATCH':'SOURCE_ERROR',contract:htxContract,evidence:[],events:[],internal_only:true},parserClosed=['CLOSED','EMPTY_OR_STALE'].includes(normalized.status),result={version:OFFICIAL_EVENTS_EVIDENCE_VERSION,...normalized,network_calls:1,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:[{route:'EXACT_OFFICIAL_FEED',status:raw.ok&&redirectAllowed&&parserClosed?'CLOSED':'SOURCE_ERROR',http_status:raw.http_status,error:!redirectAllowed?'OFFICIAL_DOMAIN_REDIRECT_MISMATCH':parserClosed?raw.error:normalized.status}],internal_only:true};await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,observed_ts:now,expires_ts:now+(raw.ok&&redirectAllowed&&parserClosed?TTL:15*60000),payload:result});return result;
