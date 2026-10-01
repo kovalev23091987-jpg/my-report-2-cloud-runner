@@ -46,6 +46,7 @@ test('low-priority prospective statistics cannot cancel an otherwise complete ma
 test('full manual report reserves its deep check for a strict-17 registry asset',()=>{
  assert.match(runner,/REPORT2_MANUAL_MODE=expectedManualMode/u);
  assert.match(runner,/REPORT2_STRICT17_ELIGIBLE_CONTRACTS/u);
+ assert.match(runner,/coinpaprika_id&&row\?\.sector_tag\)\|\|\(row\?\.coingecko_id&&row\?\.coingecko_category_id/u);
  assert.match(worker,/MANUAL_STRICT17_AUDIT/u);
  assert.match(worker,/strict17_manual_audit:true/u);
  assert.match(worker,/require_exact_contract:true,required_contract:contract/u);

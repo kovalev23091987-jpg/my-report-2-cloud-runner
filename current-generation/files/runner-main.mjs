@@ -481,7 +481,7 @@ async function main() {
   const officialSourceRegistry=compileOfficialSourceRegistry(JSON.parse(await fs.readFile(resolve('./official-event-sources.json'),'utf8')));
   const supplementalIdentityRegistry=mergeOfficialAndConfiguredRegistries({official:officialSourceRegistry,configured:envText('REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON',{required:false})||{}});
   env.REPORT2_STRICT17_ELIGIBLE_CONTRACTS=Object.entries(supplementalIdentityRegistry.registry||{})
-    .filter(([,row])=>Boolean(row?.chain&&row?.contract_or_mint&&row?.official_feeds?.length&&row?.official_domains?.length&&row?.coinpaprika_id&&row?.sector_tag))
+    .filter(([,row])=>Boolean(row?.chain&&row?.contract_or_mint&&row?.official_feeds?.length&&row?.official_domains?.length&&((row?.coinpaprika_id&&row?.sector_tag)||(row?.coingecko_id&&row?.coingecko_category_id))))
     .map(([base])=>`${String(base).toUpperCase()}-USDT`);
   console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
   const unifiedHttpBudget=createUnifiedHttpBudget();
