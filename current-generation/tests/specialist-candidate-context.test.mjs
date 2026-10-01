@@ -44,7 +44,7 @@ test('maximum available slots, missing keys and fresh caches cause no extra HTTP
  for(const extra of [{remaining:0},{vyx_api_key:'',nansen_api_key:''},{cached:{VYX:{},NANSEN:{}}}])assert.equal((await collectSpecialistContext({...params(),...extra})).network_calls,0);
 });
 test('Nansen daily attempt cap is durable across invocations; VYX continues',async()=>{
- const p=params();for(let i=0;i<5;i++)assert.equal((await collectSpecialistContext(p)).network_calls,2);
+ const p=params();for(let i=0;i<8;i++)assert.equal((await collectSpecialistContext(p)).network_calls,2);
  const r=await collectSpecialistContext(p);assert.equal(r.network_calls,1);assert.ok(r.receipts.some(x=>x.source==='NANSEN'&&x.status==='LOCAL_BUDGET_OR_BACKOFF'));
 });
 test('quota cooldown covers all symbols, retains classification and does not leak secrets',async()=>{
@@ -80,9 +80,10 @@ test('flows and positions share Nansen daily cap and provider-wide quota cooldow
  assert.equal(requests[0].body.label,'exchange');assert.equal(requests[0].body.token_address,flowIdentity.contract_or_mint);
  assert.equal(requests[0].body.date.from,'2026-09-30T11:00:00.000Z');
  assert.equal((await collectSpecialistContext(p)).network_calls,3);
- assert.equal((await collectSpecialistContext(p)).network_calls,2);
+ assert.equal((await collectSpecialistContext(p)).network_calls,3);
+ assert.equal((await collectSpecialistContext(p)).network_calls,3);
  assert.equal((await collectSpecialistContext(p)).network_calls,1);
- assert.equal(p.db.sql.prepare("SELECT attempts FROM report2_specialist_budget WHERE source='NANSEN'").get().attempts,5);
+ assert.equal(p.db.sql.prepare("SELECT attempts FROM report2_specialist_budget WHERE source='NANSEN'").get().attempts,8);
  const q={...p,db:new DB(),fetch_impl:async url=>url.includes('vyx')?ok({...vyx,symbol_name:'TEST'}):({ok:false,status:403,headers:new Headers(),json:async()=>({code:'insufficient_credits',retry_after:180})})};
  const r=await collectSpecialistContext(q);assert.equal(r.network_calls,2);assert.equal(r.payloads[0].payload.status,'PROVIDER_QUOTA');assert.ok(r.receipts.some(x=>x.source==='NANSEN'&&x.actual_http===0));
  assert.equal((await collectSpecialistContext(q)).network_calls,1);
