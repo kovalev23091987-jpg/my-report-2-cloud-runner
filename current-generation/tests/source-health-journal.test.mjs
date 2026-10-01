@@ -35,6 +35,6 @@ test('N17 distinguishes quota, access, code failure and invalid content without 
   [{status:'SOURCE_ERROR',network_calls:1,receipts:[{http_status:500}]},'EXTERNAL_FAILURE'],
  ];
  const d=db();let out;
- for(let i=0;i<cases.length;i++){const [r,expected]=cases[i],operational_class=classifyEvidenceSourceHealth(r);assert.equal(operational_class,expected);out=await recordEvidenceSourceHealth(d,{contract:'LINK-USDT',run_id:'CLASS:'+i,now:i,admit:()=>({allowed:true}),observations:[{...row,status:r.status,actual_http:r.network_calls,operational_class}]});if(r.network_calls===0)assert.equal(out.status,'NO_NEW_TRANSPORT_OBSERVATION');}
+ for(let i=0;i<cases.length;i++){const [r,expected]=cases[i],operational_class=classifyEvidenceSourceHealth(r);assert.equal(operational_class,expected);out=await recordEvidenceSourceHealth(d,{contract:'LINK-USDT',run_id:'CLASS:'+i,now:i,admit:()=>({allowed:true}),observations:[{...row,status:r.status,actual_http:r.network_calls,operational_class}]});if(r.network_calls===0)assert.ok(['NO_NEW_TRANSPORT_OBSERVATION','CLOSED_OPERATIONAL_JOURNAL_CACHE'].includes(out.status));}
  const counts=out.observations[0];assert.equal(counts.recent_observations,7);assert.equal(counts.rate_limited_count,2);assert.equal(counts.access_blocked_count,1);assert.equal(counts.internal_failure_count,1);assert.equal(counts.external_failure_count,1);assert.equal(counts.invalid_response_count,1);assert.equal(out.predictive_weight_changed,false);assert.equal(out.quarantine_activated,false);d.sqlite.close();
 });

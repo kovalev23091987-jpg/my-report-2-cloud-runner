@@ -32,7 +32,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   if(!timezone||!/^\d+[mhd]$/.test(refresh))fail('REFRESH_METADATA');
   if(!['RSS','ATOM','ICS','HTML'].includes(format))fail('FORMAT');
   if(!['ENABLED','DISABLED'].includes(status))fail('STATUS');
-  if(status==='ENABLED'&&(!['RSS','ATOM','ICS'].includes(format)||!['FIXED_RSS_V1','FIXED_ATOM_V1','FIXED_ICS_V1'].includes(parser)))fail('ENABLED_PARSER');
+  if(status==='ENABLED'&&!((['RSS','ATOM','ICS'].includes(format)&&parser===`FIXED_${format}_V1`)||(format==='HTML'&&parser==='FIXED_HTML_JSONLD_V1')))fail('ENABLED_PARSER');
   if(status==='DISABLED'&&(!clean(row?.disabled_reason)||parser!==null))fail('DISABLED_REASON');
   if(snapshotSpace&&(!/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(snapshotSpace)||!withinDomain(hostOf(snapshotEvidence),domain)))fail('SNAPSHOT_IDENTITY');
   const prior=registry[base];

@@ -20,6 +20,10 @@ test('K16 official events enforces the registered fixed parser format',()=>{
  assert.equal(parseOfficialFeed({body:rss,content_type:'application/rss+xml',feed_url:META.official_feeds[0],official_domains:META.official_domains,expected_format:'ATOM',now:NOW}).status,'PARSER_FORMAT_MISMATCH');
  assert.equal(parseOfficialFeed({body:rss,content_type:'application/rss+xml',feed_url:META.official_feeds[0],official_domains:META.official_domains,expected_format:'RSS',now:NOW}).status,'CLOSED');
 });
+test('K16 official events parses only exact-domain recent JSON-LD articles from fixed HTML',()=>{
+ const body=`<!doctype html><html><script type="application/ld+json">{"@context":"https://schema.org","@type":"NewsArticle","headline":"Protocol update","datePublished":"2026-09-28T02:30:00Z","url":"https://abc.example/news/update"}</script></html>`;
+ const parsed=parseOfficialFeed({body,content_type:'text/html',feed_url:'https://abc.example/newsroom',official_domains:['abc.example'],expected_format:'HTML',now:NOW});assert.equal(parsed.status,'CLOSED');assert.equal(parsed.events.length,1);assert.equal(parsed.events[0].format,'HTML');
+});
 test('K16 official events uses one admitted request, caches it and blocks redirect to another host',async()=>{
  const db=new DB(),fetch_impl=async()=>({ok:true,status:200,url:'https://abc.example/feed.xml',headers:{get:()=> 'application/rss+xml'},text:async()=>rss}),base={db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'ABC-USDT',run_id:'R',asset_metadata:META,now:NOW};const first=await collectOfficialEventsEvidence(base),second=await collectOfficialEventsEvidence({...base,run_id:'R2',now:NOW+1});assert.equal(first.status,'CLOSED');assert.equal(first.network_calls,1);assert.equal(second.network_calls,0);
  const blocked=await collectOfficialEventsEvidence({...base,db:new DB(),run_id:'R3',fetch_impl:async()=>({ok:true,status:200,url:'https://evil.example/feed.xml',headers:{get:()=> 'application/rss+xml'},text:async()=>rss})});assert.equal(blocked.status,'OFFICIAL_DOMAIN_REDIRECT_MISMATCH');assert.equal(blocked.evidence.length,0);

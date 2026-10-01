@@ -17033,6 +17033,23 @@ async function buildDeepCheckInput(params, env) {
   const canonicalDiscoveryRow=params?.discovery_row?{...params.discovery_row,current_price:htxReferencePrice.status==='CLOSED'?htxReferencePrice.value:null,early_candidate_direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction,direction_hint:directionCandidate.direction==='UNKNOWN'?null:directionCandidate.direction}:null;
   const canonicalFuturesComponent=futures?.data?{...futures,data:{...futures.data,mark_price:null,ticker:null,ticker_24h:null}}:futures;
   const canonicalLiquidationIntelligence=liquidationIntelligence?{...liquidationIntelligence,provider_current_price:null}:liquidationIntelligence;
+  const bboBid=Number(futures?.data?.bbo?.best_bid),bboAsk=Number(futures?.data?.bbo?.best_ask);
+  const bboClosed=Number.isFinite(bboBid)&&Number.isFinite(bboAsk)&&bboBid>0&&bboAsk>=bboBid;
+  const depthClosed=futures?.data?.health?.depth===true&&bboClosed;
+  const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
+  const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
+  const technicalClosed=Boolean(technicalState&&finalDecisionPublicationShadow?.entry_signal&&typeof finalDecisionPublicationShadow.entry_signal==='object');
+  if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
+    candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
+      evidence_result:candidateEvidenceV2,
+      primary_sources:{
+        PRIMARY_TECHNICAL_CONTEXT:{status:technicalClosed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:technicalClosed,network_calls:0,receipts:[{check_completed:technicalClosed,status:technicalState||'NOT_EVALUATED'}]},
+        PRIMARY_EXECUTION_STRESS:{status:depthClosed?'CHECKED_HTX_ORDERBOOK_STRESS':'HTX_ORDERBOOK_NOT_CLOSED',check_completed:depthClosed,network_calls:0,receipts:[{check_completed:depthClosed,status:depthClosed?'CLOSED':'NOT_CLOSED',bid:Number.isFinite(bboBid)?bboBid:null,ask:Number.isFinite(bboAsk)?bboAsk:null,depth:futures?.data?.health?.depth===true}]},
+        PRIMARY_EXECUTION_COST:{status:executionCostClosed?'CHECKED_HTX_EXECUTION_COST':'HTX_EXECUTION_COST_NOT_CLOSED',check_completed:executionCostClosed,network_calls:0,receipts:[{check_completed:executionCostClosed,status:executionCostClosed?'CLOSED':'NOT_CLOSED',buy_impact_filled:futures?.data?.liquidity?.buy_market_impact?.fully_filled===true,sell_impact_filled:futures?.data?.liquidity?.sell_market_impact?.fully_filled===true}]},
+      },
+    });
+  }
+  console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
   const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({

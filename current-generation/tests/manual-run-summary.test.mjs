@@ -37,12 +37,15 @@ test('watch is presented with a favorable measured target without a fixed percen
 test('failed source status never masquerades as healthy absence of ideas',()=>{
  assert.equal(formatManualRunSummary({status:'NOT_CLOSED',candidates:[],generated_at}),null);
 });
-test('manual run returns the already approved full report text unchanged',()=>{
+test('manual run always returns the owner layout instead of stored technical text',()=>{
  const approved='МОЙ ОТЧЁТ 2\n\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nНаблюдение по QNT-USDT.';
  const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:17,checked_block_count:17,all_blocks_checked:true}}],generated_at};
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'CLOSED');
- assert.equal(formatManualRunSummary(checked),approved);
+ const rendered=formatManualRunSummary(checked);
+ assert.match(rendered,/Проверка: 17 из 17 блоков/u);
+ assert.match(rendered,/ЛОНГ[\s\S]*ШОРТ/u);
+ assert.doesNotMatch(rendered,/КАНОНИЧЕСКОЕ СОСТОЯНИЕ/u);
 });
 test('manual run fails closed when any candidate lacks a real 17 block check',()=>{
  const output={status:'CLOSED',source:'manual',candidates:[{manual_text:'НЕ ПОКАЗЫВАТЬ',block_coverage:{coverage_count:17,checked_block_count:12,all_blocks_checked:false}}],generated_at};
