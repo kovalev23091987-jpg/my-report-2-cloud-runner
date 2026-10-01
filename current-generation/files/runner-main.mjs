@@ -779,9 +779,9 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       shadowDecisionAuto: envText("REPORT2_TELEGRAM_SHADOW_DECISION_AUTO", { required: false }),
       watch70Enabled: envText("REPORT2_TELEGRAM_WATCH70_ENABLED", { required: false }),
       watch70Threshold: envText("REPORT2_TELEGRAM_WATCH70_THRESHOLD", { required: false }),
-      infoEnabled: postV7UnifiedEnabled ? "0" : envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
+      infoEnabled: envText("REPORT2_TELEGRAM_INFO_ENABLED", { required: false }),
       infoTestId: envText("REPORT2_TELEGRAM_INFO_TEST_ID", { required: false }),
-      infoObserveEnabled: postV7UnifiedEnabled ? "0" : envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
+      infoObserveEnabled: envText("REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED", { required: false }),
       currentLifecycle: telegramInstallValidation && telegramReportTestRequested ? null : (v3TelegramLifecycleSidecar || {status:"LIFECYCLE_NOT_RUN"}),
       // The bound canonical publisher owns OBSERVE, WAIT and ENTRY in post-v7.
       // Keeping the legacy sender disabled prevents duplicate or differently
