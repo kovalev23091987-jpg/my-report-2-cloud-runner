@@ -15,6 +15,13 @@ test('K16: stale, wrong asset, error and empty fixtures never contribute',()=>{
   assert.equal(consumeEvidenceV2([],{base_interest:70,decision_ts:1500}).adjustment,0);
 });
 
+test('K16: validation exposes the exact rejection reason',()=>{
+  const base=make(templates[0]);
+  assert.equal(validateEvidenceV2({...base,expires_at:1400},{decision_ts:1500}).status,'EVIDENCE_EXPIRED');
+  assert.equal(validateEvidenceV2({...base,first_known_ts:1600},{decision_ts:1500}).status,'FIRST_KNOWN_AFTER_DECISION');
+  assert.equal(validateEvidenceV2({...base,validation_status:'ERROR'},{decision_ts:1500}).status,'VALIDATION_ERROR');
+});
+
 test('K16: one event through multiple transports owns one score family',()=>{
   const base=make(templates.find(x=>x.block_id==='N05'));
   const result=consumeEvidenceV2([base,{...base,evidence_id:'OTHER',provider_id:'AGGREGATOR'}],{base_interest:70,decision_ts:1500});
