@@ -102,7 +102,7 @@ export function auditCandidateBlocks({evidence=[],sources={},primary_checks={},d
 }
 
 export async function collectCandidateEvidenceV2(params={}){
- const requestedCap=Number(params.max_requests);const evidenceCap=Number.isSafeInteger(requestedCap)?Math.max(5,Math.min(28,requestedCap)):5;
+ const requestedCap=Number(params.max_requests??process.env.REPORT2_EVIDENCE_HTTP_CAP);const evidenceCap=Number.isSafeInteger(requestedCap)?Math.max(5,Math.min(28,requestedCap)):5;
  const publicRows=Array.isArray(params?.public_evidence?.evidence)?params.public_evidence.evidence:[];
  const primaryChecks={
   N01:{checked:true,status:'CHECKED_PRIMARY_RISK_CONTEXT',facts:publicRows.filter(row=>/RISK|REGIME|EVENT/i.test(String(row?.chain||row?.metric||''))).length,decision_usable:true},
