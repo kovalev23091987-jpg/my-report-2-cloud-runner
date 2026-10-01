@@ -16372,6 +16372,7 @@ async function buildDeepCheckInput(params, env) {
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
         critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:sourceRoutingPlan.reserve_liquidation_lane,
+        strict17_required:String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL',
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}

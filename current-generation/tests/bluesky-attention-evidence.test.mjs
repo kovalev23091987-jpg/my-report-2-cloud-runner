@@ -32,3 +32,7 @@ test('K31 Bluesky HTTP 200 malformed JSON is invalid and is not stored as zero a
  const out=await collectBlueskyAttentionEvidence({db:new DB(),fetch_impl:async()=>({ok:true,status:200,json:async()=>null}),request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'LINK-USDT',run_id:'R-BAD',asset_identity:identity,now:Date.parse('2026-09-28T03:00:00Z')});
  assert.equal(out.status,'INVALID_RESPONSE');assert.equal(out.receipts[0].status,'INVALID_RESPONSE');assert.equal(out.evidence.length,0);
 });
+test('K31 Bluesky uses the working public AppView host',async()=>{
+ let requested='';const out=await collectBlueskyAttentionEvidence({db:new DB(),fetch_impl:async url=>{requested=String(url);return{ok:true,status:200,json:async()=>({posts:[]})};},request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'LINK-USDT',run_id:'R-HOST',asset_identity:identity,now:Date.parse('2026-10-01T03:00:00Z')});
+ assert.match(requested,/^https:\/\/api\.bsky\.app\/xrpc\/app\.bsky\.feed\.searchPosts\?/u);assert.equal(out.status,'CLOSED');
+});
