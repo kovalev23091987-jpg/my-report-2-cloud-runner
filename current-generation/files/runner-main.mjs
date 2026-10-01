@@ -25,7 +25,7 @@ import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } fro
 import { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from "./src/bound-telegram-delivery-sidecar.mjs";
 import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from "./src/scheduler-control.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET, R820_PROSPECTIVE_VALIDATION_VERSION } from "./r8-20-prospective-validation-sidecar.mjs";
-import { classifyCanonicalRunCompletion, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
+import { classifyCanonicalRunCompletion, enforceManualBlockCoverage, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext,contextForContract} from './src/global-market-context.mjs';
 import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './src/supplemental-candidate-context.mjs';
@@ -194,17 +194,20 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron}={})
       schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...classifyCanonicalRunCompletion({candidate_count:rows.length,cron}),pipeline_health:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
       candidates:rows.map(row=>{
         let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
+        const blockCoverage=canonical?.metadata?.internal_market_context?.evidence_v2?.block_coverage||null;
         return {
           publication_id:row.publication_id,contract:row.contract_code,direction:row.direction,run_id:row.run_id,snapshot_id:row.snapshot_id,wave_id:row.wave_id,
           observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
           actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||null,
+          block_coverage:blockCoverage,
           canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
         };
       }),
       generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,
     };
-    output.report_text=formatManualRunSummary(output);
-    return output;
+    const checkedOutput=enforceManualBlockCoverage(output);
+    checkedOutput.report_text=formatManualRunSummary(checkedOutput);
+    return checkedOutput;
   }catch(error){
     return {schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:'NOT_CLOSED',reason:'CANONICAL_RUN_OUTPUT_READ_FAILED',error:String(error?.message||error).slice(0,240),candidates:[],generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false};
   }
