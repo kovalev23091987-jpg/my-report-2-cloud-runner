@@ -18,3 +18,9 @@ test('a public future call uses the official read-only MCP tool, caches partial 
  const params={db,fetch_impl,contract:'BTW-USDT',run_id:'FUTURE',now:T};assert.equal((await collectCoinLobsterFutureModel(params)).network_calls,1);assert.equal((await collectCoinLobsterFutureModel(params)).network_calls,0);assert.equal(calls,1);
  await db.prepare('DELETE FROM report2_coinlobster_future_cache').run();assert.equal((await collectCoinLobsterFutureModel(params)).network_calls,0);assert.equal(calls,1);db.sql.close();
 });
+
+test('lower-detail future model cannot consume the native level envelope but can reuse cached context',async()=>{
+ const db=database();let calls=0;
+ const opts={db,contract:'BTW-USDT',run_id:'ENVELOPE',now:T,max_http:0,fetch_impl:async()=>{calls++;throw Error('cannot dispatch');}};
+ assert.equal((await collectCoinLobsterFutureModel(opts)).status,'DEFERRED_HTTP_ENVELOPE');assert.equal(calls,0);db.sql.close();
+});

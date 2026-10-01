@@ -1,10 +1,12 @@
+import {capturedTrackedBands} from './byk-tracked-future-map.mjs';
+import {capturedFutureMap,capturedNativeFutureMaps,capturedCoinLobsterHint} from './future-liquidation-map-source.mjs';
 import {selectComparableVolumeProfiles} from './cross-venue-volume-profile.mjs';
 import {volumeProfileFacts,applyVolumeProfileToLiquidationPanel} from './htx-volume-profile.mjs';
 import {attachNativeContext} from './liquidation-extension/runtime-bridge.mjs';
 import { buildCanonicalAnalyticalResult } from './canonical-analytical-result.mjs';
 import { computeCanonicalInterestFromRuntime } from './canonical-interest-score.mjs';
 import { buildRoleEvidenceView } from './source-role-consumer.mjs';
-import { buildPumpLiquidationZones } from './pump-liquidation-zones.mjs';
+import { buildPumpLiquidationZones,coinLobsterFutureRows } from './pump-liquidation-zones.mjs';
 import { formatTelegramCompact } from './telegram-compact-formatter.mjs';
 import { formatManualReport } from './manual-report-formatter.mjs';
 import { safeUserReason } from './reason-registry.mjs';
@@ -219,6 +221,9 @@ export function buildRuntimeCanonicalBundle({
  const volumeConsensus=selectComparableVolumeProfiles({contract,now:observed_ts,reference_price:price,direction,peer_sources:internal_market_context?.cross_exchange_risk?.volume_profiles?.sources||{}});
  const volumeProfile=volumeConsensus.primary;
  const liquidationPanel=applyVolumeProfileToLiquidationPanel(buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts}),volumeProfile,{contract,now:observed_ts,reference_price:price,consensus_factor:volumeConsensus.factor});
+ const futureMapSource=capturedFutureMap({contract,run_id,snapshot_id,observed_ts});
+ const trackedHlView=capturedTrackedBands({contract,run_id,observed_ts});
+ const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...capturedNativeFutureMaps({contract,run_id})],native_contexts:nativeContexts,projected:coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models),observed_ts}),future_hint:capturedCoinLobsterHint(contract),future_source_status:{...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile,volume_consensus:volumeConsensus,contract,observed_ts,reference_price:price});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;
@@ -276,7 +281,7 @@ export function buildRuntimeCanonicalBundle({
   entry:entryFrom(publication_shadow,observation)??observation?.entry??null,trigger:route?.trigger??observation?.trigger??null,invalidation:publication_shadow?.scenario_plan?.invalidation??observation?.invalidation??null,
   targets:targetsFrom(publication_shadow,observation),costs:publication_shadow?.cost_assessment??null,
   early_candidate:earlyCandidate(discovery_row,directionResolution.early_receipt),opportunity:opportunityCompact(opportunity),microstructure:microCompact(discovery_row),
-  liquidations:nativeLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
+  liquidations:renderedLiquidationView,data_quality:data_sufficiency??null,free_sources:freeSources,
   changes_from_previous:snapshotChanges.lines,
   metadata:{contract:text(contract)||null,oi_window_receipts,canonical_runtime_adapter:CANONICAL_RUNTIME_ADAPTER_VERSION,entry_readiness_score_status:'NOT_PROVISIONED_DO_NOT_INVENT',live_probability:null,validated_signal:false,automatic_execution:false,minimum_reportable_move_pct:5,technical_move_potential:observation?.technical_move_potential??(publication_shadow?.scenario_plan?.remaining_move_pct>=5?{status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',potential_move_pct:publication_shadow.scenario_plan.remaining_move_pct,target_price:publication_shadow.scenario_plan.target_price}:null),start_closing_price:targetsFrom(publication_shadow,observation)?.[0]?.price??null,idea_basis:pump?.pump?.is_pump===true?'LIQUIDATION_PUMP':(opportunity?.newest_event?.minute_decomposition?.classification_allowed===true||opportunity?.newest_event?.early_anomaly_classification)?'CANDLE_ANOMALY':'MULTI_FACTOR',supporting_context:supportingContext,internal_market_context:internal_market_context&&internal_market_context.internal_only===true?internal_market_context:null,dynamic_liquidation_panel:liquidationPanel,supplemental_score_adjustment:supplementalScoreAdjustment,score_basis:{selected:interestBasis.basis,qualified_early_detection_0_100:earlyQuality,deep_canonical_interest_0_100:deepInterest,routed_overall_0_100:routedOverall},direction_resolution:directionResolution,scenario_plan_transfer:{existing_plan_closed:existingPlanClosed,fallback_plan_closed:observationPlanClosed,reason:effectiveState==='REJECTED'&&!existingPlanClosed&&!observationPlanClosed?(observation?.entry&&!observation?.targets?.length?'TARGET_NOT_PROVEN':'PLAN_NOT_CLOSED'):null},source_role_view:sourceRoleView,snapshot_comparison:snapshotChanges,evidence_domain_contract:evidenceDomains,protective_filter:publication_shadow?.protective_filter??null},
  });

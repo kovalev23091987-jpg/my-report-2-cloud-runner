@@ -36,7 +36,7 @@ export function formatManualReport(result){
  const nativeLines=nativeLiquidationLines(result.liquidations,{manual:true});
  lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations),...forwardModelLines);
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
- lines.push(...formatLiquidationHistoryFacts(result.metadata?.internal_market_context?.cross_exchange_risk,{user_ru:true}));
+ if(!result.liquidations?.future_only)lines.push(...formatLiquidationHistoryFacts(result.metadata?.internal_market_context?.cross_exchange_risk,{user_ru:true}));
  if(result.free_sources)lines.push('','КАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ',`Статус непрерывного сбора: ${result.free_sources.continuous_collector_status==='PARTIAL_REALTIME_COVERAGE'?'частичное покрытие в реальном времени':'проверяется'}.`,`Новые внешние запросы горячего цикла: ${result.free_sources.hot_cycle_external_request_delta??0}.`);
  const sf=supportingFacts(result);if(sf.length){lines.push('','ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');for(const f of sf.slice(0,6)){const src=sourceLabelRu(f.source)||f.source;const v=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;lines.push(`- ${f.label}: ${v}${src?` — ${src}`:''}.`);}}
  if(result.changes_from_previous?.length)lines.push('','ИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА',...result.changes_from_previous.map(x=>`- ${safeUserReason(displaySnapshotChange(x))||'изменение зафиксировано'}`));

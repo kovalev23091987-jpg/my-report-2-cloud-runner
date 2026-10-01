@@ -16331,7 +16331,6 @@ async function buildDeepCheckInput(params, env) {
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
 
   let futureProviderModels=null;
-  if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
   let htxLiquidationShadow=null;
 
   let liquidationIntelligence;
@@ -16376,6 +16375,8 @@ async function buildDeepCheckInput(params, env) {
     };
   }
 
+  if(typeof env?.REPORT2_TRACKED_HL_FUTURE_COLLECT==='function')try{await env.REPORT2_TRACKED_HL_FUTURE_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),byk_admission:bykAdmission,now:Date.now()});}catch{/* Optional future sample remains unavailable; do not synthesize levels. */}
+
   // Owner contract: open-position liquidation levels are collected before history.
   let nativeLiquidationAcquisition = null;
   const liquidationCandidateHttpCap=remainingLiquidationHttpCap({plan:sourceRoutingPlan,cross_exchange_context:{network_calls:futureProviderModels?.network_calls??0}});
@@ -16393,6 +16394,8 @@ async function buildDeepCheckInput(params, env) {
       });
     } catch(error) { nativeLiquidationCollectionError=String(error?.message||error).slice(0,200); /* Optional source fails closed; never refresh its old timestamps. */ }
   }
+
+  if(typeof env?.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT==='function')try{futureProviderModels=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),now:Date.now()});}catch{futureProviderModels={status:'SOURCE_ERROR',network_calls:1,levels:[]};}
 
   // Historical liquidation tape is secondary to the future map.
 

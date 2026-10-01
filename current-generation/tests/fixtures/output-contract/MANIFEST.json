@@ -3,11 +3,13 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "5a128173d48483a22f96db0a6490435fe8970f66eae57704999f73d0c8b13a9c",
-    "current-generation/files/src/telegram-compact-formatter.mjs": "ca30d45b004dd0c517bbf90c6c837a7cbda295535bbe8ce90a9c2863740a8a92",
-    "current-generation/files/src/canonical-display.mjs": "abedc8c35c9d55ab830e0025f21efd64805a4f7d29210e612c20a4366fce3c96",
+    "current-generation/files/src/manual-report-formatter.mjs": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68",
+    "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
+    "current-generation/files/src/canonical-display.mjs": "0b28929b8d2bb3486cdecbb3807b118748ea9f5e6007687820f0f8c4eb7b0f39",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
-    "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997"
+    "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0",
+    "current-generation/files/src/canonical-publication.mjs": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -66,6 +68,64 @@
       ],
       "golden_fixtures_changed": false,
       "telegram_format_changed": false
+    },
+    {
+      "date": "2026-10-01",
+      "requirement": "Owner explicitly corrects task to future liquidation levels, volume size classes and all useful sources, independently of distance, in standalone and main report",
+      "changes": [
+        {
+          "file": "current-generation/files/src/manual-report-formatter.mjs",
+          "previous_sha256": "d372ec3c309f83449418ad9558b0e0f716f16ef5d288ddeff7bccc6ae3100fec",
+          "new_sha256": "82e68f61e6df3b52e9dc2586b59f4a315431171b74b15a52a55c39ad94071b68"
+        },
+        {
+          "file": "current-generation/files/src/telegram-compact-formatter.mjs",
+          "previous_sha256": "ca30d45b004dd0c517bbf90c6c837a7cbda295535bbe8ce90a9c2863740a8a92",
+          "new_sha256": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c"
+        },
+        {
+          "file": "current-generation/files/src/canonical-display.mjs",
+          "previous_sha256": "e7cad32bca8bb1708bf61852b8075ad6c7c6d642ceaca4b615acec858df16789",
+          "new_sha256": "65535f0626959e10ccaf7cf6303cf06fcb3b4edc39d7d2ebde474820f2bc13ff"
+        },
+        {
+          "file": "current-generation/files/src/canonical-runtime-adapter.mjs",
+          "new_sha256": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
+          "scope": "Future map acquisition and display only; direction, interest and entry policy retained"
+        },
+        {
+          "file": "current-generation/files/src/canonical-publication.mjs",
+          "new_sha256": "e41d52d8090eda95f07c50ad38669904dd6213226954e1e25d3dd674d7c6b074",
+          "scope": "Future map acquisition and display only; direction, interest and entry policy retained"
+        }
+      ],
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "authorization": "Explicit autonomous implementation and repair instruction; future_only records use the corrected liquidation renderer",
+      "worker_budget_order_change": {
+        "scope": "Numeric future maps and native positions before lower-detail model hints; all before realized history",
+        "previous_worker_sha256": "b852d386dad5d40778284ba036075b940dc944dbe56e21c6bf7de67d2d5534d9",
+        "new_worker_sha256": "82dde6361282b0bd1c3fea71fc099a1d69729ea4c767b814909af7d00cd66024",
+        "strategy_weights_changed": false,
+        "entry_rules_changed": false,
+        "request_caps_changed": false
+      }
+    },
+    {
+      "date": "2026-10-01",
+      "scope": "OWNER_REQUESTED_FUTURE_LIQUIDATION_TRACKED_NATIVE_BANDS",
+      "reason": "Connect verified ByK tracked native source in both report paths within existing monthly/HTTP envelopes; show far huge band before a dust farthest level; preserve original currencies, scan clock and sampled scope. Strategy and golden fixture bytes unchanged.",
+      "module_changes": {
+        "current-generation/files/src/canonical-display.mjs": {
+          "before": "65535f0626959e10ccaf7cf6303cf06fcb3b4edc39d7d2ebde474820f2bc13ff",
+          "after": "4a9a25f26bfe4ba73a9baf6f8808c48735276e1aaad588444048fa6ba42ae8ae"
+        },
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "377c22308f050083a2566d8578d18f54b4a59bd373bf576b13ab834636ee7be1",
+          "after": "98ac948afd6f9616c8ac546a966137b19e81a8b121d69cfcad21b482736699a0"
+        }
+      },
+      "worker_sha256": "38e45208b75a064ada89f0a90c4bdce393497319a709e35c5f94717cc0ebd3e3"
     }
   ]
 }

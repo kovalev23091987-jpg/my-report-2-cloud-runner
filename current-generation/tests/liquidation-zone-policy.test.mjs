@@ -1,50 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildPumpLiquidationZones,classifyPump24h} from '../files/src/pump-liquidation-zones.mjs';
+import {buildPumpLiquidationZones,classifyPump24h,liquidationVolumeTier} from '../files/src/pump-liquidation-zones.mjs';
 import {displayLegacyLiquidations} from '../files/src/canonical-display.mjs';
-const zones=[
- {price:110,status:'CLOSED',source:'ByKaranteli',notional_usdt:1000},
- {price:121,status:'CLOSED',source:'ByKaranteli',notional_usdt:15000},
- {price:142,status:'CLOSED',source:'ByKaranteli',notional_usdt:250000},
- {price:175,status:'CLOSED',source:'ByKaranteli',notional_usdt:2500000},
- {price:90,status:'CLOSED',source:'ByKaranteli',notional_usdt:900},
- {price:79,status:'CLOSED',source:'ByKaranteli',notional_usdt:12000},
- {price:58,status:'CLOSED',source:'ByKaranteli',notional_usdt:220000},
- {price:25,status:'CLOSED',source:'ByKaranteli',notional_usdt:2200000},
-];
-test('five percent starts liquidation-map urgency and has no upper ceiling',()=>{
- for(const move of [5,40,100,200,-250])assert.equal(classifyPump24h(move).is_pump,true);
- assert.equal(classifyPump24h(200).upper_ceiling_pct,null);
-});
-test('early anomaly can show verified zones before five percent',()=>{
- const x=buildPumpLiquidationZones({contract:'FIL-USDT',rolling_24h_change_pct:2,current_price:100,early_anomaly:true,projected:zones});
- assert.equal(x.status,'CLOSED');assert.equal(x.above.length,4);assert.equal(x.below.length,4);
- assert.deepEqual(x.above.map(row=>row.band),['5_15','15_30','30_60','60_PLUS']);
- assert.deepEqual(x.below.map(row=>row.band),['5_15','15_30','30_60','60_PLUS']);
- assert.ok(x.above.every(row=>['небольшая','средняя','крупная','огромная'].includes(row.strength_label_ru)));
- assert.ok(x.above.every(row=>row.exact_amount_available===true));
- assert.equal(x.coverage_status,'PROVIDER_ZONES_ALL_BANDS');
-});
-test('every eligible HTX futures contract gets four calculated zones on both sides',()=>{
- for(const contract of ['SUI-USDT','FIL-USDT','龙虾-USDT']){
-  const x=buildPumpLiquidationZones({contract,rolling_24h_change_pct:0,current_price:10,projected:[]});
-  assert.equal(x.status,'CLOSED');assert.equal(x.coverage_scope,'ALL_HTX_FUTURES_EXCEPT_BTC_ETH');
-  assert.equal(x.coverage_status,'CALCULATED_FOR_ALL_BANDS');assert.equal(x.above.length,4);assert.equal(x.below.length,4);
-  assert.ok(x.above.concat(x.below).every(row=>row.kind==='CALCULATED'&&row.exact_amount_available===false&&row.strength_label_ru));
- }
-});
-test('provider holes are filled by calculated bands without inventing exact amounts',()=>{
- const x=buildPumpLiquidationZones({contract:'SUI-USDT',rolling_24h_change_pct:18,current_price:100,projected:[zones[0],zones[6]],calculation_context:{oi_change_pct:8,volume_ratio:3,funding_rate_pct:0.02}});
- assert.equal(x.status,'CLOSED');assert.equal(x.coverage_status,'MIXED_PROVIDER_AND_CALCULATED');
- assert.equal(x.above.length,4);assert.equal(x.below.length,4);
- assert.equal(x.above[0].exact_amount_available,true);assert.ok(x.above.slice(1).every(row=>row.exact_notional_usdt===null));
-});
-test('0xArchive projected buckets never masquerade as an exact liquidation amount',()=>{
- const map=buildPumpLiquidationZones({contract:'FIL-USDT',rolling_24h_change_pct:8,current_price:100,projected:[{status:'CLOSED',source:'0xArchive',providers:['0xArchive'],center_price:110,largest_provider_position_usd:42000,position_count:3}]});
- assert.equal(map.above[0].kind,'PROJECTED');assert.equal(map.above[0].exact_amount_available,false);
- const rendered=displayLegacyLiquidations(map).join(' ');
- assert.doesNotMatch(rendered,/точная сумма 42000/);
-});
-test('BTC and ETH never show liquidation maps',()=>{
- for(const contract of ['BTC-USDT','ETH-USDT'])assert.equal(buildPumpLiquidationZones({contract,rolling_24h_change_pct:200,current_price:100,projected:zones}).status,'EXCLUDED_BY_USER_POLICY');
+import {normalizeBykStructured} from '../files/src/liquidation-extension/providers.mjs';
+const T=1800000000000;
+const row=(price,amount,extra={})=>({price,notional_usdt:amount,source:'TEST',source_ts:T,status:'CLOSED',liquidated_side:price>100?'SHORT':'LONG',...extra});
+const build=extra=>buildPumpLiquidationZones({contract:'BTW-USDT',current_price:100,observed_ts:T,...extra});
+test('pump urgency is separate from existence and distance of liquidation levels',()=>{for(const n of [5,40,100,200,-250])assert.equal(classifyPump24h(n).is_pump,true);assert.equal(classifyPump24h(200).upper_ceiling_pct,null);assert.equal(build({early_anomaly:true}).status,'NOT_CLOSED');});
+test('no source map means no invented levels, amounts or size labels',()=>{const x=build({realized:[row(109,5000000)]});assert.equal(x.status,'NOT_CLOSED');assert.equal(x.calculated_fallback_enabled,false);assert.equal(x.provider_zone_count,0);assert.equal(x.above.length+x.below.length,0);assert.equal(x.realized_events_excluded,1);assert.doesNotMatch(displayLegacyLiquidations(x).join(' '),/109|огромная|нулевые/);});
+test('very close and arbitrarily distant huge levels survive independent of band',()=>{const x=build({projected:[row(100.1,6000000),row(101,5000000),row(102,4000000),row(400,10000000),row(800,5),row(99.9,9000000),row(.1,8000000)]});assert.equal(x.status,'CLOSED');assert.equal(x.distance_cap_pct,null);for(const n of [100.1,101,102,400,800])assert.ok(x.above.some(z=>z.price===n));for(const n of [99.9,.1])assert.ok(x.below.some(z=>z.price===n));assert.equal(x.above.find(z=>z.price===400).strength_label_ru,'огромная');assert.ok(x.above.find(z=>z.price===800).selection_roles.includes('FARTHEST_VISIBLE'));});
+test('a far huge level remains visible when an even farther dust level would consume the display slot',()=>{const x=build({projected:[row(110,9000000),row(120,8000000),row(130,7000000),row(140,6000000),row(100.1,10000),row(2000,2000000),row(1000000,1)]});assert.equal(x.above.length,6);assert.ok(x.above.some(z=>z.price===2000&&z.selection_roles.includes('FARTHEST_HUGE_VISIBLE')));assert.equal(x.above.some(z=>z.price===1000000),false);assert.ok(x.all_zones.some(z=>z.price===1000000));});
+test('volume determines size without fabricating strength from distance, source count or OI',()=>{for(const [n,label] of [[100,'небольшая'],[10000,'средняя'],[100000,'крупная'],[1000000,'огромная']]){assert.equal(liquidationVolumeTier(n),label);for(const p of [100.1,120,500])assert.equal(build({projected:[row(p,n)]}).above[0].strength_label_ru,label);}assert.equal(liquidationVolumeTier(null),null);});
+test('stale, future-clock, executed, swept, wrong-side and unbound rows are excluded',()=>{const x=build({projected:[row(110,1,{source_ts:T-300001}),row(111,1,{source_ts:T+1}),row(112,1,{kind:'REALIZED'}),row(113,1,{kind:'CALCULATED'}),row(114,1,{lifecycle:'SWEPT'}),row(115,1,{liquidated_side:'LONG',native_reference_price:100}),row(116,1,{source_ts:null}),row(117,1,{status:'NOT_CLOSED'})]});assert.equal(x.provider_zone_count,0);});
+test('unknown money units retain price context without pretending a dollar amount',()=>{const x=build({projected:[row(110,7000000,{notional:7000000,notional_unit:'CONTRACTS'})]});assert.equal(x.above[0].notional,null);assert.equal(x.above[0].strength_label_ru,null);assert.match(displayLegacyLiquidations(x).join(' '),/размер неизвестен; объём неизвестен/);});
+test('provider model amounts remain estimates and upstream overlap is not summed',()=>{const c={symbol:'BTW',as_of_ms:T,received_at_ms:T,max_age_ms:300000,snapshot_id:'S',run_id:'R'};const p={symbol:'BTW',as_of:new Date(T).toISOString(),real_levels:{model_version:'real_v1_multi',reference_price:100,sources:['gate'],levels:[{price:110,notional_usd:1000000,side:'short'}]}};const receipt=normalizeBykStructured(p,c);const x=build({provider_maps:[receipt,receipt]});assert.equal(x.provider_zone_count,1);assert.equal(x.above[0].notional,1000000);assert.equal(x.above[0].estimated,true);assert.equal(x.above[0].exact_amount_available,false);assert.equal(x.above[0].decision_target_eligible,false);assert.equal(x.notional_summed_across_providers,false);assert.match(displayLegacyLiquidations(x).join(' '),/оценка 1000000 USD/);});
+test('tampered or different-symbol provider maps cannot become this coin map',()=>{const c={symbol:'OTHER',as_of_ms:T,received_at_ms:T,max_age_ms:300000,snapshot_id:'S',run_id:'R'},r=normalizeBykStructured({symbol:'OTHER',as_of:new Date(T).toISOString(),real_levels:{model_version:'real_v1_multi',reference_price:100,sources:['gate'],levels:[{price:110,notional_usd:1,side:'short'}]}},c);assert.equal(build({provider_maps:[r]}).provider_zone_count,0);r.native_symbol='BTW';assert.equal(build({provider_maps:[r]}).provider_zone_count,0);});
+test('native reported position sizes keep unit, conditional margin and source scope',()=>{const ctx={status:'USABLE_NATIVE_SAMPLE',binding:{contract:'BTW-USDT'},source_ts:T,provider:'Hyperliquid',coverage:'EXPLICIT_PUBLIC_ACCOUNT_SAMPLE',above:[{native_price:101,notional:2000000,notional_unit:'USDC',native_reference_price:100,conditional_cross:true,price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}]};const x=build({native_contexts:[ctx]});assert.equal(x.above[0].notional_unit,'USDC');assert.equal(x.above[0].notional,2000000);assert.equal(x.above[0].conditional_cross,true);assert.equal(x.above[0].estimated,false);assert.equal(x.above[0].exact_notional_usdt,null);assert.match(displayLegacyLiquidations(x).join(' '),/позиция 2000000 USDC/);});
+test('duplicates are not added together and unshown levels remain in full map',()=>{const rows=Array.from({length:12},(_,i)=>row(101+i,100+i));const x=build({projected:[...rows,rows[0]]});assert.equal(x.provider_zone_count,12);assert.equal(x.all_zones.length,12);assert.equal(x.above.length,5);assert.equal(x.omitted_zone_count,7);});
+test('BTC and ETH remain excluded',()=>{for(const contract of ['BTC-USDT','ETH-USDT'])assert.equal(buildPumpLiquidationZones({contract,current_price:100}).status,'EXCLUDED_BY_USER_POLICY');});
+
+test('cross-quote distance uses original source price and never divides USD or USDC by HTX USDT',()=>{
+ const x=build({current_price:200,projected:[row(110,1000000,{price_quote:'USD',native_reference_price:100}),row(90,2000000,{price_quote:'USDC',native_reference_price:100}),row(120,3000000,{price_quote:'USD'})]});
+ assert.equal(x.above.find(z=>z.price===110).distance_pct,10.000000000000009);assert.equal(x.below[0].distance_pct,-9.999999999999998);assert.equal(x.above.find(z=>z.price===120).distance_pct,null);
+ const out=displayLegacyLiquidations(x).join(' ');assert.match(out,/к цене источника/);assert.match(out,/расстояние неизвестно/);assert.doesNotMatch(out,/-45%|-55%/);
 });

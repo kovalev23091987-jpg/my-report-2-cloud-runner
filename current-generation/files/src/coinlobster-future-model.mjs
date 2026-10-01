@@ -8,11 +8,11 @@ export function parseCoinLobsterMcpResponse(body){
 }
 export function normalizeCoinLobsterFuture(payload,{contract,now=Date.now()}={}){
  const base=clean(contract).replace(/-USDT$/,'').toUpperCase(),responseBase=clean(payload?.coin??payload?.pair).toUpperCase().split('/')[0];
- const timestamp=Date.parse(payload?.as_of??payload?.headline_as_of??''),clock=Number.isFinite(timestamp)&&timestamp<=now+60_000&&now-timestamp<=TTL;
- const common={source:'COINLOBSTER_FUTURE_MODEL',contract,role:'PROJECTED_PROVIDER_MODEL',observed_ts:now,source_ts:Number.isFinite(timestamp)?timestamp:null,access_note:payload?.access_note??null,network_calls:0,levels:[],provider_model_not_position_census:true,internal_only:true};
+ const timestamp=Date.parse(payload?.as_of??payload?.headline_as_of??''),clock=Number.isFinite(timestamp)&&timestamp<=now+60_000&&now-timestamp<=5*60_000;
+ const common={source:'COINLOBSTER_FUTURE_MODEL',contract,role:'PROJECTED_PROVIDER_MODEL',observed_ts:now,source_ts:Number.isFinite(timestamp)?timestamp:null,source_age_ms:Number.isFinite(timestamp)?now-timestamp:null,source_clock_current:clock,delayed:payload?.delayed??null,access_note:payload?.access_note??null,network_calls:0,levels:[],provider_model_not_position_census:true,internal_only:true};
  if(responseBase!==base)return{...common,status:'IDENTITY_NOT_CLOSED',reason:'EXACT_RESPONSE_COIN_REQUIRED'};
  if(payload?.available===false)return{...common,status:'SOURCE_NOT_AVAILABLE',reason:payload.error??payload.note??'PROVIDER_DATA_UNAVAILABLE'};
- if(payload?.detail==='headline')return{...common,status:'PARTIAL_FUTURE_HEADLINE_ONLY',nearest_side:clock&&['above','below'].includes(payload?.headline?.nearest_liquidation_zone)?payload.headline.nearest_liquidation_zone:null,full_answer_in_seconds:num(payload?.full_answer_in_seconds),reason:'NO_NUMERIC_FORWARD_LEVELS_IN_CURRENT_ACCESS'};
+ if(payload?.detail==='headline')return{...common,status:'PARTIAL_FUTURE_HEADLINE_ONLY',nearest_side:Number.isFinite(timestamp)&&timestamp<=now&&['above','below'].includes(payload?.headline?.nearest_liquidation_zone)?payload.headline.nearest_liquidation_zone:null,full_answer_in_seconds:num(payload?.full_answer_in_seconds),reason:'NO_NUMERIC_FORWARD_LEVELS_IN_CURRENT_ACCESS'};
  if(!clock)return{...common,status:'SOURCE_CLOCK_NOT_CURRENT',reason:'FORWARD_MODEL_TIMESTAMP_REQUIRED'};
  const projection=payload?.projection,reference=num(projection?.reference_price??projection?.current_price);
  if(!Array.isArray(projection?.levels)||projection.levels.length>500||!(reference>0))return{...common,status:payload?.warming?'WARMING':'SCHEMA_NOT_CLOSED',reason:'EXPLICIT_FORWARD_PRICE_SIDE_NOTIONAL_SCHEMA_REQUIRED'};
@@ -20,13 +20,14 @@ export function normalizeCoinLobsterFuture(payload,{contract,now=Date.now()}={})
  if(!rows.every(r=>num(r.price)>0&&(r.side==='long'&&r.price<reference||r.side==='short'&&r.price>reference)))return{...common,status:'SCHEMA_NOT_CLOSED',reason:'FORWARD_SIDE_GEOMETRY_NOT_CLOSED'};
  return{...common,status:'CLOSED',reference_price:reference,levels:rows.map(r=>({price:Number(r.price),side:r.side,notional_usd:Number(r.notional_usd),distance_pct:(Number(r.price)/reference-1)*100,price_quote:'USD',price_semantics:'PROVIDER_MODEL_PRICE_BIN'}))};
 }
-export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fetch,contract,run_id,now=Date.now(),request_admit=null}={}){
+export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fetch,contract,run_id,now=Date.now(),request_admit=null,max_http=1}={}){
  const normalized=clean(contract).normalize('NFC').toUpperCase(),base=normalized.replace(/-USDT$/,'');
  const no=(status,reason)=>({source:'COINLOBSTER_FUTURE_MODEL',contract:normalized,role:'PROJECTED_PROVIDER_MODEL',status,reason,network_calls:0,levels:[],internal_only:true});
  if(!/^[\p{L}\p{N}]+-USDT$/u.test(normalized)||['BTC','ETH'].includes(base))return no('EXCLUDED_BY_USER_POLICY','NO_FORWARD_MAP_FOR_BTC_ETH_OR_INVALID_CONTRACT');
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinlobster_future_cache(contract TEXT PRIMARY KEY,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL)`).run();
  const cached=await db.prepare(`SELECT payload_json FROM report2_coinlobster_future_cache WHERE contract=?1 AND expires_ts>?2`).bind(normalized,now).first();
  if(cached){try{return{...JSON.parse(cached.payload_json),cache_status:'HIT',network_calls:0};}catch{}}
+ if(!(Number(max_http)>0))return no('DEFERRED_HTTP_ENVELOPE','NATIVE_FUTURE_LEVELS_USED_PROTECTED_ENVELOPE');
  if(request_admit){const grant=request_admit({logical_request_id:`COINLOBSTER_FUTURE:${run_id}:${normalized}`,lane:'background',attempts:1});if(!grant.allowed||grant.duplicate)return no('DEFERRED_HTTP_ENVELOPE','UNIFIED_HTTP_NOT_ADMITTED');}
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_coinlobster_future_requests(request_id TEXT PRIMARY KEY,day_start_ts INTEGER NOT NULL,created_ts INTEGER NOT NULL)`).run();
  const day=Math.floor(now/DAY)*DAY,id=createHash('sha256').update(`${day}:${run_id}:${normalized}`).digest('hex');
@@ -44,6 +45,6 @@ export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fe
 export function formatCoinLobsterFutureLines(context){
  if(!context)return[];
  if(context.status==='CLOSED'&&context.levels?.length)return['CoinLobster: модельные будущие уровни источника.',...['short','long'].map(side=>{const rows=context.levels.filter(r=>r.side===side).sort((a,b)=>b.notional_usd-a.notional_usd).slice(0,4);return `CoinLobster — ${side==='short'?'выше':'ниже'}: ${rows.length?rows.map(r=>`${Number(r.price.toPrecision(10))} USD (${r.distance_pct>0?'+':''}${r.distance_pct.toFixed(1)}%); модельный объём ${Number(r.notional_usd.toPrecision(6))} USD`).join(', '):'уровни не получены'}.`;})];
- if(context.status==='PARTIAL_FUTURE_HEADLINE_ONLY')return[`CoinLobster: доступна предварительная модельная подсказка${context.nearest_side?` — крупнейшая ближайшая зона ${context.nearest_side==='below'?'ниже':'выше'} цены`:''}; числовые уровни и объёмы не предоставлены.`];
+ if(context.status==='PARTIAL_FUTURE_HEADLINE_ONLY')return[`CoinLobster: ${context.source_clock_current===false?'устаревшая':'предварительная'} модельная подсказка${context.source_ts?` от ${new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(context.source_ts))} МСК`:''}${context.nearest_side?` — крупнейшая ближайшая зона ${context.nearest_side==='below'?'ниже':'выше'} цены`:''}; числовые уровни и объёмы не предоставлены.`];
  return['CoinLobster: числовая карта будущих ликвидаций не получена; причина сохранена в проверке источников.'];
 }

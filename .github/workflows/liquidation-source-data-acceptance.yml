@@ -1,7 +1,7 @@
 name: Liquidation Source Data Acceptance
 on:
   push:
-    branches: [repair/liquidation-source-data-20260930, repair/future-liquidation-priority-20261001]
+    branches: ['repair/liquidation-source-data-20260930','repair/future-liquidation-map-20261001','repair/future-liquidation-priority-20261001']
     paths:
       - current-generation/**
       - audit-fixes/liquidation-source-data-20260930/**
@@ -17,16 +17,30 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
       REPORT2_SOURCE_PROXY_TOKEN: ${{ secrets.REPORT2_SOURCE_PROXY_TOKEN }}
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+      REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+      COINALYZE_API_KEY: ${{ secrets.COINALYZE_API_KEY }}
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Probe keyless CoinLobster future map for BTW
+        run: node audit-fixes/liquidation-source-data-20260930/coinlobster-future-probe.mjs
+      - name: Probe existing protected future liquidation map for BTW
+        run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output
+      - name: Verify supported future-map control through the same protected route
+        env:
+          REPORT2_FUTURE_PROBE_SYMBOL: SOL
+        run: node audit-fixes/liquidation-source-data-20260930/future-map-probe.mjs current-generation/files audit-output/sol-control
+      - name: Verify tracked future native price bands for exact BTW and supported SOL
+        run: |
+          node --test audit-fixes/liquidation-source-data-20260930/prepared-byk-tracked-future-map.test.mjs
+          node audit-fixes/liquidation-source-data-20260930/byk-hl-bands-probe.mjs
       - name: Assemble production runtime with candidate source changes
         run: |
           mkdir -p runtime audit-output
@@ -50,6 +64,8 @@ jobs:
           node audit-fixes/liquidation-source-data-20260930/live-future-map.mjs runtime audit-output
       - name: Verify exact BTW history with bounded public requests and isolated SQLite
         run: node audit-fixes/liquidation-source-data-20260930/live-acceptance.mjs runtime audit-output
+      - name: Verify future liquidation consumers on exact BTW inputs
+        run: node audit-fixes/liquidation-source-data-20260930/future-render-acceptance.mjs runtime audit-output
       - name: Explain failed validation
         if: failure()
         run: |
