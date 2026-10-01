@@ -5064,6 +5064,14 @@ async function persistStage0(
               info?.price_tick
             ),
 
+          market_24h: {
+            open: num(market?.open),
+            high: num(market?.high),
+            low: num(market?.low),
+            close: price,
+            source_ts: marketTs,
+          },
+
           price,
 
           volume_24h_contracts:
@@ -6999,6 +7007,29 @@ function buildDiscoveryPrefilter(
         rs4h,
       best_oi_build_pct:
         bestOiBuild,
+      source_ts:
+        row?.market_24h?.source_ts ??
+        discoverySnapshotTs,
+      price_tick:
+        factualNumber(row?.price_tick),
+      market_24h:
+        row?.market_24h ?? null,
+      open_interest_value_usdt:
+        oiValue,
+      turnover_24h_usdt:
+        turnover,
+      price_change_pct: {
+        '5m': transitionMetric(row,'5m','price_change_pct'),
+        '15m': transitionMetric(row,'15m','price_change_pct'),
+        '1h': price1h,
+        '4h': price4h,
+        '24h': transitionMetric(row,'24h','price_change_pct'),
+      },
+      oi_change_pct: {
+        '15m': oi15m,
+        '1h': oi1h,
+        '4h': oi4h,
+      },
       false_negative_events:
         falseNegativeEvents,
     };
@@ -7073,6 +7104,25 @@ function buildDiscoveryPrefilter(
         rs4h,
       best_oi_build_pct:
         bestOiBuild,
+      source_ts:
+        row?.market_24h?.source_ts ??
+        discoverySnapshotTs,
+      price_tick:
+        factualNumber(row?.price_tick),
+      market_24h:
+        row?.market_24h ?? null,
+      price_change_pct: {
+        '5m': transitionMetric(row,'5m','price_change_pct'),
+        '15m': transitionMetric(row,'15m','price_change_pct'),
+        '1h': price1h,
+        '4h': price4h,
+        '24h': transitionMetric(row,'24h','price_change_pct'),
+      },
+      oi_change_pct: {
+        '15m': oi15m,
+        '1h': oi1h,
+        '4h': oi4h,
+      },
       freshness_sec:
         Number.isFinite(
           Number(
@@ -19983,7 +20033,7 @@ export async function scanLiquidationCandidates({env,max_candidates=5,exact_cont
   const metric=(row,window,field)=>{const value=row?.transitions?.[window]?.[field];return value===null||value===undefined||value===''||!Number.isFinite(Number(value))?null:Number(value);};
   const candidates=selected.map(candidate=>{
     const contract=String(candidate?.contract||'').trim().toUpperCase(),row=rows.get(contract)||{};
-    return{priority_rank:candidate?.priority_rank??null,contract,current_price:Number.isFinite(Number(row?.price))?Number(row.price):null,turnover_24h_usdt:Number.isFinite(Number(row?.turnover_24h_usdt))?Number(row.turnover_24h_usdt):null,open_interest_value_usdt:Number.isFinite(Number(row?.open_interest?.value_usdt))?Number(row.open_interest.value_usdt):null,funding_rate_pct:Number.isFinite(Number(row?.funding?.funding_rate_pct))?Number(row.funding.funding_rate_pct):null,price_change_pct:{'5m':metric(row,'5m','price_change_pct'),'15m':metric(row,'15m','price_change_pct'),'1h':metric(row,'1h','price_change_pct'),'4h':metric(row,'4h','price_change_pct')},oi_change_pct:{'15m':metric(row,'15m','oi_change_pct'),'1h':metric(row,'1h','oi_change_pct'),'4h':metric(row,'4h','oi_change_pct')},anomaly_flags_count:Number(candidate?.anomaly_flags_count||0),anomaly_flags:Array.isArray(candidate?.anomaly_flags)?candidate.anomaly_flags:[],direction_hint:candidate?.discovery_direction_hint||'NEUTRAL_ANOMALY',qualified_growth_candidate:shortlisted.has(contract),freshness_sec:Number.isFinite(Number(row?.freshness?.market_age_sec))?Number(row.freshness.market_age_sec):null,data_status:row?.data_status||null};
+    return{priority_rank:candidate?.priority_rank??null,contract,current_price:Number.isFinite(Number(row?.price))?Number(row.price):null,turnover_24h_usdt:Number.isFinite(Number(row?.turnover_24h_usdt))?Number(row.turnover_24h_usdt):null,open_interest_value_usdt:Number.isFinite(Number(row?.open_interest?.value_usdt))?Number(row.open_interest.value_usdt):null,funding_rate_pct:Number.isFinite(Number(row?.funding?.funding_rate_pct))?Number(row.funding.funding_rate_pct):null,price_tick:Number.isFinite(Number(row?.price_tick))?Number(row.price_tick):null,source_ts:Number.isFinite(Number(row?.market_24h?.source_ts))?Number(row.market_24h.source_ts):null,market_24h:row?.market_24h??null,price_change_pct:{'5m':metric(row,'5m','price_change_pct'),'15m':metric(row,'15m','price_change_pct'),'1h':metric(row,'1h','price_change_pct'),'4h':metric(row,'4h','price_change_pct'),'24h':metric(row,'24h','price_change_pct')},oi_change_pct:{'15m':metric(row,'15m','oi_change_pct'),'1h':metric(row,'1h','oi_change_pct'),'4h':metric(row,'4h','oi_change_pct')},anomaly_flags_count:Number(candidate?.anomaly_flags_count||0),anomaly_flags:Array.isArray(candidate?.anomaly_flags)?candidate.anomaly_flags:[],direction_hint:candidate?.discovery_direction_hint||'NEUTRAL_ANOMALY',qualified_growth_candidate:shortlisted.has(contract),freshness_sec:Number.isFinite(Number(row?.freshness?.market_age_sec))?Number(row.freshness.market_age_sec):null,data_status:row?.data_status||null};
   });
   const sourceClosed=Number(scan?.counts?.errors||0)===0&&Number(scan?.counts?.universe_total||0)>0;
   const status=!sourceClosed?'HTX_SCAN_NOT_CLOSED':exactStatus||(candidates.length?'CLOSED':'NO_LIQUIDATION_CANDIDATES');

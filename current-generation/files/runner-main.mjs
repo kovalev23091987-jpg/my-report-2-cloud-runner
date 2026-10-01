@@ -661,13 +661,21 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
       priority_reason:candidate.qualified_growth_candidate===true?'EARLY_TECHNICAL_ANOMALY':'MANUAL_LIQUIDATION_REQUEST',
       projected:coinLobsterFutureRows(coinFuture),
       calculation_context:{
-        oi_change_pct:candidate.oi_change_pct?.['4h']??candidate.oi_change_pct?.['1h']??null,
+        source_ts:candidate.source_ts,
+        market_source_ts:candidate.source_ts,
+        open_interest_value_usdt:candidate.open_interest_value_usdt,
+        turnover_24h_usdt:candidate.turnover_24h_usdt,
+        oi_change_pct:candidate.oi_change_pct,
+        price_change_pct:candidate.price_change_pct,
         funding_rate_pct:candidate.funding_rate_pct,
+        market_24h:candidate.market_24h,
+        price_tick:candidate.price_tick,
         volume_ratio:null,
       },
+      volume_profile:effectiveVolumeProfile,
     }):{status:'NOT_CLOSED',above:[],below:[]};
     const scopedCoinLobster=candidate?contextForContract(env.REPORT2_GLOBAL_MARKET_CONTEXT,candidate.contract)?.coinlobster:null;
-    const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
+    const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,htx_model:liquidationMap.htx_source_backed_model,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
     const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext):[];
     const lines=candidate?[
       ...displayLegacyLiquidations(liquidationMap),

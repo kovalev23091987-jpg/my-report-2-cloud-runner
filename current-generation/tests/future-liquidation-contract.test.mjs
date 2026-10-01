@@ -43,7 +43,7 @@ test('main and standalone production consumers call future maps before realized 
 });
 test('historical source success does not close the future-map receipt',()=>{
  const chain=buildLiquidationSourceChain({contract:'BTW-USDT',risk:{chain_attempts:[{source:'GATE_LIQUIDATION_HISTORY',status:'CLOSED'}]}});
- assert.equal(chain.useful_future_source_count,0);assert.equal(chain.useful_history_source_count,1);assert.match(chain.policy,/FUTURE_LEVELS_FIRST/);
+ assert.equal(chain.configured_future_connection_count,9);assert.equal(chain.useful_future_source_count,0);assert.equal(chain.useful_history_source_count,1);assert.match(chain.policy,/HTX_SOURCE_MODEL_BASELINE/);assert.equal(chain.evaluated_not_enabled.length,3);assert.ok(chain.evaluated_not_enabled.every(row=>row.network_calls===0));
 });
 
 test('the actual ByK real_v1_multi snapshot yields future long/short prices and never realized totals',()=>{
