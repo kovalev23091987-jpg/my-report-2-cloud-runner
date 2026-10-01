@@ -504,10 +504,14 @@ async function main() {
   if(requestedSource!=='schedule'&&!manualCommandClaim.claimed)throw new Error(`DURABLE_MANUAL_COMMAND_NOT_CLAIMED:${manualCommandClaim.status||manualCommandClaim.row?.state||'UNKNOWN'}`);
   if(requestedSource==='schedule'&&manualCommandClaim.claimed){source='manual_recovery';env.REPORT2_RUN_SOURCE=source;manualCommandId=manualCommandClaim.row.command_id;env.REPORT2_MANUAL_COIN_CONTRACT=manualCommandClaim.row.contract||'';}
   const recoveredMode=source==='manual_recovery'?manualCommandClaim.row.mode:null;
-  const commandIntent=recoveredMode==='LIQUIDATION_ONLY'
+  const parsedCommandIntent=recoveredMode==='LIQUIDATION_ONLY'
     ?{version:'durable-command-recovery-v1',matched:true,mode:manualCommandClaim.row.contract?'EXACT_COIN_LIQUIDATIONS':'LIQUIDATION_CANDIDATES',contract:manualCommandClaim.row.contract||null,normalized:'durable queued liquidation command'}
     :source==='schedule'?{matched:false,mode:null,contract:null,reason:'SCHEDULE_HAS_NO_RECOVERABLE_MANUAL_COMMAND'}:parseLiquidationCommand(env.REPORT2_MANUAL_COMMAND);
-  const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):(envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null);
+  const explicitManualContract=envText('REPORT2_MANUAL_COIN_CONTRACT',{required:false}).toUpperCase()||null;
+  const commandIntent=parsedCommandIntent.matched&&!parsedCommandIntent.contract&&explicitManualContract
+    ?{...parsedCommandIntent,mode:'EXACT_COIN_LIQUIDATIONS',contract:explicitManualContract,contract_source:'EXPLICIT_MANUAL_FIELD'}
+    :parsedCommandIntent;
+  const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):explicitManualContract;
   const expectedManualMode=source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
   env.REPORT2_MANUAL_MODE=expectedManualMode;
   if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
