@@ -8,6 +8,7 @@ const actionable=new Set(['OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','E
 
 function proven(row,generatedAt){
  const c=row?.canonical;
+ if(c?.data_quality?.sufficient===false)return false;
  if(c?.status!=='CLOSED'||!actionable.has(c?.state)||c?.direction!==row?.direction||!contract(row?.contract)||
   !['LONG','SHORT'].includes(row?.direction)||!c?.entry||!c?.trigger||!c?.invalidation||!Array.isArray(c?.targets))return false;
  if(c.state==='OBSERVE'&&finite(c.scores?.coin_interest_0_100)<70)return false;
@@ -44,7 +45,12 @@ export function enforceManualBlockCoverage(output={}){
  const audits=output.candidates.map(row=>row?.block_coverage||null);
  const fullyChecked=audits.filter(audit=>audit?.coverage_count===17&&audit?.checked_block_count===17&&audit?.all_blocks_checked===true).length;
  const checkedCounts=audits.map(audit=>Number(audit?.checked_block_count)).filter(Number.isFinite);
- const block_audit={required_block_count:17,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,minimum_checked_block_count:checkedCounts.length?Math.min(...checkedCounts):0,all_candidates_fully_checked:fullyChecked===audits.length};
+ const usefulCounts=audits.map(audit=>Number(audit?.usable_block_count)).filter(Number.isFinite);
+ const sufficientCandidates=output.candidates.filter(row=>row?.canonical?.data_quality?.sufficient!==false).length;
+ const block_audit={required_block_count:17,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,
+  minimum_checked_block_count:checkedCounts.length?Math.min(...checkedCounts):0,minimum_usable_block_count:usefulCounts.length?Math.min(...usefulCounts):0,
+  data_sufficient_candidate_count:sufficientCandidates,all_candidates_data_sufficient:sufficientCandidates===output.candidates.length,
+  all_candidates_fully_checked:fullyChecked===audits.length};
  if(block_audit.all_candidates_fully_checked)return {...output,block_audit};
  return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_17_BLOCKS_NOT_CONFIRMED',block_audit};
 }
@@ -56,7 +62,11 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
- const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...(['manual','manual_recovery'].includes(source)?['Проверка: 17 из 17 блоков.']:[]),''];
+ const auditLines=['manual','manual_recovery'].includes(source)?[
+  'Проверка источников: 17 из 17 блоков.',
+  `Пригодные фактические сведения: ${Number(block_audit?.minimum_usable_block_count||0)} из 17 блоков.`,
+ ]:[];
+ const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];
  let found=0;
  for(const direction of ['LONG','SHORT']){
   lines.push(direction==='LONG'?'ЛОНГ':'ШОРТ');
