@@ -39,12 +39,13 @@ test('failed source status never masquerades as healthy absence of ideas',()=>{
 });
 test('manual run always returns the owner layout instead of stored technical text',()=>{
  const approved='МОЙ ОТЧЁТ 2\n\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nНаблюдение по QNT-USDT.';
- const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:17,checked_block_count:17,all_blocks_checked:true}}],generated_at};
+ const blocks=Object.fromEntries(Array.from({length:17},(_,i)=>[`N${String(i+1).padStart(2,'0')}`,{status:i<2?'ADMISSIBLE_FACTUAL_CONTEXT':i<9?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':'CHECKED_NO_USABLE_FACTS'}]));
+ const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:17,checked_block_count:17,usable_block_count:2,all_blocks_checked:true,blocks}}],generated_at};
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'CLOSED');
  const rendered=formatManualRunSummary(checked);
- assert.match(rendered,/Проверка источников: 17 из 17 блоков/u);
- assert.match(rendered,/Пригодные фактические сведения: 0 из 17 блоков/u);
+ assert.match(rendered,/Проверка блоков: 17 из 17; обязательных сбоев: 0/u);
+ assert.match(rendered,/Новые допущенные факты: 2 блока; сведения без допуска в решение: 7; событий не обнаружено: 8/u);
  assert.match(rendered,/ЛОНГ[\s\S]*ШОРТ/u);
  assert.doesNotMatch(rendered,/КАНОНИЧЕСКОЕ СОСТОЯНИЕ/u);
 });
@@ -62,7 +63,7 @@ test('empty manual run cannot claim a vacuous 17 of 17 check',()=>{
  assert.equal(checked.block_audit.candidate_count,0);
  assert.equal(checked.block_audit.all_candidates_fully_checked,false);
  assert.match(formatManualRunSummary(checked),/0 из 17/u);
- assert.doesNotMatch(formatManualRunSummary(checked),/Проверка источников: 17 из 17/u);
+ assert.doesNotMatch(formatManualRunSummary(checked),/Проверка блоков: 17 из 17/u);
 });
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
