@@ -43,7 +43,8 @@ test('manual run always returns the owner layout instead of stored technical tex
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'CLOSED');
  const rendered=formatManualRunSummary(checked);
- assert.match(rendered,/Проверка: 17 из 17 блоков/u);
+ assert.match(rendered,/Проверка источников: 17 из 17 блоков/u);
+ assert.match(rendered,/Пригодные фактические сведения: 0 из 17 блоков/u);
  assert.match(rendered,/ЛОНГ[\s\S]*ШОРТ/u);
  assert.doesNotMatch(rendered,/КАНОНИЧЕСКОЕ СОСТОЯНИЕ/u);
 });
@@ -61,7 +62,7 @@ test('empty manual run cannot claim a vacuous 17 of 17 check',()=>{
  assert.equal(checked.block_audit.candidate_count,0);
  assert.equal(checked.block_audit.all_candidates_fully_checked,false);
  assert.match(formatManualRunSummary(checked),/0 из 17/u);
- assert.doesNotMatch(formatManualRunSummary(checked),/Проверка: 17 из 17/u);
+ assert.doesNotMatch(formatManualRunSummary(checked),/Проверка источников: 17 из 17/u);
 });
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};

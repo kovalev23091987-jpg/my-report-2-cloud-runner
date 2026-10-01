@@ -17,11 +17,16 @@ export function buildLiquidationFreshnessAudit(chain){
  const bySource=new Map((chain?.future_level_stages||[]).map(row=>[row.source,row]));
  const receipts=LIQUIDATION_REQUIRED_FRESH_EXTERNAL_CONNECTIONS.map(source=>{
   const row=bySource.get(source)||{},networkCalls=Math.max(0,Number(row.network_calls)||0);
-  const freshNetworkCheck=networkCalls>0||row.fresh_check_completed===true,freshDataUsed=freshNetworkCheck&&row.data_available===true;
-  return{source,status:row.status||'NOT_RUN',network_calls:networkCalls,fresh_network_check:freshNetworkCheck,fresh_check_basis:row.fresh_check_basis??(networkCalls>0?'DIRECT_SOURCE_REQUEST':null),fresh_data_used:freshDataUsed,reason:row.reason??(!freshNetworkCheck?'NO_FRESH_NETWORK_CALL':'FRESH_RESPONSE_NOT_USABLE')};
+  const directNetworkCheck=networkCalls>0,coverageCheck=directNetworkCheck||row.fresh_check_completed===true;
+  const freshDataUsed=directNetworkCheck&&row.data_available===true;
+  return{source,status:row.status||'NOT_RUN',network_calls:networkCalls,direct_network_check:directNetworkCheck,coverage_check:coverageCheck,
+   fresh_network_check:directNetworkCheck,fresh_check_basis:row.fresh_check_basis??(directNetworkCheck?'DIRECT_SOURCE_REQUEST':null),fresh_data_used:freshDataUsed,
+   reason:row.reason??(!coverageCheck?'NO_FRESH_COVERAGE_CHECK':!directNetworkCheck?'NO_DIRECT_SOURCE_REQUEST':'FRESH_RESPONSE_NOT_USABLE')};
  });
- const freshChecks=receipts.filter(row=>row.fresh_network_check).length,freshUsed=receipts.filter(row=>row.fresh_data_used).length;
- return{schema:'report2-liquidation-freshness-audit-v1',strict_fresh_required:true,required_source_count:receipts.length,fresh_network_check_count:freshChecks,fresh_data_used_count:freshUsed,complete:freshUsed===receipts.length,status:freshUsed===receipts.length?'CLOSED':'PARTIAL_SOURCE_COVERAGE',receipts};
+ const directChecks=receipts.filter(row=>row.direct_network_check).length,coverageChecks=receipts.filter(row=>row.coverage_check).length,freshUsed=receipts.filter(row=>row.fresh_data_used).length;
+ return{schema:'report2-liquidation-freshness-audit-v2-direct-vs-coverage',strict_fresh_required:true,required_source_count:receipts.length,
+  direct_network_check_count:directChecks,fresh_network_check_count:directChecks,fresh_coverage_check_count:coverageChecks,fresh_data_used_count:freshUsed,
+  complete:freshUsed===receipts.length,status:freshUsed===receipts.length?'CLOSED':'PARTIAL_SOURCE_COVERAGE',receipts};
 }
 
 export function buildLiquidationSourceChain({contract,risk={},native={},coverage={},coinlobster=null,byk_future=null,tracked_hl=null,future_models=null,htx_model=null,venue_registry=null,external_readiness={}}={}){
