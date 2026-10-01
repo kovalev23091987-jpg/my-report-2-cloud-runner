@@ -49,6 +49,8 @@ test('full manual report reserves its deep check for a strict-17 registry asset'
  assert.match(runner,/coinpaprika_id&&row\?\.sector_tag\)\|\|\(row\?\.coingecko_id&&row\?\.coingecko_category_id/u);
  assert.match(worker,/MANUAL_STRICT17_AUDIT/u);
  assert.match(worker,/strict17_manual_audit:true/u);
+ assert.match(worker,/NEUTRAL_MANUAL_AUDIT/u);
+ assert.match(worker,/rawAuditCandidate/u);
  assert.match(worker,/require_exact_contract:true,required_contract:contract/u);
  assert.match(worker,/REPORT2_MANUAL_MODE\|\|''\)\.toUpperCase\(\)==='FULL_MANUAL'\s*\n\s*\? 0/u);
 });

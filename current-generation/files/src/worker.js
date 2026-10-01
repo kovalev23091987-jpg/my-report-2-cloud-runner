@@ -19405,7 +19405,27 @@ const __REPORT2_ORIGINAL_HANDLER = {
           .map(value=>String(value||'').trim().toUpperCase()).filter(value=>confirmedScopeContracts.includes(value)));
         const shortlisted=(postV7DeepPrefilter?.shortlist||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
         const telemetry=(postV7DeepPrefilter?.contract_telemetry||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
-        const selected=shortlisted||telemetry||null;
+        // A strict manual audit must still inspect one fully registered active
+        // asset when Discovery cannot build telemetry because Stage-0 OI or
+        // turnover is missing. Deep Check owns the fresh enrichment; the raw
+        // row is only a neutral, directionless handoff and cannot authorize a
+        // trade by itself.
+        const rawAuditRow=(scan?.contracts||[])
+          .filter(row=>strictEligible.has(String(row?.contract_code||'').trim().toUpperCase()))
+          .sort((a,b)=>Number(b?.turnover_24h_usdt||0)-Number(a?.turnover_24h_usdt||0))[0]||null;
+        const rawAuditCandidate=rawAuditRow?{
+          contract:String(rawAuditRow.contract_code).trim().toUpperCase(),
+          discovery_direction_hint:'NEUTRAL_MANUAL_AUDIT',
+          queue_for_deep_check:true,
+          source_ts:rawAuditRow?.market_24h?.source_ts??scan?.timestamp??null,
+          price_tick:rawAuditRow?.price_tick??null,
+          market_24h:rawAuditRow?.market_24h??null,
+          open_interest_value_usdt:rawAuditRow?.open_interest?.value_usdt??null,
+          turnover_24h_usdt:rawAuditRow?.turnover_24h_usdt??null,
+          price_change_pct:Object.fromEntries(['5m','15m','1h','4h','24h'].map(window=>[window,rawAuditRow?.transitions?.[window]?.price_change_pct??null])),
+          oi_change_pct:Object.fromEntries(['15m','1h','4h'].map(window=>[window,rawAuditRow?.transitions?.[window]?.oi_change_pct??null])),
+        }:null;
+        const selected=shortlisted||telemetry||rawAuditCandidate;
         if(selected){
           const contract=String(selected.contract).trim().toUpperCase();
           const forced={...selected,priority_rank:0,contract,strict17_manual_audit:true};
