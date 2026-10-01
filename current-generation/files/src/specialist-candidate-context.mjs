@@ -39,7 +39,10 @@ export function consumeSpecialistContext({sources={},contract,now,primary_price,
  return {status:facts.length?'CONTEXT_AVAILABLE':'NOT_CLOSED',blocks,facts,no_new_hard_gate:true,no_directional_vote:true,score_contribution:0};
 }
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
-const spec={VYX:{cap:144,ttl:120000},NANSEN:{cap:5,ttl:21600000},NANSEN_FLOWS:{ttl:3600000}};
+// Five daily Nansen attempts were lower than the approved manual-report
+// envelope and allowed repeated validation runs to starve mandatory block N05.
+// Eight keeps the bounded daily ceiling aligned with REPORT2_MANUAL_RUNS_PER_DAY.
+const spec={VYX:{cap:144,ttl:120000},NANSEN:{cap:8,ttl:21600000},NANSEN_FLOWS:{ttl:3600000}};
 const providerFor=source=>source==='NANSEN_FLOWS'?'NANSEN':source;
 function flowIdentity(identity,base){
  const aliases={bsc:'bnb',bnb:'bnb',ethereum:'ethereum',arbitrum:'arbitrum',base:'base',polygon:'polygon',optimism:'optimism',avalanche:'avalanche',solana:'solana'};
