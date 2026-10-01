@@ -1,6 +1,6 @@
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
-export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v1-20260929';
+export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v2-approved-layout-20261001';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;
@@ -38,9 +38,26 @@ export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
  if(candidate_count===0&&Number(cron?.v3_live_deep_check_count)>0)return {status:'PARTIAL_DATA_UNAVAILABLE',reason:'CANONICAL_CANDIDATE_NOT_PERSISTED'};
  return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
 }
-export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id}={}){
- if(status==='PARTIAL_DATA_UNAVAILABLE')return 'МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена. Сделать полный вывод о наличии идей сейчас нельзя.\n\nДействие сейчас: не входить, дождаться следующей проверки.';
+export function enforceManualBlockCoverage(output={}){
+ if(!['manual','manual_recovery'].includes(output?.source)||!Array.isArray(output?.candidates)||!output.candidates.length)return output;
+ const audits=output.candidates.map(row=>row?.block_coverage||null);
+ const fullyChecked=audits.filter(audit=>audit?.coverage_count===17&&audit?.checked_block_count===17&&audit?.all_blocks_checked===true).length;
+ const checkedCounts=audits.map(audit=>Number(audit?.checked_block_count)).filter(Number.isFinite);
+ const block_audit={required_block_count:17,candidate_count:audits.length,fully_checked_candidate_count:fullyChecked,minimum_checked_block_count:checkedCounts.length?Math.min(...checkedCounts):0,all_candidates_fully_checked:fullyChecked===audits.length};
+ if(block_audit.all_candidates_fully_checked)return {...output,block_audit};
+ return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'ALL_17_BLOCKS_NOT_CONFIRMED',block_audit};
+}
+export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit}={}){
+ if(status==='PARTIAL_DATA_UNAVAILABLE'){
+  const checked=Number(block_audit?.minimum_checked_block_count);
+  const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из 17.`:'';
+  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress} Сделать полный вывод о наличии идей сейчас нельзя.\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
+ }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
+ if(['manual','manual_recovery'].includes(source)){
+  const approved=candidates.map(row=>typeof row?.manual_text==='string'?row.manual_text.trim():'').filter(Boolean);
+  if(approved.length)return approved.join('\n\n');
+ }
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),''];
  let found=0;
@@ -114,4 +131,4 @@ export function formatStandaloneLiquidationSourceLines(liq){
  if(lines.length)lines.push('Это уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.');
  return lines;
 }
-export default {MANUAL_RUN_SUMMARY_VERSION,formatManualRunSummary,formatLiquidationRunSummary};
+export default {MANUAL_RUN_SUMMARY_VERSION,classifyCanonicalRunCompletion,enforceManualBlockCoverage,formatManualRunSummary,formatLiquidationRunSummary};
