@@ -57,7 +57,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
   }
   lines.push('Действие сейчас: не входить.');
  }
- if(source==='manual'&&typeof run_id==='string'&&run_id){
+ if(['manual','manual_recovery'].includes(source)&&typeof run_id==='string'&&run_id){
   const context=candidates.filter(row=>contract(row?.contract)&&!['BTC-USDT','ETH-USDT'].includes(row.contract)&&
    row.run_id===run_id&&row.canonical?.run_id===run_id&&row.canonical?.status==='CLOSED'&&
    row.canonical.liquidations?.future_only===true).slice(0,6);
