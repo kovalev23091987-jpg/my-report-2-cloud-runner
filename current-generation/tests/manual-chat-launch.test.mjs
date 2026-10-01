@@ -5,6 +5,7 @@ import fs from 'node:fs';
 const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
 const enqueue=fs.readFileSync(new URL('../../runner/enqueue-manual-command.mjs',import.meta.url),'utf8');
 const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
 
 test('ordinary chat has one file-scoped launch path bound to main',()=>{
  assert.match(workflow,/push:\s*\n\s*branches:\s*\n\s*- main\s*\n\s*paths:\s*\n\s*- "manual-requests\/run\.json"/u);
@@ -40,4 +41,17 @@ test('every successful run emits a canonical artifact instead of a chat reconstr
 test('low-priority prospective statistics cannot cancel an otherwise complete manual report when capacity is reserved elsewhere',()=>{
  assert.match(runner,/r820ManualNonFatalStatuses=new Set\(\["CLOSED","CAPACITY_DEFERRED_FAIL_CLOSED","BUDGET_ENVELOPE_EXCEEDED_FAIL_CLOSED","DEFERRED_LOW_PRIORITY_CADENCE","DEFERRED_BUDGET_ADMISSION"\]\)/u);
  assert.match(runner,/!r820ManualNonFatalStatuses\.has\(r820ProspectiveValidationSidecar\?\.status\)/u);
+});
+
+test('full manual report reserves its deep check for a strict-17 registry asset',()=>{
+ assert.match(runner,/REPORT2_MANUAL_MODE=expectedManualMode/u);
+ assert.match(runner,/REPORT2_STRICT17_ELIGIBLE_CONTRACTS/u);
+ assert.match(worker,/MANUAL_STRICT17_AUDIT/u);
+ assert.match(worker,/strict17_manual_audit:true/u);
+ assert.match(worker,/require_exact_contract:true,required_contract:contract/u);
+});
+
+test('N10 closes from completed technical inputs without requiring an entry signal',()=>{
+ assert.match(worker,/technicalPipelineStates=\[futures\?\.execution_status,trajectory\?\.execution_status\]/u);
+ assert.match(worker,/technicalPipelineStates\.every\(value=>value==='FULFILLED'\).*htxObservationReferencePrice\?\.status==='CLOSED'/u);
 });
