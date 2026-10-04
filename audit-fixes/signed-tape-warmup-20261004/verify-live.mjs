@@ -20,11 +20,16 @@ function save(error=null){fs.writeFileSync('audit-output/signed-tape-source-bodi
 process.on('uncaughtExceptionMonitor',e=>save(String(e)));
 await installEvidenceSourceStore(db);clearHtxSignedTapeSnapshots();
 async function htx(url,key){
- const id=run_id+':'+key;assert.equal(budget.reserve({logical_request_id:id,lane:'background',attempts:1}).allowed,true);
- assert.equal((await reserveEvidenceSourceAttempts(db,{source:'HTX_PUBLIC_RISK',reservation_id:id,attempts:1,daily_cap:144,now:Date.now()})).allowed,true);
- assert.ok(raw.length<6);const row={url,started_ts:Date.now()};raw.push(row);save();
- const response=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(10000)}),body=await response.text();Object.assign(row,{http_status:response.status,observed_ts:Date.now(),sha256:crypto.createHash('sha256').update(body).digest('hex'),body});save();assert.equal(response.ok,true);
- return parseHtxMarketJson(body,url);
+ const id=run_id+':'+key;assert.equal(budget.reserve({logical_request_id:id,lane:'background',attempts:2}).allowed,true);
+ assert.equal((await reserveEvidenceSourceAttempts(db,{source:'HTX_PUBLIC_RISK',reservation_id:id,attempts:2,daily_cap:144,now:Date.now()})).allowed,true);
+ for(let attempt=0;attempt<2;attempt++){
+  assert.ok(raw.length<12);const row={url,attempt,started_ts:Date.now()};raw.push(row);save();
+  try{const response=await fetch(url,{redirect:'error',signal:AbortSignal.timeout(15000)}),body=await response.text();Object.assign(row,{http_status:response.status,observed_ts:Date.now(),sha256:crypto.createHash('sha256').update(body).digest('hex'),body});save();
+   if(!response.ok){if(attempt===0&&[429,500,502,503,504].includes(response.status))continue;throw Error('HTX_HTTP_'+response.status);}
+   return parseHtxMarketJson(body,url);
+  }catch(error){row.error=String(error);row.observed_ts=Date.now();save();if(attempt===1||!['TimeoutError','AbortError','TypeError'].includes(error.name))throw error;}
+ }
+ throw Error('HTX_BOUNDED_TRANSPORT_NOT_CLOSED');
 }
 for(const contract of contracts){
  const q=encodeURIComponent(contract);
@@ -36,5 +41,5 @@ for(const contract of contracts){
  results.push({contract,observed_ts:now,receipt});save();assert.ok(receipt.persisted_minutes>0,contract+':NO_ACTUAL_PERSISTED_RAW_MINUTE');assert.equal(receipt.network_calls,0);assert.equal(receipt.status,'WARMING_OR_GAPPED_RAW_24H');assert.equal(receipt.evidence.length,0);
  const repeated=await persistCapturedHtxSignedTape({db,contract,now,db_admit:admit});results.at(-1).idempotent_readback=repeated;save();assert.equal(repeated.persisted_minutes,receipt.persisted_minutes);assert.equal(repeated.storage_bytes,receipt.storage_bytes);assert.equal(repeated.evidence.length,0);
 }
-const usage=db.usageSnapshot();assert.equal(usage.unknown_ops,0);assert.ok(usage.rows_read<=15000&&usage.rows_written<=100);assert.equal(raw.length,6);assert.equal(results.length,2);save();
+const usage=db.usageSnapshot();assert.equal(usage.unknown_ops,0);assert.ok(usage.rows_read<=15000&&usage.rows_written<=100);assert.ok(raw.length>=6&&raw.length<=12);assert.equal(results.length,2);save();
 console.log(JSON.stringify({status:'CLOSED_LIVE_RAW_MINUTE_WARMUP',contracts:results.map(r=>({contract:r.contract,persisted_minutes:r.receipt.persisted_minutes,status:r.receipt.status})),source_http:raw.length,database_usage:usage,raw_24h_live_accepted:false,deep_checks_started:0,telegram_calls:0,all_15_live_accepted:false}));
