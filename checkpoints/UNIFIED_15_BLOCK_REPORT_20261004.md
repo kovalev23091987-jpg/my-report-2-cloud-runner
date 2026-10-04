@@ -4,6 +4,8 @@
 
 ## Подтверждённое общее выполнение
 
+Последний выпуск PR97: main `25ff5f05ec7391722992e2f4a6c19b864938c7ce`, cloud37208984616 SUCCESS, compiled7/7 и integration37/37. Exact receipt `checkpoints/canonical-execution-output-release-evidence-20261004.json`. N11/N16 теперь включаются в NEW canonical до persistence из одного bounded indexed read сохранённого same-snapshot proof, русская форма и approved revalidation общие. Это исправление producer, не новая приёмка рынка. До этого PR96 связал существующий context с настоящим approved renderer. Все результаты обоих чатов и текущего пакета находятся в одном main.
+
 Исходный свежий main `b840b894e0826ac8157f04e4ebbd334892f3ddd7` уже объединяет PR93, PR94 и PR95. Повторного merge старых веток или сложения одинаковых результатов не требуется. Все15 активны: N01–N12/N14–N16; N13/N17 исключены. PR91 с составом11 отменён PR92.
 
 Польза10ТИПОВ на разных реальных входах: N02/N04/N05/N06/N09/N11/N12/N14/N15/N16. Это не10на каждой монете и не15в одном свежем отчёте. N01/N03/N07/N08/N10 требуют actual source/use. N08 schema repair PR95 выпущен, но actual restriction не доказан.
