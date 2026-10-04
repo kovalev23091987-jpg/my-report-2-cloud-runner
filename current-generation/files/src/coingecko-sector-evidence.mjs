@@ -22,6 +22,13 @@ export function selectCoingeckoSectorCategory(metadata,directory){
 // Static network definitions are eligibility rules, never an asset identity source.
 // A native identity must still come from the exact HTX binding or explicit registry.
 export const NATIVE_SECTOR_BINDINGS=Object.freeze({
+ BTC:{chain:'bitcoin',platform:null,coin_id:'bitcoin'},
+ LTC:{chain:'litecoin',platform:null,coin_id:'litecoin'},
+ BCH:{chain:'bitcoin-cash',platform:null,coin_id:'bitcoin-cash'},
+ DOGE:{chain:'dogecoin',platform:null,coin_id:'dogecoin'},
+ ZEC:{chain:'zcash',platform:null,coin_id:'zcash'},
+ XLM:{chain:'stellar',platform:null,coin_id:'stellar'},
+ ETC:{chain:'ethereum-classic',platform:null,coin_id:'ethereum-classic'},
  NEAR:{chain:'near',platform:'near-protocol',coin_id:'near'},
  ETH:{chain:'ethereum',platform:'ethereum',coin_id:'ethereum'},
  SOL:{chain:'solana',platform:'solana',coin_id:'solana'},
@@ -45,7 +52,7 @@ export function verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_i
  const nativeBinding=exactNativeSectorBinding(identity,contract);
  if(nativeBinding){
   const platforms=Array.isArray(asset_platforms)?asset_platforms.filter(r=>r?.id===nativeBinding.platform):[];
-  return Boolean(coin_id===nativeBinding.coin_id&&metadata?.id===nativeBinding.coin_id&&clean(metadata.symbol).toUpperCase()===contract.replace(/-USDT$/,'')&&metadata.asset_platform_id===null&&Array.isArray(metadata.categories)&&(!category_name||(category_name==='Layer 1 (L1)'&&metadata.categories.includes(category_name)))&&platforms.length===1&&platforms[0].native_coin_id===nativeBinding.coin_id&&metadata.platforms&&typeof metadata.platforms==='object'&&!Array.isArray(metadata.platforms)&&!clean(metadata.platforms[nativeBinding.platform])&&!clean(metadata.platforms[identity.chain]));
+  return Boolean(coin_id===nativeBinding.coin_id&&metadata?.id===nativeBinding.coin_id&&clean(metadata.symbol).toUpperCase()===contract.replace(/-USDT$/,'')&&metadata.asset_platform_id===null&&Array.isArray(metadata.categories)&&(!category_name||(category_name==='Layer 1 (L1)'&&metadata.categories.includes(category_name)))&&(nativeBinding.platform===null||platforms.length===1&&platforms[0].native_coin_id===nativeBinding.coin_id)&&metadata.platforms&&typeof metadata.platforms==='object'&&!Array.isArray(metadata.platforms)&&!clean(metadata.platforms[nativeBinding.platform])&&!clean(metadata.platforms[identity.chain]));
  }
  const address=clean(identity?.contract_or_mint),chain=identity?.chain,platform=COINGECKO_ASSET_PLATFORMS[chain];
  if(!platform||!address||metadata?.id!==coin_id||!/^[a-z0-9-]{2,100}$/.test(coin_id)||clean(metadata.symbol).toUpperCase()!==clean(contract).replace(/-USDT$/,'')||!Array.isArray(metadata?.categories)||(category_name&&!metadata.categories.includes(category_name)))return false;
@@ -79,7 +86,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,minute_provider:'COINGECKO',minute_cap:9});
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v);
- const asset_platforms=native?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
+ const asset_platforms=native?.platform?await reader.get('NATIVE_PLATFORM_BINDING','https://api.coingecko.com/api/v3/asset_platforms',{ttl_ms:86400000,shape:Array.isArray}):null;
  const get=(route,url,options)=>reader.get(route,url,options);
  const metadataUrl=(pinned||native)?`https://api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`:`https://api.coingecko.com/api/v3/coins/${platform}/contract/${encodeURIComponent(identity.contract_or_mint)}`;
  const metadata=await get('EXACT_COIN_METADATA',metadataUrl,{ttl_ms:21600000,shape:object});

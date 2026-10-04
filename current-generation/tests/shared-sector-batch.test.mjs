@@ -1,5 +1,6 @@
 import test from 'node:test';
 import fs from 'node:fs';
+import vm from 'node:vm';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import path from 'node:path';
@@ -12,6 +13,7 @@ const {collectCoinpaprikaSectorEvidence}=await load('coinpaprika-sector-evidence
 const {consumeSectorContext}=await load('sector-context.mjs');
 const {createProviderReferenceReader}=await load('provider-reference-cache.mjs');
 const {normalizeHtxAssetReferences}=await load('htx-asset-identity.mjs');
+const {compileOfficialSourceRegistry}=await load('official-source-registry.mjs');
 const {parseSupplementalIdentityRegistry}=await load('supplemental-candidate-context.mjs');
 const {installEvidenceSourceStore}=await load('evidence-source-store.mjs');
 const {collectCandidateEvidenceV2,planCandidateEvidenceRoutes,BLOCK_SOURCE_REQUIREMENTS}=await load('candidate-evidence-v2-runtime.mjs');
@@ -84,4 +86,28 @@ test('all 15 blocks and market routes remain assigned for arbitrary HTX futures'
   const identity={chain,contract_or_mint:chain==='solana'?'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn':address},plan=planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity});
   for(const route of ['CHAIN_SUPPLY','CHAIN_EVENTS','BLUESKY','SECTOR_COINGECKO'])assert.ok(plan.routes.some(r=>r.name===route),`${chain}:${route}`);
  }
+});
+
+test('official registry accepts exact native networks and rejects another market binding',()=>{
+ const row={contract_code:'SOL-USDT',asset_id:'solana:native:mainnet',official_name:'Solana',official_domain:'solana.com',canonical_url:'https://solana.com/news',evidence_link:'https://solana.com/',format:'HTML',parser_id:null,timezone:'UTC',verified_at:new Date(NOW-1000).toISOString(),refresh_period:'1h',status:'DISABLED',disabled_reason:'Native identity fixture only'};
+ const raw={schema:'report2-official-event-sources-v1',entries:[row]};assert.equal(compileOfficialSourceRegistry(raw).registry.SOL.native_asset_id,'solana:mainnet');assert.throws(()=>compileOfficialSourceRegistry({...raw,entries:[{...row,contract_code:'NEAR-USDT'}]}),/NATIVE_CONTRACT_BINDING/);
+});
+
+test('real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers',()=>{
+ const f=JSON.parse(fs.readFileSync(new URL('./fixtures/htx-wire-bindings-37213989822.json',import.meta.url))),entries=normalizeHtxAssetReferences(f.payload).entries;assert.equal(f.provenance.synthetic,false);
+ for(const base of Object.keys(NATIVE_SECTOR_BINDINGS)){assert.equal(entries[base].status,'CLOSED',base);assert.equal(entries[base].identities[0].asset_kind,'NATIVE');assert.equal(entries[base].identities[0].native_asset_id,`${NATIVE_SECTOR_BINDINGS[base].chain}:mainnet`);}
+ for(const base of ['LINK','LDO','PEPE','PUMP','BOME','WIF'])assert.equal(entries[base].status,'CLOSED',base);
+ assert.equal(entries.PEPE.identities[0].contract_or_mint,'0x6982508145454ce325ddbe47a25d4ec3d2311933');
+ const r=normalizeHtxAssetReferences({code:200,data:[{currency:'TEST',chains:[{baseChain:'ETH',contractAddress:'1'.repeat(40)}]}]});assert.equal(r.entries.TEST.identities[0].contract_or_mint,'0x'+'1'.repeat(40));
+});
+
+test('actual worker excludes stocks and unknown class from the deep queue',async()=>{
+ const worker=fs.readFileSync(new URL('worker.js',root),'utf8'),classification=worker.slice(worker.indexOf('function classifyHtxInstrumentScope('),worker.indexOf('function symbolFingerprint(')),queue=worker.slice(worker.indexOf('function buildDeepCheckQueue('),worker.indexOf('function discoveryQuantile('));
+ const evaluateHtxFuturesTurnoverGate=()=>({allowed:true,reason:null}); // Controlled passing turnover isolates the actual scope veto.
+ const c=vm.runInNewContext(classification+';classifyHtxInstrumentScope',{}),q=vm.runInNewContext(queue+';buildDeepCheckQueue',{evaluateHtxFuturesTurnoverGate});
+ const metadata={labels:[],tradfi_labels:[],business_type:'swap',contract_type:'swap',trade_partition:'USDT'},cryptoScope=c(metadata),stockScope=c({...metadata,labels:['stock'],tradfi_labels:['stock']}),unknown=c({...metadata,tradfi_labels:undefined});
+ assert.equal(cryptoScope.eligible_for_crypto_discovery,true);assert.equal(stockScope.eligible_for_crypto_discovery,false);assert.equal(unknown.eligible_for_crypto_discovery,false);
+ const base={data_status:'CLOSED',freshness:{stale:false},quality:{market_present:true,oi_present:true,funding_present:true,history_available:true,missing:[]},symbol_fingerprint:{resolution_status:'RESOLVED_HTX_EXACT'},turnover_24h_usdt:1000000,market_24h:{trade_turnover:1000000}};
+ const result=q({contracts:[{...base,contract_code:'AAPL-USDT',instrument_scope:stockScope},{...base,contract_code:'UNKNOWN-USDT',instrument_scope:unknown}]});assert.equal(result.queue.length,0);for(const r of result.excluded)assert.ok(r.reasons.includes('INSTRUMENT_SCOPE_NOT_CRYPTO_CONFIRMED'));
+ assert.match(worker,/if\(scopeConfirmed&&telemetry\)/);assert.match(worker,/\.filter\(value=>confirmedScopeContracts\.includes\(value\)\)/);
 });

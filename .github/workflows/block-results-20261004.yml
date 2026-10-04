@@ -61,6 +61,8 @@ jobs:
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
+          REPORT2_REFERENCE_AUDIT_REPLAY: '1'
         run: node audit-fixes/block-results-20261004/verify-shared-sector-route.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()

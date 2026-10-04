@@ -1,3 +1,4 @@
+import {NATIVE_SECTOR_BINDINGS,exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
 
 export const OFFICIAL_SOURCE_REGISTRY_VERSION='official-source-registry-v1-20260928';
@@ -9,7 +10,7 @@ const withinDomain=(host,domain)=>host===domain||host?.endsWith(`.${domain}`);
 const exactIdentity=assetId=>{
  const match=/^([a-z0-9_-]+):(.*)$/i.exec(clean(assetId));if(!match)return null;
  const chain=match[1].toLowerCase(),address=match[2];
- if(chain==='near'&&address==='native:mainnet')return{chain,asset_kind:'NATIVE',native_asset_id:'near:mainnet',contract_or_mint:null};
+ if(address==='native:mainnet'&&Object.values(NATIVE_SECTOR_BINDINGS).some(r=>r.chain===chain))return{chain,asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`,contract_or_mint:null};
  if(chain==='solana')return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)?{chain,contract_or_mint:address}:null;
  return EVM.test(address)?{chain,contract_or_mint:address.toLowerCase()}:null;
 };
@@ -26,7 +27,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   const fail=reason=>{throw new Error(`OFFICIAL_SOURCE_REGISTRY_INVALID:${index}:${reason}`);};
   if(!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||!base)fail('CONTRACT_CODE');
   if(!identity)fail('ASSET_ID');
-  if(identity.asset_kind==='NATIVE'&&contract!=='NEAR-USDT')fail('NATIVE_CONTRACT_BINDING');
+  if(identity.asset_kind==='NATIVE'&&!exactNativeSectorBinding(identity,contract))fail('NATIVE_CONTRACT_BINDING');
   if(!name)fail('OFFICIAL_NAME');
   if(!/^[a-z0-9.-]+$/.test(domain)||!domain.includes('.'))fail('OFFICIAL_DOMAIN');
   const hostedAccount=/^https:\/\/medium\.com\/feed\/@([a-z0-9_-]{2,64})$/i.exec(canonical)?.[1]?.toLowerCase()||null;
