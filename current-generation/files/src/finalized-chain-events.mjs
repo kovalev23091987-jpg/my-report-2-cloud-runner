@@ -1,6 +1,6 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
-export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v3-receipt-clock-20261004';
+export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v4-narrowing-and-balanced-semantics-20261004';
 export const AAVE_POOL='0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2';
 export const AAVE_TOPIC='0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286';
 export const TRANSFER_TOPIC='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
@@ -35,7 +35,7 @@ export function decodeFinalizedSolanaTransaction({transaction,mint,signature,obs
  for(const row of post){const amount=solanaAmount(row);if(amount!==null)byIndex.set(row.accountIndex,{pre:byIndex.get(row.accountIndex)?.pre??0n,post:amount});}
  let debits=0n,credits=0n;for(const row of byIndex.values()){const delta=row.post-row.pre;if(delta<0n)debits-=delta;else credits+=delta;}
  const net=credits-debits;if(net===0n&&debits===0n)return [];
- const block_id=net>0n?'N02':net<0n?'N03':'N04',metric_family=net>0n?'MINT_TRANSFER':net<0n?'BURN_TRANSFER':'TOKEN_TRANSFER',amount=net===0n?debits:(net<0n?-net:net);
+ const block_id=net>0n?'N02':net<0n?'N03':'N04',metric_family=net>0n?'TOKEN_BALANCE_INCREASE':net<0n?'TOKEN_BALANCE_DECREASE':'TOKEN_TRANSFER',amount=net===0n?debits:(net<0n?-net:net);
  return[buildEvidenceV2({provider_id:SOURCE,upstream_id:'SOLANA_MAINNET_RPC',asset_id:`solana:${mint}`,htx_contract:contract,block_id,metric_family,origin_event_id:signature,dependency_group:`solana:${signature}`,source_ts,observed_ts,expires_at:observed_ts+TTL,coverage_status:'BOUNDED_FINALIZED_EVENT_SAMPLE',coverage_fraction:0,finality_status:'FINAL',validation_status:'VALID',directional_strength:null,risk_strength:null,extra:{chain:'solana',token_address:mint,tx_hash:signature,block_ref:String(slot),amount_base_units:String(amount),quantity_units:'RAW_BASE_UNITS_NO_USD_CONVERSION',market_kind:'ONCHAIN_TOKEN_TRANSFER',producer:'SOLANA_FINALIZED_TOKEN_BALANCE_DIFF',event_is_not_market_direction:true}})];
 }
 
@@ -56,20 +56,26 @@ export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetc
  await installEvidenceSourceStore(db);const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:${chain}:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
  if(chain==='solana'&&BASE58.test(token)&&mode==='TOKEN_TRANSFER')return collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint:token,now,clock,strict_fresh_manual});
  const endpoint=EVM_ENDPOINTS[chain];if(!endpoint||!ADDR.test(token)||mode==='AAVE_CREDIT'&&chain!=='ethereum')return{status:'EXACT_SUPPORTED_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
- const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:3});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
- const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:3,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
+ const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
+ const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
  let calls=0;const send=body=>{calls++;return rpc(fetch_impl,endpoint,body);},receipts=[],evidence=[];let status='SOURCE_SCHEMA_NOT_CLOSED',summary={mode,chain,scope:'LAST_256_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK',quantity_units:'RAW_BASE_UNITS',direction_neutral:true};
  const head=await send([{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['finalized',false]}]);receipts.push({route:'CHAIN_AND_FINALIZED_HEADER',http_status:head.http_status});
  const block=exactResult(head.payload,2);if(head.ok&&clean(exactResult(head.payload,1))===EVM_CHAIN_IDS[chain]&&HEX.test(block?.number)&&HEX.test(block?.timestamp)){
-  const end=BigInt(block.number),start=end>255n?end-255n:0n,raw=await send({jsonrpc:'2.0',id:3,method:'eth_getLogs',params:[{address:mode==='AAVE_CREDIT'?AAVE_POOL:token,fromBlock:'0x'+start.toString(16),toBlock:block.number,topics:[mode==='AAVE_CREDIT'?AAVE_TOPIC:TRANSFER_TOPIC]}]});receipts.push({route:'FINALIZED_LOGS',http_status:raw.http_status});
-  const logs=exactResult(raw.payload,3);if(raw.ok&&Array.isArray(logs)&&logs.length<=200){
+  const end=BigInt(block.number);let start=end>255n?end-255n:0n;let raw=await send({jsonrpc:'2.0',id:3,method:'eth_getLogs',params:[{address:mode==='AAVE_CREDIT'?AAVE_POOL:token,fromBlock:'0x'+start.toString(16),toBlock:block.number,topics:[mode==='AAVE_CREDIT'?AAVE_TOPIC:TRANSFER_TOPIC]}]});receipts.push({route:'FINALIZED_LOGS',http_status:raw.http_status});
+  let logs=exactResult(raw.payload,3),scopeNarrowed=false;
+  if(raw.ok&&Array.isArray(logs)&&logs.length>200){
+   start=end>15n?end-15n:0n;scopeNarrowed=true;
+   raw=await send({jsonrpc:'2.0',id:3,method:'eth_getLogs',params:[{address:mode==='AAVE_CREDIT'?AAVE_POOL:token,fromBlock:'0x'+start.toString(16),toBlock:block.number,topics:[mode==='AAVE_CREDIT'?AAVE_TOPIC:TRANSFER_TOPIC]}]});
+   receipts.push({route:'NARROWED_LAST_16_FINALIZED_BLOCKS',http_status:raw.http_status});logs=exactResult(raw.payload,3);
+  }
+  if(raw.ok&&Array.isArray(logs)&&logs.length<=200){
    const matching=logs.filter(x=>HEX.test(x?.blockNumber)&&BigInt(x.blockNumber)>=start&&BigInt(x.blockNumber)<=end&&(mode!=='AAVE_CREDIT'||[address(x?.topics?.[1]),address(x?.topics?.[2])].includes(token))),wanted=matching.at(-1)?.blockNumber;let timed=null;
    if(wanted){const r=await send({jsonrpc:'2.0',id:4,method:'eth_getBlockByNumber',params:[wanted,false]});receipts.push({route:'EXACT_EVENT_BLOCK_CLOCK',http_status:r.http_status});timed=r.ok?exactResult(r.payload,4):null;}
    const observed=clock();
    for(const log of matching.filter(x=>x.blockNumber===wanted)){const row=decodeFinalizedChainEvent({log,mode,asset:token,block:timed,observed_ts:observed,contract,chain});if(row)evidence.push(row);}
-   status=wanted&&timed===null?'EVENT_CLOCK_NOT_CLOSED':wanted&&evidence.length===0?'EVENT_VALIDATION_NOT_CLOSED':'CLOSED';summary={...summary,finalized_block:block.number,window_start_block:'0x'+start.toString(16),matching_logs:matching.length,confirmed_timed_events:evidence.length,untimed_logs_excluded:matching.length-evidence.length,empty_sample:matching.length===0};
+   status=wanted&&timed===null?'EVENT_CLOCK_NOT_CLOSED':wanted&&evidence.length===0?'EVENT_VALIDATION_NOT_CLOSED':'CLOSED';summary={...summary,scope:scopeNarrowed?'LAST_16_FINALIZED_BLOCKS_ONE_TIMED_EVENT_BLOCK':summary.scope,scope_narrowed:scopeNarrowed,finalized_block:block.number,window_start_block:'0x'+start.toString(16),matching_logs:matching.length,confirmed_timed_events:evidence.length,untimed_logs_excluded:matching.length-evidence.length,empty_sample:matching.length===0};
   }else status=Array.isArray(logs)&&logs.length>200?'LOG_SAMPLE_SATURATED':'SOURCE_LOG_SCHEMA_NOT_CLOSED';
  }
- const result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary,network_calls:calls,logical_rpc_methods:calls===3?4:calls===2?3:2,admission,whole_job_admission,receipts,internal_only:true};
+ const result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary,network_calls:calls,logical_rpc_methods:calls+1,admission,whole_job_admission,receipts,internal_only:true};
  const observed=clock();if(status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:observed+TTL,payload:result});return result;
 }

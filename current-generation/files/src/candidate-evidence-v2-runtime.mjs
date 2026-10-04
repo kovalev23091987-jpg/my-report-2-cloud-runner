@@ -7,13 +7,14 @@ import {collectFinalizedChainEvents} from './finalized-chain-events.mjs';
 import {collectChainSupplyEvidence} from './chain-supply-evidence.mjs';
 import {collectBlueskyAttentionEvidence} from './bluesky-attention-evidence.mjs';
 import {collectOfficialEventsEvidence} from './official-events-evidence.mjs';
+import {collectOfficialTokenSchedule,exactTokenScheduleRoute} from './official-token-schedule.mjs';
 import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
 import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v15-decision-accounting-20261001';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v16-primary-facts-20261004';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 const bounded=(value,min,max)=>Math.min(max,Math.max(min,value));
@@ -31,7 +32,7 @@ export function nansenFlowEvidence(source,params){
 // trading accuracy or a share of provider quota. Eligibility, caches and every
 // existing durable quota remain inside their original collectors.
 export const EVIDENCE_ROUTE_PRIORITY=Object.freeze({
- LARGE_TRADES:5,OFFICIAL:5,CHAIN_SUPPLY:5,CHAIN_EVENTS:5,
+ LARGE_TRADES:5,OFFICIAL:5,TOKEN_SCHEDULE:5,CHAIN_SUPPLY:5,CHAIN_EVENTS:5,
  DERIBIT:5,BLUESKY:5,SECTOR:4,SECTOR_COINGECKO:4,
  BLOCKSCOUT:1,GDELT:1,
 });
@@ -50,7 +51,7 @@ export function rotateEvidenceRoleRoutes(routes,key){
 export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N01:{all:['OFFICIAL_TOKEN_SCHEDULE'],supplemental:['OFFICIAL_EVENTS']},
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX']},
- N03:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
+ N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
  N05:{all:['NANSEN_FLOWS'],supplemental:['CHAIN_EVENTS']},
  N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY']},
@@ -187,6 +188,7 @@ export function finalizeCandidateBlockCoverage({evidence_result={},primary_sourc
 export function planCandidateEvidenceRoutes(params={}){
  const chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address&&params?.asset_identity?.asset_kind!=='NATIVE'),nativeSectorEligible=Boolean(exactNativeSectorBinding(params?.asset_identity,params?.contract)),nativeSupplyEligible=chainName==='near'&&params?.asset_identity?.asset_kind==='NATIVE'&&params?.asset_identity?.native_asset_id==='near:mainnet'&&!address&&params?.contract==='NEAR-USDT',supplyEligible=chainEligible||nativeSupplyEligible,evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),socialEligible=chainEligible&&(evmEligible||chainName==='solana'),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
  const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(supplyEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
+ if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
  if(params?.asset_metadata?.coinpaprika_id&&params?.asset_metadata?.sector_tag)routes.push({name:'SECTOR',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  if(nativeSectorEligible||chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  return{routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,supplyEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible};
@@ -200,7 +202,7 @@ export async function collectCandidateEvidenceV2(params={}){
  const {routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,supplyEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible}=planCandidateEvidenceRoutes(params);
  const deferred={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0,receipts:[],internal_only:true};
  let deribit=deferred,chainSupply=supplyEligible?deferred:{status:nativeSectorEligible?'NATIVE_SUPPLY_PROVIDER_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:nativeSectorEligible?'NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});
+ const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const largeTrades=routeBlock.results.LARGE_TRADES||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
  const sector=routeBlock.results.SECTOR||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
@@ -208,11 +210,13 @@ export async function collectCandidateEvidenceV2(params={}){
  const supplementalSources=params?.supplemental_context?.sources||{};
  const nansen=supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0};
  const evidence=[...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
- const statuses=[cgSector?.status,largeTrades?.status,sector?.status,htx?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
- // RSS/Atom/ICS announcements never establish structured unlock/vesting
- // coverage. Keep N01 present and explicitly open until that owner exists.
- const tokenSchedule={status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true};
- const sources={COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,DERIBIT_ALT_OPTIONS:deribit,CHAIN_SUPPLY:chainSupply,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
+ const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true};
+ const statuses=[tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
+ // Generic news cannot close vesting. Only the exact primary-document adapter
+ // may close N01; its static terms are not an observed future unlock transfer.
+ evidence.push(...(tokenSchedule.evidence||[]));
+ const comparison=chainSupply?.status==='CLOSED'&&chainSupply?.evidence?.some(r=>['SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED'].includes(r.metric_family))?{...chainSupply,check_completed:chainSupply.network_calls>0,scope:'EXACT_FINALIZED_SUPPLY_COMPARISON',transfer_cause_verified:false}:{status:'TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED',network_calls:0,evidence:[]};
+ const sources={COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,DERIBIT_ALT_OPTIONS:deribit,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
  // Fix the decision clock only after every asynchronous collector returns.
  // Responses received after params.now must not be rejected as future-known.
  const auditDecisionTs=Date.now();

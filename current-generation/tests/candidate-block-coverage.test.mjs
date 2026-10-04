@@ -100,7 +100,7 @@ test('saturated or incomplete event samples remain attempted without closing neu
    assert.equal(result.blocks[block].source_checks.CHAIN_EVENTS.attempted,true);
    assert.equal(result.blocks[block].checked,false);
    assert.equal(result.blocks[block].decision_path,'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED');
-   assert.deepEqual(result.blocks[block].missing_required,['CHAIN_EVENTS']);
+   assert.deepEqual(result.blocks[block].missing_required,block==='N03'?['ANY:CHAIN_EVENTS|CHAIN_SUPPLY_COMPARISON']:['CHAIN_EVENTS']);
   }
  }
  assert.equal(sourceWasActuallyChecked({status:'CLOSED_EMPTY_BOUNDED_SAMPLE',network_calls:1,receipts:[{http_status:200}]}),true);

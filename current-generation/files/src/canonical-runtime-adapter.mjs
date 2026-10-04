@@ -13,6 +13,7 @@ import { safeUserReason } from './reason-registry.mjs';
 import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
+import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
@@ -254,6 +255,8 @@ export function buildRuntimeCanonicalBundle({
  const freeSources=free_source_summary?.status==='CLOSED'&&free_source_summary?.owner==='source-registry.mjs'?free_source_summary:{version:'free-source-runtime-summary-missing-owner-v1',status:'NOT_CLOSED',owner:null,registry:{status:'NOT_CLOSED',entries:[]},entry_funnel:{status:'NOT_CLOSED',blockers:['UNKNOWN_INTERNAL_REASON'],blocker_details:[{code:'UNKNOWN_INTERNAL_REASON',full_ru:'Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.',short_ru:'сводка источников не подтверждена; вывод не готов',known:false}],has_unknown_reason:true},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0};
  const supportingContext=consumeExistingSourceReceipts(existing_source_receipts||{});
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
+ const technicalFacts=precommittedTechnicalPlanEvidence({scenario:publication_shadow?.scenario_plan,contract,snapshot_id,observed_ts});
+ if(technicalFacts.length&&internal_market_context?.evidence_v2){internal_market_context={...internal_market_context,evidence_v2:{...internal_market_context.evidence_v2,evidence:[...arr(internal_market_context.evidence_v2.evidence),...technicalFacts]}};}
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});

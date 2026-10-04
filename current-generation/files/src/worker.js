@@ -3401,7 +3401,18 @@ function classifyHtxInstrumentScope(info) {
       "commodities",
     ]);
 
+  // Exact fiat instruments independently identified by HTX's own listings.
+  // HTX currently sends empty tradfi_labels for these four forex pairs.
+  // This is a scoped primary-source correction, not a crypto ticker allowlist.
+  const officialForexEvidence = {
+    "EURUSD-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15470",
+    "GBPUSD-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15470",
+    "USDJPY-USDT": "https://t.me/HTXGlobalAnnouncementChannel/15480",
+    "USDBRL-USDT": "https://www.htx.com/en-us/support/45044889526369/",
+  }[String(info?.contract_code || "").toUpperCase()] || null;
+
   const htxTradfiClassified =
+    Boolean(officialForexEvidence) ||
     tradfiLabels.length > 0 ||
     labels.some(
       (label) =>
@@ -3444,6 +3455,8 @@ function classifyHtxInstrumentScope(info) {
       "NOT_ACTIVE_USDT_SWAP_SCOPE"
     );
   }
+
+  if (officialForexEvidence) reasons.push("HTX_OFFICIAL_FOREX_UNDERLYING");
 
   if (htxTradfiClassified) {
     reasons.push(
@@ -3499,6 +3512,7 @@ function classifyHtxInstrumentScope(info) {
     },
 
     evidence: {
+      official_forex_source_url: officialForexEvidence,
       business_type:
         businessType || null,
 
