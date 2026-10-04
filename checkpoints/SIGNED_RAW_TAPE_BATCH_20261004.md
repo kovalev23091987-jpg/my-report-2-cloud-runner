@@ -1,0 +1,11 @@
+# Exact signed raw HTX tape — coherent warmup package, 2026-10-04
+
+The common catalog remains all 119 crypto futures contracts / 102 assets. No spot-only or stock/fiat assets are added. This package supports the exact 102 USDT swap analysis keys, including Unicode/numeric names. The 17 delivery/inverse adapters are still explicitly unfinished; their prices, contract sizes and raw flow are not substituted by the representative USDT swap.
+
+The production normalizer observes the already fetched exact metadata, 1-minute factual trade counts and losslessly parsed raw fill IDs. It persists only individually closed minutes in the existing admitted evidence cache, without additional production HTTP, a new table, a second collector schedule or a manual report. Each minute must have its own exact count match, unique fill IDs, exact contract-size quote conversion and hash. Compensating mismatches cannot prove coverage. Existing complete minute conflicts and corrupt saved rows are rejected. Bounds: 45 stable minutes per acquisition, 27h retention, 1.5MB payload. High-volume or insufficient samples stay partial, not zero.
+
+Only 1440 consecutive exact raw minutes, with globally unique fill IDs, may yield the neutral N12 actual signed 24h fact. The latest closed minute is withheld to allow upstream settlement. Missing/stale/gapped data returns no 24h evidence. A controlled 1440-minute unit fixture is explicitly not live acceptance.
+
+The assembled cloud audit acquires six admitted official HTTP responses (NEAR/SOL metadata, actual minute counts, actual raw fills) and verifies durable nonempty raw-minute readback and idempotence. It must report WARMING_OR_GAPPED_RAW_24H and no signal. No native/catalog/options probe is repeated. No new FULL_MANUAL, liquidation or Telegram is started.
+
+Remaining: actual uninterrupted 24h ledger/history, aligned trajectory flow windows and downstream admission; full functional core-block acceptance, exact identities and exact delivery/inverse adapters. The current analytics pipeline retains its existing cadence. This package does not claim a new 5-minute full-universe raw-fill collector, all-asset warmup, complete 24h actual flow, or completion of the 15 core blocks.

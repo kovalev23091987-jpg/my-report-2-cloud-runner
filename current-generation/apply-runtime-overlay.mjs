@@ -21,7 +21,7 @@ const files=[
  'src/worker.js',
  'src/block-decision-use-audit.mjs',
  'src/funding-directional-policy.mjs',
- 'src/htx-trade-json.mjs',
+ 'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
  'src/verified-futures-flow-binding.mjs',
  'src/htx-volume-profile.mjs',
  'src/cross-venue-volume-profile.mjs',
