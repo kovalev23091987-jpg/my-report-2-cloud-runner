@@ -1,3 +1,11 @@
+# Действующее продолжение от 04.10.2026 (новейшие прямые инструкции владельца)
+
+Облачное продолжение авторизовано владельцем; задача6ac2929912d88191886ee5f0ce512572 включена. Старые указания ниже о disabled6abd относятся к прежней задаче и не отменяют это разрешение. Не создавать конкурирующие задачи. Читать свежий main, release fence и checkpoints/CLOUD_PHASE_STATE_20261004.json. Выполнять обязательный acquire/publish/readback protocol из checkpoints/CLOUD_PHASE_GUARD_20261004.md; чужой active owner запрещает параллельные изменения и source probes. Незавершённый этап продолжить, а не открывать следующий из-за нового запуска. PR103 проверен в cloud37223249357/job111497627649, интеграция37/37, stageguard4/4; proof checkpoints/cloud-phase-gate-release-evidence-20261004.json. Это приёмка защиты этапов, не закрытие 15 аналитических блоков.
+
+Порядок:15 основных N01–N12,N14–N16 → liquidation coverage по тому же общему universe всех crypto FUTURES → fresh единый MAIN/manual → Telegram. Общая подтверждённая база119 контрактов/102 активов во всех трёх семействах; checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz. Spot-only/акции/фиат исключены; PAXG/XAUT/Unicode/цифровые названия сохранены. 17 inverse/delivery exact adapters ещё не закрыты; отсутствующие/partial данные не green и не ноль. Пакеты связанных исправлений проверять целиком, затем сохранять source/use/cloud evidence. Никакого FULL_MANUAL без существенного actual raw24h flow исправления и quota admission; неизменные threshold70/weights/rules/free/quota/Telegram form. Полное покрытие ликвидаций: каждый актив×все8 источников, только реальные числовые future levels, ≥1 включает блок; uncovered не опрашивается live, top2 не подменяются. Неделя refresh в существующем runtime. Подробнее обязательное ТЗ и checkpoints/UNIFIED_15_BLOCK_REPORT_20261004.md, TECHNICAL_NATIVE_FACTS_20261004.md, CRYPTO_SCOPE_REPAIR_20261004.md.
+
+---
+
 # МОЙ ОТЧЁТ 2 — ОБЯЗАТЕЛЬНЫЙ КОНТРАКТ ЗАПУСКА
 
 Статус: текущая обязательная инструкция. Старые отчёты, черновики, доказательства и архивные версии не являются инструкциями запуска.
