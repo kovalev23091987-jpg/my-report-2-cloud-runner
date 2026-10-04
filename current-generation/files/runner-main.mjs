@@ -525,6 +525,8 @@ async function main() {
   const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):explicitManualContract;
   const expectedManualMode=source==='schedule'?'SCHEDULE':source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
   env.REPORT2_MANUAL_MODE=expectedManualMode;
+  const mainSourceRegistry=expectedManualMode==='LIQUIDATION_ONLY'?supplementalIdentityRegistry:
+    mergeOfficialAndConfiguredRegistries({official:compileOfficialSourceRegistry(JSON.parse(await fs.readFile(resolve('./main-official-event-sources.json'),'utf8'))),configured:supplementalIdentityRegistry.registry});
   const executionBudget=proveTwoCandidateBudget();
   if(!executionBudget.safe)throw new Error('TWO_CANDIDATE_BUDGET_UNSAFE');
   env.REPORT2_DEEP_RUNTIME_OPTIONS=deepRuntimeOptions({actor:preflight.actor,mode:expectedManualMode});
@@ -566,7 +568,7 @@ async function main() {
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=async params=>{const result=await collectHtxBoundSupplementalContext({
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
-    registry:supplementalIdentityRegistry.registry,
+    registry:mainSourceRegistry.registry,
     request_admit:unifiedHttpBudget.reserve,
     reference_enabled:expectedManualMode!=='LIQUIDATION_ONLY',
     vyx_api_key:envText('VYX_API_KEY',{required:false}),
