@@ -1,0 +1,185 @@
+{
+  "schema": "report2-liquidation-cumulative-actual-functional-acceptance-v1",
+  "phase": "LIQUIDATION_COVERAGE",
+  "status": "CLOSED",
+  "actual_evidence_verified": true,
+  "all_future_assets_checked": true,
+  "all_eight_sources_checked": true,
+  "real_future_levels_only": true,
+  "same_core_universe": true,
+  "durable_database_verified": true,
+  "weekly_refresh_verified": true,
+  "manual_and_standalone_gate_verified": true,
+  "common_future_universe": {
+    "path": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
+    "sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613",
+    "contracts": 119,
+    "assets": 102,
+    "families": 3,
+    "spot_only_assets": 0,
+    "stock_or_fiat_assets": 0,
+    "paxg_xaut_retained": true,
+    "unicode_and_numeric_allowed": true,
+    "inverse_delivery_retained_explicitly_unsupported": 17
+  },
+  "coverage_audit": {
+    "path": "checkpoints/liquidation-coverage-audit-release-evidence-20261004.json",
+    "merged_pr": 114,
+    "merge_sha": "dac5008b75e28223d93cb63259ab8c60ba3caa8f",
+    "checked_cells": 816,
+    "expected_cells": 816,
+    "covered_assets": 55,
+    "uncovered_assets": 47,
+    "source_ids": [
+      "HYPERLIQUID_NATIVE",
+      "BYK_TRACKED_HL_BANDS",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "GTRADE_NATIVE",
+      "BYKARANTELI_FUTURE_MAP",
+      "COINLOBSTER_FUTURE_MODEL",
+      "OXARCHIVE_HL_BUCKETS"
+    ],
+    "qualifying_source_ids": [
+      "HYPERLIQUID_NATIVE"
+    ],
+    "nonqualifying_sources_retained_in_database": true,
+    "unknown_or_unchecked_cells": 0,
+    "upstream_dedup_verified": true,
+    "cloud_runs": [
+      {
+        "run_id": 37239027707,
+        "job_id": 111543804496,
+        "artifact_id": 11316518880,
+        "artifact_sha256": "a0c000b7203ca49bd41312765308ade12bcb4b388f35262cab56fe3c28873ae5"
+      },
+      {
+        "run_id": 37239245960,
+        "job_id": 111544431505,
+        "artifact_id": 11315754976,
+        "artifact_sha256": "0e16f8e79f77f1c745e252905cebc62974b08b8aa0bb35ac6ae6706dcf6491be"
+      }
+    ]
+  },
+  "runtime_gate": {
+    "merged_pr": 115,
+    "merge_sha": "0ce6505c7f472d3b9da6a992903e0b30c188ac6c",
+    "cloud_run_id": 37240034320,
+    "job_id": 111546744866,
+    "artifact_id": 11316921164,
+    "artifact_sha256": "46a845f63d926269d496441f0e4d9a2f7d30c8417b7491c99f362c89b9276e29",
+    "targeted_tests": 28,
+    "integration_tests": 37,
+    "uncovered_zero_provider_calls": true,
+    "covered_only_admitted_sources": true,
+    "explicit_empty_allowlist_fail_closed": true,
+    "calculated_htx_fallback": false,
+    "synthetic_maps_admitted": false,
+    "leaders_may_be_replaced": false
+  },
+  "weekly_refresh": {
+    "merged_pr": 116,
+    "merge_sha": "611dcebb66396ce7b8ae7c91646e5003da222337",
+    "cloud_run_id": 37240482138,
+    "job_id": 111548032149,
+    "artifact_id": 11317706105,
+    "artifact_sha256": "631b859385b14ad6545ad4b1ff22fef98d541c20f24d90f737e1813395b4bb67",
+    "targeted_tests": 17,
+    "integration_tests": 37,
+    "existing_schedule_used": true,
+    "new_schedule_created": false,
+    "separate_staging_cache": true,
+    "atomic_swap_after_816_cells": true,
+    "http_cap": 120,
+    "ordinary_main_skipped_on_due_refresh": true,
+    "technical_telegram": false,
+    "actual_readback": {
+      "status": "NOT_DUE",
+      "assets": 102,
+      "cells": 816,
+      "source_http": 0,
+      "due_ts": 1791747508467
+    }
+  },
+  "standalone_uncovered_acceptance": {
+    "contract": "BTR-USDT",
+    "cloud_run_id": 37240717948,
+    "job_id": 111548745620,
+    "artifact_id": 11317845929,
+    "artifact_sha256": "88a200b62e96c48f83387d3e82e8949e88ef8be8b3d08c830e667c1be7ebfcbd",
+    "status": "NO_VERIFIED_REAL_LEVEL_SOURCE",
+    "coverage_eligible": false,
+    "source_http": 0,
+    "full_report_started": false,
+    "decision_generated": false,
+    "telegram_started": false,
+    "calculated_htx_fallback": false,
+    "synthetic_maps_admitted": false
+  },
+  "native_semantics_release": {
+    "merged_pr": 117,
+    "merge_sha": "57b996e490794f2d34958e0e69d30d6b3d18c86c",
+    "cloud_run_id": 37240950504,
+    "job_id": 111549394262,
+    "artifact_id": 11317436520,
+    "artifact_sha256": "58cb7b89fd1955531b81084e91842be04150fadf82f53444e3aa3354e91a8527",
+    "targeted_tests": 10,
+    "integration_tests": 37,
+    "real_level_kind": "NATIVE_FUTURE_LEVEL",
+    "provider_estimate_kind": "PROVIDER_ESTIMATE"
+  },
+  "standalone_covered_acceptance": {
+    "contract": "NEAR-USDT",
+    "workflow_head": "e12ade32b744f774bafba42fa89ae1ed1c862f34",
+    "worker_head": "db32a9a8954716c611d4532ec3930673f236c3cd4a6a8f12c8dfb653ec1999eb",
+    "cloud_run_id": 37241890076,
+    "job_id": 111552114037,
+    "artifact_id": 11316793810,
+    "artifact_sha256": "7115afaf08a2f05cb0fdfaef139a4ac3184c6b7d3810b1d18071d1528adf786f",
+    "source": "manual_recovery",
+    "canonical_run_id": "LIQ_ONLY:1791154589326",
+    "generated_at": "2026-10-04T22:56:47.605Z",
+    "coverage_status": "COVERED_REAL_NUMERIC_FUTURE_LEVELS",
+    "coverage_eligible": true,
+    "admitted_source_ids": [
+      "HYPERLIQUID_NATIVE"
+    ],
+    "independent_upstreams": [
+      "HYPERLIQUID"
+    ],
+    "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+    "real_numeric_future_level_count": 3,
+    "all_level_kinds": [
+      "NATIVE_FUTURE_LEVEL"
+    ],
+    "all_estimated_flags": [
+      false
+    ],
+    "calculated_zone_count": 0,
+    "calculated_fallback_enabled": false,
+    "future_map_source": null,
+    "alternative_manual_recalculation": false,
+    "full_report_started": false,
+    "decision_generated": false,
+    "telegram_started": false,
+    "artifact_verifier_passed": true,
+    "legacy_eight-source_freshness_label": "PARTIAL_SOURCE_COVERAGE",
+    "owner_admission_rule_satisfied": ">=1 actual useful numeric source"
+  },
+  "policy": {
+    "minimum_useful_source_count": 1,
+    "all_available_real_sources_used": true,
+    "same_upstream_not_independent_vote": true,
+    "uncovered_assets_remain_in_database": true,
+    "uncovered_assets_skip_live_liquidation": true,
+    "top_two_checked_independently": true,
+    "leaders_may_be_replaced": false,
+    "calculated_htx_fallback_forbidden": true,
+    "synthetic_comparison_forbidden": true,
+    "missing_stale_partial_never_zero_or_green": true
+  },
+  "source_http_for_receipt_only": 0,
+  "production_canonical_writes_for_receipt_only": 0,
+  "telegram_calls_for_receipt_only": 0,
+  "next_phase": "JOINT_REPORT"
+}

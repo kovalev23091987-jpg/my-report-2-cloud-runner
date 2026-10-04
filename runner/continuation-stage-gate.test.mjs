@@ -2,7 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {checkState,acquireIteration,finishPhase,releaseIteration,PHASES,REQUIREMENTS} from './continuation-stage-gate.mjs';
-const state=JSON.parse(fs.readFileSync(new URL('../checkpoints/CLOUD_PHASE_STATE_20261004.json',import.meta.url)));
+const savedState=JSON.parse(fs.readFileSync(new URL('../checkpoints/CLOUD_PHASE_STATE_20261004.json',import.meta.url)));
+// Stage-guard unit tests must remain stable as the durable production state advances.
+// Rebuild the initial phase fixture while retaining saved policy amendments/schema.
+const state=structuredClone(savedState);
+state.current_phase='CORE_BLOCKS';state.lease=null;
+for(let i=0;i<state.phases.length;i++)state.phases[i]={...state.phases[i],status:i===0?'IN_PROGRESS':'PENDING',completion_receipt:null};
 const now=1791136800000,owner='HTX:CONTROLLED_TEST:1',receipt={path:'controlled-completion-proof.json',sha256:'a'.repeat(64)};
 test('another scheduled iteration stays on the unfinished core phase and cannot acquire a parallel lease',()=>{
  const leased=acquireIteration({...state,lease:null},{owner,now});assert.equal(checkState(leased).id,'CORE_BLOCKS');
