@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "20efe70018c9f9feac78e74fcc3b20d6e85b0f17023045606a5bf7903bff1da5",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "c4f7f9e3ac01108a1a13cc20083528e5a7359c0a508e0103cd8faa00f2fb7630",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "778e09ae2d75510119aef3609e79dc79901b3b361ccccd5f381afb0b43e02903",
     "current-generation/files/src/canonical-publication.mjs": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c"
   },
   "fixtures": {
@@ -23,6 +23,21 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-04",
+      "scope": "OWNER_REQUESTED_REMAINING_BLOCK_FACTS",
+      "authorization": "Owner requires actual useful facts in all 15 blocks across every eligible HTX crypto futures asset before liquidation and Telegram work.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "c4f7f9e3ac01108a1a13cc20083528e5a7359c0a508e0103cd8faa00f2fb7630",
+          "after": "778e09ae2d75510119aef3609e79dc79901b3b361ccccd5f381afb0b43e02903"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "telegram_delivery_enabled": false,
+      "note": "A closed same-contract, same-snapshot technical scenario becomes neutral evidence context. Existing frozen canonical inputs remain byte-for-byte unchanged."
+    },
     {
       "date": "2026-10-04",
       "scope": "OWNER_REQUESTED_IMMUTABLE_EXECUTION_CONTEXT_IN_ONE_CANONICAL",
