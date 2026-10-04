@@ -23,6 +23,7 @@ const fetch_impl=async(url,options)=>{
  try{const r=await fetch(url,options),body=await r.clone().text();Object.assign(row,{http_status:r.status,received_ts:Date.now(),body_sha256:crypto.createHash('sha256').update(body).digest('hex'),body});return r;}
  catch(e){Object.assign(row,{received_ts:Date.now(),error:String(e?.name||e)});throw e;}
 };
+process.on('uncaughtExceptionMonitor',error=>{fs.writeFileSync('audit-output/technical-native-failure.json',JSON.stringify({github_head:process.env.GITHUB_SHA,run_id,error:String(error),source_http:raw.length,database_usage:db.usageSnapshot(),deep_checks_started:0,canonical_writes:0,telegram_calls:0},null,2)+'\n');fs.writeFileSync('audit-output/technical-native-source-bodies.json',JSON.stringify(raw,null,2)+'\n');});
 const request_admit=r=>budget.reserve(r);
 async function native(contract,chain,suffix){
  const result=await collectChainSupplyEvidence({db,fetch_impl,request_admit,contract,run_id:run_id+suffix,asset_identity:{chain,asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`,contract_or_mint:null},identity_method:'OFFICIAL_MAINNET_NATIVE_ASSET',now:Date.now(),strict_fresh_manual:true});

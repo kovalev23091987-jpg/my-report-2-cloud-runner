@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
 import {gunzipSync} from 'node:zlib';
-import {buildHtxCryptoUniverse,mergeHtxLinearCatalogModes} from '../files/src/htx-crypto-universe.mjs';
+import {buildHtxCryptoUniverse,mergeHtxLinearCatalogModes,HTX_LINEAR_MARGIN_CATALOG_URLS} from '../files/src/htx-crypto-universe.mjs';
 import {isExactHtxUsdtSwapKey} from '../files/src/htx-contract-key.mjs';
 import {compileOfficialSourceRegistry} from '../files/src/official-source-registry.mjs';
 import {collectReadyHtxVolumeProfile} from '../files/src/htx-volume-profile-collector.mjs';
@@ -52,6 +52,7 @@ test('Unicode HTX profiles reach the exact encoded primary routes within unchang
 });
 
 test('all margin modes are unioned and neither conflicts nor unidentified assets can claim complete enumeration',()=>{
+ assert.equal(new URL(HTX_LINEAR_MARGIN_CATALOG_URLS.isolated).searchParams.get('business_type'),'swap');
  const base=catalogs.linear,unique={...base.data[0],symbol:'123CRYPTO',contract_code:'123CRYPTO-USDT',pair:'123CRYPTO-USDT',labels:[],tradfi_labels:[]},modes={all:base,cross:{...base,data:[unique]},isolated:{...base,data:[]}};
  const merged=mergeHtxLinearCatalogModes({base,modes,observed_ts:now});assert.equal(merged.status,'CLOSED');assert.deepEqual(merged.new_contracts_vs_default,['123CRYPTO-USDT']);assert.ok(buildHtxCryptoUniverse({catalogs:{...catalogs,linear:merged.payload},classify_linear:classify,observed_ts:now}).assets.some(r=>r.symbol==='123CRYPTO'));
  assert.equal(mergeHtxLinearCatalogModes({base,modes:{all:base},observed_ts:now}).status,'PARTIAL');

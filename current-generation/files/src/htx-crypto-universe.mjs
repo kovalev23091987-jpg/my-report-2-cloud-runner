@@ -3,7 +3,7 @@ export const HTX_CATALOG_URLS=Object.freeze({
  coin_swap:'https://api.hbdm.com/swap-api/v1/swap_contract_info',
  coin_delivery:'https://api.hbdm.com/api/v1/contract_contract_info',
 });
-export const HTX_LINEAR_MARGIN_CATALOG_URLS=Object.freeze(Object.fromEntries(['all','cross','isolated'].map(mode=>[mode,HTX_CATALOG_URLS.linear+'&support_margin_mode='+mode])));
+export const HTX_LINEAR_MARGIN_CATALOG_URLS=Object.freeze(Object.fromEntries(['all','cross','isolated'].map(mode=>[mode,HTX_CATALOG_URLS.linear.replace('business_type=all','business_type='+(mode==='isolated'?'swap':'all'))+'&support_margin_mode='+mode])));
 export function mergeHtxLinearCatalogModes({base,modes,observed_ts}={}){
  const failures=[],rows=new Map(),sources=[['default',base],...Object.entries(modes||{})];
  for(const mode of ['all','cross','isolated'])if(!modes?.[mode])failures.push({mode,reason:'MARGIN_MODE_CATALOG_REQUIRED'});

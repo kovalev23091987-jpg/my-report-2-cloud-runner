@@ -9,3 +9,5 @@
 Облачный live probe ограничен 13 sourceHTTP, существующими HTX_PUBLIC_RISK/CHAIN_RPC лимитами, только quota/cache writes; deep0/canonical0/Telegram0. NEAR first/second даёт два реальных finalized snapshots; N03 считается полезным только если действительно получена supply decrease, не из фикстуры. SOL и общий N10 проверяются отдельно.
 
 15/15 ещё не приняты; inverse/delivery exact adapters, реальный signed raw24h flow, coverage8/weekly, freshMAIN и Telegram остаются незавершёнными. PRIMARY_TECHNICAL_CONTEXT pipeline audit не объявляется closed одним информационным диапазоном. Existing worker pin и golden вывод не менялись.
+
+Первый cloud run37221516069: inherited checks PASS, живой probe остановился на isolated+business_type=all (неподдерживаемое сочетание HTX API), без merge. Исправлен режим isolated на documented business_type=swap; all/cross сохраняют all для delivery. Добавлено сохранение source receipts при любой аварийной остановке probe. Повторная проверка необходима именно из-за этого изменения, не для повторения уже принятого блока.
