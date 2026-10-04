@@ -1,6 +1,7 @@
 import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
+import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
 export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v4-immutable-execution-parity-20261004';
@@ -16,6 +17,12 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N14'&&row.metric_family==='DELTA_SCOPED_OPTION_IV'){
+  if(row.provider_id!=='DELTA_OPTIONS'||row.upstream_id!=='DELTA_EXCHANGE_INDIA_PUBLIC_OPTIONS'||row.base_currency!==row.htx_contract.slice(0,-5)||row.source_clock_policy!=='PROVIDER_MICROSECOND_TIMESTAMP_ONLY'||row.source_is_htx_execution_price!==false)return null;
+  const declared=row.option_risk_context,risk=deriveDeltaOptionRisk({samples:declared?.samples,base_currency:row.base_currency,observed_ts:row.observed_ts});
+  if(!risk||risk.status!==declared.status||risk.source_ts!==row.source_ts||!['sample_count','call_count','put_count','expiration_timestamp','mark_iv_median_pct','mark_iv_min_pct','mark_iv_max_pct'].every(k=>eq(risk[k],declared[k])))return null;
+  return{source:'Delta Exchange',label:'Опционная волатильность актива на Delta',value:`медиана волатильности по котировкам ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} колл и ${risk.put_count} пут около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().replace('T',' ').slice(0,16)} UTC, расчёты в USD; данные этой площадки, направление и разрешение сделки не назначены`};
+ }
  if(row.block_id==='N10'&&row.metric_family==='ROLLING_24H_PRICE_RANGE_CONTEXT'){
   if(row.upstream_id!=='HTX_OFFICIAL_ROLLING_MARKET_SUMMARY'||row.source_clock_policy!=='HTX_PRIMARY_ROLLING_24H_SUMMARY'||row.closed_candle_claim!==false||row.signed_trade_flow_claim!==false||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||![row.range_low,row.range_high,row.last_price,row.range_pct].every(v=>number(v)!==null)||!(row.range_low>0&&row.range_high>=row.range_low&&row.last_price>=row.range_low&&row.last_price<=row.range_high)||!eq(row.range_pct,(row.range_high/row.range_low-1)*100))return null;
   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);

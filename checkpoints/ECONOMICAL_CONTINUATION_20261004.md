@@ -1,0 +1,9 @@
+# Owner amendment — economical continuation, 04.10.2026 23:00 MSK
+
+The owner requests less repeated work and quota use at hourly continuation. The existing task prompt was updated and acknowledged on 04.10.2026. No second schedule was created and existing market collector/analytics cadence is unchanged.
+
+Start with current main ref, phase state and release fence together. A foreign active lease/fence ends this attempt before edits, market calls or tests. Otherwise acquire/readback ownership and continue next_action/pending branch/PR/job/artifact. Read only the latest contract and relevant changed documents; do not re-read old reports as new instructions. Do not recreate an existing cloud job or repeat completed live probes. Tests belong to a substantial changed package, not the hourly trigger. Repeat only for relevant changed code/configuration, a failure, a new requirement or a material unresolved concern. New market calls require an actual need for repair, freshness, weekly refresh or new final acceptance, plus existing admission.
+
+No-main-change is not a global skip rule: unfinished code work still proceeds from its saved checkpoint. Waiting for another active owner/job/time/admission is a skip of duplicate work, not a completed phase. A still-valid saved acceptance is reused with its exact tested tree, dependencies, artifact and scope; it is not called fresh if its source TTL expired. Historical replay is not new live acceptance. Preserve all entry/quota/canonical requirements and the owner's raw24h-only deferral. Report only substantive verified progress or a genuine blocker.
+
+Current coherent package adds independently scoped Delta options context to N14 and its free quota/cache/backoff controls. It is not a request to run all prior live source probes. The next durable source acceptance will reference its exact cloud head/tree/artifact and actual report consumer.
