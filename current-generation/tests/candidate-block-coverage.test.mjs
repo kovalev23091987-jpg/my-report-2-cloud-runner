@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {auditCandidateBlocks} from '../files/src/candidate-evidence-v2-runtime.mjs';
+import {auditCandidateBlocks,sourceWasActuallyChecked,sourceWasAttempted} from '../files/src/candidate-evidence-v2-runtime.mjs';
 const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
 const completeSources=()=>Object.fromEntries(SOURCE_NAMES.map(source=>[source,{status:'VALID_RESPONSE_NO_EVENT',network_calls:1}]));
 
@@ -89,4 +89,27 @@ test('strict fresh manual audit rejects cache-only external owners but accepts f
  assert.deepEqual(result.blocks.N01.missing_required,['OFFICIAL_EVENTS']);
  assert.equal(result.blocks.N10.checked,true);
  assert.equal(result.all_blocks_checked,false);
+});
+
+test('saturated or incomplete event samples remain attempted without closing neutral blocks',()=>{
+ for(const status of ['LOG_SAMPLE_SATURATED','SOURCE_SAMPLE_TRUNCATED','SOURCE_SAMPLE_INCOMPLETE']){
+  const sources=completeSources();sources.CHAIN_EVENTS={status,network_calls:2,receipts:[{http_status:200}]};
+  const result=auditCandidateBlocks({sources,strict_fresh:true});
+  for(const block of ['N03','N04']){
+   assert.equal(result.blocks[block].source_checks.CHAIN_EVENTS.attempted,true);
+   assert.equal(result.blocks[block].checked,false);
+   assert.equal(result.blocks[block].decision_path,'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED');
+   assert.deepEqual(result.blocks[block].missing_required,['CHAIN_EVENTS']);
+  }
+ }
+ assert.equal(sourceWasActuallyChecked({status:'CLOSED_EMPTY_BOUNDED_SAMPLE',network_calls:1,receipts:[{http_status:200}]}),true);
+});
+
+test('missing HTTP status is not a transport receipt',()=>{
+ for(const http_status of [null,undefined,0,'',99,600]){
+  const source={status:'TRANSPORT_RESULT_UNKNOWN',network_calls:0,receipts:[{http_status}]};
+  assert.equal(sourceWasActuallyChecked(source),false);
+  assert.equal(sourceWasAttempted(source),false);
+ }
+ assert.equal(sourceWasAttempted({status:'SOURCE_ERROR',network_calls:1,receipts:[{http_status:null}]}),true);
 });

@@ -105,20 +105,21 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
  return{results,receipts,network_calls:actual,reserved_requests:reserved,max_requests};
 }
 
+const hasHttpReceipt=receipt=>receipt?.http_status!==null&&receipt?.http_status!==undefined&&Number.isInteger(Number(receipt.http_status))&&Number(receipt.http_status)>=100&&Number(receipt.http_status)<=599;
 export function sourceWasActuallyChecked(source){
  if(!source||typeof source!=='object')return false;
  const status=String(source.status||'NOT_EVALUATED').toUpperCase();
- if(/(?:^|_)(?:EXACT_.+_REQUIRED|REQUIRED|DEFERRED|WAITING|NOT_EVALUATED|NOT_RUN|NOT_CLOSED|SOURCE_ERROR|INVALID(?:_|$)|SCHEMA|TIMEOUT|ACCESS_BLOCKED|RATE_LIMIT|QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|UNSUPPORTED|PARSER_FORMAT_MISMATCH)(?:_|$)/.test(status))return false;
+ if(/(?:^|_)(?:EXACT_.+_REQUIRED|REQUIRED|DEFERRED|WAITING|NOT_EVALUATED|NOT_RUN|NOT_CLOSED|SOURCE_ERROR|SATURATED|TRUNCATED|INCOMPLETE|INVALID(?:_|$)|SCHEMA|TIMEOUT|ACCESS_BLOCKED|RATE_LIMIT|QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|UNSUPPORTED|PARSER_FORMAT_MISMATCH)(?:_|$)/.test(status))return false;
  if(source.check_completed===true)return true;
  if(Number(source.network_calls)>0)return true;
  if(Array.isArray(source.evidence)&&source.evidence.length>0)return true;
- if(Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.cache_hit===true||row?.check_completed===true))return true;
+ if(Array.isArray(source.receipts)&&source.receipts.some(row=>hasHttpReceipt(row)||row?.cache_hit===true||row?.check_completed===true))return true;
  const cache=String(source.cache_status||'').toUpperCase();
  return /(^|_)(HIT|SHARED_HIT|REUSED|REFRESHED|FRESH|VALID_CACHE|CACHE_VALID)(_|$)/.test(cache);
 }
 export function sourceWasAttempted(source){
  if(!source||typeof source!=='object')return false;
- return Number(source.network_calls)>0||source.check_completed===true||Array.isArray(source.receipts)&&source.receipts.some(row=>Number.isInteger(Number(row?.http_status))||row?.check_completed===true)||sourceWasActuallyChecked(source);
+ return Number(source.network_calls)>0||source.check_completed===true||Array.isArray(source.receipts)&&source.receipts.some(row=>hasHttpReceipt(row)||row?.check_completed===true)||sourceWasActuallyChecked(source);
 }
 
 function proofForRequirement(requirement,sources){

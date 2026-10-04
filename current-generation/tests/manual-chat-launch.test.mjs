@@ -53,7 +53,7 @@ test('full manual report preserves market rank and records the top two',()=>{
  assert.doesNotMatch(worker,/MANUAL_STRICT17_AUDIT/u);
  assert.doesNotMatch(worker,/NEUTRAL_MANUAL_AUDIT/u);
  assert.doesNotMatch(worker,/rawAuditCandidate/u);
- assert.match(worker,/REPORT2_MANUAL_MODE\|\|''\)\.toUpperCase\(\)==='FULL_MANUAL'\s*\n\s*\? 0/u);
+ assert.match(worker,/isFreshManualMainAnalysis\(env\?\.REPORT2_MANUAL_MODE\)\s*\n\s*\? 0/u);
 });
 
 test('canonical run artifact exposes candidate rank and selected contracts',()=>{

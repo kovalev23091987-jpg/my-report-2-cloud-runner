@@ -7,6 +7,9 @@ export const TWO_CANDIDATE_PLAN=Object.freeze({
   maximum_analytics_runs_per_day:47,node_hot_http_limit:96,
 });
 export const TWO_NODE_HTTP_LIMITS=Object.freeze({whole_job:164,hot:96,background:56,statistics:12});
+export function isFreshManualMainAnalysis(mode){
+  return ['FULL_MANUAL','MANUAL_COIN'].includes(String(mode||'').trim().toUpperCase());
+}
 export function proveTwoCandidateBudget(plan=TWO_CANDIDATE_PLAN){
   const scheduled=plan.scheduled_cycles_per_day*plan.candidates_per_full_cycle;
   const manual=plan.manual_full_commands_per_day*plan.candidates_per_full_cycle+plan.manual_coin_commands_per_day;
