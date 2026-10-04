@@ -8,7 +8,7 @@ For each candidate retain: exact asset/contract identity, new useful fact, publi
 
 Coverage of this instruction includes all fifteen configured consumers: N01 supporting risk recheck, N02 supply risk, N03 supply reduction/money-flow context, N04 transfer investigation, N05 market-flow confirmation, N06 early interest, N07 official event risk, N08 execution restriction, N09 eligibility, N10 technical target/path/invalidation, N11 execution stress/depth, N12 factual trade-flow diagnostics, N14 options risk, N15 sector/peer relative strength, and N16 execution costs. Liquidation requires actual numeric external future levels; realized liquidation history and locally calculated stress maps do not qualify.
 
-Current search status: IN_PROGRESS; no additional source has passed end-to-end live acceptance yet. Pacifica's official public positions API documents a liquidation_price field, but a documented nullable field is not proof of actual useful numeric coverage. Evaluate actual public positions before enabling. Drift documentation describes margin/liquidation mechanics; this does not prove a public provider-reported future level. Do not enable either on documentation alone.
+Current search status: IN_PROGRESS; Delta N14 has passed actual fresh source → canonical builder → approved manual renderer acceptance (PR108); full MAIN/TG acceptance remains open. Pacifica's official public positions API documents a liquidation_price field, but a documented nullable field is not proof of actual useful numeric coverage. Evaluate actual public positions before enabling. Drift documentation describes margin/liquidation mechanics; this does not prove a public provider-reported future level. Do not enable either on documentation alone.
 
 Primary references inspected on 04.10.2026:
 - https://docs.pacifica.fi/api-documentation/api/rest-api/account/get-positions
@@ -21,3 +21,5 @@ This file is an instruction/research checkpoint, not source coverage or report a
 ## Roles amendment — latest owner instruction 04.10.2026
 
 Before enabling any additional source, assign primary/confirming/additional/fallback role for each fact and identify its upstream. Shared upstream routes cannot gain independent weight twice. Operational priority is not strategy weight. New options context cannot replace HTX execution price or authorize entry; new venue facts must retain their exact market, units and scope. Deribit remains the primary options role; Delta is an independently scoped additional source. A useful verified basket from either can provide N14 context, without inventing absent provider data or score bonuses.
+
+Delta acceptance: checkpoints/delta-options-release-evidence-20261004.json. Actual fresh BTC/ETH/XAUT context reached three approved renderer reports with two shared requests. Research continues for the other core blocks and liquidation; Pacifica/Drift/CoinMetrics candidates remain unaccepted.
