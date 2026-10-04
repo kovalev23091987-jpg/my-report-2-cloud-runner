@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004]
 permissions:
   contents: read
 jobs:
@@ -27,6 +27,10 @@ jobs:
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node current-generation/validate.mjs > audit-output/validation.json
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early-repair.tap
+          for suite in approved-entry-path approved-entry-performance decision-timeline early-observation-state prospective-public-history public-collector-history-consumer stage392-persistence-contract; do
+            node --import ./current-generation/tests/early-evidence-repair/no-network.mjs "current-generation/tests/$suite.runtime.mjs" runtime >> audit-output/runtime-controls.jsonl
+          done
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node audit-fixes/block-results-20261004/replay.mjs runtime > audit-output/rendered-context-replay.json
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json

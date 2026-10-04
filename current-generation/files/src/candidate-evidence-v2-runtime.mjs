@@ -48,15 +48,19 @@ export function rotateEvidenceRoleRoutes(routes,key){
 // evaluated.  Supplemental and discovery routes remain visible, but they may
 // not close a block on behalf of a missing primary route.
 export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
+ N01:{all:['OFFICIAL_EVENTS'],supplemental:[]},
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX']},
  N03:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
+ N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
  N05:{all:['NANSEN_FLOWS'],supplemental:['CHAIN_EVENTS']},
+ N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N07:{all:['OFFICIAL_EVENTS'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
  N09:{all:['HTX_PUBLIC_RISK'],supplemental:[]},
  N10:{all:['PRIMARY_TECHNICAL_CONTEXT'],supplemental:[]},
  N11:{all:['PRIMARY_EXECUTION_STRESS'],supplemental:[]},
  N12:{all:['HTX_LARGE_TRADES'],supplemental:[]},
+ N14:{all:['DERIBIT_ALT_OPTIONS'],supplemental:[]},
  N15:{any:['COINGECKO_SECTOR','COINPAPRIKA_SECTOR'],supplemental:[]},
  N16:{all:['PRIMARY_EXECUTION_COST'],supplemental:[]},
 });
@@ -162,7 +166,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   };
  }
  const values=Object.values(result);
- return {status:values.every(row=>row.checked)?'CLOSED_ALL_11_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,
+ return {status:values.every(row=>row.checked)?'CLOSED_ALL_15_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,
   checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,
   score_or_risk_input_block_count:values.filter(row=>row.decision_path==='ADMITTED_SCORE_OR_RISK_INPUT').length,
   admitted_control_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_CONTROL_CONTEXT').length,
@@ -186,10 +190,9 @@ export async function collectCandidateEvidenceV2(params={}){
  const core=await collectEvidenceRouteBlock({routes:[{name:'HTX',role:'HTX_EXECUTION_RULES'}],collectors:{HTX:collectHtxPublicRiskEvidence},params,max_requests:evidenceCap});
  const htx=core.results.HTX;
  const chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address),evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),socialEligible=chainEligible&&(evmEligible||chainName==='solana'),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
- const retired={status:'RETIRED_NO_VERIFIED_CONSUMER',evidence:[],network_calls:0,receipts:[],internal_only:true};
  const deferred={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0,receipts:[],internal_only:true};
- let deribit=retired,chainSupply=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=retired,official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'},{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
+ let deribit=deferred,chainSupply=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
+ const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'},{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(params?.asset_metadata?.coinpaprika_id&&params?.asset_metadata?.sector_tag)routes.push({name:'SECTOR',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  if(chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});

@@ -8,13 +8,13 @@ function canonical(){const c=structuredClone(fixture.canonical);c.metadata.inter
 
 test('same actual BTW snapshot separates four eligible facts from zero applied score blocks',()=>{
  const c=canonical(),before=JSON.stringify(c),r=auditCanonicalBlockDecisionUse(c);
- assert.equal(r.checked_block_count,11);assert.equal(r.directional_eligible_block_count,3);
+ assert.equal(r.checked_block_count,15);assert.equal(r.directional_eligible_block_count,3);
  assert.equal(r.score_status,'BASE_SCORE_MISSING');assert.equal(r.score_applied_block_count,0);
  assert.equal(r.blocks.N15.score_application_status,'NO_BASE_SCORE_NO_APPLICATION');
  assert.equal(r.blocks.N09.score_application_status,'VALID_CONTEXT_NO_SCORE_EFFECT');
  assert.equal(r.blocks.N10.score_application_status,'CONTROL_CHECK_APPLICATION_NOT_PROVEN');
  assert.equal(r.all_blocks_have_proven_decision_effect,false);
- assert.equal(JSON.stringify(c),before);assert.equal(Object.keys(r.blocks).length,11);
+ assert.equal(JSON.stringify(c),before);assert.equal(Object.keys(r.blocks).length,15);
  assert.equal(r.blocks.N13,undefined);assert.equal(r.blocks.N17,undefined);
 });
 test('assigned consumer, HTTP checks or forged unbound score receipts cannot prove use',()=>{
