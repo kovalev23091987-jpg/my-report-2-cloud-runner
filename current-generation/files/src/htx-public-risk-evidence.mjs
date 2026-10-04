@@ -1,6 +1,6 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 
-export const HTX_PUBLIC_RISK_EVIDENCE_VERSION='htx-public-risk-evidence-v2-shared-source-clock-20260930';
+export const HTX_PUBLIC_RISK_EVIDENCE_VERSION='htx-public-risk-evidence-v3-same-run-shared-response-20261004';
 const SOURCE='HTX_PUBLIC_RISK',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
 const GLOBAL_KEY='ALL_HTX_LINEAR_SWAPS_V2';
 const text=value=>String(value??'').trim();
@@ -51,7 +51,16 @@ export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fet
  await install(db);const cached=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,htxContract,now).first();
  if(!strict_fresh_manual&&cached){try{const p=JSON.parse(cached.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{...p,cache_status:'HIT',network_calls:0};}catch{}}
  const shared=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,GLOBAL_KEY,now).first();
- if(!strict_fresh_manual&&shared){try{const p=JSON.parse(shared.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalizeHtxPublicRisk({contract:htxContract,...p.payloads,observed_ts:now}),cache_status:'SHARED_HIT',network_calls:0,receipts:p.receipts,shared_catalog_source_ts:p.source_ts,internal_only:true};}catch{}}
+ if(shared){try{
+  const p=JSON.parse(shared.payload_json),sameRun=Boolean(text(run_id))&&p.run_id===text(run_id),received=finite(p.observed_ts);
+  // One newly fetched all-contract response can serve both exact markets in
+  // the same manual cycle. A previous run never satisfies manual freshness.
+  const currentRunFresh=sameRun&&received!==null&&received<=now&&now-received<TTL;
+  if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION&&(!strict_fresh_manual||currentRunFresh)){
+   const normalized=normalizeHtxPublicRisk({contract:htxContract,...p.payloads,observed_ts:now});
+   return{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalized,cache_status:currentRunFresh?'CURRENT_RUN_SHARED_HIT':'SHARED_HIT',network_calls:0,check_completed:currentRunFresh&&normalized.status==='CLOSED',check_basis:currentRunFresh?'SAME_RUN_FRESH_HTTP_EXACT_CONTRACT':'VALID_SHARED_CACHE',receipts:p.receipts,shared_catalog_source_ts:p.source_ts,shared_response_run_id:p.run_id??null,internal_only:true};
+  }
+ }catch{}}
  const reservationId=`EV2:${SOURCE}:${run_id}:${GLOBAL_KEY}:${Math.floor(now/TTL)}`;
  const wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:3}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
@@ -66,7 +75,7 @@ export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fet
  const result={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,...normalized,network_calls:3,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:[state,isolated,cross].map((row,index)=>({route:['STATE','ISOLATED','CROSS'][index],status:row.ok?'CLOSED':'SOURCE_ERROR',http_status:row.http_status??null,error:row.error??null,received_ts:row.received_ts??null})),internal_only:true};
  const clocks=[state,isolated,cross].map(r=>finite(r.payload?.ts));
  if([state,isolated,cross].every(r=>r.ok&&Array.isArray(r.payload?.data))&&clocks.every(ts=>ts!==null&&ts<=observedTs&&observedTs-ts<TTL)){
-  const sourceTs=Math.min(...clocks),bundle={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,source_ts:sourceTs,receipts:result.receipts,payloads:{state_payload:compactPayload(state.payload,true),isolated_payload:compactPayload(isolated.payload,false),cross_payload:compactPayload(cross.payload,false)}};
+  const sourceTs=Math.min(...clocks),bundle={version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,run_id:text(run_id),observed_ts:observedTs,source_ts:sourceTs,receipts:result.receipts,payloads:{state_payload:compactPayload(state.payload,true),isolated_payload:compactPayload(isolated.payload,false),cross_payload:compactPayload(cross.payload,false)}};
   await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(SOURCE,GLOBAL_KEY,observedTs,sourceTs+TTL,JSON.stringify(bundle)).run();
  }
  if(normalized.status==='CLOSED')await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(SOURCE,htxContract,observedTs,normalized.evidence[0].expires_at,JSON.stringify(result)).run();

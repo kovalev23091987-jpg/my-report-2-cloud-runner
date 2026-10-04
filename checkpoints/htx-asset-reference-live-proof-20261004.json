@@ -1,0 +1,45 @@
+{
+  "status": "CLOSED",
+  "total": 1699,
+  "counts": {
+    "CLOSED": 820,
+    "AMBIGUOUS_HTX_CHAIN_ADDRESSES": 20,
+    "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND": 666,
+    "NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE": 17,
+    "NATIVE_OR_UNSUPPORTED_HTX_ASSET": 176
+  },
+  "examples": {
+    "PUMP": {
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "solana",
+          "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+        }
+      ]
+    },
+    "PEPE": {
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "ethereum",
+          "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+        }
+      ]
+    },
+    "NEAR": {
+      "status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identities": []
+    },
+    "USELESS": {
+      "status": "HTX_CURRENCY_NOT_FOUND"
+    }
+  },
+  "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+  "http_status": 200,
+  "observed_at": "2026-10-04T08:18:58.275585+00:00",
+  "raw_bytes": 1042513,
+  "raw_sha256": "60929f0cc27d1ee7b240664036762b10c2c8a16e2cf2820c109cd85fee0ae18f",
+  "api_key_used": false,
+  "production_deployment_test": false
+}

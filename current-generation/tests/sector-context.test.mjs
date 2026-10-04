@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import {normalizeCoingeckoSector,collectCoingeckoSectorEvidence} from '../files/src/coingecko-sector-evidence.mjs';
+import {normalizeCoingeckoSector,collectCoingeckoSectorEvidence,selectCoingeckoSectorCategory} from '../files/src/coingecko-sector-evidence.mjs';
 import {normalizeCoinpaprikaSector,verifyCoinpaprikaIdentity} from '../files/src/coinpaprika-sector-evidence.mjs';
 import {consumeSectorContext} from '../files/src/sector-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
@@ -54,4 +54,14 @@ test('daily and minute exhaustion defer this provider and free the phase slot fo
  else{await installProviderMinuteLedger(database);await reserveProviderMinuteUnits(database,{provider:'COINGECKO',reservation_id:'full',units:9,cap:9,now});}
  let fallback=false;const r=await collectEvidenceRouteBlock({routes:[{name:'CG'},{name:'NEXT'}],params:options(database,now),max_requests:3,collectors:{CG:collectCoingeckoSectorEvidence,NEXT:async p=>{const admission=p.request_admit({attempts:1});fallback=admission.allowed;return{status:'NEXT_ROLE',network_calls:0};}}});
  assert.equal(r.network_calls,0);assert.equal(fallback,true);assert.equal(r.results.CG.admission.allowed,false);database.sqlite.close();}
+});
+
+test('exact provider categories beyond oracle and DeFi produce the same bounded sector context',()=>{
+ const p={...params,category_id:'meme-token',category_name:'Meme',metadata:{...params.metadata,categories:['Ethereum Ecosystem','Meme']},categories:[{category_id:'meme-token',name:'Meme'}]};
+ assert.deepEqual(selectCoingeckoSectorCategory(p.metadata,p.categories),p.categories[0]);
+ const r=normalizeCoingeckoSector(p);assert.equal(r.status,'CLOSED');assert.equal(r.evidence[0].block_id,'N15');
+ const consumed=consumeSectorContext({evidence:r.evidence,contract:'LINK-USDT',asset_identity:identity,now:oldNow});assert.equal(consumed.status,'CLOSED');assert.match(consumed.facts[0].label,/мем-монеты/);
+ assert.equal(selectCoingeckoSectorCategory(p.metadata,[...p.categories,...p.categories]),null);
+ assert.equal(selectCoingeckoSectorCategory({categories:['Ethereum Ecosystem']},[{category_id:'ethereum-ecosystem',name:'Ethereum Ecosystem'}]),null);
+ const altered=normalizeCoingeckoSector({...p,metadata:{...p.metadata,categories:['Other']}});assert.equal(altered.evidence.length,0);
 });

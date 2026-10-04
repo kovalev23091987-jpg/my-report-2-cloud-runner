@@ -73,6 +73,7 @@ const files=[
  'src/discovery-candidate-score.mjs',
  'src/two-candidate-policy.mjs',
  'src/bounded-hot-maintenance.mjs',
+ 'src/htx-asset-identity.mjs',
  'src/market-contracts.mjs',
  'src/candidate-task-queue.mjs',
  'src/asset-identity-cache.mjs',

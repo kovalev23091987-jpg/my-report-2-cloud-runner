@@ -2,11 +2,22 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v1-ready-context-20260930';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v2-exact-provider-category-20261004';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
-export const SUPPORTED_SECTOR_NAMES=Object.freeze({'Oracle':'оракулы','Decentralized Finance (DeFi)':'децентрализованные финансы'});
+export const SUPPORTED_SECTOR_NAMES=Object.freeze({'Oracle':'оракулы','Decentralized Finance (DeFi)':'децентрализованные финансы','Meme':'мем-монеты','Gaming (GameFi)':'игровые проекты','Artificial Intelligence (AI)':'искусственный интеллект','Real World Assets (RWA)':'реальные активы','Layer 1 (L1)':'базовые блокчейны','Layer 2 (L2)':'сети второго уровня'});
+export function sectorCategoryLabel(name){
+ const value=clean(name);
+ if(!/^[\p{L}\p{N} &().,'/-]{1,120}$/u.test(value)||/ecosystem/i.test(value)||/^(?:cryptocurrency|stablecoins?|all coins)$/i.test(value))return null;
+ return SUPPORTED_SECTOR_NAMES[value]||value;
+}
+export function selectCoingeckoSectorCategory(metadata,directory){
+ if(!Array.isArray(metadata?.categories)||!Array.isArray(directory))return null;
+ const names=[...Object.keys(SUPPORTED_SECTOR_NAMES),...metadata.categories.filter(n=>!Object.hasOwn(SUPPORTED_SECTOR_NAMES,n))];
+ for(const name of names){if(!metadata.categories.includes(name)||!sectorCategoryLabel(name))continue;const rows=directory.filter(r=>r?.name===name&&/^[a-z0-9-]{2,100}$/.test(r?.category_id));if(rows.length===1)return rows[0];}
+ return null;
+}
 export function verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name}={}){
  const address=clean(identity?.contract_or_mint),chain=identity?.chain;
  if(!['ethereum','solana'].includes(chain)||!address||metadata?.id!==coin_id||!/^[a-z0-9-]{2,100}$/.test(coin_id)||clean(metadata.symbol).toUpperCase()!==clean(contract).replace(/-USDT$/,'')||!Array.isArray(metadata?.categories)||(category_name&&!metadata.categories.includes(category_name)))return false;
@@ -14,7 +25,7 @@ export function verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_i
 }
 export function normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,observed_ts=Date.now()}={}){
  const matching=Array.isArray(categories)?categories.filter(r=>r.category_id===category_id&&r.name===category_name):[];
- if(!SUPPORTED_SECTOR_NAMES[category_name]||!verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name})||matching.length!==1||!Array.isArray(quotes))return{status:'EXACT_ASSET_AND_CATEGORY_REQUIRED',evidence:[]};
+ if(!sectorCategoryLabel(category_name)||!verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name})||matching.length!==1||!Array.isArray(quotes))return{status:'EXACT_ASSET_AND_CATEGORY_REQUIRED',evidence:[]};
  const counts=new Map(),symbols=new Map();
  for(const r of quotes){counts.set(r?.id,(counts.get(r?.id)||0)+1);const s=clean(r?.symbol).toUpperCase();symbols.set(s,(symbols.get(s)||0)+1);}
  const valid=r=>{const ts=Date.parse(r?.last_updated),change=num(r?.price_change_percentage_24h),symbol=clean(r?.symbol).toUpperCase();return r&&counts.get(r.id)===1&&symbols.get(symbol)===1&&Number.isFinite(ts)&&ts<=observed_ts&&observed_ts-ts<=MAX_AGE&&num(r.current_price)>0&&num(r.total_volume)>=100000&&change!==null?{id:r.id,symbol,source_ts:ts,change_24h_pct:change,quote:'USD_AGGREGATED'}:null;};
@@ -31,7 +42,7 @@ export function normalizeCoingeckoSector({metadata,categories,quotes,identity,co
 export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,asset_metadata,now=Date.now(),strict_fresh_manual=false}={}){
  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
  const pinned=Boolean(coin_id||category_id||category_name),validAddress=identity?.chain==='ethereum'?/^0x[0-9a-f]{40}$/i.test(identity.contract_or_mint):identity?.chain==='solana'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(identity.contract_or_mint);
- if(!validAddress||!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!SUPPORTED_SECTOR_NAMES[category_name])))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+ if(!validAddress||!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!sectorCategoryLabel(category_name))))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  const key=`${contract}:${identity.chain}:${identity.contract_or_mint}:${coin_id}:${category_id}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION)return cached;
@@ -61,10 +72,10 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  }
  const metadataUrl=pinned?`https://api.coingecko.com/api/v3/coins/${coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false`:`https://api.coingecko.com/api/v3/coins/${identity.chain}/contract/${encodeURIComponent(identity.contract_or_mint)}`;
  const metadata=await get('EXACT_COIN_METADATA',metadataUrl);
- if(!pinned){coin_id=clean(metadata?.id);category_name=Object.keys(SUPPORTED_SECTOR_NAMES).find(name=>metadata?.categories?.includes(name))||'';}
- const verified=verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name});
- const categories=verified&&category_name?await get('EXACT_CATEGORY_DIRECTORY','https://api.coingecko.com/api/v3/coins/categories/list'):null;
- if(!pinned&&Array.isArray(categories)){const matched=categories.filter(r=>r.name===category_name);if(matched.length===1&&/^[a-z0-9-]{2,100}$/.test(matched[0].category_id))category_id=matched[0].category_id;}
+ if(!pinned)coin_id=clean(metadata?.id);
+ const verified=verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name:pinned?category_name:null});
+ const categories=verified?await get('EXACT_CATEGORY_DIRECTORY','https://api.coingecko.com/api/v3/coins/categories/list'):null;
+ if(!pinned){const selected=selectCoingeckoSectorCategory(metadata,categories);category_name=selected?.name||'';category_id=selected?.category_id||'';}
  const match=Array.isArray(categories)&&categories.filter(r=>r.category_id===category_id&&r.name===category_name).length===1;
  const quotes=match?await get('CATEGORY_QUOTES',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`):null;
  const normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,observed_ts:Date.now()});

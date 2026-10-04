@@ -28,7 +28,7 @@ import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET
 import { classifyCanonicalRunCompletion, enforceManualBlockCoverage, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext,contextForContract} from './src/global-market-context.mjs';
-import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './src/supplemental-candidate-context.mjs';
+import {parseSupplementalIdentityRegistry} from './src/supplemental-candidate-context.mjs';
 import {runOxArchiveCostProbe,loadOxArchiveReadiness,createOxArchiveCollector} from './src/oxarchive-cost-probe.mjs';
 import {installSourceAllowances} from './src/liquidation-extension/install-source-allowances.mjs';
 import {loadLiquidationVenueCatalog} from './src/liquidation-extension/venue-catalog-cache.mjs';
@@ -51,6 +51,7 @@ import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/
 import {collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget,HTTP_LIMITS} from './src/unified-budget.mjs';
 import {TWO_CANDIDATE_PLAN,TWO_NODE_HTTP_LIMITS,proveTwoCandidateBudget,deepRuntimeOptions} from './src/two-candidate-policy.mjs';
+import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 
@@ -562,15 +563,17 @@ async function main() {
     console.log('SAVED_CANONICAL_RUN_OUTPUT',JSON.stringify({status:savedOutput.status,run_id:savedRunId,candidates:savedOutput.candidates.length,block_audit:savedOutput.block_audit||null,report_text_present:Boolean(savedOutput.report_text)}));
     return;
   }
-  env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=params=>collectSupplementalCandidateContext({
+  env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=async params=>{const result=await collectHtxBoundSupplementalContext({
     db:env.DATA_DB,
     fetch_impl:globalThis.fetch,
     registry:supplementalIdentityRegistry.registry,
+    request_admit:unifiedHttpBudget.reserve,
+    reference_enabled:expectedManualMode!=='LIQUIDATION_ONLY',
     vyx_api_key:envText('VYX_API_KEY',{required:false}),
     nansen_api_key:envText('NANSEN_API_KEY',{required:false}),
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
-  });
+  });if(result.asset_reference)console.log('HTX_ASSET_REFERENCE_RECEIPT',JSON.stringify({contract:params.contract,status:result.asset_reference.status,identity:result.asset_reference.identity,identity_method:result.identity_method,cache_status:result.asset_reference.cache_status,network_calls:result.asset_reference.network_calls,reference_observed_ts:result.asset_reference.reference_observed_ts,receipt:result.asset_reference.receipt||null}));return result;};
   const liquidationRiskByContract=new Map(),futureHttpByContract=new Map();
   env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT=async params=>{const result=await collectCoinLobsterFutureModel({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,max_http:Math.max(0,5-(futureHttpByContract.get(params.contract)??0)),strict_fresh_manual:source!=='schedule'&&commandIntent.matched,...params});futureHttpByContract.set(params.contract,(futureHttpByContract.get(params.contract)??0)+result.network_calls);return result;};
   env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=async params=>{const risk=await collectCrossExchangeRiskContext({
