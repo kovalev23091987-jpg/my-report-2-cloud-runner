@@ -11,6 +11,7 @@ const canonicalChain=value=>({eth:'ethereum',ethereum:'ethereum',bsc:'bsc',arbit
 const stableSymbol=value=>['USDT','USDC','USD','DAI','FDUSD'].includes(clean(value).toUpperCase());
 const exactIdentity=row=>{
  const chain=clean(row?.chain).toLowerCase(),address=clean(row?.contract_or_mint);
+ if(chain==='near'&&row?.asset_kind==='NATIVE'&&row?.native_asset_id==='near:mainnet'&&!address)return{chain,asset_kind:'NATIVE',native_asset_id:'near:mainnet',contract_or_mint:null};
  if(!chain||!address)return null;
  if(chain==='solana'?!BASE58.test(address):!EVM.test(address))return null;
  return {chain,contract_or_mint:chain==='solana'?address:address.toLowerCase()};
@@ -18,6 +19,7 @@ const exactIdentity=row=>{
 export function sameChainAssetIdentity(a,b){
  const left=exactIdentity(a),right=exactIdentity(b);
  if(!left||!right||left.chain!==right.chain)return false;
+ if(left.asset_kind==='NATIVE'||right.asset_kind==='NATIVE')return left.asset_kind===right.asset_kind&&left.native_asset_id===right.native_asset_id;
  return left.chain==='solana'?left.contract_or_mint===right.contract_or_mint:left.contract_or_mint.toLowerCase()===right.contract_or_mint.toLowerCase();
 }
 
@@ -47,7 +49,7 @@ export function chooseSupplementalLane({run_id,contract,entry,derivatives_venues
  // suppresses another request until its existing cache expires.
  if((Number(derivatives_venues)<2||critical_conflict===true)&&!cached_sources.BITGET)return 'BITGET_FALLBACK';
  const available=[];
- if(entry?.identity){
+ if(entry?.identity&&entry.identity.asset_kind!=='NATIVE'){
   const expected=['DEX_SCREENER',...(geckoNetwork(entry.identity.chain)?['GECKOTERMINAL']:[]),...(chainId(entry.identity.chain)?['GOPLUS']:[]),...(entry.identity.chain==='solana'?['SOLANA_RPC']:[])];
   if(expected.some(source=>!cached_sources[source]))available.push('DEX_RISK','DEX_RISK','DEX_RISK');
  }

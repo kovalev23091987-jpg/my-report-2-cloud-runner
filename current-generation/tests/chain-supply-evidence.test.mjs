@@ -17,13 +17,13 @@ test('K16 first finalized supply observation is context only and direction neutr
 });
 
 test('K16 exact base-unit delta is retained without Number precision loss',()=>{
- const row=normalizeChainSupply({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:sol},previous:{chain:'solana',address:sol,supply:'999999999999999999999999',decimals:9},current:{supply:'1000000000000000000000001',decimals:9,block_ref:11,source_ts:1000,finalized:true},observed_ts:1100});
+ const row=normalizeChainSupply({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:sol},previous:{chain:'solana',address:sol,supply:'999999999999999999999999',decimals:9,source_ts:900,block_ref:10,finalized:true},current:{supply:'1000000000000000000000001',decimals:9,block_ref:11,source_ts:1000,finalized:true},observed_ts:1100});
  assert.equal(row.evidence[0].metric_family,'SUPPLY_INCREASE');assert.equal(row.evidence[0].supply_delta_base_units,'2');assert.equal(row.evidence[0].block_id,'N02');assert.equal(row.evidence[0].coverage_fraction,0);
 });
 
 test('K16 burn delta maps to N03 but cannot invent a short or long vote',()=>{
  const address='0x0000000000000000000000000000000000000001';
- const row=normalizeChainSupply({contract:'ABC-USDT',identity:{chain:'ethereum',contract_or_mint:address},previous:{chain:'ethereum',address,supply:'100',decimals:0},current:{supply:'90',decimals:0,block_ref:'0x10',source_ts:1000,finalized:true},observed_ts:1100});
+ const row=normalizeChainSupply({contract:'ABC-USDT',identity:{chain:'ethereum',contract_or_mint:address},previous:{chain:'ethereum',address,supply:'100',decimals:0,source_ts:900,block_ref:'0xf',finalized:true},current:{supply:'90',decimals:0,block_ref:'0x10',source_ts:1000,finalized:true},observed_ts:1100});
  assert.equal(row.evidence[0].block_id,'N03');assert.equal(row.evidence[0].metric_family,'SUPPLY_DECREASE');assert.equal(row.evidence[0].directional_strength,null);assert.equal(row.evidence[0].risk_strength,null);
 });
 

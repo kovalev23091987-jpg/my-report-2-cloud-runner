@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {auditCandidateBlocks,sourceWasActuallyChecked,sourceWasAttempted} from '../files/src/candidate-evidence-v2-runtime.mjs';
-const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
+const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','OFFICIAL_TOKEN_SCHEDULE','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
 const completeSources=()=>Object.fromEntries(SOURCE_NAMES.map(source=>[source,{status:'VALID_RESPONSE_NO_EVENT',network_calls:1}]));
 
 test('all 15 configured additional blocks are checked without equating a check to a score',()=>{
@@ -55,7 +55,7 @@ test('a supplemental route cannot close a missing primary block owner',()=>{
  };
  const result=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000});
  assert.equal(result.blocks.N01.checked,false);
- assert.equal(result.blocks.N01.missing_required[0],'OFFICIAL_EVENTS');
+ assert.equal(result.blocks.N01.missing_required[0],'OFFICIAL_TOKEN_SCHEDULE');
  assert.equal(result.blocks.N02.checked,false);
  assert.equal(result.blocks.N03.checked,false);
  assert.equal(result.blocks.N07.checked,false);
@@ -82,11 +82,12 @@ test('zero-fact primary blocks require explicit completed receipts',()=>{
 test('strict fresh manual audit rejects cache-only external owners but accepts fresh internal checks',()=>{
  const sources=completeSources();
  sources.OFFICIAL_EVENTS={status:'CLOSED',network_calls:0,cache_status:'HIT'};
+ sources.OFFICIAL_TOKEN_SCHEDULE={status:'CLOSED',network_calls:0,cache_status:'HIT'};
  sources.PRIMARY_TECHNICAL_CONTEXT={status:'CHECKED_PRIMARY_TECHNICAL_CONTEXT',check_completed:true,network_calls:0};
  const result=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000,strict_fresh:true});
  assert.equal(result.strict_fresh_required,true);
  assert.equal(result.blocks.N01.checked,false);
- assert.deepEqual(result.blocks.N01.missing_required,['OFFICIAL_EVENTS']);
+ assert.deepEqual(result.blocks.N01.missing_required,['OFFICIAL_TOKEN_SCHEDULE']);
  assert.equal(result.blocks.N10.checked,true);
  assert.equal(result.all_blocks_checked,false);
 });
