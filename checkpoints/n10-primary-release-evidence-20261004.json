@@ -1,0 +1,193 @@
+{
+  "schema": "report2-primary-technical-quality-release-proof-v1",
+  "observed_at": "2026-10-04T21:36:49.624908+00:00",
+  "pr": 111,
+  "merged_main": "9e29e18f4caf7ae2cc03979bfff584a8367f2bd6",
+  "merged_tree": "856a1778eb60380a1b04b81f9d2d711e60be47d5",
+  "merged_tree_equals_live_tested_tree": true,
+  "worker_sha256": "db32a9a8954716c611d4532ec3930673f236c3cd4a6a8f12c8dfb653ec1999eb",
+  "code_validation": {
+    "head": "7d3b23c1e5930e2b1aecc1a121ed5ebc4ff4c046",
+    "tree": "535bfd39fa839b1b2e7d75622e274acc11b5308d",
+    "cloud_run": 37236235424,
+    "cloud_job": 111535786230,
+    "overall_job_conclusion": "failure",
+    "code_validation_step_conclusion": "success",
+    "current_generation_tests": "PASS",
+    "integration_passed": 37,
+    "integration_failed": 0,
+    "new_primary_quality_tests_passed": 5,
+    "stage_guard_tests_passed": 5,
+    "artifact_id": 11315965608,
+    "artifact_sha256": "eee1819d84535c1201c0ae95acb4caa8b8ccaf95fcef5138b843bb6a998c4816",
+    "failure_scope": "AUDIT_CODE_READ_BLOCK_COVERAGE_SHAPE_AFTER_13_BTC_SOURCE_CALLS",
+    "no_btc_live_report_acceptance_claim": true
+  },
+  "live_acceptance": {
+    "head": "26cb89fc1e1c87e1f3d9fa133bd1e59f3aea129a",
+    "tree": "856a1778eb60380a1b04b81f9d2d711e60be47d5",
+    "cloud_run": 37236524316,
+    "cloud_job": 111536606893,
+    "conclusion": "SUCCESS",
+    "artifact_id": 11315448990,
+    "artifact_sha256": "5802052b13948fc390408c1603410ab550523eabc4c943ba1c2dc249c3a6bdf0",
+    "dependency_checks": "EXACT_CLOUD37236235424_VALIDATED_RUNTIME_REUSED_NO_REPEAT_TESTS",
+    "every_runtime_file_hash_matched_validated_engine": true,
+    "useful_contracts": [
+      "哈基米-USDT"
+    ],
+    "source_http": 13,
+    "database_usage": {
+      "requests": 52,
+      "rows_read": 39,
+      "rows_written": 39,
+      "unknown_ops": 0,
+      "targets": {
+        "batch:report2_evidence_source_daily": {
+          "requests": 26,
+          "rows_read": 13,
+          "rows_written": 13,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 13,
+          "rows_read": 13,
+          "rows_written": 26,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 13,
+          "rows_read": 13,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    }
+  },
+  "common_future_assets": 102,
+  "common_future_contracts": 119,
+  "inverse_delivery_contracts_retained_with_explicit_unsupported_adapters": 17,
+  "primary_receipt": {
+    "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+    "check_completed": true,
+    "network_calls": 0,
+    "evidence": [
+      {
+        "evidence_id": "EV2:a998c54e9db23f3dc345358ded82d9f905377476aae82fe1c4ecc967add4bb0c",
+        "asset_id": "htx-futures:哈基米-USDT",
+        "htx_contract": "哈基米-USDT",
+        "block_id": "N10",
+        "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+        "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+        "upstream_id": "HTX_OFFICIAL_CLOSED_CANDLES",
+        "origin_event_id": "哈基米-USDT:60min:1791147600000",
+        "dependency_group": "HTX_CLOSED_CANDLES:哈基米-USDT:60min:1791147600000",
+        "source_ts": 1791149570006,
+        "observed_ts": 1791149570644,
+        "first_known_ts": 1791149570644,
+        "effective_from": null,
+        "effective_to": null,
+        "window_start": 1791075600000,
+        "window_end": 1791147600000,
+        "coverage_status": "EXACT_TWENTY_CLOSED_CANDLES",
+        "coverage_fraction": 0,
+        "unit": null,
+        "value": null,
+        "directional_strength": null,
+        "risk_strength": null,
+        "identity_status": "EXACT",
+        "finality_status": "FINAL",
+        "schema_version": "EvidenceV2.1",
+        "raw_hash": "97e710ebddf818c7bf48e3b8738f7a5b7c784d4c703d4a05fcc3b0e8c75b8acc",
+        "expires_at": 1791149750006,
+        "cost_receipt_id": null,
+        "validation_status": "VALID",
+        "validation_reason": null,
+        "period": "60min",
+        "interval_ms": 3600000,
+        "candle_count": 20,
+        "range_high": 0.03131,
+        "range_low": 0.02814,
+        "last_closed_price": 0.02858,
+        "range_pct": 11.26510305614783,
+        "all_candles_closed": true,
+        "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS",
+        "entry_authorized_by_context": false,
+        "liquidation_as_target": false
+      }
+    ],
+    "receipts": [
+      {
+        "check_completed": true,
+        "status": "REJECTED",
+        "contract": "哈基米-USDT",
+        "futures_status": "FULFILLED",
+        "trajectory_status": "FULFILLED",
+        "reference_price_status": "CLOSED",
+        "reference_source_ts": 1791149569511,
+        "trajectory_source_ts": 1791149520000,
+        "actual_price_windows": [
+          {
+            "label": "15m",
+            "window_start_ts": 1791148620000,
+            "window_end_ts": 1791149520000,
+            "candle_count": 15,
+            "open": 0.02868,
+            "high": 0.02878,
+            "low": 0.02866,
+            "close": 0.02874
+          }
+        ],
+        "failures": [],
+        "source_transport": "EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY",
+        "signed_raw_24h_verified": false,
+        "entry_authorized_by_context": false
+      }
+    ],
+    "entry_rules_changed": false
+  },
+  "accepted_block": "N10",
+  "scope": "EXACT_PRODUCTION_SNAPSHOT_TRAJECTORY_AND_CANONICAL_MANUAL_COMPONENT_USE_NOT_FRESH_ALL15_MAIN",
+  "source_use_evidence": {
+    "checkpoints/n10-primary-live-verification-20261004.json.gz": {
+      "sha256": "22cd565ce023ca10a0e5cc3ee55aee54320ff33a532eb2d167be4ee0bfe275ef",
+      "uncompressed_sha256": "7f3d3c48508eafa3e6b8d552d1cb9619964c86531e243c2003b4cd278af6a015"
+    },
+    "checkpoints/n10-primary-source-bodies-20261004.json.gz": {
+      "sha256": "0c0a6b883d1b1546e0a2b56f36506a0677ff48e5f81ce56a6922427be2335203",
+      "uncompressed_sha256": "ba1ce88eb5bdab66a83007b7ac277dae5b510249285a7d4c487ef806cbe9db80"
+    },
+    "checkpoints/n10-primary-initial-btc-source-bodies-20261004.json.gz": {
+      "sha256": "cefd1112461be699026a647c01a24b39eaaca900285b5812215e77db06c5a32f",
+      "uncompressed_sha256": "7422183a244d215409ed0fb26a22faad2029f99a19b0f5110d6b5c9cd585fca7"
+    },
+    "checkpoints/n10-primary-initial-audit-failure-20261004.json.gz": {
+      "sha256": "dd833c16ffcaeb29326e21446fa235dd368a96f85ffab574faaef5ea58954b41",
+      "uncompressed_sha256": "78dcb20231423991067a9017159526138a20fd87b0ab592e82b79c1dbfd6710a"
+    },
+    "checkpoints/n10-primary-code-validation-20261004.json.gz": {
+      "sha256": "120c00e97a576d925b49e91a031aab4b6c1576a0738565364f8cc902e55ce75c"
+    }
+  },
+  "actual_manual_report_saved": true,
+  "neutral_rolling_range_alone_cannot_close_pipeline": true,
+  "fulfilled_promises_alone_cannot_close_pipeline": true,
+  "source_expired_after_acceptance_does_not_authorize_new_live_report": true,
+  "raw24h_signed_verified": false,
+  "no_new_source_requests_in_regular_pipeline": true,
+  "same_quota_caps_preserved": true,
+  "strategy_weights_and_entry_rules_preserved": true,
+  "all_15_live_accepted": false,
+  "full_main_acceptance": false,
+  "telegram_delivery_proven": false,
+  "deep_checks_started": 0,
+  "production_canonical_writes": 0,
+  "telegram_calls": 0,
+  "initial_failed_validation_run": {
+    "cloud_run": 37236107255,
+    "job": 111535410884,
+    "failure": "OBSOLETE_FULFILLED_ONLY_WIRING_ASSERTION",
+    "source_http": 0
+  },
+  "next_action": "Continue remaining CORE_BLOCKS acceptance and exact asset/source identities: meaningful official N07 context and other unresolved primary/consumer gaps from the current block results; finish useful free-source candidates from all16 register without repeating accepted PR108–111 probes. Preserve explicit honest17 inverse/delivery limitations. No new MAIN until material remaining repair and actual admission. After saved core acceptance: actual102x8 liquidation coverage/runtime/standalone/weekly, fresh joint MAIN and canonical Telegram SENT. Pending PR107 needs its own actual tested proof; no duplicate implementation."
+}

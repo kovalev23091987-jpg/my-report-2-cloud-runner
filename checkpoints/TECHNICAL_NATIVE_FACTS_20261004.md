@@ -1,3 +1,7 @@
+## N10 primary repair accepted PR111, 04.10.2026 21:32UTC
+
+Реальные production snapshot+trajectory 哈基米-USDT теперь прошли primary quality guard, N10 receiptchecked и20closedcandlepricecontext показан в canonical/manual. Engine validation+37integration+5newN10+5stageguard passed; freshsource/use job37236524316/111536606893SUCCESS,13HTTP,D1read39/write39. Exacthead/tree/merged and source bodies: n10-primary-release-evidence-20261004.json. Это actual scoped primary component acceptance; неall15/top2/MAIN/TG. Guard не делает HTTP в regularruntime, не подменяет primarypipeline rollingrange/HTTP200, не выбирает target/entry и не объявляетraw24hflow. Все119contracts/102assets retained,17inverse/delivery ещё honest unsupported exact execution adapters. Не повторять этот probe.
+
 # Проверенный выпуск PR102, 04.10.2026 17:50 UTC
 
 Main5b62d96a76350039a933fd6cfe468f5978c84dca, testedbf0abde01ce06af0b15f52af6e01179ee4287814, exact tree435eed4578e1917160f36c863beb0e3d7d025d44. Cloud37221892102/job111493731490 SUCCESS, full validation PASS,37/37 integration. Artifact11311035251 sha256289a49d45a935b0b6cbec0d215bddf692a612e3aa036414b4b4a9d2ddf018c26. Worker pin unchanged40bbaf02761cabaef8cf2e7d033f9a6fcfedaed8fd3cbe66fc0c16103297c85f.
