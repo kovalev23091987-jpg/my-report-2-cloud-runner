@@ -9,6 +9,14 @@ export const WEEK=7*24*60*60_000;
 const SOURCE='HTX_FUTURES_LIQUIDATION_COVERAGE',KEY='ALL_CRYPTO_FUTURES',sha=b=>createHash('sha256').update(b).digest('hex');
 const upstream={HYPERLIQUID_NATIVE:'HYPERLIQUID',BYK_TRACKED_HL_BANDS:'HYPERLIQUID',OXARCHIVE_HL_BUCKETS:'HYPERLIQUID',LIGHTER_NATIVE:'LIGHTER',GMX_NATIVE:'GMX',GTRADE_NATIVE:'GTRADE',BYKARANTELI_FUTURE_MAP:'BYK_PROVIDER_FUTURE_LEVELS',COINLOBSTER_FUTURE_MODEL:'COINLOBSTER'};
 const statusSet=new Set(['UNVERIFIED','REAL_NUMERIC_LEVELS','EXACT_SOURCE_MARKET_UNSUPPORTED','NO_REAL_NUMERIC_LEVELS','ACCESS_BLOCKED','SOURCE_ERROR','QUOTA_DEFERRED']);
+export const NON_QUALIFYING_FUTURE_SOURCE_POLICIES=Object.freeze({
+ LIGHTER_NATIVE:'CURRENT_ACCOUNT_ENDPOINT_HAS_NO_PROVIDER_SNAPSHOT_CLOCK',
+ GMX_NATIVE:'CURRENT_POSITION_ENDPOINT_HAS_NO_PROVIDER_SNAPSHOT_CLOCK',
+ GTRADE_NATIVE:'OFFICIAL_SDK_OUTPUT_IS_A_FEE_AWARE_ESTIMATE',
+ BYKARANTELI_FUTURE_MAP:'PROVIDER_OUTPUT_IS_A_PROJECTED_MODEL',
+ COINLOBSTER_FUTURE_MODEL:'PROVIDER_OUTPUT_IS_A_PROJECTED_MODEL',
+ OXARCHIVE_HL_BUCKETS:'POSITION_DERIVED_PROJECTED_BUCKETS_ARE_NOT_NATIVE_ACCOUNT_LEVELS',
+});
 export function createFuturesCoverageDatabase({universe,universe_sha256,now}={}){
  if(universe?.status!=='CLOSED'||!Array.isArray(universe.assets)||!universe.assets.length||!Array.isArray(universe.contracts)||!/^[a-f0-9]{64}$/.test(universe_sha256||'')||!Number.isSafeInteger(now)||now<universe.observed_ts||SOURCES.length!==8)throw Error('EXACT_COMPLETE_CRYPTO_FUTURES_UNIVERSE_REQUIRED');
  const assets=universe.assets.map(a=>({symbol:a.symbol,analysis_contract:a.asset_analysis_contract,contracts:a.contracts,source_checks:Object.fromEntries(SOURCES.map(s=>[s,{source_id:s,upstream_id:upstream[s],status:'UNVERIFIED',checked_ts:null,real_numeric_level_count:null,proof_sha256:null}]))}));
@@ -31,9 +39,9 @@ export function validateFuturesCoverageDatabase(db){
 export function qualifyNumericFutureReceipt({source_id,receipt,contract,now}={}){
  if(!SOURCES.includes(source_id)||!isExactHtxUsdtSwapKey(contract)||receipt?.native_symbol!==contract.slice(0,-5)||receipt.usable_for_context!==true||receipt.source_clock_closed===false||!Number.isSafeInteger(receipt.source_ts)||receipt.source_ts>now||now-receipt.source_ts>300000)return null;
  const names={HYPERLIQUID_NATIVE:/^Hyperliquid(?: official)?$/i,LIGHTER_NATIVE:/^Lighter official$/i,GMX_NATIVE:/^GMX official$/i,GTRADE_NATIVE:/^gTrade official SDK$/i,BYK_TRACKED_HL_BANDS:/^Bykaranteli tracked Hyperliquid/i,OXARCHIVE_HL_BUCKETS:/^(0xArchive|OxArchive)/i,BYKARANTELI_FUTURE_MAP:/^Bykaranteli/i,COINLOBSTER_FUTURE_MODEL:/^CoinLobster/i};if(!names[source_id].test(receipt.provider||''))return null;
- const {fingerprint:sealed,...body}=receipt;if(typeof sealed!=='string'||fingerprint(body)!==sealed||/REALIZED|CALCULATED|MODEL|ESTIMAT/.test(receipt.evidence_class||''))return null;
+ const {fingerprint:sealed,...body}=receipt;if(typeof sealed!=='string'||fingerprint(body)!==sealed||/REALIZED|CALCULATED|MODEL|ESTIMAT|PROJECTED/.test(receipt.evidence_class||''))return null;
  const zones=receipt.zones;if(!Array.isArray(zones)||!zones.length||zones.length>500)return null;
- const real=zones.filter(z=>typeof z.native_price==='number'&&Number.isFinite(z.native_price)&&z.native_price>0&&['LONG','SHORT'].includes(z.liquidated_side)&&!/CALCULATED|MODEL_PRICE_BIN|SDK_ESTIMATE|CLUSTER_CENTER|LEVERAGE_STRESS/.test(z.price_semantics||'')&&Number.isSafeInteger(z.source_ts??receipt.source_ts)&&(z.source_ts??receipt.source_ts)<=now&&now-(z.source_ts??receipt.source_ts)<=300000);
+ const real=zones.filter(z=>typeof z.native_price==='number'&&Number.isFinite(z.native_price)&&z.native_price>0&&['LONG','SHORT'].includes(z.liquidated_side)&&!/CALCULATED|MODEL_PRICE_BIN|SDK_ESTIMATE|CLUSTER_CENTER|LEVERAGE_STRESS|BUCKET_CENTER/.test(z.price_semantics||'')&&Number.isSafeInteger(z.source_ts??receipt.source_ts)&&(z.source_ts??receipt.source_ts)<=now&&now-(z.source_ts??receipt.source_ts)<=300000);
  if(!real.length)return null;
  return{source_id,upstream_id:upstream[source_id],status:'REAL_NUMERIC_LEVELS',checked_ts:now,source_ts:receipt.source_ts,real_numeric_level_count:real.length,proof_sha256:sealed,coverage_scope:receipt.coverage||'RETURNED_NATIVE_POSITIONS_ONLY',level_prices:real.slice(0,16).map(z=>({price:z.native_price,side:z.liquidated_side,price_quote:z.price_quote??receipt.price_quote??receipt.native_market?.quote??null})),historical_capability_only:true,live_signal_generated:false};
 }
@@ -45,6 +53,31 @@ export function applyFuturesCoverageCheck(database,{contract,source_id,status,re
  if(status!=='REAL_NUMERIC_LEVELS'&&!/^[a-f0-9]{64}$/.test(source_proof_sha256||''))throw Error('EXACT_CHECK_PROOF_REQUIRED');
  asset.source_checks[source_id]=numeric||{source_id,upstream_id:upstream[source_id],status,checked_ts:now,real_numeric_level_count:null,proof_sha256:source_proof_sha256};
  copy.updated_ts=now;copy.source_checks_complete=copy.assets.every(a=>SOURCES.every(s=>!['UNVERIFIED','QUOTA_DEFERRED'].includes(a.source_checks[s].status)));return copy;
+}
+export function applyFuturesCoverageChecks(database,checks=[]){
+ if(!validateFuturesCoverageDatabase(database)||!Array.isArray(checks)||!checks.length)throw Error('EXACT_SOURCE_CHECK_BATCH_REQUIRED');
+ const copy=structuredClone(database),seen=new Set();let cursor=copy.updated_ts;
+ for(const {contract,source_id,status,receipt=null,source_proof_sha256=null,now} of checks){
+  const asset=copy.assets.find(a=>a.analysis_contract===contract),key=`${contract}:${source_id}`;
+  if(!asset||!SOURCES.includes(source_id)||!statusSet.has(status)||status==='UNVERIFIED'||!Number.isSafeInteger(now)||now<cursor||seen.has(key))throw Error('EXACT_SOURCE_CHECK_SCOPE_REQUIRED');
+  const numeric=qualifyNumericFutureReceipt({source_id,receipt,contract,now});
+  if(status==='REAL_NUMERIC_LEVELS'&&!numeric)throw Error('GENUINE_NUMERIC_FUTURE_RECEIPT_REQUIRED');
+  if(status!=='REAL_NUMERIC_LEVELS'&&!/^[a-f0-9]{64}$/.test(source_proof_sha256||''))throw Error('EXACT_CHECK_PROOF_REQUIRED');
+  asset.source_checks[source_id]=numeric||{source_id,upstream_id:upstream[source_id],status,checked_ts:now,real_numeric_level_count:null,proof_sha256:source_proof_sha256};
+  seen.add(key);cursor=now;
+ }
+ copy.updated_ts=cursor;copy.source_checks_complete=copy.assets.every(a=>SOURCES.every(s=>!['UNVERIFIED','QUOTA_DEFERRED'].includes(a.source_checks[s].status)));return copy;
+}
+export function resetFuturesCoverageForWeeklyRefresh(database,{now}={}){
+ if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts)throw Error('VALID_COVERAGE_REFRESH_CLOCK_REQUIRED');
+ if(now<database.weekly_refresh_due_ts)return{database,reset:false,status:'NOT_DUE'};
+ const copy=structuredClone(database);for(const asset of copy.assets)for(const source_id of SOURCES)asset.source_checks[source_id]={source_id,upstream_id:upstream[source_id],status:'UNVERIFIED',checked_ts:null,real_numeric_level_count:null,proof_sha256:null};
+ copy.updated_ts=now;copy.source_checks_complete=false;copy.weekly_refresh_due_ts=now+WEEK;return{database:copy,reset:true,status:'WEEKLY_REFRESH_RESET'};
+}
+export function summarizeFuturesCoverage(database,{now=Date.now()}={}){
+ if(!validateFuturesCoverageDatabase(database))return{status:'COVERAGE_DATABASE_NOT_AVAILABLE',assets:0,cells:0,checked_cells:0,covered_assets:0,complete:false};
+ const rows=database.assets.map(asset=>futuresLiquidationAdmission(database,{contract:asset.analysis_contract,now})),cells=database.assets.length*SOURCES.length,checked=database.assets.reduce((n,a)=>n+SOURCES.filter(s=>a.source_checks[s].status!=='UNVERIFIED').length,0);
+ return{status:database.source_checks_complete?'CLOSED':'IN_PROGRESS',assets:database.assets.length,cells,checked_cells:checked,covered_assets:rows.filter(r=>r.eligible).length,uncovered_assets:rows.filter(r=>!r.eligible).length,complete:database.source_checks_complete,weekly_refresh_due_ts:database.weekly_refresh_due_ts};
 }
 export function futuresLiquidationAdmission(database,{contract,now}={}){
  const no=status=>({status,eligible:false,source_ids:[],independent_upstreams:[],network_calls:0,calculated_fallback_allowed:false});
