@@ -100,7 +100,7 @@ const files=[
  'src/shadow-market-pilot.mjs',
  'src/blockscout-index-evidence.mjs',
  'src/candidate-evidence-v2-runtime.mjs',
- 'src/htx-large-trades-evidence.mjs','src/coinpaprika-sector-evidence.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/finalized-chain-events.mjs',
+ 'src/htx-large-trades-evidence.mjs','src/coinpaprika-sector-evidence.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/block-result-context.mjs','src/finalized-chain-events.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',
  'src/outcome-v2.mjs',

@@ -29,15 +29,28 @@ test('provider quota denial cannot hide the next useful official block',async()=
  await db.prepare("INSERT INTO report2_evidence_source_daily(source,day_utc,attempts,updated_at) VALUES('DERIBIT_ALT_OPTIONS','2026-09-29',168,?1)").bind(NOW).run();
  const calls=[];
  const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls.push(url);if(String(url).includes('/market/history/trade'))return new Response(JSON.stringify({status:'ok',ch:'market.ABC-USDT.trade.detail',ts:Date.now(),data:[]}));assert.equal(url,'https://abc.example/feed.xml');return new Response(rss,{headers:{'content-type':'application/rss+xml'}});},asset_metadata:{official_domains:['abc.example'],official_feeds:['https://abc.example/feed.xml']}});
- assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'DAILY_CAP_OR_DUPLICATE');
+ assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'RETIRED_NO_VERIFIED_CONSUMER');
  assert.equal(out.sources.OFFICIAL_EVENTS.status,'CLOSED');assert.equal(out.block_coverage.blocks.N07.observed_facts,1);
  assert.equal(out.network_calls,2);assert.equal(calls.length,2);assert.equal(out.sources.HTX_LARGE_TRADES.status,'CLOSED_EMPTY_BOUNDED_SAMPLE');assert.ok(out.shared_http_envelope.reserved_attempts<=5);
  assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+});
+
+test('retired social and option sources cannot request admission even for an eligible token',async()=>{
+ const db=new DB();await cachedCore(db);const attempted=[];
+ const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'RETIRE',now:NOW,
+  asset_identity:{chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)},
+  request_admit:request=>{attempted.push(request.logical_request_id);return{allowed:false,status:'TEST_QUOTA_DENIED'};},
+  fetch_impl:()=>{throw Error('NETWORK_NOT_ALLOWED_IN_RETIREMENT_TEST');}});
+ assert.equal(out.sources.BLUESKY_PUBLIC.status,'RETIRED_NO_VERIFIED_CONSUMER');
+ assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'RETIRED_NO_VERIFIED_CONSUMER');
+ assert.equal(attempted.some(id=>/BLUESKY|DERIBIT_ALT_OPTIONS/.test(id)),false);
+ assert.equal(out.route_priority.executed_order.includes('BLUESKY'),false);
+ assert.equal(out.route_priority.executed_order.includes('DERIBIT'),false);
 });
 
 test('cold HTX and remaining supplementary routes stay inside the five-call envelope',async()=>{
  const db=new DB();let calls=0;
  const out=await collectCandidateEvidenceV2({db,contract:'ABC-USDT',run_id:'R',now:NOW,max_requests:5,clock:()=>NOW,pause_impl:async()=>{},request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;return String(url).includes('hbdm.com')?new Response(JSON.stringify({status:'ok',ts:NOW,data:[{contract_code:'ABC-USDT',open:1}]})):new Response('');}});
  assert.equal(calls,4);assert.equal(out.network_calls,4);assert.equal(out.shared_http_envelope.reserved_attempts,4);
- assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'DEFERRED_SHARED_REQUEST_ENVELOPE');
+ assert.equal(out.sources.DERIBIT_ALT_OPTIONS.status,'RETIRED_NO_VERIFIED_CONSUMER');
 });

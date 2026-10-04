@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "20efe70018c9f9feac78e74fcc3b20d6e85b0f17023045606a5bf7903bff1da5",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "4b5991e3c319abb6126d30292559fcda59090d648f01153c950f9b9aa2ba2d8c",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "3f3162463036d30117f3a23e34438253c84a27a27b9af84e90180e95fae164f7",
     "current-generation/files/src/canonical-publication.mjs": "6eed73583edd255ac928cb2377cb6b04279a5a41c39900aeb95fd1cdc900127a"
   },
   "fixtures": {
@@ -196,6 +196,21 @@
       "same_wave_dedup_retained": true,
       "telegram_layout_changed": false,
       "authorization": "Explicit owner instructions: исправить передачу подтверждений источников; разрешить повторную отправку новой волны после паузы; Хорошо меняй и внедряй"
+    },
+    {
+      "date": "2026-10-04",
+      "scope": "OWNER_REQUIRES_ACTUAL_USE_OF_RETAINED_BLOCKS",
+      "changes": [
+        {
+          "file": "current-generation/files/src/canonical-runtime-adapter.mjs",
+          "previous_sha256": "4b5991e3c319abb6126d30292559fcda59090d648f01153c950f9b9aa2ba2d8c",
+          "new_sha256": "3f3162463036d30117f3a23e34438253c84a27a27b9af84e90180e95fae164f7"
+        }
+      ],
+      "golden_fixtures_changed": false,
+      "telegram_formatter_changed": false,
+      "strategy_weights_changed": false,
+      "authorization": "Explicit owner instruction to finish each retained block and remove blocks unable to deliver their intended result"
     }
   ]
 }

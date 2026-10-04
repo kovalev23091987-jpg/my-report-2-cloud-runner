@@ -30,7 +30,7 @@ export function auditCanonicalBlockDecisionUse(canonical={}) {
  }
  const values=Object.values(blocks);
  return {schema:'report2-block-decision-use-audit-v1',run_id:canonical.run_id||null,snapshot_id:canonical.snapshot_id||null,contract:contract||null,decision_ts:decisionTs,score_status:score.status||'NOT_RECORDED',direction_closed:directionClosed,blocks,
-  required_block_count:15,checked_block_count:values.filter(row=>row.checked).length,directional_eligible_block_count:values.filter(row=>row.directional_eligible_fact_count>0).length,score_applied_block_count:values.filter(row=>row.score_application_receipt_count>0).length,control_check_reported_block_count:values.filter(row=>row.control_check_reported).length,
+  required_block_count:Object.keys(BLOCKS).length,checked_block_count:values.filter(row=>row.checked).length,directional_eligible_block_count:values.filter(row=>row.directional_eligible_fact_count>0).length,score_applied_block_count:values.filter(row=>row.score_application_receipt_count>0).length,control_check_reported_block_count:values.filter(row=>row.control_check_reported).length,
   all_blocks_have_proven_decision_effect:values.every(row=>row.score_application_receipt_count>0||row.control_decision_effect_proven),
   missing_effect_not_coerced_to_success:true,score_or_strategy_changed:false,internal_only:true};
 }

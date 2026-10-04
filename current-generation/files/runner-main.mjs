@@ -205,6 +205,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron}={})
           actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
           block_coverage:blockCoverage,
           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{}),
+          block_rendered_results:canonical?.metadata?.block_rendered_results??null,
           canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
         };
       }),
