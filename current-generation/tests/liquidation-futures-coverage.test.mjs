@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 const root=process.env.REPORT2_COVERAGE_MODULE_ROOT,load=rel=>import(root?pathToFileURL(root+'/'+rel):new URL('../files/src/'+rel,import.meta.url));
-const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,WEEK}=await load('liquidation-futures-coverage.mjs');
+const {createFuturesCoverageDatabase,validateFuturesCoverageDatabase,qualifyNumericFutureReceipt,applyFuturesCoverageCheck,futuresLiquidationAdmission,saveFuturesCoverageDatabase,loadFuturesCoverageDatabase,saveFuturesCoverageRefreshDatabase,loadFuturesCoverageRefreshDatabase,resetFuturesCoverageForWeeklyRefresh,WEEK}=await load('liquidation-futures-coverage.mjs');
 const {seal}=await load('liquidation-extension/core.mjs');
 const bytes=fs.readFileSync(new URL('../../checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz',import.meta.url)),universe=JSON.parse(zlib.gunzipSync(bytes)),T=universe.observed_ts+1000;
 const matrix=()=>createFuturesCoverageDatabase({universe,universe_sha256:createHash('sha256').update(bytes).digest('hex'),now:T});
@@ -31,4 +31,12 @@ class DB{constructor(){this.sql=new DatabaseSync(':memory:');}prepare(sql){const
 test('durable same-universe matrix uses existing admitted cache and exact readback without network calls',async()=>{
  const db=new DB(),database=matrix();assert.equal((await saveFuturesCoverageDatabase({db,database,now:T,db_admit:()=>({allowed:false})})).saved,false);
  const out=await saveFuturesCoverageDatabase({db,database,now:T,db_admit:()=>({allowed:true})});assert.equal(out.asset_source_cells,816);assert.equal(out.network_calls,0);const saved=await loadFuturesCoverageDatabase({db,now:T});assert.equal(validateFuturesCoverageDatabase(saved),true);assert.deepEqual(saved.assets,database.assets);
+});
+test('weekly refresh staging is durable and cannot replace the active matrix before completion',async()=>{
+ const db=new DB(),active=matrix(),admit=()=>({allowed:true});await saveFuturesCoverageDatabase({db,database:active,now:T,db_admit:admit});
+ const reset=resetFuturesCoverageForWeeklyRefresh(active,{now:T+WEEK});assert.equal(reset.reset,true);assert.equal(reset.database.refresh_from_updated_ts,active.updated_ts);
+ const staged=await saveFuturesCoverageRefreshDatabase({db,database:reset.database,now:T+WEEK,db_admit:admit});assert.equal(staged.status,'DURABLE_WEEKLY_REFRESH_STAGING_SAVED');
+ const activeRead=await loadFuturesCoverageDatabase({db,now:T+WEEK}),pending=await loadFuturesCoverageRefreshDatabase({db,now:T+WEEK});
+ assert.equal(activeRead.source_checks_complete,false);assert.equal(activeRead.assets[0].source_checks.HYPERLIQUID_NATIVE.status,'UNVERIFIED');
+ assert.equal(pending.refresh_from_updated_ts,active.updated_ts);assert.deepEqual(activeRead.assets,active.assets);
 });

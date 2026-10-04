@@ -6,7 +6,7 @@ import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCa
 export const LIQUIDATION_COVERAGE_VERSION='htx-crypto-futures-eight-source-capability-v1-20261004';
 export const COVERAGE_SOURCE_IDS=Object.freeze([...SOURCES]);
 export const WEEK=7*24*60*60_000;
-const SOURCE='HTX_FUTURES_LIQUIDATION_COVERAGE',KEY='ALL_CRYPTO_FUTURES',sha=b=>createHash('sha256').update(b).digest('hex');
+const SOURCE='HTX_FUTURES_LIQUIDATION_COVERAGE',KEY='ALL_CRYPTO_FUTURES',REFRESH_KEY='ALL_CRYPTO_FUTURES_WEEKLY_REFRESH_PENDING',sha=b=>createHash('sha256').update(b).digest('hex');
 const upstream={HYPERLIQUID_NATIVE:'HYPERLIQUID',BYK_TRACKED_HL_BANDS:'HYPERLIQUID',OXARCHIVE_HL_BUCKETS:'HYPERLIQUID',LIGHTER_NATIVE:'LIGHTER',GMX_NATIVE:'GMX',GTRADE_NATIVE:'GTRADE',BYKARANTELI_FUTURE_MAP:'BYK_PROVIDER_FUTURE_LEVELS',COINLOBSTER_FUTURE_MODEL:'COINLOBSTER'};
 const statusSet=new Set(['UNVERIFIED','REAL_NUMERIC_LEVELS','EXACT_SOURCE_MARKET_UNSUPPORTED','NO_REAL_NUMERIC_LEVELS','ACCESS_BLOCKED','SOURCE_ERROR','QUOTA_DEFERRED']);
 export const NON_QUALIFYING_FUTURE_SOURCE_POLICIES=Object.freeze({
@@ -72,7 +72,7 @@ export function resetFuturesCoverageForWeeklyRefresh(database,{now}={}){
  if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts)throw Error('VALID_COVERAGE_REFRESH_CLOCK_REQUIRED');
  if(now<database.weekly_refresh_due_ts)return{database,reset:false,status:'NOT_DUE'};
  const copy=structuredClone(database);for(const asset of copy.assets)for(const source_id of SOURCES)asset.source_checks[source_id]={source_id,upstream_id:upstream[source_id],status:'UNVERIFIED',checked_ts:null,real_numeric_level_count:null,proof_sha256:null};
- copy.updated_ts=now;copy.source_checks_complete=false;copy.weekly_refresh_due_ts=now+WEEK;return{database:copy,reset:true,status:'WEEKLY_REFRESH_RESET'};
+ copy.updated_ts=now;copy.source_checks_complete=false;copy.weekly_refresh_due_ts=now+WEEK;copy.refresh_started_ts=now;copy.refresh_from_updated_ts=database.updated_ts;return{database:copy,reset:true,status:'WEEKLY_REFRESH_RESET'};
 }
 export function summarizeFuturesCoverage(database,{now=Date.now()}={}){
  if(!validateFuturesCoverageDatabase(database))return{status:'COVERAGE_DATABASE_NOT_AVAILABLE',assets:0,cells:0,checked_cells:0,covered_assets:0,complete:false};
@@ -88,11 +88,14 @@ export function futuresLiquidationAdmission(database,{contract,now}={}){
  if(!real.length)return no(checked.some(r=>r?.status==='UNVERIFIED'||r?.status==='QUOTA_DEFERRED')?'SOURCE_CHECKS_NOT_COMPLETE':checked.some(r=>r?.status==='REAL_NUMERIC_LEVELS')?'COVERAGE_REFRESH_REQUIRED':'NO_VERIFIED_REAL_LEVEL_SOURCE');
  return{status:'COVERED_REAL_NUMERIC_FUTURE_LEVELS',eligible:true,contract,source_ids:real.map(r=>r.source_id),independent_upstreams:[...new Set(real.map(r=>r.upstream_id))],coverage_scope:'PROVEN_SOURCE_CAPABILITY_ONLY_FRESH_LIVE_LEVELS_STILL_REQUIRED',network_calls:0,calculated_fallback_allowed:false,leaders_may_be_replaced:false};
 }
-export async function saveFuturesCoverageDatabase({db,database,db_admit,now,expected_previous_assets_sha256=null}={}){
+async function saveCoverageDatabaseAtKey({db,database,db_admit,now,expected_previous_assets_sha256=null,key}={}){
  const grant=db_admit?.({rows_read:8,rows_written:4});if(grant?.allowed!==true)return{status:'COVERAGE_DB_ADMISSION_REQUIRED',saved:false,network_calls:0};
  if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts||Buffer.byteLength(JSON.stringify(database))>1500000)throw Error('COVERAGE_DATABASE_INTEGRITY_REQUIRED');
- await installEvidenceSourceStore(db);const prior=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:KEY,now});if(prior&&sha(JSON.stringify(prior.assets))!==sha(JSON.stringify(database.assets))&&expected_previous_assets_sha256!==sha(JSON.stringify(prior.assets)))return{status:'COVERAGE_REVISION_CONFLICT',saved:false,network_calls:0};
- await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:KEY,observed_ts:now,expires_ts:now+30*24*60*60_000,payload:database});
- const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:KEY,now});if(!saved||sha(JSON.stringify(saved.assets))!==sha(JSON.stringify(database.assets)))return{status:'COVERAGE_READBACK_NOT_CLOSED',saved:false,network_calls:0};return{status:'DURABLE_COVERAGE_DATABASE_SAVED',saved:true,crypto_future_assets:database.crypto_future_assets,crypto_future_contracts:database.crypto_future_contracts,asset_source_cells:database.crypto_future_assets*8,source_checks_complete:database.source_checks_complete,network_calls:0};
+ await installEvidenceSourceStore(db);const prior=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(prior&&sha(JSON.stringify(prior.assets))!==sha(JSON.stringify(database.assets))&&expected_previous_assets_sha256!==sha(JSON.stringify(prior.assets)))return{status:'COVERAGE_REVISION_CONFLICT',saved:false,network_calls:0};
+ await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:now+30*24*60*60_000,payload:database});
+ const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!saved||sha(JSON.stringify(saved.assets))!==sha(JSON.stringify(database.assets)))return{status:'COVERAGE_READBACK_NOT_CLOSED',saved:false,network_calls:0};return{status:key===KEY?'DURABLE_COVERAGE_DATABASE_SAVED':'DURABLE_WEEKLY_REFRESH_STAGING_SAVED',saved:true,crypto_future_assets:database.crypto_future_assets,crypto_future_contracts:database.crypto_future_contracts,asset_source_cells:database.crypto_future_assets*8,source_checks_complete:database.source_checks_complete,network_calls:0};
 }
+export async function saveFuturesCoverageDatabase(params={}){return saveCoverageDatabaseAtKey({...params,key:KEY});}
+export async function saveFuturesCoverageRefreshDatabase(params={}){return saveCoverageDatabaseAtKey({...params,key:REFRESH_KEY});}
 export async function loadFuturesCoverageDatabase({db,now=Date.now()}={}){return readEvidenceSourceCache(db,{source:SOURCE,asset_key:KEY,now});}
+export async function loadFuturesCoverageRefreshDatabase({db,now=Date.now()}={}){return readEvidenceSourceCache(db,{source:SOURCE,asset_key:REFRESH_KEY,now});}
