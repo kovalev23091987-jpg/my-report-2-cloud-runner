@@ -37,7 +37,7 @@
   "liquidation_display_policy": "FOUR_DISTINCT_ZONES_PER_SIDE_MERGE_WITHIN_3_PERCENTAGE_POINTS_NO_HIDDEN_COUNT",
   "manual_run_summary_layout": "manual-run-summary-ru-v4-owner-layout-11-blocks-20261004",
   "telegram_layout_policy": "EXISTING_APPROVED_LAYOUT_UNCHANGED",
-  "required_analytical_blocks": 11,
+  "required_analytical_blocks": 15,
   "block_accounting_policy": "ACTUAL_HTTP_VALID_CACHE_OR_PRIMARY_CHECK_ONLY",
   "missing_identity_key_or_budget_status_counts_as_checked": false,
   "discovery_direction_policy": "DISCOVERY_ONLY_NEVER_ENTRY",
@@ -69,11 +69,7 @@
   ],
   "removed_analytical_blocks": [
     "N13",
-    "N17",
-    "N01",
-    "N04",
-    "N06",
-    "N14"
+    "N17"
   ],
   "discovery_funding_policy": "OPTIONAL_SUPPORTIVE_BONUS_MAX_5_NEVER_REQUIRED",
   "discovery_market_turnover_floor_usdt": 100000,
@@ -86,12 +82,8 @@
   "automatic_main_asset_identity": "CONFIGURED_EXACT_BINDING_THEN_UNIQUE_HTX_OFFICIAL_CHAIN_ADDRESS",
   "automatic_identity_ambiguity_policy": "NO_GUESS_NO_NATIVE_TO_WRAPPED_SUBSTITUTION",
   "liquidation_only_identity_rules_changed": false,
-  "retired_block_reasons": {
-    "N01": "NO_ACTIVE_UNLOCK_SCHEDULE_OR_AMOUNT_PRODUCER_GENERIC_ANNOUNCEMENT_IS_NOT_UNLOCK_COVERAGE",
-    "N04": "RAW_TRANSFERS_WITHOUT_WALLET_CLASSIFICATION_VALUE_OR_USE_CONSUMER",
-    "N06": "ATTENTION_COUNTER_WITHOUT_IMPLEMENTED_PRIORITY_CONSUMER",
-    "N14": "OPTIONS_LIQUIDITY_COUNTER_WITHOUT_IMPLEMENTED_RISK_CONSUMER"
-  },
+  "retired_block_reasons": {},
   "block_factual_context_consumer": "src/block-result-context.mjs",
-  "all_remaining_blocks_usefulness_accepted": false
+  "all_remaining_blocks_usefulness_accepted": false,
+  "block_removal_policy": "KEEP_ANY_VERIFIABLE_USEFUL_RESULT; REPAIR_FIRST; REMOVE_ONLY_WHEN_NO_USEFUL_FUNCTION_CAN_BE_PROVIDED"
 }

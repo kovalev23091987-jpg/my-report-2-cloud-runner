@@ -2,7 +2,7 @@ import {BLOCKS} from './evidence-v2.mjs';
 const requiredBlockCount=Object.keys(BLOCKS).length;
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
-export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v4-owner-layout-11-blocks-20261004';
+export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v4-owner-layout-15-blocks-20261004';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;

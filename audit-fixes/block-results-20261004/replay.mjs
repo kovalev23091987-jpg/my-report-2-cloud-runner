@@ -13,6 +13,6 @@ canonical.metadata.supporting_context={facts:context.facts};
 const manual=formatManualReport(canonical),proof=auditRenderedBlockResults({canonical,manual});
 assert.equal(manual.ok,true);assert.deepEqual(proof.used_context_block_ids.sort(),['N05','N09','N12']);
 assert.equal(JSON.stringify(canonical.metadata.supplemental_score_adjustment),scoreBefore);
-assert.equal(Object.keys(BLOCKS).length,11);
-for(const id of ['N01','N04','N06','N13','N14','N17'])assert.equal(BLOCKS[id],undefined);
+assert.equal(Object.keys(BLOCKS).length,15);
+for(const id of ['N13','N17'])assert.equal(BLOCKS[id],undefined);
 console.log(JSON.stringify({status:'EXACT_HISTORICAL_INPUT_REACHES_EXISTING_CONTEXT',provenance:fixture.source,context,proof,score_unchanged:true,active_blocks:Object.keys(BLOCKS),source_http:0,production_writes:0,telegram_calls:0,current_market_acceptance:false},null,2));
