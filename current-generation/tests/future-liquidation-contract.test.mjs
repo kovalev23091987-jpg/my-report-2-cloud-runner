@@ -10,6 +10,7 @@ import {outputContractScenarios} from './output-contract-support.mjs';
 import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 import {formatTelegramCompact} from '../files/src/telegram-compact-formatter.mjs';
 import {renderCanonicalTelegram} from '../files/src/canonical-publication.mjs';
+import {seal} from '../files/src/liquidation-extension/core.mjs';
 const read=p=>fs.readFileSync(new URL(p,import.meta.url),'utf8');
 function database(){const sql=new DatabaseSync(':memory:');return{sql,prepare(query){return{args:[],bind(...args){this.args=args;return this;},async run(){return sql.prepare(query).run(...this.args);},async first(){return sql.prepare(query).get(...this.args)||null;},async all(){return{results:sql.prepare(query).all(...this.args)};}};}};}
 test('every coin reports future levels above and below; executed events and fixed bands cannot satisfy the contract',()=>{
@@ -22,6 +23,11 @@ test('every coin reports future levels above and below; executed events and fixe
 test('future provider levels retain side, price, source and provider amount without guaranteeing the future',()=>{
  const map=buildPumpLiquidationZones({contract:'BTW-USDT',current_price:100,observed_ts:1790806000000,projected:[{price:112,source:'Provider',source_ts:1790806000000,native_reference_price:100,side:'SHORT',notional_usd:250000,status:'CLOSED',price_quote:'USD'},{price:89,source:'Provider',source_ts:1790806000000,native_reference_price:100,side:'LONG',notional_usd:310000,status:'CLOSED',price_quote:'USD',price_semantics:'PROVIDER_MODEL_PRICE_BIN'}]});
  const out=displayLegacyLiquidations(map).join('\n');assert.equal(map.provider_zone_count,2);assert.match(out,/выше: 112 USD/);assert.match(out,/ниже: 89 USD/);assert.match(out,/Provider/);assert.match(out,/оценка 310000 USD/);assert.doesNotMatch(out,/точная сумма|гарант/);
+});
+test('native account liquidation prices remain explicitly native instead of being relabelled projected',()=>{
+ const source_ts=1790806000000,receipt=seal({provider:'Hyperliquid official',native_symbol:'BTW',usable_for_context:true,source_ts,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',zones:[{native_price:112,liquidated_side:'SHORT',notional:250000,notional_unit:'USDC',source_ts,native_reference_price:100,price_quote:'USDC',price_semantics:'EXCHANGE_ACCOUNT_LIQUIDATION_PRICE'}]});
+ const map=buildPumpLiquidationZones({contract:'BTW-USDT',current_price:100,observed_ts:source_ts,provider_maps:[receipt]});
+ assert.equal(map.provider_zone_count,1);assert.equal(map.above[0].kind,'NATIVE_FUTURE_LEVEL');assert.equal(map.above[0].estimated,false);assert.equal(map.calculated_zone_count,0);
 });
 test('zero remaining history allowance makes no HTTP call and preserves cached observations',async()=>{
  const db=database();const first=await collectCrossExchangeRiskContext({db,contract:'BTW-USDT',run_id:'empty',lane_override:'HISTORY',max_http:0,fetch_impl:()=>{throw Error('history must not dispatch');}});assert.equal(first.network_calls,0);assert.equal(first.status,'DEFERRED_AFTER_FUTURE_LEVELS');
