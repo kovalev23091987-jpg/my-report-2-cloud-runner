@@ -1,0 +1,40 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.argv[2]||'runtime'),load=rel=>import(pathToFileURL(path.join(root,rel)));
+const {RemoteD1Database}=await load('report2-d1-adapter.mjs');
+const {collectCoingeckoSectorEvidence}=await load('src/coingecko-sector-evidence.mjs');
+const {collectOfficialEventsEvidence}=await load('src/official-events-evidence.mjs');
+const {compileOfficialSourceRegistry}=await load('src/official-source-registry.mjs');
+const {parseSupplementalIdentityRegistry}=await load('src/supplemental-candidate-context.mjs');
+const {consumeSectorContext}=await load('src/sector-context.mjs');
+const {consumeBlockResultContext}=await load('src/block-result-context.mjs');
+const {createUnifiedHttpBudget}=await load('src/unified-budget.mjs');
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),budget=createUnifiedHttpBudget(),calls=[],raw=[];
+const fetch_impl=async(url,options)=>{
+ assert.ok(calls.length<5);assert.ok(url.startsWith('https://api.coingecko.com/api/v3/')||url==='https://medium.com/feed/@bitwayofficial');
+ calls.push({url,method:options?.method||'GET'});const response=await fetch(url,options);raw.push({url,status:response.status,headers:Object.fromEntries(response.headers),body:await response.clone().text(),received_ts:Date.now()});return response;
+};
+const registry=parseSupplementalIdentityRegistry(compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(path.join(root,'main-official-event-sources.json')))).registry).entries;
+const near=registry.NEAR,run_id=`SHARED_SECTOR_REPAIR:${process.env.GITHUB_RUN_ID}`;
+const result=await collectCoingeckoSectorEvidence({db,fetch_impl,request_admit:r=>budget.reserve(r),run_id,contract:'NEAR-USDT',asset_identity:near.identity,asset_metadata:{},now:Date.now(),strict_fresh_manual:true});
+const context=consumeSectorContext({evidence:result.evidence,contract:'NEAR-USDT',asset_identity:near.identity,now:Date.now()});
+const btw=registry.BTW;
+const official=await collectOfficialEventsEvidence({db,fetch_impl,request_admit:r=>budget.reserve(r),run_id,contract:'BTW-USDT',asset_identity:btw.identity,asset_metadata:btw,now:Date.now(),strict_fresh_manual:true});
+const official_context=consumeBlockResultContext({evidence:official.evidence,contract:'BTW-USDT',now:Date.now()});
+const now=Date.now(),tables=await db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND (name LIKE 'report2_market_%' OR name IN ('report2_command_v2','canonical_publication_shadow','report2_public_collector_health_v1','report2_runtime_control_v1','report2_evidence_source_daily')) LIMIT 40").all();
+const states={};
+for(const name of ['report2_command_v2','canonical_publication_shadow','report2_public_collector_health_v1','report2_runtime_control_v1'])if(tables.results.some(r=>r.name===name)){
+ const cols=await db.prepare(`PRAGMA table_info(${name})`).all();const names=cols.results.map(r=>r.name);states[name]={columns:names};
+ const time=names.find(x=>['updated_at','created_ts','updated_ts','received_ts'].includes(x));
+ if(time){const selected=names.filter(n=>!/(json|payload|text|token|secret)/i.test(n)).join(',');states[name].rows=(await db.prepare(`SELECT ${selected} FROM ${name} ORDER BY ${time} DESC LIMIT 6`).all()).results;}
+}
+if(tables.results.some(r=>r.name==='report2_market_snapshot_batch_v1')){
+ states.recent_slots=(await db.prepare('SELECT bucket,generation,COUNT(*) AS shards,SUM(contract_count) AS contracts,MIN(received_ts) AS first_received,MAX(received_ts) AS last_received FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND bucket>=?2 GROUP BY bucket,generation ORDER BY bucket DESC LIMIT 80').bind('HUB_PUBLIC_COLLECTOR',now-7*3600000).all()).results;
+}
+try{states.database_bytes=(await db.prepare('PRAGMA page_count').first()).page_count*(await db.prepare('PRAGMA page_size').first()).page_size;}catch(error){states.database_bytes_error=String(error.message);}
+const usage=db.usageSnapshot();assert.equal(usage.unknown_ops,0);assert.ok(usage.rows_read<=10000&&usage.rows_written<=100);
+fs.writeFileSync('audit-output/shared-sector-live-verification.json',JSON.stringify({schema:'report2-shared-sector-verification-v1',github_head:process.env.GITHUB_SHA,run_id,result,context,official,official_context,calls,source_http:calls.length,database_usage:usage,states,production_write_scope:'EXISTING_PROVIDER_QUOTA_AND_SOURCE_CACHE_ONLY',deep_checks_started:0,canonical_writes:0,telegram_calls:0,main_accepted:false,telegram_delivery_proven:false},null,2)+'\n');
+fs.writeFileSync('audit-output/shared-sector-source-bodies.json',JSON.stringify(raw,null,2)+'\n');
+console.log(JSON.stringify({status:result.status,source_http:calls.length,sector_facts:context.facts.length,official_status:official.status,official_facts:official_context.facts.length,database_usage:usage}));
