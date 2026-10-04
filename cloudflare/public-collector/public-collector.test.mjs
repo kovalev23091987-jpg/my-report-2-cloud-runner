@@ -148,11 +148,14 @@ test('retention releases expired space before snapshot allocation and preserves 
     constructor(){super();this.full=true;this.calls=[];}
     async run(sql,args){
       if(sql.includes('DELETE FROM report2_market_snapshot_batch_v1')){
-        assert.equal(args[0],cutoff);
-        assert.match(sql,/bucket<\?1/);assert.match(sql,/LIMIT 96/);
+        assert.equal(args[0],'HUB_PUBLIC_COLLECTOR');
+        assert.equal(args[1],env.REPORT2_CURRENT_GENERATION);
+        assert.equal(args[2],cutoff);
+        assert.match(sql,/bucket<\?3/);assert.match(sql,/LIMIT 8/);
         this.calls.push('retention');this.full=false;
         return{meta:{changes:6,rows_read:6,rows_written:18}};
       }
+      if(sql.includes('INSERT OR IGNORE INTO report2_public_collector_usage_v1')&&this.full)throw new Error('D1_ERROR: Exceeded maximum DB size');
       if(sql.includes('INSERT INTO report2_market_snapshot_batch_v1')){
         this.calls.push('snapshot');
         if(this.full)throw new Error('D1_ERROR: Exceeded maximum DB size');
