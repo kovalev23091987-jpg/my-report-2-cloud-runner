@@ -1,3 +1,15 @@
+# Проверенный выпуск PR102, 04.10.2026 17:50 UTC
+
+Main5b62d96a76350039a933fd6cfe468f5978c84dca, testedbf0abde01ce06af0b15f52af6e01179ee4287814, exact tree435eed4578e1917160f36c863beb0e3d7d025d44. Cloud37221892102/job111493731490 SUCCESS, full validation PASS,37/37 integration. Artifact11311035251 sha256289a49d45a935b0b6cbec0d215bddf692a612e3aa036414b4b4a9d2ddf018c26. Worker pin unchanged40bbaf02761cabaef8cf2e7d033f9a6fcfedaed8fd3cbe66fc0c16103297c85f.
+
+Свежие119crypto contracts/102assets:102linear perpetual,4linear delivery,5coin perpetual,8coin delivery. Default378=all374+cross4, isolated-only0 verified by scoped empty-query+full unfiltered metadata reconciliation; new contracts0. Все102USDT swaps имеют реальные N10 ценовые факты. SOL N02 native total635227994.402425079 finalizedmainnet; NEAR N03 две реальные decrease observations, включая −0.2199059200424498 NEAR между новым first/second. Никакого buyback/burn cause/price impact/entry из этих контекстов не утверждается. SourceHTTP13,D1read36/write34/unknown0;deep0/canonical0/Telegram0.
+
+Сохранено: checkpoints/technical-native-release-evidence-20261004.json и полный общий будущий scope checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz. Прямое последнее указание: этот же universe всех криптофьючерсных активов передать в последующий liquidation audit каждого из8sources; spot-only исключить. Coverage failures не удаляют монету из universe. Проверка режима/семейства/классификации защищает от случайного пропуска.
+
+**Первый этап ещё продолжается.** N10 primary pipeline audit не закрывается одним нейтральным price-context. Inverse/delivery market adapters17contracts ещё явно неподдерживаемы; actual raw24h flow не заменён свечами/6h history;15/15 per-contract usefulness,freshMAIN, liquidationcoverage/weekly и Telegram не объявлены принятыми. Продолжать автономно в порядке владельца. Не повторять полный дорогой MAIN без нового исправления actual flow; не возобновлять старый chat-monitor/FIL.
+
+---
+
 # Следующий проверяемый выпуск, 04.10.2026
 
 Задание владельца уточнено: только активные криптофьючерсы HTX, без spot-only активов; общий all-family universe обязателен для всех основных блоков и последующей проверки каждого актива по всем восьми liquidation sources. Контракты без покрытия остаются в общей базе с явным статусом; не удалять их как будто отсутствуют на HTX. Не подставлять расчётные уровни. Сначала 15 основных блоков, затем liquidation, затем совместный MAIN и Telegram.
