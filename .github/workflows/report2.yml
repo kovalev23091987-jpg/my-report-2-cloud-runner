@@ -2,7 +2,7 @@ name: Report 2 Cloud Runner
 
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "7,27,47 * * * *"
   push:
     branches:
       - main
@@ -120,7 +120,7 @@ jobs:
 
   run-report2:
     needs: [execution-gate, enqueue-manual-command]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '*/20 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '7,27,47 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
     concurrency:

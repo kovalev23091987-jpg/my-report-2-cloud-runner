@@ -35,7 +35,11 @@ test('only authoritative report workflow remains manually runnable',()=>{
 });
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.ok(y.includes('- cron: "*/20 * * * *"'));
+ const cron=y.match(/cron: "([^"]+)"/)[1],guard=y.match(/github.event.schedule == '([^']+)'/)[1];
+ assert.equal(cron,'7,27,47 * * * *');assert.equal(guard,cron);
+ const minutes=cron.split(' ')[0].split(',').map(Number);
+ assert.deepEqual([minutes[1]-minutes[0],minutes[2]-minutes[1],60+minutes[0]-minutes[2]],[20,20,20]);
+ assert.equal(minutes.length*24,generation.scheduled_runs_per_day);
  assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"47"/);
  assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
