@@ -1,3 +1,15 @@
+# Локальный кандидат после PR94 — точная область N08, 04.10.2026 13:32 UTC
+
+Свежий исходный main `8bb5513c93a203e472308e264d8df06a582b6f97`, открыты только старые draft PR42/43/45; сохранённый release fence истёк и имеет статус `RUNTIME_RELEASED_CHECKPOINT_SAVE`. Облачный выпуск этого кандидата ещё не подтверждён.
+
+Исправлен парсер N08/N09 для официального HTX `/linear-swap-api/v1/swap_api_state`. По официальному контракту endpoint относится к isolated margin и поле `open` означает доступность открытия: `1` — доступно, `0` — недоступно. Теперь результат считается закрытым только при единственной строке точного контракта, `margin_mode=isolated`, `margin_account` равном выбранному контракту, бинарном `open` и свежем source clock. Несуществующие в официальной схеме поля `open_order/open_position` больше не используются и не сохраняются в общем кэше.
+
+`open=0` остаётся N08 adverse risk без LONG/SHORT vote; `open=1` остаётся ограниченным контекстом N09. Неверная область, другой margin account, `open=2`, чужой контракт и stale/future clock закрываются как PARTIAL/ERROR без влияния на score. Веса, порог70, формы, Telegram и liquidation не менялись.
+
+Полная локальная `node current-generation/validate.mjs` прошла: tests PASS, syntax PASS, текущие квоты и top2 limit сохранены. Точная квитанция: `checkpoints/n08-exact-scope-local-evidence-20261004.json`. Это ремонт схемы N08, а не доказательство фактического ограничения на последнем рынке. Свежий MAIN top2, общий отчёт15 блоков и Telegram с настоящим `message_id` остаются открыты.
+
+---
+
 # Последний проверенный выпуск PR94 — 04.10.2026
 
 Main55b8d7f65810a1f9953006e2d4c2e2e875e8ead7; head90372e6803a5ee832439df14de777c08b74cb405; exact same Git tree b5ce229c81a506bf72a6112f26796443b66875da. Cloud37203816064/job111440744663 SUCCESS: текущая validation, ранние transport/persistence,7runtime controls,37integration, исторические replay и точный production loadCanonicalRunOutput на ранее сохранённом actualrun1791111337657-1791111344224. ZIP11303827214 независимо скачан: SHA256926a0ed5c424ed49148bca97a351a23c00870e4abfd8f6862a9a0965f315568e. Runtime tree1c716ad0c1dd62850974529de0b1c69b6254fe2a26e98363f00d43bf23f727e1; worker unchanged.
