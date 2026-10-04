@@ -27,17 +27,17 @@ test('zero remaining history allowance makes no HTTP call and preserves cached o
  const db=database();const first=await collectCrossExchangeRiskContext({db,contract:'BTW-USDT',run_id:'empty',lane_override:'HISTORY',max_http:0,fetch_impl:()=>{throw Error('history must not dispatch');}});assert.equal(first.network_calls,0);assert.equal(first.status,'DEFERRED_AFTER_FUTURE_LEVELS');
  db.sql.close();
 });
-test('main and standalone production consumers call future maps before realized history and preserve bounded envelopes',()=>{
+test('main and standalone production consumers enforce durable real-level coverage before source calls',()=>{
  const worker=read('../files/src/worker.js'),main=worker.slice(worker.indexOf('async function buildDeepCheckInput'));
  assert.ok(main.indexOf('await env.REPORT2_LIQUIDATION_NATIVE_COLLECT')<main.indexOf('await htxLiquidationTape'));
  assert.ok(main.indexOf('await LIQUIDATION_INTELLIGENCE_API.collectCrossVenueLiquidationIntelligence')<main.indexOf('await htxLiquidationTape'));
  assert.ok(main.indexOf('await env.REPORT2_LIQUIDATION_NATIVE_COLLECT')<main.indexOf('await env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT'));
  const runner=read('../files/runner-main.mjs'),solo=runner.slice(runner.indexOf('  if(commandIntent.matched){'));
- assert.ok(solo.indexOf('future_only:true')<solo.indexOf('crossExchangeRisk=await'));
+ assert.ok(solo.indexOf('candidateCoverage=candidate?liquidationCoverageFor')<solo.indexOf('acquisition=await collectFor(candidate)'));
  assert.ok(solo.indexOf('acquisition=await collectFor(candidate)')<solo.indexOf('crossExchangeRisk=await'));
  assert.match(solo,/max_http_for_candidate:Math.max\(0,8-bykFutureCalls\)/);
- assert.ok(solo.indexOf('acquisition=await collectFor(candidate)')<solo.indexOf('coinFuture=await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT'));
  assert.ok(main.indexOf('await env.REPORT2_LIQUIDATION_NATIVE_COLLECT')<main.indexOf('await env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT'));
+ assert.match(solo,/projected:\[\]/);assert.match(solo,/futureMapSource=null/);
  assert.match(runner,/5-\(futureHttpByContract.get\(params.contract\)\?\?5\)/);
  const formatter=read('../files/src/manual-report-formatter.mjs');assert.ok(formatter.indexOf('...nativeLines')<formatter.indexOf('lines.push(...formatLiquidationHistoryFacts'));
 });
