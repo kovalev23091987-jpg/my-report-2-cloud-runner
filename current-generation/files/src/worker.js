@@ -1,4 +1,5 @@
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
+import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
@@ -16287,13 +16288,13 @@ async function buildDeepCheckInput(params, env) {
       supplementalCandidateContext=await env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT({
         contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),derivatives_venues:derivativeVenues.size,
         critical_conflict:conflict,primary_price:htxObservationReferencePrice.status==='CLOSED'?htxObservationReferencePrice.value:null,now:Date.now(),reserve_for_liquidations:sourceRoutingPlan.reserve_liquidation_lane,
-        strict17_required:String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL',
-        force_fresh_manual:String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL',
+        strict17_required:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE),
+        force_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE),
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
   try{
-    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'});
+    if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
 
@@ -19429,14 +19430,14 @@ const __REPORT2_ORIGINAL_HANDLER = {
             ...(env?.REPORT2_DEEP_RUNTIME_OPTIONS||{}),
 
             cooldown_sec:
-              String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'
+              isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)
                 ? 0
                 : fastMoveWatchCycle
                     ?.adaptive_cooldown_sec ??
                   1800,
 
             bypass_cooldown:
-              String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL',
+              isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE),
 
             lease_sec:
               600,

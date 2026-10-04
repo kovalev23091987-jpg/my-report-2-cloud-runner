@@ -8,7 +8,7 @@ import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='a1fd0c333d80b44482e91650d37288adb76452c1a65cc508db68f0ed8c5ff386';
+const expectedWorker='a5c8330e10297378f8771222f0c9ea2a04840c8271e12e62896d425886f8d032';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
