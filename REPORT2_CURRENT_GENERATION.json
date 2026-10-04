@@ -43,14 +43,13 @@
   "discovery_direction_policy": "DISCOVERY_ONLY_NEVER_ENTRY",
   "deep_selection_policy": "COMMON_PRIORITY_QUEUE_NO_LIQUIDATION_MONOPOLY",
   "technical_silence_policy": "PRESERVE_ORIGINAL_FAILURE_NEVER_HEALTHY_NO_IDEA",
-  "liquidation_future_chain_version": "LIQUIDATION_FUTURE_CONNECTIONS_V9_20261001",
+  "liquidation_future_chain_version": "LIQUIDATION_EXTERNAL_LEVELS_ONLY_20261004",
   "liquidation_future_chain_required_in": [
     "MAIN_REPORT",
     "LIQUIDATION_ONLY"
   ],
-  "liquidation_future_connection_count": 9,
+  "liquidation_future_connection_count": 8,
   "liquidation_future_connections": [
-    "HTX_SOURCE_BACKED_MODEL",
     "HYPERLIQUID_NATIVE",
     "BYK_TRACKED_HL_BANDS",
     "LIGHTER_NATIVE",
@@ -60,7 +59,7 @@
     "COINLOBSTER_FUTURE_MODEL",
     "OXARCHIVE_HL_BUCKETS"
   ],
-  "liquidation_future_policy": "HTX_SOURCE_MODEL_BASELINE_THEN_EXACT_NATIVE_AND_PROVIDER_CROSSCHECKS;ADAPTIVE_FAILOVER_WITHOUT_SUMMING_OVERLAP",
+  "liquidation_future_policy": "REAL_EXTERNAL_NUMERIC_FUTURE_LEVELS_ONLY;NO_HTX_CALCULATED_FALLBACK;UPSTREAM_DEDUP",
   "liquidation_history_role": "SECONDARY_STATISTICS_ONLY_NEVER_CLOSES_FUTURE_MAP",
   "liquidation_candidate_sources_not_enabled": [
     "COINGLASS_LIQUIDATION_MAP",
@@ -85,5 +84,7 @@
   "retired_block_reasons": {},
   "block_factual_context_consumer": "src/block-result-context.mjs",
   "all_remaining_blocks_usefulness_accepted": false,
-  "block_removal_policy": "KEEP_ANY_VERIFIABLE_USEFUL_RESULT; REPAIR_FIRST; REMOVE_ONLY_WHEN_NO_USEFUL_FUNCTION_CAN_BE_PROVIDED"
+  "block_removal_policy": "KEEP_ANY_VERIFIABLE_USEFUL_RESULT; REPAIR_FIRST; REMOVE_ONLY_WHEN_NO_USEFUL_FUNCTION_CAN_BE_PROVIDED",
+  "signed_raw_24h_publication_policy": "OWNER_AUTHORIZED_DEFERRED_EXACT_METRIC_20261004",
+  "free_source_expansion_instruction": "checkpoints/FREE_SOURCE_EXPANSION_20261004.md"
 }

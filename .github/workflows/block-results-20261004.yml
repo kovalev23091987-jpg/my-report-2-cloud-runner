@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004, autonomous/cloud-phase-gate-20261004, autonomous/options-risk-batch-20261004, autonomous/signed-tape-warmup-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004, autonomous/cloud-phase-gate-20261004, autonomous/options-risk-batch-20261004, autonomous/signed-tape-warmup-20261004, autonomous/coverage-cadence-batch-20261004]
 permissions:
   contents: read
 jobs:
@@ -41,6 +41,8 @@ jobs:
           REPORT2_SECTOR_MODULE_ROOT=runtime/src node --test current-generation/tests/shared-sector-batch.test.mjs > audit-output/shared-sector-batch.tap
           REPORT2_OPTIONS_MODULE_ROOT=runtime/src node --test current-generation/tests/deribit-option-risk-batch.test.mjs > audit-output/options-risk-batch.tap
           REPORT2_SIGNED_TAPE_MODULE_ROOT=runtime/src node --test current-generation/tests/htx-signed-tape.test.mjs > audit-output/signed-tape-batch.tap
+          REPORT2_COVERAGE_MODULE_ROOT=runtime/src node --test current-generation/tests/liquidation-futures-coverage.test.mjs > audit-output/liquidation-futures-coverage.tap
+          REPORT2_CADENCE_RUNTIME_ROOT=runtime node --test current-generation/tests/scheduled-cadence-effective.test.mjs > audit-output/scheduled-cadence-effective.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Recover already collected live data without new source calls
         if: github.ref == 'refs/heads/autonomous/block-small-benefit-20261004'
@@ -101,6 +103,13 @@ jobs:
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
           REPORT2_CONTINUATION_OWNER: 'HTX:20261004T1811:bc2e6615'
         run: node audit-fixes/signed-tape-warmup-20261004/verify-live.mjs runtime
+      - name: Verify durable same-universe coverage matrix without market calls
+        if: github.ref == 'refs/heads/autonomous/coverage-cadence-batch-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261004T1811:bc2e6615'
+        run: node audit-fixes/coverage-cadence-batch-20261004/verify-live.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:

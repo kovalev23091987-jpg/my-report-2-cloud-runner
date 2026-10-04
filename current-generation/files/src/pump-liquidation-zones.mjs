@@ -1,6 +1,6 @@
 import {fingerprint} from './liquidation-extension/core.mjs';
-import {buildHtxSourceBackedLiquidationModel,reconcileLiquidationZones} from './htx-source-backed-liquidation-model.mjs';
-export const PUMP_LIQUIDATION_ZONES_VERSION='liquidation-zones-v5-multi-source-with-htx-model-20261001';
+import {reconcileLiquidationZones} from './htx-source-backed-liquidation-model.mjs';
+export const PUMP_LIQUIDATION_ZONES_VERSION='liquidation-zones-v6-external-only-owner-policy-20261004';
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const text=v=>String(v??'').trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -11,8 +11,8 @@ function normalize(row,{current,observed,source=null,source_ts=null,unit=null,es
  const price=finite(row?.native_price??row?.level_price??row?.center_price??row?.price),amount=finite(row?.notional??row?.notional_usd??row?.notional_usdt??row?.cluster_notional_usd??row?.size_usd),clock=finite(row?.source_ts??source_ts),provider=text(row?.source??row?.provider??source),u=text(row?.notional_unit??unit??(row?.notional_usdt!=null?'USDT':row?.notional_usd!=null?'USD':null));
  if(!price||price<=0||!provider||!clock||clock>observed||observed-clock>300000)return null;
  if(row?.status&& !['CLOSED','USABLE_SCOPED_CONTEXT'].includes(row.status))return null;
- const semantics=[row?.kind,row?.evidence_class,row?.role].map(text).join(' '),approvedCalculated=row?.evidence_class==='SOURCE_BACKED_CALCULATED_MODEL'&&row?.independence_group==='HTX_OFFICIAL_MODEL';
- if(/REALIZED|LEVERAGE_STRESS/.test(semantics)||/CALCULATED/.test(semantics)&&!approvedCalculated||['SWEPT','INVALIDATED','EXPIRED'].includes(text(row?.lifecycle).toUpperCase()))return null;
+ const semantics=[row?.kind,row?.evidence_class,row?.role].map(text).join(' '),approvedCalculated=false;
+ if(/REALIZED|LEVERAGE_STRESS/.test(semantics)||/CALCULATED/.test(semantics)||row?.independence_group==='HTX_OFFICIAL_MODEL'||['SWEPT','INVALIDATED','EXPIRED'].includes(text(row?.lifecycle).toUpperCase()))return null;
  const side=text(row?.liquidated_side??row?.side??liquidated_side).toUpperCase(),ref=finite(row?.native_reference_price);
  if(!['LONG','SHORT'].includes(side)||ref!==null&&(side==='SHORT'&&price<=ref||side==='LONG'&&price>=ref))return null;
  const quote=text(row?.price_quote??price_quote)||(u==='USDT'?'USDT':'USD'),reference=quote==='USDT'?current:ref;
@@ -32,8 +32,7 @@ function selectSide(rows,side){
 }
 export function buildPumpLiquidationZones({contract=null,rolling_24h_change_pct,current_price,early_anomaly=false,priority_reason=null,realized=[],projected=[],provider_maps=[],native_contexts=[],calculation_context={},volume_profile=null,observed_ts=Date.now()}={}){
  const base=text(contract).normalize('NFC').toUpperCase().replace(/-USDT$/,''),px=finite(current_price),pump=classifyPump24h(rolling_24h_change_pct,{early_anomaly});
- const common={version:PUMP_LIQUIDATION_ZONES_VERSION,pump,current_price:px,priority_reason:text(priority_reason)||null,above:[],below:[],future_only:true,future_levels_required:true,future_levels_status:'NOT_AVAILABLE',distance_cap_pct:null,minimum_distance_pct:0,max_per_side:6,display_minimum_separation_pct:3,display_max_per_side:4,display_nearby_levels_as_one_range:true,calculated_fallback_enabled:true,calculated_fallback_policy:'FRESH_HTX_SOURCE_DATA_REQUIRED_NO_FIXED_PERCENTAGE_BANDS',no_invented_exact_amounts:true,notional_summed_across_providers:false,volume_tiers:LIQUIDATION_VOLUME_TIERS,realized_events_excluded:arr(realized).length};
- if(['BTC','ETH'].includes(base))return{...common,status:'EXCLUDED_BY_USER_POLICY',reason:'BTC_ETH_EXCLUDED_BY_USER_POLICY'};
+ const common={version:PUMP_LIQUIDATION_ZONES_VERSION,pump,current_price:px,priority_reason:text(priority_reason)||null,above:[],below:[],future_only:true,future_levels_required:true,future_levels_status:'NOT_AVAILABLE',distance_cap_pct:null,minimum_distance_pct:0,max_per_side:6,display_minimum_separation_pct:3,display_max_per_side:4,display_nearby_levels_as_one_range:true,calculated_fallback_enabled:false,calculated_fallback_policy:'OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY',no_invented_exact_amounts:true,notional_summed_across_providers:false,volume_tiers:LIQUIDATION_VOLUME_TIERS,realized_events_excluded:arr(realized).length};
  if(!base||px===null||px<=0||!Number.isSafeInteger(observed_ts))return{...common,status:'TECHNICAL_FAILURE',reason:'HTX_CONTRACT_OR_CURRENT_PRICE_REQUIRED'};
  const rows=[],receipts=[];
  for(const map of arr(provider_maps)){
@@ -51,12 +50,10 @@ export function buildPumpLiquidationZones({contract=null,rolling_24h_change_pct,
   }
  }
  for(const z of arr(projected)){const row=normalize(z,{current:px,observed:observed_ts});if(row)rows.push(row);}
- const htxModel=buildHtxSourceBackedLiquidationModel({contract,current_price:px,observed_ts,calculation_context,volume_profile});
- receipts.push({source:'HTX_SOURCE_BACKED_MODEL',status:htxModel.status,coverage:htxModel.coverage??null,source_ts:htxModel.source_ts??null,total_zones:arr(htxModel.zones).length,reason:htxModel.reason??null});
- for(const z of arr(htxModel.zones)){const row=normalize(z,{current:px,observed:observed_ts,source:z.source,source_ts:z.source_ts,estimated:true,coverage:z.coverage});if(row)rows.push(row);}
+ const htxModel={status:'DISABLED_BY_OWNER',reason:'CALCULATED_HTX_FALLBACK_FORBIDDEN',zones:[],volatility_1h_pct:null};
  const unique=new Map();for(const z of rows){const key=[z.source,z.venue,z.price,z.notional_unit,z.position_key].join(':');const old=unique.get(key);if(!old||z.source_ts>old.source_ts||z.source_ts===old.source_ts&&(z.notional??0)>(old.notional??0))unique.set(key,z);}
  const raw=[...unique.values()],all=reconcileLiquidationZones(raw,{reference_price:px,volatility_pct:htxModel.volatility_1h_pct}),above=selectSide(all,'ABOVE'),below=selectSide(all,'BELOW'),calculatedCount=all.filter(z=>z.independence_groups?.includes('HTX_OFFICIAL_MODEL')).length,externalCount=all.filter(z=>z.independence_groups?.some(group=>group!=='HTX_OFFICIAL_MODEL')).length,consensusCount=all.filter(z=>(z.independent_source_count??0)>=2).length;
- return{...common,status:all.length?'CLOSED':'NOT_CLOSED',future_levels_status:all.length?(externalCount?'SOURCE_LEVELS_AVAILABLE_WITH_HTX_MODEL':'HTX_SOURCE_BACKED_MODEL_AVAILABLE'):'NOT_AVAILABLE',reason:all.length?null:'FUTURE_LEVELS_NOT_AVAILABLE',above,below,all_zones:all,provider_zone_count:all.length,external_zone_count:externalCount,calculated_zone_count:calculatedCount,consensus_zone_count:consensusCount,displayed_zone_count:above.length+below.length,omitted_zone_count:all.length-above.length-below.length,source_receipts:receipts,htx_source_backed_model:{...htxModel,zones:undefined},coverage_scope:htxModel.status==='CLOSED'?'ALL_ACTIVE_HTX_CONTRACTS_WITH_CLOSED_OFFICIAL_INPUTS_PLUS_AVAILABLE_EXTERNAL_SOURCES':'ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE',coverage_status:htxModel.status==='CLOSED'?'FULL_HTX_CALCULATED_COVERAGE':'PARTIAL_SOURCE_BACKED_FUTURE_MAP',above_status:above.length?'CLOSED':'NOT_CLOSED',below_status:below.length?'CLOSED':'NOT_CLOSED'};
+ return{...common,status:all.length?'CLOSED':'NOT_CLOSED',future_levels_status:all.length?(externalCount?'EXTERNAL_SOURCE_LEVELS_AVAILABLE':'NOT_AVAILABLE'):'NOT_AVAILABLE',reason:all.length?null:'FUTURE_LEVELS_NOT_AVAILABLE',above,below,all_zones:all,provider_zone_count:all.length,external_zone_count:externalCount,calculated_zone_count:calculatedCount,consensus_zone_count:consensusCount,displayed_zone_count:above.length+below.length,omitted_zone_count:all.length-above.length-below.length,source_receipts:receipts,htx_source_backed_model:{...htxModel,zones:undefined},coverage_scope:htxModel.status==='CLOSED'?'ALL_ACTIVE_HTX_CONTRACTS_WITH_CLOSED_OFFICIAL_INPUTS_PLUS_AVAILABLE_EXTERNAL_SOURCES':'ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE',coverage_status:htxModel.status==='CLOSED'?'FULL_HTX_CALCULATED_COVERAGE':'PARTIAL_SOURCE_BACKED_FUTURE_MAP',above_status:above.length?'CLOSED':'NOT_CLOSED',below_status:below.length?'CLOSED':'NOT_CLOSED'};
 }
 export default{PUMP_LIQUIDATION_ZONES_VERSION,classifyPump24h,buildPumpLiquidationZones};
 

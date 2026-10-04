@@ -1,0 +1,19 @@
+# Owner-approved free source expansion — 04.10.2026 22:35 MSK
+
+Search for additional free sources for every core block N01–N12, N14–N16 and separately for the future liquidation block. This extends the remaining completion work; it does not replace it or authorize competing schedules. Do not connect a source merely to increase the number of connections.
+
+Owner amendment 22:35 MSK: verify and control all free rate/credit limits. Before activation record official source terms/date, request/minute/day/month and endpoint cost, account/key requirements, cache lifetime, bounded retries, and projected scheduled/collector/manual usage. Preserve protected manual reserve and existing total HTTP/D1 caps. Every source call and retry must obtain runtime admission and record actual usage. Unknown limits or an unbudgeted route remain disabled; do not interpret missing documentation as unlimited access.
+
+For each candidate retain: exact asset/contract identity, new useful fact, public/free access and existing quota admission, source timestamp and raw response hash, upstream identity, normalization receipt, actual consumer/control use, and fresh report/canonical evidence. A successful HTTP response, parser fixture or historical replay alone is not successful deployment. Existing source duplicates must not gain an independent vote. Preserve strategy weights, 70 threshold, entry rules, approved formatting and the complete common HTX crypto futures universe.
+
+Coverage of this instruction includes all fifteen configured consumers: N01 supporting risk recheck, N02 supply risk, N03 supply reduction/money-flow context, N04 transfer investigation, N05 market-flow confirmation, N06 early interest, N07 official event risk, N08 execution restriction, N09 eligibility, N10 technical target/path/invalidation, N11 execution stress/depth, N12 factual trade-flow diagnostics, N14 options risk, N15 sector/peer relative strength, and N16 execution costs. Liquidation requires actual numeric external future levels; realized liquidation history and locally calculated stress maps do not qualify.
+
+Current search status: IN_PROGRESS; no additional source has passed end-to-end live acceptance yet. Pacifica's official public positions API documents a liquidation_price field, but a documented nullable field is not proof of actual useful numeric coverage. Evaluate actual public positions before enabling. Drift documentation describes margin/liquidation mechanics; this does not prove a public provider-reported future level. Do not enable either on documentation alone.
+
+Primary references inspected on 04.10.2026:
+- https://docs.pacifica.fi/api-documentation/api/rest-api/account/get-positions
+- https://docs.pacifica.fi/api-documentation/api/rest-api/vaults/list-vaults
+- https://docs.pacifica.fi/api-documentation/api/mcp
+- https://docs.drift.trade/protocol/about-v3/margin
+
+This file is an instruction/research checkpoint, not source coverage or report acceptance.

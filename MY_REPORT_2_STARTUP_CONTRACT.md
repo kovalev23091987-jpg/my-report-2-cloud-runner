@@ -1,3 +1,9 @@
+## Новейшие дополнения владельца — 04.10.2026 22:16–22:35 МСК
+
+Читать checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md: можно закончить остальные задачи, единый отчёт и настоящую Telegram delivery без временно исключённой EXACT_SIGNED_RAW_24H. Существующий фактический N12 bounded context остаётся;70/weights/entry/quota/canonical gates не ослаблять. Это отменяет старое требование ожидать raw24h перед всей остальной работой.
+
+Читать checkpoints/FREE_SOURCE_EXPANSION_20261004.md: искать дополнительные бесплатные полезные подключения для ВСЕХ15 блоков N01–N12,N14–N16 и отдельно liquidation. Подключённым считать только actualsource → полезный consumer → freshreport/canonical evidence; HTTP200/fixture/route не приёмка. Существующий общий HTX crypto FUTURES universe обязателен. Никаких HTX расчётных future levels и synthetic-map comparison; прежние инструкции ниже про HTX model/BTC ETH exclusion отменены новейшим указанием владельца.
+
 ## Самый новый проверенный аналитический пакет: PR104
 
 N14 теперь даёт actual scoped mark IV (с пересчётом consumer) на7активах BTC/ETH/SOL/AVAX/XRP/HYPE/TRX; все102HTXcrypto FUTURES assets проверены,95provider-only catalogue absences. Source2HTTP, cloud37224521405/job111501307137 SUCCESS,37integration,12options. Main9da3847088bc80020f53f8916944c7bb0afe5518/tree3f223f91cfdb1933aff2d6cd9a1284da7e15f9ad; квитанция checkpoints/options-risk-release-evidence-20261004.json, полные actualsource/use gzip сохранены. Не повторять completedprobe. CORE_BLOCKS остаётсяIN_PROGRESS. Продолжать следующие незавершённые основные блоки/exactmarket adapters/identity/raw24h. Phaselease/releaseguard ниже обязательны.
