@@ -1,6 +1,6 @@
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v1-20261004';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v2-approved-telegram-parity-20261004';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -89,13 +89,22 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  return{version:BLOCK_RESULT_CONTEXT_VERSION,status:facts.length?'CLOSED':'NOT_CLOSED',facts,internal_only:true};
 }
 
+// A stored descriptive fact cannot substitute for its exact still-valid evidence.
+// Both presentation surfaces use the same source/use binding, without scores.
+export function confirmedBlockContextFacts(canonical){
+ const available=consumeBlockResultContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract:canonical?.metadata?.contract,now:canonical?.observed_ts});
+ const stored=list(canonical?.metadata?.supporting_context?.facts);
+ return available.facts.filter(row=>stored.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key&&f.label===row.label&&f.value===row.value));
+}
+
 // Proof is based on the final formatter output, including its bounded fact limit.
 // A label in metadata or a completed HTTP call cannot establish actual use.
-export function auditRenderedBlockResults({canonical,manual}={}){
+export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const contract=canonical?.metadata?.contract,now=canonical?.observed_ts;
  const available=consumeBlockResultContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract,now});
  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
- const facts=list(canonical?.metadata?.supporting_context?.facts);
- const receipts=available.facts.filter(row=>facts.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key)&&printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
- return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),entry_authorized:false,internal_only:true};
+ const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
+ const payload=telegram?.ok===true&&typeof telegram.text==='string'&&Boolean(canonical?.analytical_fingerprint)&&telegram.analytical_fingerprint===canonical.analytical_fingerprint?telegram.text:null;
+ const telegramReceipts=confirmedBlockContextFacts(canonical).filter(row=>payload?.includes(`• ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
+ return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.map(row=>row.block_id))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
 }

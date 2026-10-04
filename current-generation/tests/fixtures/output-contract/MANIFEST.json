@@ -9,7 +9,7 @@
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "ccc0d2c5934eb032451df1b6f3d363e939eb64e9b098c7685e72bf92567757a3",
-    "current-generation/files/src/canonical-publication.mjs": "6eed73583edd255ac928cb2377cb6b04279a5a41c39900aeb95fd1cdc900127a"
+    "current-generation/files/src/canonical-publication.mjs": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -23,6 +23,22 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-04",
+      "scope": "OWNER_REQUESTED_UNIFIED_15_BLOCK_MAIN_MANUAL_TELEGRAM",
+      "authorization": "Owner requires the work of both chats and all 15 analytical blocks to use one report for manual and Telegram; liquidation excluded from new work.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "6eed73583edd255ac928cb2377cb6b04279a5a41c39900aeb95fd1cdc900127a",
+          "after": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "layout_headings_bullet_limits_and_length_limit_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "note": "Only exact revalidated facts already bound to supporting context fill existing approved Telegram market-fact positions; formatter receipts remain outside canonical."
+    },
     {
       "date": "2026-10-01",
       "scope": "OWNER_REQUESTED_DISTINCT_LIQUIDATION_DISPLAY_CLUSTERS",
