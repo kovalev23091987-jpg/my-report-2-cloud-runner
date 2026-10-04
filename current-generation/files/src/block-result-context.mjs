@@ -1,3 +1,4 @@
+import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
@@ -76,7 +77,11 @@ function describe(row,now){
  if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_LIQUIDITY_CONTEXT'){
   const open=number(row.open_instrument_count),liquid=number(row.liquid_instrument_count);
   if(row.source_clock_policy!=='PROVIDER_TIMESTAMP_ONLY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||!Number.isSafeInteger(open)||open<1||!Number.isSafeInteger(liquid)||liquid<0||liquid>open)return null;
-  return{source:'Deribit',label:'Опционный рынок актива',value:`открытых инструментов ${open}, с котировками или активностью в проверенной выборке ${liquid}; это не оценка опционного риска и не разрешение сделки`};
+  const scoped=number(row.scoped_instrument_count);
+  const scope=Number.isSafeInteger(scoped)&&scoped>0&&scoped<=open&&row.settlement_currency?`; проверено ${scoped} с расчётами в ${row.settlement_currency}`:'';
+  const declared=row.option_risk_context,risk=declared?deriveDeribitOptionRisk({samples:declared.samples,base_currency:row.base_currency,settlement_currency:row.settlement_currency,observed_ts:row.observed_ts}):null;
+  if(risk&&risk.status===declared.status&&risk.sample_count===declared.sample_count&&eq(risk.mark_iv_median_pct,declared.mark_iv_median_pct)&&eq(risk.mark_iv_min_pct,declared.mark_iv_min_pct)&&eq(risk.mark_iv_max_pct,declared.mark_iv_max_pct)&&risk.expiration_timestamp===declared.expiration_timestamp)return{source:'Deribit',label:'Опционная волатильность актива',value:`mark IV: медиана ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} call и ${risk.put_count} put около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().slice(0,10)}${scope}; открытых опционов в каталоге ${open}; волатильность этой выборки, направление и разрешение сделки не назначены`};
+  return{source:'Deribit',label:'Опционный рынок актива',value:`открытых инструментов ${open}${scope}, с котировками или активностью в проверенной выборке ${liquid}; опционный риск по этой выборке не закрыт, разрешение сделки не назначено`};
  }
  if(row.block_id==='N02'&&row.metric_family==='SUPPLY_UNCHANGED'){
   if(!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||BigInt(row.total_supply_base_units)!==BigInt(row.previous_supply_base_units)||row.supply_delta_base_units!=='0')return null;
