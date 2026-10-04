@@ -4880,7 +4880,7 @@ async function persistStage0(
       ),
   };
 
-  const contracts =
+  const allContracts =
     active.map(
       (info) => {
         const code =
@@ -5243,6 +5243,22 @@ async function persistStage0(
       }
     );
 
+  /* Stage 0 is the crypto-futures analysis universe. HTX returns its stock,
+   * FX and commodity derivatives from the same linear endpoint, so retain an
+   * explicit audit of those rows while keeping them out of every analytical
+   * consumer and persisted market-history shard. Unknown classifications are
+   * retained in the audit and fail completeness; they are never silently
+   * promoted to crypto. */
+  const contracts = allContracts.filter(
+    (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED"
+  );
+  const excludedNonCryptoContracts = allContracts
+    .filter((row) => row?.instrument_scope?.classification === "NON_CRYPTO_HTX_CLASSIFIED")
+    .map((row) => row.contract_code);
+  const unknownScopeContracts = allContracts
+    .filter((row) => row?.instrument_scope?.classification === "UNKNOWN_FAIL_CLOSED")
+    .map((row) => row.contract_code);
+
   const scanned =
     contracts.filter(
       (c) =>
@@ -5294,21 +5310,11 @@ async function persistStage0(
         "CRYPTO_CONFIRMED"
     ).length;
 
-  const nonCryptoHtxClassified =
-    contracts.filter(
-      (c) =>
-        c?.instrument_scope
-          ?.classification ===
-        "NON_CRYPTO_HTX_CLASSIFIED"
-    ).length;
+  const nonCryptoHtxClassified = excludedNonCryptoContracts.length;
 
-  const instrumentScopeUnknown =
-    contracts.filter(
-      (c) =>
-        c?.instrument_scope
-          ?.classification ===
-        "UNKNOWN_FAIL_CLOSED"
-    ).length;
+  const instrumentScopeUnknown = unknownScopeContracts.length;
+
+  const activeHtxDerivativeTotal = allContracts.length;
 
   const stage0CoveragePct =
     universeTotal
@@ -5380,6 +5386,9 @@ async function persistStage0(
       ).toISOString(),
 
     counts: {
+      htx_active_derivatives_total:
+        activeHtxDerivativeTotal,
+
       universe_total:
         universeTotal,
 
@@ -5394,6 +5403,9 @@ async function persistStage0(
 
       instrument_scope_unknown:
         instrumentScopeUnknown,
+
+      excluded_non_crypto:
+        nonCryptoHtxClassified,
 
       errors:
         [
@@ -5452,13 +5464,13 @@ async function persistStage0(
           : "not_closed",
 
       crypto_instrument_scope_pct:
-        universeTotal
+        activeHtxDerivativeTotal
           ? (
               (
-                universeTotal -
+                activeHtxDerivativeTotal -
                 instrumentScopeUnknown
               ) /
-              universeTotal
+              activeHtxDerivativeTotal
             ) *
             100
           : 0,
@@ -5475,7 +5487,9 @@ async function persistStage0(
 
     health: {
       contracts:
-        contractsR.ok,
+        contractsR.ok &&
+        instrumentScopeUnknown === 0 &&
+        universeTotal > 0,
 
       market:
         marketR.ok,
@@ -5559,6 +5573,22 @@ async function persistStage0(
           : history.available
           ? "D1 is connected, but temporal transitions remain insufficient until prior scans accumulate."
           : "Current scan remains usable, but temporal transitions are insufficient until D1 persistence is configured and populated.",
+    },
+
+    scope_audit: {
+      source_active_derivatives_total:
+        activeHtxDerivativeTotal,
+      crypto_futures_retained:
+        universeTotal,
+      excluded_non_crypto_contracts:
+        excludedNonCryptoContracts,
+      unknown_fail_closed_contracts:
+        unknownScopeContracts,
+      lost_contracts:
+        activeHtxDerivativeTotal -
+        universeTotal -
+        excludedNonCryptoContracts.length -
+        unknownScopeContracts.length,
     },
 
     contracts,
@@ -16209,12 +16239,30 @@ async function buildDeepCheckInput(params, env) {
   let shadowDecision = null;
   let shadowPersistence = null;
 
+  const liquidationCoverageAdmission =
+    typeof env?.REPORT2_LIQUIDATION_COVERAGE_FOR === "function"
+      ? env.REPORT2_LIQUIDATION_COVERAGE_FOR(contract)
+      : {
+          status: "COVERAGE_DATABASE_NOT_AVAILABLE",
+          eligible: false,
+          source_ids: [],
+          calculated_fallback_allowed: false,
+        };
+  const admittedLiquidationSourceIds = new Set(
+    liquidationCoverageAdmission?.eligible === true &&
+      Array.isArray(liquidationCoverageAdmission?.source_ids)
+      ? liquidationCoverageAdmission.source_ids
+      : []
+  );
+
   // One bounded Deep Check runs per invocation. Reserve every ByKaranteli
   // request for this contract before the first network call so scheduled and
   // manual "Create report" runs share one atomic monthly allowance. BTC/ETH
   // need no liquidation map and reserve only the existing smart-money call;
   // every other HTX Futures contract reserves four map-quality calls plus it.
-  const bykRequestedUnits = ["BTC-USDT", "ETH-USDT"].includes(contract) ? 1 : 5;
+  const bykRequestedUnits = admittedLiquidationSourceIds.has("BYKARANTELI_FUTURE_MAP")
+    ? (["BTC-USDT", "ETH-USDT"].includes(contract) ? 1 : 5)
+    : 1;
   let bykAdmission = { allowed: false, status: "ADMISSION_CALLBACK_NOT_CONFIGURED", reserved_units: 0 };
   try {
     if (typeof env?.REPORT2_BYKARANTELI_RESERVE === "function") {
@@ -16228,6 +16276,9 @@ async function buildDeepCheckInput(params, env) {
     bykAdmission = { allowed: false, status: "ADMISSION_FAILED_CLOSED", reserved_units: 0, error: String(error?.message || error).slice(0, 200) };
   }
   const admittedBykApiKey = bykAdmission?.allowed === true ? (env?.BYKARANTELI_API_KEY || "") : "";
+  const admittedBykLiquidationApiKey = admittedLiquidationSourceIds.has("BYKARANTELI_FUTURE_MAP")
+    ? admittedBykApiKey
+    : "";
 
   let publicEvidence;
   let publicEvidenceAvailableTs = null;
@@ -16346,7 +16397,7 @@ async function buildDeepCheckInput(params, env) {
       await LIQUIDATION_INTELLIGENCE_API.collectCrossVenueLiquidationIntelligence({
         contract_code: contract,
         fetch_impl: fetch,
-        api_key: admittedBykApiKey,
+        api_key: admittedBykLiquidationApiKey,
         now_ts: Date.now(),
         htx_liquidation_tape: null,
         future_only: true,
@@ -17007,7 +17058,7 @@ async function buildDeepCheckInput(params, env) {
     });
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
-  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,liquidation_coverage_admission:liquidationCoverageAdmission,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
   const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
   let canonicalExecutionContextSource=null;
   // One bounded indexed read of the source already saved by this exact cycle;
