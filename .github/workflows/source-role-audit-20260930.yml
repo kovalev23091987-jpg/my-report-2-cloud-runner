@@ -1,7 +1,7 @@
 name: Report 2 Source Role Audit
 on:
   push:
-    branches: [autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
+    branches: [autonomous/blockscout-backoff-20261004, autonomous/verified-flow-binding-20260930, autonomous/sector-integration-20260930, autonomous/current-acceptance-20260930, autonomous/okx-asset-class-20260930, autonomous/volume-profile-20260930, autonomous/free-sources-20260930, autonomous/volume-research-20260930, autonomous/receipt-context-20260930, autonomous/htx-flow-integrity-20260930, autonomous/source-quota-role-20260930, autonomous/source-role-consumer-20260930, autonomous/prospective-repair-20260930, autonomous/prospective-integration-20260930, autonomous/source-allocation-20260930, autonomous/source-allocation-cache-20260930, autonomous/specialist-context-20260930, autonomous/specialist-consumers-20260930, autonomous/exchange-flows-20260930, autonomous/exchange-flow-acceptance-20260930]
     paths:
       - current-generation/**
       - runner/current-runtime-binding.mjs
@@ -23,6 +23,8 @@ jobs:
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -61,10 +63,21 @@ jobs:
           REPORT2_QUOTA_TEST_MODULE="file://$(realpath runtime/src/cross-exchange-risk-context.mjs)" node --test current-generation/tests/coinalyze-quota-fallback.test.mjs > audit-output/quota-fallback-runtime.tap
           node --test current-generation/tests/quota-periods.test.mjs current-generation/tests/source-health-journal.test.mjs > audit-output/quota-boundaries-health.tap
           REPORT2_ROLE_TEST_MODULE="file://$(realpath runtime/src/source-role-consumer.mjs)" REPORT2_ROLE_PUBLICATION_MODULE="file://$(realpath runtime/src/canonical-publication.mjs)" node --test current-generation/tests/source-role-evidence.test.mjs > audit-output/source-role-evidence-runtime.tap
+          REPORT2_BLOCKSCOUT_TEST_MODULE="file://$(realpath runtime/src/blockscout-index-evidence.mjs)" node --test current-generation/tests/blockscout-index-evidence.test.mjs > audit-output/blockscout-runtime.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Verify ready sector producers with six public requests at most
         if: github.ref == 'refs/heads/autonomous/sector-integration-20260930'
         run: node audit-fixes/sector-integration-20260930/live-acceptance.mjs runtime
+      - name: Replay the captured HTX wire against the exact runtime
+        if: github.ref == 'refs/heads/autonomous/blockscout-backoff-20261004'
+        run: node audit-fixes/blockscout-backoff-20261004/replay-flow.mjs runtime
+      - name: Compare the same actual indexed-source response before and after
+        if: github.ref == 'refs/heads/autonomous/blockscout-backoff-20261004'
+        env:
+          BLOCKSCOUT_PRO_API_KEY: ${{ secrets.BLOCKSCOUT_PRO_API_KEY }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/blockscout-backoff-20261004/live-replay.mjs runtime
       - name: Explain failed offline checks
         if: failure()
         run: |
@@ -78,7 +91,7 @@ jobs:
           path: audit-output/
           retention-days: 30
   live:
-    if: github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
+    if: github.ref != 'refs/heads/autonomous/blockscout-backoff-20261004' && github.ref != 'refs/heads/autonomous/verified-flow-binding-20260930' && github.ref != 'refs/heads/autonomous/sector-integration-20260930' && github.ref != 'refs/heads/autonomous/current-acceptance-20260930' && github.ref != 'refs/heads/autonomous/okx-asset-class-20260930' && github.ref != 'refs/heads/autonomous/volume-profile-20260930' && github.ref != 'refs/heads/autonomous/exchange-flow-acceptance-20260930' && github.ref != 'refs/heads/autonomous/exchange-flows-20260930' && github.ref != 'refs/heads/autonomous/specialist-consumers-20260930' && github.ref != 'refs/heads/autonomous/specialist-context-20260930' && github.ref != 'refs/heads/autonomous/receipt-context-20260930' && github.ref != 'refs/heads/autonomous/source-quota-role-20260930' && github.ref != 'refs/heads/autonomous/source-role-consumer-20260930' && github.ref != 'refs/heads/autonomous/prospective-repair-20260930' && github.ref != 'refs/heads/autonomous/prospective-integration-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-20260930' && github.ref != 'refs/heads/autonomous/source-allocation-cache-20260930'
     needs: verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
