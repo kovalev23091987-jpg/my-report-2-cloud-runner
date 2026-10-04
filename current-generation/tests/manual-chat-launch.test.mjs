@@ -62,7 +62,7 @@ test('canonical run artifact exposes candidate rank and selected contracts',()=>
  assert.match(worker,/deep_check_selected/u);
 });
 
-test('N10 closes from completed technical inputs without requiring an entry signal',()=>{
- assert.match(worker,/technicalPipelineStates=\[futures\?\.execution_status,trajectory\?\.execution_status\]/u);
- assert.match(worker,/technicalPipelineStates\.every\(value=>value==='FULFILLED'\).*htxObservationReferencePrice\?\.status==='CLOSED'/u);
+test('manual N10 routes the real snapshot and trajectory through the quality guard without requiring an entry signal',()=>{
+ assert.match(worker,/buildHtxPrimaryTechnicalReceipt\(\{contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState\}\)/u);
+ assert.match(worker,/PRIMARY_TECHNICAL_CONTEXT:primaryTechnicalReceipt/u);
 });

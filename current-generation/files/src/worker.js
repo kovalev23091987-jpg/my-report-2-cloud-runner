@@ -1,4 +1,5 @@
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
+import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
@@ -16994,13 +16995,12 @@ async function buildDeepCheckInput(params, env) {
   const depthClosed=futures?.data?.health?.depth===true&&bboClosed;
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
-  const technicalPipelineStates=[futures?.execution_status,trajectory?.execution_status].map(value=>String(value||'').toUpperCase());
-  const technicalClosed=technicalPipelineStates.every(value=>value==='FULFILLED')&&htxObservationReferencePrice?.status==='CLOSED';
+  const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState});
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
       evidence_result:candidateEvidenceV2,
       primary_sources:{
-        PRIMARY_TECHNICAL_CONTEXT:{status:technicalClosed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:technicalClosed,network_calls:0,receipts:[{check_completed:technicalClosed,status:technicalState||'NO_ENTRY_STATE',futures_status:technicalPipelineStates[0]||'NOT_EVALUATED',trajectory_status:technicalPipelineStates[1]||'NOT_EVALUATED',reference_price_status:htxObservationReferencePrice?.status||'NOT_EVALUATED'}]},
+        PRIMARY_TECHNICAL_CONTEXT:primaryTechnicalReceipt,
         PRIMARY_EXECUTION_STRESS:{status:depthClosed?'CHECKED_HTX_ORDERBOOK_STRESS':'HTX_ORDERBOOK_NOT_CLOSED',check_completed:depthClosed,network_calls:0,receipts:[{check_completed:depthClosed,status:depthClosed?'CLOSED':'NOT_CLOSED',bid:Number.isFinite(bboBid)?bboBid:null,ask:Number.isFinite(bboAsk)?bboAsk:null,depth:futures?.data?.health?.depth===true}]},
         PRIMARY_EXECUTION_COST:{status:executionCostClosed?'CHECKED_HTX_EXECUTION_COST':'HTX_EXECUTION_COST_NOT_CLOSED',check_completed:executionCostClosed,network_calls:0,receipts:[{check_completed:executionCostClosed,status:executionCostClosed?'CLOSED':'NOT_CLOSED',buy_impact_filled:futures?.data?.liquidity?.buy_market_impact?.fully_filled===true,sell_impact_filled:futures?.data?.liquidity?.sell_market_impact?.fully_filled===true}]},
       },

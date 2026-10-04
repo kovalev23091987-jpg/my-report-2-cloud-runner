@@ -37,3 +37,30 @@ export function readHtxTechnicalStructure({contract,now=Date.now()}={}){
  }
  return rolling&&rolling.observed_ts<=now?normalizeHtxRollingRange({payload:rolling.payload,contract,observed_ts:now}):[];
 }
+
+// A completed promise is not proof that its provider returned useful data.
+// Check the existing snapshot AND trajectory; a rolling price summary alone
+// cannot admit the primary technical pipeline. Flow coverage is independent.
+export function buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price,now=Date.now(),route_state=null}={}){
+ const f=futures?.data,t=trajectory?.data,failures=[];
+ const positive=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
+ const fresh=ts=>Number.isSafeInteger(ts)&&ts<=now&&now-ts<=TTL;
+ const states=[futures?.execution_status,trajectory?.execution_status].map(v=>String(v||'').toUpperCase());
+ if(!isExactHtxUsdtSwapKey(contract)||f?.contract!==contract||t?.contract!==contract||reference_price?.contract!==contract)failures.push('EXACT_SAME_LINEAR_PERPETUAL_REQUIRED');
+ if(!states.every(v=>v==='FULFILLED'))failures.push('SNAPSHOT_AND_TRAJECTORY_NOT_COMPLETED');
+ if(f?.health?.info!==true||f?.health?.depth!==true||f?.contract_info?.contract_code!==contract||f?.contract_info?.contract_status!==1||!positive(f?.contract_info?.contract_size))failures.push('FACTUAL_ACTIVE_INSTRUMENT_AND_DEPTH_REQUIRED');
+ if(reference_price?.status!=='CLOSED'||reference_price?.venue!=='HTX'||reference_price?.type!=='MID_OBSERVATION'||Date.parse(f?.liquidity?.depth_timestamp||'')!==reference_price?.source_ts||!positive(reference_price?.value)||!positive(f?.bbo?.best_bid)||!positive(f?.bbo?.best_ask)||f.bbo.best_ask<f.bbo.best_bid||!fresh(reference_price?.source_ts)||!fresh(reference_price?.received_ts))failures.push('FRESH_PRIMARY_PRICE_REQUIRED');
+ if(positive(f?.bbo?.best_bid)&&positive(f?.bbo?.best_ask)&&Math.abs(Number(reference_price?.value)-(f.bbo.best_bid+f.bbo.best_ask)/2)>Math.max(1,(f.bbo.best_bid+f.bbo.best_ask)/2)*1e-9)failures.push('REFERENCE_MUST_MATCH_ACTUAL_BID_ASK');
+ if(t?.health?.info!==true||t?.health?.price_1m!==true||t?.contract_info?.contract_code!==contract||!fresh(t?.provider_source_ts))failures.push('FACTUAL_FRESH_TRAJECTORY_REQUIRED');
+ const windows=[];
+ for(const [label,duration] of Object.entries({'15m':900000,'1h':3600000,'4h':14400000,'24h':86400000})){
+  const row=t?.windows?.[label],p=row?.price,start=row?.synchronized_window_start_ts,end=row?.synchronized_window_end_ts;
+  if(p?.usable!==true||p?.coverage!=='closed'||p.exact_1m_bars!==true||p.expected_1m_bars!==duration/60000||p.received_1m_bars!==duration/60000||!Number.isSafeInteger(start)||end-start!==duration||!fresh(end)||p.window_start_ts!==start||p.window_end_ts!==end||![p.open,p.high,p.low,p.close].every(positive)||p.low>p.high||p.open<p.low||p.open>p.high||p.close<p.low||p.close>p.high)continue;
+  windows.push({label,window_start_ts:start,window_end_ts:end,candle_count:p.received_1m_bars,open:p.open,high:p.high,low:p.low,close:p.close});
+ }
+ if(!windows.length)failures.push('EXACT_COMPLETE_CLOSED_PRICE_WINDOW_REQUIRED');
+ const evidence=readHtxTechnicalStructure({contract,now}).filter(r=>r.metric_family==='CLOSED_CANDLE_RANGE_CONTEXT');
+ if(!evidence.length)failures.push('VALIDATED_CLOSED_CANDLE_CONTEXT_REQUIRED');
+ const closed=failures.length===0;
+ return {status:closed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:closed,network_calls:0,evidence:closed?evidence:[],receipts:[{check_completed:closed,status:route_state||'NO_ENTRY_STATE',contract,futures_status:states[0],trajectory_status:states[1],reference_price_status:reference_price?.status||'NOT_EVALUATED',reference_source_ts:reference_price?.source_ts??null,trajectory_source_ts:t?.provider_source_ts??null,actual_price_windows:windows,failures,source_transport:'EXISTING_SAME_CANDIDATE_SNAPSHOT_AND_TRAJECTORY',signed_raw_24h_verified:false,entry_authorized_by_context:false}],entry_rules_changed:false};
+}
