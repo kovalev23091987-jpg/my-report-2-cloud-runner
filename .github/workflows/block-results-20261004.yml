@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004]
 permissions:
   contents: read
 jobs:
@@ -33,7 +33,20 @@ jobs:
           done
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node audit-fixes/block-results-20261004/replay.mjs runtime > audit-output/rendered-context-replay.json
+          node audit-fixes/block-use-audit-20261004/replay.mjs runtime > audit-output/decision-use-replay.json
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+      - name: Recover already collected live data without new source calls
+        if: github.ref == 'refs/heads/autonomous/block-small-benefit-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/block-results-20261004/recover-live-result.mjs runtime
+      - name: Verify repaired option route within existing source quota
+        if: github.ref == 'refs/heads/autonomous/block-small-benefit-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/block-results-20261004/verify-options-route.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:
