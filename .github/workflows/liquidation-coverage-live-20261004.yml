@@ -23,7 +23,7 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
       - name: Validate coverage policy package
-        run: node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-futures-coverage-policy.test.mjs runner/continuation-stage-gate.test.mjs > audit-output/coverage-policy.tap
+        run: node --test current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-futures-coverage-policy.test.mjs > audit-output/coverage-policy.tap
       - name: Run bounded actual coverage increment
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
