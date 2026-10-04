@@ -75,7 +75,7 @@ test('scheduled provider spending cannot consume the protected owner reserve, en
 test('scheduled execution cannot acquire full-manual freshness or cooldown bypass',()=>{
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
  assert.match(runner,/expectedManualMode=source==='schedule'\?'SCHEDULE'/);
- assert.ok(runner.indexOf("if(source==='schedule'){")<runner.indexOf('collectSupplementalCandidateContext({'));
+ assert.ok(runner.indexOf("if(source==='schedule'){")<runner.indexOf('collectHtxBoundSupplementalContext({'));
 });
 
 test('ordinary hot retention is bounded without changing freshness or retention dates',async()=>{
