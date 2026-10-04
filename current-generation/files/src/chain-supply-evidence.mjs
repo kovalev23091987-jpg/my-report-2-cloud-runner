@@ -1,7 +1,7 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const CHAIN_SUPPLY_EVIDENCE_VERSION='chain-supply-evidence-v3-source-slot-clock-20260930';
+export const CHAIN_SUPPLY_EVIDENCE_VERSION='chain-supply-evidence-v4-receipt-clock-20261004';
 const SOURCE='CHAIN_RPC',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
 const EVM_ENDPOINTS=Object.freeze({ethereum:'https://ethereum-rpc.publicnode.com',bsc:'https://bsc-rpc.publicnode.com',arbitrum:'https://arbitrum-one-rpc.publicnode.com',base:'https://base-rpc.publicnode.com',polygon:'https://polygon-bor-rpc.publicnode.com',optimism:'https://optimism-rpc.publicnode.com',avalanche:'https://avalanche-c-chain-rpc.publicnode.com'});
 const EVM_CHAIN_IDS=Object.freeze({ethereum:'0x1',bsc:'0x38',arbitrum:'0xa4b1',base:'0x2105',polygon:'0x89',optimism:'0xa',avalanche:'0xa86a'});
@@ -32,6 +32,7 @@ export function normalizeChainSupply({contract,identity,current,previous=null,ob
  if(currentValue===null)return{status:'SOURCE_SCHEMA_ERROR',evidence:[],internal_only:true};
  const delta=previousValue===null?null:currentValue-previousValue,metric=delta===null?'TOTAL_SUPPLY_OBSERVATION':delta>0n?'SUPPLY_INCREASE':delta<0n?'SUPPLY_DECREASE':'SUPPLY_UNCHANGED',block=delta!==null&&delta<0n?'N03':'N02';
  const sourceTs=finite(current?.source_ts),origin=`${id.chain}:${id.address}:${text(current?.block_ref)||sourceTs}`;
+ if(sourceTs===null||sourceTs>observed_ts)return{status:'SOURCE_CLOCK_NOT_CLOSED',contract:htxContract,evidence:[],internal_only:true};
  const evidence=buildEvidenceV2({provider_id:SOURCE,upstream_id:id.chain==='solana'?'SOLANA_MAINNET_RPC':'PUBLICNODE_RPC',asset_id:`${id.chain}:${id.address}`,htx_contract:htxContract,block_id:block,metric_family:metric,origin_event_id:origin,dependency_group:`CHAIN_SUPPLY:${id.chain}:${id.address}:${text(current?.block_ref)||sourceTs}`,source_ts:sourceTs,observed_ts,expires_at:observed_ts+TTL,directional_strength:null,risk_strength:null,coverage_status:delta===null?'CONTEXT_ONLY':'PARTIAL',coverage_fraction:0,finality_status:current?.finalized===true?'FINAL':'PROVISIONAL',validation_status:'VALID',extra:{chain:id.chain,token_address:id.address,total_supply_base_units:text(current.supply),previous_supply_base_units:previousValue===null?null:text(previous.supply),supply_delta_base_units:delta===null?null:String(delta),decimals,block_ref:text(current?.block_ref)||null,identity_method:text(identity?.identity_method)||null,direction_policy:'SUPPLY_OBSERVATION_ONLY_UNTIL_MATCHED_FINALIZED_TRANSACTION'}});
  return{status:sourceTs!==null&&sourceTs<=observed_ts?'CLOSED':'SOURCE_CLOCK_NOT_CLOSED',contract:htxContract,evidence:[evidence],summary:{chain:id.chain,total_supply_base_units:text(current.supply),supply_delta_base_units:evidence.supply_delta_base_units,decimals:evidence.decimals,finalized:evidence.finality_status==='FINAL'},current_observation:{chain:id.chain,address:id.address,supply:text(current.supply),decimals:evidence.decimals,block_ref:evidence.block_ref,source_ts:sourceTs},internal_only:true};
 }
@@ -61,7 +62,7 @@ async function fetchSupply(fetchImpl,id){
  return{receipts:[{route:'EVM_CHAIN_ID',...chainRow},{route:'EVM_FINALIZED_BLOCK',...blockRow},{route:'EVM_TOTAL_SUPPLY',...supplyRow}],attempts:chainRow.network_calls+blockRow.network_calls+supplyRow.network_calls,current:supplyRow.ok&&supply!==null?{supply,decimals:supplyRow.decimals,block_ref:blockRef,source_ts:Number.parseInt(text(blockRow?.payload?.result?.timestamp),16)*1000,finalized:true}:null};
 }
 
-export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,identity_method=null,now=Date.now(),strict_fresh_manual=false}={}){
+export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,identity_method=null,now=Date.now(),clock=Date.now,strict_fresh_manual=false}={}){
  if(!db)throw new Error('CHAIN_SUPPLY_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),id=exactIdentity(asset_identity);
  if(!/^[^\s-]+-USDT$/u.test(htxContract)||!id)return{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION)return{...cached,contract:htxContract};
@@ -69,9 +70,9 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
  const attempts=id.chain==='solana'?2:3,reservationId=`EV2:${SOURCE}:${run_id}:${assetKey}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
- const fetched=await fetchSupply(fetch_impl,id),normalized=normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous,observed_ts:now});
+ const fetched=await fetchSupply(fetch_impl,id),observed=clock(),normalized=normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous,observed_ts:observed});
  const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null})),internal_only:true};
- if(fetched.current)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,observed_ts:now,expires_ts:now+TTL,payload:result});return result;
+ if(normalized.status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:assetKey,observed_ts:observed,expires_ts:observed+TTL,payload:result});return result;
 }
 
 export default{normalizeChainSupply,collectChainSupplyEvidence};
