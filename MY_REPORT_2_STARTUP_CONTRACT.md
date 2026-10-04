@@ -102,3 +102,6 @@ N14 теперь даёт actual scoped mark IV (с пересчётом consume
 
 
 Последний проверенный ремонт PR93: bounded N02/N04/N06/N14 context, раннее сохранение canonical итогов до statistical observers, exact NOT_CLOSED KPI readback и индексированные result reads. См. checkpoints/BLOCK_RESULTS_20261004.md и block-small-benefit-release-evidence-20261004.json. Actual8usefultypes across distinct inputs не равно15useful на freshMAIN. На recentNEAR/BR подтверждены2контекстных блока на каждую монету. Все15 оставить; остальные попытаться исправить. Hourly cloud continuation6abd7056e60c819191dd4723398e975b, exact latestmain и fence обязательны.
+
+## Verified continuation PR105 — 2026-10-04
+PR104 scoped options risk covered all102 same-universe assets; do not repeat. PR105 actual signed raw-minute persistence is merged and verified: cloud37227084058/job111508862748 SUCCESS,37integration+6assembled tape tests, NEAR/SOL45 real minutes each,6HTTP/D1read26/write24. Proof checkpoints/signed-tape-release-evidence-20261004.json. Worker pin e899be2d51008e7acf6b738733c0a7c847bc4c1824edcc724775aa8c14b8a8fc. Full24h, aligned trajectory binding and all15live acceptance remain open; do not call this a full24h flow or repeat this probe/oldMAIN/native/catalog/N14. Preserve common119crypto FUTURES/102assets and sequential phase gate.
