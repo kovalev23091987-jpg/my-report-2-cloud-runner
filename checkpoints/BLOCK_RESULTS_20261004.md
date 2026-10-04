@@ -1,3 +1,9 @@
+# Новейшее указание о продолжении/передаче, 04.10.2026 15:05 UTC
+
+Владелец17:57МСК попросил убрать мониторинг. Automation6abd7056e60c819191dd4723398e975b отключена, is_enabled=false verified; не включать и не создавать новую без прямого указания. Рыночный public collector и GitHub analytics расписания не менялись. Пользователь18:05МСК просит полную текстовую передачу в другой чат. Все технические задачи не закончены. Следующий shared static-reference/sector quota/nativeNEAR sector пакет только исследован: реализации/PR/test/live source probe ещё НЕТ. Считать выполненным только PR98 и более ранние квитанции. Отключённая automation сама агентную работу не продолжает.
+
+---
+
 # Последний проверенный выпуск PR98 — native NEAR и порядок supply observations, 04.10.2026 14:52 UTC
 
 Main `103ec7af2df3ed7a5254a13ea19b5178207ce310`, tested head `814d81107a096e8d27ed5e59c36acd2ac6e02fee`, одинаковое Git tree `c1d95505be882ee6ca01516afc3d74123a65136e`. Cloud37210758796/job111461292184 SUCCESS, integration37/37, unified7/7, native7/7, full validationPASS. Artifact11307135035 ZIP SHA256 `0d498f8bb61457ca7d122f62399c6a742e431c04043cf4a81dd0004945a9a37c`; runtime `581112f9cfd9c9007e3951923954c53577f6d3cee0a0b11b962f46c5cfd063eb`; manifest `94e8961bdf35f208ce643c01564fc48dcfb01e1e6dd1e82d154556e8ec0ccaee`. Worker pin прежний `23434002a204734c230235fa9cbf58b3ce3fdae790343aabf01db1d05b0d0226`.
