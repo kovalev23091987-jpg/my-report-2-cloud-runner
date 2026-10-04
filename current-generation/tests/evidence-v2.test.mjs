@@ -7,21 +7,21 @@ const templates=JSON.parse(fs.readFileSync(new URL('./fixtures/evidence-v2/n01-n
 const configuredTemplates=templates.filter(row=>BLOCKS[row.block_id]);
 const make=(row,i=0)=>({...row,evidence_id:`E-${row.block_id}-${i}`,asset_id:'asset:sol',htx_contract:'SOL-USDT',provider_id:'P',upstream_id:'U',origin_event_id:`O-${row.block_id}`,dependency_group:`D-${row.block_id}`,observed_ts:1000,source_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:2000,reliability:.8});
 
-test('K16: all 15 configured block fixtures validate and reach a concrete consumer',()=>{
-  assert.equal(configuredTemplates.length,15);for(const [i,row] of configuredTemplates.entries()){const evidence=make(row,i);assert.equal(validateEvidenceV2(evidence,{decision_ts:1500}).usable,true);const result=consumeEvidenceV2([evidence],{base_interest:70,decision_ts:1500});assert.equal(result.receipts[0].consumer,BLOCKS[row.block_id].consumer);}
+test('K16: all 11 configured block fixtures validate and reach a concrete consumer',()=>{
+  assert.equal(configuredTemplates.length,11);for(const [i,row] of configuredTemplates.entries()){const evidence=make(row,i);assert.equal(validateEvidenceV2(evidence,{decision_ts:1500}).usable,true);const result=consumeEvidenceV2([evidence],{base_interest:70,decision_ts:1500});assert.equal(result.receipts[0].consumer,BLOCKS[row.block_id].consumer);}
 });
 
 test('removed N13 and N17 evidence can never reach a decision consumer',()=>{
- for(const id of ['N13','N17']){const row=make(templates.find(x=>x.block_id===id));const result=consumeEvidenceV2([row],{base_interest:70,decision_ts:1500});assert.equal(result.adjustment,0);assert.equal(result.receipts[0].reason,'BLOCK_UNKNOWN');}
+ for(const id of ['N01','N04','N06','N13','N14','N17']){const row=make(templates.find(x=>x.block_id===id));const result=consumeEvidenceV2([row],{base_interest:70,decision_ts:1500});assert.equal(result.adjustment,0);assert.equal(result.receipts[0].reason,'BLOCK_UNKNOWN');}
 });
 
 test('K16: stale, wrong asset, error and empty fixtures never contribute',()=>{
-  const base=make(templates[0]);for(const row of [{...base,expires_at:1400},{...base,identity_status:'TICKER_ONLY'},{...base,validation_status:'ERROR'}]){const result=consumeEvidenceV2([row],{base_interest:70,decision_ts:1500});assert.equal(result.adjustment,0);}
+  const base=make(configuredTemplates[0]);for(const row of [{...base,expires_at:1400},{...base,identity_status:'TICKER_ONLY'},{...base,validation_status:'ERROR'}]){const result=consumeEvidenceV2([row],{base_interest:70,decision_ts:1500});assert.equal(result.adjustment,0);}
   assert.equal(consumeEvidenceV2([],{base_interest:70,decision_ts:1500}).adjustment,0);
 });
 
 test('K16: validation exposes the exact rejection reason',()=>{
-  const base=make(templates[0]);
+  const base=make(configuredTemplates[0]);
   assert.equal(validateEvidenceV2({...base,expires_at:1400},{decision_ts:1500}).status,'EVIDENCE_EXPIRED');
   assert.equal(validateEvidenceV2({...base,first_known_ts:1600},{decision_ts:1500}).status,'FIRST_KNOWN_AFTER_DECISION');
   assert.equal(validateEvidenceV2({...base,validation_status:'ERROR'},{decision_ts:1500}).status,'VALIDATION_ERROR');
@@ -49,7 +49,7 @@ test('K31-K33 base-owned roots, missing expiry and future source time never cont
 });
 
 test('K16: risk strength can only reduce suitability and never becomes a bullish direction',()=>{
-  const risk={...make(templates.find(row=>row.block_id==='N01')),directional_strength:null,risk_strength:.8};
+  const risk={...make(templates.find(row=>row.block_id==='N07')),directional_strength:null,risk_strength:.8};
   const result=consumeEvidenceV2([risk],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<0);assert.ok(result.final_interest<70);
 });
 
