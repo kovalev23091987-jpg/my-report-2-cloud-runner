@@ -25,3 +25,6 @@ Before enabling any additional source, assign primary/confirming/additional/fall
 Delta acceptance: checkpoints/delta-options-release-evidence-20261004.json. Actual fresh BTC/ETH/XAUT context reached three approved renderer reports with two shared requests. Research continues for the other core blocks and liquidation; Pacifica/Drift/CoinMetrics candidates remain unaccepted.
 
 PR109 actual accepted addition: CoinMetrics Community dated native supply history BTC/ETH reached two approved manual reports; primary finalized chain remains required, no score/direction. Source2HTTP/D1read22write20unknown0. Proof checkpoints/coinmetrics-supply-release-evidence-20261004.json; per-consumer search register checkpoints/FREE_16_SOURCE_SEARCH_20261004.md. No fresh MAIN/TG acceptance.
+
+## PR110 — native N15 exact repair, verified 04.10.2026
+APT provider native identifier and ATOM uatom validated against exact platform + HTX native binding; functional Layer0 peers supported without ecosystem/ticker substitution. Fresh actual APT50/ATOM8 peer comparisons reached canonical builder/manual renderer:2HTTP,D1read37/write19. Existing scoped N15 policy and quota unchanged. Proof native-peers-release-evidence-20261004.json; no new MAIN/TG acceptance. All16 search register remains open for unproven candidates. GitHub Aptos mainnet release discovered, not yet a production connection.
