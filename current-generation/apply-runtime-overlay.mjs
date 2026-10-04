@@ -96,7 +96,7 @@ const files=[
  'src/sourcify-abi-evidence.mjs',
  'src/bluesky-attention-evidence.mjs',
  'src/official-events-evidence.mjs','src/official-token-schedule.mjs','src/technical-plan-context.mjs',
- 'src/official-source-registry.mjs',
+ 'src/official-source-registry.mjs','src/htx-contract-key.mjs','src/htx-crypto-universe.mjs',
  'src/gdelt-official-discovery.mjs',
  'src/shadow-market-pilot.mjs',
  'src/blockscout-index-evidence.mjs',

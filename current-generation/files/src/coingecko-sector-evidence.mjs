@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
@@ -78,7 +79,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  let coin_id=clean(asset_metadata?.coingecko_id),category_id=clean(asset_metadata?.coingecko_category_id),category_name=clean(asset_metadata?.coingecko_category_name);const identity=asset_identity;
  const native=exactNativeSectorBinding(identity,contract);if(native&&!coin_id)coin_id=native.coin_id;
  const pinned=Boolean(category_id||category_name),platform=COINGECKO_ASSET_PLATFORMS[identity?.chain],validAddress=native||Boolean(platform)&&(identity?.chain==='solana'?/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(identity.contract_or_mint):/^0x[0-9a-f]{40}$/i.test(identity.contract_or_mint));
- if(!validAddress||!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!sectorCategoryLabel(category_name))))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+ if(!validAddress||!isExactHtxUsdtSwapKey(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!sectorCategoryLabel(category_name))))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  const key=`${contract}:${identity.chain}:${native?identity.native_asset_id:identity.contract_or_mint}:${coin_id}:${category_id}:${category_name}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION)return cached;

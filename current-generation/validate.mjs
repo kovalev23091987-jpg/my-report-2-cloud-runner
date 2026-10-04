@@ -8,7 +8,7 @@ import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='ce4aeaaaa7bc05e27da523d4979efa9492a1ef058c05e763b6220260ea0acc90';
+const expectedWorker='40bbaf02761cabaef8cf2e7d033f9a6fcfedaed8fd3cbe66fc0c16103297c85f';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -26,7 +26,7 @@ const checks=[
  '../audit-fixes/t16/run-gtrade-native-smoke.mjs',
  '../audit-fixes/t16/run-blockscout-index-smoke.mjs',
  'files/src/two-candidate-policy.mjs','files/src/bounded-hot-maintenance.mjs','files/src/htx-asset-identity.mjs','files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs','files/src/verified-futures-flow-binding.mjs','files/src/htx-volume-profile.mjs','files/src/cross-venue-volume-profile.mjs','files/src/htx-volume-profile-collector.mjs',
- 'files/src/official-source-registry.mjs','files/src/provider-reference-cache.mjs',
+ 'files/src/official-source-registry.mjs','files/src/htx-contract-key.mjs','files/src/htx-crypto-universe.mjs','files/src/provider-reference-cache.mjs',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/execution-report-context.mjs','files/src/upstream-proof-utils.mjs','files/src/block-decision-use-audit.mjs','files/src/manual-run-summary.mjs','files/src/future-liquidation-map-source.mjs',
  'files/src/source-role-registry.mjs','files/src/source-role-consumer.mjs',

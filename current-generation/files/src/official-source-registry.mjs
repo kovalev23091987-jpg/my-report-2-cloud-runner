@@ -1,7 +1,8 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {NATIVE_SECTOR_BINDINGS,exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
 
-export const OFFICIAL_SOURCE_REGISTRY_VERSION='official-source-registry-v1-20260928';
+export const OFFICIAL_SOURCE_REGISTRY_VERSION='official-source-registry-v2-20261004';
 const EVM=/^0x[0-9a-f]{40}$/i;
 const clean=value=>String(value??'').trim();
 const baseOf=contract=>clean(contract).toUpperCase().replace(/[-_/]?(USDT|USD|USDC|PERP)$/,'');
@@ -25,7 +26,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
  for(const [index,row] of raw.entries.entries()){
   const contract=clean(row?.contract_code).toUpperCase(),base=baseOf(contract),identity=exactIdentity(row?.asset_id),name=clean(row?.official_name),domain=clean(row?.official_domain).toLowerCase(),canonical=clean(row?.canonical_url),evidence=clean(row?.evidence_link),format=clean(row?.format).toUpperCase(),status=clean(row?.status).toUpperCase(),verified=Date.parse(row?.verified_at),refresh=clean(row?.refresh_period),timezone=clean(row?.timezone),parser=row?.parser_id===null?null:clean(row?.parser_id),snapshotSpace=clean(row?.snapshot_space),snapshotEvidence=clean(row?.snapshot_evidence_link);
   const fail=reason=>{throw new Error(`OFFICIAL_SOURCE_REGISTRY_INVALID:${index}:${reason}`);};
-  if(!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||!base)fail('CONTRACT_CODE');
+  if(!isExactHtxUsdtSwapKey(contract)||!base)fail('CONTRACT_CODE');
   if(!identity)fail('ASSET_ID');
   if(identity.asset_kind==='NATIVE'&&!exactNativeSectorBinding(identity,contract))fail('NATIVE_CONTRACT_BINDING');
   if(!name)fail('OFFICIAL_NAME');

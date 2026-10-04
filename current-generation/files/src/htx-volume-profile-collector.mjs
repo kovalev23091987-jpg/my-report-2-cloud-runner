@@ -1,8 +1,9 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {readReadyHtxVolumeProfile,observeHtxVolumeSnapshot} from './htx-volume-profile.mjs';
 import {parseHtxTradePayload} from './htx-trade-json.mjs';
 export async function collectReadyHtxVolumeProfile({contract,run_id,request_admit,fetch_impl=globalThis.fetch,clock=Date.now}={}){
  const ready=readReadyHtxVolumeProfile({contract,now:clock()});if(ready.status==='CLOSED')return {...ready,network_calls:0};
- if(!/^[A-Z0-9]{1,32}-USDT$/.test(contract||''))return {...ready,network_calls:0};
+ if(!isExactHtxUsdtSwapKey(contract||''))return {...ready,network_calls:0};
  const admission=request_admit?.({logical_request_id:`VOLUME_PROFILE:${run_id}:${contract}`,lane:'background',attempts:3});
  if(!admission?.allowed||admission.duplicate)return {...ready,reason:admission?.status||'ADMISSION_REQUIRED',network_calls:0};
  const suffix=`contract_code=${encodeURIComponent(contract)}`;

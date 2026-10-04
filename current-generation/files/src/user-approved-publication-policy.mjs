@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {digest} from './upstream-proof-utils.mjs';
 
 export const USER_APPROVED_PUBLICATION_POLICY_VERSION='user-approved-publication-policy-v2-no-fixed-minimum-20261001';
@@ -40,7 +41,7 @@ export function buildApprovedEntryAreaRule({observed_ts=Date.now()}={}){
 
 export function buildApprovedFeeSchedule({decision_summary:decision,observed_ts=Date.now()}={}){
  const now=stamp(observed_ts),contract=text(decision?.contract_code).toUpperCase();
- if(now===null||now<APPROVED_TS||!/^[A-Z0-9]{1,24}-USDT$/.test(contract))return null;
+ if(now===null||now<APPROVED_TS||!isExactHtxUsdtSwapKey(contract))return null;
  return sealed({
   schema_version:'tz101-htx-fee-schedule-v1',status:'CLOSED',venue:'HTX',market_type:'USDT_PERP',
   contract_code:contract,fee_role:'TAKER',

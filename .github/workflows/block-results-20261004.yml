@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004]
 permissions:
   contents: read
 jobs:
@@ -71,6 +71,12 @@ jobs:
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
           REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON: ${{ secrets.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON }}
         run: node audit-fixes/remaining-block-facts-20261004/verify-live.mjs runtime
+      - name: Verify all three HTX crypto catalogs and exact shared facts
+        if: github.ref == 'refs/heads/autonomous/crypto-scope-repair-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/crypto-scope-repair-20261004/verify-live.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:

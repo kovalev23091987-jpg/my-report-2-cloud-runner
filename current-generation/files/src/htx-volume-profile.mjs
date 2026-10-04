@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 // Exact executed-volume profile. Ready REST snapshots only: no rolling tape,
 // database, polling, candle-volume allocation, or cross-venue substitution.
 export const VOLUME_PROFILE_VERSION='htx-volume-profile-v1-20260930';
@@ -9,7 +10,7 @@ const unavailable=reason=>({version:VOLUME_PROFILE_VERSION,status:'NOT_CLOSED',r
 export function clearVolumeProfileSnapshots(){snapshots.clear();}
 export function observeHtxVolumeSnapshot(payload,url,received_at=Date.now()){
  const u=new URL(url);if(u.hostname!=='api.hbdm.com'||payload?.status!=='ok')return;
- const contract=u.searchParams.get('contract_code');if(!/^[A-Z0-9]{1,32}-USDT$/.test(contract||''))return;
+ const contract=u.searchParams.get('contract_code');if(!isExactHtxUsdtSwapKey(contract||''))return;
  const kind=u.pathname==='/linear-swap-api/v1/swap_contract_info'?'info':u.pathname==='/linear-swap-ex/market/history/trade'?'trades':u.pathname==='/linear-swap-ex/market/history/kline'&&u.searchParams.get('period')==='1min'?'candles':null;
  if(!kind)return;
  // Replace the entire endpoint snapshot; NEVER merge successive responses.
@@ -17,7 +18,7 @@ export function observeHtxVolumeSnapshot(payload,url,received_at=Date.now()){
  const old=snapshots.get(contract)||{};snapshots.set(contract,{...old,[kind]:{payload,received_at}});
 }
 export function buildHtxVolumeProfile({contract,trades,candles,info,now=Date.now(),window_minutes=null,window_end=null}={}){
- if(!/^[A-Z0-9]{1,32}-USDT$/.test(contract||''))return unavailable('EXACT_CONTRACT_REQUIRED');
+ if(!isExactHtxUsdtSwapKey(contract||''))return unavailable('EXACT_CONTRACT_REQUIRED');
  if(trades?.status!=='ok'||candles?.status!=='ok'||info?.status!=='ok'||trades.ch!==`market.${contract}.trade.detail`||candles.ch!==`market.${contract}.kline.1min`)return unavailable('EXACT_HTX_CHANNELS_REQUIRED');
  if(![trades,candles,info].every(p=>finite(p.ts)!==null&&p.ts<=now&&now-p.ts<=MAX_AGE))return unavailable('FRESH_SOURCE_TIMESTAMPS_REQUIRED');
  const metadata=(Array.isArray(info.data)?info.data:[]).filter(r=>r.contract_code===contract);
