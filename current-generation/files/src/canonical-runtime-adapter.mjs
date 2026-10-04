@@ -33,6 +33,21 @@ const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
 const validState=v=>['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED','WAIT_FOR_TRIGGER','OBSERVE','REJECTED'].includes(text(v));
 const firstFinite=(...values)=>{for(const v of values){const n=finite(v);if(n!==null)return n;}return null;};
+const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS']);
+function nativeLiquidationSourceId(value){
+ const provider=text(value?.provider??value?.venue).toUpperCase();
+ if(provider.includes('HYPERLIQUID'))return'HYPERLIQUID_NATIVE';
+ if(provider.includes('LIGHTER'))return'LIGHTER_NATIVE';
+ if(provider.includes('GMX'))return'GMX_NATIVE';
+ if(provider.includes('GTRADE')||provider.includes('GAINS'))return'GTRADE_NATIVE';
+ if(provider.includes('0XARCHIVE')||provider.includes('OXARCHIVE'))return'OXARCHIVE_HL_BUCKETS';
+ return null;
+}
+function liquidationCoverageGate(context,contract){
+ const admission=context?.liquidation_coverage_admission;
+ const exact=admission?.eligible===true&&text(admission?.contract).toUpperCase()===text(contract).toUpperCase()&&Array.isArray(admission?.source_ids);
+ return {admission:admission??null,eligible:exact,allowed:new Set(exact?admission.source_ids:[])};
+}
 function currentPrice({publication,liquidations,futures,discovery}={}){
  return firstFinite(
   publication?.scenario_plan?.execution_reference_price,
@@ -197,6 +212,11 @@ export function buildRuntimeCanonicalBundle({
  const interestBasis=selectCanonicalInterestBasis({state:null,early_quality:earlyQuality,deep_interest:deepInterest,early_qualified:early});
  const baseInterest=interestBasis.score;
  const price=currentPrice({publication:publication_shadow,liquidations:liquidation_intelligence,futures:futures_component,discovery:discovery_row});
+ const liquidationGate=liquidationCoverageGate(internal_market_context,contract);
+ const bykFutureAllowed=liquidationGate.allowed.has('BYKARANTELI_FUTURE_MAP');
+ const trackedHlAllowed=liquidationGate.allowed.has('BYK_TRACKED_HL_BANDS');
+ const coinLobsterAllowed=liquidationGate.allowed.has('COINLOBSTER_FUTURE_MODEL');
+ const nativeAcquisitionAllowed=NATIVE_LIQUIDATION_SOURCE_IDS.some(source=>liquidationGate.allowed.has(source));
  const liqPriority=liquidationMapPriority({
   contract,
   move_pct:finite(discovery_row?.rolling_24h_change_pct),
@@ -212,7 +232,7 @@ export function buildRuntimeCanonicalBundle({
   early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',
   priority_reason:liqPriority.reason,
   realized:arr(liquidation_intelligence?.realized?.provider),
-  projected:arr(liquidation_intelligence?.projected_clusters).map(r=>({...r,status:String(liquidation_intelligence?.projected_map_status||'').startsWith('CLOSED')?'CLOSED':'NOT_CLOSED',source:r?.provider||liquidation_intelligence?.provider||'PROJECTED_PROVIDER'})),
+  projected:bykFutureAllowed?arr(liquidation_intelligence?.projected_clusters).map(r=>({...r,status:String(liquidation_intelligence?.projected_map_status||'').startsWith('CLOSED')?'CLOSED':'NOT_CLOSED',source:r?.provider||liquidation_intelligence?.provider||'PROJECTED_PROVIDER'})):[],
   calculation_context:{
    source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),
    market_source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),
@@ -227,14 +247,17 @@ export function buildRuntimeCanonicalBundle({
   },
   volume_profile:internal_market_context?.volume_profile??null,
  });
- const nativeLiquidationView=attachNativeContext(pump,native_liquidation_acquisition,{contract,run_id,snapshot_id,observed_ts,direction});
- const nativeContexts=[nativeLiquidationView?.native_extension,...arr(nativeLiquidationView?.independent_extensions)].filter(Boolean);
+ const attachedNativeLiquidationView=attachNativeContext(pump,nativeAcquisitionAllowed?native_liquidation_acquisition:null,{contract,run_id,snapshot_id,observed_ts,direction});
+ const nativeContexts=[attachedNativeLiquidationView?.native_extension,...arr(attachedNativeLiquidationView?.independent_extensions)]
+  .filter(context=>{const source=nativeLiquidationSourceId(context);return source&&liquidationGate.allowed.has(source);});
+ const nativeLiquidationView={...attachedNativeLiquidationView,native_extension:nativeContexts[0]??(native_liquidation_acquisition?{status:'COVERAGE_GATE_NOT_ADMITTED',reason:liquidationGate.admission?.status??'COVERAGE_DATABASE_NOT_AVAILABLE'}:attachedNativeLiquidationView?.native_extension),independent_extensions:nativeContexts.slice(1),coverage_admission:liquidationGate.admission};
  const volumeConsensus=selectComparableVolumeProfiles({contract,now:observed_ts,reference_price:price,direction,peer_sources:internal_market_context?.cross_exchange_risk?.volume_profiles?.sources||{}});
  const volumeProfile=volumeConsensus.primary;
  const liquidationPanel=applyVolumeProfileToLiquidationPanel(buildDynamicLiquidationPanel({contexts:nativeContexts,reference_price:price,observed_ts}),volumeProfile,{contract,now:observed_ts,reference_price:price,consensus_factor:volumeConsensus.factor});
- const futureMapSource=capturedFutureMap({contract,run_id,snapshot_id,observed_ts});
- const trackedHlView=capturedTrackedBands({contract,run_id,observed_ts});
- const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...capturedNativeFutureMaps({contract,run_id})],native_contexts:nativeContexts,projected:coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models),calculation_context:{source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),market_source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),open_interest_value_usdt:finite(discovery_row?.open_interest_value_usdt),turnover_24h_usdt:finite(discovery_row?.turnover_24h_usdt),oi_change_pct:discovery_row?.oi_change_pct??{'4h':finite(discovery_row?.best_oi_build_pct)},price_change_pct:discovery_row?.price_change_pct??{'24h':finite(discovery_row?.rolling_24h_change_pct)},funding_rate_pct:finite(discovery_row?.funding_per_hour_pct??discovery_row?.funding_rate_pct),market_24h:discovery_row?.market_24h??null,price_tick:finite(discovery_row?.price_tick),volume_ratio:finite(discovery_row?.volume_ratio)},volume_profile:volumeProfile,observed_ts}),future_hint:capturedCoinLobsterHint(contract),future_source_status:{...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
+ const futureMapSource=bykFutureAllowed?capturedFutureMap({contract,run_id,snapshot_id,observed_ts}):{source:'BYKARANTELI_FUTURE_MAP',status:'COVERAGE_GATE_NOT_ADMITTED',maps:[],network_calls:0};
+ const trackedHlView=trackedHlAllowed?capturedTrackedBands({contract,run_id,observed_ts}):{source:'BYK_TRACKED_HL_BANDS',status:'COVERAGE_GATE_NOT_ADMITTED',maps:[],network_calls:0};
+ const nativeFutureMaps=capturedNativeFutureMaps({contract,run_id}).filter(map=>{const source=nativeLiquidationSourceId(map);return source&&liquidationGate.allowed.has(source);});
+ const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...nativeFutureMaps],native_contexts:nativeContexts,projected:coinLobsterAllowed?coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models):[],calculation_context:{source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),market_source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),open_interest_value_usdt:finite(discovery_row?.open_interest_value_usdt),turnover_24h_usdt:finite(discovery_row?.turnover_24h_usdt),oi_change_pct:discovery_row?.oi_change_pct??{'4h':finite(discovery_row?.best_oi_build_pct)},price_change_pct:discovery_row?.price_change_pct??{'24h':finite(discovery_row?.rolling_24h_change_pct)},funding_rate_pct:finite(discovery_row?.funding_per_hour_pct??discovery_row?.funding_rate_pct),market_24h:discovery_row?.market_24h??null,price_tick:finite(discovery_row?.price_tick),volume_ratio:finite(discovery_row?.volume_ratio)},volume_profile:volumeProfile,observed_ts}),future_hint:coinLobsterAllowed?capturedCoinLobsterHint(contract):{source:'COINLOBSTER_FUTURE_HINT',contract,status:'COVERAGE_GATE_NOT_ADMITTED',data_available:false,network_calls:0},future_source_status:{coverage_admission:liquidationGate.admission,...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile,volume_consensus:volumeConsensus,contract,observed_ts,reference_price:price});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;
