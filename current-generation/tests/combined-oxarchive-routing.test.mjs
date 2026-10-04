@@ -41,3 +41,12 @@ test('durable per-asset coverage restricts runtime calls to admitted source ids'
  await service.collect({contract:'ABC-USDT',native_symbol:'ABC',run_id:'coverage',deep_started_ts:Date.now(),max_deep_ms:45000,allowed_source_ids:['HYPERLIQUID_NATIVE']});
  assert.equal(oxCalls,0);assert.deepEqual(service.summary().routed.map(row=>row.lane),['HYPERLIQUID_NATIVE']);
 });
+
+test('an explicit empty durable coverage admission fails closed without source calls',async()=>{
+ const calls=[];
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,provider_admit:async provider=>{calls.push(provider);return {allowed:true,new_reservation:true};},fetch_impl:async()=>{throw new Error('unexpected source call');}});
+ const result=await service.collect({contract:'UNCOVERED-USDT',native_symbol:'UNCOVERED',run_id:'uncovered',deep_started_ts:Date.now(),max_deep_ms:45000,allowed_source_ids:[]});
+ assert.equal(result,null);
+ assert.deepEqual(calls,[]);
+ assert.equal(service.summary().routed.at(-1).status,'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE');
+});

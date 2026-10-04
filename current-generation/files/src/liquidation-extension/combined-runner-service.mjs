@@ -44,7 +44,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   const requestedCandidateCap=Number(params?.max_http_for_candidate);
   const candidateHttpCap=Number.isSafeInteger(requestedCandidateCap)?Math.max(0,Math.min(max_http_per_run,requestedCandidateCap)):max_http_per_run;
   const candidateReservedStart=budget.summary().reserved_http;
-  const allowed=new Set(Array.isArray(params.allowed_source_ids)?params.allowed_source_ids:[]),restrict=allowed.size>0;
+  const restrict=Array.isArray(params.allowed_source_ids),allowed=new Set(restrict?params.allowed_source_ids:[]);
   const id=params?.source_identity||{},lanes=[];
   if(!restrict||allowed.has('HYPERLIQUID_NATIVE'))lanes.push('HYPERLIQUID_NATIVE');
   if(typeof secondary==='function'&&(!restrict||allowed.has('GTRADE_NATIVE')))lanes.push('GTRADE_NATIVE');
