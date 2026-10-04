@@ -4,6 +4,8 @@
 
 ## Подтверждённое общее выполнение
 
+Последний PR98 main `103ec7af2df3ed7a5254a13ea19b5178207ce310`, cloud37210758796 SUCCESS, runtime581112f9cfd9c9007e3951923954c53577f6d3cee0a0b11b962f46c5cfd063eb. Пакет13файлов: MAIN-only nativeNEAR finalizedRPC2HTTP, source-clock/supply comparison/foreign cache safety, N02first observation в общей форме, честный scopeN01, malformed unlock riskguard. Source actualNEAR closed и1useful context; формы проверены отдельно offline7/7, это не actual freshMAIN. Квитанции native-supply-batch-release-evidence и near-native-source-proof. N02уже входил в10полезных типов, поэтому счёт10/15не увеличен. N01/N03/N07/N08/N10 actual и freshMAIN/TG всё ещё открыты. PR96/97 codeproducer/commonforms уже завершены; следующий критерий их actualfresh consumption, не повтор ремонта. Owner17:43МСК требует продолжать в облаке без его соединения до actualallcomplete, крупными пакетами с общим прогоном.
+
 Последний выпуск PR97: main `25ff5f05ec7391722992e2f4a6c19b864938c7ce`, cloud37208984616 SUCCESS, compiled7/7 и integration37/37. Exact receipt `checkpoints/canonical-execution-output-release-evidence-20261004.json`. N11/N16 теперь включаются в NEW canonical до persistence из одного bounded indexed read сохранённого same-snapshot proof, русская форма и approved revalidation общие. Это исправление producer, не новая приёмка рынка. До этого PR96 связал существующий context с настоящим approved renderer. Все результаты обоих чатов и текущего пакета находятся в одном main.
 
 Исходный свежий main `b840b894e0826ac8157f04e4ebbd334892f3ddd7` уже объединяет PR93, PR94 и PR95. Повторного merge старых веток или сложения одинаковых результатов не требуется. Все15 активны: N01–N12/N14–N16; N13/N17 исключены. PR91 с составом11 отменён PR92.
