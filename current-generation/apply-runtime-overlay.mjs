@@ -91,7 +91,7 @@ const files=[
  'src/provider-minute-ledger.mjs','src/provider-reference-cache.mjs',
  'src/prospective-delivery-cohort.mjs',
  'src/htx-public-risk-evidence.mjs',
- 'src/delta-options-evidence.mjs','src/deribit-option-risk-context.mjs','src/deribit-alt-options-evidence.mjs',
+ 'src/coinmetrics-supply-context.mjs','src/delta-options-evidence.mjs','src/deribit-option-risk-context.mjs','src/deribit-alt-options-evidence.mjs',
  'src/chain-supply-evidence.mjs',
  'src/sourcify-abi-evidence.mjs',
  'src/bluesky-attention-evidence.mjs',

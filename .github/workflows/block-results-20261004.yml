@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004, autonomous/cloud-phase-gate-20261004, autonomous/options-risk-batch-20261004, autonomous/signed-tape-warmup-20261004, autonomous/coverage-cadence-batch-20261004, autonomous/free-options-batch-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004, autonomous/cloud-phase-gate-20261004, autonomous/options-risk-batch-20261004, autonomous/signed-tape-warmup-20261004, autonomous/coverage-cadence-batch-20261004, autonomous/free-options-batch-20261004, autonomous/free-supply-context-batch-20261004]
 permissions:
   contents: read
 jobs:
@@ -43,6 +43,7 @@ jobs:
           REPORT2_SIGNED_TAPE_MODULE_ROOT=runtime/src node --test current-generation/tests/htx-signed-tape.test.mjs > audit-output/signed-tape-batch.tap
           REPORT2_COVERAGE_MODULE_ROOT=runtime/src node --test current-generation/tests/liquidation-futures-coverage.test.mjs > audit-output/liquidation-futures-coverage.tap
           REPORT2_DELTA_MODULE_ROOT=runtime/src node --test current-generation/tests/delta-options-evidence.test.mjs > audit-output/delta-options-batch.tap
+          REPORT2_COINMETRICS_MODULE_ROOT=runtime/src node --test current-generation/tests/coinmetrics-supply-context.test.mjs > audit-output/coinmetrics-supply-batch.tap
           REPORT2_CADENCE_RUNTIME_ROOT=runtime node --test current-generation/tests/scheduled-cadence-effective.test.mjs > audit-output/scheduled-cadence-effective.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Recover already collected live data without new source calls
@@ -118,6 +119,13 @@ jobs:
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
           REPORT2_CONTINUATION_OWNER: 'HTX:20261004T1811:bc2e6615'
         run: node audit-fixes/free-options-batch-20261004/verify-live.mjs runtime
+      - name: Verify actual free native supply history and approved report consumption
+        if: github.ref == 'refs/heads/autonomous/free-supply-context-batch-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261004T1811:bc2e6615'
+        run: node audit-fixes/free-supply-context-batch-20261004/verify-live.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:
