@@ -3,12 +3,13 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v3-shared-reference-native-20261004';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v4-native-denom-functional-category-20261004';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export const COINGECKO_ASSET_PLATFORMS=Object.freeze({ethereum:'ethereum',solana:'solana',bsc:'binance-smart-chain',arbitrum:'arbitrum-one',base:'base',polygon:'polygon-pos',optimism:'optimistic-ethereum',avalanche:'avalanche'});
-export const SUPPORTED_SECTOR_NAMES=Object.freeze({'Oracle':'оракулы','Decentralized Finance (DeFi)':'децентрализованные финансы','Meme':'мем-монеты','Gaming (GameFi)':'игровые проекты','Artificial Intelligence (AI)':'искусственный интеллект','Real World Assets (RWA)':'реальные активы','Layer 1 (L1)':'базовые блокчейны','Layer 2 (L2)':'сети второго уровня'});
+export const SUPPORTED_SECTOR_NAMES=Object.freeze({'Oracle':'оракулы','Decentralized Finance (DeFi)':'децентрализованные финансы','Meme':'мем-монеты','Gaming (GameFi)':'игровые проекты','Artificial Intelligence (AI)':'искусственный интеллект','Real World Assets (RWA)':'реальные активы','Layer 1 (L1)':'базовые блокчейны','Layer 2 (L2)':'сети второго уровня','Layer 0 (L0)':'межсетевые блокчейны'});
+const NATIVE_FUNCTIONAL_CATEGORIES=['Layer 1 (L1)','Layer 0 (L0)'];
 export function sectorCategoryLabel(name){
  const value=clean(name);
  if(!/^[\p{L}\p{N} &().,'/-]{1,120}$/u.test(value)||/ecosystem/i.test(value)||/^(?:cryptocurrency|stablecoins?|all coins)$/i.test(value))return null;
@@ -38,10 +39,10 @@ export const NATIVE_SECTOR_BINDINGS=Object.freeze({
  ADA:{chain:'cardano',platform:'cardano',coin_id:'cardano'},
  DOT:{chain:'polkadot',platform:'polkadot',coin_id:'polkadot'},
  TRX:{chain:'tron',platform:'tron',coin_id:'tron'},
- ATOM:{chain:'cosmos',platform:'cosmos',coin_id:'cosmos'},
+ ATOM:{chain:'cosmos',platform:'cosmos',coin_id:'cosmos',native_provider_ref:'uatom'},
  XRP:{chain:'xrp',platform:'xrp',coin_id:'ripple'},
  SUI:{chain:'sui',platform:'sui',coin_id:'sui'},
- APT:{chain:'aptos',platform:'aptos',coin_id:'aptos'},
+ APT:{chain:'aptos',platform:'aptos',coin_id:'aptos',native_provider_ref:'0x1::aptos_coin::AptosCoin'},
 });
 export function exactNativeSectorBinding(identity,contract){
  const binding=NATIVE_SECTOR_BINDINGS[String(contract||'').replace(/-USDT$/,'')];
@@ -53,7 +54,16 @@ export function verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_i
  const nativeBinding=exactNativeSectorBinding(identity,contract);
  if(nativeBinding){
   const platforms=Array.isArray(asset_platforms)?asset_platforms.filter(r=>r?.id===nativeBinding.platform):[];
-  return Boolean(coin_id===nativeBinding.coin_id&&metadata?.id===nativeBinding.coin_id&&clean(metadata.symbol).toUpperCase()===contract.replace(/-USDT$/,'')&&metadata.asset_platform_id===null&&Array.isArray(metadata.categories)&&(!category_name||(category_name==='Layer 1 (L1)'&&metadata.categories.includes(category_name)))&&(nativeBinding.platform===null||platforms.length===1&&platforms[0].native_coin_id===nativeBinding.coin_id)&&metadata.platforms&&typeof metadata.platforms==='object'&&!Array.isArray(metadata.platforms)&&!clean(metadata.platforms[nativeBinding.platform])&&!clean(metadata.platforms[identity.chain]));
+  // Some genuine native assets have a provider denomination/Move type, not an
+  // empty token address. Require BOTH exact HTX native identity and the provider
+  // native_coin_id binding; never accept an arbitrary populated platform field.
+  // Aptos official application guide and cosmos/chain-registry cosmoshub asset
+  // list define these exact native identifiers. Wrapped/IBC/foreign refs fail.
+  const nativeRef=nativeBinding.native_provider_ref;
+  const representation=nativeRef
+   ?metadata?.asset_platform_id===nativeBinding.platform&&metadata?.platforms?.[nativeBinding.platform]===nativeRef&&(!clean(metadata.platforms[identity.chain])||metadata.platforms[identity.chain]===nativeRef)
+   :metadata?.asset_platform_id===null&&!clean(metadata?.platforms?.[nativeBinding.platform])&&!clean(metadata?.platforms?.[identity.chain]);
+  return Boolean(coin_id===nativeBinding.coin_id&&metadata?.id===nativeBinding.coin_id&&clean(metadata.symbol).toUpperCase()===contract.replace(/-USDT$/,'')&&representation&&Array.isArray(metadata.categories)&&(!category_name||(NATIVE_FUNCTIONAL_CATEGORIES.includes(category_name)&&metadata.categories.includes(category_name)))&&(nativeBinding.platform===null||platforms.length===1&&platforms[0].native_coin_id===nativeBinding.coin_id)&&metadata.platforms&&typeof metadata.platforms==='object'&&!Array.isArray(metadata.platforms));
  }
  const address=clean(identity?.contract_or_mint),chain=identity?.chain,platform=COINGECKO_ASSET_PLATFORMS[chain];
  if(!platform||!address||metadata?.id!==coin_id||!/^[a-z0-9-]{2,100}$/.test(coin_id)||clean(metadata.symbol).toUpperCase()!==clean(contract).replace(/-USDT$/,'')||!Array.isArray(metadata?.categories)||(category_name&&!metadata.categories.includes(category_name)))return false;
@@ -94,7 +104,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!pinned)coin_id=clean(metadata?.id);
  const verified=verifyCoingeckoSectorIdentity(metadata,{identity,contract,coin_id,category_name:pinned?category_name:null,asset_platforms});
  const categories=verified?await get('EXACT_CATEGORY_DIRECTORY','https://api.coingecko.com/api/v3/coins/categories/list',{ttl_ms:3600000,shape:Array.isArray}):null;
- if(!pinned){const nativeCategories=Array.isArray(categories)?categories.filter(r=>r.name==='Layer 1 (L1)'&&r.category_id==='layer-1'):[];const selected=native?(metadata?.categories?.includes('Layer 1 (L1)')&&nativeCategories.length===1?nativeCategories[0]:null):selectCoingeckoSectorCategory(metadata,categories);category_name=selected?.name||'';category_id=selected?.category_id||'';}
+ if(!pinned){const nativeCategories=Array.isArray(categories)?NATIVE_FUNCTIONAL_CATEGORIES.flatMap(name=>{const matches=categories.filter(r=>r.name===name&&/^[a-z0-9-]{2,100}$/.test(r.category_id));return metadata?.categories?.includes(name)&&matches.length===1?matches:[];}):[];const selected=native?nativeCategories[0]:selectCoingeckoSectorCategory(metadata,categories);category_name=selected?.name||'';category_id=selected?.category_id||'';}
  const match=Array.isArray(categories)&&categories.filter(r=>r.category_id===category_id&&r.name===category_name).length===1;
  const quotes=match?await get('CATEGORY_QUOTES',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual}):null;
  const normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
