@@ -34,3 +34,19 @@ test('a failed selected source falls through to another eligible source without 
  assert.equal(result,null);assert.ok(admissions.some(id=>id.startsWith('LIQ_NATIVE_CATALOG:')));
  const routed=service.summary().routed;assert.deepEqual(routed.map(x=>x.lane),['HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS']);assert.equal(routed[1].status,'HTTP_ERROR');assert.equal(routed[1].fallback,true);
 });
+
+test('durable per-asset coverage restricts runtime calls to admitted source ids',async()=>{
+ let oxCalls=0;const ox=async()=>{oxCalls++;return null;};ox.summary=()=>({enabled:true});
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,oxarchive_collect:ox,provider_admit:async()=>({allowed:true,new_reservation:true}),fetch_impl:async()=>new Response(JSON.stringify([{universe:[{name:'OTHER'}]},[]]),{status:200})});
+ await service.collect({contract:'ABC-USDT',native_symbol:'ABC',run_id:'coverage',deep_started_ts:Date.now(),max_deep_ms:45000,allowed_source_ids:['HYPERLIQUID_NATIVE']});
+ assert.equal(oxCalls,0);assert.deepEqual(service.summary().routed.map(row=>row.lane),['HYPERLIQUID_NATIVE']);
+});
+
+test('an explicit empty durable coverage admission fails closed without source calls',async()=>{
+ const calls=[];
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,provider_admit:async provider=>{calls.push(provider);return {allowed:true,new_reservation:true};},fetch_impl:async()=>{throw new Error('unexpected source call');}});
+ const result=await service.collect({contract:'UNCOVERED-USDT',native_symbol:'UNCOVERED',run_id:'uncovered',deep_started_ts:Date.now(),max_deep_ms:45000,allowed_source_ids:[]});
+ assert.equal(result,null);
+ assert.deepEqual(calls,[]);
+ assert.equal(service.summary().routed.at(-1).status,'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE');
+});

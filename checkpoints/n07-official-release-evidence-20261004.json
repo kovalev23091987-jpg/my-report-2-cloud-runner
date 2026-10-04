@@ -1,0 +1,86 @@
+{
+  "schema": "report2-actual-official-n07-release-proof-v1",
+  "observed_at": "2026-10-04T21:48:08Z",
+  "pr": 112,
+  "tested_head": "61f55fa3fda5e7a168dd9523e87977cff0f71a2f",
+  "tested_tree": "a5da9444cb790122b00f780aaa39603b596b7f26",
+  "merged_main": "63eed1dd9f4841a8f57954cf9eb5b489e509815a",
+  "merged_tree": "a5da9444cb790122b00f780aaa39603b596b7f26",
+  "merged_tree_equals_tested_tree": true,
+  "cloud_run": 37237427161,
+  "cloud_job": 111539244713,
+  "conclusion": "SUCCESS",
+  "artifact_id": 11316341599,
+  "artifact_sha256": "b5ba18385f64a07ef4c4be2858c10d4a042ac8c79550a75f3512268a78120889",
+  "worker_sha256": "db32a9a8954716c611d4532ec3930673f236c3cd4a6a8f12c8dfb653ec1999eb",
+  "targeted_tests": {
+    "passed": 16,
+    "failed": 0,
+    "stage_guard_passed": 5
+  },
+  "actual_result": {
+    "contract": "LINK-USDT",
+    "exact_asset_identity": "ethereum:0x514910771af9ca656af840dff83e8264ecf986ca",
+    "official_url": "https://chain.link/newsroom",
+    "status": "CLOSED",
+    "event_count": 1,
+    "event_title": "Chainlink Is Enabling Financial Institutions to Connect to Swift’s Blockchain Ledger",
+    "event_date": "2026-09-28",
+    "block": "N07",
+    "canonical_builder_used": true,
+    "approved_manual_renderer_used": true,
+    "score_effect": 0,
+    "direction_effect": false,
+    "target_effect": false,
+    "automatic_execution": false
+  },
+  "common_future_assets": 102,
+  "common_future_contracts": 119,
+  "all_assets_retained": true,
+  "source_http": 1,
+  "source_retries": 0,
+  "database_usage": {
+    "requests": 11,
+    "rows_read": 3,
+    "rows_written": 5,
+    "unknown_ops": 0
+  },
+  "production_canonical_writes": 0,
+  "deep_checks_started": 0,
+  "telegram_calls": 0,
+  "full_main_acceptance": false,
+  "all_15_live_accepted": false,
+  "telegram_delivery_proven": false,
+  "source_limits": {
+    "provider_published_numeric_limit": null,
+    "unknown_limit_is_not_unlimited": true,
+    "internal_refresh_period_ms": 86400000,
+    "per_acceptance_http_cap": 1,
+    "retries": 0,
+    "response_max_bytes": 524288,
+    "timeout_ms": 8000,
+    "daily_source_cap": 288,
+    "shared_job_http_cap_unchanged": 164
+  },
+  "source_use_evidence": {
+    "checkpoints/n07-official-live-verification-20261004.json.gz": {
+      "sha256": "3a603bda50f66a5b657e309aa28b773d72e0b95ff6f719bcd00f4e9a5c9c742e",
+      "uncompressed_sha256": "5184fbc7e85890a8dd2d30ebe55e4a1d92c7e9b060b054df1548d7f8ca6c039d",
+      "bytes": 8535,
+      "uncompressed_bytes": 42891
+    },
+    "checkpoints/n07-official-source-body-20261004.json.gz": {
+      "sha256": "e706608cb18aa32eb9c97d1e9a3fa88181b6905a3f8d7c0d890c589475236189",
+      "uncompressed_sha256": "d7c3b8d6875d37822be3b171e529df8c592bc3897ce7a87b02020123d5bd2464",
+      "bytes": 50099,
+      "uncompressed_bytes": 319360
+    },
+    "checkpoints/n07-official-targeted-tests-20261004.tap.gz": {
+      "sha256": "2ef6e082d8cdccbe833041639d2f4c902805fdfb113ccc4912a5936808e5421b",
+      "uncompressed_sha256": "bd1e46027e62637028966cec8cdf2306133d125270f2989c858e080036a66ccd",
+      "bytes": 805,
+      "uncompressed_bytes": 1670
+    }
+  },
+  "next_action": "Reconcile the remaining CORE block acceptance ledger from saved real source/use proofs, then repair only genuine unresolved primary/consumer gaps without repeating PR102–112. Preserve the explicit 17 inverse/delivery limitations and defer only EXACT_SIGNED_RAW_24H. Do not run MAIN until CORE acceptance is saved. Then execute actual 102x8 liquidation coverage/runtime/standalone/weekly, fresh joint MAIN and canonical Telegram SENT. Pending PR107 remains unmerged without its own actual proof."
+}

@@ -2,7 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {checkState,acquireIteration,finishPhase,releaseIteration,PHASES,REQUIREMENTS} from './continuation-stage-gate.mjs';
-const state=JSON.parse(fs.readFileSync(new URL('../checkpoints/CLOUD_PHASE_STATE_20261004.json',import.meta.url)));
+const savedState=JSON.parse(fs.readFileSync(new URL('../checkpoints/CLOUD_PHASE_STATE_20261004.json',import.meta.url)));
+// Stage-guard unit tests must remain stable as the durable production state advances.
+// Rebuild the initial phase fixture while retaining saved policy amendments/schema.
+const state=structuredClone(savedState);
+state.current_phase='CORE_BLOCKS';state.lease=null;
+for(let i=0;i<state.phases.length;i++)state.phases[i]={...state.phases[i],status:i===0?'IN_PROGRESS':'PENDING',completion_receipt:null};
 const now=1791136800000,owner='HTX:CONTROLLED_TEST:1',receipt={path:'controlled-completion-proof.json',sha256:'a'.repeat(64)};
 test('another scheduled iteration stays on the unfinished core phase and cannot acquire a parallel lease',()=>{
  const leased=acquireIteration({...state,lease:null},{owner,now});assert.equal(checkState(leased).id,'CORE_BLOCKS');
@@ -24,4 +29,17 @@ test('unverified predecessor and foreign release are refused',()=>{
  const broken=structuredClone({...state,lease:null});broken.phases[2].status='IN_PROGRESS';assert.throws(()=>checkState(broken),/PREDECESSOR_NOT_VERIFIED/);
  const leased=acquireIteration({...state,lease:null},{owner,now});assert.throws(()=>releaseIteration(leased,{owner:'HTX:OTHER',now}),/ONLY_CURRENT_OWNER_MAY_RELEASE/);
  assert.equal(releaseIteration(leased,{owner,now}).current_phase,PHASES[0]);
+});
+
+test('joint report may omit only the owner-deferred raw24h metric with a bound explicit proof; all other acceptance remains required',()=>{
+ const original=structuredClone({...state,lease:null});delete original.owner_scope_amendment;
+ for(const phase of original.phases.slice(0,2)){phase.status='VERIFIED';phase.completion_receipt=receipt;}
+ original.phases[2].status='IN_PROGRESS';original.current_phase='JOINT_REPORT';
+ const base=acquireIteration(original,{owner,now}),proof={phase:'JOINT_REPORT',status:'CLOSED',actual_evidence_verified:true,...Object.fromEntries(REQUIREMENTS.JOINT_REPORT.filter(k=>k!=='raw_24h_flow_verified').map(k=>[k,true]))};
+ assert.throws(()=>finishPhase(base,{owner,now:now+1,proof,receipt}),/ACTUAL_PHASE_ACCEPTANCE_REQUIRED/);
+ const amended=structuredClone(base);amended.owner_scope_amendment={id:'OWNER_RAW24H_DEFERRAL_20261004',path:'checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md',sha256:'b'.repeat(64),deferred_metric:'EXACT_SIGNED_RAW_24H',joint_report_without_metric_authorized:true,other_entry_rules_unchanged:true};
+ assert.throws(()=>finishPhase(amended,{owner,now:now+1,proof,receipt}),/EXPLICIT_OWNER_RAW24H_OMISSION_PROOF_REQUIRED/);
+ const accepted={...proof,raw_24h_explicitly_excluded:true,raw_24h_included:false,owner_amendment_sha256:'b'.repeat(64)};
+ assert.equal(finishPhase(amended,{owner,now:now+1,proof:accepted,receipt}).current_phase,'TELEGRAM');
+ for(const key of REQUIREMENTS.JOINT_REPORT.filter(k=>k!=='raw_24h_flow_verified'))assert.throws(()=>finishPhase(amended,{owner,now:now+1,proof:{...accepted,[key]:false},receipt}),/ACTUAL_PHASE_ACCEPTANCE_REQUIRED/);
 });

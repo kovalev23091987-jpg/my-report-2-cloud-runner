@@ -1,16 +1,60 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "CORE_BLOCKS",
+  "current_phase": "JOINT_REPORT",
   "phases": [
-    {"id": "CORE_BLOCKS", "status": "IN_PROGRESS", "completion_receipt": null},
-    {"id": "LIQUIDATION_COVERAGE", "status": "PENDING", "completion_receipt": null},
-    {"id": "JOINT_REPORT", "status": "PENDING", "completion_receipt": null},
-    {"id": "TELEGRAM", "status": "PENDING", "completion_receipt": null}
+    {
+      "id": "CORE_BLOCKS",
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/core15-functional-acceptance-20261004.json",
+        "sha256": "61a25f296cb0f8cc849c67c404487b0d55fc28e1b9877398d73a274536567c13"
+      },
+      "completed_ts": 1791150935708
+    },
+    {
+      "id": "LIQUIDATION_COVERAGE",
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/liquidation-phase-functional-acceptance-20261004.json",
+        "sha256": "90e0fb49666de60951f50fa4ce0eac4b09d962094b64acb13a142bbb3b4e8955"
+      },
+      "completed_ts": 1791154697290
+    },
+    {
+      "id": "JOINT_REPORT",
+      "status": "IN_PROGRESS",
+      "completion_receipt": null
+    },
+    {
+      "id": "TELEGRAM",
+      "status": "PENDING",
+      "completion_receipt": null
+    }
   ],
-  "lease": null,
-  "next_action": "Continue unfinished core blocks and exact market support; no liquidation, joint MAIN or Telegram phase before saved actual core acceptance.",
-  "last_verified_release": "checkpoints/technical-native-release-evidence-20261004.json",
+  "lease": {
+    "owner": "HTX:20261004T2141:6253a1db",
+    "acquired_ts": 1791150090057,
+    "expires_ts": 1791157290057
+  },
+  "next_action": "Run one fresh admitted unified MAIN for the actual top2 from the same HTX crypto-futures universe. Verify all accepted core block outputs and per-asset liquidation gates in the same canonical snapshot; do not replace leaders for coverage convenience. EXACT_SIGNED_RAW_24H may be explicitly omitted only under the saved owner amendment. Save fresh MAIN evidence before Telegram.",
+  "last_verified_release": "checkpoints/liquidation-phase-functional-acceptance-20261004.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
-  "new_iteration_is_new_phase": false
+  "new_iteration_is_new_phase": false,
+  "updated_ts": 1791154697334,
+  "owner_scope_amendment": {
+    "id": "OWNER_RAW24H_DEFERRAL_20261004",
+    "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
+    "sha256": "1403893f3f0c1d2e72de85c3864e15cbbebf81cabbbd97a6c8abc6faa7131264",
+    "deferred_metric": "EXACT_SIGNED_RAW_24H",
+    "joint_report_without_metric_authorized": true,
+    "other_entry_rules_unchanged": true
+  },
+  "economical_continuation": {
+    "path": "checkpoints/ECONOMICAL_CONTINUATION_20261004.md",
+    "sha256": "fed8b4d552e2edbf91c5c5a6e8241ef1173ce0bb87e2831c9b9b4fe6dc38c9be",
+    "reuse_completed_probes": true,
+    "resume_pending_job_without_redispatch": true
+  },
+  "free_source_search_register": "checkpoints/FREE_16_SOURCE_SEARCH_20261004.md"
 }

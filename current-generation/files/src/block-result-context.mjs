@@ -1,5 +1,8 @@
+import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
+import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
+import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
 export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v4-immutable-execution-parity-20261004';
@@ -15,6 +18,21 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N02'&&row.metric_family==='PROVIDER_DAILY_NATIVE_SUPPLY_HISTORY'){
+  const d=row.supply_history_context,identity={chain:row.asset_id?.split(':')[0],asset_kind:'NATIVE',native_asset_id:row.asset_id?.replace(':native:mainnet',':mainnet'),contract_or_mint:null};
+  if(row.provider_id!=='COINMETRICS_SUPPLY'||row.upstream_id!=='COINMETRICS_NETWORK_DATA_COMMUNITY'||row.historical_only!==true||row.source_clock_policy!=='PROVIDER_DAILY_RECORD_TIMESTAMP_ONLY')return null;
+  const actual=deriveCoinmetricsSupplyContext({contract:row.htx_contract,identity,catalog:row.catalog,series:row.series,observed_ts:row.observed_ts});
+  if(!actual||actual.asset_id!==row.asset_id||actual.source_ts!==row.source_ts||JSON.stringify(actual)!==JSON.stringify(d))return null;
+  const amount=v=>v.replace('.',','),symbol=row.htx_contract.slice(0,-5);
+  return{source:'CoinMetrics / ежедневная история',label:'История предложения по данным CoinMetrics',value:`на ${new Date(actual.source_ts).toISOString().slice(0,10)}: ${amount(actual.latest_native_units)} ${symbol}; изменение между ${new Date(actual.history_start_ts).toISOString().slice(0,10)} и ${new Date(actual.source_ts).toISOString().slice(0,10)}: ${amount(actual.change_7_days_native_units)} ${symbol}; 8 ежедневных записей, исторические данные поставщика, текущий подтверждённый блок и причины изменения не проверены`};
+ }
+
+ if(row.block_id==='N14'&&row.metric_family==='DELTA_SCOPED_OPTION_IV'){
+  if(row.provider_id!=='DELTA_OPTIONS'||row.upstream_id!=='DELTA_EXCHANGE_INDIA_PUBLIC_OPTIONS'||row.base_currency!==row.htx_contract.slice(0,-5)||row.source_clock_policy!=='PROVIDER_MICROSECOND_TIMESTAMP_ONLY'||row.source_is_htx_execution_price!==false)return null;
+  const declared=row.option_risk_context,risk=deriveDeltaOptionRisk({samples:declared?.samples,base_currency:row.base_currency,observed_ts:row.observed_ts});
+  if(!risk||risk.status!==declared.status||risk.source_ts!==row.source_ts||!['sample_count','call_count','put_count','expiration_timestamp','mark_iv_median_pct','mark_iv_min_pct','mark_iv_max_pct'].every(k=>eq(risk[k],declared[k])))return null;
+  return{source:'Delta Exchange',label:'Опционная волатильность актива на Delta',value:`медиана волатильности по котировкам ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} колл и ${risk.put_count} пут около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().replace('T',' ').slice(0,16)} UTC, расчёты в USD; данные этой площадки, направление и разрешение сделки не назначены`};
+ }
  if(row.block_id==='N10'&&row.metric_family==='ROLLING_24H_PRICE_RANGE_CONTEXT'){
   if(row.upstream_id!=='HTX_OFFICIAL_ROLLING_MARKET_SUMMARY'||row.source_clock_policy!=='HTX_PRIMARY_ROLLING_24H_SUMMARY'||row.closed_candle_claim!==false||row.signed_trade_flow_claim!==false||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||![row.range_low,row.range_high,row.last_price,row.range_pct].every(v=>number(v)!==null)||!(row.range_low>0&&row.range_high>=row.range_low&&row.last_price>=row.range_low&&row.last_price<=row.range_high)||!eq(row.range_pct,(row.range_high/row.range_low-1)*100))return null;
   const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
@@ -76,7 +94,11 @@ function describe(row,now){
  if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_LIQUIDITY_CONTEXT'){
   const open=number(row.open_instrument_count),liquid=number(row.liquid_instrument_count);
   if(row.source_clock_policy!=='PROVIDER_TIMESTAMP_ONLY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||!Number.isSafeInteger(open)||open<1||!Number.isSafeInteger(liquid)||liquid<0||liquid>open)return null;
-  return{source:'Deribit',label:'Опционный рынок актива',value:`открытых инструментов ${open}, с котировками или активностью в проверенной выборке ${liquid}; это не оценка опционного риска и не разрешение сделки`};
+  const scoped=number(row.scoped_instrument_count);
+  const scope=Number.isSafeInteger(scoped)&&scoped>0&&scoped<=open&&row.settlement_currency?`; проверено ${scoped} с расчётами в ${row.settlement_currency}`:'';
+  const declared=row.option_risk_context,risk=declared?deriveDeribitOptionRisk({samples:declared.samples,base_currency:row.base_currency,settlement_currency:row.settlement_currency,observed_ts:row.observed_ts}):null;
+  if(risk&&risk.status===declared.status&&risk.sample_count===declared.sample_count&&eq(risk.mark_iv_median_pct,declared.mark_iv_median_pct)&&eq(risk.mark_iv_min_pct,declared.mark_iv_min_pct)&&eq(risk.mark_iv_max_pct,declared.mark_iv_max_pct)&&risk.expiration_timestamp===declared.expiration_timestamp)return{source:'Deribit',label:'Опционная волатильность актива',value:`mark IV: медиана ${fmt(risk.mark_iv_median_pct)}%, диапазон ${fmt(risk.mark_iv_min_pct)}–${fmt(risk.mark_iv_max_pct)}%; ${risk.call_count} call и ${risk.put_count} put около базовой цены (±10%), экспирация ${new Date(risk.expiration_timestamp).toISOString().slice(0,10)}${scope}; открытых опционов в каталоге ${open}; волатильность этой выборки, направление и разрешение сделки не назначены`};
+  return{source:'Deribit',label:'Опционный рынок актива',value:`открытых инструментов ${open}${scope}, с котировками или активностью в проверенной выборке ${liquid}; опционный риск по этой выборке не закрыт, разрешение сделки не назначено`};
  }
  if(row.block_id==='N02'&&row.metric_family==='SUPPLY_UNCHANGED'){
   if(!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||BigInt(row.total_supply_base_units)!==BigInt(row.previous_supply_base_units)||row.supply_delta_base_units!=='0')return null;
@@ -91,6 +113,11 @@ function describe(row,now){
   const start=number(row.window_start_ts),end=number(row.window_end_ts),incoming=number(row.incoming_tokens),outgoing=number(row.outgoing_tokens);
   if(start===null||end===null||end-start!==7200000||end>now||row.source_ts!==end||!positive(incoming)||!positive(outgoing)||row.unit!=='TOKEN_AMOUNT'||!eq(incoming-outgoing,row.value))return null;
   return{source:'Nansen',label:'Потоки токена через биржи за два полных часа',value:`поступило ${fmt(incoming)}, выведено ${fmt(outgoing)}; чистый ${incoming>=outgoing?'приток':'отток'} ${fmt(Math.abs(incoming-outgoing))} токенов; охват источника ${fmt(row.coverage_fraction*100)} из 100`};
+ }
+ if(row.block_id==='N12'&&row.metric_family==='EXACT_SIGNED_RAW_24H'){
+  const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),start=number(row.window_start),end=number(row.window_end),count=number(row.raw_trade_count);
+  if(row.provider_id!=='HTX_SIGNED_RAW_TAPE'||row.upstream_id!=='HTX_OFFICIAL_RAW_FILLS'||row.source_clock_policy!=='IMMUTABLE_EXACT_RAW_MINUTES'||row.not_candle_signed_estimate!==true||row.entry_authorized!==false||row.unit!=='USDT'||row.verified_minutes!==1440||!Number.isSafeInteger(start)||start%60000||end-start!==86400000||end!==row.source_ts||end>now||now-end>180000||!positive(buy)||!positive(sell)||!Number.isSafeInteger(count)||count<0||count!==row.factual_trade_count||!eq(row.value,buy-sell)||!/^[a-f0-9]{64}$/.test(row.raw_minute_root_sha256||''))return null;
+  return{source:'HTX / исходные сделки',label:'Подтверждённый поток фьючерсных сделок за 24 часа',value:`${count} исходных сделок: покупки ${fmt(buy)}, продажи ${fmt(sell)} USDT; разница ${fmt(buy-sell)} USDT; каждую из 1440 минут проверили по фактическому счётчику; направление и разрешение сделки не назначены`};
  }
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'){
   const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),count=number(row.valid_recent_rows);

@@ -1,3 +1,11 @@
+## Проверенные дополнения PR109–111, 04.10.2026
+
+- N02: бесплатная дополнительная CoinMetrics daily history BTC/ETH в canonical/manual, primary finalized-chain не подменяется. Proof coinmetrics-supply-release-evidence-20261004.json.
+- N15: реальные ADA/50L1, APT/50L1 и ATOM/8Layer0 comparisons; exact native identifiers исправлены, общий universe не сокращён. Proof native-peers-release-evidence-20261004.json.
+- N10: actual primary production snapshot+trajectory 哈基米-USDT и полезный диапазон20closedcandles дошли в canonical/manual. Новый guard отвергает merelyFULFILLED/missing/stale/foreign/partial и нейтральный rollingrange без полноценного конвейера. Proof n10-primary-release-evidence-20261004.json.
+
+Эти независимые scoped acceptances не означают15из15 на фактическихtop2 нового MAIN; его и настоящую Telegram delivery ещё нужно закрыть. Перестать повторять принятые sourceprobes.
+
 ## Текущая поправка охвата, 04.10.2026 17:12 UTC
 
 Владелец требует ВСЕ криптоактивы независимо от письма/цифр; исключать акции и валютные пары. Предыдущие 100/270 были результатом слишком широкого фильтра одного каталога, а НЕ окончательным общим охватом. PAXG/XAUT возвращены как issuer-proven crypto tokens. Снимки трёх первичных HTX каталогов дают 119 активных криптоконтрактов / 102 уникальных актива: 102 USDT perpetual, 4 USDT delivery, 5 coin-margined perpetual, 8 coin-margined delivery. Это результат replay подлинных ответов; свежая облачная квитанция следующего выпуска ещё требуется. Из 268 исключённых контрактов НЕ все являются акциями: имеются fiat/indices/не-крипто commodities.

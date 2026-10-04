@@ -1,4 +1,5 @@
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
+import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
@@ -15908,6 +15909,12 @@ async function buildDeepCheckInput(params, env) {
     futures.data = bindVerifiedFuturesFlow(futures.data, trajectory.data, componentsAvailableTs);
   }
 
+  // Persist only exact count-verified raw fills already fetched by this same deep check.
+  // This starts a bounded warmup; it cannot fill missing hours or authorize entry.
+  let signedTapeReceipt={status:'NOT_CONFIGURED',evidence:[],network_calls:0};
+  if(typeof env?.REPORT2_SIGNED_TAPE_PERSIST==='function')try{signedTapeReceipt=await env.REPORT2_SIGNED_TAPE_PERSIST({contract,now:Date.now()});}catch(error){signedTapeReceipt={status:'RAW_TAPE_PERSISTENCE_NOT_CLOSED',evidence:[],network_calls:0,error:String(error?.message||error).slice(0,160)};}
+  if(futures?.data)futures.data.signed_raw_tape_receipt=signedTapeReceipt;
+
   const history =
     settled(results[3]);
 
@@ -16327,6 +16334,7 @@ async function buildDeepCheckInput(params, env) {
   try{
     if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  if(signedTapeReceipt.evidence?.length)candidateEvidenceV2={...candidateEvidenceV2,evidence:[...(candidateEvidenceV2.evidence||[]),...signedTapeReceipt.evidence]};
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
 
   let futureProviderModels=null;
@@ -16987,13 +16995,12 @@ async function buildDeepCheckInput(params, env) {
   const depthClosed=futures?.data?.health?.depth===true&&bboClosed;
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
-  const technicalPipelineStates=[futures?.execution_status,trajectory?.execution_status].map(value=>String(value||'').toUpperCase());
-  const technicalClosed=technicalPipelineStates.every(value=>value==='FULFILLED')&&htxObservationReferencePrice?.status==='CLOSED';
+  const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState});
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
       evidence_result:candidateEvidenceV2,
       primary_sources:{
-        PRIMARY_TECHNICAL_CONTEXT:{status:technicalClosed?'CHECKED_PRIMARY_TECHNICAL_CONTEXT':'TECHNICAL_PIPELINE_NOT_CLOSED',check_completed:technicalClosed,network_calls:0,receipts:[{check_completed:technicalClosed,status:technicalState||'NO_ENTRY_STATE',futures_status:technicalPipelineStates[0]||'NOT_EVALUATED',trajectory_status:technicalPipelineStates[1]||'NOT_EVALUATED',reference_price_status:htxObservationReferencePrice?.status||'NOT_EVALUATED'}]},
+        PRIMARY_TECHNICAL_CONTEXT:primaryTechnicalReceipt,
         PRIMARY_EXECUTION_STRESS:{status:depthClosed?'CHECKED_HTX_ORDERBOOK_STRESS':'HTX_ORDERBOOK_NOT_CLOSED',check_completed:depthClosed,network_calls:0,receipts:[{check_completed:depthClosed,status:depthClosed?'CLOSED':'NOT_CLOSED',bid:Number.isFinite(bboBid)?bboBid:null,ask:Number.isFinite(bboAsk)?bboAsk:null,depth:futures?.data?.health?.depth===true}]},
         PRIMARY_EXECUTION_COST:{status:executionCostClosed?'CHECKED_HTX_EXECUTION_COST':'HTX_EXECUTION_COST_NOT_CLOSED',check_completed:executionCostClosed,network_calls:0,receipts:[{check_completed:executionCostClosed,status:executionCostClosed?'CLOSED':'NOT_CLOSED',buy_impact_filled:futures?.data?.liquidity?.buy_market_impact?.fully_filled===true,sell_impact_filled:futures?.data?.liquidity?.sell_market_impact?.fully_filled===true}]},
       },

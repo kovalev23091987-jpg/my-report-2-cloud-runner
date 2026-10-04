@@ -7,7 +7,7 @@ export function normalizeTrackedBands(payload,{contract,run_id,observed_ts=Date.
  const symbol=String(contract??'').replace(/-USDT$/,'').toUpperCase();
  const result={source:'BYK_TRACKED_HL_BANDS',contract,run_id,role:'NATIVE_POSITION_CONTEXT',upstream_family:'HYPERLIQUID',independent_of_other_hl_sources:false,entry_eligible:false,score_eligible:false,status:'SOURCE_SCHEMA_NOT_CLOSED',data_available:false,maps:[],network_calls:0};
  const reject=status=>({...result,status});
- if(!/^[A-Z0-9_:.]{1,40}-USDT$/.test(String(contract??'').toUpperCase())||['BTC','ETH'].includes(symbol))return reject('EXCLUDED_OR_INVALID_CONTRACT');
+ if(!/^[\p{L}\p{N}_:.]{1,40}-USDT$/u.test(String(contract??'').toUpperCase()))return reject('INVALID_CONTRACT');
  if(String(payload?.coin??'').toUpperCase()!==symbol)return reject('EXACT_SYMBOL_MISMATCH');
  const mark=finite(payload?.mark);
  if(!(mark>0)||!payload?.coverage)return reject('NO_EXACT_TRACKED_MARKET_REFERENCE');
@@ -31,7 +31,7 @@ export function normalizeTrackedBands(payload,{contract,run_id,observed_ts=Date.
  const coverage={kind:'TRACKED_ACCOUNT_SAMPLE_ONLY',account_population_limit:1000,provider_coverage:payload.coverage??null,provider_totals:payload.totals??null,bucket_width_pct_of_mark:bucket,returned_bands:row_count,accepted_bands:zones.length,rejected_bands:invalid_rows,full_market_census:false,distance_limit_pct:null};
  // Keep the provider clock, sample totals and band semantics. Do not use the
  // model_comparison or historical hourly rows as future open-position levels.
- const map=seal({provider:'ByKaranteli Hyperliquid',venue:'HYPERLIQUID',native_symbol:symbol,run_id,source_ts,status:zones.length?'USABLE_SCOPED_CONTEXT':'NO_VALID_BANDS_IN_TRACKED_SAMPLE',usable_for_context:zones.length>0,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',coverage,zones});
+ const map=seal({provider:'ByKaranteli tracked Hyperliquid',venue:'HYPERLIQUID',native_symbol:symbol,run_id,source_ts,status:zones.length?'USABLE_SCOPED_CONTEXT':'NO_VALID_BANDS_IN_TRACKED_SAMPLE',usable_for_context:zones.length>0,evidence_class:'NATIVE_ACCOUNT_LIQUIDATION_PRICES',coverage,zones});
  if(Buffer.byteLength(JSON.stringify(map))>2000000)return reject('SOURCE_RESPONSE_SIZE_LIMIT');
  return{...result,status:map.status,data_available:zones.length>0,source_ts,zone_count:zones.length,coverage,maps:zones.length?[map]:[]};
 }
@@ -41,7 +41,7 @@ function remember(value){const key=`${value.run_id}:${value.contract}`;if(collec
 export async function collectTrackedBands({contract,run_id,byk_admission,request_admit,fetch_impl=globalThis.fetch,now=Date.now()}={}){
  const symbol=String(contract??'').replace(/-USDT$/,'').toUpperCase(),base={source:'BYK_TRACKED_HL_BANDS',contract,run_id,data_available:false,network_calls:0,maps:[]};
  if(collected.has(`${run_id}:${contract}`))return{...capturedTrackedBands({contract,run_id,observed_ts:now}),network_calls:0,cache_hit:true};
- if(!/^[A-Z0-9_:.]{1,40}-USDT$/.test(String(contract??'').toUpperCase())||['BTC','ETH'].includes(symbol))return{...base,status:'EXCLUDED_OR_INVALID_CONTRACT'};
+ if(!/^[\p{L}\p{N}_:.]{1,40}-USDT$/u.test(String(contract??'').toUpperCase()))return{...base,status:'INVALID_CONTRACT'};
  // Reuse one unused unit of the existing protected monthly reservation.
  if(byk_admission?.allowed!==true||!(Number(byk_admission.reserved_units)>=4))return{...base,status:'EXISTING_BYK_MONTHLY_RESERVATION_NOT_GRANTED'};
  const grant=typeof request_admit==='function'?request_admit({logical_request_id:`BYK_TRACKED_HL:${run_id}:${contract}`,lane:'background',attempts:1}):null;

@@ -44,7 +44,14 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   const requestedCandidateCap=Number(params?.max_http_for_candidate);
   const candidateHttpCap=Number.isSafeInteger(requestedCandidateCap)?Math.max(0,Math.min(max_http_per_run,requestedCandidateCap)):max_http_per_run;
   const candidateReservedStart=budget.summary().reserved_http;
-  const id=params?.source_identity||{},lanes=['HYPERLIQUID_NATIVE'];if(typeof secondary==='function')lanes.push('GTRADE_NATIVE');if(Number.isSafeInteger(id.lighter_market_id)&&id.lighter_market_id>=0)lanes.push('LIGHTER_NATIVE');if(/^0x[0-9a-f]{40}$/i.test(id.gmx_market_address||''))lanes.push('GMX_NATIVE');if(typeof oxarchive==='function')lanes.push('OXARCHIVE_HL_BUCKETS');
+  const restrict=Array.isArray(params.allowed_source_ids),allowed=new Set(restrict?params.allowed_source_ids:[]);
+  const id=params?.source_identity||{},lanes=[];
+  if(!restrict||allowed.has('HYPERLIQUID_NATIVE'))lanes.push('HYPERLIQUID_NATIVE');
+  if(typeof secondary==='function'&&(!restrict||allowed.has('GTRADE_NATIVE')))lanes.push('GTRADE_NATIVE');
+  if(Number.isSafeInteger(id.lighter_market_id)&&id.lighter_market_id>=0&&(!restrict||allowed.has('LIGHTER_NATIVE')))lanes.push('LIGHTER_NATIVE');
+  if(/^0x[0-9a-f]{40}$/i.test(id.gmx_market_address||'')&&(!restrict||allowed.has('GMX_NATIVE')))lanes.push('GMX_NATIVE');
+  if(typeof oxarchive==='function'&&(!restrict||allowed.has('OXARCHIVE_HL_BUCKETS')))lanes.push('OXARCHIVE_HL_BUCKETS');
+  if(!lanes.length){routed.push({contract:params.contract,status:'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE',allowed_source_ids:[...allowed],candidate_http_cap:candidateHttpCap});return null;}
   let healthRows=[];try{healthRows=source_weight_store?await source_weight_store.load(lanes):[];}catch{healthRows=[];}
   const hlCost=primary.estimateHttpCost(params),sharedGtrade=secondary?.hasRunSnapshot?.(params.run_id)===true;
   const weighted=planLiquidationSourceOrder({lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1},exact:lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&primary.nativeMarketCoverage(params).status==='SUPPORTED'),cached:sharedGtrade?['GTRADE_NATIVE']:[]});lastWeightProfile=weighted.profile;
