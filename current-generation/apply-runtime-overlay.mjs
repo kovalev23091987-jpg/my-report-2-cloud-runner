@@ -88,7 +88,7 @@ const files=[
  'src/evidence-v2.mjs',
  'src/evidence-source-adapters.mjs',
  'src/evidence-source-store.mjs',
- 'src/provider-minute-ledger.mjs',
+ 'src/provider-minute-ledger.mjs','src/provider-reference-cache.mjs',
  'src/prospective-delivery-cohort.mjs',
  'src/htx-public-risk-evidence.mjs',
  'src/deribit-alt-options-evidence.mjs',

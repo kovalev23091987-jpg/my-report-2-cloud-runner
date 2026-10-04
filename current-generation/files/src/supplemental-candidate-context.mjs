@@ -1,3 +1,4 @@
+import {NATIVE_SECTOR_BINDINGS} from './coingecko-sector-evidence.mjs';
 import {collectSpecialistContext} from './specialist-candidate-context.mjs';
 export const SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION='supplemental-candidate-context-v7-strict17-20261001';
 const TTL_MS=60*60*1000,IDENTITY_TTL_MS=6*60*60*1000,IDENTITY_RETRY_TTL_MS=60*60*1000;
@@ -11,7 +12,7 @@ const canonicalChain=value=>({eth:'ethereum',ethereum:'ethereum',bsc:'bsc',arbit
 const stableSymbol=value=>['USDT','USDC','USD','DAI','FDUSD'].includes(clean(value).toUpperCase());
 const exactIdentity=row=>{
  const chain=clean(row?.chain).toLowerCase(),address=clean(row?.contract_or_mint);
- if(chain==='near'&&row?.asset_kind==='NATIVE'&&row?.native_asset_id==='near:mainnet'&&!address)return{chain,asset_kind:'NATIVE',native_asset_id:'near:mainnet',contract_or_mint:null};
+ if(row?.asset_kind==='NATIVE'&&Object.values(NATIVE_SECTOR_BINDINGS).some(r=>r.chain===chain)&&row.native_asset_id===`${chain}:mainnet`&&!address)return{chain,asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`,contract_or_mint:null};
  if(!chain||!address)return null;
  if(chain==='solana'?!BASE58.test(address):!EVM.test(address))return null;
  return {chain,contract_or_mint:chain==='solana'?address:address.toLowerCase()};

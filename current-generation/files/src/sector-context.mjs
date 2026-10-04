@@ -1,10 +1,10 @@
 import {validateEvidenceV2} from './evidence-v2.mjs';
-import {sectorCategoryLabel} from './coingecko-sector-evidence.mjs';
+import {sectorCategoryLabel,nativeSectorAssetId} from './coingecko-sector-evidence.mjs';
 const num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const labels={oracle:'оракулы',oracles:'оракулы',exchange:'биржевые проекты'};
 const sources={COINGECKO_SECTOR:'CoinGecko',COINPAPRIKA_SECTOR:'CoinPaprika'};
 export function consumeSectorContext({evidence=[],contract,asset_identity,now}={}){
- const facts=[],blocks={},id=asset_identity?`${asset_identity.chain}:${asset_identity.contract_or_mint}`:null;
+ const facts=[],blocks={},id=asset_identity?nativeSectorAssetId(asset_identity,contract)||`${asset_identity.chain}:${asset_identity.contract_or_mint}`:null;
  const common={advisory_only:true,directional_vote:false,hard_gate:false,score_contribution:0};
  for(const r of (Array.isArray(evidence)?evidence:[]).filter(r=>r&&typeof r==='object').sort((a,b)=>(a.provider_id==='COINGECKO_SECTOR'?-1:1)-(b.provider_id==='COINGECKO_SECTOR'?-1:1))){
   const label=r.provider_id==='COINGECKO_SECTOR'?sectorCategoryLabel(r.category_name):labels[r.tag_id];
