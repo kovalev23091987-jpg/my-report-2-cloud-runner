@@ -35,8 +35,8 @@ test('K16 Deribit alt: catalog and summary are bounded, cached and admitted befo
 
 test('K16 Deribit alt: absent option market is NOT_APPLICABLE, not guessed from BTC',async()=>{
  const db=new DB(),calls=[];const fetch_impl=async url=>{calls.push(url);return{ok:true,status:200,json:async()=>({result:[{instrument_name:'BTC-30OCT26-100000-C',base_currency:'BTC',kind:'option',is_active:true}]})};};
- const out=await collectDeribitAltOptionsEvidence({db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:1000});
- assert.equal(out.status,'NOT_APPLICABLE');assert.equal(out.evidence.length,0);assert.equal(out.network_calls,1);assert.equal(calls.length,1);
+ const out=await collectDeribitAltOptionsEvidence({db,fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'SOL-USDT',run_id:'R',now:1000,clock:()=>1000});
+ assert.equal(out.status,'NOT_APPLICABLE');assert.equal(out.evidence.length,1);assert.equal(out.evidence[0].metric_family,'ALT_OPTIONS_CATALOG_ABSENCE');assert.equal(out.network_calls,1);assert.equal(calls.length,1);
 });
 
 test('K16 Deribit alt: no whole-job admission means zero network calls',async()=>{
@@ -56,4 +56,13 @@ test('provider clock stays factual; missing or future quote timestamps never bec
 test('catalog transport failure cannot prove that an option market is absent',async()=>{
  const out=await collectDeribitAltOptionsEvidence({db:new DB(),fetch_impl:async()=>({ok:false,status:503,json:async()=>null}),request_admit:()=>({allowed:true}),contract:'SOL-USDT',run_id:'FAIL',now:2000});
  assert.equal(out.status,'SOURCE_ERROR');assert.equal(out.summary.open_instrument_count,null);assert.equal(out.evidence.length,0);
+});
+
+test('a successful exact catalog absence is useful information, with no score or quote claim',async()=>{
+ const {consumeBlockResultContext}=await import('../files/src/block-result-context.mjs');
+ const out=await collectDeribitAltOptionsEvidence({db:new DB(),fetch_impl:async()=>({ok:true,status:200,json:async()=>catalog}),request_admit:()=>({allowed:true}),contract:'NEAR-USDT',run_id:'ABSENCE',now:2000,clock:()=>2000});
+ const context=consumeBlockResultContext({evidence:out.evidence,contract:'NEAR-USDT',now:2000});
+ assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N14');assert.equal(context.facts[0].score_contribution,0);
+ assert.match(context.facts[0].value,/открытых опционов актива не найдено.*только к этой площадке/u);
+ assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:2000}).adjustment,0);
 });

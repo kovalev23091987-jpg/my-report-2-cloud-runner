@@ -13,6 +13,10 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_CATALOG_ABSENCE'){
+  if(row.source_clock_policy!=='OBSERVED_STATIC_CATALOG_QUERY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||row.open_instrument_count!==0||row.value!==0||!/^[0-9a-f]{64}$/i.test(row.catalog_response_sha256||''))return null;
+  return{source:'Deribit',label:'Доступность опционов актива',value:`в каталоге Deribit на ${new Date(row.source_ts).toISOString().replace('T',' ').slice(0,19)} UTC открытых опционов актива не найдено; сведения относятся только к этой площадке, опционный риск не оценён`};
+ }
  if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_LIQUIDITY_CONTEXT'){
   const open=number(row.open_instrument_count),liquid=number(row.liquid_instrument_count);
   if(row.source_clock_policy!=='PROVIDER_TIMESTAMP_ONLY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||!Number.isSafeInteger(open)||open<1||!Number.isSafeInteger(liquid)||liquid<0||liquid>open)return null;

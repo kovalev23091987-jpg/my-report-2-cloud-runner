@@ -1,7 +1,8 @@
+import {createHash} from 'node:crypto';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION='deribit-alt-options-evidence-v1-20260928';
+export const DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION='deribit-alt-options-evidence-v2-settlement-route-20261004';
 const SOURCE='DERIBIT_ALT_OPTIONS',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,CATALOG_TTL=6*60*60_000,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
 const BASE='https://www.deribit.com/api/v2',text=value=>String(value??'').trim(),finite=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
 const baseOf=contract=>text(contract).toUpperCase().replace(/-USDT$/,'');
@@ -32,20 +33,25 @@ export function normalizeDeribitAltOptions({contract,instruments=[],summary_payl
 export async function collectDeribitAltOptionsEvidence({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false,clock=Date.now}={}){
  if(!db)throw new Error('DERIBIT_ALT_OPTIONS_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),base=baseOf(htxContract);
  if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
- await installEvidenceSourceStore(db);const candidateCached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,now});if(!strict_fresh_manual&&candidateCached)return{...candidateCached,contract:htxContract};
+ await installEvidenceSourceStore(db);const candidateCached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,now});if(!strict_fresh_manual&&candidateCached?.version===DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION)return{...candidateCached,contract:htxContract};
  let catalog=strict_fresh_manual?null:await readEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,now}),catalogReceipt=null,catalogNetwork=0;
+ if(catalog&&(catalog.validation_status!=='VALID'||!Number.isFinite(catalog.observed_ts)||!catalog.response_sha256))catalog=null;
  const plannedAttempts=catalog?1:2,reservationId=`EV2:${SOURCE}:${run_id}:${base}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:plannedAttempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:plannedAttempts,daily_cap:DAILY_CAP,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
  if(!catalog){
   catalogReceipt=await getJson(fetch_impl,`${BASE}/public/get_instruments?currency=any&kind=option&expired=false`,clock);catalogNetwork=1;
+  catalogReceipt.ok=catalogReceipt.ok&&Array.isArray(catalogReceipt.payload?.result);
   const exactInstruments=selectExactAltOptionInstruments(catalogReceipt.ok?catalogReceipt.payload:null,base);
-  catalog={exact_instruments:exactInstruments};
+  catalog={exact_instruments:exactInstruments,observed_ts:catalogReceipt.received_ts,validation_status:catalogReceipt.ok?'VALID':'INVALID',response_sha256:createHash('sha256').update(JSON.stringify(catalogReceipt.payload)).digest('hex')};
   if(catalogReceipt.ok)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:`CATALOG:${base}`,observed_ts:now,expires_ts:now+CATALOG_TTL,payload:catalog});
  }
  const instruments=Array.isArray(catalog?.exact_instruments)?catalog.exact_instruments:[];
  if(!instruments.length){
-  const result={version:DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION,status:catalogReceipt&&!catalogReceipt.ok?'SOURCE_ERROR':'NOT_APPLICABLE',contract:htxContract,evidence:[],network_calls:catalogNetwork,cache_status:catalogNetwork?'REFRESHED':'HIT',whole_job_admission:wholeJobAdmission,admission,receipts:catalogReceipt?[{route:'CATALOG',status:catalogReceipt.ok?'CLOSED':'SOURCE_ERROR',http_status:catalogReceipt.http_status,error:catalogReceipt.error}]:[],summary:{base_currency:base,open_instrument_count:catalogReceipt&&!catalogReceipt.ok?null:0,liquid_instrument_count:catalogReceipt&&!catalogReceipt.ok?null:0},internal_only:true};
+  const catalogValid=catalog.validation_status==='VALID'&&Number.isFinite(catalog.observed_ts)&&catalog.observed_ts<=Math.max(now,catalogReceipt?.received_ts||0)&&catalog.observed_ts+CATALOG_TTL>=now;
+  const observation=Math.max(now,catalog.observed_ts||0);
+  const absence=catalogValid?buildEvidenceV2({provider_id:SOURCE,upstream_id:'DERIBIT_PUBLIC_OPTIONS',asset_id:`htx-futures:${htxContract}`,htx_contract:htxContract,block_id:'N14',metric_family:'ALT_OPTIONS_CATALOG_ABSENCE',origin_event_id:`CATALOG:${base}:${catalog.observed_ts}`,dependency_group:`DERIBIT_OPTIONS_CATALOG:${base}:${catalog.observed_ts}`,source_ts:catalog.observed_ts,observed_ts:observation,expires_at:Math.min(catalog.observed_ts+CATALOG_TTL,observation+TTL),coverage_status:'EXACT_PROVIDER_CATALOG_ONLY',coverage_fraction:0,unit:'instruments',value:0,extra:{base_currency:base,open_instrument_count:0,source_clock_policy:'OBSERVED_STATIC_CATALOG_QUERY',catalog_response_sha256:catalog.response_sha256,direction_policy:'PROVIDER_ABSENCE_ONLY_NO_DIRECTIONAL_BONUS'}}):null;
+  const result={version:DERIBIT_ALT_OPTIONS_EVIDENCE_VERSION,status:catalogReceipt&&!catalogReceipt.ok?'SOURCE_ERROR':catalogValid?'NOT_APPLICABLE':'CATALOG_OBSERVATION_NOT_CLOSED',contract:htxContract,evidence:absence?[absence]:[],network_calls:catalogNetwork,cache_status:catalogNetwork?'REFRESHED':'HIT',whole_job_admission:wholeJobAdmission,admission,receipts:catalogReceipt?[{route:'CATALOG',status:catalogReceipt.ok?'CLOSED':'SOURCE_ERROR',http_status:catalogReceipt.http_status,error:catalogReceipt.error}]:[],summary:{base_currency:base,open_instrument_count:catalogReceipt&&!catalogReceipt.ok?null:0,liquid_instrument_count:catalogReceipt&&!catalogReceipt.ok?null:0},internal_only:true};
   await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:`SUMMARY:${base}`,observed_ts:now,expires_ts:now+TTL,payload:result});return result;
  }
  // Alt options are grouped by settlement currency (usually USDC), not by underlying ticker.
