@@ -17,3 +17,7 @@ Primary references inspected on 04.10.2026:
 - https://docs.drift.trade/protocol/about-v3/margin
 
 This file is an instruction/research checkpoint, not source coverage or report acceptance.
+
+## Roles amendment — latest owner instruction 04.10.2026
+
+Before enabling any additional source, assign primary/confirming/additional/fallback role for each fact and identify its upstream. Shared upstream routes cannot gain independent weight twice. Operational priority is not strategy weight. New options context cannot replace HTX execution price or authorize entry; new venue facts must retain their exact market, units and scope. Deribit remains the primary options role; Delta is an independently scoped additional source. A useful verified basket from either can provide N14 context, without inventing absent provider data or score bonuses.
