@@ -1,3 +1,7 @@
+# Проверенный выпуск PR104
+
+Merged main 9da3847088bc80020f53f8916944c7bb0afe5518; exact tested tree 3f223f91cfdb1933aff2d6cd9a1284da7e15f9ad. Cloud37224521405/job111501307137 SUCCESS,37integration,12options tests, assembled-runtime binding PASS. Artifact11311541694 sha256fd7400b00d123d96e9decde529e59359f8768edf3fd134e8ae7df97a97a1630a. Свежими2DeribitHTTP проверены102/102 активов того же crypto FUTURES universe; actual mark IV+consumer context дляBTC/ETH/SOL/AVAX/XRP/HYPE/TRX,95exact provider-only catalog absences. D1 read238/write149/unknown0. Сохранены долговечные полные source bodies и per-asset/source/use results gzip в checkpoints. Quotas/weights/threshold/entry/form неизменны; canonical0/deep0/TG0. Это новая фактическая N14 приёмка, общий15/MAIN покаfalse.
+
 # Пакет N14: точный опционный контекст, 04.10.2026
 
 Текущий этап CORE_BLOCKS, owner HTX:20261004T1811:bc2e6615. Исправлена потеря BTC/ETH при нескольких settlement currencies: выбирается точная USDC partition, остальные остаются в общем числе открытых опционов; fraction явно частичный. Значения разных расчетных валют не суммируются. Имена инструментов сохраняются дословно, включая дробные страйки с малой буквой d (XRP). Источник exact metadata base_currency, не догадка по тикеру.

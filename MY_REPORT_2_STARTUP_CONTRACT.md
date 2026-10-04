@@ -1,3 +1,7 @@
+## Самый новый проверенный аналитический пакет: PR104
+
+N14 теперь даёт actual scoped mark IV (с пересчётом consumer) на7активах BTC/ETH/SOL/AVAX/XRP/HYPE/TRX; все102HTXcrypto FUTURES assets проверены,95provider-only catalogue absences. Source2HTTP, cloud37224521405/job111501307137 SUCCESS,37integration,12options. Main9da3847088bc80020f53f8916944c7bb0afe5518/tree3f223f91cfdb1933aff2d6cd9a1284da7e15f9ad; квитанция checkpoints/options-risk-release-evidence-20261004.json, полные actualsource/use gzip сохранены. Не повторять completedprobe. CORE_BLOCKS остаётсяIN_PROGRESS. Продолжать следующие незавершённые основные блоки/exactmarket adapters/identity/raw24h. Phaselease/releaseguard ниже обязательны.
+
 # Действующее продолжение от 04.10.2026 (новейшие прямые инструкции владельца)
 
 Облачное продолжение авторизовано владельцем; задача6ac2929912d88191886ee5f0ce512572 включена. Старые указания ниже о disabled6abd относятся к прежней задаче и не отменяют это разрешение. Не создавать конкурирующие задачи. Читать свежий main, release fence и checkpoints/CLOUD_PHASE_STATE_20261004.json. Выполнять обязательный acquire/publish/readback protocol из checkpoints/CLOUD_PHASE_GUARD_20261004.md; чужой active owner запрещает параллельные изменения и source probes. Незавершённый этап продолжить, а не открывать следующий из-за нового запуска. PR103 проверен в cloud37223249357/job111497627649, интеграция37/37, stageguard4/4; proof checkpoints/cloud-phase-gate-release-evidence-20261004.json. Это приёмка защиты этапов, не закрытие 15 аналитических блоков.
