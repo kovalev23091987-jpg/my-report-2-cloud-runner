@@ -134,7 +134,7 @@ jobs:
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-      REPORT2_EXPECTED_WORKER_SHA: "dd4fa4d5c8aa6b432a3c54c5025ba6851a3f254a7cba93ee79bbc77869f312a1"
+      REPORT2_EXPECTED_WORKER_SHA: "a1fd0c333d80b44482e91650d37288adb76452c1a65cc508db68f0ed8c5ff386"
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
       REPORT2_SOURCE_PROXY_URL: ${{ secrets.REPORT2_SOURCE_PROXY_URL }}
@@ -169,7 +169,7 @@ jobs:
       REPORT2_MANUAL_COIN_CONTRACT: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.coin_contract || inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
-      REPORT2_D1_RUNS_PER_DAY: "80"
+      REPORT2_D1_RUNS_PER_DAY: "47"
       REPORT2_CURRENT_GENERATION: "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
       REPORT2_POST_V7_UNIFIED_ENABLED: "1"
       REPORT2_LIQUIDATION_EXTENSION_MODE: "SHADOW_ONLY"

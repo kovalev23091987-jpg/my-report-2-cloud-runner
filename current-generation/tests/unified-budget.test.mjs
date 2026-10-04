@@ -6,8 +6,8 @@ import {BYK_PLAN,HTTP_LIMITS,D1_DAILY_LIMITS,proveBykWorstCase,admitDailyDeep,cr
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
 class D1{constructor(){this.sqlite=new DatabaseSync(':memory:');this.tail=Promise.resolve();}prepare(sql){return new Statement(this,sql);}async batch(rows){let release;const previous=this.tail;this.tail=new Promise(resolve=>{release=resolve;});await previous;this.sqlite.exec('BEGIN IMMEDIATE');try{const result=[];for(const row of rows)result.push(await row.run());this.sqlite.exec('COMMIT');return result;}catch(error){this.sqlite.exec('ROLLBACK');throw error;}finally{release();}}}
 
-test('K15: 31-day worst case is 13,330 and scheduled plus burst is 12,090',()=>{
-  assert.deepEqual(proveBykWorstCase(),{closed:true,monthly_units:13330,scheduled_units:12090,daily_fulls:86,project_headroom:170});
+test('K15: 31-day worst case is 13,330 and scheduled plus burst is 11,625',()=>{
+  assert.deepEqual(proveBykWorstCase(),{closed:true,monthly_units:13330,scheduled_units:11625,daily_fulls:86,project_headroom:170});
   assert.equal(D1_DAILY_LIMITS.planned_rows_read,3374000);
   assert.equal(D1_DAILY_LIMITS.rows_read-D1_DAILY_LIMITS.planned_rows_read,126000);
   assert.equal(D1_DAILY_LIMITS.rows_written-D1_DAILY_LIMITS.planned_rows_written,3840);
@@ -17,7 +17,7 @@ test('K15: liquidation-only spends zero BYK but shares five manual-coin admissio
   assert.deepEqual(admitDailyDeep({category:'liquidation_only',daily_counts:{manual_coin:4}}),{allowed:true,status:'ADMITTED',category:'manual_coin',byk_units:0});
   assert.equal(admitDailyDeep({category:'liquidation_only',daily_counts:{manual_coin:5}}).allowed,false);
   assert.equal(Object.values(BYK_PLAN.categories).reduce((sum,x)=>sum+x.daily,0),86);
-  const fullCounts={scheduled:72,manual_full:3,manual_coin:5,burst:6};
+  const fullCounts={scheduled:72,manual_full:6,manual_coin:5,burst:3};
   assert.equal(admitDailyDeep({category:'scheduled',daily_counts:fullCounts}).status,'DAILY_CATEGORY_CAP_EXHAUSTED');
 });
 

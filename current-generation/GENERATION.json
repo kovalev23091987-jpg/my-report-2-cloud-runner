@@ -16,16 +16,16 @@
   "bykaranteli_operational_monthly_cap": 13500,
   "bykaranteli_scheduled_monthly_cap": 12900,
   "max_bykaranteli_requests_per_deep_check": 5,
-  "burst_deep_checks_reserved_per_day": 6,
+  "burst_deep_checks_reserved_per_day": 3,
   "worst_case_31_day_requests_with_eight_manual_runs_daily": 13330,
-  "scheduled_plus_burst_31_day_requests": 12090,
+  "scheduled_plus_burst_31_day_requests": 11625,
   "btc_eth_liquidation_maps": false,
   "all_other_htx_futures_equal_eligibility": true,
   "strong_move_threshold_abs_pct": 5,
   "strong_move_upper_ceiling_pct": null,
   "native_liquidation_extension": "SHADOW_ONLY_DECISION_INPUT",
   "telegram_publication_binding": "DISPATCH_OWN_SNAPSHOT_BACKLOG_SAFE_V7_VISIBLE_REMOVAL_ONLY",
-  "directional_deep_slot": "FIRST_READY_DIRECTIONAL_CANDIDATE_AFTER_COOLDOWN",
+  "directional_deep_slot": "TWO_BEST_MEASURED_MARKET_CANDIDATES_AFTER_ELIGIBILITY_AND_COOLDOWN",
   "manual_chat_launch": "MAIN_BRANCH_FILE_SCOPED_CONTENTS_TRIGGER",
   "manual_chat_generation_resolution": "CURRENT_POINTER_FAIL_CLOSED",
   "manual_chat_canonical_artifact": "report2-run-result",
@@ -33,15 +33,28 @@
   "legacy_post_v7_telegram_sender": "DISABLED",
   "minimum_reportable_move_pct": null,
   "minimum_move_policy": "NO_FIXED_PERCENTAGE_FAVORABLE_MEASURED_TARGET_REQUIRED_FOR_WAIT_AND_ENTRY_TARGET_OPTIONAL_FOR_OBSERVE",
-  "minimum_move_evidence": ["MEASURED_MARKET_STRUCTURE", "FRESH_SCOPED_NATIVE_LIQUIDATION_LEVEL", "MEASURED_CANDLE_ANOMALY"],
+  "minimum_move_evidence": [
+    "MEASURED_MARKET_STRUCTURE",
+    "FRESH_SCOPED_NATIVE_LIQUIDATION_LEVEL",
+    "MEASURED_CANDLE_ANOMALY"
+  ],
   "approved_entry_policy": "REACHABLE_WITH_IMMUTABLE_ENTRY_AREA_FEE_HOLDING_AND_COST_INPUTS",
-  "approved_entry_performance_horizons_hours": [1, 4, 12, 24],
-  "approved_entry_performance_dimensions": ["DIRECTION", "IDEA_BASIS", "SOURCE", "COHORT"],
+  "approved_entry_performance_horizons_hours": [
+    1,
+    4,
+    12,
+    24
+  ],
+  "approved_entry_performance_dimensions": [
+    "DIRECTION",
+    "IDEA_BASIS",
+    "SOURCE",
+    "COHORT"
+  ],
   "approved_user_message_layout": "FROZEN_GOLDEN_TESTED_RUSSIAN_V1",
   "stale_telegram_dispatch_policy": "EXPIRE_OR_FAIL_FINAL_NEVER_LATE_SEND",
-  "d1_per_run_read_burst_cap": 34000,
-  "d1_per_run_write_burst_cap": 560,
-  "d1_max_reserved_reads_at_80_runs": 2720000,
+  "d1_per_run_read_burst_cap": 54000,
+  "d1_per_run_write_burst_cap": 840,
   "d1_daily_read_limit": 3500000,
   "liqflow_access": "PUBLIC_PILOT_UNTIL_2026-10-27_THEN_API_KEY_REQUIRED",
   "automatic_asset_identity": "DEX_SCREENER_AND_GECKOTERMINAL_DOMINANT_ADDRESS_AGREEMENT",
@@ -58,8 +71,15 @@
   "combined_liquidation_network_cap_per_run": 8,
   "full_report_shared_extension_request_cap": 5,
   "multi_source_max_deep_checks_per_31_days": 2666,
-  "multi_source_max_shared_requests_per_31_days": 14074,
-  "multi_source_provider_monthly_caps": {"HYPERLIQUID": 10000, "GTRADE": 4000, "LIGHTER": 10000, "GMX": 8000, "LIQFLOW": 10000, "OXARCHIVE": 5000},
+  "multi_source_max_shared_requests_per_31_days": 14353,
+  "multi_source_provider_monthly_caps": {
+    "HYPERLIQUID": 10000,
+    "GTRADE": 4000,
+    "LIGHTER": 10000,
+    "GMX": 8000,
+    "LIQFLOW": 10000,
+    "OXARCHIVE": 5000
+  },
   "multi_source_oxarchive_worst_case_credits_per_31_days": 2666,
   "multi_source_oxarchive_credit_headroom": 2334,
   "full_report_cross_exchange_family_rotation_share": 0.3333333333,
@@ -84,7 +104,15 @@
   "public_collector_telegram_delivery": false,
   "stage0_history_preferred_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
   "stage0_history_fallback_source": "SCAN_RUNS_COMPACT_V2",
-  "history_compatibility": {"schema_version": "report2-market-snapshot-batch-v1", "unit_normalizer": "HTX_USDT_PERP_SNAPSHOT_UNITS_V1", "generations": ["MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M", "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M", "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"]},
+  "history_compatibility": {
+    "schema_version": "report2-market-snapshot-batch-v1",
+    "unit_normalizer": "HTX_USDT_PERP_SNAPSHOT_UNITS_V1",
+    "generations": [
+      "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M",
+      "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+      "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
+    ]
+  },
   "stage0_history_expected_5m_points_6h": 72,
   "stage0_history_max_shard_rows_6h": 576,
   "stage0_history_max_page_shards": 24,
@@ -93,18 +121,34 @@
   "d1_max_reserved_writes_at_86_runs": 48160,
   "d1_total_planned_rows_read": 3374000,
   "d1_total_planned_rows_written": 66160,
-  "supplemental_adjustment_weights": {"CROSS_EXCHANGE_DERIVATIVES": 32, "MARKET_STRENGTH_SPOT": 30, "SMART_MONEY_ONCHAIN": 20, "SUPPORTING_RISK": 18},
-  "predictive_source_weight_range": [0.75, 1.25],
+  "supplemental_adjustment_weights": {
+    "CROSS_EXCHANGE_DERIVATIVES": 32,
+    "MARKET_STRENGTH_SPOT": 30,
+    "SMART_MONEY_ONCHAIN": 20,
+    "SUPPORTING_RISK": 18
+  },
+  "predictive_source_weight_range": [
+    0.75,
+    1.25
+  ],
   "r8_20_readiness_observability": "EIGHT_LONG_SHORT_BY_1H_4H_12H_24H_CELLS_80_TRAIN_PLUS_40_HOLDOUT",
   "r8_20_readiness_auto_promotion": false,
   "r8_20_hourly_rows_read_cap": 3000,
   "htx_public_risk_daily_attempt_cap": 144,
   "htx_public_risk_cache_minutes": 60,
-  "htx_public_risk_requests_per_refresh": 3
-  ,"macro_calendar_daily_attempt_cap": 12
-  ,"macro_calendar_cache_hours": 6
-  ,"macro_calendar_requests_per_refresh": 2
-  ,"deribit_alt_options_daily_attempt_cap": 168
-  ,"deribit_alt_options_catalog_cache_hours": 6
-  ,"deribit_alt_options_summary_cache_minutes": 20
+  "htx_public_risk_requests_per_refresh": 3,
+  "macro_calendar_daily_attempt_cap": 12,
+  "macro_calendar_cache_hours": 6,
+  "macro_calendar_requests_per_refresh": 2,
+  "deribit_alt_options_daily_attempt_cap": 168,
+  "deribit_alt_options_catalog_cache_hours": 6,
+  "deribit_alt_options_summary_cache_minutes": 20,
+  "scheduled_analytics_minimum_interval_minutes": 40,
+  "scheduled_analytics_cycles_per_day": 36,
+  "full_cycle_deep_candidate_limit": 2,
+  "scheduled_deep_candidates_per_day": 72,
+  "manual_monthly_byk_reserve": 1705,
+  "d1_maximum_analytics_runs_per_day": 47,
+  "manual_deep_checks_reserved_per_day": 11,
+  "d1_max_reserved_reads_at_47_runs": 2538000
 }

@@ -71,6 +71,8 @@ const files=[
  'src/selected-early-evidence.mjs',
  'src/deep-candidate-order.mjs',
  'src/discovery-candidate-score.mjs',
+ 'src/two-candidate-policy.mjs',
+ 'src/bounded-hot-maintenance.mjs',
  'src/market-contracts.mjs',
  'src/candidate-task-queue.mjs',
  'src/asset-identity-cache.mjs',

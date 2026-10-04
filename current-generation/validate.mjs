@@ -4,10 +4,11 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
+import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='dd4fa4d5c8aa6b432a3c54c5025ba6851a3f254a7cba93ee79bbc77869f312a1';
+const expectedWorker='a1fd0c333d80b44482e91650d37288adb76452c1a65cc508db68f0ed8c5ff386';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -24,7 +25,7 @@ const checks=[
  '../audit-fixes/t16/run-gmx-native-smoke.mjs',
  '../audit-fixes/t16/run-gtrade-native-smoke.mjs',
  '../audit-fixes/t16/run-blockscout-index-smoke.mjs',
- 'files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs','files/src/verified-futures-flow-binding.mjs','files/src/htx-volume-profile.mjs','files/src/cross-venue-volume-profile.mjs','files/src/htx-volume-profile-collector.mjs',
+ 'files/src/two-candidate-policy.mjs','files/src/bounded-hot-maintenance.mjs','files/byk-quota-budget.mjs','files/runner-main.mjs','files/src/worker.js','files/src/htx-trade-json.mjs','files/src/verified-futures-flow-binding.mjs','files/src/htx-volume-profile.mjs','files/src/cross-venue-volume-profile.mjs','files/src/htx-volume-profile-collector.mjs',
  'files/src/official-source-registry.mjs',
  'files/src/user-approved-publication-policy.mjs','files/src/entry-area-rule-v2.mjs','files/src/tz101-scenario-plan.mjs','files/src/tz101-cost-assessment.mjs','files/src/technical-move-potential.mjs',
  'files/src/manual-run-summary.mjs','files/src/future-liquidation-map-source.mjs',
@@ -54,7 +55,7 @@ for(const rel of checks)run(['--check',path.join(here,rel)]);
 const tests=fs.readdirSync(path.join(here,'tests')).filter(x=>x.endsWith('.test.mjs')).sort().map(x=>path.join(here,'tests',x));
 run(['--test',...tests]);
 const generation=JSON.parse(fs.readFileSync(path.join(here,'GENERATION.json'),'utf8'));
-if(generation.schedule_minutes!==20||generation.scheduled_runs_per_day!==72||generation.manual_runs_reserved_per_day!==8||generation.burst_deep_checks_reserved_per_day!==6||generation.worst_case_31_day_requests_with_eight_manual_runs_daily!==13330||generation.scheduled_plus_burst_31_day_requests!==12090)throw Error('GENERATION_QUOTA_MATH_MISMATCH');
+if(generation.schedule_minutes!==20||generation.scheduled_runs_per_day!==72||generation.manual_runs_reserved_per_day!==8||generation.burst_deep_checks_reserved_per_day!==3||generation.worst_case_31_day_requests_with_eight_manual_runs_daily!==13330||generation.scheduled_plus_burst_31_day_requests!==11625)throw Error('GENERATION_QUOTA_MATH_MISMATCH');
 const sourceRuntime=process.argv[2]?path.resolve(process.argv[2]):null;
 let overlay=null;
 if(sourceRuntime){
@@ -82,4 +83,5 @@ if(sourceRuntime){
  run([path.join(here,'tests/stage392-persistence-contract.runtime.mjs'),runtime]);
  fs.rmSync(temp,{recursive:true,force:true});
 }
-console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:6,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));
+if(!proveTwoCandidateBudget().safe)throw Error('TWO_CANDIDATE_QUOTA_UNSAFE');
+console.log(JSON.stringify({status:'CURRENT_GENERATION_VALIDATED',generation:generation.generation,tests:'PASS',syntax:'PASS',schedule_minutes:20,scheduled_runs_per_day:72,manual_runs_per_day:8,burst_deep_checks_per_day:3,scheduled_analytics_interval_minutes:40,scheduled_analytics_cycles_per_day:36,full_cycle_candidate_limit:2,worst_case_31_day_requests:13330,overlay:overlay?'PASS':'NOT_REQUESTED'}));

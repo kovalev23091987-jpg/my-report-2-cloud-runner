@@ -49,7 +49,8 @@ import {evaluatePreflight} from './src/runtime-control.mjs';
 import {installRuntimeControl,claimAnalyticsLease,assertAnalyticsFence,renewAnalyticsLease,finishAnalyticsLease} from './src/analytics-lease.mjs';
 import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/durable-command-queue.mjs';
 import {collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
-import {createUnifiedHttpBudget} from './src/unified-budget.mjs';
+import {createUnifiedHttpBudget,HTTP_LIMITS} from './src/unified-budget.mjs';
+import {TWO_CANDIDATE_PLAN,TWO_NODE_HTTP_LIMITS,proveTwoCandidateBudget,deepRuntimeOptions} from './src/two-candidate-policy.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 
@@ -485,7 +486,7 @@ async function main() {
     .filter(([,row])=>Boolean(row?.chain&&row?.contract_or_mint&&row?.official_feeds?.length&&row?.official_domains?.length&&((row?.coinpaprika_id&&row?.sector_tag)||(row?.coingecko_id&&row?.coingecko_category_id))))
     .map(([base])=>`${String(base).toUpperCase()}-USDT`);
   console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
-  const unifiedHttpBudget=createUnifiedHttpBudget();
+  const unifiedHttpBudget=createUnifiedHttpBudget({...HTTP_LIMITS,...TWO_NODE_HTTP_LIMITS});
   await installRuntimeControl(env.DATA_DB);
   await installProviderMinuteLedger(env.DATA_DB);
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});
@@ -521,8 +522,27 @@ async function main() {
     ?{...parsedCommandIntent,mode:'EXACT_COIN_LIQUIDATIONS',contract:explicitManualContract,contract_source:'EXPLICIT_MANUAL_FIELD'}
     :parsedCommandIntent;
   const expectedManualContract=source==='manual_recovery'?(manualCommandClaim.row.contract||null):commandIntent.matched?(commandIntent.contract||null):explicitManualContract;
-  const expectedManualMode=source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
+  const expectedManualMode=source==='schedule'?'SCHEDULE':source==='manual_recovery'?manualCommandClaim.row.mode:commandIntent.matched?'LIQUIDATION_ONLY':expectedManualContract?'MANUAL_COIN':'FULL_MANUAL';
   env.REPORT2_MANUAL_MODE=expectedManualMode;
+  const executionBudget=proveTwoCandidateBudget();
+  if(!executionBudget.safe)throw new Error('TWO_CANDIDATE_BUDGET_UNSAFE');
+  env.REPORT2_DEEP_RUNTIME_OPTIONS=deepRuntimeOptions({actor:preflight.actor,mode:expectedManualMode});
+  env.REPORT2_DEEP_HTTP_ADMIT=unifiedHttpBudget.reserve;
+  console.log('TWO_CANDIDATE_EXECUTION_BUDGET',JSON.stringify(executionBudget));
+  if(source==='schedule'){
+    const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:preflight.actor});
+    if(!ownership.allowed)throw new Error(`PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:${ownership.status}`);
+    const cadence=await claimMaintenanceCadence(env.DATA_DB,{job_key:'TWO_CANDIDATE_ANALYTICS_40M',actor:manualCommandActor,now_ts:started,interval_ms:TWO_CANDIDATE_PLAN.scheduled_interval_minutes*60_000});
+    console.log('SCHEDULED_TWO_CANDIDATE_ADMISSION',JSON.stringify(cadence));
+    if(!cadence.claimed){
+      if(!['NOT_DUE','LEASE_ACTIVE'].includes(cadence.status))throw new Error(`SCHEDULED_CADENCE_NOT_CLOSED:${cadence.status}`);
+      const finish=await releaseAnalyticsLease();if(!finish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${finish.status}`);
+      return;
+    }
+    // Failed attempts also consume a cycle, preserving the provider reserve.
+    const charged=await completeMaintenanceCadence(env.DATA_DB,{job_key:cadence.job_key,actor:manualCommandActor,success:true,now_ts:started,result:'ATTEMPT_ADMITTED'});
+    if(charged.completed!==true)throw new Error(`SCHEDULED_CADENCE_CHARGE_FAILED:${charged.status}`);
+  }
   if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
   if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
   console.log('DURABLE_MANUAL_COMMAND_CLAIM',JSON.stringify({command_id:manualCommandId||null,claimed:manualCommandClaim.claimed,state:manualCommandClaim.row?.state||manualCommandClaim.status||null,mode:manualCommandClaim.row?.mode||null,contract:manualCommandClaim.row?.contract||null,recovered_by_scheduled_executor:source==='manual_recovery'}));
@@ -577,7 +597,7 @@ async function main() {
   maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
 });
 if (!d1NominalReservation.ok) throw new Error(`D1_RUN_RESERVATION_NOT_CLOSED:${d1NominalReservation.status}`);
-const d1RunReservation = buildR88BurstReservation(d1NominalReservation);
+const d1RunReservation = buildR88BurstReservation(d1NominalReservation,TWO_CANDIDATE_PLAN.d1_run_cap);
 if (!d1RunReservation.ok) throw new Error(`R8_8_BURST_RESERVATION_NOT_CLOSED:${d1RunReservation.status}`);
 const d1DailyBeforeReservationRaw = await loadDailyUsageAggregate(env.DATA_DB, started);
 const d1DailyBeforeReservation = buildR88DailyAdmissionView(d1DailyBeforeReservationRaw,d1RunReservation);
@@ -774,6 +794,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     env.REPORT2_CURRENT_CYCLE_EARLY_RESULT=result;
     return result;
   };
+  const stage0HttpGrant=unifiedHttpBudget.reserve({logical_request_id:`STAGE0:${started}`,lane:'hot',attempts:4});
+  if(!stage0HttpGrant.allowed)throw new Error('STAGE0_HTTP_NOT_ADMITTED');
   await worker.scheduled({ scheduledTime: started, cron: source === "schedule" ? "ROTATING_EXACT_20_MINUTES" : "manual" }, env, ctx);
   const leaseAfterWorker=await assertAnalyticsFence(env.DATA_DB,analyticsLease,{now:Date.now()});
   if(!leaseAfterWorker.allowed)throw new Error(`ANALYTICS_FENCE_LOST_AFTER_WORKER:${leaseAfterWorker.status}`);
