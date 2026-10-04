@@ -1,0 +1,862 @@
+{
+  "schema": "report2-preserved-sector-rendering-input-v1",
+  "source": {
+    "publication_id": "PUB:f4d28b404eaf1dfa985edbb243fa2da763f6654d",
+    "d1_meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 9.7793
+      },
+      "duration": 9.7793,
+      "changes": 0,
+      "last_row_id": 0,
+      "changed_db": false,
+      "size_after": 446169088,
+      "rows_read": 1,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "capture_at": "2026-10-04T11:35:38.428Z",
+    "source_http": 0,
+    "production_writes": 0
+  },
+  "canonical": {
+    "run_id": "1791105013968-1791105019503",
+    "snapshot_id": "S392:BTW-USDT:1791105089681",
+    "observed_ts": 1791105089681,
+    "status": "CLOSED",
+    "state": "REJECTED",
+    "metadata": {
+      "contract": "BTW-USDT",
+      "supporting_context": {
+        "version": "existing-source-consumer-v4-hyperliquid-recorder-20260925",
+        "status": "CLOSED",
+        "blocks": {
+          "supporting_risk": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "onchain": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "dex_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "protocol_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "hyperliquid_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_spot_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "historical_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_sequence_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_utility_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "exchange_flows": {
+            "status": "CLOSED",
+            "decision_block": "SMART_MONEY_ONCHAIN",
+            "facts": [
+              {
+                "advisory_only": true,
+                "directional_vote": false,
+                "hard_gate": false,
+                "score_contribution": 0,
+                "source": "NANSEN",
+                "decision_block": "SMART_MONEY_ONCHAIN",
+                "field": "CEX_NET_FLOW_TOKENS_2H",
+                "label": "Чистый приток на CEX по меткам Nansen за два полных часа (не сигнал продажи)",
+                "value": 322929.2670771158,
+                "unit": "BTW",
+                "source_ts": 1791104400000,
+                "window_start_ts": 1791097200000,
+                "window_end_ts": 1791104400000
+              }
+            ],
+            "inflow_tokens": 572068.837390716,
+            "outflow_tokens": 249139.57031360018,
+            "identity": {
+              "chain": "bnb",
+              "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+            },
+            "label_authority": "NANSEN",
+            "individual_addresses_verified": false,
+            "data_may_be_revised": true,
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0
+          },
+          "sector_comparison": {
+            "status": "CLOSED",
+            "facts": [
+              {
+                "advisory_only": true,
+                "directional_vote": false,
+                "hard_gate": false,
+                "score_contribution": 0,
+                "source": "CoinGecko",
+                "decision_block": "MARKET_STRENGTH_SPOT",
+                "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+                "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+                "value": "монета -21,33%, медиана +1,49%, разница -22,82 п.п.; сводные цены площадок",
+                "unit": "",
+                "source_ts": 1791104900000
+              }
+            ],
+            "blocks": {
+              "COINGECKO_SECTOR": {
+                "status": "CLOSED",
+                "block_id": "N15",
+                "relative_strength_pct_points": -22.822364999999998,
+                "eligible_peers": 50,
+                "category": "decentralized-finance-defi",
+                "source_ts": 1791104900000,
+                "advisory_only": true,
+                "directional_vote": false,
+                "hard_gate": false,
+                "score_contribution": 0
+              }
+            },
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0
+          },
+          "volume_profile": {
+            "version": "htx-volume-profile-v1-20260930",
+            "status": "CLOSED",
+            "source": "HTX_OFFICIAL",
+            "market": "HTX_LINEAR_USDT_PERPETUAL",
+            "contract": "BTW-USDT",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "method": "EXACT_TRADES_MINUTE_RECONCILED",
+            "window_start": 1791090600000,
+            "window_end": 1791105000000,
+            "window_minutes": 240,
+            "source_ts": 1791105032131,
+            "observed_ts": 1791105089681,
+            "expires_at": 1791105180000,
+            "coverage_fraction": 1,
+            "minutes_reconciled": 240,
+            "unique_trades": 1991,
+            "volume_unit": "BTW",
+            "total_base_volume": 303880,
+            "price_low": 0.913508,
+            "price_high": 1.142131,
+            "bin_count": 60,
+            "bin_width": 0.0038103833333333337,
+            "volume_by_price_bin": [
+              1500,
+              2920,
+              10220,
+              15380,
+              11080,
+              16540,
+              11640,
+              7620,
+              24320,
+              11880,
+              520,
+              4060,
+              500,
+              1360,
+              1520,
+              960,
+              600,
+              980,
+              3960,
+              20,
+              2260,
+              800,
+              4800,
+              4440,
+              1300,
+              3480,
+              920,
+              640,
+              6580,
+              10940,
+              7080,
+              660,
+              1660,
+              2300,
+              7240,
+              4480,
+              800,
+              780,
+              1300,
+              9320,
+              4140,
+              1200,
+              4980,
+              11760,
+              3020,
+              5100,
+              2720,
+              5740,
+              6680,
+              7800,
+              2100,
+              4980,
+              6800,
+              6320,
+              1540,
+              3660,
+              6820,
+              11560,
+              5480,
+              2120
+            ],
+            "poc": 0.9458962583333334,
+            "val": 0.913508,
+            "vah": 1.0811648666666667,
+            "value_area_fraction": 0.7287087008029486,
+            "poc_tie_rule": "LOWEST_PRICE_BIN",
+            "value_area_rule": "CONTIGUOUS_70_PERCENT_LARGER_ADJACENT_TIE_HIGH",
+            "last_closed_bars": [
+              {
+                "ts": 1791104820000,
+                "open": 1.135846,
+                "high": 1.136189,
+                "low": 1.133427,
+                "close": 1.13343,
+                "base_volume": 680
+              },
+              {
+                "ts": 1791104880000,
+                "open": 1.13343,
+                "high": 1.13343,
+                "low": 1.133427,
+                "close": 1.133427,
+                "base_volume": 1800
+              },
+              {
+                "ts": 1791104940000,
+                "open": 1.131651,
+                "high": 1.142131,
+                "low": 1.13015,
+                "close": 1.142131,
+                "base_volume": 3560
+              }
+            ],
+            "score_eligible": true,
+            "maximum_score_points": 1.5,
+            "profitability_proven": false,
+            "new_history_accumulated": false,
+            "fallback_reasons": []
+          },
+          "volume_profile_consensus": {
+            "status": "SINGLE_VENUE",
+            "factor": 0.5,
+            "primary": {
+              "version": "htx-volume-profile-v1-20260930",
+              "status": "CLOSED",
+              "source": "HTX_OFFICIAL",
+              "market": "HTX_LINEAR_USDT_PERPETUAL",
+              "contract": "BTW-USDT",
+              "decision_block": "MARKET_STRENGTH_SPOT",
+              "method": "EXACT_TRADES_MINUTE_RECONCILED",
+              "window_start": 1791090600000,
+              "window_end": 1791105000000,
+              "window_minutes": 240,
+              "source_ts": 1791105032131,
+              "observed_ts": 1791105089681,
+              "expires_at": 1791105180000,
+              "coverage_fraction": 1,
+              "minutes_reconciled": 240,
+              "unique_trades": 1991,
+              "volume_unit": "BTW",
+              "total_base_volume": 303880,
+              "price_low": 0.913508,
+              "price_high": 1.142131,
+              "bin_count": 60,
+              "bin_width": 0.0038103833333333337,
+              "volume_by_price_bin": [
+                1500,
+                2920,
+                10220,
+                15380,
+                11080,
+                16540,
+                11640,
+                7620,
+                24320,
+                11880,
+                520,
+                4060,
+                500,
+                1360,
+                1520,
+                960,
+                600,
+                980,
+                3960,
+                20,
+                2260,
+                800,
+                4800,
+                4440,
+                1300,
+                3480,
+                920,
+                640,
+                6580,
+                10940,
+                7080,
+                660,
+                1660,
+                2300,
+                7240,
+                4480,
+                800,
+                780,
+                1300,
+                9320,
+                4140,
+                1200,
+                4980,
+                11760,
+                3020,
+                5100,
+                2720,
+                5740,
+                6680,
+                7800,
+                2100,
+                4980,
+                6800,
+                6320,
+                1540,
+                3660,
+                6820,
+                11560,
+                5480,
+                2120
+              ],
+              "poc": 0.9458962583333334,
+              "val": 0.913508,
+              "vah": 1.0811648666666667,
+              "value_area_fraction": 0.7287087008029486,
+              "poc_tie_rule": "LOWEST_PRICE_BIN",
+              "value_area_rule": "CONTIGUOUS_70_PERCENT_LARGER_ADJACENT_TIE_HIGH",
+              "last_closed_bars": [
+                {
+                  "ts": 1791104820000,
+                  "open": 1.135846,
+                  "high": 1.136189,
+                  "low": 1.133427,
+                  "close": 1.13343,
+                  "base_volume": 680
+                },
+                {
+                  "ts": 1791104880000,
+                  "open": 1.13343,
+                  "high": 1.13343,
+                  "low": 1.133427,
+                  "close": 1.133427,
+                  "base_volume": 1800
+                },
+                {
+                  "ts": 1791104940000,
+                  "open": 1.131651,
+                  "high": 1.142131,
+                  "low": 1.13015,
+                  "close": 1.142131,
+                  "base_volume": 3560
+                }
+              ],
+              "score_eligible": true,
+              "maximum_score_points": 1.5,
+              "profitability_proven": false,
+              "new_history_accumulated": false,
+              "fallback_reasons": []
+            },
+            "confirmations": [],
+            "conflicts": [],
+            "skipped": [],
+            "independent_venues": 1,
+            "volumes_summed": false,
+            "score_counted_once": true
+          }
+        },
+        "facts": [
+          {
+            "source": "HTX",
+            "label": "Боковой объём HTX, 240м",
+            "value": "POC 0.94589626; VA 0.913508–1.0811649 USDT; 0 балла; одна площадка",
+            "unit": ""
+          },
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "source": "NANSEN",
+            "decision_block": "SMART_MONEY_ONCHAIN",
+            "field": "CEX_NET_FLOW_TOKENS_2H",
+            "label": "Чистый приток на CEX по меткам Nansen за два полных часа (не сигнал продажи)",
+            "value": 322929.2670771158,
+            "unit": "BTW",
+            "source_ts": 1791104400000,
+            "window_start_ts": 1791097200000,
+            "window_end_ts": 1791104400000
+          },
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "source": "CoinGecko",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "field": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+            "label": "Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет",
+            "value": "монета -21,33%, медиана +1,49%, разница -22,82 п.п.; сводные цены площадок",
+            "unit": "",
+            "source_ts": 1791104900000
+          }
+        ],
+        "no_new_hard_gate": true,
+        "no_directional_vote": true,
+        "new_sources_added": false,
+        "specialist_context_status": "CONTEXT_AVAILABLE"
+      },
+      "internal_market_context": {
+        "candidate_context": {
+          "asset_identity": {
+            "chain": "bsc",
+            "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+          }
+        },
+        "evidence_v2": {
+          "evidence": [
+            {
+              "evidence_id": "EV2:e868e4e75063991c5ecc65f39528b12709ae08c0f00011fa6eace452af83ffce",
+              "asset_id": "bsc:0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa",
+              "htx_contract": "BTW-USDT",
+              "block_id": "N15",
+              "metric_family": "SECTOR_RELATIVE_STRENGTH_CONTEXT",
+              "provider_id": "COINGECKO_SECTOR",
+              "upstream_id": "COINGECKO_AGGREGATED_VENUES",
+              "origin_event_id": "bitway:decentralized-finance-defi:1791104900000",
+              "dependency_group": "SECTOR:bitway:decentralized-finance-defi:1791104900000",
+              "source_ts": 1791104900000,
+              "observed_ts": 1791105060592,
+              "first_known_ts": 1791105060592,
+              "effective_from": null,
+              "effective_to": null,
+              "window_start": null,
+              "window_end": null,
+              "coverage_status": "PARTIAL_PROVIDER_DIRECTIONAL_CONTEXT",
+              "coverage_fraction": 0.75,
+              "unit": null,
+              "value": null,
+              "directional_strength": -1,
+              "risk_strength": null,
+              "identity_status": "EXACT",
+              "finality_status": "FINAL",
+              "schema_version": "EvidenceV2.1",
+              "raw_hash": "788ab3faf04eccb5957cf3460e3a19ed5ccdfee4c3e00094d2e1a14ab430c91b",
+              "expires_at": 1791105360592,
+              "cost_receipt_id": null,
+              "validation_status": "VALID",
+              "validation_reason": null,
+              "coin_id": "bitway",
+              "tag_id": "decentralized-finance-defi",
+              "category_name": "Decentralized Finance (DeFi)",
+              "target_source_ts": 1791104900000,
+              "target_change_24h_pct": -21.33319,
+              "peer_median_change_24h_pct": 1.489175,
+              "relative_strength_pct_points": -22.822364999999998,
+              "eligible_peers": 50,
+              "returned_category_rows": 100,
+              "full_sector_coverage": false,
+              "window": "PROVIDER_ROLLING_24H_AT_NEAR_SYNCHRONOUS_QUOTES",
+              "quote": "USD_AGGREGATED_NOT_HTX_EXECUTION_PRICE",
+              "direction_neutral": false,
+              "entry_eligible": false,
+              "is_htx_price": false,
+              "peers": [
+                {
+                  "id": "0x",
+                  "symbol": "ZRX",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.68327,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "1inch",
+                  "symbol": "1INCH",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 5.32494,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "aave",
+                  "symbol": "AAVE",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.23314,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "aerodrome-finance",
+                  "symbol": "AERO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 8.49038,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "aster-2",
+                  "symbol": "ASTER",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.7416,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "babylon",
+                  "symbol": "BABY",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 1.64861,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "bedrock-token",
+                  "symbol": "BR",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -20.81621,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "berachain-bera",
+                  "symbol": "BERA",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.18116,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "binance-staked-sol",
+                  "symbol": "BNSOL",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 1.23479,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "cap-4",
+                  "symbol": "CAP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -6.37103,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "chainlink",
+                  "symbol": "LINK",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.55838,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "chip-2",
+                  "symbol": "CHIP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 4.31948,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "coinbase-wrapped-xrp",
+                  "symbol": "CBXRP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.74896,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "compound-governance-token",
+                  "symbol": "COMP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 1.32974,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "convex-finance",
+                  "symbol": "CVX",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.75203,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "cow-protocol",
+                  "symbol": "COW",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.90568,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "crvusd",
+                  "symbol": "CRVUSD",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.02721,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "curve-dao-token",
+                  "symbol": "CRV",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.71622,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "dai",
+                  "symbol": "DAI",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.014,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "derive",
+                  "symbol": "DRV",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 8.42547,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "dexe",
+                  "symbol": "DEXE",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.31909,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "dydx-chain",
+                  "symbol": "DYDX",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.63245,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "edgex",
+                  "symbol": "EDGE",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.06913,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "ethena",
+                  "symbol": "ENA",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.14065,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "ethena-staked-ena",
+                  "symbol": "SENA",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.16751,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "ether-fi",
+                  "symbol": "ETHFI",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 5.0998,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "falcon-finance-ff",
+                  "symbol": "FF",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -2.55224,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "flying-tulip",
+                  "symbol": "FT",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 9.37886,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "frax-ether",
+                  "symbol": "FRXETH",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 1.09562,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "gmx",
+                  "symbol": "GMX",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.04951,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "gnosis",
+                  "symbol": "GNO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.3835,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "hastra-auto",
+                  "symbol": "AUTO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.02234,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "havven",
+                  "symbol": "SNX",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 1.73004,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "hyperliquid",
+                  "symbol": "HYPE",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.64513,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "injective-protocol",
+                  "symbol": "INJ",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.26599,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "instadapp",
+                  "symbol": "FLUID",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 4.3615,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "iota",
+                  "symbol": "IOTA",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 13.82852,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "jito-governance-token",
+                  "symbol": "JTO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 6.88933,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "jupiter-exchange-solana",
+                  "symbol": "JUP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 5.46474,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "jupiter-perpetuals-liquidity-provider-token",
+                  "symbol": "JLP",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.58621,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "just",
+                  "symbol": "JST",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.35342,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "kamino",
+                  "symbol": "KMNO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": -0.99721,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "kinetiq",
+                  "symbol": "KNTQ",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 6.01564,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "lido-dao",
+                  "symbol": "LDO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.08661,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "lighter",
+                  "symbol": "LIT",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 3.98686,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "mag7-ssi",
+                  "symbol": "MAG7.SSI",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.88433,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "meteora",
+                  "symbol": "MET",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 6.36163,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "morpho",
+                  "symbol": "MORPHO",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 7.28925,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "msol",
+                  "symbol": "MSOL",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 0.89524,
+                  "quote": "USD_AGGREGATED"
+                },
+                {
+                  "id": "numeraire",
+                  "symbol": "NMR",
+                  "source_ts": 1791104900000,
+                  "change_24h_pct": 2.85261,
+                  "quote": "USD_AGGREGATED"
+                }
+              ],
+              "sector_proof": "EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1",
+              "direction_policy": "RELATIVE_STRENGTH_SUPPORTS_LONG_RELATIVE_WEAKNESS_SUPPORTS_SHORT_LOW_WEIGHT"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-04T09:11:29.681Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: идея отклонена\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена\nПРИЧИНЫ\n- Закрытые минутные свечи: 15\n- Открытый интерес HTX: +5,008488964% за 1 ч; контракты, окно 04.10 11:00–04.10 12:00 МСК.\n- Открытый интерес HTX: +3,100516753% за 4 ч; контракты, окно 04.10 08:00–04.10 12:00 МСК.\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: Гейт.\nЖёсткие проверки: 1.\nОснова идеи: ликвидационные зоны и ускорение движения.\nПАМП И ЛИКВИДАЦИИ\nСильные ликвидации выше: 1,154465473–1,185459779 USDT (+1,15…+3,86%) — средняя; оценка 10049,42288 USDT; Расчётная модель HTX; 1,3411503–1,363661614 USDT (+17,5…+19,47%) — средняя; оценка 10590,86546 USDT; Расчётная модель HTX; 1,490607236–1,515627197 USDT (+30,6…+32,79%) — средняя; оценка 13672,74852 USDT; Расчётная модель HTX; 1,927373804–1,948540665 USDT (+68,86…+70,72%) — средняя; оценка 11611,45661 USDT; Расчётная модель HTX.\nСильные ликвидации ниже: 0,9730737568–0,9820393353 USDT (−13,96…−14,75%) — средняя; оценка 12437,30457 USDT; Расчётная модель HTX; 0,825386161–0,8546500757 USDT (−25,12…−27,69%) — средняя; оценка 10419,05216 USDT; Расчётная модель HTX; 0,7512468001–0,7853686099 USDT (−31,19…−34,18%) — средняя; оценка 21862,03034 USDT; Расчётная модель HTX; 0,7012580047–0,734035361 USDT (−35,69…−38,56%) — средняя; оценка 14647,65967 USDT; Расчётная модель HTX.\nРазмер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.\nПокрытие: только доступные площадки и диапазон источника; время снимка 04.10 12:10 МСК.\nCoinLobster: устаревшая модельная подсказка от 04.10, 11:28 МСК — крупнейшая ближайшая зона ниже цены; числовые уровни и объёмы не предоставлены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Боковой объём HTX, 240м: POC 0.94589626; VA 0.913508–1.0811649 USDT; 0 балла; одна площадка — ХТХ.\n- Чистый приток на CEX по меткам Nansen за два полных часа (не сигнал продажи): 322929.2670771158 BTW — NANSEN.\n- Сектор «децентрализованные финансы» за 24 часа, выборка 50 монет: монета -21,33%, медиана +1,49%, разница -22,82 п.п.; сводные цены площадок — CoinGecko.\nИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА\n- С 2026-10-04T08:58:26.847Z по 2026-10-04T09:10:31.805Z: состав свежих подтверждённых фактов изменился — добавлено 4, перестало быть текущими 16."
+}

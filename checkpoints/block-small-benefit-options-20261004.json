@@ -1,0 +1,166 @@
+{
+  "schema": "report2-options-route-verification-v1",
+  "github_head": "9b47cff5e771d6da729a7fa3f295112ad2f9913d",
+  "contract": "SOL-USDT",
+  "result": {
+    "version": "deribit-alt-options-evidence-v2-settlement-route-20261004",
+    "status": "CLOSED",
+    "contract": "SOL-USDT",
+    "evidence": [
+      {
+        "evidence_id": "EV2:3a5caf87e0dae72644bad304ebefc1824096d994c6784a428097f4b5b931dcea",
+        "asset_id": "htx-futures:SOL-USDT",
+        "htx_contract": "SOL-USDT",
+        "block_id": "N14",
+        "metric_family": "ALT_OPTIONS_LIQUIDITY_CONTEXT",
+        "provider_id": "DERIBIT_ALT_OPTIONS",
+        "upstream_id": "DERIBIT_PUBLIC_OPTIONS",
+        "origin_event_id": "SOL:1791113440150",
+        "dependency_group": "DERIBIT_OPTIONS:SOL:1791113440150",
+        "source_ts": 1791113440150,
+        "observed_ts": 1791113442067,
+        "first_known_ts": 1791113442067,
+        "effective_from": null,
+        "effective_to": null,
+        "window_start": null,
+        "window_end": null,
+        "coverage_status": "COMPLETE",
+        "coverage_fraction": 1,
+        "unit": null,
+        "value": null,
+        "directional_strength": null,
+        "risk_strength": null,
+        "identity_status": "EXACT",
+        "finality_status": "FINAL",
+        "schema_version": "EvidenceV2.1",
+        "raw_hash": "de40aa69e550eb59d9dde480efba87f7f53b1f3618acb57de0421e84b29c343f",
+        "expires_at": 1791114642067,
+        "cost_receipt_id": null,
+        "validation_status": "VALID",
+        "validation_reason": null,
+        "source_clock_policy": "PROVIDER_TIMESTAMP_ONLY",
+        "base_currency": "SOL",
+        "open_instrument_count": 702,
+        "liquid_instrument_count": 702,
+        "total_volume": 15820,
+        "total_open_interest": 612350,
+        "direction_policy": "CONTEXT_ONLY_NO_DIRECTIONAL_BONUS"
+      }
+    ],
+    "summary": {
+      "base_currency": "SOL",
+      "open_instrument_count": 702,
+      "liquid_instrument_count": 702
+    },
+    "internal_only": true,
+    "network_calls": 2,
+    "cache_status": "REFRESHED",
+    "whole_job_admission": {
+      "allowed": true,
+      "status": "RESERVED",
+      "lane": "background",
+      "attempts": 2,
+      "logical_request_id": "EV2:DERIBIT_ALT_OPTIONS:OPTIONS_REPAIR:37198962593:SOL:1492594",
+      "duplicate": false
+    },
+    "admission": {
+      "allowed": true,
+      "status": "RESERVED",
+      "source": "DERIBIT_ALT_OPTIONS",
+      "day_utc": "2026-10-04",
+      "attempts": 2
+    },
+    "receipts": [
+      {
+        "route": "CATALOG",
+        "status": "CLOSED",
+        "http_status": 200,
+        "error": null
+      },
+      {
+        "route": "SUMMARY",
+        "status": "CLOSED",
+        "http_status": 200,
+        "error": null
+      }
+    ]
+  },
+  "context": {
+    "version": "block-result-context-v1-20261004",
+    "status": "CLOSED",
+    "facts": [
+      {
+        "advisory_only": true,
+        "directional_vote": false,
+        "hard_gate": false,
+        "score_contribution": 0,
+        "source": "Deribit",
+        "label": "Опционный рынок актива",
+        "value": "открытых инструментов 702, с котировками или активностью в проверенной выборке 702; это не оценка опционного риска и не разрешение сделки",
+        "unit": "",
+        "field": "ALT_OPTIONS_LIQUIDITY_CONTEXT",
+        "block_id": "N14",
+        "evidence_id": "EV2:3a5caf87e0dae72644bad304ebefc1824096d994c6784a428097f4b5b931dcea",
+        "physical_root_key": "htx-futures:SOL-USDT|SOL:1791113440150",
+        "source_ts": 1791113440150,
+        "observed_ts": 1791113442067
+      }
+    ],
+    "internal_only": true
+  },
+  "calls": [
+    "https://www.deribit.com/api/v2/public/get_instruments?currency=any&kind=option&expired=false",
+    "https://www.deribit.com/api/v2/public/get_book_summary_by_currency?currency=USDC&kind=option"
+  ],
+  "source_http": 2,
+  "deep_checks_started": 0,
+  "database_usage": {
+    "requests": 12,
+    "rows_read": 6,
+    "rows_written": 5,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "production_write_scope": "EXISTING_SOURCE_QUOTA_AND_CACHE_ONLY",
+  "canonical_writes": 0,
+  "telegram_calls": 0,
+  "entry_authorized": false,
+  "main_accepted": false
+}

@@ -1,4 +1,30 @@
-# Текущий статус после уточнения владельца 04.10.2026
+# Последний проверенный выпуск PR93 — 04.10.2026
+
+Main05703333e5b7eaa2664020109e98f322f43d56e4, head9b47cff5e771d6da729a7fa3f295112ad2f9913d, exact sameGit tree7cbdb4d10e79714babd9f04c84d610d7191a3502. Cloud workflow37198962593/job111426517137 SUCCESS: текущая validation, ранний transport/persistence,7runtime controls,37integration, два реальных исторических replay, индексированный read-only recovery и настоящий N14SOL→USDC source probe. ZIP11301209634 проверен SHA256fd0fc41d898840a019cc1ff63fb5be2a3b065c51f28dedfc3b497778afd50cea. Compiledtree e5df05458a4084aca787e61d45b243b2a9c472e1760658ce4d3424882bd1afcc. Worker unchanged.
+
+8из15типов блоков дали подтверждённую пользу НА РАЗНЫХ настоящих входах: N02/N04/N05/N06/N09/N12 в историческом BTW formatter replay, N15 отдельно проверен по точному исходному D1 canonical и сохранённому тексту (50peers,1read/0write), N14 дал настоящий SOL catalog/summary context (702открытых инструмента,702с котировками либо активностью,2HTTP/6reads/5sourcequota-cache writes,0canonical writes). Нельзя переносить эти8на каждую монету или один свежий запуск. В последнем основном NEAR/BR run фактический сохранённый rendering доказан для2блоков N09/N12 у каждой; у обоих недостаточные данные. Все15 сохранены, N13/N17 остаются удалены. MAIN/TG и весь проект НЕ приняты полностью.
+
+## Применимость и оставшийся ремонт
+
+| Блок | Подтверждённый небольшой результат либо следующий ремонт | Статус |
+|---|---|---|
+|N01|Структурированные официальные unlock/vesting facts; общий RSS не является unlock-проверкой|Ремонт остаётся|
+|N02|Точное предложение10B и отсутствие изменения между двумя наблюдениями|Польза доказана на BTW|
+|N03|Достоверное supply decrease/burn/buyback; перевод к zero-address сам по себе не доказывает изменение totalSupply|Применимых фактов ещё нет|
+|N04|3события1TX,238token каждое; не суммировать в714netflow|Польза доказана на BTW|
+|N05|2completehours Nansen token in/out, охват25%, неUSD|Польза доказана на BTW|
+|N06|60мин exact-address Bluesky,0authors/posts в этой выборке|Польза доказана на BTW|
+|N07|Официальный headline/date/host; actual fresh source+rendering проверить|Ожидает применимых facts|
+|N08|Scoped HTX opening restriction; не смешивать isolated margin и futures execution|Проверить применимую квитанцию|
+|N09|Isolated margin opening permission с явной областью|Доказано BTW и recent NEAR/BR|
+|N10|Настоящие технические target/path/invalidation и применение либо отказ плана|Ремонт/доказательство остаются|
+|N11|Measured order-book depth/execution stress из фактического same-snapshot proof|Ремонт/доказательство остаются|
+|N12|Bounded taker trades buy/sell USDT и count; не24h/whales|Доказано BTW и recent NEAR/BR|
+|N14|Deribit exact catalog/summary по settlement currency, реальный clock; отсутствующий рынок только этой площадки|Source context SOL доказан, risk/gate ещё нет|
+|N15|Фактическое sector basket сравнение50peers, точный saved rendering|Польза доказана на BTW, functional peers ещё проверить|
+|N16|Same-contract-quantity execution cost с реальным book, fees/funding явно missing|Ремонт/доказательство остаются|
+
+# Архив точки после уточнения владельца 04.10.2026
 
 Предыдущая редакция и PR91 преждевременно вывели N01/N04/N06/N14 по отсутствию готового consumer. Владелец уточнил критерий: оставить даже небольшую достоверную пользу; сначала исправлять; удалять только абсолютно бесполезные и неисправимые блоки. Все четыре возвращаются. Активны 15 (N13/N17 остаются исключены по прежнему решению).
 
@@ -68,3 +94,10 @@ Cloud candidate71a158/workflow37198318979: вся offline validation, ранни
 Cloud workflow37198548619/head0e1214 SUCCESS: полные checks и recovery9D1reads/0writes/0sourceHTTP; exactrun1791111337657-1791111344224, BR snapshotS392:BR-USDT:1791111402482 и NEAR S392:NEAR-USDT:1791111378863. По2готовых контекстных факта N09/N12 у каждой монеты в canonical.supporting_context, но actionability manual_text=NULL; сохранённый presentation_inputs_json тоже нужно учитывать, как делает основной loadCanonicalRunOutput. Без этого actual persisted rendering не подтвержден, replay подтверждает факты отдельно. BR OBSERVE/NEAR REJECTED, у обоих data_quality.sufficient=false,46/72historyslots и missingflow24h; BR spotquality также insufficient. Не выдавать наблюдение за вход.
 
 N14 real cloud probe:1catalogHTTP/6reads/5source-quota/cache writes, Deribit exactNEAR openoptions0. Новый малый потребитель сохраняет полезный факт отсутствия опционов на ЭТОЙ площадке с временем наблюдения staticcatalog, без zero-risk/score/quote claims; транспортная ошибка такого факта не создаёт. Версия cache повышена, старые неподтверждённые counts не обходят новый маршрут. Дополнительно проверить фактический summary маршрут SOL→USDC двумя запросами максимум, отдельно от MAIN, безdeep или канонических записей. Это не замена топ-кандидата: только проверка источника, не торговый отбор.
+
+
+## Следующее автономное действие
+
+Следующий технический маршрут N11/N16: финальный HTX execution_snapshot сохраняется в full_evidence_shadow_log.stage392_proof_bundle_json (prepareFullEvidenceProofBundle); не использовать HTTP receipt как доказательство. Читать по точному contract/observed_ts через существующий индекс, проверять snapshot_id, identity и immutable bundle; verifyExecutionFacts из src/tz101-execution-facts.mjs пересчитывает реальные bounded bids/asks, whole contract size/tick и планы entry/exit для ОДНОГО количества контрактов. Отдельный отчетный consumer может дать depth/cost facts без score и entry_authorization. Исходный full-evidence source сохраняется, CORE worker менять не обязательно. Отсутствующие, будущие, stale и изменённые prepared.facts отклонять; не выдавать независимые одинаковые-USDT buy/sell impact за same-quantity roundtrip. Комиссии и funding не включены — явно указать. В loadCanonicalRunOutput информационные доказательства должны быть точно same-run/snapshot и отражены в фактическом report_text, не в одном metadata флажке. Новых full_manual ради этих данных не делать; исходный1791111337657-1791111344224 уже вD1.
+
+Продолжить N01/N03/official feeds и точную identity без ticker guesses, fresh MAIN/top2, flow24h, cloud schedule receipts, cleanup/quota и затем Telegram после технического MAIN с настоящим message_id. Историю не ждать для выпуска доступных исправлений, не фабриковать отсутствующую историю или вход. Hourly continuation6abd7056e60c819191dd4723398e975b возобновлена после выпуска; это отдельные cloud итерации, не обещание непрерывного процесса. Дорогие manual runs в каждом цикле запрещены, дополнительные2manual requests и2deep этой сессии учитывать вместе с предыдущими7commands/8deep, оставлять владельцу reserve. Первый запрос упал в preflight до market collect; второй собрал2deep, затем low-priority observer failed. Уже завершённые команды не повторять.
