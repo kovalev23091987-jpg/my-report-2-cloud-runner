@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "20efe70018c9f9feac78e74fcc3b20d6e85b0f17023045606a5bf7903bff1da5",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "ccc0d2c5934eb032451df1b6f3d363e939eb64e9b098c7685e72bf92567757a3",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "c4f7f9e3ac01108a1a13cc20083528e5a7359c0a508e0103cd8faa00f2fb7630",
     "current-generation/files/src/canonical-publication.mjs": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c"
   },
   "fixtures": {
@@ -23,6 +23,22 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-04",
+      "scope": "OWNER_REQUESTED_IMMUTABLE_EXECUTION_CONTEXT_IN_ONE_CANONICAL",
+      "authorization": "Owner requires all retained blocks to share one manual/approved Telegram report and requests batched repairs followed by joint testing.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "ccc0d2c5934eb032451df1b6f3d363e939eb64e9b098c7685e72bf92567757a3",
+          "after": "c4f7f9e3ac01108a1a13cc20083528e5a7359c0a508e0103cd8faa00f2fb7630"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "liquidation_chain_model_or_form_changed": false,
+      "layout_headings_bullet_limits_and_length_limit_changed": false,
+      "note": "New canonical snapshots can carry verified same-run immutable execution facts; older canonical rows remain untouched."
+    },
     {
       "date": "2026-10-04",
       "scope": "OWNER_REQUESTED_UNIFIED_15_BLOCK_MAIN_MANUAL_TELEGRAM",
