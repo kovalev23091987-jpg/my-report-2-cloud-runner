@@ -1,15 +1,19 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "CORE_BLOCKS",
+  "current_phase": "LIQUIDATION_COVERAGE",
   "phases": [
     {
       "id": "CORE_BLOCKS",
-      "status": "IN_PROGRESS",
-      "completion_receipt": null
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/core15-functional-acceptance-20261004.json",
+        "sha256": "61a25f296cb0f8cc849c67c404487b0d55fc28e1b9877398d73a274536567c13"
+      },
+      "completed_ts": 1791150935708
     },
     {
       "id": "LIQUIDATION_COVERAGE",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "completion_receipt": null
     },
     {
@@ -28,12 +32,12 @@
     "acquired_ts": 1791150090057,
     "expires_ts": 1791157290057
   },
-  "next_action": "Reconcile the remaining CORE block acceptance ledger from saved real source/use proofs, then repair only genuine unresolved primary/consumer gaps without repeating PR102–112. Preserve the explicit 17 inverse/delivery limitations and defer only EXACT_SIGNED_RAW_24H. Do not run MAIN until CORE acceptance is saved. Then execute actual 102x8 liquidation coverage/runtime/standalone/weekly, fresh joint MAIN and canonical Telegram SENT. Pending PR107 remains unmerged without its own actual proof.",
-  "last_verified_release": "checkpoints/n07-official-release-evidence-20261004.json",
+  "next_action": "Run actual per-asset/per-source liquidation coverage for the same 102-asset HTX crypto-futures universe, with all eight sources, real numeric future levels only, upstream dedup, durable database, standalone gate and weekly refresh. Do not replace top2 or run MAIN/Telegram until this phase is saved.",
+  "last_verified_release": "checkpoints/core15-functional-release-evidence-20261004.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791150488000,
+  "updated_ts": 1791150935708,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
