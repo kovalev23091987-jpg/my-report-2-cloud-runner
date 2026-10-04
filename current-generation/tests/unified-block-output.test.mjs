@@ -8,6 +8,8 @@ const {consumeBlockResultContext,confirmedBlockContextFacts,auditRenderedBlockRe
 const {canonicalFingerprint,renderCanonicalTelegram,assessActionability}=await import(new URL('canonical-publication.mjs',root));
 const {formatManualReport}=await import(new URL('manual-report-formatter.mjs',root));
 const {normalizeOfficialFeed,parseOfficialFeed}=await import(new URL('official-events-evidence.mjs',root));
+const {consumeCanonicalExecutionContext}=await import(new URL('execution-report-context.mjs',root));
+const execution=JSON.parse(fs.readFileSync(new URL('../../checkpoints/execution-context-source-20261004.json',import.meta.url)));
 
 const saved=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
 // Presentation controls reuse genuine historical facts, but explicitly invent
@@ -58,4 +60,43 @@ test('N07 requires an actual nonempty headline and shares exact dated facts with
  assert.equal(normalizeOfficialFeed({...p,body:body.replace('Обновление протокола','')}).evidence.length,0);
  const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:E\nDTSTAMP:20261004T080000Z\nDTSTART:20261005T080000Z\nURL:https://issuer.example/event\nEND:VEVENT\nEND:VCALENDAR';
  assert.equal(parseOfficialFeed({body:ics,feed_url:p.feed_url,official_domains:['issuer.example'],now}).events.length,0);
+});
+function executionControl(i=0){
+ const source=structuredClone(execution.rows[i]),c=control();
+ c.run_id=execution.origin_run_id;c.snapshot_id=source.bundle.snapshot_id;c.observed_ts=source.observed_ts;
+ c.metadata.contract=source.contract_code;c.metadata.internal_market_context.evidence_v2.evidence=[];
+ c.metadata.execution_context_source=source;
+ c.metadata.supporting_context.facts=consumeCanonicalExecutionContext({contract:source.contract_code,run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:c.observed_ts,execution_context_source:source}).facts;
+ c.source_receipts=[];c.analytical_fingerprint=canonicalFingerprint(c);return c;
+}
+test('immutable BR/NEAR book facts reach approved Russian manual and Telegram forms from one canonical',()=>{
+ for(let i=0;i<2;i++){
+  const c=executionControl(i),before=JSON.stringify(c),manual=formatManualReport(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+  assert.equal(manual.ok,true,manual.status);assert.equal(tg.ok,true,tg.status);
+  const audit=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
+  assert.deepEqual(audit.used_context_block_ids,['N11','N16']);assert.deepEqual(audit.telegram_used_context_block_ids,['N11','N16']);
+  assert.equal(audit.context_receipts.length,5);assert.equal(audit.telegram_context_receipts.length,3);
+  assert.match(manual.text,/комиссии и периодические платежи не включены/);assert.doesNotMatch(manual.text,/\bLONG\b|\bSHORT\b|\bfunding\b/);
+  assert.match(tg.text,i===0?/6\.28575 USDT для 2081 одинаковых контрактов/:/1\.553 USDT для 203 одинаковых контрактов/);
+  assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,false);assert.equal(audit.telegram_delivery_proven,false);
+  assert.equal(JSON.stringify(c),before);
+ }
+});
+test('canonical execution facts cannot survive changed quantity, foreign snapshot or forged descriptive text',()=>{
+ for(const mutate of [c=>c.snapshot_id='FOREIGN',c=>c.metadata.contract='OTHER-USDT',c=>{delete c.metadata.execution_context_source;},c=>c.metadata.execution_context_source.bundle.execution_gate.factual_basis.plans.LONG.measured_contracts++,c=>c.metadata.supporting_context.facts.forEach(f=>f.value='Подменённые издержки')]){
+  const c=executionControl();mutate(c);assert.equal(confirmedBlockContextFacts(c).length,0);
+  assert.equal(auditRenderedBlockResults({canonical:c,telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'})}).telegram_context_receipts.length,0);
+ }
+});
+test('exact assembled runtime canonical producer joins source facts without creating score, target or permission',{skip:!process.env.REPORT2_UNIFIED_MODULE_ROOT},async()=>{
+ const {buildRuntimeCanonicalBundle}=await import(new URL('canonical-runtime-adapter.mjs',root));
+ const source=structuredClone(execution.rows[0]);
+ const input={contract:source.contract_code,run_id:execution.origin_run_id,snapshot_id:source.bundle.snapshot_id,observed_ts:source.observed_ts};
+ const before=buildRuntimeCanonicalBundle(input),after=buildRuntimeCanonicalBundle({...input,execution_context_source:source});
+ assert.deepEqual(after.canonical.scores,before.canonical.scores);assert.equal(after.canonical.state,before.canonical.state);assert.equal(after.canonical.direction,before.canonical.direction);
+ assert.deepEqual(after.canonical.targets,before.canonical.targets);assert.deepEqual(after.canonical.hard_gates,before.canonical.hard_gates);
+ assert.deepEqual(after.block_rendered_results.used_context_block_ids,['N11','N16']);
+ assert.equal(after.canonical.metadata.supporting_context.facts.length,5);
+ assert.deepEqual(after.canonical.metadata.execution_context_source,source);
+ assert.match(after.manual.text,/6\.28575 USDT для 2081 одинаковых контрактов/);
 });

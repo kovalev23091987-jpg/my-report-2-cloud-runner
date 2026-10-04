@@ -104,6 +104,7 @@ import {
 import {
   buildRuntimeCanonicalBundle,
 } from "./canonical-runtime-adapter.mjs";
+import {loadExecutionReportSource} from './execution-report-context.mjs';
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
 import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
 import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
@@ -16970,13 +16971,20 @@ async function buildDeepCheckInput(params, env) {
   }
   console.log('STRICT_17_FINAL_COVERAGE',JSON.stringify({contract,run_id:String(params?.run_id||''),block_coverage:candidateEvidenceV2?.block_coverage||null}));
   const internalMarketContext={...globalInternalContext,candidate_context:supplementalCandidateContext,candidate_sources:supplementalCandidateContext?.sources||{},source_confirmation_route:sourceConfirmationReceipt,cross_exchange_risk:crossExchangeRiskContext,predictive_source_health:env?.REPORT2_LIQUIDATION_PREDICTIVE_HEALTH||null,evidence_v2:candidateEvidenceV2?.block_coverage?candidateEvidenceV2:(env?.REPORT2_EVIDENCE_V2||null),decision_ts:now,htx_reference_price:htxReferencePrice,htx_execution_receipt:htxExecutionReceipt,direction_candidate:directionCandidate,entry_direction_authorization:entryDirectionAuthorization,internal_only:true};
+  const canonicalRunId=String(params?.run_id||'').trim()||nativeLiquidationAcquisition?.run_id||`manual-shadow-${now}`;
+  let canonicalExecutionContextSource=null;
+  // One bounded indexed read of the source already saved by this exact cycle;
+  // failure hides only informational depth/cost facts, never opens an entry.
+  if(env?.DATA_DB&&String(env?.REPORT2_POST_V7_UNIFIED_ENABLED||'')==='1'){
+    const identity={contract,run_id:canonicalRunId,snapshot_id:stage392SnapshotId,observed_ts:now};
+    try{canonicalExecutionContextSource=await loadExecutionReportSource(env.DATA_DB,{...identity,canonical:identity},canonicalRunId);}catch{}
+  }
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
       contract,
-      run_id:
-        String(params?.run_id || "").trim() ||
-        nativeLiquidationAcquisition?.run_id || `manual-shadow-${now}`,
+      run_id: canonicalRunId,
+      execution_context_source: canonicalExecutionContextSource,
       snapshot_id:
         stage392SnapshotId,
       observed_ts:

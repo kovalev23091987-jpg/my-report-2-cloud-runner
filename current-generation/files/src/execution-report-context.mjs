@@ -4,7 +4,7 @@
  */
 import {verifyExecutionFacts} from './tz101-execution-facts.mjs';
 import {digest} from './upstream-proof-utils.mjs';
-export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v1-20261004';
+export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v2-canonical-20261004';
 const stamp=n=>Number.isSafeInteger(n)&&n>=1_000_000_000_000;
 const failure=reason=>({status:'NOT_CLOSED',reason,facts:[],entry_authorized:false,score_contribution:0});
 const number=n=>String(Number(n.toFixed(6)));
@@ -57,6 +57,19 @@ export async function loadExecutionReportSource(db,row,runId){
   bundle:{version:b.version,mode:b.mode,contract_code:b.contract_code,snapshot_id:b.snapshot_id,observed_ts:b.observed_ts,
    full_evidence:{full_evidence_id:b.full_evidence?.full_evidence_id,contract_code:b.full_evidence?.contract_code,snapshot_id:b.full_evidence?.snapshot_id,observed_ts:b.full_evidence?.observed_ts,persistence:b.full_evidence?.persistence},
    execution_gate:b.execution_gate,hard_veto:b.hard_veto,safety_gate_receipt:b.safety_gate_receipt}};
+}
+// The same immutable source can enter a NEW canonical snapshot. Historical
+// canonical rows are never rewritten, and no trading authority is transferred.
+export function consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source}={}){
+ const identity={contract,run_id,snapshot_id,observed_ts};
+ const proof=consumeExecutionReportContext({...identity,canonical:identity,execution_context_source},run_id);
+ const facts=proof.facts.map(f=>({...f,source:'HTX',unit:'',field:'IMMUTABLE_EXECUTION_SNAPSHOT',
+  label:f.label.replace(/LONG/g,'покупки').replace(/SHORT/g,'продажи'),
+  value:f.value.replace(/\bbid\b/g,'покупка').replace(/\bask\b/g,'продажа').replace(/HTX step0/g,'возвращённая выборка HTX').replace(/funding/g,'периодические платежи'),
+  evidence_id:`${f.evidence_ids.join('|')}|${f.block_id}|${f.label}`,
+  physical_root_key:f.physical_roots.join('|'),physical_root_keys:f.physical_roots,
+  consumer:'CANONICAL_CONFIRMED_EXECUTION_CONTEXT',advisory_only:true}));
+ return {...proof,facts};
 }
 export function auditExecutionReportRendering(output={}){
  const receipts=[];
