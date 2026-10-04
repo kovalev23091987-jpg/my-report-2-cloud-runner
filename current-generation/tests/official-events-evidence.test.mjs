@@ -50,3 +50,16 @@ test('failed feed requests respect backoff without repeated network calls',async
  const p={db:new DB(),contract:'ABC-USDT',run_id:'A',asset_metadata:META,now:NOW,request_admit:()=>({allowed:true})};let calls=0;p.fetch_impl=async()=>{calls++;return new Response('limited',{status:429});};
  const a=await collectOfficialEventsEvidence(p),b=await collectOfficialEventsEvidence({...p,run_id:'B',now:NOW+1000});assert.equal(a.status,'SOURCE_ERROR');assert.equal(b.status,'SOURCE_ERROR');assert.equal(b.network_calls,0);assert.equal(calls,1);
 });
+test('verified hosted RSS checks the exact publisher without trusting all Medium accounts',async()=>{
+ const metadata={official_domains:['bitway.com'],official_feeds:['https://medium.com/feed/@bitwayofficial'],official_feed_specs:[{url:'https://medium.com/feed/@bitwayofficial',format:'RSS',parser_id:'FIXED_RSS_V1',publisher_account:'bitwayofficial',publisher_authorization_url:'https://docs.bitway.com/resources/official-links'}]};
+ const body='<rss><channel><link>https://medium.com/@bitwayofficial?source=rss</link><item><guid>B1</guid><title>Protocol update</title><link>https://medium.com/@bitwayofficial/update</link><pubDate>Mon, 28 Sep 2026 02:30:00 GMT</pubDate></item></channel></rss>';
+ const p={contract:'BTW-USDT',asset_identity:{chain:'bsc',contract_or_mint:'0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa'},asset_metadata:metadata,feed_url:metadata.official_feeds[0],expected_format:'RSS',content_type:'application/rss+xml',observed_ts:NOW};
+ const good=normalizeOfficialFeed({...p,body});assert.equal(good.status,'CLOSED');assert.equal(good.evidence.length,1);assert.equal(good.other_announcement_channels_checked,false);
+ assert.equal(normalizeOfficialFeed({...p,body:body.replaceAll('@bitwayofficial','@unrelated')}).status,'OFFICIAL_PUBLISHER_NOT_CLOSED');
+ assert.equal(normalizeOfficialFeed({...p,body:body.replace('@bitwayofficial/update','@unrelated/update')}).evidence.length,0);
+ assert.equal(normalizeOfficialFeed({...p,body,asset_metadata:{...metadata,official_feed_specs:[]}}).status,'EXACT_OFFICIAL_FEED_REQUIRED');
+ const empty=body.replace(/<item>[\s\S]*<\/item>/,'');assert.equal(normalizeOfficialFeed({...p,body:empty}).status,'EMPTY_OR_STALE');
+ let calls=0;const out=await collectOfficialEventsEvidence({db:new DB(),contract:p.contract,asset_identity:p.asset_identity,asset_metadata:metadata,run_id:'HOSTED',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;assert.equal(url,p.feed_url);return new Response(body,{headers:{'content-type':'application/rss+xml'}});}});
+ assert.equal(calls,1);assert.equal(out.status,'CLOSED');assert.equal(out.source_scope,'OFFICIAL_ACCOUNT_RSS_ONLY');
+ assert.equal(parseOfficialFeed({body:'not a feed',feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).status,'SOURCE_FEED_SCHEMA_NOT_CLOSED');
+});

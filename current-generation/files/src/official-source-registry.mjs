@@ -26,7 +26,10 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   if(!identity)fail('ASSET_ID');
   if(!name)fail('OFFICIAL_NAME');
   if(!/^[a-z0-9.-]+$/.test(domain)||!domain.includes('.'))fail('OFFICIAL_DOMAIN');
-  if(!withinDomain(hostOf(canonical),domain))fail('CANONICAL_URL');
+  const hostedAccount=/^https:\/\/medium\.com\/feed\/@([a-z0-9_-]{2,64})$/i.exec(canonical)?.[1]?.toLowerCase()||null;
+  const authorization=clean(row?.publisher_authorization_url);
+  const authorizedHostedFeed=Boolean(hostedAccount&&format==='RSS'&&parser==='FIXED_RSS_V1'&&withinDomain(hostOf(authorization),domain));
+  if(!withinDomain(hostOf(canonical),domain)&&!authorizedHostedFeed)fail('CANONICAL_URL');
   if(!withinDomain(hostOf(evidence),domain))fail('EVIDENCE_LINK');
   if(!Number.isFinite(verified)||verified>now+5*60_000)fail('VERIFIED_AT');
   if(!timezone||!/^\d+[mhd]$/.test(refresh))fail('REFRESH_METADATA');
@@ -41,10 +44,10 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
    ...(prior||{}),chain:identity.chain,contract_or_mint:identity.contract_or_mint,official_name:name,
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
-   official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone}]:[])],
+   official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})}]:[])],
    coingecko_id:clean(row?.coingecko_id)||prior?.coingecko_id||null,coingecko_category_id:clean(row?.coingecko_category_id)||prior?.coingecko_category_id||null,coingecko_category_name:clean(row?.coingecko_category_name)||prior?.coingecko_category_name||null,coinpaprika_id:clean(row?.coinpaprika_id)||prior?.coinpaprika_id||null,sector_tag:clean(row?.sector_tag)||prior?.sector_tag||null,snapshot_space:snapshotSpace||prior?.snapshot_space||null,protocol_slug:clean(row?.protocol_slug)||prior?.protocol_slug||null,
   };
-  records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null});
+  records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})});
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:records.length?'CLOSED':'NOT_CLOSED',registry,records};
 }

@@ -14,6 +14,7 @@ const input=path.join(runtime,'src/worker.js');
 if(!fs.existsSync(input)||!expectedInputs.has(sha(input)))throw Error('CURRENT_GENERATION_INPUT_RUNTIME_MISMATCH');
 const files=[
  'official-event-sources.json',
+ 'main-official-event-sources.json',
  'runner-main.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',

@@ -2,8 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from '../files/src/official-source-registry.mjs';
+import {parseSupplementalIdentityRegistry} from '../files/src/supplemental-candidate-context.mjs';
 
 const source=JSON.parse(fs.readFileSync(new URL('../files/official-event-sources.json',import.meta.url),'utf8'));
+const mainSources=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url),'utf8'));
+
+test('main-only hosted publisher has exact project identity and issuer authorization',()=>{
+ const compiled=compileOfficialSourceRegistry(mainSources,{now:Date.parse('2026-10-04T10:00:00Z')});
+ const merged=mergeOfficialAndConfiguredRegistries({official:compiled,configured:compileOfficialSourceRegistry(source).registry});
+ const entry=parseSupplementalIdentityRegistry(merged.registry).entries.BTW;
+ assert.equal(entry.identity.chain,'bsc');assert.equal(entry.identity.contract_or_mint,'0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa');
+ assert.deepEqual(entry.official_domains,['bitway.com']);assert.equal(entry.official_feed_specs[0].publisher_account,'bitwayofficial');
+ assert.equal(entry.official_feed_specs[0].publisher_authorization_url,'https://docs.bitway.com/resources/official-links');
+ assert.equal(compileOfficialSourceRegistry(source).registry.BTW,undefined);
+ for(const bad of [undefined,'https://other.example/official-links']){
+  const x=structuredClone(mainSources);x.entries[0].publisher_authorization_url=bad;
+  assert.throws(()=>compileOfficialSourceRegistry(x),/CANONICAL_URL/);
+ }
+ const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(runner,/mainSourceRegistry=expectedManualMode==='LIQUIDATION_ONLY'\?supplementalIdentityRegistry/);
+});
 
 test('K16 versioned official registry exposes exact identity and the fixed Chainlink HTML feed',()=>{
  const out=compileOfficialSourceRegistry(source,{now:Date.parse('2026-09-30T12:00:00Z')});
