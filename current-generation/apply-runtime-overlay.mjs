@@ -95,7 +95,7 @@ const files=[
  'src/chain-supply-evidence.mjs',
  'src/sourcify-abi-evidence.mjs',
  'src/bluesky-attention-evidence.mjs',
- 'src/official-events-evidence.mjs','src/official-token-schedule.mjs','src/technical-plan-context.mjs',
+ 'src/official-events-evidence.mjs','src/official-token-schedule.mjs','src/technical-plan-context.mjs','src/solana-native-supply.mjs','src/htx-technical-structure.mjs',
  'src/official-source-registry.mjs','src/htx-contract-key.mjs','src/htx-crypto-universe.mjs',
  'src/gdelt-official-discovery.mjs',
  'src/shadow-market-pilot.mjs',

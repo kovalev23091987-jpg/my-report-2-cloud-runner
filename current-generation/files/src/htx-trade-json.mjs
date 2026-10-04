@@ -1,3 +1,4 @@
+import {observeHtxTechnicalSnapshot} from './htx-technical-structure.mjs';
 import {observeHtxVolumeSnapshot} from './htx-volume-profile.mjs';
 // Preserve wire identifiers before JSON Number rounding. No market measures,
 // timestamps, quantities, or non-trade responses are converted to strings.
@@ -45,7 +46,7 @@ export function parseHtxMarketJson(raw, url) {
   const target = new URL(url);
   const futures = target.hostname === 'api.hbdm.com' && /^\/linear-swap-ex\/market\/(?:history\/)?trade$/.test(target.pathname);
   const spot = target.hostname === 'api.htx.com' && /^\/market\/(?:history\/)?trade$/.test(target.pathname);
-  if (!futures && !spot) { const payload=JSON.parse(raw); observeHtxVolumeSnapshot(payload,url); return payload; }
+  if (!futures && !spot) { const payload=JSON.parse(raw); observeHtxVolumeSnapshot(payload,url); observeHtxTechnicalSnapshot(payload,url); return payload; }
   const payload = parseHtxTradePayload(raw);
   const symbol = target.searchParams.get(futures ? 'contract_code' : 'symbol');
   if (payload?.status === 'ok' && (!symbol || payload.ch !== `market.${symbol}.trade.detail`)) {

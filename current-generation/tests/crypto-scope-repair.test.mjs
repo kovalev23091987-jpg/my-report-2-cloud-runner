@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
 import {gunzipSync} from 'node:zlib';
-import {buildHtxCryptoUniverse} from '../files/src/htx-crypto-universe.mjs';
+import {buildHtxCryptoUniverse,mergeHtxLinearCatalogModes,HTX_LINEAR_MARGIN_CATALOG_URLS} from '../files/src/htx-crypto-universe.mjs';
 import {isExactHtxUsdtSwapKey} from '../files/src/htx-contract-key.mjs';
 import {compileOfficialSourceRegistry} from '../files/src/official-source-registry.mjs';
 import {collectReadyHtxVolumeProfile} from '../files/src/htx-volume-profile-collector.mjs';
@@ -49,4 +49,13 @@ test('Unicode fee receipt keeps the same approved rates and exact HTX contract',
 test('Unicode HTX profiles reach the exact encoded primary routes within unchanged admission budget',async()=>{
  clearVolumeProfileSnapshots();const calls=[];const r=await collectReadyHtxVolumeProfile({contract:'哈基米-USDT',run_id:'CONTROLLED_UNICODE_ROUTE',clock:()=>now,request_admit:p=>{assert.equal(p.attempts,3);return{allowed:true};},fetch_impl:async url=>{calls.push(new URL(url));return new Response(JSON.stringify({status:'error',err_msg:'controlled unavailable response'}));}});
  assert.equal(r.network_calls,3);assert.equal(calls.length,3);assert.ok(calls.every(u=>u.searchParams.get('contract_code')==='哈基米-USDT'));assert.notEqual(r.status,'CLOSED');
+});
+
+test('all margin modes are unioned and neither conflicts nor unidentified assets can claim complete enumeration',()=>{
+ assert.equal(new URL(HTX_LINEAR_MARGIN_CATALOG_URLS.isolated).searchParams.get('business_type'),'swap');
+ const base=catalogs.linear,unique={...base.data[0],symbol:'123CRYPTO',contract_code:'123CRYPTO-USDT',pair:'123CRYPTO-USDT',labels:[],tradfi_labels:[]},modes={all:base,cross:{...base,data:[unique]},isolated:{...base,data:[]}};
+ const merged=mergeHtxLinearCatalogModes({base,modes,observed_ts:now});assert.equal(merged.status,'CLOSED');assert.deepEqual(merged.new_contracts_vs_default,['123CRYPTO-USDT']);assert.ok(buildHtxCryptoUniverse({catalogs:{...catalogs,linear:merged.payload},classify_linear:classify,observed_ts:now}).assets.some(r=>r.symbol==='123CRYPTO'));
+ assert.equal(mergeHtxLinearCatalogModes({base,modes:{all:base},observed_ts:now}).status,'PARTIAL');
+ assert.equal(mergeHtxLinearCatalogModes({base,modes:{...modes,cross:{...base,data:[{...base.data[0],contract_size:999}]}},observed_ts:now}).status,'PARTIAL');
+ const unknown=structuredClone(catalogs);delete unknown.linear.data[0].labels;assert.equal(buildHtxCryptoUniverse({catalogs:unknown,classify_linear:classify,observed_ts:now}).status,'PARTIAL');
 });
