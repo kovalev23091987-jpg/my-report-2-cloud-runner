@@ -2,6 +2,7 @@ import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
+import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
 export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v4-immutable-execution-parity-20261004';
@@ -17,6 +18,15 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N02'&&row.metric_family==='PROVIDER_DAILY_NATIVE_SUPPLY_HISTORY'){
+  const d=row.supply_history_context,identity={chain:row.asset_id?.split(':')[0],asset_kind:'NATIVE',native_asset_id:row.asset_id?.replace(':native:mainnet',':mainnet'),contract_or_mint:null};
+  if(row.provider_id!=='COINMETRICS_SUPPLY'||row.upstream_id!=='COINMETRICS_NETWORK_DATA_COMMUNITY'||row.historical_only!==true||row.source_clock_policy!=='PROVIDER_DAILY_RECORD_TIMESTAMP_ONLY')return null;
+  const actual=deriveCoinmetricsSupplyContext({contract:row.htx_contract,identity,catalog:row.catalog,series:row.series,observed_ts:row.observed_ts});
+  if(!actual||actual.asset_id!==row.asset_id||actual.source_ts!==row.source_ts||JSON.stringify(actual)!==JSON.stringify(d))return null;
+  const amount=v=>v.replace('.',','),symbol=row.htx_contract.slice(0,-5);
+  return{source:'CoinMetrics / ежедневная история',label:'История предложения по данным CoinMetrics',value:`на ${new Date(actual.source_ts).toISOString().slice(0,10)}: ${amount(actual.latest_native_units)} ${symbol}; изменение между ${new Date(actual.history_start_ts).toISOString().slice(0,10)} и ${new Date(actual.source_ts).toISOString().slice(0,10)}: ${amount(actual.change_7_days_native_units)} ${symbol}; 8 ежедневных записей, исторические данные поставщика, текущий подтверждённый блок и причины изменения не проверены`};
+ }
+
  if(row.block_id==='N14'&&row.metric_family==='DELTA_SCOPED_OPTION_IV'){
   if(row.provider_id!=='DELTA_OPTIONS'||row.upstream_id!=='DELTA_EXCHANGE_INDIA_PUBLIC_OPTIONS'||row.base_currency!==row.htx_contract.slice(0,-5)||row.source_clock_policy!=='PROVIDER_MICROSECOND_TIMESTAMP_ONLY'||row.source_is_htx_execution_price!==false)return null;
   const declared=row.option_risk_context,risk=deriveDeltaOptionRisk({samples:declared?.samples,base_currency:row.base_currency,observed_ts:row.observed_ts});
