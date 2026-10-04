@@ -6,6 +6,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 import {patchWorker} from './patch-worker.mjs';
+import {loadExactCollector} from './github-backup.mjs';
 
 const basePath=process.env.REPORT2_HUB_MODULE_PATH
   ? path.resolve(process.env.REPORT2_HUB_MODULE_PATH)
@@ -93,7 +94,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v7-retention-before-write-20261004/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });
@@ -104,7 +105,7 @@ test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v7-retention-before-write-20261004/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
 });
 
@@ -113,7 +114,7 @@ test('T03 upgrades V4 while retaining exact bounded claims and a shorter backup 
   const previous='const worker_default={};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
-  assert.match(upgraded.source,/report2-public-collector-v6-once-pack-retry-20260929/);
+  assert.match(upgraded.source,/report2-public-collector-v7-retention-before-write-20261004/);
   assert.doesNotMatch(upgraded.source,/now \+ 24e4/);
   assert.equal((upgraded.source.match(/now \+ 12e4/g)||[]).length,2);
 });
@@ -138,4 +139,54 @@ test('T03 upgrades deployed V5 and preserves exact JSON bytes in the faster pack
   if(current.length)expected.push(JSON.stringify(current));
   assert.deepEqual(shards.map(row=>row.payload),expected);
   for(const shard of shards)assert.equal(shard.payload_bytes,Buffer.byteLength(shard.payload));
+});
+
+test('retention releases expired space before snapshot allocation and preserves failure receipts',async()=>{
+  const collector=loadExactCollector(fs.readFileSync(injectedPath,'utf8'));
+  const bucket=Date.UTC(2026,9,4,7,0),cutoff=bucket-72*3600000;
+  class FullSnapshotDB extends FakeD1{
+    constructor(){super();this.full=true;this.calls=[];}
+    async run(sql,args){
+      if(sql.includes('DELETE FROM report2_market_snapshot_batch_v1')){
+        assert.equal(args[0],cutoff);
+        assert.match(sql,/bucket<\?1/);assert.match(sql,/LIMIT 96/);
+        this.calls.push('retention');this.full=false;
+        return{meta:{changes:6,rows_read:6,rows_written:18}};
+      }
+      if(sql.includes('INSERT INTO report2_market_snapshot_batch_v1')){
+        this.calls.push('snapshot');
+        if(this.full)throw new Error('D1_ERROR: Exceeded maximum DB size');
+      }
+      return super.run(sql,args);
+    }
+  }
+  const db=new FullSnapshotDB(),originalFetch=globalThis.fetch;
+  globalThis.fetch=async url=>{
+    const value=String(url),contract_code='SOL-USDT',ts=bucket;
+    if(value.includes('batch_merged'))return Response.json({status:'ok',ts,ticks:[{contract_code,close:100,trade_turnover:1e6,ts}]});
+    if(value.includes('swap_open_interest'))return Response.json({status:'ok',ts,data:[{contract_code,volume:10,value:1000}]});
+    if(value.includes('swap_batch_funding_rate'))return Response.json({status:'ok',ts,data:[{contract_code,funding_rate:.001}]});
+    if(value.includes('swap_contract_info'))return Response.json({status:'ok',ts,data:[{contract_code,contract_status:1,business_type:'swap',contract_size:1}]});
+    throw Error(`UNEXPECTED_FETCH:${value}`);
+  };
+  const env={PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',REPORT2_CURRENT_GENERATION:'MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M'};
+  try{
+    await collector({scheduledTime:bucket},{...env,DATA_DB:db});
+    assert.deepEqual(db.calls,['retention','snapshot']);
+    assert.equal(db.health.status,'CLOSED');
+    assert.equal(db.usage.rows_written,22); // claim + 18 indexed deletes + insert + two acknowledgements
+    const failed=new FullSnapshotDB();
+    globalThis.fetch=async()=>{throw new Error('PROVIDER_UNAVAILABLE')};
+    await assert.rejects(collector({scheduledTime:bucket},{...env,DATA_DB:failed}),/PROVIDER_UNAVAILABLE/);
+    assert.equal(failed.usage.state,'ERROR');assert.equal(failed.usage.rows_written,21);
+  }finally{globalThis.fetch=originalFetch;}
+});
+
+test('V6 upgrades to retention fix and preserves every byte of the Hub prefix',()=>{
+  const injected=fs.readFileSync(injectedPath,'utf8').trim();
+  const prefix='const worker_default={fetch(){return new Response("hub")}};\n';
+  const previous=prefix+'var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v6-once-pack-retry-20260929";\nconst oldTail=true;\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
+  const upgraded=patchWorker(previous,injected);
+  assert.equal(upgraded.status,'UPGRADED');assert.ok(upgraded.source.startsWith(prefix));
+  assert.equal(patchWorker(upgraded.source,injected).status,'ALREADY_PATCHED');
 });

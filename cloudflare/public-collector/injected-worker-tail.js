@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v6-once-pack-retry-20260929";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v7-retention-before-write-20261004";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -213,6 +213,15 @@ async function __report2PublicCollectorScheduled(controller, env) {
   }
   var externalRequests = 0, rowsRead = 2, rowsWritten = Number(claim.rows_written ?? 0), payloadBytes = 0, contractCount = 0, shardCount = 0;
   try {
+    // Release expired payload space before any new snapshot allocation. Doing
+    // this after persist makes retention unreachable when the database is full.
+    // Keep the existing 72-hour cutoff, hourly cadence and 96-row bound.
+    if (new Date(bucket).getUTCMinutes() === 0) {
+      var cleanup = await env.DATA_DB.prepare(`DELETE FROM report2_market_snapshot_batch_v1 WHERE rowid IN
+        (SELECT rowid FROM report2_market_snapshot_batch_v1 WHERE bucket<?1 ORDER BY bucket,shard LIMIT 96)`).bind(bucket - __REPORT2_PUBLIC_COLLECTOR_RETENTION_MS).run();
+      rowsRead += Number(cleanup?.meta?.rows_read ?? 0);
+      rowsWritten += Number(cleanup?.meta?.rows_written ?? cleanup?.meta?.changes ?? 0);
+    }
     var prior = await __report2PublicCollectorPriorSnapshot(env.DATA_DB);
     rowsRead += Number(prior.shard_rows_read ?? 0);
     var cachedCatalog = __report2PublicCollectorCachedCatalog(prior);
@@ -282,11 +291,6 @@ async function __report2PublicCollectorScheduled(controller, env) {
     var persisted = await __report2PublicCollectorPersist(env.DATA_DB, shards);
     rowsRead += persisted.rows_read;
     rowsWritten += persisted.rows_written;
-    if (new Date(bucket).getUTCMinutes() === 0) {
-      var cleanup = await env.DATA_DB.prepare(`DELETE FROM report2_market_snapshot_batch_v1 WHERE rowid IN
-        (SELECT rowid FROM report2_market_snapshot_batch_v1 WHERE bucket<?1 ORDER BY bucket,shard LIMIT 96)`).bind(bucket - __REPORT2_PUBLIC_COLLECTOR_RETENTION_MS).run();
-      rowsWritten += Number(cleanup?.meta?.changes ?? 0);
-    }
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "CLOSED", error_text: null, contract_count: contractCount, shard_count: shardCount });
     console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
   } catch (error) {
