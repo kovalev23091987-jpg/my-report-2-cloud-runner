@@ -13,7 +13,7 @@ class D1{
 const token=(currency,baseChain,contractAddress)=>({currency,chains:[{baseChain,contractAddress}]});
 const response={code:200,data:[token('pump','SOLANA',mint),token('pepe','ETH',address),token('near','NEAR','')]};
 test('official HTX exact currency and chain address are required; duplicate, native and ambiguous mappings stay closed',()=>{
- const r=normalizeHtxAssetReferences(response);assert.equal(r.entries.PUMP.status,'CLOSED');assert.equal(r.entries.PUMP.identities[0].contract_or_mint,mint);assert.equal(r.entries.NEAR.status,'NATIVE_OR_UNSUPPORTED_HTX_ASSET');
+ const r=normalizeHtxAssetReferences(response);assert.equal(r.entries.PUMP.status,'CLOSED');assert.equal(r.entries.PUMP.identities[0].contract_or_mint,mint);assert.equal(r.entries.NEAR.status,'CLOSED');assert.equal(r.entries.NEAR.identities[0].native_asset_id,'near:mainnet');
  const duplicate=normalizeHtxAssetReferences({code:200,data:[token('abc','ETH',address),token('abc','ETH',secondAddress)]});assert.equal(duplicate.entries.ABC.status,'DUPLICATE_HTX_CURRENCY');
  for(const chains of [[{baseChain:'ETH',contractAddress:address},{baseChain:'BSC',contractAddress:secondAddress}],[{baseChain:'NEAR',contractAddress:''},{baseChain:'ETH',contractAddress:address}]]){
   assert.notEqual(normalizeHtxAssetReferences({code:200,data:[{currency:'abc',chains}]}).entries.ABC.status,'CLOSED');
