@@ -1,12 +1,12 @@
-# Локальный кандидат после PR94 — точная область N08, 04.10.2026 13:32 UTC
+# Последний проверенный выпуск PR95 — точная область N08, 04.10.2026 13:40 UTC
 
-Свежий исходный main `8bb5513c93a203e472308e264d8df06a582b6f97`, открыты только старые draft PR42/43/45; сохранённый release fence истёк и имеет статус `RUNTIME_RELEASED_CHECKPOINT_SAVE`. Облачный выпуск этого кандидата ещё не подтверждён.
+Main `66cdeb7d59e9ce5aa0ef2d7d6241476f6463a637`; PR95 head `b32c0efff89a54cd815e63f274a7fe70ca2307dd`; exact same Git tree `a801d84f3dbc47e5c944fb91665da83cd32c30b4`. Cloud workflow `37206255357` / job `111447948015` SUCCESS: integration `37/37`, validation PASS, early repair `21/21`, runtime controls `27/27`. Artifact `11305065246` (`useful-block-results-37206255357`) независимо скачан и проверен: ZIP SHA256 `7b510b34a2fdb8a03d004a8a061482fbc19f09fe48dfb8d12f9c9f3418e3ad29`; runtime manifest SHA256 `9bd86ea06e622d493f791ac2ad690626a0af4c6f4f5a6f6a3d31bca19cb8d7a3`; runtime tree `a22e4890cc23bc0f0e5362292733ef417aad7c2319d7201d895f9a0af4f92484`; worker unchanged `a5c8330e10297378f8771222f0c9ea2a04840c8271e12e62896d425886f8d032`.
 
 Исправлен парсер N08/N09 для официального HTX `/linear-swap-api/v1/swap_api_state`. По официальному контракту endpoint относится к isolated margin и поле `open` означает доступность открытия: `1` — доступно, `0` — недоступно. Теперь результат считается закрытым только при единственной строке точного контракта, `margin_mode=isolated`, `margin_account` равном выбранному контракту, бинарном `open` и свежем source clock. Несуществующие в официальной схеме поля `open_order/open_position` больше не используются и не сохраняются в общем кэше.
 
 `open=0` остаётся N08 adverse risk без LONG/SHORT vote; `open=1` остаётся ограниченным контекстом N09. Неверная область, другой margin account, `open=2`, чужой контракт и stale/future clock закрываются как PARTIAL/ERROR без влияния на score. Веса, порог70, формы, Telegram и liquidation не менялись.
 
-Полная локальная `node current-generation/validate.mjs` прошла: tests PASS, syntax PASS, текущие квоты и top2 limit сохранены. Точная квитанция: `checkpoints/n08-exact-scope-local-evidence-20261004.json`. Это ремонт схемы N08, а не доказательство фактического ограничения на последнем рынке. Свежий MAIN top2, общий отчёт15 блоков и Telegram с настоящим `message_id` остаются открыты.
+Полная локальная и облачная validation прошла; текущие квоты и top2 limit сохранены. Точная release-квитанция: `checkpoints/n08-exact-scope-local-evidence-20261004.json`. Это выпущенный ремонт схемы N08, а не доказательство фактического ограничения на последнем рынке. Поэтому остаются подтверждёнными `10/15` типов на разных реальных входах; N08 к ним пока не добавлен. Свежий MAIN top2, общий отчёт15 блоков и Telegram с настоящим `message_id` остаются открыты.
 
 ---
 
