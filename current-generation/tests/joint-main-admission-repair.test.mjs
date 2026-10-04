@@ -24,6 +24,19 @@ test('exact HTX native identity can close a capability check without inventing a
  assert.equal(sourceWasActuallyChecked({...checked,capability_registry_complete:false}),false);
 });
 
+test('versioned exact token binding can close missing routes while preserving missing-fact semantics',()=>{
+ const token={contract:'QNT-USDT',asset_identity:{chain:'ethereum',contract_or_mint:'0x4a220e6096b25eadb88358cb44068a3248254675'},identity_method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',now:T};
+ const checked=capabilityCheckedNoExactRoute(token,'OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY');
+ assert.equal(sourceWasActuallyChecked(checked),true);assert.equal(checked.exact_identity.contract,'QNT-USDT');
+ assert.equal(checked.decision_effect,'MISSING_FACT_NO_ZERO_NO_GREEN');assert.deepEqual(checked.evidence,[]);
+});
+
+test('an exact token with no configured provider route records a checked missing Nansen fact',()=>{
+ const source=fs.readFileSync(new URL('../files/src/candidate-evidence-v2-runtime.mjs',import.meta.url),'utf8');
+ assert.match(source,/if\(exactCapability&&String\(nansen\.status\|\|'NOT_EVALUATED'\)==='NOT_EVALUATED'\)nansen=noRoute/);
+ assert.match(source,/NO_EXACT_TOKEN_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY/);
+});
+
 test('native assets account for unavailable exact routes while all useful market blocks remain independently required',()=>{
  const sources={
   OFFICIAL_TOKEN_SCHEDULE:noRoute('OFFICIAL_TOKEN_SCHEDULE'),CHAIN_SUPPLY:noRoute('CHAIN_SUPPLY'),CHAIN_EVENTS:noRoute('CHAIN_EVENTS'),NANSEN_FLOWS:noRoute('NANSEN_FLOWS'),BLUESKY_PUBLIC:noRoute('BLUESKY_PUBLIC'),OFFICIAL_EVENTS:noRoute('OFFICIAL_EVENTS'),

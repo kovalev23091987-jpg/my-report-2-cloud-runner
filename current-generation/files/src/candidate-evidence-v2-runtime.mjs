@@ -49,11 +49,11 @@ export function rotateEvidenceRoleRoutes(routes,key){
 }
 export function exactCapabilityIdentity(params={}){
  const contract=String(params?.contract||'').trim().toUpperCase(),identity=params?.asset_identity,method=String(params?.identity_method||'').trim();
- if(!/^\S+-USDT$/u.test(contract)||!identity||!method.startsWith('HTX_OFFICIAL_'))return null;
+ if(!/^\S+-USDT$/u.test(contract)||!identity||!['HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK','HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(method))return null;
  const chain=String(identity.chain||'').trim().toLowerCase();if(!chain)return null;
  if(identity.asset_kind==='NATIVE'&&identity.contract_or_mint===null&&identity.native_asset_id===`${chain}:mainnet`&&method==='HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK')return{contract,chain,asset_kind:'NATIVE',native_asset_id:identity.native_asset_id,identity_method:method};
  const address=String(identity.contract_or_mint||'').trim();
- if(address&&method==='HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS')return{contract,chain,asset_kind:'TOKEN',contract_or_mint:address,identity_method:method};
+ if(address&&['HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS','VERSIONED_EXPLORER_EXACT_TOKEN_BINDING'].includes(method))return{contract,chain,asset_kind:'TOKEN',contract_or_mint:address,identity_method:method};
  return null;
 }
 export function capabilityCheckedNoExactRoute(params,source_id,reason){
@@ -234,7 +234,7 @@ export async function collectCandidateEvidenceV2(params={}){
  if(exactCapability&&Number(cgSector.network_calls)>0&&['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(cgSector.status)))cgSector=noRoute('COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
  const supplementalSources=params?.supplemental_context?.sources||{};
  let nansen=supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0};
- if(exactCapability?.asset_kind==='NATIVE'&&String(nansen.status||'NOT_EVALUATED')==='NOT_EVALUATED')nansen=noRoute('NANSEN_FLOWS','NO_EXACT_NATIVE_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY');
+ if(exactCapability&&String(nansen.status||'NOT_EVALUATED')==='NOT_EVALUATED')nansen=noRoute('NANSEN_FLOWS',exactCapability.asset_kind==='NATIVE'?'NO_EXACT_NATIVE_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY':'NO_EXACT_TOKEN_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY');
  const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
  const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
  const statuses=[coinmetrics?.status,delta?.status,tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
