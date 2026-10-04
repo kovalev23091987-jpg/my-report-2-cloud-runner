@@ -1,0 +1,40 @@
+# Единое выполнение двух чатов — 04.10.2026
+
+Новое прямое указание владельца: объединить всю выполненную работу обоих чатов и довести все 15 аналитических блоков в одной системе отчёта, ручной форме и Telegram. Ликвидационную цепочку, модель и форму пока не брать в ремонт; владелец настроит её отдельно позднее. Сохранять действующее поведение, не отключать и не реконструировать его в этой задаче.
+
+## Подтверждённое общее выполнение
+
+Исходный свежий main `b840b894e0826ac8157f04e4ebbd334892f3ddd7` уже объединяет PR93, PR94 и PR95. Повторного merge старых веток или сложения одинаковых результатов не требуется. Все15 активны: N01–N12/N14–N16; N13/N17 исключены. PR91 с составом11 отменён PR92.
+
+Польза10ТИПОВ на разных реальных входах: N02/N04/N05/N06/N09/N11/N12/N14/N15/N16. Это не10на каждой монете и не15в одном свежем отчёте. N01/N03/N07/N08/N10 требуют actual source/use. N08 schema repair PR95 выпущен, но actual restriction не доказан.
+
+PR93: раннее сохранение canonical до statistical observers; legitimate NOT_CLOSED0 KPI readback; bounded indexed reads; N02/N04/N06/N14 factual consumers; настоящий SOL Deribit USDC catalog/summary702. PR94: immutable same-run/snapshot execution facts, verifyExecutionFacts, N11 depth и N16 same-quantity roundtrip в rebuilt actual report_text. На BR/NEAR доказаны N09/N11/N12/N16; это старые реальные снимки, не fresh MAIN. PR95: exact isolated margin contract/account/binary open/source clock. Квитанции release этих PR сохранены отдельно.
+
+## Один canonical, разные утверждённые поверхности
+
+Каждая выбранная монета должна иметь точную связь command (для manual) → run → contract → snapshot → source facts → canonical → approved manual/Telegram. Две рыночные монеты одного основного цикла остаются в одном report2-run-result с двумя кандидатами, а не в двух несвязанных тестах. Telegram может иметь отдельное сообщение каждой монеты, но оно обязано ссылаться на собственный canonical того же допущенного запуска.
+
+Проверять раздельно: обращение/валидный кэш; точную identity; пригодность факта; контекст в отчёте; applied score/control; approved Telegram payload; actual delivery/message_id. Не требовать события либо направленных баллов от каждого блока в каждом запуске. Валидное отсутствие событий сохранять с точной областью, но HTTP200 и общее checked15 не заменяют достаточность данных или полезную функцию.
+
+Полный MAIN: свежие top2 фактического ранга HTX turnover>=100000, без замены лидеров удобными монетами; audit15по каждой; raw flow24h и история по настоящим данным; точная identity и source/use proofs. Отклонение идеи по рыночным правилам допустимо при полноте проверки. Missing/partial/stale нельзя превратить во вход. Полная свежая MAIN/Telegram acceptance пока false.
+
+## Найденный следующий разрыв и кандидат ремонта
+
+Approved sender использует `renderCanonicalTelegram` из canonical-publication.mjs, а не telegram-compact-formatter.mjs. Compact formatter и manual читали supporting_context; approved formatter не читал факты дополнительных блоков. Поэтому работа manual/compact не доказывала попадание фактов в отправляемый текст.
+
+Кандидат: exact still-valid evidence + одинаковые evidence_id/physical_root/label/value из supporting_context могут заполнить только существующие market-fact bullet slots approved formatter. Прежние основные факты имеют приоритет. Заголовки, ordering, 1bullet WAIT/3для прочих событий,1800символов, actionability, source/gate/score rules не меняются. Не видимые из-за лимита факты не считаются отображёнными. Пустой headline N07 не становится announcement. Audit сохраняется вне canonical и различает manual rendering и approved payload rendering; payload proof не является delivery proof. Readback использует сохранённый telegram_text в том же индексированном запросе, не генерирует историческую отправку.
+
+Контрольные тесты содержат явно синтетическое направление только для проверки формы на сохранённых реальных BTW facts. N07 issuer.example — синтетический parser/presentation test, не настоящий source probe. Нельзя увеличивать10типов этим тестом или отправлять его. Облачная приёмка кандидата обязательна до выпуска.
+
+## Следующая независимая работа
+
+1. N01 official structured unlock/vesting; N03 supply decrease/burn/buyback semantics; N07 actual official facts; N08 actual scoped restriction при наличии; N10 real target/path/invalidation. Сначала исправлять, не удалять по пустому запуску.
+2. N11/N16 должны пройти также fresh canonical→approved payload, а не остаться только дополнением reconstructed report_text. PR94 не доказывает этот следующий этап.
+3. N14 полноценный options-risk и N15 functional peers остаются отдельными открытыми частями, несмотря на малую доказанную пользу.
+4. Exact native/non-token routes: NEAR не wrapped; BR не BOHR по тикеру. Raw24h — genuine HTX signed trades/архив, не свечная сумма/turnover/другая биржа. 72snapshot slots не заменяют tape.
+5. Реальные scheduled MAIN receipts/owner/control gate; один analytics owner,40min minimum; collector независим5min. Backup/readback/retention/cleanup без уничтожения нужной истории. Owner reserve и все quota fences сохранять.
+6. После MAIN настоящая новая Telegram canonical→queue→approved payload→delivery→message_id, без stale/test/partial sends; duplicates/wave pause/retry/leases проверить.
+
+Сохранять веса,70threshold, прежние entry rules, формы и запрет картинок. Fixed5% filter удалён. Платных подключений не добавлять; FIL/AKE/research не возобновлять. FULL_MANUAL не повторять автоматически: уже7manualcommands/8deep плюс2manualrequests последующей сессии (первый preflight fail, второй2deep/canonical saved/observer fail). Recovery старых данных уже выполнен. Новый costly run только по новому основанию и реальному quota admission.
+
+План36scheduled×2deep,3full×2+5exact manualreserve,3burst/day,13500ops/month,HTTP164/run,D1 54000reads/840writes/run/47runsday,CoinGecko48/day9/min1488/month; protected reserve1705. Чужой active release fence уважать. Cloud continuation `6abd7056e60c819191dd4723398e975b` не выключать до actual completedall; это отдельные hourly итерации, не непрерывный агент.
