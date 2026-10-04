@@ -1,3 +1,4 @@
+import {loadExecutionReportSource,auditExecutionReportRendering} from './src/execution-report-context.mjs';
 import {recallKpiReadbackMatches} from './src/recall-kpi-readback.mjs';
 import {collectTrackedBands,capturedTrackedBands} from './src/byk-tracked-future-map.mjs';
 import {captureBykFutureMap,capturedFutureMap,capturedNativeFutureMaps} from './src/future-liquidation-map-source.mjs';
@@ -210,13 +211,18 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,cand
           block_coverage:blockCoverage,
           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{}),
           block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
-          canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
+          canonical:canonical?{contract:canonical.metadata?.contract,status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
         };
       }),
       generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false,
     };
+    for(const candidate of output.candidates){
+      try{candidate.execution_context_source=await loadExecutionReportSource(db,candidate,output.run_id);}
+      catch(error){candidate.execution_context_source=null;candidate.execution_context_diagnostic=String(error?.message||error).slice(0,160);}
+    }
     const checkedOutput=enforceManualBlockCoverage(output);
     checkedOutput.report_text=formatManualRunSummary(checkedOutput);
+    checkedOutput.execution_report_rendering=auditExecutionReportRendering(checkedOutput);
     return checkedOutput;
   }catch(error){
     return {schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),status:'NOT_CLOSED',reason:'CANONICAL_RUN_OUTPUT_READ_FAILED',error:String(error?.message||error).slice(0,240),candidates:[],generated_at:new Date().toISOString(),secrets_included:false,alternative_manual_recalculation:false};

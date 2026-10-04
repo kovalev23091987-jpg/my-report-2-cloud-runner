@@ -1,4 +1,5 @@
 import {BLOCKS} from './evidence-v2.mjs';
+import {consumeExecutionReportContext} from './execution-report-context.mjs';
 const requiredBlockCount=Object.keys(BLOCKS).length;
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
@@ -13,12 +14,14 @@ function confirmedRunContext(candidates,runId){
  if(!runId||!Array.isArray(candidates))return lines;
  for(const row of candidates){
   const proof=row?.block_rendered_results,c=row?.canonical;
-  if(!contract(row?.contract)||row.run_id!==runId||c?.run_id!==runId||proof?.run_id!==runId||
-   proof.contract!==row.contract||!row.snapshot_id||row.snapshot_id!==c.snapshot_id||proof.snapshot_id!==row.snapshot_id||
-   row.observed_ts!==c.observed_ts||proof.status!=='RENDERED_OUTPUT_VERIFIED'||typeof row.manual_text!=='string')continue;
-  const facts=(Array.isArray(proof.context_receipts)?proof.context_receipts:[]).filter(f=>BLOCKS[f.block_id]&&f.consumer==='MANUAL_CONFIRMED_CONTEXT'&&f.score_contribution===0&&
+  const binding=contract(row?.contract)&&row.run_id===runId&&c?.run_id===runId&&proof?.run_id===runId&&
+   proof.contract===row.contract&&row.snapshot_id&&row.snapshot_id===c.snapshot_id&&proof.snapshot_id===row.snapshot_id&&
+   row.observed_ts===c.observed_ts&&proof.status==='RENDERED_OUTPUT_VERIFIED'&&typeof row.manual_text==='string';
+  const savedFacts=binding?(Array.isArray(proof.context_receipts)?proof.context_receipts:[]).filter(f=>BLOCKS[f.block_id]&&f.consumer==='MANUAL_CONFIRMED_CONTEXT'&&f.score_contribution===0&&
    typeof f.label==='string'&&typeof f.value==='string'&&Number.isFinite(f.source_ts)&&Number.isFinite(f.observed_ts)&&f.source_ts<=f.observed_ts&&f.observed_ts<=row.observed_ts&&
-   row.manual_text.includes(`- ${f.label}: ${f.value}`));
+   row.manual_text.includes(`- ${f.label}: ${f.value}`)):[];
+  const executionFacts=consumeExecutionReportContext(row,runId).facts;
+  const facts=[...savedFacts,...executionFacts];
   if(!facts.length)continue;
   if(!lines.length)lines.push('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');
   lines.push(row.contract,...facts.slice(0,24).map(f=>`- ${f.label}: ${f.value}.`));
