@@ -2,12 +2,13 @@ export const BYK_OFFICIAL_MONTHLY_QUOTA = 15_000;
 export const BYK_OPERATIONAL_MONTHLY_CAP = 13_500;
 export const BYK_SCHEDULED_MONTHLY_CAP = 12_900;
 export const BYK_MAX_REQUESTS_PER_DEEP_CHECK = 5;
+export const BYK_PROTECTED_MANUAL_MONTHLY_UNITS = 1705;
 
 export function utcMonthKey(ts = Date.now()) {
   return new Date(ts).toISOString().slice(0, 7);
 }
 
-export function evaluateBykQuotaAdmission({ source, units, used_total = 0, used_scheduled = 0 } = {}) {
+export function evaluateBykQuotaAdmission({ source, units, used_total = 0, used_scheduled = 0, used_manual = Math.max(0,Number(used_total)-Number(used_scheduled)) } = {}) {
   const runSource = source === "schedule" ? "schedule" : "manual";
   const amount = Number(units);
   if (!Number.isSafeInteger(amount) || amount < 1 || amount > BYK_MAX_REQUESTS_PER_DEEP_CHECK) {
@@ -19,6 +20,7 @@ export function evaluateBykQuotaAdmission({ source, units, used_total = 0, used_
   if (runSource === "schedule" && Number(used_scheduled) + amount > BYK_SCHEDULED_MONTHLY_CAP) {
     return { allowed: false, status: "SCHEDULED_MONTHLY_CAP_EXHAUSTED", source: runSource };
   }
+  if(runSource === "schedule" && Number(used_total)+amount>BYK_OPERATIONAL_MONTHLY_CAP-Math.max(0,BYK_PROTECTED_MANUAL_MONTHLY_UNITS-Number(used_manual)))return {allowed:false,status:"MANUAL_RESERVE_PROTECTED",source:runSource};
   return { allowed: true, status: "ADMITTED", source: runSource };
 }
 
@@ -67,7 +69,8 @@ export function makeBykReserve(db, { source, clock = Date.now } = {}) {
         WHERE month_key=?5 AND official_quota=?6 AND operational_cap=?7 AND scheduled_cap=?8
           AND used_total+?1<=operational_cap
           AND (?2='manual' OR used_scheduled+?1<=scheduled_cap)
-          AND NOT EXISTS(SELECT 1 FROM report2_byk_reservations WHERE reservation_id=?3)`).bind(amount, runSource, id, now, month, BYK_OFFICIAL_MONTHLY_QUOTA, BYK_OPERATIONAL_MONTHLY_CAP, BYK_SCHEDULED_MONTHLY_CAP),
+          AND (?2='manual' OR used_total+?1<=operational_cap-MAX(0,?9-used_manual))
+          AND NOT EXISTS(SELECT 1 FROM report2_byk_reservations WHERE reservation_id=?3)`).bind(amount, runSource, id, now, month, BYK_OFFICIAL_MONTHLY_QUOTA, BYK_OPERATIONAL_MONTHLY_CAP, BYK_SCHEDULED_MONTHLY_CAP, BYK_PROTECTED_MANUAL_MONTHLY_UNITS),
       db.prepare(`INSERT INTO report2_byk_reservations(reservation_id,month_key,run_source,contract_code,reserved_units,created_ts)
         SELECT ?1,?2,?3,?4,?5,?6 FROM report2_byk_monthly_usage
         WHERE month_key=?2 AND last_reservation_id=?1 ON CONFLICT(reservation_id) DO NOTHING`).bind(id, month, runSource, String(contract || ""), amount, now),

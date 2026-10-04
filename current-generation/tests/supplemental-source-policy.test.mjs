@@ -15,8 +15,8 @@ import {
   D1_BURST_RESERVATION,
 } from '../files/src/supplemental-source-policy.mjs';
 
-test('31 day budget includes 72 scheduled, three reports and five coin analyses daily', () => {
-  assert.equal(MAX_MONTHLY_DEEP_CHECKS, 2480);
+test('31 day budget includes 72 scheduled checks, six manual full checks, five coin checks and three burst checks daily', () => {
+  assert.equal(MAX_MONTHLY_DEEP_CHECKS, 2666);
 });
 
 test('rotating liquidation lanes preserve the 50 request hot envelope', () => {
@@ -24,7 +24,7 @@ test('rotating liquidation lanes preserve the 50 request hot envelope', () => {
   assert.deepEqual(view.hot_request_budget, { existing:44, supplemental_lane_max:5, reserve:1, limit:50 });
   for (const id of ['LIGHTER','GMX','GTRADE','LIQFLOW_HL_NATIVE']) {
     const row = view.rows.find(x => x.id === id);
-    assert.ok(row.worst_case_monthly_calls <= 3220);
+    assert.ok(row.worst_case_monthly_calls <= 3400);
   }
   const liqflow = view.rows.find(x => x.id === 'LIQFLOW_HL_NATIVE');
   assert.equal(liqflow.within_known_monthly_quota, true);
@@ -42,19 +42,19 @@ test('0xArchive requires its key and then uses the official one-credit bounded r
 
 test('CoinLobster keyless layer is admitted while paid worst-case credit use is explicit', () => {
   assert.equal(validateSupplementalRequest({source_id:'COINLOBSTER',request_count:2}).allowed,true);
-  assert.equal(paidCoinLobsterMonthlyCredits({callsPerReport:2,creditsPerCall:50}),248000);
+  assert.equal(paidCoinLobsterMonthlyCredits({callsPerReport:2,creditsPerCall:50}),266600);
   assert.equal(SUPPLEMENTAL_SOURCES.COINLOBSTER.free_key_monthly_credits,250);
   const row=sourceBudgetView().rows.find(x=>x.id==='COINLOBSTER');
   assert.equal(row.worst_case_monthly_calls,2976);
 });
 
-test('supplemental D1 rows fit both per-run burst and 80-run daily budget with wide margin',()=>{
+test('supplemental D1 rows fit both per-run burst and 86-check daily budget with wide margin',()=>{
   const view=sourceBudgetView().d1_incremental_budget;
   assert.deepEqual(SUPPLEMENTAL_D1_WORST_PER_RUN,{rows_read:20,rows_written:20});
   assert.ok(view.rows_read<D1_BURST_RESERVATION.rows_read);
   assert.ok(view.rows_written<D1_BURST_RESERVATION.rows_written);
-  assert.equal(view.projected_daily_rows_read,1600);
-  assert.equal(view.projected_daily_rows_written,1600);
+  assert.equal(view.projected_daily_rows_read,1720);
+  assert.equal(view.projected_daily_rows_written,1720);
   assert.ok(view.projected_daily_rows_read<3_500_000);
   assert.ok(view.projected_daily_rows_written<70_000);
 });

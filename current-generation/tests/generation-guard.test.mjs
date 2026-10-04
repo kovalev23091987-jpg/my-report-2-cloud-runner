@@ -3,25 +3,25 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 const generation=JSON.parse(fs.readFileSync(new URL('../GENERATION.json',import.meta.url),'utf8'));
-test('20-minute schedule plus three reports and five coin analyses fits 31-day quota with reserve',()=>{
+test('two candidates every 40 minutes plus three full reports and five coin analyses fits quota',()=>{
  const scheduled=generation.scheduled_runs_per_day;
  const scheduledWorst=(scheduled+generation.burst_deep_checks_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
- const worst=(scheduled+generation.burst_deep_checks_reserved_per_day+generation.manual_runs_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
+ const worst=(scheduled+generation.burst_deep_checks_reserved_per_day+generation.manual_deep_checks_reserved_per_day)*31*generation.max_bykaranteli_requests_per_deep_check;
  assert.equal(generation.manual_report_runs_reserved_per_day,3);
  assert.equal(generation.manual_coin_analysis_runs_reserved_per_day,5);
- assert.equal(scheduled,72);assert.equal(scheduledWorst,12090);assert.equal(worst,13330);
+ assert.equal(scheduled,72);assert.equal(scheduledWorst,11625);assert.equal(worst,13330);
  assert(scheduledWorst<generation.bykaranteli_scheduled_monthly_cap);
  assert(worst<generation.bykaranteli_operational_monthly_cap);
  assert(generation.bykaranteli_scheduled_monthly_cap<generation.bykaranteli_operational_monthly_cap);
  assert(generation.bykaranteli_operational_monthly_cap<generation.bykaranteli_official_monthly_quota);
 });
 test('multi-source comparison remains bounded for schedule, burst checks and manual reserve',()=>{
- const deepRuns=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day+generation.manual_runs_reserved_per_day)*31;
+ const deepRuns=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day+generation.manual_deep_checks_reserved_per_day)*31;
  assert.equal(deepRuns,2666);
- const totalRequests=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day)*31*generation.full_report_shared_extension_request_cap+generation.manual_runs_reserved_per_day*31*generation.liquidation_only_max_additional_requests;
- assert.equal(totalRequests,14074);
+ const totalRequests=(generation.scheduled_runs_per_day+generation.burst_deep_checks_reserved_per_day)*31*generation.full_report_shared_extension_request_cap+generation.manual_deep_checks_reserved_per_day*31*generation.liquidation_only_max_additional_requests;
+ assert.equal(totalRequests,14353);
  assert.equal(generation.multi_source_max_deep_checks_per_31_days,deepRuns);
- assert.equal(generation.multi_source_max_shared_requests_per_31_days,14074);
+ assert.equal(generation.multi_source_max_shared_requests_per_31_days,14353);
  assert.equal(generation.multi_source_oxarchive_worst_case_credits_per_31_days,2666);
  assert.equal(generation.multi_source_provider_monthly_caps.OXARCHIVE-2666,2334);
  assert.ok(generation.multi_source_provider_monthly_caps.GTRADE<=4000);
@@ -36,7 +36,7 @@ test('only authoritative report workflow remains manually runnable',()=>{
 test('workflow schedule and generation binding are exact',()=>{
  const y=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
  assert.ok(y.includes('- cron: "*/20 * * * *"'));
- assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"80"/);
+ assert.match(y,/REPORT2_D1_RUNS_PER_DAY:\s*"47"/);
  assert.match(y,/REPORT2_CURRENT_GENERATION:\s*"MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"/);
  assert.match(y,/REPORT2_MANUAL_COIN_CONTRACT:/);
  assert.match(y,/REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON:\s*\$\{\{ secrets\.REPORT2_SUPPLEMENTAL_IDENTITY_REGISTRY_JSON \}\}/);
@@ -89,7 +89,7 @@ test('workflow worker pin equals the effective V13 worker bytes',()=>{
  const worker=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url));
  const hash=createHash('sha256').update(worker).digest('hex');
  const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
- assert.equal(hash,'dd4fa4d5c8aa6b432a3c54c5025ba6851a3f254a7cba93ee79bbc77869f312a1');
+ assert.equal(hash,'a1fd0c333d80b44482e91650d37288adb76452c1a65cc508db68f0ed8c5ff386');
  assert.match(workflow,new RegExp(hash));
 });
 test('controlled T15 measurements upload an exact sanitized receipt',()=>{

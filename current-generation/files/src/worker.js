@@ -107,6 +107,7 @@ import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePri
 import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
 import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
 import {scoreDiscoveryCandidate,compareDiscoveryCandidates} from './discovery-candidate-score.mjs';
+import {buildLiquidationMaintenanceStatements,buildBoundedRetentionStatement} from './bounded-hot-maintenance.mjs';
 
 import {
   buildFreeSourceRuntimeSummary,
@@ -4697,17 +4698,7 @@ async function persistStage0(
       60 *
       1000;
 
-    await env.DATA_DB
-      .prepare(`
-        DELETE FROM
-          scan_runs
-        WHERE
-          ts_bucket < ?1
-      `)
-      .bind(
-        retentionBefore
-      )
-      .run();
+    await buildBoundedRetentionStatement(env.DATA_DB,{table:'scan_runs',cutoff:retentionBefore}).run();
 
     return {
       status:
@@ -7321,6 +7312,7 @@ function buildBoundedDeepCheckPlan(
   options = {}
 ) {
   const HARD_MAX_PER_RUN = 2;
+  const externalLimit = options?.execution_runtime==="GITHUB_ACTIONS_NODE" ? 96 : WORKERS_FREE_EXTERNAL_LIMIT;
 
   /*
    * External-request budget is calculated from the actual Deep Check:
@@ -7339,7 +7331,7 @@ function buildBoundedDeepCheckPlan(
       0,
       Math.floor(
         (
-          WORKERS_FREE_EXTERNAL_LIMIT -
+          externalLimit -
           STAGE0_EXTERNAL_REQUESTS -
           EXTERNAL_REQUEST_RESERVE
         ) /
@@ -7796,12 +7788,15 @@ function buildBoundedDeepCheckPlan(
       workers_free_external_limit:
         WORKERS_FREE_EXTERNAL_LIMIT,
 
+      execution_runtime:options?.execution_runtime||"CLOUDFLARE_WORKER",
+      execution_external_limit:externalLimit,
+
       external_request_reserve:
         EXTERNAL_REQUEST_RESERVE,
 
       within_known_external_limit:
         estimatedExternal <=
-          WORKERS_FREE_EXTERNAL_LIMIT -
+          externalLimit -
             EXTERNAL_REQUEST_RESERVE,
 
       three_deep_checks_would_estimate:
@@ -8398,16 +8393,7 @@ async function finalizeDeepCheckSchedulerSlot(
             details?.handoff?.dedup_reentry_key ?? null
           ),
 
-        env.DATA_DB
-          .prepare(`
-            DELETE FROM
-              deep_check_run_log
-            WHERE
-              completed_ts < ?1
-          `)
-          .bind(
-            retentionBefore
-          ),
+        buildBoundedRetentionStatement(env.DATA_DB,{table:'deep_check_run_log',cutoff:retentionBefore}),
       ]);
 
     return {
@@ -8626,6 +8612,10 @@ async function runBoundedDeepCheckScheduler(
     const target
     of plan.selected
   ) {
+    if(options?.execution_runtime==="GITHUB_ACTIONS_NODE"){
+      const grant=typeof env?.REPORT2_DEEP_HTTP_ADMIT==="function"?env.REPORT2_DEEP_HTTP_ADMIT({logical_request_id:`FULL_DEEP:${runId}:${target.contract}`,lane:"hot",attempts:40}):null;
+      if(grant?.allowed!==true||grant?.duplicate===true){results.push({contract:target.contract,run_id:runId,execution_status:"SKIPPED",reason:grant?.status||"NODE_DEEP_HTTP_ADMISSION_REQUIRED"});continue;}
+    }
     const selectedEarly=await bindSelectedEarlyEvidence({target,env,scan:options?.early_scan,run_id:runId,now_ts:Date.now()});
     const selectedDiscoverySource=selectedEarly.candidate||target?._v3_discovery_source||null;
     const liveLane =
@@ -10968,12 +10958,8 @@ async function runShadowOutcomeCalibrationSweep(env, nowMs = Date.now(), maxTask
     const retentionBefore = now - 180 * 24 * 60 * 60 * 1000;
     try {
       await env.DATA_DB.batch([
-        env.DATA_DB
-          .prepare(`DELETE FROM shadow_outcome_log WHERE computed_ts < ?1`)
-          .bind(retentionBefore),
-        env.DATA_DB
-          .prepare(`DELETE FROM shadow_calibration_signal WHERE observed_ts < ?1`)
-          .bind(retentionBefore),
+        buildBoundedRetentionStatement(env.DATA_DB,{table:'shadow_outcome_log',cutoff:retentionBefore}),
+        buildBoundedRetentionStatement(env.DATA_DB,{table:'shadow_calibration_signal',cutoff:retentionBefore}),
       ]);
     } catch (error) {
       summary.last_status = "PARTIAL";
@@ -12808,12 +12794,7 @@ async function persistShadowDecisionTelemetry(env, shadow) {
           JSON.stringify(shadow?.evidence_flags || {}).slice(0, 12000),
           observedTs
         ),
-      env.DATA_DB
-        .prepare(`
-          DELETE FROM shadow_decision_log
-          WHERE observed_ts < ?1
-        `)
-        .bind(retentionBefore),
+      buildBoundedRetentionStatement(env.DATA_DB,{table:'shadow_decision_log',cutoff:retentionBefore}),
     ]);
 
     return {
@@ -15652,10 +15633,8 @@ const LIQUIDATION_INTELLIGENCE_API = (() => {
 
       const lifecycle = boundedLifecycleRows(record, observedTs, contract, observationId);
       const stateStatement = lifecycleStateStatement(env, lifecycle.rows);
-      const cleanupObs = env.DATA_DB.prepare(`DELETE FROM liquidation_shadow_observation WHERE observed_ts < ?1`).bind(cutoff);
-      const expireState = env.DATA_DB.prepare(`UPDATE liquidation_cluster_state SET lifecycle='EXPIRED' WHERE last_seen_ts < ?1 AND lifecycle NOT IN ('SWEPT','INVALIDATED','EXPIRED')`).bind(now - 24 * 60 * 60 * 1000);
-      const deleteState = env.DATA_DB.prepare(`DELETE FROM liquidation_cluster_state WHERE last_seen_ts < ?1`).bind(cutoff);
-      const statements = [insert, ...(stateStatement ? [stateStatement] : []), cleanupObs, expireState, deleteState];
+      const maintenance=buildLiquidationMaintenanceStatements(env.DATA_DB,{now,cutoff});
+      const statements = [insert, ...(stateStatement ? [stateStatement] : []), ...maintenance];
       const results = await env.DATA_DB.batch(statements);
       return {
         status: "CLOSED",
@@ -19447,6 +19426,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
           {
             max_per_run:
               1,
+            ...(env?.REPORT2_DEEP_RUNTIME_OPTIONS||{}),
 
             cooldown_sec:
               String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'

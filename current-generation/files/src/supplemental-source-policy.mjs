@@ -1,12 +1,17 @@
+import {TWO_CANDIDATE_PLAN} from './two-candidate-policy.mjs';
+
 export const SUPPLEMENTAL_SOURCE_POLICY_VERSION = 'supplemental-source-policy-v1-20260927';
 
-export const SCHEDULED_RUNS_PER_DAY = 72;
+export const SCHEDULED_RUNS_PER_DAY = TWO_CANDIDATE_PLAN.scheduled_cycles_per_day;
 export const MANUAL_REPORT_RUNS_PER_DAY = 3;
 export const MANUAL_COIN_ANALYSIS_RUNS_PER_DAY = 5;
 export const MANUAL_RUNS_PER_DAY = MANUAL_REPORT_RUNS_PER_DAY + MANUAL_COIN_ANALYSIS_RUNS_PER_DAY;
 export const MAX_DAYS_PER_MONTH = 31;
-export const MAX_MONTHLY_DEEP_CHECKS =
-  (SCHEDULED_RUNS_PER_DAY + MANUAL_RUNS_PER_DAY) * MAX_DAYS_PER_MONTH;
+export const MAX_DAILY_DEEP_CHECKS =
+  SCHEDULED_RUNS_PER_DAY * TWO_CANDIDATE_PLAN.candidates_per_full_cycle +
+  MANUAL_REPORT_RUNS_PER_DAY * TWO_CANDIDATE_PLAN.candidates_per_full_cycle +
+  MANUAL_COIN_ANALYSIS_RUNS_PER_DAY + TWO_CANDIDATE_PLAN.burst_deep_checks_per_day;
+export const MAX_MONTHLY_DEEP_CHECKS = MAX_DAILY_DEEP_CHECKS * MAX_DAYS_PER_MONTH;
 
 // The existing hot path uses 44 of its 50 external-request envelope.  All
 // projected and cross-exchange additions share one five-request rotating lane.
@@ -335,8 +340,8 @@ export function sourceBudgetView() {
     },
     d1_incremental_budget: {
       ...SUPPLEMENTAL_D1_WORST_PER_RUN,
-      projected_daily_rows_read: SUPPLEMENTAL_D1_WORST_PER_RUN.rows_read * (SCHEDULED_RUNS_PER_DAY + MANUAL_RUNS_PER_DAY),
-      projected_daily_rows_written: SUPPLEMENTAL_D1_WORST_PER_RUN.rows_written * (SCHEDULED_RUNS_PER_DAY + MANUAL_RUNS_PER_DAY),
+      projected_daily_rows_read: SUPPLEMENTAL_D1_WORST_PER_RUN.rows_read * MAX_DAILY_DEEP_CHECKS,
+      projected_daily_rows_written: SUPPLEMENTAL_D1_WORST_PER_RUN.rows_written * MAX_DAILY_DEEP_CHECKS,
       burst_reservation: D1_BURST_RESERVATION,
     },
     rows,

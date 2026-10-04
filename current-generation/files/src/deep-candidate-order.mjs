@@ -7,6 +7,8 @@ export function hasCurrentDirectionalContext(row){
  return ['LONG','SHORT','LONG_WATCH','SHORT_WATCH'].includes(hint);
 }
 export function compareOrdinaryDeepCandidates(a,b){
+ const aScore=finite((a?._v3_discovery_source||a)?.selection_score_0_100),bScore=finite((b?._v3_discovery_source||b)?.selection_score_0_100);
+ if(aScore!==null&&bScore!==null&&aScore!==bScore)return bScore-aScore;
  const directionDelta=Number(hasCurrentDirectionalContext(b))-Number(hasCurrentDirectionalContext(a));if(directionDelta)return directionDelta;
  const aRank=finite(a?.priority_rank)??Infinity,bRank=finite(b?.priority_rank)??Infinity;if(aRank!==bRank)return aRank-bRank;
  const aTs=finite(a?.last_check_ts)??-Infinity,bTs=finite(b?.last_check_ts)??-Infinity;if(aTs!==bTs)return aTs-bTs;
