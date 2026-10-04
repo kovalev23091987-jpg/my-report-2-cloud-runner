@@ -16,6 +16,6 @@ test('Solana finalized balance movement closes the transfer block without invent
 
 test('Solana finalized collector actually calls signatures and one exact transaction',async()=>{
  const methods=[];const fetch_impl=async(_url,options)=>{const body=JSON.parse(options.body);methods.push(body.method);const result=body.method==='getSignaturesForAddress'?[{signature:SIG,err:null,slot:123}]:transaction;return new Response(JSON.stringify({jsonrpc:'2.0',id:body.id,result}),{status:200,headers:{'content-type':'application/json'}});};
- const result=await collectFinalizedChainEvents({db:new DB(),fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'JUP-USDT',run_id:'R',asset_identity:{chain:'solana',contract_or_mint:MINT},now:NOW});
+ const result=await collectFinalizedChainEvents({db:new DB(),fetch_impl,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'JUP-USDT',run_id:'R',asset_identity:{chain:'solana',contract_or_mint:MINT},now:NOW,clock:()=>NOW});
  assert.equal(result.status,'CLOSED');assert.equal(result.network_calls,2);assert.deepEqual(methods,['getSignaturesForAddress','getTransaction']);assert.equal(result.evidence[0].block_id,'N04');
 });
