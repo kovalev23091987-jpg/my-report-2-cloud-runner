@@ -1,3 +1,4 @@
+import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
@@ -14,6 +15,18 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N10'&&row.metric_family==='ROLLING_24H_PRICE_RANGE_CONTEXT'){
+  if(row.upstream_id!=='HTX_OFFICIAL_ROLLING_MARKET_SUMMARY'||row.source_clock_policy!=='HTX_PRIMARY_ROLLING_24H_SUMMARY'||row.closed_candle_claim!==false||row.signed_trade_flow_claim!==false||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||![row.range_low,row.range_high,row.last_price,row.range_pct].every(v=>number(v)!==null)||!(row.range_low>0&&row.range_high>=row.range_low&&row.last_price>=row.range_low&&row.last_price<=row.range_high)||!eq(row.range_pct,(row.range_high/row.range_low-1)*100))return null;
+  const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
+  return{source:'HTX / рыночная сводка',label:'Наблюдаемый диапазон цены за 24 часа',value:`${price(row.range_low)}–${price(row.range_high)} USDT, ширина ${fmt(row.range_pct)}%; последняя цена ${price(row.last_price)} USDT; скользящая суточная сводка, будущие цели и направление сделки этим не подтверждены`};
+ }
+ if(row.block_id==='N10'&&row.metric_family==='CLOSED_CANDLE_RANGE_CONTEXT'){
+  const intervals={'1min':60000,'5min':300000,'15min':900000,'30min':1800000,'60min':3600000,'4hour':14400000};
+  if(row.source_clock_policy!=='HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS'||row.upstream_id!=='HTX_OFFICIAL_CLOSED_CANDLES'||row.candle_count!==20||row.all_candles_closed!==true||row.entry_authorized_by_context!==false||row.liquidation_as_target!==false||row.interval_ms!==intervals[row.period]||row.window_end!==Math.floor(row.source_ts/row.interval_ms)*row.interval_ms||row.window_start!==row.window_end-20*row.interval_ms||![row.range_low,row.range_high,row.last_closed_price,row.range_pct].every(v=>number(v)!==null)||!(row.range_low>0&&row.range_high>=row.range_low&&row.last_closed_price>=row.range_low&&row.last_closed_price<=row.range_high)||!eq(row.range_pct,(row.range_high/row.range_low-1)*100))return null;
+  const price=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:12}).format(v);
+  return{source:'HTX / закрытые свечи',label:'Фактический ценовой диапазон',value:`20 закрытых свечей ${row.period}: ${price(row.range_low)}–${price(row.range_high)} USDT, ширина ${fmt(row.range_pct)}%; цена последней закрытой свечи ${price(row.last_closed_price)} USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно`};
+ }
+
  if(row.block_id==='N01'&&row.metric_family==='OFFICIAL_VESTING_TERMS'){
   if(row.source_clock_policy!=='OBSERVED_PRIMARY_DOCUMENT_QUERY'||row.actual_unlock_transfer_verified!==false||!/^[0-9a-f]{64}$/.test(row.document_sha256||''))return null;
   if(row.parser_id==='NEAR_PUBLISHED_UNLOCK_STATUS_V1'&&row.asset_id==='near:native:mainnet'&&row.htx_contract==='NEAR-USDT'&&row.official_url==='https://www.near.org/'&&row.published_status==='FULLY_UNLOCKED')return{source:'near.org',label:'Опубликованный статус блокировок NEAR',value:'официальный сайт сообщает о полностью разблокированном предложении; инфляция и новая эмиссия этим не исключены; это заявление проекта, а не проверка будущих транзакций'};
@@ -52,9 +65,9 @@ function describe(row,now){
  }
  if(row.block_id==='N02'&&row.metric_family==='TOTAL_SUPPLY_OBSERVATION'){
   if(!raw(row.total_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||row.supply_delta_base_units!==null)return null;
-  const native=row.asset_kind==='NATIVE';
-  if(native&&(row.chain!=='near'||row.native_asset_id!=='near:mainnet'||row.htx_contract!=='NEAR-USDT'||row.decimals!==24||row.token_address!==null))return null;
-  return{source:native?'NEAR mainnet RPC':'публичный RPC',label:native?'Наблюдение предложения нативного NEAR':'Наблюдение предложения токена',value:`${tokenAmount(row.total_supply_base_units,row.decimals)} ${native?'NEAR':'токенов'}; одно подтверждённое наблюдение; изменение предложения и будущие разблокировки этим не проверены`};
+  const native=row.asset_kind==='NATIVE',symbol=row.chain==='near'?'NEAR':row.chain==='solana'?'SOL':null;
+  if(native&&(!symbol||row.native_asset_id!==`${row.chain}:mainnet`||row.htx_contract!==symbol+'-USDT'||row.decimals!==(symbol==='NEAR'?24:9)||row.token_address!==null||(symbol==='SOL'&&(row.genesis_hash!==SOLANA_MAINNET_GENESIS||row.commitment!=='finalized'))))return null;
+  return{source:native?`${symbol} mainnet RPC`:'публичный RPC',label:native?`Наблюдение предложения нативного ${symbol}`:'Наблюдение предложения токена',value:`${tokenAmount(row.total_supply_base_units,row.decimals)} ${native?symbol:'токенов'}; одно подтверждённое наблюдение; изменение предложения и будущие разблокировки этим не проверены`};
  }
  if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_CATALOG_ABSENCE'){
   if(row.source_clock_policy!=='OBSERVED_STATIC_CATALOG_QUERY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||row.open_instrument_count!==0||row.value!==0||!/^[0-9a-f]{64}$/i.test(row.catalog_response_sha256||''))return null;
