@@ -1,3 +1,7 @@
+## Последний проверенный выпуск PR106
+
+Main ec3f12dd5f7bf9fe948203db2c8245fa4d01ca0f/tree4175a8a279f1f9d1a24c395a78877972c5a96dd1; cloud37229030374/job111514582523SUCCESS,37integration+2effectivecadence+4coverage+5stageguard. Proofcheckpoints/coverage-cadence-release-evidence-20261004.json. Исправлен actualscheduledfatal SCHEDULED_CADENCE_CHARGE_FAILED:INVALID_INPUT (передаётся исходный lease timestamp). Durable119contracts/102assets×8=816cells readback closed; все пока UNVERIFIED, sourcechecks/weekly/livegate не закрыты. SourceHTTP0/MAIN0/TG0. Не повторять этот probe. Все15/новыйMAIN/TG ещё не приняты.
+
 ## Новейшие дополнения владельца — 04.10.2026 22:16–22:35 МСК
 
 Читать checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md: можно закончить остальные задачи, единый отчёт и настоящую Telegram delivery без временно исключённой EXACT_SIGNED_RAW_24H. Существующий фактический N12 bounded context остаётся;70/weights/entry/quota/canonical gates не ослаблять. Это отменяет старое требование ожидать raw24h перед всей остальной работой.
