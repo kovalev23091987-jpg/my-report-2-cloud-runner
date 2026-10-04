@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import path from 'node:path';
+const runtime=process.argv[2];
+const modulePath=runtime?path.resolve(runtime,'src/block-decision-use-audit.mjs'):path.resolve('current-generation/files/src/block-decision-use-audit.mjs');
+const {auditCanonicalBlockDecisionUse}=await import(pathToFileURL(modulePath));
+const fixturePath='checkpoints/btw-preserved-block-use-input-20261004.json',bytes=fs.readFileSync(fixturePath);
+const fixture=JSON.parse(bytes),saved=JSON.parse(fs.readFileSync('checkpoints/main-all15-live-audit-20261004.json'));
+const canonical=structuredClone(fixture.canonical);
+canonical.metadata.internal_market_context.evidence_v2.block_coverage=saved.candidates[0].block_coverage;
+const before=JSON.stringify(canonical),audit=auditCanonicalBlockDecisionUse(canonical);
+if(JSON.stringify(canonical)!==before||audit.checked_block_count!==15||audit.score_applied_block_count!==0||audit.directional_eligible_block_count!==3)throw Error('ACTUAL_REPLAY_OR_INVARIANCE_FAILED');
+console.log(JSON.stringify({schema:'report2-actual-block-use-replay-v1',input_sha256:createHash('sha256').update(bytes).digest('hex'),source:fixture.source,unchanged_input:true,actual_same_snapshot:true,baseline:{eligible_fact_blocks:saved.block_audit.minimum_usable_block_count,reported_decision_accounted:saved.candidates[0].block_coverage.all_blocks_decision_accounted},audit,source_http:0,production_writes:0,telegram_calls:0,production_replacement:false},null,2));

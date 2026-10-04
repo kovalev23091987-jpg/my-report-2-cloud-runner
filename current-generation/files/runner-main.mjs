@@ -7,6 +7,7 @@ import {applyVolumeProfileToLiquidationPanel,volumeProfileFacts} from './src/htx
 import {createCombinedLiquidationService} from './src/liquidation-extension/combined-runner-service.mjs';
 import {createD1SourceAdmission} from './src/liquidation-extension/d1-source-admission.mjs';
 import fs from "node:fs/promises";
+import {auditCanonicalBlockDecisionUse} from './src/block-decision-use-audit.mjs';
 import crypto from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
@@ -203,6 +204,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron}={})
           observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
           actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
           block_coverage:blockCoverage,
+          block_decision_use:auditCanonicalBlockDecisionUse(canonical||{}),
           canonical:canonical?{status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
         };
       }),
