@@ -16,3 +16,9 @@ test('canonical result is saved before low priority observers can throw',()=>{
  assert.ok(src.indexOf("await fs.writeFile('report2-run-result.json'")<src.indexOf('const lowPriorityCadenceDue'));
  assert.ok(src.includes('recallKpiReadbackMatches(persistedRow,record)'));
 });
+
+test('result reads use existing contract/run index and cannot scan all publications',()=>{
+ const src=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');
+ assert.match(src,/WHERE run_id=\?1 AND contract_code IN/u);
+ assert.match(src,/candidateContracts:env\.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT\?\.deep_check_selected/u);
+});

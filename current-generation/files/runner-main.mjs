@@ -190,10 +190,12 @@ async function observeNaturalTelegramDecision(db) {
   }
 }
 
-async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron}={}){
+async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,candidateContracts=[]}={}){
   try{
-    const response=await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
-      FROM canonical_publication_shadow WHERE run_id=?1 ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||'')).all();
+    const contracts=[...new Set(candidateContracts)].filter(value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)).slice(0,6);
+    if(!contracts.length&&Number(cron?.v3_live_deep_check_count)>0)throw new Error('CANONICAL_OUTPUT_CANDIDATE_IDENTITY_REQUIRED');
+    const response=contracts.length?await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,actionability_status,actionability_reason,created_ts,bound_ts
+      FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}`).join(',')}) ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||''),...contracts).all():{results:[]};
     const rows=Array.isArray(response?.results)?response.results:[];
     const output={
       schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...classifyCanonicalRunCompletion({candidate_count:rows.length,cron}),pipeline_health:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
@@ -960,7 +962,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
 
   // Preserve the already collected canonical result even if a later observer fails.
-  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron});
+  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[]});
   const canonicalRunOutput={...canonicalRunOutputBase,market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
