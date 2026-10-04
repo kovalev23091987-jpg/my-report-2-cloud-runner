@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v6-once-pack-retry-20260929";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v7-retention-before-write-20261004";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -156,21 +156,35 @@ async function __report2PublicCollectorClaim(db, bucket, now) {
   var token = crypto.randomUUID();
   var day = Math.floor(bucket / 864e5) * 864e5;
   var daily = await db.prepare(`SELECT COUNT(*) AS slots,COALESCE(SUM(rows_written),0) AS rows_written
-    FROM report2_public_collector_usage_v1 WHERE actor=?1 AND generation=?2 AND bucket>=?3 AND state='CLOSED'`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, day).first();
+    FROM report2_public_collector_usage_v1 WHERE actor=?1 AND generation=?2 AND bucket>=?3`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, day).first();
   if (Number(daily?.slots ?? 0) >= 288 || Number(daily?.rows_written ?? 0) >= __REPORT2_PUBLIC_COLLECTOR_DAILY_WRITE_CAP) {
     return { claimed: false, status: "DAILY_BUDGET_BLOCKED", daily };
   }
+  var existing = await db.prepare(`SELECT state,claim_token,lease_until,status FROM report2_public_collector_usage_v1
+    WHERE actor=?1 AND generation=?2 AND bucket=?3 LIMIT 1`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket).first();
+  if (existing?.state === "CLOSED") return { claimed:false,status:"ALREADY_CLOSED",daily };
+  if (existing?.state === "ERROR") return { claimed:false,status:"PRIMARY_ERROR_IMMUTABLE",daily };
+  if (Number(existing?.lease_until ?? 0) > now) return { claimed:false,status:"ALREADY_RUNNING",daily };
+  // Automatic retention precedes even the small claim INSERT. Eight rows per
+  // five-minute slot replaces the old 96/hour burst and exceeds normal six-
+  // shard production. The backup skips closed/running/error slots above.
+  if (Number(daily?.rows_written ?? 0)+8+35>__REPORT2_PUBLIC_COLLECTOR_DAILY_WRITE_CAP) return {claimed:false,status:"DAILY_BUDGET_BLOCKED",daily};
+  var cleanup = await db.prepare(`DELETE FROM report2_market_snapshot_batch_v1 WHERE rowid IN
+    (SELECT rowid FROM report2_market_snapshot_batch_v1 WHERE actor=?1 AND generation=?2 AND bucket<?3 ORDER BY bucket,shard LIMIT 8)`)
+    .bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR,__REPORT2_PUBLIC_COLLECTOR_GENERATION,Math.min(bucket,now)-__REPORT2_PUBLIC_COLLECTOR_RETENTION_MS).run();
+  var cleanupWrites=Number(cleanup?.meta?.rows_written ?? cleanup?.meta?.changes ?? 0),cleanupReads=Number(cleanup?.meta?.rows_read ?? 0);
+  console.log("REPORT2_AUTOMATIC_RETENTION",JSON.stringify({cutoff:Math.min(bucket,now)-__REPORT2_PUBLIC_COLLECTOR_RETENTION_MS,deleted:Number(cleanup?.meta?.changes??0),rows_written:cleanupWrites,db_bytes:cleanup?.meta?.size_after??null,storage_warning:Number(cleanup?.meta?.size_after??0)>=450000000,history_tables_touched:false}));
   var inserted = await db.prepare(`INSERT OR IGNORE INTO report2_public_collector_usage_v1
     (actor,generation,bucket,state,claim_token,lease_until,started_ts,completed_ts,external_requests,rows_read,rows_written,payload_bytes,status,error_text)
-    VALUES(?1,?2,?3,'STARTED',?4,?5,?6,NULL,0,0,1,0,'STARTED',NULL)`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 12e4, now).run();
+    VALUES(?1,?2,?3,'STARTED',?4,?5,?6,NULL,0,?7,?8,0,'STARTED',NULL)`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 12e4, now,cleanupReads,cleanupWrites+1).run();
   var row = await db.prepare(`SELECT state,claim_token,lease_until,status FROM report2_public_collector_usage_v1
     WHERE actor=?1 AND generation=?2 AND bucket=?3 LIMIT 1`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket).first();
-  if (row?.claim_token === token) return { claimed: true, status: "CLAIMED", token, daily, rows_written: Number(inserted?.meta?.changes ?? 0) };
+  if (row?.claim_token === token) return { claimed: true, status: "CLAIMED", token, daily, rows_written: cleanupWrites+Number(inserted?.meta?.rows_written ?? inserted?.meta?.changes ?? 0),rows_read:cleanupReads };
   if (row?.state === "CLOSED") return { claimed: false, status: "ALREADY_CLOSED", daily };
   if (Number(row?.lease_until ?? 0) > now) return { claimed: false, status: "ALREADY_RUNNING", daily };
   var stolen = await db.prepare(`UPDATE report2_public_collector_usage_v1 SET claim_token=?4,lease_until=?5,started_ts=?6,status='RECLAIMED',error_text=NULL
     WHERE actor=?1 AND generation=?2 AND bucket=?3 AND state='STARTED' AND lease_until<=?6`).bind(__REPORT2_PUBLIC_COLLECTOR_ACTOR, __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, token, now + 12e4, now).run();
-  return Number(stolen?.meta?.changes ?? 0) === 1 ? { claimed: true, status: "RECLAIMED", token, daily, rows_written: 1 } : { claimed: false, status: "CLAIM_RACE_LOST", daily };
+  return Number(stolen?.meta?.changes ?? 0) === 1 ? { claimed: true, status: "RECLAIMED", token, daily, rows_written: cleanupWrites+Number(stolen?.meta?.rows_written ?? 1),rows_read:cleanupReads } : { claimed: false, status: "CLAIM_RACE_LOST", daily };
 }
 async function __report2PublicCollectorPersist(db, shards) {
   var statements = shards.map((row) => db.prepare(`INSERT INTO report2_market_snapshot_batch_v1
@@ -211,7 +225,7 @@ async function __report2PublicCollectorScheduled(controller, env) {
     console.log("REPORT2_PUBLIC_COLLECTOR_NOOP", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, bucket, status: claim.status }));
     return;
   }
-  var externalRequests = 0, rowsRead = 2, rowsWritten = Number(claim.rows_written ?? 0), payloadBytes = 0, contractCount = 0, shardCount = 0;
+  var externalRequests = 0, rowsRead = 3+Number(claim.rows_read??0), rowsWritten = Number(claim.rows_written ?? 0), payloadBytes = 0, contractCount = 0, shardCount = 0;
   try {
     var prior = await __report2PublicCollectorPriorSnapshot(env.DATA_DB);
     rowsRead += Number(prior.shard_rows_read ?? 0);
@@ -282,11 +296,6 @@ async function __report2PublicCollectorScheduled(controller, env) {
     var persisted = await __report2PublicCollectorPersist(env.DATA_DB, shards);
     rowsRead += persisted.rows_read;
     rowsWritten += persisted.rows_written;
-    if (new Date(bucket).getUTCMinutes() === 0) {
-      var cleanup = await env.DATA_DB.prepare(`DELETE FROM report2_market_snapshot_batch_v1 WHERE rowid IN
-        (SELECT rowid FROM report2_market_snapshot_batch_v1 WHERE bucket<?1 ORDER BY bucket,shard LIMIT 96)`).bind(bucket - __REPORT2_PUBLIC_COLLECTOR_RETENTION_MS).run();
-      rowsWritten += Number(cleanup?.meta?.changes ?? 0);
-    }
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "CLOSED", error_text: null, contract_count: contractCount, shard_count: shardCount });
     console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
   } catch (error) {
