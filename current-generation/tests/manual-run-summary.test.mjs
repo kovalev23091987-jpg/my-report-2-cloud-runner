@@ -78,3 +78,20 @@ test('standalone answer distinguishes projected 0xArchive buckets from direct Hy
  assert.ok(lines.some(line=>line.includes('оценочный объём 42000 USD')));
  assert.ok(lines.every(line=>!line.startsWith('Hyperliquid FIL')));
 });
+
+test('partial analysis preserves only verified same-run rendered facts without creating an entry plan',async()=>{
+ const fs=await import('node:fs');
+ const {consumeBlockResultContext,auditRenderedBlockResults}=await import('../files/src/block-result-context.mjs');
+ const {formatManualReport}=await import('../files/src/manual-report-formatter.mjs');
+ const c=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical;
+ c.metadata.supporting_context={facts:consumeBlockResultContext({evidence:c.metadata.internal_market_context.evidence_v2.evidence,contract:c.metadata.contract,now:c.observed_ts}).facts};
+ const manual=formatManualReport(c);
+ const row={contract:c.metadata.contract,run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:c.observed_ts,canonical:c,manual_text:manual.text,block_rendered_results:auditRenderedBlockResults({canonical:c,manual})};
+ const output={status:'PARTIAL_DATA_UNAVAILABLE',run_id:c.run_id,candidates:[row]};
+ const text=formatManualRunSummary(output);
+ assert.match(text,/Проверка не завершена/u);assert.match(text,/238 токенов/u);assert.match(text,/Действие сейчас: не входить/u);
+ assert.doesNotMatch(text,/Уровень входа:/u);
+ for(const mutate of [r=>r.run_id='foreign',r=>r.snapshot_id='foreign',r=>r.manual_text='',r=>r.block_rendered_results.status='UNVERIFIED']){
+  const changed=structuredClone(row);mutate(changed);assert.doesNotMatch(formatManualRunSummary({...output,candidates:[changed]}),/238 токенов/u);
+ }
+});

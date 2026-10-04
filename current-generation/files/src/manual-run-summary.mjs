@@ -8,6 +8,24 @@ const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.t
 const contract=value=>typeof value==='string'&&/^[^\s]{1,40}-USDT$/u.test(value)?value:null;
 const actionable=new Set(['OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED']);
 
+function confirmedRunContext(candidates,runId){
+ const lines=[];
+ if(!runId||!Array.isArray(candidates))return lines;
+ for(const row of candidates){
+  const proof=row?.block_rendered_results,c=row?.canonical;
+  if(!contract(row?.contract)||row.run_id!==runId||c?.run_id!==runId||proof?.run_id!==runId||
+   proof.contract!==row.contract||!row.snapshot_id||row.snapshot_id!==c.snapshot_id||proof.snapshot_id!==row.snapshot_id||
+   row.observed_ts!==c.observed_ts||proof.status!=='RENDERED_OUTPUT_VERIFIED'||typeof row.manual_text!=='string')continue;
+  const facts=(Array.isArray(proof.context_receipts)?proof.context_receipts:[]).filter(f=>BLOCKS[f.block_id]&&f.consumer==='MANUAL_CONFIRMED_CONTEXT'&&f.score_contribution===0&&
+   typeof f.label==='string'&&typeof f.value==='string'&&Number.isFinite(f.source_ts)&&Number.isFinite(f.observed_ts)&&f.source_ts<=f.observed_ts&&f.observed_ts<=row.observed_ts&&
+   row.manual_text.includes(`- ${f.label}: ${f.value}`));
+  if(!facts.length)continue;
+  if(!lines.length)lines.push('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');
+  lines.push(row.contract,...facts.slice(0,24).map(f=>`- ${f.label}: ${f.value}.`));
+ }
+ return lines;
+}
+
 function proven(row,generatedAt){
  const c=row?.canonical;
  if(c?.data_quality?.sufficient===false)return false;
@@ -63,10 +81,11 @@ export function enforceManualBlockCoverage(output={}){
  return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'REQUIRED_BLOCKS_NOT_CONFIRMED',block_audit};
 }
 export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit}={}){
+ const contextLines=confirmedRunContext(candidates,run_id);
  if(status==='PARTIAL_DATA_UNAVAILABLE'){
   const checked=Number(block_audit?.minimum_checked_block_count);
   const progress=Number.isFinite(checked)?` Фактически подтверждено блоков: ${checked} из ${requiredBlockCount}.`:'';
-  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
+  return `МОЙ ОТЧЁТ 2\n\nПроверка не завершена: часть необходимых данных не подтверждена.${progress}\n\nЛОНГ\nПолный вывод пока недоступен.\n\nШОРТ\nПолный вывод пока недоступен.${contextLines.length?'\n\n'+contextLines.join('\n'):''}\n\nДействие сейчас: не входить, дождаться следующей проверки.`;
  }
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
@@ -83,6 +102,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
   else for(const row of ideas){lines.push(...idea(row));found++;}
   lines.push('');
  }
+ if(contextLines.length)lines.push(...contextLines,'');
  if(!found){
   const rejected=candidates.filter(row=>row?.canonical_state==='REJECTED'&&contract(row?.contract));
   if(rejected.length){

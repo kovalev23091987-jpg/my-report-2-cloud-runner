@@ -11,7 +11,7 @@ const canonical=structuredClone(fixture.canonical),scoreBefore=JSON.stringify(ca
 const context=consumeBlockResultContext({contract:canonical.metadata.contract,now:canonical.observed_ts,evidence:canonical.metadata.internal_market_context.evidence_v2.evidence});
 canonical.metadata.supporting_context={facts:context.facts};
 const manual=formatManualReport(canonical),proof=auditRenderedBlockResults({canonical,manual});
-assert.equal(manual.ok,true);assert.deepEqual(proof.used_context_block_ids.sort(),['N05','N09','N12']);
+assert.equal(manual.ok,true);assert.deepEqual(proof.used_context_block_ids.sort(),['N02','N04','N05','N06','N09','N12']);
 assert.equal(JSON.stringify(canonical.metadata.supplemental_score_adjustment),scoreBefore);
 assert.equal(Object.keys(BLOCKS).length,15);
 for(const id of ['N13','N17'])assert.equal(BLOCKS[id],undefined);

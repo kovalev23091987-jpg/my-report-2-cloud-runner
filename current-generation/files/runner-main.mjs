@@ -1,3 +1,4 @@
+import {recallKpiReadbackMatches} from './src/recall-kpi-readback.mjs';
 import {collectTrackedBands,capturedTrackedBands} from './src/byk-tracked-future-map.mjs';
 import {captureBykFutureMap,capturedFutureMap,capturedNativeFutureMaps} from './src/future-liquidation-map-source.mjs';
 import {collectCoinLobsterFutureModel,formatCoinLobsterFutureLines} from './src/coinlobster-future-model.mjs';
@@ -413,24 +414,13 @@ async function observeDiscoveryRecallKpi(db, { startedTs, source, runId } = {}) 
         created_ts=excluded.created_ts
     `).bind(bucket,ts,String(runId||""),record.mode,record.status,record.current_scan_ts,record.closed_horizons.length,text,Date.now()).run();
     const persistedRow = await db.prepare(`
-      SELECT mode,status,closed_horizons,strategy_changed,decision_weights_changed,
+      SELECT mode,status,closed_horizons,audit_ts,source_run_id,kpi_json,strategy_changed,decision_weights_changed,
              live_probability,validated_signal,automatic_telegram,trading_execution
       FROM discovery_recall_kpi_shadow
       WHERE audit_ts_bucket = ?1
       LIMIT 1
     `).bind(bucket).first();
-    const readbackOk = Boolean(
-      persistedRow &&
-      persistedRow.mode === "DISCOVERY_RECALL_KPI_SHADOW_V1" &&
-      ["CLOSED","PARTIAL"].includes(String(persistedRow.status || "")) &&
-      Number(persistedRow.closed_horizons || 0) >= 1 &&
-      Number(persistedRow.strategy_changed || 0) === 0 &&
-      Number(persistedRow.decision_weights_changed || 0) === 0 &&
-      Number(persistedRow.live_probability || 0) === 0 &&
-      Number(persistedRow.validated_signal || 0) === 0 &&
-      Number(persistedRow.automatic_telegram || 0) === 0 &&
-      Number(persistedRow.trading_execution || 0) === 0
-    );
+    const readbackOk = recallKpiReadbackMatches(persistedRow,record);
     if (!readbackOk) throw new Error("DISCOVERY_RECALL_KPI_D1_READBACK_FAIL_CLOSED");
     console.log("DISCOVERY_RECALL_KPI_PERSISTENCE_PROOF", "STATUS_PASS MODE_SHADOW SAFETY_PASS ROW_FOUND");
     const report = { ...record, persisted:true, persistence_readback:"PASS", auto_send:false };
@@ -969,6 +959,15 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   }
   console.log("V3_TELEGRAM_DELIVERY_SIDECAR", JSON.stringify(v3TelegramDeliverySidecar));
 
+  // Preserve the already collected canonical result even if a later observer fails.
+  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron});
+  const canonicalRunOutput={...canonicalRunOutputBase,market_scan_audit:{
+    universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
+    stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
+  },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
+  await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
+  console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
+
   // Statistical/diagnostic observers are hourly and only after every user-critical
   // lane. This preserves the 7–14 day evidence programme without starving live work.
   const scheduledMinuteUtc = new Date(started).getUTCMinutes();
@@ -1026,13 +1025,6 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   if (source !== "schedule" && telegramReportTestRequested && telegramOutput?.morning?.sent !== true && telegramOutput?.morning?.delivery_confirmed !== true) {
     throw new Error(`TELEGRAM_REPORT_TEST_FAIL_CLOSED:${telegramOutput?.morning?.status || "UNKNOWN"}`);
   }
-  const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron});
-  const canonicalRunOutput={...canonicalRunOutputBase,market_scan_audit:{
-    universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
-    stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
-  },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
-  await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
-  console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
   console.log("R8_8_D1_PRE_POST_USAGE", JSON.stringify({reservation:d1RunReservation,usage:env.DATA_DB.usageSnapshot()}));
   const d1PostCycleBudget = evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsWritten:1});
   if (!d1PostCycleBudget.allowed) throw new Error(`D1_POST_CYCLE_RESERVATION_EXCEEDED:${(d1PostCycleBudget.reasons||[]).join(",")}`);

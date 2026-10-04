@@ -7,7 +7,26 @@ const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
 const eq=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
 const list=v=>Array.isArray(v)?v:[];
 const common={advisory_only:true,directional_vote:false,hard_gate:false,score_contribution:0};
+const raw=v=>typeof v==='string'&&/^\d+$/.test(v);
+function tokenAmount(value,decimals){
+ const n=BigInt(value),base=10n**BigInt(decimals),fraction=String(n%base).padStart(decimals,'0').replace(/0+$/,'');
+ return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
+}
 function describe(row,now){
+ if(row.block_id==='N14'&&row.metric_family==='ALT_OPTIONS_LIQUIDITY_CONTEXT'){
+  const open=number(row.open_instrument_count),liquid=number(row.liquid_instrument_count);
+  if(row.source_clock_policy!=='PROVIDER_TIMESTAMP_ONLY'||row.base_currency!==row.htx_contract.replace(/-USDT$/,'')||!Number.isSafeInteger(open)||open<1||!Number.isSafeInteger(liquid)||liquid<0||liquid>open)return null;
+  return{source:'Deribit',label:'Опционный рынок актива',value:`открытых инструментов ${open}, с котировками или активностью в проверенной выборке ${liquid}; это не оценка опционного риска и не разрешение сделки`};
+ }
+ if(row.block_id==='N02'&&row.metric_family==='SUPPLY_UNCHANGED'){
+  if(!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||BigInt(row.total_supply_base_units)!==BigInt(row.previous_supply_base_units)||row.supply_delta_base_units!=='0')return null;
+  return{source:'публичный RPC',label:'Наблюдение предложения токена',value:`${tokenAmount(row.total_supply_base_units,row.decimals)} токенов; между двумя наблюдениями изменения нет; будущие разблокировки этим не проверены`};
+ }
+ if(row.block_id==='N06'&&row.metric_family==='UNIQUE_AUTHOR_ATTENTION'){
+  const start=number(row.window_start),end=number(row.window_end),authors=number(row.value),posts=number(row.original_post_count);
+  if(row.query_identity!=='EXACT_CONTRACT_OR_MINT'||row.unit!=='unique_authors'||start===null||end===null||end<=start||end>now||row.source_ts!==end||!Number.isSafeInteger(authors)||authors<0||!Number.isSafeInteger(posts)||posts<authors||typeof row.sample_saturated!=='boolean')return null;
+  return{source:'Bluesky',label:'Публичные сообщения с точным адресом токена',value:`за ${fmt((end-start)/60000)} минут: ${authors} авторов, ${posts} сообщений${row.sample_saturated?'; выборка ограничена лимитом':''}; поиск только по адресу, общий интерес и тренд этим не подтверждены`};
+ }
  if(row.block_id==='N05'&&row.metric_family==='CEX_NET_FLOW_TWO_COMPLETE_HOURS'){
   const start=number(row.window_start_ts),end=number(row.window_end_ts),incoming=number(row.incoming_tokens),outgoing=number(row.outgoing_tokens);
   if(start===null||end===null||end-start!==7200000||end>now||row.source_ts!==end||!positive(incoming)||!positive(outgoing)||row.unit!=='TOKEN_AMOUNT'||!eq(incoming-outgoing,row.value))return null;
@@ -49,16 +68,30 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
   if(!fact||seen.has(root))continue;
   seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,source_ts:row.source_ts,observed_ts:row.observed_ts});
  }
+ // Group event logs by transaction. Serial transfers are never summed as flow.
+ const groups=new Map();
+ for(const row of list(evidence)){
+  if(row?.block_id!=='N04'||row.metric_family!=='TOKEN_TRANSFER'||row.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now||!raw(row.amount_base_units)||!/^0x[0-9a-f]{64}$/i.test(row.tx_hash||'')||!/^0x[0-9a-f]{40}$/i.test(row.from||'')||!/^0x[0-9a-f]{40}$/i.test(row.to||'')||!/^\d+$/.test(String(row.log_index))||!row.chain||!row.token_address||row.event_is_not_market_direction!==true)continue;
+  const root=evidenceDedupKey(row);if(seen.has(root))continue;seen.add(root);
+  const key=`${row.asset_id}|${row.chain}|${row.token_address}|${row.tx_hash}`;
+  if(!groups.has(key))groups.set(key,[]);groups.get(key).push(row);
+ }
+ for(const rows of groups.values()){
+  const row=rows[0],amounts=[...new Set(rows.map(r=>r.amount_base_units))];
+  const supply=list(evidence).find(r=>r.block_id==='N02'&&r.asset_id===row.asset_id&&r.chain===row.chain&&r.token_address===row.token_address&&r.htx_contract===contract&&validateEvidenceV2(r,{decision_ts:now}).usable&&number(r.observed_ts)!==null&&r.observed_ts<=now&&r.source_ts<=r.observed_ts&&Number.isSafeInteger(r.decimals)&&r.decimals>=0&&r.decimals<=255);
+  const quantity=amounts.length===1?(supply?`${tokenAmount(amounts[0],supply.decimals)} токенов в каждом событии`:`${amounts[0]} минимальных единиц в каждом событии`):'разные количества';
+  facts.push({...common,source:'публичный RPC',label:'Подтверждённые переводы токена',value:`${rows.length} событий в одной транзакции; ${quantity}; ограниченная выборка, события не суммируются как приток или отток; принадлежность адресов биржам не подтверждена`,unit:'',field:'TOKEN_TRANSFER',block_id:'N04',evidence_id:row.evidence_id,physical_root_key:evidenceDedupKey(row),evidence_ids:rows.map(r=>r.evidence_id),physical_root_keys:rows.map(evidenceDedupKey),source_ts:Math.max(...rows.map(r=>r.source_ts)),observed_ts:Math.max(...rows.map(r=>r.observed_ts))});
+ }
  return{version:BLOCK_RESULT_CONTEXT_VERSION,status:facts.length?'CLOSED':'NOT_CLOSED',facts,internal_only:true};
 }
 
-// Proof is based on the final formatter output, including its six-fact limit.
+// Proof is based on the final formatter output, including its bounded fact limit.
 // A label in metadata or a completed HTTP call cannot establish actual use.
 export function auditRenderedBlockResults({canonical,manual}={}){
  const contract=canonical?.metadata?.contract,now=canonical?.observed_ts;
  const available=consumeBlockResultContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract,now});
  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
  const facts=list(canonical?.metadata?.supporting_context?.facts);
- const receipts=available.facts.filter(row=>facts.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key)&&printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
+ const receipts=available.facts.filter(row=>facts.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key)&&printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),entry_authorized:false,internal_only:true};
 }
