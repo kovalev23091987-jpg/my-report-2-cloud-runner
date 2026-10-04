@@ -1,5 +1,4 @@
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
-import {fundingDirectionalRoutes} from './funding-directional-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
@@ -107,6 +106,7 @@ import {
 import {normalizeDirectionCandidate,authorizeEntryDirection,buildHtxReferencePrice,buildHtxExecutionReceipt} from './market-contracts.mjs';
 import {readMarketHistoryForContract,readMarketHistoryTargets} from './market-history-reader.mjs';
 import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
+import {scoreDiscoveryCandidate,compareDiscoveryCandidates} from './discovery-candidate-score.mjs';
 
 import {
   buildFreeSourceRuntimeSummary,
@@ -6213,7 +6213,7 @@ function buildDiscoveryPrefilter(
       )
     );
 
-  const eligibleRows =
+  const technicallyEligibleRows =
     contracts.filter(
       (row) =>
         eligibleContracts.has(
@@ -6223,6 +6223,12 @@ function buildDiscoveryPrefilter(
           ).trim()
         )
     );
+
+  const MINIMUM_LIVE_TURNOVER_USDT=100000;
+  const eligibleRows=technicallyEligibleRows.filter(row=>{
+    const turnover=Number(row?.turnover_24h_usdt);
+    return Number.isFinite(turnover)&&turnover>=MINIMUM_LIVE_TURNOVER_USDT;
+  });
 
   const finite =
     (value) =>
@@ -6584,16 +6590,6 @@ function buildDiscoveryPrefilter(
         oiValue > 0
       );
 
-    const liveTurnoverFloor =
-      Math.max(
-        100000,
-        Number(
-          options
-            ?.minimum_live_turnover_usdt ??
-          100000
-        )
-      );
-
     const funding =
       fundingPctOf(row);
 
@@ -6617,24 +6613,6 @@ function buildDiscoveryPrefilter(
       ) &&
       fundingPerHour >=
         positiveFundingTailThreshold;
-
-    const legacyFundingExtreme =
-      finite(funding) &&
-      funding !== 0 &&
-      finite(
-        fundingAbsThreshold
-      ) &&
-      Math.abs(funding) >=
-        fundingAbsThreshold;
-
-    const fundingExtremeContextRecall =
-      (
-        negativeFundingTail ||
-        positiveFundingTail ||
-        legacyFundingExtreme
-      ) &&
-      turnover >=
-        liveTurnoverFloor;
 
     const strictFlags = [];
     const earlyFlags = [];
@@ -6685,24 +6663,6 @@ function buildDiscoveryPrefilter(
           `${window}:${field}`
         );
       }
-    }
-
-    if (legacyFundingExtreme) {
-      strictFlags.push(
-        "funding:absolute_extreme"
-      );
-    }
-
-    if (negativeFundingTail) {
-      earlyFlags.push(
-        "funding:negative_hourly_tail"
-      );
-    }
-
-    if (positiveFundingTail) {
-      earlyFlags.push(
-        "funding:positive_hourly_tail"
-      );
     }
 
     const price1h =
@@ -6837,10 +6797,6 @@ function buildDiscoveryPrefilter(
       );
     }
 
-    const fundingRoutes=fundingDirectionalRoutes({early_liquidity:earlyLiquidity,negative_funding_tail:negativeFundingTail,positive_funding_tail:positiveFundingTail,oi_building:oiBuilding,positive_momentum:positiveMomentum,negative_momentum:negativeMomentum,strong_relative_long:strongRelativeLong,strong_relative_short:strongRelativeShort});
-    longRoutes.push(...fundingRoutes.long_routes);
-    shortRoutes.push(...fundingRoutes.short_routes);
-
     const strictLegacyRoute =
       coreLiquidity &&
       strictFlags.length >=
@@ -6860,7 +6816,6 @@ function buildDiscoveryPrefilter(
     const queueForDeepCheck =
       strictLegacyRoute ||
       multiEngineRecallRoute ||
-      fundingExtremeContextRecall ||
       longWatch ||
       shortWatch;
 
@@ -6958,6 +6913,20 @@ function buildDiscoveryPrefilter(
         ])
       );
 
+    const directionalMarketRoute=longWatch||shortWatch;
+    const fundingDirectionallySupportive=(longWatch&&negativeFundingTail)||(shortWatch&&positiveFundingTail);
+    const selectionScore=scoreDiscoveryCandidate({
+      core_liquidity:coreLiquidity,
+      early_liquidity:earlyLiquidity,
+      non_funding_anomaly_count:allFlags.length,
+      directional_market_route:directionalMarketRoute,
+      oi_building:oiBuilding,
+      momentum_confirmed:longWatch?positiveMomentum:shortWatch?negativeMomentum:positiveMomentum||negativeMomentum,
+      relative_strength_confirmed:longWatch?strongRelativeLong:shortWatch?strongRelativeShort:strongRelativeLong||strongRelativeShort,
+      funding_directionally_supportive:fundingDirectionallySupportive,
+      fresh:row?.freshness?.stale===false,
+    });
+
     const directionHint =
       longWatch &&
       !shortWatch
@@ -6999,11 +6968,17 @@ function buildDiscoveryPrefilter(
       funding_per_hour_pct:
         fundingPerHour,
       funding_directional_vote:
-        negativeFundingTail ||
-        positiveFundingTail,
+        fundingDirectionallySupportive,
       funding_context_only:
-        !negativeFundingTail &&
-        !positiveFundingTail,
+        true,
+      funding_bonus_0_5:
+        selectionScore.components.funding_bonus,
+      selection_score_0_100:
+        selectionScore.score_0_100,
+      selection_score_components:
+        selectionScore.components,
+      non_funding_anomaly_flags_count:
+        allFlags.length,
       relative_strength_1h_pct_points:
         rs1h,
       relative_strength_4h_pct_points:
@@ -7042,11 +7017,7 @@ function buildDiscoveryPrefilter(
     );
 
     if (!queueForDeepCheck) {
-      if (
-        !coreLiquidity &&
-        !earlyLiquidity &&
-        !fundingExtremeContextRecall
-      ) {
+      if (!coreLiquidity&&!earlyLiquidity) {
         belowLiquidity.push(
           contract
         );
@@ -7100,11 +7071,17 @@ function buildDiscoveryPrefilter(
       funding_per_hour_pct:
         fundingPerHour,
       funding_directional_vote:
-        negativeFundingTail ||
-        positiveFundingTail,
+        fundingDirectionallySupportive,
       funding_context_only:
-        !negativeFundingTail &&
-        !positiveFundingTail,
+        true,
+      funding_bonus_0_5:
+        selectionScore.components.funding_bonus,
+      selection_score_0_100:
+        selectionScore.score_0_100,
+      selection_score_components:
+        selectionScore.components,
+      non_funding_anomaly_flags_count:
+        allFlags.length,
       relative_strength_1h_pct_points:
         rs1h,
       relative_strength_4h_pct_points:
@@ -7155,67 +7132,7 @@ function buildDiscoveryPrefilter(
    * fairness/cooldown still decides which
    * one gets the single Deep Check slot.
    */
-  anomalyPool.sort(
-    (a, b) => {
-      const watchDelta =
-        Number(
-          b.long_watch ||
-          b.short_watch
-        ) -
-        Number(
-          a.long_watch ||
-          a.short_watch
-        );
-
-      if (watchDelta) {
-        return watchDelta;
-      }
-
-      const modelDelta =
-        (
-          b.model_routes?.length ||
-          0
-        ) -
-        (
-          a.model_routes?.length ||
-          0
-        );
-
-      if (modelDelta) {
-        return modelDelta;
-      }
-
-      const flagDelta =
-        b.anomaly_flags_count -
-        a.anomaly_flags_count;
-
-      if (flagDelta) {
-        return flagDelta;
-      }
-
-      const turnoverDelta =
-        (
-          b.turnover_24h_usdt ??
-          -Infinity
-        ) -
-        (
-          a.turnover_24h_usdt ??
-          -Infinity
-        );
-
-      if (turnoverDelta) {
-        return turnoverDelta;
-      }
-
-      return String(
-        a.contract
-      ).localeCompare(
-        String(
-          b.contract
-        )
-      );
-    }
-  );
+  anomalyPool.sort(compareDiscoveryCandidates);
 
   const shortlist =
     anomalyPool
@@ -7297,7 +7214,11 @@ function buildDiscoveryPrefilter(
       universe_total:
         contracts.length,
       technical_eligible:
+        technicallyEligibleRows.length,
+      turnover_100k_eligible:
         eligibleRows.length,
+      below_absolute_turnover_floor:
+        technicallyEligibleRows.length-eligibleRows.length,
       liquidity_pool:
         contractTelemetry.filter(
           (row) =>
@@ -7360,7 +7281,9 @@ function buildDiscoveryPrefilter(
       "Discovery Recall uses only factual Stage-0 data already present in memory.",
       "Initial technical admission is HTX-futures-first: fresh market, current price, exact HTX identity and confirmed crypto scope are mandatory; missing OI/funding/history stay explicit UNKNOWN gaps to be enriched and cannot authorize entry.",
       "The existing p70 turnover/OI lane is preserved; the added early lane is discovery-only and never bypasses HTX Execution in Deep Check / Final Decision.",
-      "Funding is context only: sign/interval never creates or blocks a LONG/SHORT discovery route; extremes may only affect neutral review priority.",
+      "Funding is context only: sign/interval never creates or blocks a LONG/SHORT discovery route; it can only add a small bonus after an independent directional route already exists.",
+      "Funding contributes at most 5 selection points and is never required for candidate eligibility.",
+      "Every Discovery candidate must have at least 100,000 USDT factual HTX 24h turnover.",
       "BTC/ETH relative strength uses the same Stage-0 scan/windows; missing benchmark evidence creates no RS flag.",
       "No external HTTP request is generated by this layer.",
       "No D1 request is generated by this layer.",
@@ -19402,44 +19325,23 @@ const __REPORT2_ORIGINAL_HANDLER = {
         }
       }
 
-      /* A full owner report promises an honest N01-N17 audit. Do not spend its
-       * only Deep Check slot on an asset that lacks the pre-verified identity,
-       * official-feed and sector bindings required by those blocks. Prefer an
-       * already shortlisted eligible asset, otherwise inspect the first active
-       * eligible registry asset without inventing a directional signal. */
+      /* A full owner report must preserve the factual market rank. Registry
+       * readiness is recorded for source coverage, but it may never replace a
+       * better market candidate with an easier-to-enrich symbol. */
       if(String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'){
         const strictEligible=new Set((Array.isArray(env?.REPORT2_STRICT17_ELIGIBLE_CONTRACTS)?env.REPORT2_STRICT17_ELIGIBLE_CONTRACTS:[])
           .map(value=>String(value||'').trim().toUpperCase()).filter(value=>confirmedScopeContracts.includes(value)));
-        const shortlisted=(postV7DeepPrefilter?.shortlist||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
-        const telemetry=(postV7DeepPrefilter?.contract_telemetry||[]).find(row=>strictEligible.has(String(row?.contract||'').trim().toUpperCase()));
-        // A strict manual audit must still inspect one fully registered active
-        // asset when Discovery cannot build telemetry because Stage-0 OI or
-        // turnover is missing. Deep Check owns the fresh enrichment; the raw
-        // row is only a neutral, directionless handoff and cannot authorize a
-        // trade by itself.
-        const rawAuditRow=(scan?.contracts||[])
-          .filter(row=>strictEligible.has(String(row?.contract_code||'').trim().toUpperCase()))
-          .sort((a,b)=>Number(b?.turnover_24h_usdt||0)-Number(a?.turnover_24h_usdt||0))[0]||null;
-        const rawAuditCandidate=rawAuditRow?{
-          contract:String(rawAuditRow.contract_code).trim().toUpperCase(),
-          discovery_direction_hint:'NEUTRAL_MANUAL_AUDIT',
-          queue_for_deep_check:true,
-          source_ts:rawAuditRow?.market_24h?.source_ts??scan?.timestamp??null,
-          price_tick:rawAuditRow?.price_tick??null,
-          market_24h:rawAuditRow?.market_24h??null,
-          open_interest_value_usdt:rawAuditRow?.open_interest?.value_usdt??null,
-          turnover_24h_usdt:rawAuditRow?.turnover_24h_usdt??null,
-          price_change_pct:Object.fromEntries(['5m','15m','1h','4h','24h'].map(window=>[window,rawAuditRow?.transitions?.[window]?.price_change_pct??null])),
-          oi_change_pct:Object.fromEntries(['15m','1h','4h'].map(window=>[window,rawAuditRow?.transitions?.[window]?.oi_change_pct??null])),
-        }:null;
-        const selected=shortlisted||telemetry||rawAuditCandidate;
-        if(selected){
-          const contract=String(selected.contract).trim().toUpperCase();
-          const forced={...selected,priority_rank:0,contract,strict17_manual_audit:true};
-          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:[forced,...(postV7DeepPrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim().toUpperCase()!==contract)]};
-          liveHandoffPlan={lane:'MANUAL_STRICT17_AUDIT',require_exact_contract:true,required_contract:contract,live_shortlist_count:1,maintenance_available:false,maintenance_deferred:false};
+        const ranked=(postV7DeepPrefilter?.shortlist||[])
+          .filter(row=>confirmedScopeContracts.includes(String(row?.contract||'').trim().toUpperCase()))
+          .map(row=>{
+            const contract=String(row?.contract||'').trim().toUpperCase();
+            return {...row,contract,full_source_registry_ready:strictEligible.has(contract)};
+          });
+        if(ranked.length){
+          postV7DeepPrefilter={...postV7DeepPrefilter,shortlist:ranked};
+          liveHandoffPlan={lane:'MANUAL_MARKET_RANKED_TOP2',require_exact_contract:false,required_contract:null,live_shortlist_count:ranked.length,live_contracts:ranked.map(row=>row.contract),top_two_contracts:ranked.slice(0,2).map(row=>row.contract),strict_source_ready_contracts:ranked.filter(row=>row.full_source_registry_ready===true).map(row=>row.contract),maintenance_available:false,maintenance_deferred:false};
         }else{
-          liveHandoffPlan={lane:'MANUAL_STRICT17_AUDIT_REJECTED',require_exact_contract:true,required_contract:null,live_shortlist_count:0,maintenance_available:false,maintenance_deferred:false,reason:'NO_ACTIVE_STRICT17_REGISTRY_ASSET'};
+          liveHandoffPlan={lane:'MANUAL_MARKET_RANKED_TOP2_EMPTY',require_exact_contract:false,required_contract:null,live_shortlist_count:0,live_contracts:[],top_two_contracts:[],maintenance_available:false,maintenance_deferred:false,reason:'NO_FACTUALLY_QUALIFIED_MARKET_CANDIDATE'};
         }
       }
 
@@ -19589,6 +19491,18 @@ const __REPORT2_ORIGINAL_HANDLER = {
               null,
           }
         );
+
+      env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT={
+        schema:'report2-candidate-selection-audit-v1',
+        run_id:runId,
+        lane:liveHandoffPlan?.lane??null,
+        minimum_turnover_24h_usdt:100000,
+        qualified_candidates:(discoveryPrefilter?.shortlist||[]).map(row=>({rank:row?.priority_rank??null,contract:row?.contract??null,score_0_100:row?.selection_score_0_100??null,direction_hint:row?.discovery_direction_hint??null,funding_bonus_0_5:row?.funding_bonus_0_5??0,non_funding_anomaly_flags_count:row?.non_funding_anomaly_flags_count??0,turnover_24h_usdt:row?.turnover_24h_usdt??null})),
+        top_two_contracts:Array.isArray(liveHandoffPlan?.top_two_contracts)?liveHandoffPlan.top_two_contracts:[],
+        registry_did_not_change_rank:true,
+        deep_check_selected:(boundedDeepCheck?.plan?.selected||[]).map(row=>row?.contract).filter(Boolean),
+        deep_check_capacity_this_invocation:Number(boundedDeepCheck?.plan?.parameters?.configured_max_per_run??0),
+      };
 
       if(queuedLiquidationContract&&typeof env?.REPORT2_LIQUIDATION_QUEUE_COMPLETE==='function'){
         const queueResult=(Array.isArray(boundedDeepCheck?.results)?boundedDeepCheck.results:[]).find(row=>String(row?.contract||'').trim().toUpperCase()===queuedLiquidationContract);

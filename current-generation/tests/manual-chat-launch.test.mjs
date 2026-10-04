@@ -43,16 +43,23 @@ test('low-priority prospective statistics cannot cancel an otherwise complete ma
  assert.match(runner,/!r820ManualNonFatalStatuses\.has\(r820ProspectiveValidationSidecar\?\.status\)/u);
 });
 
-test('full manual report reserves its deep check for a strict-17 registry asset',()=>{
+test('full manual report preserves market rank and records the top two',()=>{
  assert.match(runner,/REPORT2_MANUAL_MODE=expectedManualMode/u);
  assert.match(runner,/REPORT2_STRICT17_ELIGIBLE_CONTRACTS/u);
  assert.match(runner,/coinpaprika_id&&row\?\.sector_tag\)\|\|\(row\?\.coingecko_id&&row\?\.coingecko_category_id/u);
- assert.match(worker,/MANUAL_STRICT17_AUDIT/u);
- assert.match(worker,/strict17_manual_audit:true/u);
- assert.match(worker,/NEUTRAL_MANUAL_AUDIT/u);
- assert.match(worker,/rawAuditCandidate/u);
- assert.match(worker,/require_exact_contract:true,required_contract:contract/u);
+ assert.match(worker,/MANUAL_MARKET_RANKED_TOP2/u);
+ assert.match(worker,/top_two_contracts:ranked\.slice\(0,2\)/u);
+ assert.match(worker,/registry_did_not_change_rank:true/u);
+ assert.doesNotMatch(worker,/MANUAL_STRICT17_AUDIT/u);
+ assert.doesNotMatch(worker,/NEUTRAL_MANUAL_AUDIT/u);
+ assert.doesNotMatch(worker,/rawAuditCandidate/u);
  assert.match(worker,/REPORT2_MANUAL_MODE\|\|''\)\.toUpperCase\(\)==='FULL_MANUAL'\s*\n\s*\? 0/u);
+});
+
+test('canonical run artifact exposes candidate rank and selected contracts',()=>{
+ assert.match(runner,/candidate_selection_audit:env\.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT\|\|null/u);
+ assert.match(worker,/qualified_candidates/u);
+ assert.match(worker,/deep_check_selected/u);
 });
 
 test('N10 closes from completed technical inputs without requiring an entry signal',()=>{
