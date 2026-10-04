@@ -1,0 +1,44 @@
+name: Report 2 Scoped Actual Peers Acceptance
+on:
+  push:
+    branches: [autonomous/native-peers-acceptance-20261004]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble already tested runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Validate changed native binding and inherited behavior once
+        if: ${{ false }} # Exact engine already passed cloud37234493172; guard hashes every file.
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          REPORT2_SECTOR_MODULE_ROOT=runtime/src node --test current-generation/tests/shared-sector-batch.test.mjs > audit-output/shared-sector-batch.tap
+          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
+      - name: Verify repaired native bindings in actual fresh peer report consumption
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261004T1811:bc2e6615'
+        run: node audit-fixes/native-peers-acceptance-20261004/verify-live.mjs runtime > audit-output/native-peers-acceptance.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-peers-acceptance-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

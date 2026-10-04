@@ -1,5 +1,6 @@
 import test from 'node:test';
 import fs from 'node:fs';
+import zlib from 'node:zlib';
 import vm from 'node:vm';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
@@ -73,7 +74,7 @@ test('all supported native networks pass through the same production sector plan
   const bound=normalizeHtxAssetReferences({code:200,data:[{currency:base,chains:[{baseChain:base,contractAddress:''}]}]}).entries[base];assert.equal(bound.status,'CLOSED');assert.deepEqual(bound.identities[0],identity);
   assert.deepEqual(parseSupplementalIdentityRegistry({[base]:identity}).entries[base].identity,identity);assert.ok(planCandidateEvidenceRoutes({contract,asset_identity:identity}).routes.some(r=>r.name==='SECTOR_COINGECKO'));
   assert.equal(exactNativeSectorBinding(identity,'OTHER-USDT'),null);
-  const m={id:b.coin_id,symbol:base,asset_platform_id:null,platforms:{},categories:['Layer 1 (L1)']};assert.equal(verifyCoingeckoSectorIdentity(m,{identity,contract,coin_id:b.coin_id,asset_platforms:[{id:b.platform,native_coin_id:b.coin_id}]}),true);
+  const m={id:b.coin_id,symbol:base,asset_platform_id:b.native_provider_ref?b.platform:null,platforms:b.native_provider_ref?{[b.platform]:b.native_provider_ref}:{},categories:['Layer 1 (L1)']};assert.equal(verifyCoingeckoSectorIdentity(m,{identity,contract,coin_id:b.coin_id,asset_platforms:[{id:b.platform,native_coin_id:b.coin_id}]}),true);
  }
  const ambiguous=normalizeHtxAssetReferences({code:200,data:[{currency:'SOL',chains:[{baseChain:'SOL',contractAddress:''},{baseChain:'ETH',contractAddress:address}]}]}).entries.SOL;assert.notEqual(ambiguous.status,'CLOSED');
 });
@@ -110,4 +111,21 @@ test('actual worker excludes stocks and unknown class from the deep queue',async
  const base={data_status:'CLOSED',freshness:{stale:false},quality:{market_present:true,oi_present:true,funding_present:true,history_available:true,missing:[]},symbol_fingerprint:{resolution_status:'RESOLVED_HTX_EXACT'},turnover_24h_usdt:1000000,market_24h:{trade_turnover:1000000}};
  const result=q({contracts:[{...base,contract_code:'AAPL-USDT',instrument_scope:stockScope},{...base,contract_code:'UNKNOWN-USDT',instrument_scope:unknown}]});assert.equal(result.queue.length,0);for(const r of result.excluded)assert.ok(r.reasons.includes('INSTRUMENT_SCOPE_NOT_CRYPTO_CONFIRMED'));
  assert.match(worker,/if\(scopeConfirmed&&telemetry\)/);assert.match(worker,/\.filter\(value=>confirmedScopeContracts\.includes\(value\)\)/);
+});
+
+// Real wire metadata exposed two distinct native representations previously rejected.
+test('actual native APT denomination binds only to its mainnet coin, and Cosmos keeps Layer0 taxonomy',()=>{
+ const f=JSON.parse(zlib.gunzipSync(fs.readFileSync(new URL('./fixtures/native-provider-denom-20261004.json.gz',import.meta.url))));assert.equal(f.provenance.synthetic,false);
+ const body=url=>JSON.parse(f.responses.find(r=>r.url.includes(url)).body),apt=body('/coins/aptos?'),atom=body('/coins/cosmos?');
+ for(const row of f.responses)assert.equal(crypto.createHash('sha256').update(row.body).digest('hex'),row.body_sha256);
+ for(const [base,m,category] of [['APT',apt,'Layer 1 (L1)'],['ATOM',atom,'Layer 0 (L0)']]){
+  const b=NATIVE_SECTOR_BINDINGS[base],identity={chain:b.chain,asset_kind:'NATIVE',native_asset_id:`${b.chain}:mainnet`,contract_or_mint:null},params={identity,contract:`${base}-USDT`,coin_id:b.coin_id,category_name:category,asset_platforms:[{id:b.platform,native_coin_id:b.coin_id}]};
+  assert.equal(verifyCoingeckoSectorIdentity(m,params),true);
+  for(const bad of [{...m,platforms:{[b.platform]:'wrapped-native'}},{...m,id:'wrapped-'+m.id},{...m,asset_platform_id:'ethereum'}])assert.equal(verifyCoingeckoSectorIdentity(bad,params),false);
+  assert.equal(verifyCoingeckoSectorIdentity(m,{...params,identity:{...identity,contract_or_mint:'wrapped'}}),false);
+  assert.equal(verifyCoingeckoSectorIdentity(m,{...params,asset_platforms:[{id:b.platform,native_coin_id:'wrapped-'+b.coin_id}]}),false);
+  assert.equal(verifyCoingeckoSectorIdentity(m,{...params,category_name:'Cosmos Ecosystem'}),false);
+ }
+ const quotes=body('/coins/markets?'),categories=body('/categories/list'),identity={chain:'aptos',asset_kind:'NATIVE',native_asset_id:'aptos:mainnet',contract_or_mint:null},observed_ts=Math.max(...f.responses.filter(r=>r.observed_ts).map(r=>r.observed_ts));
+ const result=normalizeCoingeckoSector({metadata:apt,categories,quotes,identity,contract:'APT-USDT',coin_id:'aptos',category_id:'layer-1',category_name:'Layer 1 (L1)',asset_platforms:[{id:'aptos',native_coin_id:'aptos'}],observed_ts});assert.equal(result.status,'CLOSED');assert.equal(consumeSectorContext({evidence:result.evidence,contract:'APT-USDT',asset_identity:identity,now:observed_ts}).status,'CLOSED');
 });
