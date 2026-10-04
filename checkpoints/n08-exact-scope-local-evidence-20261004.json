@@ -1,0 +1,53 @@
+{
+  "schema": "report2-n08-exact-scope-local-evidence-v1",
+  "created_at": "2026-10-04T13:32:32Z",
+  "base_main": "8bb5513c93a203e472308e264d8df06a582b6f97",
+  "status": "LOCAL_VALIDATION_PASS_CLOUD_RELEASE_PENDING",
+  "source_contract": {
+    "provider": "HTX",
+    "endpoint": "/linear-swap-api/v1/swap_api_state",
+    "documented_scope": "isolated margin",
+    "documented_open_semantics": "open=1 available; open=0 unavailable",
+    "official_documentation": "https://huobiapi.github.io/docs/usdt_swap/v1/en/#isolated-query-information-on-system-status"
+  },
+  "repair": {
+    "block": "N08",
+    "normalizer_version": "htx-public-risk-evidence-v4-exact-isolated-open-state-20261004",
+    "required_exact_fields": [
+      "contract_code equals selected HTX contract",
+      "margin_mode equals isolated",
+      "margin_account equals selected HTX contract",
+      "open is exactly 0 or 1",
+      "source clock is current"
+    ],
+    "removed_unofficial_fields": [
+      "open_order",
+      "open_position"
+    ],
+    "cache_binding": "same run shared response retains contract_code, margin_mode, margin_account and open",
+    "score_policy": "unchanged; only an exact fresh open=0 restriction carries the existing adverse risk, never a direction vote",
+    "telegram_policy": "unchanged",
+    "liquidation_policy": "unchanged"
+  },
+  "negative_tests": [
+    "wrong or missing contract",
+    "cross margin row",
+    "wrong margin account",
+    "non-binary open value",
+    "stale or future source clock"
+  ],
+  "validation": {
+    "command": "node current-generation/validate.mjs",
+    "result": "CURRENT_GENERATION_VALIDATED",
+    "tests": "PASS",
+    "syntax": "PASS",
+    "overlay": "NOT_REQUESTED"
+  },
+  "acceptance_boundary": {
+    "actual_restricted_market_observed": false,
+    "fresh_main_top2_run": false,
+    "telegram_delivery": false,
+    "message_id": null,
+    "note": "This closes the N08 parser/schema defect locally. It does not claim that the latest market had an opening restriction or that MAIN/Telegram is accepted."
+  }
+}

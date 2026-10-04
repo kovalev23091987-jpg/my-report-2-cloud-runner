@@ -12,14 +12,15 @@ class DB{constructor(){this.sqlite=new DatabaseSync(':memory:');}prepare(sql){re
 const payload=(data,ts=1000)=>({status:'ok',ts,data});
 
 test('K16 HTX risk: explicit opening restriction is adverse risk and never a Short direction vote',()=>{
- const out=normalizeHtxPublicRisk({contract:'SOL-USDT',state_payload:payload([{contract_code:'SOL-USDT',open:0}]),isolated_payload:payload([{contract_code:'SOL-USDT',lever_rate:20}]),cross_payload:payload([]),observed_ts:1100});
+ const out=normalizeHtxPublicRisk({contract:'SOL-USDT',state_payload:payload([{contract_code:'SOL-USDT',margin_mode:'isolated',margin_account:'SOL-USDT',open:0}]),isolated_payload:payload([{contract_code:'SOL-USDT',lever_rate:20}]),cross_payload:payload([]),observed_ts:1100});
  assert.equal(out.status,'CLOSED');assert.equal(out.evidence[0].block_id,'N08');assert.equal(out.evidence[0].directional_strength,null);assert.equal(out.evidence[0].risk_strength,1);
+ assert.equal(out.evidence[0].execution_open_field,'open');assert.equal(out.evidence[0].execution_open_scope,'HTX_ISOLATED_MARGIN');
  assert.ok(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:1100}).adjustment<0);
 });
 
 test('K16 HTX risk: exact official response is cached and consumes only three rate-limited attempts',async()=>{
  const db=new DB(),calls=[];
- const fetch_impl=async url=>{calls.push(url);const body=url.includes('swap_api_state')?payload([{contract_code:'XLM-USDT',open:1}]):payload([{contract_code:'XLM-USDT',lever_rate:20}]);return{ok:true,status:200,json:async()=>body};};
+ const fetch_impl=async url=>{calls.push(url);const body=url.includes('swap_api_state')?payload([{contract_code:'XLM-USDT',margin_mode:'isolated',margin_account:'XLM-USDT',open:1}]):payload([{contract_code:'XLM-USDT',lever_rate:20}]);return{ok:true,status:200,json:async()=>body};};
  const params={db,fetch_impl,pause_impl:async()=>{},clock:()=>10_000,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'XLM-USDT',run_id:'R',now:10_000};
  const first=await collectHtxPublicRiskEvidence(params),second=await collectHtxPublicRiskEvidence({...params,run_id:'R2',now:10_001});
  assert.equal(first.status,'CLOSED');assert.equal(first.network_calls,3);assert.equal(first.evidence[0].risk_strength,null);assert.equal(first.evidence[0].directional_strength,null);
@@ -34,7 +35,7 @@ test('K16 HTX risk: transport cannot start without the whole-job HTTP admission'
 });
 
 test('K16 HTX risk: wrong or absent contract state fails closed with zero score effect',()=>{
- const out=normalizeHtxPublicRisk({contract:'SOL-USDT',state_payload:payload([{contract_code:'BTC-USDT',open:0}]),isolated_payload:null,cross_payload:null,observed_ts:1100});
+ const out=normalizeHtxPublicRisk({contract:'SOL-USDT',state_payload:payload([{contract_code:'BTC-USDT',margin_mode:'isolated',margin_account:'BTC-USDT',open:0}]),isolated_payload:null,cross_payload:null,observed_ts:1100});
  assert.equal(out.status,'PARTIAL');assert.equal(out.evidence[0].validation_status,'ERROR');assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:1100}).adjustment,0);
 });
 
@@ -50,9 +51,9 @@ test('K16 HTX risk: authoritative runner and worker consume the live candidate e
 });
 
 test('HTX risk preserves source time and rejects missing identity or stale source clocks',()=>{
- const good=normalizeHtxPublicRisk({contract:'TAO-USDT',state_payload:payload([{contract_code:'TAO-USDT',open:1}],1000),observed_ts:1100});
+ const good=normalizeHtxPublicRisk({contract:'TAO-USDT',state_payload:payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'TAO-USDT',open:1}],1000),observed_ts:1100});
  assert.equal(good.evidence[0].source_ts,1000);assert.equal(good.evidence[0].execution_open_allowed,true);
- for(const state_payload of [payload([{open:0}],1000),payload([{contract_code:'TAO-USDT',open:0}],1),payload([{contract_code:'TAO-USDT',open:0}],5000000)]){
+ for(const state_payload of [payload([{open:0}],1000),payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'TAO-USDT',open:0}],1),payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'TAO-USDT',open:0}],5000000),payload([{contract_code:'TAO-USDT',margin_mode:'cross',margin_account:'USDT',open:0}],1000),payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'OTHER-USDT',open:0}],1000),payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'TAO-USDT',open:2}],1000)]){
   const out=normalizeHtxPublicRisk({contract:'TAO-USDT',state_payload,observed_ts:4000000});
   assert.equal(out.status,'PARTIAL');assert.equal(out.evidence[0].validation_status,'ERROR');
   assert.equal(out.evidence[0].execution_open_allowed,null);
@@ -63,7 +64,7 @@ test('HTX risk preserves source time and rejects missing identity or stale sourc
 
 test('HTX shared all-contract cache serves the second exact asset without another reservation',async()=>{
  const db=new DB();let calls=0;
- const fetch_impl=async url=>{calls++;assert.equal(new URL(url).searchParams.has('contract_code'),false);return{ok:true,status:200,json:async()=>payload([{contract_code:'TAO-USDT',open:1},{contract_code:'XLM-USDT',open:0}],1000)};};
+ const fetch_impl=async url=>{calls++;assert.equal(new URL(url).searchParams.has('contract_code'),false);return{ok:true,status:200,json:async()=>payload([{contract_code:'TAO-USDT',margin_mode:'isolated',margin_account:'TAO-USDT',open:1},{contract_code:'XLM-USDT',margin_mode:'isolated',margin_account:'XLM-USDT',open:0}],1000)};};
  const params={db,fetch_impl,pause_impl:async()=>{},clock:()=>1100,request_admit:()=>({allowed:true,status:'RESERVED'}),contract:'TAO-USDT',run_id:'R',now:1100};
  const a=await collectHtxPublicRiskEvidence(params),b=await collectHtxPublicRiskEvidence({...params,contract:'XLM-USDT',run_id:'R2',now:1200});
  assert.equal(a.network_calls,3);assert.equal(b.network_calls,0);assert.equal(b.cache_status,'SHARED_HIT');
@@ -75,7 +76,7 @@ test('HTX shared all-contract cache serves the second exact asset without anothe
 
 test('strict manual two-candidate cycle reuses newly fetched HTX rows with separate exact-market audits',async()=>{
  const db=new DB(),budget=createUnifiedHttpBudget();let calls=0;
- const fetch_impl=async()=>{calls++;return{ok:true,status:200,json:async()=>payload([{contract_code:'FIRST-USDT',open:1},{contract_code:'SECOND-USDT',open:0}],1000)};};
+ const fetch_impl=async()=>{calls++;return{ok:true,status:200,json:async()=>payload([{contract_code:'FIRST-USDT',margin_mode:'isolated',margin_account:'FIRST-USDT',open:1},{contract_code:'SECOND-USDT',margin_mode:'isolated',margin_account:'SECOND-USDT',open:0}],1000)};};
  const params={db,fetch_impl,pause_impl:async()=>{},clock:()=>1100,request_admit:budget.reserve,run_id:'FRESH_MANUAL',now:1100,strict_fresh_manual:true};
  const first=await collectHtxPublicRiskEvidence({...params,contract:'FIRST-USDT'});
  const second=await collectHtxPublicRiskEvidence({...params,contract:'SECOND-USDT',now:1200});
@@ -91,7 +92,7 @@ test('strict manual two-candidate cycle reuses newly fetched HTX rows with separ
  assert.equal(third.network_calls,3);assert.equal(calls,6);assert.equal(budget.summary().total,6);
 });
 test('same-run shared response never borrows another market opening permission',async()=>{
- const db=new DB(),params={db,pause_impl:async()=>{},clock:()=>1100,request_admit:createUnifiedHttpBudget().reserve,run_id:'ONE_RUN',now:1100,strict_fresh_manual:true,fetch_impl:async()=>({ok:true,status:200,json:async()=>payload([{contract_code:'FIRST-USDT',open:1}],1000)})};
+ const db=new DB(),params={db,pause_impl:async()=>{},clock:()=>1100,request_admit:createUnifiedHttpBudget().reserve,run_id:'ONE_RUN',now:1100,strict_fresh_manual:true,fetch_impl:async()=>({ok:true,status:200,json:async()=>payload([{contract_code:'FIRST-USDT',margin_mode:'isolated',margin_account:'FIRST-USDT',open:1}],1000)})};
  await collectHtxPublicRiskEvidence({...params,contract:'FIRST-USDT'});
  const missing=await collectHtxPublicRiskEvidence({...params,contract:'MISSING-USDT',now:1200});
  assert.equal(missing.status,'PARTIAL');assert.equal(missing.check_completed,false);assert.equal(missing.evidence[0].validation_status,'ERROR');assert.equal(missing.evidence[0].execution_open_allowed,null);
