@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004]
 permissions:
   contents: read
 jobs:
@@ -35,6 +35,7 @@ jobs:
           node audit-fixes/block-results-20261004/replay.mjs runtime > audit-output/rendered-context-replay.json
           node audit-fixes/block-use-audit-20261004/replay.mjs runtime > audit-output/decision-use-replay.json
           REPORT2_UNIFIED_MODULE_ROOT=runtime/src node --test current-generation/tests/unified-block-output.test.mjs > audit-output/unified-block-output.tap
+          REPORT2_NATIVE_MODULE_ROOT=runtime/src node --test current-generation/tests/native-supply-batch.test.mjs > audit-output/native-supply-batch.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Recover already collected live data without new source calls
         if: github.ref == 'refs/heads/autonomous/block-small-benefit-20261004'
@@ -48,6 +49,12 @@ jobs:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
         run: node audit-fixes/block-results-20261004/verify-options-route.mjs runtime
+      - name: Verify exact native route within existing source quota
+        if: github.ref == 'refs/heads/autonomous/native-supply-batch-20261004'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/block-results-20261004/verify-native-supply-route.mjs runtime
       - uses: actions/upload-artifact@v4
         if: always()
         with:

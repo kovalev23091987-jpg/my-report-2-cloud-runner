@@ -9,10 +9,12 @@ const withinDomain=(host,domain)=>host===domain||host?.endsWith(`.${domain}`);
 const exactIdentity=assetId=>{
  const match=/^([a-z0-9_-]+):(.*)$/i.exec(clean(assetId));if(!match)return null;
  const chain=match[1].toLowerCase(),address=match[2];
+ if(chain==='near'&&address==='native:mainnet')return{chain,asset_kind:'NATIVE',native_asset_id:'near:mainnet',contract_or_mint:null};
  if(chain==='solana')return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)?{chain,contract_or_mint:address}:null;
  return EVM.test(address)?{chain,contract_or_mint:address.toLowerCase()}:null;
 };
 const unique=values=>[...new Set(values.filter(Boolean))];
+const identityKey=id=>id?.asset_kind==='NATIVE'?`${id.chain}:native:mainnet`:id?.chain&&id?.contract_or_mint?`${id.chain}:${id.contract_or_mint}`:null;
 
 export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('OFFICIAL_SOURCE_REGISTRY_OBJECT_REQUIRED');
@@ -24,6 +26,7 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   const fail=reason=>{throw new Error(`OFFICIAL_SOURCE_REGISTRY_INVALID:${index}:${reason}`);};
   if(!/^[A-Z0-9]{2,30}-USDT$/.test(contract)||!base)fail('CONTRACT_CODE');
   if(!identity)fail('ASSET_ID');
+  if(identity.asset_kind==='NATIVE'&&contract!=='NEAR-USDT')fail('NATIVE_CONTRACT_BINDING');
   if(!name)fail('OFFICIAL_NAME');
   if(!/^[a-z0-9.-]+$/.test(domain)||!domain.includes('.'))fail('OFFICIAL_DOMAIN');
   const hostedAccount=/^https:\/\/medium\.com\/feed\/@([a-z0-9_-]{2,64})$/i.exec(canonical)?.[1]?.toLowerCase()||null;
@@ -39,15 +42,15 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   if(status==='DISABLED'&&(!clean(row?.disabled_reason)||parser!==null))fail('DISABLED_REASON');
   if(snapshotSpace&&(!/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(snapshotSpace)||!withinDomain(hostOf(snapshotEvidence),domain)))fail('SNAPSHOT_IDENTITY');
   const prior=registry[base];
-  if(prior?.chain&&(`${prior.chain}:${prior.contract_or_mint}`!==`${identity.chain}:${identity.contract_or_mint}`))fail('ASSET_ID_CONFLICT');
+  if(prior?.chain&&identityKey(prior)!==identityKey(identity))fail('ASSET_ID_CONFLICT');
   registry[base]={
-   ...(prior||{}),chain:identity.chain,contract_or_mint:identity.contract_or_mint,official_name:name,
+   ...(prior||{}),...identity,official_name:name,
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
    official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})}]:[])],
    coingecko_id:clean(row?.coingecko_id)||prior?.coingecko_id||null,coingecko_category_id:clean(row?.coingecko_category_id)||prior?.coingecko_category_id||null,coingecko_category_name:clean(row?.coingecko_category_name)||prior?.coingecko_category_name||null,coinpaprika_id:clean(row?.coinpaprika_id)||prior?.coinpaprika_id||null,sector_tag:clean(row?.sector_tag)||prior?.sector_tag||null,snapshot_space:snapshotSpace||prior?.snapshot_space||null,protocol_slug:clean(row?.protocol_slug)||prior?.protocol_slug||null,
   };
-  records.push({contract_code:contract,asset_id:`${identity.chain}:${identity.contract_or_mint}`,official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})});
+  records.push({contract_code:contract,asset_id:identityKey(identity),official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})});
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:records.length?'CLOSED':'NOT_CLOSED',registry,records};
 }
@@ -55,9 +58,9 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
 export function mergeOfficialAndConfiguredRegistries({official,configured}={}){
  const compiled=official?.registry?official:compileOfficialSourceRegistry(official),parsed=parseSupplementalIdentityRegistry(configured||{}),merged={...compiled.registry};
  for(const [base,row] of Object.entries(parsed.entries||{})){
-  const prior=merged[base],a=prior?.chain&&prior?.contract_or_mint?`${prior.chain}:${prior.contract_or_mint}`:null,b=row?.identity?`${row.identity.chain}:${row.identity.contract_or_mint}`:null;
+  const prior=merged[base],a=identityKey(prior),b=identityKey(row?.identity);
   if(a&&b&&(row.identity?.chain==='solana'?a!==b:a.toLowerCase()!==b.toLowerCase()))throw new Error(`SUPPLEMENTAL_IDENTITY_REGISTRY_CONFLICT:${base}`);
-  merged[base]={...(prior||{}),...(row||{}),...(row?.identity||(!prior?.chain?{}:{chain:prior.chain,contract_or_mint:prior.contract_or_mint})),coinpaprika_id:row?.coinpaprika_id||prior?.coinpaprika_id||null,sector_tag:row?.sector_tag||prior?.sector_tag||null,protocol_slug:row?.protocol_slug||prior?.protocol_slug||null,official_name:row?.official_name||prior?.official_name||null,official_domains:unique([...(prior?.official_domains||[]),...(row?.official_domains||[])]),official_feeds:unique([...(prior?.official_feeds||[]),...(row?.official_feeds||[])]),official_feed_specs:[...(prior?.official_feed_specs||[]),...(row?.official_feed_specs||[])]};
+  merged[base]={...(prior||{}),...(row||{}),...(row?.identity||(!prior?.chain?{}:{chain:prior.chain,contract_or_mint:prior.contract_or_mint,...(prior.asset_kind==='NATIVE'?{asset_kind:prior.asset_kind,native_asset_id:prior.native_asset_id}:{})})),coinpaprika_id:row?.coinpaprika_id||prior?.coinpaprika_id||null,sector_tag:row?.sector_tag||prior?.sector_tag||null,protocol_slug:row?.protocol_slug||prior?.protocol_slug||null,official_name:row?.official_name||prior?.official_name||null,official_domains:unique([...(prior?.official_domains||[]),...(row?.official_domains||[])]),official_feeds:unique([...(prior?.official_feeds||[]),...(row?.official_feeds||[])]),official_feed_specs:[...(prior?.official_feed_specs||[]),...(row?.official_feed_specs||[])]};
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:Object.keys(merged).length?'CLOSED':'NOT_CLOSED',registry:merged,versioned_records:compiled.records.length,configured_status:parsed.status};
 }
