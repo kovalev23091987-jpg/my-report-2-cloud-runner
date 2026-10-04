@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
-import {normalizeCoingeckoSector,collectCoingeckoSectorEvidence,selectCoingeckoSectorCategory} from '../files/src/coingecko-sector-evidence.mjs';
+import {normalizeCoingeckoSector,collectCoingeckoSectorEvidence,selectCoingeckoSectorCategory,verifyCoingeckoSectorIdentity,COINGECKO_ASSET_PLATFORMS} from '../files/src/coingecko-sector-evidence.mjs';
 import {normalizeCoinpaprikaSector,verifyCoinpaprikaIdentity} from '../files/src/coinpaprika-sector-evidence.mjs';
 import {consumeSectorContext} from '../files/src/sector-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
@@ -64,4 +64,16 @@ test('exact provider categories beyond oracle and DeFi produce the same bounded 
  assert.equal(selectCoingeckoSectorCategory(p.metadata,[...p.categories,...p.categories]),null);
  assert.equal(selectCoingeckoSectorCategory({categories:['Ethereum Ecosystem']},[{category_id:'ethereum-ecosystem',name:'Ethereum Ecosystem'}]),null);
  const altered=normalizeCoingeckoSector({...p,metadata:{...p.metadata,categories:['Other']}});assert.equal(altered.evidence.length,0);
+});
+
+test('sector binding includes supported EVM networks and never substitutes an Ethereum address for another chain',async()=>{
+ for(const [chain,platform] of Object.entries(COINGECKO_ASSET_PLATFORMS)){
+  if(chain==='solana')continue;
+  const i={...identity,chain},m={...params.metadata,platforms:{[platform]:identity.contract_or_mint}};
+  assert.equal(verifyCoingeckoSectorIdentity(m,{identity:i,contract:'LINK-USDT',coin_id:'chainlink',category_name:'Oracle'}),true);
+  if(chain!=='ethereum')assert.equal(verifyCoingeckoSectorIdentity(params.metadata,{identity:i,contract:'LINK-USDT',coin_id:'chainlink',category_name:'Oracle'}),false);
+ }
+ const database=db(),now=Date.now(),urls=[];
+ const result=await collectCoingeckoSectorEvidence({...options(database,now),asset_identity:{...identity,chain:'bsc'},asset_metadata:{},fetch_impl:async url=>{urls.push(url);const data=url.includes('/categories/list')?params.categories:url.includes('/markets?')?params.quotes.map(r=>({...r,last_updated:new Date(now-60000).toISOString()})):{...params.metadata,platforms:{'binance-smart-chain':identity.contract_or_mint}};return new Response(JSON.stringify(data));}});
+ assert.equal(result.status,'CLOSED');assert.ok(urls[0].includes('/coins/binance-smart-chain/contract/'));assert.equal(urls.length,3);database.sqlite.close();
 });

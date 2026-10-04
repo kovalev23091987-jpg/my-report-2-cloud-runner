@@ -1,7 +1,7 @@
 import {collectHtxLargeTradesEvidence} from './htx-large-trades-evidence.mjs';
 import {collectHtxPublicRiskEvidence} from './htx-public-risk-evidence.mjs';
 import {collectDeribitAltOptionsEvidence} from './deribit-alt-options-evidence.mjs';
-import {collectCoingeckoSectorEvidence} from './coingecko-sector-evidence.mjs';
+import {collectCoingeckoSectorEvidence,COINGECKO_ASSET_PLATFORMS} from './coingecko-sector-evidence.mjs';
 import {collectCoinpaprikaSectorEvidence} from './coinpaprika-sector-evidence.mjs';
 import {collectFinalizedChainEvents} from './finalized-chain-events.mjs';
 import {collectChainSupplyEvidence} from './chain-supply-evidence.mjs';
@@ -192,7 +192,7 @@ export async function collectCandidateEvidenceV2(params={}){
  let deribit=deferred,chainSupply=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
  const routes=[{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(chainEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'},{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(params?.asset_metadata?.coinpaprika_id&&params?.asset_metadata?.sector_tag)routes.push({name:'SECTOR',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
- if(chainEligible&&['ethereum','solana'].includes(chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
+ if(chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const largeTrades=routeBlock.results.LARGE_TRADES||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};

@@ -1,0 +1,139 @@
+{
+  "schema": "report2-measured-run-v1",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "worker_sha256": "a1fd0c333d80b44482e91650d37288adb76452c1a65cc508db68f0ed8c5ff386",
+  "source": "manual",
+  "started_ts": 1791102468922,
+  "completed_ts": 1791102543762,
+  "duration_ms": 74840,
+  "cron_run_id": "1791102468922-1791102473196",
+  "universe_total": 370,
+  "scanned": 370,
+  "stage0_coverage_pct": 100,
+  "live_shortlist_count": 0,
+  "live_deep_check_count": 2,
+  "pipeline_health_status": "DEGRADED_PIPELINE",
+  "telegram_network_enabled": false,
+  "telegram_output_enabled": false,
+  "d1_finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "R2RUN:1791102468922:a1fd0c333d80b444",
+    "source_run_id": "1791102468922-1791102473196",
+    "measured_rows_read": 34286,
+    "measured_rows_written_accounted": 404,
+    "measured_requests_accounted": 428,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "budget_mode": "ADAPTIVE_DAILY_ACTUAL_WITH_34K_BURST_CAP_V3_20260927",
+    "measured_rows_read": 34286,
+    "measured_rows_written": 403,
+    "measured_requests": 427,
+    "unknown_ops": 0,
+    "run_burst_cap": {
+      "rows_read": 54000,
+      "rows_written": 840
+    },
+    "run_headroom": {
+      "rows_read": 19714,
+      "rows_written": 437
+    },
+    "runs_per_day": 47,
+    "maximum_reserved_daily_rows_read": 2538000,
+    "maximum_reserved_daily_rows_written": 39480,
+    "naive_projected_daily_rows_read": 1611442,
+    "naive_projected_daily_rows_written": 18941,
+    "safety_budget_daily_rows_read": 3500000,
+    "safety_budget_daily_rows_written": 70000,
+    "daily_admission_status": "CLOSED",
+    "top_targets": [
+      {
+        "target": "batch:liquidation_cluster_state",
+        "requests": 4,
+        "rows_read": 18054,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:opportunity_shadow_outcome",
+        "requests": 2,
+        "rows_read": 5367,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:scan_runs",
+        "requests": 10,
+        "rows_read": 2534,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_liq_source_allowance_shadow",
+        "requests": 12,
+        "rows_read": 2442,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:liquidation_events",
+        "requests": 1,
+        "rows_read": 1984,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:v3_early_candidate_wave",
+        "requests": 4,
+        "rows_read": 1041,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      {
+        "target": "first:scan_runs",
+        "requests": 1,
+        "rows_read": 503,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:fast_move_watch_state",
+        "requests": 5,
+        "rows_read": 486,
+        "rows_written": 13,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:canonical_publication_shadow",
+        "requests": 1,
+        "rows_read": 398,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "all:report2_market_snapshot_batch_v1",
+        "requests": 21,
+        "rows_read": 366,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:opportunity_shadow_outcome",
+        "requests": 4,
+        "rows_read": 216,
+        "rows_written": 92,
+        "unknown_ops": 0
+      },
+      {
+        "target": "batch:report2_market_snapshot_batch_v1",
+        "requests": 5,
+        "rows_read": 144,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    ]
+  },
+  "unknown_ops": 0,
+  "secret_values_stored": false
+}
