@@ -47,3 +47,10 @@ test('configured exact bindings and postponed liquidation-only mode do not spend
  }
  const runner=fs.readFileSync(new URL('../files/runner-main.mjs',import.meta.url),'utf8');assert.match(runner,/reference_enabled:expectedManualMode!=='LIQUIDATION_ONLY'/);
 });
+test('versioned futures-only QNT binding closes exact identity without ticker substitution or a network call',async()=>{
+ const db=new D1();let calls=0;
+ const result=await collectHtxAssetIdentity({db,contract:'QNT-USDT',run_id:'QNT',now:Date.parse('2026-10-04T23:55:00Z'),fetch_impl:async()=>{calls++;throw Error('must not fetch');}});
+ assert.equal(result.status,'CLOSED');assert.equal(result.identity_method,'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING');
+ assert.deepEqual(result.identity,{chain:'ethereum',contract_or_mint:'0x4a220e6096b25eadb88358cb44068a3248254675'});
+ assert.equal(result.receipt.evidence_url,'https://etherscan.io/address/0x4a220e6096b25eadb88358cb44068a3248254675');assert.equal(calls,0);
+});

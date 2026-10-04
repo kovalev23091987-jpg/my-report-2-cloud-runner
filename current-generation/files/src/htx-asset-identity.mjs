@@ -6,6 +6,19 @@ import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSou
 export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v3-wire-address-native-20261004';
 const SOURCE='HTX_ASSET_REFERENCE',CACHE_KEY='ALL_CURRENCIES_CHAIN_ADDRESSES_V1',TTL=6*60*60_000,DAILY_CAP=8;
 export const HTX_ASSET_REFERENCE_URL='https://api.huobi.pro/v2/reference/currencies';
+/* HTX can keep a futures market after the asset disappears from its spot
+ * currency catalogue. Such a contract must not lose all exact-source checks.
+ * Every override is a versioned, independently inspectable chain binding;
+ * ticker similarity alone is never sufficient. */
+export const FUTURES_ONLY_EXACT_ASSET_BINDINGS=Object.freeze({
+ QNT:Object.freeze({
+  identity:Object.freeze({chain:'ethereum',contract_or_mint:'0x4a220e6096b25eadb88358cb44068a3248254675'}),
+  method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',
+  evidence_url:'https://etherscan.io/address/0x4a220e6096b25eadb88358cb44068a3248254675',
+  official_domain:'quant.network',
+  verified_at:'2026-10-04T23:50:00.000Z',
+ }),
+});
 const text=v=>String(v??'').trim(),evm=/^0x[0-9a-f]{40}$/i,solana=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const chains=Object.freeze({ETH:'ethereum',ETHEREUM:'ethereum',SOL:'solana',SOLANA:'solana',BSC:'bsc',BNB:'bsc',ARBITRUM:'arbitrum',ARBITRUMONE:'arbitrum',BASE:'base',POLYGON:'polygon',MATIC:'polygon',OPTIMISM:'optimism',AVAX:'avalanche',AVALANCHE:'avalanche'});
 const chainOf=row=>chains[text(row?.baseChain).toUpperCase().replace(/[ _-]/g,'')]||null;
@@ -41,6 +54,8 @@ function selectReference(bundle,contract,{cache_status,network_calls=0}={}){
 export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),clock=Date.now}={}){
  const market=text(contract).toUpperCase();
  if(!db?.prepare||!/^\S+-USDT$/u.test(market)||!text(run_id))return{status:'EXACT_HTX_MARKET_AND_RUN_REQUIRED',identity:null,network_calls:0};
+ const override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[market.slice(0,-5)];
+ if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_FUTURES_ONLY_BINDING',receipt:{evidence_url:override.evidence_url,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
  await installEvidenceSourceStore(db);
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,now});
  if(cached?.version===HTX_ASSET_IDENTITY_VERSION&&Number.isFinite(cached.observed_ts)&&cached.observed_ts<=now)return selectReference(cached,market,{cache_status:'VALID_HTX_REFERENCE_CACHE'});
