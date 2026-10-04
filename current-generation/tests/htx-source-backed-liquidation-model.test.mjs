@@ -42,10 +42,9 @@ test('independent sources are reconciled near one zone and their notionals are n
  const [zone]=reconcileLiquidationZones(rows,{reference_price:100,volatility_pct:3});assert.equal(zone.independent_source_count,3);assert.equal(zone.consensus_confidence_ru,'высокая');assert.equal(zone.notional,3_000_000);assert.equal(zone.amount_semantics,'BEST_SINGLE_SOURCE_NOTIONAL_NOT_SUMMED');
 });
 
-test('pump map falls back to source-backed HTX calculation and reports full calculated coverage',()=>{
+test('production pump map never calls or compares a calculated HTX fallback even with fresh complete inputs',()=>{
  const map=buildPumpLiquidationZones({contract:'龙虾-USDT',current_price:100,observed_ts:T,calculation_context:context()});
- assert.equal(map.status,'CLOSED');assert.equal(map.future_levels_status,'HTX_SOURCE_BACKED_MODEL_AVAILABLE');assert.equal(map.coverage_status,'FULL_HTX_CALCULATED_COVERAGE');assert.ok(map.above.length);assert.ok(map.below.length);assert.ok(map.calculated_zone_count>0);assert.equal(map.external_zone_count,0);
- const output=displayFutureLiquidations(map).join('\n');assert.match(output,/Расчётная модель HTX/);assert.match(output,/оценка/);
+ assert.equal(map.status,'NOT_CLOSED');assert.equal(map.future_levels_status,'NOT_AVAILABLE');assert.equal(map.calculated_fallback_enabled,false);assert.equal(map.provider_zone_count,0);assert.equal(map.htx_source_backed_model.status,'DISABLED_BY_OWNER');assert.equal(map.calculated_zone_count,0);
 });
 
 test('user display merges neighboring BTW levels into one range and keeps four separated zones per side',()=>{

@@ -29,7 +29,11 @@ export function acquireIteration(state,{owner,now,ttl_ms=7200000}={}){
 export function finishPhase(state,{owner,now,proof,receipt}={}){
  const current=checkState(state);if(!current)throw Error('ALL_PHASES_ALREADY_VERIFIED');
  if(state.lease?.owner!==owner||!(state.lease.expires_ts>now))throw Error('ACTIVE_OWNED_ITERATION_REQUIRED');
- if(proof?.phase!==current.id||proof?.status!=='CLOSED'||proof?.actual_evidence_verified!==true||!REQUIREMENTS[current.id].every(key=>proof[key]===true))throw Error('ACTUAL_PHASE_ACCEPTANCE_REQUIRED');
+ const amendment=state.owner_scope_amendment;
+ const authorizedDeferral=current.id==='JOINT_REPORT'&&amendment?.id==='OWNER_RAW24H_DEFERRAL_20261004'&&amendment.deferred_metric==='EXACT_SIGNED_RAW_24H'&&amendment.joint_report_without_metric_authorized===true&&amendment.other_entry_rules_unchanged===true&&amendment.path==='checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md'&&/^[a-f0-9]{64}$/.test(amendment.sha256||'');
+ const requirements=REQUIREMENTS[current.id].filter(key=>!authorizedDeferral||key!=='raw_24h_flow_verified');
+ if(proof?.phase!==current.id||proof?.status!=='CLOSED'||proof?.actual_evidence_verified!==true||!requirements.every(key=>proof[key]===true))throw Error('ACTUAL_PHASE_ACCEPTANCE_REQUIRED');
+ if(authorizedDeferral&&proof.raw_24h_flow_verified!==true&&(proof.raw_24h_explicitly_excluded!==true||proof.raw_24h_included!==false||proof.owner_amendment_sha256!==amendment.sha256))throw Error('EXPLICIT_OWNER_RAW24H_OMISSION_PROOF_REQUIRED');
  if(!receipt?.path||!/^[a-f0-9]{64}$/.test(receipt.sha256||''))throw Error('EXACT_SAVED_COMPLETION_RECEIPT_REQUIRED');
  const result=structuredClone(state),index=PHASES.indexOf(current.id);result.phases[index]={...result.phases[index],status:'VERIFIED',completion_receipt:receipt,completed_ts:now};
  if(index+1<PHASES.length){result.phases[index+1].status='IN_PROGRESS';result.current_phase=PHASES[index+1];}else result.current_phase='COMPLETE';
