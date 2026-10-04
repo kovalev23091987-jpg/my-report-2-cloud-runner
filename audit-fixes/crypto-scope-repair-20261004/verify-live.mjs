@@ -1,0 +1,43 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.argv[2]||'runtime'),load=name=>import(pathToFileURL(path.join(root,name)));
+const {RemoteD1Database}=await load('report2-d1-adapter.mjs');
+const {HTX_CATALOG_URLS,buildHtxCryptoUniverse}=await load('src/htx-crypto-universe.mjs');
+const {collectHtxPublicRiskEvidence,normalizeHtxPublicRisk}=await load('src/htx-public-risk-evidence.mjs');
+const {consumeBlockResultContext}=await load('src/block-result-context.mjs');
+const {planCandidateEvidenceRoutes,BLOCK_SOURCE_REQUIREMENTS}=await load('src/candidate-evidence-v2-runtime.mjs');
+const {reserveEvidenceSourceAttempts}=await load('src/evidence-source-store.mjs');
+const {createUnifiedHttpBudget}=await load('src/unified-budget.mjs');
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),budget=createUnifiedHttpBudget(),run_id=`CRYPTO_SCOPE:${process.env.GITHUB_RUN_ID}`,raw=[];
+const allowed=new Set([...Object.values(HTX_CATALOG_URLS),'https://api.hbdm.com/linear-swap-api/v1/swap_api_state','https://api.hbdm.com/linear-swap-api/v1/swap_adjustfactor','https://api.hbdm.com/linear-swap-api/v1/swap_cross_adjustfactor']);
+const fetch_impl=async(url,options)=>{assert.ok(allowed.has(url),`UNPLANNED_SOURCE:${url}`);assert.ok(raw.length<6);const r=await fetch(url,options);const body=await r.clone().text();raw.push({url,http_status:r.status,received_ts:Date.now(),body_sha256:crypto.createHash('sha256').update(body).digest('hex'),body});return r;};
+const request_admit=r=>budget.reserve(r),catalogs={};
+for(const [family,url] of Object.entries(HTX_CATALOG_URLS)){
+ const id=`${run_id}:CATALOG:${family}`;
+ assert.equal(request_admit({logical_request_id:id,lane:'background',attempts:1}).allowed,true);
+ assert.equal((await reserveEvidenceSourceAttempts(db,{source:'HTX_PUBLIC_RISK',reservation_id:id,attempts:1,daily_cap:144,now:Date.now()})).allowed,true);
+ const r=await fetch_impl(url,{redirect:'error',signal:AbortSignal.timeout(10000)});assert.ok(r.ok);catalogs[family]=await r.json();
+}
+const worker=fs.readFileSync(path.join(root,'src/worker.js'),'utf8'),classify=vm.runInNewContext(worker.slice(worker.indexOf('function classifyHtxInstrumentScope('),worker.indexOf('function symbolFingerprint('))+';classifyHtxInstrumentScope',{});
+const universe=buildHtxCryptoUniverse({catalogs,classify_linear:classify,observed_ts:Date.now()});assert.equal(universe.status,'CLOSED');
+for(const symbol of ['PAXG','XAUT'])assert.ok(universe.assets.some(r=>r.symbol===symbol));
+const activeSwaps=universe.contracts.filter(r=>r.production_market_adapter_supported);
+const risk=await collectHtxPublicRiskEvidence({db,fetch_impl,request_admit,contract:activeSwaps[0].contract_code,run_id,now:Date.now(),strict_fresh_manual:true});
+const cached=await db.prepare('SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1').bind('HTX_PUBLIC_RISK','ALL_HTX_LINEAR_SWAPS_V2').first(),shared=JSON.parse(cached?.payload_json||'null'),fresh=shared?.version===risk.version&&shared?.run_id===run_id;
+const matrix=universe.contracts.map(row=>{
+ const planContract=row.production_market_adapter_supported?row.contract_code:null;
+ const plan=planContract?planCandidateEvidenceRoutes({contract:planContract}):null;
+ const normalized=fresh&&planContract?normalizeHtxPublicRisk({contract:planContract,...shared.payloads,observed_ts:shared.observed_ts}):{evidence:[],status:planContract?'FRESH_PRIMARY_RESPONSE_REQUIRED':'EXACT_SETTLEMENT_ADAPTER_REQUIRED'};
+ const context=consumeBlockResultContext({contract:row.contract_code,evidence:normalized.evidence,now:Date.now()});
+ return{...row,all_15_assigned:Boolean(plan),block_assignments:plan?BLOCK_SOURCE_REQUIREMENTS:null,route_names:plan?['HTX',...plan.routes.map(r=>r.name)]:[],actual_risk_status:normalized.status,actual_context_block_ids:[...new Set(context.facts.map(f=>f.block_id))],actual_facts:context.facts,other_sources_executed:false,all_15_useful_on_this_contract:false};
+});
+const usage=db.usageSnapshot();assert.equal(usage.unknown_ops,0);assert.ok(usage.rows_read<=15000&&usage.rows_written<=40);
+const proof={schema:'htx-crypto-scope-live-v1',github_head:process.env.GITHUB_SHA,run_id,observed_ts:Date.now(),counts:universe.counts,all_catalogs_complete:true,all_market_adapters_complete:universe.all_market_adapters_complete,linear_swaps:activeSwaps.length,all_15_assigned_linear_swaps:matrix.filter(r=>r.production_market_adapter_supported).every(r=>r.all_15_assigned),n08_real_context_contracts:matrix.filter(r=>r.actual_context_block_ids.includes('N08')).length,n09_real_context_contracts:matrix.filter(r=>r.actual_context_block_ids.includes('N09')).length,source_http:raw.length,source_receipts:raw.map(({body,...r})=>r),database_usage:usage,production_write_scope:'EXISTING_PROVIDER_QUOTA_AND_SOURCE_CACHE_ONLY',deep_checks_started:0,canonical_writes:0,telegram_calls:0,all_15_live_accepted:false};
+fs.writeFileSync('audit-output/crypto-scope-live-verification.json',JSON.stringify(proof,null,2)+'\n');
+fs.writeFileSync('audit-output/htx-all-crypto-futures-universe.json',JSON.stringify({...universe,matrix},null,2)+'\n');
+fs.writeFileSync('audit-output/crypto-scope-source-bodies.json',JSON.stringify(raw,null,2)+'\n');
+console.log(JSON.stringify(proof));

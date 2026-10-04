@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {VOLUME_PROFILE_VERSION,readReadyHtxVolumeProfile,volumeProfileSignal} from './htx-volume-profile.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 const M=60000,TTL=180000,n=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
@@ -54,7 +55,7 @@ export function selectComparableVolumeProfiles({contract,now,reference_price,dir
 }
 export async function collectCrossVenueVolumeProfiles({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,clock=Date.now}={}){
  const now=clock(),base=String(contract||'').replace('-USDT',''),sources={},receipts=[];let network_calls=0;
- if(!db||!/^[A-Z0-9]{1,32}-USDT$/.test(contract||''))return {sources,network_calls,status:'EXACT_CONTRACT_DB_REQUIRED'};
+ if(!db||!isExactHtxUsdtSwapKey(contract||''))return {sources,network_calls,status:'EXACT_CONTRACT_DB_REQUIRED'};
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_volume_profile_cache(contract TEXT NOT NULL,source TEXT NOT NULL,expires_ts INTEGER NOT NULL,payload_json TEXT NOT NULL,PRIMARY KEY(contract,source))`).run();
  let cat;try{cat=await db.prepare(`SELECT payload_json FROM report2_cross_exchange_catalog WHERE catalog_id='CEX_V3' AND expires_ts>=?1 LIMIT 1`).bind(now).first();}catch{}
  let entry;try{entry=JSON.parse(cat?.payload_json).entries?.[base];}catch{}

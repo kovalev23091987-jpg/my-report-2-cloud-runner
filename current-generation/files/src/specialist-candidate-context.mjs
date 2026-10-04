@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 // Read-only additions. These receipts never authorize an HTX trade or alter score.
 export const SPECIALIST_CONTEXT_VERSION='specialist-context-v1-20260930';
 // Consumers recheck time and market binding at publication, not merely at fetch.
@@ -100,7 +101,7 @@ async function reserve(db,source,now){
 }
 export async function collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity,cached={},remaining=0,vyx_api_key='',nansen_api_key=''}={}){
  const payloads=[],receipts=[];let network_calls=0;
- if(remaining<1||(!vyx_api_key&&!nansen_api_key)||!/^[A-Z0-9]{1,24}$/.test(base))return {payloads,receipts,network_calls};
+ if(remaining<1||(!vyx_api_key&&!nansen_api_key)||!isExactHtxUsdtSwapKey(String(base||'')+'-USDT'))return {payloads,receipts,network_calls};
  await db.prepare(`CREATE TABLE IF NOT EXISTS report2_specialist_budget(source TEXT PRIMARY KEY,day TEXT NOT NULL,attempts INTEGER NOT NULL,blocked_until INTEGER NOT NULL)`).run();
  let vyx=cached.VYX;
  const identity=flowIdentity(asset_identity,base),windowEnd=Math.floor(now/3600000)*3600000;

@@ -3411,15 +3411,29 @@ function classifyHtxInstrumentScope(info) {
     "USDBRL-USDT": "https://www.htx.com/en-us/support/45044889526369/",
   }[String(info?.contract_code || "").toUpperCase()] || null;
 
-  const htxTradfiClassified =
-    Boolean(officialForexEvidence) ||
+  // Exact exceptions bind the HTX contract to an issuer-documented crypto
+  // token. Generic Metals/TradFi tags are not sufficient to exclude it.
+  // Stock-tagged homonyms never inherit spot-token identity by ticker alone.
+  const cryptoTokenEvidence = {
+    "PAXG-USDT": "https://www.paxos.com/paxgold",
+    "XAUT-USDT": "https://gold.tether.to/",
+  }[String(info?.contract_code || "").toUpperCase()] || null;
+  const explicitStockOrForex = Boolean(officialForexEvidence) ||
+    labels.some(label => ["stock", "stocks", "forex", "fx"].includes(label)) ||
+    tradfiLabels.some(label => /^(stocks?|forex|fx)$/i.test(label));
+  const confirmedCryptoToken = Boolean(cryptoTokenEvidence) && !explicitStockOrForex &&
+    ["PAXG", "XAUT"].includes(String(info?.symbol || "").toUpperCase()) &&
+    String(info?.contract_code || "").toUpperCase() === String(info?.symbol || "").toUpperCase() + "-USDT";
+
+  const htxTradfiClassified = !confirmedCryptoToken && (
+    explicitStockOrForex ||
     tradfiLabels.length > 0 ||
     labels.some(
       (label) =>
         tradfiLabelSet.has(
           label
         )
-    );
+    ));
 
   const evidenceComplete =
     labelsPresent &&
@@ -3429,8 +3443,8 @@ function classifyHtxInstrumentScope(info) {
     Boolean(tradePartition);
 
   const correctMarket =
-    businessType === "swap" &&
-    contractType === "swap" &&
+    ((businessType === "swap" && contractType === "swap") ||
+      (businessType === "futures" && ["this_week", "next_week", "quarter", "next_quarter"].includes(contractType))) &&
     tradePartition === "USDT";
 
   let classification =
@@ -3452,11 +3466,12 @@ function classifyHtxInstrumentScope(info) {
 
   if (!correctMarket) {
     reasons.push(
-      "NOT_ACTIVE_USDT_SWAP_SCOPE"
+      "NOT_HTX_LINEAR_CRYPTO_FUTURES_SCOPE"
     );
   }
 
   if (officialForexEvidence) reasons.push("HTX_OFFICIAL_FOREX_UNDERLYING");
+  if (confirmedCryptoToken) reasons.push("EXACT_ISSUER_CRYPTO_TOKEN_UNDERLYING");
 
   if (htxTradfiClassified) {
     reasons.push(
@@ -3513,6 +3528,7 @@ function classifyHtxInstrumentScope(info) {
 
     evidence: {
       official_forex_source_url: officialForexEvidence,
+      official_crypto_token_source_url: confirmedCryptoToken ? cryptoTokenEvidence : null,
       business_type:
         businessType || null,
 
@@ -5575,7 +5591,7 @@ async function persistStage0(
 
     rules: [
       "Exact HTX UTF-8 contract_code is the canonical identity; no translation is used.",
-      "Automatic crypto discovery requires current HTX labels and tradfi_labels; TradFi or unknown scope fails closed.",
+      "Automatic crypto discovery retains every crypto asset regardless of symbol script; stock and fiat underlyings are excluded, and issuer-proven crypto tokens override generic TradFi labels.",
       "Missing values are never converted to zero.",
       "Transitions are calculated only from persisted historical observations; they are not reconstructed from current snapshots.",
       "Rolling-24h turnover change is labeled as a proxy and is not treated as exact interval volume.",
