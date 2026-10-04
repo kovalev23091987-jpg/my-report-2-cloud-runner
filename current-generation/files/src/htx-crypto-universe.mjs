@@ -7,8 +7,11 @@ export const HTX_LINEAR_MARGIN_CATALOG_URLS=Object.freeze(Object.fromEntries(['a
 export function mergeHtxLinearCatalogModes({base,modes,observed_ts}={}){
  const failures=[],rows=new Map(),sources=[['default',base],...Object.entries(modes||{})];
  for(const mode of ['all','cross','isolated'])if(!modes?.[mode])failures.push({mode,reason:'MARGIN_MODE_CATALOG_REQUIRED'});
- let ts=0;
+ let ts=0;const empty_modes=[];
+ const indexedCodes=new Set(['all','cross'].flatMap(mode=>Array.isArray(modes?.[mode]?.data)?modes[mode].data.map(r=>r?.contract_code):[]));
+ const isolatedAbsent=Array.isArray(base?.data)&&base.data.every(r=>['all','cross'].includes(r.support_margin_mode)&&indexedCodes.has(r.contract_code));
  for(const [mode,p] of sources){
+  if(mode==='isolated'&&isolatedAbsent&&p?.status==='error'&&p.err_code===1014&&p.err_msg==='This contract doesnt exist.'&&Number.isSafeInteger(p.ts)&&p.ts<=observed_ts&&observed_ts-p.ts<=300000){empty_modes.push({mode,status:'SCOPED_CONTRACT_NOT_FOUND_WITH_COMPLETE_UNFILTERED_MODE_RECONCILIATION'});ts=Math.max(ts,p.ts);continue;}
   if(p?.status!=='ok'||!Array.isArray(p.data)||!Number.isSafeInteger(p.ts)||p.ts>observed_ts||observed_ts-p.ts>300000){failures.push({mode,reason:'FRESH_MARGIN_MODE_CATALOG_REQUIRED'});continue;}
   ts=Math.max(ts,p.ts);const seen=new Set();
   for(const r of p.data){const code=r?.contract_code;if(typeof code!=='string'||!code||seen.has(code)){failures.push({mode,contract:code,reason:'EXACT_UNIQUE_MODE_CONTRACT_REQUIRED'});continue;}seen.add(code);
@@ -17,7 +20,7 @@ export function mergeHtxLinearCatalogModes({base,modes,observed_ts}={}){
    else rows.set(code,r);
   }
  }
- return{status:failures.length?'PARTIAL':'CLOSED',payload:{status:'ok',ts,data:[...rows.values()]},failures,counts:Object.fromEntries(sources.map(([mode,p])=>[mode,Array.isArray(p?.data)?p.data.length:null])),new_contracts_vs_default:[...rows.keys()].filter(code=>!base?.data?.some(r=>r.contract_code===code)).sort()};
+ return{status:failures.length?'PARTIAL':'CLOSED',payload:{status:'ok',ts,data:[...rows.values()]},failures,empty_modes,counts:Object.fromEntries(sources.map(([mode,p])=>[mode,Array.isArray(p?.data)?p.data.length:empty_modes.some(r=>r.mode===mode)?0:null])),new_contracts_vs_default:[...rows.keys()].filter(code=>!base?.data?.some(r=>r.contract_code===code)).sort()};
 }
 const key=v=>String(v??'').trim().toUpperCase();
 const negative=row=>[...(row.labels||[]),...(row.tradfi_labels||[])].some(v=>/^(tradfi|stocks?|indices|commodities|metals|forex|fx)$/i.test(String(v)));

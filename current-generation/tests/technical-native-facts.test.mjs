@@ -8,6 +8,7 @@ import {parseSolanaSupplyPayload,fetchSolanaNativeSupply,SOLANA_MAINNET_GENESIS}
 import {collectChainSupplyEvidence} from '../files/src/chain-supply-evidence.mjs';
 import {planCandidateEvidenceRoutes} from '../files/src/candidate-evidence-v2-runtime.mjs';
 import {normalizeHtxTechnicalStructure,normalizeHtxRollingRange,clearHtxTechnicalSnapshots,readHtxTechnicalStructure} from '../files/src/htx-technical-structure.mjs';
+import {mergeHtxLinearCatalogModes} from '../files/src/htx-crypto-universe.mjs';
 import {parseHtxMarketJson} from '../files/src/htx-trade-json.mjs';
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
@@ -47,4 +48,11 @@ test('closed candle N10 uses exactly 20 complete minutes and does not authorize 
  const duration=60000,end=Math.floor(NOW/duration)*duration,contract='哈基米-USDT',p={status:'ok',ch:`market.${contract}.kline.1min`,ts:NOW,data:Array.from({length:20},(_,i)=>({id:(end-20*duration+i*duration)/1000,open:10,low:9,high:11,close:10}))};
  const evidence=normalizeHtxTechnicalStructure({payload:p,contract,period:'1min',observed_ts:NOW});assert.equal(evidence.length,1);assert.equal(consumeBlockResultContext({contract,evidence,now:NOW}).facts.length,1);
  for(const payload of [{...p,data:p.data.slice(1)},{...p,data:[...p.data.slice(1),p.data[1]]},{...p,ch:'market.OTHER-USDT.kline.1min'},{...p,data:p.data.map(r=>({...r,close:12}))}])assert.equal(normalizeHtxTechnicalStructure({payload,contract,period:'1min',observed_ts:NOW}).length,0);
+});
+
+test('primary HTX empty isolated mode is accepted only with exact default/all/cross reconciliation',()=>{
+ const base=JSON.parse(body('margin-default')),modes=Object.fromEntries(['all','cross','isolated'].map(m=>[m,JSON.parse(body('margin-'+m))])),observed_ts=modes.isolated.ts+1000;
+ const out=mergeHtxLinearCatalogModes({base,modes,observed_ts});assert.equal(out.status,'CLOSED');assert.deepEqual(out.counts,{default:378,all:374,cross:4,isolated:0});assert.equal(out.new_contracts_vs_default.length,0);assert.equal(out.empty_modes.length,1);
+ for(const replacement of [{...modes.isolated,err_code:1013},{...modes.isolated,ts:observed_ts-300001}])assert.equal(mergeHtxLinearCatalogModes({base,modes:{...modes,isolated:replacement},observed_ts}).status,'PARTIAL');
+ assert.equal(mergeHtxLinearCatalogModes({base:{...base,data:[...base.data,{contract_code:'HIDDEN-USDT',support_margin_mode:'isolated'}]},modes,observed_ts}).status,'PARTIAL');
 });
