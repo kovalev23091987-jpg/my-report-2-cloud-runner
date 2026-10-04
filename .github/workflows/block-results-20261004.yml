@@ -1,7 +1,7 @@
 name: Report 2 Useful Block Results
 on:
   push:
-    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004]
+    branches: [autonomous/block-results-20261004, autonomous/block-results-followup-20261004, autonomous/block-small-benefit-20261004, autonomous/unified-block-output-20261004, autonomous/canonical-execution-output-20261004, autonomous/native-supply-batch-20261004, autonomous/shared-sector-batch-20261004, autonomous/remaining-block-facts-20261004, autonomous/crypto-scope-repair-20261004, autonomous/technical-native-facts-20261004, autonomous/cloud-phase-gate-20261004]
 permissions:
   contents: read
 jobs:
@@ -25,6 +25,8 @@ jobs:
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
       - name: Verify inherited checks and actual result consumption
         run: |
+          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
+          node runner/continuation-stage-gate.mjs status > audit-output/continuation-stage-state.json
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node current-generation/validate.mjs > audit-output/validation.json
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/early-evidence-repair/repair.test.mjs telegram-repair-tests/v3-early-sidecar.test.mjs > audit-output/early-repair.tap
