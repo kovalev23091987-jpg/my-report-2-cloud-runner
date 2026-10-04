@@ -47,6 +47,19 @@ export function rotateEvidenceRoleRoutes(routes,key){
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
  return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
 }
+export function exactCapabilityIdentity(params={}){
+ const contract=String(params?.contract||'').trim().toUpperCase(),identity=params?.asset_identity,method=String(params?.identity_method||'').trim();
+ if(!/^\S+-USDT$/u.test(contract)||!identity||!method.startsWith('HTX_OFFICIAL_'))return null;
+ const chain=String(identity.chain||'').trim().toLowerCase();if(!chain)return null;
+ if(identity.asset_kind==='NATIVE'&&identity.contract_or_mint===null&&identity.native_asset_id===`${chain}:mainnet`&&method==='HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK')return{contract,chain,asset_kind:'NATIVE',native_asset_id:identity.native_asset_id,identity_method:method};
+ const address=String(identity.contract_or_mint||'').trim();
+ if(address&&method==='HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS')return{contract,chain,asset_kind:'TOKEN',contract_or_mint:address,identity_method:method};
+ return null;
+}
+export function capabilityCheckedNoExactRoute(params,source_id,reason){
+ const identity=exactCapabilityIdentity(params);if(!identity)return null;
+ return{status:'CAPABILITY_CHECKED_NO_EXACT_ROUTE',check_completed:true,capability_registry_complete:true,source_id,reason,exact_identity:identity,network_calls:0,evidence:[],receipts:[{check_completed:true,status:'NO_EXACT_ROUTE',source_id,contract:identity.contract,identity_method:identity.identity_method}],observed_ts:Number(params?.now)||Date.now(),decision_effect:'MISSING_FACT_NO_ZERO_NO_GREEN',internal_only:true};
+}
 // A block is complete only when its assigned primary owner was actually
 // evaluated.  Supplemental and discovery routes remain visible, but they may
 // not close a block on behalf of a missing primary route.
@@ -112,6 +125,7 @@ const hasHttpReceipt=receipt=>receipt?.http_status!==null&&receipt?.http_status!
 export function sourceWasActuallyChecked(source){
  if(!source||typeof source!=='object')return false;
  const status=String(source.status||'NOT_EVALUATED').toUpperCase();
+ if(status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE')return source.check_completed===true&&source.capability_registry_complete===true&&Boolean(source?.exact_identity?.contract)&&Boolean(source?.exact_identity?.identity_method)&&source.decision_effect==='MISSING_FACT_NO_ZERO_NO_GREEN';
  if(/(?:^|_)(?:EXACT_.+_REQUIRED|REQUIRED|DEFERRED|WAITING|NOT_EVALUATED|NOT_RUN|NOT_CLOSED|SOURCE_ERROR|STALE|SATURATED|TRUNCATED|INCOMPLETE|INVALID(?:_|$)|SCHEMA|TIMEOUT|ACCESS_BLOCKED|RATE_LIMIT|QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|UNSUPPORTED|PARSER_FORMAT_MISMATCH)(?:_|$)/.test(status))return false;
  if(source.check_completed===true)return true;
  if(Number(source.network_calls)>0)return true;
@@ -202,19 +216,27 @@ export async function collectCandidateEvidenceV2(params={}){
  const core=await collectEvidenceRouteBlock({routes:[{name:'HTX',role:'HTX_EXECUTION_RULES'}],collectors:{HTX:collectHtxPublicRiskEvidence},params,max_requests:evidenceCap});
  const htx=core.results.HTX;
  const {routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,supplyEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible}=planCandidateEvidenceRoutes(params);
+ const exactCapability=exactCapabilityIdentity(params),noRoute=(source,reason)=>capabilityCheckedNoExactRoute(params,source,reason);
  const deferred={status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0,receipts:[],internal_only:true};
- let deribit=deferred,chainSupply=supplyEligible?deferred:{status:nativeSectorEligible?'NATIVE_SUPPLY_PROVIDER_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},chainEvents=chainEligible?deferred:{status:nativeSectorEligible?'NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},bluesky=socialEligible?deferred:{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},official=officialEligible?deferred:{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
+ let deribit=deferred,
+  chainSupply=supplyEligible?deferred:(exactCapability?.asset_kind==='NATIVE'?noRoute('CHAIN_SUPPLY','NO_EXACT_FINALIZED_SUPPLY_ADAPTER_FOR_NATIVE_CHAIN'):{status:nativeSectorEligible?'NATIVE_SUPPLY_PROVIDER_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
+  chainEvents=chainEligible?deferred:(exactCapability?.asset_kind==='NATIVE'?noRoute('CHAIN_EVENTS','NO_EXACT_FINALIZED_EVENT_ADAPTER_FOR_NATIVE_CHAIN'):{status:nativeSectorEligible?'NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED':'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
+  bluesky=socialEligible?deferred:(exactCapability?noRoute('BLUESKY_PUBLIC','NO_EXACT_SOCIAL_ASSET_ROUTE_FOR_VERIFIED_IDENTITY'):{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
+  official=officialEligible?deferred:(exactCapability?noRoute('OFFICIAL_EVENTS','NO_EXACT_OFFICIAL_FEED_IN_CAPABILITY_REGISTRY'):{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
+  gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
  const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{LARGE_TRADES:collectHtxLargeTradesEvidence,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const delta=routeBlock.results.DELTA||{status:'NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY',evidence:[],network_calls:0};
  const largeTrades=routeBlock.results.LARGE_TRADES||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
  const sector=routeBlock.results.SECTOR||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
- const cgSector=routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+ let cgSector=routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
+ if(exactCapability&&Number(cgSector.network_calls)>0&&['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(cgSector.status)))cgSector=noRoute('COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
  const supplementalSources=params?.supplemental_context?.sources||{};
- const nansen=supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0};
+ let nansen=supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0};
+ if(exactCapability?.asset_kind==='NATIVE'&&String(nansen.status||'NOT_EVALUATED')==='NOT_EVALUATED')nansen=noRoute('NANSEN_FLOWS','NO_EXACT_NATIVE_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY');
  const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
- const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true};
+ const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
  const statuses=[coinmetrics?.status,delta?.status,tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE');
  // Generic news cannot close vesting. Only the exact primary-document adapter
  // may close N01; its static terms are not an observed future unlock transfer.

@@ -44,6 +44,7 @@ jobs:
           REPORT2_COVERAGE_MODULE_ROOT=runtime/src node --test current-generation/tests/liquidation-futures-coverage.test.mjs > audit-output/liquidation-futures-coverage.tap
           REPORT2_DELTA_MODULE_ROOT=runtime/src node --test current-generation/tests/delta-options-evidence.test.mjs > audit-output/delta-options-batch.tap
           REPORT2_COINMETRICS_MODULE_ROOT=runtime/src node --test current-generation/tests/coinmetrics-supply-context.test.mjs > audit-output/coinmetrics-supply-batch.tap
+          REPORT2_JOINT_REPAIR_RUNTIME_ROOT=runtime node --test current-generation/tests/joint-main-admission-repair.test.mjs > audit-output/joint-main-admission-repair.tap
           REPORT2_CADENCE_RUNTIME_ROOT=runtime node --test current-generation/tests/scheduled-cadence-effective.test.mjs > audit-output/scheduled-cadence-effective.tap
           node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
       - name: Recover already collected live data without new source calls
