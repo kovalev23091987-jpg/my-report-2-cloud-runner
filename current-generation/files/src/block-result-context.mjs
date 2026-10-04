@@ -97,6 +97,11 @@ function describe(row,now){
   if(start===null||end===null||end-start!==7200000||end>now||row.source_ts!==end||!positive(incoming)||!positive(outgoing)||row.unit!=='TOKEN_AMOUNT'||!eq(incoming-outgoing,row.value))return null;
   return{source:'Nansen',label:'Потоки токена через биржи за два полных часа',value:`поступило ${fmt(incoming)}, выведено ${fmt(outgoing)}; чистый ${incoming>=outgoing?'приток':'отток'} ${fmt(Math.abs(incoming-outgoing))} токенов; охват источника ${fmt(row.coverage_fraction*100)} из 100`};
  }
+ if(row.block_id==='N12'&&row.metric_family==='EXACT_SIGNED_RAW_24H'){
+  const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),start=number(row.window_start),end=number(row.window_end),count=number(row.raw_trade_count);
+  if(row.provider_id!=='HTX_SIGNED_RAW_TAPE'||row.upstream_id!=='HTX_OFFICIAL_RAW_FILLS'||row.source_clock_policy!=='IMMUTABLE_EXACT_RAW_MINUTES'||row.not_candle_signed_estimate!==true||row.entry_authorized!==false||row.unit!=='USDT'||row.verified_minutes!==1440||!Number.isSafeInteger(start)||start%60000||end-start!==86400000||end!==row.source_ts||end>now||now-end>180000||!positive(buy)||!positive(sell)||!Number.isSafeInteger(count)||count<0||count!==row.factual_trade_count||!eq(row.value,buy-sell)||!/^[a-f0-9]{64}$/.test(row.raw_minute_root_sha256||''))return null;
+  return{source:'HTX / исходные сделки',label:'Подтверждённый поток фьючерсных сделок за 24 часа',value:`${count} исходных сделок: покупки ${fmt(buy)}, продажи ${fmt(sell)} USDT; разница ${fmt(buy-sell)} USDT; каждую из 1440 минут проверили по фактическому счётчику; направление и разрешение сделки не назначены`};
+ }
  if(row.block_id==='N12'&&row.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE'){
   const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),count=number(row.valid_recent_rows);
   if(!positive(buy)||!positive(sell)||!Number.isSafeInteger(count)||count<1||row.unit!=='USDT'||!eq(buy+sell,row.value))return null;

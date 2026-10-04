@@ -15908,6 +15908,12 @@ async function buildDeepCheckInput(params, env) {
     futures.data = bindVerifiedFuturesFlow(futures.data, trajectory.data, componentsAvailableTs);
   }
 
+  // Persist only exact count-verified raw fills already fetched by this same deep check.
+  // This starts a bounded warmup; it cannot fill missing hours or authorize entry.
+  let signedTapeReceipt={status:'NOT_CONFIGURED',evidence:[],network_calls:0};
+  if(typeof env?.REPORT2_SIGNED_TAPE_PERSIST==='function')try{signedTapeReceipt=await env.REPORT2_SIGNED_TAPE_PERSIST({contract,now:Date.now()});}catch(error){signedTapeReceipt={status:'RAW_TAPE_PERSISTENCE_NOT_CLOSED',evidence:[],network_calls:0,error:String(error?.message||error).slice(0,160)};}
+  if(futures?.data)futures.data.signed_raw_tape_receipt=signedTapeReceipt;
+
   const history =
     settled(results[3]);
 
@@ -16327,6 +16333,7 @@ async function buildDeepCheckInput(params, env) {
   try{
     if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  if(signedTapeReceipt.evidence?.length)candidateEvidenceV2={...candidateEvidenceV2,evidence:[...(candidateEvidenceV2.evidence||[]),...signedTapeReceipt.evidence]};
   console.log('EVIDENCE_V2_CANDIDATE_RECEIPT',JSON.stringify({contract,status:candidateEvidenceV2?.status||'UNKNOWN',cache_status:candidateEvidenceV2?.cache_status||null,network_calls:Number(candidateEvidenceV2?.network_calls||0),block_coverage:candidateEvidenceV2?.block_coverage||null,whole_job_admission:candidateEvidenceV2?.whole_job_admission?.status||null,daily_admission:candidateEvidenceV2?.admission?.status||null,evidence:(candidateEvidenceV2?.evidence||[]).map(row=>({block_id:row.block_id,metric_family:row.metric_family,validation_status:row.validation_status,coverage_status:row.coverage_status,directional_strength:row.directional_strength,risk_strength:row.risk_strength})),receipts:(candidateEvidenceV2?.receipts||[]).map(row=>({route:row.route,status:row.status,http_status:row.http_status}))}));
 
   let futureProviderModels=null;
