@@ -1,0 +1,115 @@
+{
+  "schema": "remaining-block-facts-release-evidence-v1",
+  "pr": 100,
+  "tested_sha": "dbd5a0c3ddec63903177a7a9b5bd2e44b63db791",
+  "released_main": "2e733e2a70d5c797c8e2e803126bce59bc638ff7",
+  "workflow_run_id": 37218165394,
+  "job_id": 111482853430,
+  "conclusion": "success",
+  "artifact_id": 11309118298,
+  "artifact_sha256": "9b0036deab67948491714dfcd438116e28f385592fefa400d122a39ae7593ba0",
+  "worker_sha256": "ce4aeaaaa7bc05e27da523d4979efa9492a1ef058c05e763b6220260ea0acc90",
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "validation": "CURRENT_GENERATION_VALIDATED",
+  "source_observed_ts": 1791132583438,
+  "catalog_contracts": 374,
+  "active_contracts": 370,
+  "crypto_contracts": 100,
+  "excluded_non_crypto_contracts": 270,
+  "all_15_assigned": true,
+  "shared_n08_context_contracts": 100,
+  "shared_n09_context_contracts": 100,
+  "documents": [
+    {
+      "contract": "NEAR-USDT",
+      "status": "CLOSED",
+      "context_facts": 1,
+      "http_status": 200
+    },
+    {
+      "contract": "APT-USDT",
+      "status": "OFFICIAL_SCHEDULE_SOURCE_ERROR",
+      "context_facts": 0,
+      "http_status": 429
+    }
+  ],
+  "official_feed": {
+    "contract": "BTW-USDT",
+    "status": "EMPTY_OR_STALE",
+    "context_facts": 1,
+    "all_official_channels_checked": false
+  },
+  "source_http": 7,
+  "database_usage": {
+    "requests": 49,
+    "rows_read": 19,
+    "rows_written": 22,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:report2_evidence_source_daily": {
+        "requests": 10,
+        "rows_read": 5,
+        "rows_written": 5,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 10,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 7,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 18,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 1,
+        "rows_written": 7,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "coverage_matrix_path": "checkpoints/htx-crypto-block-route-matrix-20261004.json.gz",
+  "coverage_matrix_sha256": "82d888fc5c132aae1e16ce0eded1818a2f951f1dc5a5e2e17755e5ee0d197d62",
+  "scope": "ALL_CURRENT_ACTIVE_HTX_CRYPTO_USDT_SWAPS",
+  "other_htx_contract_types_verified": false,
+  "all_15_live_accepted": false,
+  "main_accepted": false,
+  "deep_checks_started": 0,
+  "canonical_writes": 0,
+  "telegram_calls": 0,
+  "telegram_delivery_proven": false,
+  "initial_workflow_failure": {
+    "workflow_run_id": 37218053459,
+    "commit": "5ab71102a438190fb8da5a39b7038ad836ec8b28",
+    "cause": "COMPRESSED_FIXTURES_UPLOADED_AS_BASE64_TEXT_INSTEAD_OF_BINARY_BLOBS",
+    "source_calls_started": false,
+    "resolved_by_commit": "dbd5a0c3ddec63903177a7a9b5bd2e44b63db791"
+  },
+  "owner_scope_correction": {
+    "date": "2026-10-04T16:53:43Z",
+    "excluded": "STOCK_AND_FIAT_UNDERLYINGS",
+    "retain": "ALL_CRYPTO_FUTURES_INCLUDING_PAXG_XAUT",
+    "counts_are_final_crypto_universe": false,
+    "current_scope_filter_requires_repair": true
+  },
+  "tested_tree": "27c40a55fd7ef79c90a51eda9a329ca405ff7735"
+}
