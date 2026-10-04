@@ -18,6 +18,7 @@ const files=[
  'runner-main.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',
+ 'src/block-decision-use-audit.mjs',
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs',
  'src/verified-futures-flow-binding.mjs',
