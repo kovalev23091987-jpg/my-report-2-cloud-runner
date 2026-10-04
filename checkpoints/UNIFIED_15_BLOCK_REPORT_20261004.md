@@ -18,13 +18,17 @@ PR93: раннее сохранение canonical до statistical observers; le
 
 Полный MAIN: свежие top2 фактического ранга HTX turnover>=100000, без замены лидеров удобными монетами; audit15по каждой; raw flow24h и история по настоящим данным; точная identity и source/use proofs. Отклонение идеи по рыночным правилам допустимо при полноте проверки. Missing/partial/stale нельзя превратить во вход. Полная свежая MAIN/Telegram acceptance пока false.
 
-## Найденный следующий разрыв и кандидат ремонта
+## Выпущенный общий ремонт PR96
+
+Main `396105a7be8099fd6ed3550ca75e18587cba2164`, exact tested head `8aa2c45e25b552a1c783d743c6dc49ed4c9afdd3`; одинаковое Git tree `2051c8b07bb0421df34df21f236afe6d8633ab57`. Cloud `37208007635` / job `111453170211` SUCCESS: integration37/37, unified4/4; точные квитанции в `checkpoints/unified-block-output-release-evidence-20261004.json`. Это выпуск передачи фактов, не fresh MAIN и не доставка.
 
 Approved sender использует `renderCanonicalTelegram` из canonical-publication.mjs, а не telegram-compact-formatter.mjs. Compact formatter и manual читали supporting_context; approved formatter не читал факты дополнительных блоков. Поэтому работа manual/compact не доказывала попадание фактов в отправляемый текст.
 
 Кандидат: exact still-valid evidence + одинаковые evidence_id/physical_root/label/value из supporting_context могут заполнить только существующие market-fact bullet slots approved formatter. Прежние основные факты имеют приоритет. Заголовки, ordering, 1bullet WAIT/3для прочих событий,1800символов, actionability, source/gate/score rules не меняются. Не видимые из-за лимита факты не считаются отображёнными. Пустой headline N07 не становится announcement. Audit сохраняется вне canonical и различает manual rendering и approved payload rendering; payload proof не является delivery proof. Readback использует сохранённый telegram_text в том же индексированном запросе, не генерирует историческую отправку.
 
-Контрольные тесты содержат явно синтетическое направление только для проверки формы на сохранённых реальных BTW facts. N07 issuer.example — синтетический parser/presentation test, не настоящий source probe. Нельзя увеличивать10типов этим тестом или отправлять его. Облачная приёмка кандидата обязательна до выпуска.
+Контрольные тесты содержат явно синтетическое направление только для проверки формы на сохранённых реальных BTW facts. N07 issuer.example — синтетический parser/presentation test, не настоящий source probe. Нельзя увеличивать10типов этим тестом или отправлять его. Exact cloud и merge PR96 подтверждены.
+
+Новое прямое указание владельца17:10МСК: работать крупными связанными пакетами, затем один общий тестовый прогон, не проверять после каждого отдельного изменения и не тратить лимит на повторения. Следующий пакет добавляет immutable N11/N16 в НОВЫЙ canonical до сохранения, русскую форму этих фактов и их повторную проверку approved sender. Старые canonical не переписывать. Для фактов нужен один bounded indexed read per candidate, без sourceHTTP/нового deep. Не менять score, target, entry gates, liquidation.
 
 ## Следующая независимая работа
 

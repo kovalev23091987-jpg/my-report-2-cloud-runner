@@ -1,3 +1,13 @@
+# Последний проверенный выпуск PR96 — единый контекст manual/approved Telegram, 04.10.2026 14:10 UTC
+
+Main `396105a7be8099fd6ed3550ca75e18587cba2164`, head `8aa2c45e25b552a1c783d743c6dc49ed4c9afdd3`, same Git tree `2051c8b07bb0421df34df21f236afe6d8633ab57`. Cloud37208007635/job111453170211 SUCCESS, integration37/37 и unified4/4. Artifact11305278270 ZIP SHA256 `3cbbc951aaaa1945b24ca7a9ce737dcf4524322bf04ae55829aa770766477b2f`; runtime tree `1f845c3d3fa0b7ff0f90078e27f6b6502f040ce0468c7f9eb7bcbdd4f21eb0a7`. Точная квитанция `checkpoints/unified-block-output-release-evidence-20261004.json`; общий статус двух чатов `checkpoints/UNIFIED_15_BLOCK_REPORT_20261004.md`.
+
+Работа PR93/94/95 уже объединена. Действуют15, польза10типов на разных actual входах. Исправлена передача exact validated supporting facts в существующие bullet slots actual approved sender, не только compact formatter. Число показанных строк/длина/layout/gates/scores прежние; скрытый лимитом факт не считается показанным. Readback использует сохранённый telegram_text; payload proof не delivery. N07 без headline не считается объявлением. Контрольные presentation fixtures не являются новым рынком или source proof. SourceHTTP0/deep0/Telegram0; 1D1read allowance diagnostic и одна неуспешная diagnostic query к отсутствующей таблице, writes0.
+
+После нового указания17:10МСК работать связанными пакетами и одним общим тестированием. Готовится canonical N11/N16 package: один exact indexed read уже сохранённого proof перед NEW canonical, русские labels/values и approved revalidation; current worker pin обновляется строго на новые bytes, guards не ослабляются. Исторический canonical не переписывать; no score/entry authorization/liquidation changes. Fresh MAIN/raw24h/identity/5remaining actual blocks/Telegram message_id/квоты/очистка не закрыты. Плановых новых MAIN receipts в последних20workflowruns не появилось; повтор FULL_MANUAL не выполнен.
+
+---
+
 # Последний проверенный выпуск PR95 — точная область N08, 04.10.2026 13:40 UTC
 
 Main `66cdeb7d59e9ce5aa0ef2d7d6241476f6463a637`; PR95 head `b32c0efff89a54cd815e63f274a7fe70ca2307dd`; exact same Git tree `a801d84f3dbc47e5c944fb91665da83cd32c30b4`. Cloud workflow `37206255357` / job `111447948015` SUCCESS: integration `37/37`, validation PASS, early repair `21/21`, runtime controls `27/27`. Artifact `11305065246` (`useful-block-results-37206255357`) независимо скачан и проверен: ZIP SHA256 `7b510b34a2fdb8a03d004a8a061482fbc19f09fe48dfb8d12f9c9f3418e3ad29`; runtime manifest SHA256 `9bd86ea06e622d493f791ac2ad690626a0af4c6f4f5a6f6a3d31bca19cb8d7a3`; runtime tree `a22e4890cc23bc0f0e5362292733ef417aad7c2319d7201d895f9a0af4f92484`; worker unchanged `a5c8330e10297378f8771222f0c9ea2a04840c8271e12e62896d425886f8d032`.
