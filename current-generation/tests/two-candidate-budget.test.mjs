@@ -47,6 +47,22 @@ test('funding and legacy direction priority cannot replace a better measured mar
  const b={contract:'WEAKER-USDT',priority_rank:2,_v3_discovery_source:{selection_score_0_100:60,discovery_direction_hint:'LONG_WATCH'}};
  assert.ok(compareOrdinaryDeepCandidates(a,b)<0);
 });
+test('full manual exact top-two order cannot be replaced by a higher enrichment score',()=>{
+ const src=fs.readFileSync(new URL('../files/src/worker.js',import.meta.url),'utf8');
+ const body=src.match(/function buildBoundedDeepCheckPlan\([\s\S]*?\n\}/u)?.[0];assert.ok(body);
+ const plan=new Function('schedulerNumber','compareOrdinaryDeepCandidates',`const STAGE0_EXTERNAL_REQUESTS=4,DEEP_CHECK_EXTERNAL_REQUESTS=39,SMART_MONEY_EXTERNAL_REQUESTS=1,WORKERS_FREE_EXTERNAL_LIMIT=50,EXTERNAL_REQUEST_RESERVE=6;${body};return buildBoundedDeepCheckPlan;`)(v=>v==null?null:Number(v),compareOrdinaryDeepCandidates);
+ const shortlist=[
+  {contract:'LEADER-USDT',priority_rank:1,selection_score_0_100:63},
+  {contract:'SECOND-USDT',priority_rank:2,selection_score_0_100:88},
+  {contract:'EASIER-USDT',priority_rank:3,selection_score_0_100:95},
+ ],scope=shortlist.map(row=>row.contract);
+ const result=plan({shortlist},[],Date.now(),{confirmed_scope_contracts:scope,...deepRuntimeOptions({actor:'GITHUB_ACTIONS',mode:'FULL_MANUAL'}),required_contracts:['LEADER-USDT','SECOND-USDT']});
+ assert.deepEqual(result.selected.map(row=>row.contract),['LEADER-USDT','SECOND-USDT']);
+ assert.equal(result.parameters.required_contracts_status,'READY_EXACT_ORDER');
+ const unavailable=plan({shortlist:shortlist.slice(1)},[],Date.now(),{confirmed_scope_contracts:scope,...deepRuntimeOptions({actor:'GITHUB_ACTIONS',mode:'FULL_MANUAL'}),required_contracts:['LEADER-USDT','SECOND-USDT']});
+ assert.deepEqual(unavailable.selected.map(row=>row.contract),['SECOND-USDT']);
+ assert.equal(unavailable.parameters.required_contracts_status,'PARTIAL_EXACT_ORDER_FAIL_CLOSED_NO_REPLACEMENT');
+});
 test('hot maintenance drains hundreds of expired rows in bounded batches and preserves fresh rows',async()=>{
  const db=new D1(),now=Date.now(),cutoff=now-7*24*60*60_000;
  db.sql.exec('CREATE TABLE liquidation_shadow_observation(observed_ts INTEGER);CREATE TABLE liquidation_cluster_state(last_seen_ts INTEGER,lifecycle TEXT);');
