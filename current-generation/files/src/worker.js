@@ -7430,6 +7430,13 @@ function buildBoundedDeepCheckPlan(
       ?.require_exact_contract ===
     true;
 
+  const requiredContracts =
+    Array.isArray(options?.required_contracts)
+      ? [...new Set(options.required_contracts
+          .map((value) => String(value || "").trim())
+          .filter(Boolean))]
+      : [];
+
   const bypassCooldown =
     options
       ?.bypass_cooldown ===
@@ -7708,9 +7715,18 @@ function buildBoundedDeepCheckPlan(
     ready.push(readyRow);
   }
 
-  /* Ordinary discovery uses current factual quality first. Mandatory exact
-   * rechecks/manual jobs keep their separate lane and are unaffected. */
-  ready.sort(compareOrdinaryDeepCandidates);
+  /* Ordinary discovery uses current factual quality first. A full owner
+   * report supplies the already-established factual top-two order explicitly:
+   * the scheduler may omit an unavailable leader, but it may never replace it
+   * with a lower-ranked, easier-to-enrich contract. */
+  if (requiredContracts.length) {
+    const requiredRank = new Map(requiredContracts.map((contract, index) => [contract, index]));
+    ready.sort((a, b) =>
+      (requiredRank.get(a.contract) ?? Number.MAX_SAFE_INTEGER) -
+      (requiredRank.get(b.contract) ?? Number.MAX_SAFE_INTEGER));
+  } else {
+    ready.sort(compareOrdinaryDeepCandidates);
+  }
 
   /*
    * A Fast-Move queue lease and the Deep Check must refer to exactly
@@ -7725,7 +7741,11 @@ function buildBoundedDeepCheckPlan(
             row.contract ===
               requiredContract
         )
-      : ready;
+      : requiredContracts.length
+        ? requiredContracts
+            .map((contract) => ready.find((row) => row.contract === contract))
+            .filter(Boolean)
+        : ready;
 
   const selected =
     eligibleForSelection.slice(
@@ -7795,6 +7815,16 @@ function buildBoundedDeepCheckPlan(
 
       required_contract_status:
         requiredContractStatus,
+
+      required_contracts:
+        requiredContracts,
+
+      required_contracts_status:
+        !requiredContracts.length
+          ? "NOT_REQUIRED"
+          : selected.length === requiredContracts.length
+            ? "READY_EXACT_ORDER"
+            : "PARTIAL_EXACT_ORDER_FAIL_CLOSED_NO_REPLACEMENT",
     },
 
     scope_status:
@@ -16119,13 +16149,17 @@ async function buildDeepCheckInput(params, env) {
       ],
     ];
 
+    /* A non-empty, DB-bound history is useful factual context even while its
+     * rolling window is still warming. Missing buckets remain explicit below
+     * and keep data_quality.sufficient=false; they no longer turn every other
+     * completed block into a pipeline failure. This is the saved owner
+     * raw24h deferral, not a synthetic completion or a zero value. */
     const historyUsable =
       history?.execution_status ===
         "FULFILLED" &&
       historyData?.health
         ?.data_db === true &&
-      historySeries.length > 0 &&
-      historyData?.coverage?.complete_5m_window === true;
+      historySeries.length > 0;
 
     const components = {
       futures_snapshot:
@@ -16199,6 +16233,17 @@ async function buildDeepCheckInput(params, env) {
       sufficient:
         classification ===
         "SUFFICIENT",
+
+      owner_deferred_exact_signed_raw24h:
+        true,
+
+      owner_deferred_gaps:
+        gaps.filter((gap) =>
+          gap === "futures_trajectory.flow_24h"
+        ),
+
+      partial_context_is_not_zero_or_green:
+        classification !== "SUFFICIENT",
 
       components,
 
@@ -19547,6 +19592,11 @@ const __REPORT2_ORIGINAL_HANDLER = {
               liveHandoffPlan
                 ?.required_contract ??
               null,
+
+            required_contracts:
+              liveHandoffPlan?.lane === 'MANUAL_MARKET_RANKED_TOP2'
+                ? liveHandoffPlan.top_two_contracts
+                : [],
 
             queue_starvation:
               fastMoveWatchCycle
