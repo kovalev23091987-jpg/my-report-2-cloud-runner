@@ -16194,10 +16194,17 @@ async function buildDeepCheckInput(params, env) {
     components.futures_snapshot.factual_order_flow_window =
       futures?.data?.verified_order_flow?.binding ?? null;
 
+    /* The owner scope is crypto futures only. Spot remains useful supporting
+     * context, but an unavailable or yellow spot snapshot may not invalidate
+     * an otherwise factual futures report. Its gaps stay visible and cannot
+     * authorize an entry. */
+    components.spot_snapshot.required_for_futures_report = false;
+
     const states =
-      Object.values(components)
+      Object.entries(components)
+        .filter(([name]) => name !== "spot_snapshot")
         .map(
-          (component) =>
+          ([, component]) =>
             component.sufficiency
         );
 
