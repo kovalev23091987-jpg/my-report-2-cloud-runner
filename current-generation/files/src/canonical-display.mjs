@@ -97,7 +97,7 @@ export function displayLegacyLiquidations(liq){
  if(liq?.future_only===true)return displayFutureLiquidations(liq);
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
-  const parts=(Array.isArray(rows)?rows:[]).filter(z=>liq?.future_levels_required!==true||z?.kind==='PROJECTED').slice(0,4).map(z=>{
+  const parts=(Array.isArray(rows)?rows:[]).filter(z=>liq?.future_levels_required!==true||['NATIVE_FUTURE_LEVEL','PROVIDER_ESTIMATE','PROJECTED'].includes(z?.kind)).slice(0,4).map(z=>{
    const price=displayNumber(z?.price??z?.level_price);if(price===null)return null;
    const d=z?.distance_pct,strength=text(z?.strength_label_ru)||'сила не определена';
    const amount=typeof z?.exact_notional_usdt==='number'&&Number.isFinite(z.exact_notional_usdt)&&z.exact_notional_usdt>0?`; ${liq?.future_levels_required===true?'объём источника':'точная сумма'} ${displayNumber(z.exact_notional_usdt)} ${liq?.future_levels_required===true?text(z?.notional_quote)||'USDT':'USDT'}`:'';
