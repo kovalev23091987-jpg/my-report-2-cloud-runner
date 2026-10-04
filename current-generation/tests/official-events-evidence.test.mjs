@@ -37,7 +37,7 @@ test('K16 official events performs no request without exact registry metadata or
 });
 test('future publication dates are not clipped into current factual evidence',()=>{
  const future=rss.replaceAll('02:30:00','04:30:00');assert.equal(parseOfficialFeed({body:future,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).events.length,0);
- const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:F\nDTSTART:20260929T120000Z\nDTSTAMP:20260929T010000Z\nURL:https://abc.example/e\nEND:VEVENT\nEND:VCALENDAR';
+ const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:F\nSUMMARY:Governance call\nDTSTART:20260929T120000Z\nDTSTAMP:20260929T010000Z\nURL:https://abc.example/e\nEND:VEVENT\nEND:VCALENDAR';
  for(const body of [ics,ics.replace('DTSTAMP:20260929T010000Z\n','')])assert.equal(parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).events.length,0);
  const good=parseOfficialFeed({body:ics.replace('20260929T010000Z','20260928T010000Z'),feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW});assert.equal(good.events[0].source_ts,Date.parse('2026-09-28T01:00:00Z'));assert.ok(good.events[0].effective_at>NOW);
 });

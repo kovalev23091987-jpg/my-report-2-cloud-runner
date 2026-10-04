@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import {normalizeOfficialEvent,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const OFFICIAL_EVENTS_EVIDENCE_VERSION='official-events-evidence-v6-authorized-publisher-20261004';
+export const OFFICIAL_EVENTS_EVIDENCE_VERSION='official-events-evidence-v7-headline-required-20261004';
 const SOURCE='OFFICIAL_EVENTS',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap,MAX_BYTES=512*1024;
 const text=value=>String(value??'').trim(),digest=value=>crypto.createHash('sha256').update(String(value)).digest('hex');
 const decode=value=>text(value).replace(/^<!\[CDATA\[|\]\]>$/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&#39;/g,"'").trim();
@@ -63,7 +63,7 @@ export function parseOfficialFeed({body,content_type='',feed_url,official_domain
   const rows=[...(raw.match(/<item\b[\s\S]*?<\/item>/gi)||[]),...(raw.match(/<entry\b[\s\S]*?<\/entry>/gi)||[])];
   for(const row of rows){const published=stamp(tag(row,'pubDate')||tag(row,'published')||tag(row,'updated')),url=exactUrl(tag(row,'link')||atomLink(row),domains),title=tag(row,'title').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();if(published===null||!url||published<now-7*24*60*60_000||published>now)continue;if(publisher_account&&!(new URL(url).pathname.toLowerCase().startsWith(`/@${publisher_account.toLowerCase()}/`)))continue;events.push({event_id:tag(row,'guid')||tag(row,'id')||digest(`${url}|${published}|${title}`),title:title.slice(0,240),source_ts:published,effective_at:published,effective_to:null,official_url:url,format:/<entry\b/i.test(row)?'ATOM':'RSS'});}
  }
- const unique=[...new Map(events.map(row=>[row.event_id,row])).values()].sort((a,b)=>b.effective_at-a.effective_at).slice(0,16);return{status:unique.length?'CLOSED':'EMPTY_OR_STALE',events:unique};
+ const unique=[...new Map(events.filter(row=>text(row.title)).map(row=>[row.event_id,row])).values()].sort((a,b)=>b.effective_at-a.effective_at).slice(0,16);return{status:unique.length?'CLOSED':'EMPTY_OR_STALE',events:unique};
 }
 
 export function normalizeOfficialFeed({contract,asset_identity,asset_metadata,feed_url,body,content_type,expected_format=null,observed_ts=Date.now()}={}){

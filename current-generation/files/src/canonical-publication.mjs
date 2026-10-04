@@ -3,6 +3,7 @@ import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasIntern
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
 import {buildRoleEvidenceView} from './source-role-consumer.mjs';
+import {confirmedBlockContextFacts,auditRenderedBlockResults} from './block-result-context.mjs';
 export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v4-early-observation-without-proven-target-20261001';
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const upper=v=>text(v).toUpperCase();
@@ -116,7 +117,10 @@ export function renderCanonicalTelegram({canonical,lifecycle_event}={}){
  if(['WAIT','ENTRY'].includes(event)&&!reportableTarget(canonical))return{ok:false,status:'REPORTABLE_TARGET_PROOF_NOT_CLOSED',text:null};
  const lines=[ticker,dir,title,'',`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,`Основа идеи: ${basisLabel(canonical)}.`];
  lines.push(relativeLine(d,relativeConfirmed(canonical)));
- for(const fact of displayMarketFacts(canonical).slice(0,event==='WAIT'?1:3))lines.push(`• ${fact}`);
+ // Preserve the approved bullet positions and their bound. Only exact valid
+ // context facts can fill unused positions; receipt-only metadata cannot.
+ const contextFacts=confirmedBlockContextFacts(canonical).map(f=>`${f.label}: ${f.value} — ${f.source}.`);
+ for(const fact of [...new Set([...displayMarketFacts(canonical),...contextFacts])].slice(0,event==='WAIT'?1:3))lines.push(`• ${fact}`);
  if(event==='OBSERVE'){
    const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${fmtPrice(t?.value)} USDT;`,`• повторного подтверждения объёма, открытого интереса и ликвидаций.`,`Идея теряет интерес: ${displayCondition(t?.cancel_condition)}.`,target?`Цель после подтверждения входа: ${fmtPrice(target?.price??target)} USDT.`:'Цель после подтверждения входа: пока не подтверждена.',`Следующая проверка: ${fmtMsk(t?.next_recheck_ts)} МСК.`);
  } else if(event==='WAIT'){
@@ -209,7 +213,7 @@ export async function loadBoundTelegram(db,{idempotency_key,now_ts=Date.now()}={
   const visible=await db.prepare(`SELECT idempotency_key FROM v3_telegram_dispatch_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND state='SENT' AND lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND CAST(telegram_message_id AS INTEGER)>0 AND updated_ts<?4 ORDER BY updated_ts DESC LIMIT 1`).bind(b.contract_code,b.direction,b.wave_id,Number(p.bound_ts??now)).first();
   if(!visible)return {status:'REMOVAL_WITHOUT_PRIOR_DELIVERY',ok:false};prior_delivery_verified=true;
  }
- return {status:'CLOSED',ok:true,publication_id:p.publication_id,text:p.telegram_text,manual_text:p.manual_text,canonical,analytical_fingerprint:p.analytical_fingerprint,presentation_hash:p.presentation_hash,prior_delivery_verified};
+ return {status:'CLOSED',ok:true,publication_id:p.publication_id,text:p.telegram_text,manual_text:p.manual_text,canonical,analytical_fingerprint:p.analytical_fingerprint,presentation_hash:p.presentation_hash,prior_delivery_verified,block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:true,text:p.manual_text},telegram:{ok:true,text:p.telegram_text,analytical_fingerprint:canonical.analytical_fingerprint}})};
 }
 
 export async function loadExactManual(db,{publication_id,expected_identity=null}={}){
