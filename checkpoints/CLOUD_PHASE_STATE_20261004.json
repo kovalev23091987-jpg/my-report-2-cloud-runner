@@ -1,6 +1,6 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "LIQUIDATION_COVERAGE",
+  "current_phase": "JOINT_REPORT",
   "phases": [
     {
       "id": "CORE_BLOCKS",
@@ -13,12 +13,16 @@
     },
     {
       "id": "LIQUIDATION_COVERAGE",
-      "status": "IN_PROGRESS",
-      "completion_receipt": null
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/liquidation-phase-functional-acceptance-20261004.json",
+        "sha256": "90e0fb49666de60951f50fa4ce0eac4b09d962094b64acb13a142bbb3b4e8955"
+      },
+      "completed_ts": 1791154697290
     },
     {
       "id": "JOINT_REPORT",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "completion_receipt": null
     },
     {
@@ -32,12 +36,12 @@
     "acquired_ts": 1791150090057,
     "expires_ts": 1791157290057
   },
-  "next_action": "Run actual per-asset/per-source liquidation coverage for the same 102-asset HTX crypto-futures universe, with all eight sources, real numeric future levels only, upstream dedup, durable database, standalone gate and weekly refresh. Do not replace top2 or run MAIN/Telegram until this phase is saved.",
-  "last_verified_release": "checkpoints/core15-functional-release-evidence-20261004.json",
+  "next_action": "Run one fresh admitted unified MAIN for the actual top2 from the same HTX crypto-futures universe. Verify all accepted core block outputs and per-asset liquidation gates in the same canonical snapshot; do not replace leaders for coverage convenience. EXACT_SIGNED_RAW_24H may be explicitly omitted only under the saved owner amendment. Save fresh MAIN evidence before Telegram.",
+  "last_verified_release": "checkpoints/liquidation-phase-functional-acceptance-20261004.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791150935708,
+  "updated_ts": 1791154697334,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
