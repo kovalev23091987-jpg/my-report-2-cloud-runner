@@ -31,7 +31,10 @@ export function verifiedSignedMinutes({snapshot,contract,now}={}){
  const fills=rows.map(r=>({id:typeof r.id==='string'?r.id:typeof r.id==='number'&&Number.isSafeInteger(r.id)&&r.id>0?String(r.id):null,ts:r.ts,side:r.direction,price:r.price,contracts:r.amount,quote_usdt:r.trade_turnover??(r.price*r.amount*size)}));
  // A repeated exact provider fill ID invalidates the transport, rather than being silently removed.
  if(fills.some(r=>r.id===null)||new Set(fills.map(r=>r.id)).size!==fills.length)return{...blank,status:'RAW_FILL_ID_INTEGRITY_NOT_CLOSED'};
- const end=Math.floor(now/MIN)*MIN-MIN,start=end-45*MIN,minutes=[],gaps=[];
+ // Reuse all factual closed minutes already returned by the existing deep
+ // request, rather than discarding everything older than 45 minutes.
+ // No extra endpoint, pagination, request or invented fill is introduced.
+ const windowMinutes=Math.min(1440,klines.length),end=Math.floor(now/MIN)*MIN-MIN,start=end-windowMinutes*MIN,minutes=[],gaps=[];
  const bars=klines.filter(r=>Number.isSafeInteger(r.id)&&r.id*1000>=start&&r.id*1000<end);if(new Set(bars.map(b=>b.id)).size!==bars.length)return{...blank,status:'DUPLICATE_FACTUAL_MINUTE'};
  for(let ts=start;ts<end;ts+=MIN){const bar=bars.find(b=>b.id*1000===ts),raw=fills.filter(r=>r.ts>=ts&&r.ts<ts+MIN).sort((a,b)=>a.ts-b.ts||a.id.localeCompare(b.id));
   if(!bar||!Number.isSafeInteger(bar.count)||bar.count<0||bar.count!==raw.length){gaps.push({start_ts:ts,status:'EXACT_MINUTE_COUNT_NOT_CLOSED'});continue;}
@@ -43,7 +46,7 @@ export function verifiedSignedMinutes({snapshot,contract,now}={}){
 export function mergeSignedTape({previous,acquisition,now}={}){
  if(!acquisition?.minutes?.length)return{status:acquisition?.status||'NO_VERIFIED_RAW_MINUTE',ring:null};
  const contract=acquisition.contract,size=acquisition.contract_size,byMinute=new Map();
- if(!Number.isSafeInteger(now)||!isExactHtxUsdtSwapKey(contract)||!(n(size)>0)||acquisition.minutes.length>45||new Set(acquisition.minutes.map(m=>m.start_ts)).size!==acquisition.minutes.length||!acquisition.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:size})))return{status:'ACQUIRED_RAW_TAPE_INTEGRITY_NOT_CLOSED',ring:null};
+ if(!Number.isSafeInteger(now)||!isExactHtxUsdtSwapKey(contract)||!(n(size)>0)||acquisition.minutes.length>1440||new Set(acquisition.minutes.map(m=>m.start_ts)).size!==acquisition.minutes.length||!acquisition.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:size})))return{status:'ACQUIRED_RAW_TAPE_INTEGRITY_NOT_CLOSED',ring:null};
  if(previous){if(previous.version!==HTX_SIGNED_TAPE_VERSION||previous.contract!==contract||previous.contract_size!==size||!Array.isArray(previous.minutes)||previous.minutes.length>1620||new Set(previous.minutes.map(m=>m.start_ts)).size!==previous.minutes.length||!previous.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:size})))return{status:'SAVED_RAW_TAPE_INTEGRITY_NOT_CLOSED',ring:null};for(const m of previous.minutes)if(m.start_ts>=now-27*60*MIN)byMinute.set(m.start_ts,m);}
  for(const m of acquisition.minutes){const old=byMinute.get(m.start_ts);if(old&&old.raw_sha256!==m.raw_sha256)return{status:'CONFLICTING_COMPLETE_RAW_MINUTE',ring:null,conflict_ts:m.start_ts};byMinute.set(m.start_ts,old||m);}
  const ring={version:HTX_SIGNED_TAPE_VERSION,contract,contract_size:size,observed_ts:now,minutes:[...byMinute.values()].sort((a,b)=>a.start_ts-b.start_ts),source:'HTX_OFFICIAL_EXACT_RAW_FILLS',price_quote:'USDT',entry_authorized:false};
@@ -67,4 +70,34 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
  const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return{status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0};
  const checked=signedTape24hEvidence({ring:saved,now});
  return{...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:Buffer.byteLength(JSON.stringify(merged.ring),'utf8'),network_calls:0,db_admission:grant,internal_only:true};
+}
+
+export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
+ if(!db?.prepare||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(now))return null;
+ if(db_admit?.({rows_read:16,rows_written:0})?.allowed!==true)return null;
+ // The established cache may not exist on a first run. This optional history
+ // never creates tables or marks a missing window complete.
+ try{return await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});}catch{return null;}
+}
+
+export function mergeHtxSignedHistoryTrades({ring,current_trades=[],contract,contract_size,now}={}){
+ const fallback=status=>({status,trades:current_trades,reused_minutes:0,reused_fills:0,source_http:0});
+ if(!ring)return fallback('NO_SAVED_VERIFIED_RAW_HISTORY');
+ if(current_trades?._source_truncated===true||Number(current_trades?._source_rows_dropped||0)>0)return fallback('CURRENT_RAW_TRANSPORT_NOT_COMPLETE');
+ if(ring.version!==HTX_SIGNED_TAPE_VERSION||ring.contract!==contract||ring.contract_size!==contract_size||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(now)||!Array.isArray(current_trades)||!Array.isArray(ring.minutes)||ring.minutes.length>1620||new Set(ring.minutes.map(m=>m.start_ts)).size!==ring.minutes.length||!ring.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size})))return fallback('SAVED_RAW_HISTORY_NOT_CLOSED');
+ const minutes=ring.minutes.filter(m=>m.start_ts>=now-27*60*MIN),fills=minutes.flatMap(m=>m.fills);
+ if(fills.length>20000||new Set(fills.map(r=>r.id)).size!==fills.length)return fallback('SAVED_RAW_HISTORY_ID_OR_SIZE_NOT_CLOSED');
+ const currentIds=current_trades.map(r=>typeof r.id==='string'?r.id:Number.isSafeInteger(r.id)?String(r.id):null);
+ if(currentIds.some(id=>!id||!/^\d+$/.test(id))||new Set(currentIds).size!==currentIds.length)return fallback('CURRENT_RAW_HISTORY_ID_NOT_CLOSED');
+ const byId=new Map(current_trades.map((r,i)=>[currentIds[i],r]));let reused=0;
+ for(const f of fills){
+  const current=byId.get(f.id);
+  if(current){if(current.ts!==f.ts||current.direction!==f.side||!close(current.price,f.price)||!close(current.amount,f.contracts)||(current.trade_turnover!==undefined&&!close(current.trade_turnover,f.quote_usdt)))return fallback('CONFLICTING_SAVED_AND_CURRENT_FILL');continue;}
+  byId.set(f.id,{id:f.id,ts:f.ts,direction:f.side,price:f.price,amount:f.contracts,trade_turnover:f.quote_usdt});reused++;
+ }
+ // Preserve the worker's existing 10,000-record bound and transport flags.
+ if(byId.size>10000)return fallback('MERGED_RAW_HISTORY_SIZE_NOT_CLOSED');
+ const trades=[...byId.values()].sort((a,b)=>a.ts-b.ts);
+ Object.defineProperties(trades,{_source_truncated:{value:false},_source_rows_dropped:{value:0},_containers_scanned:{value:Number(current_trades._containers_scanned||0)},_raw_rows_scanned:{value:trades.length}});
+ return{status:'VERIFIED_RAW_HISTORY_REUSED',trades,reused_minutes:minutes.length,reused_fills:reused,overlapping_equal_fills:fills.length-reused,source_http:0,source_clock_unchanged:true,full_window_completion_claimed:false};
 }

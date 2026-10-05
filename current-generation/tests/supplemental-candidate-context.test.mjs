@@ -111,3 +111,10 @@ test('missing manual registry caches a candidate but never upgrades it to exact 
  const second=await collectSupplementalCandidateContext({db,fetch_impl,registry:{},contract:'ABC-USDT',run_id:'r2',derivatives_venues:2,now:1_800_000_001_000});
  assert.ok(second.network_calls<=3);assert.notEqual(second.identity_status,'CLOSED');assert.equal(second.identity??null,null);assert.equal(urls.filter(x=>x.includes('/search/pools?')).length,1);
 });
+
+test('the optional periodic lane cannot spend the scarce manual Nansen flow allowance',async()=>{
+ const db=new DB(),urls=[];
+ await collectSupplementalCandidateContext({db,fetch_impl:async url=>{urls.push(String(url));return new Response(JSON.stringify({}));},registry:{ABC:{chain:'ethereum',contract_or_mint:addr}},contract:'ABC-USDT',run_id:'periodic',derivatives_venues:2,reserve_for_liquidations:false,strict17_required:false,nansen_api_key:'key',now:1_800_003_600_000});
+ assert.ok(urls.every(url=>!url.includes('nansen.ai')));
+
+});

@@ -199,6 +199,8 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
   return {version:SUPPLEMENTAL_CANDIDATE_CONTEXT_VERSION,status:Object.values(sources).some(x=>x.status==='CLOSED')?'CLOSED':'IDENTITY_CANDIDATE_DISCOVERED',contract,base,registry_status:parsed.status,identity_status:'CANDIDATE_ONLY',identity_method:discovered?.identity_method||null,asset_identity:null,asset_identity_candidate:entry.identity_candidate,registry_confirmation_required:Boolean(entry.identity_candidate),asset_metadata:{...(entry.coinpaprika_id&&entry.sector_tag?{coinpaprika_id:entry.coinpaprika_id,sector_tag:entry.sector_tag}:{}),...(entry.coingecko_id&&entry.coingecko_category_id?{coingecko_id:entry.coingecko_id,coingecko_category_id:entry.coingecko_category_id,coingecko_category_name:entry.coingecko_category_name}:{}),official_name:entry.official_name,official_domains:entry.official_domains,official_feeds:entry.official_feeds,official_feed_specs:entry.official_feed_specs,snapshot_space:entry.snapshot_space},lane:'IDENTITY_DISCOVERY',network_calls:identityDiscovery.network_calls,liquidation_lane_reserved:false,liquidation_identity:{lighter_market_id:entry.lighter_market_id,gmx_market_address:entry.gmx_market_address},receipts:discovered?.discovery_receipts||[],sources,internal_only:true};
  }
  const cachedSources=await loadCachedSources(db,contract,now);
+ // Validate identity BEFORE specialist cache admission, not after it skipped a request.
+ if(cachedSources.NANSEN_FLOWS?.identity&&!sameChainAssetIdentity({...cachedSources.NANSEN_FLOWS.identity,chain:cachedSources.NANSEN_FLOWS.identity.chain==='bnb'?'bsc':cachedSources.NANSEN_FLOWS.identity.chain},entry.identity))delete cachedSources.NANSEN_FLOWS;
  if(force_fresh_manual)delete cachedSources.NANSEN_FLOWS;
  const lane=effectiveReserve?null:chooseSupplementalLane({run_id,contract,entry,derivatives_venues,critical_conflict,cached_sources:cachedSources});
  const receipts=[],calls=[];let httpCalls=0;const get=url=>{httpCalls++;return requestJson(fetch_impl,url);};const post=(url,body)=>{httpCalls++;return requestJson(fetch_impl,url,{method:'POST',body});};
@@ -234,8 +236,10 @@ export async function collectSupplementalCandidateContext({db,fetch_impl=globalT
  const complementaryLane=lane==='BITGET_FALLBACK'&&httpCalls<5?chooseSupplementalLane({run_id,contract,entry,derivatives_venues:2,critical_conflict:false,cached_sources:{...cachedSources,BITGET:{status:'ATTEMPTED'}}}):null;
  if(complementaryLane)await collectLane(complementaryLane);
  // A changed registry binding must never reuse an old token's flow receipt.
- if(cachedSources.NANSEN_FLOWS?.identity&&!sameChainAssetIdentity({...cachedSources.NANSEN_FLOWS.identity,chain:cachedSources.NANSEN_FLOWS.identity.chain==='bnb'?'bsc':cachedSources.NANSEN_FLOWS.identity.chain},entry.identity))delete cachedSources.NANSEN_FLOWS;
- if(!strict17_required&&!effectiveReserve){specialist=await collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity:entry.identity,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key});httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);}
+
+ // Scarce Nansen attempts belong to the primary manual-flow lane. Optional
+ // periodic cohort calls cannot consume that same eight-attempt allowance.
+ if(!strict17_required&&!effectiveReserve){specialist=await collectSpecialistContext({db,fetch_impl,base,now,primary_price,asset_identity:entry.identity,cached:cachedSources,remaining:5-httpCalls,vyx_api_key,nansen_api_key:''});httpCalls+=specialist.network_calls;receipts.push(...specialist.receipts);}
  if(httpCalls>5)throw new Error('SUPPLEMENTAL_LANE_HTTP_BUDGET_EXCEEDED');
  const settled=await Promise.all(calls.map(async([source,promise,normalize])=>{const raw=await promise;const payload=raw.ok?normalize(raw.payload):{source,status:'SOURCE_ERROR',observed_ts:now,error:raw.error,exact_identity:false};return {source,payload};}));
  settled.push(...specialist.payloads);
