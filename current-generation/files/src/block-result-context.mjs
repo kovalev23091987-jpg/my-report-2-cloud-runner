@@ -1,3 +1,4 @@
+import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
 import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
@@ -20,6 +21,14 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N02'&&row.metric_family==='PROVIDER_AGGREGATED_SUPPLY_CONTEXT'){
+  if(row.provider_id!=='COINPAPRIKA_SECTOR'||row.upstream_id!=='COINPAPRIKA_AGGREGATED_VENUES'||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.chain_finality_verified!==false||row.supply_change_or_unlock_inferred!==false||row.entry_authorized!==false||row.supply_unit!=='PROVIDER_REPORTED_ASSET_UNITS'||row.source_clock_policy!=='PROVIDER_RECORD_TIMESTAMP_NOT_CHAIN_FINALITY')return null;
+  const actual=normalizeCoinpaprikaMarketSupply({reference:row.provider_reference,ticker:row.provider_ticker,contract:row.htx_contract,observed_ts:row.observed_ts}),fact=actual.evidence?.[0];
+  if(!fact||fact.asset_id!==row.asset_id||fact.source_ts!==row.source_ts||JSON.stringify(fact.supply_values)!==JSON.stringify(row.supply_values)||now-row.source_ts>900000)return null;
+  const labels={circulating_supply:'в обращении',total_supply:'общее предложение',max_supply:'максимум'},parts=Object.entries(row.supply_values).map(([key,n])=>`${labels[key]} ${fmt(n)}`);
+  return{source:'CoinPaprika',label:'Предложение по данным поставщика',value:`${parts.join('; ')} единиц актива; обновление ${new Date(row.source_ts).toISOString()}. Это сводные сведения поставщика, финализированное состояние сети и будущие разблокировки ими не подтверждены`};
+ }
+
  if(row.block_id==='N04'&&row.metric_family==='NATIVE_TRANSFER'&&row.producer==='SOLANA_FINALIZED_NATIVE_SYSTEM_TRANSFER'){
   const signature=row.tx_hash,slot=String(row.block_ref??'');
   if(row.provider_id!=='CHAIN_RPC'||row.upstream_id!=='SOLANA_MAINNET_RPC'||row.asset_id!=='solana:native:mainnet'||row.htx_contract!=='SOL-USDT'||row.chain!=='solana'||row.native_asset_id!=='solana:mainnet'||!/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature||'')||!/^\d+$/.test(String(row.instruction_index))||!/^\d+$/.test(slot)||!raw(row.amount_base_units)||BigInt(row.amount_base_units)<=0n||row.quantity_units!=='LAMPORTS'||row.market_kind!=='ONCHAIN_NATIVE_TRANSFER'||row.event_is_not_market_direction!==true||row.exchange_labels_verified!==false||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.source_ts>now||now-row.source_ts>20*60_000)return null;

@@ -2,17 +2,24 @@ import {readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAt
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
 
 export const PROVIDER_REFERENCE_CACHE_VERSION='provider-reference-cache-v1-20261004';
+const runMemory=new Map();
 const digest=async value=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),b=>b.toString(16).padStart(2,'0')).join('');
 
 // Cache transport bodies, never candidate evidence. Callers revalidate exact
 // identity/category membership and quote clocks for each requested market.
-export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),daily_cap,minute_provider=null,minute_cap=9}={}){
+export function createProviderReferenceReader({db,source,run_id,request_admit,fetch_impl=globalThis.fetch,now=Date.now(),clock=()=>now,daily_cap,minute_provider=null,minute_cap=9}={}){
  const receipts=[];let calls=0,denied=null,backoff=null,sequence=0;
- async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false}={}){
+ async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes}={}){
   if(denied||backoff)return null;
   const u=new URL(url),allowed=source==='COINGECKO_SECTOR'?u.hostname==='api.coingecko.com'&&u.pathname.startsWith('/api/v3/')
    :['COINPAPRIKA_SECTOR','COINPAPRIKA_HTX_IDENTITY'].includes(source)?u.hostname==='api.coinpaprika.com'&&u.pathname.startsWith('/v1/'):false;
   if(!allowed||u.protocol!=='https:'||u.username||u.password)throw Error('PROVIDER_REFERENCE_ROUTE_NOT_ALLOWED');
+  const readTs=clock();if(!Number.isSafeInteger(readTs)||readTs<now)throw Error('REFERENCE_READ_CLOCK_NOT_CLOSED');
+  const memoryKey=`${source}:${run_id}:${url}`;
+  const memory=max_cache_bytes<max_bytes&&!bypass_cache&&ttl_ms>0?runMemory.get(memoryKey):null;
+  if(memory&&memory.received_ts<=readTs&&readTs<Math.min(memory.expires_ts,memory.received_ts+ttl_ms)&&memory.body.length<=max_bytes&&shape(memory.payload)){
+   receipts.push({...memory.receipt,route,status:'VALIDATED_RUN_MEMORY_REFERENCE',actual_http:0});return memory.payload;
+  }
   const key=`REFERENCE:${PROVIDER_REFERENCE_CACHE_VERSION}:${await digest(url)}`;
   if(ttl_ms>0&&!bypass_cache){
    // Only immutable coin metadata is shared between the two existing roles.
@@ -20,8 +27,8 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    const sibling=source==='COINPAPRIKA_SECTOR'?'COINPAPRIKA_HTX_IDENTITY':source==='COINPAPRIKA_HTX_IDENTITY'?'COINPAPRIKA_SECTOR':null;
    const shared=sibling&&u.hostname==='api.coinpaprika.com'&&/^\/v1\/coins\/[a-z0-9][a-z0-9-]{2,79}$/.test(u.pathname)&&!u.search;
    for(const owner of shared?[source,sibling]:[source]){
-    const cached=await readEvidenceSourceCache(db,{source:owner,asset_key:key,now});
-    if(cached?.version===PROVIDER_REFERENCE_CACHE_VERSION&&cached.url===url&&Number.isSafeInteger(cached.received_ts)&&Number.isSafeInteger(cached.expires_ts)&&cached.received_ts<=now&&now<Math.min(cached.expires_ts,cached.received_ts+ttl_ms)&&typeof cached.body==='string'&&cached.body.length<=max_bytes&&cached.body_sha256===await digest(cached.body)){
+    const cached=await readEvidenceSourceCache(db,{source:owner,asset_key:key,now:readTs});
+    if(cached?.version===PROVIDER_REFERENCE_CACHE_VERSION&&cached.url===url&&Number.isSafeInteger(cached.received_ts)&&Number.isSafeInteger(cached.expires_ts)&&cached.received_ts<=readTs&&readTs<Math.min(cached.expires_ts,cached.received_ts+ttl_ms)&&typeof cached.body==='string'&&cached.body.length<=max_bytes&&cached.body_sha256===await digest(cached.body)){
      try{const payload=JSON.parse(cached.body);if(shape(payload)){receipts.push({route,url,status:'VALIDATED_REFERENCE_CACHE',http_status:200,received_ts:cached.received_ts,expires_ts:Math.min(cached.expires_ts,cached.received_ts+ttl_ms),body_sha256:cached.body_sha256,actual_http:0,cache_owner_source:owner,shared_provider:owner!==source?'COINPAPRIKA':null});return payload;}}catch{}
     }
    }
@@ -49,7 +56,12 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
    if(!response.ok||body.length>max_bytes)return null;
    let payload;try{payload=JSON.parse(body);}catch{receipt.status='INVALID_JSON';return null;}
    if(!shape(payload)){receipt.status='INVALID_RESPONSE_SHAPE';return null;}
-   if(ttl_ms>0)await writeEvidenceSourceCache(db,{source,asset_key:key,observed_ts:received_ts,expires_ts:received_ts+ttl_ms,payload:{version:PROVIDER_REFERENCE_CACHE_VERSION,url,received_ts,expires_ts:received_ts+ttl_ms,body_sha256,body}});
+   if(ttl_ms>0&&max_cache_bytes<max_bytes){
+    runMemory.set(memoryKey,{payload,body,received_ts,expires_ts:received_ts+ttl_ms,receipt});
+    while(runMemory.size>4)runMemory.delete(runMemory.keys().next().value);
+    receipt.cache_storage_status=body.length>max_cache_bytes?'BODY_EXCEEDS_STORAGE_BOUND_RUN_MEMORY_ONLY':'BOUNDED_REFERENCE_BODY';
+   }
+   if(ttl_ms>0&&body.length<=max_cache_bytes)await writeEvidenceSourceCache(db,{source,asset_key:key,observed_ts:received_ts,expires_ts:received_ts+ttl_ms,payload:{version:PROVIDER_REFERENCE_CACHE_VERSION,url,received_ts,expires_ts:received_ts+ttl_ms,body_sha256,body}});
    return payload;
   }catch(error){receipts.push({route,url,status:'SOURCE_ERROR',error:String(error.message).slice(0,100),actual_http:1});return null;}
   finally{clearTimeout(timer);}

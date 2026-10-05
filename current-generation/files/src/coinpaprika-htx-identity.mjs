@@ -56,3 +56,23 @@ export async function collectCoinpaprikaHtxIdentity({db,fetch_impl=globalThis.fe
 }
 
 export default{normalizeCoinpaprikaHtxIdentity,collectCoinpaprikaHtxIdentity};
+
+export function normalizeCoinpaprikaProviderReference({markets,metadata,contract}={}){
+ const market=clean(contract).toUpperCase(),base=market.replace(/-USDT$/,'');
+ if(!exactContract(market)||!Array.isArray(markets))return{status:'EXACT_HTX_MARKET_REQUIRED'};
+ const rows=markets.filter(r=>exactPair(r,base)),ids=[...new Set(rows.map(r=>clean(r.base_currency_id).toLowerCase()))];
+ if(!rows.length)return{status:'NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA'};
+ if(ids.length!==1||!/^[a-z0-9][a-z0-9-]{2,79}$/.test(ids[0]))return{status:'AMBIGUOUS_COINPAPRIKA_HTX_MARKET_IDENTITY'};
+ if(metadata?.id!==ids[0]||clean(metadata?.symbol).toUpperCase()!==base||metadata?.is_active!==true||!['coin','token'].includes(metadata?.type))return{status:'COINPAPRIKA_ASSET_METADATA_MISMATCH'};
+ // This authorizes provider market facts only, never a blockchain route.
+ return{status:'CLOSED_PROVIDER_MARKET_REFERENCE',contract:market,coinpaprika_id:ids[0],asset_id:`provider:coinpaprika:${ids[0]}`,method:'EXACT_HTX_MARKET_AND_ACTIVE_PROVIDER_METADATA',chain_route_authorized:false,
+  markets:rows.map(r=>({pair:r.pair,quote_currency_id:r.quote_currency_id,base_currency_id:r.base_currency_id,category:r.category,market_url:r.market_url})),
+  metadata:{id:metadata.id,symbol:metadata.symbol,is_active:metadata.is_active,type:metadata.type,name:metadata.name}};
+}
+export function verifyCoinpaprikaProviderReference(reference,contract,now){
+ if(reference?.status!=='CLOSED_PROVIDER_MARKET_REFERENCE'||reference.contract!==contract||reference.chain_route_authorized!==false||!Number.isSafeInteger(reference.reference_observed_ts)||reference.reference_observed_ts>now||now-reference.reference_observed_ts>6*3600000)return false;
+ const actual=normalizeCoinpaprikaProviderReference({markets:reference.markets,metadata:reference.metadata,contract});
+ return actual.status===reference.status&&actual.coinpaprika_id===reference.coinpaprika_id&&actual.asset_id===reference.asset_id&&actual.method===reference.method;
+}
+
+export function coinpaprikaHtxMarketRows(markets,contract){const market=clean(contract).toUpperCase();return exactContract(market)&&Array.isArray(markets)?markets.filter(r=>exactPair(r,market.replace(/-USDT$/,''))):[];}
