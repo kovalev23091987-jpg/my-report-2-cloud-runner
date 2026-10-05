@@ -32,3 +32,9 @@ test('one admitted six-hour catalog request is shared by every exact futures con
  const first=await collectHtxOfficialAnnouncements({...base,contract:'ZEC-USDT'}),second=await collectHtxOfficialAnnouncements({...base,contract:'ETC-USDT'});assert.equal(first.network_calls,1);assert.equal(second.network_calls,0);assert.equal(second.cache_status,'CURRENT_RUN_SHARED_HIT');assert.equal(calls,1);assert.equal(admissions,1);
  assert.equal(planCandidateEvidenceRoutes({contract:'任意-USDT'}).routes.some(row=>row.name==='HTX_ANNOUNCEMENTS'),true);
 });
+test('failed shared catalog preserves its actual cause for the second candidate without a redispatch or false absence',async()=>{
+ const db=new DB();let calls=0,admissions=0;
+ const base={db,now:NOW,run_id:'JOINT_FAILED',strict_fresh_manual:true,request_admit:()=>{admissions++;return{allowed:true};},fetch_impl:async()=>{calls++;return{ok:false,status:403,url:HTX_OFFICIAL_ANNOUNCEMENTS_URL,text:async()=>''};}};
+ const first=await collectHtxOfficialAnnouncements({...base,contract:'BR-USDT'}),second=await collectHtxOfficialAnnouncements({...base,contract:'ZEC-USDT'});
+ assert.equal(first.status,'SOURCE_ERROR');assert.equal(second.status,'SOURCE_ERROR');assert.equal(second.network_calls,0);assert.equal(second.receipts[0].http_status,403);assert.equal(second.receipts[0].error,'HTTP_403');assert.deepEqual(second.evidence,[]);assert.equal(calls,1);assert.equal(admissions,1);assert.equal(second.shared_source_run_id,'JOINT_FAILED');
+});

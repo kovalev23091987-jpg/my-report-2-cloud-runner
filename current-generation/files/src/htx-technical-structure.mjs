@@ -32,10 +32,10 @@ export function normalizeHtxRollingRange({payload,contract,observed_ts}={}){
 export function readHtxTechnicalStructure({contract,now=Date.now()}={}){
  // The strongest existing time window takes precedence; no extra transport.
  for(const period of ['4hour','60min','30min','15min','5min','1min']){
-  const snapshot=captured.get(contract+':'+period);if(!snapshot||snapshot.observed_ts>now)continue;
-  const evidence=normalizeHtxTechnicalStructure({...snapshot,observed_ts:now});if(evidence.length)return evidence;
+  const snapshot=captured.get(contract+':'+period);if(!snapshot||snapshot.observed_ts>now||now-snapshot.payload?.ts>TTL)continue;
+  const evidence=normalizeHtxTechnicalStructure(snapshot);if(evidence.length)return evidence;
  }
- return rolling&&rolling.observed_ts<=now?normalizeHtxRollingRange({payload:rolling.payload,contract,observed_ts:now}):[];
+ return rolling&&rolling.observed_ts<=now&&now-rolling.payload?.ts<=TTL?normalizeHtxRollingRange({payload:rolling.payload,contract,observed_ts:rolling.observed_ts}):[];
 }
 
 // A completed promise is not proof that its provider returned useful data.

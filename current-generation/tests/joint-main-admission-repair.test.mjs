@@ -17,7 +17,7 @@ const noRoute=(source,reason='NO_CONFIGURED_EXACT_ROUTE')=>capabilityCheckedNoEx
 
 test('exact HTX native identity can close a capability check without inventing a fact, zero or green result',()=>{
  const checked=noRoute('CHAIN_SUPPLY');
- assert.equal(sourceWasActuallyChecked(checked),true);
+ assert.equal(sourceWasActuallyChecked(checked),false);
  assert.equal(checked.network_calls,0);assert.deepEqual(checked.evidence,[]);
  assert.equal(checked.decision_effect,'MISSING_FACT_NO_ZERO_NO_GREEN');
  assert.equal(sourceWasActuallyChecked({...checked,exact_identity:null}),false);
@@ -27,7 +27,7 @@ test('exact HTX native identity can close a capability check without inventing a
 test('versioned exact token binding can close missing routes while preserving missing-fact semantics',()=>{
  const token={contract:'QNT-USDT',asset_identity:{chain:'ethereum',contract_or_mint:'0x4a220e6096b25eadb88358cb44068a3248254675'},identity_method:'VERSIONED_EXPLORER_EXACT_TOKEN_BINDING',now:T};
  const checked=capabilityCheckedNoExactRoute(token,'OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY');
- assert.equal(sourceWasActuallyChecked(checked),true);assert.equal(checked.exact_identity.contract,'QNT-USDT');
+ assert.equal(sourceWasActuallyChecked(checked),false);assert.equal(checked.exact_identity.contract,'QNT-USDT');
  assert.equal(checked.decision_effect,'MISSING_FACT_NO_ZERO_NO_GREEN');assert.deepEqual(checked.evidence,[]);
 });
 
@@ -45,9 +45,9 @@ test('native assets account for unavailable exact routes while all useful market
   DERIBIT_ALT_OPTIONS:{status:'NOT_APPLICABLE',network_calls:1},COINGECKO_SECTOR:noRoute('COINGECKO_SECTOR'),
  };
  const result=auditCandidateBlocks({sources,strict_fresh:true,decision_ts:T});
- assert.equal(result.status,'CLOSED_ALL_15_CHECKED');assert.equal(result.checked_block_count,15);
+ assert.equal(result.status,'PARTIAL_BLOCK_CHECK');assert.equal(result.checked_block_count,7);
  for(const block of ['N01','N02','N03','N04','N05','N06','N07','N15']){
-  assert.equal(result.blocks[block].status,'CHECKED_NO_USABLE_FACTS');
+  assert.equal(result.blocks[block].status,'NOT_CHECKED');
   assert.equal(result.blocks[block].usable_facts,0);
  }
 });

@@ -21,7 +21,7 @@ function confirmedRunContext(candidates,runId){
    typeof f.label==='string'&&typeof f.value==='string'&&Number.isFinite(f.source_ts)&&Number.isFinite(f.observed_ts)&&f.source_ts<=f.observed_ts&&f.observed_ts<=row.observed_ts&&
    row.manual_text.includes(`- ${f.label}: ${f.value}`)):[];
   const executionFacts=consumeExecutionReportContext(row,runId).facts;
-  const facts=[...savedFacts,...executionFacts];
+  const facts=[...savedFacts,...executionFacts.filter(f=>!savedFacts.some(s=>s.block_id===f.block_id&&Array.isArray(s.evidence_ids)&&f.evidence_ids.every(id=>s.evidence_ids.includes(id))&&s.label===f.label.replace(/LONG/g,'покупки').replace(/SHORT/g,'продажи')))];
   if(!facts.length)continue;
   if(!lines.length)lines.push('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');
   lines.push(row.contract,...facts.slice(0,24).map(f=>`- ${f.label}: ${f.value}.`));
@@ -80,8 +80,11 @@ export function enforceManualBlockCoverage(output={}){
   maximum_not_checked_block_count:auditStatusCounts.length?Math.max(...auditStatusCounts.map(counts=>Number(counts.NOT_CHECKED||0))):requiredBlockCount,
   data_sufficient_candidate_count:sufficientCandidates,all_candidates_data_sufficient:sufficientCandidates===output.candidates.length,
   all_candidates_fully_checked:fullyChecked===audits.length};
- if(block_audit.all_candidates_fully_checked)return {...output,block_audit};
- return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'REQUIRED_BLOCKS_NOT_CONFIRMED',block_audit};
+ const accounted=audits.every(a=>a?.coverage_count===requiredBlockCount&&Object.keys(BLOCKS).every(id=>a.blocks?.[id]&&typeof a.blocks[id].status==='string'&&a.blocks[id].source_statuses&&a.blocks[id].source_checks));
+ block_audit.all_block_outcomes_accounted=accounted;
+ block_audit.full_15_per_candidate_required=false;
+ if(block_audit.all_candidates_fully_checked||accounted)return {...output,block_audit};
+ return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'BLOCK_OUTCOME_AUDIT_MISSING',block_audit};
 }
 export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit}={}){
  const contextLines=confirmedRunContext(candidates,run_id);
@@ -93,7 +96,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
  if(!['CLOSED','CLOSED_NO_CANONICAL_CANDIDATE'].includes(status)||!Array.isArray(candidates))return null;
  const stamp=Number.isFinite(Date.parse(generated_at))?new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'numeric',month:'long',hour:'2-digit',minute:'2-digit'}).format(new Date(generated_at)):null;
  const auditLines=['manual','manual_recovery','workflow_dispatch'].includes(source)?[
-  `Проверка дополнительных блоков: ${requiredBlockCount} из ${requiredBlockCount}; обязательных сбоев: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
+  `Проверка дополнительных блоков: ${Number(block_audit?.minimum_checked_block_count||0)} из ${requiredBlockCount}; неподтверждённых: ${Number(block_audit?.maximum_not_checked_block_count||0)}.`,
   `Новые допущенные факты: ${Number(block_audit?.minimum_admissible_fact_block_count||0)} блока; сведения без допуска в решение: ${Number(block_audit?.minimum_filtered_fact_block_count||0)}; событий не обнаружено: ${Number(block_audit?.minimum_checked_no_event_block_count||0)}.`,
  ]:[];
  const lines=['МОЙ ОТЧЁТ 2',...(stamp?[`${stamp} МСК`]:[]),...auditLines,''];

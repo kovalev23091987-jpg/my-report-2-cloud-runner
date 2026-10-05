@@ -43,3 +43,11 @@ test('joint report may omit only the owner-deferred raw24h metric with a bound e
  assert.equal(finishPhase(amended,{owner,now:now+1,proof:accepted,receipt}).current_phase,'TELEGRAM');
  for(const key of REQUIREMENTS.JOINT_REPORT.filter(k=>k!=='raw_24h_flow_verified'))assert.throws(()=>finishPhase(amended,{owner,now:now+1,proof:{...accepted,[key]:false},receipt}),/ACTUAL_PHASE_ACCEPTANCE_REQUIRED/);
 });
+test('owner maximum useful acceptance requires bound same-run source and consumption proof, never cumulative all15 flags',()=>{
+ const leased=acquireIteration({...state,lease:null},{owner,now});
+ leased.owner_maximum_useful_blocks_amendment={id:'OWNER_MAXIMUM_USEFUL_BLOCKS_20261005',path:'checkpoints/OWNER_MAXIMUM_USEFUL_BLOCKS_20261005.md',sha256:'c'.repeat(64),required_full_15_each_asset:false,range_is_not_trade_threshold:true,score_and_entry_rules_unchanged:true};
+ const proof={phase:'CORE_BLOCKS',status:'CLOSED',actual_evidence_verified:true,supported_market_scope_verified:true,source_data_and_consumption_verified:true,exact_identity_and_units_verified:true,maximum_available_blocks_live_verified:true,all_source_outcomes_accounted:true,same_run_participation_verified:true,no_cumulative_scope_counts:true,owner_maximum_useful_amendment_sha256:'c'.repeat(64),all_15_live_accepted:false};
+ assert.equal(finishPhase(leased,{owner,now:now+1,proof,receipt}).current_phase,'LIQUIDATION_COVERAGE');
+ for(const key of ['maximum_available_blocks_live_verified','all_source_outcomes_accounted','same_run_participation_verified','no_cumulative_scope_counts'])assert.throws(()=>finishPhase(leased,{owner,now:now+1,proof:{...proof,[key]:false,all_15_live_accepted:true},receipt}),/ACTUAL_PHASE_ACCEPTANCE_REQUIRED/);
+ assert.throws(()=>finishPhase(leased,{owner,now:now+1,proof:{...proof,owner_maximum_useful_amendment_sha256:'d'.repeat(64)},receipt}),/BOUND_OWNER_MAXIMUM_USEFUL_PROOF_REQUIRED/);
+});
