@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {normalizeBlueskyAttention,blueskyFailureStatus,collectBlueskyAttentionEvidence} from '../files/src/bluesky-attention-evidence.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
+import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 
 const address='0x514910771af9ca656af840dff83e8264ecf986ca',identity={chain:'ethereum',contract_or_mint:address};
 const post=(uri,did,body)=>({uri,cid:`cid-${uri}`,author:{did},record:{text:body,createdAt:'2026-09-28T00:00:00Z'},indexedAt:'2026-09-28T00:00:01Z'});
@@ -20,8 +21,19 @@ test('K16 Bluesky remains warming before thirty windows over seven days',()=>{
 });
 
 test('K16 Bluesky rejects ticker-only identity and preserves Solana case',()=>{
- assert.equal(normalizeBlueskyAttention({contract:'LINK-USDT',identity:{chain:'ethereum',contract_or_mint:'LINK'},payload:{posts:[]},window_start:0,window_end:1,observed_ts:2}).status,'EXACT_ASSET_IDENTITY_REQUIRED');
+ assert.equal(normalizeBlueskyAttention({contract:'LINK-USDT',identity:{chain:'ethereum',contract_or_mint:'LINK'},payload:{posts:[]},window_start:0,window_end:1,observed_ts:2}).status,'EXACT_SOCIAL_IDENTITY_REQUIRED');
  const mint='So11111111111111111111111111111111111111112',row=normalizeBlueskyAttention({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:mint},payload:{posts:[post('a','did:plc:1',mint.toLowerCase())]},window_start:0,window_end:1,observed_ts:2});assert.equal(row.summary.original_posts,0);
+});
+
+test('native attention uses one verified official domain and never ticker matching',()=>{
+ const native={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null},metadata={official_domains:['cardano.org']};
+ const payload={posts:[post('a','did:plc:1','news https://cardano.org/update'),post('b','did:plc:2','ADA pumps'),post('c','did:plc:3','fake notcardano.org.evil')]};
+ const row=normalizeBlueskyAttention({contract:'ADA-USDT',identity:native,asset_metadata:metadata,payload,window_start:0,window_end:1000,observed_ts:1100});
+ assert.equal(row.status,'CLOSED');assert.equal(row.summary.unique_authors,1);assert.equal(row.evidence[0].asset_id,'cardano:native:mainnet');assert.equal(row.evidence[0].query_identity,'EXACT_OFFICIAL_DOMAIN_NATIVE');assert.equal(row.evidence[0].directional_strength,null);
+ const context=consumeBlockResultContext({evidence:row.evidence,contract:'ADA-USDT',now:1200});
+ assert.equal(context.status,'CLOSED');assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N06');assert.equal(context.facts[0].label,'Публичные сообщения с официальным доменом проекта');assert.match(context.facts[0].value,/подтверждённому домену cardano\.org/);
+ assert.equal(normalizeBlueskyAttention({contract:'ADA-USDT',identity:native,asset_metadata:{official_domains:['cardano.org','example.org']},payload,window_start:0,window_end:1000,observed_ts:1100}).status,'EXACT_SOCIAL_IDENTITY_REQUIRED');
+ assert.equal(normalizeBlueskyAttention({contract:'NEAR-USDT',identity:native,asset_metadata:metadata,payload,window_start:0,window_end:1000,observed_ts:1100}).status,'EXACT_SOCIAL_IDENTITY_REQUIRED');
 });
 
 test('K16 Bluesky access denial is not misclassified as an empty valid sample',()=>{

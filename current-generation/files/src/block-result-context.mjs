@@ -4,8 +4,9 @@ import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
+import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v6-general-supply-check-20261005';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v7-native-domain-attention-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -130,8 +131,9 @@ function describe(row,now){
  }
  if(row.block_id==='N06'&&row.metric_family==='UNIQUE_AUTHOR_ATTENTION'){
   const start=number(row.window_start),end=number(row.window_end),authors=number(row.value),posts=number(row.original_post_count);
-  if(row.query_identity!=='EXACT_CONTRACT_OR_MINT'||row.unit!=='unique_authors'||start===null||end===null||end<=start||end>now||row.source_ts!==end||!Number.isSafeInteger(authors)||authors<0||!Number.isSafeInteger(posts)||posts<authors||typeof row.sample_saturated!=='boolean')return null;
-  return{source:'Bluesky',label:'Публичные сообщения с точным адресом токена',value:`за ${fmt((end-start)/60000)} минут: ${authors} авторов, ${posts} сообщений${row.sample_saturated?'; выборка ограничена лимитом':''}; поиск только по адресу, общий интерес и тренд этим не подтверждены`};
+  const native=row.query_identity==='EXACT_OFFICIAL_DOMAIN_NATIVE',nativeIdentity=native?{chain:row.chain,asset_kind:'NATIVE',native_asset_id:row.native_asset_id,contract_or_mint:null}:null;
+  if(!['EXACT_CONTRACT_OR_MINT','EXACT_OFFICIAL_DOMAIN_NATIVE'].includes(row.query_identity)||native&&(!exactNativeSectorBinding(nativeIdentity,row.htx_contract)||row.asset_id!==`${row.chain}:native:mainnet`||row.official_domain===null||!/^[a-z0-9.-]+$/.test(row.official_domain))||row.unit!=='unique_authors'||start===null||end===null||end<=start||end>now||row.source_ts!==end||!Number.isSafeInteger(authors)||authors<0||!Number.isSafeInteger(posts)||posts<authors||typeof row.sample_saturated!=='boolean')return null;
+  return{source:'Bluesky',label:native?'Публичные сообщения с официальным доменом проекта':'Публичные сообщения с точным адресом токена',value:`за ${fmt((end-start)/60000)} минут: ${authors} авторов, ${posts} сообщений${row.sample_saturated?'; выборка ограничена лимитом':''}; поиск только по ${native?`подтверждённому домену ${row.official_domain}`:'адресу'}, общий интерес и тренд этим не подтверждены`};
  }
  if(row.block_id==='N05'&&row.metric_family==='CEX_NET_FLOW_TWO_COMPLETE_HOURS'){
   const start=number(row.window_start_ts),end=number(row.window_end_ts),incoming=number(row.incoming_tokens),outgoing=number(row.outgoing_tokens);

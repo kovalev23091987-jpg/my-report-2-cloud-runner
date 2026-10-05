@@ -94,6 +94,13 @@ test('official registry accepts exact native networks and rejects another market
  const raw={schema:'report2-official-event-sources-v1',entries:[row]};assert.equal(compileOfficialSourceRegistry(raw).registry.SOL.native_asset_id,'solana:mainnet');assert.throws(()=>compileOfficialSourceRegistry({...raw,entries:[{...row,contract_code:'NEAR-USDT'}]}),/NATIVE_CONTRACT_BINDING/);
 });
 
+test('shared route planner admits native Bluesky only with exact binding and one official domain',()=>{
+ const identity={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null};
+ const good=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']},run_id:'NATIVE_SOCIAL'});
+ assert.ok(good.routes.some(r=>r.name==='BLUESKY'));
+ for(const params of [{contract:'NEAR-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:[]}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org','example.org']}}])assert.equal(planCandidateEvidenceRoutes({...params,run_id:'BAD'}).routes.some(r=>r.name==='BLUESKY'),false);
+});
+
 test('real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers',()=>{
  const f=JSON.parse(fs.readFileSync(new URL('./fixtures/htx-wire-bindings-37213989822.json',import.meta.url))),entries=normalizeHtxAssetReferences(f.payload).entries;assert.equal(f.provenance.synthetic,false);
  for(const base of Object.keys(NATIVE_SECTOR_BINDINGS)){assert.equal(entries[base].status,'CLOSED',base);assert.equal(entries[base].identities[0].asset_kind,'NATIVE');assert.equal(entries[base].identities[0].native_asset_id,`${NATIVE_SECTOR_BINDINGS[base].chain}:mainnet`);}
