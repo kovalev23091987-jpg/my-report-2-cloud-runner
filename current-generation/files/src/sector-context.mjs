@@ -1,4 +1,4 @@
-import {validateEvidenceV2} from './evidence-v2.mjs';
+import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {sectorCategoryLabel,nativeSectorAssetId} from './coingecko-sector-evidence.mjs';
 const num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const labels={oracle:'оракулы',oracles:'оракулы',exchange:'биржевые проекты'};
@@ -13,7 +13,7 @@ export function consumeSectorContext({evidence=[],contract,asset_identity,now}={
   const values=peers.map(x=>x.change_24h_pct).sort((a,b)=>a-b),mid=Math.floor(values.length/2),median=values.length%2?values[mid]:(values[mid-1]+values[mid])/2,target=num(r.target_change_24h_pct),delta=num(r.relative_strength_pct_points);
   if(target===null||delta===null||num(r.peer_median_change_24h_pct)===null||Math.abs(median-r.peer_median_change_24h_pct)>1e-8||Math.abs(target-median-delta)>1e-8)continue;
   const pct=n=>`${n>0?'+':''}${n.toFixed(2).replace('.',',')}`;
-  const fact={...common,block_id:'N15',source:sources[r.provider_id],decision_block:'MARKET_STRENGTH_SPOT',field:'SECTOR_RELATIVE_STRENGTH_CONTEXT',label:`Сектор «${label}» за 24 часа, выборка ${peers.length} монет`,value:`монета ${pct(target)}%, медиана ${pct(median)}%, разница ${pct(delta)} п.п.; сводные цены площадок`,unit:'',source_ts:r.source_ts};
+  const fact={...common,block_id:'N15',source:sources[r.provider_id],decision_block:'MARKET_STRENGTH_SPOT',field:'SECTOR_RELATIVE_STRENGTH_CONTEXT',label:`Сектор «${label}» за 24 часа, выборка ${peers.length} монет`,value:`монета ${pct(target)}%, медиана ${pct(median)}%, разница ${pct(delta)} п.п.; сводные цены площадок`,unit:'',source_ts:r.source_ts,observed_ts:r.observed_ts,evidence_id:r.evidence_id,physical_root_key:evidenceDedupKey(r)};
   blocks[r.provider_id]={status:'CLOSED',block_id:'N15',relative_strength_pct_points:delta,eligible_peers:peers.length,category:r.tag_id,source_ts:r.source_ts,...common};
   if(!facts.length)facts.push(fact);
  }

@@ -5,8 +5,9 @@ import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
+import {consumeSectorContext} from './sector-context.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v9-native-sol-transfer-context-20261005';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v10-sector-joint-receipt-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -214,19 +215,22 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
 
 // A stored descriptive fact cannot substitute for its exact still-valid evidence.
 // Both presentation surfaces use the same source/use binding, without scores.
-export function confirmedBlockContextFacts(canonical){
+function availableCanonicalContextFacts(canonical){
  const available=consumeBlockResultContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract:canonical?.metadata?.contract,now:canonical?.observed_ts});
  const execution=consumeCanonicalExecutionContext({contract:canonical?.metadata?.contract,run_id:canonical?.run_id,snapshot_id:canonical?.snapshot_id,observed_ts:canonical?.observed_ts,execution_context_source:canonical?.metadata?.execution_context_source});
+ const sector=consumeSectorContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract:canonical?.metadata?.contract,asset_identity:canonical?.metadata?.internal_market_context?.candidate_context?.asset_identity,now:canonical?.observed_ts});
+ return [...available.facts,...execution.facts,...sector.facts];
+}
+export function confirmedBlockContextFacts(canonical){
  const stored=list(canonical?.metadata?.supporting_context?.facts);
- return [...available.facts,...execution.facts].filter(row=>stored.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key&&f.label===row.label&&f.value===row.value));
+ return availableCanonicalContextFacts(canonical).filter(row=>stored.some(f=>f.evidence_id===row.evidence_id&&f.physical_root_key===row.physical_root_key&&f.label===row.label&&f.value===row.value));
 }
 
 // Proof is based on the final formatter output, including its bounded fact limit.
 // A label in metadata or a completed HTTP call cannot establish actual use.
 export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const contract=canonical?.metadata?.contract,now=canonical?.observed_ts;
- const available=consumeBlockResultContext({evidence:canonical?.metadata?.internal_market_context?.evidence_v2?.evidence,contract,now});
- available.facts.push(...consumeCanonicalExecutionContext({contract,run_id:canonical?.run_id,snapshot_id:canonical?.snapshot_id,observed_ts:now,execution_context_source:canonical?.metadata?.execution_context_source}).facts);
+ const available={facts:availableCanonicalContextFacts(canonical)};
  const printed=manual?.ok===true&&typeof manual.text==='string'?manual.text:null;
  const receipts=confirmedBlockContextFacts(canonical).filter(row=>printed?.includes(`- ${row.label}: ${row.value}`)).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,evidence_ids:row.evidence_ids||[row.evidence_id],physical_root_keys:row.physical_root_keys||[row.physical_root_key],source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,source:row.source,consumer:'MANUAL_CONFIRMED_CONTEXT',score_contribution:0}));
  const payload=telegram?.ok===true&&typeof telegram.text==='string'&&Boolean(canonical?.analytical_fingerprint)&&telegram.analytical_fingerprint===canonical.analytical_fingerprint?telegram.text:null;
