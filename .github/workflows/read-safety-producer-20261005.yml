@@ -1,0 +1,25 @@
+name: Inspect Existing Safety Producer
+on:
+  push:
+    branches: [codex/read-safety-producer-20261005]
+permissions:
+  contents: read
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read existing producer code
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > /dev/null
+          node -e "const fs=require('fs');for(const name of ['tz101-hard-veto-producer.mjs','tz101-decision-evidence-producer.mjs'])console.log('SOURCEFILE:'+name+':'+fs.readFileSync('runtime/src/'+name).toString('base64'))"
