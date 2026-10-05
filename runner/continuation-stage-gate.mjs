@@ -31,7 +31,11 @@ export function finishPhase(state,{owner,now,proof,receipt}={}){
  if(state.lease?.owner!==owner||!(state.lease.expires_ts>now))throw Error('ACTIVE_OWNED_ITERATION_REQUIRED');
  const amendment=state.owner_scope_amendment;
  const authorizedDeferral=current.id==='JOINT_REPORT'&&amendment?.id==='OWNER_RAW24H_DEFERRAL_20261004'&&amendment.deferred_metric==='EXACT_SIGNED_RAW_24H'&&amendment.joint_report_without_metric_authorized===true&&amendment.other_entry_rules_unchanged===true&&amendment.path==='checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md'&&/^[a-f0-9]{64}$/.test(amendment.sha256||'');
- const requirements=REQUIREMENTS[current.id].filter(key=>!authorizedDeferral||key!=='raw_24h_flow_verified');
+ const maxAmendment=state.owner_maximum_useful_blocks_amendment;
+ const maximumUsefulAuthorized=current.id==='CORE_BLOCKS'&&maxAmendment?.id==='OWNER_MAXIMUM_USEFUL_BLOCKS_20261005'&&maxAmendment.required_full_15_each_asset===false&&maxAmendment.range_is_not_trade_threshold===true&&maxAmendment.score_and_entry_rules_unchanged===true&&maxAmendment.path==='checkpoints/OWNER_MAXIMUM_USEFUL_BLOCKS_20261005.md'&&/^[a-f0-9]{64}$/.test(maxAmendment.sha256||'');
+ const requirements=REQUIREMENTS[current.id].filter(key=>(!authorizedDeferral||key!=='raw_24h_flow_verified')&&(!maximumUsefulAuthorized||key!=='all_15_live_accepted'));
+ if(maximumUsefulAuthorized)requirements.push('maximum_available_blocks_live_verified','all_source_outcomes_accounted','same_run_participation_verified','no_cumulative_scope_counts');
+ if(maximumUsefulAuthorized&&proof?.owner_maximum_useful_amendment_sha256!==maxAmendment.sha256)throw Error('BOUND_OWNER_MAXIMUM_USEFUL_PROOF_REQUIRED');
  if(proof?.phase!==current.id||proof?.status!=='CLOSED'||proof?.actual_evidence_verified!==true||!requirements.every(key=>proof[key]===true))throw Error('ACTUAL_PHASE_ACCEPTANCE_REQUIRED');
  if(authorizedDeferral&&proof.raw_24h_flow_verified!==true&&(proof.raw_24h_explicitly_excluded!==true||proof.raw_24h_included!==false||proof.owner_amendment_sha256!==amendment.sha256))throw Error('EXPLICIT_OWNER_RAW24H_OMISSION_PROOF_REQUIRED');
  if(!receipt?.path||!/^[a-f0-9]{64}$/.test(receipt.sha256||''))throw Error('EXACT_SAVED_COMPLETION_RECEIPT_REQUIRED');
