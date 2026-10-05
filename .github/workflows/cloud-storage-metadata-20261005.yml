@@ -1,0 +1,39 @@
+name: Report2 Existing Cloud Storage Metadata
+on:
+  push:
+    branches: [codex/cloud-storage-metadata-20261005]
+permissions:
+  contents: read
+jobs:
+  read:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check fresh owner and fence before read
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='668196db39e08062323a1cb8f0974851cc30c067')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261005T215136067Z:source-storage'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Read exact stored public evidence, no sources or MAIN
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          mkdir -p audit-output
+          node audit-fixes/cloud-storage-metadata-20261005.mjs > audit-output/console.json
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cloud-storage-metadata-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
