@@ -1,6 +1,7 @@
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
+import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
@@ -17107,11 +17108,13 @@ async function buildDeepCheckInput(params, env) {
   const executionCostClosed=futures?.data?.coverage?.htx_futures_liquidity==='closed';
   const technicalState=String(finalDecisionPublicationShadow?.entry_signal?.state||'').trim();
   const primaryTechnicalReceipt=buildHtxPrimaryTechnicalReceipt({contract,futures,trajectory,reference_price:htxObservationReferencePrice,now,route_state:technicalState});
+  const primaryHtxFuturesFlow=buildHtxFuturesFlowPrimary({contract,trajectory:trajectory?.data,now});
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
       evidence_result:candidateEvidenceV2,
       primary_sources:{
         PRIMARY_TECHNICAL_CONTEXT:primaryTechnicalReceipt,
+        PRIMARY_HTX_FUTURES_FLOW:primaryHtxFuturesFlow,
         PRIMARY_EXECUTION_STRESS:{status:depthClosed?'CHECKED_HTX_ORDERBOOK_STRESS':'HTX_ORDERBOOK_NOT_CLOSED',check_completed:depthClosed,network_calls:0,receipts:[{check_completed:depthClosed,status:depthClosed?'CLOSED':'NOT_CLOSED',bid:Number.isFinite(bboBid)?bboBid:null,ask:Number.isFinite(bboAsk)?bboAsk:null,depth:futures?.data?.health?.depth===true}]},
         PRIMARY_EXECUTION_COST:{status:executionCostClosed?'CHECKED_HTX_EXECUTION_COST':'HTX_EXECUTION_COST_NOT_CLOSED',check_completed:executionCostClosed,network_calls:0,receipts:[{check_completed:executionCostClosed,status:executionCostClosed?'CLOSED':'NOT_CLOSED',buy_impact_filled:futures?.data?.liquidity?.buy_market_impact?.fully_filled===true,sell_impact_filled:futures?.data?.liquidity?.sell_market_impact?.fully_filled===true}]},
       },

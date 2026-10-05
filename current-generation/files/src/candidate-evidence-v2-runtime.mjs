@@ -22,6 +22,17 @@ export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtim
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 const bounded=(value,min,max)=>Math.min(max,Math.max(min,value));
+const finite=value=>typeof value==='number'&&Number.isFinite(value);
+export function buildHtxFuturesFlowPrimary({contract,trajectory,now=Date.now()}={}){
+ const market=String(contract||'').trim().toUpperCase(),root={status:'HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED',check_completed:false,network_calls:0,evidence:[],internal_only:true};
+ const window=trajectory?.windows?.['4h'],flow=window?.order_flow,price=window?.price,quality=flow?.cvd_delta_quality,factual=quality?.factual_coverage,integrity=quality?.record_integrity;
+ const start=flow?.window_start_ts,end=flow?.window_end_ts,buy=flow?.taker_buy_usdt,sell=flow?.taker_sell_usdt,count=flow?.sample_trades,size=trajectory?.contract_info?.contract_size;
+ const closed=trajectory?.source==='HTX official public API'&&trajectory?.market==='HTX USDT-M Futures'&&trajectory?.contract===market&&trajectory?.contract_info?.contract_code===market&&finite(size)&&size>0&&trajectory?.coverage?.flow_4h==='closed'&&window?.label==='4h'&&flow?.usable===true&&flow?.cvd_delta_reliable===true&&flow?.raw_delta_is_diagnostic_only===false&&quality?.status==='COMPLETE'&&quality?.reliable===true&&quality?.trade_count_exact_match===true&&quality?.raw_record_integrity_complete===true&&integrity?.status==='COMPLETE'&&integrity?.complete===true&&integrity?.source_truncated===false&&['missing_trade_id_count','duplicate_trade_id_count','invalid_payload_count','source_rows_dropped'].every(key=>integrity?.[key]===0)&&factual?.status==='COMPLETE'&&factual?.exact_1m_bars===true&&factual?.trade_count_fields_complete===true&&factual?.expected_1m_bars===240&&factual?.received_1m_bars===240&&price?.usable===true&&price?.exact_1m_bars===true&&price?.trade_count_complete===true&&price?.expected_1m_bars===240&&price?.received_1m_bars===240&&Number.isSafeInteger(start)&&Number.isSafeInteger(end)&&start%60000===0&&end-start===4*60*60_000&&end<=now&&now-end<=120000&&Number.isSafeInteger(count)&&count>0&&quality?.raw_trade_count===count&&quality?.factual_1m_trade_count===count&&factual?.factual_1m_trade_count===count&&integrity?.raw_records===count&&integrity?.unique_trade_ids===count&&price?.trade_count===count&&finite(buy)&&buy>=0&&finite(sell)&&sell>=0&&buy+sell>0&&finite(flow?.delta_usdt)&&Math.abs(flow.delta_usdt-(buy-sell))<1e-8;
+ if(!closed)return root;
+ const physical=`HTX_RAW_FILLS:${market}:${start}:${end}`;
+ const evidence=buildEvidenceV2({provider_id:'HTX_FUTURES_RAW_FLOW',upstream_id:'HTX_OFFICIAL_RAW_FILLS',asset_id:`HTX:USDT_M_PERPETUAL:${market}`,htx_contract:market,block_id:'N05',metric_family:'EXACT_FUTURES_TAKER_FLOW_4H',origin_event_id:`${market}:${start}:${end}`,dependency_group:physical,source_ts:end,observed_ts:Number(trajectory.timestamp),expires_at:end+5*60_000,coverage_status:'EXACT_FOUR_HOURS',coverage_fraction:1/6,unit:'USDT',value:flow.delta_usdt,directional_strength:null,risk_strength:null,extra:{physical_root_key:physical,window_start_ts:start,window_end_ts:end,buy_quote_turnover_usdt:buy,sell_quote_turnover_usdt:sell,raw_trade_count:count,factual_1m_trade_count:count,source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',common_upstream_not_independent_vote:true,score_contribution:0,entry_authorized:false,nansen_required:false}});
+ return{status:'CLOSED_EXACT_FUTURES_FLOW_4H',check_completed:true,network_calls:0,evidence:[evidence],receipts:[{check_completed:true,status:'CLOSED',contract:market,window:'4h',source_http:0}],internal_only:true};
+}
 export function nansenFlowEvidence(source,params){
  // Reuse the exact token, contiguous complete-window and provider receipt
  // checks used by the visible specialist consumer. CLOSED alone is not proof.
@@ -83,7 +94,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY']},
  N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
- N05:{all:['NANSEN_FLOWS'],supplemental:['CHAIN_EVENTS']},
+ N05:{any:['NANSEN_FLOWS','PRIMARY_HTX_FUTURES_FLOW'],supplemental:['CHAIN_EVENTS']},
  N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY','WIKIMEDIA_ATTENTION']},
  N07:{all:['OFFICIAL_EVENTS'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
@@ -213,7 +224,8 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
 
 export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={}}={}){
  const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
- return {...evidence_result,sources,block_coverage:auditCandidateBlocks({evidence:evidence_result?.evidence||[],sources,decision_ts:evidence_result?.decision_ts??Date.now(),strict_fresh:evidence_result?.strict_fresh_required===true})};
+ const evidence=[...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])];
+ return {...evidence_result,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:evidence_result?.decision_ts??Date.now(),strict_fresh:evidence_result?.strict_fresh_required===true})};
 }
 
 export function planCandidateEvidenceRoutes(params={}){
