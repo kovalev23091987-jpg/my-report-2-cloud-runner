@@ -1,0 +1,71 @@
+{
+  "schema": "report2-batched-general-repairs-release-evidence-v1",
+  "prs": [
+    {
+      "pr": 161,
+      "merged": "668196db39e08062323a1cb8f0974851cc30c067",
+      "tested": "4ba8305a75a2f59ddb7af142930add7a7cbc4d58",
+      "cloud_run": 37384119499,
+      "artifact": 11375784250,
+      "sha256": "b70a3d70998c63dabe1ae9be07389f3f72ff36296bfc4f2cca602dddeff7291d",
+      "scope": "Same-run immutable canonical lifecycle authority; exact old FIL false LONG prevented; new 37387931030 CURRENT_RUN_CANONICAL_NOT_FOUND prevented dispatch",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "d1_read": 3,
+      "d1_write": 0
+    },
+    {
+      "pr": 162,
+      "merged": "3ed1764c25d7225f66456c6272d4d634106d37d7",
+      "tested": "cb7585188128fe6f8fcf1e571177f276a15f92f6",
+      "cloud_run": 37386210877,
+      "artifact": 11379295514,
+      "sha256": "75ff5ea135b809839f6f02cd829dc1b19c6a459b7505add156ee23256c67fe75",
+      "scope": "Exact bounded N12 unscored diagnostic assigned consumer; old actual FIL/BR 102/12 fills at original cutoff. Not nonzero score or directional neutral assessment",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "fresh_joint_use_confirmed": false
+    },
+    {
+      "pr": 163,
+      "merged": "f4882b33d18eb6033cd89cf8df9dbf569cc06b5c",
+      "tested": "e5bd2c6c6bc618cd27e422db5f2e47bdd3da4e35",
+      "cloud_run": 37387524712,
+      "artifact": 11379462639,
+      "sha256": "afecf1912ee7dd1661b9c7cb6a42a7b9d30ec53d74041808208a5bc6eddd09c8",
+      "scope": "Exact retained history restoration, frozen runtime and 37 scenarios pass; archive views installed",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0
+    },
+    {
+      "pr": 164,
+      "merged": "58e61b88e5f2f52a090a3fadf4139df2950e485f",
+      "tested": "90b4c90a021ca834b35cac901b880dcb163fa732",
+      "cloud_run": 37389761977,
+      "artifact": 11380496920,
+      "sha256": "8e6bcc6100a738683e343d4c30c3324d69678a2340419f8c0ccad8bf38946fc4",
+      "scope": "Hourly bounded maintenance, lease tests and actual 48 rows restored; daily D1 admitted and measured",
+      "before_db_bytes": 493002752,
+      "after_db_bytes": 486187008,
+      "moved_records": 48,
+      "d1_read": 1047,
+      "d1_write": 244,
+      "archive_http": 96,
+      "github_http": 6,
+      "total_archive_http": 102,
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0
+    }
+  ],
+  "limitations": [
+    "Retained Node reader must be explicitly enabled; JSON SQL functions on archived markers fail closed instead of fabricating empty facts",
+    "Hot 48h and bound/SENT rows are not relocated",
+    "No fresh joint counts or same-run Telegram SENT acceptance yet"
+  ],
+  "strategy_caps_unchanged": true,
+  "project_complete": false
+}
