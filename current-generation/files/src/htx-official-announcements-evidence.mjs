@@ -1,0 +1,53 @@
+import crypto from 'node:crypto';
+import {buildEvidenceV2} from './evidence-source-adapters.mjs';
+import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+
+export const HTX_OFFICIAL_ANNOUNCEMENTS_VERSION='htx-official-announcements-v1-shared-exact-market-20261005';
+export const HTX_OFFICIAL_ANNOUNCEMENTS_URL='https://www.htx.com/en-us/support/list/360000039942/';
+export const HTX_OFFICIAL_ANNOUNCEMENTS_POLICY=Object.freeze({
+ provider_published_numeric_limits:'UNKNOWN_NOT_UNLIMITED',
+ internal_minute_cap:1,
+ internal_daily_cap:4,
+ internal_monthly_bound:124,
+ cache_ms:6*60*60_000,
+ retries:0,
+});
+const SOURCE='HTX_OFFICIAL_ANNOUNCEMENTS',GLOBAL_KEY='HTX_SUPPORT_360000039942_V1',TTL=HTX_OFFICIAL_ANNOUNCEMENTS_POLICY.cache_ms,DAY=86400000;
+const text=value=>String(value??'').replace(/\s+/g,' ').trim();
+const digest=value=>crypto.createHash('sha256').update(String(value)).digest('hex');
+const decode=value=>text(String(value??'').replace(/<[^>]*>/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/&nbsp;/g,' '));
+const exactContract=value=>/^\S+-USDT$/u.test(text(value).toUpperCase());
+const canonicalUrl=value=>{try{const u=new URL(value,HTX_OFFICIAL_ANNOUNCEMENTS_URL);if(u.protocol!=='https:'||!/(^|\.)htx\.com$/i.test(u.hostname)||!/^\/[^?#]*support\/(?:detail\/)?\d+\/?$/i.test(u.pathname))return null;u.hash='';u.search='';return u.href;}catch{return null;}};
+const publicationClock=(value,now)=>{const raw=text(value);let ts=Date.parse(raw);if(Number.isFinite(ts))return ts<=now?ts:null;const m=raw.match(/\b(0?[1-9]|1[0-2])[\/-](0?[1-9]|[12]\d|3[01])\s+(?:at\s+)?([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?\s*(?:\(UTC\)|UTC)?\b/i);if(!m)return null;const d=new Date(now),candidate=Date.UTC(d.getUTCFullYear(),Number(m[1])-1,Number(m[2]),Number(m[3]),Number(m[4]),Number(m[5]||0));return candidate>now+31*DAY?Date.UTC(d.getUTCFullYear()-1,Number(m[1])-1,Number(m[2]),Number(m[3]),Number(m[4]),Number(m[5]||0)):candidate<=now?candidate:null;};
+const articleFrom=(row,now)=>{if(!row||typeof row!=='object')return null;const title=decode(row.headline??row.name??row.title??row.subject),url=canonicalUrl(row.url??row.href??row.link??(row.id?`https://www.htx.com/support/${row.id}`:null)),source_ts=publicationClock(row.datePublished??row.publishTime??row.publishedAt??row.createdAt??row.created_at??row.time,now);return title&&url&&source_ts?{title,url,source_ts}:null;};
+function walk(value,now,out,depth=0){if(depth>10||value===null||value===undefined)return;if(Array.isArray(value)){for(const row of value)walk(row,now,out,depth+1);return;}if(typeof value!=='object')return;const article=articleFrom(value,now);if(article)out.push(article);for(const row of Object.values(value))if(row&&typeof row==='object')walk(row,now,out,depth+1);}
+function structuredArticles(body,now){const out=[];for(const match of body.matchAll(/<script\b[^>]*(?:type=["']application\/ld\+json["']|id=["']__NEXT_DATA__["'])[^>]*>([\s\S]*?)<\/script>/gi)){try{walk(JSON.parse(match[1].replace(/&quot;/g,'"')),now,out);}catch{}}return out;}
+function anchorArticles(body,now){const out=[];for(const match of body.matchAll(/<a\b[^>]*href=["']([^"']*support\/(?:detail\/)?\d+\/?)["'][^>]*>([\s\S]{1,3000}?)<\/a>/gi)){const url=canonicalUrl(match[1]),title=decode(match[2]);if(!url||!title)continue;const index=match.index??0,scope=body.slice(Math.max(0,index-500),Math.min(body.length,index+match[0].length+500)),source_ts=publicationClock(decode(scope),now);if(source_ts)out.push({title,url,source_ts});}return out;}
+export function parseHtxAnnouncementCatalog({body,observed_ts=Date.now()}={}){
+ const raw=String(body??'');if(raw.length<500||raw.length>2_000_000||!/<html\b/i.test(raw)||!/<\/html>/i.test(raw))return{status:'HTX_ANNOUNCEMENT_SCHEMA_NOT_CLOSED',entries:[],schema_checked:false};
+ const map=new Map();for(const row of [...structuredArticles(raw,observed_ts),...anchorArticles(raw,observed_ts)]){const key=row.url;if(!map.has(key))map.set(key,row);}
+ const entries=[...map.values()].sort((a,b)=>b.source_ts-a.source_ts||a.url.localeCompare(b.url));
+ const closed=entries.length>=10&&entries.every(row=>row.title.length>=4&&row.title.length<=500&&row.source_ts<=observed_ts&&canonicalUrl(row.url));
+ return{status:closed?'CLOSED':'HTX_ANNOUNCEMENT_SCHEMA_NOT_CLOSED',entries:closed?entries.slice(0,100):[],schema_checked:closed,returned_entry_count:entries.length};
+}
+function mentionsContract(title,contract){const [base]=contract.split('-'),escaped=base.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),pattern=new RegExp(`(^|[^\\p{L}\\p{N}])${escaped}\\s*[\\/-]\\s*USDT(?=$|[^\\p{L}\\p{N}])`,'iu');return pattern.test(title);}
+export function normalizeHtxAnnouncements({contract,catalog,observed_ts=Date.now(),response_sha256}={}){
+ const market=text(contract).toUpperCase();if(!exactContract(market)||catalog?.status!=='CLOSED'||catalog?.schema_checked!==true||!Array.isArray(catalog.entries)||catalog.entries.length<10)return{status:'HTX_ANNOUNCEMENT_SCHEMA_NOT_CLOSED',contract:market,evidence:[],events:[],check_completed:false,internal_only:true};
+ const recent=catalog.entries.filter(row=>row.source_ts>=observed_ts-14*DAY&&row.source_ts<=observed_ts),matched=recent.filter(row=>mentionsContract(row.title,market));
+ const common={provider_id:SOURCE,upstream_id:'HTX_OFFICIAL_SUPPORT',asset_id:`htx-futures:${market}`,htx_contract:market,block_id:'N07',observed_ts,expires_at:observed_ts+TTL,directional_strength:null,risk_strength:null,coverage_fraction:0,validation_status:'VALID',extra:{source_clock_policy:'OBSERVED_HTX_SUPPORT_CATALOG_QUERY',catalog_url:HTX_OFFICIAL_ANNOUNCEMENTS_URL,catalog_response_sha256:response_sha256,lookback_days:14,all_htx_announcement_channels_checked:false,common_upstream_not_independent_vote:true,score_contribution:0,entry_authorized:false}};
+ const evidence=matched.map(row=>buildEvidenceV2({...common,metric_family:'HTX_OFFICIAL_ASSET_ANNOUNCEMENT',origin_event_id:row.url,dependency_group:`HTX_SUPPORT_ANNOUNCEMENT:${row.url}`,source_ts:row.source_ts,effective_from:row.source_ts,coverage_status:'EXACT_CONTRACT_OFFICIAL_CONTEXT',extra:{...common.extra,official_url:row.url,event_title:row.title,recent_event_count:matched.length}}));
+ if(!evidence.length)evidence.push(buildEvidenceV2({...common,metric_family:'HTX_OFFICIAL_ANNOUNCEMENT_BOUNDED_ABSENCE',origin_event_id:`${HTX_OFFICIAL_ANNOUNCEMENTS_URL}:${observed_ts}`,dependency_group:`HTX_SUPPORT_CATALOG:${response_sha256}`,source_ts:observed_ts,coverage_status:'BOUNDED_ONE_HTX_SUPPORT_CATALOG',extra:{...common.extra,recent_event_count:0,checked_entry_count:recent.length}}));
+ return{status:matched.length?'CLOSED':'CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK',contract:market,evidence,events:matched,check_completed:true,checked_entry_count:recent.length,internal_only:true};
+}
+async function fetchText(fetchImpl){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);try{const response=await fetchImpl(HTX_OFFICIAL_ANNOUNCEMENTS_URL,{headers:{accept:'text/html','user-agent':'My-Report-2/htx-announcements-v1'},signal:controller.signal,redirect:'error'}),body=await response.text().catch(()=>''),final=text(response.url)||HTX_OFFICIAL_ANNOUNCEMENTS_URL;return{ok:response.ok&&final===HTX_OFFICIAL_ANNOUNCEMENTS_URL,http_status:response.status,body,error:response.ok&&final!==HTX_OFFICIAL_ANNOUNCEMENTS_URL?'OFFICIAL_URL_REDIRECT_MISMATCH':response.ok?null:`HTTP_${response.status}`};}catch(error){return{ok:false,http_status:null,body:'',error:String(error?.name==='AbortError'?'TIMEOUT':error?.message||error).slice(0,160)};}finally{clearTimeout(timer);}}
+export async function collectHtxOfficialAnnouncements({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false}={}){
+ if(!db)throw new Error('HTX_ANNOUNCEMENTS_DB_REQUIRED');const market=text(contract).toUpperCase();if(!exactContract(market))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
+ await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:GLOBAL_KEY,now});if(cached?.version===HTX_OFFICIAL_ANNOUNCEMENTS_VERSION&&(!strict_fresh_manual||cached.run_id===text(run_id))){const normalized=normalizeHtxAnnouncements({contract:market,catalog:cached.catalog,observed_ts:now,response_sha256:cached.response_sha256});return{version:HTX_OFFICIAL_ANNOUNCEMENTS_VERSION,...normalized,network_calls:0,cache_status:cached.run_id===text(run_id)?'CURRENT_RUN_SHARED_HIT':'SHARED_HIT',receipts:cached.receipts,policy:HTX_OFFICIAL_ANNOUNCEMENTS_POLICY,internal_only:true};}
+ const reservationId=`EV2:${SOURCE}:${run_id}:${GLOBAL_KEY}:${Math.floor(now/TTL)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts:1}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
+ const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:reservationId,attempts:1,daily_cap:HTX_OFFICIAL_ANNOUNCEMENTS_POLICY.internal_daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
+ const raw=await fetchText(fetch_impl),catalog=raw.ok?parseHtxAnnouncementCatalog({body:raw.body,observed_ts:now}):{status:'SOURCE_ERROR',entries:[],schema_checked:false},responseSha=raw.ok?digest(raw.body):null,normalized=raw.ok?normalizeHtxAnnouncements({contract:market,catalog,observed_ts:now,response_sha256:responseSha}):{status:'SOURCE_ERROR',contract:market,evidence:[],events:[],check_completed:false,internal_only:true},receipts=[{route:'HTX_OFFICIAL_SUPPORT_LIST',status:raw.ok&&catalog.status==='CLOSED'?'CLOSED':'SOURCE_ERROR',http_status:raw.http_status,error:raw.error||catalog.status}],result={version:HTX_OFFICIAL_ANNOUNCEMENTS_VERSION,...normalized,network_calls:1,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts,policy:HTX_OFFICIAL_ANNOUNCEMENTS_POLICY,internal_only:true};
+ if(raw.ok&&catalog.status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:GLOBAL_KEY,observed_ts:now,expires_ts:now+TTL,payload:{version:HTX_OFFICIAL_ANNOUNCEMENTS_VERSION,run_id:text(run_id),catalog,response_sha256:responseSha,receipts}});
+ return result;
+}
+
+export default{parseHtxAnnouncementCatalog,normalizeHtxAnnouncements,collectHtxOfficialAnnouncements};

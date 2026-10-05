@@ -187,6 +187,15 @@ function describe(row,now){
   if(!title||url.protocol!=='https:')return null;
   return{source:url.hostname,label:'Официальное объявление проекта',value:`${title.slice(0,240)}; ${new Date(row.source_ts).toISOString().slice(0,10)}; оценка направления не назначена`};
  }
+ if(row.block_id==='N07'&&row.metric_family==='HTX_OFFICIAL_ASSET_ANNOUNCEMENT'){
+  const title=String(row.event_title||'').trim();let url;try{url=new URL(row.official_url);}catch{return null;}
+  if(row.provider_id!=='HTX_OFFICIAL_ANNOUNCEMENTS'||row.upstream_id!=='HTX_OFFICIAL_SUPPORT'||url.protocol!=='https:'||!/(^|\.)htx\.com$/i.test(url.hostname)||!title||row.common_upstream_not_independent_vote!==true||row.score_contribution!==0||row.entry_authorized!==false)return null;
+  return{source:'HTX / официальные объявления',label:'Официальная публикация по активу',value:`${title.slice(0,240)}; опубликовано ${new Date(row.source_ts).toISOString().replace('T',' ').slice(0,19)} UTC; направление и разрешение сделки не назначены`};
+ }
+ if(row.block_id==='N07'&&row.metric_family==='HTX_OFFICIAL_ANNOUNCEMENT_BOUNDED_ABSENCE'){
+  if(row.provider_id!=='HTX_OFFICIAL_ANNOUNCEMENTS'||row.upstream_id!=='HTX_OFFICIAL_SUPPORT'||row.recent_event_count!==0||row.lookback_days!==14||row.all_htx_announcement_channels_checked!==false||row.common_upstream_not_independent_vote!==true||row.score_contribution!==0||row.entry_authorized!==false||!/^[0-9a-f]{64}$/.test(row.catalog_response_sha256||''))return null;
+  return{source:'HTX / официальные объявления',label:'Проверка публикаций по точному контракту',value:'в возвращённой официальной ленте HTX за 14 дней публикаций с точным контрактом не найдено; проверена только эта лента, отсутствие событий во всех каналах не утверждается'};
+ }
  return null;
 }
 

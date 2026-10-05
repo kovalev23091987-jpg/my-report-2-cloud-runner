@@ -9,6 +9,7 @@ export const SOURCE_POLICIES=Object.freeze({
  CHAIN_RPC:{daily_cap:720,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03','N04','N05']},
  KOIOS_NATIVE_SUPPLY:{daily_cap:48,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02','N03'],official_public_daily_cap:5000,official_burst_cap:100,official_burst_window_seconds:10,retries:0},
  OFFICIAL_EVENTS:{daily_cap:288,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N01','N07','N08','N09']},
+ HTX_OFFICIAL_ANNOUNCEMENTS:{daily_cap:4,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N07'],monthly_module_bound:124,retries:0,provider_published_numeric_limits:'UNKNOWN_NOT_UNLIMITED'},
  GDELT_NEWS_DISCOVERY:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N07']},
  BLUESKY_PUBLIC:{daily_cap:240,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N06']},
  DERIBIT_ALT_OPTIONS:{daily_cap:168,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N14']},
