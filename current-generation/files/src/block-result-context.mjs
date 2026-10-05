@@ -45,6 +45,10 @@ function describe(row,now){
   return{source:'HTX / закрытые свечи',label:'Фактический ценовой диапазон',value:`20 закрытых свечей ${row.period}: ${price(row.range_low)}–${price(row.range_high)} USDT, ширина ${fmt(row.range_pct)}%; цена последней закрытой свечи ${price(row.last_closed_price)} USDT; это наблюдаемый диапазон, цели и разрешение входа проверяются отдельно`};
  }
 
+ if(row.block_id==='N01'&&row.metric_family==='OFFICIAL_INITIAL_DISTRIBUTION_TERMS'){
+  if(row.parser_id!=='CARDANO_INITIAL_DISTRIBUTION_V1'||row.asset_id!=='cardano:native:mainnet'||row.htx_contract!=='ADA-USDT'||row.official_url!=='https://cardano.org/genesis/'||row.source_clock_policy!=='OBSERVED_PRIMARY_DOCUMENT_QUERY'||row.scope!=='HISTORICAL_INITIAL_DISTRIBUTION_ONLY'||row.future_unlock_schedule_verified!==false||row.actual_unlock_transfer_verified!==false||row.ongoing_issuance_excluded!==false||row.initial_supply_tokens!=='31112484646'||row.public_sale_tokens!=='25927070538'||!/^[0-9a-f]{64}$/.test(row.document_sha256||''))return null;
+  return{source:'cardano.org',label:'Официальное первоначальное распределение ADA',value:'публичные продажи: 25 927 070 538 ADA; предложение при запуске: 31 112 484 646 ADA. Это историческое распределение 2015–2017 годов; будущие разблокировки и прекращение эмиссии этим не подтверждены'};
+ }
  if(row.block_id==='N01'&&row.metric_family==='OFFICIAL_VESTING_TERMS'){
   if(row.source_clock_policy!=='OBSERVED_PRIMARY_DOCUMENT_QUERY'||row.actual_unlock_transfer_verified!==false||!/^[0-9a-f]{64}$/.test(row.document_sha256||''))return null;
   if(row.parser_id==='NEAR_PUBLISHED_UNLOCK_STATUS_V1'&&row.asset_id==='near:native:mainnet'&&row.htx_contract==='NEAR-USDT'&&row.official_url==='https://www.near.org/'&&row.published_status==='FULLY_UNLOCKED')return{source:'near.org',label:'Опубликованный статус блокировок NEAR',value:'официальный сайт сообщает о полностью разблокированном предложении; инфляция и новая эмиссия этим не исключены; это заявление проекта, а не проверка будущих транзакций'};

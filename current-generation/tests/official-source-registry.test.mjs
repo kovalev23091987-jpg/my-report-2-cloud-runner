@@ -8,7 +8,7 @@ const source=JSON.parse(fs.readFileSync(new URL('../files/official-event-sources
 const mainSources=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url),'utf8'));
 
 test('main-only hosted publisher has exact project identity and issuer authorization',()=>{
- const compiled=compileOfficialSourceRegistry(mainSources,{now:Date.parse('2026-10-04T14:40:00Z')});
+ const compiled=compileOfficialSourceRegistry(mainSources,{now:Date.parse('2026-10-05T04:30:00Z')});
  const merged=mergeOfficialAndConfiguredRegistries({official:compiled,configured:compileOfficialSourceRegistry(source).registry});
  const entry=parseSupplementalIdentityRegistry(merged.registry).entries.BTW;
  assert.equal(entry.identity.chain,'bsc');assert.equal(entry.identity.contract_or_mint,'0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa');
