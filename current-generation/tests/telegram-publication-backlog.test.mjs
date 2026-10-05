@@ -14,7 +14,7 @@ const finalReconciliation=path.join(repo,'post-v7-consolidated/final-reconciliat
 const migrations=path.join(repo,'post-v7-consolidated/liquidation/unified-delivery-base/migrations.sql');
 const runtime=fs.mkdtempSync(path.join(os.tmpdir(),'report2-telegram-backlog-'));
 for(const name of ['canonical-publication.mjs','recheck-scheduler.mjs','manual-report-formatter.mjs','canonical-display.mjs','reason-registry.mjs','native-liquidation-guard.mjs','v3-telegram-runtime.mjs','v3-telegram-delivery-sidecar.mjs','v3-pipeline-health-runtime.mjs','v3-telegram-lifecycle.mjs']){
- const source=name==='native-liquidation-guard.mjs'
+ const source=['native-liquidation-guard.mjs','canonical-display.mjs'].includes(name)
   ? path.join(generation,'files/src',name)
   : ['canonical-publication.mjs','recheck-scheduler.mjs','manual-report-formatter.mjs','canonical-display.mjs','reason-registry.mjs'].includes(name)
     ? path.join(finalReconciliation,name)

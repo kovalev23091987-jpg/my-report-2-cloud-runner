@@ -59,7 +59,7 @@ import {TWO_CANDIDATE_PLAN,TWO_NODE_HTTP_LIMITS,proveTwoCandidateBudget,deepRunt
 import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
-import {loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage} from './src/liquidation-futures-coverage.mjs';
+import {runtimeLiquidationCollectionAdmission,loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage} from './src/liquidation-futures-coverage.mjs';
 import {deliverExactSavedRunTelegram,acceptedJointForTelegramRetrieval} from './src/exact-saved-run-telegram.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v13-current-cycle-20260929";
@@ -646,7 +646,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
   const liquidationCoverageDatabase=await loadFuturesCoverageDatabase({db:env.DATA_DB,now:started});
   const liquidationCoverageSummary=summarizeFuturesCoverage(liquidationCoverageDatabase,{now:started});
-  const liquidationCoverageFor=contract=>futuresLiquidationAdmission(liquidationCoverageDatabase,{contract:String(contract||'').trim().toUpperCase(),now:Date.now()});
+  const liquidationCoverageFor=contract=>runtimeLiquidationCollectionAdmission(liquidationCoverageDatabase,{contract:String(contract||'').trim().toUpperCase(),now:Date.now()});
   env.REPORT2_LIQUIDATION_COVERAGE_FOR=liquidationCoverageFor;
   console.log('LIQUIDATION_FUTURES_COVERAGE_DATABASE',JSON.stringify(liquidationCoverageSummary));
   if(commandIntent.matched&&commandIntent.contract){

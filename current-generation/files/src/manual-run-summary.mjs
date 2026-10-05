@@ -156,20 +156,6 @@ export function formatLiquidationRunSummary({status,scan,preliminary_candidates=
  return lines.join('\n').trim();
 }
 export function formatStandaloneLiquidationSourceLines(liq){
- const info=nativeLiquidationSources(liq);
- if(!info.present)return [];
- if(info.kind!=='NESTED')return nativeLiquidationLines(liq,{manual:true})||[];
- const lines=[];
- for(const context of info.contexts){
-  const scoped=context.schema==='NATIVE_LIQUIDATION_CONTEXT_V1'?{native_extension:context}:{independent_extensions:[context]};
-  const segment=nativeLiquidationLines(scoped,{manual:true})||[];
-  for(const line of segment.filter(value=>!value.startsWith('Это уровни указанных площадок'))){
-   if(context.provider!=='0xArchive'){lines.push(line);continue;}
-   lines.push(line.replace(/^Hyperliquid ([A-Z0-9]+)(?=[, —])/, '0xArchive $1 (оценочные зоны Hyperliquid)')
-    .replace(/; ([\d,.]+) (USD|USDT|USDC)(?=\.|,)/g,'; оценочный объём $1 $2'));
-  }
- }
- if(lines.length)lines.push('Это уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.');
- return lines;
+ return nativeLiquidationLines(liq,{manual:true})||[];
 }
 export default {MANUAL_RUN_SUMMARY_VERSION,classifyCanonicalRunCompletion,enforceManualBlockCoverage,formatManualRunSummary,formatLiquidationRunSummary};
