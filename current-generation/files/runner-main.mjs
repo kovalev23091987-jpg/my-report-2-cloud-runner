@@ -494,6 +494,7 @@ async function main() {
     .map(([base])=>`${String(base).toUpperCase()}-USDT`);
   console.log('OFFICIAL_SOURCE_REGISTRY',JSON.stringify({status:supplementalIdentityRegistry.status,version:officialSourceRegistry.version,versioned_records:supplementalIdentityRegistry.versioned_records,configured_status:supplementalIdentityRegistry.configured_status}));
   const unifiedHttpBudget=createUnifiedHttpBudget({...HTTP_LIMITS,...TWO_NODE_HTTP_LIMITS});
+  if(envText('REPORT2_RETAINED_HISTORY_ENABLED',{required:false})==='1')env.DATA_DB.enableRetainedHistory({fetch_impl:(...args)=>globalThis.fetch(...args),request_admit:unifiedHttpBudget.reserve,max_fetches:4});
   await installRuntimeControl(env.DATA_DB);
   await installProviderMinuteLedger(env.DATA_DB);
   const analyticsLease=await claimAnalyticsLease(env.DATA_DB,{actor:preflight.actor,generation,run_id:`ANALYTICS:${started}:${sha.slice(0,12)}`,now:started});

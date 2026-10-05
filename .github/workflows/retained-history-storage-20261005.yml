@@ -1,4 +1,4 @@
-name: Report2 Retained Public History Copy
+name: Report2 Retained History Readthrough Verification
 on:
   push:
     branches: [codex/retained-history-storage-20261005]
@@ -22,7 +22,20 @@ jobs:
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
             if(phase.lease?.owner!=='HTX:20261005T215136067Z:source-storage'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-      - name: Copy and independently read exact cold evidence; no database writes
+      - name: Assemble and verify exact runtime before empty schema bootstrap
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Bootstrap empty archive views; no evidence removed
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ARCHIVE_EXPECTED_MAIN: '3ed1764c25d7225f66456c6272d4d634106d37d7'
@@ -31,7 +44,7 @@ jobs:
         run: |
           mkdir -p audit-output
           node --test audit-fixes/retained-history-20261005/retained-history.test.mjs > audit-output/retained-history.tap
-          node audit-fixes/retained-history-20261005/copy-retained-history.mjs > audit-output/console.json
+          node audit-fixes/retained-history-20261005/install-retained-views.mjs > audit-output/console.json
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
       - uses: actions/upload-artifact@v4
