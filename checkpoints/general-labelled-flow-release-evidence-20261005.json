@@ -1,0 +1,159 @@
+{
+  "schema": "report2-general-labelled-flow-release-evidence-v1",
+  "status": "CLOSED_SCOPED_ACTUAL_SOURCE_TO_SHARED_CONSUMER",
+  "verified_at": "2026-10-05T07:40:52.977645+00:00",
+  "pr": 139,
+  "tested_head": "ac0bc9ce4c84ec966a382fc34399b1faf2ed0f69",
+  "tested_tree": "205bd66c2cb45182380e1f1408af9604e74d5f0b",
+  "merge_commit": "b384ad248cc0636e396d7515b6f3ae05dc07d79e",
+  "merged_tree_exact": true,
+  "cloud_run": 37278722289,
+  "cloud_job": 111661513073,
+  "cloud_conclusion": "SUCCESS",
+  "artifact": 11330619177,
+  "artifact_sha256": "ec64020334802dac849be0fe194e1ed86bec7622a9d25ad419a448528191f6e7",
+  "source_use_proof": {
+    "path": "checkpoints/general-labelled-flow-source-use-20261005.json.gz",
+    "sha256": "93e6ae7f0455cb0b3e25118b906e7f879a446d8a1e2b8d2855a27a1b10ce1db6"
+  },
+  "runtime_sha256": {
+    "src/candidate-evidence-v2-runtime.mjs": "6e06a730e74fbac23a76627fa503f3d9f85a4b5fcc611577199baa09b1b87b71",
+    "src/specialist-candidate-context.mjs": "ce6490755f0e83067b9f790ae4bfff44adbf449f8bf73db6e170f2ddd55999f3"
+  },
+  "validation": {
+    "engine": "PASS",
+    "integration_passed": 37,
+    "stage_guard_passed": 5,
+    "changed_tests_included_once_in_engine": true
+  },
+  "actual_scope": {
+    "contract": "BTW-USDT",
+    "identity": {
+      "chain": "bsc",
+      "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+    },
+    "window_start_ts": 1791176400000,
+    "window_end_ts": 1791183600000,
+    "source_ts": 1791183600000,
+    "observed_ts": 1791185445438,
+    "inflow_cex_tokens": 182840.30649088888,
+    "outflow_cex_tokens": 197571.3718901914,
+    "net_cex_tokens": -14731.065399302519,
+    "bucket_count": 2,
+    "complete_buckets": true,
+    "http_status": 200,
+    "raw_body_sha256": "9953a02f9df58390ca5000a79656efb13b56709f05bfaf7cab6ff199f8073a69",
+    "label_authority": "NANSEN",
+    "individual_addresses_verified": false,
+    "provider_data_may_be_revised": true,
+    "block_audit": {
+      "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+      "checked": true,
+      "observed_facts": 1,
+      "usable_facts": 1,
+      "source_statuses": {
+        "NANSEN_FLOWS": "CLOSED",
+        "CHAIN_EVENTS": "NOT_EVALUATED"
+      },
+      "source_checks": {
+        "NANSEN_FLOWS": {
+          "status": "CLOSED",
+          "attempted": true,
+          "checked": true,
+          "network_calls": 0,
+          "cache_status": null,
+          "receipt_count": 0
+        },
+        "CHAIN_EVENTS": {
+          "status": "NOT_EVALUATED",
+          "attempted": false,
+          "checked": false,
+          "network_calls": 0,
+          "cache_status": null,
+          "receipt_count": 0
+        }
+      },
+      "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+      "maximum_score_points": 0.5,
+      "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+      "evidence_rejection_reasons": {},
+      "required_all": [
+        "NANSEN_FLOWS"
+      ],
+      "required_any": [],
+      "missing_required": []
+    },
+    "canonical_builder_used": true,
+    "approved_manual_used": true,
+    "used_context_block_ids": [
+      "N05"
+    ],
+    "report_is_scoped_builder_acceptance_not_full_main": true
+  },
+  "acquisition": {
+    "original_run": 37278120940,
+    "original_job": 111659646738,
+    "original_head": "5f215bec2466d6dbc5e5496e3feb0d2294380d0f",
+    "original_artifact": 11331331086,
+    "original_artifact_sha256": "f90ad6125051f0db0c6c967fc9aa59097f0f630599007e6c0142e6b904318f15",
+    "original_source_http": 1,
+    "original_d1_read": 3,
+    "original_d1_write": 1,
+    "acceptance_source_http": 0,
+    "acceptance_d1_read": 0,
+    "acceptance_d1_write": 0,
+    "unknown_d1_operations": 0,
+    "original_clock_preserved": true,
+    "failure_repaired": "Validated CLOSED source payload lacked attached evidence, leaving sourceWasActuallyChecked false. Producer now attaches independently revalidated exact evidence; invalid/unattempted remain missing. Strict freshness still requires original transport/cache policy, not fabricated calls."
+  },
+  "implementation_scope": {
+    "general_existing_supported_token_adapters": [
+      "ethereum",
+      "bnb",
+      "arbitrum",
+      "base",
+      "polygon",
+      "optimism",
+      "avalanche",
+      "solana"
+    ],
+    "identity_required": true,
+    "all_supported_tokens_use_same_consumer": true,
+    "native_flow_available": false,
+    "all_102_assets_accepted": false,
+    "confirmed_zero_windows_retained_neutral": true,
+    "unattempted_token_not_capability_absence": true,
+    "same_upstream_not_independent": true
+  },
+  "source_limits": {
+    "official_flow_credits": 1,
+    "free_daily_top_up_balance": 10,
+    "provider_free_per_second": 15,
+    "provider_free_per_minute": 300,
+    "shared_internal_nansen_attempts_per_day": 8,
+    "ordinary_and_manual_share_same_ledger": true,
+    "retries": 0,
+    "maximum_source_http": 1,
+    "shared_job_http": 164,
+    "no_paid_top_up_or_pay_per_request": true
+  },
+  "official_docs": [
+    "https://docs.nansen.ai/api/token-god-mode/flows",
+    "https://docs.nansen.ai/getting-started/credits",
+    "https://docs.nansen.ai/getting-started/rate-limits"
+  ],
+  "constraints": {
+    "threshold": 70,
+    "weights_unchanged": true,
+    "roles_unchanged": true,
+    "entry_rules_unchanged": true,
+    "approved_forms_unchanged": true,
+    "new_source_enable": false,
+    "full_main_calls": 0,
+    "production_canonical_writes": 0,
+    "telegram_calls": 0,
+    "telegram_delivery_proven": false,
+    "all_15_live_accepted": false,
+    "core_phase": "IN_PROGRESS"
+  }
+}
