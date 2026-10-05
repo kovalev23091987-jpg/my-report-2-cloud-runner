@@ -65,9 +65,9 @@ test('verified hosted RSS checks the exact publisher without trusting all Medium
 });
 
 test('a bounded official feed absence requires intact dated publisher rows; malformed or future rows do not prove absence',()=>{
- const old=rss.replaceAll('2026','2025');
+ const old=rss.replace(/<item><guid>bad<\/guid>[\s\S]*?<\/item>/,'').replaceAll('2026','2025');
  const good=parseOfficialFeed({body:old,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW});assert.equal(good.events.length,0);assert.equal(good.feed_schema_checked,true);
- for(const body of [old.replaceAll('2025','invalid-year'),old.replace('</rss>',''),old.replaceAll('abc.example','foreign.example'),rss.replaceAll('02:30:00','04:30:00')])assert.notEqual(parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).feed_schema_checked,true);
+ for(const body of [old.replaceAll('2025','invalid-year'),old.replace('</rss>',''),old.replaceAll('abc.example','foreign.example'),rss.replaceAll('02:30:00','04:30:00'),old.replace('</item>',''),old.replace('</channel>','<item><title>Truncated</title></channel>'),old.replace('</channel>','<entry></entry></channel>')])assert.notEqual(parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).feed_schema_checked,true);
  const modified=`<html><script type="application/ld+json">${JSON.stringify({'@type':'NewsArticle',headline:'Old article',datePublished:'2025-01-01',dateModified:new Date(NOW).toISOString(),url:'https://abc.example/old'})}</script></html>`;
  assert.equal(parseOfficialFeed({body:modified,content_type:'text/html',feed_url:'https://abc.example/news',official_domains:META.official_domains,now:NOW}).events.length,0);
 });

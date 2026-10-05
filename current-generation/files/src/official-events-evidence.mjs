@@ -67,8 +67,14 @@ export function parseOfficialFeed({body,content_type='',feed_url,official_domain
  const unique=[...new Map(events.filter(row=>text(row.title)).map(row=>[row.event_id,row])).values()].sort((a,b)=>b.effective_at-a.effective_at).slice(0,16);
  const xmlRows=detected==='RSS'?(raw.match(/<item\b[\s\S]*?<\/item>/gi)||[]):detected==='ATOM'?(raw.match(/<entry\b[\s\S]*?<\/entry>/gi)||[]):[];
  const xmlContainer=detected==='RSS'?/<rss\b[\s\S]*<channel\b[\s\S]*<\/channel>\s*<\/rss>\s*$/i.test(raw):detected==='ATOM'?/<feed\b[\s\S]*<\/feed>\s*$/i.test(raw):false;
+ // A truncated item must not disappear from the regex row list and make a
+ // damaged response look like a valid empty feed. Reject mixed row formats,
+ // duplicate containers and unmatched row boundaries for absence proof.
+ const count=pattern=>(raw.match(pattern)||[]).length;
+ const rowName=detected==='RSS'?'item':'entry',otherName=detected==='RSS'?'entry':'item';
+ const boundariesClosed=count(new RegExp(`<${rowName}\\b`,'gi'))===xmlRows.length&&count(new RegExp(`</${rowName}\\s*>`,'gi'))===xmlRows.length&&count(new RegExp(`</?${otherName}\\b`,'gi'))===0&&(detected==='RSS'?count(/<rss\b/gi)===1&&count(/<\/rss\s*>/gi)===1&&count(/<channel\b/gi)===1&&count(/<\/channel\s*>/gi)===1:detected==='ATOM'&&count(/<feed\b/gi)===1&&count(/<\/feed\s*>/gi)===1);
  const datedRowsClosed=xmlRows.every(row=>{const published=stamp(tag(row,'pubDate')||tag(row,'published')||tag(row,'updated')),url=exactUrl(tag(row,'link')||atomLink(row),domains);return published!==null&&published<=now&&Boolean(url)&&Boolean(tag(row,'title'))&&(!publisher_account||new URL(url).pathname.toLowerCase().startsWith(`/@${publisher_account.toLowerCase()}/`));});
- return{status:unique.length?'CLOSED':'EMPTY_OR_STALE',events:unique,feed_schema_checked:xmlContainer&&datedRowsClosed,checked_entry_count:xmlRows.length};
+ return{status:unique.length?'CLOSED':'EMPTY_OR_STALE',events:unique,feed_schema_checked:xmlContainer&&boundariesClosed&&datedRowsClosed,checked_entry_count:xmlRows.length};
 }
 
 export function normalizeOfficialFeed({contract,asset_identity,asset_metadata,feed_url,body,content_type,expected_format=null,observed_ts=Date.now()}={}){

@@ -53,3 +53,15 @@ test('K16 runtime loads the versioned registry and overlay carries both registry
  assert.match(runner,/official-event-sources\.json/);assert.match(runner,/supplementalIdentityRegistry\.registry/);
  assert.match(overlay,/official-event-sources\.json/);assert.match(overlay,/official-source-registry\.mjs/);
 });
+
+
+test('an exact configured identity without category fields preserves versioned sector routes',()=>{
+ const identity={chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)};
+ const official={registry:{ABC:{...identity,coingecko_id:'exact-project',coingecko_category_id:'meme-token',coingecko_category_name:'Meme',official_domains:['abc.example'],official_feeds:['https://abc.example/feed.xml']}}};
+ const out=mergeOfficialAndConfiguredRegistries({official,configured:{ABC:identity}});
+ assert.equal(out.registry.ABC.coingecko_id,'exact-project');
+ assert.equal(out.registry.ABC.coingecko_category_id,'meme-token');
+ assert.equal(out.registry.ABC.coingecko_category_name,'Meme');
+ assert.deepEqual(out.registry.ABC.official_feeds,['https://abc.example/feed.xml']);
+ assert.throws(()=>mergeOfficialAndConfiguredRegistries({official,configured:{ABC:{...identity,contract_or_mint:'0x'+'2'.repeat(40)}}}),/IDENTITY_REGISTRY_CONFLICT/);
+});
