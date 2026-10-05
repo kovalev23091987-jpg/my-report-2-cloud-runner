@@ -38,7 +38,7 @@ const files=[
  'src/pump-liquidation-zones.mjs',
  'src/htx-source-backed-liquidation-model.mjs',
  'src/future-liquidation-map-source.mjs','src/byk-tracked-future-map.mjs',
- 'src/canonical-runtime-adapter.mjs',
+ 'src/canonical-runtime-adapter.mjs','src/early-direction-receipt.mjs',
  'src/source-role-registry.mjs',
  'src/source-role-consumer.mjs',
  'src/canonical-publication.mjs',

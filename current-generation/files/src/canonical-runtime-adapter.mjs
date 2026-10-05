@@ -1,3 +1,4 @@
+import {qualifyEarlyDirectionReceipt as qualifiedEarlyReceipt} from './early-direction-receipt.mjs';
 import {readHtxTechnicalStructure} from './htx-technical-structure.mjs';
 import {capturedTrackedBands} from './byk-tracked-future-map.mjs';
 import {capturedFutureMap,capturedNativeFutureMaps,capturedCoinLobsterHint} from './future-liquidation-map-source.mjs';
@@ -28,7 +29,7 @@ import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v14-early-observation-target-pending-20261001';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v15-assigned-direction-state-20261005';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -128,19 +129,6 @@ function hardGates({discovery,publication,executionHandoff}={}){
  if(publication?.publication_gate)gates.push({gate:'TZ101_PUBLICATION',status:publication.publication_gate.status??null,reason:publication.publication_gate.reason??null});
  if(executionHandoff)gates.push({gate:'HTX_EXECUTION_HANDOFF',status:executionHandoff.status??null,reason:executionHandoff.reason??null});
  return gates;
-}
-function qualifiedEarlyReceipt(discovery,decisionTs){
- const receipt=discovery?.early_candidate_receipt;
- const candidate=normalizeDirectionCandidate(receipt?.direction_hint??discovery?.early_candidate_direction_hint,{origin:'EARLY_CYCLE',source_ts:receipt?.source_ts??discovery?.early_candidate_source_ts,confirmation_state:receipt?.direction_state??'UNCONFIRMED'});
- const sourceTs=finite(receipt?.source_ts??receipt?.feature_observed_ts??discovery?.early_candidate_source_ts);
- const availableAt=finite(receipt?.available_at??discovery?.early_candidate_available_at??sourceTs);
- const sameContract=text(receipt?.contract)===text(discovery?.contract);
- const sameWave=text(receipt?.wave_id)!==''&&text(receipt?.wave_id)===text(discovery?.early_candidate_wave_id??discovery?.wave_id);
- const fresh=sourceTs!==null&&availableAt!==null&&sourceTs<=decisionTs&&availableAt<=decisionTs&&decisionTs-sourceTs<=15*60_000;
- const evidence=arr(receipt?.evidence);
- const directed=evidence.some(row=>{const side=text(row?.side).toUpperCase();return row?.status==='CLOSED'&&(side===candidate.direction||side==='BOTH');});
- const closed=discovery?.early_candidate_bridge===true&&receipt?.status==='CLOSED'&&sameContract&&sameWave&&fresh&&directed&&['LONG','SHORT'].includes(candidate.direction);
- return {closed,direction:closed?candidate.direction:null,candidate,source_ts:sourceTs,available_at:availableAt,same_contract:sameContract,same_wave:sameWave,fresh,directed,evidence_ids:arr(receipt?.evidence_ids)};
 }
 export function resolveCanonicalDirection({route=null,discovery=null,decision_ts=Date.now()}={}){
  const facts=[];
