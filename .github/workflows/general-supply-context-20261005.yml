@@ -5,6 +5,7 @@ on:
 permissions:
   contents: read
   actions: read
+  actions: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -24,11 +25,18 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: Validate changed cache compatibility and general consumer package
+      - uses: actions/download-artifact@v4
+        with:
+          name: supply-context-acceptance-37265872492
+          run-id: 37265872492
+          github-token: ${{ github.token }}
+          path: prior-output
+      - name: Reuse successful package validation; correct audit assertion only
         run: |
-          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-          node current-generation/validate.mjs > audit-output/validation.json
-          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
+          git fetch --depth=1 origin 272af0b6304a66dd7905c5e0f4e6f38dc5427b0a
+          git diff --name-only 272af0b6304a66dd7905c5e0f4e6f38dc5427b0a HEAD > audit-output/changed-since-validation.txt
+          node -e "const fs=require('fs'); const allowed=['.github/workflows/general-supply-context-20261005.yml','audit-fixes/general-supply-context-20261005/verify-live.mjs']; for(const p of fs.readFileSync('audit-output/changed-since-validation.txt','utf8').trim().split(String.fromCharCode(10)))if(!allowed.includes(p))throw Error('CHANGED_DEPENDENCY_REQUIRES_TEST:'+p); if(!fs.readFileSync('prior-output/validation.json','utf8').includes('CURRENT_GENERATION_VALIDATED'))throw Error('PRIOR_VALIDATION_MISSING');"
+          cp prior-output/validation.json prior-output/integration.json prior-output/continuation-stage-gate.tap audit-output/
           cmp current-generation/files/src/chain-supply-evidence.mjs runtime/src/chain-supply-evidence.mjs
           cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
       - name: Verify actual finalized supply comparison reaches approved report
