@@ -1,0 +1,1156 @@
+{
+  "schema": "report2-actual-scheduled-maximum-useful-readback-v1",
+  "created_utc": "2026-10-05T18:40:15.068Z",
+  "cloud_run": 37356271646,
+  "cloud_job": 111919399448,
+  "head": "b8aa66353a6bd1094e2407b0cbbad29dfae0e27e",
+  "run_id": "1791224954306-1791224965631",
+  "generated_at": "2026-10-05T18:30:50.790Z",
+  "generated_msk": "2026-10-05T21:30:50.790+03:00",
+  "report_artifact": 11364228706,
+  "report_artifact_sha256": "150b2b65b6dbea8a772e9d38a55ad4d7b394d58009b5409bc7147f343d686eab",
+  "telegram_artifact": 11365320629,
+  "telegram_artifact_sha256": "dbadde0b4d92728f7d838b1c05e757baec4db3d5ec172d89e537c514596b7033",
+  "isolated_readback": {
+    "cloud_run": 37357271612,
+    "cloud_job": 111922744351,
+    "artifact_digest_checks": "PASS",
+    "source_run_head_and_snapshot_binding": "PASS",
+    "new_sourceHTTP": 0,
+    "new_MAIN": 0,
+    "new_telegram_calls": 0
+  },
+  "market_scan": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "actual_top2": [
+    "ZEC-USDT",
+    "FIL-USDT"
+  ],
+  "candidates": [
+    {
+      "contract": "FIL-USDT",
+      "run_id": "1791224954306-1791224965631",
+      "snapshot_id": "S392:FIL-USDT:1791225044105",
+      "participating_core_block_count": 5,
+      "participating_core_block_ids": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N16"
+      ],
+      "nonzero_score_effect_block_count": 0,
+      "neutral_assessed_and_rendered_block_count": 5,
+      "evaluation_is_not_nonzero_weight": true,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "hard_veto_status": "CLEAR",
+      "all_15_source_outcomes_recorded": true,
+      "blocks": {
+        "N01": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N02": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_SUPPLY": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N03": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N04": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N05": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N06": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N07": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "ALREADY_RESERVED_NO_REDISPATCH",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N08": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N09": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N10": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "source_errors": {}
+        },
+        "N11": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 3,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "source_errors": {}
+        },
+        "N12": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 1,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NO_BASE_SCORE_NO_APPLICATION",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "source_errors": {}
+        },
+        "N14": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "source_errors": {}
+        },
+        "N15": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N16": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 2,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "source_errors": {}
+        }
+      },
+      "liquidation": {
+        "actual_future_levels": 2,
+        "up": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "price": 3.9762397343,
+            "price_quote": "USDC",
+            "distance_pct": 259.4535960639673,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": 423196.103871,
+            "notional_unit": "USDC",
+            "exact_notional_usdt": null,
+            "exact_amount_available": true,
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "REPORTED_VOLUME_TIER"
+            ],
+            "source": "Hyperliquid official",
+            "venue": null,
+            "source_ts": 1791225039720,
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "native_reference_price": 1.10619,
+            "conditional_cross": true,
+            "position_count": 1,
+            "position_key": "6fdffee19937540e9fb30169cadf7c495e2aa3a62a9096a54daa36db75e9cffa",
+            "decision_target_eligible": false,
+            "estimated": false,
+            "independence_group": null,
+            "model_sources": [],
+            "model_version": null,
+            "anchor_kinds": [],
+            "leverage_scenarios": [],
+            "source_backed_calculated": false,
+            "native_price": 3.9762397343,
+            "notional_usdt": 423196.103871,
+            "corroborating_sources": [
+              "Hyperliquid official"
+            ],
+            "independent_source_count": 1,
+            "independence_groups": [
+              "Hyperliquid official"
+            ],
+            "consensus_confidence_ru": "один источник",
+            "consensus_tolerance_pct": 0.4,
+            "consensus_component_count": 1,
+            "consensus_components": [
+              {
+                "price": 3.9762397343,
+                "source": "Hyperliquid official",
+                "independence_group": "Hyperliquid official",
+                "estimated": false
+              }
+            ],
+            "selection_roles": [
+              "LARGEST_VISIBLE",
+              "NEAREST_NONZERO",
+              "FARTHEST_VISIBLE"
+            ]
+          }
+        ],
+        "down": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "price": 0.9184542448,
+            "price_quote": "USDC",
+            "distance_pct": -16.97138422874913,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "BELOW",
+            "liquidated_side": "BUYERS",
+            "notional": 140421.97098,
+            "notional_unit": "USDC",
+            "exact_notional_usdt": null,
+            "exact_amount_available": true,
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "REPORTED_VOLUME_TIER"
+            ],
+            "source": "Hyperliquid official",
+            "venue": null,
+            "source_ts": 1791225039656,
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "native_reference_price": 1.10619,
+            "conditional_cross": false,
+            "position_count": 1,
+            "position_key": "b61ccdffce9c6c595fee365470858ace8e4e88ba8100b56b314d30f81cb7b44a",
+            "decision_target_eligible": false,
+            "estimated": false,
+            "independence_group": null,
+            "model_sources": [],
+            "model_version": null,
+            "anchor_kinds": [],
+            "leverage_scenarios": [],
+            "source_backed_calculated": false,
+            "native_price": 0.9184542448,
+            "notional_usdt": 140421.97098,
+            "corroborating_sources": [
+              "Hyperliquid official"
+            ],
+            "independent_source_count": 1,
+            "independence_groups": [
+              "Hyperliquid official"
+            ],
+            "consensus_confidence_ru": "один источник",
+            "consensus_tolerance_pct": 0.4,
+            "consensus_component_count": 1,
+            "consensus_components": [
+              {
+                "price": 0.9184542448,
+                "source": "Hyperliquid official",
+                "independence_group": "Hyperliquid official",
+                "estimated": false
+              }
+            ],
+            "selection_roles": [
+              "LARGEST_VISIBLE",
+              "NEAREST_NONZERO",
+              "FARTHEST_VISIBLE"
+            ]
+          }
+        ],
+        "source": "HYPERLIQUID_NATIVE",
+        "venue_is_HTX": false,
+        "calculated_fallback": false
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "run_id": "1791224954306-1791224965631",
+      "snapshot_id": "S392:ZEC-USDT:1791225015208",
+      "participating_core_block_count": 7,
+      "participating_core_block_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "nonzero_score_effect_block_count": 1,
+      "neutral_assessed_and_rendered_block_count": 6,
+      "evaluation_is_not_nonzero_weight": true,
+      "canonical_state": "REJECTED",
+      "direction": "LONG",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 74,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "hard_veto_status": "CLEAR",
+      "all_15_source_outcomes_recorded": true,
+      "blocks": {
+        "N01": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_TOKEN_SCHEDULE": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N02": {
+          "checked": false,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "checked": false,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_SUPPLY": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+            "COINMETRICS_SUPPLY": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N03": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N04": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N05": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "NANSEN_FLOWS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N06": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N07": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "DAILY_CAP_OR_DUPLICATE",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N08": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N09": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N10": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "source_errors": {}
+        },
+        "N11": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 3,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "source_errors": {}
+        },
+        "N12": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 1,
+            "score_application_receipt_count": 1,
+            "score_contribution": 0.0179,
+            "score_application_status": "SCORE_APPLICATION_PROVEN",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "SCORE_EFFECT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "source_errors": {}
+        },
+        "N14": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "source_errors": {}
+        },
+        "N15": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "COINGECKO_SECTOR": "DAILY_CAP_OR_DUPLICATE",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N16": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 2,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "source_errors": {}
+        }
+      },
+      "liquidation": {
+        "actual_future_levels": 0,
+        "up": [],
+        "down": [],
+        "source": null,
+        "venue_is_HTX": false,
+        "calculated_fallback": false
+      }
+    }
+  ],
+  "telegram_proof": {
+    "schema": "telegram-info-proof-v1",
+    "head": "b8aa66353a6bd1094e2407b0cbbad29dfae0e27e",
+    "source": "schedule",
+    "source_run_id": "1791224954306-1791224965631",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-shadow-v1",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "ZEC-USDT",
+          "wave_id": "EDW:ZEC-USDT:1791187242450:G3",
+          "direction": "SHORT",
+          "status": "CLOSED",
+          "previous_status": "OBSERVE",
+          "current_status": "OBSERVE",
+          "reason": "USEFUL_LIVE_OBSERVATION",
+          "dispatch": null,
+          "score_0_100": 73
+        },
+        {
+          "contract": "FIL-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 57,
+        "rows_written": 2,
+        "requests": 8,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "bound_sender_summary": {
+    "status": "CLOSED",
+    "network_send_enabled": true,
+    "sent": 0,
+    "message_ids": [],
+    "source": "V3_TELEGRAM_DELIVERY_SIDECAR in exact completed production job log; only unmasked textual statuses and zero counts used",
+    "reconciliation_processed": 0
+  },
+  "new_observed_inconsistency": {
+    "contract": "ZEC-USDT",
+    "same_run_canonical_direction": "LONG",
+    "lifecycle_direction": "SHORT",
+    "canonical_interest": 74,
+    "lifecycle_score": 73,
+    "lifecycle_dispatch": null,
+    "canonical_state": "REJECTED",
+    "root_cause_proven": false,
+    "investigation_target": "Different canonical direction resolution and lifecycle source rows; inspect exact same-run rows before changing any guard",
+    "incorrect_send_observed": false,
+    "approved_Telegram_SENT": false
+  },
+  "why_not_complete": [
+    "FIL native exact identity/source routes not closed; N01-N04 are not usable",
+    "FIL N12 is rendered but cannot be scored without base direction/score; excluded from participation",
+    "N07 and ZEC CG N15 requests denied by existing daily source admission",
+    "ZEC canonical LONG differs from lifecycle SHORT; unchanged OBSERVE has no dispatch",
+    "FIL lifecycle WAVE_NOT_CURRENT; canonical direction/score absent",
+    "Neutral context does not prove nonzero score or application of a control restriction"
+  ],
+  "acceptance": "ACTUAL_ZEC7_FIL5_CORE_PLUS_FIL2_REAL_LEVELS_TELEGRAM_NOT_SENT",
+  "all_available_blocks_decision_accounted": false,
+  "maximum_available_blocks_live_verified": false,
+  "full_project_complete": false,
+  "all_assets_coverage_claimed": false,
+  "separate_FIL_monitor_resumed": false,
+  "old_automations_reenabled": false,
+  "policy_changes": false
+}
