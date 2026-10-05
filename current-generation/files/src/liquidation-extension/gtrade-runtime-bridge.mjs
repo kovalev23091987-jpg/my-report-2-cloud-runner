@@ -1,3 +1,4 @@
+import {createScopedProviderAcquisition,verifyScopedProviderAcquisition,bindScopedProviderAcquisition} from './scoped-provider-runtime-bridge.mjs';
 import {captureNativeFutureMap} from '../future-liquidation-map-source.mjs';
 import {fingerprint,seal,timestamp,selectZones} from './core.mjs';
 const text=v=>typeof v==='string'?v.trim():'';
@@ -7,13 +8,15 @@ export function createGTradeAcquisition({contract,native_symbol,run_id,acquisiti
  if(normalized_receipt?.provider!=='gTrade official SDK'||normalized_receipt?.venue!=='gTrade-Arbitrum'||normalized_receipt?.native_symbol!==native_symbol||normalized_receipt?.run_id!==run_id||normalized_receipt?.usable_for_context!==true)throw Error('GTRADE_NORMALIZED_RECEIPT_NOT_CLOSED');
  const {fingerprint:f,...body}=normalized_receipt;if(fingerprint(body)!==f)throw Error('GTRADE_NORMALIZED_RECEIPT_FINGERPRINT_INVALID');
  if(!Array.isArray(transport_receipts)||transport_receipts.length!==3||transport_receipts.some(x=>x?.http_status!==200||typeof x?.sha256!=='string'||timestamp(x?.received_ts)===null||x.received_ts>collection_completed_ts))throw Error('GTRADE_TRANSPORT_RECEIPTS_NOT_CLOSED');
+ if(normalized_receipt.source_clock_closed===false)return createScopedProviderAcquisition({contract,native_symbol,run_id,acquisition_id,provider:'gTrade official SDK',venue:'gTrade-Arbitrum',price_quote:'USD',collection_started_ts,collection_completed_ts,normalized_receipts:[normalized_receipt],transport_receipts});
  captureNativeFutureMap(normalized_receipt,{contract,run_id,price_quote:'USD'});
  const chosen=selectZones(normalized_receipt);const compact=z=>({native_price:z.native_price,side:z.liquidated_side,notional:z.notional,notional_unit:z.notional_unit,native_reference_price:z.native_reference_price,distance_pct:z.distance_pct,selection_roles:z.selection_roles,position_count:z.position_count,actual_leverage:z.actual_leverage??null,collateral_symbol:z.collateral_symbol??null,source_ts:z.source_ts??normalized_receipt.source_ts,price_quote:'USD',price_semantics:z.price_semantics,provider:'gTrade official SDK',venue:'gTrade-Arbitrum',entry_eligible:false,is_htx_price:false});
  const raw={schema:'GTRADE_LIQUIDATION_ACQUISITION_V1',contract,native_symbol,run_id,acquisition_id,collection_started_ts,collection_completed_ts,source_ts:normalized_receipt.source_ts,sdk_version,block_number:normalized_receipt.block_number??null,same_block_atomic:false,selected_market_positions:normalized_receipt.selected_market_positions??null,excluded_positions_count:Array.isArray(normalized_receipt.excluded_positions)?normalized_receipt.excluded_positions.length:null,above:(chosen.above??[]).map(compact),below:(chosen.below??[]).map(compact),transport_sha256:transport_receipts.map(x=>x.sha256),mode:'SHADOW_ONLY',automatic_execution:false,entry_eligible:false};
  return {...raw,acquisition_fingerprint:fingerprint(raw)};
 }
-export function verifyGTradeAcquisition(raw){if(raw?.schema!=='GTRADE_LIQUIDATION_ACQUISITION_V1'||raw?.mode!=='SHADOW_ONLY')return false;const {acquisition_fingerprint:f,...body}=raw;return typeof f==='string'&&fingerprint(body)===f;}
+export function verifyGTradeAcquisition(raw){if(raw?.schema==='SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1')return raw.provider==='gTrade official SDK'&&verifyScopedProviderAcquisition(raw);if(raw?.schema!=='GTRADE_LIQUIDATION_ACQUISITION_V1'||raw?.mode!=='SHADOW_ONLY')return false;const {acquisition_fingerprint:f,...body}=raw;return typeof f==='string'&&fingerprint(body)===f;}
 export function bindGTradeAcquisition(raw,{contract,run_id,snapshot_id,observed_ts,direction=null,max_age_ms=300000}={}){
+ if(raw?.schema==='SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1')return bindScopedProviderAcquisition(raw,{contract,run_id,snapshot_id,observed_ts,direction,max_age_ms});
  const fail=reason=>({schema:'GTRADE_LIQUIDATION_CONTEXT_V1',status:'NOT_CLOSED',reason,mode:'SHADOW_ONLY',above:[],below:[],entry_eligible:false,render_enabled:false});
  if(!verifyGTradeAcquisition(raw))return fail('GTRADE_ACQUISITION_INVALID');
  if(!text(contract)||!text(run_id)||!text(snapshot_id)||timestamp(observed_ts)===null||![null,'LONG','SHORT'].includes(direction))return fail('GTRADE_CANONICAL_IDENTITY_REQUIRED');

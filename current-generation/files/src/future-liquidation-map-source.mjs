@@ -55,8 +55,8 @@ const nativeMaps=new Map();
 export function captureNativeFutureMap(receipt,{contract,run_id,price_quote}={}){
  const {fingerprint:proof,...body}=receipt||{};
  if(!proof||fingerprint(body)!==proof||receipt?.usable_for_context!==true||receipt.run_id!==run_id||receipt.native_symbol!==String(contract).replace(/-USDT$/,'')||!Array.isArray(receipt.zones)||receipt.zones.length>500)return false;
- const zones=receipt.zones.map(({account,address,...z})=>({...z,price_quote:z.price_quote??price_quote,position_key:z.position_key??(account?fingerprint(account):null)}));
- const map=seal({provider:receipt.provider,venue:receipt.venue,native_symbol:receipt.native_symbol,run_id,snapshot_id:receipt.snapshot_id,source_ts:receipt.source_ts,status:receipt.status,usable_for_context:true,evidence_class:receipt.evidence_class,coverage:receipt.coverage??'RETURNED_SOURCE_POSITIONS_ONLY',zones,upstream_receipt_fingerprint:proof});
+ const zones=receipt.zones.map(({account,address,...z})=>({...z,source_ts:receipt.source_clock_closed===false?null:z.source_ts,source_clock_closed:receipt.source_clock_closed,price_quote:z.price_quote??price_quote,position_key:z.position_key??(account?fingerprint(account):null)}));
+ const map=seal({provider:receipt.provider,venue:receipt.venue,native_symbol:receipt.native_symbol,run_id,snapshot_id:receipt.snapshot_id,source_ts:receipt.source_clock_closed===false?null:receipt.source_ts,source_clock_closed:receipt.source_clock_closed,upstream_groups:receipt.upstream_groups,price_quote:price_quote??receipt.price_quote,sdk_version:receipt.sdk_version??null,model_version:receipt.model_version??null,positions_source_ts:receipt.positions_source_ts??null,estimation_note:receipt.estimation_note??null,status:receipt.status,usable_for_context:true,evidence_class:receipt.evidence_class,coverage:receipt.coverage??'RETURNED_SOURCE_POSITIONS_ONLY',zones,upstream_receipt_fingerprint:proof});
  if(Buffer.byteLength(JSON.stringify(map))>2000000)return false;
  const key=`${run_id}:${contract}:${receipt.provider}`;if(nativeMaps.size>=8&&!nativeMaps.has(key))nativeMaps.delete(nativeMaps.keys().next().value);
  nativeMaps.set(key,map);return true;

@@ -5,9 +5,9 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "2b8cf5b05b35173ebe2d58bdd31597e116b6197d965eb51e3e57bb7c04f817a8",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
-    "current-generation/files/src/canonical-display.mjs": "f18f615e648f309180e3757910a7de30e3d8f6a80bd497e900ecef7b6fd7f2d1",
+    "current-generation/files/src/canonical-display.mjs": "f24fcec4c0b7e9f388ddf634af3ed7a736d75a6e016113104012187611881b4d",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
-    "current-generation/files/src/native-liquidation-guard.mjs": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
+    "current-generation/files/src/native-liquidation-guard.mjs": "4ae9895944199c33e65604e4d9f43df55ee3de37bb535630abd8eabe8334b9e5",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "945558edad94309160a18ffab3e282d8c5ba18d9c8867fcab7489d2b6599d243",
     "current-generation/files/src/canonical-publication.mjs": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c"
   },
@@ -23,6 +23,25 @@
   },
   "automatic_golden_update": false,
   "authorized_maintenance_history": [
+    {
+      "date": "2026-10-05",
+      "scope": "OWNER_APPROVED_LABELLED_ESTIMATES_5PCT_FARTHEST_ORIGINAL_DISPLAY",
+      "authorization": "Vladimir 22:38:38 MSK: permit labelled source estimates and merge nearby same-side levels within5%, showing the farther original level.",
+      "module_changes": {
+        "current-generation/files/src/canonical-display.mjs": {
+          "before": "f18f615e648f309180e3757910a7de30e3d8f6a80bd497e900ecef7b6fd7f2d1",
+          "after": "f24fcec4c0b7e9f388ddf634af3ed7a736d75a6e016113104012187611881b4d"
+        },
+        "current-generation/files/src/native-liquidation-guard.mjs": {
+          "before": "0b1231cdf68763ef3da118e50f12644239fbccd71f8e5c862b6a1a5409fb3997",
+          "after": "4ae9895944199c33e65604e4d9f43df55ee3de37bb535630abd8eabe8334b9e5"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "note": "Original price, distance, clock and amount retained. No amount sum or average price. Main approved layout remains frozen."
+    },
     {
       "date": "2026-10-05",
       "scope": "OWNER_REQUIRED_APPROVED_REPORT_ETC_TRANSLATION_REPAIR",

@@ -88,6 +88,21 @@ export function futuresLiquidationAdmission(database,{contract,now}={}){
  if(!real.length)return no(checked.some(r=>r?.status==='UNVERIFIED'||r?.status==='QUOTA_DEFERRED')?'SOURCE_CHECKS_NOT_COMPLETE':checked.some(r=>r?.status==='REAL_NUMERIC_LEVELS')?'COVERAGE_REFRESH_REQUIRED':'NO_VERIFIED_REAL_LEVEL_SOURCE');
  return{status:'COVERED_REAL_NUMERIC_FUTURE_LEVELS',eligible:true,contract,source_ids:real.map(r=>r.source_id),independent_upstreams:[...new Set(real.map(r=>r.upstream_id))],coverage_scope:'PROVEN_SOURCE_CAPABILITY_ONLY_FRESH_LIVE_LEVELS_STILL_REQUIRED',network_calls:0,calculated_fallback_allowed:false,leaders_may_be_replaced:false};
 }
+// Owner-approved additional contexts are collection permission, NOT verified coverage.
+// The existing D1/HTTP admissions still run; unknown source age never becomes a score or target.
+export function runtimeLiquidationCollectionAdmission(database,{contract,now}={}){
+ const proven=futuresLiquidationAdmission(database,{contract,now});
+ if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts)return proven;
+ const asset=database.assets.find(a=>a.analysis_contract===contract);if(!asset)return proven;
+ const additional=['GTRADE_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL'].filter(id=>{
+  const r=asset.source_checks[id];return r.status==='NO_REAL_NUMERIC_LEVELS'&&r.checked_ts<=now&&now-r.checked_ts<WEEK&&/^[a-f0-9]{64}$/.test(r.proof_sha256||'');
+ });
+ if(!additional.length)return proven;
+ return {...proven,status:proven.eligible?'PROVEN_LEVEL_ROUTE_PLUS_ADDITIONAL_CONTEXT_CHECKS':'BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED',eligible:true,contract,
+  source_ids:[...new Set([...proven.source_ids,...additional])],proven_level_source_ids:proven.source_ids,additional_context_check_source_ids:additional,
+  coverage_scope:'ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE',fresh_live_levels_confirmed:false,
+  receipt_only_context_score_eligible:false,receipt_only_context_target_eligible:false,leaders_may_be_replaced:false};
+}
 async function saveCoverageDatabaseAtKey({db,database,db_admit,now,expected_previous_assets_sha256=null,key}={}){
  const grant=db_admit?.({rows_read:8,rows_written:4});if(grant?.allowed!==true)return{status:'COVERAGE_DB_ADMISSION_REQUIRED',saved:false,network_calls:0};
  if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts||Buffer.byteLength(JSON.stringify(database))>1500000)throw Error('COVERAGE_DATABASE_INTEGRITY_REQUIRED');
