@@ -8,7 +8,7 @@ const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fro
 const hash=v=>createHash('sha256').update(JSON.stringify(stable(v))).digest('hex');
 export function nativeLiquidationSources(liq){
  const nested=[];
- if(liq?.native_extension?.schema==='NATIVE_LIQUIDATION_CONTEXT_V1')nested.push(liq.native_extension);
+ if(['NATIVE_LIQUIDATION_CONTEXT_V1','GTRADE_LIQUIDATION_CONTEXT_V1','SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1'].includes(liq?.native_extension?.schema))nested.push(liq.native_extension);
  for(const e of arr(liq?.independent_extensions))if(['GTRADE_LIQUIDATION_CONTEXT_V1','SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1'].includes(e?.schema))nested.push(e);
  if(nested.length){
   const usable=nested.filter(e=>['USABLE_NATIVE_SAMPLE','USABLE_SCOPED_NATIVE_CONTEXT','USABLE_RECEIPT_ONLY_CONTEXT'].includes(e.status));
