@@ -1,9 +1,0 @@
-# Verified futures flow binding — 2026-09-30
-
-Fresh production-mode manual report run 36748951341 selected NIL-USDT. It finished with REJECTED because no complete entry plan was produced. The persisted data-quality receipt separately had futures_snapshot.htx_futures_order_flow and futures_trajectory.flow_24h gaps. Data sufficiency explicitly has NONE_EVIDENCE_CLASSIFICATION_ONLY decision semantics; those gaps were not proved to be the cause of rejection.
-
-The standalone unwindowed futures snapshot correctly treats its raw CVD as diagnostic, but the deep-check summary never bound already verified trajectory coverage. The producer had complete short windows while the snapshot gap could never close. Bind only the already available exact 15-minute window for the same HTX USDT-M contract, contract size and current collection. Verify provider/market identity, all matching window boundaries, a closed fresh minute grid, positive exact trade counts, unique IDs and complete payload integrity. The raw unwindowed order_flow stays diagnostic. Add the explicit factual window binding to the quality receipt. Keep the independent 24-hour gap; never relabel the whole tape as complete. No extra HTTP, history collection, D1 rows or duplicate directional vote. Existing direction calculations and entry gates remain unchanged.
-
-The worker changes only to connect the factual consumer and expose its receipt. Production workflow, generation validation and independent generation test pins are updated together. Offline regression covers mismatch, stale/future clocks, wrong asset/units/source, missing minute or record and exact real-worker trajectory producer.
-
-No paid upgrades, Telegram sends or trading execution. No assumption of renewed quota on October 1. Any missing 24h ready history remains unavailable under the user's no-accumulation constraint.

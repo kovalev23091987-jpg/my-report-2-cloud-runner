@@ -1,4 +1,0 @@
-import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';import {createHash} from 'node:crypto';
-const root=path.dirname(fileURLToPath(import.meta.url));const p=JSON.parse(fs.readFileSync(path.join(root,'HANDOFF_MANIFEST.json'),'utf8'));const seen=new Set();
-for(const f of p.files){if(typeof f.path!=='string'||path.isAbsolute(f.path)||f.path.split('/').includes('..')||seen.has(f.path))throw Error('MANIFEST_PATH_INVALID');seen.add(f.path);const target=path.resolve(root,f.path);if(!target.startsWith(root+path.sep))throw Error('PATH_ESCAPE');const s=fs.lstatSync(target);if(!s.isFile()||s.isSymbolicLink())throw Error('ORDINARY_FILE_REQUIRED');const b=fs.readFileSync(target);if(b.length!==f.bytes||createHash('sha256').update(b).digest('hex')!==f.sha256)throw Error('HASH_MISMATCH:'+f.path);}
-console.log(JSON.stringify({status:'HANDOFF_INTEGRITY_PASS',files:seen.size,production_installer:false,source_code_only_verified:true}));

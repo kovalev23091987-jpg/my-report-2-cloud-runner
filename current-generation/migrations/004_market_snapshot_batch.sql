@@ -1,2 +1,0 @@
-CREATE TABLE IF NOT EXISTS report2_market_snapshot_batch_v1(bucket INTEGER NOT NULL,actor TEXT NOT NULL,generation TEXT NOT NULL,schema_version TEXT NOT NULL,shard INTEGER NOT NULL,source_timestamps_json TEXT NOT NULL,received_ts INTEGER NOT NULL,status TEXT NOT NULL,payload_hash TEXT NOT NULL,payload TEXT NOT NULL,contract_count INTEGER NOT NULL,payload_bytes INTEGER NOT NULL,PRIMARY KEY(actor,generation,bucket,shard));
-CREATE INDEX IF NOT EXISTS idx_report2_market_snapshot_batch_v1_range ON report2_market_snapshot_batch_v1(generation,bucket,shard);
