@@ -1,0 +1,723 @@
+{
+  "schema": "report2-all15-fresh-control-usefulness-v1",
+  "head": "476cade2f81810d14d323077fecddfb6b3f89e80",
+  "tree": "e38de7a659d98323dd13ab50463a2d6537badb36",
+  "cloud_run": 37289397069,
+  "cloud_job": 111696029285,
+  "cloud_conclusion": "SUCCESS",
+  "artifact_id": 11336141123,
+  "artifact_sha256": "36b65f37f826344f852b32f63712f7c65c38457cb469f6e2b4c12df4e7f1f089",
+  "artifact_file_sha256": "36b65f37f826344f852b32f63712f7c65c38457cb469f6e2b4c12df4e7f1f089",
+  "run_id": "1791192063320-1791192067628",
+  "generated_at": "2026-10-05T09:22:20.202Z",
+  "source": "fresh_actual_manual_top2",
+  "owner_request": "05Oct12:13MSK one shared control after repairs, no Telegram",
+  "analytics_duration_ms": 79006,
+  "runtime_scan_assets": 102,
+  "market_scan_audit": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "selection": "actual unchanged market-ranked BR/BTW, no identity-based replacement",
+  "candidates": [
+    {
+      "contract": "BTW-USDT",
+      "run_id": "1791192063320-1791192067628",
+      "snapshot_id": "S392:BTW-USDT:1791192136218",
+      "binding_verified": true,
+      "candidate_manual_context_blocks": [
+        "N02",
+        "N03",
+        "N04",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N15",
+        "N16"
+      ],
+      "candidate_manual_context_count": 13,
+      "joint_rendered_context_blocks": [
+        "N02",
+        "N03",
+        "N04",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N16"
+      ],
+      "joint_rendered_context_count": 12,
+      "joint_missing_blocks": [
+        "N01",
+        "N05",
+        "N15"
+      ],
+      "primary_checked_blocks": [
+        "N02",
+        "N03",
+        "N04",
+        "N06",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N15",
+        "N16"
+      ],
+      "score_applied_blocks": [],
+      "all15_usefulness_accepted": false,
+      "canonical_state": "REJECTED",
+      "data_quality": {
+        "classification": "PARTIAL",
+        "sufficient": false,
+        "owner_deferred_exact_signed_raw24h": true,
+        "owner_deferred_gaps": [
+          "futures_trajectory.flow_24h"
+        ],
+        "partial_context_is_not_zero_or_green": true,
+        "components": {
+          "futures_snapshot": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "SUFFICIENT",
+            "gaps": [],
+            "factual_order_flow_window": {
+              "schema": "VERIFIED_HTX_FUTURES_FLOW_BINDING_V1",
+              "contract": "BTW-USDT",
+              "window": "15m",
+              "window_start_ts": 1791191160000,
+              "window_end_ts": 1791192060000,
+              "raw_trade_count": 161,
+              "factual_1m_trade_count": 161,
+              "source": "HTX official public API",
+              "market": "HTX USDT-M Futures",
+              "available_ts": 1791192106112,
+              "basis": "EXISTING_TRAJECTORY_EXACT_FACTUAL_COUNT_AND_UNIQUE_PAYLOAD",
+              "full_24h_coverage_claimed": false,
+              "additional_http_requests": 0,
+              "additional_directional_votes": 0
+            }
+          },
+          "spot_snapshot": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "PARTIAL",
+            "gaps": [
+              "quality_status_GREEN"
+            ],
+            "required_for_futures_report": false
+          },
+          "futures_trajectory": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "PARTIAL",
+            "gaps": [
+              "flow_4h",
+              "flow_24h"
+            ]
+          },
+          "stage0_history": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "SUFFICIENT",
+            "gaps": []
+          }
+        },
+        "gaps": [
+          "spot_snapshot.quality_status_GREEN",
+          "futures_trajectory.flow_4h",
+          "futures_trajectory.flow_24h"
+        ],
+        "unavailable_by_design": [
+          "futures_trajectory.coverage.oi_5m",
+          "futures_trajectory.coverage.oi_15m"
+        ],
+        "history_observed": {
+          "expected_5m_points": 72,
+          "received_points": 72,
+          "approximate_5m_coverage_pct": 100
+        },
+        "decision_effect": "NONE_EVIDENCE_CLASSIFICATION_ONLY"
+      },
+      "block_sources": {
+        "N01": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+            "OFFICIAL_EVENTS": "EMPTY_OR_STALE"
+          },
+          "missing_required": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ]
+        },
+        "N02": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_SUPPLY": "CLOSED",
+            "BLOCKSCOUT_INDEX": "SOURCE_ERROR",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
+          },
+          "missing_required": []
+        },
+        "N03": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "CLOSED",
+            "BLOCKSCOUT_INDEX": "SOURCE_ERROR"
+          },
+          "missing_required": []
+        },
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 3,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "SOURCE_ERROR"
+          },
+          "missing_required": []
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "CLOSED"
+          },
+          "missing_required": [
+            "NANSEN_FLOWS"
+          ]
+        },
+        "N06": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "SOURCE_ERROR",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "missing_required": []
+        },
+        "N07": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": false,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_EVENTS": "EMPTY_OR_STALE",
+            "GDELT_NEWS_DISCOVERY": "SOURCE_ERROR"
+          },
+          "missing_required": [
+            "OFFICIAL_EVENTS"
+          ]
+        },
+        "N08": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "EMPTY_OR_STALE"
+          },
+          "missing_required": []
+        },
+        "N09": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "missing_required": []
+        },
+        "N10": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "missing_required": []
+        },
+        "N11": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "missing_required": []
+        },
+        "N12": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "missing_required": []
+        },
+        "N14": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "missing_required": []
+        },
+        "N15": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "missing_required": []
+        },
+        "N16": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "missing_required": []
+        }
+      },
+      "scoped_absence_not_market_event_data_blocks": [
+        "N06",
+        "N07",
+        "N14"
+      ]
+    },
+    {
+      "contract": "BR-USDT",
+      "run_id": "1791192063320-1791192067628",
+      "snapshot_id": "S392:BR-USDT:1791192098506",
+      "binding_verified": true,
+      "candidate_manual_context_blocks": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N16"
+      ],
+      "candidate_manual_context_count": 7,
+      "joint_rendered_context_blocks": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N16"
+      ],
+      "joint_rendered_context_count": 7,
+      "joint_missing_blocks": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06",
+        "N07",
+        "N15"
+      ],
+      "primary_checked_blocks": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N14",
+        "N16"
+      ],
+      "score_applied_blocks": [
+        "N12"
+      ],
+      "all15_usefulness_accepted": false,
+      "canonical_state": "REJECTED",
+      "data_quality": {
+        "classification": "PARTIAL",
+        "sufficient": false,
+        "owner_deferred_exact_signed_raw24h": true,
+        "owner_deferred_gaps": [
+          "futures_trajectory.flow_24h"
+        ],
+        "partial_context_is_not_zero_or_green": true,
+        "components": {
+          "futures_snapshot": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "SUFFICIENT",
+            "gaps": [],
+            "factual_order_flow_window": {
+              "schema": "VERIFIED_HTX_FUTURES_FLOW_BINDING_V1",
+              "contract": "BR-USDT",
+              "window": "15m",
+              "window_start_ts": 1791191160000,
+              "window_end_ts": 1791192060000,
+              "raw_trade_count": 100,
+              "factual_1m_trade_count": 100,
+              "source": "HTX official public API",
+              "market": "HTX USDT-M Futures",
+              "available_ts": 1791192081208,
+              "basis": "EXISTING_TRAJECTORY_EXACT_FACTUAL_COUNT_AND_UNIQUE_PAYLOAD",
+              "full_24h_coverage_claimed": false,
+              "additional_http_requests": 0,
+              "additional_directional_votes": 0
+            }
+          },
+          "spot_snapshot": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "INSUFFICIENT",
+            "gaps": [
+              "quality_status_GREEN"
+            ],
+            "required_for_futures_report": false
+          },
+          "futures_trajectory": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "PARTIAL",
+            "gaps": [
+              "flow_24h"
+            ]
+          },
+          "stage0_history": {
+            "execution_status": "FULFILLED",
+            "sufficiency": "SUFFICIENT",
+            "gaps": []
+          }
+        },
+        "gaps": [
+          "spot_snapshot.quality_status_GREEN",
+          "futures_trajectory.flow_24h"
+        ],
+        "unavailable_by_design": [
+          "futures_trajectory.coverage.oi_5m",
+          "futures_trajectory.coverage.oi_15m"
+        ],
+        "history_observed": {
+          "expected_5m_points": 72,
+          "received_points": 72,
+          "approximate_5m_coverage_pct": 100
+        },
+        "decision_effect": "NONE_EVIDENCE_CLASSIFICATION_ONLY"
+      },
+      "block_sources": {
+        "N01": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+          },
+          "missing_required": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ]
+        },
+        "N02": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_SUPPLY": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
+          },
+          "missing_required": [
+            "CHAIN_SUPPLY"
+          ]
+        },
+        "N03": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "missing_required": [
+            "ANY:CHAIN_EVENTS|CHAIN_SUPPLY_COMPARISON"
+          ]
+        },
+        "N04": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "missing_required": [
+            "CHAIN_EVENTS"
+          ]
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
+          },
+          "missing_required": [
+            "NANSEN_FLOWS"
+          ]
+        },
+        "N06": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "BLUESKY_PUBLIC": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "missing_required": [
+            "BLUESKY_PUBLIC"
+          ]
+        },
+        "N07": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          },
+          "missing_required": [
+            "OFFICIAL_EVENTS"
+          ]
+        },
+        "N08": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+          },
+          "missing_required": []
+        },
+        "N09": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "missing_required": []
+        },
+        "N10": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "missing_required": []
+        },
+        "N11": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "missing_required": []
+        },
+        "N12": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "missing_required": []
+        },
+        "N14": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "missing_required": []
+        },
+        "N15": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "missing_required": [
+            "ANY:COINGECKO_SECTOR|COINPAPRIKA_SECTOR"
+          ]
+        },
+        "N16": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "missing_required": []
+        }
+      },
+      "scoped_absence_not_market_event_data_blocks": [
+        "N14"
+      ]
+    }
+  ],
+  "output_status": "PARTIAL_DATA_UNAVAILABLE",
+  "output_reason": "REQUIRED_BLOCKS_NOT_CONFIRMED",
+  "all15_ready": false,
+  "telegram_network_enabled": false,
+  "sent_count": 0,
+  "new_schedules": 0,
+  "repeated_main": false,
+  "raw24h_status": "NO_VERIFIED_FULL_24H",
+  "raw24h_source_http": 0,
+  "raw24h_d1_usage": {
+    "requests": 7,
+    "rows_read": 39,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 18,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw24h_catalog_assets": 17,
+  "raw24h_max_persisted_minutes": 325,
+  "raw24h_integrity_checks": [
+    {
+      "contract": "NEAR-USDT",
+      "status": "WARMING_OR_GAPPED_RAW_24H",
+      "verified_minutes": 135,
+      "required_minutes": 1440,
+      "persisted_minutes": 135,
+      "first_minute_ts": 1791138120000,
+      "last_minute_ts": 1791176700000,
+      "missing_current_window_minutes": 1305,
+      "cache_fresh": true,
+      "earliest_possible_ready_ts": 1791224580000,
+      "earliest_possible_ready_is_guarantee": false,
+      "evidence": []
+    },
+    {
+      "contract": "SOL-USDT",
+      "status": "WARMING_OR_GAPPED_RAW_24H",
+      "verified_minutes": 45,
+      "required_minutes": 1440,
+      "persisted_minutes": 45,
+      "first_minute_ts": 1791138120000,
+      "last_minute_ts": 1791140760000,
+      "missing_current_window_minutes": 1395,
+      "cache_fresh": true,
+      "earliest_possible_ready_ts": 1791224580000,
+      "earliest_possible_ready_is_guarantee": false,
+      "evidence": []
+    }
+  ],
+  "source_use_gzip": {
+    "path": "checkpoints/all15-control-source-use-20261005.json.gz",
+    "sha256": "41291adba9684fa0b087198ee3495c873039b96cb7cdef5a68e80c345e6d6e56"
+  },
+  "discovered_gaps": [
+    "N15 sector source CLOSED and candidate manual contains actual50peer comparison, but generic block-rendered audit only includes block-result/execution consumers; approved joint confirmedRunContext therefore drops N15. Source→candidate manual works, joint receipt/selection does not.",
+    "N05 NANSEN_FLOWS NOT_EVALUATED for both top2, key configured; current artifact does not distinguish quota/backoff/routing. Read exact specialist admission/cache receipts before repair or new request.",
+    "BR exact HTX reference currency not found; N02–N07 and N15 identities missing; no BOHR or wrapped substitute.",
+    "BTW N01 lacks structured primary schedule; N07 scoped returned RSS had no recent dated events, does not close primary role.",
+    "BTW futures trajectory flow4h missing; raw24h deferral does not authorize suppressing this gap.",
+    "Raw tape only captures deep-selected market windows.17cacheassets/max325minutes, NEAR135/SOL45; selected-market recurrence is not continuous24hcollection. No publication or readiness promise from elapsed time."
+  ],
+  "no_more_live_calls_needed_to_investigate_current_receipt": true
+}
