@@ -1,0 +1,109 @@
+{
+  "schema": "report2-verified-estimates-cloud-blocked-v1",
+  "created_utc": "2026-10-05T20:24:09.094Z",
+  "status": "PREPARED_NOT_MERGED_NOT_PRODUCTION_ACCEPTED",
+  "expected_main_before_checkpoint": "a54f26a235d5147bdd3bd4727323c60caa7c5f0d",
+  "PR": 154,
+  "branch": "codex/verified-liquidation-estimates-20261005",
+  "head": "11370d82debafeb1f0f72fcb03e318c2cab371fc",
+  "tree": "fe1b6dc8313dfe923825ebaeeaf4530819b62ca5",
+  "code_validation": {
+    "current_generation": "PASS",
+    "targeted_initial": 28,
+    "frozen_approved_fixture_outputs_unchanged": 8,
+    "assembled_runtime": "PENDING_GITHUB_RUNNER"
+  },
+  "historical_actual_proof": {
+    "path": "audit-fixes/verified-liquidation-estimates-20261005/historical-gtrade-replay.json.gz",
+    "snapshot_kind": "ALREADY_RECEIVED_20260927_AT_ORIGINAL_CUTOFF",
+    "saved_crypto_futures_assets": 102,
+    "actual_numeric_context_assets": 50,
+    "supported_no_open_positions": 19,
+    "no_exact_crypto_market": 33,
+    "fresh_position_clock_assets": 0,
+    "nonzero_score_assets": 0,
+    "is_new_live_or_general_CORE_acceptance": false
+  },
+  "cloud": {
+    "run": 37367680431,
+    "job": 111956691653,
+    "status": "queued",
+    "completed_steps": 0,
+    "observed_utc": "2026-10-05T20:24:09.094Z",
+    "incident": {
+      "url": "https://www.githubstatus.com/",
+      "actions_runner_delay_since_utc": "2026-10-05T19:11:00Z",
+      "last_update_utc": "2026-10-05T19:50:00Z",
+      "status": "INVESTIGATING"
+    }
+  },
+  "new_SOURCE_HTTP": 0,
+  "new_MAIN": 0,
+  "new_Telegram": 0,
+  "new_Nansen": 0,
+  "bounded_source_proof": {
+    "status": "NOT_EXECUTED",
+    "maximum_source_HTTP": 3,
+    "expected_owner": "HTX:20261005T193931083Z:estimated-levels",
+    "expected_main": "a54f26a235d5147bdd3bd4727323c60caa7c5f0d",
+    "on_phase_release_or_head_change": "FRESH_MAIN_OWNER_GATE_MUST_REFUSE_SOURCE_CALLS; code-only validation may finish",
+    "continuation_requires": "Read existing cloud results; acquire a fresh bounded owner against fresh main before any still-needed actual probe. No unchanged MAIN/limit reset."
+  },
+  "last_actual_CORE": {
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_MAXIMUM_USEFUL_2130MSK_20261005.json",
+    "run": 37356271646,
+    "generated_msk": "2026-10-05T21:30:50.790+03:00",
+    "core": {
+      "ZEC": 7,
+      "FIL": 5
+    },
+    "nonzero_score": {
+      "ZEC": 1,
+      "FIL": 0
+    },
+    "neutral_assessed_and_rendered": {
+      "ZEC": 6,
+      "FIL": 5
+    },
+    "actual_future_levels": {
+      "ZEC": 0,
+      "FIL": 2
+    },
+    "Telegram_SENT": 0
+  },
+  "source_route_readback": {
+    "path": "checkpoints/SOURCE_ROUTE_USE_READBACK_20261005.json",
+    "assigned_logical_routes_per_candidate": 30,
+    "range_per_block": [
+      1,
+      3
+    ],
+    "full_declared_capability_inventory_counted": false,
+    "independent_vote_count_inferred": false,
+    "absence_and_no_exact_route_not_useful_data": true,
+    "shared_network_counts_not_summed": true
+  },
+  "remaining": [
+    "PR153 unmerged; assembled cloud cancelled before test steps",
+    "PR154 assembled runtime and fresh source proof pending; historical proof is not fresh",
+    "N01/N02 unsupported native identity/feed coverage remains; no per-coin workaround",
+    "N05 requires verified complete4h flow; Nansen deferred",
+    "N12 FIL valid fact displayed but no assigned application without base score/direction; do not inflate participation",
+    "N15 native exact sector registry/caps unresolved; PR153 exact-token solution does not close native Top2",
+    "ZEC canonical/lifecycle direction discrepancy root cause unproven; inspect exact producer rows before changing guards",
+    "No fresh approved Telegram SENT/message_id chain accepted"
+  ],
+  "owner_recent_instructions": {
+    "cloud_execution_preferred": true,
+    "actual_received_data_required": true,
+    "original_cutoff_replay_and_batched_checks_preferred": true,
+    "existing_119_contract_102_asset_universe_only": true,
+    "verified_source_estimates_labelled": true,
+    "merge_nearby_relative_price_pct": 5,
+    "show_farthest_original_level": true,
+    "source_overlap_not_independent": true
+  },
+  "production_code_changed_by_this_checkpoint": false,
+  "new_automations_created": false,
+  "full_project_complete": false
+}
