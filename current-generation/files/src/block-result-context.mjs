@@ -5,7 +5,7 @@ import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v4-immutable-execution-parity-20261004';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v5-cardano-closed-epochs-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -80,6 +80,17 @@ function describe(row,now){
   const ordered=row.plan_direction==='LONG'?row.invalidation_price<row.entry_price&&row.target_price>row.entry_price:row.invalidation_price>row.entry_price&&row.target_price<row.entry_price;
   if(!ordered)return null;
   return{source:'HTX / сохранённый сценарий',label:'Проверенный технический сценарий',value:`${row.plan_direction}: вход ${fmt(row.entry_price)}, цель ${fmt(row.target_price)}, отмена ${fmt(row.invalidation_price)} USDT; заранее сохранённый сценарий, разрешение входа проверяется отдельно`};
+ }
+ if(row.block_id==='N02'&&row.metric_family==='CARDANO_ACTIVE_SUPPLY_OBSERVATION'){
+  if(row.provider_id!=='KOIOS_NATIVE_SUPPLY'||row.upstream_id!=='KOIOS_CARDANO_MAINNET'||row.chain!=='cardano'||row.asset_kind!=='NATIVE'||row.native_asset_id!=='cardano:mainnet'||row.htx_contract!=='ADA-USDT'||row.token_address!==null||row.supply_measure!=='CARDANO_ACTIVE_SUPPLY'||row.unit!=='lovelace'||row.provider_query!=='KOIOS_TOTALS_CLOSED_EPOCH'||row.decimals!==6||!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!raw(row.max_supply_base_units)||!Number.isSafeInteger(row.epoch_no)||!Number.isSafeInteger(row.previous_epoch_no)||row.epoch_no!==row.previous_epoch_no+1||row.block_ref!==`epoch:${row.epoch_no}`||row.previous_block_ref!==`epoch:${row.previous_epoch_no}`)return null;
+  const delta=BigInt(row.total_supply_base_units)-BigInt(row.previous_supply_base_units);if(String(delta)!==row.supply_delta_base_units)return null;
+  return{source:'Koios / Cardano mainnet',label:'Активное предложение нативного ADA',value:`${tokenAmount(row.total_supply_base_units,6)} ADA по завершённой эпохе ${row.epoch_no}; изменение к эпохе ${row.previous_epoch_no}: ${delta<0n?'−':'+'}${tokenAmount(String(delta<0n?-delta:delta),6)} ADA; максимум ${tokenAmount(row.max_supply_base_units,6)} ADA; будущие разблокировки этим не проверены`};
+ }
+ if(row.block_id==='N03'&&row.metric_family==='SUPPLY_REDUCTION_CHECK'){
+  if(row.provider_id!=='KOIOS_NATIVE_SUPPLY'||row.upstream_id!=='KOIOS_CARDANO_MAINNET'||row.chain!=='cardano'||row.native_asset_id!=='cardano:mainnet'||row.htx_contract!=='ADA-USDT'||row.supply_measure!=='CARDANO_ACTIVE_SUPPLY'||row.unit!=='lovelace'||row.provider_query!=='KOIOS_TOTALS_CLOSED_EPOCH'||row.decimals!==6||!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.epoch_no)||!Number.isSafeInteger(row.previous_epoch_no)||row.epoch_no!==row.previous_epoch_no+1||row.change_cause_verified!==false||row.burn_verified!==false||row.buyback_verified!==false)return null;
+  const delta=BigInt(row.total_supply_base_units)-BigInt(row.previous_supply_base_units);if(String(delta)!==row.supply_delta_base_units||row.supply_decreased!==(delta<0n))return null;
+  const state=delta<0n?`снижение на ${tokenAmount(String(-delta),6)} ADA`:delta>0n?`снижения нет, рост на ${tokenAmount(String(delta),6)} ADA`:'изменения нет';
+  return{source:'Koios / Cardano mainnet',label:'Сравнение активного предложения ADA',value:`между завершёнными эпохами ${row.previous_epoch_no} и ${row.epoch_no}: ${state}; причина изменения, сжигание, выкуп и влияние на цену не подтверждены`};
  }
  if(row.block_id==='N02'&&row.metric_family==='TOTAL_SUPPLY_OBSERVATION'){
   if(!raw(row.total_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||row.supply_delta_base_units!==null)return null;

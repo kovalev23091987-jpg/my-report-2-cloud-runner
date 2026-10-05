@@ -6,6 +6,7 @@ export const SOURCE_POLICIES=Object.freeze({
  COINPAPRIKA_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488,official_free_monthly_requests:20000},
  HTX_PUBLIC_RISK:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N08','N09','N11','N16']},
  CHAIN_RPC:{daily_cap:720,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03','N04','N05']},
+ KOIOS_NATIVE_SUPPLY:{daily_cap:48,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02','N03'],official_public_daily_cap:5000,official_burst_cap:100,official_burst_window_seconds:10,retries:0},
  OFFICIAL_EVENTS:{daily_cap:288,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N01','N07','N08','N09']},
  GDELT_NEWS_DISCOVERY:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N07']},
  BLUESKY_PUBLIC:{daily_cap:240,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N06']},
@@ -28,6 +29,7 @@ export function planEvidenceSourceRequest({source,htx_contract,asset_id,registry
  if(policy.auth!=='PUBLIC'&&!secret_present)return{allowed:false,status:'WAITING_FREE_KEY',required_secret:policy.auth,attempts:0};
  const count=Math.max(1,Number(methods)||1);if(Number(used_today)+count>policy.daily_cap)return{allowed:false,status:'DAILY_CAP_EXHAUSTED',attempts:0};
  if(source==='CHAIN_RPC'&&count>4)return{allowed:false,status:'RPC_METHODS_PER_REFRESH_EXCEEDED',attempts:0};
+ if(source==='KOIOS_NATIVE_SUPPLY'&&count!==4)return{allowed:false,status:'KOIOS_EXACT_FOUR_REQUEST_REFRESH_REQUIRED',attempts:0};
  if(source==='BLOCKSCOUT_INDEX'&&(!Number.isFinite(Number(credit_cost))||Number(credit_cost)<=0||Number(credit_cost)>policy.daily_credit_cap))return{allowed:false,status:'VERIFIED_CREDIT_COST_REQUIRED',attempts:0};
  return{allowed:true,status:'PLANNED',source,attempts:count,ttl_ms:policy.ttl_ms,blocks:policy.blocks,auth:policy.auth};
 }
