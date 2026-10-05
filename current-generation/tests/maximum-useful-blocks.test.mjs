@@ -42,3 +42,15 @@ test('maximum-useful report accepts honestly accounted optional gaps and never t
  const result=enforceManualBlockCoverage({status:'CLOSED',source:'manual',candidates:[{block_coverage:coverage,canonical:{state:'REJECTED',data_quality:{sufficient:false}}}]});assert.equal(result.status,'CLOSED');assert.equal(result.block_audit.minimum_checked_block_count,0);assert.equal(result.block_audit.all_candidates_data_sufficient,false);assert.equal(result.block_audit.full_15_per_candidate_required,false);
  assert.match(formatManualRunSummary(result),/0 из 15/);assert.match(formatManualRunSummary(result),/не входить/);
 });
+test('real neutral execution facts retain consumer review without base score or direction; no invented score or entry',()=>{
+ const id=identity(),context=consumeCanonicalExecutionContext(id),evidence=buildCanonicalExecutionEvidence(id);
+ const market={decision_ts:id.observed_ts,evidence_v2:{evidence}};
+ const inputs=buildSupplementalScoreEvidence({direction:null,internal_market_context:market});
+ const review=applySupplementalScoreAdjustment(null,inputs);
+ assert.equal(review.status,'BASE_SCORE_MISSING');assert.equal(review.base_score,null);assert.equal(review.final_score,null);assert.equal(review.adjustment,0);assert.equal(review.receipts.length,2);
+ const canonical={...id,direction:null,metadata:{contract:id.contract,supporting_context:{facts:context.facts},execution_context_source:id.execution_context_source,internal_market_context:market,supplemental_score_adjustment:review}};
+ const manual={ok:true,text:context.facts.map(f=>`- ${f.label}: ${f.value}`).join('\n')};
+ const audit=auditCanonicalBlockDecisionUse(canonical,{manual});assert.deepEqual(audit.participating_block_ids,['N11','N16']);assert.equal(audit.score_applied_block_count,0);assert.equal(audit.direction_closed,false);assert.equal(audit.all_blocks_have_proven_decision_effect,false);
+ evidence[0].risk_strength=.5;assert.equal(buildSupplementalScoreEvidence({direction:null,internal_market_context:market}).length,1,'risk scoring is not silently neutralized');
+ market.decision_ts=id.observed_ts+600000;assert.equal(buildSupplementalScoreEvidence({direction:null,internal_market_context:market}).length,0,'expired facts are never revived');
+});

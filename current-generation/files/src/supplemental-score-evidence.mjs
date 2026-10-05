@@ -7,7 +7,16 @@ const clamp=(v,lo,hi)=>Math.min(hi,Math.max(lo,v));
 const sideSign=(row,direction)=>{const side=String(row?.direction??row?.side??row?.lean??'').toUpperCase();if(!['BUY','SELL','LONG','SHORT','BULLISH','BEARISH'].includes(side))return null;const bullish=['BUY','LONG','BULLISH'].includes(side);return direction==='SHORT'?(bullish?-1:1):(bullish?1:-1);};
 
 export function buildSupplementalScoreEvidence({direction,internal_market_context=null,liquidation_panel=null,volume_profile=null,volume_consensus=null,contract=null,observed_ts=null,reference_price=null}={}){
- const dir=String(direction||'').toUpperCase();if(!['LONG','SHORT'].includes(dir))return[];
+ const dir=String(direction||'').toUpperCase();
+ if(!['LONG','SHORT'].includes(dir)){
+  // Unknown trade direction must not discard independently usable neutral facts.
+  // Directional/risk weights remain unassessed until their real base is available.
+  const rows=internal_market_context?.evidence_v2?.evidence||[],decisionTs=finite(internal_market_context?.decision_ts);
+  const neutral=rows.filter(row=>(finite(row.directional_strength)??0)===0&&(finite(row.risk_strength)??0)===0);
+  const consumed=consumeEvidenceV2(neutral,{base_interest:undefined,decision_ts:decisionTs,base_evidence_ids:internal_market_context?.evidence_v2?.base_evidence_ids||[],base_evidence_roots:internal_market_context?.evidence_v2?.base_evidence_roots||[]});
+  const chains={DERIVATIVES:'CROSS_EXCHANGE_DERIVATIVES',MARKET_DEMAND:'MARKET_STRENGTH_SPOT',ONCHAIN:'SMART_MONEY_ONCHAIN',RISK_EVENTS:'SUPPORTING_RISK',TECHNICAL_EXISTING:'MARKET_STRENGTH_SPOT'};
+  return consumed.receipts.filter(r=>r.reason==='CONSUMED'&&chains[r.family]).map(r=>({source_id:'EVIDENCE_V2',responsibility_group:`EVIDENCE_V2_${r.block_id}_${r.evidence_id}`,decision_chain:chains[r.family],signed_strength:0,quality:1,asset_identity:'EXACT_EVIDENCE_V2',metric_family:`EVIDENCE_V2_${r.family}`,provider_object_id:r.evidence_id,physical_root_key:r.physical_root_key,fresh:true,exact_identity:true,direction_neutral_context:true,assessment_mode:'NEUTRAL_CONTEXT_ONLY_NO_DIRECTION',evidence_v2_receipts:consumed.receipts}));
+ }
  const out=[];const profileEvidence=volumeProfileScoreEvidence(volume_profile,{contract,now:observed_ts,reference_price,direction:dir});if(profileEvidence){const factor=clamp(finite(volume_consensus?.factor)??.5,0,1);profileEvidence.quality*=factor;profileEvidence.consensus_status=volume_consensus?.status||'SINGLE_VENUE';profileEvidence.confirming_venues=volume_consensus?.confirmations?.map(p=>p.source)||[];profileEvidence.maximum_score_points*=factor;if(factor>0)out.push(profileEvidence);}const deribit=internal_market_context?.deribit;
  const liq=liquidation_panel?.score_evidence;
  if(liq?.fresh===true&&liq?.exact_identity===true){const bull=finite(liq.bullish_strength);if(bull!==null&&bull!==0)out.push({...liq,signed_strength:dir==='SHORT'?-bull:bull});}
@@ -54,7 +63,12 @@ export function buildSupplementalScoreEvidence({direction,internal_market_contex
 }
 
 export function applySupplementalScoreAdjustment(baseScore,evidence=[]){
- const base=finite(baseScore);if(base===null)return{status:'BASE_SCORE_MISSING',base_score:null,final_score:null,adjustment:0,receipts:[]};
+ const base=finite(baseScore);if(base===null){
+  const neutral=Array.isArray(evidence)?evidence.filter(row=>row.source_id==='EVIDENCE_V2'&&finite(row.signed_strength)===0&&row.fresh===true&&row.exact_identity===true&&row.evidence_v2_receipts?.some(r=>r.evidence_id===row.provider_object_id&&r.reason==='CONSUMED')):[];
+  // Retain real consumer review, while keeping score/direction unavailable.
+  const review=applySupplementalScoreAdjustment(0,neutral);
+  return{status:'BASE_SCORE_MISSING',base_score:null,final_score:null,adjustment:0,receipts:review.receipts.map(row=>({...row,score_contribution:0,assessment_mode:'NEUTRAL_CONTEXT_ONLY_NO_BASE_SCORE'}))};
+ }
  const physicalRoot=row=>String(row?.physical_root_key||[row?.source_id,row?.provider_object_id??row?.origin_event_id??row?.metric_family,row?.metric_family,row?.asset_identity].join('|'));
  const byRoot=new Map(),discarded=[];
  for(const row of Array.isArray(evidence)?evidence:[]){

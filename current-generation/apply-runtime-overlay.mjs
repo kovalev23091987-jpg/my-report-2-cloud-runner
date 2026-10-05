@@ -86,7 +86,7 @@ const files=[
  'src/analytical-integrity.mjs',
  'src/stage392-proof-runtime.mjs',
  'src/tz101-execution-facts.mjs',
- 'src/full-evidence-shadow-model.mjs',
+ 'src/full-evidence-shadow-model.mjs','src/full-evidence-contract.mjs',
  'src/evidence-v2.mjs',
  'src/evidence-source-adapters.mjs',
  'src/evidence-source-store.mjs',
