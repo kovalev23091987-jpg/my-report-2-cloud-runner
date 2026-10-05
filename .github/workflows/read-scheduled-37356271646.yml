@@ -1,0 +1,37 @@
+name: Read Actual Fresh Joint Evidence
+on:
+  push:
+    branches: [codex/read-scheduled-37356271646]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read exact existing fresh artifacts without source calls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto');
+            fs.mkdirSync('audit-input',{recursive:true});
+            for(const [id,name,expected] of [[11364228706,'fresh','150b2b65b6dbea8a772e9d38a55ad4d7b394d58009b5409bc7147f343d686eab'],[11365320629,'telegram','dbadde0b4d92728f7d838b1c05e757baec4db3d5ec172d89e537c514596b7033']]){
+              const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:id,archive_format:'zip'});
+              const zip=Buffer.from(r.data),sha=crypto.createHash('sha256').update(zip).digest('hex');if(sha!==expected)throw Error('ARTIFACT_HASH_MISMATCH');fs.writeFileSync(`audit-input/${name}.zip`,zip);
+            }
+      - name: Inspect actual result and delivery proof
+        run: |
+          unzip -q audit-input/fresh.zip -d audit-input/fresh
+          unzip -q audit-input/telegram.zip -d audit-input/telegram
+          node current-generation/tests/read-fresh-joint.mjs audit-input > actual-fresh-joint-audit.json
+          cat actual-fresh-joint-audit.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: actual-fresh-joint-readback
+          path: actual-fresh-joint-audit.json
+          retention-days: 30
