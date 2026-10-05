@@ -19,3 +19,17 @@ test('bounded source setup preserves used units and every unrequested provider',
 test('unconfigured, duplicate or empty source filters cannot create new allowances',async()=>{
  for(const provider_filter of [[],['GTRADE','GTRADE'],['UNREVIEWED'],['OXARCHIVE']])await assert.rejects(installSourceAllowances({db:database(),now:T,provider_filter}),/SOURCE_ALLOWANCE_PROVIDER_FILTER_INVALID/);
 });
+
+test('old generation usage is reconciled once without double scanning or reducing counters',async()=>{
+ const db=database();const setup=await installSourceAllowances({db,now:T,provider_filter:['GTRADE']});
+ const scope=setup.bindings.GTRADE.scope_id;
+ db.raw.prepare('INSERT INTO report2_liq_source_reservation_shadow VALUES(?,?,?,?,?,?,?,?,?,?,?)').run('old',scope,'GTRADE','BTC-USDT','prior',21,0,1,T-1000,'f','RESERVED_NOT_REFUNDED');
+ const queries=[];const prepare=db.prepare;db.prepare=sql=>{queries.push(sql);return prepare(sql);};
+ await installSourceAllowances({db,now:T,provider_filter:['GTRADE']});
+ assert.equal(db.raw.prepare('SELECT used_units FROM report2_liq_source_allowance_shadow WHERE scope_id=?').get(scope).used_units,21);
+ const query=queries.find(q=>q.includes('WITH prior'));assert.ok(query);
+ const plan=db.raw.prepare('EXPLAIN QUERY PLAN '+query).all(scope,'GTRADE',Date.parse('2026-10-01T00:00:00Z'),Date.parse('2026-11-01T00:00:00Z'));
+ assert.equal(plan.filter(p=>p.detail.includes('SEARCH report2_liq_source_reservation_shadow')).length,1);
+ await installSourceAllowances({db,now:T+1000,provider_filter:['GTRADE']});
+ assert.equal(db.raw.prepare('SELECT used_units,version FROM report2_liq_source_allowance_shadow WHERE scope_id=?').get(scope).version,1);
+});
