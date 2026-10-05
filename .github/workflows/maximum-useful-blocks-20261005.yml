@@ -1,7 +1,7 @@
 name: Report 2 Maximum Useful Block Package Validation
 on:
   push:
-    branches: [codex/maximum-useful-blocks-20261005, codex/maximum-useful-delivery-gate-20261005, codex/quality-neutral-context-repair-20261005, codex/official-source-diagnostic-20261005, codex/general-native-supply-history-20261005]
+    branches: [codex/maximum-useful-blocks-20261005, codex/maximum-useful-delivery-gate-20261005, codex/quality-neutral-context-repair-20261005, codex/official-source-diagnostic-20261005, codex/general-native-supply-history-20261005, codex/source-use-and-sector-20261005]
 permissions:
   contents: read
   actions: read
@@ -27,7 +27,7 @@ jobs:
       - name: Validate connected package without live sources
         run: |
           node current-generation/validate.mjs > audit-output/validation.json
-          node --test current-generation/tests/general-native-supply-history.test.mjs > audit-output/general-native-supply-history.tap
+          node --test current-generation/tests/source-accounting-20261005.test.mjs current-generation/tests/coinpaprika-sector-evidence.test.mjs > audit-output/source-accounting-sector.tap
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node current-generation/tests/actual-quality-replay.mjs runtime > audit-output/actual-quality-replay.json

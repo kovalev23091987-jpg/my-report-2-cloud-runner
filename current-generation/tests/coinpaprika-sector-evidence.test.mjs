@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';
-import {verifyCoinpaprikaIdentity,normalizeCoinpaprikaSector,collectCoinpaprikaSectorEvidence} from '../files/src/coinpaprika-sector-evidence.mjs';import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
+import {verifyCoinpaprikaIdentity,normalizeCoinpaprikaSector,collectCoinpaprikaSectorEvidence,selectCoinpaprikaFunctionalSector} from '../files/src/coinpaprika-sector-evidence.mjs';import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 const NOW=Date.now(),address='0x514910771AF9Ca656af840dff83E8264EcF986CA',identity={chain:'ethereum',contract_or_mint:address},metadata={id:'link-chainlink',symbol:'LINK',is_active:true,contracts:[{platform:'eth-ethereum',contract:address}],tags:[{id:'oracles'}]},tag={id:'oracles',type:'functional',coins:['link-chainlink','p1','p2','p3','missing']};
 const quote=(id,change,symbol=id,ts=NOW-60000)=>({id,symbol,last_updated:new Date(ts).toISOString(),quotes:{USD:{price:1,volume_24h:200000,percent_change_24h:change}}}),tickers=[quote('link-chainlink',5,'LINK'),quote('p1',-2),quote('p2',1),quote('p3',3)];
 const params={metadata,tag,tickers,identity,contract:'LINK-USDT',coin_id:'link-chainlink',tag_id:'oracles',observed_ts:NOW};
@@ -10,4 +10,32 @@ test('stale, future, duplicate, missing-return or asynchronous peer cannot manuf
 test('source cache avoids real requests and preserves a failure backoff',async()=>{for(const ok of [true,false]){const database=db();let calls=0;const options={db:database,asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id,sector_tag:'oracles'},contract:'LINK-USDT',run_id:'LIVE',now:NOW,request_admit:r=>{assert.equal(r.attempts,1);return{allowed:true};},fetch_impl:async url=>{calls++;return new Response(JSON.stringify(url.includes('/coins/')?(ok?metadata:{...metadata,symbol:'OTHER'}):url.includes('/tags/')?tag:tickers));}};const a=await collectCoinpaprikaSectorEvidence(options),b=await collectCoinpaprikaSectorEvidence({...options,now:NOW+1000,run_id:'NEXT'});assert.equal(calls,ok?3:1);assert.equal(b.network_calls,0);assert.equal(b.status,a.status);assert.equal(b.cache_status,'HIT');database.sqlite.close();}});
 test('a rejected or unrelated functional tag prevents unnecessary ticker request',async()=>{
  for(const failure of [true,false]){const database=db(),urls=[];const r=await collectCoinpaprikaSectorEvidence({db:database,contract:'LINK-USDT',run_id:'TAG_FAIL',now:NOW,asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id,sector_tag:'oracles'},request_admit:()=>({allowed:true}),fetch_impl:async url=>{urls.push(url);return new Response(JSON.stringify(url.includes('/coins/')?metadata:{...tag,coins:['p1','p2','p3']}),{status:url.includes('/tags/')&&failure?429:200});}});assert.equal(r.evidence.length,0);assert.equal(urls.length,2);assert.ok(urls.every(url=>!url.includes('/tickers')));database.sqlite.close();}
+});
+
+test('general metadata category discovery is exact, functional, deterministic and rejects ambiguity',()=>{
+ const directory=[{id:'pow',type:'algorithm'},{id:'oracles',type:'functional'},{id:'another',type:'functional'}];
+ assert.equal(selectCoinpaprikaFunctionalSector(metadata,directory).id,'oracles');
+ assert.equal(selectCoinpaprikaFunctionalSector(metadata,directory.filter(r=>r.id!=='oracles')),null);
+ assert.equal(selectCoinpaprikaFunctionalSector(metadata,[...directory,{id:'oracles',type:'functional'}]),null);
+ assert.equal(selectCoinpaprikaFunctionalSector({...metadata,tags:[{id:'pow'}]},directory),null);
+});
+test('verified tokens discover a sector without per-coin sector registry and retain durable cache',async()=>{
+ const database=db(),urls=[];
+ const options={db:database,asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id},contract:'LINK-USDT',run_id:'AUTO',now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async url=>{
+  urls.push(url);const body=url.endsWith('/tags')?[{id:'oracles',type:'functional'}]:url.includes('/coins/')?metadata:url.includes('/tags/')?tag:tickers;
+  return new Response(JSON.stringify(body));
+ }};
+ const first=await collectCoinpaprikaSectorEvidence(options),second=await collectCoinpaprikaSectorEvidence({...options,run_id:'NEXT',now:NOW+1000});
+ assert.equal(first.status,'CLOSED');assert.equal(first.summary.tag_id,'oracles');assert.equal(urls.length,4);assert.equal(second.network_calls,0);assert.equal(second.evidence[0].first_known_ts,first.evidence[0].first_known_ts);
+ database.sqlite.close();
+});
+test('unverified metadata, missing functional category or exhausted admission cannot trigger quote polling',async()=>{
+ for(const mode of ['foreign','nonfunctional','budget']){
+  const database=db(),urls=[];
+  const out=await collectCoinpaprikaSectorEvidence({db:database,asset_identity:identity,asset_metadata:{coinpaprika_id:metadata.id},contract:'LINK-USDT',run_id:mode,now:NOW,request_admit:()=>mode==='budget'?({allowed:false,status:'DAILY_CAP_OR_DUPLICATE'}):({allowed:true}),fetch_impl:async url=>{
+   urls.push(url);return new Response(JSON.stringify(url.includes('/coins/')?(mode==='foreign'?{...metadata,symbol:'OTHER'}:metadata):[{id:'oracles',type:'algorithm'}]));
+  }});
+  assert.equal(out.evidence.length,0);assert.equal(urls.some(url=>url.includes('/tickers')),false);assert.ok(urls.length<=2);
+  database.sqlite.close();
+ }
 });
