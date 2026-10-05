@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
-import {formatTelegramCompact} from './telegram-compact-formatter.mjs';
+import {renderCanonicalTelegram,CANONICAL_PUBLICATION_VERSION} from './canonical-publication.mjs';
 
-export const EXACT_SAVED_RUN_TELEGRAM_VERSION='exact-saved-run-telegram-v1-20261005';
+export const EXACT_SAVED_RUN_TELEGRAM_VERSION='exact-saved-run-telegram-v2-approved-layout-20261005';
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const finite=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
 const sha256=v=>crypto.createHash('sha256').update(String(v)).digest('hex');
@@ -27,9 +27,10 @@ export function validateExactSavedRunTelegram({saved_output,requested_run_id,now
  const observed=candidates.filter(c=>c?.canonical?.status==='CLOSED'&&c?.canonical?.state==='OBSERVE'&&['LONG','SHORT'].includes(text(c?.canonical?.direction).toUpperCase())&&finite(c?.canonical?.scores?.coin_interest_0_100)>=70&&c?.canonical?.data_quality?.owner_deferred_exact_signed_raw24h===true);
  if(observed.length!==1)return fail('EXACTLY_ONE_OWNER_DEFERRED_OBSERVATION_REQUIRED');
  const candidate=observed[0],valid=finite(candidate.valid_until_ts||candidate?.canonical?.trigger?.expires_ts);if(valid===null||valid<Number(now_ts))return fail('SAVED_OBSERVATION_EXPIRED');
- const rendered=formatTelegramCompact(displayView(candidate));if(rendered.ok!==true)return fail(`APPROVED_RENDERER_${rendered.status||'FAILED'}`);
- if(!/^\S+\s+—\s+⚪️ НАБЛЮДЕНИЕ/mu.test(rendered.message)||!/Монета интересна:\s+(?:7\d|8\d|9\d|100) из 100/u.test(rendered.message))return fail('OBSERVATION_PRESENTATION_NOT_CLOSED');
- return {ok:true,status:'CLOSED',reason:null,candidate,rendered:{...rendered,message_hash:sha256(rendered.message)}};
+ // The compact formatter is an internal surface, not the approved sender.
+ // Reuse the established publication renderer without changing canonical data.
+ const rendered=renderCanonicalTelegram({canonical:displayView(candidate),lifecycle_event:'OBSERVE'});if(rendered.ok!==true)return fail(`APPROVED_RENDERER_${rendered.status||'FAILED'}`);
+ return {ok:true,status:'CLOSED',reason:null,candidate,rendered:{...rendered,message:rendered.text,formatter:CANONICAL_PUBLICATION_VERSION,message_hash:sha256(rendered.text)}};
 }
 
 export async function deliverExactSavedRunTelegram({db,saved_output,requested_run_id,enabled=false,relay_url=null,relay_key=null,now_ts=Date.now(),fetch_impl=globalThis.fetch}={}){
