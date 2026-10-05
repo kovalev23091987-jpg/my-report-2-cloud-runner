@@ -1,0 +1,52 @@
+name: Report 2 Actual Solana Transfer Context Acceptance
+on:
+  push:
+    branches: [autonomous/solana-transfer-context-20261005]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Validate changed package once
+        run: |
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
+          node --test current-generation/tests/solana-finalized-events.test.mjs current-generation/tests/block-result-context.test.mjs > audit-output/solana-transfer-package.tap
+          cmp current-generation/files/src/bluesky-attention-evidence.mjs runtime/src/bluesky-attention-evidence.mjs
+          cmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs
+          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
+      - name: Verify actual Solana transfer context reaches approved report
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261005T053025255Z:a89aa0a8-68c5-419a-a260-203c2dcbf2e4'
+        run: node audit-fixes/solana-transfer-context-20261005/verify-live.mjs runtime > audit-output/solana-transfer-acceptance.json
+      - name: Runtime manifest
+        if: always()
+        run: |
+          sha256sum runtime/src/block-result-context.mjs > audit-output/runtime-sha256.txt
+          git rev-parse HEAD > audit-output/github-head.txt
+          git rev-parse HEAD^{tree} > audit-output/github-tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: solana-transfer-acceptance-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
