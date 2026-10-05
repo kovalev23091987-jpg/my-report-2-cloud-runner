@@ -7,6 +7,7 @@ const end=Date.parse('2026-10-05T07:00:00Z'),now=end+600000,identity={chain:'bsc
 const payload={pagination:{is_last_page:true},data:[5,6].map(h=>({date:`2026-10-05T0${h}:00:00Z`,bucket_end:`2026-10-05T0${h+1}:00:00Z`,is_complete:true,total_inflows_cex:10,total_outflows_cex:-4}))};
 const source=()=>normalizeNansenFlows(payload,{base:'龙虾',identity,now,window_end:end});
 test('shared labelled-flow producer retains exact-token semantics, raw outflow sign and established bounded weight',()=>{
+ const resolved=resolveNansenFlowPrimary(source(),params);const actualAudit=auditCandidateBlocks({evidence:resolved.evidence,sources:{NANSEN_FLOWS:resolved},decision_ts:now});assert.equal(actualAudit.blocks.N05.checked,true);assert.equal(actualAudit.blocks.N05.usable_facts,1);assert.equal(auditCandidateBlocks({evidence:resolved.evidence,sources:{NANSEN_FLOWS:resolved},decision_ts:now,strict_fresh:true}).blocks.N05.checked,false);
  const evidence=nansenFlowEvidence(source(),params);assert.equal(evidence.length,1);assert.equal(evidence[0].asset_id,`bnb:${identity.contract_or_mint}`);assert.equal(evidence[0].value,12);assert.equal(evidence[0].directional_strength,-12/28);assert.equal(evidence[0].label_authority,'NANSEN');assert.equal(evidence[0].individual_addresses_verified,false);
  assert.equal(consumeBlockResultContext({evidence,contract:params.contract,now}).facts[0].block_id,'N05');assert.ok(consumeEvidenceV2(evidence,{base_interest:70,decision_ts:now}).adjustment<0);
 });

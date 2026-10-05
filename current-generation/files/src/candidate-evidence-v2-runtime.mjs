@@ -36,7 +36,7 @@ export function resolveNansenFlowPrimary(source,params={}){
  const current=source||{status:'NOT_EVALUATED',network_calls:0},exact=exactCapabilityIdentity(params);
  if(current.status==='NOT_EVALUATED'&&exact?.asset_kind==='NATIVE')return capabilityCheckedNoExactRoute(params,'NANSEN_FLOWS','DOCUMENTED_PROVIDER_FLOW_ENDPOINT_EXCLUDES_NATIVE_TOKENS');
  if(current.status==='NOT_EVALUATED')return{...current,check_completed:false,capability_registry_complete:false,reason:'LABELLED_FLOW_PRIMARY_NOT_EVALUATED_NO_CAPABILITY_ABSENCE_PROVEN',internal_only:true};
- if(current.status==='CLOSED'&&!nansenFlowEvidence(current,params).length)return{...current,status:'INVALID_FLOW_BINDING_OR_COMPLETE_WINDOW',check_completed:false,evidence:[],internal_only:true};
+ if(current.status==='CLOSED'){const evidence=nansenFlowEvidence(current,params);if(!evidence.length)return{...current,status:'INVALID_FLOW_BINDING_OR_COMPLETE_WINDOW',check_completed:false,evidence:[],internal_only:true};return{...current,evidence};}
  return current;
 }
 // Only name producers that actually emit a row for this block in this collector.
