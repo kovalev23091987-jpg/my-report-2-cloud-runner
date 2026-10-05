@@ -1,0 +1,49 @@
+{
+  "schema": "report2-htx-flow-without-nansen-release-evidence-v1",
+  "status": "CODE_AND_ASSEMBLED_RUNTIME_ACCEPTED_LIVE_JOINT_PENDING",
+  "pr": 143,
+  "merged_commit": "432c6295642ff625b7b0097e8549f536cd4b07cc",
+  "tested_head": "c7a86a865749c8c5914c5bb4d9aabf3f7bdf25d5",
+  "tested_tree": "3f30403d3d554020d3be7372d1c81a045754912d",
+  "cloud_run_id": 37303115963,
+  "cloud_job_id": 111740327519,
+  "artifact_id": 11343035788,
+  "artifact_sha256": "528578f8d9a7be2cb44abd57543c418fe31ff032d43122a82c47964eb6125439",
+  "worker_sha256": "c2cc64f214cf98711a5aaa18e378922ac2acf4a215a96ac8b6a333c0a4c5b181",
+  "validation": {
+    "integration_passed": 37,
+    "integration_failed": 0,
+    "engine_tests": "PASS",
+    "syntax": "PASS",
+    "continuation_stage_guard_passed": 5,
+    "raw_history_fixture_verified_minutes": 240,
+    "raw_history_negative_cases_rejected": 5
+  },
+  "functional_change": {
+    "block": "N05",
+    "fallback": "HTX_FUTURES_RAW_FLOW",
+    "required_window": "EXACT_FOUR_HOURS",
+    "required_closed_1m_buckets": 240,
+    "same_contract_required": true,
+    "complete_record_integrity_required": true,
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "labelled_token_deposit_or_withdrawal_claim": false,
+    "independent_upstream_vote": false,
+    "missing_or_partial_stays_open": true
+  },
+  "owner_nansen_deferral": "checkpoints/OWNER_NANSEN_DEFERRAL_20261005.md",
+  "validation_cost": {
+    "source_http": 0,
+    "d1_reads": 0,
+    "d1_writes": 0,
+    "new_MAIN": 0,
+    "telegram_calls": 0
+  },
+  "acceptance_limits": {
+    "fixture_is_not_live_flow_acceptance": true,
+    "fresh_joint_report_required": true,
+    "core_phase_complete": false,
+    "telegram_accepted": false
+  }
+}
