@@ -1,6 +1,6 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "COMPLETE",
+  "current_phase": "TELEGRAM",
   "phases": [
     {
       "id": "CORE_BLOCKS",
@@ -31,21 +31,27 @@
     },
     {
       "id": "TELEGRAM",
-      "status": "VERIFIED",
-      "completion_receipt": {
+      "status": "IN_PROGRESS",
+      "completion_receipt": null,
+      "completed_ts": 1791166512309,
+      "previous_completion_receipt": {
         "path": "checkpoints/telegram-functional-acceptance-20261005.json",
         "sha256": "fab0b5e5d2543f5839c1a4867a91fe4a88555e20f8b22c34dd65e7cdc15f4fcf"
       },
-      "completed_ts": 1791166512309
+      "reopened_reason": "Owner rejected compact Telegram form; restore established canonical approved layout, liquidation presence/absence only amendment."
     }
   ],
-  "lease": null,
-  "next_action": "All owner-authorized phases are VERIFIED. Continue only routine scheduled operation and the separately deferred EXACT_SIGNED_RAW_24H confirmation; do not rerun completed acceptance probes.",
+  "lease": {
+    "owner": "HTX:20261005T0330:d119c598-0d29-4a45-bae1-cec837819684",
+    "acquired_ts": 1791170975150,
+    "expires_ts": 1791178175150
+  },
+  "next_action": "Restore renderCanonicalTelegram in exact saved-run sender; one network-free cloud regression package, preserve manual renderer, deploy; fresh naturally admitted SENT must verify corrected layout. Do not resend expired snapshot or rerun MAIN for a formatting fix.",
   "last_verified_release": "checkpoints/final-top2-ranking-release-evidence-20261005.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791166512388,
+  "updated_ts": 1791170975150,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
