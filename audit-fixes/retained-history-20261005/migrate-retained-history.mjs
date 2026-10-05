@@ -8,7 +8,7 @@ const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPO
 const reservation={rows_read:5000,rows_written:400},reservationId=`RETAINED_HISTORY:${process.env.GITHUB_RUN_ID}:${Date.now()}`;
 const request=db._request.bind(db);
 db._request=async p=>{
- if(!['first','all','run'].includes(p.op)||!/^\s*(SELECT|PRAGMA (?:page_count|page_size)|INSERT INTO report2_(?:full_evidence|canonical)_archive_v1|INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow|UPDATE report2_runner_budget_ledger_shadow|DELETE FROM (?:full_evidence_shadow_log|canonical_publication_shadow))\b/i.test(p.sql)||db.usageSnapshot().rows_read>4500||db.usageSnapshot().rows_written>360||db.usageSnapshot().unknown_ops||db.usageSnapshot().requests>115)throw Error('ARCHIVE_MIGRATION_BOUND_EXHAUSTED');
+ if(!['first','all','run'].includes(p.op)||!/^\s*(SELECT|PRAGMA (?:page_count|page_size)|INSERT INTO report2_(?:full_evidence|canonical)_archive_v1|INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow|UPDATE report2_runner_budget_ledger_shadow|DELETE FROM (?:full_evidence_shadow_log|canonical_publication_shadow))\b/i.test(p.sql)||db.usageSnapshot().rows_read>4500||db.usageSnapshot().rows_written>360||db.usageSnapshot().unknown_ops||db.usageSnapshot().requests>220)throw Error('ARCHIVE_MIGRATION_BOUND_EXHAUSTED');
  return request(p);
 };
 const daily=await loadDailyUsageAggregate(db),admission=evaluateDailyReservationBudget({daily,nextReservation:reservation});
@@ -20,8 +20,8 @@ const databaseBytes=async()=>{const result=await db.prepare('SELECT 1 AS read_on
 before=await databaseBytes();
 const cutoff=Date.now()-HISTORY_HOT_WINDOW_MS,selected=[];
 for(const [table,sql] of [
- ['full_evidence_shadow_log','SELECT * FROM full_evidence_shadow_log WHERE observed_ts<?1 ORDER BY observed_ts,full_evidence_id LIMIT 12'],
- ['canonical_publication_shadow',"SELECT * FROM canonical_publication_shadow WHERE observed_ts<?1 AND canonical_state='REJECTED' AND bound_ts IS NULL AND NOT EXISTS (SELECT 1 FROM v3_dispatch_publication_binding_shadow b WHERE b.publication_id=canonical_publication_shadow.publication_id) ORDER BY observed_ts,publication_id LIMIT 12"],
+ ['full_evidence_shadow_log','SELECT * FROM full_evidence_shadow_log WHERE observed_ts<?1 ORDER BY observed_ts,full_evidence_id LIMIT 24'],
+ ['canonical_publication_shadow',"SELECT * FROM canonical_publication_shadow WHERE observed_ts<?1 AND canonical_state='REJECTED' AND bound_ts IS NULL AND NOT EXISTS (SELECT 1 FROM v3_dispatch_publication_binding_shadow b WHERE b.publication_id=canonical_publication_shadow.publication_id) ORDER BY observed_ts,publication_id LIMIT 24"],
 ]){
  const rows=(await db.prepare(sql).bind(cutoff).all()).results||[];
  for(const row of rows){
@@ -40,7 +40,7 @@ if(selected.length){
  if((await api('GET','git/ref/heads/report2-retained-history')).object.sha!==previous)throw Error('ARCHIVE_BRANCH_MOVED');
  await api('PATCH','git/refs/heads/report2-retained-history',{sha:commit,force:false});
 }
-const restorer=createHistoryRestorer({max_fetches:24});
+const restorer=createHistoryRestorer({max_fetches:48});
 // Verify every durable public object before any original row is removed.
 for(const s of selected){
  const r=await fetch(`https://raw.githubusercontent.com/${REPOSITORY}/${commit}/${s.path}`,{redirect:'error',signal:AbortSignal.timeout(8000)});if(!r.ok)throw Error(`ARCHIVE_PUBLIC_READ_HTTP_${r.status}`);
