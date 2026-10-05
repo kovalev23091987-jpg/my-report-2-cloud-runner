@@ -1,4 +1,5 @@
 import {collectWikimediaAttention,exactWikimediaPage} from './wikimedia-attention-context.mjs';
+import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import {collectCoinmetricsSupplyContext,exactCoinmetricsNativeIdentity} from './coinmetrics-supply-context.mjs';
 import {collectHtxLargeTradesEvidence} from './htx-large-trades-evidence.mjs';
 import {collectHtxPublicRiskEvidence} from './htx-public-risk-evidence.mjs';
@@ -17,17 +18,26 @@ import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
-export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v19-native-domain-attention-20261005';
+export const CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION='candidate-evidence-v2-runtime-v20-exact-labelled-flow-20261005';
 
 const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'')){hash^=ch.codePointAt(0);hash=Math.imul(hash,16777619);}return(hash>>>0)%Math.max(1,Number(mod)||1);};
 const bounded=(value,min,max)=>Math.min(max,Math.max(min,value));
 export function nansenFlowEvidence(source,params){
- if(source?.status!=='CLOSED'||!Array.isArray(source?.buckets)||source.buckets.length!==2)return[];
- let incoming=0,outgoing=0;
- for(const row of source.buckets){const a=Number(row?.total_inflows_cex),b=Number(row?.total_outflows_cex);if(!Number.isFinite(a)||!Number.isFinite(b)||a<0)return[];incoming+=a;outgoing+=Math.abs(b);}
+ // Reuse the exact token, contiguous complete-window and provider receipt
+ // checks used by the visible specialist consumer. CLOSED alone is not proof.
+ const checked=consumeSpecialistContext({sources:{NANSEN_FLOWS:source},contract:params?.contract,now:params?.now,asset_identity:params?.asset_identity}).blocks.exchange_flows;
+ if(checked?.status!=='CLOSED')return[];
+ const incoming=checked.inflow_tokens,outgoing=checked.outflow_tokens;
  const total=incoming+outgoing,sourceTs=Number(source.source_ts),observedTs=Number(source.observed_ts),identity=source.identity||{};
- if(!(total>0)||![sourceTs,observedTs].every(Number.isFinite)||sourceTs>observedTs)return[];
- return[buildEvidenceV2({provider_id:'NANSEN_FLOWS',upstream_id:'NANSEN_TOKEN_GOD_MODE',asset_id:`${identity.chain}:${identity.contract_or_mint}`,htx_contract:params.contract,block_id:'N05',metric_family:'CEX_NET_FLOW_TWO_COMPLETE_HOURS',origin_event_id:`${params.contract}:${source.window_start_ts}:${source.window_end_ts}`,dependency_group:`NANSEN_CEX_FLOW:${params.contract}:${source.window_start_ts}:${source.window_end_ts}`,source_ts:sourceTs,observed_ts:observedTs,expires_at:observedTs+60*60_000,coverage_status:'TWO_COMPLETE_HOURS',coverage_fraction:.25,directional_strength:bounded((outgoing-incoming)/total,-1,1),risk_strength:null,unit:String(source.unit||'TOKEN_AMOUNT'),value:incoming-outgoing,extra:{incoming_tokens:incoming,outgoing_tokens:outgoing,window_start_ts:source.window_start_ts,window_end_ts:source.window_end_ts,direction_policy:'OUTFLOW_SUPPORTS_LONG_INFLOW_SUPPORTS_SHORT_LOW_WEIGHT'}})];
+ if(!Number.isFinite(total)||total<0||source.source_ts!==source.window_end_ts||source.window_start_ts!==source.window_end_ts-7200000||source.unit!=='TOKEN_AMOUNT')return[];
+ return[buildEvidenceV2({provider_id:'NANSEN_FLOWS',upstream_id:'NANSEN_TOKEN_GOD_MODE',asset_id:`${identity.chain}:${identity.contract_or_mint}`,htx_contract:params.contract,block_id:'N05',metric_family:'CEX_NET_FLOW_TWO_COMPLETE_HOURS',origin_event_id:`${params.contract}:${source.window_start_ts}:${source.window_end_ts}`,dependency_group:`NANSEN_CEX_FLOW:${params.contract}:${source.window_start_ts}:${source.window_end_ts}`,source_ts:sourceTs,observed_ts:observedTs,expires_at:observedTs+60*60_000,coverage_status:'TWO_COMPLETE_HOURS',coverage_fraction:.25,directional_strength:total===0?0:bounded((outgoing-incoming)/total,-1,1),risk_strength:null,unit:'TOKEN_AMOUNT',value:incoming-outgoing,extra:{incoming_tokens:incoming,outgoing_tokens:outgoing,window_start_ts:source.window_start_ts,window_end_ts:source.window_end_ts,label_authority:'NANSEN',individual_addresses_verified:false,provider_data_may_be_revised:true,verified_zero_flow_window:total===0,direction_policy:total===0?'NEUTRAL_VERIFIED_ZERO_WINDOW':'OUTFLOW_SUPPORTS_LONG_INFLOW_SUPPORTS_SHORT_LOW_WEIGHT'}})];
+}
+export function resolveNansenFlowPrimary(source,params={}){
+ const current=source||{status:'NOT_EVALUATED',network_calls:0},exact=exactCapabilityIdentity(params);
+ if(current.status==='NOT_EVALUATED'&&exact?.asset_kind==='NATIVE')return capabilityCheckedNoExactRoute(params,'NANSEN_FLOWS','DOCUMENTED_PROVIDER_FLOW_ENDPOINT_EXCLUDES_NATIVE_TOKENS');
+ if(current.status==='NOT_EVALUATED')return{...current,check_completed:false,capability_registry_complete:false,reason:'LABELLED_FLOW_PRIMARY_NOT_EVALUATED_NO_CAPABILITY_ABSENCE_PROVEN',internal_only:true};
+ if(current.status==='CLOSED'&&!nansenFlowEvidence(current,params).length)return{...current,status:'INVALID_FLOW_BINDING_OR_COMPLETE_WINDOW',check_completed:false,evidence:[],internal_only:true};
+ return current;
 }
 // Only name producers that actually emit a row for this block in this collector.
 // Existing technical/market blocks are owned outside this supplementary lane.
@@ -235,8 +245,7 @@ export async function collectCandidateEvidenceV2(params={}){
  let cgSector=routeBlock.results.SECTOR_COINGECKO||{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  if(exactCapability&&Number(cgSector.network_calls)>0&&['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(cgSector.status)))cgSector=noRoute('COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
  const supplementalSources=params?.supplemental_context?.sources||{};
- let nansen=supplementalSources.NANSEN_FLOWS||{status:'NOT_EVALUATED',network_calls:0};
- if(exactCapability&&String(nansen.status||'NOT_EVALUATED')==='NOT_EVALUATED')nansen=noRoute('NANSEN_FLOWS',exactCapability.asset_kind==='NATIVE'?'NO_EXACT_NATIVE_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY':'NO_EXACT_TOKEN_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY');
+ const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
  const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
  const wikimedia=routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
