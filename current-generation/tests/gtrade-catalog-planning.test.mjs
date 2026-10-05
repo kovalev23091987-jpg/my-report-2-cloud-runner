@@ -23,7 +23,7 @@ test('combined service reuses actual catalog across candidates and reserves the 
  const first={...query('BR'),deep_started_ts:T,max_deep_ms:45000,max_http_for_candidate:5,allowed_source_ids:['GTRADE_NATIVE']};
  await service.collect(first);await service.collect({...first,...query('FIL'),allowed_source_ids:['GMX_NATIVE','GTRADE_NATIVE'],source_identity:{gmx_market_address:'0x'+'1'.repeat(40)}});
  assert.equal(urls.length,3);assert.ok(urls.every(u=>u.includes('gains.trade')));assert.equal(urls.filter(u=>u.endsWith('/trading-variables')).length,1);
- const summary=service.summary();assert.equal(summary.source_weight_profile?.[0]?.source_id??summary.weight_profile?.[0]?.source_id??summary.records?.filter(r=>r.contract==='FIL-USDT')[0]?.selection_profile?.[0]?.source_id,'GTRADE_NATIVE');
+ const summary=service.summary();assert.equal(summary.source_weighting.profile[0].source_id,'GTRADE_NATIVE');
 });
 test('actual stock/forex routes, ambiguous crypto and future catalog clocks remain ineligible',async()=>{
  const nonCrypto=variables.pairs.find(p=>p.to==='USD'&&!['crypto','altcoins','crypto-degen'].includes(variables.groups[Number(p.groupIndex)]?.name));assert.ok(nonCrypto);
