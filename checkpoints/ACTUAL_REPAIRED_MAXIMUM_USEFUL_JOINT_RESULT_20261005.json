@@ -1,0 +1,1023 @@
+{
+  "schema": "report2-actual-maximum-useful-repaired-joint-v1",
+  "created_utc": "2026-10-05T17:33:47.050Z",
+  "head": "3dc0a63336ea84ff0b2e235de32c12373e485ffa",
+  "cloud_run": 37348017716,
+  "cloud_job": 111891485182,
+  "run_id": "1791221005624-1791221015309",
+  "generated_at": "2026-10-05T17:24:51.275Z",
+  "result_artifact": 11361082062,
+  "result_artifact_sha256": "7381a6f13d128db32bc316870bbae8531c8577f8923dbfd912bd5838a6b202f7",
+  "telegram_artifact": 11361546303,
+  "telegram_artifact_sha256": "0ee0fe831b98b13850ef47b16439f9b4f6d494736746e068f803dc430befc631",
+  "read_only_verification_run": 37348376144,
+  "read_only_verification_job": 111892670551,
+  "readback_sourceHTTP": 0,
+  "readback_MAIN": 0,
+  "actual_top2": [
+    "ZEC-USDT",
+    "NIL-USDT"
+  ],
+  "market_scan": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "candidates": [
+    {
+      "contract": "NIL-USDT",
+      "run_id": "1791221005624-1791221015309",
+      "snapshot_id": "S392:NIL-USDT:1791221085749",
+      "participating_block_count": 8,
+      "participating_block_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N16"
+      ],
+      "nonzero_score_effect_blocks": 0,
+      "neutral_assessed_and_rendered_blocks": 8,
+      "participation_is_not_nonzero_score": true,
+      "checked_required_source_count": 11,
+      "rendered_context_block_ids": [
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N02",
+        "N03",
+        "N06",
+        "N10",
+        "N04",
+        "N11",
+        "N16"
+      ],
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "all_15_source_outcomes_recorded": true,
+      "blocks": {
+        "N01": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_TOKEN_SCHEDULE": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N02": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_SUPPLY": "CLOSED",
+            "BLOCKSCOUT_INDEX": "CLOSED",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N03": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "CLOSED",
+            "BLOCKSCOUT_INDEX": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N04": {
+          "checked": true,
+          "valid_facts": 2,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "checked": true,
+            "observed_fact_count": 52,
+            "valid_fact_count": 2,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 2,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N05": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N06": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N07": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "ALREADY_RESERVED_NO_REDISPATCH",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N08": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N09": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N10": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "source_errors": {}
+        },
+        "N11": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 3,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "source_errors": {}
+        },
+        "N12": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 1,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NO_BASE_SCORE_NO_APPLICATION",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "source_errors": {}
+        },
+        "N14": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "source_errors": {}
+        },
+        "N15": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "COINGECKO_SECTOR": "DAILY_CAP_OR_DUPLICATE",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N16": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": null,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 2,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "source_errors": {}
+        }
+      },
+      "hard_veto_status": "VETO",
+      "liquidation": {
+        "accepted_real_future_levels": 2,
+        "source": "HYPERLIQUID_NATIVE",
+        "calculated_fallback": false,
+        "venue_is_not_HTX": true
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "run_id": "1791221005624-1791221015309",
+      "snapshot_id": "S392:ZEC-USDT:1791221055478",
+      "participating_block_count": 7,
+      "participating_block_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "nonzero_score_effect_blocks": 1,
+      "neutral_assessed_and_rendered_blocks": 6,
+      "participation_is_not_nonzero_score": true,
+      "checked_required_source_count": 8,
+      "rendered_context_block_ids": [
+        "N02",
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N06",
+        "N10",
+        "N11",
+        "N16"
+      ],
+      "canonical_state": "REJECTED",
+      "direction": "LONG",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 73,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "all_15_source_outcomes_recorded": true,
+      "blocks": {
+        "N01": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_TOKEN_SCHEDULE": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N02": {
+          "checked": false,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "checked": false,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_SUPPLY": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+            "COINMETRICS_SUPPLY": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N03": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N04": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N05": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "NANSEN_FLOWS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N06": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N07": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "DAILY_CAP_OR_DUPLICATE",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N08": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          },
+          "source_errors": {}
+        },
+        "N09": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          },
+          "source_errors": {}
+        },
+        "N10": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          },
+          "source_errors": {}
+        },
+        "N11": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 3,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          },
+          "source_errors": {}
+        },
+        "N12": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 1,
+          "use": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 1,
+            "score_application_receipt_count": 1,
+            "score_contribution": 0.013,
+            "score_application_status": "SCORE_APPLICATION_PROVEN",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 1,
+            "participating": true,
+            "participation_status": "SCORE_EFFECT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          },
+          "source_errors": {}
+        },
+        "N14": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          },
+          "source_errors": {}
+        },
+        "N15": {
+          "checked": false,
+          "valid_facts": 0,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "checked": false,
+            "observed_fact_count": 0,
+            "valid_fact_count": 0,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "NOT_CHECKED",
+            "control_check_reported": false,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 0,
+            "rendered_useful_context_receipt_count": 0,
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "COINGECKO_SECTOR": "DAILY_CAP_OR_DUPLICATE",
+            "COINPAPRIKA_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
+          },
+          "source_errors": {}
+        },
+        "N16": {
+          "checked": true,
+          "valid_facts": 1,
+          "usable_score_facts": 0,
+          "use": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "checked": true,
+            "observed_fact_count": 1,
+            "valid_fact_count": 1,
+            "directional_eligible_fact_count": 0,
+            "score_application_receipt_count": 0,
+            "score_contribution": 0,
+            "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+            "control_check_reported": true,
+            "control_decision_effect_proven": false,
+            "decision_assessment_receipt_count": 1,
+            "rendered_useful_context_receipt_count": 2,
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "evaluation_is_not_nonzero_weight": true
+          },
+          "sources": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          },
+          "source_errors": {}
+        }
+      },
+      "hard_veto_status": "CLEAR",
+      "liquidation": {
+        "accepted_real_future_levels": 0,
+        "source": null,
+        "calculated_fallback": false,
+        "venue_is_not_HTX": true
+      }
+    }
+  ],
+  "telegram": {
+    "schema": "telegram-info-proof-v1",
+    "head": "3dc0a63336ea84ff0b2e235de32c12373e485ffa",
+    "source": "schedule",
+    "source_run_id": "1791221005624-1791221015309",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-shadow-v1",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "ZEC-USDT",
+          "status": "DIRECTION_NOT_CLOSED",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "NIL-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 43,
+        "rows_written": 0,
+        "requests": 4,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "maximum_available_blocks_live_verified": false,
+  "all_source_outcomes_accounted": true,
+  "same_run_participation_verified": true,
+  "no_cumulative_scope_counts": true,
+  "all_available_facts_decision_accounted": false,
+  "why_not_fully_accepted": [
+    "NIL N12 is rendered but has no score consumer receipt because no base direction/score exists; excluded from participation count",
+    "Neutral assessment does not prove nonzero weight or application as an execution restriction",
+    "Both candidates remain canonical REJECTED; fresh approved Telegram SENT/message_id not observed",
+    "N07 and N15 source caps deny new requests; no quota reset or repeat probe authorized"
+  ],
+  "acceptance": "ACTUAL_SAME_RUN_PROGRESS_7_AND_8_CORE_BLOCKS_TELEGRAM_PENDING",
+  "no_claim_all_assets_live_covered": true
+}
