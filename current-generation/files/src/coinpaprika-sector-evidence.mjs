@@ -3,7 +3,7 @@ import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs'
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
-export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v7-provider-market-reference-20261005';
+export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v8-project-activity-market-reference-20261005';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}={}){
  const platform=PLATFORMS[identity?.chain],address=clean(identity?.contract_or_mint);if(!platform||!address||metadata?.id!==coin_id||metadata?.symbol!==base||metadata?.is_active!==true)return false;
@@ -11,15 +11,21 @@ export function verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id
 }
 // Select only a provider-declared functional category also present on the exact
 // verified asset. A consensus algorithm/ecosystem tag is never a sector fallback.
+export function comparableCoinpaprikaFunctionalTag(row){
+ // Provider "functional" includes investor/regulatory themes and consensus
+ // mechanics in actual responses. These are not project-activity sectors.
+ const id=clean(row?.id);
+ return row?.type==='functional'&&!/^(?:alleged-|made-in-|recently-|presale$|defunct$|wrapped-token$|personal-token$|celebrity-tokens$|binance-launch(?:pad|pool)$)/.test(id)&&!/(?:-portfolio|-holdings|-token$)/.test(id)&&!['cryptocurrency','pos','staking','restaking','liquid-restaking-tokens','sharding','scalable','high-transaction-speed-tps','feeless','open-source','governance','cosmos','substrate','metis-andromeda','wbet','dapps-token'].includes(id);
+}
 export function selectCoinpaprikaFunctionalSector(metadata,directory){
  if(!Array.isArray(metadata?.tags)||!Array.isArray(directory))return null;
  const declared=new Set(metadata.tags.map(row=>clean(row?.id)));
  const counts=new Map();for(const row of directory)counts.set(row?.id,(counts.get(row?.id)||0)+1);
- const eligible=directory.filter(row=>declared.has(row?.id)&&counts.get(row.id)===1&&row.type==='functional'&&/^[a-z0-9-]{3,80}$/.test(row.id));
+ const eligible=directory.filter(row=>declared.has(row?.id)&&counts.get(row.id)===1&&comparableCoinpaprikaFunctionalTag(row)&&/^[a-z0-9-]{3,80}$/.test(row.id));
  return eligible.sort((a,b)=>a.id.localeCompare(b.id))[0]||null;
 }
 export function normalizeCoinpaprikaSector({metadata,tag,tickers,identity,provider_reference=null,contract,coin_id,tag_id,observed_ts=Date.now()}={}){
- const base=clean(contract).replace(/-USDT$/,'');if(!(provider_reference?verifyCoinpaprikaProviderReference(provider_reference,contract,observed_ts)&&provider_reference.coinpaprika_id===coin_id&&metadata?.id===coin_id&&metadata?.symbol===base&&metadata?.is_active===true:verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}))||tag?.id!==tag_id||tag?.type!=='functional'||!Array.isArray(tag?.coins)||!tag.coins.includes(coin_id)||!Array.isArray(tickers))return{status:'EXACT_ASSET_AND_FUNCTIONAL_SECTOR_REQUIRED',evidence:[],summary:{tag_id:tag?.id,tag_type:tag?.type,members_are_array:Array.isArray(tag?.coins),contains_target:Array.isArray(tag?.coins)&&tag.coins.includes(coin_id),metadata_active:metadata?.is_active,ticker_rows:Array.isArray(tickers)?tickers.length:0,tag_member_sample:Array.isArray(tag?.coins)?tag.coins.slice(0,6):null}};
+ const base=clean(contract).replace(/-USDT$/,'');if(!(provider_reference?verifyCoinpaprikaProviderReference(provider_reference,contract,observed_ts)&&provider_reference.coinpaprika_id===coin_id&&metadata?.id===coin_id&&metadata?.symbol===base&&metadata?.is_active===true:verifyCoinpaprikaIdentity(metadata,{identity,base,coin_id,tag_id}))||tag?.id!==tag_id||!comparableCoinpaprikaFunctionalTag(tag)||!Array.isArray(tag?.coins)||!tag.coins.includes(coin_id)||!Array.isArray(tickers))return{status:'EXACT_ASSET_AND_FUNCTIONAL_SECTOR_REQUIRED',evidence:[],summary:{tag_id:tag?.id,tag_type:tag?.type,members_are_array:Array.isArray(tag?.coins),contains_target:Array.isArray(tag?.coins)&&tag.coins.includes(coin_id),metadata_active:metadata?.is_active,ticker_rows:Array.isArray(tickers)?tickers.length:0,tag_member_sample:Array.isArray(tag?.coins)?tag.coins.slice(0,6):null}};
  const ids=new Set(tag.coins),duplicates=new Set(),byId=new Map();for(const r of tickers){if(byId.has(r?.id))duplicates.add(r.id);byId.set(r?.id,r);}
  const valid=r=>{const ts=Date.parse(r?.last_updated),q=r?.quotes?.USD,change=finite(q?.percent_change_24h);return r&&!duplicates.has(r.id)&&Number.isFinite(ts)&&ts<=observed_ts&&observed_ts-ts<=MAX_AGE&&finite(q?.price)>0&&change!==null&&finite(q?.volume_24h)>=100000?{id:r.id,symbol:r.symbol,source_ts:ts,change_24h_pct:change,quote:'USD_AGGREGATED'}:null;};
  const target=valid(byId.get(coin_id));if(!target||target.symbol!==base)return{status:'EXACT_FRESH_TARGET_QUOTE_REQUIRED',evidence:[],summary:null};
@@ -39,7 +45,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION)return{...cached,contract};
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
- const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
+ const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
  const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:6*1024*1024,bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
  const finish=async(result)=>{
   const summary=reader.summary(),final={version:COINPAPRIKA_SECTOR_VERSION,...result,...(!summary.admission.allowed?{status:summary.admission.status}:{}),...(summary.provider_backoff?{status:summary.provider_backoff.status}:{}),...summary,internal_only:true,free_only:true,monthly_module_bound:48*31,official_free_monthly_requests:20000};
@@ -72,7 +78,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  let tag=null,tickers=null,sectorResult={status:'EXACT_FUNCTIONAL_SECTOR_NOT_FOUND',evidence:[]};
  if(tag_id){
   tag=await request('FUNCTIONAL_SECTOR_MEMBERS',`https://api.coinpaprika.com/v1/tags/${encodeURIComponent(tag_id)}?additional_fields=coins`,3600000);
-  if(tag?.id===tag_id&&tag?.type==='functional'&&Array.isArray(tag.coins)&&tag.coins.includes(coin_id)){
+  if(tag?.id===tag_id&&comparableCoinpaprikaFunctionalTag(tag)&&Array.isArray(tag.coins)&&tag.coins.includes(coin_id)){
    tickers=await request('FREE_AGGREGATED_QUOTES','https://api.coinpaprika.com/v1/tickers?quotes=USD',60000);
    sectorResult=normalizeCoinpaprikaSector({metadata,tag,tickers,identity:asset_identity,provider_reference:reference,contract,coin_id,tag_id,observed_ts:Date.now()});
   }else sectorResult={status:'EXACT_FUNCTIONAL_SECTOR_MEMBERS_NOT_CLOSED',evidence:[]};

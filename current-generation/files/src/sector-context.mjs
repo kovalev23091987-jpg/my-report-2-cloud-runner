@@ -1,3 +1,4 @@
+import {comparableCoinpaprikaFunctionalTag} from './coinpaprika-sector-evidence.mjs';
 import {verifyCoinpaprikaProviderReference} from './coinpaprika-htx-identity.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {sectorCategoryLabel,nativeSectorAssetId} from './coingecko-sector-evidence.mjs';
@@ -9,7 +10,7 @@ export function consumeSectorContext({evidence=[],contract,asset_identity,now}={
  const common={advisory_only:true,directional_vote:false,hard_gate:false,score_contribution:0};
  for(const r of (Array.isArray(evidence)?evidence:[]).filter(r=>r&&typeof r==='object').sort((a,b)=>(a.provider_id==='COINGECKO_SECTOR'?-1:1)-(b.provider_id==='COINGECKO_SECTOR'?-1:1))){
   const providerBound=r.provider_id==='COINPAPRIKA_SECTOR'&&verifyCoinpaprikaProviderReference(r.provider_reference,contract,now)&&r.coin_id===r.provider_reference.coinpaprika_id;
-  const declaredTag=providerBound&&r.provider_tag?.id===r.tag_id&&r.provider_tag?.type==='functional'&&typeof r.provider_tag.name==='string'&&r.provider_tag.name.length>0&&r.provider_tag.name.length<=80&&r.provider_tag.name===r.category_name&&Array.isArray(r.provider_tag.coins)&&r.provider_tag.coins.includes(r.coin_id);
+  const declaredTag=providerBound&&r.provider_tag?.id===r.tag_id&&comparableCoinpaprikaFunctionalTag(r.provider_tag)&&typeof r.provider_tag.name==='string'&&r.provider_tag.name.length>0&&r.provider_tag.name.length<=80&&r.provider_tag.name===r.category_name&&Array.isArray(r.provider_tag.coins)&&r.provider_tag.coins.includes(r.coin_id);
   const label=r.provider_id==='COINGECKO_SECTOR'?sectorCategoryLabel(r.category_name):labels[r.tag_id]||(declaredTag?r.provider_tag.name:null);
   const rowAssetId=providerBound?r.provider_reference.asset_id:id;
   if(!sources[r?.provider_id]||r.block_id!=='N15'||r.metric_family!=='SECTOR_RELATIVE_STRENGTH_CONTEXT'||r.sector_proof!=='EXACT_ASSET_CATEGORY_AND_QUOTE_BASKET_V1'||r.htx_contract!==contract||!rowAssetId||r.asset_id!==rowAssetId||!validateEvidenceV2(r,{decision_ts:now}).usable||r.observed_ts>now||r.source_ts>r.observed_ts||!label)continue;
