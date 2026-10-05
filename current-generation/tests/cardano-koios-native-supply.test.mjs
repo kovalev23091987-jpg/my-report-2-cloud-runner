@@ -1,11 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {DatabaseSync} from 'node:sqlite';
 import {collectChainSupplyEvidence,normalizeChainSupply} from '../files/src/chain-supply-evidence.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
-import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
+import {consumeBlockResultContext,auditRenderedBlockResults} from '../files/src/block-result-context.mjs';
 import {auditCandidateBlocks,planCandidateEvidenceRoutes} from '../files/src/candidate-evidence-v2-runtime.mjs';
 import {SOURCE_POLICIES,planEvidenceSourceRequest} from '../files/src/evidence-source-adapters.mjs';
+import {canonicalFingerprint,renderCanonicalTelegram} from '../files/src/canonical-publication.mjs';
+import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 
 const SYSTEM_START=1506203091,EPOCH_LENGTH=432000,NOW=Date.parse('2026-10-05T04:00:00Z');
 const TIP_EPOCH=Math.floor((NOW/1000-SYSTEM_START)/EPOCH_LENGTH),CURRENT=TIP_EPOCH-1,PREVIOUS=TIP_EPOCH-2;
@@ -39,4 +42,12 @@ test('Cardano route and public quota are explicit and bounded',()=>{
  assert.equal(planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity}).nativeSupplyEligible,false);
  assert.equal(SOURCE_POLICIES.KOIOS_NATIVE_SUPPLY.daily_cap,48);assert.equal(SOURCE_POLICIES.KOIOS_NATIVE_SUPPLY.official_public_daily_cap,5000);assert.equal(SOURCE_POLICIES.KOIOS_NATIVE_SUPPLY.retries,0);
  assert.equal(planEvidenceSourceRequest({source:'KOIOS_NATIVE_SUPPLY',htx_contract:'ADA-USDT',asset_id:'cardano:native:mainnet',registry_verified:true,methods:4}).allowed,true);assert.equal(planEvidenceSourceRequest({source:'KOIOS_NATIVE_SUPPLY',htx_contract:'ADA-USDT',asset_id:'cardano:native:mainnet',registry_verified:true,methods:3}).allowed,false);
+});
+
+test('verified Cardano facts reach the established manual and Telegram layouts',()=>{
+ const c=JSON.parse(fs.readFileSync(new URL('../../checkpoints/btw-preserved-block-result-input-20261004.json',import.meta.url))).canonical,tip=Math.floor((c.observed_ts/1000-SYSTEM_START)/EPOCH_LENGTH),epoch=tip-1,prior=epoch-1,closedAt=e=>(SYSTEM_START+(e+1)*EPOCH_LENGTH)*1000;
+ const normalized=normalizeChainSupply({identity,contract:'ADA-USDT',identity_method:'HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK',previous:{chain:'cardano',address:'native:mainnet',supply:'34999000000000000',decimals:6,block_ref:`epoch:${prior}`,source_ts:closedAt(prior),finalized:true,epoch_no:prior},current:{supply:'35000000000000000',decimals:6,block_ref:`epoch:${epoch}`,source_ts:closedAt(epoch),finalized:true,epoch_no:epoch,supply_measure:'CARDANO_ACTIVE_SUPPLY',unit:'lovelace',provider_query:'KOIOS_TOTALS_CLOSED_EPOCH',max_supply:'45000000000000000'},observed_ts:c.observed_ts});
+ c.direction='LONG';c.state='OBSERVE';c.metadata.contract='ADA-USDT';c.trigger={metric:'price',operator:'>=',value:1,unit:'USDT',timeframe:'5m',expires_ts:c.observed_ts+600000,next_recheck_ts:c.observed_ts+60000,cancel_condition:'price<1'};
+ c.metadata.internal_market_context.evidence_v2.evidence=normalized.evidence;c.metadata.supporting_context={facts:consumeBlockResultContext({evidence:normalized.evidence,contract:'ADA-USDT',now:c.observed_ts}).facts};c.source_receipts=[];c.analytical_fingerprint=canonicalFingerprint(c);
+ const manual=formatManualReport(c),telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),proof=auditRenderedBlockResults({canonical:c,manual,telegram});assert.equal(manual.ok,true);assert.equal(telegram.ok,true);assert.deepEqual(proof.used_context_block_ids,['N02','N03']);assert.deepEqual(proof.telegram_used_context_block_ids,['N02','N03']);for(const rendered of [manual.text,telegram.text]){assert.match(rendered,/Активное предложение нативного ADA/);assert.match(rendered,/Сравнение активного предложения ADA/);}assert.equal(proof.telegram_delivery_proven,false);
 });
