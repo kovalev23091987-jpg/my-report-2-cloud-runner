@@ -52,12 +52,12 @@
     "acquired_ts": 1791214905519,
     "expires_ts": 1791224537843
   },
-  "next_action": "Fresh scheduled joint run 37340765812 has already completed. ZEC has six bound participating blocks; SUI has zero proven participation despite rendered facts. Telegram was not sent; both canonical candidates rejected by critical-quality veto. Investigate actual quality producer and source/decision consumers, preserve guards and quotas, no unchanged repeat MAIN. PR149 delivery guard merged and cloud-verified; not live Telegram acceptance.",
-  "last_verified_release": "checkpoints/maximum-useful-block-package-release-evidence-20261005.json",
+  "next_action": "PR150 merged after successful cloud validation, including original-clock replay of the actual ZEC/SUI quality failure. Await one admitted scheduled run of repaired code, then verify bound actual participation and approved Telegram SENT. Do not dispatch an extra unchanged MAIN, reuse old snapshots as delivery proof, or mark CORE accepted before source outcomes and actual use are read back.",
+  "last_verified_release": "checkpoints/quality-neutral-context-repair-release-evidence-20261005.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791218485796,
+  "updated_ts": 1791219637845,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -87,12 +87,15 @@
   "pending_work": null,
   "last_control": "checkpoints/all15-control-usefulness-20261005.json",
   "pending": {
-    "status": "ACTUAL_FRESH_RUN_READ_BACK_UNACCEPTED",
-    "cloud_run_id": 37340765812,
-    "runtime_run_id": "1791217568265-1791217581684",
-    "artifact_id": 11358093409,
-    "checkpoint": "checkpoints/ACTUAL_MAXIMUM_USEFUL_JOINT_RESULT_20261005.json",
-    "next": "GENERAL_QUALITY_AND_PARTICIPATION_CAUSE_REPAIR"
+    "status": "PR150_CLOUD_VERIFIED_AWAITING_SCHEDULED_LIVE_READBACK",
+    "pr": 150,
+    "merged_head": "500a830c12c99739b5f015102f381996c7c6674d",
+    "tested_head": "30b9d3dcc38f019fc785767508b38681922fbd7b",
+    "cloud_run": 37344685104,
+    "cloud_job": 111880177790,
+    "source_http": 0,
+    "MAIN": 0,
+    "telegram_calls": 0
   },
   "owner_final_batch_amendment": {
     "path": "checkpoints/OWNER_BATCHED_FINAL_VALIDATION_20261005.md",
