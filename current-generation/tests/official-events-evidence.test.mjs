@@ -63,3 +63,23 @@ test('verified hosted RSS checks the exact publisher without trusting all Medium
  assert.equal(calls,1);assert.equal(out.status,'CLOSED');assert.equal(out.source_scope,'OFFICIAL_ACCOUNT_RSS_ONLY');
  assert.equal(parseOfficialFeed({body:'not a feed',feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).status,'SOURCE_FEED_SCHEMA_NOT_CLOSED');
 });
+
+test('a bounded official feed absence requires intact dated publisher rows; malformed or future rows do not prove absence',()=>{
+ const old=rss.replace(/<item><guid>bad<\/guid>[\s\S]*?<\/item>/,'').replaceAll('2026','2025');
+ const good=parseOfficialFeed({body:old,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW});assert.equal(good.events.length,0);assert.equal(good.feed_schema_checked,true);
+ for(const body of [old.replaceAll('2025','invalid-year'),old.replace('</rss>',''),old.replaceAll('abc.example','foreign.example'),rss.replaceAll('02:30:00','04:30:00'),old.replace('</item>',''),old.replace('</channel>','<item><title>Truncated</title></channel>'),old.replace('</channel>','<entry></entry></channel>')])assert.notEqual(parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW}).feed_schema_checked,true);
+ const modified=`<html><script type="application/ld+json">${JSON.stringify({'@type':'NewsArticle',headline:'Old article',datePublished:'2025-01-01',dateModified:new Date(NOW).toISOString(),url:'https://abc.example/old'})}</script></html>`;
+ assert.equal(parseOfficialFeed({body:modified,content_type:'text/html',feed_url:'https://abc.example/news',official_domains:META.official_domains,now:NOW}).events.length,0);
+});
+
+
+test('an Atom updated-only old article cannot be admitted as a new publication or a completed absence check',()=>{
+ const body='<feed><entry><title>Old article edited</title><link href="https://abc.example/old"/><updated>2026-09-28T02:30:00Z</updated></entry></feed>';
+ const parsed=parseOfficialFeed({body,feed_url:META.official_feeds[0],official_domains:META.official_domains,now:NOW});
+ assert.equal(parsed.events.length,0);assert.equal(parsed.feed_schema_checked,false);
+});
+test('a truncated feed is an explicit schema failure through the collector and cannot be cached as checked absence',async()=>{
+ const params={db:new DB(),contract:'ABC-USDT',run_id:'BROKEN',asset_metadata:META,now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async()=>new Response('<rss><channel><item><title>Broken</title></channel></rss>',{headers:{'content-type':'application/rss+xml'}})};
+ const result=await collectOfficialEventsEvidence(params);
+ assert.equal(result.status,'SOURCE_FEED_SCHEMA_NOT_CLOSED');assert.equal(result.check_completed,false);assert.equal(result.evidence.length,0);assert.equal(result.receipts[0].status,'SOURCE_ERROR');
+});

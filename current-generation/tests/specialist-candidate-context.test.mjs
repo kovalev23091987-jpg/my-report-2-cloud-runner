@@ -52,10 +52,10 @@ test('quota cooldown covers all symbols, retains classification and does not lea
  const r=await collectSpecialistContext(p);assert.equal(r.payloads[1].payload.status,'PROVIDER_QUOTA');assert.doesNotMatch(JSON.stringify(r),/secret-/);
  const s=await collectSpecialistContext(p);assert.equal(s.network_calls,1);
 });
-test('actual supplemental collector persists both additions inside existing five HTTP envelope',async()=>{
+test('optional supplemental collector preserves VYX without spending manual primary Nansen allowance',async()=>{
  const p=params(),calls=[];const fetch_impl=async(url,opts)=>{calls.push(url);if(url.includes('vyx'))return ok(vyx);if(url.includes('nansen'))return ok(nansen);return ok({data:[{symbol:'SOLUSDT',lastPr:'120'}]});};
  const r=await collectSupplementalCandidateContext({db:p.db,fetch_impl,contract:'SOL-USDT',run_id:'specialist',derivatives_venues:2,registry:{SOL:{chain:'solana',contract_or_mint:'So11111111111111111111111111111111111111112'}},primary_price:120,now,vyx_api_key:p.vyx_api_key,nansen_api_key:p.nansen_api_key});
- assert.ok(calls.length<=5);assert.equal(r.sources.VYX.status,'CLOSED');assert.equal(r.sources.NANSEN.status,'CONTEXT_UNTIMED');assert.equal(r.sources.NANSEN.source_ts,null);
+ assert.ok(calls.length<=5);assert.equal(r.sources.VYX.status,'CLOSED');assert.equal(r.sources.NANSEN,undefined);assert.ok(calls.every(url=>!url.includes('nansen')));
 });
 const flowIdentity={chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)};
 const windowEnd=Date.parse('2026-09-30T14:00:00Z');
@@ -91,8 +91,8 @@ test('flows and positions share Nansen daily cap and provider-wide quota cooldow
 });
 test('actual supplemental path carries flows using existing slots and reuses their cache',async()=>{
  const db=new DB(),requests=[];
- const p={db,contract:'TEST-USDT',registry:{TEST:flowIdentity},derivatives_venues:2,run_id:'flow',now,primary_price:120,nansen_api_key:'secret-n',vyx_api_key:'secret-v',fetch_impl:async(url,opts)=>{requests.push(url);return ok(url.endsWith('/flows')?flowPayload:url.includes('vyx')?{...vyx,symbol_name:'TEST'}:url.includes('nansen')?nansen:{});}};
+ const p={db,contract:'TEST-USDT',registry:{TEST:flowIdentity},derivatives_venues:2,run_id:'flow',now,primary_price:120,strict17_required:true,nansen_api_key:'secret-n',vyx_api_key:'secret-v',fetch_impl:async(url,opts)=>{requests.push(url);return ok(url.endsWith('/flows')?flowPayload:url.includes('vyx')?{...vyx,symbol_name:'TEST'}:url.includes('nansen')?nansen:{});}};
  const r=await collectSupplementalCandidateContext(p);assert.ok(requests.length<=5);assert.equal(r.sources.NANSEN_FLOWS.status,'CLOSED');assert.equal(r.asset_identity.contract_or_mint,flowIdentity.contract_or_mint);
  const before=requests.filter(x=>x.endsWith('/flows')).length;await collectSupplementalCandidateContext({...p,now:now+1000});assert.equal(requests.filter(x=>x.endsWith('/flows')).length,before);
- const reserved=await collectSupplementalCandidateContext({...p,reserve_for_liquidations:true});assert.equal(reserved.network_calls,0);
+ const reserved=await collectSupplementalCandidateContext({...p,strict17_required:false,reserve_for_liquidations:true});assert.equal(reserved.network_calls,0);
 });

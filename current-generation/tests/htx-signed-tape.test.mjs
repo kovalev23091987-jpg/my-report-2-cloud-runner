@@ -5,7 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {pathToFileURL} from 'node:url';
 const root=process.env.REPORT2_SIGNED_TAPE_MODULE_ROOT;
 const load=rel=>import(root?pathToFileURL(root+'/'+rel):new URL('../files/src/'+rel,import.meta.url));
-const {HTX_SIGNED_TAPE_VERSION,verifiedSignedMinutes,mergeSignedTape,signedTape24hEvidence,observeHtxSignedTape,clearHtxSignedTapeSnapshots,persistCapturedHtxSignedTape}=await load('htx-signed-tape.mjs');
+const {HTX_SIGNED_TAPE_VERSION,verifiedSignedMinutes,mergeSignedTape,signedTape24hEvidence,observeHtxSignedTape,clearHtxSignedTapeSnapshots,persistCapturedHtxSignedTape,mergeHtxSignedHistoryTrades}=await load('htx-signed-tape.mjs');
 const {consumeBlockResultContext}=await load('block-result-context.mjs');
 const {consumeEvidenceV2}=await load('evidence-v2.mjs');
 const MIN=60000,now=1791141000000,contract='测试1000-USDT',size=1,hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
@@ -27,3 +27,19 @@ test('only a complete 1440-minute ring with exact unique fills supplies a neutra
 test('durable raw ring respects DB admission and readback without network requests or new tables',async()=>{clearHtxSignedTapeSnapshots();const s=snapshot();for(const [k,url] of [['metadata','/linear-swap-api/v1/swap_contract_info'],['trades','/linear-swap-ex/market/history/trade'],['minutes','/linear-swap-ex/market/history/kline']])observeHtxSignedTape(s[k].payload,'https://api.hbdm.com'+url+'?contract_code='+encodeURIComponent(contract)+'&period=1min',now);const db=new DB();assert.equal((await persistCapturedHtxSignedTape({db,contract,now,db_admit:()=>({allowed:false,status:'NO_HEADROOM'})})).status,'NO_HEADROOM');let grants=0;const out=await persistCapturedHtxSignedTape({db,contract,now,db_admit:e=>{grants++;assert.equal(e.rows_written,4);return{allowed:true};}});assert.equal(grants,1);assert.equal(out.persisted_minutes,45);assert.equal(out.network_calls,0);assert.equal(out.evidence.length,0);assert.ok(db.sqlite.prepare("SELECT payload_json FROM report2_evidence_source_cache WHERE source='HTX_SIGNED_RAW_TAPE'").get());});
 
 test('injected corrupt acquisitions and duplicate saved minute keys are rejected before persistence',()=>{const a=verifiedSignedMinutes({snapshot:snapshot(),contract,now}),m=mergeSignedTape({acquisition:a,now});const bad=structuredClone(a);bad.minutes[0].raw_sha256='0'.repeat(64);assert.equal(mergeSignedTape({acquisition:bad,now}).status,'ACQUIRED_RAW_TAPE_INTEGRITY_NOT_CLOSED');const duplicate=structuredClone(m.ring);duplicate.minutes.push(duplicate.minutes[0]);assert.equal(mergeSignedTape({previous:duplicate,acquisition:a,now}).status,'SAVED_RAW_TAPE_INTEGRITY_NOT_CLOSED');assert.equal(signedTape24hEvidence({ring:duplicate,now}).evidence.length,0);});
+
+test('the shared raw accumulator retains factual minutes older than 45 minutes already present in the same response',()=>{
+ const s=snapshot();s.minutes.payload.data=Array.from({length:300},(_,i)=>({id:(now-301*MIN+i*MIN)/1000,count:i===298?1:0}));
+ const a=verifiedSignedMinutes({snapshot:s,contract,now});assert.equal(a.minutes.length,300);assert.equal(a.network_calls,0);assert.equal(mergeSignedTape({acquisition:a,now}).ring.minutes.length,300);
+});
+test('validated immutable raw history extends the same contract sample; foreign, corrupt or conflicting fills never do',()=>{
+ const ring=controlledRing(),current=ring.minutes.at(-1).fills.map(f=>({id:f.id,ts:f.ts,direction:f.side,price:f.price,amount:f.contracts,trade_turnover:f.quote_usdt}));
+ const params={ring,current_trades:current,contract,contract_size:1,now};const good=mergeHtxSignedHistoryTrades(params);
+ assert.equal(good.trades.length,1440);assert.equal(good.reused_fills,1439);assert.equal(good.source_http,0);assert.equal(good.full_window_completion_claimed,false);
+ for(const mutate of [r=>r.contract='FOREIGN-USDT',r=>r.contract_size=2,r=>r.minutes[0].raw_sha256='foreign',r=>r.minutes[0].observed_ts=now+1,r=>r.minutes.push(r.minutes[0])]){const r=structuredClone(ring);mutate(r);assert.deepEqual(mergeHtxSignedHistoryTrades({...params,ring:r}).trades,current);}
+ const conflict=structuredClone(current);conflict[0].amount+=1;assert.equal(mergeHtxSignedHistoryTrades({...params,current_trades:conflict}).status,'CONFLICTING_SAVED_AND_CURRENT_FILL');
+});
+
+test('saved history does not erase truncation or dropped-row provenance from the current transport',()=>{
+ for(const flag of ['_source_truncated','_source_rows_dropped']){const current=[];Object.defineProperty(current,flag,{value:flag==='_source_truncated'?true:1});const result=mergeHtxSignedHistoryTrades({ring:controlledRing(),current_trades:current,contract,contract_size:1,now});assert.equal(result.status,'CURRENT_RAW_TRANSPORT_NOT_COMPLETE');assert.equal(result.trades,current);}
+});

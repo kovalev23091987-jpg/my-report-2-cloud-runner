@@ -1,7 +1,7 @@
-name: Report 2 Shared Sector Joint Receipt Acceptance
+name: Report 2 Connected Core Repair Validation
 on:
   push:
-    branches: [autonomous/sector-joint-context-20261005]
+    branches: [autonomous/core-final-batch-20261005]
 permissions:
   contents: read
 jobs:
@@ -27,23 +27,17 @@ jobs:
         run: |
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node current-generation/validate.mjs > audit-output/validation.json
-          node current-generation/tests/sector-context.runtime.mjs runtime > audit-output/sector-joint-runtime.json
+          node current-generation/tests/raw-history-trajectory.runtime.mjs runtime > audit-output/raw-history-trajectory-runtime.json
           node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
-      - name: Verify exact saved source through shared joint consumer and read provider admission
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-          REPORT2_CONTINUATION_OWNER: 'HTX:20261005T093648Z:bdbda5a1-e2c7-4311-944a-09a7e5a85a8c'
-        run: node audit-fixes/sector-joint-context-20261005/verify-saved-use.mjs runtime > audit-output/sector-joint-acceptance.json
       - name: Exact runtime manifest
         if: always()
         run: |
-          sha256sum runtime/src/manual-report-formatter.mjs runtime/src/sector-context.mjs runtime/src/block-result-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/manual-run-summary.mjs > audit-output/runtime-sha256.txt
+          sha256sum runtime/src/manual-report-formatter.mjs runtime/src/worker.js runtime/runner-main.mjs runtime/src/htx-signed-tape.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs > audit-output/runtime-sha256.txt
           git rev-parse HEAD > audit-output/github-head.txt
           git rev-parse HEAD^{tree} > audit-output/github-tree.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: sector-joint-context-${{ github.run_id }}
+          name: connected-core-repair-${{ github.run_id }}
           path: audit-output/
           retention-days: 30

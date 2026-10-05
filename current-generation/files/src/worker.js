@@ -1,3 +1,4 @@
+import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
@@ -2654,7 +2655,9 @@ function buildTrajectoryWindow({
       ? latestClosed.ts + 60000
       : null;
 
-  const orderedTrades = sortedTrades(tradeList);
+  const exactHistoryMarket=contractInfo?.contract_code===contract&&contractInfo?.business_type==='swap'&&contractInfo?.trade_partition==='USDT'&&contractInfo?.contract_status===1;
+  const verifiedHistory=mergeHtxSignedHistoryTrades({ring:exactHistoryMarket?params?._verified_signed_history:null,current_trades:tradeList,contract,contract_size:contractSize,now});
+  const orderedTrades = sortedTrades(verifiedHistory.trades);
 
   const oiContracts = normalizeOiHistory(oiContractsR.data);
   const oiBase = normalizeOiHistory(oiBaseR.data);
@@ -2993,6 +2996,8 @@ function buildTrajectoryWindow({
 
     tool:
       "htx_futures_trajectory",
+
+    verified_signed_history: {status:verifiedHistory.status,reused_minutes:verifiedHistory.reused_minutes,reused_fills:verifiedHistory.reused_fills,overlapping_equal_fills:verifiedHistory.overlapping_equal_fills||0,source_http:0,full_window_completion_claimed:false},
 
     version:
       "1.2-opportunity-integrity-inputs",
@@ -15899,10 +15904,13 @@ async function buildDeepCheckInput(params, env) {
     _fetch_json: sharedFetch.fetch,
   };
 
+  let savedSignedHistory=null;
+  if(typeof env?.REPORT2_SIGNED_TAPE_READ==='function')try{savedSignedHistory=await env.REPORT2_SIGNED_TAPE_READ({contract,now:Date.now()});}catch{}
   const trajectoryParams = {
     contract,
     trades: 2000,
     kline_size: 1600,
+    _verified_signed_history: savedSignedHistory,
     _fetch_json: sharedFetch.fetch,
   };
 
