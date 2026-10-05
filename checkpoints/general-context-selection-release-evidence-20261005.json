@@ -1,0 +1,75 @@
+{
+  "schema": "report2-general-context-selection-release-evidence-v1",
+  "generated_at": "2026-10-05T07:19:18.120583+00:00",
+  "pr": 138,
+  "tested_head": "61d2f1881474ad9d044bd2c29c6d3d4ece9b56bc",
+  "tested_tree": "b8efb265dda2870e60ddbeeb965a35f0ea30529d",
+  "merged_head": "75be90ae1e8a28e3a07fc6a3b669a849efd4033d",
+  "merged_tree": "b8efb265dda2870e60ddbeeb965a35f0ea30529d",
+  "exact_tree_verified": true,
+  "cloud_run": 37276709015,
+  "cloud_job": 111655211272,
+  "cloud_conclusion": "SUCCESS",
+  "artifact_id": 11330487599,
+  "artifact_sha256": "83dd93b2eb7eb90842ca2854d226561baae7acf24c05096972cc69aea1a44d3c",
+  "runtime_sha256": {
+    "src/manual-report-formatter.mjs": "2b8cf5b05b35173ebe2d58bdd31597e116b6197d965eb51e3e57bb7c04f817a8",
+    "src/sector-context.mjs": "41842f915e1e192d1ec79b07a3ab3beb2440d1be54dac6d2a2798e82b2952f20",
+    "src/specialist-candidate-context.mjs": "4bad0836758b0b19e606dcbb072dd85ed7294b573eb4609c2e075a139233c50e"
+  },
+  "validation": {
+    "engine": "PASS",
+    "integration": 37,
+    "changed_consumer_tests": 27,
+    "changed_tests_included_in_engine_without_duplicate_cloud_run": true,
+    "stage_guard": 5,
+    "golden_fixture_bytes_unchanged": true,
+    "formatter_hash_revised_with_reason": true
+  },
+  "scope": "GENERAL_INTERNAL_SELECTION_OF_EXISTING_VALID_CORE_FACTS_WITHIN_APPROVED_24_LINE_LIMIT",
+  "overflow_proof": "REGRESSION_ONLY_ALL15_POSITIONS_NOT_ACTUAL_ALL15_DATA",
+  "actual_cache_report_scope": [
+    "ADA-USDT"
+  ],
+  "actual_rendered_context_blocks": [
+    "N01",
+    "N07"
+  ],
+  "actual_rendered_fact_count": 3,
+  "source_http": 0,
+  "database_usage": {
+    "requests": 12,
+    "rows_read": 2,
+    "rows_written": 0,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "source_cache_reused_without_retiming": true,
+  "score_weights_entry_roles_unchanged": true,
+  "telegram_layout_unchanged": true,
+  "production_canonical_writes": 0,
+  "full_main_acceptance": false,
+  "all_15_live_accepted": false,
+  "telegram_calls": 0,
+  "telegram_delivery_proven": false,
+  "prior_failed_run": {
+    "id": 37276278527,
+    "job": 111653883770,
+    "reason": "Frozen formatter source hash needed an explicit pin revision; golden output bytes and all other engine tests remained unchanged. No source calls occurred."
+  },
+  "source_use_path": "checkpoints/general-context-selection-source-use-20261005.json.gz",
+  "source_use_sha256": "27851d80bfbda63161dbea60c583f24e76c954a671a42d66654f824fca6c6ca6"
+}
