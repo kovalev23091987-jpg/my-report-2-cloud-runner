@@ -8,7 +8,7 @@ const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPO
 const reservation={rows_read:5000,rows_written:400},reservationId=`RETAINED_HISTORY:${process.env.GITHUB_RUN_ID}:${Date.now()}`;
 const request=db._request.bind(db);
 db._request=async p=>{
- if(!['first','all','run'].includes(p.op)||!/^\s*(SELECT|INSERT INTO report2_(?:full_evidence|canonical)_archive_v1|INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow|UPDATE report2_runner_budget_ledger_shadow|DELETE FROM (?:full_evidence_shadow_log|canonical_publication_shadow))\b/i.test(p.sql)||db.usageSnapshot().rows_read>4500||db.usageSnapshot().rows_written>360||db.usageSnapshot().unknown_ops||db.usageSnapshot().requests>115)throw Error('ARCHIVE_MIGRATION_BOUND_EXHAUSTED');
+ if(!['first','all','run'].includes(p.op)||!/^\s*(SELECT|PRAGMA (?:page_count|page_size)|INSERT INTO report2_(?:full_evidence|canonical)_archive_v1|INSERT OR IGNORE INTO report2_runner_budget_ledger_shadow|UPDATE report2_runner_budget_ledger_shadow|DELETE FROM (?:full_evidence_shadow_log|canonical_publication_shadow))\b/i.test(p.sql)||db.usageSnapshot().rows_read>4500||db.usageSnapshot().rows_written>360||db.usageSnapshot().unknown_ops||db.usageSnapshot().requests>115)throw Error('ARCHIVE_MIGRATION_BOUND_EXHAUSTED');
  return request(p);
 };
 const daily=await loadDailyUsageAggregate(db),admission=evaluateDailyReservationBudget({daily,nextReservation:reservation});
@@ -16,7 +16,8 @@ if(!admission.allowed)throw Error(`ARCHIVE_D1_DAILY_ADMISSION_${admission.status
 await reserveRunBudget(db,{reservationId,reservation});
 let error=null;const moved=[];let before=null,after=null,commit=null,archiveHTTP=0;
 try{
-before=await db.prepare('SELECT page_count*page_size AS database_bytes FROM pragma_page_count(),pragma_page_size()').first();
+const databaseBytes=async()=>{const pages=await db.prepare('PRAGMA page_count').first(),size=await db.prepare('PRAGMA page_size').first();return{database_bytes:Number(pages.page_count)*Number(size.page_size)};};
+before=await databaseBytes();
 const cutoff=Date.now()-HISTORY_HOT_WINDOW_MS,selected=[];
 for(const [table,sql] of [
  ['full_evidence_shadow_log','SELECT * FROM full_evidence_shadow_log WHERE observed_ts<?1 ORDER BY observed_ts,full_evidence_id LIMIT 12'],
@@ -57,7 +58,7 @@ for(const s of selected){
  assert.deepEqual(await restorer.restore(final),s.row);
  moved.push({table:s.table,id:s.row[spec.key],contract:s.row.contract_code,observed_ts:s.row.observed_ts,raw_bytes:s.envelope.raw_bytes,raw_sha256:s.envelope.raw_sha256,path:s.path});
 }
-after=await db.prepare('SELECT page_count*page_size AS database_bytes FROM pragma_page_count(),pragma_page_size()').first();
+after=await databaseBytes();
 archiveHTTP=restorer.usage().archive_http+selected.length;
 }catch(e){error=String(e.message).slice(0,240);}finally{
  try{await finalizeRunUsage(db,{reservationId,sourceRunId:`RETAINED_HISTORY:${process.env.GITHUB_RUN_ID}`,usage:db.usageSnapshot()});}catch(e){error=error||String(e.message).slice(0,240);}
