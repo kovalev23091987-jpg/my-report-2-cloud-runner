@@ -33,7 +33,7 @@ export function consumeSpecialistContext({sources={},contract,now,primary_price,
   const checked=normalizeNansenFlows({data:flow.buckets,pagination:{is_last_page:flow.pagination_complete}},{base,now,identity:asset_identity,window_end:flow.window_end_ts});
   const valid=flow.version===SPECIALIST_CONTEXT_VERSION&&flow.status==='CLOSED'&&flow.symbol===base&&id&&JSON.stringify(id)===JSON.stringify(flow.identity)&&flow.observed_ts<=now&&flow.observed_ts>=flow.window_end_ts&&now-flow.observed_ts<=3600000&&checked.status==='CLOSED';
   if(valid){
-   const f={...common,source:'NANSEN',decision_block:'SMART_MONEY_ONCHAIN',field:'CEX_NET_FLOW_TOKENS_2H',label:'Чистый приток на CEX по меткам Nansen за два полных часа (не сигнал продажи)',value:checked.net_cex_tokens,unit:base,source_ts:checked.source_ts,window_start_ts:checked.window_start_ts,window_end_ts:checked.window_end_ts};
+   const f={...common,block_id:'N05',source:'NANSEN',decision_block:'SMART_MONEY_ONCHAIN',field:'CEX_NET_FLOW_TOKENS_2H',label:'Чистый приток на CEX по меткам Nansen за два полных часа (не сигнал продажи)',value:checked.net_cex_tokens,unit:base,source_ts:checked.source_ts,window_start_ts:checked.window_start_ts,window_end_ts:checked.window_end_ts};
    blocks.exchange_flows={status:'CLOSED',decision_block:'SMART_MONEY_ONCHAIN',facts:[f],inflow_tokens:checked.inflow_cex_tokens,outflow_tokens:checked.outflow_cex_tokens,identity:id,label_authority:'NANSEN',individual_addresses_verified:false,data_may_be_revised:true,...common};facts.push(f);
   }else blocks.exchange_flows={status:'NOT_CLOSED',reason:'EXCHANGE_FLOW_IDENTITY_OR_WINDOW_INVALID',...common};
  }

@@ -71,6 +71,7 @@ test('exchange flows require exact token and complete contiguous hours; amounts 
  for(const extra of [{identity:null},{base:'ETH'},{now:windowEnd-1},{now:windowEnd+7200001}])assert.equal(normalizeNansenFlows(flowPayload,{...ctx,...extra}).status,'NOT_CLOSED');
  const input={sources:{NANSEN_FLOWS:r},contract:'TEST-USDT',now,asset_identity:flowIdentity};
  assert.equal(consumeSpecialistContext(input).blocks.exchange_flows.status,'CLOSED');
+ assert.equal(consumeSpecialistContext(input).facts[0].block_id,'N05');
  for(const extra of [{asset_identity:null},{asset_identity:{...flowIdentity,contract_or_mint:'0x'+'2'.repeat(40)}},{contract:'OTHER-USDT'},{now:now+3600001}])assert.equal(consumeSpecialistContext({...input,...extra}).facts.length,0);
 });
 test('flows and positions share Nansen daily cap and provider-wide quota cooldown',async()=>{
