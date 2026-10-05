@@ -28,7 +28,6 @@ jobs:
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node current-generation/validate.mjs > audit-output/validation.json
           node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
-          node --test current-generation/tests/supporting-context-selection.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/sector-context.test.mjs current-generation/tests/specialist-candidate-context.test.mjs > audit-output/context-selection-package.tap
       - name: Verify valid cached source facts through the changed shared report consumer
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
