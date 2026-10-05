@@ -984,7 +984,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     v3TelegramLifecycleSidecar = await runV3TelegramLifecycleSidecar(env.DATA_DB, {
       source_run_id:String(cron.run_id || ""), now_ts:Date.now(),
       d1_pretelegram_budget_closed:lifecyclePreactionBudget.allowed, dispatch_enabled:v3TelegramJournalEnabled,
-      completed_handoffs:completedLifecycleHandoffs,
+      completed_handoffs:completedLifecycleHandoffs, canonical_required:postV7UnifiedEnabled,
     });
   }
   console.log("V3_TELEGRAM_LIFECYCLE_SIDECAR", JSON.stringify(v3TelegramLifecycleSidecar));

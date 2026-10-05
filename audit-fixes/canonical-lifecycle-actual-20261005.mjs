@@ -1,0 +1,15 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+import {deriveLifecycleContext} from '../runtime/src/v3-telegram-lifecycle-sidecar.mjs';
+const fixture=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/actual-lifecycle-37382044550.json'));
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),orig=db._request.bind(db);
+db._request=async p=>{assert.equal(p.op,'all');assert.match(p.sql,/^\s*SELECT\b/i);assert.ok(!/\b(INSERT|DELETE|UPDATE|CREATE|DROP|ALTER)\b/i.test(p.sql));const u=db.usageSnapshot();assert.ok(u.rows_read<200&&u.rows_written===0&&u.unknown_ops===0&&u.requests<3);return orig(p);};
+const run=fixture.row.run_id;
+const h=await db.prepare(`SELECT h.handoff_id,h.source_run_id,h.scan_ts,h.contract_code,h.base_ticker,h.discovery_rank,h.direction AS handoff_direction,h.wave_id,h.dedup_reentry_key,h.state,h.deep_check_run_id,h.completed_ts,h.updated_ts,d.execution_status,d.data_sufficiency,d.error_text AS deep_error,d.started_ts AS deep_started_ts,d.completed_ts AS deep_completed_ts FROM deep_check_run_log d CROSS JOIN v3_discovery_deep_handoff_shadow h ON h.handoff_id=d.v3_handoff_id AND h.contract_code=d.contract_code AND h.source_run_id=d.run_id WHERE d.run_id=?1 AND d.contract_code=?2 AND h.state='COMPLETED' AND h.deep_check_run_id=d.run_id ORDER BY h.updated_ts DESC LIMIT 1`).bind(run,fixture.row.contract_code).all();
+const s=await db.prepare('SELECT shadow_id,contract_code,observed_ts,rules_version,direction_hint,eq_status,dq_status,stage,data_sufficiency,created_ts FROM shadow_decision_log WHERE shadow_id=?1 LIMIT 1').bind('1791239015611:FIL-USDT').all();
+assert.equal(h.results.length,1);assert.equal(s.results.length,1);
+const args={handoff:h.results[0],early:fixture.early,shadow:s.results[0],final:null,previous:null,now_ts:fixture.now_ts,dispatch_enabled:true};
+const old=deriveLifecycleContext(args),repaired=deriveLifecycleContext({...args,canonical_required:true,canonical:fixture.row});
+assert.equal(old.status,'CLOSED');assert.equal(old.ctx.direction,'LONG');assert.equal(repaired.status,'CANONICAL_DIRECTION_NOT_CLOSED');assert.equal(repaired.ctx,null);
+assert.equal(fixture.early.direction_state,'DIRECTION_NOT_CLOSED');assert.equal(fixture.row.canonical_state,'REJECTED');
+const out={schema:'report2-actual-canonical-lifecycle-replay-v1',original_run:37382044550,source_run_id:run,replay_clock:fixture.now_ts,inputs:args,immutable_canonical_projection:fixture.row,legacy:old,repaired,sourceHTTP:0,MAIN:0,Telegram:0,original_snapshot_resent:false,usage:db.usageSnapshot(),new_score_created:false,source_caps_reset:false};
+fs.writeFileSync('audit-output/actual-lifecycle-replay.json',JSON.stringify(out,null,2));console.log(JSON.stringify({status:'ACTUAL_FALSE_LONG_REPRODUCED_AND_REPAIRED',usage:db.usageSnapshot(),sourceHTTP:0,MAIN:0,Telegram:0}));
