@@ -27,7 +27,10 @@ jobs:
         run: |
           REPORT2_NATIVE_MODULE_ROOT=runtime/src node --test current-generation/tests/cardano-koios-native-supply.test.mjs current-generation/tests/chain-supply-evidence.test.mjs current-generation/tests/native-supply-batch.test.mjs current-generation/tests/technical-native-facts.test.mjs > audit-output/cardano-targeted.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-          node current-generation/validate.mjs runtime > audit-output/validation.json
+          # Runtime was already assembled with the current overlay above. Validate
+          # the full source tree once; integration + exact cmp below validate the
+          # assembled runtime without applying the overlay a second time.
+          node current-generation/validate.mjs > audit-output/validation.json
           node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
           cmp current-generation/files/src/chain-supply-evidence.mjs runtime/src/chain-supply-evidence.mjs
           cmp current-generation/files/src/evidence-source-adapters.mjs runtime/src/evidence-source-adapters.mjs
