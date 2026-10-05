@@ -2,10 +2,15 @@ import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,reserveEvidenceSourceAttempts} from './evidence-source-store.mjs';
 import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-export const COINMETRICS_SUPPLY_VERSION='coinmetrics-community-daily-native-supply-v1-20261004';
+export const COINMETRICS_SUPPLY_VERSION='coinmetrics-community-daily-native-supply-v2-shared-network-families-20261005';
 export const COINMETRICS_FREE_LIMITS=Object.freeze({official_documentation:'https://docs.coinmetrics.io/api/v4/',auth:'NONE_COMMUNITY_PUBLIC',license:'CC_BY_NC_4_0_PERSONAL_NONCOMMERCIAL_WITH_ATTRIBUTION',official_requests_per_6s:10,module_rolling_60s_attempts:2,module_daily_attempts:12,ordinary_daily_attempts:8,protected_manual_attempts:4,module_31_day_attempts:372,catalog_cache_ms:86400000,series_cache_ms:21600000,source_max_age_ms:259200000,retries:0,whole_job_cap_increased:false});
 const SOURCE='COINMETRICS_SUPPLY',DAY=86400000,hash=s=>createHash('sha256').update(s).digest('hex');
-const definitions={BTC:{id:'btc',chain:'bitcoin',decimals:8},ETH:{id:'eth',chain:'ethereum',decimals:18}};
+export const COINMETRICS_NATIVE_NETWORK_FAMILIES=Object.freeze({
+ BTC:{id:'btc',chain:'bitcoin',decimals:8},ETH:{id:'eth',chain:'ethereum',decimals:18},
+ BCH:{id:'bch',chain:'bitcoin-cash',decimals:8},LTC:{id:'ltc',chain:'litecoin',decimals:8},DOGE:{id:'doge',chain:'dogecoin',decimals:8},ZEC:{id:'zec',chain:'zcash',decimals:8},
+ ETC:{id:'etc',chain:'ethereum-classic',decimals:18},XRP:{id:'xrp',chain:'xrp',decimals:6},XLM:{id:'xlm',chain:'stellar',decimals:7},
+});
+const definitions=COINMETRICS_NATIVE_NETWORK_FAMILIES,SHARED_NATIVE_ASSETS=Object.values(definitions).map(d=>d.id).sort().join(',');
 export function exactCoinmetricsNativeIdentity(contract,identity){const d=definitions[String(contract||'').replace(/-USDT$/,'')];return Boolean(d&&contract===`${d.id.toUpperCase()}-USDT`&&identity?.asset_kind==='NATIVE'&&identity.chain===d.chain&&identity.native_asset_id===`${d.chain}:mainnet`&&identity.contract_or_mint===null);}
 function integer(value,decimals){if(typeof value!=='string'||!/^\d{1,24}(?:\.\d{1,18})?$/.test(value))return null;const [a,b='']=value.split('.');return b.length>decimals?null:BigInt(a+b.padEnd(decimals,'0'));}
 const decimal=(n,d)=>{const negative=n<0n,v=negative?-n:n,b=10n**BigInt(d),fraction=String(v%b).padStart(d,'0').replace(/0+$/,'');return`${negative?'-':''}${v/b}${fraction?'.'+fraction:''}`;};
@@ -31,7 +36,7 @@ export async function collectCoinmetricsSupplyContext({db,fetch_impl=globalThis.
  await installEvidenceSourceStore(db);let calls=0,admission=null;const receipts=[];
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'ACCESS_BACKOFF',now});if(backoff?.until_ts>now)return{status:backoff.status,evidence:[],network_calls:0,admission:{allowed:false,status:backoff.status},backoff_until:backoff.until_ts};
  const utcDay=Math.floor(now/DAY)*DAY,start=new Date(utcDay-10*DAY).toISOString(),end=new Date(utcDay).toISOString();
- const urls={CATALOG:'https://community-api.coinmetrics.io/v4/catalog-all-v2/asset-metrics?assets=btc,eth&metrics=SplyCur&page_size=100',SERIES:`https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets=btc,eth&metrics=SplyCur&frequency=1d&start_time=${encodeURIComponent(start)}&end_time=${encodeURIComponent(end)}&page_size=100`};
+ const urls={CATALOG:`https://community-api.coinmetrics.io/v4/catalog-all-v2/asset-metrics?assets=${SHARED_NATIVE_ASSETS}&metrics=SplyCur&page_size=100`,SERIES:`https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets=${SHARED_NATIVE_ASSETS}&metrics=SplyCur&frequency=1d&start_time=${encodeURIComponent(start)}&end_time=${encodeURIComponent(end)}&page_size=100`};
  async function get(route){const ttl=route==='CATALOG'?COINMETRICS_FREE_LIMITS.catalog_cache_ms:COINMETRICS_FREE_LIMITS.series_cache_ms,key='GLOBAL:'+route;
   const c=strict_fresh_manual?null:await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(c?.version===COINMETRICS_SUPPLY_VERSION&&c.observed_ts<=now&&c.observed_ts+ttl>now&&typeof c.body==='string'&&Buffer.byteLength(c.body)<=150000&&hash(c.body)===c.body_sha256){try{const p=JSON.parse(c.body);if(Array.isArray(p.data)&&!p.next_page_url){receipts.push({route,cache_hit:true,actual_http:0,body_sha256:c.body_sha256});return p;}}catch{}}
   const id=`CM:${run_id}:${contract}:${route}`,whole=request_admit?.({logical_request_id:id,lane:'background',attempts:1});admission=whole;if(whole?.allowed!==true||whole.duplicate)return null;
