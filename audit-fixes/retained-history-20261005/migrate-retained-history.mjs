@@ -5,6 +5,7 @@ import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,
 import {packHistoryRow,unpackHistoryRow,archivedHeader,exactArchiveSql,createHistoryRestorer,REPOSITORY,HISTORY_HOT_WINDOW_MS,HISTORY_TABLES} from '../../current-generation/files/src/retained-history.mjs';
 const token=process.env.GITHUB_TOKEN;if(!token)throw Error('ARCHIVE_GITHUB_TOKEN_REQUIRED');
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
+let githubHTTP=0;
 const reservation={rows_read:5000,rows_written:400},reservationId=`RETAINED_HISTORY:${process.env.GITHUB_RUN_ID}:${Date.now()}`;
 const request=db._request.bind(db);
 db._request=async p=>{
@@ -30,6 +31,7 @@ for(const [table,sql] of [
  }
 }
 const api=async(method,path,body)=>{
+ githubHTTP++;
  const r=await fetch(`https://api.github.com/repos/${REPOSITORY}/${path}`,{method,headers:{authorization:`Bearer ${token}`,accept:'application/vnd.github+json','content-type':'application/json','X-GitHub-Api-Version':'2022-11-28'},...(body?{body:JSON.stringify(body)}:{})});if(!r.ok)throw Error(`ARCHIVE_GITHUB_${method}_${r.status}`);return r.json();
 };
 commit=(await api('GET','git/ref/heads/report2-retained-history')).object.sha;
@@ -63,6 +65,6 @@ archiveHTTP=restorer.usage().archive_http+selected.length;
 }catch(e){error=String(e.message).slice(0,240);}finally{
  try{await finalizeRunUsage(db,{reservationId,sourceRunId:`RETAINED_HISTORY:${process.env.GITHUB_RUN_ID}`,usage:db.usageSnapshot()});}catch(e){error=error||String(e.message).slice(0,240);}
 }
-const proof={schema:'report2-verified-retained-history-relocation-v1',status:error?'PARTIAL_RELOCATION_SAFE_HISTORY_RETAINED':'EXACT_ARCHIVE_AND_READTHROUGH_VERIFIED',error,read_at:Date.now(),archive_commit:commit,before,after,moved,usage:db.usageSnapshot(),archive_http:archiveHTTP,sourceHTTP:0,MAIN:0,Telegram:0,hot_window_ms:HISTORY_HOT_WINDOW_MS,history_discarded:false,source_reservations_reset:false,admission,reservationId};
+const proof={schema:'report2-verified-retained-history-relocation-v1',status:error?'PARTIAL_RELOCATION_SAFE_HISTORY_RETAINED':'EXACT_ARCHIVE_AND_READTHROUGH_VERIFIED',error,read_at:Date.now(),archive_commit:commit,before,after,moved,usage:db.usageSnapshot(),archive_http:archiveHTTP,github_http:githubHTTP,total_archive_http:archiveHTTP+githubHTTP,sourceHTTP:0,MAIN:0,Telegram:0,hot_window_ms:HISTORY_HOT_WINDOW_MS,history_discarded:false,source_reservations_reset:false,admission,reservationId};
 fs.writeFileSync('audit-output/retained-history-relocation.json',JSON.stringify(proof,null,2));console.log(JSON.stringify(proof));
 if(error)process.exitCode=1;
