@@ -3,7 +3,7 @@ import {normalizeAttentionSample,SOURCE_POLICIES} from './evidence-source-adapte
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 
-export const BLUESKY_ATTENTION_EVIDENCE_VERSION='bluesky-attention-evidence-v3-native-official-domain-20261005';
+export const BLUESKY_ATTENTION_EVIDENCE_VERSION='bluesky-attention-evidence-v4-exact-htx-market-20261005';
 const SOURCE='BLUESKY_PUBLIC',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
 const text=value=>String(value??'').trim(),EVM=/^0x[0-9a-f]{40}$/i,BASE58=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const digest=value=>crypto.createHash('sha256').update(String(value)).digest('hex');
@@ -16,11 +16,19 @@ function exactNativeDomainIdentity(identity,assetMetadata,contract){
  if(!binding||domains.length!==1)return null;
  const domain=domains[0];return{chain:binding.chain,domain,asset_id:`${binding.chain}:native:mainnet`,query:domain,mode:'EXACT_OFFICIAL_DOMAIN_NATIVE'};
 }
+function exactHtxMarketIdentity(contract){
+ const market=text(contract).toUpperCase(),match=market.match(/^([^\s-]+)-USDT$/u);if(!match)return null;
+ return{chain:null,market,base:match[1],asset_id:`htx-futures:${market}`,query:`${match[1]}/USDT HTX`,mode:'EXACT_HTX_MARKET_PAIR'};
+}
 function socialIdentity(identity,assetMetadata,contract){
  const token=exactIdentity(identity);if(token)return{...token,asset_id:`${token.chain}:${token.address}`,query:token.address,mode:'EXACT_CONTRACT_OR_MINT'};
- return exactNativeDomainIdentity(identity,assetMetadata,contract);
+ return exactNativeDomainIdentity(identity,assetMetadata,contract)||exactHtxMarketIdentity(contract);
 }
 function includesNativeDomain(body,domain){return new RegExp(`(^|[^a-z0-9.-])(?:https?:\\/\\/)?(?:www\\.)?${escapeRegex(domain)}(?=$|[^a-z0-9.-])`,'i').test(text(body));}
+function includesExactHtxMarket(body,identity){
+ const base=escapeRegex(identity.base),pair=new RegExp(`(^|[^\\p{L}\\p{N}])${base}\\s*[\\/-]\\s*USDT(?=$|[^\\p{L}\\p{N}])`,'iu'),htx=/(^|[^a-z0-9])(?:HTX|HUOBI)(?=$|[^a-z0-9])/i;
+ return pair.test(text(body))&&htx.test(text(body));
+}
 
 async function getJson(fetchImpl,url){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
@@ -32,11 +40,11 @@ async function getJson(fetchImpl,url){
 export function normalizeBlueskyAttention({contract,identity,asset_metadata,payload,window_start,window_end,history_windows=0,history_days=0,observed_ts=Date.now()}={}){
  const htxContract=text(contract).toUpperCase(),id=socialIdentity(identity,asset_metadata,htxContract);if(!id)return{status:'EXACT_SOCIAL_IDENTITY_REQUIRED',evidence:[],summary:null,internal_only:true};
  const rows=Array.isArray(payload?.posts)?payload.posts:[],seen=new Set(),posts=[];
- for(const row of rows){const uri=text(row?.uri),cid=text(row?.cid),did=text(row?.author?.did),body=text(row?.record?.text),key=uri||cid,matched=id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?includesNativeDomain(body,id.domain):includesExact(body,id.address,id.case_sensitive);if(!key||seen.has(key)||!did||!matched)continue;seen.add(key);posts.push({uri,cid,did,body,created_at:text(row?.record?.createdAt),indexed_at:text(row?.indexedAt)});}
+ for(const row of rows){const uri=text(row?.uri),cid=text(row?.cid),did=text(row?.author?.did),body=text(row?.record?.text),key=uri||cid,matched=id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?includesNativeDomain(body,id.domain):id.mode==='EXACT_HTX_MARKET_PAIR'?includesExactHtxMarket(body,id):includesExact(body,id.address,id.case_sensitive);if(!key||seen.has(key)||!did||!matched)continue;seen.add(key);posts.push({uri,cid,did,body,created_at:text(row?.record?.createdAt),indexed_at:text(row?.indexedAt)});}
  const authors=new Map(),texts=new Map();for(const post of posts){authors.set(post.did,(authors.get(post.did)||0)+1);const bodyHash=digest(post.body.toLowerCase().replace(/\s+/g,' ').trim());texts.set(bodyHash,(texts.get(bodyHash)||0)+1);}
  const uniqueAuthors=authors.size,topAuthorPosts=Math.max(0,...authors.values()),topTextCopies=Math.max(0,...texts.values()),sampleSaturated=rows.length>=100||Boolean(text(payload?.cursor));
  const evidence=normalizeAttentionSample({provider_id:SOURCE,asset_id:id.asset_id,htx_contract:htxContract,window_start,window_end,unique_authors:uniqueAuthors,sample_saturated:sampleSaturated,history_windows,history_days,observed_ts});
- Object.assign(evidence,{chain:id.chain,asset_kind:id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?'NATIVE':'TOKEN',native_asset_id:id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?`${id.chain}:mainnet`:null,token_address:id.address||null,official_domain:id.domain||null,original_post_count:posts.length,top_author_concentration:posts.length?topAuthorPosts/posts.length:0,duplicate_text_fraction:posts.length?topTextCopies/posts.length:0,query_identity:id.mode,direction_policy:'ATTENTION_PRIORITY_ONLY_NO_DIRECTIONAL_VOTE'});
+ Object.assign(evidence,{chain:id.chain,asset_kind:id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?'NATIVE':id.mode==='EXACT_HTX_MARKET_PAIR'?'HTX_FUTURES_MARKET':'TOKEN',native_asset_id:id.mode==='EXACT_OFFICIAL_DOMAIN_NATIVE'?`${id.chain}:mainnet`:null,token_address:id.address||null,official_domain:id.domain||null,market_pair:id.market||null,original_post_count:posts.length,top_author_concentration:posts.length?topAuthorPosts/posts.length:0,duplicate_text_fraction:posts.length?topTextCopies/posts.length:0,query_identity:id.mode,direction_policy:'ATTENTION_PRIORITY_ONLY_NO_DIRECTIONAL_VOTE'});
  return{status:'CLOSED',contract:htxContract,evidence:[evidence],summary:{unique_authors:uniqueAuthors,original_posts:posts.length,top_author_concentration:evidence.top_author_concentration,duplicate_text_fraction:evidence.duplicate_text_fraction,sample_saturated:sampleSaturated,history_windows,history_days},internal_only:true};
 }
 
