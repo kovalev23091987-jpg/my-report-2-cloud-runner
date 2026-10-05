@@ -64,7 +64,7 @@ export function mergeOfficialAndConfiguredRegistries({official,configured}={}){
   if(a&&b&&(row.identity?.chain==='solana'?a!==b:a.toLowerCase()!==b.toLowerCase()))throw new Error(`SUPPLEMENTAL_IDENTITY_REGISTRY_CONFLICT:${base}`);
   merged[base]={...(prior||{}),...(row||{}),...(row?.identity||(!prior?.chain?{}:{chain:prior.chain,contract_or_mint:prior.contract_or_mint,...(prior.asset_kind==='NATIVE'?{asset_kind:prior.asset_kind,native_asset_id:prior.native_asset_id}:{})})),coinpaprika_id:row?.coinpaprika_id||prior?.coinpaprika_id||null,sector_tag:row?.sector_tag||prior?.sector_tag||null,coingecko_id:row?.coingecko_id||prior?.coingecko_id||null,coingecko_category_id:row?.coingecko_category_id||prior?.coingecko_category_id||null,coingecko_category_name:row?.coingecko_category_name||prior?.coingecko_category_name||null,protocol_slug:row?.protocol_slug||prior?.protocol_slug||null,official_name:row?.official_name||prior?.official_name||null,official_domains:unique([...(prior?.official_domains||[]),...(row?.official_domains||[])]),official_feeds:unique([...(prior?.official_feeds||[]),...(row?.official_feeds||[])]),official_feed_specs:[...(prior?.official_feed_specs||[]),...(row?.official_feed_specs||[])]};
  }
- return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:Object.keys(merged).length?'CLOSED':'NOT_CLOSED',registry:merged,versioned_records:compiled.records.length,configured_status:parsed.status};
+ return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:Object.keys(merged).length?'CLOSED':'NOT_CLOSED',registry:merged,versioned_records:compiled.records?.length||0,configured_status:parsed.status};
 }
 
 export default{compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries};

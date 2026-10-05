@@ -64,7 +64,7 @@ test('technical plan is copied only from a closed same-snapshot precommitted pro
 });
 test('an empty qualified official feed is scoped N07 context; errors and wrong publishers remain open',async()=>{
  const meta={official_domains:['issuer.example'],official_feeds:['https://issuer.example/feed.xml']},p={db:memoryDB(),contract:'TEST-USDT',run_id:'feed',asset_metadata:meta,now:NOW,request_admit:()=>({allowed:true}),fetch_impl:async()=>new Response('<rss><channel></channel></rss>',{headers:{'content-type':'application/rss+xml'}})};
- const out=await collectOfficialEventsEvidence(p);assert.equal(out.status,'EMPTY_OR_STALE');assert.equal(facts(out.evidence,p.contract).length,1);assert.equal(out.evidence[0].all_official_channels_checked,false);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ const out=await collectOfficialEventsEvidence(p);assert.equal(out.status,'CLOSED_BOUNDED_OFFICIAL_FEED_CHECK');assert.equal(facts(out.evidence,p.contract).length,1);assert.equal(out.evidence[0].all_official_channels_checked,false);assert.equal(consumeEvidenceV2(out.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  const error=await collectOfficialEventsEvidence({...p,db:memoryDB(),fetch_impl:async()=>new Response('limited',{status:429})});assert.equal(error.evidence.length,0);
  assert.equal(auditCandidateBlocks({sources:{OFFICIAL_EVENTS:out},evidence:out.evidence,decision_ts:NOW}).blocks.N01.checked,false);
 });
