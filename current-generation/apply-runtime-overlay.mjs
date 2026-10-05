@@ -63,6 +63,7 @@ const files=[
  'src/liquidation-command-router.mjs',
  'src/publication-reconciler.mjs',
  'src/bound-telegram-delivery-sidecar.mjs',
+ 'src/exact-saved-run-telegram.mjs',
  'src/oxarchive-cost-probe.mjs',
  'src/runtime-control.mjs',
  'src/analytics-lease.mjs',

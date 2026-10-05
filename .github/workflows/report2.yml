@@ -130,7 +130,7 @@ jobs:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       ANALYTICS_ENABLED: "1"
       PUBLIC_COLLECTOR_ENABLED: "0"
-      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
+      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -151,8 +151,9 @@ jobs:
       REPORT2_EVIDENCE_HTTP_CAP: ${{ github.event_name == 'schedule' && '10' || '24' }}
       REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f"
       REPORT2_TELEGRAM_INSTALL_VALIDATION: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '1' || '0' }}
+      REPORT2_EXACT_SAVED_RUN_TELEGRAM: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]') && '1' || '0' }}
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
-      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true)) && '1' || '0' }}
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}

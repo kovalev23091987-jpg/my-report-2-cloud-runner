@@ -60,6 +60,7 @@ import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 import {loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage} from './src/liquidation-futures-coverage.mjs';
+import {deliverExactSavedRunTelegram} from './src/exact-saved-run-telegram.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v13-current-cycle-20260929";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -561,12 +562,20 @@ async function main() {
     const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null});
     savedOutput.requested_saved_run_id=savedRunId;
     savedOutput.saved_canonical_retrieval=true;
+    const exactTelegramRequested=['1','true','yes','on'].includes(String(process.env.REPORT2_EXACT_SAVED_RUN_TELEGRAM||'0').trim().toLowerCase());
+    let exactTelegram=null;
+    if(exactTelegramRequested){
+      exactTelegram=await deliverExactSavedRunTelegram({db:env.DATA_DB,saved_output:savedOutput,requested_run_id:savedRunId,enabled:true,relay_url:envText('REPORT2_TELEGRAM_RELAY_URL',{required:false}),relay_key:envText('REPORT2_TELEGRAM_RELAY_KEY',{required:false}),now_ts:Date.now(),fetch_impl:nativeFetch});
+      await fs.writeFile('telegram-info-proof.json',JSON.stringify(exactTelegram,null,2));
+      if(exactTelegram.sent!==true||!exactTelegram.message_id)throw new Error(`EXACT_SAVED_RUN_TELEGRAM_NOT_SENT:${exactTelegram.status}:${exactTelegram.error||exactTelegram.reason||'UNKNOWN'}`);
+    }
+    savedOutput.exact_saved_run_telegram=exactTelegram;
     await fs.writeFile('report2-run-result.json',JSON.stringify(savedOutput,null,2));
     const completion=await completeCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,snapshot_id:savedRunId,rendered_text:JSON.stringify(savedOutput),delivered_to_existing_channel:true,now:Date.now()});
     if(!completion.completed)throw new Error(`DURABLE_SAVED_RUN_COMPLETION_FAILED:${completion.status}`);
     const leaseFinish=await releaseAnalyticsLease();
     if(!leaseFinish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${leaseFinish.status}`);
-    console.log('SAVED_CANONICAL_RUN_OUTPUT',JSON.stringify({status:savedOutput.status,run_id:savedRunId,candidates:savedOutput.candidates.length,block_audit:savedOutput.block_audit||null,report_text_present:Boolean(savedOutput.report_text)}));
+    console.log('SAVED_CANONICAL_RUN_OUTPUT',JSON.stringify({status:savedOutput.status,run_id:savedRunId,candidates:savedOutput.candidates.length,block_audit:savedOutput.block_audit||null,report_text_present:Boolean(savedOutput.report_text),telegram_status:exactTelegram?.status||null,telegram_message_id:exactTelegram?.message_id||null}));
     return;
   }
   env.REPORT2_SUPPLEMENTAL_CANDIDATE_COLLECT=async params=>{const result=await collectHtxBoundSupplementalContext({
