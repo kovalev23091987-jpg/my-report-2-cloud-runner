@@ -6,7 +6,7 @@ import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v7-native-domain-attention-20261005';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v8-solana-transfer-context-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -19,6 +19,11 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N04'&&row.metric_family==='TOKEN_TRANSFER'&&row.producer==='SOLANA_FINALIZED_TOKEN_BALANCE_DIFF'){
+  const mint=row.token_address,signature=row.tx_hash,slot=String(row.block_ref??'');
+  if(row.provider_id!=='CHAIN_RPC'||row.upstream_id!=='SOLANA_MAINNET_RPC'||row.chain!=='solana'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint||'')||row.asset_id!==`solana:${mint}`||!/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature||'')||row.origin_event_id!==signature||!/^\d+$/.test(slot)||!Number.isSafeInteger(Number(slot))||!raw(row.amount_base_units)||BigInt(row.amount_base_units)<=0n||row.quantity_units!=='RAW_BASE_UNITS_NO_USD_CONVERSION'||row.market_kind!=='ONCHAIN_TOKEN_TRANSFER'||row.event_is_not_market_direction!==true||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.source_ts>now||now-row.source_ts>20*60_000)return null;
+  return{source:'Solana mainnet RPC',label:'Перераспределение балансов токена в Solana',value:`одна финализированная транзакция в слоте ${slot}, ${new Date(row.source_ts).toISOString()}: уменьшения балансов равны увеличениям, ${row.amount_base_units} минимальных единиц; ограниченная выборка по точному mint, принадлежность биржам и направление рынка не установлены`};
+ }
  if(row.block_id==='N02'&&row.metric_family==='PROVIDER_DAILY_NATIVE_SUPPLY_HISTORY'){
   const d=row.supply_history_context,identity={chain:row.asset_id?.split(':')[0],asset_kind:'NATIVE',native_asset_id:row.asset_id?.replace(':native:mainnet',':mainnet'),contract_or_mint:null};
   if(row.provider_id!=='COINMETRICS_SUPPLY'||row.upstream_id!=='COINMETRICS_NETWORK_DATA_COMMUNITY'||row.historical_only!==true||row.source_clock_policy!=='PROVIDER_DAILY_RECORD_TIMESTAMP_ONLY')return null;
