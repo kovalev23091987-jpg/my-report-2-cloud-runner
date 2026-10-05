@@ -15,9 +15,15 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
   if(!allowed||u.protocol!=='https:'||u.username||u.password)throw Error('PROVIDER_REFERENCE_ROUTE_NOT_ALLOWED');
   const key=`REFERENCE:${PROVIDER_REFERENCE_CACHE_VERSION}:${await digest(url)}`;
   if(ttl_ms>0&&!bypass_cache){
-   const cached=await readEvidenceSourceCache(db,{source,asset_key:key,now});
-   if(cached?.version===PROVIDER_REFERENCE_CACHE_VERSION&&cached.url===url&&Number.isSafeInteger(cached.received_ts)&&cached.received_ts<=now&&now-cached.received_ts<ttl_ms&&cached.received_ts+ttl_ms>=cached.expires_ts&&typeof cached.body==='string'&&cached.body.length<=max_bytes&&cached.body_sha256===await digest(cached.body)){
-    try{const payload=JSON.parse(cached.body);if(shape(payload)){receipts.push({route,url,status:'VALIDATED_REFERENCE_CACHE',http_status:200,received_ts:cached.received_ts,body_sha256:cached.body_sha256,actual_http:0});return payload;}}catch{}
+   // Only immutable coin metadata is shared between the two existing roles.
+   // Quotes, catalogs, evidence and backoff/reservations remain role scoped.
+   const sibling=source==='COINPAPRIKA_SECTOR'?'COINPAPRIKA_HTX_IDENTITY':source==='COINPAPRIKA_HTX_IDENTITY'?'COINPAPRIKA_SECTOR':null;
+   const shared=sibling&&u.hostname==='api.coinpaprika.com'&&/^\/v1\/coins\/[a-z0-9][a-z0-9-]{2,79}$/.test(u.pathname)&&!u.search;
+   for(const owner of shared?[source,sibling]:[source]){
+    const cached=await readEvidenceSourceCache(db,{source:owner,asset_key:key,now});
+    if(cached?.version===PROVIDER_REFERENCE_CACHE_VERSION&&cached.url===url&&Number.isSafeInteger(cached.received_ts)&&Number.isSafeInteger(cached.expires_ts)&&cached.received_ts<=now&&now<Math.min(cached.expires_ts,cached.received_ts+ttl_ms)&&typeof cached.body==='string'&&cached.body.length<=max_bytes&&cached.body_sha256===await digest(cached.body)){
+     try{const payload=JSON.parse(cached.body);if(shape(payload)){receipts.push({route,url,status:'VALIDATED_REFERENCE_CACHE',http_status:200,received_ts:cached.received_ts,expires_ts:Math.min(cached.expires_ts,cached.received_ts+ttl_ms),body_sha256:cached.body_sha256,actual_http:0,cache_owner_source:owner,shared_provider:owner!==source?'COINPAPRIKA':null});return payload;}}catch{}
+    }
    }
   }
   const reservation_id=`EV2:${source}:${run_id}:${await digest(url)}:${sequence++}`;
