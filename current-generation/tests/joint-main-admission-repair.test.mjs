@@ -31,10 +31,10 @@ test('versioned exact token binding can close missing routes while preserving mi
  assert.equal(checked.decision_effect,'MISSING_FACT_NO_ZERO_NO_GREEN');assert.deepEqual(checked.evidence,[]);
 });
 
-test('an exact token with no configured provider route records a checked missing Nansen fact',()=>{
+test('an unattempted exact token primary cannot masquerade as a completed Nansen capability absence',()=>{
  const source=fs.readFileSync(new URL('../files/src/candidate-evidence-v2-runtime.mjs',import.meta.url),'utf8');
- assert.match(source,/if\(exactCapability&&String\(nansen\.status\|\|'NOT_EVALUATED'\)==='NOT_EVALUATED'\)nansen=noRoute/);
- assert.match(source,/NO_EXACT_TOKEN_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY/);
+ assert.doesNotMatch(source,/NO_EXACT_TOKEN_FLOW_ROUTE_IN_CONFIGURED_PROVIDER_CAPABILITY/);
+ assert.match(source,/resolveNansenFlowPrimary\(supplementalSources\.NANSEN_FLOWS,params\)/);
 });
 
 test('native assets account for unavailable exact routes while all useful market blocks remain independently required',()=>{

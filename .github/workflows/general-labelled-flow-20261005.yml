@@ -1,0 +1,49 @@
+name: Report 2 General Labelled Flow Acceptance
+on:
+  push:
+    branches: [autonomous/general-labelled-flow-20261005]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Validate the changed consumer package once
+        run: |
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
+      - name: Verify exact labelled flow reaches the shared report consumer
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          NANSEN_API_KEY: ${{ secrets.NANSEN_API_KEY }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261005T065824Z:6d3a7486-ccaa-4681-acee-0c5fa580333c'
+        run: node audit-fixes/general-labelled-flow-20261005/verify-live.mjs runtime > audit-output/labelled-flow-acceptance.json
+      - name: Exact runtime manifest
+        if: always()
+        run: |
+          sha256sum runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/specialist-candidate-context.mjs > audit-output/runtime-sha256.txt
+          git rev-parse HEAD > audit-output/github-head.txt
+          git rev-parse HEAD^{tree} > audit-output/github-tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: general-labelled-flow-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
