@@ -5,6 +5,7 @@ export const SOURCE_POLICIES=Object.freeze({
  HTX_LARGE_TRADES:{daily_cap:144,ttl_ms:60_000,auth:'PUBLIC',blocks:['N12']},
  COINGECKO_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488},
  COINPAPRIKA_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488,official_free_monthly_requests:20000},
+ COINPAPRIKA_HTX_IDENTITY:{daily_cap:12,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02','N03','N04'],monthly_module_bound:372,official_free_monthly_requests:20000,official_ip_requests_per_second:10,internal_minute_cap:2,retries:0},
  HTX_PUBLIC_RISK:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N08','N09','N11','N16']},
  CHAIN_RPC:{daily_cap:720,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03','N04','N05']},
  KOIOS_NATIVE_SUPPLY:{daily_cap:48,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02','N03'],official_public_daily_cap:5000,official_burst_cap:100,official_burst_window_seconds:10,retries:0},
