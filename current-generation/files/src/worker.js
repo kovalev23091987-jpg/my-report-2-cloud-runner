@@ -19459,7 +19459,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
       if(String(env?.REPORT2_MANUAL_MODE||'').toUpperCase()==='FULL_MANUAL'){
         const strictEligible=new Set((Array.isArray(env?.REPORT2_STRICT17_ELIGIBLE_CONTRACTS)?env.REPORT2_STRICT17_ELIGIBLE_CONTRACTS:[])
           .map(value=>String(value||'').trim().toUpperCase()).filter(value=>confirmedScopeContracts.includes(value)));
-        const ranked=(postV7DeepPrefilter?.shortlist||[])
+        const ranked=(discoveryPrefilter?.shortlist||[])
           .filter(row=>confirmedScopeContracts.includes(String(row?.contract||'').trim().toUpperCase()))
           .map(row=>{
             const contract=String(row?.contract||'').trim().toUpperCase();
