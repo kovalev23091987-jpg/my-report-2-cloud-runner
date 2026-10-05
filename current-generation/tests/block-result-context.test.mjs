@@ -32,12 +32,12 @@ test('expired, foreign, future and corrupted sums cannot become report facts',()
  assert.deepEqual(consume(c).facts.map(f=>f.block_id).sort(),['N02','N04','N06']);
 });
 
-test('metadata-only, formatter failure and facts hidden by existing bounded fact limit never establish use',()=>{
+test('formatter failure and metadata alone never establish use; real block facts survive bounded display selection',()=>{
  const c=prepared();assert.equal(auditRenderedBlockResults({canonical:c,manual:{ok:false,text:null}}).context_receipts.length,0);
  c.metadata.supporting_context.facts.unshift(...Array.from({length:24},(_,i)=>({label:`Другая проверка ${i}`,value:i,source:'HTX'})));
  const manual=formatManualReport(c);assert.equal(manual.ok,true);
- assert.equal(auditRenderedBlockResults({canonical:c,manual}).context_receipts.length,0);
- assert.equal(auditRenderedBlockResults({canonical:c,manual}).available_not_rendered_evidence_ids.length,6);
+ assert.equal(auditRenderedBlockResults({canonical:c,manual}).context_receipts.length,6);
+ assert.equal(auditRenderedBlockResults({canonical:c,manual}).available_not_rendered_evidence_ids.length,0);
  c.metadata.supporting_context.facts=[];
  assert.equal(auditRenderedBlockResults({canonical:c,manual:{ok:true,text:consume(c).facts.map(f=>`- ${f.label}: ${f.value}`).join('\n')}}).context_receipts.length,0);
 });

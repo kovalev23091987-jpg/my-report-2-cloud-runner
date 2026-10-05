@@ -11,6 +11,22 @@ function reasonLine(r){const s=safeUserReason(r);return s?`- ${s}`:null;}
 function blockerDetails(result){const f=result?.free_sources?.entry_funnel;const ds=Array.isArray(f?.blocker_details)?f.blocker_details:[];if(ds.length)return ds;return (Array.isArray(f?.blockers)?f.blockers:[]).map(code=>({code,...reasonDefinition(code),known:code!=='UNKNOWN_INTERNAL_REASON'}));}
 function activeSources(result){const entries=Array.isArray(result?.free_sources?.registry?.entries)?result.free_sources.registry.entries:[];return entries.filter(x=>x.decision_usable===true||x.runtime_current===true).map(x=>sourceLabelRu(x.id)||x.id).filter(Boolean);}
 function supportingFacts(result){return Array.isArray(result?.metadata?.supporting_context?.facts)?result.metadata.supporting_context.facts:[];}
+export const SUPPORTING_CONTEXT_SELECTION_VERSION='supporting-context-block-reservation-v1-20261005';
+// Consumers have already validated these facts. Reserve display space, not
+// score or source authority. Never manufacture a fact for an uncovered block.
+// Keep the approved 24-line bound and original ordering among selected facts.
+export function selectSupportingContextFacts(facts=[]){
+ const rows=(Array.isArray(facts)?facts:[]).filter(f=>f&&typeof f==='object');
+ if(rows.length<=24)return rows;
+ const firstByBlock=new Map(),selected=new Set();
+ for(let i=0;i<rows.length;i++){
+  const block=rows[i].block_id;
+  if(/^N(?:0[1-9]|1[0-2]|1[4-6])$/.test(block||'')&&!firstByBlock.has(block))firstByBlock.set(block,i);
+ }
+ for(const i of firstByBlock.values())selected.add(i);
+ for(let i=0;i<rows.length&&selected.size<24;i++)selected.add(i);
+ return rows.filter((_,i)=>selected.has(i));
+}
 export function formatManualReport(result){
  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};
  const blockers=blockerDetails(result),unknown=hasUnknownBlockerReasons(result?.free_sources?.entry_funnel);
@@ -38,7 +54,7 @@ export function formatManualReport(result){
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
  if(!result.liquidations?.future_only)lines.push(...formatLiquidationHistoryFacts(result.metadata?.internal_market_context?.cross_exchange_risk,{user_ru:true}));
  if(result.free_sources)lines.push('','КАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ',`Статус непрерывного сбора: ${result.free_sources.continuous_collector_status==='PARTIAL_REALTIME_COVERAGE'?'частичное покрытие в реальном времени':'проверяется'}.`,`Новые внешние запросы горячего цикла: ${result.free_sources.hot_cycle_external_request_delta??0}.`);
- const sf=supportingFacts(result);if(sf.length){lines.push('','ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');for(const f of sf.slice(0,24)){const src=sourceLabelRu(f.source)||f.source;const v=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;lines.push(`- ${f.label}: ${v}${src?` — ${src}`:''}.`);}}
+ const sf=selectSupportingContextFacts(supportingFacts(result));if(sf.length){lines.push('','ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ');for(const f of sf){const src=sourceLabelRu(f.source)||f.source;const v=f.value===null||f.value===undefined?'подтверждено':`${f.value}${f.unit?` ${f.unit}`:''}`;lines.push(`- ${f.label}: ${v}${src?` — ${src}`:''}.`);}}
  if(result.changes_from_previous?.length)lines.push('','ИЗМЕНЕНИЯ С ПРЕДЫДУЩЕГО ЗАПУСКА',...result.changes_from_previous.map(x=>`- ${safeUserReason(displaySnapshotChange(x))||'изменение зафиксировано'}`));
  const out=lines.filter(Boolean).join('\n');const forbidden=/\b(?:LONG|SHORT|OI|Funding|Spot flow|Spread|Slippage|Data Quality|Source receipts|hard gates)\b|\b[A-Z]{2,}_[A-Z0-9_]{2,}\b/i;if(forbidden.test(out)||hasInternalTerminology(out))return{ok:false,status:'FORBIDDEN_USER_TERMINOLOGY',text:null};return{ok:true,status:unknown?'SAFE_FAIL_CLOSED_UNKNOWN_REASON':'READY',text:out,formatter:MANUAL_REPORT_FORMATTER_VERSION,analytical_fingerprint:result.analytical_fingerprint};
 }
