@@ -18,7 +18,7 @@ test('all 15 configured additional blocks are checked without equating a check t
  assert.deepEqual(result.blocks.N02.evidence_rejection_reasons,{ZERO_DECISION_COVERAGE:1});
  assert.equal(result.all_blocks_have_assigned_consumer,true);assert.equal(result.all_blocks_decision_accounted,false);
  assert.equal(result.blocks.N02.source_statuses.CHAIN_SUPPLY,'CLOSED');
- assert.deepEqual(result.blocks.N02.source_checks.CHAIN_SUPPLY,{status:'CLOSED',attempted:true,checked:true,network_calls:1,cache_status:null,receipt_count:0});
+ assert.deepEqual(result.blocks.N02.source_checks.CHAIN_SUPPLY,{status:'CLOSED',attempted:true,checked:true,capability_resolved_without_route:false,network_calls:1,cache_status:null,receipt_count:0,admission_status:null,receipts:[]});
  assert.equal(result.blocks.N06.status,'CHECKED_NO_USABLE_FACTS');
  assert.equal(result.blocks.N06.source_statuses.BLUESKY_PUBLIC,'CLOSED');
  assert.equal(result.blocks.N10.status,'CHECKED_NO_USABLE_FACTS');

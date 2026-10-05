@@ -17112,6 +17112,7 @@ async function buildDeepCheckInput(params, env) {
   if(typeof env?.REPORT2_EVIDENCE_V2_FINALIZE==='function'){
     candidateEvidenceV2=env.REPORT2_EVIDENCE_V2_FINALIZE({
       evidence_result:candidateEvidenceV2,
+      decision_ts:now,
       primary_sources:{
         PRIMARY_TECHNICAL_CONTEXT:primaryTechnicalReceipt,
         PRIMARY_HTX_FUTURES_FLOW:primaryHtxFuturesFlow,

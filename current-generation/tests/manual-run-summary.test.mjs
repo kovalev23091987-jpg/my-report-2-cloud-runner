@@ -45,7 +45,7 @@ test('manual run always returns the owner layout instead of stored technical tex
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'CLOSED');
  const rendered=formatManualRunSummary(checked);
- assert.match(rendered,/Проверка дополнительных блоков: 15 из 15; обязательных сбоев: 0/u);
+ assert.match(rendered,/Проверка дополнительных блоков: 15 из 15; неподтверждённых: 0/u);
  assert.match(rendered,/Новые допущенные факты: 2 блока; сведения без допуска в решение: 6; событий не обнаружено: 7/u);
  assert.match(rendered,/ЛОНГ[\s\S]*ШОРТ/u);
  assert.doesNotMatch(rendered,/КАНОНИЧЕСКОЕ СОСТОЯНИЕ/u);
@@ -54,7 +54,7 @@ test('manual run fails closed when any candidate lacks a real 15 block check',()
  const output={status:'CLOSED',source:'manual',candidates:[{manual_text:'НЕ ПОКАЗЫВАТЬ',block_coverage:{coverage_count:15,checked_block_count:12,all_blocks_checked:false}}],generated_at};
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
- assert.equal(checked.reason,'REQUIRED_BLOCKS_NOT_CONFIRMED');
+ assert.equal(checked.reason,'BLOCK_OUTCOME_AUDIT_MISSING');
  assert.match(formatManualRunSummary(checked),/12 из 15/u);
  assert.doesNotMatch(formatManualRunSummary(checked),/НЕ ПОКАЗЫВАТЬ/u);
 });

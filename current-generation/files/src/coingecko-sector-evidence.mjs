@@ -92,7 +92,7 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!validAddress||!isExactHtxUsdtSwapKey(contract)||(pinned&&(!/^[a-z0-9-]{2,100}$/.test(coin_id)||!/^[a-z0-9-]{2,100}$/.test(category_id)||!sectorCategoryLabel(category_name))))return{status:'EXACT_SECTOR_REGISTRY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);
  const key=`${contract}:${identity.chain}:${native?identity.native_asset_id:identity.contract_or_mint}:${coin_id}:${category_id}:${category_name}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
- if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION)return cached;
+ if(!strict_fresh_manual&&cached?.version===COINGECKO_SECTOR_VERSION&&cached.status==='CLOSED'&&cached.evidence?.length&&cached.evidence.every(r=>r.htx_contract===contract&&r.source_ts<=now&&r.first_known_ts<=now&&r.expires_at>=now))return cached;
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});
  if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,minute_provider:'COINGECKO',minute_cap:9});

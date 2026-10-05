@@ -15,7 +15,8 @@ import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
 import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
-import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
+import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence} from './execution-report-context.mjs';
+import {auditCandidateBlocks} from './candidate-evidence-v2-runtime.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
 import { buildOutputSurfaceContract } from './output-surface-contract.mjs';
@@ -258,6 +259,14 @@ export function buildRuntimeCanonicalBundle({
  const trackedHlView=trackedHlAllowed?capturedTrackedBands({contract,run_id,observed_ts}):{source:'BYK_TRACKED_HL_BANDS',status:'COVERAGE_GATE_NOT_ADMITTED',maps:[],network_calls:0};
  const nativeFutureMaps=capturedNativeFutureMaps({contract,run_id}).filter(map=>{const source=nativeLiquidationSourceId(map);return source&&liquidationGate.allowed.has(source);});
  const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...nativeFutureMaps],native_contexts:nativeContexts,projected:coinLobsterAllowed?coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models):[],calculation_context:{source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),market_source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),open_interest_value_usdt:finite(discovery_row?.open_interest_value_usdt),turnover_24h_usdt:finite(discovery_row?.turnover_24h_usdt),oi_change_pct:discovery_row?.oi_change_pct??{'4h':finite(discovery_row?.best_oi_build_pct)},price_change_pct:discovery_row?.price_change_pct??{'24h':finite(discovery_row?.rolling_24h_change_pct)},funding_rate_pct:finite(discovery_row?.funding_per_hour_pct??discovery_row?.funding_rate_pct),market_24h:discovery_row?.market_24h??null,price_tick:finite(discovery_row?.price_tick),volume_ratio:finite(discovery_row?.volume_ratio)},volume_profile:volumeProfile,observed_ts}),future_hint:coinLobsterAllowed?capturedCoinLobsterHint(contract):{source:'COINLOBSTER_FUTURE_HINT',contract,status:'COVERAGE_GATE_NOT_ADMITTED',data_available:false,network_calls:0},future_source_status:{coverage_admission:liquidationGate.admission,...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
+ const technicalFacts=[...readHtxTechnicalStructure({contract,now:observed_ts}),...precommittedTechnicalPlanEvidence({scenario:publication_shadow?.scenario_plan,contract,snapshot_id,observed_ts})];
+ const executionFacts=buildCanonicalExecutionEvidence({contract,run_id,snapshot_id,observed_ts,execution_context_source});
+ if(internal_market_context?.evidence_v2){
+  const prior=internal_market_context.evidence_v2,unique=new Map();
+  for(const row of [...arr(prior.evidence),...technicalFacts,...executionFacts])if(!unique.has(row.evidence_id))unique.set(row.evidence_id,row);
+  const evidence=[...unique.values()];
+  internal_market_context={...internal_market_context,decision_ts:observed_ts,evidence_v2:{...prior,decision_ts:observed_ts,evidence,block_coverage:auditCandidateBlocks({evidence,sources:prior.sources,decision_ts:observed_ts,strict_fresh:prior.strict_fresh_required===true})}};
+ }
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile,volume_consensus:volumeConsensus,contract,observed_ts,reference_price:price});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
  const interest=supplementalScoreAdjustment.final_score;
@@ -279,8 +288,6 @@ export function buildRuntimeCanonicalBundle({
  const freeSources=free_source_summary?.status==='CLOSED'&&free_source_summary?.owner==='source-registry.mjs'?free_source_summary:{version:'free-source-runtime-summary-missing-owner-v1',status:'NOT_CLOSED',owner:null,registry:{status:'NOT_CLOSED',entries:[]},entry_funnel:{status:'NOT_CLOSED',blockers:['UNKNOWN_INTERNAL_REASON'],blocker_details:[{code:'UNKNOWN_INTERNAL_REASON',full_ru:'Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.',short_ru:'сводка источников не подтверждена; вывод не готов',known:false}],has_unknown_reason:true},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0};
  const supportingContext=consumeExistingSourceReceipts(existing_source_receipts||{});
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
- const technicalFacts=[...readHtxTechnicalStructure({contract,now:observed_ts}),...precommittedTechnicalPlanEvidence({scenario:publication_shadow?.scenario_plan,contract,snapshot_id,observed_ts})];
- if(technicalFacts.length&&internal_market_context?.evidence_v2){internal_market_context={...internal_market_context,evidence_v2:{...internal_market_context.evidence_v2,evidence:[...arr(internal_market_context.evidence_v2.evidence),...technicalFacts]}};}
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  const sectorContext=consumeSectorContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,asset_identity:internal_market_context?.candidate_context?.asset_identity,now:observed_ts});

@@ -152,7 +152,7 @@ const hasHttpReceipt=receipt=>receipt?.http_status!==null&&receipt?.http_status!
 export function sourceWasActuallyChecked(source){
  if(!source||typeof source!=='object')return false;
  const status=String(source.status||'NOT_EVALUATED').toUpperCase();
- if(status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE')return source.check_completed===true&&source.capability_registry_complete===true&&Boolean(source?.exact_identity?.contract)&&Boolean(source?.exact_identity?.identity_method)&&source.decision_effect==='MISSING_FACT_NO_ZERO_NO_GREEN';
+ if(status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE')return false;
  if(/(?:^|_)(?:EXACT_.+_REQUIRED|REQUIRED|DEFERRED|WAITING|NOT_EVALUATED|NOT_RUN|NOT_CLOSED|SOURCE_ERROR|STALE|SATURATED|TRUNCATED|INCOMPLETE|INVALID(?:_|$)|SCHEMA|TIMEOUT|ACCESS_BLOCKED|RATE_LIMIT|QUOTA|DAILY_CAP|CREDIT_CAP|BUDGET|UNSUPPORTED|PARSER_FORMAT_MISMATCH)(?:_|$)/.test(status))return false;
  if(source.check_completed===true)return true;
  if(Number(source.network_calls)>0)return true;
@@ -163,6 +163,7 @@ export function sourceWasActuallyChecked(source){
 }
 export function sourceWasAttempted(source){
  if(!source||typeof source!=='object')return false;
+ if(source.status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE'&&Number(source.network_calls||0)===0)return false;
  return Number(source.network_calls)>0||source.check_completed===true||Array.isArray(source.receipts)&&source.receipts.some(row=>hasHttpReceipt(row)||row?.check_completed===true)||sourceWasActuallyChecked(source);
 }
 
@@ -190,6 +191,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
  for(const block of Object.keys(BLOCKS)){
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
   const evaluated=rows.map(row=>({row,validation:validateEvidenceV2(row,{decision_ts})}));
+  const validContext=evaluated.filter(({validation})=>validation.usable).length;
   const usable=evaluated.filter(({row,validation})=>validation.usable&&Number(row.coverage_fraction)>0).length;
   const rejectionReasons=evaluated.filter(({row,validation})=>!validation.usable||!(Number(row.coverage_fraction)>0)).reduce((acc,{row,validation})=>{
    const reason=!validation.usable?validation.status:'ZERO_DECISION_COVERAGE';acc[reason]=(acc[reason]||0)+1;return acc;
@@ -198,13 +200,13 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   const policy=BLOCKS[block]||{};
   const owners=[...(requirement.all||[]),...(requirement.any||[]),...(requirement.supplemental||[])];
   const sourceStatuses=Object.fromEntries(owners.map(name=>[name,String(sources?.[name]?.status||'NOT_EVALUATED')]));
-  const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0}];}));
+  const sourceChecks=Object.fromEntries(owners.map(name=>{const source=sources?.[name]||{};return[name,{status:String(source?.status||'NOT_EVALUATED'),attempted:sourceWasAttempted(source),checked:sourceWasActuallyChecked(source),capability_resolved_without_route:source.status==='CAPABILITY_CHECKED_NO_EXACT_ROUTE',network_calls:Number(source?.network_calls||0),cache_status:String(source?.cache_status||'')||null,receipt_count:Array.isArray(source?.receipts)?source.receipts.length:0,admission_status:source.admission?.status??source.whole_job_admission?.status??null,receipts:Array.isArray(source.receipts)?source.receipts.slice(0,8).map(r=>({route:r.route??null,status:r.status??null,http_status:r.http_status??null,error:r.error??null})):[]}];}));
   const proof=strict_fresh?proofForFreshRequirement(requirement,sources):proofForRequirement(requirement,sources),checked=proof.checked;
   const validNeutral=rows.length>0&&evaluated.every(({validation})=>validation.usable)&&evaluated.every(({row})=>Number(row.coverage_fraction)===0);
   const decisionPath=!checked?'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED':usable>0?'ADMITTED_SCORE_OR_RISK_INPUT':controlConsumers.has(policy.consumer)?'ADMITTED_CONTROL_CONTEXT':validNeutral?'ADMITTED_NEUTRAL_CONTEXT':rows.length?'OBSERVED_CONTEXT_NOT_SCORE_ELIGIBLE':'CHECKED_NEUTRAL_NO_EVENT';
   result[block]={
    status:usable?'ADMISSIBLE_FACTUAL_CONTEXT':validNeutral?'CHECKED_NEUTRAL_CONTEXT':rows.length?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':checked?'CHECKED_NO_USABLE_FACTS':owners.length?'NOT_CHECKED':'NO_ASSIGNED_SOURCE',
-   checked,observed_facts:rows.length,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
+   checked,observed_facts:rows.length,valid_context_facts:validContext,usable_facts:usable,source_statuses:sourceStatuses,source_checks:sourceChecks,
    decision_consumer:policy.consumer||null,maximum_score_points:Number(policy.cap)||0,decision_path:decisionPath,evidence_rejection_reasons:rejectionReasons,
    required_all:proof.required_all,required_any:proof.required_any,missing_required:proof.missing_required,
   };
@@ -223,10 +225,10 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
 }
 
-export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={}}={}){
+export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},decision_ts=evidence_result?.decision_ts??Date.now()}={}){
  const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
  const evidence=[...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])];
- return {...evidence_result,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:evidence_result?.decision_ts??Date.now(),strict_fresh:evidence_result?.strict_fresh_required===true})};
+ return {...evidence_result,decision_ts,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts,strict_fresh:evidence_result?.strict_fresh_required===true})};
 }
 
 export function planCandidateEvidenceRoutes(params={}){
