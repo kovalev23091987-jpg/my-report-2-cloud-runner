@@ -33,7 +33,7 @@ test('reference admission and provider failure never emit a verified identity',a
  const db=new D1();let calls=0;
  const none=await collectHtxAssetIdentity({db,contract:'PUMP-USDT',run_id:'NO_ADMISSION',fetch_impl:async()=>{calls++;}});assert.equal(none.identity,null);assert.equal(calls,0);
  const invalid=await collectHtxAssetIdentity({db,contract:'PUMP-USDT',run_id:'INVALID',request_admit:createUnifiedHttpBudget().reserve,fetch_impl:async()=>{calls++;return{ok:true,status:200,json:async()=>({code:200,data:[token('pump','UNKNOWN',mint)]})};}});
- assert.notEqual(invalid.status,'CLOSED');assert.equal(invalid.identity,null);assert.equal(calls,1);
+ assert.notEqual(invalid.status,'CLOSED');assert.equal(invalid.identity,null);assert.equal(calls,2);assert.notEqual(invalid.identity_fallback_status,'CLOSED');
 });
 test('main supplemental collector receives only authoritative fallback identity and preserves registry metadata',async()=>{
  const db=new D1(),registry={PUMP:{official_name:'Pump.fun',official_domains:['pump.fun']}},budget=createUnifiedHttpBudget();let captured;

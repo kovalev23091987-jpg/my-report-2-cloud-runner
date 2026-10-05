@@ -2,6 +2,7 @@ import {NATIVE_SECTOR_BINDINGS} from './coingecko-sector-evidence.mjs';
 import crypto from 'node:crypto';
 import {collectSupplementalCandidateContext,parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {collectCoinpaprikaHtxIdentity} from './coinpaprika-htx-identity.mjs';
 
 export const HTX_ASSET_IDENTITY_VERSION='htx-official-asset-identity-v3-wire-address-native-20261004';
 const SOURCE='HTX_ASSET_REFERENCE',CACHE_KEY='ALL_CURRENCIES_CHAIN_ADDRESSES_V1',TTL=6*60*60_000,DAILY_CAP=8;
@@ -57,8 +58,14 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  const override=FUTURES_ONLY_EXACT_ASSET_BINDINGS[market.slice(0,-5)];
  if(override)return{version:HTX_ASSET_IDENTITY_VERSION,status:'CLOSED',contract:market,currency:market.slice(0,-5),identity:override.identity,identity_method:override.method,network_calls:0,cache_status:'VERSIONED_FUTURES_ONLY_BINDING',receipt:{evidence_url:override.evidence_url,official_domain:override.official_domain,verified_at:override.verified_at,reference_kind:'STATIC_EXACT_CHAIN_BINDING'},reference_observed_ts:Date.parse(override.verified_at),reference_kind:'STATIC_ASSET_BINDING_ONLY',internal_only:true};
  await installEvidenceSourceStore(db);
+ const withFallback=async primary=>{
+  if(primary.status==='CLOSED')return primary;
+  const fallback=await collectCoinpaprikaHtxIdentity({db,fetch_impl,request_admit,contract:market,run_id,now});
+  if(fallback.status==='CLOSED')return{...fallback,network_calls:Number(primary.network_calls||0)+Number(fallback.network_calls||0),htx_asset_reference_status:primary.status,htx_asset_reference_receipt:primary.receipt||null};
+  return{...primary,network_calls:Number(primary.network_calls||0)+Number(fallback.network_calls||0),identity_fallback_status:fallback.status,identity_fallback_receipts:fallback.receipts||[]};
+ };
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,now});
- if(cached?.version===HTX_ASSET_IDENTITY_VERSION&&Number.isFinite(cached.observed_ts)&&cached.observed_ts<=now)return selectReference(cached,market,{cache_status:'VALID_HTX_REFERENCE_CACHE'});
+ if(cached?.version===HTX_ASSET_IDENTITY_VERSION&&Number.isFinite(cached.observed_ts)&&cached.observed_ts<=now)return withFallback(selectReference(cached,market,{cache_status:'VALID_HTX_REFERENCE_CACHE'}));
  const id=`HTX_ASSET_REFERENCE:${run_id}`;
  const grant=typeof request_admit==='function'?request_admit({logical_request_id:id,lane:'background',attempts:1}):null;
  if(grant?.allowed!==true||grant.duplicate===true)return{status:grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED',identity:null,network_calls:0};
@@ -68,12 +75,12 @@ export async function collectHtxAssetIdentity({db,fetch_impl=globalThis.fetch,re
  try{
   const response=await fetch_impl(HTX_ASSET_REFERENCE_URL,{headers:{accept:'application/json'},signal:controller.signal});
   const payload=await response.json().catch(()=>null),observed=clock(),normalized=normalizeHtxAssetReferences(payload);
-  if(!response.ok||normalized.status!=='CLOSED')return{status:'HTX_ASSET_REFERENCE_SOURCE_NOT_CLOSED',identity:null,network_calls:1,http_status:response.status};
+  if(!response.ok||normalized.status!=='CLOSED')return withFallback({status:'HTX_ASSET_REFERENCE_SOURCE_NOT_CLOSED',identity:null,network_calls:1,http_status:response.status});
   const bundle={version:HTX_ASSET_IDENTITY_VERSION,entries:normalized.entries,observed_ts:observed,
    receipt:{endpoint:HTX_ASSET_REFERENCE_URL,http_status:response.status,received_ts:observed,parsed_payload_sha256:crypto.createHash('sha256').update(JSON.stringify(payload)).digest('hex')}};
   await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:CACHE_KEY,observed_ts:observed,expires_ts:observed+TTL,payload:bundle});
-  return selectReference(bundle,market,{cache_status:'REFRESHED',network_calls:1});
- }catch(error){return{status:'HTX_ASSET_REFERENCE_SOURCE_ERROR',identity:null,network_calls:1,error:text(error?.message||error).slice(0,160)};}
+  return withFallback(selectReference(bundle,market,{cache_status:'REFRESHED',network_calls:1}));
+ }catch(error){return withFallback({status:'HTX_ASSET_REFERENCE_SOURCE_ERROR',identity:null,network_calls:1,error:text(error?.message||error).slice(0,160)});}
  finally{clearTimeout(timer);}
 }
 
@@ -83,7 +90,7 @@ export async function collectHtxBoundSupplementalContext({reference_enabled=true
  let reference=null,scopedRegistry=registry;
  if(reference_enabled&&!known){
   reference=await collectHtxAssetIdentity(params);
-  if(reference.status==='CLOSED')scopedRegistry={...registry,[base]:{...(registry[base]||{}),...reference.identity}};
+  if(reference.status==='CLOSED')scopedRegistry={...registry,[base]:{...(registry[base]||{}),...reference.identity,...(reference.coinpaprika_id?{coinpaprika_id:reference.coinpaprika_id}:{})}};
  }
  const context=await supplemental_collect({...params,registry:scopedRegistry,allow_identity_discovery:reference_enabled?false:params.allow_identity_discovery});
  if(!reference)return context;
