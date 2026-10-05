@@ -8,15 +8,19 @@ test('same-block source accounting distinguishes valid facts, actual assigned us
  const coverage=auditCandidateBlocks({evidence:rows,sources:{CHAIN_SUPPLY:{status:'CLOSED',network_calls:1,evidence:[evidence]},BLOCKSCOUT_INDEX:{status:'CLOSED',evidence:[other]},COINMETRICS_SUPPLY:{status:'DAILY_CAP_OR_DUPLICATE',evidence:[]}},decision_ts:2000});
  const canonical={run_id:'RUN',snapshot_id:'SNAP',direction:'LONG',observed_ts:2000,metadata:{contract:'TEST-USDT',internal_market_context:{decision_ts:2000,evidence_v2:{evidence:rows,block_coverage:coverage}},supplemental_score_adjustment:{status:'CLOSED',base_score:70,final_score:70,receipts:[{source_id:'EVIDENCE_V2',provider_object_id:'A',score_contribution:.1,evidence_v2_receipts:[{evidence_id:'A',block_id:'N02',consumer:'SUPPLY_RISK',reason:'CONSUMED'}]}]}}};
  const before=JSON.stringify(canonical),use=auditCanonicalBlockDecisionUse(canonical).blocks.N02.source_accounting;
- assert.equal(use.configured_route_count,3);assert.equal(use.routes_with_valid_facts,2);assert.equal(use.routes_with_actual_use,1);assert.equal(use.routes_with_nonzero_score,1);assert.equal(use.details.BLOCKSCOUT_INDEX.used_fact_count,0);assert.equal(use.details.CHAIN_SUPPLY.used_fact_count,1);
+ assert.equal(use.configured_route_count,4);assert.equal(use.routes_with_valid_facts,2);assert.equal(use.routes_with_actual_use,1);assert.equal(use.routes_with_nonzero_score,1);assert.equal(use.details.BLOCKSCOUT_INDEX.used_fact_count,0);assert.equal(use.details.CHAIN_SUPPLY.used_fact_count,1);
+ assert.equal(use.details.COINPAPRIKA_SECTOR.used_fact_count,0);assert.equal(use.details.COINPAPRIKA_SECTOR.valid_fact_count,0);
  assert.equal(use.independence_claimed,false);assert.deepEqual(use.details.BLOCKSCOUT_INDEX.declared_upstream_ids,['CHAIN']);assert.equal(JSON.stringify(canonical),before);
  canonical.metadata.internal_market_context.decision_ts=4000;
  assert.equal(auditCanonicalBlockDecisionUse(canonical).blocks.N02.source_accounting.routes_with_actual_use,0);
 });
-test('sector routing no longer demands a per-coin functional tag; exact token identity is still required',()=>{
+test('provider market discovery stays eligible without a chain route while chain supply remains excluded',()=>{
  const params={contract:'TEST-USDT',asset_identity:{chain:'ethereum',asset_kind:'TOKEN',contract_or_mint:'0x'+'1'.repeat(40)},asset_metadata:{coinpaprika_id:'test-token'}};
  assert.equal(planCandidateEvidenceRoutes(params).routes.some(r=>r.name==='SECTOR'),true);
- assert.equal(planCandidateEvidenceRoutes({...params,asset_identity:{...params.asset_identity,contract_or_mint:null}}).routes.some(r=>r.name==='SECTOR'),false);
+ const withoutChain={...params,asset_identity:{...params.asset_identity,contract_or_mint:null}};
+ assert.equal(planCandidateEvidenceRoutes(withoutChain).routes.some(r=>r.name==='SECTOR'),true);
+ assert.equal(planCandidateEvidenceRoutes(withoutChain).routes.some(r=>r.name==='CHAIN_SUPPLY'),false);
+ assert.equal(planCandidateEvidenceRoutes({...params,contract:'TEST-SPOT'}).routes.some(r=>r.name==='SECTOR'),false);
 });
 test('unclosed factual four-hour flow reports concrete failed guards without waiving any',()=>{
  const result=buildHtxFuturesFlowPrimary({contract:'TEST-USDT',trajectory:{},now:2000});
