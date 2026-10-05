@@ -1,0 +1,136 @@
+{
+  "schema": "report2-wikimedia-attention-release-evidence-v1",
+  "generated_at": "2026-10-05T04:42:57.180046+00:00",
+  "pr": 134,
+  "tested_head": "a74f42cfd7affbffe6fad54ba8ae9adf0f981ea0",
+  "merged_main": "4f8286f2fe081870078f653de7edd421bc24e88b",
+  "cloud_run": 37264558763,
+  "cloud_job": 111618499514,
+  "cloud_status": "SUCCESS",
+  "artifact_id": 11325861920,
+  "artifact_sha256": "4d70f25e1fb0dae62943d36a18fe07a49ef3eafcc40dab2fb82dbaf98309d53f",
+  "runtime_sha256": {
+    "src/wikimedia-attention-context.mjs": "141aa92f08b213f954a8e9024b4154647a4db94d422e17b24b16fa5e2579d6ce",
+    "src/candidate-evidence-v2-runtime.mjs": "5078409adb8fc60c5fa89ac82767eaad446220e5e55639077a34ee8ebece13cc",
+    "src/evidence-source-adapters.mjs": "c1ad7aa1c50e9734c6db9deec4c3c4b93443794e96154aa73cacb7b82833cb5b",
+    "src/block-result-context.mjs": "f9d41185126956e96f2beb95439befda227cdeb4514e9ad8c38abdc8aec8947c"
+  },
+  "useful_manual_context_blocks": [
+    "N06"
+  ],
+  "source_http": 1,
+  "database_usage": {
+    "requests": 18,
+    "rows_read": 7,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 3,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 2,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "exact_asset": "cardano:native:mainnet",
+  "provider_role": "ADDITIONAL_ATTENTION_CONTEXT",
+  "primary_bluesky_requirement_unchanged": true,
+  "primary_n06_closed": false,
+  "summary": {
+    "recent_7day_views": 512,
+    "previous_7day_views": 566,
+    "change_pct": -9.540636042402827,
+    "day_count": 14,
+    "window_end": 1791072000000
+  },
+  "source_limits": {
+    "published_user_agent_requests_per_minute": 200,
+    "published_day_cap": null,
+    "published_month_cap": null,
+    "key_required": false,
+    "credit_cost": 0,
+    "license": "CC0-1.0",
+    "internal_minute_cap": 2,
+    "internal_daily_cap": 12,
+    "ordinary_daily_cap": 8,
+    "internal_31day_max": 372,
+    "cache_ms": 21600000,
+    "retries": 0,
+    "timeout_ms": 8000
+  },
+  "official_limit_sources": [
+    "https://doc.wikimedia.org/generated-data-platform/aqs/analytics-api/documentation/access-policy.html",
+    "https://www.mediawiki.org/wiki/Wikimedia_APIs/Rate_limits"
+  ],
+  "score_adjustment": 0,
+  "directional_vote": false,
+  "unique_traders_claim": false,
+  "full_main_acceptance": false,
+  "all_15_live_accepted": false,
+  "telegram_calls": 0,
+  "evidence_files": {
+    "checkpoints/wikimedia-attention-source-20261005.json.gz": "b2ae5ab41ff5f9c3692bf341b3df50ea233d87a0d28cc9882c369670c6932d47",
+    "checkpoints/wikimedia-attention-use-20261005.json.gz": "a6f8278ca85ab249230f70fd5149ef31bb72cb41634a2ca22cc9b07372a17789",
+    "checkpoints/wikimedia-attention-codevalidation-20261005.json.gz": "0ce22de576398626e20938654f1b28752c5165a84723133a966129bb207c3426"
+  },
+  "tested_tree": "0156022b3a9f994cfea7022fbe6757da319f7691",
+  "merged_tree": "0156022b3a9f994cfea7022fbe6757da319f7691",
+  "exact_merged_tree_verified": true,
+  "runtime_assembly": {
+    "status": "FULL_COMBINED_RUNTIME_RECONSTRUCTED",
+    "base": "f7c5c77acfc2640c2c9b396d61560d33bf4fa263",
+    "production_overlays": 15,
+    "worker_sha256": "5935b4739942e974481a86fd4173ca501772fd3828453e8cf120f91799f5662b",
+    "source_mode_default": "OFF",
+    "production_changed": true
+  }
+}

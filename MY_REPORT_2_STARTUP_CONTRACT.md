@@ -1,3 +1,9 @@
+## Последние проверенные пакеты — PR133/134, 05.10.2026
+
+ADA N01: официальное первоначальное распределение; N07: два датированных объявления cardano.org фактически дошли в canonical builder/approved manual.2sourceHTTP; исправление ошибочной audit assertion затем повторно использовало свежий D1cache с0HTTP, не тестировало код повторно. Нейтральный контекст не является score/risk input; N01 не подтверждает будущие unlocks. Proof checkpoints/cardano-official-release-evidence-20261005.json.
+
+Wikimedia N06 additional:14полных дней,512просмотровстатьиCardano против566 за предыдущие7дней.1HTTP,D1read7/write11/unknown0,cloud37264558763/job111618499514SUCCESS,37integration/enginePASS/5stageguard. Exact native ADA identity; additional role retains missing Bluesky primary,zero score/direction; просмотры не число трейдеров. Proof checkpoints/wikimedia-attention-release-evidence-20261005.json. No fresh MAIN/productioncanonicalwrite/TG; CORE_BLOCKS IN_PROGRESS. Completed probes never repeat without repair/freshness reason. Continue phase next_action, keep native N04/N05 gaps honest.
+
 ## Исправление неверной полной приёмки — 05.10.2026
 
 Сохранённый свежий joint run1791165008983-1791165015355 (01:51UTC) прямо содержит all_blocks_have_useful_data=false и all_blocks_decision_accounted=false для ADA/龙虾. Проверены все15, но NO_EXACT_ROUTE не является полезными данными. Числа3/4 — только score/risk inputs; manual factual context получен также в других блоках. Универсальная готовность всех16 не подтверждена. CORE_BLOCKS вновь IN_PROGRESS; прежние scoped proofs и actual liquidation audit55/102 сохраняются как повторно используемые факты, не перепроверять их без причины. Полный разбор: checkpoints/FRESH_REPORT_USEFULNESS_CORRECTION_20261005.json. Продолжать только сохранённые незакрытые gaps, не весь аудит заново.
