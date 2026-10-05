@@ -1,0 +1,50 @@
+import crypto from 'node:crypto';
+import {formatTelegramCompact} from './telegram-compact-formatter.mjs';
+
+export const EXACT_SAVED_RUN_TELEGRAM_VERSION='exact-saved-run-telegram-v1-20261005';
+const text=v=>v===null||v===undefined?'':String(v).trim();
+const finite=v=>v===null||v===undefined||v===''?null:(Number.isFinite(Number(v))?Number(v):null);
+const sha256=v=>crypto.createHash('sha256').update(String(v)).digest('hex');
+const changes=r=>{const n=Number(r?.meta?.changes??r?.changes);return Number.isFinite(n)?n:null;};
+async function sendRelay({relay_url,relay_key,message,fetch_impl=globalThis.fetch,timeout_ms=8000}={}){const url=text(relay_url),key=text(relay_key),body=text(message);if(!url||!key||!body)return{network_result:'CONFIG_ERROR',status:'RELAY_NOT_CONFIGURED',message_id:null};const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout_ms);try{const response=await fetch_impl(url,{method:'POST',headers:{'content-type':'application/json; charset=UTF-8',authorization:`Bearer ${key}`},body:JSON.stringify({text:body}),signal:controller.signal});let payload=null;try{payload=await response.json();}catch{}if(response.ok&&payload?.ok===true)return{network_result:'CONFIRMED_SENT',status:text(payload.status)||'SENT',message_id:payload.message_id??null,http_status:response.status};if(payload?.ok===false)return{network_result:'REJECTED',status:text(payload.status)||'RELAY_REJECTED',message_id:null,http_status:response.status};return{network_result:response.status>=500?'5XX':'UNKNOWN',status:response.status>=500?'RELAY_5XX':'AMBIGUOUS_RELAY_RESPONSE',message_id:null,http_status:response.status};}catch(error){return{network_result:error?.name==='AbortError'?'TIMEOUT':'NETWORK_ERROR',status:error?.name==='AbortError'?'RELAY_TIMEOUT':'NETWORK_ERROR',message_id:null};}finally{clearTimeout(timer);}}
+
+function candidateContract(c){return text(c?.contract||c?.contract_code||c?.canonical?.contract);}
+function candidateAll15(c){const a=c?.block_coverage;return a?.status==='CLOSED_ALL_15_CHECKED'&&a?.all_blocks_checked===true&&Number(a?.coverage_count)===15&&Number(a?.checked_block_count)===15;}
+function noCalculatedLiquidations(c){const l=c?.canonical?.liquidations||{};return l.calculated_fallback_enabled===false&&Number(l.calculated_zone_count||0)===0&&!(Array.isArray(l.all_zones)&&l.all_zones.some(z=>String(z?.kind||'').toUpperCase()==='CALCULATED'));}
+function displayView(c){const canonical=c.canonical||{};return {...canonical,contract:candidateContract(c),snapshot_time_utc:new Date(Number(c.observed_ts||canonical.observed_ts)).toISOString(),candidates:[{contract:candidateContract(c),ticker:candidateContract(c)}],metadata:{...(canonical.metadata||{}),contract:candidateContract(c)}};}
+
+export function validateExactSavedRunTelegram({saved_output,requested_run_id,now_ts=Date.now()}={}){
+ const fail=reason=>({ok:false,status:'NOT_CLOSED',reason,candidate:null,rendered:null});
+ const output=saved_output||{},run=text(requested_run_id);
+ if(!run||text(output.run_id)!==run)return fail('SAVED_RUN_ID_MISMATCH');
+ if(output.status!=='CLOSED'||output.reason!==null)return fail('SAVED_RUN_NOT_CLOSED');
+ if(output.secrets_included!==false||output.alternative_manual_recalculation!==false)return fail('SAVED_RUN_PROVENANCE_NOT_CLOSED');
+ const scan=output.market_scan_audit||{};if(scan.complete!==true||Number(scan.universe_total)!==102||Number(scan.scanned)!==102||Number(scan.errors)!==0||Number(scan.stale)!==0)return fail('MARKET_SCAN_NOT_CLOSED');
+ const selection=output.candidate_selection_audit||{},top=Array.isArray(selection.top_two_contracts)?selection.top_two_contracts.map(text):[],deep=Array.isArray(selection.deep_check_selected)?selection.deep_check_selected.map(text):[];
+ if(top.length!==2||JSON.stringify(top)!==JSON.stringify(deep)||selection.registry_did_not_change_rank!==true)return fail('TOP_TWO_BINDING_NOT_CLOSED');
+ const candidates=Array.isArray(output.candidates)?output.candidates:[];if(candidates.length!==2||!candidates.every(c=>text(c.run_id||c?.canonical?.run_id)===run&&top.includes(candidateContract(c))&&candidateAll15(c)&&noCalculatedLiquidations(c)))return fail('CANDIDATE_ACCEPTANCE_NOT_CLOSED');
+ const observed=candidates.filter(c=>c?.canonical?.status==='CLOSED'&&c?.canonical?.state==='OBSERVE'&&['LONG','SHORT'].includes(text(c?.canonical?.direction).toUpperCase())&&finite(c?.canonical?.scores?.coin_interest_0_100)>=70&&c?.canonical?.data_quality?.owner_deferred_exact_signed_raw24h===true);
+ if(observed.length!==1)return fail('EXACTLY_ONE_OWNER_DEFERRED_OBSERVATION_REQUIRED');
+ const candidate=observed[0],valid=finite(candidate.valid_until_ts||candidate?.canonical?.trigger?.expires_ts);if(valid===null||valid<Number(now_ts))return fail('SAVED_OBSERVATION_EXPIRED');
+ const rendered=formatTelegramCompact(displayView(candidate));if(rendered.ok!==true)return fail(`APPROVED_RENDERER_${rendered.status||'FAILED'}`);
+ if(!/^\S+\s+—\s+⚪️ НАБЛЮДЕНИЕ/mu.test(rendered.message)||!/Монета интересна:\s+(?:7\d|8\d|9\d|100) из 100/u.test(rendered.message))return fail('OBSERVATION_PRESENTATION_NOT_CLOSED');
+ return {ok:true,status:'CLOSED',reason:null,candidate,rendered:{...rendered,message_hash:sha256(rendered.message)}};
+}
+
+export async function deliverExactSavedRunTelegram({db,saved_output,requested_run_id,enabled=false,relay_url=null,relay_key=null,now_ts=Date.now(),fetch_impl=globalThis.fetch}={}){
+ const base={schema:'exact-saved-run-telegram-proof-v1',version:EXACT_SAVED_RUN_TELEGRAM_VERSION,run_id:text(requested_run_id),network_enabled:enabled===true,validated_signal:false,trading_execution:false};
+ if(enabled!==true)return {...base,status:'NETWORK_DISABLED_FAIL_CLOSED',sent:false};
+ if(!db?.prepare)return {...base,status:'SOURCE_UNSUPPORTED',sent:false};
+ const gate=validateExactSavedRunTelegram({saved_output,requested_run_id,now_ts});if(!gate.ok)return {...base,status:gate.status,reason:gate.reason,sent:false};
+ const c=gate.candidate,dispatch_key=`canonical-saved-run:${requested_run_id}:${c.snapshot_id}:${gate.rendered.message_hash}`,source_ref=`${requested_run_id}|${c.snapshot_id}|${c.publication_id}`;
+ const inserted=await db.prepare(`INSERT OR IGNORE INTO telegram_output_dispatch_journal_v2 (dispatch_key,category,source_ref,status,reserved_ts,updated_ts,message_hash,telegram_message_id,telegram_http_status,error_text) VALUES (?1,'CANONICAL_SAVED_RUN_OBSERVATION',?2,'RESERVED',?3,?3,?4,NULL,NULL,NULL)`).bind(dispatch_key,source_ref,Number(now_ts),gate.rendered.message_hash).run();
+ if(changes(inserted)!==1){const old=await db.prepare(`SELECT status,message_hash,telegram_message_id,telegram_http_status,error_text FROM telegram_output_dispatch_journal_v2 WHERE dispatch_key=?1 LIMIT 1`).bind(dispatch_key).first();if(old?.status==='SENT'&&text(old.telegram_message_id)&&old.message_hash===gate.rendered.message_hash)return {...base,status:'SENT',sent:true,reused:true,message_id:String(old.telegram_message_id),http_status:old.telegram_http_status??null,dispatch_key,source_ref,contract:candidateContract(c),snapshot_id:c.snapshot_id,publication_id:c.publication_id,formatter:gate.rendered.formatter,message_hash:gate.rendered.message_hash};return {...base,status:'NOT_SENT',reason:old?.error_text||old?.status||'RESERVATION_NOT_ACQUIRED',sent:false,dispatch_key,source_ref};}
+ const net=await sendRelay({relay_url,relay_key,message:gate.rendered.message,fetch_impl});const confirmed=net.network_result==='CONFIRMED_SENT'&&text(net.message_id);
+ if(confirmed)await db.prepare(`UPDATE telegram_output_dispatch_journal_v2 SET status='SENT',updated_ts=?2,telegram_message_id=?3,telegram_http_status=?4,error_text=NULL WHERE dispatch_key=?1 AND status='RESERVED'`).bind(dispatch_key,Date.now(),String(net.message_id),net.http_status??null).run();
+ else if(['REJECTED','CONFIG_ERROR','RENDER_ERROR'].includes(text(net.network_result)))await db.prepare(`UPDATE telegram_output_dispatch_journal_v2 SET status='SEND_FAILED',updated_ts=?2,telegram_http_status=?3,error_text=?4 WHERE dispatch_key=?1 AND status='RESERVED'`).bind(dispatch_key,Date.now(),net.http_status??null,text(net.status)||'SEND_FAILED').run();
+ else await db.prepare(`UPDATE telegram_output_dispatch_journal_v2 SET updated_ts=?2,telegram_http_status=?3,error_text=?4 WHERE dispatch_key=?1 AND status='RESERVED'`).bind(dispatch_key,Date.now(),net.http_status??null,`DELIVERY_UNKNOWN:${text(net.status)||'MISSING_POSITIVE_MESSAGE_ID'}`).run();
+ const readback=await db.prepare(`SELECT status,message_hash,telegram_message_id,telegram_http_status,error_text FROM telegram_output_dispatch_journal_v2 WHERE dispatch_key=?1 LIMIT 1`).bind(dispatch_key).first();const sent=readback?.status==='SENT'&&text(readback.telegram_message_id)&&readback.message_hash===gate.rendered.message_hash;
+ return {...base,status:sent?'SENT':'NOT_SENT',sent:Boolean(sent),reused:false,message_id:sent?String(readback.telegram_message_id):null,http_status:readback?.telegram_http_status??null,error:sent?null:(readback?.error_text||net.status||'DELIVERY_NOT_CONFIRMED'),dispatch_key,source_ref,contract:candidateContract(c),snapshot_id:c.snapshot_id,publication_id:c.publication_id,formatter:gate.rendered.formatter,message_hash:gate.rendered.message_hash,secrets_logged:false};
+}
+
+export default{EXACT_SAVED_RUN_TELEGRAM_VERSION,validateExactSavedRunTelegram,deliverExactSavedRunTelegram};

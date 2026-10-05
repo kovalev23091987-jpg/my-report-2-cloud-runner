@@ -16,6 +16,13 @@ test('ordinary chat has one file-scoped launch path bound to main',()=>{
  assert.match(workflow,/!contains\(github\.event\.head_commit\.message, '\[public-collector-release\]'\)/u);
 });
 
+test('exact saved-run Telegram is a narrow explicit push marker, not a general manual network gate',()=>{
+ assert.match(workflow,/REPORT2_EXACT_SAVED_RUN_TELEGRAM:.*\[telegram-canonical-delivery\]/u);
+ assert.match(workflow,/REPORT2_V3_TELEGRAM_NETWORK_ENABLED:.*\[telegram-canonical-delivery\]/u);
+ assert.match(runner,/deliverExactSavedRunTelegram/u);
+ assert.match(runner,/EXACT_SAVED_RUN_TELEGRAM_NOT_SENT/u);
+});
+
 test('file launch is fail-closed on authorization and exact generation',()=>{
  assert.match(enqueue,/request\?\.authorized!==true/u);
  assert.match(enqueue,/REPORT2_CURRENT_GENERATION\.json/u);

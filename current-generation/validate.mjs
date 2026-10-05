@@ -43,7 +43,7 @@ const checks=[
  'files/src/market-history-reader.mjs','files/src/deep-candidate-order.mjs','files/src/discovery-candidate-score.mjs','files/src/provider-minute-ledger.mjs','files/src/prospective-delivery-cohort.mjs',
  'files/src/stage392-proof-runtime.mjs','files/src/tz101-execution-facts.mjs','files/src/full-evidence-shadow-model.mjs',
  'files/src/liquidation-command-router.mjs',
- 'files/src/publication-reconciler.mjs','files/src/bound-telegram-delivery-sidecar.mjs',
+ 'files/src/publication-reconciler.mjs','files/src/bound-telegram-delivery-sidecar.mjs','files/src/exact-saved-run-telegram.mjs',
  'files/src/liquidation-extension/runner-extension.mjs','files/src/liquidation-extension/htx-liquidation-route.mjs',
  'files/src/liquidation-extension/combined-runner-service.mjs','files/src/liquidation-extension/native-verification.mjs',
  'files/src/liquidation-extension/native-liquidation-guard.mjs',
