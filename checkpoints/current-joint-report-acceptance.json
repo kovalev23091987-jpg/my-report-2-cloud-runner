@@ -1,0 +1,85 @@
+{
+  "schema": "report2-joint-report-functional-acceptance-v1",
+  "phase": "JOINT_REPORT",
+  "status": "CLOSED",
+  "actual_evidence_verified": true,
+  "fresh_main_verified": true,
+  "actual_top_two_verified": true,
+  "core_and_liquidation_verified": true,
+  "canonical_binding_verified": true,
+  "raw_24h_flow_verified": false,
+  "raw_24h_explicitly_excluded": true,
+  "raw_24h_included": false,
+  "owner_amendment_sha256": "1403893f3f0c1d2e72de85c3864e15cbbebf81cabbbd97a6c8abc6faa7131264",
+  "generated_at": "2026-10-05T01:55:40Z",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "main_head": "c970c7f901871f83917f8863149e5d9527676d54",
+  "workflow_run_id": 37252949669,
+  "job_id": 111584183050,
+  "artifact_id": 11322131387,
+  "artifact_sha256": "7cdd8eeccbcc115608c8dd2a37375a685539ff5c6b116f025a1cee6b83a27390",
+  "canonical_run_id": "1791165008983-1791165015355",
+  "canonical_generated_at": "2026-10-05T01:51:25.647Z",
+  "canonical_status": "CLOSED",
+  "market_scan": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "complete": true
+  },
+  "candidate_selection": {
+    "qualified_top_two": ["龙虾-USDT", "ADA-USDT"],
+    "top_two_contracts": ["龙虾-USDT", "ADA-USDT"],
+    "deep_check_selected": ["龙虾-USDT", "ADA-USDT"],
+    "exact_order_match": true,
+    "leaders_replaced_for_coverage": false
+  },
+  "block_acceptance": {
+    "required_block_count": 15,
+    "candidate_count": 2,
+    "fully_checked_candidate_count": 2,
+    "minimum_checked_block_count": 15,
+    "maximum_not_checked_block_count": 0,
+    "all_candidates_fully_checked": true,
+    "candidates": {
+      "龙虾-USDT": "CLOSED_ALL_15_CHECKED",
+      "ADA-USDT": "CLOSED_ALL_15_CHECKED"
+    }
+  },
+  "liquidation_acceptance": {
+    "same_top_two_checked_independently": true,
+    "calculated_fallback_enabled": false,
+    "calculated_zone_count": 0,
+    "missing_levels_are_not_zero_or_green": true,
+    "龙虾-USDT": {
+      "coverage_eligible": false,
+      "source_ids": [],
+      "fresh_numeric_levels_returned": false,
+      "displayed_zone_count": 0
+    },
+    "ADA-USDT": {
+      "coverage_eligible": true,
+      "source_ids": ["HYPERLIQUID_NATIVE"],
+      "fresh_numeric_levels_returned": false,
+      "displayed_zone_count": 0
+    }
+  },
+  "signal_acceptance": {
+    "contract": "龙虾-USDT",
+    "state": "OBSERVE",
+    "direction": "SHORT",
+    "coin_interest_0_100": 83,
+    "snapshot_id": "S392:龙虾-USDT:1791165057897",
+    "valid_until_ts": 1791166857897
+  },
+  "data_quality": {
+    "owner_deferred_exact_signed_raw24h": true,
+    "partial_context_is_not_zero_or_green": true,
+    "entry_rules_changed": false,
+    "strategy_weights_changed": false,
+    "threshold_70_changed": false
+  },
+  "telegram_sent": false,
+  "next_phase": "TELEGRAM"
+}
