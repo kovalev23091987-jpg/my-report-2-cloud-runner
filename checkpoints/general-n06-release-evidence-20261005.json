@@ -1,0 +1,47 @@
+{
+  "schema": "report2-general-n06-release-evidence-v1",
+  "status": "ACCEPTED_GENERAL_ROUTE",
+  "accepted_at": "2026-10-05T14:16:45Z",
+  "phase": "CORE_BLOCKS",
+  "core_phase_complete": false,
+  "pull_request": 146,
+  "merged_head": "e9137f573872f98bd5b51beef04262e37ed70d14",
+  "tested_head": "174de945e3a8310eee82c0ceb75c8926dfb8655f",
+  "tested_tree": "e28a9d38a1d85fdd671c282ba5adf1a5a3578acb",
+  "cloud": {
+    "run_id": 37322935458,
+    "job_id": 111806320169,
+    "conclusion": "SUCCESS",
+    "artifact_id": 11351176055,
+    "artifact_sha256": "3803c52aefa37105d8f027c4209a41b942329e01293c87590354909a5d7cad08",
+    "integration_passed": 37,
+    "integration_failed": 0,
+    "current_generation_tests": "PASS",
+    "syntax": "PASS"
+  },
+  "scope": {
+    "block": "N06",
+    "mechanism": "EXISTING_BLUESKY_PRIMARY_WITH_EXACT_HTX_MARKET_FALLBACK",
+    "universe_application": "EVERY_EXACT_HTX_CRYPTO_FUTURES_CONTRACT",
+    "per_coin_manual_configuration": false,
+    "stronger_identity_precedence": [
+      "EXACT_CONTRACT_OR_MINT",
+      "EXACT_OFFICIAL_DOMAIN_NATIVE",
+      "EXACT_HTX_MARKET_PAIR"
+    ],
+    "ticker_only_matching": false,
+    "unicode_safe": true,
+    "symbol_collision_rejected": "BR_IS_NOT_BOHR",
+    "market_query_requires_htx_or_huobi": true,
+    "project_wide_attention_claimed": false,
+    "directional_vote": false,
+    "entry_authorized": false
+  },
+  "cost": {
+    "source_http": 0,
+    "new_MAIN": 0,
+    "telegram_calls": 0,
+    "nansen_calls": 0
+  },
+  "next_action": "Continue general all-universe core repairs for unresolved N01-N04 primary facts and exact identity coverage. Reuse the already repaired general HTX N05 flow and PR145 N07 route. Do not hardcode one coin and do not run the full joint report until the remaining material core package is ready."
+}
