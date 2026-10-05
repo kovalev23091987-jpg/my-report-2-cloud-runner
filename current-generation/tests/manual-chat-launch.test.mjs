@@ -18,7 +18,7 @@ test('ordinary chat has one file-scoped launch path bound to main',()=>{
 
 test('exact saved-run Telegram is a narrow explicit push marker, not a general manual network gate',()=>{
  assert.match(workflow,/REPORT2_EXACT_SAVED_RUN_TELEGRAM:.*\[telegram-canonical-delivery\]/u);
- assert.match(workflow,/REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE:.*joint-report-functional-acceptance-20261005\.json/u);
+ assert.match(workflow,/REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE:.*current-joint-report-acceptance\.json/u);
  assert.match(workflow,/REPORT2_V3_TELEGRAM_NETWORK_ENABLED:.*\[telegram-canonical-delivery\]/u);
  assert.match(runner,/deliverExactSavedRunTelegram/u);
  assert.match(runner,/EXACT_SAVED_RUN_TELEGRAM_NOT_SENT/u);

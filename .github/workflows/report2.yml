@@ -152,7 +152,7 @@ jobs:
       REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f"
       REPORT2_TELEGRAM_INSTALL_VALIDATION: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '1' || '0' }}
       REPORT2_EXACT_SAVED_RUN_TELEGRAM: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]') && '1' || '0' }}
-      REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE: "../checkpoints/joint-report-functional-acceptance-20261005.json"
+      REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE: "../checkpoints/current-joint-report-acceptance.json"
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
       REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
