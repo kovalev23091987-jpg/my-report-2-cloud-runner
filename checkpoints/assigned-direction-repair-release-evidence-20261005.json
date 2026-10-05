@@ -1,0 +1,49 @@
+{
+  "schema": "report2-scoped-release-evidence-v1",
+  "PR": 156,
+  "merged_main": "3b3493490a42629147287b64e59da81fa3b5090a",
+  "tested_head": "90d9f5e8b92af8d10bb27eaf7c77b56dc165367f",
+  "tested_tree": "f1faf518f0fdb48ce0e48235cd6872c9b486f857",
+  "cloud": {
+    "run": 37374688612,
+    "job": 111980201821,
+    "artifact": 11371360157,
+    "sha256": "2d9f176c88987e5f21bbc59426792c7cb1c2289cc720125b6841283fe734b86d",
+    "code_validation": "PASS",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "D1_rows_read": 6,
+    "D1_write": 0
+  },
+  "actual_origin": {
+    "CORE_run": 37356271646,
+    "runtime": "1791224954306-1791224965631",
+    "wave": "EDW:ZEC-USDT:1791187242450:G3",
+    "direction_state": "DIRECTION_NOT_CLOSED",
+    "direction_hint": null,
+    "deep_shadow": "1791225015208:ZEC-USDT",
+    "deep_preliminary_direction": "SHORT",
+    "deep_actual_decision_generated": 0,
+    "previous_incorrect_canonical_direction": "LONG",
+    "cause": "Canonical consumer confused CLOSED transport with confirmed direction and attributed mixed LONG/SHORT/BOTH evidence to LONG; lifecycle reflected a separate preliminary deep bias, not a valid publication decision."
+  },
+  "repair": "Require fresh same-contract same-wave direction-confirmed matching evidence; do not relabel opposite or neutral rows. Preserve thresholds/weights/publication gates.",
+  "historical_N05": {
+    "cloud": 37373667276,
+    "artifact": 11371024249,
+    "sha256": "7ee1f2feadee90b61734b794392b0d5e039000ae90c7001c76923e28503a46ef",
+    "original_day": "2026-10-04",
+    "NEAR_fills": 1286,
+    "SOL_fills": 623,
+    "closed_minutes_each": 240,
+    "result": "CLOSED_EXACT_FUTURES_FLOW_4H",
+    "parser": "Existing production exact large wire-ID parser; initial diagnostic JSON.parse replay was invalid, not a production bug.",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "not_fresh_joint_acceptance": true
+  },
+  "joint_accepted": false,
+  "telegram_accepted": false
+}

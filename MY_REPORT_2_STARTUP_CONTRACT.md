@@ -1,3 +1,10 @@
+## Latest verified implementation — 2026-10-05T21:28:19.079Z
+PR155 merged existing PR153/154 general source use and labelled liquidation estimates; cloud37372745983 passed assembled validation and actual gTrade three-request shared snapshot:52/102 scoped numeric contexts,69 supported markets,0 known position source clocks,0 score effects. Receipt-only context is not a fresh entry target. Proof checkpoints/combined-core-liquidation-release-evidence-20261005.json.
+
+PR156 merged3b3493490a42629147287b64e59da81fa3b5090a, tested90d9f5e8b92af8d10bb27eaf7c77b56dc165367f/cloud37374688612 PASS, sourceHTTP0/MAIN0/TG0. Exact old ZEC wave was DIRECTION_NOT_CLOSED with null hint; deep shadow had preliminary SHORT bias and no final decision, while canonical wrongly attributed mixed direction evidence to LONG. Consumer now requires matching confirmed direction evidence. Original-clock N05 replay using existing exact wire-ID parser closes240 minutes for saved NEAR1286/SOL623 fills; this is historical consumer proof, not fresh coverage. Proof checkpoints/assigned-direction-repair-release-evidence-20261005.json. No publication gate bypass.
+
+Hosted x64 jobs failed runner acquisition before any steps. Scheduled execution-gate/run-report2 jobs use the ARM runner verified by code/source checks; cadence unchanged. Natural run37375551922 at2026-10-05T21:23:27Z is queued; no newer CORE or Telegram result exists yet. Last actual CORE remains05Oct21:30MSK ZEC7/FIL5, Telegram0. CORE and approved Telegram acceptance remain pending. Historical sections below are superseded by this correction.
+
 ## Latest actual readback and pending implementation — 2026-10-05T20:24:09.094Z
 Latest correction supersedes historical readiness below. Actual CORE run37356271646 at2026-10-05T18:30:50.790Z: ZEC7 cores (1 nonzero N12,6 neutral),FIL5 (0 nonzero,5 neutral);FIL2 Hyperliquid future levels,ZEC0;Telegram SENT0. Root cause of ZEC direction discrepancy remains unproven; no guard bypass. checkpoints/SOURCE_ROUTE_USE_READBACK_20261005.json:30 assigned logical routes/candidate,1–3/block, not whole capability inventory or independent provider votes.
 
