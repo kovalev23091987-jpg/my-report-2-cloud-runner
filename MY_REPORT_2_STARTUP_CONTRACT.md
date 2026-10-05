@@ -1,4 +1,4 @@
-## Owner final batch and saved continuation — 05.10.2026 13:30 МСК
+## Owner final batch and saved continuation — 05.10.2026
 
 Owner05Oct12:48MSK amendment is authoritative: checkpoints/OWNER_BATCHED_FINAL_VALIDATION_20261005.md. Finish GENERAL source→consumer repairs as one connected package; no individual live probes or repeated MAIN. One assembled validation and one admitted fresh joint report at package completion; Telegram follows actual useful core report in the approved form.
 
