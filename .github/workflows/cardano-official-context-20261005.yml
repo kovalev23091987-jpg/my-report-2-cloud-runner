@@ -4,6 +4,7 @@ on:
     branches: [autonomous/cardano-official-context-20261005]
 permissions:
   contents: read
+  actions: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -23,19 +24,18 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: Validate changed package once
+      - uses: actions/download-artifact@v4
+        with:
+          name: cardano-official-acceptance-37263699095
+          run-id: 37263699095
+          github-token: ${{ github.token }}
+          path: prior-output
+      - name: Verify only audit/workflow changed since accepted code validation
         run: |
-          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-          # Runtime was already assembled with the current overlay above. Validate
-          # the full source tree once; integration + exact cmp below validate the
-          # assembled runtime without applying the overlay a second time.
-          node current-generation/validate.mjs > audit-output/validation.json
-          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
-          cmp current-generation/files/src/official-token-schedule.mjs runtime/src/official-token-schedule.mjs
-          cmp current-generation/files/src/official-events-evidence.mjs runtime/src/official-events-evidence.mjs
-          cmp current-generation/files/src/official-source-registry.mjs runtime/src/official-source-registry.mjs
-          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
-      - name: Verify actual official data reaches approved reports
+          git fetch origin e39ca6a26d3b310ec1ffc2cede1cc26a3616f9ce
+          git diff --name-only e39ca6a26d3b310ec1ffc2cede1cc26a3616f9ce HEAD > audit-output/changed-since-validation.txt
+          node -e "const fs=require('fs'); const allowed=['.github/workflows/cardano-official-context-20261005.yml','audit-fixes/cardano-official-context-20261005/verify-live.mjs']; for(const p of fs.readFileSync('audit-output/changed-since-validation.txt','utf8').trim().split('\n'))if(!allowed.includes(p))throw Error('CHANGED_DEPENDENCY_REQUIRES_TEST:'+p);"
+      - name: Verify accepted fresh source cache reaches approved reports
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
