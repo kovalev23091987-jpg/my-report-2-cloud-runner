@@ -26,3 +26,11 @@ test('unattempted token primary remains incomplete; documented native absence is
  const token=resolveNansenFlowPrimary(undefined,params);assert.equal(token.status,'NOT_EVALUATED');assert.equal(token.check_completed,false);assert.equal(auditCandidateBlocks({sources:{NANSEN_FLOWS:token},decision_ts:now}).blocks.N05.checked,false);
  const native=resolveNansenFlowPrimary(undefined,{contract:'ADA-USDT',asset_identity:{chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null},identity_method:'HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK',now});assert.equal(native.status,'CAPABILITY_CHECKED_NO_EXACT_ROUTE');assert.equal(native.network_calls,0);assert.deepEqual(native.evidence,[]);assert.equal(auditCandidateBlocks({sources:{NANSEN_FLOWS:native},decision_ts:now}).blocks.N05.observed_facts,0);
 });
+
+test('actual local admission denial remains explicit and never becomes useful flow or a no-event claim',()=>{
+ const denied={source:'NANSEN_FLOWS',status:'LOCAL_BUDGET_OR_BACKOFF',actual_http:0};
+ const r=resolveNansenFlowPrimary(undefined,{...params,supplemental_context:{receipts:[denied]}});
+ assert.equal(r.status,'LOCAL_BUDGET_OR_BACKOFF');assert.equal(r.reason,'EXISTING_PROVIDER_ADMISSION_DENIED');assert.deepEqual(r.receipts,[denied]);assert.deepEqual(r.evidence,[]);assert.equal(r.check_completed,false);assert.equal(r.network_calls,0);
+ assert.equal(auditCandidateBlocks({sources:{NANSEN_FLOWS:r},decision_ts:now}).blocks.N05.checked,false);
+ for(const receipt of [{...denied,actual_http:1},{...denied,source:'OTHER'},{...denied,status:'UNKNOWN'}])assert.equal(resolveNansenFlowPrimary(undefined,{...params,supplemental_context:{receipts:[receipt]}}).status,'NOT_EVALUATED');
+});
