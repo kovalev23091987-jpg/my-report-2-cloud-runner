@@ -1,0 +1,55 @@
+name: Report2 Retained History Maintenance
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [codex/retained-history-relocation-20261005]
+    paths:
+      - '.github/workflows/retained-history-maintenance.yml'
+      - 'audit-fixes/retained-history-20261005/maintenance-lease*'
+permissions:
+  contents: write
+concurrency:
+  group: report2-retained-history-relocation
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Acquire bounded owner after fresh main and fence read
+        id: lease
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          EXPECTED_MAIN: ${{ github.event_name == 'push' && 'f4882b33d18eb6033cd89cf8df9dbf569cc06b5c' || github.sha }}
+          BORROW_EXISTING_OWNER: ${{ github.event_name == 'push' && 'HTX:20261005T215136067Z:source-storage' || '' }}
+        run: node audit-fixes/retained-history-20261005/maintenance-lease.mjs acquire
+      - name: Verify maintenance lease guards
+        if: steps.lease.outputs.allowed == 'true'
+        run: node --test audit-fixes/retained-history-20261005/maintenance-lease.test.mjs
+      - name: Preserve and verify exact cold history before conditional relocation
+        if: steps.lease.outputs.allowed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: |
+          node audit-fixes/retained-history-20261005/migrate-retained-history.mjs > audit-output/console.json
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+      - name: Release only this maintenance owner
+        if: always() && steps.lease.outputs.allowed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node audit-fixes/retained-history-20261005/maintenance-lease.mjs release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: retained-history-maintenance-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
