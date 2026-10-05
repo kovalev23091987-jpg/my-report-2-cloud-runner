@@ -1,0 +1,111 @@
+{
+  "schema": "report2-sector-joint-release-evidence-v1",
+  "status": "CLOSED_SCOPED_SHARED_CONSUMER_REPAIR",
+  "pr": 141,
+  "merged_head": "e4b89b1992e59bbb1a63f698ce5bc708f457f33b",
+  "tested_head": "8959d26911be35b0aac715d330c7017cd1266baa",
+  "tested_tree": "375634b4b4a9e0d21eeb4ddf68b217f0f91bbe89",
+  "cloud_run_id": 37292295359,
+  "cloud_job_id": 111705283624,
+  "cloud_conclusion": "SUCCESS",
+  "artifact_id": 11336977395,
+  "artifact_sha256": "40c976472ef244b3f1ec051102350a8ebc391ce381631f97531aa9d4c23674f4",
+  "source_use_path": "checkpoints/sector-joint-source-use-20261005.json.gz",
+  "source_use_sha256": "c01b5155c43d6c33b9dde8bbd4125b6b2525d67fa124e25172275be328883653",
+  "scope": "HISTORICAL_SAVED_CONTROL_AT_ORIGINAL_CLOCK_NOT_NEW_LIVE_ACCEPTANCE",
+  "original_run_id": "1791192063320-1791192067628",
+  "original_generated_at": "2026-10-05T09:22:20.202Z",
+  "runtime_sha256": {
+    "src/sector-context.mjs": "adfcc1026cac400d74550a0292b004767994ae39371babefb82b7fcb8ff3890e",
+    "src/block-result-context.mjs": "26009d783f61be74e9afb2c6e94aef9e9784884e59e6000329a09d69d87c1cc4",
+    "src/candidate-evidence-v2-runtime.mjs": "679da3c60fce7cc6a5f06904b3739bd91691d6df103b9b6bcc7a8d46c6044a3c",
+    "src/manual-report-formatter.mjs": "2b8cf5b05b35173ebe2d58bdd31597e116b6197d965eb51e3e57bb7c04f817a8",
+    "src/manual-run-summary.mjs": "11acadd86797db9ca438cf01b89d556f1ce510dedbb9af25894c26e8703de7d7"
+  },
+  "actual_source_http": 0,
+  "d1_usage": {
+    "requests": 8,
+    "rows_read": 26,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 19,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_specialist_budget": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_candidate_source_cache": {
+        "requests": 1,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "engine_validation": "PASS",
+  "sector_receipt_regressions": "PASS",
+  "stage_guard_regressions": "5_PASS",
+  "approved_manual_layout_unchanged": true,
+  "scores_direction_entry_unchanged": true,
+  "repaired_results": [
+    {
+      "contract": "BTW-USDT",
+      "before_joint_blocks": 12,
+      "after_joint_blocks": 13,
+      "bound_source": "COINGECKO_SECTOR"
+    },
+    {
+      "contract": "BR-USDT",
+      "before_joint_blocks": 7,
+      "after_joint_blocks": 7,
+      "bound_source": null
+    }
+  ],
+  "n05_actual_diagnosis": {
+    "BTW-USDT": "EXISTING_LOCAL_NANSEN_DAILY_CAP_EXHAUSTED_8_OF_8",
+    "BR-USDT": "EXACT_ASSET_IDENTITY_NOT_CLOSED",
+    "budget": {
+      "source": "NANSEN",
+      "day": "2026-10-05",
+      "attempts": 8,
+      "blocked_until": 0
+    },
+    "not_zero_or_no_event": true
+  },
+  "historical_replay_not_new_live_acceptance": true,
+  "all15_useful_accepted": false,
+  "new_MAIN": 0,
+  "telegram_calls": 0,
+  "telegram_delivery_proven": false,
+  "CORE_BLOCKS": "IN_PROGRESS",
+  "merged_tree": "fcf5ee7de6e01e2fa9853a6fb864f11ec6114591"
+}
