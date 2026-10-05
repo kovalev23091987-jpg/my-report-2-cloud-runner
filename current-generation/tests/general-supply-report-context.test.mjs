@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeChainSupply} from '../files/src/chain-supply-evidence.mjs';
+import {normalizeChainSupply,collectChainSupplyEvidence} from '../files/src/chain-supply-evidence.mjs';
+import {DatabaseSync} from 'node:sqlite';
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 import {SOLANA_MAINNET_GENESIS} from '../files/src/solana-native-supply.mjs';
@@ -26,4 +27,12 @@ test('same block, foreign identity/decimals, missing history and unfinalized his
 test('consumer rejects corrupt comparison proofs, causal claims and stale/foreign facts',()=>{
  const p=sample('ethereum'),r=normalizeChainSupply(p),row=r.evidence.find(x=>x.block_id==='N03');
  for(const mutate of [x=>x.burn_verified=true,x=>x.buyback_verified=true,x=>x.change_cause_verified=true,x=>x.supply_delta_base_units='1',x=>x.previous_block_ref=x.block_ref,x=>x.previous_source_ts=x.source_ts,x=>x.upstream_id='FOREIGN',x=>x.asset_id='foreign',x=>x.htx_contract='FOREIGN-USDT',x=>x.expires_at=0]){const x=structuredClone(row);mutate(x);assert.equal(consumeBlockResultContext({evidence:[x],contract:p.contract,now:T}).facts.length,0);}
+});
+test('migration retains the actual v6 finalized baseline instead of silently resetting comparison history',async()=>{
+ const sql=new DatabaseSync(':memory:'),db={prepare(q){return{args:[],bind(...a){this.args=a;return this;},async run(){return sql.prepare(q).run(...this.args);},async first(){return sql.prepare(q).get(...this.args)||null;}};},async batch(rows){return Promise.all(rows.map(r=>r.run()));}};
+ const {installEvidenceSourceStore,writeEvidenceSourceCache}=await import('../files/src/evidence-source-store.mjs');await installEvidenceSourceStore(db);
+ const p=sample('ethereum');p.current.block_ref='0x66';p.previous.block_ref='0x64';const prior={version:'chain-supply-evidence-v6-native-solana-20261004',status:'CLOSED',summary:{finalized:true},current_observation:p.previous};
+ await writeEvidenceSourceCache(db,{source:'CHAIN_RPC',asset_key:`ethereum:${address}`,observed_ts:T-60000,expires_ts:T+100000,payload:prior});
+ let calls=0;const fetch_impl=async(url,opts)=>{calls++;const b=JSON.parse(opts.body);return new Response(JSON.stringify(Array.isArray(b)?[{id:2,result:'0x12'},{id:1,result:'0x'+BigInt(p.current.supply).toString(16)}]:{result:b.method==='eth_chainId'?'0x1':{number:p.current.block_ref,timestamp:'0x'+Math.floor(p.current.source_ts/1000).toString(16)}}));};
+ const r=await collectChainSupplyEvidence({db,fetch_impl,request_admit:()=>({allowed:true}),asset_identity:p.identity,contract:p.contract,run_id:'MIGRATION',now:T,clock:()=>T,strict_fresh_manual:true});assert.equal(r.status,'CLOSED');assert.equal(calls,3);assert.ok(r.evidence.some(x=>x.block_id==='N03'&&x.previous_block_ref===p.previous.block_ref));sql.close();
 });
