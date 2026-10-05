@@ -92,7 +92,7 @@ export function capabilityCheckedNoExactRoute(params,source_id,reason){
 // not close a block on behalf of a missing primary route.
 export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N01:{all:['OFFICIAL_TOKEN_SCHEDULE'],supplemental:['OFFICIAL_EVENTS']},
- N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY']},
+ N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY','COINPAPRIKA_SECTOR']},
  N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
  N05:{any:['NANSEN_FLOWS','PRIMARY_HTX_FUTURES_FLOW'],supplemental:['CHAIN_EVENTS']},
@@ -240,7 +240,7 @@ export function planCandidateEvidenceRoutes(params={}){
  const routes=[...(exactCoinmetricsNativeIdentity(params?.contract,params?.asset_identity)?[{name:'COINMETRICS',role:'ADDITIONAL_NATIVE_DAILY_SUPPLY_HISTORY'}]:[]),{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(!officialEligible?[{name:'HTX_ANNOUNCEMENTS',role:'OFFICIAL_HTX_ASSET_EVENT_CONTEXT'}]:[]),...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(supplyEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(chainEventsEligible?[{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(DELTA_OBSERVED_OPTION_BASES.includes(String(params?.contract||'').replace(/-USDT$/,''))?[{name:'DELTA',role:'INDEPENDENT_SCOPED_OPTION_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(exactWikimediaPage(params))routes.push({name:'WIKIMEDIA',role:'ADDITIONAL_DAILY_PAGEVIEW_CONTEXT'});
  if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
- if(params?.asset_metadata?.coinpaprika_id&&chainEligible&&['ethereum','solana'].includes(chainName))routes.push({name:'SECTOR',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
+ if(/^\S{1,32}-USDT$/u.test(String(params?.contract||'')))routes.push({name:'SECTOR',role:'EXACT_PROVIDER_MARKET_SUPPLY_AND_SECTOR_CONTEXT'});
  if(nativeSectorEligible||chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  return{routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,nativeChainEventsEligible,supplyEligible,chainEventsEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible};
 }
