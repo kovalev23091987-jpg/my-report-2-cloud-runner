@@ -1,0 +1,58 @@
+name: Report 2 Actual General Supply Context Acceptance
+on:
+  push:
+    branches: [autonomous/general-supply-context-20261005]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: supply-context-acceptance-37265872492
+          run-id: 37265872492
+          github-token: ${{ github.token }}
+          path: prior-output
+      - name: Reuse successful package validation; correct audit assertion only
+        run: |
+          git fetch --depth=1 origin 272af0b6304a66dd7905c5e0f4e6f38dc5427b0a
+          git diff --name-only 272af0b6304a66dd7905c5e0f4e6f38dc5427b0a HEAD > audit-output/changed-since-validation.txt
+          node -e "const fs=require('fs'); const allowed=['.github/workflows/general-supply-context-20261005.yml','audit-fixes/general-supply-context-20261005/verify-live.mjs']; for(const p of fs.readFileSync('audit-output/changed-since-validation.txt','utf8').trim().split(String.fromCharCode(10)))if(!allowed.includes(p))throw Error('CHANGED_DEPENDENCY_REQUIRES_TEST:'+p); if(!fs.readFileSync('prior-output/validation.json','utf8').includes('CURRENT_GENERATION_VALIDATED'))throw Error('PRIOR_VALIDATION_MISSING');"
+          cp prior-output/validation.json prior-output/integration.json prior-output/continuation-stage-gate.tap audit-output/
+          cmp current-generation/files/src/chain-supply-evidence.mjs runtime/src/chain-supply-evidence.mjs
+          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
+      - name: Verify actual finalized supply comparison reaches approved report
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+          REPORT2_CONTINUATION_OWNER: 'HTX:20261005T044817:dea34f45-f7cc-4f53-b990-6afacb8ac389'
+        run: node audit-fixes/general-supply-context-20261005/verify-live.mjs runtime > audit-output/supply-context-acceptance.json
+      - name: Runtime manifest
+        if: always()
+        run: |
+          sha256sum runtime/src/chain-supply-evidence.mjs runtime/src/evidence-source-adapters.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/block-result-context.mjs > audit-output/runtime-sha256.txt
+          git rev-parse HEAD > audit-output/github-head.txt
+          git rev-parse HEAD^{tree} > audit-output/github-tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: supply-context-acceptance-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

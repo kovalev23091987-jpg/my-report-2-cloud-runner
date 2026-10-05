@@ -5,7 +5,7 @@ import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v5-cardano-closed-epochs-20261005';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v6-general-supply-check-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -91,6 +91,15 @@ function describe(row,now){
   return{source:'Koios / Cardano mainnet',label:'Активное предложение нативного ADA',value:`${tokenAmount(row.total_supply_base_units,6)} ADA по завершённой эпохе ${row.epoch_no}; изменение к эпохе ${row.previous_epoch_no}: ${delta<0n?'−':'+'}${tokenAmount(String(delta<0n?-delta:delta),6)} ADA; максимум ${tokenAmount(row.max_supply_base_units,6)} ADA; будущие разблокировки этим не проверены`};
  }
  if(row.block_id==='N03'&&row.metric_family==='SUPPLY_REDUCTION_CHECK'){
+  if(row.chain!=='cardano'){
+   const providers={ethereum:'PUBLICNODE_RPC',bsc:'PUBLICNODE_RPC',arbitrum:'PUBLICNODE_RPC',base:'PUBLICNODE_RPC',polygon:'PUBLICNODE_RPC',optimism:'PUBLICNODE_RPC',avalanche:'PUBLICNODE_RPC',solana:'SOLANA_MAINNET_RPC',near:'NEAR_MAINNET_RPC'};
+   const native=row.asset_kind==='NATIVE',symbol={near:'NEAR',solana:'SOL'}[row.chain],address=row.token_address;
+   const exact=native?Boolean(symbol&&row.native_asset_id===`${row.chain}:mainnet`&&row.asset_id===`${row.chain}:native:mainnet`&&row.htx_contract===`${symbol}-USDT`&&address===null&&row.decimals===(row.chain==='near'?24:9)&&(row.chain!=='solana'||row.genesis_hash===SOLANA_MAINNET_GENESIS&&row.commitment==='finalized')):row.asset_kind==='TOKEN'&&row.asset_id===`${row.chain}:${address}`&&(row.chain==='solana'?/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address||''):/^0x[0-9a-f]{40}$/.test(address||''));
+   if(!exact||row.provider_id!=='CHAIN_RPC'||row.upstream_id!==providers[row.chain]||row.finality_status!=='FINAL'||row.comparison_policy!=='EXACT_ASSET_DECIMALS_DISTINCT_BLOCK_INCREASING_CLOCK'||!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.decimals)||row.decimals<0||row.decimals>255||!Number.isSafeInteger(row.previous_source_ts)||row.previous_source_ts>=row.source_ts||!row.previous_block_ref||!row.block_ref||row.previous_block_ref===row.block_ref||row.change_cause_verified!==false||row.burn_verified!==false||row.buyback_verified!==false)return null;
+   const delta=BigInt(row.total_supply_base_units)-BigInt(row.previous_supply_base_units);if(String(delta)!==row.supply_delta_base_units||row.supply_decreased!==(delta<0n))return null;
+   const state=delta<0n?`снижение на ${tokenAmount(String(-delta),row.decimals)}`:delta>0n?`снижения нет, рост на ${tokenAmount(String(delta),row.decimals)}`:'изменения предложения нет';
+   return{source:native?`${symbol} mainnet RPC`:'публичный RPC',label:'Проверка уменьшения предложения',value:`между финализированными состояниями ${row.previous_block_ref} и ${row.block_ref}: ${state}${delta===0n?'':native?` ${symbol}`:' токенов'}; только интервал ${new Date(row.previous_source_ts).toISOString()} — ${new Date(row.source_ts).toISOString()}; причина изменения, сжигание и выкуп не подтверждены`};
+  }
   if(row.provider_id!=='KOIOS_NATIVE_SUPPLY'||row.upstream_id!=='KOIOS_CARDANO_MAINNET'||row.chain!=='cardano'||row.native_asset_id!=='cardano:mainnet'||row.htx_contract!=='ADA-USDT'||row.supply_measure!=='CARDANO_ACTIVE_SUPPLY'||row.unit!=='lovelace'||row.provider_query!=='KOIOS_TOTALS_CLOSED_EPOCH'||row.decimals!==6||!raw(row.total_supply_base_units)||!raw(row.previous_supply_base_units)||!Number.isSafeInteger(row.epoch_no)||!Number.isSafeInteger(row.previous_epoch_no)||row.epoch_no!==row.previous_epoch_no+1||row.change_cause_verified!==false||row.burn_verified!==false||row.buyback_verified!==false)return null;
   const delta=BigInt(row.total_supply_base_units)-BigInt(row.previous_supply_base_units);if(String(delta)!==row.supply_delta_base_units||row.supply_decreased!==(delta<0n))return null;
   const state=delta<0n?`снижение на ${tokenAmount(String(-delta),6)} ADA`:delta>0n?`снижения нет, рост на ${tokenAmount(String(delta),6)} ADA`:'изменения нет';
