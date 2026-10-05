@@ -6,6 +6,7 @@ const savedState=JSON.parse(fs.readFileSync(new URL('../checkpoints/CLOUD_PHASE_
 // Stage-guard unit tests must remain stable as the durable production state advances.
 // Rebuild the initial phase fixture while retaining saved policy amendments/schema.
 const state=structuredClone(savedState);
+delete state.owner_maximum_useful_blocks_amendment;
 state.current_phase='CORE_BLOCKS';state.lease=null;
 for(let i=0;i<state.phases.length;i++)state.phases[i]={...state.phases[i],status:i===0?'IN_PROGRESS':'PENDING',completion_receipt:null};
 const now=1791136800000,owner='HTX:CONTROLLED_TEST:1',receipt={path:'controlled-completion-proof.json',sha256:'a'.repeat(64)};
