@@ -48,6 +48,8 @@ test('full manual report preserves market rank and records the top two',()=>{
  assert.match(runner,/REPORT2_STRICT17_ELIGIBLE_CONTRACTS/u);
  assert.match(runner,/coinpaprika_id&&row\?\.sector_tag\)\|\|\(row\?\.coingecko_id&&row\?\.coingecko_category_id/u);
  assert.match(worker,/MANUAL_MARKET_RANKED_TOP2/u);
+ assert.match(worker,/const ranked=\(discoveryPrefilter\?\.shortlist\|\|\[\]\)/u);
+ assert.doesNotMatch(worker,/const ranked=\(postV7DeepPrefilter\?\.shortlist\|\|\[\]\)/u);
  assert.match(worker,/top_two_contracts:ranked\.slice\(0,2\)/u);
  assert.match(worker,/registry_did_not_change_rank:true/u);
  assert.doesNotMatch(worker,/MANUAL_STRICT17_AUDIT/u);
