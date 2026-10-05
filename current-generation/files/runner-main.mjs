@@ -60,7 +60,7 @@ import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
 import {loadFuturesCoverageDatabase,futuresLiquidationAdmission,summarizeFuturesCoverage} from './src/liquidation-futures-coverage.mjs';
-import {deliverExactSavedRunTelegram} from './src/exact-saved-run-telegram.mjs';
+import {deliverExactSavedRunTelegram,acceptedJointForTelegramRetrieval} from './src/exact-saved-run-telegram.mjs';
 
 const RUNNER_VERSION = "my-report-2-current-generation-v13-current-cycle-20260929";
 const nativeFetch = globalThis.fetch.bind(globalThis);
@@ -565,7 +565,7 @@ async function main() {
       const acceptancePath=envText('REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE',{required:false});
       if(!acceptancePath)throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_FILE_REQUIRED');
       exactAcceptance=JSON.parse(await fs.readFile(acceptancePath,'utf8'));
-      if(exactAcceptance?.status!=='CLOSED'||exactAcceptance?.actual_evidence_verified!==true||exactAcceptance?.canonical_run_id!==savedRunId||exactAcceptance?.canonical_status!=='CLOSED'||exactAcceptance?.actual_top_two_verified!==true||exactAcceptance?.block_acceptance?.all_candidates_fully_checked!==true||exactAcceptance?.liquidation_acceptance?.calculated_fallback_enabled!==false||Number(exactAcceptance?.liquidation_acceptance?.calculated_zone_count)!==0)throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_NOT_CLOSED');
+      if(!acceptedJointForTelegramRetrieval(exactAcceptance,savedRunId))throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_NOT_CLOSED');
     }
     const savedContracts=exactAcceptance?.candidate_selection?.top_two_contracts||[];
     const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts});

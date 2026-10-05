@@ -63,3 +63,9 @@ export async function deliverExactSavedRunTelegram({db,saved_output,requested_ru
 }
 
 export default{EXACT_SAVED_RUN_TELEGRAM_VERSION,validateExactSavedRunTelegram,deliverExactSavedRunTelegram};
+
+export function acceptedJointForTelegramRetrieval(a={},runId){
+ const block=a.block_acceptance||{};
+ const maximum=block.all_block_outcomes_accounted===true&&block.same_run_participation_verified===true&&block.maximum_available_blocks_live_verified===true&&a.owner_maximum_useful_amendment_sha256==='c7519f06133c9069231d5673dbdc631e51df7df8cf1de925cfa6137a31cd1fd9';
+ return a.status==='CLOSED'&&a.actual_evidence_verified===true&&a.canonical_run_id===runId&&a.canonical_status==='CLOSED'&&a.actual_top_two_verified===true&&(block.all_candidates_fully_checked===true||maximum)&&a.liquidation_acceptance?.calculated_fallback_enabled===false&&Number(a.liquidation_acceptance?.calculated_zone_count)===0;
+}

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {deliverExactSavedRunTelegram,validateExactSavedRunTelegram} from '../files/src/exact-saved-run-telegram.mjs';
+import {deliverExactSavedRunTelegram,validateExactSavedRunTelegram,acceptedJointForTelegramRetrieval} from '../files/src/exact-saved-run-telegram.mjs';
 import {renderCanonicalTelegram,CANONICAL_PUBLICATION_VERSION} from '../files/src/canonical-publication.mjs';
 import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 
@@ -28,4 +28,10 @@ test('honestly accounted optional gaps permit the same approved renderer, while 
  }
  assert.equal(validateExactSavedRunTelegram({saved_output:x,requested_run_id:RUN,now_ts:NOW}).ok,true);
  for(const mutate of [c=>c.block_decision_use.run_id='FOREIGN',c=>c.block_decision_use.participating_block_count=15,c=>delete c.block_coverage.blocks.N01]){const y=structuredClone(x);mutate(y.candidates[0]);assert.equal(validateExactSavedRunTelegram({saved_output:y,requested_run_id:RUN,now_ts:NOW}).ok,false);}
+});
+
+test('runner retrieval follows the bound owner scope and still requires actual joint, Top2 and real-only liquidation acceptance',()=>{
+ const proof={status:'CLOSED',actual_evidence_verified:true,canonical_run_id:RUN,canonical_status:'CLOSED',actual_top_two_verified:true,block_acceptance:{all_candidates_fully_checked:false,all_block_outcomes_accounted:true,same_run_participation_verified:true,maximum_available_blocks_live_verified:true},owner_maximum_useful_amendment_sha256:'c7519f06133c9069231d5673dbdc631e51df7df8cf1de925cfa6137a31cd1fd9',liquidation_acceptance:{calculated_fallback_enabled:false,calculated_zone_count:0}};
+ assert.equal(acceptedJointForTelegramRetrieval(proof,RUN),true);
+ for(const mutate of [x=>x.canonical_run_id='OLD',x=>x.actual_top_two_verified=false,x=>x.actual_evidence_verified=false,x=>x.block_acceptance.same_run_participation_verified=false,x=>x.owner_maximum_useful_amendment_sha256='unknown',x=>x.liquidation_acceptance.calculated_zone_count=1]){const x=structuredClone(proof);mutate(x);assert.equal(acceptedJointForTelegramRetrieval(x,RUN),false);}
 });
