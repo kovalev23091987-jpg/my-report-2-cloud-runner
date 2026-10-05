@@ -1,3 +1,4 @@
+import {maintainExpiredProviderCache} from './src/expired-provider-cache-maintenance.mjs';
 import {persistCapturedHtxSignedTape,readSavedHtxSignedTape} from './src/htx-signed-tape.mjs';
 import {loadExecutionReportSource,auditExecutionReportRendering} from './src/execution-report-context.mjs';
 import {recallKpiReadbackMatches} from './src/recall-kpi-readback.mjs';
@@ -644,6 +645,10 @@ if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
+  if(source==='schedule'){
+    const cacheMaintenance=await maintainExpiredProviderCache({db:env.DATA_DB,now:started,admit:budget=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:budget.rows_read,extraRowsWritten:budget.rows_written})});
+    console.log('BOUNDED_EXPIRED_PROVIDER_CACHE_MAINTENANCE',JSON.stringify(cacheMaintenance));
+  }
   const liquidationCoverageDatabase=await loadFuturesCoverageDatabase({db:env.DATA_DB,now:started});
   const liquidationCoverageSummary=summarizeFuturesCoverage(liquidationCoverageDatabase,{now:started});
   const liquidationCoverageFor=contract=>runtimeLiquidationCollectionAdmission(liquidationCoverageDatabase,{contract:String(contract||'').trim().toUpperCase(),now:Date.now()});

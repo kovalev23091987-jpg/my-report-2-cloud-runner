@@ -90,7 +90,7 @@ const files=[
  'src/evidence-v2.mjs',
  'src/evidence-source-adapters.mjs',
  'src/evidence-source-store.mjs',
- 'src/provider-minute-ledger.mjs','src/provider-reference-cache.mjs',
+ 'src/provider-minute-ledger.mjs','src/provider-reference-cache.mjs','src/expired-provider-cache-maintenance.mjs',
  'src/prospective-delivery-cohort.mjs',
  'src/htx-public-risk-evidence.mjs',
  'src/wikimedia-attention-context.mjs','src/coinmetrics-supply-context.mjs','src/delta-options-evidence.mjs','src/deribit-option-risk-context.mjs','src/deribit-alt-options-evidence.mjs',
