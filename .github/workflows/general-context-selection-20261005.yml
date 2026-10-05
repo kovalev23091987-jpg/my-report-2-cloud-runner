@@ -1,7 +1,7 @@
-name: Report 2 Connected Core Repair Validation
+name: Report 2 Core Without Nansen Validation
 on:
   push:
-    branches: [autonomous/core-final-batch-20261005]
+    branches: [autonomous/core-without-nansen-20261005]
 permissions:
   contents: read
 jobs:
@@ -38,6 +38,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: connected-core-repair-${{ github.run_id }}
+          name: core-without-nansen-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
