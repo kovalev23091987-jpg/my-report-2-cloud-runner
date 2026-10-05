@@ -6,7 +6,7 @@ const fingerprint=provider=>createHash('sha256').update(`${LIQUIDATION_ALLOWANCE
 const providers=Object.freeze(['HYPERLIQUID','GTRADE','LIGHTER','GMX']);
 const monthWindow=now=>{const d=new Date(now),start=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1),end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1);return{start,end,key:new Date(start).toISOString().slice(0,7).replace('-','')};};
 
-export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',oxarchive_key=''}={}){
+export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',oxarchive_key='',provider_filter=null}={}){
  if(!db?.prepare||!db?.batch)throw Error('SOURCE_ALLOWANCE_DB_REQUIRED');
  const ddl=[`CREATE TABLE IF NOT EXISTS report2_liq_source_allowance_shadow (
   scope_id TEXT PRIMARY KEY, provider TEXT NOT NULL, unit TEXT NOT NULL CHECK(unit IN ('REQUEST','CREDIT','WEIGHT')),
@@ -19,11 +19,14 @@ export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',
   contract_code TEXT NOT NULL, run_id TEXT NOT NULL, reserved_units INTEGER NOT NULL CHECK(reserved_units>0), expected_version INTEGER NOT NULL CHECK(expected_version>=0),
   committed_version INTEGER NOT NULL CHECK(committed_version=expected_version+1), created_ts INTEGER NOT NULL, reservation_fingerprint TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'RESERVED_NOT_REFUNDED' CHECK(status='RESERVED_NOT_REFUNDED'))`,
- `CREATE INDEX IF NOT EXISTS idx_report2_liq_reservation_scope ON report2_liq_source_reservation_shadow(scope_id,created_ts)`];
+ `CREATE INDEX IF NOT EXISTS idx_report2_liq_reservation_scope ON report2_liq_source_reservation_shadow(scope_id,created_ts)`,
+ `CREATE INDEX IF NOT EXISTS idx_report2_liq_reservation_provider_time ON report2_liq_source_reservation_shadow(provider,created_ts)`];
  await db.batch(ddl.map(sql=>db.prepare(sql)));
  const keyConfigured=Boolean(String(liqflow_key||'').trim()),publicPilot=now<LIQFLOW_PUBLIC_PILOT_END_TS;
  const oxarchiveConfigured=Boolean(String(oxarchive_key||'').trim());
- const window=monthWindow(now),active=[...providers,...(keyConfigured||publicPilot?['LIQFLOW']:[]),...(oxarchiveConfigured?['OXARCHIVE']:[])],bindings={};
+ const window=monthWindow(now),configured=[...providers,...(keyConfigured||publicPilot?['LIQFLOW']:[]),...(oxarchiveConfigured?['OXARCHIVE']:[])],bindings={};
+ if(provider_filter!==null&&(!Array.isArray(provider_filter)||!provider_filter.length||new Set(provider_filter).size!==provider_filter.length||provider_filter.some(p=>!configured.includes(p))))throw Error('SOURCE_ALLOWANCE_PROVIDER_FILTER_INVALID');
+ const active=provider_filter===null?configured:configured.filter(p=>provider_filter.includes(p));
  const rows=active.map(provider=>{const scope_id=`${LIQUIDATION_ALLOWANCE_GENERATION}:${window.key}:${provider}`,config_fingerprint=fingerprint(provider),allowance=providerCaps[provider];bindings[provider]={scope_id,config_fingerprint};return db.prepare(`INSERT INTO report2_liq_source_allowance_shadow
   (scope_id,provider,unit,window_start_ts,window_end_ts,allowance_units,used_units,version,last_reservation_id,config_fingerprint,shared_quota_reviewed,active,schema_version)
   VALUES(?1,?2,'REQUEST',?3,?4,?5,0,0,NULL,?6,1,1,1) ON CONFLICT(scope_id) DO NOTHING`).bind(scope_id,provider,window.start,window.end,allowance,config_fingerprint);});

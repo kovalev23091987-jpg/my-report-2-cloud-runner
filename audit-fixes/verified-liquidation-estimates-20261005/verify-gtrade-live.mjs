@@ -11,7 +11,7 @@ const require=createRequire(path.join(root,'src/liquidation-extension/package.js
 const state=JSON.parse(fs.readFileSync('checkpoints/CLOUD_PHASE_STATE_20261004.json')),lock=JSON.parse(fs.readFileSync('audit-fixes/source-optimization-20260930/execution-lock.json'));assert.equal(state.lease?.owner,process.env.REPORT2_CONTINUATION_OWNER);assert.ok(state.lease.expires_ts>Date.now());assert.equal(lock.active,false);
 const bytes=fs.readFileSync('checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz'),universe=JSON.parse(zlib.gunzipSync(bytes));assert.equal(universe.status,'CLOSED');assert.equal(universe.assets.length,102);assert.equal(universe.contracts.length,119);
 const started=Date.now(),runId=`GTRADE_BOUNDED_GENERAL:${process.env.GITHUB_RUN_ID}:${started}`,db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),rows=[],hash=b=>crypto.createHash('sha256').update(b).digest('hex');let sourceHTTP=0;
-const setup=await allowances.installSourceAllowances({db,now:started});
+const setup=await allowances.installSourceAllowances({db,now:started,provider_filter:['GTRADE']});
 const admit=admission.createD1SourceAdmission({db,scope_bindings:setup.bindings,within_run_budget:extra=>{const u=db.usageSnapshot();return {allowed:u.unknown_ops===0&&u.rows_read+extra.extraRowsRead<=1000&&u.rows_written+extra.extraRowsWritten<=200};}});
 const grant=await admit({reservation_id:'VERIFIED_EST_GENERAL:'+process.env.GITHUB_RUN_ID,contract:universe.assets[0].asset_analysis_contract,run_id:runId,requests:{GTRADE:3},weights:{GTRADE:3},max_requests:3,deadline_ts:started+45000});
 const fetch_impl=async(url,options)=>{
