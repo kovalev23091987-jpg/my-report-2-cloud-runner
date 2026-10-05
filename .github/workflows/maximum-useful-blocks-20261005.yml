@@ -1,7 +1,7 @@
 name: Report 2 Maximum Useful Block Package Validation
 on:
   push:
-    branches: [codex/maximum-useful-blocks-20261005, codex/maximum-useful-delivery-gate-20261005]
+    branches: [codex/maximum-useful-blocks-20261005, codex/maximum-useful-delivery-gate-20261005, codex/quality-neutral-context-repair-20261005]
 permissions:
   contents: read
   actions: read
@@ -29,6 +29,7 @@ jobs:
           node current-generation/validate.mjs > audit-output/validation.json
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node current-generation/tests/actual-quality-replay.mjs runtime > audit-output/actual-quality-replay.json
           node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
       - name: Read the already completed failed final joint artifact
         uses: actions/github-script@v7
