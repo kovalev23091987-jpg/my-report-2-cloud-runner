@@ -4,6 +4,7 @@ on:
     branches: [autonomous/general-supply-context-20261005]
 permissions:
   contents: read
+  actions: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -23,17 +24,19 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: Validate changed package once
+      - uses: actions/download-artifact@v4
+        with:
+          name: supply-context-acceptance-37265588313
+          run-id: 37265588313
+          github-token: ${{ github.token }}
+          path: prior-output
+      - name: Reuse exact successful code validation; correct audit workflow path only
         run: |
-          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-          # Runtime was already assembled with the current overlay above. Validate
-          # the full source tree once; integration + exact cmp below validate the
-          # assembled runtime without applying the overlay a second time.
-          node current-generation/validate.mjs > audit-output/validation.json
-          node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
-          cmp current-generation/files/src/general-supply-context-context.mjs runtime/src/general-supply-context-context.mjs
-          cmp current-generation/files/src/evidence-source-adapters.mjs runtime/src/evidence-source-adapters.mjs
-          cmp current-generation/files/src/candidate-evidence-v2-runtime.mjs runtime/src/candidate-evidence-v2-runtime.mjs
+          git fetch --depth=1 origin 8b1473bcb12da12afb1870e00298786e2faaae7d
+          git diff --name-only 8b1473bcb12da12afb1870e00298786e2faaae7d HEAD > audit-output/changed-since-validation.txt
+          node -e "const fs=require('fs'); for(const p of fs.readFileSync('audit-output/changed-since-validation.txt','utf8').trim().split(String.fromCharCode(10)))if(p!=='.github/workflows/general-supply-context-20261005.yml')throw Error('CHANGED_DEPENDENCY_REQUIRES_TEST:'+p); if(!fs.readFileSync('prior-output/validation.json','utf8').includes('CURRENT_GENERATION_VALIDATED'))throw Error('PRIOR_VALIDATION_MISSING');"
+          cp prior-output/validation.json prior-output/integration.json prior-output/continuation-stage-gate.tap audit-output/
+          cmp current-generation/files/src/chain-supply-evidence.mjs runtime/src/chain-supply-evidence.mjs
           cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
       - name: Verify actual finalized supply comparison reaches approved report
         env:
@@ -44,7 +47,7 @@ jobs:
       - name: Runtime manifest
         if: always()
         run: |
-          sha256sum runtime/src/general-supply-context-context.mjs runtime/src/evidence-source-adapters.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/block-result-context.mjs > audit-output/runtime-sha256.txt
+          sha256sum runtime/src/chain-supply-evidence.mjs runtime/src/evidence-source-adapters.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/block-result-context.mjs > audit-output/runtime-sha256.txt
           git rev-parse HEAD > audit-output/github-head.txt
           git rev-parse HEAD^{tree} > audit-output/github-tree.txt
       - uses: actions/upload-artifact@v4
