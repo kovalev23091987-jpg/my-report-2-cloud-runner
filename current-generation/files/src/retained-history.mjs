@@ -2,6 +2,7 @@ import {createHash} from 'node:crypto';
 import {gzipSync,gunzipSync} from 'node:zlib';
 
 export const RETAINED_HISTORY_SCHEMA='report2-retained-history-v1';
+export const HISTORY_HOT_WINDOW_MS=48*60*60_000;
 export const REPOSITORY='kovalev23091987-jpg/my-report-2-cloud-runner';
 export const HISTORY_TABLES=Object.freeze({
  full_evidence_shadow_log:{key:'full_evidence_id',archive:'report2_full_evidence_archive_v1',view:'report2_full_evidence_retained_v1'},
@@ -71,6 +72,7 @@ export function retainedSchemaSql(table,columns){
   `CREATE TABLE IF NOT EXISTS ${spec.archive} (${defs.join(',')})`,
   `CREATE INDEX IF NOT EXISTS idx_${spec.archive}_contract_ts ON ${spec.archive}(contract_code,observed_ts)`,
   `CREATE INDEX IF NOT EXISTS idx_${spec.archive}_ts ON ${spec.archive}(observed_ts)`,
+  `CREATE TRIGGER IF NOT EXISTS ${spec.archive}_immutable BEFORE UPDATE ON ${spec.archive} BEGIN SELECT RAISE(ABORT,'RETAINED_HISTORY_IMMUTABLE'); END`,
   `CREATE VIEW IF NOT EXISTS ${spec.view} AS SELECT ${qualified('h')} FROM ${table} h UNION ALL SELECT ${qualified('a')} FROM ${spec.archive} a WHERE NOT EXISTS (SELECT 1 FROM ${table} h WHERE h.${name(spec.key)}=a.${name(spec.key)})`,
  ];
 }

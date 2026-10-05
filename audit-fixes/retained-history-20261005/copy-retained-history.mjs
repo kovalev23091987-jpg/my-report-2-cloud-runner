@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
-import {packHistoryRow,unpackHistoryRow,REPOSITORY} from '../../current-generation/files/src/retained-history.mjs';
+import {packHistoryRow,unpackHistoryRow,REPOSITORY,HISTORY_HOT_WINDOW_MS} from '../../current-generation/files/src/retained-history.mjs';
 import assert from 'node:assert/strict';
 const token=process.env.GITHUB_TOKEN;if(!token)throw Error('ARCHIVE_GITHUB_TOKEN_REQUIRED');
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
 const request=db._request.bind(db);
 db._request=async p=>{if(!['first','all'].includes(p.op)||!/^\s*SELECT\b/i.test(p.sql)||db.usageSnapshot().rows_read>1400)throw Error('ARCHIVE_COPY_READ_ONLY_GUARD');return request(p);};
-const cutoff=Date.now()-48*86400000;
+const cutoff=Date.now()-HISTORY_HOT_WINDOW_MS;
 const selected=[];
 for(const [table,sql] of [
  ['full_evidence_shadow_log','SELECT * FROM full_evidence_shadow_log WHERE observed_ts<?1 ORDER BY observed_ts,full_evidence_id LIMIT 1'],
