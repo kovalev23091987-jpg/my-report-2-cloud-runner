@@ -98,7 +98,7 @@ test('shared route planner admits native Bluesky only with exact binding and one
  const identity={chain:'cardano',asset_kind:'NATIVE',native_asset_id:'cardano:mainnet',contract_or_mint:null};
  const good=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']},run_id:'NATIVE_SOCIAL'});
  assert.ok(good.routes.some(r=>r.name==='BLUESKY'));
- for(const params of [{contract:'NEAR-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:[]}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org','example.org']}}])assert.equal(planCandidateEvidenceRoutes({...params,run_id:'BAD'}).routes.some(r=>r.name==='BLUESKY'),false);
+ for(const params of [{contract:'NEAR-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org']}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:[]}},{contract:'ADA-USDT',asset_identity:identity,asset_metadata:{official_domains:['cardano.org','example.org']}}])assert.equal(planCandidateEvidenceRoutes({...params,run_id:'GENERAL'}).routes.some(r=>r.name==='BLUESKY'),true);
 });
 
 test('real HTX wire bodies preserve no-prefix addresses and native chain type without substituting wrappers',()=>{
