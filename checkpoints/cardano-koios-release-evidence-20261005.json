@@ -1,0 +1,72 @@
+{
+  "schema": "report2-cardano-koios-release-evidence-v1",
+  "status": "VERIFIED_SCOPED_CORE_IMPROVEMENT",
+  "created_at": "2026-10-05T04:10:43Z",
+  "scope": {
+    "asset": "ADA",
+    "contract": "ADA-USDT",
+    "native_identity": "cardano:mainnet",
+    "blocks": ["N02", "N03"],
+    "common_crypto_future_assets_retained": 102,
+    "common_crypto_future_contracts_retained": 119,
+    "common_universe_sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613"
+  },
+  "release": {
+    "pull_request": 132,
+    "tested_head": "faf7fc8c61787b76a5745f09a190202d70d3b994",
+    "tested_tree": "880ced5e80109a7fd01d7a72cc0e65d081ac99bc",
+    "merged_main": "60f2caec15ac3927a6d0ce5cfc9b7c5470d4d17f",
+    "workflow_run": 37262199395,
+    "workflow_job": 111611573389,
+    "workflow_conclusion": "SUCCESS",
+    "artifact_id": 11325237503,
+    "artifact_sha256": "6991c0e7038656446528bde903fbb2529847c556ab1ed588b3b3e58893235f1b"
+  },
+  "validation": {
+    "targeted_tests_passed": 25,
+    "integration_scenarios_passed": 37,
+    "stage_guard_tests_passed": 5,
+    "current_generation_validation": "PASS",
+    "runtime_files_exactly_matched_tested_sources": true,
+    "synthetic_signal_created": false,
+    "production_canonical_writes": 0,
+    "telegram_calls": 0
+  },
+  "actual_source_use": {
+    "provider": "KOIOS_NATIVE_SUPPLY",
+    "upstream": "KOIOS_CARDANO_MAINNET",
+    "source_http": 4,
+    "http_budget_remaining": 160,
+    "d1_rows_read": 6,
+    "d1_rows_written": 4,
+    "d1_unknown_operations": 0,
+    "epochs": [657, 658],
+    "previous_active_supply_lovelace": "38892773207743470",
+    "current_active_supply_lovelace": "38902553406006165",
+    "delta_lovelace": "9780198262695",
+    "n02_useful_fact": true,
+    "n03_useful_fact": true,
+    "manual_report_use_confirmed": true,
+    "approved_telegram_layout_targeted_test_confirmed": true,
+    "fresh_telegram_delivery_proven": false,
+    "score_contribution": 0,
+    "directional_vote": false,
+    "burn_or_buyback_cause_claimed": false
+  },
+  "limits": {
+    "official_public_daily_cap": 5000,
+    "official_burst_cap": 100,
+    "official_burst_window_seconds": 10,
+    "official_timeout_seconds": 30,
+    "internal_daily_cap": 48,
+    "internal_refresh_period_ms": 21600000,
+    "requests_per_refresh": 4,
+    "retries": 0,
+    "authentication": "PUBLIC_NO_KEY"
+  },
+  "phase_effect": {
+    "core_blocks_completed": false,
+    "current_phase": "CORE_BLOCKS",
+    "reason": "ADA N02/N03 gap is closed, but remaining selected-asset primary/consumer gaps and fresh all-15 usefulness acceptance are still open."
+  }
+}
