@@ -1,0 +1,61 @@
+name: Report2 Exact Expired Cache Recovery
+on:
+  push:
+    branches: [codex/expired-cache-recovery-20261005]
+permissions:
+  contents: read
+jobs:
+  recover:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    env:
+      REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+      REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact owner and head before capture
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='7aecc9bc9875fc178b11af44c34f925ae9c7a84b')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=='HTX:20261005T203355595Z:combined-runtime'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Capture exact expired transport cache before deletion
+        run: node audit-fixes/expired-cache-recovery-20261005.mjs capture
+      - name: Durably save recoverable expired transport bodies
+        id: backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: expired-cache-backup-${{ github.run_id }}
+          path: audit-output/expired-cache-backup.json.gz
+          retention-days: 30
+          if-no-files-found: error
+      - name: Recheck exact owner and head before bounded cleanup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='7aecc9bc9875fc178b11af44c34f925ae9c7a84b')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=='HTX:20261005T203355595Z:combined-runtime'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Delete only still-expired exact copied cache rows within D1 admission
+        env:
+          REPORT2_BACKUP_ARTIFACT_ID: ${{ steps.backup.outputs.artifact-id }}
+        run: node audit-fixes/expired-cache-recovery-20261005.mjs clean
+      - name: Exact code identity
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: expired-cache-recovery-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
