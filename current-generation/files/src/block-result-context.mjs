@@ -6,7 +6,7 @@ import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 
-export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v8-solana-transfer-context-20261005';
+export const BLOCK_RESULT_CONTEXT_VERSION='block-result-context-v9-native-sol-transfer-context-20261005';
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const positive=v=>number(v)!==null&&v>=0;
 const fmt=v=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(v);
@@ -19,6 +19,11 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N04'&&row.metric_family==='NATIVE_TRANSFER'&&row.producer==='SOLANA_FINALIZED_NATIVE_SYSTEM_TRANSFER'){
+  const signature=row.tx_hash,slot=String(row.block_ref??'');
+  if(row.provider_id!=='CHAIN_RPC'||row.upstream_id!=='SOLANA_MAINNET_RPC'||row.asset_id!=='solana:native:mainnet'||row.htx_contract!=='SOL-USDT'||row.chain!=='solana'||row.native_asset_id!=='solana:mainnet'||!/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature||'')||!/^\d+$/.test(String(row.instruction_index))||!/^\d+$/.test(slot)||!raw(row.amount_base_units)||BigInt(row.amount_base_units)<=0n||row.quantity_units!=='LAMPORTS'||row.market_kind!=='ONCHAIN_NATIVE_TRANSFER'||row.event_is_not_market_direction!==true||row.exchange_labels_verified!==false||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.source_ts>now||now-row.source_ts>20*60_000)return null;
+  return{source:'Solana mainnet RPC',label:'Финализированный перевод нативного SOL',value:`${row.amount_base_units} лампортов в одной инструкции финализированной транзакции, слот ${slot}, ${new Date(row.source_ts).toISOString()}; ограниченная выборка системной программы, принадлежность адресов биржам и направление рынка не установлены`};
+ }
  if(row.block_id==='N04'&&row.metric_family==='TOKEN_TRANSFER'&&row.producer==='SOLANA_FINALIZED_TOKEN_BALANCE_DIFF'){
   const mint=row.token_address,signature=row.tx_hash,slot=String(row.block_ref??'');
   if(row.provider_id!=='CHAIN_RPC'||row.upstream_id!=='SOLANA_MAINNET_RPC'||row.chain!=='solana'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint||'')||row.asset_id!==`solana:${mint}`||!/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(signature||'')||row.origin_event_id!==signature||!/^\d+$/.test(slot)||!Number.isSafeInteger(Number(slot))||!raw(row.amount_base_units)||BigInt(row.amount_base_units)<=0n||row.quantity_units!=='RAW_BASE_UNITS_NO_USD_CONVERSION'||row.market_kind!=='ONCHAIN_TOKEN_TRANSFER'||row.event_is_not_market_direction!==true||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.source_ts>now||now-row.source_ts>20*60_000)return null;

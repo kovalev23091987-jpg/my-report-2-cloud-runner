@@ -1,12 +1,13 @@
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
-export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v4-narrowing-and-balanced-semantics-20261004';
+export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v5-native-sol-transfer-20261005';
 export const AAVE_POOL='0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2';
 export const AAVE_TOPIC='0xe413a321e8681d831f4dbccbca790d2952b56f977908e45be37335533e005286';
 export const TRANSFER_TOPIC='0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
 const SOURCE='CHAIN_RPC',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,ADDR=/^0x[0-9a-f]{40}$/i,BASE58=/^[1-9A-HJ-NP-Za-km-z]{32,44}$/,BASE58_SIG=/^[1-9A-HJ-NP-Za-km-z]{64,88}$/,WORD=/^0x[0-9a-f]{64}$/i,HEX=/^0x[0-9a-f]+$/i,clean=x=>String(x??'').toLowerCase(),address=x=>WORD.test(String(x))&&/^0x0{24}/i.test(x)?'0x'+x.slice(-40).toLowerCase():null;
 const EVM_ENDPOINTS=Object.freeze({ethereum:'https://ethereum-rpc.publicnode.com',bsc:'https://bsc-rpc.publicnode.com',arbitrum:'https://arbitrum-one-rpc.publicnode.com',base:'https://base-rpc.publicnode.com',polygon:'https://polygon-bor-rpc.publicnode.com',optimism:'https://optimism-rpc.publicnode.com',avalanche:'https://avalanche-c-chain-rpc.publicnode.com'});
 const EVM_CHAIN_IDS=Object.freeze({ethereum:'0x1',bsc:'0x38',arbitrum:'0xa4b1',base:'0x2105',polygon:'0x89',optimism:'0xa',avalanche:'0xa86a'});
+export const SOLANA_SYSTEM_PROGRAM='11111111111111111111111111111111';
 export function decodeFinalizedChainEvent({log,mode,asset,block,observed_ts,contract,chain='ethereum'}={}){
  if(!['TOKEN_TRANSFER','AAVE_CREDIT'].includes(mode)||!ADDR.test(asset)||log?.removed!==false||!WORD.test(log?.transactionHash)||!WORD.test(log?.blockHash)||!HEX.test(log?.logIndex)||!block||clean(block.hash)!==clean(log.blockHash)||clean(block.number)!==clean(log.blockNumber)||!HEX.test(block.timestamp))return null;
  const source_ts=Number(BigInt(block.timestamp))*1000;if(!Number.isSafeInteger(source_ts)||source_ts>observed_ts)return null;
@@ -51,9 +52,38 @@ async function collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contrac
  }
  const observed=clock(),result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary:{mode:'TOKEN_TRANSFER',scope:'LAST_20_FINALIZED_SIGNATURES_ONE_TRANSACTION',matching_signatures:Array.isArray(signatures)?signatures.length:0,sampled_signature,confirmed_timed_events:evidence.length,direction_neutral:true},network_calls:calls,admission,whole_job_admission,receipts,internal_only:true};if(status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:observed+TTL,payload:result});return result;
 }
+
+export function decodeFinalizedNativeSolanaTransaction({transaction,signature,observed_ts,contract}={}){
+ const slot=Number(transaction?.slot),source_ts=Number(transaction?.blockTime)*1000,meta=transaction?.meta,message=transaction?.transaction?.message;
+ if(contract!=='SOL-USDT'||!BASE58_SIG.test(String(signature))||!Number.isSafeInteger(slot)||slot<0||!Number.isSafeInteger(source_ts)||source_ts>observed_ts||!meta||meta.err!==null||!message)return[];
+ const outer=Array.isArray(message.instructions)?message.instructions:[],inner=Array.isArray(meta.innerInstructions)?meta.innerInstructions.flatMap(row=>Array.isArray(row?.instructions)?row.instructions:[]):[],rows=[];
+ for(const [index,instruction] of [...outer,...inner].entries()){
+  const parsed=instruction?.parsed,info=parsed?.info,lamports=info?.lamports;
+  if(instruction?.program!=='system'||parsed?.type!=='transfer'||!Number.isSafeInteger(lamports)||lamports<=0||typeof info?.source!=='string'||typeof info?.destination!=='string'||info.source===info.destination)continue;
+  rows.push(buildEvidenceV2({provider_id:SOURCE,upstream_id:'SOLANA_MAINNET_RPC',asset_id:'solana:native:mainnet',htx_contract:contract,block_id:'N04',metric_family:'NATIVE_TRANSFER',origin_event_id:`${signature}:${index}`,dependency_group:`solana:${signature}`,source_ts,observed_ts,expires_at:observed_ts+TTL,coverage_status:'BOUNDED_FINALIZED_EVENT_SAMPLE',coverage_fraction:0,finality_status:'FINAL',validation_status:'VALID',directional_strength:null,risk_strength:null,extra:{chain:'solana',native_asset_id:'solana:mainnet',tx_hash:signature,instruction_index:String(index),block_ref:String(slot),from:info.source,to:info.destination,amount_base_units:String(lamports),quantity_units:'LAMPORTS',market_kind:'ONCHAIN_NATIVE_TRANSFER',producer:'SOLANA_FINALIZED_NATIVE_SYSTEM_TRANSFER',event_is_not_market_direction:true,exchange_labels_verified:false}}));
+  if(rows.length===16)break;
+ }
+ return rows;
+}
+
+async function collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual=false}){
+ const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:solana:NATIVE_TRANSFER`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ const reservation_id=`EV2:CHAIN_EVENTS:${contract}:NATIVE_TRANSFER:${run_id}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};
+ const admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:4,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission};
+ const endpoint='https://api.mainnet-beta.solana.com',sig=await rpc(fetch_impl,endpoint,{jsonrpc:'2.0',id:1,method:'getSignaturesForAddress',params:[SOLANA_SYSTEM_PROGRAM,{limit:20,commitment:'finalized'}]}),signatures=exactResult(sig.payload,1),receipts=[{route:'SOLANA_FINALIZED_NATIVE_SIGNATURES',status:sig.ok&&Array.isArray(signatures)?'CLOSED':'SOURCE_ERROR',http_status:sig.http_status,error:sig.error??null}];let calls=1,evidence=[],status='SOURCE_SCHEMA_NOT_CLOSED';const sampled_signatures=[];
+ if(sig.ok&&Array.isArray(signatures)){
+  const eligible=signatures.filter(row=>row?.err===null&&row?.confirmationStatus==='finalized'&&BASE58_SIG.test(String(row?.signature||''))).slice(0,3);status='CLOSED';
+  for(const [index,selected] of eligible.entries()){
+   const id=2+index,tx=await rpc(fetch_impl,endpoint,{jsonrpc:'2.0',id,method:'getTransaction',params:[selected.signature,{commitment:'finalized',encoding:'jsonParsed',maxSupportedTransactionVersion:0}]});calls++;const transaction=exactResult(tx.payload,id);sampled_signatures.push(selected.signature);receipts.push({route:'SOLANA_FINALIZED_NATIVE_TRANSACTION',status:tx.ok&&transaction?'CLOSED':'SOURCE_ERROR',http_status:tx.http_status,error:tx.error??null,signature:selected.signature});
+   if(!tx.ok||!transaction){status='SOURCE_TRANSACTION_NOT_CLOSED';continue;}const observed=clock(),sourceTs=Number(transaction.blockTime)*1000;if(!Number.isFinite(sourceTs)||sourceTs>observed){status='SOURCE_CLOCK_NOT_CLOSED';continue;}evidence=decodeFinalizedNativeSolanaTransaction({transaction,signature:selected.signature,observed_ts:observed,contract});status='CLOSED';if(evidence.length)break;
+  }
+ }
+ const observed=clock(),result={version:FINALIZED_CHAIN_EVENTS_VERSION,status,evidence,summary:{mode:'NATIVE_TRANSFER',scope:'LAST_20_FINALIZED_SYSTEM_PROGRAM_SIGNATURES_UP_TO_THREE_TRANSACTIONS',sampled_signatures,confirmed_timed_events:evidence.length,direction_neutral:true,quantity_units:'LAMPORTS',exchange_labels_verified:false},network_calls:calls,admission,whole_job_admission,receipts,internal_only:true};if(status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:observed+TTL,payload:result});return result;
+}
 export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,now=Date.now(),clock=Date.now,event_mode='TOKEN_TRANSFER',strict_fresh_manual=false}={}){
  const chain=clean(asset_identity?.chain),rawToken=String(asset_identity?.contract_or_mint??'').trim(),token=chain==='solana'?rawToken:clean(rawToken),mode=event_mode==='AAVE_CREDIT'?'AAVE_CREDIT':'TOKEN_TRANSFER';if(!/^[^-\s]{1,32}-USDT$/.test(contract))return{status:'EXACT_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:${chain}:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ if(chain==='solana'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity?.native_asset_id==='solana:mainnet'&&asset_identity?.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual});
  if(chain==='solana'&&BASE58.test(token)&&mode==='TOKEN_TRANSFER')return collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint:token,now,clock,strict_fresh_manual});
  const endpoint=EVM_ENDPOINTS[chain];if(!endpoint||!ADDR.test(token)||mode==='AAVE_CREDIT'&&chain!=='ethereum')return{status:'EXACT_SUPPORTED_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
  const reservation_id=`EV2:CHAIN_EVENTS:${contract}:${mode}:${run_id}:${token}`,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:4});if(whole_job_admission?.allowed!==true)return{status:whole_job_admission?.status||'ADMISSION_REQUIRED',evidence:[],network_calls:0,whole_job_admission};

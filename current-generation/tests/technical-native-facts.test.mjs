@@ -31,7 +31,10 @@ test('wrong Solana genesis, missing native integer and inconsistent supply canno
   const p=parseSolanaSupplyPayload(body('solana-native-batch'));modify(p);let calls=0;const out=await fetchSolanaNativeSupply(async()=>{calls++;return new Response(JSON.stringify(p));});assert.equal(calls,1);assert.equal(out.current,null);
  }
  assert.equal(planCandidateEvidenceRoutes({contract:'SOL-USDT',asset_identity:identity}).nativeSupplyEligible,true);
+ assert.equal(planCandidateEvidenceRoutes({contract:'SOL-USDT',asset_identity:identity}).nativeChainEventsEligible,true);
+ assert.ok(planCandidateEvidenceRoutes({contract:'SOL-USDT',asset_identity:identity}).routes.some(row=>row.name==='CHAIN_EVENTS'));
  assert.equal(planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity}).nativeSupplyEligible,false);
+ assert.equal(planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity}).nativeChainEventsEligible,false);
 });
 test('all fresh exact crypto rolling market rows can supply neutral N10 facts without targets or signed-flow claims',()=>{
  const raw=body('htx-rolling-market'),p=JSON.parse(raw),now=p.ts+1000;
