@@ -32,6 +32,13 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   const acq=createGTradeAcquisition({contract,native_symbol,run_id,acquisition_id,collection_started_ts:snapshot.started_ts,collection_completed_ts:snapshot.completed_ts,normalized_receipt:normalized,transport_receipts:snapshot.transport_receipts,sdk_version:'1.8.10'});
   return{status:'GTRADE_ACQUIRED_SCOPED_CONTEXT',requests,reused_snapshot:cached,shared_snapshot_run_id:run_id,acquisition:acq,selected_market_positions:normalized.selected_market_positions,source_ts:normalized.source_ts};
  }
+ collect.nativeMarketCoverage=({run_id,native_symbol}={})=>{
+  const catalog=catalogValues.get(run_id);if(!catalog)return{status:'CATALOG_DISCOVERY_REQUIRED'};
+  const pairs=catalog.payload?.pairs,sourceTs=timestamp(catalog.payload?.lastRefreshed),now=clock();
+  if(!catalog.ok||!Array.isArray(pairs)||!pairs.length||pairs.some(p=>typeof p?.from!=='string'||!p.from||typeof p?.to!=='string'||!p.to)||sourceTs===null||sourceTs>now||now-sourceTs>300000)return{status:'CATALOG_NOT_CLOSED'};
+  const market=resolveGTradeCryptoMarket(catalog.payload,native_symbol);
+  return {status:market.supported?'SUPPORTED':market.status==='GTRADE_SYMBOL_UNSUPPORTED'?'UNSUPPORTED':'IDENTITY_NOT_CLOSED',source_ts:sourceTs,run_id,market_status:market.status};
+ };
  collect.hasRunSnapshot=run_id=>snapshots.has(run_id);
  collect.estimateHttpCost=({run_id,native_symbol}={})=>{const catalog=catalogValues.get(run_id);if(!catalog)return 1;if(!catalog.ok||!Array.isArray(catalog.payload?.pairs))return 0;if(!resolveGTradeCryptoMarket(catalog.payload,native_symbol).supported)return 0;return snapshots.has(run_id)?0:2;};
  collect.clearRun=run_id=>{snapshots.delete(run_id);catalogs.delete(run_id);catalogValues.delete(run_id);};
