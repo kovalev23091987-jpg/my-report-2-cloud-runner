@@ -47,17 +47,13 @@
       "previous_completed_ts": 1791166512309
     }
   ],
-  "lease": {
-    "owner": "HTX:20261005T202537792Z:cloud-cancel-checkpoint",
-    "acquired_ts": 1791231937792,
-    "expires_ts": 1791232537792
-  },
-  "next_action": "Record newly observed PR154 zero-step cloud cancellation, no rerun/source calls; release this short documentation lease.",
+  "lease": null,
+  "next_action": "PR153 and PR154 are unmerged; cloud jobs cancelled before steps. Preserve passed code/historical actual proofs. After GitHub runner recovery read fresh main/phase/fence and acquire bounded owner; validate exact assembled code and any still-needed bounded fresh source proof with renewed exact main/owner gate. Do not launch unchanged MAIN or reset source caps. CORE/Telegram not accepted.",
   "last_verified_release": "checkpoints/quality-neutral-context-repair-release-evidence-20261005.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791231937792,
+  "updated_ts": 1791231956591,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -159,11 +155,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261005T193931083Z:estimated-levels",
-    "acquired_ts": 1791229171083,
-    "expires_ts": 1791234571083,
-    "released_ts": 1791231849094,
-    "reason": "Saved PR154 general estimate/display package and original-clock actual gTrade replay across all102 saved assets. GitHub job queued0steps during Actions incident; no source/MAIN/TG calls. Release prevents delayed source calls after this bounded iteration."
+    "owner": "HTX:20261005T202537792Z:cloud-cancel-checkpoint",
+    "acquired_ts": 1791231937792,
+    "expires_ts": 1791232537792,
+    "released_ts": 1791231956591,
+    "reason": "Corrected PR154 cloud job to actual CANCELLED before any steps; no cloud code/source acceptance or additional calls. No rerun/MAIN/new automation."
   },
   "bounded_next_check": {
     "automation_id": "6ac3e06700e081919ca674ce192eca4c",
@@ -235,14 +231,16 @@
     "tree": "fe1b6dc8313dfe923825ebaeeaf4530819b62ca5",
     "cloud_run": 37367680431,
     "cloud_job": 111956691653,
-    "cloud_status": "QUEUED_ZERO_STEPS",
+    "cloud_status": "JOB_CANCELLED_BEFORE_ANY_STEP",
     "historical_numeric_context_assets": 50,
     "historical_universe_assets": 102,
     "new_sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
     "production_accepted": false,
-    "delayed_live_probe_requires_fresh_owner": true
+    "delayed_live_probe_requires_fresh_owner": true,
+    "cloud_job_conclusion": "cancelled",
+    "sourceHTTP": 0
   },
   "source_route_use_readback": "checkpoints/SOURCE_ROUTE_USE_READBACK_20261005.json",
   "owner_actual_data_economy_cloud_amendment": {

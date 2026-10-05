@@ -1,7 +1,7 @@
 {
   "schema": "report2-verified-estimates-cloud-blocked-v1",
   "created_utc": "2026-10-05T20:24:09.094Z",
-  "status": "PREPARED_NOT_MERGED_NOT_PRODUCTION_ACCEPTED",
+  "status": "PREPARED_NOT_MERGED_CLOUD_CANCELLED_BEFORE_STEPS",
   "expected_main_before_checkpoint": "a54f26a235d5147bdd3bd4727323c60caa7c5f0d",
   "PR": 154,
   "branch": "codex/verified-liquidation-estimates-20261005",
@@ -11,7 +11,7 @@
     "current_generation": "PASS",
     "targeted_initial": 28,
     "frozen_approved_fixture_outputs_unchanged": 8,
-    "assembled_runtime": "PENDING_GITHUB_RUNNER"
+    "assembled_runtime": "NOT_EXECUTED_JOB_CANCELLED_BEFORE_STEPS"
   },
   "historical_actual_proof": {
     "path": "audit-fixes/verified-liquidation-estimates-20261005/historical-gtrade-replay.json.gz",
@@ -27,22 +27,24 @@
   "cloud": {
     "run": 37367680431,
     "job": 111956691653,
-    "status": "queued",
+    "status": "completed",
     "completed_steps": 0,
-    "observed_utc": "2026-10-05T20:24:09.094Z",
+    "observed_utc": "2026-10-05T20:25:56.591Z",
     "incident": {
       "url": "https://www.githubstatus.com/",
       "actions_runner_delay_since_utc": "2026-10-05T19:11:00Z",
       "last_update_utc": "2026-10-05T19:50:00Z",
       "status": "INVESTIGATING"
-    }
+    },
+    "job_conclusion": "cancelled",
+    "cancellation_reason": "NOT_RETURNED_NO_JOB_STEPS_OR_LOGS"
   },
   "new_SOURCE_HTTP": 0,
   "new_MAIN": 0,
   "new_Telegram": 0,
   "new_Nansen": 0,
   "bounded_source_proof": {
-    "status": "NOT_EXECUTED",
+    "status": "NOT_EXECUTED_JOB_CANCELLED_BEFORE_STEPS",
     "maximum_source_HTTP": 3,
     "expected_owner": "HTX:20261005T193931083Z:estimated-levels",
     "expected_main": "a54f26a235d5147bdd3bd4727323c60caa7c5f0d",
@@ -105,5 +107,6 @@
   },
   "production_code_changed_by_this_checkpoint": false,
   "new_automations_created": false,
-  "full_project_complete": false
+  "full_project_complete": false,
+  "updated_utc": "2026-10-05T20:25:56.591Z"
 }
