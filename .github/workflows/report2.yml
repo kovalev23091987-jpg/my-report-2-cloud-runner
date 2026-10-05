@@ -394,12 +394,18 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Read accumulated exact raw24h for owner control
+        if: ${{ always() && github.event_name == 'push' && contains(github.event.head_commit.message, '[all-blocks-control]') }}
+        run: node runner/raw24h-control-readback.mjs runtime
+
       - name: Upload canonical run result
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: report2-run-result
-          path: runtime/report2-run-result.json
+          path: |
+            runtime/report2-run-result.json
+            runtime/raw24h-control-readback.json
           if-no-files-found: warn
           retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}
 
