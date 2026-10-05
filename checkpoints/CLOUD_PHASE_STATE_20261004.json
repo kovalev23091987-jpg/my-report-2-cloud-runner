@@ -47,17 +47,13 @@
       "previous_completed_ts": 1791166512309
     }
   ],
-  "lease": {
-    "owner": "HTX:20261005T154046Z:1cd3b94d-4e3e-4385-81b1-61f800b46a16",
-    "acquired_ts": 1791214905519,
-    "expires_ts": 1791224537843
-  },
-  "next_action": "Retain actual same-run 7/8 core block proof, not 15-block or nonzero-weight acceptance. Verify next naturally admitted scheduled result and qualified approved Telegram SENT; preserve direction, plan, threshold and source cap gates. N07/N15 exhausted daily admission must not be reset or re-probed before rollover. No extra unchanged MAIN.",
+  "lease": null,
+  "next_action": "One bounded next-cycle continuation at 18:37 UTC reads a newer naturally admitted scheduled run and same-run approved Telegram result. Acquire fresh owner before any changes; preserve all caps, rules and forms. Actual 7/8 core proof is retained, but publication and full-use acceptance remain incomplete. No extra unchanged MAIN/source probes, quota reset or reuse of old snapshot as delivery proof.",
   "last_verified_release": "checkpoints/quality-neutral-context-repair-release-evidence-20261005.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791221627050,
+  "updated_ts": 1791221907858,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -133,5 +129,22 @@
     },
     "sha256": "c7519f06133c9069231d5673dbdc631e51df7df8cf1de925cfa6137a31cd1fd9",
     "continuous_telegram_manual_on_request": true
+  },
+  "last_released_lease": {
+    "owner": "HTX:20261005T154046Z:1cd3b94d-4e3e-4385-81b1-61f800b46a16",
+    "acquired_ts": 1791214905519,
+    "expires_ts": 1791224537843,
+    "released_ts": 1791221907858,
+    "reason": "Actual repaired scheduled run read; fresh approved publication unavailable. One bounded continuation is scheduled to inspect next naturally admitted cycle without additional MAIN/source probes."
+  },
+  "bounded_next_check": {
+    "automation_id": "6ac3e06700e081919ca674ce192eca4c",
+    "is_enabled": true,
+    "one_time": true,
+    "scheduled_utc": "2026-10-05T18:37:43Z",
+    "maximum_tool_calls": 35,
+    "source_http": 0,
+    "MAIN": 0,
+    "old_automations_reenabled": false
   }
 }
