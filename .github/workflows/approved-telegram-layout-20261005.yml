@@ -1,0 +1,42 @@
+name: Report 2 Approved Telegram Layout
+on:
+  push:
+    branches: [autonomous/approved-telegram-layout-20261005]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble exact production candidate
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Verify established form and exact dispatch without network
+        run: |
+          for module in exact-saved-run-telegram canonical-publication manual-report-formatter canonical-display; do
+            cmp "current-generation/files/src/$module.mjs" "runtime/src/$module.mjs"
+          done
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/exact-saved-run-telegram.test.mjs current-generation/tests/future-liquidation-contract.test.mjs current-generation/tests/manual-telegram-liquidation-parity.test.mjs current-generation/tests/receipt-only-canonical.test.mjs current-generation/tests/telegram-publication-backlog.test.mjs runner/continuation-stage-gate.test.mjs > audit-output/approved-layout.tap
+          node current-generation/validate.mjs > audit-output/validation.json
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          node audit-fixes/source-optimization-20260930/runtime-manifest.mjs runtime audit-output/runtime-manifest.json
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse 'HEAD^{tree}' > audit-output/tree.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-telegram-layout-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
