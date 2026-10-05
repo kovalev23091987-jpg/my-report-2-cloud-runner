@@ -150,6 +150,10 @@ function describe(row,now){
   // Preserve exact units; arbitrary transfers are never called mint/burn.
   return{source:'публичный RPC',label:'Изменение предложения токена',value:`${delta>0n?'увеличение':'уменьшение'} на ${String(delta<0n?-delta:delta)} минимальных единиц между двумя наблюдениями; точность токена ${row.decimals} знаков; причина изменения не подтверждена`};
  }
+ if(row.block_id==='N06'&&row.metric_family==='ENCYCLOPEDIA_PAGEVIEW_CONTEXT'){
+  if(row.provider_id!=='WIKIMEDIA_ATTENTION'||row.upstream_id!=='WIKIMEDIA_AQS_PAGEVIEWS'||row.asset_id!=='cardano:native:mainnet'||row.htx_contract!=='ADA-USDT'||row.article!=='Cardano_(blockchain_platform)'||row.source_clock_policy!=='PUBLISHED_COMPLETE_UTC_DAILY_PAGEVIEW_ROWS'||row.provider_role!=='ADDITIONAL_ATTENTION_CONTEXT'||row.unique_traders_claim!==false||row.directional_vote!==false||row.day_count!==14||![row.recent_7day_views,row.previous_7day_views].every(x=>Number.isSafeInteger(x)&&x>=0)||row.window_end!==row.source_ts||row.window_end-row.window_start!==14*86400000||!/^[0-9a-f]{64}$/.test(row.series_sha256||''))return null;
+  return{source:'Wikimedia / Wikipedia',label:'Внимание к статье Cardano',value:`${row.recent_7day_views} просмотров за последние 7 опубликованных полных дней против ${row.previous_7day_views} за предыдущие 7; окно заканчивается ${new Date(row.window_end).toISOString().slice(0,10)} UTC. Это просмотры статьи, число трейдеров и направление цены не установлены`};
+ }
  if(row.block_id==='N07'&&row.metric_family==='OFFICIAL_ANNOUNCEMENT'){
   const title=String(row.event_title||'').trim();let url;
   try{url=new URL(row.official_url);}catch{return null;}
