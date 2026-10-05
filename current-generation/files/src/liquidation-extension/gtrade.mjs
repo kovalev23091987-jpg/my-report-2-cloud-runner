@@ -1,16 +1,23 @@
 import {base,fail,complete,zone,num,timestamp,sourceClock} from './core.mjs';
+export function resolveGTradeCryptoMarket(variables,symbol){
+ const matching=(Array.isArray(variables?.pairs)?variables.pairs:[]).map((pair,index)=>({pair,index})).filter(({pair})=>pair?.from===symbol&&pair.to==='USD');
+ if(!matching.length)return {status:'GTRADE_SYMBOL_UNSUPPORTED',supported:false};
+ const crypto=matching.filter(({pair})=>['crypto','altcoins','crypto-degen'].includes(variables?.groups?.[Number(pair.groupIndex)]?.name));
+ if(crypto.length!==1)return {status:'GTRADE_CRYPTO_MARKET_IDENTITY_NOT_CLOSED',supported:false};
+ return {status:'EXACT_CRYPTO_MARKET',supported:true,pair_index:crypto[0].index};
+}
 // sdk is injected: use the pinned official @gainsnetwork/sdk 1.8.10 package.
 // It accounts for actual leverage, realized PnL and funding/borrowing/trading fees.
 export function normalizeGTrade({variables,trades,prices,receipts},c,sdk){
  const b=base('gTrade official SDK',c,['GTRADE_ARBITRUM'],'NATIVE_POSITION_FEE_AWARE_ESTIMATES',{venue:'gTrade-Arbitrum',quote:'USD',access:'KEYLESS_REST_TESTED',coverage:'BACKEND_OPEN_MARKET_TRADES_NON_ATOMIC'});
  if(!sdk?.getLiquidationPrice||!sdk?.buildLiquidationPriceContext||!Array.isArray(trades)||!Array.isArray(variables?.pairs)||!Array.isArray(prices?.indexPrices))return fail(b,'GTRADE_SCHEMA_OR_SDK_MISSING');
- if(!variables.pairs.some(p=>p?.from===c.symbol&&p?.to==='USD'))return fail(b,'GTRADE_SYMBOL_UNSUPPORTED');
+ const market=resolveGTradeCryptoMarket(variables,c.symbol);if(!market.supported)return fail(b,market.status);
  const variableClock=sourceClock(b,variables.lastRefreshed,c),priceClock=sourceClock(b,prices.time,c);
  if(!variableClock.ok||!priceClock.ok)return fail(b,!variableClock.ok?variableClock.reason:'INDEX_'+priceClock.reason);
  if(!Array.isArray(receipts)||receipts.length!==3||receipts.some(r=>r.http_status!==200||timestamp(r.received_ts)===null||r.received_ts>c.as_of_ms||c.as_of_ms-r.received_ts>c.max_age_ms))return fail(b,'GTRADE_RECEIPT_WINDOW_NOT_CLOSED');
  try{
  const g=sdk.transformGlobalTradingVariables(variables).globalTradingVariables;
- const selected=trades.filter(t=>t.trade?.isOpen===true&&String(t.trade.tradeType)==='0'&&variables.pairs[Number(t.trade.pairIndex)]?.from===c.symbol&&variables.pairs[Number(t.trade.pairIndex)]?.to==='USD');
+ const selected=trades.filter(t=>t.trade?.isOpen===true&&String(t.trade.tradeType)==='0'&&Number(t.trade.pairIndex)===market.pair_index);
  const z=[],excluded=[],seen=new Set();
  for(const raw of selected){
   const id=String(raw.trade.user).toLowerCase()+':'+raw.trade.index;if(seen.has(id))throw Error('DUPLICATE_GTRADE_POSITION');seen.add(id);
@@ -35,8 +42,8 @@ export function normalizeGTrade({variables,trades,prices,receipts},c,sdk){
  }
  if(selected.length>0&&z.length===0)return fail(b,'ALL_SELECTED_POSITIONS_REJECTED',{selected_market_positions:selected.length,excluded_positions:excluded,source_ts:Math.min(variableClock.source_ts,priceClock.source_ts),positions_source_ts:null});
  return complete(b,z,{source_ts:Math.min(variableClock.source_ts,priceClock.source_ts),source_age_ms:c.as_of_ms-Math.min(variableClock.source_ts,priceClock.source_ts),block_number:variables.currentBlock,
-   positions_source_ts:null,positions_observed_at_ms:receipts[1].received_ts,positions_time_basis:'RECEIPT_OF_CURRENT_OPEN_TRADES_ENDPOINT',same_block_atomic:false,
+   source_clock_closed:false,observed_at_ms:receipts[1].received_ts,freshness_basis:'CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN',variable_source_ts:variableClock.source_ts,index_source_ts:priceClock.source_ts,positions_source_ts:null,positions_observed_at_ms:receipts[1].received_ts,positions_time_basis:'RECEIPT_OF_CURRENT_OPEN_TRADES_ENDPOINT',same_block_atomic:false,
    selected_market_positions:selected.length,excluded_positions:excluded,pending_orders_excluded:trades.filter(t=>String(t.trade?.tradeType)!=='0').length,execution_target_eligible:false,
-   estimation_note:'Native positions plus official SDK; backend and index price are close in time, not atomic same-block state. Not a guaranteed trigger.'});
+   sdk_version:'1.8.10',estimation_note:'Position snapshot clock unknown. Native positions plus official SDK; backend and index price are close in time, not atomic same-block state. Not a guaranteed trigger.'});
  }catch(e){return fail(b,e.message);}
 }

@@ -1,3 +1,4 @@
+import {mergeLiquidationDisplayZones} from './canonical-display.mjs';
 import {createHash} from 'node:crypto';
 const stamp=v=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=1e12?v:null;
 const num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
@@ -11,7 +12,7 @@ export function nativeLiquidationSources(liq){
  for(const e of arr(liq?.independent_extensions))if(['GTRADE_LIQUIDATION_CONTEXT_V1','SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1'].includes(e?.schema))nested.push(e);
  if(nested.length){
   const usable=nested.filter(e=>['USABLE_NATIVE_SAMPLE','USABLE_SCOPED_NATIVE_CONTEXT','USABLE_RECEIPT_ONLY_CONTEXT'].includes(e.status));
-  return {present:true,kind:'NESTED',contexts:usable,sources:usable.map(e=>({provider:e.provider||'Hyperliquid official',venue:e.venue||'Hyperliquid',native_symbol:e.binding?.native_symbol,source_ts:e.source_ts,context_status:e.status,source_clock_closed:e.source_clock_closed,received_ts:e.received_ts,entry_eligible:e.entry_eligible,automatic_execution:e.automatic_execution,freshness_basis:e.freshness_basis,price_quote:e.price_quote,above:e.above,below:e.below,freshness_max_age_ms:e.freshness_max_age_ms}))};
+  return {present:true,kind:'NESTED',contexts:usable,sources:usable.map(e=>({provider:e.provider||'Hyperliquid official',venue:e.venue||'Hyperliquid',native_symbol:e.binding?.native_symbol,source_ts:e.source_ts,context_status:e.status,source_clock_closed:e.source_clock_closed,received_ts:e.received_ts,entry_eligible:e.entry_eligible,automatic_execution:e.automatic_execution,freshness_basis:e.freshness_basis,price_quote:e.price_quote,evidence_class:e.evidence_class,upstream_groups:e.upstream_groups,above:e.above,below:e.below,freshness_max_age_ms:e.freshness_max_age_ms}))};
  }
  if(liq?.early_context_present===true)return {present:true,kind:'FLAT',contexts:[liq],sources:arr(liq.sources).map(s=>({...s,freshness_max_age_ms:liq.freshness_max_age_ms}))};
  return {present:false,contexts:[],sources:[]};
@@ -57,21 +58,28 @@ const msk=ts=>new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-
 // snapshot. This helper does not compute scores, directions, targets or entry.
 export function nativeLiquidationLines(liq,{manual=false,compact=false}={}){
  const info=nativeLiquidationSources(liq);if(!info.present)return null;
- const sources=info.sources,lines=[]; // Preserve each independent venue; never turn two sources into one summed map.
- for(const s of sources){
-  const label=`${s.venue==='gTrade-Arbitrum'?'gTrade':text(s.venue||s.provider)} ${text(s.native_symbol)}`.trim(),quote=text(s.price_quote);
-  if(!quote)continue;
+ const lines=[],rows=[];
+ for(const s of info.sources){
+  const label=`${s.provider==='0xArchive'?'0xArchive':s.venue==='gTrade-Arbitrum'?'gTrade':text(s.venue||s.provider)} ${text(s.native_symbol)}${s.provider==='0xArchive'?' (оценочные зоны Hyperliquid)':''}`.trim(),quote=text(s.price_quote);if(!quote)continue;
   if(s.context_status==='USABLE_RECEIPT_ONLY_CONTEXT')lines.push(`${label}, ответ получен в ${msk(s.received_ts)} МСК; время исходного состояния неизвестно.`);
-  else if(stamp(s.source_ts)!==null)lines.push(!manual&&compact?`${label}, ${msk(s.source_ts)} МСК:`:`${label}, снимок ${msk(s.source_ts)} МСК${manual?'; ограниченная выборка':''}.`);
-  for(const [rows,side] of [[arr(s.above),'выше'],[arr(s.below),'ниже']]){
-   const parts=rows.slice(0,3).filter(z=>num(z.native_price)!==null&&z.native_price>0).map(z=>[
-    `${price(z.native_price)} ${quote}${num(z.distance_pct)!==null?` (${percent(z.distance_pct)})`:''}`,
-    num(z.notional)!==null?`${amount(z.notional)} ${text(z.notional_unit)}`:null,
-    z.conditional_cross===true||z.conditional_on_other_positions===true?'кросс-маржа':null,
-   ].filter(Boolean).join('; '));
-   if(parts.length)lines.push(`${manual?label+' — ':''}${side}: ${parts.join(', ')}.`);
+  else if(stamp(s.source_ts)!==null)lines.push(`${label}, снимок ${msk(s.source_ts)} МСК${manual?'; ограниченная выборка':''}.`);
+  for(const [zs,side] of [[arr(s.above),'ABOVE'],[arr(s.below),'BELOW']])for(const z of zs){
+   if(num(z.native_price)===null||z.native_price<=0)continue;
+   rows.push({...z,side,price:z.native_price,price_quote:quote,source:label,native_symbol:s.native_symbol,
+    distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',source_clock_closed:s.source_clock_closed,
+    estimated:s.provider==='0xArchive'||/ESTIMAT|PROJECTED|MODEL/.test(s.evidence_class||'')||/SDK_ESTIMATE|BUCKET_CENTER|MODEL_PRICE_BIN|FEE_AWARE/.test(z.price_semantics||'')});
   }
  }
- if(!lines.length)return ['Ликвидации: свежие нативные уровни в проверенной выборке не подтверждены.'];
+ for(const [side,label] of [['ABOVE','выше'],['BELOW','ниже']]){
+  const merged=mergeLiquidationDisplayZones(rows,side).sort((a,b)=>Math.abs(a.distance_pct)-Math.abs(b.distance_pct)).slice(0,compact?2:4);
+  const parts=merged.map(z=>[
+   `${z.estimated?'расчётный уровень ≈':''}${price(z.price)} ${z.price_quote}${num(z.distance_pct)!==null?` (${percent(z.distance_pct)} к цене источника)`:''}`,
+   num(z.notional)!==null?`${z.estimated?'оценочный объём ':''}${amount(z.notional)} ${text(z.notional_unit)} в показанной позиции`:null,
+   z.source,
+   z.display_component_count>1?`объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:null,
+   z.conditional_cross===true||z.conditional_on_other_positions===true?'кросс-маржа':null,
+  ].filter(Boolean).join('; '));if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
+ }
+ if(!rows.length)return ['Ликвидации: пригодные уровни в проверенной выборке не подтверждены.'];
  lines.push(manual?'Это уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.':compact?'Ограниченная выборка; цели на HTX не подтверждены.':'Ограниченная выборка этих площадок; цели на HTX не подтверждены.');return lines;
 }

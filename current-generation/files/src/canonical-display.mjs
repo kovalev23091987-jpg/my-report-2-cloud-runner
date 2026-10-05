@@ -1,6 +1,6 @@
 // Presentation only: never computes direction, scores, gates or targets.
 const text=v=>v==null?'':String(v).trim();
-export const LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT=3;
+export const LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT=5;
 export const LIQUIDATION_DISPLAY_MAX_PER_SIDE=4;
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 const displayTier=n=>n===null||n<=0?null:n>=1000000?'огромная':n>=100000?'крупная':n>=10000?'средняя':'небольшая';
@@ -47,45 +47,46 @@ export function displayMarketFacts(c){
  }
  return facts;
 }
-function clusterDisplayZones(rows,side,{minimum_separation_pct=LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT}={}){
- const candidates=(Array.isArray(rows)?rows:[]).filter(z=>z?.side===side&&finite(z?.price)>0);
- const comparable=candidates.filter(z=>finite(z?.distance_pct)!==null).sort((a,b)=>finite(a.distance_pct)-finite(b.distance_pct));
- const unknown=candidates.filter(z=>finite(z?.distance_pct)===null),clusters=[];
- for(const row of comparable){
-  const distance=finite(row.distance_pct),key=[text(row.price_quote)||'USD',text(row.distance_reference_basis)||'UNKNOWN'].join('|');
-  let cluster=clusters.find(c=>c.key===key&&Math.max(c.max_distance,distance)-Math.min(c.min_distance,distance)<=minimum_separation_pct);
-  if(!cluster){cluster={key,rows:[],min_distance:distance,max_distance:distance};clusters.push(cluster);}
-  cluster.rows.push(row);cluster.min_distance=Math.min(cluster.min_distance,distance);cluster.max_distance=Math.max(cluster.max_distance,distance);
+// Presentation only. Never change the original analysis map, weights or source clocks.
+// Farthest-first, bounded diameter: 100/104/108 must not chain into one 8% band.
+export function mergeLiquidationDisplayZones(rows,side){
+ const candidates=(Array.isArray(rows)?rows:[]).filter(z=>z?.side===side&&finite(z?.price)>0)
+  .map(z=>({...z})).sort((a,b)=>side==='ABOVE'?b.price-a.price:a.price-b.price);
+ const clusters=[];
+ for(const row of candidates){
+  const quote=text(row.price_quote),basis=text(row.distance_reference_basis),distance=finite(row.distance_pct);
+  const comparable=['USD','USDC','USDT'].includes(quote)&&basis&&basis!=='UNKNOWN'&&distance!==null;
+  const key=[quote,basis,text(row.native_symbol),row.source_clock_closed===false?'UNKNOWN_SOURCE_AGE':'SOURCE_CLOCK_CLOSED'].join('|');
+  let cluster=comparable?clusters.find(c=>c.key===key&&(Math.max(c.max_price,row.price)/Math.min(c.min_price,row.price)-1)*100<=LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT+1e-10):null;
+  if(!cluster){cluster={key:comparable?key:null,rows:[],min_price:row.price,max_price:row.price};clusters.push(cluster);}
+  cluster.rows.push(row);cluster.min_price=Math.min(cluster.min_price,row.price);cluster.max_price=Math.max(cluster.max_price,row.price);
  }
- for(const row of unknown)clusters.push({key:`UNKNOWN|${clusters.length}`,rows:[row],min_distance:null,max_distance:null});
- return clusters.map(cluster=>{
-  const ordered=[...cluster.rows].sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1));
-  const primary=ordered[0],prices=ordered.map(z=>finite(z.price)).filter(v=>v!==null),distances=ordered.map(z=>finite(z.distance_pct)).filter(v=>v!==null);
-  const byGroup=new Map();
-  for(const row of ordered){
-   const group=text(row.independence_group)||text(row.venue)||text(row.source)||'UNKNOWN',amount=finite(row.notional),old=byGroup.get(group)||{rows:[],amount:null};old.rows.push(row);
-   if(amount!==null){old.amount=group==='HTX_OFFICIAL_MODEL'?(old.amount??0)+amount:Math.max(old.amount??0,amount);}byGroup.set(group,old);
-  }
-  const strongest=[...byGroup.entries()].sort((a,b)=>(b[1].amount??-1)-(a[1].amount??-1))[0],notional=strongest?.[1]?.amount??null,notionalRow=strongest?.[1]?.rows?.find(z=>finite(z.notional)!==null)??primary;
-  const sources=[...new Set(ordered.map(z=>text(z.source)).filter(Boolean))],minPrice=Math.min(...prices),maxPrice=Math.max(...prices),center=prices.reduce((sum,v)=>sum+v,0)/prices.length;
-  return{...primary,price:center,native_price:center,notional,notional_usdt:notional,notional_unit:notionalRow?.notional_unit??primary.notional_unit,strength_label_ru:displayTier(notional),exact_amount_available:ordered.length===1&&primary.exact_amount_available===true,exact_notional_usdt:ordered.length===1?primary.exact_notional_usdt:null,estimated:ordered.length>1?true:primary.estimated,amount_semantics:ordered.length>1?'DISPLAY_CLUSTER_SAME_MODEL_SUM_CROSS_PROVIDER_MAX':primary.amount_semantics,source:sources.join(' + '),display_cluster:true,display_component_count:ordered.length,display_price_min:minPrice,display_price_max:maxPrice,display_distance_min:distances.length?Math.min(...distances):null,display_distance_max:distances.length?Math.max(...distances):null,display_minimum_separation_pct:minimum_separation_pct,display_components:ordered.map(z=>({price:z.price,distance_pct:z.distance_pct,notional:z.notional,notional_unit:z.notional_unit,source:z.source,independence_group:z.independence_group}))};
+ return clusters.map(c=>{
+  const primary=c.rows[0],sources=[...new Set(c.rows.map(z=>text(z.source)).filter(Boolean))];
+  // Amount belongs to the displayed original level; overlapping samples are never summed.
+  return {...primary,source:sources.join(' + '),display_cluster:true,display_component_count:c.rows.length,
+   display_price_min:c.min_price,display_price_max:c.max_price,display_distance_min:primary.distance_pct,display_distance_max:primary.distance_pct,
+   display_minimum_separation_pct:LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT,display_representative:'FARTHEST_ORIGINAL_LEVEL',
+   display_contains_estimates:c.rows.some(z=>z.estimated===true),notional_summed_across_providers:false,
+   display_components:c.rows.map(z=>({...z}))};
  });
 }
 export function selectLiquidationDisplayZones(liq,side,{limit=LIQUIDATION_DISPLAY_MAX_PER_SIDE}={}){
- const fallback=side==='ABOVE'?liq?.above:liq?.below,all=Array.isArray(liq?.all_zones)&&liq.all_zones.length?liq.all_zones:fallback;
- return clusterDisplayZones(all,side).sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,limit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
+ const fallback=side==='ABOVE'?liq?.above:liq?.below,all=Array.isArray(liq?.display_source_zones)&&liq.display_source_zones.length?liq.display_source_zones:Array.isArray(liq?.all_zones)&&liq.all_zones.length?liq.all_zones:fallback;
+ return mergeLiquidationDisplayZones(all,side).sort((a,b)=>(finite(b.notional)??-1)-(finite(a.notional)??-1)||Math.abs(finite(a.distance_pct)??Infinity)-Math.abs(finite(b.distance_pct)??Infinity)).slice(0,limit).sort((a,b)=>Math.abs(finite(a.display_distance_min)??finite(a.distance_pct)??Infinity)-Math.abs(finite(b.display_distance_min)??finite(b.distance_pct)??Infinity));
 }
-function displayPriceRange(z){const min=finite(z?.display_price_min),max=finite(z?.display_price_max);return min!==null&&max!==null&&Math.abs(max-min)>Math.max(Math.abs(max),1)*1e-10?`${displayNumber(min)}–${displayNumber(max)}`:displayNumber(z?.price);}
-function displayDistanceRange(z){const min=finite(z?.display_distance_min),max=finite(z?.display_distance_max);if(min===null||max===null)return null;const sign=value=>value>0?'+':value<0?'−':'';const abs=value=>displayNumber(Math.abs(Number(value.toFixed(2))));return Math.abs(max-min)<1e-9?`${sign(min)}${abs(min)}%`:`${sign(Math.abs(min)<=Math.abs(max)?min:max)}${abs(Math.abs(min)<=Math.abs(max)?min:max)}…${sign(Math.abs(min)>Math.abs(max)?min:max)}${abs(Math.abs(min)>Math.abs(max)?min:max)}%`;}
+function displayPriceRange(z){return displayNumber(z?.price);}
+function displayDistanceRange(z){const d=finite(z?.distance_pct);return d===null?null:`${d>0?'+':d<0?'−':''}${displayNumber(Math.abs(Number(d.toFixed(2))))}%`;}
 export function displayFutureLiquidations(liq,{compact=false}={}){
  const lines=[];
  for(const [side,label] of [['ABOVE','Сильные ликвидации выше'],['BELOW','Сильные ликвидации ниже']]){
   const available=selectLiquidationDisplayZones(liq,side),shown=compact?available.slice(0,2):available;
   const parts=shown.filter(Boolean).map(z=>{
    const px=displayPriceRange(z),d=displayDistanceRange(z),n=displayNumber(z.notional);
-   return `${/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
+   return `${z.estimated?(compact?'≈':'расчётный уровень ≈'):/NATIVE.*BUCKET_CENTER/.test(z.price_semantics||'')?'≈':''}${px} ${z.price_quote||'USD'} (${d===null?'расстояние неизвестно':`${d}${z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?' к цене источника':''}`}) — ${z.strength_label_ru||'размер неизвестен'}; ${n!==null?`${z.amount_semantics==='REPORTED_OPEN_POSITION_NOTIONAL'&&z.estimated?'открытые позиции':z.estimated?'оценка':'позиция'} ${n} ${z.notional_unit}`:'объём неизвестен'}${!compact&&z.display_component_count>1?`; объединено ${z.display_component_count} близких уровней, показан дальний${z.display_contains_estimates?'; есть расчётные уровни':''}`:''}${compact?'':`; ${z.source}${z.conditional_cross?'; зависит от других позиций счёта':''}`}`;
   });lines.push(`${label}: ${parts.length?parts.join('; '):'уровни будущих ликвидаций не получены'}.`);
  }
+ if(compact&&[...selectLiquidationDisplayZones(liq,'ABOVE'),...selectLiquidationDisplayZones(liq,'BELOW')].some(z=>z.estimated||z.display_contains_estimates))lines.push('≈ — расчётный уровень.');
  const sample=(liq?.source_receipts||[]).find(r=>r.coverage?.kind==='TRACKED_ACCOUNT_SAMPLE_ONLY')?.coverage;
  if(sample)lines.push(`Hyperliquid: выборка до ${sample.account_population_limit} аккаунтов${compact?'':`; проверено ${sample.provider_coverage?.scanned??'не указано'}; без цены ликвидации ${sample.provider_totals?.without_liq_px??'не указано'} позиций`}.`);
  if(!compact&&liq?.provider_zone_count){

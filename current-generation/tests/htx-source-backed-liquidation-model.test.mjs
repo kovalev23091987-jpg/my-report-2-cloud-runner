@@ -47,7 +47,7 @@ test('production pump map never calls or compares a calculated HTX fallback even
  assert.equal(map.status,'NOT_CLOSED');assert.equal(map.future_levels_status,'NOT_AVAILABLE');assert.equal(map.calculated_fallback_enabled,false);assert.equal(map.provider_zone_count,0);assert.equal(map.htx_source_backed_model.status,'DISABLED_BY_OWNER');assert.equal(map.calculated_zone_count,0);
 });
 
-test('user display merges neighboring BTW levels into one range and keeps four separated zones per side',()=>{
+test('owner-approved display merges within5% and retains original farther price and its amount',()=>{
  const rows=[
   [1.85195483944,9824.473498231311,'SHORT'],[1.66641146167,7610.004448781198,'SHORT'],[1.83696642985,7204.6138987029635,'SHORT'],[1.52963667959,6862.2149998057575,'SHORT'],[1.392531323,3632.779658653116,'SHORT'],
   [.931195827222,11267.707404263841,'LONG'],[.923559617605,11172.294971570274,'LONG'],[1.116739205,8727.928625330373,'LONG'],[1.24645973508,7191.413694348031,'LONG'],[.76987625,3755.902468,'LONG'],[1.367222765,2760.013371,'LONG'],
@@ -56,6 +56,6 @@ test('user display merges neighboring BTW levels into one range and keeps four s
  const above=selectLiquidationDisplayZones(liq,'ABOVE'),below=selectLiquidationDisplayZones(liq,'BELOW');
  assert.equal(above.length,4);assert.equal(below.length,4);
  const upper=above.find(z=>z.display_component_count===2),lower=below.find(z=>z.display_component_count===2);
- assert.ok(upper);assert.ok(lower);assert.equal(Math.round(upper.notional),17029);assert.equal(upper.strength_label_ru,'средняя');assert.equal(Math.round(lower.notional),22440);assert.equal(lower.strength_label_ru,'средняя');
- const output=displayFutureLiquidations(liq).join('\n');assert.match(output,/1,83696643–1,851954839/);assert.match(output,/0,9235596176–0,9311958272/);assert.doesNotMatch(output,/Ещё \d+ уров/);
+ assert.ok(upper);assert.ok(lower);assert.equal(upper.price,1.85195483944);assert.equal(Math.round(upper.notional),9824);assert.equal(lower.price,.923559617605);assert.equal(Math.round(lower.notional),11172);assert.equal(upper.notional_summed_across_providers,false);
+ const output=displayFutureLiquidations(liq).join('\n');assert.match(output,/1,851954839/);assert.match(output,/0,9235596176/);assert.doesNotMatch(output,/1,83696643–|0,9235596176–/);assert.doesNotMatch(output,/Ещё \d+ уров/);
 });
