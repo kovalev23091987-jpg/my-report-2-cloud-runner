@@ -1,3 +1,4 @@
+import {rewriteRetainedSelect,createHistoryRestorer} from './retained-history.mjs';
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 function requiredText(value, label) {
@@ -85,6 +86,10 @@ export class RemoteD1Database {
     this._usage = { requests: 0, rows_read: 0, rows_written: 0, unknown_ops: 0, targets: {} };
   }
 
+  enableRetainedHistory(options = {}) {
+    this._retainedHistory = createHistoryRestorer(options);
+  }
+
   prepare(sql) {
     return new RemoteD1PreparedStatement(this, sql);
   }
@@ -139,6 +144,11 @@ export class RemoteD1Database {
   }
 
   async _request(payload) {
+    const originalPayload = payload;
+    if (this._retainedHistory) {
+      if (payload.op === 'batch') payload = {...payload, statements:payload.statements.map(s => ({...s,sql:rewriteRetainedSelect(s.sql)}))};
+      else if (payload.sql) payload = {...payload,sql:rewriteRetainedSelect(payload.sql)};
+    }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
     try {
@@ -164,8 +174,8 @@ export class RemoteD1Database {
         const code = String(data?.error || `HTTP_${response.status}`);
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }
-      this._recordUsage(payload, data?.usage);
-      return data.result;
+      this._recordUsage(originalPayload, data?.usage);
+      return this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
     } catch (error) {
       if (error?.name === "AbortError") throw new Error("D1_BRIDGE_TIMEOUT");
       throw error;
