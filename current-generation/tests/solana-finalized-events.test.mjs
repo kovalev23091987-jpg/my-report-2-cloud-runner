@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import fs from 'node:fs';
-import {collectFinalizedChainEvents,decodeFinalizedSolanaTransaction} from '../files/src/finalized-chain-events.mjs';
+import {collectFinalizedChainEvents,decodeFinalizedSolanaTransaction,decodeFinalizedNativeSolanaTransaction,SOLANA_SYSTEM_PROGRAM} from '../files/src/finalized-chain-events.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from '../files/src/block-result-context.mjs';
 import {formatManualReport} from '../files/src/manual-report-formatter.mjs';
 
@@ -57,4 +57,19 @@ test('imbalanced Solana balance changes do not masquerade as neutral transfers o
  const tx=structuredClone(transaction);tx.meta.postTokenBalances[1].uiTokenAmount.amount='60';
  const evidence=decodeFinalizedSolanaTransaction({transaction:tx,mint:MINT,signature:SIG,observed_ts:NOW,contract:'JUP-USDT'});
  assert.equal(evidence[0].block_id,'N02');assert.equal(consumeBlockResultContext({evidence,contract:'JUP-USDT',now:NOW}).facts.length,0);
+});
+
+test('native SOL uses exact finalized System Program transfers with lamport units',()=>{
+ const nativeTx={slot:321,blockTime:NOW/1000-10,meta:{err:null,innerInstructions:[]},transaction:{message:{instructions:[{program:'system',parsed:{type:'transfer',info:{source:'A'.repeat(32),destination:'B'.repeat(32),lamports:123456}}}]}}};
+ const evidence=decodeFinalizedNativeSolanaTransaction({transaction:nativeTx,signature:SIG,observed_ts:NOW,contract:'SOL-USDT'});
+ assert.equal(evidence.length,1);assert.equal(evidence[0].asset_id,'solana:native:mainnet');assert.equal(evidence[0].amount_base_units,'123456');assert.equal(evidence[0].quantity_units,'LAMPORTS');assert.equal(evidence[0].exchange_labels_verified,false);
+ const context=consumeBlockResultContext({evidence,contract:'SOL-USDT',now:NOW});assert.equal(context.facts.length,1);assert.equal(context.facts[0].block_id,'N04');assert.match(context.facts[0].value,/123 456 лампортов|123456 лампортов/u);
+ assert.deepEqual(decodeFinalizedNativeSolanaTransaction({transaction:nativeTx,signature:SIG,observed_ts:NOW,contract:'WSOL-USDT'}),[]);
+});
+
+test('native SOL collector is a shared exact-native adapter and uses only two public RPC calls',async()=>{
+ const nativeTx={slot:321,blockTime:NOW/1000-10,meta:{err:null,innerInstructions:[]},transaction:{message:{instructions:[{program:'system',parsed:{type:'transfer',info:{source:'A'.repeat(32),destination:'B'.repeat(32),lamports:25}}}]}}};
+ const methods=[];const fetch_impl=async(_url,options)=>{const body=JSON.parse(options.body);methods.push(body);const result=body.method==='getSignaturesForAddress'?[{signature:SIG,err:null,slot:321,confirmationStatus:'finalized'}]:nativeTx;return new Response(JSON.stringify({jsonrpc:'2.0',id:body.id,result}),{status:200});};
+ const result=await collectFinalizedChainEvents({db:new DB(),fetch_impl,request_admit:p=>{assert.equal(p.attempts,4);return{allowed:true,status:'RESERVED'};},contract:'SOL-USDT',run_id:'NATIVE',asset_identity:{chain:'solana',asset_kind:'NATIVE',native_asset_id:'solana:mainnet',contract_or_mint:null},now:NOW,clock:()=>NOW});
+ assert.equal(result.status,'CLOSED');assert.equal(result.network_calls,2);assert.equal(methods[0].params[0],SOLANA_SYSTEM_PROGRAM);assert.deepEqual(methods.map(x=>x.method),['getSignaturesForAddress','getTransaction']);assert.equal(result.evidence[0].block_id,'N04');
 });
