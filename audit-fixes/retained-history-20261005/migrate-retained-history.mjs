@@ -16,7 +16,7 @@ if(!admission.allowed)throw Error(`ARCHIVE_D1_DAILY_ADMISSION_${admission.status
 await reserveRunBudget(db,{reservationId,reservation});
 let error=null;const moved=[];let before=null,after=null,commit=null,archiveHTTP=0;
 try{
-const databaseBytes=async()=>{const pages=await db.prepare('PRAGMA page_count').first(),size=await db.prepare('PRAGMA page_size').first();return{database_bytes:Number(pages.page_count)*Number(size.page_size)};};
+const databaseBytes=async()=>{const result=await db.prepare('SELECT 1 AS read_only').all();const bytes=Number(result?.meta?.size_after);if(!Number.isSafeInteger(bytes)||bytes<=0)throw Error('D1_SIZE_METADATA_REQUIRED');return{database_bytes:bytes};};
 before=await databaseBytes();
 const cutoff=Date.now()-HISTORY_HOT_WINDOW_MS,selected=[];
 for(const [table,sql] of [
