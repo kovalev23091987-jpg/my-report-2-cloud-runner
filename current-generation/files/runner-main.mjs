@@ -559,10 +559,23 @@ async function main() {
   const savedRunRequest=source!=='schedule'?String(env.REPORT2_MANUAL_COMMAND||'').match(/\bRUN_ID=(\d{10,}-\d{10,})\b/iu):null;
   if(savedRunRequest){
     const savedRunId=savedRunRequest[1];
-    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null});
+    const exactTelegramRequested=['1','true','yes','on'].includes(String(process.env.REPORT2_EXACT_SAVED_RUN_TELEGRAM||'0').trim().toLowerCase());
+    let exactAcceptance=null;
+    if(exactTelegramRequested){
+      const acceptancePath=envText('REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE',{required:false});
+      if(!acceptancePath)throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_FILE_REQUIRED');
+      exactAcceptance=JSON.parse(await fs.readFile(acceptancePath,'utf8'));
+      if(exactAcceptance?.status!=='CLOSED'||exactAcceptance?.actual_evidence_verified!==true||exactAcceptance?.canonical_run_id!==savedRunId||exactAcceptance?.canonical_status!=='CLOSED'||exactAcceptance?.actual_top_two_verified!==true||exactAcceptance?.block_acceptance?.all_candidates_fully_checked!==true||exactAcceptance?.liquidation_acceptance?.calculated_fallback_enabled!==false||Number(exactAcceptance?.liquidation_acceptance?.calculated_zone_count)!==0)throw new Error('EXACT_SAVED_RUN_ACCEPTANCE_NOT_CLOSED');
+    }
+    const savedContracts=exactAcceptance?.candidate_selection?.top_two_contracts||[];
+    const savedOutput=await loadCanonicalRunOutput(env.DATA_DB,{runId:savedRunId,source:'manual',generation,head:process.env.GITHUB_SHA||null,cron:null,candidateContracts:savedContracts});
+    if(exactAcceptance){
+      savedOutput.market_scan_audit={...exactAcceptance.market_scan,stage0_coverage_pct:exactAcceptance.market_scan?.complete===true?100:null};
+      savedOutput.candidate_selection_audit={top_two_contracts:savedContracts,deep_check_selected:exactAcceptance.candidate_selection?.deep_check_selected||[],registry_did_not_change_rank:exactAcceptance.candidate_selection?.exact_order_match===true&&exactAcceptance.candidate_selection?.leaders_replaced_for_coverage===false};
+      savedOutput.acceptance_binding={schema:exactAcceptance.schema,artifact_id:exactAcceptance.artifact_id,artifact_sha256:exactAcceptance.artifact_sha256,main_head:exactAcceptance.main_head,raw_24h_explicitly_excluded:exactAcceptance.raw_24h_explicitly_excluded===true};
+    }
     savedOutput.requested_saved_run_id=savedRunId;
     savedOutput.saved_canonical_retrieval=true;
-    const exactTelegramRequested=['1','true','yes','on'].includes(String(process.env.REPORT2_EXACT_SAVED_RUN_TELEGRAM||'0').trim().toLowerCase());
     let exactTelegram=null;
     if(exactTelegramRequested){
       exactTelegram=await deliverExactSavedRunTelegram({db:env.DATA_DB,saved_output:savedOutput,requested_run_id:savedRunId,enabled:true,relay_url:envText('REPORT2_TELEGRAM_RELAY_URL',{required:false}),relay_key:envText('REPORT2_TELEGRAM_RELAY_KEY',{required:false}),now_ts:Date.now(),fetch_impl:nativeFetch});
