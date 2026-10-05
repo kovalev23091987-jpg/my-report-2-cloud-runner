@@ -1,6 +1,6 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "JOINT_REPORT",
+  "current_phase": "TELEGRAM",
   "phases": [
     {
       "id": "CORE_BLOCKS",
@@ -22,12 +22,16 @@
     },
     {
       "id": "JOINT_REPORT",
-      "status": "IN_PROGRESS",
-      "completion_receipt": null
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/joint-report-functional-acceptance-20261005.json",
+        "sha256": "4b696df873f87bb56520d2a69f00464aa56560e9fbb1514d3583c7c91b45f44b"
+      },
+      "completed_ts": 1791163289172
     },
     {
       "id": "TELEGRAM",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "completion_receipt": null
     }
   ],
@@ -36,12 +40,12 @@
     "acquired_ts": 1791162954147,
     "expires_ts": 1791170154147
   },
-  "next_action": "After 2026-10-05T00:52:00Z run exactly one fresh admitted unified MAIN. The 00:13Z MAIN verified 102/102 and exact XAUT/SKYAI ranking but was blocked only by XAUT Nansen external failure; the immediate retry correctly skipped deep checks under cadence. Require both candidates 15/15, then save JOINT_REPORT acceptance and deliver that same canonical run to Telegram.",
+  "next_action": "Deliver the accepted canonical run 1791163034769-1791163043488 to Telegram using the approved renderer. Require actual SENT with message_id bound to the same run and snapshot; do not rerun MAIN or send stale, test, partial, or synthetic output.",
   "last_verified_release": "checkpoints/final-top2-ranking-release-evidence-20261005.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791162954147,
+  "updated_ts": 1791163289172,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
