@@ -26,7 +26,8 @@ jobs:
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
       - name: Validate connected package without live sources
         run: |
-          node current-generation/validate.mjs runtime > audit-output/validation.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           node --test runner/continuation-stage-gate.test.mjs > audit-output/continuation-stage-gate.tap
       - name: Read the already completed failed final joint artifact
