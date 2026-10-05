@@ -4,6 +4,7 @@
  */
 import {verifyExecutionFacts} from './tz101-execution-facts.mjs';
 import {digest} from './upstream-proof-utils.mjs';
+import {validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v2-canonical-20261004';
 const stamp=n=>Number.isSafeInteger(n)&&n>=1_000_000_000_000;
@@ -91,4 +92,18 @@ export function buildCanonicalExecutionEvidence(identity={}){
   const facts=context.facts.filter(row=>row.block_id===block);if(!facts.length)return [];
   return [buildEvidenceV2({provider_id:block==='N11'?'PRIMARY_EXECUTION_STRESS':'PRIMARY_EXECUTION_COST',upstream_id:'HTX_IMMUTABLE_EXECUTION_BOOK',asset_id:`htx-futures:${identity.contract}`,htx_contract:identity.contract,block_id:block,metric_family:block==='N11'?'VERIFIED_EXECUTION_SIZE_CONTEXT':'VERIFIED_EXECUTION_COST_CONTEXT',origin_event_id:`${identity.snapshot_id}:${block}`,dependency_group:`HTX_EXECUTION_BOOK:${identity.snapshot_id}`,source_ts:f.book_source_ts,observed_ts:f.received_ts,first_known_ts:f.received_ts,expires_at:f.valid_until_ts,coverage_status:'EXACT_IMMUTABLE_BOOK_ASSESSMENT',coverage_fraction:0,directional_strength:null,risk_strength:null,extra:{source_clock_policy:'EXACT_IMMUTABLE_EXECUTION_SNAPSHOT',immutable_evidence_ids:facts[0].evidence_ids,book_physical_roots:facts[0].physical_root_keys,common_upstream_not_independent_vote:true,entry_authorized:false,score_contribution:0}})];
  });
+}
+
+// Update assigned producer receipts only from exact immutable canonical facts.
+// A raw check status alone never supplies evidence IDs or independent votes.
+export function bindVerifiedPrimarySourceFacts({sources={},evidence=[],contract,decision_ts}={}){
+ const result={...sources},assigned={PRIMARY_TECHNICAL_CONTEXT:'N10',PRIMARY_EXECUTION_STRESS:'N11',PRIMARY_EXECUTION_COST:'N16'};
+ for(const [name,block] of Object.entries(assigned)){
+  const rows=evidence.filter(row=>row.provider_id===name&&row.block_id===block&&row.htx_contract===contract&&validateEvidenceV2(row,{decision_ts}).usable);
+  if(!rows.length)continue;
+  const prior=result[name]||{},unique=new Map((Array.isArray(prior.evidence)?prior.evidence:[]).map(row=>[row.evidence_id,row]));
+  for(const row of rows)unique.set(row.evidence_id,row);
+  result[name]={...prior,status:prior.status||'CLOSED',network_calls:prior.network_calls||0,evidence:[...unique.values()]};
+ }
+ return result;
 }

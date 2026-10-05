@@ -16,7 +16,7 @@ import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
 import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
-import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence} from './execution-report-context.mjs';
+import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
 import {auditCandidateBlocks} from './candidate-evidence-v2-runtime.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
@@ -253,7 +253,8 @@ export function buildRuntimeCanonicalBundle({
   const prior=internal_market_context.evidence_v2,unique=new Map();
   for(const row of [...arr(prior.evidence),...technicalFacts,...executionFacts])if(!unique.has(row.evidence_id))unique.set(row.evidence_id,row);
   const evidence=[...unique.values()];
-  internal_market_context={...internal_market_context,decision_ts:observed_ts,evidence_v2:{...prior,decision_ts:observed_ts,evidence,block_coverage:auditCandidateBlocks({evidence,sources:prior.sources,decision_ts:observed_ts,strict_fresh:prior.strict_fresh_required===true})}};
+  const sources=bindVerifiedPrimarySourceFacts({sources:prior.sources,evidence:[...technicalFacts,...executionFacts],contract,decision_ts:observed_ts});
+  internal_market_context={...internal_market_context,decision_ts:observed_ts,evidence_v2:{...prior,decision_ts:observed_ts,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts:observed_ts,strict_fresh:prior.strict_fresh_required===true})}};
  }
  const supplementalScoreEvidence=buildSupplementalScoreEvidence({direction,internal_market_context,liquidation_panel:liquidationPanel,volume_profile:volumeProfile,volume_consensus:volumeConsensus,contract,observed_ts,reference_price:price});
  const supplementalScoreAdjustment=applySupplementalScoreAdjustment(baseInterest,supplementalScoreEvidence);
