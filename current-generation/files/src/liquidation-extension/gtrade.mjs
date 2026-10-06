@@ -38,7 +38,7 @@ export function normalizeGTrade({variables,trades,prices,receipts,pinned_positio
    // SDK positionSizeToken * index is in collateral units, not USD.
    const positionValueCollateral=sdk.calculatePositionSizeCollateral(t.positionSizeToken,px);
    const usd=positionValueCollateral*coll.prices.collateralPriceUsd;
-   z.push(zone({price:lp,notional:usd,side:t.long?'LONG':'SHORT',ref:px,count:1,position_id:id,actual_leverage:t.leverage,collateral_symbol:coll.symbol,
+   z.push(zone({price:lp,notional:usd,side:t.long?'LONG':'SHORT',ref:px,count:1,position_id:id,position_key:id,actual_leverage:t.leverage,collateral_symbol:coll.symbol,
     value_in_collateral:positionValueCollateral,collateral_price_usd:coll.prices.collateralPriceUsd,contracts_version:tc.tradeInfo.contractsVersion,
     price_semantics:'OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER',sdk_version:'1.8.10',index_price:px,mark_price:prices.closes[ix]??null,source_ts:pinned?Math.min(variableClock.source_ts,priceClock.source_ts,pinned_positions.positions_source_ts):variableClock.source_ts}));
   }catch(e){excluded.push({position_id:id,reason:e.message});}
