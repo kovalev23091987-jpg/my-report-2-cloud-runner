@@ -35,7 +35,7 @@ jobs:
       - name: Verify current binding, generation and lifecycle policy
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
-          node current-generation/validate.mjs > audit-output/validation.json
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
           node --test current-generation/tests/fresh-flow-sector-consumers.test.mjs > audit-output/fresh-flow-sector.tap
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
       - name: Exact package hashes
