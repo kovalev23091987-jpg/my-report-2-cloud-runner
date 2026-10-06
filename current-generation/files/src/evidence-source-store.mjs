@@ -36,10 +36,10 @@ export async function reserveEvidenceSourceAttempts(db,{source,reservation_id,at
  return{allowed,status:allowed?'RESERVED':'DAILY_CAP_OR_DUPLICATE',source:provider,day_utc:day,attempts:allowed?count:0};
 }
 
-export async function readEvidenceSourceCache(db,{source,asset_key,now=Date.now()}={}){
+export async function readEvidenceSourceCache(db,{source,asset_key,now=Date.now(),include_cache_clock=false}={}){
  const row=await db.prepare(`SELECT observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3 LIMIT 1`).bind(text(source),text(asset_key),now).first();
  if(!row)return null;
- try{return{...JSON.parse(row.payload_json),cache_status:'HIT',network_calls:0};}catch{return null;}
+ try{return{...JSON.parse(row.payload_json),...(include_cache_clock?{cache_observed_ts:row.observed_ts,cache_expires_ts:row.expires_ts}:{}),cache_status:'HIT',network_calls:0};}catch{return null;}
 }
 
 export async function writeEvidenceSourceCache(db,{source,asset_key,observed_ts,expires_ts,payload}={}){

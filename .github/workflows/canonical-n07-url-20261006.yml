@@ -1,0 +1,53 @@
+name: Report2 Canonical N07 Actual Response
+on:
+  push:
+    branches: [codex/canonical-n07-url-20261006]
+permissions:
+  contents: read
+jobs:
+  read:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fresh owner and exact head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='8fe4b4847ca5eccb0aaff0a4323b3a4a81fdbf87')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261005T215136067Z:source-storage'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Assemble already verified exact runtime without MAIN or sources
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Replay exact actual public response and cache clocks with zero source HTTP
+        run: node --test current-generation/tests/htx-official-catalog-cache-clock.test.mjs > audit-output/cache-clock.tap
+      - name: Verify changed source binding and generation without repeated MAIN
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Exact checked package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/src/worker.js runtime/src/htx-official-announcements-evidence.mjs runtime/src/evidence-source-store.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n07-transport-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
