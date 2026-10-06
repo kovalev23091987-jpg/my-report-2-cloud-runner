@@ -31,7 +31,7 @@ import { runV3TelegramDeliverySidecar, V3_TELEGRAM_DELIVERY_SIDECAR_BUDGET } fro
 import { runBoundTelegramDeliverySidecar, BOUND_TELEGRAM_DELIVERY_BUDGET } from "./src/bound-telegram-delivery-sidecar.mjs";
 import { actorOwnsPeriodicAnalytics, claimMaintenanceCadence, completeMaintenanceCadence, maintenanceSucceeded } from "./src/scheduler-control.mjs";
 import { runR820ProspectiveValidationSidecar, R820_PROSPECTIVE_VALIDATION_BUDGET, R820_PROSPECTIVE_VALIDATION_VERSION } from "./r8-20-prospective-validation-sidecar.mjs";
-import { classifyCanonicalRunCompletion, enforceManualBlockCoverage, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
+import { auditCanonicalCandidateSet, classifyCanonicalRunCompletion, enforceManualBlockCoverage, formatManualRunSummary, formatLiquidationRunSummary, formatStandaloneLiquidationSourceLines } from "./src/manual-run-summary.mjs";
 import { installBykQuotaLedger, makeBykReserve } from "./byk-quota-budget.mjs";
 import {loadGlobalMarketContext,contextForContract} from './src/global-market-context.mjs';
 import {parseSupplementalIdentityRegistry} from './src/supplemental-candidate-context.mjs';
@@ -202,8 +202,12 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,cand
     const response=contracts.length?await db.prepare(`SELECT publication_id,contract_code,direction,run_id,snapshot_id,wave_id,observed_ts,valid_until_ts,lifecycle_event,canonical_state,canonical_json,presentation_inputs_json,manual_text,telegram_text,actionability_status,actionability_reason,created_ts,bound_ts
       FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code IN (${contracts.map((_,i)=>`?${i+2}`).join(',')}) ORDER BY created_ts DESC,publication_id ASC LIMIT 6`).bind(String(runId||''),...contracts).all():{results:[]};
     const rows=Array.isArray(response?.results)?response.results:[];
+    const persistenceAudit=auditCanonicalCandidateSet({expected_contracts:contracts,rows,run_id:String(runId||'')});
+    const completion=classifyCanonicalRunCompletion({candidate_count:persistenceAudit.present_candidate_count,expected_candidate_count:persistenceAudit.expected_candidate_count,cron});
+    const canonicalMissing=['CANONICAL_CANDIDATE_NOT_PERSISTED','CANONICAL_CANDIDATE_SET_INCOMPLETE'].includes(completion.reason);
     const output={
-      schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...classifyCanonicalRunCompletion({candidate_count:rows.length,cron}),pipeline_health:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
+      schema:'my-report-2-canonical-run-output-v1',generation,head:head||null,source,run_id:String(runId||''),...completion,canonical_persistence_audit:persistenceAudit,
+      pipeline_health:canonicalMissing?{status:'DEGRADED_PIPELINE',reason:completion.reason,original_status:cron?.v3_pipeline_health_status??null,original_reason:cron?.v3_pipeline_health_reason??null}:{status:cron?.v3_pipeline_health_status??null,reason:cron?.v3_pipeline_health_reason??null},
       candidates:rows.map(row=>{
         let canonical=null;try{canonical=JSON.parse(row.canonical_json);}catch{}
         let presentationInputs=null;try{presentationInputs=JSON.parse(row.presentation_inputs_json);}catch{}
