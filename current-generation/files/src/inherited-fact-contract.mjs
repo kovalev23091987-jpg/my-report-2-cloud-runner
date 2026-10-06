@@ -85,6 +85,7 @@ export function buildInheritedCexIdentity(row={},context={}){
     symbol_verified:row?.symbol_verified===true,asset_identity_verified:directVerified,
     asset_identity_verification_method:row?.asset_identity_verified===true?'EXPLICIT_ASSET_IDENTITY':
       directVerified?'EXACT_VENUE_INSTRUMENT_NO_ALIAS_REQUIRED':'NOT_VERIFIED',
+    ...(row?.asset_identity_binding ? {asset_identity_binding:row.asset_identity_binding,asset_identity_binding_known_ts:row.asset_identity_binding.known_ts,asset_identity_binding_expires_ts:row.asset_identity_binding.expires_ts} : {}),
     ticker_only_identity:false,
     identity_key:closed?[venueUpper,instrument,parsed.base,parsed.quote,market,String(multiplier??multiplierStatus)].join('|'):null,
   };
