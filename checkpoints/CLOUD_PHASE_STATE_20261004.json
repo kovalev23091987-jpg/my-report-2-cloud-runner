@@ -78,11 +78,11 @@
     }
   ],
   "lease": {
-    "owner": null,
-    "acquired_ts": null,
-    "expires_ts": null
+    "owner": "HTX:2026-10-06T18:38:37.246Z:approved-text-and-liquidation-batch",
+    "acquired_ts": 1791311917246,
+    "expires_ts": 1791315517246
   },
-  "next_action": "OWNER_APPROVE_CONCRETE_TELEGRAM_TEXT_DRAFT_BEFORE_FORMAT_MUTATION; VERIFY_QNT_LIGHT_PRICE_CHECK",
+  "next_action": "IMPLEMENT_OWNER_APPROVED_TELEGRAM_TEXT_AND_CONTINUE_SOURCE_COVERAGE_BATCH",
   "last_verified_release": {
     "schema": "REQUIRED_FOUR_HOUR_RAW_RETENTION_RELEASE_V1",
     "PR": 198,
@@ -125,7 +125,7 @@
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791311857440,
+  "updated_ts": 1791311917246,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1787,7 +1787,7 @@
   "owner_telegram_plain_language_request": {
     "requested_at_msk": "2026-10-06T18:30:26+03:00",
     "confirmation_required_by_owner_at_msk": "2026-10-06T18:31:15+03:00",
-    "status": "DRAFT_AWAITING_OWNER_CONFIRMATION_NOT_IMPLEMENTED",
+    "status": "OWNER_APPROVED_IMPLEMENTATION_PENDING",
     "scope": "NEW_TELEGRAM_PRESENTATIONS",
     "requested_changes": [
       "Explain OI simply and combine 1h/4h; remove exact OI clock windows from Telegram text",
@@ -1796,6 +1796,7 @@
       "Keep ticker direction stage score basis conditions cancellation targets liquidations"
     ],
     "backend_price_rechecks_remain_enabled": true,
-    "original_saved_canonical_texts_not_rewritten": true
+    "original_saved_canonical_texts_not_rewritten": true,
+    "approved_at_msk": "2026-10-06T21:37:54+03:00"
   }
 }
