@@ -1,0 +1,64 @@
+{
+  "schema": "report2-rejected-cache-hypothesis-and-retained-byk-diagnosis-v1",
+  "created_utc": "2026-10-06T05:21:37.190Z",
+  "base": "62438b2f666a8c48fc8b156ddfeadca37ce44063",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "D1": 0,
+  "production_runtime_changes": 0,
+  "cache_hypothesis": {
+    "PR": 179,
+    "state": "CLOSED_UNMERGED_WITHDRAWN",
+    "claim_of_repeated_HTTP_charge": false,
+    "disproved_reason": "readEvidenceSourceCache already sets network_calls=0 and cache_status=HIT before adapter cache returns",
+    "cloud_run": 37417905707,
+    "artifact": 11392147361,
+    "artifact_sha256": "92b381164bfd9b2001cc8453e94d2505c9879d73fa8c2b36589d8d557b5a18c6",
+    "cloud_status": "FAILED_EXPECTATIONS; NOT_RELEASE_PROOF",
+    "rerun_needed": false,
+    "current_cache_classification_release": "checkpoints/original-clock-cache-use-release-evidence-20261006.json"
+  },
+  "tracked_bands": {
+    "source": "BYK_TRACKED_HL_BANDS",
+    "source_cloud_run": 36793593176,
+    "artifact": 11132482902,
+    "artifact_sha256": "f0df94c3156c06e1e4317b4e3fc0a2c8d46b602a89e316b3ca1532c33e3120fe",
+    "artifact_digest_verified": true,
+    "stored_probe_json_sha256": "666279e0fab1d720d5da7360db56402b2d27e111aadd5404ee1b13b8c84a8c1f",
+    "contract": "SOL-USDT",
+    "source_ts": 1790812211451,
+    "logged_readback_ts": 1790812563398,
+    "age_at_logged_readback_ms": 351947,
+    "receipt_ts_not_retained_in_original_probe": true,
+    "source_max_age_ms": 300000,
+    "scanned_accounts": 1000,
+    "reported_with_liquidation_price": 50,
+    "long_bands": 12,
+    "short_bands": 37,
+    "original_probe_status": "SOURCE_TIMESTAMP_MISSING",
+    "current_adapter_reads_coverage_scanned_at": true,
+    "bucket_width_pct": 0.25,
+    "semantics": "PROVIDER_AGGREGATION_OF_REAL_OPEN_POSITION_LIQUIDATION_PRICES; CENTERS_NOT_EXACT_ACCOUNT_PRICES; SAME_HYPERLIQUID_UPSTREAM",
+    "future_use_requires": "Actual valid fresh source state and labelled bucket estimate; no retrospective clock renewal",
+    "not_proof_of_no_data": true,
+    "new_live_coverage_accepted": false
+  },
+  "candidate_research": {
+    "status": "PRIMARY_DOC_RESEARCH_ONLY_NOT_RUNTIME_ACCEPTANCE",
+    "dydx": {
+      "sources": [
+        "https://docs.dydx.exchange/api_integration-clients/indexer_client",
+        "https://indexer.dydx.trade/docs/",
+        "https://help.dydx.trade/en/articles/166991-liquidations-on-dydx-chain"
+      ],
+      "remaining": "Exact public account discovery, state/block time, same-state oracle/equity/all-margin inputs, pinned verified method and real response coverage under existing budgets; market OI alone insufficient"
+    },
+    "Drift_Velocity": {
+      "source": "https://docs.velocity.exchange/developers/data-api",
+      "remaining": "Current positions and margin require direct chain SDK state; public Data API history/liquidation events do not close future map. No adapter or source response acceptance."
+    }
+  },
+  "project_complete": false,
+  "Telegram_SENT": false
+}
