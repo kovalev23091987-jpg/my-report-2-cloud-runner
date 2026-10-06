@@ -52,18 +52,18 @@
     "acquired_ts": 1791275227067,
     "expires_ts": 1791276522165
   },
-  "next_action": "READ_ONE_NATURAL_RESULT_AFTER_PR182_183; DIAGNOSE_N05_ACQUISITION_FROM_INTERNAL_RECEIPT; NO_FORCED_TRIGGER_OR_SEND",
+  "next_action": "EXACT_1127_BR_OBSERVE_SOURCE_ROLE_HANDOFF_DIAGNOSIS; PRESERVE_CURRENT_GATES_AND_FORMAT; NO_STALE_SEND",
   "last_verified_release": {
-    "PR": 183,
-    "merged_main": "6b69c3ea8fc947504c6073967cb55adf94e20d90",
-    "proof": "checkpoints/durable-signed-flow-handoff-release-evidence-20261006.json",
-    "cloud_run": 37431260553,
-    "status": "MERGED_CLOUD_VERIFIED_FRESH_JOINT_PROOF_PENDING"
+    "PR": 184,
+    "merged_main": "a29d03a8b5050ed227160a1f4450c14823001704",
+    "proof": "checkpoints/pinned-gtrade-position-clock-release-evidence-20261006.json",
+    "cloud_run": 37434928983,
+    "status": "MERGED_CODE_AND_ACTUAL_SOURCE_COMPONENT_VERIFIED; BR_NIL_FRESH_USE_NOT_PROVEN"
   },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791275622165,
+  "updated_ts": 1791275878382,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -103,12 +103,12 @@
   },
   "last_control": "checkpoints/all15-control-usefulness-20261005.json",
   "pending": {
-    "status": "ACTUAL_BOME10_FIL8_CANONICAL_REJECTED_TELEGRAM_PENDING",
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1026MSK_20261006.json",
-    "cloud_run": 37429543025,
+    "status": "ACTUAL_NIL10_BR6_BR_OBSERVE_SOURCE_ROLES_NOT_CLOSED_TELEGRAM_PENDING",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1127MSK_20261006.json",
+    "cloud_run": 37436004948,
     "actual_core_participation": {
-      "BOME-USDT": 10,
-      "FIL-USDT": 8
+      "NIL-USDT": 10,
+      "BR-USDT": 6
     },
     "telegram_sent": 0,
     "project_complete": false
@@ -158,7 +158,7 @@
     "reason": "Same-run Telegram source-role diagnosis and PR181 cloud verification saved; await natural fresh result"
   },
   "bounded_next_check": {
-    "status": "RUNNING_ONE_BOUNDED_POST_PR183_NATURAL_READ",
+    "status": "COMPLETED_NO_NEW_ADMITTED_RESULT_WITHIN_BOUNDED_CHECK",
     "cloud_run": 37431819494,
     "observer_head": "23367f5ed54bab78861473613a92093367e167b2",
     "after_run": 37429543025,
@@ -168,29 +168,31 @@
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
-    "no_automatic_continuation": true
+    "no_automatic_continuation": true,
+    "artifact": 11399326173,
+    "zip_sha256": "4bfa0981c56d6418a45cb9b049aa1d3e221f36244b908715f042cc56b31d266c",
+    "reader_finished_before_new_1127_report": true
   },
   "last_actual_readback": {
     "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1026MSK_20261006.json",
-    "cloud_run": 37429543025,
-    "cloud_job": 112156956558,
-    "head": "ee0675b818d151725992332201cb247a7965dfa9",
-    "run_id": "1791271533255-1791271542492",
-    "generated_utc": "2026-10-06T07:26:53.938Z",
-    "generated_msk": "2026-10-06T10:26:53.938000+03:00",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1127MSK_20261006.json",
+    "cloud_run": 37436004948,
+    "head": "a29d03a8b5050ed227160a1f4450c14823001704",
+    "run_id": "1791275151636-1791275159635",
+    "generated_utc": "2026-10-06T08:27:23.842Z",
+    "generated_msk": "2026-10-06T11:27:23.842+03:00",
     "top2": [
-      "FIL-USDT",
-      "BOME-USDT"
+      "BR-USDT",
+      "NIL-USDT"
     ],
     "counts": [
       {
-        "contract": "BOME-USDT",
-        "snapshot_id": "S392:BOME-USDT:1791271609363",
+        "contract": "NIL-USDT",
+        "snapshot_id": "S392:NIL-USDT:1791275238333",
         "participating": 10,
         "participating_ids": [
           "N02",
-          "N04",
+          "N03",
           "N05",
           "N08",
           "N09",
@@ -201,88 +203,606 @@
           "N16"
         ],
         "neutral": 8,
-        "unscored": 0,
-        "nonzero_score": 2,
-        "score_contributions": {
-          "N12": -0.0106,
-          "N15": -0.0055
-        },
+        "unscored": 2,
+        "nonzero_score": 0,
+        "score_contributions": {},
+        "checked": 11,
+        "rendered": 11,
         "canonical_state": "REJECTED",
-        "direction": "LONG",
-        "coin_interest": 91,
-        "qualified_interest": 91,
+        "direction": null,
+        "actionability_status": "UNASSESSED",
+        "actionability_reason": null,
+        "coin_interest": null,
         "trigger_present": false,
+        "trigger": null,
         "liquidations": {
           "accepted_exact_future_map_levels": 0,
-          "received_estimate_levels": 0,
-          "source_clock_known": null,
-          "decision_eligible": false
+          "received_estimate_extensions": 0
+        },
+        "provider_use": {
+          "N01": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_TOKEN_SCHEDULE": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "DEFILLAMA_PUBLISHED_CALENDAR": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+            }
+          },
+          "N02": {
+            "configured_routes": 4,
+            "checked_routes": 2,
+            "valid_provider_count": 2,
+            "used_provider_ids": [
+              "CHAIN_RPC",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "rendered_provider_ids": [
+              "CHAIN_RPC",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "CHAIN_RPC",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
+            }
+          },
+          "N03": {
+            "configured_routes": 3,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "CHAIN_RPC"
+            ],
+            "rendered_provider_ids": [
+              "CHAIN_RPC"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "CHAIN_RPC"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+            }
+          },
+          "N04": {
+            "configured_routes": 2,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+            }
+          },
+          "N05": {
+            "configured_routes": 3,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "rendered_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "NANSEN_FLOWS": "NOT_EVALUATED",
+              "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+            }
+          },
+          "N06": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "BLUESKY_PUBLIC": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+            }
+          },
+          "N07": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "HTX_OFFICIAL_ANNOUNCEMENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+            }
+          },
+          "N08": {
+            "configured_routes": 2,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+            }
+          },
+          "N09": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N10": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N11": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N12": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "rendered_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "unused_route_statuses": {}
+          },
+          "N14": {
+            "configured_routes": 2,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+              "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+            }
+          },
+          "N15": {
+            "configured_routes": 2,
+            "checked_routes": 2,
+            "valid_provider_count": 2,
+            "used_provider_ids": [
+              "COINGECKO_SECTOR",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "rendered_provider_ids": [
+              "COINGECKO_SECTOR",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [
+              "COINGECKO_SECTOR",
+              "COINPAPRIKA_SECTOR"
+            ],
+            "unused_route_statuses": {}
+          },
+          "N16": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          }
         }
       },
       {
-        "contract": "FIL-USDT",
-        "snapshot_id": "S392:FIL-USDT:1791271575188",
-        "participating": 8,
+        "contract": "BR-USDT",
+        "snapshot_id": "S392:BR-USDT:1791275201070",
+        "participating": 6,
         "participating_ids": [
-          "N02",
           "N08",
           "N09",
           "N10",
           "N11",
           "N12",
-          "N15",
           "N16"
         ],
-        "neutral": 6,
+        "neutral": 5,
         "unscored": 0,
-        "nonzero_score": 2,
+        "nonzero_score": 1,
         "score_contributions": {
-          "N12": 0.0178,
-          "N15": 0.2087
+          "N12": -0.0368
         },
-        "canonical_state": "REJECTED",
+        "checked": 9,
+        "rendered": 8,
+        "canonical_state": "OBSERVE",
         "direction": "LONG",
-        "coin_interest": 82,
-        "qualified_interest": 82,
-        "trigger_present": false,
+        "actionability_status": "INTERNAL_ONLY",
+        "actionability_reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "coin_interest": 100,
+        "trigger_present": true,
+        "trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": ">=",
+          "value": 0.53312,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791277001070,
+          "next_recheck_ts": 1791275501070,
+          "cancel_condition": "price<0.42421",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
         "liquidations": {
           "accepted_exact_future_map_levels": 0,
-          "received_estimate_levels": 3,
-          "source_clock_known": false,
-          "decision_eligible": false
+          "received_estimate_extensions": 0
+        },
+        "provider_use": {
+          "N01": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+              "DEFILLAMA_PUBLISHED_CALENDAR": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED"
+            }
+          },
+          "N02": {
+            "configured_routes": 4,
+            "checked_routes": 1,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "CHAIN_SUPPLY": "EXACT_ASSET_IDENTITY_REQUIRED",
+              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+              "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+              "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+            }
+          },
+          "N03": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+              "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+            }
+          },
+          "N04": {
+            "configured_routes": 2,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+            }
+          },
+          "N05": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "NANSEN_FLOWS": "NOT_EVALUATED",
+              "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
+            }
+          },
+          "N06": {
+            "configured_routes": 3,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "BLUESKY_PUBLIC": "CLOSED",
+              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+            }
+          },
+          "N07": {
+            "configured_routes": 3,
+            "checked_routes": 0,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+              "HTX_OFFICIAL_ANNOUNCEMENTS": "DAILY_CAP_OR_DUPLICATE",
+              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+            }
+          },
+          "N08": {
+            "configured_routes": 2,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+            }
+          },
+          "N09": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N10": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N11": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          },
+          "N12": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "rendered_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "nonzero_score_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "unused_route_statuses": {}
+          },
+          "N14": {
+            "configured_routes": 2,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+              "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+            }
+          },
+          "N15": {
+            "configured_routes": 2,
+            "checked_routes": 1,
+            "valid_provider_count": 0,
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {
+              "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED",
+              "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+            }
+          },
+          "N16": {
+            "configured_routes": 1,
+            "checked_routes": 1,
+            "valid_provider_count": 1,
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "unscored_provider_ids": [],
+            "unused_route_statuses": {}
+          }
         }
       }
     ],
     "Telegram_SENT": false,
-    "publication_blockers": {
-      "BOME-USDT": "PLAN_NOT_CLOSED / NO_FORWARD_FACTUAL_PRICE_TRIGGER; CANONICAL_STATE_NOT_PUBLISHABLE",
-      "FIL-USDT": "PLAN_NOT_CLOSED / NO_FORWARD_FACTUAL_PRICE_TRIGGER; CANONICAL_STATE_NOT_PUBLISHABLE"
-    },
+    "Telegram_SENT_status": "EXACT_BOUND_JOURNAL_READ_CONFIRMED_NO_SENT",
     "project_complete": false,
+    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE",
     "read_iteration": {
       "sourceHTTP": 0,
       "MAIN": 0,
       "Telegram_send": 0,
-      "exact_D1_reader_run": 37430332098,
-      "d1_rows_read": 61,
+      "exact_D1_reader_run": 37437145066,
+      "d1_rows_read": 67,
       "d1_rows_written": 4,
-      "d1_requests": 8,
-      "unknown_ops": 0
+      "d1_requests": 9
     },
-    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE",
     "report_artifact": {
-      "id": 11396770130,
-      "zip_sha256": "fec9a1696c7d233eb3e2b3dab2f11e32812d3d1610f94f3250c31307c4fbba7f",
-      "json_sha256": "42a97814dd77340482ef0e9bc1186f9fd75a40d9080d4a5f59b6d32d542b5919"
+      "id": 11398961831,
+      "zip_sha256": "29e59457e134a37b09178e596d1375e9c0c5ef16656a56e7165e3e0420b20981"
     },
     "telegram_artifact": {
-      "id": 11396636847,
-      "zip_sha256": "f6d5c643c65c0cec25b52d9d250e6d849187a0e3de50fa50d97c9a7ce6b554bd",
-      "json_sha256": "5fe581d6f9960e94fa9dc1bf01d01096db2ba24fa918e3aaf939fbaf1d584afa"
+      "id": 11399281563,
+      "zip_sha256": "c679127508a12f5111f16ae2c7651c781e74399a4df31aafca5e180ba60f80fe"
     },
-    "retained_source": "checkpoints/actual-scheduled-source-result-37429543025.json.gz",
-    "retained_source_gzip_sha256": "e3b921524ebce5583c592d9c5fbc95950b08876fce279b8a018a5efe86ae3577",
-    "exact_diagnosis": "checkpoints/EXACT_1026MSK_REJECTION_DIAGNOSIS_20261006.json"
+    "publication_blockers": {
+      "NIL-USDT": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "BR-USDT": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+    },
+    "BR_dispatch": {
+      "state": "FAILED_FINAL",
+      "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "message_id": null,
+      "sent_ts": null
+    },
+    "exact_reader_artifact": {
+      "id": 11398934776,
+      "zip_sha256": "44240c53de92ca66f380cad6de2b341a91783701c93172c99e9cae05cfa96dd7",
+      "head": "70ee709f5f26a134f934111bb88bdcc7b5bd21e9"
+    }
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -588,13 +1108,14 @@
   },
   "pending_source_priority_context": {
     "PR": 182,
-    "status": "MERGED_CLOUD_VERIFIED_FRESH_POST_RELEASE_PROOF_PENDING",
+    "status": "FRESH_NIL_CG_AND_CP_N15_BOTH_USED_AND_RENDERED",
     "tested_head": "35e4aa5c5f5cae8371a484e13c3f2644d38c2faf",
     "cloud_run": 37428572049,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
-    "proof": "checkpoints/native-source-priority-and-sector-context-release-evidence-20261006.json"
+    "proof": "checkpoints/native-source-priority-and-sector-context-release-evidence-20261006.json",
+    "fresh_joint_run": 37436004948
   },
   "pending_durable_signed_flow": {
     "PR": 183,
@@ -618,5 +1139,12 @@
     "expires_ts": 1791275129643,
     "not_renewed_before_expiry": true,
     "no_mutations_tests_or_live_sources_after_expiry": true
+  },
+  "pending_gtrade_pinned_clock": {
+    "PR": 184,
+    "merged_main": "a29d03a8b5050ed227160a1f4450c14823001704",
+    "proof": "checkpoints/pinned-gtrade-position-clock-release-evidence-20261006.json",
+    "cloud_run": 37434928983,
+    "status": "MERGED_CODE_AND_ACTUAL_SOURCE_COMPONENT_VERIFIED; BR_NIL_FRESH_USE_NOT_PROVEN"
   }
 }

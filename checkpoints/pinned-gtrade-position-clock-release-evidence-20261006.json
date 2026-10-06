@@ -1,0 +1,94 @@
+{
+  "schema": "report2-general-pinned-gtrade-release-evidence-v1",
+  "PR": 184,
+  "merged_main": "a29d03a8b5050ed227160a1f4450c14823001704",
+  "tested_head": "10b2e3fd5cfbdffb6e3d0ec4b33d8cba28d56a95",
+  "tree": "b207be1836162e57a86e1f8b497c541331f09a88",
+  "cloud_run": 37434928983,
+  "artifact": 11398715306,
+  "zip_sha256": "34dca6126c9e07a8d3027f1a143be413b8377ac9bd7b880e242f79f58a4c2f9a",
+  "checks": {
+    "pinned_position_tests": 4,
+    "integration_tests": 37,
+    "generation": "PASS",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "D1": 0
+  },
+  "general_mechanism": {
+    "existing_source": "GTRADE",
+    "official_sdk": "1.8.10",
+    "position_sample_max": 4,
+    "selection": "EXACT_EXISTING_UNIVERSE_PAIR; BALANCED_LONG_SHORT_SORTED_VISIBLE_IDS; NOT_TOTAL_CENSUS",
+    "rpc_max_operations": 10,
+    "one_explicit_arbitrum_block": true,
+    "position_and_fees_clock_verified": true,
+    "whole_state_atomic": false,
+    "total_liquidation_http_cap": 5,
+    "additional_http_admission_required": true,
+    "unknown_clock_remains_receipt_context": true,
+    "estimates_labelled": true,
+    "htx_target_entry_eligible": false,
+    "source_overlap_not_independent": true,
+    "merge_pct": 5,
+    "display_farthest_original": true,
+    "notional_not_summed": true
+  },
+  "actual_source_proof": {
+    "cloud_run": 37435081885,
+    "head": "f726ed08575bedd4240f7c98f566e5cee678c3a3",
+    "artifact": 11398985333,
+    "zip_sha256": "e063dcaa070b4e476d3d2da0d74d6ec01f13d64b425aa61042e889956a637d8a",
+    "retained_source": "checkpoints/source-inputs/gtrade-one-batch-live-37435081885.zip",
+    "retained_git_blob": "5c62935d13cb85e54f59c7863140824e88c3015b",
+    "contract": "AAVE-USDT",
+    "sourceHTTP": 4,
+    "MAIN": 0,
+    "Telegram": 0,
+    "Nansen": 0,
+    "verified_positions": 4,
+    "visible_positions": 9,
+    "estimated_levels": 4,
+    "rendered_above": 1,
+    "rendered_below": 2,
+    "source_block": 512188938,
+    "source_block_timestamp": 1791274646000,
+    "received_position_clock_known": true,
+    "whole_state_atomic": false,
+    "not_joint_acceptance": true
+  },
+  "historical_component_replay": {
+    "cloud_run": 37434928983,
+    "original_source_run": 37433191446,
+    "per_asset_levels": {
+      "ADA": 1,
+      "BTC": 2,
+      "QNT": 4,
+      "ZEC": 1
+    },
+    "QNT_farther_original_price": 243.3728095,
+    "not_new_live_joint": true
+  },
+  "source_evaluation_history": {
+    "first_run": 37432947406,
+    "sourceHTTP": 5,
+    "second_batch_HTTP429": true,
+    "reuse_run": 37433191446,
+    "reuse_sourceHTTP": 1,
+    "total_new_sourceHTTP": 10,
+    "reservations_not_reset": true,
+    "no_universal_free_provider_rate_entitlement_inferred": true
+  },
+  "fresh_joint": {
+    "cloud_run": 37436004948,
+    "assets": [
+      "BR-USDT",
+      "NIL-USDT"
+    ],
+    "accepted_liquidation_levels": 0,
+    "component_success_not_represented_as_joint_use": true
+  },
+  "Telegram_SENT": false,
+  "project_complete": false
+}
