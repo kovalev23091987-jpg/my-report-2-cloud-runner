@@ -4,7 +4,7 @@ import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,
 import {collectHtxOfficialAnnouncements,boundedTransportErrorCodes} from '../runtime/src/htx-official-announcements-evidence.mjs';
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
 const now=Date.now(),id='N07_TRANSPORT:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
-const out={schema:'report2-bounded-n07-transport-proof-v1',head:process.env.GITHUB_SHA,observed_ts:now,MAIN:0,Telegram:0,Nansen:0,maximum_sourceHTTP:1,sourceHTTP:0,transport:[]};
+const out={schema:'report2-bounded-n07-transport-proof-v1',head:process.env.GITHUB_SHA,observed_ts:now,MAIN:0,Telegram:0,Nansen:0,maximum_sourceHTTP:1,sourceHTTP:0,probe_mode:'ONE_MANUAL_REDIRECT_HEADER_NO_FOLLOW',transport:[]};
 const check=()=>{const u=db.usageSnapshot();if(u.unknown_ops!==0||u.rows_read>2300||u.rows_written>50||u.requests>30)throw Error('BOUNDED_D1_USAGE_EXCEEDED');};
 out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:{rows_read:2500,rows_written:64},maxDailyReads:3500000,maxDailyWrites:70000});
 if(out.admission.allowed){
@@ -14,7 +14,7 @@ if(out.admission.allowed){
    request_admit:({attempts})=>{check();return attempts===1&&out.sourceHTTP===0?{allowed:true,status:'BOUNDED_SOURCE_EVALUATION_1_OF_164',lane:'background',attempts:1}:{allowed:false,status:'PROBE_HTTP_LIMIT'};},
    fetch_impl:async(url,init)=>{check();if(out.sourceHTTP>=1)throw Error('PROBE_HTTP_LIMIT');out.sourceHTTP++;
     try{
-     const response=await fetch(url,init);
+     const response=await fetch(url,{...init,redirect:'manual'});
      const location=response.headers.get('location');let official_redirect=null;
      if(location){try{const next=new URL(location,url);official_redirect={https:next.protocol==='https:',official_host:next.hostname==='www.htx.com'||next.hostname==='htx.com',path:next.pathname.slice(0,160)};}catch{}}
      out.transport.push({response_received:true,status:response.status,official_redirect});return response;
