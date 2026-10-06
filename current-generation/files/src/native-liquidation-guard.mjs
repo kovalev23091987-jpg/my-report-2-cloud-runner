@@ -12,7 +12,7 @@ export function nativeLiquidationSources(liq){
  for(const e of arr(liq?.independent_extensions))if(['GTRADE_LIQUIDATION_CONTEXT_V1','SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1'].includes(e?.schema))nested.push(e);
  if(nested.length){
   const usable=nested.filter(e=>['USABLE_NATIVE_SAMPLE','USABLE_SCOPED_NATIVE_CONTEXT','USABLE_RECEIPT_ONLY_CONTEXT'].includes(e.status));
-  return {present:true,kind:'NESTED',contexts:usable,sources:usable.map(e=>({provider:e.provider||'Hyperliquid official',venue:e.venue||'Hyperliquid',native_symbol:e.binding?.native_symbol,source_ts:e.source_ts,context_status:e.status,source_clock_closed:e.source_clock_closed,received_ts:e.received_ts,entry_eligible:e.entry_eligible,automatic_execution:e.automatic_execution,freshness_basis:e.freshness_basis,price_quote:e.price_quote,evidence_class:e.evidence_class,upstream_groups:e.upstream_groups,above:e.above,below:e.below,freshness_max_age_ms:e.freshness_max_age_ms}))};
+  return {present:true,kind:'NESTED',contexts:usable,sources:usable.map(e=>({provider:e.provider||'Hyperliquid official',venue:e.venue||'Hyperliquid',native_symbol:e.binding?.native_symbol,source_ts:e.source_ts,context_status:e.status,source_clock_closed:e.source_clock_closed,received_ts:e.received_ts,entry_eligible:e.entry_eligible,automatic_execution:e.automatic_execution,freshness_basis:e.freshness_basis,price_quote:e.price_quote,evidence_class:e.evidence_class,upstream_groups:e.upstream_groups,acquisition_fingerprint:e.acquisition_fingerprint,sdk_version:e.sdk_version,model_version:e.model_version,above:e.above,below:e.below,freshness_max_age_ms:e.freshness_max_age_ms}))};
  }
  if(liq?.early_context_present===true)return {present:true,kind:'FLAT',contexts:[liq],sources:arr(liq.sources).map(s=>({...s,freshness_max_age_ms:liq.freshness_max_age_ms}))};
  return {present:false,contexts:[],sources:[]};
@@ -67,6 +67,8 @@ export function nativeLiquidationLines(liq,{manual=false,compact=false}={}){
    if(num(z.native_price)===null||z.native_price<=0)continue;
    rows.push({...z,side,price:z.native_price,price_quote:quote,source:label,native_symbol:s.native_symbol,
     distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',source_clock_closed:s.source_clock_closed,
+    sdk_version:s.sdk_version??null,model_version:s.model_version??null,
+    display_source_state_id:s.source_clock_closed===false&&text(s.acquisition_fingerprint)&&stamp(z.observed_at_ms)!==null?`${s.acquisition_fingerprint}:${z.observed_at_ms}`:null,
     estimated:s.provider==='0xArchive'||/ESTIMAT|PROJECTED|MODEL/.test(s.evidence_class||'')||/SDK_ESTIMATE|BUCKET_CENTER|MODEL_PRICE_BIN|FEE_AWARE/.test(z.price_semantics||'')});
   }
  }
