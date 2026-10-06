@@ -1,0 +1,200 @@
+{
+  "source_run_id": "1791285825482-1791285832692",
+  "source_head": "5f8a44b07cc43b208975b05c73bdbabe43c0cbb8",
+  "source_cloud_run": 37456049325,
+  "reader_cloud_run": 37456670660,
+  "reader_artifact_id": 11409624039,
+  "reader_zip_sha256": "28e25f09d73d2965cf3166bae7fa3f174e3aa8b0bea32351a6f23ea4c6c5b2dd",
+  "scope": "Exact retained price/direction diagnostics and N10 factual boundaries; not a complete original producer input",
+  "rows": [
+    {
+      "contract": "ADA-USDT",
+      "snapshot_id": "S392:ADA-USDT:1791285886589",
+      "observed_ts": 1791285886589,
+      "fingerprint": "22da29b49709e31fd6c4f51d7ac039add655b2d754066ea69b182e70fb539f60",
+      "price": 0.2793605,
+      "prior_refusal": "NO_FORWARD_FACTUAL_PRICE_TRIGGER",
+      "direction": "LONG",
+      "early": {
+        "items": [
+          {
+            "contract": "ADA-USDT",
+            "wave_id": "EDW:ADA-USDT:1791278753698:G5",
+            "operational_priority_0_100": 70,
+            "early_detection_quality_0_100": 82,
+            "reason": "early quality 82/100",
+            "evidence_domains": [
+              "RELATIVE_STRENGTH",
+              "VOLUME_ACCELERATION_PROXY",
+              "PRICE_STATE_TRANSITION"
+            ],
+            "direction_hint": "LONG",
+            "scheduler_priority_is_probability": false
+          }
+        ]
+      },
+      "direction_receipt": {
+        "closed": true,
+        "direction": "LONG",
+        "candidate": {
+          "direction": "LONG",
+          "origin": "EARLY_CYCLE",
+          "source_ts": 1791285832833,
+          "confirmation_state": "LONG_WATCH",
+          "direction_raw": "LONG"
+        },
+        "source_ts": 1791285832833,
+        "available_at": 1791285832833,
+        "same_contract": true,
+        "same_wave": true,
+        "fresh": true,
+        "directed": true,
+        "direction_state_closed": true,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [
+          "EDW:ADA-USDT:1791278753698:G5:RELATIVE_STRENGTH:LONG",
+          "EDW:ADA-USDT:1791278753698:G5:VOLUME_ACCELERATION_PROXY:BOTH",
+          "EDW:ADA-USDT:1791278753698:G5:PRICE_STATE_TRANSITION:LONG"
+        ],
+        "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+      },
+      "technical_evidence": [
+        {
+          "evidence_id": "EV2:baa2f8fadd1ac86d77a641e9de7289d3758a98e0de74e30ed1e07b74d95dd9eb",
+          "asset_id": "htx-futures:ADA-USDT",
+          "htx_contract": "ADA-USDT",
+          "block_id": "N10",
+          "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_CANDLES",
+          "origin_event_id": "ADA-USDT:60min:1791284400000",
+          "dependency_group": "HTX_CLOSED_CANDLES:ADA-USDT:60min:1791284400000",
+          "source_ts": 1791285843354,
+          "observed_ts": 1791285843801,
+          "first_known_ts": 1791285843801,
+          "effective_from": null,
+          "effective_to": null,
+          "window_start": 1791212400000,
+          "window_end": 1791284400000,
+          "coverage_status": "EXACT_TWENTY_CLOSED_CANDLES",
+          "coverage_fraction": 0,
+          "unit": null,
+          "value": null,
+          "directional_strength": null,
+          "risk_strength": null,
+          "identity_status": "EXACT",
+          "finality_status": "FINAL",
+          "schema_version": "EvidenceV2.1",
+          "raw_hash": "8eed01f83654f49be75f7a983556ebf41e5e7fcf6dee6532e6faef871fe7b9e4",
+          "expires_at": 1791286023354,
+          "cost_receipt_id": null,
+          "validation_status": "VALID",
+          "validation_reason": null,
+          "period": "60min",
+          "interval_ms": 3600000,
+          "candle_count": 20,
+          "range_high": 0.285132,
+          "range_low": 0.261865,
+          "last_closed_price": 0.276604,
+          "range_pct": 8.885112557997443,
+          "all_candles_closed": true,
+          "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS",
+          "entry_authorized_by_context": false,
+          "liquidation_as_target": false
+        }
+      ],
+      "anomaly": {
+        "event_id": "OPP:opportunity-integrity-v2:ADA-USDT:MARKET:EPISODE:1791272700000:1791280800000",
+        "event_close_ts": 1791273600000,
+        "event_high": 0.274513,
+        "event_low": 0.2718,
+        "anomaly_candle_closed": true,
+        "producer_observed_ts": 1791285885349
+      }
+    },
+    {
+      "contract": "NIL-USDT",
+      "snapshot_id": "S392:NIL-USDT:1791285919626",
+      "observed_ts": 1791285919626,
+      "fingerprint": "877596506c70e0cf2dd124bb0a4dd15ea36f51547313cc5daab6f196a99fe97a",
+      "price": 0.09919,
+      "prior_refusal": "DIRECTION_NOT_CLOSED",
+      "direction": null,
+      "early": null,
+      "direction_receipt": {
+        "closed": false,
+        "direction": null,
+        "candidate": {
+          "direction": "SHORT",
+          "origin": "EARLY_CYCLE",
+          "source_ts": null,
+          "confirmation_state": "UNCONFIRMED",
+          "direction_raw": "SHORT"
+        },
+        "source_ts": null,
+        "available_at": null,
+        "same_contract": false,
+        "same_wave": false,
+        "fresh": false,
+        "directed": false,
+        "direction_state_closed": false,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [],
+        "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+      },
+      "technical_evidence": [
+        {
+          "evidence_id": "EV2:bfd06420ea6bffd2ee06b26040402096324f3ec3a55ddbcd9826a0f7cbf8dde4",
+          "asset_id": "htx-futures:NIL-USDT",
+          "htx_contract": "NIL-USDT",
+          "block_id": "N10",
+          "metric_family": "CLOSED_CANDLE_RANGE_CONTEXT",
+          "provider_id": "PRIMARY_TECHNICAL_CONTEXT",
+          "upstream_id": "HTX_OFFICIAL_CLOSED_CANDLES",
+          "origin_event_id": "NIL-USDT:60min:1791284400000",
+          "dependency_group": "HTX_CLOSED_CANDLES:NIL-USDT:60min:1791284400000",
+          "source_ts": 1791285890793,
+          "observed_ts": 1791285890903,
+          "first_known_ts": 1791285890903,
+          "effective_from": null,
+          "effective_to": null,
+          "window_start": 1791212400000,
+          "window_end": 1791284400000,
+          "coverage_status": "EXACT_TWENTY_CLOSED_CANDLES",
+          "coverage_fraction": 0,
+          "unit": null,
+          "value": null,
+          "directional_strength": null,
+          "risk_strength": null,
+          "identity_status": "EXACT",
+          "finality_status": "FINAL",
+          "schema_version": "EvidenceV2.1",
+          "raw_hash": "272b34e9f0f9043726d3f2f52ccb8419b6fc83db068ef4b1e1e4a9a65bbf7951",
+          "expires_at": 1791286070793,
+          "cost_receipt_id": null,
+          "validation_status": "VALID",
+          "validation_reason": null,
+          "period": "60min",
+          "interval_ms": 3600000,
+          "candle_count": 20,
+          "range_high": 0.11687,
+          "range_low": 0.09838,
+          "last_closed_price": 0.10213,
+          "range_pct": 18.794470420817255,
+          "all_candles_closed": true,
+          "source_clock_policy": "HTX_PRIMARY_RESPONSE_AND_CLOSED_CANDLE_IDS",
+          "entry_authorized_by_context": false,
+          "liquidation_as_target": false
+        }
+      ],
+      "anomaly": {
+        "event_id": null,
+        "event_close_ts": null,
+        "event_high": null,
+        "event_low": null,
+        "anomaly_candle_closed": null,
+        "producer_observed_ts": null
+      }
+    }
+  ]
+}
