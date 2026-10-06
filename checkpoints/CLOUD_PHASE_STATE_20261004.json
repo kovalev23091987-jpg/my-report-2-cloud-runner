@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T052346254Z:single-reader-entry",
-    "acquired_ts": 1791264226254,
-    "expires_ts": 1791264346254
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "GENERAL_REMAINING_GAP_WORK_AND_EXISTING_NATURAL_FRESH_REPORT; SAME_SNAPSHOT_TELEGRAM_SENT_PENDING; FINAL_CURRENT_ENTRYPOINT_CLEANUP_REQUIRED",
   "last_verified_release": "checkpoints/paired-finalized-supply-consumer-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791264226254,
+  "updated_ts": 1791264269546,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,20 +145,22 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261006T051728986Z:cached-transport-accounting",
-    "acquired_ts": 1791263848986,
-    "expires_ts": 1791264328986,
-    "released_ts": 1791264097190,
-    "reason": "Cache hypothesis disproved; PR179 withdrawn without deployment. Retained ByK source diagnosis saved; release before natural report"
+    "owner": "HTX:20261006T052346254Z:single-reader-entry",
+    "acquired_ts": 1791264226254,
+    "expires_ts": 1791264346254,
+    "released_ts": 1791264269546,
+    "reason": "Single bounded source-free cloud reader prepared; no development lock while waiting for natural report"
   },
   "bounded_next_check": {
-    "status": "ONE_SHOT_COMPLETED_ACTUAL_FRESH_REPORT_READ",
-    "cloud_run": 37411365931,
-    "source_cloud_run": 37413576711,
+    "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
+    "branch": "tools/read-current-report",
+    "workflow": ".github/workflows/read-current-report.yml",
+    "after_run": 37416383006,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
+    "max_wait_minutes": 17,
     "no_automatic_continuation": true
   },
   "last_actual_readback": {
