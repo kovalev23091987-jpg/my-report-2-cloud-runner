@@ -9,6 +9,7 @@ import {
 } from './v3-telegram-lifecycle.mjs';
 
 import {qualifiedObservationRecovery,findUnsentSourceRoleRefusal,observationRecoveryInsert} from './observation-prepublication-recovery.mjs';
+import {confirmedTelegramMessageId} from './telegram-delivery-receipt.mjs';
 
 export const V3_TELEGRAM_RUNTIME_VERSION='v3-telegram-runtime-shadow-v1';
 function text(v){return v==null?'':String(v).trim();}
@@ -88,13 +89,15 @@ export async function claimLifecycleDispatch(db,{idempotency_key,revalidation,no
 export async function finalizeLifecycleDispatch(db,{idempotency_key,network_result,telegram_message_id=null,error=null,now_ts=Date.now()}={}){
   if(!db?.prepare)return {status:'SOURCE_UNSUPPORTED'};
   const key=text(idempotency_key);if(!key)return {status:'INVALID_KEY'};
-  const state=nextDispatchState({current:DISPATCH_STATE.SENDING,network_result,revalidation:{ok:true}});
+  const receiptId=confirmedTelegramMessageId(telegram_message_id);
+  const unproven=network_result==='CONFIRMED_SENT'&&receiptId===null;
+  const state=nextDispatchState({current:DISPATCH_STATE.SENDING,network_result:unproven?'UNKNOWN':network_result,revalidation:{ok:true}});
   const now=Math.trunc(Number(now_ts)||Date.now());
   const sent=state===DISPATCH_STATE.SENT?now:null;
   try{
     const result=await db.prepare(`UPDATE v3_telegram_dispatch_shadow SET state=?2,telegram_message_id=?3,last_error=?4,updated_ts=?5,
       sent_ts=CASE WHEN ?6 IS NULL THEN sent_ts ELSE ?6 END WHERE idempotency_key=?1 AND state='SENDING'`)
-      .bind(key,state,text(telegram_message_id)||null,text(error)||null,now,sent).run();
+      .bind(key,state,receiptId,unproven?'TELEGRAM_MESSAGE_ID_NOT_CONFIRMED':text(error)||null,now,sent).run();
     const changes=Number(result?.meta?.changes??result?.changes??0);
     return {status:changes===1?state:'NOT_FINALIZED',state,updated:changes===1};
   }catch(e){return {status:'PARTIAL',error:String(e?.message||e)};}
