@@ -1,0 +1,1666 @@
+{
+  "schema": "report2-actual-scheduled-0335msk-v1",
+  "cloud_run": 37394649188,
+  "job": 112047649655,
+  "head": "8c037659a620b297a0c6df447698fc2c2baa5941",
+  "run_id": "1791246840975-1791246850102",
+  "generated_at": "2026-10-06T00:35:49.274Z",
+  "status": "CLOSED",
+  "reason": null,
+  "readback_sourceHTTP": 0,
+  "readback_MAIN": 0,
+  "readback_Telegram": 0,
+  "artifact": 11382766656,
+  "sha256": "21200790627600b2d01d3fefdffd669261ec119ad1acc7c3d74e77c48df6126d",
+  "telegram_artifact": 11382426947,
+  "telegram_sha256": "7f2b090d386d1c6d3976f02b0cecb30f14bfc603c2fc210c10c4da2f6a573dde",
+  "project_complete": false,
+  "candidates": [
+    {
+      "contract": "LSK-USDT",
+      "snapshot_id": "S392:LSK-USDT:1791246942756",
+      "observed_ts": 1791246942756,
+      "state": "REJECTED",
+      "direction": null,
+      "use_audit": {
+        "schema": "report2-block-decision-use-audit-v3-explicit-unscored-diagnostics",
+        "participating_block_count": 7,
+        "participating_block_ids": [
+          "N02",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "score_applied_block_count": 0,
+        "neutral_assessed_and_rendered_block_count": 6,
+        "unscored_diagnostic_assessed_and_rendered_block_count": 1,
+        "rendered_context_block_count": 10,
+        "score_status": "BASE_SCORE_MISSING",
+        "blocks": {
+          "N01": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "OFFICIAL_TOKEN_SCHEDULE": {
+                  "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "OFFICIAL_EVENTS": {
+                  "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "DEFILLAMA_PUBLISHED_CALENDAR": {
+                  "status": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N02": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 4,
+              "checked_route_count": 2,
+              "live_contacted_route_count": 2,
+              "routes_with_valid_facts": 2,
+              "routes_with_actual_use": 2,
+              "used_provider_count": 2,
+              "used_provider_ids": [
+                "CHAIN_RPC",
+                "COINPAPRIKA_SECTOR"
+              ],
+              "rendered_provider_ids": [
+                "CHAIN_RPC",
+                "COINPAPRIKA_SECTOR"
+              ],
+              "details": {
+                "CHAIN_SUPPLY": {
+                  "status": "CLOSED",
+                  "actual_http": 3,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "used_provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINMETRICS_SUPPLY": {
+                  "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 3,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "COINPAPRIKA_SECTOR"
+                  ],
+                  "used_provider_ids": [
+                    "COINPAPRIKA_SECTOR"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N03": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "CHAIN_EVENTS": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "CHAIN_SUPPLY_COMPARISON": {
+                  "status": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N04": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "CHAIN_EVENTS": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N05": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": [
+                    "WINDOW_FRESH"
+                  ]
+                },
+                "CHAIN_EVENTS": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N06": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "BLUESKY_PUBLIC": {
+                  "status": "CLOSED",
+                  "actual_http": 1,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "BLUESKY_PUBLIC"
+                  ],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "GDELT_NEWS_DISCOVERY": {
+                  "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "WIKIMEDIA_ATTENTION": {
+                  "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N07": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "OFFICIAL_EVENTS": {
+                  "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "HTX_OFFICIAL_ANNOUNCEMENTS": {
+                  "status": "SOURCE_ERROR",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "GDELT_NEWS_DISCOVERY": {
+                  "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N08": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "rendered_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "details": {
+                "HTX_PUBLIC_RISK": {
+                  "status": "CLOSED",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "blocking_checks": []
+                },
+                "OFFICIAL_EVENTS": {
+                  "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N09": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "rendered_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "details": {
+                "HTX_PUBLIC_RISK": {
+                  "status": "CLOSED",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N10": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "details": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_TECHNICAL_CONTEXT"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_TECHNICAL_CONTEXT"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N11": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_EXECUTION_STRESS"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_EXECUTION_STRESS"
+              ],
+              "details": {
+                "PRIMARY_EXECUTION_STRESS": {
+                  "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_EXECUTION_STRESS"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_EXECUTION_STRESS"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N12": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "participating": true,
+            "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_LARGE_TRADES"
+              ],
+              "rendered_provider_ids": [
+                "HTX_LARGE_TRADES"
+              ],
+              "details": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_SAMPLE",
+                  "actual_http": 1,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 1,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_LARGE_TRADES"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_LARGE_TRADES"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N14": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "DERIBIT_ALT_OPTIONS": {
+                  "status": "NOT_APPLICABLE",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "DERIBIT_ALT_OPTIONS"
+                  ],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "DELTA_OPTIONS": {
+                  "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N15": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 2,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [
+                "COINPAPRIKA_SECTOR"
+              ],
+              "details": {
+                "COINGECKO_SECTOR": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 2,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "CLOSED",
+                  "actual_http": 3,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "COINPAPRIKA_SECTOR"
+                  ],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N16": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_EXECUTION_COST"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_EXECUTION_COST"
+              ],
+              "details": {
+                "PRIMARY_EXECUTION_COST": {
+                  "status": "CHECKED_HTX_EXECUTION_COST",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_EXECUTION_COST"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_EXECUTION_COST"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "N05_blockers": [
+        "WINDOW_FRESH"
+      ],
+      "liquidations": {
+        "usable_original_source_clock_levels": 0,
+        "receipt_only_estimates": 0,
+        "source": null,
+        "not_HTX": true,
+        "entry_eligible": false
+      }
+    },
+    {
+      "contract": "NEAR-USDT",
+      "snapshot_id": "S392:NEAR-USDT:1791246903684",
+      "observed_ts": 1791246903684,
+      "state": "REJECTED",
+      "direction": null,
+      "use_audit": {
+        "schema": "report2-block-decision-use-audit-v3-explicit-unscored-diagnostics",
+        "participating_block_count": 9,
+        "participating_block_ids": [
+          "N01",
+          "N02",
+          "N03",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "score_applied_block_count": 0,
+        "neutral_assessed_and_rendered_block_count": 8,
+        "unscored_diagnostic_assessed_and_rendered_block_count": 1,
+        "rendered_context_block_count": 11,
+        "score_status": "BASE_SCORE_MISSING",
+        "blocks": {
+          "N01": {
+            "assigned_consumer": "SUPPORTING_RISK_RECHECK",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "OFFICIAL_TOKEN_SCHEDULE"
+              ],
+              "rendered_provider_ids": [
+                "OFFICIAL_TOKEN_SCHEDULE"
+              ],
+              "details": {
+                "OFFICIAL_TOKEN_SCHEDULE": {
+                  "status": "CLOSED",
+                  "actual_http": 1,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "OFFICIAL_TOKEN_SCHEDULE"
+                  ],
+                  "used_provider_ids": [
+                    "OFFICIAL_TOKEN_SCHEDULE"
+                  ],
+                  "blocking_checks": []
+                },
+                "OFFICIAL_EVENTS": {
+                  "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "DEFILLAMA_PUBLISHED_CALENDAR": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N02": {
+            "assigned_consumer": "SUPPLY_RISK",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 4,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 2,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "rendered_provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "details": {
+                "CHAIN_SUPPLY": {
+                  "status": "CLOSED",
+                  "actual_http": 2,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "used_provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINMETRICS_SUPPLY": {
+                  "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 1,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N03": {
+            "assigned_consumer": "MONEY_FLOW_CONTEXT",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "rendered_provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "details": {
+                "CHAIN_EVENTS": {
+                  "status": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "CHAIN_SUPPLY_COMPARISON": {
+                  "status": "CLOSED",
+                  "actual_http": 2,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "used_provider_ids": [
+                    "CHAIN_RPC"
+                  ],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N04": {
+            "assigned_consumer": "TRANSFER_INVESTIGATION",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "CHAIN_EVENTS": {
+                  "status": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "BLOCKSCOUT_INDEX": {
+                  "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N05": {
+            "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "NANSEN_FLOWS": {
+                  "status": "NOT_EVALUATED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "PRIMARY_HTX_FUTURES_FLOW": {
+                  "status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": [
+                    "WINDOW_FRESH"
+                  ]
+                },
+                "CHAIN_EVENTS": {
+                  "status": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N06": {
+            "assigned_consumer": "EARLY_INTEREST_PRIORITY",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "BLUESKY_PUBLIC": {
+                  "status": "CLOSED",
+                  "actual_http": 1,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "BLUESKY_PUBLIC"
+                  ],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "GDELT_NEWS_DISCOVERY": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "WIKIMEDIA_ATTENTION": {
+                  "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N07": {
+            "assigned_consumer": "OFFICIAL_EVENT_RISK",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 3,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "OFFICIAL_EVENTS": {
+                  "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "HTX_OFFICIAL_ANNOUNCEMENTS": {
+                  "status": "SOURCE_ERROR",
+                  "actual_http": 1,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "GDELT_NEWS_DISCOVERY": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N08": {
+            "assigned_consumer": "EXECUTION_GATE",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "rendered_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "details": {
+                "HTX_PUBLIC_RISK": {
+                  "status": "CLOSED",
+                  "actual_http": 3,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "blocking_checks": []
+                },
+                "OFFICIAL_EVENTS": {
+                  "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N09": {
+            "assigned_consumer": "EXECUTION_ELIGIBILITY",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "rendered_provider_ids": [
+                "HTX_PUBLIC_RISK"
+              ],
+              "details": {
+                "HTX_PUBLIC_RISK": {
+                  "status": "CLOSED",
+                  "actual_http": 3,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_PUBLIC_RISK"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N10": {
+            "assigned_consumer": "TARGET_PATH_INVALIDATION",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_TECHNICAL_CONTEXT"
+              ],
+              "details": {
+                "PRIMARY_TECHNICAL_CONTEXT": {
+                  "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_TECHNICAL_CONTEXT"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_TECHNICAL_CONTEXT"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N11": {
+            "assigned_consumer": "EXECUTION_STRESS",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_EXECUTION_STRESS"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_EXECUTION_STRESS"
+              ],
+              "details": {
+                "PRIMARY_EXECUTION_STRESS": {
+                  "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_EXECUTION_STRESS"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_EXECUTION_STRESS"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N12": {
+            "assigned_consumer": "MONEY_FLOW_DIAGNOSTIC",
+            "participating": true,
+            "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "HTX_LARGE_TRADES"
+              ],
+              "rendered_provider_ids": [
+                "HTX_LARGE_TRADES"
+              ],
+              "details": {
+                "HTX_LARGE_TRADES": {
+                  "status": "CLOSED_BOUNDED_SAMPLE",
+                  "actual_http": 1,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 1,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "HTX_LARGE_TRADES"
+                  ],
+                  "used_provider_ids": [
+                    "HTX_LARGE_TRADES"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N14": {
+            "assigned_consumer": "OPTIONS_RISK_CONTEXT",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "DERIBIT_ALT_OPTIONS": {
+                  "status": "NOT_APPLICABLE",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "DERIBIT_ALT_OPTIONS"
+                  ],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "DELTA_OPTIONS": {
+                  "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N15": {
+            "assigned_consumer": "SECTOR_RELATIVE_STRENGTH",
+            "participating": false,
+            "participation_status": "USE_NOT_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 2,
+              "checked_route_count": 0,
+              "live_contacted_route_count": 1,
+              "routes_with_valid_facts": 0,
+              "routes_with_actual_use": 0,
+              "used_provider_count": 0,
+              "used_provider_ids": [],
+              "rendered_provider_ids": [],
+              "details": {
+                "COINGECKO_SECTOR": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 0,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                },
+                "COINPAPRIKA_SECTOR": {
+                  "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+                  "actual_http": 1,
+                  "valid_fact_count": 0,
+                  "used_fact_count": 0,
+                  "rendered_fact_count": 0,
+                  "assessed_fact_count": 0,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [],
+                  "used_provider_ids": [],
+                  "blocking_checks": []
+                }
+              }
+            }
+          },
+          "N16": {
+            "assigned_consumer": "EXECUTION_COST_GATE",
+            "participating": true,
+            "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+            "source_accounting": {
+              "configured_route_count": 1,
+              "checked_route_count": 1,
+              "live_contacted_route_count": 0,
+              "routes_with_valid_facts": 1,
+              "routes_with_actual_use": 1,
+              "used_provider_count": 1,
+              "used_provider_ids": [
+                "PRIMARY_EXECUTION_COST"
+              ],
+              "rendered_provider_ids": [
+                "PRIMARY_EXECUTION_COST"
+              ],
+              "details": {
+                "PRIMARY_EXECUTION_COST": {
+                  "status": "CHECKED_HTX_EXECUTION_COST",
+                  "actual_http": 0,
+                  "valid_fact_count": 1,
+                  "used_fact_count": 1,
+                  "rendered_fact_count": 1,
+                  "assessed_fact_count": 1,
+                  "unscored_diagnostic_fact_count": 0,
+                  "nonzero_score_fact_count": 0,
+                  "provider_ids": [
+                    "PRIMARY_EXECUTION_COST"
+                  ],
+                  "used_provider_ids": [
+                    "PRIMARY_EXECUTION_COST"
+                  ],
+                  "blocking_checks": []
+                }
+              }
+            }
+          }
+        }
+      },
+      "N05_blockers": [
+        "WINDOW_FRESH"
+      ],
+      "liquidations": {
+        "usable_original_source_clock_levels": 0,
+        "receipt_only_estimates": 3,
+        "source": "GMX public API",
+        "not_HTX": true,
+        "entry_eligible": false
+      }
+    }
+  ],
+  "telegram": {
+    "schema": "telegram-info-proof-v1",
+    "head": "8c037659a620b297a0c6df447698fc2c2baa5941",
+    "source": "schedule",
+    "source_run_id": "1791246840975-1791246850102",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "NEAR-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "LSK-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 61,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "followup": [
+    "N05: only WINDOW_FRESH guard failed for each coin; OI-aligned hourly end is not suitable for a fresh raw-flow-only window. No freshness waiver.",
+    "LSK N15: exact CoinPaprika 19-peer relative comparison rendered but assigned decision use not proven without base score; needs separate unscored diagnostic consumer, not fake neutral score.",
+    "NEAR N15: shared HTTP envelope prevented completion after one metadata call; investigate provider priority and reuse, not daily cap reset.",
+    "LSK N01: no exact schedule or already-verified calendar provider ID; not absence of unlock events.",
+    "Telegram blocked by CANONICAL_DIRECTION_NOT_CLOSED for NEAR and WAVE_NOT_CURRENT for LSK; no sender attempt and no SENT/message_id."
+  ],
+  "source_artifact_readback": "checkpoints/actual-scheduled-source-result-37394649188.json.gz"
+}
