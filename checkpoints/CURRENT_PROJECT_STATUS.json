@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T05:24:29.546Z",
+  "updated_utc": "2026-10-06T05:36:30.411Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -22,19 +22,51 @@
     "Telegram": 0
   },
   "latest_actual_report": {
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
-    "cloud_run": 37413576711,
-    "head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
-    "run_id": "1791260701995-1791260712949",
-    "generated_utc": "2026-10-06T04:26:37.940Z",
-    "generated_msk": "2026-10-06T07:26:37.940+03:00",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
+    "cloud_run": 37418312423,
+    "head": "733e24a156c783d29743e960119bd58a90855a1d",
+    "run_id": "1791264245746-1791264254804",
+    "generated_utc": "2026-10-06T05:25:41.606Z",
+    "generated_msk": "2026-10-06T08:25:41.606000+03:00",
     "top2": [
-      "UNI-USDT",
+      "FIL-USDT",
       "BR-USDT"
     ],
     "counts": [
       {
-        "contract": "UNI-USDT",
+        "contract": "BR-USDT",
+        "snapshot_id": "S392:BR-USDT:1791264336039",
+        "participating": 7,
+        "participating_ids": [
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "neutral": 6,
+        "unscored": 0,
+        "nonzero_score": 1,
+        "score_contributions": {
+          "N12": 0.0265
+        },
+        "canonical_state": "REJECTED",
+        "direction": "SHORT",
+        "qualified_interest": 91,
+        "trigger_present": false,
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_estimate_levels": 0,
+          "providers": [],
+          "source_clock_known": null,
+          "decision_eligible": false
+        }
+      },
+      {
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791264303995",
         "participating": 9,
         "participating_ids": [
           "N02",
@@ -50,46 +82,27 @@
         "neutral": 7,
         "unscored": 2,
         "nonzero_score": 0,
+        "score_contributions": {},
         "canonical_state": "REJECTED",
+        "direction": null,
+        "qualified_interest": null,
+        "trigger_present": false,
         "liquidations": {
           "accepted_exact_future_map_levels": 0,
-          "rendered_GMX_fee_aware_estimates": 2,
-          "above": 17.643023871293,
-          "below": 2.275604967963,
-          "quote": "USD",
+          "rendered_estimate_levels": 3,
+          "providers": [
+            "GMX public API"
+          ],
           "source_clock_known": false,
-          "receipt_only_context": true,
-          "not_HTX_levels": true,
-          "score_effect": 0
-        }
-      },
-      {
-        "contract": "BR-USDT",
-        "participating": 7,
-        "participating_ids": [
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ],
-        "neutral": 6,
-        "unscored": 1,
-        "nonzero_score": 0,
-        "canonical_state": "REJECTED",
-        "liquidations": {
-          "accepted_exact_future_map_levels": 0,
-          "rendered_estimates": 0
+          "decision_eligible": false
         }
       }
     ],
     "Telegram_SENT": false,
-    "exact_diagnosis": "checkpoints/ACTUAL_0726_OBSERVATION_DIAGNOSIS_20261006.json",
+    "exact_diagnosis": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json",
     "publication_blockers": {
-      "UNI": "CANONICAL_DIRECTION_NOT_CLOSED; EARLY_QUALITY_64_BELOW_70; NO_CURRENT_OBSERVATION_PLAN",
-      "BR": "WAVE_NOT_CURRENT; CURRENT_HANDOFF_WAVE_NULL; NO_CURRENT_OBSERVATION_PLAN"
+      "BR": "CANONICAL_STATE_NOT_PUBLISHABLE; PLAN_NOT_CLOSED; qualified SHORT91 same-wave receipt",
+      "FIL": "CANONICAL_DIRECTION_NOT_CLOSED"
     },
     "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE"
   },
@@ -129,10 +142,11 @@
   ],
   "source_accounting": {
     "catalog": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
-    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
+    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
     "logical_assignments": 32,
     "logical_assignments_are_not_independent_providers": true,
-    "catalog_report_contains_historical_sections": true
+    "catalog_report_contains_historical_sections": false,
+    "exact_source_use": "checkpoints/SOURCE_USE_0825MSK_20261006.json.gz"
   },
   "old_open_PRs": [
     {
@@ -186,7 +200,7 @@
   "cloud_read_utility": {
     "branch": "tools/read-current-report",
     "workflow": ".github/workflows/read-current-report.yml",
-    "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
+    "status": "COMPLETED_SUCCESS",
     "after_cloud_run": 37416383006,
     "created_after": "2026-10-06T05:05:00Z",
     "max_wait_minutes": 17,
@@ -194,6 +208,8 @@
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
-    "development_agent_continuation": false
+    "development_agent_continuation": false,
+    "cloud_run": 37418379131,
+    "no_active_cloud_wait": true
   }
 }

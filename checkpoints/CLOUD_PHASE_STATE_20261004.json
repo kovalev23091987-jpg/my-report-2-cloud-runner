@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T053018812Z:exact-current-scenario-read",
-    "acquired_ts": 1791264618812,
-    "expires_ts": 1791264918812
+    "owner": "HTX:20261006T053904745Z:exact-retained-scenario",
+    "acquired_ts": 1791265144745,
+    "expires_ts": 1791265744745
   },
-  "next_action": "GENERAL_REMAINING_GAP_WORK_AND_EXISTING_NATURAL_FRESH_REPORT; SAME_SNAPSHOT_TELEGRAM_SENT_PENDING; FINAL_CURRENT_ENTRYPOINT_CLEANUP_REQUIRED",
+  "next_action": "INSPECT_GENERAL_CURRENT_OBSERVATION_PLAN_WITH_SAVED_0825_INPUTS; DO_NOT_REPLAY_MAIN_OR_STALE_TELEGRAM",
   "last_verified_release": "checkpoints/paired-finalized-supply-consumer-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791264618812,
+  "updated_ts": 1791265144745,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -97,11 +97,11 @@
   },
   "last_control": "checkpoints/all15-control-usefulness-20261005.json",
   "pending": {
-    "status": "ACTUAL_0726_UNI9_BR7_GENERAL_REPAIRS_MERGED_APPROVED_TELEGRAM_PENDING",
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
-    "cloud_run": 37413576711,
+    "status": "ACTUAL_0825_FIL9_BR7_SCENARIO_PLAN_DIAGNOSIS_PENDING_TELEGRAM",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
+    "cloud_run": 37418312423,
     "actual_core_participation": {
-      "UNI": 9,
+      "FIL": 9,
       "BR": 7
     },
     "telegram_sent": 0,
@@ -145,11 +145,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261006T052346254Z:single-reader-entry",
-    "acquired_ts": 1791264226254,
-    "expires_ts": 1791264346254,
-    "released_ts": 1791264269546,
-    "reason": "Single bounded source-free cloud reader prepared; no development lock while waiting for natural report"
+    "owner": "HTX:20261006T053534787Z:save-actual-current-state",
+    "acquired_ts": 1791264934787,
+    "expires_ts": 1791265234787,
+    "released_ts": 1791264990411,
+    "reason": "exact report/source catalog preserved; no cloud checks still running"
   },
   "bounded_next_check": {
     "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
@@ -164,33 +164,89 @@
     "no_automatic_continuation": true
   },
   "last_actual_readback": {
-    "cloud_run": 37413576711,
-    "head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
-    "run_id": "1791260701995-1791260712949",
-    "generated_at": "2026-10-06T04:26:37.940Z",
-    "proof": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
-    "actual_top2": [
-      "UNI-USDT",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
+    "cloud_run": 37418312423,
+    "head": "733e24a156c783d29743e960119bd58a90855a1d",
+    "run_id": "1791264245746-1791264254804",
+    "generated_utc": "2026-10-06T05:25:41.606Z",
+    "generated_msk": "2026-10-06T08:25:41.606000+03:00",
+    "top2": [
+      "FIL-USDT",
       "BR-USDT"
     ],
-    "participating": {
-      "UNI": 9,
-      "BR": 7
+    "counts": [
+      {
+        "contract": "BR-USDT",
+        "snapshot_id": "S392:BR-USDT:1791264336039",
+        "participating": 7,
+        "participating_ids": [
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "neutral": 6,
+        "unscored": 0,
+        "nonzero_score": 1,
+        "score_contributions": {
+          "N12": 0.0265
+        },
+        "canonical_state": "REJECTED",
+        "direction": "SHORT",
+        "qualified_interest": 91,
+        "trigger_present": false,
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_estimate_levels": 0,
+          "providers": [],
+          "source_clock_known": null,
+          "decision_eligible": false
+        }
+      },
+      {
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791264303995",
+        "participating": 9,
+        "participating_ids": [
+          "N02",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "neutral": 7,
+        "unscored": 2,
+        "nonzero_score": 0,
+        "score_contributions": {},
+        "canonical_state": "REJECTED",
+        "direction": null,
+        "qualified_interest": null,
+        "trigger_present": false,
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_estimate_levels": 3,
+          "providers": [
+            "GMX public API"
+          ],
+          "source_clock_known": false,
+          "decision_eligible": false
+        }
+      }
+    ],
+    "Telegram_SENT": false,
+    "exact_diagnosis": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json",
+    "publication_blockers": {
+      "BR": "CANONICAL_STATE_NOT_PUBLISHABLE; PLAN_NOT_CLOSED; qualified SHORT91 same-wave receipt",
+      "FIL": "CANONICAL_DIRECTION_NOT_CLOSED"
     },
-    "neutral": {
-      "UNI": 7,
-      "BR": 6
-    },
-    "unscored": {
-      "UNI": 2,
-      "BR": 1
-    },
-    "nonzero_score": {
-      "UNI": 0,
-      "BR": 0
-    },
-    "telegram_SENT": false,
-    "project_complete": false
+    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -386,33 +442,8 @@
     "calendar_actual_fact_accepted": false
   },
   "pending_current_direction_diagnosis": {
-    "cloud_run": 37403854284,
-    "source_run_id": "1791253403789-1791253419323",
-    "canonical_readback": 37404607065,
-    "episode_readback": 37405375170,
-    "sourceHTTP": 0,
-    "MAIN": 0,
-    "Telegram": 0,
-    "source_writes": 0,
-    "WIF_quality82_is_bidirectional_unqualified": true,
-    "statistical_origin_event_close": "2026-10-05T22:15:00Z",
-    "latest_actual_related_event_close": "2026-10-06T02:15:00Z",
-    "producer_first_seen": "2026-10-06T02:24:43.010Z",
-    "current_related_event_timely_under_existing_10min_gate": true,
-    "fresh_observation_handoff_not_yet_fixed": false,
-    "no_claim_WIF_send_was_eligible": true,
-    "proof": "checkpoints/ACTUAL_0525_DIRECTION_DIAGNOSIS_20261006.json",
-    "prospective_handoff_release_PR": 174,
-    "latest_source_cloud_run": 37413576711,
-    "latest_exact_readback": 37414443568,
-    "latest_exact_proof": "checkpoints/ACTUAL_0726_OBSERVATION_DIAGNOSIS_20261006.json",
-    "UNI_early_quality": 64,
-    "UNI_below_70": true,
-    "UNI_relative_short_price_long_conflict": true,
-    "BR_handoff_wave_null": true,
-    "BR_previous_wave_not_current": true,
-    "no_current_observation_plan": true,
-    "no_eligible_publication_loss_proven_in_this_run": true
+    "checkpoint": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json",
+    "status": "EXACT_READ_COMPLETED_BR_DIRECTION_CLOSED_PLAN_NOT_CLOSED_FIL_DIRECTION_CONFLICT"
   },
   "pending_prospective_observation": {
     "PR": 174,

@@ -18,11 +18,11 @@ jobs:
         with:
           script: |
             const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
-            if(head!=='844033a9398f954cd0587b525bc4c60a5e6ba06c')throw Error('MAIN_MOVED');
+            if(head!=='a8e8f0661f8b483b3d63554039e4a3fe995093b0')throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(phase.lease?.owner!=='HTX:20261006T053018812Z:exact-current-scenario-read'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-      - name: Read two exact canonical rows under D1 budget
+            if(phase.lease?.owner!=='HTX:20261006T053904745Z:exact-retained-scenario'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Read one missing exact episode and retained tape under D1 budget
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}

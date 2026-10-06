@@ -1,0 +1,53 @@
+{
+  "schema": "exact-current-observation-diagnosis-v1",
+  "created_utc": "2026-10-06T05:36:30.411Z",
+  "source_cloud_run": 37418312423,
+  "run_id": "1791264245746-1791264254804",
+  "reader_cloud_run": 37418960208,
+  "reader_artifact": 11392149073,
+  "zip_sha256": "356344217a56eb1d0abdce9eb8d092c24963dee575521c936f45a925be280eab",
+  "exact_run_snapshot_fingerprint_verified": true,
+  "usage": {
+    "rows_read": 58,
+    "rows_written": 4,
+    "requests": 8,
+    "unknown_ops": 0,
+    "ledger_only_writes": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0
+  },
+  "BR": {
+    "snapshot_id": "S392:BR-USDT:1791264336039",
+    "direction": "SHORT",
+    "qualified_interest": 91,
+    "early_receipt": {
+      "fresh": true,
+      "same_wave": true,
+      "same_contract": true,
+      "direction_closed": true,
+      "source_ts": 1791264254995
+    },
+    "scenario_plan_transfer": {
+      "existing_plan_closed": false,
+      "fallback_plan_closed": false,
+      "reason": "PLAN_NOT_CLOSED"
+    },
+    "entry_funnel_blockers": [],
+    "immutable_opportunity_event_close_ts": 1791247500000,
+    "immutable_decision_ts": 1791264336039,
+    "old_opportunity_not_current": true,
+    "next_investigation": "Inspect existing prospective-plan producer and handoff fields against exact same-run inputs; do not assume absence is a defect or weaken gates",
+    "canonical_state": "REJECTED",
+    "telegram_reason": "CANONICAL_STATE_NOT_PUBLISHABLE"
+  },
+  "FIL": {
+    "snapshot_id": "S392:FIL-USDT:1791264303995",
+    "direction_closed": false,
+    "receipt_conflict": "RELATIVE_STRENGTH LONG versus PRICE_STATE_TRANSITION SHORT",
+    "telegram_reason": "CANONICAL_DIRECTION_NOT_CLOSED"
+  },
+  "mutable_current_wave_read_is_not_original_run_proof": true,
+  "Telegram_SENT": false,
+  "project_complete": false
+}
