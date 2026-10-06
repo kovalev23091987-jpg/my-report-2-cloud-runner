@@ -131,7 +131,7 @@ export function renderCanonicalTelegram({canonical,lifecycle_event}={}){
  lines.push('',relativeLine(d,relativeConfirmed(canonical)));
  const oi=plainOpenInterest(canonical);
  const contextFacts=confirmedBlockContextFacts(canonical).map(f=>plainContextFact(f,canonical));
- const facts=[...new Set([...(oi?[oi]:[]),...displayMarketFacts(canonical).filter(f=>!f.startsWith('Открытый интерес HTX:')),...contextFacts])].slice(0,event==='WAIT'?1:2);
+ const facts=[...new Set([...(oi?[oi]:[]),...displayMarketFacts(canonical).filter(f=>!f.startsWith('Открытый интерес HTX:')),...contextFacts])].slice(0,event==='WAIT'?1:oi?2:3);
  for(const fact of facts)lines.push('',`• ${fact}`);
  lines.push('');
  if(event==='OBSERVE'){
