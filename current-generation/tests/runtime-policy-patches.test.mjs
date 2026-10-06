@@ -59,6 +59,7 @@ test('runtime target uses measured structure and rejects sub-five-percent struct
   const src=path.join(temp,'src');fs.mkdirSync(src,{recursive:true});
   const file=path.join(src,'multi-wave-campaign-engine.mjs');fs.writeFileSync(file,original);
   fs.writeFileSync(path.join(src,'final-decision-integration-engine.mjs'),decisionOriginal);
+  fs.copyFileSync(new URL('../../telegram-tz-reconciliation-fix/overlay/files/src/v3-telegram-delivery-sidecar.mjs',import.meta.url),path.join(src,'v3-telegram-delivery-sidecar.mjs'));
   const result=applyRuntimePolicyPatches(temp);assert.equal(result.status,'CLOSED');
   const patched=fs.readFileSync(file,'utf8');
   assert.match(patched,/const thresholdPct = measuredBaseMovePct;/);
@@ -69,5 +70,10 @@ test('runtime target uses measured structure and rejects sub-five-percent struct
   assert.match(decision,/DECISION_THEN_EXACT_D1_ACK_V1/);
   assert.match(decision,/registryPostDecisionAck/);
   assert.match(decision,/timeline_contract: input\?\.evidence_registry/);
+  const relay=fs.readFileSync(path.join(src,'v3-telegram-delivery-sidecar.mjs'),'utf8');
+  assert.match(relay,/confirmedRelayReceipt\(body\)/);
+  assert.doesNotMatch(relay,/if\(response.ok&&body\?\.ok===true\)return/);
+  assert.equal(applyRuntimePolicyPatches(temp).telegram_delivery,'POSITIVE_MESSAGE_ID_REQUIRED');
+  assert.equal(fs.readFileSync(path.join(src,'v3-telegram-delivery-sidecar.mjs'),'utf8'),relay);
  }finally{fs.rmSync(temp,{recursive:true,force:true});}
 });

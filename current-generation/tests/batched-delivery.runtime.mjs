@@ -14,6 +14,7 @@ const {canonicalLifecycleAuthority}=await imp('canonical-lifecycle-authority.mjs
 const {prepareLifecycleTransition,finalizeLifecycleDispatch}=await imp('v3-telegram-runtime.mjs');
 const {deriveLifecycleContext}=await imp('v3-telegram-lifecycle-sidecar.mjs');
 const {runBoundTelegramDeliverySidecar}=await imp('bound-telegram-delivery-sidecar.mjs');
+const {auditRenderedBlockResults,confirmedBlockContextFacts}=await imp('block-result-context.mjs');
 const manifest=JSON.parse(fs.readFileSync(new URL('./fixtures/batched-retained-delivery-source-manifest.json',import.meta.url)));
 const corpus={rows:[],weekly_journal:manifest.weekly_journal};
 for(const source of manifest.sources){const raw=JSON.parse(gunzipSync(fs.readFileSync(path.join('batch-source',source.name,source.file))));
@@ -65,6 +66,16 @@ test('all retained canonical rows preserve fingerprint, source clocks, refusals 
  for(const [state,r] of Object.entries(corpus.weekly_journal.states)){assert.equal(r.complete,true);proof.weekly[state]=r.rows.length;}
  proof.weekly.scope=corpus.weekly_journal.scope;
 });
+test('same retained corpus binds block facts to approved output without inventing scores or liquidation targets',()=>{
+ proof.block_and_liquidation=[];
+ for(const r of corpus.rows){const c=r.canonical,before=JSON.stringify(c),manual=pub.renderCanonicalManual({canonical:c}),telegram=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+  const audit=auditRenderedBlockResults({canonical:c,manual,telegram});
+  for(const f of [...audit.context_receipts,...audit.telegram_context_receipts]){assert.ok(f.evidence_id&&f.physical_root_key);if(f.score_contribution!==undefined)assert.equal(f.score_contribution,0);assert.ok(f.source_ts<=c.observed_ts);}
+  assert.equal(audit.telegram_delivery_proven,false);assert.equal(audit.entry_authorized,false);assert.equal(JSON.stringify(c),before);
+  const blocks=c.metadata.internal_market_context?.evidence_v2?.block_coverage?.blocks||{};
+  proof.block_and_liquidation.push({run_id:c.run_id,snapshot_id:c.snapshot_id,contract:c.metadata.contract,blocks:Object.fromEntries(Object.entries(blocks).map(([id,b])=>[id,{status:b.status,checked:b.checked,observed_facts:b.observed_facts,valid_context_facts:b.valid_context_facts,usable_facts:b.usable_facts,source_statuses:b.source_statuses}])),bound_context_facts:confirmedBlockContextFacts(c).length,manual_context_blocks:audit.used_context_block_ids,telegram_context_blocks:audit.telegram_used_context_block_ids,available_not_rendered:audit.available_not_rendered_evidence_ids.length,accepted_liquidation_levels:(c.liquidations.above||[]).length+(c.liquidations.below||[]).length,liquidation_status:c.liquidations.future_levels_status,targets:c.targets.length});
+ }
+});
 for(const side of ['LONG','SHORT'])test(`${side}: composed adapter to lifecycle to approved binding to injected relay and dedup`,async()=>{
  const c=rangeCanonical(side);assert.equal(c.state,'OBSERVE');assert.equal(c.metadata.direction_resolution.authorized_entry_direction,'UNKNOWN');assert.equal(pub.assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,true);
  const {db,x,transition}=await prepare(c);try{let calls=0;const sentText=[];const opts={enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async(url,o)=>{calls++;assert.equal(url,'https://controlled.invalid/relay');sentText.push(JSON.parse(o.body).text);return{ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9001})};}};
@@ -76,7 +87,7 @@ for(const side of ['LONG','SHORT'])test(`${side}: composed adapter to lifecycle 
 for(const [name,response] of Object.entries({NO_ID:{ok:true,status:'SENT'},ZERO_ID:{ok:true,status:'SENT',message_id:0},NONNUMERIC_ID:{ok:true,status:'SENT',message_id:'abc'},READY_ONLY:{ok:true,status:'READY'},NEGATIVE_ID:{ok:true,status:'SENT',message_id:-1}}))test(`ambiguous relay ${name} cannot be recorded as a confirmed delivery`,async()=>{
  const c=rangeCanonical(),{db,x}=await prepare(c);try{let calls=0;const result=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>{calls++;return{ok:true,status:200,json:async()=>response};}});assert.equal(result.sent,0,JSON.stringify(result));assert.notEqual(rowState(db).state,'SENT');assert.equal(calls,1);proof.controlled.push({case:name,final_state:rowState(db).state});}finally{db.close();}
 });
-for(const [name,mutate] of Object.entries({LOW_SCORE:c=>{c.scores.coin_interest_0_100=69;},DIRECTION_UNKNOWN:c=>{c.direction=null;},MISSING_TRIGGER:c=>{c.trigger=null;},MISSING_CONFIRMING_SOURCE:c=>{c.metadata.source_role_view.classified=c.metadata.source_role_view.classified.filter(r=>r.source_key==='HTX_OFFICIAL');},REJECTED:c=>{c.state='REJECTED';}}))test(`qualification ${name} blocks the composed chain before any dispatch`,()=>{
+for(const [name,mutate] of Object.entries({LOW_SCORE:c=>{c.scores.coin_interest_0_100=69;},DIRECTION_UNKNOWN:c=>{c.direction=null;},MISSING_TRIGGER:c=>{c.trigger=null;},MISSING_CONFIRMING_SOURCE:c=>{c.metadata.source_role_view.classified=c.metadata.source_role_view.classified.filter(r=>r.source_key==='HTX_OFFICIAL');},REJECTED:c=>{c.state='REJECTED';}}))test(`qualification ${name} blocks the composed chain before network delivery`,()=>{
  const c=rangeCanonical();mutate(c);c.analytical_fingerprint=pub.canonicalFingerprint(c);const x=envelope(c);if(name!=='MISSING_TRIGGER')assert.notEqual(canonicalLifecycleAuthority({row:x.row,handoff:x.handoff,early:x.early,now_ts:x.now}).status,'CLOSED');assert.equal(pub.assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,false);proof.controlled.push({case:name,relay_invocations:0});
 });
 test('expired or fingerprint-corrupted persisted publication cannot reach the relay',async()=>{
