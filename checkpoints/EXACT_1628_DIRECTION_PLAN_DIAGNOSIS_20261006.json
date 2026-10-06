@@ -1,0 +1,247 @@
+{
+  "schema": "EXACT_1628_DIRECTION_PLAN_DIAGNOSIS_V1",
+  "source_cloud_run": 37470725751,
+  "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+  "run_id": "1791293174910-1791293186480",
+  "reader_head": "21f9dfe2ac0a012103ed4f8290d63e64885c0cf6",
+  "reader_cloud_run": 37471324192,
+  "reader_artifact": 11416552410,
+  "reader_zip_sha256": "9be612cadd5c7ea146567c2ebd70fe4e18a1c41fd8138d9fffe79d2738cba04d",
+  "read_ts": 1791293431862,
+  "early_rows_scope": "MUTABLE_CURRENT_ROWS_AT_READ_TS_NOT_ORIGINAL_HISTORY",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "EXACT_CURRENT_DATA:37471324192:1",
+    "source_run_id": "37471324192",
+    "measured_rows_read": 62,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 12,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 12,
+    "rows_read": 63,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 45,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_feature_snapshot": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "candidates": [
+    {
+      "contract": "FIL-USDT",
+      "publication_id": "PUB:9085bd95ce90791d89e3e0e3a305b25c61dcd0f1",
+      "snapshot_id": "S392:FIL-USDT:1791293228860",
+      "canonical_state": "REJECTED",
+      "fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+      "direction": "SHORT",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "score_basis": {
+        "selected": "QUALIFIED_EARLY_DETECTION_SCORE",
+        "qualified_early_detection_0_100": 82,
+        "deep_canonical_interest_0_100": 51,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "SHORT",
+        "facts": [
+          {
+            "direction": "SHORT",
+            "evidence_id": "EARLY:EDW:FIL-USDT:1791264254995:G6:SHORT",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "SHORT",
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791293186698,
+            "confirmation_state": "SHORT_WATCH",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791293186698,
+          "available_at": 1791293186698,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FIL-USDT:1791264254995:G6:OI_ACCELERATION:BOTH",
+            "EDW:FIL-USDT:1791264254995:G6:RELATIVE_STRENGTH:LONG",
+            "EDW:FIL-USDT:1791264254995:G6:RELATIVE_STRENGTH:SHORT",
+            "EDW:FIL-USDT:1791264254995:G6:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "SHORT",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "FIL-USDT",
+          "decision_ts": 1791293228860,
+          "status": "NOT_CLOSED",
+          "reason": "CANCELLATION_ALREADY_TRUE_AT_SNAPSHOT",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "SHORT",
+          "current_price": 1.15685,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:FIL-USDT:MARKET:EPISODE:1791201600000:1791244800000",
+          "event_close_ts": 1791207000000,
+          "producer_observed_ts": 1791293227628,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "anomaly_candle_closed": true,
+          "event_high": 1.1133,
+          "event_low": 1.0965,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 1.0965,
+          "cancellation_price": 1.1133
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "source_role_status": "CLOSED",
+      "protective_filter": null
+    },
+    {
+      "contract": "NIL-USDT",
+      "publication_id": "PUB:9c0018482f0778cc79dce6d115d26f032e8d87f6",
+      "snapshot_id": "S392:NIL-USDT:1791293271797",
+      "canonical_state": "REJECTED",
+      "fingerprint": "4bf13922523aa368a0ff6a03c1ea4db2bddb69d9da0f418cf24605fe4306db4c",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 73,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791293186698,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791293186698,
+          "available_at": 1791293186698,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:NIL-USDT:1791268186966:G4:RELATIVE_STRENGTH:LONG",
+            "EDW:NIL-USDT:1791268186966:G4:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "NIL-USDT",
+          "decision_ts": 1791293271797,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 0.10305500000000001
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "source_role_status": "CLOSED",
+      "protective_filter": null
+    }
+  ],
+  "scope": "RETAINED_EXACT_CURRENT_CANONICAL_NOT_NEW_MARKET_RUN; NO_PUBLICATION_ACCEPTANCE",
+  "next": "Evaluate historical fallback plan selection and lifecycle classification against original current technical evidence; retain genuine cancellation and risk gates."
+}
