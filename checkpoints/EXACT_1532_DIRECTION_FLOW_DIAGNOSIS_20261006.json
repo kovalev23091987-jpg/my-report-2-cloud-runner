@@ -1,0 +1,413 @@
+{
+  "schema": "EXACT_1532_DIRECTION_FLOW_DIAGNOSIS_V1",
+  "reader_cloud_run": 37468350184,
+  "reader_head": "016888287fce6bebfc681eecb45b806ecac0c6a1",
+  "artifact": 11414734372,
+  "zip_sha256": "86a8999ce37a50ce1b2114ce2e6f499ada50c6b369dd845afa1062fc0eb58722",
+  "source_run": "1791289780456-1791289794210",
+  "source_head": "d8ecd68a7bce301329eed41b93b0f0abcb6d5a86",
+  "read_ts": 1791292058760,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "budget_ledger_writes": 4,
+  "d1_usage": {
+    "requests": 12,
+    "rows_read": 60,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 43,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_candidate_wave": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_early_feature_snapshot": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "exact_features_original_scan": true,
+  "mutable_wave_rows_are_readback_not_original_history": true,
+  "candidates": [
+    {
+      "contract": "FIL-USDT",
+      "publication_id": "PUB:f989983d091e5e1199cbad8464d72b19aae3806f",
+      "snapshot_id": "S392:FIL-USDT:1791289864824",
+      "fingerprint": "000ac01759b2dc9c210e966c872f436cdacc2cebf7b764af5078925f0e0b8729",
+      "canonical_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791289794420,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791289794420,
+          "available_at": 1791289794420,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FIL-USDT:1791264254995:G6:OI_ACCELERATION:BOTH",
+            "EDW:FIL-USDT:1791264254995:G6:RELATIVE_STRENGTH:SHORT"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 73,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "original_feature": {
+        "observed_ts": 1791289794420,
+        "direction_hint": null,
+        "direction_state": "DIRECTION_NOT_CLOSED",
+        "long_evidence_domain_count": 1,
+        "short_evidence_domain_count": 2,
+        "early_detection_quality_0_100": 73
+      },
+      "original_evidence": [
+        {
+          "domain": "OI_ACCELERATION",
+          "side": "BOTH",
+          "status": "CLOSED",
+          "self_percentile": 0.8888888888888888,
+          "robust_z": 1.5244723995825522
+        },
+        {
+          "domain": "RELATIVE_STRENGTH",
+          "side": "SHORT",
+          "status": "CLOSED",
+          "btc_1h_pct_points": -1.0397777035651923,
+          "eth_1h_pct_points": -0.9918345803168527,
+          "btc_4h_pct_points": -3.7280815758601205,
+          "eth_4h_pct_points": -3.2625646287119836
+        },
+        {
+          "domain": "RELATIVE_STRENGTH",
+          "side": "SHORT",
+          "status": "CLOSED",
+          "btc_1h_pct_points": -1.0397777035651923,
+          "eth_1h_pct_points": -0.9918345803168527,
+          "btc_4h_pct_points": -3.7280815758601205,
+          "eth_4h_pct_points": -3.2625646287119836,
+          "sector_1h_pct_points": null,
+          "down_market_resilience": false,
+          "recovery_speed_ratio": null,
+          "repeated_level_hold": false
+        }
+      ],
+      "flow_primary": {
+        "status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+        "check_completed": false,
+        "network_calls": 0,
+        "evidence": [],
+        "internal_only": true,
+        "signed_raw_flow_status": "SIGNED_FLOW_EXACT_RING_REQUIRED",
+        "raw_acquisition_diagnostic": {
+          "status": "RAW_TAPE_STORAGE_BOUND_REACHED",
+          "observed_ts": 1791289828910,
+          "new_verified_minutes": 267,
+          "unverified_recent_minutes": 1173,
+          "persisted_minutes": null,
+          "storage_bytes": null,
+          "source_clocks": {
+            "trades": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289816699,
+              "received_ts": 1791289817194,
+              "age_ms": 12211
+            },
+            "minutes": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289816883,
+              "received_ts": 1791289817025,
+              "age_ms": 12027
+            },
+            "metadata": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289816642,
+              "received_ts": 1791289816784,
+              "age_ms": 12268
+            }
+          },
+          "network_calls": 0,
+          "internal_only": true
+        },
+        "blocking_checks": [
+          "FLOW_COVERAGE",
+          "FLOW_USABLE",
+          "DELTA_RELIABLE",
+          "NOT_DIAGNOSTIC_ONLY",
+          "QUALITY_COMPLETE",
+          "QUALITY_RELIABLE",
+          "COUNTERS_EXACT",
+          "WINDOW_FRESH",
+          "FACTUAL_COUNTER_MATCH",
+          "FACTUAL_BAR_COUNTER_MATCH",
+          "PRICE_COUNTER_MATCH"
+        ]
+      },
+      "direction_transfer_loss_proven": false
+    },
+    {
+      "contract": "龙虾-USDT",
+      "publication_id": "PUB:7e6dda71b9f276ce7d0b360b01aadb66eaf12cfe",
+      "snapshot_id": "S392:龙虾-USDT:1791289911551",
+      "fingerprint": "ed2838d44d54b1b630d451824835bfc5460c3abea988e21ac0dc3fb19003c737",
+      "canonical_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791289794420,
+            "confirmation_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791289794420,
+          "available_at": 1791289794420,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:%E9%BE%99%E8%99%BE-USDT:1791289794420:G5:OI_ACCELERATION:BOTH",
+            "EDW:%E9%BE%99%E8%99%BE-USDT:1791289794420:G5:RELATIVE_STRENGTH:LONG",
+            "EDW:%E9%BE%99%E8%99%BE-USDT:1791289794420:G5:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:%E9%BE%99%E8%99%BE-USDT:1791289794420:G5:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 82,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "original_feature": {
+        "observed_ts": 1791289794420,
+        "direction_hint": null,
+        "direction_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+        "long_evidence_domain_count": 3,
+        "short_evidence_domain_count": 3,
+        "early_detection_quality_0_100": 82
+      },
+      "original_evidence": [
+        {
+          "domain": "OI_ACCELERATION",
+          "side": "BOTH",
+          "status": "CLOSED",
+          "self_percentile": 0.9583333333333334,
+          "robust_z": 5.446021646430555
+        },
+        {
+          "domain": "RELATIVE_STRENGTH",
+          "side": "LONG",
+          "status": "CLOSED",
+          "btc_1h_pct_points": 10.282601128097891,
+          "eth_1h_pct_points": 10.33054425134623,
+          "btc_4h_pct_points": 15.268150263617432,
+          "eth_4h_pct_points": 15.733667210765567
+        },
+        {
+          "domain": "VOLUME_ACCELERATION_PROXY",
+          "side": "BOTH",
+          "status": "CLOSED",
+          "self_percentile": 0.9305555555555556,
+          "proxy_note": "rolling_24h_turnover_change_not_interval_volume"
+        },
+        {
+          "domain": "PRICE_STATE_TRANSITION",
+          "side": "SHORT",
+          "status": "CLOSED",
+          "failure": false,
+          "acceleration": -0.49342072045829743
+        },
+        {
+          "domain": "RELATIVE_STRENGTH",
+          "side": "LONG",
+          "status": "CLOSED",
+          "btc_1h_pct_points": 10.282601128097891,
+          "eth_1h_pct_points": 10.33054425134623,
+          "btc_4h_pct_points": 15.268150263617432,
+          "eth_4h_pct_points": 15.733667210765567,
+          "sector_1h_pct_points": null,
+          "down_market_resilience": false,
+          "recovery_speed_ratio": null,
+          "repeated_level_hold": false
+        }
+      ],
+      "flow_primary": {
+        "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "check_completed": true,
+        "network_calls": 0,
+        "evidence": [
+          {
+            "evidence_id": "EV2:d3f8d395c23aa14ec45fe16999ee38b1728cb3baa47ae6f62269b7873642455d",
+            "asset_id": "HTX:USDT_M_PERPETUAL:龙虾-USDT",
+            "htx_contract": "龙虾-USDT",
+            "block_id": "N05",
+            "metric_family": "EXACT_FUTURES_TAKER_FLOW_4H",
+            "provider_id": "HTX_FUTURES_RAW_FLOW",
+            "upstream_id": "HTX_OFFICIAL_RAW_FILLS",
+            "origin_event_id": "龙虾-USDT:1791275400000:1791289800000",
+            "dependency_group": "HTX_RAW_FILLS:龙虾-USDT:1791275400000:1791289800000",
+            "source_ts": 1791289800000,
+            "observed_ts": 1791289870125,
+            "first_known_ts": 1791289870125,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "EXACT_FOUR_HOURS",
+            "coverage_fraction": 0.16666666666666666,
+            "unit": "USDT",
+            "value": 19480.866199999466,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "e19eb2529a9ec2aba8c690b5a09c48ae5fbf3e5988f8b29e8413674118dc53dd",
+            "expires_at": 1791290100000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "physical_root_key": "HTX_RAW_FILLS:龙虾-USDT:1791275400000:1791289800000",
+            "window_start_ts": 1791275400000,
+            "window_end_ts": 1791289800000,
+            "buy_quote_turnover_usdt": 163041.87919999944,
+            "sell_quote_turnover_usdt": 143561.01299999998,
+            "raw_trade_count": 1583,
+            "factual_1m_trade_count": 1583,
+            "verified_minutes": 240,
+            "raw_minute_root_sha256": "fbf202fc4f444d65b257f959f88429baf612bbf5916e18cd8fb822af24a0b0ef",
+            "source_clock_policy": "IMMUTABLE_EXACT_RAW_MINUTES",
+            "publication_freshness_ms": 300000,
+            "window_alignment": "LATEST_VERIFIED_CLOSED_RAW_MINUTE_INDEPENDENT_OF_HOURLY_OI",
+            "not_candle_signed_estimate": true,
+            "common_upstream_not_independent_vote": true,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "nansen_required": false
+          }
+        ],
+        "receipts": [
+          {
+            "check_completed": true,
+            "status": "CLOSED",
+            "contract": "龙虾-USDT",
+            "window": "4h",
+            "verified_minutes": 240,
+            "raw_trade_count": 1583,
+            "factual_1m_trade_count": 1583,
+            "raw_minute_root_sha256": "fbf202fc4f444d65b257f959f88429baf612bbf5916e18cd8fb822af24a0b0ef",
+            "window_start_ts": 1791275400000,
+            "window_end_ts": 1791289800000,
+            "source_http": 0
+          }
+        ],
+        "internal_only": true,
+        "raw_acquisition_diagnostic": {
+          "status": "WARMING_OR_GAPPED_RAW_24H",
+          "observed_ts": 1791289876676,
+          "new_verified_minutes": 499,
+          "unverified_recent_minutes": 941,
+          "persisted_minutes": 499,
+          "storage_bytes": 373560,
+          "source_clocks": {
+            "trades": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289869480,
+              "received_ts": 1791289869982,
+              "age_ms": 7196
+            },
+            "minutes": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289869632,
+              "received_ts": 1791289870125,
+              "age_ms": 7044
+            },
+            "metadata": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791289869478,
+              "received_ts": 1791289869623,
+              "age_ms": 7198
+            }
+          },
+          "network_calls": 0,
+          "internal_only": true
+        }
+      },
+      "direction_transfer_loss_proven": false
+    }
+  ],
+  "project_complete": false
+}

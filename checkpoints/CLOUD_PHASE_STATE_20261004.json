@@ -52,88 +52,38 @@
     "acquired_ts": 1791287377490,
     "expires_ts": 1791293971787
   },
-  "next_action": "EXACT_1532_DIRECTION_CONFIRMED_UNCLOSED; REPAIR_LOSSLESS_RAW_TAPE_STORAGE_WITH_SAME_1500000_BYTE_DURABLE_CAP_THEN_COMPOSED_CHAIN",
+  "next_action": "READ_FRESH_NATURAL_POST197_REPORT_AND_SOURCE_TO_TELEGRAM_CHAIN; DO_NOT_FORCE_DIRECTION_OR_REUSE_OLD_SNAPSHOT",
   "last_verified_release": {
-    "schema": "TOP2_SOURCE_HTTP_FAIRNESS_RELEASE_V1",
-    "PR": 196,
-    "merged_main": "fb3d99c41bfcfcd03c9f2f0a84326b544aa8f590",
-    "tested_head": "7efff7a946faa3f1b007b793d969aad53a3c303f",
-    "cloud_run": 37467229450,
-    "artifact": 11414617806,
-    "zip_sha256": "d7a59297055058bb36fbf21f6e39c73ed77c3663c7120dd0a622213311b16ca6",
-    "status": "MERGED_COMPOSED_SOURCE_SHARE_VERIFIED_FRESH_JOINT_TOP2_PENDING",
+    "schema": "LOSSLESS_RAW_TAPE_STORAGE_RELEASE_V1",
+    "PR": 197,
+    "merged_main": "6a46a110facb150b54acfbbeb2e026415e583279",
+    "tested_head": "e1e5b14837f6a3398ec02ba72f6e69b0868f87b0",
+    "cloud_run": 37468997663,
+    "artifact": 11415509556,
+    "zip_sha256": "8c25f74544480d90b49f786d77a357c73848273e2e8ab98cee5b42a395653b02",
+    "status": "MERGED_COMPOSED_N05_STORAGE_VERIFIED_FRESH_ACTUAL_PENDING",
     "sourceHTTP": 0,
     "MAIN": 0,
     "production_D1": 0,
     "Telegram": 0,
-    "composed_source_cases": 9,
+    "raw_storage_consumer_cases": 17,
+    "composed_delivery_cases": 22,
     "generation_validation": "PASS",
     "integration_checks": 37,
-    "proof": "checkpoints/top2-source-http-fairness-release-20261006.json",
-    "original_actual_routes": [
-      {
-        "contract": "FIL-USDT",
-        "lane": "HYPERLIQUID_NATIVE",
-        "status": "ACQUISITION_RETURNED"
-      },
-      {
-        "contract": "FIL-USDT",
-        "lane": "GTRADE_NATIVE",
-        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
-      },
-      {
-        "contract": "FIL-USDT",
-        "lane": "GMX_NATIVE",
-        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
-      },
-      {
-        "contract": "FIL-USDT",
-        "lane": "LIGHTER_NATIVE",
-        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
-      },
-      {
-        "contract": "龙虾-USDT",
-        "lane": "GTRADE_NATIVE",
-        "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
-      }
-    ],
-    "component_replay": {
-      "schema": "TOP2_NATIVE_SOURCE_SHARE_COMPONENT_REPLAY_V1",
-      "scope": "CONTROLLED_HL_ACCOUNT_PAYLOADS_WITH_RETAINED_ACTUAL_GTRADE_CATALOG_AT_ITS_ORIGINAL_CLOCK_NOT_ACTUAL_MARKET_LEVEL_ACCEPTANCE",
-      "original_source_head": "f726ed08575bedd4240f7c98f566e5cee678c3a3",
-      "original_catalog_clock": 1791274654409,
-      "sourceHTTP": 0,
-      "MAIN": 0,
-      "production_D1": 0,
-      "Telegram": 0,
-      "cases": [
-        {
-          "case": "BASELINE_FIRST_NATIVE_FIVE_SECOND_CATALOG_DENIED",
-          "first_accounts": 3,
-          "total_http": 5,
-          "second_status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
-        },
-        {
-          "case": "TWO_SLOT_NATIVE_SAMPLE_AND_SECOND_REAL_CATALOG",
-          "first_accounts": 2,
-          "total_http": 5,
-          "second_status": "GTRADE_SYMBOL_UNSUPPORTED",
-          "retained_catalog_actual": true,
-          "first_account_payloads_controlled": true,
-          "new_second_levels": false,
-          "entry_authorized": false
-        }
-      ]
-    },
-    "hashes": "024370b0fe9f8b0c3d8a162af81af1c5f932a7d96850b5a211e5d0242770beed  runtime/runner-main.mjs\ne81d404ece5eda7e23c723b18c666eeb20fb26a04c96515db10f8c9b59640a53  runtime/src/liquidation-source-weighting.mjs\n4677cb2ccf76ff5b2426258f405eb60a940215bbd210d95f569cbd1eb01612ab  runtime/src/liquidation-extension/combined-runner-service.mjs\na859fd8b4009d964903376d216357b157f4ad532fe69d387544b6a9ca98674fa  runtime/src/liquidation-extension/runner-extension.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
-    "manual_single_candidate_preserved": true,
-    "total_http_cap": 5,
-    "no_new_second_asset_levels_invented": true
+    "physical_storage_cap_bytes": 1500000,
+    "inflation_guard_bytes": 8000000,
+    "exact_240_required": true,
+    "original_clocks_preserved": true,
+    "actual_missing_FIL_tape_reconstructed": false,
+    "high_volume_payload_scope": "CONTROLLED_NOT_ACTUAL_MARKET_INPUT",
+    "retained_actual_N05_cache_replay": true,
+    "hashes": "90475d0e3d711a9380f8a306ad55ef6e5875a6a0bee3c1762d5b58d6060551ed  runtime/src/htx-signed-tape.mjs\n9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71  cloudflare/public-collector/injected-worker-tail.js\n0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f  runtime/src/canonical-publication.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
+    "proof": "checkpoints/lossless-raw-tape-storage-release-20261006.json"
   },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791292171787,
+  "updated_ts": 1791292493746,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1165,9 +1115,11 @@
     "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1532MSK_20261006.json"
   },
   "latest_direction_diagnosis": {
-    "checkpoint": "checkpoints/EXACT_1327_DIRECTION_AND_DELIVERY_20261006.json",
-    "reader_cloud_run": 37452033081,
-    "status": "EXACT_FRESH_IDENTITY_CONFIRMED_BUT_EARLY_DIRECTION_UNCLOSED; DEEP_ROOT_CAUSE_AND_WEEKLY_JOURNAL_PENDING"
+    "checkpoint": "checkpoints/EXACT_1532_DIRECTION_FLOW_DIAGNOSIS_20261006.json",
+    "reader_cloud_run": 37468350184,
+    "artifact": 11414734372,
+    "zip_sha256": "86a8999ce37a50ce1b2114ce2e6f499ada50c6b369dd845afa1062fc0eb58722",
+    "status": "EXACT_ORIGINAL_FEATURES_CONFIRMED_DIRECTION_NOT_CLOSED_NO_TRANSFER_LOSS; FIL_RAW_STORAGE_BOUND_REPAIRED_PR197_FRESH_PENDING"
   },
   "latest_weekly_delivery_diagnosis": {
     "checkpoint": "checkpoints/WEEKLY_DELIVERY_AND_DEEP_PROOF_20261006.json",
@@ -1571,5 +1523,32 @@
     "manual_single_candidate_preserved": true,
     "total_http_cap": 5,
     "no_new_second_asset_levels_invented": true
+  },
+  "pending_lossless_raw_tape_storage": {
+    "schema": "LOSSLESS_RAW_TAPE_STORAGE_RELEASE_V1",
+    "PR": 197,
+    "merged_main": "6a46a110facb150b54acfbbeb2e026415e583279",
+    "tested_head": "e1e5b14837f6a3398ec02ba72f6e69b0868f87b0",
+    "cloud_run": 37468997663,
+    "artifact": 11415509556,
+    "zip_sha256": "8c25f74544480d90b49f786d77a357c73848273e2e8ab98cee5b42a395653b02",
+    "status": "MERGED_COMPOSED_N05_STORAGE_VERIFIED_FRESH_ACTUAL_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "raw_storage_consumer_cases": 17,
+    "composed_delivery_cases": 22,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "physical_storage_cap_bytes": 1500000,
+    "inflation_guard_bytes": 8000000,
+    "exact_240_required": true,
+    "original_clocks_preserved": true,
+    "actual_missing_FIL_tape_reconstructed": false,
+    "high_volume_payload_scope": "CONTROLLED_NOT_ACTUAL_MARKET_INPUT",
+    "retained_actual_N05_cache_replay": true,
+    "hashes": "90475d0e3d711a9380f8a306ad55ef6e5875a6a0bee3c1762d5b58d6060551ed  runtime/src/htx-signed-tape.mjs\n9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71  cloudflare/public-collector/injected-worker-tail.js\n0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f  runtime/src/canonical-publication.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
+    "proof": "checkpoints/lossless-raw-tape-storage-release-20261006.json"
   }
 }
