@@ -33,18 +33,22 @@ export function chooseWeightedLiquidationLane({lanes,seed,rows=[]}={}){
 
 // Availability is an operational statistic, never predictive accuracy. An exact
 // native route and a projected bucket are different roles, not substitutes.
-export function planLiquidationSourceOrder({lanes=[],rows=[],costs={},exact=[],cached=[]}={}){
- const profile=buildLiquidationSourceWeightProfile(lanes,rows),known=new Set(exact),reuse=new Set(cached);
+export function planLiquidationSourceOrder({lanes=[],rows=[],costs={},exact=[],cached=[],clock_capable=[]}={}){
+ const profile=buildLiquidationSourceWeightProfile(lanes,rows),known=new Set(exact),reuse=new Set(cached),clockCapable=new Set(clock_capable);
  const plan=profile.map(row=>{
   const projected=row.source_id==='OXARCHIVE_HL_BUCKETS',cost=Number(costs[row.source_id]);
   const role=projected?'PROJECTED_BUCKET_CONTEXT':'NATIVE_POSITION_CONTEXT';
   const coverage=known.has(row.source_id)?'EXACT_ROUTE_PROVEN':'CATALOG_DISCOVERY_REQUIRED';
-  return {...row,role,coverage,cached_snapshot:reuse.has(row.source_id),declared_http:Number.isSafeInteger(cost)&&cost>=0?cost:null,
+  // A mapped account endpoint and frequent successful receipts do not prove
+  // the time of its open positions. Give a clock-verifiable producer a chance
+  // before receipt-only routes spend the shared envelope. This is capability,
+  // never a claim that this particular acquisition is fresh or accepted.
+  return {...row,role,coverage,cached_snapshot:reuse.has(row.source_id),position_clock_verifiable:!projected&&clockCapable.has(row.source_id),clock_capability_priority:!projected&&clockCapable.has(row.source_id)?1:0,declared_http:Number.isSafeInteger(cost)&&cost>=0?cost:null,
    priority:projected?0:reuse.has(row.source_id)?3:known.has(row.source_id)?2:1,
    utility_basis:row.predictive_weight_eligible?'QUALIFIED_PREDICTIVE_FACTOR_WITHIN_ROLE':'OPERATIONAL_AVAILABILITY_ONLY',
    utility_per_reserved_http:row.selection_weight/Math.max(1,Number.isSafeInteger(cost)?cost:999)};
- }).sort((a,b)=>b.priority-a.priority||b.utility_per_reserved_http-a.utility_per_reserved_http||a.source_id.localeCompare(b.source_id));
- return {ordered:plan.map(row=>row.source_id),profile:plan,policy:'EXACT_NATIVE_ROLE_THEN_AVAILABILITY_PER_COST_WITH_PROJECTED_CONTEXT_SEPARATE'};
+ }).sort((a,b)=>b.clock_capability_priority-a.clock_capability_priority||b.priority-a.priority||b.utility_per_reserved_http-a.utility_per_reserved_http||a.source_id.localeCompare(b.source_id));
+ return {ordered:plan.map(row=>row.source_id),profile:plan,policy:'VERIFIABLE_POSITION_CLOCK_THEN_EXACT_NATIVE_ROLE_AND_AVAILABILITY_PER_COST'};
 }
 
 export function nextLiquidationSourceReliability(current,outcome){
