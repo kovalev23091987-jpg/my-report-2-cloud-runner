@@ -21,6 +21,7 @@ const files=[
  'src/worker.js',
  'src/block-decision-use-audit.mjs',
  'src/bounded-money-flow-diagnostic.mjs',
+ 'src/published-token-calendar.mjs',
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
  'src/verified-futures-flow-binding.mjs',
