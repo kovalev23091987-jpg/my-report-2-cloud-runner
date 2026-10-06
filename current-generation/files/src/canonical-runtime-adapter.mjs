@@ -20,7 +20,7 @@ import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
 import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
-import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,buildCanonicalExecutionRoleReceipts,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
+import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,buildCanonicalExecutionRoleFacts,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
 import {auditCandidateBlocks} from './candidate-evidence-v2-runtime.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
@@ -309,7 +309,7 @@ export function buildRuntimeCanonicalBundle({
  if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
   ...sourceReceipts(public_evidence),
-  ...buildCanonicalExecutionRoleReceipts({contract,run_id,snapshot_id,observed_ts,execution_context_source}),
+  ...buildCanonicalExecutionRoleFacts({contract,run_id,snapshot_id,observed_ts,execution_context_source}).map(row=>({...normalizeInheritedFactEnvelope([row]).facts[0],evidence_ids:row.evidence_ids,snapshot_id:row.snapshot_id,run_id:row.run_id,physical_root_key:row.physical_root_key,proof_purpose:row.proof_purpose,entry_authorized:false,score_contribution:0})),
   ...(futures_component?.ok===true&&futures_component?.data?[{
     metric:'HTX_EXECUTION_SNAPSHOT',source:'HTX',venue:'HTX',status:'CLOSED',market_type:'USDT_M_PERPETUAL',
     source_ts:futures_component?.available_ts??futures_component?.data?.ts??observed_ts,observed_ts,unit:null,value:null,
