@@ -1,3 +1,4 @@
+import {capturedSignedTapeFourHourFlow} from './htx-signed-tape.mjs';
 import {collectPublishedTokenCalendar,publishedCalendarCandidateEligible} from './published-token-calendar.mjs';
 import {collectWikimediaAttention,exactWikimediaPage} from './wikimedia-attention-context.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
@@ -26,6 +27,8 @@ const rotation=(value,mod)=>{let hash=2166136261;for(const ch of String(value??'
 const bounded=(value,min,max)=>Math.min(max,Math.max(min,value));
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
 export function buildHtxFuturesFlowPrimary({contract,trajectory,now=Date.now()}={}){
+ const verifiedFlow=capturedSignedTapeFourHourFlow({contract,now});
+ if(verifiedFlow.check_completed===true)return verifiedFlow;
  const market=String(contract||'').trim().toUpperCase(),root={status:'HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED',check_completed:false,network_calls:0,evidence:[],internal_only:true};
  const window=trajectory?.windows?.['4h'],flow=window?.order_flow,price=window?.price,quality=flow?.cvd_delta_quality,factual=quality?.factual_coverage,integrity=quality?.record_integrity;
  const start=flow?.window_start_ts,end=flow?.window_end_ts,buy=flow?.taker_buy_usdt,sell=flow?.taker_sell_usdt,count=flow?.sample_trades,size=trajectory?.contract_info?.contract_size;
