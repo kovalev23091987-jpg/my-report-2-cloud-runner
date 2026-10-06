@@ -33,7 +33,7 @@ import {buildDynamicLiquidationPanel} from './dynamic-liquidation-panel.mjs';
 import {evaluateTechnicalMovePotential} from './technical-move-potential.mjs';
 import {normalizeDirectionCandidate} from './market-contracts.mjs';
 
-export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v15-assigned-direction-state-20261005';
+export const CANONICAL_RUNTIME_ADAPTER_VERSION='canonical-runtime-adapter-v16-confirmed-observe-direction-20261006';
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
@@ -137,7 +137,9 @@ function hardGates({discovery,publication,executionHandoff}={}){
 export function resolveCanonicalDirection({route=null,discovery=null,decision_ts=Date.now()}={}){
  const facts=[];
  const routed=normalizeDirectionCandidate(route?.direction,{origin:'FINAL_ROUTE',source_ts:route?.source_ts??decision_ts,confirmation_state:text(route?.state)});
- if(['WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(text(route?.state))&&['LONG','SHORT'].includes(routed.direction))facts.push({direction:routed.direction,evidence_id:`FINAL_ROUTE:${text(route?.state)}:${routed.direction}`,origin:'FINAL_ROUTE'});
+ // OBSERVE is also produced by the committed final-decision router. Retain its
+ // confirmed analytical direction without authorizing an entry.
+ if(['OBSERVE','WAIT_FOR_TRIGGER','ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED'].includes(text(route?.state))&&['LONG','SHORT'].includes(routed.direction))facts.push({direction:routed.direction,evidence_id:`FINAL_ROUTE:${text(route?.state)}:${routed.direction}`,origin:'FINAL_ROUTE'});
  const early=qualifiedEarlyReceipt(discovery,decision_ts);
  if(early.closed)for(const evidenceId of (early.evidence_ids.length?early.evidence_ids:[`EARLY:${text(discovery?.early_candidate_wave_id)}:${early.direction}`]))facts.push({direction:early.direction,evidence_id:text(evidenceId),origin:'EARLY_CYCLE'});
  const unique=[...new Map(facts.map(row=>[row.evidence_id,row])).values()];
