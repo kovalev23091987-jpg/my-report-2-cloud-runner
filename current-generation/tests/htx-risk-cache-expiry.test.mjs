@@ -23,7 +23,7 @@ function retainedCacheDb(row,{asset=true,shared=true}={}){
 test('actual retained BR risk facts were valid when cache was read but expired before the same canonical decision',()=>{
  const row=fixture.rows.find(r=>r.contract==='BR-USDT');
  assert.equal(row.source_run,37408724152);
- for(const e of row.evidence){assert.equal(validateEvidenceV2(e,{decision_ts:row.cache_read_ts}).usable,true);assert.equal(validateEvidenceV2(e,{decision_ts:row.decision_ts}).reason,'EVIDENCE_EXPIRED');}
+ for(const e of row.evidence){assert.equal(validateEvidenceV2(e,{decision_ts:row.cache_read_ts}).usable,true);assert.equal(validateEvidenceV2(e,{decision_ts:row.decision_ts}).status,'EVIDENCE_EXPIRED');}
  assert.equal(row.evidence[0].expires_at-row.cache_read_ts,4644);
 });
 test('near-expiry exact and shared retained BR caches require existing three-request admission instead of relabelled fresh facts',async()=>{
