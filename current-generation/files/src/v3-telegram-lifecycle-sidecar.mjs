@@ -1,3 +1,4 @@
+import {assessActionability,renderCanonicalTelegram} from './canonical-publication.mjs';
 import {canonicalLifecycleAuthority} from './canonical-lifecycle-authority.mjs';
 import {prepareLifecycleTransition} from './v3-telegram-runtime.mjs';
 
@@ -88,11 +89,20 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
   const removal=finalHard?'HARD_VETO':finalRisk==='INVALIDATED'?'INVALIDATED':terminal?lifecycle:directionDestroyed?'DIRECTION_DESTROYED':dataUnusable?'DATA_UNUSABLE':null;
   if(removal && !['OBSERVE','WAIT','ENTRY'].includes(upper(previous?.status)))return {status:'RISK_BLOCKED',reason:removal,ctx:null};
   // Current canonical publication owns new idea direction; removal keeps the existing prior-visible cleanup path.
+  let observationPublication=null;
   if(canonical_required&&!removal){
     const authority=canonicalLifecycleAuthority({row:canonical,handoff,early,now_ts:now});
     if(authority.status!=='CLOSED')return {...authority,ctx:null};
     if(conflict||dir&&dir!==authority.direction)return {status:'CANONICAL_DIRECTION_MISMATCH',ctx:null};
     dir=authority.direction;
+    if(authority.canonical_state==='OBSERVE'){
+      const observationCanonical=JSON.parse(canonical.canonical_json);
+      const action=assessActionability({canonical:observationCanonical,lifecycle_event:'OBSERVE'});
+      if(action.deliver!==true)return{status:action.reason,ctx:null};
+      const presentation=renderCanonicalTelegram({canonical:observationCanonical,lifecycle_event:'OBSERVE'});
+      if(presentation.ok!==true)return{status:presentation.status,ctx:null};
+      observationPublication=canonical;
+    }
   }
   if(!dir&&removal&&priorDir)dir=priorDir;
   if(!dir)return {status:conflict?'DIRECTION_CONFLICT_FAIL_CLOSED':'DIRECTION_NOT_CLOSED',ctx:null};
@@ -118,6 +128,7 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
   ].join('|');
   const ctx={
     contract,direction:dir,wave_id:wave,rules_version:V3_TELEGRAM_SHADOW_RULES_VERSION,
+    ...(observationPublication?{canonical_observation_publication:observationPublication}:{}),
     dispatch_enabled:dispatch_enabled===true,
     deep_check_completed:deepCompleted,
     identity_current:true,
