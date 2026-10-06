@@ -80,6 +80,24 @@ test('backlog dispatch binds its own publication when delivery executes in a lat
  assert.equal(binding.run_id,'RUN-A');assert.equal(binding.snapshot_id,'SNAP-A');
 });
 
+test('manual refusal records its failing status when Telegram text is READY and leaves no binding',async t=>{
+ const db=new DB();t.after(()=>db.close());
+ const {c,p}=await seedFresh(db);
+ c.free_sources={registry:{entries:[{id:'UNTRANSLATED_INTERNAL_SOURCE',decision_usable:true}]}};
+ c.analytical_fingerprint=publication.canonicalFingerprint(c);
+ db.raw.prepare('UPDATE canonical_publication_shadow SET canonical_json=?,analytical_fingerprint=? WHERE publication_id=?').run(JSON.stringify(c),c.analytical_fingerprint,p.publication_id);
+ assert.equal(publication.renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'}).status,'READY');
+ assert.equal(publication.renderCanonicalManual({canonical:c}).status,'FORBIDDEN_USER_TERMINOLOGY');
+ const result=await reconciler.reconcilePendingPublications(db,{now_ts:NOW,source_run_id:'RUN-B'});
+ assert.equal(result.results[0].status,'PRESENTATION_FAILED');
+ assert.equal(result.results[0].surface,'MANUAL');
+ assert.equal(result.results[0].reason,'FORBIDDEN_USER_TERMINOLOGY');
+ const row=db.raw.prepare("SELECT state,last_error,telegram_message_id,sent_ts FROM v3_telegram_dispatch_shadow WHERE idempotency_key='FRESH'").get();
+ assert.equal(row.state,'FAILED_FINAL');assert.equal(row.last_error,'FORBIDDEN_USER_TERMINOLOGY');
+ assert.equal(row.telegram_message_id,null);assert.equal(row.sent_ts,null);
+ assert.equal(db.raw.prepare("SELECT count(*) n FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key='FRESH'").get().n,0);
+});
+
 test('legacy early publication repairs its wave id from canonical evidence and binds',async t=>{
  const db=new DB();t.after(()=>db.close());
  const c=canonical({run:'RUN-LEGACY',snapshot:'SNAP-LEGACY'});

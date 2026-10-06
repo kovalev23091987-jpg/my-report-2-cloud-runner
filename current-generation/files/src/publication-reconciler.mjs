@@ -126,7 +126,7 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
   try{presentationInputs=JSON.parse(exact.pub.presentation_inputs_json||'{}')||{};}catch{presentationInputs={};}
   const savedManual=text(presentationInputs.manual_text||presentationInputs.manual?.text);
   const man=savedManual?{ok:true,status:'SAVED_CANONICAL_MANUAL',text:savedManual}:renderCanonicalManual({canonical,lifecycle_event:row.lifecycle_event});
-  if(!tg.ok||!man.ok){await mark(db,row.idempotency_key,'FAILED_FINAL',tg.status||man.status,now);out.push({key:row.idempotency_key,status:'PRESENTATION_FAILED'});continue;}
+  if(!tg.ok||!man.ok){const surface=!tg.ok?'TELEGRAM':'MANUAL',reason=(!tg.ok?tg.status:man.status)||'PRESENTATION_FAILED';await mark(db,row.idempotency_key,'FAILED_FINAL',reason,now);out.push({key:row.idempotency_key,status:'PRESENTATION_FAILED',surface,reason});continue;}
   const f=await finalizePublication(db,{publication_id:exact.pub.publication_id,lifecycle_event:row.lifecycle_event,direction:row.direction,manual_text:man.text,telegram_text:tg.text,prior_sent:await priorSent(db,row),now_ts:now});
   if(f.deliver!==true){await mark(db,row.idempotency_key,'FAILED_FINAL',f.reason||f.status,now);out.push({key:row.idempotency_key,status:'SUPPRESSED_ACTIONABILITY',reason:f.reason||f.status});continue;}
   if(f.create_recheck===true){
