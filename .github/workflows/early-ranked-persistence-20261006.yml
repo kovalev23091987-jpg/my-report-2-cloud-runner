@@ -18,10 +18,10 @@ jobs:
         with:
           script: |
             const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
-            if(head!=='cc968f96a16ae7ba9d2ce00fd110c66651c93c99')throw Error('MAIN_MOVED');
+            if(head!=='72a0079d4580a5d7bd9113dab09ef025164c1b53')throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(phase.lease?.owner!=='HTX:20261006T0942:observation-gate-diagnosis'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(phase.lease?.owner!=='HTX:2026-10-06T10:37:45.942Z:chat-continuation-pr188'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Read exact existing 12:27 scheduled report
         uses: actions/github-script@v7
         with:
