@@ -55,7 +55,7 @@ test('actual retained refusal remains a refusal; controlled new snapshot creates
  const before=JSON.stringify(original),input=controlledCurrent(),{db,key}=database(input);t.after(()=>db.close());
  const oldBefore=db.sqlite.prepare('SELECT * FROM v3_telegram_dispatch_shadow WHERE idempotency_key=?').get(key);
  const result=await prepareLifecycleTransition(db,input.ctx,input.now);
- assert.equal(result.dispatch?.state,'PENDING');assert.equal(result.dispatch_decision.reason,'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_SOURCE_ROLE_REFUSAL');
+ assert.equal(result.dispatch?.state,'PENDING');assert.equal(result.dispatch_decision.reason,'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_PREPUBLICATION_REFUSAL');
  assert.equal(result.dispatch.idempotency_key,key+'|RECOVERY|'+input.row.snapshot_id);
  assert.deepEqual(db.sqlite.prepare('SELECT * FROM v3_telegram_dispatch_shadow WHERE idempotency_key=?').get(key),oldBefore);
  assert.equal(JSON.stringify(original),before);
@@ -68,7 +68,7 @@ test('sent, pending, sending, unknown network failure, binding and stale/future 
  for(const override of [
   {state:'SENT',sent_ts:old.created_ts,telegram_message_id:'123'},
   {state:'PENDING'},{state:'SENDING'},{state:'FAILED_RETRYABLE'},
-  {last_error:'RELAY_TIMEOUT'},{sent_ts:old.created_ts},{telegram_message_id:'123'},
+  {last_error:'RELAY_TIMEOUT'},{last_error:'READY'},{last_error:'REPORTABLE_TARGET_PROOF_NOT_CLOSED'},{last_error:'DISPLAY_IDENTITY_NOT_CLOSED'},{sent_ts:old.created_ts},{telegram_message_id:'123'},
  ]){const input=controlledCurrent(),{db}=database(input,override);try{assert.equal((await prepareLifecycleTransition(db,input.ctx,input.now)).dispatch,null);}finally{db.close();}}
  const input=controlledCurrent();
  for(const change of [
@@ -104,4 +104,26 @@ test('same mechanism handles another exact contract; races, existing sent ideas 
   for(let i=0;i<8;i++)b.db.sqlite.prepare(`INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,last_error,created_ts,updated_ts,shadow_only) VALUES(?,?,?,'LONG',?,'OBSERVE',?,'FAILED_FINAL','UNKNOWN_FAILURE',?,?,1)`).run('x'+i,'key'+i,input.ctx.contract,input.ctx.wave_id,input.ctx.rules_version,input.now-i,input.now-i);
   assert.equal((await prepareLifecycleTransition(b.db,input.ctx,input.now)).dispatch,null);
  }finally{b.db.close();}
+});
+
+
+test('a prior state refusal no longer suppresses a different fully qualified snapshot; the old refusal stays immutable',async t=>{
+ const input=controlledCurrent(),{db,key}=database(input,{last_error:'OBSERVE_STATE_MISMATCH'});t.after(()=>db.close());
+ const before=db.sqlite.prepare('SELECT * FROM v3_telegram_dispatch_shadow WHERE idempotency_key=?').get(key);
+ const result=await prepareLifecycleTransition(db,input.ctx,input.now);
+ assert.equal(result.dispatch?.state,'PENDING');
+ assert.equal(result.dispatch_decision.reason,'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_PREPUBLICATION_REFUSAL');
+ assert.equal(result.dispatch.idempotency_key,key+'|RECOVERY|'+input.row.snapshot_id);
+ assert.deepEqual(db.sqlite.prepare('SELECT * FROM v3_telegram_dispatch_shadow WHERE idempotency_key=?').get(key),before);
+ assert.equal((await prepareLifecycleTransition(db,input.ctx,input.now+1)).dispatch,null);
+});
+
+test('state-refusal SQL rechecks network/binding and active-dispatch guards at insert time',async t=>{
+ const {findUnsentSourceRoleRefusal,observationRecoveryInsert}=await imp('observation-prepublication-recovery.mjs');
+ const input=controlledCurrent(),{db,key}=database(input,{last_error:'OBSERVE_STATE_MISMATCH'});t.after(()=>db.close());
+ const qualified=qualifiedObservationRecovery({ctx:input.ctx,previous_status:'OBSERVE',current_status:'OBSERVE',dispatch:{dispatch:false,reason:'NO_STATE_CHANGE'},now:input.now});
+ assert.ok(await findUnsentSourceRoleRefusal(db,{ctx:input.ctx,base_key:key,qualified}));
+ db.sqlite.prepare("UPDATE v3_telegram_dispatch_shadow SET state='SENDING' WHERE idempotency_key=?").run(key);
+ const result=await observationRecoveryInsert(db,{row:{dispatch_id:'RACE',idempotency_key:key+'|RECOVERY|'+input.row.snapshot_id},ctx:input.ctx,base_key:key,qualified,now:input.now}).run();
+ assert.equal(Number(result.meta.changes),0);
 });
