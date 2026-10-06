@@ -1,0 +1,177 @@
+{
+  "schema": "report2-authoritative-current-status-v1",
+  "updated_utc": "2026-10-06T05:07:54.125Z",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "working_ref": "refs/heads/main",
+  "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
+  "base_before_documentation_consolidation": "4383ed6f328f703bd5c9b4c7f9651e37dfd52afb",
+  "project_complete": false,
+  "acceptance": {
+    "CORE_BLOCKS": "IN_PROGRESS",
+    "LIQUIDATION_COVERAGE": "PENDING",
+    "JOINT_REPORT": "PENDING",
+    "TELEGRAM": "PENDING"
+  },
+  "latest_verified_release": {
+    "PR": 178,
+    "proof": "checkpoints/paired-finalized-supply-consumer-release-evidence-20261006.json",
+    "actual_original_clock_replay": true,
+    "controlled_decrease_not_live": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "latest_actual_report": {
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
+    "cloud_run": 37413576711,
+    "head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
+    "run_id": "1791260701995-1791260712949",
+    "generated_utc": "2026-10-06T04:26:37.940Z",
+    "generated_msk": "2026-10-06T07:26:37.940+03:00",
+    "top2": [
+      "UNI-USDT",
+      "BR-USDT"
+    ],
+    "counts": [
+      {
+        "contract": "UNI-USDT",
+        "participating": 9,
+        "participating_ids": [
+          "N02",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "neutral": 7,
+        "unscored": 2,
+        "nonzero_score": 0,
+        "canonical_state": "REJECTED",
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_GMX_fee_aware_estimates": 2,
+          "above": 17.643023871293,
+          "below": 2.275604967963,
+          "quote": "USD",
+          "source_clock_known": false,
+          "receipt_only_context": true,
+          "not_HTX_levels": true,
+          "score_effect": 0
+        }
+      },
+      {
+        "contract": "BR-USDT",
+        "participating": 7,
+        "participating_ids": [
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "neutral": 6,
+        "unscored": 1,
+        "nonzero_score": 0,
+        "canonical_state": "REJECTED",
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_estimates": 0
+        }
+      }
+    ],
+    "Telegram_SENT": false,
+    "exact_diagnosis": "checkpoints/ACTUAL_0726_OBSERVATION_DIAGNOSIS_20261006.json",
+    "publication_blockers": {
+      "UNI": "CANONICAL_DIRECTION_NOT_CLOSED; EARLY_QUALITY_64_BELOW_70; NO_CURRENT_OBSERVATION_PLAN",
+      "BR": "WAVE_NOT_CURRENT; CURRENT_HANDOFF_WAVE_NULL; NO_CURRENT_OBSERVATION_PLAN"
+    },
+    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE"
+  },
+  "pending": [
+    {
+      "task": "Fresh approved automatic OBSERVE or ENTRY Telegram delivery",
+      "requires": "One naturally admitted eligible fresh canonical run, unchanged approved text, SENT and message_id of the same snapshot",
+      "do_not": "Force direction, raise score, reuse stale report, remove current wave/trigger/cancellation/freshness gates"
+    },
+    {
+      "task": "Verify PR178 decrease context on natural actual inputs",
+      "requires": "Real negative finalized supply comparison and same-run N02 current context; controlled branches do not close live acceptance"
+    },
+    {
+      "task": "Remaining shared priority source coverage",
+      "blocks": [
+        "N01",
+        "N02",
+        "N05",
+        "N12",
+        "N15"
+      ],
+      "requires": "Separate technical route loss, denied admission/access, missing exact identity, meaningful absence and unsupported network; add only factually verified useful general routes"
+    },
+    {
+      "task": "Future liquidation coverage",
+      "requires": "Same-clock verified account positions or labelled proven estimates; existing unknown-position-clock estimates are receipt context only",
+      "new_free_candidates_not_enabled": [
+        "dYdX",
+        "Drift"
+      ]
+    },
+    {
+      "task": "Final cloud version cleanup",
+      "requires": "Refresh this status at final actual outcome; retain immutable original evidence; classify legacy open PRs and isolated branches before any removal"
+    }
+  ],
+  "source_accounting": {
+    "catalog": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
+    "logical_assignments": 32,
+    "logical_assignments_are_not_independent_providers": true,
+    "catalog_report_contains_historical_sections": true
+  },
+  "old_open_PRs": [
+    {
+      "number": 107,
+      "branch": "repair/tracked-coverage-boundary-20261004",
+      "head": "87823a889b0e257639a5f514cec9b9bc0d57359c",
+      "status": "OPEN_UNMERGED_NOT_PRODUCTION_ACCEPTANCE",
+      "readback": "Current adapter provider label already matches current qualifier; old alternate-label patch is not a new source proof. Current bucket-center exclusion must be preserved."
+    },
+    {
+      "number": 45,
+      "branch": "repair/manual-request-result-binding-v2-20261001",
+      "head": "24e9d6ac45016d01569aafd35ece64c2108642f3",
+      "status": "OPEN_UNMERGED_NOT_PRODUCTION_ACCEPTANCE"
+    },
+    {
+      "number": 43,
+      "branch": "repair/factual-retest-observe-20260930",
+      "head": "747392524327fd8a65e24a608d8f6c85ad31c94a",
+      "status": "OPEN_UNMERGED_NOT_PRODUCTION_ACCEPTANCE"
+    },
+    {
+      "number": 42,
+      "branch": "autonomous/compact-statistics-policy-20260930",
+      "head": "c02c4694f618ae8fe0b221eefc6b67f36bc3cb3a",
+      "status": "OPEN_UNMERGED_NOT_PRODUCTION_ACCEPTANCE"
+    }
+  ],
+  "history": {
+    "startup_before_consolidation": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
+    "blob_sha": "8291f28f66b5ac7186311d1291b99e6b202b59c4",
+    "phase_before_consolidation": "checkpoints/archive/phase-state-before-consolidation-20261006.json",
+    "branch_inventory": "checkpoints/archive/cloud-version-inventory-20261006.json"
+  },
+  "continuation": {
+    "own_phase_lease_required": true,
+    "foreign_active_lease_or_fence": "NO_MUTATION_NO_TESTS_NO_LIVE_SOURCE_CALLS",
+    "agent_background_running_after_turn": false,
+    "production_schedules_are_separate": true,
+    "automatic_continuation_created_by_cleanup": false
+  }
+}
