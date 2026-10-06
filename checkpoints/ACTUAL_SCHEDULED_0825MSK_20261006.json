@@ -1,0 +1,139 @@
+{
+  "schema": "actual-post-repair-joint-result-v1",
+  "created_utc": "2026-10-06T05:29:42.338297+00:00",
+  "cloud_run": 37418312423,
+  "head": "733e24a156c783d29743e960119bd58a90855a1d",
+  "run_id": "1791264245746-1791264254804",
+  "generated_utc": "2026-10-06T05:25:41.606Z",
+  "generated_msk": "2026-10-06T08:25:41.606000+03:00",
+  "report": {
+    "status": "CLOSED",
+    "reason": null,
+    "artifact": 11392113417,
+    "zip_sha256": "f999db454dc54c11ac91615e5b035720b749a6058decd0e94213b693223c5c9c",
+    "json_sha256": "cc671355463770bd49cfa8aadeaaf47b004c68abff767bcc7c3f46177673b93e",
+    "two_expected_two_exact_canonical": true,
+    "saved_original": "checkpoints/actual-scheduled-source-result-37418312423.json.gz",
+    "saved_gzip_sha256": "fec9db433afce30754f7f1dfdb2c79e51c6711f8a9e4ea3ded1f5613a72acc75"
+  },
+  "actual_top2": [
+    "FIL-USDT",
+    "BR-USDT"
+  ],
+  "candidates": [
+    {
+      "contract": "BR-USDT",
+      "snapshot_id": "S392:BR-USDT:1791264336039",
+      "participating": 7,
+      "participating_ids": [
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "neutral": 6,
+      "unscored": 0,
+      "nonzero_score": 1,
+      "score_contributions": {
+        "N12": 0.0265
+      },
+      "canonical_state": "REJECTED",
+      "direction": "SHORT",
+      "qualified_interest": 91,
+      "trigger_present": false,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_estimate_levels": 0,
+        "providers": [],
+        "source_clock_known": null,
+        "decision_eligible": false
+      }
+    },
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791264303995",
+      "participating": 9,
+      "participating_ids": [
+        "N02",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 7,
+      "unscored": 2,
+      "nonzero_score": 0,
+      "score_contributions": {},
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "qualified_interest": null,
+      "trigger_present": false,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_estimate_levels": 3,
+        "providers": [
+          "GMX public API"
+        ],
+        "source_clock_known": false,
+        "decision_eligible": false
+      }
+    }
+  ],
+  "Telegram_SENT": false,
+  "telegram": {
+    "artifact": 11392232855,
+    "zip_sha256": "a1123282519a70f504131d8c58830d0a519a42fd0479add8b6c81adc98e0f0ad",
+    "json_sha256": "321b8e935772d35370787957e3b976468b407b9b7b0bdbb2a8d58e0e4e637912",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "BR-USDT",
+          "status": "CANONICAL_STATE_NOT_PUBLISHABLE",
+          "reason": "CANONICAL_STATE_NOT_PUBLISHABLE",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "FIL-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 64,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "reader": {
+    "cloud_run": 37418379131,
+    "artifact": 11391509700,
+    "zip_sha256": "997378b01257a1c7efe0090bd8fe1a4b174e75de3360d299eff0422b1bc9d667",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "D1": 0,
+    "Telegram_send": 0
+  },
+  "project_complete": false,
+  "exact_diagnosis": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json"
+}
