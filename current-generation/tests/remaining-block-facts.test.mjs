@@ -91,7 +91,7 @@ test('actual full HTX catalog excludes every stock and exact forex correction, w
 });
 test('two exact finalized supply observations can provide neutral N03, but cannot prove buyback or a price effect',()=>{
  const identity={chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)},previous={chain:'ethereum',address:identity.contract_or_mint,supply:'1000',decimals:2,source_ts:NOW-2000,block_ref:'0x1',finalized:true},current={supply:'900',decimals:2,source_ts:NOW-1000,block_ref:'0x2',finalized:true};
- const result=normalizeChainSupply({contract:'LINK-USDT',identity,current,previous,observed_ts:NOW});assert.equal(result.evidence[0].metric_family,'SUPPLY_DECREASE');assert.equal(facts(result.evidence,'LINK-USDT').length,1);assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ const result=normalizeChainSupply({contract:'LINK-USDT',identity,current,previous,observed_ts:NOW});assert.equal(result.evidence[0].metric_family,'SUPPLY_DECREASE');assert.deepEqual(facts(result.evidence,'LINK-USDT').map(x=>x.block_id).sort(),['N02','N03']);assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  for(const patch of [{previous_source_ts:NOW},{previous_block_ref:'0x2'},{supply_delta_base_units:'-1'},{metric_family:'SUPPLY_INCREASE'}])assert.equal(facts([{...result.evidence[0],...patch}],'LINK-USDT').length,0);
  const audit=auditCandidateBlocks({sources:{CHAIN_EVENTS:{status:'LOG_SAMPLE_SATURATED',network_calls:2},CHAIN_SUPPLY_COMPARISON:{status:'CLOSED',network_calls:2}},evidence:result.evidence,decision_ts:NOW});assert.equal(audit.blocks.N03.checked,true);assert.equal(audit.blocks.N04.checked,false);
 });
