@@ -9,9 +9,11 @@
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "123454176e09af5bf78cdcb7dcbf64572e630a61e9c1e8501c15ae22523f5547",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
-    "current-generation/files/src/canonical-publication.mjs": "0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f",
+    "current-generation/files/src/canonical-publication.mjs": "45de8f7441cbd08f1f7fef74b8337ef9bec33e1fefaf67408c78c68d8bb8260e",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
-    "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc"
+    "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
+    "current-generation/files/src/block-result-context.mjs": "ed64de4c1b671bccd367ed24b3b2903285d07d5414d4481b00c8363e80aec747",
+    "current-generation/files/src/telegram-plain-facts.mjs": "f9f87d3c574788df925e08bfded0528f0d8cdf2a0e552ba4fde85e00dd0645fc"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -413,6 +415,30 @@
       "formatter_bytes_changed": false,
       "threshold_weights_entry_rules_changed": false,
       "note": "Only a qualified new observation may replace an unusable historical statistical candle with a newer exact measured range. Routed/prospective cancellations and real risk gates remain binding."
+    },
+    {
+      "date": "2026-10-06",
+      "scope": "OWNER_APPROVED_PLAIN_LANGUAGE_TELEGRAM_V5",
+      "authorization": "Vladimir explicitly approved supplied draft at 21:37:54 MSK; new Telegram presentations only.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f",
+          "after": "45de8f7441cbd08f1f7fef74b8337ef9bec33e1fefaf67408c78c68d8bb8260e"
+        },
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": null,
+          "after": "ed64de4c1b671bccd367ed24b3b2903285d07d5414d4481b00c8363e80aec747"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": null,
+          "after": "f9f87d3c574788df925e08bfded0528f0d8cdf2a0e552ba4fde85e00dd0645fc"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "manual_layout_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "historical_publications_immutable": true,
+      "backend_light_rechecks_enabled": true
     }
   ],
   "consumer_selection_revisions": [

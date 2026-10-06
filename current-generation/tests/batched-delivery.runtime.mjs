@@ -110,7 +110,7 @@ for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation 
  const c=rangeCanonical(side),{db,x}=await prepare(c);try{
   const sent=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>({ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9002})})});assert.equal(sent.sent,1);
   assert.equal(c.metadata.price_recheck_policy,'LIGHT_PRICE_AND_CANCELLATION_5M');
-  assert.match(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
+  assert.doesNotMatch(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
   // This partial-data fixture intentionally suppresses manual entry/trigger details.
   assert(!pub.renderCanonicalManual({canonical:c}).text.includes('Следующая автоматическая проверка:'));
   const source=fs.readFileSync('cloudflare/public-collector/injected-worker-tail.js','utf8');
@@ -122,9 +122,9 @@ for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation 
  }finally{db.close();}
 });
 
-test('owner-approved price-check wording is explicit in the complete manual and Telegram watch forms',()=>{
+test('new owner-approved Telegram form hides schedule while complete manual retains price-check semantics',()=>{
  const fixture=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/output-contract/long-observe-full.json'));
  const c=structuredClone(fixture.canonical);c.metadata.price_recheck_policy='LIGHT_PRICE_AND_CANCELLATION_5M';c.analytical_fingerprint=pub.canonicalFingerprint(c);
  assert.match(pub.renderCanonicalManual({canonical:c}).text,/Полное подтверждение входа — при следующем полном анализе/);
- assert.match(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
+ assert.doesNotMatch(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
 });
