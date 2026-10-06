@@ -56,7 +56,7 @@ const files=[
  'src/schedule-quota-calculator.mjs',
  'src/v3-adaptive-budget.mjs',
  'src/v3-pipeline-health-sidecar.mjs',
- 'src/v3-telegram-lifecycle-sidecar.mjs','src/canonical-lifecycle-authority.mjs',
+ 'src/v3-telegram-lifecycle-sidecar.mjs','src/canonical-lifecycle-authority.mjs','src/observation-source-role-gate.mjs',
  'src/supplemental-candidate-context.mjs',
  'src/specialist-candidate-context.mjs',
  'src/candidate-source-routing.mjs',

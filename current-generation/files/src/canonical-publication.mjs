@@ -2,7 +2,7 @@ import {formatManualReport} from './manual-report-formatter.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
-import {buildRoleEvidenceView} from './source-role-consumer.mjs';
+import {earlySourceRolesClosed} from './observation-source-role-gate.mjs';
 import {confirmedBlockContextFacts,auditRenderedBlockResults} from './block-result-context.mjs';
 export const CANONICAL_PUBLICATION_VERSION='approved-user-layout-v4-early-observation-without-proven-target-20261001';
 const text=v=>v===null||v===undefined?'':String(v).trim();
@@ -17,16 +17,6 @@ function contractOf(c){return text(c?.metadata?.contract||c?.candidates?.[0]?.co
 function closedHardGates(c){const gs=Array.isArray(c?.hard_gates)?c.hard_gates:[];return gs.length>0&&gs.every(g=>['CLOSED','PASS','CLEAR','ELIGIBLE'].includes(upper(g?.status??g?.state??g?.result)));}
 function exactTrigger(t,observed){return Boolean(t&&text(t.metric)&&['>=','<=','>','<'].includes(text(t.operator))&&finite(t.value)!==null&&text(t.unit)&&text(t.timeframe)&&stamp(t.expires_ts)!==null&&t.expires_ts>=observed&&text(t.cancel_condition)&&stamp(t.next_recheck_ts)!==null&&t.next_recheck_ts>observed&&t.next_recheck_ts<=t.expires_ts);}
 function observationAreaClosed(c){const e=c?.entry;return Boolean(text(e?.area)||(finite(e?.min_price)!==null&&finite(e?.max_price)!==null));}
-function earlySourceRolesClosed(c){
- const stored=c?.metadata?.source_role_view;if(stored?.status!=='CLOSED')return false;
- // Revalidate stored observations. Old capability-only metadata must not
- // authorize publication after an upgrade or on another contract.
- const v=buildRoleEvidenceView(stored.classified,{contract:contractOf(c),observed_ts:c.observed_ts});
- const xs=v.classified.filter(x=>x.role_evidence_usable===true);
- const htx=xs.some(x=>x.source_key==='HTX_OFFICIAL'&&x.assigned_roles.includes('EXECUTION_TRUTH'));
- const origins=new Set(xs.map(x=>x.independence_group).filter(Boolean));
- return htx&&origins.size>=2;
-}
 function referenceEntry(c){const e=c?.entry||{};const lo=finite(e.min_price),hi=finite(e.max_price);if(lo!==null&&hi!==null)return(lo+hi)/2;const trigger=finite(c?.trigger?.value);return trigger;}
 function remainingMove(c,target){const entry=referenceEntry(c),price=finite(target?.price??target),d=upper(c?.direction);if(entry===null||entry<=0||price===null||!['LONG','SHORT'].includes(d))return null;return d==='LONG'?(price/entry-1)*100:(1-price/entry)*100;}
 function reportableTarget(c){return(Array.isArray(c?.targets)?c.targets:[]).find(t=>{

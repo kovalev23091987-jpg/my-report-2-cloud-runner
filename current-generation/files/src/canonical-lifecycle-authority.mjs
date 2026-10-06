@@ -1,3 +1,4 @@
+import {earlySourceRolesClosed} from './observation-source-role-gate.mjs';
 /** New Telegram ideas use the immutable canonical row of the same completed run.
  * A shadow bias is not a closed canonical direction. Prior-visible removals are
  * handled separately by the existing lifecycle and delivered-message gate.
@@ -29,6 +30,11 @@ export function canonicalLifecycleAuthority({row,handoff,early,now_ts=Date.now()
  const score=canonical.scores?.coin_interest_0_100;
  if(canonical.state==='OBSERVE'&&!(typeof score==='number'&&Number.isFinite(score)&&score>=70))
   return no('CANONICAL_OBSERVE_THRESHOLD_NOT_CLOSED');
+ // A blocked observation must not persist a user lifecycle or occupy its
+ // same-wave dispatch identity before the publication gate can admit it.
+ // Full identity, text and delivery freshness are still rechecked downstream.
+ if(canonical.state==='OBSERVE'&&!earlySourceRolesClosed(canonical))
+  return no('OBSERVE_SOURCE_ROLES_NOT_CLOSED');
  return {status:'CLOSED',direction:d,canonical_state:canonical.state,publication_id:row.publication_id,
   run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:ts,source:'SAME_RUN_CANONICAL_ASSIGNED_DIRECTION',new_score_created:false};
 }
