@@ -2,8 +2,8 @@ import crypto from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const HTX_OFFICIAL_ANNOUNCEMENTS_VERSION='htx-official-announcements-v1-shared-exact-market-20261005';
-export const HTX_OFFICIAL_ANNOUNCEMENTS_URL='https://www.htx.com/en-us/support/list/360000039942/';
+export const HTX_OFFICIAL_ANNOUNCEMENTS_VERSION='htx-official-announcements-v2-canonical-official-url-20261006';
+export const HTX_OFFICIAL_ANNOUNCEMENTS_URL='https://www.htx.com/support/list/360000039942/';
 export const HTX_OFFICIAL_ANNOUNCEMENTS_POLICY=Object.freeze({
  provider_published_numeric_limits:'UNKNOWN_NOT_UNLIMITED',
  internal_minute_cap:1,
