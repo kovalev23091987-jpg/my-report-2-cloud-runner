@@ -22,6 +22,7 @@ const files=[
  'src/block-decision-use-audit.mjs',
  'src/bounded-money-flow-diagnostic.mjs',
  'src/sector-relative-strength-review.mjs',
+ 'src/supplemental-supporting-bridge.mjs',
  'src/published-token-calendar.mjs',
  'src/funding-directional-policy.mjs',
  'src/htx-trade-json.mjs','src/htx-signed-tape.mjs',
