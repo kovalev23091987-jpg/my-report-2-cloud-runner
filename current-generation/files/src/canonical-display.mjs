@@ -56,12 +56,12 @@ export function mergeLiquidationDisplayZones(rows,side){
  for(const row of candidates){
   const quote=text(row.price_quote),basis=text(row.distance_reference_basis),distance=finite(row.distance_pct);
   const comparable=['USD','USDC','USDT'].includes(quote)&&basis&&basis!=='UNKNOWN'&&distance!==null;
-  const ts=finite(row.source_ts),ref=finite(row.native_reference_price),reportedState=text(row.display_source_state_id);
+  const ts=finite(row.source_ts),ref=finite(row.distance_reference_price??row.native_reference_price),reportedState=text(row.display_source_state_id);
   // Unknown source age is a limitation, never a shared state identifier.
   // A receipt-only state may be compared only inside the same authenticated
   // provider response cohort, preserving its original receipt clock.
   const state=row.source_clock_closed===false?(reportedState||null):Number.isSafeInteger(ts)&&ts>=1e12?`SOURCE:${ts}`:null;
-  const reference=basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?ref:null;
+  const reference=ref;
   const referenceClosed=basis!=='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'||reference>0;
   const methodClosed=row.estimated!==true||Boolean(text(row.price_semantics));
   const method=[text(row.price_semantics),text(row.model_version),text(row.sdk_version)].join(':');
