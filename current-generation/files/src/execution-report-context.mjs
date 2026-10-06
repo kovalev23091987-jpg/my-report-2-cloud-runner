@@ -6,6 +6,7 @@ import {verifyExecutionFacts} from './tz101-execution-facts.mjs';
 import {digest} from './upstream-proof-utils.mjs';
 import {validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
+import {normalizeInheritedFact} from './inherited-fact-contract.mjs';
 export const EXECUTION_REPORT_CONTEXT_VERSION='execution-report-context-v2-canonical-20261004';
 const stamp=n=>Number.isSafeInteger(n)&&n>=1_000_000_000_000;
 const failure=reason=>({status:'NOT_CLOSED',reason,facts:[],entry_authorized:false,score_contribution:0});
@@ -106,4 +107,32 @@ export function bindVerifiedPrimarySourceFacts({sources={},evidence=[],contract,
   result[name]={...prior,status:prior.status||'CLOSED',network_calls:prior.network_calls||0,evidence:[...unique.values()]};
  }
  return result;
+}
+
+
+// Transfer the exact measured HTX execution truth into the publication role
+// consumer. This is original-clock source evidence, not a new entry grant.
+export function buildCanonicalExecutionRoleReceipts(identity={}){
+ const context=consumeCanonicalExecutionContext(identity);
+ if(context.status!=='IMMUTABLE_SNAPSHOT_FACTS_VERIFIED')return [];
+ const source=identity.execution_context_source,g=source?.bundle?.execution_gate;
+ const f=g?.factual_basis?.facts;
+ if(g.status!=='CLOSED'||g.authoritative!==true||g.htx_execution_gate_closed!==true||g.execution_blocked!==false||
+  f?.venue!=='HTX'||f.market!=='USDT_M_PERPETUAL'||f.contract_code!==identity.contract||
+  !stamp(f.book_source_ts)||!stamp(f.received_ts)||f.received_ts>identity.observed_ts||
+  !stamp(f.valid_until_ts)||f.valid_until_ts<identity.observed_ts)return [];
+ const measured=verifyExecutionFacts(g.factual_basis,{contract_code:identity.contract,observed_ts:identity.observed_ts});
+ if(measured.plans?.LONG?.status!=='CLOSED'||measured.plans?.SHORT?.status!=='CLOSED')return [];
+ const receipt=normalizeInheritedFact({
+  contract_code:identity.contract,source:'HTX',venue:'HTX',metric:'execution_gate_status',
+  market_type:f.market,primary_market_id:`${identity.contract}:HTX:${f.market}`,symbol:identity.contract,
+  symbol_verified:true,asset_identity_verified:true,source_compatible:true,
+  status:'CLOSED',quality_status:'GREEN',source_ts:f.book_source_ts,received_ts:f.received_ts,
+  observed_ts:identity.observed_ts,max_age_sec:f.max_book_age_ms/1000,coverage_pct:100,
+  value:1,unit:'boolean',interval:'SNAPSHOT',
+ });
+ if(receipt.fact_contract_status!=='CLOSED'||receipt.decision_usable!==true)return [];
+ return [{...receipt,evidence_ids:[source.full_evidence_id,g.safety_gate_receipt_id],
+  snapshot_id:identity.snapshot_id,run_id:identity.run_id,physical_root_key:`${f.depth_channel}:${f.book_source_ts}`,
+  proof_purpose:'EXECUTION_TRUTH_AT_OBSERVATION',entry_authorized:false,score_contribution:0}];
 }

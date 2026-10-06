@@ -20,7 +20,7 @@ import { consumeExistingSourceReceipts } from './existing-source-consumer.mjs';
 import {consumeSectorContext} from './sector-context.mjs';
 import {consumeBlockResultContext,auditRenderedBlockResults} from './block-result-context.mjs';
 import {precommittedTechnicalPlanEvidence} from './technical-plan-context.mjs';
-import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
+import {consumeCanonicalExecutionContext,buildCanonicalExecutionEvidence,buildCanonicalExecutionRoleReceipts,bindVerifiedPrimarySourceFacts} from './execution-report-context.mjs';
 import {auditCandidateBlocks} from './candidate-evidence-v2-runtime.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import { normalizeInheritedFactEnvelope } from './inherited-fact-contract.mjs';
@@ -309,6 +309,7 @@ export function buildRuntimeCanonicalBundle({
  if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
   ...sourceReceipts(public_evidence),
+  ...buildCanonicalExecutionRoleReceipts({contract,run_id,snapshot_id,observed_ts,execution_context_source}),
   ...(futures_component?.ok===true&&futures_component?.data?[{
     metric:'HTX_EXECUTION_SNAPSHOT',source:'HTX',venue:'HTX',status:'CLOSED',market_type:'USDT_M_PERPETUAL',
     source_ts:futures_component?.available_ts??futures_component?.data?.ts??observed_ts,observed_ts,unit:null,value:null,
@@ -347,3 +348,4 @@ export function buildRuntimeCanonicalBundle({
  return {version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,block_rendered_results,parity_fingerprint:canonical?.analytical_fingerprint??null};
 }
 export default{CANONICAL_RUNTIME_ADAPTER_VERSION,resolveCanonicalDirection,selectCanonicalPublicationState,selectCanonicalInterestBasis,buildRuntimeCanonicalBundle};
+
