@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T07:46:37.705Z",
+  "updated_utc": "2026-10-06T07:53:54.955Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -194,7 +194,16 @@
     "agent_background_running_after_turn": false,
     "production_schedules_are_separate": true,
     "automatic_continuation_created_by_cleanup": false,
-    "active_cloud_development_jobs": [],
+    "active_cloud_development_jobs": [
+      {
+        "cloud_run": 37431819494,
+        "kind": "READ_ONLY_EXISTING_SCHEDULED_ARTIFACTS",
+        "sourceHTTP": 0,
+        "MAIN": 0,
+        "D1": 0,
+        "Telegram_send": 0
+      }
+    ],
     "last_bounded_read": {
       "cloud_run": 37430332098,
       "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
@@ -221,17 +230,20 @@
   "cloud_read_utility": {
     "branch": "tools/read-current-report",
     "workflow": ".github/workflows/read-current-report.yml",
-    "status": "PREPARING_ONE_BOUNDED_POST_PR183_NATURAL_READ",
-    "cloud_run": 37427476306,
+    "status": "RUNNING_ONE_BOUNDED_POST_PR183_NATURAL_READ",
+    "cloud_run": 37431819494,
     "after_cloud_run": 37429543025,
-    "created_after": "2026-10-06T06:49:00Z",
+    "created_after": "2026-10-06T07:46:54.074Z",
     "max_wait_minutes": 30,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
     "development_agent_continuation": false,
-    "no_active_cloud_wait": true
+    "no_active_cloud_wait": false,
+    "observer_head": "23367f5ed54bab78861473613a92093367e167b2",
+    "after_run": 37429543025,
+    "no_automatic_continuation": true
   },
   "archived_legacy_PRs": [
     {
