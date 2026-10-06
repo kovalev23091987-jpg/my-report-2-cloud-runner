@@ -78,3 +78,14 @@ export async function recordEvidenceSourceHealth(db,{contract,run_id,observation
 }
 
 export default{installEvidenceSourceStore,reserveEvidenceSourceAttempts,reserveEvidenceSourceCredits,readEvidenceSourceCache,writeEvidenceSourceCache};
+
+// A saved provider response is provenance, never a new network attempt or grant.
+// Callers keep their existing exact-key and expiry validation before this reuse.
+export function reuseEvidenceSourceResult(result){
+ const receipts=Array.isArray(result?.receipts)?result.receipts:[];
+ return {...result,network_calls:0,cache_status:'ORIGINAL_RESULT_CACHE_HIT',
+  admission:null,whole_job_admission:null,credit_admission:null,
+  ...(Object.hasOwn(result,'route_credit_cost')?{route_credit_cost:0}:{}),
+  receipts:receipts.map(receipt=>({route:receipt.route??null,status:'REUSED_RESULT_CACHE',cache_hit:true,actual_http:0,original_receipt:receipt})),
+  original_transport:{network_calls:result.network_calls??null,admission:result.admission??null,whole_job_admission:result.whole_job_admission??null,credit_admission:result.credit_admission??null,route_credit_cost:result.route_credit_cost??null,receipts}};
+}

@@ -1,7 +1,7 @@
 import {COINPAPRIKA_HTX_MARKETS_URL,coinpaprikaHtxMarketRows,normalizeCoinpaprikaProviderReference,verifyCoinpaprikaProviderReference} from './coinpaprika-htx-identity.mjs';
 import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
-import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,reuseEvidenceSourceResult} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 export const COINPAPRIKA_SECTOR_VERSION='coinpaprika-sector-v8-project-activity-market-reference-20261005';
 const SOURCE='COINPAPRIKA_SECTOR',MAX_AGE=15*60000,PLATFORMS={ethereum:'eth-ethereum',solana:'sol-solana'},clean=v=>String(v??'').trim(),finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -43,7 +43,7 @@ export async function collectCoinpaprikaSectorEvidence({db,fetch_impl=globalThis
  await installEvidenceSourceStore(db);
  const key=marketDiscovery?`${contract}:PROVIDER_MARKET_REFERENCE:${coin_id||'DISCOVERY'}:${tag_id}`:`${contract}:${asset_identity.chain}:${asset_identity.contract_or_mint}:${coin_id}:${tag_id}`;
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
- if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION)return{...cached,contract};
+ if(!strict_fresh_manual&&cached?.version===COINPAPRIKA_SECTOR_VERSION)return{...reuseEvidenceSourceResult(cached),contract};
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,backoff_until:backoff.backoff_until};
  const reader=createProviderReferenceReader({db,source:SOURCE,run_id,request_admit,fetch_impl,now,clock:Date.now,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap});
  const request=async(route,url,ttl_ms=0)=>reader.get(route,url,{ttl_ms,max_bytes:6*1024*1024,max_cache_bytes:route==='FREE_AGGREGATED_QUOTES'?16384:6*1024*1024,bypass_cache:strict_fresh_manual&&['FREE_AGGREGATED_QUOTES','EXACT_ASSET_SUPPLY_TICKER'].includes(route),shape:v=>v&&typeof v==='object'});
