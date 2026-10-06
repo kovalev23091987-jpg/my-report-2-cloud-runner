@@ -1,0 +1,124 @@
+{
+  "schema": "actual-scheduled-post174-result-v1",
+  "cloud_run": 37408724152,
+  "job": 112092114301,
+  "head": "bf15333ac743f154a5052900e29dd845d8615d72",
+  "run_id": "1791257011553-1791257021716",
+  "generated_at": "2026-10-06T03:25:13.027Z",
+  "generated_msk": "2026-10-06T06:25:13.027+03:00",
+  "report_artifact": {
+    "id": 11388480969,
+    "sha256": "940ca6637f1c7eb8f36286ab23911c0506cc7247cad9c55314ae9f2354cdff71"
+  },
+  "telegram_artifact": {
+    "id": 11388640872,
+    "sha256": "6f8f6e9cb46ddb14e495a67dee0763a2ca8a4934c9a97ede27240a80bbc89c20"
+  },
+  "observer": {
+    "cloud": 37407608304,
+    "artifact": 11388760795,
+    "sha256": "8ce4b980347ff13a75aa605238555ebb736999b479fb73632d7717d14299251e",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "D1": 0
+  },
+  "exact_readback": {
+    "cloud": 37409174768,
+    "head": "ad1a85fcf45ec439d42190d7ee22924ebff3fd41",
+    "artifact": 11389051419,
+    "sha256": "b73ac73fca545ffd83b87588acb0d8542eb2a8c5d0b2b8c888b36a33faeb11a1",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "source_writes": 0,
+    "D1": {
+      "reads": 24,
+      "writes": 4,
+      "requests": 7,
+      "unknown": 0,
+      "writes_scope": "BUDGET_LEDGER_ONLY"
+    }
+  },
+  "actual_selected": [
+    "BR-USDT",
+    "QNT-USDT"
+  ],
+  "deep_checks_completed": 2,
+  "canonical_rows_present": 1,
+  "canonical_row_missing": [
+    "QNT-USDT"
+  ],
+  "BR": {
+    "publication_id": "PUB:1f5d53ae358fb55bd61bfe32a2f34c2cde6925d7",
+    "snapshot_id": "S392:BR-USDT:1791257063771",
+    "canonical_state": "REJECTED",
+    "direction": null,
+    "participating_blocks": [
+      "N05",
+      "N10",
+      "N11",
+      "N12",
+      "N16"
+    ],
+    "participating_count": 5,
+    "neutral_count": 4,
+    "unscored_diagnostic_count": 1,
+    "nonzero_score_count": 0,
+    "accepted_liquidation_levels": 0,
+    "qualified_interest_score": null,
+    "early_diagnostic_quality": 73,
+    "early_direction_state": "DIRECTION_NOT_CLOSED",
+    "early_evidence_assigned": 0,
+    "unassigned_evidence_ids": 2,
+    "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED",
+    "N05": {
+      "full_verified_closed_minutes": 240,
+      "fills": 1436,
+      "buy_usdt": 67461,
+      "sell_usdt": 86141.26,
+      "delta_usdt": -18680.26
+    },
+    "unavailable": {
+      "N01_to_N04": "EXACT_ASSET_IDENTITY_OR_OFFICIAL_ROUTE_NOT_CONFIRMED",
+      "N06": "LIMITED_EXACT_SEARCH_NO_MEANINGFUL_FACT",
+      "N07": "BOUNDED_OFFICIAL_FEED_NO_MATCH_NOT_GLOBAL_NO_EVENTS",
+      "N08_N09": "VALID_CHECKS_NO_MEANINGFUL_RENDERED_FACT",
+      "N14": "NO_VERIFIED_SUPPORTED_OPTION_INSTRUMENT",
+      "N15": "EXACT_SECTOR_REGISTRY_REQUIRED_AND_NO_EXACT_CP_HTX_SPOT_MATCH"
+    }
+  },
+  "QNT": {
+    "canonical_row_saved": false,
+    "deep_execution_status": "COMPLETED",
+    "deep_sufficiency": "PARTIAL",
+    "deep_error": null,
+    "wave_id": null,
+    "participation": null,
+    "participation_is_not_zero_or_previous_10": "UNCONFIRMED",
+    "missing_canonical_cause": "NOT_YET_ESTABLISHED"
+  },
+  "telegram": {
+    "SENT": false,
+    "message_id": null,
+    "transitions": {
+      "BR": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "QNT": "WAVE_NOT_CURRENT"
+    },
+    "transport_attempted": false
+  },
+  "observed_storage_bytes": 499539968,
+  "storage_causal_attribution": "POSSIBLE_CAPACITY_RELATED_CANONICAL_WRITE_FAILURE_NOT_ESTABLISHED",
+  "declared_report_status": "CLOSED",
+  "declared_pipeline_health": "HEALTHY_NO_IDEA",
+  "acceptance_status": "INCOMPLETE_ONE_OF_TWO_CANONICAL_ROWS_MISSING",
+  "next_actions": [
+    "ALLOW_EXISTING_HOURLY_RETAINED_HISTORY_MAINTENANCE",
+    "DIAGNOSE_MISSING_QNT_CANONICAL_SAVE",
+    "REPORT_MISSING_CANONICAL_ROWS_AS_TECHNICAL_PARTIAL_NOT_HEALTHY_NO_IDEA",
+    "KEEP_DIRECTION_THRESHOLD_ENTRY_FORMS_AND_BUDGET_GATES"
+  ],
+  "fresh_PR174_observation_handoff_used_in_published_idea": false,
+  "approved_Telegram_delivery_accepted": false,
+  "project_complete": false
+}

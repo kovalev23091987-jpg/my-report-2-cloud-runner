@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T032727906Z:missing-canonical-readback",
-    "acquired_ts": 1791257247906,
-    "expires_ts": 1791257727906
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": 0
   },
-  "next_action": "READ_EXACT_0625_BR_CANONICAL_AND_QNT_MISSING_ROW_WITH_BOUNDED_D1_NO_SOURCE_MAIN",
+  "next_action": "READ_NATURAL_HOURLY_STORAGE_MAINTENANCE_THEN_REPAIR_EXACT_MISSING_CANONICAL_REPORTING_WITH_NO_EXTRA_MAIN",
   "last_verified_release": "checkpoints/prospective-observation-handoff-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791257247906,
+  "updated_ts": 1791257428346,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,11 +145,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261005T215136067Z:source-storage",
-    "acquired_ts": 1791237096067,
-    "expires_ts": 1791256714937,
-    "released_ts": 1791256068348,
-    "reason": "General prospective observation repair merged and cloud verified. Release owner during natural scheduled result wait so hourly retained-history maintenance is not blocked."
+    "owner": "HTX:20261006T032727906Z:missing-canonical-readback",
+    "acquired_ts": 1791257247906,
+    "expires_ts": 1791257727906,
+    "released_ts": 1791257428346,
+    "reason": "Exact new readback completed; release immediately for existing hourly retained-history maintenance at near-capacity DB."
   },
   "bounded_next_check": {
     "automation_id": "6ac3e06700e081919ca674ce192eca4c",
@@ -166,33 +166,34 @@
     "additional_automation_created": false
   },
   "last_actual_readback": {
-    "path": "checkpoints/ACTUAL_SCHEDULED_0525MSK_20261006.json",
-    "cloud_run": 37403854284,
-    "head": "56f5149a5c851cbeb1564c168da0be7b58bcc188",
-    "run_id": "1791253403789-1791253419323",
-    "generated_at": "2026-10-06T02:25:41.001Z",
-    "project_complete": false,
+    "path": "checkpoints/ACTUAL_SCHEDULED_0625MSK_20261006.json",
+    "cloud_run": 37408724152,
+    "head": "bf15333ac743f154a5052900e29dd845d8615d72",
+    "run_id": "1791257011553-1791257021716",
+    "generated_at": "2026-10-06T03:25:13.027Z",
+    "actual_selected": [
+      "BR-USDT",
+      "QNT-USDT"
+    ],
+    "canonical_rows_present": 1,
     "participating_blocks": {
-      "QNT": 10,
-      "WIF": 9
+      "BR": 5,
+      "QNT": null
     },
     "neutral_blocks": {
-      "QNT": 8,
-      "WIF": 8
+      "BR": 4,
+      "QNT": null
     },
     "unscored_diagnostic_blocks": {
-      "QNT": 2,
-      "WIF": 1
+      "BR": 1,
+      "QNT": null
     },
     "nonzero_score_blocks": {
-      "QNT": 0,
-      "WIF": 0
+      "BR": 0,
+      "QNT": null
     },
     "telegram_SENT": false,
-    "telegram_reasons": {
-      "QNT": "WAVE_NOT_CURRENT",
-      "WIF": "CANONICAL_DIRECTION_NOT_CLOSED"
-    }
+    "project_complete": false
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -429,12 +430,14 @@
     "BR_unscored": 1,
     "BR_nonzero": 0,
     "QNT_participation": null,
-    "QNT_reason": "CANONICAL_ABSENT_FROM_SAME_RUN_ARTIFACT_CAUSE_PENDING",
+    "QNT_reason": "NO_CANONICAL_ROW_FOR_EXACT_SOURCE_RUN_CAUSE_NOT_ESTABLISHED",
     "Telegram_SENT": false,
     "telegram_reasons": {
       "BR": "CANONICAL_DIRECTION_NOT_CLOSED",
       "QNT": "WAVE_NOT_CURRENT"
     },
-    "project_complete": false
+    "project_complete": false,
+    "exact_readback": 37409174768,
+    "observed_storage_bytes": 499539968
   }
 }
