@@ -52,18 +52,18 @@
     "acquired_ts": 1791283065942,
     "expires_ts": 1791284565942
   },
-  "next_action": "TRACE_EXACT_1227_CURRENT_WAVE_DIRECTION_AND_OBSERVE_GATES; ONE_NATURAL_POST187_READ; NO_STALE_SEND",
+  "next_action": "TRACE_EXACT_1327_DIRECTION_RECEIPTS_AFTER_PR188; FRESH_POST188_JOINT_AND_SAME_SNAPSHOT_TELEGRAM_SENT_PENDING",
   "last_verified_release": {
-    "PR": 187,
-    "merged_main": "cf144aeec517ccd3632132a8cb0c11e02624e037",
-    "proof": "checkpoints/qualified-observation-recovery-release-evidence-20261006.json",
-    "cloud_run": 37442691378,
-    "status": "MERGED_ORIGINAL_REFUSAL_AND_CONTROLLED_NEW_SNAPSHOT_SQLITE_RECOVERY_VERIFIED; FRESH_SENT_PENDING"
+    "PR": 188,
+    "merged_main": "5fd159fb64ade06f47953a18306595fcfdc6e8b8",
+    "proof": "checkpoints/ranked-early-persistence-release-evidence-20261006.json",
+    "cloud_run": 37451390034,
+    "status": "MERGED_CLOUD_VALIDATION_AND_37_INTEGRATION_PASS_FRESH_JOINT_AND_SENT_PENDING"
   },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791283065942,
+  "updated_ts": 1791283518296,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1170,26 +1170,54 @@
   },
   "latest_actual_report": {
     "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1227MSK_20261006.json",
-    "cloud_run": 37442843603,
-    "head": "592fc18f6c8702414c8f5a60a091d5c800e4387a",
-    "run_id": "1791278745801-1791278753533",
-    "generated_utc": "2026-10-06T09:27:16.730Z",
-    "generated_msk": "2026-10-06T12:27:16.730+03:00",
-    "contains_PR186": true,
-    "contains_PR187": false,
+    "cloud_run": 37449586596,
+    "head": "cc968f96a16ae7ba9d2ce00fd110c66651c93c99",
+    "run_id": "1791282296620-1791282305950",
+    "generated_utc": "2026-10-06T10:27:02.249Z",
+    "generated_msk": "2026-10-06T13:27:02.249+03:00",
+    "contains_PR187": true,
+    "contains_PR188": false,
     "Telegram_SENT": false,
     "project_complete": false,
     "report_status": "CLOSED",
     "report_status_is_not_project_acceptance": true,
     "publication_blockers": {
       "ADA-USDT": "CANONICAL_DIRECTION_NOT_CLOSED",
-      "FIL-USDT": "WAVE_NOT_CURRENT"
+      "ZEC-USDT": "CANONICAL_DIRECTION_NOT_CLOSED"
     },
     "counts": [
       {
-        "contract": "FIL-USDT",
-        "snapshot_id": "S392:FIL-USDT:1791278831562",
+        "contract": "ADA-USDT",
+        "snapshot_id": "S392:ADA-USDT:1791282416554",
+        "participating": 12,
+        "participating_ids": [
+          "N01",
+          "N02",
+          "N03",
+          "N06",
+          "N07",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "checked": 13,
+        "neutral": 10,
+        "unscored": 2,
+        "nonzero_score": 0,
+        "canonical_state": "REJECTED",
+        "direction": null,
+        "liquidations": {
+          "accepted_future_levels": 0,
+          "future_status": "NOT_AVAILABLE"
+        }
+      },
+      {
+        "contract": "ZEC-USDT",
+        "snapshot_id": "S392:ZEC-USDT:1791282360874",
         "participating": 8,
         "participating_ids": [
           "N02",
@@ -1201,636 +1229,36 @@
           "N15",
           "N16"
         ],
+        "checked": 8,
         "neutral": 6,
         "unscored": 2,
         "nonzero_score": 0,
-        "checked": 9,
-        "rendered": 10,
         "canonical_state": "REJECTED",
         "direction": null,
-        "scores": {
-          "overall_0_100": null,
-          "coin_interest_0_100": null,
-          "entry_readiness_0_100": null,
-          "is_probability": false
-        },
         "liquidations": {
           "accepted_future_levels": 0,
-          "unconfirmed_position_clock_context": false,
           "future_status": "NOT_AVAILABLE"
-        },
-        "provider_use": {
-          "N01": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
-              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
-              "DEFILLAMA_PUBLISHED_CALENDAR": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED"
-            }
-          },
-          "N02": {
-            "assigned_routes": 4,
-            "checked_routes": 1,
-            "valid": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "used": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "rendered": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "CHAIN_SUPPLY": "EXACT_ASSET_IDENTITY_REQUIRED",
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
-              "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED"
-            }
-          },
-          "N03": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
-              "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
-            }
-          },
-          "N04": {
-            "assigned_routes": 2,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
-            }
-          },
-          "N05": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "NANSEN_FLOWS": "NOT_EVALUATED",
-              "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
-              "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
-            }
-          },
-          "N06": {
-            "assigned_routes": 3,
-            "checked_routes": 1,
-            "valid": [
-              "BLUESKY_PUBLIC"
-            ],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "BLUESKY_PUBLIC": "CLOSED",
-              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
-              "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
-            }
-          },
-          "N07": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
-              "HTX_OFFICIAL_ANNOUNCEMENTS": "DAILY_CAP_OR_DUPLICATE",
-              "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
-            }
-          },
-          "N08": {
-            "assigned_routes": 2,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "used": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "rendered": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
-            }
-          },
-          "N09": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "used": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "rendered": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N10": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "used": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "rendered": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N11": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "used": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "rendered": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N12": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_LARGE_TRADES"
-            ],
-            "used": [
-              "HTX_LARGE_TRADES"
-            ],
-            "rendered": [
-              "HTX_LARGE_TRADES"
-            ],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [
-              "HTX_LARGE_TRADES"
-            ],
-            "other_routes": {}
-          },
-          "N14": {
-            "assigned_routes": 2,
-            "checked_routes": 1,
-            "valid": [
-              "DERIBIT_ALT_OPTIONS"
-            ],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
-              "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
-            }
-          },
-          "N15": {
-            "assigned_routes": 2,
-            "checked_routes": 1,
-            "valid": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "used": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "rendered": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [
-              "COINPAPRIKA_SECTOR"
-            ],
-            "other_routes": {
-              "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED"
-            }
-          },
-          "N16": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "used": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "rendered": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          }
-        }
-      },
-      {
-        "contract": "ADA-USDT",
-        "snapshot_id": "S392:ADA-USDT:1791278800597",
-        "participating": 9,
-        "participating_ids": [
-          "N01",
-          "N02",
-          "N03",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ],
-        "neutral": 8,
-        "unscored": 1,
-        "nonzero_score": 0,
-        "checked": 10,
-        "rendered": 10,
-        "canonical_state": "REJECTED",
-        "direction": null,
-        "scores": {
-          "overall_0_100": null,
-          "coin_interest_0_100": null,
-          "entry_readiness_0_100": null,
-          "is_probability": false
-        },
-        "liquidations": {
-          "accepted_future_levels": 0,
-          "unconfirmed_position_clock_context": true,
-          "future_status": "NOT_AVAILABLE"
-        },
-        "provider_use": {
-          "N01": {
-            "assigned_routes": 3,
-            "checked_routes": 1,
-            "valid": [
-              "OFFICIAL_TOKEN_SCHEDULE"
-            ],
-            "used": [
-              "OFFICIAL_TOKEN_SCHEDULE"
-            ],
-            "rendered": [
-              "OFFICIAL_TOKEN_SCHEDULE"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "OFFICIAL_TOKEN_SCHEDULE"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "DEFILLAMA_PUBLISHED_CALENDAR": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N02": {
-            "assigned_routes": 4,
-            "checked_routes": 1,
-            "valid": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "used": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "rendered": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
-              "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
-              "COINPAPRIKA_SECTOR": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N03": {
-            "assigned_routes": 3,
-            "checked_routes": 1,
-            "valid": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "used": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "rendered": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "KOIOS_NATIVE_SUPPLY"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "CHAIN_EVENTS": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
-            }
-          },
-          "N04": {
-            "assigned_routes": 2,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "CHAIN_EVENTS": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
-              "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
-            }
-          },
-          "N05": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "NANSEN_FLOWS": "NOT_EVALUATED",
-              "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
-              "CHAIN_EVENTS": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED"
-            }
-          },
-          "N06": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "BLUESKY_PUBLIC": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "GDELT_NEWS_DISCOVERY": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "WIKIMEDIA_ATTENTION": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N07": {
-            "assigned_routes": 3,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "HTX_OFFICIAL_ANNOUNCEMENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "GDELT_NEWS_DISCOVERY": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N08": {
-            "assigned_routes": 2,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "used": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "rendered": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "unscored": [],
-            "other_routes": {
-              "OFFICIAL_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N09": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "used": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "rendered": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "HTX_PUBLIC_RISK"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N10": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "used": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "rendered": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_TECHNICAL_CONTEXT"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N11": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "used": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "rendered": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_EXECUTION_STRESS"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          },
-          "N12": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "HTX_LARGE_TRADES"
-            ],
-            "used": [
-              "HTX_LARGE_TRADES"
-            ],
-            "rendered": [
-              "HTX_LARGE_TRADES"
-            ],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [
-              "HTX_LARGE_TRADES"
-            ],
-            "other_routes": {}
-          },
-          "N14": {
-            "assigned_routes": 2,
-            "checked_routes": 1,
-            "valid": [
-              "DERIBIT_ALT_OPTIONS"
-            ],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
-              "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
-            }
-          },
-          "N15": {
-            "assigned_routes": 2,
-            "checked_routes": 0,
-            "valid": [],
-            "used": [],
-            "rendered": [],
-            "nonzero": [],
-            "neutral": [],
-            "unscored": [],
-            "other_routes": {
-              "COINGECKO_SECTOR": "DEFERRED_SHARED_REQUEST_ENVELOPE",
-              "COINPAPRIKA_SECTOR": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-            }
-          },
-          "N16": {
-            "assigned_routes": 1,
-            "checked_routes": 1,
-            "valid": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "used": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "rendered": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "nonzero": [],
-            "neutral": [
-              "PRIMARY_EXECUTION_COST"
-            ],
-            "unscored": [],
-            "other_routes": {}
-          }
         }
       }
     ],
     "artifacts": {
       "report": {
-        "id": 11401843355,
-        "zip_sha256": "8066265c6e8e31ac9b17b3ccb02b4de7ffe2ccde578f1c445f44740879af3b12"
+        "id": 11406300575,
+        "zip_sha256": "15b6a7e1d3f78aa841c71b0ece34c1adeb606143ad3f97d0a2a10ee0e2c87324"
       },
       "telegram": {
-        "id": 11401204765,
-        "zip_sha256": "b1224a0317ea17874f6069fa2d97842574d40cef53d4df9e90a1ee35bc96a154"
+        "id": 11406280590,
+        "zip_sha256": "058e6d9c791dd0a40c481f20d75f0442e80f258f00c4c19d276038ba6065e518"
       }
     },
     "this_read_sourceHTTP": 0,
     "this_read_MAIN": 0,
     "this_read_Telegram_send": 0,
+    "this_read_D1": 0,
     "report_candidates": [
-      "FIL-USDT",
-      "ADA-USDT"
+      "ADA-USDT",
+      "ZEC-USDT"
     ],
-    "exact_d1_read": {
-      "run": 37443413520,
-      "head": "89f60e3c00bbd06d53b1fde999e6be031606ab2e",
-      "artifact": 11402660324,
-      "zip_sha256": "602cfcedab0487536a6912ddab438b0bb5d60d618ec54181013febe7aaf57a3d",
-      "retained_source": "checkpoints/source-inputs/exact-observe-source-37443413520.zip",
-      "D1": {
-        "rows_read": 74,
-        "rows_written": 4,
-        "requests": 9,
-        "unknown_ops": 0
-      },
-      "same_run_bound_dispatches": [],
-      "sourceHTTP": 0,
-      "MAIN": 0,
-      "Telegram": 0
-    }
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1327MSK_20261006.json"
   }
 }
