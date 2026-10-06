@@ -72,9 +72,20 @@ export function mergeSignedTape({previous,acquisition,now}={}){
  if(previous){if(previous.version!==HTX_SIGNED_TAPE_VERSION||previous.contract!==contract||previous.contract_size!==size||!Array.isArray(previous.minutes)||previous.minutes.length>1620||new Set(previous.minutes.map(m=>m.start_ts)).size!==previous.minutes.length||!previous.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:size})))return{status:'SAVED_RAW_TAPE_INTEGRITY_NOT_CLOSED',ring:null};for(const m of previous.minutes)if(m.start_ts>=now-27*60*MIN)byMinute.set(m.start_ts,m);}
  for(const m of acquisition.minutes){const old=byMinute.get(m.start_ts);if(old&&old.raw_sha256!==m.raw_sha256)return{status:'CONFLICTING_COMPLETE_RAW_MINUTE',ring:null,conflict_ts:m.start_ts};byMinute.set(m.start_ts,old||m);}
  const ring={version:HTX_SIGNED_TAPE_VERSION,contract,contract_size:size,observed_ts:now,minutes:[...byMinute.values()].sort((a,b)=>a.start_ts-b.start_ts),source:'HTX_OFFICIAL_EXACT_RAW_FILLS',price_quote:'USDT',entry_authorized:false};
- const storage=encodeSignedTapeStorage(ring);
- if(!storage.payload)return{status:storage.status,ring:null};
- return{status:'DURABLE_RAW_TAPE_WARMING',ring,storage};
+ let storage=encodeSignedTapeStorage(ring),discarded_minutes=0;
+ if(!storage.payload){
+  // The deferred 24h archive must not crowd out the required exact 4h
+  // window. Drop whole older minutes only; never shorten that window or
+  // replace missing minutes with a partial aggregate.
+  const requiredStart=ring.minutes.at(-1).start_ts+MIN-240*MIN;
+  const older=ring.minutes.filter(m=>m.start_ts<requiredStart),required=ring.minutes.filter(m=>m.start_ts>=requiredStart);
+  const core={...ring,minutes:required};let best=encodeSignedTapeStorage(core);
+  if(!best.payload)return{status:storage.status,ring:null};
+  let low=0,high=older.length,bestMinutes=required;
+  while(low<high){const count=Math.ceil((low+high)/2),candidate=[...older.slice(older.length-count),...required],encoded=encodeSignedTapeStorage({...ring,minutes:candidate});if(encoded.payload){low=count;best=encoded;bestMinutes=candidate;}else high=count-1;}
+  discarded_minutes=ring.minutes.length-bestMinutes.length;ring.minutes=bestMinutes;storage=best;
+ }
+ return{status:'DURABLE_RAW_TAPE_WARMING',ring,storage,discarded_minutes};
 }
 export function signedTape24hEvidence({ring,now}={}){
  if(!ring||ring.version!==HTX_SIGNED_TAPE_VERSION||!isExactHtxUsdtSwapKey(ring.contract)||!(n(ring.contract_size)>0)||!Array.isArray(ring.minutes)||new Set(ring.minutes.map(m=>m.start_ts)).size!==ring.minutes.length||!Number.isSafeInteger(now))return{status:'NO_VERIFIED_RAW_TAPE',evidence:[]};
@@ -99,7 +110,7 @@ function acquisitionClockDiagnostic(snapshot,now){
 export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),db_admit,publish_verified_24h=false}={}){
  const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
  const finish=result=>{
-  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,storage_encoding:result.storage_encoding??null,uncompressed_bytes:result.uncompressed_bytes??null,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,storage_encoding:result.storage_encoding??null,uncompressed_bytes:result.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
   return result;
  };
  if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});
@@ -111,7 +122,7 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
  const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
  retainBounded(verifiedRings,contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
- return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:merged.storage.storage_bytes,storage_encoding:merged.storage.encoding,uncompressed_bytes:merged.storage.uncompressed_bytes,network_calls:0,db_admission:grant,internal_only:true});
+ return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:merged.storage.storage_bytes,storage_encoding:merged.storage.encoding,uncompressed_bytes:merged.storage.uncompressed_bytes,discarded_older_minutes:merged.discarded_minutes,network_calls:0,db_admission:grant,internal_only:true});
 }
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
