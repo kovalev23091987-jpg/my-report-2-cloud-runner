@@ -32,16 +32,19 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: One official source under existing source and D1 admission
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node runner/read-n07-transport-20261006.mjs
+      - name: Replay exact actual public response and cache clocks with zero source HTTP
+        run: node --test current-generation/tests/htx-official-catalog-cache-clock.test.mjs > audit-output/cache-clock.tap
       - name: Verify changed source binding and generation without repeated MAIN
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Exact checked package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/src/worker.js runtime/src/htx-official-announcements-evidence.mjs runtime/src/evidence-source-store.mjs > audit-output/runtime-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
