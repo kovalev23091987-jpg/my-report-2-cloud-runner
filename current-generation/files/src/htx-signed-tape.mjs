@@ -3,11 +3,11 @@ import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const HTX_SIGNED_TAPE_VERSION='htx-signed-tape-v1-exact-minute-raw-20261004';
-const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map();
+const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map(),acquisitionReceipts=new Map();
 const n=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const close=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
-export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();}
+export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();}
 export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){
  const u=new URL(url),contract=u.searchParams.get('contract_code');if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||payload?.status!=='ok')return;
  let type=null;
@@ -62,16 +62,31 @@ export function signedTape24hEvidence({ring,now}={}){
  const root=hash(rows.map(m=>({start_ts:m.start_ts,count:m.factual_count,raw_sha256:m.raw_sha256}))),evidence=buildEvidenceV2({provider_id:'HTX_SIGNED_RAW_TAPE',upstream_id:'HTX_OFFICIAL_RAW_FILLS',asset_id:`htx-futures:${ring.contract}`,htx_contract:ring.contract,block_id:'N12',metric_family:'EXACT_SIGNED_RAW_24H',origin_event_id:`${ring.contract}:${start}:${end}:${root}`,dependency_group:`HTX_RAW_24H:${ring.contract}:${end}`,source_ts:end,observed_ts:now,expires_at:end+180000,unit:'USDT',value:buy-sell,coverage_status:'EXACT_1440_RAW_MINUTES',coverage_fraction:1,extra:{window_start:start,window_end:end,raw_trade_count:fills.length,factual_trade_count:rows.reduce((a,m)=>a+m.factual_count,0),verified_minutes:1440,raw_minute_root_sha256:root,buy_quote_turnover_usdt:buy,sell_quote_turnover_usdt:sell,source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',not_candle_signed_estimate:true,entry_authorized:false}});
  return{status:'CLOSED_EXACT_SIGNED_RAW_24H',verified_minutes:1440,raw_trade_count:fills.length,evidence:[evidence]};
 }
+function retainBounded(map,contract,value){
+ if(!map.has(contract)&&map.size>=8)map.delete(map.keys().next().value);
+ map.set(contract,value);
+}
+function acquisitionClockDiagnostic(snapshot,now){
+ return Object.fromEntries(['trades','minutes','metadata'].map(type=>{
+  const s=snapshot?.[type],source_ts=Number.isSafeInteger(s?.payload?.ts)?s.payload.ts:null,received_ts=Number.isSafeInteger(s?.observed_ts)?s.observed_ts:null;
+  const status=!s?'MISSING_CAPTURE':source_ts===null||received_ts===null?'SOURCE_CLOCK_REQUIRED':source_ts>received_ts||received_ts>now?'SOURCE_CLOCK_ORDER_NOT_CLOSED':now-source_ts>TTL?'SOURCE_CAPTURE_NOT_FRESH':'CLOCK_CLOSED';
+  return[type,{status,source_ts,received_ts,age_ms:source_ts===null?null:now-source_ts}];
+ }));
+}
 export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),db_admit,publish_verified_24h=false}={}){
- const acquisition=verifiedSignedMinutes({snapshot:captured.get(contract),contract,now});if(!acquisition.minutes.length)return{...acquisition,evidence:[]};
- const grant=db_admit?.({rows_read:16,rows_written:4});if(grant?.allowed!==true)return{status:grant?.status||'RAW_TAPE_DB_ADMISSION_REQUIRED',evidence:[],network_calls:0};
- await installEvidenceSourceStore(db);const previous=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return{...merged,evidence:[],network_calls:0};
+ const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
+ const finish=result=>{
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
+  return result;
+ };
+ if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});
+ const grant=db_admit?.({rows_read:16,rows_written:4});if(grant?.allowed!==true)return finish({status:grant?.status||'RAW_TAPE_DB_ADMISSION_REQUIRED',evidence:[],network_calls:0});
+ await installEvidenceSourceStore(db);const previous=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return finish({...merged,evidence:[],network_calls:0});
  await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.ring});
- const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return{status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0};
- if(!verifiedRings.has(contract)&&verifiedRings.size>=8)verifiedRings.delete(verifiedRings.keys().next().value);
- verifiedRings.set(contract,saved);
+ const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
+ retainBounded(verifiedRings,contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
- return{...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:Buffer.byteLength(JSON.stringify(merged.ring),'utf8'),network_calls:0,db_admission:grant,internal_only:true};
+ return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:Buffer.byteLength(JSON.stringify(merged.ring),'utf8'),network_calls:0,db_admission:grant,internal_only:true});
 }
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
@@ -79,7 +94,14 @@ export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admi
  if(db_admit?.({rows_read:16,rows_written:0})?.allowed!==true)return null;
  // The established cache may not exist on a first run. This optional history
  // never creates tables or marks a missing window complete.
- try{return await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});}catch{return null;}
+ try{
+  const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});
+  // A valid immutable window already in the durable cache remains usable if
+  // this deep check cannot add new complete minutes. Validation retains the
+  // original per-minute clocks, IDs and counters; reading never refreshes them.
+  if(signedTapeFourHourFlow({ring:saved,contract,now}).check_completed===true)retainBounded(verifiedRings,contract,saved);
+  return saved;
+ }catch{return null;}
 }
 
 export function mergeHtxSignedHistoryTrades({ring,current_trades=[],contract,contract_size,now}={}){
@@ -120,5 +142,6 @@ export function signedTapeFourHourFlow({ring,contract,now}={}){
  return{status:'CLOSED_EXACT_FUTURES_FLOW_4H',check_completed:true,network_calls:0,evidence:[evidence],receipts:[{check_completed:true,status:'CLOSED',contract,window:'4h',verified_minutes:240,raw_trade_count:count,factual_1m_trade_count:count,raw_minute_root_sha256:root,window_start_ts:start,window_end_ts:end,source_http:0}],internal_only:true};
 }
 export function capturedSignedTapeFourHourFlow({contract,now}={}){
- return signedTapeFourHourFlow({ring:verifiedRings.get(contract),contract,now});
+ const flow=signedTapeFourHourFlow({ring:verifiedRings.get(contract),contract,now}),diagnostic=acquisitionReceipts.get(contract);
+ return{...flow,...(diagnostic?.observed_ts<=now?{raw_acquisition_diagnostic:diagnostic}:{} )};
 }
