@@ -9,7 +9,7 @@ test('retained actual source lists serve owner-priority blocks before lower-prio
  for(const candidate of f.rows){
   const actual=candidate.canonical.metadata.internal_market_context.evidence_v2.route_accounting.filter(x=>x.route!=='HTX').map(x=>({name:x.route,role:x.role}));
   for(let slot=0;slot<80;slot++){
-   const routed=rotateEvidenceRoleRoutes(actual,candidate.contract_code+':'+slot);
+   const routed=rotateEvidenceRoleRoutes(actual,candidate.contract_code+':'+slot,{owner_priority:true});
    assert.deepEqual([...routed.map(r=>r.name)].sort(),[...actual.map(r=>r.name)].sort());
    assert.equal(new Set(routed.map(r=>r.name)).size,actual.length);
    const p=routed.filter(r=>priorities.has(r.name));assert.ok(p.length);
@@ -19,7 +19,7 @@ test('retained actual source lists serve owner-priority blocks before lower-prio
 });
 test('exhausted envelope still reads later valid caches, preserves quota skips and never expands source admission',async()=>{
  let calls=0;
- const routes=rotateEvidenceRoleRoutes([{name:'HTX_ANNOUNCEMENTS'},{name:'SECTOR'},{name:'LARGE_TRADES'},{name:'CHAIN_SUPPLY'},{name:'BLUESKY'}],'actual-envelope');
+ const routes=rotateEvidenceRoleRoutes([{name:'HTX_ANNOUNCEMENTS'},{name:'SECTOR'},{name:'LARGE_TRADES'},{name:'CHAIN_SUPPLY'},{name:'BLUESKY'}],'actual-envelope',{owner_priority:true});
  const collectors=Object.fromEntries(routes.map(r=>[r.name,async p=>{
   if(r.name==='BLUESKY')return{status:'CLOSED',cache_status:'VALID_CACHE',network_calls:0,evidence:[]};
   const grant=p.request_admit({attempts:1,source:r.name});if(!grant.allowed)return{status:grant.status,network_calls:0,evidence:[],admission:grant};
