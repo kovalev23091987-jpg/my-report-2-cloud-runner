@@ -1,0 +1,421 @@
+{
+  "schema": "report2-exact-0525-direction-diagnosis-v1",
+  "source_run_id": "1791253403789-1791253419323",
+  "diagnostic_cloud_run": 37404607065,
+  "tested_head": "d63ea74b5cba092e2ff487ed8fc6a8414638cb29",
+  "artifact_id": 11386925172,
+  "artifact_sha256": "048460e17ae249cf015895180729659610c9d8b53d7e0754dac079501fb73249",
+  "gzip_sha256": "c00ccf11ac7ec23f5d2b01e20e13db3af46d73e8c66a8352b2f9d5da2184588c",
+  "raw_json_sha256": "5fe1ccb052cc13e780a4ae30b54c6d82352800a45bd00ae954836aea6500de0d",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "D1": {
+    "requests": 6,
+    "rows_read": 13,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "threshold": 70,
+  "forms_changed": false,
+  "direction_invented": false,
+  "rows": [
+    {
+      "publication_id": "PUB:844a978f55e0008b68c2e51170e618535bb66c54",
+      "contract": "QNT-USDT",
+      "snapshot_id": "S392:QNT-USDT:1791253533892",
+      "observed_ts": 1791253533892,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": null,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "origin_event": {
+        "event_id": "OPP:opportunity-integrity-v2:QNT-USDT:MARKET:EPISODE:1791244800000:1791248400000",
+        "event_close_ts": 1791245700000,
+        "event_type": "ANOMALOUS_EFFORT_VS_RESULT",
+        "candle": {
+          "open": 263.26,
+          "high": 264.28,
+          "low": 259.32,
+          "close": 259.6
+        },
+        "hypotheses": {
+          "ABSORPTION_ACCUMULATION": {
+            "evidence_score": 35,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "LIQUIDITY_RECLAIM"
+            ],
+            "against": [
+              "CLOSE_NEAR_LOW"
+            ],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "DISTRIBUTION": {
+            "evidence_score": 35,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "CLOSE_NEAR_LOW"
+            ],
+            "against": [
+              "RECLAIM_PRESENT"
+            ],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "TWO_WAY_TRANSFER": {
+            "evidence_score": 20,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [],
+            "against": [],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "DERIVATIVE_LIQUIDATION_NOISE": {
+            "evidence_score": 60,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "OI_FLUSH",
+              "LIQUIDITY_SWEEP",
+              "NOT_CROSS_EXCHANGE_CONFIRMED"
+            ],
+            "against": [],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "rule": "All scores are uncalibrated evidence summaries. None is a probability or trading direction."
+        }
+      },
+      "exact_four_hour_flow": [
+        {
+          "evidence_id": "EV2:02b8c2314bb5f97397e8fb9f707181b8e33059ba247bdf1a9b6703a7fa11ba2b",
+          "asset_id": "HTX:USDT_M_PERPETUAL:QNT-USDT",
+          "htx_contract": "QNT-USDT",
+          "block_id": "N05",
+          "metric_family": "EXACT_FUTURES_TAKER_FLOW_4H",
+          "provider_id": "HTX_FUTURES_RAW_FLOW",
+          "upstream_id": "HTX_OFFICIAL_RAW_FILLS",
+          "origin_event_id": "QNT-USDT:1791238980000:1791253380000",
+          "dependency_group": "HTX_RAW_FILLS:QNT-USDT:1791238980000:1791253380000",
+          "source_ts": 1791253380000,
+          "observed_ts": 1791253488912,
+          "first_known_ts": 1791253488912,
+          "effective_from": null,
+          "effective_to": null,
+          "window_start": null,
+          "window_end": null,
+          "coverage_status": "EXACT_FOUR_HOURS",
+          "coverage_fraction": 0.16666666666666666,
+          "unit": "USDT",
+          "value": -7327.463199999918,
+          "directional_strength": null,
+          "risk_strength": null,
+          "identity_status": "EXACT",
+          "finality_status": "FINAL",
+          "schema_version": "EvidenceV2.1",
+          "raw_hash": "7d58b4f29145430d67cc6aca28e85f1027196a56282b18c9c94c72cfbaa5cb1e",
+          "expires_at": 1791253680000,
+          "cost_receipt_id": null,
+          "validation_status": "VALID",
+          "validation_reason": null,
+          "physical_root_key": "HTX_RAW_FILLS:QNT-USDT:1791238980000:1791253380000",
+          "window_start_ts": 1791238980000,
+          "window_end_ts": 1791253380000,
+          "buy_quote_turnover_usdt": 60021.66479999999,
+          "sell_quote_turnover_usdt": 67349.12799999991,
+          "raw_trade_count": 508,
+          "factual_1m_trade_count": 508,
+          "verified_minutes": 240,
+          "raw_minute_root_sha256": "811ba1308279df97238647a5f4a93337001265be94c2c3d211e0e227d3df373b",
+          "source_clock_policy": "IMMUTABLE_EXACT_RAW_MINUTES",
+          "publication_freshness_ms": 300000,
+          "window_alignment": "LATEST_VERIFIED_CLOSED_RAW_MINUTE_INDEPENDENT_OF_HOURLY_OI",
+          "not_candle_signed_estimate": true,
+          "common_upstream_not_independent_vote": true,
+          "score_contribution": 0,
+          "entry_authorized": false,
+          "nansen_required": false
+        }
+      ],
+      "four_hour_flow_covers_origin_candle": true
+    },
+    {
+      "publication_id": "PUB:a5e4a5309d4c32b5ad4a9ca9d108098689242933",
+      "contract": "WIF-USDT",
+      "snapshot_id": "S392:WIF-USDT:1791253484352",
+      "observed_ts": 1791253484352,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 82,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791253419556,
+            "confirmation_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791253419556,
+          "available_at": 1791253419556,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:WIF-USDT:1791253419556:G5:OI_ACCELERATION:BOTH",
+            "EDW:WIF-USDT:1791253419556:G5:RELATIVE_STRENGTH:SHORT",
+            "EDW:WIF-USDT:1791253419556:G5:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:WIF-USDT:1791253419556:G5:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "origin_event": {
+        "event_id": "OPP:opportunity-integrity-v2:WIF-USDT:MARKET:EPISODE:1791237600000:1791252900000",
+        "event_close_ts": 1791238500000,
+        "event_type": "ANOMALOUS_EFFORT_VS_RESULT",
+        "candle": {
+          "open": 0.2559,
+          "high": 0.2578,
+          "low": 0.2558,
+          "close": 0.2563
+        },
+        "hypotheses": {
+          "ABSORPTION_ACCUMULATION": {
+            "evidence_score": 55,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "HIGH_EFFORT_WEAK_BODY",
+              "LIQUIDITY_RECLAIM"
+            ],
+            "against": [
+              "CLOSE_NEAR_LOW"
+            ],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "DISTRIBUTION": {
+            "evidence_score": 50,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "HIGH_EFFORT_WEAK_RESULT",
+              "CLOSE_NEAR_LOW"
+            ],
+            "against": [
+              "RECLAIM_PRESENT"
+            ],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "TWO_WAY_TRANSFER": {
+            "evidence_score": 40,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "HIGH_TURNOVER_LOW_NET_PROGRESS"
+            ],
+            "against": [],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "DERIVATIVE_LIQUIDATION_NOISE": {
+            "evidence_score": 60,
+            "confidence": null,
+            "confidence_status": "UNCALIBRATED_SHADOW_EVIDENCE_NOT_PROBABILITY",
+            "for": [
+              "OI_FLUSH",
+              "LIQUIDITY_SWEEP",
+              "NOT_CROSS_EXCHANGE_CONFIRMED"
+            ],
+            "against": [],
+            "missing_evidence": [
+              "timestamp_aligned_taker_flow",
+              "price_oi_1h",
+              "spot_perp_basis"
+            ]
+          },
+          "rule": "All scores are uncalibrated evidence summaries. None is a probability or trading direction."
+        }
+      },
+      "exact_four_hour_flow": [
+        {
+          "evidence_id": "EV2:5547c44085200129afdd004cd0c053f9939a6d034273e40daac1d56f13637735",
+          "asset_id": "HTX:USDT_M_PERPETUAL:WIF-USDT",
+          "htx_contract": "WIF-USDT",
+          "block_id": "N05",
+          "metric_family": "EXACT_FUTURES_TAKER_FLOW_4H",
+          "provider_id": "HTX_FUTURES_RAW_FLOW",
+          "upstream_id": "HTX_OFFICIAL_RAW_FILLS",
+          "origin_event_id": "WIF-USDT:1791238980000:1791253380000",
+          "dependency_group": "HTX_RAW_FILLS:WIF-USDT:1791238980000:1791253380000",
+          "source_ts": 1791253380000,
+          "observed_ts": 1791253437421,
+          "first_known_ts": 1791253437421,
+          "effective_from": null,
+          "effective_to": null,
+          "window_start": null,
+          "window_end": null,
+          "coverage_status": "EXACT_FOUR_HOURS",
+          "coverage_fraction": 0.16666666666666666,
+          "unit": "USDT",
+          "value": -49450.71340000001,
+          "directional_strength": null,
+          "risk_strength": null,
+          "identity_status": "EXACT",
+          "finality_status": "FINAL",
+          "schema_version": "EvidenceV2.1",
+          "raw_hash": "226ce6221a36cc254c491020f647586b79c32a79318c848449733dd325646ee6",
+          "expires_at": 1791253680000,
+          "cost_receipt_id": null,
+          "validation_status": "VALID",
+          "validation_reason": null,
+          "physical_root_key": "HTX_RAW_FILLS:WIF-USDT:1791238980000:1791253380000",
+          "window_start_ts": 1791238980000,
+          "window_end_ts": 1791253380000,
+          "buy_quote_turnover_usdt": 22016.6294,
+          "sell_quote_turnover_usdt": 71467.34280000001,
+          "raw_trade_count": 461,
+          "factual_1m_trade_count": 461,
+          "verified_minutes": 240,
+          "raw_minute_root_sha256": "f4ac9ce28b440b6cce8c462a1e1ecf858ba6f1503bda4085f3d3e8b314a5a101",
+          "source_clock_policy": "IMMUTABLE_EXACT_RAW_MINUTES",
+          "publication_freshness_ms": 300000,
+          "window_alignment": "LATEST_VERIFIED_CLOSED_RAW_MINUTE_INDEPENDENT_OF_HOURLY_OI",
+          "not_candle_signed_estimate": true,
+          "common_upstream_not_independent_vote": true,
+          "score_contribution": 0,
+          "entry_authorized": false,
+          "nansen_required": false
+        }
+      ],
+      "four_hour_flow_covers_origin_candle": false
+    }
+  ],
+  "conclusion": "The same-run early-quality82 diagnostic is not a qualified directional score; WIF sources conflict and direction-state remains bidirectional. Do not infer 82 means admissible idea or set SHORT from discovery-only. No verified generic direction-transfer bug shown by this readback; publication remains correctly suppressed for these exact rows. Neutral-block count did not cause rejection."
+}
