@@ -1,0 +1,1025 @@
+{
+  "schema": "report2-actual-scheduled-readback-20261006-0525msk-v1",
+  "cloud_run": 37403854284,
+  "source_head": "56f5149a5c851cbeb1564c168da0be7b58bcc188",
+  "created_at": "2026-10-06T02:23:02Z",
+  "generated_at": "2026-10-06T02:25:41.001Z",
+  "run_id": "1791253403789-1791253419323",
+  "report_status": "CLOSED",
+  "report_reason": null,
+  "report_artifact": {
+    "id": 11386607071,
+    "name": "report2-run-result",
+    "zip_sha256": "4a4f234f2ee50536bd4cead50f38b253c38ae5f7276caa184a4a1fe1b141866f",
+    "json_sha256": "a4ae4a41011a6397ed2495b1f8d09db35cb11687f5b6de47beca95455f626883"
+  },
+  "telegram_artifact": {
+    "id": 11386552235,
+    "name": "report2-telegram-info-proof",
+    "zip_sha256": "e1e882723e9efb1eb11319b4d1391d785b2e0261aff7890b9f1fdfdf2dcb3779",
+    "json_sha256": "01fdc0bf0adbc4e6e8a370a2d6dd5c970168ee4abf58e06e271cba9e609d8f8f"
+  },
+  "project_complete": false,
+  "readback_sourceHTTP": 0,
+  "readback_MAIN": 0,
+  "readback_Telegram_send": 0,
+  "readback_D1": 0,
+  "source_archive": {
+    "path": "checkpoints/actual-scheduled-source-result-37403854284.json.gz",
+    "gzip_sha256": "85cc08b9470339418d866cbfca6687eb9d64d9dab125c9c0f227c737b668e212",
+    "original_json_sha256": "9c727e6258449ea3ec98edb841dbac01352d110b7bd91d682e9c9cff54967e52"
+  },
+  "candidates": [
+    {
+      "contract": "QNT-USDT",
+      "snapshot_id": "S392:QNT-USDT:1791253533892",
+      "state": "REJECTED",
+      "direction": null,
+      "participating": 10,
+      "participating_ids": [
+        "N02",
+        "N05",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 8,
+      "unscored_diagnostic": 2,
+      "nonzero_score": 0,
+      "control_effect_proven_blocks": [],
+      "source_audit": {
+        "N01": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "OFFICIAL_TOKEN_SCHEDULE": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "DEFILLAMA_PUBLISHED_CALENDAR": {
+              "status": "PUBLISHED_CALENDAR_ACCESS_OR_RATE_BLOCKED",
+              "actual_http": 1,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N02": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 4,
+          "checked": 3,
+          "meaningful": 1,
+          "used": [
+            "CHAIN_RPC"
+          ],
+          "routes": {
+            "CHAIN_SUPPLY": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "CLOSED",
+              "actual_http": 1,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "COINMETRICS_SUPPLY": {
+              "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N03": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "CHAIN_SUPPLY_COMPARISON": {
+              "status": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "CLOSED",
+              "actual_http": 1,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N04": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "CLOSED",
+              "actual_http": 1,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N05": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_FUTURES_RAW_FLOW"
+          ],
+          "routes": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N06": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "BLUESKY_PUBLIC": {
+              "status": "CLOSED",
+              "actual_http": 1,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "WIKIMEDIA_ATTENTION": {
+              "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N07": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_OFFICIAL_ANNOUNCEMENTS"
+          ],
+          "routes": {
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "HTX_OFFICIAL_ANNOUNCEMENTS": {
+              "status": "CLOSED",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N08": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "routes": {
+            "HTX_PUBLIC_RISK": {
+              "status": "CLOSED",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N09": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "routes": {
+            "HTX_PUBLIC_RISK": {
+              "status": "CLOSED",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N10": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "routes": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N11": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "routes": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N12": {
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_LARGE_TRADES"
+          ],
+          "routes": {
+            "HTX_LARGE_TRADES": {
+              "status": "CLOSED_BOUNDED_SAMPLE",
+              "actual_http": 1,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N14": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "DERIBIT_ALT_OPTIONS": {
+              "status": "NOT_APPLICABLE",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "DELTA_OPTIONS": {
+              "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N15": {
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 2,
+          "meaningful": 1,
+          "used": [
+            "COINGECKO_SECTOR"
+          ],
+          "routes": {
+            "COINGECKO_SECTOR": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N16": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "routes": {
+            "PRIMARY_EXECUTION_COST": {
+              "status": "CHECKED_HTX_EXECUTION_COST",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        }
+      },
+      "liquidation": {
+        "accepted_exact_map_levels": 0,
+        "receipt_only_estimate_above": [],
+        "receipt_only_estimate_below": [],
+        "source_clock_closed": null,
+        "venue": null,
+        "quote": null,
+        "entry_eligible": null
+      }
+    },
+    {
+      "contract": "WIF-USDT",
+      "snapshot_id": "S392:WIF-USDT:1791253484352",
+      "state": "REJECTED",
+      "direction": null,
+      "participating": 9,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "neutral": 8,
+      "unscored_diagnostic": 1,
+      "nonzero_score": 0,
+      "control_effect_proven_blocks": [],
+      "source_audit": {
+        "N01": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 0,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "OFFICIAL_TOKEN_SCHEDULE": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "DEFILLAMA_PUBLISHED_CALENDAR": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N02": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 4,
+          "checked": 2,
+          "meaningful": 1,
+          "used": [
+            "COINPAPRIKA_SECTOR"
+          ],
+          "routes": {
+            "CHAIN_SUPPLY": {
+              "status": "CLOSED",
+              "actual_http": 2,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "EXACT_EVM_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "COINMETRICS_SUPPLY": {
+              "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N03": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "CHAIN_RPC"
+          ],
+          "routes": {
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "CHAIN_SUPPLY_COMPARISON": {
+              "status": "CLOSED",
+              "actual_http": 2,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "EXACT_EVM_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N04": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 0,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "EXACT_EVM_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N05": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_FUTURES_RAW_FLOW"
+          ],
+          "routes": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "CHAIN_EVENTS": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N06": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 0,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "BLUESKY_PUBLIC": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "WIKIMEDIA_ATTENTION": {
+              "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N07": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 3,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "HTX_OFFICIAL_ANNOUNCEMENTS": {
+              "status": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N08": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "routes": {
+            "HTX_PUBLIC_RISK": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N09": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "routes": {
+            "HTX_PUBLIC_RISK": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N10": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "routes": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N11": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "routes": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N12": {
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "HTX_LARGE_TRADES"
+          ],
+          "routes": {
+            "HTX_LARGE_TRADES": {
+              "status": "CLOSED_BOUNDED_SAMPLE",
+              "actual_http": 1,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        },
+        "N14": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "DERIBIT_ALT_OPTIONS": {
+              "status": "NOT_APPLICABLE",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "DELTA_OPTIONS": {
+              "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+              "actual_http": 0,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N15": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "configured": 2,
+          "checked": 1,
+          "meaningful": 0,
+          "used": [],
+          "routes": {
+            "COINGECKO_SECTOR": {
+              "status": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+              "actual_http": 1,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "CLOSED",
+              "actual_http": 3,
+              "valid_fact_count": 0,
+              "meaningful_fact_count": 0,
+              "used_fact_count": 0
+            }
+          }
+        },
+        "N16": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "configured": 1,
+          "checked": 1,
+          "meaningful": 1,
+          "used": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "routes": {
+            "PRIMARY_EXECUTION_COST": {
+              "status": "CHECKED_HTX_EXECUTION_COST",
+              "actual_http": 0,
+              "valid_fact_count": 1,
+              "meaningful_fact_count": 1,
+              "used_fact_count": 1
+            }
+          }
+        }
+      },
+      "liquidation": {
+        "accepted_exact_map_levels": 0,
+        "receipt_only_estimate_above": [
+          {
+            "native_price": 1.1813728455620123,
+            "side": "SHORT",
+            "notional": 9.994881460669088,
+            "notional_unit": "USD",
+            "native_reference_price": 0.24716188344847245,
+            "distance_pct": 377.97533708643283,
+            "selection_roles": [
+              "NEAREST_NONZERO",
+              "LARGEST_VISIBLE",
+              "LARGEST_DISTANT"
+            ],
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": null,
+            "source_clock_closed": false,
+            "observed_at_ms": 1791253477475,
+            "freshness_basis": "CURRENT_POSITIONS_COMPUTED_API_NO_BLOCK_TIMESTAMP",
+            "price_quote": "USD",
+            "price_semantics": "PROVIDER_FEE_AWARE_LIQUIDATION_PRICE",
+            "position_key": "GMX:arbitrum:0x16b4dd210a4141ce9493be0c01069ce6f7482b9e2dbfccd06cc43d2dcd68edba",
+            "provider": "GMX public API",
+            "venue": "GMX-arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          },
+          {
+            "native_price": 0.29184114909928777,
+            "side": "SHORT",
+            "notional": 9.3166,
+            "notional_unit": "USD",
+            "native_reference_price": 0.24716007114057936,
+            "distance_pct": 18.07778973056484,
+            "selection_roles": [
+              "NEAREST_NONZERO",
+              "LARGEST_VISIBLE",
+              "LARGEST_DISTANT"
+            ],
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": null,
+            "source_clock_closed": false,
+            "observed_at_ms": 1791253477825,
+            "freshness_basis": "CURRENT_POSITIONS_COMPUTED_API_NO_BLOCK_TIMESTAMP",
+            "price_quote": "USD",
+            "price_semantics": "PROVIDER_FEE_AWARE_LIQUIDATION_PRICE",
+            "position_key": "GMX:arbitrum:0xce96cc3a4acbc1a68feca6eb1908a99d47bfc9a42fe852693454429477b8276e",
+            "provider": "GMX public API",
+            "venue": "GMX-arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "receipt_only_estimate_below": [],
+        "source_clock_closed": false,
+        "venue": "GMX-arbitrum",
+        "quote": "USD",
+        "entry_eligible": false
+      }
+    }
+  ],
+  "telegram": {
+    "schema": "telegram-info-proof-v1",
+    "head": "56f5149a5c851cbeb1564c168da0be7b58bcc188",
+    "source": "schedule",
+    "source_run_id": "1791253403789-1791253419323",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "WIF-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "QNT-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 56,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "blocker_classification": {
+    "publication": "No direction/current-wave on these actual candidates; retain gates; cannot invent admitted signal or SEND stale snapshot.",
+    "N01": "QNT attempted exact published calendar HTTP403; provider-wide bounded backoff applies to WIF. Not evidence of no unlock events.",
+    "N04_QNT": "50 indexed transfers returned; all rejected FINALITY_NOT_FINAL. Do not label them finalized or weaken finality.",
+    "N15_WIF": "CG exact metadata returned but comparison deferred shared request envelope; CP query completed without usable sector comparison. Not absence of all sector data.",
+    "N07_WIF": "Exact bounded official HTX feed returned no matching publication; rendered scope limitation is not meaningful event participation.",
+    "liquidation": "WIF two original GMX fee-aware estimates shown with source-age unknown/USD/explicit account sample/score and entry disabled. QNT none; neither has accepted exact map."
+  },
+  "pending": [
+    "One fresh strategy-admitted approved Telegram SENT/message_id, same run/snapshot; no forced MAIN or old snapshot.",
+    "N01 provider access and existing official-route coverage limitations; N15 envelope/fact availability varies by asset.",
+    "Supporting DEX/Bitget general bridge is cloud/actual historical replay proven; latest natural candidates alone do not prove new source use for all assets."
+  ]
+}
