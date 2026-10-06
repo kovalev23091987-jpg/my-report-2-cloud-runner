@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v7-retention-before-write-20261004";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v8-light-price-recheck-20261006";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -210,6 +210,64 @@ async function __report2PublicCollectorFinalize(db, { bucket, claim_token, state
   if (Number(healthReceipt?.meta?.changes ?? 0) !== 1) throw new Error("PUBLIC_COLLECTOR_HEALTH_ACK_FAILED");
   return { rows_written: Number(receipt.meta.changes) + Number(healthReceipt.meta.changes) };
 }
+// This is a point-in-time price/cancellation check of an already SENT idea.
+// It never confirms candle settlement, new interest, liquidity, or an entry.
+function __report2PriceCompare(price, operator, value) {
+  return operator === '>=' ? price >= value : operator === '<=' ? price <= value : operator === '>' ? price > value : operator === '<' ? price < value : false;
+}
+function __report2PriceCheck({canonical, market, market_source_ts, now, expires_ts}) {
+  var trigger = canonical?.trigger;
+  var direction = canonical?.direction;
+  var source = __report2PublicCollectorTimestamp(market_source_ts);
+  var observed = __report2PublicCollectorTimestamp(market?.observed_ts);
+  var price = __report2PublicCollectorFinite(market?.price);
+  var value = __report2PublicCollectorFinite(trigger?.value);
+  var cancel = /^price\s*(>=|<=|>|<)\s*([0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?)$/i.exec(String(trigger?.cancel_condition ?? '').trim());
+  var base = {schema:'LIGHT_PRICE_RECHECK_V1',scope:'PRICE_AND_CANCELLATION_ONLY',checked_ts:now,entry_authorized:false,full_analysis_completed:false};
+  if (expires_ts <= now) return {...base,status:'EXPIRED',reason:'ORIGINAL_TTL_EXPIRED'};
+  if (!['OBSERVE','WAIT_FOR_TRIGGER'].includes(canonical?.state) || !['LONG','SHORT'].includes(direction) || trigger?.metric !== 'price' || trigger?.unit !== 'USDT' || value === null || value <= 0 || !['>=','<=','>','<'].includes(trigger?.operator) || !cancel || Number(cancel[2]) <= 0) return {...base,status:'NOT_CHECKED',reason:'EXACT_PRICE_CONDITIONS_REQUIRED'};
+  if (market?.contract !== canonical?.metadata?.contract || market?.source_status !== 'CLOSED' || market?.catalog_active !== true || price === null || price <= 0 || source === null || observed === null || now-source < 0 || now-source > 180000 || now-observed < 0 || now-observed > 180000 || observed < canonical.observed_ts) return {...base,status:'NOT_CHECKED',reason:'FRESH_EXACT_HTX_PRICE_REQUIRED'};
+  var cancelled = __report2PriceCompare(price,cancel[1],Number(cancel[2]));
+  var reached = __report2PriceCompare(price,trigger.operator,value);
+  return {...base,status:cancelled?'CANCELLED':reached?'TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED':'WAITING_FOR_PRICE',price,source_ts:source,observed_ts:observed,source:'HTX_OFFICIAL_COLLECTOR',settlement_confirmed:false};
+}
+function __report2PriceStable(value) {
+  return Array.isArray(value) ? value.map(__report2PriceStable) : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().filter(key=>value[key]!==undefined).map(key=>[key,__report2PriceStable(value[key])])) : value;
+}
+async function __report2RunPriceRechecks(db,{rows,market_source_ts,bucket,now}) {
+  var query = await db.prepare(`SELECT t.*,p.canonical_json,p.analytical_fingerprint,d.telegram_message_id
+    FROM v3_recheck_task_shadow t
+    JOIN canonical_publication_shadow p ON p.publication_id=t.publication_id AND p.contract_code=t.contract_code AND p.direction=t.direction AND p.run_id=t.run_id AND p.snapshot_id=t.snapshot_id AND p.wave_id=t.wave_id
+    JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id
+    JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND d.contract=t.contract_code AND d.direction=t.direction AND d.wave_id=t.wave_id
+    JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=p.observed_ts
+    WHERE t.state='PENDING' AND t.due_ts<=?1 AND b.lifecycle_event IN ('OBSERVE','WAIT')
+      AND (CASE WHEN json_valid(t.last_result) THEN COALESCE(json_extract(t.last_result,'$.last_bucket'),0) ELSE 0 END)<?2
+    ORDER BY t.updated_ts ASC,t.due_ts ASC LIMIT 2`).bind(now,bucket).all();
+  var selected = query?.results ?? [], marketMap = new Map(rows.map(row=>[row.contract,row]));
+  var receipt = {status:'CLOSED',selected:selected.length,checked:0,rows_read:Number(query?.meta?.rows_read ?? selected.length),rows_written:0,results:[],entry_authorized:false,source_http:0,telegram:false};
+  for (var task of selected) {
+    var canonical;
+    try {canonical=JSON.parse(task.canonical_json);} catch {receipt.results.push({task_id:task.task_id,status:'INVALID_CANONICAL_JSON'});continue;}
+    var copy={...canonical};delete copy.analytical_fingerprint;
+    var fingerprint=await __report2PublicCollectorHash(JSON.stringify(__report2PriceStable(copy)));
+    var id=String(task.telegram_message_id ?? '');
+    if (!/^[1-9][0-9]*$/.test(id) || !Number.isSafeInteger(Number(id)) || fingerprint!==task.analytical_fingerprint || fingerprint!==canonical.analytical_fingerprint || canonical.metadata?.contract!==task.contract_code || canonical.run_id!==task.run_id || canonical.snapshot_id!==task.snapshot_id || canonical.direction!==task.direction || canonical.trigger?.next_recheck_ts!==task.due_ts || canonical.trigger?.expires_ts!==task.expires_ts) {receipt.results.push({task_id:task.task_id,status:'EXACT_SENT_IDENTITY_REQUIRED'});continue;}
+    var result=__report2PriceCheck({canonical,market:marketMap.get(task.contract_code),market_source_ts,now,expires_ts:task.expires_ts});
+    var saved={...result,last_bucket:bucket,task_id:task.task_id,publication_id:task.publication_id,run_id:task.run_id,snapshot_id:task.snapshot_id,analytical_fingerprint:fingerprint,telegram_message_id:id};
+    var state=result.status==='CANCELLED'?'CANCELLED':result.status==='EXPIRED'?'EXPIRED':'PENDING';
+    var write=await db.prepare(`UPDATE v3_recheck_task_shadow SET state=?2,last_result=?3,updated_ts=?4
+      WHERE task_id=?1 AND state='PENDING' AND publication_id=?5 AND run_id=?6 AND snapshot_id=?7 AND updated_ts=?8`).bind(task.task_id,state,JSON.stringify(saved),now,task.publication_id,task.run_id,task.snapshot_id,task.updated_ts).run();
+    receipt.rows_written+=Number(write?.meta?.rows_written ?? write?.meta?.changes ?? 0);
+    if (Number(write?.meta?.changes ?? 0)!==1) {receipt.results.push({task_id:task.task_id,status:'TASK_CHANGED_NO_ACK'});continue;}
+    var readback=await db.prepare('SELECT state,last_result FROM v3_recheck_task_shadow WHERE task_id=?1 LIMIT 1').bind(task.task_id).first();
+    receipt.rows_read+=1;
+    if (readback?.state!==state || readback?.last_result!==JSON.stringify(saved)) throw Error('LIGHT_PRICE_CHECK_READBACK_FAILED');
+    if (result.price!==undefined) receipt.checked++;
+    receipt.results.push(saved);
+  }
+  return receipt;
+}
 async function __report2PublicCollectorScheduled(controller, env) {
   var started = Date.now();
   if (!__report2PublicCollectorSwitch(env?.PUBLIC_COLLECTOR_ENABLED)) throw new Error("PUBLIC_COLLECTOR_DISABLED");
@@ -288,7 +346,8 @@ async function __report2PublicCollectorScheduled(controller, env) {
     contractCount = rows.length;
     shardCount = shards.length;
     payloadBytes = shards.reduce((sum, row) => sum + row.payload_bytes, 0);
-    var amortizedWrites = shards.length * 2 + 3;
+    var lightEnabled = __report2PublicCollectorSwitch(env?.PRICE_RECHECK_ENABLED);
+    var amortizedWrites = shards.length * 2 + 3 + (lightEnabled ? 6 : 0);
     var allowedSubrequests = catalogResult ? 4 : 3;
     if (externalRequests > allowedSubrequests || amortizedWrites > __REPORT2_PUBLIC_COLLECTOR_DAILY_WRITE_CAP / 288 || payloadBytes > 2 * 1024 * 1024) {
       throw new Error("PUBLIC_COLLECTOR_MEASURED_BUDGET_EXCEEDED");
@@ -296,6 +355,13 @@ async function __report2PublicCollectorScheduled(controller, env) {
     var persisted = await __report2PublicCollectorPersist(env.DATA_DB, shards);
     rowsRead += persisted.rows_read;
     rowsWritten += persisted.rows_written;
+    if (lightEnabled) {
+      // At most two updates to an existing indexed table. No new history table,
+      // source request or Telegram transport is created by the lightweight lane.
+      var light=await __report2RunPriceRechecks(env.DATA_DB,{rows,market_source_ts:marketResult.source_ts,bucket,now:Date.now()});
+      rowsRead+=light.rows_read;rowsWritten+=light.rows_written;
+      console.log('REPORT2_LIGHT_PRICE_RECHECK',JSON.stringify(light));
+    }
     await __report2PublicCollectorFinalize(env.DATA_DB, { bucket, claim_token: claim.token, state: "CLOSED", started_ts: started, completed_ts: Date.now(), external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten, payload_bytes: payloadBytes, status: "CLOSED", error_text: null, contract_count: contractCount, shard_count: shardCount });
     console.log("REPORT2_PUBLIC_COLLECTOR_CLOSED", JSON.stringify({ version: __REPORT2_PUBLIC_COLLECTOR_VERSION, generation: __REPORT2_PUBLIC_COLLECTOR_GENERATION, bucket, contracts: contractCount, shards: shardCount, external_requests: externalRequests, rows_read: rowsRead, rows_written: rowsWritten + 2, payload_bytes: payloadBytes, wall_ms: Date.now() - started, analytical_decision: false, telegram: false, bykaranteli: false }));
   } catch (error) {

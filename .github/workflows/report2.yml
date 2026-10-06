@@ -438,7 +438,7 @@ jobs:
           node-version: '24'
       - name: Validate collector and exact Hub overlay
         run: |
-          node --test cloudflare/public-collector/public-collector.test.mjs current-generation/tests/market-snapshot-batch.test.mjs
+          node --test cloudflare/public-collector/public-collector.test.mjs cloudflare/public-collector/github-backup.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs current-generation/tests/market-snapshot-batch.test.mjs
           node cloudflare/public-collector/patch-worker.mjs cloudflare/public-collector/dist
           node --check cloudflare/public-collector/dist/worker.js
           REPORT2_HUB_MODULE_PATH=cloudflare/public-collector/dist/worker.js node --test cloudflare/public-collector/public-collector.test.mjs

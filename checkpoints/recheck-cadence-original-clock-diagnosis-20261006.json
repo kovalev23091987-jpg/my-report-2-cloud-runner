@@ -1,0 +1,65 @@
+{
+  "schema": "RECHECK_CADENCE_ORIGINAL_CLOCK_DIAGNOSIS_V1",
+  "source_proof": "checkpoints/ACTUAL_SCHEDULED_1425MSK_20261006.json",
+  "source_run_id": "1791285825482-1791285832692",
+  "source_snapshot_id": "S392:ADA-USDT:1791285886589",
+  "source_fingerprint": "22da29b49709e31fd6c4f51d7ac039add655b2d754066ea69b182e70fb539f60",
+  "source_clock_unchanged": true,
+  "scope": "CURRENT_SCHEDULER_COMPONENTS_AND_CALLER_ORDER_WITH_CONTROLLED_PROJECTED_TASKS_NOT_ACTUAL_DELIVERY",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "checks": [
+    {
+      "direction": "LONG",
+      "scope": "CONTROLLED_TASK_AT_RETAINED_ORIGINAL_CLOCK_NOT_AN_ACTUAL_SENT_TASK",
+      "observed_ts": 1791285886589,
+      "due_ts": 1791286186589,
+      "expires_ts": 1791287686589,
+      "next_admissible_analytics_ts": 1791288225482,
+      "at_promised_recheck": "NOT_DUE",
+      "at_next_analytics": "NO_DUE_TASK",
+      "final_task": {
+        "state": "EXPIRED",
+        "last_result": "TTL_EXPIRED_BEFORE_RECHECK"
+      }
+    },
+    {
+      "direction": "SHORT",
+      "scope": "CONTROLLED_TASK_AT_RETAINED_ORIGINAL_CLOCK_NOT_AN_ACTUAL_SENT_TASK",
+      "observed_ts": 1791285886589,
+      "due_ts": 1791286186589,
+      "expires_ts": 1791287686589,
+      "next_admissible_analytics_ts": 1791288225482,
+      "at_promised_recheck": "NOT_DUE",
+      "at_next_analytics": "NO_DUE_TASK",
+      "final_task": {
+        "state": "EXPIRED",
+        "last_result": "TTL_EXPIRED_BEFORE_RECHECK"
+      }
+    }
+  ],
+  "collector_role": "COLLECTION_ONLY_NO_ANALYTICS_OR_DELIVERY",
+  "thirty_minute_full_cycle_budget": {
+    "scheduled_deep_checks_per_day": 96,
+    "manual_commands_per_day": 8,
+    "manual_deep_checks_per_day": 11,
+    "scheduled_monthly_units": 15345,
+    "manual_monthly_units": 1705,
+    "monthly_units": 17050,
+    "manual_reserve_preserved": true,
+    "maximum_analytics_rows_read": 2538000,
+    "maximum_analytics_rows_written": 39480,
+    "safe": false
+  },
+  "automatic_cadence_or_ttl_change": false,
+  "diagnosis": "FIVE_MINUTE_RECHECK_UNREACHABLE_BEFORE_THIRTY_MINUTE_TTL_WITH_FORTY_MINUTE_ANALYTICS_FOR_THIS_ORIGINAL_CLOCK",
+  "code_sha256": {
+    "current-generation/files/runner-main.mjs": "0a8be08ba22ab533971b4fbb5437cc5a6c1c34d77c0b0e7543476cba61f18fb3",
+    "current-generation/files/src/worker.js": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503",
+    "post-v7-consolidated/final-reconciliation/files/src/scheduler-control.mjs": "ffdcde5a97aa58040e1bff4001bd3980e9e8799eaaa951e8ceeeecc4ba347cea",
+    "post-v7-consolidated/final-reconciliation/files/src/recheck-scheduler.mjs": "fb8f5ca80b08e20e4bf0c3c11517a4d6096ad381da513f5657159aa0879eda43",
+    "cloudflare/public-collector/injected-worker-tail.js": "424edb1b71af8ce8e10e469d4a6324afc7eec65a36038e998b02646893c9d887"
+  }
+}

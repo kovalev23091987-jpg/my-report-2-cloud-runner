@@ -8,7 +8,7 @@ const fake=row=>({prepare(){return{bind(){return{first:async()=>row}}}}});
 test('backup loads the same bounded collector tail as the deployed primary',()=>{
   const source=fs.readFileSync(new URL('./injected-worker-tail.js',import.meta.url),'utf8');
   assert.equal(typeof loadExactCollector(source),'function');
-  assert.match(source,/report2-public-collector-v7-retention-before-write-20261004/);
+  assert.match(source,/report2-public-collector-v8-light-price-recheck-20261006/);
 });
 test('backup skips a completed primary without contacting public APIs',async()=>{
   let count=0,clock=BUCKET+3*60_000;
