@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T053904745Z:exact-retained-scenario",
-    "acquired_ts": 1791265144745,
-    "expires_ts": 1791265744745
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "INSPECT_GENERAL_CURRENT_OBSERVATION_PLAN_WITH_SAVED_0825_INPUTS; DO_NOT_REPLAY_MAIN_OR_STALE_TELEGRAM",
   "last_verified_release": "checkpoints/paired-finalized-supply-consumer-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791265144745,
+  "updated_ts": 1791265412225,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,11 +145,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261006T053534787Z:save-actual-current-state",
-    "acquired_ts": 1791264934787,
-    "expires_ts": 1791265234787,
-    "released_ts": 1791264990411,
-    "reason": "exact report/source catalog preserved; no cloud checks still running"
+    "owner": "HTX:20261006T053904745Z:exact-retained-scenario",
+    "acquired_ts": 1791265144745,
+    "expires_ts": 1791265744745,
+    "released_ts": 1791265412225,
+    "reason": "bounded missing original event read completed and preserved; no cloud diagnostic running"
   },
   "bounded_next_check": {
     "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
@@ -443,7 +443,8 @@
   },
   "pending_current_direction_diagnosis": {
     "checkpoint": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json",
-    "status": "EXACT_READ_COMPLETED_BR_DIRECTION_CLOSED_PLAN_NOT_CLOSED_FIL_DIRECTION_CONFLICT"
+    "missing_producer_read": "checkpoints/EXACT_MISSING_0825_SCENARIO_EVIDENCE_20261006.json",
+    "status": "BR_SHORT91_PLAN_NOT_CLOSED_ORIGINAL_EVENT_ROW_UNAVAILABLE_DO_NOT_ASSUME_FIX"
   },
   "pending_prospective_observation": {
     "PR": 174,

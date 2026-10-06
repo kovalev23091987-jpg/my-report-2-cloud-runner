@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T05:36:30.411Z",
+  "updated_utc": "2026-10-06T05:43:32.225Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -104,9 +104,15 @@
       "BR": "CANONICAL_STATE_NOT_PUBLISHABLE; PLAN_NOT_CLOSED; qualified SHORT91 same-wave receipt",
       "FIL": "CANONICAL_DIRECTION_NOT_CLOSED"
     },
-    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE"
+    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE",
+    "missing_producer_read": "checkpoints/EXACT_MISSING_0825_SCENARIO_EVIDENCE_20261006.json"
   },
   "pending": [
+    {
+      "task": "Explain absent BR current observation scenario on original inputs",
+      "actual": "BR_SHORT91 fresh same-wave; existing/fallback plan not closed; exact event row unavailable",
+      "requires": "Read existing producer/persistence path and preserve future same-run plan diagnostics; do not invent a current trigger from old candle"
+    },
     {
       "task": "Fresh approved automatic OBSERVE or ENTRY Telegram delivery",
       "requires": "One naturally admitted eligible fresh canonical run, unchanged approved text, SENT and message_id of the same snapshot",
@@ -179,14 +185,23 @@
     "startup_before_consolidation": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
     "blob_sha": "8291f28f66b5ac7186311d1291b99e6b202b59c4",
     "phase_before_consolidation": "checkpoints/archive/phase-state-before-consolidation-20261006.json",
-    "branch_inventory": "checkpoints/archive/cloud-version-inventory-20261006.json"
+    "branch_inventory": "checkpoints/archive/cloud-version-inventory-20261006.json",
+    "source_catalog_before_consolidation": "checkpoints/archive/source-catalog-use-before-consolidation-20261006.md"
   },
   "continuation": {
     "own_phase_lease_required": true,
     "foreign_active_lease_or_fence": "NO_MUTATION_NO_TESTS_NO_LIVE_SOURCE_CALLS",
     "agent_background_running_after_turn": false,
     "production_schedules_are_separate": true,
-    "automatic_continuation_created_by_cleanup": false
+    "automatic_continuation_created_by_cleanup": false,
+    "active_cloud_development_jobs": [],
+    "last_bounded_read": {
+      "cloud_run": 37419624255,
+      "status": "READBACK_FAILED_MISSING_ORIGINAL_ROW",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0
+    }
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
   "withdrawn_PRs": [
