@@ -1,0 +1,294 @@
+{
+  "schema": "WEEKLY_DELIVERY_EXACT_PROOF_DIAGNOSIS_V1",
+  "created_utc": "2026-10-06T11:05:45.608Z",
+  "reader_cloud_run": 37452923228,
+  "reader_head": "24db365a59f8b57a75d21320cfbdbace29598c9e",
+  "artifact": {
+    "id": 11407900642,
+    "zip_sha256": "427cdbb93ecd9af48ab538c86e11b6b6b7ecd2b30116281a2ba13125dcf36722"
+  },
+  "weekly_journal": {
+    "scope": "CURRENT_FINAL_DISPATCH_STATES_UPDATED_IN_LAST_7_DAYS_NOT_EVENT_HISTORY",
+    "lower_ts": 1790679304571,
+    "upper_ts": 1791284104571,
+    "per_state_limit": 401
+  },
+  "states": {
+    "PENDING": {
+      "count": 0,
+      "complete": true,
+      "reason_counts": {},
+      "selected_rows": []
+    },
+    "SENDING": {
+      "count": 0,
+      "complete": true,
+      "reason_counts": {},
+      "selected_rows": []
+    },
+    "SENT": {
+      "count": 1,
+      "complete": true,
+      "reason_counts": {
+        "SENT": 1
+      },
+      "selected_rows": [
+        {
+          "dispatch_id": "V3TG:TAO-USDT|SHORT|EDW:TAO-USDT:1789985218852:G1|OBSERVE|v3-telegram-shadow-r6|R2984525",
+          "contract": "TAO-USDT",
+          "direction": "SHORT",
+          "lifecycle_event": "OBSERVE",
+          "state": "SENT",
+          "created_ts": 1790715096837,
+          "updated_ts": 1790715098070,
+          "sent_ts": 1790715098070,
+          "telegram_message_id": "144",
+          "last_error": "SENT"
+        }
+      ]
+    },
+    "FAILED_RETRYABLE": {
+      "count": 0,
+      "complete": true,
+      "reason_counts": {},
+      "selected_rows": []
+    },
+    "FAILED_FINAL": {
+      "count": 59,
+      "complete": true,
+      "reason_counts": {
+        "OBSERVE_SOURCE_ROLES_NOT_CLOSED": 5,
+        "OBSERVE_STATE_MISMATCH": 20,
+        "READY": 4,
+        "REMOVAL_WITHOUT_PRIOR_DELIVERY": 8,
+        "REPORTABLE_TARGET_PROOF_NOT_CLOSED": 22
+      },
+      "selected_rows": [
+        {
+          "dispatch_id": "V3TG:WIF-USDT|LONG|EDW:WIF-USDT:1791187242450:G4|OBSERVE|v3-telegram-shadow-r6",
+          "contract": "WIF-USDT",
+          "direction": "LONG",
+          "lifecycle_event": "OBSERVE",
+          "state": "FAILED_FINAL",
+          "created_ts": 1791197452911,
+          "updated_ts": 1791197453979,
+          "sent_ts": null,
+          "telegram_message_id": null,
+          "last_error": "READY"
+        },
+        {
+          "dispatch_id": "V3TG:ADA-USDT|LONG|EDW:ADA-USDT:1791153642508:G3|OBSERVE|v3-telegram-shadow-r6",
+          "contract": "ADA-USDT",
+          "direction": "LONG",
+          "lifecycle_event": "OBSERVE",
+          "state": "FAILED_FINAL",
+          "created_ts": 1791153705301,
+          "updated_ts": 1791153706087,
+          "sent_ts": null,
+          "telegram_message_id": null,
+          "last_error": "READY"
+        },
+        {
+          "dispatch_id": "V3TG:NEAR-USDT|LONG|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984717",
+          "contract": "NEAR-USDT",
+          "direction": "LONG",
+          "lifecycle_event": "OBSERVE",
+          "state": "FAILED_FINAL",
+          "created_ts": 1790830475608,
+          "updated_ts": 1790830476498,
+          "sent_ts": null,
+          "telegram_message_id": null,
+          "last_error": "READY"
+        },
+        {
+          "dispatch_id": "V3TG:HBAR-USDT|SHORT|EDW:HBAR-USDT:1790112662879:G1|OBSERVE|v3-telegram-shadow-r6",
+          "contract": "HBAR-USDT",
+          "direction": "SHORT",
+          "lifecycle_event": "OBSERVE",
+          "state": "FAILED_FINAL",
+          "created_ts": 1790703261377,
+          "updated_ts": 1790703262598,
+          "sent_ts": null,
+          "telegram_message_id": null,
+          "last_error": "READY"
+        }
+      ]
+    },
+    "EXPIRED_NOT_SENT": {
+      "count": 8,
+      "complete": true,
+      "reason_counts": {
+        "EXPIRED_NOT_SENT": 8
+      },
+      "selected_rows": []
+    },
+    "SUPPRESSED_DEDUP": {
+      "count": 0,
+      "complete": true,
+      "reason_counts": {},
+      "selected_rows": []
+    }
+  },
+  "full_evidence": [
+    {
+      "contract": "ADA-USDT",
+      "full_evidence_id": "1791282416554:ADA-USDT:full-evidence-v2",
+      "snapshot_id": "S392:ADA-USDT:1791282416554",
+      "observed_ts": 1791282416554,
+      "shadow": {
+        "shadow_id": "1791282416554:ADA-USDT",
+        "contract_code": "ADA-USDT",
+        "observed_ts": 1791282416554,
+        "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+        "source": "DEEP_CHECK_INPUT",
+        "mode": "SHADOW_ONLY_NO_EXECUTION",
+        "direction_hint": "LONG",
+        "dc_long": 41.75,
+        "dc_short": 9.39,
+        "eq_status": "SHADOW_MEASURABLE",
+        "dq_status": "PARTIAL",
+        "stage": "SHADOW_OBSERVE_LONG_BIAS",
+        "data_sufficiency": "PARTIAL",
+        "calibrated": 0,
+        "full_decision_eligible": 0,
+        "actual_decision_generated": 0,
+        "validated": 0,
+        "telegram_started": 0,
+        "created_ts": 1791282416554
+      },
+      "decision_evidence_audit": {
+        "version": "tz101-price-flow-relative-producer-r4.0",
+        "status": "NO_USABLE_EVIDENCE",
+        "check": "UNKNOWN",
+        "reasons": [
+          "OPPORTUNITY_RECEIPT_NOT_CLOSED"
+        ],
+        "rows": [],
+        "facts": null,
+        "independent_domains": [],
+        "complete_direction": false,
+        "persistence": "UNACKNOWLEDGED",
+        "profile_id": "existing-htx-price-flow-confirmation-5m"
+      },
+      "opportunity_present": false,
+      "campaign_present": false,
+      "position_state": "UNKNOWN"
+    },
+    {
+      "contract": "ZEC-USDT",
+      "full_evidence_id": "1791282360874:ZEC-USDT:full-evidence-v2",
+      "snapshot_id": "S392:ZEC-USDT:1791282360874",
+      "observed_ts": 1791282360874,
+      "shadow": {
+        "shadow_id": "1791282360874:ZEC-USDT",
+        "contract_code": "ZEC-USDT",
+        "observed_ts": 1791282360874,
+        "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+        "source": "DEEP_CHECK_INPUT",
+        "mode": "SHADOW_ONLY_NO_EXECUTION",
+        "direction_hint": "LONG",
+        "dc_long": 37.43,
+        "dc_short": 0.63,
+        "eq_status": "SHADOW_MEASURABLE",
+        "dq_status": "PARTIAL",
+        "stage": "SHADOW_OBSERVE_LONG_BIAS",
+        "data_sufficiency": "PARTIAL",
+        "calibrated": 0,
+        "full_decision_eligible": 0,
+        "actual_decision_generated": 0,
+        "validated": 0,
+        "telegram_started": 0,
+        "created_ts": 1791282360874
+      },
+      "decision_evidence_audit": {
+        "version": "tz101-price-flow-relative-producer-r4.0",
+        "status": "NO_USABLE_EVIDENCE",
+        "check": "UNKNOWN",
+        "reasons": [
+          "DIRECTION_NOT_PRECOMMITTED"
+        ],
+        "rows": [],
+        "facts": null,
+        "independent_domains": [],
+        "complete_direction": false,
+        "persistence": "UNACKNOWLEDGED",
+        "profile_id": "existing-htx-price-flow-confirmation-5m"
+      },
+      "opportunity_present": true,
+      "campaign_present": false,
+      "position_state": "UNKNOWN"
+    }
+  ],
+  "d1_usage": {
+    "requests": 27,
+    "rows_read": 153,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 38,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 15,
+        "rows_read": 76,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 22,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:full_evidence_shadow_log": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:shadow_decision_log": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "last_sent_msk": "2026-09-29T23:51:38.070+03:00",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "ready_error_source": "PRESENTATION_FAILURE_BRANCH_RECORDS_tg.status_OR_man.status_EVEN_WHEN_ONLY_MANUAL_FAILED; HISTORICAL_EXACT_RENDER_REASON_PENDING",
+  "hub_current_sender_code": "telegram-test calls sendTelegramMessage; positive actual Telegram ACK returns SENT and message_id, no READY delivery state",
+  "current13_27": "ADA decision evidence empty because opportunity receipt not closed; ZEC decision evidence empty because event direction not precommitted; shadow LONG bias alone is not assigned closed directional evidence",
+  "weekly_history_scope": "CURRENT_STORED_JOURNAL_IN_THIS_CHAIN; RETENTION_AND_OTHER_DELIVERY_LANES_NOT_AUDITED",
+  "project_complete": false,
+  "checkpoint": "checkpoints/WEEKLY_DELIVERY_AND_DEEP_PROOF_20261006.json"
+}
