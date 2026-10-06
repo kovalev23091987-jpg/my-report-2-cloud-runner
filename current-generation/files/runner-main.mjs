@@ -57,6 +57,7 @@ import {claimCommand,claimNextCommand,completeCommand,deferCommand} from './src/
 import {collectCandidateEvidenceV2,finalizeCandidateBlockCoverage} from './src/candidate-evidence-v2-runtime.mjs';
 import {createUnifiedHttpBudget,HTTP_LIMITS} from './src/unified-budget.mjs';
 import {TWO_CANDIDATE_PLAN,TWO_NODE_HTTP_LIMITS,proveTwoCandidateBudget,deepRuntimeOptions} from './src/two-candidate-policy.mjs';
+import {bindGateOfficialAssetIdentity} from './src/gate-official-asset-binding.mjs';
 import {collectHtxBoundSupplementalContext} from './src/htx-asset-identity.mjs';
 import {compileOfficialSourceRegistry,mergeOfficialAndConfiguredRegistries} from './src/official-source-registry.mjs';
 import {installProviderMinuteLedger} from './src/provider-minute-ledger.mjs';
@@ -608,6 +609,7 @@ async function main() {
     venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY,
     ...params,
   });if(result.asset_reference)console.log('HTX_ASSET_REFERENCE_RECEIPT',JSON.stringify({contract:params.contract,status:result.asset_reference.status,identity:result.asset_reference.identity,identity_method:result.identity_method,cache_status:result.asset_reference.cache_status,network_calls:result.asset_reference.network_calls,reference_observed_ts:result.asset_reference.reference_observed_ts,receipt:result.asset_reference.receipt||null}));return result;};
+  env.REPORT2_PUBLIC_ASSET_BINDING=params=>bindGateOfficialAssetIdentity({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,db_admit:e=>evaluateWithinRunReservation({reservation:d1RunReservation,currentUsage:env.DATA_DB.usageSnapshot(),extraRowsRead:4500+e.rows_read,extraRowsWritten:150+e.rows_written}),...params});
   const liquidationRiskByContract=new Map(),futureHttpByContract=new Map();
   env.REPORT2_FUTURE_PROVIDER_MODEL_COLLECT=async params=>{const admission=env.REPORT2_LIQUIDATION_COVERAGE_FOR?.(params.contract);if(!admission?.eligible||!admission.source_ids.includes('COINLOBSTER_FUTURE_MODEL'))return{status:'COVERAGE_GATE_NOT_ADMITTED',reason:admission?.status||'COVERAGE_DATABASE_NOT_AVAILABLE',levels:[],network_calls:0,internal_only:true};const result=await collectCoinLobsterFutureModel({db:env.DATA_DB,fetch_impl:globalThis.fetch,request_admit:unifiedHttpBudget.reserve,max_http:Math.max(0,5-(futureHttpByContract.get(params.contract)??0)),strict_fresh_manual:source!=='schedule'&&commandIntent.matched,...params});futureHttpByContract.set(params.contract,(futureHttpByContract.get(params.contract)??0)+result.network_calls);return result;};
   env.REPORT2_CROSS_EXCHANGE_RISK_COLLECT=async params=>{const risk=await collectCrossExchangeRiskContext({

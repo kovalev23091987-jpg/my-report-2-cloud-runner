@@ -16443,6 +16443,12 @@ async function buildDeepCheckInput(params, env) {
       });
     }
   }catch(error){supplementalCandidateContext={status:'SOURCE_ERROR',sources:{},internal_only:true,error:String(error?.message||error).slice(0,200)};}
+  if(typeof env?.REPORT2_PUBLIC_ASSET_BINDING==='function')try{
+    const assetBinding=await env.REPORT2_PUBLIC_ASSET_BINDING({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now()});
+    publicEvidence=assetBinding.public_evidence||publicEvidence;
+    if(assetBinding.binding?.verified===true)publicEvidenceAvailableTs=Math.max(publicEvidenceAvailableTs||0,assetBinding.available_ts||0);
+    console.log('PUBLIC_ASSET_BINDING_RECEIPT',JSON.stringify({contract,status:assetBinding.status,reason:assetBinding.reason,network_calls:assetBinding.network_calls,binding:assetBinding.binding||null}));
+  }catch(error){console.log('PUBLIC_ASSET_BINDING_UNAVAILABLE',JSON.stringify({contract,reason:String(error.message).slice(0,120)}));}
   try{
     if(typeof env?.REPORT2_EVIDENCE_V2_COLLECT==='function')candidateEvidenceV2=await env.REPORT2_EVIDENCE_V2_COLLECT({contract,run_id:String(params?.run_id||`manual-${cycleStartedTs}`),asset_identity:supplementalCandidateContext?.asset_identity||null,asset_metadata:supplementalCandidateContext?.asset_metadata||null,identity_method:supplementalCandidateContext?.identity_method||null,public_evidence:publicEvidence,supplemental_context:supplementalCandidateContext,now:Date.now(),strict_fresh_manual:isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)});
   }catch(error){candidateEvidenceV2={status:'SOURCE_ERROR',evidence:[],internal_only:true,error:String(error?.message||error).slice(0,200)};}
@@ -20198,3 +20204,4 @@ async function __report2CloudByKProxy(request, env) {
  const provider=await fetch(target.toString(),{method:"GET",headers:{accept:"application/json",authorization:`Bearer ${apiKey}`,"user-agent":"My-Report-2-HUB/4.1-github-proxy"}}); return new Response(provider.body,{status:provider.status,headers:{"content-type":provider.headers.get("content-type")||"application/json","cache-control":"no-store"}});
 }
 export default {...__REPORT2_ORIGINAL_HANDLER,async fetch(request,env,ctx){const url=new URL(request.url);if(url.pathname==="/cloud-bykaranteli-proxy")return __report2CloudByKProxy(request,env);if(typeof __REPORT2_ORIGINAL_HANDLER.fetch!=="function")return new Response("Not Found",{status:404});return __REPORT2_ORIGINAL_HANDLER.fetch(request,env,ctx);}};
+

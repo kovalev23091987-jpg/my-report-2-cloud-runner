@@ -12,7 +12,7 @@ export function createProviderReferenceReader({db,source,run_id,request_admit,fe
  async function get(route,url,{ttl_ms=0,max_bytes=2*1024*1024,shape=()=>true,bypass_cache=false,max_cache_bytes=max_bytes}={}){
   if(denied||backoff)return null;
   const u=new URL(url),allowed=source==='COINGECKO_SECTOR'?u.hostname==='api.coingecko.com'&&u.pathname.startsWith('/api/v3/')
-   :['COINPAPRIKA_SECTOR','COINPAPRIKA_HTX_IDENTITY'].includes(source)?u.hostname==='api.coinpaprika.com'&&u.pathname.startsWith('/v1/'):false;
+   :['COINPAPRIKA_SECTOR','COINPAPRIKA_HTX_IDENTITY'].includes(source)?u.hostname==='api.coinpaprika.com'&&u.pathname.startsWith('/v1/'):source==='GATE_ASSET_REFERENCE'?u.hostname==='api.gateio.ws'&&u.pathname==='/api/v4/wallet/currency_chains'&&[...u.searchParams.keys()].length===1&&/^[A-Z0-9][A-Z0-9]{0,31}$/.test(u.searchParams.get('currency')||''):false;
   if(!allowed||u.protocol!=='https:'||u.username||u.password)throw Error('PROVIDER_REFERENCE_ROUTE_NOT_ALLOWED');
   const readTs=clock();if(!Number.isSafeInteger(readTs)||readTs<now)throw Error('REFERENCE_READ_CLOCK_NOT_CLOSED');
   const memoryKey=`${source}:${run_id}:${url}`;

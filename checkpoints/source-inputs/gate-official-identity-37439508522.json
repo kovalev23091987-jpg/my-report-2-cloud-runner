@@ -1,0 +1,189 @@
+{
+  "schema": "report2-general-gate-static-identity-evaluation-v1",
+  "head": "1fcc26d972369c7fe1b98198d53e5a85fee4bee9",
+  "started_ts": 1791277002573,
+  "sourceHTTP": 1,
+  "maximum_sourceHTTP": 1,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Nansen": 0,
+  "production_enabled": false,
+  "not_fresh_joint_acceptance": true,
+  "selection": {
+    "contract": "NIL-USDT",
+    "basis": "FIRST_SORTED_RETAINED_ACTUAL_CANDIDATE_WITH_OFFICIAL_HTX_TOKEN_ADDRESS_IN_EXISTING_CRYPTO_UNIVERSE; NO_ADAPTER_COIN_CONFIG",
+    "source_cloud_run": 37436004948,
+    "original_snapshot_id": "S392:NIL-USDT:1791275238333",
+    "official_htx_reference": {
+      "version": "htx-official-asset-identity-v3-wire-address-native-20261004",
+      "status": "CLOSED",
+      "contract": "NIL-USDT",
+      "currency": "NIL",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47"
+      },
+      "identity_method": "HTX_OFFICIAL_CURRENCY_CHAIN_ADDRESS",
+      "network_calls": 0,
+      "cache_status": "VALID_HTX_REFERENCE_CACHE",
+      "receipt": {
+        "endpoint": "https://api.huobi.pro/v2/reference/currencies",
+        "http_status": 200,
+        "received_ts": 1791271560467,
+        "parsed_payload_sha256": "f8e9cea5ee9071560247f256d32d4a339200bb80ea423da30c8c61672a78b1f8"
+      },
+      "reference_observed_ts": 1791271560467,
+      "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+      "internal_only": true
+    }
+  },
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-06",
+      "run_count": 31,
+      "reserved_rows_read": 546500,
+      "reserved_rows_written": 9400,
+      "measured_rows_read": 344859,
+      "measured_rows_written": 5267,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 2500,
+      "rows_written": 64
+    },
+    "projected_reserved": {
+      "rows_read": 549000,
+      "rows_written": 9464
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "daily_source_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "GATE_ASSET_REFERENCE",
+    "day_utc": "2026-10-06",
+    "attempts": 1
+  },
+  "provider_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "GATE",
+    "minute_bucket": 1791276960000,
+    "reserved_units": 1,
+    "rolling_units": 1,
+    "cap": 4
+  },
+  "transport": {
+    "url": "https://api.gateio.ws/api/v4/wallet/currency_chains?currency=NIL",
+    "http_status": 200,
+    "received_ts": 1791277006024,
+    "body_sha256": "b02eceff137d18c76981220f41a7c04d0cef1e6a07831f830960bb285ce6bd3e",
+    "reference_kind": "STATIC_ASSET_BINDING_ONLY",
+    "not_a_live_market_clock": true
+  },
+  "chain_rows": 1,
+  "comparable_address_count": 1,
+  "exact_matches": [
+    {
+      "chain": "ETH",
+      "name_cn": "Ethereum（ERC20）",
+      "name_en": "Ethereum(ERC20)",
+      "is_disabled": 0,
+      "is_deposit_disabled": 0,
+      "is_withdraw_disabled": 0,
+      "contract_address": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47",
+      "decimal": "6",
+      "is_tag": 0,
+      "withdraw_amount_min": "0.098765"
+    }
+  ],
+  "identity_binding_usable": true,
+  "status": "ACTUAL_OFFICIAL_SAME_CHAIN_ADDRESS_BINDING_CLOSED_NOT_JOINT_USE",
+  "reason": null,
+  "binding_known_after_original_decision": true,
+  "original_canonical_not_promoted": true,
+  "market_metric_source_clocks_not_refreshed": true,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "GATE_STATIC_IDENTITY:37439508522:1",
+    "source_run_id": "37439508522",
+    "measured_rows_read": 40,
+    "measured_rows_written_accounted": 13,
+    "measured_requests_accounted": 19,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791277006255,
+  "d1_usage": {
+    "requests": 19,
+    "rows_read": 41,
+    "rows_written": 13,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 32,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}

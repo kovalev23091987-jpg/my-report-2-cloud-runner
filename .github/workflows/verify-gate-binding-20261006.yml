@@ -1,0 +1,89 @@
+name: Report2 General Gate Official Asset Binding
+on:
+  push:
+    branches: [codex/gate-official-asset-binding-20261006]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check fresh owner before tests and replay
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='d549f393d7e9d600528273336a9676b8a0f5fdfd')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261006T082707067Z:post184-evidence'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Read exact retained actual source artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11398934776,archive_format:'zip'});
+            const b=Buffer.from(r.data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='44240c53de92ca66f380cad6de2b341a91783701c93172c99e9cae05cfa96dd7')throw Error('EXACT_SOURCE_ZIP_DIGEST_MISMATCH');
+            fs.writeFileSync('original-source.zip',b);fs.mkdirSync('original-source',{recursive:true});cp.execFileSync('unzip',['-q','original-source.zip','-d','original-source']);
+            const z=require('zlib');const p=JSON.parse(z.gunzipSync(fs.readFileSync('original-source/exact-current-data.json.gz')));
+            if(p.source_head!=='a29d03a8b5050ed227160a1f4450c14823001704'||p.sourceHTTP!==0||p.source_cloud_run!==37436004948)throw Error('ACTUAL_SOURCE_BINDING_MISMATCH');
+      - name: Read actual admitted Gate source response
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11399903566,archive_format:'zip'});
+            const b=Buffer.from(r.data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='75bd2fcc57d4c235533d2d2b28ed08a8b086d5080662babafadb437478f9a86b')throw Error('GATE_SOURCE_ZIP_DIGEST_MISMATCH');
+            fs.writeFileSync('gate-source.zip',b);fs.mkdirSync('gate-source',{recursive:true});cp.execFileSync('unzip',['-q','gate-source.zip','-d','gate-source']);
+            const p=JSON.parse(fs.readFileSync('gate-source/gate-identity-source-proof.json'));
+            if(p.head!=='1fcc26d972369c7fe1b98198d53e5a85fee4bee9'||p.sourceHTTP!==1||p.MAIN!==0)throw Error('GATE_SOURCE_BINDING_MISMATCH');
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse unchanged actual component tests already passed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11401391801,archive_format:'zip'});
+            const b=Buffer.from(r.data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='7c3ed7ec39423ce933578e3b2b927f88c79548d0ab62bb64d54b66c4a15af25d')throw Error('PASSED_TESTS_DIGEST_MISMATCH');
+            fs.writeFileSync('passed-tests.zip',b);cp.execFileSync('unzip',['-q','passed-tests.zip','-d','passed-tests']);
+            if(fs.readFileSync('passed-tests/head.txt','utf8').trim()!=='3fb4e69696cf98082b4f444f8ac1e2f89d41b591')throw Error('PASSED_TEST_HEAD_MISMATCH');
+            for(const name of ['gate-binding-tests.tap','fact-role-regression.tap']){const s=fs.readFileSync('passed-tests/'+name,'utf8');if(!s.includes('fail 0'))throw Error('TARGETED_TESTS_NOT_PASSED');fs.copyFileSync('passed-tests/'+name,'audit-output/'+name);}
+            const h=fs.readFileSync('passed-tests/runtime-hashes.txt','utf8').trim().split('\n');
+            for(const line of h){const [hash,file]=line.split(/\s+/);if(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')!==hash)throw Error('TARGETED_RUNTIME_CHANGED:'+file);}
+            fs.copyFileSync('passed-tests/gate-binding-component-proof.json','audit-output/gate-binding-component-proof.json');
+            fs.writeFileSync('audit-output/reused-targeted-checks.json',JSON.stringify({source_run:37441193119,source_artifact:11401391801,passed:17,sourceHTTP:0,MAIN:0,Telegram:0,runtime_hashes_equal:true}));
+      - name: Verify current binding, generation and lifecycle policy
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Exact package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/src/worker.js runtime/src/canonical-publication.mjs runtime/src/canonical-lifecycle-authority.mjs runtime/src/gate-official-asset-binding.mjs runtime/src/source-role-consumer.mjs runtime/src/inherited-fact-contract.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gate-official-asset-binding-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+
