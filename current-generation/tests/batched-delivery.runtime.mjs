@@ -111,7 +111,8 @@ for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation 
   const sent=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>({ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9002})})});assert.equal(sent.sent,1);
   assert.equal(c.metadata.price_recheck_policy,'LIGHT_PRICE_AND_CANCELLATION_5M');
   assert.match(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
-  assert.match(pub.renderCanonicalManual({canonical:c}).text,/Полное подтверждение входа — при следующем полном анализе/);
+  // This partial-data fixture intentionally suppresses manual entry/trigger details.
+  assert(!pub.renderCanonicalManual({canonical:c}).text.includes('Следующая автоматическая проверка:'));
   const source=fs.readFileSync('cloudflare/public-collector/injected-worker-tail.js','utf8');
   const check=Function('worker_default',source+'\nreturn __report2RunPriceRechecks;')({});
   const now=c.trigger.next_recheck_ts+1000,price=(Number(c.trigger.value)+Number(c.invalidation.price))/2;
@@ -119,4 +120,11 @@ for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation 
   assert.equal(receipt.checked,1,JSON.stringify(receipt));assert.equal(receipt.results[0].status,'WAITING_FOR_PRICE');assert.equal(receipt.results[0].entry_authorized,false);
   proof.controlled.push({case:side+'_COMPOSED_SENT_TO_PRICE_CHECK',sourceHTTP:0,Telegram:0,checked:receipt.checked,status:receipt.results[0].status,entry_authorized:false});
  }finally{db.close();}
+});
+
+test('owner-approved price-check wording is explicit in the complete manual and Telegram watch forms',()=>{
+ const fixture=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/output-contract/long-observe-full.json'));
+ const c=structuredClone(fixture.canonical);c.metadata.price_recheck_policy='LIGHT_PRICE_AND_CANCELLATION_5M';c.analytical_fingerprint=pub.canonicalFingerprint(c);
+ assert.match(pub.renderCanonicalManual({canonical:c}).text,/Полное подтверждение входа — при следующем полном анализе/);
+ assert.match(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
 });
