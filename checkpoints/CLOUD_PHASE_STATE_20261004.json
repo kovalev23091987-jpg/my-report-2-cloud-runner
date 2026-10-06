@@ -50,43 +50,43 @@
   "lease": {
     "owner": "HTX:2026-10-06T10:37:45.942Z:chat-continuation-pr188",
     "acquired_ts": 1791283065942,
-    "expires_ts": 1791285839518
+    "expires_ts": 1791287341445
   },
-  "next_action": "REPLAY_RETAINED_READY_PRESENTATION_FAILURE_AND_CORRECT_DIAGNOSTIC; FRESH_POST189_NATURAL_REPORT_AND_SENT_PENDING",
+  "next_action": "INSPECT_N05_ACQUISITION_GAP_AND_FRESH_POST190_NATURAL_REPORT; SAME_SNAPSHOT_APPROVED_SENT_PENDING",
   "last_verified_release": {
-    "PR": 189,
-    "merged_main": "a2ab056f8275d22b1a191664b924ca2856ec203d",
-    "tested_head": "1037e117385871fbe5de3af5282d0f85fd2b3fa1",
-    "cloud_run": 37453675564,
+    "schema": "PRESENTATION_FAILURE_DIAGNOSTIC_RELEASE_V1",
+    "created_utc": "2026-10-06T11:19:01.445Z",
+    "PR": 190,
+    "merged_main": "99911a5f7eadf78b0bdf9730d77859aa9dd4402a",
+    "tested_head": "a2f975d96ea24cd7572dd2753a5e8c6e15988022",
+    "cloud_run": 37454781185,
     "artifact": {
-      "id": 11407791912,
-      "zip_sha256": "777bc53522faae529699304a4b55e010bc23379cf9660c655dd65bb7bef15204"
+      "id": 11409720683,
+      "zip_sha256": "6169d895b420828d88e5716f22a4988e2cc91fdeb712c3f09728e5a9b0155ea2"
     },
     "targeted": {
-      "passed": 6,
-      "failed": 0,
-      "previous_loss_reproduced": true
+      "passed": 10,
+      "failed": 0
     },
     "current_generation": "PASS",
     "integration": {
       "passed": 37,
       "failed": 0
     },
+    "reconciler_sha256": "09e384f61bffa3493ee543725b1d4bc004a5fdeb01d9bd6197a85cfb1c7ccf9b",
+    "scope": "Correct failed-surface reason when Telegram READY but manual refuses; preserves failure and zero binding/send",
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
     "D1": 0,
-    "formatter_bytes_unchanged": true,
-    "golden_fixture_bytes_unchanged": true,
-    "entry_authority_unchanged": true,
     "fresh_SENT_pending": true,
-    "proof": "checkpoints/confirmed-observe-direction-release-evidence-20261006.json",
-    "status": "MERGED_CLOUD_AND_37_INTEGRATION_PASS_FRESH_SENT_PENDING"
+    "historical_READY_cause_reproduced": false,
+    "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
   },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791284745608,
+  "updated_ts": 1791285541445,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1296,5 +1296,6 @@
     "FAILED_FINAL": 59,
     "EXPIRED_NOT_SENT": 8,
     "last_sent_msk": "2026-09-29T23:51:38.070+03:00"
-  }
+  },
+  "latest_presentation_readback": "checkpoints/retained-presentation-readback-20261006.json"
 }

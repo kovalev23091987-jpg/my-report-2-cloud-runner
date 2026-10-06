@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T11:05:45.608Z",
+  "updated_utc": "2026-10-06T11:19:01.445Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -13,34 +13,34 @@
     "TELEGRAM": "PENDING"
   },
   "latest_verified_release": {
-    "PR": 189,
-    "merged_main": "a2ab056f8275d22b1a191664b924ca2856ec203d",
-    "tested_head": "1037e117385871fbe5de3af5282d0f85fd2b3fa1",
-    "cloud_run": 37453675564,
+    "schema": "PRESENTATION_FAILURE_DIAGNOSTIC_RELEASE_V1",
+    "created_utc": "2026-10-06T11:19:01.445Z",
+    "PR": 190,
+    "merged_main": "99911a5f7eadf78b0bdf9730d77859aa9dd4402a",
+    "tested_head": "a2f975d96ea24cd7572dd2753a5e8c6e15988022",
+    "cloud_run": 37454781185,
     "artifact": {
-      "id": 11407791912,
-      "zip_sha256": "777bc53522faae529699304a4b55e010bc23379cf9660c655dd65bb7bef15204"
+      "id": 11409720683,
+      "zip_sha256": "6169d895b420828d88e5716f22a4988e2cc91fdeb712c3f09728e5a9b0155ea2"
     },
     "targeted": {
-      "passed": 6,
-      "failed": 0,
-      "previous_loss_reproduced": true
+      "passed": 10,
+      "failed": 0
     },
     "current_generation": "PASS",
     "integration": {
       "passed": 37,
       "failed": 0
     },
+    "reconciler_sha256": "09e384f61bffa3493ee543725b1d4bc004a5fdeb01d9bd6197a85cfb1c7ccf9b",
+    "scope": "Correct failed-surface reason when Telegram READY but manual refuses; preserves failure and zero binding/send",
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
     "D1": 0,
-    "formatter_bytes_unchanged": true,
-    "golden_fixture_bytes_unchanged": true,
-    "entry_authority_unchanged": true,
     "fresh_SENT_pending": true,
-    "proof": "checkpoints/confirmed-observe-direction-release-evidence-20261006.json",
-    "status": "MERGED_CLOUD_AND_37_INTEGRATION_PASS_FRESH_SENT_PENDING"
+    "historical_READY_cause_reproduced": false,
+    "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
   },
   "latest_actual_report": {
     "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
@@ -194,73 +194,48 @@
     "automatic_continuation_created_by_cleanup": false,
     "active_cloud_development_jobs": [],
     "last_bounded_read": {
-      "cloud_run": 37452923228,
-      "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
-      "sourceHTTP": 0,
-      "MAIN": 0,
-      "Telegram": 0,
+      "schema": "RETAINED_PRESENTATION_READBACK_V1",
+      "created_utc": "2026-10-06T11:19:01.445Z",
+      "cloud_run": 37454274871,
+      "reader_head": "9c82ff6a7bb6022500ea067d73d9cf528aa9b986",
+      "artifact": {
+        "id": 11409385094,
+        "zip_sha256": "2c128557135ca4a9dc5301d24b40e3831d81bb0ccf1d4617e47079d3a2efc2d7"
+      },
+      "targets": [
+        {
+          "contract": "WIF-USDT",
+          "publication_id": "PUB:f32d10219c0b5a31f1231228ba07a0d0362dca7c",
+          "run_id": "1791197350168-1791197360469",
+          "snapshot_id": "S392:WIF-USDT:1791197448267",
+          "fingerprint": "52ec644e4fddeb1faf8b61a5efd1c4cbeae664dffd5dc997a8a10c25881a727d",
+          "state": "REJECTED",
+          "telegram": "READY",
+          "manual": "READY"
+        },
+        {
+          "contract": "ADA-USDT",
+          "publication_id": "PUB:1e818bf94c36e7526af6fd69cd663dc48d588cda",
+          "run_id": "1791153635343-1791153642359",
+          "snapshot_id": "S392:ADA-USDT:1791153679531",
+          "fingerprint": "f5cf138d1bc049ea5879300a606e002f9b74006f5b54d6764e8141cdcb0cb794",
+          "state": "REJECTED",
+          "telegram": "READY",
+          "manual": "READY"
+        }
+      ],
+      "interpretation": "Current PR189 renderers on retained historical exact canonical documents both return READY. Historical failure is not reproduced; cause unconfirmed. Not historical renderer replay or fresh acceptance.",
       "D1": {
-        "requests": 27,
-        "rows_read": 153,
+        "requests": 12,
+        "rows_read": 52,
         "rows_written": 4,
         "unknown_ops": 0,
-        "targets": {
-          "first:report2_runner_budget_ledger_shadow": {
-            "requests": 2,
-            "rows_read": 38,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "run:OTHER": {
-            "requests": 1,
-            "rows_read": 0,
-            "rows_written": 3,
-            "unknown_ops": 0
-          },
-          "all:deep_check_run_log": {
-            "requests": 1,
-            "rows_read": 6,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "all:canonical_publication_shadow": {
-            "requests": 2,
-            "rows_read": 6,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "all:v3_telegram_dispatch_shadow": {
-            "requests": 15,
-            "rows_read": 76,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "all:v3_early_candidate_wave": {
-            "requests": 1,
-            "rows_read": 22,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "all:full_evidence_shadow_log": {
-            "requests": 2,
-            "rows_read": 2,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "all:shadow_decision_log": {
-            "requests": 2,
-            "rows_read": 2,
-            "rows_written": 0,
-            "unknown_ops": 0
-          },
-          "run:report2_runner_budget_ledger_shadow": {
-            "requests": 1,
-            "rows_read": 1,
-            "rows_written": 1,
-            "unknown_ops": 0
-          }
-        }
-      }
+        "writes": "reservation ledger only"
+      },
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram_send": 0,
+      "project_complete": false
     }
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
@@ -382,12 +357,304 @@
     "status": "EXACT_FRESH_IDENTITY_CONFIRMED_BUT_EARLY_DIRECTION_UNCLOSED; DEEP_ROOT_CAUSE_AND_WEEKLY_JOURNAL_PENDING"
   },
   "latest_weekly_delivery_diagnosis": {
-    "checkpoint": "checkpoints/WEEKLY_DELIVERY_AND_DEEP_PROOF_20261006.json",
-    "cloud_run": 37452923228,
-    "SENT": 1,
-    "FAILED_FINAL": 59,
-    "EXPIRED_NOT_SENT": 8,
-    "last_sent_msk": "2026-09-29T23:51:38.070+03:00"
+    "schema": "WEEKLY_DELIVERY_EXACT_PROOF_DIAGNOSIS_V1",
+    "created_utc": "2026-10-06T11:05:45.608Z",
+    "reader_cloud_run": 37452923228,
+    "reader_head": "24db365a59f8b57a75d21320cfbdbace29598c9e",
+    "artifact": {
+      "id": 11407900642,
+      "zip_sha256": "427cdbb93ecd9af48ab538c86e11b6b6b7ecd2b30116281a2ba13125dcf36722"
+    },
+    "weekly_journal": {
+      "scope": "CURRENT_FINAL_DISPATCH_STATES_UPDATED_IN_LAST_7_DAYS_NOT_EVENT_HISTORY",
+      "lower_ts": 1790679304571,
+      "upper_ts": 1791284104571,
+      "per_state_limit": 401
+    },
+    "states": {
+      "PENDING": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "SENDING": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "SENT": {
+        "count": 1,
+        "complete": true,
+        "reason_counts": {
+          "SENT": 1
+        },
+        "selected_rows": [
+          {
+            "dispatch_id": "V3TG:TAO-USDT|SHORT|EDW:TAO-USDT:1789985218852:G1|OBSERVE|v3-telegram-shadow-r6|R2984525",
+            "contract": "TAO-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "SENT",
+            "created_ts": 1790715096837,
+            "updated_ts": 1790715098070,
+            "sent_ts": 1790715098070,
+            "telegram_message_id": "144",
+            "last_error": "SENT"
+          }
+        ]
+      },
+      "FAILED_RETRYABLE": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "FAILED_FINAL": {
+        "count": 59,
+        "complete": true,
+        "reason_counts": {
+          "OBSERVE_SOURCE_ROLES_NOT_CLOSED": 5,
+          "OBSERVE_STATE_MISMATCH": 20,
+          "READY": 4,
+          "REMOVAL_WITHOUT_PRIOR_DELIVERY": 8,
+          "REPORTABLE_TARGET_PROOF_NOT_CLOSED": 22
+        },
+        "selected_rows": [
+          {
+            "dispatch_id": "V3TG:WIF-USDT|LONG|EDW:WIF-USDT:1791187242450:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "WIF-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791197452911,
+            "updated_ts": 1791197453979,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:ADA-USDT|LONG|EDW:ADA-USDT:1791153642508:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ADA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791153705301,
+            "updated_ts": 1791153706087,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|LONG|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984717",
+            "contract": "NEAR-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790830475608,
+            "updated_ts": 1790830476498,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:HBAR-USDT|SHORT|EDW:HBAR-USDT:1790112662879:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "HBAR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790703261377,
+            "updated_ts": 1790703262598,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          }
+        ]
+      },
+      "EXPIRED_NOT_SENT": {
+        "count": 8,
+        "complete": true,
+        "reason_counts": {
+          "EXPIRED_NOT_SENT": 8
+        },
+        "selected_rows": []
+      },
+      "SUPPRESSED_DEDUP": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      }
+    },
+    "full_evidence": [
+      {
+        "contract": "ADA-USDT",
+        "full_evidence_id": "1791282416554:ADA-USDT:full-evidence-v2",
+        "snapshot_id": "S392:ADA-USDT:1791282416554",
+        "observed_ts": 1791282416554,
+        "shadow": {
+          "shadow_id": "1791282416554:ADA-USDT",
+          "contract_code": "ADA-USDT",
+          "observed_ts": 1791282416554,
+          "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+          "source": "DEEP_CHECK_INPUT",
+          "mode": "SHADOW_ONLY_NO_EXECUTION",
+          "direction_hint": "LONG",
+          "dc_long": 41.75,
+          "dc_short": 9.39,
+          "eq_status": "SHADOW_MEASURABLE",
+          "dq_status": "PARTIAL",
+          "stage": "SHADOW_OBSERVE_LONG_BIAS",
+          "data_sufficiency": "PARTIAL",
+          "calibrated": 0,
+          "full_decision_eligible": 0,
+          "actual_decision_generated": 0,
+          "validated": 0,
+          "telegram_started": 0,
+          "created_ts": 1791282416554
+        },
+        "decision_evidence_audit": {
+          "version": "tz101-price-flow-relative-producer-r4.0",
+          "status": "NO_USABLE_EVIDENCE",
+          "check": "UNKNOWN",
+          "reasons": [
+            "OPPORTUNITY_RECEIPT_NOT_CLOSED"
+          ],
+          "rows": [],
+          "facts": null,
+          "independent_domains": [],
+          "complete_direction": false,
+          "persistence": "UNACKNOWLEDGED",
+          "profile_id": "existing-htx-price-flow-confirmation-5m"
+        },
+        "opportunity_present": false,
+        "campaign_present": false,
+        "position_state": "UNKNOWN"
+      },
+      {
+        "contract": "ZEC-USDT",
+        "full_evidence_id": "1791282360874:ZEC-USDT:full-evidence-v2",
+        "snapshot_id": "S392:ZEC-USDT:1791282360874",
+        "observed_ts": 1791282360874,
+        "shadow": {
+          "shadow_id": "1791282360874:ZEC-USDT",
+          "contract_code": "ZEC-USDT",
+          "observed_ts": 1791282360874,
+          "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+          "source": "DEEP_CHECK_INPUT",
+          "mode": "SHADOW_ONLY_NO_EXECUTION",
+          "direction_hint": "LONG",
+          "dc_long": 37.43,
+          "dc_short": 0.63,
+          "eq_status": "SHADOW_MEASURABLE",
+          "dq_status": "PARTIAL",
+          "stage": "SHADOW_OBSERVE_LONG_BIAS",
+          "data_sufficiency": "PARTIAL",
+          "calibrated": 0,
+          "full_decision_eligible": 0,
+          "actual_decision_generated": 0,
+          "validated": 0,
+          "telegram_started": 0,
+          "created_ts": 1791282360874
+        },
+        "decision_evidence_audit": {
+          "version": "tz101-price-flow-relative-producer-r4.0",
+          "status": "NO_USABLE_EVIDENCE",
+          "check": "UNKNOWN",
+          "reasons": [
+            "DIRECTION_NOT_PRECOMMITTED"
+          ],
+          "rows": [],
+          "facts": null,
+          "independent_domains": [],
+          "complete_direction": false,
+          "persistence": "UNACKNOWLEDGED",
+          "profile_id": "existing-htx-price-flow-confirmation-5m"
+        },
+        "opportunity_present": true,
+        "campaign_present": false,
+        "position_state": "UNKNOWN"
+      }
+    ],
+    "d1_usage": {
+      "requests": 27,
+      "rows_read": 153,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 38,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 15,
+          "rows_read": 76,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_early_candidate_wave": {
+          "requests": 1,
+          "rows_read": 22,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:full_evidence_shadow_log": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:shadow_decision_log": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "last_sent_msk": "2026-09-29T23:51:38.070+03:00",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "ready_error_source": {
+      "status": "POSSIBLE_CODE_PATH_NOT_CONFIRMED_HISTORICAL_CAUSE",
+      "current_sender_does_not_emit_READY": true,
+      "retained_replay_both_renderers_ready": true,
+      "followup": "checkpoints/retained-presentation-readback-20261006.json",
+      "diagnostic_fix": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
+    },
+    "hub_current_sender_code": "telegram-test calls sendTelegramMessage; positive actual Telegram ACK returns SENT and message_id, no READY delivery state",
+    "current13_27": "ADA decision evidence empty because opportunity receipt not closed; ZEC decision evidence empty because event direction not precommitted; shadow LONG bias alone is not assigned closed directional evidence",
+    "weekly_history_scope": "CURRENT_STORED_JOURNAL_IN_THIS_CHAIN; RETENTION_AND_OTHER_DELIVERY_LANES_NOT_AUDITED",
+    "project_complete": false,
+    "checkpoint": "checkpoints/WEEKLY_DELIVERY_AND_DEEP_PROOF_20261006.json"
   },
   "pending_confirmed_observe_direction": {
     "PR": 189,
@@ -417,5 +684,53 @@
     "entry_authority_unchanged": true,
     "fresh_SENT_pending": true,
     "proof": "checkpoints/confirmed-observe-direction-release-evidence-20261006.json"
+  },
+  "latest_presentation_readback": {
+    "schema": "RETAINED_PRESENTATION_READBACK_V1",
+    "created_utc": "2026-10-06T11:19:01.445Z",
+    "cloud_run": 37454274871,
+    "reader_head": "9c82ff6a7bb6022500ea067d73d9cf528aa9b986",
+    "artifact": {
+      "id": 11409385094,
+      "zip_sha256": "2c128557135ca4a9dc5301d24b40e3831d81bb0ccf1d4617e47079d3a2efc2d7"
+    },
+    "targets": [
+      {
+        "contract": "WIF-USDT",
+        "publication_id": "PUB:f32d10219c0b5a31f1231228ba07a0d0362dca7c",
+        "run_id": "1791197350168-1791197360469",
+        "snapshot_id": "S392:WIF-USDT:1791197448267",
+        "fingerprint": "52ec644e4fddeb1faf8b61a5efd1c4cbeae664dffd5dc997a8a10c25881a727d",
+        "state": "REJECTED",
+        "telegram": "READY",
+        "manual": "READY"
+      },
+      {
+        "contract": "ADA-USDT",
+        "publication_id": "PUB:1e818bf94c36e7526af6fd69cd663dc48d588cda",
+        "run_id": "1791153635343-1791153642359",
+        "snapshot_id": "S392:ADA-USDT:1791153679531",
+        "fingerprint": "f5cf138d1bc049ea5879300a606e002f9b74006f5b54d6764e8141cdcb0cb794",
+        "state": "REJECTED",
+        "telegram": "READY",
+        "manual": "READY"
+      }
+    ],
+    "interpretation": "Current PR189 renderers on retained historical exact canonical documents both return READY. Historical failure is not reproduced; cause unconfirmed. Not historical renderer replay or fresh acceptance.",
+    "D1": {
+      "requests": 12,
+      "rows_read": 52,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "writes": "reservation ledger only"
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "project_complete": false
+  },
+  "pending_presentation_diagnostic": {
+    "status": "MERGED_TESTED_HISTORICAL_CAUSE_UNCONFIRMED_FRESH_SENT_PENDING",
+    "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
   }
 }
