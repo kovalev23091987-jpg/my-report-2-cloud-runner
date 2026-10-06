@@ -1,0 +1,948 @@
+{
+  "schema": "RETAINED_DELIVERY_SOURCE_MANIFEST_V1",
+  "expected_rows": 10,
+  "scope": "SCOPED_AVAILABLE_CANONICAL_ROWS_NOT_ALL_WEEKLY_REFUSALS",
+  "sources": [
+    {
+      "name": "1327",
+      "artifact_id": 11406619141,
+      "sha256": "db6a4526f1c2df08aefd867578d73a42cb2d8047a2c1f65c183072df3126298b",
+      "file": "exact-current-data.json.gz"
+    },
+    {
+      "name": "1425",
+      "artifact_id": 11409624039,
+      "sha256": "28e25f09d73d2965cf3166bae7fa3f174e3aa8b0bea32351a6f23ea4c6c5b2dd",
+      "file": "exact-current-data.json.gz"
+    },
+    {
+      "name": "presentation",
+      "artifact_id": 11409385094,
+      "sha256": "2c128557135ca4a9dc5301d24b40e3831d81bb0ccf1d4617e47079d3a2efc2d7",
+      "file": "presentation-causes.json.gz"
+    },
+    {
+      "name": "br",
+      "zip_path": "checkpoints/source-inputs/exact-observe-source-37437145066.zip",
+      "file": "exact-current-data.json.gz",
+      "sha256": "44240c53de92ca66f380cad6de2b341a91783701c93172c99e9cae05cfa96dd7"
+    },
+    {
+      "name": "fil",
+      "zip_path": "checkpoints/source-inputs/exact-observe-source-37443413520.zip",
+      "file": "exact-current-data.json.gz",
+      "sha256": "602cfcedab0487536a6912ddab438b0bb5d60d618ec54181013febe7aaf57a3d"
+    }
+  ],
+  "weekly_journal": {
+    "scope": "CURRENT_FINAL_DISPATCH_STATES_UPDATED_IN_LAST_7_DAYS_NOT_EVENT_HISTORY",
+    "lower_ts": 1790679304571,
+    "upper_ts": 1791284104571,
+    "per_state_limit": 401,
+    "states": {
+      "PENDING": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [],
+        "complete": true
+      },
+      "SENDING": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [],
+        "complete": true
+      },
+      "SENT": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [
+          {
+            "dispatch_id": "V3TG:TAO-USDT|SHORT|EDW:TAO-USDT:1789985218852:G1|OBSERVE|v3-telegram-shadow-r6|R2984525",
+            "contract": "TAO-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "SENT",
+            "created_ts": 1790715096837,
+            "updated_ts": 1790715098070,
+            "sent_ts": 1790715098070,
+            "telegram_message_id": "144",
+            "last_error": "SENT"
+          }
+        ],
+        "complete": true
+      },
+      "FAILED_RETRYABLE": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [],
+        "complete": true
+      },
+      "FAILED_FINAL": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [
+          {
+            "dispatch_id": "V3TG:BR-USDT|LONG|EDW:BR-USDT:1791238979688:G5|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "BR-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791275241400,
+            "updated_ts": 1791275242278,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ZEC-USDT|SHORT|EDW:ZEC-USDT:1791268186966:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ZEC-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791268280882,
+            "updated_ts": 1791268282379,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:FIL-USDT|LONG|EDW:FIL-USDT:1791235752894:G5|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "FIL-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791235830183,
+            "updated_ts": 1791235831116,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ZEC-USDT|SHORT|EDW:ZEC-USDT:1791187242450:G3|OBSERVE|v3-telegram-shadow-r6|R2985362",
+            "contract": "ZEC-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791217669736,
+            "updated_ts": 1791217671507,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:SUI-USDT|SHORT|EDW:SUI-USDT:1791210604095:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "SUI-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791214169807,
+            "updated_ts": 1791214170926,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:WLD-USDT|SHORT|EDW:WLD-USDT:1791207117838:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "WLD-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791207225427,
+            "updated_ts": 1791207226499,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:NIL-USDT|SHORT|EDW:NIL-USDT:1791203469281:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "NIL-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791203529726,
+            "updated_ts": 1791203530547,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:AKE-USDT|SHORT|EDW:AKE-USDT:1791200833206:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "AKE-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791200877175,
+            "updated_ts": 1791200878107,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:WIF-USDT|LONG|EDW:WIF-USDT:1791187242450:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "WIF-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791197452911,
+            "updated_ts": 1791197453979,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:ZEC-USDT|SHORT|EDW:ZEC-USDT:1791187242450:G3|OBSERVE|v3-telegram-shadow-r6|R2985324",
+            "contract": "ZEC-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791194541060,
+            "updated_ts": 1791194542497,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|LONG|EDW:BTW-USDT:1791180179355:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "BTW-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791190954851,
+            "updated_ts": 1791190955751,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ZEC-USDT|SHORT|EDW:ZEC-USDT:1791187242450:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ZEC-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791187325268,
+            "updated_ts": 1791187326513,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|SHORT|EDW:BTW-USDT:1791180179355:G4|OBSERVE|v3-telegram-shadow-r6|R2985306",
+            "contract": "BTW-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791184088157,
+            "updated_ts": 1791184089380,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|SHORT|EDW:BTW-USDT:1791180179355:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "BTW-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791180258938,
+            "updated_ts": 1791180259985,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:TAO-USDT|SHORT|EDW:TAO-USDT:1791176859502:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "TAO-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791176933594,
+            "updated_ts": 1791176934505,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ADA-USDT|LONG|EDW:ADA-USDT:1791153642508:G3|OBSERVE|v3-telegram-shadow-r6|R2985284",
+            "contract": "ADA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791170802095,
+            "updated_ts": 1791170802985,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ZKC-USDT|LONG|EDW:ZKC-USDT:1791163501677:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ZKC-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791163551079,
+            "updated_ts": 1791163551859,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ADA-USDT|LONG|EDW:ADA-USDT:1791153642508:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ADA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791153705301,
+            "updated_ts": 1791153706087,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:MUBARAK-USDT|SHORT|EDW:MUBARAK-USDT:1791151159024:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "MUBARAK-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791151216770,
+            "updated_ts": 1791151217549,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|SHORT|EDW:ENA-USDT:1790831555214:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ENA-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790838927982,
+            "updated_ts": 1790838929169,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:DOT-USDT|SHORT|EDW:DOT-USDT:1790832594147:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "DOT-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790832648910,
+            "updated_ts": 1790832875825,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|LONG|EDW:ENA-USDT:1790831555214:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ENA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790831610776,
+            "updated_ts": 1790831611923,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|LONG|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984717",
+            "contract": "NEAR-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790830475608,
+            "updated_ts": 1790830476498,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:AVAX-USDT|SHORT|EDW:AVAX-USDT:1789937425064:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "AVAX-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790822490923,
+            "updated_ts": 1790829404419,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:AAVE-USDT|LONG|EDW:AAVE-USDT:1790091390675:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "AAVE-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790820789072,
+            "updated_ts": 1790820790060,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:OP-USDT|LONG|EDW:OP-USDT:1790066587786:G1|OBSERVE|v3-telegram-shadow-r6|R2984695",
+            "contract": "OP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790817236710,
+            "updated_ts": 1790817237598,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:PUMP-USDT|LONG|EDW:PUMP-USDT:1790110966974:G1|OBSERVE|v3-telegram-shadow-r6|R2984683",
+            "contract": "PUMP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790809878917,
+            "updated_ts": 1790809880060,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|SHORT|EDW:BTW-USDT:1790074622613:G1|OBSERVE|v3-telegram-shadow-r6|R2984681",
+            "contract": "BTW-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790808717201,
+            "updated_ts": 1790808718137,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:HYPE-USDT|LONG|EDW:HYPE-USDT:1790088079989:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "HYPE-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790807665329,
+            "updated_ts": 1790807666282,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|SHORT|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984669",
+            "contract": "NEAR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790801470991,
+            "updated_ts": 1790801472297,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ICP-USDT|SHORT|EDW:ICP-USDT:1790035005254:G1|OBSERVE|v3-telegram-shadow-r6|R2984659",
+            "contract": "ICP-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790795830832,
+            "updated_ts": 1790795831881,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:PUMP-USDT|LONG|EDW:PUMP-USDT:1790110966974:G1|OBSERVE|v3-telegram-shadow-r6|R2984651",
+            "contract": "PUMP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790790723159,
+            "updated_ts": 1790790724416,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:DOT-USDT|LONG|EDW:DOT-USDT:1790045206158:G1|OBSERVE|v3-telegram-shadow-r6|R2984647",
+            "contract": "DOT-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790788416172,
+            "updated_ts": 1790788417514,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|LONG|EDW:ENA-USDT:1789948743378:G1|OBSERVE|v3-telegram-shadow-r6|R2984641",
+            "contract": "ENA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790784908525,
+            "updated_ts": 1790784909887,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:RIVER-USDT|LONG|EDW:RIVER-USDT:1790179001372:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "RIVER-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790783761793,
+            "updated_ts": 1790783764741,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ASTER-USDT|LONG|EDW:ASTER-USDT:1790024065530:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "ASTER-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790772790563,
+            "updated_ts": 1790774193935,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:NIL-USDT|LONG|EDW:NIL-USDT:1790256838148:G1|OBSERVE|v3-telegram-shadow-r6|R2984617",
+            "contract": "NIL-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790770633586,
+            "updated_ts": 1790770634964,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:NIL-USDT|LONG|EDW:NIL-USDT:1790256838148:G1|OBSERVE|v3-telegram-shadow-r6|R2984611",
+            "contract": "NIL-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790766764890,
+            "updated_ts": 1790766766326,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:PONS-USDT|LONG|EDW:PONS-USDT:1789986181671:G1|OBSERVE|v3-telegram-shadow-r6|R2984609",
+            "contract": "PONS-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790765674555,
+            "updated_ts": 1790765675867,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:MARSCOIN-USDT|SHORT|EDW:MARSCOIN-USDT:1789974756166:G1|OBSERVE|v3-telegram-shadow-r6|R2984584",
+            "contract": "MARSCOIN-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790750495720,
+            "updated_ts": 1790750496652,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|SHORT|EDW:BTW-USDT:1790074622613:G1|OBSERVE|v3-telegram-shadow-r6|R2984575",
+            "contract": "BTW-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790745195182,
+            "updated_ts": 1790745196091,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|SHORT|EDW:ENA-USDT:1789948743378:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "ENA-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790739336707,
+            "updated_ts": 1790739337883,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:UNI-USDT|SHORT|EDW:UNI-USDT:1789723940002:G1|OBSERVE|v3-telegram-shadow-r6|R2984563",
+            "contract": "UNI-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790738004511,
+            "updated_ts": 1790738005431,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ICP-USDT|LONG|EDW:ICP-USDT:1790035005254:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "ICP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790734339037,
+            "updated_ts": 1790734339809,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:ASTER-USDT|LONG|EDW:ASTER-USDT:1790024065530:G1|OBSERVE|v3-telegram-shadow-r6|R2984553",
+            "contract": "ASTER-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790732019768,
+            "updated_ts": 1790732021087,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ICP-USDT|LONG|EDW:ICP-USDT:1790035005254:G1|OBSERVE|v3-telegram-shadow-r6|R2984551",
+            "contract": "ICP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790730809390,
+            "updated_ts": 1790730810291,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|SHORT|EDW:ENA-USDT:1789948743378:G1|OBSERVE|v3-telegram-shadow-r6|R2984545",
+            "contract": "ENA-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790727517174,
+            "updated_ts": 1790727518490,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:LIT-USDT|SHORT|EDW:LIT-USDT:1789963099714:G1|OBSERVE|v3-telegram-shadow-r6|R2984542",
+            "contract": "LIT-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790725748968,
+            "updated_ts": 1790725750383,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:LIT-USDT|SHORT|EDW:LIT-USDT:1789963099714:G1|OBSERVE|v3-telegram-shadow-r6|R2984541",
+            "contract": "LIT-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790724680635,
+            "updated_ts": 1790724682063,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REPORTABLE_TARGET_PROOF_NOT_CLOSED"
+          },
+          {
+            "dispatch_id": "V3TG:GRAM-USDT|SHORT|EDW:GRAM-USDT:1789965148554:G1|OBSERVE|v3-telegram-shadow-r6|R2984523",
+            "contract": "GRAM-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790714166467,
+            "updated_ts": 1790714167878,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|SHORT|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984521",
+            "contract": "NEAR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790712871629,
+            "updated_ts": 1790712874063,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:ONDO-USDT|LONG|EDW:ONDO-USDT:1789945298661:G1|OBSERVE|v3-telegram-shadow-r6|R2984518",
+            "contract": "ONDO-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790710957168,
+            "updated_ts": 1790710958337,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:PUMP-USDT|SHORT|EDW:PUMP-USDT:1790110966974:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "PUMP-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790707398398,
+            "updated_ts": 1790708229492,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:HBAR-USDT|SHORT|EDW:HBAR-USDT:1790112662879:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "HBAR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790703261377,
+            "updated_ts": 1790703262598,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:PUMP-USDT|SHORT|EDW:PUMP-USDT:1790110966974:G1|OBSERVE|v3-telegram-shadow-r6|R2984503",
+            "contract": "PUMP-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790701902661,
+            "updated_ts": 1790701903638,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:RIVER-USDT|SHORT|EDW:RIVER-USDT:1790179001372:G1|OBSERVE|v3-telegram-shadow-r6|R2984501",
+            "contract": "RIVER-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790700938534,
+            "updated_ts": 1790700939891,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "OBSERVE_STATE_MISMATCH"
+          },
+          {
+            "dispatch_id": "V3TG:WLD-USDT|SHORT|EDW:WLD-USDT:1790083685299:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "WLD-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790698499501,
+            "updated_ts": 1790698500722,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:FARTCOIN-USDT|SHORT|EDW:FARTCOIN-USDT:1790010108530:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "FARTCOIN-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790694917567,
+            "updated_ts": 1790694918600,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          },
+          {
+            "dispatch_id": "V3TG:BTW-USDT|LONG|EDW:BTW-USDT:1790074622613:G1|IDEA_REMOVED|v3-telegram-shadow-r6",
+            "contract": "BTW-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "IDEA_REMOVED",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790689084313,
+            "updated_ts": 1790689085363,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "REMOVAL_WITHOUT_PRIOR_DELIVERY"
+          }
+        ],
+        "complete": true
+      },
+      "EXPIRED_NOT_SENT": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [
+          {
+            "dispatch_id": "V3TG:FIL-USDT|LONG|EDW:FIL-USDT:1791235752894:G5|OBSERVE|v3-telegram-shadow-r6|R2985398",
+            "contract": "FIL-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1791239049989,
+            "updated_ts": 1791242562172,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|LONG|EDW:NEAR-USDT:1791156069939:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "NEAR-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1791156155727,
+            "updated_ts": 1791160450350,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:FIL-USDT|SHORT|EDW:FIL-USDT:1790838962380:G2|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "FIL-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790839008884,
+            "updated_ts": 1790840256421,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:WLD-USDT|LONG|EDW:WLD-USDT:1790083685299:G1|OBSERVE|v3-telegram-shadow-r6|R2984601",
+            "contract": "WLD-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790760968208,
+            "updated_ts": 1790762065633,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:ENA-USDT|LONG|EDW:ENA-USDT:1789948743378:G1|OBSERVE|v3-telegram-shadow-r6|R2984597",
+            "contract": "ENA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790758525811,
+            "updated_ts": 1790759612773,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:AVAX-USDT|SHORT|EDW:AVAX-USDT:1789937425064:G1|OBSERVE|v3-telegram-shadow-r6|R2984595",
+            "contract": "AVAX-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790757503746,
+            "updated_ts": 1790758527126,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:XMR-USDT|SHORT|EDW:XMR-USDT:1789978434763:G1|OBSERVE|v3-telegram-shadow-r6|R2984589",
+            "contract": "XMR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790753804933,
+            "updated_ts": 1790754871018,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          },
+          {
+            "dispatch_id": "V3TG:PUMP-USDT|LONG|EDW:PUMP-USDT:1790110966974:G1|OBSERVE|v3-telegram-shadow-r6|R2984539",
+            "contract": "PUMP-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "EXPIRED_NOT_SENT",
+            "created_ts": 1790723507522,
+            "updated_ts": 1790724682063,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "EXPIRED_NOT_SENT"
+          }
+        ],
+        "complete": true
+      },
+      "SUPPRESSED_DEDUP": {
+        "plan": [
+          {
+            "id": 5,
+            "parent": 0,
+            "notused": 49,
+            "detail": "SEARCH v3_telegram_dispatch_shadow USING INDEX idx_v3_dispatch_state_ts (state=? AND updated_ts>? AND updated_ts<?)"
+          }
+        ],
+        "rows": [],
+        "complete": true
+      }
+    }
+  }
+}
