@@ -1,3 +1,4 @@
+import {bindSupplementalSupportingReceipts,attachSupplementalSupportingUse} from './supplemental-supporting-bridge.mjs';
 import {reviewSectorRelativeStrength} from './sector-relative-strength-review.mjs';
 import {reviewBoundedMoneyFlow} from './bounded-money-flow-diagnostic.mjs';
 import {qualifyEarlyDirectionReceipt as qualifiedEarlyReceipt} from './early-direction-receipt.mjs';
@@ -279,7 +280,10 @@ export function buildRuntimeCanonicalBundle({
  const routedOverall=finite(publication_shadow?.score_interval?.score_lower_bound);
  const overall=effectiveState==='OBSERVE'?null:routedOverall;
  const freeSources=free_source_summary?.status==='CLOSED'&&free_source_summary?.owner==='source-registry.mjs'?free_source_summary:{version:'free-source-runtime-summary-missing-owner-v1',status:'NOT_CLOSED',owner:null,registry:{status:'NOT_CLOSED',entries:[]},entry_funnel:{status:'NOT_CLOSED',blockers:['UNKNOWN_INTERNAL_REASON'],blocker_details:[{code:'UNKNOWN_INTERNAL_REASON',full_ru:'Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.',short_ru:'сводка источников не подтверждена; вывод не готов',known:false}],has_unknown_reason:true},continuous_collector_status:'PARTIAL_REALTIME_COVERAGE',hot_cycle_external_request_delta:0,d1_write_delta:0};
- const supportingContext=consumeExistingSourceReceipts(existing_source_receipts||{});
+ const supplementalSupportingBridge=bindSupplementalSupportingReceipts({context:internal_market_context?.candidate_context,existing:existing_source_receipts||{},contract,run_id,snapshot_id,decision_ts:observed_ts});
+ const supportingContext=consumeExistingSourceReceipts(supplementalSupportingBridge.receipts);
+ const supplementalSupportingUse=attachSupplementalSupportingUse({consumed:supportingContext,bridge:supplementalSupportingBridge});
+ supportingContext.supplemental_supporting_use=supplementalSupportingUse;
  const specialistContext=consumeSpecialistContext({sources:internal_market_context?.candidate_sources||{},contract,now:finite(observed_ts),primary_price:internal_market_context?.htx_reference_price,asset_identity:internal_market_context?.candidate_context?.asset_identity});
  const blockResultContext=consumeBlockResultContext({evidence:internal_market_context?.evidence_v2?.evidence||[],contract,now:observed_ts});
  const executionContext=consumeCanonicalExecutionContext({contract,run_id,snapshot_id,observed_ts,execution_context_source});
@@ -287,7 +291,7 @@ export function buildRuntimeCanonicalBundle({
  supportingContext.blocks={...supportingContext.blocks,...specialistContext.blocks,sector_comparison:sectorContext,volume_profile:volumeProfile,volume_profile_consensus:volumeConsensus};
  const profileFacts=volumeProfileFacts(volumeProfile,{contract,now:observed_ts,reference_price:price,direction}).slice(0,1);
  if(profileFacts.length){const vpReceipt=supplementalScoreAdjustment.receipts.find(r=>r.source_id==='HTX_VOLUME_PROFILE');const state=volumeConsensus.status==='MULTI_VENUE_CONFIRMED'?`совпадение HTX+${volumeConsensus.confirmations.map(r=>r.source).join('+')}`:volumeConsensus.status==='CONFLICT'?'расхождение; вес 0':'одна площадка';profileFacts[0].value+=`; ${vpReceipt?.score_contribution??0} балла; ${state}`;profileFacts[0].unit='';}
- supportingContext.facts=[...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts];
+ supportingContext.facts=[...supplementalSupportingUse.facts,...profileFacts,...specialistContext.facts,...blockResultContext.facts,...executionContext.facts,...sectorContext.facts,...supportingContext.facts.filter(f=>!supplementalSupportingUse.facts.includes(f))];
  supportingContext.specialist_context_status=specialistContext.status;
  if(specialistContext.facts.length||profileFacts.length||blockResultContext.facts.length||executionContext.facts.length||sectorContext.facts.length)supportingContext.status='CLOSED';
  const runtimeSourceReceipts=[
