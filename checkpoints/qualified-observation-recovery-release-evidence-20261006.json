@@ -1,0 +1,53 @@
+{
+  "schema": "report2-general-qualified-observation-recovery-release-v1",
+  "PR": 187,
+  "merged_main": "cf144aeec517ccd3632132a8cb0c11e02624e037",
+  "tested_head": "3a76b14e093aabcaabdc74ec3cf8009acccc2849",
+  "tree": "6e5186b60a3d448923d958bc4f2dfdcbc0e2e9ec",
+  "cloud_run": 37442691378,
+  "artifact": 11401224863,
+  "zip_sha256": "bbea7243aaaf8cca15e37d75e8347720804385a697d4147c87d67116e36f9b64",
+  "status": "MERGED_ORIGINAL_REFUSAL_AND_CONTROLLED_NEW_SNAPSHOT_SQLITE_RECOVERY_VERIFIED; FRESH_SENT_PENDING",
+  "validation": {
+    "targeted_passed": 12,
+    "generation": "PASS",
+    "syntax": "PASS",
+    "integration_passed": 37,
+    "approved_goldens_unchanged": true
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "production_D1": 0,
+  "actual_input": {
+    "run": 37436004948,
+    "snapshot": "S392:BR-USDT:1791275201070",
+    "fingerprint": "958981ca5efe3c9f04912cb7fcef46f6705a884e37f9c6a96c20278fb15dcc96",
+    "refusal": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+    "journal_state": "FAILED_FINAL",
+    "original_canonical_and_journal_preserved": true
+  },
+  "positive_proof": {
+    "controlled_not_live": true,
+    "SQLite_atomic_same_wave_dedup": true,
+    "new_snapshot_own_publication_bound": true,
+    "other_exact_contract_branch_verified": true,
+    "no_old_snapshot_sent": true
+  },
+  "guards": [
+    "Existing full OBSERVE actionability and approved-renderer acceptance before lifecycle persistence",
+    "Exact current canonical row, fingerprint, contract/direction/run/snapshot/wave and clocks",
+    "Only older FAILED_FINAL OBSERVE_SOURCE_ROLES_NOT_CLOSED with no sent_ts/message_id/publication binding",
+    "Separate new snapshot dispatch, never reset old failure or source reservations",
+    "Queued/retrying/sending/sent OBSERVE/WAIT/ENTRY excluded atomically",
+    "Unknown network outcome, unrelated failure, expired/future/foreign data, cooldown and journal over 8 rows do not recover"
+  ],
+  "runtime_hashes": {
+    "worker": "120072c4075973e67c92e1de7bdd3becf0cb8ace7f61e7b37ad3c6263f50beeb",
+    "recovery_helper": "36c56abf308734ff4734cb7c2c166f0fb88e37bcdb329fcf9bd6b6a883b5f602",
+    "telegram_runtime": "ecb1d864aa1ef6f635d66e5a37e358faafbcdba1eb92bc98a67d621a6fdd0979",
+    "lifecycle_sidecar": "2c584faa510625fbe1953037481b4a1e9c73ee44e70fd4d7e64e48128ba536fe"
+  },
+  "strategy_threshold_approved_forms_changed": false,
+  "project_complete": false
+}
