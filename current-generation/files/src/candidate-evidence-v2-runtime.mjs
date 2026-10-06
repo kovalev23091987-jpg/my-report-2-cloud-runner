@@ -73,7 +73,7 @@ export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
  if(!routes.length)return [];
  const eligible=routes.map((route,index)=>({route,index,tickets:EVIDENCE_ROUTE_PRIORITY[route.name]??1}));
  const tickets=eligible.flatMap(row=>Array(row.tickets).fill(row.index));
- const priorityNames=new Set(['LARGE_TRADES','TOKEN_SCHEDULE','CHAIN_SUPPLY','SECTOR','SECTOR_COINGECKO','TOKEN_CALENDAR']);
+ const priorityNames=new Set(['LARGE_TRADES','TOKEN_SCHEDULE','CHAIN_SUPPLY','COINMETRICS','SECTOR','SECTOR_COINGECKO','TOKEN_CALENDAR']);
  const priority=owner_priority?eligible.filter(row=>priorityNames.has(row.route.name)):[];
  const priorityTickets=priority.flatMap(row=>Array(row.tickets).fill(row.index));
  const first=(priorityTickets.length?priorityTickets:tickets)[rotation(key,priorityTickets.length||tickets.length)];
