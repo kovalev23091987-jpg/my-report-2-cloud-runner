@@ -1,0 +1,64 @@
+name: Report2 Selected Top2 Pinned Position Batch
+on:
+  push:
+    branches: [codex/top2-pinned-position-batch-20261006]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check fresh owner before tests and replay
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='50de5f1fd5b7dc479cc50b4d809626e28fe230d6')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:2026-10-06T18:38:37.246Z:approved-text-and-liquidation-batch'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Read exact retained actual source artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11397777455,archive_format:'zip'});
+            const b=Buffer.from(r.data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0')throw Error('EXACT_SOURCE_ZIP_DIGEST_MISMATCH');
+            fs.writeFileSync('original-source.zip',b);fs.mkdirSync('original-source',{recursive:true});cp.execFileSync('unzip',['-q','original-source.zip','-d','original-source']);
+            const p=JSON.parse(fs.readFileSync('original-source/gtrade-pinned-source-proof.json'));
+            if(p.head!=='fdbdfe2e1945b21ef531a5398ddc8e77d70d28b0'||p.sourceHTTP!==1||p.source_clock?.block_number!==512184595)throw Error('ACTUAL_SOURCE_BINDING_MISMATCH');
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Verify current binding, generation and lifecycle policy
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/gtrade-pinned-position.runtime.mjs current-generation/tests/top2-pinned-batch.runtime.mjs > audit-output/pinned-position-tests.tap
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Exact package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/runner-main.mjs runtime/src/worker.js runtime/src/liquidation-extension/gtrade.mjs runtime/src/liquidation-extension/gtrade-pinned-position-snapshot.mjs runtime/src/liquidation-extension/gtrade-runtime-collector.mjs runtime/src/liquidation-extension/combined-runner-service.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/manual-report-formatter.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: top2-pinned-position-batch-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+

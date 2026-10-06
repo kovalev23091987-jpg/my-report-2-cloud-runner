@@ -19,7 +19,7 @@ export function selectGTradePinnedPositionSample(trades,pair_index){
  return {selected:chosen,candidate_count:rows.length,policy:'SORTED_VISIBLE_POSITION_IDS_MAX4_BALANCED_LONG_SHORT',complete_position_census:false};
 }
 export function permittedGTradePinnedRpcBatch(body){
- if(!Array.isArray(body)||!body.length||body.length>10)return false;
+ if(!Array.isArray(body)||!body.length||body.length>14)return false;
  const ids=new Set(),tags=new Set();let blockReads=0,chainReads=0;
  const okay=body.every(r=>{
   if(r?.jsonrpc!=='2.0'||!Number.isSafeInteger(r.id)||ids.has(r.id)||!Array.isArray(r.params))return false;ids.add(r.id);
@@ -30,8 +30,8 @@ export function permittedGTradePinnedRpcBatch(body){
   if(!c||Object.keys(c).sort().join(',')!=='data,to'||String(c.to).toLowerCase()!==GTRADE_DIAMOND.toLowerCase())return false;
   try{
    const t=interfaceFor().iface.parseTransaction({data:c.data});if(!t)return false;
-   if(['getAllTradesForTraders','getAllTradeInfosForTraders','getAllTradesLiquidationParamsForTraders'].includes(t.name))return t.args[0].length>0&&t.args[0].length<=4&&Number(t.args[1])===0&&Number(t.args[2])===127;
-   if(t.name==='getTradeFeesDataArray')return t.args[0].length>0&&t.args[0].length<=4&&t.args[0].length===t.args[1].length;
+   if(['getAllTradesForTraders','getAllTradeInfosForTraders','getAllTradesLiquidationParamsForTraders'].includes(t.name))return t.args[0].length>0&&t.args[0].length<=8&&Number(t.args[1])===0&&Number(t.args[2])===127;
+   if(t.name==='getTradeFeesDataArray')return t.args[0].length>0&&t.args[0].length<=8&&t.args[0].length===t.args[1].length;
    if(t.name==='getBorrowingInitialAccFees')return Number(t.args[0])>0;
    return false;
   }catch{return false;}
@@ -39,7 +39,8 @@ export function permittedGTradePinnedRpcBatch(body){
  return okay&&tags.size===1;
 }
 export function buildGTradePinnedRpcBatch({current_block,selected}){
- if(!Number.isSafeInteger(current_block)||current_block<=0||!Array.isArray(selected)||!selected.length||selected.length>4)throw Error('GTRADE_PINNED_SELECTION_INVALID');
+ if(!Number.isSafeInteger(current_block)||current_block<=0||!Array.isArray(selected)||!selected.length||selected.length>8)throw Error('GTRADE_PINNED_SELECTION_INVALID');
+ const markets=new Map(),ids=new Set();for(const r of selected){const t=r?.trade,ix=integer(t?.pairIndex);if(ix===null||!addr(t?.user)||integer(t?.index)===null||integer(t?.collateralIndex)===null||integer(t.collateralIndex)<1||ids.has(id(t)))throw Error('GTRADE_PINNED_SELECTION_INVALID');ids.add(id(t));markets.set(ix,(markets.get(ix)||0)+1);}if(markets.size>2||[...markets.values()].some(n=>n>4))throw Error('GTRADE_PINNED_MARKET_SAMPLE_BOUND');
  const {ethers,iface}=interfaceFor(),tag=ethers.utils.hexValue(current_block),accounts=[...new Set(selected.map(r=>r.trade.user.toLowerCase()))];
  const call=(fn,args,n)=>({jsonrpc:'2.0',id:n,method:'eth_call',params:[{to:GTRADE_DIAMOND,data:iface.encodeFunctionData(fn,args)},tag]});
  const body=[{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:[tag,false]},call('getAllTradesForTraders',[accounts,0,127],3),call('getAllTradeInfosForTraders',[accounts,0,127],4),call('getAllTradesLiquidationParamsForTraders',[accounts,0,127],5),call('getTradeFeesDataArray',[selected.map(r=>r.trade.user),selected.map(r=>r.trade.index)],6),...selected.map((r,i)=>call('getBorrowingInitialAccFees',[r.trade.collateralIndex,r.trade.user,r.trade.index],i+7))];
@@ -47,6 +48,7 @@ export function buildGTradePinnedRpcBatch({current_block,selected}){
 }
 function plain(tuple,fn){const components=ABI.find(x=>x.name===fn).outputs[0].components;return Object.fromEntries(components.map((p,i)=>[p.name,p.type==='bool'?tuple[i]:p.type==='address'?String(tuple[i]):tuple[i].toString()]));}
 export function decodeGTradePinnedRpcSnapshot({body,response,selected,current_block,pair_index,receipt,as_of_ms,max_age_ms=300000}){
+ if(!selected?.some(r=>integer(r?.trade?.pairIndex)===pair_index))throw Error('GTRADE_PINNED_REQUESTED_MARKET_NOT_SELECTED');
  if(!permittedGTradePinnedRpcBatch(body)||fingerprint(body)!==fingerprint(buildGTradePinnedRpcBatch({current_block,selected}))||!Array.isArray(response)||response.length!==body.length||timestamp(as_of_ms)===null||receipt?.http_status!==200||timestamp(receipt.received_ts)===null||receipt.received_ts>as_of_ms||as_of_ms-receipt.received_ts>max_age_ms||!/^[0-9a-f]{64}$/.test(receipt.sha256||''))throw Error('GTRADE_PINNED_RPC_ENVELOPE_INVALID');
  const answers=new Map();for(const r of response){if(r?.jsonrpc!=='2.0'||!Number.isSafeInteger(r.id)||answers.has(r.id)||r.error||!Object.hasOwn(r,'result'))throw Error('GTRADE_PINNED_RPC_RESPONSE_INVALID');answers.set(r.id,r.result);}
  if(body.some(r=>!answers.has(r.id)))throw Error('GTRADE_PINNED_RPC_ID_MISSING');
@@ -59,10 +61,10 @@ export function decodeGTradePinnedRpcSnapshot({body,response,selected,current_bl
  if(fees.length!==selected.length)throw Error('GTRADE_PINNED_FEES_ALIGNMENT_INVALID');
  const trades=[],excluded=[];selected.forEach((r,i)=>{
   const key=id(r.trade),live=open.get(key);
-  if(!live||live.trade.isOpen!==true||String(live.trade.tradeType)!=='0'||integer(live.trade.pairIndex)!==pair_index||integer(live.trade.collateralIndex)!==integer(r.trade.collateralIndex)){excluded.push({position_id:key,reason:'DISCOVERED_POSITION_NOT_OPEN_WITH_SAME_EXACT_MARKET_AND_COLLATERAL_AT_PINNED_BLOCK'});return;}
-  live.tradeFeesData=plain(fees[i],'getTradeFeesDataArray');live.initialAccFees=plain(iface.decodeFunctionResult('getBorrowingInitialAccFees',answers.get(i+7))[0],'getBorrowingInitialAccFees');trades.push(live);
+  if(!live||live.trade.isOpen!==true||String(live.trade.tradeType)!=='0'||integer(live.trade.pairIndex)!==integer(r.trade.pairIndex)||integer(live.trade.collateralIndex)!==integer(r.trade.collateralIndex)){if(integer(r.trade.pairIndex)===pair_index)excluded.push({position_id:key,reason:'DISCOVERED_POSITION_NOT_OPEN_WITH_SAME_EXACT_MARKET_AND_COLLATERAL_AT_PINNED_BLOCK'});return;}
+  live.tradeFeesData=plain(fees[i],'getTradeFeesDataArray');live.initialAccFees=plain(iface.decodeFunctionResult('getBorrowingInitialAccFees',answers.get(i+7))[0],'getBorrowingInitialAccFees');if(integer(r.trade.pairIndex)===pair_index)trades.push(live);
  });
- const evidence=seal({schema:'GTRADE_EXPLICIT_BLOCK_POSITION_SNAPSHOT_V1',chain_id:42161,contract:GTRADE_DIAMOND,block_number:current_block,block_hash:block.hash,positions_source_ts:ts,pair_index,received_ts:receipt.received_ts,source_response_sha256:receipt.sha256,request_fingerprint:fingerprint(body),trades_fingerprint:fingerprint(trades),verified_open_positions:trades.length,selected_discovery_positions:selected.length,excluded_positions:excluded,complete_position_census:false,selection_policy:'SORTED_VISIBLE_POSITION_IDS_MAX4_BALANCED_LONG_SHORT',margin_and_fee_inputs_same_explicit_block:true});
+ const evidence=seal({schema:'GTRADE_EXPLICIT_BLOCK_POSITION_SNAPSHOT_V1',chain_id:42161,contract:GTRADE_DIAMOND,block_number:current_block,block_hash:block.hash,positions_source_ts:ts,pair_index,received_ts:receipt.received_ts,source_response_sha256:receipt.sha256,request_fingerprint:fingerprint(body),trades_fingerprint:fingerprint(trades),verified_open_positions:trades.length,selected_discovery_positions:selected.filter(r=>integer(r.trade.pairIndex)===pair_index).length,shared_batch_selected_positions:selected.length,shared_batch_markets:[...new Set(selected.map(r=>integer(r.trade.pairIndex)))],shared_batch_max_markets:2,excluded_positions:excluded,complete_position_census:false,selection_policy:'SORTED_VISIBLE_POSITION_IDS_MAX4_BALANCED_LONG_SHORT',margin_and_fee_inputs_same_explicit_block:true});
  return {trades,evidence};
 }
 export function verifyGTradePinnedPositionSnapshot(evidence,{trades,current_block,pair_index,as_of_ms,max_age_ms=300000}){

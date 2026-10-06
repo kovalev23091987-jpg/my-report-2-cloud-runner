@@ -8700,6 +8700,8 @@ async function runBoundedDeepCheckScheduler(
     };
   }
 
+  env.REPORT2_LIQUIDATION_SELECTED_CONTRACTS={run_id:runId,contracts:plan.selected.map(row=>row.contract)};
+
   const results = [];
 
   /*
