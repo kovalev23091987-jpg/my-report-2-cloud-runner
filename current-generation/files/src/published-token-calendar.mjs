@@ -68,6 +68,7 @@ export async function collectPublishedTokenCalendar(params={}){
  const url=`https://defillama.com/unlocks/${reference.coin_id}`,key=`${PUBLISHED_TOKEN_CALENDAR_VERSION}:${contract}:${reference.asset_id}:${url}`;
  const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===PUBLISHED_TOKEN_CALENDAR_VERSION&&cached.status==='CLOSED'&&cached.evidence?.length===1&&cached.evidence[0].htx_contract===contract&&cached.evidence[0].asset_id===reference.asset_id&&derivePublishedCalendarContext({page:cached.evidence[0].provider_calendar_page,reference,observed_ts:cached.evidence[0].observed_ts,now})&&cached.evidence[0].expires_at>=now)return {...cached,network_calls:0,cache_status:'VALIDATED_ORIGINAL_CALENDAR_CONTEXT'};
+ if(!strict_fresh_manual&&cached?.status==='PUBLISHED_CALENDAR_PROVIDER_ROUTE_NOT_FOUND'&&cached.url===url)return{...cached,network_calls:0,cache_status:'VALIDATED_PROVIDER_ROUTE_NEGATIVE_CACHE'};
  const backoff=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:'PROVIDER_BACKOFF',now});if(backoff)return{status:backoff.status,evidence:[],network_calls:0,check_completed:false};
  const reservation_id=`EV2:${SOURCE}:${run_id}:${hash(key)}`,whole=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:1});
  if(whole?.allowed!==true||whole.duplicate===true)return{status:whole?.duplicate?'ALREADY_RESERVED_NO_REDISPATCH':whole?.status||'SOURCE_ADMISSION_REQUIRED',evidence:[],network_calls:0,check_completed:false};
@@ -79,6 +80,7 @@ export async function collectPublishedTokenCalendar(params={}){
   else{const chunks=[];let bytes=0;for await(const chunk of response.body){bytes+=chunk.byteLength;if(bytes>MAX_BODY){controller.abort();throw Error('PUBLISHED_CALENDAR_BODY_BOUND_EXCEEDED');}chunks.push(Buffer.from(chunk));}const body=Buffer.concat(chunks).toString('utf8'),observed_ts=clock(),document_sha256=hash(body),page=extractPublishedCalendarPage(body);result={...normalizePublishedCalendar({page,reference,observed_ts,document_sha256}),receipts:[{url,http_status:response.status,received_ts:observed_ts,body_sha256:document_sha256,bytes}]};}
  }catch(e){result={status:'PUBLISHED_CALENDAR_SOURCE_NOT_CLOSED',reason:String(e.message).slice(0,160),evidence:[],check_completed:false};}finally{clearTimeout(timer);}
  result={...result,network_calls:1,admission,internal_only:true};
+ if(result.status==='PUBLISHED_CALENDAR_PROVIDER_ROUTE_NOT_FOUND')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:now,expires_ts:now+TTL,payload:{...result,url}});
  if(result.status==='CLOSED'&&Buffer.byteLength(JSON.stringify(result))<=16000)await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:result.evidence[0].observed_ts,expires_ts:result.evidence[0].expires_at,payload:result});
  return result;
 }
