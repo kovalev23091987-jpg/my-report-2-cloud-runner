@@ -3,6 +3,9 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 export const HTX_PUBLIC_RISK_EVIDENCE_VERSION='htx-public-risk-evidence-v5-neutral-restriction-context-20261004';
 const SOURCE='HTX_PUBLIC_RISK',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,DAILY_CAP=SOURCE_POLICIES[SOURCE].daily_cap;
 const GLOBAL_KEY='ALL_HTX_LINEAR_SWAPS_V2';
+// Keep a cache valid through the remaining snapshot assembly. The source TTL
+// and original clocks are unchanged; an ageing cache needs admitted refresh.
+const CACHE_DECISION_RESERVE_MS=2*60_000;
 const text=value=>String(value??'').trim();
 const contractOf=value=>text(value).toUpperCase();
 const finite=value=>value!==null&&value!==undefined&&value!==''&&Number.isFinite(Number(value))?Number(value):null;
@@ -49,9 +52,10 @@ export function normalizeHtxPublicRisk({contract,state_payload,isolated_payload,
 
 export async function collectHtxPublicRiskEvidence({db,fetch_impl=globalThis.fetch,pause_impl=ms=>new Promise(resolve=>setTimeout(resolve,ms)),clock=Date.now,request_admit,contract,run_id,now=Date.now(),strict_fresh_manual=false}={}){
  if(!db)throw new Error('HTX_PUBLIC_RISK_DB_REQUIRED');const htxContract=contractOf(contract);if(!/^[^\s-]+-USDT$/u.test(htxContract))return{status:'EXACT_HTX_CONTRACT_REQUIRED',evidence:[],network_calls:0,internal_only:true};
- await install(db);const cached=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,htxContract,now).first();
+ const cacheCutoff=now+CACHE_DECISION_RESERVE_MS;
+ await install(db);const cached=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,htxContract,cacheCutoff).first();
  if(!strict_fresh_manual&&cached){try{const p=JSON.parse(cached.payload_json);if(p.version===HTX_PUBLIC_RISK_EVIDENCE_VERSION)return{...p,cache_status:'HIT',network_calls:0};}catch{}}
- const shared=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,GLOBAL_KEY,now).first();
+ const shared=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 AND expires_ts>?3`).bind(SOURCE,GLOBAL_KEY,cacheCutoff).first();
  if(shared){try{
   const p=JSON.parse(shared.payload_json),sameRun=Boolean(text(run_id))&&p.run_id===text(run_id),received=finite(p.observed_ts);
   // One newly fetched all-contract response can serve both exact markets in

@@ -21,7 +21,7 @@ const NOW=Date.parse('2026-09-29T22:00:00Z');
 const rss='<rss><channel><item><guid>update-1</guid><title>Protocol update</title><link>https://abc.example/news/update</link><pubDate>Tue, 29 Sep 2026 21:30:00 GMT</pubDate></item></channel></rss>';
 async function cachedCore(db){
  await installEvidenceSourceStore(db);
- await writeEvidenceSourceCache(db,{source:'HTX_PUBLIC_RISK',asset_key:'ABC-USDT',observed_ts:NOW,expires_ts:NOW+60000,payload:{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,status:'CLOSED',evidence:[],network_calls:0}});
+ await writeEvidenceSourceCache(db,{source:'HTX_PUBLIC_RISK',asset_key:'ABC-USDT',observed_ts:NOW,expires_ts:NOW+3600000,payload:{version:HTX_PUBLIC_RISK_EVIDENCE_VERSION,status:'CLOSED',evidence:[],network_calls:0}});
 }
 
 test('provider quota denial cannot hide the next useful official block',async()=>{
