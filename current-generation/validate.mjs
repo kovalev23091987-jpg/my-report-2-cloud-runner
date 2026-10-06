@@ -16,7 +16,7 @@ const run=(args,{cwd=repo}={})=>{
 };
 const checks=[
  '../runner/current-runtime-binding.mjs',
- 'runtime-policy-patches.mjs',
+ 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  '../audit-fixes/t16/run-official-feed-smoke.mjs',

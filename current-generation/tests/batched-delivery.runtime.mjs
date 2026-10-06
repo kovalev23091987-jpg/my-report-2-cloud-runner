@@ -11,7 +11,7 @@ const imp=p=>import(pathToFileURL(path.join(root,'src',p)));
 const pub=await imp('canonical-publication.mjs');
 const {buildRuntimeCanonicalBundle}=await imp('canonical-runtime-adapter.mjs');
 const {canonicalLifecycleAuthority}=await imp('canonical-lifecycle-authority.mjs');
-const {prepareLifecycleTransition}=await imp('v3-telegram-runtime.mjs');
+const {prepareLifecycleTransition,finalizeLifecycleDispatch}=await imp('v3-telegram-runtime.mjs');
 const {deriveLifecycleContext}=await imp('v3-telegram-lifecycle-sidecar.mjs');
 const {runBoundTelegramDeliverySidecar}=await imp('bound-telegram-delivery-sidecar.mjs');
 const manifest=JSON.parse(fs.readFileSync(new URL('./fixtures/batched-retained-delivery-source-manifest.json',import.meta.url)));
@@ -26,8 +26,9 @@ function rangeCanonical(side='LONG'){
  const ts=range.observed_ts,wave=range.early.items[0].wave_id,er=range.direction_receipt;
  // Real source range and clocks; qualification envelope is controlled, never
  // asserted to be an original producer replay or a new sendable market idea.
- const x={contract:range.contract,run_id:'CONTROLLED-BATCH',snapshot_id:`S392:${range.contract}:${ts}`,observed_ts:ts,discovery_row:{contract:range.contract,current_price:range.price,early_candidate_bridge:true,early_candidate_wave_id:wave,wave_id:wave,early_candidate_quality_0_100:82,early_candidate_receipt:{status:'CLOSED',contract:range.contract,wave_id:wave,source_ts:er.source_ts,available_at:er.available_at,direction_hint:side,direction_state:side+'_WATCH',evidence:[{status:'CLOSED',side}]}},publication_shadow:{entry_signal:{state:'REJECTED'}},opportunity:{observed_ts:range.anomaly.producer_observed_ts,newest_event:{event_id:range.anomaly.event_id,event_close_ts:range.anomaly.event_close_ts,candle:{high:range.anomaly.event_high,low:range.anomaly.event_low},minute_decomposition:{classification_allowed:true}}},internal_market_context:{internal_only:true,evidence_v2:{evidence:range.technical_evidence}}};
- // SHORT has a valid old anomaly below price; LONG uses the new forward range.
+ const x={contract:range.contract,run_id:'CONTROLLED-BATCH',snapshot_id:`S392:${range.contract}:${ts}`,observed_ts:ts,discovery_row:{contract:range.contract,current_price:range.price,early_candidate_bridge:true,early_candidate_wave_id:wave,wave_id:wave,early_candidate_quality_0_100:82,early_candidate_receipt:{status:'CLOSED',contract:range.contract,wave_id:wave,source_ts:er.source_ts,available_at:er.available_at,direction_hint:side,direction_state:side+'_WATCH',evidence:[{status:'CLOSED',side}]}},publication_shadow:{entry_signal:{state:'REJECTED'}},opportunity:{observed_ts:range.anomaly.producer_observed_ts,newest_event:{event_id:range.anomaly.event_id,event_close_ts:range.anomaly.event_close_ts,candle:{high:range.anomaly.event_high,low:range.anomaly.event_low},minute_decomposition:{classification_allowed:side==='LONG'}}},internal_market_context:{internal_only:true,evidence_v2:{evidence:range.technical_evidence}}};
+ // SHORT is a controlled mirror with anomaly classification unavailable; both
+ // directions must use factual forward boundaries rather than an invalid cancel.
  const c=buildRuntimeCanonicalBundle(x).canonical;
  c.metadata.source_role_view=verifiedRoleView(range.contract,ts);
  c.analytical_fingerprint=pub.canonicalFingerprint(c);return c;
@@ -80,5 +81,17 @@ for(const [name,mutate] of Object.entries({LOW_SCORE:c=>{c.scores.coin_interest_
 });
 test('expired or fingerprint-corrupted persisted publication cannot reach the relay',async()=>{
  for(const mode of ['EXPIRED','FINGERPRINT']){const c=rangeCanonical(),{db,x}=await prepare(c);try{if(mode==='FINGERPRINT')db.sqlite.prepare("UPDATE canonical_publication_shadow SET analytical_fingerprint=?").run('0'.repeat(64));let calls=0;const result=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:mode==='EXPIRED'?c.trigger.expires_ts+1:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>{calls++;throw Error('UNEXPECTED_RELAY');}});assert.equal(result.sent,0);assert.equal(calls,0);proof.controlled.push({case:mode,relay_invocations:0,state:rowState(db).state});}finally{db.close();}}
+});
+test('journal finalization itself requires a positive receipt even when a caller says confirmed',async()=>{
+ for(const id of [null,0,-1,'abc','1.5',true]){const c=rangeCanonical(),{db,x,transition}=await prepare(c);try{
+  db.sqlite.prepare("UPDATE v3_telegram_dispatch_shadow SET state='SENDING'").run();
+  const r=await finalizeLifecycleDispatch(db,{idempotency_key:transition.dispatch.idempotency_key,network_result:'CONFIRMED_SENT',telegram_message_id:id,now_ts:x.now+1});
+  assert.equal(r.state,'FAILED_RETRYABLE');assert.equal(rowState(db).last_error,'TELEGRAM_MESSAGE_ID_NOT_CONFIRMED');
+ }finally{db.close();}}
+ proof.controlled.push({case:'FINALIZER_INDEPENDENT_RECEIPT_GUARD',invalid_ids:6});
+});
+for(const [name,response] of Object.entries({SERVER_500:{ok:false,status:500,body:null},REJECTED_400:{ok:false,status:400,body:{ok:false,status:'REJECTED'}},NETWORK_ERROR:null}))test(`composed transport ${name} preserves failure without false delivery`,async()=>{
+ const c=rangeCanonical(),{db,x}=await prepare(c);try{const r=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>{if(!response)throw Error('CONTROLLED_NETWORK_ERROR');return{ok:response.ok,status:response.status,json:async()=>response.body};}});
+ assert.equal(r.sent,0);assert.notEqual(rowState(db).state,'SENT');proof.controlled.push({case:name,state:rowState(db).state});}finally{db.close();}
 });
 test.after(()=>{fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/batched-delivery-proof.json',JSON.stringify(proof,null,2)+'\n');});

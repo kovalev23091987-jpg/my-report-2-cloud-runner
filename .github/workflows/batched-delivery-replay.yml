@@ -48,6 +48,8 @@ jobs:
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/batched-delivery.runtime.mjs > audit-output/batched-delivery-tests.tap
+      - name: Integrated release regression
+        run: node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
       - name: Current generation validation
         if: always()
         run: node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
@@ -56,7 +58,7 @@ jobs:
         run: |
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
-          sha256sum runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
+          sha256sum runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:

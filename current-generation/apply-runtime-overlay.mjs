@@ -56,7 +56,7 @@ const files=[
  'src/schedule-quota-calculator.mjs',
  'src/v3-adaptive-budget.mjs',
  'src/v3-pipeline-health-sidecar.mjs',
- 'src/v3-telegram-lifecycle-sidecar.mjs','src/v3-telegram-runtime.mjs','src/observation-prepublication-recovery.mjs','src/canonical-lifecycle-authority.mjs','src/observation-source-role-gate.mjs',
+ 'src/v3-telegram-lifecycle-sidecar.mjs','src/v3-telegram-runtime.mjs','src/telegram-delivery-receipt.mjs','src/observation-prepublication-recovery.mjs','src/canonical-lifecycle-authority.mjs','src/observation-source-role-gate.mjs',
  'src/supplemental-candidate-context.mjs',
  'src/specialist-candidate-context.mjs',
  'src/candidate-source-routing.mjs',
@@ -143,4 +143,3 @@ fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.m
 fs.copyFileSync(path.join(here,'files/src/retained-history.mjs'),path.join(runtime,'retained-history.mjs'));
 const policyPatches=applyRuntimePolicyPatches(runtime);
 console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
-

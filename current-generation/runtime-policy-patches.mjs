@@ -75,7 +75,12 @@ export function applyRuntimePolicyPatches(runtime){
  ];
  for(const [before,after,label] of lineageReplacements)decision=replaceOnce(decision,before,after,label);
  fs.writeFileSync(decisionFile,decision);
- return {status:'CLOSED',patched:['src/multi-wave-campaign-engine.mjs','src/final-decision-integration-engine.mjs'],minimum_reportable_move_pct:null,target_basis:'PRECOMMITTED_MEASURED_BASE_NO_FIXED_MINIMUM',persistence_timeline:'DECISION_THEN_EXACT_D1_ACK'};
+ const relayFile=path.join(runtime,'src/v3-telegram-delivery-sidecar.mjs');
+ let relay=fs.readFileSync(relayFile,'utf8');
+ relay=replaceOnce(relay,"import {claimLifecycleDispatch,finalizeLifecycleDispatch} from './v3-telegram-runtime.mjs';","import {claimLifecycleDispatch,finalizeLifecycleDispatch} from './v3-telegram-runtime.mjs';\nimport {confirmedRelayReceipt} from './telegram-delivery-receipt.mjs';",'TELEGRAM_RELAY_RECEIPT_IMPORT');
+ relay=replaceOnce(relay,"    if(response.ok&&body?.ok===true)return {ok:true,network_result:'CONFIRMED_SENT',status:text(body.status)||'SENT',message_id:body.message_id??null,http_status:response.status};","    const receipt=response.ok?confirmedRelayReceipt(body):null;\n    if(receipt)return {ok:true,network_result:'CONFIRMED_SENT',status:'SENT',message_id:receipt.message_id,http_status:response.status};",'TELEGRAM_RELAY_POSITIVE_MESSAGE_RECEIPT');
+ fs.writeFileSync(relayFile,relay);
+ return {status:'CLOSED',patched:['src/multi-wave-campaign-engine.mjs','src/final-decision-integration-engine.mjs','src/v3-telegram-delivery-sidecar.mjs'],minimum_reportable_move_pct:null,target_basis:'PRECOMMITTED_MEASURED_BASE_NO_FIXED_MINIMUM',persistence_timeline:'DECISION_THEN_EXACT_D1_ACK',telegram_delivery:'POSITIVE_MESSAGE_ID_REQUIRED'};
 }
 
 export default{applyRuntimePolicyPatches};
