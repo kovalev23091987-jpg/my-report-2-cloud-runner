@@ -1,3 +1,4 @@
+import {collectPublishedTokenCalendar,publishedCalendarCandidateEligible} from './published-token-calendar.mjs';
 import {collectWikimediaAttention,exactWikimediaPage} from './wikimedia-attention-context.mjs';
 import {consumeSpecialistContext} from './specialist-candidate-context.mjs';
 import {collectCoinmetricsSupplyContext,exactCoinmetricsNativeIdentity} from './coinmetrics-supply-context.mjs';
@@ -61,7 +62,7 @@ export function resolveNansenFlowPrimary(source,params={}){
 // trading accuracy or a share of provider quota. Eligibility, caches and every
 // existing durable quota remain inside their original collectors.
 export const EVIDENCE_ROUTE_PRIORITY=Object.freeze({
- LARGE_TRADES:5,OFFICIAL:5,HTX_ANNOUNCEMENTS:5,TOKEN_SCHEDULE:5,CHAIN_SUPPLY:5,CHAIN_EVENTS:5,
+ TOKEN_CALENDAR:1,LARGE_TRADES:5,OFFICIAL:5,HTX_ANNOUNCEMENTS:5,TOKEN_SCHEDULE:5,CHAIN_SUPPLY:5,CHAIN_EVENTS:5,
  DERIBIT:5,DELTA:4,COINMETRICS:3,BLUESKY:5,SECTOR:4,SECTOR_COINGECKO:4,
  BLOCKSCOUT:1,GDELT:1,
 });
@@ -91,7 +92,7 @@ export function capabilityCheckedNoExactRoute(params,source_id,reason){
 // evaluated.  Supplemental and discovery routes remain visible, but they may
 // not close a block on behalf of a missing primary route.
 export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
- N01:{all:['OFFICIAL_TOKEN_SCHEDULE'],supplemental:['OFFICIAL_EVENTS']},
+ N01:{all:['OFFICIAL_TOKEN_SCHEDULE'],supplemental:['OFFICIAL_EVENTS','DEFILLAMA_PUBLISHED_CALENDAR']},
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY','COINPAPRIKA_SECTOR']},
  N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
@@ -239,6 +240,7 @@ export function planCandidateEvidenceRoutes(params={}){
  const chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address&&params?.asset_identity?.asset_kind!=='NATIVE'),nativeSectorEligible=Boolean(exactNativeSectorBinding(params?.asset_identity,params?.contract)),nativeContract={near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT'}[chainName],nativeSupplyEligible=['near','solana','cardano'].includes(chainName)&&params?.asset_identity?.asset_kind==='NATIVE'&&params?.asset_identity?.native_asset_id===`${chainName}:mainnet`&&!address&&params?.contract===nativeContract,nativeChainEventsEligible=chainName==='solana'&&nativeSupplyEligible,supplyEligible=chainEligible||nativeSupplyEligible,chainEventsEligible=chainEligible||nativeChainEventsEligible,evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],socialEligible=/^[^\s-]+-USDT$/u.test(String(params?.contract||'').toUpperCase()),officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
  const routes=[...(exactCoinmetricsNativeIdentity(params?.contract,params?.asset_identity)?[{name:'COINMETRICS',role:'ADDITIONAL_NATIVE_DAILY_SUPPLY_HISTORY'}]:[]),{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(!officialEligible?[{name:'HTX_ANNOUNCEMENTS',role:'OFFICIAL_HTX_ASSET_EVENT_CONTEXT'}]:[]),...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(supplyEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(chainEventsEligible?[{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(DELTA_OBSERVED_OPTION_BASES.includes(String(params?.contract||'').replace(/-USDT$/,''))?[{name:'DELTA',role:'INDEPENDENT_SCOPED_OPTION_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(exactWikimediaPage(params))routes.push({name:'WIKIMEDIA',role:'ADDITIONAL_DAILY_PAGEVIEW_CONTEXT'});
+ if(publishedCalendarCandidateEligible(params))routes.push({name:'TOKEN_CALENDAR',role:'ADDITIONAL_PUBLISHED_FUTURE_VESTING_CALENDAR'});
  if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
  if(/^\S{1,32}-USDT$/u.test(String(params?.contract||'')))routes.push({name:'SECTOR',role:'EXACT_PROVIDER_MARKET_SUPPLY_AND_SECTOR_CONTEXT'});
  if(nativeSectorEligible||chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
@@ -259,7 +261,7 @@ export async function collectCandidateEvidenceV2(params={}){
   bluesky=socialEligible?deferred:(exactCapability?noRoute('BLUESKY_PUBLIC','NO_EXACT_SOCIAL_ASSET_ROUTE_FOR_VERIFIED_IDENTITY'):{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   official=officialEligible?deferred:(exactCapability?noRoute('OFFICIAL_EVENTS','NO_EXACT_OFFICIAL_FEED_IN_CAPABILITY_REGISTRY'):{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
+ const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const delta=routeBlock.results.DELTA||{status:'NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY',evidence:[],network_calls:0};
@@ -272,13 +274,14 @@ export async function collectCandidateEvidenceV2(params={}){
  const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
  const wikimedia=routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const htxAnnouncements=routeBlock.results.HTX_ANNOUNCEMENTS||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
+ const publishedCalendar=routeBlock.results.TOKEN_CALENDAR||{status:'EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED',evidence:[],network_calls:0,check_completed:false,internal_only:true};
  const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
- const statuses=[wikimedia?.status,coinmetrics?.status,delta?.status,tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,htxAnnouncements?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE'||value==='CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK');
+ const statuses=[publishedCalendar?.status,wikimedia?.status,coinmetrics?.status,delta?.status,tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,htxAnnouncements?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE'||value==='CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK');
  // Generic news cannot close vesting. Only the exact primary-document adapter
  // may close N01; its static terms are not an observed future unlock transfer.
- evidence.push(...(tokenSchedule.evidence||[]),...(wikimedia.evidence||[]),...(htxAnnouncements.evidence||[]));
+ evidence.push(...(publishedCalendar.evidence||[]),...(tokenSchedule.evidence||[]),...(wikimedia.evidence||[]),...(htxAnnouncements.evidence||[]));
  const comparison=chainSupply?.status==='CLOSED'&&chainSupply?.evidence?.some(r=>['SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED','SUPPLY_REDUCTION_CHECK'].includes(r.metric_family))?{...chainSupply,check_completed:chainSupply.network_calls>0,scope:chainName==='cardano'?'EXACT_TWO_CLOSED_CARDANO_EPOCHS':'EXACT_FINALIZED_SUPPLY_COMPARISON',transfer_cause_verified:false}:{status:'TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED',network_calls:0,evidence:[]};
- const sources={WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
+ const sources={DEFILLAMA_PUBLISHED_CALENDAR:publishedCalendar,WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
  // Fix the decision clock only after every asynchronous collector returns.
  // Responses received after params.now must not be rejected as future-known.
  const auditDecisionTs=Date.now();
@@ -300,6 +303,7 @@ export async function collectCandidateEvidenceV2(params={}){
   receipts:[
    ...(coinmetrics.receipts||[]).map(row=>({...row,source:'COINMETRICS_SUPPLY'})),
    ...(delta.receipts||[]).map(row=>({...row,source:'DELTA_OPTIONS'})),
+   ...(publishedCalendar.receipts||[]).map(row=>({...row,source:'DEFILLAMA_PUBLISHED_CALENDAR'})),
    ...(cgSector.receipts||[]).map(row=>({...row,source:'COINGECKO_SECTOR'})),
    ...(largeTrades.receipts||[]).map(row=>({...row,source:'HTX_LARGE_TRADES'})),
    ...(sector.receipts||[]).map(row=>({...row,source:'COINPAPRIKA_SECTOR'})),

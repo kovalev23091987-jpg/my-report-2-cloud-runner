@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 export const EVIDENCE_SOURCE_ADAPTERS_VERSION='evidence-source-adapters-v1-20260928';
 export const SOURCE_POLICIES=Object.freeze({
+ DEFILLAMA_PUBLISHED_CALENDAR:{daily_cap:24,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N01'],role:'ADDITIONAL_CONTEXT',retries:0,provider_published_numeric_limits:'UNKNOWN_NOT_UNLIMITED'},
  WIKIMEDIA_ATTENTION:{daily_cap:12,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N06']},
  HTX_LARGE_TRADES:{daily_cap:144,ttl_ms:60_000,auth:'PUBLIC',blocks:['N12']},
  COINGECKO_SECTOR:{daily_cap:48,ttl_ms:5*60_000,auth:'PUBLIC',blocks:['N15'],monthly_module_bound:1488},

@@ -1,3 +1,4 @@
+import {derivePublishedCalendarContext} from './published-token-calendar.mjs';
 import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
 import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
@@ -21,6 +22,14 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N01'&&row.metric_family==='PROVIDER_PUBLISHED_FUTURE_TOKEN_CALENDAR'){
+  if(row.provider_id!=='DEFILLAMA_PUBLISHED_CALENDAR'||row.upstream_id!=='DEFILLAMA_PUBLISHED_VESTING_CALENDAR'||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.official_confirmation!==false||row.actual_unlock_transfer_verified!==false||row.entry_authorized!==false||row.source_clock_policy!=='PUBLIC_PAGE_GENERATION_NOT_UNLOCK_EXECUTION')return null;
+  const c=derivePublishedCalendarContext({page:row.provider_calendar_page,reference:row.provider_asset_reference,observed_ts:row.observed_ts,now});
+  if(!c||c.asset_id!==row.asset_id||row.provider_asset_reference.contract!==row.htx_contract||c.source_ts!==row.source_ts||JSON.stringify(c)!==JSON.stringify(row.calendar_context))return null;
+  const categories={insiders:'команда',privateSale:'частные инвесторы',noncirculating:'не обращающиеся токены'},events=c.events.slice(0,4).map(e=>`${new Date(e.effective_at).toISOString().replace('T',' ').slice(0,16)} UTC: ${fmt(e.amount_tokens)} ${c.token_unit} (${categories[e.category]||e.category})`);
+  return{source:'DefiLlama / опубликованный календарь',label:'Запланированные разблокировки по календарю поставщика',value:`${events.join('; ')}; суммы перечислены раздельно. Это календарь поставщика: официальное подтверждение исполнения и фактический перевод токенов не проверены`};
+ }
+
  if(row.block_id==='N02'&&row.metric_family==='PROVIDER_AGGREGATED_SUPPLY_CONTEXT'){
   if(row.provider_id!=='COINPAPRIKA_SECTOR'||row.upstream_id!=='COINPAPRIKA_AGGREGATED_VENUES'||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.chain_finality_verified!==false||row.supply_change_or_unlock_inferred!==false||row.entry_authorized!==false||row.supply_unit!=='PROVIDER_REPORTED_ASSET_UNITS'||row.source_clock_policy!=='PROVIDER_RECORD_TIMESTAMP_NOT_CHAIN_FINALITY')return null;
   const actual=normalizeCoinpaprikaMarketSupply({reference:row.provider_reference,ticker:row.provider_ticker,contract:row.htx_contract,observed_ts:row.observed_ts}),fact=actual.evidence?.[0];
