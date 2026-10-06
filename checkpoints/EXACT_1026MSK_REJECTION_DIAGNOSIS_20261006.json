@@ -1,0 +1,97 @@
+{
+  "schema": "EXACT_SAME_RUN_REJECTION_DIAGNOSIS_V1",
+  "cloud_run": 37429543025,
+  "head": "ee0675b818d151725992332201cb247a7965dfa9",
+  "run_id": "1791271533255-1791271542492",
+  "read_cloud_run": 37430332098,
+  "read_cloud_job": 112159447176,
+  "read_artifact": 11397085789,
+  "artifact_zip_sha256": "64a170ee64be059a0451cbadebab44cef8a8399ecb3754cb8fdb2df8a236b42a",
+  "json_sha256": "d09792858f8bec7d33152eb27018270754935de778f732203d94ad561c388067",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "D1": {
+    "requests": 8,
+    "rows_read": 61,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 26,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 22,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "candidates": [
+    {
+      "contract": "BOME-USDT",
+      "snapshot_id": "S392:BOME-USDT:1791271609363",
+      "analytical_fingerprint": "d118b2911b8f983b76d7db6d7ab052e55c60da565d5d4ea47f8dfe9c3b656000",
+      "state": "REJECTED",
+      "direction": "LONG",
+      "qualified_early_interest": 91,
+      "deep_canonical_interest": 58,
+      "reason": "NO_FORWARD_FACTUAL_PRICE_TRIGGER",
+      "current_price": 0.00099685,
+      "event_high": 0.0009823,
+      "event_low": 0.000937,
+      "event_close_ts": 1791259200000,
+      "prospective_input_present": false,
+      "htx_execution_truth_present": true,
+      "future_trigger_present": false,
+      "interpretation": "Exact producer event high already below LONG current price. No forward factual price trigger; do not manufacture a replacement or send old event."
+    },
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791271575188",
+      "analytical_fingerprint": "a139b223b3557f571b8ffdcfceab2deb7f68908305624f67238ad4b5c162a830",
+      "state": "REJECTED",
+      "direction": "LONG",
+      "qualified_early_interest": 82,
+      "deep_canonical_interest": 61,
+      "reason": "NO_FORWARD_FACTUAL_PRICE_TRIGGER",
+      "current_price": 1.1969500000000002,
+      "event_high": 1.1133,
+      "event_low": 1.0965,
+      "event_close_ts": 1791207000000,
+      "prospective_input_present": false,
+      "htx_execution_truth_present": true,
+      "future_trigger_present": false,
+      "interpretation": "Exact producer event high already below LONG current price. No forward factual price trigger; do not manufacture a replacement or send old event."
+    }
+  ],
+  "project_complete": false
+}

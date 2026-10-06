@@ -38,7 +38,7 @@
       "canonical_state": "REJECTED",
       "direction": "LONG",
       "coin_interest": 91,
-      "qualified_interest": null,
+      "qualified_interest": 91,
       "trigger_present": false,
       "liquidations": {
         "accepted_exact_future_map_levels": 0,
@@ -71,7 +71,7 @@
       "canonical_state": "REJECTED",
       "direction": "LONG",
       "coin_interest": 82,
-      "qualified_interest": null,
+      "qualified_interest": 82,
       "trigger_present": false,
       "liquidations": {
         "accepted_exact_future_map_levels": 0,
@@ -83,14 +83,19 @@
   ],
   "Telegram_SENT": false,
   "publication_blockers": {
-    "BOME-USDT": "CANONICAL_STATE_NOT_PUBLISHABLE; underlying original-run reason requires exact canonical metadata read",
-    "FIL-USDT": "CANONICAL_STATE_NOT_PUBLISHABLE; underlying original-run reason requires exact canonical metadata read"
+    "BOME-USDT": "PLAN_NOT_CLOSED / NO_FORWARD_FACTUAL_PRICE_TRIGGER; CANONICAL_STATE_NOT_PUBLISHABLE",
+    "FIL-USDT": "PLAN_NOT_CLOSED / NO_FORWARD_FACTUAL_PRICE_TRIGGER; CANONICAL_STATE_NOT_PUBLISHABLE"
   },
   "project_complete": false,
   "read_iteration": {
     "sourceHTTP": 0,
     "MAIN": 0,
-    "Telegram_send": 0
+    "Telegram_send": 0,
+    "exact_D1_reader_run": 37430332098,
+    "d1_rows_read": 61,
+    "d1_rows_written": 4,
+    "d1_requests": 8,
+    "unknown_ops": 0
   },
   "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE",
   "report_artifact": {
@@ -104,5 +109,6 @@
     "json_sha256": "5fe581d6f9960e94fa9dc1bf01d01096db2ba24fa918e3aaf939fbaf1d584afa"
   },
   "retained_source": "checkpoints/actual-scheduled-source-result-37429543025.json.gz",
-  "retained_source_gzip_sha256": "e3b921524ebce5583c592d9c5fbc95950b08876fce279b8a018a5efe86ae3577"
+  "retained_source_gzip_sha256": "e3b921524ebce5583c592d9c5fbc95950b08876fce279b8a018a5efe86ae3577",
+  "exact_diagnosis": "checkpoints/EXACT_1026MSK_REJECTION_DIAGNOSIS_20261006.json"
 }
