@@ -98,3 +98,41 @@ N02 LSK использует сеть и CoinPaprika: сетевое предл�
 Telegram: в указанном запуске нет SENT/message_id. LSK: WAVE_NOT_CURRENT; NEAR: CANONICAL_DIRECTION_NOT_CLOSED. Обе канонические строки REJECTED. Направление, порог 70, волна и сценарий не подменяются. Доставка остаётся незавершённой до принятого свежего сигнала и SENT/message_id того же снимка.
 
 Доказательства: checkpoints/ACTUAL_SCHEDULED_0335MSK_20261006.json; checkpoints/actual-scheduled-source-result-37394649188.json.gz; PR169 cloud37396757549 (SHA256 534ef11df4ab422f3d17f3db3248832c00c9de9254fbafbfa95d32674cb50b13); PR170 cloud37397580284 (SHA256 aa830b3e8152a58cdfb5ca82a02959aa4a05d71198bc82bbe424b2839542a1a6). Анализ этого документа sourceHTTP=0, MAIN=0, Telegram=0.
+
+Дополнительный разбор старого каталога по тому же фактическому запуску. «Текущие receipts» подтверждают только пригодность нормализованного ответа для его роли; таблица не прибавляет основные блоки и не доказывает применение к баллам.
+
+| Запись старого каталога | Статус каталога | LSK: receipts / текущие | NEAR: receipts / текущие | Назначение |
+|---|---|---|---|---|
+| HTX | PRODUCTION | 1 / 0 | 1 / 0 | EXECUTION_PRIMARY |
+| Binance Live Public | PRODUCTION | 0 / 0 | 0 / 0 | MARKET_STRENGTH_SPOT |
+| Binance Public Data Archive | CANDIDATE | 0 / 0 | 0 / 0 | HISTORICAL_CONTEXT |
+| Bybit | PRODUCTION | 1 / 0 | 1 / 0 | CROSS_EXCHANGE_DERIVATIVES |
+| OKX | PRODUCTION | 10 / 9 | 12 / 12 | CROSS_EXCHANGE_DERIVATIVES_AND_SPOT |
+| Gate | PRODUCTION | 4 / 4 | 4 / 4 | CROSS_EXCHANGE_DERIVATIVES |
+| Hyperliquid | PRODUCTION | 0 / 0 | 0 / 0 | SMART_MONEY_SUPPORTING |
+| ByKaranteli | SHADOW | 0 / 0 | 0 / 0 | SMART_MONEY_SUPPORTING |
+| DEX Screener | CANDIDATE | 0 / 0 | 0 / 0 | DEX_CONTEXT |
+| GeckoTerminal | CANDIDATE | 0 / 0 | 0 / 0 | DEX_CONTEXT |
+| DefiLlama | CANDIDATE | 0 / 0 | 0 / 0 | PROTOCOL_CONTEXT |
+| CoinGecko | NOT_CONFIGURED | 0 / 0 | 0 / 0 | NONE |
+| Coinalyze | NOT_CONFIGURED | 0 / 0 | 0 / 0 | NONE |
+| Etherscan | NOT_CONFIGURED | 0 / 0 | 0 / 0 | NONE |
+| GoPlus | CANDIDATE | 0 / 0 | 0 / 0 | SUPPORTING_RISK |
+| Alchemy | BLOCKED | 0 / 0 | 0 / 0 | ONCHAIN_CONTEXT |
+| Solana Public RPC | CANDIDATE | 0 / 0 | 0 / 0 | ONCHAIN_CONTEXT |
+| Bitget | SHADOW | 0 / 0 | 0 / 0 | BITGET_CONTEXT |
+| Coinbase Exchange | SHADOW | 0 / 0 | 0 / 0 | COINBASE_SPOT_CONTEXT |
+| Deribit | SHADOW | 0 / 0 | 0 / 0 | SECOND_PRIORITY_MARKET_BACKGROUND |
+
+В LSK дополнительно фактически получены Bitget (цена, funding и текущее OI), DEX Screener и GeckoTerminal (ликвидность, объём и количество покупок/продаж пулов). Это отдельные вспомогательные сведения, не подтверждённое использование назначенным N-потребителем в этом запуске. У DEX двух сервисов совпадает один активный pool_key: они описывают один пул, их объёмы нельзя суммировать. Цепочка передачи этого дополнительного DEX-контекста в основной потребитель пока не подтверждена; эту потерю нельзя скрыть общим CLOSED. Для NEAR этот вспомогательный слот был сохранён под ликвидационный блок.
+
+В исходной цепочке ликвидаций NEAR реально проверены Hyperliquid (1 HTTP, кандидатный бюджет не позволил продолжить) и GMX (4 HTTP, получен контекст). Lighter/gTrade не допущены остатком бюджета, ByKaranteli model требует отсутствующий API key, CoinLobster future model отложен из-за защищённого бюджета, OXArchive не был вызван. Поэтому семь отсутствующих числовых результатов в этом запуске не означают семь успешных пустых ответов.
+
+Дополнение N07, 06.10.2026 01:21 UTC: облачные фактические проверки 37398550713/37398705610 установили причину transport fetch failed — официальный HTTP301 с локализованного /en-us/support/list/360000039942/ на /support/list/360000039942/. Выполнено 2 HTTP суммарно с существующим дневным допуском N07, MAIN0, Telegram0. Это объясняет техническую ошибку, но пока не доказывает получение пригодного каталога или сведения по монете. PR171 проверяет прямой канонический адрес; никакого сброса caps/reservations или следования произвольным redirects.
+
+
+## Later actual run: 06 October 04:26:40 MSK
+Same fresh scheduled37398950554: actual 牛来/OKB each10 main blocks N02,N04,N05,N08,N09,N10,N11,N12,N15,N16. 牛来8neutral+2unscored diagnostic, score-effect0; OKB8neutral+N12(-0.0457)/N15(+0.3429) nonzero. N05 full240minutes actual246/735 fills, no waiver. OKB3GMX receipt-only estimates rendered; original source state clock unknown; accepted exact-map levels0. Telegram0, 牛来 WAVE_NOT_CURRENT, OKB CANONICAL_STATE_NOT_PUBLISHABLE. Same-run exact plan diagnostic: old anomaly high131.72 below current133.995; no closed existing or fallback plan. Detailed source accounting is in ACTUAL_SCHEDULED_0426MSK_20261006.json and its immutable source gzip; do not combine with historical LSK/NEAR proof.
+
+## N07 general repair PR171 (after this actual run)
+Unchanged source daily cap4/global admission key. Three admitted source evaluations in total: original URL failed UNEXPECTED_REDIRECT, manual no-follow response301 revealed official canonical /support/list/360000039942/, canonical official URL returnedHTTP200 and88205-byte actual HTML parsed20entries. Exact NEAR bounded query matched0; this is a bounded check, not useful project news or proof of no events. No more N07 probes required. PR171 preserves original successful cache row observation and6h expiry rather than rewriting query clocks on reuse. Cloud generation/binding/frozen37 plus3 actual-body/cache tests passed sourceHTTP0 MAIN0 Telegram0. PR171 was not in04:26 report head; its next fresh joint use remains pending.

@@ -1,0 +1,62 @@
+{
+  "schema": "report2-n07-canonical-cache-release-evidence-v1",
+  "PR": 171,
+  "merged_main": "fa8c743e50411e074e6a1ef50302eeafe7743b8a",
+  "tested_head": "82eca73484c4b5f53934fee6d87e10e35c448237",
+  "tested_tree": "f308fe6e179f693ef0b74e74a7d06a2930e93bfb",
+  "cloud_run": 37399285688,
+  "artifact": 11384487810,
+  "sha256": "890afa7976970f0c4ecd38cf2d280d299dda4bd6ee28ac3dc27727c879af1f5c",
+  "checks": {
+    "generation": "PASS",
+    "binding": "PASS",
+    "frozen_integration": 37,
+    "actual_body_cache_tests": 3,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "D1": 0
+  },
+  "actual_source_evaluation": {
+    "sourceHTTP": 3,
+    "MAIN": 0,
+    "Telegram": 0,
+    "daily_cap": 4,
+    "cap_reset": false,
+    "Nansen": 0,
+    "runs": [
+      {
+        "run": 37398550713,
+        "result": "UNEXPECTED_REDIRECT"
+      },
+      {
+        "run": 37398705610,
+        "HTTP": 301,
+        "redirect_followed": false,
+        "location": "https://www.htx.com/support/list/360000039942/"
+      },
+      {
+        "run": 37398931948,
+        "HTTP": 200,
+        "body_bytes": 88205,
+        "body_sha256": "843cd4f08e62e7feca68456d23baa562607ffb8234bd1cc75a4371cad9a0cc8a",
+        "parsed_entries": 20,
+        "exact_query": "NEAR-USDT",
+        "matched_entries": 0,
+        "result": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+        "meaningful_news": false
+      }
+    ]
+  },
+  "cache": {
+    "source_id_unchanged": "HTX_OFFICIAL_ANNOUNCEMENTS",
+    "daily_key_unchanged": "HTX_SUPPORT_360000039942_V1",
+    "version": "htx-official-announcements-v2-canonical-official-url-20261006",
+    "ttl_ms": 21600000,
+    "original_query_clock_preserved": true,
+    "original_expiry_preserved": true,
+    "future_or_extended_cache_clock_rejected": true
+  },
+  "next_fresh_joint_pending": true,
+  "project_complete": false
+}
