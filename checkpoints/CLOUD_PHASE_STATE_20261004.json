@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T033517381Z:canonical-completion",
-    "acquired_ts": 1791257717381,
-    "expires_ts": 1791258437381
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": 0
   },
-  "next_action": "REPAIR_INCOMPLETE_CANONICAL_CANDIDATE_SET_ACCOUNTING_REUSE_EXACT_0625_DATA_NO_LIVE_MAIN",
-  "last_verified_release": "checkpoints/prospective-observation-handoff-release-evidence-20261006.json",
+  "next_action": "REPAIR_SAME_RUN_HTX_SHARED_RISK_CACHE_NEAR_EXPIRY_WITHOUT_RELAXING_SOURCE_CLOCK_OR_CAPS",
+  "last_verified_release": "checkpoints/canonical-candidate-completion-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791257717381,
+  "updated_ts": 1791258218261,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,11 +145,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:37409462780",
-    "acquired_ts": 1791257561893,
-    "expires_ts": 1791258041893,
-    "released_ts": 1791257605995,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "HTX:20261006T033517381Z:canonical-completion",
+    "acquired_ts": 1791257717381,
+    "expires_ts": 1791258437381,
+    "released_ts": 1791258218261,
+    "reason": "PR175 verified and merged. Release completed packet; preserve restored hourly storage maintenance."
   },
   "bounded_next_check": {
     "automation_id": "6ac3e06700e081919ca674ce192eca4c",
@@ -439,5 +439,27 @@
     "project_complete": false,
     "exact_readback": 37409174768,
     "observed_storage_bytes": 499539968
+  },
+  "pending_canonical_completion": {
+    "PR": 175,
+    "proof": "checkpoints/canonical-candidate-completion-release-evidence-20261006.json",
+    "fresh_actual_readback_pending": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "pending_shared_risk_expiry": {
+    "contract": "BR-USDT",
+    "source": "HTX_PUBLIC_RISK",
+    "blocks": [
+      "N08",
+      "N09"
+    ],
+    "source_ts": 1791253449196,
+    "first_known_ts": 1791257044552,
+    "canonical_decision_ts": 1791257063771,
+    "rejection": "EVIDENCE_EXPIRED",
+    "shared_cache_admitted_near_source_expiry": true,
+    "fix_status": "PENDING_GENERAL_CACHE_REMAINING_VALIDITY_REPAIR"
   }
 }
