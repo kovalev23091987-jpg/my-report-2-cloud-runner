@@ -69,14 +69,17 @@ export const EVIDENCE_ROUTE_PRIORITY=Object.freeze({
  DERIBIT:5,DELTA:4,COINMETRICS:3,BLUESKY:5,SECTOR:4,SECTOR_COINGECKO:4,
  BLOCKSCOUT:1,GDELT:1,
 });
-export function rotateEvidenceRoleRoutes(routes,key){
+export function rotateEvidenceRoleRoutes(routes,key,{owner_priority=false}={}){
  if(!routes.length)return [];
  const eligible=routes.map((route,index)=>({route,index,tickets:EVIDENCE_ROUTE_PRIORITY[route.name]??1}));
  const tickets=eligible.flatMap(row=>Array(row.tickets).fill(row.index));
- const first=tickets[rotation(key,tickets.length)];
+ const priorityNames=new Set(['LARGE_TRADES','TOKEN_SCHEDULE','CHAIN_SUPPLY','SECTOR','SECTOR_COINGECKO','TOKEN_CALENDAR']);
+ const priority=owner_priority?eligible.filter(row=>priorityNames.has(row.route.name)):[];
+ const priorityTickets=priority.flatMap(row=>Array(row.tickets).fill(row.index));
+ const first=(priorityTickets.length?priorityTickets:tickets)[rotation(key,priorityTickets.length||tickets.length)];
  // Each eligible route remains present exactly once: a cached fact costs no
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
- return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
+ return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>(owner_priority?(Number(priorityNames.has(b.route.name))-Number(priorityNames.has(a.route.name))):0)||b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
 }
 export function exactCapabilityIdentity(params={}){
  const contract=String(params?.contract||'').trim().toUpperCase(),identity=params?.asset_identity,method=String(params?.identity_method||'').trim();
@@ -264,7 +267,7 @@ export async function collectCandidateEvidenceV2(params={}){
   bluesky=socialEligible?deferred:(exactCapability?noRoute('BLUESKY_PUBLIC','NO_EXACT_SOCIAL_ASSET_ROUTE_FOR_VERIFIED_IDENTITY'):{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   official=officialEligible?deferred:(exactCapability?noRoute('OFFICIAL_EVENTS','NO_EXACT_OFFICIAL_FEED_IN_CAPABILITY_REGISTRY'):{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
+ const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const delta=routeBlock.results.DELTA||{status:'NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY',evidence:[],network_calls:0};
