@@ -1,0 +1,117 @@
+{
+  "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
+  "cloud_run": 37423984921,
+  "cloud_job": 112139411994,
+  "head": "705f6def3f75936722557c55508dfa58a0247651",
+  "run_id": "1791268174325-1791268186776",
+  "generated_utc": "2026-10-06T06:31:24.472Z",
+  "generated_msk": "2026-10-06T09:31:24.472000+03:00",
+  "top2": [
+    "ZEC-USDT",
+    "牛来-USDT"
+  ],
+  "counts": [
+    {
+      "contract": "牛来-USDT",
+      "snapshot_id": "S392:牛来-USDT:1791268276885",
+      "participating": 11,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 9,
+      "unscored": 2,
+      "nonzero_score": 0,
+      "score_contributions": {},
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "qualified_interest": null,
+      "trigger_present": false,
+      "actionability_status": "UNASSESSED",
+      "actionability_reason": null,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_estimate_levels": 0,
+        "providers": [],
+        "source_clock_known": null,
+        "decision_eligible": false
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "snapshot_id": "S392:ZEC-USDT:1791268240254",
+      "participating": 8,
+      "participating_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 6,
+      "unscored": 0,
+      "nonzero_score": 2,
+      "score_contributions": {
+        "N12": -0.0114,
+        "N15": -0.0442
+      },
+      "canonical_state": "OBSERVE",
+      "direction": "SHORT",
+      "qualified_interest": 82,
+      "trigger_present": true,
+      "actionability_status": "INTERNAL_ONLY",
+      "actionability_reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_estimate_levels": 3,
+        "providers": [
+          "GMX public API"
+        ],
+        "source_clock_known": false,
+        "decision_eligible": false
+      }
+    }
+  ],
+  "Telegram_SENT": false,
+  "publication_blockers": {
+    "ZEC-USDT": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+    "牛来-USDT": "WAVE_NOT_CURRENT; CANONICAL_DIRECTION_NOT_CLOSED"
+  },
+  "report_artifact": {
+    "id": 11394480538,
+    "zip_sha256": "098af48525af6a366a84b5ed74e2e35ed1b56ae398db9266d990b58adebcd4b3",
+    "json_sha256": "7fefbfdc07c01c8f1f29613d46946658564fbfb962ad8d017d5cdeff7b7e0054"
+  },
+  "telegram_artifact": {
+    "id": 11394365641,
+    "zip_sha256": "ba2094ec5ab18154f6d87875ca19b3c7acd26dc3ff004b08fdde07e41e294449",
+    "json_sha256": "9d928052580f93018eaf72f1d717143a0af70fb4fd9c7a814748875890c22c4e"
+  },
+  "retained_source": "checkpoints/actual-scheduled-source-result-37423984921.json.gz",
+  "retained_source_gzip_sha256": "19cee2691eb196ad3633e8ac8260a34db25d305b8356acac08df00c36187ab13",
+  "read_iteration": {
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "exact_D1_reader_run": 37425212292,
+    "d1_rows_read": 54,
+    "d1_rows_written": 4,
+    "d1_requests": 8,
+    "unknown_ops": 0
+  },
+  "exact_diagnosis": "checkpoints/HTX_OBSERVE_ROLE_HANDOFF_DIAGNOSIS_20261006.json",
+  "project_complete": false,
+  "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE"
+}

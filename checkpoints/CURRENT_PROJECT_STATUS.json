@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T05:52:24.092Z",
+  "updated_utc": "2026-10-06T06:48:54.730Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -13,64 +13,37 @@
     "TELEGRAM": "PENDING"
   },
   "latest_verified_release": {
-    "PR": 180,
-    "proof": "checkpoints/original-clock-scenario-diagnostic-release-evidence-20261006.json",
-    "diagnostic_only": true,
-    "decision_behavior_and_forms_preserved": true,
+    "PR": 181,
+    "proof": "checkpoints/actual-htx-observe-role-release-evidence-20261006.json",
+    "diagnostic_only": false,
+    "approved_forms_and_existing_admission_rules_preserved": true,
     "sourceHTTP": 0,
     "MAIN": 0,
     "D1": 0,
     "Telegram": 0
   },
   "latest_actual_report": {
-    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
-    "cloud_run": 37418312423,
-    "head": "733e24a156c783d29743e960119bd58a90855a1d",
-    "run_id": "1791264245746-1791264254804",
-    "generated_utc": "2026-10-06T05:25:41.606Z",
-    "generated_msk": "2026-10-06T08:25:41.606000+03:00",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_0931MSK_20261006.json",
+    "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
+    "cloud_run": 37423984921,
+    "cloud_job": 112139411994,
+    "head": "705f6def3f75936722557c55508dfa58a0247651",
+    "run_id": "1791268174325-1791268186776",
+    "generated_utc": "2026-10-06T06:31:24.472Z",
+    "generated_msk": "2026-10-06T09:31:24.472000+03:00",
     "top2": [
-      "FIL-USDT",
-      "BR-USDT"
+      "ZEC-USDT",
+      "牛来-USDT"
     ],
     "counts": [
       {
-        "contract": "BR-USDT",
-        "snapshot_id": "S392:BR-USDT:1791264336039",
-        "participating": 7,
-        "participating_ids": [
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ],
-        "neutral": 6,
-        "unscored": 0,
-        "nonzero_score": 1,
-        "score_contributions": {
-          "N12": 0.0265
-        },
-        "canonical_state": "REJECTED",
-        "direction": "SHORT",
-        "qualified_interest": 91,
-        "trigger_present": false,
-        "liquidations": {
-          "accepted_exact_future_map_levels": 0,
-          "rendered_estimate_levels": 0,
-          "providers": [],
-          "source_clock_known": null,
-          "decision_eligible": false
-        }
-      },
-      {
-        "contract": "FIL-USDT",
-        "snapshot_id": "S392:FIL-USDT:1791264303995",
-        "participating": 9,
+        "contract": "牛来-USDT",
+        "snapshot_id": "S392:牛来-USDT:1791268276885",
+        "participating": 11,
         "participating_ids": [
           "N02",
+          "N03",
+          "N04",
           "N05",
           "N08",
           "N09",
@@ -80,7 +53,7 @@
           "N15",
           "N16"
         ],
-        "neutral": 7,
+        "neutral": 9,
         "unscored": 2,
         "nonzero_score": 0,
         "score_contributions": {},
@@ -88,6 +61,43 @@
         "direction": null,
         "qualified_interest": null,
         "trigger_present": false,
+        "actionability_status": "UNASSESSED",
+        "actionability_reason": null,
+        "liquidations": {
+          "accepted_exact_future_map_levels": 0,
+          "rendered_estimate_levels": 0,
+          "providers": [],
+          "source_clock_known": null,
+          "decision_eligible": false
+        }
+      },
+      {
+        "contract": "ZEC-USDT",
+        "snapshot_id": "S392:ZEC-USDT:1791268240254",
+        "participating": 8,
+        "participating_ids": [
+          "N02",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "neutral": 6,
+        "unscored": 0,
+        "nonzero_score": 2,
+        "score_contributions": {
+          "N12": -0.0114,
+          "N15": -0.0442
+        },
+        "canonical_state": "OBSERVE",
+        "direction": "SHORT",
+        "qualified_interest": 82,
+        "trigger_present": true,
+        "actionability_status": "INTERNAL_ONLY",
+        "actionability_reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
         "liquidations": {
           "accepted_exact_future_map_levels": 0,
           "rendered_estimate_levels": 3,
@@ -100,20 +110,42 @@
       }
     ],
     "Telegram_SENT": false,
-    "exact_diagnosis": "checkpoints/ACTUAL_0825_OBSERVATION_DIAGNOSIS_20261006.json",
     "publication_blockers": {
-      "BR": "CANONICAL_STATE_NOT_PUBLISHABLE; PLAN_NOT_CLOSED; qualified SHORT91 same-wave receipt",
-      "FIL": "CANONICAL_DIRECTION_NOT_CLOSED"
+      "ZEC-USDT": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "牛来-USDT": "WAVE_NOT_CURRENT; CANONICAL_DIRECTION_NOT_CLOSED"
     },
-    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_ELIGIBLE_TRADE_OR_TELEGRAM_ACCEPTANCE",
-    "missing_producer_read": "checkpoints/EXACT_MISSING_0825_SCENARIO_EVIDENCE_20261006.json"
+    "report_artifact": {
+      "id": 11394480538,
+      "zip_sha256": "098af48525af6a366a84b5ed74e2e35ed1b56ae398db9266d990b58adebcd4b3",
+      "json_sha256": "7fefbfdc07c01c8f1f29613d46946658564fbfb962ad8d017d5cdeff7b7e0054"
+    },
+    "telegram_artifact": {
+      "id": 11394365641,
+      "zip_sha256": "ba2094ec5ab18154f6d87875ca19b3c7acd26dc3ff004b08fdde07e41e294449",
+      "json_sha256": "9d928052580f93018eaf72f1d717143a0af70fb4fd9c7a814748875890c22c4e"
+    },
+    "retained_source": "checkpoints/actual-scheduled-source-result-37423984921.json.gz",
+    "retained_source_gzip_sha256": "19cee2691eb196ad3633e8ac8260a34db25d305b8356acac08df00c36187ab13",
+    "read_iteration": {
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram_send": 0,
+      "exact_D1_reader_run": 37425212292,
+      "d1_rows_read": 54,
+      "d1_rows_written": 4,
+      "d1_requests": 8,
+      "unknown_ops": 0
+    },
+    "exact_diagnosis": "checkpoints/HTX_OBSERVE_ROLE_HANDOFF_DIAGNOSIS_20261006.json",
+    "project_complete": false,
+    "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE"
   },
   "pending": [
     {
-      "task": "Read current observation-plan diagnostic in one new natural same-run result",
-      "release_PR": 180,
-      "requires": "Exact fresh producer receipt plus canonical approved text and Telegram lifecycle; no extra MAIN or stale send",
-      "actual_last_BR": "SHORT91 qualified, no plan; original event row unavailable; retained old boundary .44361 above price .39239"
+      "task": "Verify restored HTX execution role and fresh approved automatic Telegram delivery in one natural run after PR181",
+      "requires": "Same-run exact source-role proof, approved canonical text, SENT and message_id; no extra MAIN, old snapshot send or gate relaxation",
+      "original_actual_blocker": "ZEC SHORT82 qualified OBSERVE rejected because exact immutable HTX execution fact was omitted from role view",
+      "release_proof": "checkpoints/actual-htx-observe-role-release-evidence-20261006.json"
     },
     {
       "task": "Fresh approved automatic OBSERVE or ENTRY Telegram delivery",
@@ -146,11 +178,11 @@
   ],
   "source_accounting": {
     "catalog": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
-    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_0825MSK_20261006.json",
+    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_0931MSK_20261006.json",
     "logical_assignments": 32,
     "logical_assignments_are_not_independent_providers": true,
     "catalog_report_contains_historical_sections": false,
-    "exact_source_use": "checkpoints/SOURCE_USE_0825MSK_20261006.json.gz"
+    "exact_source_use": "checkpoints/actual-scheduled-source-result-37423984921.json.gz"
   },
   "history": {
     "startup_before_consolidation": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
@@ -168,11 +200,17 @@
     "automatic_continuation_created_by_cleanup": false,
     "active_cloud_development_jobs": [],
     "last_bounded_read": {
-      "cloud_run": 37419624255,
-      "status": "READBACK_FAILED_MISSING_ORIGINAL_ROW",
+      "cloud_run": 37425212292,
+      "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
       "sourceHTTP": 0,
       "MAIN": 0,
-      "Telegram": 0
+      "Telegram": 0,
+      "D1": {
+        "rows_read": 54,
+        "rows_written": 4,
+        "requests": 8,
+        "unknown_ops": 0
+      }
     }
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
