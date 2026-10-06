@@ -36,6 +36,13 @@ test('retained raw inputs preserve every historical engine output on the same or
   const old=before.buildOpportunityShadowAnalysis(input),next=engine.buildOpportunityShadowAnalysis(input);
   const {live_observation_event,...rest}=next;
   assert.deepEqual(rest,old,'prospective handoff must not alter historical samples, scores or statistics');
+  if(r.contract==='WIF-USDT'){
+   assert.ok(live_observation_event,'real retained raw inputs must reach the producer current-event handoff');
+   assert.equal(live_observation_event.event_close_ts,1791252900000);
+   assert.ok(Math.abs(live_observation_event.volume_ratio_median-r.original_event.related_signals.at(-1).volume_ratio_median)<1e-10);
+   assert.equal(live_observation_event.candle.high,.2482);assert.equal(live_observation_event.candle.low,.246);
+   assert.ok(helper.readProspectiveOpportunity(next,{contract:r.contract,decision_ts:r.canonical_cutoff}));
+  }else assert.equal(live_observation_event,undefined);
   replays.set(r.contract,{r,bars,next});
  }
 });

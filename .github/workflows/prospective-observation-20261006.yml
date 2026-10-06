@@ -42,6 +42,7 @@ jobs:
       - name: Exact package hashes
         if: always()
         run: |
+          cp runtime/src/opportunity-intelligence-runtime.mjs audit-output/opportunity-runtime-source.mjs
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
           sha256sum runtime/src/worker.js runtime/src/prospective-opportunity-view.mjs runtime/src/opportunity-intelligence-engine.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/manual-report-formatter.mjs > audit-output/runtime-hashes.txt
