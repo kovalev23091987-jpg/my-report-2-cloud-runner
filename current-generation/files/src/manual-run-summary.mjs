@@ -57,9 +57,19 @@ function idea(row){
  return lines;
 }
 
-export function classifyCanonicalRunCompletion({candidate_count=0,cron}={}){
+export function auditCanonicalCandidateSet({expected_contracts=[],rows=[],run_id}={}){
+ const expected=[...new Set(expected_contracts)].filter(value=>contract(value));
+ const present=[...new Set(rows.filter(row=>row?.run_id===run_id&&expected.includes(row?.contract_code)).map(row=>row.contract_code))];
+ const missing=expected.filter(value=>!present.includes(value));
+ return {schema:'CANONICAL_CANDIDATE_SET_AUDIT_V1',status:missing.length?'PARTIAL':'CLOSED',run_id,
+  expected_contracts:expected,present_contracts:present,missing_contracts:missing,
+  expected_candidate_count:expected.length,present_candidate_count:present.length,
+  missing_is_technical_not_no_market_idea:missing.length>0};
+}
+export function classifyCanonicalRunCompletion({candidate_count=0,expected_candidate_count=0,cron}={}){
  if(cron?.v3_pipeline_health_status==='DEGRADED_PIPELINE')return {status:'PARTIAL_DATA_UNAVAILABLE',reason:cron.v3_pipeline_health_reason||'PIPELINE_NOT_CLOSED'};
  if(candidate_count===0&&Number(cron?.v3_live_deep_check_count)>0)return {status:'PARTIAL_DATA_UNAVAILABLE',reason:'CANONICAL_CANDIDATE_NOT_PERSISTED'};
+ if(candidate_count<Math.max(Number(expected_candidate_count)||0,Number(cron?.v3_live_deep_check_count)||0))return {status:'PARTIAL_DATA_UNAVAILABLE',reason:'CANONICAL_CANDIDATE_SET_INCOMPLETE'};
  return {status:candidate_count>0?'CLOSED':'CLOSED_NO_CANONICAL_CANDIDATE',reason:null};
 }
 export function enforceManualBlockCoverage(output={}){
