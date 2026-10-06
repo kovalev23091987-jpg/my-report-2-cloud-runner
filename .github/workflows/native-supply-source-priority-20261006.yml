@@ -35,7 +35,7 @@ jobs:
       - name: Verify current binding, generation and lifecycle policy
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
-          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/priority-source-admission.test.mjs > audit-output/priority-source-admission.tap
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/sector-multiple-sources.runtime.mjs > audit-output/sector-multiple-sources.tap
           node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
       - name: Exact package hashes
@@ -43,7 +43,7 @@ jobs:
         run: |
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
-          sha256sum runtime/src/worker.js runtime/src/prospective-opportunity-view.mjs runtime/src/opportunity-intelligence-engine.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/manual-report-formatter.mjs > audit-output/runtime-hashes.txt
+          sha256sum runtime/src/worker.js runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/sector-context.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/manual-report-formatter.mjs > audit-output/runtime-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
