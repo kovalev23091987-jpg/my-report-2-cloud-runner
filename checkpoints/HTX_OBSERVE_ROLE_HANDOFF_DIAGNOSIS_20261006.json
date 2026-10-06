@@ -1,0 +1,58 @@
+{
+  "schema": "EXACT_SAME_RUN_OBSERVE_SOURCE_ROLE_DIAGNOSIS_V1",
+  "source_cloud_run": 37423984921,
+  "source_run_id": "1791268174325-1791268186776",
+  "source_head": "705f6def3f75936722557c55508dfa58a0247651",
+  "snapshot": "S392:ZEC-USDT:1791268240254",
+  "state": "OBSERVE",
+  "qualified_interest": 82,
+  "direction": "SHORT",
+  "trigger_price": 1319.19,
+  "cancel_price": 1334.34,
+  "trigger_closed": true,
+  "canonical_reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+  "network_sender_enabled": true,
+  "telegram_network_attempt_for_this_candidate": false,
+  "canonical_immutable_reader": {
+    "cloud_run": 37425212292,
+    "artifact": 11394851836,
+    "zip_sha256": "61dfba2b755eea732af75ee99c3047af6a2617a6e6e0cbbf0d43517411291693",
+    "json_sha256": "28d6f4b4499001052bb555badf0548482e0ca1b90255e19752a85373c4f069ce",
+    "gzip_sha256": "710777dfa612caca790e8d0f6999017df00cd6e945ced135111475450f2ce8fd",
+    "D1_rows_read": 54,
+    "D1_rows_written": 4,
+    "requests": 8,
+    "unknown_ops": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "actual_role_view": {
+    "usable_origins": [
+      "OKX_OFFICIAL",
+      "GATE_OFFICIAL"
+    ],
+    "HTX_EXECUTION_TRUTH_present": false,
+    "measured_immutable_HTX_execution_source_present_in_same_canonical": true
+  },
+  "root_cause": "Canonical role receipts include only public external evidence and an optional unmeasured generic HTX snapshot. Existing exact immutable HTX execution truth is not transferred to role consumer. >=2 origins alone do not satisfy mandatory HTX EXECUTION_TRUTH.",
+  "fix_scope": "Transfer exact measured HTX execution gate through existing inherited-fact normalizer into existing source-role consumer; original source and receipt clocks retained. No new independent provider, score or entry authority.",
+  "publication_requirements_preserved": [
+    "interest>=70",
+    "qualified direction/current wave",
+    "factual working area/trigger/cancellation",
+    "HTX execution source truth",
+    "at least two known usable origins",
+    "immutable identity/content",
+    "15-second book age at original decision",
+    "approved manual/Telegram text"
+  ],
+  "target_optional_for_observe": true,
+  "overall_score_optional_for_observe": true,
+  "not_transport_limit": "Actual delivery reconciliation rejects actionability before Telegram network call; legacy output flags do not disable canonical sender.",
+  "telegram_acceptance_pending": true,
+  "component_replay_is_not_new_live_or_full_original_producer_run": true,
+  "other_candidate": "牛来 no closed direction/current wave; this fix does not fabricate one.",
+  "release_proof": "checkpoints/actual-htx-observe-role-release-evidence-20261006.json",
+  "actual_component_after_fix": "QUALIFIED_OBSERVE_WITH_UNCHANGED_TEXT; NOT_STALE_SENT"
+}

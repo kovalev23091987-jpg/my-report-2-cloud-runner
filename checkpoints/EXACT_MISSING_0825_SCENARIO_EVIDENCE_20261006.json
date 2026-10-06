@@ -1,0 +1,31 @@
+{
+  "schema": "exact-missing-original-scenario-read-v1",
+  "created_utc": "2026-10-06T05:43:32.225Z",
+  "source_cloud_run": 37418312423,
+  "run_id": "1791264245746-1791264254804",
+  "contract": "BR-USDT",
+  "snapshot_id": "S392:BR-USDT:1791264336039",
+  "event_id": "OPP:opportunity-integrity-v2:BR-USDT:MARKET:EPISODE:1791244800000:1791259200000",
+  "reader_cloud_run": 37419624255,
+  "reader_head": "4228e9b634e5a7aee70238ccfb2a15eea6187e72",
+  "artifact": 11392686271,
+  "zip_sha256": "00105622d7f15466ebb9849a8a5a9ceb2db2afc5feafbe87f80b9b91f4323ca7",
+  "json_sha256": "9578e8e4fd0ed41f09eb1417d25184c18b5862fe31a9d4becac6ee07bec2c963",
+  "status": "READBACK_FAILED",
+  "reason": "EXACT_EVENT_BINDING_FAILED",
+  "actual_database_result": "opportunity_shadow_event exact key read returned no row;0 data rows read for that query",
+  "meaning": "Missing retained producer evidence; not proof no market event or adapter defect",
+  "usage": {
+    "rows_read": 21,
+    "rows_written": 4,
+    "requests": 5,
+    "unknown_ops": 0,
+    "ledger_only_writes": true
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "repeated_query_planned": false,
+  "next_general_investigation": "Retain same-run prospective plan rejection receipt and original producer context; first inspect current persistence mechanism, preserve current freshness/70/direction/plan gates",
+  "project_complete": false
+}
