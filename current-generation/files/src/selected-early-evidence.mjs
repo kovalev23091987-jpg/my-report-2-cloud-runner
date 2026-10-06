@@ -1,3 +1,9 @@
+import {compareOrdinaryDeepCandidates} from './deep-candidate-order.mjs';
+export function rankedEarlyPersistenceContracts(prefilter){
+ const rows=Array.isArray(prefilter?.shortlist)?prefilter.shortlist:[];
+ return [...rows].sort(compareOrdinaryDeepCandidates).slice(0,2).map(row=>String(row?.contract||'').trim()).filter(Boolean);
+}
+
 import {applyEarlyCandidateBridge} from './early-candidate-bridge.mjs';
 
 // Refresh only the actual scheduler choice, before handoff identity is built.
