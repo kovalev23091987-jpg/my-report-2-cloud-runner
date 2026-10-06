@@ -1,0 +1,45 @@
+{
+  "schema": "ACTUAL_HTX_OBSERVE_SOURCE_ROLE_RELEASE_V1",
+  "PR": 181,
+  "merged_main": "f31e3ffc6b1d6da57b33fd6b06c1167f332c5c06",
+  "tested_head": "5ade6dcf489663b62f93b34b0b000309c1b999fa",
+  "tested_tree": "bca6bba9d9f413454d2b2d90d3c105ceacd71108",
+  "cloud_run": 37425716619,
+  "cloud_job": 112144772114,
+  "artifact": 11394592243,
+  "artifact_zip_sha256": "510a956286e5f0678914c0c5dbb4a912857d17e600b8a62a42e5af7900e194fb",
+  "diagnosis": "checkpoints/HTX_OBSERVE_ROLE_HANDOFF_DIAGNOSIS_20261006.json",
+  "actual_source_report": "checkpoints/ACTUAL_SCHEDULED_0931MSK_20261006.json",
+  "verification": {
+    "runtime_binding": "PASS",
+    "generation_tests": "PASS",
+    "syntax": "PASS",
+    "exact_original_clock_regressions": 4,
+    "final_integration_passed": 37,
+    "final_integration_failed": 0,
+    "approved_rendered_text_byte_identical": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "D1": 0,
+    "Telegram_send": 0
+  },
+  "fix": "Verified same-run immutable HTX execution facts normalized in existing consumer and transferred as EXECUTION_TRUTH. Existing two-origin/70/trigger/cancellation/strategy/entry/freshness gates unchanged.",
+  "hashes": {
+    "current-generation/files/src/execution-report-context.mjs": "1da697c3c63f25a703e86302d73a7ce390ef2388b64302aea3f338f8d4b91418",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "b2e1b7c2cc476de0ce7da5ca931c68e6edbd38bcb253d944413f909b6aa35d44",
+    "current-generation/tests/execution-role-handoff.runtime.mjs": "c549253ec88d2aab74a55eade70d9d4e0d646ae4486f58b4dc1ce644f255b63c"
+  },
+  "actual_fixture_json_sha256": "0adaaf3cdf058e07508ec6069b95434b94a388073f4c487a9c9eb09e8b151708",
+  "actual_fixture_gzip_sha256": "be4b0d9f7560657e90c7f7ed02d6e5e216fc9a448b593f1c6e2be2e98c33ff29",
+  "controlled_replay_not_new_live_or_full_original_producer": true,
+  "failed_predecessor": {
+    "cloud_run": 37425508303,
+    "artifact": 11394686772,
+    "zip_sha256": "49dd2fae070c3289266871ad665786c16739860965c6a8000872a2d965378ea3",
+    "targeted_actual_tests_passed": 4,
+    "generation_failed": "SOURCE_MODULE_IMPORT_RESOLUTION; FIXED_BY_NORMALIZATION_IN_EXISTING_RUNTIME_CONSUMER",
+    "integration_not_run": true
+  },
+  "fresh_production_SENT_message_id_pending": true,
+  "project_complete": false
+}

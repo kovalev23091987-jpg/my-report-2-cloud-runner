@@ -1,0 +1,108 @@
+{
+  "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
+  "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1026MSK_20261006.json",
+  "cloud_run": 37429543025,
+  "cloud_job": 112156956558,
+  "head": "ee0675b818d151725992332201cb247a7965dfa9",
+  "run_id": "1791271533255-1791271542492",
+  "generated_utc": "2026-10-06T07:26:53.938Z",
+  "generated_msk": "2026-10-06T10:26:53.938000+03:00",
+  "top2": [
+    "FIL-USDT",
+    "BOME-USDT"
+  ],
+  "counts": [
+    {
+      "contract": "BOME-USDT",
+      "snapshot_id": "S392:BOME-USDT:1791271609363",
+      "participating": 10,
+      "participating_ids": [
+        "N02",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 8,
+      "unscored": 0,
+      "nonzero_score": 2,
+      "score_contributions": {
+        "N12": -0.0106,
+        "N15": -0.0055
+      },
+      "canonical_state": "REJECTED",
+      "direction": "LONG",
+      "coin_interest": 91,
+      "qualified_interest": null,
+      "trigger_present": false,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "received_estimate_levels": 0,
+        "source_clock_known": null,
+        "decision_eligible": false
+      }
+    },
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791271575188",
+      "participating": 8,
+      "participating_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 6,
+      "unscored": 0,
+      "nonzero_score": 2,
+      "score_contributions": {
+        "N12": 0.0178,
+        "N15": 0.2087
+      },
+      "canonical_state": "REJECTED",
+      "direction": "LONG",
+      "coin_interest": 82,
+      "qualified_interest": null,
+      "trigger_present": false,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "received_estimate_levels": 3,
+        "source_clock_known": false,
+        "decision_eligible": false
+      }
+    }
+  ],
+  "Telegram_SENT": false,
+  "publication_blockers": {
+    "BOME-USDT": "CANONICAL_STATE_NOT_PUBLISHABLE; underlying original-run reason requires exact canonical metadata read",
+    "FIL-USDT": "CANONICAL_STATE_NOT_PUBLISHABLE; underlying original-run reason requires exact canonical metadata read"
+  },
+  "project_complete": false,
+  "read_iteration": {
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0
+  },
+  "CLOSED_means": "EXPECTED_EXACT_CANONICAL_ROWS_SAVED; NOT_TELEGRAM_ACCEPTANCE",
+  "report_artifact": {
+    "id": 11396770130,
+    "zip_sha256": "fec9a1696c7d233eb3e2b3dab2f11e32812d3d1610f94f3250c31307c4fbba7f",
+    "json_sha256": "42a97814dd77340482ef0e9bc1186f9fd75a40d9080d4a5f59b6d32d542b5919"
+  },
+  "telegram_artifact": {
+    "id": 11396636847,
+    "zip_sha256": "f6d5c643c65c0cec25b52d9d250e6d849187a0e3de50fa50d97c9a7ce6b554bd",
+    "json_sha256": "5fe581d6f9960e94fa9dc1bf01d01096db2ba24fa918e3aaf939fbaf1d584afa"
+  },
+  "retained_source": "checkpoints/actual-scheduled-source-result-37429543025.json.gz",
+  "retained_source_gzip_sha256": "e3b921524ebce5583c592d9c5fbc95950b08876fce279b8a018a5efe86ae3577"
+}
