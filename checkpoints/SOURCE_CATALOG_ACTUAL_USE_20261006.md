@@ -136,3 +136,31 @@ Same fresh scheduled37398950554: actual 牛来/OKB each10 main blocks N02,N04,N0
 
 ## N07 general repair PR171 (after this actual run)
 Unchanged source daily cap4/global admission key. Three admitted source evaluations in total: original URL failed UNEXPECTED_REDIRECT, manual no-follow response301 revealed official canonical /support/list/360000039942/, canonical official URL returnedHTTP200 and88205-byte actual HTML parsed20entries. Exact NEAR bounded query matched0; this is a bounded check, not useful project news or proof of no events. No more N07 probes required. PR171 preserves original successful cache row observation and6h expiry rather than rewriting query clocks on reuse. Cloud generation/binding/frozen37 plus3 actual-body/cache tests passed sourceHTTP0 MAIN0 Telegram0. PR171 was not in04:26 report head; its next fresh joint use remains pending.
+
+
+## Detailed same-run actual provider use: 04:26:40 MSK
+Both real Top2 have the same source counts below. Assigned routes are logical declarations; route counts are not provider totals or additive HTTP. Shared HTX/CHAIN_RPC responses contribute to multiple blocks. No independent confirmation count is inferred.
+| Block | Assigned routes | Actually checked | Routes with meaningful facts | Used provider IDs |
+|---|---:|---:|---:|---|
+| N01 | 3 | 0 | 0 | none |
+| N02 | 4 | 2 | 1 | CHAIN_RPC |
+| N03 | 3 | 1 | 0 | none |
+| N04 | 2 | 1 | 1 | CHAIN_RPC |
+| N05 | 3 | 2 | 1 | HTX_FUTURES_RAW_FLOW |
+| N06 | 3 | 0 | 0 | none |
+| N07 | 3 | 0 | 0 | none |
+| N08 | 2 | 1 | 1 | HTX_PUBLIC_RISK |
+| N09 | 1 | 1 | 1 | HTX_PUBLIC_RISK |
+| N10 | 1 | 1 | 1 | PRIMARY_TECHNICAL_CONTEXT |
+| N11 | 1 | 1 | 1 | PRIMARY_EXECUTION_STRESS |
+| N12 | 1 | 1 | 1 | HTX_LARGE_TRADES |
+| N14 | 2 | 1 | 0 | none |
+| N15 | 2 | 2 | 1 | COINGECKO_SECTOR |
+| N16 | 1 | 1 | 1 | PRIMARY_EXECUTION_COST |
+
+Unused N01: no official vesting/feed route; exact token CG reference was not available before the earlier calendar lookup. The later same-run N15 metadata is actually retained and hash verified; PR173 dependency repair is under test, not a calendar fact. N03: finalized transfers were checked but supplied no burn/mint fact, and two comparable finalized supply observations are not yet retained; Blockscout deferred by envelope. N06: Bluesky deferred by envelope, verified official-name/domain and Wikipedia binding absent. N07: first candidate existing reservation, second daily cap; actual URL/cache repair PR171 is later than this run and does not erase those outcomes. N14: Deribit verified no supported instrument, Delta not in verified capability. These are distinct route/limit/availability causes, not universal absence of information.
+
+## PR172 supporting data bridge (after the fresh run)
+Saved exact LSK responses at original03:35cutoff now pass through existing consumers and assembled canonical adapter into approved manual context. Bitget funding0.00005fraction shown; OI6407142 omitted because native unit unknown. DexScreener506507.99USD and GeckoTerminal550072.7802USD describe the same Ethereum pool; one selected observed liquidity550072.7802USD, supplier values retained, amounts not summed, independent confirmation1. Maximum2distinct pool facts prevents crowding. All new facts advisory, score0, entryfalse, no new N-block participation. Cloud37400642572, generation/binding/frozen37+4actual regressions PASS, sourceHTTP0 MAIN0 Telegram0 D10. This is original-clock component proof, not newer live acceptance.
+
+PR173 now merged/cloud verified: exact token calendars follow their existing CoinGecko metadata route and use monotonic current collection time; native ordering unchanged, one dispatch, original first-known clocks/expiry and source envelope unchanged. Actual retained two-token reference reuse proven; no calendar fact asserted. New naturally admitted live acceptance pending.
