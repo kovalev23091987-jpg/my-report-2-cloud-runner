@@ -1,32 +1,40 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "CORE_BLOCKS",
+  "current_phase": "JOINT_REPORT",
   "phases": [
     {
       "id": "CORE_BLOCKS",
-      "status": "IN_PROGRESS",
-      "completion_receipt": null,
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/OWNER_MAXIMUM_AVAILABLE_CORE_ACCEPTANCE_20261006.json",
+        "sha256": "a09504c48730a084ac20f0ec217d7359e5bb9174cfdb2507fd3a610380401a1b"
+      },
       "previous_completion_receipt": {
         "path": "checkpoints/core15-functional-acceptance-20261004.json",
         "sha256": "61a25f296cb0f8cc849c67c404487b0d55fc28e1b9877398d73a274536567c13"
       },
       "previous_completed_ts": 1791150935708,
-      "reopened_reason": "Partial current source coverage remains explicitly bounded. Owner does not require all15; historical all15 flags are not current maximum-available acceptance."
+      "reopened_reason": "Partial current source coverage remains explicitly bounded. Owner does not require all15; historical all15 flags are not current maximum-available acceptance.",
+      "completed_ts": 1791314521303
     },
     {
       "id": "LIQUIDATION_COVERAGE",
-      "status": "PENDING",
-      "completion_receipt": null,
+      "status": "VERIFIED",
+      "completion_receipt": {
+        "path": "checkpoints/OWNER_OPTIONAL_LIQUIDATION_ACCEPTANCE_20261006.json",
+        "sha256": "5e2d8e86f0fe5887b7af12a3dad43cfd7ad1ee2e67fe3c30d9f6112ebb9716f0"
+      },
       "previous_completion_receipt": {
         "path": "checkpoints/liquidation-phase-functional-acceptance-20261004.json",
         "sha256": "90e0fb49666de60951f50fa4ce0eac4b09d962094b64acb13a142bbb3b4e8955"
       },
       "previous_completed_ts": 1791154697290,
-      "reopened_reason": "Predecessor usefulness acceptance reopened; retain existing scoped evidence without repeating completed probes."
+      "reopened_reason": "Predecessor usefulness acceptance reopened; retain existing scoped evidence without repeating completed probes.",
+      "completed_ts": 1791314521361
     },
     {
       "id": "JOINT_REPORT",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "completion_receipt": null,
       "previous_completion_receipt": {
         "path": "checkpoints/joint-report-functional-acceptance-20261005.json",
@@ -124,7 +132,7 @@
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791314282051,
+  "updated_ts": 1791314521361,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
