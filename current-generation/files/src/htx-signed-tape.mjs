@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import {gzipSync,gunzipSync} from 'node:zlib';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
@@ -7,6 +8,27 @@ const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=ne
 const n=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const close=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
+const STORAGE_CAP=1500000,DECODE_CAP=8000000,PACKED_VERSION='htx-signed-tape-storage-gzip-v1';
+const byteHash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+// Lossless storage only: the decoded ring, minute clocks, fill IDs and hashes
+// are unchanged. The existing durable byte cap and DB operations stay fixed.
+export function encodeSignedTapeStorage(ring){
+ const bytes=Buffer.from(JSON.stringify(ring));
+ if(bytes.length>DECODE_CAP)return{status:'RAW_TAPE_STORAGE_BOUND_REACHED',payload:null};
+ if(bytes.length<=STORAGE_CAP)return{status:'RAW_TAPE_STORAGE_CLOSED',payload:ring,storage_bytes:bytes.length,uncompressed_bytes:bytes.length,encoding:'JSON'};
+ const payload={version:PACKED_VERSION,contract:ring.contract,encoding:'GZIP_BASE64',uncompressed_bytes:bytes.length,sha256:byteHash(bytes),data:gzipSync(bytes,{mtime:0}).toString('base64')},storage_bytes=Buffer.byteLength(JSON.stringify(payload));
+ return storage_bytes<=STORAGE_CAP?{status:'RAW_TAPE_STORAGE_CLOSED',payload,storage_bytes,uncompressed_bytes:bytes.length,encoding:'GZIP_BASE64'}:{status:'RAW_TAPE_STORAGE_BOUND_REACHED',payload:null};
+}
+export function decodeSignedTapeStorage(payload){
+ if(payload?.version!==PACKED_VERSION)return payload;
+ if(payload.encoding!=='GZIP_BASE64'||!Number.isSafeInteger(payload.uncompressed_bytes)||payload.uncompressed_bytes<1||payload.uncompressed_bytes>DECODE_CAP||typeof payload.sha256!=='string'||!/^[a-f0-9]{64}$/.test(payload.sha256)||typeof payload.data!=='string'||!payload.data||!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(payload.data)||Buffer.byteLength(JSON.stringify(payload))>STORAGE_CAP)return null;
+ try{
+  const bytes=gunzipSync(Buffer.from(payload.data,'base64'),{maxOutputLength:DECODE_CAP});
+  if(bytes.length!==payload.uncompressed_bytes||byteHash(bytes)!==payload.sha256)return null;
+  const ring=JSON.parse(bytes.toString('utf8'));
+  return ring?.version===HTX_SIGNED_TAPE_VERSION&&ring.contract===payload.contract?ring:null;
+ }catch{return null;}
+}
 export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();}
 export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){
  const u=new URL(url),contract=u.searchParams.get('contract_code');if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||payload?.status!=='ok')return;
@@ -50,8 +72,9 @@ export function mergeSignedTape({previous,acquisition,now}={}){
  if(previous){if(previous.version!==HTX_SIGNED_TAPE_VERSION||previous.contract!==contract||previous.contract_size!==size||!Array.isArray(previous.minutes)||previous.minutes.length>1620||new Set(previous.minutes.map(m=>m.start_ts)).size!==previous.minutes.length||!previous.minutes.every(m=>m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:size})))return{status:'SAVED_RAW_TAPE_INTEGRITY_NOT_CLOSED',ring:null};for(const m of previous.minutes)if(m.start_ts>=now-27*60*MIN)byMinute.set(m.start_ts,m);}
  for(const m of acquisition.minutes){const old=byMinute.get(m.start_ts);if(old&&old.raw_sha256!==m.raw_sha256)return{status:'CONFLICTING_COMPLETE_RAW_MINUTE',ring:null,conflict_ts:m.start_ts};byMinute.set(m.start_ts,old||m);}
  const ring={version:HTX_SIGNED_TAPE_VERSION,contract,contract_size:size,observed_ts:now,minutes:[...byMinute.values()].sort((a,b)=>a.start_ts-b.start_ts),source:'HTX_OFFICIAL_EXACT_RAW_FILLS',price_quote:'USDT',entry_authorized:false};
- if(Buffer.byteLength(JSON.stringify(ring),'utf8')>1500000)return{status:'RAW_TAPE_STORAGE_BOUND_REACHED',ring:null};
- return{status:'DURABLE_RAW_TAPE_WARMING',ring};
+ const storage=encodeSignedTapeStorage(ring);
+ if(!storage.payload)return{status:storage.status,ring:null};
+ return{status:'DURABLE_RAW_TAPE_WARMING',ring,storage};
 }
 export function signedTape24hEvidence({ring,now}={}){
  if(!ring||ring.version!==HTX_SIGNED_TAPE_VERSION||!isExactHtxUsdtSwapKey(ring.contract)||!(n(ring.contract_size)>0)||!Array.isArray(ring.minutes)||new Set(ring.minutes.map(m=>m.start_ts)).size!==ring.minutes.length||!Number.isSafeInteger(now))return{status:'NO_VERIFIED_RAW_TAPE',evidence:[]};
@@ -76,17 +99,19 @@ function acquisitionClockDiagnostic(snapshot,now){
 export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),db_admit,publish_verified_24h=false}={}){
  const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
  const finish=result=>{
-  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,storage_encoding:result.storage_encoding??null,uncompressed_bytes:result.uncompressed_bytes??null,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
   return result;
  };
  if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});
  const grant=db_admit?.({rows_read:16,rows_written:4});if(grant?.allowed!==true)return finish({status:grant?.status||'RAW_TAPE_DB_ADMISSION_REQUIRED',evidence:[],network_calls:0});
- await installEvidenceSourceStore(db);const previous=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return finish({...merged,evidence:[],network_calls:0});
- await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.ring});
- const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
+ await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}),previous=decodeSignedTapeStorage(cached);
+ if(cached&&!previous)return finish({status:'SAVED_RAW_TAPE_STORAGE_INTEGRITY_NOT_CLOSED',evidence:[],network_calls:0});
+ const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return finish({...merged,evidence:[],network_calls:0});
+ await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.storage.payload});
+ const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
  retainBounded(verifiedRings,contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
- return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:Buffer.byteLength(JSON.stringify(merged.ring),'utf8'),network_calls:0,db_admission:grant,internal_only:true});
+ return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:merged.storage.storage_bytes,storage_encoding:merged.storage.encoding,uncompressed_bytes:merged.storage.uncompressed_bytes,network_calls:0,db_admission:grant,internal_only:true});
 }
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
@@ -95,7 +120,7 @@ export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admi
  // The established cache may not exist on a first run. This optional history
  // never creates tables or marks a missing window complete.
  try{
-  const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});
+  const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));
   // A valid immutable window already in the durable cache remains usable if
   // this deep check cannot add new complete minutes. Validation retains the
   // original per-minute clocks, IDs and counters; reading never refreshes them.
