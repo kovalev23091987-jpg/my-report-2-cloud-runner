@@ -18,10 +18,10 @@ jobs:
         with:
           script: |
             const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
-            if(head!=='956053f0eeff76011996f5381473a4fa515c8d0f')throw Error('MAIN_MOVED');
+            if(head!=='5982d569b318c64ed318550289f6b42bd00304c9')throw Error('MAIN_MOVED');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
-            if(phase.lease?.owner!=='HTX:20261006T065915411Z:general-flow-gmx-clock'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if(phase.lease?.owner!=='HTX:20261006T082707067Z:post184-evidence'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Read two exact canonical rows under D1 budget
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}

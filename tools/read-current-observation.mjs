@@ -23,6 +23,7 @@ if(out.admission.allowed){
    for(const row of rows){if(row.contract_code!==contract||row.run_id!==run||row.snapshot_id!=='S392:'+contract+':'+row.observed_ts||row.observed_ts<req.start_ts||row.observed_ts>req.upper_ts||row.snapshot_id!==req.snapshot_ids[contract])throw Error('EXACT_CANONICAL_BINDING_FAILED');const canonical=JSON.parse(row.canonical_json);if(canonical.analytical_fingerprint!==req.analytical_fingerprints[contract])throw Error('ARTIFACT_CANONICAL_FINGERPRINT_MISMATCH');out.rows.push({...row,canonical_json:undefined,canonical});}
    if(!rows.length)out.rows.push({contract_code:contract,run_id:run,status:'NO_CANONICAL_ROW_FOR_EXACT_SOURCE_RUN',canonical:null});
   }
+  out.dispatch=await db.prepare("SELECT d.dispatch_id,d.idempotency_key,d.contract,d.direction,d.wave_id,d.lifecycle_event,d.rules_version,d.state,d.decision_id,d.created_ts,d.updated_ts,d.sent_ts,d.telegram_message_id,d.last_error,b.publication_id FROM v3_telegram_dispatch_shadow d LEFT JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE d.idempotency_key=?1 LIMIT 1").bind(req.dispatch_key).all();check();
   out.early=await db.prepare("SELECT wave_id,contract_code,generation,first_seen_ts,lifecycle_stage,direction_hint,direction_state,early_detection_quality_0_100,last_seen_ts FROM v3_early_candidate_wave WHERE contract_code IN (?1,?2) ORDER BY last_seen_ts DESC LIMIT 8").bind(...req.contracts).all();check();
   out.status='EXACT_CURRENT_PUBLIC_DATA_READ';
  }catch(e){out.status='READBACK_FAILED';out.error=String(e.message).slice(0,180);}
