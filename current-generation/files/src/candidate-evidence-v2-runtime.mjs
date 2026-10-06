@@ -128,6 +128,20 @@ export function classifyEvidenceSourceHealth(result={},valid_rows=0){
  return'NOT_CLOSED';
 }
 
+// Exact token calendars depend on already verified CoinGecko address metadata.
+// Resolve that dependency within the existing route set, not a second dispatch.
+export function orderEvidenceDependencyRoutes(routes=[],asset_identity=null){
+ const rows=[...routes],calendar=rows.findIndex(r=>r.name==='TOKEN_CALENDAR'),cg=rows.findIndex(r=>r.name==='SECTOR_COINGECKO');
+ if(calendar<0||cg<0||calendar>cg||asset_identity?.asset_kind==='NATIVE'||!asset_identity?.contract_or_mint)return rows;
+ const [dependent]=rows.splice(calendar,1),at=rows.findIndex(r=>r.name==='SECTOR_COINGECKO');
+ rows.splice(at+1,0,dependent);return rows;
+}
+export function evidenceRouteObservationNow(route,params={}){
+ if(route?.name!=='TOKEN_CALENDAR')return params.now;
+ const prior=Number(params.now),current=Number((params.clock||Date.now)());
+ if(!Number.isSafeInteger(current)||current<=0||Number.isFinite(prior)&&current<prior)throw Error('SOURCE_ROUTE_CLOCK_NOT_MONOTONIC');
+ return current;
+}
 export async function collectEvidenceRouteBlock({routes=[],collectors={},params={},max_requests=5}={}){
  let reserved=0,actual=0,routeReserved=0;const results={},receipts=[];
  const request_admit=request=>{
@@ -140,7 +154,7 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
   // Collectors read valid cached facts before their request admission. Calling
   // every relevant role also reuses caches after the network envelope is full.
   const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
-  try{result=await collect({...params,request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
+  try{result=await collect({...params,now:evidenceRouteObservationNow(route,params),request_admit,fetch_impl});}catch(error){result={status:'CODE_OR_STORE_ERROR',evidence:[],error:String(error?.message||error).slice(0,120)};}
   const calls=actual-beforeActual,reported=Number(result?.network_calls);result={...result,network_calls:calls};
   // A shared upstream or cache never authorizes evidence for another market.
   if(params.contract&&Array.isArray(result.evidence)){
@@ -267,7 +281,7 @@ export async function collectCandidateEvidenceV2(params={}){
   bluesky=socialEligible?deferred:(exactCapability?noRoute('BLUESKY_PUBLIC','NO_EXACT_SOCIAL_ASSET_ROUTE_FOR_VERIFIED_IDENTITY'):{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   official=officialEligible?deferred:(exactCapability?noRoute('OFFICIAL_EVENTS','NO_EXACT_OFFICIAL_FEED_IN_CAPABILITY_REGISTRY'):{status:'EXACT_OFFICIAL_FEED_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true}),
   gdelt=gdeltEligible?deferred:{status:'EXACT_OFFICIAL_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true},blockscout=blockscoutEligible?deferred:{status:evmEligible?'WAITING_FREE_KEY':'EXACT_EVM_IDENTITY_REQUIRED',evidence:[],network_calls:0,receipts:[],internal_only:true};
- const routeBlock=await collectEvidenceRouteBlock({routes:rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
+ const routeBlock=await collectEvidenceRouteBlock({routes:orderEvidenceDependencyRoutes(rotateEvidenceRoleRoutes(routes,key,{owner_priority:true}),params.asset_identity),params,max_requests:Math.max(0,evidenceCap-core.reserved_requests),collectors:{TOKEN_CALENDAR:collectPublishedTokenCalendar,WIKIMEDIA:collectWikimediaAttention,LARGE_TRADES:collectHtxLargeTradesEvidence,HTX_ANNOUNCEMENTS:collectHtxOfficialAnnouncements,TOKEN_SCHEDULE:collectOfficialTokenSchedule,SECTOR:collectCoinpaprikaSectorEvidence,SECTOR_COINGECKO:collectCoingeckoSectorEvidence,CHAIN_SUPPLY:collectChainSupplyEvidence,CHAIN_EVENTS:p=>collectFinalizedChainEvents({...p,event_mode:'TOKEN_TRANSFER'}),BLUESKY:collectBlueskyAttentionEvidence,OFFICIAL:collectOfficialEventsEvidence,GDELT:collectGdeltOfficialDiscovery,BLOCKSCOUT:collectBlockscoutIndexEvidence,DERIBIT:collectDeribitAltOptionsEvidence,DELTA:collectDeltaOptionsEvidence,COINMETRICS:collectCoinmetricsSupplyContext}});
  ({CHAIN_SUPPLY:chainSupply=chainSupply,CHAIN_EVENTS:chainEvents=chainEvents,BLUESKY:bluesky=bluesky,OFFICIAL:official=official,GDELT:gdelt=gdelt,BLOCKSCOUT:blockscout=blockscout,DERIBIT:deribit=deribit}=routeBlock.results);
  const coinmetrics=routeBlock.results.COINMETRICS||{status:'EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const delta=routeBlock.results.DELTA||{status:'NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY',evidence:[],network_calls:0};
