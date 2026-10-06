@@ -21,7 +21,10 @@ export function consumeSectorContext({evidence=[],contract,asset_identity,now}={
   const pct=n=>`${n>0?'+':''}${n.toFixed(2).replace('.',',')}`;
   const fact={...common,block_id:'N15',source:sources[r.provider_id],decision_block:'MARKET_STRENGTH_SPOT',field:'SECTOR_RELATIVE_STRENGTH_CONTEXT',label:`Сектор «${label}» за 24 часа, выборка ${peers.length} монет`,value:`монета ${pct(target)}%, медиана ${pct(median)}%, разница ${pct(delta)} п.п.; сводные цены площадок`,unit:'',source_ts:r.source_ts,observed_ts:r.observed_ts,evidence_id:r.evidence_id,physical_root_key:evidenceDedupKey(r)};
   blocks[r.provider_id]={status:'CLOSED',block_id:'N15',relative_strength_pct_points:delta,eligible_peers:peers.length,category:r.tag_id,source_ts:r.source_ts,...common};
-  if(!facts.length)facts.push(fact);
+  // Each supported provider contributes its own validated cohort comparison.
+  // Keep at most one fact per provider; do not average different cohorts or
+  // turn aggregated providers into independent directional votes.
+  if(!facts.some(existing=>existing.source===fact.source))facts.push(fact);
  }
  return{status:facts.length?'CLOSED':'NOT_CLOSED',facts,blocks,...common};
 }

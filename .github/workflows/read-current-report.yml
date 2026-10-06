@@ -8,7 +8,7 @@ permissions:
 jobs:
   read:
     runs-on: ubuntu-24.04-arm
-    timeout-minutes: 19
+    timeout-minutes: 33
     steps:
       - uses: actions/checkout@v4
       - name: Await one existing naturally admitted fresh report
@@ -16,9 +16,9 @@ jobs:
         with:
           script: |
             const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
-            const owner=context.repo.owner,repo=context.repo.repo,expected='763edae791e6f224b8554fd2eebf632b7af5cb3a',deadline=Date.now()+17*60*1000,seen=new Set();
+            const owner=context.repo.owner,repo=context.repo.repo,expected='925cf3907c32114635dfbe9d2808bac40fa4ff6f',deadline=Date.now()+30*60*1000,seen=new Set();
             fs.mkdirSync('audit-output',{recursive:true});
-            const result={schema:'report2-bounded-natural-scheduled-readback-v1',observer_head:context.sha,expected_production_head:expected,sourceHTTP:0,MAIN:0,Telegram_send:0,D1:0,created_after:'2026-10-06T06:49:00Z',skipped:[],status:'WAITING_FOR_NATURALLY_ADMITTED_RESULT'};
+            const result={schema:'report2-bounded-natural-scheduled-readback-v1',observer_head:context.sha,expected_production_head:expected,sourceHTTP:0,MAIN:0,Telegram_send:0,D1:0,created_after:'2026-10-06T07:46:54.074Z',skipped:[],status:'WAITING_FOR_NATURALLY_ADMITTED_RESULT'};
             const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
             const read=async(path,ref)=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref})).data.content,'base64').toString());
             const signatures=new Map();
@@ -48,7 +48,7 @@ jobs:
              await new Promise(resolve=>setTimeout(resolve,10000));
              while(Date.now()<deadline){
               await guard();
-              const runs=(await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id:358951594,event:'schedule',per_page:10,created:'>=2026-10-06T06:49:00Z'})).data.workflow_runs.filter(r=>r.id>37423984921&&r.status==='completed').sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+              const runs=(await github.rest.actions.listWorkflowRuns({owner,repo,workflow_id:358951594,event:'schedule',per_page:10,created:'>=2026-10-06T07:46:54.074Z'})).data.workflow_runs.filter(r=>r.id>37429543025&&r.status==='completed').sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
               for(const run of runs){
                if(seen.has(run.id))continue;
                const artifacts=(await github.rest.actions.listWorkflowRunArtifacts({owner,repo,run_id:run.id,per_page:30})).data.artifacts;

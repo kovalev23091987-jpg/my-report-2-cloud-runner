@@ -1,0 +1,50 @@
+{
+  "schema": "DURABLE_SIGNED_FLOW_HANDOFF_RELEASE_V1",
+  "PR": 183,
+  "status": "MERGED_CLOUD_VERIFIED_FRESH_JOINT_PROOF_PENDING",
+  "merged_main": "6b69c3ea8fc947504c6073967cb55adf94e20d90",
+  "tested_head": "e73a24fb4b0d198e619705d29513a47dacb4f05a",
+  "tree": "1d87807b79814f2bebb2ecf3da1ae538a5cda725",
+  "cloud_run": 37431260553,
+  "cloud_job": 112162416846,
+  "artifact": 11396803120,
+  "artifact_zip_sha256": "dc02248e8472a75758ac78efa004660f9a3f9fe853c89e5043e5a53143611d99",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "actual_input": {
+    "reader_run": 37427234358,
+    "contract": "牛来-USDT",
+    "original_cutoff": 1791268276885,
+    "verified_window_minutes": 240,
+    "raw_trade_count": 295,
+    "original_producer_replay": false,
+    "new_live_acceptance": false
+  },
+  "checks": {
+    "cache_consumer_and_negative": 3,
+    "raw_tape_regressions": 9,
+    "generation": "PASS",
+    "syntax": "PASS",
+    "integration37": "PASS"
+  },
+  "changes": [
+    "Exact valid durable raw window reaches N05 without requiring a new successful acquisition",
+    "Bounded scalar acquisition clocks and persistence status retained in existing internal N05 receipt"
+  ],
+  "original_clocks_preserved": true,
+  "full_240_requirement_preserved": true,
+  "raw24h_remains_deferred": true,
+  "weights_changed": false,
+  "threshold_changed": false,
+  "approved_forms_changed": false,
+  "extra_source_requests": 0,
+  "extra_D1_writes": 0,
+  "failed_fixture_transfer": {
+    "cloud_run": 37431038629,
+    "reason": "Test fixture upload received truncated transfer; corrected to exact original gzip blob 9d1e8ac347b730151b837b362ee5f38a0b63d747",
+    "no_production_merge": true
+  },
+  "project_complete": false
+}

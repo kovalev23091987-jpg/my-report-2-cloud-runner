@@ -1,0 +1,123 @@
+{
+  "schema": "GENERAL_SOURCE_CLOCK_DIAGNOSIS_V1",
+  "cloud_run": 37427234358,
+  "cloud_job": 112149555316,
+  "tested_head": "8310762347945ccbdd122ec4318e665818509e39",
+  "artifact": 11394394693,
+  "artifact_zip_sha256": "426f7674755784dd6a037d3814c7a9def78baf9b3667af378e14379c1b6f8e62",
+  "sourceHTTP": 2,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Nansen": 0,
+  "d1_usage": {
+    "requests": 11,
+    "rows_read": 52,
+    "rows_written": 9,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 24,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_liq_source_allowance_shadow": {
+        "requests": 1,
+        "rows_read": 21,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "GENERAL_SOURCE_CLOCK:37427234358:1:GMX",
+    "reserved": [
+      {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GMX",
+        "provider": "GMX",
+        "units": 2
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false,
+    "combined_local_reservation": true,
+    "local_rates_are_policy_not_provider_entitlement": true
+  },
+  "project_complete": false,
+  "GMX": {
+    "actual_HTTP_200": 2,
+    "returned_positions": [
+      2,
+      0
+    ],
+    "snapshot_clock_present": false,
+    "only_clock_fields": [
+      "increasedAtTime",
+      "decreasedAtTime"
+    ],
+    "actual_position_symbols": [
+      "APE/USD",
+      "XPL/USD"
+    ],
+    "scope": "SOURCE_SCHEMA_EVALUATION_ON_EXISTING_PUBLIC_ACCOUNTS_NOT_ALL119_COVERAGE",
+    "receipt_only_context_preserved": true,
+    "documentation_same_block_positionValueInUsd_does_not_supply_our_snapshot_timestamp": true
+  },
+  "N05": {
+    "ZEC-USDT": {
+      "verified_saved_minutes": 594,
+      "latest_verified_end": 1791224880000,
+      "original_decision": 1791268240254,
+      "original_end_age_ms": 43360254,
+      "latest_cache_observed_ts": 1791224988443,
+      "cache_read_scope": "CURRENT_MUTABLE_CACHE_WITH_ORIGINAL_IMMUTABLE_MINUTE_CLOCKS_NOT_ORIGINAL_RUN_INPUT",
+      "canonical_original_blocker": "WINDOW_FRESH",
+      "conclusion": "OLD_SAVED_RING_CANNOT_SUPPLY_FRESH240_WINDOW; NEED_PERSISTENCE_ACQUISITION_REASON_NOT_FRESHNESS_WAIVER"
+    },
+    "牛来-USDT": {
+      "verified_saved_minutes": 1618,
+      "latest_verified_end": 1791268140000,
+      "original_decision": 1791268276885,
+      "original_end_age_ms": 136885,
+      "canonical_original_flow_use": true
+    }
+  },
+  "remaining": [
+    "N05 acquisition/persistence cause for high-activity markets",
+    "Future GMX snapshot clock requires factual exact-state proof; no timestamp invented",
+    "Fresh automatic Telegram after PR181"
+  ]
+}
