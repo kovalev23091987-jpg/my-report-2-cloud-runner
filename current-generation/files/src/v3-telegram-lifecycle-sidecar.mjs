@@ -76,13 +76,18 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
   const sdir=shadowDirectional(shadow);
   const fdir=finalDirectional(final);
   const priorDir=direction(previous?.direction);
-  const currentDirs=[fdir,sdir,hdir,direction(early.direction_hint)].filter(Boolean);
+  const authority=canonical_required?canonicalLifecycleAuthority({row:canonical,handoff,early,now_ts:now}):null;
+  const canonicalObservation=authority?.status==='CLOSED'&&authority.canonical_state==='OBSERVE';
+  // Qualified same-run OBSERVE has already resolved its assigned direction.
+  // A legacy telemetry bias is context, not an independently closed opposite
+  // direction. A CLOSED final direction still conflicts and blocks normally.
+  const currentDirs=(canonicalObservation?[fdir,authority.direction]:[fdir,sdir,hdir,direction(early.direction_hint)]).filter(Boolean);
   const conflict=new Set(currentDirs).size>1;
-  let dir=conflict?null:(fdir||sdir||hdir||null);
+  let dir=conflict?null:(canonicalObservation?authority.direction:(fdir||sdir||hdir||null));
   const finalRisk=upper(final?.risk_state);
   const finalHard=Number(final?.hard_veto||0)===1;
   const lifecycle=upper(early?.lifecycle_stage||final?.campaign_phase||'DISCOVERY');
-  const finalDirectionDestroyed=Boolean(final&&['NEUTRAL','INSUFFICIENT'].includes(upper(final.direction)));
+  const finalDirectionDestroyed=Boolean(final&&['NEUTRAL','INSUFFICIENT'].includes(upper(final.direction))&&(!canonicalObservation||upper(final.directional_quality)==='CLOSED'));
   const directionDestroyed=conflict||finalDirectionDestroyed;
   const terminal=TERMINAL.has(lifecycle);
   const dataUnusable=Boolean(final&&['BLOCKED','INSUFFICIENT'].includes(upper(final.data_quality)))||upper(shadow?.dq_status)==='INSUFFICIENT';
@@ -91,7 +96,6 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
   // Current canonical publication owns new idea direction; removal keeps the existing prior-visible cleanup path.
   let observationPublication=null;
   if(canonical_required&&!removal){
-    const authority=canonicalLifecycleAuthority({row:canonical,handoff,early,now_ts:now});
     if(authority.status!=='CLOSED')return {...authority,ctx:null};
     if(conflict||dir&&dir!==authority.direction)return {status:'CANONICAL_DIRECTION_MISMATCH',ctx:null};
     dir=authority.direction;
@@ -106,9 +110,9 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
   }
   if(!dir&&removal&&priorDir)dir=priorDir;
   if(!dir)return {status:conflict?'DIRECTION_CONFLICT_FAIL_CLOSED':'DIRECTION_NOT_CLOSED',ctx:null};
-  if(hdir&&dir!==hdir&&!removal)return {status:'HANDOFF_DIRECTION_CONFLICT_FAIL_CLOSED',ctx:null};
+  if(hdir&&dir!==hdir&&!removal&&!canonicalObservation)return {status:'HANDOFF_DIRECTION_CONFLICT_FAIL_CLOSED',ctx:null};
   const shadowSuff=normalizedSufficiency(handoff?.data_sufficiency||shadow?.data_sufficiency);
-  const observationUseful=Boolean(shadowDirectional(shadow)||fdir);
+  const observationUseful=Boolean(canonicalObservation||shadowDirectional(shadow)||fdir);
   const sufficientObservation=deepCompleted&&observationUseful&&['PARTIAL','SUFFICIENT'].includes(shadowSuff)&&
     ['PARTIAL','HTX_CLOSED_EXTERNAL_CHAINS_MISSING','CLOSED'].includes(upper(shadow?.dq_status))&&
     upper(shadow?.eq_status)==='SHADOW_MEASURABLE'&&upper(shadow?.stage)!=='OBSERVE_DATA_INSUFFICIENT';
