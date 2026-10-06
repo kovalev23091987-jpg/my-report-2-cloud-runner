@@ -1,7 +1,9 @@
 import {assessActionability,canonicalFingerprint,renderCanonicalTelegram} from './canonical-publication.mjs';
 
-export const OBSERVATION_RECOVERY_VERSION='observation-prepublication-recovery-v1-20261006';
+export const OBSERVATION_RECOVERY_VERSION='observation-prepublication-recovery-v2-fresh-state-refusal-20261006';
 export const OBSERVATION_RECOVERY_MAX_JOURNAL_ROWS=8;
+// These refusals occur before publication binding or a network attempt.
+const recoverableRefusals=new Set(['OBSERVE_SOURCE_ROLES_NOT_CLOSED','OBSERVE_STATE_MISMATCH']);
 const active=new Set(['PENDING','FAILED_RETRYABLE','SENDING','SENT']);
 
 // Recover only an unsent pre-network publication refusal with a different,
@@ -24,7 +26,7 @@ export async function findUnsentSourceRoleRefusal(db,{ctx,base_key,qualified}={}
  const rows=result.results;if(rows.length>OBSERVATION_RECOVERY_MAX_JOURNAL_ROWS)return null;
  if(rows.some(r=>['OBSERVE','WAIT','ENTRY'].includes(r.lifecycle_event)&&active.has(r.state)))return null;
  const old=rows.find(r=>r.idempotency_key===base_key);
- return old?.state==='FAILED_FINAL'&&old.lifecycle_event==='OBSERVE'&&old.last_error==='OBSERVE_SOURCE_ROLES_NOT_CLOSED'&&old.telegram_message_id===null&&old.sent_ts===null&&old.binding_key===null&&Number.isSafeInteger(old.updated_ts)&&old.updated_ts<qualified.observed_ts?old:null;
+ return old?.state==='FAILED_FINAL'&&old.lifecycle_event==='OBSERVE'&&recoverableRefusals.has(old.last_error)&&old.telegram_message_id===null&&old.sent_ts===null&&old.binding_key===null&&Number.isSafeInteger(old.updated_ts)&&old.updated_ts<qualified.observed_ts?old:null;
 }
 
 export function observationRecoveryInsert(db,{row,ctx,base_key,qualified,now}={}){
@@ -33,7 +35,7 @@ export function observationRecoveryInsert(db,{row,ctx,base_key,qualified,now}={}
    SELECT ?1,?2,?3,?4,?5,'OBSERVE',?6,'PENDING',?7,?8,?9,?9,1
    WHERE EXISTS(SELECT 1 FROM v3_telegram_dispatch_shadow d
      WHERE d.idempotency_key=?10 AND d.contract=?3 AND d.direction=?4 AND d.wave_id=?5 AND d.rules_version=?6 AND d.lifecycle_event='OBSERVE'
-       AND d.state='FAILED_FINAL' AND d.last_error='OBSERVE_SOURCE_ROLES_NOT_CLOSED' AND d.telegram_message_id IS NULL AND d.sent_ts IS NULL AND d.updated_ts<?11
+       AND d.state='FAILED_FINAL' AND d.last_error IN ('OBSERVE_SOURCE_ROLES_NOT_CLOSED','OBSERVE_STATE_MISMATCH') AND d.telegram_message_id IS NULL AND d.sent_ts IS NULL AND d.updated_ts<?11
        AND NOT EXISTS(SELECT 1 FROM v3_dispatch_publication_binding_shadow b WHERE b.idempotency_key=d.idempotency_key))
    AND NOT EXISTS(SELECT 1 FROM v3_telegram_dispatch_shadow d
      WHERE d.contract=?3 AND d.direction=?4 AND d.wave_id=?5 AND d.rules_version=?6 AND d.lifecycle_event IN ('OBSERVE','WAIT','ENTRY')

@@ -41,7 +41,7 @@ export async function prepareLifecycleTransition(db,ctx={},now_ts=Date.now()){
     const first=decideLifecycleDispatch({previous_status:USER_STATE.NONE,current_status:derived.status,contract,direction:dir,wave_id:wave,rules_version:rules,cooldown_active:ctx.cooldown_active});
     if(first.dispatch===true)try{
       const old=await findUnsentSourceRoleRefusal(db,{ctx,base_key:first.key,qualified});
-      if(old){recovery={base_key:first.key,qualified};dispatch={...first,key:first.key+'|RECOVERY|'+qualified.snapshot_id,reason:'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_SOURCE_ROLE_REFUSAL'};}
+      if(old){recovery={base_key:first.key,qualified};dispatch={...first,key:first.key+'|RECOVERY|'+qualified.snapshot_id,reason:'FRESH_QUALIFIED_OBSERVATION_AFTER_UNSENT_PREPUBLICATION_REFUSAL'};}
     }catch(error){return {...base,status:'RECOVERY_JOURNAL_NOT_CLOSED',error:String(error.message).slice(0,180)};}
   }
   const stmts=[db.prepare(`INSERT INTO v3_user_lifecycle_shadow(
