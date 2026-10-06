@@ -14,36 +14,22 @@ out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregat
 if(out.admission.allowed){
  await reserveRunBudget(db,{reservationId:id,now,reservation});
  try{
+
   check();
   out.handoffs=await db.prepare("SELECT h.*,d.execution_status,d.data_sufficiency,substr(d.error_text,1,500) error_text,d.started_ts,d.completed_ts FROM deep_check_run_log d JOIN v3_discovery_deep_handoff_shadow h ON h.handoff_id=d.v3_handoff_id AND h.contract_code=d.contract_code AND h.source_run_id=d.run_id WHERE d.run_id=?1 ORDER BY h.discovery_rank LIMIT 2").bind(run).all();check();
-  for(const contract of req.contracts){
-   const found=await db.prepare('SELECT publication_id,contract_code,run_id,snapshot_id,observed_ts,canonical_state,canonical_json,manual_text,telegram_text,presentation_hash FROM canonical_publication_shadow WHERE run_id=?1 AND contract_code=?2 ORDER BY observed_ts DESC LIMIT 2').bind(run,contract).all();check();
-   const rows=Array.isArray(found.results)?found.results:[];
-   if(rows.length>1)throw Error('AMBIGUOUS_SAME_RUN_CANONICAL');
-   for(const row of rows){if(row.contract_code!==contract||row.run_id!==run||row.snapshot_id!=='S392:'+contract+':'+row.observed_ts||row.observed_ts<req.start_ts||row.observed_ts>req.upper_ts||row.snapshot_id!==req.snapshot_ids[contract])throw Error('EXACT_CANONICAL_BINDING_FAILED');const canonical=JSON.parse(row.canonical_json);if(canonical.analytical_fingerprint!==req.analytical_fingerprints[contract])throw Error('ARTIFACT_CANONICAL_FINGERPRINT_MISMATCH');out.rows.push({...row,canonical_json:undefined,canonical});}
-   if(!rows.length)out.rows.push({contract_code:contract,run_id:run,status:'NO_CANONICAL_ROW_FOR_EXACT_SOURCE_RUN',canonical:null});
-  }
-  out.dispatch=await db.prepare("SELECT d.dispatch_id,d.idempotency_key,d.contract,d.direction,d.wave_id,d.lifecycle_event,d.rules_version,d.state,d.decision_id,d.created_ts,d.updated_ts,d.sent_ts,d.telegram_message_id,d.last_error,b.publication_id FROM v3_telegram_dispatch_shadow d LEFT JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE b.run_id=?1 AND b.snapshot_id IN (?2,?3) LIMIT 4").bind(run,...req.contracts.map(c=>req.snapshot_ids[c])).all();check();
-  out.early=[];
-  for(const h of out.handoffs.results||[]){
-   if(!req.contracts.includes(h.contract_code)||h.source_run_id!==run||!Number.isSafeInteger(h.scan_ts)||h.scan_ts<req.start_ts||h.scan_ts>req.upper_ts)throw Error('EXACT_HANDOFF_BINDING_FAILED');
-   const wave=await db.prepare('SELECT * FROM v3_early_candidate_wave WHERE wave_id=?1 AND contract_code=?2 LIMIT 1').bind(h.wave_id,h.contract_code).first();check();
-   const feature=await db.prepare('SELECT * FROM v3_early_feature_snapshot WHERE contract_code=?1 AND ts_bucket=?2 LIMIT 1').bind(h.contract_code,Math.floor(h.scan_ts/300000)*300000).first();check();
-   out.early.push({contract:h.contract_code,original_scan_ts:h.scan_ts,wave,feature,feature_same_original_scan:feature?.observed_ts===h.scan_ts,wave_mutable_at_read_time:true});
-  }
-
   out.pipeline_rows=[];
   for(const contract of req.contracts){
+   const h=out.handoffs.results.find(h=>h.contract_code===contract);
    const observed=Number(req.snapshot_ids[contract].split(':').at(-1));
+   if(!h||h.source_run_id!==run||h.scan_ts<req.start_ts||h.scan_ts>req.upper_ts||h.started_ts>observed||h.completed_ts<observed)throw Error('EXACT_HANDOFF_BINDING_FAILED');
    const result=await db.batch([
     db.prepare('SELECT * FROM shadow_decision_log WHERE contract_code=?1 AND observed_ts=?2 LIMIT 1').bind(contract,observed),
-    db.prepare('SELECT f.*,c.score_lower_bound,c.score_upper_bound,c.valid_until_ts,c.status AS telegram_context_status FROM final_decision_integration_shadow f LEFT JOIN final_decision_telegram_context_shadow c ON c.decision_id=f.decision_id WHERE f.contract_code=?1 AND f.observation_ts=?2 LIMIT 2').bind(contract,observed)
+    db.prepare('SELECT f.*,c.score_lower_bound,c.score_upper_bound,c.valid_until_ts,c.status AS telegram_context_status FROM final_decision_integration_shadow f LEFT JOIN final_decision_telegram_context_shadow c ON c.decision_id=f.decision_id WHERE f.contract_code=?1 AND f.persisted_ts BETWEEN ?2 AND ?3 ORDER BY f.persisted_ts DESC LIMIT 2').bind(contract,h.started_ts,h.completed_ts)
    ]);check();
    if(result.some(r=>r.success===false))throw Error('EXACT_PIPELINE_QUERY_FAILED');
-   if(result[0].results.length!==1||result[1].results.length!==1)throw Error('EXACT_PIPELINE_ROWS_MISSING_OR_AMBIGUOUS');
-   out.pipeline_rows.push({contract,observed_ts:observed,shadow:result[0].results[0],final:result[1].results[0]});
+   out.pipeline_rows.push({contract,observed_ts:observed,deep_started_ts:h.started_ts,deep_completed_ts:h.completed_ts,shadow:result[0].results,final:result[1].results});
+   if(result[0].results.length!==1||result[1].results.length!==1)throw Error('EXACT_PIPELINE_ROWS_MISSING_OR_AMBIGUOUS:'+contract+':'+result[0].results.length+':'+result[1].results.length);
   }
-
   out.status='EXACT_CURRENT_PUBLIC_DATA_READ';
  }catch(e){out.status='READBACK_FAILED';out.error=String(e.message).slice(0,180);}
  finally{out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}
