@@ -48,6 +48,8 @@ function usableReason(r,key,context){
  const source=finite(r.event_ts),received=finite(r.received_ts),sla=finite(r.max_age_sec);
  const checked=finite(context.observed_ts)??received;
  if(source===null||received===null||checked===null||source<1e12||received<1e12||sla===null||sla<=0)return 'SOURCE_CLOCK_OR_SLA_MISSING';
+ const bindingKnown=finite(r.identity?.asset_identity_binding_known_ts),bindingExpires=finite(r.identity?.asset_identity_binding_expires_ts);
+ if(r.identity?.asset_identity_binding&&(bindingKnown===null||bindingExpires===null||bindingKnown>checked||checked>=bindingExpires))return 'ASSET_BINDING_NOT_KNOWN_OR_EXPIRED_AT_DECISION';
  if(source>received+60000||source>checked+60000||received>checked+60000)return 'FUTURE_SOURCE_OR_RECEIPT';
  if(checked-source>sla*1000||r.freshness_status!=='CURRENT_AT_OBSERVATION')return 'STALE_OR_UNVERIFIED_FRESHNESS';
  const venueKey=aliases[upper(r.venue)]??null;
