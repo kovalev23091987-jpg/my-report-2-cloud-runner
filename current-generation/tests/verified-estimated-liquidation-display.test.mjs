@@ -9,7 +9,7 @@ import {seal} from '../files/src/liquidation-extension/core.mjs';
 import {capturedNativeFutureMaps} from '../files/src/future-liquidation-map-source.mjs';
 import {nativeLiquidationLines,validateNativeLiquidationContext} from '../files/src/native-liquidation-guard.mjs';
 const T=1800000000000;
-const row=(price,extra={})=>({price,side:price>100?'ABOVE':'BELOW',distance_pct:price-100,price_quote:'USD',distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',native_symbol:'SOL',source:'one',notional:100,notional_unit:'USD',source_ts:T,...extra});
+const row=(price,extra={})=>({price,side:price>100?'ABOVE':'BELOW',distance_pct:price-100,price_quote:'USD',distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',native_symbol:'SOL',source:'one',notional:100,notional_unit:'USD',native_reference_price:100,price_semantics:'EXCHANGE_ACCOUNT_REPORTED_PRICE',source_ts:T,...extra});
 test('5% relative-price merge shows original farthest price, distance and amount without mutating raw map',()=>{
  const raw=[row(110,{notional:10000,source:'HL'}),row(115.5,{notional:5,source:'GT',estimated:true})],before=JSON.stringify(raw);
  const result=mergeLiquidationDisplayZones(raw,'ABOVE');assert.equal(result.length,1);assert.equal(result[0].price,115.5);assert.equal(result[0].distance_pct,15.5);assert.equal(result[0].notional,5);assert.equal(result[0].source_ts,T);assert.equal(result[0].display_components.length,2);assert.equal(JSON.stringify(raw),before);

@@ -56,9 +56,18 @@ export function mergeLiquidationDisplayZones(rows,side){
  for(const row of candidates){
   const quote=text(row.price_quote),basis=text(row.distance_reference_basis),distance=finite(row.distance_pct);
   const comparable=['USD','USDC','USDT'].includes(quote)&&basis&&basis!=='UNKNOWN'&&distance!==null;
-  const key=[quote,basis,text(row.native_symbol),row.source_clock_closed===false?'UNKNOWN_SOURCE_AGE':'SOURCE_CLOCK_CLOSED'].join('|');
-  let cluster=comparable?clusters.find(c=>c.key===key&&(Math.max(c.max_price,row.price)/Math.min(c.min_price,row.price)-1)*100<=LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT+1e-10):null;
-  if(!cluster){cluster={key:comparable?key:null,rows:[],min_price:row.price,max_price:row.price};clusters.push(cluster);}
+  const ts=finite(row.source_ts),ref=finite(row.distance_reference_price??row.native_reference_price),reportedState=text(row.display_source_state_id);
+  // Unknown source age is a limitation, never a shared state identifier.
+  // A receipt-only state may be compared only inside the same authenticated
+  // provider response cohort, preserving its original receipt clock.
+  const state=row.source_clock_closed===false?(reportedState||null):Number.isSafeInteger(ts)&&ts>=1e12?`SOURCE:${ts}`:null;
+  const reference=ref;
+  const referenceClosed=basis!=='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'||reference>0;
+  const methodClosed=row.estimated!==true||Boolean(text(row.price_semantics));
+  const method=[text(row.price_semantics),text(row.model_version),text(row.sdk_version)].join(':');
+  const key=[quote,basis,text(row.native_symbol),state,reference===null?'':Number(reference.toPrecision(12)),method,text(row.notional_unit),text(row.margin_mode),row.conditional_cross===true||row.conditional_on_other_positions===true?'PORTFOLIO_CONDITIONAL':'SINGLE_POSITION'].join('|');
+  let cluster=comparable&&state&&referenceClosed&&methodClosed?clusters.find(c=>c.key===key&&(Math.max(c.max_price,row.price)/Math.min(c.min_price,row.price)-1)*100<=LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT+1e-10):null;
+  if(!cluster){cluster={key:comparable&&state&&referenceClosed&&methodClosed?key:null,rows:[],min_price:row.price,max_price:row.price};clusters.push(cluster);}
   cluster.rows.push(row);cluster.min_price=Math.min(cluster.min_price,row.price);cluster.max_price=Math.max(cluster.max_price,row.price);
  }
  return clusters.map(c=>{
