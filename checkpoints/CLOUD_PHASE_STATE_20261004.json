@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T0430:actual-0726-checkpoint",
-    "acquired_ts": 1791261037754,
-    "expires_ts": 1791261157754
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
-  "next_action": "READ_ONE_NATURALLY_ADMITTED_FRESH_RESULT_AFTER_PR175_PR176; INVESTIGATE_MISSING_CANONICAL_IF_REPEATED; TELEGRAM_SAME_CHAIN_PENDING",
+  "next_action": "SOURCE_FREE_CACHE_USE_ACCOUNTING_FIX; EXACT_CURRENT_DIRECTION_WAVE_DIAGNOSIS_IF_GENERAL_DEFECT; APPROVED_TELEGRAM_SENT_PENDING_NO_BYPASS",
   "last_verified_release": "checkpoints/canonical-candidate-completion-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791261037754,
+  "updated_ts": 1791261110354,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,50 +145,47 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261006T0356:bounded-next-read",
-    "acquired_ts": 1791258983921,
-    "expires_ts": 1791259103921,
-    "released_ts": 1791259004812,
-    "reason": "One source-free natural-result observer prepared; release before scheduled execution"
+    "owner": "HTX:20261006T0430:actual-0726-checkpoint",
+    "acquired_ts": 1791261037754,
+    "expires_ts": 1791261157754,
+    "released_ts": 1791261110354,
+    "reason": "Actual result recorded and reported; release before hourly archive"
   },
   "bounded_next_check": {
-    "status": "ONE_READ_ONLY_CLOUD_OBSERVER_PREPARED",
-    "branch": "codex/watch-post176-fresh-20261006",
+    "status": "ONE_SHOT_COMPLETED_ACTUAL_FRESH_REPORT_READ",
+    "cloud_run": 37411365931,
+    "source_cloud_run": 37413576711,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
-    "after_cloud_run": 37408724152,
-    "max_wait_minutes": 34,
-    "created_after": "2026-10-06T03:56:00Z",
     "no_automatic_continuation": true
   },
   "last_actual_readback": {
-    "path": "checkpoints/ACTUAL_SCHEDULED_0625MSK_20261006.json",
-    "cloud_run": 37408724152,
-    "head": "bf15333ac743f154a5052900e29dd845d8615d72",
-    "run_id": "1791257011553-1791257021716",
-    "generated_at": "2026-10-06T03:25:13.027Z",
-    "actual_selected": [
-      "BR-USDT",
-      "QNT-USDT"
+    "cloud_run": 37413576711,
+    "head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
+    "run_id": "1791260701995-1791260712949",
+    "generated_at": "2026-10-06T04:26:37.940Z",
+    "proof": "checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json",
+    "actual_top2": [
+      "UNI-USDT",
+      "BR-USDT"
     ],
-    "canonical_rows_present": 1,
-    "participating_blocks": {
-      "BR": 5,
-      "QNT": null
+    "participating": {
+      "UNI": 9,
+      "BR": 7
     },
-    "neutral_blocks": {
-      "BR": 4,
-      "QNT": null
+    "neutral": {
+      "UNI": 7,
+      "BR": 6
     },
-    "unscored_diagnostic_blocks": {
-      "BR": 1,
-      "QNT": null
+    "unscored": {
+      "UNI": 2,
+      "BR": 1
     },
-    "nonzero_score_blocks": {
-      "BR": 0,
-      "QNT": null
+    "nonzero_score": {
+      "UNI": 0,
+      "BR": 0
     },
     "telegram_SENT": false,
     "project_complete": false
@@ -332,7 +329,8 @@
     "MAIN": 0,
     "Telegram": 0,
     "fresh_readback": 37394649188,
-    "used_provider_ids_per_block_verified": true
+    "used_provider_ids_per_block_verified": true,
+    "cache_HIT_classification_defect": "PENDING_SOURCE_FREE_RETAINED_DATA_FIX"
   },
   "pending_liquidation_comparability": {
     "PR": 168,
@@ -413,30 +411,16 @@
     "fresh_joint_and_SENT_pending": true
   },
   "pending_post174_actual": {
-    "cloud_run": 37408724152,
-    "run_id": "1791257011553-1791257021716",
-    "generated_at": "2026-10-06T03:25:13.027Z",
-    "actual_selected": [
-      "BR-USDT",
-      "QNT-USDT"
-    ],
-    "artifact_canonical_contracts": [
-      "BR-USDT"
-    ],
-    "BR_participation": 5,
-    "BR_neutral": 4,
-    "BR_unscored": 1,
-    "BR_nonzero": 0,
-    "QNT_participation": null,
-    "QNT_reason": "NO_CANONICAL_ROW_FOR_EXACT_SOURCE_RUN_CAUSE_NOT_ESTABLISHED",
-    "Telegram_SENT": false,
-    "telegram_reasons": {
-      "BR": "CANONICAL_DIRECTION_NOT_CLOSED",
-      "QNT": "WAVE_NOT_CURRENT"
+    "cloud_run": 37413576711,
+    "counts": {
+      "UNI": 9,
+      "BR": 7
     },
-    "project_complete": false,
-    "exact_readback": 37409174768,
-    "observed_storage_bytes": 499539968
+    "telegram_SENT": false,
+    "blockers": {
+      "UNI": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "BR": "WAVE_NOT_CURRENT"
+    }
   },
   "pending_canonical_completion": {
     "PR": 175,
@@ -448,11 +432,16 @@
     "missing_QNT_root_cause": "Exceeded maximum DB size",
     "exact_proof": "checkpoints/QNT_CANONICAL_STORAGE_FAILURE_0625MSK_20261006.json",
     "maintenance_after_bytes": 492883968,
-    "fresh_after_maintenance_pending": true
+    "fresh_after_maintenance_pending": false,
+    "fresh_after_maintenance_run": 37413576711,
+    "two_expected_two_saved": true
   },
   "pending_shared_risk_expiry": {
     "status": "GENERAL_FIX_MERGED_CLOUD_VERIFIED_NOT_LIVE_ACCEPTED",
     "PR": 176,
-    "proof": "checkpoints/htx-risk-cache-decision-validity-release-evidence-20261006.json"
+    "proof": "checkpoints/htx-risk-cache-decision-validity-release-evidence-20261006.json",
+    "fresh_same_run_used": true,
+    "fresh_run": 37413576711,
+    "BR_N08_N09_confirmed": true
   }
 }

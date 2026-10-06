@@ -1,0 +1,121 @@
+{
+  "schema": "actual-post-repair-joint-result-v1",
+  "created_utc": "2026-10-06T04:31:03.868Z",
+  "cloud_run": 37413576711,
+  "head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
+  "run_id": "1791260701995-1791260712949",
+  "generated_utc": "2026-10-06T04:26:37.940Z",
+  "generated_msk": "2026-10-06T07:26:37.940+03:00",
+  "report": {
+    "status": "CLOSED",
+    "reason": null,
+    "artifact": 11390441188,
+    "zip_sha256": "1b5645633774cc7827f9fdba96082db9f78592fc0cb88f4456e4cdd35e8f1087",
+    "json_sha256": "a5f8d4eaa83df51130fadb90ada2a57ba341977efce6e5f032b9d7244d06c9da",
+    "saved_gzip_sha256": "eb27391fffed6d7222bbac6556bf12d6e546c4f47b6a2837ac821a20c99e39c3",
+    "saved_original": "checkpoints/actual-scheduled-source-result-37413576711.json.gz",
+    "two_expected_two_exact_canonical": true,
+    "no_missing_canonical": true
+  },
+  "actual_top2": [
+    "UNI-USDT",
+    "BR-USDT"
+  ],
+  "candidates": [
+    {
+      "contract": "UNI-USDT",
+      "snapshot_id": "S392:UNI-USDT:1791260760284",
+      "participating": 9,
+      "participating_ids": [
+        "N02",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 7,
+      "unscored": 2,
+      "nonzero_score": 0,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "qualified_interest": null,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_GMX_fee_aware_estimates": 2,
+        "above": 17.643023871293,
+        "below": 2.275604967963,
+        "quote": "USD",
+        "source_clock_known": false,
+        "receipt_only_context": true,
+        "not_HTX_levels": true,
+        "score_effect": 0
+      }
+    },
+    {
+      "contract": "BR-USDT",
+      "snapshot_id": "S392:BR-USDT:1791260793440",
+      "participating": 7,
+      "participating_ids": [
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "neutral": 6,
+      "unscored": 1,
+      "nonzero_score": 0,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "qualified_interest": null,
+      "liquidations": {
+        "accepted_exact_future_map_levels": 0,
+        "rendered_estimates": 0
+      }
+    }
+  ],
+  "telegram": {
+    "proof_artifact": 11390451302,
+    "zip_sha256": "8065c650ca715d7eed0cd5b8a127badb5d09942de462bd99215ff319c40dd1e3",
+    "json_sha256": "22f4322cb2a42fe7397e896e250cc602ede1e025f22f2ff1e5660c7246904f42",
+    "same_source_run": true,
+    "SENT": false,
+    "message_id": null,
+    "blockers": {
+      "UNI": "CANONICAL_DIRECTION_NOT_CLOSED",
+      "BR": "WAVE_NOT_CURRENT"
+    },
+    "legacy_watch70_remains_disabled": true,
+    "approved_canonical_observation_route_not_entry_only": true
+  },
+  "repairs": {
+    "PR176_N08_N09_both_used_in_same_fresh_run": true,
+    "PR175_exact_candidate_completion_proven": true,
+    "post_maintenance_both_canonical_saved": true
+  },
+  "observer": {
+    "cloud_run": 37411365931,
+    "artifact": 11390157133,
+    "zip_sha256": "6768e467502b570069ab55f3bfb41657be190cbf1e5dc80a845ed413be2a3084",
+    "status": "ACTUAL_FRESH_REPORT_READ",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "D1": 0,
+    "one_shot_completed": true
+  },
+  "limits_strategy_forms_or_freshness_waived": false,
+  "source_and_block_counts_are_not_independent_votes": true,
+  "project_complete": false,
+  "pending": [
+    "Exact diagnosis of same-run direction and wave if a new general technical defect is found",
+    "Correct validated cache route accounting for HIT statuses",
+    "Fresh approved actionable OBSERVE/WAIT/ENTRY Telegram SENT with same-run message_id; do not bypass current blockers"
+  ]
+}

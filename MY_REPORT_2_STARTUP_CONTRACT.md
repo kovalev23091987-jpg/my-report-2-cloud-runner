@@ -1,4 +1,9 @@
 
+## Актуальный живой результат 06.10.2026 07:26:38 МСК — не завершение проекта
+
+Scheduled 37413576711, head fc4db3746b622cd669dcf7e243d19ffa92eb2ae2, runtime 1791260701995-1791260712949. Фактические Top2 UNI/BR; сохранены оба точных canonical. UNI9 (7 neutral + N12/N15 unscored), BR7 (6 neutral + N12 unscored), подтверждённого ненулевого N-score effect0. В обеих монетах N08/N09 пригодны и использованы после PR176. UNI: две справочные fee-aware оценки GMX в утверждённом ручном renderer, исходный source clock неизвестен; не уровни HTX и не доказанные свежие exact-map targets. BR: уровней нет. Оба canonical REJECTED, direction/qualified interest null. Telegram SENT/message_id отсутствует: UNI CANONICAL_DIRECTION_NOT_CLOSED, BR WAVE_NOT_CURRENT. Ограничения не обходились, legacy watch70 не включался. Уведомление о результате дано при прочтении. Proof checkpoints/ACTUAL_SCHEDULED_0726MSK_20261006.json и сохранённый исходный artifact gzip. Source-free bounded observer 37411365931 завершён; новые продолжения автоматически не создаются.
+
+
 ## Актуальная поправка 06.10.2026 — точная причина QNT 06:25 МСК
 
 В той же строке bounded_deep_check_scheduler задания 112092114301 для QNT: execution FULFILLED, canonical CLOSED/REJECTED, formatter READY, но canonical_persistence PERSISTENCE_FAILED: Exceeded maximum DB size. Числа production logs замаскированы и не разбирались. Это установленная техническая причина отсутствующей canonical row, а не отсутствие данных; QNT count по этому запуску не принят. Естественное обслуживание 37409462780 позже подтвердило освобождение базы до 492883968 bytes с точным архивом и read-through без утраты истории. Свежая приёмка после восстановления pending, Telegram SENT отсутствует. Подробнее checkpoints/QNT_CANONICAL_STORAGE_FAILURE_0625MSK_20261006.json. Эта поправка заменяет прежнее утверждение «причина ещё не установлена».
