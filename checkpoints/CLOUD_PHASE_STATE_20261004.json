@@ -50,9 +50,9 @@
   "lease": {
     "owner": "HTX:2026-10-06T11:49:37.490Z:batched-delivery-replay",
     "acquired_ts": 1791287377490,
-    "expires_ts": 1791291852033
+    "expires_ts": 1791292952699
   },
-  "next_action": "Deploy exact verified v8 collector, read same deployed module and first new five-minute pack; then continue only on proved source or actual qualification blockers; no synthetic Telegram",
+  "next_action": "Prepare bounded two-candidate source allocation against retained inputs: preserve a minimal verification request for the second actual leader; first reproduce actual1532 quota denial, then compose smaller representative native account sample and exact gTrade unsupported/catalog fallback within unchanged five calls",
   "last_verified_release": {
     "schema": "LIGHT_PRICE_RECHECK_RELEASE_V1",
     "PR": 195,
@@ -61,7 +61,7 @@
     "cloud_run": 37465577240,
     "artifact": 11414264475,
     "zip_sha256": "03cb2c8d0f346a57e358d59fb39c65b6b9031f1c547867e30f4fc7fb1dbfc1d5",
-    "status": "MERGED_PRICE_CHECK_COMPONENT_VERIFIED_COLLECTOR_DEPLOYMENT_PENDING",
+    "status": "MERGED_AND_EXACT_COLLECTOR_DEPLOYED_FIRST_FRESH_PACK_VERIFIED",
     "composed_cases": 22,
     "collector_backup_snapshot_cases": 27,
     "generation_validation": "PASS",
@@ -112,12 +112,124 @@
       "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json"
     },
     "actual_market_acceptance": false,
-    "proof": "checkpoints/light-price-recheck-release-20261006.json"
+    "proof": "checkpoints/light-price-recheck-release-20261006.json",
+    "collector_deployment": {
+      "cloud_run": 37465880165,
+      "head": "1ea35c32c137a7027a36762efac38b40c4856c17",
+      "artifact": 11414414877,
+      "zip_sha256": "7b343151d40a2d8b37464086c57c3e63e188abed1a281d92b08e93dcc31c99ad",
+      "prepare-proof.json": {
+        "status": "UPGRADED",
+        "script": "my-report-2-hub",
+        "base_sha256": "872c902af33208c65ccbf3c149124f83fbf5620b0193f706a9470ce9d8d0f8ba",
+        "output_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "collector_version": "report2-public-collector-v8-light-price-recheck-20261006",
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false
+      },
+      "first-live-sample-proof.json": {
+        "status": "FIRST_LIVE_SAMPLE_CLOSED",
+        "actor": "HUB_PUBLIC_COLLECTOR",
+        "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+        "bucket": 1791291000000,
+        "completed_ts": 1791291004542,
+        "contracts": 371,
+        "shards": 6,
+        "external_requests": 4,
+        "rows_read": 19,
+        "rows_written": 11,
+        "payload_bytes": 111313,
+        "batch_contracts": 371,
+        "batch_shards": 6,
+        "analytical_decision": false,
+        "telegram": false,
+        "paid_source": false,
+        "verified_at": "2026-10-06T12:50:23.275Z"
+      },
+      "deployment-proof.json": {
+        "status": "DEPLOYED_VERIFIED",
+        "script": "my-report-2-hub",
+        "expected_module_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "response_sha256": "80e9688959aed206f6edaec3dc6130d1d37157cbbb8aec526627686c82b0f47e",
+        "collector_marker": true,
+        "exact_module_matches": true,
+        "price_recheck_binding_present": true,
+        "crons": [
+          "*/5 * * * *",
+          "3-58/5 * * * *"
+        ],
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PRICE_RECHECK_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false,
+        "verified_at": "2026-10-06T12:48:21.002Z"
+      },
+      "fresh_sent_idea_price_receipt_verified": false,
+      "no_actual_due_sent_idea_claimed": true
+    },
+    "next_unresolved_proved_mechanism": {
+      "source_run_id": "1791289780456-1791289794210",
+      "routes": [
+        {
+          "contract": "FIL-USDT",
+          "lane": "HYPERLIQUID_NATIVE",
+          "status": "ACQUISITION_RETURNED"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GMX_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "LIGHTER_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "龙虾-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+        }
+      ],
+      "diagnosis": "FIRST_NATIVE_ACQUISITION_USES_FIVE_REQUESTS; SECOND_TOP2_GTRADE_CATALOG_DENIED_COMBINED_TOTAL_HTTP_BUDGET",
+      "scope": "NATURAL_TOP2_NOT_SPECIAL_MONITOR",
+      "policy": "REPAIR_FAIR_SOURCE_ADMISSION_WITH_SAME_TOTAL_FIVE_REQUEST_CAP; DO_NOT_INVENT_LEVELS_OR_MOVE_RANK"
+    }
   },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791290865408,
+  "updated_ts": 1791291152699,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1235,7 +1347,7 @@
     "cloud_run": 37465577240,
     "artifact": 11414264475,
     "zip_sha256": "03cb2c8d0f346a57e358d59fb39c65b6b9031f1c547867e30f4fc7fb1dbfc1d5",
-    "status": "MERGED_PRICE_CHECK_COMPONENT_VERIFIED_COLLECTOR_DEPLOYMENT_PENDING",
+    "status": "MERGED_AND_EXACT_COLLECTOR_DEPLOYED_FIRST_FRESH_PACK_VERIFIED",
     "composed_cases": 22,
     "collector_backup_snapshot_cases": 27,
     "generation_validation": "PASS",
@@ -1286,6 +1398,230 @@
       "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json"
     },
     "actual_market_acceptance": false,
-    "proof": "checkpoints/light-price-recheck-release-20261006.json"
+    "proof": "checkpoints/light-price-recheck-release-20261006.json",
+    "collector_deployment": {
+      "cloud_run": 37465880165,
+      "head": "1ea35c32c137a7027a36762efac38b40c4856c17",
+      "artifact": 11414414877,
+      "zip_sha256": "7b343151d40a2d8b37464086c57c3e63e188abed1a281d92b08e93dcc31c99ad",
+      "prepare-proof.json": {
+        "status": "UPGRADED",
+        "script": "my-report-2-hub",
+        "base_sha256": "872c902af33208c65ccbf3c149124f83fbf5620b0193f706a9470ce9d8d0f8ba",
+        "output_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "collector_version": "report2-public-collector-v8-light-price-recheck-20261006",
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false
+      },
+      "first-live-sample-proof.json": {
+        "status": "FIRST_LIVE_SAMPLE_CLOSED",
+        "actor": "HUB_PUBLIC_COLLECTOR",
+        "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+        "bucket": 1791291000000,
+        "completed_ts": 1791291004542,
+        "contracts": 371,
+        "shards": 6,
+        "external_requests": 4,
+        "rows_read": 19,
+        "rows_written": 11,
+        "payload_bytes": 111313,
+        "batch_contracts": 371,
+        "batch_shards": 6,
+        "analytical_decision": false,
+        "telegram": false,
+        "paid_source": false,
+        "verified_at": "2026-10-06T12:50:23.275Z"
+      },
+      "deployment-proof.json": {
+        "status": "DEPLOYED_VERIFIED",
+        "script": "my-report-2-hub",
+        "expected_module_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "response_sha256": "80e9688959aed206f6edaec3dc6130d1d37157cbbb8aec526627686c82b0f47e",
+        "collector_marker": true,
+        "exact_module_matches": true,
+        "price_recheck_binding_present": true,
+        "crons": [
+          "*/5 * * * *",
+          "3-58/5 * * * *"
+        ],
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PRICE_RECHECK_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false,
+        "verified_at": "2026-10-06T12:48:21.002Z"
+      },
+      "fresh_sent_idea_price_receipt_verified": false,
+      "no_actual_due_sent_idea_claimed": true
+    },
+    "next_unresolved_proved_mechanism": {
+      "source_run_id": "1791289780456-1791289794210",
+      "routes": [
+        {
+          "contract": "FIL-USDT",
+          "lane": "HYPERLIQUID_NATIVE",
+          "status": "ACQUISITION_RETURNED"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GMX_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "LIGHTER_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "龙虾-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+        }
+      ],
+      "diagnosis": "FIRST_NATIVE_ACQUISITION_USES_FIVE_REQUESTS; SECOND_TOP2_GTRADE_CATALOG_DENIED_COMBINED_TOTAL_HTTP_BUDGET",
+      "scope": "NATURAL_TOP2_NOT_SPECIAL_MONITOR",
+      "policy": "REPAIR_FAIR_SOURCE_ADMISSION_WITH_SAME_TOTAL_FIVE_REQUEST_CAP; DO_NOT_INVENT_LEVELS_OR_MOVE_RANK"
+    }
+  },
+  "latest_collector_deployment": {
+    "cloud_run": 37465880165,
+    "head": "1ea35c32c137a7027a36762efac38b40c4856c17",
+    "artifact": 11414414877,
+    "zip_sha256": "7b343151d40a2d8b37464086c57c3e63e188abed1a281d92b08e93dcc31c99ad",
+    "prepare-proof.json": {
+      "status": "UPGRADED",
+      "script": "my-report-2-hub",
+      "base_sha256": "872c902af33208c65ccbf3c149124f83fbf5620b0193f706a9470ce9d8d0f8ba",
+      "output_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+      "collector_version": "report2-public-collector-v8-light-price-recheck-20261006",
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false
+    },
+    "first-live-sample-proof.json": {
+      "status": "FIRST_LIVE_SAMPLE_CLOSED",
+      "actor": "HUB_PUBLIC_COLLECTOR",
+      "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+      "bucket": 1791291000000,
+      "completed_ts": 1791291004542,
+      "contracts": 371,
+      "shards": 6,
+      "external_requests": 4,
+      "rows_read": 19,
+      "rows_written": 11,
+      "payload_bytes": 111313,
+      "batch_contracts": 371,
+      "batch_shards": 6,
+      "analytical_decision": false,
+      "telegram": false,
+      "paid_source": false,
+      "verified_at": "2026-10-06T12:50:23.275Z"
+    },
+    "deployment-proof.json": {
+      "status": "DEPLOYED_VERIFIED",
+      "script": "my-report-2-hub",
+      "expected_module_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+      "response_sha256": "80e9688959aed206f6edaec3dc6130d1d37157cbbb8aec526627686c82b0f47e",
+      "collector_marker": true,
+      "exact_module_matches": true,
+      "price_recheck_binding_present": true,
+      "crons": [
+        "*/5 * * * *",
+        "3-58/5 * * * *"
+      ],
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PRICE_RECHECK_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false,
+      "verified_at": "2026-10-06T12:48:21.002Z"
+    },
+    "fresh_sent_idea_price_receipt_verified": false,
+    "no_actual_due_sent_idea_claimed": true
+  },
+  "pending_top2_source_http_fairness": {
+    "source_run_id": "1791289780456-1791289794210",
+    "routes": [
+      {
+        "contract": "FIL-USDT",
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "龙虾-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+      }
+    ],
+    "diagnosis": "FIRST_NATIVE_ACQUISITION_USES_FIVE_REQUESTS; SECOND_TOP2_GTRADE_CATALOG_DENIED_COMBINED_TOTAL_HTTP_BUDGET",
+    "scope": "NATURAL_TOP2_NOT_SPECIAL_MONITOR",
+    "policy": "REPAIR_FAIR_SOURCE_ADMISSION_WITH_SAME_TOTAL_FIVE_REQUEST_CAP; DO_NOT_INVENT_LEVELS_OR_MOVE_RANK"
   }
 }
