@@ -1,3 +1,11 @@
+# Актуальная поправка 06.10.2026: наблюдения в Telegram, PR174
+
+Владелец требует отправлять не только входы, но и пригодные идеи наблюдения с конкретными условиями входа и отмены; порог 70 и прежние утверждённые формы сохраняются. PR174 сохраняет исходную статистику эпизода и отдельно передаёт уже обнаруженную свежую HTX-свечу в существующий план наблюдения. Факт принимается только с точной идентичностью, исходным временем и полными закрытыми минутами. Дополнительных баллов, независимых голосов или разрешения входа нет.
+
+Cloud 37407405178: сборка, binding, generation, 4 проверки сохранённых фактических данных/потребителя и 37 интеграционных проверок пройдены; sourceHTTP=0, MAIN=0, Telegram=0, D1=0. WIF из запуска 37403854284 имел свежую связанную свечу 02:15 UTC, но его фактическое направление осталось противоречивым; это не доказательство пропущенной допустимой отправки. QNT оставался без текущего события. Свежий отчёт после PR174 и настоящий approved Telegram SENT/message_id ещё не приняты. Проект не завершён. Собственный lease освобождён на ожидание штатного запуска; production collector/workflows продолжают свою существующую работу.
+
+Доказательство: checkpoints/prospective-observation-handoff-release-evidence-20261006.json.
+
 <!-- CURRENT ACTUAL READBACK 2026-10-06 05:25:41 MSK -->
 Fresh natural scheduled run37403854284, head56f5149a5c851cbeb1564c168da0be7b58bcc188, runtime1791253403789-1791253419323: QNT10/WIF9 participating core blocks; each8 neutral, diagnostic2/1, nonzero0/0. QNT has a real official HTX announcement (N07); WIF has two labelled GMX fee-aware receipt-only estimates with unknown source age, no exact accepted map. Telegram SENT0/message_id absent: QNT WAVE_NOT_CURRENT, WIF CANONICAL_DIRECTION_NOT_CLOSED. N01 exact calendar attemptHTTP403; not proof of no unlock events. Readback sourceHTTP0 MAIN0 Telegram0 D10. Threshold70, strategy, freshness and approved manual/Telegram forms unchanged. Project NOT COMPLETE. Inspect same-run WIF early-quality82 versus missing canonical direction before attributing all publication suppression to market conditions; no forced MAIN or stale delivery. Proof: checkpoints/ACTUAL_SCHEDULED_0525MSK_20261006.json and original gz archive.
 
