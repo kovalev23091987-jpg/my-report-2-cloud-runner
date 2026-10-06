@@ -1,0 +1,81 @@
+{
+  "schema": "report2-general-gate-official-asset-binding-release-v1",
+  "PR": 186,
+  "merged_main": "9a1e1f9b172dde51d921191e26fbe2d243b5cbde",
+  "tested_head": "cd2be083390002e0a84042f14b35bc1122b235f2",
+  "tree": "4e9bd91a60b186bddcbe3fabcc8d200149cf96a1",
+  "cloud_run": 37441393331,
+  "status": "MERGED_CODE_AND_ACTUAL_COMPONENT_VERIFIED; FRESH_JOINT_AND_TELEGRAM_SENT_PENDING",
+  "sourceHTTP_evaluation": 1,
+  "sourceHTTP_validation": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "Nansen": 0,
+  "source_evaluation": {
+    "run": 37439508522,
+    "head": "1fcc26d972369c7fe1b98198d53e5a85fee4bee9",
+    "artifact": 11399903566,
+    "zip_sha256": "75bd2fcc57d4c235533d2d2b28ed08a8b086d5080662babafadb437478f9a86b",
+    "proof": "checkpoints/source-inputs/gate-official-identity-37439508522.json",
+    "raw": "checkpoints/source-inputs/gate-currency-chains-37439508522.json",
+    "body_sha256": "b02eceff137d18c76981220f41a7c04d0cef1e6a07831f830960bb285ce6bd3e",
+    "received_ts": 1791277006024
+  },
+  "cloud_proof": {
+    "artifact": 11401412014,
+    "zip_sha256": "a8b920cb4ab402267a94cb26322c7de2e8303172a2e7ef53833be340317d4f35",
+    "generation": "PASS",
+    "syntax": "PASS",
+    "integration_passed": 37,
+    "reused_unchanged_targeted": {
+      "run": 37441193119,
+      "artifact": 11401391801,
+      "zip_sha256": "7c3ed7ec39423ce933578e3b2b927f88c79548d0ab62bb64d54b66c4a15af25d",
+      "passed": 17,
+      "exact_runtime_hashes_equal": true
+    }
+  },
+  "actual_component": {
+    "contract": "NIL-USDT",
+    "original_run": 37436004948,
+    "original_snapshot": "S392:NIL-USDT:1791275238333",
+    "binding_known_ts": 1791277006024,
+    "assigned_metrics": 4,
+    "roles": [
+      "FUNDING_CROSS_VENUE",
+      "OI_CROSS_VENUE",
+      "PRICE_CROSS_VENUE",
+      "TRADES_CROSS_VENUE"
+    ],
+    "origin_groups": 1,
+    "original_values_and_market_clocks_preserved": true,
+    "old_snapshot_promotion_rejected": true,
+    "not_fresh_joint_acceptance": true
+  },
+  "generality": {
+    "coin_branches": 0,
+    "route": "Exact existing Gate USDT-perpetual plus official HTX Ethereum token/Solana mint reference; same-chain exact official Gate address",
+    "native_without_address_supported": false,
+    "ambiguous_wrapped_scaled_and_foreign_not_promoted": true,
+    "other_venues_not_promoted": true
+  },
+  "budget": {
+    "whole_http_cap": 164,
+    "static_reference_ttl_hours": 6,
+    "daily_source_cap": 8,
+    "shared_gate_minute_cap": 4,
+    "D1_admission_required": true,
+    "source_reservations_reset": false
+  },
+  "runtime_hashes": {
+    "worker": "120072c4075973e67c92e1de7bdd3becf0cb8ace7f61e7b37ad3c6263f50beeb",
+    "gate_module": "b3efba433a42067f4218488090ba8056bd0c0ed5df260f57a72f71dac3dea3cd",
+    "role_consumer": "81acb21b0eb4b10a3d12e02a564c5f712d31eff1857fef8dbf19e8cde8c1fb0f",
+    "fact_contract": "37a456ac9a1938ffa35411640a0ba0646eb94f84ea867b9879833a7434278807",
+    "canonical_adapter": "b2e1b7c2cc476de0ce7da5ca931c68e6edbd38bcb253d944413f909b6aa35d44",
+    "manual_formatter": "2b8cf5b05b35173ebe2d58bdd31597e116b6197d965eb51e3e57bb7c04f817a8",
+    "compact_formatter": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c"
+  },
+  "strategy_and_approved_forms_changed": false,
+  "project_complete": false
+}
