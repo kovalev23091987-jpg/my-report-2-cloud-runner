@@ -48,16 +48,21 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T054447932Z:general-plan-diagnostic",
-    "acquired_ts": 1791265487932,
-    "expires_ts": 1791266387932
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
-  "next_action": "INSPECT_GENERAL_CURRENT_OBSERVATION_PLAN_WITH_SAVED_0825_INPUTS; DO_NOT_REPLAY_MAIN_OR_STALE_TELEGRAM",
-  "last_verified_release": "checkpoints/paired-finalized-supply-consumer-release-evidence-20261006.json",
+  "next_action": "READ_ONE_NEW_NATURAL_RESULT_AFTER_PR180_FOR_EXACT_PLAN_DIAGNOSTIC_AND_APPROVED_TELEGRAM; NO_EXTRA_MAIN_OR_STALE_SEND",
+  "last_verified_release": {
+    "PR": 180,
+    "proof": "checkpoints/original-clock-scenario-diagnostic-release-evidence-20261006.json",
+    "cloud_run": 37420459212,
+    "status": "DIAGNOSTIC_METADATA_VERIFIED_PUBLICATION_BEHAVIOR_UNCHANGED"
+  },
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791265487932,
+  "updated_ts": 1791265944093,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,11 +150,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261006T053904745Z:exact-retained-scenario",
-    "acquired_ts": 1791265144745,
-    "expires_ts": 1791265744745,
-    "released_ts": 1791265412225,
-    "reason": "bounded missing original event read completed and preserved; no cloud diagnostic running"
+    "owner": "HTX:20261006T054447932Z:general-plan-diagnostic",
+    "acquired_ts": 1791265487932,
+    "expires_ts": 1791266387932,
+    "released_ts": 1791265944093,
+    "reason": "PR180 merged and cloud evidence saved; cleanup recorded; no remaining active cloud diagnostics"
   },
   "bounded_next_check": {
     "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
@@ -514,7 +519,15 @@
     "preserve_verified_evidence": true,
     "final_cleanup_pending": true,
     "current_entrypoint_consolidated": true,
-    "inventory": "checkpoints/archive/cloud-version-inventory-20261006.json"
+    "inventory": "checkpoints/archive/cloud-version-inventory-20261006.json",
+    "legacy_PRs_closed": [
+      42,
+      43,
+      45,
+      107
+    ],
+    "proof": "checkpoints/CLOUD_VERSION_CONSOLIDATION_20261006.json",
+    "final_acceptance_status_update_pending": true
   },
   "current_authoritative_status": "checkpoints/CURRENT_PROJECT_STATUS.json",
   "startup_history": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
@@ -525,5 +538,10 @@
     "proof": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
     "original_HTTP_already_zero": true,
     "production_changes": 0
+  },
+  "pending_observation_plan_diagnostic": {
+    "PR": 180,
+    "proof": "checkpoints/original-clock-scenario-diagnostic-release-evidence-20261006.json",
+    "status": "MERGED_CLOUD_VERIFIED_FRESH_DIAGNOSTIC_PENDING"
   }
 }

@@ -1,0 +1,59 @@
+{
+  "schema": "original-clock-scenario-diagnostic-release-v1",
+  "created_utc": "2026-10-06T05:52:24.092Z",
+  "PR": 180,
+  "merged_main": "88ec8836a267b1ebc42fe94c96e55f194f6ee7a2",
+  "tested_head": "8ec33cc17ebed659115109cb958ad81271f423ce",
+  "tested_tree": "e92c5e068cbcad3016a2c61c6f4c332da5ce0a4f",
+  "cloud_run": 37420459212,
+  "job": 112128427886,
+  "artifact": 11392792172,
+  "zip_sha256": "b32737d9f559cb1ef440eef811cb84c8017fa202159a1ab23d41c503fff60234",
+  "checks": {
+    "binding": "PASS",
+    "generation": "PASS",
+    "diagnostic_regressions": 4,
+    "integration_checks": 37,
+    "all_pass": true
+  },
+  "mechanism": "Original-clock fallback plan receipt; algorithm and publication permissions unchanged",
+  "actual_price_candle_source": {
+    "source_cloud_run": 37418312423,
+    "reader_cloud_run": 37418960208,
+    "snapshot_id": "S392:BR-USDT:1791264336039",
+    "fixture_json_sha256": "a26d556dd55fc9d8bf7c59325e61e770fed92657005b97a8f54072f1cecdd1d7",
+    "fixture_gzip_sha256": "c032849af761ad9d91ef3b37f64f2120eac8405ab267e2b848e9fda0b51be4b7",
+    "full_original_producer_input": false,
+    "exact_original_price": 0.39239,
+    "exact_original_event_low": 0.44361,
+    "exact_original_event_high": 0.46278,
+    "exact_original_close_ts": 1791247500000,
+    "reconstructed_qualification_not_new_actual_proof": true
+  },
+  "before_after_every_analytical_field_except_diagnostic_equal": true,
+  "approved_text_equal": true,
+  "golden_fixture_bytes_changed": false,
+  "formatter_bytes_changed": false,
+  "threshold70_weights_entry_freshness_plan_rules_changed": false,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "fresh_same_run_diagnostic_acceptance": "PENDING_NATURAL_SCHEDULED_RESULT",
+  "actual_approved_Telegram_SENT": "PENDING",
+  "project_complete": false,
+  "failed_predecessors": [
+    {
+      "cloud_run": 37420230910,
+      "reason": "adapter module manifest digest not updated;915pass1fail3skip;targeted not executed",
+      "artifact": 11392876577,
+      "zip_sha256": "82fc67f6b4d07974df387b1d51bbe8deb65e7dcb0e799315d45f4a3a43285942"
+    },
+    {
+      "cloud_run": 37420349453,
+      "reason": "test referenced projected report as full canonical;replaced with original-field fixture;runtime unchanged",
+      "artifact": 11392467953,
+      "zip_sha256": "e2de83990f2a1f884601093dc7fca9567dc0365df852e1d7f03ffd8fcaad8861"
+    }
+  ]
+}
