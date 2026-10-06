@@ -1,0 +1,47 @@
+name: Report2 Read General Direction Runtime
+on:
+  push:
+    branches: [tools/read-general-direction-runtime-20261006]
+permissions:
+  contents: read
+jobs:
+  read:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fresh owner and exact main
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='cc968f96a16ae7ba9d2ce00fd110c66651c93c99')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261006T0942:observation-gate-diagnosis'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Materialize current public runtime modules only
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/source
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          node - <<'NODE'
+          const fs=require('fs'),path=require('path'),crypto=require('crypto');
+          const files=fs.readdirSync('runtime/src').filter(n=>/^(?:v3-early|early-candidate|selected-early|entry-signal|.*decision|.*direction|.*shadow).*(?:\.mjs|\.js)$/.test(n));
+          const hashes={};
+          for(const n of files){const b=fs.readFileSync(path.join('runtime/src',n));fs.writeFileSync(path.join('audit-output/source',n),b);hashes[n]=crypto.createHash('sha256').update(b).digest('hex');}
+          fs.writeFileSync('audit-output/read.json',JSON.stringify({head:process.env.GITHUB_SHA,production_head:'cc968f96a16ae7ba9d2ce00fd110c66651c93c99',sourceHTTP:0,MAIN:0,Telegram:0,D1:0,tests:0,purpose:'Read existing general producer and consumer implementations; no live calls or policy change',hashes},null,2));
+          NODE
+          git rev-parse HEAD > audit-output/head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: general-direction-runtime-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
