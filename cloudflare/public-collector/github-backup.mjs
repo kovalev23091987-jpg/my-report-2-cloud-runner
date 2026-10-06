@@ -27,7 +27,7 @@ export async function runBackupCollector({db,now=Date.now,sleep=wait,collector}=
     await sleep(Number(row.lease_until)-now()+1000);
   }
   if(now()-bucket>=4*60_000+30_000)return{status:'SLOT_TOO_LATE',bucket,external_requests:0};
-  await collector({scheduledTime:bucket},{DATA_DB:db,PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:GENERATION},{waitUntil(){}});
+  await collector({scheduledTime:bucket},{DATA_DB:db,PRICE_RECHECK_ENABLED:'1',PUBLIC_COLLECTOR_ENABLED:'1',ANALYTICS_ENABLED:'0',DELIVERY_ENABLED:'0',CALIBRATION_APPLY_ENABLED:'0',REPORT2_CURRENT_GENERATION:GENERATION},{waitUntil(){}});
   return{status:'BACKUP_ATTEMPTED',bucket,external_requests:'COLLECTOR_BOUNDED_BY_EXISTING_CLAIM'};
 }
 

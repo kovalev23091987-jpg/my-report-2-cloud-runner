@@ -40,7 +40,7 @@ export function formatManualReport(result){
  if(!unknown&&result.entry)lines.push(`Вход: ${result.entry.area??`${fmt(result.entry.min_price)}–${fmt(result.entry.max_price)}`}`);
  if(!unknown&&result.trigger){
   const trigger=displayTrigger(result.trigger);if(!trigger)return {ok:false,status:'TRIGGER_PRESENTATION_NOT_CLOSED',text:null};
-  lines.push(`Условие входа: ${trigger}.`,`Отмена ожидания: ${displayCondition(result.trigger.cancel_condition)}.`,`Условие действительно до: ${displayTime(result.trigger.expires_ts)} МСК.`,`Следующая автоматическая проверка: ${displayTime(result.trigger.next_recheck_ts)} МСК.`);
+  lines.push(`Условие входа: ${trigger}.`,`Отмена ожидания: ${displayCondition(result.trigger.cancel_condition)}.`,`Условие действительно до: ${displayTime(result.trigger.expires_ts)} МСК.`,result?.metadata?.price_recheck_policy==='LIGHT_PRICE_AND_CANCELLATION_5M'?`Проверка цены и отмены: начиная с ${displayTime(result.trigger.next_recheck_ts)} МСК; далее каждые 5 минут до истечения условия. Полное подтверждение входа — при следующем полном анализе.`:`Следующая автоматическая проверка: ${displayTime(result.trigger.next_recheck_ts)} МСК.`);
  }
  if(result.invalidation){const invalidation=displayInvalidation(result.invalidation);if(!invalidation)return {ok:false,status:'INVALIDATION_PRESENTATION_NOT_CLOSED',text:null};lines.push(`Отмена идеи: ${invalidation}`);}
  if(!unknown&&result.targets?.length){const prices=result.targets.map(x=>displayNumber(x?.price??x)).filter(Boolean);if(prices.length)lines.push(`Начинать закрывать позицию: ${prices[0]} USDT.`,`Дальнейшие цели: ${prices.join(', ')} USDT.`);}
