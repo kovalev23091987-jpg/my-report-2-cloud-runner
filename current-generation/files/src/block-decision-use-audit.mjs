@@ -13,7 +13,7 @@ export function summarizeAssignedSourceUse(details={}) {
   attempted_route_count:routes.filter(r=>r.attempted).length,checked_route_count:routes.filter(r=>r.checked).length,
   live_contacted_route_count:routes.filter(r=>r.actual_http>0).length,
   checked_without_new_http_route_count:routes.filter(r=>r.checked&&r.actual_http===0).length,
-  validated_cache_route_count:routes.filter(r=>r.checked&&r.actual_http===0&&/CACHE|REUSE/i.test(r.cache_status||'')).length,
+  validated_cache_route_count:routes.filter(r=>r.checked&&r.actual_http===0&&r.valid_fact_count>0&&/CACHE|REUSE|(?:^|_)HIT(?:_|$)/i.test(r.cache_status||'')).length,
   routes_with_valid_facts:routes.filter(r=>r.valid_fact_count>0).length,
   routes_with_meaningful_facts:routes.filter(r=>r.meaningful_fact_count>0).length,
   routes_with_actual_use:routes.filter(r=>r.used_fact_count>0).length,routes_with_nonzero_score:routes.filter(r=>r.nonzero_score_fact_count>0).length,
