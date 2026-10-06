@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T10:45:18.295Z",
+  "updated_utc": "2026-10-06T10:53:59.518Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -171,16 +171,60 @@
     "automatic_continuation_created_by_cleanup": false,
     "active_cloud_development_jobs": [],
     "last_bounded_read": {
-      "cloud_run": 37430332098,
+      "cloud_run": 37452033081,
       "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
       "sourceHTTP": 0,
       "MAIN": 0,
       "Telegram": 0,
       "D1": {
-        "rows_read": 61,
+        "requests": 9,
+        "rows_read": 73,
         "rows_written": 4,
-        "requests": 8,
-        "unknown_ops": 0
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 37,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "all:deep_check_run_log": {
+            "requests": 1,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:canonical_publication_shadow": {
+            "requests": 2,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_telegram_dispatch_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_early_candidate_wave": {
+            "requests": 1,
+            "rows_read": 22,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
       }
     }
   },
@@ -296,5 +340,10 @@
     "proof": "checkpoints/ranked-early-persistence-release-evidence-20261006.json",
     "cloud_run": 37451390034,
     "status": "MERGED_CLOUD_VALIDATION_AND_37_INTEGRATION_PASS_FRESH_JOINT_AND_SENT_PENDING"
+  },
+  "latest_direction_diagnosis": {
+    "checkpoint": "checkpoints/EXACT_1327_DIRECTION_AND_DELIVERY_20261006.json",
+    "reader_cloud_run": 37452033081,
+    "status": "EXACT_FRESH_IDENTITY_CONFIRMED_BUT_EARLY_DIRECTION_UNCLOSED; DEEP_ROOT_CAUSE_AND_WEEKLY_JOURNAL_PENDING"
   }
 }

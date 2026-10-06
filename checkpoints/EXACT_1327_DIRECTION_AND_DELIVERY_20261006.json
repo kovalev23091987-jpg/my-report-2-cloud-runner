@@ -1,0 +1,166 @@
+{
+  "schema": "EXACT_DIRECTION_AND_DELIVERY_DIAGNOSIS_V1",
+  "created_utc": "2026-10-06T10:53:59.518Z",
+  "source_run_id": "1791282296620-1791282305950",
+  "source_cloud_run": 37449586596,
+  "source_head": "cc968f96a16ae7ba9d2ce00fd110c66651c93c99",
+  "reader_cloud_run": 37452033081,
+  "reader_head": "ad0fefbad75de1eb178c15ae58ee628cd2e21204",
+  "artifact": {
+    "id": 11406619141,
+    "zip_sha256": "db6a4526f1c2df08aefd867578d73a42cb2d8047a2c1f65c183072df3126298b"
+  },
+  "rows": [
+    {
+      "contract": "ADA-USDT",
+      "snapshot_id": "S392:ADA-USDT:1791282416554",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "UNKNOWN",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791282306125,
+            "confirmation_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+            "direction_raw": null
+          },
+          "source_ts": 1791282306125,
+          "available_at": 1791282306125,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ADA-USDT:1791278753698:G5:OI_ACCELERATION:BOTH",
+            "EDW:ADA-USDT:1791278753698:G5:RELATIVE_STRENGTH:LONG",
+            "EDW:ADA-USDT:1791278753698:G5:RELATIVE_STRENGTH:SHORT",
+            "EDW:ADA-USDT:1791278753698:G5:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:ADA-USDT:1791278753698:G5:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 91,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "snapshot_id": "S392:ZEC-USDT:1791282360874",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791282306125,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791282306125,
+          "available_at": 1791282306125,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ZEC-USDT:1791268186966:G4:RELATIVE_STRENGTH:LONG",
+            "EDW:ZEC-USDT:1791268186966:G4:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 64,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      }
+    }
+  ],
+  "d1_usage": {
+    "requests": 9,
+    "rows_read": 73,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 37,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 22,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "weekly_absence_not_yet_audited": true,
+  "final_deep_decision_missing_in_source_job": true,
+  "missing_final_deep_decision_root_cause_pending": true,
+  "post188_natural_trigger": {
+    "cloud_run": 37451970439,
+    "head": "33466f4aa2ea40da9e8345e6710779fab8861f73",
+    "worker_binding_verified": true,
+    "analytical_admission": "NOT_DUE",
+    "new_report": false
+  },
+  "owner_steering": "Audit prolonged lack of useful notifications and change delivery strategy if evidence identifies excess restrictions; do not invent directional signals or claim weekly history without audit.",
+  "project_complete": false
+}
