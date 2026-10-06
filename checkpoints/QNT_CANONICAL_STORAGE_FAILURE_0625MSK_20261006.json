@@ -1,0 +1,61 @@
+{
+  "schema": "exact-qnt-canonical-storage-failure-receipt-v1",
+  "created_utc": "2026-10-06T03:55:42.054Z",
+  "cloud_run": 37408724152,
+  "job": 112092114301,
+  "run_id": "1791257011553-1791257021716",
+  "generated_utc": "2026-10-06T03:25:13.027Z",
+  "contract": "QNT-USDT",
+  "source": {
+    "artifact": 11388480969,
+    "sha256": "940ca6637f1c7eb8f36286ab23911c0506cc7247cad9c55314ae9f2354cdff71",
+    "exact_DB_readback": 37409174768,
+    "production_log_line": "bounded_deep_check_scheduler",
+    "production_numbers_masked_and_not_parsed": true
+  },
+  "qualitative_exact_job_receipt": {
+    "execution_status": "FULFILLED",
+    "data_sufficiency": "PARTIAL",
+    "journal_status": "CLOSED",
+    "canonical_persistence": {
+      "status": "PERSISTENCE_FAILED",
+      "persisted": false,
+      "error_category": "Exceeded maximum DB size"
+    },
+    "canonical_result": {
+      "status": "CLOSED",
+      "state": "REJECTED",
+      "telegram_formatter_status": "READY",
+      "manual_formatter_status": "READY"
+    },
+    "full_evidence_persistence": {
+      "status": "CLOSED",
+      "persisted": true
+    }
+  },
+  "root_cause": "D1_DATABASE_CAPACITY_PREVENTED_CANONICAL_INSERT_AFTER_SUCCESSFUL_DEEP_ASSESSMENT",
+  "QNT_participation": null,
+  "reason": "No persisted same-run canonical; do not claim a count from masked source logs",
+  "publication": {
+    "telegram_SENT": false,
+    "reason": "No current wave and no persisted canonical; do not bypass"
+  },
+  "remediation": {
+    "completed_natural_maintenance": 37409462780,
+    "after_bytes": 492883968,
+    "history_preserved": true,
+    "reservations_reset": false,
+    "PR175_missing_candidate_accounting": true,
+    "fresh_post_maintenance_acceptance": false
+  },
+  "remaining": [
+    "Verify next naturally admitted result persists both actual candidates after recovered capacity",
+    "Keep maintenance owner unblocked; reassess capacity if recurrence",
+    "Same-run approved actionable observation or entry Telegram SENT"
+  ],
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "D1": 0,
+  "project_complete": false
+}

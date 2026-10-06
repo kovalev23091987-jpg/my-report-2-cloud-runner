@@ -1,4 +1,9 @@
 
+## Актуальная поправка 06.10.2026 — точная причина QNT 06:25 МСК
+
+В той же строке bounded_deep_check_scheduler задания 112092114301 для QNT: execution FULFILLED, canonical CLOSED/REJECTED, formatter READY, но canonical_persistence PERSISTENCE_FAILED: Exceeded maximum DB size. Числа production logs замаскированы и не разбирались. Это установленная техническая причина отсутствующей canonical row, а не отсутствие данных; QNT count по этому запуску не принят. Естественное обслуживание 37409462780 позже подтвердило освобождение базы до 492883968 bytes с точным архивом и read-through без утраты истории. Свежая приёмка после восстановления pending, Telegram SENT отсутствует. Подробнее checkpoints/QNT_CANONICAL_STORAGE_FAILURE_0625MSK_20261006.json. Эта поправка заменяет прежнее утверждение «причина ещё не установлена».
+
+
 ## Актуальная поправка 06.10.2026 — PR176, срок кэша N08/N09
 
 В фактическом отчёте 06:25 МСК BR сведения HTX risk были прочитаны за 4644 мс до истечения исходного срока и правильно отклонены к моменту канонического решения как EVIDENCE_EXPIRED. PR176 требует запас 120 секунд для обоих путей кэша; иначе выполняется только существующий допущенный бюджетом refresh. Исходные часы, TTL, лимиты, threshold70, формы и стратегия не изменены. Облачная сборка, generation, три новые проверки на сохранённых фактических данных и 37 integration PASS; sourceHTTP0 MAIN0 Telegram0 D10. Это не новая живая приёмка BR7 или отправки. Последний фактический отчёт остаётся BR5 (4 neutral + N12 unscored; 0 nonzero), QNT count не подтверждён из-за отсутствующего canonical. Telegram SENT отсутствует. Proof: checkpoints/htx-risk-cache-decision-validity-release-evidence-20261006.json. Причина выпадения QNT и связанная свежая доставка остаются pending.
