@@ -1,0 +1,297 @@
+{
+  "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
+  "cloud_run": 37456049325,
+  "head": "5f8a44b07cc43b208975b05c73bdbabe43c0cbb8",
+  "run_id": "1791285825482-1791285832692",
+  "generated_utc": "2026-10-06T11:25:25.049Z",
+  "generated_msk": "2026-10-06T14:25:25.049+03:00",
+  "report_status": "CLOSED",
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "scan": {
+    "universe_total": 103,
+    "scanned": 103,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "top2": [
+    "ADA-USDT",
+    "NIL-USDT"
+  ],
+  "candidates": [
+    {
+      "contract": "NIL-USDT",
+      "publication_id": "PUB:7df4bebce3cd41272981ad65dbf162cac292a643",
+      "snapshot_id": "S392:NIL-USDT:1791285919626",
+      "wave_id": null,
+      "fingerprint": "877596506c70e0cf2dd124bb0a4dd15ea36f51547313cc5daab6f196a99fe97a",
+      "state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "checked": 12,
+      "participating": 10,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 8,
+      "unscored": 2,
+      "nonzero": {},
+      "direction_receipt": {
+        "closed": false,
+        "direction": null,
+        "candidate": {
+          "direction": "SHORT",
+          "origin": "EARLY_CYCLE",
+          "source_ts": null,
+          "confirmation_state": "UNCONFIRMED",
+          "direction_raw": "SHORT"
+        },
+        "source_ts": null,
+        "available_at": null,
+        "same_contract": false,
+        "same_wave": false,
+        "fresh": false,
+        "directed": false,
+        "direction_state_closed": false,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [],
+        "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+      },
+      "plan_refusal": {
+        "version": "observation-plan-diagnostic-v1-20261006",
+        "contract": "NIL-USDT",
+        "decision_ts": 1791285919626,
+        "status": "NOT_CLOSED",
+        "reason": "DIRECTION_NOT_CLOSED",
+        "score_contribution": 0,
+        "entry_authorized_by_receipt": false,
+        "direction": null,
+        "current_price": 0.09919
+      },
+      "N05": {
+        "NANSEN_FLOWS": "NOT_EVALUATED",
+        "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+      },
+      "accepted_liquidation_levels": 0
+    },
+    {
+      "contract": "ADA-USDT",
+      "publication_id": "PUB:29dfb2faa6522e4d54de7820c0b8763ba441c15c",
+      "snapshot_id": "S392:ADA-USDT:1791285886589",
+      "wave_id": "EDW:ADA-USDT:1791278753698:G5",
+      "fingerprint": "22da29b49709e31fd6c4f51d7ac039add655b2d754066ea69b182e70fb539f60",
+      "state": "REJECTED",
+      "direction": "LONG",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 83,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "checked": 14,
+      "participating": 13,
+      "participating_ids": [
+        "N01",
+        "N02",
+        "N03",
+        "N05",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "neutral": 11,
+      "unscored": 0,
+      "nonzero": {
+        "N12": -0.0071,
+        "N15": 0.1257
+      },
+      "direction_receipt": {
+        "closed": true,
+        "direction": "LONG",
+        "candidate": {
+          "direction": "LONG",
+          "origin": "EARLY_CYCLE",
+          "source_ts": 1791285832833,
+          "confirmation_state": "LONG_WATCH",
+          "direction_raw": "LONG"
+        },
+        "source_ts": 1791285832833,
+        "available_at": 1791285832833,
+        "same_contract": true,
+        "same_wave": true,
+        "fresh": true,
+        "directed": true,
+        "direction_state_closed": true,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [
+          "EDW:ADA-USDT:1791278753698:G5:RELATIVE_STRENGTH:LONG",
+          "EDW:ADA-USDT:1791278753698:G5:VOLUME_ACCELERATION_PROXY:BOTH",
+          "EDW:ADA-USDT:1791278753698:G5:PRICE_STATE_TRANSITION:LONG"
+        ],
+        "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+      },
+      "plan_refusal": {
+        "version": "observation-plan-diagnostic-v1-20261006",
+        "contract": "ADA-USDT",
+        "decision_ts": 1791285886589,
+        "status": "NOT_CLOSED",
+        "reason": "NO_FORWARD_FACTUAL_PRICE_TRIGGER",
+        "score_contribution": 0,
+        "entry_authorized_by_receipt": false,
+        "direction": "LONG",
+        "current_price": 0.2793605,
+        "prospective_input_present": false,
+        "prospective_receipt_usable": false,
+        "event_id": "OPP:opportunity-integrity-v2:ADA-USDT:MARKET:EPISODE:1791272700000:1791280800000",
+        "event_close_ts": 1791273600000,
+        "producer_observed_ts": 1791285885349,
+        "producer_available_at": null,
+        "statistical_episode_id": null,
+        "anomaly_candle_closed": true,
+        "event_high": 0.274513,
+        "event_low": 0.2718,
+        "routed_trigger_price": null,
+        "selected_trigger_price": null,
+        "cancellation_price": null
+      },
+      "N05": {
+        "NANSEN_FLOWS": "NOT_EVALUATED",
+        "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "CHAIN_EVENTS": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED"
+      },
+      "accepted_liquidation_levels": 0
+    }
+  ],
+  "report_artifact": {
+    "id": 11408614157,
+    "zip_sha256": "3a41879aa0776943985bb9d8e4aef7e05110fb38a8ef94e8bf3e65ac8f72c52f"
+  },
+  "telegram_artifact": {
+    "id": 11408679133,
+    "zip_sha256": "ff5dd9ba7ba12b438229a5cb04267db2e8f6f189713b262edbfa653354639fd8"
+  },
+  "telegram_lifecycle": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "ADA-USDT",
+        "status": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "reason": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "current_status": null,
+        "dispatch": null
+      },
+      {
+        "contract": "NIL-USDT",
+        "status": "CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH",
+        "reason": "CURRENT_RUN_CANONICAL_IDENTITY_MISMATCH",
+        "current_status": null,
+        "dispatch": null
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 64,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    }
+  },
+  "telegram_network_enabled": true,
+  "telegram_sent": 0,
+  "exact_readback": {
+    "cloud_run": 37456670660,
+    "head": "a2deccff4307a3d99fc62f22e9742a796cf9930f",
+    "artifact": 11409624039,
+    "zip_sha256": "28e25f09d73d2965cf3166bae7fa3f174e3aa8b0bea32351a6f23ea4c6c5b2dd",
+    "D1": {
+      "requests": 9,
+      "rows_read": 77,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 41,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_early_candidate_wave": {
+          "requests": 1,
+          "rows_read": 22,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "early_rows_scope": "MUTABLE_CURRENT_ROWS_AT_READ_TS_NOT_ORIGINAL_HISTORY"
+  },
+  "correction": "NIL current raw receipt exists but direction is UNKNOWN and early quality64; handoff omitted its unqualified bridge wave. Identity refusal is not proof of a lost valid signal. N05 exact4h closed for both this run; prior gap was scoped to13:27.",
+  "release_scope": "POST188_POST189_POST190_PRE191_PRE192",
+  "project_complete": false,
+  "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1425MSK_20261006.json"
+}
