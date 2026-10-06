@@ -152,94 +152,23 @@
     }
   },
   "latest_actual_report": {
-    "cloud_run": 37487195477,
-    "head": "bc744628b5b96dec9d2aa6704c2010867f3cca2a",
-    "run_id": "1791300272369-1791300282948",
-    "contract": "QNT-USDT",
-    "snapshot_id": "S392:QNT-USDT:1791300373364",
-    "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
-    "fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
-    "telegram_message_id": "146",
-    "sent_utc": "2026-10-06T15:26:18.938Z",
-    "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
-    "scope": "FRESH_AUTOMATIC_OBSERVE_NOT_ENTRY_OR_PROFITABILITY",
-    "proof": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
-    "entry_authorized": false,
-    "generated_utc": "2026-10-06T15:26:27.817Z",
-    "generated_msk": "2026-10-06 18:26:27.817 MSK",
-    "scan": {
-      "universe_total": 103,
-      "scanned": 103,
-      "errors": 0,
-      "stale": 0,
-      "stage0_coverage_pct": 100,
-      "complete": true
-    },
+    "cloud_run": 37511270818,
+    "head": "84d3d10d563bfce87dec7cf8983c7674fd518433",
+    "run_id": "1791311184115-1791311208966",
+    "generated_at": "2026-10-06T18:29:49.795Z",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json",
     "top2": [
-      "QNT-USDT",
-      "BR-USDT"
+      "ZEC-USDT",
+      "PUMP-USDT"
     ],
-    "telegram_sent": 1,
-    "participation": {
-      "checked": 12,
-      "participating": [
-        "N02",
-        "N03",
-        "N05",
-        "N08",
-        "N09",
-        "N10",
-        "N11",
-        "N12",
-        "N15",
-        "N16"
-      ],
-      "nonzero_score_blocks": 2,
-      "neutral_blocks": 8
-    },
-    "N05": {
-      "NANSEN_FLOWS": "NOT_EVALUATED",
-      "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
-      "CHAIN_EVENTS": "DEFERRED_SHARED_REQUEST_ENVELOPE"
-    },
-    "remaining_BR": {
-      "direction": null,
-      "state": "REJECTED",
-      "required_raw_minutes_present": 191,
-      "required_raw_minutes_missing": 49,
-      "gap_utc": [
-        "2026-10-06T11:24:00Z",
-        "2026-10-06T12:13:00Z"
-      ],
-      "ring_observed_ts": 1791300301310,
-      "ring_precedes_decision": true
-    },
-    "checkpoint": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
-    "project_complete": false
+    "PUMP_SENT_message_id": "147",
+    "ZEC_labelled_estimated_levels": 4,
+    "scope": "ONE_ACTUAL_TOP2_RUN; PUMP_SENT147_WITHOUT_FRESH_MAP; ZEC_FOUR_ESTIMATED_GTRADE_LEVELS_WITHOUT_DIRECTION"
   },
   "pending": [
     {
-      "task": "Owner approval of simpler Telegram text",
-      "requires": "Show concrete draft and wait for Vladimir confirmation before implementing",
-      "request": {
-        "requested_at_msk": "2026-10-06T18:30:26+03:00",
-        "confirmation_required_by_owner_at_msk": "2026-10-06T18:31:15+03:00",
-        "status": "DRAFT_AWAITING_OWNER_CONFIRMATION_NOT_IMPLEMENTED",
-        "scope": "NEW_TELEGRAM_PRESENTATIONS",
-        "requested_changes": [
-          "Explain OI simply and combine 1h/4h; remove exact OI clock windows from Telegram text",
-          "State buy/sell sample amounts clearly in USDT and preserve bounded-sample meaning",
-          "Remove price-recheck schedule lines and snapshot date from Telegram presentation",
-          "Keep ticker direction stage score basis conditions cancellation targets liquidations"
-        ],
-        "backend_price_rechecks_remain_enabled": true,
-        "original_saved_canonical_texts_not_rewritten": true
-      }
-    },
-    {
-      "task": "Fresh light price/cancellation readback on actually SENT QNT",
-      "requires": "Existing collector task result for the same QNT run/snapshot without new MAIN/source HTTP/Telegram",
-      "scope": "PRICE_AND_CANCELLATION_ONLY_NOT_ENTRY"
+      "task": "Actual new V5 Telegram readback",
+      "requires": "Fresh production publication rendered V5; retained QNT proof is validation, not a new delivery"
     },
     {
       "task": "Verify PR178 decrease context on natural actual inputs",
@@ -1636,24 +1565,23 @@
     }
   },
   "latest_telegram_acceptance": {
-    "cloud_run": 37487195477,
-    "head": "bc744628b5b96dec9d2aa6704c2010867f3cca2a",
-    "run_id": "1791300272369-1791300282948",
-    "contract": "QNT-USDT",
-    "snapshot_id": "S392:QNT-USDT:1791300373364",
-    "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
-    "fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
-    "telegram_message_id": "146",
-    "sent_utc": "2026-10-06T15:26:18.938Z",
+    "cloud_run": 37511270818,
+    "head": "84d3d10d563bfce87dec7cf8983c7674fd518433",
+    "run_id": "1791311184115-1791311208966",
+    "contract": "PUMP-USDT",
+    "snapshot_id": "S392:PUMP-USDT:1791311372493",
+    "publication_id": "PUB:aabb7d297e4c5bb11b9cb901f7a094c0fb7c3492",
+    "fingerprint": "3b61d894f3a8b642a29ff3a48911f1abe0dc50344c47d8f3f3426c18a254f588",
+    "telegram_message_id": "147",
+    "sent_ts": 1791311381879,
     "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
-    "scope": "FRESH_AUTOMATIC_OBSERVE_NOT_ENTRY_OR_PROFITABILITY",
-    "proof": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
-    "entry_authorized": false
+    "scope": "PRE200_V4_PRESENTATION; FRESH_PUMP_OBSERVE_NOT_ENTRY",
+    "proof": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json"
   },
   "owner_telegram_plain_language_request": {
     "requested_at_msk": "2026-10-06T18:30:26+03:00",
     "confirmation_required_by_owner_at_msk": "2026-10-06T18:31:15+03:00",
-    "status": "OWNER_APPROVED_IMPLEMENTATION_PENDING",
+    "status": "OWNER_APPROVED_IMPLEMENTED_MAIN",
     "scope": "NEW_TELEGRAM_PRESENTATIONS",
     "requested_changes": [
       "Explain OI simply and combine 1h/4h; remove exact OI clock windows from Telegram text",
@@ -1663,6 +1591,43 @@
     ],
     "backend_price_rechecks_remain_enabled": true,
     "original_saved_canonical_texts_not_rewritten": true,
-    "approved_at_msk": "2026-10-06T21:37:54+03:00"
+    "approved_at_msk": "2026-10-06T21:37:54+03:00",
+    "release_proof": "checkpoints/OWNER_APPROVED_TELEGRAM_V5_RELEASE_20261006.json",
+    "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt"
+  },
+  "latest_verified_telegram_presentation_release": {
+    "PR": 200,
+    "merged_main": "fadb2683a15544ce60b657b44a58a652825011e5",
+    "tested_head": "78fd99b464744b50c12da9b592d26b5630c81bb2",
+    "cloud_run": 37513865833,
+    "artifact": 11436491376,
+    "zip_sha256": "a0539ca640f67a4420d35686daa0bd7980f3df763b21476b58d3d69dd7856390",
+    "composed_cases": 27,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "proof": "checkpoints/OWNER_APPROVED_TELEGRAM_V5_RELEASE_20261006.json"
+  },
+  "latest_actual_light_price_readback": {
+    "contract": "QNT-USDT",
+    "telegram_message_id": "146",
+    "status": "EXPIRED",
+    "checked_ts": 1791302403857,
+    "scope": "ACTUAL_FINAL_EXPIRED_RECEIPT_VERIFIED; FULL_FIVE_MINUTE_HISTORY_NOT_RETAINED_IN_THIS_TASK_ROW",
+    "proof": "checkpoints/QNT_ACTUAL_LIGHT_PRICE_READBACK_20261006.json",
+    "original_collector_window": "checkpoints/QNT_ORIGINAL_COLLECTOR_WINDOW_20261006.json",
+    "collector_cadence_verified": true
+  },
+  "latest_actual_liquidation_acceptance": {
+    "contract": "ZEC-USDT",
+    "source_cloud_run": 37511270818,
+    "run_id": "1791311184115-1791311208966",
+    "levels": 4,
+    "above": 2,
+    "below": 2,
+    "source": "gTrade official SDK 1.8.10",
+    "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+    "reported_at": "2026-10-06T21:29:49.795+03:00",
+    "scope": "ACTUAL_FRESH_LABELLED_POSITION_BASED_ESTIMATES_IN_ANALYTICAL_SNAPSHOT; NO_ZEC_DIRECTION_OR_TELEGRAM_SEND",
+    "proof": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json"
   }
 }

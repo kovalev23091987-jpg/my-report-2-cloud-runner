@@ -1,0 +1,709 @@
+{
+  "schema": "ACTUAL_SCHEDULED_SOURCE_AND_DELIVERY_READBACK_V1",
+  "source_cloud_run": 37511270818,
+  "head": "84d3d10d563bfce87dec7cf8983c7674fd518433",
+  "run_id": "1791311184115-1791311208966",
+  "generated_at": "2026-10-06T18:29:49.795Z",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "report_artifact": {
+    "id": 11435413386,
+    "zip_sha256": "6751a07a6ee17f5f7af6e513cdf9b427827b633bf592e2a7117e04495cb8a1d3"
+  },
+  "exact_reader": {
+    "run": 37514325965,
+    "head": "1273fe64752c3d306c2dfafddbf2b0f5829b403e",
+    "artifact": 11436017169,
+    "zip_sha256": "8bfd74f2fd6b752ffae2d301e091fef8ffb3ca101bb9f7e369ffc1d80d942a9c",
+    "usage": {
+      "requests": 8,
+      "rows_read": 78,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 61,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 1,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    }
+  },
+  "scope": "ONE_ACTUAL_TOP2_RUN; PUMP_SENT147_WITHOUT_FRESH_MAP; ZEC_FOUR_ESTIMATED_GTRADE_LEVELS_WITHOUT_DIRECTION",
+  "candidates": [
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:6b4597b76f8f03516b06f8a9a9c5a6afdec0e9d6",
+      "snapshot_id": "S392:ZEC-USDT:1791311300610",
+      "fingerprint": "9fc8712de5108a4dcdc0d6619255b4105afbe52bab590f2a7fd6882bbae8adff",
+      "identity": {
+        "status": "CLOSED",
+        "reason": null
+      },
+      "fingerprint_verified": true,
+      "state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating": 8,
+      "participating_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "direction_receipt": {
+        "closed": false,
+        "direction": null,
+        "candidate": {
+          "direction": "LONG",
+          "origin": "EARLY_CYCLE",
+          "source_ts": 1791311209280,
+          "confirmation_state": "DIRECTION_NOT_CLOSED",
+          "direction_raw": "LONG"
+        },
+        "source_ts": 1791311209280,
+        "available_at": 1791311209280,
+        "same_contract": true,
+        "same_wave": true,
+        "fresh": true,
+        "directed": true,
+        "direction_state_closed": false,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [
+          "EDW:ZEC-USDT:1791311209280:G5:OI_ACCELERATION:BOTH",
+          "EDW:ZEC-USDT:1791311209280:G5:RELATIVE_STRENGTH:LONG"
+        ],
+        "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+      },
+      "N05": {
+        "NANSEN_FLOWS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+        "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+        "CHAIN_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+      },
+      "liquidation_levels": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 905.296647235,
+          "price_quote": "USD",
+          "distance_pct": -33.42451451600422,
+          "distance_reference_price": 1359.8048,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "BELOW",
+          "liquidated_side": "BUYERS",
+          "notional": 168.9514425904726,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "gTrade official SDK",
+          "venue": null,
+          "source_ts": 1791311277243,
+          "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "native_reference_price": 1359.8048,
+          "conditional_cross": false,
+          "position_count": 1,
+          "position_key": "0x00c9d41fbd9a4cddfdbc8c103d7046147b6fb8bf:25",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 905.296647235,
+          "notional_usdt": 168.9514425904726,
+          "corroborating_sources": [
+            "gTrade official SDK"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "gTrade official SDK"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 905.2966472346777,
+              "source": "gTrade official SDK",
+              "independence_group": "gTrade official SDK",
+              "estimated": true
+            }
+          ]
+        },
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 1192.48774494,
+          "price_quote": "USD",
+          "distance_pct": -12.304490693296522,
+          "distance_reference_price": 1359.8048,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "BELOW",
+          "liquidated_side": "BUYERS",
+          "notional": 16535.665349688723,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "средняя",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "gTrade official SDK",
+          "venue": null,
+          "source_ts": 1791311277243,
+          "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "native_reference_price": 1359.8048,
+          "conditional_cross": false,
+          "position_count": 1,
+          "position_key": "0x478ed6c83003ec70137d0076da4b5c1c40507ba7:3260",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 1192.48774494,
+          "notional_usdt": 16535.665349688723,
+          "corroborating_sources": [
+            "gTrade official SDK"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "gTrade official SDK"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 1192.4877449370006,
+              "source": "gTrade official SDK",
+              "independence_group": "gTrade official SDK",
+              "estimated": true
+            }
+          ]
+        },
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 1612.73397986,
+          "price_quote": "USD",
+          "distance_pct": 18.600403518077393,
+          "distance_reference_price": 1359.8048,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 20395.89856069655,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "средняя",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "gTrade official SDK",
+          "venue": null,
+          "source_ts": 1791311277243,
+          "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "native_reference_price": 1359.8048,
+          "conditional_cross": false,
+          "position_count": 1,
+          "position_key": "0x0b9b90bcf3fa83a933668e072611af7805fe84ad:122",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 1612.73397986,
+          "notional_usdt": 20395.89856069655,
+          "corroborating_sources": [
+            "gTrade official SDK"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "gTrade official SDK"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 1612.7339798581852,
+              "source": "gTrade official SDK",
+              "independence_group": "gTrade official SDK",
+              "estimated": true
+            }
+          ]
+        },
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 2554.56710919,
+          "price_quote": "USD",
+          "distance_pct": 87.86278068666145,
+          "distance_reference_price": 1359.8048,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 251.8002567952331,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "gTrade official SDK",
+          "venue": null,
+          "source_ts": 1791311277243,
+          "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "native_reference_price": 1359.8048,
+          "conditional_cross": false,
+          "position_count": 1,
+          "position_key": "0x24d197db5f5963084c85b4dca98e4acaae83bf16:772",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 2554.56710919,
+          "notional_usdt": 251.8002567952331,
+          "corroborating_sources": [
+            "gTrade official SDK"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "gTrade official SDK"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 2554.567109190695,
+              "source": "gTrade official SDK",
+              "independence_group": "gTrade official SDK",
+              "estimated": true
+            }
+          ]
+        }
+      ],
+      "native_source_proof": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+        "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+        "mode": "SHADOW_ONLY",
+        "freshness_max_age_ms": 300000,
+        "binding": {
+          "contract": "ZEC-USDT",
+          "native_symbol": "ZEC",
+          "run_id": "1791311184115-1791311208966",
+          "snapshot_id": "S392:ZEC-USDT:1791311300610",
+          "observed_ts": 1791311300610,
+          "direction": null
+        },
+        "acquisition_id": "GTRADE_NATIVE:1791311184115-1791311208966:ZEC-USDT",
+        "acquisition_fingerprint": "fbdd42326d03747af464094035953cb4d361e441a89e9e216ecd576c580a61f6",
+        "source_ts": 1791311277243,
+        "source_clock_closed": true,
+        "source_age_ms": 23367,
+        "received_ts": 1791311288810,
+        "receipt_age_ms": 11800,
+        "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+        "venue": "gTrade-Arbitrum",
+        "provider": "gTrade official SDK",
+        "price_quote": "USD",
+        "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791311278000,
+        "positions_block_hash": "0xfc53ee931f97f614114be13a069f85ad87574d11f630e180a7172fda629eb1b1",
+        "position_snapshot_fingerprint": "cd8cbd833543ef2a4756a86fd3702a2774d43865d03e20ad70f1587c4d837340",
+        "complete_position_census": false,
+        "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+        "upstream_groups": [
+          "GTRADE_ARBITRUM"
+        ],
+        "sdk_version": "1.8.10",
+        "model_version": null,
+        "estimation_note": "Open positions and margin/fee inputs verified at one explicit Arbitrum block. Fresh official variables and index are non-atomic inputs; partial position sample, official SDK estimate, not HTX liquidation or a guaranteed trigger.",
+        "variable_source_ts": 1791311277243,
+        "index_source_ts": 1791311280125,
+        "above": [
+          {
+            "native_price": 1612.7339798581852,
+            "side": "SHORT",
+            "notional": 20395.89856069655,
+            "notional_unit": "USD",
+            "native_reference_price": 1359.8048,
+            "distance_pct": 18.600403518077393,
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": 1791311277243,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791311288810,
+            "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x0b9b90bcf3fa83a933668e072611af7805fe84ad:122",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          },
+          {
+            "native_price": 2554.567109190695,
+            "side": "SHORT",
+            "notional": 251.8002567952331,
+            "notional_unit": "USD",
+            "native_reference_price": 1359.8048,
+            "distance_pct": 87.86278068666145,
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": 1791311277243,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791311288810,
+            "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x24d197db5f5963084c85b4dca98e4acaae83bf16:772",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "below": [
+          {
+            "native_price": 905.2966472346777,
+            "side": "LONG",
+            "notional": 168.9514425904726,
+            "notional_unit": "USD",
+            "native_reference_price": 1359.8048,
+            "distance_pct": -33.42451451600422,
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": 1791311277243,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791311288810,
+            "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x00c9d41fbd9a4cddfdbc8c103d7046147b6fb8bf:25",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          },
+          {
+            "native_price": 1192.4877449370006,
+            "side": "LONG",
+            "notional": 16535.665349688723,
+            "notional_unit": "USD",
+            "native_reference_price": 1359.8048,
+            "distance_pct": -12.304490693296522,
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": 1791311277243,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791311288810,
+            "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x478ed6c83003ec70137d0076da4b5c1c40507ba7:3260",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "independent_vote_added": false,
+        "prices_converted_to_htx": false,
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "render_enabled": true,
+        "body_bytes_before_fingerprint": 4358,
+        "fingerprint": "75828684c00837403080380b1e7d366803a685bab2811e59a22abc750170c1aa"
+      },
+      "dispatch": null
+    },
+    {
+      "contract": "PUMP-USDT",
+      "publication_id": "PUB:aabb7d297e4c5bb11b9cb901f7a094c0fb7c3492",
+      "snapshot_id": "S392:PUMP-USDT:1791311372493",
+      "fingerprint": "3b61d894f3a8b642a29ff3a48911f1abe0dc50344c47d8f3f3426c18a254f588",
+      "identity": {
+        "status": "CLOSED",
+        "reason": null
+      },
+      "fingerprint_verified": true,
+      "state": "OBSERVE",
+      "direction": "LONG",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating": 10,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "direction_receipt": {
+        "closed": true,
+        "direction": "LONG",
+        "candidate": {
+          "direction": "LONG",
+          "origin": "EARLY_CYCLE",
+          "source_ts": 1791311209280,
+          "confirmation_state": "LONG_WATCH",
+          "direction_raw": "LONG"
+        },
+        "source_ts": 1791311209280,
+        "available_at": 1791311209280,
+        "same_contract": true,
+        "same_wave": true,
+        "fresh": true,
+        "directed": true,
+        "direction_state_closed": true,
+        "evidence_ids": [],
+        "unassigned_evidence_ids": [
+          "EDW:PUMP-USDT:1791311209280:G6:OI_ACCELERATION:BOTH",
+          "EDW:PUMP-USDT:1791311209280:G6:RELATIVE_STRENGTH:LONG",
+          "EDW:PUMP-USDT:1791311209280:G6:VOLUME_ACCELERATION_PROXY:BOTH"
+        ],
+        "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+      },
+      "N05": {
+        "NANSEN_FLOWS": "NOT_EVALUATED",
+        "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "CHAIN_EVENTS": "CLOSED"
+      },
+      "liquidation_levels": [],
+      "native_source_proof": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+        "status": "USABLE_RECEIPT_ONLY_CONTEXT",
+        "mode": "SHADOW_ONLY",
+        "freshness_max_age_ms": 300000,
+        "binding": {
+          "contract": "PUMP-USDT",
+          "native_symbol": "PUMP",
+          "run_id": "1791311184115-1791311208966",
+          "snapshot_id": "S392:PUMP-USDT:1791311372493",
+          "observed_ts": 1791311372493,
+          "direction": "LONG"
+        },
+        "acquisition_id": "GTRADE_NATIVE:1791311184115-1791311208966:PUMP-USDT",
+        "acquisition_fingerprint": "549d58ed6ae93fa174dd24f033e1c9d73d568291b1b67979115a23ca629328ce",
+        "source_ts": null,
+        "source_clock_closed": false,
+        "source_age_ms": null,
+        "received_ts": 1791311281322,
+        "receipt_age_ms": 91171,
+        "freshness_basis": "CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN",
+        "venue": "gTrade-Arbitrum",
+        "provider": "gTrade official SDK",
+        "price_quote": "USD",
+        "coverage": "BACKEND_OPEN_MARKET_TRADES_NON_ATOMIC",
+        "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+        "upstream_groups": [
+          "GTRADE_ARBITRUM"
+        ],
+        "sdk_version": "1.8.10",
+        "model_version": null,
+        "estimation_note": "Position snapshot clock unknown. Native positions plus official SDK; backend and index price are close in time, not atomic same-block state. Not a guaranteed trigger.",
+        "variable_source_ts": 1791311277243,
+        "index_source_ts": 1791311280125,
+        "above": [
+          {
+            "native_price": 0.007540461048687733,
+            "side": "SHORT",
+            "notional": 1245.436987989604,
+            "notional_unit": "USD",
+            "native_reference_price": 0.006228564,
+            "distance_pct": 21.06259241596833,
+            "selection_roles": [
+              "NEAREST_NONZERO",
+              "LARGEST_VISIBLE",
+              "LARGEST_DISTANT"
+            ],
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": null,
+            "source_clock_closed": false,
+            "observed_at_ms": 1791311280916,
+            "freshness_basis": "CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x93b04aecf8615d0049853c832816944086bc74e8:8",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "below": [
+          {
+            "native_price": 0.005529707058674937,
+            "side": "LONG",
+            "notional": 250.27901840655835,
+            "notional_unit": "USD",
+            "native_reference_price": 0.006228564,
+            "distance_pct": -11.220193632514054,
+            "selection_roles": [
+              "NEAREST_NONZERO"
+            ],
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": null,
+            "source_clock_closed": false,
+            "observed_at_ms": 1791311280916,
+            "freshness_basis": "CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0x62ff5d7f23216cb946456a09a0b6ba2935d34259:656",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          },
+          {
+            "native_price": 0.004562708216529095,
+            "side": "LONG",
+            "notional": 2876.7333800369174,
+            "notional_unit": "USD",
+            "native_reference_price": 0.006228564,
+            "distance_pct": -26.745422917239104,
+            "selection_roles": [
+              "LARGEST_VISIBLE",
+              "LARGEST_DISTANT"
+            ],
+            "position_count": 1,
+            "margin_mode": null,
+            "conditional_cross": false,
+            "source_ts": null,
+            "source_clock_closed": false,
+            "observed_at_ms": 1791311280916,
+            "freshness_basis": "CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN",
+            "price_quote": "USD",
+            "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+            "position_key": "0xa606d4b69b54a3024b5d56fac54113255f8985c9:161",
+            "provider": "gTrade official SDK",
+            "venue": "gTrade-Arbitrum",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "independent_vote_added": false,
+        "prices_converted_to_htx": false,
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "render_enabled": true,
+        "body_bytes_before_fingerprint": 3446,
+        "fingerprint": "e562b7b8dd3bf0014a1438c43fd7d890b8e568abe6ae0b2b52d8df86db0bf905"
+      },
+      "dispatch": {
+        "dispatch_id": "V3TG:PUMP-USDT|LONG|EDW:PUMP-USDT:1791311209280:G6|OBSERVE|v3-telegram-shadow-r6",
+        "idempotency_key": "PUMP-USDT|LONG|EDW:PUMP-USDT:1791311209280:G6|OBSERVE|v3-telegram-shadow-r6",
+        "contract": "PUMP-USDT",
+        "direction": "LONG",
+        "wave_id": "EDW:PUMP-USDT:1791311209280:G6",
+        "lifecycle_event": "OBSERVE",
+        "rules_version": "v3-telegram-shadow-r6",
+        "state": "SENT",
+        "decision_id": null,
+        "created_ts": 1791311379672,
+        "updated_ts": 1791311381879,
+        "sent_ts": 1791311381879,
+        "telegram_message_id": "147",
+        "last_error": "SENT",
+        "publication_id": "PUB:aabb7d297e4c5bb11b9cb901f7a094c0fb7c3492"
+      },
+      "presentation_hash": "b9df32253211150040bcb52a09996b1bfee5e9ccf9e38e3cd7fcc5c6d54d13c0",
+      "presentation_hash_verified": true,
+      "presentation_validation": {
+        "status": "CLOSED",
+        "reason": null,
+        "presentation_hash": "b9df32253211150040bcb52a09996b1bfee5e9ccf9e38e3cd7fcc5c6d54d13c0"
+      }
+    }
+  ]
+}

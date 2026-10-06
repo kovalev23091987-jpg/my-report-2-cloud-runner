@@ -1,0 +1,155 @@
+{
+  "schema": "QNT_ACTUAL_LIGHT_PRICE_RECEIPT_V1",
+  "head": "77ffb1f6647cf8c0f131d5a4febbcebc0182fcea",
+  "read_ts": 1791312428832,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "run_id": "1791300272369-1791300282948",
+  "snapshot_id": "S392:QNT-USDT:1791300373364",
+  "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+  "original_fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-06",
+      "run_count": 59,
+      "reserved_rows_read": 1149000,
+      "reserved_rows_written": 20056,
+      "measured_rows_read": 723933,
+      "measured_rows_written": 11092,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 600,
+      "rows_written": 12
+    },
+    "projected_reserved": {
+      "rows_read": 1149600,
+      "rows_written": 20068
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "row": {
+    "task_id": "RCHK:a2b55591143969c0a8e864aaa7cc0a88a2a6acd9",
+    "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+    "contract_code": "QNT-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:QNT-USDT:1791300283140:G4",
+    "snapshot_id": "S392:QNT-USDT:1791300373364",
+    "run_id": "1791300272369-1791300282948",
+    "due_ts": 1791300673364,
+    "expires_ts": 1791302173364,
+    "state": "EXPIRED",
+    "attempt_count": 0,
+    "lease_owner": null,
+    "lease_started_ts": null,
+    "lease_expires_ts": null,
+    "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791302403857,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791302400000,\"task_id\":\"RCHK:a2b55591143969c0a8e864aaa7cc0a88a2a6acd9\",\"publication_id\":\"PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6\",\"run_id\":\"1791300272369-1791300282948\",\"snapshot_id\":\"S392:QNT-USDT:1791300373364\",\"analytical_fingerprint\":\"51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31\",\"telegram_message_id\":\"146\"}",
+    "created_ts": 1791300378938,
+    "updated_ts": 1791302403857,
+    "shadow_only": 1,
+    "observed_ts": 1791300373364,
+    "analytical_fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+    "publication_wave": "EDW:QNT-USDT:1791300283140:G4"
+  },
+  "original_trigger": {
+    "trigger_type": "PRICE_CONFIRMATION",
+    "metric": "price",
+    "operator": ">=",
+    "value": 268.55,
+    "unit": "USDT",
+    "timeframe": "5m",
+    "expires_ts": 1791302173364,
+    "next_recheck_ts": 1791300673364,
+    "cancel_condition": "price<250.63",
+    "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+  },
+  "price_policy": "LIGHT_PRICE_AND_CANCELLATION_5M",
+  "dispatch": {
+    "state": "SENT",
+    "telegram_message_id": "146",
+    "updated_ts": 1791300378938,
+    "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6"
+  },
+  "status": "EXACT_TASK_READBACK",
+  "result": {
+    "schema": "LIGHT_PRICE_RECHECK_V1",
+    "scope": "PRICE_AND_CANCELLATION_ONLY",
+    "checked_ts": 1791302403857,
+    "entry_authorized": false,
+    "full_analysis_completed": false,
+    "status": "EXPIRED",
+    "reason": "ORIGINAL_TTL_EXPIRED",
+    "last_bucket": 1791302400000,
+    "task_id": "RCHK:a2b55591143969c0a8e864aaa7cc0a88a2a6acd9",
+    "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+    "run_id": "1791300272369-1791300282948",
+    "snapshot_id": "S392:QNT-USDT:1791300373364",
+    "analytical_fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+    "telegram_message_id": "146"
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "EXACT_QNT_LIGHT_PRICE:37513936070:1",
+    "source_run_id": "37513936070",
+    "measured_rows_read": 66,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 6,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 6,
+    "rows_read": 67,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 60,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "result_decode_note": "Decoded original last_result from exact readback; reader optional last_result_json field was absent.",
+  "cloud_run": 37513936070,
+  "artifact": 11435931686,
+  "zip_sha256": "70d64c268ec3a6f5b178b0ab9906ffae4a2381176a42913a0938c250d0210e20",
+  "scope": "ACTUAL_FINAL_EXPIRED_RECEIPT_VERIFIED; FULL_FIVE_MINUTE_HISTORY_NOT_RETAINED_IN_THIS_TASK_ROW"
+}
