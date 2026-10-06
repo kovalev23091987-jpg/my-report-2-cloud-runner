@@ -3,11 +3,11 @@ import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const HTX_SIGNED_TAPE_VERSION='htx-signed-tape-v1-exact-minute-raw-20261004';
-const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map();
+const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map();
 const n=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const close=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
-export function clearHtxSignedTapeSnapshots(){captured.clear();}
+export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();}
 export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){
  const u=new URL(url),contract=u.searchParams.get('contract_code');if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||payload?.status!=='ok')return;
  let type=null;
@@ -68,6 +68,8 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
  await installEvidenceSourceStore(db);const previous=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return{...merged,evidence:[],network_calls:0};
  await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.ring});
  const saved=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return{status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0};
+ if(!verifiedRings.has(contract)&&verifiedRings.size>=8)verifiedRings.delete(verifiedRings.keys().next().value);
+ verifiedRings.set(contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
  return{...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:Buffer.byteLength(JSON.stringify(merged.ring),'utf8'),network_calls:0,db_admission:grant,internal_only:true};
 }
@@ -100,4 +102,23 @@ export function mergeHtxSignedHistoryTrades({ring,current_trades=[],contract,con
  const trades=[...byId.values()].sort((a,b)=>a.ts-b.ts);
  Object.defineProperties(trades,{_source_truncated:{value:false},_source_rows_dropped:{value:0},_containers_scanned:{value:Number(current_trades._containers_scanned||0)},_raw_rows_scanned:{value:trades.length}});
  return{status:'VERIFIED_RAW_HISTORY_REUSED',trades,reused_minutes:minutes.length,reused_fills:reused,overlapping_equal_fills:fills.length-reused,source_http:0,source_clock_unchanged:true,full_window_completion_claimed:false};
+}
+
+export function signedTapeFourHourFlow({ring,contract,now}={}){
+ const blank=status=>({status,check_completed:false,evidence:[],network_calls:0,internal_only:true,blocking_checks:[status]});
+ if(!ring||ring.version!==HTX_SIGNED_TAPE_VERSION||ring.contract!==contract||!isExactHtxUsdtSwapKey(contract)||!(n(ring.contract_size)>0)||!Number.isSafeInteger(now)||!Number.isSafeInteger(ring.observed_ts)||ring.observed_ts>now||!Array.isArray(ring.minutes)||ring.minutes.length>1620||new Set(ring.minutes.map(m=>m.start_ts)).size!==ring.minutes.length)return blank('SIGNED_FLOW_EXACT_RING_REQUIRED');
+ const end=Math.max(...ring.minutes.map(m=>m.start_ts))+MIN,start=end-240*MIN;
+ if(!Number.isSafeInteger(end)||end>now||now-end>5*MIN)return blank('SIGNED_FLOW_WINDOW_NOT_FRESH');
+ const rows=ring.minutes.filter(m=>m.start_ts>=start&&m.start_ts<end).sort((a,b)=>a.start_ts-b.start_ts);
+ if(rows.length!==240||!rows.every((m,i)=>m.start_ts===start+i*MIN&&m.observed_ts<=now&&m.source_ts<=now&&validateSignedMinute(m,{contract,contract_size:ring.contract_size})))return blank('SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED');
+ const fills=rows.flatMap(m=>m.fills),count=rows.reduce((a,m)=>a+m.factual_count,0);
+ if(count!==fills.length||count<1||new Set(fills.map(f=>f.id)).size!==count)return blank('SIGNED_FLOW_FILL_COUNTERS_OR_IDS_NOT_CLOSED');
+ const buy=fills.filter(f=>f.side==='buy').reduce((a,f)=>a+f.quote_usdt,0),sell=fills.filter(f=>f.side==='sell').reduce((a,f)=>a+f.quote_usdt,0);
+ if(!Number.isFinite(buy)||!Number.isFinite(sell)||!(buy+sell>0))return blank('SIGNED_FLOW_TURNOVER_NOT_CLOSED');
+ const observed=Math.max(...rows.map(m=>m.observed_ts)),root=hash(rows.map(m=>({start_ts:m.start_ts,count:m.factual_count,raw_sha256:m.raw_sha256}))),physical=`HTX_RAW_FILLS:${contract}:${start}:${end}`;
+ const evidence=buildEvidenceV2({provider_id:'HTX_FUTURES_RAW_FLOW',upstream_id:'HTX_OFFICIAL_RAW_FILLS',asset_id:`HTX:USDT_M_PERPETUAL:${contract}`,htx_contract:contract,block_id:'N05',metric_family:'EXACT_FUTURES_TAKER_FLOW_4H',origin_event_id:`${contract}:${start}:${end}`,dependency_group:physical,source_ts:end,observed_ts:observed,expires_at:end+5*MIN,coverage_status:'EXACT_FOUR_HOURS',coverage_fraction:1/6,unit:'USDT',value:buy-sell,directional_strength:null,risk_strength:null,extra:{physical_root_key:physical,window_start_ts:start,window_end_ts:end,buy_quote_turnover_usdt:buy,sell_quote_turnover_usdt:sell,raw_trade_count:count,factual_1m_trade_count:count,verified_minutes:240,raw_minute_root_sha256:root,source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',publication_freshness_ms:5*MIN,window_alignment:'LATEST_VERIFIED_CLOSED_RAW_MINUTE_INDEPENDENT_OF_HOURLY_OI',not_candle_signed_estimate:true,common_upstream_not_independent_vote:true,score_contribution:0,entry_authorized:false,nansen_required:false}});
+ return{status:'CLOSED_EXACT_FUTURES_FLOW_4H',check_completed:true,network_calls:0,evidence:[evidence],receipts:[{check_completed:true,status:'CLOSED',contract,window:'4h',verified_minutes:240,raw_trade_count:count,factual_1m_trade_count:count,raw_minute_root_sha256:root,window_start_ts:start,window_end_ts:end,source_http:0}],internal_only:true};
+}
+export function capturedSignedTapeFourHourFlow({contract,now}={}){
+ return signedTapeFourHourFlow({ring:verifiedRings.get(contract),contract,now});
 }
