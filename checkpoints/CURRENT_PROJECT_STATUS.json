@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T11:19:01.445Z",
+  "updated_utc": "2026-10-06T11:26:01.790Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -13,18 +13,19 @@
     "TELEGRAM": "PENDING"
   },
   "latest_verified_release": {
-    "schema": "PRESENTATION_FAILURE_DIAGNOSTIC_RELEASE_V1",
-    "created_utc": "2026-10-06T11:19:01.445Z",
-    "PR": 190,
-    "merged_main": "99911a5f7eadf78b0bdf9730d77859aa9dd4402a",
-    "tested_head": "a2f975d96ea24cd7572dd2753a5e8c6e15988022",
-    "cloud_run": 37454781185,
+    "schema": "FRESH_OBSERVATION_STATE_REFUSAL_RELEASE_V1",
+    "created_utc": "2026-10-06T11:26:01.790Z",
+    "PR": 191,
+    "merged_main": "947c637fc6b0cf2bb15f81a91ea8b339f5ac7fc7",
+    "tested_head": "88781ebf1b472112d1cd373fb2d762aa5305bc42",
+    "cloud_run": 37455981637,
     "artifact": {
-      "id": 11409720683,
-      "zip_sha256": "6169d895b420828d88e5716f22a4988e2cc91fdeb712c3f09728e5a9b0155ea2"
+      "id": 11409767618,
+      "zip_sha256": "57f8d7e79c7ba5b1bac5297beed8f2c29cffccbd22b0e1f3b2691b97d6016272"
     },
     "targeted": {
-      "passed": 10,
+      "recovery_preflight_passed": 10,
+      "authority_passed": 4,
       "failed": 0
     },
     "current_generation": "PASS",
@@ -32,15 +33,25 @@
       "passed": 37,
       "failed": 0
     },
-    "reconciler_sha256": "09e384f61bffa3493ee543725b1d4bc004a5fdeb01d9bd6197a85cfb1c7ccf9b",
-    "scope": "Correct failed-surface reason when Telegram READY but manual refuses; preserves failure and zero binding/send",
+    "runtime_hashes": {
+      "recovery": "16d43ca2f96925287f4f0752e2a53fcb11837635cefcabc65932e344d870176f",
+      "telegram_runtime": "358720654189324f7d412eb22e664ad1dcbe6bf926859aef4301463bac52e1b5"
+    },
+    "recoverable_refusals": [
+      "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "OBSERVE_STATE_MISMATCH"
+    ],
+    "scope": "New qualified fresh same-wave canonical may create a separate dispatch after one unsent/unbound prior refusal; original journal unchanged; no active/prior SENT dispatch; exact identity/actionability/freshness and atomic SQL race guards retained",
+    "historical_original_source_refusal_reused": true,
+    "state_refusal_case_controlled": true,
     "sourceHTTP": 0,
+    "production_D1": 0,
     "MAIN": 0,
-    "Telegram": 0,
-    "D1": 0,
+    "Telegram_send": 0,
+    "approved_formatter_bytes_unchanged": true,
+    "strategy_entry_freshness_and_caps_unchanged": true,
     "fresh_SENT_pending": true,
-    "historical_READY_cause_reproduced": false,
-    "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
+    "proof": "checkpoints/fresh-observe-state-refusal-release-20261006.json"
   },
   "latest_actual_report": {
     "schema": "ACTUAL_SCHEDULED_REPORT_READBACK_V1",
@@ -236,6 +247,12 @@
       "MAIN": 0,
       "Telegram_send": 0,
       "project_complete": false
+    },
+    "active_natural_report_readback": {
+      "cloud_run": 37456049325,
+      "head": "5f8a44b07cc43b208975b05c73bdbabe43c0cbb8",
+      "status": "RUNNING_POST188_POST189_POST190_PRE191",
+      "fresh_SENT_pending": true
     }
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
@@ -732,5 +749,50 @@
   "pending_presentation_diagnostic": {
     "status": "MERGED_TESTED_HISTORICAL_CAUSE_UNCONFIRMED_FRESH_SENT_PENDING",
     "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
+  },
+  "pending_fresh_state_refusal": {
+    "schema": "FRESH_OBSERVATION_STATE_REFUSAL_RELEASE_V1",
+    "created_utc": "2026-10-06T11:26:01.790Z",
+    "PR": 191,
+    "merged_main": "947c637fc6b0cf2bb15f81a91ea8b339f5ac7fc7",
+    "tested_head": "88781ebf1b472112d1cd373fb2d762aa5305bc42",
+    "cloud_run": 37455981637,
+    "artifact": {
+      "id": 11409767618,
+      "zip_sha256": "57f8d7e79c7ba5b1bac5297beed8f2c29cffccbd22b0e1f3b2691b97d6016272"
+    },
+    "targeted": {
+      "recovery_preflight_passed": 10,
+      "authority_passed": 4,
+      "failed": 0
+    },
+    "current_generation": "PASS",
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    },
+    "runtime_hashes": {
+      "recovery": "16d43ca2f96925287f4f0752e2a53fcb11837635cefcabc65932e344d870176f",
+      "telegram_runtime": "358720654189324f7d412eb22e664ad1dcbe6bf926859aef4301463bac52e1b5"
+    },
+    "recoverable_refusals": [
+      "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "OBSERVE_STATE_MISMATCH"
+    ],
+    "scope": "New qualified fresh same-wave canonical may create a separate dispatch after one unsent/unbound prior refusal; original journal unchanged; no active/prior SENT dispatch; exact identity/actionability/freshness and atomic SQL race guards retained",
+    "historical_original_source_refusal_reused": true,
+    "state_refusal_case_controlled": true,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "approved_formatter_bytes_unchanged": true,
+    "strategy_entry_freshness_and_caps_unchanged": true,
+    "fresh_SENT_pending": true,
+    "proof": "checkpoints/fresh-observe-state-refusal-release-20261006.json"
+  },
+  "latest_raw_acquisition_diagnosis": {
+    "proof": "checkpoints/N05_RAW_ACQUISITION_GAP_20261006.json",
+    "status": "DIAGNOSIS_ONLY_CONTIGUOUS_4H_GAP_REMAINS"
   }
 }

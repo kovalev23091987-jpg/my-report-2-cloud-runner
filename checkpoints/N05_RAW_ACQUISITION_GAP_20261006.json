@@ -1,0 +1,34 @@
+{
+  "schema": "N05_RAW_ACQUISITION_GAP_DIAGNOSIS_V1",
+  "created_utc": "2026-10-06T11:26:01.790Z",
+  "source_reader_cloud_run": 37452923228,
+  "source_snapshot": "S392:ADA-USDT:1791282416554",
+  "source_fingerprint": "4c1d3006f5502a1a21f3713c3b49ab086dd6018658d2f1dd52e9c26587d58673",
+  "source_artifact": {
+    "id": 11407900642,
+    "zip_sha256": "427cdbb93ecd9af48ab538c86e11b6b6b7ecd2b30116281a2ba13125dcf36722"
+  },
+  "observed": {
+    "contract": "ADA-USDT",
+    "N05_status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+    "signed_status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+    "new_verified_minutes": 138,
+    "persisted_minutes": 505,
+    "storage_bytes": 952341,
+    "source_clocks": "CLOSED"
+  },
+  "static_code_findings": {
+    "public_collector": "batch price/OI/funding/metadata every five minutes; no exact raw trade acquisition",
+    "raw_tape": "existing bounded deep requests capture at most 2000 trade containers; exact raw minutes persisted only after deep checks",
+    "analytics_interval_minutes": 40,
+    "candidate_limit": 2,
+    "required_N05_minutes": 240
+  },
+  "inference": "Changing Top2, bounded recent raw windows and no continuous raw collection can leave gaps despite hundreds of saved minutes. This supports a missing-acquisition diagnosis, not a proven cause of all weekly delivery refusals.",
+  "not_waived": "N05 exact240/freshness; no candle-signed approximation; raw24h and Nansen deferrals retained",
+  "implementation_status": "DIAGNOSIS_ONLY_NO_NEW_COLLECTOR_OR_UNBUDGETED_CALLS",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "project_complete": false
+}
