@@ -46,7 +46,7 @@ test('actual blocked BR publication cannot occupy an OBSERVE lifecycle before so
 test('shared lifecycle skips all writes for the same original blocked canonical, keeping a later fresh transition possible',async()=>{
  const x=input();let writes=0,batches=0;
  const shadow={contract_code:'BR-USDT',observed_ts:c.observed_ts,created_ts:c.observed_ts,direction_hint:'LONG',stage:'SHADOW_OBSERVE_LONG_BIAS',dq_status:'PARTIAL',eq_status:'SHADOW_MEASURABLE',data_sufficiency:'PARTIAL'};
- const db={prepare(sql){if(/INSERT|UPDATE|DELETE|CREATE/i.test(sql))writes++;return{bind(){return this;},run(){throw Error('UNEXPECTED_MUTATION');},first(){throw Error('UNEXPECTED_PERSISTENCE_READ');}};},async batch(){batches++;return[[x.early],[shadow],[],[],[x.row]].map(results=>({success:true,results}));}};
+ const db={prepare(sql){if(/^\s*(INSERT|UPDATE|DELETE|CREATE)\b/i.test(sql))writes++;return{bind(){return this;},run(){throw Error('UNEXPECTED_MUTATION');},first(){throw Error('UNEXPECTED_PERSISTENCE_READ');}};},async batch(){batches++;return[[x.early],[shadow],[],[],[x.row]].map(results=>({success:true,results}));}};
  const result=await runV3TelegramLifecycleSidecar(db,{source_run_id:c.run_id,now_ts:x.now_ts,dispatch_enabled:true,canonical_required:true,completed_handoffs:{status:'CLOSED',source_run_id:c.run_id,handoffs:[x.handoff]}});
  assert.equal(result.transitions[0].status,'OBSERVE_SOURCE_ROLES_NOT_CLOSED');assert.equal(result.transitions[0].dispatch,null);
  assert.equal(writes,0);assert.equal(batches,1);
