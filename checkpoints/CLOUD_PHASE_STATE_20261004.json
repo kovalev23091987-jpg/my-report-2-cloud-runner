@@ -48,16 +48,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261006T043518109Z:current-observation-diagnosis",
-    "acquired_ts": 1791261318109,
-    "expires_ts": 1791261798109
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
-  "next_action": "SOURCE_FREE_CACHE_USE_ACCOUNTING_FIX; EXACT_CURRENT_DIRECTION_WAVE_DIAGNOSIS_IF_GENERAL_DEFECT; APPROVED_TELEGRAM_SENT_PENDING_NO_BYPASS",
+  "next_action": "AWAIT_EXISTING_NATURAL_ELIGIBLE_OBSERVATION_OR_ENTRY_AND_VERIFY_SAME_SNAPSHOT_SENT_MESSAGE_ID; NO_EXTRA_MAIN_OR_STALE_SEND; SOURCE_LIMITATIONS_REMAIN",
   "last_verified_release": "checkpoints/canonical-candidate-completion-release-evidence-20261006.json",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791261318109,
+  "updated_ts": 1791261554309,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -145,11 +145,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:37414273860",
-    "acquired_ts": 1791261216909,
-    "expires_ts": 1791261696909,
-    "released_ts": 1791261260849,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "HTX:20261006T043518109Z:current-observation-diagnosis",
+    "acquired_ts": 1791261318109,
+    "expires_ts": 1791261798109,
+    "released_ts": 1791261554309,
+    "reason": "Exact 0726 observation diagnosis and PR177 source-free verification finished; no active observer or source probes"
   },
   "bounded_next_check": {
     "status": "ONE_SHOT_COMPLETED_ACTUAL_FRESH_REPORT_READ",
@@ -330,7 +330,8 @@
     "Telegram": 0,
     "fresh_readback": 37394649188,
     "used_provider_ids_per_block_verified": true,
-    "cache_HIT_classification_defect": "PENDING_SOURCE_FREE_RETAINED_DATA_FIX"
+    "cache_HIT_classification_defect": "PR177_MERGED_ORIGINAL_CLOCK_VALID_HIT_CLASSIFICATION_VERIFIED",
+    "latest_release_proof": "checkpoints/original-clock-cache-use-release-evidence-20261006.json"
   },
   "pending_liquidation_comparability": {
     "PR": 168,
@@ -399,7 +400,17 @@
     "fresh_observation_handoff_not_yet_fixed": false,
     "no_claim_WIF_send_was_eligible": true,
     "proof": "checkpoints/ACTUAL_0525_DIRECTION_DIAGNOSIS_20261006.json",
-    "prospective_handoff_release_PR": 174
+    "prospective_handoff_release_PR": 174,
+    "latest_source_cloud_run": 37413576711,
+    "latest_exact_readback": 37414443568,
+    "latest_exact_proof": "checkpoints/ACTUAL_0726_OBSERVATION_DIAGNOSIS_20261006.json",
+    "UNI_early_quality": 64,
+    "UNI_below_70": true,
+    "UNI_relative_short_price_long_conflict": true,
+    "BR_handoff_wave_null": true,
+    "BR_previous_wave_not_current": true,
+    "no_current_observation_plan": true,
+    "no_eligible_publication_loss_proven_in_this_run": true
   },
   "pending_prospective_observation": {
     "PR": 174,
@@ -425,7 +436,7 @@
   "pending_canonical_completion": {
     "PR": 175,
     "proof": "checkpoints/canonical-candidate-completion-release-evidence-20261006.json",
-    "fresh_actual_readback_pending": true,
+    "fresh_actual_readback_pending": false,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
@@ -437,11 +448,19 @@
     "two_expected_two_saved": true
   },
   "pending_shared_risk_expiry": {
-    "status": "GENERAL_FIX_MERGED_CLOUD_VERIFIED_NOT_LIVE_ACCEPTED",
+    "status": "GENERAL_FIX_MERGED_CLOUD_VERIFIED_FRESH_SAME_RUN_BR_UNI_N08_N09_USED",
     "PR": 176,
     "proof": "checkpoints/htx-risk-cache-decision-validity-release-evidence-20261006.json",
     "fresh_same_run_used": true,
     "fresh_run": 37413576711,
     "BR_N08_N09_confirmed": true
+  },
+  "owner_observation_delivery_amendment": {
+    "observation_delivery_required_before_entry_ready": true,
+    "approved_forms_unchanged": true,
+    "minimum_quality_70_preserved": true,
+    "exact_trigger_and_cancellation_required": true,
+    "qualified_direction_and_freshness_required": true,
+    "send_frequency_not_fabricated": true
   }
 }

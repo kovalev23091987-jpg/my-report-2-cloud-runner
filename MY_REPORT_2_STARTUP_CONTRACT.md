@@ -1,3 +1,13 @@
+## Актуальное уточнение 06.10.2026 — наблюдения и точная диагностика 07:26 МСК
+
+Владелец требует Telegram-наблюдения до готового входа: конкретный триггер и отмена, прежняя утверждённая форма, порог70, квалифицированное направление и свежесть. Доставка не должна требовать ENTRY_READY для события OBSERVE. Существующий механизм и PR174 сохраняют это; тестовая отправка не является свежей SENT-приёмкой.
+
+Exact source-free readback37414443568 того же source run37413576711: UNI раннее качество64 ниже70; RELATIVE_STRENGTH SHORT и PRICE_STATE_TRANSITION LONG не назначены подтверждённому направлению. BR handoff wave null; старая wave last_seen относится к предыдущему запуску, текущие direction/interest/trigger отсутствуют. Оба canonical REJECTED; пригодный текущий observation plan отсутствует. В этом запуске не доказана потеря уже допустимого наблюдения. Telegram SENT/message_id отсутствует. Не делать из этого вывод о полной исправности всей системы или готовности проекта. Proof checkpoints/ACTUAL_0726_OBSERVATION_DIAGNOSIS_20261006.json; sourceHTTP0 MAIN0 Telegram0, D1r50/w4(ledger)/8requests/unknown0.
+
+PR177 исправляет только внутреннюю классификацию valid HIT/SHARED_HIT/CURRENT_RUN_SHARED_HIT по уже проверенным фактам с исходными часами. Expired cache и zeroHTTP primary snapshot не считаются valid cache; cached absence не становится полезной опционной информацией. Cloud37414552267: binding/generation,5 targeted,37integration PASS; sourceHTTP0 MAIN0 Telegram0 D10. Participation, provider independence, score, forms и стратегия неизменны. Proof checkpoints/original-clock-cache-use-release-evidence-20261006.json.
+
+Последний живой результат остаётся UNI9/BR7 (nonzero N-score0/0), Telegram pending. Собственный lease освобождён. Изолированные readback/verification завершены, новый background observer/MAIN/source probes не запущен. Штатные production workflow/collector и обслуживание истории сохраняются. Проект не завершён.
+
 
 ## Актуальный живой результат 06.10.2026 07:26:38 МСК — не завершение проекта
 

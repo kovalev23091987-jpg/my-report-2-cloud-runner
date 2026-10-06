@@ -1,0 +1,262 @@
+{
+  "schema": "report2-exact-current-data-readback-v1",
+  "head": "259f9622d2dfa10bf87c44cb15ea7e4bbfa9f6ad",
+  "read_ts": 1791261345084,
+  "run_id": "1791260701995-1791260712949",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-06",
+      "run_count": 16,
+      "reserved_rows_read": 300500,
+      "reserved_rows_written": 5288,
+      "measured_rows_read": 196960,
+      "measured_rows_written": 3034,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 2500,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 303000,
+      "rows_written": 5304
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_usage": {
+    "requests": 8,
+    "rows_read": 50,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 17,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_early_candidate_wave": {
+        "requests": 1,
+        "rows_read": 20,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "readback_cloud_run": 37414443568,
+  "artifact": 11389888094,
+  "artifact_sha256": "e3df5efcfb0baf33a158831825bdf4ccdd05200f11c72289bb5bbfb960422919",
+  "original_json_sha256": "610578bc2759488ae7c5bbd4ef1de7ee7d7344e33d82f36c15f5202363449eb1",
+  "original_gzip_sha256": "48cb045286dfded49628e22e04a76b0b6ee7bbb84c63d1857bc345a5d672a19d",
+  "source_run": 37413576711,
+  "source_time_msk": "2026-10-06T07:26:37.940+03:00",
+  "source_head": "fc4db3746b622cd669dcf7e243d19ffa92eb2ae2",
+  "handoffs": [
+    {
+      "contract_code": "UNI-USDT",
+      "wave_id": "EDW:UNI-USDT:1791260713116:G3",
+      "state": "COMPLETED",
+      "scan_ts": 1791260713116,
+      "updated_ts": 1791260762498,
+      "execution_status": "COMPLETED",
+      "data_sufficiency": "PARTIAL",
+      "error_text": null,
+      "started_ts": 1791260722542,
+      "completed_ts": 1791260762498
+    },
+    {
+      "contract_code": "BR-USDT",
+      "wave_id": null,
+      "state": "COMPLETED",
+      "scan_ts": 1791260713116,
+      "updated_ts": 1791260794857,
+      "execution_status": "COMPLETED",
+      "data_sufficiency": "PARTIAL",
+      "error_text": null,
+      "started_ts": 1791260762809,
+      "completed_ts": 1791260794857
+    }
+  ],
+  "selected_early_wave_rows": [
+    {
+      "wave_id": "EDW:UNI-USDT:1791260713116:G3",
+      "contract_code": "UNI-USDT",
+      "generation": 3,
+      "first_seen_ts": 1791260713116,
+      "lifecycle_stage": "DISCOVERY",
+      "direction_hint": null,
+      "direction_state": "DIRECTION_NOT_CLOSED",
+      "early_detection_quality_0_100": 64,
+      "last_seen_ts": 1791260713116
+    },
+    {
+      "wave_id": "EDW:BR-USDT:1791238979688:G5",
+      "contract_code": "BR-USDT",
+      "generation": 5,
+      "first_seen_ts": 1791238979688,
+      "lifecycle_stage": "DISCOVERY",
+      "direction_hint": null,
+      "direction_state": "DIRECTION_NOT_CLOSED",
+      "early_detection_quality_0_100": 73,
+      "last_seen_ts": 1791257021905
+    }
+  ],
+  "early_rows_read_at_readback_not_immutable_run_history": true,
+  "candidates": [
+    {
+      "contract": "UNI-USDT",
+      "snapshot_id": "S392:UNI-USDT:1791260760284",
+      "observed_ts": 1791260760284,
+      "state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791260713116,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791260713116,
+          "available_at": 1791260713116,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:UNI-USDT:1791260713116:G3:RELATIVE_STRENGTH:SHORT",
+            "EDW:UNI-USDT:1791260713116:G3:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": 64,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "trigger": null,
+      "entry": null,
+      "canonical_has_observation_plan": false
+    },
+    {
+      "contract": "BR-USDT",
+      "snapshot_id": "S392:BR-USDT:1791260793440",
+      "observed_ts": 1791260793440,
+      "state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": null,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "trigger": null,
+      "entry": null,
+      "canonical_has_observation_plan": false
+    }
+  ],
+  "project_complete": false,
+  "telegram_SENT": false
+}
