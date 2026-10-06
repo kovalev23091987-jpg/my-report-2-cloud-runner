@@ -1,0 +1,78 @@
+{
+  "schema": "htx-risk-cache-decision-validity-release-v1",
+  "created_utc": "2026-10-06T03:52:55.523Z",
+  "PR": 176,
+  "merged_main": "bfd94305f4cf6e6c0eac3adfc932cc0306202edb",
+  "tested_head": "11fae3aa5a4ec93e6da71e51e40bf11dcd5637a0",
+  "tested_tree": "9de1a4feb7a94d1a32b2e3eda16411aecd2a4615",
+  "cloud_run": 37410959663,
+  "job": 112099066700,
+  "artifact": 11388638616,
+  "artifact_sha256": "a60aecd28f3caf282a3f12d83e344eff7e967dc415954f2569bedfe2c66db549",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "D1": 0,
+  "checks": {
+    "binding": "PASS",
+    "generation": "PASS",
+    "new_retained_tests": 3,
+    "integration": 37,
+    "status": "PASS"
+  },
+  "actual_failure": {
+    "cloud_run": 37408724152,
+    "contract": "BR-USDT",
+    "blocks": [
+      "N08",
+      "N09"
+    ],
+    "source_ts": 1791253449196,
+    "cache_read_ts": 1791257044552,
+    "expires_ts": 1791257049196,
+    "canonical_decision_ts": 1791257063771,
+    "remaining_ms_at_read": 4644,
+    "rejection": "EVIDENCE_EXPIRED"
+  },
+  "separate_retained_cache_case": {
+    "cloud_run": 37403854284,
+    "contract": "QNT-USDT",
+    "original_clock_preserved": true,
+    "not_combined_as_one_live_acceptance": true
+  },
+  "fix": {
+    "minimum_remaining_cache_validity_ms": 120000,
+    "exact_and_shared_cache": true,
+    "existing_three_request_refresh_admission": true,
+    "original_source_clock_TTL_and_caps_preserved": true,
+    "no_refresh_if_admission_denied": true
+  },
+  "failed_first_cloud": {
+    "run": 37410666202,
+    "artifact": 11388824670,
+    "sha256": "e82b483e18e6047b3565bc984e6f579d885eaae570a6660a7a1f07bb1e4bd2ca",
+    "reason": "Two test fixture assertions corrected; no source HTTP or MAIN"
+  },
+  "latest_actual": {
+    "cloud_run": 37408724152,
+    "time_msk": "2026-10-06T06:25:13.027+03:00",
+    "BR": {
+      "participating": 5,
+      "neutral": 4,
+      "unscored": 1,
+      "nonzero": 0
+    },
+    "QNT": {
+      "participating": null,
+      "reason": "CANONICAL_CANDIDATE_NOT_PERSISTED"
+    },
+    "telegram_SENT": false
+  },
+  "fresh_post_fix_live_acceptance": false,
+  "pending": [
+    "QNT missing canonical persistence root cause",
+    "One naturally admitted fresh post-fix report",
+    "Same fresh approved Telegram observation/entry SENT and message_id"
+  ],
+  "project_complete": false
+}
