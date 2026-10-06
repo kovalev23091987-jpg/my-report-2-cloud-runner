@@ -50,9 +50,9 @@
   "lease": {
     "owner": "HTX:2026-10-06T11:49:37.490Z:batched-delivery-replay",
     "acquired_ts": 1791287377490,
-    "expires_ts": 1791290867323
+    "expires_ts": 1791291852033
   },
-  "next_action": "Batched original-clock funnel/source analysis completed: unchanged actual score83 ADA passes projected plan and original role gates; complete one natural post194 joint readback, investigate only a new proved blocker; do not repeat all passed components",
+  "next_action": "Implement owner-selected 5-minute price/cancellation checks on verified collector rows; no entry authorization, no new source HTTP, full analytics cadence and quota unchanged; latest natural same-run report1532 has no qualified direction and no SENT",
   "last_verified_release": {
     "PR": 194,
     "merged_main": "8244cedfa4b8ed98161e92a47450f69a11da491a",
@@ -74,7 +74,7 @@
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791289067323,
+  "updated_ts": 1791290052033,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -995,5 +995,16 @@
     "generation_validation": "PASS",
     "proof": "checkpoints/position-clock-source-priority-release-20261006.json"
   },
-  "latest_original_plan_projection": "checkpoints/batched-original-clock-plan-projection-20261006.json"
+  "latest_original_plan_projection": "checkpoints/batched-original-clock-plan-projection-20261006.json",
+  "owner_light_price_recheck": {
+    "id": "OWNER_LIGHT_PRICE_RECHECK_20261006",
+    "confirmed_utc": "2026-10-06T12:31:36Z",
+    "choice": "Лёгкая проверка 5 мин (Recommended)",
+    "scope": "PRICE_AND_CANCELLATION_FROM_EXISTING_COLLECTOR_ONLY",
+    "full_analytics_interval_minutes": 40,
+    "entry_authorization": false,
+    "new_source_http": 0,
+    "approved_text_change": "Clarify that next 5-minute check is price/cancellation only; full volume/OI/liquidation entry confirmation remains separate",
+    "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json"
+  }
 }
