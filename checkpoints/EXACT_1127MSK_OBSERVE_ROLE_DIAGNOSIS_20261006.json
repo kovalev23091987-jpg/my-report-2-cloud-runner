@@ -1,0 +1,72 @@
+{
+  "schema": "report2-exact-observe-role-diagnosis-v1",
+  "cloud_run": 37436004948,
+  "run_id": "1791275151636-1791275159635",
+  "head": "a29d03a8b5050ed227160a1f4450c14823001704",
+  "snapshot_id": "S392:BR-USDT:1791275201070",
+  "contract": "BR-USDT",
+  "canonical_state": "OBSERVE",
+  "direction": "LONG",
+  "interest_score": 100,
+  "score_is_probability": false,
+  "trigger": {
+    "trigger_type": "PRICE_CONFIRMATION",
+    "metric": "price",
+    "operator": ">=",
+    "value": 0.53312,
+    "unit": "USDT",
+    "timeframe": "5m",
+    "expires_ts": 1791277001070,
+    "next_recheck_ts": 1791275501070,
+    "cancel_condition": "price<0.42421",
+    "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+  },
+  "htx_execution_role": "CLOSED",
+  "admitted_independent_origin_count": 1,
+  "admitted_origin_ids": [
+    "HTX_OFFICIAL"
+  ],
+  "external_Gate_metrics_received": 4,
+  "external_Gate_identity_status": "NOT_CLOSED",
+  "external_Gate_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+  "Bybit": "SOURCE_INCOMPATIBLE",
+  "OKX": "SOURCE_INCOMPATIBLE",
+  "dispatch_state": "FAILED_FINAL",
+  "dispatch_error": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+  "Telegram_SENT": false,
+  "message_id": null,
+  "source_data_absence_claimed": false,
+  "precise_remaining_gap": "EXACT_CROSS_VENUE_ASSET_IDENTITY_CORROBORATION_NOT_CLOSED; TICKER_OR_CEX_PRICE_ONLY_NOT_ACCEPTED",
+  "existing_policy": "HTX_EXECUTION_TRUTH_AND_AT_LEAST_2_DISTINCT_ADMITTED_ORIGINS",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram_send": 0,
+  "reader": {
+    "cloud_run": 37437145066,
+    "head": "70ee709f5f26a134f934111bb88bdcc7b5bd21e9",
+    "artifact": 11398934776,
+    "zip_sha256": "44240c53de92ca66f380cad6de2b341a91783701c93172c99e9cae05cfa96dd7",
+    "d1_reads": 67,
+    "d1_writes": 4,
+    "d1_requests": 9,
+    "unknown_ops": 0
+  },
+  "technical_risk": {
+    "current_lifecycle_saved_OBSERVE_before_publication_eligible": true,
+    "original_transition_previous_state": "NONE",
+    "original_dispatch_created_then_failed_gate": true,
+    "later_same_wave_valid_publication_may_be_suppressed_by_unchanged_state": true,
+    "observed_later_suppression_proven": false,
+    "proposed_general_fix": "SHARED_SOURCE_ROLE_GATE_BEFORE_NEW_OBSERVE_LIFECYCLE_PERSISTENCE",
+    "old_failed_dispatches_not_reset": true
+  },
+  "new_source_candidate": {
+    "provider": "GATE_OFFICIAL",
+    "kind": "STATIC_CURRENCY_CHAIN_ADDRESS_FOR_GENERAL_EXACT_CROSS_VENUE_BINDING",
+    "official_docs": "https://www.gate.com/docs/developers/apiv4/en/wallet/",
+    "actual_source_evaluation_completed": false,
+    "production_enabled": false,
+    "not_a_new_independent_source": true
+  },
+  "project_complete": false
+}
