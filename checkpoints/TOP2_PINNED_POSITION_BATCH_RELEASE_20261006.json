@@ -1,0 +1,270 @@
+{
+  "scope": "RETAINED_ACTUAL_POSITIONS_AND_INPUTS_AT_ORIGINAL_CLOCK; COMPOSED_TRANSPORT_REPLY; CONTROLLED_70_SECOND_DEEP_GAP; NOT_FRESH_PRODUCTION",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "source_clock_closed": true,
+  "markets": [
+    "ZEC",
+    "QNT"
+  ],
+  "verified_positions": [
+    1,
+    4
+  ],
+  "injected_calls": 4,
+  "HTTP_cap": 5,
+  "max_source_phase_ms": 45000,
+  "source_timestamps_preserved": true,
+  "old_unknown_clock_not_upgraded": true,
+  "summary": {
+    "mode": "SHADOW_ONLY",
+    "state": "DYNAMIC_REPRESENTATIVE_PANEL_DECISION_INPUT",
+    "same_admission_and_transport_for_all_sources": true,
+    "gtrade_sdk": {
+      "required_version": "1.8.10",
+      "status": "PINNED_SDK_LOADED"
+    },
+    "primary": {
+      "mode": "SHADOW_ONLY",
+      "source": "NATIVE_LIQUIDATION_EXTENSION",
+      "reserved_http": 0,
+      "max_http": 5,
+      "records": [],
+      "production_sender_enabled": false,
+      "automatic_execution": false
+    },
+    "secondary": {
+      "mode": "SHADOW_ONLY",
+      "source": "MULTI_VENUE_LIQUIDATION_EXTENSION",
+      "secondary_min_quality": 70,
+      "fallback_min_quality": 60,
+      "records": [],
+      "notional_summed_across_providers": false,
+      "automatic_execution": false
+    },
+    "shared_budget": {
+      "reserved_http": 4,
+      "gross_reserved_http": 4,
+      "claimed_http": 4,
+      "actual_http": 4,
+      "max_http": 5,
+      "active": 0,
+      "peak_parallel": 2,
+      "max_parallel": 2,
+      "queued": 0,
+      "phase_started_ts": 1791273618880,
+      "max_total_ms": 45000,
+      "per_minute_limits": {
+        "HYPERLIQUID": 12,
+        "LIQFLOW": 6,
+        "GTRADE": 6,
+        "LIGHTER": 12,
+        "GMX": 4,
+        "OXARCHIVE": 6
+      },
+      "scope": "SAME_RUN_ALL_NEW_PROVIDERS",
+      "unused_local_capacity_released_after_completed_collector": true,
+      "monthly_provider_reservations_not_refunded": true,
+      "actual_dispatch_rate_enforced": true,
+      "phase_deadline_actively_enforced": true,
+      "provider_quota_provisioned": false,
+      "known_unspent_denials_release_local_capacity": true,
+      "unknown_reservation_ack_keeps_local_capacity": true,
+      "errors": []
+    },
+    "routed": [
+      {
+        "contract": "ZEC-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+        "usable": true,
+        "attempt": 1,
+        "position_proof": {
+          "status": "GTRADE_PINNED_OPEN_POSITIONS_CLOSED",
+          "reason": null,
+          "source_clock_closed": true,
+          "batch_contracts": [
+            "ZEC-USDT",
+            "QNT-USDT"
+          ]
+        },
+        "role_health_update": null,
+        "fallback": false,
+        "candidate_http_cap": 4,
+        "selection_profile": [
+          {
+            "source_id": "GTRADE_NATIVE",
+            "responsibility": "gTrade: native positions and dynamic fees",
+            "attempts": 0,
+            "usable_runs": 0,
+            "not_closed_runs": 0,
+            "reliability": 0.5,
+            "predictive_observations": 0,
+            "predictive_accuracy": null,
+            "predictive_weight_factor": 1,
+            "predictive_weight_eligible": false,
+            "selection_weight": 1,
+            "exploration_floor": 0.5,
+            "last_status": null,
+            "updated_ts": null,
+            "role": "NATIVE_POSITION_CONTEXT",
+            "coverage": "CATALOG_DISCOVERY_REQUIRED",
+            "cached_snapshot": false,
+            "position_clock_verifiable": true,
+            "clock_capability_priority": 1,
+            "declared_http": 1,
+            "priority": 1,
+            "utility_basis": "OPERATIONAL_AVAILABILITY_ONLY",
+            "utility_per_reserved_http": 1
+          }
+        ],
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 4,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "role_usable": true,
+          "failure_origin": null
+        },
+        "health_update": null
+      },
+      {
+        "contract": "QNT-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+        "usable": true,
+        "attempt": 1,
+        "position_proof": {
+          "status": "GTRADE_PINNED_OPEN_POSITIONS_CLOSED",
+          "reason": null,
+          "source_clock_closed": true,
+          "batch_contracts": [
+            "ZEC-USDT",
+            "QNT-USDT"
+          ]
+        },
+        "role_health_update": null,
+        "fallback": false,
+        "candidate_http_cap": 1,
+        "selection_profile": [
+          {
+            "source_id": "GTRADE_NATIVE",
+            "responsibility": "gTrade: native positions and dynamic fees",
+            "attempts": 0,
+            "usable_runs": 0,
+            "not_closed_runs": 0,
+            "reliability": 0.5,
+            "predictive_observations": 0,
+            "predictive_accuracy": null,
+            "predictive_weight_factor": 1,
+            "predictive_weight_eligible": false,
+            "selection_weight": 1,
+            "exploration_floor": 0.5,
+            "last_status": null,
+            "updated_ts": null,
+            "role": "NATIVE_POSITION_CONTEXT",
+            "coverage": "EXACT_ROUTE_PROVEN",
+            "cached_snapshot": true,
+            "position_clock_verifiable": true,
+            "clock_capability_priority": 1,
+            "declared_http": 0,
+            "priority": 3,
+            "utility_basis": "OPERATIONAL_AVAILABILITY_ONLY",
+            "utility_per_reserved_http": 1
+          }
+        ],
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 0,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "role_usable": true,
+          "failure_origin": null
+        },
+        "health_update": null
+      }
+    ],
+    "rotating_lanes": [
+      "HYPERLIQUID_NATIVE",
+      "GTRADE_NATIVE_WHEN_CONFIGURED",
+      "LIGHTER_NATIVE_WHEN_EXACT",
+      "GMX_NATIVE_WHEN_EXACT",
+      "OXARCHIVE_HL_BUCKETS_WHEN_KEY"
+    ],
+    "fallback_policy": "EXACT_COVERAGE_AND_ROLE_UTILITY_THEN_ALL_ADMITTED_SUPPLEMENTAL_ROUTES",
+    "cross_source_confirmation": true,
+    "total_http_cap": 5,
+    "candidate_slots": 2,
+    "preserve_one_request_for_following_candidate": true,
+    "outside_shared_budget_http": 0,
+    "notional_summed_across_providers": false,
+    "source_overlap_is_not_an_independent_vote": true,
+    "source_weighting": {
+      "mode": "ROLE_SCOPED_AVAILABILITY_AND_COST;PREDICTIVE_FACTOR_ONLY_WHEN_QUALIFIED",
+      "core_decision_weights_changed": false,
+      "profile": [
+        {
+          "source_id": "GTRADE_NATIVE",
+          "responsibility": "gTrade: native positions and dynamic fees",
+          "attempts": 0,
+          "usable_runs": 0,
+          "not_closed_runs": 0,
+          "reliability": 0.5,
+          "predictive_observations": 0,
+          "predictive_accuracy": null,
+          "predictive_weight_factor": 1,
+          "predictive_weight_eligible": false,
+          "selection_weight": 1,
+          "exploration_floor": 0.5,
+          "last_status": null,
+          "updated_ts": null,
+          "role": "NATIVE_POSITION_CONTEXT",
+          "coverage": "EXACT_ROUTE_PROVEN",
+          "cached_snapshot": true,
+          "position_clock_verifiable": true,
+          "clock_capability_priority": 1,
+          "declared_http": 0,
+          "priority": 3,
+          "utility_basis": "OPERATIONAL_AVAILABILITY_ONLY",
+          "utility_per_reserved_http": 1
+        }
+      ]
+    },
+    "oxarchive": {
+      "enabled": false
+    },
+    "output_mode": "CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION",
+    "production_enabled": true,
+    "automatic_execution": false
+  },
+  "schema": "SELECTED_TOP2_PINNED_POSITION_BATCH_RELEASE_V1",
+  "PR": 201,
+  "merged_main": "5b65801bcae5adfb37a1f04bd2e9b587fdd1974b",
+  "tested_head": "6a69cf8d295cef17e694551d4d52d30e15105439",
+  "cloud_run": 37517168582,
+  "artifact": 11437531298,
+  "zip_sha256": "ff96077e896a2371149bebb0fae7a57112b888ff713f31554711a3169394699c",
+  "tests_passed": 8,
+  "integration_checks": 37,
+  "generation_validation": "PASS",
+  "tested_code_matches_merged": true,
+  "new_production_batch": "NOT_YET_OBSERVED",
+  "failed_attempts": [
+    {
+      "run": 37517040909,
+      "head": "14962e4ab89eba6d6ea7b0572a29df1faf0fb3b3",
+      "reason": "AUTHORITATIVE_WORKER_HASH_PIN_NOT_UPDATED; FIXED",
+      "artifact": 11437438729,
+      "zip_sha256": "3aca48cb045af4a17e36a88d79942b658b04d3e332fa9a0c5d29bb526c1f2544"
+    }
+  ],
+  "hashes": "a817ee7b096fec6b56c89992a1ca2224be49e523df3b89b835f6ce359772d543  runtime/runner-main.mjs\n1a3bdbcb04b77ab07beb6611145a4feffac18e39041f975fa49aeece0ed0fc73  runtime/src/worker.js\nd45cc86b170d5b6e756b4f9ae18e86b13b8b786e4177d7e373d1d5c205ebd0a9  runtime/src/liquidation-extension/gtrade.mjs\n8abd644dd07b48cadbf6bee2055f5b7839800cfdb819099cd739ec53fc359f2a  runtime/src/liquidation-extension/gtrade-pinned-position-snapshot.mjs\n04ff4dc5859907508653a51655147bef3dd71c290c9132e2da10632f45db0376  runtime/src/liquidation-extension/gtrade-runtime-collector.mjs\n67a844eadb11bd16bb556bb3a9411c5e315bcce0f63a6c442077f417edc4f053  runtime/src/liquidation-extension/combined-runner-service.mjs\nab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af  runtime/src/canonical-runtime-adapter.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\n"
+}

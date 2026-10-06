@@ -1,0 +1,1633 @@
+{
+  "schema": "report2-authoritative-current-status-v1",
+  "updated_utc": "2026-10-06T15:35:11.340Z",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "working_ref": "refs/heads/main",
+  "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
+  "base_before_documentation_consolidation": "4383ed6f328f703bd5c9b4c7f9651e37dfd52afb",
+  "project_complete": false,
+  "acceptance": {
+    "CORE_BLOCKS": "IN_PROGRESS",
+    "LIQUIDATION_COVERAGE": "PENDING",
+    "JOINT_REPORT": "ACCEPTED_QNT_PARTIAL_SOURCE_SCOPE",
+    "TELEGRAM": "ACCEPTED_FRESH_OBSERVE_SENT"
+  },
+  "latest_verified_release": {
+    "schema": "CURRENT_OBSERVATION_PIPELINE_RELEASE_V1",
+    "PR": 199,
+    "merged_main": "c93ecf19cb6c709977077d98a0fcbcd6ad4f18a1",
+    "tested_head": "ed7417400c916526b658e202a6267e3fd3ed05bf",
+    "cloud_run": 37474467465,
+    "artifact": 11419105541,
+    "zip_sha256": "a252f4b184ba820ad212054d8cd8f02bc8794d0ad8c702622197264e9502db30",
+    "status": "MERGED_EXACT_COMPOSED_OBSERVATION_PIPELINE_VERIFIED_FRESH_PRODUCTION_PENDING",
+    "composed_and_regression_cases": 42,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "tested_code_exactly_matches_merged": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "component_replay": {
+      "schema": "CURRENT_OBSERVATION_PIPELINE_COMPONENT_REPLAY_V1",
+      "scope": "RETAINED_SOURCE_FACTS_AT_ORIGINAL_CLOCK; RECONSTRUCTED_ADAPTER_ENVELOPE_AND_LOCAL_PUBLICATION; INJECTED_RELAY_ONLY",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "fresh_SENT": false,
+      "source_cloud_run": 37470725751,
+      "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "run_id": "1791293174910-1791293186480",
+      "snapshot_id": "S392:FIL-USDT:1791293228860",
+      "original_fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+      "cases": [
+        {
+          "case": "ACTUAL_PRIOR_REJECTION_RETAINED",
+          "final_rows_in_original_lifecycle_window": 0
+        },
+        {
+          "case": "CURRENT_RANGE_REPLACES_UNUSABLE_HISTORICAL_FALLBACK",
+          "level": 1.0763,
+          "cancel": 1.2109,
+          "score": 82
+        },
+        {
+          "case": "CONTROLLED_LONG_MIRROR_NOT_ACTUAL_MARKET_DIRECTION"
+        },
+        {
+          "case": "ROUTED_CANCEL_CLOCK_RANGE_DIRECTION_SCORE_VETO_REFUSALS",
+          "count": 8
+        },
+        {
+          "case": "QUALIFIED_CANONICAL_NOT_UNQUALIFIED_TELEMETRY",
+          "status": "CLOSED",
+          "entry_authorized": false
+        },
+        {
+          "case": "COMPOSED_LOCAL_PIPELINE",
+          "injected_message_id": 9002,
+          "relay_invocations": 1,
+          "duplicates": 0,
+          "production_sent": false
+        },
+        {
+          "case": "NIL_ACTUAL_REFUSAL_PRESERVED"
+        }
+      ]
+    },
+    "changes": {
+      "historical_fallback": "Only a new qualified early observation without routed/prospective active trigger may use a newer verified range when the historical candle cancellation is already true.",
+      "lifecycle": "Same-run qualified canonical OBSERVE direction owns the new idea; unqualified telemetry bias is not an independently CLOSED opposite direction."
+    },
+    "preserved": [
+      "score70",
+      "strategy weights",
+      "source clocks",
+      "original TTL",
+      "real CLOSED direction conflicts",
+      "routed/prospective cancellation",
+      "hard veto/risk/data/terminal removals",
+      "previously visible cleanup",
+      "WAIT/ENTRY",
+      "approved formatter/golden bytes",
+      "HTTP/D1 caps",
+      "analytics40min",
+      "collector5min"
+    ],
+    "hashes": {
+      "adapter": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+      "lifecycle": "38fda1629825d6f7e8022891aaf060526d3023b8296b610c15ff6b66698725de",
+      "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503"
+    },
+    "original_pipeline_readback": {
+      "run": 37473627292,
+      "head": "245aa739427e9460de3144d0807475ff54528d46",
+      "artifact": 11418720063,
+      "zip_sha256": "7a884bbe9bed3a4e28aaf2672f8177c25886a6f903b12a5169c4d6f3733a7162",
+      "requests": 9,
+      "rows_read": 59,
+      "ledger_rows_written": 4,
+      "source_writes": 0,
+      "unknown_ops": 0,
+      "final_rows_found": 0,
+      "source_cloud_run": 37470725751
+    },
+    "prior_failed_attempts": [
+      {
+        "kind": "reader",
+        "run": 37473078912,
+        "reason": "ASSERTED_REQUIRED_FINAL_AT_CANONICAL_OBSERVATION_TS; FINAL_ABSENT"
+      },
+      {
+        "kind": "reader",
+        "run": 37473340592,
+        "reason": "ASSERTED_REQUIRED_FINAL_IN_DEEP_WINDOW; FINAL_ABSENCE_IS_VALID_UNPROVISIONED_STATE"
+      },
+      {
+        "kind": "release",
+        "run": 37474123843,
+        "reason": "CONTROLLED_TERMINAL_FIXTURE_USED_UNSUPPORTED_STAGE_AND_ADAPTER_INTEGRITY_MANIFEST_NOT_YET_UPDATED"
+      }
+    ],
+    "local_validation_limit": "Unassembled scratch runtime lacks inherited existing-source-consumer.mjs; release acceptance uses the exact assembled cloud runtime, all checks passed.",
+    "fresh_sent": false,
+    "project_complete": false,
+    "proof": "checkpoints/current-observation-pipeline-release-20261006.json",
+    "fresh_actual_readback": {
+      "cloud_run": 37487195477,
+      "head": "bc744628b5b96dec9d2aa6704c2010867f3cca2a",
+      "run_id": "1791300272369-1791300282948",
+      "contract": "QNT-USDT",
+      "snapshot_id": "S392:QNT-USDT:1791300373364",
+      "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+      "fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+      "telegram_message_id": "146",
+      "sent_utc": "2026-10-06T15:26:18.938Z",
+      "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
+      "scope": "FRESH_AUTOMATIC_OBSERVE_NOT_ENTRY_OR_PROFITABILITY",
+      "proof": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
+      "entry_authorized": false
+    }
+  },
+  "latest_actual_report": {
+    "cloud_run": 37511270818,
+    "head": "84d3d10d563bfce87dec7cf8983c7674fd518433",
+    "run_id": "1791311184115-1791311208966",
+    "generated_at": "2026-10-06T18:29:49.795Z",
+    "checkpoint": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json",
+    "top2": [
+      "ZEC-USDT",
+      "PUMP-USDT"
+    ],
+    "PUMP_SENT_message_id": "147",
+    "ZEC_labelled_estimated_levels": 4,
+    "scope": "ONE_ACTUAL_TOP2_RUN; PUMP_SENT147_WITHOUT_FRESH_MAP; ZEC_FOUR_ESTIMATED_GTRADE_LEVELS_WITHOUT_DIRECTION"
+  },
+  "pending": [
+    {
+      "task": "Actual new V5 Telegram readback",
+      "requires": "Fresh production publication rendered V5; retained QNT proof is validation, not a new delivery"
+    },
+    {
+      "task": "Verify PR178 decrease context on natural actual inputs",
+      "requires": "Real negative finalized supply comparison and same-run N02 current context; controlled branches do not close live acceptance"
+    },
+    {
+      "task": "Remaining shared priority source coverage",
+      "blocks": [
+        "N01",
+        "N02",
+        "N05",
+        "N12",
+        "N15"
+      ],
+      "requires": "Separate technical route loss, denied admission/access, missing exact identity, meaningful absence and unsupported network; add only factually verified useful general routes"
+    },
+    {
+      "task": "Future liquidation coverage",
+      "requires": "Same-clock verified account positions or labelled proven estimates; existing unknown-position-clock estimates are receipt context only",
+      "new_free_candidates_not_enabled": [
+        "dYdX",
+        "Drift"
+      ]
+    }
+  ],
+  "source_accounting": {
+    "catalog": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+    "latest_exact_run": "checkpoints/ACTUAL_SCHEDULED_1327MSK_20261006.json",
+    "logical_assignments": 32,
+    "logical_assignments_are_not_independent_providers": true,
+    "catalog_report_contains_historical_sections": true,
+    "exact_source_use": "checkpoints/ACTUAL_SCHEDULED_1227MSK_20261006.json#counts.provider_use"
+  },
+  "history": {
+    "startup_before_consolidation": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
+    "blob_sha": "8291f28f66b5ac7186311d1291b99e6b202b59c4",
+    "phase_before_consolidation": "checkpoints/archive/phase-state-before-consolidation-20261006.json",
+    "branch_inventory": "checkpoints/archive/cloud-version-inventory-20261006.json",
+    "source_catalog_before_consolidation": "checkpoints/archive/source-catalog-use-before-consolidation-20261006.md",
+    "version_consolidation": "checkpoints/CLOUD_VERSION_CONSOLIDATION_20261006.json"
+  },
+  "continuation": {
+    "own_phase_lease_required": true,
+    "foreign_active_lease_or_fence": "NO_MUTATION_NO_TESTS_NO_LIVE_SOURCE_CALLS",
+    "agent_background_running_after_turn": false,
+    "production_schedules_are_separate": true,
+    "automatic_continuation_created_by_cleanup": false,
+    "active_cloud_development_jobs": [],
+    "last_bounded_read": {
+      "cloud_run": 37456670660,
+      "head": "a2deccff4307a3d99fc62f22e9742a796cf9930f",
+      "artifact": 11409624039,
+      "zip_sha256": "28e25f09d73d2965cf3166bae7fa3f174e3aa8b0bea32351a6f23ea4c6c5b2dd",
+      "D1": {
+        "requests": 9,
+        "rows_read": 77,
+        "rows_written": 4,
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 41,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "all:deep_check_run_log": {
+            "requests": 1,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:canonical_publication_shadow": {
+            "requests": 2,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_telegram_dispatch_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_early_candidate_wave": {
+            "requests": 1,
+            "rows_read": 22,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "early_rows_scope": "MUTABLE_CURRENT_ROWS_AT_READ_TS_NOT_ORIGINAL_HISTORY"
+    },
+    "active_natural_report_readback": {
+      "cloud_run": 37457802147,
+      "status": "STOPPED_BY_EXACT_RUNTIME_GUARD_AFTER_PR193_REPLACED_PR192",
+      "artifact": 11412586394,
+      "zip_sha256": "820b12b1510588364dce7b227ae7fdb9a1fdd628975519dbbb93c2f5e23876b3",
+      "error": "PRODUCTION_RUNTIME_MOVED",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "D1": 0,
+      "Telegram_send": 0,
+      "active": false
+    },
+    "batched_execution_strategy": {
+      "owner_instruction_at_msk": [
+        "2026-10-06T14:48:17+03:00",
+        "2026-10-06T14:50:30+03:00"
+      ],
+      "method": "LARGE_RETAINED_ORIGINAL_CLOCK_BATCHES_AND_COMPOSED_PIPELINE_TESTS",
+      "serial_wait_after_each_fix": false,
+      "new_live_source_calls_only_for_proven_missing_fact": true,
+      "production_cadence_unchanged": true,
+      "full_acceptance_requires_fresh_same_run_SENT": true,
+      "next_work_blocks": [
+        "CANDIDATE_FUNNEL_AND_SHARED_SOURCE_USE",
+        "FUTURE_LIQUIDATION_IDENTITY_AND_CLOCK_COVERAGE",
+        "ONE_NATURAL_LIVE_JOINT_READBACK_AFTER_BATCH"
+      ],
+      "no_automatic_continuation_created": true
+    },
+    "current_execution_block": "FRESH_QNT_OBSERVE_SENT146_VERIFIED_AND_SAVED; TELEGRAM_TEXT_DRAFT_AWAITING_OWNER_APPROVAL"
+  },
+  "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
+  "withdrawn_PRs": [
+    {
+      "number": 179,
+      "reason": "Shared store already zeroes HTTP on cache reuse",
+      "merged": false,
+      "rerun": false
+    }
+  ],
+  "cloud_read_utility": {
+    "status": "COMPLETED_NO_NEW_ADMITTED_RESULT_WITHIN_BOUNDED_CHECK",
+    "cloud_run": 37431819494,
+    "observer_head": "23367f5ed54bab78861473613a92093367e167b2",
+    "after_run": 37429543025,
+    "created_after": "2026-10-06T07:46:54.074Z",
+    "max_wait_minutes": 30,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "D1": 0,
+    "no_automatic_continuation": true,
+    "artifact": 11399326173,
+    "zip_sha256": "4bfa0981c56d6418a45cb9b049aa1d3e221f36244b908715f042cc56b31d266c",
+    "reader_finished_before_new_1127_report": true,
+    "no_active_cloud_wait": true
+  },
+  "archived_legacy_PRs": [
+    {
+      "number": 42,
+      "state": "closed",
+      "merged": false,
+      "head": "c02c4694f618ae8fe0b221eefc6b67f36bc3cb3a",
+      "branch": "autonomous/compact-statistics-policy-20260930"
+    },
+    {
+      "number": 43,
+      "state": "closed",
+      "merged": false,
+      "head": "747392524327fd8a65e24a608d8f6c85ad31c94a",
+      "branch": "repair/factual-retest-observe-20260930"
+    },
+    {
+      "number": 45,
+      "state": "closed",
+      "merged": false,
+      "head": "24e9d6ac45016d01569aafd35ece64c2108642f3",
+      "branch": "repair/manual-request-result-binding-v2-20261001"
+    },
+    {
+      "number": 107,
+      "state": "closed",
+      "merged": false,
+      "head": "87823a889b0e257639a5f514cec9b9bc0d57359c",
+      "branch": "repair/tracked-coverage-boundary-20261004"
+    }
+  ],
+  "documentation_cleanup": {
+    "current_entrypoints_consolidated": true,
+    "legacy_PRs_closed_without_merge": true,
+    "retained_original_evidence": true,
+    "final_acceptance_status_update_pending": true
+  },
+  "latest_source_diagnosis": {
+    "checkpoint": "checkpoints/GENERAL_SOURCE_CLOCK_DIAGNOSIS_20261006.json",
+    "cloud_run": 37427234358,
+    "sourceHTTP": 2,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_report": false,
+    "production_runtime_changed": false
+  },
+  "pending_source_release": {
+    "PR": 182,
+    "status": "MERGED_CLOUD_VERIFIED_FRESH_POST_RELEASE_PROOF_PENDING",
+    "tested_head": "35e4aa5c5f5cae8371a484e13c3f2644d38c2faf",
+    "cloud_run": 37428572049,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "proof": "checkpoints/native-source-priority-and-sector-context-release-evidence-20261006.json",
+    "merged_main": "690f4626d7669f0c65ba6d94880ddf5c3a0730d1"
+  },
+  "pending_durable_signed_flow": {
+    "PR": 183,
+    "merged_main": "6b69c3ea8fc947504c6073967cb55adf94e20d90",
+    "proof": "checkpoints/durable-signed-flow-handoff-release-evidence-20261006.json",
+    "cloud_run": 37431260553,
+    "status": "MERGED_CLOUD_VERIFIED_FRESH_JOINT_PROOF_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "pending_gate_official_identity": {
+    "PR": 186,
+    "merged_main": "9a1e1f9b172dde51d921191e26fbe2d243b5cbde",
+    "proof": "checkpoints/gate-official-asset-binding-release-evidence-20261006.json",
+    "cloud_run": 37441393331,
+    "status": "MERGED_CODE_AND_ACTUAL_COMPONENT_VERIFIED; FRESH_JOINT_AND_TELEGRAM_SENT_PENDING"
+  },
+  "pending_qualified_observation_recovery": {
+    "PR": 187,
+    "merged_main": "cf144aeec517ccd3632132a8cb0c11e02624e037",
+    "proof": "checkpoints/qualified-observation-recovery-release-evidence-20261006.json",
+    "cloud_run": 37442691378,
+    "status": "MERGED_ORIGINAL_REFUSAL_AND_CONTROLLED_NEW_SNAPSHOT_SQLITE_RECOVERY_VERIFIED; FRESH_SENT_PENDING"
+  },
+  "pending_early_persistence": {
+    "PR": 188,
+    "merged_main": "5fd159fb64ade06f47953a18306595fcfdc6e8b8",
+    "proof": "checkpoints/ranked-early-persistence-release-evidence-20261006.json",
+    "cloud_run": 37451390034,
+    "status": "MERGED_CLOUD_VALIDATION_AND_37_INTEGRATION_PASS_FRESH_JOINT_AND_SENT_PENDING"
+  },
+  "latest_direction_diagnosis": {
+    "checkpoint": "checkpoints/EXACT_1628_DIRECTION_PLAN_DIAGNOSIS_20261006.json",
+    "source_cloud_run": 37470725751,
+    "reader_cloud_run": 37471324192,
+    "FIL": "QUALIFIED_EARLY_SHORT_82; PLAN_NOT_CLOSED_CANCELLATION_ALREADY_TRUE_ON_HISTORICAL_EVENT",
+    "NIL": "EARLY_DIRECTION_STATE_NOT_CLOSED",
+    "telegram_sent": 0,
+    "project_complete": false,
+    "latest_exact_lifecycle_checkpoint": "checkpoints/current-observation-pipeline-release-20261006.json",
+    "correction": "No final row existed in original lifecycle time window. Actual destruction was LONG shadow telemetry vs qualified SHORT early direction, not an actual CLOSED final NEUTRAL decision."
+  },
+  "latest_weekly_delivery_diagnosis": {
+    "schema": "WEEKLY_DELIVERY_EXACT_PROOF_DIAGNOSIS_V1",
+    "created_utc": "2026-10-06T11:05:45.608Z",
+    "reader_cloud_run": 37452923228,
+    "reader_head": "24db365a59f8b57a75d21320cfbdbace29598c9e",
+    "artifact": {
+      "id": 11407900642,
+      "zip_sha256": "427cdbb93ecd9af48ab538c86e11b6b6b7ecd2b30116281a2ba13125dcf36722"
+    },
+    "weekly_journal": {
+      "scope": "CURRENT_FINAL_DISPATCH_STATES_UPDATED_IN_LAST_7_DAYS_NOT_EVENT_HISTORY",
+      "lower_ts": 1790679304571,
+      "upper_ts": 1791284104571,
+      "per_state_limit": 401
+    },
+    "states": {
+      "PENDING": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "SENDING": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "SENT": {
+        "count": 1,
+        "complete": true,
+        "reason_counts": {
+          "SENT": 1
+        },
+        "selected_rows": [
+          {
+            "dispatch_id": "V3TG:TAO-USDT|SHORT|EDW:TAO-USDT:1789985218852:G1|OBSERVE|v3-telegram-shadow-r6|R2984525",
+            "contract": "TAO-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "SENT",
+            "created_ts": 1790715096837,
+            "updated_ts": 1790715098070,
+            "sent_ts": 1790715098070,
+            "telegram_message_id": "144",
+            "last_error": "SENT"
+          }
+        ]
+      },
+      "FAILED_RETRYABLE": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      },
+      "FAILED_FINAL": {
+        "count": 59,
+        "complete": true,
+        "reason_counts": {
+          "OBSERVE_SOURCE_ROLES_NOT_CLOSED": 5,
+          "OBSERVE_STATE_MISMATCH": 20,
+          "READY": 4,
+          "REMOVAL_WITHOUT_PRIOR_DELIVERY": 8,
+          "REPORTABLE_TARGET_PROOF_NOT_CLOSED": 22
+        },
+        "selected_rows": [
+          {
+            "dispatch_id": "V3TG:WIF-USDT|LONG|EDW:WIF-USDT:1791187242450:G4|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "WIF-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791197452911,
+            "updated_ts": 1791197453979,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:ADA-USDT|LONG|EDW:ADA-USDT:1791153642508:G3|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "ADA-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1791153705301,
+            "updated_ts": 1791153706087,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:NEAR-USDT|LONG|EDW:NEAR-USDT:1789969516548:G1|OBSERVE|v3-telegram-shadow-r6|R2984717",
+            "contract": "NEAR-USDT",
+            "direction": "LONG",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790830475608,
+            "updated_ts": 1790830476498,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          },
+          {
+            "dispatch_id": "V3TG:HBAR-USDT|SHORT|EDW:HBAR-USDT:1790112662879:G1|OBSERVE|v3-telegram-shadow-r6",
+            "contract": "HBAR-USDT",
+            "direction": "SHORT",
+            "lifecycle_event": "OBSERVE",
+            "state": "FAILED_FINAL",
+            "created_ts": 1790703261377,
+            "updated_ts": 1790703262598,
+            "sent_ts": null,
+            "telegram_message_id": null,
+            "last_error": "READY"
+          }
+        ]
+      },
+      "EXPIRED_NOT_SENT": {
+        "count": 8,
+        "complete": true,
+        "reason_counts": {
+          "EXPIRED_NOT_SENT": 8
+        },
+        "selected_rows": []
+      },
+      "SUPPRESSED_DEDUP": {
+        "count": 0,
+        "complete": true,
+        "reason_counts": {},
+        "selected_rows": []
+      }
+    },
+    "full_evidence": [
+      {
+        "contract": "ADA-USDT",
+        "full_evidence_id": "1791282416554:ADA-USDT:full-evidence-v2",
+        "snapshot_id": "S392:ADA-USDT:1791282416554",
+        "observed_ts": 1791282416554,
+        "shadow": {
+          "shadow_id": "1791282416554:ADA-USDT",
+          "contract_code": "ADA-USDT",
+          "observed_ts": 1791282416554,
+          "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+          "source": "DEEP_CHECK_INPUT",
+          "mode": "SHADOW_ONLY_NO_EXECUTION",
+          "direction_hint": "LONG",
+          "dc_long": 41.75,
+          "dc_short": 9.39,
+          "eq_status": "SHADOW_MEASURABLE",
+          "dq_status": "PARTIAL",
+          "stage": "SHADOW_OBSERVE_LONG_BIAS",
+          "data_sufficiency": "PARTIAL",
+          "calibrated": 0,
+          "full_decision_eligible": 0,
+          "actual_decision_generated": 0,
+          "validated": 0,
+          "telegram_started": 0,
+          "created_ts": 1791282416554
+        },
+        "decision_evidence_audit": {
+          "version": "tz101-price-flow-relative-producer-r4.0",
+          "status": "NO_USABLE_EVIDENCE",
+          "check": "UNKNOWN",
+          "reasons": [
+            "OPPORTUNITY_RECEIPT_NOT_CLOSED"
+          ],
+          "rows": [],
+          "facts": null,
+          "independent_domains": [],
+          "complete_direction": false,
+          "persistence": "UNACKNOWLEDGED",
+          "profile_id": "existing-htx-price-flow-confirmation-5m"
+        },
+        "opportunity_present": false,
+        "campaign_present": false,
+        "position_state": "UNKNOWN"
+      },
+      {
+        "contract": "ZEC-USDT",
+        "full_evidence_id": "1791282360874:ZEC-USDT:full-evidence-v2",
+        "snapshot_id": "S392:ZEC-USDT:1791282360874",
+        "observed_ts": 1791282360874,
+        "shadow": {
+          "shadow_id": "1791282360874:ZEC-USDT",
+          "contract_code": "ZEC-USDT",
+          "observed_ts": 1791282360874,
+          "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+          "source": "DEEP_CHECK_INPUT",
+          "mode": "SHADOW_ONLY_NO_EXECUTION",
+          "direction_hint": "LONG",
+          "dc_long": 37.43,
+          "dc_short": 0.63,
+          "eq_status": "SHADOW_MEASURABLE",
+          "dq_status": "PARTIAL",
+          "stage": "SHADOW_OBSERVE_LONG_BIAS",
+          "data_sufficiency": "PARTIAL",
+          "calibrated": 0,
+          "full_decision_eligible": 0,
+          "actual_decision_generated": 0,
+          "validated": 0,
+          "telegram_started": 0,
+          "created_ts": 1791282360874
+        },
+        "decision_evidence_audit": {
+          "version": "tz101-price-flow-relative-producer-r4.0",
+          "status": "NO_USABLE_EVIDENCE",
+          "check": "UNKNOWN",
+          "reasons": [
+            "DIRECTION_NOT_PRECOMMITTED"
+          ],
+          "rows": [],
+          "facts": null,
+          "independent_domains": [],
+          "complete_direction": false,
+          "persistence": "UNACKNOWLEDGED",
+          "profile_id": "existing-htx-price-flow-confirmation-5m"
+        },
+        "opportunity_present": true,
+        "campaign_present": false,
+        "position_state": "UNKNOWN"
+      }
+    ],
+    "d1_usage": {
+      "requests": 27,
+      "rows_read": 153,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 38,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 15,
+          "rows_read": 76,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_early_candidate_wave": {
+          "requests": 1,
+          "rows_read": 22,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:full_evidence_shadow_log": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:shadow_decision_log": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "last_sent_msk": "2026-09-29T23:51:38.070+03:00",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "ready_error_source": {
+      "status": "POSSIBLE_CODE_PATH_NOT_CONFIRMED_HISTORICAL_CAUSE",
+      "current_sender_does_not_emit_READY": true,
+      "retained_replay_both_renderers_ready": true,
+      "followup": "checkpoints/retained-presentation-readback-20261006.json",
+      "diagnostic_fix": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
+    },
+    "hub_current_sender_code": "telegram-test calls sendTelegramMessage; positive actual Telegram ACK returns SENT and message_id, no READY delivery state",
+    "current13_27": "ADA decision evidence empty because opportunity receipt not closed; ZEC decision evidence empty because event direction not precommitted; shadow LONG bias alone is not assigned closed directional evidence",
+    "weekly_history_scope": "CURRENT_STORED_JOURNAL_IN_THIS_CHAIN; RETENTION_AND_OTHER_DELIVERY_LANES_NOT_AUDITED",
+    "project_complete": false,
+    "checkpoint": "checkpoints/WEEKLY_DELIVERY_AND_DEEP_PROOF_20261006.json"
+  },
+  "pending_confirmed_observe_direction": {
+    "PR": 189,
+    "merged_main": "a2ab056f8275d22b1a191664b924ca2856ec203d",
+    "tested_head": "1037e117385871fbe5de3af5282d0f85fd2b3fa1",
+    "cloud_run": 37453675564,
+    "artifact": {
+      "id": 11407791912,
+      "zip_sha256": "777bc53522faae529699304a4b55e010bc23379cf9660c655dd65bb7bef15204"
+    },
+    "targeted": {
+      "passed": 6,
+      "failed": 0,
+      "previous_loss_reproduced": true
+    },
+    "current_generation": "PASS",
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "D1": 0,
+    "formatter_bytes_unchanged": true,
+    "golden_fixture_bytes_unchanged": true,
+    "entry_authority_unchanged": true,
+    "fresh_SENT_pending": true,
+    "proof": "checkpoints/confirmed-observe-direction-release-evidence-20261006.json"
+  },
+  "latest_presentation_readback": {
+    "schema": "RETAINED_PRESENTATION_READBACK_V1",
+    "created_utc": "2026-10-06T11:19:01.445Z",
+    "cloud_run": 37454274871,
+    "reader_head": "9c82ff6a7bb6022500ea067d73d9cf528aa9b986",
+    "artifact": {
+      "id": 11409385094,
+      "zip_sha256": "2c128557135ca4a9dc5301d24b40e3831d81bb0ccf1d4617e47079d3a2efc2d7"
+    },
+    "targets": [
+      {
+        "contract": "WIF-USDT",
+        "publication_id": "PUB:f32d10219c0b5a31f1231228ba07a0d0362dca7c",
+        "run_id": "1791197350168-1791197360469",
+        "snapshot_id": "S392:WIF-USDT:1791197448267",
+        "fingerprint": "52ec644e4fddeb1faf8b61a5efd1c4cbeae664dffd5dc997a8a10c25881a727d",
+        "state": "REJECTED",
+        "telegram": "READY",
+        "manual": "READY"
+      },
+      {
+        "contract": "ADA-USDT",
+        "publication_id": "PUB:1e818bf94c36e7526af6fd69cd663dc48d588cda",
+        "run_id": "1791153635343-1791153642359",
+        "snapshot_id": "S392:ADA-USDT:1791153679531",
+        "fingerprint": "f5cf138d1bc049ea5879300a606e002f9b74006f5b54d6764e8141cdcb0cb794",
+        "state": "REJECTED",
+        "telegram": "READY",
+        "manual": "READY"
+      }
+    ],
+    "interpretation": "Current PR189 renderers on retained historical exact canonical documents both return READY. Historical failure is not reproduced; cause unconfirmed. Not historical renderer replay or fresh acceptance.",
+    "D1": {
+      "requests": 12,
+      "rows_read": 52,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "writes": "reservation ledger only"
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "project_complete": false
+  },
+  "pending_presentation_diagnostic": {
+    "status": "MERGED_TESTED_HISTORICAL_CAUSE_UNCONFIRMED_FRESH_SENT_PENDING",
+    "proof": "checkpoints/presentation-failure-diagnostic-release-20261006.json"
+  },
+  "pending_fresh_state_refusal": {
+    "schema": "FRESH_OBSERVATION_STATE_REFUSAL_RELEASE_V1",
+    "created_utc": "2026-10-06T11:26:01.790Z",
+    "PR": 191,
+    "merged_main": "947c637fc6b0cf2bb15f81a91ea8b339f5ac7fc7",
+    "tested_head": "88781ebf1b472112d1cd373fb2d762aa5305bc42",
+    "cloud_run": 37455981637,
+    "artifact": {
+      "id": 11409767618,
+      "zip_sha256": "57f8d7e79c7ba5b1bac5297beed8f2c29cffccbd22b0e1f3b2691b97d6016272"
+    },
+    "targeted": {
+      "recovery_preflight_passed": 10,
+      "authority_passed": 4,
+      "failed": 0
+    },
+    "current_generation": "PASS",
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    },
+    "runtime_hashes": {
+      "recovery": "16d43ca2f96925287f4f0752e2a53fcb11837635cefcabc65932e344d870176f",
+      "telegram_runtime": "358720654189324f7d412eb22e664ad1dcbe6bf926859aef4301463bac52e1b5"
+    },
+    "recoverable_refusals": [
+      "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+      "OBSERVE_STATE_MISMATCH"
+    ],
+    "scope": "New qualified fresh same-wave canonical may create a separate dispatch after one unsent/unbound prior refusal; original journal unchanged; no active/prior SENT dispatch; exact identity/actionability/freshness and atomic SQL race guards retained",
+    "historical_original_source_refusal_reused": true,
+    "state_refusal_case_controlled": true,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "MAIN": 0,
+    "Telegram_send": 0,
+    "approved_formatter_bytes_unchanged": true,
+    "strategy_entry_freshness_and_caps_unchanged": true,
+    "fresh_SENT_pending": true,
+    "proof": "checkpoints/fresh-observe-state-refusal-release-20261006.json"
+  },
+  "latest_raw_acquisition_diagnosis": {
+    "proof": "checkpoints/N05_RAW_ACQUISITION_GAP_20261006.json",
+    "status": "13:27_SCOPED_GAP; 14:25_EXACT4H_CLOSED_BOTH_ADA_NIL",
+    "latest": "checkpoints/ACTUAL_SCHEDULED_1425MSK_20261006.json"
+  },
+  "pending_forward_technical_observation": {
+    "schema": "FORWARD_TECHNICAL_OBSERVATION_RELEASE_V1",
+    "created_utc": "2026-10-06T11:39:28.405Z",
+    "PR": 192,
+    "merged_main": "2909c31e35fe0d36a955c2f5ac9114112b616f7e",
+    "tested_head": "97a84da46ea26bb195a62dc64803c53646cf4f9f",
+    "cloud_run": 37457415444,
+    "artifact": {
+      "id": 11410950300,
+      "zip_sha256": "5940b5b3c74667e8f323395b8cf02cad0ca79c3d156e896e5d2a4dd82abde6e2"
+    },
+    "targeted": {
+      "adapter_and_direction_passed": 10,
+      "factual_range_passed": 4,
+      "failed": 0
+    },
+    "current_generation": "PASS",
+    "integration": {
+      "passed": 37,
+      "failed": 0
+    },
+    "runtime_hashes": {
+      "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503",
+      "adapter": "9db50966520f32efe28a9f99f993c011ae4ad4842a28a335196288cb51a626bb",
+      "range": "468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c"
+    },
+    "scope": "Qualified early direction may reuse exact same-contract fresh N10 closed-candle forward boundary and opposite cancellation if old anomaly cannot provide them; no target, vote, score or entry authorization; WAIT/ENTRY and existing routed triggers/plans retain original rules",
+    "prior_live_report": "checkpoints/ACTUAL_SCHEDULED_1425MSK_20261006.json",
+    "retained_boundary_fixture_exact": true,
+    "qualification_envelope_controlled_not_full_original_replay": true,
+    "approved_formatter_and_golden_fixture_bytes_unchanged": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram_send": 0,
+    "fresh_SENT_pending": true,
+    "proof": "checkpoints/forward-technical-observation-release-20261006.json"
+  },
+  "pending_positive_telegram_receipt": {
+    "PR": 193,
+    "merged_main": "dcbdd957dd53e73b331f970434c74494fc18067a",
+    "tested_head": "411042c5daef5574e040492d4c9248e3233464c8",
+    "cloud_run": 37460374009,
+    "artifact": 11412741119,
+    "zip_sha256": "05273aa92cb6761b7e88623b9b3bbfb135ad08f10fb84116a565086e20516856",
+    "status": "MERGED_COMPOSED_BATCH_VERIFIED_FRESH_REAL_SENT_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "retained_original_canonicals": 10,
+    "composed_tests": 19,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "proof": "checkpoints/batched-delivery-replay-release-20261006.json",
+    "fresh_actual_readback": {
+      "cloud_run": 37487195477,
+      "head": "bc744628b5b96dec9d2aa6704c2010867f3cca2a",
+      "run_id": "1791300272369-1791300282948",
+      "contract": "QNT-USDT",
+      "snapshot_id": "S392:QNT-USDT:1791300373364",
+      "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+      "fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+      "telegram_message_id": "146",
+      "sent_utc": "2026-10-06T15:26:18.938Z",
+      "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
+      "scope": "FRESH_AUTOMATIC_OBSERVE_NOT_ENTRY_OR_PROFITABILITY",
+      "proof": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
+      "entry_authorized": false
+    }
+  },
+  "owner_batch_execution_amendment": {
+    "owner_instruction_at_msk": [
+      "2026-10-06T14:48:17+03:00",
+      "2026-10-06T14:50:30+03:00"
+    ],
+    "method": "LARGE_RETAINED_ORIGINAL_CLOCK_BATCHES_AND_COMPOSED_PIPELINE_TESTS",
+    "serial_wait_after_each_fix": false,
+    "new_live_source_calls_only_for_proven_missing_fact": true,
+    "production_cadence_unchanged": true,
+    "full_acceptance_requires_fresh_same_run_SENT": true,
+    "next_work_blocks": [
+      "CANDIDATE_FUNNEL_AND_SHARED_SOURCE_USE",
+      "FUTURE_LIQUIDATION_IDENTITY_AND_CLOCK_COVERAGE",
+      "ONE_NATURAL_LIVE_JOINT_READBACK_AFTER_BATCH"
+    ],
+    "no_automatic_continuation_created": true
+  },
+  "pending_position_clock_source_priority": {
+    "PR": 194,
+    "merged_main": "8244cedfa4b8ed98161e92a47450f69a11da491a",
+    "tested_head": "607963be0e40eea46967b7376563529204e3c902",
+    "cloud_run": 37461512537,
+    "artifact": 11412607985,
+    "zip_sha256": "44c38372cac97dba818abcde76d9e11e3533cc6a22f5c6f66b163ebe9fed8e5f",
+    "status": "MERGED_ORIGINAL_CLOCK_COMBINED_COLLECTOR_VERIFIED_FRESH_TOP2_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "production_D1": 0,
+    "unit_cases": 4,
+    "composed_runtime_cases": 4,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "proof": "checkpoints/position-clock-source-priority-release-20261006.json"
+  },
+  "latest_original_plan_projection": "checkpoints/batched-original-clock-plan-projection-20261006.json",
+  "owner_light_price_recheck": {
+    "id": "OWNER_LIGHT_PRICE_RECHECK_20261006",
+    "confirmed_utc": "2026-10-06T12:31:36Z",
+    "choice": "Лёгкая проверка 5 мин (Recommended)",
+    "scope": "PRICE_AND_CANCELLATION_FROM_EXISTING_COLLECTOR_ONLY",
+    "full_analytics_interval_minutes": 40,
+    "entry_authorization": false,
+    "new_source_http": 0,
+    "approved_text_change": "Clarify that next 5-minute check is price/cancellation only; full volume/OI/liquidation entry confirmation remains separate",
+    "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json"
+  },
+  "pending_light_price_recheck": {
+    "schema": "LIGHT_PRICE_RECHECK_RELEASE_V1",
+    "PR": 195,
+    "merged_main": "149ce182b42de3430db8bebc0242f229e314ca3b",
+    "tested_head": "9538684b0284338ed9bb9233852023d5691e8f4e",
+    "cloud_run": 37465577240,
+    "artifact": 11414264475,
+    "zip_sha256": "03cb2c8d0f346a57e358d59fb39c65b6b9031f1c547867e30f4fc7fb1dbfc1d5",
+    "status": "MERGED_AND_EXACT_COLLECTOR_DEPLOYED_FIRST_FRESH_PACK_VERIFIED",
+    "composed_cases": 22,
+    "collector_backup_snapshot_cases": 27,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "hashes": {
+      "cloudflare/public-collector/injected-worker-tail.js": "9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71",
+      "runtime/src/canonical-publication.mjs": "0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f",
+      "runtime/src/telegram-delivery-receipt.mjs": "1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4",
+      "runtime/src/v3-telegram-delivery-sidecar.mjs": "521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13",
+      "runtime/src/v3-telegram-runtime.mjs": "7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c",
+      "runtime/src/worker.js": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503",
+      "runtime/src/canonical-runtime-adapter.mjs": "f7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374",
+      "runtime/src/observation-technical-range.mjs": "468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c",
+      "runtime/src/manual-report-formatter.mjs": "9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad",
+      "runtime/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c"
+    },
+    "controlled_sent_to_price_checks": [
+      {
+        "case": "LONG_COMPOSED_SENT_TO_PRICE_CHECK",
+        "sourceHTTP": 0,
+        "Telegram": 0,
+        "checked": 1,
+        "status": "WAITING_FOR_PRICE",
+        "entry_authorized": false
+      },
+      {
+        "case": "SHORT_COMPOSED_SENT_TO_PRICE_CHECK",
+        "sourceHTTP": 0,
+        "Telegram": 0,
+        "checked": 1,
+        "status": "WAITING_FOR_PRICE",
+        "entry_authorized": false
+      }
+    ],
+    "owner_amendment": {
+      "id": "OWNER_LIGHT_PRICE_RECHECK_20261006",
+      "confirmed_utc": "2026-10-06T12:31:36Z",
+      "choice": "Лёгкая проверка 5 мин (Recommended)",
+      "scope": "PRICE_AND_CANCELLATION_FROM_EXISTING_COLLECTOR_ONLY",
+      "full_analytics_interval_minutes": 40,
+      "entry_authorization": false,
+      "new_source_http": 0,
+      "approved_text_change": "Clarify that next 5-minute check is price/cancellation only; full volume/OI/liquidation entry confirmation remains separate",
+      "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json"
+    },
+    "actual_market_acceptance": false,
+    "proof": "checkpoints/light-price-recheck-release-20261006.json",
+    "collector_deployment": {
+      "cloud_run": 37465880165,
+      "head": "1ea35c32c137a7027a36762efac38b40c4856c17",
+      "artifact": 11414414877,
+      "zip_sha256": "7b343151d40a2d8b37464086c57c3e63e188abed1a281d92b08e93dcc31c99ad",
+      "prepare-proof.json": {
+        "status": "UPGRADED",
+        "script": "my-report-2-hub",
+        "base_sha256": "872c902af33208c65ccbf3c149124f83fbf5620b0193f706a9470ce9d8d0f8ba",
+        "output_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "collector_version": "report2-public-collector-v8-light-price-recheck-20261006",
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false
+      },
+      "first-live-sample-proof.json": {
+        "status": "FIRST_LIVE_SAMPLE_CLOSED",
+        "actor": "HUB_PUBLIC_COLLECTOR",
+        "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+        "bucket": 1791291000000,
+        "completed_ts": 1791291004542,
+        "contracts": 371,
+        "shards": 6,
+        "external_requests": 4,
+        "rows_read": 19,
+        "rows_written": 11,
+        "payload_bytes": 111313,
+        "batch_contracts": 371,
+        "batch_shards": 6,
+        "analytical_decision": false,
+        "telegram": false,
+        "paid_source": false,
+        "verified_at": "2026-10-06T12:50:23.275Z"
+      },
+      "deployment-proof.json": {
+        "status": "DEPLOYED_VERIFIED",
+        "script": "my-report-2-hub",
+        "expected_module_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+        "response_sha256": "80e9688959aed206f6edaec3dc6130d1d37157cbbb8aec526627686c82b0f47e",
+        "collector_marker": true,
+        "exact_module_matches": true,
+        "price_recheck_binding_present": true,
+        "crons": [
+          "*/5 * * * *",
+          "3-58/5 * * * *"
+        ],
+        "binding_names": [
+          "ALERT_DISPATCH_KEY",
+          "ANALYTICS_ENABLED",
+          "BYKARANTELI_API_KEY",
+          "CALIBRATION_APPLY_ENABLED",
+          "DATA_DB",
+          "DELIVERY_ENABLED",
+          "PRICE_RECHECK_ENABLED",
+          "PUBLIC_COLLECTOR_ENABLED",
+          "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+          "REPORT2_CURRENT_GENERATION",
+          "TELEGRAM_BOT_TOKEN",
+          "TELEGRAM_CHAT_ID",
+          "TELEGRAM_TEST_KEY"
+        ],
+        "secret_values_exported": false,
+        "verified_at": "2026-10-06T12:48:21.002Z"
+      },
+      "fresh_sent_idea_price_receipt_verified": false,
+      "no_actual_due_sent_idea_claimed": true
+    },
+    "next_unresolved_proved_mechanism": {
+      "source_run_id": "1791289780456-1791289794210",
+      "routes": [
+        {
+          "contract": "FIL-USDT",
+          "lane": "HYPERLIQUID_NATIVE",
+          "status": "ACQUISITION_RETURNED"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "GMX_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "FIL-USDT",
+          "lane": "LIGHTER_NATIVE",
+          "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+        },
+        {
+          "contract": "龙虾-USDT",
+          "lane": "GTRADE_NATIVE",
+          "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+        }
+      ],
+      "diagnosis": "FIRST_NATIVE_ACQUISITION_USES_FIVE_REQUESTS; SECOND_TOP2_GTRADE_CATALOG_DENIED_COMBINED_TOTAL_HTTP_BUDGET",
+      "scope": "NATURAL_TOP2_NOT_SPECIAL_MONITOR",
+      "policy": "REPAIR_FAIR_SOURCE_ADMISSION_WITH_SAME_TOTAL_FIVE_REQUEST_CAP; DO_NOT_INVENT_LEVELS_OR_MOVE_RANK"
+    }
+  },
+  "latest_collector_deployment": {
+    "cloud_run": 37465880165,
+    "head": "1ea35c32c137a7027a36762efac38b40c4856c17",
+    "artifact": 11414414877,
+    "zip_sha256": "7b343151d40a2d8b37464086c57c3e63e188abed1a281d92b08e93dcc31c99ad",
+    "prepare-proof.json": {
+      "status": "UPGRADED",
+      "script": "my-report-2-hub",
+      "base_sha256": "872c902af33208c65ccbf3c149124f83fbf5620b0193f706a9470ce9d8d0f8ba",
+      "output_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+      "collector_version": "report2-public-collector-v8-light-price-recheck-20261006",
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false
+    },
+    "first-live-sample-proof.json": {
+      "status": "FIRST_LIVE_SAMPLE_CLOSED",
+      "actor": "HUB_PUBLIC_COLLECTOR",
+      "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+      "bucket": 1791291000000,
+      "completed_ts": 1791291004542,
+      "contracts": 371,
+      "shards": 6,
+      "external_requests": 4,
+      "rows_read": 19,
+      "rows_written": 11,
+      "payload_bytes": 111313,
+      "batch_contracts": 371,
+      "batch_shards": 6,
+      "analytical_decision": false,
+      "telegram": false,
+      "paid_source": false,
+      "verified_at": "2026-10-06T12:50:23.275Z"
+    },
+    "deployment-proof.json": {
+      "status": "DEPLOYED_VERIFIED",
+      "script": "my-report-2-hub",
+      "expected_module_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+      "response_sha256": "80e9688959aed206f6edaec3dc6130d1d37157cbbb8aec526627686c82b0f47e",
+      "collector_marker": true,
+      "exact_module_matches": true,
+      "price_recheck_binding_present": true,
+      "crons": [
+        "*/5 * * * *",
+        "3-58/5 * * * *"
+      ],
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PRICE_RECHECK_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false,
+      "verified_at": "2026-10-06T12:48:21.002Z"
+    },
+    "fresh_sent_idea_price_receipt_verified": false,
+    "no_actual_due_sent_idea_claimed": true
+  },
+  "pending_top2_source_http_fairness": {
+    "schema": "TOP2_SOURCE_HTTP_FAIRNESS_RELEASE_V1",
+    "PR": 196,
+    "merged_main": "fb3d99c41bfcfcd03c9f2f0a84326b544aa8f590",
+    "tested_head": "7efff7a946faa3f1b007b793d969aad53a3c303f",
+    "cloud_run": 37467229450,
+    "artifact": 11414617806,
+    "zip_sha256": "d7a59297055058bb36fbf21f6e39c73ed77c3663c7120dd0a622213311b16ca6",
+    "status": "MERGED_COMPOSED_SOURCE_SHARE_VERIFIED_FRESH_JOINT_TOP2_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "composed_source_cases": 9,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "proof": "checkpoints/top2-source-http-fairness-release-20261006.json",
+    "original_actual_routes": [
+      {
+        "contract": "FIL-USDT",
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "FIL-USDT",
+        "lane": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE"
+      },
+      {
+        "contract": "龙虾-USDT",
+        "lane": "GTRADE_NATIVE",
+        "status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+      }
+    ],
+    "component_replay": {
+      "schema": "TOP2_NATIVE_SOURCE_SHARE_COMPONENT_REPLAY_V1",
+      "scope": "CONTROLLED_HL_ACCOUNT_PAYLOADS_WITH_RETAINED_ACTUAL_GTRADE_CATALOG_AT_ITS_ORIGINAL_CLOCK_NOT_ACTUAL_MARKET_LEVEL_ACCEPTANCE",
+      "original_source_head": "f726ed08575bedd4240f7c98f566e5cee678c3a3",
+      "original_catalog_clock": 1791274654409,
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "cases": [
+        {
+          "case": "BASELINE_FIRST_NATIVE_FIVE_SECOND_CATALOG_DENIED",
+          "first_accounts": 3,
+          "total_http": 5,
+          "second_status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+        },
+        {
+          "case": "TWO_SLOT_NATIVE_SAMPLE_AND_SECOND_REAL_CATALOG",
+          "first_accounts": 2,
+          "total_http": 5,
+          "second_status": "GTRADE_SYMBOL_UNSUPPORTED",
+          "retained_catalog_actual": true,
+          "first_account_payloads_controlled": true,
+          "new_second_levels": false,
+          "entry_authorized": false
+        }
+      ]
+    },
+    "hashes": "024370b0fe9f8b0c3d8a162af81af1c5f932a7d96850b5a211e5d0242770beed  runtime/runner-main.mjs\ne81d404ece5eda7e23c723b18c666eeb20fb26a04c96515db10f8c9b59640a53  runtime/src/liquidation-source-weighting.mjs\n4677cb2ccf76ff5b2426258f405eb60a940215bbd210d95f569cbd1eb01612ab  runtime/src/liquidation-extension/combined-runner-service.mjs\na859fd8b4009d964903376d216357b157f4ad532fe69d387544b6a9ca98674fa  runtime/src/liquidation-extension/runner-extension.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
+    "manual_single_candidate_preserved": true,
+    "total_http_cap": 5,
+    "no_new_second_asset_levels_invented": true
+  },
+  "pending_lossless_raw_tape_storage": {
+    "schema": "LOSSLESS_RAW_TAPE_STORAGE_RELEASE_V1",
+    "PR": 197,
+    "merged_main": "6a46a110facb150b54acfbbeb2e026415e583279",
+    "tested_head": "e1e5b14837f6a3398ec02ba72f6e69b0868f87b0",
+    "cloud_run": 37468997663,
+    "artifact": 11415509556,
+    "zip_sha256": "8c25f74544480d90b49f786d77a357c73848273e2e8ab98cee5b42a395653b02",
+    "status": "MERGED_COMPOSED_N05_STORAGE_VERIFIED_FRESH_ACTUAL_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "raw_storage_consumer_cases": 17,
+    "composed_delivery_cases": 22,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "physical_storage_cap_bytes": 1500000,
+    "inflation_guard_bytes": 8000000,
+    "exact_240_required": true,
+    "original_clocks_preserved": true,
+    "actual_missing_FIL_tape_reconstructed": false,
+    "high_volume_payload_scope": "CONTROLLED_NOT_ACTUAL_MARKET_INPUT",
+    "retained_actual_N05_cache_replay": true,
+    "hashes": "90475d0e3d711a9380f8a306ad55ef6e5875a6a0bee3c1762d5b58d6060551ed  runtime/src/htx-signed-tape.mjs\n9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71  cloudflare/public-collector/injected-worker-tail.js\n0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f  runtime/src/canonical-publication.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
+    "proof": "checkpoints/lossless-raw-tape-storage-release-20261006.json",
+    "fresh_actual_readback": {
+      "cloud_run": 37470725751,
+      "head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1628MSK_20261006.json",
+      "N05_status_by_contract": {
+        "NIL-USDT": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "FIL-USDT": "CLOSED_EXACT_FUTURES_FLOW_4H"
+      },
+      "scope": "Both current N05 windows closed; controlled storage-bound/long-growth tests retained separately, not reclassified as naturally observed boundary cases."
+    }
+  },
+  "pending_required_four_hour_retention": {
+    "schema": "REQUIRED_FOUR_HOUR_RAW_RETENTION_RELEASE_V1",
+    "PR": 198,
+    "merged_main": "2e7fb3cc8f34ffc0b4a5843a06f0266521aae1bb",
+    "tested_head": "9cf9c97d2a7509bda06583d1fd6497eebcf9c275",
+    "cloud_run": 37469884985,
+    "artifact": 11416880384,
+    "zip_sha256": "7f559ec448b000300af453ff51cf5f6bba90f092c0895050959ba9e3a8ee7cfc",
+    "status": "MERGED_COMPOSED_REQUIRED_4H_RETENTION_VERIFIED_FRESH_ACTUAL_PENDING",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "raw_storage_consumer_cases": 18,
+    "composed_delivery_cases": 22,
+    "generation_validation": "PASS",
+    "integration_checks": 37,
+    "physical_storage_cap_bytes": 1500000,
+    "inflation_guard_bytes": 8000000,
+    "exact_240_required": true,
+    "original_clocks_preserved": true,
+    "older_minutes_trimmed_only_if_storage_bound": true,
+    "required_four_hour_interval_never_shortened": true,
+    "controlled_growth_fixture_not_actual_market": true,
+    "earlier_failed_test_attempts": [
+      {
+        "run": 37469704133,
+        "head": "86c6d4fce244ee4365f592a3fd31e1897d88b8cc",
+        "reason": "CONTROLLED_FIXTURE_DID_NOT_CROSS_DECLARED_DECODE_BOUND"
+      },
+      {
+        "run": 37469803239,
+        "head": "f2b99ab5a36774eed43a6cce011f3ba2f019c35a",
+        "reason": "CONTROLLED_FIXTURE_DID_NOT_CROSS_DECLARED_DECODE_BOUND"
+      }
+    ],
+    "hashes": "db8486de235b149ee16856760fc596669803971ce4d909805ba0ff251321b3ae  runtime/src/htx-signed-tape.mjs\n9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71  cloudflare/public-collector/injected-worker-tail.js\n0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f  runtime/src/canonical-publication.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
+    "proof": "checkpoints/required-four-hour-raw-retention-release-20261006.json",
+    "fresh_actual_readback": {
+      "cloud_run": 37470725751,
+      "head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "checkpoint": "checkpoints/ACTUAL_SCHEDULED_1628MSK_20261006.json",
+      "N05_status_by_contract": {
+        "NIL-USDT": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "FIL-USDT": "CLOSED_EXACT_FUTURES_FLOW_4H"
+      },
+      "scope": "Both current N05 windows closed; controlled storage-bound/long-growth tests retained separately, not reclassified as naturally observed boundary cases."
+    }
+  },
+  "strategy_feasibility": {
+    "schema": "OWNER_CURRENT_STRATEGY_FEASIBILITY_V2",
+    "updated_utc": "2026-10-06T13:36:41.251Z",
+    "verdict": "TECHNICALLY_FEASIBLE_WITH_CURRENT_VERIFIED_SOURCES_WITH_PARTIAL_COVERAGE; PRODUCTION_DELIVERY_NOT_YET_ACCEPTED",
+    "owner_requirements": {
+      "liquidation_map_optional": true,
+      "use_real_levels_on_supported_assets_mark_unavailable_elsewhere": true,
+      "all16_simultaneously_required": false,
+      "use_maximum_factually_useful_blocks_typically_6_to_10": true,
+      "fixed_daily_signal_count_required": false
+    },
+    "source_sufficiency_basis": {
+      "cloud_run": 37470725751,
+      "head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "run_id": "1791293174910-1791293186480",
+      "participating_blocks": {
+        "NIL-USDT": 11,
+        "FIL-USDT": 9
+      },
+      "FIL_interest_score": 82,
+      "FIL_direction": "SHORT",
+      "both_candidates_N05": "CLOSED_EXACT_FUTURES_FLOW_4H"
+    },
+    "limits": "Participating blocks include neutral factual context. Evidence supports technical implementation, not profitable trades, guaranteed signal frequency, universal source coverage or completed Telegram delivery.",
+    "actual_signal_flow_restored": true,
+    "project_complete": false,
+    "no_additional_strategy_simplification_justified_by_current_evidence": true,
+    "no_strategy_threshold_or_direction_waiver": true,
+    "source_http_for_this_assessment": 0,
+    "correction": "Previous infeasibility statement relied on requirements not present in current owner strategy (mandatory all16, universal four levels each side, guaranteed daily signal count); withdrawn.",
+    "evidence": [
+      "checkpoints/ACTUAL_SCHEDULED_1628MSK_20261006.json",
+      "checkpoints/EXACT_1628_DIRECTION_PLAN_DIAGNOSIS_20261006.json"
+    ],
+    "next": "OWNER_REVIEW_NEW_PLAIN_LANGUAGE_TELEGRAM_DRAFT_AND_EXACT_LIGHT_RECHECK",
+    "actual_signal_flow_scope": "ONE_FRESH_QUALIFIED_OBSERVE_SENT_MESSAGE146; NO_FREQUENCY_OR_ENTRY_GUARANTEE"
+  },
+  "pending_current_observation_pipeline": {
+    "schema": "CURRENT_OBSERVATION_PIPELINE_RELEASE_V1",
+    "PR": 199,
+    "merged_main": "c93ecf19cb6c709977077d98a0fcbcd6ad4f18a1",
+    "tested_head": "ed7417400c916526b658e202a6267e3fd3ed05bf",
+    "cloud_run": 37474467465,
+    "artifact": 11419105541,
+    "zip_sha256": "a252f4b184ba820ad212054d8cd8f02bc8794d0ad8c702622197264e9502db30",
+    "status": "MERGED_EXACT_COMPOSED_OBSERVATION_PIPELINE_VERIFIED_FRESH_PRODUCTION_PENDING",
+    "composed_and_regression_cases": 42,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "tested_code_exactly_matches_merged": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "component_replay": {
+      "schema": "CURRENT_OBSERVATION_PIPELINE_COMPONENT_REPLAY_V1",
+      "scope": "RETAINED_SOURCE_FACTS_AT_ORIGINAL_CLOCK; RECONSTRUCTED_ADAPTER_ENVELOPE_AND_LOCAL_PUBLICATION; INJECTED_RELAY_ONLY",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "fresh_SENT": false,
+      "source_cloud_run": 37470725751,
+      "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "run_id": "1791293174910-1791293186480",
+      "snapshot_id": "S392:FIL-USDT:1791293228860",
+      "original_fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+      "cases": [
+        {
+          "case": "ACTUAL_PRIOR_REJECTION_RETAINED",
+          "final_rows_in_original_lifecycle_window": 0
+        },
+        {
+          "case": "CURRENT_RANGE_REPLACES_UNUSABLE_HISTORICAL_FALLBACK",
+          "level": 1.0763,
+          "cancel": 1.2109,
+          "score": 82
+        },
+        {
+          "case": "CONTROLLED_LONG_MIRROR_NOT_ACTUAL_MARKET_DIRECTION"
+        },
+        {
+          "case": "ROUTED_CANCEL_CLOCK_RANGE_DIRECTION_SCORE_VETO_REFUSALS",
+          "count": 8
+        },
+        {
+          "case": "QUALIFIED_CANONICAL_NOT_UNQUALIFIED_TELEMETRY",
+          "status": "CLOSED",
+          "entry_authorized": false
+        },
+        {
+          "case": "COMPOSED_LOCAL_PIPELINE",
+          "injected_message_id": 9002,
+          "relay_invocations": 1,
+          "duplicates": 0,
+          "production_sent": false
+        },
+        {
+          "case": "NIL_ACTUAL_REFUSAL_PRESERVED"
+        }
+      ]
+    },
+    "changes": {
+      "historical_fallback": "Only a new qualified early observation without routed/prospective active trigger may use a newer verified range when the historical candle cancellation is already true.",
+      "lifecycle": "Same-run qualified canonical OBSERVE direction owns the new idea; unqualified telemetry bias is not an independently CLOSED opposite direction."
+    },
+    "preserved": [
+      "score70",
+      "strategy weights",
+      "source clocks",
+      "original TTL",
+      "real CLOSED direction conflicts",
+      "routed/prospective cancellation",
+      "hard veto/risk/data/terminal removals",
+      "previously visible cleanup",
+      "WAIT/ENTRY",
+      "approved formatter/golden bytes",
+      "HTTP/D1 caps",
+      "analytics40min",
+      "collector5min"
+    ],
+    "hashes": {
+      "adapter": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+      "lifecycle": "38fda1629825d6f7e8022891aaf060526d3023b8296b610c15ff6b66698725de",
+      "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503"
+    },
+    "original_pipeline_readback": {
+      "run": 37473627292,
+      "head": "245aa739427e9460de3144d0807475ff54528d46",
+      "artifact": 11418720063,
+      "zip_sha256": "7a884bbe9bed3a4e28aaf2672f8177c25886a6f903b12a5169c4d6f3733a7162",
+      "requests": 9,
+      "rows_read": 59,
+      "ledger_rows_written": 4,
+      "source_writes": 0,
+      "unknown_ops": 0,
+      "final_rows_found": 0,
+      "source_cloud_run": 37470725751
+    },
+    "prior_failed_attempts": [
+      {
+        "kind": "reader",
+        "run": 37473078912,
+        "reason": "ASSERTED_REQUIRED_FINAL_AT_CANONICAL_OBSERVATION_TS; FINAL_ABSENT"
+      },
+      {
+        "kind": "reader",
+        "run": 37473340592,
+        "reason": "ASSERTED_REQUIRED_FINAL_IN_DEEP_WINDOW; FINAL_ABSENCE_IS_VALID_UNPROVISIONED_STATE"
+      },
+      {
+        "kind": "release",
+        "run": 37474123843,
+        "reason": "CONTROLLED_TERMINAL_FIXTURE_USED_UNSUPPORTED_STAGE_AND_ADAPTER_INTEGRITY_MANIFEST_NOT_YET_UPDATED"
+      }
+    ],
+    "local_validation_limit": "Unassembled scratch runtime lacks inherited existing-source-consumer.mjs; release acceptance uses the exact assembled cloud runtime, all checks passed.",
+    "fresh_sent": false,
+    "project_complete": false,
+    "proof": "checkpoints/current-observation-pipeline-release-20261006.json",
+    "fresh_actual_readback": {
+      "cloud_run": 37487195477,
+      "head": "bc744628b5b96dec9d2aa6704c2010867f3cca2a",
+      "run_id": "1791300272369-1791300282948",
+      "contract": "QNT-USDT",
+      "snapshot_id": "S392:QNT-USDT:1791300373364",
+      "publication_id": "PUB:b32b638ddf17e08e7729ca4ca9da11e7fa4ef4c6",
+      "fingerprint": "51bd41963f52b40897b2eb9e6dd95f1b09b152b6c93d83a38ec464e1e3ed7d31",
+      "telegram_message_id": "146",
+      "sent_utc": "2026-10-06T15:26:18.938Z",
+      "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
+      "scope": "FRESH_AUTOMATIC_OBSERVE_NOT_ENTRY_OR_PROFITABILITY",
+      "proof": "checkpoints/ACTUAL_QNT_OBSERVE_SENT_1826MSK_20261006.json",
+      "entry_authorized": false
+    }
+  },
+  "latest_telegram_acceptance": {
+    "cloud_run": 37511270818,
+    "head": "84d3d10d563bfce87dec7cf8983c7674fd518433",
+    "run_id": "1791311184115-1791311208966",
+    "contract": "PUMP-USDT",
+    "snapshot_id": "S392:PUMP-USDT:1791311372493",
+    "publication_id": "PUB:aabb7d297e4c5bb11b9cb901f7a094c0fb7c3492",
+    "fingerprint": "3b61d894f3a8b642a29ff3a48911f1abe0dc50344c47d8f3f3426c18a254f588",
+    "telegram_message_id": "147",
+    "sent_ts": 1791311381879,
+    "status": "ACTUAL_FRESH_APPROVED_OBSERVE_SENT_VERIFIED",
+    "scope": "PRE200_V4_PRESENTATION; FRESH_PUMP_OBSERVE_NOT_ENTRY",
+    "proof": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json"
+  },
+  "owner_telegram_plain_language_request": {
+    "requested_at_msk": "2026-10-06T18:30:26+03:00",
+    "confirmation_required_by_owner_at_msk": "2026-10-06T18:31:15+03:00",
+    "status": "OWNER_APPROVED_IMPLEMENTED_MAIN",
+    "scope": "NEW_TELEGRAM_PRESENTATIONS",
+    "requested_changes": [
+      "Explain OI simply and combine 1h/4h; remove exact OI clock windows from Telegram text",
+      "State buy/sell sample amounts clearly in USDT and preserve bounded-sample meaning",
+      "Remove price-recheck schedule lines and snapshot date from Telegram presentation",
+      "Keep ticker direction stage score basis conditions cancellation targets liquidations"
+    ],
+    "backend_price_rechecks_remain_enabled": true,
+    "original_saved_canonical_texts_not_rewritten": true,
+    "approved_at_msk": "2026-10-06T21:37:54+03:00",
+    "release_proof": "checkpoints/OWNER_APPROVED_TELEGRAM_V5_RELEASE_20261006.json",
+    "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt"
+  },
+  "latest_verified_telegram_presentation_release": {
+    "PR": 200,
+    "merged_main": "fadb2683a15544ce60b657b44a58a652825011e5",
+    "tested_head": "78fd99b464744b50c12da9b592d26b5630c81bb2",
+    "cloud_run": 37513865833,
+    "artifact": 11436491376,
+    "zip_sha256": "a0539ca640f67a4420d35686daa0bd7980f3df763b21476b58d3d69dd7856390",
+    "composed_cases": 27,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "proof": "checkpoints/OWNER_APPROVED_TELEGRAM_V5_RELEASE_20261006.json"
+  },
+  "latest_actual_light_price_readback": {
+    "contract": "QNT-USDT",
+    "telegram_message_id": "146",
+    "status": "EXPIRED",
+    "checked_ts": 1791302403857,
+    "scope": "ACTUAL_FINAL_EXPIRED_RECEIPT_VERIFIED; FULL_FIVE_MINUTE_HISTORY_NOT_RETAINED_IN_THIS_TASK_ROW",
+    "proof": "checkpoints/QNT_ACTUAL_LIGHT_PRICE_READBACK_20261006.json",
+    "original_collector_window": "checkpoints/QNT_ORIGINAL_COLLECTOR_WINDOW_20261006.json",
+    "collector_cadence_verified": true
+  },
+  "latest_actual_liquidation_acceptance": {
+    "contract": "ZEC-USDT",
+    "source_cloud_run": 37511270818,
+    "run_id": "1791311184115-1791311208966",
+    "levels": 4,
+    "above": 2,
+    "below": 2,
+    "source": "gTrade official SDK 1.8.10",
+    "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+    "reported_at": "2026-10-06T21:29:49.795+03:00",
+    "scope": "ACTUAL_FRESH_LABELLED_POSITION_BASED_ESTIMATES_IN_ANALYTICAL_SNAPSHOT; NO_ZEC_DIRECTION_OR_TELEGRAM_SEND",
+    "proof": "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json"
+  }
+}
