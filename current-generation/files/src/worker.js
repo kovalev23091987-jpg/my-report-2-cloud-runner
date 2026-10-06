@@ -3,7 +3,7 @@ import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
 import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
-import {bindSelectedEarlyEvidence} from './selected-early-evidence.mjs';
+import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
@@ -19007,41 +19007,6 @@ const __REPORT2_ORIGINAL_HANDLER = {
           }
         );
 
-      /*
-       * The early-feature owner must observe the scan that belongs to this
-       * run before shortlist selection and canonical assessment.  The runner
-       * supplies the existing persistence sidecar through this hook; no early
-       * formula, threshold or wave rule is duplicated here.
-       */
-      let currentCycleEarlyPersistence = {
-        status: "HOOK_NOT_CONFIGURED",
-        persisted: 0,
-      };
-      if (typeof env?.REPORT2_CURRENT_CYCLE_EARLY_PERSIST === "function") {
-        try {
-          currentCycleEarlyPersistence =
-            await env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST({
-              current_scan_ts:
-                Number(scan?.timestamp) ||
-                null,
-              source_run_id:
-                String(runId || ""),
-              now_ts:
-                Number(scan?.timestamp) ||
-                Date.now(),
-            });
-        } catch (error) {
-          currentCycleEarlyPersistence = {
-            status: "DATA_NOT_CLOSED",
-            reason: "CURRENT_CYCLE_EARLY_PERSISTENCE_FAILED",
-            error: String(error?.message || error).slice(0, 300),
-            persisted: 0,
-          };
-        }
-      }
-      env.REPORT2_CURRENT_CYCLE_EARLY_RESULT =
-        currentCycleEarlyPersistence;
-
       const deepCheckQueue =
         buildDeepCheckQueue(
           scan
@@ -19113,6 +19078,43 @@ const __REPORT2_ORIGINAL_HANDLER = {
               scan,
               deepCheckQueue
             );
+
+      /*
+       * The early-feature owner must observe the scan that belongs to this
+       * run before shortlist selection and canonical assessment.  The runner
+       * prioritizes the ordinary market leaders in the existing two-write envelope.
+       * The runner supplies the persistence sidecar through this hook; no early
+       * formula, threshold or wave rule is duplicated here.
+       */
+      let currentCycleEarlyPersistence = {
+        status: "HOOK_NOT_CONFIGURED",
+        persisted: 0,
+      };
+      if (typeof env?.REPORT2_CURRENT_CYCLE_EARLY_PERSIST === "function") {
+        try {
+          currentCycleEarlyPersistence =
+            await env.REPORT2_CURRENT_CYCLE_EARLY_PERSIST({
+              current_scan_ts:
+                Number(scan?.timestamp) ||
+                null,
+              source_run_id:
+                String(runId || ""),
+              preferred_contracts: rankedEarlyPersistenceContracts(baseDiscoveryPrefilter),
+              now_ts:
+                Number(scan?.timestamp) ||
+                Date.now(),
+            });
+        } catch (error) {
+          currentCycleEarlyPersistence = {
+            status: "DATA_NOT_CLOSED",
+            reason: "CURRENT_CYCLE_EARLY_PERSISTENCE_FAILED",
+            error: String(error?.message || error).slice(0, 300),
+            persisted: 0,
+          };
+        }
+      }
+      env.REPORT2_CURRENT_CYCLE_EARLY_RESULT =
+        currentCycleEarlyPersistence;
 
       const earlyBridgeInputs =
         ["CLOSED", "PARTIAL"].includes(
@@ -20204,4 +20206,3 @@ async function __report2CloudByKProxy(request, env) {
  const provider=await fetch(target.toString(),{method:"GET",headers:{accept:"application/json",authorization:`Bearer ${apiKey}`,"user-agent":"My-Report-2-HUB/4.1-github-proxy"}}); return new Response(provider.body,{status:provider.status,headers:{"content-type":provider.headers.get("content-type")||"application/json","cache-control":"no-store"}});
 }
 export default {...__REPORT2_ORIGINAL_HANDLER,async fetch(request,env,ctx){const url=new URL(request.url);if(url.pathname==="/cloud-bykaranteli-proxy")return __report2CloudByKProxy(request,env);if(typeof __REPORT2_ORIGINAL_HANDLER.fetch!=="function")return new Response("Not Found",{status:404});return __REPORT2_ORIGINAL_HANDLER.fetch(request,env,ctx);}};
-
