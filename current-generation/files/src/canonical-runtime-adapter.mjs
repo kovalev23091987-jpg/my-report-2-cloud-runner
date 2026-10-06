@@ -184,8 +184,14 @@ function observationPlan({contract,publication,route,direction,price,opportunity
  // A stale anomaly boundary behind the current price is not a forward watch.
  // A qualified early direction may instead reuse this snapshot's verified N10
  // range. Existing routed triggers/cancellation and entry plans keep precedence.
- const range=allow_range_observation&&routedLevel===null&&(level===null||cancel===null)?verifiedObservationRange({evidence:technical_evidence,contract,direction,price,decision_ts:observedTs}):null;
- if(range){level=range.level;cancel=range.cancel;note({technical_range_receipt:range});}
+ const oldCancellationTrue=cancel!==null&&((direction==='LONG'&&price<cancel)||(direction==='SHORT'&&price>cancel));
+ // A historical statistical candle is not the active cancellation contract of
+ // a new qualified early observation. Only a newer verified closed range may
+ // replace that unusable fallback; routed/live prospective plans stay binding.
+ const historicalFallbackUnusable=oldCancellationTrue&&!prospective&&route?.trigger==null;
+ const rangeCandidate=allow_range_observation&&routedLevel===null&&(level===null||cancel===null||historicalFallbackUnusable)?verifiedObservationRange({evidence:technical_evidence,contract,direction,price,decision_ts:observedTs}):null;
+ const range=rangeCandidate&&(!oldCancellationTrue||(historicalFallbackUnusable&&finite(event?.event_close_ts)!==null&&event.event_close_ts<rangeCandidate.window_end))?rangeCandidate:null;
+ if(range){level=range.level;cancel=range.cancel;note({technical_range_receipt:range,...(oldCancellationTrue?{replaced_historical_fallback_reason:'CANCELLATION_ALREADY_TRUE_AT_SNAPSHOT'}:{})});}
  note({anomaly_candle_closed:anomalyClosed,event_high:eventHigh,event_low:eventLow,routed_trigger_price:routedLevel,selected_trigger_price:level,cancellation_price:cancel});
  if(level===null||cancel===null)return reject(!anomalyClosed?'CLOSED_ANOMALY_CANDLE_REQUIRED':level===null?'NO_FORWARD_FACTUAL_PRICE_TRIGGER':'OPPOSITE_FACTUAL_CANDLE_BOUNDARY_REQUIRED');
  // The stated cancellation condition must still be false at this snapshot.
@@ -356,4 +362,3 @@ export function buildRuntimeCanonicalBundle({
  return {version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,block_rendered_results,parity_fingerprint:canonical?.analytical_fingerprint??null};
 }
 export default{CANONICAL_RUNTIME_ADAPTER_VERSION,resolveCanonicalDirection,selectCanonicalPublicationState,selectCanonicalInterestBasis,buildRuntimeCanonicalBundle};
-
