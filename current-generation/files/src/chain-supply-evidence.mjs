@@ -113,7 +113,16 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
  if(!db)throw new Error('CHAIN_SUPPLY_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),id=exactIdentity(asset_identity);
  if(!/^[^\s-]+-USDT$/u.test(htxContract)||!id||(id.asset_kind==='NATIVE'&&htxContract!==nativeContract(id)))return{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  const source=sourceFor(id),ttl=SOURCE_POLICIES[source].ttl_ms,dailyCap=SOURCE_POLICIES[source].daily_cap;
- await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION&&cached.contract===htxContract&&(cached.evidence||[]).every(row=>row.htx_contract===htxContract))return cached;
+ await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION&&cached.contract===htxContract&&(cached.evidence||[]).every(row=>row.htx_contract===htxContract)){
+  const reduction=cached.evidence.find(row=>row.block_id==='N03'&&row.metric_family==='SUPPLY_DECREASE');
+  if(reduction&&!cached.evidence.some(row=>row.block_id==='N02')&&cached.current_observation){
+   // Derive only from the retained original finalized observation; never
+   // renew its receipt, expiry, comparison history or transport reservation.
+   const context=normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method:reduction.identity_method},current:{...cached.current_observation,genesis_hash:reduction.genesis_hash,commitment:reduction.commitment,supply_measure:reduction.supply_measure},previous:{chain:reduction.chain,address:id.address,supply:reduction.previous_supply_base_units,decimals:reduction.decimals,block_ref:reduction.previous_block_ref,source_ts:reduction.previous_source_ts,finalized:true},observed_ts:reduction.observed_ts});
+   return{...cached,evidence:[...cached.evidence,...context.evidence.filter(row=>row.block_id==='N02')]};
+  }
+  return cached;
+ }
  const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(source,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');if([CHAIN_SUPPLY_EVIDENCE_VERSION,'chain-supply-evidence-v7-cardano-koios-20261005','chain-supply-evidence-v6-native-solana-20261004','chain-supply-evidence-v5-native-chronology-20261004','chain-supply-evidence-v4-receipt-clock-20261004'].includes(prior?.version)&&prior.status==='CLOSED'&&prior.summary?.finalized===true&&prior.current_observation)previous={...prior.current_observation,finalized:true};}catch{}
  const attempts=id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
