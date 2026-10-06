@@ -1,8 +1,9 @@
+import {selectGTradePinnedPositionSample,buildGTradePinnedRpcBatch,decodeGTradePinnedRpcSnapshot,GTRADE_RPC} from './gtrade-pinned-position-snapshot.mjs';
 import {readJson} from './io.mjs';import {normalizeGTrade,resolveGTradeCryptoMarket} from './gtrade.mjs';import {createGTradeAcquisition} from './gtrade-runtime-bridge.mjs';import {timestamp} from './core.mjs';
 const URLS={variables:'https://backend-arbitrum.gains.trade/trading-variables',trades:'https://backend-arbitrum.gains.trade/open-trades',prices:'https://backend-pricing.eu.gains.trade/charts'};
 export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,clock=Date.now,max_wall_ms=20000}={}){
  if(!sdk?.getLiquidationPrice||!sdk?.buildLiquidationPriceContext)throw Error('PINNED_GTRADE_SDK_REQUIRED');
- const snapshots=new Map(),catalogs=new Map(),catalogValues=new Map();
+ const snapshots=new Map(),catalogs=new Map(),catalogValues=new Map(),pinnedPositions=new Map();
  const loadCatalog=(run_id,deadline_ts)=>{if(catalogs.has(run_id))return catalogs.get(run_id);const promise=readJson(URLS.variables,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(10000,Number(deadline_ts)-clock())),max_bytes:8000000}).then(raw=>{catalogValues.set(run_id,raw);return raw;});catalogs.set(run_id,promise);return promise;};
  const loadSnapshot=(run_id,deadline_ts,catalog)=>{
   if(snapshots.has(run_id))return snapshots.get(run_id);
@@ -16,7 +17,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   })();
   snapshots.set(run_id,promise);return promise;
  };
- async function collect({contract,native_symbol,run_id,acquisition_id,deadline_ts,snapshot_admitted=false,admit_market_snapshot=null}={}){
+ async function collect({contract,native_symbol,run_id,acquisition_id,deadline_ts,snapshot_admitted=false,admit_market_snapshot=null,admit_position_snapshot=null}={}){
   if(!(Number(deadline_ts)>clock()))return{status:'GTRADE_DEADLINE_NOT_AVAILABLE',requests:0};
   const catalogCached=catalogs.has(run_id),catalog=await loadCatalog(run_id,deadline_ts),catalogCalls=catalogCached?0:1,sourceTs=timestamp(catalog.payload?.lastRefreshed);
   if(!catalog.ok)return{status:'GTRADE_HTTP_NOT_CLOSED',requests:catalogCalls,reused_catalog:catalogCached,reasons:[catalog.reason]};
@@ -26,11 +27,30 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   const cached=snapshots.has(run_id),snapshot=await loadSnapshot(run_id,deadline_ts,catalog),completed=clock(),requests=catalogCalls+(cached?0:snapshot.requests);
   if(snapshot.status!=='GTRADE_SHARED_SNAPSHOT_CLOSED')return{status:snapshot.status,requests,reused_snapshot:cached,reasons:snapshot.reasons};
   if(completed-snapshot.completed_ts>300000)return{status:'GTRADE_SHARED_SNAPSHOT_STALE',requests:0,reused_snapshot:true};
-  const c={symbol:native_symbol,route_symbol:native_symbol,run_id,snapshot_id:acquisition_id,as_of_ms:completed,received_at_ms:snapshot.completed_ts,max_age_ms:300000};
-  const normalized=normalizeGTrade({variables:snapshot.variables,trades:snapshot.trades,prices:snapshot.prices,receipts:snapshot.transport_receipts},c,sdk);
-  if(normalized.usable_for_context!==true)return{status:normalized.status||'GTRADE_NORMALIZATION_NOT_CLOSED',requests,reused_snapshot:cached,normalized};
-  const acq=createGTradeAcquisition({contract,native_symbol,run_id,acquisition_id,collection_started_ts:snapshot.started_ts,collection_completed_ts:snapshot.completed_ts,normalized_receipt:normalized,transport_receipts:snapshot.transport_receipts,sdk_version:'1.8.10'});
-  return{status:'GTRADE_ACQUIRED_SCOPED_CONTEXT',requests,reused_snapshot:cached,shared_snapshot_run_id:run_id,acquisition:acq,selected_market_positions:normalized.selected_market_positions,source_ts:normalized.source_ts};
+  const pinKey=run_id+':'+native_symbol;let pin=pinnedPositions.get(pinKey)??null,pinCalls=0;
+  if(!pin&&typeof admit_position_snapshot==='function'){
+   const selection=selectGTradePinnedPositionSample(snapshot.trades,market.pair_index);
+   if(selection.selected.length){
+    const grant=await admit_position_snapshot();
+    if(grant?.allowed===true&&grant?.new_reservation===true){
+     const body=buildGTradePinnedRpcBatch({current_block:snapshot.variables.currentBlock,selected:selection.selected});
+     pinCalls=1;
+     const raw=await readJson(GTRADE_RPC,{method:'POST',body,fetch_impl,clock,timeout_ms:Math.max(1,Math.min(10000,Number(deadline_ts)-clock())),max_bytes:2000000});
+     pin={status:raw.ok?'GTRADE_PINNED_SNAPSHOT_NOT_CLOSED':'GTRADE_PINNED_RPC_'+raw.reason,requests:1,receipt:raw.receipt};
+     if(raw.ok)try{
+      const decoded=decodeGTradePinnedRpcSnapshot({body,response:raw.payload,selected:selection.selected,current_block:snapshot.variables.currentBlock,pair_index:market.pair_index,receipt:raw.receipt,as_of_ms:clock()});
+      pin={...pin,status:decoded.trades.length?'GTRADE_PINNED_OPEN_POSITIONS_CLOSED':'GTRADE_PINNED_SELECTED_POSITIONS_NO_LONGER_OPEN',...decoded,candidate_position_count:selection.candidate_count};
+     }catch(error){pin.reason=String(error.message).slice(0,160);}
+    }else pin={status:'SKIPPED_GTRADE_PINNED_POSITION_BUDGET',reason:grant?.reason??'POSITION_SNAPSHOT_NOT_ADMITTED',requests:0};
+    pinnedPositions.set(pinKey,pin);
+   }
+  }
+  const verifiedPin=pin?.status==='GTRADE_PINNED_OPEN_POSITIONS_CLOSED'?pin:null,normalizationClock=clock();
+  const c={symbol:native_symbol,route_symbol:native_symbol,run_id,snapshot_id:acquisition_id,as_of_ms:normalizationClock,received_at_ms:verifiedPin?Math.max(snapshot.completed_ts,verifiedPin.receipt.received_ts):snapshot.completed_ts,max_age_ms:300000};
+  const normalized=normalizeGTrade({variables:snapshot.variables,trades:verifiedPin?verifiedPin.trades:snapshot.trades,prices:snapshot.prices,receipts:verifiedPin?[...snapshot.transport_receipts,verifiedPin.receipt]:snapshot.transport_receipts,pinned_positions:verifiedPin?.evidence??null},c,sdk);
+  if(normalized.usable_for_context!==true)return{status:normalized.status||'GTRADE_NORMALIZATION_NOT_CLOSED',requests:requests+pinCalls,reused_snapshot:cached,normalized,pinned_position_status:pin?.status??'PINNED_POSITION_SOURCE_NOT_REQUESTED'};
+  const acq=createGTradeAcquisition({contract,native_symbol,run_id,acquisition_id,collection_started_ts:snapshot.started_ts,collection_completed_ts:verifiedPin?Math.max(snapshot.completed_ts,verifiedPin.receipt.received_ts):snapshot.completed_ts,normalized_receipt:normalized,transport_receipts:verifiedPin?[...snapshot.transport_receipts,verifiedPin.receipt]:snapshot.transport_receipts,sdk_version:'1.8.10'});
+  return{status:'GTRADE_ACQUIRED_SCOPED_CONTEXT',requests:requests+pinCalls,pinned_position_status:pin?.status??'PINNED_POSITION_SOURCE_NOT_REQUESTED',position_source_clock_known:normalized.source_clock_closed===true,reused_snapshot:cached,shared_snapshot_run_id:run_id,acquisition:acq,selected_market_positions:normalized.selected_market_positions,source_ts:normalized.source_ts};
  }
  collect.nativeMarketCoverage=({run_id,native_symbol}={})=>{
   const catalog=catalogValues.get(run_id);if(!catalog)return{status:'CATALOG_DISCOVERY_REQUIRED'};
@@ -41,7 +61,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
  };
  collect.hasRunSnapshot=run_id=>snapshots.has(run_id);
  collect.estimateHttpCost=({run_id,native_symbol}={})=>{const catalog=catalogValues.get(run_id);if(!catalog)return 1;if(!catalog.ok||!Array.isArray(catalog.payload?.pairs))return 0;if(!resolveGTradeCryptoMarket(catalog.payload,native_symbol).supported)return 0;return snapshots.has(run_id)?0:2;};
- collect.clearRun=run_id=>{snapshots.delete(run_id);catalogs.delete(run_id);catalogValues.delete(run_id);};
+ collect.clearRun=run_id=>{snapshots.delete(run_id);catalogs.delete(run_id);catalogValues.delete(run_id);for(const key of pinnedPositions.keys())if(key.startsWith(run_id+':'))pinnedPositions.delete(key);};
  collect.snapshotCount=()=>snapshots.size;
  collect.catalogCount=()=>catalogs.size;
  return collect;

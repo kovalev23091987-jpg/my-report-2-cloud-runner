@@ -1,5 +1,6 @@
+import {permittedGTradePinnedRpcBatch} from './gtrade-pinned-position-snapshot.mjs';
 import {createHash} from 'node:crypto';
-const ALLOWED=new Set(['trade.hyperperps.app','api.hyperliquid.xyz','api.0xarchive.io','bykaranteli.com','backend-arbitrum.gains.trade','backend-pricing.eu.gains.trade','xoomar.com','node.liqflow.app','mainnet.zklighter.elliot.ai','arbitrum.gmxapi.io','gmx.squids.live']);
+const ALLOWED=new Set(['arb1.arbitrum.io','trade.hyperperps.app','api.hyperliquid.xyz','api.0xarchive.io','bykaranteli.com','backend-arbitrum.gains.trade','backend-pricing.eu.gains.trade','xoomar.com','node.liqflow.app','mainnet.zklighter.elliot.ai','arbitrum.gmxapi.io','gmx.squids.live']);
 export function providerErrorDetails(payload,{headers={},request_id=null}={}){
  const token=v=>typeof v==='number'?String(v):typeof v==='string'&&/^[A-Za-z0-9_.:-]{1,100}$/.test(v)?v:null;
  let message=payload?.error?.message??payload?.message??(typeof payload?.error==='string'?payload.error:null);
@@ -13,7 +14,8 @@ export async function readJson(url,{method='GET',body,headers={},fetch_impl=glob
  if(method==='POST'){
   const hyper=u.hostname==='api.hyperliquid.xyz'&&u.pathname==='/info'&&['metaAndAssetCtxs','recentTrades','clearinghouseState'].includes(body?.type);
   const gmx=u.hostname==='gmx.squids.live'&&u.pathname==='/gmx-synthetics-arbitrum:prod/api/graphql'&&typeof body?.query==='string'&&body.query.startsWith('query RepresentativeGmxPositions')&&/^0x[0-9a-f]{40}$/i.test(body?.variables?.market||'');
-  if(!hyper&&!gmx)throw Error('UNAPPROVED_POST_OPERATION');
+  const gtrade=u.hostname==='arb1.arbitrum.io'&&u.pathname==='/rpc'&&permittedGTradePinnedRpcBatch(body);
+  if(!hyper&&!gmx&&!gtrade)throw Error('UNAPPROVED_POST_OPERATION');
  }
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout_ms);
  const receipt={url:u.toString(),method,started_ts:clock(),request_body:body??null,transport:'DIRECT_READ_ONLY_HTTP',authentication:Object.keys(headers).some(k=>/authorization|api-key/i.test(k))?'CALLER_CONFIGURED_HEADER':'NONE'};
