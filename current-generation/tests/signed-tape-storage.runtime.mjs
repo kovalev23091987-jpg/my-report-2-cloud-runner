@@ -53,7 +53,7 @@ test('DB denial still prevents persistence and codec does not raise the physical
 });
 test('growing deferred history trims whole old minutes without crowding out exact current four hours',()=>{
  const a=tape.verifiedSignedMinutes({snapshot:snapshot(),contract,now:T}),latest=tape.mergeSignedTape({acquisition:a,now:T}).ring;
- const older=Array.from({length:760},(_,i)=>{const m=structuredClone(a.minutes[i%240]);m.start_ts=latest.minutes[0].start_ts-(760-i)*MIN;for(let j=0;j<m.fills.length;j++){m.fills[j].ts=m.start_ts+1000+j;m.fills[j].id=String(200000000000000000000n+BigInt(i*60+j));}m.raw_sha256=hash(m.fills);return m;});
+ const older=Array.from({length:1000},(_,i)=>{const m=structuredClone(a.minutes[i%240]);m.start_ts=latest.minutes[0].start_ts-(1000-i)*MIN;for(let j=0;j<m.fills.length;j++){m.fills[j].ts=m.start_ts+1000+j;m.fills[j].id=String(200000000000000000000n+BigInt(i*60+j));}m.raw_sha256=hash(m.fills);return m;});
  const previous={...latest,minutes:older};assert.ok(Buffer.byteLength(JSON.stringify(previous))<8000000);assert.ok(Buffer.byteLength(JSON.stringify({...previous,minutes:[...older,...latest.minutes]}))>8000000);
  const result=tape.mergeSignedTape({previous,acquisition:a,now:T});assert.ok(result.ring);assert.ok(result.discarded_minutes>0);assert.ok(result.storage.storage_bytes<=1500000);assert.ok(result.storage.uncompressed_bytes<=8000000);
  assert.deepEqual(result.ring.minutes.slice(-240),latest.minutes);assert.deepEqual(tape.signedTapeFourHourFlow({ring:result.ring,contract,now:T}).evidence,tape.signedTapeFourHourFlow({ring:latest,contract,now:T}).evidence);assert.equal(tape.signedTape24hEvidence({ring:result.ring,now:T}).evidence.length,0);
