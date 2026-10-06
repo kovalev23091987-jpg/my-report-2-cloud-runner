@@ -73,10 +73,13 @@ export function rotateEvidenceRoleRoutes(routes,key){
  if(!routes.length)return [];
  const eligible=routes.map((route,index)=>({route,index,tickets:EVIDENCE_ROUTE_PRIORITY[route.name]??1}));
  const tickets=eligible.flatMap(row=>Array(row.tickets).fill(row.index));
- const first=tickets[rotation(key,tickets.length)];
+ const priorityNames=new Set(['LARGE_TRADES','TOKEN_SCHEDULE','CHAIN_SUPPLY','SECTOR','SECTOR_COINGECKO','TOKEN_CALENDAR']);
+ const priority=eligible.filter(row=>priorityNames.has(row.route.name));
+ const priorityTickets=priority.flatMap(row=>Array(row.tickets).fill(row.index));
+ const first=(priorityTickets.length?priorityTickets:tickets)[rotation(key,priorityTickets.length||tickets.length)];
  // Each eligible route remains present exactly once: a cached fact costs no
 // additional HTTP, and a quota/backoff skip must not suppress the next route.
- return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
+ return [eligible[first],...eligible.filter(row=>row.index!==first).sort((a,b)=>Number(priorityNames.has(b.route.name))-Number(priorityNames.has(a.route.name))||b.tickets-a.tickets||a.index-b.index)].map(row=>row.route);
 }
 export function exactCapabilityIdentity(params={}){
  const contract=String(params?.contract||'').trim().toUpperCase(),identity=params?.asset_identity,method=String(params?.identity_method||'').trim();
