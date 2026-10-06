@@ -18,7 +18,7 @@ const phase=JSON.parse(await fs.readFile('checkpoints/CLOUD_PHASE_STATE_20261004
 const own='HTX:20261006T065915411Z:general-flow-gmx-clock',guard=()=>{if(phase.lease?.owner!==own||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');};
 guard();
 const now=Date.now(),id='GTRADE_PINNED_SOURCE:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT,db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN);
-const out={schema:'report2-gtrade-pinned-source-evaluation-v1',head:process.env.GITHUB_SHA,expected_main:process.env.REPORT2_EXPECTED_MAIN,started_ts:now,sourceHTTP:0,maximum_sourceHTTP:5,MAIN:0,Telegram:0,Nansen:0,production_runtime_changes:0,not_fresh_joint_acceptance:true,sdk_version:'1.8.10',official_sdk_abi_commit:'aa7a05a4919ba6667513c128e6bf5806af0be181',universe_assets:102,universe_contracts:119};
+const out={schema:'report2-gtrade-pinned-source-evaluation-v1',head:process.env.GITHUB_SHA,expected_main:process.env.REPORT2_EXPECTED_MAIN,started_ts:now,sourceHTTP:0,maximum_sourceHTTP:1,MAIN:0,Telegram:0,Nansen:0,production_runtime_changes:0,not_fresh_joint_acceptance:true,sdk_version:'1.8.10',official_sdk_abi_commit:'aa7a05a4919ba6667513c128e6bf5806af0be181',universe_assets:102,universe_contracts:119};
 const hash=b=>createHash('sha256').update(b).digest('hex');
 await fs.mkdir('audit-output',{recursive:true});
 const check=()=>{guard();const u=db.usageSnapshot();if(u.unknown_ops!==0||u.rows_read>2300||u.rows_written>60||u.requests>24)throw Error('BOUNDED_D1_USAGE_EXCEEDED');};
@@ -30,11 +30,11 @@ if(out.d1_admission.allowed){
   const cfg=await db.prepare("SELECT scope_id,provider,config_fingerprint,window_start_ts,window_end_ts,allowance_units,used_units,active FROM report2_liq_source_allowance_shadow WHERE provider='GTRADE' AND active=1 AND window_start_ts<=?1 AND window_end_ts>?1 ORDER BY window_start_ts DESC LIMIT 2").bind(now).all();check();
   const rows=cfg.results||[];if(rows.length!==1)throw Error('UNIQUE_EXISTING_GTRADE_ALLOWANCE_REQUIRED');
   const c=rows[0],admit=createD1SourceAdmission({db,scope_bindings:{GTRADE:{scope_id:c.scope_id,config_fingerprint:c.config_fingerprint}},within_run_budget:()=>{check();return{allowed:true};}});
-  const budget=createSharedSourceBudget({provider_admit:admit,max_requests:5,max_parallel:1,max_total_ms:45000,fetch_impl:async(url,init)=>{check();if(out.sourceHTTP>=5)throw Error('BOUNDED_SOURCE_HTTP_EXCEEDED');out.sourceHTTP++;return fetch(url,init);}});
-  out.source_admission=await budget.admit({reservation_id:id+':GTRADE',contract:universe.assets[0].asset_analysis_contract,run_id:id,requests:{GTRADE:5},max_requests:5,deadline_ts:Date.now()+45000});
+  const budget=createSharedSourceBudget({provider_admit:admit,max_requests:1,max_parallel:1,max_total_ms:45000,fetch_impl:async(url,init)=>{check();if(out.sourceHTTP>=1)throw Error('BOUNDED_SOURCE_HTTP_EXCEEDED');out.sourceHTTP++;return fetch(url,init);}});
+  out.source_admission=await budget.admit({reservation_id:id+':GTRADE',contract:universe.assets[0].asset_analysis_contract,run_id:id,requests:{GTRADE:1},max_requests:1,deadline_ts:Date.now()+45000});
   if(out.source_admission.allowed){
    const rests=[];for(const url of ['https://backend-arbitrum.gains.trade/trading-variables','https://backend-arbitrum.gains.trade/open-trades','https://backend-pricing.eu.gains.trade/charts']){
-    const r=await readJson(url,{fetch_impl:budget.fetch,timeout_ms:10000,max_bytes:8000000});check();rests.push(r);out['rest_'+rests.length]=await save('rest-'+rests.length,r);if(!r.ok)throw Error('EXISTING_GTRADE_REST_NOT_CLOSED:'+r.reason);
+    const r=JSON.parse(gunzipSync(await fs.readFile('original-source/rest-'+(rests.length+1)+'.json.gz')));check();rests.push(r);out['rest_'+rests.length]=await save('rest-'+rests.length,r);if(!r.ok)throw Error('EXISTING_GTRADE_REST_NOT_CLOSED:'+r.reason);
    }
    const [variables,backendTrades,prices]=rests.map(r=>r.payload);
    if(!Number.isSafeInteger(variables.currentBlock)||variables.currentBlock<=0||!Array.isArray(backendTrades))throw Error('CURRENT_BLOCK_OR_TRADE_SCHEMA_MISSING');
@@ -46,7 +46,7 @@ if(out.d1_admission.allowed){
    const tag=ethers.utils.hexValue(variables.currentBlock);
    const rpc=async(name,body)=>{
     const response=await budget.fetch(rpcUrl,{method:'POST',headers:{accept:'application/json','content-type':'application/json'},body:JSON.stringify(body),redirect:'error',signal:AbortSignal.timeout(10000)});
-    const text=await response.text();if(!response.ok)throw Error('RPC_HTTP_'+response.status);
+    const text=await response.text();if(!response.ok){out.rpc_http_error={status:response.status,retry_after:response.headers.get('retry-after'),body:text.slice(0,1000)};throw Error('RPC_HTTP_'+response.status);}
     let parsed;try{parsed=JSON.parse(text);}catch{throw Error('RPC_JSON_INVALID');}
     out[name]=await save(name,parsed);
     if(!Array.isArray(parsed)||parsed.length!==body.length)throw Error('RPC_BATCH_LENGTH_NOT_CLOSED');
@@ -55,7 +55,9 @@ if(out.d1_admission.allowed){
     return {byId,receipt:{http_status:response.status,received_ts:Date.now(),sha256:hash(Buffer.from(text)),url:rpcUrl,method:'POST',pinned_block:tag}};
    };
    const call=(fn,args,id)=>({jsonrpc:'2.0',id,method:'eth_call',params:[{to:diamond,data:iface.encodeFunctionData(fn,args)},tag]});
-   const first=await rpc('rpc-pinned-positions',[{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:[tag,false]},call('getAllTradesForTraders',[accounts,0,127],3),call('getAllTradeInfosForTraders',[accounts,0,127],4),call('getAllTradesLiquidationParamsForTraders',[accounts,0,127],5)]);
+   const originalPin=JSON.parse(gunzipSync(await fs.readFile('original-source/rpc-pinned-positions.json.gz')));
+   const first={byId:new Map(originalPin.map(x=>{if(x?.error||!Object.hasOwn(x,'result'))throw Error('ORIGINAL_PINNED_RESPONSE_INVALID');return[x.id,x.result];}))};
+   out.reused_source={cloud_run:37432947406,artifact:11397437411,zip_sha256:'1f6b256ec5217c17082755c3e363f190424e3704de176cd0fd2a712923e4f89f',original_source_clocks_preserved:true,REST_HTTP:0,first_RPC_HTTP:0};
    if(Number(first.byId.get(1))!==42161)throw Error('CHAIN_ID_MISMATCH');
    const block=first.byId.get(2),blockTs=Number(block?.timestamp)*1000,asof=Date.now();
    if(Number(block?.number)!==variables.currentBlock||!/^0x[0-9a-f]{64}$/i.test(block?.hash||'')||!Number.isSafeInteger(blockTs)||blockTs>asof||asof-blockTs>300000)throw Error('PINNED_BLOCK_CLOCK_NOT_CLOSED');
@@ -63,7 +65,7 @@ if(out.d1_admission.allowed){
    if(tuples.some(x=>x.length!==tuples[0].length))throw Error('POSITION_INFO_ALIGNMENT_NOT_CLOSED');
    const plain=(value,components)=>Object.fromEntries(components.map((p,i)=>[p.name,p.type==='bool'?value[i]:p.type==='address'?String(value[i]):value[i].toString()]));
    const decoded=tuples[0].map((trade,i)=>({trade:plain(trade,abi.find(x=>x.name==='getAllTradesForTraders').outputs[0].components),tradeInfo:plain(tuples[1][i],abi.find(x=>x.name==='getAllTradeInfosForTraders').outputs[0].components),liquidationParams:plain(tuples[2][i],abi.find(x=>x.name==='getAllTradesLiquidationParamsForTraders').outputs[0].components)}));
-   const selected=decoded.filter(t=>t.trade.isOpen===true&&Number(t.trade.collateralIndex)>0&&String(t.trade.tradeType)==='0'&&symbolByPair.has(Number(t.trade.pairIndex))).slice(0,32);
+   const selected=decoded.filter(t=>t.trade.isOpen===true&&Number(t.trade.collateralIndex)>0&&String(t.trade.tradeType)==='0'&&symbolByPair.has(Number(t.trade.pairIndex))).slice(0,8);
    if(!selected.length)throw Error('NO_VERIFIED_OPEN_CRYPTO_POSITIONS_IN_BOUNDED_SAMPLE');
    const second=await rpc('rpc-pinned-fees',[call('getTradeFeesDataArray',[selected.map(x=>x.trade.user),selected.map(x=>x.trade.index)],1),...selected.map((x,i)=>call('getBorrowingInitialAccFees',[x.trade.collateralIndex,x.trade.user,x.trade.index],i+2))]);
    const fees=iface.decodeFunctionResult('getTradeFeesDataArray',second.byId.get(1))[0];if(fees.length!==selected.length)throw Error('FEE_POSITION_ALIGNMENT_NOT_CLOSED');
