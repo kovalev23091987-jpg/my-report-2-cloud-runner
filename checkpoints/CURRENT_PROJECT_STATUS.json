@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T13:36:41.251Z",
+  "updated_utc": "2026-10-06T13:58:10.160Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -13,43 +13,128 @@
     "TELEGRAM": "PENDING"
   },
   "latest_verified_release": {
-    "schema": "REQUIRED_FOUR_HOUR_RAW_RETENTION_RELEASE_V1",
-    "PR": 198,
-    "merged_main": "2e7fb3cc8f34ffc0b4a5843a06f0266521aae1bb",
-    "tested_head": "9cf9c97d2a7509bda06583d1fd6497eebcf9c275",
-    "cloud_run": 37469884985,
-    "artifact": 11416880384,
-    "zip_sha256": "7f559ec448b000300af453ff51cf5f6bba90f092c0895050959ba9e3a8ee7cfc",
-    "status": "MERGED_COMPOSED_REQUIRED_4H_RETENTION_VERIFIED_FRESH_ACTUAL_PENDING",
+    "schema": "CURRENT_OBSERVATION_PIPELINE_RELEASE_V1",
+    "PR": 199,
+    "merged_main": "c93ecf19cb6c709977077d98a0fcbcd6ad4f18a1",
+    "tested_head": "ed7417400c916526b658e202a6267e3fd3ed05bf",
+    "cloud_run": 37474467465,
+    "artifact": 11419105541,
+    "zip_sha256": "a252f4b184ba820ad212054d8cd8f02bc8794d0ad8c702622197264e9502db30",
+    "status": "MERGED_EXACT_COMPOSED_OBSERVATION_PIPELINE_VERIFIED_FRESH_PRODUCTION_PENDING",
+    "composed_and_regression_cases": 42,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "tested_code_exactly_matches_merged": true,
     "sourceHTTP": 0,
     "MAIN": 0,
     "production_D1": 0,
     "Telegram": 0,
-    "raw_storage_consumer_cases": 18,
-    "composed_delivery_cases": 22,
-    "generation_validation": "PASS",
-    "integration_checks": 37,
-    "physical_storage_cap_bytes": 1500000,
-    "inflation_guard_bytes": 8000000,
-    "exact_240_required": true,
-    "original_clocks_preserved": true,
-    "older_minutes_trimmed_only_if_storage_bound": true,
-    "required_four_hour_interval_never_shortened": true,
-    "controlled_growth_fixture_not_actual_market": true,
-    "earlier_failed_test_attempts": [
+    "component_replay": {
+      "schema": "CURRENT_OBSERVATION_PIPELINE_COMPONENT_REPLAY_V1",
+      "scope": "RETAINED_SOURCE_FACTS_AT_ORIGINAL_CLOCK; RECONSTRUCTED_ADAPTER_ENVELOPE_AND_LOCAL_PUBLICATION; INJECTED_RELAY_ONLY",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "fresh_SENT": false,
+      "source_cloud_run": 37470725751,
+      "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "run_id": "1791293174910-1791293186480",
+      "snapshot_id": "S392:FIL-USDT:1791293228860",
+      "original_fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+      "cases": [
+        {
+          "case": "ACTUAL_PRIOR_REJECTION_RETAINED",
+          "final_rows_in_original_lifecycle_window": 0
+        },
+        {
+          "case": "CURRENT_RANGE_REPLACES_UNUSABLE_HISTORICAL_FALLBACK",
+          "level": 1.0763,
+          "cancel": 1.2109,
+          "score": 82
+        },
+        {
+          "case": "CONTROLLED_LONG_MIRROR_NOT_ACTUAL_MARKET_DIRECTION"
+        },
+        {
+          "case": "ROUTED_CANCEL_CLOCK_RANGE_DIRECTION_SCORE_VETO_REFUSALS",
+          "count": 8
+        },
+        {
+          "case": "QUALIFIED_CANONICAL_NOT_UNQUALIFIED_TELEMETRY",
+          "status": "CLOSED",
+          "entry_authorized": false
+        },
+        {
+          "case": "COMPOSED_LOCAL_PIPELINE",
+          "injected_message_id": 9002,
+          "relay_invocations": 1,
+          "duplicates": 0,
+          "production_sent": false
+        },
+        {
+          "case": "NIL_ACTUAL_REFUSAL_PRESERVED"
+        }
+      ]
+    },
+    "changes": {
+      "historical_fallback": "Only a new qualified early observation without routed/prospective active trigger may use a newer verified range when the historical candle cancellation is already true.",
+      "lifecycle": "Same-run qualified canonical OBSERVE direction owns the new idea; unqualified telemetry bias is not an independently CLOSED opposite direction."
+    },
+    "preserved": [
+      "score70",
+      "strategy weights",
+      "source clocks",
+      "original TTL",
+      "real CLOSED direction conflicts",
+      "routed/prospective cancellation",
+      "hard veto/risk/data/terminal removals",
+      "previously visible cleanup",
+      "WAIT/ENTRY",
+      "approved formatter/golden bytes",
+      "HTTP/D1 caps",
+      "analytics40min",
+      "collector5min"
+    ],
+    "hashes": {
+      "adapter": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+      "lifecycle": "38fda1629825d6f7e8022891aaf060526d3023b8296b610c15ff6b66698725de",
+      "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503"
+    },
+    "original_pipeline_readback": {
+      "run": 37473627292,
+      "head": "245aa739427e9460de3144d0807475ff54528d46",
+      "artifact": 11418720063,
+      "zip_sha256": "7a884bbe9bed3a4e28aaf2672f8177c25886a6f903b12a5169c4d6f3733a7162",
+      "requests": 9,
+      "rows_read": 59,
+      "ledger_rows_written": 4,
+      "source_writes": 0,
+      "unknown_ops": 0,
+      "final_rows_found": 0,
+      "source_cloud_run": 37470725751
+    },
+    "prior_failed_attempts": [
       {
-        "run": 37469704133,
-        "head": "86c6d4fce244ee4365f592a3fd31e1897d88b8cc",
-        "reason": "CONTROLLED_FIXTURE_DID_NOT_CROSS_DECLARED_DECODE_BOUND"
+        "kind": "reader",
+        "run": 37473078912,
+        "reason": "ASSERTED_REQUIRED_FINAL_AT_CANONICAL_OBSERVATION_TS; FINAL_ABSENT"
       },
       {
-        "run": 37469803239,
-        "head": "f2b99ab5a36774eed43a6cce011f3ba2f019c35a",
-        "reason": "CONTROLLED_FIXTURE_DID_NOT_CROSS_DECLARED_DECODE_BOUND"
+        "kind": "reader",
+        "run": 37473340592,
+        "reason": "ASSERTED_REQUIRED_FINAL_IN_DEEP_WINDOW; FINAL_ABSENCE_IS_VALID_UNPROVISIONED_STATE"
+      },
+      {
+        "kind": "release",
+        "run": 37474123843,
+        "reason": "CONTROLLED_TERMINAL_FIXTURE_USED_UNSUPPORTED_STAGE_AND_ADAPTER_INTEGRITY_MANIFEST_NOT_YET_UPDATED"
       }
     ],
-    "hashes": "db8486de235b149ee16856760fc596669803971ce4d909805ba0ff251321b3ae  runtime/src/htx-signed-tape.mjs\n9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71  cloudflare/public-collector/injected-worker-tail.js\n0b2745280c8d005226ece542f4ef59cb28101cad03110cd09f06dbfc6796504f  runtime/src/canonical-publication.mjs\n1cdec60c33e5d1fcbbe2a744b9f1c5e396b9e29855dea2e38994ad8e0132cbb4  runtime/src/telegram-delivery-receipt.mjs\n521ffd67810c11173447cfa34dda6223ac2314b767ad489f2c492cfcfa2aeb13  runtime/src/v3-telegram-delivery-sidecar.mjs\n7c2fbcf275d6dac05104576ea3d40dd11030d308433e2f31e436e0d58d79935c  runtime/src/v3-telegram-runtime.mjs\n1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503  runtime/src/worker.js\nf7447f29267205c560afb063f6d307760060f3e9f6e966a0ec182303cedab374  runtime/src/canonical-runtime-adapter.mjs\n468caf2fc71c8c71e82725774a4b5d4b4d89acc4d5d4af411621049ed6f7834c  runtime/src/observation-technical-range.mjs\n9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad  runtime/src/manual-report-formatter.mjs\ne74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c  runtime/src/telegram-compact-formatter.mjs\n",
-    "proof": "checkpoints/required-four-hour-raw-retention-release-20261006.json"
+    "local_validation_limit": "Unassembled scratch runtime lacks inherited existing-source-consumer.mjs; release acceptance uses the exact assembled cloud runtime, all checks passed.",
+    "fresh_sent": false,
+    "project_complete": false,
+    "proof": "checkpoints/current-observation-pipeline-release-20261006.json"
   },
   "latest_actual_report": {
     "schema": "ACTUAL_SCHEDULED_JOINT_POST198_V1",
@@ -933,9 +1018,10 @@
         195,
         196,
         197,
-        198
+        198,
+        199
       ],
-      "requires": "No full analysis or Telegram acceptance invented from a price-only check; next eligible fresh naturally admitted qualified canonical needs exact SENT/message_id",
+      "requires": "First naturally admitted fresh post199 canonical report and exact same-snapshot Telegram SENT/message_id; controlled replay is not actual publication.",
       "no_serial_wait_between_repairs": true
     },
     {
@@ -1201,7 +1287,9 @@
     "FIL": "QUALIFIED_EARLY_SHORT_82; PLAN_NOT_CLOSED_CANCELLATION_ALREADY_TRUE_ON_HISTORICAL_EVENT",
     "NIL": "EARLY_DIRECTION_STATE_NOT_CLOSED",
     "telegram_sent": 0,
-    "project_complete": false
+    "project_complete": false,
+    "latest_exact_lifecycle_checkpoint": "checkpoints/current-observation-pipeline-release-20261006.json",
+    "correction": "No final row existed in original lifecycle time window. Actual destruction was LONG shadow telemetry vs qualified SHORT early direction, not an actual CLOSED final NEUTRAL decision."
   },
   "latest_weekly_delivery_diagnosis": {
     "schema": "WEEKLY_DELIVERY_EXACT_PROOF_DIAGNOSIS_V1",
@@ -2178,6 +2266,130 @@
       "checkpoints/ACTUAL_SCHEDULED_1628MSK_20261006.json",
       "checkpoints/EXACT_1628_DIRECTION_PLAN_DIAGNOSIS_20261006.json"
     ],
-    "next": "Assess historical anomaly fallback/current technical range and exact lifecycle final-row classification as one connected pipeline task; retain genuine risk/cancellation/direction gates."
+    "next": "READ_FIRST_NATURAL_POST199_PRODUCTION_REPORT_AND_EXACT_TELEGRAM_RESULT; NEVER_RESEND_1628_SNAPSHOT"
+  },
+  "pending_current_observation_pipeline": {
+    "schema": "CURRENT_OBSERVATION_PIPELINE_RELEASE_V1",
+    "PR": 199,
+    "merged_main": "c93ecf19cb6c709977077d98a0fcbcd6ad4f18a1",
+    "tested_head": "ed7417400c916526b658e202a6267e3fd3ed05bf",
+    "cloud_run": 37474467465,
+    "artifact": 11419105541,
+    "zip_sha256": "a252f4b184ba820ad212054d8cd8f02bc8794d0ad8c702622197264e9502db30",
+    "status": "MERGED_EXACT_COMPOSED_OBSERVATION_PIPELINE_VERIFIED_FRESH_PRODUCTION_PENDING",
+    "composed_and_regression_cases": 42,
+    "integration_checks": 37,
+    "generation_validation": "PASS",
+    "tested_code_exactly_matches_merged": true,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "component_replay": {
+      "schema": "CURRENT_OBSERVATION_PIPELINE_COMPONENT_REPLAY_V1",
+      "scope": "RETAINED_SOURCE_FACTS_AT_ORIGINAL_CLOCK; RECONSTRUCTED_ADAPTER_ENVELOPE_AND_LOCAL_PUBLICATION; INJECTED_RELAY_ONLY",
+      "sourceHTTP": 0,
+      "MAIN": 0,
+      "production_D1": 0,
+      "Telegram": 0,
+      "fresh_SENT": false,
+      "source_cloud_run": 37470725751,
+      "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+      "run_id": "1791293174910-1791293186480",
+      "snapshot_id": "S392:FIL-USDT:1791293228860",
+      "original_fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+      "cases": [
+        {
+          "case": "ACTUAL_PRIOR_REJECTION_RETAINED",
+          "final_rows_in_original_lifecycle_window": 0
+        },
+        {
+          "case": "CURRENT_RANGE_REPLACES_UNUSABLE_HISTORICAL_FALLBACK",
+          "level": 1.0763,
+          "cancel": 1.2109,
+          "score": 82
+        },
+        {
+          "case": "CONTROLLED_LONG_MIRROR_NOT_ACTUAL_MARKET_DIRECTION"
+        },
+        {
+          "case": "ROUTED_CANCEL_CLOCK_RANGE_DIRECTION_SCORE_VETO_REFUSALS",
+          "count": 8
+        },
+        {
+          "case": "QUALIFIED_CANONICAL_NOT_UNQUALIFIED_TELEMETRY",
+          "status": "CLOSED",
+          "entry_authorized": false
+        },
+        {
+          "case": "COMPOSED_LOCAL_PIPELINE",
+          "injected_message_id": 9002,
+          "relay_invocations": 1,
+          "duplicates": 0,
+          "production_sent": false
+        },
+        {
+          "case": "NIL_ACTUAL_REFUSAL_PRESERVED"
+        }
+      ]
+    },
+    "changes": {
+      "historical_fallback": "Only a new qualified early observation without routed/prospective active trigger may use a newer verified range when the historical candle cancellation is already true.",
+      "lifecycle": "Same-run qualified canonical OBSERVE direction owns the new idea; unqualified telemetry bias is not an independently CLOSED opposite direction."
+    },
+    "preserved": [
+      "score70",
+      "strategy weights",
+      "source clocks",
+      "original TTL",
+      "real CLOSED direction conflicts",
+      "routed/prospective cancellation",
+      "hard veto/risk/data/terminal removals",
+      "previously visible cleanup",
+      "WAIT/ENTRY",
+      "approved formatter/golden bytes",
+      "HTTP/D1 caps",
+      "analytics40min",
+      "collector5min"
+    ],
+    "hashes": {
+      "adapter": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+      "lifecycle": "38fda1629825d6f7e8022891aaf060526d3023b8296b610c15ff6b66698725de",
+      "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503"
+    },
+    "original_pipeline_readback": {
+      "run": 37473627292,
+      "head": "245aa739427e9460de3144d0807475ff54528d46",
+      "artifact": 11418720063,
+      "zip_sha256": "7a884bbe9bed3a4e28aaf2672f8177c25886a6f903b12a5169c4d6f3733a7162",
+      "requests": 9,
+      "rows_read": 59,
+      "ledger_rows_written": 4,
+      "source_writes": 0,
+      "unknown_ops": 0,
+      "final_rows_found": 0,
+      "source_cloud_run": 37470725751
+    },
+    "prior_failed_attempts": [
+      {
+        "kind": "reader",
+        "run": 37473078912,
+        "reason": "ASSERTED_REQUIRED_FINAL_AT_CANONICAL_OBSERVATION_TS; FINAL_ABSENT"
+      },
+      {
+        "kind": "reader",
+        "run": 37473340592,
+        "reason": "ASSERTED_REQUIRED_FINAL_IN_DEEP_WINDOW; FINAL_ABSENCE_IS_VALID_UNPROVISIONED_STATE"
+      },
+      {
+        "kind": "release",
+        "run": 37474123843,
+        "reason": "CONTROLLED_TERMINAL_FIXTURE_USED_UNSUPPORTED_STAGE_AND_ADAPTER_INTEGRITY_MANIFEST_NOT_YET_UPDATED"
+      }
+    ],
+    "local_validation_limit": "Unassembled scratch runtime lacks inherited existing-source-consumer.mjs; release acceptance uses the exact assembled cloud runtime, all checks passed.",
+    "fresh_sent": false,
+    "project_complete": false,
+    "proof": "checkpoints/current-observation-pipeline-release-20261006.json"
   }
 }

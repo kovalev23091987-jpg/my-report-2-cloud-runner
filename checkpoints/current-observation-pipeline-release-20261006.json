@@ -1,0 +1,124 @@
+{
+  "schema": "CURRENT_OBSERVATION_PIPELINE_RELEASE_V1",
+  "PR": 199,
+  "merged_main": "c93ecf19cb6c709977077d98a0fcbcd6ad4f18a1",
+  "tested_head": "ed7417400c916526b658e202a6267e3fd3ed05bf",
+  "cloud_run": 37474467465,
+  "artifact": 11419105541,
+  "zip_sha256": "a252f4b184ba820ad212054d8cd8f02bc8794d0ad8c702622197264e9502db30",
+  "status": "MERGED_EXACT_COMPOSED_OBSERVATION_PIPELINE_VERIFIED_FRESH_PRODUCTION_PENDING",
+  "composed_and_regression_cases": 42,
+  "integration_checks": 37,
+  "generation_validation": "PASS",
+  "tested_code_exactly_matches_merged": true,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "component_replay": {
+    "schema": "CURRENT_OBSERVATION_PIPELINE_COMPONENT_REPLAY_V1",
+    "scope": "RETAINED_SOURCE_FACTS_AT_ORIGINAL_CLOCK; RECONSTRUCTED_ADAPTER_ENVELOPE_AND_LOCAL_PUBLICATION; INJECTED_RELAY_ONLY",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "fresh_SENT": false,
+    "source_cloud_run": 37470725751,
+    "source_head": "6ffbe65f498a400db7e9fe4bb6cd61ebe4452a4f",
+    "run_id": "1791293174910-1791293186480",
+    "snapshot_id": "S392:FIL-USDT:1791293228860",
+    "original_fingerprint": "0f7ec1da6cee3e31c1e280cbce8845c9104e0305d167c459c96051bf9f3837a1",
+    "cases": [
+      {
+        "case": "ACTUAL_PRIOR_REJECTION_RETAINED",
+        "final_rows_in_original_lifecycle_window": 0
+      },
+      {
+        "case": "CURRENT_RANGE_REPLACES_UNUSABLE_HISTORICAL_FALLBACK",
+        "level": 1.0763,
+        "cancel": 1.2109,
+        "score": 82
+      },
+      {
+        "case": "CONTROLLED_LONG_MIRROR_NOT_ACTUAL_MARKET_DIRECTION"
+      },
+      {
+        "case": "ROUTED_CANCEL_CLOCK_RANGE_DIRECTION_SCORE_VETO_REFUSALS",
+        "count": 8
+      },
+      {
+        "case": "QUALIFIED_CANONICAL_NOT_UNQUALIFIED_TELEMETRY",
+        "status": "CLOSED",
+        "entry_authorized": false
+      },
+      {
+        "case": "COMPOSED_LOCAL_PIPELINE",
+        "injected_message_id": 9002,
+        "relay_invocations": 1,
+        "duplicates": 0,
+        "production_sent": false
+      },
+      {
+        "case": "NIL_ACTUAL_REFUSAL_PRESERVED"
+      }
+    ]
+  },
+  "changes": {
+    "historical_fallback": "Only a new qualified early observation without routed/prospective active trigger may use a newer verified range when the historical candle cancellation is already true.",
+    "lifecycle": "Same-run qualified canonical OBSERVE direction owns the new idea; unqualified telemetry bias is not an independently CLOSED opposite direction."
+  },
+  "preserved": [
+    "score70",
+    "strategy weights",
+    "source clocks",
+    "original TTL",
+    "real CLOSED direction conflicts",
+    "routed/prospective cancellation",
+    "hard veto/risk/data/terminal removals",
+    "previously visible cleanup",
+    "WAIT/ENTRY",
+    "approved formatter/golden bytes",
+    "HTTP/D1 caps",
+    "analytics40min",
+    "collector5min"
+  ],
+  "hashes": {
+    "adapter": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+    "lifecycle": "38fda1629825d6f7e8022891aaf060526d3023b8296b610c15ff6b66698725de",
+    "worker": "1ae640ba51e2b9261eb94730795997f794e3ae52fa8b0c27c4545cf34fa90503"
+  },
+  "original_pipeline_readback": {
+    "run": 37473627292,
+    "head": "245aa739427e9460de3144d0807475ff54528d46",
+    "artifact": 11418720063,
+    "zip_sha256": "7a884bbe9bed3a4e28aaf2672f8177c25886a6f903b12a5169c4d6f3733a7162",
+    "requests": 9,
+    "rows_read": 59,
+    "ledger_rows_written": 4,
+    "source_writes": 0,
+    "unknown_ops": 0,
+    "final_rows_found": 0,
+    "source_cloud_run": 37470725751
+  },
+  "prior_failed_attempts": [
+    {
+      "kind": "reader",
+      "run": 37473078912,
+      "reason": "ASSERTED_REQUIRED_FINAL_AT_CANONICAL_OBSERVATION_TS; FINAL_ABSENT"
+    },
+    {
+      "kind": "reader",
+      "run": 37473340592,
+      "reason": "ASSERTED_REQUIRED_FINAL_IN_DEEP_WINDOW; FINAL_ABSENCE_IS_VALID_UNPROVISIONED_STATE"
+    },
+    {
+      "kind": "release",
+      "run": 37474123843,
+      "reason": "CONTROLLED_TERMINAL_FIXTURE_USED_UNSUPPORTED_STAGE_AND_ADAPTER_INTEGRITY_MANIFEST_NOT_YET_UPDATED"
+    }
+  ],
+  "local_validation_limit": "Unassembled scratch runtime lacks inherited existing-source-consumer.mjs; release acceptance uses the exact assembled cloud runtime, all checks passed.",
+  "fresh_sent": false,
+  "project_complete": false,
+  "proof": "checkpoints/current-observation-pipeline-release-20261006.json"
+}
