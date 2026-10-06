@@ -50,7 +50,7 @@
   "lease": {
     "owner": "HTX:20261006T065915411Z:general-flow-gmx-clock",
     "acquired_ts": 1791269955411,
-    "expires_ts": 1791270555411
+    "expires_ts": 1791271343142
   },
   "next_action": "READ_ONE_NEW_NATURAL_ADMITTED_RESULT_AFTER_PR181_FOR_APPROVED_OBSERVE_OR_ENTRY_SENT_SAME_SNAPSHOT; NO_EXTRA_MAIN_OR_STALE_SEND",
   "last_verified_release": {
@@ -62,7 +62,7 @@
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791269955411,
+  "updated_ts": 1791270443142,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -157,10 +157,11 @@
     "reason": "Same-run Telegram source-role diagnosis and PR181 cloud verification saved; await natural fresh result"
   },
   "bounded_next_check": {
-    "status": "BOUNDED_READ_ONLY_JOB_REQUESTED",
+    "status": "BOUNDED_READ_ONLY_CLOUD_JOB_ACTIVE",
     "branch": "tools/read-current-report",
     "workflow": ".github/workflows/read-current-report.yml",
-    "after_run": 37416383006,
+    "cloud_run": 37427476306,
+    "after_run": 37423984921,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram_send": 0,
@@ -577,5 +578,15 @@
     "status": "FRESH_ORIGINAL_CLOCK_DIAGNOSTIC_READ",
     "fresh_cloud_run": 37423984921,
     "exact_reader": 37425212292
+  },
+  "general_source_clock_investigation": {
+    "cloud_run": 37427234358,
+    "proof": "checkpoints/GENERAL_SOURCE_CLOCK_DIAGNOSIS_20261006.json",
+    "sourceHTTP": 2,
+    "MAIN": 0,
+    "Telegram": 0,
+    "GMX_source_clock_known": false,
+    "ZEC_saved_raw_minutes_stale": true,
+    "new_provider_added": false
   }
 }

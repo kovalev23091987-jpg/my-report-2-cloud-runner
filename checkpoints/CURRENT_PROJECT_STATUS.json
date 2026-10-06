@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-06T06:48:54.730Z",
+  "updated_utc": "2026-10-06T07:07:23.142Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -198,7 +198,14 @@
     "agent_background_running_after_turn": false,
     "production_schedules_are_separate": true,
     "automatic_continuation_created_by_cleanup": false,
-    "active_cloud_development_jobs": [],
+    "active_cloud_development_jobs": [
+      {
+        "cloud_run": 37427476306,
+        "scope": "ONLY_EXISTING_NATURAL_REPORT_AND_SAME_RUN_TELEGRAM_ARTIFACT_READ",
+        "maximum_wait_minutes": 17,
+        "agent_continuation": false
+      }
+    ],
     "last_bounded_read": {
       "cloud_run": 37425212292,
       "status": "EXACT_CURRENT_PUBLIC_DATA_READ",
@@ -225,17 +232,17 @@
   "cloud_read_utility": {
     "branch": "tools/read-current-report",
     "workflow": ".github/workflows/read-current-report.yml",
-    "status": "COMPLETED_SUCCESS",
-    "after_cloud_run": 37416383006,
-    "created_after": "2026-10-06T05:05:00Z",
+    "status": "IN_PROGRESS",
+    "cloud_run": 37427476306,
+    "after_cloud_run": 37423984921,
+    "created_after": "2026-10-06T06:49:00Z",
     "max_wait_minutes": 17,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram_send": 0,
     "D1": 0,
     "development_agent_continuation": false,
-    "cloud_run": 37418379131,
-    "no_active_cloud_wait": true
+    "no_active_cloud_wait": false
   },
   "archived_legacy_PRs": [
     {
@@ -272,5 +279,14 @@
     "legacy_PRs_closed_without_merge": true,
     "retained_original_evidence": true,
     "final_acceptance_status_update_pending": true
+  },
+  "latest_source_diagnosis": {
+    "checkpoint": "checkpoints/GENERAL_SOURCE_CLOCK_DIAGNOSIS_20261006.json",
+    "cloud_run": 37427234358,
+    "sourceHTTP": 2,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_report": false,
+    "production_runtime_changed": false
   }
 }
