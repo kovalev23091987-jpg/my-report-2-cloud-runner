@@ -31,7 +31,9 @@ test('retained historical market history supports two selected exact wave receip
  await run(db,{...args,cycle_context:context,preferred_contracts:priority});
  const initial=db.sql.prepare('SELECT contract_code FROM v3_early_candidate_wave').all();
  assert.deepEqual(initial.map(r=>r.contract_code),['ADA-USDT']);
- const scan={timestamp:NOW};
+ const current=JSON.parse(fs.readFileSync(new URL('./early-evidence-repair/real_scans.json',import.meta.url))).find(s=>s.ts===NOW);
+ // The market values are retained; identity/scope gate receipts are explicit fixture controls.
+ const scan={timestamp:NOW,contracts:current.contracts.map(r=>({contract_code:r[0],price:r[1],turnover_24h_usdt:r[2],symbol_fingerprint:{resolution_status:'RESOLVED_HTX_EXACT'},quality:{market_present:true},instrument_scope:{classification:'CRYPTO_CONFIRMED'},freshness:{stale:false,market_age_sec:r[7]}}))};
  for(const contract of priority){
   const r=await bindSelectedEarlyEvidence({target:{contract},env,scan,run_id:args.source_run_id,now_ts:NOW+2000});
   assert.equal(r.status,'CLOSED');

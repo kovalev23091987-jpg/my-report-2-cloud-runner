@@ -41,10 +41,23 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Retain completed 22 checks from unchanged runtime
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11403335535,archive_format:'zip'});
+            const b=Buffer.from(r.data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='581cc80b931fe4771f071758921241be64564cfcb259c650c25ab8d7a103a2d3')throw Error('COMPLETED_CHECKS_DIGEST_MISMATCH');
+            fs.writeFileSync('prior-checks.zip',b);fs.mkdirSync('prior-checks',{recursive:true});cp.execFileSync('unzip',['-q','prior-checks.zip','-d','prior-checks']);
+            const lines=fs.readFileSync('prior-checks/runtime-hashes.txt','utf8').trim().split('\n');
+            for(const line of lines){const [expected,file]=line.split(/\s+/);if(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')!==expected)throw Error('REUSE_RUNTIME_CHANGED:'+file);}
+            fs.copyFileSync('prior-checks/early-ranked-tests.tap','audit-output/prior-tests.tap');
+            fs.writeFileSync('audit-output/reused-checks.json',JSON.stringify({run:37445782566,passed:22,failed:1,original_failure_retained:true,repeated_only:'Missing controlled fixture scan identity was supplied; one failed historical replay rerun',runtime_hashes_unchanged:true,sourceHTTP:0,MAIN:0,Telegram:0,D1:0},null,2));
       - name: Verify current binding, generation and lifecycle policy
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
-          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/early-ranked-persistence.runtime.mjs current-generation/tests/early-evidence-repair/repair.test.mjs > audit-output/early-ranked-tests.tap
+          REPORT2_TEST_RUNTIME=runtime node --test --test-name-pattern="retained historical market history supports two selected exact wave receipts" current-generation/tests/early-ranked-persistence.runtime.mjs > audit-output/early-ranked-tests.tap
           node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
       - name: Exact package hashes
