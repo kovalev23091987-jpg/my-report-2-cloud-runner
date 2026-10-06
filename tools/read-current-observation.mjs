@@ -45,6 +45,14 @@ if(out.admission.allowed){
    if(result[0].results.length!==1)throw Error('EXACT_SHADOW_ROW_MISSING_OR_AMBIGUOUS:'+contract);
   }
 
+  out.full_evidence=[];
+  for(const contract of req.contracts){
+   const observed=Number(req.snapshot_ids[contract].split(':').at(-1));
+   const full=await db.prepare('SELECT full_evidence_id,contract_code,observed_ts,stage392_proof_bundle_json FROM full_evidence_shadow_log WHERE contract_code=?1 AND observed_ts=?2 LIMIT 1').bind(contract,observed).all();check();
+   out.full_evidence.push({contract,observed_ts:observed,rows:full.results});
+  }
+  out.raw_tape_cache=await db.prepare("SELECT source,asset_key,observed_ts,expires_ts,payload_json FROM report2_evidence_source_cache WHERE source='HTX_SIGNED_RAW_TAPE' AND asset_key='BR-USDT' LIMIT 1").all();check();
+  out.raw_tape_cache_scope='MUTABLE_CURRENT_RING_AT_READ_TS; IMMUTABLE_MINUTE_CLOCKS_MUST_BE_CHECKED_FOR_ORIGINAL_ASOF';
   out.status='EXACT_CURRENT_PUBLIC_DATA_READ';
  }catch(e){out.status='READBACK_FAILED';out.error=String(e.message).slice(0,180);}
  finally{out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}
