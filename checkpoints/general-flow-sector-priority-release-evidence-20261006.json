@@ -1,0 +1,107 @@
+{
+  "schema": "report2-general-flow-sector-priority-release-v1",
+  "observed_at": "2026-10-06T01:11:53.381Z",
+  "status": "PR169_PR170_MERGED_COMPONENT_PROVEN_FRESH_JOINT_TELEGRAM_PENDING",
+  "project_complete": false,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "Nansen": 0,
+  "releases": [
+    {
+      "PR": 169,
+      "tested_head": "1203c376662a15961f8d4beeb290acb96711cb11",
+      "tree": "9c89e62ad8e30e2773178380da25552465d880b3",
+      "merged_main": "caaa755a714634a8a1adc8145ab83b784106c4fc",
+      "cloud_run": 37396757549,
+      "artifact": 11383363787,
+      "sha256": "534ef11df4ab422f3d17f3db3248832c00c9de9254fbafbfa95d32674cb50b13",
+      "tests": {
+        "generation": "PASS",
+        "binding": "PASS",
+        "frozen_integration": 37,
+        "targeted_actual_data": 4
+      },
+      "mechanisms": [
+        "N05_EXACT_240_VERIFIED_RAW_MINUTES_LAST_VERIFIED_FRESH_END_NOT_HOURLY_OI",
+        "N15_ASSIGNED_UNSCORED_SECTOR_REVIEW_BOUND_TO_EXACT_STATISTICS_AND_RENDERED_CONTEXT"
+      ]
+    },
+    {
+      "PR": 170,
+      "tested_head": "e8ad3d2957d0664907d3a5ca16d6dd5a06c10f7b",
+      "tree": "785d6929f2832cf9103ae560c0fcb60e75de82d2",
+      "merged_main": "4fa004ace7f8a15a5fae4c022d72a92eb8461022",
+      "cloud_run": 37397580284,
+      "artifact": 11384045759,
+      "sha256": "aa830b3e8152a58cdfb5ca82a02959aa4a05d71198bc82bbe424b2839542a1a6",
+      "tests": {
+        "generation": "PASS",
+        "binding": "PASS",
+        "frozen_integration": 37,
+        "targeted": 2
+      },
+      "mechanisms": [
+        "OWNER_PRIORITY_EXISTING_SOURCE_ADMISSION",
+        "ALL_ROUTES_RETAINED_ONCE_WITH_CACHE_READS_AFTER_HTTP_ENVELOPE_EXHAUSTION"
+      ],
+      "regression_discovered": {
+        "failed_run": 37397178717,
+        "reason": "Exclusive priority changed generic weighted rotation and left complementary first-place counters undefined.",
+        "fixed": "Owner priority is explicit in production; default weighted rotation retains its original fairness contract. Existing regression unchanged."
+      }
+    }
+  ],
+  "actual_original_data": {
+    "cloud_run": 37394649188,
+    "run_id": "1791246840975-1791246850102",
+    "generated_at": "2026-10-06T00:35:49.274Z",
+    "component_only": true,
+    "LSK": {
+      "exact_raw_minutes": 240,
+      "raw_fills": 731,
+      "last_verified_end": 1791246840000,
+      "flow_age_ms": 102756,
+      "previous_actual_participation": 7,
+      "N15_review_replay_participation": 8,
+      "nonzero_score_blocks": 0
+    },
+    "NEAR": {
+      "exact_raw_minutes": 240,
+      "raw_fills": 1025,
+      "last_verified_end": 1791246780000,
+      "flow_age_ms": 123684,
+      "previous_actual_participation": 9,
+      "nonzero_score_blocks": 0
+    },
+    "fixture_gzip_sha256": "d3e6ac9394f57739a1ea7ffe89a4aade9ff52a52fd271f5612fdf17f575dc50f",
+    "fixture_json_sha256": "43449786afe1e42c67c129ac1cf82b5f2e2c5efba8da2a0ad3d89edb952c3388",
+    "replay_counts_are_not_new_live_counts": true
+  },
+  "last_scheduled_not_due": {
+    "cloud_run": 37397068069,
+    "head": "caaa755a714634a8a1adc8145ab83b784106c4fc",
+    "status": "NOT_DUE",
+    "admitted": false,
+    "new_report": false
+  },
+  "last_actual_checkpoint": "checkpoints/ACTUAL_SCHEDULED_0335MSK_20261006.json",
+  "source_catalog_analysis": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
+  "unchanged": [
+    "THRESHOLD_70",
+    "STRATEGY_WEIGHTS",
+    "ENTRY_FRESHNESS_WAVE_SCENARIO",
+    "HTTP164_D1_CAPS_MANUAL_RESERVE",
+    "NANSEN_DEFERRED",
+    "N05_EXACT_FOUR_HOURS",
+    "RAW24H_ONLY_DEFERRAL",
+    "APPROVED_MANUAL_TELEGRAM_FORM",
+    "ACTUAL_TOP2"
+  ],
+  "pending": [
+    "New naturally admitted report after merged mechanisms; no forced MAIN.",
+    "Same-run eligible canonical/approved Telegram SENT/message_id.",
+    "Remaining unavailable exact routes/source access/clock/method constraints stay explicit."
+  ],
+  "telegram_sent": 0
+}
