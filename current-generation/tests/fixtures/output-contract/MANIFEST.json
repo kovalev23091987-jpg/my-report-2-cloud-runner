@@ -9,8 +9,9 @@
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "123454176e09af5bf78cdcb7dcbf64572e630a61e9c1e8501c15ae22523f5547",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "b2e1b7c2cc476de0ce7da5ca931c68e6edbd38bcb253d944413f909b6aa35d44",
-    "current-generation/files/src/canonical-publication.mjs": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c",
-    "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71"
+    "current-generation/files/src/canonical-publication.mjs": "a0a0854985505386f6269d33388b53e909eccb286f405126b0003e81179348be",
+    "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
+    "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -370,6 +371,22 @@
       "strategy_weights_or_entry_rules_changed": false,
       "telegram_layout_changed": false,
       "note": "Transfer already verified same-run immutable HTX execution fact with its original clock. Source-role and >=70 observation gates unchanged."
+    },
+    {
+      "date": "2026-10-06",
+      "scope": "OWNER_REQUIRED_GENERAL_OBSERVE_PUBLICATION_PREFLIGHT",
+      "authorization": "Vladimir requests general automatic observation/entry delivery, preserves approved forms and publication gates, and explicitly forbids per-coin send tuning.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "17a03a9dd7aa01920ee22e034f27b69cb8739f7ef745ce1b4e3e31819581f14c",
+          "after": "a0a0854985505386f6269d33388b53e909eccb286f405126b0003e81179348be"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "source_role_policy_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "note": "Extract existing source-role predicate unchanged into one shared helper. All frozen output scenarios passed at cloud37438519656; only source-file hash failed because of the extraction. No goldens regenerated."
     }
   ],
   "consumer_selection_revisions": [
