@@ -1,10 +1,29 @@
 import {verifyBoundedMoneyFlowReviews} from './bounded-money-flow-diagnostic.mjs';
-import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
+import {BLOCKS,validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 
 import {auditRenderedBlockResults} from './block-result-context.mjs';
 
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const array=value=>Array.isArray(value)?value:[];
+const unique=values=>[...new Set(values.filter(v=>typeof v==='string'&&v.length>0))].sort();
+export function summarizeAssignedSourceUse(details={}) {
+ const routes=Object.values(details),ids=key=>unique(routes.flatMap(r=>array(r[key])));
+ return {scope:'ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG',configured_route_count:routes.length,
+  attempted_route_count:routes.filter(r=>r.attempted).length,checked_route_count:routes.filter(r=>r.checked).length,
+  live_contacted_route_count:routes.filter(r=>r.actual_http>0).length,
+  checked_without_new_http_route_count:routes.filter(r=>r.checked&&r.actual_http===0).length,
+  validated_cache_route_count:routes.filter(r=>r.checked&&r.actual_http===0&&/CACHE|REUSE/i.test(r.cache_status||'')).length,
+  routes_with_valid_facts:routes.filter(r=>r.valid_fact_count>0).length,
+  routes_with_meaningful_facts:routes.filter(r=>r.meaningful_fact_count>0).length,
+  routes_with_actual_use:routes.filter(r=>r.used_fact_count>0).length,routes_with_nonzero_score:routes.filter(r=>r.nonzero_score_fact_count>0).length,
+  valid_provider_ids:ids('provider_ids'),used_provider_ids:ids('used_provider_ids'),rendered_provider_ids:ids('rendered_provider_ids'),
+  nonzero_score_provider_ids:ids('nonzero_score_provider_ids'),neutral_assessed_provider_ids:ids('neutral_assessed_provider_ids'),unscored_diagnostic_provider_ids:ids('unscored_diagnostic_provider_ids'),
+  used_declared_upstream_ids:ids('used_declared_upstream_ids'),used_physical_root_keys:ids('used_physical_root_keys'),
+  valid_provider_count:ids('provider_ids').length,used_provider_count:ids('used_provider_ids').length,rendered_provider_count:ids('rendered_provider_ids').length,
+  control_effect_provider_count:0,control_effect_not_proven:true,details,independence_claimed:false,rows_are_not_provider_count:true,
+  checked_without_new_http_is_not_automatically_cache:true,provider_or_upstream_count_is_not_independent_vote_count:true,
+  http_per_route_is_not_additive_across_blocks:true};
+}
 
 // Read only: eligibility and assigned consumers never prove application.
 // This receipt changes neither score inputs nor report/Telegram text.
@@ -37,10 +56,11 @@ export function auditCanonicalBlockDecisionUse(canonical={}, {manual}={}) {
   const participating=actuallyUsedIds.size>0;
   const sourceDetails=Object.fromEntries(Object.entries(coverage.blocks?.[block]?.source_checks||{}).map(([source,check])=>{
    const sourceIds=new Set(array(check.valid_evidence_ids)),bound=valid.filter(row=>sourceIds.has(row.evidence_id));
-   return[source,{status:check.status,attempted:check.attempted===true,checked:check.checked===true,actual_http:check.network_calls||0,valid_fact_count:bound.length,meaningful_fact_count:bound.filter(meaningful).length,assessed_fact_count:bound.filter(row=>assessed.some(r=>r.provider_object_id===row.evidence_id)).length,unscored_diagnostic_fact_count:bound.filter(row=>diagnosticReviews.some(r=>r.evidence_id===row.evidence_id)).length,rendered_fact_count:bound.filter(isRendered).length,used_fact_count:bound.filter(row=>actuallyUsedIds.has(row.evidence_id)).length,nonzero_score_fact_count:bound.filter(row=>receipts.some(r=>r.provider_object_id===row.evidence_id)).length,declared_upstream_ids:array(check.declared_upstream_ids),blocking_checks:array(check.blocking_checks)}];
+   const providers=predicate=>unique(bound.filter(predicate).map(row=>row.provider_id));
+   const used=bound.filter(row=>actuallyUsedIds.has(row.evidence_id));
+   return[source,{status:check.status,attempted:check.attempted===true,checked:check.checked===true,actual_http:check.network_calls||0,valid_fact_count:bound.length,meaningful_fact_count:bound.filter(meaningful).length,assessed_fact_count:bound.filter(row=>assessed.some(r=>r.provider_object_id===row.evidence_id)).length,unscored_diagnostic_fact_count:bound.filter(row=>diagnosticReviews.some(r=>r.evidence_id===row.evidence_id)).length,rendered_fact_count:bound.filter(isRendered).length,used_fact_count:bound.filter(row=>actuallyUsedIds.has(row.evidence_id)).length,nonzero_score_fact_count:bound.filter(row=>receipts.some(r=>r.provider_object_id===row.evidence_id)).length,provider_ids:unique(bound.map(row=>row.provider_id)),used_provider_ids:providers(row=>actuallyUsedIds.has(row.evidence_id)),rendered_provider_ids:providers(isRendered),nonzero_score_provider_ids:providers(row=>receipts.some(r=>r.provider_object_id===row.evidence_id)),neutral_assessed_provider_ids:providers(row=>actuallyUsedIds.has(row.evidence_id)&&isRendered(row)&&assessedUseful.some(r=>r.provider_object_id===row.evidence_id&&r.score_contribution===0)),unscored_diagnostic_provider_ids:providers(row=>diagnosticReviews.some(r=>r.evidence_id===row.evidence_id)),used_declared_upstream_ids:unique(used.map(row=>row.upstream_id)),used_physical_root_keys:unique(used.map(evidenceDedupKey)),declared_upstream_ids:array(check.declared_upstream_ids),physical_root_keys:array(check.physical_root_keys),cache_status:check.cache_status??null,admission_status:check.admission_status??null,capability_resolved_without_route:check.capability_resolved_without_route===true,blocking_checks:array(check.blocking_checks),receipts:array(check.receipts)}];
   }));
-  const sourceValues=Object.values(sourceDetails);
-  const source_accounting={scope:'ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG',configured_route_count:sourceValues.length,attempted_route_count:sourceValues.filter(r=>r.attempted).length,checked_route_count:sourceValues.filter(r=>r.checked).length,routes_with_valid_facts:sourceValues.filter(r=>r.valid_fact_count>0).length,routes_with_meaningful_facts:sourceValues.filter(r=>r.meaningful_fact_count>0).length,routes_with_actual_use:sourceValues.filter(r=>r.used_fact_count>0).length,routes_with_nonzero_score:sourceValues.filter(r=>r.nonzero_score_fact_count>0).length,details:sourceDetails,independence_claimed:false,rows_are_not_provider_count:true};
+  const source_accounting=summarizeAssignedSourceUse(sourceDetails);
   const checked=coverage.blocks?.[block]?.checked===true;
   const contribution=receipts.reduce((sum,receipt)=>sum+Number(receipt.score_contribution),0);
   const control=coverage.blocks?.[block]?.decision_path==='ADMITTED_CONTROL_CONTEXT';
