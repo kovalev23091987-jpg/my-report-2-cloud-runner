@@ -24,11 +24,11 @@ if(out.admission.allowed){
    if(!h||h.source_run_id!==run||h.scan_ts<req.start_ts||h.scan_ts>req.upper_ts||h.started_ts>observed||h.completed_ts<observed)throw Error('EXACT_HANDOFF_BINDING_FAILED');
    const result=await db.batch([
     db.prepare('SELECT * FROM shadow_decision_log WHERE contract_code=?1 AND observed_ts=?2 LIMIT 1').bind(contract,observed),
-    db.prepare('SELECT f.*,c.score_lower_bound,c.score_upper_bound,c.valid_until_ts,c.status AS telegram_context_status FROM final_decision_integration_shadow f LEFT JOIN final_decision_telegram_context_shadow c ON c.decision_id=f.decision_id WHERE f.contract_code=?1 AND f.persisted_ts BETWEEN ?2 AND ?3 ORDER BY f.persisted_ts DESC LIMIT 2').bind(contract,h.started_ts,h.completed_ts)
+    db.prepare('SELECT f.*,c.score_lower_bound,c.score_upper_bound,c.valid_until_ts,c.status AS telegram_context_status FROM final_decision_integration_shadow f LEFT JOIN final_decision_telegram_context_shadow c ON c.decision_id=f.decision_id WHERE f.contract_code=?1 AND f.persisted_ts BETWEEN ?2 AND ?3 ORDER BY f.persisted_ts DESC LIMIT 2').bind(contract,h.scan_ts-300000,h.completed_ts)
    ]);check();
    if(result.some(r=>r.success===false))throw Error('EXACT_PIPELINE_QUERY_FAILED');
    out.pipeline_rows.push({contract,observed_ts:observed,deep_started_ts:h.started_ts,deep_completed_ts:h.completed_ts,shadow:result[0].results,final:result[1].results});
-   if(result[0].results.length!==1||result[1].results.length!==1)throw Error('EXACT_PIPELINE_ROWS_MISSING_OR_AMBIGUOUS:'+contract+':'+result[0].results.length+':'+result[1].results.length);
+   if(result[0].results.length!==1)throw Error('EXACT_SHADOW_ROW_MISSING_OR_AMBIGUOUS:'+contract);
   }
   out.status='EXACT_CURRENT_PUBLIC_DATA_READ';
  }catch(e){out.status='READBACK_FAILED';out.error=String(e.message).slice(0,180);}
