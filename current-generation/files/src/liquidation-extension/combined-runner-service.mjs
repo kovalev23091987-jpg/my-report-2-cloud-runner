@@ -94,9 +94,12 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   if(typeof oxarchive==='function'&&(!restrict||allowed.has('OXARCHIVE_HL_BUCKETS')))lanes.push('OXARCHIVE_HL_BUCKETS');
   if(!lanes.length){routed.push({contract:params.contract,status:'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE',allowed_source_ids:[...allowed],candidate_http_cap:candidateHttpCap});return null;}
   let healthRows=[];try{healthRows=source_weight_store?await source_weight_store.load(lanes):[];}catch{healthRows=[];}
+  // Weekly proof is a structural routing hint only. The producer must still
+  // reread the native catalog/account at the original current-run clocks.
+  const provenHints=new Set(Array.isArray(params.proven_level_source_ids)?params.proven_level_source_ids.filter(id=>lanes.includes(id)):[]);
   const hlCost=primary.estimateHttpCost(params),sharedGtrade=secondary?.hasRunSnapshot?.(params.run_id)===true;
   lastRotation=verifiedNativeRotation({catalog:gtrade_routing_catalog,contracts:candidate_slots===2?params.position_batch_contracts:[],now:clock()});
-  const weighted=planLiquidationSourceOrder({preferred:lastRotation.preferred,lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1},exact:lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&primary.nativeMarketCoverage(params).status==='SUPPORTED'||lane==='GTRADE_NATIVE'&&secondary?.nativeMarketCoverage?.(params)?.status==='SUPPORTED'),cached:sharedGtrade?['GTRADE_NATIVE']:[],clock_capable:lanes.filter(x=>x==='HYPERLIQUID_NATIVE'||x==='GTRADE_NATIVE')});lastWeightProfile=weighted.profile;
+  const weighted=planLiquidationSourceOrder({preferred:lastRotation.preferred,lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1},exact:lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&(primary.nativeMarketCoverage(params).status==='SUPPORTED'||provenHints.has(lane))||lane==='GTRADE_NATIVE'&&secondary?.nativeMarketCoverage?.(params)?.status==='SUPPORTED'),cached:[...(sharedGtrade?['GTRADE_NATIVE']:[]),...(primary.hasFreshNativeAccount(params)?['HYPERLIQUID_NATIVE']:[])],clock_capable:lanes.filter(x=>x==='HYPERLIQUID_NATIVE'||x==='GTRADE_NATIVE')});lastWeightProfile=weighted.profile;
   // Check every admitted useful route; exact coverage and utility determine order.
   // These existing producers can verify a position-state clock. GMX/Lighter
   // current APIs only verify receipt time; they remain fallback context lanes.

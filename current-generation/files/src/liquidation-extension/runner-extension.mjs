@@ -4,7 +4,7 @@ import {readJson} from './io.mjs';
 import {createNativeAcquisition} from './runtime-bridge.mjs';
 import {resolveHtxLiquidationSources} from './htx-liquidation-route.mjs';
 import {extractHyperliquidMarketContext} from './hyperliquid-market-context.mjs';
-import {timestamp} from './core.mjs';
+import {selectVerifiedNativeAccounts} from './verified-native-account-cache.mjs';
 const text=x=>typeof x==='string'?x.trim():'';
 // Dependency injection lets the existing runner own scheduler, quota and D1.
 // Without a durable quota admission callback the extension makes ZERO calls.
@@ -12,10 +12,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
  if(!Number.isSafeInteger(accounts_per_deep)||accounts_per_deep<1||accounts_per_deep>8)throw Error('ACCOUNT_LIMIT_INVALID');
  if(!Number.isSafeInteger(max_http_per_run)||max_http_per_run<2||max_http_per_run>24)throw Error('RUN_HTTP_LIMIT_INVALID');
  let phaseStart=null;let calls=0;const records=[],inflight=new Map(),catalogByRun=new Map(),accountsByRun=new Map();
- const cachedAccounts=(run_id,native_symbol)=>[...(accountsByRun.get(run_id)?.values()||[])].filter(a=>{
-  const now=clock(),source=timestamp(a.state?.time),received=timestamp(a.http_receipt?.received_ts);
-  return source!==null&&received!==null&&source<=received&&received<=now&&now-source<=120000&&now-received<=120000&&Array.isArray(a.state.assetPositions)&&a.state.assetPositions.some(x=>x?.position?.coin===native_symbol&&Number(x.position.szi)!==0&&Number.isFinite(Number(x.position.szi)));
- }).sort((a,b)=>a.address.toLowerCase().localeCompare(b.address.toLowerCase()));
+ const cachedAccounts=(run_id,native_symbol)=>selectVerifiedNativeAccounts([...(accountsByRun.get(run_id)?.values()||[])],{run_id,symbol:native_symbol,now:clock(),max_age_ms:120000,max_accounts:accounts_per_deep});
  async function collect({contract,run_id,native_symbol,deep_started_ts,max_deep_ms=45000,max_http_for_candidate=max_http_per_run}={}){
   if(mode!=='SHADOW_ONLY')return null;
   if(typeof admit!=='function'){records.push({status:'SKIPPED_DURABLE_ADMISSION_NOT_CONFIGURED',contract});return null;}
@@ -31,7 +28,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
   if(!baseRoute.ok||baseRoute.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
   if(baseRoute.external_liquidation_map_needed!==true){records.push({status:'SKIPPED_BTC_ETH_BY_USER_POLICY',contract,native_symbol});return null;}
   let discoveryProvider=chooseNativeAccountDiscovery({now:clock(),symbol:native_symbol,liqflow_key,swole_enabled:swole_discovery_enabled});
-  if(discoveryProvider==='LIQFLOW'&&clock()>=Date.parse('2026-10-27T00:00:00Z')&&!text(liqflow_key)){records.push({status:'SKIPPED_FREE_KEY_ROUTE_NOT_CONFIGURED',contract});return null;}
+  if(discoveryProvider==='LIQFLOW'&&clock()>=Date.parse('2026-10-27T00:00:00Z')&&!text(liqflow_key)&&!cachedAccounts(run_id,native_symbol).length){records.push({status:'SKIPPED_FREE_KEY_ROUTE_NOT_CONFIGURED',contract});return null;}
   const collection_started_ts=clock(),transport=[],accounts=[];let admittedReserved=0,catalogReserved=0;
   async function request(url,body){
    if(clock()>=deadline)return {ok:false,reason:'DEADLINE_REACHED'};
@@ -45,7 +42,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
     calls+=1;
     const catalogGrant=await admit({reservation_id:`LIQ_NATIVE_CATALOG:${run_id}`,contract,run_id,
      requests:{HYPERLIQUID:1},weights:{HYPERLIQUID:22},max_requests:1,deadline_ts:deadline});
-    if(catalogGrant?.allowed!==true||catalogGrant?.new_reservation!==true){if(catalogGrant?.reservation_not_created===true)calls-=1;records.push({status:'SKIPPED_CATALOG_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
+    if(catalogGrant?.allowed!==true||catalogGrant?.new_reservation!==true){if(catalogGrant?.reservation_not_created===true)calls-=1;records.push({status:'SKIPPED_CATALOG_QUOTA_OR_RETRY_ALREADY_RESERVED',contract,reason:catalogGrant?.reason??'ADMISSION_NOT_CLOSED',reservation_not_created:catalogGrant?.reservation_not_created===true});return null;}
     admittedReserved+=1;catalogReserved=1;catalog=await request('https://api.hyperliquid.xyz/info',{type:'metaAndAssetCtxs'});
     if(catalog.ok)catalogByRun.set(run_id,catalog);
    }
@@ -57,13 +54,21 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    // A clearinghouse response contains all account positions. Reuse only the
    // original fresh state from this run, retaining its receipt and source clock.
    const reused=cachedAccounts(run_id,native_symbol).slice(0,accounts_per_deep);
+   const reuseOnly=optionalStatus=>{
+    const completed=clock(),originalStart=Math.min(...reused.map(a=>a.http_receipt.received_ts));
+    const acquisition=createNativeAcquisition({contract,native_symbol,run_id,acquisition_id:`LIQ_ACQ:${run_id}:${contract}:${collection_started_ts}`,collection_started_ts:originalStart,collection_completed_ts:completed,accounts:reused.map(a=>structuredClone(a)),provenance:{discovery_provider:null,discovery_source_id:null,discovery_status:'NOT_NEEDED_FRESH_VERIFIED_SAME_RUN_ACCOUNT',optional_discovery_status:optionalStatus,selection_bias:'VERIFIED_ORIGINAL_SAME_RUN_NATIVE_ACCOUNT_SAMPLE',sampling_policy:'ORIGINAL_NATIVE_ACCOUNT_REUSE',selected_reasons:[],visible_accounts:null,reused_native_accounts:reused.length,native_account_reuse_policy:'EXACT_RUN_ORIGINAL_CLOCK_MAX120S_NO_DUPLICATES',collection_attempt_started_ts:collection_started_ts,native_symbol_membership_verified:true,execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:null,transport_count:transport.length,quota_reserved_requests:admittedReserved,hyperliquid_market_context:marketContext}});
+    records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:reused.length,discovery_closed:false,optional_discovery_status:optionalStatus,reused_native_accounts:reused.length,sampling_policy:'ORIGINAL_NATIVE_ACCOUNT_REUSE',actual_requests:transport.length,reserved_requests:admittedReserved,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
+   };
+   // Enrichment needs BOTH discovery and a new native read. Do not spend the
+   // last request, or lose already verified levels, on discovery alone.
+   if(reused.length&&(reused.length>=accounts_per_deep||transport.length+2>max_http_for_candidate||calls+2>max_http_per_run))return reuseOnly('OPTIONAL_ENRICHMENT_HTTP_ENVELOPE');
    if(!reused.length&&(transport.length+2>max_http_for_candidate||calls+2>max_http_per_run)){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'SAMPLE',actual_requests:transport.length});return null;}
    if(transport.length+1>max_http_for_candidate||calls+1>max_http_per_run){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'DISCOVERY',actual_requests:transport.length});return null;}
    calls+=1;
    const admitDiscovery=()=>admit({reservation_id:`LIQ_NATIVE_DISCOVERY:${run_id}:${contract}:${discoveryProvider}`,contract,run_id,requests:{[discoveryProvider]:1},weights:{},max_requests:1,deadline_ts:deadline});
    let discoveryGrant=await admitDiscovery();
    if(discoveryProvider==='SWOLE_DISCOVERY'&&discoveryGrant?.reservation_not_created===true&&String(discoveryGrant.reason).endsWith('FREE_QUOTA_EXHAUSTED')&&(clock()<Date.parse('2026-10-27T00:00:00Z')||text(liqflow_key))){discoveryProvider='LIQFLOW';discoveryGrant=await admitDiscovery();}
-   if(discoveryGrant?.allowed!==true||discoveryGrant?.new_reservation!==true){if(discoveryGrant?.reservation_not_created===true)calls-=1;records.push({status:'SKIPPED_DISCOVERY_QUOTA_OR_RETRY_ALREADY_RESERVED',contract});return null;}
+   if(discoveryGrant?.allowed!==true||discoveryGrant?.new_reservation!==true){if(discoveryGrant?.reservation_not_created===true)calls-=1;if(reused.length)return reuseOnly(discoveryGrant?.reason??'OPTIONAL_DISCOVERY_NOT_ADMITTED');records.push({status:'SKIPPED_DISCOVERY_QUOTA_OR_RETRY_ALREADY_RESERVED',contract,reason:discoveryGrant?.reason??'ADMISSION_NOT_CLOSED',reservation_not_created:discoveryGrant?.reservation_not_created===true});return null;}
    admittedReserved+=1;let list;if(discoveryProvider==='SWOLE_DISCOVERY'){list=await readSwoleAccountDiscovery(native_symbol,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(12000,deadline-clock()))});transport.push(list.receipt);}else list=await request(`https://node.liqflow.app/api/coin/${encodeURIComponent(native_symbol)}/positions`);
    const discoveryClosed=list.ok&&list.payload?.coin===native_symbol&&Array.isArray(list.payload.positions);
    if(!discoveryClosed&&!reused.length){records.push({status:'DISCOVERY_NOT_CLOSED',contract,discovery_provider:discoveryProvider,reason:list.reason??null,actual_requests:transport.length});return null;}
@@ -82,19 +87,22 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    if(selected.length){
     calls+=selected.length;
     grant=await admit({reservation_id:`LIQ_NATIVE_SAMPLE:${run_id}:${contract}`,contract,run_id,requests:{HYPERLIQUID:selected.length},weights:{HYPERLIQUID:selected.length*2},max_requests:selected.length,deadline_ts:deadline});
-    if(grant?.allowed!==true||grant?.new_reservation!==true){if(grant?.reservation_not_created===true)calls-=selected.length;grant=null;if(!accounts.length){records.push({status:'SKIPPED_SAMPLE_QUOTA_OR_RETRY_ALREADY_RESERVED',contract,actual_requests:transport.length});return null;}}
+    if(grant?.allowed!==true||grant?.new_reservation!==true){const deniedReason=grant?.reason??'ADMISSION_NOT_CLOSED';if(grant?.reservation_not_created===true)calls-=selected.length;grant=null;if(!accounts.length){records.push({status:'SKIPPED_SAMPLE_QUOTA_OR_RETRY_ALREADY_RESERVED',contract,reason:deniedReason,actual_requests:transport.length});return null;}}
     else admittedReserved+=selected.length;
    }
    let i=0;async function job(){while(grant?.allowed===true&&i<selected.length){const a=selected[i++];const r=await request('https://api.hyperliquid.xyz/info',{type:'clearinghouseState',user:a.address});if(r.ok){const account={address:a.address,state:r.payload,http_receipt:r.receipt};accounts.push(account);const cache=accountsByRun.get(run_id)||new Map();cache.set(a.address.toLowerCase(),structuredClone(account));accountsByRun.set(run_id,cache);}}}
    await Promise.all([job(),job()]);
+   const verified=selectVerifiedNativeAccounts(accounts,{run_id,symbol:native_symbol,now:clock(),max_age_ms:120000,max_accounts:accounts_per_deep});
+   const excludedNativeAccounts=verified.length?accounts.filter(a=>!verified.some(v=>v.address.toLowerCase()===a.address.toLowerCase())).map(a=>a.address):[];
+   if(verified.length)accounts.splice(0,accounts.length,...verified);
    const completed=clock(),originalStart=Math.min(collection_started_ts,...accounts.map(a=>a.http_receipt.received_ts));
    const acquisition=createNativeAcquisition({contract,native_symbol,run_id,acquisition_id:`LIQ_ACQ:${run_id}:${contract}:${collection_started_ts}`,collection_started_ts:originalStart,collection_completed_ts:completed,accounts,
-    provenance:{discovery_provider:discoveryProvider==='SWOLE_DISCOVERY'?'Swolecharts':'LiqFlow',discovery_source_id:discoveryProvider,discovery_attribution_url:discoveryProvider==='SWOLE_DISCOVERY'?'https://swolecharts.com/hyperliquid/liquidation-map/'+native_symbol:null,discovery_status:discoveryClosed?'CLOSED':list.reason??'DISCOVERY_SCHEMA_NOT_CLOSED',discovery_total:list.payload?.total??null,discovery_page:list.payload?.page??null,selection_bias:'SAME_RUN_NATIVE_ACCOUNT_POSITIONS_PLUS_FIRST_PAGE_NEAR_AND_LARGE; HINTS_ARE_NOT_EVIDENCE',sampling_policy:sample.policy,selected_reasons:sample.selected.map(x=>x.discovery_reason),visible_accounts:sample.eligible_visible_accounts,reused_native_accounts:reused.length,native_account_reuse_policy:'EXACT_RUN_ORIGINAL_CLOCK_MAX120S_NO_DUPLICATES',collection_attempt_started_ts:collection_started_ts,native_symbol_membership_verified:true,
+    provenance:{discovery_provider:discoveryProvider==='SWOLE_DISCOVERY'?'Swolecharts':'LiqFlow',discovery_source_id:discoveryProvider,discovery_attribution_url:discoveryProvider==='SWOLE_DISCOVERY'?'https://swolecharts.com/hyperliquid/liquidation-map/'+native_symbol:null,discovery_status:discoveryClosed?'CLOSED':list.reason??'DISCOVERY_SCHEMA_NOT_CLOSED',discovery_total:list.payload?.total??null,discovery_page:list.payload?.page??null,selection_bias:'SAME_RUN_NATIVE_ACCOUNT_POSITIONS_PLUS_FIRST_PAGE_NEAR_AND_LARGE; HINTS_ARE_NOT_EVIDENCE',sampling_policy:sample.policy,selected_reasons:sample.selected.map(x=>x.discovery_reason),visible_accounts:sample.eligible_visible_accounts,excluded_unusable_native_accounts:excludedNativeAccounts,reused_native_accounts:reused.length,native_account_reuse_policy:'EXACT_RUN_ORIGINAL_CLOCK_MAX120S_NO_DUPLICATES',collection_attempt_started_ts:collection_started_ts,native_symbol_membership_verified:true,
     execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:grant?.reservation_id??discoveryGrant.reservation_id??null,transport_count:transport.length,quota_reserved_requests:admittedReserved,hyperliquid_market_context:marketContext}});
    records.push({status:'ACQUIRED_NATIVE_SAMPLE',contract,run_id,accounts:accounts.length,discovery_provider:discoveryProvider,discovery_closed:discoveryClosed,reused_native_accounts:reused.length,sampling_policy:sample.policy,actual_requests:transport.length,reserved_requests:admittedReserved,elapsed_ms:completed-collection_started_ts,acquisition_fingerprint:acquisition.acquisition_fingerprint});return acquisition;
   }catch(e){records.push({status:'NATIVE_COLLECTION_FAILED_CLOSED',contract,reason:String(e?.message||e).slice(0,100)});return null;}finally{calls-=Math.max(0,admittedReserved-transport.length);}
  }
- function estimateHttpCost({run_id,native_symbol,max_http_for_candidate=max_http_per_run}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 1;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?1+Math.min(Math.max(0,accounts_per_deep-cachedAccounts(run_id,native_symbol).length),Math.max(0,max_http_for_candidate-1)):0;}
+ function estimateHttpCost({run_id,native_symbol,max_http_for_candidate=max_http_per_run}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok)return 1;const supported=Array.isArray(catalog.payload?.[0]?.universe)&&catalog.payload[0].universe.some(r=>r?.name===native_symbol&&r?.isDelisted!==true);return supported?(cachedAccounts(run_id,native_symbol).length?0:1+Math.min(accounts_per_deep,Math.max(0,max_http_for_candidate-1))):0;}
  function nativeMarketCoverage({run_id,native_symbol}={}){const catalog=catalogByRun.get(run_id);if(!catalog?.ok||!Array.isArray(catalog.payload?.[0]?.universe)||!text(native_symbol))return{status:'UNKNOWN'};return{status:catalog.payload[0].universe.some(row=>row?.name===native_symbol&&row?.isDelisted!==true)?'SUPPORTED':'UNSUPPORTED',native_symbol,catalog_verified:true};}
- return {collect,estimateHttpCost,nativeMarketCoverage,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
+ return {collect,estimateHttpCost,nativeMarketCoverage,hasFreshNativeAccount:params=>nativeMarketCoverage(params).status==='SUPPORTED'&&cachedAccounts(params.run_id,params.native_symbol).length>0,summary:()=>({mode,source:'NATIVE_LIQUIDATION_EXTENSION',reserved_http:calls,max_http:max_http_per_run,records:[...records],production_sender_enabled:false,automatic_execution:false})};
 }

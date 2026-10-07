@@ -1561,7 +1561,7 @@
       "task_id": "BLOCK_N05",
       "block": "N05",
       "name": "Потоки: полный4h HTX либо проверенный разрешённый источник",
-      "status": "PARTIAL_PRIMARY_FLOW_AND_ATTRIBUTION",
+      "status": "FULL240MIN_SCOPED_ACTUAL_BR_AND_龙虾_VERIFIED; GENERAL_COVERAGE_OPEN",
       "remaining_action": "Проверить полный240минHTX и потребление сохранённых signed fills; не отменять условие. New exchange-labelled sources только с проверенным доступом/label semantics. Nansen отложен0; exact24h отложен отдельно.",
       "previous_exact_proofs": [
         {
@@ -1594,7 +1594,8 @@
         }
       ],
       "complete_for_all_assets": false,
-      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json"
+      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+      "latest_full_240min_actual_readback": "checkpoints/ACTUAL_POST_PR209_READBACK_20261007.json"
     },
     {
       "task_id": "BLOCK_N06",
@@ -1988,7 +1989,7 @@
       "task_id": "BLOCK_LIQ",
       "block": "LIQ",
       "name": "Будущие ликвидационные уровни",
-      "status": "PARTIAL_COVERAGE_PR209_PR210_PR211_VERIFIED; NATURAL_NEW_HEAD_ACCEPTANCE_PENDING",
+      "status": "PR211_NATURAL_REPORT_VERIFIED_NO_FRESH_LEVELS; CACHE_COMPLETENESS_AND_PROVEN_NATIVE_PRIORITY_FIX_IN_CLOUD_VALIDATION",
       "remaining_action": "Продолжить точное покрытие future levels по открытому реестру. Новый поиск кошельков подключён; уровни только после свежей официальной native проверки. 36 исторических возможностей одного аккаунта не являются текущим покрытием всего рынка. Проверить следующий штатный отчёт на новом head, без принудительной отправки Telegram.",
       "previous_exact_proofs": [
         {
@@ -2028,7 +2029,8 @@
       ],
       "actual_native_production_report_acceptance": false,
       "new_discovery_actual_evidence": "checkpoints/source-inputs/swole-native-sample-37596747832.proof.json",
-      "retained_multi_asset_capability": "checkpoints/SWOLE_RETAINED_ACCOUNT_CAPABILITY_20261007.json"
+      "retained_multi_asset_capability": "checkpoints/SWOLE_RETAINED_ACCOUNT_CAPABILITY_20261007.json",
+      "latest_actual_readback": "checkpoints/ACTUAL_POST_PR211_READBACK_20261007.json"
     }
   ],
   "owner_tasks": [
@@ -2352,7 +2354,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791364474219,
+  "updated_ts": 1791365859005,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -2383,5 +2385,30 @@
     "cloud_run": 37598203529,
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
+  },
+  "latest_post_pr211_actual_readback": {
+    "path": "checkpoints/ACTUAL_POST_PR211_READBACK_20261007.json",
+    "cloud_run": 37600513666,
+    "head": "3f5134cd97b0ba9ce35fb2e4b9a8889b167fb646",
+    "new_fresh_same_run_SENT": false,
+    "participating_counts": [
+      {
+        "contract": "PENGU-USDT",
+        "count": 10
+      },
+      {
+        "contract": "龙虾-USDT",
+        "count": 10
+      }
+    ]
+  },
+  "native_cache_completeness_work": {
+    "status": "IMPLEMENTED_LOCAL_TARGETED_TESTS_PASS; COMPOSED_CLOUD_VALIDATION_PENDING",
+    "max_verified_cached_native_accounts_weekly": 8,
+    "wrong_side_null_price_missing_clock_cache_hits_rejected": true,
+    "valid_fresh_cache_survives_optional_quota_denial": true,
+    "known_verified_native_route_priority": "STRUCTURAL_WEEKLY_HINT_ONLY_CURRENT_CATALOG_AND_ACCOUNT_REREAD_MANDATORY",
+    "new_sourceHTTP": 0,
+    "new_telegram_messages": 0
   }
 }

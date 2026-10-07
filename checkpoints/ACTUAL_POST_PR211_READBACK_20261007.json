@@ -1,0 +1,95 @@
+{
+  "schema": "ACTUAL_POST_PR211_READBACK_20261007_V1",
+  "cloud_run": 37600513666,
+  "head": "3f5134cd97b0ba9ce35fb2e4b9a8889b167fb646",
+  "run_id": "1791365151399-1791365160234",
+  "artifact_id": 11473160358,
+  "artifact_digest": "sha256:b84b48cd352ee8a6d44ad6c83b60a98cf0256738ad5f7c1d5265279d533b461f",
+  "telegram_info_artifact": 11472666638,
+  "telegram_info_digest": "sha256:d18ae62e02444c41cea784c50dbc6d0cd3db38476a03c78aebf1810e197eabbb",
+  "market_scan_audit": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "source": "schedule",
+  "sourceHTTP_added_by_readback": 0,
+  "D1_added_by_readback": 0,
+  "new_fresh_same_run_SENT": false,
+  "candidates": [
+    {
+      "contract": "PENGU-USDT",
+      "snapshot_id": "S392:PENGU-USDT:1791365253118",
+      "publication_id": "PUB:71e1997c7eb70f346e1651c204b93fa199dddaa4",
+      "fingerprint": "f711c2a6caa9bc54a9aca6a2ff44a2ed7c7129d13b32c597d73c1b9256100c23",
+      "state": "REJECTED",
+      "direction": null,
+      "participating_block_ids": [
+        "N02",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "participating_block_count": 10,
+      "telegram_delivery_proven": false,
+      "telegram_message_id": null,
+      "future_levels_status": "NOT_AVAILABLE",
+      "native_status": "USABLE_RECEIPT_ONLY_CONTEXT",
+      "native_source_ts": null,
+      "proven_level_source_ids": [
+        "HYPERLIQUID_NATIVE"
+      ]
+    },
+    {
+      "contract": "龙虾-USDT",
+      "snapshot_id": "S392:龙虾-USDT:1791365215579",
+      "publication_id": "PUB:80608629a532be207a360967bc5eb0736bdca677",
+      "fingerprint": "0f27349686754fd446f4163078c560ae612dfe1c9521e07b835458aeb484e813",
+      "state": "REJECTED",
+      "direction": null,
+      "participating_block_ids": [
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "participating_block_count": 10,
+      "telegram_delivery_proven": false,
+      "telegram_message_id": null,
+      "future_levels_status": "NOT_AVAILABLE",
+      "native_status": null,
+      "native_source_ts": null,
+      "proven_level_source_ids": []
+    }
+  ],
+  "scope": "NATURAL_PRODUCTION_PR211_DESCENDANT_BEFORE_CACHE_COMPLETENESS_AND_PROVEN_ROUTE_PRIORITY_FIX",
+  "actual_log_diagnosis": {
+    "job": 112723497135,
+    "log_numbers_masked_by_GitHub": true,
+    "exact_counts_taken_from_artifact_only": true,
+    "PENGU_gtrade_pinned_status": "GTRADE_PINNED_RPC_TIMEOUT",
+    "PENGU_native_next_status": "SKIPPED_CATALOG_QUOTA_OR_RETRY_ALREADY_RESERVED",
+    "note": "Log preserves statuses but masks numeric digits; do not reconstruct masked quotas/timestamps. Next composed batch checks proven native route before catalog-only alternative and includes explicit admission reasons.",
+    "phase_deadline_inference": "LIKELY_FROM_GTRADE_PINNED_RPC_TIMEOUT_AND_GLOBAL45S_POLICY; exact catalog admission reason was not logged; new batch adds it",
+    "catalog_admission_reason_exactly_verified": false
+  }
+}
