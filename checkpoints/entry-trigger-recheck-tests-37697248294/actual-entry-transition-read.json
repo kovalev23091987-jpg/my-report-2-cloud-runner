@@ -1,0 +1,151 @@
+{
+  "schema": "ACTUAL_SAVED_SENT_ENTRY_TRANSITION_DIAGNOSIS_V1",
+  "head": "71289d780a6ab8124666be2e69d5fe679cd61a63",
+  "read_ts": 1791412336448,
+  "cloud_run": "37696777714",
+  "source_gzip_sha256": "64371d66509dc15e374d071b5c244d8d76097a588489ac8d29f0a7988fa7efdd",
+  "source_run": "1791404713379-1791404725011",
+  "snapshot_id": "S392:BOME-USDT:1791404783785",
+  "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+  "analytical_fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+  "message_id": "155",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_market_price_crossing_inferred": false,
+  "canonical_state": "OBSERVE",
+  "original_observed_ts": 1791404783785,
+  "original_due_ts": 1791405083785,
+  "original_expires_ts": 1791406583785,
+  "original_ttl_minutes": 30,
+  "regular_full_analysis_minutes": 40,
+  "original_entry_diagnostics": {
+    "targets": [],
+    "costs": null,
+    "microstructure": {
+      "status": "NOT_CLOSED",
+      "domains": [],
+      "continuous_coverage": "PARTIAL_REALTIME_COVERAGE"
+    },
+    "technical_move_potential": {
+      "version": "technical-move-potential-v4-no-fixed-minimum-20261001",
+      "status": "NOT_CLOSED",
+      "reason": "FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN",
+      "direction": "LONG",
+      "entry_reference_price": 0.0009874,
+      "minimum_move_pct": null,
+      "target_price": null,
+      "potential_move_pct": null,
+      "basis": null,
+      "basis_ru": null,
+      "not_random_target": true
+    },
+    "validated_signal": false,
+    "entry_funnel": {
+      "version": "entry-funnel-diagnostics-v2-reason-registry-20260925",
+      "status": "CLOSED",
+      "blockers": [],
+      "blocker_details": [],
+      "has_unknown_reason": false,
+      "fee_blocked": false,
+      "funding_holding_blocked": false,
+      "source_blocked": false,
+      "cross_venue_divergence": false
+    }
+  },
+  "limitation": "Current mutable task receipt is read at read_ts. It does not reconstruct overwritten historical five-minute prices or prove all absent entries.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 71,
+      "reserved_rows_read": 1391350,
+      "reserved_rows_written": 27140,
+      "measured_rows_read": 899726,
+      "measured_rows_written": 12748,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1392850,
+      "rows_written": 27156
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "task": {
+    "task_id": "RCHK:5370089c9e7291d14b2e962d1187ce09f2d755ff",
+    "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+    "contract_code": "BOME-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:BOME-USDT:1791404725238:G5",
+    "snapshot_id": "S392:BOME-USDT:1791404783785",
+    "run_id": "1791404713379-1791404725011",
+    "due_ts": 1791405083785,
+    "expires_ts": 1791406583785,
+    "state": "EXPIRED",
+    "attempt_count": 0,
+    "lease_owner": null,
+    "lease_started_ts": null,
+    "lease_expires_ts": null,
+    "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791406804638,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791406800000,\"task_id\":\"RCHK:5370089c9e7291d14b2e962d1187ce09f2d755ff\",\"publication_id\":\"PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb\",\"run_id\":\"1791404713379-1791404725011\",\"snapshot_id\":\"S392:BOME-USDT:1791404783785\",\"analytical_fingerprint\":\"b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488\",\"telegram_message_id\":\"155\"}",
+    "created_ts": 1791404833130,
+    "updated_ts": 1791406804638
+  },
+  "status": "ACTUAL_ORIGINAL_SENT_RECHECK_TASK_READ",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ENTRY_TRANSITION:37696777714:1",
+    "source_run_id": "37696777714",
+    "measured_rows_read": 73,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 5,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 5,
+    "rows_read": 74,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 72,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}

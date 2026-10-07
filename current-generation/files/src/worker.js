@@ -19193,15 +19193,18 @@ const __REPORT2_ORIGINAL_HANDLER = {
       let postV7RecheckClaim = {status:'DISABLED',claimed:false};
       if (String(env?.REPORT2_POST_V7_UNIFIED_ENABLED || '') === '1') {
         await requeueExpiredLease(env.DATA_DB,{now_ts:Date.now()});
-        postV7RecheckClaim = telegramBindingRecovery
+        postV7RecheckClaim = telegramBindingRecovery && !env?.REPORT2_TRIGGERED_RECHECK_TASK_ID
           ? {status:'DEFERRED_FOR_TELEGRAM_BINDING_RECOVERY',claimed:false,recovery_contract:telegramBindingRecovery.contract}
           : await claimDueRecheck(env.DATA_DB,{
               actor:String(env?.REPORT2_ANALYTICS_ACTOR || 'GITHUB_ACTIONS'),
               configured_owner:'GITHUB_ACTIONS',
+              task_id:env?.REPORT2_TRIGGERED_RECHECK_TASK_ID||null,
               now_ts:Date.now(),
               lease_ms:5*60_000,
             });
       }
+
+      if(env?.REPORT2_TRIGGERED_RECHECK_TASK_ID && (!postV7RecheckClaim.claimed || postV7RecheckClaim.task?.task_id!==env.REPORT2_TRIGGERED_RECHECK_TASK_ID))throw new Error('TRIGGERED_RECHECK_CLAIM_NOT_CLOSED');
 
       console.log(
         "early_candidate_bridge",
@@ -19605,12 +19608,14 @@ const __REPORT2_ORIGINAL_HANDLER = {
             cooldown_sec:
               isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE)
                 ? 0
-                : fastMoveWatchCycle
+                : (Boolean(env?.REPORT2_TRIGGERED_RECHECK_TASK_ID) && postV7RecheckClaim?.task?.task_id===env.REPORT2_TRIGGERED_RECHECK_TASK_ID)
+                  ? 0
+                  : fastMoveWatchCycle
                     ?.adaptive_cooldown_sec ??
                   1800,
 
             bypass_cooldown:
-              isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE),
+              isFreshManualMainAnalysis(env?.REPORT2_MANUAL_MODE) || (Boolean(env?.REPORT2_TRIGGERED_RECHECK_TASK_ID) && postV7RecheckClaim?.task?.task_id===env.REPORT2_TRIGGERED_RECHECK_TASK_ID),
 
             lease_sec:
               600,
