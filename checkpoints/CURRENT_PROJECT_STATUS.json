@@ -953,7 +953,7 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791406358955,
+  "updated_ts": 1791406519107,
   "next_action": "Qualify a distinct verified current Veranta v2 TradingStorage readonly native path after actual Multicall getPositions reverted; no identical failed request. Full register and future statistical/history/source coverage remain open.",
   "current_task": "Qualify a distinct verified current Veranta v2 TradingStorage readonly native path after actual Multicall getPositions reverted; no identical failed request. Full register and future statistical/history/source coverage remain open.",
   "latest_native_payment_release": {
@@ -2527,5 +2527,92 @@
         "reason": "CHANGED_CONSUMER_MODULE_HASH_PIN_NOT_UPDATED_FIXED_WITH_GOLDENS_UNCHANGED"
       }
     ]
+  },
+  "latest_veranta_v2_direct_storage_qualification": {
+    "schema": "CURRENT_VERANTA_V2_STORAGE_QUALIFICATION_20261007_V1",
+    "cloud_run": 37685497656,
+    "source_head": "5ba53088b48a29aa01ac1bf10c4e99c61f345061",
+    "proof_head": "9b3fa718bba9601a745c07b945cebcb9df752b8f",
+    "proof": "checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-proof.json",
+    "status": "CURRENT_VERIFIED_STORAGE_ABI_RECEIVED_NO_POSITION_CALL_BECAUSE_MODEL_TYPE_SELECTOR_DEFECT",
+    "implementation": "0x7175518A822e04ecB8770343582E76f156D06c64",
+    "sourceHTTP": 3,
+    "reservedHTTP": 4,
+    "CHAIN_RPC_before": 155,
+    "CHAIN_RPC_after": 159,
+    "D1": {
+      "requests": 16,
+      "rows_read": 77,
+      "rows_written": 11,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 66,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 4,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 3,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "pin": {
+      "height": 52308554,
+      "block_hash": "0xd8fa0976c90caa1813b2986a4d3cc743f9ca71f26007119b8a6b572c63928db6",
+      "source_ts": 1791406455000,
+      "observed_ts": 1791406456333,
+      "finalized": false
+    },
+    "positions": 0,
+    "production_enabled": false,
+    "native_getter_call_made": false,
+    "selector_defect": "Escaped numeric ABI type selector; exact openTrades/openTradesInfo getters actually present in current verified ABI.",
+    "next_action": "Reuse digest-verified retained current ABI as a structural definition; recheck current implementation/code and exact trade state with new source block. Do not reread ABI or retry Multicall."
   }
 }
