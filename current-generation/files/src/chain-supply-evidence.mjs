@@ -1,8 +1,10 @@
+import {NATIVE_LEDGER_FAMILIES,fetchNativeLedgerSupply,normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
+import {fetchStellarPublishedSupply,normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
 import {fetchSolanaNativeSupply,SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 
-export const CHAIN_SUPPLY_EVIDENCE_VERSION='chain-supply-evidence-v8-general-comparison-context-20261005';
+export const CHAIN_SUPPLY_EVIDENCE_VERSION='chain-supply-evidence-v9-primary-native-families-20261007';
 const DEFAULT_SOURCE='CHAIN_RPC';
 const EVM_ENDPOINTS=Object.freeze({ethereum:'https://ethereum-rpc.publicnode.com',bsc:'https://bsc-rpc.publicnode.com',arbitrum:'https://arbitrum-one-rpc.publicnode.com',base:'https://base-rpc.publicnode.com',polygon:'https://polygon-bor-rpc.publicnode.com',optimism:'https://optimism-rpc.publicnode.com',avalanche:'https://avalanche-c-chain-rpc.publicnode.com'});
 const EVM_CHAIN_IDS=Object.freeze({ethereum:'0x1',bsc:'0x38',arbitrum:'0xa4b1',base:'0x2105',polygon:'0x89',optimism:'0xa',avalanche:'0xa86a'});
@@ -14,14 +16,14 @@ const decimalsOf=value=>{const n=finite(value);return Number.isSafeInteger(n)&&n
 
 function exactIdentity(identity){
  const chain=text(identity?.chain).toLowerCase(),address=text(identity?.contract_or_mint);
- if(['near','solana','cardano'].includes(chain)&&identity?.asset_kind==='NATIVE'&&identity?.native_asset_id===`${chain}:mainnet`&&(!address||address==='native:mainnet'))return{chain,address:'native:mainnet',asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`};
+ if(['near','solana','cardano','xrp','stellar'].includes(chain)&&identity?.asset_kind==='NATIVE'&&identity?.native_asset_id===`${chain}:mainnet`&&(!address||address==='native:mainnet'))return{chain,address:'native:mainnet',asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`};
  if(chain==='solana'&&BASE58.test(address))return{chain,address};
  if(EVM_ENDPOINTS[chain]&&EVM.test(address))return{chain,address:address.toLowerCase()};
  return null;
 }
 
-const nativeContract=id=>({near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT'}[id?.chain]||null);
-const sourceFor=id=>id?.chain==='cardano'?'KOIOS_NATIVE_SUPPLY':DEFAULT_SOURCE;
+const nativeContract=id=>({near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT',xrp:'XRP-USDT',stellar:'XLM-USDT'}[id?.chain]||null);
+const sourceFor=id=>id?.chain==='cardano'?'KOIOS_NATIVE_SUPPLY':NATIVE_LEDGER_FAMILIES[id?.chain]?.provider||DEFAULT_SOURCE;
 
 async function postRpc(fetchImpl,url,method,params){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
@@ -44,14 +46,15 @@ export function normalizeChainSupply({contract,identity,current,previous=null,ob
  const sourceTs=finite(current?.source_ts),priorTs=finite(previous?.source_ts),chronological=priorTs!==null&&sourceTs!==null&&priorTs<sourceTs&&text(previous?.block_ref)!==''&&text(current?.block_ref)!==''&&text(previous.block_ref)!==text(current.block_ref)&&previous?.finalized===true;
  const decimals=decimalsOf(current?.decimals),currentValue=unsigned(current?.supply),samePrevious=chronological&&decimals!==null&&id.chain===text(previous?.chain).toLowerCase()&&sameAddress&&decimalsOf(previous?.decimals)===decimals,previousValue=samePrevious?unsigned(previous?.supply):null;
  if(id.asset_kind==='NATIVE'&&id.chain==='solana'&&(current?.genesis_hash!==SOLANA_MAINNET_GENESIS||current?.commitment!=='finalized'||current?.decimals!==9))return{status:'SOLANA_MAINNET_SUPPLY_PROOF_REQUIRED',evidence:[],internal_only:true};
+ if(id.chain==='xrp'){const proof=normalizeNativeLedgerPair({...current?.native_ledger_pair_payload,observed_ts});if(proof.status!=='CLOSED'||proof.current.supply!==text(current?.supply)||proof.current.source_ts!==sourceTs||proof.current.block_ref!==current?.block_ref||decimals!==6||previous&&(proof.previous.supply!==text(previous.supply)||proof.previous.block_ref!==previous.block_ref||proof.previous.source_ts!==priorTs||decimalsOf(previous.decimals)!==6))return{status:'EXACT_XRPL_FINALIZED_LEDGER_PROOF_REQUIRED',evidence:[],internal_only:true};}
  if(currentValue===null)return{status:'SOURCE_SCHEMA_ERROR',evidence:[],internal_only:true};
  if(current?.finalized!==true)return{status:'SOURCE_FINALITY_NOT_CLOSED',evidence:[],internal_only:true};
  const delta=previousValue===null?null:currentValue-previousValue,metric=id.chain==='cardano'?'CARDANO_ACTIVE_SUPPLY_OBSERVATION':delta===null?'TOTAL_SUPPLY_OBSERVATION':delta>0n?'SUPPLY_INCREASE':delta<0n?'SUPPLY_DECREASE':'SUPPLY_UNCHANGED',block=id.chain==='cardano'?'N02':delta!==null&&delta<0n?'N03':'N02',source=sourceFor(id),ttl=SOURCE_POLICIES[source].ttl_ms;
  const origin=`${id.chain}:${id.address}:${text(current?.block_ref)||sourceTs}`;
  if(sourceTs===null||sourceTs>observed_ts)return{status:'SOURCE_CLOCK_NOT_CLOSED',contract:htxContract,evidence:[],internal_only:true};
  if(observed_ts-sourceTs>(id.chain==='cardano'?6*24*60*60_000:ttl))return{status:'STALE_FINALIZED_SUPPLY',contract:htxContract,evidence:[],internal_only:true};
- const common={chain:id.chain,token_address:id.asset_kind==='NATIVE'?null:id.address,asset_kind:id.asset_kind||'TOKEN',native_asset_id:id.native_asset_id||null,genesis_hash:current?.genesis_hash||null,commitment:current?.commitment||null,total_supply_base_units:text(current.supply),previous_supply_base_units:previousValue===null?null:text(previous.supply),supply_delta_base_units:delta===null?null:String(delta),decimals,block_ref:text(current?.block_ref)||null,previous_source_ts:previousValue===null?null:priorTs,previous_block_ref:previousValue===null?null:text(previous.block_ref),comparison_policy:'EXACT_ASSET_DECIMALS_DISTINCT_BLOCK_INCREASING_CLOCK',identity_method:text(identity?.identity_method)||null,direction_policy:'SUPPLY_OBSERVATION_ONLY_UNTIL_MATCHED_FINALIZED_TRANSACTION',supply_measure:text(current?.supply_measure)||'TOKEN_TOTAL_SUPPLY',unit:text(current?.unit)||null,provider_query:text(current?.provider_query)||null,epoch_no:Number.isSafeInteger(current?.epoch_no)?current.epoch_no:null,previous_epoch_no:Number.isSafeInteger(previous?.epoch_no)?previous.epoch_no:null,max_supply_base_units:text(current?.max_supply)||null};
- const upstream=id.chain==='near'?'NEAR_MAINNET_RPC':id.chain==='solana'?'SOLANA_MAINNET_RPC':id.chain==='cardano'?'KOIOS_CARDANO_MAINNET':'PUBLICNODE_RPC';
+ const common={...(current?.native_ledger_pair_payload?{native_ledger_pair_payload:current.native_ledger_pair_payload}:{}),chain:id.chain,token_address:id.asset_kind==='NATIVE'?null:id.address,asset_kind:id.asset_kind||'TOKEN',native_asset_id:id.native_asset_id||null,genesis_hash:current?.genesis_hash||null,commitment:current?.commitment||null,total_supply_base_units:text(current.supply),previous_supply_base_units:previousValue===null?null:text(previous.supply),supply_delta_base_units:delta===null?null:String(delta),decimals,block_ref:text(current?.block_ref)||null,previous_source_ts:previousValue===null?null:priorTs,previous_block_ref:previousValue===null?null:text(previous.block_ref),comparison_policy:'EXACT_ASSET_DECIMALS_DISTINCT_BLOCK_INCREASING_CLOCK',identity_method:text(identity?.identity_method)||null,direction_policy:'SUPPLY_OBSERVATION_ONLY_UNTIL_MATCHED_FINALIZED_TRANSACTION',supply_measure:text(current?.supply_measure)||'TOKEN_TOTAL_SUPPLY',unit:text(current?.unit)||null,provider_query:text(current?.provider_query)||null,epoch_no:Number.isSafeInteger(current?.epoch_no)?current.epoch_no:null,previous_epoch_no:Number.isSafeInteger(previous?.epoch_no)?previous.epoch_no:null,max_supply_base_units:text(current?.max_supply)||null};
+ const upstream=NATIVE_LEDGER_FAMILIES[id.chain]?.upstream||(id.chain==='near'?'NEAR_MAINNET_RPC':id.chain==='solana'?'SOLANA_MAINNET_RPC':id.chain==='cardano'?'KOIOS_CARDANO_MAINNET':'PUBLICNODE_RPC');
  const evidence=[buildEvidenceV2({provider_id:source,upstream_id:upstream,asset_id:`${id.chain}:${id.address}`,htx_contract:htxContract,block_id:block,metric_family:metric,origin_event_id:origin,dependency_group:`CHAIN_SUPPLY:${id.chain}:${id.address}:${text(current?.block_ref)||sourceTs}`,source_ts:sourceTs,observed_ts,expires_at:observed_ts+ttl,directional_strength:null,risk_strength:null,coverage_status:delta===null?'CONTEXT_ONLY':'PARTIAL_FINALIZED_COMPARISON',coverage_fraction:id.chain==='cardano'?.25:0,finality_status:'FINAL',validation_status:'VALID',extra:common})];
  // A decrease comparison belongs to N03, but its same finalized current
  // supply remains an independently assigned N02 context fact. Preserve the
@@ -88,7 +91,9 @@ async function fetchEvmTokenState(fetchImpl,url,address,blockRef){
  }catch(error){return{network_calls:1,ok:false,http_status:null,payload:null,decimals:null,error:String(error?.message||error).slice(0,120)};}finally{clearTimeout(timer);}
 }
 
-async function fetchSupply(fetchImpl,id){
+async function fetchSupply(fetchImpl,id,clock){
+ if(id.chain==='stellar')return fetchStellarPublishedSupply(fetchImpl);
+ if(id.chain==='xrp')return fetchNativeLedgerSupply(fetchImpl,id,{clock});
  if(id.chain==='cardano'&&id.asset_kind==='NATIVE')return fetchCardanoSupply(fetchImpl);
  if(id.chain==='solana'&&id.asset_kind==='NATIVE')return fetchSolanaNativeSupply(fetchImpl);
  if(id.chain==='near'){
@@ -123,13 +128,14 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
   }
   return cached;
  }
- const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(source,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');if([CHAIN_SUPPLY_EVIDENCE_VERSION,'chain-supply-evidence-v7-cardano-koios-20261005','chain-supply-evidence-v6-native-solana-20261004','chain-supply-evidence-v5-native-chronology-20261004','chain-supply-evidence-v4-receipt-clock-20261004'].includes(prior?.version)&&prior.status==='CLOSED'&&prior.summary?.finalized===true&&prior.current_observation)previous={...prior.current_observation,finalized:true};}catch{}
- const attempts=id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
+ const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(source,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');if([CHAIN_SUPPLY_EVIDENCE_VERSION,'chain-supply-evidence-v8-general-comparison-context-20261005','chain-supply-evidence-v7-cardano-koios-20261005','chain-supply-evidence-v6-native-solana-20261004','chain-supply-evidence-v5-native-chronology-20261004','chain-supply-evidence-v4-receipt-clock-20261004'].includes(prior?.version)&&prior.status==='CLOSED'&&prior.summary?.finalized===true&&prior.current_observation)previous={...prior.current_observation,finalized:true};}catch{}
+ const attempts=id.chain==='stellar'?1:id.chain==='xrp'?3:id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source,reservation_id:reservationId,attempts,daily_cap:dailyCap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
- const fetched=await fetchSupply(fetch_impl,id),observed=clock(),normalized=normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous:fetched.previous||previous,observed_ts:observed});
- const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null})),internal_only:true};
- if(normalized.status==='CLOSED')await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:observed+ttl,payload:result});return result;
+ if(NATIVE_LEDGER_FAMILIES[id.chain]){const parent=await reserveEvidenceSourceAttempts(db,{source:DEFAULT_SOURCE,reservation_id:reservationId+':PARENT',attempts,daily_cap:SOURCE_POLICIES[DEFAULT_SOURCE].daily_cap,now});if(!parent.allowed)return{status:parent.status,evidence:[],network_calls:0,admission:parent,internal_only:true};}
+ const fetched=await fetchSupply(fetch_impl,id,clock),observed=clock(),normalized=id.chain==='stellar'?normalizeStellarPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous:id.chain==='xrp'?fetched.previous:fetched.previous||previous,observed_ts:observed});
+ const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,...(id.chain==='xrp'&&fetched.status!=='CLOSED'?{status:fetched.status}:{}),network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null})),internal_only:true};
+ if(normalized.status==='CLOSED'||NATIVE_LEDGER_FAMILIES[id.chain])await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:observed+(normalized.status==='CLOSED'?ttl:30*60_000),payload:result});return result;
 }
 
 export default{normalizeChainSupply,collectChainSupplyEvidence};

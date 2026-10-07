@@ -6,6 +6,7 @@ import {parseSupplementalIdentityRegistry} from '../files/src/supplemental-candi
 
 const source=JSON.parse(fs.readFileSync(new URL('../files/official-event-sources.json',import.meta.url),'utf8'));
 const mainSources=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url),'utf8'));
+mainSources.entries=mainSources.entries.filter(r=>Date.parse(r.verified_at)<=Date.parse('2026-10-05T04:30:00Z')); // Historical registry cutoff; new connections cannot be backdated.
 
 test('main-only hosted publisher has exact project identity and issuer authorization',()=>{
  const compiled=compileOfficialSourceRegistry(mainSources,{now:Date.parse('2026-10-05T04:30:00Z')});

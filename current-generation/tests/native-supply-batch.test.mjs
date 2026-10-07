@@ -19,7 +19,7 @@ const identity={chain:'near',asset_kind:'NATIVE',native_asset_id:'near:mainnet',
 const NOW=Date.parse('2026-10-04T14:40:00Z'),hash='11111111111111111111111111111111';
 function memoryDB(){const sqlite=new DatabaseSync(':memory:');return{sqlite,prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};},async batch(rows){return Promise.all(rows.map(row=>row.run()));}};}
 test('native registry survives compilation/merge/parse and never becomes a wrapped DEX lane',()=>{
- const sources=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url)));
+ const sources=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url)));sources.entries=sources.entries.filter(r=>Date.parse(r.verified_at)<=Date.parse('2026-10-05T04:30:00Z'));
  const compiled=compileOfficialSourceRegistry(sources,{now:Date.parse('2026-10-05T04:30:00Z')}),merged=mergeOfficialAndConfiguredRegistries({official:compiled,configured:{}}),entry=parseSupplementalIdentityRegistry(merged.registry).entries.NEAR;
  assert.deepEqual(entry.identity,identity);assert.deepEqual(entry.official_feeds,[]);
  assert.equal(chooseSupplementalLane({entry,derivatives_venues:2}),null);
