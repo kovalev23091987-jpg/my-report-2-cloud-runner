@@ -104,15 +104,15 @@
     }
   ],
   "lease": {
-    "owner": null,
-    "acquired_ts": null,
-    "expires_ts": null
+    "owner": "HTX:20261007:1791335044245:coverage-expansion",
+    "acquired_ts": 1791335044245,
+    "expires_ts": 1791342244245
   },
-  "next_action": "NORMAL_CLOUD_PRODUCTION; NO_PENDING_DEVELOPMENT_IN_APPROVED_SCOPE",
+  "next_action": "OWNER_REQUESTED_ADDITIONAL_SOURCE_COVERAGE_AND_FULL_TZ_RECONCILIATION",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791333941287,
+  "updated_ts": 1791335044245,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -297,5 +297,13 @@
   "latest_telegram_presentation_release": "checkpoints/OWNER_APPROVED_TELEGRAM_V5_RELEASE_20261006.json",
   "latest_liquidation_batch_release": "checkpoints/TOP2_PINNED_POSITION_BATCH_RELEASE_20261006.json",
   "history": "checkpoints/archive/phase-before-approved-batch-final-20261006.json",
-  "completion_scope": "ONE_CURRENT_RUNTIME_TOP2_REPORT; AUTOMATIC_APPROVED_V5_PONS_OBSERVE_SENT; OPTIONAL_PARTIAL_LTC_NATIVE_LEVELS; NO_ENTRY_ACCEPTANCE"
+  "completion_scope": "ONE_CURRENT_RUNTIME_TOP2_REPORT; AUTOMATIC_APPROVED_V5_PONS_OBSERVE_SENT; OPTIONAL_PARTIAL_LTC_NATIVE_LEVELS; NO_ENTRY_ACCEPTANCE",
+  "additional_coverage_work": {
+    "status": "IN_PROGRESS",
+    "owner_instruction_at_msk": "2026-10-07T04:03:15+03:00",
+    "base_functional_acceptance_retained": true,
+    "scope": "Reconcile full owner TZ and extend factually useful source/future-level coverage within existing caps; original templates, thresholds, entry and missing-data honesty preserved.",
+    "proof_required": "Exact retained input and official method/identity/state clock, source costs, composed pipeline, cloud execution and current canonical consumption.",
+    "background_agent_after_turn": false
+  }
 }
