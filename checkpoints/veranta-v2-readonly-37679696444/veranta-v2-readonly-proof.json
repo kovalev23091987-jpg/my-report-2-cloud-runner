@@ -1,0 +1,508 @@
+{
+  "schema": "ACTUAL_VERANTA_V2_READONLY_20261007_V1",
+  "head": "b1716342f8dd769108355a300d840dd90f46ab71",
+  "cloud_run": 37679696444,
+  "run_id": "ACTUAL_VERANTA_V2_READONLY:37679696444:1791403690976",
+  "started_ts": 1791403690976,
+  "status": "ACTUAL_VERANTA_V2_READONLY_NOT_CLOSED",
+  "production_enabled": false,
+  "official_sdk_commit": "d8b3f07ab7235ac102bbeae670dcbbe53fa1f270",
+  "official_sdk_version": "0.3.1",
+  "source_http_cap": 5,
+  "response_bytes_cap": 2000000,
+  "max_catalogue_rows": 512,
+  "max_event_rows": 200,
+  "max_position_rows": 64,
+  "max_accounts": 1,
+  "source_clocks_refreshed": false,
+  "old_v1_addresses_or_formula_used": false,
+  "signature_requests": 0,
+  "authenticated_requests": 0,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "full_market_coverage": false,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "verified_future_levels": [],
+  "positions": [],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 58,
+      "reserved_rows_read": 1209850,
+      "reserved_rows_written": 23404,
+      "measured_rows_read": 783414,
+      "measured_rows_written": 11167,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1211350,
+      "rows_written": 23504
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_VERANTA_V2_READONLY:37679696444:1791403690976",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 126
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 5
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "PUBLICNODE_NATIVE_EVM",
+    "minute_bucket": 1791403680000,
+    "reserved_units": 5,
+    "rolling_units": 5,
+    "cap": 6
+  },
+  "current_meta": {
+    "chainId": 8453,
+    "addresses": {
+      "tradingRouter": "0x44914408af82bC9983bbb330e3578E1105e11d4e",
+      "tradingStorage": "0x8a311D7048c35985aa31C131B9A13e03a5f7422d",
+      "pairStorage": "0x5db3772136e5557EFE028Db05EE95C84D76faEC4",
+      "pairInfos": "0x81F22d0Cc22977c91bEfE648C9fddf1f2bd977e5",
+      "priceAggregator": "0x64e2625621970F8cfA17B294670d61CB883dA511",
+      "multicall": "0xA7cFc43872F4D7B0E6141ee8c36f1F7FEe5d099e",
+      "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "referral": "0x1A110bBA13A1f16cCa4b79758BD39290f29De82D",
+      "tranche": "0x944766f715b51967E56aFdE5f0Aa76cEaCc9E7f9",
+      "execute": "0xdbDd7B8a8747904f53eb7AEF655a6FF81e2c306a",
+      "vaultManager": "0xe9fB8C70aF1b99F2Baaa07Aa926FCf3d237348DD",
+      "builderCode": "0xeDA810c70769a7221fB7e640D974534026719975",
+      "delegationTemplate": "0x92F8ab16f6322a11d9f629baF081094c22A3a362"
+    },
+    "eip712": {
+      "trading": {
+        "name": "AvantisTrading",
+        "version": "1",
+        "chainId": 8453,
+        "verifyingContract": "0x44914408af82bC9983bbb330e3578E1105e11d4e"
+      },
+      "referral": {
+        "name": "AvantisTrading",
+        "version": "1",
+        "chainId": 8453,
+        "verifyingContract": "0x1A110bBA13A1f16cCa4b79758BD39290f29De82D"
+      },
+      "signatureFormat": "rsv-65-bytes"
+    },
+    "enums": {
+      "openOrderType": {
+        "market": 0,
+        "stop_limit": 1,
+        "limit": 2,
+        "market_pnl": 3
+      },
+      "marginUpdateType": {
+        "deposit": 0,
+        "withdraw": 1
+      },
+      "priceSourcing": {
+        "HERMES": 0,
+        "PRO": 1
+      },
+      "limitOrderType": {
+        "tp": 0,
+        "sl": 1,
+        "liq": 2,
+        "open": 3,
+        "partial_tp": 4,
+        "partial_sl": 5
+      },
+      "triggerType": {
+        "fixed": 0,
+        "percentage": 1
+      }
+    },
+    "units": {
+      "price": "1e10",
+      "leverage": "1e10",
+      "slippagePercent": "1e10",
+      "coinExposure": "1e10",
+      "usdc": "1e6",
+      "intentDeadline": "milliseconds",
+      "delegateExpiry": "seconds"
+    },
+    "defaults": {
+      "executionFeeWei": "0",
+      "intentDeadlineMs": 120000,
+      "slippagePercent": "1"
+    },
+    "glossary": {
+      "positionSizeUSDC": "The trade's collateral in USDC (1e6). Misleading name: NOT the leveraged position size.",
+      "initialPosToken": "Always 0 on opens. On increases: the additional collateral being added (1e6).",
+      "_amount": "Collateral being closed, in USDC (1e6); request param collateralToCloseUsdc.",
+      "_openTimestamp": "The position's on-chain open timestamp; binds a close intent to the exact position instance (PositionMismatch on drift).",
+      "timestamp": "In TpSlReq: same position-instance binding as _openTimestamp. In Trade: set by the contract, 0 in requests.",
+      "wantedPrice": "Expected execution price (1e10) used for slippage checks; request param expectedPrice.",
+      "defaultLeverage": "Target fill leverage (1e10); request param leverage.",
+      "coinSize": "Exposure in base-asset units (1e10); request params coinExposure / coinExposureToClose.",
+      "buy": "true = long, false = short; request param side.",
+      "tp": "Take-profit price (1e10); 0 = not set.",
+      "sl": "Stop-loss price (1e10); 0 = not set.",
+      "orderType": "In TpSlReq: PARTIAL_TP(4) / PARTIAL_SL(5); request param kind (take_profit | stop_loss).",
+      "percentage": "TpSlReq percentage trigger: signed int256, 1e10 = 1% (negative allowed).",
+      "signTimestamp": "TpSlReq freshness stamp in milliseconds; must not be in the future. TpSlReq has NO deadline field.",
+      "_deadline": "Intent expiry in unix MILLISECONDS (contract checks deadline/1000 >= block.timestamp).",
+      "expiry": "DelegateReq delegation expiry in unix SECONDS.",
+      "tnc": "Fixed Terms-of-Service constant; sign the returned string verbatim.",
+      "_nonce": "Signer-chosen 256-bit nonce on a Permit2-style unordered bitmap (no sequencing).",
+      "twapId": "On-chain id of a TWAP order (from the twap-app open response or the twaps list); cancels are scoped to it.",
+      "entityId": "Storage id of an off-chain partial TP/SL (named documentId before the /price-triggers migration); CancelOffchainOrder signs over it as proof of ownership (verified off-chain, never submitted on-chain).",
+      "__reserved1": "Always 0."
+    }
+  },
+  "catalogue_count": 202,
+  "selected_catalogue_candidate": {
+    "index": 0,
+    "pair": {
+      "feed": {
+        "maxOpenDeviationP": 1,
+        "maxCloseDeviationP": 50,
+        "feedId": "0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace",
+        "attributes": {
+          "symbol": "Crypto.ETH/USD",
+          "assetType": "crypto",
+          "isOpen": true,
+          "nextOpen": 0,
+          "nextClose": 0,
+          "schedule": "America/New_York;O,O,O,O,O,O,O;"
+        }
+      },
+      "backupFeed": {
+        "maxDeviationP": 5,
+        "feedId": "0x71041dddad3595F9CEd3DcCFBe3D1F4b0a16Bb70"
+      },
+      "spreadP": 0.01,
+      "pnlSpreadP": 0.025,
+      "leverages": {
+        "minLeverage": 1,
+        "maxLeverage": 50,
+        "pnlMinLeverage": 75,
+        "pnlMaxLeverage": 500
+      },
+      "priceImpactMultiplier": 1.2,
+      "skewImpactMultiplier": 0.25,
+      "groupIndex": 0,
+      "feeIndex": 0,
+      "values": {
+        "maxGainP": 2500,
+        "maxSlP": 80,
+        "maxLongOiP": 50,
+        "maxShortOiP": 50,
+        "groupOpenInterestPercentageP": 40,
+        "maxWalletOIP": 50,
+        "isUSDCAligned": false,
+        "groupOpenInterestPecentage": 40,
+        "maxWalletOI": 50
+      },
+      "from": "ETH",
+      "to": "USD",
+      "timer": {
+        "numTiers": 1,
+        "positionSizeToThresholdTierMap": {
+          "0": 0
+        },
+        "thresholdTierToTimerMap": {
+          "0": 0
+        }
+      },
+      "openInterest": {
+        "long": 211938.87,
+        "short": 238553.62
+      },
+      "marginFee": {
+        "long": 0,
+        "short": 0
+      },
+      "pairSpreadP": 0.01,
+      "pairLimitOrderFeeP": 0,
+      "pairMinLevPosUSDC": 100,
+      "pairMinLeverage": 1,
+      "pairOI": 450492.49,
+      "pairMaxOI": 15990529.724000001,
+      "maxWalletOI": 62463006.74,
+      "index": 0,
+      "pairParams": {
+        "onePercentDepthAbove": 39578594.896,
+        "onePercentDepthBelow": 51272463.104
+      },
+      "storagePairParams": {
+        "posSpreadCap": 2,
+        "negSpreadCap": 25,
+        "isPnlTypeAllowed": 0,
+        "pnlPriceImpactMultiplier": 1.2,
+        "pnlSkewImpactMultiplier": 0,
+        "pnlPosSpreadCap": 2,
+        "pnlNegSpreadCap": 7.5,
+        "minLongBorrowFee": 0,
+        "maxLongBorrowFee": 100,
+        "lazerFeedId": 2
+      },
+      "blockOILimit": 2500000,
+      "openFeeP": 0.045,
+      "closeFeeP": 0.045,
+      "limitOrderFeeP": 0,
+      "minLevPosUSDC": 100,
+      "pnlFees": {
+        "numTiers": 10,
+        "tierP": [
+          1,
+          5,
+          25,
+          50,
+          100,
+          250,
+          500,
+          1500,
+          2500,
+          3000
+        ],
+        "feesP": [
+          80,
+          50,
+          45,
+          37.5,
+          27.5,
+          25,
+          25,
+          22.5,
+          15,
+          2.5
+        ]
+      },
+      "lossProtectionMultiplier": {
+        "0": 0,
+        "1": 8,
+        "2": 8,
+        "3": 8
+      },
+      "longSkewConfig": {
+        "0": 0,
+        "1": 101,
+        "2": 101,
+        "3": 101
+      },
+      "shortSkewConfig": {
+        "0": 0,
+        "1": 101,
+        "2": 101,
+        "3": 101
+      },
+      "skewEqParams": [
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ],
+        [
+          0,
+          450
+        ]
+      ],
+      "isPairListed": true,
+      "minShortBorrowFee": 0,
+      "maxShortBorrowFee": 100,
+      "lazerFeed": {
+        "feedId": 2,
+        "exponent": -8,
+        "minChannel": "real_time",
+        "state": "stable"
+      },
+      "liquidity": {
+        "buy": 15990529.724000001,
+        "sell": 15990529.724000001
+      },
+      "zfpOverride": null,
+      "leverageOverride": null,
+      "uncappedSpread": {
+        "isActive": false,
+        "windows": []
+      },
+      "coinOI": {
+        "long": 92.1901262635,
+        "short": 91.1753172919
+      },
+      "fundingFeePerHourP": 0,
+      "fundingRate": {
+        "long": 0.0009,
+        "short": -0.0009100172733319474
+      },
+      "accPerOiLong": 31.162396417329894,
+      "accPerOiShort": -31.60674963365522,
+      "fundingLastUpdateBlock": 52307089,
+      "decayedVol": -0.001972,
+      "additionalPairParams2": {
+        "openMakerFeeP": 0.01,
+        "closeMakerFeeP": 0.01,
+        "openTakerFeeP": 0.045,
+        "closeTakerFeeP": 0.045,
+        "closeOnlyMode": false
+      },
+      "assetOIParams": {
+        "isHardCap": false,
+        "totalOIHardCap": 0,
+        "longOIHardCap": 0,
+        "shortOIHardCap": 0
+      },
+      "hedgingParams": {
+        "hedgingFeePerBlockP": 5e-7,
+        "hedgingThresholdLowP": 0,
+        "hedgingThresholdHighP": 100
+      },
+      "pairTwapParams": {
+        "minRunTime": 30,
+        "maxRunTime": 86400,
+        "frequency": 30,
+        "twapFee": 0
+      }
+    },
+    "cex_identity_closed": false,
+    "reason": "Returned native protocol market and oracle candidate only; catalogue symbols are not admitted CEX identity."
+  },
+  "discovered_public_accounts": [],
+  "error": "NO_PUBLIC_TRADER_IN_BOUNDED_RECENT_TRADE_SAMPLE\n\n0 !== 1\n",
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 131
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_VERANTA_V2_READONLY:37679696444:1791403690976",
+    "source_run_id": "37679696444",
+    "measured_rows_read": 69,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "source_http": 3,
+  "reserved_http": 5,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 70,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 59,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791403695492,
+  "raw_gzip_sha256": "f7ee0bfbb9029666281583b93fb69fd8fb5821708cfe5db4a388f8cc3b98d8bc"
+}
