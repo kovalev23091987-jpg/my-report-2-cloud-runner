@@ -1,0 +1,775 @@
+{
+  "schema": "POST_PR226_NATURAL_CONNECTED_ALL_BLOCKS_AUDIT_V1",
+  "cloud_run": 37652266611,
+  "head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+  "run_id": "1791390513519-1791390521999",
+  "generated_at": "2026-10-07T16:30:06.232Z",
+  "source_artifacts": [
+    {
+      "key": "report",
+      "id": 11496981312,
+      "digest": "4a535c052c3ffc9927a10583a8a60614379aeafaec9b7722631ff32086ddc8ef"
+    },
+    {
+      "key": "delivery",
+      "id": 11496941365,
+      "digest": "e43ad5c363180314b31ed94861f1ef441e577a4a259bad03ecb2bb2de9d144bb"
+    }
+  ],
+  "canonical_sha256": "91e997923f0008d49e3135c4717a2880f81cde911413d2c077cd2c6b756d97cf",
+  "raw_evidence": "checkpoints/POST_PR226_NATURAL_REPORT_37652266611.json",
+  "retained_readback": "checkpoints/POST_PR226_NATURAL_RETAINED_READBACK_20261007.json",
+  "candidates": [
+    {
+      "contract": "BR-USDT",
+      "snapshot_id": "S392:BR-USDT:1791390601271",
+      "decision_ts": 1791390601271,
+      "participating": 6,
+      "checked": 10,
+      "rendered": 9,
+      "neutral_assessed_rendered": 5,
+      "unscored_diagnostic_rendered": 1,
+      "score_applied": 0,
+      "participating_ids": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "rows": [
+        {
+          "id": "N01",
+          "consumer": "SUPPORTING_RISK_RECHECK",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+            "DEFILLAMA_PUBLISHED_CALENDAR": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED"
+          }
+        },
+        {
+          "id": "N02",
+          "consumer": "SUPPLY_RISK",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "CHAIN_SUPPLY": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          }
+        },
+        {
+          "id": "N03",
+          "consumer": "MONEY_FLOW_CONTEXT",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "CHAIN_SUPPLY_COMPARISON": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          }
+        },
+        {
+          "id": "N04",
+          "consumer": "TRANSFER_INVESTIGATION",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED",
+            "BLOCKSCOUT_INDEX": "EXACT_EVM_IDENTITY_REQUIRED"
+          }
+        },
+        {
+          "id": "N05",
+          "consumer": "MARKET_FLOW_CONFIRMATION",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
+          }
+        },
+        {
+          "id": "N06",
+          "consumer": "EARLY_INTEREST_PRIORITY",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          }
+        },
+        {
+          "id": "N07",
+          "consumer": "OFFICIAL_EVENT_RISK",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          }
+        },
+        {
+          "id": "N08",
+          "consumer": "EXECUTION_GATE",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "route_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "EXACT_OFFICIAL_FEED_REQUIRED"
+          }
+        },
+        {
+          "id": "N09",
+          "consumer": "EXECUTION_ELIGIBILITY",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "route_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          }
+        },
+        {
+          "id": "N10",
+          "consumer": "TARGET_PATH_INVALIDATION",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "route_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          }
+        },
+        {
+          "id": "N11",
+          "consumer": "EXECUTION_STRESS",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 3,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          }
+        },
+        {
+          "id": "N12",
+          "consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_LARGE_TRADES"
+          ],
+          "route_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          }
+        },
+        {
+          "id": "N14",
+          "consumer": "OPTIONS_RISK_CONTEXT",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          }
+        },
+        {
+          "id": "N15",
+          "consumer": "SECTOR_RELATIVE_STRENGTH",
+          "checked": true,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "COINGECKO_SECTOR": "EXACT_SECTOR_REGISTRY_REQUIRED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          }
+        },
+        {
+          "id": "N16",
+          "consumer": "EXECUTION_COST_GATE",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 2,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          }
+        }
+      ],
+      "N05_source_diagnostic": {
+        "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+        "contract": "BR-USDT",
+        "evaluated_ts": 1791390601271,
+        "freshness_limit_ms": 300000,
+        "signed_raw_status": "SIGNED_FLOW_EXACT_RING_REQUIRED",
+        "signed_raw_ring": {
+          "status": "SIGNED_FLOW_WINDOW_NOT_FRESH",
+          "observed_ts": 1791368815873,
+          "reported_window_end_ts": 1791368700000,
+          "reported_window_age_ms": 21872232,
+          "reported_minute_rows": 1197,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        },
+        "acquisition": null,
+        "trajectory": {
+          "observed_ts": 1791390572944,
+          "window_start_ts": 1791374400000,
+          "window_end_ts": 1791388800000,
+          "window_age_ms": 1801271,
+          "expected_1m_bars": 240,
+          "received_1m_bars": 240
+        },
+        "diagnostic_only": true,
+        "internal_only": true,
+        "source_clocks_refreshed": false,
+        "network_calls": 0
+      },
+      "future_levels": 0,
+      "canonical_state": "REJECTED",
+      "direction": null
+    },
+    {
+      "contract": "龙虾-USDT",
+      "snapshot_id": "S392:龙虾-USDT:1791390569430",
+      "decision_ts": 1791390569430,
+      "participating": 11,
+      "checked": 14,
+      "rendered": 14,
+      "neutral_assessed_rendered": 9,
+      "unscored_diagnostic_rendered": 2,
+      "score_applied": 0,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "rows": [
+        {
+          "id": "N01",
+          "consumer": "SUPPORTING_RISK_RECHECK",
+          "checked": false,
+          "valid_facts": 0,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "DEFILLAMA_PUBLISHED_CALENDAR": "PUBLISHED_CALENDAR_ACCESS_OR_RATE_BLOCKED"
+          }
+        },
+        {
+          "id": "N02",
+          "consumer": "SUPPLY_RISK",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "CHAIN_RPC"
+          ],
+          "route_statuses": {
+            "CHAIN_SUPPLY": "CLOSED",
+            "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE",
+            "COINMETRICS_SUPPLY": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          }
+        },
+        {
+          "id": "N03",
+          "consumer": "MONEY_FLOW_CONTEXT",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "CHAIN_RPC"
+          ],
+          "route_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "CLOSED",
+            "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+          }
+        },
+        {
+          "id": "N04",
+          "consumer": "TRANSFER_INVESTIGATION",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "CHAIN_RPC"
+          ],
+          "route_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "DEFERRED_SHARED_REQUEST_ENVELOPE"
+          }
+        },
+        {
+          "id": "N05",
+          "consumer": "MARKET_FLOW_CONFIRMATION",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_FUTURES_RAW_FLOW"
+          ],
+          "route_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+            "CHAIN_EVENTS": "CLOSED"
+          }
+        },
+        {
+          "id": "N06",
+          "consumer": "EARLY_INTEREST_PRIORITY",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "BLUESKY_PUBLIC": "CLOSED",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+            "WIKIMEDIA_ATTENTION": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED"
+          }
+        },
+        {
+          "id": "N07",
+          "consumer": "OFFICIAL_EVENT_RISK",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+            "GDELT_NEWS_DISCOVERY": "EXACT_OFFICIAL_IDENTITY_REQUIRED"
+          }
+        },
+        {
+          "id": "N08",
+          "consumer": "EXECUTION_GATE",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "route_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED",
+            "OFFICIAL_EVENTS": "CAPABILITY_CHECKED_NO_EXACT_ROUTE"
+          }
+        },
+        {
+          "id": "N09",
+          "consumer": "EXECUTION_ELIGIBILITY",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "route_statuses": {
+            "HTX_PUBLIC_RISK": "CLOSED"
+          }
+        },
+        {
+          "id": "N10",
+          "consumer": "TARGET_PATH_INVALIDATION",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "route_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "CHECKED_PRIMARY_TECHNICAL_CONTEXT"
+          }
+        },
+        {
+          "id": "N11",
+          "consumer": "EXECUTION_STRESS",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 3,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "CHECKED_HTX_ORDERBOOK_STRESS"
+          }
+        },
+        {
+          "id": "N12",
+          "consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "HTX_LARGE_TRADES"
+          ],
+          "route_statuses": {
+            "HTX_LARGE_TRADES": "CLOSED_BOUNDED_SAMPLE"
+          }
+        },
+        {
+          "id": "N14",
+          "consumer": "OPTIONS_RISK_CONTEXT",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": false,
+          "status": "USE_NOT_PROVEN",
+          "rendered_receipts": 0,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [],
+          "route_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_APPLICABLE",
+            "DELTA_OPTIONS": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY"
+          }
+        },
+        {
+          "id": "N15",
+          "consumer": "SECTOR_RELATIVE_STRENGTH",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "rendered_receipts": 1,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "COINGECKO_SECTOR"
+          ],
+          "route_statuses": {
+            "COINGECKO_SECTOR": "CLOSED",
+            "COINPAPRIKA_SECTOR": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA"
+          }
+        },
+        {
+          "id": "N16",
+          "consumer": "EXECUTION_COST_GATE",
+          "checked": true,
+          "valid_facts": 1,
+          "participating": true,
+          "status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "rendered_receipts": 2,
+          "score_contribution": null,
+          "control_effect_proven": false,
+          "used_providers": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "route_statuses": {
+            "PRIMARY_EXECUTION_COST": "CHECKED_HTX_EXECUTION_COST"
+          }
+        }
+      ],
+      "N05_source_diagnostic": {
+        "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+        "contract": "龙虾-USDT",
+        "evaluated_ts": 1791390569430,
+        "freshness_limit_ms": 300000,
+        "signed_raw_status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "signed_raw_ring": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "observed_ts": 1791390537996,
+          "reported_window_end_ts": 1791390420000,
+          "reported_window_age_ms": 149430,
+          "reported_minute_rows": 1306,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        },
+        "acquisition": {
+          "status": "WARMING_OR_GAPPED_RAW_24H",
+          "observed_ts": 1791390537996,
+          "new_verified_minutes": 383,
+          "unverified_recent_minutes": 1057,
+          "persisted_minutes": 1306,
+          "source_clocks": {
+            "trades": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791390533426,
+              "received_ts": 1791390533908,
+              "age_ms": 4570
+            },
+            "minutes": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791390533642,
+              "received_ts": 1791390534090,
+              "age_ms": 4354
+            },
+            "metadata": {
+              "status": "CLOCK_CLOSED",
+              "source_ts": 1791390533380,
+              "received_ts": 1791390533495,
+              "age_ms": 4616
+            }
+          }
+        },
+        "trajectory": {
+          "observed_ts": 1791390533129,
+          "window_start_ts": 1791374400000,
+          "window_end_ts": 1791388800000,
+          "window_age_ms": 1769430,
+          "expected_1m_bars": 240,
+          "received_1m_bars": 240
+        },
+        "diagnostic_only": true,
+        "internal_only": true,
+        "source_clocks_refreshed": false,
+        "network_calls": 0
+      },
+      "future_levels": 0,
+      "canonical_state": "REJECTED",
+      "direction": null
+    }
+  ],
+  "liquidation": {
+    "automatic_search_executed": true,
+    "exact_native_diagnostics_not_retained_in_canonical": true,
+    "log_only_observation": {
+      "gtrade_status": "GTRADE_SYMBOL_UNSUPPORTED",
+      "dydx_status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "bounded_subaccount_page": 200,
+      "complete_accounts_read": 200,
+      "total_actual_http": 4,
+      "max_http": 5,
+      "shared_same_run_reuse": true,
+      "masked_source_timestamps_not_reconstructed": true
+    },
+    "pending_defect": "CURRENT_VERIFIED_EMPTY_DYDX_SAMPLE_MISCLASSIFIED_AS_TRANSPORT_FAILURE"
+  },
+  "telegram": {
+    "schema": "telegram-info-proof-v1",
+    "head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+    "source": "schedule",
+    "source_run_id": "1791390513519-1791390521999",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "龙虾-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "BR-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 86,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "new_fresh_SENT": false,
+  "source_http_added_by_readback": 0,
+  "D1_added_by_readback": 0,
+  "forced_MAIN": 0,
+  "threshold_weights_entry_and_freshness_changed": false,
+  "full_owner_task_complete": false,
+  "next_batch": [
+    "Retain exact native empty-source clocks and status in canonical diagnostics",
+    "Separate successful empty native reads from actual transport failures and suppress duplicate cached health samples",
+    "Keep HTX persistence failure diagnostic with original acquisition clocks; BR full240 fresh facts remain unproven"
+  ]
+}
