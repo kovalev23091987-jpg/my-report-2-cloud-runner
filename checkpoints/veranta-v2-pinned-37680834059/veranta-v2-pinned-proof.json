@@ -1,0 +1,168 @@
+{
+  "schema": "ACTUAL_VERANTA_V2_PINNED_MULTICALL_20261007_V1",
+  "head": "86d3bb9b6b9a1e6c23809426887d9ae5d18de43a",
+  "cloud_run": 37680834059,
+  "run_id": "ACTUAL_VERANTA_V2_PINNED:37680834059:1791404240546",
+  "started_ts": 1791404240546,
+  "status": "ACTUAL_VERANTA_V2_PINNED_NOT_CLOSED",
+  "production_enabled": false,
+  "source_http_cap": 5,
+  "logical_rpc_cap": 10,
+  "account_cap": 1,
+  "response_bytes_cap": 2000000,
+  "source_clocks_refreshed": false,
+  "old_v1_abi_used": false,
+  "source_clock_closed": false,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "source_account": "0x8e1c4e0a7e85b2490f6d811824515d6fad3115a6",
+  "source_proxy": "0xA7cFc43872F4D7B0E6141ee8c36f1F7FEe5d099e",
+  "retained_discovery_cloud_run": 37679978751,
+  "retained_discovery_does_not_prove_current_state": true,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "verified_future_levels": [],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 60,
+      "reserved_rows_read": 1212850,
+      "reserved_rows_written": 23604,
+      "measured_rows_read": 783553,
+      "measured_rows_written": 11189,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1214350,
+      "rows_written": 23704
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_VERANTA_V2_PINNED:37680834059:1791404240546",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 134
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 5
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "PUBLICNODE_NATIVE_EVM",
+    "minute_bucket": 1791404220000,
+    "reserved_units": 5,
+    "rolling_units": 5,
+    "cap": 6
+  },
+  "error": "HTTP_403\n\nfalse !== true\n",
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 139
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_VERANTA_V2_PINNED:37680834059:1791404240546",
+    "source_run_id": "37680834059",
+    "measured_rows_read": 71,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "source_http": 1,
+  "logical_rpc": 0,
+  "reserved_http": 5,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 72,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 61,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791404243607,
+  "raw_gzip_sha256": "92162beb37d62e7c586e0a4e1fc621a5da13a4a9dcb0e3af9a1e00b1b94dc331"
+}
