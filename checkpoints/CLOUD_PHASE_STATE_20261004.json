@@ -118,17 +118,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:20261007:1791353055520:factual-idea-basis",
-    "acquired_ts": 1791353055520,
-    "expires_ts": 1791360255520,
-    "scope": "OWNER_0901_FACTUAL_IDEA_BASIS_IMPLEMENTATION_AND_CONNECTED_CLOUD_REPLAY"
-  },
+  "lease": null,
   "next_action": "BLOCK_IMPACT_DIAGNOSIS_AND_BOUNDED_SECTOR_TARGET_COVERAGE_REPAIR",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791354186722,
+  "updated_ts": 1791357360004,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -179,11 +174,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261007:1791351578400:official-native-coverage",
-    "acquired_ts": 1791351578400,
-    "expires_ts": 1791354278400,
-    "released_ts": 1791352343581,
-    "reason": "Large PR203/204/205 connected batch and exact budget readback saved; release own lease for normal cloud production and maintenance"
+    "owner": "HTX:20261007:1791353055520:factual-idea-basis",
+    "acquired_ts": 1791353055520,
+    "expires_ts": 1791360255520,
+    "scope": "OWNER_0901_FACTUAL_IDEA_BASIS_IMPLEMENTATION_AND_CONNECTED_CLOUD_REPLAY",
+    "released_ts": 1791357360004,
+    "reason": "Save completed PR207/208 connected cloud implementation and original-clock/native exact proofs; full owner task register stays open; normal production and history maintenance remain independent"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -310,11 +306,11 @@
     "superseded_by": "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md"
   },
   "latest_status": "checkpoints/CURRENT_PROJECT_STATUS.json",
-  "latest_actual_readback": "checkpoints/ACTUAL_CURRENT_BRIEF_AKE_SENT152_20261007.json",
-  "latest_telegram_presentation_release": "checkpoints/OWNER_BRIEF_TELEGRAM_RELEASE_20261007.json",
+  "latest_actual_readback": "checkpoints/ACTUAL_NEAR_SENT153_AND_LIQUIDATION_STARVATION_20261007.json",
+  "latest_telegram_presentation_release": "checkpoints/SUBSTANTIAL_IDEA_BASIS_RELEASE_20261007.json",
   "latest_liquidation_batch_release": "checkpoints/TOP2_PINNED_POSITION_BATCH_RELEASE_20261006.json",
   "history": "checkpoints/archive/phase-before-approved-batch-final-20261006.json",
-  "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
+  "completion_scope": "POST_PR206_NEAR_LONG_OBSERVE_SENT153; PR207_208_IMPLEMENTATION_CLOUD_VERIFIED_AND_ACTUAL_NATIVE_PAIR_PROVEN_SEPARATELY; NO_NEW_PR207_208_SAME_RUN_SENT_OR_EMPIRICAL_ACCEPTANCE",
   "additional_coverage_work": {
     "status": "PARTIAL_VERIFIED_PR203_PR204_PR205_FULL_TASK_REGISTER_OPEN",
     "owner_instruction_at_msk": "2026-10-07T04:03:15+03:00",
@@ -456,7 +452,7 @@
     "artifact_id": 11463814448,
     "artifact_digest": "sha256:6fc2d15437506bf6b648f162496658881913dbf7c90ec1d009e4d997ecb82eb6",
     "status": "MERGED_CLOUD_COMPOSED_TESTS_PASS",
-    "new_fresh_SENT": false,
+    "new_fresh_SENT": true,
     "sourceHTTP": 0,
     "MAIN": 0,
     "Telegram": 0,
@@ -468,7 +464,23 @@
       "integration": 37,
       "current_generation": "PASS"
     },
-    "remaining": "NEW_POLICY_NATURAL_PRODUCTION_SENT_NOT_YET_VERIFIED; FULL_OWNER_REGISTER_STILL_OPEN"
+    "remaining": "PR206_NATURAL_NEAR_SENT153_NOW_VERIFIED_SEPARATELY; PR207_208_PRODUCTION_SENT_AND_FULL_OWNER_REGISTER_STILL_OPEN",
+    "actual_same_run_acceptance": {
+      "cloud_run": 37581697482,
+      "head": "22a0f14477dcbae050c34b6adf01664afa9c31f2",
+      "run_id": "1791354535321-1791354544804",
+      "contract": "NEAR-USDT",
+      "snapshot_id": "S392:NEAR-USDT:1791354633125",
+      "publication_id": "PUB:0e983dba4aaddcd267f696d44920b70a68bfaf84",
+      "fingerprint": "4cf54ad6bd0eb6d5d8ef4105928d232f2bdde6de344928e64b5b94adef3bffb4",
+      "telegram_message_id": "153",
+      "sent_ts": 1791354637704,
+      "presentation_hash": "489b01b1a9aba58fc772f75846438a3d265600968df6515892335696a7616ff1",
+      "status": "ACTUAL_POST_PR206_SUBSTANTIAL_FACTS_APPROVED_OBSERVE_SENT_VERIFIED",
+      "scope": "POST_PR206_PRE_PR207_PR208; DO_NOT_ACCEPT_NEW_WEIGHTS_OR_PAIR_RELEASE_FROM_THIS_SENT",
+      "proof": "checkpoints/ACTUAL_NEAR_SENT153_AND_LIQUIDATION_STARVATION_20261007.json"
+    },
+    "no_new_SENT_at_cloud_test_time": true
   },
   "owner_substantial_facts_and_real_block_gaps": {
     "id": "OWNER_SUBSTANTIAL_FACTS_AND_REAL_BLOCK_GAPS_20261007",
@@ -494,7 +506,7 @@
       "artifact_id": 11463814448,
       "artifact_digest": "sha256:6fc2d15437506bf6b648f162496658881913dbf7c90ec1d009e4d997ecb82eb6",
       "status": "MERGED_CLOUD_COMPOSED_TESTS_PASS",
-      "new_fresh_SENT": false,
+      "new_fresh_SENT": true,
       "sourceHTTP": 0,
       "MAIN": 0,
       "Telegram": 0,
@@ -506,8 +518,49 @@
         "integration": 37,
         "current_generation": "PASS"
       },
-      "remaining": "NEW_POLICY_NATURAL_PRODUCTION_SENT_NOT_YET_VERIFIED; FULL_OWNER_REGISTER_STILL_OPEN"
+      "remaining": "PR206_NATURAL_NEAR_SENT153_VERIFIED; BROADER_WORK_OPEN",
+      "actual_same_run_acceptance": {
+        "cloud_run": 37581697482,
+        "head": "22a0f14477dcbae050c34b6adf01664afa9c31f2",
+        "run_id": "1791354535321-1791354544804",
+        "contract": "NEAR-USDT",
+        "snapshot_id": "S392:NEAR-USDT:1791354633125",
+        "publication_id": "PUB:0e983dba4aaddcd267f696d44920b70a68bfaf84",
+        "fingerprint": "4cf54ad6bd0eb6d5d8ef4105928d232f2bdde6de344928e64b5b94adef3bffb4",
+        "telegram_message_id": "153",
+        "sent_ts": 1791354637704,
+        "presentation_hash": "489b01b1a9aba58fc772f75846438a3d265600968df6515892335696a7616ff1",
+        "status": "ACTUAL_POST_PR206_SUBSTANTIAL_FACTS_APPROVED_OBSERVE_SENT_VERIFIED",
+        "scope": "POST_PR206_PRE_PR207_PR208; DO_NOT_ACCEPT_NEW_WEIGHTS_OR_PAIR_RELEASE_FROM_THIS_SENT",
+        "proof": "checkpoints/ACTUAL_NEAR_SENT153_AND_LIQUIDATION_STARVATION_20261007.json"
+      },
+      "no_new_SENT_at_cloud_test_time": true
     },
     "broader_work_complete": false
-  }
+  },
+  "latest_useful_weights_liquidation_release": {
+    "path": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+    "status": "MERGED_CLOUD_BATCH_VALIDATION_AND_ACTUAL_NATIVE_SAMPLE_PROVEN",
+    "prs": [
+      207,
+      208
+    ],
+    "production_head": "414620a155df00bc9d89b31aac56750711c20420",
+    "cloud_runs": [
+      37584872997,
+      37585608811
+    ],
+    "new_fresh_same_run_SENT": false
+  },
+  "latest_block_information_report": "checkpoints/BLOCK_INFORMATION_LIMITS_AND_REPAIR_20261007.md",
+  "owner_useful_weight_statistics": {
+    "path": "checkpoints/OWNER_USEFUL_WEIGHTS_LIQUIDATION_PRIORITY_20261007.json",
+    "implementation": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+    "initial_caps_engineering": true,
+    "empirical_complete": false,
+    "cadence_days": 7,
+    "sourceHTTP": 0,
+    "changes_within_existing_family_envelopes": true
+  },
+  "current_execution_block": "SAVED_PR207_PR208_BATCH; FULL_REGISTER_OPEN"
 }
