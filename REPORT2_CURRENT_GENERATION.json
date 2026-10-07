@@ -95,5 +95,18 @@
   "full_tz_reconciliation": "checkpoints/CURRENT_TZ_RECONCILIATION_86_20261007.json",
   "supplemental_block_weight_policy": "OWNER_USEFUL_BLOCK_CAPS_V1_20261007",
   "supplemental_block_weight_authorization": "checkpoints/OWNER_USEFUL_WEIGHTS_LIQUIDATION_PRIORITY_20261007.json",
-  "latest_useful_weights_liquidation_release": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json"
+  "latest_useful_weights_liquidation_release": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+  "liquidation_additional_calculated_connection_count": 1,
+  "liquidation_additional_calculated_connections": [
+    "DYDX_PINNED_NATIVE"
+  ],
+  "dydx_conditional_native_policy": {
+    "release": "checkpoints/DYDX_PINNED_NATIVE_RUNTIME_RELEASE_20261007.json",
+    "enabled_with_admitted_structural_hints": true,
+    "source_clock_max_age_ms": 120000,
+    "monthly_operational_request_ceiling": 1000,
+    "original_source_based_calculated_context": true,
+    "htx_execution_target_eligible": false,
+    "full_market_coverage": false
+  }
 }

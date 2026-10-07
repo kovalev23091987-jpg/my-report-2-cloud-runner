@@ -121,15 +121,15 @@
   "lease": {
     "owner": "HTX:20261007:1791365140268:liquidation-max-data",
     "acquired_ts": 1791365140268,
-    "expires_ts": 1791376593366,
+    "expires_ts": 1791380383081,
     "scope": "OWNER_AUTHORIZED_MAXIMUM_VERIFIED_LIQUIDATION_DATA_AND_CONNECTED_REPORT",
-    "renewed_ts": 1791371193366
+    "renewed_ts": 1791374983081
   },
-  "next_action": "Verify free reserve Arbitrum RPC and current-fresh native cache reuse after transport deadline; keep current natural acceptance separate.",
+  "next_action": "Finish one admitted automatic dYdX native routing bootstrap with actual source receipts and exact structural D1 readback; joint fresh natural report acceptance; continue unresolved full task register.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791371193366,
+  "updated_ts": 1791374983081,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -773,8 +773,26 @@
     "evidence": "checkpoints/DYDX_CONDITIONAL_NATIVE_MODEL_RELEASE_20261007.json",
     "pr": 217,
     "production_head": "a657f3a392c100ab47665ae8bed494d35fee5c4f",
-    "status": "VERIFIED_PRODUCER_ASSEMBLED_PRODUCTION_COLLECTION_PENDING",
+    "status": "VERIFIED_RETAINED_MODEL_RUNTIME_NOW_RELEASED",
     "production_source_activation": false,
+    "full_owner_task_completion": false,
+    "production_collection_pending": false,
+    "runtime_release": "checkpoints/DYDX_PINNED_NATIVE_RUNTIME_RELEASE_20261007.json"
+  },
+  "latest_dydx_pinned_native_runtime_release": {
+    "evidence": "checkpoints/DYDX_PINNED_NATIVE_RUNTIME_RELEASE_20261007.json",
+    "pr": 218,
+    "production_head": "c5e0c08a03c91c29bf5de56cf2daef65fdefcc74",
+    "cloud_run": 37618493147,
+    "status": "VERIFIED_RUNTIME_RELEASE_AUTOMATIC_STRUCTURAL_BOOTSTRAP_PENDING",
+    "code_enabled_for_admitted_hints": true,
+    "durable_structural_bootstrap_pending": true,
+    "new_fresh_SENT": false,
     "full_owner_task_completion": false
+  },
+  "owner_latest_source_fact_requirement": {
+    "at": "2026-10-07T15:03:42+03:00",
+    "text": "Проверяй, чтобы они давали нам реальные данные, а не подключение ради подключения.",
+    "acceptance": "Actual source state, original clock, exact asset, admitted consumer and report use must be proven separately from nominal connectivity."
   }
 }
