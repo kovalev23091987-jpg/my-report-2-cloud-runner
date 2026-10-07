@@ -49,7 +49,7 @@ test('new connections use the shared route transport guard, retained data clocks
  const planned=planCandidateEvidenceRoutes(params);assert(planned.routes.some(r=>r.name==='CHAIN_SUPPLY'));assert(!planned.routes.some(r=>r.name==='CHAIN_EVENTS'));
 });
 test('official GitHub collector honors exact issuer registry and leaves four of twelve daily attempts for protected manual use',async()=>{
- const p=releaseParams('APT','aptos'),T=p.observed_ts,db=new DB();let calls=0;const base={db,contract:p.contract,asset_identity:p.asset_identity,asset_metadata:p.asset_metadata,now:T,clock:()=>T,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;assert.equal(url,p.feed_url);return new Response(p.body);}};
+ const p=releaseParams('APT','aptos'),T=p.observed_ts,db=new DB();let calls=0;const base={db,contract:p.contract,asset_identity:p.asset_identity,asset_metadata:p.asset_metadata,now:T,clock:()=>T,request_admit:()=>({allowed:true}),fetch_impl:async(url,init)=>{calls++;assert.equal(url,p.feed_url);assert.equal(init.headers.accept,'application/vnd.github+json');return new Response(p.body);}};
  const limitedDb=new DB(),fixed={...base,db:limitedDb};
  for(let i=0;i<8;i++){const r=await collectOfficialEventsEvidence({...fixed,run_id:'R'+i,strict_fresh_manual:true});assert.equal(r.network_calls,1);}
  await limitedDb.prepare('DELETE FROM report2_evidence_source_cache').run();const limit=await collectOfficialEventsEvidence({...fixed,run_id:'R8'});assert.equal(limit.network_calls,0);assert.equal(limit.status,'OFFICIAL_RELEASE_DAILY_CAP');

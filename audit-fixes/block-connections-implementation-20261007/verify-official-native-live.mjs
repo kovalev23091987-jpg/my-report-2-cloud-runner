@@ -17,7 +17,7 @@ if(out.admission.allowed){
    const spec=registry[symbol].official_feed_specs.find(r=>r.parser_id==='FIXED_GITHUB_RELEASES_V1'),metadata={...registry[symbol],official_feeds:[spec.url],official_feed_specs:[spec]};
    const result=await collectOfficialEventsEvidence({db,contract:symbol+'-USDT',asset_identity:{chain,asset_kind:'NATIVE',native_asset_id:chain+':mainnet',contract_or_mint:null},asset_metadata:metadata,run_id:id+':'+symbol,now,request_admit:r=>({allowed:r.attempts===1,status:'BOUNDED_ACTUAL_SOURCE_COMPONENT_NOT_MAIN'}),fetch_impl:async(url,init)=>{
     if(url!==spec.url||out.sourceHTTP>=2)throw Error('EXACT_RESEARCH_TRANSPORT_REQUIRED');out.sourceHTTP++;
-    const r=await fetch(url,init),body=await r.text(),ts=Date.now();if(Buffer.byteLength(body)>512*1024)throw Error('BOUNDED_BODY_EXCEEDED');let payload;try{payload=JSON.parse(body);}catch{payload=null;}
+    if(init.headers.accept!=='application/vnd.github+json')throw Error('GITHUB_JSON_ACCEPT_REQUIRED');const r=await fetch(url,init),body=await r.text(),ts=Date.now();if(Buffer.byteLength(body)>512*1024)throw Error('BOUNDED_BODY_EXCEEDED');let payload;try{payload=JSON.parse(body);}catch{payload=null;}
     out.responses.push({contract:symbol+'-USDT',url,received_ts:ts,http_status:r.status,body_sha256:hash(body),payload});return new Response(body,{status:r.status,headers:r.headers});
    }});
    const decision_ts=Date.now(),consumer=consumeBlockResultContext({contract:symbol+'-USDT',evidence:result.evidence,now:decision_ts}),score_check=consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts});
