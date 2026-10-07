@@ -1,4 +1,4 @@
-import {auditObservationSourceRoles} from './src/observation-source-role-gate.mjs';
+import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
 import {saveNativeWalletRouting} from './src/liquidation-extension/native-wallet-routing.mjs';
 import {saveGTradeRoutingCatalog} from './src/liquidation-extension/native-routing-catalog.mjs';
 import {loadBlockWeightPolicy,refreshWeeklyBlockWeightPolicy} from './src/block-weight-calibration.mjs';

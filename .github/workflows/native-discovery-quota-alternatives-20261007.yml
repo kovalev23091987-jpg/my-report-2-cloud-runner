@@ -85,6 +85,7 @@ jobs:
       - name: Prove tested source code is the exact assembled producer and consumer
         run: |
           cmp current-generation/files/src/observation-source-role-gate.mjs runtime/src/observation-source-role-gate.mjs
+          cmp current-generation/files/src/observation-source-role-audit.mjs runtime/src/observation-source-role-audit.mjs
           cmp current-generation/files/src/liquidation-extension/official-trade-account-discovery.mjs runtime/src/liquidation-extension/official-trade-account-discovery.mjs
           cmp current-generation/files/src/liquidation-extension/verified-native-account-cache.mjs runtime/src/liquidation-extension/verified-native-account-cache.mjs
           cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
