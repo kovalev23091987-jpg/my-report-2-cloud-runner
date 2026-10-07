@@ -7,6 +7,9 @@ const MAX_BYTES=2_000_000, MAX_U64=(1n<<64n)-1n, PPM=1_000_000n;
 const PATHS=['/dydxprotocol.subaccounts.Query/SubaccountAll','/dydxprotocol.perpetuals.Query/AllPerpetuals','/dydxprotocol.perpetuals.Query/AllLiquidityTiers','/dydxprotocol.prices.Query/AllMarketPrices','/dydxprotocol.assets.Query/AllAssets'];
 const fail=reason=>{throw Error(reason);};
 const hash=value=>createHash('sha256').update(value).digest('hex');
+const trustedSnapshots=new WeakMap();
+function snapshotDigest(s){return hash(JSON.stringify({...s,perpetuals:[...s.perpetuals],tiers:[...s.tiers],prices:[...s.prices],assets:[...s.assets]},(_,v)=>typeof v==='bigint'?String(v):v));}
+export function verifyDydxPinnedSnapshot(s){try{return trustedSnapshots.has(s)&&trustedSnapshots.get(s)===snapshotDigest(s);}catch{return false;}}
 function fields(bytes){
  let i=0;const rows=[];
  const uint=()=>{let value=0n;for(let shift=0n;shift<70n;shift+=7n){if(i>=bytes.length)fail('PROTO_TRUNCATED');const x=bytes[i++];value|=BigInt(x&127)<<shift;if(!(x&128)){if(value>MAX_U64)fail('PROTO_UINT64_BOUND');return value;}}fail('PROTO_VARINT_BOUND');};
@@ -16,9 +19,24 @@ function fields(bytes){
  }return rows;
 }
 function one(rows,id,wire,defaultValue){const found=rows.filter(x=>x.field===id);if(found.length>1||found.some(x=>x.wire!==wire))fail('PROTO_SINGULAR_FIELD');if(!found.length){if(defaultValue===undefined)fail('PROTO_REQUIRED_INPUT');return defaultValue;}return found[0].value;}
-const uint=(rows,id)=>{const n=one(rows,id,0,0n);if(n>0xffffffffn)fail('PROTO_UINT32_BOUND');return Number(n);};
+const uint=(rows,id)=>{const n=one(rows,id,0,0n);if(n<0n||n>0xffffffffn)fail('PROTO_UINT32_BOUND');return Number(n);};
 const zig=(rows,id)=>{const n=uint(rows,id);return n%2?-(n+1)/2:n/2;};
 const text=bytes=>new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+function nativeID(f){const owner=text(one(f,1,2)),number=uint(f,2);if(!/^dydx1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{38}$/.test(owner)||number>=128000)fail('SUBACCOUNT_ID_INVALID');return{owner,number};}
+function hexMessage(s){if(typeof s!=='string'||!/^(?:[A-Fa-f0-9]{2}){1,180}$/.test(s))fail('QUERY_PROTO_BOUND');return fields(Buffer.from(s,'hex'));}
+export function permittedDydxReadOnlyBody(body){try{
+ if(body?.jsonrpc==='2.0'&&body.id===1&&body.method==='status'&&body.params&&Object.keys(body.params).length===0&&Object.keys(body).sort().join(',')==='id,jsonrpc,method,params')return true;
+ const rows=Array.isArray(body)?body:[body];if(!rows.length||rows.length>8||new Set(rows.map(r=>r?.id)).size!==rows.length)return false;
+ for(const r of rows){if(r?.jsonrpc!=='2.0'||r.method!=='abci_query'||Object.keys(r).sort().join(',')!=='id,jsonrpc,method,params'||!r.params||Object.keys(r.params).sort().join(',')!=='data,height,path,prove'||!/^\d{1,18}$/.test(r.params.height)||BigInt(r.params.height)<=0n||r.params.prove!==false)return false;}
+ if(!Array.isArray(body)&&body.id===2&&body.params.path===PATHS[0]){const f=hexMessage(body.params.data);if(f.length!==1||f[0].field!==1||f[0].wire!==2)return false;const p=fields(f[0].value);if(p.some(x=>![1,2,3].includes(x.field))||uint(p,3)!==20)return false;const key=one(p,1,2,Buffer.alloc(0)),offset=one(p,2,0,0n);return key.length<=100&&offset<=2560n&&!(key.length&&offset>0n);}
+ if(Array.isArray(body)&&body.length===4&&body.every((r,i)=>r.id===i+3&&r.params.path===PATHS[i+1]&&r.params.data==='0A0318F403'))return true;
+ if(Array.isArray(body)&&body.every((r,i)=>r.id===20+i&&r.params.path==='/dydxprotocol.subaccounts.Query/Subaccount')){const ids=body.map(r=>{const f=hexMessage(r.params.data);if(f.length!==1||f[0].field!==1||f[0].wire!==2)fail('QUERY_ID_REQUIRED');const id=nativeID(fields(f[0].value));return id.owner+':'+id.number;});return new Set(ids).size===ids.length;}
+ return false;
+ }catch{return false;}}
+function vi(n){if(n<0n||n>MAX_U64)fail('QUERY_UINT_BOUND');const out=[];do{let b=Number(n&127n);n>>=7n;out.push(n?b|128:b);}while(n);return Buffer.from(out);}
+const byteField=(id,b)=>Buffer.concat([vi(BigInt(id*8+2)),vi(BigInt(b.length)),b]);
+export function dydxAccountQueryBody(accounts,height){if(!Array.isArray(accounts)||accounts.length<1||accounts.length>8)fail('QUERY_ACCOUNT_BOUND');const result=accounts.map((a,i)=>{nativeID([{field:1,wire:2,value:Buffer.from(a.owner??'')},{field:2,wire:0,value:BigInt(a.number)}]);const id=Buffer.concat([byteField(1,Buffer.from(a.owner)),Buffer.concat([vi(16n),vi(BigInt(a.number))])]);return{jsonrpc:'2.0',id:20+i,method:'abci_query',params:{path:'/dydxprotocol.subaccounts.Query/Subaccount',data:byteField(1,id).toString('hex').toUpperCase(),height,prove:false}};});if(!permittedDydxReadOnlyBody(result))fail('EXACT_NATIVE_QUERY_REQUIRED');return result;}
+export function dydxAccountPageBody({height,offset=0,key=null}={}){if(!Number.isSafeInteger(offset)||offset<0||offset>2560||offset%20||key!==null&&(typeof key!=='string'||!/^[a-f0-9]{2,200}$/i.test(key)||key.length%2))fail('BOUNDED_NATIVE_PAGE_REQUIRED');const p=Buffer.concat([...(key?[byteField(1,Buffer.from(key,'hex'))]:offset?[Buffer.concat([vi(16n),vi(BigInt(offset))])]:[]),Buffer.from('1814','hex')]);const body={jsonrpc:'2.0',id:2,method:'abci_query',params:{path:PATHS[0],data:byteField(1,p).toString('hex').toUpperCase(),height,prove:false}};if(!permittedDydxReadOnlyBody(body))fail('EXACT_NATIVE_PAGE_REQUIRED');return body;}
 export function decodeDydxGobInt(bytes){if(!Buffer.isBuffer(bytes)||bytes.length>257)fail('GOB_BYTES_BOUND');if(!bytes.length)return 0n;if(bytes[0]>>1!==1)fail('GOB_VERSION_UNSUPPORTED');let n=0n;for(const b of bytes.subarray(1))n=(n<<8n)|BigInt(b);return bytes[0]&1?-n:n;}
 const gob=(rows,id)=>decodeDydxGobInt(one(rows,id,2));
 const expBound=n=>{if(!Number.isInteger(n)||Math.abs(n)>30)fail('DECIMAL_EXPONENT_BOUND');return n;};
@@ -33,9 +51,10 @@ export function decodeDydxPinnedSnapshot({raw,now,max_age_ms=120000}){
  const [status,accounts,context]=raw.raw,s=status.payload?.result,source_ts=Date.parse(s?.sync_info?.latest_block_time),height=String(s?.sync_info?.latest_block_height||'');
  if(status.payload?.id!==1||status.payload.error||status.receipt.request_body?.method!=='status'||status.receipt.request_body.id!==1||s?.node_info?.network!=='dydx-mainnet-1'||s?.sync_info?.catching_up!==false||!/^\d+$/.test(height)||BigInt(height)<=0n||!Number.isSafeInteger(source_ts)||source_ts>status.receipt.received_ts||now-source_ts>max_age_ms||!/^[a-fA-F0-9]{64}$/.test(s.sync_info.latest_block_hash||''))fail('NATIVE_BLOCK_CLOCK_NOT_CLOSED');
  if(raw.raw.some(r=>r.receipt.received_ts<source_ts)||raw.raw.slice(1).some(r=>r.receipt.started_ts<status.receipt.received_ts))fail('NATIVE_QUERY_RECEIPT_ORDER_INVALID');
- const requests=[accounts.receipt.request_body,...(Array.isArray(context.receipt.request_body)?context.receipt.request_body:[])];if(requests.length!==5||requests.some((r,i)=>r.id!==i+2||r.method!=='abci_query'||r.params?.path!==PATHS[i]||r.params?.height!==height||r.params?.prove!==false||r.params?.data!==(i===0?'0A021814':'0A0318F403')))fail('EXACT_PINNED_REQUEST_BINDING_REQUIRED');
+ if(!raw.raw.every(r=>permittedDydxReadOnlyBody(r.receipt.request_body)))fail('EXACT_PINNED_REQUEST_BINDING_REQUIRED');const requestRows=[accounts.receipt.request_body,context.receipt.request_body].flat();if(requestRows.some(r=>r.params.height!==height))fail('EXACT_PINNED_REQUEST_BINDING_REQUIRED');
  if(!Array.isArray(context.payload)||context.payload.length!==4||new Set(context.payload.map(r=>r.id)).size!==4)fail('PINNED_CONTEXT_BATCH_INVALID');
- const ac=collection(accounts.payload,2,height,20,false),catalogs=[3,4,5,6].map(id=>collection(context.payload.find(r=>r.id===id),id,height,500,true));
+ let ac;if(Array.isArray(accounts.receipt.request_body)){if(!Array.isArray(accounts.payload)||accounts.payload.length!==accounts.receipt.request_body.length||new Set(accounts.payload.map(r=>r.id)).size!==accounts.payload.length)fail('EXACT_ACCOUNT_BATCH_REQUIRED');const records=[];for(const req of accounts.receipt.request_body){const requested=nativeID(fields(one(hexMessage(req.params.data),1,2))),response=accounts.payload.find(r=>r.id===req.id),parsed=collection(response,req.id,height,1,true);if(parsed.records.length!==1)fail('REQUESTED_SUBACCOUNT_NOT_FOUND');const actual=nativeID(fields(one(parsed.records[0],1,2)));if(actual.owner!==requested.owner||actual.number!==requested.number)fail('NATIVE_ACCOUNT_RESPONSE_IDENTITY_MISMATCH');records.push(...parsed.records);}ac={records,partial:true};}else ac=collection(accounts.payload,2,height,20,false);
+ const catalogs=[3,4,5,6].map(id=>collection(context.payload.find(r=>r.id===id),id,height,500,true));
  const perpetuals=unique(catalogs[0].records.map(f=>{const p=fields(one(f,1,2));return{id:uint(p,1),ticker:text(one(p,2,2)),market_id:uint(p,3),atomic_resolution:expBound(zig(p,4)),liquidity_tier:uint(p,6),market_type:uint(p,7),funding_index:gob(f,2)};}),'id');
  const tiers=unique(catalogs[1].records.map(f=>{const r={id:uint(f,1),initial_margin_ppm:uint(f,3),maintenance_fraction_ppm:uint(f,4)};if(r.initial_margin_ppm<1||r.initial_margin_ppm>1000000||r.maintenance_fraction_ppm<1||r.maintenance_fraction_ppm>1000000)fail('MARGIN_FRACTION_INVALID');return r;}),'id');
  const prices=unique(catalogs[2].records.map(f=>({id:uint(f,1),exponent:expBound(zig(f,2)),price:one(f,3,0,0n)})),'id');
@@ -45,7 +64,8 @@ export function decodeDydxPinnedSnapshot({raw,now,max_age_ms=120000}){
   const parseMany=(field,parser)=>{const xs=f.filter(x=>x.field===field);if(xs.length>100||xs.some(x=>x.wire!==2))fail('SUBACCOUNT_POSITION_BOUND');return xs.map(x=>parser(fields(x.value)));};
   const positions=parseMany(3,p=>({id:uint(p,1),quantums:gob(p,2),funding_index:gob(p,3),quote_balance:gob(p,4)})),asset_positions=parseMany(2,p=>({id:uint(p,1),quantums:gob(p,2)}));unique(positions,'id');unique(asset_positions,'id');return{owner,number,positions,asset_positions,margin_enabled:uint(f,4)};
  });unique(subaccounts.map(a=>({id:a.owner+':'+a.number})),'id');
- return{schema:'DYDX_PINNED_SNAPSHOT_V1',source_ts,height,block_hash:s.sync_info.latest_block_hash,chain_id:s.node_info.network,perpetuals,tiers,prices,assets,subaccounts,partial_account_sample:ac.partial,run_id:raw.run_id,receipts:raw.raw.map(r=>r.receipt)};
+ const page=!Array.isArray(accounts.payload)?one(fields(Buffer.from(accounts.payload.result.response.value,'base64')),2,2,Buffer.alloc(0)):Buffer.alloc(0),nextKey=one(fields(page),1,2,Buffer.alloc(0));if(nextKey.length>100)fail('NEXT_PAGE_KEY_BOUND');
+ const snapshot={schema:'DYDX_PINNED_SNAPSHOT_V1',source_ts,height,block_hash:s.sync_info.latest_block_hash,chain_id:s.node_info.network,perpetuals,tiers,prices,assets,subaccounts,partial_account_sample:ac.partial,account_request_kind:Array.isArray(accounts.payload)?'EXACT_SUBACCOUNT_BATCH':'BOUNDED_SUBACCOUNT_PAGE',next_page_key_hex:nextKey.length?nextKey.toString('hex'):null,run_id:raw.run_id,receipts:raw.raw.map(r=>r.receipt)};trustedSnapshots.set(snapshot,snapshotDigest(snapshot));return snapshot;
 }
 const floor=(n,d)=>{let q=n/d;return n<0n&&n%d?q-1n:q;};
 const ceil=(n,d)=>{let q=n/d;return n>0n&&n%d?q+1n:q;};

@@ -49,7 +49,7 @@ const checks=[
  'files/src/liquidation-extension/native-liquidation-guard.mjs',
  'files/src/liquidation-extension/lighter-runtime-collector.mjs','files/src/liquidation-extension/gmx-runtime-collector.mjs','files/src/liquidation-extension/scoped-provider-runtime-bridge.mjs',
  'files/src/liquidation-extension/install-source-allowances.mjs',
- 'files/src/liquidation-extension/dydx-pinned-conditional-levels.mjs','files/src/liquidation-extension/venue-catalog-cache.mjs','files/src/liquidation-extension/native-wallet-routing.mjs','files/src/liquidation-extension/official-trade-account-discovery.mjs','files/src/observation-source-role-audit.mjs',
+ 'files/src/liquidation-extension/dydx-runtime-collector.mjs','files/src/liquidation-extension/dydx-pinned-conditional-levels.mjs','files/src/liquidation-extension/venue-catalog-cache.mjs','files/src/liquidation-extension/native-wallet-routing.mjs','files/src/liquidation-extension/official-trade-account-discovery.mjs','files/src/observation-source-role-audit.mjs',
 ];
 for(const rel of checks)run(['--check',path.join(here,rel)]);
 const tests=fs.readdirSync(path.join(here,'tests')).filter(x=>x.endsWith('.test.mjs')).sort().map(x=>path.join(here,'tests',x));

@@ -41,9 +41,10 @@ const text=v=>v===null||v===undefined?'':String(v).trim();
 const arr=v=>Array.isArray(v)?v:[];
 const validState=v=>['ENTRY_NOW_ANALYTICAL','ENTRY_NOW_VALIDATED','WAIT_FOR_TRIGGER','OBSERVE','REJECTED'].includes(text(v));
 const firstFinite=(...values)=>{for(const v of values){const n=finite(v);if(n!==null)return n;}return null;};
-const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS']);
+const NATIVE_LIQUIDATION_SOURCE_IDS=Object.freeze(['HYPERLIQUID_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','GTRADE_NATIVE','OXARCHIVE_HL_BUCKETS','DYDX_PINNED_NATIVE']);
 function nativeLiquidationSourceId(value){
  const provider=text(value?.provider??value?.venue).toUpperCase();
+ if(provider.includes('DYDX'))return'DYDX_PINNED_NATIVE';
  if(provider.includes('HYPERLIQUID'))return'HYPERLIQUID_NATIVE';
  if(provider.includes('LIGHTER'))return'LIGHTER_NATIVE';
  if(provider.includes('GMX'))return'GMX_NATIVE';
