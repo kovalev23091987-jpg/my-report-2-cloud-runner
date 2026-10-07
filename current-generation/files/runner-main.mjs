@@ -1,3 +1,4 @@
+import {admitTriggeredRecheck} from './src/triggered-entry-recheck.mjs';
 import {buildLiquidationSourceAcquisitionAudit} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
 import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
@@ -559,12 +560,24 @@ async function main() {
     console.log('SCHEDULED_TWO_CANDIDATE_ADMISSION',JSON.stringify(cadence));
     if(!cadence.claimed){
       if(!['NOT_DUE','LEASE_ACTIVE'].includes(cadence.status))throw new Error(`SCHEDULED_CADENCE_NOT_CLOSED:${cadence.status}`);
-      const finish=await releaseAnalyticsLease();if(!finish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${finish.status}`);
-      return;
-    }
+      const triggered=cadence.status==='NOT_DUE'
+        ?await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,admit:async()=>evaluateDailyReservationBudget({
+          daily:await loadDailyUsageAggregate(env.DATA_DB,started),nextReservation:TWO_CANDIDATE_PLAN.d1_run_cap,
+          maxDailyReads:envNumber('REPORT2_D1_MAX_DAILY_READS',3500000),maxDailyWrites:envNumber('REPORT2_D1_MAX_DAILY_WRITES',70000),
+        })})
+        :{claimed:false,status:'REGULAR_CADENCE_LEASE_ACTIVE'};
+      console.log('TRIGGERED_ENTRY_RECHECK_ADMISSION',JSON.stringify(triggered));
+      if(!triggered.claimed){
+        const finish=await releaseAnalyticsLease();if(!finish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${finish.status}`);
+        return;
+      }
+      env.REPORT2_TRIGGERED_RECHECK_TASK_ID=triggered.task.task_id;
+      env.REPORT2_DEEP_RUNTIME_OPTIONS={...env.REPORT2_DEEP_RUNTIME_OPTIONS,max_per_run:1};
+    }else{
     // Failed attempts also consume a cycle, preserving the provider reserve.
     const charged=await completeMaintenanceCadence(env.DATA_DB,{job_key:cadence.job_key,actor:manualCommandActor,lease_started_ts:cadence.lease_started_ts,success:true,now_ts:started,result:'ATTEMPT_ADMITTED'});
     if(charged.completed!==true)throw new Error(`SCHEDULED_CADENCE_CHARGE_FAILED:${charged.status}`);
+    }
   }
   if(manualCommandClaim.claimed&&manualCommandClaim.row?.generation!==generation)throw new Error('DURABLE_MANUAL_COMMAND_GENERATION_MISMATCH');
   if(manualCommandClaim.claimed&&(manualCommandClaim.row?.mode!==expectedManualMode||(manualCommandClaim.row?.contract??null)!==expectedManualContract))throw new Error('DURABLE_MANUAL_COMMAND_INPUT_MISMATCH');
@@ -849,7 +862,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     return;
   }
   const queueClaimRunId=`QUEUE:${started}`;
-  const scheduledQueueClaim=source==='schedule'?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
+  const scheduledQueueClaim=source==='schedule'&&!env.REPORT2_TRIGGERED_RECHECK_TASK_ID?await liquidationQueue.claim({run_id:queueClaimRunId,now:started}):{claimed:false,status:'MANUAL_FULL_REPORT_DOES_NOT_CLAIM_QUEUE'};
   if(scheduledQueueClaim.claimed){env.REPORT2_LIQUIDATION_QUEUE_CONTRACT=scheduledQueueClaim.contract;env.REPORT2_LIQUIDATION_QUEUE_ATTEMPTS=String(scheduledQueueClaim.attempts||0);env.REPORT2_LIQUIDATION_QUEUE_COMPLETE=params=>liquidationQueue.complete({contract:scheduledQueueClaim.contract,wave_id:scheduledQueueClaim.wave_id,task_kind:scheduledQueueClaim.task_kind,run_id:queueClaimRunId,usable:params?.usable===true,result:params?.result??null,now:Date.now()});}
   console.log('LIQUIDATION_CANDIDATE_QUEUE_CLAIM',JSON.stringify(scheduledQueueClaim));
   const leaseRenewal=await renewAnalyticsLease(env.DATA_DB,analyticsLease,{now:Date.now()});
@@ -1049,6 +1062,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
+  if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
   console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
 

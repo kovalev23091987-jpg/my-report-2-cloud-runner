@@ -8,7 +8,7 @@ import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='8dda6de4518a4b9afcf17c51b4a2f68bfac74c6b04fe5b630e194ba03e66f247';
+const expectedWorker='340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
  if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
@@ -16,7 +16,7 @@ const run=(args,{cwd=repo}={})=>{
 };
 const checks=[
  '../runner/current-runtime-binding.mjs',
- 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs',
+ 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  '../audit-fixes/t16/run-official-feed-smoke.mjs',
