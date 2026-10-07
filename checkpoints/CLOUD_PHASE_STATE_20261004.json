@@ -1,6 +1,6 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "COMPLETE",
+  "current_phase": "FULL_OWNER_TZ_IN_PROGRESS",
   "phases": [
     {
       "id": "CORE_BLOCKS",
@@ -173,14 +173,14 @@
   "lease": {
     "owner": "HTX:20261008:1791409775850:full-tz-native-core",
     "acquired_ts": 1791409775850,
-    "expires_ts": 1791412775850,
-    "scope": "OWNER_AUTHORIZED_BOUNDED_FULL_REGISTER_NATIVE_QUALIFICATION_CORE_SOURCE_GAPS"
+    "expires_ts": 1791415089534,
+    "scope": "OWNER_AUTHORIZED_FULL_TZ_ENTRY_TRANSITION_AND_LIQUIDATION_RELEVANCE"
   },
-  "next_action": "Continue the full owner register from retained main proofs. Priorities LIQ/N01/N02/N05/N12/N15. Current Veranta native trade is verified but current PairInfos verified source lookup returned 404; activation requires current fees/oracle identity/assigned consumer. BR N05 original failure remains unresolved. Await genuine prospective data and do not force new SENT.",
+  "next_action": "Repair and verify exact SENT OBSERVE/WAIT price-trigger to fresh full analysis admission; retain all strict ENTRY gates and existing budgets. Full register remains open.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791409775850,
+  "updated_ts": 1791411789534,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -361,7 +361,7 @@
     "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt",
     "superseded_by": "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md"
   },
-  "latest_status": "MERGED_ORIGINAL_CLOCK_N05_AND_ASSEMBLED_REPORT_VERIFIED_NATURAL_BR_ROOT_CAUSE_PENDING",
+  "latest_status": "LIQUIDATION_RELEVANCE_RELEASED_ENTRY_TRANSITION_IN_PROGRESS",
   "latest_actual_readback": {
     "evidence": "checkpoints/POST_PR227_NATURAL_RETAINED_READBACK_20261007.json",
     "workflow_run": 37663457675,
@@ -2120,5 +2120,40 @@
     "path": "checkpoints/CONTINUATION_20261007_2110.md",
     "state": "checkpoints/CONTINUATION_STATE_20261007_2110.json",
     "verified_main_before_save": "4c191e434c6296f50b35347e5779eb56a436283d"
+  },
+  "latest_liquidation_relevance_release": {
+    "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
+    "prs": [
+      232,
+      233
+    ],
+    "merge_heads": [
+      "f44ed26c775c26ca9d274fed6eff0c2d8528421a",
+      "bd949e793a517df5c97baae40edebf60b183dfff"
+    ],
+    "proof": "checkpoints/LIQUIDATION_ALL_PATHS_CONNECTED_VERIFICATION_20261008.json",
+    "cloud_run": 37695156120,
+    "artifact_id": 11514847398,
+    "artifact_digest": "sha256:5d45de4fae18be6cf58c242f92b8ded4c120d78a16793fa82759cbe158c02d15",
+    "tests": {
+      "related": 24,
+      "approved_delivery": 35,
+      "integration": 37
+    },
+    "new_fresh_SENT": false,
+    "old_native_raw_independently_revalidated": false,
+    "display_max_distance_pct": 100,
+    "display_cap_is_engineering_bound_not_strategy_calibration": true,
+    "original_sent155_preserved": true
+  },
+  "entry_transition_work": {
+    "status": "IN_PROGRESS",
+    "owner_request": "Owner reports that advertised trigger conditions repeatedly occurred but no ENTRY was delivered; diagnose and repair full continuation without lowering gates.",
+    "confirmed_gap": "30-minute observation TTL with full analytics40minutes; five-minute price receipt records TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED but does not admit full analysis.",
+    "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json",
+    "prior_light_release": "checkpoints/light-price-recheck-release-20261006.json",
+    "not_all_absent_entries_explained": true,
+    "proposed_scope": "Use existing3/day one-candidate burst reserve for exact current SENT trigger receipt before original TTL; preserve regular40min cadence, source freshness,8manual, all entry gates.",
+    "actual_live_entry_verified": false
   }
 }
