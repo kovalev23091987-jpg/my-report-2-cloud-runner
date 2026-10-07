@@ -84,6 +84,14 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
  };
  collect.hasPositionRoutingHint=({native_symbol}={})=>hintSelection(native_symbol).length>0;
  collect.marketSnapshotHttpCost=({run_id,native_symbol,position_batch_contracts=[]}={})=>{const catalog=catalogValues.get(run_id);const batch=position_batch_contracts.length?position_batch_contracts:[native_symbol+'-USDT'];return batch.length<=2&&new Set(batch).size===batch.length&&batch.includes(native_symbol+'-USDT')&&batch.every(code=>{const symbol=typeof code==='string'&&code.replace(/-USDT$/,'');if(!symbol||code!==symbol+'-USDT')return false;const market=catalog?resolveGTradeCryptoMarket(catalog.payload,symbol):null;return (!catalog||market.supported)&&hintSelection(symbol,market?.pair_index??null).length>0;})?1:2;};
+ // Ordering must price the whole useful acquisition, while admission keeps its
+ // catalog/snapshot/native stages separately reserved. A cheap catalog alone
+ // cannot justify spending the last request needed by another useful source.
+ collect.estimateUsefulHttpCost=params=>{const{run_id,native_symbol}=params??{},catalog=catalogValues.get(run_id);
+  if(catalog?.ok&&Array.isArray(catalog.payload?.pairs)&&!resolveGTradeCryptoMarket(catalog.payload,native_symbol).supported)return 0;
+  if(pinnedPositions.has(run_id+':'+native_symbol))return 0;
+  return (catalogs.has(run_id)?0:1)+(snapshots.has(run_id)?0:collect.marketSnapshotHttpCost(params??{}))+1;
+ };
  collect.hasRunSnapshot=run_id=>snapshots.has(run_id);
  collect.estimateHttpCost=({run_id,native_symbol,position_batch_contracts=[]}={})=>{const catalog=catalogValues.get(run_id);if(!catalog)return 1;if(!catalog.ok||!Array.isArray(catalog.payload?.pairs))return 0;if(!resolveGTradeCryptoMarket(catalog.payload,native_symbol).supported)return 0;return snapshots.has(run_id)?0:collect.marketSnapshotHttpCost({run_id,native_symbol,position_batch_contracts});};
  collect.clearRun=run_id=>{snapshots.delete(run_id);catalogs.delete(run_id);catalogValues.delete(run_id);for(const key of pinnedPositions.keys())if(key.startsWith(run_id+':'))pinnedPositions.delete(key);};
