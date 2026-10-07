@@ -1,24 +1,25 @@
 {
-  "schema": "CURRENT_VERANTA_V2_STORAGE_QUALIFICATION_20261007_V1",
-  "cloud_run": 37685497656,
-  "source_head": "5ba53088b48a29aa01ac1bf10c4e99c61f345061",
-  "proof_head": "9b3fa718bba9601a745c07b945cebcb9df752b8f",
-  "proof": "checkpoints/veranta-v2-direct-storage-37685497656/veranta-v2-direct-storage-proof.json",
-  "status": "CURRENT_VERIFIED_STORAGE_ABI_RECEIVED_NO_POSITION_CALL_BECAUSE_MODEL_TYPE_SELECTOR_DEFECT",
-  "implementation": "0x7175518A822e04ecB8770343582E76f156D06c64",
-  "sourceHTTP": 3,
-  "reservedHTTP": 4,
-  "CHAIN_RPC_before": 155,
-  "CHAIN_RPC_after": 159,
+  "schema": "CURRENT_VERANTA_V2_STORAGE_QUALIFICATION_20261007_V2",
+  "cloud_run": 37685777220,
+  "source_head": "727d6445645b8bca78dbabec9be71aba122c1bf7",
+  "proof_head": "00776eb8721113dda75770d9f813bd54e0f48afa",
+  "proof": "checkpoints/veranta-v2-storage-abi-reuse-37685777220/veranta-v2-storage-abi-reuse-proof.json",
+  "artifact_id": 11511495514,
+  "artifact_digest": "sha256:cfbd44003b652873e0e7db64625ccc7fe5ce7c223322a025ba8685af89da4291",
+  "status": "ACTUAL_VERIFIED_CURRENT_STORAGE_EXACT_NATIVE_POSITION_RECEIVED_FEES_IDENTITY_CONSUMER_PENDING",
+  "sourceHTTP": 2,
+  "reservedHTTP": 2,
+  "CHAIN_RPC_before": 159,
+  "CHAIN_RPC_after": 161,
   "D1": {
     "requests": 16,
-    "rows_read": 77,
+    "rows_read": 78,
     "rows_written": 11,
     "unknown_ops": 0,
     "targets": {
       "first:report2_runner_budget_ledger_shadow": {
         "requests": 2,
-        "rows_read": 66,
+        "rows_read": 67,
         "rows_written": 0,
         "unknown_ops": 0
       },
@@ -73,15 +74,45 @@
     }
   },
   "pin": {
-    "height": 52308554,
-    "block_hash": "0xd8fa0976c90caa1813b2986a4d3cc743f9ca71f26007119b8a6b572c63928db6",
-    "source_ts": 1791406455000,
-    "observed_ts": 1791406456333,
-    "finalized": false
+    "height": 52308624,
+    "block_hash": "0x9e7109c141e41728597d05172bdeff011be81ccc0b419c8231939b3607dea4b8",
+    "source_ts": 1791406595000,
+    "observed_ts": 1791406595524,
+    "finalized": false,
+    "canonical_reread_verified": true
   },
-  "positions": 0,
+  "positions": 1,
+  "full_account_census": false,
+  "source_state_clock_closed": true,
+  "fees_current_state_closed": false,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "admitted_future_levels": 0,
   "production_enabled": false,
-  "native_getter_call_made": false,
-  "selector_defect": "Escaped numeric ABI type selector; exact openTrades/openTradesInfo getters actually present in current verified ABI.",
-  "next_action": "Reuse digest-verified retained current ABI as a structural definition; recheck current implementation/code and exact trade state with new source block. Do not reread ABI or retry Multicall."
+  "prior_verified_ABI_reused_with_original_clocks": true,
+  "actual_native_trade": {
+    "trader": "0x8E1c4e0a7e85b2490f6d811824515D6FAD3115A6",
+    "pairIndex": "0",
+    "index": "0",
+    "initialPosToken": "15000000",
+    "positionSizeUSDC": "1791367115",
+    "openPrice": "25939115829000",
+    "buy": false,
+    "leverage": "100000000000",
+    "tp": "12966380042993",
+    "sl": "28014245095320",
+    "timestamp": "1791367115"
+  },
+  "trade_info": {
+    "0": {
+      "openInterestUSDC": "150000000",
+      "tpLastUpdated": "52288884",
+      "slLastUpdated": "52288884",
+      "beingMarketClosed": false,
+      "lossProtection": "0"
+    }
+  },
+  "ambiguous_positionSizeUSDC_not_used_as_collateral": true,
+  "collateral_base_units": "15000000",
+  "next_action": "Verify current PairInfos liquidation getter and PairStorage market/oracle binding on a single fresh native block; preserve quote USD and isolated position scope."
 }
