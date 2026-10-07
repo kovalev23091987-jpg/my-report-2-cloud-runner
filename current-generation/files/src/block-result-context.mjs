@@ -1,3 +1,5 @@
+import {normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
+import {normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
 import {plainContextFact,omitTelegramCurrencies} from './telegram-plain-facts.mjs';
 import {derivePublishedCalendarContext} from './published-token-calendar.mjs';
 import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
@@ -23,6 +25,29 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N02'&&row.metric_family==='STELLAR_PUBLISHED_SUPPLY_METRICS'){
+  const rebuilt=normalizeStellarPublishedSupply({contract:row.htx_contract,identity:{chain:'stellar',asset_kind:'NATIVE',native_asset_id:'stellar:mainnet',contract_or_mint:null},payload:row.primary_payload,observed_ts:row.observed_ts}).evidence?.[0];
+  if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.source_ts!==row.source_ts||JSON.stringify(rebuilt.supply_values_base_units)!==JSON.stringify(row.supply_values_base_units)||row.chain_finalized_block_verified!==false||row.burn_or_buyback_change_verified!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
+  return{source:'Stellar Development Foundation',label:'Предложение XLM по данным фонда',value:`общее ${tokenAmount(row.supply_values_base_units.totalSupply,7)} XLM; в обращении ${tokenAmount(row.supply_values_base_units.circulatingSupply,7)} XLM; опубликованные компоненты согласованы. Это сведения фонда, финализированный блок, изменение сжиганий и будущие разблокировки не проверены`};
+ }
+ if(['N02','N03'].includes(row.block_id)&&row.chain==='xrp'&&['TOTAL_SUPPLY_OBSERVATION','SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED','SUPPLY_REDUCTION_CHECK'].includes(row.metric_family)){
+  const pair=normalizeNativeLedgerPair({...row.native_ledger_pair_payload,observed_ts:row.observed_ts}),h=pair.current,p=pair.previous;
+  if(pair.status!=='CLOSED'||row.provider_id!=='XRPL_NATIVE_SUPPLY'||row.upstream_id!=='XRPL_INFTF_MAINNET_RPC'||row.asset_id!=='xrp:native:mainnet'||row.native_asset_id!=='xrp:mainnet'||row.htx_contract!=='XRP-USDT'||row.decimals!==6||h.supply!==row.total_supply_base_units||h.block_ref!==row.block_ref||h.source_ts!==row.source_ts||row.directional_strength!==null||row.risk_strength!==null)return null;
+  if(row.block_id==='N02'&&row.metric_family==='TOTAL_SUPPLY_OBSERVATION'&&row.supply_delta_base_units===null)return{source:'XRPL / InFTF mainnet RPC',label:'Подтверждённое общее предложение XRP',value:`${tokenAmount(h.supply,6)} XRP по валидированному ledger ${h.ledger_index}; обращающееся предложение и будущие разблокировки этим не проверены`};
+  const delta=BigInt(h.supply)-BigInt(p.supply);
+  if(row.previous_supply_base_units!==p.supply||row.previous_block_ref!==p.block_ref||row.previous_source_ts!==p.source_ts||row.supply_delta_base_units!==String(delta))return null;
+  return{source:'XRPL / InFTF mainnet RPC',label:'Изменение общего предложения XRP',value:`${delta<0n?'−':delta>0n?'+':''}${tokenAmount(String(delta<0n?-delta:delta),6)} XRP между соседними валидированными ledger ${p.ledger_index} и ${h.ledger_index}; отдельная транзакция и её причина, выкуп и влияние на цену не подтверждены`};
+ }
+ if(row.block_id==='N07'&&['OFFICIAL_SOFTWARE_RELEASE','OFFICIAL_RELEASE_SUBSET_CHECK'].includes(row.metric_family)){
+  if(row.provider_id!=='OFFICIAL_EVENTS'||row.upstream_id!==`OFFICIAL_GITHUB:${row.github_repository}`||row.entry_authorized!==false||row.directional_strength!==null||row.risk_strength!==null||row.all_official_channels_checked!==false)return null;
+  if(row.metric_family==='OFFICIAL_SOFTWARE_RELEASE'){
+   if(row.mainnet_deployment_verified!==false||row.source_clock_policy!=='ORIGINAL_RELEASE_PUBLISHED_AT'||row.official_url!==`https://github.com/${row.github_repository}/releases/tag/${encodeURIComponent(row.release_tag)}`||!row.event_title)return null;
+   return{source:`официальный GitHub / ${row.github_repository}`,label:'Опубликован выпуск программного обеспечения',value:`${row.event_title}; ${new Date(row.source_ts).toISOString().slice(0,10)}; публикация релиза, установка в основной сети и влияние на цену не подтверждены`};
+  }
+  if(row.source_clock_policy!=='OBSERVED_OFFICIAL_RELEASE_SUBSET_QUERY'||row.recent_event_count!==0||row.lookback_days!==7||row.maximum_returned_rows!==10||!/^[a-f0-9]{64}$/.test(row.feed_response_sha256||''))return null;
+  return{source:`официальный GitHub / ${row.github_repository}`,label:'Проверка опубликованных выпусков проекта',value:`в возвращённой выборке до10 выпусков пригодных стабильных релизов за последние7 дней нет; другие страницы и каналы объявлений этим не проверены`};
+ }
+
  if(row.block_id==='N01'&&row.metric_family==='PROVIDER_PUBLISHED_FUTURE_TOKEN_CALENDAR'){
   if(row.provider_id!=='DEFILLAMA_PUBLISHED_CALENDAR'||row.upstream_id!=='DEFILLAMA_PUBLISHED_VESTING_CALENDAR'||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.official_confirmation!==false||row.actual_unlock_transfer_verified!==false||row.entry_authorized!==false||row.source_clock_policy!=='PUBLIC_PAGE_GENERATION_NOT_UNLOCK_EXECUTION')return null;
   const c=derivePublishedCalendarContext({page:row.provider_calendar_page,reference:row.provider_asset_reference,observed_ts:row.observed_ts,now});

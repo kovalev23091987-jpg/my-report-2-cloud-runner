@@ -1,3 +1,4 @@
+import {exactGithubReleaseSpec} from './github-official-releases.mjs';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {NATIVE_SECTOR_BINDINGS,exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 import {parseSupplementalIdentityRegistry} from './supplemental-candidate-context.mjs';
@@ -33,14 +34,16 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
   if(!/^[a-z0-9.-]+$/.test(domain)||!domain.includes('.'))fail('OFFICIAL_DOMAIN');
   const hostedAccount=/^https:\/\/medium\.com\/feed\/@([a-z0-9_-]{2,64})$/i.exec(canonical)?.[1]?.toLowerCase()||null;
   const authorization=clean(row?.publisher_authorization_url);
+  const githubSpec={url:canonical,format,parser_id:parser,github_repository:clean(row.github_repository),release_policy:clean(row.release_policy),publisher_authorization_url:authorization};
+  const authorizedGithubFeed=Boolean(format==='JSON'&&exactGithubReleaseSpec(canonical,{official_domains:[domain],official_feed_specs:[githubSpec]}));
   const authorizedHostedFeed=Boolean(hostedAccount&&format==='RSS'&&parser==='FIXED_RSS_V1'&&withinDomain(hostOf(authorization),domain));
-  if(!withinDomain(hostOf(canonical),domain)&&!authorizedHostedFeed)fail('CANONICAL_URL');
+  if(!withinDomain(hostOf(canonical),domain)&&!authorizedHostedFeed&&!authorizedGithubFeed)fail('CANONICAL_URL');
   if(!withinDomain(hostOf(evidence),domain))fail('EVIDENCE_LINK');
   if(!Number.isFinite(verified)||verified>now+5*60_000)fail('VERIFIED_AT');
   if(!timezone||!/^\d+[mhd]$/.test(refresh))fail('REFRESH_METADATA');
-  if(!['RSS','ATOM','ICS','HTML'].includes(format))fail('FORMAT');
+  if(!['RSS','ATOM','ICS','HTML','JSON'].includes(format))fail('FORMAT');
   if(!['ENABLED','DISABLED'].includes(status))fail('STATUS');
-  if(status==='ENABLED'&&!((['RSS','ATOM','ICS'].includes(format)&&parser===`FIXED_${format}_V1`)||(format==='HTML'&&['FIXED_HTML_JSONLD_V1','FIXED_HTML_CHAINLINK_NEWSROOM_V1'].includes(parser))))fail('ENABLED_PARSER');
+  if(status==='ENABLED'&&!(authorizedGithubFeed||(['RSS','ATOM','ICS'].includes(format)&&parser===`FIXED_${format}_V1`)||(format==='HTML'&&['FIXED_HTML_JSONLD_V1','FIXED_HTML_CHAINLINK_NEWSROOM_V1'].includes(parser))))fail('ENABLED_PARSER');
   if(status==='DISABLED'&&(!clean(row?.disabled_reason)||parser!==null))fail('DISABLED_REASON');
   if(snapshotSpace&&(!/^[a-z0-9][a-z0-9._-]{1,99}$/i.test(snapshotSpace)||!withinDomain(hostOf(snapshotEvidence),domain)))fail('SNAPSHOT_IDENTITY');
   const prior=registry[base];
@@ -49,10 +52,10 @@ export function compileOfficialSourceRegistry(raw,{now=Date.now()}={}){
    ...(prior||{}),...identity,official_name:name,
    official_domains:unique([...(prior?.official_domains||[]),domain]),
    official_feeds:unique([...(prior?.official_feeds||[]),...(status==='ENABLED'?[canonical]:[])]),
-   official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})}]:[])],
+   official_feed_specs:[...(prior?.official_feed_specs||[]),...(status==='ENABLED'?[{url:canonical,format,parser_id:parser,refresh_period:refresh,timezone,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {}),...(authorizedGithubFeed?{github_repository:githubSpec.github_repository,release_policy:githubSpec.release_policy,publisher_authorization_url:authorization}: {})}]:[])],
    coingecko_id:clean(row?.coingecko_id)||prior?.coingecko_id||null,coingecko_category_id:clean(row?.coingecko_category_id)||prior?.coingecko_category_id||null,coingecko_category_name:clean(row?.coingecko_category_name)||prior?.coingecko_category_name||null,coinpaprika_id:clean(row?.coinpaprika_id)||prior?.coinpaprika_id||null,sector_tag:clean(row?.sector_tag)||prior?.sector_tag||null,snapshot_space:snapshotSpace||prior?.snapshot_space||null,protocol_slug:clean(row?.protocol_slug)||prior?.protocol_slug||null,
   };
-  records.push({contract_code:contract,asset_id:identityKey(identity),official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {})});
+  records.push({contract_code:contract,asset_id:identityKey(identity),official_domain:domain,canonical_url:canonical,format,parser_id:parser,snapshot_space:snapshotSpace||null,snapshot_evidence_link:snapshotEvidence||null,timezone,evidence_link:evidence,verified_at:new Date(verified).toISOString(),refresh_period:refresh,status,disabled_reason:status==='DISABLED'?clean(row.disabled_reason):null,...(authorizedHostedFeed?{publisher_account:hostedAccount,publisher_authorization_url:authorization}: {}),...(authorizedGithubFeed?{github_repository:githubSpec.github_repository,release_policy:githubSpec.release_policy,publisher_authorization_url:authorization}: {})});
  }
  return {version:OFFICIAL_SOURCE_REGISTRY_VERSION,status:records.length?'CLOSED':'NOT_CLOSED',registry,records};
 }
