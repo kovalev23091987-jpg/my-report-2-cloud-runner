@@ -1,6 +1,6 @@
 {
   "schema": "report2-continuation-phase-state-v1",
-  "current_phase": "COMPLETE",
+  "current_phase": "CORE_BLOCKS",
   "phases": [
     {
       "id": "CORE_BLOCKS",
@@ -114,15 +114,15 @@
     }
   ],
   "lease": {
-    "owner": null,
-    "acquired_ts": null,
-    "expires_ts": null
+    "owner": "HTX:20261007:1791348490847:full-block-task-recovery",
+    "acquired_ts": 1791348490847,
+    "expires_ts": 1791353890847
   },
-  "next_action": "NORMAL_CLOUD_PRODUCTION; REVIEW_ONLY_NEW_PROVEN_DEFECT_OR_GENERAL_GAP; FULL_TZ_EMPIRICAL_AND_COVERAGE_LIMITS_IN_CURRENT_STATUS",
+  "next_action": "RESTORE_FULL_BLOCK_CONFIGURATION_AND_NEW_SOURCE_CONNECTION_BACKLOG; PRIORITY_N01_N02_N05_N12_N15; NO_SCOPE_CLOSURE_FROM_SENT_ALONE",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791347710310,
+  "updated_ts": 1791348490847,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -310,7 +310,7 @@
   "history": "checkpoints/archive/phase-before-approved-batch-final-20261006.json",
   "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
   "additional_coverage_work": {
-    "status": "CURRENT_OWNER_BATCH_COMPLETED_WITH_EXPLICIT_FULL_TZ_OPEN_ITEMS",
+    "status": "REOPENED_FULL_BLOCK_AND_SOURCE_TASK_RECOVERY",
     "owner_instruction_at_msk": "2026-10-07T04:03:15+03:00",
     "base_functional_acceptance_retained": true,
     "scope": "Current owner-approved concise Telegram and exact measured fact consumption; full86 requirement reconciliation with explicit source/history/statistical limits. Thresholds, entry, data honesty and budgets unchanged.",
@@ -320,7 +320,9 @@
     "proof": "checkpoints/CURRENT_TZ_RECONCILIATION_86_20261007.json",
     "consumer_gap_fixed": "PR202_EXACT_MEASURED_RELATIVE_FACT_CONSUMPTION_AND_APPROVED_BRIEF_OUTPUT",
     "new_provider_enabled": false,
-    "universal_source_coverage_accepted": false
+    "universal_source_coverage_accepted": false,
+    "owner_reopened_at_utc": "2026-10-07T04:48:10.847Z",
+    "reason": "Owner explicitly reminded that block configuration and new connection search were omitted from the reduced remaining-work list; recover all original and amended tasks."
   },
   "history_before_owner_brief": "checkpoints/archive/phase-before-owner-brief-20261007.json",
   "owner_telegram_brief_amendment": {
@@ -346,5 +348,13 @@
       "PARTIAL_HISTORY_COVERAGE",
       "PARTIAL_SOURCE_SCOPE"
     ]
+  },
+  "owner_full_task_recovery": {
+    "original_requirements": 86,
+    "core_blocks": 15,
+    "liquidation_block": 1,
+    "source_search_included": true,
+    "latest_instruction": "Поднимай все задачи которые у тебя были",
+    "per_coin_tuning_forbidden": true
   }
 }
