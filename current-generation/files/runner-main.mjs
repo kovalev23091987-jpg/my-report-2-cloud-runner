@@ -1,4 +1,4 @@
-import {admitTriggeredRecheck} from './src/triggered-entry-recheck.mjs';
+import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget} from './src/triggered-entry-recheck.mjs';
 import {buildLiquidationSourceAcquisitionAudit} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
 import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
@@ -560,12 +560,25 @@ async function main() {
     console.log('SCHEDULED_TWO_CANDIDATE_ADMISSION',JSON.stringify(cadence));
     if(!cadence.claimed){
       if(!['NOT_DUE','LEASE_ACTIVE'].includes(cadence.status))throw new Error(`SCHEDULED_CADENCE_NOT_CLOSED:${cadence.status}`);
-      const triggered=cadence.status==='NOT_DUE'
-        ?await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,admit:async()=>evaluateDailyReservationBudget({
-          daily:await loadDailyUsageAggregate(env.DATA_DB,started),nextReservation:TWO_CANDIDATE_PLAN.d1_run_cap,
-          maxDailyReads:envNumber('REPORT2_D1_MAX_DAILY_READS',3500000),maxDailyWrites:envNumber('REPORT2_D1_MAX_DAILY_WRITES',70000),
-        })})
-        :{claimed:false,status:'REGULAR_CADENCE_LEASE_ACTIVE'};
+      let triggered={claimed:false,status:'REGULAR_CADENCE_LEASE_ACTIVE'};
+      if(cadence.status==='NOT_DUE'){
+        if(!proveTriggeredRecheckD1Budget().safe)throw new Error('TRIGGERED_RECHECK_D1_PLAN_UNSAFE');
+        const admissionBudget=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(env.DATA_DB,started),
+          nextReservation:{rows_read:TWO_CANDIDATE_PLAN.d1_run_cap.rows_read+TRIGGERED_RECHECK_D1_RESERVATION.rows_read,
+            rows_written:TWO_CANDIDATE_PLAN.d1_run_cap.rows_written+TRIGGERED_RECHECK_D1_RESERVATION.rows_written},
+          maxDailyReads:envNumber('REPORT2_D1_MAX_DAILY_READS',3500000),maxDailyWrites:envNumber('REPORT2_D1_MAX_DAILY_WRITES',70000)});
+        if(admissionBudget.allowed){
+          const triggerReservationId=`R2TRIGGER:${started}:${sha.slice(0,16)}`;
+          await reserveRunBudget(env.DATA_DB,{reservationId:triggerReservationId,now:started,reservation:TRIGGERED_RECHECK_D1_RESERVATION});
+          try{
+            triggered=await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,admit:()=>({allowed:true})});
+            const usage=env.DATA_DB.usageSnapshot();
+            if(usage.unknown_ops||usage.rows_read>1300||usage.rows_written>14)throw new Error('TRIGGERED_ADMISSION_D1_ENVELOPE_EXCEEDED');
+          }finally{
+            await finalizeRunUsage(env.DATA_DB,{reservationId:triggerReservationId,sourceRunId:process.env.GITHUB_RUN_ID||'TRIGGERED_ADMISSION',usage:env.DATA_DB.usageSnapshot()});
+          }
+        }else triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};
+      }
       console.log('TRIGGERED_ENTRY_RECHECK_ADMISSION',JSON.stringify(triggered));
       if(!triggered.claimed){
         const finish=await releaseAnalyticsLease();if(!finish.finished)throw new Error(`ANALYTICS_LEASE_FINISH_FAILED:${finish.status}`);

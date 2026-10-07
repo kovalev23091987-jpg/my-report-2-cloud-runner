@@ -1,7 +1,16 @@
 import crypto from 'node:crypto';
 import {TWO_CANDIDATE_PLAN} from './two-candidate-policy.mjs';
+import {D1_DAILY_LIMITS} from './unified-budget.mjs';
 
 export const TRIGGERED_RECHECK_VERSION='exact-sent-triggered-recheck-v1-20261008';
+export const TRIGGERED_RECHECK_D1_RESERVATION=Object.freeze({rows_read:1500,rows_written:16});
+export function proveTriggeredRecheckD1Budget(){
+ // Reserve for every one of the72 cron invocations, even though ordinary
+ // admitted cycles do not need this small admission-only ledger entry.
+ const reads=D1_DAILY_LIMITS.planned_rows_read+72*TRIGGERED_RECHECK_D1_RESERVATION.rows_read;
+ const writes=D1_DAILY_LIMITS.planned_rows_written+72*TRIGGERED_RECHECK_D1_RESERVATION.rows_written;
+ return {safe:reads<=D1_DAILY_LIMITS.rows_read&&writes<=D1_DAILY_LIMITS.rows_written,maximum_planned_rows_read:reads,maximum_planned_rows_written:writes,cron_admissions_reserved:72,source_http:0};
+}
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,stable(v[k])])):v;
 const fingerprint=c=>{const copy={...c};delete copy.analytical_fingerprint;return crypto.createHash('sha256').update(JSON.stringify(stable(copy))).digest('hex');};
 const compare=(price,operator,value)=>operator==='>='?price>=value:operator==='>'?price>value:operator==='<='?price<=value:operator==='<'?price<value:false;
