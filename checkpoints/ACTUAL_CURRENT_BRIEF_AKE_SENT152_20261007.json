@@ -1,0 +1,3985 @@
+{
+  "schema": "ACTUAL_CURRENT_OWNER_BRIEF_SENT152_V1",
+  "cloud_run": 37557085058,
+  "source_head": "e1c6f33c095a27be2876a42b06d2459a0c0cb618",
+  "run_id": "1791336391823-1791336400972",
+  "generated_at": "2026-10-07T01:27:47.993Z",
+  "report_status": "CLOSED",
+  "report_artifact": {
+    "id": 11455056992,
+    "sha256": "97d56c87cb172842a73112a70f2f4f2643b5546a958dba7c1598ec82155bcfb1"
+  },
+  "telegram_lifecycle_artifact": {
+    "id": 11455391777,
+    "sha256": "6b110c7221e9824cb3a7fd585b790312d8e59808f32f0714fe71747abbea836e"
+  },
+  "exact_readback": {
+    "cloud_run": 37557478267,
+    "head": "3f1617a6fca93b5646a08dda06e6aa71ceb5d072",
+    "artifact": 11455282229,
+    "zip_sha256": "481a7e319a68ea13b2a0dbc07e489a7b91d87068ff169277d7de50358ce95c90",
+    "archive": "checkpoints/actual-current-approved-brief-37557085058.json.gz",
+    "gzip_sha256": "b159bcf725af3f607d0036ea1eb9575ca8136fe2fe44a90a6a6fc62b737ad156",
+    "json_sha256": "2ef59f6238c05f3fc8f1b06973f2e456917ad99fdba1f55043cede4157d275aa",
+    "D1": {
+      "requests": 8,
+      "rows_read": 27,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:deep_check_run_log": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_telegram_dispatch_shadow": {
+          "requests": 1,
+          "rows_read": 9,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram_send": 0
+  },
+  "candidates": [
+    {
+      "contract": "AKE-USDT",
+      "snapshot_id": "S392:AKE-USDT:1791336461166",
+      "publication_id": "PUB:698ae2391b8b7469ef9e83321e200284db2be131",
+      "state": "OBSERVE",
+      "direction": "LONG",
+      "fingerprint": "5dcb3d91a3788f1626fbbe2680d0aba19a26ab174e7008c409d30563af3694cd",
+      "interest_score": 82,
+      "participating_blocks": [
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "participating_count": 7,
+      "nonzero_block_contributions": {
+        "N12": -0.0227
+      },
+      "source_use": {
+        "N01": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "OFFICIAL_TOKEN_SCHEDULE": {
+                "status": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "DEFILLAMA_PUBLISHED_CALENDAR": {
+                "status": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N02": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 4,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_SUPPLY": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINMETRICS_SUPPLY": {
+                "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": "PER_TRANSPORT_RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_MARKET_CATALOG",
+                    "status": "VALIDATED_REFERENCE_CACHE",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N03": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "CHAIN_SUPPLY_COMPARISON": {
+                "status": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N04": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N05": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "used_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "rendered_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_RAW_FILLS"
+            ],
+            "used_physical_root_keys": [
+              "HTX_RAW_FILLS:AKE-USDT:1791321960000:1791336360000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "used_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "used_physical_root_keys": [
+                  "HTX_RAW_FILLS:AKE-USDT:1791321960000:1791336360000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "physical_root_keys": [
+                  "HTX_RAW_FILLS:AKE-USDT:1791321960000:1791336360000"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              },
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N06": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 1,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "BLUESKY_PUBLIC"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "BLUESKY_PUBLIC": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 1,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "BLUESKY_PUBLIC"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "BLUESKY_PUBLIC"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|1791332847383:1791336447383"
+                ],
+                "cache_status": "REFRESHED",
+                "admission_status": "RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "SEARCH_POSTS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "GDELT_NEWS_DISCOVERY": {
+                "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "WIKIMEDIA_ATTENTION": {
+                "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N07": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_OFFICIAL_ANNOUNCEMENTS"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "HTX_OFFICIAL_ANNOUNCEMENTS": {
+                "status": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_OFFICIAL_ANNOUNCEMENTS"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_SUPPORT"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|https://www.htx.com/support/list/360000039942/:1791333357249"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_OFFICIAL_SUPPORT_LIST",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "GDELT_NEWS_DISCOVERY": {
+                "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N08": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_LINEAR_SWAP"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:AKE-USDT|AKE-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_PUBLIC_RISK": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "used_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "STATE",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "ISOLATED",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "CROSS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N09": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_LINEAR_SWAP"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:AKE-USDT|AKE-USDT:1791333318905"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_PUBLIC_RISK": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "used_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:1791333318905"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:1791333318905"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "STATE",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "ISOLATED",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "CROSS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N10": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_CANDLES"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:AKE-USDT|AKE-USDT:60min:1791334800000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_TECHNICAL_CONTEXT": {
+                "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_CLOSED_CANDLES"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:60min:1791334800000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_CLOSED_CANDLES"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|AKE-USDT:60min:1791334800000"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "NO_ENTRY_STATE",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N11": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N11"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_EXECUTION_STRESS": {
+                "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N11"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N11"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N12": {
+          "participation_status": "SCORE_EFFECT_PROVEN",
+          "score_contribution": -0.0227,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 1,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 1,
+            "valid_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "used_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "rendered_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "nonzero_score_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "used_declared_upstream_ids": [
+              "HTX_PUBLIC_FUTURES_TRADES"
+            ],
+            "used_physical_root_keys": [
+              "HTX:AKE-USDT|AKE-USDT:BOUNDED:1000002249162180000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_LARGE_TRADES": {
+                "status": "CLOSED_BOUNDED_SAMPLE",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 1,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 1,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 1,
+                "provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "used_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "nonzero_score_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "used_declared_upstream_ids": [
+                  "HTX_PUBLIC_FUTURES_TRADES"
+                ],
+                "used_physical_root_keys": [
+                  "HTX:AKE-USDT|AKE-USDT:BOUNDED:1000002249162180000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_PUBLIC_FUTURES_TRADES"
+                ],
+                "physical_root_keys": [
+                  "HTX:AKE-USDT|AKE-USDT:BOUNDED:1000002249162180000"
+                ],
+                "cache_status": null,
+                "admission_status": "RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": null,
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N14": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "DERIBIT_ALT_OPTIONS"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "DERIBIT_ALT_OPTIONS": {
+                "status": "NOT_APPLICABLE",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "DERIBIT_ALT_OPTIONS"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "DERIBIT_PUBLIC_OPTIONS"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|CATALOG:AKE:1791336424359"
+                ],
+                "cache_status": "HIT",
+                "admission_status": "SHARED_CACHE_NO_SOURCE_ATTEMPT",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "DELTA_OPTIONS": {
+                "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N15": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "COINGECKO_SECTOR": {
+                "status": "EXACT_SECTOR_REGISTRY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": "PER_TRANSPORT_RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_MARKET_CATALOG",
+                    "status": "VALIDATED_REFERENCE_CACHE",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N16": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": 0,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N16"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_EXECUTION_COST": {
+                "status": "CHECKED_HTX_EXECUTION_COST",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N16"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:AKE-USDT|S392:AKE-USDT:1791336461166:N16"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        }
+      },
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -2.0625522772374616,
+          "absolute_move_pct": 2.0625522772374616,
+          "is_pump": true,
+          "is_strong_move": false,
+          "early_anomaly": true,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.029896199999999998,
+        "priority_reason": "OI_FUNDING_VOLUME_OR_SPOT_ANOMALY",
+        "above": [],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "NOT_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "NOT_CLOSED",
+        "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+        "all_zones": [],
+        "display_source_zones": [],
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 0,
+        "omitted_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "NOT_CLOSED",
+        "below_status": "NOT_CLOSED",
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "AKE-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL"
+          ],
+          "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "AKE-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "AKE-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL"
+            ],
+            "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      }
+    },
+    {
+      "contract": "BTR-USDT",
+      "snapshot_id": "S392:BTR-USDT:1791336437636",
+      "publication_id": "PUB:167a46f885afeece056d0c65a59c8d9e2b1639ea",
+      "state": "REJECTED",
+      "direction": null,
+      "fingerprint": "bb9d31bfe6f5f80283ac15d6e5f28ff2bfdafcb6bc466c185e66eb4cdde0ac2b",
+      "interest_score": null,
+      "participating_blocks": [
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "participating_count": 7,
+      "nonzero_block_contributions": {},
+      "source_use": {
+        "N01": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "OFFICIAL_TOKEN_SCHEDULE": {
+                "status": "STRUCTURED_TOKEN_SCHEDULE_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "DEFILLAMA_PUBLISHED_CALENDAR": {
+                "status": "EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N02": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 4,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_SUPPLY": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINMETRICS_SUPPLY": {
+                "status": "EXACT_SUPPORTED_NATIVE_BINDING_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": "PER_TRANSPORT_RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_MARKET_CATALOG",
+                    "status": "VALIDATED_REFERENCE_CACHE",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N03": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "CHAIN_SUPPLY_COMPARISON": {
+                "status": "TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N04": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "BLOCKSCOUT_INDEX": {
+                "status": "EXACT_EVM_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N05": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "used_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "rendered_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_RAW_FILLS"
+            ],
+            "used_physical_root_keys": [
+              "HTX_RAW_FILLS:BTR-USDT:1791321900000:1791336300000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "used_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "used_physical_root_keys": [
+                  "HTX_RAW_FILLS:BTR-USDT:1791321900000:1791336300000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "physical_root_keys": [
+                  "HTX_RAW_FILLS:BTR-USDT:1791321900000:1791336300000"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              },
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N06": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 1,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "BLUESKY_PUBLIC"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "BLUESKY_PUBLIC": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 1,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "BLUESKY_PUBLIC"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "BLUESKY_PUBLIC"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|1791332819584:1791336419584"
+                ],
+                "cache_status": "REFRESHED",
+                "admission_status": "RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "SEARCH_POSTS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "GDELT_NEWS_DISCOVERY": {
+                "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "WIKIMEDIA_ATTENTION": {
+                "status": "EXACT_VERIFIED_PAGE_BINDING_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N07": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_OFFICIAL_ANNOUNCEMENTS"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "HTX_OFFICIAL_ANNOUNCEMENTS": {
+                "status": "CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_OFFICIAL_ANNOUNCEMENTS"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_SUPPORT"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|https://www.htx.com/support/list/360000039942/:1791333357249"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_OFFICIAL_SUPPORT_LIST",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "GDELT_NEWS_DISCOVERY": {
+                "status": "EXACT_OFFICIAL_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N08": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_LINEAR_SWAP"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BTR-USDT|BTR-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_PUBLIC_RISK": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "used_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:OPEN_RESTRICTION_CHECK:1791333318905"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "STATE",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "ISOLATED",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "CROSS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "OFFICIAL_EVENTS": {
+                "status": "EXACT_OFFICIAL_FEED_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N09": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 1,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "used_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "rendered_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_PUBLIC_RISK"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_LINEAR_SWAP"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BTR-USDT|BTR-USDT:1791333318905"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_PUBLIC_RISK": {
+                "status": "CLOSED",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "used_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_PUBLIC_RISK"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:1791333318905"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_LINEAR_SWAP"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:1791333318905"
+                ],
+                "cache_status": "SHARED_HIT",
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "STATE",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "ISOLATED",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  },
+                  {
+                    "route": "CROSS",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N10": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_TECHNICAL_CONTEXT"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_CLOSED_CANDLES"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BTR-USDT|BTR-USDT:60min:1791334800000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_TECHNICAL_CONTEXT": {
+                "status": "CHECKED_PRIMARY_TECHNICAL_CONTEXT",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_TECHNICAL_CONTEXT"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_CLOSED_CANDLES"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:60min:1791334800000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_CLOSED_CANDLES"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|BTR-USDT:60min:1791334800000"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "NO_ENTRY_STATE",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N11": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_EXECUTION_STRESS"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N11"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_EXECUTION_STRESS": {
+                "status": "CHECKED_HTX_ORDERBOOK_STRESS",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_EXECUTION_STRESS"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N11"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N11"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N12": {
+          "participation_status": "UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 1,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "used_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "rendered_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [
+              "HTX_LARGE_TRADES"
+            ],
+            "used_declared_upstream_ids": [
+              "HTX_PUBLIC_FUTURES_TRADES"
+            ],
+            "used_physical_root_keys": [
+              "HTX:BTR-USDT|BTR-USDT:BOUNDED:1000002016764050000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "HTX_LARGE_TRADES": {
+                "status": "CLOSED_BOUNDED_SAMPLE",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 1,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 1,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "used_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [
+                  "HTX_LARGE_TRADES"
+                ],
+                "used_declared_upstream_ids": [
+                  "HTX_PUBLIC_FUTURES_TRADES"
+                ],
+                "used_physical_root_keys": [
+                  "HTX:BTR-USDT|BTR-USDT:BOUNDED:1000002016764050000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_PUBLIC_FUTURES_TRADES"
+                ],
+                "physical_root_keys": [
+                  "HTX:BTR-USDT|BTR-USDT:BOUNDED:1000002016764050000"
+                ],
+                "cache_status": null,
+                "admission_status": "RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": null,
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N14": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 1,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "DERIBIT_ALT_OPTIONS"
+            ],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 1,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "DERIBIT_ALT_OPTIONS": {
+                "status": "NOT_APPLICABLE",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 1,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "DERIBIT_ALT_OPTIONS"
+                ],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [
+                  "DERIBIT_PUBLIC_OPTIONS"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|CATALOG:BTR:1791336424359"
+                ],
+                "cache_status": "REFRESHED",
+                "admission_status": "RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "CATALOG",
+                    "status": "CLOSED",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              },
+              "DELTA_OPTIONS": {
+                "status": "NOT_IN_VERIFIED_DELTA_OPTION_CAPABILITY",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N15": {
+          "participation_status": "USE_NOT_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 2,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "COINGECKO_SECTOR": {
+                "status": "EXACT_SECTOR_REGISTRY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "COINPAPRIKA_SECTOR": {
+                "status": "NO_EXACT_HTX_SPOT_MARKET_IN_COINPAPRIKA",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": "PER_TRANSPORT_RESERVED",
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": "HTX_MARKET_CATALOG",
+                    "status": "VALIDATED_REFERENCE_CACHE",
+                    "http_status": 200,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        },
+        "N16": {
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "score_contribution": null,
+          "accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 1,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "used_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "rendered_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "PRIMARY_EXECUTION_COST"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_IMMUTABLE_EXECUTION_BOOK"
+            ],
+            "used_physical_root_keys": [
+              "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N16"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "PRIMARY_EXECUTION_COST": {
+                "status": "CHECKED_HTX_EXECUTION_COST",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "used_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "rendered_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "PRIMARY_EXECUTION_COST"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "used_physical_root_keys": [
+                  "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N16"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_IMMUTABLE_EXECUTION_BOOK"
+                ],
+                "physical_root_keys": [
+                  "htx-futures:BTR-USDT|S392:BTR-USDT:1791336437636:N16"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          }
+        }
+      },
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -0.7761966364812412,
+          "absolute_move_pct": 0.7761966364812412,
+          "is_pump": true,
+          "is_strong_move": false,
+          "early_anomaly": true,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.04611,
+        "priority_reason": "OI_FUNDING_VOLUME_OR_SPOT_ANOMALY",
+        "above": [],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "NOT_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "NOT_CLOSED",
+        "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+        "all_zones": [],
+        "display_source_zones": [],
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 0,
+        "omitted_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "NOT_CLOSED",
+        "below_status": "NOT_CLOSED",
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "BTR-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL"
+          ],
+          "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "BTR-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "BTR-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL"
+            ],
+            "coverage_scope": "ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      }
+    }
+  ],
+  "delivery": {
+    "dispatch_id": "V3TG:AKE-USDT|LONG|EDW:AKE-USDT:1791336401148:G5|OBSERVE|v3-telegram-shadow-r6",
+    "idempotency_key": "AKE-USDT|LONG|EDW:AKE-USDT:1791336401148:G5|OBSERVE|v3-telegram-shadow-r6",
+    "contract": "AKE-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:AKE-USDT:1791336401148:G5",
+    "lifecycle_event": "OBSERVE",
+    "rules_version": "v3-telegram-shadow-r6",
+    "state": "SENT",
+    "decision_id": null,
+    "created_ts": 1791336464005,
+    "updated_ts": 1791336464865,
+    "sent_ts": 1791336464865,
+    "telegram_message_id": "152",
+    "last_error": "SENT",
+    "publication_id": "PUB:698ae2391b8b7469ef9e83321e200284db2be131"
+  },
+  "presentation_hash": "f3e0b9a7a3275ba10945f02c832e0cc5cbdefec57e104b59ab3eeb33d99bb15c",
+  "telegram_text": "AKE\n🟢 РОСТ\n⚪️ РАННЕЕ НАБЛЮДЕНИЕ\nОценка: 82 из 100.\n\nОснова идеи: ликвидационные зоны и ускорение движения.\n\n• Открытые позиции — сделки, которые трейдеры ещё не закрыли. Их общий объём на HTX уменьшился на 0,1% за час и увеличился на 0,9% за четыре часа. Сам по себе этот показатель не определяет направление цены.\n\n• В последних 8 полученных сделках покупки составили 119,43, продажи — 477,72. Выборка маленькая, по ней нельзя судить обо всём рынке.\n\nДля входа ждём:\n• закрепления цены выше 0,031;\n• повторного подтверждения объёма, открытого интереса и ликвидаций.\n\nИдея теряет интерес: цена ниже 0,0292.\n\nЦель после подтверждения входа: пока не подтверждена.\n\nСильные ликвидации выше: уровни не получены.\nСильные ликвидации ниже: уровни не получены.",
+  "verification": [
+    {
+      "contract": "AKE-USDT",
+      "snapshot_id": "S392:AKE-USDT:1791336461166",
+      "fingerprint_verified": true,
+      "identity": {
+        "status": "CLOSED",
+        "reason": null
+      },
+      "presentation": {
+        "status": "CLOSED",
+        "reason": null,
+        "presentation_hash": "f3e0b9a7a3275ba10945f02c832e0cc5cbdefec57e104b59ab3eeb33d99bb15c"
+      },
+      "approved_brief_exact": true
+    },
+    {
+      "contract": "BTR-USDT",
+      "snapshot_id": "S392:BTR-USDT:1791336437636",
+      "fingerprint_verified": true,
+      "identity": {
+        "status": "CLOSED",
+        "reason": null
+      },
+      "presentation": null,
+      "approved_brief_exact": null
+    }
+  ],
+  "acceptance_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
+  "reader_did_not_send": true,
+  "source_original_clocks_preserved": true
+}
