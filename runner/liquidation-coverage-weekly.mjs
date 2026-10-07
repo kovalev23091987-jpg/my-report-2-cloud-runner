@@ -6,8 +6,8 @@ import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import {pathToFileURL} from 'node:url';
 const root=path.resolve(process.argv[2]||'runtime'),load=n=>import(pathToFileURL(path.join(root,n)));
-const [{RemoteD1Database},coverage,tracked,io,providers,sampler,allowances,admission,bykQuota]=await Promise.all([
- load('report2-d1-adapter.mjs'),load('src/liquidation-futures-coverage.mjs'),load('src/byk-tracked-future-map.mjs'),load('src/liquidation-extension/io.mjs'),load('src/liquidation-extension/providers.mjs'),load('src/liquidation-extension/select-native-account-sample.mjs'),load('src/liquidation-extension/install-source-allowances.mjs'),load('src/liquidation-extension/d1-source-admission.mjs'),load('byk-quota-budget.mjs')]);
+const [{RemoteD1Database},coverage,tracked,io,providers,sampler,allowances,admission,bykQuota,swole]=await Promise.all([
+ load('report2-d1-adapter.mjs'),load('src/liquidation-futures-coverage.mjs'),load('src/byk-tracked-future-map.mjs'),load('src/liquidation-extension/io.mjs'),load('src/liquidation-extension/providers.mjs'),load('src/liquidation-extension/select-native-account-sample.mjs'),load('src/liquidation-extension/install-source-allowances.mjs'),load('src/liquidation-extension/d1-source-admission.mjs'),load('byk-quota-budget.mjs'),load('src/liquidation-extension/swole-account-discovery.mjs')]);
 const sha=value=>crypto.createHash('sha256').update(typeof value==='string'||Buffer.isBuffer(value)?value:JSON.stringify(value)).digest('hex');
 const setMaintenanceOutput=value=>{if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,`maintenance_active=${value?'true':'false'}\n`);};
 const universeBytes=fs.readFileSync('checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz'),universe=JSON.parse(zlib.gunzipSync(universeBytes)),universeSha=sha(universeBytes);
@@ -18,7 +18,7 @@ setMaintenanceOutput(true);
 let database=await coverage.loadFuturesCoverageRefreshDatabase({db,now:started});
 if(!coverage.validateFuturesCoverageDatabase(database)||database.universe_sha256!==universeSha||database.refresh_from_updated_ts!==active.updated_ts){const refresh=coverage.resetFuturesCoverageForWeeklyRefresh(active,{now:started});assert.equal(refresh.reset,true);database=refresh.database;}
 
-let http=0,lastNow=Math.max(database.updated_ts,started),bykCalls=0,hyperCalls=0,liqflowCalls=0,nativeReusedChecks=0;const checks=[],sourceReceipts=[];
+let http=0,lastNow=Math.max(database.updated_ts,started),bykCalls=0,hyperCalls=0,liqflowCalls=0,nativeReusedChecks=0,swoleCalls=0;const checks=[],sourceReceipts=[];
 const clock=()=>Math.max(Date.now(),++lastNow),proof=value=>sha({universe_sha256:universeSha,...value});
 const pending=(asset,source)=>asset.source_checks[source].status==='UNVERIFIED'||asset.source_checks[source].status==='QUOTA_DEFERRED';
 for(const asset of database.assets)for(const [source_id,policy] of Object.entries(coverage.NON_QUALIFYING_FUTURE_SOURCE_POLICIES))if(pending(asset,source_id))checks.push({contract:asset.analysis_contract,source_id,status:'NO_REAL_NUMERIC_LEVELS',source_proof_sha256:proof({source_id,policy,contract:asset.analysis_contract,policy_version:coverage.LIQUIDATION_COVERAGE_VERSION}),now:clock()});
@@ -37,9 +37,9 @@ for(const asset of database.assets){
  checks.push({contract,source_id:'BYK_TRACKED_HL_BANDS',status,receipt,source_proof_sha256:receipt?null:proof({source_id:'BYK_TRACKED_HL_BANDS',contract,status,transport:raw.receipt?.sha256??null,reason:raw.reason??normalized?.status??null}),now:checked});
  sourceReceipts.push({source_id:'BYK_TRACKED_HL_BANDS',contract,status,http_status:raw.receipt?.http_status??null,transport_sha256:raw.receipt?.sha256??null,zone_count:map?.zones?.length??0});
 }
-const setup=await allowances.installSourceAllowances({db,now:clock(),liqflow_key:process.env.LIQFLOW_API_KEY||'',oxarchive_key:process.env.OXARCHIVE_API_KEY||''});
+const setup=await allowances.installSourceAllowances({db,enable_swole_discovery:true,now:clock(),liqflow_key:process.env.LIQFLOW_API_KEY||'',oxarchive_key:process.env.OXARCHIVE_API_KEY||''});
 const sourceAdmit=admission.createD1SourceAdmission({db,scope_bindings:setup.bindings,within_run_budget:()=>{const usage=db.usageSnapshot();return{allowed:usage.unknown_ops===0&&usage.rows_read<50000&&usage.rows_written<800};}});
-const nativeSession=createWeeklyNativeCoverageSession({run_id:runId,source_admit:sourceAdmit,read_json:io.readJson,select_accounts:sampler.selectNativeAccountSample,normalize_native:providers.normalizeNativeHL,available_requests:()=>Math.max(0,maxHttp-http),on_request:provider=>{http++;if(provider==='HYPERLIQUID')hyperCalls++;else liqflowCalls++;},clock,liqflow_key:process.env.LIQFLOW_API_KEY||''});
+const nativeSession=createWeeklyNativeCoverageSession({run_id:runId,source_admit:sourceAdmit,read_json:io.readJson,select_accounts:sampler.selectNativeAccountSample,normalize_native:providers.normalizeNativeHL,available_requests:()=>Math.max(0,maxHttp-http),on_request:provider=>{http++;if(provider==='HYPERLIQUID')hyperCalls++;else if(provider==='SWOLE_DISCOVERY')swoleCalls++;else liqflowCalls++;},read_swole:setup.bindings.SWOLE_DISCOVERY?swole.readSwoleAccountDiscovery:null,clock,liqflow_key:process.env.LIQFLOW_API_KEY||''});
 const catalog=database.assets.some(a=>pending(a,'HYPERLIQUID_NATIVE'))?await nativeSession.ensureCatalog():null;
 const hlRows=Array.isArray(catalog?.payload?.[0]?.universe)?catalog.payload[0].universe:[],contexts=Array.isArray(catalog?.payload?.[1])?catalog.payload[1]:[];
 for(const asset of database.assets){
@@ -52,6 +52,15 @@ for(const asset of database.assets){
  checks.push({contract,source_id:'HYPERLIQUID_NATIVE',status,receipt:status==='REAL_NUMERIC_LEVELS'?receipt:null,source_proof_sha256:status==='REAL_NUMERIC_LEVELS'?null:proof({source_id:'HYPERLIQUID_NATIVE',contract,status,catalog_sha256:catalog.receipt?.sha256??null,transport:sample.transport??[],reason:sample.reason}),now:observed});
  sourceReceipts.push({source_id:'HYPERLIQUID_NATIVE',contract,status,network_calls:sample.network_calls,reused_accounts:sample.reused_accounts,source_ts:receipt?.source_ts??null,original_transport_sha256:sample.original_transport_sha256??[],zone_count:receipt?.zones?.length??0});
 }
+// Later native responses can include markets whose earlier discovery failed.
+// Replace that one capability check using the same original-clock cache only.
+for(const check of checks.filter(x=>x.source_id==='HYPERLIQUID_NATIVE'&&['NO_REAL_NUMERIC_LEVELS','QUOTA_DEFERRED'].includes(x.status))){
+ const symbol=check.contract.replace(/-USDT$/,''),sample=await nativeSession.collect({contract:check.contract,symbol,allow_discovery:false}),observed=clock();
+ if(sample.receipt&&coverage.qualifyNumericFutureReceipt({source_id:'HYPERLIQUID_NATIVE',receipt:sample.receipt,contract:check.contract,now:observed})){
+  Object.assign(check,{status:'REAL_NUMERIC_LEVELS',receipt:sample.receipt,source_proof_sha256:null,now:observed});nativeReusedChecks++;
+  sourceReceipts.push({source_id:'HYPERLIQUID_NATIVE',contract:check.contract,status:'REAL_NUMERIC_LEVELS',network_calls:0,reused_accounts:sample.reused_accounts,source_ts:sample.receipt.source_ts,original_transport_sha256:sample.original_transport_sha256,zone_count:sample.receipt.zones.length,earlier_check_replaced_from_same_run_cache:true});
+ }
+}
 if(checks.length)database=coverage.applyFuturesCoverageChecks(database,checks.sort((a,b)=>a.now-b.now));
 const priorPending=await coverage.loadFuturesCoverageRefreshDatabase({db,now:clock()}),priorPendingSha=priorPending?sha(priorPending.assets):null,admit=extra=>{const u=db.usageSnapshot();return{allowed:u.unknown_ops===0&&u.rows_read+extra.rows_read<=54000&&u.rows_written+extra.rows_written<=840};};
 const staged=await coverage.saveFuturesCoverageRefreshDatabase({db,database,now:clock(),expected_previous_assets_sha256:priorPendingSha,db_admit:admit});assert.equal(staged.saved,true);
@@ -59,6 +68,6 @@ let summary=coverage.summarizeFuturesCoverage(database,{now:clock()}),committed=
 if(summary.complete){const activeAssetsSha=sha(active.assets);committed=await coverage.saveFuturesCoverageDatabase({db,database,now:clock(),expected_previous_assets_sha256:activeAssetsSha,db_admit:admit});assert.equal(committed.saved,true);const live=await coverage.loadFuturesCoverageDatabase({db,now:clock()});assert.deepEqual(live.assets,database.assets);summary=coverage.summarizeFuturesCoverage(live,{now:clock()});}
 const readback=await coverage.loadFuturesCoverageRefreshDatabase({db,now:clock()});assert.equal(coverage.validateFuturesCoverageDatabase(readback),true);assert.deepEqual(readback.assets,database.assets);
 const usage=db.usageSnapshot();assert.equal(usage.unknown_ops,0);assert.ok(http<=maxHttp);assert.equal(summary.assets,102);assert.equal(summary.cells,816);
-const report={schema:'report2-liquidation-coverage-weekly-v1',status:summary.complete?'WEEKLY_REFRESH_COMMITTED':'WEEKLY_REFRESH_IN_PROGRESS',github_head:process.env.GITHUB_SHA,observed_ts:clock(),run_id:runId,universe_sha256:universeSha,contracts:119,assets:102,cells:816,checks_written:checks.length,source_http:http,source_http_cap:maxHttp,byk_http:bykCalls,native_http_protected_before_byk:nativeHttpReserve,hyperliquid_http:hyperCalls,liqflow_http:liqflowCalls,native_same_run_reused_checks:nativeReusedChecks,nonqualifying_sources:Object.fromEntries(Object.entries(coverage.NON_QUALIFYING_FUTURE_SOURCE_POLICIES)),summary,staging_persistence:staged,active_commit:committed,database_usage:usage,source_receipts:sourceReceipts,calculated_htx_fallback:false,synthetic_maps_admitted:false,model_or_projected_levels_admitted:false,top2_replacement_allowed:false,technical_telegram:false};
+const report={schema:'report2-liquidation-coverage-weekly-v1',status:summary.complete?'WEEKLY_REFRESH_COMMITTED':'WEEKLY_REFRESH_IN_PROGRESS',github_head:process.env.GITHUB_SHA,observed_ts:clock(),run_id:runId,universe_sha256:universeSha,contracts:119,assets:102,cells:816,checks_written:checks.length,source_http:http,source_http_cap:maxHttp,byk_http:bykCalls,native_http_protected_before_byk:nativeHttpReserve,hyperliquid_http:hyperCalls,liqflow_http:liqflowCalls,swole_discovery_http:swoleCalls,native_same_run_reused_checks:nativeReusedChecks,nonqualifying_sources:Object.fromEntries(Object.entries(coverage.NON_QUALIFYING_FUTURE_SOURCE_POLICIES)),summary,staging_persistence:staged,active_commit:committed,database_usage:usage,source_receipts:sourceReceipts,calculated_htx_fallback:false,synthetic_maps_admitted:false,model_or_projected_levels_admitted:false,top2_replacement_allowed:false,technical_telegram:false};
 fs.writeFileSync('liquidation-coverage-weekly-result.json',JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({...report,source_receipts:undefined}));

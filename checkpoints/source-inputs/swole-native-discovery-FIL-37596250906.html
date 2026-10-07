@@ -1,0 +1,265 @@
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FIL Liquidation Map &amp; Heatmap on Hyperliquid</title><meta name="description" content="FIL liquidation map &amp; heatmap on Hyperliquid from 22 real positions, 56.4% of OI covered: where longs and shorts get liquidated, updated every minute."><meta name="author" content="CryptoZyzz"><link rel="canonical" href="https://swolecharts.com/hyperliquid/liquidation-map/FIL"><meta property="og:type" content="website"><meta property="og:site_name" content="Swolecharts"><meta property="og:title" content="FIL Liquidation Map &amp; Heatmap on Hyperliquid"><meta property="og:description" content="FIL liquidation map &amp; heatmap on Hyperliquid from 22 real positions, 56.4% of OI covered: where longs and shorts get liquidated, updated every minute."><meta property="og:url" content="https://swolecharts.com/hyperliquid/liquidation-map/FIL"><meta property="og:image" content="https://swolecharts.com/static/og/default.39f8bc9128c4.png"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Swolecharts: Free live crypto derivatives data"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://swolecharts.com/static/og/default.39f8bc9128c4.png"><meta name="twitter:site" content="@CryptoZyzz"><meta name="theme-color" content="#0b0e13"><link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"><link rel="icon" href="/static/pwa/icon.0bf2417b7760.svg" type="image/svg+xml"><link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/static/pwa/apple-touch-icon.4ad3bd7a279c.png"><script>if('serviceWorker' in navigator&&window.isSecureContext){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><script>try{if(/(?:^|;\s*)sc_in=1/.test(document.cookie)){var t=localStorage.getItem('sc.theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>
+      (adsbygoogle = window.adsbygoogle || []).push({
+        google_ad_client: "ca-pub-9681547784552447",
+        enable_page_level_ads: true
+      });
+    </script><link rel="preload" href="/static/fonts/inter-latin.260c81a4759b.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/static/app.8734a0aabc78.css"><link rel="stylesheet" href="/static/skip.05baf9bd11ac.css"><link rel="stylesheet" href="/static/site.0f116666e4e3.css"><style id="vm-venue-css">:root{--v-binance:#f0b90b;--v-bybit:#ff8a3d;--v-hyperliquid:#4fe0bf;--v-bitget:#6ea8ff;--v-gate:#f07ad8;--v-htx:#a6d94a;--v-mexc:#5fd0f5;--v-kucoin:#d9a066;--v-aster:#8f9bff;--v-lighter:#c58cff}:root[data-theme=light]{--v-binance:#b88a00;--v-bybit:#e2610f;--v-hyperliquid:#0f9e80;--v-bitget:#2f6fdb;--v-gate:#b8329c;--v-htx:#5f8f12;--v-mexc:#0b87b3;--v-kucoin:#9a6326;--v-aster:#4550c9;--v-lighter:#7e3fc9}.chip.binance,.v-binance{--vc:var(--v-binance)}.chip.bybit,.v-bybit{--vc:var(--v-bybit)}.chip.hyperliquid,.v-hyperliquid{--vc:var(--v-hyperliquid)}.chip.bitget,.v-bitget{--vc:var(--v-bitget)}.chip.gate,.v-gate{--vc:var(--v-gate)}.chip.htx,.v-htx{--vc:var(--v-htx)}.chip.mexc,.v-mexc{--vc:var(--v-mexc)}.chip.kucoin,.v-kucoin{--vc:var(--v-kucoin)}.chip.aster,.v-aster{--vc:var(--v-aster)}.chip.lighter,.v-lighter{--vc:var(--v-lighter)}</style><script id="vm-venues" type="application/json">[{"name": "binance", "label": "Binance"}, {"name": "bybit", "label": "Bybit"}, {"name": "hyperliquid", "label": "Hyperliquid"}, {"name": "bitget", "label": "Bitget"}, {"name": "gate", "label": "Gate"}, {"name": "htx", "label": "HTX"}, {"name": "mexc", "label": "MEXC"}, {"name": "kucoin", "label": "KuCoin"}, {"name": "aster", "label": "Aster"}, {"name": "lighter", "label": "Lighter"}]</script><link rel="stylesheet" href="/static/coin.43020452a324.css"><link rel="stylesheet" href="/static/markets.7572e306dc97.css"><link rel="stylesheet" href="/static/seo.13549a71725b.css"><style>
+  .lm-chart { padding: 4px 14px 6px; }
+  .lm-svg { display: block; width: 100%; height: auto; }
+  .lm-plot { fill: var(--panel2); }
+  .lm-grid { stroke: var(--line); stroke-width: 1; }
+  .lm-long { fill: var(--down); fill-opacity: .8; }
+  .lm-short { fill: var(--up); fill-opacity: .8; }
+  .lm-long:hover, .lm-short:hover { fill-opacity: 1; }
+  .lm-cum { fill: none; stroke-width: 2; stroke-linejoin: round; }
+  .lm-cum-long { stroke: var(--down); stroke-dasharray: 5 3; }
+  .lm-cum-short { stroke: var(--up); stroke-dasharray: 5 3; }
+  .lm-mark { stroke: var(--text); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .lm-tx { fill: var(--muted); font-size: 12px; font-family: inherit; }
+  .lm-dim { fill: var(--dim); font-size: 11px; }
+  .lm-cumtx { fill: var(--dim); }
+  .lm-marktx { fill: var(--text); font-weight: 600; }
+  .lm-empty { font-size: 16px; }
+  .lm-narrow { display: none; }
+  .lm-narrow .lm-tx { font-size: 14px; }
+  .lm-narrow .lm-dim { font-size: 12.5px; }
+  @media (max-width: 600px) {
+    .lm-wide { display: none; }
+    .lm-narrow { display: block; }
+    .lm-chart { padding: 4px 6px 6px; }
+  }
+  .lm-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 0 14px 10px; font-size: 12.5px; color: var(--muted); }
+  .lm-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .lm-legend .k-long { background: var(--down); } .lm-legend .k-short { background: var(--up); }
+  .lm-legend .k-cum { width: 16px; height: 0; border-top: 2px dashed var(--muted); border-radius: 0; vertical-align: 3px; }
+  .lm-coins { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; }
+  .lm-coins a { padding: 3px 9px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 12.5px; text-decoration: none; }
+  .lm-coins a[aria-current] { color: var(--text); border-color: var(--line2); background: var(--panel2); }
+  .lm-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .lm-near { color: var(--warn); }
+  .lm-addr { font-family: "JetBrains Mono", monospace; font-size: 12px; }
+  .lm-note, .hw-note { margin: 0; padding: 0 14px 12px; font-size: 12.5px; color: var(--muted); }
+</style><meta name="coinzilla" content="6a793f277d2272787128f98f2ebe4632" /><script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "7183a1d97fce473781cc44d308e5b36c"}'></script><script type="application/ld+json">
+{"@context": "https://schema.org", "@graph": [
+  {"@type": "BreadcrumbList", "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://swolecharts.com/"},
+    {"@type": "ListItem", "position": 2, "name": "Hyperliquid", "item": "https://swolecharts.com/hyperliquid"},
+    {"@type": "ListItem", "position": 3, "name": "Liquidation map", "item": "https://swolecharts.com/hyperliquid/liquidation\u002Dmap"},
+    {"@type": "ListItem", "position": 4, "name": "FIL", "item": "https://swolecharts.com/hyperliquid/liquidation\u002Dmap/FIL"}
+  ]},
+  {"@type": "WebPage", "@id": "https://swolecharts.com/hyperliquid/liquidation\u002Dmap/FIL", "url": "https://swolecharts.com/hyperliquid/liquidation\u002Dmap/FIL",
+   "name": "FIL Liquidation Map \u0026 Heatmap (Hyperliquid)", "description": "FIL liquidation map \u0026 heatmap on Hyperliquid from 22 real positions, 56.4% of OI covered: where longs and shorts get liquidated, updated every minute.", "inLanguage": "en",
+   "dateModified": "2026-10-07T08:48:24.045191+00:00",
+   "isPartOf": {"@type": "WebSite", "@id": "https://swolecharts.com/#website", "name": "Swolecharts", "url": "https://swolecharts.com/"}},
+  {"@type": "FAQPage", "mainEntity": [
+    {"@type": "Question", "name": "How is this FIL liquidation map made?", "acceptedAnswer": {"@type": "Answer", "text": "From real positions, not a model. Hyperliquid is an on\u002Dchain exchange, so every account\u0027s open positions and their liquidation prices are public. This site tracks the wallets that trade on Hyperliquid, reads their positions from Hyperliquid\u0027s public API and records them. The map adds up, per price level, the value of every tracked position whose liquidation price sits there: longs below the current price, shorts above it."}},
+    {"@type": "Question", "name": "How much of the market does it cover?", "acceptedAnswer": {"@type": "Answer", "text": "Not all of it. Hyperliquid limits how often its API can be called, so the tracker checks the 300 wallets with the biggest positions every minute and the others every few hours. Coverage is the tracked long and short value divided by twice the open interest (every long has a matching short). The largest positions are the ones that move the market, and they are the best covered. Right now the FIL map covers 56.4% of FIL\u0027s open interest on Hyperliquid. Across all Hyperliquid perps the tracker currently sees 90.9% of open interest (64.3% checked in the last 15 minutes)."}},
+    {"@type": "Question", "name": "How fresh is the data?", "acceptedAnswer": {"@type": "Answer", "text": "The biggest wallets are re\u002Dchecked every minute, smaller ones less often\u003B the table shows when each position was last checked. Wallets not checked for 48 hours are left out. A position whose liquidation price the market has already passed since its last check is counted separately, not drawn. The page refreshes the positions every minute."}},
+    {"@type": "Question", "name": "Why can a cross\u002Dmargin liquidation price move?", "acceptedAnswer": {"@type": "Answer", "text": "An isolated position has its own margin, so its liquidation price only moves when the trader adds or removes margin. A cross\u002Dmargin position shares the account\u0027s whole balance: profit or loss on the account\u0027s other positions, deposits and withdrawals all move its liquidation price. The map uses the liquidation price Hyperliquid reported at the last check. Positions with no liquidation price (an account with enough collateral that it can\u0027t be liquidated) are left off the chart."}},
+    {"@type": "Question", "name": "How is this different from an estimated liquidation map?", "acceptedAnswer": {"@type": "Answer", "text": "Most liquidation maps guess: they take open interest and spread it over typical leverage levels. On Hyperliquid the positions themselves are visible, so this map shows where tracked positions will actually be liquidated, at the cost of covering only part of the market. Nothing here is financial advice."}}
+  ]}
+]}
+</script></head><body ><a class="sr-only skip-link" href="#main">Skip to main content</a><header class="top"><a class="brand" href="/"><svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7"/><path d="M6 22h4V14H6zM14 22h4V6h-4zM22 22h4V11h-4z"/></svg><div><div class="brand-name">Swolecharts</div><div class="sub">Live crypto data · 10 exchanges</div></div></a><nav class="sitenav" id="sitenav" aria-label="Site"><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Markets</button><div class="mm-p"><a href="/coins">All coins</a><a href="/open-interest">Open interest</a><a href="/long-short-ratio">Long/short ratio</a><a href="/options">Crypto options: max pain, put/call</a><a href="/exchanges">Exchanges</a><a href="/bitcoin-cycle-indicators">Bitcoin cycle indicators</a><a class="mm-all" href="/tools#h-markets">View all markets</a></div></div><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Liquidations</button><div class="mm-p"><a href="/liquidation-heatmap">Liquidation heatmap</a><a href="/liquidations">Crypto liquidations</a><a href="/hyperliquid/liquidation-map">Hyperliquid liquidation map</a><a href="/liquidation-levels">Liquidation levels</a><a href="/liquidation-max-pain">Liquidation max pain</a><a href="/liquidations/largest">Largest liquidations</a><a class="mm-all" href="/tools#h-liquidations">View all liquidations</a></div></div><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Funding</button><div class="mm-p"><a href="/funding-rates">Funding rates</a><a href="/funding-rates/heatmap">Funding heatmap</a><a href="/funding-rates/highest">Highest funding</a><a href="/funding-arbitrage">Funding arbitrage</a><a href="/funding-rates/accumulated">Accumulated funding</a><a class="mm-all" href="/tools#h-funding">View all funding</a></div></div><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Screeners</button><div class="mm-p"><a href="/">Volume Monitor</a><a href="/screener">Custom futures screener</a><a href="/open-interest-screener">OI screener</a><a href="/cvd">CVD screener</a><a href="/liquidity-heatmap">Liquidity heatmap (order book)</a><a href="/gainers-losers">Gainers &amp; losers</a><a class="mm-all" href="/tools#h-screeners">View all screeners</a></div></div><div class="mm-g on"><button type="button" class="mm-b" aria-expanded="false">Hyperliquid</button><div class="mm-p"><a href="/hyperliquid">Hyperliquid</a><a href="/hyperliquid/whales">Hyperliquid whales</a><a href="/hyperliquid/liquidation-map">Hyperliquid liquidation map</a><a href="/hyperliquid/stocks">Hyperliquid stock perps</a><a href="/hyperliquid/funding-rate">Hyperliquid funding</a><a href="/hyperliquid/vaults">Hyperliquid vaults</a><a class="mm-all" href="/tools#h-hyperliquid">View all Hyperliquid</a></div></div><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Tools</button><div class="mm-p"><a href="/calculators">Calculators</a><a href="/calculators/liquidation-price">Liquidation price calculator</a><a href="/backtest">Condition backtester</a><a href="/widgets">Widgets</a><a href="/developers">Developer API</a><a class="mm-all" href="/tools#h-tools">View all tools</a></div></div><div class="mm-g"><button type="button" class="mm-b" aria-expanded="false">Learn</button><div class="mm-p"><a href="/learn">Learn hub</a><a href="/glossary">Glossary</a><a href="/reports">Derivatives reports</a><a href="/methodology/liquidation-heatmap">Heatmap methodology</a><a href="/coinglass-alternative">CoinGlass alternative</a><a class="mm-all" href="/tools#h-learn">View all learn</a></div></div><a class="mm-x" href="/tools">All products</a></nav><div class="actions"><a class="btn acct" id="nav-login" href="/login" >Log in</a><a class="btn acct hide-sm" id="nav-signup" href="/signup">Sign up</a><script>try{if(/(?:^|;\s*)sc_in=1/.test(document.cookie)){var a=document.getElementById('nav-login');a.href='/account';a.textContent='Account';var b=document.getElementById('nav-signup');if(b)b.remove();}}catch(e){}</script><button id="btn-search" class="btn icon" type="button" title="Search (/ or Ctrl+K)" aria-label="Search coins and pages" aria-haspopup="dialog" aria-keyshortcuts="/ Control+K" data-src="/static/search.639b6d361f4a.js"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></button><button id="btn-theme" class="btn icon" type="button" title="Toggle light / dark" aria-label="Toggle light or dark theme"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg></button><a class="btn mm-open" id="mm-btn" href="/tools" aria-controls="sitenav" aria-expanded="false"><i aria-hidden="true"></i>Menu</a></div></header>
+
+<div id="main" tabindex="-1">
+
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">›</span><a href="/hyperliquid">Hyperliquid</a><span aria-hidden="true">›</span><a href="/hyperliquid/liquidation-map">Liquidation map</a><span aria-hidden="true">›</span><span aria-current="page">FIL</span></nav>
+<section class="pagehead">
+  <h1>FIL Liquidation Map &amp; Heatmap (Hyperliquid)</h1>
+  <p class="lede">Where <b>FIL</b> positions on <b>Hyperliquid</b> get liquidated, from the <b>real positions</b> of tracked wallets rather than a leverage model. Bars show the value liquidated at each price: <b>longs</b> below the current price, <b>shorts</b> above it. Lines show the running total from the price outwards. Coverage says how much of the market the tracked wallets hold.</p>
+  <p class="lede" id="summary">22 open FIL positions in 22 tracked Hyperliquid wallets: $2.31M long and $3.20M short (41.9% long). That is 56.4% of FIL&#x27;s $4.88M open interest on Hyperliquid; 91.4% of it was checked in the last 15 minutes. Within 10% of the 1.101 mark price, $0 of longs would be liquidated on the way down and $0 of shorts on the way up.</p>
+
+  <p class="meta"><span>22 positions · 22 wallets</span><span>56.4% of FIL OI covered</span><span>Tracker coverage of Hyperliquid OI: 90.9%</span><span class="asof">As of <bdi dir="ltr">08:48 UTC</bdi></span></p>
+</section>
+
+<nav class="mk-views hl-views" aria-label="Hyperliquid views">
+  <a href="/hyperliquid">Overview</a>
+  <a href="/hyperliquid/funding-rate">Funding</a>
+  <a href="/funding-arbitrage/hyperliquid">Funding arbitrage</a>
+  <a href="/hyperliquid/open-interest">Open interest</a>
+  <a href="/hyperliquid/stocks">Stock perps (HIP-3)</a>
+  <a href="/hyperliquid/whales">Whales</a>
+  <a href="/hyperliquid/leaderboard">Leaderboard</a>
+  <a href="/hyperliquid/long-short-ratio">Long/short ratio</a>
+  <a href="/hyperliquid/cohorts">Cohorts</a>
+  <a href="/hyperliquid/hlp">HLP vault</a>
+  <a href="/hyperliquid/vaults">Vaults</a>
+  <a href="/hyperliquid/spot">Spot tokens</a>
+  <a href="/hyperliquid/liquidation-map" aria-current="page">Liquidation map</a>
+  <a href="/hyperliquid/stop-loss-heatmap">Stop-loss heatmap</a>
+  <a href="/pump-scanner/hyperliquid">Pump scanner</a>
+</nav>
+
+<main class="page hl-page" id="hl-liqmap">
+  <nav class="lm-coins" aria-label="Liquidation map coin"><a href="/hyperliquid/liquidation-map/BTC">BTC</a><a href="/hyperliquid/liquidation-map/ETH">ETH</a><a href="/hyperliquid/liquidation-map/HYPE">HYPE</a><a href="/hyperliquid/liquidation-map/ZEC">ZEC</a><a href="/hyperliquid/liquidation-map/SOL">SOL</a><a href="/hyperliquid/liquidation-map/PUMP">PUMP</a><a href="/hyperliquid/liquidation-map/NEAR">NEAR</a><a href="/hyperliquid/liquidation-map/XRP">XRP</a><a href="/hyperliquid/liquidation-map/LIT">LIT</a><a href="/hyperliquid/liquidation-map/ENA">ENA</a><a href="/hyperliquid/liquidation-map/DOGE">DOGE</a><a href="/hyperliquid/liquidation-map/ZRO">ZRO</a><a href="/hyperliquid/liquidation-map/FIL" aria-current="page">FIL</a></nav>
+
+  <section class="stat-grid hl-stats" aria-label="FIL liquidation map summary">
+    <div class="stat">
+      <div class="stat-label"><span>Coverage of FIL OI</span><span class="tag">tracked</span></div>
+      <div class="stat-value">56.4%</div>
+      <div class="stat-sub"><span>$5.50M tracked · $4.88M OI</span><span>91.4% checked ≤ 15 min</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label"><span>Long liquidations</span><span class="tag">within −10%</span></div>
+      <div class="stat-value down">$0</div>
+      <div class="stat-sub"><span></span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label"><span>Short liquidations</span><span class="tag">within +10%</span></div>
+      <div class="stat-value up">$0</div>
+      <div class="stat-sub"><span></span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label"><span>Tracked positions</span><span class="tag">22 wallets</span></div>
+      <div class="stat-value">22</div>
+      <div class="stat-sub"><span>$2.31M long · $3.20M short</span><span>41.9% long</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-label"><span>Tracker coverage</span><span class="tag">all HL perps</span></div>
+      <div class="stat-value">90.9%</div>
+      <div class="stat-sub"><span>64.3% fresh</span><span>14,958 holders of 61,951 wallets</span></div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-chart">
+    <div class="panel-h">
+      <h2 id="h-chart">FIL liquidation map · ±25%</h2>
+      <nav class="seglinks" aria-label="Chart range"><a href="/hyperliquid/liquidation-map/FIL?range=10">±10%</a><a href="/hyperliquid/liquidation-map/FIL" aria-current="page">±25%</a><a href="/hyperliquid/liquidation-map/FIL?range=50">±50%</a></nav>
+    </div>
+    <div class="lm-chart"><svg class="lm-svg lm-wide" viewBox="0 0 960 380" role="img" preserveAspectRatio="xMidYMid meet" aria-label="FIL liquidation map on Hyperliquid"><rect x="88" y="24" width="784" height="296" class="lm-plot"/><text x="480.0" y="172.0" class="lm-tx lm-empty" text-anchor="middle">No tracked liquidation levels in this range yet</text></svg><svg class="lm-svg lm-narrow" viewBox="0 0 470 290" role="img" preserveAspectRatio="xMidYMid meet" aria-label="FIL liquidation map on Hyperliquid"><rect x="76" y="26" width="314" height="218" class="lm-plot"/><text x="233.0" y="135.0" class="lm-tx lm-empty" text-anchor="middle">No tracked liquidation levels in this range yet</text></svg></div>
+    <div class="lm-legend"><span><i class="k-long"></i>Longs liquidated (price falls)</span><span><i class="k-short"></i>Shorts liquidated (price rises)</span><span><i class="k-cum"></i>Cumulative from the price outwards (right axis)</span></div>
+
+    <p class="lm-note">Each bar is 0.005503 wide. Outside the range: $0 of longs and $146.80M of shorts. 5 positions ($2.31M) have no liquidation price.</p>
+
+  </section>
+
+
+  <div class="lm-two">
+    <section class="panel" aria-labelledby="h-cl">
+      <div class="panel-h"><h2 id="h-cl">Biggest long liquidation clusters</h2><span class="muted">below 1.101</span></div>
+      <div class="tablescroll"><table class="dtable">
+        <thead><tr><th scope="col">Price</th><th class="r" scope="col">Distance</th><th class="r" scope="col">Liquidated</th><th class="r" scope="col">Positions</th></tr></thead>
+        <tbody><tr class="empty-row"><td colspan="4">No tracked long liquidations in the ±25% range.</td></tr></tbody>
+      </table></div>
+    </section>
+    <section class="panel" aria-labelledby="h-cs">
+      <div class="panel-h"><h2 id="h-cs">Biggest short liquidation clusters</h2><span class="muted">above 1.101</span></div>
+      <div class="tablescroll"><table class="dtable">
+        <thead><tr><th scope="col">Price</th><th class="r" scope="col">Distance</th><th class="r" scope="col">Liquidated</th><th class="r" scope="col">Positions</th></tr></thead>
+        <tbody><tr class="empty-row"><td colspan="4">No tracked short liquidations in the ±25% range.</td></tr></tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="h-near">
+    <div class="panel-h"><h2 id="h-near">Liquidations near the price</h2><span class="muted">tracked positions, value at the liquidation price</span></div>
+    <div class="tablescroll"><table class="dtable">
+      <thead><tr><th scope="col">Price move</th><th class="r" scope="col">Longs liquidated (price falls)</th><th class="r" scope="col">Shorts liquidated (price rises)</th></tr></thead>
+      <tbody><tr><td>±2%</td><td class="r down">$0</td><td class="r up">$0</td></tr><tr><td>±5%</td><td class="r down">$0</td><td class="r up">$0</td></tr><tr><td>±10%</td><td class="r down">$0</td><td class="r up">$0</td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-top">
+    <div class="panel-h"><h2 id="h-top">Largest tracked FIL positions</h2><span class="muted">top 22 by size</span></div>
+    <div class="tablescroll tall"><table class="dtable">
+      <thead><tr>
+        <th scope="col">Wallet</th><th scope="col">Side</th>
+        <th class="r" scope="col" title="Position size at the mark price">Size</th>
+        <th class="r" scope="col">Entry</th>
+        <th class="r" scope="col">Liq. price</th>
+        <th class="r" scope="col" title="How far the price must move to liquidate">Distance</th>
+        <th class="r" scope="col">Leverage</th>
+        <th scope="col">Margin</th>
+        <th class="r" scope="col" title="Time since the wallet was last checked">Checked</th>
+      </tr></thead>
+      <tbody>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0xeadc152ac1014ace57c6b353f89adf5faffe9d55" title="0xeadc152ac1014ace57c6b353f89adf5faffe9d55">0xeadc…9d55</a></td><td class="up">Long</td><td class="r">$2.20M</td><td class="r">0.9616</td><td class="r">—</td><td class="r">—</td><td class="r">5×</td><td>cross</td><td class="r">3 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x5647249079e257329ecb6f46ed41821d3c69e7de" title="0x5647249079e257329ecb6f46ed41821d3c69e7de">0x5647…e7de</a></td><td class="down">Short</td><td class="r">$585K</td><td class="r">0.9533</td><td class="r">6.852</td><td class="r">+522.65%</td><td class="r">5×</td><td>cross</td><td class="r">2 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x07fd993f0fa3a185f7207adccd29f7a87404689d" title="0x07fd993f0fa3a185f7207adccd29f7a87404689d">0x07fd…689d</a></td><td class="down">Short</td><td class="r">$572K</td><td class="r">1.025</td><td class="r">15.195</td><td class="r">+1280.76%</td><td class="r">5×</td><td>cross</td><td class="r">53 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x0d438ba1817d0958ae3bf70b23faaf1d0117c930" title="0x0d438ba1817d0958ae3bf70b23faaf1d0117c930">0x0d43…c930</a></td><td class="down">Short</td><td class="r">$425K</td><td class="r">0.9447</td><td class="r">4.530</td><td class="r">+311.62%</td><td class="r">5×</td><td>cross</td><td class="r">7 h</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x023a3d058020fb76cca98f01b3c48c8938a22355" title="0x023a3d058020fb76cca98f01b3c48c8938a22355">0x023a…2355</a></td><td class="down">Short</td><td class="r">$352K</td><td class="r">1.073</td><td class="r">25.119</td><td class="r">+2182.47%</td><td class="r">5×</td><td>cross</td><td class="r">2 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x2eddf3aa5c4df34f9263a98b564bec3b4ec78179" title="0x2eddf3aa5c4df34f9263a98b564bec3b4ec78179">0x2edd…8179</a></td><td class="down">Short</td><td class="r">$343K</td><td class="r">1.013</td><td class="r">14.280</td><td class="r">+1197.57%</td><td class="r">5×</td><td>cross</td><td class="r">82 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0xa20fb0c9e04063eec5be286e9269028d966646fa" title="0xa20fb0c9e04063eec5be286e9269028d966646fa">0xa20f…46fa</a></td><td class="down">Short</td><td class="r">$162K</td><td class="r">1.071</td><td class="r">11.988</td><td class="r">+989.28%</td><td class="r">5×</td><td>cross</td><td class="r">3 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05" title="0x8af700ba841f30e0a3fcb0ee4c4a9d223e1efa05">0x8af7…fa05</a></td><td class="down">Short</td><td class="r">$157K</td><td class="r">3.189</td><td class="r">127.76</td><td class="r">+11509.56%</td><td class="r">5×</td><td>cross</td><td class="r">3 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x27c9fa86c91b84ddfa15de58c482ff662498d65d" title="0x27c9fa86c91b84ddfa15de58c482ff662498d65d">0x27c9…d65d</a></td><td class="down">Short</td><td class="r">$137K</td><td class="r">1.102</td><td class="r">7.023</td><td class="r">+538.15%</td><td class="r">5×</td><td>cross</td><td class="r">2 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x47f5a6397b79deaaca5c456503e7c1a49357b942" title="0x47f5a6397b79deaaca5c456503e7c1a49357b942">0x47f5…b942</a></td><td class="down">Short</td><td class="r">$135K</td><td class="r">0.9392</td><td class="r">19.645</td><td class="r">+1685.06%</td><td class="r">5×</td><td>cross</td><td class="r">54 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x7717a7a245d9f950e586822b8c9b46863ed7bd7e" title="0x7717a7a245d9f950e586822b8c9b46863ed7bd7e">0x7717…bd7e</a></td><td class="down">Short</td><td class="r">$132K</td><td class="r">1.124</td><td class="r">55.691</td><td class="r">+4960.53%</td><td class="r">5×</td><td>cross</td><td class="r">3 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x123dbca6a27005a3c4ce10cb66ee8ece8fc13bff" title="0x123dbca6a27005a3c4ce10cb66ee8ece8fc13bff">0x123d…3bff</a></td><td class="up">Long</td><td class="r">$75K</td><td class="r">0.8951</td><td class="r">—</td><td class="r">—</td><td class="r">5×</td><td>cross</td><td class="r">2 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x71d0e11ebb6150cebe20cf62f798be1a50108c26" title="0x71d0e11ebb6150cebe20cf62f798be1a50108c26">0x71d0…8c26</a></td><td class="down">Short</td><td class="r">$59K</td><td class="r">1.101</td><td class="r">160.18</td><td class="r">+14455.26%</td><td class="r">5×</td><td>cross</td><td class="r">2 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x4b1c09fa8322548360a76a3747e32a60a864bc38" title="0x4b1c09fa8322548360a76a3747e32a60a864bc38">0x4b1c…bc38</a></td><td class="down">Short</td><td class="r">$43K</td><td class="r">0.9650</td><td class="r">38.420</td><td class="r">+3391.15%</td><td class="r">5×</td><td>cross</td><td class="r">44 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0xdf954bbe619273a56e0cfa90dad8382195dc7d72" title="0xdf954bbe619273a56e0cfa90dad8382195dc7d72">0xdf95…7d72</a></td><td class="down">Short</td><td class="r">$31K</td><td class="r">1.033</td><td class="r">997.10</td><td class="r">+90503.98%</td><td class="r">5×</td><td>cross</td><td class="r">3 min</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0xf9109ada2f73c62e9889b45453065f0d99260a2d" title="0xf9109ada2f73c62e9889b45453065f0d99260a2d">0xf910…0a2d</a></td><td class="down">Short</td><td class="r">$25K</td><td class="r">1.099</td><td class="r">235.94</td><td class="r">+21339.67%</td><td class="r">3×</td><td>cross</td><td class="r">7 h</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x39bac00809cae627f52e4a82f95f4f67d5b269bd" title="0x39bac00809cae627f52e4a82f95f4f67d5b269bd">0x39ba…69bd</a></td><td class="up">Long</td><td class="r">$23K</td><td class="r">1.110</td><td class="r">—</td><td class="r">—</td><td class="r">5×</td><td>cross</td><td class="r">7 h</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x45d26f28196d226497130c4bac709d808fed4029" title="0x45d26f28196d226497130c4bac709d808fed4029">0x45d2…4029</a></td><td class="down">Short</td><td class="r">$22K</td><td class="r">7.908</td><td class="r">1,709.8</td><td class="r">+155261.46%</td><td class="r">5×</td><td>cross</td><td class="r">47 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x47472cd62c99b8b5ce7e84e733515133e9aec0bd" title="0x47472cd62c99b8b5ce7e84e733515133e9aec0bd">0x4747…c0bd</a></td><td class="down">Short</td><td class="r">$11K</td><td class="r">1.112</td><td class="r">947.77</td><td class="r">+86021.34%</td><td class="r">5×</td><td>cross</td><td class="r">67 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x258a4b8a8447c61aabf1bef9bb14ee4d69efff03" title="0x258a4b8a8447c61aabf1bef9bb14ee4d69efff03">0x258a…ff03</a></td><td class="down">Short</td><td class="r">$6,347</td><td class="r">1.094</td><td class="r">715.93</td><td class="r">+64955.13%</td><td class="r">5×</td><td>cross</td><td class="r">37 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x64b766b07362405a9cc19c2226490f3015929da9" title="0x64b766b07362405a9cc19c2226490f3015929da9">0x64b7…9da9</a></td><td class="up">Long</td><td class="r">$5,519</td><td class="r">1.088</td><td class="r">—</td><td class="r">—</td><td class="r">5×</td><td>cross</td><td class="r">87 s</td></tr>
+<tr><td><a class="lm-addr" href="/hyperliquid/wallet/0x4e60e3a4a32d63d245aa4e4ce304b4254b088f95" title="0x4e60e3a4a32d63d245aa4e4ce304b4254b088f95">0x4e60…8f95</a></td><td class="up">Long</td><td class="r">$1,013</td><td class="r">1.099</td><td class="r">—</td><td class="r">—</td><td class="r">5×</td><td>cross</td><td class="r">5 h</td></tr>
+</tbody>
+    </table></div>
+  </section>
+
+
+
+  <section class="panel" aria-labelledby="h-cov">
+    <div class="panel-h"><h2 id="h-cov">Tracker coverage and freshness</h2><span class="muted">all Hyperliquid perps · 90.9% of OI</span></div>
+    <div class="tablescroll"><table class="dtable">
+      <thead><tr><th scope="col">Tier</th><th class="r" scope="col">Wallets</th><th class="r" scope="col">With positions</th><th class="r" scope="col">Tracked value</th><th class="r" scope="col">Target cycle</th><th class="r" scope="col">Actual cycle</th></tr></thead>
+      <tbody><tr><td>A</td><td class="r">300</td><td class="r">300</td><td class="r">$8.46B</td><td class="r">60 s</td><td class="r">3 min</td></tr><tr><td>B</td><td class="r">3,000</td><td class="r">3,000</td><td class="r">$2.94B</td><td class="r">15 min</td><td class="r">—</td></tr><tr><td>C</td><td class="r">58,651</td><td class="r">11,658</td><td class="r">$544.67M</td><td class="r">4 h</td><td class="r">—</td></tr></tbody>
+    </table></div>
+    <p class="hw-note">Tier A is the 300 wallets with the largest positions; B the next ones; C everyone else. Hyperliquid's API rate limit decides how often the smaller tiers can be checked, so their actual cycle can be longer than the target. Coverage is tracked value ÷ (2 × Hyperliquid open interest); 64.3% was checked in the last 15 minutes. Wallets not checked for 48 hours are left out of this page.</p>
+  </section>
+
+
+
+  <div class="mk-notes">
+    <p class="note"><b>How to read it.</b> A tall bar is a price where a lot of tracked FIL positions would be liquidated. Liquidations are forced market orders, so a big cluster close to the price can speed up a move once it is reached. The map only shows wallets this site tracks (56.4% of FIL open interest), so the real totals are larger. Positions from wallets not checked for 48 hours are left out. Not financial advice.</p>
+  </div>
+
+  <nav class="panel related" aria-labelledby="h-related">
+  <div class="panel-h"><h2 id="h-related">Related pages</h2></div>
+  <div class="panel-b related-links"><a href="/hyperliquid/liquidation-map">Hyperliquid liquidation map: all coins</a><a href="/hyperliquid">Hyperliquid vs Binance &amp; Bybit</a><a href="/hyperliquid/open-interest">Hyperliquid open interest</a><a href="/hyperliquid/funding-rate">Hyperliquid funding rates</a><a href="/liquidations">Liquidations, all exchanges</a><a href="/coin/FIL">FIL on all exchanges</a><a href="/liquidation-map/FIL">FIL liquidation map, estimated for all exchanges</a><a href="/hyperliquid/liquidation-map/BTC">BTC liquidation map</a><a href="/hyperliquid/liquidation-map/ETH">ETH liquidation map</a><a href="/hyperliquid/liquidation-map/HYPE">HYPE liquidation map</a><a href="/hyperliquid/liquidation-map/ZEC">ZEC liquidation map</a><a href="/hyperliquid/liquidation-map/SOL">SOL liquidation map</a><a href="/hyperliquid/liquidation-map/PUMP">PUMP liquidation map</a><a href="/hyperliquid/liquidation-map/NEAR">NEAR liquidation map</a></div>
+</nav>
+
+
+</main>
+
+<section class="faq" id="faq">
+  <h2>FIL Hyperliquid liquidation map FAQ</h2>
+  <div class="faq-grid">
+    <details open>
+      <summary>How is this FIL liquidation map made?</summary>
+      <p>From real positions, not a model. Hyperliquid is an on-chain exchange, so every account's open positions and their liquidation prices are public. This site tracks the wallets that trade on Hyperliquid, reads their positions from Hyperliquid's public API and records them. The map adds up, per price level, the value of every tracked position whose liquidation price sits there: longs below the current price, shorts above it.</p>
+    </details>
+    <details open>
+      <summary>How much of the market does it cover?</summary>
+      <p>Not all of it. Hyperliquid limits how often its API can be called, so the tracker checks the 300 wallets with the biggest positions every minute and the others every few hours. Coverage is the tracked long and short value divided by twice the open interest (every long has a matching short). The largest positions are the ones that move the market, and they are the best covered. Right now the FIL map covers 56.4% of FIL&#x27;s open interest on Hyperliquid. Across all Hyperliquid perps the tracker currently sees 90.9% of open interest (64.3% checked in the last 15 minutes).</p>
+    </details>
+    <details open>
+      <summary>How fresh is the data?</summary>
+      <p>The biggest wallets are re-checked every minute, smaller ones less often; the table shows when each position was last checked. Wallets not checked for 48 hours are left out. A position whose liquidation price the market has already passed since its last check is counted separately, not drawn. The page refreshes the positions every minute.</p>
+    </details>
+    <details open>
+      <summary>Why can a cross-margin liquidation price move?</summary>
+      <p>An isolated position has its own margin, so its liquidation price only moves when the trader adds or removes margin. A cross-margin position shares the account's whole balance: profit or loss on the account's other positions, deposits and withdrawals all move its liquidation price. The map uses the liquidation price Hyperliquid reported at the last check. Positions with no liquidation price (an account with enough collateral that it can't be liquidated) are left off the chart.</p>
+    </details>
+    <details open>
+      <summary>How is this different from an estimated liquidation map?</summary>
+      <p>Most liquidation maps guess: they take open interest and spread it over typical leverage levels. On Hyperliquid the positions themselves are visible, so this map shows where tracked positions will actually be liquidated, at the cost of covering only part of the market. Nothing here is financial advice.</p>
+    </details>
+  </div>
+</section>
+
+
+
+</div>
+
+<footer class="foot"><nav class="fcols" aria-label="Site index"><div><b class="foothead">Markets</b><a href="/coins">All coins</a><a href="/open-interest">Open interest</a></div><div><b class="foothead">Liquidations</b><a href="/liquidation-heatmap">Liquidation heatmap</a><a href="/liquidations">Crypto liquidations</a></div><div><b class="foothead">Funding</b><a href="/funding-rates">Funding rates</a><a href="/funding-rates/heatmap">Funding heatmap</a></div><div><b class="foothead">Screeners</b><a href="/">Volume Monitor</a><a href="/screener">Custom futures screener</a></div><div><b class="foothead">Hyperliquid</b><a href="/hyperliquid">Hyperliquid</a><a href="/hyperliquid/whales">Hyperliquid whales</a></div><div><b class="foothead">Tools</b><a href="/calculators">Calculators</a><a href="/calculators/liquidation-price">Liquidation price calculator</a></div><div><b class="foothead">Learn</b><a href="/learn">Learn hub</a><a href="/glossary">Glossary</a></div><div><b class="foothead">About</b><a href="/about">About Swolecharts</a><a href="/official-channels">Official channels</a><a href="/contact">Contact</a><a href="/privacy">Privacy policy</a><a href="/terms">Terms of use</a><a href="/disclaimer">Disclaimer</a></div></nav><nav class="flang" aria-label="Languages"><a href="/ar/liquidation-heatmap" hreflang="ar" lang="ar" dir="rtl">العربية</a><a href="/de/liquidation-heatmap" hreflang="de" lang="de">Deutsch</a><a href="/es/liquidation-heatmap" hreflang="es" lang="es">Español</a><a href="/fr/liquidation-heatmap" hreflang="fr" lang="fr">Français</a><a href="/id/liquidation-heatmap" hreflang="id" lang="id">Bahasa Indonesia</a><a href="/ja/liquidation-heatmap" hreflang="ja" lang="ja">日本語</a><a href="/ko/liquidation-heatmap" hreflang="ko" lang="ko">한국어</a><a href="/pt/liquidation-heatmap" hreflang="pt" lang="pt">Português</a><a href="/ru/liquidation-heatmap" hreflang="ru" lang="ru">Русский</a><a href="/tr/liquidation-heatmap" hreflang="tr" lang="tr">Türkçe</a><a href="/vi/liquidation-heatmap" hreflang="vi" lang="vi">Tiếng Việt</a></nav><div class="fstrip"><div>Created by <a href="https://twitter.com/CryptoZyzz" target="_blank" rel="noopener">@CryptoZyzz</a> · <a href="https://twitter.com/intent/tweet?text=Free%20live%20crypto%20volume%20spikes%2C%20liquidations%20and%20funding%20(Binance%2C%20Bybit%2C%20Hyperliquid)&url=https%3A%2F%2Fswolecharts.com%2F" target="_blank" rel="noopener">Share on X</a> · Feedback &amp; feature ideas welcome on X</div><div class="donate">Made profits? Tips keep it free:
+    <button type="button" id="eth" class="addr" data-addr="0x2873bd5FCDaf6B008Ac0B8627ffF2bE842497880" title="Click to copy">ETH 0x2873bd5FCDaf6B008Ac0B8627ffF2bE842497880</button><span id="copied" class="muted small"></span></div><div class="muted small">Not financial advice. Data from public exchange feeds; may be delayed or incomplete. Trade links go to the exchange.</div><div class="muted disclose">Some links are referral links: if you sign up through them we may earn a commission, at no cost to you.</div></div></footer>
+
+<div id="toast" class="toast" hidden></div>
+<script src="/static/prefs.cd444c4ca05f.js" defer></script>
+<script src="/static/site.07c60f6d83ef.js" defer></script>
+
+</body>
+</html>

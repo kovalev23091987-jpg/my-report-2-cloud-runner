@@ -1,5 +1,5 @@
 import {permittedGTradePinnedRpcBatch} from './gtrade-pinned-position-snapshot.mjs';
-const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4,OXARCHIVE:6});
+const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,SWOLE_DISCOVERY:6,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4,OXARCHIVE:6});
 const providerOf=(url,init)=>{
  const u=new URL(String(url)),method=String(init?.method||'GET').toUpperCase();
  if(u.protocol!=='https:'||u.username||u.password)throw Error('READ_ONLY_SOURCE_URL_REQUIRED');
@@ -8,6 +8,7 @@ const providerOf=(url,init)=>{
   let b;try{b=JSON.parse(init.body);}catch{throw Error('READ_ONLY_BODY_REQUIRED');}
   if(['metaAndAssetCtxs','clearinghouseState','recentTrades'].includes(b?.type))return 'HYPERLIQUID';
  }
+ if(u.hostname==='swolecharts.com'&&method==='GET'&&/^\/hyperliquid\/liquidation-map\/[A-Z0-9]{1,20}$/.test(u.pathname)&&!u.search)return 'SWOLE_DISCOVERY';
  if(u.hostname==='node.liqflow.app'&&/^\/api\/coin\/[^/]+\/positions$/.test(u.pathname)&&method==='GET')return 'LIQFLOW';
  if(method==='GET'&&((u.hostname==='backend-arbitrum.gains.trade'&&['/open-trades','/trading-variables'].includes(u.pathname))||(u.hostname==='backend-pricing.eu.gains.trade'&&u.pathname==='/charts')))return 'GTRADE';
  if(u.hostname==='mainnet.zklighter.elliot.ai'&&method==='GET'&&['/api/v1/recentTrades','/api/v1/account'].includes(u.pathname))return 'LIGHTER';
@@ -43,7 +44,7 @@ export function createSharedSourceBudget({provider_admit,fetch_impl=globalThis.f
     reserved-=n;for(const [p,v]of parts){const k=p+':'+minute;rates.set(k,Math.max(0,(rates.get(k)||0)-v));}
    }
    const upstreamReason=String(result?.reason||'UNKNOWN').trim().slice(0,160)||'UNKNOWN';
-   return no(`UPSTREAM_QUOTA_NOT_GRANTED:${upstreamReason}`);
+   return {...no(`UPSTREAM_QUOTA_NOT_GRANTED:${upstreamReason}`),...(result?.allowed===false&&result?.new_reservation===false&&result?.reservation_not_created===true?{reservation_not_created:true}:{})};
   }
   if(!deadlineOk()||clock()>=request.deadline_ts)return no('SOURCE_PHASE_EXPIRED_AFTER_QUOTA_ACK');
   for(const [p,v]of parts)granted.set(p,(granted.get(p)||0)+v);

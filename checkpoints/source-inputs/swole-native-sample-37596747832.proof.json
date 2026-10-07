@@ -1,0 +1,256 @@
+{
+  "schema": "SWOLE_NATIVE_DISCOVERY_RESEARCH_V1",
+  "head": "18dda44e4e33ac62d40dd4ed096af057223409af",
+  "run_id": "SWOLE_DISCOVERY:37596747832:1791363190641",
+  "started_ts": 1791363190641,
+  "source_cap": 1,
+  "sourceHTTP": 1,
+  "MAIN": 0,
+  "Telegram": 0,
+  "enabled_for_decisions": false,
+  "reason": "Initial largest account has no native liquidation price; reuse exact retained discovery page, exclude null liquidation hints and verify one balanced nearest account with one new native read",
+  "rows": [
+    {
+      "provider": "HYPERLIQUID",
+      "receipt": {
+        "url": "https://api.hyperliquid.xyz/info",
+        "method": "POST",
+        "started_ts": 1791363192035,
+        "request_body": {
+          "type": "clearinghouseState",
+          "user": "0x0d438ba1817d0958ae3bf70b23faaf1d0117c930"
+        },
+        "transport": "DIRECT_READ_ONLY_HTTP",
+        "authentication": "NONE",
+        "http_status": 200,
+        "received_ts": 1791363192208,
+        "retry_after": null,
+        "bytes": 17033,
+        "sha256": "38eb2734f1aa6b404fd70161ff6c1b91eb7f9ffdf4f7e1cb7cd5f4b8b44d9a7f"
+      },
+      "normalization_status": "USABLE_SCOPED_CONTEXT",
+      "usable_for_context": true,
+      "numeric_level_count": 1,
+      "source_ts": 1791363191891,
+      "normalized": {
+        "version": "report2-free-liquidation-evidence-v1-research-20260927",
+        "provider": "Hyperliquid official",
+        "native_symbol": "FIL",
+        "run_id": "SWOLE_DISCOVERY:37596747832:1791363190641",
+        "snapshot_id": "RESEARCH:FIL:1791363192208",
+        "analysis_as_of_ms": 1791363192208,
+        "received_at_ms": 1791363192208,
+        "upstream_groups": [
+          "HYPERLIQUID_MAINNET_PERPS"
+        ],
+        "evidence_class": "NATIVE_ACCOUNT_LIQUIDATION_PRICES",
+        "execution_venue": "HTX",
+        "native_levels_are_htx_levels": false,
+        "execution_alias_verified": false,
+        "usable_for_context": true,
+        "execution_target_eligible": false,
+        "automatic_execution": false,
+        "status": "USABLE_SCOPED_CONTEXT",
+        "zones": [
+          {
+            "native_price": 4.0026732893,
+            "liquidated_side": "SHORT",
+            "notional": 425010.03776,
+            "notional_unit": "USDC",
+            "notional_usd": null,
+            "position_count": 1,
+            "native_reference_price": 1.0976,
+            "distance_pct": 264.6750445790816,
+            "reference_basis": "NATIVE_POSITION_VALUE_DIVIDED_BY_ABSOLUTE_SIZE",
+            "account": "0x0d438ba1817d0958ae3bf70b23faaf1d0117c930",
+            "margin_mode": "cross",
+            "conditional_on_other_positions": true,
+            "source_ts": 1791363191891,
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE"
+          }
+        ],
+        "reasons": [],
+        "venue": "Hyperliquid",
+        "quote": "USDC",
+        "access": "KEYLESS_REST_TESTED",
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "source_ts": 1791363191891,
+        "source_age_ms": 317,
+        "reference_price": null,
+        "reference_basis": "PER_POSITION_NATIVE_VALUE_DIVIDED_BY_SIZE",
+        "account_count": 1,
+        "omitted_positions": [],
+        "whole_book_coverage_pct": null,
+        "selection_bias": "SWOLE_POSITIVE_LIQUIDATION_HINT_NEAR_AND_LARGE_SAMPLE",
+        "fingerprint": "c4c4fdc496e0fcf45a9d525f4a0d7409a4fb19cdca5f9b23f756e921f43b25db"
+      }
+    }
+  ],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 26,
+      "reserved_rows_read": 529600,
+      "reserved_rows_written": 11024,
+      "measured_rows_read": 323218,
+      "measured_rows_written": 5418,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1250,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 530850,
+      "rows_written": 11124
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "SWOLE_DISCOVERY:37596747832:1791363190641",
+    "reserved": [
+      {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:HYPERLIQUID",
+        "provider": "HYPERLIQUID",
+        "units": 1
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false
+  },
+  "discovery": {
+    "coin": "FIL",
+    "account_count": 17,
+    "selected": [
+      "0x0d438ba1817d0958ae3bf70b23faaf1d0117c930"
+    ],
+    "original_page_receipt": {
+      "url": "https://swolecharts.com/hyperliquid/liquidation-map/FIL",
+      "method": "GET",
+      "started_ts": 1791362925628,
+      "received_ts": 1791362926313,
+      "http_status": 200,
+      "bytes": 41533,
+      "sha256": "ca86d268863220bb43001098acb90d36d2758827243cf6114c58d567990c53e3"
+    },
+    "only_discovery_not_levels": true,
+    "selection_policy": "NEAR_AND_LARGE_BALANCED_V1",
+    "prior_null_native_level_excluded": true
+  },
+  "native_account_coins": [
+    "BTC",
+    "ETH",
+    "ATOM",
+    "SOL",
+    "AVAX",
+    "BNB",
+    "OP",
+    "LTC",
+    "ARB",
+    "DOGE",
+    "SUI",
+    "LINK",
+    "XRP",
+    "BCH",
+    "AAVE",
+    "COMP",
+    "WLD",
+    "TRX",
+    "UNI",
+    "ZRO",
+    "DOT",
+    "TRB",
+    "TIA",
+    "ADA",
+    "NEAR",
+    "ORDI",
+    "NEO",
+    "FIL",
+    "SUSHI",
+    "JUP",
+    "WIF",
+    "ETC",
+    "ONDO",
+    "ENA",
+    "POL",
+    "XLM",
+    "ALGO",
+    "HYPE",
+    "TRUMP",
+    "PAXG",
+    "ASTER",
+    "ZEC",
+    "XMR",
+    "PONS"
+  ],
+  "status": "ACTUAL_BOUNDED_BATCH_RESPONSES_RETAINED_FOR_VALIDATION",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "SWOLE_DISCOVERY:37596747832:1791363190641",
+    "source_run_id": "37596747832",
+    "measured_rows_read": 33,
+    "measured_rows_written_accounted": 9,
+    "measured_requests_accounted": 10,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791363192372,
+  "d1_usage": {
+    "requests": 10,
+    "rows_read": 34,
+    "rows_written": 9,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 27,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_source_allowance_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "a9803f24fc4e2012a4b36a48b018d82f8ad51d04900858647fd02c3a04eaa9df"
+}
