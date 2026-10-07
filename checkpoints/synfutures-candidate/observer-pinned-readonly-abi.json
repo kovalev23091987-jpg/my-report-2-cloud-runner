@@ -1,0 +1,439 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "instrument",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "expiry",
+        "type": "uint32"
+      },
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      }
+    ],
+    "name": "getAcc",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint48[]",
+            "name": "oids",
+            "type": "uint48[]"
+          },
+          {
+            "internalType": "uint48[]",
+            "name": "rids",
+            "type": "uint48[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "int128",
+                "name": "balance",
+                "type": "int128"
+              },
+              {
+                "internalType": "int128",
+                "name": "size",
+                "type": "int128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "entryNotional",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "entrySocialLossIndex",
+                "type": "uint128"
+              },
+              {
+                "internalType": "int128",
+                "name": "entryFundingIndex",
+                "type": "int128"
+              }
+            ],
+            "internalType": "struct Position",
+            "name": "position",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "balance",
+                "type": "uint128"
+              },
+              {
+                "internalType": "int128",
+                "name": "size",
+                "type": "int128"
+              }
+            ],
+            "internalType": "struct Order[]",
+            "name": "orders",
+            "type": "tuple[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "liquidity",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "entryFeeIndex",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint96",
+                "name": "balance",
+                "type": "uint96"
+              },
+              {
+                "internalType": "uint160",
+                "name": "sqrtEntryPX96",
+                "type": "uint160"
+              }
+            ],
+            "internalType": "struct Range[]",
+            "name": "ranges",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "int256[]",
+            "name": "ordersTaken",
+            "type": "int256[]"
+          }
+        ],
+        "internalType": "struct Portfolio",
+        "name": "portfolio",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint32",
+            "name": "timestamp",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "height",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct BlockInfo",
+        "name": "blockInfo",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "instrument",
+            "type": "address"
+          },
+          {
+            "internalType": "uint32[]",
+            "name": "expiries",
+            "type": "uint32[]"
+          }
+        ],
+        "internalType": "struct FetchInstrumentParam[]",
+        "name": "params",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "getInstrumentBatch",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "instrumentAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "market",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "enum FeederType",
+                "name": "ftype",
+                "type": "uint8"
+              },
+              {
+                "internalType": "bool",
+                "name": "isToken0Quote",
+                "type": "bool"
+              },
+              {
+                "internalType": "address",
+                "name": "pair",
+                "type": "address"
+              },
+              {
+                "internalType": "uint64",
+                "name": "scaler0",
+                "type": "uint64"
+              },
+              {
+                "internalType": "uint64",
+                "name": "scaler1",
+                "type": "uint64"
+              }
+            ],
+            "internalType": "struct DexV2Feeder",
+            "name": "dexV2Feeder",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "enum FeederType",
+                "name": "ftype",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint64",
+                "name": "scaler0",
+                "type": "uint64"
+              },
+              {
+                "internalType": "address",
+                "name": "aggregator0",
+                "type": "address"
+              },
+              {
+                "internalType": "uint24",
+                "name": "heartBeat0",
+                "type": "uint24"
+              },
+              {
+                "internalType": "uint64",
+                "name": "scaler1",
+                "type": "uint64"
+              },
+              {
+                "internalType": "address",
+                "name": "aggregator1",
+                "type": "address"
+              },
+              {
+                "internalType": "uint24",
+                "name": "heartBeat1",
+                "type": "uint24"
+              }
+            ],
+            "internalType": "struct PriceFeeder",
+            "name": "priceFeeder",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint16",
+            "name": "initialMarginRatio",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint16",
+            "name": "maintenanceMarginRatio",
+            "type": "uint16"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "minMarginAmount",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint16",
+                "name": "tradingFeeRatio",
+                "type": "uint16"
+              },
+              {
+                "internalType": "uint16",
+                "name": "protocolFeeRatio",
+                "type": "uint16"
+              },
+              {
+                "internalType": "enum QuoteType",
+                "name": "qtype",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint128",
+                "name": "tip",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct QuoteParam",
+            "name": "param",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "spotPrice",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum Condition",
+            "name": "condition",
+            "type": "uint8"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint32",
+                "name": "expiry",
+                "type": "uint32"
+              },
+              {
+                "internalType": "uint32",
+                "name": "timestamp",
+                "type": "uint32"
+              },
+              {
+                "internalType": "enum Status",
+                "name": "status",
+                "type": "uint8"
+              },
+              {
+                "internalType": "int24",
+                "name": "tick",
+                "type": "int24"
+              },
+              {
+                "internalType": "uint160",
+                "name": "sqrtPX96",
+                "type": "uint160"
+              },
+              {
+                "internalType": "uint128",
+                "name": "liquidity",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "totalLiquidity",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "totalShort",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "openInterests",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "totalLong",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "involvedFund",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "feeIndex",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "protocolFee",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "longSocialLossIndex",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "shortSocialLossIndex",
+                "type": "uint128"
+              },
+              {
+                "internalType": "int128",
+                "name": "longFundingIndex",
+                "type": "int128"
+              },
+              {
+                "internalType": "int128",
+                "name": "shortFundingIndex",
+                "type": "int128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "insuranceFund",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "settlementPrice",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct Amm[]",
+            "name": "amms",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "markPrices",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct AssembledInstrumentData[]",
+        "name": "",
+        "type": "tuple[]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint32",
+            "name": "timestamp",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "height",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct BlockInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
