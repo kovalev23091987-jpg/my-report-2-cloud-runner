@@ -43,7 +43,7 @@ export function acquisitionHasFreshLevels(raw,{contract,run_id,observed_ts}={}){
 // This factory is the one called by generated runner code. OFF makes zero SDK,
 // D1 or HTTP calls. Both providers pass through the SAME request budget and
 // network concurrency limiter. No separate scheduler or trading path is added.
-export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null,swole_discovery_enabled=false}={}){
+export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null,swole_discovery_enabled=false,gtrade_reserve_rpc_enabled=false}={}){
  if(mode!=='SHADOW_ONLY')return null;
  if(!Number.isSafeInteger(candidate_slots)||candidate_slots<1||candidate_slots>2)throw Error('CANDIDATE_SLOTS_INVALID');
  const budget=createSharedSourceBudget({provider_admit,fetch_impl,clock,max_requests:max_http_per_run,max_parallel:2,max_total_ms});
@@ -54,7 +54,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
    const loaded=sdk_loader();
    if(loaded?.version!==PINNED_GTRADE_SDK_VERSION)sdkStatus='PINNED_SDK_VERSION_MISMATCH';
    else if(typeof loaded.sdk?.getLiquidationPrice!=='function'||typeof loaded.sdk?.buildLiquidationPriceContext!=='function')sdkStatus='SDK_INTERFACE_NOT_CLOSED';
-   else{secondary=createGTradeRuntimeCollector({sdk:loaded.sdk,fetch_impl:budget.fetch,clock,max_wall_ms:20000,on_catalog:on_gtrade_catalog});sdkStatus='PINNED_SDK_LOADED';}
+   else{secondary=createGTradeRuntimeCollector({sdk:loaded.sdk,fetch_impl:budget.fetch,clock,max_wall_ms:20000,on_catalog:on_gtrade_catalog,reserve_rpc_enabled:gtrade_reserve_rpc_enabled});sdkStatus='PINNED_SDK_LOADED';}
   }catch{sdkStatus='PINNED_SDK_NOT_AVAILABLE';}
  }
  const combined=createMultiVenueLiquidationExtension({hyperliquid_extension:primary,gtrade_collector:secondary,admit:budget.admit,clock});

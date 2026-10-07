@@ -34,7 +34,7 @@ export function createWeeklyNativeCoverageSession({run_id,source_admit,read_json
    const account={address:selected[0].address,state:state.payload,receipt:state.receipt};sample=[account];
    if(freshAccount(account,clock())&&accounts.size<120)accounts.set(account.address.toLowerCase(),structuredClone(account));
   }
-  const observed=clock(),receipt=normalize_native({accounts:sample.map(a=>({address:a.address,state:a.state})),selection_bias:cached.length?'BOUNDED_ORIGINAL_SAME_RUN_NATIVE_ACCOUNTS_WITH_VERIFIED_LEVELS':'ONE_ACCOUNT_WEEKLY_CAPABILITY_SAMPLE'},
+  const observed=clock(),receipt=normalize_native({accounts:sample.map(a=>({address:a.address,state:a.state,received_at_ms:a.receipt.received_ts})),selection_bias:cached.length?'BOUNDED_ORIGINAL_SAME_RUN_NATIVE_ACCOUNTS_WITH_VERIFIED_LEVELS':'ONE_ACCOUNT_WEEKLY_CAPABILITY_SAMPLE'},
    {symbol,route_symbol:symbol,run_id,snapshot_id:`COVERAGE:${contract}:${observed}`,as_of_ms:observed,received_at_ms:Math.max(...sample.map(a=>a.receipt.received_ts)),max_age_ms:300000});
   return{status:receipt.usable_for_context?'NATIVE_SAMPLE_NORMALIZED':'NO_REAL_NUMERIC_LEVELS',reason:receipt.usable_for_context?null:receipt.status,receipt,network_calls:transport.length,reused_accounts:cached.length,original_transport_sha256:sample.map(a=>a.receipt.sha256),transport};
  }

@@ -1,6 +1,6 @@
-import {permittedGTradePinnedRpcBatch} from './gtrade-pinned-position-snapshot.mjs';
+import {permittedGTradePinnedRpcBatch,permittedGTradeRpcUrl} from './gtrade-pinned-position-snapshot.mjs';
 import {createHash} from 'node:crypto';
-const ALLOWED=new Set(['arb1.arbitrum.io','trade.hyperperps.app','api.hyperliquid.xyz','api.0xarchive.io','bykaranteli.com','backend-arbitrum.gains.trade','backend-pricing.eu.gains.trade','xoomar.com','node.liqflow.app','mainnet.zklighter.elliot.ai','arbitrum.gmxapi.io','gmx.squids.live']);
+const ALLOWED=new Set(['arbitrum-one-rpc.publicnode.com','arb1.arbitrum.io','trade.hyperperps.app','api.hyperliquid.xyz','api.0xarchive.io','bykaranteli.com','backend-arbitrum.gains.trade','backend-pricing.eu.gains.trade','xoomar.com','node.liqflow.app','mainnet.zklighter.elliot.ai','arbitrum.gmxapi.io','gmx.squids.live']);
 export function providerErrorDetails(payload,{headers={},request_id=null}={}){
  const token=v=>typeof v==='number'?String(v):typeof v==='string'&&/^[A-Za-z0-9_.:-]{1,100}$/.test(v)?v:null;
  let message=payload?.error?.message??payload?.message??(typeof payload?.error==='string'?payload.error:null);
@@ -10,11 +10,12 @@ export function providerErrorDetails(payload,{headers={},request_id=null}={}){
 export async function readJson(url,{method='GET',body,headers={},fetch_impl=globalThis.fetch,timeout_ms=15000,max_bytes=8000000,clock=Date.now}={}){
  const u=new URL(url);
  if(u.protocol!=='https:'||u.username||u.password||!ALLOWED.has(u.hostname))throw Error('SOURCE_URL_NOT_ALLOWLISTED');
+ if(['arb1.arbitrum.io','arbitrum-one-rpc.publicnode.com'].includes(u.hostname)&&(!permittedGTradeRpcUrl(u)||method!=='POST'))throw Error('EXACT_PINNED_RPC_ROUTE_REQUIRED');
  if(!['GET','POST'].includes(method))throw Error('READ_ONLY_METHOD_REQUIRED');
  if(method==='POST'){
   const hyper=u.hostname==='api.hyperliquid.xyz'&&u.pathname==='/info'&&['metaAndAssetCtxs','recentTrades','clearinghouseState'].includes(body?.type);
   const gmx=u.hostname==='gmx.squids.live'&&u.pathname==='/gmx-synthetics-arbitrum:prod/api/graphql'&&typeof body?.query==='string'&&body.query.startsWith('query RepresentativeGmxPositions')&&/^0x[0-9a-f]{40}$/i.test(body?.variables?.market||'');
-  const gtrade=u.hostname==='arb1.arbitrum.io'&&u.pathname==='/rpc'&&permittedGTradePinnedRpcBatch(body);
+  const gtrade=permittedGTradeRpcUrl(u)&&permittedGTradePinnedRpcBatch(body);
   if(!hyper&&!gmx&&!gtrade)throw Error('UNAPPROVED_POST_OPERATION');
  }
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout_ms);
