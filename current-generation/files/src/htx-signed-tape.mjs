@@ -129,18 +129,23 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
  if(!db?.prepare||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(now))return null;
- if(db_admit?.({rows_read:16,rows_written:0})?.allowed!==true)return null;
+ const fail=(status,failure_stage,error_code=null)=>{retainBounded(ringReadbacks,contract,{status,failure_stage,error_code,evaluated_ts:now,observed_ts:null,reported_window_end_ts:null,reported_window_age_ms:null,reported_minute_rows:null,diagnostic_only:true,source_clock_unchanged:true});return null;};
+ let failureStage='D1_ADMISSION';
  // The established cache may not exist on a first run. This optional history
  // never creates tables or marks a missing window complete.
  try{
-  const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));
+  if(db_admit?.({rows_read:16,rows_written:0})?.allowed!==true)return fail('RAW_TAPE_READ_ADMISSION_DENIED',failureStage);
+  failureStage='READ_SAVED_FALLBACK_RING';const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now});
+  if(!cached)return fail('NO_SAVED_RAW_TAPE',failureStage);
+  failureStage='DECODE_SAVED_FALLBACK_RING';const saved=decodeSignedTapeStorage(cached);
+  if(!saved)return fail('SAVED_RAW_TAPE_STORAGE_INTEGRITY_NOT_CLOSED',failureStage);
   // A valid immutable window already in the durable cache remains usable if
   // this deep check cannot add new complete minutes. Validation retains the
   // original per-minute clocks, IDs and counters; reading never refreshes them.
   const savedFlow=signedTapeFourHourFlow({ring:saved,contract,now});retainBounded(ringReadbacks,contract,ringClockDiagnostic(saved,contract,now,savedFlow.status));
   if(savedFlow.check_completed===true)retainBounded(verifiedRings,contract,saved);
   return saved;
- }catch{return null;}
+ }catch(error){const candidate=String(error?.code??error?.name??'READ_EXCEPTION');return fail('RAW_TAPE_READ_NOT_CLOSED',failureStage,/^[A-Za-z0-9_-]{1,64}$/.test(candidate)?candidate:'READ_EXCEPTION');}
 }
 
 export function mergeHtxSignedHistoryTrades({ring,current_trades=[],contract,contract_size,now}={}){
@@ -187,5 +192,6 @@ function ringClockDiagnostic(ring,contract,now,status){
 export function capturedSignedTapeFourHourFlow({contract,now}={}){
  const flow=signedTapeFourHourFlow({ring:verifiedRings.get(contract),contract,now}),diagnostic=acquisitionReceipts.get(contract);
  const ring=verifiedRings.get(contract),saved_ring_diagnostic=ring?ringClockDiagnostic(ring,contract,now,flow.status):ringReadbacks.get(contract)??null;
- return{...flow,saved_ring_diagnostic,...(diagnostic?.observed_ts<=now?{raw_acquisition_diagnostic:diagnostic}:{} )};
+ const read=ringReadbacks.get(contract),read_diagnostic=read?.evaluated_ts<=now?{status:read.status,failure_stage:read.failure_stage??null,error_code:read.error_code??null,evaluated_ts:read.evaluated_ts,diagnostic_only:true,source_clock_unchanged:true}:null;
+ return{...flow,saved_ring_diagnostic,saved_ring_read_diagnostic:read_diagnostic,...(diagnostic?.observed_ts<=now?{raw_acquisition_diagnostic:diagnostic}:{} )};
 }
