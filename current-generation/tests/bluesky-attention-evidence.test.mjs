@@ -6,7 +6,7 @@ import {consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 
 const address='0x514910771af9ca656af840dff83e8264ecf986ca',identity={chain:'ethereum',contract_or_mint:address};
-const post=(uri,did,body)=>({uri,cid:`cid-${uri}`,author:{did},record:{text:body,createdAt:'2026-09-28T00:00:00Z'},indexedAt:'2026-09-28T00:00:01Z'});
+const post=(uri,did,body)=>({uri,cid:`cid-${uri}`,author:{did},record:{text:body,createdAt:'1970-01-01T00:00:00.500Z'},indexedAt:'1970-01-01T00:00:00.600Z'});
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
 class DB{constructor(){this.sqlite=new DatabaseSync(':memory:');}prepare(sql){return new Statement(this,sql);}async batch(rows){this.sqlite.exec('BEGIN');try{const out=[];for(const row of rows)out.push(await row.run());this.sqlite.exec('COMMIT');return out;}catch(error){this.sqlite.exec('ROLLBACK');throw error;}}}
 
@@ -21,9 +21,9 @@ test('K16 Bluesky remains warming before thirty windows over seven days',()=>{
 });
 
 test('K16 Bluesky rejects ticker matching, falls back to the exact HTX pair and preserves Solana case',()=>{
- const market=normalizeBlueskyAttention({contract:'LINK-USDT',identity:{chain:'ethereum',contract_or_mint:'LINK'},payload:{posts:[post('ticker','did:plc:1','LINK pumps'),post('pair','did:plc:2','LINK/USDT on HTX')]},window_start:0,window_end:1,observed_ts:2});
+ const market=normalizeBlueskyAttention({contract:'LINK-USDT',identity:{chain:'ethereum',contract_or_mint:'LINK'},payload:{posts:[post('ticker','did:plc:1','LINK pumps'),post('pair','did:plc:2','LINK/USDT on HTX')]},window_start:0,window_end:1000,observed_ts:1100});
  assert.equal(market.status,'CLOSED');assert.equal(market.summary.original_posts,1);assert.equal(market.evidence[0].query_identity,'EXACT_HTX_MARKET_PAIR');assert.equal(market.evidence[0].asset_id,'htx-futures:LINK-USDT');
- const mint='So11111111111111111111111111111111111111112',row=normalizeBlueskyAttention({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:mint},payload:{posts:[post('a','did:plc:1',mint.toLowerCase())]},window_start:0,window_end:1,observed_ts:2});assert.equal(row.summary.original_posts,0);
+ const mint='So11111111111111111111111111111111111111112',row=normalizeBlueskyAttention({contract:'SOL-USDT',identity:{chain:'solana',contract_or_mint:mint},payload:{posts:[post('a','did:plc:1',mint.toLowerCase())]},window_start:0,window_end:1000,observed_ts:1100});assert.equal(row.summary.original_posts,0);
 });
 
 test('general HTX market attention is Unicode-safe and never confuses BR with BOHR',()=>{
