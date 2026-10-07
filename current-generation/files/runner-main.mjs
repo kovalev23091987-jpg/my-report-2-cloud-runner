@@ -1,3 +1,4 @@
+import {buildLiquidationSourceAcquisitionAudit} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
 import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
 import {saveNativeWalletRouting} from './src/liquidation-extension/native-wallet-routing.mjs';
@@ -1043,7 +1044,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
 
   // Preserve the already collected canonical result even if a later observer fails.
   const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[]});
-  const canonicalRunOutput={...canonicalRunOutputBase,market_scan_audit:{
+  const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
     stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};

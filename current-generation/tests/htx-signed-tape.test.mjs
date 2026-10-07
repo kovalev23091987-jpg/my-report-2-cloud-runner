@@ -5,7 +5,7 @@ import {DatabaseSync} from 'node:sqlite';
 import {pathToFileURL} from 'node:url';
 const root=process.env.REPORT2_SIGNED_TAPE_MODULE_ROOT;
 const load=rel=>import(root?pathToFileURL(root+'/'+rel):new URL('../files/src/'+rel,import.meta.url));
-const {HTX_SIGNED_TAPE_VERSION,verifiedSignedMinutes,mergeSignedTape,signedTape24hEvidence,observeHtxSignedTape,clearHtxSignedTapeSnapshots,persistCapturedHtxSignedTape,mergeHtxSignedHistoryTrades}=await load('htx-signed-tape.mjs');
+const {HTX_SIGNED_TAPE_VERSION,verifiedSignedMinutes,mergeSignedTape,signedTape24hEvidence,observeHtxSignedTape,clearHtxSignedTapeSnapshots,persistCapturedHtxSignedTape,mergeHtxSignedHistoryTrades,capturedSignedTapeFourHourFlow}=await load('htx-signed-tape.mjs');
 const {consumeBlockResultContext}=await load('block-result-context.mjs');
 const {consumeEvidenceV2}=await load('evidence-v2.mjs');
 const MIN=60000,now=1791141000000,contract='测试1000-USDT',size=1,hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
@@ -42,4 +42,15 @@ test('validated immutable raw history extends the same contract sample; foreign,
 
 test('saved history does not erase truncation or dropped-row provenance from the current transport',()=>{
  for(const flag of ['_source_truncated','_source_rows_dropped']){const current=[];Object.defineProperty(current,flag,{value:flag==='_source_truncated'?true:1});const result=mergeHtxSignedHistoryTrades({ring:controlledRing(),current_trades:current,contract,contract_size:1,now});assert.equal(result.status,'CURRENT_RAW_TRANSPORT_NOT_COMPLETE');assert.equal(result.trades,current);}
+});
+
+test('persistence exceptions retain the exact admitted failure stage and source clocks without evidence, retry or extra writes',async()=>{
+ for(const failure of ['D1_ADMISSION','INSTALL_EVIDENCE_SOURCE_STORE','READ_PREVIOUS_RING','WRITE_MERGED_RING','READBACK_MERGED_RING']){
+  clearHtxSignedTapeSnapshots();const snap=snapshot();for(const [type,route] of [['metadata','/linear-swap-api/v1/swap_contract_info'],['trades','/linear-swap-ex/market/history/trade'],['minutes','/linear-swap-ex/market/history/kline']])observeHtxSignedTape(snap[type].payload,'https://api.hbdm.com'+route+'?contract_code='+encodeURIComponent(contract)+(type==='minutes'?'&period=1min':''),now);
+  const ops=[];let reads=0;const boom=()=>{const e=new Error('DO_NOT_EXPORT_SECRET');e.code='D1_TEST_DENIAL';throw e;};const db={prepare(sql){return{bind(){return this;},async first(){ops.push('READ');reads++;if(failure==='READ_PREVIOUS_RING'||failure==='READBACK_MERGED_RING'&&reads===2)boom();return null;},async run(){ops.push('WRITE');if(failure==='WRITE_MERGED_RING')boom();return{success:true};}};},async batch(){ops.push('INSTALL');if(failure==='INSTALL_EVIDENCE_SOURCE_STORE')boom();}};
+  const result=await persistCapturedHtxSignedTape({db,contract,now,db_admit:()=>{ops.push('ADMISSION');if(failure==='D1_ADMISSION')boom();return{allowed:true};}});
+  assert.equal(result.status,'RAW_TAPE_PERSISTENCE_NOT_CLOSED');assert.equal(result.failure_stage,failure);assert.equal(result.error_code,'D1_TEST_DENIAL');assert.deepEqual(result.evidence,[]);assert.equal(result.network_calls,0);
+  const flow=capturedSignedTapeFourHourFlow({contract,now});assert.equal(flow.check_completed,false);assert.equal(flow.evidence.length,0);assert.equal(flow.raw_acquisition_diagnostic.failure_stage,failure);assert.equal(flow.raw_acquisition_diagnostic.source_clocks.trades.source_ts,now);assert.equal(flow.raw_acquisition_diagnostic.source_clocks.minutes.source_ts,now);assert.equal(flow.raw_acquisition_diagnostic.new_verified_minutes,45);assert.ok(!JSON.stringify(flow).includes('DO_NOT_EXPORT_SECRET'));assert.ok(ops.filter(o=>o==='WRITE').length<=1);
+ }
+ clearHtxSignedTapeSnapshots();
 });
