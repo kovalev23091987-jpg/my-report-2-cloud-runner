@@ -45,7 +45,7 @@ const checks=[
  'files/src/liquidation-command-router.mjs',
  'files/src/publication-reconciler.mjs','files/src/bound-telegram-delivery-sidecar.mjs','files/src/exact-saved-run-telegram.mjs',
  'files/src/liquidation-extension/runner-extension.mjs','files/src/liquidation-extension/htx-liquidation-route.mjs',
- 'files/src/liquidation-extension/combined-runner-service.mjs','files/src/liquidation-extension/native-verification.mjs',
+ 'files/src/liquidation-extension/gtrade-position-routing.mjs','files/src/liquidation-extension/combined-runner-service.mjs','files/src/liquidation-extension/native-verification.mjs',
  'files/src/liquidation-extension/native-liquidation-guard.mjs',
  'files/src/liquidation-extension/lighter-runtime-collector.mjs','files/src/liquidation-extension/gmx-runtime-collector.mjs','files/src/liquidation-extension/scoped-provider-runtime-bridge.mjs',
  'files/src/liquidation-extension/install-source-allowances.mjs',

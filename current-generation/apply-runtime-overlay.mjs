@@ -125,7 +125,7 @@ const files=[
  'src/liquidation-extension/multi-runner-extension.mjs',
  'src/liquidation-extension/gtrade-runtime-collector.mjs',
  'src/liquidation-extension/gtrade-runtime-bridge.mjs',
- 'src/liquidation-extension/gtrade.mjs','src/liquidation-extension/gtrade-pinned-position-snapshot.mjs',
+ 'src/liquidation-extension/gtrade-position-routing.mjs','src/liquidation-extension/gtrade.mjs','src/liquidation-extension/gtrade-pinned-position-snapshot.mjs',
  'src/liquidation-extension/lighter-runtime-collector.mjs',
  'src/liquidation-extension/gmx-runtime-collector.mjs',
  'src/liquidation-extension/scoped-provider-runtime-bridge.mjs',
