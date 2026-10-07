@@ -6,6 +6,8 @@ import {verifyScopedProviderAcquisition,bindScopedProviderAcquisition} from '../
 import {createMultiLiquidationAcquisition} from '../files/src/liquidation-extension/gtrade-runtime-bridge.mjs';
 import {attachNativeContext} from '../files/src/liquidation-extension/runtime-bridge.mjs';
 import {nativeLiquidationLines} from '../files/src/native-liquidation-guard.mjs';
+import {acquisitionHasFreshLevels} from '../files/src/liquidation-extension/combined-runner-service.mjs';
+import {normalizeGmx} from '../files/src/liquidation-extension/round2-providers.mjs';
 const T=1_800_000_000_000,response=x=>new Response(JSON.stringify(x),{status:200,headers:{'content-type':'application/json'}});
 
 test('Lighter discovers active accounts then accepts only native account liquidation prices',async()=>{
@@ -14,11 +16,19 @@ test('Lighter discovers active accounts then accepts only native account liquida
  const collect=createLighterRuntimeCollector({fetch_impl,clock:()=>T});const out=await collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'r',acquisition_id:'a',market_id:103,deadline_ts:T+30000});
  assert.equal(out.status,'LIGHTER_ACQUIRED_SCOPED_CONTEXT');assert.ok(out.requests<=4);assert.equal(verifyScopedProviderAcquisition(out.acquisition),true);assert.ok(out.acquisition.above.length+out.acquisition.below.length>0);
  assert.equal(out.acquisition.source_ts,null);assert.equal(out.acquisition.source_clock_closed,false);
+ assert.equal(acquisitionHasFreshLevels(createMultiLiquidationAcquisition({contract:'FIL-USDT',run_id:'r',scoped:[out.acquisition]}),{contract:'FIL-USDT',run_id:'r',observed_ts:T}),false);
  assert.ok([...out.acquisition.above,...out.acquisition.below].every(row=>row.source_ts===null&&row.source_clock_closed===false));
  const scoped=bindScopedProviderAcquisition(out.acquisition,{contract:'FIL-USDT',run_id:'r',snapshot_id:'s',observed_ts:T});assert.equal(scoped.source_age_ms,null);assert.equal(scoped.receipt_age_ms,0);assert.equal(scoped.freshness_basis,'CURRENT_ENDPOINT_RECEIPT_ONLY_SOURCE_AGE_UNKNOWN');
  const multi=createMultiLiquidationAcquisition({contract:'FIL-USDT',run_id:'r',scoped:[out.acquisition]});
  const context=attachNativeContext({},multi,{contract:'FIL-USDT',run_id:'r',snapshot_id:'s',observed_ts:T,direction:null});
  const lines=nativeLiquidationLines(context,{manual:true});assert.ok(lines.some(line=>line.includes('Lighter FIL')));
+});
+
+test('GMX same ticker on another collateral market cannot enter the exact selected sample',()=>{
+ const market='0x'+'1'.repeat(40),other='0x'+'2'.repeat(40),account='0x'+'3'.repeat(40);
+ const payload=[{account,contractKey:'0x'+'4'.repeat(64),marketAddress:other,indexName:'FIL/USD',sizeInUsd:'1000000000000000000000000000000000',liquidationPrice:'800000000000000000000000000000',markPrice:'1000000000000000000000000000000',isLong:true}];
+ const r=normalizeGmx({payload,receipt:{http_status:200,received_ts:T},account,chain:'arbitrum',market_address:market},{symbol:'FIL',route_symbol:'FIL',run_id:'r',snapshot_id:'s',as_of_ms:T,received_at_ms:T,max_age_ms:300000});
+ assert.equal(r.zones.length,0);assert.equal(r.request_market_address,market);assert.equal(r.source_clock_closed,false);
 });
 
 test('GMX uses exact market discovery and fee-aware account position endpoint',async()=>{

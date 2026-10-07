@@ -32,13 +32,15 @@ export function decimal30String(v){
  if(typeof v!=='string'||!/^\d+$/.test(v))throw Error('DECIMAL30_STRING_REQUIRED');
  const s=v.replace(/^0+(?=\d)/,'').padStart(31,'0');return s.slice(0,-30)+'.'+s.slice(-30);
 }
-export function normalizeGmx({payload,receipt,account,chain},c){
+export function normalizeGmx({payload,receipt,account,chain,market_address=null},c){
  const b=base('GMX public API',c,[`GMX_V2_${String(chain).toUpperCase()}`],'NATIVE_POSITION_PROVIDER_FEE_AWARE_ESTIMATES',{venue:`GMX-${chain}`,quote:'USD',access:'KEYLESS_REST_TESTED',coverage:'EXPLICIT_PUBLIC_ACCOUNT_SAMPLE'});
  if(chain!=='arbitrum'||!observedReceipt(receipt,c)||!/^0x[0-9a-f]{40}$/i.test(account)||!Array.isArray(payload))return fail(b,'GMX_READ_IDENTITY_OR_CLOCK_INVALID');
+ if(market_address!==null&&!/^0x[0-9a-f]{40}$/i.test(market_address))return fail(b,'GMX_EXACT_MARKET_INVALID');
  const z=[],omitted=[],seen=new Set();
  try{for(const p of payload){
   if(String(p.account).toLowerCase()!==account.toLowerCase())throw Error('GMX_ACCOUNT_MISMATCH');
   if(p.indexName!==c.symbol+'/USD')continue;
+  if(market_address!==null&&String(p.marketAddress).toLowerCase()!==market_address.toLowerCase())continue;
   if(!/^0x[0-9a-f]{64}$/i.test(p.contractKey)||seen.has(p.contractKey))throw Error('DUPLICATE_OR_MISSING_GMX_POSITION_KEY');seen.add(p.contractKey);
   const size=decimal30String(p.sizeInUsd),lp=decimal30String(p.liquidationPrice),mp=decimal30String(p.markPrice);
   if(!positive(size))continue;
@@ -49,7 +51,7 @@ export function normalizeGmx({payload,receipt,account,chain},c){
    increased_at_time:p.increasedAtTime??null,decreased_at_time:p.decreasedAtTime??null,position_update_time_not_used_as_snapshot:true}));
  }
  return complete(b,z,{source_ts:null,source_age_ms:null,source_clock_closed:false,observed_at_ms:receipt.received_ts,freshness_basis:'CURRENT_POSITIONS_COMPUTED_API_NO_BLOCK_TIMESTAMP',
-  request_account:account,whole_book_coverage_pct:null,omitted_positions:omitted,execution_target_eligible:false});
+  request_account:account,request_market_address:market_address,whole_book_coverage_pct:null,omitted_positions:omitted,execution_target_eligible:false});
  }catch(e){return fail(b,e.message);}
 }
 export function normalizeLiqFlow({payload,receipt,reference,reference_receipt,unit_contract,catalog},c){
