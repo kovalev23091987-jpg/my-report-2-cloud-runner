@@ -68,7 +68,8 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
      records.push({status:reused.length?'HINT_CURRENT_NATIVE_LEVELS_VERIFIED':'HINT_NO_CURRENT_NATIVE_LEVELS',contract,hinted_accounts:hints.length,useful_accounts:reused.length,stored_prices_used:false});
     }else{if(hintGrant?.reservation_not_created===true)calls-=hints.length;records.push({status:'SKIPPED_ROUTING_HINT_ADMISSION',contract,reason:hintGrant?.reason??'ADMISSION_NOT_CLOSED'});}
    }
-   const saveHints=async()=>{if(typeof on_native_accounts==='function')try{await on_native_accounts({accounts:[...(accountsByRun.get(run_id)?.values()||[])].slice(0,8),run_id,now:clock()});}catch{records.push({status:'OPTIONAL_WALLET_HINT_SAVE_NOT_CLOSED',contract});}};
+   let hintSaveAttempted=false;
+   const saveHints=async()=>{if(hintSaveAttempted)return;hintSaveAttempted=true;if(typeof on_native_accounts==='function')try{await on_native_accounts({accounts:[...(accountsByRun.get(run_id)?.values()||[])].slice(0,8),run_id,now:clock()});}catch{records.push({status:'OPTIONAL_WALLET_HINT_SAVE_NOT_CLOSED',contract});}};
    const reuseOnly=optionalStatus=>{
     const completed=clock(),originalStart=Math.min(...reused.map(a=>a.http_receipt.received_ts));
     const acquisition=createNativeAcquisition({contract,native_symbol,run_id,acquisition_id:`LIQ_ACQ:${run_id}:${contract}:${collection_started_ts}`,collection_started_ts:originalStart,collection_completed_ts:completed,accounts:reused.map(a=>structuredClone(a)),provenance:{discovery_provider:null,discovery_source_id:null,discovery_status:'NOT_NEEDED_FRESH_VERIFIED_SAME_RUN_ACCOUNT',optional_discovery_status:optionalStatus,selection_bias:'VERIFIED_ORIGINAL_SAME_RUN_NATIVE_ACCOUNT_SAMPLE',sampling_policy:'ORIGINAL_NATIVE_ACCOUNT_REUSE',selected_reasons:[],visible_accounts:null,reused_native_accounts:reused.length,native_account_reuse_policy:'EXACT_RUN_ORIGINAL_CLOCK_MAX120S_NO_DUPLICATES',collection_attempt_started_ts:collection_started_ts,native_symbol_membership_verified:true,execution_asset_identity_verified:false,raw_model_prices_used:false,reservation_id:null,transport_count:transport.length,quota_reserved_requests:admittedReserved,hyperliquid_market_context:marketContext}});
@@ -76,7 +77,8 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    };
    // Enrichment needs BOTH discovery and a new native read. Do not spend the
    // last request, or lose already verified levels, on discovery alone.
-   if(reused.length&&hints.length){await saveHints();return reuseOnly('CURRENT_NATIVE_REREAD_FROM_STRUCTURAL_WALLET_HINT');}
+   if(hints.length)await saveHints();
+   if(reused.length&&hints.length){return reuseOnly('CURRENT_NATIVE_REREAD_FROM_STRUCTURAL_WALLET_HINT');}
    if(reused.length&&deadline-clock()<250)return reuseOnly('OPTIONAL_ENRICHMENT_PHASE_DEADLINE');
    if(reused.length&&(reused.length>=accounts_per_deep||transport.length+2>max_http_for_candidate||calls+2>max_http_per_run))return reuseOnly('OPTIONAL_ENRICHMENT_HTTP_ENVELOPE');
    if(!reused.length&&(transport.length+2>max_http_for_candidate||calls+2>max_http_per_run)){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'SAMPLE',actual_requests:transport.length});return null;}

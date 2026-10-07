@@ -33,7 +33,7 @@ test('a day-old structural hint yields only a newly read official liquidation le
  assert.equal(raw.provenance.optional_discovery_status,'CURRENT_NATIVE_REREAD_FROM_STRUCTURAL_WALLET_HINT');
 });
 test('an expired current state or unsupported current catalog never promotes stored capability to fresh levels',async()=>{
- const bad=service({invalid:true,max:2});assert.equal(await bad.collect(),null);assert.equal(bad.calls.length,2);assert.equal(bad.saved.length,0);
+ const bad=service({invalid:true,max:2});assert.equal(await bad.collect(),null);assert.equal(bad.calls.length,2);assert.equal(bad.saved.length,1);assert.equal(buildNativeWalletRouting(bad.saved[0]),null);
  const unsupported=service({unsupported:true});assert.equal(await unsupported.collect(),null);assert.equal(unsupported.calls.length,1);
  const denied=service({denied:true,max:2});assert.equal(await denied.collect(),null);assert.equal(denied.calls.length,1);
 });
@@ -60,7 +60,13 @@ test('one fresh hinted account serves another exact asset in the same run withou
 test('unknown write acknowledgements and a newer competing routing row cannot be declared saved or retried',async()=>{
  for(const result of [undefined,{success:true,meta:{changes:0}}]){
   let writes=0;const db={prepare:()=>({bind:()=>({run:async()=>{writes++;return result;}})})};
-  const saved=await saveNativeWalletRouting({db,previous:routing,accounts:[account],run_id:'store',now:T,db_admit:async()=>({allowed:true})});
+  const saved=await saveNativeWalletRouting({db,previous:routing,accounts:[{...account,state:state(T+10),http_receipt:{...account.http_receipt,received_ts:T+10}}],run_id:'store',now:T+10,db_admit:async()=>({allowed:true})});
   assert.equal(saved.routing,routing);assert.equal(writes,1);assert.notEqual(saved.status,'STRUCTURAL_WALLET_HINTS_SAVED');
  }
+});
+
+test('a fresh native reread removes closed or no-price capability instead of repeating a stale address hint',()=>{
+ const a=structuredClone(account);a.state.time=T+10;a.http_receipt.received_ts=T+10;a.state.assetPositions=[];
+ const updated=buildNativeWalletRouting({previous:routing,accounts:[a],run_id:'new',now:T+10});assert.ok(updated);assert.equal(updated.accounts.length,0);assert.equal(updated.last_updated_source_ts,T+10);assert.deepEqual(selectNativeWalletRouting(updated,{symbol:'NEAR',now:T+10}),[]);
+ assert.equal(buildNativeWalletRouting({previous:routing,accounts:[account],run_id:'same',now:T}),null);
 });

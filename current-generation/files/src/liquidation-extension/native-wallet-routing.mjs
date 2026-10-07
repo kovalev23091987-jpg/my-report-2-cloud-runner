@@ -8,7 +8,7 @@ function validRow(row,now){return row&&address(row.address)&&timestamp(row.verif
 export function validateNativeWalletRouting(raw,{now=Date.now()}={}){
  if(!Number.isSafeInteger(now)||raw?.schema!==SCHEMA||raw?.scope!=='ADDRESS_DISCOVERY_HINT_ONLY_FRESH_NATIVE_REREAD_REQUIRED'||!Array.isArray(raw.accounts)||raw.accounts.length>32||new Set(raw.accounts.map(x=>x?.address)).size!==raw.accounts.length)return null;
  const {routing_fingerprint,...material}=raw;
- if(Object.keys(material).sort().join(',')!=='accounts,schema,scope'||routing_fingerprint!==fingerprint(material))return null;
+ if(Object.keys(material).sort().join(',')!=='accounts,last_updated_source_ts,schema,scope'||timestamp(material.last_updated_source_ts)===null||material.last_updated_source_ts>now||material.accounts.some(x=>x.verified_source_ts>material.last_updated_source_ts)||routing_fingerprint!==fingerprint(material))return null;
  return {accounts:raw.accounts.filter(row=>validRow(row,now))};
 }
 export function selectNativeWalletRouting(raw,{symbol,now=Date.now(),max_accounts=3}={}){
@@ -17,23 +17,26 @@ export function selectNativeWalletRouting(raw,{symbol,now=Date.now(),max_account
 }
 export function buildNativeWalletRouting({previous=null,accounts=[],run_id,now=Date.now(),max_age_ms=120000}={}){
  if(!run_id||![120000,300000].includes(max_age_ms))return null;
- const rows=new Map((validateNativeWalletRouting(previous,{now})?.accounts||[]).map(x=>[x.address,structuredClone(x)]));let usefulNew=0;
+ const validPrevious=validateNativeWalletRouting(previous,{now});
+ const rows=new Map((validPrevious?.accounts||[]).map(x=>[x.address,structuredClone(x)]));let usefulNew=0,lastUpdated=validPrevious?previous.last_updated_source_ts:0;
  for(const account of accounts.slice(0,8)){
   const transport=account?.http_receipt??account?.receipt;
   if(transport?.http_status!==200||!/^[a-f0-9]{64}$/.test(transport.sha256||'')||!Array.isArray(account?.state?.assetPositions)||account.state.assetPositions.length>200)continue;
+  const source=timestamp(account.state.time),received=timestamp(transport.received_ts);
+  if(source===null||received===null||source>received||received>now||now-source>max_age_ms||now-received>max_age_ms)continue;
   const symbols=[...new Set(account.state.assetPositions.map(x=>x?.position?.coin).filter(coin))].filter(symbol=>selectVerifiedNativeAccounts([account],{symbol,run_id,now,max_age_ms,max_accounts:1}).length>0).sort();
-  if(!symbols.length)continue;
+  if(!symbols.length){if(rows.delete(account.address.toLowerCase())){usefulNew++;lastUpdated=Math.max(lastUpdated,source);}continue;}
   const row={address:account.address.toLowerCase(),coins:symbols,verified_source_ts:timestamp(account.state.time),verified_receipt_ts:timestamp(transport.received_ts),original_response_sha256:transport.sha256},old=rows.get(row.address);
-  if(!old||row.verified_source_ts>=old.verified_source_ts){rows.set(row.address,row);usefulNew++;}
+  if(!old||row.verified_source_ts>=old.verified_source_ts){rows.set(row.address,row);usefulNew++;lastUpdated=Math.max(lastUpdated,source);}
  }
  if(!usefulNew)return null;
- const material={schema:SCHEMA,scope:'ADDRESS_DISCOVERY_HINT_ONLY_FRESH_NATIVE_REREAD_REQUIRED',accounts:[...rows.values()].sort((a,b)=>b.verified_source_ts-a.verified_source_ts||b.coins.length-a.coins.length||a.address.localeCompare(b.address)).slice(0,32)};
- return {...material,routing_fingerprint:fingerprint(material)};
+ const material={schema:SCHEMA,last_updated_source_ts:lastUpdated,scope:'ADDRESS_DISCOVERY_HINT_ONLY_FRESH_NATIVE_REREAD_REQUIRED',accounts:[...rows.values()].sort((a,b)=>b.verified_source_ts-a.verified_source_ts||b.coins.length-a.coins.length||a.address.localeCompare(b.address)).slice(0,32)};
+ const result={...material,routing_fingerprint:fingerprint(material)};return result.routing_fingerprint===previous?.routing_fingerprint?null:result;
 }
 export async function saveNativeWalletRouting({db,previous,accounts,run_id,now=Date.now(),db_admit}={}){
  const routing=buildNativeWalletRouting({previous,accounts,run_id,now});if(!routing)return{status:'NO_NEW_VERIFIED_WALLET_HINT',routing:previous};
  if(typeof db_admit!=='function'||(await db_admit({rows_read:2,rows_written:1}))?.allowed!==true)return{status:'D1_WRITE_NOT_ADMITTED',routing:previous};
- const observed=Math.max(...routing.accounts.map(x=>x.verified_source_ts));
+ const observed=routing.last_updated_source_ts;
  const result=await db.prepare('INSERT INTO report2_liq_venue_catalog_cache(source,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4) ON CONFLICT(source) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json WHERE excluded.observed_ts>=report2_liq_venue_catalog_cache.observed_ts').bind(NATIVE_WALLET_ROUTING_SOURCE,observed,observed+TTL,JSON.stringify(routing)).run();
  if(result?.success!==true||!Number.isSafeInteger(result?.meta?.changes))return{status:'D1_WRITE_ACK_UNKNOWN',routing:previous};
  if(result.meta.changes!==1)return{status:'NEWER_ROUTING_ROW_RETAINED',routing:previous};
