@@ -1,0 +1,17 @@
+✔ only individual raw minute/count matches persist; a bounded recent sample never proves 24 hours (2.792179ms)
+✔ compensating minute count errors, unsafe IDs, stale and foreign metadata never green the tape (0.785632ms)
+✔ changed complete minute and corrupt saved source bytes do not replace a verified ring (1.660878ms)
+✔ only a complete 1440-minute ring with exact unique fills supplies a neutral signed fact to the report (28.639826ms)
+✔ durable raw ring respects DB admission and readback without network requests or new tables (2.099537ms)
+✔ injected corrupt acquisitions and duplicate saved minute keys are rejected before persistence (0.497148ms)
+✔ the shared raw accumulator retains factual minutes older than 45 minutes already present in the same response (1.871004ms)
+✔ validated immutable raw history extends the same contract sample; foreign, corrupt or conflicting fills never do (17.56617ms)
+✔ saved history does not erase truncation or dropped-row provenance from the current transport (3.303309ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 117.651033

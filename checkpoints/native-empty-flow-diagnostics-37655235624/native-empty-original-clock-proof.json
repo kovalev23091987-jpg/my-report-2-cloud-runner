@@ -1,0 +1,206 @@
+{
+  "scope": "CONTROLLED_TRANSPORT_REPLAY_RETAINED_ACTUAL_NATIVE_INPUT_NOT_FRESH_MAIN",
+  "source_cloud_run": 37625020734,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "diagnostics": {
+    "schema": "NATIVE_LIQUIDATION_SOURCE_DIAGNOSTICS_V1",
+    "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+    "selected_contracts": [
+      "AAVE-USDT",
+      "ACE-USDT"
+    ],
+    "attempts": [
+      {
+        "contract": "AAVE-USDT",
+        "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "evaluated_ts": 1791378011607,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 3,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "BOUNDED_SAMPLE_EMPTY",
+          "role_usable": false,
+          "failure_origin": "COVERAGE",
+          "sample_is_not_full_market": true
+        },
+        "position_proof": {
+          "source_clock_closed": true,
+          "source_read_proof": {
+            "schema": "DYDX_VERIFIED_PINNED_READ_DIAGNOSTIC_V1",
+            "contract": "AAVE-USDT",
+            "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+            "chain_id": "dydx-mainnet-1",
+            "source_ts": 1791378009354,
+            "height": "108444955",
+            "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+            "validated_at_ts": 1791378011607,
+            "snapshot_verified": true,
+            "complete_accounts_read": 200,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "selected_market_supported": true,
+            "transport_receipts": [
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+                "bytes": 1101
+              },
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+                "bytes": 19879
+              },
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00",
+                "bytes": 21085
+              }
+            ],
+            "source_clocks_refreshed": false,
+            "full_market_census": false,
+            "diagnostic_only": true
+          },
+          "source_ts": 1791378009354,
+          "height": "108444955",
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          }
+        },
+        "health_update": {
+          "recorded": true,
+          "reason": null
+        },
+        "usable": false
+      },
+      {
+        "contract": "ACE-USDT",
+        "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "evaluated_ts": 1791378011607,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 0,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "UNSUPPORTED_VERIFIED_NATIVE_CATALOG",
+          "role_usable": false,
+          "failure_origin": "COVERAGE",
+          "sample_is_not_full_market": true
+        },
+        "position_proof": {
+          "source_clock_closed": true,
+          "source_read_proof": {
+            "schema": "DYDX_VERIFIED_PINNED_READ_DIAGNOSTIC_V1",
+            "contract": "ACE-USDT",
+            "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+            "chain_id": "dydx-mainnet-1",
+            "source_ts": 1791378009354,
+            "height": "108444955",
+            "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+            "validated_at_ts": 1791378011607,
+            "snapshot_verified": true,
+            "complete_accounts_read": 200,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "selected_market_supported": false,
+            "transport_receipts": [
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+                "bytes": 1101
+              },
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+                "bytes": 19879
+              },
+              {
+                "http_status": 200,
+                "started_ts": 1791378011607,
+                "received_ts": 1791378011607,
+                "sha256": "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00",
+                "bytes": 21085
+              }
+            ],
+            "source_clocks_refreshed": false,
+            "full_market_census": false,
+            "diagnostic_only": true
+          },
+          "source_ts": 1791378009354,
+          "height": "108444955",
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          }
+        },
+        "health_update": {
+          "recorded": false,
+          "reason": "SHARED_SNAPSHOT_NO_NEW_TRANSPORT"
+        },
+        "usable": false
+      }
+    ],
+    "known_actual_http": 3,
+    "unknown_actual_http_rows": 0,
+    "source_clocks_refreshed": false,
+    "diagnostic_only": true,
+    "coverage_is_not_census": true,
+    "entry_authorized": false,
+    "network_calls_added": 0
+  },
+  "health_samples": 1,
+  "roles": [
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "contract": "AAVE-USDT",
+      "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+      "role": "NATIVE_POSITION_CONTEXT",
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "role_usable": false,
+      "actual_http": 3,
+      "now": 1791378011607
+    },
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "contract": "ACE-USDT",
+      "run_id": "CONTROLLED_RETAINED_EMPTY_NATIVE_DIAGNOSTIC",
+      "role": "NATIVE_POSITION_CONTEXT",
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "role_usable": false,
+      "actual_http": 0,
+      "now": 1791378011607
+    }
+  ]
+}
