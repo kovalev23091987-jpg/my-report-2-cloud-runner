@@ -4,13 +4,14 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {replay,params,selected,run,T,snapshot,levels,workerCaller,wire} from './cache-only-native-caller.test.mjs';
+import {replay,params,selected,run,T,snapshot,levels,workerCaller,wire,assets} from './cache-only-native-caller.test.mjs';
 const root=path.resolve(process.env.REPORT2_TEST_RUNTIME||'runtime');
 const {buildRuntimeCanonicalBundle}=await import(pathToFileURL(path.join(root,'src/canonical-runtime-adapter.mjs')));
+const {addDydxCollectionPermission}=await import(pathToFileURL(path.join(root,'src/liquidation-extension/dydx-runtime-collector.mjs')));
 test('assembled zero-HTTP second-asset caller reaches canonical/manual conditional context while preserving score, direction, entry, targets and approved Telegram',async()=>{
  const f=replay(),env=wire(f.service);await workerCaller(env,{contract:selected[0],cap:5,reserved:true});f.setNow(T+44000);f.forbid();
  const second=await workerCaller(env,{contract:selected[1]}),reference=levels.find(l=>l.asset===selected[1].slice(0,-5)).reference_price;
- const p={contract:selected[1],run_id:run,snapshot_id:'CONTROLLED_CACHE_ONLY:'+selected[1],observed_ts:T+44000,discovery_row:{contract:selected[1],mark_price:reference},publication_shadow:{entry_signal:{state:'REJECTED',direction:null},scenario_plan:{execution_reference_price:reference}}};
+ const p={contract:selected[1],run_id:run,snapshot_id:'CONTROLLED_CACHE_ONLY:'+selected[1],observed_ts:T+44000,discovery_row:{contract:selected[1],mark_price:reference},publication_shadow:{entry_signal:{state:'REJECTED',direction:null},scenario_plan:{execution_reference_price:reference}},internal_market_context:{internal_only:true,liquidation_coverage_admission:addDydxCollectionPermission({eligible:false,source_ids:[]},{contract:selected[1],crypto_assets:assets,now:T+44000,automatic_discovery_enabled:true})}};
  const baseline=buildRuntimeCanonicalBundle(p),result=buildRuntimeCanonicalBundle({...p,native_liquidation_acquisition:second.acquisition});
  for(const key of ['state','direction','scores','entry','trigger','invalidation','targets'])assert.deepEqual(result.canonical[key],baseline.canonical[key],key);
  assert.equal(result.canonical.state,'REJECTED');assert.equal(result.canonical.direction,null);assert.equal(result.canonical.metadata.validated_signal,false);assert.equal(result.canonical.targets?.length??0,0);

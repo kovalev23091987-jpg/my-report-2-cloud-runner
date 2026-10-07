@@ -30,7 +30,7 @@ export function wire(service,contracts=selected,selectedRun=run){
  new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}});
  return env;
 }
-export {replay,params,selected,run,T,snapshot,levels,last,bytes,lastBytes};
+export {replay,params,selected,run,T,snapshot,levels,last,bytes,lastBytes,assets};
 test('actual worker and runner route second exact selected asset at cap0 and no reserved lane to fresh same-run snapshot without HTTP, D1 or reservations',async()=>{
  const f=replay(),env=wire(f.service);const first=await workerCaller(env,{contract:selected[0],cap:5,reserved:true});assert.ok(first.acquisition);assert.equal(first.mode,'SOURCE_HTTP');
  const before=structuredClone(f.service.summary().shared_budget),counts=[f.calls.length,f.grants.length,f.db.length];f.setNow(T+44000);f.forbid();
