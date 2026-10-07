@@ -43,11 +43,11 @@ export function acquisitionHasFreshLevels(raw,{contract,run_id,observed_ts}={}){
 // This factory is the one called by generated runner code. OFF makes zero SDK,
 // D1 or HTTP calls. Both providers pass through the SAME request budget and
 // network concurrency limiter. No separate scheduler or trading path is added.
-export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null,swole_discovery_enabled=false,gtrade_reserve_rpc_enabled=false}={}){
+export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null,swole_discovery_enabled=false,gtrade_reserve_rpc_enabled=false,native_wallet_routing=null,on_native_accounts=null}={}){
  if(mode!=='SHADOW_ONLY')return null;
  if(!Number.isSafeInteger(candidate_slots)||candidate_slots<1||candidate_slots>2)throw Error('CANDIDATE_SLOTS_INVALID');
  const budget=createSharedSourceBudget({provider_admit,fetch_impl,clock,max_requests:max_http_per_run,max_parallel:2,max_total_ms});
- const primary=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',admit:budget.admit,fetch_impl:budget.fetch,clock,accounts_per_deep,max_http_per_run,max_total_ms,liqflow_key,swole_discovery_enabled});
+ const primary=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',admit:budget.admit,fetch_impl:budget.fetch,clock,accounts_per_deep,max_http_per_run,max_total_ms,liqflow_key,swole_discovery_enabled,native_wallet_routing,on_native_accounts});
  let secondary=null,sdkStatus=secondary_enabled?'PINNED_SDK_NOT_AVAILABLE':'SECONDARY_DISABLED_BY_CONFIGURATION';
  if(secondary_enabled){
   try{
@@ -99,7 +99,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   const provenHints=new Set(Array.isArray(params.proven_level_source_ids)?params.proven_level_source_ids.filter(id=>lanes.includes(id)):[]);
   const hlCost=primary.estimateHttpCost(params),sharedGtrade=secondary?.hasRunSnapshot?.(params.run_id)===true;
   lastRotation=verifiedNativeRotation({catalog:gtrade_routing_catalog,contracts:candidate_slots===2?params.position_batch_contracts:[],now:clock()});
-  const weighted=planLiquidationSourceOrder({preferred:lastRotation.preferred,lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1},exact:lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&(primary.nativeMarketCoverage(params).status==='SUPPORTED'||provenHints.has(lane))||lane==='GTRADE_NATIVE'&&secondary?.nativeMarketCoverage?.(params)?.status==='SUPPORTED'),cached:[...(sharedGtrade?['GTRADE_NATIVE']:[]),...(primary.hasFreshNativeAccount(params)?['HYPERLIQUID_NATIVE']:[])],clock_capable:lanes.filter(x=>x==='HYPERLIQUID_NATIVE'||x==='GTRADE_NATIVE')});lastWeightProfile=weighted.profile;
+  const weighted=planLiquidationSourceOrder({preferred:lastRotation.preferred,lanes,rows:healthRows,costs:{HYPERLIQUID_NATIVE:hlCost,GTRADE_NATIVE:secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3),LIGHTER_NATIVE:4,GMX_NATIVE:4,OXARCHIVE_HL_BUCKETS:1},exact:lanes.filter(lane=>lane==='LIGHTER_NATIVE'||lane==='GMX_NATIVE'||lane==='HYPERLIQUID_NATIVE'&&(primary.nativeMarketCoverage(params).status==='SUPPORTED'||provenHints.has(lane)||primary.hasWalletRoutingHint(params))||lane==='GTRADE_NATIVE'&&secondary?.nativeMarketCoverage?.(params)?.status==='SUPPORTED'),cached:[...(sharedGtrade?['GTRADE_NATIVE']:[]),...(primary.hasFreshNativeAccount(params)?['HYPERLIQUID_NATIVE']:[])],clock_capable:lanes.filter(x=>x==='HYPERLIQUID_NATIVE'||x==='GTRADE_NATIVE')});lastWeightProfile=weighted.profile;
   // Check every admitted useful route; exact coverage and utility determine order.
   // These existing producers can verify a position-state clock. GMX/Lighter
   // current APIs only verify receipt time; they remain fallback context lanes.

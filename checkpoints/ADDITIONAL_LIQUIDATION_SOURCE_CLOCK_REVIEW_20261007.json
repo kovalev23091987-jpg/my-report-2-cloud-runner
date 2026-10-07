@@ -1,0 +1,53 @@
+{
+  "schema": "ADDITIONAL_LIQUIDATION_SOURCE_CLOCK_REVIEW_20261007_V1",
+  "reviewed_utc": "2026-10-07T10:17:52.123Z",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_independent_provider_enabled": false,
+  "providers": [
+    {
+      "provider": "Lighter",
+      "primary_repository": "elliottech/lighter-python",
+      "exact_head": "04bee9ba9811b87ef1cccc568e7f590b5fe649bb",
+      "files": [
+        "lighter/models/detailed_account.py",
+        "lighter/models/account_position.py"
+      ],
+      "immutable_files_match_read": true,
+      "clock_fields": [
+        "transaction_time",
+        "created_at",
+        "cancel_all_time"
+      ],
+      "state_snapshot_clock_supplied": false,
+      "conclusion": "CURRENT_PUBLIC_ACCOUNT_MODEL_HAS_NATIVE_LIQUIDATION_PRICE_BUT_NO_POSITION_STATE_SNAPSHOT_CLOCK; ACTIVITY_TIME_NOT_PROMOTED; RETAIN_RECEIPT_ONLY_SCOPE"
+    },
+    {
+      "provider": "GMX",
+      "primary_repository": "gmx-io/gmx-interface",
+      "exact_head": "568425581d0a5989c556af7fcb71f9691e1d491b",
+      "files": [
+        "sdk/src/utils/positions/api.ts",
+        "sdk/src/utils/positions/types.ts"
+      ],
+      "primary_docs": [
+        "https://docs.gmx.io/docs/api/integration-guide/",
+        "https://docs.gmx.io/docs/api/overview/"
+      ],
+      "documented_common_block_position_reader": true,
+      "documented_response_cache_seconds": 1,
+      "public_type_clock_fields": [
+        "increasedAtTime",
+        "decreasedAtTime"
+      ],
+      "state_snapshot_block_or_time_in_public_position_type": false,
+      "peer_urls_same_data": [
+        "https://arbitrum.gmxapi.io/v1",
+        "https://arbitrum.gmxapi.ai/v1"
+      ],
+      "conclusion": "A_COMMON_INTERNAL_READER_BLOCK_IS_NOT_AN_EXPOSED_VERIFIED_SOURCE_TIMESTAMP; EXISTING_RECEIPT_ONLY_SCOPE_RETAINED; A_CLOCK_PROVEN_RPC_READER_ADAPTER_WOULD_NEED_EXACT_CONTRACT_PRICE_AND_FEE_INPUTS"
+    }
+  ],
+  "repetition_policy": "NO_UNCHANGED_LIVE_PROBE; NEXT_CALL_ONLY_WITH_DOCUMENTED_INCREMENTAL_CLOCK_OR_EXACT_RPC_SCHEMA"
+}
