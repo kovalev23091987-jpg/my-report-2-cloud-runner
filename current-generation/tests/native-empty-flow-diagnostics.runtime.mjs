@@ -48,3 +48,6 @@ test('HTX persistence exception retains failure stage and original captured cloc
 test('a durable admission exception also retains original clocks and a later report never rewrites its acquisition clock',async()=>{
  capture();const result=await tape.persistCapturedHtxSignedTape({contract,now:T,db_admit:()=>{throw Error('CONTROLLED_ADMISSION_FAILURE');}});assert.equal(result.failure_stage,'ADMISSION');const primary=buildHtxFuturesFlowPrimary({contract,now:T+300001});assert.equal(primary.check_completed,false);assert.equal(primary.raw_acquisition_diagnostic.observed_ts,T);assert.equal(primary.raw_acquisition_diagnostic.source_clocks.metadata.source_ts,T);assert.equal(primary.network_calls,0);assert.equal(primary.evidence.length,0);
 });
+test('legacy fallback request estimates never become known actual HTTP in retained diagnostics',()=>{
+ const d=buildNativeSourceDiagnostics({run_id,contracts:selected,routed:[{run_id,contract:selected[0],lane:'CONTROLLED_UNKNOWN',status:'FAILED',actual_http:null,source_outcome:{attempted_http_count:1}},{run_id,contract:selected[1],lane:'CONTROLLED_ZERO',status:'CACHE',actual_http:0,source_outcome:{attempted_http_count:0}}]});assert.equal(d.known_actual_http,0);assert.equal(d.unknown_actual_http_rows,1);assert.equal(d.attempts[0].actual_http,null);assert.equal(d.attempts[1].actual_http,0);
+});
