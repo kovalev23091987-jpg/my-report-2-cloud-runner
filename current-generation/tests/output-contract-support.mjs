@@ -8,6 +8,11 @@ const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..')
 export async function loadEffectivePresentationModules(){
   const target=fs.mkdtempSync(path.join(os.tmpdir(),'report2-output-contract-'));
   const copies={
+    'idea-basis-facts.mjs':'current-generation/files/src/idea-basis-facts.mjs',
+    'telegram-plain-facts.mjs':'current-generation/files/src/telegram-plain-facts.mjs',
+    'early-direction-receipt.mjs':'current-generation/files/src/early-direction-receipt.mjs',
+    'market-contracts.mjs':'current-generation/files/src/market-contracts.mjs',
+    'evidence-v2.mjs':'current-generation/files/src/evidence-v2.mjs',
     'canonical-publication.mjs':'post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs',
     'manual-report-formatter.mjs':'current-generation/files/src/manual-report-formatter.mjs',
     'gate-liquidation-history.mjs':'current-generation/files/src/gate-liquidation-history.mjs',

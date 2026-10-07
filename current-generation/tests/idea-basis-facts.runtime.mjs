@@ -32,7 +32,7 @@ test('retained real QNT primary score factors explain82 without promoting sparse
  const before=JSON.stringify(c),facts=basis.usedIdeaBasisFacts(c),label=basis.factualIdeaBasis(c);
  assert.ok(facts.some(f=>f.domain==='RELATIVE_STRENGTH'),label);
  assert.ok(facts.some(f=>f.domain==='OI_ACCELERATION'),label);
- assert.ok(facts.some(f=>f.domain==='VOLUME_ACCELERATION_PROXY'),label);
+ assert.ok(facts.some(f=>f.domain==='PRICE_STATE_TRANSITION'),label);
  assert.doesNotMatch(label,/ликвидационн|накоплен|покупки составили/);
  const tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
  assert.ok(tg.ok,JSON.stringify(tg));assert.ok(tg.text.includes(label));assert.ok(tg.length<1800);
