@@ -1,0 +1,120 @@
+{
+  "schema": "DYDX_RECENT_NATIVE_BLOCK_DISCOVERY_NOT_USEFUL_20261007_V1",
+  "cloud_run": 37623017267,
+  "head": "6b6f263b0605aab67972e00563d6a383d15eb31e",
+  "run_id": "DYDX_NATIVE_ACTIVITY_RESEARCH:37623017267:1791377034398",
+  "artifact_id": 11483106370,
+  "artifact_sha256": "c25e0803a71d6426ab01f433b7417b945df393a3a6ba8917a689af1c87291324",
+  "status": "SOURCE_VALID_NO_USEFUL_ACCOUNT_HINTS_NOT_ACTIVATED",
+  "source_block": {
+    "height": "108443351",
+    "source_ts": 1791377035875,
+    "block_hash": "7A861F4FBC5FFCB28CC61D4C460066E9D594C9AD6A11ADFFF4520849EAC017BF",
+    "chain_id": "dydx-mainnet-1",
+    "trust_basis": "READ_ONLY_PRIMARY_RPC_EXPLICIT_HEIGHT_NOT_CRYPTOGRAPHIC_STATE_PROOF"
+  },
+  "activity": {
+    "schema": "DYDX_NATIVE_RECENT_BLOCK_ACCOUNT_DISCOVERY_V1",
+    "status": "NO_NATIVE_ACCOUNT_HINTS",
+    "chain_id": "dydx-mainnet-1",
+    "height": "108443351",
+    "source_ts": 1791377035875,
+    "block_hash": "7A861F4FBC5FFCB28CC61D4C460066E9D594C9AD6A11ADFFF4520849EAC017BF",
+    "block_count": 4,
+    "block_heights": [
+      "108443351",
+      "108443350",
+      "108443349",
+      "108443348"
+    ],
+    "block_transaction_count": 20,
+    "consensus_records": 4,
+    "decoded_messages": 16,
+    "recognized_clob_messages": 4,
+    "decoded_operations": 0,
+    "unique_observed_accounts": 0,
+    "selected_accounts": [],
+    "scope": "BOUNDED_ADJACENT_BLOCK_ACTIVITY_ACCOUNT_HINTS_CURRENT_NATIVE_STATE_REREAD_REQUIRED",
+    "open_positions_claimed": false,
+    "trade_side_is_position_side": false,
+    "levels_produced": 0,
+    "independent_upstream_added": false,
+    "sourceHTTP": 0
+  },
+  "fallback_page": {
+    "accounts": 20,
+    "nonzero_positions": 0,
+    "useful_levels": 0
+  },
+  "original_evaluation_ts": 1791377038149,
+  "source_http_actual": 3,
+  "source_http_reserved_charged": 3,
+  "refunded": false,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 52,
+    "rows_written": 10,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 38,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 4,
+        "rows_read": 9,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_path": "checkpoints/source-inputs/dydx-native-quiet-blocks-37623017267.json.gz",
+  "raw_sha256": "591f20a57873963920b7711d421fbcc9aa06ff9af52891a53c3db45d728a6def",
+  "production_recent_block_rotation_enabled": false,
+  "flat_query_defect": {
+    "found_in": "Official QueryGetSubaccountRequest owner1/number2; prior runtime nested SubaccountId was incorrect, controlled transport failed to expose it. Page-based actual proofs remain correct. Invalid exact responses fail closed and do not create levels.",
+    "primary": "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/proto/dydxprotocol/subaccounts/query.proto",
+    "fix": "Flat protobuf request; strict native response owner/number at original exact height; actual source-based-account reread required."
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "full_owner_completion": false
+}

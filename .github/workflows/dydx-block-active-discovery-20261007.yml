@@ -1,4 +1,4 @@
-name: Report2 dYdX Native Active Account Discovery Verification
+name: Report2 dYdX Exact Native Account Query Verification
 on:
   push:
     branches: [codex/dydx-block-active-discovery-20261007]
@@ -129,7 +129,7 @@ jobs:
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
             if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-      - name: Verify actual current native block activity with full state in at most3 admitted source HTTP
+      - name: Verify corrected flat exact account requests with current state in at most3 admitted source HTTP
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
@@ -143,6 +143,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: dydx-block-active-${{ github.run_id }}
+          name: dydx-native-exact-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
