@@ -87,6 +87,15 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
    if(budget.summary().reserved_http+outstanding>max_http_per_run)return candidateHttpCap;
    return Math.min(requestedCap,max_http_per_run-candidateReservedStart);
   };
+  // The exact dYdX account batch rereads both selected assets in the same
+  // three requests. Borrow the following envelope only for two admitted
+  // source-derived hints, never for arbitrary codes or a larger source cap.
+  const sharedDydxBatchCap=()=>{
+   const batch=params.dydx_position_batch_contracts;
+   if(!dydx||candidate_slots!==2||!Array.isArray(batch)||batch.length!==2||new Set(batch).size!==2||!batch.includes(params.contract)||batch.some(code=>typeof code!=='string'||!/^([^\s-]+)-USDT$/u.test(code)||!dydx_crypto_assets.has(code.replace(/-USDT$/,''))||!dydx.hasRoutingHint({contract:code,native_symbol:code.replace(/-USDT$/,'')})))return candidateHttpCap;
+   if(budget.summary().reserved_http+dydx.estimateHttpCost(params)>max_http_per_run)return candidateHttpCap;
+   return Math.min(requestedCap,max_http_per_run-candidateReservedStart);
+  };
   const restrict=Array.isArray(params.allowed_source_ids),allowed=new Set(restrict?params.allowed_source_ids:[]);
   const id=params?.source_identity||{},lanes=[];
   if(!restrict||allowed.has('HYPERLIQUID_NATIVE'))lanes.push('HYPERLIQUID_NATIVE');
@@ -115,7 +124,7 @@ const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null,po
    if(lane==='OXARCHIVE_HL_BUCKETS'){const coverage=primary.nativeMarketCoverage(params).status;if(coverage==='UNSUPPORTED')return observe(lane,null,'UNSUPPORTED_NATIVE_SYMBOL_VERIFIED_HYPERLIQUID_CATALOG',attempt,true,0);if(coverage!=='SUPPORTED')return observe(lane,null,'SKIPPED_NATIVE_MARKET_COVERAGE_NOT_VERIFIED',attempt,false,0);}
    const sharedGtrade=lane==='GTRADE_NATIVE'&&secondary?.hasRunSnapshot?.(params.run_id)===true;
    const declaredCost=lane==='DYDX_PINNED_NATIVE'?dydx.estimateHttpCost(params):lane==='HYPERLIQUID_NATIVE'?primary.estimateHttpCost(params):lane==='GTRADE_NATIVE'?(secondary?.estimateHttpCost?.(params)??(sharedGtrade?0:3)):lane==='OXARCHIVE_HL_BUCKETS'?1:4;
-   const laneCap=lane==='GTRADE_NATIVE'?sharedGtradeBatchCap():candidateHttpCap;
+   const laneCap=lane==='GTRADE_NATIVE'?sharedGtradeBatchCap():lane==='DYDX_PINNED_NATIVE'?sharedDydxBatchCap():candidateHttpCap;
    if(budget.summary().reserved_http-candidateReservedStart+declaredCost>laneCap)return observe(lane,null,'SKIPPED_CANDIDATE_HTTP_ENVELOPE',attempt,false);
    if(budget.summary().reserved_http+declaredCost>max_http_per_run)return observe(lane,null,'QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET',attempt,false);
    if(lane==='DYDX_PINNED_NATIVE'){
