@@ -1,0 +1,294 @@
+{
+  "schema": "DYDX_PINNED_NATIVE_STATE_RESEARCH_20261007_V1",
+  "head": "923ce07e5b16c3ba998302b2dd1bd7c18f87bc3f",
+  "protocol_schema_head": "e278fb0032d511ebfdc58e8dcc7aba3164057c50",
+  "run_id": "DYDX_PINNED_RESEARCH:37612540426:1791371572939",
+  "started_ts": 1791371572939,
+  "source_cap": 3,
+  "sourceHTTP": 3,
+  "MAIN": 0,
+  "Telegram": 0,
+  "decision_activation": false,
+  "liquidation_levels_accepted": 0,
+  "reason": "Indexer latest height is not an atomic account/price snapshot; verify independent direct native state and inputs pinned to one explicit block before any conditional calculation",
+  "rows": [
+    {
+      "path": "/dydxprotocol.perpetuals.Query/AllPerpetuals",
+      "response_id": 3,
+      "height": "108434861",
+      "returned_records": 296,
+      "partial_catalog": false,
+      "proto_sha256": "a866877c4775693c84bdbd915fb311ad7b099a01082452f0e09ec358fa00feda"
+    },
+    {
+      "path": "/dydxprotocol.perpetuals.Query/AllLiquidityTiers",
+      "response_id": 4,
+      "height": "108434861",
+      "returned_records": 8,
+      "partial_catalog": false,
+      "proto_sha256": "0fd39fc1ee831ebcb09b9572c67f85fc310ba970fc938e4b7063c46d130cdf66"
+    },
+    {
+      "path": "/dydxprotocol.prices.Query/AllMarketPrices",
+      "response_id": 5,
+      "height": "108434861",
+      "returned_records": 297,
+      "partial_catalog": false,
+      "proto_sha256": "22a1e48ffda3966dfa38ab4ad867398e33c10bffc6e12da06254c291fd0d6081"
+    },
+    {
+      "path": "/dydxprotocol.assets.Query/AllAssets",
+      "response_id": 6,
+      "height": "108434861",
+      "returned_records": 1,
+      "partial_catalog": false,
+      "proto_sha256": "9ca252e4c5e96678fa8267c315b9647592eb8b07a7d0ccae348e5075f0a79d32"
+    }
+  ],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 32,
+      "reserved_rows_read": 642600,
+      "reserved_rows_written": 13104,
+      "measured_rows_read": 393176,
+      "measured_rows_written": 6418,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1250,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 643850,
+      "rows_written": 13204
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "DYDX_PINNED_RESEARCH:37612540426:1791371572939",
+    "reserved": [
+      {
+        "scope_id": "DYDX_PINNED_RESEARCH_V1:202610:DYDX_RPC",
+        "provider": "DYDX_RPC",
+        "units": 3
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false
+  },
+  "pinned_block": {
+    "chain_id": "dydx-mainnet-1",
+    "height": "108434861",
+    "source_ts": 1791371573962,
+    "hash": "9774C53BC4434F5A1EBA341D3290CFA5584F7D0B9F839DEB4D6187C37BC013EF",
+    "status_receipt": {
+      "url": "https://dydx-rpc.publicnode.com/",
+      "method": "POST",
+      "request_body": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "status",
+        "params": {}
+      },
+      "started_ts": 1791371574883,
+      "http_status": 200,
+      "received_ts": 1791371575157,
+      "bytes": 1101,
+      "sha256": "fb3e5de63861fe538db4ae12efb65af2cbcd4adfb17508e03e3890590db0761c"
+    }
+  },
+  "account_sample": {
+    "returned_accounts": 20,
+    "partial_page": true,
+    "accounts": [
+      {
+        "owner": "dydx1000dnnuxhq9738f257nqtastzn8wqm6ldcdlw5",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1000dtq9at9cpsxmtucma52fxp7w07jcglfusq6",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1000qkj0ns34zk9706plzq4vk07kmgvkdaruddj",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 2
+      },
+      {
+        "owner": "dydx1003529ts43v9a25fxm8erstl53k538y4mh76e5",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100506kftkaxq7q7dyang0v3g7ct2cfzsz9k6f3",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1005rtsdjq45n6ckp4w8z92f3xsptav824v70m0",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1006m8x352r8tk7qlkut6cqp609wkre763xsjjv",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1006py723hlxe6k82y9wkh94gy2c8cjdgpj567v",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1006py723hlxe6k82y9wkh94gy2c8cjdgpj567v",
+        "number": "128",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1006u94sl34cdayzwr6d69q773nqn0cg44zzuzv",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx10083025ktz55uzlswxtf8fjrxjffml72lkgtfz",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx10083025ktz55uzlswxtf8fjrxjffml72lkgtfz",
+        "number": "128",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx1009y7329rwft9s6eqt3tu8rmlzsjx2esqxqxw8",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100cf6pxukxez3pfkwlefne5jstu2wwwwwl28us",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100ctpn67m232x0nnn0sm804rxmj50utl0ezwc9",
+        "number": "128",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100gqtamc04gg3p4mmczugerqc0wtslcj5m04es",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100jlkzlxxaunf96mrgvw5e2v4n5wjhpz3ckf8h",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 4
+      },
+      {
+        "owner": "dydx100l9m6g70j28g2tk3jj4plmge8vsmj6jdrlzhk",
+        "number": "0",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100l9m6g70j28g2tk3jj4plmge8vsmj6jdrlzhk",
+        "number": "1",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      },
+      {
+        "owner": "dydx100l9m6g70j28g2tk3jj4plmge8vsmj6jdrlzhk",
+        "number": "2",
+        "asset_position_records": 1,
+        "perpetual_position_records": 0
+      }
+    ]
+  },
+  "status": "ACTUAL_NATIVE_ACCOUNT_AND_CONTEXT_READS_PINNED_TO_ONE_CURRENT_BLOCK",
+  "source_clock_binding_verified": true,
+  "model_or_liquidation_calculation_validation_pending": true,
+  "full_account_census": false,
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "DYDX_PINNED_RESEARCH:37612540426:1791371572939",
+    "source_run_id": "37612540426",
+    "measured_rows_read": 38,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 9,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791371575827,
+  "d1_usage": {
+    "requests": 9,
+    "rows_read": 39,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 33,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 5,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "023e41bbb51955cc1860f152e35b2319a4e545fec8096d9caa9297b6c54310ae"
+}
