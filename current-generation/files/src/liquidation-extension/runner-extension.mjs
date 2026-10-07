@@ -23,7 +23,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
  }
  async function collectOnce({contract,run_id,native_symbol,deep_started_ts,max_deep_ms,max_http_for_candidate}){
   const now=clock();if(phaseStart===null)phaseStart=now;const deadline=Math.min(phaseStart+max_total_ms,Number(deep_started_ts)+max_deep_ms);
-  if(!Number.isFinite(deadline)||deadline-now<250){records.push({status:'SKIPPED_DEADLINE',contract});return null;}
+  if(!Number.isFinite(deadline)||(deadline-now<250&&!cachedAccounts(run_id,native_symbol).length)){records.push({status:'SKIPPED_DEADLINE',contract});return null;}
   const baseRoute=resolveHtxLiquidationSources({contract});
   if(!baseRoute.ok||baseRoute.base!==native_symbol){records.push({status:'NATIVE_SYMBOL_CONTRACT_MISMATCH',contract,native_symbol});return null;}
   if(baseRoute.external_liquidation_map_needed!==true){records.push({status:'SKIPPED_BTC_ETH_BY_USER_POLICY',contract,native_symbol});return null;}
@@ -61,6 +61,7 @@ export function createRunnerLiquidationExtension({mode='OFF',admit,fetch_impl=gl
    };
    // Enrichment needs BOTH discovery and a new native read. Do not spend the
    // last request, or lose already verified levels, on discovery alone.
+   if(reused.length&&deadline-clock()<250)return reuseOnly('OPTIONAL_ENRICHMENT_PHASE_DEADLINE');
    if(reused.length&&(reused.length>=accounts_per_deep||transport.length+2>max_http_for_candidate||calls+2>max_http_per_run))return reuseOnly('OPTIONAL_ENRICHMENT_HTTP_ENVELOPE');
    if(!reused.length&&(transport.length+2>max_http_for_candidate||calls+2>max_http_per_run)){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'SAMPLE',actual_requests:transport.length});return null;}
    if(transport.length+1>max_http_for_candidate||calls+1>max_http_per_run){records.push({status:'SKIPPED_CANDIDATE_HTTP_ENVELOPE',contract,phase:'DISCOVERY',actual_requests:transport.length});return null;}

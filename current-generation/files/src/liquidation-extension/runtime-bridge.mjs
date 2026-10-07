@@ -26,7 +26,7 @@ export function bindNativeAcquisition(raw,{contract,run_id,snapshot_id,observed_
  if(raw.collection_completed_ts>observed_ts)return denied('ACQUISITION_AFTER_ANALYTICAL_CUTOFF');
  if(raw.collection_started_ts>raw.collection_completed_ts)return denied('ACQUISITION_TIME_ORDER_INVALID');
  if(observed_ts-raw.collection_completed_ts>max_age_ms)return denied('ACQUISITION_TOO_OLD');
- const native=normalizeNativeHL({accounts:raw.accounts.map(a=>({address:a.address,state:a.state})),selection_bias:raw.provenance?.selection_bias??'BOUNDED_PUBLIC_ACCOUNT_SAMPLE'},
+ const native=normalizeNativeHL({accounts:raw.accounts.map(a=>({address:a.address,state:a.state,received_at_ms:a.http_receipt.received_ts})),selection_bias:raw.provenance?.selection_bias??'BOUNDED_PUBLIC_ACCOUNT_SAMPLE'},
   {symbol:raw.native_symbol,route_symbol:raw.native_symbol,run_id,snapshot_id,as_of_ms:observed_ts,received_at_ms:raw.collection_completed_ts,max_age_ms,execution_alias_verified:false});
  captureNativeFutureMap(native,{contract,run_id,price_quote:'USDC'});
  const chosen=selectZones(native);const compactRow=z=>({native_price:z.native_price,side:z.liquidated_side,notional:z.notional,notional_unit:z.notional_unit,native_reference_price:z.native_reference_price,

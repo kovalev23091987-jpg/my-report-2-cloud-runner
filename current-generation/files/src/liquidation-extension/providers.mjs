@@ -40,7 +40,9 @@ export function normalizeNativeHL(p,c){
  try{for(const r of p.accounts){
   if(typeof r.address!=='string'||!/^0x[0-9a-f]{40}$/i.test(r.address)||seen.has(r.address.toLowerCase()))throw Error('DUPLICATE_OR_INVALID_ACCOUNT');seen.add(r.address.toLowerCase());
   if(!Array.isArray(r.state?.assetPositions))throw Error('ACCOUNT_RESPONSE_INVALID');
-  const clock=sourceClock(b,r.state.time,c);if(!clock.ok)throw Error(clock.reason);oldest=Math.min(oldest,clock.source_ts);
+  const ownReceived=Object.hasOwn(r,'received_at_ms')?timestamp(r.received_at_ms):r.http_receipt?timestamp(r.http_receipt.received_ts):c.received_at_ms;
+  if(ownReceived===null||ownReceived>c.received_at_ms||c.as_of_ms-ownReceived>c.max_age_ms)throw Error('ACCOUNT_ORIGINAL_RECEIPT_CLOCK_NOT_CLOSED');
+  const clock=sourceClock(b,r.state.time,{...c,received_at_ms:ownReceived});if(!clock.ok)throw Error(clock.reason);oldest=Math.min(oldest,clock.source_ts);
   const matches=r.state.assetPositions.filter(x=>x.position?.coin===c.symbol);if(matches.length>1)throw Error('DUPLICATE_POSITION_IN_ACCOUNT');
   for(const a of matches){const t=a.position;const size=num(t.szi);if(size===null)throw Error('POSITION_SIZE_MISSING');if(size===0)continue;
    if(num(t.liquidationPx)===null||num(t.liquidationPx)<=0){omitted.push({account:r.address,reason:'LIQUIDATION_PRICE_NOT_PROVIDED'});continue;}

@@ -33,12 +33,12 @@ function fixtureFor(symbol){
 const {createCombinedLiquidationService}=await load('combined-runner-service.mjs');
 const {buildGTradeRoutingCatalog}=await load('native-routing-catalog.mjs');
 
-function batchService({denied=false,invalid=false,batchContracts=['ZEC-USDT','QNT-USDT'],rotation=false}={}){
+function batchService({denied=false,invalid=false,batchContracts=['ZEC-USDT','QNT-USDT'],rotation=false,reserveRpc=false}={}){
  let now=T;const calls=[],grants=[];
- const s=createCombinedLiquidationService({mode:'SHADOW_ONLY',gtrade_routing_catalog:rotation?buildGTradeRoutingCatalog(read('rest-1.json.gz'),{now:T}):null,candidate_slots:2,max_http_per_run:5,max_total_ms:45000,clock:()=>now,sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async request=>{grants.push(request);return denied&&request.reservation_id.includes('PINNED_POSITION')?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'CONTROLLED_PROVIDER_DENIAL'}:{allowed:true,new_reservation:true};},fetch_impl:async(url,init={})=>{
+ const s=createCombinedLiquidationService({mode:'SHADOW_ONLY',gtrade_reserve_rpc_enabled:reserveRpc,gtrade_routing_catalog:rotation?buildGTradeRoutingCatalog(read('rest-1.json.gz'),{now:T}):null,candidate_slots:2,max_http_per_run:5,max_total_ms:45000,clock:()=>now,sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async request=>{grants.push(request);return denied&&request.reservation_id.includes('PINNED_POSITION')?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'CONTROLLED_PROVIDER_DENIAL'}:{allowed:true,new_reservation:true};},fetch_impl:async(url,init={})=>{
   calls.push(String(url));let payload;
   if(String(url).includes('api.hyperliquid.xyz'))payload=[{universe:[]},[]];
-  else if(String(url)===pin.GTRADE_RPC){const body=JSON.parse(init.body),selected=[...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'ZEC').pair_index).selected,...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'QNT').pair_index).selected];assert.deepEqual(body,pin.buildGTradePinnedRpcBatch({current_block:variables.currentBlock,selected}));payload=responses(selected);if(invalid)payload[1].result.hash='0xBAD';}
+  else if(String(url)===(reserveRpc?pin.GTRADE_RESERVE_RPC:pin.GTRADE_RPC)){const body=JSON.parse(init.body),selected=[...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'ZEC').pair_index).selected,...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'QNT').pair_index).selected];assert.deepEqual(body,pin.buildGTradePinnedRpcBatch({current_block:variables.currentBlock,selected}));payload=responses(selected);if(invalid)payload[1].result.hash='0xBAD';}
   else payload=String(url).endsWith('/trading-variables')?variables:String(url).endsWith('/charts')?prices:raws;
   return new Response(JSON.stringify(payload),{status:200});
  }});
@@ -85,4 +85,12 @@ test('mixed-market decoder binds only the requested market and rejects third mar
 
 test('warm exact two-market routing hint gives gTrade one complete pinned batch before the native lane spends its requests',async()=>{
  const f=batchService({rotation:true});const a=await f.collect('ZEC');const b=await f.collect('QNT');assert.equal(a.gtrade.source_clock_closed,true);assert.equal(b.gtrade.source_clock_closed,true);assert.equal(f.calls[0].endsWith('/trading-variables'),true);assert.equal(f.calls.length,5);assert.equal(f.s.summary().native_rotation.eligible,true);assert.equal(f.s.summary().shared_budget.actual_http,5);assert.ok(f.s.summary().shared_budget.reserved_http<=5);
+});
+
+ test('verified reserve RPC uses the same pinned two-market body and one existing provider reservation',async()=>{
+ const f=batchService({reserveRpc:true}),a=await f.collect('ZEC');f.advance(70000);const b=await f.collect('QNT');
+ assert.equal(a.gtrade.source_clock_closed,true);assert.equal(b.gtrade.source_clock_closed,true);
+ assert.equal(f.calls.filter(url=>url===pin.GTRADE_RESERVE_RPC).length,1);assert.equal(f.calls.includes(pin.GTRADE_RPC),false);assert.equal(f.calls.length,4);
+ assert.equal(f.s.summary().shared_budget.actual_http,4);assert.equal(f.grants.filter(x=>x.requests.GTRADE).length,3);
+ const bad=batchService({reserveRpc:true,invalid:true});const rejected=await bad.collect('ZEC');assert.equal(rejected.gtrade.source_clock_closed,false);assert.equal(bad.calls.length,4);
 });
