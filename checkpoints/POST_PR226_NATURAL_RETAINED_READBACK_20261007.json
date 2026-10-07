@@ -1,0 +1,482 @@
+{
+  "schema": "ACTUAL_POST_PR226_NATURAL_REPORT_RETAINED_20261007_V1",
+  "cloud_run": 37652266611,
+  "head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+  "run_id": "1791390513519-1791390521999",
+  "generated_at": "2026-10-07T16:30:06.232Z",
+  "status": "CLOSED",
+  "artifact_specs": [
+    {
+      "key": "report",
+      "id": 11496981312,
+      "digest": "4a535c052c3ffc9927a10583a8a60614379aeafaec9b7722631ff32086ddc8ef"
+    },
+    {
+      "key": "delivery",
+      "id": 11496941365,
+      "digest": "e43ad5c363180314b31ed94861f1ef441e577a4a259bad03ecb2bb2de9d144bb"
+    }
+  ],
+  "report_sha256": "91e997923f0008d49e3135c4717a2880f81cde911413d2c077cd2c6b756d97cf",
+  "telegram_sha256": "e4b6240a79194a8e5b56bd929d60fefc0b07d15d3f0caf540a1bfa3155263bc8",
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "natural_report_unchanged": true,
+  "telegram_proof": {
+    "schema": "telegram-info-proof-v1",
+    "head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+    "source": "schedule",
+    "source_run_id": "1791390513519-1791390521999",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "龙虾-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "BR-USDT",
+          "status": "WAVE_NOT_CURRENT",
+          "reason": null,
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 86,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "candidates": [
+    {
+      "contract": "BR-USDT",
+      "run_id": "1791390513519-1791390521999",
+      "snapshot_id": "S392:BR-USDT:1791390601271",
+      "observed_ts": 1791390601271,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating_block_count": 6,
+      "participating_block_ids": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "score_applied_block_count": 0,
+      "checked_block_count": 10,
+      "rendered_blocks": [
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N06",
+        "N07",
+        "N10",
+        "N11",
+        "N16"
+      ],
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -17.255026623221802,
+          "absolute_move_pct": 17.255026623221802,
+          "is_pump": true,
+          "is_strong_move": true,
+          "early_anomaly": false,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.521165,
+        "priority_reason": "ABS_MOVE_AT_LEAST_5_PERCENT",
+        "above": [],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "NOT_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "NOT_CLOSED",
+        "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+        "all_zones": [],
+        "display_source_zones": [],
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 0,
+        "omitted_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "NOT_CLOSED",
+        "below_status": "NOT_CLOSED",
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "BR-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false,
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "BR-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "BR-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false,
+            "automatic_discovery_allowed": true,
+            "structural_hint_available": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      },
+      "data_quality_keys": [
+        "classification",
+        "sufficient",
+        "owner_deferred_exact_signed_raw24h",
+        "owner_deferred_gaps",
+        "partial_context_is_not_zero_or_green",
+        "components",
+        "gaps",
+        "unavailable_by_design",
+        "history_observed",
+        "decision_effect"
+      ]
+    },
+    {
+      "contract": "龙虾-USDT",
+      "run_id": "1791390513519-1791390521999",
+      "snapshot_id": "S392:龙虾-USDT:1791390569430",
+      "observed_ts": 1791390569430,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating_block_count": 11,
+      "participating_block_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "score_applied_block_count": 0,
+      "checked_block_count": 14,
+      "rendered_blocks": [
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N02",
+        "N03",
+        "N06",
+        "N07",
+        "N10",
+        "N05",
+        "N04",
+        "N11",
+        "N16",
+        "N15"
+      ],
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -16.51432403947495,
+          "absolute_move_pct": 16.51432403947495,
+          "is_pump": true,
+          "is_strong_move": true,
+          "early_anomaly": false,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.043526999999999996,
+        "priority_reason": "ABS_MOVE_AT_LEAST_5_PERCENT",
+        "above": [],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "NOT_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "NOT_CLOSED",
+        "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+        "all_zones": [],
+        "display_source_zones": [],
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 0,
+        "omitted_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "NOT_CLOSED",
+        "below_status": "NOT_CLOSED",
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "龙虾-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false,
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "龙虾-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "龙虾-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false,
+            "automatic_discovery_allowed": true,
+            "structural_hint_available": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      },
+      "data_quality_keys": [
+        "classification",
+        "sufficient",
+        "owner_deferred_exact_signed_raw24h",
+        "owner_deferred_gaps",
+        "partial_context_is_not_zero_or_green",
+        "components",
+        "gaps",
+        "unavailable_by_design",
+        "history_observed",
+        "decision_effect"
+      ]
+    }
+  ]
+}
