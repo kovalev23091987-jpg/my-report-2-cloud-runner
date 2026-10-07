@@ -2354,7 +2354,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791374983081,
+  "updated_ts": 1791375417670,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -2532,15 +2532,35 @@
     "pr": 218,
     "production_head": "c5e0c08a03c91c29bf5de56cf2daef65fdefcc74",
     "cloud_run": 37618493147,
-    "status": "VERIFIED_RUNTIME_RELEASE_AUTOMATIC_STRUCTURAL_BOOTSTRAP_PENDING",
+    "status": "VERIFIED_RUNTIME_AND_ACTUAL_NATIVE_STRUCTURAL_BOOTSTRAP",
     "code_enabled_for_admitted_hints": true,
-    "durable_structural_bootstrap_pending": true,
+    "durable_structural_bootstrap_pending": false,
     "new_fresh_SENT": false,
-    "full_owner_task_completion": false
+    "full_owner_task_completion": false,
+    "actual_bootstrap": "checkpoints/DYDX_ACTUAL_NATIVE_BOOTSTRAP_20261007.json",
+    "eligible_structural_assets": [
+      "WIF",
+      "ATOM",
+      "ETH"
+    ],
+    "source_http": 3,
+    "source_ts": 1791375068156,
+    "partial_account_sample": true
   },
   "owner_latest_source_fact_requirement": {
     "at": "2026-10-07T15:03:42+03:00",
     "text": "Проверяй, чтобы они давали нам реальные данные, а не подключение ради подключения.",
     "acceptance": "Actual source state, original clock, exact asset, admitted consumer and report use must be proven separately from nominal connectivity."
+  },
+  "latest_dydx_actual_native_bootstrap": {
+    "proof": "checkpoints/DYDX_ACTUAL_NATIVE_BOOTSTRAP_20261007.json",
+    "cloud_run": 37619180777,
+    "run_id": "DYDX_NATIVE_BOOTSTRAP:37619180777:1791375067429",
+    "status": "ACTUAL_PINNED_NATIVE_INPUT_TO_SCOPED_CONTEXT_AND_DURABLE_ROUTING_VERIFIED",
+    "sourceHTTP": 3,
+    "D1_unknown_ops": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false
   }
 }
