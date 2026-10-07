@@ -171,16 +171,16 @@
     }
   ],
   "lease": {
-    "owner": "HTX:20261007:1791399140815:cache-only-full-register",
-    "acquired_ts": 1791399140815,
-    "expires_ts": 1791409058955,
-    "scope": "OWNER_AUTHORIZED_BOUNDED_CURRENT_NATIVE_SOURCE_QUALIFICATION_AND_FULL_REGISTER"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null,
+    "scope": null
   },
   "next_action": "Continue the full owner register from retained main proofs. Priorities LIQ/N01/N02/N05/N12/N15. Current Veranta native trade is verified but current PairInfos verified source lookup returned 404; activation requires current fees/oracle identity/assigned consumer. BR N05 original failure remains unresolved. Await genuine prospective data and do not force new SENT.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791407316795,
+  "updated_ts": 1791407505652,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -231,12 +231,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261007:1791394702919:connected-source-health",
-    "acquired_ts": 1791394702919,
-    "expires_ts": 1791400102919,
-    "scope": "OWNER_AUTHORIZED_CONNECTED_SOURCE_HEALTH_EXACT_DIAGNOSTICS_AND_FULL_REGISTER_CONTINUATION",
-    "released_ts": 1791398189861,
-    "reason": "Owner requested detailed transfer to another chat; proofs retained, current lease released without changing production strategy."
+    "owner": "HTX:20261007:1791399140815:cache-only-full-register",
+    "acquired_ts": 1791399140815,
+    "expires_ts": 1791409058955,
+    "scope": "OWNER_AUTHORIZED_BOUNDED_CURRENT_NATIVE_SOURCE_QUALIFICATION_AND_FULL_REGISTER",
+    "released_ts": 1791407505652,
+    "reason": "Connected PR228–231 proofs, actual same-run BOME SENT155, current native qualifications and full-register continuation retained; release only this session's own lease."
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -666,7 +666,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "CURRENT_VERANTA_V2_READONLY_QUALIFICATION_AND_FULL_REGISTER",
+  "current_execution_block": "FULL_OWNER_REGISTER_OPEN_RETAINED_CHECKPOINT",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -790,9 +790,10 @@
     "production_natural_acceptance": "PENDING_NEXT_NATURAL_REPORT"
   },
   "owner_latest_continuation_instruction": {
-    "at_MSK": "2026-10-07T12:53:15+03:00",
-    "instruction": "Не останавливайся, продолжай выполнение задач.",
-    "scope": "CONTINUE_MAXIMUM_USEFUL_LIQUIDATION_DATA_AND_FULL_REGISTER_WITHOUT_TASK_BY_TASK_CONFIRMATION"
+    "text": "Выполняй до самого завершения без моих команд; штатная работа в облаке без интернета владельца.",
+    "authorization": "CONTINUE_EXISTING_FULL_REGISTER_WITHOUT_ROUTINE_PERMISSION",
+    "future_market_facts_not_fabricated": true,
+    "agent_background_execution_after_turn_promised": false
   },
   "latest_native_wallet_routing_release": {
     "pr": 214,
@@ -2115,5 +2116,10 @@
     "report_artifacts": 0,
     "not_natural_release_acceptance": true,
     "masked_next_due_number_not_reconstructed": true
+  },
+  "latest_continuation_handoff": {
+    "path": "checkpoints/CONTINUATION_20261007_2110.md",
+    "state": "checkpoints/CONTINUATION_STATE_20261007_2110.json",
+    "verified_main_before_save": "4c191e434c6296f50b35347e5779eb56a436283d"
   }
 }
