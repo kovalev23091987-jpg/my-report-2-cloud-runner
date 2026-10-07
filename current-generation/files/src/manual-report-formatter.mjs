@@ -1,4 +1,5 @@
 import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
+import {factualIdeaBasis} from './idea-basis-facts.mjs';
 import {formatLiquidationHistoryFacts} from './gate-liquidation-history.mjs';
 import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displaySnapshotChange} from './canonical-display.mjs';
 import {nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
@@ -45,7 +46,8 @@ export function formatManualReport(result){
  if(result.invalidation){const invalidation=displayInvalidation(result.invalidation);if(!invalidation)return {ok:false,status:'INVALIDATION_PRESENTATION_NOT_CLOSED',text:null};lines.push(`Отмена идеи: ${invalidation}`);}
  if(!unknown&&result.targets?.length){const prices=result.targets.map(x=>displayNumber(x?.price??x)).filter(Boolean);if(prices.length)lines.push(`Начинать закрывать позицию: ${prices[0]} USDT.`,`Дальнейшие цели: ${prices.join(', ')} USDT.`);}
  const basis=String(result?.metadata?.idea_basis||'');
- if(basis==='LIQUIDATION_PUMP')lines.push('Основа идеи: ликвидационные зоны и ускорение движения.');
+ if(result.metadata?.idea_basis_receipt)lines.push(`Основа идеи: ${factualIdeaBasis(result)}.`);
+ else if(basis==='LIQUIDATION_PUMP')lines.push('Основа идеи: ликвидационные зоны и ускорение движения.');
  else if(basis==='CANDLE_ANOMALY')lines.push('Основа идеи: более ранняя свечная аномалия, которая сейчас получает подтверждение.');
  else lines.push('Основа идеи: совокупность рыночных подтверждений.');
  const forwardModelLines=formatCoinLobsterFutureLines(result.metadata?.internal_market_context?.cross_exchange_risk?.future_provider_models);

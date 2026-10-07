@@ -3,17 +3,18 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad",
+    "current-generation/files/src/manual-report-formatter.mjs": "fcdf8e613a237288dae32b3a5838394a15aafe5f920e87e5ed985e803dda77c9",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
     "current-generation/files/src/canonical-display.mjs": "d89805f4fc479732aec87bd5cf851624591ecebf7144e17fb4c7b41cf1124593",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "123454176e09af5bf78cdcb7dcbf64572e630a61e9c1e8501c15ae22523f5547",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
-    "current-generation/files/src/canonical-publication.mjs": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "3685fd49ac7377999499862563fa28bda835dcb656554df7b8cacc4240e72e48",
+    "current-generation/files/src/canonical-publication.mjs": "2761bad4950f62c1679c6cb5fdefcd49212983cc62be39137c55b225d5bc3d21",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
     "current-generation/files/src/block-result-context.mjs": "6b6e2597597349973d00b9234bdca23b0a8cb32c432189feecbfee1ba1472f37",
-    "current-generation/files/src/telegram-plain-facts.mjs": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1"
+    "current-generation/files/src/telegram-plain-facts.mjs": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1",
+    "current-generation/files/src/idea-basis-facts.mjs": "2aa02d0c309fbcbb40549545b93ce0a82e66a9f256564bcb42005a1f76c99c05"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -486,6 +487,29 @@
       "before_sha256": "9a2f7754bb360b63d037512417572c606a3c4546ba844b405cd055011817ffe1",
       "after_sha256": "6b6e2597597349973d00b9234bdca23b0a8cb32c432189feecbfee1ba1472f37",
       "golden_fixtures_changed": false
+    },
+    {
+      "date": "2026-10-07",
+      "scope": "OWNER_ACTUAL_SUBSTANTIAL_USED_SCORE_FACTORS_IDEA_BASIS",
+      "authorization": "Vladimir09:01MSK: fix and implement individual factual cause;09:06MSK: only substantial rating factors;09:08MSK: then continue fullTZ.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
+          "after": "3685fd49ac7377999499862563fa28bda835dcb656554df7b8cacc4240e72e48"
+        },
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302",
+          "after": "2761bad4950f62c1679c6cb5fdefcd49212983cc62be39137c55b225d5bc3d21"
+        },
+        "current-generation/files/src/manual-report-formatter.mjs": {
+          "before": "9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad",
+          "after": "fcdf8e613a237288dae32b3a5838394a15aafe5f920e87e5ed985e803dda77c9"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "historical_brief_cutover": "2026-10-07T06:01:08Z",
+      "source_HTTP_delta": 0,
+      "strategy_weights_changed": false
     }
   ],
   "consumer_selection_revisions": [

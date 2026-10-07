@@ -1,4 +1,5 @@
 import {formatManualReport} from './manual-report-formatter.mjs';
+import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
@@ -122,21 +123,22 @@ function renderLegacyCanonicalTelegram({canonical,lifecycle_event}={}){
  lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 export function renderCanonicalTelegram({canonical,lifecycle_event,context_policy='OWNER_APPROVED_BRIEF_20261007'}={}){
- if(!['OWNER_APPROVED_BRIEF_20261007','ORIGINAL_V5_20261006'].includes(context_policy))return{ok:false,status:'APPROVED_CONTEXT_POLICY_REQUIRED',text:null};
+ if(!['OWNER_APPROVED_BRIEF_20261007','ORIGINAL_BRIEF_20261007','ORIGINAL_V5_20261006'].includes(context_policy))return{ok:false,status:'APPROVED_CONTEXT_POLICY_REQUIRED',text:null};
  if(canonical?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};const nativeGuard=validateNativeLiquidationContext(canonical);if(!nativeGuard.ok)return{ok:false,status:nativeGuard.status,text:null};const event=upper(lifecycle_event),d=upper(canonical.direction),ticker=text(canonical?.metadata?.contract||canonical?.candidates?.[0]?.contract||canonical?.candidates?.[0]?.ticker).replace(/-USDT$/i,'');
  if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
  const dir=d==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 ЖДЁМ ПОДТВЕРЖДЕНИЕ ВХОДА':event==='ENTRY'?'✅ ВХОД ОДОБРЕН':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
  const shownScore=score(canonical.scores?.overall_0_100)??score(canonical.scores?.coin_interest_0_100);
  if(['WAIT','ENTRY'].includes(event)&&!reportableTarget(canonical))return{ok:false,status:'REPORTABLE_TARGET_PROOF_NOT_CLOSED',text:null};
- const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${basisLabel(canonical)}.`];
- const brief=context_policy==='OWNER_APPROVED_BRIEF_20261007';
+ const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007';
+ const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
+ const brief=context_policy!=='ORIGINAL_V5_20261006';
  const relative=brief?plainRelativeComparison(canonical):relativeLine(d,relativeConfirmed(canonical));
- if(relative)lines.push('',relative);
+ if(relative&&!factual)lines.push('',relative);
  const oi=plainOpenInterest(canonical);
  const price=brief?telegramPrice:fmtPrice;
  const contextFacts=confirmedBlockContextFacts(canonical).filter(f=>!brief||isApprovedTelegramContextFact(f,canonical)).map(f=>plainContextFact(f,canonical));
  const facts=[...new Set([...(oi?[oi]:[]),...(!brief?displayMarketFacts(canonical).filter(f=>!f.startsWith('Открытый интерес HTX:')):[]),...contextFacts])].slice(0,event==='WAIT'?1:oi?2:3);
- for(const fact of facts)lines.push('',`• ${fact}`);
+ if(!factual)for(const fact of facts)lines.push('',`• ${fact}`);
  lines.push('');
  if(event==='OBSERVE'){
    const t=canonical.trigger,target=reportableTarget(canonical);lines.push('Для входа ждём:',`• закрепления цены ${d==='LONG'?'выше':'ниже'} ${price(t?.value)} USDT;`,`• повторного подтверждения объёма, открытого интереса и ликвидаций.`,'',`Идея теряет интерес: ${plainCancellation(t?.cancel_condition,{brief})||displayCondition(t?.cancel_condition)}.`,'',target?`Цель после подтверждения входа: ${price(target?.price??target)} USDT.`:'Цель после подтверждения входа: пока не подтверждена.');
@@ -173,11 +175,12 @@ export function validatePresentation({canonical,manual_text,telegram_text,direct
   // diagnostics. New publications must use the approved brief fact selection.
   const briefCutover=Date.parse('2026-10-07T01:30:00Z');
   const originalV5=canonical.observed_ts<briefCutover?renderCanonicalTelegram({canonical,lifecycle_event:event,context_policy:'ORIGINAL_V5_20261006'}):null;
+  const originalBrief=canonical.observed_ts<IDEA_BASIS_CUTOVER?renderCanonicalTelegram({canonical,lifecycle_event:event,context_policy:'ORIGINAL_BRIEF_20261007'}):null;
   // Immutable pre-approval publications may retain their exact approved V4 bytes.
   // New snapshots must use V5; this never rewrites or resends historical messages.
   const cutover=Date.parse('2026-10-06T18:37:54Z');
   const legacy=canonical.observed_ts<cutover?renderLegacyCanonicalTelegram({canonical,lifecycle_event:event}):null;
-  if((!originalV5?.ok||telegram_text!==originalV5.text)&&(!legacy?.ok||telegram_text!==legacy.text))return fail('TELEGRAM_CANONICAL_CONTENT_MISMATCH');
+  if((!originalBrief?.ok||telegram_text!==originalBrief.text)&&(!originalV5?.ok||telegram_text!==originalV5.text)&&(!legacy?.ok||telegram_text!==legacy.text))return fail('TELEGRAM_CANONICAL_CONTENT_MISMATCH');
  }
  const expectedManual=formatManualReport(canonical);
  if(!expectedManual.ok)return fail(expectedManual.status);
