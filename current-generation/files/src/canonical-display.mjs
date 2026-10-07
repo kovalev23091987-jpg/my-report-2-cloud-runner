@@ -90,7 +90,7 @@ export function auditLiquidationPresentation(liq,{policy='ORIGINAL'}={}){
  const all=Array.isArray(liq?.display_source_zones)&&liq.display_source_zones.length?liq.display_source_zones:Array.isArray(liq?.all_zones)&&liq.all_zones.length?liq.all_zones:[...(Array.isArray(liq?.above)?liq.above:[]),...(Array.isArray(liq?.below)?liq.below:[])];
  const rows=all.map(z=>{
   const d=finite(z?.distance_pct),ref=finite(z?.distance_reference_price??z?.native_reference_price??(z?.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'?null:liq?.current_price)),px=finite(z?.price),recomputed=ref>0&&px>0?(px/ref-1)*100:null;
-  const status=policy!==RELEVANT_LIQUIDATION_PRESENTATION?'ORIGINAL':d===null?'DISTANCE_NOT_CLOSED':z?.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE'&&recomputed===null?'SOURCE_REFERENCE_NOT_CLOSED':recomputed!==null&&Math.abs(recomputed-d)>.01?'DISTANCE_SOURCE_REFERENCE_MISMATCH':Math.abs(d)>LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT?'OUTSIDE_PRESENTATION_DISTANCE_BOUND':'DISPLAY_ELIGIBLE';
+  const status=policy!==RELEVANT_LIQUIDATION_PRESENTATION?'ORIGINAL':d===null?'DISTANCE_NOT_CLOSED':recomputed===null?'SOURCE_REFERENCE_NOT_CLOSED':Math.abs(recomputed-d)>.01?'DISTANCE_SOURCE_REFERENCE_MISMATCH':Math.abs(d)>LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT?'OUTSIDE_PRESENTATION_DISTANCE_BOUND':'DISPLAY_ELIGIBLE';
   return {zone:z,status,recomputed_distance_pct:recomputed};
  });
  return {policy,maximum_distance_pct:policy===RELEVANT_LIQUIDATION_PRESENTATION?LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT:null,raw_level_count:rows.length,omitted_level_count:rows.filter(r=>!['ORIGINAL','DISPLAY_ELIGIBLE'].includes(r.status)).length,rows,analysis_recomputed:false,source_clocks_refreshed:false};
@@ -148,7 +148,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
  return lines;
 }
 export function displayLegacyLiquidations(liq,{policy='ORIGINAL'}={}){
- if(liq?.future_only===true)return displayFutureLiquidations(liq,{policy});
+ if(liq?.future_only===true||policy===RELEVANT_LIQUIDATION_PRESENTATION)return displayFutureLiquidations(liq,{policy});
  const lines=[];
  for(const [rows,label] of [[liq?.above,'Сильные ликвидации выше'],[liq?.below,'Сильные ликвидации ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).filter(z=>liq?.future_levels_required!==true||['NATIVE_FUTURE_LEVEL','PROVIDER_ESTIMATE','PROJECTED'].includes(z?.kind)).slice(0,4).map(z=>{
