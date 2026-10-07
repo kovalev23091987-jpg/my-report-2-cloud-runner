@@ -8,3 +8,8 @@ test('official Lighter and GMX catalogs build exact venue identities once per da
  const first=await loadLiquidationVenueCatalog({db,fetch_impl,now:1000});assert.equal(first.network_calls,2);assert.equal(first.entries.FIL.lighter_market_id,103);assert.equal(first.entries.FIL.gmx_market_address,'0x1111111111111111111111111111111111111111');assert.equal(first.entries.OLD,undefined);
  const second=await loadLiquidationVenueCatalog({db,fetch_impl,now:2000});assert.equal(second.network_calls,0);assert.equal(calls,2);assert.ok(second.receipts.every(x=>x.status==='CACHE_HIT'));
 });
+
+test('structural gTrade hints are returned separately from exact Lighter/GMX market identities',async()=>{
+ const db=new DB();db.rows.set('GTRADE_ROUTING',{source:'GTRADE_ROUTING',observed_ts:1000,expires_ts:10000,payload_json:JSON.stringify({schema:'GTRADE_STRUCTURAL_ROUTING_CATALOG_V1',markets:[{contract:'FIL-USDT',pair_index:3}]})});
+ const catalog=await loadLiquidationVenueCatalog({db,now:2000,fetch_impl:async()=>response([])});assert.equal(catalog.gtrade_routing_catalog.markets[0].contract,'FIL-USDT');assert.deepEqual(catalog.entries,{});
+});

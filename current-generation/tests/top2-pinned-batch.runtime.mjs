@@ -31,17 +31,18 @@ function fixtureFor(symbol){
 }
 
 const {createCombinedLiquidationService}=await load('combined-runner-service.mjs');
+const {buildGTradeRoutingCatalog}=await load('native-routing-catalog.mjs');
 
-function batchService({denied=false,invalid=false,batchContracts=['ZEC-USDT','QNT-USDT']}={}){
+function batchService({denied=false,invalid=false,batchContracts=['ZEC-USDT','QNT-USDT'],rotation=false}={}){
  let now=T;const calls=[],grants=[];
- const s=createCombinedLiquidationService({mode:'SHADOW_ONLY',candidate_slots:2,max_http_per_run:5,max_total_ms:45000,clock:()=>now,sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async request=>{grants.push(request);return denied&&request.reservation_id.includes('PINNED_POSITION')?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'CONTROLLED_PROVIDER_DENIAL'}:{allowed:true,new_reservation:true};},fetch_impl:async(url,init={})=>{
+ const s=createCombinedLiquidationService({mode:'SHADOW_ONLY',gtrade_routing_catalog:rotation?buildGTradeRoutingCatalog(read('rest-1.json.gz'),{now:T}):null,candidate_slots:2,max_http_per_run:5,max_total_ms:45000,clock:()=>now,sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async request=>{grants.push(request);return denied&&request.reservation_id.includes('PINNED_POSITION')?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'CONTROLLED_PROVIDER_DENIAL'}:{allowed:true,new_reservation:true};},fetch_impl:async(url,init={})=>{
   calls.push(String(url));let payload;
   if(String(url).includes('api.hyperliquid.xyz'))payload=[{universe:[]},[]];
   else if(String(url)===pin.GTRADE_RPC){const body=JSON.parse(init.body),selected=[...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'ZEC').pair_index).selected,...pin.selectGTradePinnedPositionSample(raws,resolveGTradeCryptoMarket(variables,'QNT').pair_index).selected];assert.deepEqual(body,pin.buildGTradePinnedRpcBatch({current_block:variables.currentBlock,selected}));payload=responses(selected);if(invalid)payload[1].result.hash='0xBAD';}
   else payload=String(url).endsWith('/trading-variables')?variables:String(url).endsWith('/charts')?prices:raws;
   return new Response(JSON.stringify(payload),{status:200});
  }});
- const collect=symbol=>s.collect({contract:symbol+'-USDT',native_symbol:symbol,run_id:'BATCH',deep_started_ts:now,max_deep_ms:45000,max_http_for_candidate:5,allowed_source_ids:['GTRADE_NATIVE'],position_batch_contracts:batchContracts});
+ const collect=symbol=>s.collect({contract:symbol+'-USDT',native_symbol:symbol,run_id:'BATCH',deep_started_ts:now,max_deep_ms:45000,max_http_for_candidate:5,allowed_source_ids:rotation?['HYPERLIQUID_NATIVE','GTRADE_NATIVE']:['GTRADE_NATIVE'],position_batch_contracts:batchContracts});
  return{s,calls,grants,collect,advance:ms=>{now+=ms;}};
 }
 test('retained exact ZEC and QNT positions verified together survive a later deep check after the shared source deadline',async()=>{
@@ -80,4 +81,8 @@ test('mixed-market decoder binds only the requested market and rejects third mar
  const third=raws.find(x=>Number(x.trade.pairIndex)===resolveGTradeCryptoMarket(variables,'ADA').pair_index);assert.throws(()=>pin.buildGTradePinnedRpcBatch({current_block:variables.currentBlock,selected:[...selected,third]}),/MARKET_SAMPLE_BOUND/);
  const extra=clone(selected[1]);extra.trade.index=9999;assert.throws(()=>pin.buildGTradePinnedRpcBatch({current_block:variables.currentBlock,selected:[...selected,extra]}),/MARKET_SAMPLE_BOUND/);
  for(const mutate of [b=>{b[0].method='eth_sendRawTransaction';},b=>{b[2].params[1]='latest';},b=>{b[2].params[0].value='0x1';},b=>{b[2].params[0].to='0x'+'1'.repeat(40);},b=>{b.push(...clone(b));}]){const b=clone(body);mutate(b);assert.equal(pin.permittedGTradePinnedRpcBatch(b),false);}
+});
+
+test('warm exact two-market routing hint gives gTrade one complete pinned batch before the native lane spends its requests',async()=>{
+ const f=batchService({rotation:true});const a=await f.collect('ZEC');const b=await f.collect('QNT');assert.equal(a.gtrade.source_clock_closed,true);assert.equal(b.gtrade.source_clock_closed,true);assert.equal(f.calls[0].endsWith('/trading-variables'),true);assert.equal(f.calls.length,5);assert.equal(f.s.summary().native_rotation.eligible,true);assert.equal(f.s.summary().shared_budget.actual_http,5);assert.ok(f.s.summary().shared_budget.reserved_http<=5);
 });
