@@ -110,19 +110,21 @@ function acquisitionClockDiagnostic(snapshot,now){
 export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),db_admit,publish_verified_24h=false}={}){
  const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
  const finish=result=>{
-  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,storage_encoding:result.storage_encoding??null,uncompressed_bytes:result.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,failure_stage:result.failure_stage??null,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??null,storage_encoding:result.storage_encoding??null,uncompressed_bytes:result.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),network_calls:0,internal_only:true});
   return result;
  };
  if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});
+ let stage='ADMISSION';try{
  const grant=db_admit?.({rows_read:16,rows_written:4});if(grant?.allowed!==true)return finish({status:grant?.status||'RAW_TAPE_DB_ADMISSION_REQUIRED',evidence:[],network_calls:0});
- await installEvidenceSourceStore(db);const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}),previous=decodeSignedTapeStorage(cached);
+ stage='INSTALL';await installEvidenceSourceStore(db);stage='READ';const cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}),previous=decodeSignedTapeStorage(cached);
  if(cached&&!previous)return finish({status:'SAVED_RAW_TAPE_STORAGE_INTEGRITY_NOT_CLOSED',evidence:[],network_calls:0});
- const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return finish({...merged,evidence:[],network_calls:0});
- await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.storage.payload});
- const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
+ stage='MERGE';const merged=mergeSignedTape({previous,acquisition,now});if(!merged.ring)return finish({...merged,evidence:[],network_calls:0});
+ stage='WRITE';await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,observed_ts:now,expires_ts:now+30*60*MIN,payload:merged.storage.payload});
+ stage='READBACK';const saved=decodeSignedTapeStorage(await readEvidenceSourceCache(db,{source:SOURCE,asset_key:contract,now}));if(!saved||hash(saved.minutes)!==hash(merged.ring.minutes))return finish({status:'RAW_TAPE_READBACK_NOT_CLOSED',evidence:[],network_calls:0});
  retainBounded(verifiedRings,contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
  return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:merged.storage.storage_bytes,storage_encoding:merged.storage.encoding,uncompressed_bytes:merged.storage.uncompressed_bytes,discarded_older_minutes:merged.discarded_minutes,network_calls:0,db_admission:grant,internal_only:true});
+ }catch{return finish({status:'RAW_TAPE_PERSISTENCE_NOT_CLOSED',failure_stage:stage,evidence:[],network_calls:0,internal_only:true});}
 }
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){
