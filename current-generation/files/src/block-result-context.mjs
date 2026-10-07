@@ -1,3 +1,4 @@
+import {normalizeXrplNativePayments} from './xrpl-native-payments.mjs';
 import {normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
 import {normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
 import {plainContextFact,omitTelegramCurrencies} from './telegram-plain-facts.mjs';
@@ -25,13 +26,20 @@ function tokenAmount(value,decimals){
  return new Intl.NumberFormat('ru-RU').format(n/base)+(fraction?`,${fraction}`:'');
 }
 function describe(row,now){
+ if(row.block_id==='N04'&&row.metric_family==='XRPL_VALIDATED_NATIVE_PAYMENT_SAMPLE'){
+  const rebuilt=normalizeXrplNativePayments({contract:row.htx_contract,identity:{chain:'xrp',asset_kind:'NATIVE',native_asset_id:'xrp:mainnet',contract_or_mint:null},ledger_payload:row.validated_ledger_payload,supply_pair_proof:row.supply_pair_proof,observed_ts:row.observed_ts}).evidence?.[0];
+  if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.source_ts!==row.source_ts||JSON.stringify(rebuilt.native_payments)!==JSON.stringify(row.native_payments)||row.exchange_labels_verified!==false||row.entry_authorized!==false||row.directional_strength!==null||row.risk_strength!==null||now-row.source_ts>20*60_000)return null;
+  const example=row.native_payments.slice(0,3).map(p=>`${tokenAmount(p.delivered_drops,6)} XRP`).join('; ');
+  return{source:'XRPL / InFTF mainnet RPC',label:'Подтверждённые переводы нативного XRP',value:`${row.native_payments.length} успешных платежей в ограниченной выборке ledger ${row.ledger_index}; фактически полученные суммы, примеры: ${example}. Это часть платежей одного ledger, принадлежность адресов биржам, накопление и направление рынка не установлены`};
+ }
+
  if(row.block_id==='N02'&&row.metric_family==='STELLAR_PUBLISHED_SUPPLY_METRICS'){
   const rebuilt=normalizeStellarPublishedSupply({contract:row.htx_contract,identity:{chain:'stellar',asset_kind:'NATIVE',native_asset_id:'stellar:mainnet',contract_or_mint:null},payload:row.primary_payload,observed_ts:row.observed_ts}).evidence?.[0];
   if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.source_ts!==row.source_ts||JSON.stringify(rebuilt.supply_values_base_units)!==JSON.stringify(row.supply_values_base_units)||row.chain_finalized_block_verified!==false||row.burn_or_buyback_change_verified!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
   return{source:'Stellar Development Foundation',label:'Предложение XLM по данным фонда',value:`общее ${tokenAmount(row.supply_values_base_units.totalSupply,7)} XLM; в обращении ${tokenAmount(row.supply_values_base_units.circulatingSupply,7)} XLM; опубликованные компоненты согласованы. Это сведения фонда, финализированный блок, изменение сжиганий и будущие разблокировки не проверены`};
  }
  if(['N02','N03'].includes(row.block_id)&&row.chain==='xrp'&&['TOTAL_SUPPLY_OBSERVATION','SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED','SUPPLY_REDUCTION_CHECK'].includes(row.metric_family)){
-  const pair=normalizeNativeLedgerPair({...row.native_ledger_pair_payload,observed_ts:row.observed_ts}),h=pair.current,p=pair.previous;
+  const pair=normalizeNativeLedgerPair({...row.native_ledger_pair_payload,observed_ts:now}),h=pair.current,p=pair.previous;
   if(pair.status!=='CLOSED'||row.provider_id!=='XRPL_NATIVE_SUPPLY'||row.upstream_id!=='XRPL_INFTF_MAINNET_RPC'||row.asset_id!=='xrp:native:mainnet'||row.native_asset_id!=='xrp:mainnet'||row.htx_contract!=='XRP-USDT'||row.decimals!==6||h.supply!==row.total_supply_base_units||h.block_ref!==row.block_ref||h.source_ts!==row.source_ts||row.directional_strength!==null||row.risk_strength!==null)return null;
   if(row.block_id==='N02'&&row.metric_family==='TOTAL_SUPPLY_OBSERVATION'&&row.supply_delta_base_units===null)return{source:'XRPL / InFTF mainnet RPC',label:'Подтверждённое общее предложение XRP',value:`${tokenAmount(h.supply,6)} XRP по валидированному ledger ${h.ledger_index}; обращающееся предложение и будущие разблокировки этим не проверены`};
   const delta=BigInt(h.supply)-BigInt(p.supply);
