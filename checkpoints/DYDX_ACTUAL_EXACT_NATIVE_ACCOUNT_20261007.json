@@ -1,0 +1,954 @@
+{
+  "schema": "DYDX_ACTUAL_EXACT_QUERY_ACCOUNT_NATIVE_STATE_AND_SCOPED_CONSUMER_20261007_V1",
+  "github_head": "c1ecaaa4bc557ca3aa07ea60066e73ae385fef82",
+  "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+  "started_ts": 1791377364515,
+  "reason": "Official QueryGetSubaccountRequest owner1/number2 must be flat, not nested SubaccountId. Retained real page discovery was correct; exact account reread previously had only controlled transport proof and failed closed. Verify the corrected source-derived account batch using current native state and original clocks in the same3 admitted HTTP. Recent-block discovery proved no useful hints and is not enabled in weekly production.",
+  "source_http_cap": 3,
+  "MAIN": 0,
+  "Telegram": 0,
+  "full_market_coverage": false,
+  "htx_native_liquidation_prices": false,
+  "decision_target_eligible": false,
+  "new_fresh_SENT": false,
+  "universe_sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613",
+  "assets": 102,
+  "contracts": 119,
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 38,
+      "reserved_rows_read": 756350,
+      "reserved_rows_written": 15184,
+      "measured_rows_read": 470604,
+      "measured_rows_written": 7567,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 757850,
+      "rows_written": 15284
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "source_allowance_setup": {
+    "status": "CLOSED",
+    "generation": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS",
+    "window_start_ts": 1790812800000,
+    "window_end_ts": 1793491200000,
+    "bindings": {
+      "DYDX_RPC": {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:DYDX_RPC",
+        "config_fingerprint": "5155004892c33f3abfa7dd17cd920518bebbef52a0bc548e82ef1cfb028b9bf5"
+      }
+    },
+    "providers": [
+      "DYDX_RPC"
+    ],
+    "per_provider_operational_cap": 10000,
+    "provider_operational_caps": {
+      "DYDX_RPC": 1000
+    },
+    "combined_run_http_cap": 5,
+    "liqflow_access": "PUBLIC_PILOT_TIME_BOUNDED",
+    "liqflow_public_pilot_end_ts": 1793059200000,
+    "swole_discovery_access": "DISABLED",
+    "oxarchive_access": "DISABLED_API_KEY_REQUIRED",
+    "automatic_topup": false,
+    "old_generation_scope_reuse": false,
+    "previous_generation_usage_reconciled": true
+  },
+  "prior_structural_account_count": 2,
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:DYDX_PAGE",
+    "reserved": [
+      {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:DYDX_RPC",
+        "provider": "DYDX_RPC",
+        "units": 3
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false,
+    "combined_local_reservation": true,
+    "local_rates_are_policy_not_provider_entitlement": true
+  },
+  "collection": {
+    "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+    "reason": null
+  },
+  "source_block": {
+    "height": "108443885",
+    "source_ts": 1791377363911,
+    "block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+    "chain_id": "dydx-mainnet-1",
+    "trust_basis": "READ_ONLY_PRIMARY_RPC_EXPLICIT_HEIGHT_NOT_CRYPTOGRAPHIC_STATE_PROOF"
+  },
+  "account_query_kind": "EXACT_SUBACCOUNT_BATCH",
+  "recent_block_discovery_enabled": false,
+  "account_sample": {
+    "count": 2,
+    "nonzero_perpetual_positions": 6,
+    "partial": true,
+    "next_cursor_retained": true
+  },
+  "model": {
+    "status": "VERIFIED_CONDITIONAL_LEVELS",
+    "levels": [
+      {
+        "provider": "DYDX_PINNED_NATIVE",
+        "upstream_group": "DYDX_MAINNET_CHAIN",
+        "asset": "WIF",
+        "external_contract": "WIF-USD",
+        "owner": "dydx1000qkj0ns34zk9706plzq4vk07kmgvkdaruddj",
+        "subaccount": 0,
+        "perpetual_id": 65,
+        "position_side": "SHORT",
+        "position_quantums": "-1081000000",
+        "position_atomic_resolution": -6,
+        "price": 1.625804937,
+        "reference_price": 0.22902998100000002,
+        "price_quote": "USD",
+        "collateral_asset": "USDC",
+        "oracle_price_integer": "1625804937",
+        "adjacent_safe_oracle_integer": "1625804936",
+        "oracle_exponent": -9,
+        "source_ts": 1791377363911,
+        "height": "108443885",
+        "block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "level_kind": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD",
+        "calculated": true,
+        "exact_exchange_native_liquidation_price": false,
+        "method": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "assumptions": [
+          "OTHER_ORACLES_FIXED_AT_PINNED_BLOCK",
+          "POSITIONS_AND_COLLATERAL_FIXED",
+          "FUNDING_INDEX_FIXED_AT_PINNED_BLOCK",
+          "NO_INTERVENING_TRADES_TRANSFERS_OR_FEES"
+        ],
+        "sample_scope": "BOUNDED_PARTIAL_PUBLIC_SUBACCOUNT_SAMPLE",
+        "full_market_coverage": false,
+        "htx_native_level": false,
+        "entry_eligible": false,
+        "target_eligible": false,
+        "volume_aggregation_eligible": false
+      },
+      {
+        "provider": "DYDX_PINNED_NATIVE",
+        "upstream_group": "DYDX_MAINNET_CHAIN",
+        "asset": "ETH",
+        "external_contract": "ETH-USD",
+        "owner": "dydx100jlkzlxxaunf96mrgvw5e2v4n5wjhpz3ckf8h",
+        "subaccount": 0,
+        "perpetual_id": 1,
+        "position_side": "LONG",
+        "position_quantums": "413000000",
+        "position_atomic_resolution": -9,
+        "price": 1180.842111,
+        "reference_price": 2567.4567669999997,
+        "price_quote": "USD",
+        "collateral_asset": "USDC",
+        "oracle_price_integer": "1180842111",
+        "adjacent_safe_oracle_integer": "1180842112",
+        "oracle_exponent": -6,
+        "source_ts": 1791377363911,
+        "height": "108443885",
+        "block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "level_kind": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD",
+        "calculated": true,
+        "exact_exchange_native_liquidation_price": false,
+        "method": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "assumptions": [
+          "OTHER_ORACLES_FIXED_AT_PINNED_BLOCK",
+          "POSITIONS_AND_COLLATERAL_FIXED",
+          "FUNDING_INDEX_FIXED_AT_PINNED_BLOCK",
+          "NO_INTERVENING_TRADES_TRANSFERS_OR_FEES"
+        ],
+        "sample_scope": "BOUNDED_PARTIAL_PUBLIC_SUBACCOUNT_SAMPLE",
+        "full_market_coverage": false,
+        "htx_native_level": false,
+        "entry_eligible": false,
+        "target_eligible": false,
+        "volume_aggregation_eligible": false
+      }
+    ],
+    "accounts": [
+      {
+        "owner": "dydx1000qkj0ns34zk9706plzq4vk07kmgvkdaruddj",
+        "number": 0,
+        "levels": 1,
+        "status": "VERIFIED_COMPLETE_ACCOUNT",
+        "net_collateral_quantums": "1598992941",
+        "maintenance_margin_quantums": "13583529",
+        "funding_quantums": "-3554242"
+      },
+      {
+        "owner": "dydx100jlkzlxxaunf96mrgvw5e2v4n5wjhpz3ckf8h",
+        "number": 0,
+        "levels": 1,
+        "status": "VERIFIED_COMPLETE_ACCOUNT",
+        "net_collateral_quantums": "670761033",
+        "maintenance_margin_quantums": "104961243",
+        "funding_quantums": "565606"
+      }
+    ],
+    "full_account_census": false,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "production_activation": false
+  },
+  "same_run_second_asset": {
+    "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+    "requests": 0,
+    "acquisition": {
+      "schema": "SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1",
+      "contract": "ETH-USDT",
+      "native_symbol": "ETH",
+      "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+      "acquisition_id": "DYDX:DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:ETH-USDT",
+      "provider": "dYdX pinned protocol model",
+      "venue": "dYdX-mainnet",
+      "price_quote": "USD",
+      "collection_started_ts": 1791377366215,
+      "collection_completed_ts": 1791377366452,
+      "source_ts": 1791377363911,
+      "source_clock_closed": true,
+      "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+      "upstream_groups": [
+        "DYDX_MAINNET_CHAIN"
+      ],
+      "sdk_version": null,
+      "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+      "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+      "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+      "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+      "positions_source_ts": 1791377363911,
+      "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+      "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+      "complete_position_census": false,
+      "variable_source_ts": null,
+      "index_source_ts": null,
+      "above": [],
+      "below": [
+        {
+          "native_price": 1180.842111,
+          "side": "LONG",
+          "notional": 1060.359644771,
+          "notional_unit": "USD",
+          "native_reference_price": 2567.4567669999997,
+          "distance_pct": -54.0073224921415,
+          "position_count": 1,
+          "margin_mode": "CROSS",
+          "conditional_cross": true,
+          "source_ts": 1791377363911,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791377366452,
+          "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+          "price_quote": "USD",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "position_key": "1ebeeec7bfb834e783788134b2058e2bfcf71f5f16305ebc9c5d21b4b4af1a0e",
+          "provider": "dYdX pinned protocol model",
+          "venue": "dYdX-mainnet",
+          "entry_eligible": false,
+          "is_htx_price": false
+        }
+      ],
+      "transport_sha256": [
+        "b5880f2599c195958105b6656800f896c5d14d283ac2aaa908f886fab1a1d7b6",
+        "b90db8c3d001099266c6d28d18be899c6643bd9a48d6a19e7bccb77d7fe38b21",
+        "e88f566ad3cffa5a3de0246a5b13db54e6f2ca2d0f671a77c4a14d516846083c"
+      ],
+      "mode": "SHADOW_ONLY",
+      "automatic_execution": false,
+      "entry_eligible": false,
+      "acquisition_fingerprint": "9560992653672ee53068e8821071b3a67f3fea82382c110688d6c644829cc901"
+    },
+    "source_ts": 1791377363911,
+    "height": "108443885"
+  },
+  "scoped_consumers": [
+    {
+      "contract": "WIF-USDT",
+      "observed_ts": 1791377366651,
+      "normalized": {
+        "provider": "dYdX pinned protocol model",
+        "venue": "dYdX-mainnet",
+        "native_symbol": "WIF",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "snapshot_id": "ACQUISITION:DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:WIF-USDT",
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "price_quote": "USD",
+        "notional_unit": "USD",
+        "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+        "observed_at_ms": 1791377366452,
+        "usable_for_context": true,
+        "status": "USABLE_SCOPED_CONTEXT",
+        "execution_target_eligible": false,
+        "automatic_execution": false,
+        "zones": [
+          {
+            "native_price": 1.625804937,
+            "liquidated_side": "SHORT",
+            "notional": 247.58140946100002,
+            "notional_unit": "USD",
+            "notional_usd": 247.58140946100002,
+            "position_count": 1,
+            "native_reference_price": 0.22902998100000002,
+            "distance_pct": 609.865551183013,
+            "source_ts": 1791377363911,
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "c2c8a98e1dfaa83f56a52b7cc92b15adabd353e5f7d9fdb356799f4b83a6c553",
+            "margin_mode": "CROSS",
+            "conditional_on_other_positions": true,
+            "decision_target_eligible": false,
+            "entry_eligible": false,
+            "oracle_price_integer": "1625804937",
+            "adjacent_safe_oracle_integer": "1625804936",
+            "oracle_exponent": -9
+          }
+        ],
+        "fingerprint": "54c0ba6a0c344b96d8a4d12a01f15f489191144c3878e46d1e05f85fc1df1bda"
+      },
+      "acquisition": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1",
+        "contract": "WIF-USDT",
+        "native_symbol": "WIF",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "acquisition_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:WIF-USDT",
+        "provider": "dYdX pinned protocol model",
+        "venue": "dYdX-mainnet",
+        "price_quote": "USD",
+        "collection_started_ts": 1791377366215,
+        "collection_completed_ts": 1791377366452,
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "sdk_version": null,
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "complete_position_census": false,
+        "variable_source_ts": null,
+        "index_source_ts": null,
+        "above": [
+          {
+            "native_price": 1.625804937,
+            "side": "SHORT",
+            "notional": 247.58140946100002,
+            "notional_unit": "USD",
+            "native_reference_price": 0.22902998100000002,
+            "distance_pct": 609.865551183013,
+            "position_count": 1,
+            "margin_mode": "CROSS",
+            "conditional_cross": true,
+            "source_ts": 1791377363911,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791377366452,
+            "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "c2c8a98e1dfaa83f56a52b7cc92b15adabd353e5f7d9fdb356799f4b83a6c553",
+            "provider": "dYdX pinned protocol model",
+            "venue": "dYdX-mainnet",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "below": [],
+        "transport_sha256": [
+          "b5880f2599c195958105b6656800f896c5d14d283ac2aaa908f886fab1a1d7b6",
+          "b90db8c3d001099266c6d28d18be899c6643bd9a48d6a19e7bccb77d7fe38b21",
+          "e88f566ad3cffa5a3de0246a5b13db54e6f2ca2d0f671a77c4a14d516846083c"
+        ],
+        "mode": "SHADOW_ONLY",
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "acquisition_fingerprint": "a9cb91908823ac4e129d53397341ac0e52753e5c73bed753194fa35953de45b7"
+      },
+      "bound": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+        "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+        "mode": "SHADOW_ONLY",
+        "freshness_max_age_ms": 120000,
+        "binding": {
+          "contract": "WIF-USDT",
+          "native_symbol": "WIF",
+          "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+          "snapshot_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:SOURCE_ONLY:WIF-USDT",
+          "observed_ts": 1791377366651,
+          "direction": null
+        },
+        "acquisition_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:WIF-USDT",
+        "acquisition_fingerprint": "a9cb91908823ac4e129d53397341ac0e52753e5c73bed753194fa35953de45b7",
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "source_age_ms": 2740,
+        "received_ts": 1791377366452,
+        "receipt_age_ms": 199,
+        "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+        "venue": "dYdX-mainnet",
+        "provider": "dYdX pinned protocol model",
+        "price_quote": "USD",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "complete_position_census": false,
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "sdk_version": null,
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "variable_source_ts": null,
+        "index_source_ts": null,
+        "above": [
+          {
+            "native_price": 1.625804937,
+            "side": "SHORT",
+            "notional": 247.58140946100002,
+            "notional_unit": "USD",
+            "native_reference_price": 0.22902998100000002,
+            "distance_pct": 609.865551183013,
+            "position_count": 1,
+            "margin_mode": "CROSS",
+            "conditional_cross": true,
+            "source_ts": 1791377363911,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791377366452,
+            "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "c2c8a98e1dfaa83f56a52b7cc92b15adabd353e5f7d9fdb356799f4b83a6c553",
+            "provider": "dYdX pinned protocol model",
+            "venue": "dYdX-mainnet",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "below": [],
+        "notional_summed_across_providers": false,
+        "independent_vote_added": false,
+        "prices_converted_to_htx": false,
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "render_enabled": true,
+        "body_bytes_before_fingerprint": 2526,
+        "fingerprint": "a1081aa485ac2274d316895fc01aff4ee8ef1a7862dfd6e037ca54f6999f7613"
+      },
+      "native_reference_panel": {
+        "version": "dynamic-liquidation-panel-v3-explicit-target-proof-20260930",
+        "status": "CLOSED",
+        "observed_ts": 1791377366651,
+        "reference_price": 0.22902998100000002,
+        "zones_seen": 1,
+        "stale_zones_excluded": 0,
+        "provider_count": 1,
+        "clusters": [
+          {
+            "liquidated_side": "SHORT",
+            "center_price": 1.625804937,
+            "distance_pct": 609.865551183013,
+            "provider_count": 1,
+            "providers": [
+              "dYdX pinned protocol model"
+            ],
+            "position_count": 1,
+            "largest_provider_position_usd": 123.79070473050001,
+            "source_ts": 1791377363911,
+            "decision_target_eligible": false,
+            "target_price": null,
+            "path_obstacle_eligible": false,
+            "contains_estimates": true,
+            "price_semantics": [
+              "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE"
+            ],
+            "target_admission_reasons": [
+              "ESTIMATED_CONTEXT_ONLY"
+            ],
+            "identity_status": "EXACT_NATIVE_MARKET",
+            "notional_summed_across_providers": false,
+            "cross_margin_discount_applied": true,
+            "agreement": "SINGLE_PROVIDER"
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "one_position_counted_once": true,
+        "cross_margin_weight": 0.5,
+        "score_evidence": {
+          "source_id": "DYNAMIC_LIQUIDATION_PANEL",
+          "responsibility_group": "PROJECTED_LIQUIDATIONS",
+          "decision_chain": "CROSS_EXCHANGE_DERIVATIVES",
+          "bullish_strength": 0,
+          "quality": 0.49999999999999994,
+          "asset_identity": "EXACT_NATIVE_MARKET",
+          "metric_family": "VERIFIED_LIQUIDATION_IMBALANCE",
+          "provider_object_id": "DYNAMIC_REPRESENTATIVE_PANEL",
+          "fresh": true,
+          "source_ts": 1791377363911,
+          "exact_identity": true
+        }
+      },
+      "reference_is_native_source_not_htx_execution_price": true,
+      "MAIN": 0,
+      "Telegram": 0
+    },
+    {
+      "contract": "ETH-USDT",
+      "observed_ts": 1791377366653,
+      "normalized": {
+        "provider": "dYdX pinned protocol model",
+        "venue": "dYdX-mainnet",
+        "native_symbol": "ETH",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "snapshot_id": "ACQUISITION:DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:ETH-USDT",
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "price_quote": "USD",
+        "notional_unit": "USD",
+        "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+        "observed_at_ms": 1791377366452,
+        "usable_for_context": true,
+        "status": "USABLE_SCOPED_CONTEXT",
+        "execution_target_eligible": false,
+        "automatic_execution": false,
+        "zones": [
+          {
+            "native_price": 1180.842111,
+            "liquidated_side": "LONG",
+            "notional": 1060.359644771,
+            "notional_unit": "USD",
+            "notional_usd": 1060.359644771,
+            "position_count": 1,
+            "native_reference_price": 2567.4567669999997,
+            "distance_pct": -54.0073224921415,
+            "source_ts": 1791377363911,
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "1ebeeec7bfb834e783788134b2058e2bfcf71f5f16305ebc9c5d21b4b4af1a0e",
+            "margin_mode": "CROSS",
+            "conditional_on_other_positions": true,
+            "decision_target_eligible": false,
+            "entry_eligible": false,
+            "oracle_price_integer": "1180842111",
+            "adjacent_safe_oracle_integer": "1180842112",
+            "oracle_exponent": -6
+          }
+        ],
+        "fingerprint": "85ba2a19c2cf619ff1d9a37738fa9dc0864fc3dc018430f4d200fd194b3f6d4d"
+      },
+      "acquisition": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1",
+        "contract": "ETH-USDT",
+        "native_symbol": "ETH",
+        "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+        "acquisition_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:ETH-USDT",
+        "provider": "dYdX pinned protocol model",
+        "venue": "dYdX-mainnet",
+        "price_quote": "USD",
+        "collection_started_ts": 1791377366215,
+        "collection_completed_ts": 1791377366452,
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "sdk_version": null,
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "complete_position_census": false,
+        "variable_source_ts": null,
+        "index_source_ts": null,
+        "above": [],
+        "below": [
+          {
+            "native_price": 1180.842111,
+            "side": "LONG",
+            "notional": 1060.359644771,
+            "notional_unit": "USD",
+            "native_reference_price": 2567.4567669999997,
+            "distance_pct": -54.0073224921415,
+            "position_count": 1,
+            "margin_mode": "CROSS",
+            "conditional_cross": true,
+            "source_ts": 1791377363911,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791377366452,
+            "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "1ebeeec7bfb834e783788134b2058e2bfcf71f5f16305ebc9c5d21b4b4af1a0e",
+            "provider": "dYdX pinned protocol model",
+            "venue": "dYdX-mainnet",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "transport_sha256": [
+          "b5880f2599c195958105b6656800f896c5d14d283ac2aaa908f886fab1a1d7b6",
+          "b90db8c3d001099266c6d28d18be899c6643bd9a48d6a19e7bccb77d7fe38b21",
+          "e88f566ad3cffa5a3de0246a5b13db54e6f2ca2d0f671a77c4a14d516846083c"
+        ],
+        "mode": "SHADOW_ONLY",
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "acquisition_fingerprint": "68baa21575b7068fc60706d7ef4a82a3ebea8c93fd59f8439ea6240102132043"
+      },
+      "bound": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+        "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+        "mode": "SHADOW_ONLY",
+        "freshness_max_age_ms": 120000,
+        "binding": {
+          "contract": "ETH-USDT",
+          "native_symbol": "ETH",
+          "run_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+          "snapshot_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:SOURCE_ONLY:ETH-USDT",
+          "observed_ts": 1791377366653,
+          "direction": null
+        },
+        "acquisition_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515:ETH-USDT",
+        "acquisition_fingerprint": "68baa21575b7068fc60706d7ef4a82a3ebea8c93fd59f8439ea6240102132043",
+        "source_ts": 1791377363911,
+        "source_clock_closed": true,
+        "source_age_ms": 2742,
+        "received_ts": 1791377366452,
+        "receipt_age_ms": 201,
+        "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+        "venue": "dYdX-mainnet",
+        "provider": "dYdX pinned protocol model",
+        "price_quote": "USD",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791377363911,
+        "positions_block_hash": "722A67B72CCD402FF4BD1AEA6F0AD2DA8D33F6238D7C44F98766C4B212CDC5F3",
+        "position_snapshot_fingerprint": "2560cd317a4afb4dba5d0a24eee5b62fc77d6d398e2fc59d6589c65398c22d44",
+        "complete_position_census": false,
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "sdk_version": null,
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "variable_source_ts": null,
+        "index_source_ts": null,
+        "above": [],
+        "below": [
+          {
+            "native_price": 1180.842111,
+            "side": "LONG",
+            "notional": 1060.359644771,
+            "notional_unit": "USD",
+            "native_reference_price": 2567.4567669999997,
+            "distance_pct": -54.0073224921415,
+            "position_count": 1,
+            "margin_mode": "CROSS",
+            "conditional_cross": true,
+            "source_ts": 1791377363911,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791377366452,
+            "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "1ebeeec7bfb834e783788134b2058e2bfcf71f5f16305ebc9c5d21b4b4af1a0e",
+            "provider": "dYdX pinned protocol model",
+            "venue": "dYdX-mainnet",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "independent_vote_added": false,
+        "prices_converted_to_htx": false,
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "render_enabled": true,
+        "body_bytes_before_fingerprint": 2521,
+        "fingerprint": "a3ab677e209603b04a602dd69d634c6d05f112fb1d97761728614eeb4285915b"
+      },
+      "native_reference_panel": {
+        "version": "dynamic-liquidation-panel-v3-explicit-target-proof-20260930",
+        "status": "CLOSED",
+        "observed_ts": 1791377366653,
+        "reference_price": 2567.4567669999997,
+        "zones_seen": 1,
+        "stale_zones_excluded": 0,
+        "provider_count": 1,
+        "clusters": [
+          {
+            "liquidated_side": "LONG",
+            "center_price": 1180.842111,
+            "distance_pct": -54.0073224921415,
+            "provider_count": 1,
+            "providers": [
+              "dYdX pinned protocol model"
+            ],
+            "position_count": 1,
+            "largest_provider_position_usd": 530.1798223855,
+            "source_ts": 1791377363911,
+            "decision_target_eligible": false,
+            "target_price": null,
+            "path_obstacle_eligible": false,
+            "contains_estimates": true,
+            "price_semantics": [
+              "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE"
+            ],
+            "target_admission_reasons": [
+              "ESTIMATED_CONTEXT_ONLY"
+            ],
+            "identity_status": "EXACT_NATIVE_MARKET",
+            "notional_summed_across_providers": false,
+            "cross_margin_discount_applied": true,
+            "agreement": "SINGLE_PROVIDER"
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "one_position_counted_once": true,
+        "cross_margin_weight": 0.5,
+        "score_evidence": {
+          "source_id": "DYNAMIC_LIQUIDATION_PANEL",
+          "responsibility_group": "PROJECTED_LIQUIDATIONS",
+          "decision_chain": "CROSS_EXCHANGE_DERIVATIVES",
+          "bullish_strength": 0,
+          "quality": 0.49999999999999994,
+          "asset_identity": "EXACT_NATIVE_MARKET",
+          "metric_family": "VERIFIED_LIQUIDATION_IMBALANCE",
+          "provider_object_id": "DYNAMIC_REPRESENTATIVE_PANEL",
+          "fresh": true,
+          "source_ts": 1791377363911,
+          "exact_identity": true
+        }
+      },
+      "reference_is_native_source_not_htx_execution_price": true,
+      "MAIN": 0,
+      "Telegram": 0
+    }
+  ],
+  "structural_save": {
+    "status": "DYDX_STRUCTURAL_ROUTING_SAVED",
+    "accounts": 2,
+    "levels_saved": false
+  },
+  "structural_readback": {
+    "fingerprint": "51dff93652756cba3ced63dbb6cfdab611ccf4b23b25f2668f3c9233da14cd07",
+    "accounts": [
+      {
+        "owner": "dydx1000qkj0ns34zk9706plzq4vk07kmgvkdaruddj",
+        "number": 0,
+        "coins": [
+          "WIF"
+        ],
+        "verified_source_ts": 1791377363911,
+        "verified_receipt_ts": 1791377366365,
+        "original_account_response_sha256": "b90db8c3d001099266c6d28d18be899c6643bd9a48d6a19e7bccb77d7fe38b21"
+      },
+      {
+        "owner": "dydx100jlkzlxxaunf96mrgvw5e2v4n5wjhpz3ckf8h",
+        "number": 0,
+        "coins": [
+          "ATOM",
+          "ETH"
+        ],
+        "verified_source_ts": 1791377363911,
+        "verified_receipt_ts": 1791377366365,
+        "original_account_response_sha256": "b90db8c3d001099266c6d28d18be899c6643bd9a48d6a19e7bccb77d7fe38b21"
+      }
+    ],
+    "next_cursor_retained": true,
+    "level_or_account_balance_state_stored": false
+  },
+  "monthly_readback": {
+    "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:DYDX_RPC",
+    "provider": "DYDX_RPC",
+    "unit": "REQUEST",
+    "allowance_units": 1000,
+    "used_units": 15,
+    "version": 5
+  },
+  "status": "ACTUAL_PINNED_NATIVE_INPUT_TO_SCOPED_CONTEXT_AND_DURABLE_ROUTING_VERIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "DYDX_NATIVE_EXACT_ACCOUNT:37623708779:1791377364515",
+    "source_run_id": "37623708779",
+    "measured_rows_read": 55,
+    "measured_rows_written_accounted": 10,
+    "measured_requests_accounted": 18,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791377367103,
+  "shared_budget": {
+    "reserved_http": 3,
+    "gross_reserved_http": 3,
+    "claimed_http": 3,
+    "actual_http": 3,
+    "max_http": 3,
+    "active": 0,
+    "peak_parallel": 1,
+    "max_parallel": 2,
+    "queued": 0,
+    "phase_started_ts": 1791377365720,
+    "max_total_ms": 45000,
+    "per_minute_limits": {
+      "HYPERLIQUID": 12,
+      "SWOLE_DISCOVERY": 6,
+      "LIQFLOW": 6,
+      "GTRADE": 6,
+      "LIGHTER": 12,
+      "GMX": 4,
+      "OXARCHIVE": 6,
+      "DYDX_RPC": 6
+    },
+    "scope": "SAME_RUN_ALL_NEW_PROVIDERS",
+    "unused_local_capacity_released_after_completed_collector": true,
+    "monthly_provider_reservations_not_refunded": true,
+    "actual_dispatch_rate_enforced": true,
+    "phase_deadline_actively_enforced": true,
+    "provider_quota_provisioned": false,
+    "known_unspent_denials_release_local_capacity": true,
+    "unknown_reservation_ack_keeps_local_capacity": true,
+    "errors": []
+  },
+  "source_http": 3,
+  "d1_usage": {
+    "requests": 18,
+    "rows_read": 56,
+    "rows_written": 10,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 39,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 4,
+        "rows_read": 10,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_venue_catalog_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_source_allowance_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "c54a5833b6e73f73ce5de2e8f72ea2b8d4229d4687dfd7475afdf4b0c0e51fa7",
+  "cloud_run": 37623708779,
+  "artifact_id": 11483152334,
+  "artifact_sha256": "b66ed4271c3b9212917ad42d6646e9d6a597a8bc1c750224b4c8bda00f274e01",
+  "production_head": "abd98d30d797c17c55bafb61ce708a66b0813d83",
+  "PR": 219,
+  "raw_path": "checkpoints/source-inputs/dydx-native-exact-37623708779.json.gz",
+  "raw_git_blob_sha": "6a635b68138f52610d3a839630cdf3a31abc9e82",
+  "original_clock_only_after_expiry": true,
+  "actual_htx_main_report": false,
+  "actual_same_run_SENT": false
+}
