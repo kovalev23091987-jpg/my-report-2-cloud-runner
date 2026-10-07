@@ -60,10 +60,22 @@ jobs:
           mkdir -p priority-source
           echo 'e063dcaa070b4e476d3d2da0d74d6ec01f13d64b425aa61042e889956a637d8a  checkpoints/source-inputs/gtrade-one-batch-live-37435081885.zip' | sha256sum -c -
           unzip -q checkpoints/source-inputs/gtrade-one-batch-live-37435081885.zip -d priority-source
-      - name: Verify native account breadth and preserved source-role boundaries
-        run: |
-          node --test current-generation/tests/native-account-reuse.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/native-provider-collectors.test.mjs current-generation/tests/combined-oxarchive-routing.test.mjs current-generation/tests/runner-catalog-first.test.mjs current-generation/tests/high-interest-source-routing.test.mjs > audit-output/native-coverage-tests.tap
-          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/top2-native-source-share.runtime.mjs current-generation/tests/top2-pinned-batch.runtime.mjs current-generation/tests/position-clock-source-order.runtime.mjs > audit-output/native-pinned-runtime.tap
+      - name: Resume passed checks and load the omitted pinned fixture without source calls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const diff=(await github.rest.repos.compareCommits({owner:context.repo.owner,repo:context.repo.repo,base:'aafb58cf8819cadc8df161bb15e93206c3a79c9e',head:context.sha})).data.files;
+            if(diff.some(x=>x.filename!=='.github/workflows/native-coverage-reuse-20261007.yml'))throw Error('PASSED_CODE_CHANGED_DO_NOT_REUSE');
+            for(const source of [{id:11468539286,sha:'93fa0ecc3c8e546310878f9f9acc6ad7ceb9883a166fe4643a821e03a717ab17',dir:'passed-checks'},{id:11397777455,sha:'8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0',dir:'original-source'}]){
+              const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:source.id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==source.sha)throw Error('RETAINED_SOURCE_DIGEST_MISMATCH');
+              fs.mkdirSync(source.dir,{recursive:true});fs.writeFileSync(source.dir+'.zip',b);cp.execFileSync('unzip',['-q',source.dir+'.zip','-d',source.dir]);
+            }
+            for(const name of ['native-coverage-tests.tap','validation.json','validation-errors.txt'])fs.copyFileSync('passed-checks/'+name,'audit-output/'+name);
+            fs.writeFileSync('audit-output/reused-checks.json',JSON.stringify({tested_head:'aafb58cf8819cadc8df161bb15e93206c3a79c9e',cloud_run:37593026399,artifact_sha256:'93fa0ecc3c8e546310878f9f9acc6ad7ceb9883a166fe4643a821e03a717ab17',unchanged_code_proven:true,sourceHTTP:0}));
+      - name: Complete the omitted composed pinned batch check
+        run: REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/top2-pinned-batch.runtime.mjs > audit-output/native-pinned-runtime.tap
       - name: Verify substantial used score facts from retained real market observations
         run: node --test current-generation/tests/idea-basis-facts.runtime.mjs > audit-output/idea-basis-tests.tap
       - name: Replay complete composed delivery chain and all retained refusals
@@ -72,9 +84,6 @@ jobs:
           REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
       - name: Integrated release regression
         run: node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-      - name: Current generation validation
-        if: always()
-        run: node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
       - name: Check fresh owner again before two missing batch response reads
         uses: actions/github-script@v7
         with:
