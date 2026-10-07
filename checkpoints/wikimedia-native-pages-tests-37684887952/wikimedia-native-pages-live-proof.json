@@ -1,0 +1,546 @@
+{
+  "schema": "ACTUAL_WIKIMEDIA_NATIVE_PAGES_20261007_V1",
+  "status": "ACTUAL_EXACT_NATIVE_PAGES_AND_ASSEMBLED_NEUTRAL_N06_CONSUMERS_CLOSED",
+  "run_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401",
+  "head": "f824cf47bec0729920200a13c4160abbffb46475",
+  "cloud_run": 37684887952,
+  "source_http_cap": 2,
+  "limits": {
+    "published_user_agent_requests_per_minute": 200,
+    "published_day_cap": null,
+    "published_month_cap": null,
+    "key_required": false,
+    "credit_cost": 0,
+    "license": "CC0-1.0",
+    "internal_minute_cap": 2,
+    "internal_daily_cap": 12,
+    "ordinary_daily_cap": 8,
+    "internal_31day_max": 372,
+    "cache_ms": 21600000,
+    "retries": 0,
+    "timeout_ms": 8000
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "source_clocks_refreshed": false,
+  "primary_attention_substituted": false,
+  "results": [
+    {
+      "contract": "ETH-USDT",
+      "asset_identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      },
+      "result": {
+        "version": "wikimedia-attention-v2-exact-native-pages-20261007",
+        "status": "CLOSED",
+        "contract": "ETH-USDT",
+        "evidence": [
+          {
+            "evidence_id": "EV2:5861263e1b0c9b825c1dde46124560829ada4ed87bcc1da5db840cde0ff37d3f",
+            "asset_id": "ethereum:native:mainnet",
+            "htx_contract": "ETH-USDT",
+            "block_id": "N06",
+            "metric_family": "ENCYCLOPEDIA_PAGEVIEW_CONTEXT",
+            "provider_id": "WIKIMEDIA_ATTENTION",
+            "upstream_id": "WIKIMEDIA_AQS_PAGEVIEWS",
+            "origin_event_id": "Ethereum:2026092200:2026100500",
+            "dependency_group": "WIKIMEDIA_PAGEVIEWS:Ethereum:1791244800000",
+            "source_ts": 1791244800000,
+            "observed_ts": 1791406171780,
+            "first_known_ts": 1791406171780,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": 1790035200000,
+            "window_end": 1791244800000,
+            "coverage_status": "EXACT_PAGE_14_COMPLETE_UTC_DAYS",
+            "coverage_fraction": 0,
+            "unit": "pageviews",
+            "value": 4477,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "a4f81597335d81b7831b8e140b5aca6559755433eb127c9558b7055358efcbbe",
+            "expires_at": 1791427771780,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "article": "Ethereum",
+            "project": "en.wikipedia.org",
+            "page_url": "https://en.wikipedia.org/wiki/Ethereum",
+            "previous_7day_views": 4643,
+            "recent_7day_views": 4477,
+            "change_pct": -3.575274606935175,
+            "day_count": 14,
+            "agent": "user",
+            "source_clock_policy": "PUBLISHED_COMPLETE_UTC_DAILY_PAGEVIEW_ROWS",
+            "unique_traders_claim": false,
+            "directional_vote": false,
+            "provider_role": "ADDITIONAL_ATTENTION_CONTEXT",
+            "series_sha256": "e1945f65343c4985f398280000b655d20df1c7088d51aa9a282cfe3a76851abd"
+          }
+        ],
+        "summary": {
+          "recent_7day_views": 4477,
+          "previous_7day_views": 4643,
+          "change_pct": -3.575274606935175,
+          "day_count": 14,
+          "window_end": 1791244800000
+        },
+        "internal_only": true,
+        "network_calls": 1,
+        "admission": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "WIKIMEDIA_ATTENTION",
+          "minute_bucket": 1791406140000,
+          "reserved_units": 1,
+          "rolling_units": 1,
+          "cap": 2
+        },
+        "cache_status": "REFRESHED",
+        "receipts": [
+          {
+            "route": "EXACT_PAGE_DAILY_VIEWS",
+            "http_status": 200,
+            "body_sha256": "3d26c17667a12e5a048e57da5e1f2d7ad52e4ae21cd20a84fbdbc817f3c1efba"
+          }
+        ]
+      },
+      "context": {
+        "version": "block-result-context-v11-verified-native-evm-20261007",
+        "status": "CLOSED",
+        "facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "source": "Wikimedia / Wikipedia",
+            "label": "Внимание к статье Ethereum",
+            "value": "4477 просмотров за последние 7 опубликованных полных дней против 4643 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+            "unit": "",
+            "field": "ENCYCLOPEDIA_PAGEVIEW_CONTEXT",
+            "block_id": "N06",
+            "evidence_id": "EV2:5861263e1b0c9b825c1dde46124560829ada4ed87bcc1da5db840cde0ff37d3f",
+            "physical_root_key": "ethereum:native:mainnet|Ethereum:2026092200:2026100500",
+            "source_ts": 1791244800000,
+            "observed_ts": 1791406171780
+          }
+        ],
+        "internal_only": true
+      },
+      "report": {
+        "manual": {
+          "ok": true,
+          "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+          "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T20:49:31.963Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Внимание к статье Ethereum: 4477 просмотров за последние 7 опубликованных полных дней против 4643 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены — Wikimedia / Wikipedia.",
+          "formatter": "manual-report-approved-layout-v1-20260927",
+          "analytical_fingerprint": "7b924314d634722760beaadca6baea35bc3fa4ae3420ebc022ad65ce416834fe"
+        },
+        "rendered_use": {
+          "version": "block-result-context-v11-verified-native-evm-20261007",
+          "contract": "ETH-USDT",
+          "run_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401",
+          "snapshot_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401:ETH-USDT:1791406171963",
+          "status": "RENDERED_OUTPUT_VERIFIED",
+          "context_receipts": [
+            {
+              "block_id": "N06",
+              "evidence_id": "EV2:5861263e1b0c9b825c1dde46124560829ada4ed87bcc1da5db840cde0ff37d3f",
+              "physical_root_key": "ethereum:native:mainnet|Ethereum:2026092200:2026100500",
+              "evidence_ids": [
+                "EV2:5861263e1b0c9b825c1dde46124560829ada4ed87bcc1da5db840cde0ff37d3f"
+              ],
+              "physical_root_keys": [
+                "ethereum:native:mainnet|Ethereum:2026092200:2026100500"
+              ],
+              "source_ts": 1791244800000,
+              "observed_ts": 1791406171780,
+              "label": "Внимание к статье Ethereum",
+              "value": "4477 просмотров за последние 7 опубликованных полных дней против 4643 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+              "source": "Wikimedia / Wikipedia",
+              "consumer": "MANUAL_CONFIRMED_CONTEXT",
+              "score_contribution": 0
+            }
+          ],
+          "used_context_block_ids": [
+            "N06"
+          ],
+          "available_not_rendered_evidence_ids": [],
+          "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+          "telegram_context_receipts": [],
+          "telegram_used_context_block_ids": [],
+          "telegram_available_not_rendered_evidence_ids": [
+            "EV2:5861263e1b0c9b825c1dde46124560829ada4ed87bcc1da5db840cde0ff37d3f"
+          ],
+          "telegram_delivery_proven": false,
+          "telegram_message_id": null,
+          "entry_authorized": false,
+          "internal_only": true
+        }
+      },
+      "primary_requirement_unchanged": true,
+      "score_adjustment": 0
+    },
+    {
+      "contract": "BTC-USDT",
+      "asset_identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      },
+      "result": {
+        "version": "wikimedia-attention-v2-exact-native-pages-20261007",
+        "status": "CLOSED",
+        "contract": "BTC-USDT",
+        "evidence": [
+          {
+            "evidence_id": "EV2:58c7a9592388625e539a5405cf211432bec4905e495b3b44ad5e52ded447a935",
+            "asset_id": "bitcoin:native:mainnet",
+            "htx_contract": "BTC-USDT",
+            "block_id": "N06",
+            "metric_family": "ENCYCLOPEDIA_PAGEVIEW_CONTEXT",
+            "provider_id": "WIKIMEDIA_ATTENTION",
+            "upstream_id": "WIKIMEDIA_AQS_PAGEVIEWS",
+            "origin_event_id": "Bitcoin:2026092200:2026100500",
+            "dependency_group": "WIKIMEDIA_PAGEVIEWS:Bitcoin:1791244800000",
+            "source_ts": 1791244800000,
+            "observed_ts": 1791406173585,
+            "first_known_ts": 1791406173585,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": 1790035200000,
+            "window_end": 1791244800000,
+            "coverage_status": "EXACT_PAGE_14_COMPLETE_UTC_DAYS",
+            "coverage_fraction": 0,
+            "unit": "pageviews",
+            "value": 18111,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "aa781ad74d58636c18f1a6f52ab8412a194624ad9c000bbd60f38f816769a454",
+            "expires_at": 1791427773585,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "article": "Bitcoin",
+            "project": "en.wikipedia.org",
+            "page_url": "https://en.wikipedia.org/wiki/Bitcoin",
+            "previous_7day_views": 34318,
+            "recent_7day_views": 18111,
+            "change_pct": -47.225945567923546,
+            "day_count": 14,
+            "agent": "user",
+            "source_clock_policy": "PUBLISHED_COMPLETE_UTC_DAILY_PAGEVIEW_ROWS",
+            "unique_traders_claim": false,
+            "directional_vote": false,
+            "provider_role": "ADDITIONAL_ATTENTION_CONTEXT",
+            "series_sha256": "992c8779d16bdb50df67aed380a2b67b6f224d7c889981a061256648cf64759d"
+          }
+        ],
+        "summary": {
+          "recent_7day_views": 18111,
+          "previous_7day_views": 34318,
+          "change_pct": -47.225945567923546,
+          "day_count": 14,
+          "window_end": 1791244800000
+        },
+        "internal_only": true,
+        "network_calls": 1,
+        "admission": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "WIKIMEDIA_ATTENTION",
+          "minute_bucket": 1791406140000,
+          "reserved_units": 1,
+          "rolling_units": 2,
+          "cap": 2
+        },
+        "cache_status": "REFRESHED",
+        "receipts": [
+          {
+            "route": "EXACT_PAGE_DAILY_VIEWS",
+            "http_status": 200,
+            "body_sha256": "d08732332cead1508387389b353fe7a9b625d30c6cb5b3e7495261a10a64240b"
+          }
+        ]
+      },
+      "context": {
+        "version": "block-result-context-v11-verified-native-evm-20261007",
+        "status": "CLOSED",
+        "facts": [
+          {
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0,
+            "source": "Wikimedia / Wikipedia",
+            "label": "Внимание к статье Bitcoin",
+            "value": "18111 просмотров за последние 7 опубликованных полных дней против 34318 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+            "unit": "",
+            "field": "ENCYCLOPEDIA_PAGEVIEW_CONTEXT",
+            "block_id": "N06",
+            "evidence_id": "EV2:58c7a9592388625e539a5405cf211432bec4905e495b3b44ad5e52ded447a935",
+            "physical_root_key": "bitcoin:native:mainnet|Bitcoin:2026092200:2026100500",
+            "source_ts": 1791244800000,
+            "observed_ts": 1791406173585
+          }
+        ],
+        "internal_only": true
+      },
+      "report": {
+        "manual": {
+          "ok": true,
+          "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+          "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T20:49:33.757Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Внимание к статье Bitcoin: 18111 просмотров за последние 7 опубликованных полных дней против 34318 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены — Wikimedia / Wikipedia.",
+          "formatter": "manual-report-approved-layout-v1-20260927",
+          "analytical_fingerprint": "67efef70d4e6cafd52c5009b6e0f6a22f90d1002dc6c21279697a7c20a40b49d"
+        },
+        "rendered_use": {
+          "version": "block-result-context-v11-verified-native-evm-20261007",
+          "contract": "BTC-USDT",
+          "run_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401",
+          "snapshot_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401:BTC-USDT:1791406173757",
+          "status": "RENDERED_OUTPUT_VERIFIED",
+          "context_receipts": [
+            {
+              "block_id": "N06",
+              "evidence_id": "EV2:58c7a9592388625e539a5405cf211432bec4905e495b3b44ad5e52ded447a935",
+              "physical_root_key": "bitcoin:native:mainnet|Bitcoin:2026092200:2026100500",
+              "evidence_ids": [
+                "EV2:58c7a9592388625e539a5405cf211432bec4905e495b3b44ad5e52ded447a935"
+              ],
+              "physical_root_keys": [
+                "bitcoin:native:mainnet|Bitcoin:2026092200:2026100500"
+              ],
+              "source_ts": 1791244800000,
+              "observed_ts": 1791406173585,
+              "label": "Внимание к статье Bitcoin",
+              "value": "18111 просмотров за последние 7 опубликованных полных дней против 34318 за предыдущие 7; окно заканчивается 2026-10-06 UTC. Это просмотры статьи, число трейдеров и направление цены не установлены",
+              "source": "Wikimedia / Wikipedia",
+              "consumer": "MANUAL_CONFIRMED_CONTEXT",
+              "score_contribution": 0
+            }
+          ],
+          "used_context_block_ids": [
+            "N06"
+          ],
+          "available_not_rendered_evidence_ids": [],
+          "telegram_payload_status": "APPROVED_PAYLOAD_NOT_CONFIRMED",
+          "telegram_context_receipts": [],
+          "telegram_used_context_block_ids": [],
+          "telegram_available_not_rendered_evidence_ids": [
+            "EV2:58c7a9592388625e539a5405cf211432bec4905e495b3b44ad5e52ded447a935"
+          ],
+          "telegram_delivery_proven": false,
+          "telegram_message_id": null,
+          "entry_authorized": false,
+          "internal_only": true
+        }
+      },
+      "primary_requirement_unchanged": true,
+      "score_adjustment": 0
+    }
+  ],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 64,
+      "reserved_rows_read": 1272350,
+      "reserved_rows_written": 24660,
+      "measured_rows_read": 820469,
+      "measured_rows_written": 11636,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1273850,
+      "rows_written": 24760
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "sourceHTTP": 2,
+  "D1": {
+    "requests": 39,
+    "rows_read": 80,
+    "rows_written": 23,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 65,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 4,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 4,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_WIKIMEDIA_NATIVE_PAGES:37684887952:1791406169401",
+    "source_run_id": "37684887952",
+    "measured_rows_read": 80,
+    "measured_rows_written_accounted": 24,
+    "measured_requests_accounted": 40,
+    "unknown_ops": 0
+  },
+  "D1_actual": {
+    "requests": 40,
+    "rows_read": 81,
+    "rows_written": 24,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 65,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 4,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "f9207165707085b91fe1fac8e9ea8ab2b421dac477ed6733848a25c5d1af9d9d"
+}
