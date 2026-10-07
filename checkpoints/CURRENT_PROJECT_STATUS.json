@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-07T07:16:00.004Z",
+  "updated_utc": "2026-10-07T08:45:02.142395+00:00",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -13,31 +13,25 @@
     "TELEGRAM": "VERIFIED_POST_PR206_NEAR_SUBSTANTIAL_FACTS_SENT153"
   },
   "latest_actual_report": {
-    "cloud_run": 37581697482,
-    "head": "22a0f14477dcbae050c34b6adf01664afa9c31f2",
-    "run_id": "1791354535321-1791354544804",
-    "generated_at": "2026-10-07T06:30:42.248Z",
+    "cloud_run": 37593824869,
+    "head": "9789ec7d3e597cbbc8b82a951edc91327097bfb3",
+    "run_id": "1791361640186-1791361654208",
+    "generated_at": "2026-10-07T08:29:41.993Z",
     "top2": [
-      "NEAR-USDT",
-      "FIL-USDT"
+      "BR-USDT",
+      "龙虾-USDT"
     ],
-    "participating_blocks": {
-      "NEAR-USDT": 11,
-      "FIL-USDT": 9
-    },
-    "score_applied_blocks": {
-      "NEAR-USDT": 2,
-      "FIL-USDT": 0
-    },
     "states": {
-      "NEAR-USDT": "OBSERVE",
-      "FIL-USDT": "REJECTED"
+      "BR-USDT": "REJECTED",
+      "龙虾-USDT": "REJECTED"
     },
-    "NEAR_interest_score": 82,
-    "NEAR_SENT_message_id": "153",
-    "fresh_SENT": true,
-    "checkpoint": "checkpoints/ACTUAL_NEAR_SENT153_AND_LIQUIDATION_STARVATION_20261007.json",
-    "scope": "POST_PR206_PRE_PR207_PR208; DO_NOT_ACCEPT_NEW_WEIGHTS_OR_PAIR_RELEASE_FROM_THIS_SENT"
+    "fresh_SENT": false,
+    "scope": "EXACT_CURRENT_MAIN_NATURAL_RUN_AFTER_PR209; REJECTED_WITHOUT_ASSIGNED_DIRECTION; NO_GLOBAL_SOURCE_OR_TELEGRAM_ACCEPTANCE",
+    "checkpoint": "checkpoints/ACTUAL_POST_PR209_READBACK_20261007.json",
+    "participating_blocks": {
+      "BR-USDT": 7,
+      "龙虾-USDT": 10
+    }
   },
   "pending": [
     {
@@ -664,9 +658,9 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791357360004,
-  "next_action": "REUSE_SAVED_PROOFS; CHECK_NATURAL_POST_RELEASE_RESULT_WHEN_AVAILABLE_WITHOUT_REDISPATCH; CONTINUE_ONLY_CONCRETE_UNPROVEN_SOURCE_CONSUMER_OR_EMPIRICAL_GAPS",
-  "current_task": "PR207/208 merged, actual native FIL/NEAR gap proof and retained calculated ZEC/QNT pair saved; all implementation-batch checks pass, full owner registry still open",
+  "updated_ts": 1791362702142,
+  "next_action": "Validate and release current composed routing/weekly package; preserve fresh same-run acceptance separately; evaluate new position discovery source with bounded proof",
+  "current_task": "Connected native route scheduling and weekly account capability reuse; full owner task register remains open",
   "latest_native_payment_release": {
     "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
     "pr": 204,
@@ -892,5 +886,31 @@
     "cadence_days": 7,
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
+  },
+  "latest_native_coverage_reuse_release": {
+    "path": "checkpoints/NATIVE_COVERAGE_REUSE_RELEASE_20261007.json",
+    "pr": 209,
+    "production_head": "9789ec7d3e597cbbc8b82a951edc91327097bfb3",
+    "cloud_run": 37593310823,
+    "artifact_digest": "sha256:b4ce090686a7bbbaa4ccf0f7029877218513561f8f7922ff5d58a2cce02c7449",
+    "new_fresh_same_run_SENT": false
+  },
+  "latest_post_pr209_actual_readback": {
+    "path": "checkpoints/ACTUAL_POST_PR209_READBACK_20261007.json",
+    "cloud_run": 37593824869,
+    "head": "9789ec7d3e597cbbc8b82a951edc91327097bfb3",
+    "run_id": "1791361640186-1791361654208",
+    "fresh_SENT": false
+  },
+  "owner_source_grouping_proposal": {
+    "at_msk": "2026-10-07T11:31:00+03:00",
+    "proposal_not_mandate": true,
+    "goals": [
+      "More useful liquidation level coverage",
+      "Evaluate grouping and additional sources"
+    ],
+    "live_levels_require_fresh_position_clocks": true,
+    "liqflow_and_native_HL_same_upstream": true,
+    "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   }
 }

@@ -1,10 +1,10 @@
 import {selectGTradePinnedPositionSample,buildGTradePinnedRpcBatch,decodeGTradePinnedRpcSnapshot,GTRADE_RPC} from './gtrade-pinned-position-snapshot.mjs';
 import {readJson} from './io.mjs';import {normalizeGTrade,resolveGTradeCryptoMarket} from './gtrade.mjs';import {createGTradeAcquisition} from './gtrade-runtime-bridge.mjs';import {timestamp} from './core.mjs';
 const URLS={variables:'https://backend-arbitrum.gains.trade/trading-variables',trades:'https://backend-arbitrum.gains.trade/open-trades',prices:'https://backend-pricing.eu.gains.trade/charts'};
-export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,clock=Date.now,max_wall_ms=20000}={}){
+export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,clock=Date.now,max_wall_ms=20000,on_catalog=null}={}){
  if(!sdk?.getLiquidationPrice||!sdk?.buildLiquidationPriceContext)throw Error('PINNED_GTRADE_SDK_REQUIRED');
  const snapshots=new Map(),catalogs=new Map(),catalogValues=new Map(),pinnedPositions=new Map();
- const loadCatalog=(run_id,deadline_ts)=>{if(catalogs.has(run_id))return catalogs.get(run_id);const promise=readJson(URLS.variables,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(10000,Number(deadline_ts)-clock())),max_bytes:8000000}).then(raw=>{catalogValues.set(run_id,raw);return raw;});catalogs.set(run_id,promise);return promise;};
+ const loadCatalog=(run_id,deadline_ts)=>{if(catalogs.has(run_id))return catalogs.get(run_id);const promise=readJson(URLS.variables,{fetch_impl,clock,timeout_ms:Math.max(1,Math.min(10000,Number(deadline_ts)-clock())),max_bytes:8000000}).then(async raw=>{catalogValues.set(run_id,raw);if(typeof on_catalog==='function')try{await on_catalog(raw);}catch{}return raw;});catalogs.set(run_id,promise);return promise;};
  const loadSnapshot=(run_id,deadline_ts,catalog)=>{
   if(snapshots.has(run_id))return snapshots.get(run_id);
   const start=clock(),deadline=Math.min(Number(deadline_ts)||start+max_wall_ms,start+max_wall_ms);

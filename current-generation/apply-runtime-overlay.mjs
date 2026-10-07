@@ -120,7 +120,7 @@ const files=[
  'src/liquidation-extension/native-verification.mjs',
  'src/liquidation-extension/select-native-account-sample.mjs',
  'src/liquidation-extension/run-source-budget.mjs',
- 'src/liquidation-extension/combined-runner-service.mjs',
+ 'src/liquidation-extension/combined-runner-service.mjs','src/liquidation-extension/native-routing-catalog.mjs',
  'src/liquidation-extension/multi-runner-extension.mjs',
  'src/liquidation-extension/gtrade-runtime-collector.mjs',
  'src/liquidation-extension/gtrade-runtime-bridge.mjs',
