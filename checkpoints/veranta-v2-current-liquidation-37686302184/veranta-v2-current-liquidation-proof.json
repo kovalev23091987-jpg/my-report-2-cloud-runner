@@ -1,0 +1,763 @@
+{
+  "schema": "ACTUAL_VERANTA_V2_CURRENT_LIQUIDATION_20261007_V1",
+  "head": "3d52cc1d20a36ab40a445a6e0f32755a72250fd8",
+  "cloud_run": 37686302184,
+  "run_id": "ACTUAL_VERANTA_V2_CURRENT_LIQUIDATION:37686302184:1791406850725",
+  "started_ts": 1791406850725,
+  "status": "ACTUAL_VERANTA_V2_PINNED_NOT_CLOSED",
+  "production_enabled": false,
+  "source_http_cap": 5,
+  "logical_rpc_cap": 20,
+  "account_cap": 1,
+  "response_bytes_cap": 2000000,
+  "source_clocks_refreshed": false,
+  "old_v1_abi_used": false,
+  "source_clock_closed": false,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "source_account": "0x8e1c4e0a7e85b2490f6d811824515d6fad3115a6",
+  "source_proxy": "0x8a311D7048c35985aa31C131B9A13e03a5f7422d",
+  "retained_discovery_cloud_run": 37679978751,
+  "retained_discovery_does_not_prove_current_state": true,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "verified_future_levels": [],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 67,
+      "reserved_rows_read": 1276850,
+      "reserved_rows_written": 24960,
+      "measured_rows_read": 820702,
+      "measured_rows_written": 11682,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1278350,
+      "rows_written": 25060
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_VERANTA_V2_CURRENT_LIQUIDATION:37686302184:1791406850725",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 161
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 5
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "PUBLICNODE_NATIVE_EVM",
+    "minute_bucket": 1791406800000,
+    "reserved_units": 5,
+    "rolling_units": 5,
+    "cap": 6
+  },
+  "pin": {
+    "height": 52308752,
+    "block_hash": "0x9441aa30b276e6e7b17054739a1788050c8e82b42fbfaaef228ff37a15f9348b",
+    "source_ts": 1791406851000,
+    "observed_ts": 1791406852752,
+    "finalized": false
+  },
+  "pinned_implementation": "0x7175518A822e04ecB8770343582E76f156D06c64",
+  "retained_verified_abi": {
+    "cloud_run": 37685497656,
+    "raw_gzip_sha256": "02418c389e67db25840a796656a727bb1f25c2e40241c3e3fc1f0b2341d38dad",
+    "received_ts": 1791406456557,
+    "body_sha256": "33ab200c70adc4eda6698a749c69fff347312d69d45acebd4baa313dc2f5d120",
+    "source_clocks_refreshed": false,
+    "current_code_reread_required": true
+  },
+  "current_readonly_getters": [
+    {
+      "name": "devFeesUSDC",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "firstEmptyTradeIndex",
+      "inputs": [
+        {
+          "name": "trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "index",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "govFeesUSDC",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "maxTradesPerPair",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "openTrades",
+      "inputs": [
+        {
+          "name": "_trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "_index",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "components": [
+            {
+              "name": "trader",
+              "type": "address",
+              "internalType": "address"
+            },
+            {
+              "name": "pairIndex",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "index",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "initialPosToken",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "positionSizeUSDC",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "openPrice",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "buy",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "leverage",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "tp",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "sl",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "timestamp",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "internalType": "struct ITradingStorage.Trade"
+        }
+      ]
+    },
+    {
+      "name": "openTradesCount",
+      "inputs": [
+        {
+          "name": "_trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "openTradesInfo",
+      "inputs": [
+        {
+          "name": "_trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "_index",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple",
+          "components": [
+            {
+              "name": "openInterestUSDC",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "tpLastUpdated",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "slLastUpdated",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "beingMarketClosed",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "lossProtection",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "internalType": "struct ITradingStorage.TradeInfo"
+        }
+      ]
+    },
+    {
+      "name": "pairInfos",
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "contract IPairInfos"
+        }
+      ]
+    },
+    {
+      "name": "pairOI",
+      "inputs": [
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "pairTraders",
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ]
+    },
+    {
+      "name": "pairTradersArray",
+      "inputs": [
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address[]",
+          "internalType": "address[]"
+        }
+      ]
+    },
+    {
+      "name": "pairTradersId",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "positionRollKeepers",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ]
+    },
+    {
+      "name": "positionSizeInCoin",
+      "inputs": [
+        {
+          "name": "_trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "_index",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "collateral",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "name": "positionSizeInCoin",
+      "inputs": [
+        {
+          "name": "_trader",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "_pairIndex",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "_index",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    }
+  ],
+  "original_structural_hint": {
+    "pairIndex": 0,
+    "index": 0,
+    "source_cloud_run": 37679978751,
+    "original_openedAt": 1791367115,
+    "not_current_state": true
+  },
+  "abi": {
+    "provider": "SOURCIFY_VERIFIED_CURRENT_IMPLEMENTATION",
+    "implementation": "0x7175518A822e04ecB8770343582E76f156D06c64",
+    "contract_name": "TradingStorage",
+    "abi_sha256": "4001fde4f9c63ef9f3731d61278dc55b715af681869ecd0ee8a110b913d3a49b",
+    "getters": [
+      {
+        "name": "openTrades",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "_trader",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "_pairIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "_index",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "trader",
+                "type": "address",
+                "internalType": "address"
+              },
+              {
+                "name": "pairIndex",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "index",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "initialPosToken",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "positionSizeUSDC",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "openPrice",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "buy",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "leverage",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "tp",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "sl",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "timestamp",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "internalType": "struct ITradingStorage.Trade"
+          }
+        ],
+        "stateMutability": "view"
+      },
+      {
+        "name": "openTradesInfo",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "_trader",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "_pairIndex",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "_index",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ],
+        "outputs": [
+          {
+            "name": "",
+            "type": "tuple",
+            "components": [
+              {
+                "name": "openInterestUSDC",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "tpLastUpdated",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "slLastUpdated",
+                "type": "uint256",
+                "internalType": "uint256"
+              },
+              {
+                "name": "beingMarketClosed",
+                "type": "bool",
+                "internalType": "bool"
+              },
+              {
+                "name": "lossProtection",
+                "type": "uint256",
+                "internalType": "uint256"
+              }
+            ],
+            "internalType": "struct ITradingStorage.TradeInfo"
+          }
+        ],
+        "stateMutability": "view"
+      }
+    ],
+    "runtime_match": "exact_match"
+  },
+  "position_state": {
+    "openTrades": {
+      "0": {
+        "trader": "0x8E1c4e0a7e85b2490f6d811824515D6FAD3115A6",
+        "pairIndex": "0",
+        "index": "0",
+        "initialPosToken": "15000000",
+        "positionSizeUSDC": "1791367115",
+        "openPrice": "25939115829000",
+        "buy": false,
+        "leverage": "100000000000",
+        "tp": "12966380042993",
+        "sl": "28014245095320",
+        "timestamp": "1791367115"
+      }
+    },
+    "openTradesInfo": {
+      "0": {
+        "openInterestUSDC": "150000000",
+        "tpLastUpdated": "52288884",
+        "slLastUpdated": "52288884",
+        "beingMarketClosed": false,
+        "lossProtection": "0"
+      }
+    }
+  },
+  "pinned_trade": {
+    "trader": "0x8E1c4e0a7e85b2490f6d811824515D6FAD3115A6",
+    "pairIndex": "0",
+    "index": "0",
+    "initialPosToken": "15000000",
+    "positionSizeUSDC": "1791367115",
+    "openPrice": "25939115829000",
+    "buy": false,
+    "leverage": "100000000000",
+    "tp": "12966380042993",
+    "sl": "28014245095320",
+    "timestamp": "1791367115"
+  },
+  "error": "HTTP_404\n\nfalse !== true\n",
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 166
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_VERANTA_V2_CURRENT_LIQUIDATION:37686302184:1791406850725",
+    "source_run_id": "37686302184",
+    "measured_rows_read": 78,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "source_http": 3,
+  "logical_rpc": 8,
+  "reserved_http": 5,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 79,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 68,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791406853444,
+  "raw_gzip_sha256": "1546e830934c1a759504b4dd3d6e04a17a350584c6aec3a7ac81dbf57627dce3"
+}
