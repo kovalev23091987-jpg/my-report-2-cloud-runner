@@ -20,14 +20,14 @@ function control(){
  c.metadata.supporting_context={facts:consumeBlockResultContext({contract:c.metadata.contract,now:c.observed_ts,evidence:c.metadata.internal_market_context.evidence_v2.evidence}).facts};
  c.analytical_fingerprint=canonicalFingerprint(c);return c;
 }
-test('same genuine historical context reaches approved Telegram bullet slots and manual output, without permission',()=>{
- const c=control(),before=JSON.stringify(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),manual=formatManualReport(c);
+test('same genuine historical context retains historical V5 slots and full manual output',()=>{
+ const c=control(),before=JSON.stringify(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}),manual=formatManualReport(c);
  assert.equal(tg.ok,true,tg.status);assert.equal(manual.ok,true,manual.status);
  const proof=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
  assert.equal(proof.used_context_block_ids.length,6);assert.equal(proof.telegram_used_context_block_ids.length,3);
  assert.equal(proof.telegram_available_not_rendered_evidence_ids.length,3);
  assert.equal(proof.telegram_delivery_proven,false);assert.equal(proof.telegram_message_id,null);
- assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,false);
+ assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);
  assert.equal(JSON.stringify(c),before);
  assert.equal(tg.text.match(/^• Наблюдение предложения токена:/gm)?.length,1);
  assert.equal(tg.text.includes('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ'),false);
@@ -35,17 +35,17 @@ test('same genuine historical context reaches approved Telegram bullet slots and
 test('unbound, changed, stale, foreign or future evidence cannot become approved Telegram facts',()=>{
  for(const change of [c=>{c.metadata.supporting_context.facts.forEach(f=>f.evidence_id='FORGED');},c=>{c.metadata.supporting_context.facts.forEach(f=>f.value='Изменённое утверждение');},c=>{c.metadata.internal_market_context.evidence_v2.evidence.forEach(r=>r.expires_at=0);},c=>{c.metadata.internal_market_context.evidence_v2.evidence.forEach(r=>r.htx_contract='OTHER-USDT');},c=>{c.metadata.internal_market_context.evidence_v2.evidence.forEach(r=>r.source_ts=c.observed_ts+1);}]){
   const c=control();change(c);assert.equal(confirmedBlockContextFacts(c).length,0);
-  const tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+  const tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
   assert.equal(auditRenderedBlockResults({canonical:c,telegram:tg}).telegram_context_receipts.length,0);
  }
 });
 test('compact formatter, missing payload or mismatched fingerprint do not prove approved Telegram use',()=>{
- const c=control(),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+ const c=control(),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
  for(const telegram of [null,{...tg,ok:false},{ok:true,message:tg.text,analytical_fingerprint:c.analytical_fingerprint},{...tg,analytical_fingerprint:'OTHER'}]){
   assert.equal(auditRenderedBlockResults({canonical:c,telegram}).telegram_context_receipts.length,0);
  }
  const c2=structuredClone(c);c2.source_receipts=Array.from({length:3},(_,i)=>({status:'CLOSED',metric:'FUNDING',unit:'PERCENT',value:i,venue:'HTX'}));
- assert.equal(auditRenderedBlockResults({canonical:c2,telegram:renderCanonicalTelegram({canonical:c2,lifecycle_event:'OBSERVE'})}).telegram_context_receipts.length,0);
+ assert.equal(auditRenderedBlockResults({canonical:c2,telegram:renderCanonicalTelegram({canonical:c2,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'})}).telegram_context_receipts.length,0);
 });
 test('N07 requires an actual nonempty headline and shares exact dated facts with both report surfaces',()=>{
  const c=control(),now=c.observed_ts,date=new Date(now-60000).toUTCString();
@@ -55,7 +55,7 @@ test('N07 requires an actual nonempty headline and shares exact dated facts with
  c.metadata.internal_market_context.evidence_v2.evidence=result.evidence;
  c.metadata.supporting_context.facts=consumeBlockResultContext({contract:c.metadata.contract,now,evidence:result.evidence}).facts;
  c.analytical_fingerprint=canonicalFingerprint(c);
- const proof=auditRenderedBlockResults({canonical:c,manual:formatManualReport(c),telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'})});
+ const proof=auditRenderedBlockResults({canonical:c,manual:formatManualReport(c),telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'})});
  assert.deepEqual(proof.used_context_block_ids,['N07']);assert.deepEqual(proof.telegram_used_context_block_ids,['N07']);
  assert.equal(normalizeOfficialFeed({...p,body:body.replace('Обновление протокола','')}).evidence.length,0);
  const ics='BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:E\nDTSTAMP:20261004T080000Z\nDTSTART:20261005T080000Z\nURL:https://issuer.example/event\nEND:VEVENT\nEND:VCALENDAR';
@@ -71,21 +71,21 @@ function executionControl(i=0){
 }
 test('immutable BR/NEAR book facts reach approved Russian manual and Telegram forms from one canonical',()=>{
  for(let i=0;i<2;i++){
-  const c=executionControl(i),before=JSON.stringify(c),manual=formatManualReport(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
+  const c=executionControl(i),before=JSON.stringify(c),manual=formatManualReport(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'});
   assert.equal(manual.ok,true,manual.status);assert.equal(tg.ok,true,tg.status);
   const audit=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
   assert.deepEqual(audit.used_context_block_ids,['N11','N16']);assert.deepEqual(audit.telegram_used_context_block_ids,['N11','N16']);
   assert.equal(audit.context_receipts.length,5);assert.equal(audit.telegram_context_receipts.length,3);
   assert.match(manual.text,/комиссии и периодические платежи не включены/);assert.doesNotMatch(manual.text,/\bLONG\b|\bSHORT\b|\bfunding\b/);
   assert.match(tg.text,i===0?/6\.28575 USDT для 2081 одинаковых контрактов/:/1\.553 USDT для 203 одинаковых контрактов/);
-  assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE'}).deliver,false);assert.equal(audit.telegram_delivery_proven,false);
+  assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);assert.equal(audit.telegram_delivery_proven,false);
   assert.equal(JSON.stringify(c),before);
  }
 });
 test('canonical execution facts cannot survive changed quantity, foreign snapshot or forged descriptive text',()=>{
  for(const mutate of [c=>c.snapshot_id='FOREIGN',c=>c.metadata.contract='OTHER-USDT',c=>{delete c.metadata.execution_context_source;},c=>c.metadata.execution_context_source.bundle.execution_gate.factual_basis.plans.LONG.measured_contracts++,c=>c.metadata.supporting_context.facts.forEach(f=>f.value='Подменённые издержки')]){
   const c=executionControl();mutate(c);assert.equal(confirmedBlockContextFacts(c).length,0);
-  assert.equal(auditRenderedBlockResults({canonical:c,telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'})}).telegram_context_receipts.length,0);
+  assert.equal(auditRenderedBlockResults({canonical:c,telegram:renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'})}).telegram_context_receipts.length,0);
  }
 });
 test('exact assembled runtime canonical producer joins source facts without creating score, target or permission',{skip:!process.env.REPORT2_UNIFIED_MODULE_ROOT},async()=>{

@@ -44,11 +44,16 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: Read exact retained ZEC input with bounded D1 ledger
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/read-current-observation.mjs
+      - name: Reuse exact admitted ZEC readback without more D1 calls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11455181355,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='ebdd4139a8344513d03254d9ca068977ee337d9afb38561ccceeb4c36dc0dcc3')throw Error('EXACT_READBACK_DIGEST_MISMATCH');
+            fs.writeFileSync('zec-readback.zip',b);cp.execFileSync('unzip',['-q','zec-readback.zip','-d','zec-readback']);
+            fs.copyFileSync('zec-readback/exact-current-data.json.gz','audit-output/exact-current-data.json.gz');
+            fs.copyFileSync('zec-readback/readback-summary.json','audit-output/original-readback-summary.json');
       - name: Replay complete composed delivery chain and all retained refusals
         run: |
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json

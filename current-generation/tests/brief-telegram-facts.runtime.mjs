@@ -21,7 +21,7 @@ test('actual ZEC user receipt replays to brief facts and rounded estimated level
  const before=JSON.stringify(c),tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),manual=pub.renderCanonicalManual({canonical:c});
  assert.ok(tg.ok,JSON.stringify(tg));assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text);
  assert.equal(c.trigger.value,1383.45);assert.equal(c.invalidation.price,1319.19);
- assert.match(tg.text,/цены выше 1 383,45/);assert.match(tg.text,/цена ниже 1319,19/);
+ assert.match(tg.text,/цены выше 1 383,45/);assert.match(tg.text,/цена ниже 1 319,19/);
  assert.match(tg.text,/1 613 \(\+18%\) — средняя \(расчётный\)/);assert.match(tg.text,/2 555 \(\+87%\) — небольшая \(расчётный\)/);
  assert.match(tg.text,/1 193 \(−13%\) — средняя \(расчётный\)/);assert.match(tg.text,/905 \(−34%\) — небольшая \(расчётный\)/);
  assert.doesNotMatch(tg.text,/\bUSD(?:T|C)?\b|История предложения|CoinMetrics|Ждём подтверждения:|монета должна|Снимок рынка:|20509|16627|817019/);

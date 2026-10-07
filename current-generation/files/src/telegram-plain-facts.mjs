@@ -49,9 +49,9 @@ export function isApprovedTelegramContextFact(f,c){
  const buy=number(r?.buy_quote_turnover_usdt),sell=number(r?.sell_quote_turnover_usdt);
  return Number.isSafeInteger(r?.valid_recent_rows)&&r.valid_recent_rows>0&&buy!==null&&sell!==null&&buy>=0&&sell>=0;
 }
-export function plainCancellation(condition){
+export function plainCancellation(condition,{brief=false}={}){
  const m=/^(?:price|цена)\s*([<>]=?)\s*(\d+(?:\.\d+)?)$/.exec(String(condition??'').trim());
  if(!m)return null;
  const op={'<':'ниже','>':'выше','<=':'не выше','>=':'не ниже'}[m[1]];
- return `цена ${op} ${m[2].replace('.',',')} USDT`;
+ return `цена ${op} ${brief?telegramPrice(Number(m[2])):m[2].replace('.',',')} USDT`;
 }

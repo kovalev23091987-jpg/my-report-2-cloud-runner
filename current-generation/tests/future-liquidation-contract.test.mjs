@@ -84,6 +84,6 @@ test('positive future volumes render in main manual, compact and actual publicat
  c.liquidations=buildPumpLiquidationZones({contract:c.metadata.contract,current_price:100,observed_ts:T,projected:[101,102,105,110,500,90,89,85,75,2].map(price=>({price,notional_usd:2200000,source:'Verified provider',source_ts:T,price_semantics:'PROVIDER_MODEL_PRICE_BIN',native_reference_price:100,side:price>100?'SHORT':'LONG',price_quote:'USD',status:'CLOSED'}))});
  const manual=formatManualReport(c),compact=formatTelegramCompact(c),telegram=renderCanonicalTelegram({canonical:c,lifecycle_event:'WAIT'});
  for(const r of [manual,compact,telegram])assert.equal(r.ok,true,JSON.stringify(r));
- for(const out of [manual.text,compact.message,telegram.text]){assert.match(out,/огромная/);assert.match(out,/2200000 USD/);assert.doesNotMatch(out,/точная сумма|произошедших|расчётная вероятная зона/);}
+ for(const out of [manual.text,compact.message,telegram.text]){assert.match(out,/огромная/);assert.doesNotMatch(out,/точная сумма|произошедших|расчётная вероятная зона/);} for(const out of [manual.text,compact.message])assert.match(out,/2200000 USD/); assert.match(telegram.text,/расчётный/);assert.doesNotMatch(telegram.text,/2200000|USD/);
  assert.match(manual.text,/500 USD/);assert.match(manual.text,/2 USD/);assert.ok(compact.length<=compact.max_length);assert.equal(c.liquidations.all_zones.length,10);
 });

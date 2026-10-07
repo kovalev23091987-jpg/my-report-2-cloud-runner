@@ -25,6 +25,6 @@ test('valid observation score is a score out of 100 and target is conditional on
  c.metadata.technical_move_potential={status:'CLOSED',basis:'PRECOMMITTED_MEASURED_STRUCTURE',target_price:280};
  const r=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});
  assert.equal(r.ok,true);assert.match(r.text,/Оценка: 91 из 100/);
- assert.match(r.text,/Цель после подтверждения входа: 280 USDT/);
+ assert.match(r.text,/Цель после подтверждения входа: 280/);
  assert.doesNotMatch(r.text,/Оценка: 91%|Начинать закрывать позицию/);
 });

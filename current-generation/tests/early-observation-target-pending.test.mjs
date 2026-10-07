@@ -55,5 +55,5 @@ test('early observation with a proven 5 percent target keeps the existing messag
  assert.equal(action.reason,'EARLY_ACTIONABLE_OBSERVE');
  const rendered=renderCanonicalTelegram({canonical,lifecycle_event:'OBSERVE'});
  assert.equal(rendered.ok,true);
- assert.match(rendered.text,/Цель после подтверждения входа: 106 USDT\./);
+ assert.match(rendered.text,/Цель после подтверждения входа: 106\./);
 });
