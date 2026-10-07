@@ -1,0 +1,100 @@
+{
+  "schema": "ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT_20261007_V1",
+  "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
+  "source_cloud_run": 37681792251,
+  "source_head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+  "read_cloud_run": 37682711022,
+  "read_head": "16ce3250da423b0567f7bd0ccb4cf8572735dfbf",
+  "run_id": "1791404713379-1791404725011",
+  "contract": "BOME-USDT",
+  "snapshot_id": "S392:BOME-USDT:1791404783785",
+  "observed_ts": 1791404783785,
+  "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+  "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+  "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
+  "telegram_text": "BOME\n🟢 РОСТ\n⚪️ РАННЕЕ НАБЛЮДЕНИЕ\nОценка: 82 из 100.\n\nОснова идеи: рост открытых позиций за пять минут выделяется на фоне истории этой монеты; за четыре часа монета опережает биткоин на 2,9 п. п. и эфир на 2,7 п. п.; по измеренной структуре цена пытается выйти вверх.\n\nДля входа ждём:\n• закрепления цены выше 0,000987;\n• повторного подтверждения объёма, открытого интереса и ликвидаций.\n\nИдея теряет интерес: цена ниже 0,000962.\n\nЦель после подтверждения входа: пока не подтверждена.\n\nСильные ликвидации выше: 0,0212 (+2070%) — крупная (фактический).\nСильные ликвидации ниже: уровни не получены.\nУровни Hyperliquid; ограниченная выборка; проценты от цены источника.\nЗависят от других позиций счёта.",
+  "dispatch": {
+    "dispatch_id": "V3TG:BOME-USDT|LONG|EDW:BOME-USDT:1791404725238:G5|OBSERVE|v3-telegram-shadow-r6",
+    "idempotency_key": "BOME-USDT|LONG|EDW:BOME-USDT:1791404725238:G5|OBSERVE|v3-telegram-shadow-r6",
+    "contract": "BOME-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:BOME-USDT:1791404725238:G5",
+    "lifecycle_event": "OBSERVE",
+    "rules_version": "v3-telegram-shadow-r6",
+    "state": "SENT",
+    "decision_id": null,
+    "created_ts": 1791404831512,
+    "updated_ts": 1791404833130,
+    "sent_ts": 1791404833130,
+    "telegram_message_id": "155",
+    "last_error": "SENT",
+    "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb"
+  },
+  "verification": {
+    "contract": "BOME-USDT",
+    "snapshot_id": "S392:BOME-USDT:1791404783785",
+    "fingerprint_verified": true,
+    "identity": {
+      "status": "CLOSED",
+      "reason": null
+    },
+    "presentation": {
+      "status": "CLOSED",
+      "reason": null,
+      "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27"
+    },
+    "original_v5_exact": true
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_writes": 0,
+  "D1": {
+    "requests": 8,
+    "rows_read": 88,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 64,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 6,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "original_source_clocks_preserved": true,
+  "new_send_from_readback": false,
+  "acceptance_scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+  "project_complete": false
+}

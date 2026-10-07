@@ -1,0 +1,77 @@
+{
+  "schema": "telegram-info-proof-v1",
+  "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+  "source": "schedule",
+  "source_run_id": "1791404713379-1791404725011",
+  "lifecycle": {
+    "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+    "mode": "SHADOW_ONLY",
+    "network_send": false,
+    "dispatch_enabled": true,
+    "probability": null,
+    "validated_signal": false,
+    "trading_execution": false,
+    "status": "CLOSED",
+    "completed_handoffs": 2,
+    "transitions": [
+      {
+        "contract": "龙虾-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      },
+      {
+        "contract": "BOME-USDT",
+        "wave_id": "EDW:BOME-USDT:1791404725238:G5",
+        "direction": "LONG",
+        "status": "CLOSED",
+        "previous_status": "NONE",
+        "current_status": "OBSERVE",
+        "reason": "USEFUL_LIVE_OBSERVATION",
+        "dispatch": {
+          "state": "PENDING",
+          "idempotency_key": "BOME-USDT|LONG|EDW:BOME-USDT:1791404725238:G5|OBSERVE|v3-telegram-shadow-r6"
+        },
+        "score_0_100": 82
+      }
+    ],
+    "usage_delta": {
+      "rows_read": 84,
+      "rows_written": 8,
+      "requests": 9,
+      "unknown_ops": 0
+    }
+  },
+  "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+  "v3_telegram_network_enabled": true,
+  "output": {
+    "version": "telegram-output-v9-plain-text-explained-score",
+    "enabled": false,
+    "info_enabled": false,
+    "final_chain_auto": false,
+    "final_chain_threshold": 70,
+    "morning": {
+      "status": "INFO_DISABLED",
+      "sent": false
+    },
+    "early_info": {
+      "status": "INFO_DISABLED",
+      "sent": false,
+      "count": 0
+    },
+    "watch70": {
+      "status": "DISABLED_FINAL_CHAIN_ONLY",
+      "sent": 0
+    },
+    "shadow_decision": {
+      "status": "OUTPUT_DISABLED",
+      "sent": false,
+      "count": 0
+    }
+  },
+  "live_probability": null,
+  "validated_signal": false,
+  "execution": false,
+  "automatic_weight_tuning": false
+}

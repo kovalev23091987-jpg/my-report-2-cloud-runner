@@ -23,9 +23,9 @@
     "candidates": [
       {
         "contract": "龙虾-USDT",
-        "snapshot_id": "S392:龙虾-USDT:1791402353223",
-        "state": "OBSERVE",
-        "direction": "SHORT",
+        "snapshot_id": "S392:龙虾-USDT:1791404826193",
+        "state": "REJECTED",
+        "direction": null,
         "participating": 10,
         "participating_ids": [
           "N02",
@@ -40,16 +40,27 @@
           "N16"
         ],
         "checked": 14,
-        "score_applied": 1
+        "score_applied": 0,
+        "N05": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "observed_ts": 1791404797642,
+          "reported_window_end_ts": 1791404700000,
+          "reported_window_age_ms": 126193,
+          "reported_minute_rows": 1311,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        }
       },
       {
-        "contract": "ZEC-USDT",
-        "snapshot_id": "S392:ZEC-USDT:1791402321170",
-        "state": "REJECTED",
-        "direction": null,
-        "participating": 7,
+        "contract": "BOME-USDT",
+        "snapshot_id": "S392:BOME-USDT:1791404783785",
+        "state": "OBSERVE",
+        "direction": "LONG",
+        "participating": 9,
         "participating_ids": [
           "N02",
+          "N04",
+          "N05",
           "N08",
           "N09",
           "N10",
@@ -57,8 +68,17 @@
           "N12",
           "N16"
         ],
-        "checked": 9,
-        "score_applied": 0
+        "checked": 13,
+        "score_applied": 1,
+        "N05": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "observed_ts": 1791404744255,
+          "reported_window_end_ts": 1791404640000,
+          "reported_window_age_ms": 143785,
+          "reported_minute_rows": 1013,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        }
       }
     ],
     "dydx_same_run_reuse": [
@@ -2093,5 +2113,200 @@
     "retained_crypto_formula_matches": 23,
     "source_state_clock_closed": false,
     "admitted_future_levels": 0
+  },
+  "latest_post_pr229_actual_readback": {
+    "schema": "POST_PR228_NATURAL_CONNECTED_READBACK_20261007_V1",
+    "cloud_run": 37676707744,
+    "head": "addf5ab62343959fd42ce3908141dd5b109bb564",
+    "run_id": "1791402266304-1791402274999",
+    "generated_at": "2026-10-07T19:45:58.801Z",
+    "status": "EXACT_DIGEST_VERIFIED_ORIGINAL_NATURAL_ARTIFACT",
+    "proof": "checkpoints/POST_PR228_NATURAL_RETAINED_READBACK_20261007.json",
+    "candidates": [
+      {
+        "contract": "龙虾-USDT",
+        "snapshot_id": "S392:龙虾-USDT:1791404826193",
+        "state": "REJECTED",
+        "direction": null,
+        "participating": 10,
+        "participating_ids": [
+          "N02",
+          "N03",
+          "N04",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "checked": 14,
+        "score_applied": 0,
+        "N05": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "observed_ts": 1791404797642,
+          "reported_window_end_ts": 1791404700000,
+          "reported_window_age_ms": 126193,
+          "reported_minute_rows": 1311,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        }
+      },
+      {
+        "contract": "BOME-USDT",
+        "snapshot_id": "S392:BOME-USDT:1791404783785",
+        "state": "OBSERVE",
+        "direction": "LONG",
+        "participating": 9,
+        "participating_ids": [
+          "N02",
+          "N04",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "checked": 13,
+        "score_applied": 1,
+        "N05": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "observed_ts": 1791404744255,
+          "reported_window_end_ts": 1791404640000,
+          "reported_window_age_ms": 143785,
+          "reported_minute_rows": 1013,
+          "diagnostic_only": true,
+          "source_clock_unchanged": true
+        }
+      }
+    ],
+    "dydx_same_run_reuse": [
+      {
+        "contract": "ZEC-USDT",
+        "run_id": "1791402266304-1791402274999",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 3,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "EMPTY_BOUNDED_SAMPLE",
+          "failure_origin": "COVERAGE"
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791402309908,
+          "observed_ts": 1791402311226,
+          "height": "108484299",
+          "block_hash": "37F9F871144016EE5BDC95F69080EACD6AA116857D7130651BDD7F1DFB2F98D5",
+          "receipt_sha256": [
+            "e10aca33f4e56fc879642d4b57da321bebc23365a709961b812e3401e5e376e0",
+            "21b8fbf5ab920ce5d3ee786d2d2f96b48bdc45163f5d97299636aa18a1368c7b",
+            "fe2da9a78d05043db74bfd13e6786fab5c5f6079c3c36e344dd3bde669192788"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791402309908,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      },
+      {
+        "contract": "龙虾-USDT",
+        "run_id": "1791402266304-1791402274999",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 0,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "EMPTY_BOUNDED_SAMPLE",
+          "failure_origin": "COVERAGE"
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791402309908,
+          "observed_ts": 1791402311226,
+          "height": "108484299",
+          "block_hash": "37F9F871144016EE5BDC95F69080EACD6AA116857D7130651BDD7F1DFB2F98D5",
+          "receipt_sha256": [
+            "e10aca33f4e56fc879642d4b57da321bebc23365a709961b812e3401e5e376e0",
+            "21b8fbf5ab920ce5d3ee786d2d2f96b48bdc45163f5d97299636aa18a1368c7b",
+            "fe2da9a78d05043db74bfd13e6786fab5c5f6079c3c36e344dd3bde669192788"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791402309908,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      }
+    ],
+    "shared_budget": {
+      "reserved_http": 4,
+      "actual_http": 4,
+      "max_http_per_run": 5
+    },
+    "caller_modes": {
+      "ZEC-USDT": "SOURCE_HTTP",
+      "龙虾-USDT": "SOURCE_HTTP"
+    },
+    "cap_zero_caller_natural_acceptance": false,
+    "cap_zero_controlled_assembled_acceptance": "checkpoints/CACHE_ONLY_NATIVE_CONNECTED_VERIFICATION_20261007.json",
+    "source_reread_HTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "BR_selected": false,
+    "BR_fixed": false,
+    "pr229_natural_acceptance": false,
+    "n05_actual": {
+      "龙虾-USDT": {
+        "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "window_end_ts": 1791402240000,
+        "window_age_ms": 113223,
+        "verified_minutes": 240
+      },
+      "ZEC-USDT": {
+        "status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+        "source_captures_fresh": true,
+        "persisted_minutes": 830,
+        "current_240_minutes_not_proven": true,
+        "trajectory_window_age_ms": 2721170
+      }
+    },
+    "project_complete": false
   }
 }
