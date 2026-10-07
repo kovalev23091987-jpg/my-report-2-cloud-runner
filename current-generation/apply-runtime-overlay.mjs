@@ -46,7 +46,7 @@ const files=[
  'src/opportunity-intelligence-engine.mjs','src/prospective-opportunity-view.mjs',
  'src/source-role-registry.mjs',
  'src/source-role-consumer.mjs',
- 'src/canonical-publication.mjs','src/telegram-plain-facts.mjs',
+ 'src/canonical-publication.mjs','src/idea-basis-facts.mjs','src/telegram-plain-facts.mjs',
  'src/early-wave-continuity.mjs',
  'src/telegram-compact-formatter.mjs',
  'src/manual-report-formatter.mjs',
