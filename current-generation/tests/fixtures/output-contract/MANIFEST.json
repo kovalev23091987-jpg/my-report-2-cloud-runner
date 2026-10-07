@@ -12,7 +12,7 @@
     "current-generation/files/src/canonical-publication.mjs": "2761bad4950f62c1679c6cb5fdefcd49212983cc62be39137c55b225d5bc3d21",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "6b6e2597597349973d00b9234bdca23b0a8cb32c432189feecbfee1ba1472f37",
+    "current-generation/files/src/block-result-context.mjs": "c6dc3cc8e15a89f805b5a772433e899930c4b61c71c92d12cd898688535f7f61",
     "current-generation/files/src/telegram-plain-facts.mjs": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519"
   },
@@ -542,6 +542,25 @@
       "strategy_weights_or_entry_rules_changed": false,
       "publication_source_gate_changed": false,
       "note": "Intentional source registry extension; automatic golden updates remain disabled. All existing formatter bytes and historical outputs must still pass immutable regression."
+    },
+    {
+      "date": "2026-10-07",
+      "scope": "OWNER_REQUIRED_MORE_USEFUL_PRIMARY_BLOCKS_WITH_NATIVE_EVM_FACTS",
+      "authorization": "Owner18:25 and18:32MSK expressly requests improving other blocks and implementing useful new data sources in connected batches.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "6b6e2597597349973d00b9234bdca23b0a8cb32c432189feecbfee1ba1472f37",
+          "after": "c6dc3cc8e15a89f805b5a772433e899930c4b61c71c92d12cd898688535f7f61",
+          "exact_scope": "Read-only consumer revalidates finalized exact native EVM block burn and successful transaction receipts in existing supporting-context slots."
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "approved_manual_telegram_forms_changed": false,
+      "threshold_weights_entry_or_freshness_changed": false,
+      "automatic_golden_update": false,
+      "failed_hash_only_cloud_run": 37649912749,
+      "note": "All existing immutable output scenarios passed; the intended additional fact consumer changed only its pinned source hash. Do not regenerate any approved fixture."
     }
   ],
   "consumer_selection_revisions": [

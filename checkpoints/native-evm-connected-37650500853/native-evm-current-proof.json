@@ -1,0 +1,3622 @@
+{
+  "schema": "ACTUAL_NATIVE_EVM_PRIMARY_CONNECTED_20261007_V1",
+  "github_head": "057f077c8084289de7c07ce46299c3a74f0a7890",
+  "cloud_run": 37650500853,
+  "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192",
+  "started_ts": 1791389715192,
+  "source_http_cap": 6,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "forced_candidate_report": false,
+  "source_clock_refreshed": false,
+  "net_market_flow_claimed": false,
+  "source_count_is_not_independent_vote_count": true,
+  "reason": "Native ETH/BNB/AVAX could not enter the existing token-address-only finalized event route. One bounded admission batch verifies current finalized native primary block/receipts and its assigned N03/N04 consumers; no per-coin price level setup or forced production MAIN.",
+  "networks": [
+    {
+      "chain": "ethereum",
+      "contract": "ETH-USDT",
+      "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:ethereum",
+      "snapshot_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:ethereum:SOURCE_REFERENCE_ONLY",
+      "source": {
+        "version": "native-evm-finalized-context-v1-20261007",
+        "status": "CLOSED",
+        "contract": "ETH-USDT",
+        "evidence": [
+          {
+            "evidence_id": "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda",
+            "asset_id": "ethereum:native:mainnet",
+            "htx_contract": "ETH-USDT",
+            "block_id": "N03",
+            "metric_family": "NATIVE_EXECUTION_BASE_FEE_BURN",
+            "provider_id": "CHAIN_RPC",
+            "upstream_id": "PUBLICNODE_NATIVE_EVM:ethereum",
+            "origin_event_id": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE",
+            "dependency_group": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "source_ts": 1791388631000,
+            "observed_ts": 1791389717567,
+            "first_known_ts": 1791389717567,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "ONE_FINALIZED_BLOCK_BOUNDED_NATIVE_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "wei",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "d3100cc4c05f2015437ca63c3fd93483d6e79d0170b69d2e8975f4f567cf5c53",
+            "expires_at": 1791389831000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "chain": "ethereum",
+            "native_asset_id": "ethereum:mainnet",
+            "asset_kind": "NATIVE",
+            "token_address": null,
+            "block_hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "block_ref": "0x18ee36c",
+            "native_evm_proof": {
+              "schema": "NATIVE_EVM_FINALIZED_BLOCK_AND_RECEIPTS_V1",
+              "chain": "ethereum",
+              "chain_id": "0x1",
+              "requested_block_tag": "finalized",
+              "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+              "block": {
+                "hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "number": "0x18ee36c",
+                "timestamp": "0x6ac66bd7",
+                "gasUsed": "0xdad490",
+                "gasLimit": "0x3938700",
+                "baseFeePerGas": "0x8a8de9ab",
+                "transaction_count": 204
+              },
+              "samples": [
+                {
+                  "transaction": {
+                    "hash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "value": "0x33337cb9c2190",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "status": "0x1"
+                  }
+                },
+                {
+                  "transaction": {
+                    "hash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "value": "0x14ed8be5f65d6",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "status": "0x1"
+                  }
+                }
+              ]
+            },
+            "native_evm_proof_sha256": "fe2359adbe15d65c0df6cae51fda65c4f90473c0b88330220796db07bc9d0d41",
+            "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE",
+            "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+            "source_clock_refreshed": false,
+            "event_is_not_market_direction": true,
+            "exchange_labels_verified": false,
+            "common_upstream_not_independent_vote": true,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "base_fee_per_gas_wei": "2324556203",
+            "execution_gas_used": "14341264",
+            "burned_base_units": "33337074190060592",
+            "decimals": 18,
+            "producer": "ETHEREUM_FINALIZED_EIP1559_BLOCK",
+            "burn_scope": "EXECUTION_BASE_FEE_ONLY",
+            "blob_fees_included": false,
+            "net_supply_change_verified": false,
+            "buyback_verified": false
+          },
+          {
+            "evidence_id": "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5",
+            "asset_id": "ethereum:native:mainnet",
+            "htx_contract": "ETH-USDT",
+            "block_id": "N04",
+            "metric_family": "NATIVE_TRANSFER",
+            "provider_id": "CHAIN_RPC",
+            "upstream_id": "PUBLICNODE_NATIVE_EVM:ethereum",
+            "origin_event_id": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+            "dependency_group": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "source_ts": 1791388631000,
+            "observed_ts": 1791389717567,
+            "first_known_ts": 1791389717567,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "ONE_FINALIZED_BLOCK_BOUNDED_NATIVE_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "wei",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "621de43d5cc24056071757a2048124462c4541f9030c17877cd8f47c7ec6c688",
+            "expires_at": 1791389831000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "chain": "ethereum",
+            "native_asset_id": "ethereum:mainnet",
+            "asset_kind": "NATIVE",
+            "token_address": null,
+            "block_hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "block_ref": "0x18ee36c",
+            "native_evm_proof": {
+              "schema": "NATIVE_EVM_FINALIZED_BLOCK_AND_RECEIPTS_V1",
+              "chain": "ethereum",
+              "chain_id": "0x1",
+              "requested_block_tag": "finalized",
+              "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+              "block": {
+                "hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "number": "0x18ee36c",
+                "timestamp": "0x6ac66bd7",
+                "gasUsed": "0xdad490",
+                "gasLimit": "0x3938700",
+                "baseFeePerGas": "0x8a8de9ab",
+                "transaction_count": 204
+              },
+              "samples": [
+                {
+                  "transaction": {
+                    "hash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "value": "0x33337cb9c2190",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "status": "0x1"
+                  }
+                },
+                {
+                  "transaction": {
+                    "hash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "value": "0x14ed8be5f65d6",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "status": "0x1"
+                  }
+                }
+              ]
+            },
+            "native_evm_proof_sha256": "fe2359adbe15d65c0df6cae51fda65c4f90473c0b88330220796db07bc9d0d41",
+            "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+            "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+            "source_clock_refreshed": false,
+            "event_is_not_market_direction": true,
+            "exchange_labels_verified": false,
+            "common_upstream_not_independent_vote": true,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "tx_hash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+            "transaction_index": "12",
+            "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+            "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+            "amount_base_units": "900739662356880",
+            "decimals": 18,
+            "quantity_units": "NATIVE_WEI_18_DECIMALS",
+            "market_kind": "ONCHAIN_NATIVE_TRANSFER",
+            "producer": "EVM_FINALIZED_SUCCESSFUL_NATIVE_TRANSACTION",
+            "transaction_input_empty": true,
+            "internal_transfers_included": false,
+            "net_flow_claim": false
+          },
+          {
+            "evidence_id": "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde",
+            "asset_id": "ethereum:native:mainnet",
+            "htx_contract": "ETH-USDT",
+            "block_id": "N04",
+            "metric_family": "NATIVE_TRANSFER",
+            "provider_id": "CHAIN_RPC",
+            "upstream_id": "PUBLICNODE_NATIVE_EVM:ethereum",
+            "origin_event_id": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+            "dependency_group": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "source_ts": 1791388631000,
+            "observed_ts": 1791389717567,
+            "first_known_ts": 1791389717567,
+            "effective_from": null,
+            "effective_to": null,
+            "window_start": null,
+            "window_end": null,
+            "coverage_status": "ONE_FINALIZED_BLOCK_BOUNDED_NATIVE_SAMPLE",
+            "coverage_fraction": 0,
+            "unit": "wei",
+            "value": null,
+            "directional_strength": null,
+            "risk_strength": null,
+            "identity_status": "EXACT",
+            "finality_status": "FINAL",
+            "schema_version": "EvidenceV2.1",
+            "raw_hash": "1904caf3de35713fabff7d58f57f7a841a38f2f7d8f9b8cb04d8471a032f9f10",
+            "expires_at": 1791389831000,
+            "cost_receipt_id": null,
+            "validation_status": "VALID",
+            "validation_reason": null,
+            "chain": "ethereum",
+            "native_asset_id": "ethereum:mainnet",
+            "asset_kind": "NATIVE",
+            "token_address": null,
+            "block_hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "block_ref": "0x18ee36c",
+            "native_evm_proof": {
+              "schema": "NATIVE_EVM_FINALIZED_BLOCK_AND_RECEIPTS_V1",
+              "chain": "ethereum",
+              "chain_id": "0x1",
+              "requested_block_tag": "finalized",
+              "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+              "block": {
+                "hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "number": "0x18ee36c",
+                "timestamp": "0x6ac66bd7",
+                "gasUsed": "0xdad490",
+                "gasLimit": "0x3938700",
+                "baseFeePerGas": "0x8a8de9ab",
+                "transaction_count": 204
+              },
+              "samples": [
+                {
+                  "transaction": {
+                    "hash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "value": "0x33337cb9c2190",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                    "transactionIndex": "0xc",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                    "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                    "status": "0x1"
+                  }
+                },
+                {
+                  "transaction": {
+                    "hash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "value": "0x14ed8be5f65d6",
+                    "input": "0x"
+                  },
+                  "receipt": {
+                    "transactionHash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                    "transactionIndex": "0x1d",
+                    "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                    "blockNumber": "0x18ee36c",
+                    "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                    "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                    "status": "0x1"
+                  }
+                }
+              ]
+            },
+            "native_evm_proof_sha256": "fe2359adbe15d65c0df6cae51fda65c4f90473c0b88330220796db07bc9d0d41",
+            "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+            "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+            "source_clock_refreshed": false,
+            "event_is_not_market_direction": true,
+            "exchange_labels_verified": false,
+            "common_upstream_not_independent_vote": true,
+            "score_contribution": 0,
+            "entry_authorized": false,
+            "tx_hash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+            "transaction_index": "29",
+            "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+            "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+            "amount_base_units": "368167790536150",
+            "decimals": 18,
+            "quantity_units": "NATIVE_WEI_18_DECIMALS",
+            "market_kind": "ONCHAIN_NATIVE_TRANSFER",
+            "producer": "EVM_FINALIZED_SUCCESSFUL_NATIVE_TRANSACTION",
+            "transaction_input_empty": true,
+            "internal_transfers_included": false,
+            "net_flow_claim": false
+          }
+        ],
+        "native_evm_proof": {
+          "schema": "NATIVE_EVM_FINALIZED_BLOCK_AND_RECEIPTS_V1",
+          "chain": "ethereum",
+          "chain_id": "0x1",
+          "requested_block_tag": "finalized",
+          "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+          "block": {
+            "hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+            "number": "0x18ee36c",
+            "timestamp": "0x6ac66bd7",
+            "gasUsed": "0xdad490",
+            "gasLimit": "0x3938700",
+            "baseFeePerGas": "0x8a8de9ab",
+            "transaction_count": 204
+          },
+          "samples": [
+            {
+              "transaction": {
+                "hash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                "transactionIndex": "0xc",
+                "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "blockNumber": "0x18ee36c",
+                "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                "value": "0x33337cb9c2190",
+                "input": "0x"
+              },
+              "receipt": {
+                "transactionHash": "0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                "transactionIndex": "0xc",
+                "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "blockNumber": "0x18ee36c",
+                "from": "0x17b8d2caa18167d7e31e8522a7573252872465ad",
+                "to": "0x08f4f2b19b731cd2572ac517a43a0e68fb80d47f",
+                "status": "0x1"
+              }
+            },
+            {
+              "transaction": {
+                "hash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                "transactionIndex": "0x1d",
+                "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "blockNumber": "0x18ee36c",
+                "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                "value": "0x14ed8be5f65d6",
+                "input": "0x"
+              },
+              "receipt": {
+                "transactionHash": "0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+                "transactionIndex": "0x1d",
+                "blockHash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+                "blockNumber": "0x18ee36c",
+                "from": "0x2cff890f0378a11913b6129b2e97417a2c302680",
+                "to": "0x838f31af9d5be9283b722b340d28b986383bf27e",
+                "status": "0x1"
+              }
+            }
+          ]
+        },
+        "source_ts": 1791388631000,
+        "observed_ts": 1791389717567,
+        "expires_at": 1791389831000,
+        "summary": {
+          "chain": "ethereum",
+          "scope": "ONE_FINALIZED_BLOCK_UP_TO_TWO_POSITIVE_NATIVE_TRANSACTIONS",
+          "finalized_block": "0x18ee36c",
+          "finalized_block_hash": "0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff",
+          "source_ts": 1791388631000,
+          "block_transaction_count": 204,
+          "selected_receipts": 2,
+          "successful_native_transfers": 2,
+          "execution_burn_verified": true,
+          "quantity_units": "NATIVE_WEI_18_DECIMALS",
+          "net_market_flow_verified": false,
+          "exchange_labels_verified": false,
+          "direction_neutral": true
+        },
+        "internal_only": true,
+        "network_calls": 2,
+        "logical_rpc_methods": 4,
+        "admission": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "PUBLICNODE_NATIVE_EVM",
+          "minute_bucket": 1791389700000,
+          "reserved_units": 2,
+          "rolling_units": 2,
+          "cap": 6
+        },
+        "whole_job_admission": {
+          "allowed": true,
+          "status": "RESERVED",
+          "attempts": 2
+        },
+        "cache_status": "REFRESHED",
+        "receipts": [
+          {
+            "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+            "http_status": 200,
+            "status": "RECEIVED",
+            "body_sha256": "137e0c1c196715e412d0eb714dac8276d6f3120636727d0d0346adb4e9d3e7ee",
+            "error": null,
+            "rpc_errors": []
+          },
+          {
+            "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+            "http_status": 200,
+            "status": "RECEIVED",
+            "body_sha256": "19bcf921c7220c255a6f56a592f3f2266f44274c31268987aac395baf1a619bd",
+            "error": null,
+            "rpc_errors": []
+          }
+        ]
+      },
+      "source_fact_count": 3,
+      "rendered_block_ids": [
+        "N03",
+        "N04"
+      ],
+      "rendered_receipts": [
+        {
+          "block_id": "N03",
+          "evidence_id": "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda",
+          "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE",
+          "evidence_ids": [
+            "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda"
+          ],
+          "physical_root_keys": [
+            "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE"
+          ],
+          "source_ts": 1791388631000,
+          "observed_ts": 1791389717567,
+          "label": "Сжигание базовой комиссии Ethereum",
+          "value": "0,033337074190060592 ETH в финализированном блоке 0x18ee36c; только базовая комиссия исполнения, blob-комиссии и итоговое изменение предложения не включены; выкуп и направление цены не установлены",
+          "source": "Ethereum / финализированный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5",
+          "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+          "evidence_ids": [
+            "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5"
+          ],
+          "physical_root_keys": [
+            "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f"
+          ],
+          "source_ts": 1791388631000,
+          "observed_ts": 1791389717567,
+          "label": "Подтверждённый перевод нативного ETH",
+          "value": "0,00090073966235688 ETH в успешной транзакции 0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+          "source": "ETH / финализированный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde",
+          "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+          "evidence_ids": [
+            "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde"
+          ],
+          "physical_root_keys": [
+            "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8"
+          ],
+          "source_ts": 1791388631000,
+          "observed_ts": 1791389717567,
+          "label": "Подтверждённый перевод нативного ETH",
+          "value": "0,00036816779053615 ETH в успешной транзакции 0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+          "source": "ETH / финализированный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "source_checks": {
+        "N01": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "DEFILLAMA_PUBLISHED_CALENDAR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_TOKEN_SCHEDULE": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DEFILLAMA_PUBLISHED_CALENDAR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPORTING_RISK_RECHECK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ]
+        },
+        "N02": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_SUPPLY": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED",
+            "COINMETRICS_SUPPLY": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINMETRICS_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPLY_RISK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_SUPPLY"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "CHAIN_SUPPLY"
+          ]
+        },
+        "N03": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda"
+              ],
+              "provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "declared_upstream_ids": [
+                "PUBLICNODE_NATIVE_EVM:ethereum"
+              ],
+              "physical_root_keys": [
+                "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE"
+              ],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "CHAIN_SUPPLY_COMPARISON": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 1
+          },
+          "required_all": [],
+          "required_any": [
+            "CHAIN_EVENTS",
+            "CHAIN_SUPPLY_COMPARISON"
+          ],
+          "missing_required": []
+        },
+        "N04": {
+          "status": "CHECKED_NEUTRAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 2,
+          "valid_context_facts": 2,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [
+                "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5",
+                "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde"
+              ],
+              "provider_ids": [
+                "CHAIN_RPC"
+              ],
+              "declared_upstream_ids": [
+                "PUBLICNODE_NATIVE_EVM:ethereum"
+              ],
+              "physical_root_keys": [
+                "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+                "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8"
+              ],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TRANSFER_INVESTIGATION",
+          "maximum_score_points": 0.3,
+          "decision_path": "ADMITTED_NEUTRAL_CONTEXT",
+          "evidence_rejection_reasons": {
+            "ZERO_DECISION_COVERAGE": 2
+          },
+          "required_all": [
+            "CHAIN_EVENTS"
+          ],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "CLOSED"
+          },
+          "source_checks": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "NANSEN_FLOWS",
+            "PRIMARY_HTX_FUTURES_FLOW"
+          ],
+          "missing_required": [
+            "ANY:NANSEN_FLOWS|PRIMARY_HTX_FUTURES_FLOW"
+          ]
+        },
+        "N06": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "BLUESKY_PUBLIC": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED",
+            "WIKIMEDIA_ATTENTION": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "BLUESKY_PUBLIC": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "WIKIMEDIA_ATTENTION": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EARLY_INTEREST_PRIORITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "BLUESKY_PUBLIC"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "BLUESKY_PUBLIC"
+          ]
+        },
+        "N07": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "HTX_OFFICIAL_ANNOUNCEMENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OFFICIAL_EVENT_RISK",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "OFFICIAL_EVENTS",
+            "HTX_OFFICIAL_ANNOUNCEMENTS"
+          ],
+          "missing_required": [
+            "ANY:OFFICIAL_EVENTS|HTX_OFFICIAL_ANNOUNCEMENTS"
+          ]
+        },
+        "N08": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_GATE",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N09": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_ELIGIBILITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N10": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TARGET_PATH_INVALIDATION",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ]
+        },
+        "N11": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_STRESS",
+          "maximum_score_points": 0.4,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_STRESS"
+          ]
+        },
+        "N12": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_LARGE_TRADES": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_LARGE_TRADES"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_LARGE_TRADES"
+          ]
+        },
+        "N14": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_EVALUATED",
+            "DELTA_OPTIONS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "DERIBIT_ALT_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DELTA_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OPTIONS_RISK_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "DERIBIT_ALT_OPTIONS",
+            "DELTA_OPTIONS"
+          ],
+          "missing_required": [
+            "ANY:DERIBIT_ALT_OPTIONS|DELTA_OPTIONS"
+          ]
+        },
+        "N15": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "COINGECKO_SECTOR",
+            "COINPAPRIKA_SECTOR"
+          ],
+          "missing_required": [
+            "ANY:COINGECKO_SECTOR|COINPAPRIKA_SECTOR"
+          ]
+        },
+        "N16": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_COST": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_COST": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_COST_GATE",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_COST"
+          ]
+        }
+      },
+      "canonical_state": "REJECTED",
+      "scores_unchanged": true,
+      "entry_authorized": false,
+      "synthetic_discovery_price_is_not_market_proof": true,
+      "report_consumer": "CONTROLLED_SOURCE_REFERENCE_MANUAL_ONLY",
+      "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T16:15:17.732Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.\nДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ\n- Сжигание базовой комиссии Ethereum: 0,033337074190060592 ETH в финализированном блоке 0x18ee36c; только базовая комиссия исполнения, blob-комиссии и итоговое изменение предложения не включены; выкуп и направление цены не установлены — Ethereum / финализированный RPC.\n- Подтверждённый перевод нативного ETH: 0,00090073966235688 ETH в успешной транзакции 0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены — ETH / финализированный RPC.\n- Подтверждённый перевод нативного ETH: 0,00036816779053615 ETH в успешной транзакции 0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены — ETH / финализированный RPC.",
+      "decision_use": null
+    },
+    {
+      "chain": "bsc",
+      "contract": "BNB-USDT",
+      "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:bsc",
+      "snapshot_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:bsc:SOURCE_REFERENCE_ONLY",
+      "source": {
+        "version": "native-evm-finalized-context-v1-20261007",
+        "status": "SOURCE_RECEIPT_NOT_CLOSED",
+        "evidence": [],
+        "network_calls": 2,
+        "logical_rpc_methods": 4,
+        "admission": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "PUBLICNODE_NATIVE_EVM",
+          "minute_bucket": 1791389700000,
+          "reserved_units": 2,
+          "rolling_units": 4,
+          "cap": 6
+        },
+        "whole_job_admission": {
+          "allowed": true,
+          "status": "RESERVED",
+          "attempts": 2
+        },
+        "cache_status": "REFRESHED",
+        "receipts": [
+          {
+            "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+            "http_status": 200,
+            "status": "RECEIVED",
+            "body_sha256": "dab3081b07525b0d00f0339772ebe0eafcbfbf7a12e87c4a4e60209d76baee20",
+            "error": null,
+            "rpc_errors": []
+          },
+          {
+            "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+            "http_status": 403,
+            "status": "SOURCE_ERROR",
+            "body_sha256": "2436840333a9532fd189d94178966a7c723e5de1e7badf1babaf49bb71194b34",
+            "error": null,
+            "rpc_errors": [
+              {
+                "id": 3,
+                "code": -32602,
+                "message": "Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode"
+              },
+              {
+                "id": 4,
+                "code": -32602,
+                "message": "Archive requests require a personal token. Get one at: https://www.allnodes.com/publicnode"
+              }
+            ]
+          }
+        ],
+        "internal_only": true
+      },
+      "source_fact_count": 0,
+      "rendered_block_ids": [],
+      "rendered_receipts": [],
+      "source_checks": {
+        "N01": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "DEFILLAMA_PUBLISHED_CALENDAR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_TOKEN_SCHEDULE": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DEFILLAMA_PUBLISHED_CALENDAR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPORTING_RISK_RECHECK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ]
+        },
+        "N02": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_SUPPLY": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED",
+            "COINMETRICS_SUPPLY": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINMETRICS_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPLY_RISK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_SUPPLY"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "CHAIN_SUPPLY"
+          ]
+        },
+        "N03": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "SOURCE_RECEIPT_NOT_CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "SOURCE_RECEIPT_NOT_CLOSED",
+              "attempted": true,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "SOURCE_ERROR",
+                  "http_status": 403,
+                  "error": null
+                }
+              ]
+            },
+            "CHAIN_SUPPLY_COMPARISON": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "CHAIN_EVENTS",
+            "CHAIN_SUPPLY_COMPARISON"
+          ],
+          "missing_required": [
+            "ANY:CHAIN_EVENTS|CHAIN_SUPPLY_COMPARISON"
+          ]
+        },
+        "N04": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "SOURCE_RECEIPT_NOT_CLOSED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "SOURCE_RECEIPT_NOT_CLOSED",
+              "attempted": true,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "SOURCE_ERROR",
+                  "http_status": 403,
+                  "error": null
+                }
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TRANSFER_INVESTIGATION",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_EVENTS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "CHAIN_EVENTS"
+          ]
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "SOURCE_RECEIPT_NOT_CLOSED"
+          },
+          "source_checks": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "CHAIN_EVENTS": {
+              "status": "SOURCE_RECEIPT_NOT_CLOSED",
+              "attempted": true,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 2,
+              "cache_status": "REFRESHED",
+              "receipt_count": 2,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                },
+                {
+                  "route": "EXACT_SELECTED_NATIVE_RECEIPTS",
+                  "status": "SOURCE_ERROR",
+                  "http_status": 403,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "NANSEN_FLOWS",
+            "PRIMARY_HTX_FUTURES_FLOW"
+          ],
+          "missing_required": [
+            "ANY:NANSEN_FLOWS|PRIMARY_HTX_FUTURES_FLOW"
+          ]
+        },
+        "N06": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "BLUESKY_PUBLIC": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED",
+            "WIKIMEDIA_ATTENTION": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "BLUESKY_PUBLIC": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "WIKIMEDIA_ATTENTION": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EARLY_INTEREST_PRIORITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "BLUESKY_PUBLIC"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "BLUESKY_PUBLIC"
+          ]
+        },
+        "N07": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "HTX_OFFICIAL_ANNOUNCEMENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OFFICIAL_EVENT_RISK",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "OFFICIAL_EVENTS",
+            "HTX_OFFICIAL_ANNOUNCEMENTS"
+          ],
+          "missing_required": [
+            "ANY:OFFICIAL_EVENTS|HTX_OFFICIAL_ANNOUNCEMENTS"
+          ]
+        },
+        "N08": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_GATE",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N09": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_ELIGIBILITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N10": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TARGET_PATH_INVALIDATION",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ]
+        },
+        "N11": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_STRESS",
+          "maximum_score_points": 0.4,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_STRESS"
+          ]
+        },
+        "N12": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_LARGE_TRADES": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_LARGE_TRADES"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_LARGE_TRADES"
+          ]
+        },
+        "N14": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_EVALUATED",
+            "DELTA_OPTIONS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "DERIBIT_ALT_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DELTA_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OPTIONS_RISK_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "DERIBIT_ALT_OPTIONS",
+            "DELTA_OPTIONS"
+          ],
+          "missing_required": [
+            "ANY:DERIBIT_ALT_OPTIONS|DELTA_OPTIONS"
+          ]
+        },
+        "N15": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "COINGECKO_SECTOR",
+            "COINPAPRIKA_SECTOR"
+          ],
+          "missing_required": [
+            "ANY:COINGECKO_SECTOR|COINPAPRIKA_SECTOR"
+          ]
+        },
+        "N16": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_COST": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_COST": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_COST_GATE",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_COST"
+          ]
+        }
+      },
+      "canonical_state": "REJECTED",
+      "scores_unchanged": true,
+      "entry_authorized": false,
+      "synthetic_discovery_price_is_not_market_proof": true,
+      "report_consumer": "CONTROLLED_SOURCE_REFERENCE_MANUAL_ONLY",
+      "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T16:15:19.550Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+      "decision_use": null
+    },
+    {
+      "chain": "avalanche",
+      "contract": "AVAX-USDT",
+      "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:avalanche",
+      "snapshot_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192:avalanche:SOURCE_REFERENCE_ONLY",
+      "source": {
+        "version": "native-evm-finalized-context-v1-20261007",
+        "status": "CLOSED",
+        "contract": "AVAX-USDT",
+        "evidence": [],
+        "native_evm_proof": {
+          "schema": "NATIVE_EVM_FINALIZED_BLOCK_AND_RECEIPTS_V1",
+          "chain": "avalanche",
+          "chain_id": "0xa86a",
+          "requested_block_tag": "finalized",
+          "source_clock_policy": "ORIGINAL_FINALIZED_BLOCK_TIMESTAMP",
+          "block": {
+            "hash": "0x16478e704f16d735da1bdeeb459f8085ef37503c440dd53cd55319e6639fd806",
+            "number": "0x5c79bcc",
+            "timestamp": "0x6ac67011",
+            "gasUsed": "0x80930",
+            "gasLimit": "0x4c4b400",
+            "baseFeePerGas": "0x12a05f200",
+            "transaction_count": 3
+          },
+          "samples": []
+        },
+        "source_ts": 1791389713000,
+        "observed_ts": 1791389721177,
+        "expires_at": 1791390913000,
+        "summary": {
+          "chain": "avalanche",
+          "scope": "ONE_FINALIZED_BLOCK_UP_TO_TWO_POSITIVE_NATIVE_TRANSACTIONS",
+          "finalized_block": "0x5c79bcc",
+          "finalized_block_hash": "0x16478e704f16d735da1bdeeb459f8085ef37503c440dd53cd55319e6639fd806",
+          "source_ts": 1791389713000,
+          "block_transaction_count": 3,
+          "selected_receipts": 0,
+          "successful_native_transfers": 0,
+          "execution_burn_verified": false,
+          "quantity_units": "NATIVE_WEI_18_DECIMALS",
+          "net_market_flow_verified": false,
+          "exchange_labels_verified": false,
+          "direction_neutral": true
+        },
+        "internal_only": true,
+        "network_calls": 1,
+        "logical_rpc_methods": 2,
+        "admission": {
+          "allowed": true,
+          "status": "RESERVED_OR_IDENTICAL",
+          "provider": "PUBLICNODE_NATIVE_EVM",
+          "minute_bucket": 1791389700000,
+          "reserved_units": 2,
+          "rolling_units": 6,
+          "cap": 6
+        },
+        "whole_job_admission": {
+          "allowed": true,
+          "status": "RESERVED",
+          "attempts": 2
+        },
+        "cache_status": "REFRESHED",
+        "receipts": [
+          {
+            "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+            "http_status": 200,
+            "status": "RECEIVED",
+            "body_sha256": "c6f6823ad847434a7bc3f8fea6d18c16dd7deeec6e055cef56700342b5c22f8c",
+            "error": null,
+            "rpc_errors": []
+          }
+        ]
+      },
+      "source_fact_count": 0,
+      "rendered_block_ids": [],
+      "rendered_receipts": [],
+      "source_checks": {
+        "N01": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_TOKEN_SCHEDULE": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "DEFILLAMA_PUBLISHED_CALENDAR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_TOKEN_SCHEDULE": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DEFILLAMA_PUBLISHED_CALENDAR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPORTING_RISK_RECHECK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "OFFICIAL_TOKEN_SCHEDULE"
+          ]
+        },
+        "N02": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_SUPPLY": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED",
+            "COINMETRICS_SUPPLY": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINMETRICS_SUPPLY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SUPPLY_RISK",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_SUPPLY"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "CHAIN_SUPPLY"
+          ]
+        },
+        "N03": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "CHAIN_SUPPLY_COMPARISON": "NOT_EVALUATED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 1,
+              "cache_status": "REFRESHED",
+              "receipt_count": 1,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "CHAIN_SUPPLY_COMPARISON": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "CHECKED_NEUTRAL_NO_EVENT",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "CHAIN_EVENTS",
+            "CHAIN_SUPPLY_COMPARISON"
+          ],
+          "missing_required": []
+        },
+        "N04": {
+          "status": "CHECKED_NO_USABLE_FACTS",
+          "checked": true,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "CHAIN_EVENTS": "CLOSED",
+            "BLOCKSCOUT_INDEX": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 1,
+              "cache_status": "REFRESHED",
+              "receipt_count": 1,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            },
+            "BLOCKSCOUT_INDEX": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TRANSFER_INVESTIGATION",
+          "maximum_score_points": 0.3,
+          "decision_path": "CHECKED_NEUTRAL_NO_EVENT",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "CHAIN_EVENTS"
+          ],
+          "required_any": [],
+          "missing_required": []
+        },
+        "N05": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "NOT_EVALUATED",
+            "CHAIN_EVENTS": "CLOSED"
+          },
+          "source_checks": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "CHAIN_EVENTS": {
+              "status": "CLOSED",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 1,
+              "cache_status": "REFRESHED",
+              "receipt_count": 1,
+              "admission_status": "RESERVED_OR_IDENTICAL",
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": [
+                {
+                  "route": "EXACT_CHAIN_FINALIZED_FULL_BLOCK",
+                  "status": "RECEIVED",
+                  "http_status": 200,
+                  "error": null
+                }
+              ]
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "NANSEN_FLOWS",
+            "PRIMARY_HTX_FUTURES_FLOW"
+          ],
+          "missing_required": [
+            "ANY:NANSEN_FLOWS|PRIMARY_HTX_FUTURES_FLOW"
+          ]
+        },
+        "N06": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "BLUESKY_PUBLIC": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED",
+            "WIKIMEDIA_ATTENTION": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "BLUESKY_PUBLIC": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "WIKIMEDIA_ATTENTION": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EARLY_INTEREST_PRIORITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "BLUESKY_PUBLIC"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "BLUESKY_PUBLIC"
+          ]
+        },
+        "N07": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "OFFICIAL_EVENTS": "NOT_EVALUATED",
+            "HTX_OFFICIAL_ANNOUNCEMENTS": "NOT_EVALUATED",
+            "GDELT_NEWS_DISCOVERY": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "HTX_OFFICIAL_ANNOUNCEMENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "GDELT_NEWS_DISCOVERY": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OFFICIAL_EVENT_RISK",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "OFFICIAL_EVENTS",
+            "HTX_OFFICIAL_ANNOUNCEMENTS"
+          ],
+          "missing_required": [
+            "ANY:OFFICIAL_EVENTS|HTX_OFFICIAL_ANNOUNCEMENTS"
+          ]
+        },
+        "N08": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED",
+            "OFFICIAL_EVENTS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "OFFICIAL_EVENTS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_GATE",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N09": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_PUBLIC_RISK": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_PUBLIC_RISK": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_ELIGIBILITY",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_PUBLIC_RISK"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_PUBLIC_RISK"
+          ]
+        },
+        "N10": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_TECHNICAL_CONTEXT": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_TECHNICAL_CONTEXT": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "TARGET_PATH_INVALIDATION",
+          "maximum_score_points": 0.2,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_TECHNICAL_CONTEXT"
+          ]
+        },
+        "N11": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_STRESS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_STRESS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_STRESS",
+          "maximum_score_points": 0.4,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_STRESS"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_STRESS"
+          ]
+        },
+        "N12": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "HTX_LARGE_TRADES": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "HTX_LARGE_TRADES": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MONEY_FLOW_DIAGNOSTIC",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "HTX_LARGE_TRADES"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "HTX_LARGE_TRADES"
+          ]
+        },
+        "N14": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "DERIBIT_ALT_OPTIONS": "NOT_EVALUATED",
+            "DELTA_OPTIONS": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "DERIBIT_ALT_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "DELTA_OPTIONS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "OPTIONS_RISK_CONTEXT",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "DERIBIT_ALT_OPTIONS",
+            "DELTA_OPTIONS"
+          ],
+          "missing_required": [
+            "ANY:DERIBIT_ALT_OPTIONS|DELTA_OPTIONS"
+          ]
+        },
+        "N15": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "COINGECKO_SECTOR": "NOT_EVALUATED",
+            "COINPAPRIKA_SECTOR": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "COINGECKO_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "COINPAPRIKA_SECTOR": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "SECTOR_RELATIVE_STRENGTH",
+          "maximum_score_points": 0.6,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "COINGECKO_SECTOR",
+            "COINPAPRIKA_SECTOR"
+          ],
+          "missing_required": [
+            "ANY:COINGECKO_SECTOR|COINPAPRIKA_SECTOR"
+          ]
+        },
+        "N16": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "PRIMARY_EXECUTION_COST": "NOT_EVALUATED"
+          },
+          "source_checks": {
+            "PRIMARY_EXECUTION_COST": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "EXECUTION_COST_GATE",
+          "maximum_score_points": 0.3,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [
+            "PRIMARY_EXECUTION_COST"
+          ],
+          "required_any": [],
+          "missing_required": [
+            "PRIMARY_EXECUTION_COST"
+          ]
+        }
+      },
+      "canonical_state": "REJECTED",
+      "scores_unchanged": true,
+      "entry_authorized": false,
+      "synthetic_discovery_price_is_not_market_proof": true,
+      "report_consumer": "CONTROLLED_SOURCE_REFERENCE_MANUAL_ONLY",
+      "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T16:15:21.349Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+      "decision_use": null
+    }
+  ],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 47,
+      "reserved_rows_read": 927350,
+      "reserved_rows_written": 18304,
+      "measured_rows_read": 575435,
+      "measured_rows_written": 9037,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 928850,
+      "rows_written": 18404
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 64
+  },
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 70
+  },
+  "verified_useful_networks": [
+    "ethereum"
+  ],
+  "status": "PARTIAL_NATIVE_PRIMARY_SOURCE_COVERAGE",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192",
+    "source_run_id": "37650500853",
+    "measured_rows_read": 80,
+    "measured_rows_written_accounted": 31,
+    "measured_requests_accounted": 60,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791389721629,
+  "source_http": 5,
+  "reserved_http": 6,
+  "d1_usage": {
+    "requests": 60,
+    "rows_read": 81,
+    "rows_written": 31,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 48,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 15,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 6,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 6,
+        "rows_read": 3,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 3,
+        "rows_read": 9,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 6,
+        "rows_read": 12,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 3,
+        "rows_read": 0,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "e112f2a388a57b27ecbb15fc01dc2d19d2c2df9549427454300ee55b713d0968"
+}
