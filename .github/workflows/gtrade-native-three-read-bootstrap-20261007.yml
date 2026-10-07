@@ -1,0 +1,65 @@
+name: Report2 Actual Three Read gTrade and Durable Structural Routing
+on:
+  push:
+    branches: [codex/gtrade-native-three-read-bootstrap-20261007]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check actual owner and exact current production before assembly
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='167b17c68fa4a7631c5574b879f9aef4bb308e9e')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Load verified original native structural capabilities
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11486709178,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='38a1027486bc11ac0800e4138f44685ba5c1e48622443029d7d59577817c12b7')throw Error('VERIFIED_STRUCTURAL_SOURCE_DIGEST_MISMATCH');
+            fs.mkdirSync('gtrade-verified-source',{recursive:true});fs.writeFileSync('gtrade-verified-source.zip',b);cp.execFileSync('unzip',['-q','gtrade-verified-source.zip','-d','gtrade-verified-source']);
+      - name: Assemble exact current runtime without MAIN
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          cmp current-generation/files/src/liquidation-extension/gtrade-runtime-collector.mjs runtime/src/liquidation-extension/gtrade-runtime-collector.mjs
+          cmp current-generation/files/src/liquidation-extension/gtrade-pinned-position-snapshot.mjs runtime/src/liquidation-extension/gtrade-pinned-position-snapshot.mjs
+          node --check tools/verify-gtrade-actual-three-read-20261007.mjs
+      - name: Recheck exact owner immediately before bounded source calls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='167b17c68fa4a7631c5574b879f9aef4bb308e9e')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Verify new actual three-read route and guarded durable hints
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/verify-gtrade-actual-three-read-20261007.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: gtrade-native-three-read-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
