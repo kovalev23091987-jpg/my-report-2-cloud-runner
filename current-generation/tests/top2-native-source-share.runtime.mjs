@@ -25,12 +25,12 @@ test('reproduce the actual first-leader-five-calls starvation pattern without ne
  const second=await s.collect(params('龙虾-USDT',['GTRADE_NATIVE']));assert.equal(second,null);assert.equal(urls.length,5);assert.equal(s.summary().routed.at(-1).status,'QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET');
  proof.cases.push({case:'BASELINE_FIRST_NATIVE_FIVE_SECOND_CATALOG_DENIED',first_accounts:first.accounts.length,total_http:urls.length,second_status:s.summary().routed.at(-1).status});
 });
-test('two-slot policy retains two native accounts and permits the second exact retained catalog check within five calls',async()=>{
- const {s,urls}=service(2);const first=await s.collect(params('FIL-USDT',['HYPERLIQUID_NATIVE']));assert(first);assert.equal(first.accounts.length,2);assert.equal(urls.length,4);
- const second=await s.collect(params('龙虾-USDT',['GTRADE_NATIVE']));assert.equal(second,null);assert.equal(urls.length,5);assert.equal(s.summary().shared_budget.actual_http,5);
+test('two-slot policy preserves a complete native verification pair for the second candidate',async()=>{
+ const {s,urls}=service(2);const first=await s.collect(params('FIL-USDT',['HYPERLIQUID_NATIVE']));assert(first);assert.equal(first.accounts.length,1);assert.equal(urls.length,3);
+ const second=await s.collect(params('龙虾-USDT',['GTRADE_NATIVE']));assert.equal(second,null);assert.equal(urls.length,4);assert.equal(s.summary().shared_budget.actual_http,4);
  const route=s.summary().routed.at(-1);assert.equal(route.status,'GTRADE_SYMBOL_UNSUPPORTED');assert.equal(route.source_outcome.evaluated,true);assert.equal(route.source_outcome.coverage_status,'UNSUPPORTED');
  assert.equal(first.provenance.model_prices_used_as_evidence,undefined);assert.equal(first.provenance.raw_model_prices_used,false);
- proof.cases.push({case:'TWO_SLOT_NATIVE_SAMPLE_AND_SECOND_REAL_CATALOG',first_accounts:2,total_http:5,second_status:route.status,retained_catalog_actual:true,first_account_payloads_controlled:true,new_second_levels:false,entry_authorized:false});
+ proof.cases.push({case:'TWO_SLOT_COMPLETE_NATIVE_PAIR_RESERVED_AND_SECOND_REAL_CATALOG',first_accounts:1,total_http:4,second_status:route.status,retained_catalog_actual:true,first_account_payloads_controlled:true,new_second_levels:false,entry_authorized:false});
 });
 test('manual single-slot collection retains its existing three-account five-call sample',async()=>{
  const {s,urls}=service(1);const first=await s.collect(params('FIL-USDT',['HYPERLIQUID_NATIVE']));assert.equal(first.accounts.length,3);assert.equal(urls.length,5);

@@ -19,7 +19,7 @@ const files=[
  'src/recall-kpi-readback.mjs','src/execution-report-context.mjs','src/upstream-proof-utils.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',
- 'src/block-decision-use-audit.mjs',
+ 'src/block-decision-use-audit.mjs','src/block-score-policy.mjs','src/block-weight-calibration.mjs',
  'src/bounded-money-flow-diagnostic.mjs',
  'src/sector-relative-strength-review.mjs',
  'src/supplemental-supporting-bridge.mjs',

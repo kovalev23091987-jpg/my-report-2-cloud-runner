@@ -58,5 +58,8 @@ export function buildTz101CostAssessment({decision_summary:decision,execution_ga
   if(grossReward>0&&grossRisk>0&&total>=0){out.gross_reward_usdt=grossReward;out.gross_risk_usdt=grossRisk;out.total_cost_usdt=total;out.reward_after_costs_usdt=Math.max(0,grossReward-total);out.risk_after_costs_usdt=grossRisk+total;out.risk_reward_ratio=out.risk_after_costs_usdt>0?out.reward_after_costs_usdt/out.risk_after_costs_usdt:null;out.risk_reward_after_costs_status=finite(out.risk_reward_ratio)&&out.risk_reward_ratio>0?'CLOSED':'NOT_CLOSED';}
  }
  if(out.fees_usdt!==null&&out.funding_cost_usdt!==null&&out.risk_reward_after_costs_status==='CLOSED')out.status='CLOSED';
+ // Retain the real approved cost horizon for later4h statistical assessment;
+ // a shorter reservation cannot silently cover a longer forecast.
+ if(out.status==='CLOSED'){out.holding_entry_ts=holdingPlan.entry_ts;out.holding_exit_ts=holdingPlan.planned_exit_no_later_than_ts;}
  return out;
 }

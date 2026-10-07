@@ -81,10 +81,10 @@ export function usedIdeaBasisFacts(c){
  for(const receipt of arr(c.metadata?.supplemental_score_adjustment?.receipts)){
   if(receipt.source_id!=='EVIDENCE_V2'||num(receipt.score_contribution)===null||receipt.score_contribution<1||!arr(receipt.evidence_v2_receipts).some(r=>r.evidence_id===receipt.provider_object_id&&r.reason==='CONSUMED'))continue;
   const r=rows.find(r=>r.evidence_id===receipt.provider_object_id);
-  if(!r||r.htx_contract!==contract||!validateEvidenceV2(r,{decision_ts:now}).usable||r.coverage_fraction!==1||r.whole_window_coverage_proven===false||r.entry_eligible===false)continue;
+  if(!r||r.htx_contract!==contract||!validateEvidenceV2(r,{decision_ts:now}).usable||(r.metric_family==='SECTOR_RELATIVE_STRENGTH_CONTEXT'?r.coverage_fraction<.5:r.coverage_fraction!==1||r.whole_window_coverage_proven===false||r.entry_eligible===false))continue;
   if(r.metric_family==='ACTUAL_TAKER_TRADES_BOUNDED_IMBALANCE')continue;
   // Unknown families stay in the detailed audit, never receive a guessed label.
-  if(r.metric_family==='SECTOR_RELATIVE_STRENGTH'&&num(r.relative_to_sector_pct_points)!==null)facts.push({kind:'USED_SECTOR_FACTOR',evidence_id:r.evidence_id,source_ts:r.source_ts,phrase:`монета ${r.relative_to_sector_pct_points>0?'опережает':'отстаёт от'} свой сектор на ${pct(r.relative_to_sector_pct_points)} п. п.`});
+  if(r.metric_family==='SECTOR_RELATIVE_STRENGTH_CONTEXT'&&num(r.relative_strength_pct_points)!==null)facts.push({kind:'USED_SECTOR_FACTOR',evidence_id:r.evidence_id,source_ts:r.source_ts,phrase:`монета ${r.relative_strength_pct_points>0?'опережает проверенную группу':'отстаёт от проверенной группы'} монет своего сектора на ${pct(r.relative_strength_pct_points)} п. п.`});
  }
  return facts;
 }

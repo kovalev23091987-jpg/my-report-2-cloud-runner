@@ -44,11 +44,11 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
  async function collect(params={}){
   const requestedCandidateCap=Number(params?.max_http_for_candidate);
   const requestedCap=Number.isSafeInteger(requestedCandidateCap)?Math.max(0,Math.min(max_http_per_run,requestedCandidateCap)):max_http_per_run;
-  // Production deep checks are sequential. Preserve one catalog/verification
-  // request for a following selected candidate instead of spending all five
-  // on a third public account of the first. This is not promised level coverage.
+  // Production deep checks are sequential. Preserve a discovery request PLUS one native account verification for
+  // a following selected candidate. One catalog request alone cannot
+  // return a liquidation level (observed NEAR starvation at09:30). This is not promised level coverage.
   const visited=visitedByRun.get(params.run_id)||new Set();visited.add(params.contract);visitedByRun.set(params.run_id,visited);
-  const reserveForFollowingCandidate=Math.max(0,candidate_slots-visited.size);
+  const reserveForFollowingCandidate=2*Math.max(0,candidate_slots-visited.size);
   const candidateHttpCap=candidate_slots===1?requestedCap:Math.min(requestedCap,Math.max(0,max_http_per_run-budget.summary().reserved_http-reserveForFollowingCandidate));
   params={...params,max_http_for_candidate:candidateHttpCap};
   const candidateReservedStart=budget.summary().reserved_http;
@@ -104,5 +104,5 @@ const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null,po
  }
  return {collect,summary:()=>({mode:'SHADOW_ONLY',state:'DYNAMIC_REPRESENTATIVE_PANEL_DECISION_INPUT',same_admission_and_transport_for_all_sources:true,
   gtrade_sdk:{required_version:PINNED_GTRADE_SDK_VERSION,status:sdkStatus},primary:primary.summary(),secondary:combined.summary(),shared_budget:budget.summary(),
-  routed,rotating_lanes:['HYPERLIQUID_NATIVE','GTRADE_NATIVE_WHEN_CONFIGURED','LIGHTER_NATIVE_WHEN_EXACT','GMX_NATIVE_WHEN_EXACT','OXARCHIVE_HL_BUCKETS_WHEN_KEY'],fallback_policy:'EXACT_COVERAGE_AND_ROLE_UTILITY_THEN_ALL_ADMITTED_SUPPLEMENTAL_ROUTES',cross_source_confirmation:true,total_http_cap:max_http_per_run,candidate_slots,preserve_one_request_for_following_candidate:candidate_slots===2,outside_shared_budget_http:0,notional_summed_across_providers:false,source_overlap_is_not_an_independent_vote:true,source_weighting:{mode:'ROLE_SCOPED_AVAILABILITY_AND_COST;PREDICTIVE_FACTOR_ONLY_WHEN_QUALIFIED',core_decision_weights_changed:false,profile:lastWeightProfile},oxarchive:typeof oxarchive==='function'?oxarchive.summary?.()||{enabled:true}:{enabled:false},output_mode:'CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION',production_enabled:true,automatic_execution:false})};
+  routed,rotating_lanes:['HYPERLIQUID_NATIVE','GTRADE_NATIVE_WHEN_CONFIGURED','LIGHTER_NATIVE_WHEN_EXACT','GMX_NATIVE_WHEN_EXACT','OXARCHIVE_HL_BUCKETS_WHEN_KEY'],fallback_policy:'EXACT_COVERAGE_AND_ROLE_UTILITY_THEN_ALL_ADMITTED_SUPPLEMENTAL_ROUTES',cross_source_confirmation:true,total_http_cap:max_http_per_run,candidate_slots,preserve_minimum_native_pair_for_following_candidate:candidate_slots===2,following_candidate_minimum_http:2,outside_shared_budget_http:0,notional_summed_across_providers:false,source_overlap_is_not_an_independent_vote:true,source_weighting:{mode:'ROLE_SCOPED_AVAILABILITY_AND_COST;PREDICTIVE_FACTOR_ONLY_WHEN_QUALIFIED',core_decision_weights_changed:false,profile:lastWeightProfile},oxarchive:typeof oxarchive==='function'?oxarchive.summary?.()||{enabled:true}:{enabled:false},output_mode:'CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION',production_enabled:true,automatic_execution:false})};
 }
