@@ -6,9 +6,9 @@ import {installProviderMinuteLedger,reserveProviderMinuteUnits} from './provider
 
 export const NATIVE_EVM_CONTEXT_VERSION='native-evm-finalized-context-v1-20261007';
 export const NATIVE_EVM_NETWORKS=Object.freeze({
- ethereum:{chain_id:'0x1',endpoint:'https://ethereum-rpc.publicnode.com',symbol:'ETH',execution_base_fee_burn:true},
- bsc:{chain_id:'0x38',endpoint:'https://bsc-rpc.publicnode.com',symbol:'BNB',execution_base_fee_burn:false},
- avalanche:{chain_id:'0xa86a',endpoint:'https://avalanche-c-chain-rpc.publicnode.com',symbol:'AVAX',execution_base_fee_burn:false},
+ ethereum:{chain_id:'0x1',endpoint:'https://ethereum-rpc.publicnode.com',symbol:'ETH',execution_base_fee_burn:true,upstream_id:'PUBLICNODE_NATIVE_EVM:ethereum',production_enabled:true},
+ bsc:{chain_id:'0x38',endpoint:'https://bsc-dataseed.bnbchain.org',symbol:'BNB',execution_base_fee_burn:false,upstream_id:'BNBCHAIN_MAINNET_RPC',production_enabled:true},
+ avalanche:{chain_id:'0xa86a',endpoint:'https://avalanche-c-chain-rpc.publicnode.com',symbol:'AVAX',execution_base_fee_burn:false,upstream_id:'PUBLICNODE_NATIVE_EVM:avalanche',production_enabled:false},
 });
 const SOURCE='CHAIN_RPC',TTL=SOURCE_POLICIES[SOURCE].ttl_ms,MAX_TX=2000,MAX_BODY=2*1024*1024;
 const HEX=/^0x(?:0|[1-9a-f][0-9a-f]*)$/i,HASH=/^0x[0-9a-f]{64}$/i,ADDR=/^0x[0-9a-f]{40}$/i;
@@ -38,7 +38,7 @@ export function deriveNativeEvmFacts({contract,asset_identity,proof,observed_ts}
  if(!head||network.execution_base_fee_burn&&q(block.baseFeePerGas)===null||!Number.isSafeInteger(block.transaction_count)||block.transaction_count<0||block.transaction_count>MAX_TX||!Array.isArray(samples)||samples.length>2||samples.length>block.transaction_count)return{status:'EXACT_FRESH_FINALIZED_BLOCK_REQUIRED',evidence:[]};
  const ids=new Set(),indexes=new Set();
  for(const s of samples){const tx=s?.transaction,index=q(tx?.transactionIndex);if(!validTx(tx,block)||index>=BigInt(block.transaction_count)||ids.has(lower(tx.hash))||indexes.has(String(index))||!validReceipt(tx,s.receipt,block))return{status:'EXACT_SELECTED_TRANSACTION_RECEIPT_REQUIRED',evidence:[]};ids.add(lower(tx.hash));indexes.add(String(index));}
- const upstream='PUBLICNODE_NATIVE_EVM:'+network.chain,root='NATIVE_EVM_BLOCK:'+network.chain+':'+lower(block.hash),extra={chain:network.chain,native_asset_id:network.chain+':mainnet',asset_kind:'NATIVE',token_address:null,block_hash:lower(block.hash),block_ref:lower(block.number),native_evm_proof:proof,native_evm_proof_sha256:hash(proof),physical_root_key:root,source_clock_policy:proof.source_clock_policy,source_clock_refreshed:false,event_is_not_market_direction:true,exchange_labels_verified:false,common_upstream_not_independent_vote:true,score_contribution:0,entry_authorized:false};
+ const upstream=network.upstream_id,root='NATIVE_EVM_BLOCK:'+network.chain+':'+lower(block.hash),extra={chain:network.chain,native_asset_id:network.chain+':mainnet',asset_kind:'NATIVE',token_address:null,block_hash:lower(block.hash),block_ref:lower(block.number),native_evm_proof:proof,native_evm_proof_sha256:hash(proof),physical_root_key:root,source_clock_policy:proof.source_clock_policy,source_clock_refreshed:false,event_is_not_market_direction:true,exchange_labels_verified:false,common_upstream_not_independent_vote:true,score_contribution:0,entry_authorized:false};
  const make=(block_id,metric_family,origin_event_id,detail)=>buildEvidenceV2({provider_id:SOURCE,upstream_id:upstream,asset_id:network.chain+':native:mainnet',htx_contract:contract,block_id,metric_family,origin_event_id,dependency_group:root,source_ts:head.source_ts,observed_ts,expires_at:head.source_ts+TTL,coverage_status:'ONE_FINALIZED_BLOCK_BOUNDED_NATIVE_SAMPLE',coverage_fraction:0,directional_strength:null,risk_strength:null,finality_status:'FINAL',unit:'wei',extra:{...extra,...detail}});
  const evidence=[];
  if(network.execution_base_fee_burn&&q(block.baseFeePerGas)!==null){
@@ -66,7 +66,7 @@ export async function collectNativeEvmFinalizedContext({db,fetch_impl=globalThis
  const network=exactNativeEvmNetwork({contract,asset_identity});if(!network)return{status:'EXACT_NATIVE_EVM_NETWORK_REQUIRED',network_calls:0,evidence:[],internal_only:true};
  await installEvidenceSourceStore(db);const key=NATIVE_EVM_CONTEXT_VERSION+':'+contract,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
  if(!strict_fresh_manual&&cached?.version===NATIVE_EVM_CONTEXT_VERSION&&cached.contract===contract&&Number.isSafeInteger(cached.observed_ts)&&cached.observed_ts<=now&&cached.expires_at>=now){const rebuilt=deriveNativeEvmFacts({contract,asset_identity,proof:cached.native_evm_proof,observed_ts:cached.observed_ts});if(rebuilt.status==='CLOSED'&&rebuilt.source_ts===cached.source_ts&&rebuilt.expires_at===cached.expires_at&&JSON.stringify(rebuilt.evidence)===JSON.stringify(cached.evidence)&&(cached.evidence||[]).every(row=>verifiedNativeEvmContextRow(row,{now})))return{...cached,network_calls:0,cache_status:'VALIDATED_ORIGINAL_CLOCK_CACHE'};}
- const blocked=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain,now});if(blocked)return{...blocked,network_calls:0,evidence:[],internal_only:true};
+ const blocked=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,now});if(blocked)return{...blocked,network_calls:0,evidence:[],internal_only:true};
  const reservation_id='EV2:NATIVE_EVM:'+run_id+':'+contract,whole_job_admission=request_admit?.({logical_request_id:reservation_id,lane:'background',attempts:2});
  if(!whole_job_admission?.allowed||whole_job_admission.duplicate)return{status:whole_job_admission?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED',network_calls:0,evidence:[],whole_job_admission};
  let admission=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id,attempts:2,daily_cap:SOURCE_POLICIES[SOURCE].daily_cap,now});if(!admission.allowed)return{status:admission.status,network_calls:0,evidence:[],admission};
@@ -86,7 +86,7 @@ export async function collectNativeEvmFinalizedContext({db,fetch_impl=globalThis
   }
  }else if(chain_id!==network.chain_id&&chain_id!==null)normalized={status:'WRONG_NATIVE_CHAIN_ID',evidence:[]};
  const observed=clock(),answer={version:NATIVE_EVM_CONTEXT_VERSION,...normalized,network_calls:reads.length,logical_rpc_methods:reads.reduce((n,r)=>n+r.request.length,0),admission,whole_job_admission,cache_status:'REFRESHED',receipts,internal_only:true};
- if(reads.some(r=>[403,429,451,503].includes(r.http_status)||r.errors?.some(e=>e.code===-32005))){const until=observed+30*60000;await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain,observed_ts:observed,expires_ts:until,payload:{status:'SOURCE_ACCESS_OR_RATE_BACKOFF',until_ts:until}});}
+ if(reads.some(r=>[403,429,451,503].includes(r.http_status)||r.errors?.some(e=>e.code===-32005))){const until=observed+30*60000;await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:NATIVE_EVM_CONTEXT_VERSION+':BACKOFF:'+network.chain+':'+network.upstream_id,observed_ts:observed,expires_ts:until,payload:{status:'SOURCE_ACCESS_OR_RATE_BACKOFF',until_ts:until}});}
  if(normalized.status==='CLOSED')await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:key,observed_ts:observed,expires_ts:normalized.expires_at,payload:answer});
  return answer;
 }
