@@ -121,14 +121,14 @@
   "lease": {
     "owner": "HTX:20261007:1791399140815:cache-only-full-register",
     "acquired_ts": 1791399140815,
-    "expires_ts": 1791407201056,
+    "expires_ts": 1791409058955,
     "scope": "OWNER_AUTHORIZED_BOUNDED_CURRENT_NATIVE_SOURCE_QUALIFICATION_AND_FULL_REGISTER"
   },
-  "next_action": "Close general N06 original-post clock/cache identity gaps with assembled verification; decode retained current Veranta native error offline. Full register remains active.",
+  "next_action": "Qualify a distinct verified current Veranta v2 TradingStorage readonly native path after actual Multicall getPositions reverted; no identical failed request. Full register and future statistical/history/source coverage remain open.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791404737224,
+  "updated_ts": 1791406358955,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -1842,5 +1842,130 @@
       }
     },
     "project_complete": false
-  }
+  },
+  "latest_wikimedia_native_page_release": {
+    "schema": "WIKIMEDIA_NATIVE_PAGES_CONNECTED_RELEASE_20261007_V1",
+    "status": "MERGED_TWO_ACTUAL_EXACT_NATIVE_PAGEVIEW_FACTS_AND_ASSIGNED_NEUTRAL_CONSUMERS_VERIFIED",
+    "pr": 231,
+    "production_head": "062a712b71d853ec97b49addd797d0a4e4be5c8e",
+    "tested_head": "f824cf47bec0729920200a13c4160abbffb46475",
+    "proof_head": "4afe08c2db14193b2b3b5f5344cb8dabd605eaee",
+    "cloud_run": 37684887952,
+    "artifact_id": 11510900361,
+    "artifact_digest": "sha256:63ec50fd0324f7d8d8de03fb7dfbcd5fbee78f1c9c6bd4b6cbfddcb4ac4bd695",
+    "proof": "checkpoints/WIKIMEDIA_NATIVE_PAGES_CONNECTED_VERIFICATION_20261007.json",
+    "live_proof": "checkpoints/wikimedia-native-pages-tests-37684887952/wikimedia-native-pages-live-proof.json",
+    "raw_proof": "checkpoints/wikimedia-native-pages-tests-37684887952/wikimedia-native-pages-raw.json.gz",
+    "actual_contracts": [
+      "ETH-USDT",
+      "BTC-USDT"
+    ],
+    "actual_series_count": 2,
+    "published_window_end": 1791244800000,
+    "actual_consumer": "N06_ADDITIONAL_NEUTRAL_PAGEVIEW_CONTEXT_IN_ASSEMBLED_MANUAL_REPORT",
+    "sourceHTTP": 2,
+    "D1": {
+      "requests": 40,
+      "rows_read": 81,
+      "rows_written": 24,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 65,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 7,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:OTHER": {
+          "requests": 10,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 4,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 4,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "natural_after_PR231_acceptance": false,
+    "related_tests": 12,
+    "approved_delivery_tests": 35,
+    "integration_scenarios": 37,
+    "validation": "CURRENT_GENERATION_VALIDATED",
+    "primary_requirement_unchanged": true,
+    "source_clocks_refreshed": false,
+    "output_goldens_unchanged": true,
+    "new_module_overlay_checked": true,
+    "previous_failed_controlled_runs": [
+      {
+        "run": 37684552332,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "reason": "NEW_BINDING_MODULE_OVERLAY_LIST_MISSING_FIXED"
+      },
+      {
+        "run": 37684711770,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "reason": "CHANGED_CONSUMER_MODULE_HASH_PIN_NOT_UPDATED_FIXED_WITH_GOLDENS_UNCHANGED"
+      }
+    ]
+  },
+  "project_complete": false,
+  "block_configuration_complete": false,
+  "new_connection_search_complete": false
 }
