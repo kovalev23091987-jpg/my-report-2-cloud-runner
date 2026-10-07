@@ -1,4 +1,4 @@
-import {mergeLiquidationDisplayZones} from './canonical-display.mjs';
+import {mergeLiquidationDisplayZones,selectLiquidationDisplayZones,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
 import {createHash} from 'node:crypto';
 const stamp=v=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=1e12?v:null;
 const num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
@@ -56,7 +56,7 @@ const percent=v=>(v>0?'+':'')+String(Number(v.toFixed(1))).replace('.',',')+'%';
 const msk=ts=>new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(ts));
 // Presentation only. All values, sides and distances come from the canonical
 // snapshot. This helper does not compute scores, directions, targets or entry.
-export function nativeLiquidationLines(liq,{manual=false,compact=false}={}){
+export function nativeLiquidationLines(liq,{manual=false,compact=false,policy='ORIGINAL'}={}){
  const info=nativeLiquidationSources(liq);if(!info.present)return null;
  const lines=[],rows=[];
  for(const s of info.sources){
@@ -73,7 +73,7 @@ export function nativeLiquidationLines(liq,{manual=false,compact=false}={}){
   }
  }
  for(const [side,label] of [['ABOVE','выше'],['BELOW','ниже']]){
-  const merged=mergeLiquidationDisplayZones(rows,side).sort((a,b)=>Math.abs(a.distance_pct)-Math.abs(b.distance_pct)).slice(0,compact?2:4);
+  const merged=(policy===RELEVANT_LIQUIDATION_PRESENTATION?selectLiquidationDisplayZones({display_source_zones:rows},side,{policy}):mergeLiquidationDisplayZones(rows,side)).sort((a,b)=>Math.abs(a.distance_pct)-Math.abs(b.distance_pct)).slice(0,compact?2:4);
   const parts=merged.map(z=>[
    `${z.estimated?'расчётный уровень ≈':''}${price(z.price)} ${z.price_quote}${num(z.distance_pct)!==null?` (${percent(z.distance_pct)} к цене источника)`:''}`,
    num(z.notional)!==null?`${z.estimated?'оценочный объём ':''}${amount(z.notional)} ${text(z.notional_unit)} в показанной позиции`:null,
@@ -82,6 +82,6 @@ export function nativeLiquidationLines(liq,{manual=false,compact=false}={}){
    z.conditional_cross===true||z.conditional_on_other_positions===true?'кросс-маржа':null,
   ].filter(Boolean).join('; '));if(parts.length)lines.push(`${label}: ${parts.join(', ')}.`);
  }
- if(!rows.length)return ['Ликвидации: пригодные уровни в проверенной выборке не подтверждены.'];
+ if(!rows.length||policy===RELEVANT_LIQUIDATION_PRESENTATION&&!['ABOVE','BELOW'].some(side=>selectLiquidationDisplayZones({display_source_zones:rows},side,{policy}).length))return ['Ликвидации: пригодные уровни в проверенной выборке не подтверждены.'];
  lines.push(manual?'Это уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.':compact?'Ограниченная выборка; цели на HTX не подтверждены.':'Ограниченная выборка этих площадок; цели на HTX не подтверждены.');return lines;
 }
