@@ -13,7 +13,7 @@ const {consumeEvidenceV2}=await load('evidence-v2.mjs');
 const {planCandidateEvidenceRoutes,collectEvidenceRouteBlock}=await load('candidate-evidence-v2-runtime.mjs');
 const read=name=>JSON.parse(gunzipSync(fs.readFileSync(new URL('fixtures/block-connections-20261007/'+name,import.meta.url))));
 const research=read('research-run37574060777.json.gz'),health=read('native-health-run37574793676.json.gz');
-const registry=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url))),{now:1791350400000}).registry;
+const registry=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url))),{now:1791351600000}).registry;
 const identity=chain=>({chain,asset_kind:'NATIVE',native_asset_id:chain+':mainnet',contract_or_mint:null});
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
 class DB{constructor(){this.sqlite=new DatabaseSync(':memory:');}prepare(sql){return new Statement(this,sql);}async batch(rows){this.sqlite.exec('BEGIN');try{const out=[];for(const row of rows)out.push(await row.run());this.sqlite.exec('COMMIT');return out;}catch(e){this.sqlite.exec('ROLLBACK');throw e;}}}
