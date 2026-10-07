@@ -19,11 +19,11 @@ test('a collector exception after HTX does not prevent Coinalyze-to-Gate fallbac
  const out=await collectCrossExchangeRiskContext({db,fetch_impl,contract:'BTW-USDT',run_id:'EXCEPTION',now:T,lane_override:'HISTORY',include_htx_realized:true,coinalyze_api_key:'FIXTURE'});
  assert.equal(calls,3);assert.equal(out.network_calls,3);assert.equal(out.status,'CLOSED');assert.equal(out.sources.GATE_LIQUIDATION_HISTORY.status,'CLOSED');assert.deepEqual(out.chain_attempts.map(r=>r.status),['CLOSED','SOURCE_EXCEPTION','CLOSED']);db.sql.close();
 });
-test('the shared native chain checks gTrade before Hyperliquid and unsupported catalogs do not spend account or 0xArchive requests',async()=>{
+test('the shared native chain prices complete useful acquisition and unsupported catalogs do not spend account or 0xArchive requests',async()=>{
  const urls=[],ox=async()=>{throw Error('unsupported route must not run');},sdk={getLiquidationPrice(){},buildLiquidationPriceContext(){}};
  const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',clock:()=>T,liqflow_key:'FIXTURE_ONLY',sdk_loader:()=>({version:'1.8.10',sdk}),provider_admit:async()=>({allowed:true,new_reservation:true}),oxarchive_collect:ox,fetch_impl:async url=>{urls.push(String(url));return String(url).includes('gains.trade')?reply({pairs:[{from:'OTHER',to:'USD'}],lastRefreshed:T}):reply([{universe:[{name:'OTHER'}]},[]]);}});
  await service.collect({contract:'BTW-USDT',native_symbol:'BTW',run_id:'TAIL',deep_started_ts:T,max_deep_ms:45000});
- assert.equal(urls.length,2);assert.match(urls[0],/trading-variables/);assert.match(urls[1],/hyperliquid/);assert.deepEqual(service.summary().routed.map(r=>r.lane),['GTRADE_NATIVE','HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS']);assert.equal(service.summary().shared_budget.actual_http,2);
+ assert.equal(urls.length,2);assert.equal(urls.filter(u=>u.includes('trading-variables')).length,1);assert.equal(urls.filter(u=>u.includes('api.hyperliquid.xyz/info')).length,1);assert.deepEqual(new Set(service.summary().routed.map(r=>r.lane)),new Set(['GTRADE_NATIVE','HYPERLIQUID_NATIVE','OXARCHIVE_HL_BUCKETS']));assert.equal(service.summary().routed.at(-1).lane,'OXARCHIVE_HL_BUCKETS');assert.equal(service.summary().shared_budget.actual_http,2);
 });
 test('main-report priority candidates receive the complete forward-map envelope before history',()=>{
  const plan=buildCandidateSourceRoutingPlan({discovery_row:{early_candidate_quality_0_100:85},cross_exchange_turn:false});assert.equal(plan.run_cross_exchange,true);assert.equal(remainingLiquidationHttpCap({plan,cross_exchange_context:{network_calls:0}}),5);
