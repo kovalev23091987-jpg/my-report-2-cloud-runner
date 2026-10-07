@@ -1,3 +1,4 @@
+import {collectXrplNativePayments} from './xrpl-native-payments.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 export const FINALIZED_CHAIN_EVENTS_VERSION='finalized-chain-events-v5-native-sol-transfer-20261005';
@@ -83,6 +84,7 @@ async function collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,c
 export async function collectFinalizedChainEvents({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,now=Date.now(),clock=Date.now,event_mode='TOKEN_TRANSFER',strict_fresh_manual=false}={}){
  const chain=clean(asset_identity?.chain),rawToken=String(asset_identity?.contract_or_mint??'').trim(),token=chain==='solana'?rawToken:clean(rawToken),mode=event_mode==='AAVE_CREDIT'?'AAVE_CREDIT':'TOKEN_TRANSFER';if(!/^[^-\s]{1,32}-USDT$/.test(contract))return{status:'EXACT_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
  await installEvidenceSourceStore(db);const key=`FINAL_EVENTS:${FINALIZED_CHAIN_EVENTS_VERSION}:${contract}:${chain}:${mode}:${token}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});if(!strict_fresh_manual&&cached?.version===FINALIZED_CHAIN_EVENTS_VERSION)return{...cached,contract};
+ if(chain==='xrp'&&contract==='XRP-USDT'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity.native_asset_id==='xrp:mainnet'&&asset_identity.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectXrplNativePayments({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock,strict_fresh_manual});
  if(chain==='solana'&&asset_identity?.asset_kind==='NATIVE'&&asset_identity?.native_asset_id==='solana:mainnet'&&asset_identity?.contract_or_mint===null&&mode==='TOKEN_TRANSFER')return collectNativeSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,now,clock,strict_fresh_manual});
  if(chain==='solana'&&BASE58.test(token)&&mode==='TOKEN_TRANSFER')return collectSolanaFinalizedEvents({db,fetch_impl,request_admit,contract,run_id,mint:token,now,clock,strict_fresh_manual});
  const endpoint=EVM_ENDPOINTS[chain];if(!endpoint||!ADDR.test(token)||mode==='AAVE_CREDIT'&&chain!=='ethereum')return{status:'EXACT_SUPPORTED_CHAIN_IDENTITY_REQUIRED',evidence:[],network_calls:0};
