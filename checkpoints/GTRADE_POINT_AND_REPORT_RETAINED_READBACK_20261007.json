@@ -1,0 +1,83 @@
+{
+  "schema": "RETAINED_POINT_AND_NATURAL_REPORT_READBACK_20261007_V1",
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "artifact_specs": [
+    {
+      "key": "point",
+      "id": 11491052731,
+      "digest": "0e9f19a237f341b3762910a840dc3c3530a2c37a0b2609d59390b7d48b7b165c"
+    },
+    {
+      "key": "report",
+      "id": 11490465980,
+      "digest": "9506a58e7a1566193f4ad798c1cf8cff4adbeb77e7c7d138c8609949f8e5ba05"
+    },
+    {
+      "key": "delivery",
+      "id": 11490406028,
+      "digest": "080b566694f5bf3e937c9556e4e9a8d357e3d5e282f4f882624714e317798aa4"
+    }
+  ],
+  "point_head": "f7c6a80f6830bc6809372ae18dd2d16e09b218d7",
+  "point_status": "ACTUAL_EXACT_SELECTED_NATIVE_LEVELS_AND_DURABLE_HINTS_VERIFIED",
+  "tests": {
+    "coverage-and-routing.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ native order and proposed match bytes discover exact public subaccounts without treating order price/side as a position (11.01776ms)\n✔ nested signed short-term placement is parsed by the pinned Cosmos/dYdX schema without recursive scanning arbitrary address text (0.576475ms)\n✔ foreign native block hash, height, chain or original clock fails before account discovery (0.854948ms)\n✔ malformed native protobuf, excessive sample limit, invalid base64 and duplicated match variants are denied (0.617164ms)\n✔ additional native block request is read-only, explicit-height and allowed only with the exact four catalog queries (0.396053ms)\n✔ activity account discovery rereads full exact accounts in3 HTTP and retains original chain clock and the untouched native page cursor (76.283083ms)\n✔ empty activity block falls back to one bounded native page in the same3 requests and produces no invented activity hints (14.125831ms)\n✔ a source block identity failure spends no third read and cannot save structural account hints (1.087277ms)\n✔ actual two-row cache write is admitted conservatively; one remaining row cannot authorize a structural save (7.278099ms)\n✔ retained actual native block handles the index0 Slinky zlib commit and absent Any value without inventing trading accounts (4.169779ms)\n✔ only valid consensus schema can be skipped; empty known default message and unrelated bytes yield no position claims (0.720489ms)\n✔ five exact subaccount queries remain allowed and four adjacent block reads preserve the eight-message ceiling (1.091701ms)\n✔ recent native account hints require adjacent parent hashes and original monotone block clocks, and deduplicate accounts (1.195344ms)\n✔ exact QueryGetSubaccountRequest is the official flat owner1/number2 protobuf and the previous nested request is re",
+      "sha256": "a96924c0cdde373c9516a084e3b55908468b2915dd77f4c920a3b6c32bff8b16"
+    },
+    "dydx-canonical-runtime.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ exact assembled native producer reaches both eligible canonical reports with calculated labels and no entry/target authorization (50.623248ms)\n✔ denied, stale or foreign acquisition cannot create dYdX report levels or grant publication (16.248407ms)\n✔ retained actual corrected flat-account source reaches assembled canonical/manual consumers at original clock with explicit calculated labels (13.494557ms)\nℹ tests 3\nℹ suites 0\nℹ pass 3\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 187.433256\n",
+      "sha256": "99f93828af3f1449d4db37e6394a8d233a6407556cb4fa409eef7de99735271b"
+    },
+    "native-pinned-runtime.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ retained exact ZEC and QNT positions verified together survive a later deep check after the shared source deadline (133.365077ms)\n✔ one unsupported native catalog plus the real shared calculated pair fits all five requests (77.394616ms)\n✔ an unsupported second calculated market cannot borrow the following native pair reserve (34.043449ms)\n✔ batch denial and invalid source proof never upgrade either market; no unadmitted retry for the second (107.147497ms)\n✔ batch receipt reused at its original clock becomes unusable when original inputs expire (58.59274ms)\n✔ mixed-market decoder binds only the requested market and rejects third markets, duplicates and larger samples (12.88779ms)\n✔ warm exact two-market routing hint gives gTrade one complete pinned batch before the native lane spends its requests (145.371494ms)\n✔ verified reserve RPC uses the same pinned two-market body and one existing provider reservation (117.23321ms)\nℹ tests 8\nℹ suites 0\nℹ pass 8\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1168.535447\n",
+      "sha256": "945ba523719787c1b20b59409510a80fd4783f36e806de6ac21b515932c28f08"
+    },
+    "observation-pipeline-tests.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ actual retained QNT renders exactly the owner-approved draft without changing canonical analysis or manual bytes (78.293962ms)\n✔ immutable original SENT146 presentation remains accepted only on its original historical input (25.787046ms)\n✔ all new lifecycle forms omit schedule and market snapshot without creating levels or changing entry conditions (2.204477ms)\n✔ closed OI increases, decreases, mixed signs and absence retain factual meaning (10.610787ms)\n✔ unconfirmed trade sample cannot be promoted into a Telegram fact (23.732174ms)\n✔ all retained canonical rows preserve fingerprint, source clocks, refusals and approved renderers (153.452263ms)\n✔ same retained corpus binds block facts to approved output without inventing scores or liquidation targets (108.779468ms)\n✔ LONG: composed adapter to lifecycle to approved binding to injected relay and dedup (33.310733ms)\n✔ SHORT: composed adapter to lifecycle to approved binding to injected relay and dedup (16.085122ms)\n✔ ambiguous relay NO_ID cannot be recorded as a confirmed delivery (15.015653ms)\n✔ ambiguous relay ZERO_ID cannot be recorded as a confirmed delivery (15.281999ms)\n✔ ambiguous relay NONNUMERIC_ID cannot be recorded as a confirmed delivery (14.637632ms)\n✔ ambiguous relay READY_ONLY cannot be recorded as a confirmed delivery (14.593806ms)\n✔ ambiguous relay NEGATIVE_ID cannot be recorded as a confirmed delivery (15.055159ms)\n✔ qualification LOW_SCORE blocks the composed chain before network delivery (4.912884ms)\n✔ qualification DIRECTION_UNKNOWN blocks the composed chain before network delivery (4.793768ms)\n✔ qualification MISSING_TRIGGER blocks the composed chain before network delivery (4.465893ms)\n✔ qualification MISSING_CONFIRMING_SOURCE blocks the composed chain before network delivery (4.134536ms)\n✔ qualif",
+      "sha256": "0f543e11ccdd71f2294d5ff40f699ecbb690156ed4ea7329d018de679f20d48a"
+    },
+    "gtrade-position-routing-runtime.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ actual full native returned array yields11 structural IDs across7 exact crypto assets, only4 RAY fee-complete levels (1.454307ms)\n✔ three controlled HTTP replays of original actual state preserve4 exact RAY estimates through scoped and canonical consumers (139.831468ms)\n✔ closed positions and invalid RPC never reuse the hint as a level; closed selected IDs are removed (202.800832ms)\n✔ omission from a bounded native returned array is not a closed position and cannot remove its structural hint (137.64571ms)\n✔ sparse source-derived selections use bounded exact native getters and retain fee-aware actual source estimates (58.55248ms)\n✔ an explicit native closed/default tuple removes its exact selected IDs while foreign open IDs fail closed (77.950326ms)\n✔ three transport receipts alone cannot convert unpinned or old discovery proof into a fresh reduced route (0.504706ms)\n✔ two native HL reads plus three retained gTrade reads fit global5 and both selected assets retain calculated levels (81.736492ms)\n✔ explicit smaller candidate envelope and malformed second asset batch cannot borrow global budget (86.653522ms)\n✔ unknown gTrade admission ACK is charged without retries or artificial levels (2.019656ms)\n✔ an unsupported first candidate cannot make the following one-request hinted snapshot reuse a spent catalog reservation (72.830017ms)\n✔ retained source proof is written only after producer and canonical verification (0.72837ms)\nℹ tests 12\nℹ suites 0\nℹ pass 12\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 1425.223836\n",
+      "sha256": "bca0db085cfd772c092e71145a2a59cd7c20dcf09c9c70311cb8cd7af300fef3"
+    },
+    "idea-basis-tests.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ retained real QNT primary score factors explain82 without promoting sparse flow or inventing future liquidations (63.998518ms)\n✔ different real selected contract has its own receipt; values and coin cannot be borrowed (47.614609ms)\n✔ closed labels without numeric producer facts, stale input, wrong wave and unsupported direction cannot explain a score (21.54905ms)\n✔ actual AKE has no future zones and tiny negativeN12; neither is a major cause (10.649437ms)\n✔ already sent AKE historical brief bytes/hash remain valid and are never resent (22.515907ms)\nℹ tests 5\nℹ suites 0\nℹ pass 5\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 276.612786\n",
+      "sha256": "a130b86f75b5e163a7d8219ef50afe3eab8e31f2176a68ff2e9fc7b0cb7a7cf3"
+    },
+    "source-role-artifact-runtime.tap": {
+      "pass": null,
+      "fail": null,
+      "format": "OTHER_SUCCESSFUL_COMMAND_OUTPUT",
+      "sample": "✔ original actual NEAR SENT153 retains its exact qualifying source roles and clocks in composed internal artifact diagnostics without another source or D1 call (15.030374ms)\nℹ tests 1\nℹ suites 0\nℹ pass 1\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 65.871712\n",
+      "sha256": "094e1c09a743f70cc149cf26f338a1c0c97df8577909065a4f40a5155d4de20a"
+    }
+  },
+  "point_raw_sha256": "e4ebcc42fa70ee89303a21f8928bd0cec88a2d9daf0bd8b1246b755f510b7291",
+  "report_files": [
+    "report/report2-run-result.json",
+    "delivery/telegram-info-proof.json"
+  ]
+}

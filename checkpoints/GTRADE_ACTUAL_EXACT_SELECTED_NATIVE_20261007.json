@@ -1,0 +1,654 @@
+{
+  "schema": "GTRADE_ACTUAL_EXACT_SELECTED_NATIVE_20261007_V1",
+  "github_head": "f7c6a80f6830bc6809372ae18dd2d16e09b218d7",
+  "run_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+  "started_ts": 1791383898408,
+  "contract": "BTC-USDT",
+  "reason": "An actual bounded native BTC response37635380824 omitted source-proven ID693; omission is not closure. Verify official exact selected getters at a current explicit block to close this precise missing native state, preserving three admitted source requests and no forced MAIN or Telegram.",
+  "source_http_cap": 3,
+  "MAIN": 0,
+  "Telegram": 0,
+  "forced_candidate_report": false,
+  "source_clock_refreshed": false,
+  "full_market_coverage": false,
+  "new_fresh_SENT": false,
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 45,
+      "reserved_rows_read": 871850,
+      "reserved_rows_written": 17364,
+      "measured_rows_read": 540485,
+      "measured_rows_written": 8526,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 873350,
+      "rows_written": 17464
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "bootstrap_readback": {
+    "source_ts": 1791382665000,
+    "positions": 11,
+    "assets": [
+      "BNB",
+      "BTC",
+      "ETH",
+      "HYPE",
+      "PONS",
+      "RAY",
+      "ZEC"
+    ],
+    "routing_fingerprint": "4f093b5d54c3d504fc7e589812fa5865c19b76a9bdbe7d5d25f244f2a6a572fa",
+    "levels_saved": false
+  },
+  "provider_before": {
+    "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GTRADE",
+    "used_units": 112,
+    "version": 80,
+    "allowance_units": 4000
+  },
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408:CURRENT_BTC_NATIVE",
+    "reserved": [
+      {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GTRADE",
+        "provider": "GTRADE",
+        "units": 3
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false,
+    "combined_local_reservation": true,
+    "local_rates_are_policy_not_provider_entitlement": true
+  },
+  "current_routing_observation": {
+    "schema": "GTRADE_PINNED_STRUCTURAL_IDS_V1",
+    "chain_id": 42161,
+    "contract": "0xFF162c694eAA571f685030649814282eA457f169",
+    "block_number": 512593743,
+    "block_hash": "0x6dd89592e77e48dd5da0533bf71fb3a10e9aa870cccee65494da685b5272560f",
+    "source_ts": 1791383900000,
+    "received_ts": 1791383901358,
+    "response_sha256": "86e722c8cbbac7559b4c1ded23e2c6c316449f43a3916e9aef4a6e926b7f876e",
+    "positions": [
+      {
+        "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+        "index": 3,
+        "pairIndex": 0,
+        "collateralIndex": 3
+      }
+    ],
+    "checked_selected_ids": [
+      {
+        "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+        "index": 3,
+        "pairIndex": 0,
+        "collateralIndex": 3
+      },
+      {
+        "user": "0x62ff5d7f23216cb946456a09a0b6ba2935d34259",
+        "index": 693,
+        "pairIndex": 0,
+        "collateralIndex": 3
+      }
+    ],
+    "complete_position_census": false,
+    "fingerprint": "c4c23330e203bc1e5d4494068200040bb26b90848feb10dbe546fd62ca93c757"
+  },
+  "current_routing_save": {
+    "status": "GTRADE_VERIFIED_STRUCTURAL_IDS_SAVED",
+    "routing": {
+      "schema": "GTRADE_STRUCTURAL_POSITION_ROUTING_V1",
+      "scope": "POSITION_ID_HINTS_ONLY_FRESH_NATIVE_REREAD_REQUIRED",
+      "chain_id": 42161,
+      "contract": "0xFF162c694eAA571f685030649814282eA457f169",
+      "source_ts": 1791383900000,
+      "positions": [
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 3,
+          "pairIndex": 0,
+          "collateralIndex": 3,
+          "symbol": "BTC",
+          "verified_source_ts": 1791383900000,
+          "verified_receipt_ts": 1791383901358,
+          "original_response_sha256": "86e722c8cbbac7559b4c1ded23e2c6c316449f43a3916e9aef4a6e926b7f876e"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 0,
+          "pairIndex": 47,
+          "collateralIndex": 3,
+          "symbol": "BNB",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 11,
+          "pairIndex": 488,
+          "collateralIndex": 3,
+          "symbol": "PONS",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 12,
+          "pairIndex": 1,
+          "collateralIndex": 3,
+          "symbol": "ETH",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 13,
+          "pairIndex": 20,
+          "collateralIndex": 3,
+          "symbol": "ZEC",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 6,
+          "pairIndex": 299,
+          "collateralIndex": 3,
+          "symbol": "RAY",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927",
+          "index": 9,
+          "pairIndex": 331,
+          "collateralIndex": 3,
+          "symbol": "HYPE",
+          "verified_source_ts": 1791382665000,
+          "verified_receipt_ts": 1791382667634,
+          "original_response_sha256": "3a359a7bc9dbad7db1a37cffcb2872f571ca1c9048331e58c710832305e66f8a"
+        },
+        {
+          "user": "0x4a2129d66db069a531ed86db0011692a01bd85b7",
+          "index": 140,
+          "pairIndex": 299,
+          "collateralIndex": 3,
+          "symbol": "RAY",
+          "verified_source_ts": 1791382190000,
+          "verified_receipt_ts": 1791382192715,
+          "original_response_sha256": "960c83825af969b2d871636d1dc228b8fe82694a07a4c546fc682422c2afe909"
+        },
+        {
+          "user": "0x4a2129d66db069a531ed86db0011692a01bd85b7",
+          "index": 143,
+          "pairIndex": 299,
+          "collateralIndex": 3,
+          "symbol": "RAY",
+          "verified_source_ts": 1791382190000,
+          "verified_receipt_ts": 1791382192715,
+          "original_response_sha256": "960c83825af969b2d871636d1dc228b8fe82694a07a4c546fc682422c2afe909"
+        },
+        {
+          "user": "0x62ff5d7f23216cb946456a09a0b6ba2935d34259",
+          "index": 694,
+          "pairIndex": 299,
+          "collateralIndex": 3,
+          "symbol": "RAY",
+          "verified_source_ts": 1791382190000,
+          "verified_receipt_ts": 1791382192715,
+          "original_response_sha256": "960c83825af969b2d871636d1dc228b8fe82694a07a4c546fc682422c2afe909"
+        }
+      ],
+      "routing_fingerprint": "d1ed48895b7a3a37fc618a890f63df4897308cb6d6923503b17c3943c147603e"
+    },
+    "positions": 10,
+    "assets": 7,
+    "sourceHTTP": 0,
+    "levels_saved": false
+  },
+  "collection": {
+    "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+    "requests": 3,
+    "pinned_position_status": "GTRADE_PINNED_OPEN_POSITIONS_CLOSED",
+    "pinned_position_reason": null,
+    "position_batch_contracts": [
+      "BTC-USDT"
+    ],
+    "position_source_clock_known": true,
+    "reused_snapshot": false,
+    "shared_snapshot_run_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+    "acquisition": {
+      "schema": "SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1",
+      "contract": "BTC-USDT",
+      "native_symbol": "BTC",
+      "run_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+      "acquisition_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408:BTC",
+      "provider": "gTrade official SDK",
+      "venue": "gTrade-Arbitrum",
+      "price_quote": "USD",
+      "collection_started_ts": 1791383900617,
+      "collection_completed_ts": 1791383901358,
+      "source_ts": 1791383880077,
+      "source_clock_closed": true,
+      "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+      "upstream_groups": [
+        "GTRADE_ARBITRUM"
+      ],
+      "sdk_version": "1.8.10",
+      "model_version": null,
+      "estimation_note": "Open positions and margin/fee inputs verified at one explicit Arbitrum block. Fresh official variables and index are non-atomic inputs; partial position sample, official SDK estimate, not HTX liquidation or a guaranteed trigger.",
+      "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+      "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+      "position_query_basis": "EXACT_SELECTED_NATIVE_GETTERS",
+      "position_discovery_basis": "VERIFIED_STRUCTURAL_IDS_FRESH_NATIVE_REREAD",
+      "positions_source_ts": 1791383900000,
+      "positions_block_hash": "0x6dd89592e77e48dd5da0533bf71fb3a10e9aa870cccee65494da685b5272560f",
+      "position_snapshot_fingerprint": "7f4c5ea1c219dccce67defbf67b18df9c4b8d8f427fbba80fbb52ed83daac54e",
+      "complete_position_census": false,
+      "variable_source_ts": 1791383887578,
+      "index_source_ts": 1791383880077,
+      "above": [],
+      "below": [
+        {
+          "native_price": 52831.39188419716,
+          "side": "LONG",
+          "notional": 137.59553314928738,
+          "notional_unit": "USD",
+          "native_reference_price": 83041.07,
+          "distance_pct": -36.37920141901212,
+          "position_count": 1,
+          "margin_mode": null,
+          "conditional_cross": false,
+          "source_ts": 1791383880077,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791383901358,
+          "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+          "price_quote": "USD",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "position_key": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927:3",
+          "provider": "gTrade official SDK",
+          "venue": "gTrade-Arbitrum",
+          "entry_eligible": false,
+          "is_htx_price": false
+        }
+      ],
+      "transport_sha256": [
+        "9706f5caa6ab2ae6d618394cc2bd70d749bb67b8f960b5306dce6d720a5a1c67",
+        "b1a4257de6da865c734d976b0f84d46f79ff394e338ef9e31d293bd1b0309316",
+        "86e722c8cbbac7559b4c1ded23e2c6c316449f43a3916e9aef4a6e926b7f876e"
+      ],
+      "mode": "SHADOW_ONLY",
+      "automatic_execution": false,
+      "entry_eligible": false,
+      "acquisition_fingerprint": "0e116f7be2b0cfd7aad0eb607b77fb7668a5f023ecf897099483fc73e4c0f893"
+    },
+    "selected_market_positions": 1,
+    "source_ts": 1791383880077
+  },
+  "rpc_response_errors": [],
+  "pinned_body": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_chainId",
+      "params": []
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "eth_getBlockByNumber",
+      "params": [
+        "0x1e8d8f4f",
+        false
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x15878e07000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000000000000000000000000000000000000000000003"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x75cd812d000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000000000000000000000000000000000000000000003"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x28dc892f000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000000000000000000000000000000000000000000003"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x15878e0700000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d3425900000000000000000000000000000000000000000000000000000000000002b5"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x75cd812d00000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d3425900000000000000000000000000000000000000000000000000000000000002b5"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x28dc892f00000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d3425900000000000000000000000000000000000000000000000000000000000002b5"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x2b9455fd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae892700000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d342590000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000002b5"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000000000000000000000000000000000000000000003"
+        },
+        "0x1e8d8f4f"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed000000000000000000000000000000000000000000000000000000000000000300000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d3425900000000000000000000000000000000000000000000000000000000000002b5"
+        },
+        "0x1e8d8f4f"
+      ]
+    }
+  ],
+  "rpc_receipt": {
+    "url": "https://arbitrum-one-rpc.publicnode.com/",
+    "http_status": 200,
+    "sha256": "86e722c8cbbac7559b4c1ded23e2c6c316449f43a3916e9aef4a6e926b7f876e",
+    "received_ts": 1791383901357
+  },
+  "scoped_consumer": {
+    "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+    "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+    "mode": "SHADOW_ONLY",
+    "freshness_max_age_ms": 300000,
+    "binding": {
+      "contract": "BTC-USDT",
+      "native_symbol": "BTC",
+      "run_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+      "snapshot_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408:SOURCE_REFERENCE_ONLY",
+      "observed_ts": 1791383901768,
+      "direction": null
+    },
+    "acquisition_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408:BTC",
+    "acquisition_fingerprint": "0e116f7be2b0cfd7aad0eb607b77fb7668a5f023ecf897099483fc73e4c0f893",
+    "source_ts": 1791383880077,
+    "source_clock_closed": true,
+    "source_age_ms": 21691,
+    "received_ts": 1791383901358,
+    "receipt_age_ms": 410,
+    "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+    "venue": "gTrade-Arbitrum",
+    "provider": "gTrade official SDK",
+    "price_quote": "USD",
+    "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+    "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+    "position_query_basis": "EXACT_SELECTED_NATIVE_GETTERS",
+    "position_discovery_basis": "VERIFIED_STRUCTURAL_IDS_FRESH_NATIVE_REREAD",
+    "positions_source_ts": 1791383900000,
+    "positions_block_hash": "0x6dd89592e77e48dd5da0533bf71fb3a10e9aa870cccee65494da685b5272560f",
+    "position_snapshot_fingerprint": "7f4c5ea1c219dccce67defbf67b18df9c4b8d8f427fbba80fbb52ed83daac54e",
+    "complete_position_census": false,
+    "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+    "upstream_groups": [
+      "GTRADE_ARBITRUM"
+    ],
+    "sdk_version": "1.8.10",
+    "model_version": null,
+    "estimation_note": "Open positions and margin/fee inputs verified at one explicit Arbitrum block. Fresh official variables and index are non-atomic inputs; partial position sample, official SDK estimate, not HTX liquidation or a guaranteed trigger.",
+    "variable_source_ts": 1791383887578,
+    "index_source_ts": 1791383880077,
+    "above": [],
+    "below": [
+      {
+        "native_price": 52831.39188419716,
+        "side": "LONG",
+        "notional": 137.59553314928738,
+        "notional_unit": "USD",
+        "native_reference_price": 83041.07,
+        "distance_pct": -36.37920141901212,
+        "position_count": 1,
+        "margin_mode": null,
+        "conditional_cross": false,
+        "source_ts": 1791383880077,
+        "source_clock_closed": true,
+        "observed_at_ms": 1791383901358,
+        "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+        "price_quote": "USD",
+        "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+        "position_key": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927:3",
+        "provider": "gTrade official SDK",
+        "venue": "gTrade-Arbitrum",
+        "entry_eligible": false,
+        "is_htx_price": false
+      }
+    ],
+    "notional_summed_across_providers": false,
+    "independent_vote_added": false,
+    "prices_converted_to_htx": false,
+    "automatic_execution": false,
+    "entry_eligible": false,
+    "render_enabled": true,
+    "body_bytes_before_fingerprint": 2609,
+    "fingerprint": "45b50004b4bdf063ff154b706a167b4844cef4b497576c0693675a8ac8617448"
+  },
+  "observed_ts": 1791383901768,
+  "future_levels": 1,
+  "current_routing_readback": {
+    "source_ts": 1791383900000,
+    "positions": 10,
+    "assets": [
+      "BNB",
+      "BTC",
+      "ETH",
+      "HYPE",
+      "PONS",
+      "RAY",
+      "ZEC"
+    ],
+    "routing_fingerprint": "d1ed48895b7a3a37fc618a890f63df4897308cb6d6923503b17c3943c147603e",
+    "levels_saved": false
+  },
+  "provider_after": {
+    "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GTRADE",
+    "used_units": 115,
+    "version": 81,
+    "allowance_units": 4000,
+    "unit": "REQUEST"
+  },
+  "status": "ACTUAL_EXACT_SELECTED_NATIVE_LEVELS_AND_DURABLE_HINTS_VERIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "GTRADE_ACTUAL_EXACT_SELECTED:37638236338:1791383898408",
+    "source_run_id": "37638236338",
+    "measured_rows_read": 55,
+    "measured_rows_written_accounted": 10,
+    "measured_requests_accounted": 13,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791383902309,
+  "shared_budget": {
+    "reserved_http": 3,
+    "gross_reserved_http": 3,
+    "claimed_http": 3,
+    "actual_http": 3,
+    "max_http": 3,
+    "active": 0,
+    "peak_parallel": 1,
+    "max_parallel": 2,
+    "queued": 0,
+    "phase_started_ts": 1791383899568,
+    "max_total_ms": 45000,
+    "per_minute_limits": {
+      "HYPERLIQUID": 12,
+      "SWOLE_DISCOVERY": 6,
+      "LIQFLOW": 6,
+      "GTRADE": 6,
+      "LIGHTER": 12,
+      "GMX": 4,
+      "OXARCHIVE": 6,
+      "DYDX_RPC": 6
+    },
+    "scope": "SAME_RUN_ALL_NEW_PROVIDERS",
+    "unused_local_capacity_released_after_completed_collector": true,
+    "monthly_provider_reservations_not_refunded": true,
+    "actual_dispatch_rate_enforced": true,
+    "phase_deadline_actively_enforced": true,
+    "provider_quota_provisioned": false,
+    "known_unspent_denials_release_local_capacity": true,
+    "unknown_reservation_ack_keeps_local_capacity": true,
+    "errors": []
+  },
+  "source_http": 3,
+  "d1_usage": {
+    "requests": 13,
+    "rows_read": 56,
+    "rows_written": 10,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 46,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_venue_catalog_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "e4ebcc42fa70ee89303a21f8928bd0cec88a2d9daf0bd8b1246b755f510b7291"
+}
