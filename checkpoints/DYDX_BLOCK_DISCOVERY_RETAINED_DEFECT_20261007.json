@@ -1,0 +1,95 @@
+{
+  "schema": "DYDX_BLOCK_DISCOVERY_RETAINED_DEFECT_20261007_V1",
+  "cloud_run": 37621191104,
+  "github_head": "a92c734531e4791d2ea7dfc52006bbc6630d3dc7",
+  "artifact_id": 11481449161,
+  "artifact_sha256": "975971f50d08a31725ea5fbc2804e7cbdec6a84291c6ea9a5d19a9d0994465ca",
+  "run_id": "DYDX_NATIVE_ACTIVITY_RESEARCH:37621191104:1791376133655",
+  "status": "ACTUAL_ACTIVITY_DISCOVERY_NOT_ACTIVATED_PARSE_DEFECT_FIXED_OFFLINE",
+  "failure": "NATIVE_PINNED_SNAPSHOT_NOT_CLOSED",
+  "collection": {
+    "status": "DYDX_NATIVE_NOT_CLOSED",
+    "reason": "DISCOVERY_WIRE"
+  },
+  "source_http_actual": 2,
+  "source_http_reserved_charged": 3,
+  "unused_request_refunded": false,
+  "source_block": {
+    "height": "108441899",
+    "source_time": "2026-10-07T12:28:54.148712034Z",
+    "hash": "78FD4100CFDF7224120D7EA3E6A4962CDA77CA8B2675FE7F4F52D4E96808C689"
+  },
+  "raw_path": "checkpoints/source-inputs/dydx-native-activity-37621191104.json.gz",
+  "raw_sha256": "1e5cc6203c4e0dd2ef9662f78157cb9e140325e8476b37505c67039848afe71b",
+  "raw_receipt_sha256": [
+    "b64a3d79bfcfd5f9392126615ea398df343b03f0549c010e01d19237514a822c",
+    "dfcb0c2f44c66f0b88ae98625b4db8cf5d5d0884222d059c8dbbff7793dcfdf0"
+  ],
+  "real_block_findings": {
+    "transactions": 5,
+    "index0": "SLINKY_ZLIB_EXTENDED_COMMIT_INFO_NOT_TRADING_TX",
+    "other_messages": 4,
+    "account_hints": 0,
+    "liquidation_levels": 0
+  },
+  "fix": "Strict bounded consensus schema only at index0; protobuf Any default empty value; never scrape consensus validator addresses. Four adjacent native blocks in existing8-message read-only RPC batch; parent hashes and original clocks bound; max8 exact current-height account rereads or20-account native page fallback in total3 HTTP.",
+  "primary_references": [
+    "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/protocol/app/app.go",
+    "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/protocol/app/prepare/prepare_proposal.go",
+    "https://github.com/dydxprotocol/slinky/blob/v1.3.2/abci/strategies/codec/codec.go",
+    "https://github.com/dydxprotocol/cometbft/blob/0cbd83dfd37f/proto/tendermint/abci/types.proto"
+  ],
+  "d1_usage": {
+    "requests": 15,
+    "rows_read": 48,
+    "rows_written": 9,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 36,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 4,
+        "rows_read": 8,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_venue_catalog_cache": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "MAIN": 0,
+  "Telegram": 0,
+  "full_owner_completion": false
+}
