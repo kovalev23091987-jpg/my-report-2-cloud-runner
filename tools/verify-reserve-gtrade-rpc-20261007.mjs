@@ -7,7 +7,6 @@ import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
 import {createD1SourceAdmission} from '../current-generation/files/src/liquidation-extension/d1-source-admission.mjs';
 import {LIQUIDATION_ALLOWANCE_GENERATION} from '../current-generation/files/src/liquidation-extension/install-source-allowances.mjs';
-import {readJson} from '../current-generation/files/src/liquidation-extension/io.mjs';
 const pin=await import(pathToFileURL(path.resolve('runtime/src/liquidation-extension/gtrade-pinned-position-snapshot.mjs')));
 const url='https://arbitrum-one-rpc.publicnode.com',db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),started=Date.now(),run_id=`GTRADE_RESERVE_RPC:${process.env.GITHUB_RUN_ID}:${started}`,reservation={rows_read:1250,rows_written:100},raw=[];
 const proof={schema:'RESERVE_GTRADE_RPC_VERIFICATION_20261007_V1',head:process.env.GITHUB_SHA,run_id,started_ts:started,source_cap:2,sourceHTTP:0,MAIN:0,Telegram:0,paid_access:false,decisions_enabled:false,url,scope:'CURRENT_CHAIN_AND_EXPLICIT_BLOCK_POSITION_READ_CAPABILITY_ONLY; RETAINED_POSITION_IDENTITIES; NO_FRESH_MARKET_MAP_OR_SDK_PRICE_ACCEPTANCE',rows:[]};
@@ -23,7 +22,26 @@ try{
    const admit=createD1SourceAdmission({db,scope_bindings:{GTRADE:{scope_id,config_fingerprint:cfg.config_fingerprint}},within_run_budget:e=>{const u=db.usageSnapshot();return{allowed:u.unknown_ops===0&&u.rows_read+e.extraRowsRead+4<=reservation.rows_read&&u.rows_written+e.extraRowsWritten+4<=reservation.rows_written};}});
    const grant=await admit({reservation_id:run_id,contract:'RETAINED_GTRADE_POSITION_CAPABILITY',run_id,requests:{GTRADE:2},weights:{GTRADE:14},max_requests:2,deadline_ts:started+45000});proof.provider_admission=grant;
    if(grant.allowed!==true||grant.new_reservation!==true)throw Error('DURABLE_PROVIDER_ADMISSION_BLOCKED');
-   const read=async body=>{proof.sourceHTTP++;const result=await readJson(url,{method:'POST',body,timeout_ms:10000,max_bytes:2000000});raw.push({body,...result});return result;};
+   const metadataBody=[{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['latest',false]}];
+   // Research-only metadata read; production still requires an explicit pinned block.
+   const read=async body=>{
+    if(JSON.stringify(body)!==JSON.stringify(metadataBody)&&!pin.permittedGTradePinnedRpcBatch(body))throw Error('UNAPPROVED_RESEARCH_RPC_BODY');
+    if(proof.sourceHTTP>=2)throw Error('RESEARCH_HTTP_CAP');
+    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000),receipt={url,method:'POST',started_ts:Date.now(),request_body:body,transport:'DIRECT_READ_ONLY_HTTP',authentication:'NONE'};
+    let result;
+    try{
+     proof.sourceHTTP++;
+     const response=await fetch(url,{method:'POST',headers:{accept:'application/json','content-type':'application/json'},body:JSON.stringify(body),redirect:'error',signal:controller.signal});
+     receipt.http_status=response.status;
+     if(Number(response.headers.get('content-length')||0)>2000000)throw Error('RESPONSE_SIZE_LIMIT');
+     const reader=response.body.getReader(),parts=[];let bytes=0;
+     while(true){const part=await reader.read();if(part.done)break;bytes+=part.value.byteLength;if(bytes>2000000){await reader.cancel();throw Error('RESPONSE_SIZE_LIMIT');}parts.push(Buffer.from(part.value));}
+     const data=Buffer.concat(parts);receipt.received_ts=Date.now();receipt.bytes=data.length;receipt.sha256=createHash('sha256').update(data).digest('hex');
+     result={ok:response.ok,reason:response.ok?null:'HTTP_'+response.status,receipt,payload:JSON.parse(data.toString('utf8'))};
+    }catch(error){result={ok:false,reason:error.name==='AbortError'?'TIMEOUT':String(error.message).slice(0,120),receipt:{...receipt,received_ts:Date.now()},payload:null};}
+    finally{clearTimeout(timer);}
+    raw.push({body,...result});return result;
+   };
    const metadata=await read([{jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]},{jsonrpc:'2.0',id:2,method:'eth_getBlockByNumber',params:['latest',false]}]);
    if(!metadata.ok||!Array.isArray(metadata.payload)||metadata.payload.length!==2||metadata.payload.some(x=>x.error))throw Error('RESERVE_RPC_METADATA_NOT_CLOSED');
    const answers=new Map(metadata.payload.map(x=>[x.id,x.result])),block=answers.get(2),block_number=Number(block?.number),source_ts=Number(block?.timestamp)*1000;
