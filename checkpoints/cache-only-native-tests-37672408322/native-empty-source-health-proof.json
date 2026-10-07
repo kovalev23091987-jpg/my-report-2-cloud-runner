@@ -1,0 +1,157 @@
+{
+  "schema": "NATIVE_EMPTY_SOURCE_HEALTH_RETAINED_PROOF_V1",
+  "source_cloud_run": 37625020734,
+  "source_gzip_sha256": "18841bfd206d140292c1417474ffe2acb37ef8d7115411ced9a7dd4b702f8768",
+  "scope": "CONTROLLED_TRANSPORT_AT_ORIGINAL_CLOCK_NOT_FRESH_PRODUCTION_READ",
+  "audit": {
+    "schema": "LIQUIDATION_SOURCE_ACQUISITION_AUDIT_V1",
+    "run_id": "CONTROLLED_NATIVE_EMPTY_HEALTH",
+    "evaluated_ts": 1791378011607,
+    "candidates": [
+      "AAVE-USDT",
+      "ACE-USDT"
+    ],
+    "routes": [
+      {
+        "contract": "AAVE-USDT",
+        "run_id": "CONTROLLED_NATIVE_EMPTY_HEALTH",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 3,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "EMPTY_BOUNDED_SAMPLE",
+          "failure_origin": "COVERAGE"
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791378009354,
+          "observed_ts": 1791378011607,
+          "height": "108444955",
+          "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+          "receipt_sha256": [
+            "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+            "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+            "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      },
+      {
+        "contract": "ACE-USDT",
+        "run_id": "CONTROLLED_NATIVE_EMPTY_HEALTH",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 0,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "EMPTY_BOUNDED_SAMPLE",
+          "failure_origin": "COVERAGE"
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791378009354,
+          "observed_ts": 1791378011607,
+          "height": "108444955",
+          "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+          "receipt_sha256": [
+            "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+            "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+            "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      }
+    ],
+    "shared_budget": {
+      "reserved_http": 3,
+      "actual_http": 3,
+      "max_http_per_run": 5
+    },
+    "source_clocks_refreshed": false,
+    "diagnostic_only": true,
+    "internal_only": true,
+    "network_calls": 0,
+    "db_calls": 0,
+    "entry_authorized": false
+  },
+  "availability_updates": [
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "usable": true,
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "now": 1791378011607
+    },
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "usable": true,
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "now": 1791378011607
+    }
+  ],
+  "role_updates": [
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "contract": "AAVE-USDT",
+      "run_id": "CONTROLLED_NATIVE_EMPTY_HEALTH",
+      "role": "NATIVE_POSITION_CONTEXT",
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "role_usable": false,
+      "actual_http": 3,
+      "now": 1791378011607
+    },
+    {
+      "source_id": "DYDX_PINNED_NATIVE",
+      "contract": "ACE-USDT",
+      "run_id": "CONTROLLED_NATIVE_EMPTY_HEALTH",
+      "role": "NATIVE_POSITION_CONTEXT",
+      "status": "DYDX_NO_ELIGIBLE_SAMPLE_LEVEL",
+      "role_usable": false,
+      "actual_http": 0,
+      "now": 1791378011607
+    }
+  ],
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false
+}

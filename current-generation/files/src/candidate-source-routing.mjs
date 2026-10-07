@@ -46,4 +46,11 @@ export function remainingLiquidationHttpCap({plan,cross_exchange_context=null}={
  return Math.max(0,total-used);
 }
 
+// A new-request reservation gates transport, not reuse of a verified same-run
+// native snapshot. The service independently enforces the exact selected pair.
+export function nativeLiquidationCollectionMode({contract,http_cap,lane_reserved,collector}={}){
+ if(typeof collector!=='function'||typeof contract!=='string'||!/^[^-\s]+-USDT$/u.test(contract))return null;
+ return lane_reserved===true&&Number.isSafeInteger(http_cap)&&http_cap>0?'SOURCE_HTTP':'CACHE_ONLY';
+}
+
 export default{CANDIDATE_SOURCE_ROUTING_VERSION,HIGH_INTEREST_SOURCE_THRESHOLD,CANDIDATE_CONFIRMATION_HTTP_ENVELOPE,buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap};

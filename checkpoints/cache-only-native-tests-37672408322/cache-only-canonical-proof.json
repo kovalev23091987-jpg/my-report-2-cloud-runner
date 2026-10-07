@@ -1,0 +1,1833 @@
+{
+  "schema": "CACHE_ONLY_ASSEMBLED_CANONICAL_PROOF_V1",
+  "scope": "CONTROLLED_DENSE_INPUT_AT_ORIGINAL_CLOCK_NOT_FRESH_HTX_REPORT_OR_SENT",
+  "contract": "BCH-USDT",
+  "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+  "source_ts": 1791378009354,
+  "height": "108444955",
+  "baseline": {
+    "version": "canonical-analytical-result-v1-20260924",
+    "status": "CLOSED",
+    "snapshot_id": "CONTROLLED_CACHE_ONLY:BCH-USDT",
+    "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+    "observed_ts": 1791378055607,
+    "snapshot_time_utc": "2026-10-07T13:00:55.607Z",
+    "universe": [
+      {
+        "contract": "BCH-USDT"
+      }
+    ],
+    "candidates": [
+      {
+        "contract": "BCH-USDT",
+        "ticker": "BCH-USDT"
+      }
+    ],
+    "state": "REJECTED",
+    "direction": null,
+    "scores": {
+      "overall_0_100": null,
+      "coin_interest_0_100": null,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "reasons": [],
+    "source_receipts": [],
+    "hard_gates": [],
+    "current_price": 301.97583979999996,
+    "entry": null,
+    "trigger": null,
+    "invalidation": null,
+    "targets": [],
+    "costs": null,
+    "early_candidate": null,
+    "opportunity": null,
+    "microstructure": null,
+    "liquidations": {
+      "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+      "pump": {
+        "status": "NOT_CLOSED",
+        "rolling_24h_change_pct": null,
+        "absolute_move_pct": null,
+        "is_pump": false,
+        "is_strong_move": false,
+        "early_anomaly": false,
+        "threshold_pct": 5,
+        "inclusive": true,
+        "upper_ceiling_pct": null
+      },
+      "current_price": 301.97583979999996,
+      "priority_reason": "HTX_FUTURES_EXCEPT_BTC_ETH",
+      "above": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.8795459,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 4198.8795459,
+          "notional_usdt": 936.1251033799999,
+          "corroborating_sources": [
+            "dYdX pinned protocol model"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "dYdX pinned protocol model"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 4198.879545899999,
+              "source": "dYdX pinned protocol model",
+              "independence_group": "dYdX pinned protocol model",
+              "estimated": true
+            }
+          ],
+          "selection_roles": [
+            "LARGEST_VISIBLE",
+            "NEAREST_NONZERO",
+            "FARTHEST_VISIBLE"
+          ]
+        }
+      ],
+      "below": [],
+      "future_only": true,
+      "future_levels_required": true,
+      "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+      "distance_cap_pct": null,
+      "minimum_distance_pct": 0,
+      "max_per_side": 6,
+      "display_minimum_separation_pct": 5,
+      "display_max_per_side": 4,
+      "display_nearby_levels_as_one_range": false,
+      "calculated_fallback_enabled": false,
+      "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+      "no_invented_exact_amounts": true,
+      "notional_summed_across_providers": false,
+      "volume_tiers": {
+        "small_below": 10000,
+        "medium_below": 100000,
+        "large_below": 1000000,
+        "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+        "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+      },
+      "realized_events_excluded": 0,
+      "status": "CLOSED",
+      "reason": null,
+      "all_zones": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.8795459,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 4198.8795459,
+          "notional_usdt": 936.1251033799999,
+          "corroborating_sources": [
+            "dYdX pinned protocol model"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "dYdX pinned protocol model"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 4198.879545899999,
+              "source": "dYdX pinned protocol model",
+              "independence_group": "dYdX pinned protocol model",
+              "estimated": true
+            }
+          ]
+        }
+      ],
+      "display_source_zones": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.879545899999,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false
+        }
+      ],
+      "provider_zone_count": 1,
+      "external_zone_count": 1,
+      "calculated_zone_count": 0,
+      "consensus_zone_count": 0,
+      "displayed_zone_count": 1,
+      "omitted_zone_count": 0,
+      "source_receipts": [
+        {
+          "source": "dYdX pinned protocol model",
+          "status": "USABLE_SCOPED_CONTEXT",
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "source_ts": 1791378009354,
+          "visible_half_range_pct": null,
+          "total_zones": 1
+        }
+      ],
+      "htx_source_backed_model": {
+        "status": "DISABLED_BY_OWNER",
+        "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+        "volatility_1h_pct": null
+      },
+      "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+      "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+      "above_status": "CLOSED",
+      "below_status": "NOT_CLOSED",
+      "independent_extensions": [],
+      "coverage_admission": {
+        "eligible": true,
+        "source_ids": [
+          "DYDX_PINNED_NATIVE"
+        ],
+        "automatic_discovery_allowed": true,
+        "structural_hint_available": false,
+        "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+        "contract": "BCH-USDT",
+        "additional_context_check_source_ids": [
+          "DYDX_PINNED_NATIVE"
+        ],
+        "proven_level_source_ids": [],
+        "fresh_live_levels_confirmed": false,
+        "calculated_fallback_allowed": false,
+        "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+        "leaders_may_be_replaced": false
+      },
+      "future_hint": {
+        "source": "COINLOBSTER_FUTURE_HINT",
+        "contract": "BCH-USDT",
+        "status": "COVERAGE_GATE_NOT_ADMITTED",
+        "data_available": false,
+        "network_calls": 0
+      },
+      "future_source_status": {
+        "coverage_admission": {
+          "eligible": true,
+          "source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false,
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "contract": "BCH-USDT",
+          "additional_context_check_source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "proven_level_source_ids": [],
+          "fresh_live_levels_confirmed": false,
+          "calculated_fallback_allowed": false,
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "leaders_may_be_replaced": false
+        },
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "status": "COVERAGE_GATE_NOT_ADMITTED",
+        "network_calls": 0,
+        "tracked_hl": {
+          "source": "BYK_TRACKED_HL_BANDS",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0
+        }
+      }
+    },
+    "data_quality": null,
+    "free_sources": {
+      "version": "free-source-runtime-summary-missing-owner-v1",
+      "status": "NOT_CLOSED",
+      "owner": null,
+      "registry": {
+        "status": "NOT_CLOSED",
+        "entries": []
+      },
+      "entry_funnel": {
+        "status": "NOT_CLOSED",
+        "blockers": [
+          "UNKNOWN_INTERNAL_REASON"
+        ],
+        "blocker_details": [
+          {
+            "code": "UNKNOWN_INTERNAL_REASON",
+            "full_ru": "Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.",
+            "short_ru": "сводка источников не подтверждена; вывод не готов",
+            "known": false
+          }
+        ],
+        "has_unknown_reason": true
+      },
+      "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE",
+      "hot_cycle_external_request_delta": 0,
+      "d1_write_delta": 0
+    },
+    "changes_from_previous": [],
+    "metadata": {
+      "contract": "BCH-USDT",
+      "idea_basis_receipt": {
+        "version": "used-facts-idea-basis-v1-20261007",
+        "contract": "BCH-USDT",
+        "direction": null,
+        "observed_ts": 1791378055607,
+        "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+        "snapshot_id": "CONTROLLED_CACHE_ONLY:BCH-USDT",
+        "early": null,
+        "changes_score": false,
+        "authorizes_entry": false
+      },
+      "oi_window_receipts": null,
+      "canonical_runtime_adapter": "canonical-runtime-adapter-v17-forward-technical-observation-20261006",
+      "entry_readiness_score_status": "NOT_PROVISIONED_DO_NOT_INVENT",
+      "live_probability": null,
+      "validated_signal": false,
+      "automatic_execution": false,
+      "minimum_reportable_move_pct": null,
+      "technical_move_potential": null,
+      "start_closing_price": null,
+      "idea_basis": "MULTI_FACTOR",
+      "supporting_context": {
+        "version": "existing-source-consumer-v4-hyperliquid-recorder-20260925",
+        "status": "NOT_CLOSED",
+        "blocks": {
+          "supporting_risk": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "onchain": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "dex_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "protocol_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "hyperliquid_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_spot_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "historical_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_sequence_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_utility_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "sector_comparison": {
+            "status": "NOT_CLOSED",
+            "facts": [],
+            "blocks": {},
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0
+          },
+          "volume_profile": {
+            "version": "htx-volume-profile-v1-20260930",
+            "status": "NOT_CLOSED",
+            "reason": "READY_SNAPSHOTS_REQUIRED",
+            "source": "HTX_OFFICIAL",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "score_eligible": false,
+            "new_history_accumulated": false
+          },
+          "volume_profile_consensus": {
+            "status": "NOT_CLOSED",
+            "factor": 0,
+            "primary": {
+              "version": "htx-volume-profile-v1-20260930",
+              "status": "NOT_CLOSED",
+              "reason": "READY_SNAPSHOTS_REQUIRED",
+              "source": "HTX_OFFICIAL",
+              "decision_block": "MARKET_STRENGTH_SPOT",
+              "score_eligible": false,
+              "new_history_accumulated": false
+            },
+            "confirmations": [],
+            "conflicts": [],
+            "skipped": []
+          }
+        },
+        "facts": [],
+        "no_new_hard_gate": true,
+        "no_directional_vote": true,
+        "new_sources_added": false,
+        "supplemental_supporting_use": {
+          "version": "supplemental-supporting-bridge-v1-20261006",
+          "status": "NOT_CLOSED",
+          "facts": [],
+          "bindings": [],
+          "network_calls": 0,
+          "core_block_participation_added": 0
+        },
+        "specialist_context_status": "NOT_CLOSED"
+      },
+      "bounded_money_flow_diagnostic": {
+        "status": "EXACT_SNAPSHOT_REQUIRED",
+        "receipts": [],
+        "score_contribution": 0
+      },
+      "sector_relative_strength_review": {
+        "status": "EXACT_SNAPSHOT_REQUIRED",
+        "receipts": [],
+        "score_contribution": 0
+      },
+      "internal_market_context": {
+        "internal_only": true,
+        "liquidation_coverage_admission": {
+          "eligible": true,
+          "source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false,
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "contract": "BCH-USDT",
+          "additional_context_check_source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "proven_level_source_ids": [],
+          "fresh_live_levels_confirmed": false,
+          "calculated_fallback_allowed": false,
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "leaders_may_be_replaced": false
+        }
+      },
+      "dynamic_liquidation_panel": {
+        "version": "dynamic-liquidation-panel-v3-explicit-target-proof-20260930",
+        "status": "NOT_CLOSED",
+        "observed_ts": 1791378055607,
+        "reference_price": 301.97583979999996,
+        "zones_seen": 0,
+        "stale_zones_excluded": 0,
+        "provider_count": 0,
+        "clusters": [],
+        "notional_summed_across_providers": false,
+        "one_position_counted_once": true,
+        "cross_margin_weight": 0.5,
+        "score_evidence": null,
+        "volume_profile_status": "READY_SNAPSHOTS_REQUIRED"
+      },
+      "supplemental_score_adjustment": {
+        "status": "BASE_SCORE_MISSING",
+        "base_score": null,
+        "final_score": null,
+        "adjustment": 0,
+        "receipts": []
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": null,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "UNKNOWN",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": null
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "BCH-USDT",
+          "decision_ts": 1791378055607,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 301.97583979999996
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "source_role_view": {
+        "version": "source-role-consumer-v2-per-metric-proof-20260930",
+        "status": "CLOSED",
+        "scope": "OBSERVED_USABLE_METRICS_ONLY",
+        "classified": [],
+        "roles": {},
+        "independent_groups": {},
+        "independent_groups_by_comparison": {},
+        "independence_semantics": "DISTINCT_KNOWN_ORIGINS_NOT_STATISTICAL_INDEPENDENCE",
+        "unknown_sources": [],
+        "predictive_weight_changed": false
+      },
+      "snapshot_comparison": {
+        "version": "snapshot-diff-v1-20260925",
+        "status": "NOT_CLOSED",
+        "previous_observed_ts": null,
+        "current_observed_ts": 1791378055607,
+        "previous_time_utc": null,
+        "current_time_utc": "2026-10-07T13:00:55.607Z",
+        "lines": [],
+        "changed_fact_count": 0,
+        "comparison_is_probability": false,
+        "decision_effect": false
+      },
+      "evidence_domain_contract": {
+        "version": "evidence-domain-contract-v1-20260925",
+        "status": "CLOSED",
+        "domains": {
+          "effort_result": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "wick_close_reclaim": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "flows": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "oi_trajectory": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "funding_history": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "basis": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "order_book": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "liquidations": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "relative_strength": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "price_response": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          }
+        },
+        "closed_count": 0,
+        "explicit_missing_count": 10,
+        "all_required_domains_declared": true,
+        "optional_missing_stays_explicit": true,
+        "unknown_as_zero": false,
+        "directional_vote_added": false
+      },
+      "protective_filter": null
+    },
+    "safety": {
+      "strategy_weights_changed": false,
+      "hard_gates_bypassed": false,
+      "automatic_execution": false,
+      "validated_signal": false
+    },
+    "analytical_fingerprint": "b0a5a8033902cd02f8526da44b9e7947234840f871a1a290a29e32fecad0efd2"
+  },
+  "canonical": {
+    "version": "canonical-analytical-result-v1-20260924",
+    "status": "CLOSED",
+    "snapshot_id": "CONTROLLED_CACHE_ONLY:BCH-USDT",
+    "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+    "observed_ts": 1791378055607,
+    "snapshot_time_utc": "2026-10-07T13:00:55.607Z",
+    "universe": [
+      {
+        "contract": "BCH-USDT"
+      }
+    ],
+    "candidates": [
+      {
+        "contract": "BCH-USDT",
+        "ticker": "BCH-USDT"
+      }
+    ],
+    "state": "REJECTED",
+    "direction": null,
+    "scores": {
+      "overall_0_100": null,
+      "coin_interest_0_100": null,
+      "entry_readiness_0_100": null,
+      "is_probability": false
+    },
+    "reasons": [],
+    "source_receipts": [],
+    "hard_gates": [],
+    "current_price": 301.97583979999996,
+    "entry": null,
+    "trigger": null,
+    "invalidation": null,
+    "targets": [],
+    "costs": null,
+    "early_candidate": null,
+    "opportunity": null,
+    "microstructure": null,
+    "liquidations": {
+      "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+      "pump": {
+        "status": "NOT_CLOSED",
+        "rolling_24h_change_pct": null,
+        "absolute_move_pct": null,
+        "is_pump": false,
+        "is_strong_move": false,
+        "early_anomaly": false,
+        "threshold_pct": 5,
+        "inclusive": true,
+        "upper_ceiling_pct": null
+      },
+      "current_price": 301.97583979999996,
+      "priority_reason": "HTX_FUTURES_EXCEPT_BTC_ETH",
+      "above": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.8795459,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 4198.8795459,
+          "notional_usdt": 936.1251033799999,
+          "corroborating_sources": [
+            "dYdX pinned protocol model"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "dYdX pinned protocol model"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 4198.879545899999,
+              "source": "dYdX pinned protocol model",
+              "independence_group": "dYdX pinned protocol model",
+              "estimated": true
+            }
+          ],
+          "selection_roles": [
+            "LARGEST_VISIBLE",
+            "NEAREST_NONZERO",
+            "FARTHEST_VISIBLE"
+          ]
+        }
+      ],
+      "below": [],
+      "future_only": true,
+      "future_levels_required": true,
+      "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+      "distance_cap_pct": null,
+      "minimum_distance_pct": 0,
+      "max_per_side": 6,
+      "display_minimum_separation_pct": 5,
+      "display_max_per_side": 4,
+      "display_nearby_levels_as_one_range": false,
+      "calculated_fallback_enabled": false,
+      "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+      "no_invented_exact_amounts": true,
+      "notional_summed_across_providers": false,
+      "volume_tiers": {
+        "small_below": 10000,
+        "medium_below": 100000,
+        "large_below": 1000000,
+        "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+        "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+      },
+      "realized_events_excluded": 0,
+      "status": "CLOSED",
+      "reason": null,
+      "all_zones": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.8795459,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 4198.8795459,
+          "notional_usdt": 936.1251033799999,
+          "corroborating_sources": [
+            "dYdX pinned protocol model"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "dYdX pinned protocol model"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 4198.879545899999,
+              "source": "dYdX pinned protocol model",
+              "independence_group": "dYdX pinned protocol model",
+              "estimated": true
+            }
+          ]
+        }
+      ],
+      "display_source_zones": [
+        {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 4198.879545899999,
+          "price_quote": "USD",
+          "distance_pct": 1290.4687039469572,
+          "distance_reference_price": 301.97583979999996,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 936.1251033799999,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791378009354,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 301.97583979999996,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false
+        }
+      ],
+      "provider_zone_count": 1,
+      "external_zone_count": 1,
+      "calculated_zone_count": 0,
+      "consensus_zone_count": 0,
+      "displayed_zone_count": 1,
+      "omitted_zone_count": 0,
+      "source_receipts": [
+        {
+          "source": "dYdX pinned protocol model",
+          "status": "USABLE_SCOPED_CONTEXT",
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "source_ts": 1791378009354,
+          "visible_half_range_pct": null,
+          "total_zones": 1
+        }
+      ],
+      "htx_source_backed_model": {
+        "status": "DISABLED_BY_OWNER",
+        "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+        "volatility_1h_pct": null
+      },
+      "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+      "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+      "above_status": "CLOSED",
+      "below_status": "NOT_CLOSED",
+      "native_extension": {
+        "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+        "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+        "mode": "SHADOW_ONLY",
+        "freshness_max_age_ms": 120000,
+        "binding": {
+          "contract": "BCH-USDT",
+          "native_symbol": "BCH",
+          "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+          "snapshot_id": "CONTROLLED_CACHE_ONLY:BCH-USDT",
+          "observed_ts": 1791378055607,
+          "direction": null
+        },
+        "acquisition_id": "DYDX:CONTROLLED_CACHE_ONLY_CALLER:BCH-USDT",
+        "acquisition_fingerprint": "771e925fd9d2035cfa4dc047cfafa9973d1077856db98f21fd89c73d1c55bbcb",
+        "source_ts": 1791378009354,
+        "source_clock_closed": true,
+        "source_age_ms": 46253,
+        "received_ts": 1791378011607,
+        "receipt_age_ms": 44000,
+        "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+        "venue": "dYdX-mainnet",
+        "provider": "dYdX pinned protocol model",
+        "price_quote": "USD",
+        "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+        "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+        "positions_source_ts": 1791378009354,
+        "positions_block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+        "position_snapshot_fingerprint": "cd2a041e5c79133b4ac9444c0b10bcb5a047668cb080c5b05a19930f4709d451",
+        "complete_position_census": false,
+        "evidence_class": "NATIVE_ACCOUNT_CALCULATED_CONDITIONAL_PROTOCOL_ESTIMATES",
+        "upstream_groups": [
+          "DYDX_MAINNET_CHAIN"
+        ],
+        "sdk_version": null,
+        "model_version": "DYDX_COMPLETE_CROSS_ACCOUNT_FUNDING_AND_INTEGER_MMR_THRESHOLD_V1",
+        "estimation_note": "Расчёт dYdX по полному аккаунту; цены остальных позиций и funding зафиксированы на блоке. Ограниченная выборка.",
+        "variable_source_ts": null,
+        "index_source_ts": null,
+        "above": [
+          {
+            "native_price": 4198.879545899999,
+            "side": "SHORT",
+            "notional": 936.1251033799999,
+            "notional_unit": "USD",
+            "native_reference_price": 301.97583979999996,
+            "distance_pct": 1290.4687039469572,
+            "position_count": 1,
+            "margin_mode": "CROSS",
+            "conditional_cross": true,
+            "source_ts": 1791378009354,
+            "source_clock_closed": true,
+            "observed_at_ms": 1791378011607,
+            "freshness_basis": "ORIGINAL_EXPLICIT_CHAIN_BLOCK",
+            "price_quote": "USD",
+            "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+            "position_key": "a6daeca2dbd97cb66bb4f7e486827b77ce8ca63cd7116de522af558de2ec43ef",
+            "provider": "dYdX pinned protocol model",
+            "venue": "dYdX-mainnet",
+            "entry_eligible": false,
+            "is_htx_price": false
+          }
+        ],
+        "below": [],
+        "notional_summed_across_providers": false,
+        "independent_vote_added": false,
+        "prices_converted_to_htx": false,
+        "automatic_execution": false,
+        "entry_eligible": false,
+        "render_enabled": true,
+        "body_bytes_before_fingerprint": 2452,
+        "fingerprint": "ca71c488ef5f714b9500c09b32e810d0819accdaa226da4900f38eea6cadaa37"
+      },
+      "independent_extensions": [],
+      "multi_source_extension": {
+        "status": "CLOSED",
+        "notional_summed_across_providers": false,
+        "independent_votes_generated": false,
+        "source_count": 1
+      },
+      "coverage_admission": {
+        "eligible": true,
+        "source_ids": [
+          "DYDX_PINNED_NATIVE"
+        ],
+        "automatic_discovery_allowed": true,
+        "structural_hint_available": false,
+        "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+        "contract": "BCH-USDT",
+        "additional_context_check_source_ids": [
+          "DYDX_PINNED_NATIVE"
+        ],
+        "proven_level_source_ids": [],
+        "fresh_live_levels_confirmed": false,
+        "calculated_fallback_allowed": false,
+        "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+        "leaders_may_be_replaced": false
+      },
+      "future_hint": {
+        "source": "COINLOBSTER_FUTURE_HINT",
+        "contract": "BCH-USDT",
+        "status": "COVERAGE_GATE_NOT_ADMITTED",
+        "data_available": false,
+        "network_calls": 0
+      },
+      "future_source_status": {
+        "coverage_admission": {
+          "eligible": true,
+          "source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false,
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "contract": "BCH-USDT",
+          "additional_context_check_source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "proven_level_source_ids": [],
+          "fresh_live_levels_confirmed": false,
+          "calculated_fallback_allowed": false,
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "leaders_may_be_replaced": false
+        },
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "status": "COVERAGE_GATE_NOT_ADMITTED",
+        "network_calls": 0,
+        "tracked_hl": {
+          "source": "BYK_TRACKED_HL_BANDS",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0
+        }
+      }
+    },
+    "data_quality": null,
+    "free_sources": {
+      "version": "free-source-runtime-summary-missing-owner-v1",
+      "status": "NOT_CLOSED",
+      "owner": null,
+      "registry": {
+        "status": "NOT_CLOSED",
+        "entries": []
+      },
+      "entry_funnel": {
+        "status": "NOT_CLOSED",
+        "blockers": [
+          "UNKNOWN_INTERNAL_REASON"
+        ],
+        "blocker_details": [
+          {
+            "code": "UNKNOWN_INTERNAL_REASON",
+            "full_ru": "Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.",
+            "short_ru": "сводка источников не подтверждена; вывод не готов",
+            "known": false
+          }
+        ],
+        "has_unknown_reason": true
+      },
+      "continuous_collector_status": "PARTIAL_REALTIME_COVERAGE",
+      "hot_cycle_external_request_delta": 0,
+      "d1_write_delta": 0
+    },
+    "changes_from_previous": [],
+    "metadata": {
+      "contract": "BCH-USDT",
+      "idea_basis_receipt": {
+        "version": "used-facts-idea-basis-v1-20261007",
+        "contract": "BCH-USDT",
+        "direction": null,
+        "observed_ts": 1791378055607,
+        "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+        "snapshot_id": "CONTROLLED_CACHE_ONLY:BCH-USDT",
+        "early": null,
+        "changes_score": false,
+        "authorizes_entry": false
+      },
+      "oi_window_receipts": null,
+      "canonical_runtime_adapter": "canonical-runtime-adapter-v17-forward-technical-observation-20261006",
+      "entry_readiness_score_status": "NOT_PROVISIONED_DO_NOT_INVENT",
+      "live_probability": null,
+      "validated_signal": false,
+      "automatic_execution": false,
+      "minimum_reportable_move_pct": null,
+      "technical_move_potential": null,
+      "start_closing_price": null,
+      "idea_basis": "MULTI_FACTOR",
+      "supporting_context": {
+        "version": "existing-source-consumer-v4-hyperliquid-recorder-20260925",
+        "status": "NOT_CLOSED",
+        "blocks": {
+          "supporting_risk": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "onchain": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "dex_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "protocol_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "hyperliquid_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_spot_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "historical_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "coinbase_sequence_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "bitget_utility_context": {
+            "status": "NOT_CLOSED",
+            "facts": []
+          },
+          "sector_comparison": {
+            "status": "NOT_CLOSED",
+            "facts": [],
+            "blocks": {},
+            "advisory_only": true,
+            "directional_vote": false,
+            "hard_gate": false,
+            "score_contribution": 0
+          },
+          "volume_profile": {
+            "version": "htx-volume-profile-v1-20260930",
+            "status": "NOT_CLOSED",
+            "reason": "READY_SNAPSHOTS_REQUIRED",
+            "source": "HTX_OFFICIAL",
+            "decision_block": "MARKET_STRENGTH_SPOT",
+            "score_eligible": false,
+            "new_history_accumulated": false
+          },
+          "volume_profile_consensus": {
+            "status": "NOT_CLOSED",
+            "factor": 0,
+            "primary": {
+              "version": "htx-volume-profile-v1-20260930",
+              "status": "NOT_CLOSED",
+              "reason": "READY_SNAPSHOTS_REQUIRED",
+              "source": "HTX_OFFICIAL",
+              "decision_block": "MARKET_STRENGTH_SPOT",
+              "score_eligible": false,
+              "new_history_accumulated": false
+            },
+            "confirmations": [],
+            "conflicts": [],
+            "skipped": []
+          }
+        },
+        "facts": [],
+        "no_new_hard_gate": true,
+        "no_directional_vote": true,
+        "new_sources_added": false,
+        "supplemental_supporting_use": {
+          "version": "supplemental-supporting-bridge-v1-20261006",
+          "status": "NOT_CLOSED",
+          "facts": [],
+          "bindings": [],
+          "network_calls": 0,
+          "core_block_participation_added": 0
+        },
+        "specialist_context_status": "NOT_CLOSED"
+      },
+      "bounded_money_flow_diagnostic": {
+        "status": "EXACT_SNAPSHOT_REQUIRED",
+        "receipts": [],
+        "score_contribution": 0
+      },
+      "sector_relative_strength_review": {
+        "status": "EXACT_SNAPSHOT_REQUIRED",
+        "receipts": [],
+        "score_contribution": 0
+      },
+      "internal_market_context": {
+        "internal_only": true,
+        "liquidation_coverage_admission": {
+          "eligible": true,
+          "source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false,
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "contract": "BCH-USDT",
+          "additional_context_check_source_ids": [
+            "DYDX_PINNED_NATIVE"
+          ],
+          "proven_level_source_ids": [],
+          "fresh_live_levels_confirmed": false,
+          "calculated_fallback_allowed": false,
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "leaders_may_be_replaced": false
+        }
+      },
+      "dynamic_liquidation_panel": {
+        "version": "dynamic-liquidation-panel-v3-explicit-target-proof-20260930",
+        "status": "CLOSED",
+        "observed_ts": 1791378055607,
+        "reference_price": 301.97583979999996,
+        "zones_seen": 1,
+        "stale_zones_excluded": 0,
+        "provider_count": 1,
+        "clusters": [
+          {
+            "liquidated_side": "SHORT",
+            "center_price": 4198.879545899999,
+            "distance_pct": 1290.4687039469572,
+            "provider_count": 1,
+            "providers": [
+              "dYdX pinned protocol model"
+            ],
+            "position_count": 1,
+            "largest_provider_position_usd": 468.06255168999996,
+            "source_ts": 1791378009354,
+            "decision_target_eligible": false,
+            "target_price": null,
+            "path_obstacle_eligible": false,
+            "contains_estimates": true,
+            "price_semantics": [
+              "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE"
+            ],
+            "target_admission_reasons": [
+              "ESTIMATED_CONTEXT_ONLY"
+            ],
+            "identity_status": "EXACT_NATIVE_MARKET",
+            "notional_summed_across_providers": false,
+            "cross_margin_discount_applied": true,
+            "agreement": "SINGLE_PROVIDER"
+          }
+        ],
+        "notional_summed_across_providers": false,
+        "one_position_counted_once": true,
+        "cross_margin_weight": 0.5,
+        "score_evidence": {
+          "source_id": "DYNAMIC_LIQUIDATION_PANEL",
+          "responsibility_group": "PROJECTED_LIQUIDATIONS",
+          "decision_chain": "CROSS_EXCHANGE_DERIVATIVES",
+          "bullish_strength": 0,
+          "quality": 0.49999999999999994,
+          "asset_identity": "EXACT_NATIVE_MARKET",
+          "metric_family": "VERIFIED_LIQUIDATION_IMBALANCE",
+          "provider_object_id": "DYNAMIC_REPRESENTATIVE_PANEL",
+          "fresh": true,
+          "source_ts": 1791378009354,
+          "exact_identity": true
+        },
+        "volume_profile_status": "READY_SNAPSHOTS_REQUIRED"
+      },
+      "supplemental_score_adjustment": {
+        "status": "BASE_SCORE_MISSING",
+        "base_score": null,
+        "final_score": null,
+        "adjustment": 0,
+        "receipts": []
+      },
+      "score_basis": {
+        "selected": "NOT_CLOSED",
+        "qualified_early_detection_0_100": null,
+        "deep_canonical_interest_0_100": null,
+        "routed_overall_0_100": null
+      },
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "UNKNOWN",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": null
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "BCH-USDT",
+          "decision_ts": 1791378055607,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 301.97583979999996
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "source_role_view": {
+        "version": "source-role-consumer-v2-per-metric-proof-20260930",
+        "status": "CLOSED",
+        "scope": "OBSERVED_USABLE_METRICS_ONLY",
+        "classified": [],
+        "roles": {},
+        "independent_groups": {},
+        "independent_groups_by_comparison": {},
+        "independence_semantics": "DISTINCT_KNOWN_ORIGINS_NOT_STATISTICAL_INDEPENDENCE",
+        "unknown_sources": [],
+        "predictive_weight_changed": false
+      },
+      "snapshot_comparison": {
+        "version": "snapshot-diff-v1-20260925",
+        "status": "NOT_CLOSED",
+        "previous_observed_ts": null,
+        "current_observed_ts": 1791378055607,
+        "previous_time_utc": null,
+        "current_time_utc": "2026-10-07T13:00:55.607Z",
+        "lines": [],
+        "changed_fact_count": 0,
+        "comparison_is_probability": false,
+        "decision_effect": false
+      },
+      "evidence_domain_contract": {
+        "version": "evidence-domain-contract-v1-20260925",
+        "status": "CLOSED",
+        "domains": {
+          "effort_result": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "wick_close_reclaim": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "flows": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "oi_trajectory": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "funding_history": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "basis": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "order_book": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "liquidations": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "relative_strength": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          },
+          "price_response": {
+            "status": "EXPLICIT_MISSING",
+            "source": null,
+            "missing_is_zero": false
+          }
+        },
+        "closed_count": 0,
+        "explicit_missing_count": 10,
+        "all_required_domains_declared": true,
+        "optional_missing_stays_explicit": true,
+        "unknown_as_zero": false,
+        "directional_vote_added": false
+      },
+      "protective_filter": null
+    },
+    "safety": {
+      "strategy_weights_changed": false,
+      "hard_gates_bypassed": false,
+      "automatic_execution": false,
+      "validated_signal": false
+    },
+    "analytical_fingerprint": "359a15e05115871d3180b576b836b7bf97b9f8e493266fd220dc76e2d217f6e2"
+  },
+  "manual_text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-07T13:00:55.607Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: не закрыто\nОбщая оценка: не подтверждена\nМонета интересна: не подтверждена\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- подтверждённых причин нет\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\nПодтверждённых ранних кандидатов нет.\nВсего ранних кандидатов: 0.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nЛИКВИДАЦИИ\nСильные ликвидации выше: расчётный уровень ≈4198,879546 USD (+1290,47% к цене источника) — небольшая; оценка 936,1251034 USD; dYdX pinned protocol model; зависит от других позиций счёта.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nРазмер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.\nПокрытие: только доступные площадки и диапазон источника; время снимка 07.10 16:00 МСК.\nДополнительная фактическая выборка площадок:\ndYdX-mainnet BCH, снимок 16:00 МСК; ограниченная выборка.\nвыше: расчётный уровень ≈4198,879546 USD (+1290,5% к цене источника); оценочный объём 936,13 USD в показанной позиции; dYdX-mainnet BCH; кросс-маржа.\nЭто уровни указанных площадок из ограниченной выборки; как цели на HTX отдельно не подтверждены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+  "service": {
+    "mode": "SHADOW_ONLY",
+    "state": "DYNAMIC_REPRESENTATIVE_PANEL_DECISION_INPUT",
+    "same_admission_and_transport_for_all_sources": true,
+    "gtrade_sdk": {
+      "required_version": "1.8.10",
+      "status": "SECONDARY_DISABLED_BY_CONFIGURATION"
+    },
+    "primary": {
+      "mode": "SHADOW_ONLY",
+      "source": "NATIVE_LIQUIDATION_EXTENSION",
+      "reserved_http": 0,
+      "max_http": 5,
+      "records": [],
+      "production_sender_enabled": false,
+      "automatic_execution": false
+    },
+    "secondary": {
+      "mode": "SHADOW_ONLY",
+      "source": "MULTI_VENUE_LIQUIDATION_EXTENSION",
+      "secondary_min_quality": 70,
+      "fallback_min_quality": 60,
+      "records": [],
+      "notional_summed_across_providers": false,
+      "automatic_execution": false
+    },
+    "shared_budget": {
+      "reserved_http": 3,
+      "gross_reserved_http": 3,
+      "claimed_http": 3,
+      "actual_http": 3,
+      "max_http": 5,
+      "active": 0,
+      "peak_parallel": 1,
+      "max_parallel": 2,
+      "queued": 0,
+      "phase_started_ts": 1791378011607,
+      "max_total_ms": 45000,
+      "per_minute_limits": {
+        "HYPERLIQUID": 12,
+        "SWOLE_DISCOVERY": 6,
+        "LIQFLOW": 6,
+        "GTRADE": 6,
+        "LIGHTER": 12,
+        "GMX": 4,
+        "OXARCHIVE": 6,
+        "DYDX_RPC": 6
+      },
+      "scope": "SAME_RUN_ALL_NEW_PROVIDERS",
+      "unused_local_capacity_released_after_completed_collector": true,
+      "monthly_provider_reservations_not_refunded": true,
+      "actual_dispatch_rate_enforced": true,
+      "phase_deadline_actively_enforced": true,
+      "provider_quota_provisioned": false,
+      "known_unspent_denials_release_local_capacity": true,
+      "unknown_reservation_ack_keeps_local_capacity": true,
+      "errors": []
+    },
+    "routed": [
+      {
+        "contract": "ASTER-USDT",
+        "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+        "usable": true,
+        "attempt": 1,
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "contract": "ASTER-USDT",
+          "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+          "chain_id": "dydx-mainnet-1",
+          "height": "108444955",
+          "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+          "source_ts": 1791378009354,
+          "observed_ts": 1791378011607,
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "receipt_sha256": [
+            "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+            "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+            "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+          ],
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "internal_only": true
+        },
+        "role_health_update": {
+          "recorded": true
+        },
+        "fallback": false,
+        "candidate_http_cap": 3,
+        "selection_profile": [
+          {
+            "source_id": "DYDX_PINNED_NATIVE",
+            "responsibility": "dYdX: pinned complete-account conditional calculated estimates",
+            "attempts": 0,
+            "usable_runs": 0,
+            "not_closed_runs": 0,
+            "reliability": 0.5,
+            "predictive_observations": 0,
+            "predictive_accuracy": null,
+            "predictive_weight_factor": 1,
+            "predictive_weight_eligible": false,
+            "selection_weight": 1,
+            "exploration_floor": 0.5,
+            "last_status": null,
+            "updated_ts": null,
+            "role": "NATIVE_POSITION_CONTEXT",
+            "coverage": "CATALOG_DISCOVERY_REQUIRED",
+            "cached_snapshot": false,
+            "routing_preference": 0,
+            "position_clock_verifiable": true,
+            "clock_capability_priority": 1,
+            "declared_http": 3,
+            "priority": 1,
+            "utility_basis": "OPERATIONAL_AVAILABILITY_ONLY",
+            "utility_per_reserved_http": 0.3333333333333333
+          }
+        ],
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 3,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "role_usable": true,
+          "failure_origin": null
+        },
+        "health_update": {
+          "recorded": true
+        }
+      },
+      {
+        "contract": "BCH-USDT",
+        "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+        "usable": true,
+        "attempt": 1,
+        "cache_only": true,
+        "candidate_http_cap": 0,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "attempted_http_count": 0,
+          "admission_status": "ADMITTED",
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "role_usable": true,
+          "failure_origin": null
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "contract": "BCH-USDT",
+          "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+          "chain_id": "dydx-mainnet-1",
+          "height": "108444955",
+          "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+          "source_ts": 1791378009354,
+          "observed_ts": 1791378011607,
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "receipt_sha256": [
+            "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+            "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+            "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+          ],
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true,
+          "internal_only": true
+        },
+        "health_update": {
+          "recorded": false,
+          "reason": "CACHE_ONLY_NO_NEW_D1"
+        },
+        "role_health_update": {
+          "recorded": false,
+          "reason": "CACHE_ONLY_NO_NEW_D1"
+        }
+      }
+    ],
+    "rotating_lanes": [
+      "HYPERLIQUID_NATIVE",
+      "GTRADE_NATIVE_WHEN_CONFIGURED",
+      "LIGHTER_NATIVE_WHEN_EXACT",
+      "GMX_NATIVE_WHEN_EXACT",
+      "OXARCHIVE_HL_BUCKETS_WHEN_KEY"
+    ],
+    "fallback_policy": "EXACT_COVERAGE_AND_ROLE_UTILITY_THEN_ALL_ADMITTED_SUPPLEMENTAL_ROUTES",
+    "cross_source_confirmation": true,
+    "total_http_cap": 5,
+    "candidate_slots": 2,
+    "preserve_minimum_native_pair_for_following_candidate": true,
+    "following_candidate_minimum_http": 2,
+    "outside_shared_budget_http": 0,
+    "notional_summed_across_providers": false,
+    "source_overlap_is_not_an_independent_vote": true,
+    "native_rotation": {
+      "eligible": false,
+      "preferred": null,
+      "reason": "NO_EXACT_TWO_MARKET_ROUTING_HINT"
+    },
+    "dydx": {
+      "enabled": true,
+      "automatic_position_search": true,
+      "automatic_page_limit": 200,
+      "records": [
+        {
+          "contract": "ASTER-USDT",
+          "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+          "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+          "requests": 3,
+          "source_ts": 1791378009354,
+          "height": "108444955",
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_state": {
+            "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+            "contract": "ASTER-USDT",
+            "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+            "chain_id": "dydx-mainnet-1",
+            "height": "108444955",
+            "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+            "source_ts": 1791378009354,
+            "observed_ts": 1791378011607,
+            "source_clock_closed": true,
+            "native_snapshot_verified": true,
+            "transport_status": "CLOSED",
+            "schema_status": "CLOSED",
+            "receipt_sha256": [
+              "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+              "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+              "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+            ],
+            "position_search": {
+              "automatic": true,
+              "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+              "page_limit": 200,
+              "complete_accounts_read": 200,
+              "source_ts": 1791378009354,
+              "source_clock_refreshed": false,
+              "full_market_census": false
+            },
+            "source_clocks_refreshed": false,
+            "diagnostic_only": true,
+            "internal_only": true
+          }
+        },
+        {
+          "contract": "BCH-USDT",
+          "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+          "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+          "requests": 0,
+          "source_ts": 1791378009354,
+          "height": "108444955",
+          "position_search": {
+            "automatic": true,
+            "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+            "page_limit": 200,
+            "complete_accounts_read": 200,
+            "source_ts": 1791378009354,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_state": {
+            "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+            "contract": "BCH-USDT",
+            "run_id": "CONTROLLED_CACHE_ONLY_CALLER",
+            "chain_id": "dydx-mainnet-1",
+            "height": "108444955",
+            "block_hash": "CCE3EEAC3288169E91D6650A4DDC4F267B32486C2159DFB07CF23C3540565187",
+            "source_ts": 1791378009354,
+            "observed_ts": 1791378011607,
+            "source_clock_closed": true,
+            "native_snapshot_verified": true,
+            "transport_status": "CLOSED",
+            "schema_status": "CLOSED",
+            "receipt_sha256": [
+              "443f777b2ba21cb781a3731f8155d3747d2672dcdf2ae691d20476803594113b",
+              "7a216ba7b12a8b967b2b668744b8f6feca15be0f2d685c8e1e4754650371a7d6",
+              "542985e2d5169680e5c851bb6ad0e65476535d3aa9fd1c6b834fb581b5bd6f00"
+            ],
+            "position_search": {
+              "automatic": true,
+              "query_basis": "BOUNDED_SUBACCOUNT_PAGE",
+              "page_limit": 200,
+              "complete_accounts_read": 200,
+              "source_ts": 1791378009354,
+              "source_clock_refreshed": false,
+              "full_market_census": false
+            },
+            "source_clocks_refreshed": false,
+            "diagnostic_only": true,
+            "internal_only": true
+          }
+        }
+      ],
+      "same_run_original_clock_reuse": true,
+      "unadmitted_http": 0,
+      "production_entry_authorization": false
+    },
+    "source_weighting": {
+      "mode": "ROLE_SCOPED_AVAILABILITY_AND_COST;PREDICTIVE_FACTOR_ONLY_WHEN_QUALIFIED",
+      "core_decision_weights_changed": false,
+      "profile": [
+        {
+          "source_id": "DYDX_PINNED_NATIVE",
+          "responsibility": "dYdX: pinned complete-account conditional calculated estimates",
+          "attempts": 0,
+          "usable_runs": 0,
+          "not_closed_runs": 0,
+          "reliability": 0.5,
+          "predictive_observations": 0,
+          "predictive_accuracy": null,
+          "predictive_weight_factor": 1,
+          "predictive_weight_eligible": false,
+          "selection_weight": 1,
+          "exploration_floor": 0.5,
+          "last_status": null,
+          "updated_ts": null,
+          "role": "NATIVE_POSITION_CONTEXT",
+          "coverage": "CATALOG_DISCOVERY_REQUIRED",
+          "cached_snapshot": false,
+          "routing_preference": 0,
+          "position_clock_verifiable": true,
+          "clock_capability_priority": 1,
+          "declared_http": 3,
+          "priority": 1,
+          "utility_basis": "OPERATIONAL_AVAILABILITY_ONLY",
+          "utility_per_reserved_http": 0.3333333333333333
+        }
+      ]
+    },
+    "oxarchive": {
+      "enabled": false
+    },
+    "output_mode": "CANONICAL_CONTEXT_ONLY_NO_TRADE_AUTHORIZATION",
+    "production_enabled": true,
+    "automatic_execution": false
+  },
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_SENT": false,
+  "source_clocks_refreshed": false
+}
