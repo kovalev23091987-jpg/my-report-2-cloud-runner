@@ -2,7 +2,7 @@ import {BLOCKS} from './evidence-v2.mjs';
 import {consumeExecutionReportContext} from './execution-report-context.mjs';
 const requiredBlockCount=Object.keys(BLOCKS).length;
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
-import {displayFutureLiquidations,displayCoinLobsterHint} from './canonical-display.mjs';
+import {displayFutureLiquidations,displayCoinLobsterHint,liquidationPresentationPolicy} from './canonical-display.mjs';
 export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v4-owner-layout-15-blocks-20261004';
 const finite=value=>value===null||value===undefined||value===''?null:Number.isFinite(Number(value))?Number(value):null;
 const price=value=>{const n=finite(value);return n!==null&&n>0?String(Number(n.toPrecision(8))):null;};
@@ -96,7 +96,7 @@ export function enforceManualBlockCoverage(output={}){
  if(block_audit.all_candidates_fully_checked||accounted)return {...output,block_audit};
  return {...output,status:'PARTIAL_DATA_UNAVAILABLE',reason:'BLOCK_OUTCOME_AUDIT_MISSING',block_audit};
 }
-export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit}={}){
+export function formatManualRunSummary({status,candidates=[],generated_at,source,run_id,block_audit,liquidation_policy}={}){
  const contextLines=confirmedRunContext(candidates,run_id);
  if(status==='PARTIAL_DATA_UNAVAILABLE'){
   const checked=Number(block_audit?.minimum_checked_block_count);
@@ -137,7 +137,7 @@ export function formatManualRunSummary({status,candidates=[],generated_at,source
     const liq=row.canonical.liquidations,px=price(liq.current_price);
     lines.push(`Углублённая проверка: ${row.contract}.`);
     if(px)lines.push(`Цена HTX в снимке: ${px} USDT.`);
-    lines.push(...displayFutureLiquidations(liq),...displayCoinLobsterHint(liq.future_hint));
+    lines.push(...displayFutureLiquidations(liq,{policy:liquidation_policy??liquidationPresentationPolicy(row.canonical.observed_ts)}),...displayCoinLobsterHint(liq.future_hint));
     if(liq.future_levels_status==='NOT_AVAILABLE')lines.push('Будущие уровни и объёмы не получены; это отсутствие данных, а не нулевые ликвидации.');
     if(liq.future_source_status?.tracked_hl?.status==='NO_EXACT_TRACKED_MARKET_REFERENCE')
      lines.push('Hyperliquid: опорная цена и отслеживаемые позиции для этой монеты не получены.');
@@ -165,7 +165,7 @@ export function formatLiquidationRunSummary({status,scan,preliminary_candidates=
  lines.push('Уровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.');
  return lines.join('\n').trim();
 }
-export function formatStandaloneLiquidationSourceLines(liq){
- return nativeLiquidationLines(liq,{manual:true})||[];
+export function formatStandaloneLiquidationSourceLines(liq,{policy='ORIGINAL'}={}){
+ return nativeLiquidationLines(liq,{manual:true,policy})||[];
 }
 export default {MANUAL_RUN_SUMMARY_VERSION,classifyCanonicalRunCompletion,enforceManualBlockCoverage,formatManualRunSummary,formatLiquidationRunSummary};

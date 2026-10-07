@@ -65,7 +65,7 @@ export function nativeLiquidationLines(liq,{manual=false,compact=false,policy='O
   else if(stamp(s.source_ts)!==null)lines.push(`${label}, снимок ${msk(s.source_ts)} МСК${manual?'; ограниченная выборка':''}.`);
   for(const [zs,side] of [[arr(s.above),'ABOVE'],[arr(s.below),'BELOW']])for(const z of zs){
    if(num(z.native_price)===null||z.native_price<=0)continue;
-   rows.push({...z,side,price:z.native_price,price_quote:quote,source:label,native_symbol:s.native_symbol,
+   rows.push({...z,kind:'NATIVE_FUTURE_LEVEL',side,price:z.native_price,price_quote:quote,source:label,native_symbol:s.native_symbol,
     distance_reference_basis:'ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE',source_clock_closed:s.source_clock_closed,
     sdk_version:s.sdk_version??null,model_version:s.model_version??null,
     display_source_state_id:s.source_clock_closed===false&&text(s.acquisition_fingerprint)&&stamp(z.observed_at_ms)!==null?`${s.acquisition_fingerprint}:${z.observed_at_ms}`:null,

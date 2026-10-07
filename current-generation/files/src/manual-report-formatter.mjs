@@ -50,7 +50,7 @@ export function formatManualReport(result,{liquidation_policy=liquidationPresent
  else if(basis==='LIQUIDATION_PUMP')lines.push('Основа идеи: ликвидационные зоны и ускорение движения.');
  else if(basis==='CANDLE_ANOMALY')lines.push('Основа идеи: более ранняя свечная аномалия, которая сейчас получает подтверждение.');
  else lines.push('Основа идеи: совокупность рыночных подтверждений.');
- const forwardModelLines=formatCoinLobsterFutureLines(result.metadata?.internal_market_context?.cross_exchange_risk?.future_provider_models);
+ const forwardModelLines=formatCoinLobsterFutureLines(result.metadata?.internal_market_context?.cross_exchange_risk?.future_provider_models,{policy:liquidation_policy});
  const nativeLines=nativeLiquidationLines(result.liquidations,{manual:true,policy:liquidation_policy});
  lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations,{policy:liquidation_policy}),...forwardModelLines);
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
