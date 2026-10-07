@@ -1,7 +1,7 @@
 import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
 import {factualIdeaBasis} from './idea-basis-facts.mjs';
 import {formatLiquidationHistoryFacts} from './gate-liquidation-history.mjs';
-import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displaySnapshotChange} from './canonical-display.mjs';
+import {displayScore,displayNumber,displayTime,displayTrigger,displayCondition,displayInvalidation,displayReadiness,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displaySnapshotChange,liquidationPresentationPolicy} from './canonical-display.mjs';
 import {nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import { reasonDefinition, safeUserReason, sourceLabelRu, hasUnknownBlockerReasons } from './reason-registry.mjs';
 export const MANUAL_REPORT_FORMATTER_VERSION='manual-report-approved-layout-v1-20260927';
@@ -28,7 +28,7 @@ export function selectSupportingContextFacts(facts=[]){
  for(let i=0;i<rows.length&&selected.size<24;i++)selected.add(i);
  return rows.filter((_,i)=>selected.has(i));
 }
-export function formatManualReport(result){
+export function formatManualReport(result,{liquidation_policy=liquidationPresentationPolicy(result?.observed_ts)}={}){
  if(result?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};
  const blockers=blockerDetails(result),unknown=hasUnknownBlockerReasons(result?.free_sources?.entry_funnel);
  const lines=['МОЙ ОТЧЁТ 2',`Снимок рынка: ${result.snapshot_time_utc}`,''];
@@ -51,8 +51,8 @@ export function formatManualReport(result){
  else if(basis==='CANDLE_ANOMALY')lines.push('Основа идеи: более ранняя свечная аномалия, которая сейчас получает подтверждение.');
  else lines.push('Основа идеи: совокупность рыночных подтверждений.');
  const forwardModelLines=formatCoinLobsterFutureLines(result.metadata?.internal_market_context?.cross_exchange_risk?.future_provider_models);
- const nativeLines=nativeLiquidationLines(result.liquidations,{manual:true});
- lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations),...forwardModelLines);
+ const nativeLines=nativeLiquidationLines(result.liquidations,{manual:true,policy:liquidation_policy});
+ lines.push('',result.liquidations?.pump?.is_pump===true?'ПАМП И ЛИКВИДАЦИИ':'ЛИКВИДАЦИИ',...displayLegacyLiquidations(result.liquidations,{policy:liquidation_policy}),...forwardModelLines);
  if(nativeLines!==null){const valid=validateNativeLiquidationContext(result);if(!valid.ok)return{ok:false,status:valid.status,text:null};lines.push('Дополнительная фактическая выборка площадок:',...nativeLines);}
  if(!result.liquidations?.future_only)lines.push(...formatLiquidationHistoryFacts(result.metadata?.internal_market_context?.cross_exchange_risk,{user_ru:true}));
  if(result.free_sources)lines.push('','КАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ',`Статус непрерывного сбора: ${result.free_sources.continuous_collector_status==='PARTIAL_REALTIME_COVERAGE'?'частичное покрытие в реальном времени':'проверяется'}.`,`Новые внешние запросы горячего цикла: ${result.free_sources.hot_cycle_external_request_delta??0}.`);

@@ -1,6 +1,6 @@
 import {formatManualReport} from './manual-report-formatter.mjs';
 import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
-import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations} from './canonical-display.mjs';
+import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
 import {nativeLiquidationSources,nativeLiquidationLines,validateNativeLiquidationContext} from './native-liquidation-guard.mjs';
 import crypto from 'node:crypto';
 import {plainOpenInterest,plainContextFact,plainCancellation,isApprovedTelegramContextFact,plainRelativeComparison,omitTelegramCurrencies,telegramPrice} from './telegram-plain-facts.mjs';
@@ -88,13 +88,13 @@ function fmtPct(v,d=2){const n=finite(v);if(n===null)return null;const x=Math.ab
 function fmtMsk(ts){const n=stamp(ts);if(n===null)return null;return new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date(n)).replace(',','');}
 function strength(z){return text(z?.strength_label_ru)||'сила не определена';}
 function liquidationLines(c,{manual=false}={}){
- const liq=c?.liquidations||{};if(liq.future_only===true)return displayFutureLiquidations(liq,{compact:!manual});
+ const policy=liquidationPresentationPolicy(c?.observed_ts),liq=c?.liquidations||{};if(liq.future_only===true)return displayFutureLiquidations(liq,{compact:!manual,policy});
  const pump=liq?.pump?.is_pump===true,max=pump?4:2,lines=[];
  for(const [rows,label] of [[liq.above,'Сильные зоны выше'],[liq.below,'Сильные зоны ниже']]){
   const parts=(Array.isArray(rows)?rows:[]).slice(0,max).map(z=>{const p=fmtPrice(z?.price??z?.level_price),d=finite(z?.distance_pct);if(!p)return null;const amount=finite(z?.exact_notional_usdt);return `${p} USDT${d!==null?` (${fmtPct(d,1)})`:''} — ${strength(z)}${amount!==null?`, точная сумма ${fmtPrice(amount)} USDT`:z?.kind==='CALCULATED'?', расчётная вероятная зона':''}`;}).filter(Boolean);
   if(parts.length)lines.push(`${label}: ${parts.join('; ')}.`);
  }
- const native=nativeLiquidationLines(liq,{manual});
+ const native=nativeLiquidationLines(liq,{manual,policy});
  if(native!==null&&manual)lines.push('Дополнительная фактическая выборка площадок:',...native);
  return lines.length?lines:['Ликвидации: технический сбой получения или расчёта зон.'];
 }
@@ -123,13 +123,14 @@ function renderLegacyCanonicalTelegram({canonical,lifecycle_event}={}){
  lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 export function renderCanonicalTelegram({canonical,lifecycle_event,context_policy='OWNER_APPROVED_BRIEF_20261007'}={}){
- if(!['OWNER_APPROVED_BRIEF_20261007','ORIGINAL_BRIEF_20261007','ORIGINAL_V5_20261006'].includes(context_policy))return{ok:false,status:'APPROVED_CONTEXT_POLICY_REQUIRED',text:null};
+ if(!['OWNER_APPROVED_BRIEF_20261007','ORIGINAL_BRIEF_20261007','ORIGINAL_V5_20261006',RELEVANT_LIQUIDATION_PRESENTATION].includes(context_policy))return{ok:false,status:'APPROVED_CONTEXT_POLICY_REQUIRED',text:null};
  if(canonical?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};const nativeGuard=validateNativeLiquidationContext(canonical);if(!nativeGuard.ok)return{ok:false,status:nativeGuard.status,text:null};const event=upper(lifecycle_event),d=upper(canonical.direction),ticker=text(canonical?.metadata?.contract||canonical?.candidates?.[0]?.contract||canonical?.candidates?.[0]?.ticker).replace(/-USDT$/i,'');
  if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
  const dir=d==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ';const title=event==='OBSERVE'?'⚪️ РАННЕЕ НАБЛЮДЕНИЕ':event==='WAIT'?'🟡 ЖДЁМ ПОДТВЕРЖДЕНИЕ ВХОДА':event==='ENTRY'?'✅ ВХОД ОДОБРЕН':event==='IDEA_REMOVED'?'⛔️ ИДЕЯ СНЯТА':null;if(!title)return{ok:false,status:'EVENT_NOT_RENDERABLE',text:null};
  const shownScore=score(canonical.scores?.overall_0_100)??score(canonical.scores?.coin_interest_0_100);
  if(['WAIT','ENTRY'].includes(event)&&!reportableTarget(canonical))return{ok:false,status:'REPORTABLE_TARGET_PROOF_NOT_CLOSED',text:null};
- const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007';
+ const factual=context_policy==='OWNER_APPROVED_BRIEF_20261007'||context_policy===RELEVANT_LIQUIDATION_PRESENTATION;
+ const liquidationPolicy=context_policy===RELEVANT_LIQUIDATION_PRESENTATION?context_policy:liquidationPresentationPolicy(canonical.observed_ts);
  const lines=[ticker,dir,title,`Оценка: ${shownScore===null?'не подтверждена':`${Math.round(shownScore)} из 100.`}`,'',`Основа идеи: ${factual?factualIdeaBasis(canonical):basisLabel(canonical)}.`];
  const brief=context_policy!=='ORIGINAL_V5_20261006';
  const relative=brief?plainRelativeComparison(canonical):relativeLine(d,relativeConfirmed(canonical));
@@ -147,15 +148,15 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  } else if(event==='ENTRY'){
    const e=canonical.entry||{},target=reportableTarget(canonical);lines.push(`Зона входа: ${text(e.area)||`${price(e.min_price)}–${price(e.max_price)} USDT`}.`,`Начинать закрывать позицию: ${price(target?.price??target)} USDT.`,`Отмена идеи: ${displayInvalidation(canonical.invalidation)||''}.`);
  } else lines.push('Причина: ранее отправленная идея больше не соответствует обязательным условиям.');
- lines.push('',...(brief?displayBriefTelegramLiquidations(canonical.liquidations,telegramPrice):liquidationLines(canonical)));const joined=lines.filter(x=>x!==null&&x!==undefined).join('\n');const textOut=brief?omitTelegramCurrencies(joined):joined;const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
+ lines.push('',...(brief?displayBriefTelegramLiquidations(canonical.liquidations,telegramPrice,{policy:liquidationPolicy}):liquidationLines(canonical)));const joined=lines.filter(x=>x!==null&&x!==undefined).join('\n');const textOut=brief?omitTelegramCurrencies(joined):joined;const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
-export function renderCanonicalManual({canonical}={}){return formatManualReport(canonical);}
+export function renderCanonicalManual({canonical,liquidation_policy=liquidationPresentationPolicy(canonical?.observed_ts)}={}){return formatManualReport(canonical,{liquidation_policy});}
 
 export function validatePresentation({canonical,manual_text,telegram_text,direction,lifecycle_event}={}){
  const fail=reason=>({status:'NOT_CLOSED',reason,presentation_hash:null});
  if(!text(manual_text)||!text(telegram_text))return fail('BOTH_PRESENTATIONS_REQUIRED');
  const nativeCheck=validateNativeLiquidationContext(canonical);if(!nativeCheck.ok)return fail(nativeCheck.status);
- const nl=nativeLiquidationLines(canonical?.liquidations),ml=nativeLiquidationLines(canonical?.liquidations,{manual:true});
+ const policy=liquidationPresentationPolicy(canonical?.observed_ts),nl=nativeLiquidationLines(canonical?.liquidations,{policy}),ml=nativeLiquidationLines(canonical?.liquidations,{manual:true,policy});
  if(ml&&ml.some(line=>!manual_text.includes(line)))return fail('NATIVE_LIQUIDATION_MANUAL_TEXT_MISMATCH');
  const d=upper(direction??canonical?.direction);
  for(const output of [manual_text,telegram_text]){
