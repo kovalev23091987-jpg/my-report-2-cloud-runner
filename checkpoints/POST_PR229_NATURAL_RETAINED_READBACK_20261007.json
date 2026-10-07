@@ -1,0 +1,883 @@
+{
+  "schema": "ACTUAL_POST_PR229_NATURAL_REPORT_RETAINED_20261007_V1",
+  "cloud_run": 37681792251,
+  "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+  "run_id": "1791404713379-1791404725011",
+  "generated_at": "2026-10-07T20:27:18.587Z",
+  "status": "CLOSED",
+  "artifact_specs": [
+    {
+      "key": "report",
+      "id": 11509515997,
+      "digest": "d7c36eac3d5a5079a3ec1aeb64d7b0184bd8b1ea1fdf339b23b7a08b537c14fd"
+    },
+    {
+      "key": "delivery",
+      "id": 11510275392,
+      "digest": "7cc33e0fd4d612541de217d505fc607922dd3806c1585c4416c7e790c6298e6e"
+    }
+  ],
+  "report_sha256": "7655b94e437f1a5eea0ee3af4f9e53e51de98cbb99b9b099c495eb42e98d117a",
+  "telegram_sha256": "faa6f5af4efbd59dceb8eff023279c2485f18263c2225e1a5cef93c89fe40367",
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "natural_report_unchanged": true,
+  "liquidation_source_acquisition_audit": {
+    "schema": "LIQUIDATION_SOURCE_ACQUISITION_AUDIT_V1",
+    "run_id": "1791404713379-1791404725011",
+    "evaluated_ts": 1791404839132,
+    "candidates": [
+      "龙虾-USDT",
+      "BOME-USDT"
+    ],
+    "routes": [
+      {
+        "contract": "BOME-USDT",
+        "run_id": "1791404713379-1791404725011",
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "role_usable": true,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 3,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "failure_origin": null
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "BOME-USDT",
+        "run_id": "1791404713379-1791404725011",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 2,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "BOME-USDT",
+        "run_id": "1791404713379-1791404725011",
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 3,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "龙虾-USDT",
+        "run_id": "1791404713379-1791404725011",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "龙虾-USDT",
+        "run_id": "1791404713379-1791404725011",
+        "lane": "GTRADE_NATIVE",
+        "status": "QUOTA_NOT_GRANTED:WHOLE_SOURCE_PHASE_EXPIRED",
+        "role_usable": false,
+        "attempt": 2,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      }
+    ],
+    "shared_budget": {
+      "reserved_http": 3,
+      "actual_http": 3,
+      "max_http_per_run": 5
+    },
+    "source_clocks_refreshed": false,
+    "diagnostic_only": true,
+    "internal_only": true,
+    "network_calls": 0,
+    "db_calls": 0,
+    "entry_authorized": false
+  },
+  "telegram_proof": {
+    "schema": "telegram-info-proof-v1",
+    "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+    "source": "schedule",
+    "source_run_id": "1791404713379-1791404725011",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "龙虾-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "BOME-USDT",
+          "wave_id": "EDW:BOME-USDT:1791404725238:G5",
+          "direction": "LONG",
+          "status": "CLOSED",
+          "previous_status": "NONE",
+          "current_status": "OBSERVE",
+          "reason": "USEFUL_LIVE_OBSERVATION",
+          "dispatch": {
+            "state": "PENDING",
+            "idempotency_key": "BOME-USDT|LONG|EDW:BOME-USDT:1791404725238:G5|OBSERVE|v3-telegram-shadow-r6"
+          },
+          "score_0_100": 82
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 84,
+        "rows_written": 8,
+        "requests": 9,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "candidates": [
+    {
+      "contract": "龙虾-USDT",
+      "run_id": "1791404713379-1791404725011",
+      "snapshot_id": "S392:龙虾-USDT:1791404826193",
+      "observed_ts": 1791404826193,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating_block_count": 10,
+      "participating_block_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "score_applied_block_count": 0,
+      "checked_block_count": 14,
+      "rendered_blocks": [
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N02",
+        "N03",
+        "N06",
+        "N07",
+        "N10",
+        "N05",
+        "N04",
+        "N11",
+        "N16"
+      ],
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -37.37532481678001,
+          "absolute_move_pct": 37.37532481678001,
+          "is_pump": true,
+          "is_strong_move": true,
+          "early_anomaly": false,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.040209499999999995,
+        "priority_reason": "ABS_MOVE_AT_LEAST_5_PERCENT",
+        "above": [],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "NOT_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "NOT_CLOSED",
+        "reason": "FUTURE_LEVELS_NOT_AVAILABLE",
+        "all_zones": [],
+        "display_source_zones": [],
+        "provider_zone_count": 0,
+        "external_zone_count": 0,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 0,
+        "omitted_zone_count": 0,
+        "source_receipts": [],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "NOT_CLOSED",
+        "below_status": "NOT_CLOSED",
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "eligible": true,
+          "source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "independent_upstreams": [],
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "contract": "龙虾-USDT",
+          "proven_level_source_ids": [],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "leaders_may_be_replaced": false,
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "龙虾-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+            "eligible": true,
+            "source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "independent_upstreams": [],
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "contract": "龙虾-USDT",
+            "proven_level_source_ids": [],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "leaders_may_be_replaced": false,
+            "automatic_discovery_allowed": true,
+            "structural_hint_available": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      },
+      "data_quality_keys": [
+        "classification",
+        "sufficient",
+        "owner_deferred_exact_signed_raw24h",
+        "owner_deferred_gaps",
+        "partial_context_is_not_zero_or_green",
+        "components",
+        "gaps",
+        "unavailable_by_design",
+        "history_observed",
+        "decision_effect"
+      ]
+    },
+    {
+      "contract": "BOME-USDT",
+      "run_id": "1791404713379-1791404725011",
+      "snapshot_id": "S392:BOME-USDT:1791404783785",
+      "observed_ts": 1791404783785,
+      "canonical_state": "OBSERVE",
+      "direction": "LONG",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "participating_block_count": 9,
+      "participating_block_ids": [
+        "N02",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "score_applied_block_count": 1,
+      "checked_block_count": 13,
+      "rendered_blocks": [
+        "N12",
+        "N09",
+        "N08",
+        "N14",
+        "N02",
+        "N04",
+        "N06",
+        "N07",
+        "N10",
+        "N05",
+        "N11",
+        "N16"
+      ],
+      "liquidations": {
+        "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+        "pump": {
+          "status": "CLOSED",
+          "rolling_24h_change_pct": -1.9939879759519052,
+          "absolute_move_pct": 1.9939879759519052,
+          "is_pump": true,
+          "is_strong_move": false,
+          "early_anomaly": true,
+          "threshold_pct": 5,
+          "inclusive": true,
+          "upper_ceiling_pct": null
+        },
+        "current_price": 0.0009776,
+        "priority_reason": "OI_FUNDING_VOLUME_OR_SPOT_ANOMALY",
+        "above": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "price": 0.0212261087,
+            "price_quote": "USDC",
+            "distance_pct": 2070.358762781186,
+            "distance_reference_price": 0.000978,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": 213478.48059,
+            "notional_unit": "USDC",
+            "exact_notional_usdt": null,
+            "exact_amount_available": true,
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "REPORTED_VOLUME_TIER"
+            ],
+            "source": "Hyperliquid official",
+            "venue": null,
+            "source_ts": 1791404772439,
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "native_reference_price": 0.000978,
+            "conditional_cross": true,
+            "position_count": 1,
+            "position_key": "7df96c0c44cb297ee48e63362956e0c3add59881289c68c81e353652fb85181e",
+            "decision_target_eligible": false,
+            "estimated": false,
+            "independence_group": null,
+            "model_sources": [],
+            "model_version": null,
+            "anchor_kinds": [],
+            "leverage_scenarios": [],
+            "source_backed_calculated": false,
+            "native_price": 0.0212261087,
+            "notional_usdt": 213478.48059,
+            "corroborating_sources": [
+              "Hyperliquid official"
+            ],
+            "independent_source_count": 1,
+            "independence_groups": [
+              "Hyperliquid official"
+            ],
+            "consensus_confidence_ru": "один источник",
+            "consensus_tolerance_pct": 0.4,
+            "consensus_component_count": 1,
+            "consensus_components": [
+              {
+                "price": 0.0212261087,
+                "source": "Hyperliquid official",
+                "independence_group": "Hyperliquid official",
+                "estimated": false
+              }
+            ],
+            "selection_roles": [
+              "LARGEST_VISIBLE",
+              "NEAREST_NONZERO",
+              "FARTHEST_VISIBLE"
+            ]
+          }
+        ],
+        "below": [],
+        "future_only": true,
+        "future_levels_required": true,
+        "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+        "distance_cap_pct": null,
+        "minimum_distance_pct": 0,
+        "max_per_side": 6,
+        "display_minimum_separation_pct": 5,
+        "display_max_per_side": 4,
+        "display_nearby_levels_as_one_range": false,
+        "calculated_fallback_enabled": false,
+        "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+        "no_invented_exact_amounts": true,
+        "notional_summed_across_providers": false,
+        "volume_tiers": {
+          "small_below": 10000,
+          "medium_below": 100000,
+          "large_below": 1000000,
+          "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+          "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+        },
+        "realized_events_excluded": 0,
+        "status": "CLOSED",
+        "reason": null,
+        "all_zones": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "price": 0.0212261087,
+            "price_quote": "USDC",
+            "distance_pct": 2070.358762781186,
+            "distance_reference_price": 0.000978,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": 213478.48059,
+            "notional_unit": "USDC",
+            "exact_notional_usdt": null,
+            "exact_amount_available": true,
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "REPORTED_VOLUME_TIER"
+            ],
+            "source": "Hyperliquid official",
+            "venue": null,
+            "source_ts": 1791404772439,
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "native_reference_price": 0.000978,
+            "conditional_cross": true,
+            "position_count": 1,
+            "position_key": "7df96c0c44cb297ee48e63362956e0c3add59881289c68c81e353652fb85181e",
+            "decision_target_eligible": false,
+            "estimated": false,
+            "independence_group": null,
+            "model_sources": [],
+            "model_version": null,
+            "anchor_kinds": [],
+            "leverage_scenarios": [],
+            "source_backed_calculated": false,
+            "native_price": 0.0212261087,
+            "notional_usdt": 213478.48059,
+            "corroborating_sources": [
+              "Hyperliquid official"
+            ],
+            "independent_source_count": 1,
+            "independence_groups": [
+              "Hyperliquid official"
+            ],
+            "consensus_confidence_ru": "один источник",
+            "consensus_tolerance_pct": 0.4,
+            "consensus_component_count": 1,
+            "consensus_components": [
+              {
+                "price": 0.0212261087,
+                "source": "Hyperliquid official",
+                "independence_group": "Hyperliquid official",
+                "estimated": false
+              }
+            ]
+          }
+        ],
+        "display_source_zones": [
+          {
+            "kind": "NATIVE_FUTURE_LEVEL",
+            "price": 0.0212261087,
+            "price_quote": "USDC",
+            "distance_pct": 2070.358762781186,
+            "distance_reference_price": 0.000978,
+            "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+            "side": "ABOVE",
+            "liquidated_side": "SELLERS",
+            "notional": 213478.48059,
+            "notional_unit": "USDC",
+            "exact_notional_usdt": null,
+            "exact_amount_available": true,
+            "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+            "strength_label_ru": "крупная",
+            "strength_score_0_100": null,
+            "strength_basis": [
+              "REPORTED_VOLUME_TIER"
+            ],
+            "source": "Hyperliquid official",
+            "venue": null,
+            "source_ts": 1791404772439,
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+            "native_reference_price": 0.000978,
+            "conditional_cross": true,
+            "position_count": 1,
+            "position_key": "7df96c0c44cb297ee48e63362956e0c3add59881289c68c81e353652fb85181e",
+            "decision_target_eligible": false,
+            "estimated": false,
+            "independence_group": null,
+            "model_sources": [],
+            "model_version": null,
+            "anchor_kinds": [],
+            "leverage_scenarios": [],
+            "source_backed_calculated": false
+          }
+        ],
+        "provider_zone_count": 1,
+        "external_zone_count": 1,
+        "calculated_zone_count": 0,
+        "consensus_zone_count": 0,
+        "displayed_zone_count": 1,
+        "omitted_zone_count": 0,
+        "source_receipts": [
+          {
+            "source": "Hyperliquid official",
+            "status": "USABLE_SCOPED_CONTEXT",
+            "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+            "source_ts": 1791404772439,
+            "visible_half_range_pct": null,
+            "total_zones": 1
+          }
+        ],
+        "htx_source_backed_model": {
+          "status": "DISABLED_BY_OWNER",
+          "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+          "volatility_1h_pct": null
+        },
+        "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+        "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+        "above_status": "CLOSED",
+        "below_status": "NOT_CLOSED",
+        "native_extension": {
+          "schema": "NATIVE_LIQUIDATION_CONTEXT_V1",
+          "mode": "SHADOW_ONLY",
+          "status": "USABLE_NATIVE_SAMPLE",
+          "reason": null,
+          "freshness_max_age_ms": 120000,
+          "binding": {
+            "contract": "BOME-USDT",
+            "native_symbol": "BOME",
+            "run_id": "1791404713379-1791404725011",
+            "snapshot_id": "S392:BOME-USDT:1791404783785",
+            "observed_ts": 1791404783785,
+            "direction": "LONG"
+          },
+          "acquisition_fingerprint": "46d96fda951a3676e1c091fccccdb607c2b4a3db75dc066a12da5f602261f032",
+          "acquisition_id": "LIQ_ACQ:1791404713379-1791404725011:BOME-USDT:1791404770078",
+          "acquisition_completed_ts": 1791404773076,
+          "source_ts": 1791404772439,
+          "source_age_ms": 11346,
+          "native_receipt_fingerprint": "85a496f43c93def2990b425def54874eaeb2407d71fb119a0db0cb20ec07169b",
+          "source_count": 1,
+          "price_quote": "USDC",
+          "upstream_groups": [
+            "HYPERLIQUID_MAINNET_PERPS"
+          ],
+          "coverage": "BOUNDED_ACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "sample_accounts": 1,
+          "provider": "Hyperliquid official",
+          "venue": "Hyperliquid",
+          "market_context": {
+            "schema": "HYPERLIQUID_MARKET_CONTEXT_V1",
+            "status": "CLOSED",
+            "mode": "SHADOW_ONLY",
+            "provider_id": "HYPERLIQUID_NATIVE",
+            "endpoint_id": "META_AND_ASSET_CONTEXTS",
+            "upstream_group": "HYPERLIQUID_MAINNET_PERPS",
+            "native_symbol": "BOME",
+            "instrument_type": "PERPETUAL",
+            "open_interest_native": 4271064822,
+            "funding_native": 0.0000125,
+            "mark_price_native": 0.000978,
+            "oracle_price_native": 0.000976,
+            "day_notional_volume_native": 234743.6101659999,
+            "value_units": {
+              "open_interest": "NATIVE_CONTRACTS_UNCONVERTED",
+              "funding": "NATIVE_PERIOD_UNCONFIRMED",
+              "price": "USDC_NATIVE",
+              "day_notional_volume": "NATIVE_RESPONSE_UNIT"
+            },
+            "received_at": 1791404771151,
+            "source_ts": null,
+            "timestamp_basis": "HTTP_RECEIPT_ONLY_NO_METRIC_EVENT_TIME",
+            "transport_sha256": "3ed700853cc8ae63599bb97b2fe4ff90976742ad754c2bf4044587571005c937",
+            "independent_vote_added": false,
+            "entry_eligible": false
+          },
+          "returned_positive_levels": 1,
+          "missing_native_liquidation_prices": 0,
+          "above": [
+            {
+              "native_price": 0.0212261087,
+              "side": "SHORT",
+              "notional": 213478.48059,
+              "notional_unit": "USDC",
+              "native_reference_price": 0.000978,
+              "distance_pct": 2070.358762781186,
+              "selection_roles": [
+                "NEAREST_NONZERO",
+                "LARGEST_VISIBLE",
+                "LARGEST_DISTANT"
+              ],
+              "price_quote": "USDC",
+              "position_count": 1,
+              "margin_mode": "cross",
+              "conditional_cross": true,
+              "source_ts": 1791404772439,
+              "provider": "Hyperliquid official",
+              "venue": "Hyperliquid",
+              "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+              "account_reference_fingerprint": "7df96c0c44cb297ee48e63362956e0c3add59881289c68c81e353652fb85181e",
+              "is_htx_price": false,
+              "entry_eligible": false
+            }
+          ],
+          "below": [],
+          "realized_events": [],
+          "realized_projected_separate": true,
+          "requires_24h_pump": false,
+          "distance_cap_pct": null,
+          "same_upstream_votes": 1,
+          "independent_votes_added": false,
+          "notional_summed_across_providers": false,
+          "execution_alias_verified": false,
+          "automatic_execution": false,
+          "entry_eligible": false,
+          "render_enabled": true,
+          "raw_accounts_persisted": false,
+          "body_bytes_before_fingerprint": 2779,
+          "fingerprint": "7010ee8caca1baf8a5c7f9babddf88696d7dd2616f1ae52a45d91f4ef616895f"
+        },
+        "independent_extensions": [],
+        "coverage_admission": {
+          "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+          "eligible": true,
+          "contract": "BOME-USDT",
+          "source_ids": [
+            "HYPERLIQUID_NATIVE",
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "independent_upstreams": [
+            "HYPERLIQUID"
+          ],
+          "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+          "network_calls": 0,
+          "calculated_fallback_allowed": false,
+          "leaders_may_be_replaced": false,
+          "proven_level_source_ids": [
+            "HYPERLIQUID_NATIVE"
+          ],
+          "additional_context_check_source_ids": [
+            "GTRADE_NATIVE",
+            "LIGHTER_NATIVE",
+            "GMX_NATIVE",
+            "COINLOBSTER_FUTURE_MODEL",
+            "DYDX_PINNED_NATIVE"
+          ],
+          "fresh_live_levels_confirmed": false,
+          "receipt_only_context_score_eligible": false,
+          "receipt_only_context_target_eligible": false,
+          "automatic_discovery_allowed": true,
+          "structural_hint_available": false
+        },
+        "future_hint": {
+          "source": "COINLOBSTER_FUTURE_HINT",
+          "contract": "BOME-USDT",
+          "role": "FUTURE_MODEL_DIRECTION_ONLY",
+          "status": "NOT_REQUESTED",
+          "data_available": false,
+          "network_calls": 0
+        },
+        "future_source_status": {
+          "coverage_admission": {
+            "status": "BOUNDED_AUTOMATIC_NATIVE_POSITION_SEARCH_ALLOWED",
+            "eligible": true,
+            "contract": "BOME-USDT",
+            "source_ids": [
+              "HYPERLIQUID_NATIVE",
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "independent_upstreams": [
+              "HYPERLIQUID"
+            ],
+            "coverage_scope": "BOUNDED_NATIVE_SEARCH_PERMISSION_NOT_VERIFIED_MARKET_OR_LEVEL_COVERAGE",
+            "network_calls": 0,
+            "calculated_fallback_allowed": false,
+            "leaders_may_be_replaced": false,
+            "proven_level_source_ids": [
+              "HYPERLIQUID_NATIVE"
+            ],
+            "additional_context_check_source_ids": [
+              "GTRADE_NATIVE",
+              "LIGHTER_NATIVE",
+              "GMX_NATIVE",
+              "COINLOBSTER_FUTURE_MODEL",
+              "DYDX_PINNED_NATIVE"
+            ],
+            "fresh_live_levels_confirmed": false,
+            "receipt_only_context_score_eligible": false,
+            "receipt_only_context_target_eligible": false,
+            "automatic_discovery_allowed": true,
+            "structural_hint_available": false
+          },
+          "source": "BYKARANTELI_FUTURE_MAP",
+          "status": "COVERAGE_GATE_NOT_ADMITTED",
+          "network_calls": 0,
+          "tracked_hl": {
+            "source": "BYK_TRACKED_HL_BANDS",
+            "status": "COVERAGE_GATE_NOT_ADMITTED",
+            "network_calls": 0
+          }
+        }
+      },
+      "data_quality_keys": [
+        "classification",
+        "sufficient",
+        "owner_deferred_exact_signed_raw24h",
+        "owner_deferred_gaps",
+        "partial_context_is_not_zero_or_green",
+        "components",
+        "gaps",
+        "unavailable_by_design",
+        "history_observed",
+        "decision_effect"
+      ]
+    }
+  ]
+}
