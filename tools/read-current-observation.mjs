@@ -34,7 +34,7 @@ if(out.admission.allowed){
    let presentation=null,original_v5_exact=null;
    if(row.telegram_text){
     presentation=validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text,direction:row.direction,lifecycle_event:row.lifecycle_event});
-    const rendered=renderCanonicalTelegram({canonical:c,lifecycle_event:row.lifecycle_event,context_policy:'ORIGINAL_V5_20261006'});original_v5_exact=rendered.ok===true&&rendered.text===row.telegram_text;
+    const rendered=renderCanonicalTelegram({canonical:c,lifecycle_event:row.lifecycle_event,context_policy:req.presentation_policy||'ORIGINAL_V5_20261006'});original_v5_exact=rendered.ok===true&&rendered.text===row.telegram_text;
     if(presentation.status!=='CLOSED'||presentation.presentation_hash!==row.presentation_hash||!original_v5_exact)throw Error('ACTUAL_NEW_V5_PRESENTATION_FAILED');
    }
    out.verification.push({contract:row.contract_code,snapshot_id:row.snapshot_id,fingerprint_verified,identity,presentation,original_v5_exact});

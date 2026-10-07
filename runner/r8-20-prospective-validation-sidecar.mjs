@@ -1,3 +1,4 @@
+import {captureBlockWeightAttribution} from './src/block-weight-calibration.mjs';
 import { parseStage0CompactPayload } from './src/v3-early-discovery.mjs';
 import { resolveEarlyOutcome } from './src/v3-early-persistence-runtime.mjs';
 import {
@@ -346,8 +347,8 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
       AND f.decision_status='SHADOW_EVALUATED'
       AND f.direction IN ('LONG','SHORT')
       AND f.shadow_only=1 AND f.live_probability IS NULL AND f.validated_signal=0 AND f.execution_authorized=0 AND f.telegram_eligible=0
-      AND json_type(j.receipt_json,'$.entry_scenario_anchor')='object'
-      AND json_extract(j.receipt_json,'$.entry_scenario_anchor.prospective_only')=1
+      -- Anchor JSON is validated after the bounded retained-history reader
+      -- restores exact archived columns. SQL must not parse archive locators.
       AND NOT EXISTS (SELECT 1 FROM tz101_entry_area_calibration_signal s WHERE s.decision_id=f.decision_id)
     ORDER BY f.persisted_ts ASC,f.decision_id ASC
     LIMIT ${R820_PROSPECTIVE_VALIDATION_BUDGET.max_capture_candidates}`).bind(activationTs).all();
@@ -376,6 +377,7 @@ export async function captureOneEntryAreaSample(db, { activation_ts, now_ts = Da
     revised.delivery_proof={telegram:{confirmed:telegramConfirmed,dispatch_id:telegramConfirmed?text(row.telegram_dispatch_id):null,message_id:telegramConfirmed?text(row.telegram_message_id):null,confirmed_ts:telegramConfirmed?int(row.telegram_confirmed_ts):null,publication_id:text(row.publication_id),wave_id:text(row.publication_wave_id)||null},manual:{confirmed:false,reason:'NO_EXACT_MANUAL_DELIVERY_ACK_BOUND_TO_PUBLICATION'}};
     revised.outcome_wave_key=deliveryCohort.outcome_wave_key;revised.delivery_channels=deliveryCohort.delivery_channels;revised.one_wave_one_outcome=true;
     revised.begin_close_price=target;revised.minimum_reportable_move_pct=null;
+    const blockAttribution=captureBlockWeightAttribution(canonical);if(blockAttribution)revised.block_weight_attribution=blockAttribution;
     const revisedDigest=digest(revised);sampleRecord={...sampleRecord,sample_id:`EAC:${revisedDigest}`,material_digest:revisedDigest,sample:revised};
     const s = sampleRecord.sample;
     const ack = await db.prepare(`INSERT OR IGNORE INTO tz101_entry_area_calibration_signal(
@@ -478,13 +480,14 @@ export async function closeOneEntryAreaOutcome(db, { current_scan_ts, activation
   if (factual.status !== 'CLOSED_FACTUAL') return { status: 'NOT_CLOSED', reason: factual.reason, sample_id: row.sample_id, horizon_hours: Number(row.horizon_hours), rows_loaded: path.rows_loaded || 0 };
   const attached = attachFactualEntryAreaOutcome({ sample_record: sampleRecord, outcome_record: factual.record, computed_ts: now_ts });
   if (attached.status !== 'CLOSED_FACTUAL') return { status: 'NOT_CLOSED', reason: attached.reason || attached.status, sample_id: row.sample_id, horizon_hours: Number(row.horizon_hours) };
-  const o = attached.outcome;
+  const o = {...attached.outcome,block_weight_outcome_basis:{source:factual.record.source,interpolation_used:factual.record.interpolation_used,path_coverage_pct:factual.record.path_coverage_pct}};
+  const outcomeDigest=digest(o);
   const ack = await db.prepare(`INSERT OR IGNORE INTO tz101_entry_area_calibration_outcome(
       sample_id,horizon_hours,contract_code,direction,observed_ts,target_ts,outcome_scan_ts,outcome_json,material_digest,
       path_order_status,calibration_only,live_promotion_allowed,computed_ts
     ) VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,1,0,?11)`)
     .bind(attached.sample_id,o.horizon_hours,o.contract_code,o.direction,o.observed_ts,o.target_ts,o.outcome_scan_ts,
-      JSON.stringify(o),attached.material_digest,o.path_order_status,o.computed_ts).run();
+      JSON.stringify(o),outcomeDigest,o.path_order_status,o.computed_ts).run();
   const changes = Number(ack?.meta?.changes ?? ack?.changes ?? 0);
   return {
     status: changes === 1 ? 'CLOSED_FACTUAL' : changes === 0 ? 'DEDUPLICATED' : 'FAIL_CLOSED',

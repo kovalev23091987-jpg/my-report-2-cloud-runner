@@ -14,7 +14,7 @@
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
     "current-generation/files/src/block-result-context.mjs": "6b6e2597597349973d00b9234bdca23b0a8cb32c432189feecbfee1ba1472f37",
     "current-generation/files/src/telegram-plain-facts.mjs": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1",
-    "current-generation/files/src/idea-basis-facts.mjs": "2aa02d0c309fbcbb40549545b93ce0a82e66a9f256564bcb42005a1f76c99c05"
+    "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -510,6 +510,20 @@
       "historical_brief_cutover": "2026-10-07T06:01:08Z",
       "source_HTTP_delta": 0,
       "strategy_weights_changed": false
+    },
+    {
+      "date": "2026-10-07",
+      "scope": "OWNER_SUBSTANTIAL_SECTOR_RECEIPT_AND_USEFUL_BLOCK_WEIGHT_CAPS",
+      "authorization": "Owner09:22:59 permits useful block caps and bounded weekly statistical adjustment;09:27:22 requires historical eligibility replay before release.",
+      "module_changes": {
+        "current-generation/files/src/idea-basis-facts.mjs": {
+          "before": "2aa02d0c309fbcbb40549545b93ce0a82e66a9f256564bcb42005a1f76c99c05",
+          "after": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "main_family_caps_threshold_and_entry_unchanged": true
     }
   ],
   "consumer_selection_revisions": [

@@ -12,6 +12,7 @@ export async function loadEffectivePresentationModules(){
     'telegram-plain-facts.mjs':'current-generation/files/src/telegram-plain-facts.mjs',
     'early-direction-receipt.mjs':'current-generation/files/src/early-direction-receipt.mjs',
     'market-contracts.mjs':'current-generation/files/src/market-contracts.mjs',
+    'block-score-policy.mjs':'current-generation/files/src/block-score-policy.mjs',
     'evidence-v2.mjs':'current-generation/files/src/evidence-v2.mjs',
     'canonical-publication.mjs':'post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs',
     'manual-report-formatter.mjs':'current-generation/files/src/manual-report-formatter.mjs',

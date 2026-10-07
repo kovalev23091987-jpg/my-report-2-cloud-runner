@@ -15,10 +15,16 @@ const {prepareLifecycleTransition,finalizeLifecycleDispatch}=await imp('v3-teleg
 const {deriveLifecycleContext}=await imp('v3-telegram-lifecycle-sidecar.mjs');
 const {runBoundTelegramDeliverySidecar}=await imp('bound-telegram-delivery-sidecar.mjs');
 const {auditRenderedBlockResults,confirmedBlockContextFacts}=await imp('block-result-context.mjs');
+const {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment}=await imp('supplemental-score-evidence.mjs');
+const {BLOCK_WEIGHT_VERSION}=await imp('block-score-policy.mjs');
 const manifest=JSON.parse(fs.readFileSync(new URL('./fixtures/batched-retained-delivery-source-manifest.json',import.meta.url)));
 const corpus={rows:[],weekly_journal:manifest.weekly_journal};
 for(const source of manifest.sources){const raw=JSON.parse(gunzipSync(fs.readFileSync(path.join('batch-source',source.name,source.file))));
  for(const r of raw.rows||raw.results||[]){if(r.canonical)corpus.rows.push({...r,source_cloud_run:raw.source_cloud_run,source_manifest:source});}
+}
+const weightRows=[...corpus.rows];
+for(const file of ['checkpoints/actual-current-approved-brief-37557085058.json.gz','audit-output/exact-current-data.json.gz','audit-output/near0930-exact-current-data.json.gz']){
+ if(fs.existsSync(file)){const raw=JSON.parse(gunzipSync(fs.readFileSync(file)));for(const r of raw.rows||[])if(r.canonical&&!weightRows.some(x=>x.canonical.snapshot_id===r.canonical.snapshot_id))weightRows.push({...r,source_cloud_run:raw.source_cloud_run});}
 }
 const range=JSON.parse(fs.readFileSync(new URL('./fixtures/actual-1425-range-boundaries.json',import.meta.url))).rows.find(r=>r.contract==='ADA-USDT');
 const proof={schema:'BATCHED_DELIVERY_REPLAY_V1',scope:'UNCHANGED_ACTUAL_CANONICAL_AND_SEPARATE_CONTROLLED_COMPOSED_PIPELINE',sourceHTTP:0,MAIN:0,production_D1:0,Telegram:0,fresh_SENT:false,actual:[],controlled:[],weekly:{}};
@@ -106,6 +112,25 @@ for(const [name,response] of Object.entries({SERVER_500:{ok:false,status:500,bod
  assert.equal(r.sent,0);assert.notEqual(rowState(db).state,'SENT');proof.controlled.push({case:name,state:rowState(db).state});}finally{db.close();}
 });
 test.after(()=>{fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/batched-delivery-proof.json',JSON.stringify(proof,null,2)+'\n');});
+test('owner-required old-idea replay: before/after actual source weights keep sendable observations eligible through bound delivery',async()=>{
+ const results=[];let actualEligible=0;
+ for(const r of weightRows){const original=r.canonical,prior=original.metadata?.supplemental_score_adjustment,context=original.metadata?.internal_market_context;
+  if(prior?.status!=='CLOSED'||!context?.evidence_v2?.evidence?.length||!['LONG','SHORT'].includes(original.direction))continue;
+  const recompute=version=>{const ctx=structuredClone(context);ctx.decision_ts=original.observed_ts;ctx.evidence_v2.weight_policy_version=version;delete ctx.evidence_v2.block_weight_policy;
+   const fresh=buildSupplementalScoreEvidence({direction:original.direction,internal_market_context:ctx}).filter(x=>x.source_id==='EVIDENCE_V2');
+   return applySupplementalScoreAdjustment(prior.base_score,[...prior.receipts.filter(x=>x.source_id!=='EVIDENCE_V2'),...fresh]);};
+  const before=recompute('LEGACY'),after=recompute(BLOCK_WEIGHT_VERSION),c=structuredClone(original),was=pub.assessActionability({canonical:original,lifecycle_event:'OBSERVE'});
+  assert.equal(before.final_score,original.scores.coin_interest_0_100,'original score replay mismatch '+original.snapshot_id);
+  c.scores.coin_interest_0_100=after.final_score;c.metadata.supplemental_score_adjustment=after;c.analytical_fingerprint=pub.canonicalFingerprint(c);
+  const action=pub.assessActionability({canonical:c,lifecycle_event:'OBSERVE'});
+  if(was.deliver===true){assert.equal(action.deliver,true,'new weights blocked an originally sendable idea '+original.snapshot_id);actualEligible++;
+   const {db,x}=await prepare(c);try{let calls=0;const delivered=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>{calls++;return{ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9010})};}});assert.equal(delivered.sent,1,JSON.stringify(delivered));assert.equal(calls,1);assert.equal((await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+2,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>{throw Error('DUPLICATE_RELAY');}})).sent,0);}finally{db.close();}
+  }else if(original.state==='REJECTED')assert.equal(action.deliver,false);
+  results.push({contract:original.metadata.contract,snapshot_id:original.snapshot_id,original_clock:original.observed_ts,before:before.final_score,after:after.final_score,adjustment_before:before.adjustment,adjustment_after:after.adjustment,eligible_before:was.deliver,eligible_after:action.deliver,state:original.state,score_only_counterfactual:true});
+ }
+ assert.ok(results.length>=2,'actual weight replay corpus required');assert.ok(actualEligible>=1,'actual eligible observations required');
+ fs.writeFileSync('audit-output/block-weight-before-after-proof.json',JSON.stringify({schema:'ACTUAL_ORIGINAL_CLOCK_WEIGHT_REPLAY_V1',sourceHTTP:0,MAIN:0,production_D1:0,Telegram:0,new_fresh_SENT:false,actual_eligible_composed_mock_delivery:actualEligible,threshold:70,family_caps_unchanged:true,entry_and_other_qualification_rules_unchanged:true,synthetic_relay_receipt:true,not_actual_profit_validation:true,results},null,2)+'\n');
+});
 for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation receives the new bounded collector price check`,async()=>{
  const c=rangeCanonical(side),{db,x}=await prepare(c);try{
   const sent=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>({ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9002})})});assert.equal(sent.sent,1);

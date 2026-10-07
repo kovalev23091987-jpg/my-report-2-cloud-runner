@@ -43,6 +43,14 @@ test('pinned and automatic address discovery use at most three calls, then the s
  const a=await collectCoingeckoSectorEvidence(p),b=await collectCoingeckoSectorEvidence({...p,run_id:'next',now:now+1000});
  assert.equal(a.status,'CLOSED');assert.equal(a.network_calls,3);assert.equal(b.network_calls,0);assert.equal(urls.length,3);assert.equal(urls[0].includes('/contract/'),!pinned);database.sqlite.close();}
 });
+test('an exact asset missing from the first category page gets one admitted quote without peer pagination',async()=>{
+ for(const mode of ['EXACT','WRONG_ID','STALE','MULTIPLE','DENIED']){const database=db(),now=Date.now(),urls=[];let admissions=0;
+ const quotes=params.quotes.map(r=>({...r,last_updated:new Date(now-60000).toISOString()})),target=quotes.find(r=>r.id==='chainlink');assert.ok(target);
+ const result=await collectCoingeckoSectorEvidence({...options(database,now),request_admit:p=>({allowed:mode!=='DENIED'||++admissions<4}),fetch_impl:async url=>{urls.push(String(url));const u=String(url);let body=u.includes('/categories/list')?params.categories:u.includes('/markets?')?quotes.filter(r=>r.id!=='chainlink'):params.metadata;
+ if(u.includes('&ids=chainlink'))body=mode==='WRONG_ID'?[{...target,id:'other'}]:mode==='STALE'?[{...target,last_updated:new Date(now-901000).toISOString()}]:mode==='MULTIPLE'?[target,target]:[target];return new Response(JSON.stringify(body));}});
+ if(mode==='EXACT'){assert.equal(result.status,'CLOSED',JSON.stringify(result));assert.equal(result.summary.target_quote_route,'EXACT_ID_OUTSIDE_CATEGORY_PAGE');assert.equal(result.summary.returned_category_rows,quotes.length-1);assert.equal(result.network_calls,4);}else assert.equal(result.evidence.length,0);
+ assert.ok(urls.length<=4);assert.equal(urls.filter(u=>u.includes('page=2')).length,0);database.sqlite.close();}
+});
 test('429 with Retry-After creates provider-wide backoff without retrying another coin or host',async()=>{
  const database=db(),now=Date.now();let calls=0;const p={...options(database,now),fetch_impl:async()=>{calls++;return new Response('{}',{status:429,headers:{'retry-after':'3600'}});}};
  const a=await collectCoingeckoSectorEvidence(p);assert.equal(a.status,'PROVIDER_RATE_LIMITED');

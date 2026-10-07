@@ -3,7 +3,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v4-native-denom-functional-category-20261004';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v5-exact-target-outside-category-page-20261007';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -107,7 +107,17 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  if(!pinned){const nativeCategories=Array.isArray(categories)?NATIVE_FUNCTIONAL_CATEGORIES.flatMap(name=>{const matches=categories.filter(r=>r.name===name&&/^[a-z0-9-]{2,100}$/.test(r.category_id));return metadata?.categories?.includes(name)&&matches.length===1?matches:[];}):[];const selected=native?nativeCategories[0]:selectCoingeckoSectorCategory(metadata,categories);category_name=selected?.name||'';category_id=selected?.category_id||'';}
  const match=Array.isArray(categories)&&categories.filter(r=>r.category_id===category_id&&r.name===category_name).length===1;
  const quotes=match?await get('CATEGORY_QUOTES',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual}):null;
- const normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+ let normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+ // A category page contains the top100 peers, not necessarily this exact asset.
+ // Resolve ONLY its missing quote, using the already verified category/identity.
+ // One separately admitted request; never pagination or additional peer votes.
+ if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&!quotes.some(r=>r?.id===coin_id)){
+  const targetQuotes=await get('EXACT_TARGET_QUOTE',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(coin_id)}&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual});
+  if(Array.isArray(targetQuotes)&&targetQuotes.length===1&&targetQuotes[0]?.id===coin_id){
+   normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes,targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+   if(normalized.status==='CLOSED'){normalized.summary.returned_category_rows=quotes.length;normalized.summary.target_quote_route='EXACT_ID_OUTSIDE_CATEGORY_PAGE';Object.assign(normalized.evidence[0],{returned_category_rows:quotes.length,target_quote_route:'EXACT_ID_OUTSIDE_CATEGORY_PAGE'});}
+  }
+ }
  const transport=reader.summary(),providerBackoff=transport.provider_backoff;
  const result={version:COINGECKO_SECTOR_VERSION,...normalized,...(transport.admission.allowed===false?{status:transport.admission.status}:{}),...(transport.receipts.some(r=>!['RECEIVED','VALIDATED_REFERENCE_CACHE'].includes(r.status))?{status:'SOURCE_NOT_CLOSED'}:{}),...(providerBackoff?{status:providerBackoff.status}:{}),...transport,internal_only:true,free_only:true,monthly_module_bound:1488};
  const expires=normalized.status==='CLOSED'?normalized.evidence[0].expires_at:now+900000;
