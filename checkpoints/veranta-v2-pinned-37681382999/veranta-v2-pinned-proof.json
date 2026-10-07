@@ -1,0 +1,407 @@
+{
+  "schema": "ACTUAL_VERANTA_V2_PINNED_MULTICALL_SOURCIFY_20261007_V1",
+  "head": "5d299f44539edc9a8b20bd866c87507b09193866",
+  "cloud_run": 37681382999,
+  "run_id": "ACTUAL_VERANTA_V2_PINNED:37681382999:1791404509856",
+  "started_ts": 1791404509856,
+  "status": "ACTUAL_VERANTA_V2_PINNED_NOT_CLOSED",
+  "production_enabled": false,
+  "source_http_cap": 5,
+  "logical_rpc_cap": 10,
+  "account_cap": 1,
+  "response_bytes_cap": 2000000,
+  "source_clocks_refreshed": false,
+  "old_v1_abi_used": false,
+  "source_clock_closed": false,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "source_account": "0x8e1c4e0a7e85b2490f6d811824515d6fad3115a6",
+  "source_proxy": "0xA7cFc43872F4D7B0E6141ee8c36f1F7FEe5d099e",
+  "retained_discovery_cloud_run": 37679978751,
+  "retained_discovery_does_not_prove_current_state": true,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "verified_future_levels": [],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 61,
+      "reserved_rows_read": 1214350,
+      "reserved_rows_written": 23704,
+      "measured_rows_read": 783624,
+      "measured_rows_written": 11200,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1215850,
+      "rows_written": 23804
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_VERANTA_V2_PINNED:37681382999:1791404509856",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 139
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 5
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "PUBLICNODE_NATIVE_EVM",
+    "minute_bucket": 1791404460000,
+    "reserved_units": 5,
+    "rolling_units": 5,
+    "cap": 6
+  },
+  "pin": {
+    "height": 52307582,
+    "block_hash": "0x9a888331daa595f27bbb77512c81a9fd84bfdb017e8ab99363366e08c49414a1",
+    "source_ts": 1791404511000,
+    "observed_ts": 1791404512673,
+    "finalized": false
+  },
+  "pinned_implementation": "0x8B44D59d2DB7b2E191B1388b78465756CAb91159",
+  "abi": {
+    "provider": "SOURCIFY_VERIFIED_CURRENT_IMPLEMENTATION",
+    "implementation": "0x8B44D59d2DB7b2E191B1388b78465756CAb91159",
+    "contract_name": "Multicall",
+    "abi_sha256": "a595011c2c6651609af94f9aec5effbf63ff88e3c863e54f17d2d3362c59822f",
+    "getter": {
+      "name": "getPositions",
+      "type": "function",
+      "inputs": [
+        {
+          "name": "userAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "tuple[]",
+          "components": [
+            {
+              "name": "trade",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "trader",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "pairIndex",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "index",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "initialPosToken",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "positionSizeUSDC",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "openPrice",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "buy",
+                  "type": "bool",
+                  "internalType": "bool"
+                },
+                {
+                  "name": "leverage",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "tp",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "sl",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "timestamp",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ],
+              "internalType": "struct ITradingStorage.Trade"
+            },
+            {
+              "name": "tradeInfo",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "openInterestUSDC",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "tpLastUpdated",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "slLastUpdated",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "beingMarketClosed",
+                  "type": "bool",
+                  "internalType": "bool"
+                },
+                {
+                  "name": "lossProtection",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ],
+              "internalType": "struct ITradingStorage.TradeInfo"
+            },
+            {
+              "name": "rolloverFee",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "liquidationPrice",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "isPnl",
+              "type": "bool",
+              "internalType": "bool"
+            },
+            {
+              "name": "coinExposure",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "internalType": "struct IMulticall.AggregatedTrade[]"
+        },
+        {
+          "name": "",
+          "type": "tuple[]",
+          "components": [
+            {
+              "name": "order",
+              "type": "tuple",
+              "components": [
+                {
+                  "name": "trader",
+                  "type": "address",
+                  "internalType": "address"
+                },
+                {
+                  "name": "pairIndex",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "index",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "positionSize",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "buy",
+                  "type": "bool",
+                  "internalType": "bool"
+                },
+                {
+                  "name": "leverage",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "tp",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "sl",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "price",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "slippageP",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "block",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                },
+                {
+                  "name": "executionFee",
+                  "type": "uint256",
+                  "internalType": "uint256"
+                }
+              ],
+              "internalType": "struct ITradingStorage.OpenLimitOrder"
+            },
+            {
+              "name": "liquidationPrice",
+              "type": "uint256",
+              "internalType": "uint256"
+            },
+            {
+              "name": "orderType",
+              "type": "uint8",
+              "internalType": "enum IExecute.OpenLimitOrderType"
+            },
+            {
+              "name": "coinExposure",
+              "type": "uint256",
+              "internalType": "uint256"
+            }
+          ],
+          "internalType": "struct IMulticall.AggregatedOrder[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    "runtime_match": "exact_match"
+  },
+  "error": "RPC_eth_call_NOT_CLOSED",
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 144
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_VERANTA_V2_PINNED:37681382999:1791404509856",
+    "source_run_id": "37681382999",
+    "measured_rows_read": 72,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "source_http": 4,
+  "logical_rpc": 7,
+  "reserved_http": 5,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 73,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 62,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791404514807,
+  "raw_gzip_sha256": "b1c69fa84e35eaff48ccdfb6de8556e251efa598fa93da5d0c9029ca24baeaef"
+}
