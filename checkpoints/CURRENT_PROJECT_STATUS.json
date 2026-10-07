@@ -36,9 +36,9 @@
   },
   "pending": [
     {
-      "task": "Recover and finish block configuration/source-to-consumer gaps and authorized new connection research",
-      "class": "FULL_BLOCK_AND_SOURCE_WORK_REOPENED",
-      "current_observe_blocker": false,
+      "task": "Block configuration, actual useful source consumption, new connections and all original/amended remaining tasks",
+      "class": "FULL_BLOCK_AND_SOURCE_WORK_IN_PROGRESS",
+      "register": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
       "priority_blocks": [
         "N01",
         "N02",
@@ -46,7 +46,12 @@
         "N12",
         "N15"
       ],
-      "full_task_register_pending": true
+      "opportunistic_counts": [
+        12,
+        13,
+        15
+      ],
+      "protect_existing_telegram": true
     },
     {
       "task": "Prospective statistical validation and missed-opportunity denominator",
@@ -158,7 +163,13 @@
       "next_work_blocks": [],
       "no_automatic_continuation_created": true
     },
-    "current_execution_block": "FULL_BLOCK_AND_SOURCE_TASK_RECOVERY"
+    "current_execution_block": "FULL_BLOCK_AND_SOURCE_TASK_RECOVERY",
+    "next_work_blocks": [
+      "Exact native finalized supply N02/N03 expansion",
+      "Issuer-proven official release N07 connection",
+      "Per-block consumer coverage N01/N02/N05/N06/N12/N15 and other assigned useful routes",
+      "Joint regression preserves current Telegram"
+    ]
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
   "withdrawn_PRs": [
@@ -378,9 +389,10 @@
       "checkpoints/ACTUAL_SCHEDULED_2129MSK_20261006.json",
       "checkpoints/ACTUAL_SCHEDULED_2224MSK_20261006.json"
     ],
-    "next": "NORMAL_CLOUD_PRODUCTION_AND_ONLY_PROVEN_GENERAL_GAPS; NO_SERIAL_IDLE_WAIT_PER_FIX",
+    "next": "CONTINUE_FULL_BLOCK_AND_NEW_CONNECTION_WORK; RETAIN_VERIFIED_OBSERVE_DELIVERY",
     "actual_signal_flow_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
-    "functional_scope_complete": true
+    "functional_scope_complete": false,
+    "functional_delivery_verified": true
   },
   "latest_telegram_acceptance": {
     "cloud_run": 37557085058,
@@ -586,7 +598,9 @@
       "EMPIRICAL_NOT_CLOSED",
       "PARTIAL_HISTORY_COVERAGE",
       "PARTIAL_SOURCE_SCOPE"
-    ]
+    ],
+    "all_tasks_recovered_register": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+    "audit_does_not_complete_configuration": true
   },
   "functional_delivery_verified": true,
   "owner_full_task_recovery": {
@@ -596,5 +610,25 @@
     "source_search_included": true,
     "latest_instruction": "Поднимай все задачи которые у тебя были",
     "per_coin_tuning_forbidden": true
+  },
+  "full_task_register": {
+    "path": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+    "original_requirements": 86,
+    "block_tasks": 16,
+    "owner_tasks": 24,
+    "all_tasks_complete": false
+  },
+  "block_configuration_complete": false,
+  "new_connection_search_complete": false,
+  "owner_larger_useful_count_request": {
+    "desired_opportunistic_counts": [
+      12,
+      13,
+      15
+    ],
+    "each_asset_required_count": null,
+    "not_block_ids": true,
+    "N13_N17_still_removed": true,
+    "existing_telegram_delivery_and_layout_must_be_preserved": true
   }
 }
