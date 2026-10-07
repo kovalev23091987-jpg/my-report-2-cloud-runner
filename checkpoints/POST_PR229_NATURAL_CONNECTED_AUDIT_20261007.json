@@ -1,0 +1,112 @@
+{
+  "schema": "POST_PR229_NATURAL_CONNECTED_READBACK_20261007_V1",
+  "cloud_run": 37681792251,
+  "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+  "run_id": "1791404713379-1791404725011",
+  "generated_at": "2026-10-07T20:27:18.587Z",
+  "proof": "checkpoints/POST_PR229_NATURAL_RETAINED_READBACK_20261007.json",
+  "report_artifact_id": 11509515997,
+  "report_artifact_digest": "sha256:d7c36eac3d5a5079a3ec1aeb64d7b0184bd8b1ea1fdf339b23b7a08b537c14fd",
+  "candidates": [
+    {
+      "contract": "龙虾-USDT",
+      "snapshot_id": "S392:龙虾-USDT:1791404826193",
+      "state": "REJECTED",
+      "direction": null,
+      "participating": 10,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "checked": 14,
+      "score_applied": 0,
+      "N05": {
+        "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "observed_ts": 1791404797642,
+        "reported_window_end_ts": 1791404700000,
+        "reported_window_age_ms": 126193,
+        "reported_minute_rows": 1311,
+        "diagnostic_only": true,
+        "source_clock_unchanged": true
+      }
+    },
+    {
+      "contract": "BOME-USDT",
+      "snapshot_id": "S392:BOME-USDT:1791404783785",
+      "state": "OBSERVE",
+      "direction": "LONG",
+      "participating": 9,
+      "participating_ids": [
+        "N02",
+        "N04",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "checked": 13,
+      "score_applied": 1,
+      "N05": {
+        "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+        "observed_ts": 1791404744255,
+        "reported_window_end_ts": 1791404640000,
+        "reported_window_age_ms": 143785,
+        "reported_minute_rows": 1013,
+        "diagnostic_only": true,
+        "source_clock_unchanged": true
+      }
+    }
+  ],
+  "BOME_SENT": {
+    "cloud_run": 37681792251,
+    "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+    "run_id": "1791404713379-1791404725011",
+    "contract": "BOME-USDT",
+    "snapshot_id": "S392:BOME-USDT:1791404783785",
+    "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+    "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+    "telegram_message_id": "155",
+    "sent_ts": 1791404833130,
+    "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
+    "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
+    "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+    "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
+  },
+  "native_future_levels": {
+    "contract": "BOME-USDT",
+    "provider": "Hyperliquid",
+    "conditional_cross_account": true,
+    "count": 1,
+    "above_price_USDC": 0.0212261087,
+    "source_reference_price_USDC": 0.000978,
+    "HTX_direct_level": false,
+    "full_market_census": false
+  },
+  "shared_native_budget": {
+    "reserved_http": 3,
+    "actual_http": 3,
+    "max_http": 5
+  },
+  "cap_zero_caller_natural_acceptance": false,
+  "cap_zero_controlled_assembled_proof": "checkpoints/CACHE_ONLY_NATIVE_CONNECTED_VERIFICATION_20261007.json",
+  "n05_current_240_minutes_closed_for": [
+    "BOME-USDT",
+    "龙虾-USDT"
+  ],
+  "BR_selected": false,
+  "BR_root_cause_closed": false,
+  "PR230_acceptance": false,
+  "PR231_acceptance": false,
+  "project_complete": false
+}
