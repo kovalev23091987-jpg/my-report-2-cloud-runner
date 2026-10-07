@@ -1,3 +1,4 @@
+import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
 import {saveNativeWalletRouting} from './src/liquidation-extension/native-wallet-routing.mjs';
 import {saveGTradeRoutingCatalog} from './src/liquidation-extension/native-routing-catalog.mjs';
 import {loadBlockWeightPolicy,refreshWeeklyBlockWeightPolicy} from './src/block-weight-calibration.mjs';
@@ -221,6 +222,7 @@ async function loadCanonicalRunOutput(db,{runId,source,generation,head,cron,cand
           observed_ts:Number(row.observed_ts)||null,valid_until_ts:Number(row.valid_until_ts)||null,lifecycle_event:row.lifecycle_event,canonical_state:row.canonical_state,
           actionability_status:row.actionability_status,actionability_reason:row.actionability_reason,manual_text:row.manual_text||presentationInputs?.manual_text||null,
           block_coverage:blockCoverage,
+          source_role_publication_audit:auditObservationSourceRoles(canonical),
           block_decision_use:auditCanonicalBlockDecisionUse(canonical||{},{manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null}}),
           block_rendered_results:auditRenderedBlockResults({canonical,manual:{ok:Boolean(row.manual_text||presentationInputs?.manual_text),text:row.manual_text||presentationInputs?.manual_text||null},telegram:{ok:Boolean(row.telegram_text),text:row.telegram_text||null,analytical_fingerprint:canonical?.analytical_fingerprint}}),
           canonical:canonical?{contract:canonical.metadata?.contract,status:canonical.status,state:canonical.state,direction:canonical.direction,scores:canonical.scores,reasons:canonical.reasons,entry:canonical.entry,trigger:canonical.trigger,invalidation:canonical.invalidation,targets:canonical.targets,liquidations:canonical.liquidations,data_quality:canonical.data_quality,changes_from_previous:canonical.changes_from_previous,observed_ts:canonical.observed_ts,snapshot_id:canonical.snapshot_id,run_id:canonical.run_id,analytical_fingerprint:canonical.analytical_fingerprint}:null,
