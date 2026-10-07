@@ -1,0 +1,70 @@
+[
+  {
+    "name": "Adjust",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "uint32",
+        "name": "expiry",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "trader",
+        "indexed": true
+      },
+      {
+        "type": "int256",
+        "name": "net"
+      }
+    ]
+  },
+  {
+    "name": "Trade",
+    "type": "event",
+    "inputs": [
+      {
+        "type": "uint32",
+        "name": "expiry",
+        "indexed": true
+      },
+      {
+        "type": "address",
+        "name": "trader",
+        "indexed": true
+      },
+      {
+        "type": "int256",
+        "name": "size"
+      },
+      {
+        "type": "uint256",
+        "name": "amount"
+      },
+      {
+        "type": "int256",
+        "name": "takenSize"
+      },
+      {
+        "type": "uint256",
+        "name": "takenValue"
+      },
+      {
+        "type": "uint256",
+        "name": "entryNotional"
+      },
+      {
+        "type": "uint16",
+        "name": "feeRatio"
+      },
+      {
+        "type": "uint160",
+        "name": "sqrtPX96"
+      },
+      {
+        "type": "uint256",
+        "name": "mark"
+      }
+    ]
+  }
+]

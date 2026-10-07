@@ -1,0 +1,192 @@
+{
+  "schema": "ACTUAL_SYNFUTURES_V4_BOUNDED_NATIVE_20261007_V1",
+  "head": "ba775219a87460c8e41765ce8e9599cccac36305",
+  "cloud_run": 37675502402,
+  "run_id": "ACTUAL_SYNFUTURES_V4_NATIVE:37675502402:1791401679248",
+  "started_ts": 1791401679248,
+  "status": "ACTUAL_SYNFUTURES_V4_NATIVE_NOT_CLOSED",
+  "production_enabled": false,
+  "sdk_reference": {
+    "repository": "SynFutures/ts-sdk",
+    "commit": "a09a3ed460c1fa727ed4df9db0218fd5aa949409",
+    "version": "0.2.8",
+    "method": "Position.liquidationPrice",
+    "math_sha256": "e56d79d35c63c65f76f37010e743e0cff32bc17f3a9c362d034617e5319f8937",
+    "position_sha256": "a6a1287abad458ceeb8715832973cc24e8254f711cfa4ca644d3862b942f23ea",
+    "extracted_sha256": "38d56935016bbee8239ef70c8a46f1f318ec64b9ed0b3ace184f9ca8f77e6804"
+  },
+  "old_graph_repeated": false,
+  "old_observer_reused": false,
+  "source_http_cap": 5,
+  "logical_rpc_cap": 30,
+  "catalogue_page_cap": 16,
+  "event_page_cap": 200,
+  "event_block_span_cap": 900,
+  "account_cap": 4,
+  "response_bytes_cap": 2000000,
+  "native_age_cap_ms": 120000,
+  "source_clocks_refreshed": false,
+  "full_market_coverage": false,
+  "cex_identity_closed": false,
+  "consumer_closed": false,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "native_positions": [],
+  "conditional_thresholds": [],
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 55,
+      "reserved_rows_read": 1152850,
+      "reserved_rows_written": 22364,
+      "measured_rows_read": 739429,
+      "measured_rows_written": 10744,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 1154350,
+      "rows_written": 22464
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "ACTUAL_SYNFUTURES_V4_NATIVE:37675502402:1791401679248",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_before": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 109
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 5
+  },
+  "minute_admission": {
+    "allowed": true,
+    "status": "RESERVED_OR_IDENTICAL",
+    "provider": "PUBLICNODE_NATIVE_EVM",
+    "minute_bucket": 1791401640000,
+    "reserved_units": 5,
+    "rolling_units": 5,
+    "cap": 6
+  },
+  "pin": {
+    "height": 52306167,
+    "hash": "0x34d414080b3dc35568724172ed91b822ae470a73bfbcdb328ea4d59f57df3cc0",
+    "source_ts": 1791401681000,
+    "observed_ts": 1791401681436,
+    "finalized": false,
+    "canonical_reread_required": true
+  },
+  "contract_code_hashes": {
+    "gate": "0x008e9c76a35162ba475f964a691780c54176ae4b10ab830f609c1db305adcd4f",
+    "observer": "0xe7e80bd65d9b4cbf871bbc7c328492f719437d3186d34ce6679f894aee8c5f0d"
+  },
+  "catalogue_total": 65,
+  "error": "RPC_BATCH_NOT_CLOSED",
+  "provider_after": {
+    "source": "CHAIN_RPC",
+    "day_utc": "2026-10-07",
+    "attempts": 114
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ACTUAL_SYNFUTURES_V4_NATIVE:37675502402:1791401679248",
+    "source_run_id": "37675502402",
+    "measured_rows_read": 66,
+    "measured_rows_written_accounted": 11,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "source_http": 3,
+  "logical_rpc": 22,
+  "reserved_http": 5,
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 67,
+    "rows_written": 11,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 56,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 4,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791401681799,
+  "raw_gzip_sha256": "24809dfef7fbef6b5fe475e9edfc01ffa5b9223845b9a5f7ea43b1b3fc0f7fd6"
+}
