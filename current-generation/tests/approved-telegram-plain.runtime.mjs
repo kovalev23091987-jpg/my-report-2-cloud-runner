@@ -11,7 +11,7 @@ const plain=await import(pathToFileURL(path.join(runtime,'src/telegram-plain-fac
 const source=JSON.parse(gunzipSync(fs.readFileSync('batch-source/qnt1826/exact-current-data.json.gz')));
 assert.equal(source.source_cloud_run,37487195477);
 const row=source.rows.find(r=>r.contract_code==='QNT-USDT'),c=row.canonical;
-const approved=fs.readFileSync('current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt','utf8').trimEnd();
+const approved=fs.readFileSync('current-generation/tests/fixtures/approved-telegram-qnt-20261007.txt','utf8').trimEnd();
 const proof={schema:'OWNER_APPROVED_TELEGRAM_PLAIN_V5_VALIDATION',source_cloud_run:37487195477,source_head:source.source_head,run_id:c.run_id,snapshot_id:c.snapshot_id,fingerprint:c.analytical_fingerprint,owner_approved_at:'2026-10-06T18:37:54Z',sourceHTTP:0,MAIN:0,production_D1:0,Telegram:0,cases:[]};
 globalThis.fetch=async()=>{throw Error('LIVE_NETWORK_FORBIDDEN');};
 test('actual retained QNT renders exactly the owner-approved draft without changing canonical analysis or manual bytes',()=>{

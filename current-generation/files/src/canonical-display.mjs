@@ -104,6 +104,29 @@ export function displayFutureLiquidations(liq,{compact=false}={}){
  }
  return lines;
 }
+// Owner's brief Telegram view. Exact prices, quotes, amounts, source clocks and
+// the full manual view are untouched; use the existing admitted-zone selection.
+export function displayBriefTelegramLiquidations(liq,formatPrice){
+ const lines=[],used=[];
+ for(const [side,label] of [['ABOVE','Сильные ликвидации выше'],['BELOW','Сильные ликвидации ниже']]){
+  const rows=selectLiquidationDisplayZones(liq,side).filter(z=>['NATIVE_FUTURE_LEVEL','PROVIDER_ESTIMATE','PROJECTED'].includes(z.kind)).slice(0,2);
+  const parts=rows.map(z=>{
+   used.push(z);
+   const estimated=z.estimated===true||z.display_contains_estimates===true||z.kind!=='NATIVE_FUTURE_LEVEL'||/BUCKET_CENTER|MODEL_PRICE_BIN|SDK_ESTIMATE/.test(z.price_semantics||'');
+   const d=finite(z.distance_pct),rounded=d===null?null:Math.round(Math.abs(d));
+   const distance=d===null?'':` (${d>0?'+':d<0?'−':''}${rounded===0&&d!==0?'<1':rounded}%)`;
+   return `${formatPrice(z.price,{zone:true})}${distance} — ${z.strength_label_ru||'сила неизвестна'} (${estimated?'расчётный':'фактический'})`;
+  });
+  lines.push(`${label}: ${parts.length?parts.join('; '):'уровни не получены'}.`);
+ }
+ if(used.length){
+  const sources=[...new Set(used.map(z=>text(z.source).replace(/ official(?: SDK)?/i,'')).filter(Boolean))];
+  lines.push(`Уровни ${sources.join(', ')||'других площадок'}; ограниченная выборка${used.some(z=>z.distance_reference_basis==='ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE')?'; проценты от цены источника':''}.`);
+  if(used.some(z=>z.conditional_cross||z.conditional_on_other_positions))lines.push('Зависят от других позиций счёта.');
+  if(used.some(z=>z.source_clock_closed===false))lines.push('Время исходного состояния неизвестно.');
+ }
+ return lines;
+}
 export function displayLegacyLiquidations(liq){
  if(liq?.future_only===true)return displayFutureLiquidations(liq);
  const lines=[];

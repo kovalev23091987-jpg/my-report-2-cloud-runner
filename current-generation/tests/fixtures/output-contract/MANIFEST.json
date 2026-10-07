@@ -5,15 +5,15 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "9aeed5d1ef058bd437a2db5f6233a588b5db5fd96b51176e134c0fd821efb4ad",
     "current-generation/files/src/telegram-compact-formatter.mjs": "e74c3b26f6b94f9216593bc90406063b292883aaa51475de4ef1c8328f54b59c",
-    "current-generation/files/src/canonical-display.mjs": "da05a86127856288e9f216a32be2c45cd1f36b8d827af34af1556c76797b5766",
+    "current-generation/files/src/canonical-display.mjs": "d89805f4fc479732aec87bd5cf851624591ecebf7144e17fb4c7b41cf1124593",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "123454176e09af5bf78cdcb7dcbf64572e630a61e9c1e8501c15ae22523f5547",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "ab24161d7922202c6b70a978ce1988de396b86a9a691319ab66f1c00ddf0a4af",
-    "current-generation/files/src/canonical-publication.mjs": "45de8f7441cbd08f1f7fef74b8337ef9bec33e1fefaf67408c78c68d8bb8260e",
+    "current-generation/files/src/canonical-publication.mjs": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "ed64de4c1b671bccd367ed24b3b2903285d07d5414d4481b00c8363e80aec747",
-    "current-generation/files/src/telegram-plain-facts.mjs": "f9f87d3c574788df925e08bfded0528f0d8cdf2a0e552ba4fde85e00dd0645fc"
+    "current-generation/files/src/block-result-context.mjs": "1884edc8b0df6655cd15878d5bfeabfb0de11c44c54fe8a82f448e920e38fa37",
+    "current-generation/files/src/telegram-plain-facts.mjs": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1"
   },
   "fixtures": {
     "long-observe-full.json": "8ba24c2869cd6de3e9fb8754474da76caea90f4347e0b820e40f50b6c8570b5f",
@@ -439,6 +439,34 @@
       "strategy_weights_or_entry_rules_changed": false,
       "historical_publications_immutable": true,
       "backend_light_rechecks_enabled": true
+    },
+    {
+      "date": "2026-10-07",
+      "scope": "OWNER_APPROVED_BRIEF_FACTS_ROUNDED_TYPED_LEVELS",
+      "authorization": "Vladimir 04:05–04:14 MSK: hide supply technical context and unconfirmed relative expectations; no USD labels; round level prices; label each calculated/factual; save and continue autonomously.",
+      "module_changes": {
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "45de8f7441cbd08f1f7fef74b8337ef9bec33e1fefaf67408c78c68d8bb8260e",
+          "after": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302"
+        },
+        "current-generation/files/src/canonical-display.mjs": {
+          "before": "da05a86127856288e9f216a32be2c45cd1f36b8d827af34af1556c76797b5766",
+          "after": "d89805f4fc479732aec87bd5cf851624591ecebf7144e17fb4c7b41cf1124593"
+        },
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "ed64de4c1b671bccd367ed24b3b2903285d07d5414d4481b00c8363e80aec747",
+          "after": "1884edc8b0df6655cd15878d5bfeabfb0de11c44c54fe8a82f448e920e38fa37"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "f9f87d3c574788df925e08bfded0528f0d8cdf2a0e552ba4fde85e00dd0645fc",
+          "after": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "manual_layout_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "historical_publications_immutable": true,
+      "new_form_fixture": "current-generation/tests/fixtures/approved-telegram-qnt-20261007.txt"
     }
   ],
   "consumer_selection_revisions": [
