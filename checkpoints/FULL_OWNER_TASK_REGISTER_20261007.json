@@ -1481,8 +1481,8 @@
       "task_id": "BLOCK_N03",
       "block": "N03",
       "name": "Уменьшение предложения, сжигание/выкуп только при доказанной причине",
-      "status": "PARTIAL_EXPANDED_GENERAL_ROUTES_PR203",
-      "remaining_action": "Использовать пригодные связанные finalized наблюдения N02/N03, искать доказанный burn/mint/выкуп. Net supply change не доказывает покупку/выкуп; причинность не придумывать.",
+      "status": "PARTIAL_ACTUAL_ETH_EXECUTION_BURN_AND_ORIGINAL_CLOCK_REPORT_CONSUMER_VERIFIED_PR226",
+      "remaining_action": "Проверить использование в штатном отчёте; подтверждённое сжигание базовой комиссии одного блока не итоговое изменение предложения, выкуп или направление. Другие сети требуют собственной доказанной семантики.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -1514,15 +1514,27 @@
         }
       ],
       "complete_for_all_assets": false,
-      "latest_implementation_proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json",
-      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json"
+      "latest_implementation_proof": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+      "latest_native_primary_release": {
+        "path": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+        "pr": 226,
+        "production_head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+        "tested_head": "e0c94e4be750105c7cb26288d1b9fe3dc9c931b5",
+        "review_proof_head": "251443d76dbbaf9df487df861ddbc6d785863e33",
+        "cloud_run": 37651164902,
+        "artifact_id": 11495094736,
+        "artifact_digest": "sha256:d0c3c3ce3962604b7eb7f97d490684b0b511049a4587d5a410de8031e4783674",
+        "status": "MERGED_ACTUAL_NATIVE_PRIMARY_FACTS_AND_ASSEMBLED_REPORT_CONTEXT_VERIFIED_NATURAL_ACCEPTANCE_PENDING",
+        "new_fresh_SENT": false
+      }
     },
     {
       "task_id": "BLOCK_N04",
       "block": "N04",
       "name": "Переводы и точная атрибуция адресов",
-      "status": "PARTIAL_EXPANDED_VALIDATED_NATIVE_PAYMENT_ROUTE_PR204",
-      "remaining_action": "Увеличить точную finalized transfer coverage/labels там, где это действительно доступно. Bridge/liquidity/internal transfer не buy; индекс до primary finality лишь provisional.",
+      "status": "PARTIAL_ACTUAL_ETH_AND_BNB_SUCCESSFUL_NATIVE_TRANSFERS_AND_REPORT_CONSUMER_VERIFIED_PR226",
+      "remaining_action": "Проверить штатное применение exact native route для выбранного актива; двухтранзакционная выборка финализированного блока не полный поток, принадлежность бирже или направление. Avalanche без полезного факта выключен.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -1554,8 +1566,20 @@
         }
       ],
       "complete_for_all_assets": false,
-      "latest_implementation_proof": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
-      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json"
+      "latest_implementation_proof": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+      "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
+      "latest_native_primary_release": {
+        "path": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+        "pr": 226,
+        "production_head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+        "tested_head": "e0c94e4be750105c7cb26288d1b9fe3dc9c931b5",
+        "review_proof_head": "251443d76dbbaf9df487df861ddbc6d785863e33",
+        "cloud_run": 37651164902,
+        "artifact_id": 11495094736,
+        "artifact_digest": "sha256:d0c3c3ce3962604b7eb7f97d490684b0b511049a4587d5a410de8031e4783674",
+        "status": "MERGED_ACTUAL_NATIVE_PRIMARY_FACTS_AND_ASSEMBLED_REPORT_CONTEXT_VERIFIED_NATURAL_ACCEPTANCE_PENDING",
+        "new_fresh_SENT": false
+      }
     },
     {
       "task_id": "BLOCK_N05",
@@ -2245,7 +2269,7 @@
   ],
   "first_batch_status": "MERGED_PR203; EXACT_N02_N03_N07_COMPONENTS_AND_TG_REGRESSION_VERIFIED; SOURCE_SPECIFIC_REPORT_AND_LARGER_BLOCK_COUNT_NOT_CLAIMED",
   "no_new_provider_accepted_from_research_only": true,
-  "latest_completed_implementation_batch": "checkpoints/AUTOMATIC_REPORT_SOURCE_SEARCH_AND_N05_N15_RELEASE_20261007.json",
+  "latest_completed_implementation_batch": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
   "latest_completed_native_transfer_batch": {
     "proof": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
     "run": 37577028532,
@@ -2441,7 +2465,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791388018612,
+  "updated_ts": 1791390541092,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -2753,5 +2777,17 @@
     "new_sources_require_actual_data_and_report_consumption": true,
     "large_connected_batches": true,
     "no_artificial_participation_or_independent_votes": true
+  },
+  "latest_native_evm_primary_release": {
+    "path": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+    "pr": 226,
+    "production_head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+    "tested_head": "e0c94e4be750105c7cb26288d1b9fe3dc9c931b5",
+    "review_proof_head": "251443d76dbbaf9df487df861ddbc6d785863e33",
+    "cloud_run": 37651164902,
+    "artifact_id": 11495094736,
+    "artifact_digest": "sha256:d0c3c3ce3962604b7eb7f97d490684b0b511049a4587d5a410de8031e4783674",
+    "status": "MERGED_ACTUAL_NATIVE_PRIMARY_FACTS_AND_ASSEMBLED_REPORT_CONTEXT_VERIFIED_NATURAL_ACCEPTANCE_PENDING",
+    "new_fresh_SENT": false
   }
 }

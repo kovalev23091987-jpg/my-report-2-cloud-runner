@@ -1,0 +1,324 @@
+{
+  "schema": "NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007_V1",
+  "path": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+  "pr": 226,
+  "production_head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+  "tested_head": "e0c94e4be750105c7cb26288d1b9fe3dc9c931b5",
+  "review_proof_head": "251443d76dbbaf9df487df861ddbc6d785863e33",
+  "cloud_run": 37651164902,
+  "artifact_id": 11495094736,
+  "artifact_digest": "sha256:d0c3c3ce3962604b7eb7f97d490684b0b511049a4587d5a410de8031e4783674",
+  "status": "MERGED_ACTUAL_NATIVE_PRIMARY_FACTS_AND_ASSEMBLED_REPORT_CONTEXT_VERIFIED_NATURAL_ACCEPTANCE_PENDING",
+  "new_fresh_SENT": false,
+  "updated_ts": 1791390541092,
+  "scope": "N03_ETH_EXECUTION_BASE_FEE_BURN_AND_N04_ETH_BNB_FINALIZED_NATIVE_TRANSFERS; NETWORK_TRANSPORT_ACCOUNTING",
+  "actual_source_runs": [
+    {
+      "cloud_run": 37650500853,
+      "tested_head": "057f077c8084289de7c07ce46299c3a74f0a7890",
+      "artifact_id": 11494999214,
+      "artifact_digest": "sha256:2d23e1bd235faf4f50052620e8ed1a3ae112e9b124f3c06287294b5df62d4888",
+      "proof": "checkpoints/native-evm-connected-37650500853/native-evm-current-proof.json",
+      "raw": "checkpoints/native-evm-connected-37650500853/native-evm-current-raw.json.gz",
+      "source_http": 5,
+      "source_reserved": 6,
+      "verified_useful_networks": [
+        "ethereum"
+      ],
+      "partial_source_status": "BNB_PUBLICNODE_RECEIPT403;AVALANCHE_NO_ELIGIBLE_POSITIVE_NATIVE_TRANSFER",
+      "not_same_source_run_as_current_bnb": true
+    },
+    {
+      "cloud_run": 37651164902,
+      "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37651164902:1791390017354",
+      "proof": "checkpoints/native-evm-connected-37651164902/native-evm-current-proof.json",
+      "raw": "checkpoints/native-evm-connected-37651164902/native-evm-current-raw.json.gz",
+      "raw_gzip_sha256": "1741f4c73a9554623932342fb12cfed8c484b4a949f73e1e130e7fe865adf837",
+      "source_http": 2,
+      "source_reserved": 2,
+      "verified_useful_networks": [
+        "bsc"
+      ],
+      "official_bnb_route": "https://bsc-dataseed.bnbchain.org",
+      "provider_before": {
+        "source": "CHAIN_RPC",
+        "day_utc": "2026-10-07",
+        "attempts": 70
+      },
+      "provider_after": {
+        "source": "CHAIN_RPC",
+        "day_utc": "2026-10-07",
+        "attempts": 72
+      },
+      "D1": {
+        "requests": 24,
+        "rows_read": 60,
+        "rows_written": 13,
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 49,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 4,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "first:report2_evidence_source_daily": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "batch:OTHER": {
+            "requests": 5,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_evidence_source_cache": {
+            "requests": 2,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "batch:report2_evidence_source_daily": {
+            "requests": 2,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          },
+          "batch:report2_evidence_source_reservation": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 2,
+            "unknown_ops": 0
+          },
+          "first:report2_evidence_source_reservation": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_provider_minute_ledger_v1": {
+            "requests": 1,
+            "rows_read": 2,
+            "rows_written": 4,
+            "unknown_ops": 0
+          },
+          "first:report2_provider_minute_ledger_v1": {
+            "requests": 2,
+            "rows_read": 3,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_evidence_source_cache": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 2,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
+      }
+    }
+  ],
+  "retained_ethereum_replay": {
+    "source_cloud_run": 37650500853,
+    "source_run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37650500853:1791389715192",
+    "original_source_ts": 1791388631000,
+    "original_observed_ts": 1791389717567,
+    "rendered_blocks": [
+      "N03",
+      "N04"
+    ],
+    "rendered_receipts": [
+      {
+        "block_id": "N03",
+        "evidence_id": "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda",
+        "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE",
+        "evidence_ids": [
+          "EV2:0f4b3fa16496af21207ffca0fa08554d9ece2a54442afe1ee194b5d459adcbda"
+        ],
+        "physical_root_keys": [
+          "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:EXECUTION_BASE_FEE"
+        ],
+        "source_ts": 1791388631000,
+        "observed_ts": 1791389717567,
+        "label": "Сжигание базовой комиссии Ethereum",
+        "value": "0,033337074190060592 ETH в финализированном блоке 0x18ee36c; только базовая комиссия исполнения, blob-комиссии и итоговое изменение предложения не включены; выкуп и направление цены не установлены",
+        "source": "Ethereum / финализированный RPC",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      },
+      {
+        "block_id": "N04",
+        "evidence_id": "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5",
+        "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f",
+        "evidence_ids": [
+          "EV2:67dee946086717c2acfc6b9c36ef7836ea8de8f080c2147918f3d0337e8c9eb5"
+        ],
+        "physical_root_keys": [
+          "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f"
+        ],
+        "source_ts": 1791388631000,
+        "observed_ts": 1791389717567,
+        "label": "Подтверждённый перевод нативного ETH",
+        "value": "0,00090073966235688 ETH в успешной транзакции 0x1b73d2937b1af3b974b263d5e326db5627b8efa874c809c78696493d5857312f; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+        "source": "ETH / финализированный RPC",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      },
+      {
+        "block_id": "N04",
+        "evidence_id": "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde",
+        "physical_root_key": "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8",
+        "evidence_ids": [
+          "EV2:0bffae2a378ffc759e3c2b53846b3869fd6a7c036e299f550f11c99b30208cde"
+        ],
+        "physical_root_keys": [
+          "NATIVE_EVM_BLOCK:ethereum:0xda9718be177656161e47cc641787c1c0b20a30eae9c433bf48bc2dea604d34ff:TX:0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8"
+        ],
+        "source_ts": 1791388631000,
+        "observed_ts": 1791389717567,
+        "label": "Подтверждённый перевод нативного ETH",
+        "value": "0,00036816779053615 ETH в успешной транзакции 0xc150df5baf1e40f0e6c33a2849a52148d4f33ff9d355997ce27622d13b1a3cd8; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+        "source": "ETH / финализированный RPC",
+        "consumer": "MANUAL_CONFIRMED_CONTEXT",
+        "score_contribution": 0
+      }
+    ],
+    "source_http": 0,
+    "source_clock_refreshed": false,
+    "not_current_market_proof": true,
+    "not_same_source_run_as_bnb": true
+  },
+  "actual_bnb_source_and_consumption": [
+    {
+      "chain": "bsc",
+      "htx_contract": "BNB-USDT",
+      "run_id": "ACTUAL_NATIVE_EVM_PRIMARY:37651164902:1791390017354:bsc",
+      "snapshot_id": "ACTUAL_NATIVE_EVM_PRIMARY:37651164902:1791390017354:bsc:SOURCE_REFERENCE_ONLY",
+      "source_ts": 1791390018000,
+      "observed_ts": 1791390020679,
+      "block_hash": "0xfa24781cf25fc3672c059d2705eb0f505b2f35669ac3213c3f4d2661952d15d6",
+      "block_ref": "0x786ecb9",
+      "source_fact_count": 2,
+      "rendered_blocks": [
+        "N04"
+      ],
+      "rendered_receipts": [
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:47d23d61bcce3f3a2025eb3a5110f5acdb0ea5417bb6ea95c7db7784b87caa65",
+          "physical_root_key": "NATIVE_EVM_BLOCK:bsc:0xfa24781cf25fc3672c059d2705eb0f505b2f35669ac3213c3f4d2661952d15d6:TX:0xf228e69212a79562b3ca27dec37f29f83ba02a4a5cf24d5b99e9ff4131b29bed",
+          "evidence_ids": [
+            "EV2:47d23d61bcce3f3a2025eb3a5110f5acdb0ea5417bb6ea95c7db7784b87caa65"
+          ],
+          "physical_root_keys": [
+            "NATIVE_EVM_BLOCK:bsc:0xfa24781cf25fc3672c059d2705eb0f505b2f35669ac3213c3f4d2661952d15d6:TX:0xf228e69212a79562b3ca27dec37f29f83ba02a4a5cf24d5b99e9ff4131b29bed"
+          ],
+          "source_ts": 1791390018000,
+          "observed_ts": 1791390020679,
+          "label": "Подтверждённый перевод нативного BNB",
+          "value": "0,000311085792549 BNB в успешной транзакции 0xf228e69212a79562b3ca27dec37f29f83ba02a4a5cf24d5b99e9ff4131b29bed; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+          "source": "BNB / финализированный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        },
+        {
+          "block_id": "N04",
+          "evidence_id": "EV2:504e3198da960ee3379221b3cf49236efc67e077b1a92c8cdb6ea681eb9193cd",
+          "physical_root_key": "NATIVE_EVM_BLOCK:bsc:0xfa24781cf25fc3672c059d2705eb0f505b2f35669ac3213c3f4d2661952d15d6:TX:0x71d036bc54f342747d1aa26d454fe8309eb0965f346201eedc1cc84f11d95d35",
+          "evidence_ids": [
+            "EV2:504e3198da960ee3379221b3cf49236efc67e077b1a92c8cdb6ea681eb9193cd"
+          ],
+          "physical_root_keys": [
+            "NATIVE_EVM_BLOCK:bsc:0xfa24781cf25fc3672c059d2705eb0f505b2f35669ac3213c3f4d2661952d15d6:TX:0x71d036bc54f342747d1aa26d454fe8309eb0965f346201eedc1cc84f11d95d35"
+          ],
+          "source_ts": 1791390018000,
+          "observed_ts": 1791390020679,
+          "label": "Подтверждённый перевод нативного BNB",
+          "value": "0,000003218701410638 BNB в успешной транзакции 0x71d036bc54f342747d1aa26d454fe8309eb0965f346201eedc1cc84f11d95d35; выборка до двух транзакций одного финализированного блока, внутренние переводы и принадлежность адресов биржам не проверены; приток, отток и направление рынка не установлены",
+          "source": "BNB / финализированный RPC",
+          "consumer": "MANUAL_CONFIRMED_CONTEXT",
+          "score_contribution": 0
+        }
+      ],
+      "source_http": 2,
+      "consumer": "CONTROLLED_SOURCE_REFERENCE_MANUAL_ONLY",
+      "placeholder_price_is_not_market_proof": true,
+      "entry_authorized": false,
+      "scores_unchanged": true
+    }
+  ],
+  "tests": {
+    "native-evm-assembled-tests.tap": {
+      "pass": 14,
+      "fail": 0,
+      "sha256": "bfb0e777a432be9425836ab3dba9745a85123bde8475d29f77ec13d5b2f52ec0"
+    },
+    "connected-primary-consumers.tap": {
+      "pass": 48,
+      "fail": 0,
+      "sha256": "f83838334a6a38a5b252bcd98e57af14ef78c61893cdbb50ff2cad75ddc6e06c"
+    },
+    "observation-pipeline-tests.tap": {
+      "pass": 35,
+      "fail": 0,
+      "sha256": "3619de390bc3f585ceaaff608e58b932e5f944d7b9a7e6bc832993a1a40d3ba2"
+    }
+  },
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "current_generation_validation": "PASS",
+  "production_enabled_networks": [
+    "ethereum",
+    "bsc"
+  ],
+  "inactive_candidates": {
+    "production_enabled": false,
+    "source_cloud_run": 37650500853,
+    "reason": "Actual bounded block had no positive native transfer, so no additional scheduled route is enabled or counted as useful.",
+    "new_source_http": 0
+  },
+  "maintained_output_contract": {
+    "old_frozen_outputs_changed": false,
+    "block_context_sha256": "c6dc3cc8e15a89f805b5a772433e899930c4b61c71c92d12cd898688535f7f61",
+    "automatic_golden_updates": false
+  },
+  "policy": {
+    "http_cap_per_network": 2,
+    "logical_rpc_max_per_network": 4,
+    "parent_daily_CHAIN_RPC_cap": 720,
+    "shared_native_evm_minute_cap": 6,
+    "source_ttl_ms": 1200000,
+    "full_transaction_bound": 2000,
+    "receipt_sample_bound": 2,
+    "valid_empty_sample_cached_at_original_clock": true,
+    "denial_backoff_scoped_to_chain_and_upstream": true,
+    "no_reset_or_refund": true,
+    "all_samples_neutral": true,
+    "same_upstream_not_independent_vote": true,
+    "execution_burn_is_not_net_supply_or_buyback": true,
+    "transfer_is_not_net_market_flow": true,
+    "no_exchange_labels_claimed": true
+  },
+  "source_clock_refreshed": false,
+  "MAIN": 0,
+  "Telegram": 0,
+  "production_more_than_ten_participation_proven": false,
+  "full_owner_register_complete": false,
+  "next_action": "Read the next natural selected-asset report after PR225/226 once; audit actual automatic liquidation search, N05 original closure clocks, N15 use, real participating/control/nonzero counts and same-run publication without forcing MAIN, coin selection or entry."
+}

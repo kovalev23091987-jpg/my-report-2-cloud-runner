@@ -120,7 +120,7 @@
     "historical_hint_does_not_close_current_level": true,
     "report_search_release": "checkpoints/AUTOMATIC_REPORT_SOURCE_SEARCH_AND_N05_N15_RELEASE_20261007.json"
   },
-  "updated_ts": 1791388018612,
+  "updated_ts": 1791390541092,
   "latest_dydx_shared_dense_consumer_release": {
     "path": "checkpoints/DYDX_SHARED_PAIR_DENSE_CONSUMER_RELEASE_20261007.json",
     "pr": 221,
@@ -199,5 +199,41 @@
   },
   "source_order_cost_basis": "COMPLETE_USEFUL_NATIVE_ACQUISITION_SEPARATE_FROM_STAGE_ADMISSION",
   "core_flow_closure_diagnostics": "ORIGINAL_SOURCE_CLOCKS_ONLY_2KB_NO_EXTRA_READS",
-  "sector_exact_target_quote_policy": "ONE_ADMITTED_REFRESH_WHEN_MISSING_OR_STALE_ID_BOUND_TARGET_PEERS_UNCHANGED"
+  "sector_exact_target_quote_policy": "ONE_ADMITTED_REFRESH_WHEN_MISSING_OR_STALE_ID_BOUND_TARGET_PEERS_UNCHANGED",
+  "latest_native_evm_primary_release": {
+    "path": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+    "pr": 226,
+    "production_head": "cbf0b3b81a88772735c24821cec0211b55c6eeba",
+    "tested_head": "e0c94e4be750105c7cb26288d1b9fe3dc9c931b5",
+    "review_proof_head": "251443d76dbbaf9df487df861ddbc6d785863e33",
+    "cloud_run": 37651164902,
+    "artifact_id": 11495094736,
+    "artifact_digest": "sha256:d0c3c3ce3962604b7eb7f97d490684b0b511049a4587d5a410de8031e4783674",
+    "status": "MERGED_ACTUAL_NATIVE_PRIMARY_FACTS_AND_ASSEMBLED_REPORT_CONTEXT_VERIFIED_NATURAL_ACCEPTANCE_PENDING",
+    "new_fresh_SENT": false
+  },
+  "native_evm_finalized_context_policy": {
+    "http_cap_per_network": 2,
+    "logical_rpc_max_per_network": 4,
+    "parent_daily_CHAIN_RPC_cap": 720,
+    "shared_native_evm_minute_cap": 6,
+    "source_ttl_ms": 1200000,
+    "full_transaction_bound": 2000,
+    "receipt_sample_bound": 2,
+    "valid_empty_sample_cached_at_original_clock": true,
+    "denial_backoff_scoped_to_chain_and_upstream": true,
+    "no_reset_or_refund": true,
+    "all_samples_neutral": true,
+    "same_upstream_not_independent_vote": true,
+    "execution_burn_is_not_net_supply_or_buyback": true,
+    "transfer_is_not_net_market_flow": true,
+    "no_exchange_labels_claimed": true
+  },
+  "native_evm_enabled_chains": [
+    "ethereum",
+    "bsc"
+  ],
+  "native_evm_inactive_candidates": [
+    "avalanche"
+  ]
 }
