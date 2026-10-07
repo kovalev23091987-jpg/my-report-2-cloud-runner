@@ -1,0 +1,82 @@
+{
+  "schema": "DYDX_NATIVE_LIQUIDATION_CAPABILITY_REVIEW_20261007_V1",
+  "reviewed_utc": "2026-10-07T10:52:23.789Z",
+  "repository": "dydxprotocol/v4-chain",
+  "exact_head": "e278fb0032d511ebfdc58e8dcc7aba3164057c50",
+  "files": [
+    {
+      "path": "indexer/services/comlink/src/types.ts",
+      "git_blob_sha": "3f593137f67ee36c65e80900e010c2bae8088e90",
+      "bytes": 22476,
+      "url": "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/indexer/services/comlink/src/types.ts"
+    },
+    {
+      "path": "indexer/services/comlink/src/controllers/api/v4/addresses-controller.ts",
+      "git_blob_sha": "8909fe0a5f509567014407df8272a2e7ee437633",
+      "bytes": 17997,
+      "url": "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/indexer/services/comlink/src/controllers/api/v4/addresses-controller.ts"
+    },
+    {
+      "path": "indexer/services/comlink/src/controllers/api/v4/perpetual-positions-controller.ts",
+      "git_blob_sha": "961accd993ba74f0c71b299c0610080c47dc535f",
+      "bytes": 13255,
+      "url": "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/indexer/services/comlink/src/controllers/api/v4/perpetual-positions-controller.ts"
+    },
+    {
+      "path": "indexer/services/comlink/src/controllers/api/v4/height-controller.ts",
+      "git_blob_sha": "d27d31dfb67010e0838f74de27979416a9bdbfd5",
+      "bytes": 1867,
+      "url": "https://github.com/dydxprotocol/v4-chain/blob/e278fb0032d511ebfdc58e8dcc7aba3164057c50/indexer/services/comlink/src/controllers/api/v4/height-controller.ts"
+    }
+  ],
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_provider_enabled": false,
+  "independent_upstream_candidate": "DYDX_CHAIN",
+  "primary_documentation": "https://docs.dydx.exchange/api_integration-clients/indexer_client",
+  "observed_schema": {
+    "subaccount_fields": [
+      "equity",
+      "freeCollateral",
+      "openPerpetualPositions",
+      "assetPositions",
+      "updatedAtHeight",
+      "latestProcessedBlockHeight"
+    ],
+    "perpetual_position_fields_include": [
+      "side",
+      "size",
+      "entryPrice",
+      "unrealizedPnl",
+      "netFunding",
+      "createdAt",
+      "createdAtHeight"
+    ],
+    "native_liquidation_price_in_public_position_type": false,
+    "height_endpoint_fields": [
+      "height",
+      "time"
+    ],
+    "controller_uses_latest_funding_index": true,
+    "controller_has_explicit_transaction_TODO": true,
+    "controller_uses_memory_perpetual_market_refresher": true
+  },
+  "conclusion": "POTENTIAL_CHECKABLE_ESTIMATE_WITH_REAL_CROSS_ACCOUNT_INPUTS; CURRENT_SCHEMA_NOT_SUFFICIENT_FOR_ATOMIC_CURRENT_PRICE/FUNDING/ACCOUNT_CLOCK_BINDING",
+  "not_state_clocks": [
+    "createdAt",
+    "createdAtHeight",
+    "updatedAtHeight"
+  ],
+  "next_required_facts": [
+    "Exact public account discovery for a supported HTX crypto asset, not arbitrary planted wallets",
+    "Clock-proven consistent account/market/funding/oracle state at one processed block; a separate /height response or activity timestamp alone is insufficient",
+    "Versioned maintenance margin and settled/unsettled funding inputs for all cross-account positions",
+    "Independent verification of the conditional liquidation estimate against the official client calculation; honest partial other-venue scope",
+    "Reviewed bounded source allowance and unchanged shared HTTP/D1 protected capacity before production activation"
+  ],
+  "unchanged_blind_probe_not_performed": true,
+  "whole_market_future_levels_claimed": false,
+  "all_owner_tasks_complete": false
+}

@@ -31,5 +31,17 @@ export function chooseExpandedNativeAccountDiscovery(options={}){
  const paths=['HYPERLIQUID'];
  if(options.swole_enabled&&/^[A-Z0-9]{1,20}$/.test(options.symbol))paths.push('SWOLE_DISCOVERY');
  if(options.now<Date.parse('2026-10-27T00:00:00Z')||String(options.liqflow_key||'').trim())paths.push('LIQFLOW');
- return paths[Math.floor(options.now/2400000)%paths.length];
+ // Weekly refreshes recur after252 analytical windows, exactly divisible by3.
+ // Spread those checks by exact contract as well, so one weekly batch cannot
+ // permanently select just one discovery path for every supported market.
+ let offset=0;if(typeof options.selection_key==='string'&&options.selection_key.length<=100)for(const c of options.selection_key)offset=(Math.imul(offset,31)+c.codePointAt(0))>>>0;
+ return paths[(Math.floor(options.now/2400000)+offset)%paths.length];
+}
+export function nextNativeDiscoveryAfterUnspentQuota(options={}){
+ const liqflow=options.now<Date.parse('2026-10-27T00:00:00Z')||Boolean(String(options.liqflow_key||'').trim());
+ if(options.current==='SWOLE_DISCOVERY')return liqflow?'LIQFLOW':options.official_trades_enabled?'HYPERLIQUID':null;
+ if(options.current==='LIQFLOW'&&options.official_trades_enabled)return'HYPERLIQUID';
+ // Native discovery and native state share a pool. A native quota denial
+ // cannot be repaired by discovering an address elsewhere without a state read.
+ return null;
 }
