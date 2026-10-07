@@ -1,0 +1,71 @@
+name: Report2 Exact Post PR229 Natural BOME SENT Readback
+on:
+  push:
+    branches: [codex/post-pr229-bome-sent-read-20261007]
+    paths: ['tools/read-current-observation-request.json', '.github/workflows/post-pr229-bome-sent-read-20261007.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  qualify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Fresh main owner and fence guard
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='cb3f578b78dcc07bffdabd7dc16f4e2a610973d1')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64'));
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=='HTX:20261007:1791399140815:cache-only-full-register'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            if((await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_HEAD_MOVED');
+      - name: Assemble production admission modules without running report
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          cmp current-generation/files/src/evidence-source-store.mjs runtime/src/evidence-source-store.mjs
+          cmp current-generation/files/src/provider-minute-ledger.mjs runtime/src/provider-minute-ledger.mjs
+      - name: Check current readonly candidate syntax
+        run: node --check tools/read-current-observation.mjs
+      - name: Fresh guard immediately before single bounded native batch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(head!=='cb3f578b78dcc07bffdabd7dc16f4e2a610973d1')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64'));
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(p.lease?.owner!=='HTX:20261007:1791399140815:cache-only-full-register'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Read bounded current public API account route with existing ledgers
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-current-observation.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-pr229-bome-sent-read-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain actual bounded result including no-data result
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='cb3f578b78dcc07bffdabd7dc16f4e2a610973d1')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64'));
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(p.lease?.owner!=='HTX:20261007:1791399140815:cache-only-full-register'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const zlib=require('zlib'),actual=JSON.parse(zlib.gunzipSync(fs.readFileSync('audit-output/exact-current-data.json.gz'))),summary=JSON.parse(fs.readFileSync('audit-output/readback-summary.json'));if(actual.status!=='EXACT_CURRENT_PUBLIC_DATA_READ'||actual.sourceHTTP!==0||actual.MAIN!==0||actual.Telegram!==0||actual.source_writes!==0||actual.d1_usage.unknown_ops!==0)throw Error('EXACT_READ_NOT_CLOSED');const bome=actual.rows.find(x=>x.contract_code==='BOME-USDT'),dispatch=(actual.dispatch.results||[]).filter(x=>x.publication_id===bome?.publication_id);if(!bome||bome.run_id!=='1791404713379-1791404725011'||bome.snapshot_id!=='S392:BOME-USDT:1791404783785'||bome.publication_id!=='PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb'||dispatch.length!==1||dispatch[0].state!=='SENT'||!dispatch[0].telegram_message_id||!bome.telegram_text||bome.canonical.scores.coin_interest_0_100!==82)throw Error('ACTUAL_SAME_RUN_SENT_BINDING_NOT_CLOSED');const verified=actual.verification.find(x=>x.contract==='BOME-USDT');if(!verified?.fingerprint_verified||!verified.original_v5_exact||verified.presentation?.status!=='CLOSED')throw Error('ORIGINAL_APPROVED_PRESENTATION_NOT_CLOSED');const proof={schema:'ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT_20261007_V1',status:'EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED',source_cloud_run:37681792251,source_head:'53729f7af3f2b7e540f6df3d2b9d65af0140b981',read_cloud_run:context.runId,read_head:context.sha,run_id:bome.run_id,contract:bome.contract_code,snapshot_id:bome.snapshot_id,observed_ts:bome.observed_ts,publication_id:bome.publication_id,fingerprint:bome.canonical.analytical_fingerprint,presentation_hash:bome.presentation_hash,telegram_text:bome.telegram_text,dispatch:dispatch[0],verification:verified,sourceHTTP:0,MAIN:0,Telegram:0,source_writes:0,D1:actual.d1_usage,original_source_clocks_preserved:true,new_send_from_readback:false,acceptance_scope:'AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE',project_complete:false};fs.writeFileSync('audit-output/bome-sent-proof.json',JSON.stringify(proof,null,2)+'\n');
+            const entries=[];for(const name of ['exact-current-data.json.gz','readback-summary.json','bome-sent-proof.json','assembly.json']){const bytes=fs.readFileSync('audit-output/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/post-pr229-bome-sent-read-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const ref=context.ref.replace('refs/heads/','');if(ref!=='codex/post-pr229-bome-sent-read-20261007')throw Error('REVIEW_REF_MISMATCH');const parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_HEAD_MOVED');
+            const commit=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:commit.tree.sha,tree:entries})).data,created=(await github.rest.git.createCommit({owner,repo,message:'Retain current Veranta v2 bounded native qualification result without activation',tree:tree.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:created.sha,force:false});console.log(JSON.stringify({proof_commit:created.sha,status:proof.status,message_id:proof.dispatch.telegram_message_id,MAIN:0,Telegram:0}));
