@@ -1,0 +1,27 @@
+✔ only individual raw minute/count matches persist; a bounded recent sample never proves 24 hours (5.382739ms)
+✔ compensating minute count errors, unsafe IDs, stale and foreign metadata never green the tape (1.616655ms)
+✔ changed complete minute and corrupt saved source bytes do not replace a verified ring (5.119476ms)
+✔ only a complete 1440-minute ring with exact unique fills supplies a neutral signed fact to the report (72.59914ms)
+✔ durable raw ring respects DB admission and readback without network requests or new tables (11.524782ms)
+✔ injected corrupt acquisitions and duplicate saved minute keys are rejected before persistence (0.600887ms)
+✔ the shared raw accumulator retains factual minutes older than 45 minutes already present in the same response (1.8883ms)
+✔ validated immutable raw history extends the same contract sample; foreign, corrupt or conflicting fills never do (22.21562ms)
+✔ saved history does not erase truncation or dropped-row provenance from the current transport (3.381811ms)
+✔ persistence exceptions retain the exact admitted failure stage and source clocks without evidence, retry or extra writes (2.633693ms)
+✔ fallback budget denial and exception are retained without D1, transport, fabricated clock or fact (1.598507ms)
+✔ one failed admitted cache read preserves its stage and safe code through the N05 consumer (2.111203ms)
+✔ missing row and damaged compressed storage are distinguished, without writes or new tables (0.927005ms)
+✔ real retained 240-minute window retains all facts after an optional read fails and assembled canonical decision is identical (44.73206ms)
+✔ future diagnostic or unsafe error code is refused without exporting its message (0.326878ms)
+✔ original actual240minute source facts remain admitted at their clock; later stale clock produces exact diagnostics instead of refreshed evidence (2.060868ms)
+✔ missing source clock diagnostics survive the source-to-coverage-to-consumer audit without creating a check, participation or entry (8.109582ms)
+✔ bounded diagnostics report original acquisition and ring clocks and exclude raw payloads or oversize diagnostics (0.436522ms)
+✔ original acquisition persistence failure reaches bounded N05 diagnostics without exposing error messages or creating a fact (0.200339ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 225.180601
