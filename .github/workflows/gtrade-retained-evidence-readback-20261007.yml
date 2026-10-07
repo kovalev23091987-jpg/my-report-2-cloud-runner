@@ -40,7 +40,7 @@ jobs:
             ['checkpoints/POST_PR223_TELEGRAM_37636666412.json',fs.readFileSync(find('delivery','telegram-info-proof.json'))],
             ['checkpoints/GTRADE_POINT_AND_REPORT_RETAINED_READBACK_20261007.json',Buffer.from(JSON.stringify(manifest,null,2)+'\n')]];
             for(const f of cp.execFileSync('find',['point','-type','f']).toString().trim().split('\n').filter(f=>f.endsWith('.tap')||f.endsWith('integration.json')||f.endsWith('dydx-go-reference-proof.json')||f.endsWith('dydx-go-original-reference-proof.json'))){files.push(['checkpoints/gtrade-exact-selected-tests-37638236338/'+f.split('/').pop(),fs.readFileSync(f)]);}
-const entries=[];for(const [path,b]of files){const blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;entries.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+            const entries=[];for(const [path,b]of files){const blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;entries.push({path,mode:'100644',type:'blob',sha:blob.sha});}
             const ref=context.ref.replace('refs/heads/','');if(ref!=='codex/gtrade-retained-evidence-readback-20261007')throw Error('REF_NOT_EVIDENCE_BRANCH');
             const parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('EVIDENCE_BRANCH_MOVED');
             const parentCommit=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data;
