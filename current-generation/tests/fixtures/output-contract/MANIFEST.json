@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "d89805f4fc479732aec87bd5cf851624591ecebf7144e17fb4c7b41cf1124593",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "123454176e09af5bf78cdcb7dcbf64572e630a61e9c1e8501c15ae22523f5547",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "3685fd49ac7377999499862563fa28bda835dcb656554df7b8cacc4240e72e48",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
     "current-generation/files/src/canonical-publication.mjs": "2761bad4950f62c1679c6cb5fdefcd49212983cc62be39137c55b225d5bc3d21",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
@@ -524,6 +524,24 @@
       "golden_fixtures_changed": false,
       "legacy_canonical_input_outputs_changed": false,
       "main_family_caps_threshold_and_entry_unchanged": true
+    },
+    {
+      "date": "2026-10-07",
+      "scope": "OWNER_AUTHORIZED_VERIFIED_DYDX_CONDITIONAL_NATIVE_SOURCE_BINDING",
+      "authorization": "Owner expressly authorizes implementing new liquidation connections and all necessary changes without waiting; useful actual source facts must reach the existing main and liquidation reports. Labelled verifiable source-based calculations remain permitted.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "3685fd49ac7377999499862563fa28bda835dcb656554df7b8cacc4240e72e48",
+          "after": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
+          "exact_scope": "Adds DYDX_PINNED_NATIVE to the existing collection-permission registry and exact provider identity mapper only."
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "approved_manual_telegram_forms_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "publication_source_gate_changed": false,
+      "note": "Intentional source registry extension; automatic golden updates remain disabled. All existing formatter bytes and historical outputs must still pass immutable regression."
     }
   ],
   "consumer_selection_revisions": [

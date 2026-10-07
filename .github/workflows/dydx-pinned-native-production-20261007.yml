@@ -74,6 +74,8 @@ jobs:
           node --test current-generation/tests/source-role-publication-audit.runtime.mjs > audit-output/source-role-artifact-runtime.tap
           REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/top2-pinned-batch.runtime.mjs > audit-output/native-pinned-runtime.tap
           node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+      - name: Verify assembled dYdX source facts reach the canonical report
+        run: REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/dydx-native-production.runtime.mjs > audit-output/dydx-canonical-runtime.tap
       - name: Compare original native risk model independently with Go stdlib
         env:
           GO111MODULE: 'off'
