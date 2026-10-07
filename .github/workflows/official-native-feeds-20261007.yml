@@ -57,17 +57,17 @@ jobs:
       - name: Current generation validation
         if: always()
         run: node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
-      - name: Two admitted issuer-proven native project release feeds
+      - name: Reuse exact actual feed responses; no new HTTP or D1
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node audit-fixes/block-connections-implementation-20261007/verify-official-native-live.mjs
+        run: node audit-fixes/block-connections-implementation-20261007/replay-official-native.mjs
       - name: Exact package hashes
         if: always()
         run: |
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
-          sha256sum runtime/src/xrpl-native-payments.mjs runtime/src/finalized-chain-events.mjs runtime/src/native-ledger-supply.mjs runtime/src/stellar-primary-supply.mjs runtime/src/github-official-releases.mjs runtime/src/chain-supply-evidence.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/block-result-context.mjs runtime/src/telegram-plain-facts.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
+          sha256sum runtime/src/block-decision-use-audit.mjs runtime/src/xrpl-native-payments.mjs runtime/src/finalized-chain-events.mjs runtime/src/native-ledger-supply.mjs runtime/src/stellar-primary-supply.mjs runtime/src/github-official-releases.mjs runtime/src/chain-supply-evidence.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/block-result-context.mjs runtime/src/telegram-plain-facts.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
