@@ -17,9 +17,9 @@ function service({firstUnsupported=false,denied=false,slots=2}={}){
 const params=contract=>({contract,native_symbol:contract.split('-')[0],run_id:'CONTROLLED_RETAINED_0930_SHAPE',deep_started_ts:T,max_http_for_candidate:5,allowed_source_ids:['HYPERLIQUID_NATIVE']});
 test('both selected native markets obtain a verified sample within five total source requests',async()=>{
  const f=service(),first=await f.s.collect(params('FIL-USDT')),second=await f.s.collect(params('NEAR-USDT'));
- assert.equal(first.accounts.length,1);assert.equal(second.accounts.length,1);assert.equal(f.calls.length,5);assert.equal(f.calls.filter(c=>c.body?.type==='metaAndAssetCtxs').length,1);assert.equal(f.calls.filter(c=>c.body?.type==='clearinghouseState').length,2);
+ assert.equal(first.accounts.length,1);assert.equal(second.accounts.length,1);assert.equal(f.calls.length,4);assert.equal(f.calls.filter(c=>c.body?.type==='metaAndAssetCtxs').length,1);assert.equal(f.calls.filter(c=>c.body?.type==='clearinghouseState').length,1);assert.equal(second.provenance.reused_native_accounts,1);
  for(const [raw,contract] of [[first,'FIL-USDT'],[second,'NEAR-USDT']]){const c=bindNativeAcquisition(raw,{contract,run_id:raw.run_id,snapshot_id:'S:'+contract,observed_ts:T,direction:'LONG'});assert.equal(c.status,'USABLE_NATIVE_SAMPLE',JSON.stringify(c));assert.equal(c.returned_positive_levels,1);assert.equal(c.coverage,'BOUNDED_ACCOUNT_SAMPLE_NOT_FULL_MARKET');assert.equal(c.entry_eligible,false);}
- assert.equal(f.s.summary().shared_budget.actual_http,5);assert.equal(f.s.summary().following_candidate_minimum_http,2);
+ assert.equal(f.s.summary().shared_budget.actual_http,4);assert.equal(f.s.summary().following_candidate_minimum_http,2);
 });
 test('unsupported first market does not reserve imaginary account transport and leaves second market usable',async()=>{
  const f=service({firstUnsupported:true});assert.equal(await f.s.collect(params('FIL-USDT')),null);const second=await f.s.collect(params('NEAR-USDT'));assert.ok(second);assert.ok(f.calls.length<=5);

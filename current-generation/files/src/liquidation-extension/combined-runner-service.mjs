@@ -8,16 +8,36 @@ import {createGmxRuntimeCollector} from './gmx-runtime-collector.mjs';
 import {createMultiLiquidationAcquisition} from './gtrade-runtime-bridge.mjs';
 import {planLiquidationSourceOrder,buildLiquidationSourceWeightProfile} from '../liquidation-source-weighting.mjs';
 import {createOxArchiveCollector} from '../oxarchive-cost-probe.mjs';
+import {verifyAcquisition} from './runtime-bridge.mjs';
+import {bindGTradeAcquisition,verifyMultiLiquidationAcquisition} from './gtrade-runtime-bridge.mjs';
+import {bindScopedProviderAcquisition} from './scoped-provider-runtime-bridge.mjs';
+import {normalizeNativeHL} from './providers.mjs';
 const require=createRequire(import.meta.url);
 export const PINNED_GTRADE_SDK_VERSION='1.8.10';
 function defaultSdkLoader(){return{version:require('@gainsnetwork/sdk/package.json').version,sdk:require('@gainsnetwork/sdk')};}
-export function classifyOperationalSourceOutcome({status,result=false,actual_http=null}={}){
+export function classifyOperationalSourceOutcome({status,result=false,role_usable=false,actual_http=null}={}){
  const value=String(status||'UNKNOWN').toUpperCase(),knownActual=Number.isSafeInteger(actual_http)?actual_http:null;
  if(/^(SKIPPED_|QUOTA_NOT_GRANTED|SOURCE_PHASE_DEADLINE|.*ALREADY_RESERVED)/.test(value))return{evaluated:false,attempted_http_count:knownActual??0,admission_status:'NOT_DISPATCHED',transport_status:'NOT_ATTEMPTED',schema_status:'NOT_EVALUATED',coverage_status:'NOT_EVALUATED',role_usable:false,failure_origin:'INTERNAL_SCHEDULER'};
  if(value.includes('UNSUPPORTED'))return{evaluated:true,operational_success:true,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:'CLOSED',schema_status:'CLOSED',coverage_status:'UNSUPPORTED',role_usable:false,failure_origin:'COVERAGE'};
- if(result)return{evaluated:true,operational_success:true,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:'CLOSED',schema_status:'CLOSED',coverage_status:'SUPPORTED',role_usable:true,failure_origin:null};
+ if(result)return{evaluated:true,operational_success:true,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:'CLOSED',schema_status:'CLOSED',coverage_status:'SUPPORTED',role_usable:role_usable===true,failure_origin:role_usable===true?null:'ROLE_EVIDENCE_NOT_CLOSED'};
  const quota=value.includes('429')||value.includes('RATE_LIMITED')||value.includes('QUOTA_EXHAUSTED'),schema=value.includes('SCHEMA')||value.includes('IDENTITY')||value.includes('DIGEST');
  return{evaluated:true,operational_success:false,attempted_http_count:knownActual??1,admission_status:'ADMITTED',transport_status:quota?'PROVIDER_RATE_LIMITED':schema?'CLOSED':'FAILED',schema_status:schema?'INVALID':'NOT_CLOSED',coverage_status:'UNKNOWN',role_usable:false,failure_origin:quota?'PROVIDER_QUOTA':schema?'SCHEMA':'TRANSPORT'};
+}
+// Health is about future levels, independently of a successful HTTP/schema read.
+// This preview does not capture maps or manufacture a report/publication identity.
+export function acquisitionHasFreshLevels(raw,{contract,run_id,observed_ts}={}){
+ try{
+  if(raw?.contract!==contract||raw?.run_id!==run_id||!Number.isSafeInteger(observed_ts))return false;
+  if(raw.schema==='NATIVE_LIQUIDATION_ACQUISITION_V1'){
+   if(!verifyAcquisition(raw)||raw.collection_completed_ts>observed_ts||observed_ts-raw.collection_completed_ts>120000)return false;
+   const receipt=normalizeNativeHL({accounts:raw.accounts},{symbol:raw.native_symbol,route_symbol:contract.replace(/-USDT$/,''),run_id,snapshot_id:'ROLE_HEALTH_ONLY',as_of_ms:observed_ts,received_at_ms:raw.collection_completed_ts,max_age_ms:120000});
+   return receipt.usable_for_context===true&&receipt.zones.some(z=>z.notional>0&&((z.liquidated_side==='LONG'&&z.distance_pct<0)||(z.liquidated_side==='SHORT'&&z.distance_pct>0)));
+  }
+  if(raw.schema==='MULTI_LIQUIDATION_ACQUISITION_V1')return verifyMultiLiquidationAcquisition(raw)&&[raw.hyperliquid,raw.gtrade,...(raw.scoped||[])].filter(Boolean).some(item=>acquisitionHasFreshLevels(item,{contract,run_id,observed_ts}));
+  const identity={contract,run_id,snapshot_id:'ROLE_HEALTH_ONLY',observed_ts,direction:null};
+  const bound=raw.schema==='SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1'?bindScopedProviderAcquisition(raw,identity):raw.schema==='GTRADE_LIQUIDATION_ACQUISITION_V1'?bindGTradeAcquisition(raw,identity):null;
+  return bound?.status==='USABLE_SCOPED_NATIVE_CONTEXT'&&[...(bound.above||[]),...(bound.below||[])].some(z=>z.notional>0&&((z.side==='LONG'&&z.distance_pct<0)||(z.side==='SHORT'&&z.distance_pct>0)||z.liquidated_side==='LONG'&&z.distance_pct<0||z.liquidated_side==='SHORT'&&z.distance_pct>0));
+ }catch{return false;}
 }
 // This factory is the one called by generated runner code. OFF makes zero SDK,
 // D1 or HTTP calls. Both providers pass through the SAME request budget and
@@ -80,7 +100,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   // current APIs only verify receipt time; they remain fallback context lanes.
   const ordered=weighted.ordered;
   const deadline=Number(params.deep_started_ts)+Math.min(45000,Number(params.max_deep_ms)||45000);
-const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null,positionProof=null)=>{const usable=Boolean(result),outcome=classifyOperationalSourceOutcome({status,result:usable,actual_http:actualHttp});if(evaluated===false)outcome.evaluated=false;let health={recorded:false,reason:'NOT_EVALUATED'};if(outcome.evaluated&&outcome.failure_origin!=='PROVIDER_QUOTA')try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable:outcome.operational_success===true,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}let roleHealth=null;if(outcome.evaluated&&typeof source_weight_store?.recordRole==='function')try{roleHealth=await source_weight_store.recordRole({source_id:lane,contract:params.contract,run_id:params.run_id,role:lane==='OXARCHIVE_HL_BUCKETS'?'PROJECTED_BUCKET_CONTEXT':'NATIVE_POSITION_CONTEXT',status,role_usable:outcome.role_usable,actual_http:actualHttp,now:clock()});}catch(error){roleHealth={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,...(positionProof?{position_proof:positionProof}:{}),role_health_update:roleHealth,fallback:attempt>1,candidate_http_cap:candidateHttpCap,selection_profile:weighted.profile,source_outcome:outcome,health_update:health});return result;};
+const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null,positionProof=null)=>{const usable=acquisitionHasFreshLevels(result,{contract:params.contract,run_id:params.run_id,observed_ts:clock()}),outcome=classifyOperationalSourceOutcome({status,result:Boolean(result),role_usable:usable,actual_http:actualHttp});if(evaluated===false)outcome.evaluated=false;let health={recorded:false,reason:'NOT_EVALUATED'};if(outcome.evaluated&&outcome.failure_origin!=='PROVIDER_QUOTA')try{health=source_weight_store?await source_weight_store.record({source_id:lane,usable:outcome.operational_success===true,status,now:clock()}):null;}catch(error){health={recorded:false,reason:String(error?.message||error).slice(0,120)};}let roleHealth=null;if(outcome.evaluated&&typeof source_weight_store?.recordRole==='function')try{roleHealth=await source_weight_store.recordRole({source_id:lane,contract:params.contract,run_id:params.run_id,role:lane==='OXARCHIVE_HL_BUCKETS'?'PROJECTED_BUCKET_CONTEXT':'NATIVE_POSITION_CONTEXT',status,role_usable:outcome.role_usable,actual_http:actualHttp,now:clock()});}catch(error){roleHealth={recorded:false,reason:String(error?.message||error).slice(0,120)};}routed.push({contract:params.contract,lane,status,usable,attempt,...(positionProof?{position_proof:positionProof}:{}),role_health_update:roleHealth,fallback:attempt>1,candidate_http_cap:candidateHttpCap,selection_profile:weighted.profile,source_outcome:outcome,health_update:health});return result;};
   async function attemptLane(lane,attempt){
    if(clock()>=deadline)return observe(lane,null,'SOURCE_PHASE_DEADLINE_REACHED',attempt,false);
    if(lane==='OXARCHIVE_HL_BUCKETS'){const coverage=primary.nativeMarketCoverage(params).status;if(coverage==='UNSUPPORTED')return observe(lane,null,'UNSUPPORTED_NATIVE_SYMBOL_VERIFIED_HYPERLIQUID_CATALOG',attempt,true,0);if(coverage!=='SUPPORTED')return observe(lane,null,'SKIPPED_NATIVE_MARKET_COVERAGE_NOT_VERIFIED',attempt,false,0);}

@@ -1,0 +1,1486 @@
+{
+  "info": {
+    "description": "\nRaw per-wallet Hyperliquid state, read straight off my own node: individual\nliquidation buckets, resting stop orders, open positions and trader cohorts.\nNo estimation from open interest anywhere. Refreshed every ~5 minutes.\n\n**This is one of two LiqFlow APIs.**\n\n| | base URL | what it serves |\n|---|---|---|\n| **Node API** (this one) | `https://node.liqflow.app/api` | What the chain says right now: per-wallet positions, liquidation buckets, stop orders, cohorts, and every liquidation as it happens (REST + `wss://node.liqflow.app/ws/liquidations`). |\n| **Data API** | `https://liqflow.app/api` | What I computed: liquidation pressure scores, cross-exchange funding and orderbook depth, cascade history, the strategy forward-test. Snapshots every 4 hours. [Swagger](https://liqflow.app/api/swagger) |\n\nNote the URL shape, because the two sit one character apart: this API uses the\n**singular** `/api/coin/{coin}/\u2026` and the Data API the **plural**\n`/api/coins/{symbol}/\u2026`.\n\nNo key, no signup. 600 requests/minute per IP.\n[Overview of both APIs](https://liqflow.app/docs) \u00b7\nquestions to support@liqflow.app\n",
+    "title": "HL Analytics API",
+    "version": "v2"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Basic health check",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/internal/health": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Detailed health: pipeline last run, node status, parse time, data freshness",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/stats": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Global statistics including wallet count, positions, volume",
+        "tags": [
+          "stats"
+        ]
+      }
+    },
+    "/api/coins": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "List all coins with open positions",
+        "tags": [
+          "coins"
+        ]
+      }
+    },
+    "/api/coin/{coin}/price": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Current mark price for a coin",
+        "tags": [
+          "coins"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/volume": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "24h/7d volume for a coin",
+        "tags": [
+          "coins"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coins/volume": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "All coins volume ranked",
+        "tags": [
+          "coins"
+        ]
+      }
+    },
+    "/api/coins/exposure": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Per-coin exposure ranking: long/short notional, position count",
+        "tags": [
+          "coins"
+        ]
+      }
+    },
+    "/api/cohorts": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "List all 16 cohort definitions",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/api/cohort/{cohort_type}/{label}/summary": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Cohort summary: wallet count, exposure, bias",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "cohort_type",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        {
+          "in": "path",
+          "name": "label",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/cohort/{cohort_type}/{label}/bias-history": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Cohort net_long_ratio over time",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "cohort_type",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        {
+          "in": "path",
+          "name": "label",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/cohort-breakdown": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "All cohorts' exposure for one coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/cohort-metrics": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Time series of all cohort metrics for a coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/cohort/profitability": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Latest profitability cohort data for a coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/cohort/balance": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Latest balance cohort data for a coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/cohort/profitability": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Latest profitability cohort data aggregated across all coins",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/api/aggregate/cohort/balance": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Latest balance cohort data aggregated across all coins",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/api/coin/{coin}/cohort/profitability/history": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Profitability cohort history for a coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/cohort/balance/history": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Balance cohort history for a coin",
+        "tags": [
+          "cohorts"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/cohort/profitability/history": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Profitability cohort history aggregated across all coins",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/api/aggregate/cohort/balance/history": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Balance cohort history aggregated across all coins",
+        "tags": [
+          "cohorts"
+        ]
+      }
+    },
+    "/api/coin/{coin}/liq-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Liquidation level heatmap for a coin",
+        "tags": [
+          "levels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/stop-levels": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "order_type",
+            "description": "Comma-separated list of order types to include. Values: `stopMarket`, `stopLimit`, `takeProfitMarket`, `takeProfitLimit`. Omit to return all four (default).",
+            "schema": {
+              "type": "string",
+              "example": "stopMarket,stopLimit,takeProfitMarket,takeProfitLimit"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "side",
+            "description": "Filter by side. `BUY` matches buy-stops (trigger above mark); `SELL` matches sell-stops (trigger below mark).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BUY",
+                "SELL"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "min_size",
+            "description": "Minimum effective order size (in base-asset units). Orders with `size == 0` (full-position TP/SL) use the absolute position size for comparison.",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return. `0` returns all matching rows (no pagination).",
+            "schema": {
+              "type": "integer",
+              "default": 500
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset. Ignored when `limit=0`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Stop order levels for a coin.",
+        "description": "Returns untriggered stop-market and stop-limit orders whose trigger price\nsits on the correct side of the current mark (sell-stops below, buy-stops\nabove). Rows with unknown mark are included.",
+        "tags": [
+          "levels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/liq-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Liquidation levels aggregated across all coins",
+        "tags": [
+          "levels"
+        ]
+      }
+    },
+    "/api/aggregate/stop-levels": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "order_type",
+            "description": "Comma-separated list of order types to include. Values: `stopMarket`, `stopLimit`, `takeProfitMarket`, `takeProfitLimit`. Omit to return all four (default).",
+            "schema": {
+              "type": "string",
+              "example": "stopMarket,stopLimit,takeProfitMarket,takeProfitLimit"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "side",
+            "description": "Filter by side. `BUY` matches buy-stops (trigger above mark); `SELL` matches sell-stops (trigger below mark).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "BUY",
+                "SELL"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "min_size",
+            "description": "Minimum effective order size (in base-asset units). Orders with `size == 0` (full-position TP/SL) use the absolute position size for comparison.",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max rows to return. `0` returns all matching rows (no pagination).",
+            "schema": {
+              "type": "integer",
+              "default": 500
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Pagination offset. Ignored when `limit=0`.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Stop order levels aggregated across all coins.",
+        "description": "Same filters as the per-coin endpoint. Each row includes a `coin` field.",
+        "tags": [
+          "levels"
+        ]
+      }
+    },
+    "/api/coin/{coin}/combined-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Combined liquidation + stop levels for a coin",
+        "tags": [
+          "levels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/combined-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Combined liquidation + stop levels across all coins",
+        "tags": [
+          "levels"
+        ]
+      }
+    },
+    "/api/coin/{coin}/liq-risk": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Liquidation risk by cohort for a coin",
+        "tags": [
+          "levels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/liq-risk": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Aggregate liquidation risk by cohort across all coins",
+        "tags": [
+          "levels"
+        ]
+      }
+    },
+    "/api/coin/{coin}/positions": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Paginated positions for a coin, filterable by cohort",
+        "tags": [
+          "positions"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/positions/open": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "All open positions, filterable by coin/cohort/side/leverage",
+        "tags": [
+          "positions"
+        ]
+      }
+    },
+    "/api/positions/top": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "The largest open positions across EVERY market, by mark-price notional.",
+        "description": "/coin/<c>/positions answers \"who is biggest in BTC\"; this answers \"who is\nbiggest, full stop\". Ranking is by mark notional rather than the entry\nnotional /positions/open sorts on, because a position opened at half the\ncurrent price is worth what it is worth now, not what it cost.",
+        "tags": [
+          "positions"
+        ]
+      }
+    },
+    "/api/coin/{coin}/positions/heatmap": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Per-cohort position breakdown for a coin",
+        "tags": [
+          "positions"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/wallets": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Paginated wallet list, filterable by cohort/equity/pnl",
+        "tags": [
+          "wallets"
+        ]
+      }
+    },
+    "/api/wallet/{address}": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Single wallet detail with positions and stop orders",
+        "tags": [
+          "wallets"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/orders/latest": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Aggregated order summary across all coins",
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/api/coin/{coin}/orders": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Individual stop orders for a coin, paginated",
+        "tags": [
+          "orders"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/wallet/{address}/orders": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "All stop orders for a specific wallet",
+        "tags": [
+          "orders"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "address",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/coin/{coin}/orderbook": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Order book for a coin (bid/ask levels with depth) from local node",
+        "tags": [
+          "orderbook"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/orderbook": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Top-of-book for the 50 coins carrying the most open position notional.",
+        "tags": [
+          "orderbook"
+        ]
+      }
+    },
+    "/api/coin/{coin}/net-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Net directional pressure: liq_levels + stop_levels - orderbook.\nPositive net = price magnet (more liq/stops than resting orders).",
+        "tags": [
+          "netlevels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/aggregate/net-levels": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Net levels summary across top coins",
+        "tags": [
+          "netlevels"
+        ]
+      }
+    },
+    "/api/coin/{coin}/price-magnet": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Simplified view: nearest significant net-positive levels above/below current price.\nShows where price is likely attracted to based on liq+stop clusters.",
+        "tags": [
+          "netlevels"
+        ]
+      },
+      "parameters": [
+        {
+          "in": "path",
+          "name": "coin",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/leaderboard/pnl": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Wallets ranked by PnL",
+        "tags": [
+          "leaderboard"
+        ]
+      }
+    },
+    "/api/leaderboard/volume": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Wallets ranked by 30d trade volume",
+        "tags": [
+          "leaderboard"
+        ]
+      }
+    },
+    "/api/liquidations": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "coin",
+            "description": "Comma-separated markets, case-insensitive (`BTC,ETH`, `kPEPE`, `xyz:KIOXIA`). Omit for all.",
+            "schema": {
+              "type": "string",
+              "example": "BTC,ETH"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "description": "Inclusive lower bound on fill time. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "description": "Exclusive upper bound on fill time. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "user",
+            "description": "Only this liquidated wallet (0x\u2026).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "side",
+            "description": "Side of the position that was liquidated.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "long",
+                "short"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "min_usd",
+            "description": "Minimum fill notional in USD.",
+            "schema": {
+              "type": "number"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "since_id",
+            "description": "Polling mode: rows with `id` greater than this, OLDEST first. Pass back the `last_id` from the previous response to never miss or repeat a row.",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "before_id",
+            "description": "History paging: rows with `id` less than this, newest first. Pass back `next_before_id`.",
+            "schema": {
+              "type": "integer"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Rows per response, 1-1000.",
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Liquidation fills \u2014 newest first, or oldest first after `since_id`.",
+        "description": "To follow the feed by polling, start with no `since_id`, then send each\nresponse's `last_id` back as `since_id`. To walk back through history, send\n`next_before_id` back as `before_id`.",
+        "tags": [
+          "liquidations"
+        ]
+      }
+    },
+    "/api/liquidations/summary": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "coin",
+            "description": "Comma-separated markets, case-insensitive (`BTC,ETH`, `kPEPE`, `xyz:KIOXIA`). Omit for all.",
+            "schema": {
+              "type": "string",
+              "example": "BTC,ETH"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "start",
+            "description": "Inclusive lower bound on fill time. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "description": "Exclusive upper bound on fill time. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "interval",
+            "description": "Bucket width.",
+            "schema": {
+              "type": "string",
+              "default": "1h",
+              "enum": [
+                "1m",
+                "5m",
+                "15m",
+                "1h",
+                "4h",
+                "1d"
+              ]
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Long and short liquidation notional per time bucket.",
+        "description": "Every bucket in [start, end) is returned, empty ones as zeros, so the series\ncharts directly. Defaults to the last 24h. At most 2,000 buckets per call.\n`gaps` lists windows the node missed \u2014 a zero there means unknown, not calm.",
+        "tags": [
+          "liquidations"
+        ]
+      }
+    },
+    "/api/liquidations/coins": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "start",
+            "description": "Default 24h ago. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "description": "Default now. Epoch ms, epoch seconds, `YYYY-MM-DD`, or ISO-8601 (UTC if no offset).",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "minimum": 1,
+              "maximum": 500
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Liquidation totals per market over a window (default last 24h), largest first.",
+        "tags": [
+          "liquidations"
+        ]
+      }
+    },
+    "/api/liquidations/status": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
+        "summary": "Feed health and coverage, plus how to connect to the live websocket.",
+        "description": "`data_through` is the chain time of the newest fill read (epoch ms);\n`lag_seconds` is how far that trails now. `gaps` are windows the node\nmissed \u2014 the most recent 200.\n\n**Websocket:** `wss://node.liqflow.app/ws/liquidations`, optional query\nparams `coin` (comma-separated), `side`, `min_usd`, `user`, `since_id`\n(replay everything after that id first, so a reconnect loses nothing) and\n`api_key`. Messages are JSON: one `hello`, then `liquidations` batches\n(`data` is a list of the same rows `/liquidations` returns) and a `gap`\nmessage whenever the node is found to have skipped blocks. The server\npings every 20s.",
+        "tags": [
+          "liquidations"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Health and monitoring endpoints"
+    },
+    {
+      "name": "stats",
+      "description": "Global statistics"
+    },
+    {
+      "name": "coins",
+      "description": "Coin data, prices, volume, exposure"
+    },
+    {
+      "name": "cohorts",
+      "description": "Wallet cohort analytics"
+    },
+    {
+      "name": "levels",
+      "description": "Liquidation levels, stop levels, combined"
+    },
+    {
+      "name": "positions",
+      "description": "Position data and heatmaps"
+    },
+    {
+      "name": "wallets",
+      "description": "Wallet data and details"
+    },
+    {
+      "name": "orders",
+      "description": "Stop/trigger order endpoints"
+    },
+    {
+      "name": "orderbook",
+      "description": "Order book data from local node"
+    },
+    {
+      "name": "netlevels",
+      "description": "Net levels (liq + stop - orderbook)"
+    },
+    {
+      "name": "leaderboard",
+      "description": "Wallet leaderboards"
+    },
+    {
+      "name": "liquidations",
+      "description": "Every liquidation on Hyperliquid, all markets, from my node's fill stream (HL's public API has no market-wide liquidation feed). One row per fill on the liquidated side; a liquidation order that fills against several makers spans several rows sharing an `oid`. Rows land within ~2s of the block. History starts 2026-09-24. **Live push:** `wss://node.liqflow.app/ws/liquidations` \u2014 see the `/liquidations/status` description. When the node is down or skips blocks, liquidations in that window are missing; those windows are listed as `gaps`."
+    }
+  ],
+  "openapi": "3.0.3",
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Error code"
+          },
+          "status": {
+            "type": "string",
+            "description": "Error name"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Errors",
+            "additionalProperties": {}
+          }
+        },
+        "additionalProperties": false
+      },
+      "PaginationMetadata": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of items."
+          },
+          "total_pages": {
+            "type": "integer",
+            "description": "Total number of pages."
+          },
+          "first_page": {
+            "type": "integer",
+            "description": "First available page number."
+          },
+          "last_page": {
+            "type": "integer",
+            "description": "Last available page number."
+          },
+          "page": {
+            "type": "integer",
+            "description": "Current page number."
+          },
+          "previous_page": {
+            "type": "integer",
+            "description": "Previous page number."
+          },
+          "next_page": {
+            "type": "integer",
+            "description": "Next page number."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "responses": {
+      "DEFAULT_ERROR": {
+        "description": "Default error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "UNPROCESSABLE_CONTENT": {
+        "description": "Unprocessable Content",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    }
+  }
+}
