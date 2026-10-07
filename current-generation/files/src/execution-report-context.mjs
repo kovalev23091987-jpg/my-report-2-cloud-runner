@@ -38,7 +38,7 @@ export function consumeExecutionReportContext(row,runId){
   const depth=levels=>levels.reduce((sum,[price,quantity])=>sum+price*quantity*f.contract_size_base,0);
   const bid=depth(f.bids),ask=depth(f.asks),spread=(f.asks[0][0]/f.bids[0][0]-1)*10000;
   if(![bid,ask,spread].every(Number.isFinite))return failure('BOOK_DEPTH_ARITHMETIC_INVALID');
-  add('N11','Измеренная глубина стакана',`на снимке ${clock}: bid ${number(bid)} USDT (${f.bids.length} уровней), ask ${number(ask)} USDT (${f.asks.length} уровней), спред ${number(spread)} б.п.; только возвращённый HTX step0, не вся ликвидность рынка`);
+  add('N11','Измеренная глубина стакана',`на снимке ${clock}: bid ${number(bid)} USDT (${f.bids.length} уровней), ask ${number(ask)} USDT (${f.asks.length} уровней), спред ${number(spread)} б.п.; только HTX step0, не вся ликвидность рынка`);
   for(const direction of ['LONG','SHORT']){
    const plan=plans[direction];if(!plan.entry||!plan.exit)continue;
    add('N11',`Проверка размера ${direction}`,`ориентир ${number(f.requested_reference_notional_usdt)} USDT: ${plan.measured_contracts} целых контрактов; вход ${plan.entry.filled_contracts}/${plan.measured_contracts}, выход ${plan.exit.filled_contracts}/${plan.measured_contracts} тем же количеством на снимке; не личная позиция и не гарантия будущего исполнения`);

@@ -43,12 +43,12 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
   if(!pin&&typeof admit_position_snapshot==='function'){
    if(batchContracts.length>2||new Set(batchContracts).size!==batchContracts.length||!batchContracts.includes(contract)||batchContracts.some(x=>typeof x!=='string'||!/^([^\s-]+)-USDT$/u.test(x)))throw Error('GTRADE_SELECTED_CONTRACT_BATCH_INVALID');
    const markets=snapshot.hint_markets??batchContracts.map(code=>({contract:code,symbol:code.replace(/-USDT$/,''),market:resolveGTradeCryptoMarket(snapshot.variables,code.replace(/-USDT$/,''))})).filter(x=>x.market.supported).map(x=>({...x,selection:selectGTradePinnedPositionSample(snapshot.trades,x.market.pair_index)}));
-   const selected=markets.flatMap(x=>x.selection.selected);
+   const selected=markets.flatMap(x=>x.selection.selected),exactSelected=Boolean(snapshot.hint_markets&&selected.length<=2);
    if(selected.length){
     const grant=await admit_position_snapshot();
     let raw=null,body=null,status,reason=null;
     if(grant?.allowed===true&&grant?.new_reservation===true){
-     body=buildGTradePinnedRpcBatch({current_block:snapshot.variables.currentBlock,selected});
+     body=buildGTradePinnedRpcBatch({current_block:snapshot.variables.currentBlock,selected,exact_selected:exactSelected});
      pinCalls=1;
      raw=await readJson(rpcUrl,{method:'POST',body,fetch_impl,clock,timeout_ms:Math.max(1,Math.min(10000,Number(deadline_ts)-clock())),max_bytes:2000000});
      status=raw.ok?'GTRADE_PINNED_SNAPSHOT_NOT_CLOSED':'GTRADE_PINNED_RPC_'+raw.reason;
@@ -57,7 +57,7 @@ export function createGTradeRuntimeCollector({sdk,fetch_impl=globalThis.fetch,cl
     for(const entry of markets.filter(x=>x.selection.selected.length)){
      let result={status,reason,requests:pinCalls,receipt:raw?.receipt??null,rpc_url:rpcUrl,batch_contracts:batchContracts,selected_discovery_positions:entry.selection.selected.length};
      if(raw?.ok)try{
-      const decoded=decodeGTradePinnedRpcSnapshot({body,response:raw.payload,selected,current_block:snapshot.variables.currentBlock,pair_index:entry.market.pair_index,receipt:raw.receipt,as_of_ms:clock(),discovery_basis:snapshot.hint_markets?'VERIFIED_STRUCTURAL_IDS_FRESH_NATIVE_REREAD':'CURRENT_OPEN_TRADES_ENDPOINT'});
+      const decoded=decodeGTradePinnedRpcSnapshot({body,response:raw.payload,selected,current_block:snapshot.variables.currentBlock,pair_index:entry.market.pair_index,receipt:raw.receipt,as_of_ms:clock(),exact_selected:exactSelected,discovery_basis:snapshot.hint_markets?'VERIFIED_STRUCTURAL_IDS_FRESH_NATIVE_REREAD':'CURRENT_OPEN_TRADES_ENDPOINT'});
       if(!routingNotified){routingNotified=true;const payload={observation:decoded.routing_observation,variables:snapshot.variables,crypto_assets,now:clock()};const next=buildGTradePositionRouting({previous:currentRouting,...payload});if(next)currentRouting=next;if(typeof on_position_routing==='function')try{await on_position_routing(payload);}catch{}}
       result={...result,status:decoded.trades.length?'GTRADE_PINNED_OPEN_POSITIONS_CLOSED':'GTRADE_PINNED_SELECTED_POSITIONS_NO_LONGER_OPEN',reason:null,...decoded,candidate_position_count:entry.selection.candidate_count};
      }catch(error){result.reason=String(error.message).slice(0,160);}
