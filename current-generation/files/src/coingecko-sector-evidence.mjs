@@ -3,7 +3,7 @@ import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {createProviderReferenceReader} from './provider-reference-cache.mjs';
 
-export const COINGECKO_SECTOR_VERSION='coingecko-sector-v5-exact-target-outside-category-page-20261007';
+export const COINGECKO_SECTOR_VERSION='coingecko-sector-v6-exact-missing-or-stale-target-20261007';
 const SOURCE='COINGECKO_SECTOR',MAX_AGE=900000,clean=v=>String(v??'').trim();
 const num=v=>v===null||v===undefined||v===''||typeof v==='boolean'?null:Number.isFinite(Number(v))?Number(v):null;
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
@@ -109,13 +109,15 @@ export async function collectCoingeckoSectorEvidence({db,fetch_impl=globalThis.f
  const quotes=match?await get('CATEGORY_QUOTES',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=${category_id}&order=market_cap_desc&per_page=100&page=1&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual}):null;
  let normalized=normalizeCoingeckoSector({metadata,categories,quotes,identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
  // A category page contains the top100 peers, not necessarily this exact asset.
- // Resolve ONLY its missing quote, using the already verified category/identity.
- // One separately admitted request; never pagination or additional peer votes.
- if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&!quotes.some(r=>r?.id===coin_id)){
+ // Resolve its missing or stale exact-ID quote under separate admission.
+ // Duplicate identities, future clocks and same-symbol peers remain invalid;
+ // refreshing the target never refreshes peers or creates extra peer votes.
+ const targetRows=Array.isArray(quotes)?quotes.filter(r=>r?.id===coin_id):[],targetSymbol=contract.replace(/-USDT$/,''),targetTs=Date.parse(targetRows[0]?.last_updated),sameSymbolPeer=Array.isArray(quotes)&&quotes.some(r=>r?.id!==coin_id&&clean(r?.symbol).toUpperCase()===targetSymbol),refreshScope=targetRows.length===0?'EXACT_ID_OUTSIDE_CATEGORY_PAGE':targetRows.length===1&&clean(targetRows[0]?.symbol).toUpperCase()===targetSymbol&&Number.isFinite(targetTs)&&targetTs<=Date.now()&&Date.now()-targetTs>MAX_AGE?'EXACT_ID_REFRESH_STALE_CATEGORY_ROW':null;
+ if(normalized.status==='EXACT_FRESH_TARGET_QUOTE_REQUIRED'&&Array.isArray(quotes)&&refreshScope&&!sameSymbolPeer){
   const targetQuotes=await get('EXACT_TARGET_QUOTE',`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${encodeURIComponent(coin_id)}&sparkline=false`,{ttl_ms:60000,shape:Array.isArray,bypass_cache:strict_fresh_manual});
   if(Array.isArray(targetQuotes)&&targetQuotes.length===1&&targetQuotes[0]?.id===coin_id){
-   normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes,targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
-   if(normalized.status==='CLOSED'){normalized.summary.returned_category_rows=quotes.length;normalized.summary.target_quote_route='EXACT_ID_OUTSIDE_CATEGORY_PAGE';Object.assign(normalized.evidence[0],{returned_category_rows:quotes.length,target_quote_route:'EXACT_ID_OUTSIDE_CATEGORY_PAGE'});}
+   normalized=normalizeCoingeckoSector({metadata,categories,quotes:[...quotes.filter(r=>r?.id!==coin_id),targetQuotes[0]],identity,contract,coin_id,category_id,category_name,asset_platforms,observed_ts:Date.now()});
+   if(normalized.status==='CLOSED'){normalized.summary.returned_category_rows=quotes.length;normalized.summary.target_quote_route=refreshScope;normalized.summary.previous_target_source_ts=targetRows.length?targetTs:null;Object.assign(normalized.evidence[0],{returned_category_rows:quotes.length,target_quote_route:refreshScope,previous_target_source_ts:targetRows.length?targetTs:null});}
   }
  }
  const transport=reader.summary(),providerBackoff=transport.provider_backoff;
