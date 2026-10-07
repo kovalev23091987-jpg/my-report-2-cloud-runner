@@ -1,0 +1,834 @@
+{
+  "schema": "ACTUAL_POST_PR216_READBACK_20261007_V1",
+  "workflow_run": 37613818795,
+  "head": "9220553913c6ce2119fb620d15640a4978fa79d5",
+  "run_id": "1791372266789-1791372276617",
+  "generated_at": "2026-10-07T11:26:31.950Z",
+  "status": "CLOSED",
+  "pipeline_health": {
+    "status": "HEALTHY_NO_IDEA",
+    "reason": null
+  },
+  "scan": {
+    "universe_total": 102,
+    "scanned": 102,
+    "errors": 0,
+    "stale": 0,
+    "stage0_coverage_pct": 100,
+    "complete": true
+  },
+  "canonical_persistence_audit": {
+    "schema": "CANONICAL_CANDIDATE_SET_AUDIT_V1",
+    "status": "CLOSED",
+    "run_id": "1791372266789-1791372276617",
+    "expected_contracts": [
+      "UNI-USDT",
+      "ZEC-USDT"
+    ],
+    "present_contracts": [
+      "ZEC-USDT",
+      "UNI-USDT"
+    ],
+    "missing_contracts": [],
+    "expected_candidate_count": 2,
+    "present_candidate_count": 2,
+    "missing_is_technical_not_no_market_idea": false
+  },
+  "artifact_id": 11479037155,
+  "artifact_digest": "sha256:2663e1487547321a604cabf073ca65b26fa020daa5c83e4b001f31d442e4e518",
+  "telegram_artifact_id": 11479132104,
+  "telegram_artifact_digest": "sha256:70035ddef466ef82f5c8d4924709ddb75bf57f6d7eddf4ca677a13b66fb61a7d",
+  "candidates": [
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:517b44d379baf09d6400c89c4c74afaad0428b0b",
+      "run_id": "1791372266789-1791372276617",
+      "snapshot_id": "S392:ZEC-USDT:1791372385032",
+      "wave_id": "EDW:ZEC-USDT:1791372276815:G6",
+      "observed_ts": 1791372385032,
+      "direction": "SHORT",
+      "state": "REJECTED",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 91,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "blocks_checked": 10,
+      "blocks_participating": 8,
+      "participating_ids": [
+        "N02",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N15",
+        "N16"
+      ],
+      "blocks_score_applied": 2,
+      "neutral_assessed_rendered": 6,
+      "nonzero_contributions": {
+        "N12": -0.017,
+        "N15": -0.09
+      },
+      "source_role_publication_audit": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "ZEC-USDT",
+        "run_id": "1791372266789-1791372276617",
+        "snapshot_id": "S392:ZEC-USDT:1791372385032",
+        "observed_ts": 1791372385032,
+        "status": "CLOSED",
+        "observation_source_gate_closed": true,
+        "reasons": [],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "classified_receipt_count": 21,
+        "usable_role_receipt_count": 16,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 1,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 1,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 3
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372341494,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791360000000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 43200,
+            "normalized_value": 6.97070507743e-05
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "OPEN_INTEREST_CURRENT",
+            "assigned_roles": [
+              "OI_CURRENT_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791372350446,
+            "received_ts": 1791372341494,
+            "max_age_sec": 900,
+            "normalized_value": 157505190.9632
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -1.2400039341186386
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 0.0001
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 0.013271062259168076
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -1.2573477678672673
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 7.9113459562600905
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -0.9719383723641339
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -0.37676628990804817
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -0.6470191212110898
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 0.2535147910206259
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -1.359394052400631
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 0.774548169470413
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "SPOT_TURNOVER_24H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_BTC_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": -0.1854055522692518
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_ETH_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372341494,
+            "max_age_sec": 7200,
+            "normalized_value": 0.001007111591150627
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372341494,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372341494,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372341494,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1791372384768,
+            "received_ts": 1791372385032,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "future_levels_status": "NOT_AVAILABLE",
+      "levels_above": [],
+      "levels_below": [],
+      "safety_hard_veto_status": "CLEAR",
+      "telegram": {
+        "contract": "ZEC-USDT",
+        "status": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "reason": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "current_status": null,
+        "dispatch": null
+      },
+      "diagnosis_scope": "Canonical state rejection is exact; original scenario/observation refusal cause is not exposed in this artifact. Source roles and safety clear are not publication acceptance."
+    },
+    {
+      "contract": "UNI-USDT",
+      "publication_id": "PUB:206703881daa5b2610ef6df38f9677ed09cf24db",
+      "run_id": "1791372266789-1791372276617",
+      "snapshot_id": "S392:UNI-USDT:1791372337374",
+      "wave_id": "EDW:UNI-USDT:1791372276815:G5",
+      "observed_ts": 1791372337374,
+      "direction": "SHORT",
+      "state": "REJECTED",
+      "scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 100,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "blocks_checked": 12,
+      "blocks_participating": 9,
+      "participating_ids": [
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "blocks_score_applied": 1,
+      "neutral_assessed_rendered": 8,
+      "nonzero_contributions": {
+        "N12": 0.0146
+      },
+      "source_role_publication_audit": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "UNI-USDT",
+        "run_id": "1791372266789-1791372276617",
+        "snapshot_id": "S392:UNI-USDT:1791372337374",
+        "observed_ts": 1791372337374,
+        "status": "CLOSED",
+        "observation_source_gate_closed": true,
+        "reasons": [],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "GATE_OFFICIAL",
+          "HTX_OFFICIAL",
+          "OKX_OFFICIAL"
+        ],
+        "classified_receipt_count": 21,
+        "usable_role_receipt_count": 16,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 1,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 1,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 3
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372290474,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791360000000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 43200,
+            "normalized_value": 2.85839511889e-05
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "OPEN_INTEREST_CURRENT",
+            "assigned_roles": [
+              "OI_CURRENT_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791372300003,
+            "received_ts": 1791372290474,
+            "max_age_sec": 900,
+            "normalized_value": 48677589.936
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -2.7175237631001714
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [
+              "FUNDING_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": 0.0001
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [
+              "OI_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": 0.00010426077288183677
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [
+              "PRICE_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -2.7652576440492127
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [
+              "TRADES_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "GATE_OFFICIAL",
+            "event_ts": 1791370800000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": 44.69453376205787
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -0.6897939329894798
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_1H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -0.094621850533394
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -2.223022461086499
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_4H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -1.3224885488547833
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_BTC_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -7.254537931350091
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "RS_VS_ETH_24H",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -5.120595709479048
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "SPOT_TURNOVER_24H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_BTC_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -0.390983475642721
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "DOWN_MARKET_RS_VS_ETH_RAW",
+            "assigned_roles": [
+              "RELATIVE_STRENGTH_CROSS_VENUE"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "OKX_OFFICIAL",
+            "event_ts": 1791367200000,
+            "received_ts": 1791372290474,
+            "max_age_sec": 7200,
+            "normalized_value": -0.28142864256860545
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372290474,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372290474,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791372290474,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1791372337093,
+            "received_ts": 1791372337373,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+      "levels_above": [],
+      "levels_below": [
+        {
+          "kind": "NATIVE_FUTURE_LEVEL",
+          "price": 7.9099994233,
+          "price_quote": "USDC",
+          "distance_pct": -0.3954035396781408,
+          "distance_reference_price": 7.941400000000001,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "BELOW",
+          "liquidated_side": "BUYERS",
+          "notional": 343267.80914,
+          "notional_unit": "USDC",
+          "exact_notional_usdt": null,
+          "exact_amount_available": true,
+          "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+          "strength_label_ru": "крупная",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "Hyperliquid official",
+          "venue": null,
+          "source_ts": 1791372326768,
+          "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+          "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+          "native_reference_price": 7.941400000000001,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "fb404563ee89a94ed0c24e7b0e9f5c9fc75d9e0a112e1dc94f7dad328e2060a9",
+          "decision_target_eligible": false,
+          "estimated": false,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 7.9099994233,
+          "notional_usdt": 343267.80914,
+          "corroborating_sources": [
+            "Hyperliquid official"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "Hyperliquid official"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 7.9099994233,
+              "source": "Hyperliquid official",
+              "independence_group": "Hyperliquid official",
+              "estimated": false
+            }
+          ],
+          "selection_roles": [
+            "LARGEST_VISIBLE",
+            "NEAREST_NONZERO",
+            "FARTHEST_VISIBLE"
+          ]
+        }
+      ],
+      "safety_hard_veto_status": "CLEAR",
+      "telegram": {
+        "contract": "UNI-USDT",
+        "status": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "reason": "CANONICAL_STATE_NOT_PUBLISHABLE",
+        "current_status": null,
+        "dispatch": null
+      },
+      "diagnosis_scope": "Canonical state rejection is exact; original scenario/observation refusal cause is not exposed in this artifact. Source roles and safety clear are not publication acceptance."
+    }
+  ],
+  "same_run_approved_SENT": false,
+  "new_message_ids": [],
+  "historical_NEAR_SENT153_is_not_new_acceptance": true,
+  "full_86_16_24_completion": false
+}

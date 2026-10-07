@@ -1,0 +1,40 @@
+{
+  "schema": "DYDX_CONDITIONAL_NATIVE_MODEL_RELEASE_20261007_V1",
+  "pr": 217,
+  "production_head": "a657f3a392c100ab47665ae8bed494d35fee5c4f",
+  "tested_head": "4d60a88b723f00b8c7c476a06fb9f0ac732e7052",
+  "cloud_run": 37614956070,
+  "artifact_id": 11479633249,
+  "artifact_digest": "sha256:6c62ce5fceed94fc9fd991d2845a47c5d788232e13f7e4271e11ff350ea53490",
+  "status": "VERIFIED_PRODUCER_ASSEMBLED_PRODUCTION_COLLECTION_PENDING",
+  "source_input_evidence": "checkpoints/DYDX_PINNED_NATIVE_CAPABILITY_20261007.json",
+  "model_proof": "checkpoints/DYDX_CONDITIONAL_NATIVE_MODEL_PROOF_20261007.json",
+  "tests": {
+    "focused": 9,
+    "independently_decoded_actual_Gob_values": 334,
+    "independent_actual_risk_cases": 6,
+    "assembly_cmp": "PASS",
+    "current_generation": "PASS"
+  },
+  "historical_sample_assets": [
+    "WIF",
+    "ETH"
+  ],
+  "native_block": "108434861",
+  "source_ts": 1791371573962,
+  "calculated_levels_verified": 2,
+  "exact_exchange_native_levels": 0,
+  "production_source_activation": false,
+  "MAIN": 0,
+  "Telegram": 0,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "constraints": [
+    "Complete account includes all positions as collateral/risk inputs; only verified HTX crypto asset targets can produce output levels",
+    "Aggregate funding floor, signed notional truncation, base IMF ceiling and maintenance ceiling match independent Go reference",
+    "Other oracle prices and funding fixed at the original block; not an exact exchange LP or HTX entry/target",
+    "Historical replay clock is not updated to current time",
+    "Next work: bounded admission, automatic structural routing/discovery, consumer and cloud proof before activation"
+  ],
+  "full_owner_task_completion": false
+}
