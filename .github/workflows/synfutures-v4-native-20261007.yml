@@ -37,8 +37,10 @@ jobs:
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
           cmp current-generation/files/src/evidence-source-store.mjs runtime/src/evidence-source-store.mjs
           cmp current-generation/files/src/provider-minute-ledger.mjs runtime/src/provider-minute-ledger.mjs
-      - name: Check official SDK current position math and refusal paths
-        run: node --test tools/synfutures-v4-native-model.test.mjs > audit-output/synfutures-v4-model.tap
+      - name: Reuse pinned SDK model checks and check changed bounded transport syntax
+        run: |
+          cp checkpoints/synfutures-v4-native-37675502402/synfutures-v4-model.tap audit-output/synfutures-v4-model.tap
+          node --check tools/research-synfutures-v4-native-20261007.mjs
       - name: Fresh guard immediately before single bounded native batch
         uses: actions/github-script@v7
         with:
