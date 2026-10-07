@@ -1,0 +1,120 @@
+{
+  "schema": "OWNER_FULL_TZ_CONTINUATION_20261008_V1",
+  "saved_ts": 1791412825725,
+  "main_before_status_save": "0b909e78a0b5ecfcdad10e239f42b60048fcf086",
+  "latest_prs": [
+    232,
+    233,
+    234
+  ],
+  "development_lease_released": true,
+  "current_phase": "FULL_OWNER_TZ_IN_PROGRESS",
+  "project_complete": false,
+  "actual_ENTRY_verified": false,
+  "entry_release": {
+    "status": "MERGED_ASSEMBLED_VERIFIED_NATURAL_ENTRY_PENDING",
+    "pr": 234,
+    "merge_head": "0b909e78a0b5ecfcdad10e239f42b60048fcf086",
+    "tested_head": "4d61f0fad84d7abe01ed9ece5e4e13b1fe2f17f9",
+    "cloud_run": 37697248294,
+    "artifact_id": 11516485250,
+    "artifact_digest": "sha256:486919b1091b6e985c199a851b6cf4f13a1c20a1946919cda9d8f80f605a0c94",
+    "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
+    "owner_amendment": "checkpoints/OWNER_ENTRY_TRANSITION_REPAIR_20261008.md",
+    "tests": {
+      "trigger_and_cadence": 16,
+      "approved_delivery": 35,
+      "integration": 37
+    },
+    "actual_original_task": {
+      "source_cloud_run": 37681792251,
+      "read_cloud_run": 37696777714,
+      "read_head": "71289d780a6ab8124666be2e69d5fe679cd61a63",
+      "read_ts": 1791412336448,
+      "run_id": "1791404713379-1791404725011",
+      "snapshot_id": "S392:BOME-USDT:1791404783785",
+      "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+      "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+      "message_id": "155",
+      "task_id": "RCHK:5370089c9e7291d14b2e962d1187ce09f2d755ff",
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "original_ttl_minutes": 30,
+      "regular_analytics_minutes": 40,
+      "actual_price_crossing_proven": false,
+      "receipt": "checkpoints/entry-trigger-recheck-tests-37696777714/actual-entry-transition-read.json"
+    },
+    "budget": {
+      "regular_minutes": 40,
+      "collector_minutes": 5,
+      "one_candidate_per_burst": true,
+      "burst_attempts_per_UTC_day": 3,
+      "manual_commands_per_day": 8,
+      "failed_attempt_consumes_slot": true,
+      "admission_D1_reservation": {
+        "rows_read": 1500,
+        "rows_written": 16
+      },
+      "maximum_with_all72_admission_ledgers": {
+        "rows_read": 3482000,
+        "rows_written": 67312
+      },
+      "monthly_units": 13330
+    },
+    "entry_gates_changed": false,
+    "source_clocks_refreshed": false,
+    "original_ttl_unchanged": true,
+    "original_sent_preserved": true,
+    "price_alone_authorizes_ENTRY": false,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "limitations": [
+      "Exact current fresh SENT trigger receipt is required; no inference of overwritten historical prices.",
+      "Existing three/day burst cap and actual job timing can defer or prevent review before original TTL; universal monitoring is not proved.",
+      "Stored BOME has no proven target/cost plan; a price crossing alone would not prove strict entry readiness.",
+      "Controlled strict ENTRY reachability is not a delivered production ENTRY or empirical profitability acceptance."
+    ]
+  },
+  "liquidation_release": {
+    "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
+    "prs": [
+      232,
+      233
+    ],
+    "merge_heads": [
+      "f44ed26c775c26ca9d274fed6eff0c2d8528421a",
+      "bd949e793a517df5c97baae40edebf60b183dfff"
+    ],
+    "proof": "checkpoints/LIQUIDATION_ALL_PATHS_CONNECTED_VERIFICATION_20261008.json",
+    "cloud_run": 37695156120,
+    "artifact_id": 11514847398,
+    "artifact_digest": "sha256:5d45de4fae18be6cf58c242f92b8ded4c120d78a16793fa82759cbe158c02d15",
+    "tests": {
+      "related": 24,
+      "approved_delivery": 35,
+      "integration": 37
+    },
+    "new_fresh_SENT": false,
+    "old_native_raw_independently_revalidated": false,
+    "display_max_distance_pct": 100,
+    "display_cap_is_engineering_bound_not_strategy_calibration": true,
+    "original_sent155_preserved": true
+  },
+  "prior_full_handoff": "checkpoints/CONTINUATION_STATE_20261007_2110.json",
+  "full_register": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+  "next_action": "Continue full register from saved proofs. Priority: actual triggered recheck/full entry-gate trace; then N01/N02/N05/N12/N15 and mature prospective history/outcomes. No repeated original SENT155 read or forced Telegram.",
+  "do_not_repeat": [
+    "Exact SENT155 D1 read37696777714",
+    "Successful composed entry/cadence16+delivery35+integration37 cloud37697248294",
+    "Liquidation related24+delivery35+integration37 cloud37695156120",
+    "Known SynFutures rate-limit and Veranta repeated404/reverted Multicall probes"
+  ],
+  "preserved_future_work": [
+    "Full block/source coverage and source→consumer→report acceptance",
+    "BR complete240-minute original-window N05 failure",
+    "Mature actual prospective outcomes/history/denominators; no fabricated chronology or statistical acceptance",
+    "Native liquidation universe coverage; presentational cleanup is not complete market coverage"
+  ],
+  "production_schedules_are_existing": true,
+  "new_chat_automation_created": false
+}

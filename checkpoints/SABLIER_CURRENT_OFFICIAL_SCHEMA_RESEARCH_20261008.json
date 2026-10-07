@@ -1,0 +1,41 @@
+{
+  "schema": "SABLIER_CURRENT_OFFICIAL_INDEXER_SCHEMA_RESEARCH_V1",
+  "status": "RESEARCH_ONLY_QUOTA_AND_ACTUAL_MATCHING_LOCKUP_FACT_NOT_QUALIFIED",
+  "saved_ts": 1791412825725,
+  "official_repo": "sablier-labs/indexers",
+  "ref": "838607015f1cf35ce93648e6ec20afa5f76aa673",
+  "sources": [
+    {
+      "url": "https://github.com/sablier-labs/indexers/blob/838607015f1cf35ce93648e6ec20afa5f76aa673/src/schemas/streams.graphql",
+      "git_blob_sha": "077f94a5b64659b97b09a42c5948eae078bbd95c",
+      "retained_path": "checkpoints/sablier-schema-research-20261008/streams.graphql"
+    },
+    {
+      "url": "https://github.com/sablier-labs/indexers/blob/838607015f1cf35ce93648e6ec20afa5f76aa673/schema/common/indexer-info.graphql",
+      "git_blob_sha": "abbe8f7a31f5d86ea025b24dc3763fc4a600aba7",
+      "retained_path": "checkpoints/sablier-schema-research-20261008/indexer-info.graphql"
+    },
+    {
+      "url": "https://github.com/sablier-labs/indexers/blob/838607015f1cf35ce93648e6ec20afa5f76aa673/envio/streams/config.yaml",
+      "git_blob_sha": "356a73d847e14b3e2e0f5be66a3cca0f8d1a0e49",
+      "retained_path": "checkpoints/sablier-schema-research-20261008/config.yaml"
+    }
+  ],
+  "docs_url": "https://docs.sablier.com/api/streams/indexers",
+  "public_graphql_endpoint": "https://indexer.hyperindex.xyz/53b7e25/v1/graphql",
+  "facts": [
+    "Lockup schema exposes exact asset/chain/decimals, contract/version, stream amounts, cancellation and timing/segment inputs.",
+    "Flow is not a closed fixed future vesting schedule.",
+    "IndexerInfo.deployedAt is approximate deploy preparation, not a current stream/native state timestamp.",
+    "Historical sb-labs/lockup repo redirects to sablier-labs/evm-monorepo; do not repeat stale missing-repo lookup."
+  ],
+  "unqualified": [
+    "Documented numeric public production request allowance.",
+    "Successful bounded source-clock-pinned matching active Lockup response and exact HTX asset identity.",
+    "Assigned N01 consumer and report/SENT proof."
+  ],
+  "new_graphql_POST": 0,
+  "production_provider_enabled": false,
+  "source_clock_refreshed": false,
+  "provider_accepted": false
+}

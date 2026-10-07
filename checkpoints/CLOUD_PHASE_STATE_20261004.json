@@ -170,17 +170,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:20261008:1791409775850:full-tz-native-core",
-    "acquired_ts": 1791409775850,
-    "expires_ts": 1791415089534,
-    "scope": "OWNER_AUTHORIZED_FULL_TZ_ENTRY_TRANSITION_AND_LIQUIDATION_RELEVANCE"
-  },
-  "next_action": "Repair and verify exact SENT OBSERVE/WAIT price-trigger to fresh full analysis admission; retain all strict ENTRY gates and existing budgets. Full register remains open.",
+  "lease": null,
+  "next_action": "Continue full register from saved proofs. Priority: actual triggered recheck/full entry-gate trace; then N01/N02/N05/N12/N15 and mature prospective history/outcomes. No repeated original SENT155 read or forced Telegram.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791411789534,
+  "updated_ts": 1791412825725,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -231,11 +226,12 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:37690184787",
-    "acquired_ts": 1791408783399,
-    "expires_ts": 1791409263399,
-    "released_ts": 1791408816254,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "HTX:20261008:1791409775850:full-tz-native-core",
+    "acquired_ts": 1791409775850,
+    "expires_ts": 1791415089534,
+    "scope": "OWNER_AUTHORIZED_FULL_TZ_ENTRY_TRANSITION_AND_LIQUIDATION_RELEVANCE",
+    "released_ts": 1791412825725,
+    "reason": "Merged PR232/233/234 composed proofs and exact actual SENT155 diagnosis saved; full project acceptance remains open."
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -361,7 +357,7 @@
     "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt",
     "superseded_by": "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md"
   },
-  "latest_status": "LIQUIDATION_RELEVANCE_RELEASED_ENTRY_TRANSITION_IN_PROGRESS",
+  "latest_status": "ENTRY_TRANSITION_AND_LIQUIDATION_RELEVANCE_MERGED_FULL_TZ_OPEN",
   "latest_actual_readback": {
     "evidence": "checkpoints/POST_PR227_NATURAL_RETAINED_READBACK_20261007.json",
     "workflow_run": 37663457675,
@@ -2117,9 +2113,8 @@
     "masked_next_due_number_not_reconstructed": true
   },
   "latest_continuation_handoff": {
-    "path": "checkpoints/CONTINUATION_20261007_2110.md",
-    "state": "checkpoints/CONTINUATION_STATE_20261007_2110.json",
-    "verified_main_before_save": "4c191e434c6296f50b35347e5779eb56a436283d"
+    "state": "checkpoints/CONTINUATION_STATE_20261008_ENTRY_RECHECK.json",
+    "verified_main_before_save": "0b909e78a0b5ecfcdad10e239f42b60048fcf086"
   },
   "latest_liquidation_relevance_release": {
     "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
@@ -2147,13 +2142,74 @@
     "original_sent155_preserved": true
   },
   "entry_transition_work": {
-    "status": "IN_PROGRESS",
-    "owner_request": "Owner reports that advertised trigger conditions repeatedly occurred but no ENTRY was delivered; diagnose and repair full continuation without lowering gates.",
-    "confirmed_gap": "30-minute observation TTL with full analytics40minutes; five-minute price receipt records TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED but does not admit full analysis.",
-    "prior_diagnosis": "checkpoints/recheck-cadence-original-clock-diagnosis-20261006.json",
-    "prior_light_release": "checkpoints/light-price-recheck-release-20261006.json",
-    "not_all_absent_entries_explained": true,
-    "proposed_scope": "Use existing3/day one-candidate burst reserve for exact current SENT trigger receipt before original TTL; preserve regular40min cadence, source freshness,8manual, all entry gates.",
-    "actual_live_entry_verified": false
-  }
+    "status": "MECHANICAL_CHAIN_MERGED_CONNECTED_VERIFIED; PRODUCTION_ENTRY_AND_FULL_REGISTER_OPEN",
+    "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
+    "actual_ENTRY_verified": false,
+    "remaining_action": "Read one naturally admitted fresh trigger-recheck source→full gates→canonical→dispatch receipt when it exists. Preserve source timestamps and record the exact blocker if not ENTRY; do not force an entry or repeat unchanged probes."
+  },
+  "latest_entry_transition_release": {
+    "status": "MERGED_ASSEMBLED_VERIFIED_NATURAL_ENTRY_PENDING",
+    "pr": 234,
+    "merge_head": "0b909e78a0b5ecfcdad10e239f42b60048fcf086",
+    "tested_head": "4d61f0fad84d7abe01ed9ece5e4e13b1fe2f17f9",
+    "cloud_run": 37697248294,
+    "artifact_id": 11516485250,
+    "artifact_digest": "sha256:486919b1091b6e985c199a851b6cf4f13a1c20a1946919cda9d8f80f605a0c94",
+    "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
+    "owner_amendment": "checkpoints/OWNER_ENTRY_TRANSITION_REPAIR_20261008.md",
+    "tests": {
+      "trigger_and_cadence": 16,
+      "approved_delivery": 35,
+      "integration": 37
+    },
+    "actual_original_task": {
+      "source_cloud_run": 37681792251,
+      "read_cloud_run": 37696777714,
+      "read_head": "71289d780a6ab8124666be2e69d5fe679cd61a63",
+      "read_ts": 1791412336448,
+      "run_id": "1791404713379-1791404725011",
+      "snapshot_id": "S392:BOME-USDT:1791404783785",
+      "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+      "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+      "message_id": "155",
+      "task_id": "RCHK:5370089c9e7291d14b2e962d1187ce09f2d755ff",
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "original_ttl_minutes": 30,
+      "regular_analytics_minutes": 40,
+      "actual_price_crossing_proven": false,
+      "receipt": "checkpoints/entry-trigger-recheck-tests-37696777714/actual-entry-transition-read.json"
+    },
+    "budget": {
+      "regular_minutes": 40,
+      "collector_minutes": 5,
+      "one_candidate_per_burst": true,
+      "burst_attempts_per_UTC_day": 3,
+      "manual_commands_per_day": 8,
+      "failed_attempt_consumes_slot": true,
+      "admission_D1_reservation": {
+        "rows_read": 1500,
+        "rows_written": 16
+      },
+      "maximum_with_all72_admission_ledgers": {
+        "rows_read": 3482000,
+        "rows_written": 67312
+      },
+      "monthly_units": 13330
+    },
+    "entry_gates_changed": false,
+    "source_clocks_refreshed": false,
+    "original_ttl_unchanged": true,
+    "original_sent_preserved": true,
+    "price_alone_authorizes_ENTRY": false,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "limitations": [
+      "Exact current fresh SENT trigger receipt is required; no inference of overwritten historical prices.",
+      "Existing three/day burst cap and actual job timing can defer or prevent review before original TTL; universal monitoring is not proved.",
+      "Stored BOME has no proven target/cost plan; a price crossing alone would not prove strict entry readiness.",
+      "Controlled strict ENTRY reachability is not a delivered production ENTRY or empirical profitability acceptance."
+    ]
+  },
+  "current_release_new_fresh_SENT": false
 }
