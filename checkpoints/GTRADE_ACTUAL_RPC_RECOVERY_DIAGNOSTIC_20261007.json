@@ -1,0 +1,567 @@
+{
+  "schema": "GTRADE_ACTUAL_RPC_FAILURE_DIAGNOSTIC_20261007_V1",
+  "github_head": "567726d9d67c40bb4a5e8c01a1437868dee3db55",
+  "run_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+  "started_ts": 1791380590040,
+  "contract": "RAY-USDT",
+  "reason": "Natural actual Top2 report37628961697 at834619f RAY failed pinned RPC with GTRADE_PINNED_RPC_RESPONSE_INVALID. Retain the missing exact error and verify the same bounded current native route; no unchanged MAIN or Telegram replay.",
+  "source_http_cap": 4,
+  "MAIN": 0,
+  "Telegram": 0,
+  "forced_candidate_report": false,
+  "source_clock_refreshed": false,
+  "full_market_coverage": false,
+  "new_fresh_SENT": false,
+  "day_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 41,
+      "reserved_rows_read": 813350,
+      "reserved_rows_written": 16224,
+      "measured_rows_read": 505462,
+      "measured_rows_written": 8097,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 100
+    },
+    "projected_reserved": {
+      "rows_read": 814850,
+      "rows_written": 16324
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "d1_reservation": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "RESERVED",
+    "reservation_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+    "day_utc": "2026-10-07",
+    "rows_read": 1500,
+    "rows_written": 100
+  },
+  "provider_admission": {
+    "allowed": true,
+    "new_reservation": true,
+    "reservation_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040:CURRENT_RAY_NATIVE",
+    "reserved": [
+      {
+        "scope_id": "DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS:202610:GTRADE",
+        "provider": "GTRADE",
+        "units": 4
+      }
+    ],
+    "atomic_batch_ack": true,
+    "exact_readback": true,
+    "automatic_topup": false,
+    "combined_local_reservation": true,
+    "local_rates_are_policy_not_provider_entitlement": true
+  },
+  "collection": {
+    "status": "GTRADE_ACQUIRED_SCOPED_CONTEXT",
+    "requests": 4,
+    "pinned_position_status": "GTRADE_PINNED_OPEN_POSITIONS_CLOSED",
+    "pinned_position_reason": null,
+    "position_batch_contracts": [
+      "RAY-USDT"
+    ],
+    "position_source_clock_known": true,
+    "reused_snapshot": false,
+    "shared_snapshot_run_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+    "acquisition": {
+      "schema": "SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1",
+      "contract": "RAY-USDT",
+      "native_symbol": "RAY",
+      "run_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+      "acquisition_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040:RAY",
+      "provider": "gTrade official SDK",
+      "venue": "gTrade-Arbitrum",
+      "price_quote": "USD",
+      "collection_started_ts": 1791380592344,
+      "collection_completed_ts": 1791380593428,
+      "source_ts": 1791380580373,
+      "source_clock_closed": true,
+      "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+      "upstream_groups": [
+        "GTRADE_ARBITRUM"
+      ],
+      "sdk_version": "1.8.10",
+      "model_version": null,
+      "estimation_note": "Open positions and margin/fee inputs verified at one explicit Arbitrum block. Fresh official variables and index are non-atomic inputs; partial position sample, official SDK estimate, not HTX liquidation or a guaranteed trigger.",
+      "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+      "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+      "positions_source_ts": 1791380591000,
+      "positions_block_hash": "0x718714cfe7aeeca6eb1b0d64d42aa325b1d6afbd4bae9e84e80fd3660c8f4bc6",
+      "position_snapshot_fingerprint": "97567c9465ed09279e2b43b92432eb8ae3ef948bca212aafeafda96da5541a6f",
+      "complete_position_census": false,
+      "variable_source_ts": 1791380580389,
+      "index_source_ts": 1791380580373,
+      "above": [
+        {
+          "native_price": 2.671269359056453,
+          "side": "SHORT",
+          "notional": 398.83894344323755,
+          "notional_unit": "USD",
+          "native_reference_price": 2.5191333,
+          "distance_pct": 6.03922226173792,
+          "position_count": 1,
+          "margin_mode": null,
+          "conditional_cross": false,
+          "source_ts": 1791380580373,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791380593428,
+          "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+          "price_quote": "USD",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "position_key": "0x4a2129d66db069a531ed86db0011692a01bd85b7:140",
+          "provider": "gTrade official SDK",
+          "venue": "gTrade-Arbitrum",
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        {
+          "native_price": 2.6448399212352594,
+          "side": "SHORT",
+          "notional": 122.61493182082613,
+          "notional_unit": "USD",
+          "native_reference_price": 2.5191333,
+          "distance_pct": 4.99007421462212,
+          "position_count": 1,
+          "margin_mode": null,
+          "conditional_cross": false,
+          "source_ts": 1791380580373,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791380593428,
+          "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+          "price_quote": "USD",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "position_key": "0x4a2129d66db069a531ed86db0011692a01bd85b7:143",
+          "provider": "gTrade official SDK",
+          "venue": "gTrade-Arbitrum",
+          "entry_eligible": false,
+          "is_htx_price": false
+        }
+      ],
+      "below": [
+        {
+          "native_price": 1.958375068270478,
+          "side": "LONG",
+          "notional": 104.81958782699117,
+          "notional_unit": "USD",
+          "native_reference_price": 2.5191333,
+          "distance_pct": -22.259966621437698,
+          "position_count": 1,
+          "margin_mode": null,
+          "conditional_cross": false,
+          "source_ts": 1791380580373,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791380593428,
+          "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+          "price_quote": "USD",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "position_key": "0x62ff5d7f23216cb946456a09a0b6ba2935d34259:694",
+          "provider": "gTrade official SDK",
+          "venue": "gTrade-Arbitrum",
+          "entry_eligible": false,
+          "is_htx_price": false
+        },
+        {
+          "native_price": 0.17007259835751054,
+          "side": "LONG",
+          "notional": 104.84317797670994,
+          "notional_unit": "USD",
+          "native_reference_price": 2.5191333,
+          "distance_pct": -93.24876542430246,
+          "position_count": 1,
+          "margin_mode": null,
+          "conditional_cross": false,
+          "source_ts": 1791380580373,
+          "source_clock_closed": true,
+          "observed_at_ms": 1791380593428,
+          "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+          "price_quote": "USD",
+          "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+          "position_key": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927:6",
+          "provider": "gTrade official SDK",
+          "venue": "gTrade-Arbitrum",
+          "entry_eligible": false,
+          "is_htx_price": false
+        }
+      ],
+      "transport_sha256": [
+        "92e46bc6fba7f648ca89707a6f62fb3df2702769068740225d34169e98d5a493",
+        "34c158af1887a02ae80b18dd954dcaed0e11ca926a3225001e20caea8495a40d",
+        "21c891a1421e7084589280ca629e5c4f59add112f7c0ce41b164a43b0a69436e",
+        "769b6d22a29e855644f5b75a0617ffb88391ff06ae1aa7554c011e928909fb91"
+      ],
+      "mode": "SHADOW_ONLY",
+      "automatic_execution": false,
+      "entry_eligible": false,
+      "acquisition_fingerprint": "2b3127597de9ab2e4f33accf0a092d923a115d6531f539e528164c502383a9bf"
+    },
+    "selected_market_positions": 4,
+    "source_ts": 1791380580373
+  },
+  "rpc_response_errors": [],
+  "pinned_body": [
+    {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "eth_chainId",
+      "params": []
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "eth_getBlockByNumber",
+      "params": [
+        "0x1e8d5d64",
+        false
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x33ea7f7400000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f000000000000000000000000000000000000000000000000000000000000000300000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d34259000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x01e87cb000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f000000000000000000000000000000000000000000000000000000000000000300000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d34259000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x556e838f00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007f000000000000000000000000000000000000000000000000000000000000000300000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d34259000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0x2b9455fd000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000000400000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d34259000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b70000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000002b60000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000008c000000000000000000000000000000000000000000000000000000000000008f"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed000000000000000000000000000000000000000000000000000000000000000300000000000000000000000062ff5d7f23216cb946456a09a0b6ba2935d3425900000000000000000000000000000000000000000000000000000000000002b6"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000f683e61df51ccbe583b9d095d4cb8783f5ae89270000000000000000000000000000000000000000000000000000000000000006"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed00000000000000000000000000000000000000000000000000000000000000030000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7000000000000000000000000000000000000000000000000000000000000008c"
+        },
+        "0x1e8d5d64"
+      ]
+    },
+    {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "eth_call",
+      "params": [
+        {
+          "to": "0xFF162c694eAA571f685030649814282eA457f169",
+          "data": "0xab6192ed00000000000000000000000000000000000000000000000000000000000000030000000000000000000000004a2129d66db069a531ed86db0011692a01bd85b7000000000000000000000000000000000000000000000000000000000000008f"
+        },
+        "0x1e8d5d64"
+      ]
+    }
+  ],
+  "rpc_receipt": {
+    "url": "https://arbitrum-one-rpc.publicnode.com/",
+    "http_status": 200,
+    "sha256": "769b6d22a29e855644f5b75a0617ffb88391ff06ae1aa7554c011e928909fb91",
+    "received_ts": 1791380593427
+  },
+  "scoped_consumer": {
+    "schema": "SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1",
+    "status": "USABLE_SCOPED_NATIVE_CONTEXT",
+    "mode": "SHADOW_ONLY",
+    "freshness_max_age_ms": 300000,
+    "binding": {
+      "contract": "RAY-USDT",
+      "native_symbol": "RAY",
+      "run_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+      "snapshot_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040:SOURCE_REFERENCE_ONLY",
+      "observed_ts": 1791380593499,
+      "direction": null
+    },
+    "acquisition_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040:RAY",
+    "acquisition_fingerprint": "2b3127597de9ab2e4f33accf0a092d923a115d6531f539e528164c502383a9bf",
+    "source_ts": 1791380580373,
+    "source_clock_closed": true,
+    "source_age_ms": 13126,
+    "received_ts": 1791380593428,
+    "receipt_age_ms": 71,
+    "freshness_basis": "ORIGINAL_PROVIDER_CLOCK",
+    "venue": "gTrade-Arbitrum",
+    "provider": "gTrade official SDK",
+    "price_quote": "USD",
+    "coverage": "VERIFIED_PINNED_OPEN_POSITION_SAMPLE",
+    "positions_time_basis": "EXPLICIT_PINNED_RPC_BLOCK",
+    "positions_source_ts": 1791380591000,
+    "positions_block_hash": "0x718714cfe7aeeca6eb1b0d64d42aa325b1d6afbd4bae9e84e80fd3660c8f4bc6",
+    "position_snapshot_fingerprint": "97567c9465ed09279e2b43b92432eb8ae3ef948bca212aafeafda96da5541a6f",
+    "complete_position_census": false,
+    "evidence_class": "NATIVE_POSITION_FEE_AWARE_ESTIMATES",
+    "upstream_groups": [
+      "GTRADE_ARBITRUM"
+    ],
+    "sdk_version": "1.8.10",
+    "model_version": null,
+    "estimation_note": "Open positions and margin/fee inputs verified at one explicit Arbitrum block. Fresh official variables and index are non-atomic inputs; partial position sample, official SDK estimate, not HTX liquidation or a guaranteed trigger.",
+    "variable_source_ts": 1791380580389,
+    "index_source_ts": 1791380580373,
+    "above": [
+      {
+        "native_price": 2.671269359056453,
+        "side": "SHORT",
+        "notional": 398.83894344323755,
+        "notional_unit": "USD",
+        "native_reference_price": 2.5191333,
+        "distance_pct": 6.03922226173792,
+        "position_count": 1,
+        "margin_mode": null,
+        "conditional_cross": false,
+        "source_ts": 1791380580373,
+        "source_clock_closed": true,
+        "observed_at_ms": 1791380593428,
+        "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+        "price_quote": "USD",
+        "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+        "position_key": "0x4a2129d66db069a531ed86db0011692a01bd85b7:140",
+        "provider": "gTrade official SDK",
+        "venue": "gTrade-Arbitrum",
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      {
+        "native_price": 2.6448399212352594,
+        "side": "SHORT",
+        "notional": 122.61493182082613,
+        "notional_unit": "USD",
+        "native_reference_price": 2.5191333,
+        "distance_pct": 4.99007421462212,
+        "position_count": 1,
+        "margin_mode": null,
+        "conditional_cross": false,
+        "source_ts": 1791380580373,
+        "source_clock_closed": true,
+        "observed_at_ms": 1791380593428,
+        "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+        "price_quote": "USD",
+        "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+        "position_key": "0x4a2129d66db069a531ed86db0011692a01bd85b7:143",
+        "provider": "gTrade official SDK",
+        "venue": "gTrade-Arbitrum",
+        "entry_eligible": false,
+        "is_htx_price": false
+      }
+    ],
+    "below": [
+      {
+        "native_price": 1.958375068270478,
+        "side": "LONG",
+        "notional": 104.81958782699117,
+        "notional_unit": "USD",
+        "native_reference_price": 2.5191333,
+        "distance_pct": -22.259966621437698,
+        "position_count": 1,
+        "margin_mode": null,
+        "conditional_cross": false,
+        "source_ts": 1791380580373,
+        "source_clock_closed": true,
+        "observed_at_ms": 1791380593428,
+        "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+        "price_quote": "USD",
+        "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+        "position_key": "0x62ff5d7f23216cb946456a09a0b6ba2935d34259:694",
+        "provider": "gTrade official SDK",
+        "venue": "gTrade-Arbitrum",
+        "entry_eligible": false,
+        "is_htx_price": false
+      },
+      {
+        "native_price": 0.17007259835751054,
+        "side": "LONG",
+        "notional": 104.84317797670994,
+        "notional_unit": "USD",
+        "native_reference_price": 2.5191333,
+        "distance_pct": -93.24876542430246,
+        "position_count": 1,
+        "margin_mode": null,
+        "conditional_cross": false,
+        "source_ts": 1791380580373,
+        "source_clock_closed": true,
+        "observed_at_ms": 1791380593428,
+        "freshness_basis": "EXPLICIT_BLOCK_POSITIONS_AND_FEES_WITH_FRESH_NONATOMIC_OFFICIAL_INPUTS",
+        "price_quote": "USD",
+        "price_semantics": "OFFICIAL_SDK_ESTIMATE_INDEX_TRIGGER",
+        "position_key": "0xf683e61df51ccbe583b9d095d4cb8783f5ae8927:6",
+        "provider": "gTrade official SDK",
+        "venue": "gTrade-Arbitrum",
+        "entry_eligible": false,
+        "is_htx_price": false
+      }
+    ],
+    "notional_summed_across_providers": false,
+    "independent_vote_added": false,
+    "prices_converted_to_htx": false,
+    "automatic_execution": false,
+    "entry_eligible": false,
+    "render_enabled": true,
+    "body_bytes_before_fingerprint": 4429,
+    "fingerprint": "3093f8cb9007a50eaf594e215cf181c6017621c63232cae31440c5ecbe312642"
+  },
+  "observed_ts": 1791380593499,
+  "future_levels": 4,
+  "status": "ACTUAL_CURRENT_PINNED_RAY_NATIVE_AND_SCOPED_CONTEXT_VERIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "GTRADE_ACTUAL_RPC_FAILURE:37630677111:1791380590040",
+    "source_run_id": "37630677111",
+    "measured_rows_read": 47,
+    "measured_rows_written_accounted": 9,
+    "measured_requests_accounted": 9,
+    "unknown_ops": 0
+  },
+  "completed_ts": 1791380593717,
+  "shared_budget": {
+    "reserved_http": 4,
+    "gross_reserved_http": 4,
+    "claimed_http": 4,
+    "actual_http": 4,
+    "max_http": 4,
+    "active": 0,
+    "peak_parallel": 2,
+    "max_parallel": 2,
+    "queued": 0,
+    "phase_started_ts": 1791380591338,
+    "max_total_ms": 45000,
+    "per_minute_limits": {
+      "HYPERLIQUID": 12,
+      "SWOLE_DISCOVERY": 6,
+      "LIQFLOW": 6,
+      "GTRADE": 6,
+      "LIGHTER": 12,
+      "GMX": 4,
+      "OXARCHIVE": 6,
+      "DYDX_RPC": 6
+    },
+    "scope": "SAME_RUN_ALL_NEW_PROVIDERS",
+    "unused_local_capacity_released_after_completed_collector": true,
+    "monthly_provider_reservations_not_refunded": true,
+    "actual_dispatch_rate_enforced": true,
+    "phase_deadline_actively_enforced": true,
+    "provider_quota_provisioned": false,
+    "known_unspent_denials_release_local_capacity": true,
+    "unknown_reservation_ack_keeps_local_capacity": true,
+    "errors": []
+  },
+  "source_http": 4,
+  "d1_usage": {
+    "requests": 9,
+    "rows_read": 48,
+    "rows_written": 9,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 42,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_liq_source_allowance_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_allowance_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 1,
+        "unknown_ops": 0
+      },
+      "batch:report2_liq_source_reservation_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "raw_gzip_sha256": "7f9861b29819b2776602f7464e52dd9682d21889a5011a09e668fc45f873d30c"
+}
