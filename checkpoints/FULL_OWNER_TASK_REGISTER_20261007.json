@@ -1440,7 +1440,7 @@
       "task_id": "BLOCK_N02",
       "block": "N02",
       "name": "Предложение и выпуск монет",
-      "status": "OPEN_NATIVE_CHAIN_EXPANSION",
+      "status": "PARTIAL_EXPANDED_GENERAL_ROUTES_PR203",
       "remaining_action": "Расширить finalized primary supply на native chains, где сейчас только исторический CoinMetrics. Первая новая проверка: XRPL и Stellar по официальным ledger API, без wrapped замены и receipt-clock.",
       "previous_exact_proofs": [
         {
@@ -1472,13 +1472,14 @@
           "full_canonical_archive": "checkpoints/actual-current-approved-brief-37557085058.json.gz"
         }
       ],
-      "complete_for_all_assets": false
+      "complete_for_all_assets": false,
+      "latest_implementation_proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json"
     },
     {
       "task_id": "BLOCK_N03",
       "block": "N03",
       "name": "Уменьшение предложения, сжигание/выкуп только при доказанной причине",
-      "status": "OPEN_CAUSE_AND_NATIVE_COMPARISON_SCOPE",
+      "status": "PARTIAL_EXPANDED_GENERAL_ROUTES_PR203",
       "remaining_action": "Использовать пригодные связанные finalized наблюдения N02/N03, искать доказанный burn/mint/выкуп. Net supply change не доказывает покупку/выкуп; причинность не придумывать.",
       "previous_exact_proofs": [
         {
@@ -1510,7 +1511,8 @@
           "full_canonical_archive": "checkpoints/actual-current-approved-brief-37557085058.json.gz"
         }
       ],
-      "complete_for_all_assets": false
+      "complete_for_all_assets": false,
+      "latest_implementation_proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json"
     },
     {
       "task_id": "BLOCK_N04",
@@ -1630,7 +1632,7 @@
       "task_id": "BLOCK_N07",
       "block": "N07",
       "name": "Официальные события проекта",
-      "status": "OPEN_NEW_OFFICIAL_RELEASE_ROUTE",
+      "status": "PARTIAL_EXPANDED_GENERAL_ROUTES_PR203",
       "remaining_action": "Подключить общий issuer-proven GitHub release consumer после свежего cloud proof, фильтровать draft/testnet/RC. Ни одного направления/score по ключевым словам; действующий формат Telegram не менять.",
       "previous_exact_proofs": [
         {
@@ -1662,7 +1664,8 @@
           "full_canonical_archive": "checkpoints/actual-current-approved-brief-37557085058.json.gz"
         }
       ],
-      "complete_for_all_assets": false
+      "complete_for_all_assets": false,
+      "latest_implementation_proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json"
     },
     {
       "task_id": "BLOCK_N08",
@@ -2134,6 +2137,13 @@
     "XRPL validated ledger native supply for N02/N03",
     "Stellar mainnet Horizon native ledger supply for N02/N03"
   ],
-  "first_batch_status": "CLOUD_PROBE_AND_CONSUMER_NOT_YET_ACCEPTED",
-  "no_new_provider_accepted_from_research_only": true
+  "first_batch_status": "MERGED_PR203; EXACT_N02_N03_N07_COMPONENTS_AND_TG_REGRESSION_VERIFIED; SOURCE_SPECIFIC_REPORT_AND_LARGER_BLOCK_COUNT_NOT_CLAIMED",
+  "no_new_provider_accepted_from_research_only": true,
+  "latest_completed_implementation_batch": {
+    "path": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json",
+    "cloud_run": 37575766314,
+    "tested_head": "b7d162e731f77bae5b853d8ca01d45875b586445",
+    "production_head": "f927712f3422cb68bd16d819f9313ec79372b08b",
+    "artifact_digest": "sha256:f4720dbe7030d890663ac8a8b7dc49c3c068438a7f73f5992611dbd5525e66c4"
+  }
 }

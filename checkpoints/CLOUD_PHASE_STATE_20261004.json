@@ -118,16 +118,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:20261007:1791348490847:full-block-task-recovery",
-    "acquired_ts": 1791348490847,
-    "expires_ts": 1791353890847
-  },
-  "next_action": "RESTORE_FULL_BLOCK_CONFIGURATION_AND_NEW_SOURCE_CONNECTION_BACKLOG; PRIORITY_N01_N02_N05_N12_N15; NO_SCOPE_CLOSURE_FROM_SENT_ALONE",
+  "lease": null,
+  "next_action": "EXPAND_PROVEN_MISSING_GENERAL_BLOCK_ROUTES; KEEP_FULL_REGISTER_OPEN; READ_FIRST_POST_PR203_AUTOMATIC_REPORT_WITHOUT_FORCING_REPEAT_MAIN",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791348490847,
+  "updated_ts": 1791350665800,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -178,11 +174,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:37572105566",
-    "acquired_ts": 1791347673406,
-    "expires_ts": 1791348153406,
-    "released_ts": 1791347710310,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "HTX:20261007:1791348490847:full-block-task-recovery",
+    "acquired_ts": 1791348490847,
+    "expires_ts": 1791353890847,
+    "released_ts": 1791350665800,
+    "reason": "PR203 released after connected cloud regression; free normal production/maintenance while continuing read-only gap analysis"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -315,19 +311,25 @@
   "history": "checkpoints/archive/phase-before-approved-batch-final-20261006.json",
   "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
   "additional_coverage_work": {
-    "status": "IN_PROGRESS_FULL_BLOCK_AND_CONNECTION_BACKLOG",
+    "status": "IN_PROGRESS_AFTER_PR203_GENERAL_NATIVE_AND_OFFICIAL_RELEASE_CONNECTIONS",
     "owner_instruction_at_msk": "2026-10-07T04:03:15+03:00",
     "base_functional_acceptance_retained": true,
     "scope": "All recovered block configuration, actual assigned-source use, new useful connection research and implementation; owner asks opportunistic12/13/15 participating blocks. Preserve approved Telegram and thresholds/entry/budgets.",
     "proof_required": "Exact retained input and official method/identity/state clock, source costs, composed pipeline, cloud execution and current canonical consumption.",
     "background_agent_after_turn": false,
     "completed_ts": null,
-    "proof": "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+    "proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json",
     "consumer_gap_fixed": "PR202_EXACT_MEASURED_RELATIVE_FACT_CONSUMPTION_AND_APPROVED_BRIEF_OUTPUT",
-    "new_provider_enabled": false,
+    "new_provider_enabled": true,
     "universal_source_coverage_accepted": false,
     "owner_reopened_at_utc": "2026-10-07T04:48:10.847Z",
-    "reason": "Owner explicitly reminded that block configuration and new connection search were omitted from the reduced remaining-work list; recover all original and amended tasks."
+    "reason": "Owner explicitly reminded that block configuration and new connection search were omitted from the reduced remaining-work list; recover all original and amended tasks.",
+    "new_provider_families": [
+      "XRPL_NATIVE_SUPPLY",
+      "STELLAR_NATIVE_SUPPLY",
+      "GITHUB_OFFICIAL_RELEASES"
+    ],
+    "new_source_score_contribution": 0
   },
   "history_before_owner_brief": "checkpoints/archive/phase-before-owner-brief-20261007.json",
   "owner_telegram_brief_amendment": {
@@ -378,5 +380,12 @@
     "not_block_ids": true,
     "N13_N17_still_removed": true,
     "existing_telegram_delivery_and_layout_must_be_preserved": true
+  },
+  "latest_block_connection_release": {
+    "path": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json",
+    "cloud_run": 37575766314,
+    "tested_head": "b7d162e731f77bae5b853d8ca01d45875b586445",
+    "production_head": "f927712f3422cb68bd16d819f9313ec79372b08b",
+    "artifact_digest": "sha256:f4720dbe7030d890663ac8a8b7dc49c3c068438a7f73f5992611dbd5525e66c4"
   }
 }
