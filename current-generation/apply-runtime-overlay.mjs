@@ -16,6 +16,7 @@ const files=[
  'official-event-sources.json',
  'main-official-event-sources.json',
  'runner-main.mjs',
+ 'src/liquidation-source-acquisition-audit.mjs',
  'src/recall-kpi-readback.mjs','src/execution-report-context.mjs','src/upstream-proof-utils.mjs',
  'byk-quota-budget.mjs',
  'src/worker.js',
