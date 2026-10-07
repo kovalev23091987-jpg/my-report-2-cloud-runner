@@ -8,7 +8,7 @@ permissions:
   actions: read
 jobs:
   verify:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +21,7 @@ jobs:
           script: |
             const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
             if(head!=='7e6bcb83a701e279e2c1d628c1b5d07ff7fd9adc')throw Error('MAIN_MOVED');
+            const branchHead=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branchHead!==context.sha)throw Error('SUPERSEDED_REVIEW_HEAD');
             const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
             if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
@@ -156,6 +157,8 @@ jobs:
       - name: Verify source closure clocks and unchanged core source consumers
         run: |
           node --test current-generation/tests/source-closure-diagnostics.test.mjs current-generation/tests/htx-signed-tape.test.mjs current-generation/tests/fresh-flow-sector-consumers.test.mjs current-generation/tests/candidate-block-coverage.test.mjs current-generation/tests/block-decision-use-audit.test.mjs current-generation/tests/source-use-accounting.test.mjs current-generation/tests/source-quality-empty-response.test.mjs current-generation/tests/internal-source-surface-invariance.test.mjs > audit-output/core-source-closure-tests.tap
+      - name: Verify automatic report-time position search without per-coin hints
+        run: REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/dydx-automatic-report-search.runtime.mjs > audit-output/dydx-automatic-report-search.tap
       - name: Exact package hashes
         if: always()
         run: |
@@ -171,6 +174,8 @@ jobs:
           node --check runtime/src/liquidation-extension/gtrade-runtime-collector.mjs
           cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
           node --check runtime/src/liquidation-extension/combined-runner-service.mjs
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          node --check runtime/runner-main.mjs
           git rev-parse HEAD > audit-output/head.txt
           git rev-parse HEAD^{tree} > audit-output/tree.txt
           sha256sum runtime/src/block-score-policy.mjs runtime/src/block-weight-calibration.mjs runtime/src/evidence-v2.mjs runtime/src/coingecko-sector-evidence.mjs runtime/src/supplemental-score-evidence.mjs runtime/src/tz101-cost-assessment.mjs runtime/r8-20-prospective-validation-sidecar.mjs runtime/src/liquidation-extension/combined-runner-service.mjs runtime/src/block-decision-use-audit.mjs runtime/src/xrpl-native-payments.mjs runtime/src/finalized-chain-events.mjs runtime/src/native-ledger-supply.mjs runtime/src/stellar-primary-supply.mjs runtime/src/github-official-releases.mjs runtime/src/chain-supply-evidence.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/block-result-context.mjs runtime/src/telegram-plain-facts.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
@@ -190,11 +195,11 @@ jobs:
             const phase=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:main})).data.content,'base64'));
             const fence=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'audit-fixes/source-optimization-20260930/execution-lock.json',ref:main})).data.content,'base64'));
             if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f==='integration.json'||f==='dydx-go-reference-proof.json'||f==='dydx-go-original-reference-proof.json'),tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f==='integration.json'||f==='dydx-go-reference-proof.json'||f==='dydx-go-original-reference-proof.json'||f==='dydx-automatic-report-search-proof.json'),tests={};
             for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_NOT_PASS:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
-            if(tests['gtrade-position-routing-runtime.tap'].pass!==14||tests['coverage-and-routing.tap'].pass!==151||tests['core-source-closure-tests.tap'].pass<3)throw Error('REQUIRED_TESTS_MISSING');
+            if(tests['gtrade-position-routing-runtime.tap'].pass!==14||tests['coverage-and-routing.tap'].pass!==151||tests['core-source-closure-tests.tap'].pass<3||tests['dydx-automatic-report-search.tap'].pass!==4)throw Error('REQUIRED_TESTS_MISSING');
             const integration=JSON.parse(fs.readFileSync('audit-output/integration.json'));if(integration.status!=='PASS'||integration.failed!==0)throw Error('INTEGRATION_NOT_PASS');
-            const proof={schema:'NATIVE_CORE_DATA_CLOSURE_CONNECTED_VERIFICATION_20261007_V1',status:'CONNECTED_TESTS_AND_RETAINED_SOURCE_CLOCKS_PASS',tested_head:context.sha,cloud_run:context.runId,tests,integration:{passed:integration.passed,failed:integration.failed},dense_independent_reference:JSON.parse(fs.readFileSync('audit-output/dydx-go-reference-proof.json')),original_independent_reference:JSON.parse(fs.readFileSync('audit-output/dydx-go-original-reference-proof.json')),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,source_clocks_refreshed:false,thresholds_or_weights_changed:false,new_fresh_SENT:false,actual_current_source_failure_cause_inferred:false};
+            const proof={schema:'NATIVE_CORE_DATA_CLOSURE_CONNECTED_VERIFICATION_20261007_V1',status:'AUTOMATIC_REPORT_SEARCH_AND_CONNECTED_SOURCE_CLOSURE_TESTS_PASS',tested_head:context.sha,cloud_run:context.runId,tests,integration:{passed:integration.passed,failed:integration.failed},dense_independent_reference:JSON.parse(fs.readFileSync('audit-output/dydx-go-reference-proof.json')),original_independent_reference:JSON.parse(fs.readFileSync('audit-output/dydx-go-original-reference-proof.json')),automatic_report_position_search:JSON.parse(fs.readFileSync('audit-output/dydx-automatic-report-search-proof.json')),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,source_clocks_refreshed:false,thresholds_or_weights_changed:false,new_fresh_SENT:false,actual_current_source_failure_cause_inferred:false};
             const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/native-core-data-closure-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
             const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/NATIVE_CORE_DATA_CLOSURE_CONNECTED_VERIFICATION_20261007.json',mode:'100644',type:'blob',sha:b.sha});
             const ref=context.ref.replace('refs/heads/','');if(ref!=='codex/native-core-data-closure-connected-20261007')throw Error('REVIEW_REF_MISMATCH');const parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('TESTED_HEAD_MOVED');
