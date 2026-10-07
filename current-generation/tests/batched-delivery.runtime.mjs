@@ -23,7 +23,7 @@ for(const source of manifest.sources){const raw=JSON.parse(gunzipSync(fs.readFil
  for(const r of raw.rows||raw.results||[]){if(r.canonical)corpus.rows.push({...r,source_cloud_run:raw.source_cloud_run,source_manifest:source});}
 }
 const weightRows=[...corpus.rows];
-for(const file of ['checkpoints/actual-current-approved-brief-37557085058.json.gz','audit-output/exact-current-data.json.gz']){
+for(const file of ['checkpoints/actual-current-approved-brief-37557085058.json.gz','audit-output/exact-current-data.json.gz','audit-output/near0930-exact-current-data.json.gz']){
  if(fs.existsSync(file)){const raw=JSON.parse(gunzipSync(fs.readFileSync(file)));for(const r of raw.rows||[])if(r.canonical&&!weightRows.some(x=>x.canonical.snapshot_id===r.canonical.snapshot_id))weightRows.push({...r,source_cloud_run:raw.source_cloud_run});}
 }
 const range=JSON.parse(fs.readFileSync(new URL('./fixtures/actual-1425-range-boundaries.json',import.meta.url))).rows.find(r=>r.contract==='ADA-USDT');

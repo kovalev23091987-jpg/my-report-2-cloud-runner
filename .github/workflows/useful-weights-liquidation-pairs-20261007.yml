@@ -44,11 +44,17 @@ jobs:
           rm runtime/payload.tar.gz
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
-      - name: Read exact retained09:30 NEAR and FIL with bounded D1 admission
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/read-current-observation.mjs > audit-output/exact-read.log
+      - name: Reuse successful exact09:30 read without another D1 query
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11466345739,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='a3e376f8be618ccc210a542686237b09bb6e7b88003d80a94d6bb441d0736c80')throw Error('EXACT_READ_ARCHIVE_DIGEST_MISMATCH');
+            fs.mkdirSync('retained0930',{recursive:true});fs.writeFileSync('retained0930.zip',b);cp.execFileSync('unzip',['-q','retained0930.zip','-d','retained0930']);
+            fs.copyFileSync('retained0930/exact-current-data.json.gz','audit-output/near0930-exact-current-data.json.gz');
+            fs.copyFileSync('retained0930/readback-summary.json','audit-output/near0930-readback-summary.json');
+            fs.copyFileSync('checkpoints/actual-zec-sent150-original-input-20261007.json.gz','audit-output/exact-current-data.json.gz');
       - name: Verify retained gTrade catalog archive
         run: |
           mkdir -p priority-source
@@ -70,6 +76,15 @@ jobs:
       - name: Current generation validation
         if: always()
         run: node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+      - name: Check fresh owner again before the new actual native pair acquisition
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='22a0f14477dcbae050c34b6adf01664afa9c31f2')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791353055520:factual-idea-basis'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
       - name: Verify actual missing native pair once without a MAIN run or Telegram
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}

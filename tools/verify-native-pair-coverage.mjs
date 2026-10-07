@@ -10,6 +10,7 @@ import {bindNativeAcquisition} from '../runtime/src/liquidation-extension/runtim
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),started=Date.now(),run_id=`NATIVE_PAIR_GAP_FIX:${process.env.GITHUB_RUN_ID}:${started}`,reservation={rows_read:2500,rows_written:160};
 const reservationId=run_id,hash=x=>createHash('sha256').update(x).digest('hex'),rows=[],raw=[];
 const proof={schema:'BOUNDED_ACTUAL_NATIVE_PAIR_COVERAGE_V1',head:process.env.GITHUB_SHA,run_id,started_ts:started,new_defect_basis:'ACTUAL0930_FIL4HTTP_LEFT_NEAR_NO_NATIVE_VERIFICATION_PAIR',production_MAIN:0,Telegram:0,sourceHTTP:0,source_cap:5,rows};
+let service;
 const admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,started),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});proof.day_admission=admission;
 if(admission.allowed){
  await reserveRunBudget(db,{reservationId,now:started,reservation});
@@ -20,7 +21,7 @@ if(admission.allowed){
    if(!r||r.active!==1||r.allowance_units>10000||r.window_start_ts>started||r.window_end_ts<=started)throw Error('EXISTING_SOURCE_ALLOWANCE_REQUIRED');bindings[provider]={scope_id,config_fingerprint:r.config_fingerprint};
   }
   const provider_admit=createD1SourceAdmission({db,scope_bindings:bindings,within_run_budget:e=>{const u=db.usageSnapshot();return{allowed:u.unknown_ops===0&&u.rows_read+e.extraRowsRead+4<=reservation.rows_read&&u.rows_written+e.extraRowsWritten+4<=reservation.rows_written};}});
-  const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',candidate_slots:2,secondary_enabled:false,provider_admit,liqflow_key:process.env.LIQFLOW_API_KEY||'',max_http_per_run:5,max_total_ms:45000});
+  service=createCombinedLiquidationService({mode:'SHADOW_ONLY',candidate_slots:2,secondary_enabled:false,provider_admit,liqflow_key:process.env.LIQFLOW_API_KEY||'',max_http_per_run:5,max_total_ms:45000});
   // Original selected order, no replacement/tuning by whether a map exists.
   for(const contract of ['FIL-USDT','NEAR-USDT']){
    const acquisition=await service.collect({contract,native_symbol:contract.split('-')[0],run_id,deep_started_ts:Date.now(),max_http_for_candidate:5,allowed_source_ids:['HYPERLIQUID_NATIVE']});
@@ -32,7 +33,7 @@ if(admission.allowed){
   if(proof.sourceHTTP>5||db.usageSnapshot().unknown_ops>0)throw Error('ACTUAL_BOUND_VIOLATION');
   proof.status=rows.every(r=>r.status==='USABLE_NATIVE_SAMPLE'&&r.returned_positive_levels>0)?'BOTH_ACTUAL_NATIVE_SAMPLES_CLOSED':'ACTUAL_NATIVE_PAIR_PARTIAL';
  }catch(e){proof.status='ACTUAL_NATIVE_PAIR_NOT_CLOSED';proof.reason=String(e.message).slice(0,180);}
- finally{proof.finalized_usage=await finalizeRunUsage(db,{reservationId,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}
+ finally{if(service){proof.source_summary=service.summary();proof.sourceHTTP=proof.source_summary.shared_budget.actual_http;}proof.finalized_usage=await finalizeRunUsage(db,{reservationId,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}
 }else proof.status='D1_ADMISSION_BLOCKED';
 proof.completed_ts=Date.now();proof.d1_usage=db.usageSnapshot();fs.mkdirSync('audit-output',{recursive:true});
 const gz=gzipSync(Buffer.from(JSON.stringify({schema:'ACTUAL_NATIVE_PAIR_RAW_V1',run_id,head:process.env.GITHUB_SHA,acquisitions:raw})));proof.raw_gzip_sha256=hash(gz);
