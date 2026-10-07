@@ -39,7 +39,7 @@ export function auditCanonicalBlockDecisionUse(canonical={}, {manual}={}) {
  const directionClosed=['LONG','SHORT'].includes(canonical.direction);
  const scoreClosed=score.status==='CLOSED'&&finite(score.base_score)!==null&&finite(score.final_score)!==null;
  const rendered=auditRenderedBlockResults({canonical,manual});
- const meaningful=row=>!String(row.metric_family).includes('ABSENCE')&&(row.metric_family!=='UNIQUE_AUTHOR_ATTENTION'||Number(row.value)>0)&&(row.metric_family!=='ALT_OPTIONS_LIQUIDITY_CONTEXT'||row.option_risk_context?.status==='CLOSED');
+ const meaningful=row=>row.metric_family!=='OFFICIAL_RELEASE_SUBSET_CHECK'&&!String(row.metric_family).includes('ABSENCE')&&(row.metric_family!=='UNIQUE_AUTHOR_ATTENTION'||Number(row.value)>0)&&(row.metric_family!=='ALT_OPTIONS_LIQUIDITY_CONTEXT'||row.option_risk_context?.status==='CLOSED');
  const reviewArgs={evidence:rows,contract,run_id:canonical.run_id,snapshot_id:canonical.snapshot_id,decision_ts:decisionTs};
  const contextReviews=[...verifyBoundedMoneyFlowReviews(canonical?.metadata?.bounded_money_flow_diagnostic,reviewArgs),...verifySectorRelativeStrengthReviews(canonical?.metadata?.sector_relative_strength_review,reviewArgs)];
  const blocks={};

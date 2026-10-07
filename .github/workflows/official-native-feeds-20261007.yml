@@ -1,0 +1,76 @@
+name: Report2 Issuer Proven Official Native Feed Coverage
+on:
+  push:
+    branches: [codex/official-native-feeds-20261007]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check fresh owner before tests and replay
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='e8229d21540164a456a0b8b70867915fbf4b46da')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791351578400:official-native-coverage'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Load all retained inputs with immutable artifact digests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse durable original ZEC data with no new D1 or source calls
+        run: cp checkpoints/actual-zec-sent150-original-input-20261007.json.gz audit-output/exact-current-data.json.gz
+      - name: Verify actual retained sources through assembled adapters and consumers
+        run: REPORT2_NEW_SOURCE_ROOT=runtime/src node --test current-generation/tests/new-block-connections.test.mjs > audit-output/new-source-tests.tap
+      - name: Replay complete composed delivery chain and all retained refusals
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+      - name: Integrated release regression
+        run: node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Current generation validation
+        if: always()
+        run: node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+      - name: Reuse exact actual feed responses; no new HTTP or D1
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/block-connections-implementation-20261007/replay-official-native.mjs
+      - name: Exact package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/src/block-decision-use-audit.mjs runtime/src/xrpl-native-payments.mjs runtime/src/finalized-chain-events.mjs runtime/src/native-ledger-supply.mjs runtime/src/stellar-primary-supply.mjs runtime/src/github-official-releases.mjs runtime/src/chain-supply-evidence.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/block-result-context.mjs runtime/src/telegram-plain-facts.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-native-feed-release-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

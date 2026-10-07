@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {exactNativeSectorBinding} from './coingecko-sector-evidence.mjs';
 
-export const GITHUB_RELEASES_VERSION='github-official-releases-v1-20261007';
+export const GITHUB_RELEASES_VERSION='github-official-releases-v2-json-transport-20261007';
 export const GITHUB_RELEASE_LIMITS=Object.freeze({daily_cap:12,background_daily_cap:8,ttl_ms:6*60*60_000,maximum_rows:10,retries:0});
 const digest=x=>createHash('sha256').update(x).digest('hex');
 const host=x=>{try{const u=new URL(x);return u.protocol==='https:'?u.hostname:null;}catch{return null;}};

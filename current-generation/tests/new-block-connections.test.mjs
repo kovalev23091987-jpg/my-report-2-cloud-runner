@@ -10,10 +10,11 @@ const {collectChainSupplyEvidence}=await load('chain-supply-evidence.mjs');
 const {collectOfficialEventsEvidence}=await load('official-events-evidence.mjs');
 const {consumeBlockResultContext}=await load('block-result-context.mjs');
 const {consumeEvidenceV2}=await load('evidence-v2.mjs');
+const {auditCanonicalBlockDecisionUse}=await load('block-decision-use-audit.mjs');
 const {planCandidateEvidenceRoutes,collectEvidenceRouteBlock}=await load('candidate-evidence-v2-runtime.mjs');
 const read=name=>JSON.parse(gunzipSync(fs.readFileSync(new URL('fixtures/block-connections-20261007/'+name,import.meta.url))));
 const research=read('research-run37574060777.json.gz'),health=read('native-health-run37574793676.json.gz');
-const registry=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url))),{now:1791350400000}).registry;
+const registry=compileOfficialSourceRegistry(JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url))),{now:1791351600000}).registry;
 const identity=chain=>({chain,asset_kind:'NATIVE',native_asset_id:chain+':mainnet',contract_or_mint:null});
 class Statement{constructor(db,sql,args=[]){this.db=db;this.sql=sql;this.args=args;}bind(...args){return new Statement(this.db,this.sql,args);}async run(){return this.db.sqlite.prepare(this.sql).run(...this.args);}async first(){return this.db.sqlite.prepare(this.sql).get(...this.args)||null;}}
 class DB{constructor(){this.sqlite=new DatabaseSync(':memory:');}prepare(sql){return new Statement(this,sql);}async batch(rows){this.sqlite.exec('BEGIN');try{const out=[];for(const row of rows)out.push(await row.run());this.sqlite.exec('COMMIT');return out;}catch(e){this.sqlite.exec('ROLLBACK');throw e;}}}
@@ -49,7 +50,7 @@ test('new connections use the shared route transport guard, retained data clocks
  const planned=planCandidateEvidenceRoutes(params);assert(planned.routes.some(r=>r.name==='CHAIN_SUPPLY'));assert(!planned.routes.some(r=>r.name==='CHAIN_EVENTS'));
 });
 test('official GitHub collector honors exact issuer registry and leaves four of twelve daily attempts for protected manual use',async()=>{
- const p=releaseParams('APT','aptos'),T=p.observed_ts,db=new DB();let calls=0;const base={db,contract:p.contract,asset_identity:p.asset_identity,asset_metadata:p.asset_metadata,now:T,clock:()=>T,request_admit:()=>({allowed:true}),fetch_impl:async url=>{calls++;assert.equal(url,p.feed_url);return new Response(p.body);}};
+ const p=releaseParams('APT','aptos'),T=p.observed_ts,db=new DB();let calls=0;const base={db,contract:p.contract,asset_identity:p.asset_identity,asset_metadata:p.asset_metadata,now:T,clock:()=>T,request_admit:()=>({allowed:true}),fetch_impl:async(url,init)=>{calls++;assert.equal(url,p.feed_url);assert.equal(init.headers.accept,'application/vnd.github+json');return new Response(p.body);}};
  const limitedDb=new DB(),fixed={...base,db:limitedDb};
  for(let i=0;i<8;i++){const r=await collectOfficialEventsEvidence({...fixed,run_id:'R'+i,strict_fresh_manual:true});assert.equal(r.network_calls,1);}
  await limitedDb.prepare('DELETE FROM report2_evidence_source_cache').run();const limit=await collectOfficialEventsEvidence({...fixed,run_id:'R8'});assert.equal(limit.network_calls,0);assert.equal(limit.status,'OFFICIAL_RELEASE_DAILY_CAP');
@@ -61,4 +62,14 @@ test('GitHub rate backoff is durable across projects and manual requests cannot 
  const common={db,now:T,clock:()=>T,request_admit:()=>({allowed:true}),fetch_impl:async()=>{calls++;return new Response('{}',{status:429});}};
  const first=await collectOfficialEventsEvidence({...common,contract:a.contract,asset_identity:a.asset_identity,asset_metadata:a.asset_metadata,run_id:'RATE'});assert.equal(first.network_calls,1);assert.equal(first.evidence.length,0);
  const b=releaseParams('XLM','stellar');const second=await collectOfficialEventsEvidence({...common,contract:b.contract,asset_identity:b.asset_identity,asset_metadata:b.asset_metadata,run_id:'OTHER_PROJECT',strict_fresh_manual:true});assert.equal(second.network_calls,0);assert.equal(second.status,'OFFICIAL_RELEASE_PROVIDER_BACKOFF');assert.equal(calls,1);
+});
+
+test('actual empty XRP release subset is checked and rendered but never inflates participating blocks; actual Aptos release remains useful',()=>{
+ for(const [symbol,chain,expected] of [['XRP','xrp',false],['APT','aptos',true]]){
+  const p=releaseParams(symbol,chain),result=normalizeGithubReleases(p),row=result.evidence[0],facts=consumeBlockResultContext({contract:p.contract,evidence:[row],now:p.observed_ts}).facts;
+  const receipt={source_id:'EVIDENCE_V2',provider_object_id:row.evidence_id,score_contribution:0,assessment_mode:'NEUTRAL_CONTEXT_ONLY_NO_BASE_SCORE',evidence_v2_receipts:[{evidence_id:row.evidence_id,block_id:'N07',consumer:'OFFICIAL_EVENT_RISK',reason:'CONSUMED'}]};
+  const canonical={run_id:'CONTROLLED_AUDIT_RETAINED_SOURCE',snapshot_id:'RETAINED_SOURCE',direction:null,observed_ts:p.observed_ts,metadata:{contract:p.contract,internal_market_context:{decision_ts:p.observed_ts,evidence_v2:{evidence:[row],block_coverage:{blocks:{N07:{checked:true,source_checks:{OFFICIAL_EVENTS:{checked:true,valid_evidence_ids:[row.evidence_id]}}}}}}},supporting_context:{facts},supplemental_score_adjustment:{status:'BASE_SCORE_MISSING',receipts:[receipt]}}};
+  const manual={ok:true,text:facts.map(r=>`- ${r.label}: ${r.value}`).join('\n')},a=auditCanonicalBlockDecisionUse(canonical,{manual});
+  assert.equal(a.blocks.N07.checked,true);assert.equal(a.blocks.N07.decision_assessment_receipt_count,1);assert.equal(a.blocks.N07.participating,expected);assert.equal(a.blocks.N07.source_accounting.routes_with_meaningful_facts,expected?1:0);
+ }
 });
