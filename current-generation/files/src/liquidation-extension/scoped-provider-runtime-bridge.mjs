@@ -19,6 +19,7 @@ export function verifyScopedProviderAcquisition(raw){if(raw?.schema!=='SCOPED_PR
 export function bindScopedProviderAcquisition(raw,{contract,run_id,snapshot_id,observed_ts,direction=null,max_age_ms=300000}={}){
  const fail=reason=>({schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'NOT_CLOSED',reason,mode:'SHADOW_ONLY',above:[],below:[],entry_eligible:false,render_enabled:false});
  if(!verifyScopedProviderAcquisition(raw))return fail('SCOPED_ACQUISITION_INVALID');
+ if(raw.provider==='dYdX pinned protocol model')max_age_ms=Math.min(max_age_ms,120000);
  if(raw.contract!==contract||raw.run_id!==run_id||raw.native_symbol!==contract.replace(/-USDT$/,'')||!text(snapshot_id)||timestamp(observed_ts)===null||![null,'LONG','SHORT'].includes(direction))return fail('SCOPED_CANONICAL_BINDING_INVALID');
  if(raw.collection_completed_ts>observed_ts||observed_ts-raw.collection_completed_ts>max_age_ms)return fail('SCOPED_SOURCE_CLOCK_NOT_CURRENT');
  const zones=[...(raw.above||[]),...(raw.below||[])];if(zones.some(z=>finite(z.native_price)===null||finite(z.native_reference_price)===null||finite(z.notional)===null))return fail('SCOPED_ZONE_INVALID');

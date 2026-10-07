@@ -1,6 +1,7 @@
 export const LIQUIDATION_SOURCE_WEIGHTING_VERSION='liquidation-source-weighting-v2-role-cost-20260930';
 
 export const LIQUIDATION_SOURCE_ROLES=Object.freeze({
+ DYDX_PINNED_NATIVE:'dYdX: pinned complete-account conditional calculated estimates',
  HYPERLIQUID_NATIVE:'Hyperliquid: verified native position liquidation prices',
  LIQFLOW_DISCOVERY:'LiqFlow: discovery of relevant Hyperliquid accounts and model context',
  GTRADE_NATIVE:'gTrade: native positions and dynamic fees',

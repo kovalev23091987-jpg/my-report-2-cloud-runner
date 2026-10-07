@@ -1,8 +1,10 @@
 import {permittedGTradePinnedRpcBatch,permittedGTradeRpcUrl} from './gtrade-pinned-position-snapshot.mjs';
-const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,SWOLE_DISCOVERY:6,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4,OXARCHIVE:6});
+import {permittedDydxReadOnlyBody} from './dydx-pinned-conditional-levels.mjs';
+const DEFAULT_RATE=Object.freeze({HYPERLIQUID:12,SWOLE_DISCOVERY:6,LIQFLOW:6,GTRADE:6,LIGHTER:12,GMX:4,OXARCHIVE:6,DYDX_RPC:6});
 const providerOf=(url,init)=>{
  const u=new URL(String(url)),method=String(init?.method||'GET').toUpperCase();
  if(u.protocol!=='https:'||u.username||u.password)throw Error('READ_ONLY_SOURCE_URL_REQUIRED');
+ if(u.hostname==='dydx-rpc.publicnode.com'&&u.pathname==='/'&&!u.search&&!u.hash&&method==='POST'){let body;try{body=JSON.parse(init.body);}catch{throw Error('READ_ONLY_BODY_REQUIRED');}if(permittedDydxReadOnlyBody(body))return'DYDX_RPC';throw Error('PINNED_DYDX_READ_ONLY_BODY_REQUIRED');}
  if(permittedGTradeRpcUrl(u)&&method==='POST'){let body;try{body=JSON.parse(init.body);}catch{throw Error('READ_ONLY_BODY_REQUIRED');}if(permittedGTradePinnedRpcBatch(body))return 'GTRADE';throw Error('PINNED_GTRADE_READ_ONLY_BATCH_REQUIRED');}
  if(u.hostname==='api.hyperliquid.xyz'&&u.pathname==='/info'&&method==='POST'){
   let b;try{b=JSON.parse(init.body);}catch{throw Error('READ_ONLY_BODY_REQUIRED');}
