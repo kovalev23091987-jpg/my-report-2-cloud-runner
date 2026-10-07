@@ -50,7 +50,7 @@ import {attachNativeContext} from './src/liquidation-extension/runtime-bridge.mj
 import {nativeLiquidationSources} from './src/native-liquidation-guard.mjs';
 import {buildDynamicLiquidationPanel} from './src/dynamic-liquidation-panel.mjs';
 import {buildPumpLiquidationZones,coinLobsterFutureRows} from './src/pump-liquidation-zones.mjs';
-import {displayLegacyLiquidations} from './src/canonical-display.mjs';
+import {displayLegacyLiquidations,liquidationPresentationPolicy} from './src/canonical-display.mjs';
 import {createLiquidationSourceWeightStore} from './src/liquidation-source-weighting.mjs';
 import {chooseMappedLiquidationFallback} from './src/liquidation-source-plan.mjs';
 import {buildLiquidationSourceChain,buildLiquidationFreshnessAudit,formatLiquidationChainSummary} from './src/liquidation-source-chain.mjs';
@@ -812,10 +812,11 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
     const scopedCoinLobster=candidate?contextForContract(env.REPORT2_GLOBAL_MARKET_CONTEXT,candidate.contract)?.coinlobster:null;
     const sourceChain=buildLiquidationSourceChain({contract:candidate?.contract,risk:crossExchangeRisk,native:manualLiquidationSources?.summary()??{},coverage:liquidationVenueCoverage,coinlobster:scopedCoinLobster,future_models:coinFuture,byk_future:bykFuture,tracked_hl:trackedHlView,htx_model:liquidationMap.htx_source_backed_model,venue_registry:env.REPORT2_LIQUIDATION_VENUE_REGISTRY});
     const freshnessAudit=buildLiquidationFreshnessAudit(sourceChain);
-    const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext):[];
+    const liquidationPolicy=liquidationPresentationPolicy(started);
+    const nativeLines=candidate?formatStandaloneLiquidationSourceLines(liquidationContext,{policy:liquidationPolicy}):[];
     const lines=candidate&&!candidateCoverage.eligible?[`${candidate.contract}: проверенных источников с реальными будущими уровнями сейчас нет. Ликвидационный анализ для этой монеты не запускается.`]:candidate?[
-      ...displayLegacyLiquidations(liquidationMap),
-      ...formatCoinLobsterFutureLines(coinFuture),
+      ...displayLegacyLiquidations(liquidationMap,{policy:liquidationPolicy}),
+      ...formatCoinLobsterFutureLines(coinFuture,{policy:liquidationPolicy}),
       ...formatLiquidationChainSummary(sourceChain),
       ...formatLiquidationHistoryFacts(crossExchangeRisk,{user_ru:true}),
       ...volumeProfileFacts(effectiveVolumeProfile,{contract:candidate.contract,now:Date.now(),reference_price:candidate.current_price}).slice(0,1).map(f=>`${f.label}: ${f.value} ${f.unit}.`),

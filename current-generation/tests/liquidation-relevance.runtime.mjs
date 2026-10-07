@@ -10,6 +10,9 @@ const pub=await import(pathToFileURL(path.join(root,'src/canonical-publication.m
 const display=await import(pathToFileURL(path.join(root,'src/canonical-display.mjs')));
 const native=await import(pathToFileURL(path.join(root,'src/native-liquidation-guard.mjs')));
 const plain=await import(pathToFileURL(path.join(root,'src/telegram-plain-facts.mjs')));
+const summary=await import(pathToFileURL(path.join(root,'src/manual-run-summary.mjs')));
+const compact=await import(pathToFileURL(path.join(root,'src/telegram-compact-formatter.mjs')));
+const models=await import(pathToFileURL(path.join(root,'src/coinlobster-future-model.mjs')));
 const reportPath='checkpoints/POST_PR229_NATURAL_REPORT_37681792251.json',bytes=fs.readFileSync(reportPath),report=JSON.parse(bytes);
 const saved=JSON.parse(fs.readFileSync('checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json'));
 const exactBytes=fs.readFileSync('checkpoints/post-pr229-bome-sent-read-37682711022/exact-current-data.json.gz');
@@ -76,5 +79,37 @@ test('native supplemental manual path cannot leak the omitted original far level
 test('new snapshot cutoff applies automatically while original policy remains historical',()=>{
  assert.equal(display.liquidationPresentationPolicy(display.LIQUIDATION_PRESENTATION_CUTOVER),policy);assert.equal(display.liquidationPresentationPolicy(display.LIQUIDATION_PRESENTATION_CUTOVER-1),'ORIGINAL');
  proof.cases.push('AUTOMATIC_NEW_SNAPSHOT_POLICY');
+});
+test('manual run summary omits the exact original remote threshold under the new policy',()=>{
+ const candidate={...row,contract:row.contract_code};
+ const args={status:'CLOSED',candidates:[candidate],generated_at:c.snapshot_time_utc,source:'manual',run_id:c.run_id};
+ const historical=summary.formatManualRunSummary(args),current=summary.formatManualRunSummary({...args,liquidation_policy:policy});
+ assert.match(historical,/2070/);assert.doesNotMatch(current,/2070|0,021226/);assert.match(current,/Ликвидационные уровни выше: подходящие уровни не подтверждены/);
+ assert.equal(JSON.stringify(c),before);proof.cases.push('MANUAL_RUN_SUMMARY_EXACT_ORIGINAL_CLOCK_PREVIEW');
+});
+test('standalone native source display applies the same policy and retains a nearer original price',()=>{
+ assert.match(summary.formatStandaloneLiquidationSourceLines(c.liquidations).join('\n'),/2070/);
+ assert.deepEqual(summary.formatStandaloneLiquidationSourceLines(c.liquidations,{policy}),['Ликвидации: пригодные уровни в проверенной выборке не подтверждены.']);
+ const controlled=structuredClone(c.liquidations),z=controlled.native_extension.above[0];z.native_price=.0011736;z.distance_pct=20;
+ assert.match(summary.formatStandaloneLiquidationSourceLines(controlled,{policy}).join('\n'),/0,0011736.*\+20%/);
+ proof.cases.push('STANDALONE_NATIVE_DISPLAY_NO_FALLBACK_LEAK_CONTROLLED_NEAR_RETAINED');
+});
+test('compact legacy caller cannot bypass relevance selection',()=>{
+ const controlled={status:'CLOSED',observed_ts:c.observed_ts,scores:c.scores,reasons:[],metadata:{contract:'BOME-USDT'},candidates:[{ticker:'BOME'}],state:'OBSERVE',snapshot_time_utc:c.snapshot_time_utc,liquidations:c.liquidations,free_sources:{}};
+ const historical=compact.formatTelegramCompact(controlled),current=compact.formatTelegramCompact(controlled,{liquidation_policy:policy});
+ assert.ok(historical.ok,JSON.stringify(historical));assert.match(historical.message,/2070/);assert.ok(current.ok,JSON.stringify(current));assert.doesNotMatch(current.message,/2070|0,021226/);
+ proof.cases.push('COMPACT_LEGACY_CALLER_NO_BYPASS');
+});
+test('realized prices cannot become future thresholds through a legacy presentation fallback',()=>{
+ const z={...c.liquidations.above[0],kind:'REALIZED',price:.0011736,distance_pct:20};
+ const liq={status:'CLOSED',future_only:false,above:[z],below:[]};assert.equal(display.auditLiquidationPresentation(liq,{policy}).rows[0].status,'FUTURE_LEVEL_KIND_NOT_CLOSED');
+ assert.doesNotMatch(display.displayLegacyLiquidations(liq,{policy}).join('\n'),/0,0011736/);
+ proof.cases.push('REALIZED_PRICE_NOT_PROMOTED_TO_FUTURE_LEVEL');
+});
+test('provider model supplement cannot reintroduce a rejected remote level before volume ranking',()=>{
+ const controlled={status:'CLOSED',observed_ts:c.observed_ts,reference_price:100,levels:[{side:'short',price:2200,distance_pct:2100,notional_usd:1e9},{side:'short',price:120,distance_pct:20,notional_usd:10000}]},original=JSON.stringify(controlled);
+ assert.match(models.formatCoinLobsterFutureLines(controlled).join('\n'),/2200/);
+ const lines=models.formatCoinLobsterFutureLines(controlled,{policy}).join('\n');assert.doesNotMatch(lines,/2200|2100/);assert.match(lines,/120 USD \(\+20/);assert.match(lines,/модельный/);assert.equal(JSON.stringify(controlled),original);
+ proof.cases.push('CONTROLLED_MODEL_SUPPLEMENT_DISTANCE_INTEGRITY');
 });
 test.after(()=>{fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/liquidation-relevance-proof.json',JSON.stringify(proof,null,2)+'\n');if(proof.corrected_preview)fs.writeFileSync('audit-output/corrected-bome-preview.txt',proof.corrected_preview+'\n');});

@@ -1,4 +1,5 @@
 import {createHash} from 'node:crypto';
+import {auditLiquidationPresentation,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
 const TTL=30*60_000,DAY=24*60*60_000;
 const clean=x=>String(x??'').trim(),num=x=>x!==null&&x!==undefined&&x!==''&&Number.isFinite(Number(x))?Number(x):null;
 export function parseCoinLobsterMcpResponse(body){
@@ -42,9 +43,10 @@ export async function collectCoinLobsterFutureModel({db,fetch_impl=globalThis.fe
  result.network_calls=1;result.cache_status='REFRESHED';const ttl=result.status==='CLOSED'?5*60_000:result.full_answer_in_seconds>0?Math.min(TTL,Math.max(60_000,result.full_answer_in_seconds*1000)):TTL;
  await db.prepare(`INSERT INTO report2_coinlobster_future_cache(contract,expires_ts,payload_json) VALUES(?1,?2,?3) ON CONFLICT(contract) DO UPDATE SET expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(normalized,now+ttl,JSON.stringify(result)).run();return result;
 }
-export function formatCoinLobsterFutureLines(context){
+export function formatCoinLobsterFutureLines(context,{policy=liquidationPresentationPolicy(context?.observed_ts)}={}){
  if(!context)return[];
- if(context.status==='CLOSED'&&context.levels?.length)return['CoinLobster: модельные будущие уровни источника.',...['short','long'].map(side=>{const rows=context.levels.filter(r=>r.side===side).sort((a,b)=>b.notional_usd-a.notional_usd).slice(0,4);return `CoinLobster — ${side==='short'?'выше':'ниже'}: ${rows.length?rows.map(r=>`${Number(r.price.toPrecision(10))} USD (${r.distance_pct>0?'+':''}${r.distance_pct.toFixed(1)}%); модельный объём ${Number(r.notional_usd.toPrecision(6))} USD`).join(', '):'уровни не получены'}.`;})];
+ const eligible=policy===RELEVANT_LIQUIDATION_PRESENTATION?auditLiquidationPresentation({display_source_zones:(context.levels||[]).map(r=>({...r,kind:'PROVIDER_ESTIMATE',distance_reference_price:context.reference_price}))},{policy}).rows.filter(r=>r.status==='DISPLAY_ELIGIBLE').map(r=>r.zone):context.levels;
+ if(context.status==='CLOSED'&&context.levels?.length)return['CoinLobster: модельные будущие уровни источника.',...['short','long'].map(side=>{const rows=eligible.filter(r=>r.side===side).sort((a,b)=>b.notional_usd-a.notional_usd).slice(0,4);return `CoinLobster — ${side==='short'?'выше':'ниже'}: ${rows.length?rows.map(r=>`${Number(r.price.toPrecision(10))} USD (${r.distance_pct>0?'+':''}${r.distance_pct.toFixed(1)}%); модельный объём ${Number(r.notional_usd.toPrecision(6))} USD`).join(', '):'уровни не получены'}.`;})];
  if(context.status==='PARTIAL_FUTURE_HEADLINE_ONLY')return[`CoinLobster: ${context.source_clock_current===false?'устаревшая':'предварительная'} модельная подсказка${context.source_ts?` от ${new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Moscow',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(context.source_ts))} МСК`:''}${context.nearest_side?` — крупнейшая ближайшая зона ${context.nearest_side==='below'?'ниже':'выше'} цены`:''}; числовые уровни и объёмы не предоставлены.`];
  return['CoinLobster: числовая карта будущих ликвидаций не получена; причина сохранена в проверке источников.'];
 }
