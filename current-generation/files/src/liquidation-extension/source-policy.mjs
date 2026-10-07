@@ -1,6 +1,7 @@
 // Conservative operational ceilings, NOT a change to strategy weights or gates.
 // Limits must also be reconciled with the account's other consumers at deployment.
 export const SOURCE_POLICY=Object.freeze({
+ SWOLE_DISCOVERY: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:1000,per_minute_cap:6,max_concurrency:2,ttl_ms:0,role:'ALTERNATE_PUBLIC_HL_ACCOUNT_DISCOVERY_NATIVE_REREAD_REQUIRED',default_decision_enabled:false},
  LIQFLOW: {unit:'REQUEST',provider_monthly_free:50000,module_monthly_cap:12000,per_minute_cap:6,max_concurrency:2,ttl_ms:300000,role:'HL_DISCOVERY_AND_MODEL_RESEARCH',key_required_from:'2026-10-27T00:00:00Z',default_decision_enabled:false},
  HL_NATIVE: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:30000,per_minute_cap:12,max_concurrency:2,ttl_ms:120000,role:'VALIDATE_SELECTED_NATIVE_POSITIONS',default_decision_enabled:false},
  LIGHTER: {unit:'REQUEST',provider_monthly_free:null,module_monthly_cap:24000,per_minute_cap:20,max_concurrency:2,ttl_ms:180000,role:'SECOND_VENUE_SCOPED_POSITIONS',default_decision_enabled:false},

@@ -1,0 +1,35 @@
+name: Report2 Alternative Native Account Discovery
+on:
+  push:
+    branches: [codex/swole-native-discovery-20261007]
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify current owner and immutable main
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='9789ec7d3e597cbbc8b82a951edc91327097bfb3')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791360171004:owner-authorized-new-chat'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Preserve alternative discovery and one fresh native account inside durable caps
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/research-swole-native-discovery-20261007.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: swole-native-discovery-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

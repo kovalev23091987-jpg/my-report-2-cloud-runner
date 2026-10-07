@@ -1,12 +1,12 @@
 import {createHash} from 'node:crypto';
 export const LIQUIDATION_ALLOWANCE_GENERATION='DYNAMIC_PANEL_V4_20260928_MULTI_SOURCE_CAPS';
 export const LIQFLOW_PUBLIC_PILOT_END_TS=Date.parse('2026-10-27T00:00:00Z');
-const providerCaps=Object.freeze({HYPERLIQUID:10000,GTRADE:4000,LIGHTER:10000,GMX:8000,LIQFLOW:10000,OXARCHIVE:5000});
+const providerCaps=Object.freeze({HYPERLIQUID:10000,SWOLE_DISCOVERY:1000,GTRADE:4000,LIGHTER:10000,GMX:8000,LIQFLOW:10000,OXARCHIVE:5000});
 const fingerprint=provider=>createHash('sha256').update(`${LIQUIDATION_ALLOWANCE_GENERATION}|${provider}|REQUEST|${providerCaps[provider]}`).digest('hex');
 const providers=Object.freeze(['HYPERLIQUID','GTRADE','LIGHTER','GMX']);
 const monthWindow=now=>{const d=new Date(now),start=Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1),end=Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1);return{start,end,key:new Date(start).toISOString().slice(0,7).replace('-','')};};
 
-export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',oxarchive_key='',provider_filter=null}={}){
+export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',oxarchive_key='',provider_filter=null,enable_swole_discovery=false}={}){
  if(!db?.prepare||!db?.batch)throw Error('SOURCE_ALLOWANCE_DB_REQUIRED');
  const ddl=[`CREATE TABLE IF NOT EXISTS report2_liq_source_allowance_shadow (
   scope_id TEXT PRIMARY KEY, provider TEXT NOT NULL, unit TEXT NOT NULL CHECK(unit IN ('REQUEST','CREDIT','WEIGHT')),
@@ -24,7 +24,7 @@ export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',
  await db.batch(ddl.map(sql=>db.prepare(sql)));
  const keyConfigured=Boolean(String(liqflow_key||'').trim()),publicPilot=now<LIQFLOW_PUBLIC_PILOT_END_TS;
  const oxarchiveConfigured=Boolean(String(oxarchive_key||'').trim());
- const window=monthWindow(now),configured=[...providers,...(keyConfigured||publicPilot?['LIQFLOW']:[]),...(oxarchiveConfigured?['OXARCHIVE']:[])],bindings={};
+ const window=monthWindow(now),configured=[...providers,...(enable_swole_discovery?['SWOLE_DISCOVERY']:[]),...(keyConfigured||publicPilot?['LIQFLOW']:[]),...(oxarchiveConfigured?['OXARCHIVE']:[])],bindings={};
  if(provider_filter!==null&&(!Array.isArray(provider_filter)||!provider_filter.length||new Set(provider_filter).size!==provider_filter.length||provider_filter.some(p=>!configured.includes(p))))throw Error('SOURCE_ALLOWANCE_PROVIDER_FILTER_INVALID');
  const active=provider_filter===null?configured:configured.filter(p=>provider_filter.includes(p));
  const rows=active.map(provider=>{const scope_id=`${LIQUIDATION_ALLOWANCE_GENERATION}:${window.key}:${provider}`,config_fingerprint=fingerprint(provider),allowance=providerCaps[provider];bindings[provider]={scope_id,config_fingerprint};return db.prepare(`INSERT INTO report2_liq_source_allowance_shadow
@@ -37,6 +37,6 @@ export async function installSourceAllowances({db,now=Date.now(),liqflow_key='',
   used_units=MIN(allowance_units,(SELECT total FROM prior)),version=version+1
   WHERE scope_id=?1 AND used_units<(SELECT total FROM prior)`).bind(bindings[provider].scope_id,provider,window.start,window.end));
  await db.batch(priorUsage);
- return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,provider_operational_caps:Object.fromEntries(active.map(provider=>[provider,providerCaps[provider]])),combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,oxarchive_access:oxarchiveConfigured?'AUTHENTICATED_OWN_CREDIT_LEDGER':'DISABLED_API_KEY_REQUIRED',automatic_topup:false,old_generation_scope_reuse:false,previous_generation_usage_reconciled:true};
+ return {status:'CLOSED',generation:LIQUIDATION_ALLOWANCE_GENERATION,window_start_ts:window.start,window_end_ts:window.end,bindings,providers:active,per_provider_operational_cap:10000,provider_operational_caps:Object.fromEntries(active.map(provider=>[provider,providerCaps[provider]])),combined_run_http_cap:5,liqflow_access:keyConfigured?'AUTHENTICATED':publicPilot?'PUBLIC_PILOT_TIME_BOUNDED':'DISABLED_API_KEY_REQUIRED',liqflow_public_pilot_end_ts:LIQFLOW_PUBLIC_PILOT_END_TS,swole_discovery_access:enable_swole_discovery?'PUBLIC_KEYLESS_NATIVE_REREAD_REQUIRED':'DISABLED',oxarchive_access:oxarchiveConfigured?'AUTHENTICATED_OWN_CREDIT_LEDGER':'DISABLED_API_KEY_REQUIRED',automatic_topup:false,old_generation_scope_reuse:false,previous_generation_usage_reconciled:true};
 }
 export default{installSourceAllowances,LIQFLOW_PUBLIC_PILOT_END_TS};

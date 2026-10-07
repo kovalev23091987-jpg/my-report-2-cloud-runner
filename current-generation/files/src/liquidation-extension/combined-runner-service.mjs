@@ -43,11 +43,11 @@ export function acquisitionHasFreshLevels(raw,{contract,run_id,observed_ts}={}){
 // This factory is the one called by generated runner code. OFF makes zero SDK,
 // D1 or HTTP calls. Both providers pass through the SAME request budget and
 // network concurrency limiter. No separate scheduler or trading path is added.
-export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null}={}){
+export function createCombinedLiquidationService({mode='OFF',provider_admit,fetch_impl=globalThis.fetch,clock=Date.now,sdk_loader=defaultSdkLoader,secondary_enabled=true,accounts_per_deep=3,max_http_per_run=5,max_total_ms=45000,liqflow_key='',oxarchive_collect=null,oxarchive_config=null,source_weight_store=null,candidate_slots=1,gtrade_routing_catalog=null,on_gtrade_catalog=null,swole_discovery_enabled=false}={}){
  if(mode!=='SHADOW_ONLY')return null;
  if(!Number.isSafeInteger(candidate_slots)||candidate_slots<1||candidate_slots>2)throw Error('CANDIDATE_SLOTS_INVALID');
  const budget=createSharedSourceBudget({provider_admit,fetch_impl,clock,max_requests:max_http_per_run,max_parallel:2,max_total_ms});
- const primary=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',admit:budget.admit,fetch_impl:budget.fetch,clock,accounts_per_deep,max_http_per_run,max_total_ms,liqflow_key});
+ const primary=createRunnerLiquidationExtension({mode:'SHADOW_ONLY',admit:budget.admit,fetch_impl:budget.fetch,clock,accounts_per_deep,max_http_per_run,max_total_ms,liqflow_key,swole_discovery_enabled});
  let secondary=null,sdkStatus=secondary_enabled?'PINNED_SDK_NOT_AVAILABLE':'SECONDARY_DISABLED_BY_CONFIGURATION';
  if(secondary_enabled){
   try{
@@ -111,7 +111,7 @@ const observe=async(lane,result,status,attempt,evaluated=true,actualHttp=null,po
    const laneCap=lane==='GTRADE_NATIVE'?sharedGtradeBatchCap():candidateHttpCap;
    if(budget.summary().reserved_http-candidateReservedStart+declaredCost>laneCap)return observe(lane,null,'SKIPPED_CANDIDATE_HTTP_ENVELOPE',attempt,false);
    if(budget.summary().reserved_http+declaredCost>max_http_per_run)return observe(lane,null,'QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET',attempt,false);
-   if(lane==='HYPERLIQUID_NATIVE'){try{const result=await primary.collect({...params,max_http_for_candidate:Math.max(0,candidateHttpCap-(budget.summary().reserved_http-candidateReservedStart))}),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt,true,Number.isSafeInteger(last?.actual_requests)?last.actual_requests:null);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused('HYPERLIQUID');budget.releaseUnused('LIQFLOW');}}
+   if(lane==='HYPERLIQUID_NATIVE'){try{const result=await primary.collect({...params,max_http_for_candidate:Math.max(0,candidateHttpCap-(budget.summary().reserved_http-candidateReservedStart))}),last=primary.summary()?.records?.at?.(-1);return observe(lane,result,result?'ACQUISITION_RETURNED':last?.status||'NOT_CLOSED',attempt,true,Number.isSafeInteger(last?.actual_requests)?last.actual_requests:null);}catch(error){return observe(lane,null,`SOURCE_EXCEPTION:${String(error?.message||error).slice(0,120)}`,attempt);}finally{budget.releaseUnused('HYPERLIQUID');budget.releaseUnused('LIQFLOW');budget.releaseUnused('SWOLE_DISCOVERY');}}
    if(lane==='OXARCHIVE_HL_BUCKETS'){
     const grant=await budget.admit({reservation_id:`LIQ_${lane}:${params.run_id}:${params.contract}`,contract:params.contract,run_id:params.run_id,requests:{OXARCHIVE:1},weights:{OXARCHIVE:1},max_requests:1,deadline_ts:deadline});
     if(grant?.allowed!==true||grant?.new_reservation!==true)return observe(lane,null,`QUOTA_NOT_GRANTED:${grant?.reason||'UNKNOWN'}`,attempt,false);
