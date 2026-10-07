@@ -679,3 +679,5 @@ Blockchain semantics: duplicate/reorg/transfer/bridge/liquidity/multihop never a
 ## Последний внедрённый пакет
 
 `checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json`: PR203, проверенный candidate `b7d162e731f77bae5b853d8ca01d45875b586445`, облачный запуск 37575766314. Новые сведения N02/N03/N07 без новых баллов, изменения входа, частоты анализа, лимитов и согласованного Telegram.
+
+PR204: N04 расширен проверенной выборкой успешных native XRP Payment; фактически доставленная сумма, exactvalidatedledger,0score/биржевыхlabels. Proof: `checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json`. Последний postPR203/prePR204 автоматический результат:9и8участвующих блоков, обаREJECTED, freshSENTнет. Остальная работа полного реестра остаётся открытой.

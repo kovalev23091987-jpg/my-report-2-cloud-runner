@@ -1,0 +1,73 @@
+{
+  "schema": "NATIVE_PAYMENT_CONNECTION_RELEASE_20261007_V1",
+  "created_utc": "2026-10-07T05:38:08.521Z",
+  "pr": 204,
+  "production_head": "f65245d457968e717ee11a148811bcec885ab611",
+  "tested_head": "70aa6cbd09804287ebfe56b087c36e2c12361b06",
+  "cloud_run": 37577028532,
+  "artifact_id": 11462614839,
+  "artifact_digest": "sha256:5c41cdc7de65f6cd53bb49c1153faa8415343998ec5cbf6a245f0e9ad46f9d39",
+  "validation": {
+    "assembled_native_payment_tests": 4,
+    "composed_telegram_tests": 34,
+    "integration_scenarios": 37,
+    "current_generation": "PASS"
+  },
+  "actual_source": {
+    "contract": "XRP-USDT",
+    "source": "https://xrplcluster.com/",
+    "method": "ledger exact known validated hash, transactions=true, expand=true, api_version=2",
+    "ledger_index": 107487499,
+    "ledger_hash": "0ADE0EABA190D3B7D0E397A95924CEAA4E3550721D324AE39F1832DD2627C837",
+    "source_ts": 1791350411000,
+    "received_ts": 1791351330108,
+    "decision_ts": 1791351330704,
+    "returned_transactions": 77,
+    "successful_native_payment_sample": 16,
+    "sample_limit": 16,
+    "amount_field": "metadata.delivered_amount ONLY; never Amount/DeliverMax",
+    "archive": "checkpoints/actual-native-payment-connected-37577028532.json.gz",
+    "archive_blob": "a106bb70e2d41f82a192e3a30c830a07a7660a52",
+    "body_sha256": "bdf18079462c41699e5fd04dae9c82a10b8a87a21fdb9e244964b03ad7e05899"
+  },
+  "consumer": {
+    "block": "N04",
+    "facts": 1,
+    "score_adjustment": 0,
+    "exchange_attribution": false,
+    "whole_history": false,
+    "large_transfer_claim": false,
+    "upstream_independence_not_added": true,
+    "examples_include_tiny_payments": true
+  },
+  "cost": {
+    "sourceHTTP": 1,
+    "MAIN": 0,
+    "Telegram": 0,
+    "trading": 0,
+    "d1": {
+      "requests": 21,
+      "rows_read": 24,
+      "rows_written": 12,
+      "unknown_ops": 0
+    },
+    "shared_XRPL_daily_cap": 24,
+    "parent_CHAIN_RPC_daily_cap": 720,
+    "whole_job_cap": 164,
+    "no_budget_reset": true
+  },
+  "telegram": {
+    "worker_hash_unchanged": "1a3bdbcb04b77ab07beb6611145a4feffac18e39041f975fa49aeece0ed0fc73",
+    "canonical_publication_hash_unchanged": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302",
+    "brief_facts_hash_unchanged": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1",
+    "approved_brief_policy_preserved": true,
+    "no_new_N04_technical_Telegram_text": true,
+    "current_release_new_fresh_SENT": false
+  },
+  "next_acceptance": {
+    "same_report_12_13_15_not_accepted": true,
+    "whole_market_coverage": false,
+    "all_TZ_complete": false
+  },
+  "automatic_readback_before_PR204": "checkpoints/POST_PR203_AUTOMATIC_READBACK_20261007.json"
+}

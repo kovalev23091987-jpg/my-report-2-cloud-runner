@@ -118,16 +118,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:20261007:1791350763246:native-transfer-coverage",
-    "acquired_ts": 1791350763246,
-    "expires_ts": 1791353463246
-  },
-  "next_action": "GENERAL_NATIVE_N04_TRANSFER_GAP; EXACT_VALIDATED_LEDGER_AND_DELIVERED_AMOUNTS; PRESERVE_PR203_AND_TG",
+  "lease": null,
+  "next_action": "GENERAL_OFFICIAL_ISSUER_PROVEN_COVERAGE_AND_PRIORITY_NATIVE_SECTOR_GAPS",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791350763246,
+  "updated_ts": 1791351488521,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -178,11 +174,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:20261007:1791348490847:full-block-task-recovery",
-    "acquired_ts": 1791348490847,
-    "expires_ts": 1791353890847,
-    "released_ts": 1791350665800,
-    "reason": "PR203 released after connected cloud regression; free normal production/maintenance while continuing read-only gap analysis"
+    "owner": "HTX:20261007:1791350763246:native-transfer-coverage",
+    "acquired_ts": 1791350763246,
+    "expires_ts": 1791353463246,
+    "released_ts": 1791351488521,
+    "reason": "PR204 and exact actual proof saved; release own lease for production/maintenance"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -315,7 +311,7 @@
   "history": "checkpoints/archive/phase-before-approved-batch-final-20261006.json",
   "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE",
   "additional_coverage_work": {
-    "status": "IN_PROGRESS_AFTER_PR203_GENERAL_NATIVE_AND_OFFICIAL_RELEASE_CONNECTIONS",
+    "status": "IN_PROGRESS_AFTER_PR203_AND_PR204",
     "owner_instruction_at_msk": "2026-10-07T04:03:15+03:00",
     "base_functional_acceptance_retained": true,
     "scope": "All recovered block configuration, actual assigned-source use, new useful connection research and implementation; owner asks opportunistic12/13/15 participating blocks. Preserve approved Telegram and thresholds/entry/budgets.",
@@ -391,5 +387,29 @@
     "tested_head": "b7d162e731f77bae5b853d8ca01d45875b586445",
     "production_head": "f927712f3422cb68bd16d819f9313ec79372b08b",
     "artifact_digest": "sha256:f4720dbe7030d890663ac8a8b7dc49c3c068438a7f73f5992611dbd5525e66c4"
+  },
+  "latest_native_payment_release": {
+    "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
+    "pr": 204,
+    "head": "f65245d457968e717ee11a148811bcec885ab611",
+    "cloud_run": 37577028532,
+    "artifact_digest": "sha256:5c41cdc7de65f6cd53bb49c1153faa8415343998ec5cbf6a245f0e9ad46f9d39"
+  },
+  "latest_post_source_release_automatic_readback": {
+    "path": "checkpoints/POST_PR203_AUTOMATIC_READBACK_20261007.json",
+    "cloud_run": 37576173543,
+    "head": "f927712f3422cb68bd16d819f9313ec79372b08b",
+    "participating_counts": [
+      {
+        "contract": "龙虾-USDT",
+        "count": 9
+      },
+      {
+        "contract": "FIL-USDT",
+        "count": 8
+      }
+    ],
+    "fresh_SENT": false,
+    "scope": "POST_PR203_BEFORE_PR204_AUTOMATIC_REJECTED_REPORTS; DO_NOT_PROMOTE_CHECKED12_TO_PARTICIPATING12"
   }
 }

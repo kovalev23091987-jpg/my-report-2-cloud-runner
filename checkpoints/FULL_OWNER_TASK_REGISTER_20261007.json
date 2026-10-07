@@ -1518,7 +1518,7 @@
       "task_id": "BLOCK_N04",
       "block": "N04",
       "name": "Переводы и точная атрибуция адресов",
-      "status": "OPEN_EXACT_ATTRIBUTED_TRANSFER_COVERAGE",
+      "status": "PARTIAL_EXPANDED_VALIDATED_NATIVE_PAYMENT_ROUTE_PR204",
       "remaining_action": "Увеличить точную finalized transfer coverage/labels там, где это действительно доступно. Bridge/liquidity/internal transfer не buy; индекс до primary finality лишь provisional.",
       "previous_exact_proofs": [
         {
@@ -1550,7 +1550,8 @@
           "full_canonical_archive": "checkpoints/actual-current-approved-brief-37557085058.json.gz"
         }
       ],
-      "complete_for_all_assets": false
+      "complete_for_all_assets": false,
+      "latest_implementation_proof": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json"
     },
     {
       "task_id": "BLOCK_N05",
@@ -2145,5 +2146,28 @@
     "tested_head": "b7d162e731f77bae5b853d8ca01d45875b586445",
     "production_head": "f927712f3422cb68bd16d819f9313ec79372b08b",
     "artifact_digest": "sha256:f4720dbe7030d890663ac8a8b7dc49c3c068438a7f73f5992611dbd5525e66c4"
+  },
+  "latest_completed_native_transfer_batch": {
+    "proof": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
+    "run": 37577028532,
+    "production_head": "f65245d457968e717ee11a148811bcec885ab611",
+    "whole_market_coverage": false
+  },
+  "latest_automatic_participating_counts": {
+    "path": "checkpoints/POST_PR203_AUTOMATIC_READBACK_20261007.json",
+    "cloud_run": 37576173543,
+    "head": "f927712f3422cb68bd16d819f9313ec79372b08b",
+    "participating_counts": [
+      {
+        "contract": "龙虾-USDT",
+        "count": 9
+      },
+      {
+        "contract": "FIL-USDT",
+        "count": 8
+      }
+    ],
+    "fresh_SENT": false,
+    "scope": "POST_PR203_BEFORE_PR204_AUTOMATIC_REJECTED_REPORTS; DO_NOT_PROMOTE_CHECKED12_TO_PARTICIPATING12"
   }
 }

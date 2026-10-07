@@ -68,3 +68,7 @@ PR178 внедрён и облачно проверен: при снижении
 
 
 Последний пакет расширения источников: PR203, первичные native supply XRP/XLM и официальные GitHub releases APT/XRP/XLM. Приёмка компонентов и неизменного Telegram: `checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json`. Это не завершение полного реестра и не доказательство 12–15 блоков в одном новом рыночном отчёте.
+
+### Продолжение источников 07.10.2026: N04
+
+PR204 добавляет один exact-hash запрос валидированного XRP ledger после существующей проверки supply. В N04 поступает ограниченная выборка успешных native Payment по metadata.delivered_amount; нет атрибуции биржам, утверждения крупных покупок и score. Проверены облачная сборка,34Telegram+37integration, актуальная generation. Proof: `checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json`. Последний штатный запуск послеPR203 и доPR204: `checkpoints/POST_PR203_AUTOMATIC_READBACK_20261007.json`; фактическое участие9и8блоков, оба кандидатаREJECTED, freshSENT нет. Полный реестр86+16+24 остаётся открытым;12/13/15 не приняты. Текущий статус/phase задают дальнейшую работу.
