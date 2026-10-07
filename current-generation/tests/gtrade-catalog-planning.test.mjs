@@ -32,3 +32,16 @@ test('actual stock/forex routes, ambiguous crypto and future catalog clocks rema
  const a=collector(JSON.stringify(duplicate));await a.collect(query('BR'));assert.equal(a.collect.nativeMarketCoverage(query('FIL')).status,'IDENTITY_NOT_CLOSED');
  const future=structuredClone(variables);future.lastRefreshed=T+1;const f=collector(JSON.stringify(future));await f.collect(query('BR'));assert.equal(f.collect.nativeMarketCoverage(query('FIL')).status,'CATALOG_NOT_CLOSED');
 });
+test('a proven weekly native route is checked before a catalog-only gTrade route can spend the remaining envelope',async()=>{
+ const urls=[],address='0x'+'1'.repeat(40);
+ const service=createCombinedLiquidationService({mode:'SHADOW_ONLY',clock:()=>T,max_http_per_run:5,provider_admit:async()=>({allowed:true,new_reservation:true}),sdk_loader:()=>({version:'1.8.10',sdk}),fetch_impl:async(url,opts={})=>{
+  urls.push(String(url));if(String(url).endsWith('/trading-variables'))return new Response(raw);
+  if(String(url).includes('liqflow'))return new Response(JSON.stringify({coin:'FIL',positions:[{address,size:10,liq_price:.7}]}));
+  const body=JSON.parse(opts.body);if(body.type==='metaAndAssetCtxs')return new Response(JSON.stringify([{universe:[{name:'FIL'}]},[{markPx:'1'}]]));
+  assert.equal(body.type,'clearinghouseState');return new Response(JSON.stringify({time:T,assetPositions:[{position:{coin:'FIL',szi:'10',positionValue:'10',liquidationPx:'.7',leverage:{type:'cross'}}}]}));
+ }});
+ const first={...query('BR'),deep_started_ts:T,max_http_for_candidate:5,allowed_source_ids:['GTRADE_NATIVE']};await service.collect(first);
+ const native=await service.collect({...first,...query('FIL'),max_http_for_candidate:3,allowed_source_ids:['GTRADE_NATIVE','HYPERLIQUID_NATIVE'],proven_level_source_ids:['HYPERLIQUID_NATIVE']});
+ assert.equal(native.schema,'NATIVE_LIQUIDATION_ACQUISITION_V1');assert.equal(native.accounts[0].state.time,T);assert.equal(urls.length,4);assert.equal(urls.some(u=>u.endsWith('/open-trades')),false);
+ const profile=service.summary().source_weighting.profile;assert.equal(profile[0].source_id,'HYPERLIQUID_NATIVE');assert.equal(profile[0].coverage,'EXACT_ROUTE_PROVEN');assert.equal(service.summary().shared_budget.actual_http,4);
+});

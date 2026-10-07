@@ -1,3 +1,4 @@
+import {selectVerifiedNativeAccounts} from '../current-generation/files/src/liquidation-extension/verified-native-account-cache.mjs';
 import {chooseNativeAccountDiscovery} from '../current-generation/files/src/liquidation-extension/swole-account-discovery.mjs';
 const freshAccount=(a,now)=>Number.isSafeInteger(a?.state?.time)&&Number.isSafeInteger(a?.receipt?.received_ts)&&a.state.time<=a.receipt.received_ts&&a.receipt.received_ts<=now&&now-a.state.time<=300000&&now-a.receipt.received_ts<=300000&&Array.isArray(a.state.assetPositions);
 // One weekly invocation, exact original clocks, no persistent wallet cache.
@@ -16,7 +17,7 @@ export function createWeeklyNativeCoverageSession({run_id,source_admit,read_json
  }
  async function collect({contract,symbol,mark_price=null,allow_discovery=true}={}){
   if(contract!==symbol+'-USDT')throw Error('EXACT_NATIVE_MARKET_REQUIRED');
-  const now=clock(),cached=[...accounts.values()].filter(a=>freshAccount(a,now)&&a.state.assetPositions.some(x=>x?.position?.coin===symbol&&Number.isFinite(Number(x.position.szi))&&Number(x.position.szi)!==0)).slice(0,1);
+  const now=clock(),cached=selectVerifiedNativeAccounts([...accounts.values()],{run_id,symbol,now,max_age_ms:300000,max_accounts:8});
   let sample=cached,transport=[],reason=null;
   if(!sample.length){
    if(!allow_discovery)return{status:'SAME_RUN_CACHE_MISS',receipt:null,network_calls:0,reused_accounts:0};
@@ -33,7 +34,7 @@ export function createWeeklyNativeCoverageSession({run_id,source_admit,read_json
    const account={address:selected[0].address,state:state.payload,receipt:state.receipt};sample=[account];
    if(freshAccount(account,clock())&&accounts.size<120)accounts.set(account.address.toLowerCase(),structuredClone(account));
   }
-  const observed=clock(),receipt=normalize_native({accounts:sample.map(a=>({address:a.address,state:a.state})),selection_bias:cached.length?'ONE_ORIGINAL_SAME_RUN_NATIVE_ACCOUNT_WITH_THIS_POSITION':'ONE_ACCOUNT_WEEKLY_CAPABILITY_SAMPLE'},
+  const observed=clock(),receipt=normalize_native({accounts:sample.map(a=>({address:a.address,state:a.state})),selection_bias:cached.length?'BOUNDED_ORIGINAL_SAME_RUN_NATIVE_ACCOUNTS_WITH_VERIFIED_LEVELS':'ONE_ACCOUNT_WEEKLY_CAPABILITY_SAMPLE'},
    {symbol,route_symbol:symbol,run_id,snapshot_id:`COVERAGE:${contract}:${observed}`,as_of_ms:observed,received_at_ms:Math.max(...sample.map(a=>a.receipt.received_ts)),max_age_ms:300000});
   return{status:receipt.usable_for_context?'NATIVE_SAMPLE_NORMALIZED':'NO_REAL_NUMERIC_LEVELS',reason:receipt.usable_for_context?null:receipt.status,receipt,network_calls:transport.length,reused_accounts:cached.length,original_transport_sha256:sample.map(a=>a.receipt.sha256),transport};
  }

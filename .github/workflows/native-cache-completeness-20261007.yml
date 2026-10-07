@@ -1,0 +1,104 @@
+name: Report2 Native Cache Completeness Composed Verification
+on:
+  push:
+    branches: [codex/native-cache-completeness-20261007]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check fresh owner before tests and replay
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='4e76045e81ea8df7d3b2dede79a6da82880d325b')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791365140268:liquidation-max-data'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Load all retained inputs with immutable artifact digests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse successful exact09:30 read without another D1 query
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11466345739,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='a3e376f8be618ccc210a542686237b09bb6e7b88003d80a94d6bb441d0736c80')throw Error('EXACT_READ_ARCHIVE_DIGEST_MISMATCH');
+            fs.mkdirSync('retained0930',{recursive:true});fs.writeFileSync('retained0930.zip',b);cp.execFileSync('unzip',['-q','retained0930.zip','-d','retained0930']);
+            fs.copyFileSync('retained0930/exact-current-data.json.gz','audit-output/near0930-exact-current-data.json.gz');
+            fs.copyFileSync('retained0930/readback-summary.json','audit-output/near0930-readback-summary.json');
+            fs.copyFileSync('checkpoints/actual-zec-sent150-original-input-20261007.json.gz','audit-output/exact-current-data.json.gz');
+      - name: Verify retained gTrade catalog archive
+        run: |
+          mkdir -p priority-source
+          echo 'e063dcaa070b4e476d3d2da0d74d6ec01f13d64b425aa61042e889956a637d8a  checkpoints/source-inputs/gtrade-one-batch-live-37435081885.zip' | sha256sum -c -
+          unzip -q checkpoints/source-inputs/gtrade-one-batch-live-37435081885.zip -d priority-source
+      - name: Load retained pinned positions with immutable digest
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11397777455,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0')throw Error('RETAINED_PINNED_SOURCE_DIGEST_MISMATCH');
+            fs.mkdirSync('original-source',{recursive:true});fs.writeFileSync('original-source.zip',b);cp.execFileSync('unzip',['-q','original-source.zip','-d','original-source']);
+      - name: Verify connected native coverage and route scheduling changes
+        run: |
+          node --test current-generation/tests/native-cache-completeness.test.mjs current-generation/tests/swole-native-discovery.test.mjs current-generation/tests/source-allowance-install.test.mjs current-generation/tests/source-allowance-subset-20261005.test.mjs current-generation/tests/liquidation-run-cap.test.mjs current-generation/tests/source-budget-observability.test.mjs current-generation/tests/weekly-native-coverage.test.mjs current-generation/tests/native-routing-catalog.test.mjs current-generation/tests/venue-catalog-cache.test.mjs current-generation/tests/liquidation-source-weighting.test.mjs current-generation/tests/gtrade-catalog-planning.test.mjs current-generation/tests/gtrade-shared-snapshot.test.mjs current-generation/tests/native-account-reuse.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/liquidation-futures-coverage.test.mjs current-generation/tests/liquidation-futures-coverage-policy.test.mjs > audit-output/coverage-and-routing.tap
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/top2-pinned-batch.runtime.mjs > audit-output/native-pinned-runtime.tap
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+      - name: Verify substantial used score facts from retained real market observations
+        run: node --test current-generation/tests/idea-basis-facts.runtime.mjs > audit-output/idea-basis-tests.tap
+      - name: Replay complete composed delivery chain and all retained refusals
+        run: |
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+      - name: Integrated release regression
+        run: node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Prove tested source code is the exact assembled producer and consumer
+        run: |
+          cmp current-generation/files/src/liquidation-extension/verified-native-account-cache.mjs runtime/src/liquidation-extension/verified-native-account-cache.mjs
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          cmp current-generation/files/src/liquidation-extension/swole-account-discovery.mjs runtime/src/liquidation-extension/swole-account-discovery.mjs
+          cmp current-generation/files/src/liquidation-extension/runner-extension.mjs runtime/src/liquidation-extension/runner-extension.mjs
+          cmp current-generation/files/src/liquidation-extension/run-source-budget.mjs runtime/src/liquidation-extension/run-source-budget.mjs
+          cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
+          sha256sum checkpoints/source-inputs/swole-native-discovery-FIL-37596250906.html checkpoints/source-inputs/swole-native-sample-37596747832.json > audit-output/actual-input-hashes.txt
+      - name: Exact package hashes
+        if: always()
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/src/block-score-policy.mjs runtime/src/block-weight-calibration.mjs runtime/src/evidence-v2.mjs runtime/src/coingecko-sector-evidence.mjs runtime/src/supplemental-score-evidence.mjs runtime/src/tz101-cost-assessment.mjs runtime/r8-20-prospective-validation-sidecar.mjs runtime/src/liquidation-extension/combined-runner-service.mjs runtime/src/block-decision-use-audit.mjs runtime/src/xrpl-native-payments.mjs runtime/src/finalized-chain-events.mjs runtime/src/native-ledger-supply.mjs runtime/src/stellar-primary-supply.mjs runtime/src/github-official-releases.mjs runtime/src/chain-supply-evidence.mjs runtime/src/official-events-evidence.mjs runtime/src/official-source-registry.mjs runtime/src/supplemental-candidate-context.mjs runtime/src/candidate-evidence-v2-runtime.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/block-result-context.mjs runtime/src/telegram-plain-facts.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/telegram-delivery-receipt.mjs runtime/src/v3-telegram-delivery-sidecar.mjs runtime/src/v3-telegram-runtime.mjs runtime/src/worker.js runtime/src/canonical-runtime-adapter.mjs runtime/src/observation-technical-range.mjs runtime/src/manual-report-formatter.mjs runtime/src/telegram-compact-formatter.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-cache-completeness-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
