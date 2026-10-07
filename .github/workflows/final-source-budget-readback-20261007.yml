@@ -1,0 +1,35 @@
+name: Report2 Final Source Budget Readback
+on:
+  push:
+    branches: [codex/final-source-budget-readback-20261007]
+permissions:
+  contents: read
+jobs:
+  readback:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact working version and own lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='11bebd79ef2824208c9eafa1f5d62f1fc993660d')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261007:1791351578400:official-native-coverage'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: One bounded current daily counter read; no source calls
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node audit-fixes/block-connections-implementation-20261007/read-source-budgets.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-budget-readback-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

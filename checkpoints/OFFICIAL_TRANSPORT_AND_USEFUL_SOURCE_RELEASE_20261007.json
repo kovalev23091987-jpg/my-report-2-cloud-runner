@@ -1,0 +1,77 @@
+{
+  "schema": "OFFICIAL_TRANSPORT_AND_USEFUL_SOURCE_RELEASE_20261007_V1",
+  "created_utc": "2026-10-07T05:52:23.581Z",
+  "pr": 205,
+  "production_head": "11bebd79ef2824208c9eafa1f5d62f1fc993660d",
+  "tested_head": "034a273d4e01c950d465d1811feb1148a03e2ffd",
+  "cloud_run": 37577912112,
+  "artifact_id": 11463109880,
+  "artifact_digest": "sha256:f6d91c7ef5b5bb47785b6ba147431155e0ca02fddcc1d9fbd4818d53a6722995",
+  "actual_correction": {
+    "failed_run": 37577504413,
+    "failed_artifact_id": 11463685227,
+    "failed_artifact_digest": "sha256:5866c4d0cbc9b97955d71e1a55aaf5e0cbef427ab6476073481eae41833c480c",
+    "observed_error": "HTTP415: Unsupported Accept header RSS/HTML; must accept application/json",
+    "corrected_run": 37577657718,
+    "corrected_artifact_id": 11463595919,
+    "corrected_artifact_digest": "sha256:5d78d4e46fb1b6e4b4ff3a6bde04dd7bf8e3445044207d3034b1553343b9aae1",
+    "sourceHTTP": 4,
+    "corrected_accept": "application/vnd.github+json",
+    "github_only_cache_transport_version": "github-official-releases-v2-json-transport-20261007",
+    "archive": "checkpoints/actual-official-native-feeds-37577657718.json.gz",
+    "archive_blob": "3c6ee8ede3baca9dd7e452f7fb6e2fc134c6b548",
+    "new_candidates": [
+      {
+        "contract": "SOL-USDT",
+        "repository": "anza-xyz/agave",
+        "issuer_proof": "https://docs.anza.xyz/cli/install",
+        "actual_HTTP": 200,
+        "eligible_recent_events": 0,
+        "enabled": false,
+        "adds_regular_requests": 0
+      },
+      {
+        "contract": "ADA-USDT",
+        "repository": "IntersectMBO/cardano-node",
+        "issuer_proof": "https://docs.cardano.org/developer-resources/release-notes/release-notes",
+        "actual_HTTP": 200,
+        "eligible_recent_events": 0,
+        "enabled": false,
+        "adds_regular_requests": 0,
+        "existing_Cardano_RSS_preserved": true
+      }
+    ]
+  },
+  "useful_fact_controls": {
+    "empty_release_subset_checked_but_not_participating": true,
+    "actual_APT_events_retained": 2,
+    "actual_XLM_events_retained": 1,
+    "actual_XRP_release_event_count": 0,
+    "proof_of_ABSENCE_is_bounded_first10_rows_only": true,
+    "price_direction_score_ENTRY_from_releases": false,
+    "original_clocks_not_renewed": true
+  },
+  "verification": {
+    "assembled_source_tests": 8,
+    "composed_telegram_tests": 34,
+    "integration_scenarios": 37,
+    "current_generation": "PASS",
+    "final_sourceHTTP": 0,
+    "final_D1": 0,
+    "final_MAIN": 0,
+    "final_Telegram": 0,
+    "final_trading": 0
+  },
+  "Telegram": {
+    "approved_brief_unchanged": true,
+    "worker_hash": "1a3bdbcb04b77ab07beb6611145a4feffac18e39041f975fa49aeece0ed0fc73",
+    "canonical_publication_hash": "8001e06e7dacf449a8e23bd09e2f5491b7373204fae7e7247cb86b5b7a9aa302",
+    "brief_facts_hash": "3530fdb2448db89508510fc8865aad626475cc91b879b5f3d506c2e6269260d1",
+    "current_release_new_fresh_SENT": false
+  },
+  "budget_readback": "checkpoints/ACTUAL_SOURCE_BUDGET_READBACK_20261007.json",
+  "complete_batch_sourceHTTP": 18,
+  "complete_batch_sourceHTTP_is_not_all_production_daily_usage": true,
+  "all_owner_TZ_complete": false,
+  "same_report_12_13_15_accepted": false
+}

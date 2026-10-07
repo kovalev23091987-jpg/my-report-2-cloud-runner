@@ -1,0 +1,198 @@
+{
+  "schema": "EXACT_SOURCE_DAILY_BUDGET_READBACK_20261007_V1",
+  "head": "8e8a277639c050a3b5c82ceda645155002cb0a69",
+  "run": "37578182465",
+  "observed_ts": 1791352138496,
+  "day_utc": "2026-10-07",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "trading": 0,
+  "source_quota_mutations": 0,
+  "quota_resets": 0,
+  "families": [
+    {
+      "source": "GITHUB_OFFICIAL_RELEASES",
+      "daily_cap": 12,
+      "background_cap": 8,
+      "protected_manual_reserve": 4,
+      "reserved_attempts": 7,
+      "total_remaining": 5,
+      "background_remaining": 1,
+      "original_ledger_updated_at": 1791351777579,
+      "ttl_ms": 21600000,
+      "no_reset": true
+    },
+    {
+      "source": "XRPL_NATIVE_SUPPLY",
+      "daily_cap": 24,
+      "background_cap": null,
+      "protected_manual_reserve": null,
+      "reserved_attempts": 10,
+      "total_remaining": 14,
+      "background_remaining": null,
+      "original_ledger_updated_at": 1791351327020,
+      "ttl_ms": 1200000,
+      "no_reset": true
+    },
+    {
+      "source": "STELLAR_NATIVE_SUPPLY",
+      "daily_cap": 24,
+      "background_cap": null,
+      "protected_manual_reserve": null,
+      "reserved_attempts": 3,
+      "total_remaining": 21,
+      "background_remaining": null,
+      "original_ledger_updated_at": 1791349675540,
+      "ttl_ms": 21600000,
+      "no_reset": true
+    },
+    {
+      "source": "CHAIN_RPC",
+      "daily_cap": 720,
+      "background_cap": null,
+      "protected_manual_reserve": null,
+      "reserved_attempts": 27,
+      "total_remaining": 693,
+      "background_remaining": null,
+      "original_ledger_updated_at": 1791351327020,
+      "ttl_ms": 1200000,
+      "no_reset": true
+    },
+    {
+      "source": "OFFICIAL_EVENTS",
+      "daily_cap": 288,
+      "background_cap": null,
+      "protected_manual_reserve": null,
+      "reserved_attempts": 5,
+      "total_remaining": 283,
+      "background_remaining": null,
+      "original_ledger_updated_at": 1791351777579,
+      "ttl_ms": 3600000,
+      "no_reset": true
+    }
+  ],
+  "status": "ACTUAL_SOURCE_COUNTERS_WITHIN_EXISTING_CAPS",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-07",
+      "run_count": 18,
+      "reserved_rows_read": 358600,
+      "reserved_rows_written": 8112,
+      "measured_rows_read": 217031,
+      "measured_rows_written": 3935,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1500,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 360100,
+      "rows_written": 8128
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "SOURCE_BUDGET_READBACK:37578182465",
+    "source_run_id": "37578182465",
+    "measured_rows_read": 24,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 9,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 9,
+    "rows_read": 25,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 19,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_daily": {
+        "requests": 5,
+        "rows_read": 5,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "planning": {
+    "GitHub": {
+      "enabled_feed_count": 3,
+      "conditional_full_refreshes_per_day": 4,
+      "conditional_source_requests_per_day": 12,
+      "background_daily_cap": 8,
+      "manual_reserve": 4,
+      "full_three_feed_refresh_not_guaranteed": true,
+      "denied_excess_must_stay_missing": true,
+      "disabled_new_SOL_ADA_feeds_add_requests": 0
+    },
+    "XRP": {
+      "supply_fresh_pair_max_requests": 3,
+      "dependent_payment_max_requests": 1,
+      "combined_refresh_max_requests": 4,
+      "shared_daily_cap": 24,
+      "maximum_full_refreshes_per_day_if_no_other_family_use": 6,
+      "all36_analysis_cycles_not_covered": true
+    },
+    "Stellar": {
+      "source_requests_per_refresh": 1,
+      "ttl_hours": 6,
+      "conditional_requests_per_day": 4,
+      "daily_cap": 24
+    },
+    "whole_job": {
+      "HTTP_cap": 164,
+      "D1_daily_reads": 3500000,
+      "D1_daily_writes": 70000
+    }
+  },
+  "artifact": {
+    "id": 11463372318,
+    "digest": "sha256:e849bd0238af30739295d3d3acb61ed3ebc8b2e2000d51ee4c9d33e77457bf0c"
+  },
+  "source_counter_values_are_reservations_not_necessarily_actual_HTTP": true,
+  "batch_actual_http": {
+    "GITHUB_OFFICIAL_RELEASES": 7,
+    "XRPL_NATIVE_SUPPLY": 8,
+    "STELLAR_NATIVE_SUPPLY": 3,
+    "total": 18
+  },
+  "GitHub_provider_actual_original_headers": {
+    "source_run": 37574060777,
+    "limit": 60,
+    "remaining_after_three_original_calls": 57,
+    "reset": 1791352750,
+    "not_a_current_shared_IP_remaining_claim": true,
+    "official_rate_limit_docs": "https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api"
+  }
+}
