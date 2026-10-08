@@ -23,6 +23,7 @@ jobs:
       - name: Validate current generation and assemble exact new runtime
         env:
           REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+          REPORT2_VALIDATION_RECEIPT_DIR: audit-output
         run: |
           mkdir -p runtime audit-output
           node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
@@ -79,7 +80,7 @@ jobs:
             const validation=out('validation.json'),binding=out('binding.json'),integration=out('integration.json'),actual=out('actual-monthly-connected.json');
             if(tests['monthly-source-tests.tap'].pass<20||tests['approved-pipeline-tests.tap'].pass!==35||validation.status!=='CURRENT_GENERATION_VALIDATED'||binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED'||integration.status!=='PASS'||integration.failed!==0||actual.consumer.facts.length!==1||actual.assigned_route.role!=='OFFICIAL_PUBLISHED_MONTHLY_PROJECTION_CONTEXT'||actual.score_adjustment!==0||actual.sourceHTTP!==0||actual.D1!==0)throw Error('CONNECTED_SCOPE_NOT_CLOSED');
             const proof={schema:'PUBLISHED_MONTHLY_SCHEDULE_CONNECTED_20261008_V1',status:'ACTUAL_RETAINED_PRIMARY_MONTHLY_PROJECTION_TO_EXACT_NEUTRAL_N01_CONSUMER_AND_COMPOSED_PIPELINE_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,validation,binding,integration,actual,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,new_source_daily_cap:4,parent_OFFICIAL_EVENTS_daily_cap:288,global_HTTP_cap:164,all_other_caps_and_entry_weights_unchanged:true,projected_month_end_not_actual_unlock:true,source_clocks_refreshed:false,new_fresh_SENT:false,actual_ENTRY:false,full_project_complete:false};
-            const dir='checkpoints/monthly-schedule-connected-'+context.runId,entries=[],files=['validation.json','binding.json','assembly.json','integration.json','monthly-source-tests.tap','approved-pipeline-tests.tap','actual-monthly-connected.json'];
+            const dir='checkpoints/monthly-schedule-connected-'+context.runId,entries=[],files=['current-generation-unit-tests.tap','validation.json','binding.json','assembly.json','integration.json','monthly-source-tests.tap','approved-pipeline-tests.tap','actual-monthly-connected.json'];
             for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:dir+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
             const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/PUBLISHED_MONTHLY_SCHEDULE_CONNECTED_20261008.json',mode:'100644',type:'blob',sha:b.sha});
             const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain actual original-clock monthly schedule consumer and unchanged publication integration proof',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});console.log(JSON.stringify({proof_head:c.sha,status:proof.status,tests}));

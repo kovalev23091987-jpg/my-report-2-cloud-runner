@@ -10,8 +10,9 @@ const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
 const expectedWorker='340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc';
 const run=(args,{cwd=repo}={})=>{
- const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe'});
- if(result.status!==0)throw new Error(`FAILED node ${args.join(' ')}\n${result.stdout}\n${result.stderr}`);
+ const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe',maxBuffer:16*1024*1024});
+ if(args[0]==='--test'&&process.env.REPORT2_VALIDATION_RECEIPT_DIR){fs.mkdirSync(process.env.REPORT2_VALIDATION_RECEIPT_DIR,{recursive:true});fs.writeFileSync(path.join(process.env.REPORT2_VALIDATION_RECEIPT_DIR,'current-generation-unit-tests.tap'),result.stdout||'');}
+ if(result.status!==0)throw new Error(`FAILED node ${args[0]} status=${result.status} signal=${result.signal||''} error=${result.error?.code||''}\n${String(result.stdout||'').slice(-24000)}\n${String(result.stderr||'').slice(-24000)}`);
  return result.stdout.trim();
 };
 const checks=[
