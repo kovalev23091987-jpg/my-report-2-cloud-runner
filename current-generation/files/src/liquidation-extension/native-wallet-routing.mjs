@@ -1,5 +1,6 @@
 import {fingerprint,timestamp} from './core.mjs';
 import {selectVerifiedNativeAccounts} from './verified-native-account-cache.mjs';
+import {LIQUIDATION_PRESENTATION_CUTOVER,LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT} from '../canonical-display.mjs';
 export const NATIVE_WALLET_ROUTING_SOURCE='HYPERLIQUID_WALLET_ROUTING';
 const SCHEMA='VERIFIED_NATIVE_WALLET_ROUTING_V1',TTL=7*86400000;
 const address=v=>typeof v==='string'&&/^0x[a-f0-9]{40}$/.test(v);
@@ -24,7 +25,7 @@ export function buildNativeWalletRouting({previous=null,accounts=[],run_id,now=D
   if(transport?.http_status!==200||!/^[a-f0-9]{64}$/.test(transport.sha256||'')||!Array.isArray(account?.state?.assetPositions)||account.state.assetPositions.length>200)continue;
   const source=timestamp(account.state.time),received=timestamp(transport.received_ts);
   if(source===null||received===null||source>received||received>now||now-source>max_age_ms||now-received>max_age_ms)continue;
-  const symbols=[...new Set(account.state.assetPositions.map(x=>x?.position?.coin).filter(coin))].filter(symbol=>selectVerifiedNativeAccounts([account],{symbol,run_id,now,max_age_ms,max_accounts:1}).length>0).sort();
+  const symbols=[...new Set(account.state.assetPositions.map(x=>x?.position?.coin).filter(coin))].filter(symbol=>selectVerifiedNativeAccounts([account],{symbol,run_id,now,max_age_ms,max_accounts:1,maximum_distance_pct:now>=LIQUIDATION_PRESENTATION_CUTOVER?LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT:null}).length>0).sort();
   if(!symbols.length){if(rows.delete(account.address.toLowerCase())){usefulNew++;lastUpdated=Math.max(lastUpdated,source);}continue;}
   const row={address:account.address.toLowerCase(),coins:symbols,verified_source_ts:timestamp(account.state.time),verified_receipt_ts:timestamp(transport.received_ts),original_response_sha256:transport.sha256},old=rows.get(row.address);
   if(!old||row.verified_source_ts>=old.verified_source_ts){rows.set(row.address,row);usefulNew++;lastUpdated=Math.max(lastUpdated,source);}
