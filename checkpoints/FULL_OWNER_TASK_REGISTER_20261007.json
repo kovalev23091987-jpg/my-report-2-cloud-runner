@@ -60,9 +60,12 @@
         "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
         "checkpoints/OWNER_ENTRY_TRANSITION_REPAIR_20261008.md",
         "checkpoints/PRODUCTION_ENTRY_LIQ_REPAIR_CONNECTED_20261008.json",
-        "checkpoints/ACTUAL_POST_PR235_PRODUCTION_RETAINED_READER_20261008.json"
+        "checkpoints/ACTUAL_POST_PR235_PRODUCTION_RETAINED_READER_20261008.json",
+        "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "PR234 targeted3/day full recheck retained. PR235 fixes actual production HISTORY_JSON_SQL_REQUIRES_EXPLICIT_READER through split exact readers without weakening guard. Actual scheduled37724390786 now NO_FRESH_EXACT_SENT_TRIGGER rather than fatal. Strict controlled ENTRY reachable; actual fresh ENTRY/SENT remains pending. Original30minTTL/coreweights/freshness/costs/scenario preserved.",
+      "current_scope_and_remaining_limit": "PR234 targeted3/day full recheck retained. PR235 fixes actual production HISTORY_JSON_SQL_REQUIRES_EXPLICIT_READER through split exact readers without weakening guard. Actual scheduled37724390786 now NO_FRESH_EXACT_SENT_TRIGGER rather than fatal. Strict controlled ENTRY reachable; actual fresh ENTRY/SENT remains pending. Original30minTTL/coreweights/freshness/costs/scenario preserved. PR240/241 exact SENT wakeup and bounded continuous worker deployed; four primary5m slots observed. Actual ENTRY/new native-level SENT remain pending; no old task revived.",
       "task_id": "R003",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -76,9 +79,12 @@
       "evidence": [
         "runner/r8-20-prospective-validation-sidecar.mjs",
         "current-generation/files/src/prospective-delivery-cohort.mjs",
-        "current-generation/tests/approved-entry-performance.runtime.mjs"
+        "current-generation/tests/approved-entry-performance.runtime.mjs",
+        "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "Outcome/cohort/no-lookahead механизмы существуют. Контрольная выборка не реальная калибровка. Достаточная зрелая prospective train/holdout выборка, общий denominator missed moves, precision/recall и прибыльность здесь не доказаны. Live probability/validated/auto OFF; гарантированного числа сигналов нет.",
+      "current_scope_and_remaining_limit": "Outcome/cohort/no-lookahead механизмы существуют. Контрольная выборка не реальная калибровка. Достаточная зрелая prospective train/holdout выборка, общий denominator missed moves, precision/recall и прибыльность здесь не доказаны. Live probability/validated/auto OFF; гарантированного числа сигналов нет. PR240/241 exact SENT wakeup and bounded continuous worker deployed; four primary5m slots observed. Actual ENTRY/new native-level SENT remain pending; no old task revived.",
       "task_id": "R004",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -91,9 +97,12 @@
       "current_assessment": "IMPLEMENTED_OWNER_APPROVED_POLICY",
       "evidence": [
         "current-generation/files/src/user-approved-publication-policy.mjs",
-        "current-generation/tests/approved-entry-path.runtime.mjs"
+        "current-generation/tests/approved-entry-path.runtime.mjs",
+        "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "Старый blocker receipt superseded: утверждены immutable entry band 50 bps, holding ≤24h, консервативная taker .001/сторону и funding floor .1%. Это аналитический консервативный cap, а не заявление о фактической персональной комиссии. Неизвестный future funding не равен нулю.",
+      "current_scope_and_remaining_limit": "Старый blocker receipt superseded: утверждены immutable entry band 50 bps, holding ≤24h, консервативная taker .001/сторону и funding floor .1%. Это аналитический консервативный cap, а не заявление о фактической персональной комиссии. Неизвестный future funding не равен нулю. PR240/241 exact SENT wakeup and bounded continuous worker deployed; four primary5m slots observed. Actual ENTRY/new native-level SENT remain pending; no old task revived.",
       "task_id": "R005",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -107,9 +116,12 @@
       "evidence": [
         "current-generation/files/src/canonical-publication.mjs",
         "checkpoints/current-observation-pipeline-release-20261006.json",
-        "checkpoints/OWNER_BRIEF_TELEGRAM_RELEASE_20261007.json"
+        "checkpoints/OWNER_BRIEF_TELEGRAM_RELEASE_20261007.json",
+        "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "Один canonical и отдельные formatter; актуальный облачный пакет 34+37 PASS. Исторические SENT146/148/150 сохранены отдельно; новая форма уже подтверждена AKE SENT152 в fresh run37557085058, без пересылки старого snapshot.",
+      "current_scope_and_remaining_limit": "Один canonical и отдельные formatter; актуальный облачный пакет 34+37 PASS. Исторические SENT146/148/150 сохранены отдельно; новая форма уже подтверждена AKE SENT152 в fresh run37557085058, без пересылки старого snapshot. PR240/241 exact SENT wakeup and bounded continuous worker deployed; four primary5m slots observed. Actual ENTRY/new native-level SENT remain pending; no old task revived.",
       "task_id": "R006",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -770,9 +782,11 @@
       "evidence": [
         "current-generation/files/src/market-history-reader.mjs",
         ".github/workflows/report2-public-collector-backup.yml",
-        "checkpoints/light-price-recheck-release-20261006.json"
+        "checkpoints/light-price-recheck-release-20261006.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "Collector5m и основной analytics40m облачные. GitHub schedule не точные часы; partial scan/freshness/reconnect сохранены. Проверка цены/отмены не полная entry confirmation; непрерывное полное realtime покрытие не заявлено.",
+      "current_scope_and_remaining_limit": "Collector5m и основной analytics40m облачные. GitHub schedule не точные часы; partial scan/freshness/reconnect сохранены. Проверка цены/отмены не полная entry confirmation; непрерывное полное realtime покрытие не заявлено. Current continuous cloud backup is running and four primary slots20:45–21:00UTC are actually CLOSED; not proof of full permanent realtime coverage.",
       "task_id": "R047",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -786,9 +800,11 @@
       "evidence": [
         "current-generation/files/src/market-history-reader.mjs",
         ".github/workflows/report2-public-collector-backup.yml",
-        "checkpoints/light-price-recheck-release-20261006.json"
+        "checkpoints/light-price-recheck-release-20261006.json",
+        "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+        "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json"
       ],
-      "current_scope_and_remaining_limit": "Collector5m и основной analytics40m облачные. GitHub schedule не точные часы; partial scan/freshness/reconnect сохранены. Проверка цены/отмены не полная entry confirmation; непрерывное полное realtime покрытие не заявлено.",
+      "current_scope_and_remaining_limit": "Collector5m и основной analytics40m облачные. GitHub schedule не точные часы; partial scan/freshness/reconnect сохранены. Проверка цены/отмены не полная entry confirmation; непрерывное полное realtime покрытие не заявлено. Current continuous cloud backup is running and four primary slots20:45–21:00UTC are actually CLOSED; not proof of full permanent realtime coverage.",
       "task_id": "R048",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -866,7 +882,9 @@
       "evidence": [
         "runner/r8-20-prospective-validation-sidecar.mjs",
         "current-generation/files/src/prospective-delivery-cohort.mjs",
-        "current-generation/tests/approved-entry-performance.runtime.mjs"
+        "current-generation/tests/approved-entry-performance.runtime.mjs",
+        "checkpoints/POST238_CT_ORIGINAL_PRICE_WINDOW_20261008.json",
+        "checkpoints/POST238_CT_TRIGGER_TIMELINESS_DIAGNOSIS_20261008.json"
       ],
       "current_scope_and_remaining_limit": "Outcome/cohort/no-lookahead механизмы существуют. Контрольная выборка не реальная калибровка. Достаточная зрелая prospective train/holdout выборка, общий denominator missed moves, precision/recall и прибыльность здесь не доказаны. Live probability/validated/auto OFF; гарантированного числа сигналов нет.",
       "task_id": "R053",
@@ -1601,7 +1619,7 @@
       "block": "N05",
       "name": "Потоки: полный4h HTX либо проверенный разрешённый источник",
       "status": "ACTUAL_POST240_TWO_COMPLETE_240MIN_FLOWS_AND_DURABLE_READBACK_USED_RENDERED",
-      "remaining_action": "Current ETHFI and LSK exact rings persisted and used; prior NEAR WRITE_MERGED_RING D1_BRIDGE_FAILURE remains source-specific unresolved. Generic incomplete acquisitions, BR original cause and all-asset240min coverage remain open.",
+      "remaining_action": "General deployed bridge full-body limit defect fixed and controlled original-clock exact flow verifiedPR242. Next natural production persistence proof remains pending. Prior failed NEAR body not retained; generic incomplete acquisition, BR original cause and all-asset240min coverage remain open.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -1772,7 +1790,21 @@
         "complete_for_all_assets": false,
         "control_decision_effect_not_inferred": true
       },
-      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json"
+      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
+      "latest_wire_limit_release": {
+        "pr": 242,
+        "production_head": "ea4c2a2af76d2cf391cfe1732a9db4dfd8502db6",
+        "tested_head": "f4d27964f4075e920c99bb08813af212e6990c09",
+        "cloud_run": 37843228145,
+        "proof": "checkpoints/SIGNED_TAPE_EXACT_BRIDGE_WIRE_BOUND_20261008.json",
+        "status": "DEPLOYED_FULL_REQUEST_WIRE_CAP_LOSSLESS_FLOW_VERIFIED",
+        "old_request_bytes": 1511415,
+        "new_request_bytes": 107448,
+        "wire_cap": 1500000,
+        "bridge_not_modified": true,
+        "actual_historical_NEAR_cause_closed": false,
+        "current_release_new_fresh_SENT": false
+      }
     },
     {
       "task_id": "BLOCK_N06",
@@ -2827,11 +2859,11 @@
     },
     {
       "task_id": "OWNER_SCHEDULE_AND_LIGHT_RECHECK",
-      "status": "PR241_DEPLOYED_CURRENT_CODE_CONTINUOUS_CLOUD_WORKER_BOOTSTRAP_VERIFIED",
+      "status": "PR241_ACTUAL_CLOUD_BOOTSTRAP_AND_FOUR_FIVE_MINUTE_PRIMARY_SLOTS_VERIFIED;NATURAL_KICK_ENTRY_PENDING",
       "scope_and_action": "Collector5мин остаётся price/cancellation only. PR234 направляет exact SENT reached-trigger в одну свежую полную проверку из существующего3/day reserve, при обычном analytics40мин и исходномTTL. Это не ENTRY authorization по цене и не гарантия timely monitoring каждого наблюдения.",
       "latest_owner_amendment": "checkpoints/OWNER_ENTRY_TRANSITION_REPAIR_20261008.md",
       "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
-      "latest_proof": "checkpoints/continuous-production-readback-20261008/bootstrap-proof.json",
+      "latest_proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
       "latest_release": {
         "pr": 241,
         "production_head": "a0f40c267eb165371b1cf014bfb6837b57dcf6f2",
@@ -2869,7 +2901,129 @@
       },
       "remaining_action": "Verify actual aligned five-minute cycles and natural exact SENT kick before old expiry; actual ENTRY/new native SENT pending. Source164, originalTTL, burst3/day and regular40min unchanged.",
       "latest_implementation_proof": "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
-      "latest_actual_trigger_diagnosis": "checkpoints/POST238_CT_TRIGGER_TIMELINESS_DIAGNOSIS_20261008.json"
+      "latest_actual_trigger_diagnosis": "checkpoints/POST238_CT_TRIGGER_TIMELINESS_DIAGNOSIS_20261008.json",
+      "latest_actual_cadence": {
+        "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+        "reader_cloud_run": 37843686939,
+        "reader_head": "e4cf0c32cac101909aacdcc0b3cd20042de306d7",
+        "read_ts": 1791493248018,
+        "worker": {
+          "cloud_run": 37841797051,
+          "head": "f9d6257febd31b1cbabf63668016006d439f273f",
+          "status": "in_progress",
+          "conclusion": null,
+          "created_at": "2026-10-08T20:45:14Z",
+          "updated_at": "2026-10-08T20:45:18Z"
+        },
+        "poll": {
+          "day_key": "2026-10-08",
+          "last_bucket": 1791492900000,
+          "polls": 6
+        },
+        "collector_slots": [
+          {
+            "bucket": 1791492300000,
+            "state": "CLOSED",
+            "started_ts": 1791492300447,
+            "completed_ts": 1791492304399,
+            "external_requests": 4,
+            "rows_read": 42,
+            "rows_written": 17,
+            "status": "CLOSED"
+          },
+          {
+            "bucket": 1791492600000,
+            "state": "CLOSED",
+            "started_ts": 1791492600445,
+            "completed_ts": 1791492603421,
+            "external_requests": 4,
+            "rows_read": 42,
+            "rows_written": 17,
+            "status": "CLOSED"
+          },
+          {
+            "bucket": 1791492900000,
+            "state": "CLOSED",
+            "started_ts": 1791492900442,
+            "completed_ts": 1791492903522,
+            "external_requests": 4,
+            "rows_read": 42,
+            "rows_written": 17,
+            "status": "CLOSED"
+          },
+          {
+            "bucket": 1791493200000,
+            "state": "CLOSED",
+            "started_ts": 1791493200443,
+            "completed_ts": 1791493203631,
+            "external_requests": 4,
+            "rows_read": 42,
+            "rows_written": 17,
+            "status": "CLOSED"
+          }
+        ],
+        "reader_D1": {
+          "requests": 9,
+          "rows_read": 82,
+          "rows_written": 4,
+          "unknown_ops": 0,
+          "targets": {
+            "first:report2_runner_budget_ledger_shadow": {
+              "requests": 2,
+              "rows_read": 72,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "run:OTHER": {
+              "requests": 1,
+              "rows_read": 0,
+              "rows_written": 3,
+              "unknown_ops": 0
+            },
+            "first:report2_trigger_kick_poll": {
+              "requests": 1,
+              "rows_read": 1,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "all:report2_trigger_kick_slot": {
+              "requests": 1,
+              "rows_read": 0,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "all:report2_public_collector_usage_v1": {
+              "requests": 1,
+              "rows_read": 4,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "first:v3_dispatch_publication_binding_shadow": {
+              "requests": 1,
+              "rows_read": 2,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "first:v3_recheck_task_shadow": {
+              "requests": 1,
+              "rows_read": 2,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "run:report2_runner_budget_ledger_shadow": {
+              "requests": 1,
+              "rows_read": 1,
+              "rows_written": 1,
+              "unknown_ops": 0
+            }
+          }
+        },
+        "reader_sourceHTTP": 0,
+        "reader_Telegram": 0,
+        "continuous_full_realtime_coverage": false,
+        "actual_new_kick_dispatch": false,
+        "actual_ENTRY": false
+      }
     },
     {
       "task_id": "OWNER_OBSERVE_BEFORE_ENTRY",
@@ -3238,7 +3392,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791492541604,
+  "updated_ts": 1791493571038,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -4631,67 +4785,43 @@
     "masked_next_due_number_not_reconstructed": true
   },
   "latest_fresh_telegram_acceptance": {
-    "proof": "checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json",
-    "source_cloud_run": 37809017157,
-    "source_head": "9ae51c941a6056697ca7e89ce51af0d7962139b3",
-    "contract": "CT-USDT",
-    "run_id": "1791476912028-1791476921197",
-    "snapshot_id": "S392:CT-USDT:1791476996630",
-    "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
-    "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
-    "observed_ts": 1791476996630,
-    "original_trigger": {
-      "trigger_type": "PRICE_CONFIRMATION",
-      "metric": "price",
-      "operator": "<=",
-      "value": 0.32577,
-      "unit": "USDT",
-      "timeframe": "5m",
-      "expires_ts": 1791478796630,
-      "next_recheck_ts": 1791477296630,
-      "cancel_condition": "price>0.35812",
-      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
-    },
-    "canonical_entry": {
-      "area": "0.32577 USDT",
-      "min_price": 0.32577,
-      "max_price": 0.32577,
-      "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
-    },
-    "canonical_targets": [],
-    "canonical_state": "OBSERVE",
+    "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+    "source_cloud_run": 37831800227,
+    "source_head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
+    "contract": "FIL-USDT",
+    "run_id": "1791487535792-1791487551019",
+    "snapshot_id": "S392:FIL-USDT:1791487668251",
+    "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+    "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
     "receipt": {
-      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
-      "run_id": "1791476912028-1791476921197",
-      "snapshot_id": "S392:CT-USDT:1791476996630",
-      "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
-      "observed_ts": 1791476996630,
-      "wave_id": "EDW:CT-USDT:1791473232004:G1",
+      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+      "run_id": "1791487535792-1791487551019",
+      "snapshot_id": "S392:FIL-USDT:1791487668251",
+      "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+      "observed_ts": 1791487668251,
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
       "lifecycle_event": "OBSERVE",
       "state": "SENT",
-      "telegram_message_id": "161",
-      "sent_ts": 1791477001830,
+      "telegram_message_id": "162",
+      "sent_ts": 1791487675402,
       "last_error": "SENT"
     },
     "task": {
-      "task_id": "RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c",
-      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
-      "contract_code": "CT-USDT",
-      "direction": "SHORT",
-      "wave_id": "EDW:CT-USDT:1791473232004:G1",
-      "snapshot_id": "S392:CT-USDT:1791476996630",
-      "run_id": "1791476912028-1791476921197",
-      "due_ts": 1791477296630,
-      "expires_ts": 1791478796630,
+      "task_id": "RCHK:686d90629d6574d8620a34d01c5be869331e78fb",
+      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+      "contract_code": "FIL-USDT",
+      "run_id": "1791487535792-1791487551019",
+      "snapshot_id": "S392:FIL-USDT:1791487668251",
+      "due_ts": 1791487968251,
+      "expires_ts": 1791489468251,
       "state": "EXPIRED",
       "attempt_count": 0,
-      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791478803401,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791478800000,\"task_id\":\"RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c\",\"publication_id\":\"PUB:403ad12d7e3f79bc2393349c764011930dca6dad\",\"run_id\":\"1791476912028-1791476921197\",\"snapshot_id\":\"S392:CT-USDT:1791476996630\",\"analytical_fingerprint\":\"d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553\",\"telegram_message_id\":\"161\"}",
-      "created_ts": 1791477001830,
-      "updated_ts": 1791478803401
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791489603296,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791489600000,\"task_id\":\"RCHK:686d90629d6574d8620a34d01c5be869331e78fb\",\"publication_id\":\"PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999\",\"run_id\":\"1791487535792-1791487551019\",\"snapshot_id\":\"S392:FIL-USDT:1791487668251\",\"analytical_fingerprint\":\"54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879\",\"telegram_message_id\":\"162\"}",
+      "created_ts": 1791487675402,
+      "updated_ts": 1791489603296
     },
-    "status": "ACTUAL_EXACT_TASK_READ",
     "exact_SENT": true,
-    "scope": "ACTUAL_ORIGINAL_CT_SENT161_PRE_PR239_PR240;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
+    "scope": "ACTUAL_POST_PR239_FIL_OBSERVE_SENT162_PRE_PR240_PR241_PR242;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT"
   },
   "latest_continuation_handoff": {
     "state": "checkpoints/CONTINUATION_STATE_20261008_NATIVE_RELEVANT_SEARCH.json",
@@ -5192,7 +5322,7 @@
     "tested_head": "4653a49900cf95cd05b7c3f1bdd7542594d9bafa",
     "proof": "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
     "cloud_run": 37840559402,
-    "state": "DEPLOYED_ACTUAL_BOOTSTRAP_CLOSED_CONTINUOUS_CLOUD_JOB_RUNNING",
+    "state": "DEPLOYED_BOOTSTRAP_AND_FOUR_CURRENT_FIVE_MINUTE_PRIMARY_SLOTS_VERIFIED;CONTINUOUS_CLOUD_JOB_RUNNING",
     "actual_worker_run": 37841797051,
     "actual_worker_head": "f9d6257febd31b1cbabf63668016006d439f273f",
     "bootstrap_proof": "checkpoints/continuous-production-readback-20261008/bootstrap-proof.json",
@@ -5205,6 +5335,206 @@
     "actual_new_kick_dispatch": false,
     "new_fresh_SENT": false,
     "actual_ENTRY": false,
-    "original_TTL_unchanged": true
+    "original_TTL_unchanged": true,
+    "actual_cadence_proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
+  },
+  "latest_signed_tape_wire_bound_release": {
+    "pr": 242,
+    "production_head": "ea4c2a2af76d2cf391cfe1732a9db4dfd8502db6",
+    "tested_head": "f4d27964f4075e920c99bb08813af212e6990c09",
+    "cloud_run": 37843228145,
+    "proof": "checkpoints/SIGNED_TAPE_EXACT_BRIDGE_WIRE_BOUND_20261008.json",
+    "status": "DEPLOYED_FULL_REQUEST_WIRE_CAP_LOSSLESS_FLOW_VERIFIED",
+    "old_request_bytes": 1511415,
+    "new_request_bytes": 107448,
+    "wire_cap": 1500000,
+    "bridge_not_modified": true,
+    "actual_historical_NEAR_cause_closed": false,
+    "current_release_new_fresh_SENT": false
+  },
+  "latest_actual_continuous_cadence": {
+    "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+    "reader_cloud_run": 37843686939,
+    "reader_head": "e4cf0c32cac101909aacdcc0b3cd20042de306d7",
+    "read_ts": 1791493248018,
+    "worker": {
+      "cloud_run": 37841797051,
+      "head": "f9d6257febd31b1cbabf63668016006d439f273f",
+      "status": "in_progress",
+      "conclusion": null,
+      "created_at": "2026-10-08T20:45:14Z",
+      "updated_at": "2026-10-08T20:45:18Z"
+    },
+    "poll": {
+      "day_key": "2026-10-08",
+      "last_bucket": 1791492900000,
+      "polls": 6
+    },
+    "collector_slots": [
+      {
+        "bucket": 1791492300000,
+        "state": "CLOSED",
+        "started_ts": 1791492300447,
+        "completed_ts": 1791492304399,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791492600000,
+        "state": "CLOSED",
+        "started_ts": 1791492600445,
+        "completed_ts": 1791492603421,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791492900000,
+        "state": "CLOSED",
+        "started_ts": 1791492900442,
+        "completed_ts": 1791492903522,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791493200000,
+        "state": "CLOSED",
+        "started_ts": 1791493200443,
+        "completed_ts": 1791493203631,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      }
+    ],
+    "reader_D1": {
+      "requests": 9,
+      "rows_read": 82,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 72,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_trigger_kick_poll": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_trigger_kick_slot": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_public_collector_usage_v1": {
+          "requests": 1,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "reader_sourceHTTP": 0,
+    "reader_Telegram": 0,
+    "continuous_full_realtime_coverage": false,
+    "actual_new_kick_dispatch": false,
+    "actual_ENTRY": false
+  },
+  "previous_fresh_telegram_acceptance": {
+    "proof": "checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json",
+    "source_cloud_run": 37809017157,
+    "source_head": "9ae51c941a6056697ca7e89ce51af0d7962139b3",
+    "contract": "CT-USDT",
+    "run_id": "1791476912028-1791476921197",
+    "snapshot_id": "S392:CT-USDT:1791476996630",
+    "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+    "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
+    "observed_ts": 1791476996630,
+    "original_trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": "<=",
+      "value": 0.32577,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791478796630,
+      "next_recheck_ts": 1791477296630,
+      "cancel_condition": "price>0.35812",
+      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_entry": {
+      "area": "0.32577 USDT",
+      "min_price": 0.32577,
+      "max_price": 0.32577,
+      "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_targets": [],
+    "canonical_state": "OBSERVE",
+    "receipt": {
+      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+      "run_id": "1791476912028-1791476921197",
+      "snapshot_id": "S392:CT-USDT:1791476996630",
+      "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
+      "observed_ts": 1791476996630,
+      "wave_id": "EDW:CT-USDT:1791473232004:G1",
+      "lifecycle_event": "OBSERVE",
+      "state": "SENT",
+      "telegram_message_id": "161",
+      "sent_ts": 1791477001830,
+      "last_error": "SENT"
+    },
+    "task": {
+      "task_id": "RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c",
+      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+      "contract_code": "CT-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:CT-USDT:1791473232004:G1",
+      "snapshot_id": "S392:CT-USDT:1791476996630",
+      "run_id": "1791476912028-1791476921197",
+      "due_ts": 1791477296630,
+      "expires_ts": 1791478796630,
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791478803401,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791478800000,\"task_id\":\"RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c\",\"publication_id\":\"PUB:403ad12d7e3f79bc2393349c764011930dca6dad\",\"run_id\":\"1791476912028-1791476921197\",\"snapshot_id\":\"S392:CT-USDT:1791476996630\",\"analytical_fingerprint\":\"d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553\",\"telegram_message_id\":\"161\"}",
+      "created_ts": 1791477001830,
+      "updated_ts": 1791478803401
+    },
+    "status": "ACTUAL_EXACT_TASK_READ",
+    "exact_SENT": true,
+    "scope": "ACTUAL_ORIGINAL_CT_SENT161_PRE_PR239_PR240;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
   }
 }

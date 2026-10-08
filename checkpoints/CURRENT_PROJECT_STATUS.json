@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-08T20:49:01.604Z",
+  "updated_utc": "2026-10-08T21:06:11.038Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -10,7 +10,7 @@
     "CORE_BLOCKS": "VERIFIED_MAXIMUM_AVAILABLE_SAME_RUN_PARTIAL_SOURCE_SCOPE",
     "LIQUIDATION_COVERAGE": "VERIFIED_OPTIONAL_REAL_OR_LABELLED_CLOCK_PROVEN_LEVELS_WITH_PARTIAL_COVERAGE",
     "JOINT_REPORT": "ACTUAL_POST240_ETHFI_LSK_TWO_FULL_240MIN_FLOWS_USED_RENDERED;POST241_BOOTSTRAP_VERIFIED;ENTRY_NATIVE_LEVEL_SENT_PENDING",
-    "TELEGRAM": "ACTUAL_EXACT_CT_OBSERVE_SENT161_PRE_PR239_PR240;CURRENT_RELEASE_ENTRY_AND_NATIVE_LEVEL_SENT_PENDING"
+    "TELEGRAM": "ACTUAL_POST239_EXACT_FIL_OBSERVE_SENT162;CURRENT_POST242_ENTRY_AND_NATIVE_LEVEL_SENT_PENDING"
   },
   "latest_actual_report": {
     "proof": "checkpoints/continuous-production-readback-20261008/37839437696/summary.json",
@@ -96,7 +96,7 @@
         15
       ],
       "protect_existing_telegram": true,
-      "latest_completed_batch": "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json"
+      "latest_completed_batch": "checkpoints/SIGNED_TAPE_EXACT_BRIDGE_WIRE_BOUND_20261008.json"
     },
     {
       "task": "Prospective statistical validation and missed-opportunity denominator",
@@ -123,6 +123,13 @@
       "class": "ACTUAL_TRIGGER_AND_CURRENT_RELEASE_SENT_PENDING",
       "proof": "checkpoints/continuous-production-readback-20261008/bootstrap-proof.json",
       "actual_cloud_job_running": true
+    },
+    {
+      "task": "Fresh production acceptance of complete-wire-bounded durable flow and remaining incomplete windows",
+      "class": "N05_DURABILITY_CURRENT_RELEASE_ACCEPTANCE_PENDING",
+      "proof": "checkpoints/SIGNED_TAPE_EXACT_BRIDGE_WIRE_BOUND_20261008.json",
+      "old_NEAR_failed_body_not_retained": true,
+      "full_240min_requirement_unchanged": true
     }
   ],
   "source_accounting": {
@@ -739,7 +746,7 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791492541604,
+  "updated_ts": 1791493571038,
   "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
   "current_task": "PR237_PR238_CONNECTED_REPAIRS_VERIFIED_FULL_OWNER_REGISTER_AND_NATURAL_ENTRY_OPEN",
   "latest_native_payment_release": {
@@ -3228,6 +3235,204 @@
     "raw_persistence_complete": false
   },
   "latest_fresh_telegram_acceptance": {
+    "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+    "source_cloud_run": 37831800227,
+    "source_head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
+    "contract": "FIL-USDT",
+    "run_id": "1791487535792-1791487551019",
+    "snapshot_id": "S392:FIL-USDT:1791487668251",
+    "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+    "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+    "receipt": {
+      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+      "run_id": "1791487535792-1791487551019",
+      "snapshot_id": "S392:FIL-USDT:1791487668251",
+      "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+      "observed_ts": 1791487668251,
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "lifecycle_event": "OBSERVE",
+      "state": "SENT",
+      "telegram_message_id": "162",
+      "sent_ts": 1791487675402,
+      "last_error": "SENT"
+    },
+    "task": {
+      "task_id": "RCHK:686d90629d6574d8620a34d01c5be869331e78fb",
+      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+      "contract_code": "FIL-USDT",
+      "run_id": "1791487535792-1791487551019",
+      "snapshot_id": "S392:FIL-USDT:1791487668251",
+      "due_ts": 1791487968251,
+      "expires_ts": 1791489468251,
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791489603296,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791489600000,\"task_id\":\"RCHK:686d90629d6574d8620a34d01c5be869331e78fb\",\"publication_id\":\"PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999\",\"run_id\":\"1791487535792-1791487551019\",\"snapshot_id\":\"S392:FIL-USDT:1791487668251\",\"analytical_fingerprint\":\"54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879\",\"telegram_message_id\":\"162\"}",
+      "created_ts": 1791487675402,
+      "updated_ts": 1791489603296
+    },
+    "exact_SENT": true,
+    "scope": "ACTUAL_POST_PR239_FIL_OBSERVE_SENT162_PRE_PR240_PR241_PR242;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT"
+  },
+  "latest_actual_connected_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
+  "latest_continuous_cloud_worker_release": {
+    "pr": 241,
+    "production_head": "a0f40c267eb165371b1cf014bfb6837b57dcf6f2",
+    "tested_head": "4653a49900cf95cd05b7c3f1bdd7542594d9bafa",
+    "proof": "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
+    "cloud_run": 37840559402,
+    "state": "DEPLOYED_BOOTSTRAP_AND_FOUR_CURRENT_FIVE_MINUTE_PRIMARY_SLOTS_VERIFIED;CONTINUOUS_CLOUD_JOB_RUNNING",
+    "actual_worker_run": 37841797051,
+    "actual_worker_head": "f9d6257febd31b1cbabf63668016006d439f273f",
+    "bootstrap_proof": "checkpoints/continuous-production-readback-20261008/bootstrap-proof.json",
+    "bootstrap_status": "PRIMARY_CLOSED",
+    "bootstrap_sourceHTTP": 0,
+    "source_job_cap": 164,
+    "worker_maximum_minutes": 300,
+    "collector_interval_minutes": 5,
+    "regular_analytics_interval_minutes": 40,
+    "actual_new_kick_dispatch": false,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "original_TTL_unchanged": true,
+    "actual_cadence_proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json"
+  },
+  "latest_signed_tape_wire_bound_release": {
+    "pr": 242,
+    "production_head": "ea4c2a2af76d2cf391cfe1732a9db4dfd8502db6",
+    "tested_head": "f4d27964f4075e920c99bb08813af212e6990c09",
+    "cloud_run": 37843228145,
+    "proof": "checkpoints/SIGNED_TAPE_EXACT_BRIDGE_WIRE_BOUND_20261008.json",
+    "status": "DEPLOYED_FULL_REQUEST_WIRE_CAP_LOSSLESS_FLOW_VERIFIED",
+    "old_request_bytes": 1511415,
+    "new_request_bytes": 107448,
+    "wire_cap": 1500000,
+    "bridge_not_modified": true,
+    "actual_historical_NEAR_cause_closed": false,
+    "current_release_new_fresh_SENT": false
+  },
+  "latest_actual_continuous_cadence": {
+    "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
+    "reader_cloud_run": 37843686939,
+    "reader_head": "e4cf0c32cac101909aacdcc0b3cd20042de306d7",
+    "read_ts": 1791493248018,
+    "worker": {
+      "cloud_run": 37841797051,
+      "head": "f9d6257febd31b1cbabf63668016006d439f273f",
+      "status": "in_progress",
+      "conclusion": null,
+      "created_at": "2026-10-08T20:45:14Z",
+      "updated_at": "2026-10-08T20:45:18Z"
+    },
+    "poll": {
+      "day_key": "2026-10-08",
+      "last_bucket": 1791492900000,
+      "polls": 6
+    },
+    "collector_slots": [
+      {
+        "bucket": 1791492300000,
+        "state": "CLOSED",
+        "started_ts": 1791492300447,
+        "completed_ts": 1791492304399,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791492600000,
+        "state": "CLOSED",
+        "started_ts": 1791492600445,
+        "completed_ts": 1791492603421,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791492900000,
+        "state": "CLOSED",
+        "started_ts": 1791492900442,
+        "completed_ts": 1791492903522,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      },
+      {
+        "bucket": 1791493200000,
+        "state": "CLOSED",
+        "started_ts": 1791493200443,
+        "completed_ts": 1791493203631,
+        "external_requests": 4,
+        "rows_read": 42,
+        "rows_written": 17,
+        "status": "CLOSED"
+      }
+    ],
+    "reader_D1": {
+      "requests": 9,
+      "rows_read": 82,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 72,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_trigger_kick_poll": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_trigger_kick_slot": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_public_collector_usage_v1": {
+          "requests": 1,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "reader_sourceHTTP": 0,
+    "reader_Telegram": 0,
+    "continuous_full_realtime_coverage": false,
+    "actual_new_kick_dispatch": false,
+    "actual_ENTRY": false
+  },
+  "previous_fresh_telegram_acceptance": {
     "proof": "checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json",
     "source_cloud_run": 37809017157,
     "source_head": "9ae51c941a6056697ca7e89ce51af0d7962139b3",
@@ -3289,27 +3494,5 @@
     "status": "ACTUAL_EXACT_TASK_READ",
     "exact_SENT": true,
     "scope": "ACTUAL_ORIGINAL_CT_SENT161_PRE_PR239_PR240;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
-  },
-  "latest_actual_connected_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
-  "latest_continuous_cloud_worker_release": {
-    "pr": 241,
-    "production_head": "a0f40c267eb165371b1cf014bfb6837b57dcf6f2",
-    "tested_head": "4653a49900cf95cd05b7c3f1bdd7542594d9bafa",
-    "proof": "checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json",
-    "cloud_run": 37840559402,
-    "state": "DEPLOYED_ACTUAL_BOOTSTRAP_CLOSED_CONTINUOUS_CLOUD_JOB_RUNNING",
-    "actual_worker_run": 37841797051,
-    "actual_worker_head": "f9d6257febd31b1cbabf63668016006d439f273f",
-    "bootstrap_proof": "checkpoints/continuous-production-readback-20261008/bootstrap-proof.json",
-    "bootstrap_status": "PRIMARY_CLOSED",
-    "bootstrap_sourceHTTP": 0,
-    "source_job_cap": 164,
-    "worker_maximum_minutes": 300,
-    "collector_interval_minutes": 5,
-    "regular_analytics_interval_minutes": 40,
-    "actual_new_kick_dispatch": false,
-    "new_fresh_SENT": false,
-    "actual_ENTRY": false,
-    "original_TTL_unchanged": true
   }
 }
