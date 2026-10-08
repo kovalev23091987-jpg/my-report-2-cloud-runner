@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
 import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
-import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup} from './continuous-backup-worker.mjs';
+import {codeManifest,verifyCurrentMainCode,dispatchExactTriggerKick,runContinuousBackup,createCollectorJobBudget} from './continuous-backup-worker.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -10,8 +10,8 @@ const GENERATION='MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_IN
 const required=name=>{const value=String(process.env[name]||'').trim();if(!value)throw new Error(`${name}_REQUIRED`);return value;};
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
-export function loadExactCollector(source){
-  return Function('worker_default',`${source}\nreturn __report2PublicCollectorScheduled;`)({});
+export function loadExactCollector(source,fetch_impl=(...args)=>globalThis.fetch(...args)){
+  return Function('worker_default','fetch',`${source}\nreturn __report2PublicCollectorScheduled;`)({},fetch_impl);
 }
 
 export async function runBackupCollector({db,now=Date.now,sleep=wait,collector}={}){
@@ -40,9 +40,13 @@ async function main(){
   const db=new RemoteD1Database(required('REPORT2_D1_BRIDGE_URL'),required('REPORT2_D1_BRIDGE_TOKEN'),{timeoutMs:45_000});
   // The checked-in Worker tail is trusted source; this runs the exact same collector logic.
   const source=fs.readFileSync(new URL('./injected-worker-tail.js',import.meta.url),'utf8');
-  const collector=loadExactCollector(source);
+  const budgetFile='report2-collector-backup-source-budget.json',cloudRun=required('GITHUB_RUN_ID');
+  const previousBudget=fs.existsSync(budgetFile)?JSON.parse(fs.readFileSync(budgetFile,'utf8')):null;
+  if(previousBudget&&(previousBudget.schema!=='COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1'||previousBudget.cloud_run!==cloudRun))throw Error('COLLECTOR_JOB_SOURCE_BUDGET_IDENTITY_REQUIRED');
+  const sourceBudget=createCollectorJobBudget({used:previousBudget?.attempted_source_http||0,on_charge:used=>fs.writeFileSync(budgetFile,JSON.stringify({schema:'COLLECTOR_JOB_SOURCE_HTTP_BUDGET_V1',cloud_run:cloudRun,attempted_source_http:used,maximum_source_http:164}))});
+  const collector=loadExactCollector(source,sourceBudget.fetch);
   const token=required('GITHUB_TOKEN'),repository=required('GITHUB_REPOSITORY'),manifest=codeManifest(),receipts=[];
-  await runContinuousBackup({duration_minutes:Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0),source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
+  await runContinuousBackup({duration_minutes:Number(process.env.REPORT2_BACKUP_WORKER_MINUTES||0),should_continue:()=>sourceBudget.can_collect,source_guard:()=>verifyCurrentMainCode({repository,token,manifest}),cycle:async()=>{
     const result=await runBackupCollector({db,collector});let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
     if(['1','true','yes','on'].includes(String(process.env.REPORT2_TRIGGER_KICK_ENABLED||'').toLowerCase())){
       try{kick=await claimTriggerKick(db);}catch{kick={dispatch:false,status:'KICK_NOT_CLOSED',source_http:0,entry_authorized:false};}
@@ -50,6 +54,7 @@ async function main(){
     if(kick.dispatch){const dispatched=await dispatchExactTriggerKick({kick,repository,token});kick={...kick,dispatch_status:dispatched.status,github_dispatch_http_status:dispatched.http_status};}
     return {schema:'report2-public-collector-backup-v3-continuous-trigger-kick',source_code_head:process.env.GITHUB_SHA||null,cloud_run:process.env.GITHUB_RUN_ID||null,...result,kick,kick_budget:proveTriggerKickBudget(),usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
   },on_receipt:async receipt=>{
+    receipt.source_job_budget=sourceBudget.snapshot;
     receipts.push(receipt);if(receipts.length>64)receipts.shift();
     fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify({...receipt,receipts},null,2)+'\n');
     console.log('REPORT2_PUBLIC_COLLECTOR_BACKUP',JSON.stringify(receipt));

@@ -1,7 +1,13 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import {HTTP_LIMITS} from '../../current-generation/files/src/unified-budget.mjs';
 
 export const CONTINUOUS_WORKER_PLAN=Object.freeze({maximum_minutes:300,slot_ms:300000,offset_ms:60000,source_guard_http_per_cycle:2,runner:'ubuntu-latest',provider_http_added:0});
+export function createCollectorJobBudget({used=0,on_charge=()=>{},fetch_impl=(...args)=>globalThis.fetch(...args)}={}){
+ const maximum=HTTP_LIMITS.whole_job;
+ if(!Number.isSafeInteger(used)||used<0||used>maximum)throw Error('COLLECTOR_JOB_SOURCE_BUDGET_INVALID');
+ return {get used(){return used;},get can_collect(){return used+4<=maximum;},get snapshot(){return {attempted_source_http:used,maximum_source_http:maximum,failed_attempts_not_refunded:true};},fetch:async(...args)=>{if(used>=maximum)throw Error('COLLECTOR_JOB_SOURCE_HTTP_CAP');used++;await on_charge(used);return fetch_impl(...args);}};
+}
 const ROOT=new URL('../../',import.meta.url);
 export const GUARDED_CODE_PATHS=Object.freeze([
  'cloudflare/public-collector/github-backup.mjs','cloudflare/public-collector/continuous-backup-worker.mjs','cloudflare/public-collector/trigger-analysis-kick.mjs','cloudflare/public-collector/injected-worker-tail.js',
@@ -31,10 +37,11 @@ export async function dispatchExactTriggerKick({kick,repository,token,fetch_impl
   return {dispatched:r.status===204,status:r.status===204?'GITHUB_ACCEPTED_WORKFLOW_DISPATCH':'DISPATCH_FAILED_SLOT_CONSUMED',http_status:r.status,failed_dispatch_consumes_kick:true,entry_authorized:false};
  }catch{return {dispatched:false,status:'DISPATCH_FAILED_SLOT_CONSUMED',failed_dispatch_consumes_kick:true,entry_authorized:false};}
 }
-export async function runContinuousBackup({cycle,source_guard,on_receipt=()=>{},now=Date.now,sleep=ms=>new Promise(r=>setTimeout(r,ms)),duration_minutes=0}={}){
+export async function runContinuousBackup({cycle,source_guard,should_continue=()=>true,on_receipt=()=>{},now=Date.now,sleep=ms=>new Promise(r=>setTimeout(r,ms)),duration_minutes=0}={}){
  if(typeof cycle!=='function'||typeof source_guard!=='function'||!Number.isFinite(duration_minutes)||duration_minutes<0||duration_minutes>300)throw Error('CONTINUOUS_BACKUP_PLAN_INVALID');
  const started=now(),deadline=started+duration_minutes*60000;let cycles=0,failures=0,status='WORKER_WINDOW_CLOSED';
  do{
+  if(!should_continue()){status='ORIGINAL_SOURCE_JOB_HTTP_CAP_REACHED';await on_receipt({worker_status:status,worker_started_ts:started,worker_deadline_ts:deadline,cycles,failures});break;}
   const guard=await source_guard();
   if(guard.allowed!==true){status=guard.status||'CURRENT_MAIN_CODE_NOT_VERIFIED';await on_receipt({worker_status:status,source_guard:guard,worker_started_ts:started,worker_deadline_ts:deadline,cycles,failures});break;}
   let receipt;try{receipt=await cycle();}catch{failures++;receipt={status:'CONTINUOUS_BACKUP_CYCLE_NOT_CLOSED',telegram:false,analytical_decision:false};}
