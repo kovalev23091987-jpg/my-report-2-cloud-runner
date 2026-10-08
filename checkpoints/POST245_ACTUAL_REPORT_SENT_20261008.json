@@ -1,0 +1,193 @@
+{
+  "schema": "POST245_ZEC_SENT_AND_ORIGINAL_TASK_READ_20261008_V1",
+  "head": "e20297942e2aeab0106d641292cad928dc8951aa",
+  "cloud_run": "37860703402",
+  "read_ts": 1791502821984,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "cases": [
+    {
+      "source_cloud_run": 37859121552,
+      "source_head": "7bea2db324a8ae213ae9f9cb428ca0d091afd72f",
+      "contract": "ZEC-USDT",
+      "run_id": "1791501812954-1791501825647",
+      "snapshot_id": "S392:ZEC-USDT:1791501879771",
+      "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+      "analytical_fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
+      "observed_ts": 1791501879771,
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 1208.64,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791503679771,
+        "next_recheck_ts": 1791502179771,
+        "cancel_condition": "price<1162",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_entry": {
+        "area": "1208.64 USDT",
+        "min_price": 1208.64,
+        "max_price": 1208.64,
+        "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_targets": [],
+      "canonical_state": "OBSERVE",
+      "receipt": {
+        "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+        "run_id": "1791501812954-1791501825647",
+        "snapshot_id": "S392:ZEC-USDT:1791501879771",
+        "analytical_fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
+        "observed_ts": 1791501879771,
+        "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+        "lifecycle_event": "OBSERVE",
+        "state": "SENT",
+        "telegram_message_id": "165",
+        "sent_ts": 1791501913581,
+        "last_error": "SENT"
+      },
+      "task": {
+        "task_id": "RCHK:61df81de7da78101dd5216170974992a2f3d563d",
+        "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+        "contract_code": "ZEC-USDT",
+        "direction": "LONG",
+        "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+        "snapshot_id": "S392:ZEC-USDT:1791501879771",
+        "run_id": "1791501812954-1791501825647",
+        "due_ts": 1791502179771,
+        "expires_ts": 1791503679771,
+        "state": "PENDING",
+        "attempt_count": 0,
+        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791502803519,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"WAITING_FOR_PRICE\",\"price\":1192.72,\"source_ts\":1791502801936,\"observed_ts\":1791502801936,\"source\":\"HTX_OFFICIAL_COLLECTOR\",\"settlement_confirmed\":false,\"last_bucket\":1791502800000,\"task_id\":\"RCHK:61df81de7da78101dd5216170974992a2f3d563d\",\"publication_id\":\"PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b\",\"run_id\":\"1791501812954-1791501825647\",\"snapshot_id\":\"S392:ZEC-USDT:1791501879771\",\"analytical_fingerprint\":\"4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b\",\"telegram_message_id\":\"165\"}",
+        "created_ts": 1791501913581,
+        "updated_ts": 1791502803519
+      },
+      "status": "ACTUAL_EXACT_TASK_READ",
+      "exact_SENT": true
+    }
+  ],
+  "limitation": "Current mutable task state cannot reconstruct overwritten historical collector prices or prove all absent entries.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 89,
+      "reserved_rows_read": 1556500,
+      "reserved_rows_written": 29588,
+      "measured_rows_read": 888187,
+      "measured_rows_written": 13445,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1557500,
+      "rows_written": 29604
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "poll": {
+    "day_key": "2026-10-08",
+    "last_bucket": 1791502500000,
+    "polls": 38
+  },
+  "kicks": {
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1247
+      },
+      "duration": 0.1247,
+      "changes": 0,
+      "last_row_id": 1909,
+      "changed_db": false,
+      "size_after": 413450240,
+      "rows_read": 0,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "results": []
+  },
+  "status": "BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "NATURAL_SENT_TRACE:37860703402:1",
+    "source_run_id": "37860703402",
+    "measured_rows_read": 95,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 8,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 8,
+    "rows_read": 96,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 90,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_trigger_kick_poll": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}

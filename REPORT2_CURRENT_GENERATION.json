@@ -120,7 +120,7 @@
     "historical_hint_does_not_close_current_level": true,
     "report_search_release": "checkpoints/AUTOMATIC_REPORT_SOURCE_SEARCH_AND_N05_N15_RELEASE_20261007.json"
   },
-  "updated_ts": 1791499707373,
+  "updated_ts": 1791503572490,
   "latest_dydx_shared_dense_consumer_release": {
     "path": "checkpoints/DYDX_SHARED_PAIR_DENSE_CONSUMER_RELEASE_20261007.json",
     "pr": 221,
@@ -906,5 +906,98 @@
     "neutral_N02": true,
     "original_metric_expiry_preserved": true,
     "published_supply_not_circulating_unlock_or_finalized_block": true
+  },
+  "latest_primary_monthly_schedule_release": {
+    "pr": 246,
+    "production_head": "5e389fe1cb66787b6bb29c391a5141ea919eba17",
+    "tested_head": "9321268d7febc1ba45dc5176046429dfa63df3ae",
+    "proof_head": "f5c85422470b8c3d76789d59227bffd11062c447",
+    "cloud_run": 37860805652,
+    "artifact_id": 11586431855,
+    "artifact_digest": "sha256:00f084c18b10316e709d3254c8da408007eab19590c812a9af6cc3caf58c2ac5",
+    "proof": "checkpoints/PUBLISHED_MONTHLY_SCHEDULE_CONNECTED_20261008.json",
+    "status": "DEPLOYED_PRIMARY_PUBLISHED_MONTHLY_PROJECTION_EXACT_NATIVE_N01_CONSUMER",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "tests": {
+      "generation_unit": 1149,
+      "source_consumer": 44,
+      "approved_delivery": 35,
+      "integration": 37,
+      "generation": "PASS",
+      "binding": "PASS",
+      "controlled_entry": "PASS"
+    },
+    "original_source_cloud_run": 37859105684,
+    "original_source_artifact_id": 11585302379,
+    "original_source_artifact_digest": "sha256:efe095989aaf88ab638ed4ef245c6aeb30c268cc68622e6ce605db3735ff51cf",
+    "actual_sourceHTTP": 1,
+    "actual_source_D1": {
+      "requests": 17,
+      "rows_read": 95,
+      "rows_written": 12,
+      "unknown_ops": 0
+    },
+    "original_source_ts": 1791501784800,
+    "original_expires_at": 1791523384800,
+    "metric": "ADJUSTABLE_PUBLISHED_MONTH_END_SUPPLY_PROJECTION_NOT_INDIVIDUAL_UNLOCK_OR_FINALIZED_CURRENT_SUPPLY",
+    "new_source_daily_cap": 4,
+    "parent_OFFICIAL_EVENTS_cap": 288,
+    "global_HTTP_cap": 164,
+    "score_adjustment": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "full_project_complete": false
+  },
+  "latest_actual_original_primary_monthly_cache_binding": {
+    "proof": "checkpoints/ACTUAL_ORIGINAL_PRIMARY_MONTHLY_CACHE_BINDING_20261008.json",
+    "cloud_run": 37861252943,
+    "tested_head": "f4188c576e74392c09f0740ccac7633a18bf42c7",
+    "proof_head": "a0d1d27a707f4bb2f2b66b812b8a316345d4dae3",
+    "artifact_id": 11585968495,
+    "artifact_digest": "sha256:c62ce751897d0a7dabd33730201bc51cc9ffd87e23d59dee8e290deaed7401d9",
+    "status": "ACTUAL_ORIGINAL_PRIMARY_SCHEDULE_CACHE_BOUND_AND_READBACK_VERIFIED",
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 12,
+      "rows_read": 94,
+      "rows_written": 6,
+      "unknown_ops": 0
+    },
+    "source_clocks_refreshed": false,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "cache": {
+      "source": "OFFICIAL_EVENTS",
+      "asset_key": "published-monthly-supply-schedule-v1-20261008:SUI-USDT",
+      "observed_ts": 1791501784800,
+      "expires_ts": 1791523384800,
+      "payload_sha256": "f90a99776c685bfacd6be15127a23ad6c9183d8c095a1a0f3a9986e5a802fd03",
+      "original_primary_payload_sha256": "21dbd351e1891c463f7bc119812bda79ac05b431fc9884282330df0d6fd90c49",
+      "future_months": [
+        "2026-10",
+        "2026-11"
+      ],
+      "newer_existing_source_preserved": false
+    }
+  },
+  "primary_monthly_supply_projection_policy": {
+    "source": "Sui Foundation documented circulation API",
+    "exact_native_identity_required": true,
+    "consumer": "N01_NEUTRAL_MONTH_END_PROJECTION_CONTEXT",
+    "score_adjustment": 0,
+    "individual_unlock_time_claim": false,
+    "current_finalized_supply_claim": false,
+    "planned_not_actual": true,
+    "original_query_ts": 1791501784800,
+    "original_expires_at": 1791523384800,
+    "source_daily_cap": 4,
+    "parent_OFFICIAL_EVENTS_cap": 288,
+    "global_HTTP_cap": 164,
+    "expiry_boundary_reject": "now>=original_expires_at",
+    "cache_rebuilt_and_validated": true
   }
 }
