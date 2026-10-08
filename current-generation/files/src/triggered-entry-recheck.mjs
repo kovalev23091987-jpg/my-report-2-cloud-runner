@@ -4,12 +4,14 @@ import {D1_DAILY_LIMITS} from './unified-budget.mjs';
 
 export const TRIGGERED_RECHECK_VERSION='exact-sent-triggered-recheck-v3-original-task-window-20261008';
 export const TRIGGERED_RECHECK_D1_RESERVATION=Object.freeze({rows_read:1500,rows_written:16});
+export const TRIGGER_KICK_PLAN=Object.freeze({polls_per_day:288,kicks_per_day:3,poll_rows_read:40,poll_rows_written:8});
 export function proveTriggeredRecheckD1Budget(){
- // Reserve for every one of the72 cron invocations, even though ordinary
- // admitted cycles do not need this small admission-only ledger entry.
- const reads=D1_DAILY_LIMITS.planned_rows_read+72*TRIGGERED_RECHECK_D1_RESERVATION.rows_read;
- const writes=D1_DAILY_LIMITS.planned_rows_written+72*TRIGGERED_RECHECK_D1_RESERVATION.rows_written;
- return {safe:reads<=D1_DAILY_LIMITS.rows_read&&writes<=D1_DAILY_LIMITS.rows_written,maximum_planned_rows_read:reads,maximum_planned_rows_written:writes,cron_admissions_reserved:72,source_http:0};
+ // Reserve every72 normal admission checks plus288 bounded hints and at
+ // most3 additional admission jobs. Full analyses still share the same
+ // original three-attempt burst ledger, provider and daily D1 caps.
+ const reads=D1_DAILY_LIMITS.planned_rows_read+(72+TRIGGER_KICK_PLAN.kicks_per_day)*TRIGGERED_RECHECK_D1_RESERVATION.rows_read+TRIGGER_KICK_PLAN.polls_per_day*TRIGGER_KICK_PLAN.poll_rows_read;
+ const writes=D1_DAILY_LIMITS.planned_rows_written+(72+TRIGGER_KICK_PLAN.kicks_per_day)*TRIGGERED_RECHECK_D1_RESERVATION.rows_written+TRIGGER_KICK_PLAN.polls_per_day*TRIGGER_KICK_PLAN.poll_rows_written;
+ return {safe:reads<=D1_DAILY_LIMITS.rows_read&&writes<=D1_DAILY_LIMITS.rows_written,maximum_planned_rows_read:reads,maximum_planned_rows_written:writes,cron_admissions_reserved:72,additional_kick_admissions_reserved:3,kick_poll_plan:TRIGGER_KICK_PLAN,source_http:0};
 }
 const stable=v=>Array.isArray(v)?v.map(stable):v&&typeof v==='object'?Object.fromEntries(Object.keys(v).sort().filter(k=>v[k]!==undefined).map(k=>[k,stable(v[k])])):v;
 const fingerprint=c=>{const copy={...c};delete copy.analytical_fingerprint;return crypto.createHash('sha256').update(JSON.stringify(stable(copy))).digest('hex');};
@@ -34,7 +36,7 @@ export function verifyTriggeredRecheck(row,{now_ts}={}){
 
 // Admission authorizes one fresh analysis, never ENTRY. Attempted slots are
 // durable and are not refunded after a failure or reset by another executor.
-export async function admitTriggeredRecheck(db,{actor,now_ts,admit=()=>({allowed:false})}={}){
+export async function admitTriggeredRecheck(db,{actor,now_ts,task_id=null,admit=()=>({allowed:false})}={}){
  const base={version:TRIGGERED_RECHECK_VERSION,claimed:false,entry_authorized:false,source_http:0};
  if(actor!=='GITHUB_ACTIONS'||!Number.isSafeInteger(now_ts))return {...base,status:'ANALYTICS_OWNER_REQUIRED'};
  if((await admit())?.allowed!==true)return {...base,status:'D1_BUDGET_BLOCKED'};
@@ -56,8 +58,9 @@ export async function admitTriggeredRecheck(db,{actor,now_ts,admit=()=>({allowed
    JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=b.observed_ts
    WHERE t.state='PENDING' AND json_valid(t.last_result) AND json_extract(t.last_result,'$.status')='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'
      AND t.expires_ts>?1 AND t.due_ts<=?1 AND b.lifecycle_event IN ('OBSERVE','WAIT')
+     AND (?2 IS NULL OR t.task_id=?2)
      AND NOT EXISTS(SELECT 1 FROM report2_triggered_recheck_admission a WHERE a.task_id=t.task_id)
-   ORDER BY t.expires_ts,t.due_ts LIMIT 2`).bind(now_ts).all();
+   ORDER BY t.expires_ts,t.due_ts LIMIT 2`).bind(now_ts,task_id).all();
  const day=new Date(now_ts).toISOString().slice(0,10);
  for(const row of found?.results||[]){
   const publication=await db.prepare(`SELECT canonical_json,analytical_fingerprint,actionability_status
@@ -80,3 +83,4 @@ export async function admitTriggeredRecheck(db,{actor,now_ts,admit=()=>({allowed
  }
  return {...base,status:'NO_FRESH_EXACT_SENT_TRIGGER'};
 }
+
