@@ -1,8 +1,8 @@
-name: Report2 Production Entry And Liquidation Repair
+name: Report2 Exact SENT Trigger To Full Entry Recheck Connected Verification
 on:
   push:
     branches: [codex/production-entry-liq-20261008]
-    paths: ['current-generation/**', '.github/workflows/production-entry-liq-20261008.yml', 'tools/production-entry-liq-20261008.mjs']
+    paths: ['current-generation/**', 'tools/read-entry-transition-20261008.mjs', '.github/workflows/production-entry-liq-20261008.yml']
 permissions:
   contents: write
   actions: read
@@ -15,32 +15,102 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Read original 05:24 and prior NEAR artifacts without source or D1 requests
+      - name: Check fresh owner before assembled tests
         uses: actions/github-script@v7
         with:
           script: |
-            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),zlib=require('zlib');
-            const owner=context.repo.owner,repo=context.repo.repo;
-            const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
             if(head!=='172adf5b2fd28cbb0d33435c5bcefcc4d4b6122a')throw Error('MAIN_MOVED');
-            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:head})).data.content,'base64').toString());
+            const branchHead=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branchHead!==context.sha)throw Error('SUPERSEDED_REVIEW_HEAD');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
             const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
             if(phase.lease?.owner!=='HTX:20261008:1791430073069:trigger-history-reader-fix'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
-            const sources=[{name:'near0524',id:11524122537,digest:'5d3b9968834619c0c985c7b1c51cf22a1469d5d77d2f0c0b19aeea0cb46f1caa'},{name:'near0930',id:11466345739,digest:'a3e376f8be618ccc210a542686237b09bb6e7b88003d80a94d6bb441d0736c80'}];
-            fs.mkdirSync('audit-output',{recursive:true});
-            const entries=[],summary={sourceHTTP:0,D1:0,Telegram:0,sources};
-            for(const s of sources){
-              const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:s.id,archive_format:'zip'})).data);
-              if(crypto.createHash('sha256').update(bytes).digest('hex')!==s.digest)throw Error('SOURCE_DIGEST_MISMATCH');
-              fs.mkdirSync('retained/'+s.name,{recursive:true});fs.writeFileSync('retained/'+s.name+'.zip',bytes);
-              cp.execFileSync('unzip',['-q','retained/'+s.name+'.zip','-d','retained/'+s.name]);
-              const names=cp.execFileSync('find',['retained/'+s.name,'-type','f'],{encoding:'utf8'}).trim().split('\n');
-              summary[s.name]={files:names};
-              for(const path of names){const b=fs.readFileSync(path),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/production-liq-original-20261008/'+s.name+'/'+path.split('/').at(-1),mode:'100644',type:'blob',sha:blob.sha});}
-              if(s.name==='near0524'){const raw=JSON.parse(fs.readFileSync(names.find(p=>p.endsWith('report2-run-result.json')),'utf8'));summary[s.name].keys=Object.keys(raw);summary[s.name].diagnostic=[];const walk=(v,path='')=>{if(!v||typeof v!=='object')return;if(v.contract==='NEAR-USDT'||v.contract_code==='NEAR-USDT'||/liquidation.*(source|receipt|budget)/i.test(path)){const j=JSON.stringify(v);if(j.length<35000)summary[s.name].diagnostic.push({path,value:v});}for(const [k,o] of Object.entries(v))if(o&&typeof o==='object')walk(o,path+'.'+k);};walk(raw);}
+      - name: Load all retained inputs with immutable artifact digests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
             }
-            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(summary,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/production-liq-original-20261008/diagnosis.json',mode:'100644',type:'blob',sha:b.sha});
-            const branch=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+branch})).data.object.sha;if(parent!==context.sha)throw Error('HEAD_MOVED');
-            const commit=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:commit.tree.sha,tree:entries})).data,created=(await github.rest.git.createCommit({owner,repo,message:'Retain exact NEAR05:24 and prior original-clock report data for production diagnosis',tree:tree.sha,parents:[parent]})).data;
-            await github.rest.git.updateRef({owner,repo,ref:'heads/'+branch,sha:created.sha,force:false});
-            console.log(JSON.stringify({status:'ORIGINAL_ARTIFACTS_RETAINED',proof_commit:created.sha,files:entries.map(x=>x.path),sourceHTTP:0,D1:0,Telegram:0}));
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse immutable retained reports without repeated D1 or source calls
+        run: |
+          cp checkpoints/production-liq-original-20261008/near0930/exact-current-data.json.gz audit-output/near0930-exact-current-data.json.gz
+          cp checkpoints/production-liq-original-20261008/near0930/readback-summary.json audit-output/near0930-readback-summary.json
+          cp checkpoints/actual-zec-sent150-original-input-20261007.json.gz audit-output/exact-current-data.json.gz
+          cp checkpoints/production-liq-original-20261008/near0524/report2-run-result.json audit-output/near0524-report2-run-result.json
+      - name: Reuse already verified exact SENT155 task read without another D1 query
+        run: |
+          cp checkpoints/entry-trigger-recheck-tests-37696777714/actual-entry-transition-read.json audit-output/actual-entry-transition-read.json
+          node --input-type=module -e "import fs from 'node:fs';import crypto from 'node:crypto';const b=fs.readFileSync('audit-output/actual-entry-transition-read.json');if(crypto.createHash('sha256').update(b).digest('hex')!=='3795c9439d5f60845e0f1044ec630a2422176d49cf4f56d475ea7bdb6fa5bcf8')throw Error('ORIGINAL_TASK_READ_DIGEST_MISMATCH');"
+      - name: Verify original-clock trigger to full analysis admission and strict reachable ENTRY route
+        run: |
+          REPORT2_TEST_RUNTIME=runtime REPORT2_CADENCE_RUNTIME_ROOT=runtime node --test current-generation/tests/triggered-entry-recheck.test.mjs current-generation/tests/scheduled-cadence-effective.test.mjs > audit-output/triggered-recheck-runtime.tap
+          node current-generation/tests/approved-entry-path.runtime.mjs runtime > audit-output/approved-entry-path.json
+      - name: Verify native routing, original real NEAR response and all display paths
+        run: |
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/proven-native-route.runtime.mjs current-generation/tests/native-wallet-routing.test.mjs current-generation/tests/liquidation-two-native-candidates.test.mjs current-generation/tests/native-account-reuse.test.mjs current-generation/tests/native-cache-completeness.test.mjs current-generation/tests/native-discovery-quota-fallback.test.mjs current-generation/tests/liquidation-run-cap.test.mjs current-generation/tests/native-source-health.runtime.mjs current-generation/tests/liquidation-relevance.runtime.mjs > audit-output/native-route-runtime.tap
+          REPORT2_TEST_RUNTIME=runtime node tools/production-entry-liq-20261008.mjs > audit-output/near0524-diagnosis.json
+      - name: Validate current generation and unchanged approved delivery chain
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Preserve exact source bindings and tested clock audit
+        if: always()
+        run: |
+          for f in src/worker.js src/triggered-entry-recheck.mjs src/recheck-scheduler.mjs runner-main.mjs; do cmp "current-generation/files/$f" "runtime/$f"; node --check "runtime/$f"; done
+          git rev-parse HEAD > audit-output/head.txt
+          git rev-parse HEAD^{tree} > audit-output/tree.txt
+          sha256sum runtime/runner-main.mjs runtime/src/manual-run-summary.mjs runtime/src/canonical-display.mjs runtime/src/canonical-publication.mjs runtime/src/native-liquidation-guard.mjs runtime/src/worker.js runtime/src/block-score-policy.mjs runtime/src/telegram-compact-formatter.mjs runtime/src/manual-report-formatter.mjs > audit-output/runtime-hashes.txt
+      - name: Print exact failure locations
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,20000)+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: entry-trigger-recheck-connected-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain successful composed proof on review branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const head=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='172adf5b2fd28cbb0d33435c5bcefcc4d4b6122a')throw Error('MAIN_MOVED');
+            const branchHead=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branchHead!==context.sha)throw Error('SUPERSEDED_REVIEW_HEAD');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261008:1791430073069:trigger-history-reader-fix'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||['integration.json','validation.json','runtime-hashes.txt','head.txt','tree.txt','triggered-recheck-proof.json','actual-entry-transition-read.json','approved-entry-path.json','binding.json','near0524-diagnosis.json'].includes(f));
+            for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_NOT_PASS:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            if(!tests['native-route-runtime.tap']||tests['native-route-runtime.tap'].pass<30)throw Error('NATIVE_ROUTING_TESTS_MISSING');
+            if(tests['triggered-recheck-runtime.tap']?.pass!==19||tests['observation-pipeline-tests.tap']?.pass!==35)throw Error('REQUIRED_TESTS_MISSING');
+            const integration=JSON.parse(fs.readFileSync('audit-output/integration.json'));if(integration.status!=='PASS'||integration.failed!==0)throw Error('INTEGRATION_NOT_PASS');
+            const validation=JSON.parse(fs.readFileSync('audit-output/validation.json'));if(validation.status!=='CURRENT_GENERATION_VALIDATED')throw Error('GENERATION_NOT_VALIDATED');
+            const replay=JSON.parse(fs.readFileSync('audit-output/triggered-recheck-proof.json'));if(replay.cases.length!==17||!replay.canonical_unchanged||replay.actual_ENTRY!==false)throw Error('ORIGINAL_CLOCK_REPLAY_NOT_CLOSED');
+            const actual=JSON.parse(fs.readFileSync('audit-output/actual-entry-transition-read.json'));if(!['ACTUAL_ORIGINAL_SENT_RECHECK_TASK_READ','ORIGINAL_SENT_RECHECK_TASK_NOT_FOUND'].includes(actual.status))throw Error('ACTUAL_TASK_READ_NOT_CLOSED');
+            const entry=JSON.parse(fs.readFileSync('audit-output/approved-entry-path.json'));if(entry.status!=='APPROVED_ENTRY_PATH_REACHABLE'||entry.route!=='ENTRY_NOW_ANALYTICAL')throw Error('STRICT_ENTRY_ROUTE_NOT_REACHABLE');
+            const proof={schema:'PRODUCTION_ENTRY_LIQ_REPAIR_CONNECTED_20261008_V1',status:'RETAINED_ADAPTER_TRIGGER_AND_PROVEN_NATIVE_ROUTE_COMPOSED_VERIFIED_PENDING_FRESH_PRODUCTION_SENT',tested_head:context.sha,cloud_run:context.runId,tests,integration,validation,full_project_complete:false,fresh_liquidation_SENT:false,production_NOT_DUE_checked:false,original_near0524_cloud_run:37717554433,original_near0524_head:'7d4ea84e2641fcfac39aa5f0317d506a270248aa',native_http_cap_unchanged:5,sourceHTTP:0,D1:0,retained_actual_read_D1:actual.d1_usage,retained_actual_read_cloud_run:37696777714,MAIN:0,Telegram:0,source_clocks_refreshed:false,new_fresh_SENT:false,actual_ENTRY:false,entry_gates_changed:false,regular_cadence_minutes:40,burst_candidates_per_attempt:1,burst_attempts_per_UTC_day:3,manual_commands_per_day:8,original_ttl_unchanged:true,golden_fixtures_changed:false,actual_task_status:actual.status,actual_task_state:actual.task?.state,actual_task_attempts:actual.task?.attempt_count,replay_proof:'triggered-recheck-proof.json'};
+            const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/entry-trigger-recheck-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/PRODUCTION_ENTRY_LIQ_REPAIR_CONNECTED_20261008.json',mode:'100644',type:'blob',sha:b.sha});
+            const ref=context.ref.replace('refs/heads/','');if(ref!=='codex/production-entry-liq-20261008')throw Error('REVIEW_REF_MISMATCH');const parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('TESTED_HEAD_MOVED');
+            const commit=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:commit.tree.sha,tree:entries})).data,created=(await github.rest.git.createCommit({owner,repo,message:'Retain original SENT task diagnosis and assembled trigger to strict entry recheck proof',tree:tree.sha,parents:[parent]})).data;
+            await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:created.sha,force:false});console.log(JSON.stringify({status:proof.status,proof_commit:created.sha,tested_head:context.sha,tests,sourceHTTP:proof.sourceHTTP,D1:proof.D1,MAIN:0,Telegram:0}));

@@ -22,20 +22,20 @@ function service({invalid=false,max=5,unsupported=false,denied=false}={}){
  const s=createCombinedLiquidationService({mode:'SHADOW_ONLY',secondary_enabled:false,candidate_slots:1,max_http_per_run:max,clock:()=>now,native_wallet_routing:routing,on_native_accounts:async payload=>saved.push(payload),provider_admit:async r=>{grants.push(r);return denied&&r.reservation_id.includes('ROUTING_HINT')?{allowed:false,new_reservation:false,reservation_not_created:true,reason:'FREE_QUOTA_EXHAUSTED'}:{allowed:true,new_reservation:true};},fetch_impl:async(url,init={})=>{
   const body=init.body?JSON.parse(init.body):null;calls.push({url:String(url),body});
   if(body?.type==='metaAndAssetCtxs')return new Response(JSON.stringify([{universe:unsupported?[]:[{name:'NEAR'},{name:'FIL'}]},[{markPx:'1'},{markPx:'1'}]]));
-  if(body?.type==='clearinghouseState'){const value=state(invalid?T:now);return new Response(JSON.stringify(value));}
+  if(body?.type==='clearinghouseState'){const value=state(invalid?T:now);if(unsupported)value.assetPositions=[];return new Response(JSON.stringify(value));}
   return new Response(JSON.stringify({coin:'NEAR',positions:[]}));
  }});
  return{s,calls,grants,saved,collect:()=>s.collect({contract:'NEAR-USDT',native_symbol:'NEAR',run_id:'new',deep_started_ts:now,max_http_for_candidate:max,allowed_source_ids:['HYPERLIQUID_NATIVE']})};
 }
-test('a day-old structural hint yields only a newly read official liquidation level with two admitted calls',async()=>{
- const f=service(),raw=await f.collect();assert.ok(raw);assert.equal(f.calls.length,2);assert.equal(f.calls[1].body.type,'clearinghouseState');assert.equal(f.calls.some(x=>/liqflow|swole/.test(x.url)),false);assert.equal(f.grants.length,2);assert.equal(f.saved.length,1);
- const bound=bindNativeAcquisition(raw,{contract:'NEAR-USDT',run_id:'new',snapshot_id:'S:new',observed_ts:T+86400000,direction:null});assert.equal(bound.status,'USABLE_NATIVE_SAMPLE');assert.equal(bound.source_ts,T+86400000);assert.equal(bound.entry_eligible,false);assert.equal(f.s.summary().shared_budget.actual_http,2);
+test('a day-old structural hint yields only a newly read official liquidation level with one admitted call',async()=>{
+ const f=service(),raw=await f.collect();assert.ok(raw);assert.equal(f.calls.length,1);assert.equal(f.calls[0].body.type,'clearinghouseState');assert.equal(f.calls.some(x=>/liqflow|swole/.test(x.url)),false);assert.equal(f.grants.length,1);assert.equal(f.saved.length,1);
+ const bound=bindNativeAcquisition(raw,{contract:'NEAR-USDT',run_id:'new',snapshot_id:'S:new',observed_ts:T+86400000,direction:null});assert.equal(bound.status,'USABLE_NATIVE_SAMPLE');assert.equal(bound.source_ts,T+86400000);assert.equal(bound.entry_eligible,false);assert.equal(f.s.summary().shared_budget.actual_http,1);
  assert.equal(raw.provenance.optional_discovery_status,'CURRENT_NATIVE_REREAD_FROM_STRUCTURAL_WALLET_HINT');
 });
-test('an expired current state or unsupported current catalog never promotes stored capability to fresh levels',async()=>{
- const bad=service({invalid:true,max:2});assert.equal(await bad.collect(),null);assert.equal(bad.calls.length,2);assert.equal(bad.saved.length,1);assert.equal(buildNativeWalletRouting(bad.saved[0]),null);
- const unsupported=service({unsupported:true});assert.equal(await unsupported.collect(),null);assert.equal(unsupported.calls.length,1);
- const denied=service({denied:true,max:2});assert.equal(await denied.collect(),null);assert.equal(denied.calls.length,1);
+test('an expired current state or absent exact position never promotes stored capability to fresh levels',async()=>{
+ const bad=service({invalid:true,max:2});assert.equal(await bad.collect(),null);assert.equal(bad.calls.length,1);assert.equal(bad.saved.length,1);assert.equal(buildNativeWalletRouting(bad.saved[0]),null);
+ const unsupported=service({unsupported:true});const empty=await unsupported.collect();assert.equal(bindNativeAcquisition(empty,{contract:'NEAR-USDT',run_id:'new',snapshot_id:'S:new',observed_ts:T+86400000,direction:null}).status,'NOT_CLOSED');assert.equal(unsupported.calls.length,2);
+ const denied=service({denied:true,max:2});const d=await denied.collect();assert.equal(bindNativeAcquisition(d,{contract:'NEAR-USDT',run_id:'new',snapshot_id:'S:new',observed_ts:T+86400000,direction:null}).status,'NOT_CLOSED');assert.equal(denied.calls.length,1);assert.equal(denied.calls[0].body,null);
 });
 test('wallet hint storage is one guarded D1 write, and structural rows cannot pollute venue market identities',async()=>{
  let writes=0;const db={prepare:sql=>({bind:()=>({run:async()=>{writes++;return{success:true,meta:{changes:1}};},all:async()=>({results:[{source:'HYPERLIQUID_WALLET_ROUTING',observed_ts:T,expires_ts:T+7*86400000,payload_json:JSON.stringify(routing)},{source:'LIGHTER',observed_ts:T,expires_ts:T+86400000,payload_json:JSON.stringify({NEAR:{lighter_market_id:1}})},{source:'GMX',observed_ts:T,expires_ts:T+86400000,payload_json:'{}'}]})}),run:async()=>{},all:async()=>({results:[]})})};
@@ -54,7 +54,7 @@ test('retained original real wallet response creates broad exact capability with
 test('one fresh hinted account serves another exact asset in the same run without spending another discovery or native request',async()=>{
  const f=service();await f.collect();const before=f.grants.length;
  const second=await f.s.collect({contract:'FIL-USDT',native_symbol:'FIL',run_id:'new',deep_started_ts:T+86400000,max_http_for_candidate:0,allowed_source_ids:['HYPERLIQUID_NATIVE']});
- assert.ok(second);assert.equal(f.calls.length,2);assert.equal(f.grants.length,before);assert.equal(second.accounts[0].state.time,T+86400000);assert.equal(second.provenance.transport_count,0);assert.equal(second.provenance.reused_native_accounts,1);
+ assert.ok(second);assert.equal(f.calls.length,1);assert.equal(f.grants.length,before);assert.equal(second.accounts[0].state.time,T+86400000);assert.equal(second.provenance.transport_count,0);assert.equal(second.provenance.reused_native_accounts,1);
 });
 
 test('unknown write acknowledgements and a newer competing routing row cannot be declared saved or retried',async()=>{
