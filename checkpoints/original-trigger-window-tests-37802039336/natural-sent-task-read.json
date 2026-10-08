@@ -1,0 +1,216 @@
+{
+  "schema": "TWO_NATURAL_SENT_ENTRY_TASK_READ_20261008_V1",
+  "head": "75974903ce15e5aef0929f527c94de5a1f68b2f0",
+  "cloud_run": "37799119119",
+  "read_ts": 1791472506189,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "cases": [
+    {
+      "source_cloud_run": 37769881607,
+      "source_head": "241f196ff9f07b85adfb15fb47fcd01fc9cc2799",
+      "contract": "NEAR-USDT",
+      "run_id": "1791458716118-1791458723360",
+      "snapshot_id": "S392:NEAR-USDT:1791458820948",
+      "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+      "analytical_fingerprint": "907d59bd93ecc818dca4eb058d765f11c090925772d92fe7139d9aa8c8263365",
+      "observed_ts": 1791458820948,
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": "<=",
+        "value": 5.116,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791460620948,
+        "next_recheck_ts": 1791459120948,
+        "cancel_condition": "price>5.204",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_entry": {
+        "area": "5.116 USDT",
+        "min_price": 5.116,
+        "max_price": 5.116,
+        "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_targets": [],
+      "canonical_state": "OBSERVE",
+      "receipt": {
+        "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+        "run_id": "1791458716118-1791458723360",
+        "snapshot_id": "S392:NEAR-USDT:1791458820948",
+        "analytical_fingerprint": "907d59bd93ecc818dca4eb058d765f11c090925772d92fe7139d9aa8c8263365",
+        "observed_ts": 1791458820948,
+        "wave_id": "EDW:NEAR-USDT:1791426181612:G8",
+        "lifecycle_event": "OBSERVE",
+        "state": "SENT",
+        "telegram_message_id": "159",
+        "sent_ts": 1791458825985,
+        "last_error": "SENT"
+      },
+      "task": {
+        "task_id": "RCHK:fb6ab103994456754e4d6fc70e75c6041f0fecf1",
+        "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+        "contract_code": "NEAR-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NEAR-USDT:1791426181612:G8",
+        "snapshot_id": "S392:NEAR-USDT:1791458820948",
+        "run_id": "1791458716118-1791458723360",
+        "due_ts": 1791459120948,
+        "expires_ts": 1791460620948,
+        "state": "EXPIRED",
+        "attempt_count": 0,
+        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791460803669,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791460800000,\"task_id\":\"RCHK:fb6ab103994456754e4d6fc70e75c6041f0fecf1\",\"publication_id\":\"PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f\",\"run_id\":\"1791458716118-1791458723360\",\"snapshot_id\":\"S392:NEAR-USDT:1791458820948\",\"analytical_fingerprint\":\"907d59bd93ecc818dca4eb058d765f11c090925772d92fe7139d9aa8c8263365\",\"telegram_message_id\":\"159\"}",
+        "created_ts": 1791458825985,
+        "updated_ts": 1791460803669
+      },
+      "status": "ACTUAL_EXACT_TASK_READ",
+      "exact_SENT": true
+    },
+    {
+      "source_cloud_run": 37792641591,
+      "source_head": "9e90488b15c5872b8bd4e50963afdf92732c4273",
+      "contract": "NIL-USDT",
+      "run_id": "1791469682855-1791469694584",
+      "snapshot_id": "S392:NIL-USDT:1791469821192",
+      "publication_id": "PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af",
+      "analytical_fingerprint": "15efed800c909d36c2e6af8ae80df49480aac8e60a4b786948dc8fa1c8b65540",
+      "observed_ts": 1791469821192,
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 0.09331,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791471621192,
+        "next_recheck_ts": 1791470121192,
+        "cancel_condition": "price<0.08345",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "canonical_entry": {
+        "area": "0.09331 USDT",
+        "min_price": 0.09331,
+        "max_price": 0.09331,
+        "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "canonical_targets": [],
+      "canonical_state": "OBSERVE",
+      "receipt": {
+        "publication_id": "PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af",
+        "run_id": "1791469682855-1791469694584",
+        "snapshot_id": "S392:NIL-USDT:1791469821192",
+        "analytical_fingerprint": "15efed800c909d36c2e6af8ae80df49480aac8e60a4b786948dc8fa1c8b65540",
+        "observed_ts": 1791469821192,
+        "wave_id": "EDW:NIL-USDT:1791469694803:G5",
+        "lifecycle_event": "OBSERVE",
+        "state": "SENT",
+        "telegram_message_id": "160",
+        "sent_ts": 1791469827846,
+        "last_error": "SENT"
+      },
+      "task": {
+        "task_id": "RCHK:0e532499362d3e313d2381833c561e64e1e89f26",
+        "publication_id": "PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af",
+        "contract_code": "NIL-USDT",
+        "direction": "LONG",
+        "wave_id": "EDW:NIL-USDT:1791469694803:G5",
+        "snapshot_id": "S392:NIL-USDT:1791469821192",
+        "run_id": "1791469682855-1791469694584",
+        "due_ts": 1791470121192,
+        "expires_ts": 1791471621192,
+        "state": "EXPIRED",
+        "attempt_count": 0,
+        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791471903533,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791471900000,\"task_id\":\"RCHK:0e532499362d3e313d2381833c561e64e1e89f26\",\"publication_id\":\"PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af\",\"run_id\":\"1791469682855-1791469694584\",\"snapshot_id\":\"S392:NIL-USDT:1791469821192\",\"analytical_fingerprint\":\"15efed800c909d36c2e6af8ae80df49480aac8e60a4b786948dc8fa1c8b65540\",\"telegram_message_id\":\"160\"}",
+        "created_ts": 1791469827846,
+        "updated_ts": 1791471903533
+      },
+      "status": "ACTUAL_EXACT_TASK_READ",
+      "exact_SENT": true
+    }
+  ],
+  "limitation": "Current mutable task state cannot reconstruct overwritten historical collector prices or prove all absent entries.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 49,
+      "reserved_rows_read": 1015000,
+      "reserved_rows_written": 20168,
+      "measured_rows_read": 534516,
+      "measured_rows_written": 9044,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 2500,
+      "rows_written": 20
+    },
+    "projected_reserved": {
+      "rows_read": 1017500,
+      "rows_written": 20188
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "status": "BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "NATURAL_SENT_TRACE:37799119119:1",
+    "source_run_id": "37799119119",
+    "measured_rows_read": 56,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 8,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 8,
+    "rows_read": 57,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 50,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 2,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
