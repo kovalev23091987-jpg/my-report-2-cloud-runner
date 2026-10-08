@@ -24,6 +24,7 @@ jobs:
             if(crypto.createHash('sha256').update(b).digest('hex')!=='5a0cf3aac4bcda46e09903bb510c40156ed273c681312d3ee7fda43107429052')throw Error('ARTIFACT_DIGEST_MISMATCH');
             fs.writeFileSync('current-near.zip',b);fs.mkdirSync('retained',{recursive:true});cp.execFileSync('unzip',['-q','current-near.zip','-d','retained']);
             const raw=fs.readFileSync('retained/report2-run-result.json'),r=JSON.parse(raw);
+            console.log('ACTUAL_ARTIFACT_IDENTITY',JSON.stringify({head:r.head,source:r.source,mode:r.mode,contract:r.verified_candidate,run_id:r.run_id}));
             if(r.head!=='ff8fdceb0e1b56ddc6149579e2d34dd563fbb061'||r.source!=='manual'||r.mode!=='LIQUIDATION_ONLY')throw Error('EXACT_RUN_MISMATCH');
             const map=r.liquidation_map||r.result?.liquidation_map;
             console.log('RETAINED_OUTPUT_KEYS',JSON.stringify(Object.keys(r)));
