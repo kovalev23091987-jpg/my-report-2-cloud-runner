@@ -10,6 +10,7 @@ export const SOURCE_POLICIES=Object.freeze({
  HTX_PUBLIC_RISK:{daily_cap:144,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N08','N09','N11','N16']},
  XRPL_NATIVE_SUPPLY:{daily_cap:24,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03'],parent_budget:'CHAIN_RPC',retries:0},
  STELLAR_NATIVE_SUPPLY:{daily_cap:24,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02'],parent_budget:'CHAIN_RPC',retries:0},
+ HEDERA_NATIVE_SUPPLY:{daily_cap:4,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02'],parent_budget:'CHAIN_RPC',retries:0,monthly_module_bound:124,provider_published_numeric_limits:'UNKNOWN_NOT_UNLIMITED'},
  CHAIN_RPC:{daily_cap:720,ttl_ms:20*60_000,auth:'PUBLIC',blocks:['N02','N03','N04','N05']},
  KOIOS_NATIVE_SUPPLY:{daily_cap:48,ttl_ms:6*60*60_000,auth:'PUBLIC',blocks:['N02','N03'],official_public_daily_cap:5000,official_burst_cap:100,official_burst_window_seconds:10,retries:0},
  OFFICIAL_EVENTS:{daily_cap:288,ttl_ms:60*60_000,auth:'PUBLIC',blocks:['N01','N07','N08','N09']},
@@ -65,3 +66,4 @@ export function normalizeCalendarEvent({provider_id,asset_id='GLOBAL_MACRO',htx_
 }
 
 export default{EVIDENCE_SOURCE_ADAPTERS_VERSION,SOURCE_POLICIES,planEvidenceSourceRequest,buildEvidenceV2,normalizeOfficialEvent,normalizeChainTransfer,normalizeAttentionSample,normalizeCalendarEvent};
+

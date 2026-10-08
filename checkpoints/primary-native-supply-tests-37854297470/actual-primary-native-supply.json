@@ -1,0 +1,316 @@
+{
+  "schema": "ACTUAL_PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008_V1",
+  "head": "1f1da71e642312dc31c18ecee34496d2f2d498c5",
+  "cloud_run": "37854297470",
+  "run_id": "PRIMARY_NATIVE_QUAL:37854297470:1",
+  "observed_ts": 1791498873184,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "source_clock_refreshed": false,
+  "whole_job_http_cap": 2,
+  "existing_global_http_cap": 164,
+  "new_source_daily_cap": 4,
+  "existing_parent_daily_cap": 720,
+  "scope": "ACTUAL_TWO_SOURCE_IDENTITY_AND_PRIMARY_N02_CONSUMER_QUALIFICATION;NOT_HTX_FULL_ANALYSIS_OR_TELEGRAM_ACCEPTANCE",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 78,
+      "reserved_rows_read": 1491500,
+      "reserved_rows_written": 28396,
+      "measured_rows_read": 835399,
+      "measured_rows_written": 13038,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 64
+    },
+    "projected_reserved": {
+      "rows_read": 1492500,
+      "rows_written": 28460
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "identity_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "HTX_ASSET_REFERENCE",
+    "day_utc": "2026-10-08",
+    "attempts": 1
+  },
+  "htx_reference_rows": [
+    {
+      "currency": "hbar",
+      "assetType": 1,
+      "chains": [
+        {
+          "chain": "hbar",
+          "displayName": "HBAR",
+          "fullName": "Hedera Hashgraph",
+          "chainType": 0,
+          "isDynamic": false,
+          "numOfConfirmations": 1,
+          "numOfFastConfirmations": 1,
+          "depositStatus": "allowed",
+          "minDepositAmt": "5",
+          "withdrawStatus": "allowed",
+          "minWithdrawAmt": "5",
+          "withdrawPrecision": 8,
+          "maxWithdrawAmt": "999999999999999999.000000000000000000",
+          "withdrawQuotaPerDay": "999999999999999999.000000000000000000",
+          "withdrawQuotaPerYear": null,
+          "withdrawQuotaTotal": null,
+          "withdrawFeeType": "fixed",
+          "withdrawFeeExpandType": "fixed",
+          "withdrawFeeExpandData": null,
+          "transactFeeWithdraw": "1",
+          "addrWithTag": true,
+          "addrDepositTag": true
+        }
+      ],
+      "instStatus": "normal",
+      "externalTransferEnabled": false
+    }
+  ],
+  "identity": {
+    "status": "CLOSED",
+    "identities": [
+      {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      }
+    ],
+    "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+    "wrapped_bindings_excluded": 0
+  },
+  "parsed_identity": {
+    "chain": "hedera",
+    "asset_kind": "NATIVE",
+    "native_asset_id": "hedera:mainnet",
+    "contract_or_mint": null
+  },
+  "supply": {
+    "version": "chain-supply-evidence-v9-primary-native-families-20261007",
+    "status": "CLOSED",
+    "contract": "HBAR-USDT",
+    "evidence": [
+      {
+        "evidence_id": "EV2:2782298aa1996aad20a57c710b47f646b5fa4ac4b6920da588f2fc50372174d3",
+        "asset_id": "hedera:native:mainnet",
+        "htx_contract": "HBAR-USDT",
+        "block_id": "N02",
+        "metric_family": "HEDERA_PUBLISHED_SUPPLY_METRICS",
+        "provider_id": "HEDERA_NATIVE_SUPPLY",
+        "upstream_id": "HEDERA_OFFICIAL_MAINNET_MIRROR_PUBLISHED_SUPPLY",
+        "origin_event_id": "HEDERA_SUPPLY:1791496869.547900104",
+        "dependency_group": "HEDERA_PUBLISHED_NETWORK_SUPPLY",
+        "source_ts": 1791496869547,
+        "observed_ts": 1791498877512,
+        "first_known_ts": 1791498877512,
+        "effective_from": null,
+        "effective_to": null,
+        "window_start": null,
+        "window_end": null,
+        "coverage_status": "PRIMARY_PUBLISHED_RELEASED_AND_TOTAL_SUPPLY",
+        "coverage_fraction": 0,
+        "unit": "tinybar",
+        "value": null,
+        "directional_strength": null,
+        "risk_strength": null,
+        "identity_status": "EXACT",
+        "finality_status": "FINAL",
+        "schema_version": "EvidenceV2.1",
+        "raw_hash": "11f81af5607cefea0ffa299e638357e0bc45be967674d906a424e11284dd50a6",
+        "expires_at": 1791518469547,
+        "cost_receipt_id": null,
+        "validation_status": "VALID",
+        "validation_reason": null,
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "token_address": null,
+        "decimals": 8,
+        "supply_values_base_units": {
+          "released_supply": "4399775395337100883",
+          "total_supply": "5000000000000000000",
+          "unreleased_supply": "600224604662899117"
+        },
+        "consensus_timestamp": "1791496869.547900104",
+        "primary_payload": {
+          "released_supply": "4399775395337100883",
+          "timestamp": "1791496869.547900104",
+          "total_supply": "5000000000000000000"
+        },
+        "primary_payload_sha256": "0646384ce4c4c79a489fb1c63ff4ec22b95ca01cd2ecef54da556474aeb4d0be",
+        "official_url": "https://mainnet.mirrornode.hedera.com/api/v1/network/supply",
+        "source_clock_policy": "ORIGINAL_PRIMARY_CONSENSUS_TIMESTAMP",
+        "chain_finalized_block_verified": false,
+        "circulating_supply_verified": false,
+        "burn_or_buyback_change_verified": false,
+        "future_unlocks_checked": false,
+        "entry_authorized": false
+      }
+    ],
+    "summary": {
+      "finalized": false,
+      "supply_measure": "HEDERA_PUBLISHED_RELEASED_AND_TOTAL_TINYBAR_SUPPLY",
+      "chain_finalized_block_verified": false,
+      "comparison_verified": false
+    },
+    "internal_only": true,
+    "network_calls": 1,
+    "cache_status": "REFRESHED",
+    "whole_job_admission": {
+      "allowed": true,
+      "status": "RESERVED",
+      "attempts": 1
+    },
+    "admission": {
+      "allowed": true,
+      "status": "RESERVED",
+      "source": "HEDERA_NATIVE_SUPPLY",
+      "day_utc": "2026-10-08",
+      "attempts": 1
+    },
+    "receipts": [
+      {
+        "route": "HEDERA_PRIMARY_NETWORK_SUPPLY",
+        "status": "CLOSED",
+        "http_status": 200,
+        "error": ""
+      }
+    ]
+  },
+  "consumer": {
+    "version": "block-result-context-v11-verified-native-evm-20261007",
+    "status": "CLOSED",
+    "facts": [
+      {
+        "advisory_only": true,
+        "directional_vote": false,
+        "hard_gate": false,
+        "score_contribution": 0,
+        "source": "Hedera mainnet mirror",
+        "label": "Опубликованное предложение HBAR",
+        "value": "выпущено 43 997 753 953,37100883 HBAR из общего предложения 50 000 000 000 HBAR; остаток 6 002 246 046,62899117 HBAR. Метрика released supply источника; изменение выпуска и будущие разблокировки этим наблюдением не проверены",
+        "unit": "",
+        "field": "HEDERA_PUBLISHED_SUPPLY_METRICS",
+        "block_id": "N02",
+        "evidence_id": "EV2:2782298aa1996aad20a57c710b47f646b5fa4ac4b6920da588f2fc50372174d3",
+        "physical_root_key": "hedera:native:mainnet|HEDERA_SUPPLY:1791496869.547900104",
+        "source_ts": 1791496869547,
+        "observed_ts": 1791498877512
+      }
+    ],
+    "internal_only": true
+  },
+  "score_adjustment": 0,
+  "status": "ACTUAL_PRIMARY_HEDERA_SOURCE_CONSUMER_QUALIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "PRIMARY_NATIVE_QUAL:37854297470:1",
+    "source_run_id": "37854297470",
+    "measured_rows_read": 88,
+    "measured_rows_written_accounted": 17,
+    "measured_requests_accounted": 29,
+    "unknown_ops": 0
+  },
+  "sourceHTTP": 2,
+  "reserved_sourceHTTP": 2,
+  "sources": [
+    {
+      "url": "https://api.huobi.pro/v2/reference/currencies",
+      "http_status": 200,
+      "received_ts": 1791498875882,
+      "body_sha256": "963852578bc2925c0825900e09521d24899bc6513b4829585f8b03bf8df4542b",
+      "gzip_sha256": "9e3b48573394b14b7bd35948f659cfccb12a9fcb9c39e0250161881aecc750d2",
+      "file": "htx-currencies.json.gz"
+    },
+    {
+      "url": "https://mainnet.mirrornode.hedera.com/api/v1/network/supply",
+      "http_status": 200,
+      "received_ts": 1791498877512,
+      "body_sha256": "0646384ce4c4c79a489fb1c63ff4ec22b95ca01cd2ecef54da556474aeb4d0be",
+      "gzip_sha256": "deb03bce3a3dbdeb015607cfb953540311b64ef045fb32b2ee4a86dfba17e83e",
+      "file": "hedera-supply.json.gz"
+    }
+  ],
+  "d1_usage": {
+    "requests": 29,
+    "rows_read": 89,
+    "rows_written": 17,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 79,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 10,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 6,
+        "rows_read": 3,
+        "rows_written": 5,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 6,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 3,
+        "rows_read": 3,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}

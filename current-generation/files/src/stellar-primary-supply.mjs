@@ -4,12 +4,15 @@ import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 
 export const STELLAR_SUPPLY_URL='https://dashboard.stellar.org/api/v3/lumens';
 export const STELLAR_SUPPLY_TTL=6*60*60_000;
+// Published supply components may be exactly zero; finalized ledger totals
+// keep the shared positive-only parser unchanged.
+const componentUnits=v=>typeof v==='string'&&/^0+(?:\.0{1,7})?$/.test(v)?'0':decimalBaseUnits(v,7);
 export function normalizeStellarPublishedSupply({contract,identity,payload,observed_ts}={}){
  const bad=status=>({status,evidence:[],internal_only:true});
  if(contract!=='XLM-USDT'||identity?.chain!=='stellar'||identity.asset_kind!=='NATIVE'||identity.native_asset_id!=='stellar:mainnet'||identity.contract_or_mint!==null)return bad('EXACT_STELLAR_NATIVE_IDENTITY_REQUIRED');
  const ts=typeof payload?.updatedAt==='string'&&/Z$/.test(payload.updatedAt)?Date.parse(payload.updatedAt):NaN;
  if(!Number.isSafeInteger(ts)||!Number.isSafeInteger(observed_ts)||ts>observed_ts||observed_ts-ts>STELLAR_SUPPLY_TTL)return bad('PRIMARY_METRIC_CLOCK_NOT_CURRENT');
- const values={};for(const key of ['originalSupply','inflationLumens','burnedLumens','totalSupply','upgradeReserve','feePool','sdfMandate','circulatingSupply']){values[key]=decimalBaseUnits(payload[key],7);if(values[key]===null)return bad('PRIMARY_SUPPLY_METRIC_SCHEMA_REQUIRED');}
+ const values={};for(const key of ['originalSupply','inflationLumens','burnedLumens','totalSupply','upgradeReserve','feePool','sdfMandate','circulatingSupply']){values[key]=componentUnits(payload[key]);if(values[key]===null)return bad('PRIMARY_SUPPLY_METRIC_SCHEMA_REQUIRED');}
  const n=key=>BigInt(values[key]);
  if(n('originalSupply')+n('inflationLumens')-n('burnedLumens')!==n('totalSupply')||n('totalSupply')-n('upgradeReserve')-n('feePool')-n('sdfMandate')!==n('circulatingSupply')||n('originalSupply')!==1000000000000000000n)return bad('PRIMARY_SUPPLY_COMPONENTS_DO_NOT_RECONCILE');
  const sha=createHash('sha256').update(JSON.stringify(payload)).digest('hex');

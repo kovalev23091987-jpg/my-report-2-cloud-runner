@@ -1,5 +1,6 @@
 import {NATIVE_LEDGER_FAMILIES,fetchNativeLedgerSupply,normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
 import {fetchStellarPublishedSupply,normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
+import {fetchHederaPublishedSupply,normalizeHederaPublishedSupply} from './hedera-primary-supply.mjs';
 import {fetchSolanaNativeSupply,SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -16,14 +17,15 @@ const decimalsOf=value=>{const n=finite(value);return Number.isSafeInteger(n)&&n
 
 function exactIdentity(identity){
  const chain=text(identity?.chain).toLowerCase(),address=text(identity?.contract_or_mint);
- if(['near','solana','cardano','xrp','stellar'].includes(chain)&&identity?.asset_kind==='NATIVE'&&identity?.native_asset_id===`${chain}:mainnet`&&(!address||address==='native:mainnet'))return{chain,address:'native:mainnet',asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`};
+ if(['near','solana','cardano','xrp','stellar','hedera'].includes(chain)&&identity?.asset_kind==='NATIVE'&&identity?.native_asset_id===`${chain}:mainnet`&&(!address||address==='native:mainnet'))return{chain,address:'native:mainnet',asset_kind:'NATIVE',native_asset_id:`${chain}:mainnet`};
  if(chain==='solana'&&BASE58.test(address))return{chain,address};
  if(EVM_ENDPOINTS[chain]&&EVM.test(address))return{chain,address:address.toLowerCase()};
  return null;
 }
 
-const nativeContract=id=>({near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT',xrp:'XRP-USDT',stellar:'XLM-USDT'}[id?.chain]||null);
-const sourceFor=id=>id?.chain==='cardano'?'KOIOS_NATIVE_SUPPLY':NATIVE_LEDGER_FAMILIES[id?.chain]?.provider||DEFAULT_SOURCE;
+const nativeContract=id=>({near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT',xrp:'XRP-USDT',stellar:'XLM-USDT',hedera:'HBAR-USDT'}[id?.chain]||null);
+const publishedNative=id=>['stellar','hedera'].includes(id?.chain);
+const sourceFor=id=>id?.chain==='hedera'?'HEDERA_NATIVE_SUPPLY':id?.chain==='cardano'?'KOIOS_NATIVE_SUPPLY':NATIVE_LEDGER_FAMILIES[id?.chain]?.provider||DEFAULT_SOURCE;
 
 async function postRpc(fetchImpl,url,method,params){
  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
@@ -93,6 +95,7 @@ async function fetchEvmTokenState(fetchImpl,url,address,blockRef){
 
 async function fetchSupply(fetchImpl,id,clock){
  if(id.chain==='stellar')return fetchStellarPublishedSupply(fetchImpl);
+ if(id.chain==='hedera')return fetchHederaPublishedSupply(fetchImpl);
  if(id.chain==='xrp')return fetchNativeLedgerSupply(fetchImpl,id,{clock});
  if(id.chain==='cardano'&&id.asset_kind==='NATIVE')return fetchCardanoSupply(fetchImpl);
  if(id.chain==='solana'&&id.asset_kind==='NATIVE')return fetchSolanaNativeSupply(fetchImpl);
@@ -118,7 +121,7 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
  if(!db)throw new Error('CHAIN_SUPPLY_DB_REQUIRED');const htxContract=text(contract).toUpperCase(),id=exactIdentity(asset_identity);
  if(!/^[^\s-]+-USDT$/u.test(htxContract)||!id||(id.asset_kind==='NATIVE'&&htxContract!==nativeContract(id)))return{status:'EXACT_ASSET_IDENTITY_REQUIRED',evidence:[],network_calls:0,internal_only:true};
  const source=sourceFor(id),ttl=SOURCE_POLICIES[source].ttl_ms,dailyCap=SOURCE_POLICIES[source].daily_cap;
- await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION&&cached.contract===htxContract&&(cached.evidence||[]).every(row=>row.htx_contract===htxContract)){
+ await installEvidenceSourceStore(db);const assetKey=id.chain==='solana'?`${id.chain}:${id.address}`:`${id.chain}:${id.address}`.toLowerCase(),cached=await readEvidenceSourceCache(db,{source,asset_key:assetKey,now});if(!strict_fresh_manual&&cached?.version===CHAIN_SUPPLY_EVIDENCE_VERSION&&cached.contract===htxContract&&(cached.evidence||[]).every(row=>row.htx_contract===htxContract)&&(!publishedNative(id)||(cached.evidence||[]).length>0&&cached.evidence.every(row=>Number.isSafeInteger(row.source_ts)&&row.source_ts<=now&&now-row.source_ts<=ttl&&Number.isSafeInteger(row.expires_at)&&row.expires_at>now))){
   const reduction=cached.evidence.find(row=>row.block_id==='N03'&&row.metric_family==='SUPPLY_DECREASE');
   if(reduction&&!cached.evidence.some(row=>row.block_id==='N02')&&cached.current_observation){
    // Derive only from the retained original finalized observation; never
@@ -129,13 +132,14 @@ export async function collectChainSupplyEvidence({db,fetch_impl=globalThis.fetch
   return cached;
  }
  const previousRow=await db.prepare(`SELECT payload_json FROM report2_evidence_source_cache WHERE source=?1 AND asset_key=?2 LIMIT 1`).bind(source,assetKey).first();let previous=null;try{const prior=JSON.parse(previousRow?.payload_json||'null');if([CHAIN_SUPPLY_EVIDENCE_VERSION,'chain-supply-evidence-v8-general-comparison-context-20261005','chain-supply-evidence-v7-cardano-koios-20261005','chain-supply-evidence-v6-native-solana-20261004','chain-supply-evidence-v5-native-chronology-20261004','chain-supply-evidence-v4-receipt-clock-20261004'].includes(prior?.version)&&prior.status==='CLOSED'&&prior.summary?.finalized===true&&prior.current_observation)previous={...prior.current_observation,finalized:true};}catch{}
- const attempts=id.chain==='stellar'?1:id.chain==='xrp'?3:id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
+ const attempts=publishedNative(id)?1:id.chain==='xrp'?3:id.chain==='cardano'?4:['solana','near'].includes(id.chain)?2:3,reservationId=`EV2:${source}:${run_id}:${assetKey}:${Math.floor(now/ttl)}`,wholeJobAdmission=typeof request_admit==='function'?request_admit({logical_request_id:reservationId,lane:'background',attempts}):{allowed:false,status:'WHOLE_JOB_HTTP_ADMISSION_REQUIRED'};
  if(!wholeJobAdmission.allowed)return{status:wholeJobAdmission.status,evidence:[],network_calls:0,whole_job_admission:wholeJobAdmission,internal_only:true};
  const admission=await reserveEvidenceSourceAttempts(db,{source,reservation_id:reservationId,attempts,daily_cap:dailyCap,now});if(!admission.allowed)return{status:admission.status,evidence:[],network_calls:0,admission,internal_only:true};
- if(NATIVE_LEDGER_FAMILIES[id.chain]){const parent=await reserveEvidenceSourceAttempts(db,{source:DEFAULT_SOURCE,reservation_id:reservationId+':PARENT',attempts,daily_cap:SOURCE_POLICIES[DEFAULT_SOURCE].daily_cap,now});if(!parent.allowed)return{status:parent.status,evidence:[],network_calls:0,admission:parent,internal_only:true};}
- const fetched=await fetchSupply(fetch_impl,id,clock),observed=clock(),normalized=id.chain==='stellar'?normalizeStellarPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous:id.chain==='xrp'?fetched.previous:fetched.previous||previous,observed_ts:observed});
+ if(NATIVE_LEDGER_FAMILIES[id.chain]||id.chain==='hedera'){const parent=await reserveEvidenceSourceAttempts(db,{source:DEFAULT_SOURCE,reservation_id:reservationId+':PARENT',attempts,daily_cap:SOURCE_POLICIES[DEFAULT_SOURCE].daily_cap,now});if(!parent.allowed)return{status:parent.status,evidence:[],network_calls:0,admission:parent,internal_only:true};}
+ const fetched=await fetchSupply(fetch_impl,id,clock),observed=clock(),normalized=id.chain==='hedera'?normalizeHederaPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):id.chain==='stellar'?normalizeStellarPublishedSupply({contract:htxContract,identity:asset_identity,payload:fetched.payload,observed_ts:observed}):normalizeChainSupply({contract:htxContract,identity:{...id,contract_or_mint:id.address,identity_method},current:fetched.current,previous:id.chain==='xrp'?fetched.previous:fetched.previous||previous,observed_ts:observed});
  const result={version:CHAIN_SUPPLY_EVIDENCE_VERSION,...normalized,...(id.chain==='xrp'&&fetched.status!=='CLOSED'?{status:fetched.status}:{}),network_calls:fetched.attempts,cache_status:'REFRESHED',whole_job_admission:wholeJobAdmission,admission,receipts:fetched.receipts.map(({route,ok,http_status,error})=>({route,status:ok?'CLOSED':'SOURCE_ERROR',http_status,error:error??null})),internal_only:true};
- if(normalized.status==='CLOSED'||NATIVE_LEDGER_FAMILIES[id.chain])await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:observed+(normalized.status==='CLOSED'?ttl:30*60_000),payload:result});return result;
+ if(normalized.status==='CLOSED'||NATIVE_LEDGER_FAMILIES[id.chain])await writeEvidenceSourceCache(db,{source,asset_key:assetKey,observed_ts:observed,expires_ts:publishedNative(id)&&normalized.status==='CLOSED'?Math.min(observed+ttl,...normalized.evidence.map(row=>row.expires_at)):observed+(normalized.status==='CLOSED'?ttl:30*60_000),payload:result});return result;
 }
 
 export default{normalizeChainSupply,collectChainSupplyEvidence};
+

@@ -107,7 +107,7 @@ const files=[
  'src/chain-supply-evidence.mjs',
  'src/sourcify-abi-evidence.mjs',
  'src/bluesky-attention-evidence.mjs',
- 'src/official-events-evidence.mjs','src/htx-official-announcements-evidence.mjs','src/official-token-schedule.mjs','src/technical-plan-context.mjs','src/solana-native-supply.mjs','src/native-ledger-supply.mjs','src/xrpl-native-payments.mjs','src/stellar-primary-supply.mjs','src/github-official-releases.mjs','src/htx-technical-structure.mjs',
+ 'src/official-events-evidence.mjs','src/htx-official-announcements-evidence.mjs','src/official-token-schedule.mjs','src/technical-plan-context.mjs','src/solana-native-supply.mjs','src/native-ledger-supply.mjs','src/xrpl-native-payments.mjs','src/stellar-primary-supply.mjs','src/hedera-primary-supply.mjs','src/github-official-releases.mjs','src/htx-technical-structure.mjs',
  'src/official-source-registry.mjs','src/htx-contract-key.mjs','src/htx-crypto-universe.mjs',
  'src/gdelt-official-discovery.mjs',
  'src/shadow-market-pilot.mjs',
@@ -148,3 +148,4 @@ fs.copyFileSync(path.join(here,'../runner/r8-20-prospective-validation-sidecar.m
 fs.copyFileSync(path.join(here,'files/src/retained-history.mjs'),path.join(runtime,'retained-history.mjs'));
 const policyPatches=applyRuntimePolicyPatches(runtime);
 console.log(JSON.stringify({status:'CURRENT_GENERATION_APPLIED',generation:'MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M',worker_sha256:sha(input),schedule_minutes:20,public_collector_schedule_minutes:5,native_liquidation_extension:'SHADOW_ONLY_DECISION_INPUT',policy_patches:policyPatches}));
+
