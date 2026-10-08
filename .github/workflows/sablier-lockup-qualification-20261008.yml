@@ -58,13 +58,13 @@ jobs:
             const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo;
             if(!fs.existsSync('audit-output/actual-lockup-qualification.json'))throw Error('NO_ACTUAL_PROOF');
             const p=JSON.parse(fs.readFileSync('audit-output/actual-lockup-qualification.json'));
-            if(p.sourceHTTP>3||p.d1_usage.unknown_ops!==0||p.d1_usage.rows_read>1000||p.d1_usage.rows_written>64||p.production_provider_enabled!==false)throw Error('QUALIFICATION_SCOPE');
-            const dir='checkpoints/sablier-lockup-qualification-'+context.runId;
+            if(p.sourceHTTP>1||p.d1_usage.unknown_ops!==0||p.d1_usage.rows_read>1000||p.d1_usage.rows_written>64||p.production_provider_enabled!==false)throw Error('QUALIFICATION_SCOPE');
+            const dir='checkpoints/sablier-lockup-hash-qualification-'+context.runId;
             fs.mkdirSync(dir,{recursive:true});fs.copyFileSync('audit-output/actual-lockup-qualification.json',dir+'/actual.json');
             const files=[dir+'/actual.json'];
             for(const n of fs.readdirSync('audit-output/lockup-source')){fs.copyFileSync('audit-output/lockup-source/'+n,dir+'/'+n);files.push(dir+'/'+n);}
             const proof={schema:'SABLIER_DOCUMENTED_KEYLESS_ACTUAL_LOCKUP_QUALIFICATION_20261008_V1',status:p.status,head:context.sha,cloud_run:context.runId,documentation:p.documentation,documented_testing_queries_per_day:3000,local_daily_query_cap:4,actual_path:dir+'/actual.json',sourceHTTP:p.sourceHTTP,D1:p.d1_usage,matching:p.matching||[],original_finalized_clock:p.original_finalized_clock||null,production_provider_enabled:false,N01_consumer_implemented:false,MAIN:0,Telegram:0,new_fresh_SENT:false,actual_ENTRY:false,full_project_complete:false};
-            const index='checkpoints/SABLIER_DOCUMENTED_KEYLESS_ACTUAL_QUALIFICATION_20261008.json';fs.writeFileSync(index,JSON.stringify(proof,null,2)+'\n');files.push(index);
+            const index='checkpoints/SABLIER_FINALIZED_HASH_LOCKUP_QUALIFICATION_20261008.json';fs.writeFileSync(index,JSON.stringify(proof,null,2)+'\n');files.push(index);
             const entries=[];for(const file of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync(file).toString('base64'),encoding:'base64'})).data;entries.push({path:file,mode:'100644',type:'blob',sha:b.sha});}
             const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data;
             const tree=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data;
