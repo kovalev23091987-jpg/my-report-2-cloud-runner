@@ -28,6 +28,7 @@ jobs:
           node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
           tar -xzf runtime/payload.tar.gz -C runtime
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          git fetch --no-tags --depth=1 origin b67841da3af3ee752b7a75087c34467a6d54c7bb
           git show b67841da3af3ee752b7a75087c34467a6d54c7bb:current-generation/files/src/htx-signed-tape.mjs > runtime/src/htx-signed-tape.baseline.mjs
       - name: Verify causal current flow preservation and existing exact source guards
         run: |
