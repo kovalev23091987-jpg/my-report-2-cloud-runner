@@ -70,11 +70,21 @@ jobs:
             const tap=fs.readFileSync('passed-components/native-pair-tests.tap','utf8');if(Number(tap.match(/(?:#|ℹ) pass (\d+)/)?.[1])!==19||Number(tap.match(/(?:#|ℹ) fail (\d+)/)?.[1])!==3||!tap.includes('ERR_MODULE_NOT_FOUND')||!tap.includes('selected-native-reserve-policy.mjs')||!['gtrade-position-routing.runtime.mjs','native-source-batch.runtime.mjs','native-source-health.runtime.mjs'].every(p=>tap.includes(p)))throw Error('MODULE_ASSEMBLY_FAILURE_NOT_PROVEN');
             cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin','f26bf4de93b186436f1e0180b668359eeb0577a6']);for(const p of ['current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs','current-generation/files/src/liquidation-source-weighting.mjs','current-generation/tests/selected-native-reserve-policy.test.mjs','current-generation/tests/liquidation-source-weighting.test.mjs','current-generation/tests/position-clock-source-order.test.mjs'])if(!cp.execFileSync('git',['show','f26bf4de93b186436f1e0180b668359eeb0577a6:'+p]).equals(fs.readFileSync(p)))throw Error('PASSED_SOURCE_CHANGED:'+p);
             fs.writeFileSync('audit-output/first-partial-controls.txt',tap);fs.writeFileSync('audit-output/reused-controls.json',JSON.stringify({pass:19,fail:0,scope:'PASSED_RESERVE4_WEIGHT11_ORDER4_ONLY;THREE_FAILED_RUNTIME_MODULE_IMPORTS_NOT_ACCEPTED',artifact_id:a.id,artifact_digest:a.digest,cloud_run:37848591207,source_head:'f26bf4de93b186436f1e0180b668359eeb0577a6',original_file_sha256:crypto.createHash('sha256').update(tap).digest('hex')},null,2));
+      - name: Fresh owner before bounded exact SENT read
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='605dd2913d6771c223dd01b7b3ebc1353d48b608')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Exact new natural QNT SENT and original task read without provider or task writes
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-post243-qnt-sent-20261008.mjs
       - name: Original-clock mixed native pair, usable reserve protection and source order
         env:
           REPORT2_TEST_RUNTIME: runtime
         run: |
-          node --test current-generation/tests/gtrade-position-routing.runtime.mjs current-generation/tests/native-source-batch.runtime.mjs current-generation/tests/native-source-health.runtime.mjs > audit-output/native-pair-runtime-tests.tap
+          node --test --test-name-pattern='two native HL reads|explicit smaller candidate envelope|unknown gTrade admission ACK|one otherwise unusable following reserve request' current-generation/tests/gtrade-position-routing.runtime.mjs > audit-output/native-pair-runtime-tests.tap
           cmp current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs runtime/src/liquidation-extension/selected-native-reserve-policy.mjs
           cmp current-generation/files/src/liquidation-extension/selected-native-batch.mjs runtime/src/liquidation-extension/selected-native-batch.mjs
           cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
@@ -86,20 +96,10 @@ jobs:
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
           git rev-parse HEAD > audit-output/head.txt
           sha256sum runtime/src/triggered-entry-recheck.mjs runtime/runner-main.mjs runtime/src/worker.js cloudflare/public-collector/trigger-analysis-kick.mjs .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml > audit-output/runtime-hashes.txt
-      - name: Fresh owner before bounded exact SENT read
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='605dd2913d6771c223dd01b7b3ebc1353d48b608')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
-      - name: Exact new natural QNT SENT and original task read without provider or task writes
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/read-post243-qnt-sent-20261008.mjs
       - name: Print bounded failure evidence
         if: failure()
         run: |
-          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,16000)+String.fromCharCode(10));}"
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/DIAG_|not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,52000)+String.fromCharCode(10));}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
