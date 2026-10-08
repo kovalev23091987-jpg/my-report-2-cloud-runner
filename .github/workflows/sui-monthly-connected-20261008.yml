@@ -28,8 +28,9 @@ jobs:
           mkdir -p runtime audit-output
           node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
           tar -xzf runtime/payload.tar.gz -C runtime
-          node current-generation/validate.mjs runtime > audit-output/validation.json
+          cp -a runtime baseline-runtime
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          node current-generation/validate.mjs baseline-runtime > audit-output/validation.json
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           cmp runtime/src/published-monthly-supply-schedule.mjs current-generation/files/src/published-monthly-supply-schedule.mjs
           cmp runtime/src/official-token-schedule.mjs current-generation/files/src/official-token-schedule.mjs
