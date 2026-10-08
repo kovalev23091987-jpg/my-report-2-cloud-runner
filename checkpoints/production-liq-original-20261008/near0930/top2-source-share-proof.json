@@ -1,0 +1,28 @@
+{
+  "schema": "TOP2_NATIVE_SOURCE_SHARE_COMPONENT_REPLAY_V1",
+  "scope": "CONTROLLED_HL_ACCOUNT_PAYLOADS_WITH_RETAINED_ACTUAL_GTRADE_CATALOG_AT_ITS_ORIGINAL_CLOCK_NOT_ACTUAL_MARKET_LEVEL_ACCEPTANCE",
+  "original_source_head": "f726ed08575bedd4240f7c98f566e5cee678c3a3",
+  "original_catalog_clock": 1791274654409,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "cases": [
+    {
+      "case": "BASELINE_FIRST_NATIVE_FIVE_SECOND_CATALOG_DENIED",
+      "first_accounts": 3,
+      "total_http": 5,
+      "second_status": "QUOTA_NOT_GRANTED:COMBINED_TOTAL_HTTP_BUDGET"
+    },
+    {
+      "case": "TWO_SLOT_COMPLETE_NATIVE_PAIR_RESERVED_AND_SECOND_REAL_CATALOG",
+      "first_accounts": 1,
+      "total_http": 4,
+      "second_status": "GTRADE_SYMBOL_UNSUPPORTED",
+      "retained_catalog_actual": true,
+      "first_account_payloads_controlled": true,
+      "new_second_levels": false,
+      "entry_authorized": false
+    }
+  ]
+}

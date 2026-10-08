@@ -1,0 +1,35 @@
+✔ verified collector is closed and explicitly snapshot-only (13.483362ms)
+✔ rejects hash (3.893887ms)
+✔ rejects schema (1.990288ms)
+✔ rejects generation (1.626954ms)
+✔ rejects future_received (2.522172ms)
+✔ rejects future_source (5.233435ms)
+✔ rejects incomplete_shards (3.120644ms)
+✔ rejects wrong_asset (2.812944ms)
+✔ rejects zero_price (3.171408ms)
+✔ rejects negative_age (3.411664ms)
+✔ internal gap is not accepted from endpoints alone (3.025426ms)
+✔ both historical SQL paths use indexed ranges (1.712508ms)
+✔ scan fallback retains twenty-minute sampling (1.663719ms)
+✔ raw row cap rejects truncated collector path (7.896278ms)
+✔ missing old early observation does not starve newer factual outcome (5.488074ms)
+✔ durable cursor cools retries then permits next sweep (2.619461ms)
+✔ new work is not held by retry cooldown (5.059655ms)
+✔ same-time ties advance by id and missing price remains null (1.81938ms)
+✔ entry queue advances without fabricating outcome (2.384429ms)
+✔ invalid timestamps do not query or advance queue (1.008027ms)
+✔ queue turn alternates durably even with identical scan times and adapter restart (1.225925ms)
+✔ delayed maintenance never starves a queue through timestamp parity (1.098621ms)
+✔ admission blocks before requests boundary SQL (0.959695ms)
+✔ admission blocks before rows_read boundary SQL (0.306955ms)
+✔ admission blocks before rows_written boundary SQL (0.120176ms)
+✔ admission blocks before unknown_ops boundary SQL (0.099601ms)
+✔ history read reserve is admitted before consumption (0.276462ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.323444

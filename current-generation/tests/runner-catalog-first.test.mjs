@@ -54,6 +54,6 @@ test('supported HTX alt reserves sample requests only after exact catalog match'
  assert.deepEqual(admitted[1].requests,{LIQFLOW:1});
  assert.equal(extension.summary().reserved_http,2); // Empty discovery creates no imaginary native quota reservation.
  assert.equal(urls.length,2);assert.equal(admitted.reduce((sum,row)=>sum+row.max_requests,0),2);
- assert.equal(extension.estimateHttpCost({run_id:'run-2',native_symbol:'FIL'}),4);
+ assert.equal(extension.estimateHttpCost({run_id:'run-2',native_symbol:'FIL'}),2);
  assert.equal(extension.estimateHttpCost({run_id:'run-2',native_symbol:'OTHER'}),0);
 });

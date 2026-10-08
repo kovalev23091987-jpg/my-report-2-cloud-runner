@@ -7,6 +7,7 @@ import {gunzipSync} from 'node:zlib';
 import crypto from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 const root=path.resolve(process.env.REPORT2_TEST_RUNTIME||'current-generation/files');
+const {RemoteD1Database}=await import(process.env.REPORT2_TEST_RUNTIME?pathToFileURL(root+'/report2-d1-adapter.mjs'):new URL('../../runner/report2-d1-adapter.mjs',import.meta.url));
 const {verifyTriggeredRecheck,admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget}=await import(pathToFileURL(root+'/src/triggered-entry-recheck.mjs'));
 const {claimDueRecheck}=await import(pathToFileURL(root+'/src/recheck-scheduler.mjs'));
 const {compareOrdinaryDeepCandidates}=await import(pathToFileURL(root+'/src/deep-candidate-order.mjs'));
@@ -30,19 +31,36 @@ class D1{
  CREATE TABLE v3_recheck_task_shadow(task_id TEXT PRIMARY KEY,publication_id TEXT,contract_code TEXT,direction TEXT,wave_id TEXT,snapshot_id TEXT,run_id TEXT,due_ts INTEGER,expires_ts INTEGER,state TEXT,attempt_count INTEGER,lease_owner TEXT,lease_started_ts INTEGER,lease_expires_ts INTEGER,last_result TEXT,created_ts INTEGER,updated_ts INTEGER);
  CREATE INDEX idx_due ON v3_recheck_task_shadow(state,due_ts,expires_ts);
  CREATE TABLE canonical_publication_shadow(publication_id TEXT PRIMARY KEY,contract_code TEXT,direction TEXT,wave_id TEXT,run_id TEXT,snapshot_id TEXT,observed_ts INTEGER,analytical_fingerprint TEXT,canonical_json TEXT,actionability_status TEXT);
- CREATE TABLE v3_dispatch_publication_binding_shadow(idempotency_key TEXT PRIMARY KEY,publication_id TEXT,contract_code TEXT,direction TEXT,wave_id TEXT,run_id TEXT,snapshot_id TEXT,analytical_fingerprint TEXT,lifecycle_event TEXT,rules_version TEXT);
+ CREATE TABLE v3_dispatch_publication_binding_shadow(idempotency_key TEXT PRIMARY KEY,publication_id TEXT,contract_code TEXT,direction TEXT,wave_id TEXT,run_id TEXT,snapshot_id TEXT,analytical_fingerprint TEXT,lifecycle_event TEXT,rules_version TEXT,observed_ts INTEGER);
  CREATE TABLE v3_telegram_dispatch_shadow(idempotency_key TEXT PRIMARY KEY,state TEXT,contract TEXT,direction TEXT,wave_id TEXT,telegram_message_id TEXT);
  CREATE TABLE v3_user_lifecycle_shadow(contract TEXT,direction TEXT,wave_id TEXT,rules_version TEXT,status TEXT,observation_ts INTEGER,valid_until_ts INTEGER);
  `);}
  prepare(sql){const db=this,statement=args=>({bind:(...a)=>statement(a),async run(){const r=db.sql.prepare(sql).run(...args);return {meta:{changes:r.changes}};},async first(){return db.sql.prepare(sql).get(...args)||null;},async all(){return {results:db.sql.prepare(sql).all(...args)};}});return statement([]);}
  seed(r){const fields=['task_id','publication_id','contract_code','direction','wave_id','snapshot_id','run_id','due_ts','expires_ts','state','attempt_count','last_result','created_ts','updated_ts'];this.sql.prepare('INSERT INTO v3_recheck_task_shadow('+fields.join(',')+') VALUES('+fields.map(()=>'?').join(',')+')').run(...fields.map(k=>r[k]));
   const ca=JSON.parse(r.canonical_json);this.sql.prepare('INSERT INTO canonical_publication_shadow VALUES(?,?,?,?,?,?,?,?,?,?)').run(r.publication_id,r.contract_code,r.direction,r.wave_id,r.run_id,r.snapshot_id,ca.observed_ts,r.analytical_fingerprint,r.canonical_json,'ACTIONABLE');
-  const key='IDEMP:'+r.task_id;this.sql.prepare('INSERT INTO v3_dispatch_publication_binding_shadow VALUES(?,?,?,?,?,?,?,?,?,?)').run(key,r.publication_id,r.contract_code,r.direction,r.wave_id,r.run_id,r.snapshot_id,r.analytical_fingerprint,'OBSERVE','RULE');
+  const key='IDEMP:'+r.task_id;this.sql.prepare('INSERT INTO v3_dispatch_publication_binding_shadow VALUES(?,?,?,?,?,?,?,?,?,?,?)').run(key,r.publication_id,r.contract_code,r.direction,r.wave_id,r.run_id,r.snapshot_id,r.analytical_fingerprint,'OBSERVE','RULE',ca.observed_ts);
   this.sql.prepare('INSERT INTO v3_telegram_dispatch_shadow VALUES(?,?,?,?,?,?)').run(key,'SENT',r.contract_code,r.direction,r.wave_id,r.telegram_message_id);
   this.sql.prepare('INSERT INTO v3_user_lifecycle_shadow VALUES(?,?,?,?,?,?,?)').run(r.contract_code,r.direction,r.wave_id,'RULE','OBSERVE',ca.observed_ts,r.expires_ts);
  }
 }
+function retainedAdapter(db){
+ db.sql.exec('CREATE VIEW report2_canonical_retained_v1 AS SELECT * FROM canonical_publication_shadow');
+ const requests=[];
+ const remote=new RemoteD1Database('https://controlled.invalid/d1','CONTROLLED_ONLY',{fetchImpl:async(_,init)=>{
+  const p=JSON.parse(init.body);requests.push(p);const stmt=db.sql.prepare(p.sql);let result,rowsWritten=0;
+  if(p.op==='run'){const r=stmt.run(...p.params);rowsWritten=Number(r.changes);result={meta:{changes:rowsWritten}};}
+  else if(p.op==='first')result=stmt.get(...p.params)||null;
+  else if(p.op==='all')result={results:stmt.all(...p.params)};
+  else throw Error('UNEXPECTED_BRIDGE_OPERATION');
+  return new Response(JSON.stringify({ok:true,result,usage:{measured:true,rows_read:1,rows_written:rowsWritten}}));
+ }});
+ remote.enableRetainedHistory({max_fetches:0,fetch_impl:async()=>{throw Error('NO_ARCHIVED_OR_LIVE_SOURCE_REQUEST');}});
+ return {remote,requests};
+}
 const admit=(db,now=NOW)=>admitTriggeredRecheck(db,{actor:'GITHUB_ACTIONS',now_ts:now,admit:()=>({allowed:true})});
+test('production retained-history adapter accepts empty NOT_DUE trigger admission without source requests',async()=>{const db=new D1(),{remote,requests}=retainedAdapter(db);assert.equal((await admit(remote)).status,'NO_FRESH_EXACT_SENT_TRIGGER');assert.equal(requests.length,3);assert.equal(requests.some(p=>/report2_canonical_retained_v1/.test(p.sql)),false);caseDone('PRODUCTION_RETAINED_ADAPTER_EMPTY_NOT_DUE');});
+test('production retained-history adapter separates mutable JSON selection from exact canonical restoration',async()=>{const db=new D1();db.seed(task());const {remote,requests}=retainedAdapter(db),r=await admit(remote);assert.equal(r.claimed,true);assert.equal(r.task.publication_id,original.publication_id);const reads=requests.filter(p=>/report2_canonical_retained_v1/.test(p.sql));assert.equal(reads.length,1);assert.doesNotMatch(reads[0].sql,/json_\w+\s*\(/i);assert.equal(remote.usageSnapshot().unknown_ops,0);caseDone('PRODUCTION_RETAINED_ADAPTER_EXACT_SENT_SEPARATE_READER');});
+test('retained history JSON SQL guard still rejects the original mixed query and unsafe canonical parsing',async()=>{const db=new D1(),{remote,requests}=retainedAdapter(db);for(const sql of ["SELECT t.* FROM v3_recheck_task_shadow t JOIN canonical_publication_shadow p ON p.publication_id=t.publication_id WHERE json_valid(t.last_result)","SELECT json_extract(canonical_json,'$.state') FROM canonical_publication_shadow"]){await assert.rejects(remote.prepare(sql).all(),/HISTORY_JSON_SQL_REQUIRES_EXPLICIT_READER/);}assert.equal(requests.length,0);caseDone('ORIGINAL_PRODUCTION_FAILURE_AND_ARCHIVE_GUARD_REPRODUCED');});
 test('original SENT155 has a reachable analysis window before the original30-minute TTL',()=>{const r=task();assert.equal(verifyTriggeredRecheck(r,{now_ts:NOW}).eligible,true);assert.equal(JSON.stringify(c),originalBytes);assert.equal(r.expires_ts,c.trigger.expires_ts);caseDone('ORIGINAL_BOME_SENT155_CLOCKS_AND_FINGERPRINT_PRESERVED_CONTROLLED_TRIGGER');});
 test('receipt cannot authorize entry, execution or invented settlement',()=>{for(const k of ['entry_authorized','full_analysis_completed','settlement_confirmed'])assert.equal(verifyTriggeredRecheck(mutate(task(),k,true),{now_ts:NOW}).eligible,false);caseDone('PRICE_RECEIPT_NEVER_ENTRY');});
 test('changed identity, canonical payload, absent SENT id and stale future receipts cannot enter the burst lane',()=>{for(const r of [{...task(),telegram_message_id:null},mutate(task(),'snapshot_id','FOREIGN'),mutate(task(),'analytical_fingerprint','0'.repeat(64)),mutate(task(),'source_ts',NOW+1),mutate(task(),'checked_ts',NOW-180001),{...task(),canonical_json:JSON.stringify({...c,direction:'SHORT'})}])assert.equal(verifyTriggeredRecheck(r,{now_ts:NOW}).eligible,false);caseDone('IDENTITY_FRESHNESS_GUARDS');});
@@ -55,7 +73,7 @@ test('the actual runner NOT_DUE branch continues into a fresh exact full recheck
  const runner=fs.readFileSync(root+'/runner-main.mjs','utf8'),start=runner.indexOf("  if(source==='schedule'){",runner.indexOf("console.log('TWO_CANDIDATE_EXECUTION_BUDGET'")),end=runner.indexOf('  if(manualCommandClaim.claimed&&',start);
  const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
  const call=new AsyncFunction('source','env','preflight','manualCommandActor','started','TWO_CANDIDATE_PLAN','actorOwnsPeriodicAnalytics','claimMaintenanceCadence','completeMaintenanceCadence','releaseAnalyticsLease','console','admitTriggeredRecheck','loadDailyUsageAggregate','evaluateDailyReservationBudget','envNumber','TRIGGERED_RECHECK_D1_RESERVATION','proveTriggeredRecheckD1Budget','reserveRunBudget','finalizeRunUsage','sha',runner.slice(start,end)+"\nreturn 'ANALYTICS_ADMITTED';");
- const env={DATA_DB:db,REPORT2_DEEP_RUNTIME_OPTIONS:{execution_runtime:'GITHUB_ACTIONS_NODE',max_per_run:2}};let releaseCount=0,budgetCount=0,reserved=0,finalized=0;
+ const env={DATA_DB:retainedAdapter(db).remote,REPORT2_DEEP_RUNTIME_OPTIONS:{execution_runtime:'GITHUB_ACTIONS_NODE',max_per_run:2}};let releaseCount=0,budgetCount=0,reserved=0,finalized=0;
  const result=await call('schedule',env,{actor:'GITHUB_ACTIONS'},'EXACT_NODE',NOW,{scheduled_interval_minutes:40,d1_run_cap:{rows_read:54000,rows_written:840}},scheduler.actorOwnsPeriodicAnalytics,scheduler.claimMaintenanceCadence,scheduler.completeMaintenanceCadence,async()=>{releaseCount++;return {finished:true};},{log(){}},admitTriggeredRecheck,async()=>({}),args=>{budgetCount++;assert.deepEqual(args.nextReservation,{rows_read:55500,rows_written:856});return {allowed:true};},(_,v)=>v,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget,async(_,args)=>{reserved++;assert.deepEqual(args.reservation,TRIGGERED_RECHECK_D1_RESERVATION);},async()=>{finalized++;},'CONTROLLED_RUNTIME_HASH');
  assert.equal(result,'ANALYTICS_ADMITTED');assert.equal(releaseCount,0);assert.equal(budgetCount,1);assert.equal(reserved,1);assert.equal(finalized,1);assert.equal(env.REPORT2_TRIGGERED_RECHECK_TASK_ID,task().task_id);assert.equal(env.REPORT2_DEEP_RUNTIME_OPTIONS.max_per_run,1);assert.equal(db.sql.prepare('SELECT last_success_ts FROM v3_maintenance_cadence_shadow').get().last_success_ts,prior);caseDone('ACTUAL_RUNNER_NOT_DUE_BRANCH_CONNECTED');
 });

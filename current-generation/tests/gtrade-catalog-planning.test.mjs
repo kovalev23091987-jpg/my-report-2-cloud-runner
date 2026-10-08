@@ -42,6 +42,6 @@ test('a proven weekly native route is checked before a catalog-only gTrade route
  }});
  const first={...query('BR'),deep_started_ts:T,max_http_for_candidate:5,allowed_source_ids:['GTRADE_NATIVE']};await service.collect(first);
  const native=await service.collect({...first,...query('FIL'),max_http_for_candidate:3,allowed_source_ids:['GTRADE_NATIVE','HYPERLIQUID_NATIVE'],proven_level_source_ids:['HYPERLIQUID_NATIVE']});
- assert.equal(native.schema,'NATIVE_LIQUIDATION_ACQUISITION_V1');assert.equal(native.accounts[0].state.time,T);assert.equal(urls.length,4);assert.equal(urls.some(u=>u.endsWith('/open-trades')),false);
- const profile=service.summary().source_weighting.profile;assert.equal(profile[0].source_id,'HYPERLIQUID_NATIVE');assert.equal(profile[0].coverage,'EXACT_ROUTE_PROVEN');assert.equal(service.summary().shared_budget.actual_http,4);
+ assert.equal(native.schema,'NATIVE_LIQUIDATION_ACQUISITION_V1');assert.equal(native.accounts[0].state.time,T);assert.equal(urls.length,3);assert.equal(urls.some(u=>u.endsWith('/open-trades')),false);
+ const profile=service.summary().source_weighting.profile;assert.equal(profile[0].source_id,'HYPERLIQUID_NATIVE');assert.equal(profile[0].coverage,'EXACT_ROUTE_PROVEN');assert.equal(service.summary().shared_budget.actual_http,3);
 });
