@@ -2,14 +2,8 @@
   "schema": "my-report-2-manual-request-v1",
   "authorized": true,
   "generation": "CURRENT",
-  "command": "Мой отчёт 2 — проверка NEAR по текущим источникам",
+  "command": "Найди ликвидации по NEAR",
   "coin_contract": "NEAR-USDT",
-  "nonce": "owner-near0524-current-source-gap-pr235-1791431259781",
-  "purpose": "Owner requested correction of actual NEAR05:24 missing liquidation levels. One bounded current full-chain read after PR235, through existing manual quota and source/D1 admission, no quota reset. Existing push path keeps V3 Telegram network disabled; no fabricated or replayed historical message. Verify exact new native state, original source clocks, current canonical report and remaining useful-level gap.",
-  "dispatch_receipt": {
-    "previous_push": 37724411124,
-    "status": "NOT_ENQUEUED_ACTIONS_PUSH_PAYLOAD_OMITS_FILE_LIST",
-    "no_manual_reservation_created": true,
-    "explicit_enqueue_marker": true
-  }
+  "nonce": "owner-near-native-current-pr236-1791432388760",
+  "purpose": "One bounded current liquidation-only source read for the owner-reported missing NEAR levels after PR235/236. Prior strict MANUAL_COIN control37724477546 used CACHE_ONLY and made zero native HTTP; this existing liquidation-only command resolves that missing fact with existing8/day manual admission, provider and source caps. No quota resets, no Telegram push, no historical clock refresh or fabricated levels."
 }
