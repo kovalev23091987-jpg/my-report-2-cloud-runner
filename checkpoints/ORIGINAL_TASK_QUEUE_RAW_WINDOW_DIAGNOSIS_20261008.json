@@ -1,0 +1,290 @@
+{
+  "schema": "BOUNDED_POST244_TASK_AND_ORIGINAL_RAW_WINDOW_DIAGNOSIS_20261008_V1",
+  "head": "c19b643f913f7d5b2c0f9093f166b2242dbc3d3d",
+  "cloud_run": "37857536331",
+  "read_ts": 1791500796801,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "cache_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "scope": "READ_ONLY_CURRENT_TASK_QUEUE_AND_RETAINED_RAW_MINUTES;NOT_REPUBLICATION_OR_TTL_RENEWAL",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 83,
+      "reserved_rows_read": 1497500,
+      "reserved_rows_written": 28620,
+      "measured_rows_read": 836827,
+      "measured_rows_written": 13094,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1498500,
+      "rows_written": 28636
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "original_FIL": {
+    "source_cloud_run": 37853236004,
+    "source_head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+    "run_id": "1791498274068-1791498286190",
+    "snapshot_id": "S392:FIL-USDT:1791498338812",
+    "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+    "fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+    "trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": "<=",
+      "value": 1.0619,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791500138812,
+      "next_recheck_ts": 1791498638812,
+      "cancel_condition": "price>1.076",
+      "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+    }
+  },
+  "FIL_task": {
+    "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
+    "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+    "contract_code": "FIL-USDT",
+    "direction": "SHORT",
+    "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+    "snapshot_id": "S392:FIL-USDT:1791498338812",
+    "run_id": "1791498274068-1791498286190",
+    "due_ts": 1791498638812,
+    "expires_ts": 1791500138812,
+    "state": "EXPIRED",
+    "attempt_count": 0,
+    "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791500403712,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791500400000,\"task_id\":\"RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b\",\"publication_id\":\"PUB:21ec7bbeac13b76269a011e202cffaa929d4c252\",\"run_id\":\"1791498274068-1791498286190\",\"snapshot_id\":\"S392:FIL-USDT:1791498338812\",\"analytical_fingerprint\":\"aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4\",\"telegram_message_id\":\"164\"}",
+    "created_ts": 1791498387674,
+    "updated_ts": 1791500403712
+  },
+  "current_exact_collector_queue": {
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.8719
+      },
+      "duration": 0.8719,
+      "changes": 0,
+      "last_row_id": 1903,
+      "changed_db": false,
+      "size_after": 411901952,
+      "rows_read": 2,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "results": []
+  },
+  "queue_identity_checks": [],
+  "raw_windows": [
+    {
+      "contract": "ZEC-USDT",
+      "snapshot_id": "S392:ZEC-USDT:1791498382025",
+      "original_decision_ts": 1791498382025,
+      "cache_observed_ts": 1791498352128,
+      "cache_expires_ts": 1791606352128,
+      "ring_observed_ts": 1791498352128,
+      "original_report_input_reconstruction_proven": true,
+      "ring_minutes": 971,
+      "original_window_start_ts": 1791483840000,
+      "original_window_end_ts": 1791498240000,
+      "retained_window_minutes": 188,
+      "retained_and_known_by_original_decision_minutes": 188,
+      "missing_or_not_proven_original_minutes": [
+        1791483840000,
+        1791483900000,
+        1791483960000,
+        1791484020000,
+        1791484080000,
+        1791484140000,
+        1791484200000,
+        1791484260000,
+        1791484320000,
+        1791484380000,
+        1791484440000,
+        1791484500000,
+        1791484560000,
+        1791484620000,
+        1791484680000,
+        1791484740000,
+        1791484800000,
+        1791484860000,
+        1791484920000,
+        1791484980000,
+        1791485040000,
+        1791485100000,
+        1791485160000,
+        1791485220000,
+        1791485280000,
+        1791485340000,
+        1791485400000,
+        1791485460000,
+        1791485520000,
+        1791485580000,
+        1791485640000,
+        1791485700000,
+        1791485760000,
+        1791485880000,
+        1791485940000,
+        1791486000000,
+        1791486060000,
+        1791486120000,
+        1791486180000,
+        1791486240000,
+        1791486300000,
+        1791486360000,
+        1791486420000,
+        1791486480000,
+        1791486540000,
+        1791486600000,
+        1791486660000,
+        1791486720000,
+        1791486780000,
+        1791486840000,
+        1791486900000,
+        1791486960000
+      ],
+      "raw_file": "ZEC-USDT-retained-ring.json.gz",
+      "gzip_sha256": "e55e419c5d95e09d656786600419138bed89b35dde15328eb90841fe9c1c7caa",
+      "diagnostic_only": true,
+      "mutable_cache_cannot_prove_deleted_or_overwritten_original_rows": true,
+      "current_freshness_not_claimed": true
+    },
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "original_decision_ts": 1791498338812,
+      "cache_observed_ts": 1791498305977,
+      "cache_expires_ts": 1791606305977,
+      "ring_observed_ts": 1791498305977,
+      "original_report_input_reconstruction_proven": true,
+      "ring_minutes": 898,
+      "original_window_start_ts": 1791483840000,
+      "original_window_end_ts": 1791498240000,
+      "retained_window_minutes": 240,
+      "retained_and_known_by_original_decision_minutes": 240,
+      "missing_or_not_proven_original_minutes": [],
+      "raw_file": "FIL-USDT-retained-ring.json.gz",
+      "gzip_sha256": "c67a169eeead4b879eb2412c3f7064ecdad59235ebb30d3e55dfd6e867904f99",
+      "diagnostic_only": true,
+      "mutable_cache_cannot_prove_deleted_or_overwritten_original_rows": true,
+      "current_freshness_not_claimed": true
+    }
+  ],
+  "poll": {
+    "day_key": "2026-10-08",
+    "last_bucket": 1791500700000,
+    "polls": 32
+  },
+  "kicks": {
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1592
+      },
+      "duration": 0.1592,
+      "changes": 0,
+      "last_row_id": 1903,
+      "changed_db": false,
+      "size_after": 411901952,
+      "rows_read": 0,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "results": []
+  },
+  "status": "BOUNDED_READ_ONLY_ORIGINAL_WINDOW_DIAGNOSIS_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ORIGINAL_WINDOW_DIAG:37857536331:1",
+    "source_run_id": "37857536331",
+    "measured_rows_read": 90,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 10,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 10,
+    "rows_read": 91,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 84,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_trigger_kick_poll": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
