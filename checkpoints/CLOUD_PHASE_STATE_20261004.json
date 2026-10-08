@@ -173,8 +173,8 @@
   "lease": {
     "owner": "HTX:20261008:1791430073069:trigger-history-reader-fix",
     "acquired_ts": 1791430073069,
-    "expires_ts": 1791432773069,
-    "scope": "OWNER_AUTHORIZED_PRODUCTION_TRIGGER_RECHECK_HISTORY_JSON_GUARD_FIX"
+    "expires_ts": 1791433959781,
+    "scope": "OWNER_AUTHORIZED_PRODUCTION_ENTRY_RETAINED_READER_AND_NEAR0524_NATIVE_ROUTE_REPAIR"
   },
   "next_action": "Continue full register from saved proofs. Priority: actual triggered recheck/full entry-gate trace; then N01/N02/N05/N12/N15 and mature prospective history/outcomes. No repeated original SENT155 read or forced Telegram.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
@@ -665,7 +665,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "TRIGGER_RECHECK_PRODUCTION_GUARD_FIX_IN_PROGRESS",
+  "current_execution_block": "POST_PR235_ONE_BOUNDED_CURRENT_NEAR_FULL_CHAIN_CONTROL",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -2151,10 +2151,10 @@
     "actual_ENTRY_verified": false,
     "remaining_action": "Read one naturally admitted fresh trigger-recheck source→full gates→canonical→dispatch receipt when it exists. Preserve source timestamps and record the exact blocker if not ENTRY; do not force an entry or repeat unchanged probes.",
     "production_runtime_gap": {
-      "status": "IN_PROGRESS",
+      "status": "FIX_MERGED_PENDING_REAL_SCHEDULED_NOT_DUE",
       "error": "HISTORY_JSON_SQL_REQUIRES_EXPLICIT_READER",
-      "source_workflow_run": 37720493032,
-      "source_head": "a60d6c25836b1f8761d17099ea407867d482e5e7",
+      "fixed_pr": 235,
+      "cloud_run": 37724161034,
       "full_project_complete": false
     }
   },
@@ -2222,5 +2222,13 @@
       "Controlled strict ENTRY reachability is not a delivered production ENTRY or empirical profitability acceptance."
     ]
   },
-  "current_release_new_fresh_SENT": false
+  "current_release_new_fresh_SENT": false,
+  "latest_production_entry_liquidation_release": {
+    "PR": 235,
+    "main": "e00d66acd47b51aff1a7c4c55d0e44f62ff718a0",
+    "proof": "checkpoints/PRODUCTION_ENTRY_LIQ_REPAIR_CONNECTED_20261008.json",
+    "actual_ENTRY": false,
+    "new_relevant_liquidation_SENT": false,
+    "full_project_complete": false
+  }
 }
