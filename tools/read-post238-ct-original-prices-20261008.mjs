@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
+import {readMarketHistoryForContract} from '../current-generation/files/src/market-history-reader.mjs';
+const original={"cloud_run":37809017157,"head":"9ae51c941a6056697ca7e89ce51af0d7962139b3","contract":"CT-USDT","snapshot_id":"S392:CT-USDT:1791476996630","publication_id":"PUB:403ad12d7e3f79bc2393349c764011930dca6dad","analytical_fingerprint":"d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553","observed_ts":1791476996630,"trigger":{"trigger_type":"PRICE_CONFIRMATION","metric":"price","operator":"<=","value":0.32577,"unit":"USDT","timeframe":"5m","expires_ts":1791478796630,"next_recheck_ts":1791477296630,"cancel_condition":"price>0.35812","level_origin":"VERIFIED_CLOSED_CANDLE_RANGE"},"exact_sent_message_id":"161","exact_sent_read_cloud_run":37829762621};
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),readTs=Date.now(),reservation={rows_read:1000,rows_written:20},id='POST238_CT_ORIGINAL_PRICES:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
+const proof={schema:'POST238_CT_ORIGINAL_SENT_PRICE_WINDOW_20261008_V1',reader_head:process.env.GITHUB_SHA,reader_cloud_run:process.env.GITHUB_RUN_ID,read_ts:readTs,original,sourceHTTP:0,MAIN:0,Telegram:0,task_writes:0,canonical_writes:0,source_clocks_refreshed:false,actual_ENTRY:false,full_project_complete:false};
+proof.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,readTs),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
+if(proof.admission.allowed){await reserveRunBudget(db,{reservationId:id,now:readTs,reservation});try{
+ const history=await readMarketHistoryForContract({db,contract:original.contract,now_ts:1791479100000,hours:1});
+ proof.history=history;
+ proof.condition_checks=history.series.filter(r=>r.ts_bucket>=original.trigger.next_recheck_ts&&r.ts_bucket<=original.trigger.expires_ts).map(r=>({bucket:r.ts_bucket,price:r.price,original_row:r,price_trigger_reached:Number.isFinite(r.price)&&r.price<=original.trigger.value,cancelled:Number.isFinite(r.price)&&r.price>0.35812}));
+ proof.price_trigger_reached=proof.condition_checks.some(r=>r.price_trigger_reached&&!r.cancelled);
+ proof.intraminute_price_path_proven=false;proof.historical_collector_receipts_reconstructed=false;
+ const usage=db.usageSnapshot();if(usage.unknown_ops||usage.rows_read>950||usage.rows_written>18||usage.requests>14)throw Error('BOUNDED_PRICE_READ_EXCEEDED');
+ proof.status=history.status==='CLOSED'&&history.source==='REPORT2_MARKET_SNAPSHOT_BATCH_V1'?'ACTUAL_ORIGINAL_HASH_VERIFIED_PRICE_WINDOW_CLOSED':'ORIGINAL_WINDOW_PARTIAL_OR_UNAVAILABLE';
+}catch(e){proof.status='ORIGINAL_WINDOW_READ_FAILED';proof.error_code=String(e?.code??e?.name??'READ_ERROR');}finally{proof.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}}else proof.status='D1_ADMISSION_BLOCKED';
+proof.d1_usage=db.usageSnapshot();fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/original-ct-price-window.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify({status:proof.status,price_trigger_reached:proof.price_trigger_reached,conditions:proof.condition_checks?.map(r=>({bucket:r.bucket,price:r.price,price_trigger_reached:r.price_trigger_reached,cancelled:r.cancelled})),sourceHTTP:0,MAIN:0,Telegram:0,D1:proof.d1_usage}));
