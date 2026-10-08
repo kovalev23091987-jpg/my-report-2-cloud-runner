@@ -94,12 +94,16 @@ export function runtimeLiquidationCollectionAdmission(database,{contract,now}={}
  const proven=futuresLiquidationAdmission(database,{contract,now});
  if(!validateFuturesCoverageDatabase(database)||!Number.isSafeInteger(now)||now<database.updated_ts)return proven;
  const asset=database.assets.find(a=>a.analysis_contract===contract);if(!asset)return proven;
- const additional=['GTRADE_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL'].filter(id=>{
+ // An exact supported market with an empty bounded account sample is still
+ // searchable. Only fresh native positions can supply levels; a previous empty
+ // sample is neither an unsupported market nor a week-long ban on discovery.
+ const additional=['HYPERLIQUID_NATIVE','GTRADE_NATIVE','LIGHTER_NATIVE','GMX_NATIVE','COINLOBSTER_FUTURE_MODEL'].filter(id=>{
   const r=asset.source_checks[id];return r.status==='NO_REAL_NUMERIC_LEVELS'&&r.checked_ts<=now&&now-r.checked_ts<WEEK&&/^[a-f0-9]{64}$/.test(r.proof_sha256||'');
  });
  if(!additional.length)return proven;
  return {...proven,status:proven.eligible?'PROVEN_LEVEL_ROUTE_PLUS_ADDITIONAL_CONTEXT_CHECKS':'BOUNDED_ADDITIONAL_CONTEXT_CHECK_ALLOWED',eligible:true,contract,
   source_ids:[...new Set([...proven.source_ids,...additional])],proven_level_source_ids:proven.source_ids,additional_context_check_source_ids:additional,
+  structural_market_source_ids:additional.filter(id=>id==='HYPERLIQUID_NATIVE'),
   coverage_scope:'ADDITIONAL_ROUTE_CHECK_PERMISSION_IS_NOT_VERIFIED_LEVEL_COVERAGE',fresh_live_levels_confirmed:false,
   receipt_only_context_score_eligible:false,receipt_only_context_target_eligible:false,leaders_may_be_replaced:false};
 }

@@ -14,6 +14,7 @@ import {bindGTradeAcquisition,verifyMultiLiquidationAcquisition} from './gtrade-
 import {bindScopedProviderAcquisition} from './scoped-provider-runtime-bridge.mjs';
 import {normalizeNativeHL} from './providers.mjs';
 import {createDydxRuntimeCollector,verifyDydxSourceState} from './dydx-runtime-collector.mjs';
+import {LIQUIDATION_PRESENTATION_CUTOVER,LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT} from '../canonical-display.mjs';
 const require=createRequire(import.meta.url);
 export const PINNED_GTRADE_SDK_VERSION='1.8.10';
 function defaultSdkLoader(){return{version:require('@gainsnetwork/sdk/package.json').version,sdk:require('@gainsnetwork/sdk')};}
@@ -30,16 +31,17 @@ export function classifyOperationalSourceOutcome({status,result=false,role_usabl
 // This preview does not capture maps or manufacture a report/publication identity.
 export function acquisitionHasFreshLevels(raw,{contract,run_id,observed_ts}={}){
  try{
+  const relevant=z=>observed_ts<LIQUIDATION_PRESENTATION_CUTOVER||Number.isFinite(z.distance_pct)&&Math.abs(z.distance_pct)<=LIQUIDATION_PRESENTATION_MAX_DISTANCE_PCT;
   if(raw?.contract!==contract||raw?.run_id!==run_id||!Number.isSafeInteger(observed_ts))return false;
   if(raw.schema==='NATIVE_LIQUIDATION_ACQUISITION_V1'){
    if(!verifyAcquisition(raw)||raw.collection_completed_ts>observed_ts||observed_ts-raw.collection_completed_ts>120000)return false;
    const receipt=normalizeNativeHL({accounts:raw.accounts},{symbol:raw.native_symbol,route_symbol:contract.replace(/-USDT$/,''),run_id,snapshot_id:'ROLE_HEALTH_ONLY',as_of_ms:observed_ts,received_at_ms:raw.collection_completed_ts,max_age_ms:120000});
-   return receipt.usable_for_context===true&&receipt.zones.some(z=>z.notional>0&&((z.liquidated_side==='LONG'&&z.distance_pct<0)||(z.liquidated_side==='SHORT'&&z.distance_pct>0)));
+   return receipt.usable_for_context===true&&receipt.zones.some(z=>relevant(z)&&z.notional>0&&((z.liquidated_side==='LONG'&&z.distance_pct<0)||(z.liquidated_side==='SHORT'&&z.distance_pct>0)));
   }
   if(raw.schema==='MULTI_LIQUIDATION_ACQUISITION_V1')return verifyMultiLiquidationAcquisition(raw)&&[raw.hyperliquid,raw.gtrade,...(raw.scoped||[])].filter(Boolean).some(item=>acquisitionHasFreshLevels(item,{contract,run_id,observed_ts}));
   const identity={contract,run_id,snapshot_id:'ROLE_HEALTH_ONLY',observed_ts,direction:null};
   const bound=raw.schema==='SCOPED_PROVIDER_LIQUIDATION_ACQUISITION_V1'?bindScopedProviderAcquisition(raw,identity):raw.schema==='GTRADE_LIQUIDATION_ACQUISITION_V1'?bindGTradeAcquisition(raw,identity):null;
-  return bound?.status==='USABLE_SCOPED_NATIVE_CONTEXT'&&[...(bound.above||[]),...(bound.below||[])].some(z=>z.notional>0&&((z.side==='LONG'&&z.distance_pct<0)||(z.side==='SHORT'&&z.distance_pct>0)||z.liquidated_side==='LONG'&&z.distance_pct<0||z.liquidated_side==='SHORT'&&z.distance_pct>0));
+  return bound?.status==='USABLE_SCOPED_NATIVE_CONTEXT'&&[...(bound.above||[]),...(bound.below||[])].some(z=>relevant(z)&&z.notional>0&&((z.side==='LONG'&&z.distance_pct<0)||(z.side==='SHORT'&&z.distance_pct>0)||z.liquidated_side==='LONG'&&z.distance_pct<0||z.liquidated_side==='SHORT'&&z.distance_pct>0));
  }catch{return false;}
 }
 // This factory is the one called by generated runner code. OFF makes zero SDK,
