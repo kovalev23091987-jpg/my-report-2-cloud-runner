@@ -524,8 +524,11 @@ async function main() {
   cleanupClaimedAnalyticsLease=releaseAnalyticsLease;
   console.log('ANALYTICS_FENCING_LEASE',JSON.stringify(analyticsLease));
   const requestedSource=source,manualCommandActor=`${preflight.actor}:${started}:${sha.slice(0,12)}`;
+  const triggerOnly=envText('REPORT2_TRIGGER_ONLY_RUN',{required:false})==='1';
+  const triggerKickTaskId=envText('REPORT2_TRIGGER_KICK_TASK_ID',{required:false});
+  if(triggerOnly&&(requestedSource!=='schedule'||!triggerKickTaskId))throw new Error('EXACT_TRIGGER_KICK_TASK_REQUIRED');
   let manualCommandId=envText('REPORT2_COMMAND_ID',{required:false});
-  let manualCommandClaim=requestedSource==='schedule'
+  let manualCommandClaim=triggerOnly?{claimed:false,status:'TRIGGER_KICK_DOES_NOT_RECOVER_MANUAL_COMMAND'}:requestedSource==='schedule'
     ?await claimNextCommand(env.DATA_DB,{actor:manualCommandActor,generation,now:started})
     :manualCommandId?await claimCommand(env.DATA_DB,{command_id:manualCommandId,actor:manualCommandActor,now:started}):{claimed:false,status:'MANUAL_COMMAND_ID_REQUIRED'};
   if(requestedSource!=='schedule'&&!manualCommandClaim.claimed&&manualCommandClaim.row?.state==='COMPLETED'){
@@ -557,7 +560,7 @@ async function main() {
   if(source==='schedule'){
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:preflight.actor});
     if(!ownership.allowed)throw new Error(`PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:${ownership.status}`);
-    const cadence=await claimMaintenanceCadence(env.DATA_DB,{job_key:'TWO_CANDIDATE_ANALYTICS_40M',actor:manualCommandActor,now_ts:started,interval_ms:TWO_CANDIDATE_PLAN.scheduled_interval_minutes*60_000});
+    const cadence=triggerOnly?{claimed:false,status:'NOT_DUE',scope:'TRIGGER_ONLY_PRESERVES_REGULAR_CADENCE'}:await claimMaintenanceCadence(env.DATA_DB,{job_key:'TWO_CANDIDATE_ANALYTICS_40M',actor:manualCommandActor,now_ts:started,interval_ms:TWO_CANDIDATE_PLAN.scheduled_interval_minutes*60_000});
     console.log('SCHEDULED_TWO_CANDIDATE_ADMISSION',JSON.stringify(cadence));
     if(!cadence.claimed){
       if(!['NOT_DUE','LEASE_ACTIVE'].includes(cadence.status))throw new Error(`SCHEDULED_CADENCE_NOT_CLOSED:${cadence.status}`);
@@ -572,7 +575,7 @@ async function main() {
           const triggerReservationId=`R2TRIGGER:${started}:${sha.slice(0,16)}`;
           await reserveRunBudget(env.DATA_DB,{reservationId:triggerReservationId,now:started,reservation:TRIGGERED_RECHECK_D1_RESERVATION});
           try{
-            triggered=await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,admit:()=>({allowed:true})});
+            triggered=await admitTriggeredRecheck(env.DATA_DB,{actor:preflight.actor,now_ts:started,task_id:triggerOnly?triggerKickTaskId:null,admit:()=>({allowed:true})});
             const usage=env.DATA_DB.usageSnapshot();
             if(usage.unknown_ops||usage.rows_read>1300||usage.rows_written>14)throw new Error('TRIGGERED_ADMISSION_D1_ENVELOPE_EXCEEDED');
           }finally{
@@ -1175,3 +1178,4 @@ main().catch(async(error) => {
   console.error("REPORT2_RUNNER_FATAL", String(error?.stack || error));
   process.exitCode=1;
 });
+

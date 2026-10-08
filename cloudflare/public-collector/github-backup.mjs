@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {RemoteD1Database} from '../../runner/report2-d1-adapter.mjs';
+import {claimTriggerKick,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 
 const SLOT=5*60_000;
 const ACTOR='HUB_PUBLIC_COLLECTOR';
@@ -37,8 +38,14 @@ async function main(){
   const source=fs.readFileSync(new URL('./injected-worker-tail.js',import.meta.url),'utf8');
   const collector=loadExactCollector(source);
   const result=await runBackupCollector({db,collector});
-  const receipt={schema:'report2-public-collector-backup-v1',...result,usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
+  let kick={dispatch:false,status:'TRIGGER_KICK_DISABLED'};
+  if(['1','true','yes','on'].includes(String(process.env.REPORT2_TRIGGER_KICK_ENABLED||'').toLowerCase())){
+    try{kick=await claimTriggerKick(db);}catch{kick={dispatch:false,status:'KICK_NOT_CLOSED',source_http:0,entry_authorized:false};}
+  }
+  if(process.env.GITHUB_OUTPUT)fs.appendFileSync(process.env.GITHUB_OUTPUT,`trigger_dispatch=${kick.dispatch===true}\ntrigger_task_id=${kick.dispatch?kick.task_id:''}\n`);
+  const receipt={schema:'report2-public-collector-backup-v2-trigger-kick',...result,kick,kick_budget:proveTriggerKickBudget(),usage:db.usageSnapshot(),completed_at:new Date().toISOString(),telegram:false,analytical_decision:false};
   fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify(receipt,null,2)+'\n');
   console.log('REPORT2_PUBLIC_COLLECTOR_BACKUP',JSON.stringify(receipt));
 }
 if(process.argv[1]&&new URL(import.meta.url).pathname===path.resolve(process.argv[1]))main().catch(error=>{console.error('REPORT2_PUBLIC_COLLECTOR_BACKUP_ERROR',String(error?.message||error).slice(0,240));process.exitCode=1;});
+

@@ -51,6 +51,15 @@ on:
         description: "optional controlled validation lane: DEPTH, REALIZED or HISTORY"
         required: false
         default: ""
+      trigger_only_run:
+        description: "internal exact SENT price-trigger wake-up"
+        required: false
+        type: boolean
+        default: false
+      trigger_task_id:
+        description: "exact original trigger task; required for trigger-only run"
+        required: false
+        default: ""
       public_collector_release:
         description: "deploy the bounded five-minute HTX public collector"
         required: false
@@ -73,6 +82,8 @@ jobs:
     env:
       LEGACY_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       EVENT_NAME: ${{ github.event_name }}
+      TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run || 'false' }}
+      TRIGGER_TASK_ID: ${{ inputs.trigger_task_id || '' }}
       MANUAL_AUTHORIZED: ${{ inputs.manual_run_authorized || 'false' }}
     steps:
       - name: Gate the entire working job
@@ -89,13 +100,15 @@ jobs:
           elif [ "$EVENT_NAME" = "push" ]; then
             admitted=true
           elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            if normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi
+            if normalize_true "$TRIGGER_ONLY_RUN"; then
+              if normalize_true "$LEGACY_RUNNER_ENABLED" && [ -n "$TRIGGER_TASK_ID" ]; then admitted=true; fi
+            elif normalize_true "$MANUAL_AUTHORIZED"; then admitted=true; fi
           fi
           echo "admitted=$admitted" >> "$GITHUB_OUTPUT"
           echo "REPORT2_EXECUTION_GATE admitted=$admitted event=$EVENT_NAME"
 
   enqueue-manual-command:
-    if: ${{ (github.event_name == 'push' && (contains(toJSON(github.event.commits), 'manual-requests/run.json') || startsWith(github.event.head_commit.message, '[manual-request]')) && !contains(github.event.head_commit.message, '[public-collector-release]')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ inputs.trigger_only_run != true && ((github.event_name == 'push' && (contains(toJSON(github.event.commits), 'manual-requests/run.json') || startsWith(github.event.head_commit.message, '[manual-request]')) && !contains(github.event.head_commit.message, '[public-collector-release]')) || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true && inputs.public_collector_release != true && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'T00_CLOUDFLARE_HUB_AUDIT' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE') ) }}
     runs-on: ubuntu-latest
     outputs:
       command_id: ${{ steps.enqueue.outputs.command_id }}
@@ -120,7 +133,7 @@ jobs:
 
   run-report2:
     needs: [execution-gate, enqueue-manual-command]
-    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '7,27,47 * * * *') || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
+    if: ${{ always() && needs.execution-gate.outputs.admitted == 'true' && ((github.event_name == 'schedule' && github.event.schedule == '7,27,47 * * * *') || inputs.trigger_only_run == true || needs.enqueue-manual-command.result == 'success' || inputs.reason == 'T00_RUNTIME_EXPORT' || inputs.reason == 'T00_D1_INVENTORY' || inputs.reason == 'V13_P0_READ_ONLY_DIAG' || inputs.reason == 'V13_P0_DRY_RUN' || inputs.reason == 'V13_SHADOW_MARKET_SMOKE' || inputs.reason == 'V13_FINAL_37' || inputs.reason == 'T16_DERIBIT_ALT_OPTIONS_SMOKE' || inputs.reason == 'T16_CHAIN_SUPPLY_SMOKE' || inputs.reason == 'T16_SOURCIFY_ABI_SMOKE' || inputs.reason == 'T16_BLUESKY_ATTENTION_SMOKE' || inputs.reason == 'T16_METADATA_SOURCES_SMOKE' || inputs.reason == 'T16_OFFICIAL_FEED_SMOKE' || inputs.reason == 'T16_LIDO_SNAPSHOT_SMOKE' || inputs.reason == 'T16_LIGHTER_NATIVE_SMOKE' || inputs.reason == 'T16_GMX_NATIVE_SMOKE' || inputs.reason == 'T16_GTRADE_NATIVE_SMOKE' || inputs.reason == 'T16_BLOCKSCOUT_INDEX_SMOKE') }}
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 25
     concurrency:
@@ -130,7 +143,7 @@ jobs:
       REPORT2_RUNNER_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       ANALYTICS_ENABLED: "1"
       PUBLIC_COLLECTOR_ENABLED: "0"
-      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
+      DELIVERY_ENABLED: ${{ (github.event_name == 'schedule' || inputs.trigger_only_run == true || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
       CALIBRATION_APPLY_ENABLED: "0"
       REPORT2_MANUAL_RUN_AUTHORIZED: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.manual_run_authorized == true)) && '1' || '0' }}
       REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
@@ -148,13 +161,13 @@ jobs:
       REPORT2_TELEGRAM_OUTPUT_ENABLED: ${{ github.event_name == 'workflow_dispatch' && inputs.controlled_no_telegram == true && '0' || '1' }}
       REPORT2_TELEGRAM_INFO_ENABLED: "1"
       REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"
-      REPORT2_EVIDENCE_HTTP_CAP: ${{ github.event_name == 'schedule' && '10' || '24' }}
+      REPORT2_EVIDENCE_HTTP_CAP: ${{ (github.event_name == 'schedule' || inputs.trigger_only_run == true) && '10' || '24' }}
       REPORT2_TELEGRAM_INFO_TEST_ID: "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f"
       REPORT2_TELEGRAM_INSTALL_VALIDATION: ${{ github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true && '1' || '0' }}
       REPORT2_EXACT_SAVED_RUN_TELEGRAM: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]') && '1' || '0' }}
       REPORT2_EXACT_SAVED_RUN_ACCEPTANCE_FILE: "../checkpoints/current-joint-report-acceptance.json"
       REPORT2_V3_TELEGRAM_JOURNAL_ENABLED: "1"
-      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
+      REPORT2_V3_TELEGRAM_NETWORK_ENABLED: ${{ (github.event_name == 'schedule' || inputs.trigger_only_run == true || (github.event_name == 'workflow_dispatch' && inputs.isolated_telegram_validation == true) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[telegram-canonical-delivery]'))) && '1' || '0' }}
       REPORT2_R8_20_PROSPECTIVE_VALIDATION_ENABLED: ${{ github.event_name == 'workflow_dispatch' && (inputs.isolated_telegram_validation == true || inputs.controlled_no_telegram == true) && '0' || '1' }}
       BYKARANTELI_API_KEY: CLOUDFLARE_PROXY_CONFIGURED
       OXARCHIVE_API_KEY: ${{ secrets.OXARCHIVE_API_KEY }}
@@ -167,7 +180,9 @@ jobs:
       REPORT2_OXARCHIVE_COST_PROBE: ${{ inputs.oxarchive_cost_probe || 'false' }}
       REPORT2_OXARCHIVE_PROBE_SYMBOL: ${{ inputs.oxarchive_probe_symbol || 'SOL' }}
       REPORT2_CROSS_EXCHANGE_VALIDATION_LANE: ${{ inputs.cross_exchange_validation_lane || '' }}
-      REPORT2_RUN_SOURCE: ${{ github.event_name == 'schedule' && 'schedule' || 'manual' }}
+      REPORT2_RUN_SOURCE: ${{ (github.event_name == 'schedule' || inputs.trigger_only_run == true) && 'schedule' || 'manual' }}
+      REPORT2_TRIGGER_ONLY_RUN: ${{ inputs.trigger_only_run == true && '1' || '0' }}
+      REPORT2_TRIGGER_KICK_TASK_ID: ${{ inputs.trigger_task_id || '' }}
       REPORT2_MANUAL_COIN_CONTRACT: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.coin_contract || inputs.coin_contract || '' }}
       REPORT2_MANUAL_COMMAND: ${{ github.event_name == 'push' && needs.enqueue-manual-command.outputs.command || inputs.command || '' }}
       REPORT2_COMMAND_ID: ${{ needs.enqueue-manual-command.outputs.command_id || '' }}
@@ -208,7 +223,7 @@ jobs:
             npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           fi
       - name: Verify early evidence repair and frozen policy
-        if: ${{ github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'schedule' && inputs.trigger_only_run != true }}
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -231,7 +246,7 @@ jobs:
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
               audit-fixes/v13/final-integration-37.mjs runtime
       - name: Scheduled runtime integrity check
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'schedule' || inputs.trigger_only_run == true }}
         shell: bash
         run: node --check runtime/runner-main.mjs
       - name: Encrypt authoritative runtime for T00 audit
@@ -508,3 +523,4 @@ jobs:
           path: cloudflare-hub-raw.tar.gz.cms
           if-no-files-found: error
           retention-days: 1
+

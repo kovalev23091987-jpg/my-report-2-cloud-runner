@@ -1,0 +1,986 @@
+{
+  "schema": "POST239_ACTUAL_CURRENT_RUN_FLOW_DESPITE_WRITE_FAILURE_V1",
+  "source_cloud_run": 37831800227,
+  "source_head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
+  "run_id": "1791487535792-1791487551019",
+  "generated_at": "2026-10-08T19:28:00.662Z",
+  "source_artifacts": [
+    {
+      "id": 11573977715,
+      "name": "report2-run-result",
+      "digest": "sha256:578be98d0f349cd24d73503f0396938c5b6de7bd210647f419b7a077eda46134",
+      "head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3"
+    },
+    {
+      "id": 11573537678,
+      "name": "report2-telegram-info-proof",
+      "digest": "sha256:6c55a3640c2d2e4585d926c0ea9b88ae0237170b64cc6deefbf4b0ac3e4b6d65",
+      "head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3"
+    }
+  ],
+  "reader_cloud_run": 37833907757,
+  "reader_head": "7ade2b699c8f6afc8b43e8e5dc7604fbcd0c8742",
+  "reader_proof_head": "a730877bb52e9162d067c54db29f8285c405f739",
+  "sourceHTTP": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "MAIN": 0,
+  "candidates": [
+    {
+      "contract": "FIL-USDT",
+      "snapshot_id": "S392:FIL-USDT:1791487668251",
+      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+      "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+      "state": "OBSERVE",
+      "participating": [
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "N05": {
+        "coverage": {
+          "status": "NOT_CHECKED",
+          "checked": false,
+          "observed_facts": 0,
+          "valid_context_facts": 0,
+          "usable_facts": 0,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+            "CHAIN_EVENTS": "EXACT_ASSET_IDENTITY_REQUIRED"
+          },
+          "source_checks": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [
+                "FLOW_COVERAGE",
+                "FLOW_USABLE",
+                "DELTA_RELIABLE",
+                "NOT_DIAGNOSTIC_ONLY",
+                "QUALITY_COMPLETE",
+                "QUALITY_RELIABLE",
+                "COUNTERS_EXACT",
+                "WINDOW_FRESH",
+                "FACTUAL_COUNTER_MATCH",
+                "FACTUAL_BAR_COUNTER_MATCH",
+                "PRICE_COUNTER_MATCH"
+              ],
+              "source_diagnostic": {
+                "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+                "contract": "FIL-USDT",
+                "evaluated_ts": 1791487668251,
+                "freshness_limit_ms": 300000,
+                "signed_raw_status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+                "signed_raw_ring": {
+                  "status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+                  "observed_ts": 1791487634069,
+                  "reported_window_end_ts": 1791487560000,
+                  "reported_window_age_ms": 108251,
+                  "reported_minute_rows": 898,
+                  "diagnostic_only": true,
+                  "source_clock_unchanged": true
+                },
+                "acquisition": {
+                  "status": "WARMING_OR_GAPPED_RAW_24H",
+                  "failure_stage": null,
+                  "error_code": null,
+                  "observed_ts": 1791487634069,
+                  "new_verified_minutes": 136,
+                  "unverified_recent_minutes": 1304,
+                  "persisted_minutes": 898,
+                  "source_clocks": {
+                    "trades": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487626800,
+                      "received_ts": 1791487627289,
+                      "age_ms": 7269
+                    },
+                    "minutes": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487626944,
+                      "received_ts": 1791487627239,
+                      "age_ms": 7125
+                    },
+                    "metadata": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487626614,
+                      "received_ts": 1791487626739,
+                      "age_ms": 7455
+                    }
+                  },
+                  "current_run_verified_flow_retained": false
+                },
+                "trajectory": {
+                  "observed_ts": 1791487626394,
+                  "window_start_ts": 1791471600000,
+                  "window_end_ts": 1791486000000,
+                  "window_age_ms": 1668251,
+                  "expected_1m_bars": 240,
+                  "received_1m_bars": 240
+                },
+                "diagnostic_only": true,
+                "internal_only": true,
+                "source_clocks_refreshed": false,
+                "network_calls": 0
+              },
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "CHAIN_EVENTS": {
+              "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "BLOCKED_REQUIRED_SOURCE_NOT_CHECKED",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "NANSEN_FLOWS",
+            "PRIMARY_HTX_FUTURES_FLOW"
+          ],
+          "missing_required": [
+            "ANY:NANSEN_FLOWS|PRIMARY_HTX_FUTURES_FLOW"
+          ]
+        },
+        "use": {
+          "source_accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 0,
+            "checked_route_count": 0,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 0,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 0,
+            "routes_with_meaningful_facts": 0,
+            "routes_with_actual_use": 0,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [],
+            "used_provider_ids": [],
+            "rendered_provider_ids": [],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [],
+            "used_physical_root_keys": [],
+            "valid_provider_count": 0,
+            "used_provider_count": 0,
+            "rendered_provider_count": 0,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "HTX_EXACT_FUTURES_FLOW_4H_NOT_CLOSED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [
+                  "FLOW_COVERAGE",
+                  "FLOW_USABLE",
+                  "DELTA_RELIABLE",
+                  "NOT_DIAGNOSTIC_ONLY",
+                  "QUALITY_COMPLETE",
+                  "QUALITY_RELIABLE",
+                  "COUNTERS_EXACT",
+                  "WINDOW_FRESH",
+                  "FACTUAL_COUNTER_MATCH",
+                  "FACTUAL_BAR_COUNTER_MATCH",
+                  "PRICE_COUNTER_MATCH"
+                ],
+                "source_diagnostic": {
+                  "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+                  "contract": "FIL-USDT",
+                  "evaluated_ts": 1791487668251,
+                  "freshness_limit_ms": 300000,
+                  "signed_raw_status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+                  "signed_raw_ring": {
+                    "status": "SIGNED_FLOW_240_EXACT_MINUTES_REQUIRED",
+                    "observed_ts": 1791487634069,
+                    "reported_window_end_ts": 1791487560000,
+                    "reported_window_age_ms": 108251,
+                    "reported_minute_rows": 898,
+                    "diagnostic_only": true,
+                    "source_clock_unchanged": true
+                  },
+                  "acquisition": {
+                    "status": "WARMING_OR_GAPPED_RAW_24H",
+                    "failure_stage": null,
+                    "error_code": null,
+                    "observed_ts": 1791487634069,
+                    "new_verified_minutes": 136,
+                    "unverified_recent_minutes": 1304,
+                    "persisted_minutes": 898,
+                    "source_clocks": {
+                      "trades": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487626800,
+                        "received_ts": 1791487627289,
+                        "age_ms": 7269
+                      },
+                      "minutes": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487626944,
+                        "received_ts": 1791487627239,
+                        "age_ms": 7125
+                      },
+                      "metadata": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487626614,
+                        "received_ts": 1791487626739,
+                        "age_ms": 7455
+                      }
+                    },
+                    "current_run_verified_flow_retained": false
+                  },
+                  "trajectory": {
+                    "observed_ts": 1791487626394,
+                    "window_start_ts": 1791471600000,
+                    "window_end_ts": 1791486000000,
+                    "window_age_ms": 1668251,
+                    "expected_1m_bars": 240,
+                    "received_1m_bars": 240
+                  },
+                  "diagnostic_only": true,
+                  "internal_only": true,
+                  "source_clocks_refreshed": false,
+                  "network_calls": 0
+                },
+                "receipts": []
+              },
+              "CHAIN_EVENTS": {
+                "status": "EXACT_ASSET_IDENTITY_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          },
+          "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [],
+            "empty_fact_reason": "EXACT_SOURCE_NOT_CHECKED_OR_NOT_SUPPORTED",
+            "control_effect_not_invented": true
+          },
+          "checked": false,
+          "observed_fact_count": 0,
+          "valid_fact_count": 0,
+          "directional_eligible_fact_count": 0,
+          "score_application_receipt_count": 0,
+          "score_contribution": 0,
+          "score_application_status": "NOT_CHECKED",
+          "control_check_reported": false,
+          "control_decision_effect_proven": false,
+          "decision_assessment_receipt_count": 0,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 0,
+          "participating": false,
+          "participation_status": "USE_NOT_PROVEN",
+          "evaluation_is_not_nonzero_weight": true
+        },
+        "rendered": []
+      },
+      "manual_flow_lines": [],
+      "native_levels": [],
+      "canonical_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 1.1034,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791489468251,
+        "next_recheck_ts": 1791487968251,
+        "cancel_condition": "price<0.9857",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      }
+    },
+    {
+      "contract": "NEAR-USDT",
+      "snapshot_id": "S392:NEAR-USDT:1791487620989",
+      "publication_id": "PUB:55cf8da5e87abb6691cf8e32cb9a18561a166702",
+      "analytical_fingerprint": "d1d9d186c76e0a4fe1c3bf336331c732b7388f6a8c94a44c32dbd44054669d7b",
+      "state": "REJECTED",
+      "participating": [
+        "N01",
+        "N02",
+        "N03",
+        "N05",
+        "N08",
+        "N09",
+        "N10",
+        "N11",
+        "N12",
+        "N16"
+      ],
+      "N05": {
+        "coverage": {
+          "status": "ADMISSIBLE_FACTUAL_CONTEXT",
+          "checked": true,
+          "observed_facts": 1,
+          "valid_context_facts": 1,
+          "usable_facts": 1,
+          "source_statuses": {
+            "NANSEN_FLOWS": "NOT_EVALUATED",
+            "PRIMARY_HTX_FUTURES_FLOW": "CLOSED_EXACT_FUTURES_FLOW_4H",
+            "CHAIN_EVENTS": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED"
+          },
+          "source_checks": {
+            "NANSEN_FLOWS": {
+              "status": "NOT_EVALUATED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            },
+            "PRIMARY_HTX_FUTURES_FLOW": {
+              "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+              "attempted": true,
+              "checked": true,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 1,
+              "admission_status": null,
+              "blocking_checks": [],
+              "source_diagnostic": {
+                "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+                "contract": "NEAR-USDT",
+                "evaluated_ts": 1791487620989,
+                "freshness_limit_ms": 300000,
+                "signed_raw_status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "signed_raw_ring": {
+                  "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "observed_ts": 1791487572939,
+                  "reported_window_end_ts": 1791487500000,
+                  "reported_window_age_ms": 120989,
+                  "reported_minute_rows": 1512,
+                  "diagnostic_only": true,
+                  "source_clock_unchanged": true
+                },
+                "acquisition": {
+                  "status": "RAW_TAPE_PERSISTENCE_NOT_CLOSED",
+                  "failure_stage": "WRITE_MERGED_RING",
+                  "error_code": "D1_BRIDGE_FAILURE",
+                  "observed_ts": 1791487572939,
+                  "new_verified_minutes": 246,
+                  "unverified_recent_minutes": 1194,
+                  "persisted_minutes": null,
+                  "source_clocks": {
+                    "trades": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487567196,
+                      "received_ts": 1791487567653,
+                      "age_ms": 5743
+                    },
+                    "minutes": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487567946,
+                      "received_ts": 1791487568407,
+                      "age_ms": 4993
+                    },
+                    "metadata": {
+                      "status": "CLOCK_CLOSED",
+                      "source_ts": 1791487567052,
+                      "received_ts": 1791487567178,
+                      "age_ms": 5887
+                    }
+                  },
+                  "current_run_verified_flow_retained": true
+                },
+                "trajectory": {
+                  "observed_ts": 1791487566792,
+                  "window_start_ts": 1791471600000,
+                  "window_end_ts": 1791486000000,
+                  "window_age_ms": 1620989,
+                  "expected_1m_bars": 240,
+                  "received_1m_bars": 240
+                },
+                "diagnostic_only": true,
+                "internal_only": true,
+                "source_clocks_refreshed": false,
+                "network_calls": 0
+              },
+              "valid_evidence_ids": [
+                "EV2:e999abf209809fa2d509438d64c23ca9d6d1b064327550aeb29eb167c685ddbf"
+              ],
+              "provider_ids": [
+                "HTX_FUTURES_RAW_FLOW"
+              ],
+              "declared_upstream_ids": [
+                "HTX_OFFICIAL_RAW_FILLS"
+              ],
+              "physical_root_keys": [
+                "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000"
+              ],
+              "receipts": [
+                {
+                  "route": null,
+                  "status": "CLOSED",
+                  "http_status": null,
+                  "error": null
+                }
+              ]
+            },
+            "CHAIN_EVENTS": {
+              "status": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
+              "attempted": false,
+              "checked": false,
+              "capability_resolved_without_route": false,
+              "network_calls": 0,
+              "cache_status": null,
+              "receipt_count": 0,
+              "admission_status": null,
+              "blocking_checks": [],
+              "valid_evidence_ids": [],
+              "provider_ids": [],
+              "declared_upstream_ids": [],
+              "physical_root_keys": [],
+              "receipts": []
+            }
+          },
+          "decision_consumer": "MARKET_FLOW_CONFIRMATION",
+          "maximum_score_points": 0.5,
+          "decision_path": "ADMITTED_SCORE_OR_RISK_INPUT",
+          "evidence_rejection_reasons": {},
+          "required_all": [],
+          "required_any": [
+            "NANSEN_FLOWS",
+            "PRIMARY_HTX_FUTURES_FLOW"
+          ],
+          "missing_required": []
+        },
+        "use": {
+          "source_accounting": {
+            "scope": "ASSIGNED_RUNTIME_ROUTES_NOT_ENTIRE_SOURCE_CATALOG",
+            "configured_route_count": 3,
+            "attempted_route_count": 1,
+            "checked_route_count": 1,
+            "live_contacted_route_count": 0,
+            "checked_without_new_http_route_count": 1,
+            "validated_cache_route_count": 0,
+            "routes_with_valid_facts": 1,
+            "routes_with_meaningful_facts": 1,
+            "routes_with_actual_use": 1,
+            "routes_with_nonzero_score": 0,
+            "valid_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "used_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "rendered_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "nonzero_score_provider_ids": [],
+            "neutral_assessed_provider_ids": [
+              "HTX_FUTURES_RAW_FLOW"
+            ],
+            "unscored_diagnostic_provider_ids": [],
+            "used_declared_upstream_ids": [
+              "HTX_OFFICIAL_RAW_FILLS"
+            ],
+            "used_physical_root_keys": [
+              "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000"
+            ],
+            "valid_provider_count": 1,
+            "used_provider_count": 1,
+            "rendered_provider_count": 1,
+            "control_effect_provider_count": 0,
+            "control_effect_not_proven": true,
+            "details": {
+              "NANSEN_FLOWS": {
+                "status": "NOT_EVALUATED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              },
+              "PRIMARY_HTX_FUTURES_FLOW": {
+                "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                "attempted": true,
+                "checked": true,
+                "actual_http": 0,
+                "valid_fact_count": 1,
+                "meaningful_fact_count": 1,
+                "assessed_fact_count": 1,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 1,
+                "used_fact_count": 1,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "used_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "rendered_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [
+                  "HTX_FUTURES_RAW_FLOW"
+                ],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "used_physical_root_keys": [
+                  "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000"
+                ],
+                "declared_upstream_ids": [
+                  "HTX_OFFICIAL_RAW_FILLS"
+                ],
+                "physical_root_keys": [
+                  "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000"
+                ],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "source_diagnostic": {
+                  "schema": "HTX_FLOW_CLOSURE_DIAGNOSTIC_V1",
+                  "contract": "NEAR-USDT",
+                  "evaluated_ts": 1791487620989,
+                  "freshness_limit_ms": 300000,
+                  "signed_raw_status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                  "signed_raw_ring": {
+                    "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+                    "observed_ts": 1791487572939,
+                    "reported_window_end_ts": 1791487500000,
+                    "reported_window_age_ms": 120989,
+                    "reported_minute_rows": 1512,
+                    "diagnostic_only": true,
+                    "source_clock_unchanged": true
+                  },
+                  "acquisition": {
+                    "status": "RAW_TAPE_PERSISTENCE_NOT_CLOSED",
+                    "failure_stage": "WRITE_MERGED_RING",
+                    "error_code": "D1_BRIDGE_FAILURE",
+                    "observed_ts": 1791487572939,
+                    "new_verified_minutes": 246,
+                    "unverified_recent_minutes": 1194,
+                    "persisted_minutes": null,
+                    "source_clocks": {
+                      "trades": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487567196,
+                        "received_ts": 1791487567653,
+                        "age_ms": 5743
+                      },
+                      "minutes": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487567946,
+                        "received_ts": 1791487568407,
+                        "age_ms": 4993
+                      },
+                      "metadata": {
+                        "status": "CLOCK_CLOSED",
+                        "source_ts": 1791487567052,
+                        "received_ts": 1791487567178,
+                        "age_ms": 5887
+                      }
+                    },
+                    "current_run_verified_flow_retained": true
+                  },
+                  "trajectory": {
+                    "observed_ts": 1791487566792,
+                    "window_start_ts": 1791471600000,
+                    "window_end_ts": 1791486000000,
+                    "window_age_ms": 1620989,
+                    "expected_1m_bars": 240,
+                    "received_1m_bars": 240
+                  },
+                  "diagnostic_only": true,
+                  "internal_only": true,
+                  "source_clocks_refreshed": false,
+                  "network_calls": 0
+                },
+                "receipts": [
+                  {
+                    "route": null,
+                    "status": "CLOSED",
+                    "http_status": null,
+                    "error": null
+                  }
+                ]
+              },
+              "CHAIN_EVENTS": {
+                "status": "NATIVE_TRANSACTION_EVENT_ROUTE_REQUIRED",
+                "attempted": false,
+                "checked": false,
+                "actual_http": 0,
+                "valid_fact_count": 0,
+                "meaningful_fact_count": 0,
+                "assessed_fact_count": 0,
+                "unscored_diagnostic_fact_count": 0,
+                "rendered_fact_count": 0,
+                "used_fact_count": 0,
+                "nonzero_score_fact_count": 0,
+                "provider_ids": [],
+                "used_provider_ids": [],
+                "rendered_provider_ids": [],
+                "nonzero_score_provider_ids": [],
+                "neutral_assessed_provider_ids": [],
+                "unscored_diagnostic_provider_ids": [],
+                "used_declared_upstream_ids": [],
+                "used_physical_root_keys": [],
+                "declared_upstream_ids": [],
+                "physical_root_keys": [],
+                "cache_status": null,
+                "admission_status": null,
+                "capability_resolved_without_route": false,
+                "blocking_checks": [],
+                "receipts": []
+              }
+            },
+            "independence_claimed": false,
+            "rows_are_not_provider_count": true,
+            "checked_without_new_http_is_not_automatically_cache": true,
+            "provider_or_upstream_count_is_not_independent_vote_count": true,
+            "http_per_route_is_not_additive_across_blocks": true
+          },
+          "assigned_consumer": "MARKET_FLOW_CONFIRMATION",
+          "impact_diagnostic": {
+            "internal_only": true,
+            "score_recomputed": false,
+            "rows": [
+              {
+                "evidence_id": "EV2:e999abf209809fa2d509438d64c23ca9d6d1b064327550aeb29eb167c685ddbf",
+                "metric_family": "EXACT_FUTURES_TAKER_FLOW_4H",
+                "validation": "VALID",
+                "coverage_fraction": 0.16666666666666666,
+                "reliability": 0.8,
+                "directional_or_risk_strength": 0,
+                "block_cap": 0.5,
+                "weight_policy": "WEAK_OR_PARTIAL_OBSERVATION_OLD_CAP",
+                "actual_score_contribution": 0,
+                "reasons": [
+                  "NEUTRAL_CONTEXT_HAS_NO_DIRECTIONAL_VOTE",
+                  "PARTIAL_SAMPLE_LIMITS_WEIGHT",
+                  "BASE_SCORE_MISSING"
+                ]
+              }
+            ],
+            "empty_fact_reason": null,
+            "control_effect_not_invented": true
+          },
+          "checked": true,
+          "observed_fact_count": 1,
+          "valid_fact_count": 1,
+          "directional_eligible_fact_count": 0,
+          "score_application_receipt_count": 0,
+          "score_contribution": null,
+          "score_application_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "control_check_reported": false,
+          "control_decision_effect_proven": false,
+          "decision_assessment_receipt_count": 1,
+          "unscored_diagnostic_receipt_count": 0,
+          "rendered_useful_context_receipt_count": 1,
+          "participating": true,
+          "participation_status": "NEUTRAL_ASSESSMENT_AND_RENDERING_PROVEN",
+          "evaluation_is_not_nonzero_weight": true
+        },
+        "rendered": [
+          {
+            "block_id": "N05",
+            "evidence_id": "EV2:e999abf209809fa2d509438d64c23ca9d6d1b064327550aeb29eb167c685ddbf",
+            "physical_root_key": "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000",
+            "evidence_ids": [
+              "EV2:e999abf209809fa2d509438d64c23ca9d6d1b064327550aeb29eb167c685ddbf"
+            ],
+            "physical_root_keys": [
+              "HTX_RAW_FILLS:NEAR-USDT:1791473100000:1791487500000"
+            ],
+            "source_ts": 1791487500000,
+            "observed_ts": 1791487568407,
+            "label": "Фактический поток фьючерсных сделок за четыре часа",
+            "value": "2265 исходных сделок: покупки 858 408,89, продажи 747 897,98 USDT; разница 110 510,9 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
+            "source": "HTX / исходные сделки",
+            "consumer": "MANUAL_CONFIRMED_CONTEXT",
+            "score_contribution": 0
+          }
+        ]
+      },
+      "manual_flow_lines": [
+        "- Фактический поток фьючерсных сделок за четыре часа: 2265 исходных сделок: покупки 858 408,89, продажи 747 897,98 USDT; разница 110 510,9 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа — HTX / исходные сделки."
+      ],
+      "native_levels": [
+        {
+          "kind": "NATIVE_FUTURE_LEVEL",
+          "price": 1.1574247845,
+          "price_quote": "USDC",
+          "distance_pct": -74.5032540037449,
+          "distance_reference_price": 4.539499999999999,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "BELOW",
+          "liquidated_side": "BUYERS",
+          "notional": 26131666.70415,
+          "notional_unit": "USDC",
+          "exact_notional_usdt": null,
+          "exact_amount_available": true,
+          "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+          "strength_label_ru": "огромная",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "Hyperliquid official",
+          "venue": null,
+          "source_ts": 1791487610921,
+          "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+          "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+          "native_reference_price": 4.539499999999999,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "d775e2925444ff6a0382d2082a327c3e372fa924cff27a9ec3d80a2464ccaac3",
+          "decision_target_eligible": false,
+          "estimated": false,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 1.1574247845,
+          "notional_usdt": 26131666.70415,
+          "corroborating_sources": [
+            "Hyperliquid official"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "Hyperliquid official"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 1.1574247845,
+              "source": "Hyperliquid official",
+              "independence_group": "Hyperliquid official",
+              "estimated": false
+            }
+          ]
+        },
+        {
+          "kind": "NATIVE_FUTURE_LEVEL",
+          "price": 0.8179171304,
+          "price_quote": "USDC",
+          "distance_pct": -81.98221983918934,
+          "distance_reference_price": 4.5395,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "BELOW",
+          "liquidated_side": "BUYERS",
+          "notional": 9587246.50555,
+          "notional_unit": "USDC",
+          "exact_notional_usdt": null,
+          "exact_amount_available": true,
+          "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+          "strength_label_ru": "огромная",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "Hyperliquid official",
+          "venue": null,
+          "source_ts": 1791487610921,
+          "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+          "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+          "native_reference_price": 4.5395,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "58d03b678e01e08a82ff7d04b2bd35917244365012e4e8ee79917d5e6658a7e2",
+          "decision_target_eligible": false,
+          "estimated": false,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false,
+          "native_price": 0.8179171304,
+          "notional_usdt": 9587246.50555,
+          "corroborating_sources": [
+            "Hyperliquid official"
+          ],
+          "independent_source_count": 1,
+          "independence_groups": [
+            "Hyperliquid official"
+          ],
+          "consensus_confidence_ru": "один источник",
+          "consensus_tolerance_pct": 0.4,
+          "consensus_component_count": 1,
+          "consensus_components": [
+            {
+              "price": 0.8179171304,
+              "source": "Hyperliquid official",
+              "independence_group": "Hyperliquid official",
+              "estimated": false
+            }
+          ]
+        }
+      ],
+      "canonical_trigger": null
+    }
+  ],
+  "NEAR_failure_stage": "WRITE_MERGED_RING",
+  "NEAR_error_class": "D1_BRIDGE_FAILURE",
+  "NEAR_current_run_verified_flow_retained": true,
+  "NEAR_complete_240m_flow_used_and_rendered": true,
+  "durable_storage_accepted": false,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "new_native_level_SENT": false,
+  "current_release_fresh_SENT_verified": false,
+  "full_project_complete": false
+}

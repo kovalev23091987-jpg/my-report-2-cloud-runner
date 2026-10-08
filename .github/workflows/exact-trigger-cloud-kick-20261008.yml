@@ -1,0 +1,92 @@
+name: Report2 Exact Original Trigger Cloud Wake Up
+on:
+  push:
+    branches: [codex/exact-trigger-cloud-kick-20261008]
+    paths: ['current-generation/**', 'cloudflare/public-collector/**', '.github/workflows/exact-trigger-cloud-kick-20261008.yml', '.github/workflows/report2.yml', '.github/workflows/report2-public-collector-backup.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact owner before work
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='8660a8f854c4e6b3c7e69fa495f52e850e15cb92')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble exact current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+      - name: Restore immutable existing approved delivery fixtures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Retained controls and dependencies
+        run: |
+          cp checkpoints/actual-zec-sent150-original-input-20261007.json.gz audit-output/exact-current-data.json.gz
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse passed composed exact admission tests without rerunning unchanged code
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:11574796390})).data;if(a.workflow_run.id!==37833904411||a.workflow_run.head_sha!=='a6a1b9d303eae4fcd604073afc2e49ccb1bea00f'||a.digest!=='sha256:647dece6e5203062a67fb07c5ea2a0dcce17c5d60da09ae5302b1a420680da7a')throw Error('PASSED_ADMISSION_IDENTITY');const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:a.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==a.digest)throw Error('PASSED_ADMISSION_DIGEST');fs.mkdirSync('passed-admission',{recursive:true});fs.writeFileSync('passed-admission.zip',b);cp.execFileSync('unzip',['-q','passed-admission.zip','-d','passed-admission']);const t=fs.readFileSync('passed-admission/exact-admission-tests.tap','utf8');if(!/(?:#|ℹ) pass 23/.test(t)||!/(?:#|ℹ) fail 0/.test(t))throw Error('PASSED_ADMISSION_NOT_CLOSED');for(const f of ['exact-admission-tests.tap','triggered-recheck-proof.json'])fs.copyFileSync('passed-admission/'+f,'audit-output/'+f);
+            cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin','a6a1b9d303eae4fcd604073afc2e49ccb1bea00f']);for(const p of ['current-generation/files/src/triggered-entry-recheck.mjs','current-generation/files/runner-main.mjs','current-generation/tests/triggered-entry-recheck.test.mjs'])if(!cp.execFileSync('git',['show','a6a1b9d303eae4fcd604073afc2e49ccb1bea00f:'+p]).equals(fs.readFileSync(p)))throw Error('PASSED_ADMISSION_CHANGED:'+p);
+      - name: Bounded wake-up and current assembled admission matrix
+        run: |
+          node --test cloudflare/public-collector/trigger-analysis-kick.test.mjs cloudflare/public-collector/github-backup.test.mjs > audit-output/kick-tests.tap
+          node --check runtime/runner-main.mjs
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          cmp current-generation/files/src/triggered-entry-recheck.mjs runtime/src/triggered-entry-recheck.mjs
+          node --input-type=module -e "import {proveTriggerKickBudget} from './cloudflare/public-collector/trigger-analysis-kick.mjs';import fs from 'node:fs';fs.writeFileSync('audit-output/kick-budget.json',JSON.stringify(proveTriggerKickBudget(),null,2));"
+      - name: Approved assembled pipeline and generation
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum runtime/src/triggered-entry-recheck.mjs runtime/runner-main.mjs runtime/src/worker.js cloudflare/public-collector/trigger-analysis-kick.mjs .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml > audit-output/runtime-hashes.txt
+      - name: Print bounded failure evidence
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,16000)+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exact-trigger-cloud-kick-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain exact assembled proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='8660a8f854c4e6b3c7e69fa495f52e850e15cb92')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||['integration.json','validation.json','binding.json','head.txt','runtime-hashes.txt','kick-budget.json','triggered-recheck-proof.json'].includes(f));
+            for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const readOutput=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),budget=readOutput('kick-budget.json'),integration=readOutput('integration.json'),validation=readOutput('validation.json');
+            if(tests['kick-tests.tap'].pass!==26||tests['observation-pipeline-tests.tap'].pass!==35||tests['exact-admission-tests.tap'].pass!==23||integration.status!=='PASS'||integration.failed!==0||validation.status!=='CURRENT_GENERATION_VALIDATED'||!budget.safe)throw Error('CONNECTED_PROOF_NOT_CLOSED');
+            const proof={schema:'EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008_V1',status:'BOUNDED_KICK_EXACT_ADMISSION_AND_APPROVED_COMPOSED_PIPELINE_VERIFIED',tested_head:context.sha,cloud_run:context.runId,admission_tests_original_head:'a6a1b9d303eae4fcd604073afc2e49ccb1bea00f',admission_tests_original_cloud_run:37833904411,admission_tests_reused_without_changes:true,tests,integration,validation,budget,original_price_diagnosis:'checkpoints/POST238_CT_ORIGINAL_PRICE_WINDOW_20261008.json',original_CT_SENT:'checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json',old_task_revived:false,original_clocks_unchanged:true,regular_analytics_interval_minutes:40,collector_interval_minutes:5,price_is_not_ENTRY:true,entry_gates_changed:false,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,actual_ENTRY:false,current_release_new_fresh_SENT:false,actual_new_kick_dispatch:false,native_level_SENT:false,full_project_complete:false};
+            const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/exact-trigger-cloud-kick-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const blob=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json',mode:'100644',type:'blob',sha:blob.sha});
+            const ref=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_MOVED');const c=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:c.tree.sha,tree:entries})).data,n=(await github.rest.git.createCommit({owner,repo,message:'Retain exact original trigger cloud wake-up composed proof',tree:tree.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:n.sha,force:false});console.log('VERIFIED_PROOF_HEAD',n.sha);

@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: report2-public-collector-backup
@@ -21,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
+      REPORT2_TRIGGER_KICK_ENABLED: ${{ secrets.REPORT2_RUNNER_ENABLED }}
       REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
       REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
     steps:
@@ -29,7 +31,27 @@ jobs:
         with:
           node-version: '24'
       - name: Recheck the exact current bucket and collect only when primary failed
+        id: backup
         run: node cloudflare/public-collector/github-backup.mjs
+      - name: Wake exact original SENT task for a fresh gated analysis
+        if: ${{ steps.backup.outputs.trigger_dispatch == 'true' }}
+        uses: actions/github-script@v7
+        env:
+          TRIGGER_TASK_ID: ${{ steps.backup.outputs.trigger_task_id }}
+        with:
+          script: |
+            const fs=require('fs');
+            const p=JSON.parse(fs.readFileSync('report2-collector-backup-proof.json'));
+            if(p.kick?.dispatch!==true||p.kick.task_id!==process.env.TRIGGER_TASK_ID||p.kick.expires_ts<=Date.now())throw Error('EXACT_KICK_EXPIRED_OR_CHANGED');
+            try {
+              await github.rest.actions.createWorkflowDispatch({owner:context.repo.owner,repo:context.repo.repo,workflow_id:'report2.yml',ref:'main',inputs:{reason:'EXACT_SENT_PRICE_TRIGGER_WAKE_UP',trigger_only_run:true,trigger_task_id:p.kick.task_id,manual_run_authorized:false}});
+              p.kick.dispatch_status='GITHUB_ACCEPTED_WORKFLOW_DISPATCH';
+            } catch(error) {
+              p.kick.dispatch_status='DISPATCH_FAILED_SLOT_CONSUMED';
+              fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify(p,null,2)+'\n');
+              throw error;
+            }
+            fs.writeFileSync('report2-collector-backup-proof.json',JSON.stringify(p,null,2)+'\n');
       - name: Save bounded backup receipt
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -38,3 +60,4 @@ jobs:
           path: report2-collector-backup-proof.json
           if-no-files-found: warn
           retention-days: 7
+
