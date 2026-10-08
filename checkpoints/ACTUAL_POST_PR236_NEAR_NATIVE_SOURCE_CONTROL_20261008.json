@@ -1,0 +1,760 @@
+{
+  "schema": "ACTUAL_POST_PR236_NEAR_NATIVE_SOURCE_CONTROL_20261008_V1",
+  "status": "FRESH_NATIVE_LEVELS_IN_EXACT_LIQUIDATION_ONLY_REPORT",
+  "cloud_run": 37725892943,
+  "job": 113144018176,
+  "head": "ff8fdceb0e1b56ddc6149579e2d34dd563fbb061",
+  "worker_sha256": "340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc",
+  "run_id": "LIQ_ONLY:1791432460451",
+  "mode": "LIQUIDATION_ONLY",
+  "source": "manual",
+  "generated_at": "2026-10-08T04:08:06.870Z",
+  "contract": "NEAR-USDT",
+  "artifact_id": 11527976123,
+  "artifact_digest": "sha256:5a0cf3aac4bcda46e09903bb510c40156ed273c681312d3ee7fda43107429052",
+  "original_report_sha256": "257046e66cd28eb639ecdb2ce5c31afa52aaf13b09ad1fa32db3b0ea581678b8",
+  "coverage_admission": {
+    "status": "BOUNDED_PINNED_NATIVE_CALCULATED_CONTEXT_CHECK_ALLOWED",
+    "eligible": true,
+    "contract": "NEAR-USDT",
+    "source_ids": [
+      "HYPERLIQUID_NATIVE",
+      "GTRADE_NATIVE",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "COINLOBSTER_FUTURE_MODEL",
+      "DYDX_PINNED_NATIVE"
+    ],
+    "independent_upstreams": [
+      "HYPERLIQUID"
+    ],
+    "coverage_scope": "STRUCTURAL_ACCOUNT_HINT_IS_COLLECTION_PERMISSION_NOT_CURRENT_LEVEL_COVERAGE",
+    "network_calls": 0,
+    "calculated_fallback_allowed": false,
+    "leaders_may_be_replaced": false,
+    "proven_level_source_ids": [
+      "HYPERLIQUID_NATIVE"
+    ],
+    "additional_context_check_source_ids": [
+      "GTRADE_NATIVE",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "COINLOBSTER_FUTURE_MODEL",
+      "DYDX_PINNED_NATIVE"
+    ],
+    "structural_market_source_ids": [],
+    "fresh_live_levels_confirmed": false,
+    "receipt_only_context_score_eligible": false,
+    "receipt_only_context_target_eligible": false,
+    "automatic_discovery_allowed": true,
+    "structural_hint_available": true
+  },
+  "above": [
+    {
+      "kind": "NATIVE_FUTURE_LEVEL",
+      "price": 7.8183353612,
+      "price_quote": "USDC",
+      "distance_pct": 46.42722705172868,
+      "distance_reference_price": 5.3393999999999995,
+      "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+      "side": "ABOVE",
+      "liquidated_side": "SELLERS",
+      "notional": 1296137.21424,
+      "notional_unit": "USDC",
+      "exact_notional_usdt": null,
+      "exact_amount_available": true,
+      "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+      "strength_label_ru": "огромная",
+      "strength_score_0_100": null,
+      "strength_basis": [
+        "REPORTED_VOLUME_TIER"
+      ],
+      "source": "Hyperliquid official",
+      "venue": null,
+      "source_ts": 1791432472608,
+      "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+      "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+      "native_reference_price": 5.3393999999999995,
+      "conditional_cross": true,
+      "position_count": 1,
+      "position_key": "2db6e690667561fc8af6c9cb80e1401022dbeaf993cc72ab0522bb5240f5158e",
+      "decision_target_eligible": false,
+      "estimated": false,
+      "independence_group": null,
+      "model_sources": [],
+      "model_version": null,
+      "anchor_kinds": [],
+      "leverage_scenarios": [],
+      "source_backed_calculated": false,
+      "native_price": 7.8183353612,
+      "notional_usdt": 1296137.21424,
+      "corroborating_sources": [
+        "Hyperliquid official"
+      ],
+      "independent_source_count": 1,
+      "independence_groups": [
+        "Hyperliquid official"
+      ],
+      "consensus_confidence_ru": "один источник",
+      "consensus_tolerance_pct": 0.4,
+      "consensus_component_count": 1,
+      "consensus_components": [
+        {
+          "price": 7.8183353612,
+          "source": "Hyperliquid official",
+          "independence_group": "Hyperliquid official",
+          "estimated": false
+        }
+      ],
+      "selection_roles": [
+        "LARGEST_VISIBLE",
+        "NEAREST_NONZERO",
+        "FARTHEST_HUGE_VISIBLE"
+      ]
+    },
+    {
+      "kind": "NATIVE_FUTURE_LEVEL",
+      "price": 8.8690201432,
+      "price_quote": "USDC",
+      "distance_pct": 66.10518303929283,
+      "distance_reference_price": 5.3393999999999995,
+      "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+      "side": "ABOVE",
+      "liquidated_side": "SELLERS",
+      "notional": 1299.60996,
+      "notional_unit": "USDC",
+      "exact_notional_usdt": null,
+      "exact_amount_available": true,
+      "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+      "strength_label_ru": "небольшая",
+      "strength_score_0_100": null,
+      "strength_basis": [
+        "REPORTED_VOLUME_TIER"
+      ],
+      "source": "Hyperliquid official",
+      "venue": null,
+      "source_ts": 1791432472380,
+      "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+      "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+      "native_reference_price": 5.3393999999999995,
+      "conditional_cross": true,
+      "position_count": 1,
+      "position_key": "3fc52148c7dcc0fb24036dadda3c34fc18d1e7d90222a32f44f7fe6733be6e2a",
+      "decision_target_eligible": false,
+      "estimated": false,
+      "independence_group": null,
+      "model_sources": [],
+      "model_version": null,
+      "anchor_kinds": [],
+      "leverage_scenarios": [],
+      "source_backed_calculated": false,
+      "native_price": 8.8690201432,
+      "notional_usdt": 1299.60996,
+      "corroborating_sources": [
+        "Hyperliquid official"
+      ],
+      "independent_source_count": 1,
+      "independence_groups": [
+        "Hyperliquid official"
+      ],
+      "consensus_confidence_ru": "один источник",
+      "consensus_tolerance_pct": 0.4,
+      "consensus_component_count": 1,
+      "consensus_components": [
+        {
+          "price": 8.8690201432,
+          "source": "Hyperliquid official",
+          "independence_group": "Hyperliquid official",
+          "estimated": false
+        }
+      ],
+      "selection_roles": [
+        "LARGEST_VISIBLE",
+        "FARTHEST_VISIBLE"
+      ]
+    }
+  ],
+  "below": [
+    {
+      "kind": "NATIVE_FUTURE_LEVEL",
+      "price": 5.0888542062,
+      "price_quote": "USDC",
+      "distance_pct": -4.692396033262181,
+      "distance_reference_price": 5.3394,
+      "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+      "side": "BELOW",
+      "liquidated_side": "BUYERS",
+      "notional": 31631.67348,
+      "notional_unit": "USDC",
+      "exact_notional_usdt": null,
+      "exact_amount_available": true,
+      "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+      "strength_label_ru": "средняя",
+      "strength_score_0_100": null,
+      "strength_basis": [
+        "REPORTED_VOLUME_TIER"
+      ],
+      "source": "Hyperliquid official",
+      "venue": null,
+      "source_ts": 1791432472380,
+      "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+      "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+      "native_reference_price": 5.3394,
+      "conditional_cross": false,
+      "position_count": 1,
+      "position_key": "9efb2192db4c2ef2f27c488eb9aad86f73ebf9671bac89f9b47cfe97539c34e5",
+      "decision_target_eligible": false,
+      "estimated": false,
+      "independence_group": null,
+      "model_sources": [],
+      "model_version": null,
+      "anchor_kinds": [],
+      "leverage_scenarios": [],
+      "source_backed_calculated": false,
+      "native_price": 5.0888542062,
+      "notional_usdt": 31631.67348,
+      "corroborating_sources": [
+        "Hyperliquid official"
+      ],
+      "independent_source_count": 1,
+      "independence_groups": [
+        "Hyperliquid official"
+      ],
+      "consensus_confidence_ru": "один источник",
+      "consensus_tolerance_pct": 0.4,
+      "consensus_component_count": 1,
+      "consensus_components": [
+        {
+          "price": 5.0888542062,
+          "source": "Hyperliquid official",
+          "independence_group": "Hyperliquid official",
+          "estimated": false
+        }
+      ],
+      "selection_roles": [
+        "LARGEST_VISIBLE",
+        "NEAREST_NONZERO",
+        "FARTHEST_VISIBLE"
+      ]
+    }
+  ],
+  "source_receipts": [
+    {
+      "source": "Hyperliquid official",
+      "status": "USABLE_SCOPED_CONTEXT",
+      "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+      "source_ts": 1791432472380,
+      "visible_half_range_pct": null,
+      "total_zones": 3
+    }
+  ],
+  "source_chain": {
+    "schema": "report2-liquidation-source-chain-v3",
+    "contract": "NEAR-USDT",
+    "policy": "REAL_EXTERNAL_NUMERIC_LEVELS_ONLY_NO_HTX_CALCULATED_FALLBACK;ADAPTIVE_FAILOVER_WITHOUT_SUMMING_OVERLAP",
+    "all_attempts_retained": true,
+    "unsupported_is_not_zero_liquidations": true,
+    "provider_count_is_not_data_count": true,
+    "configured_future_connection_count": 8,
+    "configured_additional_calculated_connection_count": 1,
+    "configured_additional_calculated_connections": [
+      "DYDX_PINNED_NATIVE"
+    ],
+    "configured_total_future_connections": 9,
+    "configured_future_connections": [
+      "HYPERLIQUID_NATIVE",
+      "BYK_TRACKED_HL_BANDS",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "GTRADE_NATIVE",
+      "BYKARANTELI_FUTURE_MAP",
+      "COINLOBSTER_FUTURE_MODEL",
+      "OXARCHIVE_HL_BUCKETS"
+    ],
+    "stages": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": true,
+        "network_calls": 6,
+        "reason": null,
+        "fallback_rank": 1,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "data_available": false,
+        "network_calls": 0,
+        "upstream_family": "HYPERLIQUID",
+        "independent_of_other_hl_sources": false,
+        "entry_eligible": false,
+        "reason": null,
+        "fallback_rank": 2,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 3,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 4,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 2,
+        "reason": "TRANSPORT",
+        "fallback_rank": 5,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 6,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "partial_future_hint_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 7,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "role": "PROJECTED_HYPERLIQUID_CONTEXT",
+        "network_calls": 0,
+        "data_available": false,
+        "fresh_check_completed": true,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fallback_rank": 8,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 9,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "HTX_REALIZED_LIQUIDATIONS",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINALYZE",
+        "status": "PARTIAL",
+        "reason": "CLOSED_COMPARABLE_WINDOWS_REQUIRED",
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "GATE_LIQUIDATION_HISTORY",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINLOBSTER",
+        "status": "CLOSED",
+        "role": "REALIZED_VALIDATION",
+        "observed_event_count": 1,
+        "data_available": true,
+        "reason": null,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BINANCE",
+        "status": "HTTP_451",
+        "http_status": 451,
+        "catalog_complete": false,
+        "observed_ts": 1791422894709,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BYBIT",
+        "status": "HTTP_403",
+        "http_status": 403,
+        "catalog_complete": false,
+        "observed_ts": 1791430027378,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "OKX",
+        "status": "CLOSED",
+        "http_status": 200,
+        "catalog_complete": true,
+        "observed_ts": 1791402350220,
+        "exact_symbol": "NEAR-USDT-SWAP",
+        "coverage_status": "EXACT_MARKET_SUPPORTED",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      }
+    ],
+    "future_level_stages": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": true,
+        "network_calls": 6,
+        "reason": null,
+        "fallback_rank": 1,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "data_available": false,
+        "network_calls": 0,
+        "upstream_family": "HYPERLIQUID",
+        "independent_of_other_hl_sources": false,
+        "entry_eligible": false,
+        "reason": null,
+        "fallback_rank": 2,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 3,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 4,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 2,
+        "reason": "TRANSPORT",
+        "fallback_rank": 5,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 6,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "partial_future_hint_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 7,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "role": "PROJECTED_HYPERLIQUID_CONTEXT",
+        "network_calls": 0,
+        "data_available": false,
+        "fresh_check_completed": true,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fallback_rank": 8,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 9,
+        "priority_class": "FUTURE_LEVEL"
+      }
+    ],
+    "secondary_history_stages": [
+      {
+        "source": "HTX_REALIZED_LIQUIDATIONS",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINALYZE",
+        "status": "PARTIAL",
+        "reason": "CLOSED_COMPARABLE_WINDOWS_REQUIRED",
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "GATE_LIQUIDATION_HISTORY",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINLOBSTER",
+        "status": "CLOSED",
+        "role": "REALIZED_VALIDATION",
+        "observed_event_count": 1,
+        "data_available": true,
+        "reason": null,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BINANCE",
+        "status": "HTTP_451",
+        "http_status": 451,
+        "catalog_complete": false,
+        "observed_ts": 1791422894709,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BYBIT",
+        "status": "HTTP_403",
+        "http_status": 403,
+        "catalog_complete": false,
+        "observed_ts": 1791430027378,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "OKX",
+        "status": "CLOSED",
+        "http_status": 200,
+        "catalog_complete": true,
+        "observed_ts": 1791402350220,
+        "exact_symbol": "NEAR-USDT-SWAP",
+        "coverage_status": "EXACT_MARKET_SUPPORTED",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      }
+    ],
+    "evaluated_not_enabled": [
+      {
+        "source": "COINGLASS_LIQUIDATION_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_CONFIGURED_API_KEY_AND_PROFESSIONAL_PLAN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "SUPPORTED_HTX_PAIR_CATALOG_MUST_BE_VERIFIED_BEFORE_ENABLEMENT"
+      },
+      {
+        "source": "HYBLOCK_LIQUIDATION_LEVELS",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "HTX_COVERAGE_NOT_VERIFIED",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "NO_PROVEN_EXACT_HTX_PAIR_CATALOG"
+      },
+      {
+        "source": "COINANK_LIQUIDATION_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "PROGRAMMATIC_API_NOT_VERIFIED",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "TRIAL_AND_EXACT_PAIR_CATALOG_REQUIRED"
+      }
+    ],
+    "useful_future_source_count": 1,
+    "useful_history_source_count": 4,
+    "useful_source_count": 5,
+    "htx_calculated_coverage": false,
+    "cross_source_comparison_available": false,
+    "fallback_closed": true,
+    "history_cannot_close_future_map": true,
+    "unused_candidates_make_network_calls": false
+  },
+  "freshness_audit": {
+    "schema": "report2-liquidation-freshness-audit-v2-direct-vs-coverage",
+    "strict_fresh_required": true,
+    "required_source_count": 8,
+    "direct_network_check_count": 2,
+    "fresh_network_check_count": 2,
+    "fresh_coverage_check_count": 3,
+    "fresh_data_used_count": 1,
+    "complete": false,
+    "status": "PARTIAL_SOURCE_COVERAGE",
+    "receipts": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "network_calls": 6,
+        "direct_network_check": true,
+        "coverage_check": true,
+        "fresh_network_check": true,
+        "fresh_check_basis": "DIRECT_SOURCE_REQUEST",
+        "fresh_data_used": true,
+        "reason": "FRESH_RESPONSE_NOT_USABLE"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "INTERNAL_SCHEDULER"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "INTERNAL_SCHEDULER"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "network_calls": 2,
+        "direct_network_check": true,
+        "coverage_check": true,
+        "fresh_network_check": true,
+        "fresh_check_basis": "DIRECT_SOURCE_REQUEST",
+        "fresh_data_used": false,
+        "reason": "TRANSPORT"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "status": "NOT_RUN",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "status": "NOT_RUN",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": true,
+        "fresh_network_check": false,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fresh_data_used": false,
+        "reason": "NO_DIRECT_SOURCE_REQUEST"
+      }
+    ]
+  },
+  "report_text": "ЛИКВИДАЦИОННЫЙ БЛОК\n\nМонеты для наблюдения: NEAR-USDT.\nУглублённая проверка: NEAR-USDT.\nПроверки покрытия: 3 из 8; прямые свежие обращения: 2 из 8; пригодные будущие данные: 1 из 8.\nЛиквидационные уровни выше: 7,818335361 USDC (+46,43% к цене источника) — огромная; позиция 1296137,214 USDC; Hyperliquid official; зависит от других позиций счёта; 8,869020143 USDC (+66,11% к цене источника) — небольшая; позиция 1299,60996 USDC; Hyperliquid official; зависит от других позиций счёта.\nЛиквидационные уровни ниже: 5,088854206 USDC (−4,69% к цене источника) — средняя; позиция 31631,67348 USDC; Hyperliquid official.\nРазмер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.\nПокрытие: только доступные площадки и диапазон источника; время снимка 08.10 07:07 МСК.\nИсточники: числовая будущая карта — 1; данные истории — 4; причины отказов и пропусков сохранены по каждому этапу.\nHTX NEAR-USDT: 0 фактических ликвидаций в публичной выборке за запрошенные 120 минут; длинные 0 / короткие 0 USDT.\nGate NEAR-USDT: за 120 закрытых минут ликвидации длинные 4 335,35 / короткие 349,75 USDT; 24/24 интервала, только эта площадка.\nGate: открытый интерес 221 738 574,72 USDT; пользователей длинные 872 / короткие 1040.\nCoinalyze NEARUSDC-PERP.A: 2/24 закрытых интервала; наблюдаемые длинные 26,77 / короткие 501,18 USD, история неполная.\nCoinalyze NEARUSDT-PERP.A: 13/24 закрытых интервала; наблюдаемые длинные 95 320,01 / короткие 23 401,54 USD, история неполная.\nБоковой объём HTX, 240м: POC 5.3661667; VA 5.3144667–5.4241333 USDT .\nУровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.",
+  "reader_cloud_run": 37726230017,
+  "reader_sourceHTTP": 0,
+  "reader_D1": 0,
+  "reader_Telegram": 0,
+  "source_clocks_refreshed": false,
+  "fresh_automatic_SENT": false,
+  "actual_ENTRY": false,
+  "full_project_complete": false,
+  "scope": "Current liquidation-only manual native source and report verified; not new automatic Telegram or full ENTRY acceptance."
+}

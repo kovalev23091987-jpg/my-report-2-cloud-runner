@@ -1,0 +1,1785 @@
+{
+  "schema": "my-report-2-liquidation-run-output-v1",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "head": "340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc",
+  "source": "manual",
+  "run_id": "LIQ_ONLY:1791432460451",
+  "mode": "LIQUIDATION_ONLY",
+  "status": "PARTIAL_SOURCE_COVERAGE",
+  "coverage_admission": {
+    "status": "BOUNDED_PINNED_NATIVE_CALCULATED_CONTEXT_CHECK_ALLOWED",
+    "eligible": true,
+    "contract": "NEAR-USDT",
+    "source_ids": [
+      "HYPERLIQUID_NATIVE",
+      "GTRADE_NATIVE",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "COINLOBSTER_FUTURE_MODEL",
+      "DYDX_PINNED_NATIVE"
+    ],
+    "independent_upstreams": [
+      "HYPERLIQUID"
+    ],
+    "coverage_scope": "STRUCTURAL_ACCOUNT_HINT_IS_COLLECTION_PERMISSION_NOT_CURRENT_LEVEL_COVERAGE",
+    "network_calls": 0,
+    "calculated_fallback_allowed": false,
+    "leaders_may_be_replaced": false,
+    "proven_level_source_ids": [
+      "HYPERLIQUID_NATIVE"
+    ],
+    "additional_context_check_source_ids": [
+      "GTRADE_NATIVE",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "COINLOBSTER_FUTURE_MODEL",
+      "DYDX_PINNED_NATIVE"
+    ],
+    "structural_market_source_ids": [],
+    "fresh_live_levels_confirmed": false,
+    "receipt_only_context_score_eligible": false,
+    "receipt_only_context_target_eligible": false,
+    "automatic_discovery_allowed": true,
+    "structural_hint_available": true
+  },
+  "coverage_summary": {
+    "status": "CLOSED",
+    "assets": 102,
+    "cells": 816,
+    "checked_cells": 816,
+    "covered_assets": 55,
+    "uncovered_assets": 47,
+    "complete": true,
+    "weekly_refresh_due_ts": 1791747508467
+  },
+  "verified_candidate": "NEAR-USDT",
+  "preliminary_candidates": [
+    "NEAR-USDT"
+  ],
+  "liquidation_lines": [
+    "Ликвидационные уровни выше: 7,818335361 USDC (+46,43% к цене источника) — огромная; позиция 1296137,214 USDC; Hyperliquid official; зависит от других позиций счёта; 8,869020143 USDC (+66,11% к цене источника) — небольшая; позиция 1299,60996 USDC; Hyperliquid official; зависит от других позиций счёта.",
+    "Ликвидационные уровни ниже: 5,088854206 USDC (−4,69% к цене источника) — средняя; позиция 31631,67348 USDC; Hyperliquid official.",
+    "Размер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.",
+    "Покрытие: только доступные площадки и диапазон источника; время снимка 08.10 07:07 МСК.",
+    "Источники: числовая будущая карта — 1; данные истории — 4; причины отказов и пропусков сохранены по каждому этапу.",
+    "HTX NEAR-USDT: 0 фактических ликвидаций в публичной выборке за запрошенные 120 минут; длинные 0 / короткие 0 USDT.",
+    "Gate NEAR-USDT: за 120 закрытых минут ликвидации длинные 4 335,35 / короткие 349,75 USDT; 24/24 интервала, только эта площадка.",
+    "Gate: открытый интерес 221 738 574,72 USDT; пользователей длинные 872 / короткие 1040.",
+    "Coinalyze NEARUSDC-PERP.A: 2/24 закрытых интервала; наблюдаемые длинные 26,77 / короткие 501,18 USD, история неполная.",
+    "Coinalyze NEARUSDT-PERP.A: 13/24 закрытых интервала; наблюдаемые длинные 95 320,01 / короткие 23 401,54 USD, история неполная.",
+    "Боковой объём HTX, 240м: POC 5.3661667; VA 5.3144667–5.4241333 USDT ."
+  ],
+  "liquidation_map": {
+    "version": "liquidation-zones-v7-explicit-native-future-semantics-20261004",
+    "pump": {
+      "status": "CLOSED",
+      "rolling_24h_change_pct": null,
+      "absolute_move_pct": null,
+      "is_pump": true,
+      "is_strong_move": false,
+      "early_anomaly": true,
+      "threshold_pct": 5,
+      "inclusive": true,
+      "upper_ceiling_pct": null
+    },
+    "current_price": 5.339,
+    "priority_reason": "EARLY_TECHNICAL_ANOMALY",
+    "above": [
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 7.8183353612,
+        "price_quote": "USDC",
+        "distance_pct": 46.42722705172868,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1296137.21424,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "огромная",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472608,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "2db6e690667561fc8af6c9cb80e1401022dbeaf993cc72ab0522bb5240f5158e",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 7.8183353612,
+        "notional_usdt": 1296137.21424,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 7.8183353612,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ],
+        "selection_roles": [
+          "LARGEST_VISIBLE",
+          "NEAREST_NONZERO",
+          "FARTHEST_HUGE_VISIBLE"
+        ]
+      },
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 8.8690201432,
+        "price_quote": "USDC",
+        "distance_pct": 66.10518303929283,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1299.60996,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "небольшая",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "3fc52148c7dcc0fb24036dadda3c34fc18d1e7d90222a32f44f7fe6733be6e2a",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 8.8690201432,
+        "notional_usdt": 1299.60996,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 8.8690201432,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ],
+        "selection_roles": [
+          "LARGEST_VISIBLE",
+          "FARTHEST_VISIBLE"
+        ]
+      }
+    ],
+    "below": [
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 5.0888542062,
+        "price_quote": "USDC",
+        "distance_pct": -4.692396033262181,
+        "distance_reference_price": 5.3394,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "BELOW",
+        "liquidated_side": "BUYERS",
+        "notional": 31631.67348,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "средняя",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3394,
+        "conditional_cross": false,
+        "position_count": 1,
+        "position_key": "9efb2192db4c2ef2f27c488eb9aad86f73ebf9671bac89f9b47cfe97539c34e5",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 5.0888542062,
+        "notional_usdt": 31631.67348,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 5.0888542062,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ],
+        "selection_roles": [
+          "LARGEST_VISIBLE",
+          "NEAREST_NONZERO",
+          "FARTHEST_VISIBLE"
+        ]
+      }
+    ],
+    "future_only": true,
+    "future_levels_required": true,
+    "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+    "distance_cap_pct": null,
+    "minimum_distance_pct": 0,
+    "max_per_side": 6,
+    "display_minimum_separation_pct": 5,
+    "display_max_per_side": 4,
+    "display_nearby_levels_as_one_range": false,
+    "calculated_fallback_enabled": false,
+    "calculated_fallback_policy": "OWNER_DISABLED_REAL_EXTERNAL_LEVELS_ONLY",
+    "no_invented_exact_amounts": true,
+    "notional_summed_across_providers": false,
+    "volume_tiers": {
+      "small_below": 10000,
+      "medium_below": 100000,
+      "large_below": 1000000,
+      "unit": "USD_EQUIVALENT_REPORTED_NO_FX_CONVERSION",
+      "basis": "REPORT_DISPLAY_POLICY_NOT_INDUSTRY_STANDARD"
+    },
+    "realized_events_excluded": 0,
+    "status": "CLOSED",
+    "reason": null,
+    "all_zones": [
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 8.8690201432,
+        "price_quote": "USDC",
+        "distance_pct": 66.10518303929283,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1299.60996,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "небольшая",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "3fc52148c7dcc0fb24036dadda3c34fc18d1e7d90222a32f44f7fe6733be6e2a",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 8.8690201432,
+        "notional_usdt": 1299.60996,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 8.8690201432,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ]
+      },
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 7.8183353612,
+        "price_quote": "USDC",
+        "distance_pct": 46.42722705172868,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1296137.21424,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "огромная",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472608,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "2db6e690667561fc8af6c9cb80e1401022dbeaf993cc72ab0522bb5240f5158e",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 7.8183353612,
+        "notional_usdt": 1296137.21424,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 7.8183353612,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ]
+      },
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 5.0888542062,
+        "price_quote": "USDC",
+        "distance_pct": -4.692396033262181,
+        "distance_reference_price": 5.3394,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "BELOW",
+        "liquidated_side": "BUYERS",
+        "notional": 31631.67348,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "средняя",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3394,
+        "conditional_cross": false,
+        "position_count": 1,
+        "position_key": "9efb2192db4c2ef2f27c488eb9aad86f73ebf9671bac89f9b47cfe97539c34e5",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false,
+        "native_price": 5.0888542062,
+        "notional_usdt": 31631.67348,
+        "corroborating_sources": [
+          "Hyperliquid official"
+        ],
+        "independent_source_count": 1,
+        "independence_groups": [
+          "Hyperliquid official"
+        ],
+        "consensus_confidence_ru": "один источник",
+        "consensus_tolerance_pct": 0.4,
+        "consensus_component_count": 1,
+        "consensus_components": [
+          {
+            "price": 5.0888542062,
+            "source": "Hyperliquid official",
+            "independence_group": "Hyperliquid official",
+            "estimated": false
+          }
+        ]
+      }
+    ],
+    "display_source_zones": [
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 8.8690201432,
+        "price_quote": "USDC",
+        "distance_pct": 66.10518303929283,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1299.60996,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "небольшая",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "3fc52148c7dcc0fb24036dadda3c34fc18d1e7d90222a32f44f7fe6733be6e2a",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false
+      },
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 7.8183353612,
+        "price_quote": "USDC",
+        "distance_pct": 46.42722705172868,
+        "distance_reference_price": 5.3393999999999995,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "ABOVE",
+        "liquidated_side": "SELLERS",
+        "notional": 1296137.21424,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "огромная",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472608,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3393999999999995,
+        "conditional_cross": true,
+        "position_count": 1,
+        "position_key": "2db6e690667561fc8af6c9cb80e1401022dbeaf993cc72ab0522bb5240f5158e",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false
+      },
+      {
+        "kind": "NATIVE_FUTURE_LEVEL",
+        "price": 5.0888542062,
+        "price_quote": "USDC",
+        "distance_pct": -4.692396033262181,
+        "distance_reference_price": 5.3394,
+        "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+        "side": "BELOW",
+        "liquidated_side": "BUYERS",
+        "notional": 31631.67348,
+        "notional_unit": "USDC",
+        "exact_notional_usdt": null,
+        "exact_amount_available": true,
+        "amount_semantics": "REPORTED_OPEN_POSITION_NOTIONAL",
+        "strength_label_ru": "средняя",
+        "strength_score_0_100": null,
+        "strength_basis": [
+          "REPORTED_VOLUME_TIER"
+        ],
+        "source": "Hyperliquid official",
+        "venue": null,
+        "source_ts": 1791432472380,
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "price_semantics": "EXCHANGE_ACCOUNT_LIQUIDATION_PRICE",
+        "native_reference_price": 5.3394,
+        "conditional_cross": false,
+        "position_count": 1,
+        "position_key": "9efb2192db4c2ef2f27c488eb9aad86f73ebf9671bac89f9b47cfe97539c34e5",
+        "decision_target_eligible": false,
+        "estimated": false,
+        "independence_group": null,
+        "model_sources": [],
+        "model_version": null,
+        "anchor_kinds": [],
+        "leverage_scenarios": [],
+        "source_backed_calculated": false
+      }
+    ],
+    "provider_zone_count": 3,
+    "external_zone_count": 3,
+    "calculated_zone_count": 0,
+    "consensus_zone_count": 0,
+    "displayed_zone_count": 3,
+    "omitted_zone_count": 0,
+    "source_receipts": [
+      {
+        "source": "Hyperliquid official",
+        "status": "USABLE_SCOPED_CONTEXT",
+        "coverage": "EXPLICIT_PUBLIC_ACCOUNT_SAMPLE",
+        "source_ts": 1791432472380,
+        "visible_half_range_pct": null,
+        "total_zones": 3
+      }
+    ],
+    "htx_source_backed_model": {
+      "status": "DISABLED_BY_OWNER",
+      "reason": "CALCULATED_HTX_FALLBACK_FORBIDDEN",
+      "volatility_1h_pct": null
+    },
+    "coverage_scope": "ONLY_RETURNED_SOURCE_MARKETS_AND_RANGE",
+    "coverage_status": "PARTIAL_SOURCE_BACKED_FUTURE_MAP",
+    "above_status": "CLOSED",
+    "below_status": "CLOSED"
+  },
+  "future_map_source": null,
+  "future_provider_models": null,
+  "byk_future": null,
+  "tracked_hl_future": {
+    "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+    "maps": []
+  },
+  "future_levels_status": "EXTERNAL_SOURCE_LEVELS_AVAILABLE",
+  "future_level_count": 3,
+  "source_chain": {
+    "schema": "report2-liquidation-source-chain-v3",
+    "contract": "NEAR-USDT",
+    "policy": "REAL_EXTERNAL_NUMERIC_LEVELS_ONLY_NO_HTX_CALCULATED_FALLBACK;ADAPTIVE_FAILOVER_WITHOUT_SUMMING_OVERLAP",
+    "all_attempts_retained": true,
+    "unsupported_is_not_zero_liquidations": true,
+    "provider_count_is_not_data_count": true,
+    "configured_future_connection_count": 8,
+    "configured_additional_calculated_connection_count": 1,
+    "configured_additional_calculated_connections": [
+      "DYDX_PINNED_NATIVE"
+    ],
+    "configured_total_future_connections": 9,
+    "configured_future_connections": [
+      "HYPERLIQUID_NATIVE",
+      "BYK_TRACKED_HL_BANDS",
+      "LIGHTER_NATIVE",
+      "GMX_NATIVE",
+      "GTRADE_NATIVE",
+      "BYKARANTELI_FUTURE_MAP",
+      "COINLOBSTER_FUTURE_MODEL",
+      "OXARCHIVE_HL_BUCKETS"
+    ],
+    "stages": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": true,
+        "network_calls": 6,
+        "reason": null,
+        "fallback_rank": 1,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "data_available": false,
+        "network_calls": 0,
+        "upstream_family": "HYPERLIQUID",
+        "independent_of_other_hl_sources": false,
+        "entry_eligible": false,
+        "reason": null,
+        "fallback_rank": 2,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 3,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 4,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 2,
+        "reason": "TRANSPORT",
+        "fallback_rank": 5,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 6,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "partial_future_hint_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 7,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "role": "PROJECTED_HYPERLIQUID_CONTEXT",
+        "network_calls": 0,
+        "data_available": false,
+        "fresh_check_completed": true,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fallback_rank": 8,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 9,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "HTX_REALIZED_LIQUIDATIONS",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINALYZE",
+        "status": "PARTIAL",
+        "reason": "CLOSED_COMPARABLE_WINDOWS_REQUIRED",
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "GATE_LIQUIDATION_HISTORY",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINLOBSTER",
+        "status": "CLOSED",
+        "role": "REALIZED_VALIDATION",
+        "observed_event_count": 1,
+        "data_available": true,
+        "reason": null,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BINANCE",
+        "status": "HTTP_451",
+        "http_status": 451,
+        "catalog_complete": false,
+        "observed_ts": 1791422894709,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BYBIT",
+        "status": "HTTP_403",
+        "http_status": 403,
+        "catalog_complete": false,
+        "observed_ts": 1791430027378,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "OKX",
+        "status": "CLOSED",
+        "http_status": 200,
+        "catalog_complete": true,
+        "observed_ts": 1791402350220,
+        "exact_symbol": "NEAR-USDT-SWAP",
+        "coverage_status": "EXACT_MARKET_SUPPORTED",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      }
+    ],
+    "future_level_stages": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": true,
+        "network_calls": 6,
+        "reason": null,
+        "fallback_rank": 1,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "data_available": false,
+        "network_calls": 0,
+        "upstream_family": "HYPERLIQUID",
+        "independent_of_other_hl_sources": false,
+        "entry_eligible": false,
+        "reason": null,
+        "fallback_rank": 2,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 3,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 4,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 2,
+        "reason": "TRANSPORT",
+        "fallback_rank": 5,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 6,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_RUN",
+        "data_available": false,
+        "partial_future_hint_available": false,
+        "network_calls": 0,
+        "reason": null,
+        "fallback_rank": 7,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "role": "PROJECTED_HYPERLIQUID_CONTEXT",
+        "network_calls": 0,
+        "data_available": false,
+        "fresh_check_completed": true,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fallback_rank": 8,
+        "priority_class": "FUTURE_LEVEL"
+      },
+      {
+        "source": "DYDX_PINNED_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role": "NATIVE_POSITION_CONTEXT",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "INTERNAL_SCHEDULER",
+        "fallback_rank": 9,
+        "priority_class": "FUTURE_LEVEL"
+      }
+    ],
+    "secondary_history_stages": [
+      {
+        "source": "HTX_REALIZED_LIQUIDATIONS",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINALYZE",
+        "status": "PARTIAL",
+        "reason": "CLOSED_COMPARABLE_WINDOWS_REQUIRED",
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "GATE_LIQUIDATION_HISTORY",
+        "status": "CLOSED",
+        "reason": null,
+        "network_calls": 1,
+        "role": "REALIZED_HISTORY",
+        "data_available": true,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "COINLOBSTER",
+        "status": "CLOSED",
+        "role": "REALIZED_VALIDATION",
+        "observed_event_count": 1,
+        "data_available": true,
+        "reason": null,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BINANCE",
+        "status": "HTTP_451",
+        "http_status": 451,
+        "catalog_complete": false,
+        "observed_ts": 1791422894709,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "BYBIT",
+        "status": "HTTP_403",
+        "http_status": 403,
+        "catalog_complete": false,
+        "observed_ts": 1791430027378,
+        "exact_symbol": null,
+        "coverage_status": "COVERAGE_UNKNOWN",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      },
+      {
+        "source": "OKX",
+        "status": "CLOSED",
+        "http_status": 200,
+        "catalog_complete": true,
+        "observed_ts": 1791402350220,
+        "exact_symbol": "NEAR-USDT-SWAP",
+        "coverage_status": "EXACT_MARKET_SUPPORTED",
+        "role": "EXACT_MARKET_DISCOVERY",
+        "data_available": false,
+        "priority_class": "SECONDARY_HISTORY_OR_COVERAGE"
+      }
+    ],
+    "evaluated_not_enabled": [
+      {
+        "source": "COINGLASS_LIQUIDATION_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "NOT_CONFIGURED_API_KEY_AND_PROFESSIONAL_PLAN",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "SUPPORTED_HTX_PAIR_CATALOG_MUST_BE_VERIFIED_BEFORE_ENABLEMENT"
+      },
+      {
+        "source": "HYBLOCK_LIQUIDATION_LEVELS",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "HTX_COVERAGE_NOT_VERIFIED",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "NO_PROVEN_EXACT_HTX_PAIR_CATALOG"
+      },
+      {
+        "source": "COINANK_LIQUIDATION_MAP",
+        "role": "PROJECTED_PROVIDER_MODEL",
+        "status": "PROGRAMMATIC_API_NOT_VERIFIED",
+        "data_available": false,
+        "network_calls": 0,
+        "reason": "TRIAL_AND_EXACT_PAIR_CATALOG_REQUIRED"
+      }
+    ],
+    "useful_future_source_count": 1,
+    "useful_history_source_count": 4,
+    "useful_source_count": 5,
+    "htx_calculated_coverage": false,
+    "cross_source_comparison_available": false,
+    "fallback_closed": true,
+    "history_cannot_close_future_map": true,
+    "unused_candidates_make_network_calls": false
+  },
+  "freshness_audit": {
+    "schema": "report2-liquidation-freshness-audit-v2-direct-vs-coverage",
+    "strict_fresh_required": true,
+    "required_source_count": 8,
+    "direct_network_check_count": 2,
+    "fresh_network_check_count": 2,
+    "fresh_coverage_check_count": 3,
+    "fresh_data_used_count": 1,
+    "complete": false,
+    "status": "PARTIAL_SOURCE_COVERAGE",
+    "receipts": [
+      {
+        "source": "HYPERLIQUID_NATIVE",
+        "status": "ACQUISITION_RETURNED",
+        "network_calls": 6,
+        "direct_network_check": true,
+        "coverage_check": true,
+        "fresh_network_check": true,
+        "fresh_check_basis": "DIRECT_SOURCE_REQUEST",
+        "fresh_data_used": true,
+        "reason": "FRESH_RESPONSE_NOT_USABLE"
+      },
+      {
+        "source": "BYK_TRACKED_HL_BANDS",
+        "status": "NOT_REQUESTED_BY_COVERAGE_GATE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "INTERNAL_SCHEDULER"
+      },
+      {
+        "source": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "INTERNAL_SCHEDULER"
+      },
+      {
+        "source": "GTRADE_NATIVE",
+        "status": "GTRADE_RECEIPT_WINDOW_NOT_CLOSED",
+        "network_calls": 2,
+        "direct_network_check": true,
+        "coverage_check": true,
+        "fresh_network_check": true,
+        "fresh_check_basis": "DIRECT_SOURCE_REQUEST",
+        "fresh_data_used": false,
+        "reason": "TRANSPORT"
+      },
+      {
+        "source": "BYKARANTELI_FUTURE_MAP",
+        "status": "NOT_RUN",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "COINLOBSTER_FUTURE_MODEL",
+        "status": "NOT_RUN",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": false,
+        "fresh_network_check": false,
+        "fresh_check_basis": null,
+        "fresh_data_used": false,
+        "reason": "NO_FRESH_COVERAGE_CHECK"
+      },
+      {
+        "source": "OXARCHIVE_HL_BUCKETS",
+        "status": "NOT_RUN_HTTP_ENVELOPE",
+        "network_calls": 0,
+        "direct_network_check": false,
+        "coverage_check": true,
+        "fresh_network_check": false,
+        "fresh_check_basis": "FRESH_HYPERLIQUID_COVERAGE_PREREQUISITE",
+        "fresh_data_used": false,
+        "reason": "NO_DIRECT_SOURCE_REQUEST"
+      }
+    ]
+  },
+  "factual_history": {
+    "COINALYZE": {
+      "source": "COINALYZE",
+      "status": "PARTIAL",
+      "reason": "CLOSED_COMPARABLE_WINDOWS_REQUIRED",
+      "observed_ts": 1791432476254,
+      "market_count": 2,
+      "requested_symbols": [
+        "NEARUSD.6",
+        "NEARUSD_PERP.A",
+        "NEARUSDC_PERP.A",
+        "NEARUSDT_PERP.A"
+      ],
+      "comparable_symbols": [],
+      "conflicting_duplicates": [],
+      "datapoints": 15,
+      "intensity_ratio": null,
+      "coverage_fraction": 0,
+      "partial_observation": {
+        "datapoints": 15,
+        "window_start_ts": 1791425100000,
+        "window_end_ts": 1791432300000,
+        "unit": "USD",
+        "closed_intervals_only": true,
+        "complete_window": false,
+        "markets": [
+          {
+            "symbol": "NEARUSD.6",
+            "observed_buckets": 0,
+            "expected_buckets": 24,
+            "long_liquidated_observed_usd": 0,
+            "short_liquidated_observed_usd": 0,
+            "rows": []
+          },
+          {
+            "symbol": "NEARUSD_PERP.A",
+            "observed_buckets": 0,
+            "expected_buckets": 24,
+            "long_liquidated_observed_usd": 0,
+            "short_liquidated_observed_usd": 0,
+            "rows": []
+          },
+          {
+            "symbol": "NEARUSDC_PERP.A",
+            "observed_buckets": 2,
+            "expected_buckets": 24,
+            "long_liquidated_observed_usd": 26.765,
+            "short_liquidated_observed_usd": 501.177,
+            "rows": [
+              {
+                "symbol": "NEARUSDC_PERP.A",
+                "bucket": 1791428400000,
+                "l": 26.765,
+                "s": 0
+              },
+              {
+                "symbol": "NEARUSDC_PERP.A",
+                "bucket": 1791430200000,
+                "l": 0,
+                "s": 501.177
+              }
+            ]
+          },
+          {
+            "symbol": "NEARUSDT_PERP.A",
+            "observed_buckets": 13,
+            "expected_buckets": 24,
+            "long_liquidated_observed_usd": 95320.011,
+            "short_liquidated_observed_usd": 23401.54,
+            "rows": [
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791425700000,
+                "l": 0,
+                "s": 718.24
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791426000000,
+                "l": 0,
+                "s": 2410.63
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791426300000,
+                "l": 0,
+                "s": 2147.373
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791427500000,
+                "l": 0,
+                "s": 21.692
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791428100000,
+                "l": 4004.952,
+                "s": 0
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791428400000,
+                "l": 4032.3150000000005,
+                "s": 0
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791428700000,
+                "l": 75309.608,
+                "s": 206.778
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791429000000,
+                "l": 10801.8,
+                "s": 0
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791429300000,
+                "l": 1165.9959999999999,
+                "s": 0
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791429600000,
+                "l": 0,
+                "s": 16932.510000000002
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791429900000,
+                "l": 0,
+                "s": 301.224
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791430200000,
+                "l": 0,
+                "s": 663.093
+              },
+              {
+                "symbol": "NEARUSDT_PERP.A",
+                "bucket": 1791431400000,
+                "l": 5.34,
+                "s": 0
+              }
+            ]
+          }
+        ]
+      },
+      "advisory_only": true,
+      "network_calls": 1,
+      "provider_call_units": 4,
+      "symbols": [
+        "NEARUSD.6",
+        "NEARUSD_PERP.A",
+        "NEARUSDC_PERP.A",
+        "NEARUSDT_PERP.A"
+      ],
+      "catalog_cache_status": "HIT",
+      "admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINALYZE",
+        "minute_bucket": 1791432420000,
+        "reserved_units": 4,
+        "rolling_units": 4,
+        "cap": 30
+      }
+    },
+    "GATE_LIQUIDATION_HISTORY": {
+      "version": "gate-public-liquidation-stat-context-v2-20260930",
+      "source": "GATE_LIQUIDATION_HISTORY",
+      "upstream_id": "GATE_USDT_PERPETUAL",
+      "contract": "NEAR-USDT",
+      "status": "CLOSED",
+      "reason": null,
+      "source_ts": 1791432000000,
+      "observed_ts": 1791432481348,
+      "unit": "USDT_QUOTE",
+      "requested_interval": "5m",
+      "native_statistics": {
+        "source_ts": 1791432000000,
+        "long_liquidated_usd": 0,
+        "short_liquidated_usd": 0,
+        "open_interest_usd": 221738574.72,
+        "mark_price": 5.33,
+        "long_users": 872,
+        "short_users": 1040,
+        "top_long_size_contracts": 2233876,
+        "top_short_size_contracts": 1861867,
+        "liquidation_amount_fields": {
+          "long": "long_liq_usd_new",
+          "short": "short_liq_usd_new"
+        }
+      },
+      "long_liquidated_recent": 1039.6425,
+      "short_liquidated_recent": 0,
+      "recent_window_minutes": 15,
+      "intensity_ratio": 1.9963219658199938,
+      "baseline_window_comparable": true,
+      "whole_market_coverage": false,
+      "coverage": "ONE_EXACT_GATE_PERPETUAL_120_MINUTES",
+      "history": {
+        "status": "CLOSED",
+        "window_start_ts": 1791425100000,
+        "window_end_ts": 1791432300000,
+        "window_minutes": 120,
+        "expected_buckets": 24,
+        "observed_buckets": 24,
+        "missing_buckets": 0,
+        "closed_intervals_only": true,
+        "long_liquidated_observed_usd": 4335.346199999999,
+        "short_liquidated_observed_usd": 349.7491,
+        "complete_window": true,
+        "rows": [
+          {
+            "source_ts": 1791432000000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221738574.72,
+            "mark_price": 5.33,
+            "long_users": 872,
+            "short_users": 1040,
+            "top_long_size_contracts": 2233876,
+            "top_short_size_contracts": 1861867,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791431700000,
+            "long_liquidated_usd": 1039.6425,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221075040.656,
+            "mark_price": 5.3315,
+            "long_users": 883,
+            "short_users": 1016,
+            "top_long_size_contracts": 2239685,
+            "top_short_size_contracts": 1860338,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791431400000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221604097.0432,
+            "mark_price": 5.3513,
+            "long_users": 885,
+            "short_users": 1013,
+            "top_long_size_contracts": 2240637,
+            "top_short_size_contracts": 1855813,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791431100000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 223429451.1696,
+            "mark_price": 5.3859,
+            "long_users": 897,
+            "short_users": 1006,
+            "top_long_size_contracts": 2239118,
+            "top_short_size_contracts": 1858764,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791430800000,
+            "long_liquidated_usd": 214.8,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 222854484.48,
+            "mark_price": 5.37,
+            "long_users": 888,
+            "short_users": 1007,
+            "top_long_size_contracts": 2238849,
+            "top_short_size_contracts": 1862356,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791430500000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 224966803.0032,
+            "mark_price": 5.3827,
+            "long_users": 879,
+            "short_users": 1010,
+            "top_long_size_contracts": 2259380,
+            "top_short_size_contracts": 1878826,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791430200000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 225776178.1856,
+            "mark_price": 5.3974,
+            "long_users": 895,
+            "short_users": 1003,
+            "top_long_size_contracts": 2259247,
+            "top_short_size_contracts": 1879657,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791429900000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 225085307.4144,
+            "mark_price": 5.3838,
+            "long_users": 885,
+            "short_users": 1004,
+            "top_long_size_contracts": 2264372,
+            "top_short_size_contracts": 1883644,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791429600000,
+            "long_liquidated_usd": 284.4457,
+            "short_liquidated_usd": 246.8774,
+            "open_interest_usd": 223564530.9744,
+            "mark_price": 5.3669,
+            "long_users": 869,
+            "short_users": 1006,
+            "top_long_size_contracts": 2246152,
+            "top_short_size_contracts": 1872562,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791429300000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 220753215.0528,
+            "mark_price": 5.2887,
+            "long_users": 877,
+            "short_users": 1003,
+            "top_long_size_contracts": 2245845,
+            "top_short_size_contracts": 1870493,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791429000000,
+            "long_liquidated_usd": 2447.7684,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221340824.5056,
+            "mark_price": 5.2982,
+            "long_users": 874,
+            "short_users": 1010,
+            "top_long_size_contracts": 2247167,
+            "top_short_size_contracts": 1871627,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791428700000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221342054.6944,
+            "mark_price": 5.3036,
+            "long_users": 874,
+            "short_users": 1019,
+            "top_long_size_contracts": 2247646,
+            "top_short_size_contracts": 1869004,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791428400000,
+            "long_liquidated_usd": 310.996,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 224684701.024,
+            "mark_price": 5.362,
+            "long_users": 877,
+            "short_users": 1021,
+            "top_long_size_contracts": 2254955,
+            "top_short_size_contracts": 1873207,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791428100000,
+            "long_liquidated_usd": 37.6936,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 225994455.808,
+            "mark_price": 5.3848,
+            "long_users": 862,
+            "short_users": 1008,
+            "top_long_size_contracts": 2258207,
+            "top_short_size_contracts": 1871992,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791427800000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 102.8717,
+            "open_interest_usd": 227575850.0624,
+            "mark_price": 5.4143,
+            "long_users": 863,
+            "short_users": 1011,
+            "top_long_size_contracts": 2255423,
+            "top_short_size_contracts": 1873455,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791427500000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 227392123.728,
+            "mark_price": 5.411,
+            "long_users": 862,
+            "short_users": 1016,
+            "top_long_size_contracts": 2256062,
+            "top_short_size_contracts": 1873031,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791427200000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 226552299.9936,
+            "mark_price": 5.4152,
+            "long_users": 878,
+            "short_users": 1004,
+            "top_long_size_contracts": 2268251,
+            "top_short_size_contracts": 1872791,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791426900000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 226653543.84,
+            "mark_price": 5.4157,
+            "long_users": 874,
+            "short_users": 997,
+            "top_long_size_contracts": 2266728,
+            "top_short_size_contracts": 1877170,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791426600000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 226093229.824,
+            "mark_price": 5.4032,
+            "long_users": 876,
+            "short_users": 993,
+            "top_long_size_contracts": 2266420,
+            "top_short_size_contracts": 1876125,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791426300000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 226329108.224,
+            "mark_price": 5.414,
+            "long_users": 868,
+            "short_users": 990,
+            "top_long_size_contracts": 2260710,
+            "top_short_size_contracts": 1878844,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791426000000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 225556310.9792,
+            "mark_price": 5.4023,
+            "long_users": 872,
+            "short_users": 1001,
+            "top_long_size_contracts": 2131199,
+            "top_short_size_contracts": 1889950,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791425700000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 222681496.6272,
+            "mark_price": 5.3547,
+            "long_users": 886,
+            "short_users": 989,
+            "top_long_size_contracts": 2130550,
+            "top_short_size_contracts": 1883363,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791425400000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221749720.1776,
+            "mark_price": 5.3467,
+            "long_users": 880,
+            "short_users": 990,
+            "top_long_size_contracts": 2130521,
+            "top_short_size_contracts": 1875013,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          },
+          {
+            "source_ts": 1791425100000,
+            "long_liquidated_usd": 0,
+            "short_liquidated_usd": 0,
+            "open_interest_usd": 221563520.64,
+            "mark_price": 5.34,
+            "long_users": 877,
+            "short_users": 994,
+            "top_long_size_contracts": 2130508,
+            "top_short_size_contracts": 1875055,
+            "liquidation_amount_fields": {
+              "long": "long_liq_usd_new",
+              "short": "short_liq_usd_new"
+            }
+          }
+        ]
+      },
+      "positioning": {
+        "source_ts": 1791432000000,
+        "mark_price": 5.33,
+        "open_interest_usd": 221738574.72,
+        "long_users": 872,
+        "short_users": 1040,
+        "top_long_size_contracts": 2233876,
+        "top_short_size_contracts": 1861867
+      },
+      "equivalent_baseline_replacement": false,
+      "event_execution_prices_proven": false,
+      "independent_vote_added": false,
+      "direction_neutral_context": true,
+      "advisory_only": true,
+      "exact_identity": true,
+      "native_symbol": "NEAR_USDT",
+      "identity": {
+        "symbol": "NEAR_USDT",
+        "type": "direct",
+        "quanto_multiplier": 1
+      },
+      "network_calls": 1,
+      "receipts": [
+        {
+          "http_status": 200,
+          "path": "contract_stats?contract=NEAR_USDT&interval=5m&limit=26",
+          "received_ts": 1791432481348
+        }
+      ],
+      "admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE_PUBLIC_STATISTICS",
+        "minute_bucket": 1791432420000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "per_minute_operational_cap": 6,
+      "free_keyless": true
+    },
+    "HTX_REALIZED_LIQUIDATIONS": {
+      "version": "htx-public-v3-realized-liquidations-v1-20260930",
+      "source": "HTX_REALIZED_LIQUIDATIONS",
+      "upstream_id": "HTX_USDT_PERPETUAL",
+      "contract": "NEAR-USDT",
+      "source_ts": 1791432477620,
+      "observed_ts": 1791432477747,
+      "window_start_ts": 1791425100000,
+      "window_end_ts": 1791432300000,
+      "unit": "USDT_QUOTE",
+      "coverage": "PUBLIC_REQUESTED_WINDOW_OBSERVATIONS",
+      "complete_window": false,
+      "pagination_complete": false,
+      "projected_liquidation_prices": false,
+      "whole_market_coverage": false,
+      "advisory_only": true,
+      "independent_vote_added": false,
+      "status": "CLOSED",
+      "reason": null,
+      "invalid_rows": 0,
+      "events": [],
+      "observed_event_count": 0,
+      "long_liquidated_observed_usd": 0,
+      "short_liquidated_observed_usd": 0,
+      "empty_response_is_not_full_window_zero": true,
+      "network_calls": 1,
+      "http_status": 200,
+      "admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "HTX_PUBLIC_LIQUIDATIONS",
+        "minute_bucket": 1791432420000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "request_route": "GET /linear-swap-api/v3/swap_liquidation_orders",
+      "public_keyless": true
+    }
+  },
+  "report_text": "ЛИКВИДАЦИОННЫЙ БЛОК\n\nМонеты для наблюдения: NEAR-USDT.\nУглублённая проверка: NEAR-USDT.\nПроверки покрытия: 3 из 8; прямые свежие обращения: 2 из 8; пригодные будущие данные: 1 из 8.\nЛиквидационные уровни выше: 7,818335361 USDC (+46,43% к цене источника) — огромная; позиция 1296137,214 USDC; Hyperliquid official; зависит от других позиций счёта; 8,869020143 USDC (+66,11% к цене источника) — небольшая; позиция 1299,60996 USDC; Hyperliquid official; зависит от других позиций счёта.\nЛиквидационные уровни ниже: 5,088854206 USDC (−4,69% к цене источника) — средняя; позиция 31631,67348 USDC; Hyperliquid official.\nРазмер по объёму: небольшая <10 тыс., средняя 10–100 тыс., крупная 100 тыс.–1 млн, огромная ≥1 млн; шкала отчёта.\nПокрытие: только доступные площадки и диапазон источника; время снимка 08.10 07:07 МСК.\nИсточники: числовая будущая карта — 1; данные истории — 4; причины отказов и пропусков сохранены по каждому этапу.\nHTX NEAR-USDT: 0 фактических ликвидаций в публичной выборке за запрошенные 120 минут; длинные 0 / короткие 0 USDT.\nGate NEAR-USDT: за 120 закрытых минут ликвидации длинные 4 335,35 / короткие 349,75 USDT; 24/24 интервала, только эта площадка.\nGate: открытый интерес 221 738 574,72 USDT; пользователей длинные 872 / короткие 1040.\nCoinalyze NEARUSDC-PERP.A: 2/24 закрытых интервала; наблюдаемые длинные 26,77 / короткие 501,18 USD, история неполная.\nCoinalyze NEARUSDT-PERP.A: 13/24 закрытых интервала; наблюдаемые длинные 95 320,01 / короткие 23 401,54 USD, история неполная.\nБоковой объём HTX, 240м: POC 5.3661667; VA 5.3144667–5.4241333 USDT .\nУровни других площадок не являются подтверждёнными целями на ХТХ. Это наблюдение, не подтверждённый вход.",
+  "generated_at": "2026-10-08T04:08:06.870Z",
+  "secrets_included": false,
+  "alternative_manual_recalculation": false,
+  "telegram_started": false
+}
