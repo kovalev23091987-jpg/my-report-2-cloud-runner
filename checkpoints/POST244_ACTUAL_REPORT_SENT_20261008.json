@@ -1,0 +1,193 @@
+{
+  "schema": "POST244_FIL_SENT_AND_ORIGINAL_TASK_READ_20261008_V1",
+  "head": "58a1035614bfb227175bff808b8b012126b44665",
+  "cloud_run": "37854154416",
+  "read_ts": 1791498782482,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "cases": [
+    {
+      "source_cloud_run": 37853236004,
+      "source_head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+      "contract": "FIL-USDT",
+      "run_id": "1791498274068-1791498286190",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+      "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+      "observed_ts": 1791498338812,
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": "<=",
+        "value": 1.0619,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791500138812,
+        "next_recheck_ts": 1791498638812,
+        "cancel_condition": "price>1.076",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_entry": {
+        "area": "1.0619 USDT",
+        "min_price": 1.0619,
+        "max_price": 1.0619,
+        "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "canonical_targets": [],
+      "canonical_state": "OBSERVE",
+      "receipt": {
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "run_id": "1791498274068-1791498286190",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+        "observed_ts": 1791498338812,
+        "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+        "lifecycle_event": "OBSERVE",
+        "state": "SENT",
+        "telegram_message_id": "164",
+        "sent_ts": 1791498387674,
+        "last_error": "SENT"
+      },
+      "task": {
+        "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "contract_code": "FIL-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "run_id": "1791498274068-1791498286190",
+        "due_ts": 1791498638812,
+        "expires_ts": 1791500138812,
+        "state": "PENDING",
+        "attempt_count": 0,
+        "last_result": null,
+        "created_ts": 1791498387674,
+        "updated_ts": 1791498387674
+      },
+      "status": "ACTUAL_EXACT_TASK_READ",
+      "exact_SENT": true
+    }
+  ],
+  "limitation": "Current mutable task state cannot reconstruct overwritten historical collector prices or prove all absent entries.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 77,
+      "reserved_rows_read": 1490500,
+      "reserved_rows_written": 28380,
+      "measured_rows_read": 835317,
+      "measured_rows_written": 13034,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1491500,
+      "rows_written": 28396
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "poll": {
+    "day_key": "2026-10-08",
+    "last_bucket": 1791498600000,
+    "polls": 25
+  },
+  "kicks": {
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1308
+      },
+      "duration": 0.1308,
+      "changes": 0,
+      "last_row_id": 1897,
+      "changed_db": false,
+      "size_after": 411865088,
+      "rows_read": 0,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "results": []
+  },
+  "status": "BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "NATURAL_SENT_TRACE:37854154416:1",
+    "source_run_id": "37854154416",
+    "measured_rows_read": 82,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 8,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 8,
+    "rows_read": 83,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 78,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_trigger_kick_poll": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
