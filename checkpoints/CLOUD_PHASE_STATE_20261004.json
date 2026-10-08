@@ -173,14 +173,14 @@
   "lease": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
     "acquired_ts": 1791485859126,
-    "expires_ts": 1791490440576,
-    "scope": "ACTUAL_POST238_BATCH_AND_GENERIC_TIMELY_TRIGGER_WORK_NO_FORCED_MAIN"
+    "expires_ts": 1791492473137,
+    "scope": "FULL_OWNER_ACTUAL_SOURCE_BATCH_AND_CONTINUOUS_CLOUD_TRIGGER_TIMELINESS"
   },
-  "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
+  "next_action": "COMPLETE_CONTINUOUS_EXISTING_CLOUD_BACKUP_FOR_EXACT_SENT_TRIGGER_WAKEUP;THEN_READ_ACTUAL_BOUNDED_RECEIPTS;KEEP_ALL86+16+24_SCOPE_OPEN",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791487740576,
+  "updated_ts": 1791489773138,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -361,7 +361,10 @@
     "approved_example": "current-generation/tests/fixtures/approved-telegram-qnt-20261006.txt",
     "superseded_by": "checkpoints/OWNER_BRIEF_TELEGRAM_AMENDMENT_20261007.md"
   },
-  "latest_status": "PR235_PR236_MERGED_ACTUAL_NEAR_NATIVE_LEVELS_AND_PRODUCTION_READER_VERIFIED_AUTOMATIC_ENTRY_SENT_PENDING",
+  "latest_status": {
+    "path": "checkpoints/CURRENT_PROJECT_STATUS.json",
+    "updated_utc": "2026-10-08T20:02:53.137Z"
+  },
   "latest_actual_readback": {
     "evidence": "checkpoints/POST_PR227_NATURAL_RETAINED_READBACK_20261007.json",
     "workflow_run": 37663457675,
@@ -813,31 +816,52 @@
     "natural_production_acceptance": "PENDING"
   },
   "latest_actual_report": {
-    "proof": "checkpoints/POST_PR237_AUTOMATIC_NATIVE_READBACK_20261008.json",
-    "cloud_run": 37800810333,
-    "head": "5ce59b2dc05adb660c1b46074e60e0775a569d60",
-    "run_id": "1791473220191-1791473231785",
+    "proof": "checkpoints/POST239_ACTUAL_FLOW_STORAGE_RELEASE_20261008.json",
+    "cloud_run": 37831800227,
+    "head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
+    "run_id": "1791487535792-1791487551019",
+    "generated_at": "2026-10-08T19:28:00.662Z",
     "candidates": [
       {
-        "contract": "CT-USDT",
-        "snapshot_id": "S392:CT-USDT:1791473349993",
-        "publication_id": "PUB:525122089c1cee09ef7470abf447a35679a422f3",
-        "analytical_fingerprint": "025dbeb0be3e38ee3a866317b933b14ca27117aa83fef63efbb716081c4251cd",
-        "state": "REJECTED",
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791487668251",
+        "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
+        "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+        "state": "OBSERVE",
+        "participating": [
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
         "liquidation_levels": 0
       },
       {
         "contract": "NEAR-USDT",
-        "snapshot_id": "S392:NEAR-USDT:1791473314060",
-        "publication_id": "PUB:42f7ae9e66b9606d9b5f0cc5d45ef7c032e19bf8",
-        "analytical_fingerprint": "a0ed57f6a0a88d5f55cf917702efb584d07db4e33f95d95bd78e0a4bf7fa204c",
+        "snapshot_id": "S392:NEAR-USDT:1791487620989",
+        "publication_id": "PUB:55cf8da5e87abb6691cf8e32cb9a18561a166702",
+        "analytical_fingerprint": "d1d9d186c76e0a4fe1c3bf336331c732b7388f6a8c94a44c32dbd44054669d7b",
         "state": "REJECTED",
-        "liquidation_levels": 1
+        "participating": [
+          "N01",
+          "N02",
+          "N03",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "liquidation_levels": 2
       }
     ],
-    "native_actual_HTTP": 3,
-    "Telegram_sent": 0,
-    "scope": "POST_PR237_PRE_PR238_AUTOMATIC_REPORT;NO_NEW_SENT;NOT_ENTRY_WINDOW_FIX_ACCEPTANCE"
+    "native_actual_HTTP": 5,
+    "Telegram_sent_verified": false,
+    "scope": "ACTUAL_POST_PR239_N05_FULL_CURRENT_FLOW_SURVIVES_DURABILITY_FAILURE;NO_POST240_ENTRY_ACCEPTANCE"
   },
   "latest_official_trade_native_capability": {
     "path": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json",
@@ -2082,68 +2106,15 @@
     }
   },
   "latest_entry_transition_release": {
-    "status": "MERGED_ASSEMBLED_VERIFIED_NATURAL_ENTRY_PENDING",
-    "pr": 234,
-    "merge_head": "0b909e78a0b5ecfcdad10e239f42b60048fcf086",
-    "tested_head": "4d61f0fad84d7abe01ed9ece5e4e13b1fe2f17f9",
-    "cloud_run": 37697248294,
-    "artifact_id": 11516485250,
-    "artifact_digest": "sha256:486919b1091b6e985c199a851b6cf4f13a1c20a1946919cda9d8f80f605a0c94",
-    "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
-    "owner_amendment": "checkpoints/OWNER_ENTRY_TRANSITION_REPAIR_20261008.md",
-    "tests": {
-      "trigger_and_cadence": 16,
-      "approved_delivery": 35,
-      "integration": 37
-    },
-    "actual_original_task": {
-      "source_cloud_run": 37681792251,
-      "read_cloud_run": 37696777714,
-      "read_head": "71289d780a6ab8124666be2e69d5fe679cd61a63",
-      "read_ts": 1791412336448,
-      "run_id": "1791404713379-1791404725011",
-      "snapshot_id": "S392:BOME-USDT:1791404783785",
-      "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
-      "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
-      "message_id": "155",
-      "task_id": "RCHK:5370089c9e7291d14b2e962d1187ce09f2d755ff",
-      "state": "EXPIRED",
-      "attempt_count": 0,
-      "original_ttl_minutes": 30,
-      "regular_analytics_minutes": 40,
-      "actual_price_crossing_proven": false,
-      "receipt": "checkpoints/entry-trigger-recheck-tests-37696777714/actual-entry-transition-read.json"
-    },
-    "budget": {
-      "regular_minutes": 40,
-      "collector_minutes": 5,
-      "one_candidate_per_burst": true,
-      "burst_attempts_per_UTC_day": 3,
-      "manual_commands_per_day": 8,
-      "failed_attempt_consumes_slot": true,
-      "admission_D1_reservation": {
-        "rows_read": 1500,
-        "rows_written": 16
-      },
-      "maximum_with_all72_admission_ledgers": {
-        "rows_read": 3482000,
-        "rows_written": 67312
-      },
-      "monthly_units": 13330
-    },
-    "entry_gates_changed": false,
-    "source_clocks_refreshed": false,
-    "original_ttl_unchanged": true,
-    "original_sent_preserved": true,
-    "price_alone_authorizes_ENTRY": false,
+    "pr": 240,
+    "production_head": "2e26dbedbafc19eaabc1b30fe3d6931b342e0517",
+    "tested_head": "a1089edc1fe35d87360b60a703742da3c28ac07b",
+    "proof": "checkpoints/EXACT_ORIGINAL_TRIGGER_CLOUD_KICK_20261008.json",
+    "cloud_run": 37834802454,
+    "diagnosis": "checkpoints/POST238_CT_TRIGGER_TIMELINESS_DIAGNOSIS_20261008.json",
+    "state": "DEPLOYED_BOUNDED_EXACT_TRIGGER_KICK;CONTINUOUS_BACKUP_TIMELINESS_IN_PROGRESS",
     "new_fresh_SENT": false,
-    "actual_ENTRY": false,
-    "limitations": [
-      "Exact current fresh SENT trigger receipt is required; no inference of overwritten historical prices.",
-      "Existing three/day burst cap and actual job timing can defer or prevent review before original TTL; universal monitoring is not proved.",
-      "Stored BOME has no proven target/cost plan; a price crossing alone would not prove strict entry readiness.",
-      "Controlled strict ENTRY reachability is not a delivered production ENTRY or empirical profitability acceptance."
-    ]
+    "actual_ENTRY": false
   },
   "current_release_new_fresh_SENT": false,
   "latest_production_entry_liquidation_release": {
@@ -2590,22 +2561,67 @@
     }
   },
   "latest_fresh_telegram_acceptance": {
-    "schema": "EXACT_NATURAL_NIL_SENT160_20261008",
-    "cloud_run": 37792641591,
-    "head": "9e90488b15c5872b8bd4e50963afdf92732c4273",
-    "run_id": "1791469682855-1791469694584",
-    "snapshot_id": "S392:NIL-USDT:1791469821192",
-    "publication_id": "PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af",
-    "analytical_fingerprint": "15efed800c909d36c2e6af8ae80df49480aac8e60a4b786948dc8fa1c8b65540",
-    "telegram_message_id": "160",
-    "sent_ts": 1791469827846,
-    "state": "OBSERVE",
-    "direction": "LONG",
-    "proof": "checkpoints/native-source-batch-tests-37799119119/natural-sent-task-read.json",
-    "original_artifact_proof": "checkpoints/automatic-pr236-20261008/37792641591/summary.json",
-    "exact_SENT_binding_verified": true,
-    "presentation_hash_read": false,
-    "scope": "POST_PR236_PRE_PR237_PR238_HISTORICAL_OBSERVE;NOT_NEW_REPAIR_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
+    "proof": "checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json",
+    "source_cloud_run": 37809017157,
+    "source_head": "9ae51c941a6056697ca7e89ce51af0d7962139b3",
+    "contract": "CT-USDT",
+    "run_id": "1791476912028-1791476921197",
+    "snapshot_id": "S392:CT-USDT:1791476996630",
+    "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+    "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
+    "observed_ts": 1791476996630,
+    "original_trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": "<=",
+      "value": 0.32577,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791478796630,
+      "next_recheck_ts": 1791477296630,
+      "cancel_condition": "price>0.35812",
+      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_entry": {
+      "area": "0.32577 USDT",
+      "min_price": 0.32577,
+      "max_price": 0.32577,
+      "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_targets": [],
+    "canonical_state": "OBSERVE",
+    "receipt": {
+      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+      "run_id": "1791476912028-1791476921197",
+      "snapshot_id": "S392:CT-USDT:1791476996630",
+      "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
+      "observed_ts": 1791476996630,
+      "wave_id": "EDW:CT-USDT:1791473232004:G1",
+      "lifecycle_event": "OBSERVE",
+      "state": "SENT",
+      "telegram_message_id": "161",
+      "sent_ts": 1791477001830,
+      "last_error": "SENT"
+    },
+    "task": {
+      "task_id": "RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c",
+      "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+      "contract_code": "CT-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:CT-USDT:1791473232004:G1",
+      "snapshot_id": "S392:CT-USDT:1791476996630",
+      "run_id": "1791476912028-1791476921197",
+      "due_ts": 1791477296630,
+      "expires_ts": 1791478796630,
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791478803401,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791478800000,\"task_id\":\"RCHK:c18474f7fd338ada6d42fc9be4b8233cec41951c\",\"publication_id\":\"PUB:403ad12d7e3f79bc2393349c764011930dca6dad\",\"run_id\":\"1791476912028-1791476921197\",\"snapshot_id\":\"S392:CT-USDT:1791476996630\",\"analytical_fingerprint\":\"d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553\",\"telegram_message_id\":\"161\"}",
+      "created_ts": 1791477001830,
+      "updated_ts": 1791478803401
+    },
+    "status": "ACTUAL_EXACT_TASK_READ",
+    "exact_SENT": true,
+    "scope": "ACTUAL_ORIGINAL_CT_SENT161_PRE_PR239_PR240;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
   },
   "latest_actual_production_original_window_readback": {
     "proof": "checkpoints/ACTUAL_POST_PR238_SCHEDULED_ADMISSION_READBACK_20261008.json",
@@ -2614,5 +2630,13 @@
     "head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
     "status": "CURRENT_V3_ORIGINAL_TASK_WINDOW_RUNTIME_EXECUTED_NO_FRESH_EXACT_SENT_TRIGGER",
     "actual_ENTRY": false
+  },
+  "latest_flow_storage_release": {
+    "pr": 239,
+    "production_head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
+    "proof": "checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json",
+    "actual_proof": "checkpoints/POST239_ACTUAL_FLOW_STORAGE_RELEASE_20261008.json",
+    "actual_current_240min_NEAR_flow_used_despite_write_failure": true,
+    "raw_persistence_complete": false
   }
 }
