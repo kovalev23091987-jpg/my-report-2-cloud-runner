@@ -1,0 +1,382 @@
+{
+  "schema": "ACTUAL_NEAR0524_ORIGINAL_CLOCK_DIAGNOSIS_V1",
+  "status": "ACTUAL_SENT157_LIQUIDATION_GAP_CONFIRMED_NOT_RESOLVED_BY_DISPLAY",
+  "source_cloud_run": 37717554433,
+  "source_head": "7d4ea84e2641fcfac39aa5f0317d506a270248aa",
+  "run_id": "1791426172354-1791426181447",
+  "snapshot": "S392:NEAR-USDT:1791426273327",
+  "publication_id": "PUB:aa6e9381a2dd49445c590713eba8cb29474f3405",
+  "telegram_message_id": "157",
+  "telegram_binding_basis": "ORIGINAL_JOB_DELIVERY_LOG",
+  "original_report_sha256": "7c2dfb50fd6b3727fa07f2acae72ab6a8f7bf716b26ed21b15ed1092101f493b",
+  "source_receipts": [
+    {
+      "source": "dYdX pinned protocol model",
+      "status": "USABLE_SCOPED_CONTEXT",
+      "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+      "source_ts": 1791426218284,
+      "visible_half_range_pct": null,
+      "total_zones": 1
+    }
+  ],
+  "sole_returned_level": {
+    "kind": "PROVIDER_ESTIMATE",
+    "price": 105.053554591,
+    "price_quote": "USD",
+    "distance_pct": 1847.8698167033067,
+    "distance_reference_price": 5.393253373,
+    "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+    "side": "ABOVE",
+    "liquidated_side": "SELLERS",
+    "notional": 118.651574206,
+    "notional_unit": "USD",
+    "exact_notional_usdt": null,
+    "exact_amount_available": false,
+    "amount_semantics": "PROVIDER_ESTIMATE",
+    "strength_label_ru": "небольшая",
+    "strength_score_0_100": null,
+    "strength_basis": [
+      "REPORTED_VOLUME_TIER"
+    ],
+    "source": "dYdX pinned protocol model",
+    "venue": null,
+    "source_ts": 1791426218284,
+    "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+    "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+    "native_reference_price": 5.393253373,
+    "conditional_cross": true,
+    "position_count": 1,
+    "position_key": "844483316cc613cef1733e927a46e49a5241d063b71098430720b07464981e35",
+    "decision_target_eligible": false,
+    "estimated": true,
+    "independence_group": null,
+    "model_sources": [],
+    "model_version": null,
+    "anchor_kinds": [],
+    "leverage_scenarios": [],
+    "source_backed_calculated": false,
+    "native_price": 105.053554591,
+    "notional_usdt": 118.651574206,
+    "corroborating_sources": [
+      "dYdX pinned protocol model"
+    ],
+    "independent_source_count": 1,
+    "independence_groups": [
+      "dYdX pinned protocol model"
+    ],
+    "consensus_confidence_ru": "один источник",
+    "consensus_tolerance_pct": 0.4,
+    "consensus_component_count": 1,
+    "consensus_components": [
+      {
+        "price": 105.05355459100001,
+        "source": "dYdX pinned protocol model",
+        "independence_group": "dYdX pinned protocol model",
+        "estimated": true
+      }
+    ],
+    "selection_roles": [
+      "LARGEST_VISIBLE",
+      "NEAREST_NONZERO",
+      "FARTHEST_VISIBLE"
+    ]
+  },
+  "presentation": {
+    "policy": "OWNER_RELEVANT_LEVELS_20261008",
+    "maximum_distance_pct": 100,
+    "raw_level_count": 1,
+    "omitted_level_count": 1,
+    "rows": [
+      {
+        "zone": {
+          "kind": "PROVIDER_ESTIMATE",
+          "price": 105.05355459100001,
+          "price_quote": "USD",
+          "distance_pct": 1847.8698167033067,
+          "distance_reference_price": 5.393253373,
+          "distance_reference_basis": "ORIGINAL_SOURCE_REFERENCE_SAME_QUOTE",
+          "side": "ABOVE",
+          "liquidated_side": "SELLERS",
+          "notional": 118.651574206,
+          "notional_unit": "USD",
+          "exact_notional_usdt": null,
+          "exact_amount_available": false,
+          "amount_semantics": "PROVIDER_ESTIMATE",
+          "strength_label_ru": "небольшая",
+          "strength_score_0_100": null,
+          "strength_basis": [
+            "REPORTED_VOLUME_TIER"
+          ],
+          "source": "dYdX pinned protocol model",
+          "venue": null,
+          "source_ts": 1791426218284,
+          "coverage": "BOUNDED_PUBLIC_SUBACCOUNT_SAMPLE_NOT_FULL_MARKET",
+          "price_semantics": "CALCULATED_CONDITIONAL_ACCOUNT_THRESHOLD_SDK_ESTIMATE",
+          "native_reference_price": 5.393253373,
+          "conditional_cross": true,
+          "position_count": 1,
+          "position_key": "844483316cc613cef1733e927a46e49a5241d063b71098430720b07464981e35",
+          "decision_target_eligible": false,
+          "estimated": true,
+          "independence_group": null,
+          "model_sources": [],
+          "model_version": null,
+          "anchor_kinds": [],
+          "leverage_scenarios": [],
+          "source_backed_calculated": false
+        },
+        "status": "OUTSIDE_PRESENTATION_DISTANCE_BOUND",
+        "recomputed_distance_pct": 1847.8698167033067
+      }
+    ],
+    "analysis_recomputed": false,
+    "source_clocks_refreshed": false
+  },
+  "acquisition_audit": {
+    "schema": "LIQUIDATION_SOURCE_ACQUISITION_AUDIT_V1",
+    "run_id": "1791426172354-1791426181447",
+    "evaluated_ts": 1791426282379,
+    "candidates": [
+      "NEAR-USDT",
+      "ZEC-USDT"
+    ],
+    "routes": [
+      {
+        "contract": "ZEC-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+        "role_usable": true,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 3,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "failure_origin": null
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791426218284,
+          "observed_ts": 1791426221834,
+          "height": "108522845",
+          "block_hash": "10040225C41E77A26008FF86016035BD1C45C79CB3E2E4A85364F1E31144792F",
+          "receipt_sha256": [
+            "375552a907706d32d1b6ddbfb59e2ccd174326e9f60603d9520ce77b85b4f37b",
+            "469550f9ec013ee10ad9554e146c02a7fc9ce096267316c697c8242ddaf17bc1",
+            "2beffa108fe252034161bbaabc12d620de9b7a8b6bd2005fa63d55c97316d3d3"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "EXACT_SUBACCOUNT_BATCH",
+            "page_limit": null,
+            "complete_accounts_read": 5,
+            "source_ts": 1791426218284,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      },
+      {
+        "contract": "ZEC-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 2,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "ZEC-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 3,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "ZEC-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 4,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "NEAR-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "DYDX_PINNED_NATIVE",
+        "status": "DYDX_CONDITIONAL_LEVELS_CLOSED",
+        "role_usable": true,
+        "attempt": 1,
+        "source_outcome": {
+          "evaluated": true,
+          "operational_success": true,
+          "actual_http": 0,
+          "transport_status": "CLOSED",
+          "schema_status": "CLOSED",
+          "coverage_status": "SUPPORTED",
+          "failure_origin": null
+        },
+        "position_proof": {
+          "schema": "DYDX_VERIFIED_PINNED_SOURCE_STATE_V1",
+          "source_clock_closed": true,
+          "native_snapshot_verified": true,
+          "source_ts": 1791426218284,
+          "observed_ts": 1791426221834,
+          "height": "108522845",
+          "block_hash": "10040225C41E77A26008FF86016035BD1C45C79CB3E2E4A85364F1E31144792F",
+          "receipt_sha256": [
+            "375552a907706d32d1b6ddbfb59e2ccd174326e9f60603d9520ce77b85b4f37b",
+            "469550f9ec013ee10ad9554e146c02a7fc9ce096267316c697c8242ddaf17bc1",
+            "2beffa108fe252034161bbaabc12d620de9b7a8b6bd2005fa63d55c97316d3d3"
+          ],
+          "status": null,
+          "reason": null,
+          "position_search": {
+            "automatic": true,
+            "query_basis": "EXACT_SUBACCOUNT_BATCH",
+            "page_limit": null,
+            "complete_accounts_read": 5,
+            "source_ts": 1791426218284,
+            "source_clock_refreshed": false,
+            "full_market_census": false
+          },
+          "source_clocks_refreshed": false,
+          "diagnostic_only": true
+        }
+      },
+      {
+        "contract": "NEAR-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "HYPERLIQUID_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 2,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 2,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "NEAR-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "GTRADE_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 3,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "NEAR-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "GMX_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 4,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      },
+      {
+        "contract": "NEAR-USDT",
+        "run_id": "1791426172354-1791426181447",
+        "lane": "LIGHTER_NATIVE",
+        "status": "SKIPPED_CANDIDATE_HTTP_ENVELOPE",
+        "role_usable": false,
+        "attempt": 5,
+        "source_outcome": {
+          "evaluated": false,
+          "operational_success": false,
+          "actual_http": 0,
+          "transport_status": "NOT_ATTEMPTED",
+          "schema_status": "NOT_EVALUATED",
+          "coverage_status": "NOT_EVALUATED",
+          "failure_origin": "INTERNAL_SCHEDULER"
+        },
+        "position_proof": null
+      }
+    ],
+    "shared_budget": {
+      "reserved_http": 5,
+      "actual_http": 5,
+      "max_http_per_run": 5
+    },
+    "source_clocks_refreshed": false,
+    "diagnostic_only": true,
+    "internal_only": true,
+    "network_calls": 0,
+    "db_calls": 0,
+    "entry_authorized": false
+  },
+  "hyperliquid_original_response_body_retained": false,
+  "hyperliquid_empty_state_cause_not_inferable": true,
+  "previously_collected_levels_are_not_current_levels": true,
+  "proven_route_patch": "REUSE_EXACT_STRUCTURAL_MARKET_ROUTE_WITH_NEW_NATIVE_STATE_NO_CATALOG_ONLY_STARVATION",
+  "native_http_cap_unchanged": 5,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "new_SENT": false,
+  "full_project_complete": false
+}

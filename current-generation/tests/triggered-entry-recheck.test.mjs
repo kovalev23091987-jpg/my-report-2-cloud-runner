@@ -89,3 +89,36 @@ test('the effective deep planner rechecks the exact contract inside the30-minute
  const result=plan({shortlist},rows,NOW,{...options,bypass_cooldown:true,cooldown_sec:0});assert.deepEqual(result.selected.map(r=>r.contract),['BOME-USDT']);assert.equal(result.selected.length,1);
  assert.match(worker,/task_id:env\?\.REPORT2_TRIGGERED_RECHECK_TASK_ID\|\|null/);assert.match(worker,/TRIGGERED_RECHECK_CLAIM_NOT_CLOSED/);assert.match(worker,/Boolean\(env\?\.REPORT2_TRIGGERED_RECHECK_TASK_ID\).*postV7RecheckClaim/);caseDone('ASSEMBLED_DEEP_PLANNER_EXACT_SINGLE_SLOT_COOLDOWN');});
 test.after(()=>{assert.equal(JSON.stringify(c),originalBytes);fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/triggered-recheck-proof.json',JSON.stringify({...proof,canonical_unchanged:true},null,2)+'\n');});
+
+// The production SENT159 and SENT160 lifecycle context expires BEFORE their
+// first scheduled price check. This is separate from the original30min task.
+test('an expired prior analytical context cannot shorten the exact SENT task window for a new full analysis',async()=>{
+ const db=new D1(),row=task();db.seed(row);db.sql.prepare('UPDATE v3_user_lifecycle_shadow SET valid_until_ts=?').run(row.due_ts-1000);
+ const before=db.sql.prepare('SELECT valid_until_ts FROM v3_user_lifecycle_shadow').get().valid_until_ts;
+ const result=await admit(db);assert.equal(result.claimed,true);assert.equal(result.entry_authorized,false);assert.equal(result.task.expires_ts,row.expires_ts);
+ assert.equal(db.sql.prepare('SELECT valid_until_ts FROM v3_user_lifecycle_shadow').get().valid_until_ts,before);assert.equal(JSON.stringify(c),originalBytes);
+});
+test('original task expiry and changed lifecycle still reject analysis even when the prior context has expired',async()=>{
+ for(const update of ["status='IDEA_REMOVED'","observation_ts=observation_ts+1","direction='SHORT'"]){const db=new D1();db.seed(task());db.sql.exec('UPDATE v3_user_lifecycle_shadow SET valid_until_ts=0,'+update);assert.equal((await admit(db)).claimed,false);}
+ const db=new D1(),r=task();db.seed(r);db.sql.prepare('UPDATE v3_user_lifecycle_shadow SET valid_until_ts=?').run(r.due_ts-1000);assert.equal((await admit(db,r.expires_ts)).claimed,false);
+});
+test('original SENT159 canonical and retained reached price reproduce the old clock veto; SENT160 unreached price stays blocked',async()=>{
+ const file='checkpoints/ORIGINAL_LIFECYCLE_TRIGGER_CLOCKS_20261008.json',bytes=fs.readFileSync(file),actual=JSON.parse(bytes),prices=JSON.parse(fs.readFileSync('checkpoints/ORIGINAL_TRIGGER_PRICE_WINDOWS_20261008.json'));
+ assert.equal(crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+bytes.length+'\0'),bytes])).digest('hex'),'d2331a4a9214857896379d3b4a53957d27947771');
+ const savedHash=crypto.createHash('sha256').update(bytes).digest('hex'),results=[];
+ class PriorClockD1 extends D1{prepare(sql){return super.prepare(sql.replace('l.observation_ts=b.observed_ts','l.observation_ts=b.observed_ts AND l.valid_until_ts>?1'));}}
+ for(const input of actual.cases){
+  assert.equal(input.original_row_exact,true);assert.equal(input.lifecycle_expires_before_due,true);
+  const canonical=JSON.parse(input.publication.canonical_json),history=prices.cases.find(c=>c.publication_id===input.publication_id),point=history.points.find(p=>p.ts_bucket===(input.contract==='NEAR-USDT'?1791459900000:1791471300000));
+  assert.ok(point);assert.equal(hash(canonical),input.analytical_fingerprint);const now=point.ts+60000;
+  const r={...input.task,state:'PENDING',canonical_json:input.publication.canonical_json,analytical_fingerprint:input.analytical_fingerprint,telegram_message_id:input.receipt.telegram_message_id,updated_ts:point.ts+1000};
+  r.last_result=JSON.stringify({schema:'LIGHT_PRICE_RECHECK_V1',scope:'PRICE_AND_CANCELLATION_ONLY',status:point.trigger_price_reached&&!point.cancel_price_reached?'TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED':'WAITING_FOR_PRICE',checked_ts:point.ts+1000,source_ts:point.ts,observed_ts:point.ts,source:'HTX_OFFICIAL_COLLECTOR',price:point.price,entry_authorized:false,full_analysis_completed:false,settlement_confirmed:false,task_id:r.task_id,publication_id:r.publication_id,run_id:r.run_id,snapshot_id:r.snapshot_id,analytical_fingerprint:r.analytical_fingerprint,telegram_message_id:r.telegram_message_id});
+  const setup=db=>{db.seed(r);db.sql.prepare('UPDATE v3_user_lifecycle_shadow SET valid_until_ts=?').run(input.lifecycle.valid_until_ts);return db;};
+  const prior=await admit(setup(new PriorClockD1()),now),current=await admit(setup(new D1()),now);
+  assert.equal(prior.claimed,false);assert.equal(current.claimed,input.contract==='NEAR-USDT');assert.equal(current.entry_authorized,false);
+  if(current.claimed){assert.equal(current.task.snapshot_id,input.snapshot_id);assert.equal(current.task.analytical_fingerprint,input.analytical_fingerprint);assert.equal(current.task.expires_ts,input.original_trigger.expires_ts);}
+  results.push({contract:input.contract,publication_id:input.publication_id,source_run:input.run_id,source_head:input.source_head,source_snapshot:input.snapshot_id,fingerprint:input.analytical_fingerprint,actual_SENT_message_id:input.receipt.telegram_message_id,original_lifecycle_until:input.lifecycle.valid_until_ts,original_due:input.original_trigger.next_recheck_ts,original_expires:input.original_trigger.expires_ts,original_price:point.price,original_price_ts:point.ts,controlled_receipt_at_original_clock:true,old_admission:prior.status,new_admission:current.status,entry_authorized:false});
+ }
+ assert.equal(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),savedHash);
+ fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/actual-lifecycle-trigger-replay.json',JSON.stringify({schema:'ACTUAL_ORIGINAL_SENT_CLOCK_VETO_REPLAY_V1',original_blob_sha:'d2331a4a9214857896379d3b4a53957d27947771',original_bytes_sha256:savedHash,cases:results,scope:'ORIGINAL_CANONICAL_LIFECYCLE_AND_RETAINED_PRICE_CONTROLLED_RECEIPT_REPLAY_NOT_HISTORICAL_MUTABLE_RECEIPT_READ_OR_ACTUAL_ENTRY',sourceHTTP:0,D1:0,MAIN:0,Telegram:0,source_clocks_refreshed:false,actual_ENTRY:false},null,2)+'\n');
+});
