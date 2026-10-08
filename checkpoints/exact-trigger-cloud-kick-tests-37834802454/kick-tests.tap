@@ -1,0 +1,34 @@
+✔ backup loads the same bounded collector tail as the deployed primary (1.143386ms)
+✔ backup skips a completed primary without contacting public APIs (0.28119ms)
+✔ backup reclaims only the same live slot after the primary lease expires (0.185717ms)
+✔ backup refuses expired and overlong leases (0.215532ms)
+✔ actual workflow gate admits only enabled exact trigger jobs and uses scheduled integrity instead of broad manual replay (14.058894ms)
+✔ retained CT price crossed inside original window; controlled early wake-up works and delayed cron remains expired (129.558774ms)
+✔ all polls and additional admission reservations fit original caps without extra full-analysis slots (0.153619ms)
+✔ stale cannot wake analysis (0.640155ms)
+✔ future cannot wake analysis (0.559305ms)
+✔ wrong task cannot wake analysis (0.471413ms)
+✔ wrong publication cannot wake analysis (0.496481ms)
+✔ wrong run cannot wake analysis (0.51599ms)
+✔ wrong snapshot cannot wake analysis (0.565804ms)
+✔ invalid SENT id cannot wake analysis (0.63666ms)
+✔ wrong fingerprint cannot wake analysis (0.52945ms)
+✔ waiting cannot wake analysis (0.435219ms)
+✔ entry authorization cannot wake analysis (0.441379ms)
+✔ claimed completion cannot wake analysis (0.411264ms)
+✔ cancelled cannot wake analysis (0.393427ms)
+✔ original expiration and claimed tasks cannot be revived (1.019421ms)
+✔ same task and bucket are idempotent, next original bucket cannot duplicate a kick (0.760454ms)
+✔ three durable kicks exhaust the day; failed/racing dispatches do not refund slots (0.714256ms)
+✔ 288 original polls are a durable daily ceiling even if an extra job is invoked (0.460136ms)
+✔ missing trigger index, failed exact ACK, race and unknown D1 costs never dispatch (1.980284ms)
+✔ SQL uses the partial trigger index and LIMIT2 before any growing scan; only kick tables change (11.979131ms)
+✔ workflow wake-up is internal scheduled mode, exact task only, preserves normal cron and disables manual queue (0.974254ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 241.280468
