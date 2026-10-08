@@ -14,5 +14,6 @@ test('post-v7 uses one canonical sender for OBSERVE WAIT and ENTRY',()=>{
  assert.match(workflow,/REPORT2_TELEGRAM_WATCH70_THRESHOLD: "70"/);
  assert.match(workflow,/REPORT2_TELEGRAM_INFO_ENABLED: "1"/);
  assert.match(workflow,/REPORT2_TELEGRAM_INFO_OBSERVE_ENABLED: "1"/);
- assert.match(workflow,/REPORT2_EVIDENCE_HTTP_CAP: \$\{\{ github\.event_name == 'schedule' && '10' \|\| '24' \}\}/);
+ assert.match(workflow,/REPORT2_EVIDENCE_HTTP_CAP: \$\{\{ \(github\.event_name == 'schedule' \|\| inputs\.trigger_only_run == true\) && '10' \|\| '24' \}\}/);
 });
+

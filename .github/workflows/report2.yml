@@ -223,7 +223,7 @@ jobs:
             npm ci --prefix src/liquidation-extension --ignore-scripts --no-audit --no-fund
           fi
       - name: Verify early evidence repair and frozen policy
-        if: ${{ github.event_name != 'schedule' }}
+        if: ${{ github.event_name != 'schedule' && inputs.trigger_only_run != true }}
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -246,7 +246,7 @@ jobs:
           node --import ./current-generation/tests/early-evidence-repair/no-network.mjs \
               audit-fixes/v13/final-integration-37.mjs runtime
       - name: Scheduled runtime integrity check
-        if: ${{ github.event_name == 'schedule' }}
+        if: ${{ github.event_name == 'schedule' || inputs.trigger_only_run == true }}
         shell: bash
         run: node --check runtime/runner-main.mjs
       - name: Encrypt authoritative runtime for T00 audit

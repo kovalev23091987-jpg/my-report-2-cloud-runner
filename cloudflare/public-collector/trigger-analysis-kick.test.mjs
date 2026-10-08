@@ -1,10 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {claimTriggerKick,freshTriggerHint,proveTriggerKickBudget} from './trigger-analysis-kick.mjs';
 const fixture=JSON.parse(fs.readFileSync(new URL('../../current-generation/tests/fixtures/exact-ct161-price-window-20261008.json',import.meta.url)));
 const originalBytes=JSON.stringify(fixture.original),T=fixture.price_window[0].original_row.ts,NOW=T+170000;
+test('actual workflow gate admits only enabled exact trigger jobs and uses scheduled integrity instead of broad manual replay',()=>{
+ const workflow=fs.readFileSync(new URL('../../.github/workflows/report2.yml',import.meta.url),'utf8');
+ const gate=workflow.slice(workflow.indexOf('          normalize_true()'),workflow.indexOf('  enqueue-manual-command:'));
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'exact-trigger-gate-'));
+ try{for(const [enabled,id,expected] of [['false','RCHK:'+ 'a'.repeat(40),false],['true','',false],['true','RCHK:'+ 'a'.repeat(40),true]]){const out=path.join(dir,'out');fs.writeFileSync(out,'');const r=spawnSync('bash',['-c',gate],{env:{...process.env,EVENT_NAME:'workflow_dispatch',LEGACY_RUNNER_ENABLED:enabled,TRIGGER_ONLY_RUN:'true',TRIGGER_TASK_ID:id,MANUAL_AUTHORIZED:'false',GITHUB_OUTPUT:out},encoding:'utf8'});assert.equal(r.status,0);assert.equal(fs.readFileSync(out,'utf8').trim(),'admitted='+expected);}
+ assert.match(workflow,/Verify early evidence repair and frozen policy\n\s*if: \$\{\{ github.event_name != 'schedule' && inputs.trigger_only_run != true/);
+ assert.match(workflow,/Scheduled runtime integrity check\n\s*if: \$\{\{ github.event_name == 'schedule' \|\| inputs.trigger_only_run == true/);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
 function row(id=fixture.original.task.task_id){
  const r={...fixture.original.task,task_id:id,state:'PENDING',updated_ts:T+1000};
  r.last_result=JSON.stringify({schema:'LIGHT_PRICE_RECHECK_V1',scope:'PRICE_AND_CANCELLATION_ONLY',status:'TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED',checked_ts:T+1000,source_ts:T,observed_ts:T,price:fixture.price_window[0].price,source:'HTX_OFFICIAL_COLLECTOR',entry_authorized:false,full_analysis_completed:false,settlement_confirmed:false,task_id:id,publication_id:r.publication_id,run_id:r.run_id,snapshot_id:r.snapshot_id,analytical_fingerprint:fixture.original.analytical_fingerprint,telegram_message_id:'161'});return r;
