@@ -1,0 +1,46 @@
+name: Report2 Production Entry And Liquidation Repair
+on:
+  push:
+    branches: [codex/production-entry-liq-20261008]
+    paths: ['current-generation/**', '.github/workflows/production-entry-liq-20261008.yml', 'tools/production-entry-liq-20261008.mjs']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Read original 05:24 and prior NEAR artifacts without source or D1 requests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),zlib=require('zlib');
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='172adf5b2fd28cbb0d33435c5bcefcc4d4b6122a')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='HTX:20261008:1791430073069:trigger-history-reader-fix'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const sources=[{name:'near0524',id:11524122537,digest:'5d3b9968834619c0c985c7b1c51cf22a1469d5d77d2f0c0b19aeea0cb46f1caa'},{name:'near0930',id:11466345739,digest:'a3e376f8be618ccc210a542686237b09bb6e7b88003d80a94d6bb441d0736c80'}];
+            fs.mkdirSync('audit-output',{recursive:true});
+            const entries=[],summary={sourceHTTP:0,D1:0,Telegram:0,sources};
+            for(const s of sources){
+              const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:s.id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(bytes).digest('hex')!==s.digest)throw Error('SOURCE_DIGEST_MISMATCH');
+              fs.mkdirSync('retained/'+s.name,{recursive:true});fs.writeFileSync('retained/'+s.name+'.zip',bytes);
+              cp.execFileSync('unzip',['-q','retained/'+s.name+'.zip','-d','retained/'+s.name]);
+              const names=cp.execFileSync('find',['retained/'+s.name,'-type','f'],{encoding:'utf8'}).trim().split('\n');
+              summary[s.name]={files:names};
+              for(const path of names){const b=fs.readFileSync(path),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/production-liq-original-20261008/'+s.name+'/'+path.split('/').at(-1),mode:'100644',type:'blob',sha:blob.sha});}
+              if(s.name==='near0524'){const raw=JSON.parse(fs.readFileSync(names.find(p=>p.endsWith('report2-run-result.json')),'utf8'));summary[s.name].keys=Object.keys(raw);summary[s.name].diagnostic=[];const walk=(v,path='')=>{if(!v||typeof v!=='object')return;if(v.contract==='NEAR-USDT'||v.contract_code==='NEAR-USDT'||/liquidation.*(source|receipt|budget)/i.test(path)){const j=JSON.stringify(v);if(j.length<35000)summary[s.name].diagnostic.push({path,value:v});}for(const [k,o] of Object.entries(v))if(o&&typeof o==='object')walk(o,path+'.'+k);};walk(raw);}
+            }
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(summary,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/production-liq-original-20261008/diagnosis.json',mode:'100644',type:'blob',sha:b.sha});
+            const branch=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+branch})).data.object.sha;if(parent!==context.sha)throw Error('HEAD_MOVED');
+            const commit=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:commit.tree.sha,tree:entries})).data,created=(await github.rest.git.createCommit({owner,repo,message:'Retain exact NEAR05:24 and prior original-clock report data for production diagnosis',tree:tree.sha,parents:[parent]})).data;
+            await github.rest.git.updateRef({owner,repo,ref:'heads/'+branch,sha:created.sha,force:false});
+            console.log(JSON.stringify({status:'ORIGINAL_ARTIFACTS_RETAINED',proof_commit:created.sha,files:entries.map(x=>x.path),sourceHTTP:0,D1:0,Telegram:0}));
