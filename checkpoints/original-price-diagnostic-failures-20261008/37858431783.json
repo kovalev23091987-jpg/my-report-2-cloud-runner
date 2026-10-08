@@ -1,0 +1,98 @@
+{
+  "schema": "ORIGINAL_IMMUTABLE_PRICE_WINDOWS_DIAGNOSIS_20261008_V1",
+  "head": "0048a2ad15da5d992453680e262dc441833785ea",
+  "cloud_run": "37858431783",
+  "read_ts": 1791501350179,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "cache_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "helper_sha256": "1287cb2872c8e68d10ca7827f960c3abcba1207e354f30d4d456e9dc9367848d",
+  "collector_source_sha256": "9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71",
+  "scope": "READ_ONLY_ORIGINAL_IMMUTABLE_SHARDS_AND_EXACT_CANONICAL;REPLAY_AT_STORED_RECEIPT_IS_NOT_PROOF_OF_ACTUAL_COLLECTOR_ACTION",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 84,
+      "reserved_rows_read": 1498500,
+      "reserved_rows_written": 28636,
+      "measured_rows_read": 836917,
+      "measured_rows_written": 13098,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1499500,
+      "rows_written": 28652
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "status": "READ_FAILED",
+  "error": "READ_BOUND",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ORIGINAL_PRICE_WINDOWS:37858431783:1",
+    "source_run_id": "37858431783",
+    "measured_rows_read": 5161,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 7,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 7,
+    "rows_read": 5162,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 85,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 1,
+        "rows_read": 5074,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "artifact_id": 11584793450,
+  "artifact_digest": "sha256:098df4bd3128a26b68754d62b2b836a09b3d0720a7dc422ad28755db18171bdd"
+}

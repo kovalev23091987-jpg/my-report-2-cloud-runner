@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-08T22:48:27.373Z",
+  "updated_utc": "2026-10-08T23:19:47.720Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -235,48 +235,15 @@
     "automatic_continuation_created_by_cleanup": false,
     "active_cloud_development_jobs": [],
     "last_bounded_read": {
-      "source_cloud_run": 37853236004,
-      "source_head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
-      "contract": "FIL-USDT",
-      "run_id": "1791498274068-1791498286190",
-      "snapshot_id": "S392:FIL-USDT:1791498338812",
-      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
-      "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
-      "observed_ts": 1791498338812,
-      "original_trigger": {
-        "trigger_type": "PRICE_CONFIRMATION",
-        "metric": "price",
-        "operator": "<=",
-        "value": 1.0619,
-        "unit": "USDT",
-        "timeframe": "5m",
-        "expires_ts": 1791500138812,
-        "next_recheck_ts": 1791498638812,
-        "cancel_condition": "price>1.076",
-        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
-      },
-      "canonical_entry": {
-        "area": "1.0619 USDT",
-        "min_price": 1.0619,
-        "max_price": 1.0619,
-        "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
-      },
-      "canonical_targets": [],
-      "canonical_state": "OBSERVE",
-      "receipt": {
-        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
-        "run_id": "1791498274068-1791498286190",
-        "snapshot_id": "S392:FIL-USDT:1791498338812",
-        "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
-        "observed_ts": 1791498338812,
-        "wave_id": "EDW:FIL-USDT:1791466318001:G9",
-        "lifecycle_event": "OBSERVE",
-        "state": "SENT",
-        "telegram_message_id": "164",
-        "sent_ts": 1791498387674,
-        "last_error": "SENT"
-      },
-      "task": {
+      "proof": "checkpoints/ORIGINAL_TASK_QUEUE_RAW_WINDOW_DIAGNOSIS_20261008.json",
+      "cloud_run": 37857536331,
+      "tested_head": "c19b643f913f7d5b2c0f9093f166b2242dbc3d3d",
+      "proof_head": "0e4e768ede9ea3c40d356bbc83b334bffa647007",
+      "artifact_id": 11584607525,
+      "artifact_digest": "sha256:fa7217f8bc2e6d29a0e0009ba8cb81020b087382db5a36f592f2bef8e59c8257",
+      "read_ts": 1791500796801,
+      "status": "BOUNDED_READ_ONLY_ORIGINAL_WINDOW_DIAGNOSIS_CLOSED",
+      "FIL_task": {
         "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
         "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
         "contract_code": "FIL-USDT",
@@ -286,18 +253,113 @@
         "run_id": "1791498274068-1791498286190",
         "due_ts": 1791498638812,
         "expires_ts": 1791500138812,
-        "state": "PENDING",
+        "state": "EXPIRED",
         "attempt_count": 0,
-        "last_result": null,
+        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791500403712,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791500400000,\"task_id\":\"RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b\",\"publication_id\":\"PUB:21ec7bbeac13b76269a011e202cffaa929d4c252\",\"run_id\":\"1791498274068-1791498286190\",\"snapshot_id\":\"S392:FIL-USDT:1791498338812\",\"analytical_fingerprint\":\"aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4\",\"telegram_message_id\":\"164\"}",
         "created_ts": 1791498387674,
-        "updated_ts": 1791498387674
+        "updated_ts": 1791500403712
       },
-      "status": "ACTUAL_EXACT_TASK_READ",
-      "exact_SENT": true,
-      "proof": "checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json",
-      "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY",
-      "task_state_asof_ts": 1791498782482,
-      "no_original_ttl_extension": true
+      "queue_identity_checks": [],
+      "raw_windows": [
+        {
+          "contract": "ZEC-USDT",
+          "known_original_minutes": 188,
+          "original_reconstruction_proven": true,
+          "original_window_start_ts": 1791483840000,
+          "original_window_end_ts": 1791498240000
+        },
+        {
+          "contract": "FIL-USDT",
+          "known_original_minutes": 240,
+          "original_reconstruction_proven": true,
+          "original_window_start_ts": 1791483840000,
+          "original_window_end_ts": 1791498240000
+        }
+      ],
+      "poll": {
+        "day_key": "2026-10-08",
+        "last_bucket": 1791500700000,
+        "polls": 32
+      },
+      "kicks": {
+        "success": true,
+        "meta": {
+          "served_by": "v3-prod",
+          "served_by_region": "EEUR",
+          "served_by_colo": "ARN",
+          "served_by_primary": true,
+          "timings": {
+            "sql_duration_ms": 0.1592
+          },
+          "duration": 0.1592,
+          "changes": 0,
+          "last_row_id": 1903,
+          "changed_db": false,
+          "size_after": 411901952,
+          "rows_read": 0,
+          "rows_written": 0,
+          "total_attempts": 1
+        },
+        "results": []
+      },
+      "sourceHTTP": 0,
+      "D1": {
+        "requests": 10,
+        "rows_read": 91,
+        "rows_written": 4,
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 84,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "first:v3_recheck_task_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:v3_recheck_task_shadow": {
+            "requests": 1,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_evidence_source_cache": {
+            "requests": 2,
+            "rows_read": 2,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "first:report2_trigger_kick_poll": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:report2_trigger_kick_slot": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "expired_task_revived": false
     },
     "active_natural_report_readback": {
       "active": false,
@@ -316,12 +378,12 @@
       "next_work_blocks": [],
       "no_automatic_continuation_created": true
     },
-    "current_execution_block": "CONNECTED_NATIVE_DEADLINE_AND_ORIGINAL_SENT_TASK_WINDOW_REPAIRS_RETAINED",
+    "current_execution_block": "ORIGINAL_PRICE_WINDOW_AND_SOURCE_QUALIFICATION_PROOFS_RETAINED;NEXT_GENERAL_SOURCE_HISTORY_COVERAGE",
     "next_work_blocks": [
-      "Exact natural SENT price crossing → one fresh full analysis within original TTL and all unchanged ENTRY gates; no expired task revival.",
-      "Generic N01/N02/N05/N12/N15 actual useful coverage expansion; no repeated unchanged denied probes or manufactured block participation.",
-      "Broader native liquidation sample coverage preserving original state time; FIL SENT164 is one verified current sample, not universal coverage.",
-      "Prospective ENTRY cohort and complete 30–90-day all-asset history remain open."
+      "Expand genuinely useful exact primary source coverage within existing quotas; Sablier empty qualification stays disabled.",
+      "Review incomplete signed-flow acquisition and full all-asset history without weakening 240-minute requirement.",
+      "Read next natural current-release report as joint source/ENTRY/SENT verification; never force or revive expired tasks.",
+      "Prospective matured cohort, missed opportunity denominator and 30–90-day all-asset coverage remain open."
     ]
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
@@ -840,7 +902,7 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791499707373,
+  "updated_ts": 1791501587720,
   "next_action": "CONTINUE_GENERAL_N01_N02_N05_N12_N15_SOURCE_AND_HISTORY_GAPS;VERIFY_NATURAL_EXACT_SENT_TRIGGER_FULL_ANALYSIS_AND_UNCHANGED_ENTRY_GATES",
   "current_task": "FULL_OWNER_TZ_IN_PROGRESS",
   "latest_native_payment_release": {
@@ -1198,20 +1260,12 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "CONNECTED_NATIVE_DEADLINE_AND_ORIGINAL_SENT_TASK_WINDOW_REPAIRS_RETAINED",
+  "current_execution_block": "ORIGINAL_PRICE_WINDOW_AND_SOURCE_QUALIFICATION_PROOFS_RETAINED;NEXT_GENERAL_SOURCE_HISTORY_COVERAGE",
   "latest_development_lease_release": {
-    "owner": "HTX:20261008:1791470809266:full-owner-connected-continuation",
-    "acquired_ts": 1791474798376,
-    "expires_ts": 1791475098376,
-    "scope": "PERSIST_SINGLE_ACTUAL_POST_PR238_ADMISSION_READBACK_NO_TESTS_OR_SOURCE_CALLS",
-    "released_ts": 1791474878944,
-    "status": "ACTUAL_POST_PR238_V3_ADMISSION_READBACK_SAVED_FULL_REGISTER_OPEN",
-    "code_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
-    "proof": "checkpoints/ACTUAL_POST_PR238_SCHEDULED_ADMISSION_READBACK_20261008.json",
-    "sourceHTTP": 0,
-    "MAIN": 0,
-    "Telegram": 0,
-    "actual_ENTRY_verified": false
+    "owner": "HTX:1791485859126:full-owner-cloud-continuation",
+    "released_ts": 1791501587720,
+    "scope": "FULL_OWNER_BOUNDED_DOCUMENTED_KEYLESS_LOCKUP_SOURCE_QUALIFICATION_AND_GENERAL_FLOW_GAPS",
+    "reason": "BOUNDED_QUALIFICATION_AND_ORIGINAL_WINDOW_READERS_FINISHED;EXACT_PROOFS_RETAINED;NO_BACKGROUND_AGENT_PROMISE"
   },
   "latest_post_pr211_actual_readback": {
     "path": "checkpoints/ACTUAL_POST_PR211_READBACK_20261007.json",
@@ -2946,7 +3000,7 @@
     "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
     "agent_background_running_after_turn": false
   },
-  "latest_status": "PR244_NATIVE_UNUSED_PAIR_RESERVE_DEPLOYED_CONNECTED_VERIFIED;ACTUAL_POST243_QNT_SENT163_AND_TWO_FULL_240MIN_FLOWS;NATURAL_ENTRY_AND_FULL_REGISTER_OPEN",
+  "latest_status": "FULL_OWNER_TZ_IN_PROGRESS_ORIGINAL_QNT_FIL_5M_TRIGGER_ABSENCE_PROVEN;N01_SABLIER_EMPTY_DISABLED;ZEC188_OF240_ORIGINAL_WINDOW",
   "latest_liquidation_relevance_release": {
     "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
     "prs": [
@@ -4077,5 +4131,311 @@
     ],
     "Telegram_sent_verified": true,
     "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY"
+  },
+  "latest_original_immutable_price_window_readback": {
+    "proof": "checkpoints/ORIGINAL_IMMUTABLE_PRICE_WINDOW_DIAGNOSIS_20261008.json",
+    "cloud_run": 37858680543,
+    "tested_head": "a0a69ed14d2df97f88dcbc79500f6474acbbb920",
+    "proof_head": "0564825ffdb67b275af85d36641303627d76b167",
+    "artifact_id": 11585430492,
+    "artifact_digest": "sha256:dc63729801639a19da64a8592ad13c955ca6166a663949bbe255cd2fdb022198",
+    "status": "BOUNDED_ORIGINAL_IMMUTABLE_PRICE_WINDOW_READ_CLOSED",
+    "read_ts": 1791501508306,
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 20,
+      "rows_read": 188,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 87,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 14,
+          "rows_read": 98,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "immutable_shards": 84,
+    "cases": [
+      {
+        "contract": "QNT-USDT",
+        "message_id": "163",
+        "run_id": "1791494686190-1791494698261",
+        "snapshot_id": "S392:QNT-USDT:1791494765905",
+        "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+        "fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
+        "original_trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": ">=",
+          "value": 253.81,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791496565905,
+          "next_recheck_ts": 1791495065905,
+          "cancel_condition": "price<220.17",
+          "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+        },
+        "eligible_samples": 5,
+        "eligible_trigger_reached_samples": 0,
+        "eligible_cancelled_samples": 0,
+        "missing_buckets": [],
+        "eligible_prices": [
+          {
+            "bucket": 1791495300000,
+            "price": 238.04,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791495600000,
+            "price": 238.19,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791495900000,
+            "price": 237.75,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791496200000,
+            "price": 237.65,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791496500000,
+            "price": 237.57,
+            "status": "WAITING_FOR_PRICE"
+          }
+        ]
+      },
+      {
+        "contract": "FIL-USDT",
+        "message_id": "164",
+        "run_id": "1791498274068-1791498286190",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+        "original_trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 1.0619,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791500138812,
+          "next_recheck_ts": 1791498638812,
+          "cancel_condition": "price>1.076",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "eligible_samples": 5,
+        "eligible_trigger_reached_samples": 0,
+        "eligible_cancelled_samples": 0,
+        "missing_buckets": [],
+        "eligible_prices": [
+          {
+            "bucket": 1791498900000,
+            "price": 1.07,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791499200000,
+            "price": 1.0702,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791499500000,
+            "price": 1.0678,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791499800000,
+            "price": 1.0678,
+            "status": "WAITING_FOR_PRICE"
+          },
+          {
+            "bucket": 1791500100000,
+            "price": 1.0675,
+            "status": "WAITING_FOR_PRICE"
+          }
+        ]
+      }
+    ],
+    "scope": "EXACT_ORIGINAL_QNT163_FIL164_CANONICAL_AND_14_IMMUTABLE_SLOTS;NO_TRIGGER_REACHED_IN_ELIGIBLE_5M_SAMPLES;NOT_INTRAMINUTE_OR_ACTUAL_ACTION_PROOF;NO_ENTRY"
+  },
+  "latest_original_task_raw_window_diagnosis": {
+    "proof": "checkpoints/ORIGINAL_TASK_QUEUE_RAW_WINDOW_DIAGNOSIS_20261008.json",
+    "cloud_run": 37857536331,
+    "tested_head": "c19b643f913f7d5b2c0f9093f166b2242dbc3d3d",
+    "proof_head": "0e4e768ede9ea3c40d356bbc83b334bffa647007",
+    "artifact_id": 11584607525,
+    "artifact_digest": "sha256:fa7217f8bc2e6d29a0e0009ba8cb81020b087382db5a36f592f2bef8e59c8257",
+    "read_ts": 1791500796801,
+    "status": "BOUNDED_READ_ONLY_ORIGINAL_WINDOW_DIAGNOSIS_CLOSED",
+    "FIL_task": {
+      "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
+      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+      "contract_code": "FIL-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "run_id": "1791498274068-1791498286190",
+      "due_ts": 1791498638812,
+      "expires_ts": 1791500138812,
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791500403712,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791500400000,\"task_id\":\"RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b\",\"publication_id\":\"PUB:21ec7bbeac13b76269a011e202cffaa929d4c252\",\"run_id\":\"1791498274068-1791498286190\",\"snapshot_id\":\"S392:FIL-USDT:1791498338812\",\"analytical_fingerprint\":\"aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4\",\"telegram_message_id\":\"164\"}",
+      "created_ts": 1791498387674,
+      "updated_ts": 1791500403712
+    },
+    "queue_identity_checks": [],
+    "raw_windows": [
+      {
+        "contract": "ZEC-USDT",
+        "known_original_minutes": 188,
+        "original_reconstruction_proven": true,
+        "original_window_start_ts": 1791483840000,
+        "original_window_end_ts": 1791498240000
+      },
+      {
+        "contract": "FIL-USDT",
+        "known_original_minutes": 240,
+        "original_reconstruction_proven": true,
+        "original_window_start_ts": 1791483840000,
+        "original_window_end_ts": 1791498240000
+      }
+    ],
+    "poll": {
+      "day_key": "2026-10-08",
+      "last_bucket": 1791500700000,
+      "polls": 32
+    },
+    "kicks": {
+      "success": true,
+      "meta": {
+        "served_by": "v3-prod",
+        "served_by_region": "EEUR",
+        "served_by_colo": "ARN",
+        "served_by_primary": true,
+        "timings": {
+          "sql_duration_ms": 0.1592
+        },
+        "duration": 0.1592,
+        "changes": 0,
+        "last_row_id": 1903,
+        "changed_db": false,
+        "size_after": 411901952,
+        "rows_read": 0,
+        "rows_written": 0,
+        "total_attempts": 1
+      },
+      "results": []
+    },
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 10,
+      "rows_read": 91,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 84,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_trigger_kick_poll": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_trigger_kick_slot": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "expired_task_revived": false
+  },
+  "latest_sablier_actual_lockup_qualification": {
+    "proof": "checkpoints/SABLIER_FINALIZED_HASH_LOCKUP_QUALIFICATION_20261008.json",
+    "first_negative_proof": "checkpoints/SABLIER_DOCUMENTED_KEYLESS_ACTUAL_QUALIFICATION_20261008.json",
+    "cloud_run": 37856907180,
+    "artifact_id": 11584098677,
+    "artifact_digest": "sha256:bddfb56268c0fad88de0c3edac959eddad8a1a7a1907e1557fd6df969432939e",
+    "proof_head": "98619fc95893e4800b4f57d86b13faebdbefeb0f",
+    "status": "NO_MATCHING_QUALIFIED_FUTURE_LOCKUP",
+    "first_cloud_run": 37856443226,
+    "first_artifact_id": 11583709083,
+    "first_artifact_digest": "sha256:485f544e5ffe52f04769b9fc83a8b73ba8d53a927030083e89357fc30552a310",
+    "sourceHTTP_total": 4,
+    "qualified_identity_bindings": 23,
+    "matching_future_lockups": 0,
+    "production_provider_enabled": false,
+    "N01_consumer_implemented": false,
+    "original_finalized_clock": {
+      "number": 26150724,
+      "hash": "0x3b7f740195b381319076cd93451d5ea264c09494235a8728bb419a4650e6b89a",
+      "source_ts": 1791499223000
+    },
+    "scope": "BOUNDED_23_EXACT_EXISTING_ETHEREUM_BINDINGS;FIRST_NUMBER_PIN_MISSING_HASH_CLOCK_REJECTED;EXPLICIT_VERIFIED_FINALIZED_HASH_EMPTY_RESULT;NOT_ALL_CHAINS_OR_PROTOCOLS",
+    "repeat_without_new_basis": false
   }
 }

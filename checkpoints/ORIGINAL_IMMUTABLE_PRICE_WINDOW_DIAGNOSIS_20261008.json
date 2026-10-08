@@ -1,0 +1,639 @@
+{
+  "schema": "ORIGINAL_IMMUTABLE_PRICE_WINDOWS_DIAGNOSIS_20261008_V1",
+  "head": "a0a69ed14d2df97f88dcbc79500f6474acbbb920",
+  "cloud_run": "37858680543",
+  "read_ts": 1791501508306,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "cache_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "helper_sha256": "1287cb2872c8e68d10ca7827f960c3abcba1207e354f30d4d456e9dc9367848d",
+  "collector_source_sha256": "9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71",
+  "scope": "READ_ONLY_ORIGINAL_IMMUTABLE_SHARDS_AND_EXACT_CANONICAL;REPLAY_AT_STORED_RECEIPT_IS_NOT_PROOF_OF_ACTUAL_COLLECTOR_ACTION",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 86,
+      "reserved_rows_read": 1500500,
+      "reserved_rows_written": 28668,
+      "measured_rows_read": 842171,
+      "measured_rows_written": 13106,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1501500,
+      "rows_written": 28684
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "raw_file": "exact-original-price-shards.json.gz",
+  "gzip_sha256": "fdc691b82e67d03d600b00233fea82145901f5c2a0163d29337c4bb0a2bbc202",
+  "shards": 84,
+  "payload_bytes": 1577353,
+  "cases": [
+    {
+      "contract": "QNT-USDT",
+      "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+      "run_id": "1791494686190-1791494698261",
+      "snapshot_id": "S392:QNT-USDT:1791494765905",
+      "fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
+      "observed_ts": 1791494765905,
+      "trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 253.81,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791496565905,
+        "next_recheck_ts": 1791495065905,
+        "cancel_condition": "price<220.17",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "message_id": "163",
+      "samples": [
+        {
+          "bucket": 1791494700000,
+          "original_received_ts": 1791494702841,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 239.42,
+            "turnover_24h_usdt": 302758.2578,
+            "oi_contracts": 16725,
+            "oi_value_usdt": 40042.995,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791494701885,
+            "market_age_sec": 0.956,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791494701886,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791494702841,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "NOT_CHECKED",
+            "reason": "FRESH_EXACT_HTX_PRICE_REQUIRED"
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791495000000,
+          "original_received_ts": 1791495003740,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 238.94,
+            "turnover_24h_usdt": 302822.4172,
+            "oi_contracts": 16738,
+            "oi_value_usdt": 39993.7772,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791495002440,
+            "market_age_sec": 1.3,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791495002441,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791495003740,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 238.94,
+            "source_ts": 1791495002441,
+            "observed_ts": 1791495002440,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791495300000,
+          "original_received_ts": 1791495303186,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 238.04,
+            "turnover_24h_usdt": 302940.3666,
+            "oi_contracts": 16718,
+            "oi_value_usdt": 39795.5272,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791495302075,
+            "market_age_sec": 1.111,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791495302075,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791495303186,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 238.04,
+            "source_ts": 1791495302075,
+            "observed_ts": 1791495302075,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791495600000,
+          "original_received_ts": 1791495602988,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 238.19,
+            "turnover_24h_usdt": 303063.4812,
+            "oi_contracts": 16674,
+            "oi_value_usdt": 39715.8006,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791495601931,
+            "market_age_sec": 1.057,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791495601932,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791495602988,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 238.19,
+            "source_ts": 1791495601932,
+            "observed_ts": 1791495601931,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791495900000,
+          "original_received_ts": 1791495902975,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 237.75,
+            "turnover_24h_usdt": 302638.659,
+            "oi_contracts": 16685,
+            "oi_value_usdt": 39668.5875,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791495901997,
+            "market_age_sec": 0.978,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791495901997,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791495902975,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 237.75,
+            "source_ts": 1791495901997,
+            "observed_ts": 1791495901997,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791496200000,
+          "original_received_ts": 1791496204296,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 237.65,
+            "turnover_24h_usdt": 303263.6634,
+            "oi_contracts": 16710,
+            "oi_value_usdt": 39711.315,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791496202222,
+            "market_age_sec": 2.074,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791496202223,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791496204296,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 237.65,
+            "source_ts": 1791496202223,
+            "observed_ts": 1791496202222,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791496500000,
+          "original_received_ts": 1791496503077,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "QNT-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 237.57,
+            "turnover_24h_usdt": 302566.8318,
+            "oi_contracts": 16709,
+            "oi_value_usdt": 39695.5713,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791496502092,
+            "market_age_sec": 0.985,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791496502092,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791496503077,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 237.57,
+            "source_ts": 1791496502092,
+            "observed_ts": 1791496502092,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        }
+      ],
+      "eligible_samples": 5,
+      "eligible_trigger_reached_samples": 0,
+      "eligible_cancelled_samples": 0,
+      "missing_buckets": [],
+      "unobserved_intraminute_prices_not_inferred": true
+    },
+    {
+      "contract": "FIL-USDT",
+      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+      "run_id": "1791498274068-1791498286190",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+      "observed_ts": 1791498338812,
+      "trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": "<=",
+        "value": 1.0619,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791500138812,
+        "next_recheck_ts": 1791498638812,
+        "cancel_condition": "price>1.076",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "message_id": "164",
+      "samples": [
+        {
+          "bucket": 1791498300000,
+          "original_received_ts": 1791498302794,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0724,
+            "turnover_24h_usdt": 7917669.47098,
+            "oi_contracts": 6050946,
+            "oi_value_usdt": 648903.44904,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791498301860,
+            "market_age_sec": 0.934,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791498301861,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791498302794,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "NOT_CHECKED",
+            "reason": "FRESH_EXACT_HTX_PRICE_REQUIRED"
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791498600000,
+          "original_received_ts": 1791498604215,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0697,
+            "turnover_24h_usdt": 7986495.98414,
+            "oi_contracts": 6104849,
+            "oi_value_usdt": 653035.69753,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791498602025,
+            "market_age_sec": 2.19,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791498602025,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791498604215,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.0697,
+            "source_ts": 1791498602025,
+            "observed_ts": 1791498602025,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791498900000,
+          "original_received_ts": 1791498903067,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.07,
+            "turnover_24h_usdt": 8015384.65578,
+            "oi_contracts": 6121148,
+            "oi_value_usdt": 654717.99008,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791498902192,
+            "market_age_sec": 0.875,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791498902192,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791498903067,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.07,
+            "source_ts": 1791498902192,
+            "observed_ts": 1791498902192,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791499200000,
+          "original_received_ts": 1791499202952,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0702,
+            "turnover_24h_usdt": 8027457.47226,
+            "oi_contracts": 6044807,
+            "oi_value_usdt": 646915.24514,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791499202256,
+            "market_age_sec": 0.696,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791499202257,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791499202952,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.0702,
+            "source_ts": 1791499202257,
+            "observed_ts": 1791499202256,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791499500000,
+          "original_received_ts": 1791499502691,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0678,
+            "turnover_24h_usdt": 8017579.62086,
+            "oi_contracts": 6048352,
+            "oi_value_usdt": 645843.02656,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791499501988,
+            "market_age_sec": 0.703,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791499501989,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791499502691,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.0678,
+            "source_ts": 1791499501989,
+            "observed_ts": 1791499501988,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791499800000,
+          "original_received_ts": 1791499803385,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0678,
+            "turnover_24h_usdt": 8019600.9911,
+            "oi_contracts": 6048225,
+            "oi_value_usdt": 645829.4655,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791499802670,
+            "market_age_sec": 0.715,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791499802670,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791499803385,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.0678,
+            "source_ts": 1791499802670,
+            "observed_ts": 1791499802670,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791500100000,
+          "original_received_ts": 1791500102878,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "FIL-USDT",
+            "catalog_active": true,
+            "contract_size": 0.1,
+            "price": 1.0675,
+            "turnover_24h_usdt": 8026586.45906,
+            "oi_contracts": 6067385,
+            "oi_value_usdt": 647693.34875,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791500102045,
+            "market_age_sec": 0.833,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791500102045,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791500102878,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1.0675,
+            "source_ts": 1791500102045,
+            "observed_ts": 1791500102045,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        }
+      ],
+      "eligible_samples": 5,
+      "eligible_trigger_reached_samples": 0,
+      "eligible_cancelled_samples": 0,
+      "missing_buckets": [],
+      "unobserved_intraminute_prices_not_inferred": true
+    }
+  ],
+  "status": "BOUNDED_ORIGINAL_IMMUTABLE_PRICE_WINDOW_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ORIGINAL_PRICE_WINDOWS:37858680543:1",
+    "source_run_id": "37858680543",
+    "measured_rows_read": 187,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 20,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 20,
+    "rows_read": 188,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 87,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 14,
+        "rows_read": 98,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
