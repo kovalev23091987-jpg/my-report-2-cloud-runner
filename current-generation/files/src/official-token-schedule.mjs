@@ -1,3 +1,4 @@
+import {SUI_MONTHLY_SCHEDULE_ROUTE,normalizePublishedMonthlySchedule,collectPublishedMonthlySchedule} from './published-monthly-supply-schedule.mjs';
 import crypto from 'node:crypto';
 import {buildEvidenceV2,SOURCE_POLICIES} from './evidence-source-adapters.mjs';
 import {installEvidenceSourceStore,reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
@@ -8,6 +9,7 @@ const hash=v=>crypto.createHash('sha256').update(v).digest('hex');
 // Explicit primary documents, bound to native assets rather than ticker search.
 // An allocation/vesting document is context, never an observed future transfer.
 export const TOKEN_SCHEDULE_ROUTES=Object.freeze({
+ SUI:SUI_MONTHLY_SCHEDULE_ROUTE,
  ADA:{chain:'cardano',native_asset_id:'cardano:mainnet',url:'https://cardano.org/genesis/',parser:'CARDANO_INITIAL_DISTRIBUTION_V1',ttl_ms:24*60*60_000,daily_cap:2},
  APT:{chain:'aptos',native_asset_id:'aptos:mainnet',url:'https://aptosnetwork.com/currents/aptos-tokenomics-overview',parser:'APTOS_PUBLISHED_TERMS_V1'},
  NEAR:{chain:'near',native_asset_id:'near:mainnet',url:'https://www.near.org/',parser:'NEAR_PUBLISHED_UNLOCK_STATUS_V1'},
@@ -19,6 +21,7 @@ export function exactTokenScheduleRoute({contract,asset_identity}={}){
 const visible=body=>String(body||'').replace(/<(script|style)\b[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&(?:nbsp|amp);/g,' ').replace(/\s+/g,' ').trim();
 export function normalizeOfficialTokenSchedule({contract,asset_identity,body,source_url,observed_ts}={}){
  const route=exactTokenScheduleRoute({contract,asset_identity}),text=visible(body);
+ if(route?.parser==='SUI_PUBLISHED_MONTH_END_SCHEDULE_V1'){let payload;try{payload=JSON.parse(body);}catch{}return normalizePublishedMonthlySchedule({contract,asset_identity,payload,source_url,observed_ts});}
  if(!route||source_url!==route.url)return{status:'EXACT_OFFICIAL_SCHEDULE_ROUTE_REQUIRED',evidence:[]};
  if(!Number.isSafeInteger(observed_ts)||observed_ts<=0||Buffer.byteLength(String(body))>1024*1024||/404 Page Not Found|The page you are looking for does not exist/i.test(text))return{status:'OFFICIAL_SCHEDULE_SCHEMA_NOT_CLOSED',evidence:[]};
  let terms;
@@ -40,6 +43,7 @@ export function normalizeOfficialTokenSchedule({contract,asset_identity,body,sou
 }
 export async function collectOfficialTokenSchedule({db,fetch_impl=globalThis.fetch,request_admit,contract,run_id,asset_identity,now=Date.now(),clock=Date.now,strict_fresh_manual=false}={}){
  const route=exactTokenScheduleRoute({contract,asset_identity});
+ if(route?.parser==='SUI_PUBLISHED_MONTH_END_SCHEDULE_V1')return collectPublishedMonthlySchedule({db,fetch_impl,request_admit,contract,run_id,asset_identity,now,clock,strict_fresh_manual});
  if(!route)return{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',evidence:[],network_calls:0,check_completed:false,internal_only:true};
  await installEvidenceSourceStore(db);
  const key=`VESTING:${OFFICIAL_TOKEN_SCHEDULE_VERSION}:${contract}:${route.url}`,cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now});
@@ -58,3 +62,4 @@ export async function collectOfficialTokenSchedule({db,fetch_impl=globalThis.fet
  }catch(e){result={status:'OFFICIAL_SCHEDULE_SOURCE_ERROR',evidence:[],network_calls:1,admission,error:String(e.message).slice(0,160),internal_only:true};}
  return result;
 }
+
