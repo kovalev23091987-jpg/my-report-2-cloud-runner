@@ -1,0 +1,95 @@
+name: Report2 Connected Primary Native Supply Qualification
+on:
+  push:
+    branches: [codex/primary-native-supply-20261008]
+    paths: ['current-generation/**', '.github/workflows/primary-native-supply-20261008.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact owner before work
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='e8986bf943e4b4089483e5dd5b337a76f36496d5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble exact current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+      - name: Restore immutable existing approved delivery fixtures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Exact native identities, source arithmetic, original expiry and unchanged native/supply consumers
+        env:
+          REPORT2_NATIVE_MODULE_ROOT: runtime/src
+        run: |
+          node --test current-generation/tests/hedera-primary-supply.test.mjs current-generation/tests/native-supply-batch.test.mjs current-generation/tests/chain-supply-evidence.test.mjs current-generation/tests/general-supply-report-context.test.mjs current-generation/tests/htx-asset-identity.test.mjs current-generation/tests/block-result-context.test.mjs current-generation/tests/evidence-source-adapters.test.mjs > audit-output/native-supply-tests.tap
+          cmp current-generation/files/src/hedera-primary-supply.mjs runtime/src/hedera-primary-supply.mjs
+          cmp current-generation/files/src/chain-supply-evidence.mjs runtime/src/chain-supply-evidence.mjs
+          cmp current-generation/files/src/htx-asset-identity.mjs runtime/src/htx-asset-identity.mjs
+          cmp current-generation/files/src/supplemental-candidate-context.mjs runtime/src/supplemental-candidate-context.mjs
+          cmp current-generation/files/src/block-result-context.mjs runtime/src/block-result-context.mjs
+          cmp current-generation/files/src/evidence-source-adapters.mjs runtime/src/evidence-source-adapters.mjs
+      - name: Approved report and delivery, generation, exact binding and integration
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          git rev-parse HEAD > audit-output/head.txt
+      - name: Verify exact owner before the two-source qualification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='e8986bf943e4b4089483e5dd5b337a76f36496d5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: One bounded actual HTX identity and Hedera primary source batch
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/qualify-primary-native-supply-20261008.mjs
+      - name: Print bounded failure evidence
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,18000)+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: primary-native-supply-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain exact connected actual primary source and original source clocks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='e8986bf943e4b4089483e5dd5b337a76f36496d5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||['integration.json','validation.json','binding.json','head.txt','actual-primary-native-supply.json'].includes(f));for(const f of fs.readdirSync('audit-output/primary-source'))files.push('primary-source/'+f);
+            for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||pass<1||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const out=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),integration=out('integration.json'),validation=out('validation.json'),actual=out('actual-primary-native-supply.json');
+            if(tests['native-supply-tests.tap']?.pass<25||tests['observation-pipeline-tests.tap']?.pass!==35||integration.status!=='PASS'||integration.failed!==0||validation.status!=='CURRENT_GENERATION_VALIDATED'||actual.status!=='ACTUAL_PRIMARY_HEDERA_SOURCE_CONSUMER_QUALIFIED'||actual.sourceHTTP>2||actual.d1_usage.unknown_ops!==0||actual.consumer.facts.length!==1||actual.score_adjustment!==0)throw Error('PRIMARY_NATIVE_CONNECTED_PROOF_NOT_CLOSED');
+            const proof={schema:'PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008_V1',status:'ACTUAL_PRIMARY_NATIVE_IDENTITY_SUPPLY_AND_N02_RENDERING_QUALIFIED_WITH_ORIGINAL_EXPIRY_COMPOSED_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,integration,validation,actual,sourceHTTP:actual.sourceHTTP,D1:actual.d1_usage,MAIN:0,Telegram:0,new_source_daily_cap:4,new_source_monthly_bound:124,existing_parent_daily_cap:720,existing_global_http_cap:164,all_other_source_caps_unchanged:true,all_entry_and_core_weight_rules_unchanged:true,published_metric_not_finalized_block:true,published_metric_not_circulating_supply_or_unlock:true,source_clock_refreshed:false,actual_ENTRY:false,new_fresh_SENT:false,full_project_complete:false};
+            const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/primary-native-supply-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008.json',mode:'100644',type:'blob',sha:b.sha});
+            const ref=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_MOVED');const c=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:c.tree.sha,tree:entries})).data,n=(await github.rest.git.createCommit({owner,repo,message:'Retain actual primary native source consumer qualification and composed original-clock expiry proof',tree:t.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:n.sha,force:false});console.log('CONNECTED_PROOF_HEAD',n.sha);
+

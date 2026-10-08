@@ -2,6 +2,7 @@ import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
 import {normalizeXrplNativePayments} from './xrpl-native-payments.mjs';
 import {normalizeStellarPublishedSupply} from './stellar-primary-supply.mjs';
+import {normalizeHederaPublishedSupply} from './hedera-primary-supply.mjs';
 import {normalizeNativeLedgerPair} from './native-ledger-supply.mjs';
 import {plainContextFact,omitTelegramCurrencies} from './telegram-plain-facts.mjs';
 import {derivePublishedCalendarContext} from './published-token-calendar.mjs';
@@ -35,6 +36,11 @@ function describe(row,now){
   return{source:'XRPL / InFTF mainnet RPC',label:'Подтверждённые переводы нативного XRP',value:`${row.native_payments.length} успешных платежей в ограниченной выборке ledger ${row.ledger_index}; фактически полученные суммы, примеры: ${example}. Это часть платежей одного ledger, принадлежность адресов биржам, накопление и направление рынка не установлены`};
  }
 
+ if(row.block_id==='N02'&&row.metric_family==='HEDERA_PUBLISHED_SUPPLY_METRICS'){
+  const rebuilt=normalizeHederaPublishedSupply({contract:row.htx_contract,identity:{chain:'hedera',asset_kind:'NATIVE',native_asset_id:'hedera:mainnet',contract_or_mint:null},payload:row.primary_payload,observed_ts:row.observed_ts}).evidence?.[0];
+  if(!rebuilt||Object.entries(rebuilt).some(([key,value])=>JSON.stringify(value)!==JSON.stringify(row[key])))return null;
+  return{source:'Hedera mainnet mirror',label:'Опубликованное предложение HBAR',value:`выпущено ${tokenAmount(row.supply_values_base_units.released_supply,8)} HBAR из общего предложения ${tokenAmount(row.supply_values_base_units.total_supply,8)} HBAR; остаток ${tokenAmount(row.supply_values_base_units.unreleased_supply,8)} HBAR. Метрика released supply источника; изменение выпуска и будущие разблокировки этим наблюдением не проверены`};
+ }
  if(row.block_id==='N02'&&row.metric_family==='STELLAR_PUBLISHED_SUPPLY_METRICS'){
   const rebuilt=normalizeStellarPublishedSupply({contract:row.htx_contract,identity:{chain:'stellar',asset_kind:'NATIVE',native_asset_id:'stellar:mainnet',contract_or_mint:null},payload:row.primary_payload,observed_ts:row.observed_ts}).evidence?.[0];
   if(!rebuilt||rebuilt.evidence_id!==row.evidence_id||rebuilt.raw_hash!==row.raw_hash||rebuilt.source_ts!==row.source_ts||JSON.stringify(rebuilt.supply_values_base_units)!==JSON.stringify(row.supply_values_base_units)||row.chain_finalized_block_verified!==false||row.burn_or_buyback_change_verified!==false||row.directional_strength!==null||row.risk_strength!==null)return null;
@@ -313,3 +319,4 @@ export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const telegramReceipts=confirmedBlockContextFacts(canonical).filter(row=>(payload?.includes(`• ${row.label}: ${row.value}`)||payload?.includes(`• ${plainContextFact(row,canonical)}`)||payload?.includes(`• ${omitTelegramCurrencies(plainContextFact(row,canonical))}`))).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.map(row=>row.block_id))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
 }
+
