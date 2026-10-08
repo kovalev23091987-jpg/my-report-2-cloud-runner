@@ -1,6 +1,7 @@
 import {verifyAcquisition} from './runtime-bridge.mjs';
 import {verifyMultiLiquidationAcquisition,verifyGTradeAcquisition} from './gtrade-runtime-bridge.mjs';
 import {verifyScopedProviderAcquisition} from './scoped-provider-runtime-bridge.mjs';
+import {SELECTED_NATIVE_SOURCE_PLAN} from './selected-native-reserve-policy.mjs';
 
 // Only this service instance and this selected run own these raw acquisitions.
 // Collect the second selected market before returning to unrelated deep work.
@@ -17,7 +18,7 @@ export async function collectSelectedNativeBatch({service,params,selection,cover
  const contracts=selection?.contracts;
  const exactPair=selection?.run_id===params.run_id&&typeof params.run_id==='string'&&params.run_id.trim()&&Array.isArray(contracts)&&contracts.length===2&&new Set(contracts).size===2&&contracts.every(code)&&contracts.includes(params.contract)&&params.native_symbol===params.contract.replace(/-USDT$/,'')&&params.manual_liquidation_request!==true;
  const coverage=coverage_for(params.contract);
- const decorate=p=>{const c=coverage_for(p.contract);return{...p,cache_only:p.cache_only===true||Number(p.max_http_for_candidate)===0,allowed_source_ids:c.source_ids,proven_level_source_ids:c.proven_level_source_ids||[],structural_market_source_ids:c.structural_market_source_ids||[],dydx_position_batch_contracts:exactPair?contracts.filter(v=>coverage_for(v).source_ids.includes('DYDX_PINNED_NATIVE')):[],position_batch_contracts:exactPair?contracts.filter(v=>coverage_for(v).eligible&&coverage_for(v).source_ids.includes('GTRADE_NATIVE')):[]};};
+ const decorate=p=>{const c=coverage_for(p.contract);return{...p,cache_only:p.cache_only===true||Number(p.max_http_for_candidate)===0,allowed_source_ids:c.source_ids,proven_level_source_ids:c.proven_level_source_ids||[],structural_market_source_ids:c.structural_market_source_ids||[],selected_native_source_plan:exactPair?{schema:SELECTED_NATIVE_SOURCE_PLAN,run_id:p.run_id,entries:contracts.map(contract=>{const c=coverage_for(contract);return{contract,eligible:c.eligible===true,source_ids:c.source_ids};})}:null,dydx_position_batch_contracts:exactPair?contracts.filter(v=>coverage_for(v).source_ids.includes('DYDX_PINNED_NATIVE')):[],position_batch_contracts:exactPair?contracts.filter(v=>coverage_for(v).eligible&&coverage_for(v).source_ids.includes('GTRADE_NATIVE')):[]};};
  const collect=async p=>{const before=service.summary().shared_budget.reserved_http;try{return await service.collect(decorate(p));}finally{http_by_contract.set(p.contract,(http_by_contract.get(p.contract)||0)+Math.max(0,service.summary().shared_budget.reserved_http-before));}};
  if(!coverage.eligible)return null;
  let batch=batches.get(service);
@@ -36,9 +37,11 @@ export async function collectSelectedNativeBatch({service,params,selection,cover
  const other=contracts.find(v=>v!==params.contract);
  if(coverage_for(other).eligible){
   // The following candidate keeps its existing two-request discovery reserve.
-  // Do not borrow a larger first-candidate envelope or restart its deadline.
+  // A current unsupported route may release only one unusable reserve request
+  // to finish native position time; viable and unknown routes retain it.
   const following={contract:other,native_symbol:other.replace(/-USDT$/,''),run_id:params.run_id,deep_started_ts:params.deep_started_ts,max_deep_ms:params.max_deep_ms,max_http_for_candidate:2,cache_only:false,manual_liquidation_request:false,source_identity:null,early_candidate_bridge:false,early_candidate_quality_0_100:null};
   try{batch.results.set(other,await collect(following));}catch{batch.results.set(other,null);}
  }
  return first;
 }
+
