@@ -1,0 +1,183 @@
+{
+  "schema": "ACTUAL_SUI_PRIMARY_MONTHLY_API_QUALIFICATION_20261008_V1",
+  "head": "dfd6b6b09eb3bbbdf5bf784759faa6ae21b3d1fc",
+  "cloud_run": "37859105684",
+  "observed_ts": 1791501783427,
+  "documentation": [
+    "https://www.sui.io/blog/token-release-schedule",
+    "https://www.sui.io/token-schedule"
+  ],
+  "official_semantics": "PUBLISHED_ADJUSTABLE_ESTIMATED_END_OF_MONTH_CIRCULATION_SCHEDULE;NOT_EXACT_UNLOCK_EXECUTION_OR_CURRENT_FINALIZED_SUPPLY",
+  "local_daily_query_cap": 4,
+  "parent_OFFICIAL_EVENTS_cap": 288,
+  "whole_job_http_cap": 1,
+  "sourceHTTP": 1,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "cache_writes": 0,
+  "production_provider_enabled": false,
+  "N01_consumer_implemented": false,
+  "new_fresh_SENT": false,
+  "actual_ENTRY": false,
+  "source_clock_refreshed": false,
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 87,
+      "reserved_rows_read": 1501500,
+      "reserved_rows_written": 28684,
+      "measured_rows_read": 842358,
+      "measured_rows_written": 13110,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 64
+    },
+    "projected_reserved": {
+      "rows_read": 1502500,
+      "rows_written": 28748
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "identity": {
+    "contract": "SUI-USDT",
+    "chain": "sui",
+    "asset_kind": "NATIVE",
+    "native_asset_id": "sui:mainnet",
+    "contract_or_mint": null,
+    "HTX_original_received_ts": 1791498875882,
+    "reused_raw_gzip_sha256": "9e3b48573394b14b7bd35948f659cfccb12a9fcb9c39e0250161881aecc750d2",
+    "new_identity_HTTP": 0
+  },
+  "source_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "SUI_PUBLISHED_MONTHLY_SCHEDULE",
+    "day_utc": "2026-10-08",
+    "attempts": 1
+  },
+  "parent_admission": {
+    "allowed": true,
+    "status": "RESERVED",
+    "source": "OFFICIAL_EVENTS",
+    "day_utc": "2026-10-08",
+    "attempts": 1
+  },
+  "source": {
+    "url": "https://sui-circulation.suiexplorer.com/api/sui_circulation",
+    "http_status": 200,
+    "received_ts": 1791501784800,
+    "body_sha256": "21dbd351e1891c463f7bc119812bda79ac05b431fc9884282330df0d6fd90c49",
+    "gzip_sha256": "5e7bea11652d2ac775de70fed65f3d8bbd3a851a97eab17b6b1e845a65803bae",
+    "file": "sui-monthly-api.json.gz",
+    "content_type": "application/json; charset=utf-8",
+    "last_modified": null,
+    "etag": "W/\"oqhx445l677o9\""
+  },
+  "payload_shape": {
+    "type": "ARRAY",
+    "keys": null,
+    "array_length": 85
+  },
+  "bounded_schema_samples": [
+    {
+      "month": 5,
+      "year": 2023,
+      "circulatingSupplyValue": 514649369.9487179,
+      "circulatingSupplyPercentage": 0.05146493699487179
+    },
+    {
+      "month": 6,
+      "year": 2023,
+      "circulatingSupplyValue": 582598087.8974359,
+      "circulatingSupplyPercentage": 0.05825980878974359
+    },
+    {
+      "month": 4,
+      "year": 2030,
+      "circulatingSupplyValue": 4769979397.097263,
+      "circulatingSupplyPercentage": 0.4769979397097263
+    },
+    {
+      "month": 5,
+      "year": 2030,
+      "circulatingSupplyValue": 4782793256.212355,
+      "circulatingSupplyPercentage": 0.4782793256212355
+    }
+  ],
+  "status": "RAW_PRIMARY_MONTHLY_SCHEDULE_RESPONSE_RETAINED_NOT_YET_CONSUMER_QUALIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "SUI_MONTHLY_QUAL:37859105684:1",
+    "source_run_id": "37859105684",
+    "measured_rows_read": 94,
+    "measured_rows_written_accounted": 12,
+    "measured_requests_accounted": 17,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 17,
+    "rows_read": 95,
+    "rows_written": 12,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 88,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "actual_path": "checkpoints/sui-monthly-schedule-qualification-37859105684/actual.json",
+  "full_project_complete": false
+}

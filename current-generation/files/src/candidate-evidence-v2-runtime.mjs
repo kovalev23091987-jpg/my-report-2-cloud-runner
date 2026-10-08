@@ -264,7 +264,7 @@ export function planCandidateEvidenceRoutes(params={}){
  const routes=[...(exactCoinmetricsNativeIdentity(params?.contract,params?.asset_identity)?[{name:'COINMETRICS',role:'ADDITIONAL_NATIVE_DAILY_SUPPLY_HISTORY'}]:[]),{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(!officialEligible?[{name:'HTX_ANNOUNCEMENTS',role:'OFFICIAL_HTX_ASSET_EVENT_CONTEXT'}]:[]),...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(supplyEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(chainEventsEligible?[{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(DELTA_OBSERVED_OPTION_BASES.includes(String(params?.contract||'').replace(/-USDT$/,''))?[{name:'DELTA',role:'INDEPENDENT_SCOPED_OPTION_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(exactWikimediaPage(params))routes.push({name:'WIKIMEDIA',role:'ADDITIONAL_DAILY_PAGEVIEW_CONTEXT'});
  if(publishedCalendarCandidateEligible(params))routes.push({name:'TOKEN_CALENDAR',role:'ADDITIONAL_PUBLISHED_FUTURE_VESTING_CALENDAR'});
- if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
+ if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:exactTokenScheduleRoute(params).parser==='SUI_PUBLISHED_MONTH_END_SCHEDULE_V1'?'OFFICIAL_PUBLISHED_MONTHLY_PROJECTION_CONTEXT':'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
  if(/^\S{1,32}-USDT$/u.test(String(params?.contract||'')))routes.push({name:'SECTOR',role:'EXACT_PROVIDER_MARKET_SUPPLY_AND_SECTOR_CONTEXT'});
  if(nativeSectorEligible||chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  return{routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,nativeChainEventsEligible,supplyEligible,chainEventsEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible};
@@ -349,3 +349,4 @@ export async function collectCandidateEvidenceV2(params={}){
 }
 
 export default{collectCandidateEvidenceV2,finalizeCandidateBlockCoverage,auditCandidateBlocks};
+

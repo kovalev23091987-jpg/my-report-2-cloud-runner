@@ -1,3 +1,4 @@
+import {normalizePublishedMonthlySchedule,SUI_MONTHLY_SCHEDULE_ROUTE} from './published-monthly-supply-schedule.mjs';
 import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
 import {normalizeXrplNativePayments} from './xrpl-native-payments.mjs';
@@ -64,6 +65,12 @@ function describe(row,now){
   return{source:`официальный GitHub / ${row.github_repository}`,label:'Проверка опубликованных выпусков проекта',value:`в возвращённой выборке до10 выпусков пригодных стабильных релизов за последние7 дней нет; другие страницы и каналы объявлений этим не проверены`};
  }
 
+ if(row.block_id==='N01'&&row.metric_family==='OFFICIAL_PUBLISHED_MONTH_END_SUPPLY_PROJECTION'){
+  const rebuilt=normalizePublishedMonthlySchedule({contract:row.htx_contract,asset_identity:{chain:'sui',asset_kind:'NATIVE',native_asset_id:'sui:mainnet',contract_or_mint:null},payload:row.primary_payload,source_url:SUI_MONTHLY_SCHEDULE_ROUTE.url,observed_ts:row.observed_ts}).evidence?.[0];
+  if(!rebuilt||now>=rebuilt.expires_at||Object.entries(rebuilt).some(([key,value])=>JSON.stringify(value)!==JSON.stringify(row[key]))||row.schedule_context.projections[0].period_end_exclusive_ts<=now)return null;
+  const months=row.schedule_context.projections.map(p=>`${p.month}: к концу месяца плановое предложение ${fmt(p.planned_month_end_circulation_tokens)} SUI, изменение к предыдущему месяцу +${fmt(p.planned_increase_over_previous_month_tokens)} SUI`);
+  return{source:'Sui Foundation / месячный график',label:'План предложения SUI по месяцам',value:`${months.join('; ')}. План может изменяться; точные даты разблокировки, индивидуальные позиции и фактические переводы токенов этим API не подтверждены`};
+ }
  if(row.block_id==='N01'&&row.metric_family==='PROVIDER_PUBLISHED_FUTURE_TOKEN_CALENDAR'){
   if(row.provider_id!=='DEFILLAMA_PUBLISHED_CALENDAR'||row.upstream_id!=='DEFILLAMA_PUBLISHED_VESTING_CALENDAR'||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.official_confirmation!==false||row.actual_unlock_transfer_verified!==false||row.entry_authorized!==false||row.source_clock_policy!=='PUBLIC_PAGE_GENERATION_NOT_UNLOCK_EXECUTION')return null;
   const c=derivePublishedCalendarContext({page:row.provider_calendar_page,reference:row.provider_asset_reference,observed_ts:row.observed_ts,now});
@@ -319,4 +326,3 @@ export function auditRenderedBlockResults({canonical,manual,telegram}={}){
  const telegramReceipts=confirmedBlockContextFacts(canonical).filter(row=>(payload?.includes(`• ${row.label}: ${row.value}`)||payload?.includes(`• ${plainContextFact(row,canonical)}`)||payload?.includes(`• ${omitTelegramCurrencies(plainContextFact(row,canonical))}`))).map(row=>({block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:row.physical_root_key,source_ts:row.source_ts,observed_ts:row.observed_ts,label:row.label,value:row.value,consumer:'APPROVED_TELEGRAM_PAYLOAD_CONTEXT',score_contribution:0}));
  return{version:BLOCK_RESULT_CONTEXT_VERSION,contract,run_id:canonical?.run_id??null,snapshot_id:canonical?.snapshot_id??null,status:printed?'RENDERED_OUTPUT_VERIFIED':'FORMATTER_OUTPUT_NOT_CONFIRMED',context_receipts:receipts,used_context_block_ids:[...new Set(receipts.map(row=>row.block_id))],available_not_rendered_evidence_ids:available.facts.filter(row=>!receipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_payload_status:payload?'APPROVED_PAYLOAD_TEXT_OBSERVED':'APPROVED_PAYLOAD_NOT_CONFIRMED',telegram_context_receipts:telegramReceipts,telegram_used_context_block_ids:[...new Set(telegramReceipts.map(row=>row.block_id))],telegram_available_not_rendered_evidence_ids:available.facts.filter(row=>!telegramReceipts.some(r=>r.evidence_id===row.evidence_id)).map(row=>row.evidence_id),telegram_delivery_proven:false,telegram_message_id:null,entry_authorized:false,internal_only:true};
 }
-
