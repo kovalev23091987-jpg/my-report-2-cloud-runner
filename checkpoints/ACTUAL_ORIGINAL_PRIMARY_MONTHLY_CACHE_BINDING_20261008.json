@@ -1,0 +1,113 @@
+{
+  "schema": "ACTUAL_ORIGINAL_PRIMARY_MONTHLY_CACHE_BINDING_20261008_V1",
+  "head": "f4188c576e74392c09f0740ccac7633a18bf42c7",
+  "cloud_run": "37861252943",
+  "checked_ts": 1791503183195,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "cache_writes": 1,
+  "scope": "CONDITIONAL_CAS_STORE_OF_QUALIFIED_ORIGINAL_PRIMARY_RESPONSE;NO_NEW_SOURCE_QUERY_OR_TTL_RENEWAL_OR_MAIN",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 91,
+      "reserved_rows_read": 1559000,
+      "reserved_rows_written": 29620,
+      "measured_rows_read": 888870,
+      "measured_rows_written": 13454,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 1560000,
+      "rows_written": 29636
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "prior": null,
+  "cache": {
+    "source": "OFFICIAL_EVENTS",
+    "asset_key": "published-monthly-supply-schedule-v1-20261008:SUI-USDT",
+    "observed_ts": 1791501784800,
+    "expires_ts": 1791523384800,
+    "payload_sha256": "f90a99776c685bfacd6be15127a23ad6c9183d8c095a1a0f3a9986e5a802fd03",
+    "original_primary_payload_sha256": "21dbd351e1891c463f7bc119812bda79ac05b431fc9884282330df0d6fd90c49",
+    "future_months": [
+      "2026-10",
+      "2026-11"
+    ],
+    "newer_existing_source_preserved": false
+  },
+  "status": "ACTUAL_ORIGINAL_PRIMARY_SCHEDULE_CACHE_BOUND_AND_READBACK_VERIFIED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "MONTHLY_ORIGINAL_CACHE:37861252943:1",
+    "source_run_id": "37861252943",
+    "measured_rows_read": 93,
+    "measured_rows_written_accounted": 6,
+    "measured_requests_accounted": 12,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 12,
+    "rows_read": 94,
+    "rows_written": 6,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 92,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "batch:OTHER": {
+        "requests": 5,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_evidence_source_cache": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
