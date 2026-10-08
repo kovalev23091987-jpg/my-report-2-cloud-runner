@@ -4,12 +4,12 @@ import {D1_DAILY_LIMITS} from './unified-budget.mjs';
 
 export const TRIGGERED_RECHECK_VERSION='exact-sent-triggered-recheck-v3-original-task-window-20261008';
 export const TRIGGERED_RECHECK_D1_RESERVATION=Object.freeze({rows_read:1500,rows_written:16});
-export const TRIGGER_KICK_PLAN=Object.freeze({polls_per_day:288,kicks_per_day:3,poll_rows_read:40,poll_rows_written:8});
+export const TRIGGER_KICK_PLAN=Object.freeze({polls_per_day:288,kicks_per_day:3,poll_rows_read:40,poll_rows_written:8,backup_early_probe_reads:1});
 export function proveTriggeredRecheckD1Budget(){
  // Reserve every72 normal admission checks plus288 bounded hints and at
  // most3 additional admission jobs. Full analyses still share the same
  // original three-attempt burst ledger, provider and daily D1 caps.
- const reads=D1_DAILY_LIMITS.planned_rows_read+(72+TRIGGER_KICK_PLAN.kicks_per_day)*TRIGGERED_RECHECK_D1_RESERVATION.rows_read+TRIGGER_KICK_PLAN.polls_per_day*TRIGGER_KICK_PLAN.poll_rows_read;
+ const reads=D1_DAILY_LIMITS.planned_rows_read+(72+TRIGGER_KICK_PLAN.kicks_per_day)*TRIGGERED_RECHECK_D1_RESERVATION.rows_read+TRIGGER_KICK_PLAN.polls_per_day*(TRIGGER_KICK_PLAN.poll_rows_read+TRIGGER_KICK_PLAN.backup_early_probe_reads);
  const writes=D1_DAILY_LIMITS.planned_rows_written+(72+TRIGGER_KICK_PLAN.kicks_per_day)*TRIGGERED_RECHECK_D1_RESERVATION.rows_written+TRIGGER_KICK_PLAN.polls_per_day*TRIGGER_KICK_PLAN.poll_rows_written;
  return {safe:reads<=D1_DAILY_LIMITS.rows_read&&writes<=D1_DAILY_LIMITS.rows_written,maximum_planned_rows_read:reads,maximum_planned_rows_written:writes,cron_admissions_reserved:72,additional_kick_admissions_reserved:3,kick_poll_plan:TRIGGER_KICK_PLAN,source_http:0};
 }
