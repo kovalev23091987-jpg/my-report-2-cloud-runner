@@ -1478,7 +1478,7 @@
       "block": "N02",
       "name": "Предложение и выпуск монет",
       "status": "PARTIAL_EXPANDED_GENERAL_ROUTES_PR203",
-      "remaining_action": "XRPL finalized exact adjacent-ledger supply and Stellar published component arithmetic implementedPR203. Stellar published metrics are not finalized onchain circulating supply; other native chains still need exact primary routes.",
+      "remaining_action": "XRPL finalized exact adjacent-ledger supply and Stellar published component arithmetic implementedPR203. Stellar published metrics are not finalized onchain circulating supply; other native chains still need exact primary routes. HBAR exact primary published supply connected by PR245; neutral N02 consumer and original expiry verified. Fresh HBAR MAIN/SENT and broader useful asset coverage are still open.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -1513,7 +1513,44 @@
       "latest_implementation_proof": "checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json",
       "latest_useful_weight_policy": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
       "latest_post_pr226_natural_audit": "checkpoints/POST_PR226_NATURAL_CONNECTED_AUDIT_20261007.json",
-      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json"
+      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
+      "latest_primary_native_supply_release": {
+        "pr": 245,
+        "production_head": "a98e0d28ecb993dbf6a70db7244000dd05f26576",
+        "tested_head": "1f1da71e642312dc31c18ecee34496d2f2d498c5",
+        "proof_head": "b6dc8c5906c8752517781f59172ff92a3f6a8d7a",
+        "cloud_run": 37854297470,
+        "artifact_id": 11582823625,
+        "artifact_digest": "sha256:36e3e466b7ccd644344be36c55a7f0b75e0b9408b95ff96c15bd1bcbae2ce186",
+        "proof": "checkpoints/PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008.json",
+        "status": "DEPLOYED_ACTUAL_PRIMARY_HEDERA_IDENTITY_N02_CONSUMER_AND_ORIGINAL_PUBLISHED_METRIC_EXPIRY",
+        "sourceHTTP": 2,
+        "D1": {
+          "requests": 29,
+          "rows_read": 89,
+          "rows_written": 17,
+          "unknown_ops": 0
+        },
+        "tests": {
+          "source": 43,
+          "approved_delivery": 35,
+          "integration": 37,
+          "generation": "PASS",
+          "binding": "PASS"
+        },
+        "metric": "PUBLISHED_RELEASED_TOTAL_UNRELEASED_SUPPLY_NOT_CIRCULATING_OR_FUTURE_UNLOCK",
+        "source_ts": 1791496869547,
+        "expires_at": 1791518469547,
+        "new_source_daily_cap": 4,
+        "parent_cap": 720,
+        "global_http_cap": 164,
+        "score_adjustment": 0,
+        "MAIN": 0,
+        "Telegram": 0,
+        "new_fresh_SENT": false,
+        "actual_ENTRY": false,
+        "full_project_complete": false
+      }
     },
     {
       "task_id": "BLOCK_N03",
@@ -1813,7 +1850,8 @@
         "bridge_not_modified": true,
         "actual_historical_NEAR_cause_closed": false,
         "current_release_new_fresh_SENT": false
-      }
+      },
+      "latest_current_full_window_proof": "checkpoints/post244-production-readback-20261008/37853236004/summary.json"
     },
     {
       "task_id": "BLOCK_N06",
@@ -2854,6 +2892,71 @@
         "new_fresh_SENT": false,
         "actual_ENTRY": false,
         "full_project_complete": false
+      },
+      "latest_actual_native_level_SENT": {
+        "source_cloud_run": 37853236004,
+        "source_head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+        "contract": "FIL-USDT",
+        "run_id": "1791498274068-1791498286190",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+        "observed_ts": 1791498338812,
+        "original_trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 1.0619,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791500138812,
+          "next_recheck_ts": 1791498638812,
+          "cancel_condition": "price>1.076",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "canonical_entry": {
+          "area": "1.0619 USDT",
+          "min_price": 1.0619,
+          "max_price": 1.0619,
+          "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "canonical_targets": [],
+        "canonical_state": "OBSERVE",
+        "receipt": {
+          "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+          "run_id": "1791498274068-1791498286190",
+          "snapshot_id": "S392:FIL-USDT:1791498338812",
+          "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+          "observed_ts": 1791498338812,
+          "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+          "lifecycle_event": "OBSERVE",
+          "state": "SENT",
+          "telegram_message_id": "164",
+          "sent_ts": 1791498387674,
+          "last_error": "SENT"
+        },
+        "task": {
+          "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
+          "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+          "contract_code": "FIL-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+          "snapshot_id": "S392:FIL-USDT:1791498338812",
+          "run_id": "1791498274068-1791498286190",
+          "due_ts": 1791498638812,
+          "expires_ts": 1791500138812,
+          "state": "PENDING",
+          "attempt_count": 0,
+          "last_result": null,
+          "created_ts": 1791498387674,
+          "updated_ts": 1791498387674
+        },
+        "status": "ACTUAL_EXACT_TASK_READ",
+        "exact_SENT": true,
+        "proof": "checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json",
+        "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY",
+        "task_state_asof_ts": 1791498782482,
+        "no_original_ttl_extension": true
       }
     }
   ],
@@ -3225,7 +3328,7 @@
   ],
   "first_batch_status": "MERGED_PR203; EXACT_N02_N03_N07_COMPONENTS_AND_TG_REGRESSION_VERIFIED; SOURCE_SPECIFIC_REPORT_AND_LARGER_BLOCK_COUNT_NOT_CLAIMED",
   "no_new_provider_accepted_from_research_only": true,
-  "latest_completed_implementation_batch": "checkpoints/NATIVE_EVM_PRIMARY_CONNECTED_RELEASE_20261007.json",
+  "latest_completed_implementation_batch": "checkpoints/PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008.json",
   "latest_completed_native_transfer_batch": {
     "proof": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
     "run": 37577028532,
@@ -3233,42 +3336,16 @@
     "whole_market_coverage": false
   },
   "latest_automatic_participating_counts": {
-    "proof": "checkpoints/POST239_ACTUAL_FLOW_STORAGE_RELEASE_20261008.json",
-    "candidates": [
-      {
-        "contract": "FIL-USDT",
-        "run_id": "1791487535792-1791487551019",
-        "snapshot_id": "S392:FIL-USDT:1791487668251",
-        "participating_count": 6,
-        "participating_ids": [
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ]
-      },
-      {
-        "contract": "NEAR-USDT",
-        "run_id": "1791487535792-1791487551019",
-        "snapshot_id": "S392:NEAR-USDT:1791487620989",
-        "participating_count": 10,
-        "participating_ids": [
-          "N01",
-          "N02",
-          "N03",
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ]
-      }
+    "cloud_run": 37853236004,
+    "contracts": [
+      "ZEC-USDT",
+      "FIL-USDT"
     ],
-    "all_asset_completion": false
+    "counts": [
+      7,
+      7
+    ],
+    "twelve_or_more_proven": false
   },
   "latest_official_transport_batch": {
     "proof": "checkpoints/OFFICIAL_TRANSPORT_AND_USEFUL_SOURCE_RELEASE_20261007.json",
@@ -3435,7 +3512,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791496638780,
+  "updated_ts": 1791499707373,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -3545,19 +3622,56 @@
     "natural_production_acceptance": "PENDING"
   },
   "latest_actual_report": {
-    "proof": "checkpoints/post243-production-readback-20261008/37846542006/summary.json",
-    "cloud_run": 37846542006,
-    "head": "9084d89b4ea9ae51fe9c82236504d47c9e4500a3",
-    "run_id": "1791494686190-1791494698261",
-    "generated_at": "2026-10-08T21:27:15.856Z",
+    "proof": "checkpoints/post244-production-readback-20261008/37853236004/summary.json",
+    "cloud_run": 37853236004,
+    "head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+    "run_id": "1791498274068-1791498286190",
+    "generated_at": "2026-10-08T22:26:32.108Z",
     "candidates": [
       {
-        "contract": "BR-USDT",
-        "snapshot_id": "S392:BR-USDT:1791494819113",
-        "publication_id": "PUB:be6bba14d1117c309c0d9c56f876d7be04ce8bd6",
-        "fingerprint": "930276e4c2471c016b4128f8ed8e82b672794f0eef3a862505c46854efdc84b5",
+        "contract": "ZEC-USDT",
+        "snapshot_id": "S392:ZEC-USDT:1791498382025",
+        "publication_id": "PUB:791f1270060e5b33ea64bf3dd52509d212bde556",
+        "fingerprint": "806fdbb401e1160a4fdf4c36c1b428bf9c4bad3380316713f50014a450aa3d83",
         "state": "REJECTED",
         "direction": null,
+        "participating": 7,
+        "participating_ids": [
+          "N02",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "nonzero_count": 0,
+        "N05": {
+          "status": "NOT_CLOSED",
+          "rendered": [],
+          "source_clock_unchanged": true
+        },
+        "native_levels": [
+          {
+            "price": 892.1630557096,
+            "distance_pct": -24.62292533714092,
+            "reference_price": 1183.6,
+            "source": "Hyperliquid official",
+            "source_ts": 1791498331150,
+            "estimated": false,
+            "conditional_cross": true,
+            "is_HTX_target": false
+          }
+        ],
+        "data_quality": "PARTIAL"
+      },
+      {
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+        "state": "OBSERVE",
+        "direction": "SHORT",
         "participating": 7,
         "participating_ids": [
           "N05",
@@ -3568,24 +3682,24 @@
           "N12",
           "N16"
         ],
+        "nonzero_count": 1,
         "N05": {
           "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "use_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
           "rendered": [
             {
               "block_id": "N05",
-              "evidence_id": "EV2:4fc4888c145a3ec86e650e63fef257c3d8a33e2c43832a672e7b3652902eaa8f",
-              "physical_root_key": "HTX_RAW_FILLS:BR-USDT:1791480300000:1791494700000",
+              "evidence_id": "EV2:8a0f716dc2bdb0d8686cb7255d2647281f2dc5b0ce74bad95406483a7d172334",
+              "physical_root_key": "HTX_RAW_FILLS:FIL-USDT:1791483840000:1791498240000",
               "evidence_ids": [
-                "EV2:4fc4888c145a3ec86e650e63fef257c3d8a33e2c43832a672e7b3652902eaa8f"
+                "EV2:8a0f716dc2bdb0d8686cb7255d2647281f2dc5b0ce74bad95406483a7d172334"
               ],
               "physical_root_keys": [
-                "HTX_RAW_FILLS:BR-USDT:1791480300000:1791494700000"
+                "HTX_RAW_FILLS:FIL-USDT:1791483840000:1791498240000"
               ],
-              "source_ts": 1791494700000,
-              "observed_ts": 1791494773358,
+              "source_ts": 1791498240000,
+              "observed_ts": 1791498300825,
               "label": "Фактический поток фьючерсных сделок за четыре часа",
-              "value": "1314 исходных сделок: покупки 56 159,6, продажи 64 237,07 USDT; разница -8 077,47 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
+              "value": "3298 исходных сделок: покупки 785 792,6, продажи 888 403,04 USDT; разница -102 610,44 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
               "source": "HTX / исходные сделки",
               "consumer": "MANUAL_CONFIRMED_CONTEXT",
               "score_contribution": 0
@@ -3593,68 +3707,23 @@
           ],
           "source_clock_unchanged": true
         },
-        "N12": {
-          "participating": true,
-          "score_contribution": null
-        },
-        "native_levels": 0,
-        "native_position_clock": false
-      },
-      {
-        "contract": "QNT-USDT",
-        "snapshot_id": "S392:QNT-USDT:1791494765905",
-        "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
-        "fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
-        "state": "OBSERVE",
-        "direction": "LONG",
-        "participating": 10,
-        "participating_ids": [
-          "N02",
-          "N03",
-          "N05",
-          "N07",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
+        "native_levels": [
+          {
+            "price": 0.8000718008,
+            "distance_pct": -25.326034533609608,
+            "reference_price": 1.07142,
+            "source": "Hyperliquid official",
+            "source_ts": 1791498326838,
+            "estimated": false,
+            "conditional_cross": false,
+            "is_HTX_target": false
+          }
         ],
-        "N05": {
-          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "use_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
-          "rendered": [
-            {
-              "block_id": "N05",
-              "evidence_id": "EV2:e5395de8935247c4de342634d4b024b5711d38836c4c7f22e12996d92fd6543b",
-              "physical_root_key": "HTX_RAW_FILLS:QNT-USDT:1791480240000:1791494640000",
-              "evidence_ids": [
-                "EV2:e5395de8935247c4de342634d4b024b5711d38836c4c7f22e12996d92fd6543b"
-              ],
-              "physical_root_keys": [
-                "HTX_RAW_FILLS:QNT-USDT:1791480240000:1791494640000"
-              ],
-              "source_ts": 1791494640000,
-              "observed_ts": 1791494714185,
-              "label": "Фактический поток фьючерсных сделок за четыре часа",
-              "value": "323 исходных сделок: покупки 33 731,46, продажи 30 745,44 USDT; разница 2 986,02 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
-              "source": "HTX / исходные сделки",
-              "consumer": "MANUAL_CONFIRMED_CONTEXT",
-              "score_contribution": 0
-            }
-          ],
-          "source_clock_unchanged": true
-        },
-        "N12": {
-          "participating": true,
-          "score_contribution": 0.0254
-        },
-        "native_levels": 0,
-        "native_position_clock": false
+        "data_quality": "PARTIAL"
       }
     ],
     "Telegram_sent_verified": true,
-    "scope": "ACTUAL_POST_PR243_QNT_OBSERVE_SENT163_AND_TWO_COMPLETE_240MIN_FLOWS;BEFORE_PR244;NOT_ENTRY_OR_CLOCK_CONFIRMED_NATIVE_LEVEL_SENT"
+    "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY"
   },
   "latest_official_trade_native_capability": {
     "path": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json",
@@ -4875,68 +4944,69 @@
     "masked_next_due_number_not_reconstructed": true
   },
   "latest_fresh_telegram_acceptance": {
-    "proof": "checkpoints/UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008.json",
-    "read_proof": "checkpoints/unused-native-pair-reserve-tests-37849998113/natural-sent-task-read.json",
-    "source_cloud_run": 37846542006,
-    "source_head": "9084d89b4ea9ae51fe9c82236504d47c9e4500a3",
-    "contract": "QNT-USDT",
-    "run_id": "1791494686190-1791494698261",
-    "snapshot_id": "S392:QNT-USDT:1791494765905",
-    "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
-    "analytical_fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
-    "observed_ts": 1791494765905,
+    "source_cloud_run": 37853236004,
+    "source_head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+    "contract": "FIL-USDT",
+    "run_id": "1791498274068-1791498286190",
+    "snapshot_id": "S392:FIL-USDT:1791498338812",
+    "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+    "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+    "observed_ts": 1791498338812,
     "original_trigger": {
       "trigger_type": "PRICE_CONFIRMATION",
       "metric": "price",
-      "operator": ">=",
-      "value": 253.81,
+      "operator": "<=",
+      "value": 1.0619,
       "unit": "USDT",
       "timeframe": "5m",
-      "expires_ts": 1791496565905,
-      "next_recheck_ts": 1791495065905,
-      "cancel_condition": "price<220.17",
-      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      "expires_ts": 1791500138812,
+      "next_recheck_ts": 1791498638812,
+      "cancel_condition": "price>1.076",
+      "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
     },
     "canonical_entry": {
-      "area": "253.81 USDT",
-      "min_price": 253.81,
-      "max_price": 253.81,
-      "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
+      "area": "1.0619 USDT",
+      "min_price": 1.0619,
+      "max_price": 1.0619,
+      "basis": "VERIFIED_ANOMALY_CANDLE_LEVEL"
     },
     "canonical_targets": [],
     "canonical_state": "OBSERVE",
     "receipt": {
-      "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
-      "run_id": "1791494686190-1791494698261",
-      "snapshot_id": "S392:QNT-USDT:1791494765905",
-      "analytical_fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
-      "observed_ts": 1791494765905,
-      "wave_id": "EDW:QNT-USDT:1791494698540:G7",
+      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+      "run_id": "1791498274068-1791498286190",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "analytical_fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+      "observed_ts": 1791498338812,
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
       "lifecycle_event": "OBSERVE",
       "state": "SENT",
-      "telegram_message_id": "163",
-      "sent_ts": 1791494826873,
+      "telegram_message_id": "164",
+      "sent_ts": 1791498387674,
       "last_error": "SENT"
     },
     "task": {
-      "task_id": "RCHK:c91fbd31423ec02b43321c0607c15c0251311e43",
-      "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
-      "contract_code": "QNT-USDT",
-      "direction": "LONG",
-      "wave_id": "EDW:QNT-USDT:1791494698540:G7",
-      "snapshot_id": "S392:QNT-USDT:1791494765905",
-      "run_id": "1791494686190-1791494698261",
-      "due_ts": 1791495065905,
-      "expires_ts": 1791496565905,
+      "task_id": "RCHK:7ed9ed04411df9cfeabf70ef19732e6bcb44fd3b",
+      "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+      "contract_code": "FIL-USDT",
+      "direction": "SHORT",
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "snapshot_id": "S392:FIL-USDT:1791498338812",
+      "run_id": "1791498274068-1791498286190",
+      "due_ts": 1791498638812,
+      "expires_ts": 1791500138812,
       "state": "PENDING",
       "attempt_count": 0,
-      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791496204646,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"WAITING_FOR_PRICE\",\"price\":237.65,\"source_ts\":1791496202223,\"observed_ts\":1791496202222,\"source\":\"HTX_OFFICIAL_COLLECTOR\",\"settlement_confirmed\":false,\"last_bucket\":1791496200000,\"task_id\":\"RCHK:c91fbd31423ec02b43321c0607c15c0251311e43\",\"publication_id\":\"PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a\",\"run_id\":\"1791494686190-1791494698261\",\"snapshot_id\":\"S392:QNT-USDT:1791494765905\",\"analytical_fingerprint\":\"609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9\",\"telegram_message_id\":\"163\"}",
-      "created_ts": 1791494826873,
-      "updated_ts": 1791496204646
+      "last_result": null,
+      "created_ts": 1791498387674,
+      "updated_ts": 1791498387674
     },
     "status": "ACTUAL_EXACT_TASK_READ",
     "exact_SENT": true,
-    "scope": "ACTUAL_POST_PR243_QNT_OBSERVE_SENT163_BEFORE_PR244;ORIGINAL_PENDING_TASK_ASOF_21_51_UTC;NO_ENTRY_OR_TTL_RENEWAL"
+    "proof": "checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json",
+    "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY",
+    "task_state_asof_ts": 1791498782482,
+    "no_original_ttl_extension": true
   },
   "latest_continuation_handoff": {
     "state": "checkpoints/CONTINUATION_STATE_20261008_NATIVE_RELEVANT_SEARCH.json",
@@ -5068,23 +5138,21 @@
     "project_complete": false
   },
   "previous_accepted_actual_report": {
-    "proof": "checkpoints/continuous-production-readback-20261008/37839437696/summary.json",
-    "cloud_run": 37839437696,
-    "head": "70ce1d3ca579208f7f2d8863a1de7d06c2d68bcb",
-    "run_id": "1791491198351-1791491210193",
-    "generated_at": "2026-10-08T20:28:32.487Z",
+    "proof": "checkpoints/post243-production-readback-20261008/37846542006/summary.json",
+    "cloud_run": 37846542006,
+    "head": "9084d89b4ea9ae51fe9c82236504d47c9e4500a3",
+    "run_id": "1791494686190-1791494698261",
+    "generated_at": "2026-10-08T21:27:15.856Z",
     "candidates": [
       {
-        "contract": "ETHFI-USDT",
-        "snapshot_id": "S392:ETHFI-USDT:1791491304808",
-        "publication_id": "PUB:6da08812cbce5bf6634938727f5f650b442619ef",
-        "fingerprint": "b5cadfc11906f3fc8df09ef9d5e21376daae2b348798a42331041fdcc2858676",
+        "contract": "BR-USDT",
+        "snapshot_id": "S392:BR-USDT:1791494819113",
+        "publication_id": "PUB:be6bba14d1117c309c0d9c56f876d7be04ce8bd6",
+        "fingerprint": "930276e4c2471c016b4128f8ed8e82b672794f0eef3a862505c46854efdc84b5",
         "state": "REJECTED",
         "direction": null,
-        "participating": 9,
+        "participating": 7,
         "participating_ids": [
-          "N02",
-          "N04",
           "N05",
           "N08",
           "N09",
@@ -5095,24 +5163,49 @@
         ],
         "N05": {
           "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "persisted_minutes": 788,
-          "current_run_verified_flow_retained": true,
+          "use_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "rendered": [
+            {
+              "block_id": "N05",
+              "evidence_id": "EV2:4fc4888c145a3ec86e650e63fef257c3d8a33e2c43832a672e7b3652902eaa8f",
+              "physical_root_key": "HTX_RAW_FILLS:BR-USDT:1791480300000:1791494700000",
+              "evidence_ids": [
+                "EV2:4fc4888c145a3ec86e650e63fef257c3d8a33e2c43832a672e7b3652902eaa8f"
+              ],
+              "physical_root_keys": [
+                "HTX_RAW_FILLS:BR-USDT:1791480300000:1791494700000"
+              ],
+              "source_ts": 1791494700000,
+              "observed_ts": 1791494773358,
+              "label": "Фактический поток фьючерсных сделок за четыре часа",
+              "value": "1314 исходных сделок: покупки 56 159,6, продажи 64 237,07 USDT; разница -8 077,47 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
+              "source": "HTX / исходные сделки",
+              "consumer": "MANUAL_CONFIRMED_CONTEXT",
+              "score_contribution": 0
+            }
+          ],
           "source_clock_unchanged": true
         },
-        "native_levels": 0
+        "N12": {
+          "participating": true,
+          "score_contribution": null
+        },
+        "native_levels": 0,
+        "native_position_clock": false
       },
       {
-        "contract": "LSK-USDT",
-        "snapshot_id": "S392:LSK-USDT:1791491268540",
-        "publication_id": "PUB:f9274fdbd12f39ba8778671620bfd09075ed5059",
-        "fingerprint": "ca142d0008259932d6b94ee7bf8593edd73e8b13dbdcc72a1c1466e808c0e0a1",
-        "state": "REJECTED",
-        "direction": null,
-        "participating": 9,
+        "contract": "QNT-USDT",
+        "snapshot_id": "S392:QNT-USDT:1791494765905",
+        "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+        "fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
+        "state": "OBSERVE",
+        "direction": "LONG",
+        "participating": 10,
         "participating_ids": [
           "N02",
           "N03",
           "N05",
+          "N07",
           "N08",
           "N09",
           "N10",
@@ -5122,15 +5215,39 @@
         ],
         "N05": {
           "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "persisted_minutes": 1122,
-          "current_run_verified_flow_retained": true,
+          "use_status": "VALID_CONTEXT_NO_SCORE_EFFECT",
+          "rendered": [
+            {
+              "block_id": "N05",
+              "evidence_id": "EV2:e5395de8935247c4de342634d4b024b5711d38836c4c7f22e12996d92fd6543b",
+              "physical_root_key": "HTX_RAW_FILLS:QNT-USDT:1791480240000:1791494640000",
+              "evidence_ids": [
+                "EV2:e5395de8935247c4de342634d4b024b5711d38836c4c7f22e12996d92fd6543b"
+              ],
+              "physical_root_keys": [
+                "HTX_RAW_FILLS:QNT-USDT:1791480240000:1791494640000"
+              ],
+              "source_ts": 1791494640000,
+              "observed_ts": 1791494714185,
+              "label": "Фактический поток фьючерсных сделок за четыре часа",
+              "value": "323 исходных сделок: покупки 33 731,46, продажи 30 745,44 USDT; разница 2 986,02 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
+              "source": "HTX / исходные сделки",
+              "consumer": "MANUAL_CONFIRMED_CONTEXT",
+              "score_contribution": 0
+            }
+          ],
           "source_clock_unchanged": true
         },
-        "native_levels": 0
+        "N12": {
+          "participating": true,
+          "score_contribution": 0.0254
+        },
+        "native_levels": 0,
+        "native_position_clock": false
       }
     ],
-    "Telegram_sent_verified": false,
-    "scope": "ACTUAL_POST_PR240_AUTOMATIC_REJECTED_REPORT_TWO_CURRENT_COMPLETE_FLOWS;NOT_ENTRY_OR_POST241_SENT"
+    "Telegram_sent_verified": true,
+    "scope": "ACTUAL_POST_PR243_QNT_OBSERVE_SENT163_AND_TWO_COMPLETE_240MIN_FLOWS;BEFORE_PR244;NOT_ENTRY_OR_CLOCK_CONFIRMED_NATIVE_LEVEL_SENT"
   },
   "latest_actual_native_source_control": {
     "schema": "ACTUAL_POST_PR236_NEAR_NATIVE_SOURCE_CONTROL_20261008_V1",
@@ -5543,43 +5660,68 @@
     "actual_ENTRY": false
   },
   "previous_fresh_telegram_acceptance": {
-    "proof": "checkpoints/CONTINUOUS_COLLECTOR_CURRENT_CADENCE_AND_FIL_SENT_20261008.json",
-    "source_cloud_run": 37831800227,
-    "source_head": "300f5eafeaa0c7f092a62fd460667fa8183e8ba3",
-    "contract": "FIL-USDT",
-    "run_id": "1791487535792-1791487551019",
-    "snapshot_id": "S392:FIL-USDT:1791487668251",
-    "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
-    "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
+    "proof": "checkpoints/UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008.json",
+    "read_proof": "checkpoints/unused-native-pair-reserve-tests-37849998113/natural-sent-task-read.json",
+    "source_cloud_run": 37846542006,
+    "source_head": "9084d89b4ea9ae51fe9c82236504d47c9e4500a3",
+    "contract": "QNT-USDT",
+    "run_id": "1791494686190-1791494698261",
+    "snapshot_id": "S392:QNT-USDT:1791494765905",
+    "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+    "analytical_fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
+    "observed_ts": 1791494765905,
+    "original_trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": ">=",
+      "value": 253.81,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791496565905,
+      "next_recheck_ts": 1791495065905,
+      "cancel_condition": "price<220.17",
+      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_entry": {
+      "area": "253.81 USDT",
+      "min_price": 253.81,
+      "max_price": 253.81,
+      "basis": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "canonical_targets": [],
+    "canonical_state": "OBSERVE",
     "receipt": {
-      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
-      "run_id": "1791487535792-1791487551019",
-      "snapshot_id": "S392:FIL-USDT:1791487668251",
-      "analytical_fingerprint": "54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879",
-      "observed_ts": 1791487668251,
-      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+      "run_id": "1791494686190-1791494698261",
+      "snapshot_id": "S392:QNT-USDT:1791494765905",
+      "analytical_fingerprint": "609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9",
+      "observed_ts": 1791494765905,
+      "wave_id": "EDW:QNT-USDT:1791494698540:G7",
       "lifecycle_event": "OBSERVE",
       "state": "SENT",
-      "telegram_message_id": "162",
-      "sent_ts": 1791487675402,
+      "telegram_message_id": "163",
+      "sent_ts": 1791494826873,
       "last_error": "SENT"
     },
     "task": {
-      "task_id": "RCHK:686d90629d6574d8620a34d01c5be869331e78fb",
-      "publication_id": "PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999",
-      "contract_code": "FIL-USDT",
-      "run_id": "1791487535792-1791487551019",
-      "snapshot_id": "S392:FIL-USDT:1791487668251",
-      "due_ts": 1791487968251,
-      "expires_ts": 1791489468251,
-      "state": "EXPIRED",
+      "task_id": "RCHK:c91fbd31423ec02b43321c0607c15c0251311e43",
+      "publication_id": "PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a",
+      "contract_code": "QNT-USDT",
+      "direction": "LONG",
+      "wave_id": "EDW:QNT-USDT:1791494698540:G7",
+      "snapshot_id": "S392:QNT-USDT:1791494765905",
+      "run_id": "1791494686190-1791494698261",
+      "due_ts": 1791495065905,
+      "expires_ts": 1791496565905,
+      "state": "PENDING",
       "attempt_count": 0,
-      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791489603296,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791489600000,\"task_id\":\"RCHK:686d90629d6574d8620a34d01c5be869331e78fb\",\"publication_id\":\"PUB:7577f0f3cb87c4251f3dfe6d08e8cdec3f397999\",\"run_id\":\"1791487535792-1791487551019\",\"snapshot_id\":\"S392:FIL-USDT:1791487668251\",\"analytical_fingerprint\":\"54be12ff375dd29c7c02272da610fa48f2aa9dffa101b53ed7b82f5137279879\",\"telegram_message_id\":\"162\"}",
-      "created_ts": 1791487675402,
-      "updated_ts": 1791489603296
+      "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791496204646,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"WAITING_FOR_PRICE\",\"price\":237.65,\"source_ts\":1791496202223,\"observed_ts\":1791496202222,\"source\":\"HTX_OFFICIAL_COLLECTOR\",\"settlement_confirmed\":false,\"last_bucket\":1791496200000,\"task_id\":\"RCHK:c91fbd31423ec02b43321c0607c15c0251311e43\",\"publication_id\":\"PUB:7d4926fdc7a3bf494b5a5bb4b659cc723b9bf42a\",\"run_id\":\"1791494686190-1791494698261\",\"snapshot_id\":\"S392:QNT-USDT:1791494765905\",\"analytical_fingerprint\":\"609ea8644b4f16e06003fdbd11ad11f09df359497f78e3831aa74ede4b994dd9\",\"telegram_message_id\":\"163\"}",
+      "created_ts": 1791494826873,
+      "updated_ts": 1791496204646
     },
+    "status": "ACTUAL_EXACT_TASK_READ",
     "exact_SENT": true,
-    "scope": "ACTUAL_POST_PR239_FIL_OBSERVE_SENT162_PRE_PR240_PR241_PR242;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT"
+    "scope": "ACTUAL_POST_PR243_QNT_OBSERVE_SENT163_BEFORE_PR244;ORIGINAL_PENDING_TASK_ASOF_21_51_UTC;NO_ENTRY_OR_TTL_RENEWAL"
   },
   "latest_native_role_utility_release": {
     "pr": 243,
@@ -5755,5 +5897,146 @@
     "reason": "CANDIDATE_HTTP_ENVELOPE",
     "fix": "checkpoints/UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008.json",
     "scope": "ACTUAL_PRE_PR244_CAUSE;CONTROLLED_ORIGINAL_CLOCK_FIX;POST244_NATURAL_NATIVE_LEVEL_SENT_PENDING"
+  },
+  "latest_primary_native_supply_release": {
+    "pr": 245,
+    "production_head": "a98e0d28ecb993dbf6a70db7244000dd05f26576",
+    "tested_head": "1f1da71e642312dc31c18ecee34496d2f2d498c5",
+    "proof_head": "b6dc8c5906c8752517781f59172ff92a3f6a8d7a",
+    "cloud_run": 37854297470,
+    "artifact_id": 11582823625,
+    "artifact_digest": "sha256:36e3e466b7ccd644344be36c55a7f0b75e0b9408b95ff96c15bd1bcbae2ce186",
+    "proof": "checkpoints/PRIMARY_NATIVE_SUPPLY_CONNECTED_20261008.json",
+    "status": "DEPLOYED_ACTUAL_PRIMARY_HEDERA_IDENTITY_N02_CONSUMER_AND_ORIGINAL_PUBLISHED_METRIC_EXPIRY",
+    "sourceHTTP": 2,
+    "D1": {
+      "requests": 29,
+      "rows_read": 89,
+      "rows_written": 17,
+      "unknown_ops": 0
+    },
+    "tests": {
+      "source": 43,
+      "approved_delivery": 35,
+      "integration": 37,
+      "generation": "PASS",
+      "binding": "PASS"
+    },
+    "metric": "PUBLISHED_RELEASED_TOTAL_UNRELEASED_SUPPLY_NOT_CIRCULATING_OR_FUTURE_UNLOCK",
+    "source_ts": 1791496869547,
+    "expires_at": 1791518469547,
+    "new_source_daily_cap": 4,
+    "parent_cap": 720,
+    "global_http_cap": 164,
+    "score_adjustment": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "full_project_complete": false
+  },
+  "latest_post_pr244_actual_readback": {
+    "proof": "checkpoints/post244-production-readback-20261008/37853236004/summary.json",
+    "cloud_run": 37853236004,
+    "head": "e8986bf943e4b4089483e5dd5b337a76f36496d5",
+    "run_id": "1791498274068-1791498286190",
+    "generated_at": "2026-10-08T22:26:32.108Z",
+    "candidates": [
+      {
+        "contract": "ZEC-USDT",
+        "snapshot_id": "S392:ZEC-USDT:1791498382025",
+        "publication_id": "PUB:791f1270060e5b33ea64bf3dd52509d212bde556",
+        "fingerprint": "806fdbb401e1160a4fdf4c36c1b428bf9c4bad3380316713f50014a450aa3d83",
+        "state": "REJECTED",
+        "direction": null,
+        "participating": 7,
+        "participating_ids": [
+          "N02",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "nonzero_count": 0,
+        "N05": {
+          "status": "NOT_CLOSED",
+          "rendered": [],
+          "source_clock_unchanged": true
+        },
+        "native_levels": [
+          {
+            "price": 892.1630557096,
+            "distance_pct": -24.62292533714092,
+            "reference_price": 1183.6,
+            "source": "Hyperliquid official",
+            "source_ts": 1791498331150,
+            "estimated": false,
+            "conditional_cross": true,
+            "is_HTX_target": false
+          }
+        ],
+        "data_quality": "PARTIAL"
+      },
+      {
+        "contract": "FIL-USDT",
+        "snapshot_id": "S392:FIL-USDT:1791498338812",
+        "publication_id": "PUB:21ec7bbeac13b76269a011e202cffaa929d4c252",
+        "fingerprint": "aeec1f5d8b84b2dcfa257cb1dc3f020c5380e98e176bb9c0bffbbc86e01f04d4",
+        "state": "OBSERVE",
+        "direction": "SHORT",
+        "participating": 7,
+        "participating_ids": [
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "nonzero_count": 1,
+        "N05": {
+          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
+          "rendered": [
+            {
+              "block_id": "N05",
+              "evidence_id": "EV2:8a0f716dc2bdb0d8686cb7255d2647281f2dc5b0ce74bad95406483a7d172334",
+              "physical_root_key": "HTX_RAW_FILLS:FIL-USDT:1791483840000:1791498240000",
+              "evidence_ids": [
+                "EV2:8a0f716dc2bdb0d8686cb7255d2647281f2dc5b0ce74bad95406483a7d172334"
+              ],
+              "physical_root_keys": [
+                "HTX_RAW_FILLS:FIL-USDT:1791483840000:1791498240000"
+              ],
+              "source_ts": 1791498240000,
+              "observed_ts": 1791498300825,
+              "label": "Фактический поток фьючерсных сделок за четыре часа",
+              "value": "3298 исходных сделок: покупки 785 792,6, продажи 888 403,04 USDT; разница -102 610,44 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
+              "source": "HTX / исходные сделки",
+              "consumer": "MANUAL_CONFIRMED_CONTEXT",
+              "score_contribution": 0
+            }
+          ],
+          "source_clock_unchanged": true
+        },
+        "native_levels": [
+          {
+            "price": 0.8000718008,
+            "distance_pct": -25.326034533609608,
+            "reference_price": 1.07142,
+            "source": "Hyperliquid official",
+            "source_ts": 1791498326838,
+            "estimated": false,
+            "conditional_cross": false,
+            "is_HTX_target": false
+          }
+        ],
+        "data_quality": "PARTIAL"
+      }
+    ],
+    "Telegram_sent_verified": true,
+    "scope": "ACTUAL_POST244_FIL_SHORT_OBSERVE_SENT164_WITH_ORIGINAL_NATIVE_LEVEL_AND_240MIN_FLOW;ZEC_REJECTED;BEFORE_PR245;NO_ENTRY"
   }
 }
