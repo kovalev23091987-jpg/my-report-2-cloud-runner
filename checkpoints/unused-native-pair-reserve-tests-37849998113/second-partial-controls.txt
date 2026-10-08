@@ -1,0 +1,105 @@
+✔ actual full native returned array yields11 structural IDs across7 exact crypto assets, only4 RAY fee-complete levels (1.485772ms)
+✔ three controlled HTTP replays of original actual state preserve4 exact RAY estimates through scoped and canonical consumers (130.088213ms)
+✔ closed positions and invalid RPC never reuse the hint as a level; closed selected IDs are removed (191.41278ms)
+✔ omission from a bounded native returned array is not a closed position and cannot remove its structural hint (139.731345ms)
+✔ sparse source-derived selections use bounded exact native getters and retain fee-aware actual source estimates (58.420782ms)
+✔ an explicit native closed/default tuple removes its exact selected IDs while foreign open IDs fail closed (71.693289ms)
+✔ three transport receipts alone cannot convert unpinned or old discovery proof into a fresh reduced route (0.40307ms)
+✖ two native HL reads plus three retained gTrade reads fit global5 and both selected assets retain calculated levels (77.376723ms)
+✖ explicit smaller candidate envelope and malformed second asset batch cannot borrow global budget (26.59719ms)
+✖ unknown gTrade admission ACK is charged without retries or artificial levels (1.659441ms)
+✔ an unsupported first candidate cannot make the following one-request hinted snapshot reuse a spent catalog reservation (68.205775ms)
+✔ all selected IDs missing from a bounded sample remain unknown through the combined lane and do not delete original hints (108.234438ms)
+✔ a native RPC error retains its bounded code and method in combined diagnostics without retry, levels or clock promotion (33.368294ms)
+✖ one otherwise unusable following reserve request completes retained QNT position time with four HTTP and keeps BR unsupported at zero HTTP (50.123246ms)
+✔ viable following routes, missing or foreign plan, and the explicit smaller caller envelope retain the original first-candidate cap (133.348509ms)
+✔ unknown pinned admission is charged once and never retries or promotes the backend receipt clock (36.831732ms)
+✔ retained source proof is written only after producer and canonical verification (0.582027ms)
+✔ retained failure shape: unrelated first-coin deep work expires the shared source phase with two requests unused (71.361365ms)
+✔ both selected markets are collected contiguously and the second deep consumer uses original raw at zero new HTTP (12.131767ms)
+✔ stale, future, changed and foreign acquisitions never acquire new transport in a cache-only consumer (4.822351ms)
+✔ cold cache-only, a single candidate and an explicit manual request cannot start a selected-pair batch (7.135277ms)
+✔ provider denial and transport deadline keep the five-request and 45s bounds unchanged (2.186026ms)
+✔ frozen production runner calls the tested batch coordinator and retains per-contract accounting (0.59754ms)
+✔ retained complete empty selected sample is healthy transport but zero role evidence, and the second asset reuses exact original clocks with zero HTTP (145.884388ms)
+✔ bare status, a forged or serialized proof, changed proof, wrong identity and stale clocks cannot close operational source state (59.035138ms)
+✔ HTTP, schema and quota errors retain their actual failure and create no verified source state (0.770477ms)
+✔ artifact audit bounds run, asset and original proof fields and omits arbitrary raw state (0.231605ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 23
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1960.24714
+
+✖ failing tests:
+
+test at current-generation/tests/gtrade-position-routing.runtime.mjs:22:1
+✖ two native HL reads plus three retained gTrade reads fit global5 and both selected assets retain calculated levels (77.376723ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  4 !== 5
+  
+      at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/gtrade-position-routing.runtime.mjs:22:336)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 4,
+    expected: 5,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at current-generation/tests/gtrade-position-routing.runtime.mjs:23:1
+✖ explicit smaller candidate envelope and malformed second asset batch cannot borrow global budget (26.59719ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/gtrade-position-routing.runtime.mjs:23:436)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at current-generation/tests/gtrade-position-routing.runtime.mjs:24:1
+✖ unknown gTrade admission ACK is charged without retries or artificial levels (1.659441ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/gtrade-position-routing.runtime.mjs:24:284)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at current-generation/tests/gtrade-position-routing.runtime.mjs:54:1
+✖ one otherwise unusable following reserve request completes retained QNT position time with four HTTP and keeps BR unsupported at zero HTTP (50.123246ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/current-generation/tests/gtrade-position-routing.runtime.mjs:55:96)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
