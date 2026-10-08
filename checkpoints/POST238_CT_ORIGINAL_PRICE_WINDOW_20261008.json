@@ -1,0 +1,523 @@
+{
+  "schema": "POST238_CT_ORIGINAL_SENT_PRICE_WINDOW_20261008_V1",
+  "reader_head": "21e81feee43e73c9c33406945e135379a5ab931f",
+  "reader_cloud_run": "37830531373",
+  "read_ts": 1791486914819,
+  "original": {
+    "cloud_run": 37809017157,
+    "head": "9ae51c941a6056697ca7e89ce51af0d7962139b3",
+    "contract": "CT-USDT",
+    "snapshot_id": "S392:CT-USDT:1791476996630",
+    "publication_id": "PUB:403ad12d7e3f79bc2393349c764011930dca6dad",
+    "analytical_fingerprint": "d9b4b0d2ed8a88d5ba990512bf063bee3b387a66b43792b3702b57f5a0ed7553",
+    "observed_ts": 1791476996630,
+    "trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": "<=",
+      "value": 0.32577,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791478796630,
+      "next_recheck_ts": 1791477296630,
+      "cancel_condition": "price>0.35812",
+      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "exact_sent_message_id": "161",
+    "exact_sent_read_cloud_run": 37829762621
+  },
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "canonical_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "full_project_complete": false,
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-08",
+      "run_count": 65,
+      "reserved_rows_read": 1264000,
+      "reserved_rows_written": 24888,
+      "measured_rows_read": 684636,
+      "measured_rows_written": 11286,
+      "unknown_ops": 0,
+      "unfinished_count": 1
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 20
+    },
+    "projected_reserved": {
+      "rows_read": 1265000,
+      "rows_written": 24908
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "history": {
+    "version": "market-history-reader-v3-contract-verified-20260928",
+    "status": "CLOSED",
+    "source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+    "contract": "CT-USDT",
+    "requested_hours": 1,
+    "series": [
+      {
+        "ts": 1791475501754,
+        "ts_bucket": 1791475500000,
+        "timestamp_utc": "2026-10-08T16:05:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32984,
+        "turnover_24h_usdt": 199948.9276,
+        "oi_contracts": 3667,
+        "oi_value_usdt": 12095.2328,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.693,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791475801753,
+        "ts_bucket": 1791475800000,
+        "timestamp_utc": "2026-10-08T16:10:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32927,
+        "turnover_24h_usdt": 206644.0654,
+        "oi_contracts": 4403,
+        "oi_value_usdt": 14497.7581,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.797,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791476102352,
+        "ts_bucket": 1791476100000,
+        "timestamp_utc": "2026-10-08T16:15:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32765,
+        "turnover_24h_usdt": 209993.918,
+        "oi_contracts": 4791,
+        "oi_value_usdt": 15697.7115,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.813,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791476401706,
+        "ts_bucket": 1791476400000,
+        "timestamp_utc": "2026-10-08T16:20:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32901,
+        "turnover_24h_usdt": 215618.6568,
+        "oi_contracts": 5368,
+        "oi_value_usdt": 17661.2568,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 0.809,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791476701906,
+        "ts_bucket": 1791476700000,
+        "timestamp_utc": "2026-10-08T16:25:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32756,
+        "turnover_24h_usdt": 219076.1486,
+        "oi_contracts": 5709,
+        "oi_value_usdt": 18700.4004,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.378,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791477001752,
+        "ts_bucket": 1791477000000,
+        "timestamp_utc": "2026-10-08T16:30:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32597,
+        "turnover_24h_usdt": 220458.8516,
+        "oi_contracts": 5757,
+        "oi_value_usdt": 18766.0929,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 2.017,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791477302085,
+        "ts_bucket": 1791477300000,
+        "timestamp_utc": "2026-10-08T16:35:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32536,
+        "turnover_24h_usdt": 240653.0656,
+        "oi_contracts": 5976,
+        "oi_value_usdt": 19484.1504,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.25,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791477601616,
+        "ts_bucket": 1791477600000,
+        "timestamp_utc": "2026-10-08T16:40:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32617,
+        "turnover_24h_usdt": 242373.4104,
+        "oi_contracts": 5968,
+        "oi_value_usdt": 19465.8256,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 0.742,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791477902871,
+        "ts_bucket": 1791477900000,
+        "timestamp_utc": "2026-10-08T16:45:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32608,
+        "turnover_24h_usdt": 244448.543,
+        "oi_contracts": 5946,
+        "oi_value_usdt": 19265.6346,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.218,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791478201893,
+        "ts_bucket": 1791478200000,
+        "timestamp_utc": "2026-10-08T16:50:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32311,
+        "turnover_24h_usdt": 247050.716,
+        "oi_contracts": 6106,
+        "oi_value_usdt": 19729.0966,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 0.905,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791478501916,
+        "ts_bucket": 1791478500000,
+        "timestamp_utc": "2026-10-08T16:55:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32257,
+        "turnover_24h_usdt": 248876.0654,
+        "oi_contracts": 6184,
+        "oi_value_usdt": 19947.7288,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.491,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      {
+        "ts": 1791478801768,
+        "ts_bucket": 1791478800000,
+        "timestamp_utc": "2026-10-08T17:00:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.3228,
+        "turnover_24h_usdt": 250492.5842,
+        "oi_contracts": 6223,
+        "oi_value_usdt": 20087.844,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.127,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      }
+    ],
+    "health": {
+      "data_db": true,
+      "payload_parse": true
+    },
+    "coverage": {
+      "persistent_history": "closed",
+      "expected_5m_points": 12,
+      "received_points": 12,
+      "approximate_5m_coverage_pct": 100,
+      "missing_buckets": [],
+      "latest_bucket": 1791478800000,
+      "tail_age_ms": 300000,
+      "complete_5m_window": true
+    },
+    "provenance": {
+      "actor": "HUB_PUBLIC_COLLECTOR",
+      "schema_version": "report2-market-snapshot-batch-v1",
+      "generations": [
+        "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      ],
+      "generation_compatibility": {
+        "version": "report2-history-compatibility-v1-20260928",
+        "schema_version": "report2-market-snapshot-batch-v1",
+        "unit_normalizer": "HTX_USDT_PERP_SNAPSHOT_UNITS_V1",
+        "generations": [
+          "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V11_20M",
+          "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M"
+        ]
+      },
+      "fallback_used": false,
+      "validation_rejections": [
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 0,
+          "reason": "RECEIVED_AFTER_DECISION"
+        },
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 1,
+          "reason": "RECEIVED_AFTER_DECISION"
+        },
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 2,
+          "reason": "RECEIVED_AFTER_DECISION"
+        },
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 3,
+          "reason": "RECEIVED_AFTER_DECISION"
+        },
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 4,
+          "reason": "RECEIVED_AFTER_DECISION"
+        },
+        {
+          "bucket": 1791479100000,
+          "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+          "shard": 5,
+          "reason": "RECEIVED_AFTER_DECISION"
+        }
+      ]
+    },
+    "d1": {
+      "pages": 4,
+      "shard_rows_read": 84,
+      "payload_bytes": 1575855,
+      "max_parallel_reads": 2,
+      "truncated": false
+    },
+    "endpoint_errors": {
+      "data_db": null
+    }
+  },
+  "condition_checks": [
+    {
+      "bucket": 1791477300000,
+      "price": 0.32536,
+      "original_row": {
+        "ts": 1791477302085,
+        "ts_bucket": 1791477300000,
+        "timestamp_utc": "2026-10-08T16:35:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32536,
+        "turnover_24h_usdt": 240653.0656,
+        "oi_contracts": 5976,
+        "oi_value_usdt": 19484.1504,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.25,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      "price_trigger_reached": true,
+      "cancelled": false
+    },
+    {
+      "bucket": 1791477600000,
+      "price": 0.32617,
+      "original_row": {
+        "ts": 1791477601616,
+        "ts_bucket": 1791477600000,
+        "timestamp_utc": "2026-10-08T16:40:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32617,
+        "turnover_24h_usdt": 242373.4104,
+        "oi_contracts": 5968,
+        "oi_value_usdt": 19465.8256,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 0.742,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      "price_trigger_reached": false,
+      "cancelled": false
+    },
+    {
+      "bucket": 1791477900000,
+      "price": 0.32608,
+      "original_row": {
+        "ts": 1791477902871,
+        "ts_bucket": 1791477900000,
+        "timestamp_utc": "2026-10-08T16:45:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32608,
+        "turnover_24h_usdt": 244448.543,
+        "oi_contracts": 5946,
+        "oi_value_usdt": 19265.6346,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.218,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      "price_trigger_reached": false,
+      "cancelled": false
+    },
+    {
+      "bucket": 1791478200000,
+      "price": 0.32311,
+      "original_row": {
+        "ts": 1791478201893,
+        "ts_bucket": 1791478200000,
+        "timestamp_utc": "2026-10-08T16:50:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32311,
+        "turnover_24h_usdt": 247050.716,
+        "oi_contracts": 6106,
+        "oi_value_usdt": 19729.0966,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 0.905,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      "price_trigger_reached": true,
+      "cancelled": false
+    },
+    {
+      "bucket": 1791478500000,
+      "price": 0.32257,
+      "original_row": {
+        "ts": 1791478501916,
+        "ts_bucket": 1791478500000,
+        "timestamp_utc": "2026-10-08T16:55:00.000Z",
+        "contract_code": "CT-USDT",
+        "price": 0.32257,
+        "turnover_24h_usdt": 248876.0654,
+        "oi_contracts": 6184,
+        "oi_value_usdt": 19947.7288,
+        "funding_rate": 0.00005,
+        "funding_rate_pct": 0.005,
+        "funding_interval_hours": null,
+        "market_age_sec": 1.491,
+        "source_status": "CLOSED",
+        "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+        "source_generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M"
+      },
+      "price_trigger_reached": true,
+      "cancelled": false
+    }
+  ],
+  "price_trigger_reached": true,
+  "intraminute_price_path_proven": false,
+  "historical_collector_receipts_reconstructed": false,
+  "status": "ACTUAL_ORIGINAL_HASH_VERIFIED_PRICE_WINDOW_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "POST238_CT_ORIGINAL_PRICES:37830531373:1",
+    "source_run_id": "37830531373",
+    "measured_rows_read": 171,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 10,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 10,
+    "rows_read": 172,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 66,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 6,
+        "rows_read": 105,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
