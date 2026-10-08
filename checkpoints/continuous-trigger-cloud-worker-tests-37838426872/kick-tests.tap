@@ -1,0 +1,46 @@
+✔ current main code guard permits documentation-only commits but rejects changed production code (39.387198ms)
+✔ missing auth, incomplete tree, malformed ref and transport failure stop before source or database work (1.616467ms)
+✔ an exact live kick immediately dispatches only the gated main workflow and cannot authorize entry (1.152768ms)
+✔ expired, future, malformed, missing-token and entry-authorized hints never dispatch (0.417031ms)
+✔ failed dispatch keeps the durable consumed kick and never invents an accepted workflow (0.562884ms)
+✔ one cloud worker checks each five-minute slot without depending on new scheduled job starts (0.818743ms)
+✔ current code changes or unclosed source guard stop the old worker before the next cycle (0.508443ms)
+✔ a failed slot does not reset budgets and the next original slot may recover (1.669316ms)
+✔ one-shot bootstrap stays bounded and worker windows cannot exceed five hours (0.86479ms)
+✔ public standard runner, initial immutable receipt, bounded job and no delayed end-of-job dispatch are wired (0.621844ms)
+✔ backup loads the same bounded collector tail as the deployed primary (1.62398ms)
+✔ backup skips a completed primary without contacting public APIs (0.400911ms)
+✔ a completed primary is inspected at the first minute without waiting until the third minute (0.257972ms)
+✔ primary completion during the bounded wait is read back before a backup attempt (0.362539ms)
+✔ backup reclaims only the same live slot after the primary lease expires (0.269033ms)
+✔ backup refuses expired and overlong leases (0.242835ms)
+✔ actual workflow gate admits only enabled exact trigger jobs and uses scheduled integrity instead of broad manual replay (15.560332ms)
+✔ retained CT price crossed inside original window; controlled early wake-up works and delayed cron remains expired (11.24838ms)
+✔ all polls and additional admission reservations fit original caps without extra full-analysis slots (0.168285ms)
+✔ stale cannot wake analysis (0.979213ms)
+✔ future cannot wake analysis (0.79057ms)
+✔ wrong task cannot wake analysis (0.700662ms)
+✔ wrong publication cannot wake analysis (0.855242ms)
+✔ wrong run cannot wake analysis (0.958445ms)
+✔ wrong snapshot cannot wake analysis (0.861904ms)
+✔ invalid SENT id cannot wake analysis (1.125477ms)
+✔ wrong fingerprint cannot wake analysis (0.938417ms)
+✔ waiting cannot wake analysis (0.807442ms)
+✔ entry authorization cannot wake analysis (0.582221ms)
+✔ claimed completion cannot wake analysis (0.613769ms)
+✔ cancelled cannot wake analysis (0.614951ms)
+✔ original expiration and claimed tasks cannot be revived (1.955241ms)
+✔ same task and bucket are idempotent, next original bucket cannot duplicate a kick (1.205457ms)
+✔ three durable kicks exhaust the day; failed/racing dispatches do not refund slots (1.130076ms)
+✔ 288 original polls are a durable daily ceiling even if an extra job is invoked (0.681447ms)
+✔ missing trigger index, failed exact ACK, race and unknown D1 costs never dispatch (3.242862ms)
+✔ SQL uses the partial trigger index and LIMIT2 before any growing scan; only kick tables change (18.435537ms)
+✔ workflow wake-up is internal scheduled mode, exact task only, preserves normal cron and disables manual queue (1.299072ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 180.476941
