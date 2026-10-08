@@ -2571,7 +2571,7 @@
       "block": "LIQ",
       "name": "Будущие ликвидационные уровни",
       "status": "ACTUAL_AUTOMATIC_GTRADE_WLD_NEAR_SHARED_SOURCE_AND_HL_NEAR_SCOPED_CONSUMER_VERIFIED",
-      "remaining_action": "WLD+NEAR automatic shared3HTTP gTrade sample reached canonical/manual in37816310382, no same-run SENT. Later NEAR2HL levels are source-clock proven cross-account context only. Empty FIL coverage remains factual. Wider native coverage and current fresh native-level SENT remain open.",
+      "remaining_action": "WLD+NEAR automatic shared3HTTP gTrade sample reached canonical/manual in37816310382, no same-run SENT. Later NEAR2HL levels are source-clock proven cross-account context only. Empty FIL coverage remains factual. Wider native coverage and current fresh native-level SENT remain open. PR243 recent empty-role utility deployed without extra D1/provider usage; exact route/cache/rotation priority preserved. Fresh post243 automatic native-level SENT and actual ENTRY still not observed.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -2817,7 +2817,29 @@
         "project_complete": false
       },
       "latest_relevance_presentation_release": "checkpoints/LIQUIDATION_ALL_PATHS_CONNECTED_VERIFICATION_20261008.json",
-      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json"
+      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
+      "latest_native_role_utility_release": {
+        "pr": 243,
+        "production_head": "4b2ebd7f98b471dd396e43d0c97943196f3e4194",
+        "tested_head": "a51a5a7fddbcb3e90ceac550288bf41b032c99e5",
+        "proof": "checkpoints/NATIVE_ROLE_UTILITY_CONNECTED_20261008.json",
+        "cloud_run": 37845986269,
+        "artifact_id": 11580001786,
+        "artifact_digest": "sha256:f21efe5517ec14931b447f60a998f01bf18083ab0fd0801c52d7dc21e41198a8",
+        "status": "DEPLOYED_RECENT_NATIVE_ROLE_UTILITY_SEPARATE_FROM_TRANSPORT_COMPOSED_VERIFIED",
+        "role_hint_max_age_ms": 86400000,
+        "exploration_floor": 0.5,
+        "native_http_cap": 5,
+        "new_D1_queries": 0,
+        "new_D1_writes": 0,
+        "original_clocks_unchanged": true,
+        "core_weights_and_entry_gates_unchanged": true,
+        "exact_routing_cache_and_rotation_precedence_unchanged": true,
+        "role_prior_is_not_current_asset_coverage": true,
+        "new_fresh_SENT": false,
+        "actual_ENTRY": false,
+        "full_project_complete": false
+      }
     }
   ],
   "owner_tasks": [
@@ -3392,7 +3414,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791493571038,
+  "updated_ts": 1791494511123,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -5536,5 +5558,27 @@
     "status": "ACTUAL_EXACT_TASK_READ",
     "exact_SENT": true,
     "scope": "ACTUAL_ORIGINAL_CT_SENT161_PRE_PR239_PR240;NOT_NEW_RELEASE_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
+  },
+  "latest_native_role_utility_release": {
+    "pr": 243,
+    "production_head": "4b2ebd7f98b471dd396e43d0c97943196f3e4194",
+    "tested_head": "a51a5a7fddbcb3e90ceac550288bf41b032c99e5",
+    "proof": "checkpoints/NATIVE_ROLE_UTILITY_CONNECTED_20261008.json",
+    "cloud_run": 37845986269,
+    "artifact_id": 11580001786,
+    "artifact_digest": "sha256:f21efe5517ec14931b447f60a998f01bf18083ab0fd0801c52d7dc21e41198a8",
+    "status": "DEPLOYED_RECENT_NATIVE_ROLE_UTILITY_SEPARATE_FROM_TRANSPORT_COMPOSED_VERIFIED",
+    "role_hint_max_age_ms": 86400000,
+    "exploration_floor": 0.5,
+    "native_http_cap": 5,
+    "new_D1_queries": 0,
+    "new_D1_writes": 0,
+    "original_clocks_unchanged": true,
+    "core_weights_and_entry_gates_unchanged": true,
+    "exact_routing_cache_and_rotation_precedence_unchanged": true,
+    "role_prior_is_not_current_asset_coverage": true,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "full_project_complete": false
   }
 }
