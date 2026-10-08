@@ -1,0 +1,214 @@
+{
+  "schema": "ACTUAL_CONTINUOUS_CLOUD_BOOTSTRAP_READBACK_V1",
+  "artifact": {
+    "id": 11578246261,
+    "run": 37841797051,
+    "head": "f9d6257febd31b1cbabf63668016006d439f273f",
+    "digest": "sha256:8006f073899d8a7b4ab5fd004a869eb1972268db06645f8e29ef3c0fa175d861"
+  },
+  "receipt": {
+    "schema": "report2-public-collector-backup-v3-continuous-trigger-kick",
+    "source_code_head": "f9d6257febd31b1cbabf63668016006d439f273f",
+    "cloud_run": "37841797051",
+    "status": "PRIMARY_CLOSED",
+    "bucket": 1791492300000,
+    "external_requests": 0,
+    "kick": {
+      "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+      "dispatch": false,
+      "entry_authorized": false,
+      "source_http": 0,
+      "telegram": false,
+      "status": "NO_FRESH_TRIGGER_HINT",
+      "day": "2026-10-08",
+      "bucket": 1791492300000
+    },
+    "kick_budget": {
+      "safe": true,
+      "maximum_planned_rows_read": 3498308,
+      "maximum_planned_rows_written": 69664,
+      "cron_admissions_reserved": 72,
+      "additional_kick_admissions_reserved": 3,
+      "kick_poll_plan": {
+        "polls_per_day": 288,
+        "kicks_per_day": 3,
+        "poll_rows_read": 40,
+        "poll_rows_written": 8,
+        "backup_early_probe_reads": 1
+      },
+      "source_http": 0,
+      "polls_per_day": 288,
+      "kicks_per_day": 3,
+      "poll_rows_read": 40,
+      "poll_rows_written": 8,
+      "backup_early_probe_reads": 1,
+      "regular_analytics_interval_minutes": 40,
+      "original_trigger_ttl_unchanged": true
+    },
+    "usage": {
+      "requests": 6,
+      "rows_read": 3,
+      "rows_written": 1,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_public_collector_usage_v1": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_trigger_kick_poll": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        },
+        "all:report2_trigger_kick_slot": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "completed_at": "2026-10-08T20:45:24.038Z",
+    "telegram": false,
+    "analytical_decision": false,
+    "source_guard": {
+      "allowed": true,
+      "status": "CURRENT_MAIN_CODE_VERIFIED",
+      "current_main": "f9d6257febd31b1cbabf63668016006d439f273f",
+      "changed_paths": [],
+      "source_http": 0,
+      "github_metadata_http": 2
+    },
+    "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+    "worker_started_ts": 1791492322042,
+    "worker_deadline_ts": 1791492322042,
+    "cycles": 1,
+    "failures": 0,
+    "source_job_budget": {
+      "attempted_source_http": 0,
+      "maximum_source_http": 164,
+      "failed_attempts_not_refunded": true
+    },
+    "receipts": [
+      {
+        "schema": "report2-public-collector-backup-v3-continuous-trigger-kick",
+        "source_code_head": "f9d6257febd31b1cbabf63668016006d439f273f",
+        "cloud_run": "37841797051",
+        "status": "PRIMARY_CLOSED",
+        "bucket": 1791492300000,
+        "external_requests": 0,
+        "kick": {
+          "schema": "EXACT_TRIGGER_ANALYSIS_KICK_V1",
+          "dispatch": false,
+          "entry_authorized": false,
+          "source_http": 0,
+          "telegram": false,
+          "status": "NO_FRESH_TRIGGER_HINT",
+          "day": "2026-10-08",
+          "bucket": 1791492300000
+        },
+        "kick_budget": {
+          "safe": true,
+          "maximum_planned_rows_read": 3498308,
+          "maximum_planned_rows_written": 69664,
+          "cron_admissions_reserved": 72,
+          "additional_kick_admissions_reserved": 3,
+          "kick_poll_plan": {
+            "polls_per_day": 288,
+            "kicks_per_day": 3,
+            "poll_rows_read": 40,
+            "poll_rows_written": 8,
+            "backup_early_probe_reads": 1
+          },
+          "source_http": 0,
+          "polls_per_day": 288,
+          "kicks_per_day": 3,
+          "poll_rows_read": 40,
+          "poll_rows_written": 8,
+          "backup_early_probe_reads": 1,
+          "regular_analytics_interval_minutes": 40,
+          "original_trigger_ttl_unchanged": true
+        },
+        "usage": {
+          "requests": 6,
+          "rows_read": 3,
+          "rows_written": 1,
+          "unknown_ops": 0,
+          "targets": {
+            "first:report2_public_collector_usage_v1": {
+              "requests": 1,
+              "rows_read": 1,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "run:OTHER": {
+              "requests": 2,
+              "rows_read": 0,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "run:report2_trigger_kick_poll": {
+              "requests": 1,
+              "rows_read": 1,
+              "rows_written": 1,
+              "unknown_ops": 0
+            },
+            "all:report2_trigger_kick_slot": {
+              "requests": 1,
+              "rows_read": 0,
+              "rows_written": 0,
+              "unknown_ops": 0
+            },
+            "all:v3_recheck_task_shadow": {
+              "requests": 1,
+              "rows_read": 1,
+              "rows_written": 0,
+              "unknown_ops": 0
+            }
+          }
+        },
+        "completed_at": "2026-10-08T20:45:24.038Z",
+        "telegram": false,
+        "analytical_decision": false,
+        "source_guard": {
+          "allowed": true,
+          "status": "CURRENT_MAIN_CODE_VERIFIED",
+          "current_main": "f9d6257febd31b1cbabf63668016006d439f273f",
+          "changed_paths": [],
+          "source_http": 0,
+          "github_metadata_http": 2
+        },
+        "worker_status": "CONTINUOUS_CYCLE_COMPLETED",
+        "worker_started_ts": 1791492322042,
+        "worker_deadline_ts": 1791492322042,
+        "cycles": 1,
+        "failures": 0,
+        "source_job_budget": {
+          "attempted_source_http": 0,
+          "maximum_source_http": 164,
+          "failed_attempts_not_refunded": true
+        }
+      }
+    ]
+  },
+  "reader_run": 37842027823,
+  "reader_sourceHTTP": 0,
+  "reader_D1": 0,
+  "reader_Telegram": 0,
+  "full_project_complete": false
+}
