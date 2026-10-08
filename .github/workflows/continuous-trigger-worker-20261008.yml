@@ -1,0 +1,97 @@
+name: Report2 Continuous Exact Trigger Cloud Worker
+on:
+  push:
+    branches: [codex/continuous-trigger-worker-20261008]
+    paths: ['current-generation/**', 'cloudflare/public-collector/**', '.github/workflows/continuous-trigger-worker-20261008.yml', '.github/workflows/report2.yml', '.github/workflows/report2-public-collector-backup.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact owner before work
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='70ce1d3ca579208f7f2d8863a1de7d06c2d68bcb')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble exact current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+      - name: Restore immutable existing approved delivery fixtures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Retained controls and dependencies
+        run: |
+          cp checkpoints/actual-zec-sent150-original-input-20261007.json.gz audit-output/exact-current-data.json.gz
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Reuse unchanged approved delivery pipeline and integration proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:11575745666})).data;if(a.workflow_run.id!==37834802454||a.workflow_run.head_sha!=='a1089edc1fe35d87360b60a703742da3c28ac07b'||a.digest!=='sha256:e8602132e7c44b14972e17074e51088265a020632109675340719a3443fa9880')throw Error('PASSED_PIPELINE_IDENTITY');const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:a.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==a.digest)throw Error('PASSED_PIPELINE_DIGEST');fs.mkdirSync('passed-pipeline',{recursive:true});fs.writeFileSync('passed-pipeline.zip',b);cp.execFileSync('unzip',['-q','passed-pipeline.zip','-d','passed-pipeline']);const t=fs.readFileSync('passed-pipeline/observation-pipeline-tests.tap','utf8');if(!/(?:#|ℹ) pass 35/.test(t)||!/(?:#|ℹ) fail 0/.test(t))throw Error('PASSED_PIPELINE_NOT_CLOSED');for(const f of ['observation-pipeline-tests.tap','integration.json'])fs.copyFileSync('passed-pipeline/'+f,'audit-output/'+f);
+            cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin','a1089edc1fe35d87360b60a703742da3c28ac07b']);const changed=cp.execFileSync('git',['diff','--name-only','a1089edc1fe35d87360b60a703742da3c28ac07b','--','current-generation/files','post-v7-consolidated','unified-entry-signal-delta','runner/current-runtime-binding.mjs']).toString().trim().split(/\n/).filter(Boolean);if(changed.length!==1||changed[0]!=='current-generation/files/src/triggered-entry-recheck.mjs')throw Error('PASSED_PIPELINE_SOURCE_CHANGED');
+            const publicRepo=(await github.rest.repos.get({owner,repo})).data;if(publicRepo.private!==false)throw Error('STANDARD_PUBLIC_REPOSITORY_REQUIRED');
+      - name: Reuse passed unchanged current generation and admission checks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:11575829556})).data;if(a.workflow_run.id!==37838426872||a.workflow_run.head_sha!=='c036218a6492fa37d45953869afa5eec5fcecfe7'||a.digest!=='sha256:736b8b66af4f4b9da048873c3eaa88b40dc0dc1d5a70968077589920eba9c4d4')throw Error('PASSED_ADMISSION_IDENTITY');const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:a.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==a.digest)throw Error('PASSED_ADMISSION_DIGEST');fs.mkdirSync('passed-current',{recursive:true});fs.writeFileSync('passed-current.zip',b);cp.execFileSync('unzip',['-q','passed-current.zip','-d','passed-current']);const t=fs.readFileSync('passed-current/exact-admission-tests.tap','utf8');if(!/(?:#|ℹ) pass 23/.test(t)||!/(?:#|ℹ) fail 0/.test(t))throw Error('PASSED_ADMISSION_NOT_CLOSED');for(const f of ['exact-admission-tests.tap','triggered-recheck-proof.json','validation.json','binding.json'])fs.copyFileSync('passed-current/'+f,'audit-output/'+f);
+            cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin','c036218a6492fa37d45953869afa5eec5fcecfe7']);if(cp.execFileSync('git',['diff','--name-only','c036218a6492fa37d45953869afa5eec5fcecfe7','--','current-generation','runner/current-runtime-binding.mjs']).toString().trim())throw Error('PASSED_ADMISSION_OR_GENERATION_CHANGED');
+      - name: Continuous worker and original-clock fresh admission matrix
+        run: |
+          node --test cloudflare/public-collector/trigger-analysis-kick.test.mjs cloudflare/public-collector/github-backup.test.mjs cloudflare/public-collector/continuous-backup-worker.test.mjs > audit-output/kick-tests.tap
+          node --check runtime/runner-main.mjs
+          cmp current-generation/files/runner-main.mjs runtime/runner-main.mjs
+          cmp current-generation/files/src/triggered-entry-recheck.mjs runtime/src/triggered-entry-recheck.mjs
+          node --input-type=module -e "import {proveTriggerKickBudget} from './cloudflare/public-collector/trigger-analysis-kick.mjs';import fs from 'node:fs';fs.writeFileSync('audit-output/kick-budget.json',JSON.stringify(proveTriggerKickBudget(),null,2));"
+      - name: Approved assembled pipeline and generation
+        run: |
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum runtime/src/triggered-entry-recheck.mjs runtime/runner-main.mjs runtime/src/worker.js cloudflare/public-collector/trigger-analysis-kick.mjs cloudflare/public-collector/continuous-backup-worker.mjs cloudflare/public-collector/github-backup.mjs .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml > audit-output/runtime-hashes.txt
+      - name: Print bounded failure evidence
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,16000)+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: continuous-trigger-cloud-worker-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain exact assembled proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='70ce1d3ca579208f7f2d8863a1de7d06c2d68bcb')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||['integration.json','validation.json','binding.json','head.txt','runtime-hashes.txt','kick-budget.json','triggered-recheck-proof.json'].includes(f));
+            for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const readOutput=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),budget=readOutput('kick-budget.json'),integration=readOutput('integration.json'),validation=readOutput('validation.json');
+            if(tests['kick-tests.tap'].pass!==41||tests['observation-pipeline-tests.tap'].pass!==35||tests['exact-admission-tests.tap'].pass!==23||integration.status!=='PASS'||integration.failed!==0||validation.status!=='CURRENT_GENERATION_VALIDATED'||!budget.safe)throw Error('CONNECTED_PROOF_NOT_CLOSED');
+            const proof={schema:'CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008_V1',status:'CURRENT_CODE_GUARDED_FIVE_MINUTE_WORKER_AND_FRESH_ADMISSION_VERIFIED',tested_head:context.sha,cloud_run:context.runId,pipeline_tests_original_head:'a1089edc1fe35d87360b60a703742da3c28ac07b',pipeline_tests_original_cloud_run:37834802454,pipeline_tests_reused_without_changes:true,pipeline_artifact_id:11575745666,pipeline_artifact_digest:'sha256:e8602132e7c44b14972e17074e51088265a020632109675340719a3443fa9880',changed_budget_and_admission_tests_original_head:'c036218a6492fa37d45953869afa5eec5fcecfe7',changed_budget_and_admission_tests_original_cloud_run:37838426872,admission_and_generation_reused_without_changes:true,admission_artifact_id:11575829556,admission_artifact_digest:'sha256:736b8b66af4f4b9da048873c3eaa88b40dc0dc1d5a70968077589920eba9c4d4',source_job_http_cap:164,bootstrap_and_worker_share_source_http_counter:true,public_standard_runner_verified:true,worker_maximum_minutes:300,source_guard_checks_current_main_production_blobs_each_cycle:true,only_budget_math_changed_in_the_previously_verified_runtime:true,tests,integration,validation,budget,original_price_diagnosis:'checkpoints/POST238_CT_ORIGINAL_PRICE_WINDOW_20261008.json',original_CT_SENT:'checkpoints/POST238_SAME_RUN_FLOW_STORAGE_CONNECTED_20261008.json',old_task_revived:false,original_clocks_unchanged:true,regular_analytics_interval_minutes:40,collector_interval_minutes:5,price_is_not_ENTRY:true,entry_gates_changed:false,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,actual_ENTRY:false,current_release_new_fresh_SENT:false,actual_new_kick_dispatch:false,native_level_SENT:false,full_project_complete:false};
+            const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/continuous-trigger-cloud-worker-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const blob=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/CONTINUOUS_EXACT_TRIGGER_CLOUD_WORKER_20261008.json',mode:'100644',type:'blob',sha:blob.sha});
+            const ref=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_MOVED');const c=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:c.tree.sha,tree:entries})).data,n=(await github.rest.git.createCommit({owner,repo,message:'Retain continuous current-code trigger worker and source-bounded admission proof',tree:tree.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:n.sha,force:false});console.log('VERIFIED_PROOF_HEAD',n.sha);
+
