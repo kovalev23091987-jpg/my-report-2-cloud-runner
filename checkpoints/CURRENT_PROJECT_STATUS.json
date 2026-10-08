@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-08T04:14:04.648Z",
+  "updated_utc": "2026-10-08T15:50:11.640Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -9,37 +9,35 @@
   "acceptance": {
     "CORE_BLOCKS": "VERIFIED_MAXIMUM_AVAILABLE_SAME_RUN_PARTIAL_SOURCE_SCOPE",
     "LIQUIDATION_COVERAGE": "VERIFIED_OPTIONAL_REAL_OR_LABELLED_CLOCK_PROVEN_LEVELS_WITH_PARTIAL_COVERAGE",
-    "JOINT_REPORT": "HISTORICAL_NEAR_OBSERVE_SENT157_PRE_PR235_PR236;CURRENT_NATIVE_MANUAL_SOURCE_REPORT_VERIFIED_ONLY",
-    "TELEGRAM": "HISTORICAL_APPROVED_SENT157_PRE_PR235_PR236;NEW_AUTOMATIC_NATIVE_LEVEL_SENT_PENDING"
+    "JOINT_REPORT": "ACTUAL_POST237_CT_NEAR_REJECTED_REPORT_RETAINED;NO_NEW_SENT;NATURAL_POST238_ENTRY_PENDING",
+    "TELEGRAM": "EXACT_HISTORICAL_NIL_OBSERVE_SENT160_PRE_PR237_PR238;NEW_NATIVE_LEVEL_SENT_AND_ENTRY_PENDING"
   },
   "latest_actual_report": {
-    "schema": "ACTUAL_NEAR_SENT157_ORIGINAL_GAP_20261008_V1",
-    "cloud_run": 37717554433,
-    "head": "7d4ea84e2641fcfac39aa5f0317d506a270248aa",
-    "run_id": "1791426172354-1791426181447",
-    "snapshot_id": "S392:NEAR-USDT:1791426273327",
-    "publication_id": "PUB:aa6e9381a2dd49445c590713eba8cb29474f3405",
-    "telegram_message_id": "157",
-    "contract": "NEAR-USDT",
-    "state": "OBSERVE",
-    "direction": "LONG",
-    "fingerprint": "210f0f2d93ef5b7e8bd47d106138d0d77d6855d68be109b77ea8d94668958c9d",
-    "report_artifact_id": 11524122537,
-    "report_artifact_digest": "sha256:5d3b9968834619c0c985c7b1c51cf22a1469d5d77d2f0c0b19aeea0cb46f1caa",
-    "original_report_sha256": "7c2dfb50fd6b3727fa07f2acae72ab6a8f7bf716b26ed21b15ed1092101f493b",
-    "proof": "checkpoints/entry-trigger-recheck-tests-37724161034/near0524-diagnosis.json",
-    "scope": "ACTUAL05:24LOCAL_OBSERVE_SENT157_PRE_PR235_PR236;NOT_CURRENT_RELEASE_ACCEPTANCE",
-    "useful_displayed_liquidation_levels": 0,
-    "raw_level_count": 1,
-    "raw_level_distance_pct": 1847.8698167033067,
-    "raw_level_price": 105.053554591,
-    "raw_source_reference_price": 5.393253373,
-    "hyperliquid_actual_HTTP": 2,
-    "shared_native_actual_HTTP": 5,
-    "shared_native_max_HTTP": 5,
-    "hyperliquid_original_response_body_retained": false,
-    "current_provider_empty_cause_proven": false,
-    "project_complete": false
+    "proof": "checkpoints/POST_PR237_AUTOMATIC_NATIVE_READBACK_20261008.json",
+    "cloud_run": 37800810333,
+    "head": "5ce59b2dc05adb660c1b46074e60e0775a569d60",
+    "run_id": "1791473220191-1791473231785",
+    "candidates": [
+      {
+        "contract": "CT-USDT",
+        "snapshot_id": "S392:CT-USDT:1791473349993",
+        "publication_id": "PUB:525122089c1cee09ef7470abf447a35679a422f3",
+        "analytical_fingerprint": "025dbeb0be3e38ee3a866317b933b14ca27117aa83fef63efbb716081c4251cd",
+        "state": "REJECTED",
+        "liquidation_levels": 0
+      },
+      {
+        "contract": "NEAR-USDT",
+        "snapshot_id": "S392:NEAR-USDT:1791473314060",
+        "publication_id": "PUB:42f7ae9e66b9606d9b5f0cc5d45ef7c032e19bf8",
+        "analytical_fingerprint": "a0ed57f6a0a88d5f55cf917702efb584d07db4e33f95d95bd78e0a4bf7fa204c",
+        "state": "REJECTED",
+        "liquidation_levels": 1
+      }
+    ],
+    "native_actual_HTTP": 3,
+    "Telegram_sent": 0,
+    "scope": "POST_PR237_PRE_PR238_AUTOMATIC_REPORT;NO_NEW_SENT;NOT_ENTRY_WINDOW_FIX_ACCEPTANCE"
   },
   "pending": [
     {
@@ -60,7 +58,7 @@
         15
       ],
       "protect_existing_telegram": true,
-      "latest_completed_batch": "checkpoints/NATIVE_RELEVANT_SEARCH_CONNECTED_20261008.json"
+      "latest_completed_batch": "checkpoints/CONNECTED_NATIVE_ENTRY_WINDOW_RELEASE_20261008.json"
     },
     {
       "task": "Prospective statistical validation and missed-opportunity denominator",
@@ -85,14 +83,14 @@
   ],
   "source_accounting": {
     "catalog": "checkpoints/SOURCE_CATALOG_ACTUAL_USE_20261006.md",
-    "latest_exact_run": "checkpoints/ACTUAL_POST_PR223_SOURCE_CONSUMER_AND_N05_20261007.json",
+    "latest_exact_run": "checkpoints/POST_PR237_AUTOMATIC_NATIVE_READBACK_20261008.json",
     "logical_assignments": 32,
     "logical_assignments_are_not_independent_providers": true,
     "catalog_report_contains_historical_sections": true,
-    "exact_source_use": "checkpoints/ACTUAL_POST_PR223_SOURCE_CONSUMER_AND_N05_20261007.json",
+    "exact_source_use": "checkpoints/FOUR_NATURAL_BLOCK_SOURCE_USE_20261008.json",
     "current_limits": "checkpoints/ACTUAL_ZEC_SENT150_SOURCE_USE_20261007.json",
-    "current_limits_scope": "Actual RAY/龙虾 run37628961697:10 participating each,14/12 checked,0 score-applied; N05 full240 min used/rendered both; native levels0 due unconfirmed clock. Separate later gTrade source runs never combined into same-run MAIN/SENT.",
-    "previous_exact_source_use": "checkpoints/ACTUAL_POST_PR220_REPORT_N05_AND_RPC_20261007.json"
+    "current_limits_scope": "Four original-clock natural reports prove scoped N05/N12/N15 use; NIL SENT160 includes actual N12 and N15 nonzero score effects, not counterfactual or empirical weight acceptance. Post237 CT/NEAR report is REJECTED with one conditional native NEAR level and no SENT.",
+    "previous_exact_source_use": "checkpoints/ACTUAL_POST_PR223_SOURCE_CONSUMER_AND_N05_20261007.json"
   },
   "history": {
     "startup_before_consolidation": "checkpoints/archive/startup-contract-before-consolidation-20261006.md",
@@ -158,7 +156,7 @@
     },
     "active_natural_report_readback": {
       "active": false,
-      "status": "NOT_LAUNCHED; NATURAL_POST_PR207_208_READBACK_PENDING_NOT_A_BLOCKER_FOR_VALIDATED_PATCH"
+      "status": "NEXT_NATURAL_POST238_ACTUAL_ENTRY_PENDING_NO_FORCED_MAIN"
     },
     "batched_execution_strategy": {
       "owner_instruction_at_msk": [
@@ -173,9 +171,12 @@
       "next_work_blocks": [],
       "no_automatic_continuation_created": true
     },
-    "current_execution_block": "PR235_PR236_DEPLOYED_ONE_FRESH_NEAR_NATIVE_CONTROL_COMPLETE",
+    "current_execution_block": "CONNECTED_NATIVE_DEADLINE_AND_ORIGINAL_SENT_TASK_WINDOW_REPAIRS_RETAINED",
     "next_work_blocks": [
-      "Use saved proofs; next natural eligible post235/236 report and trigger→full gates→canonical→dispatch. Do not repeat NEAR native or original expired SENT155 probes unchanged. Then complete generic N01/N02/N05/N12/N15 useful-source work and prospective/history requirements."
+      "Fresh natural exact SENT trigger to one new full analysis and all unchanged entry gates; then same-run actual ENTRY if fully confirmed.",
+      "Fresh automatic eligible liquidation producer to canonical approved SENT; optional or incomplete source coverage must remain honest.",
+      "Generic N01/N02/N05/N12/N15 remaining routes and data quality; preserve actual scoped confirmations and unchanged denied-provider economy.",
+      "Complete prospective validation and all-asset historical/source coverage requirements from the full86+16+24 register."
     ]
   },
   "last_rejected_hypothesis": "checkpoints/CACHE_HYPOTHESIS_AND_TRACKED_BANDS_DIAGNOSIS_20261006.json",
@@ -402,34 +403,22 @@
     "functional_delivery_verified": true
   },
   "latest_telegram_acceptance": {
-    "schema": "ACTUAL_NEAR_SENT157_ORIGINAL_GAP_20261008_V1",
-    "cloud_run": 37717554433,
-    "head": "7d4ea84e2641fcfac39aa5f0317d506a270248aa",
-    "run_id": "1791426172354-1791426181447",
-    "snapshot_id": "S392:NEAR-USDT:1791426273327",
-    "publication_id": "PUB:aa6e9381a2dd49445c590713eba8cb29474f3405",
-    "telegram_message_id": "157",
-    "contract": "NEAR-USDT",
+    "schema": "EXACT_NATURAL_NIL_SENT160_20261008",
+    "cloud_run": 37792641591,
+    "head": "9e90488b15c5872b8bd4e50963afdf92732c4273",
+    "run_id": "1791469682855-1791469694584",
+    "snapshot_id": "S392:NIL-USDT:1791469821192",
+    "publication_id": "PUB:d903c3476ee82e8f8d0ad0c6e985e4e281c952af",
+    "analytical_fingerprint": "15efed800c909d36c2e6af8ae80df49480aac8e60a4b786948dc8fa1c8b65540",
+    "telegram_message_id": "160",
+    "sent_ts": 1791469827846,
     "state": "OBSERVE",
     "direction": "LONG",
-    "fingerprint": "210f0f2d93ef5b7e8bd47d106138d0d77d6855d68be109b77ea8d94668958c9d",
-    "report_artifact_id": 11524122537,
-    "report_artifact_digest": "sha256:5d3b9968834619c0c985c7b1c51cf22a1469d5d77d2f0c0b19aeea0cb46f1caa",
-    "original_report_sha256": "7c2dfb50fd6b3727fa07f2acae72ab6a8f7bf716b26ed21b15ed1092101f493b",
-    "proof": "checkpoints/entry-trigger-recheck-tests-37724161034/near0524-diagnosis.json",
-    "scope": "BEFORE_PR235_PR236_NOT_CURRENT_RELEASE_ACCEPTANCE",
-    "useful_displayed_liquidation_levels": 0,
-    "raw_level_count": 1,
-    "raw_level_distance_pct": 1847.8698167033067,
-    "raw_level_price": 105.053554591,
-    "raw_source_reference_price": 5.393253373,
-    "hyperliquid_actual_HTTP": 2,
-    "shared_native_actual_HTTP": 5,
-    "shared_native_max_HTTP": 5,
-    "hyperliquid_original_response_body_retained": false,
-    "current_provider_empty_cause_proven": false,
-    "project_complete": false,
-    "status": "ACTUAL_OBSERVE_SENT157_ORIGINAL_JOB_BINDING_VERIFIED"
+    "proof": "checkpoints/native-source-batch-tests-37799119119/natural-sent-task-read.json",
+    "original_artifact_proof": "checkpoints/automatic-pr236-20261008/37792641591/summary.json",
+    "exact_SENT_binding_verified": true,
+    "presentation_hash_read": false,
+    "scope": "POST_PR236_PRE_PR237_PR238_HISTORICAL_OBSERVE;NOT_NEW_REPAIR_ENTRY_OR_NATIVE_LEVEL_SENT_ACCEPTANCE"
   },
   "owner_telegram_plain_language_request": {
     "requested_at_msk": "2026-10-06T18:30:26+03:00",
@@ -541,7 +530,7 @@
     "new_free_sources": "Research only; exact identity/state/method and bounded admission required before implementation.",
     "classification_status": "ACTUAL_CURRENT_ROUTES_CLASSIFIED; NO_UNVERIFIED_PROVIDER_ENABLED"
   },
-  "completion_scope": "PR209_PR210_PR211_CONNECTED_IMPLEMENTATION_CLOUD_VERIFIED; ACTUAL_NATIVE_SOURCE_SAMPLE_PROVEN_SEPARATELY; NATURAL_NEW_HEAD_REPORT_AND_FULL_OWNER_REGISTER_OPEN",
+  "completion_scope": "TWO_PRODUCTION_MECHANICAL_GAPS_FIXED_AND_ORIGINAL_CLOCK_ACTUAL_DATA_REPLAY_VERIFIED;FULL_OWNER_REGISTER_NOT_CLOSED",
   "latest_presentation_readback": {
     "cloud_run": 37584161929,
     "artifact": 11466345739,
@@ -596,58 +585,34 @@
     }
   },
   "latest_verified_release": {
-    "schema": "PRODUCTION_ENTRY_NATIVE_RELEVANT_SEARCH_RELEASE_20261008_V1",
-    "status": "MERGED_COMPOSED_AND_ACTUAL_PRODUCTION_READER_AND_CURRENT_NEAR_NATIVE_REPORT_VERIFIED_AUTOMATIC_SENT_PENDING",
-    "prs": [
-      235,
-      236
-    ],
-    "main_after_pr235": "e00d66acd47b51aff1a7c4c55d0e44f62ff718a0",
-    "main_after_pr236": "b7951554891c23ae5c82f8ce083e4a1b84a929fd",
-    "tested_heads": [
-      "0d2d0f676da8be120e975d6b5293165c6d7e59ba",
-      "bbc10ae2548ff8da1ad9ebfa3403485d290f0b2f"
-    ],
-    "cloud_runs": [
-      37724161034,
-      37725460812
-    ],
-    "proofs": [
-      "checkpoints/PRODUCTION_ENTRY_LIQ_REPAIR_CONNECTED_20261008.json",
-      "checkpoints/NATIVE_RELEVANT_SEARCH_CONNECTED_20261008.json"
-    ],
-    "artifacts": [
-      {
-        "id": 11526718195,
-        "digest": "sha256:6ea26341fdeb431b892e9da39451e09f943b25b5ebadedea2975e89c77ead1b3"
-      },
-      {
-        "id": 11527831976,
-        "digest": "sha256:6e5dbed3745800a65eb836e6dff4bc5527b855c9cefb103c37885f07770bc088"
-      }
-    ],
-    "tests": {
-      "native_routing": 65,
-      "entry_cadence": 19,
-      "approved_delivery": 35,
-      "integration": 37,
-      "generation_validation": "PASS"
+    "proof": "checkpoints/CONNECTED_NATIVE_ENTRY_WINDOW_RELEASE_20261008.json",
+    "native": {
+      "pr": 237,
+      "merged_head": "70bb4296f6b615f917a38609bcaba22aab46d7bb",
+      "tested_head": "75974903ce15e5aef0929f527c94de5a1f68b2f0",
+      "cloud_run": 37799119119,
+      "proof": "checkpoints/NATIVE_SOURCE_BATCH_CONNECTED_20261008.json",
+      "status": "CONTIGUOUS_SELECTED_NATIVE_COLLECTION_MERGED_COMPOSED_VERIFIED",
+      "source_deadline_ms": 45000,
+      "native_http_cap": 5,
+      "new_automatic_native_SENT_verified": false
     },
-    "production_reader_proof": "checkpoints/ACTUAL_POST_PR235_PRODUCTION_RETAINED_READER_20261008.json",
-    "actual_ENTRY": false,
-    "current_release_new_fresh_SENT": false,
-    "new_relevant_liquidation_SENT": false,
-    "full_project_complete": false,
-    "source_clocks_refreshed": false,
-    "entry_gates_changed": false,
-    "quota_reset": false,
-    "current_native_proof": "checkpoints/ACTUAL_POST_PR236_NEAR_NATIVE_SOURCE_CONTROL_20261008.json",
-    "actual_native_control_cloud_run": 37725892943,
-    "actual_native_levels": 3,
-    "current_native_probe_HTTP": 8,
-    "fresh_native_levels_in_manual_report": true
+    "entry": {
+      "pr": 238,
+      "merged_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
+      "tested_head": "18a5ef7f449391afb30b9cd528b0d100f5b4d529",
+      "cloud_run": 37802039336,
+      "proof": "checkpoints/ORIGINAL_TRIGGER_WINDOW_CONNECTED_20261008.json",
+      "status": "PRIOR_LIFECYCLE_EXPIRY_NO_LONGER_SHORTENS_ORIGINAL_SENT_TASK_ANALYSIS_WINDOW",
+      "original_task_ttl_unchanged": true,
+      "fresh_collector_limit_ms": 180000,
+      "burst_attempts_per_day": 3,
+      "old_entry_evidence_never_renewed": true,
+      "new_full_analysis_required_for_ENTRY": true,
+      "actual_ENTRY_verified": false
+    }
   },
-  "owner_requested_current_batch_complete": true,
+  "owner_requested_current_batch_complete": false,
   "functional_scope_complete": false,
   "owner_telegram_brief_amendment": {
     "policy": "OWNER_APPROVED_BRIEF_20261007",
@@ -730,9 +695,9 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791432844648,
-  "next_action": "Use saved proofs; next natural eligible post235/236 report and trigger→full gates→canonical→dispatch. Do not repeat NEAR native or original expired SENT155 probes unchanged. Then complete generic N01/N02/N05/N12/N15 useful-source work and prospective/history requirements.",
-  "current_task": "FULL_OWNER_TZ_OPEN_CURRENT_NATIVE_LEVELS_VERIFIED_AUTOMATIC_DELIVERY_AND_ENTRY_PENDING",
+  "updated_ts": 1791474611640,
+  "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
+  "current_task": "PR237_PR238_CONNECTED_REPAIRS_VERIFIED_FULL_OWNER_REGISTER_AND_NATURAL_ENTRY_OPEN",
   "latest_native_payment_release": {
     "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
     "pr": 204,
@@ -780,116 +745,34 @@
     "refunds": 0
   },
   "previous_accepted_actual_report": {
-    "schema": "POST_PR229_NATURAL_CONNECTED_READBACK_20261007_V1",
-    "cloud_run": 37681792251,
-    "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
-    "run_id": "1791404713379-1791404725011",
-    "generated_at": "2026-10-07T20:27:18.587Z",
-    "proof": "checkpoints/POST_PR229_NATURAL_RETAINED_READBACK_20261007.json",
-    "report_artifact_id": 11509515997,
-    "report_artifact_digest": "sha256:d7c36eac3d5a5079a3ec1aeb64d7b0184bd8b1ea1fdf339b23b7a08b537c14fd",
-    "candidates": [
-      {
-        "contract": "龙虾-USDT",
-        "snapshot_id": "S392:龙虾-USDT:1791404826193",
-        "state": "REJECTED",
-        "direction": null,
-        "participating": 10,
-        "participating_ids": [
-          "N02",
-          "N03",
-          "N04",
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ],
-        "checked": 14,
-        "score_applied": 0,
-        "N05": {
-          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "observed_ts": 1791404797642,
-          "reported_window_end_ts": 1791404700000,
-          "reported_window_age_ms": 126193,
-          "reported_minute_rows": 1311,
-          "diagnostic_only": true,
-          "source_clock_unchanged": true
-        }
-      },
-      {
-        "contract": "BOME-USDT",
-        "snapshot_id": "S392:BOME-USDT:1791404783785",
-        "state": "OBSERVE",
-        "direction": "LONG",
-        "participating": 9,
-        "participating_ids": [
-          "N02",
-          "N04",
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N16"
-        ],
-        "checked": 13,
-        "score_applied": 1,
-        "N05": {
-          "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-          "observed_ts": 1791404744255,
-          "reported_window_end_ts": 1791404640000,
-          "reported_window_age_ms": 143785,
-          "reported_minute_rows": 1013,
-          "diagnostic_only": true,
-          "source_clock_unchanged": true
-        }
-      }
-    ],
-    "BOME_SENT": {
-      "cloud_run": 37681792251,
-      "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
-      "run_id": "1791404713379-1791404725011",
-      "contract": "BOME-USDT",
-      "snapshot_id": "S392:BOME-USDT:1791404783785",
-      "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
-      "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
-      "telegram_message_id": "155",
-      "sent_ts": 1791404833130,
-      "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
-      "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
-      "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
-      "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
-    },
-    "native_future_levels": {
-      "contract": "BOME-USDT",
-      "provider": "Hyperliquid",
-      "conditional_cross_account": true,
-      "count": 1,
-      "above_price_USDC": 0.0212261087,
-      "source_reference_price_USDC": 0.000978,
-      "HTX_direct_level": false,
-      "full_market_census": false
-    },
-    "shared_native_budget": {
-      "reserved_http": 3,
-      "actual_http": 3,
-      "max_http": 5
-    },
-    "cap_zero_caller_natural_acceptance": false,
-    "cap_zero_controlled_assembled_proof": "checkpoints/CACHE_ONLY_NATIVE_CONNECTED_VERIFICATION_20261007.json",
-    "n05_current_240_minutes_closed_for": [
-      "BOME-USDT",
-      "龙虾-USDT"
-    ],
-    "BR_selected": false,
-    "BR_root_cause_closed": false,
-    "PR230_acceptance": false,
-    "PR231_acceptance": false,
-    "project_complete": false
+    "schema": "ACTUAL_NEAR_SENT157_ORIGINAL_GAP_20261008_V1",
+    "cloud_run": 37717554433,
+    "head": "7d4ea84e2641fcfac39aa5f0317d506a270248aa",
+    "run_id": "1791426172354-1791426181447",
+    "snapshot_id": "S392:NEAR-USDT:1791426273327",
+    "publication_id": "PUB:aa6e9381a2dd49445c590713eba8cb29474f3405",
+    "telegram_message_id": "157",
+    "contract": "NEAR-USDT",
+    "state": "OBSERVE",
+    "direction": "LONG",
+    "fingerprint": "210f0f2d93ef5b7e8bd47d106138d0d77d6855d68be109b77ea8d94668958c9d",
+    "report_artifact_id": 11524122537,
+    "report_artifact_digest": "sha256:5d3b9968834619c0c985c7b1c51cf22a1469d5d77d2f0c0b19aeea0cb46f1caa",
+    "original_report_sha256": "7c2dfb50fd6b3727fa07f2acae72ab6a8f7bf716b26ed21b15ed1092101f493b",
+    "proof": "checkpoints/entry-trigger-recheck-tests-37724161034/near0524-diagnosis.json",
+    "scope": "BEFORE_PR235_PR236_NOT_CURRENT_RELEASE_ACCEPTANCE",
+    "useful_displayed_liquidation_levels": 0,
+    "raw_level_count": 1,
+    "raw_level_distance_pct": 1847.8698167033067,
+    "raw_level_price": 105.053554591,
+    "raw_source_reference_price": 5.393253373,
+    "hyperliquid_actual_HTTP": 2,
+    "shared_native_actual_HTTP": 5,
+    "shared_native_max_HTTP": 5,
+    "hyperliquid_original_response_body_retained": false,
+    "current_provider_empty_cause_proven": false,
+    "project_complete": false,
+    "status": "ACTUAL_OBSERVE_SENT157_ORIGINAL_JOB_BINDING_VERIFIED"
   },
   "latest_runner_workflow_status": {
     "run": 37625796103,
@@ -1088,11 +971,20 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "PR235_PR236_DEPLOYED_ONE_FRESH_NEAR_NATIVE_CONTROL_COMPLETE",
+  "current_execution_block": "CONNECTED_NATIVE_DEADLINE_AND_ORIGINAL_SENT_TASK_WINDOW_REPAIRS_RETAINED",
   "latest_development_lease_release": {
-    "owner": "HTX:20261008:1791430073069:trigger-history-reader-fix",
-    "released_ts": 1791432844648,
-    "reason": "PR235/236 and exact current NEAR native report proofs retained; automatic SENT/ENTRY and full register remain open"
+    "owner": "HTX:20261008:1791470809266:full-owner-connected-continuation",
+    "acquired_ts": 1791470809266,
+    "expires_ts": 1791475850472,
+    "scope": "PR237_DEPLOYED_ACTUAL_REACHED_NEAR_TRIGGER_WITH_ZERO_FULL_ATTEMPTS_CONNECTED_DIAGNOSIS",
+    "released_ts": 1791474611640,
+    "status": "PR237_PR238_CONNECTED_VERIFIED_ACTUAL_REACHED_TRIGGER_FAILURE_DIAGNOSED_FULL_REGISTER_OPEN",
+    "code_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
+    "proof": "checkpoints/CONNECTED_NATIVE_ENTRY_WINDOW_RELEASE_20261008.json",
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY_verified": false
   },
   "latest_post_pr211_actual_readback": {
     "path": "checkpoints/ACTUAL_POST_PR211_READBACK_20261007.json",
@@ -2820,10 +2712,14 @@
     "artifact_digest": "sha256:52714c98591d1565892b46293defac1554455e11d951e6c7d5b4c47a400eed44"
   },
   "latest_continuation_handoff": {
-    "state": "checkpoints/CONTINUATION_STATE_20261008_NATIVE_RELEVANT_SEARCH.json",
-    "verified_main_before_save": "ff8fdceb0e1b56ddc6149579e2d34dd563fbb061"
+    "status": "PR237_NATIVE_PHASE_AND_PR238_ORIGINAL_TASK_WINDOW_RELEASED_COMPOSED_VERIFIED",
+    "proof": "checkpoints/CONNECTED_NATIVE_ENTRY_WINDOW_RELEASE_20261008.json",
+    "full_project_complete": false,
+    "actual_new_ENTRY_verified": false,
+    "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
+    "agent_background_running_after_turn": false
   },
-  "latest_status": "PR235_PR236_MERGED_ACTUAL_NEAR_NATIVE_LEVELS_AND_PRODUCTION_READER_VERIFIED_AUTOMATIC_ENTRY_SENT_PENDING",
+  "latest_status": "PR237_PR238_MERGED_CLOUD_VERIFIED;ACTUAL_NEAR_REACHED_TRIGGER_FAILURE_PROVEN;ACTUAL_NEW_ENTRY_NOT_YET_VERIFIED",
   "latest_liquidation_relevance_release": {
     "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
     "prs": [
@@ -2850,10 +2746,10 @@
     "original_sent155_preserved": true
   },
   "entry_transition_work": {
-    "status": "MECHANICAL_CHAIN_MERGED_CONNECTED_VERIFIED; PRODUCTION_ENTRY_AND_FULL_REGISTER_OPEN",
-    "proof": "checkpoints/ENTRY_TRIGGER_RECHECK_CONNECTED_VERIFICATION_20261008.json",
+    "status": "RETAINED_READER_AND_PREMATURE_LIFECYCLE_VETO_FIXED;NATURAL_ACTUAL_ENTRY_PENDING",
+    "proof": "checkpoints/ORIGINAL_TRIGGER_WINDOW_CONNECTED_20261008.json",
     "actual_ENTRY_verified": false,
-    "remaining_action": "Actual scheduled retained reader is fixed (37724390786 NO_FRESH_EXACT_SENT_TRIGGER). Verify a naturally admitted fresh trigger through all entry gates and same-run canonical/SENT; preserve strict gates and originalTTL. Current NEAR native manual report has3 actual levels; automatic source-to-canonical-to-SENT remains pending.",
+    "remaining_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
     "production_runtime_gap": {
       "status": "FIX_MERGED_AND_ACTUAL_SCHEDULED_NOT_DUE_VERIFIED",
       "error": "HISTORY_JSON_SQL_REQUIRES_EXPLICIT_READER",
@@ -2864,6 +2760,62 @@
       "proof": "checkpoints/ACTUAL_POST_PR235_PRODUCTION_RETAINED_READER_20261008.json",
       "actual_ENTRY": false,
       "full_project_complete": false
+    },
+    "latest_release": {
+      "pr": 238,
+      "merged_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
+      "tested_head": "18a5ef7f449391afb30b9cd528b0d100f5b4d529",
+      "cloud_run": 37802039336,
+      "proof": "checkpoints/ORIGINAL_TRIGGER_WINDOW_CONNECTED_20261008.json",
+      "status": "PRIOR_LIFECYCLE_EXPIRY_NO_LONGER_SHORTENS_ORIGINAL_SENT_TASK_ANALYSIS_WINDOW",
+      "original_task_ttl_unchanged": true,
+      "fresh_collector_limit_ms": 180000,
+      "burst_attempts_per_day": 3,
+      "old_entry_evidence_never_renewed": true,
+      "new_full_analysis_required_for_ENTRY": true,
+      "actual_ENTRY_verified": false
+    },
+    "actual_reached_trigger": {
+      "cloud_run": 37769881607,
+      "source_head": "241f196ff9f07b85adfb15fb47fcd01fc9cc2799",
+      "message_id": "159",
+      "lifecycle": {
+        "contract": "NEAR-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NEAR-USDT:1791426181612:G8",
+        "rules_version": "v3-telegram-shadow-r6",
+        "status": "OBSERVE",
+        "reason": "USEFUL_LIVE_OBSERVATION",
+        "observation_ts": 1791458820948,
+        "valid_until_ts": 1791459023520,
+        "updated_ts": 1791458824907,
+        "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+        "run_id": "1791458716118-1791458723360",
+        "snapshot_id": "S392:NEAR-USDT:1791458820948",
+        "analytical_fingerprint": "907d59bd93ecc818dca4eb058d765f11c090925772d92fe7139d9aa8c8263365",
+        "lifecycle_event": "OBSERVE"
+      },
+      "task": {
+        "task_id": "RCHK:fb6ab103994456754e4d6fc70e75c6041f0fecf1",
+        "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+        "contract_code": "NEAR-USDT",
+        "direction": "SHORT",
+        "wave_id": "EDW:NEAR-USDT:1791426181612:G8",
+        "snapshot_id": "S392:NEAR-USDT:1791458820948",
+        "run_id": "1791458716118-1791458723360",
+        "due_ts": 1791459120948,
+        "expires_ts": 1791460620948,
+        "state": "EXPIRED",
+        "attempt_count": 0,
+        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791460803669,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791460800000,\"task_id\":\"RCHK:fb6ab103994456754e4d6fc70e75c6041f0fecf1\",\"publication_id\":\"PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f\",\"run_id\":\"1791458716118-1791458723360\",\"snapshot_id\":\"S392:NEAR-USDT:1791458820948\",\"analytical_fingerprint\":\"907d59bd93ecc818dca4eb058d765f11c090925772d92fe7139d9aa8c8263365\",\"telegram_message_id\":\"159\"}",
+        "created_ts": 1791458825985,
+        "updated_ts": 1791460803669
+      },
+      "retained_price_proof": "checkpoints/ORIGINAL_TRIGGER_PRICE_WINDOWS_20261008.json",
+      "original_task_attempts": 0,
+      "prior_veto": "LIFECYCLE_EXPIRED_BEFORE_FIRST_PRICE_RECHECK",
+      "historical_price_crossing_proven": true,
+      "actual_ENTRY": false
     }
   },
   "latest_entry_transition_release": {
@@ -3213,5 +3165,40 @@
       "cap": 8
     },
     "original_native_raw_account_body_in_report": false
+  },
+  "latest_connected_native_entry_window_release": {
+    "native": {
+      "pr": 237,
+      "merged_head": "70bb4296f6b615f917a38609bcaba22aab46d7bb",
+      "tested_head": "75974903ce15e5aef0929f527c94de5a1f68b2f0",
+      "cloud_run": 37799119119,
+      "proof": "checkpoints/NATIVE_SOURCE_BATCH_CONNECTED_20261008.json",
+      "status": "CONTIGUOUS_SELECTED_NATIVE_COLLECTION_MERGED_COMPOSED_VERIFIED",
+      "source_deadline_ms": 45000,
+      "native_http_cap": 5,
+      "new_automatic_native_SENT_verified": false
+    },
+    "entry": {
+      "pr": 238,
+      "merged_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
+      "tested_head": "18a5ef7f449391afb30b9cd528b0d100f5b4d529",
+      "cloud_run": 37802039336,
+      "proof": "checkpoints/ORIGINAL_TRIGGER_WINDOW_CONNECTED_20261008.json",
+      "status": "PRIOR_LIFECYCLE_EXPIRY_NO_LONGER_SHORTENS_ORIGINAL_SENT_TASK_ANALYSIS_WINDOW",
+      "original_task_ttl_unchanged": true,
+      "fresh_collector_limit_ms": 180000,
+      "burst_attempts_per_day": 3,
+      "old_entry_evidence_never_renewed": true,
+      "new_full_analysis_required_for_ENTRY": true,
+      "actual_ENTRY_verified": false
+    }
+  },
+  "latest_actual_trigger_price_and_lifecycle_read": {
+    "price_proof": "checkpoints/ORIGINAL_TRIGGER_PRICE_WINDOWS_20261008.json",
+    "lifecycle_proof": "checkpoints/ORIGINAL_LIFECYCLE_TRIGGER_CLOCKS_20261008_SUMMARY.json",
+    "NEAR_price_trigger_reached": true,
+    "NEAR_full_attempts": 0,
+    "NIL_trigger_reached_in_retained_points": false,
+    "actual_ENTRY": false
   }
 }
