@@ -1,0 +1,124 @@
+name: Report2 Finish Native Position Clock With Unusable Pair Reserve
+on:
+  push:
+    branches: [codex/native-unused-pair-reserve-20261008]
+    paths: ['current-generation/**', '.github/workflows/unused-native-pair-reserve-20261008.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact owner before work
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='605dd2913d6771c223dd01b7b3ebc1353d48b608')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble exact current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+      - name: Restore immutable existing approved delivery fixtures
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('SOURCE_ZIP_DIGEST_MISMATCH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);
+              cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+      - name: Retained controls and dependencies
+        run: |
+          cp checkpoints/actual-zec-sent150-original-input-20261007.json.gz audit-output/exact-current-data.json.gz
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Load retained pinned positions with immutable digest
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11397777455,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='8e632ffb4371498fe0ecdabbf9e7653c99c360a19163ec9c3ee03321552372f0')throw Error('RETAINED_PINNED_SOURCE_DIGEST_MISMATCH');
+            fs.mkdirSync('original-source',{recursive:true});fs.writeFileSync('original-source.zip',b);cp.execFileSync('unzip',['-q','original-source.zip','-d','original-source']);
+      - name: Load current actual gTrade native state with immutable digest
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:11485584554,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='6dacb2912f344cf08f84ad8ad4337dc57cbed898275440f61fa4d30291246d32')throw Error('GTRADE_ACTUAL_SOURCE_DIGEST_MISMATCH');
+            fs.mkdirSync('gtrade-current-source',{recursive:true});fs.writeFileSync('gtrade-current-source.zip',b);cp.execFileSync('unzip',['-q','gtrade-current-source.zip','-d','gtrade-current-source']);
+      - name: Reuse nineteen passed unchanged component controls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;
+            const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:11580636875})).data;if(a.workflow_run.id!==37848591207||a.workflow_run.head_sha!=='f26bf4de93b186436f1e0180b668359eeb0577a6'||a.digest!=='sha256:8afc14edb08e51180b6c61d687b167a2e09dd811f666a42f49d090f21e29c450')throw Error('PARTIAL_PROOF_IDENTITY');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:a.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==a.digest)throw Error('PARTIAL_PROOF_DIGEST');fs.mkdirSync('passed-components',{recursive:true});fs.writeFileSync('passed-components.zip',b);cp.execFileSync('unzip',['-q','passed-components.zip','-d','passed-components']);
+            const tap=fs.readFileSync('passed-components/native-pair-tests.tap','utf8');if(Number(tap.match(/(?:#|ℹ) pass (\d+)/)?.[1])!==19||Number(tap.match(/(?:#|ℹ) fail (\d+)/)?.[1])!==3||!tap.includes('ERR_MODULE_NOT_FOUND')||!tap.includes('selected-native-reserve-policy.mjs')||!['gtrade-position-routing.runtime.mjs','native-source-batch.runtime.mjs','native-source-health.runtime.mjs'].every(p=>tap.includes(p)))throw Error('MODULE_ASSEMBLY_FAILURE_NOT_PROVEN');
+            cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin','f26bf4de93b186436f1e0180b668359eeb0577a6']);for(const p of ['current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs','current-generation/files/src/liquidation-source-weighting.mjs','current-generation/tests/selected-native-reserve-policy.test.mjs','current-generation/tests/liquidation-source-weighting.test.mjs','current-generation/tests/position-clock-source-order.test.mjs'])if(!cp.execFileSync('git',['show','f26bf4de93b186436f1e0180b668359eeb0577a6:'+p]).equals(fs.readFileSync(p)))throw Error('PASSED_SOURCE_CHANGED:'+p);
+            fs.writeFileSync('audit-output/first-partial-controls.txt',tap);fs.writeFileSync('audit-output/reused-controls.json',JSON.stringify({pass:19,fail:0,scope:'PASSED_RESERVE4_WEIGHT11_ORDER4_ONLY;THREE_FAILED_RUNTIME_MODULE_IMPORTS_NOT_ACCEPTED',artifact_id:a.id,artifact_digest:a.digest,cloud_run:37848591207,source_head:'f26bf4de93b186436f1e0180b668359eeb0577a6',original_file_sha256:crypto.createHash('sha256').update(tap).digest('hex')},null,2));
+      - name: Reuse ten unchanged passing runtime controls and the single actual QNT read
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;
+            const sources=[{id:11581531721,run:37849336129,head:'cda4b4b9946339ea16297b59c89faa31de5e5104',digest:'sha256:a7055b14109d7dd2cb6b1698917cbacc0362fc4e520bec38da2aaa583dcda0cc',dir:'passed-runtime'},{id:11581337093,run:37849662885,head:'c5b342ba23a7c0c839b20ec1ea0298dec2f373da',digest:'sha256:44e794c75d60e61ed471adda37c5b2151409049b4347e451adc2bc4d2044f533',dir:'actual-read'}];
+            for(const s of sources){const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:s.id})).data;if(a.workflow_run.id!==s.run||a.workflow_run.head_sha!==s.head||a.digest!==s.digest)throw Error('REUSED_ARTIFACT_IDENTITY');const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:s.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==s.digest)throw Error('REUSED_ARTIFACT_DIGEST');fs.mkdirSync(s.dir,{recursive:true});fs.writeFileSync(s.dir+'.zip',b);cp.execFileSync('unzip',['-q',s.dir+'.zip','-d',s.dir]);}
+            cp.execFileSync('git',['fetch','--no-tags','--depth=1','origin',sources[0].head]);cp.execFileSync('git',['diff','--exit-code',sources[0].head,'HEAD','--','current-generation/files']);
+            const tap=fs.readFileSync('passed-runtime/native-pair-runtime-tests.tap','utf8');if(Number(tap.match(/(?:#|ℹ) pass (\d+)/)?.[1])!==23||Number(tap.match(/(?:#|ℹ) fail (\d+)/)?.[1])!==4)throw Error('RUNTIME_PARTIAL_SCOPE');
+            let count=0;for(const p of ['current-generation/tests/native-source-batch.runtime.mjs','current-generation/tests/native-source-health.runtime.mjs']){if(!cp.execFileSync('git',['show',sources[0].head+':'+p]).equals(fs.readFileSync(p)))throw Error('PASSED_RUNTIME_TEST_CHANGED');const names=[...fs.readFileSync(p,'utf8').matchAll(/^test\('([^']+)'/gm)].map(m=>m[1]);for(const n of names)if(!tap.includes('✔ '+n)&&!new RegExp('^ok [0-9]+ - '+n.replace(/[.*+?^$\{\}()|[\]\\]/g,'\\      - name: Original-clock mixed native pair'),'m').test(tap))throw Error('PASSED_RUNTIME_CASE_NOT_PROVEN:'+n);count+=names.length;}if(count!==10)throw Error('RUNTIME_CASE_COUNT');
+            fs.copyFileSync('passed-runtime/native-empty-source-health-proof.json','audit-output/native-empty-source-health-proof.json');fs.writeFileSync('audit-output/second-partial-controls.txt',tap);fs.writeFileSync('audit-output/reused-runtime-controls.json',JSON.stringify({pass:10,fail:0,scope:'PASSED_NATIVE_BATCH6_HEALTH4_ONLY;FOUR_FAILED_GTRADE_CASES_EXCLUDED',artifact:sources[0],original_file_sha256:crypto.createHash('sha256').update(tap).digest('hex')},null,2));
+            const sent=JSON.parse(fs.readFileSync('actual-read/natural-sent-task-read.json'));if(sent.status!=='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED'||sent.d1_usage.unknown_ops!==0)throw Error('ACTUAL_READ_NOT_CLOSED');fs.copyFileSync('actual-read/natural-sent-task-read.json','audit-output/natural-sent-task-read.json');fs.writeFileSync('audit-output/reused-actual-read.json',JSON.stringify({artifact:sources[1],new_D1_requests:0,source_clock_refreshed:false},null,2));
+      - name: Original-clock mixed native pair, usable reserve protection and source order
+        env:
+          REPORT2_TEST_RUNTIME: runtime
+        run: |
+          node --test current-generation/tests/gtrade-position-routing.runtime.mjs > audit-output/native-pair-runtime-tests.tap
+          cmp current-generation/files/src/liquidation-extension/selected-native-reserve-policy.mjs runtime/src/liquidation-extension/selected-native-reserve-policy.mjs
+          cmp current-generation/files/src/liquidation-extension/selected-native-batch.mjs runtime/src/liquidation-extension/selected-native-batch.mjs
+          cmp current-generation/files/src/liquidation-extension/combined-runner-service.mjs runtime/src/liquidation-extension/combined-runner-service.mjs
+      - name: Approved assembled pipeline and generation
+        run: |
+          node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/observation-pipeline-tests.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum runtime/src/triggered-entry-recheck.mjs runtime/runner-main.mjs runtime/src/worker.js cloudflare/public-collector/trigger-analysis-kick.mjs .github/workflows/report2.yml .github/workflows/report2-public-collector-backup.yml > audit-output/runtime-hashes.txt
+      - name: Print bounded failure evidence
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10)),ix=ls.map((s,i)=>/not ok|✖|AssertionError|ERR_ASSERTION|test at|error:|expected:|actual:|operator:/.test(s)?i:null).filter(i=>i!==null),keep=new Set(ix.flatMap(i=>Array.from({length:18},(_,j)=>i-2+j).filter(n=>n>=0&&n<ls.length)));if(keep.size)process.stdout.write(f+':'+String.fromCharCode(10)+[...keep].sort((a,b)=>a-b).map(i=>ls[i]).join(String.fromCharCode(10)).slice(0,16000)+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unused-native-pair-reserve-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain connected native pair reserve and exact actual release read
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='605dd2913d6771c223dd01b7b3ebc1353d48b608')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,tests={};
+            const files=fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||['integration.json','validation.json','binding.json','head.txt','runtime-hashes.txt','unused-native-pair-reserve-proof.json','gtrade-three-read-retained-proof.json','native-empty-source-health-proof.json','natural-sent-task-read.json','first-partial-controls.txt','reused-controls.json','second-partial-controls.txt','reused-runtime-controls.json','reused-actual-read.json'].includes(f));
+            for(const f of files.filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const out=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),integration=out('integration.json'),validation=out('validation.json'),replay=out('unused-native-pair-reserve-proof.json'),sent=out('natural-sent-task-read.json'),reused=out('reused-controls.json'),reusedRuntime=out('reused-runtime-controls.json'),reusedActualRead=out('reused-actual-read.json');
+            if(tests['native-pair-runtime-tests.tap']?.pass!==17||reusedRuntime.pass!==10||reusedRuntime.fail!==0||reused.pass!==19||reused.fail!==0||tests['observation-pipeline-tests.tap']?.pass!==35||integration.status!=='PASS'||integration.failed!==0||validation.status!=='CURRENT_GENERATION_VALIDATED'||replay.summary.shared_budget.actual_http!==4||replay.context.source_clock_closed!==true||replay.context.entry_eligible!==false||sent.status!=='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED'||sent.d1_usage.unknown_ops!==0)throw Error('CONNECTED_NATIVE_PAIR_PROOF_NOT_CLOSED');
+            const proof={schema:'UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008_V1',status:'ONE_UNUSABLE_PAIR_RESERVE_REQUEST_CAN_FINISH_NATIVE_POSITION_CLOCK_COMPOSED_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,reused_controls:reused,reused_runtime_controls:reusedRuntime,reused_actual_read:reusedActualRead,integration,validation,replay,actual_post243_read:sent,actual_starvation_proof:'checkpoints/post243-production-readback-20261008/37846542006/summary.json',sourceHTTP:0,D1:{requests:0,rows_read:0,rows_written:0,unknown_ops:0},retained_actual_read_D1:sent.d1_usage,MAIN:0,Telegram:0,new_provider_probes:0,new_D1_queries_in_production:0,new_D1_writes_in_production:0,native_http_cap:5,maximum_reallocated_requests:1,viable_unknown_following_routes_protected:true,explicit_caller_cap_unchanged:true,deadline_ms:45000,original_source_clocks_preserved:true,core_weights_and_entry_gates_unchanged:true,new_current_release_fresh_SENT:false,actual_ENTRY:false,full_project_complete:false};
+            const entries=[];for(const f of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/unused-native-pair-reserve-tests-'+context.runId+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008.json',mode:'100644',type:'blob',sha:b.sha});
+            const ref=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_MOVED');const c=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:c.tree.sha,tree:entries})).data,n=(await github.rest.git.createCommit({owner,repo,message:'Retain native reserve completion and exact natural QNT source/report/SENT proof',tree:t.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:n.sha,force:false});console.log('CONNECTED_PROOF_HEAD',n.sha);
