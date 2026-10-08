@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import {TWO_CANDIDATE_PLAN} from './two-candidate-policy.mjs';
 import {D1_DAILY_LIMITS} from './unified-budget.mjs';
 
-export const TRIGGERED_RECHECK_VERSION='exact-sent-triggered-recheck-v2-retained-reader-20261008';
+export const TRIGGERED_RECHECK_VERSION='exact-sent-triggered-recheck-v3-original-task-window-20261008';
 export const TRIGGERED_RECHECK_D1_RESERVATION=Object.freeze({rows_read:1500,rows_written:16});
 export function proveTriggeredRecheckD1Budget(){
  // Reserve for every one of the72 cron invocations, even though ordinary
@@ -44,11 +44,16 @@ export async function admitTriggeredRecheck(db,{actor,now_ts,admit=()=>({allowed
  await db.prepare(`CREATE INDEX IF NOT EXISTS idx_report2_recheck_trigger_ready ON v3_recheck_task_shadow(expires_ts,due_ts) WHERE state='PENDING' AND json_valid(last_result) AND json_extract(last_result,'$.status')='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'`).run();
  // Parse only the mutable collector receipt in SQL. Retained canonical bodies
  // may be archive locators and must pass through the explicit history reader.
+ // This authorizes a NEW analysis inside the original SENT task lifetime.
+ // The prior decision context often expires before the first price check;
+ // its entry freshness must not shorten that task's original trigger window.
+ // Exact lifecycle identity/status, fresh collector price and all new entry
+ // evidence gates remain required. No prior evidence is renewed.
  const found=await db.prepare(`SELECT t.*,b.analytical_fingerprint AS sent_fingerprint,b.observed_ts AS sent_observed_ts,d.telegram_message_id
    FROM v3_recheck_task_shadow t
    JOIN v3_dispatch_publication_binding_shadow b ON b.publication_id=t.publication_id AND b.contract_code=t.contract_code AND b.direction=t.direction AND b.wave_id=t.wave_id AND b.run_id=t.run_id AND b.snapshot_id=t.snapshot_id
    JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.state='SENT' AND d.contract=t.contract_code AND d.direction=t.direction AND d.wave_id=t.wave_id
-   JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=b.observed_ts AND l.valid_until_ts>?1
+   JOIN v3_user_lifecycle_shadow l ON l.contract=t.contract_code AND l.direction=t.direction AND l.wave_id=t.wave_id AND l.rules_version=b.rules_version AND l.status=b.lifecycle_event AND l.observation_ts=b.observed_ts
    WHERE t.state='PENDING' AND json_valid(t.last_result) AND json_extract(t.last_result,'$.status')='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'
      AND t.expires_ts>?1 AND t.due_ts<=?1 AND b.lifecycle_event IN ('OBSERVE','WAIT')
      AND NOT EXISTS(SELECT 1 FROM report2_triggered_recheck_admission a WHERE a.task_id=t.task_id)
