@@ -2,6 +2,22 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildLiquidationSourceWeightProfile,chooseWeightedLiquidationLane,nextLiquidationSourceReliability,planLiquidationSourceOrder,createLiquidationSourceWeightStore} from '../files/src/liquidation-source-weighting.mjs';
 import {DatabaseSync} from 'node:sqlite';
+const T=1791491304808;
+test('verified empty transport retains reliability but cannot outrank equal-cost unknown native usefulness',()=>{
+ const args={now:T,lanes:['DYDX_PINNED_NATIVE','GTRADE_NATIVE'],clock_capable:['DYDX_PINNED_NATIVE','GTRADE_NATIVE'],costs:{DYDX_PINNED_NATIVE:3,GTRADE_NATIVE:3},rows:[{source_id:'DYDX_PINNED_NATIVE',attempts:20,reliability:1,last_status:'DYDX_NO_ELIGIBLE_SAMPLE_LEVEL',updated_ts:T-1000}]};
+ const p=planLiquidationSourceOrder(args);assert.deepEqual(p.ordered,['GTRADE_NATIVE','DYDX_PINNED_NATIVE']);const dx=p.profile.find(x=>x.source_id==='DYDX_PINNED_NATIVE');assert.equal(dx.reliability,1);assert.equal(dx.selection_weight,1.5);assert.equal(dx.role_selection_weight,.5);assert.equal(dx.recent_role_not_usable,true);assert.equal(dx.predictive_weight_eligible,false);assert.equal(dx.role_hint_is_not_current_asset_coverage,true);
+});
+test('same-run zero-cost cache and exact routing priorities survive empty-role utility hint',()=>{
+ const args={now:T,lanes:['DYDX_PINNED_NATIVE','GTRADE_NATIVE'],clock_capable:['DYDX_PINNED_NATIVE','GTRADE_NATIVE'],costs:{DYDX_PINNED_NATIVE:0,GTRADE_NATIVE:3},rows:[{source_id:'DYDX_PINNED_NATIVE',attempts:20,reliability:1,last_status:'ROLE_NOT_USABLE:NATIVE_POSITION_CONTEXT:DYDX_NO_ELIGIBLE_SAMPLE_LEVEL',updated_ts:T-1000}]};
+ assert.equal(planLiquidationSourceOrder({...args,cached:['DYDX_PINNED_NATIVE']}).ordered[0],'DYDX_PINNED_NATIVE');assert.equal(planLiquidationSourceOrder({...args,exact:['DYDX_PINNED_NATIVE']}).ordered[0],'DYDX_PINNED_NATIVE');
+});
+test('future, expired, missing clocks and unsupported asset do not supply an empty-role prior',()=>{
+ const base={source_id:'DYDX_PINNED_NATIVE',attempts:20,reliability:1,last_status:'DYDX_NO_ELIGIBLE_SAMPLE_LEVEL',updated_ts:T};
+ for(const patch of [{updated_ts:T+1},{updated_ts:T-86400001},{updated_ts:null},{last_status:'UNSUPPORTED'}]){const p=planLiquidationSourceOrder({now:T,lanes:['DYDX_PINNED_NATIVE'],rows:[{...base,...patch}],costs:{DYDX_PINNED_NATIVE:3},clock_capable:['DYDX_PINNED_NATIVE']});assert.equal(p.profile[0].recent_role_not_usable,false);assert.equal(p.profile[0].role_selection_weight,p.profile[0].selection_weight);}
+});
+test('role hint never puts receipt-only or projected sources ahead of clock-verifiable native producer',()=>{
+ const p=planLiquidationSourceOrder({now:T,lanes:['DYDX_PINNED_NATIVE','GMX_NATIVE','OXARCHIVE_HL_BUCKETS'],clock_capable:['DYDX_PINNED_NATIVE'],exact:['GMX_NATIVE'],costs:{DYDX_PINNED_NATIVE:3,GMX_NATIVE:1,OXARCHIVE_HL_BUCKETS:1},rows:[{source_id:'DYDX_PINNED_NATIVE',attempts:20,reliability:1,last_status:'DYDX_NO_ELIGIBLE_SAMPLE_LEVEL',updated_ts:T},{source_id:'GMX_NATIVE',attempts:20,reliability:1},{source_id:'OXARCHIVE_HL_BUCKETS',attempts:20,reliability:1}]});assert.equal(p.ordered[0],'DYDX_PINNED_NATIVE');assert.equal(p.profile[0].role_selection_weight,.5);
+});
 
 test('new sources start equal and every source retains an exploration floor',()=>{
  const profile=buildLiquidationSourceWeightProfile(['NATIVE','OXARCHIVE']);
