@@ -1,0 +1,22 @@
+import fs from 'node:fs/promises';
+import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
+const sources=[];
+for(const id of [37853236004]){const s=JSON.parse(await fs.readFile('checkpoints/post244-production-readback-20261008/'+id+'/summary.json'));for(const c of s.candidates.filter(c=>c.state==='OBSERVE'))sources.push({cloud_run:id,head:s.head,run_id:s.run_id,...c});}
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),reservation={rows_read:1000,rows_written:16},id='NATURAL_SENT_TRACE:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
+const out={schema:'POST244_FIL_SENT_AND_ORIGINAL_TASK_READ_20261008_V1',head:process.env.GITHUB_SHA,cloud_run:process.env.GITHUB_RUN_ID,read_ts:now,sourceHTTP:0,MAIN:0,Telegram:0,task_writes:0,source_clocks_refreshed:false,actual_ENTRY:false,cases:[],limitation:'Current mutable task state cannot reconstruct overwritten historical collector prices or prove all absent entries.'};
+out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
+if(out.admission.allowed){await reserveRunBudget(db,{reservationId:id,now,reservation});try{
+for(const c of sources){
+ const task=await db.prepare('SELECT task_id,publication_id,contract_code,direction,wave_id,snapshot_id,run_id,due_ts,expires_ts,state,attempt_count,last_result,created_ts,updated_ts FROM v3_recheck_task_shadow WHERE publication_id=?1 AND contract_code=?2 AND direction=?3 AND run_id=?4 AND snapshot_id=?5 LIMIT 1').bind(c.publication,c.contract,c.canonical_direction,c.run_id,c.snapshot).first();
+ const receipt=await db.prepare("SELECT b.publication_id,b.run_id,b.snapshot_id,b.analytical_fingerprint,b.observed_ts,b.wave_id,b.lifecycle_event,d.state,d.telegram_message_id,d.sent_ts,d.last_error FROM v3_dispatch_publication_binding_shadow b JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key AND d.contract=b.contract_code AND d.direction=b.direction AND d.wave_id=b.wave_id WHERE b.publication_id=?1 AND b.contract_code=?2 AND b.direction=?3 AND b.run_id=?4 AND b.snapshot_id=?5 AND b.analytical_fingerprint=?6 LIMIT 1").bind(c.publication,c.contract,c.canonical_direction,c.run_id,c.snapshot,c.fingerprint).first();
+ if(task&&[task.due_ts===c.canonical_trigger.next_recheck_ts,task.expires_ts===c.canonical_trigger.expires_ts].some(v=>!v))throw Error('TASK_SOURCE_CLOCK_MISMATCH');
+ out.cases.push({source_cloud_run:c.cloud_run,source_head:c.head,contract:c.contract,run_id:c.run_id,snapshot_id:c.snapshot,publication_id:c.publication,analytical_fingerprint:c.fingerprint,observed_ts:c.observed_ts,original_trigger:c.canonical_trigger,canonical_entry:c.canonical_entry,canonical_targets:c.canonical_targets,canonical_state:c.state,receipt,task,status:task?'ACTUAL_EXACT_TASK_READ':'EXACT_TASK_NOT_FOUND',exact_SENT:receipt?.state==='SENT'&&/^[1-9][0-9]*$/.test(String(receipt.telegram_message_id))});
+ const usage=db.usageSnapshot();if(usage.unknown_ops||usage.rows_read>900||usage.rows_written>14||usage.requests>12)throw Error('BOUNDED_READ_EXCEEDED');
+}
+const day=new Date(now).toISOString().slice(0,10);out.poll=await db.prepare('SELECT day_key,last_bucket,polls FROM report2_trigger_kick_poll WHERE day_key=?1 LIMIT 1').bind(day).first();out.kicks=await db.prepare('SELECT day_key,slot,task_id FROM report2_trigger_kick_slot WHERE day_key=?1 ORDER BY slot LIMIT 3').bind(day).all();out.status='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED';
+}catch(e){out.status='READ_FAILED';out.error=String(e.message).slice(0,200);}finally{out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}}else out.status='D1_ADMISSION_BLOCKED';
+out.d1_usage=db.usageSnapshot();await fs.mkdir('audit-output',{recursive:true});await fs.writeFile('audit-output/natural-sent-task-read.json',JSON.stringify(out,null,2)+'\n');
+console.log(JSON.stringify({status:out.status,cases:out.cases.map(c=>({contract:c.contract,exact_SENT:c.exact_SENT,message_id:c.receipt?.telegram_message_id,state:c.task?.state,attempt_count:c.task?.attempt_count,last_result:c.task?.last_result})),sourceHTTP:0,Telegram:0,d1_usage:out.d1_usage,error:out.error}));
+if(out.status!=='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED')process.exitCode=1;
+

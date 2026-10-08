@@ -1,0 +1,55 @@
+name: Retain actual post244 report and exact SENT task
+on:
+  push:
+    branches: [codex/post244-production-readback-20261008]
+    paths: ['.github/workflows/post244-production-readback-20261008.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify exact owner before work
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const h=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:'heads/main'})).data.object.sha;if(h!=='e8986bf943e4b4089483e5dd5b337a76f36496d5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner:context.repo.owner,repo:context.repo.repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');const branch=(await github.rest.git.getRef({owner:context.repo.owner,repo:context.repo.repo,ref:context.ref.replace('refs/','')})).data.object.sha;if(branch!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Retain immutable natural production report and original-clock summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),zlib=require('zlib'),owner=context.repo.owner,repo=context.repo.repo,root='checkpoints/post244-production-readback-20261008/37853236004';
+            fs.mkdirSync(root,{recursive:true});const sources=[{id:11583102893,digest:'sha256:7a5c07c34f5e44ca97b0bf1979c98bdf0a55db909f303b002e36f7cdcce2149b',file:'report2-run-result.json'},{id:11582369297,digest:'sha256:dcd3b63e382056a71a4bfe128ab64c8b4bd4072e02596013036c0e83f2f13c69',file:'telegram-info-proof.json'}],loaded=[];
+            for(const s of sources){const a=(await github.rest.actions.getArtifact({owner,repo,artifact_id:s.id})).data;if(a.workflow_run.id!==37853236004||a.workflow_run.head_sha!=='e8986bf943e4b4089483e5dd5b337a76f36496d5'||a.digest!==s.digest)throw Error('NATURAL_ARTIFACT_IDENTITY');const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:s.id,archive_format:'zip'})).data);if('sha256:'+crypto.createHash('sha256').update(b).digest('hex')!==s.digest)throw Error('ARTIFACT_DIGEST');const d='original-'+s.id;fs.mkdirSync(d);fs.writeFileSync(d+'.zip',b);cp.execFileSync('unzip',['-q',d+'.zip','-d',d]);const raw=fs.readFileSync(d+'/'+s.file);loaded.push(JSON.parse(raw));fs.writeFileSync(root+'/'+s.file+'.gz',zlib.gzipSync(raw));}
+            const [r,t]=loaded;if(r.head!=='e8986bf943e4b4089483e5dd5b337a76f36496d5'||r.run_id!==t.source_run_id||r.status!=='CLOSED'||r.run_id!=='1791498274068-1791498286190')throw Error('PRODUCTION_ORIGINAL_RUN_NOT_CLOSED');
+            const candidates=r.candidates.map(c=>({contract:c.contract,state:c.canonical_state,publication:c.publication_id,snapshot:c.snapshot_id,fingerprint:c.canonical.analytical_fingerprint,observed_ts:c.canonical.observed_ts,canonical_direction:c.canonical.direction,canonical_trigger:c.canonical.trigger,canonical_entry:c.canonical.entry,canonical_targets:c.canonical.targets,score:c.canonical.scores,participating_blocks:c.block_decision_use.participating_block_ids,nonzero_count:c.block_decision_use.score_applied_block_count,data_quality:c.canonical.data_quality,liquidations:c.canonical.liquidations,block_rendered_results:c.block_rendered_results,block_decision_use:c.block_decision_use}));
+            const summary={schema:'POST244_ACTUAL_ORIGINAL_REPORT_20261008_V1',cloud_run:37853236004,head:r.head,run_id:r.run_id,generated_at:r.generated_at,candidates,telegram:t,acquisition:r.liquidation_source_acquisition_audit,full_project_complete:false,actual_ENTRY:false,new_fresh_SENT:false,sourceHTTP:0,MAIN:0,Telegram:0};
+            fs.writeFileSync(root+'/summary.json',JSON.stringify(summary,null,2)+'\n');fs.writeFileSync('checkpoints/post244-production-readback-20261008/manifest.json',JSON.stringify({cloud_run:37853236004,head:r.head,run_id:r.run_id,sources,source_clock_refreshed:false},null,2)+'\n');console.log(JSON.stringify({run_id:r.run_id,candidates:candidates.map(c=>({contract:c.contract,state:c.state,participating:c.participating_blocks,native_levels:c.liquidations.display_source_zones?.length}))}));
+      - name: One bounded exact actual SENT and original task read
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-post244-fil-sent-20261008.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post244-actual-read-${{ github.run_id }}
+          path: |
+            audit-output/
+            checkpoints/post244-production-readback-20261008/
+          retention-days: 30
+      - name: Retain exact report and actual bounded delivery read
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,fs=require('fs'),cp=require('child_process');const h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='e8986bf943e4b4089483e5dd5b337a76f36496d5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString()),phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            const out=JSON.parse(fs.readFileSync('audit-output/natural-sent-task-read.json'));if(out.status!=='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED'||out.d1_usage.unknown_ops!==0||out.d1_usage.rows_read>1000||out.d1_usage.rows_written>16)throw Error('ACTUAL_READ_NOT_CLOSED');fs.copyFileSync('audit-output/natural-sent-task-read.json','checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json');
+            const root='checkpoints/post244-production-readback-20261008',files=['checkpoints/POST244_ACTUAL_REPORT_SENT_20261008.json',root+'/manifest.json',...fs.readdirSync(root+'/37853236004').map(n=>root+'/37853236004/'+n)],entries=[];
+            for(const p of files){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync(p).toString('base64'),encoding:'base64'})).data;entries.push({path:p,mode:'100644',type:'blob',sha:b.sha});}
+            const ref=context.ref.replace('refs/heads/',''),parent=(await github.rest.git.getRef({owner,repo,ref:'heads/'+ref})).data.object.sha;if(parent!==context.sha)throw Error('REVIEW_MOVED');const c=(await github.rest.git.getCommit({owner,repo,commit_sha:parent})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:c.tree.sha,tree:entries})).data,n=(await github.rest.git.createCommit({owner,repo,message:'Retain actual post244 production original report and exact SENT task read',tree:t.sha,parents:[parent]})).data;await github.rest.git.updateRef({owner,repo,ref:'heads/'+ref,sha:n.sha,force:false});console.log('ACTUAL_POST244_PROOF_HEAD',n.sha);
