@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import {gzipSync,gunzipSync} from 'node:zlib';
 import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
-import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
+import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,evidenceSourceCacheWriteWireBytes} from './evidence-source-store.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const HTX_SIGNED_TAPE_VERSION='htx-signed-tape-v1-exact-minute-raw-20261004';
 const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map(),acquisitionReceipts=new Map(),ringReadbacks=new Map();
@@ -9,15 +9,21 @@ const n=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const close=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
 const STORAGE_CAP=1500000,DECODE_CAP=8000000,PACKED_VERSION='htx-signed-tape-storage-gzip-v1';
+export const HTX_SIGNED_TAPE_WIRE_CAP=1500000;
 const byteHash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+export function signedTapeStorageWireBytes(payload,ring){
+ return evidenceSourceCacheWriteWireBytes({source:SOURCE,asset_key:ring.contract,observed_ts:ring.observed_ts,expires_ts:ring.observed_ts+30*60*MIN,payload});
+}
 // Lossless storage only: the decoded ring, minute clocks, fill IDs and hashes
 // are unchanged. The existing durable byte cap and DB operations stay fixed.
 export function encodeSignedTapeStorage(ring){
  const bytes=Buffer.from(JSON.stringify(ring));
  if(bytes.length>DECODE_CAP)return{status:'RAW_TAPE_STORAGE_BOUND_REACHED',payload:null};
- if(bytes.length<=STORAGE_CAP)return{status:'RAW_TAPE_STORAGE_CLOSED',payload:ring,storage_bytes:bytes.length,uncompressed_bytes:bytes.length,encoding:'JSON'};
+ const json_wire_bytes=signedTapeStorageWireBytes(ring,ring);
+ if(bytes.length<=STORAGE_CAP&&json_wire_bytes<=HTX_SIGNED_TAPE_WIRE_CAP)return{status:'RAW_TAPE_STORAGE_CLOSED',payload:ring,storage_bytes:bytes.length,wire_bytes:json_wire_bytes,uncompressed_bytes:bytes.length,encoding:'JSON'};
  const payload={version:PACKED_VERSION,contract:ring.contract,encoding:'GZIP_BASE64',uncompressed_bytes:bytes.length,sha256:byteHash(bytes),data:gzipSync(bytes,{mtime:0}).toString('base64')},storage_bytes=Buffer.byteLength(JSON.stringify(payload));
- return storage_bytes<=STORAGE_CAP?{status:'RAW_TAPE_STORAGE_CLOSED',payload,storage_bytes,uncompressed_bytes:bytes.length,encoding:'GZIP_BASE64'}:{status:'RAW_TAPE_STORAGE_BOUND_REACHED',payload:null};
+ const wire_bytes=signedTapeStorageWireBytes(payload,ring);
+ return storage_bytes<=STORAGE_CAP&&wire_bytes<=HTX_SIGNED_TAPE_WIRE_CAP?{status:'RAW_TAPE_STORAGE_CLOSED',payload,storage_bytes,wire_bytes,uncompressed_bytes:bytes.length,encoding:'GZIP_BASE64'}:{status:'RAW_TAPE_STORAGE_BOUND_REACHED',payload:null};
 }
 export function decodeSignedTapeStorage(payload){
  if(payload?.version!==PACKED_VERSION)return payload;
@@ -111,7 +117,7 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
  const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
  let preparedStorage=null,currentRunFlowRetained=false;
  const finish=result=>{
-  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??preparedStorage?.storage_bytes??null,storage_encoding:result.storage_encoding??preparedStorage?.encoding??null,uncompressed_bytes:result.uncompressed_bytes??preparedStorage?.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),failure_stage:result.failure_stage??null,error_code:result.error_code??null,current_run_verified_flow_retained:currentRunFlowRetained,retained_flow_is_not_durable_write_acceptance:true,network_calls:0,internal_only:true});
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??preparedStorage?.storage_bytes??null,wire_bytes:preparedStorage?.wire_bytes??null,wire_cap:HTX_SIGNED_TAPE_WIRE_CAP,storage_encoding:result.storage_encoding??preparedStorage?.encoding??null,uncompressed_bytes:result.uncompressed_bytes??preparedStorage?.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),failure_stage:result.failure_stage??null,error_code:result.error_code??null,current_run_verified_flow_retained:currentRunFlowRetained,retained_flow_is_not_durable_write_acceptance:true,network_calls:0,internal_only:true});
   return result;
  };
  if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});
@@ -130,7 +136,7 @@ export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),d
  retainBounded(verifiedRings,contract,saved);
  const checked=signedTape24hEvidence({ring:saved,now});
  return finish({...checked,evidence:publish_verified_24h===true?checked.evidence:[],publication_deferred:publish_verified_24h!==true,deferred_metric:'EXACT_SIGNED_RAW_24H',persisted_minutes:saved.minutes.length,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,storage_bytes:merged.storage.storage_bytes,storage_encoding:merged.storage.encoding,uncompressed_bytes:merged.storage.uncompressed_bytes,discarded_older_minutes:merged.discarded_minutes,network_calls:0,db_admission:grant,internal_only:true});
- }catch(error){const message=String(error?.message??''),candidate=String(error?.code??(message.startsWith('D1_BRIDGE_FAILURE:')?'D1_BRIDGE_FAILURE':message==='D1_BRIDGE_TIMEOUT'?'D1_BRIDGE_TIMEOUT':error?.name)??'PERSISTENCE_EXCEPTION');return finish({status:'RAW_TAPE_PERSISTENCE_NOT_CLOSED',failure_stage:failureStage,error_code:/^[A-Za-z0-9_-]{1,64}$/.test(candidate)?candidate:'PERSISTENCE_EXCEPTION',evidence:[],network_calls:0,internal_only:true});}
+ }catch(error){const message=String(error?.message??''),candidate=String(error?.code??(message==='D1_BRIDGE_FAILURE:BODY_TOO_LARGE'?'D1_BRIDGE_BODY_TOO_LARGE':message.startsWith('D1_BRIDGE_FAILURE:')?'D1_BRIDGE_FAILURE':message==='D1_BRIDGE_TIMEOUT'?'D1_BRIDGE_TIMEOUT':error?.name)??'PERSISTENCE_EXCEPTION');return finish({status:'RAW_TAPE_PERSISTENCE_NOT_CLOSED',failure_stage:failureStage,error_code:/^[A-Za-z0-9_-]{1,64}$/.test(candidate)?candidate:'PERSISTENCE_EXCEPTION',evidence:[],network_calls:0,internal_only:true});}
 }
 
 export async function readSavedHtxSignedTape({db,contract,now=Date.now(),db_admit}={}){

@@ -42,8 +42,15 @@ export async function readEvidenceSourceCache(db,{source,asset_key,now=Date.now(
  try{return{...JSON.parse(row.payload_json),...(include_cache_clock?{cache_observed_ts:row.observed_ts,cache_expires_ts:row.expires_ts}:{}),cache_status:'HIT',network_calls:0};}catch{return null;}
 }
 
-export async function writeEvidenceSourceCache(db,{source,asset_key,observed_ts,expires_ts,payload}={}){
- await db.prepare(`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`).bind(text(source),text(asset_key),observed_ts,expires_ts,JSON.stringify(payload)).run();
+export function evidenceSourceCacheWriteRequest({source,asset_key,observed_ts,expires_ts,payload}={}){
+ return{op:'run',sql:`INSERT INTO report2_evidence_source_cache(source,asset_key,observed_ts,expires_ts,payload_json) VALUES(?1,?2,?3,?4,?5) ON CONFLICT(source,asset_key) DO UPDATE SET observed_ts=excluded.observed_ts,expires_ts=excluded.expires_ts,payload_json=excluded.payload_json`,params:[text(source),text(asset_key),observed_ts,expires_ts,JSON.stringify(payload)]};
+}
+export function evidenceSourceCacheWriteWireBytes(input){
+ return new TextEncoder().encode(JSON.stringify(evidenceSourceCacheWriteRequest(input))).byteLength;
+}
+export async function writeEvidenceSourceCache(db,input={}){
+ const request=evidenceSourceCacheWriteRequest(input);
+ await db.prepare(request.sql).bind(...request.params).run();
 }
 
 // Operational observations, separate from forecast accuracy and strategy weights.
@@ -78,3 +85,4 @@ export async function recordEvidenceSourceHealth(db,{contract,run_id,observation
 }
 
 export default{installEvidenceSourceStore,reserveEvidenceSourceAttempts,reserveEvidenceSourceCredits,readEvidenceSourceCache,writeEvidenceSourceCache};
+
