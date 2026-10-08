@@ -5,6 +5,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
+import {collectSelectedNativeBatch} from '../files/src/liquidation-extension/selected-native-batch.mjs';
 const root=path.resolve(process.env.REPORT2_TEST_RUNTIME||'current-generation/files');
 const load=n=>import(pathToFileURL(path.join(root,'src',n)));
 const [{createCombinedLiquidationService},{createDydxRuntimeCollector,verifyDydxSourceState},{decodeDydxPinnedSnapshot,calculateDydxConditionalLevels},{nativeLiquidationCollectionMode,remainingLiquidationHttpCap},{buildLiquidationSourceAcquisitionAudit}]=await Promise.all([load('liquidation-extension/combined-runner-service.mjs'),load('liquidation-extension/dydx-runtime-collector.mjs'),load('liquidation-extension/dydx-pinned-conditional-levels.mjs'),load('candidate-source-routing.mjs'),load('liquidation-source-acquisition-audit.mjs')]);
@@ -27,7 +28,7 @@ export function workerCaller(env,{contract,cap=0,reserved=false,run_id=run}={}){
 export function wire(service,contracts=selected,selectedRun=run){
  const env={REPORT2_LIQUIDATION_SELECTED_CONTRACTS:{run_id:selectedRun,contracts}},runner=fs.readFileSync(path.join(root,'runner-main.mjs'),'utf8'),start=runner.indexOf('    env.REPORT2_LIQUIDATION_NATIVE_COLLECT=async params=>'),end=runner.indexOf('\n',start);
  assert.ok(start>=0&&end>start);
- new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}});
+ new Function('env','liquidationCoverageFor','liquidationSources','futureHttpByContract','liquidationRiskByContract','console','collectSelectedNativeBatch',runner.slice(start,end))(env,()=>({eligible:true,source_ids:['DYDX_PINNED_NATIVE'],proven_level_source_ids:[]}),service,new Map(),new Map(),{log(){}},opts=>collectSelectedNativeBatch({...opts,clock:()=>T+44000}));
  return env;
 }
 export {replay,params,selected,run,T,snapshot,levels,last,bytes,lastBytes,assets};
