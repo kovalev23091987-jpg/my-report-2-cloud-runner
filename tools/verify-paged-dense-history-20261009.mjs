@@ -44,6 +44,10 @@ for(const shards of [6,7])for(const hours of [4,12,24]){
  assert.ok(f.queries.every(q=>q.plan.some(p=>/SEARCH/.test(p.detail))&&!q.plan.some(p=>/SCAN report2_market_snapshot_batch_v1/.test(p.detail))),JSON.stringify(f.queries.map(q=>q.plan)));
  cases.push({hours,shards,fixture_rows:(hours*12+1)*shards,price_points:r.points.length,status:r.status,queries:f.queries.length,all_pages_indexed:true});f.sql.close();
 }
+{
+ const f=fixture({after(){}});for(const generation of compat.generations.slice(0,2))for(let minute=0;minute<=12*60;minute+=5)for(let shard=0;shard<6;shard++)f.add(minute,{generation,expected:6,shard,contract:shard===0?'QNT-USDT':'DUMMY'+shard+'-USDT',price:(generation===compat.generations[1]?200:100)+minute});
+ const r=await load(f.db,{contract:'QNT-USDT',startTs:T,endTs:T+12*60*M,nowTs:T+25*60*M});assert.equal(r.status,'CLOSED');assert.equal(r.points.length,145);assert.equal(r.points[0].price,200);assert.equal(r.points.at(-1).price,920);assert.equal(r.rows_loaded,1740);cases.push({case:'overlapping_compatible_generations',status:r.status,rows:1740,price_points:145,preferred_complete_generation_preserved:true});f.sql.close();
+}
 for(const defect of ['missing_slot','hash_corruption_after_first_page','future_receipt_after_first_page','incomplete_split_slot']){
  const f=fixture({after(){}});for(let minute=0;minute<=24*60;minute+=5){if(defect==='missing_slot'&&minute===900)continue;for(let shard=0;shard<7;shard++){if(defect==='incomplete_split_slot'&&minute===900&&shard===6)continue;f.add(minute,{expected:7,shard,contract:shard===0?'QNT-USDT':'DUMMY'+shard+'-USDT',hashBad:defect==='hash_corruption_after_first_page'&&minute===900&&shard===0,received:defect==='future_receipt_after_first_page'&&minute===900?T+26*60*M:null});}}
  const r=await load(f.db,{contract:'QNT-USDT',startTs:T,endTs:T+24*60*M,nowTs:T+25*60*M});assert.notEqual(r.status,'CLOSED',defect);cases.push({defect,status:r.status,collector_reason:r.collector_reason,not_promoted_to_factual:true});f.sql.close();

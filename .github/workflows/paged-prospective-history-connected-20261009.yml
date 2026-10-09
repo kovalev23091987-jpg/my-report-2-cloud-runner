@@ -1,4 +1,4 @@
-name: Connected paged prospective history and original twelve-hour qualification
+name: Connected indexed paged history and original twenty-four-hour qualification
 on:
   push:
     branches: [codex/paged-prospective-history-connected-20261009]
@@ -39,12 +39,13 @@ jobs:
         run: |
           node current-generation/tests/prospective-public-history.runtime.mjs runtime > audit-output/prospective-history-tests.tap
           node tools/verify-paged-dense-history-20261009.mjs runtime > audit-output/paged-dense-history-regression.log
+          node tools/replay-original-paged-history-20261009.mjs runtime > audit-output/original12h-page-replay.log
           node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-      - name: Qualify original actual twelve-hour retained history without source HTTP or outcome writes
+      - name: Qualify original actual twenty-four-hour retained history without source HTTP or outcome writes
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/read-actual-paged-history-20261009.mjs
+        run: node tools/read-actual-paged-history24h-20261009.mjs
       - name: Print bounded failure evidence
         if: failure()
         run: |
@@ -67,6 +68,6 @@ jobs:
             const dir='checkpoints/paged-prospective-history-'+context.runId,entries=[];
             const walk=(folder,prefix='')=>fs.readdirSync(folder,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(folder+'/'+e.name,prefix+e.name+'/'):[prefix+e.name]);
             for(const f of walk('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:dir+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
-            const proof={schema:'PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009_V1',status:'BOUNDED_PAGED_DENSE_HISTORY_AND_ORIGINAL12H_READER_CONNECTED_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,validation,binding,integration,regression,actual,retained_directory:dir,sourceHTTP:0,MAIN:0,Telegram:0,actual_ENTRY:false,project_complete:false,new_fresh_SENT:false,all_global_source_D1_core_weights_ENTRY_and_original_TTL_unchanged:true,actual24h_coverage_verified:false,controlled24h_is_not_empirical_outcome:true};
+            const proof={schema:'PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009_V1',status:'BOUNDED_INDEXED_PAGED_DENSE_HISTORY_AND_ORIGINAL24H_READER_CONNECTED_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,validation,binding,integration,regression,original12h_replay:out('original12h-page-replay.json'),previous_qualification:{cloud_run:37864646300,tested_head:'66013a303f792aa909c345129198aa693e852151',artifact_id:11587965323,artifact_digest:'sha256:f780cc69fd29e832920d1b18ea2caa9faae27c23ca384f93f4f986ace23b9a6a',scope:'ACTUAL12H_CLOSED_BUT_CURSOR_RESCANNED_PRIOR_ROWS;NOT24H_PRODUCTION_ACCEPTANCE'},actual,retained_directory:dir,sourceHTTP:0,MAIN:0,Telegram:0,actual_ENTRY:false,project_complete:false,new_fresh_SENT:false,all_global_source_D1_core_weights_ENTRY_and_original_TTL_unchanged:true,actual24h_coverage_verified:actual.status==='ACTUAL_ORIGINAL24H_PAGED_HISTORY_CLOSED',controlled24h_is_not_empirical_outcome:true};
             const b=(await github.rest.git.createBlob({owner,repo,content:JSON.stringify(proof,null,2)+'\n',encoding:'utf-8'})).data;entries.push({path:'checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json',mode:'100644',type:'blob',sha:b.sha});
-            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain dense history regression and original twelve-hour reader qualification within unchanged cycle budget',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain dense history regression and original twenty-four-hour reader qualification within unchanged cycle budget',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
