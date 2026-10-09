@@ -1,0 +1,132 @@
+{
+  "schema": "NATIVE_FULL_DAY_PRICE_HISTORY_CONNECTED_20261009_V1",
+  "status": "EXACT_ORIGINAL_NATIVE_MINUTE_PRICE_AND_CURRENT_HORIZON_CONSUMERS_VERIFIED",
+  "PR": 257,
+  "tested_head": "2e6d8ff7182b78482318ae3c28bd3483d6efa35d",
+  "cloud_run": 37929161332,
+  "artifact_id": 11614927699,
+  "artifact_digest": "sha256:854bc3431a77a13c17fbb4da57ae314c034d4f8df6de2e1edbc40a14ea0cefe5",
+  "retained_validation": "checkpoints/native-kline-price-connected-37929161332.zip",
+  "original_probes": [
+    {
+      "run": 37927094470,
+      "head": "82dc0d381ff024fc5f29e21846c52d4c6a613e4f",
+      "artifact_id": 11614790613,
+      "digest": "sha256:141ca65187d50b85871c6a0a940e25930a7bbe7299b475a2abeb6f8fa4d28e0f",
+      "retained": "checkpoints/native-kline-original-37927094470.zip",
+      "sourceHTTP": 1,
+      "D1": {
+        "requests": 8,
+        "rows_read": 53,
+        "rows_written": 9
+      },
+      "status": "TRANSPORT_EXCEPTION_WITH_ORIGINAL_RESERVATION"
+    },
+    {
+      "run": 37927521761,
+      "head": "c257694989f7dd696bb96db53132e270b9c5c31d",
+      "artifact_id": 11614801469,
+      "digest": "sha256:f3c336fd6f1fe1aaa26b8c955cdd83c8ac7732046e9b93424fde9285f48273d2",
+      "retained": "checkpoints/native-kline-original-37927521761.zip",
+      "sourceHTTP": 3,
+      "D1": {
+        "requests": 8,
+        "rows_read": 56,
+        "rows_written": 4
+      },
+      "status": "ORIGINAL_301_SAME_ORIGIN_REDIRECT_AND_EXACT_ONE_MINUTE_OBJECT_KEYS_RETAINED"
+    },
+    {
+      "run": 37927835391,
+      "head": "3a3c4cd89b8a2791b9391851573eba94484884d9",
+      "artifact_id": 11614289582,
+      "digest": "sha256:59e67e7860586a603fb3f2d5f3543dbc2902fdf476e6e244fe5f63765a08e774",
+      "retained": "checkpoints/native-kline-original-37927835391.zip",
+      "sourceHTTP": 2,
+      "D1": {
+        "requests": 8,
+        "rows_read": 56,
+        "rows_written": 7
+      },
+      "status": "EXACT_NATIVE_ONE_MINUTE_ARCHIVE_RETAINED_NOT_YET_PRICE_QUALIFIED"
+    }
+  ],
+  "acquisition_budget": {
+    "actual_source_HTTP": 6,
+    "source_ledger": "HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION",
+    "original_four_attempt_reservation_retained_and_charged": true,
+    "additional_two_attempt_reservation": true,
+    "engineering_packet_cap_adjusted_from": 4,
+    "engineering_packet_cap_adjusted_to": 6,
+    "production_caps_unchanged": true,
+    "statistics_cap": 16,
+    "global_cap": 164,
+    "D1": {
+      "requests": 24,
+      "rows_read": 165,
+      "rows_written": 20,
+      "unknown_ops": 0
+    },
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "prices": {
+    "contract": "NEAR-USDT",
+    "native": "NEAR-USDT-PERP",
+    "day": "2026-10-03",
+    "archive_sha256": "1830d7631d21d86332c3df1b66bb1e7ca7d8ef21fb322e8668db045ec9d0c37d",
+    "schema": "instId,open,high,low,close,vol,volCcy,volCcyQuote,ts",
+    "original_ts_unit": "SECONDS",
+    "event_interval": [
+      1790956800000,
+      1791043200000
+    ],
+    "explicit_day_offset_minutes": 480,
+    "calendar_qualified_for_this_file_only": true,
+    "all1440_unique_minutes_exact_OHLC_native_API_match": true,
+    "source_ts": 1791139079109,
+    "archive_acquired_at": 1791547571645,
+    "qualified_at": 1791548315175,
+    "quantity_units_qualified": false,
+    "exchange_fill_identity_qualified": false,
+    "CVD_qualified": false,
+    "original_source_clock_refreshed": false
+  },
+  "validation": {
+    "qualification_tests": 5,
+    "consumer_refusals": 12,
+    "horizons": [
+      "h1",
+      "h4",
+      "h12",
+      "h24"
+    ],
+    "actual_original_price_path": true,
+    "coverage_anchor_is_not_ENTRY": true,
+    "old_trade_CSV_1435_minutes_result_preserved": true,
+    "old_first_hour": "CLOSED",
+    "old_six_hours": "CENSORED_MISSING_HISTORY",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "production_parity_to_main": "0222887934602c576faf0fd7d9dd38ff01db9d9e",
+    "worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+    "reused_unchanged_production": {
+      "cloud_run": 37926094518,
+      "unit_pass": 1171,
+      "unit_skipped": 3,
+      "separate_assembled_runtime_pass": 14,
+      "delivery": 35,
+      "integration": 37
+    }
+  },
+  "actual_ENTRY": false,
+  "entry_samples_created": 0,
+  "new_fresh_SENT": false,
+  "decision_replay_eligible": false,
+  "all102_30_90day_trade_event_price_history": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false,
+  "remaining": "Continue full register: broad qualified historical trade/event/price coverage and empirical approved ENTRY outcomes, source usefulness, natural same-run native absence diagnostics and exact delivered ENTRY. This new cold price path does not reconstruct original historical decision evidence or trade quantities."
+}
