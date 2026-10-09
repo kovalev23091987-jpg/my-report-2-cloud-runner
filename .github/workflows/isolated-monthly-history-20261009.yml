@@ -1,0 +1,60 @@
+name: Isolated multi-symbol retained monthly history validation
+on:
+  push:
+    branches: [codex/isolated-monthly-history-20261009]
+    paths: ['runner/binance-cold-batch-layout*','tools/*binance-monthly*','tools/verify-isolated-monthly-batch.py','.github/workflows/isolated-monthly-history-20261009.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main, current own lease and review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(h!=='ca1c613c5877d30230659853f3c9895ccbe497f7')throw Error('MAIN_MOVED');
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:TRANSFER:1791564085377'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Restore only checksum-bound already retained native bytes
+        run: |
+          python - <<'PY'
+          import hashlib,pathlib,zipfile
+          p=pathlib.Path('checkpoints/binance-monthly-original-37937872663.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd'
+          with zipfile.ZipFile(p) as z:z.extractall('retained-native')
+          PY
+      - name: Verify separate symbols, duplicate refusal and legacy compatibility
+        run: |
+          mkdir -p audit-output
+          python tools/test_binance_monthly_price.py > audit-output/qualification-tests.txt 2>&1
+          node --test runner/binance-cold-batch-layout.test.mjs > audit-output/batch-layout-tests.tap
+          node tools/verify-binance-monthly-price.mjs retained-native/binance-monthly > audit-output/legacy-consumer-console.json
+          cp retained-native/binance-monthly/current-consumer-results.json audit-output/legacy-consumer-results.json
+      - name: Compare every original minute through isolated storage and exact cold consumers
+        run: |
+          python tools/verify-isolated-monthly-batch.py --source retained-native/binance-monthly --output isolated-native > audit-output/isolated-console.json
+          cp isolated-native/isolated-batch-proof.json audit-output/isolated-batch-proof.json
+          cp isolated-native/current-consumer-results.json audit-output/isolated-consumer-results.json
+          cp isolated-native/qualification-summary.json audit-output/isolated-qualification-summary.json
+          node --check tools/read-binance-monthly-original-20261009.mjs
+          node --check tools/verify-binance-monthly-price.mjs
+          node --check runner/binance-cold-batch-layout.mjs
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum tools/qualify-binance-monthly-price.py tools/read-binance-monthly-original-20261009.mjs tools/verify-binance-monthly-price.mjs runner/binance-cold-batch-layout.mjs > audit-output/changed-code-hashes.txt
+          sha256sum current-generation/files/src/worker.js runner/binance-delayed-price-history.mjs > audit-output/unchanged-runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: isolated-monthly-history-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+

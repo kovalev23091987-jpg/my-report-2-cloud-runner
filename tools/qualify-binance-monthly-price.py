@@ -82,12 +82,42 @@ def qualify(archive, checksum, record, asof):
     return manifest, payload
 
 
+def batch_directories(acquisition):
+    """Resolve exact bounded archive identities before reading or writing files.
+
+    Old single-symbol batches keep their original paths. Multi-symbol batches
+    must declare the isolated layout; legacy collisions are refused, not guessed.
+    """
+    records = acquisition.get('archives')
+    layout = acquisition.get('storage_layout', 'MARKET_MONTH_SINGLE_SYMBOL')
+    if layout not in ['MARKET_MONTH_SINGLE_SYMBOL', 'MARKET_SYMBOL_MONTH'] or not isinstance(records, list) or len(records) > 612:
+        raise ValueError('BOUNDED_EXPLICIT_BATCH_LAYOUT_REQUIRED')
+    seen, slots, directories = set(), set(), []
+    for record in records:
+        market, symbol, month = (record.get(k) for k in ['market', 'symbol', 'month'])
+        if market not in ['spot', 'usd_m_futures'] or not isinstance(symbol, str) or not re.fullmatch(r'[A-Z0-9]{2,24}USDT', symbol) or not isinstance(month, str) or not re.fullmatch(r'20\d{2}-(0[1-9]|1[0-2])', month):
+            raise ValueError('EXACT_BATCH_MARKET_SYMBOL_CALENDAR_REQUIRED')
+        key = market, symbol, month
+        slot = market, month
+        if key in seen:
+            raise ValueError('DUPLICATE_BATCH_ARCHIVE_IDENTITY')
+        if layout == 'MARKET_MONTH_SINGLE_SYMBOL' and slot in slots:
+            raise ValueError('LEGACY_MULTI_SYMBOL_PATH_COLLISION')
+        seen.add(key)
+        slots.add(slot)
+        directories.append(Path(market) / symbol / month if layout == 'MARKET_SYMBOL_MONTH' else Path(market) / month)
+    return directories
+
+
 def run(directory):
     root = Path(directory)
     acquisition = json.loads((root / 'acquisition.json').read_text())
     results = []
-    for record in acquisition['archives']:
-        folder = root / record['market'] / record['month']
+    directories = batch_directories(acquisition)
+    for record, relative in zip(acquisition['archives'], directories):
+        folder = root / relative
+        if not folder.resolve().is_relative_to(root.resolve()):
+            raise ValueError('BATCH_PATH_OUTSIDE_RETAINED_ROOT')
         if record.get('status') != 'ORIGINAL_ARCHIVE_RETAINED':
             results.append({k: record.get(k) for k in ['market', 'symbol', 'month', 'status', 'reason']})
             continue
@@ -96,10 +126,10 @@ def run(directory):
             manifest, payload = qualify((folder / 'original.zip').read_bytes(), (folder / 'original.zip.CHECKSUM').read_bytes(), record, asof)
             (folder / 'qualified-price.json.gz').write_bytes(payload)
             (folder / 'qualification.json').write_text(json.dumps(manifest, indent=2) + '\n')
-            results.append(manifest)
+            results.append({**manifest, 'qualified_directory': relative.as_posix()})
         except Exception as error:
             results.append(dict(market=record['market'], symbol=record['symbol'], month=record['month'], status='QUALIFICATION_NOT_CLOSED', reason=str(error)))
-    (root / 'qualification-summary.json').write_text(json.dumps(dict(schema='BINANCE_COLD_MONTHLY_BATCH_V1', results=results, sourceHTTP=0, D1=0, MAIN=0, Telegram=0, project_complete=False), indent=2) + '\n')
+    (root / 'qualification-summary.json').write_text(json.dumps(dict(schema='BINANCE_COLD_MONTHLY_BATCH_V1', storage_layout=acquisition.get('storage_layout', 'MARKET_MONTH_SINGLE_SYMBOL'), results=results, sourceHTTP=0, D1=0, MAIN=0, Telegram=0, all102_history_complete=False, project_complete=False), indent=2) + '\n')
     print(json.dumps([dict(market=r['market'], month=r['month'], status=r['status'], minutes=r.get('minute_count'), reason=r.get('reason')) for r in results]))
 
 

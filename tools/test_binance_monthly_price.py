@@ -5,6 +5,8 @@ import io
 import json
 from pathlib import Path
 import unittest
+import tempfile
+import contextlib
 import zipfile
 import importlib.util
 
@@ -20,7 +22,7 @@ class Qualification(unittest.TestCase):
         cls.end = cls.start + 28 * 86400000
         cls.rows = [f'{cls.start+i*60000},1,2,0.5,1.5,0,{cls.start+i*60000+59999},0,0,0,0,0' for i in range(28*1440)]
 
-    def inputs(self, rows=None, market='usd_m_futures', header=False):
+    def inputs(self, rows=None, market='usd_m_futures', header=False, symbol='BTCUSDT'):
         lines = self.rows if rows is None else rows
         scale = 1000 if market == 'spot' else 1
         if scale != 1:
@@ -34,15 +36,41 @@ class Qualification(unittest.TestCase):
         if header:
             lines = ['open_time,open,high,low,close,volume,close_time,quote_volume,count,taker_buy_volume,taker_buy_quote_volume,ignore'] + lines
         out = io.BytesIO()
-        name = 'BTCUSDT-1m-2026-02'
+        name = symbol+'-1m-2026-02'
         with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
             z.writestr(name+'.csv', '\n'.join(lines)+'\n')
         archive = out.getvalue()
         checksum = (mod.sha(archive)+'  '+name+'.zip\n').encode()
         root = 'spot' if market == 'spot' else 'futures/um'
-        url = 'https://data.binance.vision/data/'+root+'/monthly/klines/BTCUSDT/1m/'+name+'.zip'
+        url = 'https://data.binance.vision/data/'+root+'/monthly/klines/'+symbol+'/1m/'+name+'.zip'
         receipts = [dict(url=url+suffix,http_status=200,sha256=mod.sha(data),bytes=len(data),started_ts=self.end+100,received_ts=self.end+200) for suffix,data in [('',archive),('.CHECKSUM',checksum)]]
-        return archive, checksum, dict(market=market,symbol='BTCUSDT',month='2026-02',receipts=receipts), self.end+1000
+        return archive, checksum, dict(market=market,symbol=symbol,month='2026-02',receipts=receipts), self.end+1000
+
+    def test_multiple_symbols_keep_distinct_originals_and_qualified_payloads(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root, records = Path(temp), []
+            for symbol, rows in [('BTCUSDT', self.rows), ('ETHUSDT', [r.replace(',1,2,0.5,1.5,', ',3,4,2,3.5,') for r in self.rows])]:
+                archive, checksum, record, _ = self.inputs(rows=rows, symbol=symbol)
+                record['status'] = 'ORIGINAL_ARCHIVE_RETAINED'
+                records.append(record)
+                folder = root / 'usd_m_futures' / symbol / '2026-02'
+                folder.mkdir(parents=True)
+                (folder / 'original.zip').write_bytes(archive)
+                (folder / 'original.zip.CHECKSUM').write_bytes(checksum)
+            (root / 'acquisition.json').write_text(json.dumps({'storage_layout': 'MARKET_SYMBOL_MONTH', 'archives': records}))
+            with contextlib.redirect_stdout(io.StringIO()): mod.run(root)
+            summary = json.loads((root / 'qualification-summary.json').read_text())
+            self.assertEqual([r['status'] for r in summary['results']], ['CLOSED_PRICE_HISTORY']*2)
+            self.assertFalse(summary['all102_history_complete'])
+            import gzip
+            prices = [json.loads(gzip.decompress((root / r['qualified_directory'] / 'qualified-price.json.gz').read_bytes()))[0][1] for r in summary['results']]
+            self.assertEqual(prices, [1.0, 3.0])
+
+    def test_legacy_multi_symbol_collision_and_duplicate_rejected_before_write(self):
+        base = dict(market='spot',symbol='BTCUSDT',month='2026-02')
+        for acquisition in [{'archives':[base,{**base,'symbol':'ETHUSDT'}]}, {'storage_layout':'MARKET_SYMBOL_MONTH','archives':[base,base]}]:
+            with self.assertRaises(ValueError): mod.batch_directories(acquisition)
+        self.assertEqual([p.as_posix() for p in mod.batch_directories({'archives':[base]})], ['spot/2026-02'])
 
     def test_exact_futures_and_spot_native_units(self):
         for market, header in [('spot',False),('usd_m_futures',True),('usd_m_futures',False)]:
