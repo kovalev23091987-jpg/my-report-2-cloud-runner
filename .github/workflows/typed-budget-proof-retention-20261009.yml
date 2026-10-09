@@ -1,0 +1,28 @@
+name: Retain typed budget refusal and original direction evidence
+on:
+  push:
+    branches: [codex/trigger-recovery-receipts-20261009]
+    paths: ['.github/workflows/typed-budget-proof-retention-20261009.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/',''),main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='9ca1e10e206d54449cd84af963978263ee6feb8f')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const files=[[11623997784,"7a8496dac9d49c45b4266144227df9f68feaca23a1a4c6ae34393a7939391be1","checkpoints/typed-budget-connected-37947759844.zip"],[11624150550,"0b9335969f6c50599759f1fb2a6c9b913e50db5ad6cbc717615e02107491d3bc","checkpoints/original-direction-inputs-37945843469.zip"],[11623431135,"3a62908e0d5b91b2df19b8e47c140ea7d4e0a9a6bc6717e25d5cce6ad2af9ef7","checkpoints/original-direction-blocked-37945979439.zip"],[11622448979,"927d0b3a5d4f858e33c15efd91ad111a85a81c8a1b04cbda7b66c52246895687","checkpoints/post261-natural-37944444674.zip"],[11622354203,"760b51207c61abb16fff409a44363b2ba1e9e36da217b045592db1e1ca326a68","checkpoints/post261-telegram-37944444674.zip"],[11624562800,"6f03685e4db7806c90e36f953a053eb1bb2c3ebd0e89e16277da14e21e413f38","checkpoints/direction-rule-inspection-37947921191.zip"]],tree=[];
+            for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+            const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain original failed query, preserved unknown costs, direction inputs and typed refusal validation'})).data;
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED_BEFORE_WRITE');
+            await github.rest.git.updateRef({owner,repo,ref,sha:next.sha,force:false});
+            core.info(JSON.stringify({status:'TYPED_BUDGET_AND_ORIGINAL_EVIDENCE_RETAINED',head:next.sha,files:tree.map(x=>x.path),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,project_complete:false}));
