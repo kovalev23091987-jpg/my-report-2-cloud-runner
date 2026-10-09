@@ -22,3 +22,36 @@ export function inspectArchivePriceWindow({manifest,payload,contract,start_ts,en
  if(rows.length!==(end_ts-start_ts)/60000||rows.some((c,i)=>c.open_ts!==start_ts+i*60000))return no('DISPUTED_OR_MISSING_MINUTE');
  return {...base,status:'CLOSED_HISTORICAL_PRICE_WINDOW',source_ts:manifest.source_ts,archive_sha256:manifest.archive_sha256,candles:rows};
 }
+
+// Combine exact already-qualified HTX days. Each day keeps its own provenance
+// and original clocks. This is retrospective price inspection, not a signal
+// replay, a fill, a live source vote or a new ENTRY sample.
+export function inspectArchivePriceSeries({archives,contract,start_ts,end_ts,as_of_ts}={}){
+ const base={schema:'HTX_RETAINED_MULTI_DAY_PRICE_SERIES_V1',source:'HTX_QUALIFIED_RETAINED_DAILY_PRICE_ARCHIVES',contract,history_role:'HISTORICAL_PRICE_ONLY',entry_authorized:false,decision_replay_eligible:false,live_quote_eligible:false,actual_fill_price_known:false,score_contribution:0,sourceHTTP:0,D1:0,entry_samples_created:0,actual_ENTRY:false,all102_history_complete:false,project_complete:false};
+ const no=(reason,details={})=>({...base,status:'CENSORED_MISSING_HISTORY',reason,...details,candles:[]});
+ if(typeof contract!=='string'||!contract.endsWith('-USDT')||contract.length<=5||contract.length>96||![start_ts,end_ts,as_of_ts].every(Number.isSafeInteger)||start_ts%60000||end_ts%60000||end_ts<=start_ts||end_ts-start_ts>90*86400000||end_ts>as_of_ts||!Array.isArray(archives)||archives.length<1||archives.length>91)return no('BOUNDED_EXACT_MATURE_MULTI_DAY_WINDOW_REQUIRED');
+ const selected=[];
+ for(const a of archives){
+  const m=a?.manifest,interval=m?.event_interval;
+  if(!m||m.contract!==contract||!Array.isArray(interval)||interval.length!==2||!interval.every(Number.isSafeInteger)||interval[0]%60000||interval[1]-interval[0]!==86400000)return no('EXACT_SINGLE_ASSET_DAILY_ARCHIVE_SET_REQUIRED');
+  if(interval[1]<=start_ts||interval[0]>=end_ts)return no('UNRELATED_ARCHIVE_OUTSIDE_REQUESTED_WINDOW');
+  selected.push(a);
+ }
+ selected.sort((a,b)=>a.manifest.event_interval[0]-b.manifest.event_interval[0]);
+ for(let i=1;i<selected.length;i++){
+  const previous=selected[i-1].manifest.event_interval[1],current=selected[i].manifest.event_interval[0];
+  if(current<previous)return no('DUPLICATE_OR_OVERLAPPING_DAILY_ARCHIVE');
+  if(current>previous)return no('MISSING_ADJACENT_DAILY_ARCHIVE');
+ }
+ if(selected[0].manifest.event_interval[0]>start_ts||selected.at(-1).manifest.event_interval[1]<end_ts)return no('FULL_REQUESTED_DAYS_NOT_COVERED');
+ const candles=[],provenance=[];
+ for(const a of selected){
+  const m=a.manifest,from=Math.max(start_ts,m.event_interval[0]),to=Math.min(end_ts,m.event_interval[1]);
+  const window=inspectArchivePriceWindow({...a,contract,start_ts:from,end_ts:to,as_of_ts});
+  if(window.status!=='CLOSED_HISTORICAL_PRICE_WINDOW')return no('DAILY_PRICE_WINDOW_NOT_CLOSED',{daily_reason:window.reason,failed_event_interval:m.event_interval});
+  candles.push(...window.candles);
+  provenance.push({event_interval:m.event_interval,used_interval:[from,to],source:window.source,source_ts:m.source_ts,available_at:Number.isSafeInteger(m.available_at)?m.available_at:null,qualified_at:m.qualified_at,archive_sha256:m.archive_sha256,qualified_price_payload_sha256:m.qualified_price_payload_sha256});
+ }
+ if(candles.length!==(end_ts-start_ts)/60000||candles.some((c,i)=>c.open_ts!==start_ts+i*60000))return no('COMPLETE_UNIQUE_MINUTE_SERIES_REQUIRED');
+ return {...base,status:'CLOSED_HISTORICAL_PRICE_SERIES',start_ts,end_ts,minute_count:candles.length,archive_count:selected.length,qualification_available_at:Math.max(...selected.map(a=>a.manifest.qualified_at)),source_ts:null,source_clocks_preserved_per_archive:true,source_archives:provenance,candles};
+}

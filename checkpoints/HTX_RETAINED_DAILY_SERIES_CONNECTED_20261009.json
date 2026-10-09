@@ -1,0 +1,96 @@
+{
+  "schema": "HTX_RETAINED_DAILY_SERIES_CONNECTED_PROOF_V1",
+  "scope": "ONE_ACTUAL_NATIVE_RETAINED_DAY_AND_SYNTHETIC_MULTI_DAY_BOUNDARY_TESTS",
+  "contract": "NEAR-USDT",
+  "actual_native_days": 1,
+  "actual_native_minutes": 1440,
+  "original_rows_and_clocks_equal": true,
+  "source_archives": [
+    {
+      "event_interval": [
+        1790956800000,
+        1791043200000
+      ],
+      "used_interval": [
+        1790956800000,
+        1791043200000
+      ],
+      "source": "HTX_NATIVE_KLINE_ARCHIVE_AND_EXACT_NATIVE_BAR",
+      "source_ts": 1791139079109,
+      "available_at": 1791547571645,
+      "qualified_at": 1791548315175,
+      "archive_sha256": "1830d7631d21d86332c3df1b66bb1e7ca7d8ef21fb322e8668db045ec9d0c37d",
+      "qualified_price_payload_sha256": "5882657247038d8300b62abd1253bf07293dfb81418dea57dcd1483327914268"
+    }
+  ],
+  "endpoints": [
+    {
+      "horizon": "h1",
+      "endpoint": {
+        "status": "CLOSED",
+        "target_ts": 1790960400000,
+        "endpoint_ts": 1790960399999,
+        "close": 4.822
+      }
+    },
+    {
+      "horizon": "h4",
+      "endpoint": {
+        "status": "CLOSED",
+        "target_ts": 1790971200000,
+        "endpoint_ts": 1790971199999,
+        "close": 4.616
+      }
+    },
+    {
+      "horizon": "h12",
+      "endpoint": {
+        "status": "CLOSED",
+        "target_ts": 1791000000000,
+        "endpoint_ts": 1790999999999,
+        "close": 4.702
+      }
+    },
+    {
+      "horizon": "h24",
+      "endpoint": {
+        "status": "CLOSED",
+        "target_ts": 1791043200000,
+        "endpoint_ts": 1791043199999,
+        "close": 4.651
+      }
+    }
+  ],
+  "unavailable_longer_windows": [
+    {
+      "requested_days": 30,
+      "status": "CENSORED_MISSING_HISTORY",
+      "reason": "FULL_REQUESTED_DAYS_NOT_COVERED"
+    },
+    {
+      "requested_days": 60,
+      "status": "CENSORED_MISSING_HISTORY",
+      "reason": "FULL_REQUESTED_DAYS_NOT_COVERED"
+    },
+    {
+      "requested_days": 90,
+      "status": "CENSORED_MISSING_HISTORY",
+      "reason": "FULL_REQUESTED_DAYS_NOT_COVERED"
+    }
+  ],
+  "synthetic_multi_day_is_actual_market_evidence": false,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "new_fresh_SENT": false,
+  "entry_samples_created": 0,
+  "actual_ENTRY": false,
+  "complete_30_90day_102asset_history": false,
+  "statistical_acceptance": false,
+  "project_complete": false,
+  "workflow_run": 37963437772,
+  "verified_head": "c1d0df0a81adceb6901e50baf8fafaf47f1b95d4",
+  "artifact_id": 11631738073,
+  "artifact_sha256": "5a50f4148c26a686dd9fb4a59a9b9ab289d0222007bc38d1e86a50207a066285",
+  "retained_artifact": "checkpoints/htx-retained-series-37963437772.zip",
+  "synthetic_test_cases_passed": 5
+}
