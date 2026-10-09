@@ -68,9 +68,10 @@
         "checkpoints/ORIGINAL_IMMUTABLE_PRICE_WINDOW_DIAGNOSIS_20261008.json",
         "checkpoints/ORIGINAL_TASK_QUEUE_RAW_WINDOW_DIAGNOSIS_20261008.json",
         "checkpoints/POST245_ACTUAL_REPORT_SENT_20261008.json",
-        "checkpoints/ORIGINAL_ZEC165_IMMUTABLE_PRICE_WINDOW_DIAGNOSIS_20261009.json"
+        "checkpoints/ORIGINAL_ZEC165_IMMUTABLE_PRICE_WINDOW_DIAGNOSIS_20261009.json",
+        "checkpoints/ORIGINAL24H_ALL_APPROVED_TRIGGER_COHORT_20261009.json"
       ],
-      "current_scope_and_remaining_limit": "Controlled ENTRY paths pass; fresh natural ENTRY/SENT remains unobserved. Exact ZEC SENT165 task waiting for price as of23:40UTC; trigger>=1208.64, original expiry23:54:39.771UTC unchanged. QNT163/FIL164 immutable original windows show no sampled trigger crossing. No expired task revived.",
+      "current_scope_and_remaining_limit": "Controlled ENTRY paths pass, but a natural ENTRY/SENT is still unobserved. PR250 closes47 persisted approved canonical decisions in one original24hwindow,14OBSERVE,9exactSENT/task bindings and14complete sampled task windows. NEAR157/159 had sampled uncancelled crossings and0task attempts before the retained PR238/240/241 releases. The3post-continuous-worker SENT163/164/165 had no sampled trigger crossing before original expiry. Five-minute snapshots do not prove intraminute settlement. No expired task revived.",
       "task_id": "R003",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true,
@@ -945,7 +946,9 @@
         "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
         "checkpoints/DENSE_HISTORY_RAW_CAP_BASELINE_20261009.json",
         "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
-        "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json"
+        "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+        "checkpoints/ORIGINAL24H_ALL_APPROVED_TRIGGER_COHORT_20261009.json",
+        "checkpoints/ORIGINAL24H_ALL102_DESCRIPTIVE_PRICE_RANGES_20261009.json"
       ],
       "current_scope_and_remaining_limit": "Actual bounded complete table read23:57UTC:0 prospective entry signals and0 outcomes; activation exists since19.09. No actual ENTRY confirmed. No empirical precision, recall, profitability or mature cohort acceptance; analytical/OBSERVE results cannot be promoted to delivered-entry cohort. Live probability/validated/auto remain OFF. PR247: actual original BTC24h snapshot path CLOSED with288points/1734original rows,5queries/1761billed cycle reads;12horiginal replay unchanged. Does not close30–90day history of all102assets or create an ENTRY/mature empirical cohort. PR248: all102 approved asset analysis contracts each have288 unchanged original price points in one24hwindow, replayed through current assembled reader at original receipt. No new D1/source calls. This does not establish30–90day event/trade coverage, perpetual reconnect uptime, or empirical ENTRY outcomes.",
       "task_id": "R053",
@@ -954,7 +957,15 @@
       "latest_actual_retained_coverage": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
       "latest_structural_history_defect": "REPAIRED_BY_PR247_INDEXED_PAGING;ORIGINAL_BASELINE_RETAINED;NOT_CAUSAL_PROOF_FOR_ZERO_ENTRY",
       "latest_paged_history_release": "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
-      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json"
+      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+      "latest_descriptive_original24h_counts": {
+        "first_to_last_at_least5pct": 47,
+        "sampled_range_at_least5pct": 95,
+        "entry_eligible_denominator": false,
+        "missed_entry_count": null,
+        "precision": null,
+        "recall": null
+      }
     },
     {
       "id": "R054",
@@ -4078,7 +4089,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791507987924,
+  "updated_ts": 1791509092595,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7374,7 +7385,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "FULL_TZ_OPEN;EXACT_FIVE_NATIVE_WIKIMEDIA_PAGE_CAPABILITIES_CONNECTED",
-  "next_action": "Continue remaining general source/event-history coverage and diagnose only demonstrated runtime defects under existing limits. Verify future natural current-market ENTRY and same-run Telegram delivery without forced MAIN, expired-task revival or lowered thresholds. The latest natural UNI/FIL report remains rejected; all102 original24h price snapshots are proven, but30–90day event/trade history and mature empirical entry cohorts remain open.",
+  "next_action": "Inspect actual technical-target producer-to-canonical binding: all47 retained canonical rows have no favorable target, while price crossings alone only authorize new analysis. Historical published NEAR157/159 crossings preceded PR238/240/241; three post-continuous-worker SENT163/164/165 have complete sampled windows and no crossing. Preserve all entry gates, original TTL and existing quotas. Continue broad source/event-history coverage; natural current ENTRY and mature empirical cohorts remain open.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -7956,6 +7967,199 @@
     "primary_attention_substituted": false,
     "source_clocks_refreshed": false,
     "all_limits_core_weights_ENTRY_original_clocks_unchanged": true,
+    "full_project_complete": false
+  },
+  "latest_original24h_trigger_cohort_diagnosis": {
+    "schema": "ORIGINAL24H_TRIGGER_COHORT_RELEASE_20261009_V1",
+    "status": "COMPLETE_PERSISTED_APPROVED_ORIGINAL24H_DECISION_AND_SAMPLED_TRIGGER_DIAGNOSIS_RETAINED",
+    "pr": 250,
+    "production_head": "6873e3f34ea64111db6e60ee1a3ab4adfece3f5d",
+    "tested_head": "37b902402e3f3d70bfa14b7baa9be0b96d972fd7",
+    "source_cloud_run": 37869142345,
+    "recovery_cloud_run": 37869403339,
+    "proof_head": "9eae38129b36ee7ae4344228114a7953cb21801b",
+    "artifact_id": 11589343683,
+    "artifact_digest": "sha256:8a496027d1aef047fd352844b3bead02672982b3605ab314760c1ca3ffea2001",
+    "proof": "checkpoints/ORIGINAL24H_ALL_APPROVED_TRIGGER_COHORT_20261009.json",
+    "price_range_proof": "checkpoints/ORIGINAL24H_ALL102_DESCRIPTIVE_PRICE_RANGES_20261009.json",
+    "start_ts": 1791419400000,
+    "end_ts": 1791505800000,
+    "original_price_read_ts": 1791505971960,
+    "canonical_read_ts": 1791508719798,
+    "approved_assets": 102,
+    "summary": {
+      "canonical_rows": 47,
+      "trigger_candidates": 14,
+      "exact_SENT": 9,
+      "original_task_found": 9,
+      "sampled_uncancelled_crossings": 4,
+      "sampled_crossings_exact_SENT": 2,
+      "complete_original_price_windows": 14,
+      "actual_entry_states": 0
+    },
+    "state_counts": {
+      "OBSERVE": 14,
+      "REJECTED": 33
+    },
+    "historical_published_crossings": [
+      {
+        "contract": "NEAR-USDT",
+        "message_id": "157",
+        "publication_id": "PUB:aa6e9381a2dd49445c590713eba8cb29474f3405",
+        "original_snapshot": "S392:NEAR-USDT:1791426273327",
+        "crossing": {
+          "ts": 1791426602027,
+          "price": 5.418
+        },
+        "original_trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": ">=",
+          "value": 5.409,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791428073327,
+          "next_recheck_ts": 1791426573327,
+          "cancel_condition": "price<5.343",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "task_attempt_count": 0,
+        "task_state_at_read": "EXPIRED"
+      },
+      {
+        "contract": "NEAR-USDT",
+        "message_id": "159",
+        "publication_id": "PUB:1074d1dca929281c7b2b76c4f0f3dd5cdfacdd3f",
+        "original_snapshot": "S392:NEAR-USDT:1791458820948",
+        "crossing": {
+          "ts": 1791459302161,
+          "price": 5.1
+        },
+        "original_trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 5.116,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791460620948,
+          "next_recheck_ts": 1791459120948,
+          "cancel_condition": "price>5.204",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "task_attempt_count": 0,
+        "task_state_at_read": "EXPIRED"
+      }
+    ],
+    "already_merged_trigger_releases": [
+      {
+        "pr": 238,
+        "merge_head": "b222489066b2c4ad8de44364bd3d7e114f21daa4",
+        "merged_at": "2026-10-08T15:38:22Z"
+      },
+      {
+        "pr": 240,
+        "merge_head": "2e26dbedbafc19eaabc1b30fe3d6931b342e0517",
+        "merged_at": "2026-10-08T19:52:11Z"
+      },
+      {
+        "pr": 241,
+        "merge_head": "a0f40c267eb165371b1cf014bfb6837b57dcf6f2",
+        "merged_at": "2026-10-08T20:44:34Z"
+      }
+    ],
+    "post_continuous_worker_original_SENT": [
+      {
+        "contract": "QNT-USDT",
+        "message_id": "163",
+        "original_observed_ts": 1791494765905,
+        "price_diagnosis": "NO_SAMPLED_ORIGINAL_TRIGGER_CROSSING",
+        "coverage_complete": true
+      },
+      {
+        "contract": "FIL-USDT",
+        "message_id": "164",
+        "original_observed_ts": 1791498338812,
+        "price_diagnosis": "NO_SAMPLED_ORIGINAL_TRIGGER_CROSSING",
+        "coverage_complete": true
+      },
+      {
+        "contract": "ZEC-USDT",
+        "message_id": "165",
+        "original_observed_ts": 1791501879771,
+        "price_diagnosis": "NO_SAMPLED_ORIGINAL_TRIGGER_CROSSING",
+        "coverage_complete": true
+      }
+    ],
+    "market_descriptive_counts": {
+      "first_to_last_at_least5pct": 47,
+      "sampled_range_at_least5pct": 95,
+      "entry_eligible_denominator": false,
+      "missed_entry_count": null,
+      "precision": null,
+      "recall": null
+    },
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 9,
+      "rows_read": 1151,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 11,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 587,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:canonical_publication_shadow": {
+          "requests": 1,
+          "rows_read": 460,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 37,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 55,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "recovery_sourceHTTP": 0,
+    "recovery_D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "task_writes": 0,
+    "outcome_writes": 0,
+    "runtime_changed": false,
+    "original_clocks_unchanged": true,
     "full_project_complete": false
   }
 }
