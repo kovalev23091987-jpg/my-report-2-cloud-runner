@@ -21,7 +21,8 @@ jobs:
             if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
             if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
             const files=[
-            [11622028131,'ce0c43f140d81e94fe83c25a7eac1f18f04629406d14295b85d766c3048a6855','checkpoints/approved-scope-connected-37944148507.zip']
+            [11622028131,'ce0c43f140d81e94fe83c25a7eac1f18f04629406d14295b85d766c3048a6855','checkpoints/approved-scope-connected-37944148507.zip'],
+            [11622518962,'a22672c9e878ed81d89e6fd9e1f05716792334c2f4365ec2a353f160fa03240c','checkpoints/approved-scope-final-consumers-37944613288.zip']
             ],tree=[];
             for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
             const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain exact approved generation scope and connected runtime validation'})).data;
