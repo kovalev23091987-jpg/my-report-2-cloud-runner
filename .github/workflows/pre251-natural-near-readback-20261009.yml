@@ -1,0 +1,51 @@
+name: Exact original natural NEAR delivery and task readback before PR251
+on:
+  push:
+    branches: [codex/pre251-natural-near-sent-readback-20261009]
+    paths: ['.github/workflows/pre251-natural-near-readback-20261009.yml','tools/read-pre251-natural-near-20261009.mjs']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require own bounded lease and exact source branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='73530a911842e553b61e3dd3a40b641055a17c90')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Restore original natural result with unchanged source clocks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11590726841,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='ec69fc5a118e5403e0762fba79f7478405f9799f62b15c22a7c978a5d5c39dab')throw Error('ORIGINAL_ARTIFACT_HASH');
+            fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('natural.zip',b);cp.execFileSync('unzip',['-q','natural.zip','-d','audit-output']);fs.renameSync('audit-output/report2-run-result.json','audit-output/original-run-result.json');
+      - name: Read only exact binding and original task with existing admission
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-pre251-natural-near-20261009.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pre251-natural-near-readback-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain original same-run delivery readback
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='73530a911842e553b61e3dd3a40b641055a17c90')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),p=JSON.parse(fs.readFileSync('audit-output/natural-sent-task-read.json'));if(p.status!=='BOUNDED_EXACT_NATURAL_SENT_TASK_READ_CLOSED'||p.cases.length!==1||!p.cases[0].exact_SENT||!p.cases[0].task)throw Error('EXACT_SENT_TASK_NOT_CLOSED');
+            const proof={...p,status:'ACTUAL_PRE251_NEAR_ORIGINAL_SENT_AND_TASK_BOUND',source_cloud_run:37871165868,source_artifact_id:11590726841,source_artifact_digest:'sha256:ec69fc5a118e5403e0762fba79f7478405f9799f62b15c22a7c978a5d5c39dab',tested_head:context.sha,cloud_run:context.runId,scope:'AFTER_PR249_BEFORE_PR251;NOT_CURRENT_TARGET_FIX_ACCEPTANCE',retained_directory:'checkpoints/pre251-natural-near-'+context.runId,project_complete:false};
+            const entries=[];for(const file of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+file).toString('base64'),encoding:'base64'})).data;entries.push({path:proof.retained_directory+'/'+file,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json',mode:'100644',type:'blob',sha:b.sha});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain exact original natural NEAR SENT binding and original recheck task',tree:tree.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
