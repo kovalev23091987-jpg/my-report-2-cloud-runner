@@ -1,0 +1,117 @@
+{
+  "schema": "ORIGINAL24H_ALL_APPROVED_DECISION_TRIGGER_DIAGNOSIS_20261009_V1",
+  "head": "ceea9e0aa8a62fd58d157b17d7fa8fa203cf2824",
+  "cloud_run": "37868794286",
+  "read_ts": 1791508468226,
+  "original_price_read_ts": 1791505971960,
+  "start_ts": 1791419400000,
+  "end_ts": 1791505800000,
+  "approved_assets": 102,
+  "original_shards": 1734,
+  "original_points": 29376,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "outcome_writes": 0,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "source_clocks_refreshed": false,
+  "project_complete": false,
+  "cases": [],
+  "limitation": "Original five-minute snapshots only; no intraminute crossing, settlement, entry-gate sufficiency or profitability claim. Mutable task/dispatch states are observed at read_ts, not reconstructed historical states. This frozen approved universe is not a new current tradeability check.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-09",
+      "run_count": 8,
+      "reserved_rows_read": 71000,
+      "reserved_rows_written": 1148,
+      "measured_rows_read": 43332,
+      "measured_rows_written": 532,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 5000,
+      "rows_written": 20
+    },
+    "projected_reserved": {
+      "rows_read": 76000,
+      "rows_written": 1168
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "index_metadata": [
+    {
+      "name": "idx_canonical_publication_actionable",
+      "tbl_name": "canonical_publication_shadow",
+      "sql": "CREATE INDEX idx_canonical_publication_actionable\n  ON canonical_publication_shadow(actionability_status,lifecycle_event,bound_ts)"
+    },
+    {
+      "name": "idx_canonical_publication_identity",
+      "tbl_name": "canonical_publication_shadow",
+      "sql": "CREATE INDEX idx_canonical_publication_identity\n  ON canonical_publication_shadow(contract_code,run_id,snapshot_id,observed_ts)"
+    },
+    {
+      "name": "idx_dispatch_publication_id",
+      "tbl_name": "v3_dispatch_publication_binding_shadow",
+      "sql": "CREATE INDEX idx_dispatch_publication_id\n  ON v3_dispatch_publication_binding_shadow(publication_id)"
+    }
+  ],
+  "status": "ORIGINAL24H_COHORT_READ_NOT_CLOSED",
+  "error": "BOUNDED_CANONICAL_TIME_INDEX_REQUIRED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ORIGINAL24H_COHORT:37868794286:1",
+    "source_run_id": "37868794286",
+    "measured_rows_read": 414,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 5,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 5,
+    "rows_read": 415,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 9,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "all:sqlite_master": {
+        "requests": 1,
+        "rows_read": 405,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "artifact_id": 11589232827,
+  "artifact_digest": "sha256:6a3d7dae548dafc447a622ec123a215b424a30b7759632adc9f41f680c02a011",
+  "reason": "No direct timestamp index; guarded source read did not run. Continue only if bounded hot-table census proves <=1000rows; reuse exact metadata without repeating its405billed rows. No source HTTP, cap reset or charge refund."
+}
