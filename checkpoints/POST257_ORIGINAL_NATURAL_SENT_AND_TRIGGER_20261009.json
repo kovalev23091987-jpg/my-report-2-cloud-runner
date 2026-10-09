@@ -1,0 +1,133 @@
+{
+  "schema": "POST257_ORIGINAL_NATURAL_SENT_AND_LIGHT_TRIGGER_20261009_V1",
+  "status": "GRAM_EXACT_SAME_RUN_SENT171_AND_ORIGINAL_LIGHT_PRICE_TRIGGER_CONFIRMED_FULL_ANALYSIS_PENDING_AS_OF_READ",
+  "natural": {
+    "cloud_run": 37930291022,
+    "head": "ddbb8bfa45dedb0005297f2f0c8765de49a1d8cc",
+    "run_id": "1791548949006-1791548960596",
+    "run_artifact": {
+      "id": 11615554480,
+      "digest": "sha256:a09a9d6e62760c4951ee1929cb9ef83667ad0f1ad6c8a3a78e38becc9471a8ca",
+      "retained": "checkpoints/post257-natural-37930291022.zip"
+    },
+    "telegram_artifact": {
+      "id": 11615519618,
+      "digest": "sha256:9c60243dd02c7272d76e3994104b7b35e42d0a00f628bb56701f22694513f7f9",
+      "retained": "checkpoints/post257-telegram-37930291022.zip",
+      "artifact_itself_records_pending_not_final_sent": true
+    }
+  },
+  "original_read": {
+    "cloud_run": 37932064823,
+    "head": "58116b62e3b00bc426a1f716e659bf9b265d0390",
+    "artifact_id": 11617116083,
+    "digest": "sha256:af3cb10682468e7e50da238f605b4bd035897fe7277a3ccd17f13cefcfe380c1",
+    "retained": "checkpoints/gram171-original-chain-37932064823.zip",
+    "read_ts": 1791549899458,
+    "D1": {
+      "requests": 9,
+      "rows_read": 65,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "task_writes": 0
+  },
+  "GRAM": {
+    "contract": "GRAM-USDT",
+    "direction": "LONG",
+    "state": "OBSERVE",
+    "interest_score": 91,
+    "overall": null,
+    "entry_readiness": null,
+    "publication_id": "PUB:52245a6bbe74c0377546fe64df30997b02a14373",
+    "snapshot_id": "S392:GRAM-USDT:1791549011706",
+    "wave_id": "EDW:GRAM-USDT:1791548960778:G4",
+    "observed_ts": 1791549011706,
+    "fingerprint": "900510605739bf077d84a188f466bb2f72ac63b635d69900e5117c81f9f37518",
+    "presentation_hash": "f92b94a222d59188a77e9be3f34da1d1e46d0139b11cedf8acae35e7151de788",
+    "SENT": {
+      "state": "SENT",
+      "message_id": 171,
+      "sent_ts": 1791549050400
+    },
+    "current_consumer": {
+      "identity": {
+        "status": "CLOSED",
+        "reason": null
+      },
+      "canonical_fingerprint_exact": true,
+      "manual_text_exact": true,
+      "telegram_text_exact": true,
+      "dispatch_binding_exact": true
+    },
+    "trigger": {
+      "operator": ">=",
+      "price": 1.4943,
+      "timeframe": "5m",
+      "expires_ts": 1791550811706,
+      "cancel_price_below": 1.34
+    },
+    "original_light_result": {
+      "checked_ts": 1791549605145,
+      "price": 1.5004,
+      "source_ts": 1791549602052,
+      "observed_ts": 1791549602051,
+      "source": "HTX_OFFICIAL_COLLECTOR",
+      "status": "TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED",
+      "settlement_confirmed": false,
+      "entry_authorized": false
+    },
+    "task_as_of_read": {
+      "state": "PENDING",
+      "attempt_count": 0,
+      "last_updated_ts": 1791549605145
+    },
+    "liquidation": {
+      "actual_native_source": "Hyperliquid official",
+      "actual_http": 3,
+      "source_ts": 1791549000436,
+      "acquisition_completed_ts": 1791549001072,
+      "canonical_bound_evaluation_ts": 1791549011706,
+      "levels": [
+        {
+          "price": 10.731185646,
+          "quote": "USDC",
+          "distance_pct": 625.1781082578727,
+          "position_notional": 27769.9268
+        },
+        {
+          "price": 2635.4236285749,
+          "quote": "USDC",
+          "distance_pct": 177993.2307457021,
+          "position_notional": 54.7526
+        }
+      ],
+      "price_semantics": "CONDITIONAL_CROSS_MARGIN_ACCOUNT_LIQUIDATION_PRICE_NOT_MARKET_CLUSTER",
+      "sample_accounts": 2,
+      "position_count_each": 1,
+      "decision_target_eligible": false,
+      "display_policy": "OWNER_RELEVANT_LEVELS_20261008_MAX_DISTANCE100PCT",
+      "levels_in_original_canonical_retained": true,
+      "display_above_count": 0,
+      "display_below_count": 0,
+      "manual_and_sent_reason": "Полученные уровни дальше 100% от цены сравнения.",
+      "other_routes_not_queried": "GTRADE_NATIVE/DYDX_PINNED_NATIVE/LIGHTER_NATIVE_REQUEST_LIMIT;NO_FULL_MARKET_CENSUS"
+    }
+  },
+  "other_same_run": {
+    "contract": "龙虾-USDT",
+    "state": "REJECTED",
+    "gTrade": "ASSET_UNSUPPORTED_HTTP1",
+    "dYdX": "REQUEST_LIMIT_HTTP0",
+    "manual_reason": "Часть площадок не поддерживает монету; часть запросов ограничена лимитом.",
+    "new_SENT": false
+  },
+  "reused_verified_current_worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+  "PR258_fair_queue_in_this_natural_run": false,
+  "actual_ENTRY": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false
+}
