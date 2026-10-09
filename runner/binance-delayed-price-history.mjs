@@ -25,3 +25,23 @@ export function measureBinanceColdPricePath({archives,venue,market,symbol,start_
   return {schema:'BINANCE_COLD_PRICE_PATH_V1',status:'CLOSED_PRICE_PATH',venue,market,symbol,quote:'USDT',start_ts,end_ts,minute_count:rows.length,price_start:first,price_end:last,raw_return_pct:(last/first-1)*100,range_above_start_pct:(hi/first-1)*100,range_below_start_pct:(lo/first-1)*100,available_at:Math.max(...loaded.map(a=>a.manifest.available_at)),source_archives:loaded.map(a=>({month:a.manifest.month,archive_sha256:a.manifest.archive_sha256,qualified_price_payload_sha256:a.manifest.qualified_price_payload_sha256})),sourceHTTP:0,D1:0,live_quote_eligible:false,htx_execution_price_eligible:false,decision_replay_eligible:false,entry_authorized:false,cost_adjusted_return:null,directional_return:null,actual_ENTRY:false,all102_history_complete:false,project_complete:false};
  }catch(e){return refused(e instanceof Error?e.message:'COLD_PRICE_PATH_NOT_CLOSED');}
 }
+
+// Derived 3m/5m OHLC from complete, checksum-qualified native 1m candles.
+// This is cold same-venue price history, never an official 3m/5m ZIP or a
+// historical decision receipt. It does not qualify volume or signed trades.
+export function readBinanceColdCandles({archives,venue,market,symbol,start_ts,end_ts,as_of,interval_ms}={}){
+ const refused=reason=>({status:'NOT_CLOSED',reason,live_quote_eligible:false,htx_execution_price_eligible:false,decision_replay_eligible:false,entry_authorized:false});
+ try{
+  if(venue!=='BINANCE'||!['spot','usd_m_futures'].includes(market)||!/^([A-Z0-9]{2,24})USDT$/.test(symbol||'')||![start_ts,end_ts,as_of,interval_ms].every(Number.isSafeInteger)||![180000,300000].includes(interval_ms)||start_ts%interval_ms||end_ts%interval_ms||end_ts<=start_ts||end_ts-start_ts>90*86400000||!Array.isArray(archives)||archives.length<1||archives.length>4)throw Error('BOUNDED_EXACT_VENUE_CANDLE_INTERVAL_REQUIRED');
+  const loaded=archives.map(a=>loadArchive(a,{market,symbol},as_of)).sort((a,b)=>a.manifest.event_interval[0]-b.manifest.event_interval[0]);
+  for(let i=1;i<loaded.length;i++)if(loaded[i-1].manifest.event_interval[1]!==loaded[i].manifest.event_interval[0])throw Error('ADJACENT_NONOVERLAPPING_MONTHS_REQUIRED');
+  const rows=loaded.flatMap(a=>a.rows).filter(r=>r[0]>=start_ts&&r[0]<end_ts);
+  if(rows.length!==(end_ts-start_ts)/60000||rows[0]?.[0]!==start_ts||rows.at(-1)?.[0]!==end_ts-60000)throw Error('FULL_REQUESTED_PRICE_INTERVAL_REQUIRED');
+  const width=interval_ms/60000,candles=[];
+  for(let i=0;i<rows.length;i+=width){
+   const group=rows.slice(i,i+width);if(group.length!==width)throw Error('CLOSED_COMPLETE_AGGREGATE_CANDLE_REQUIRED');
+   candles.push([group[0][0],group[0][1],Math.max(...group.map(r=>r[2])),Math.min(...group.map(r=>r[3])),group.at(-1)[4]]);
+  }
+  return {schema:'BINANCE_DERIVED_COLD_OHLC_V1',status:'CLOSED_COLD_CANDLES',venue,market,symbol,quote:'USDT',start_ts,end_ts,interval_ms,native_source_interval_ms:60000,minute_count:rows.length,candle_count:candles.length,candles,aggregation_basis:'COMPLETE_NATIVE_1M_OHLC',official_native_3m_5m_archive_verified:false,source_ts:null,native_source_publication_ts:null,available_at:Math.max(...loaded.map(a=>a.manifest.available_at)),qualified_at:Math.max(...loaded.map(a=>a.manifest.qualified_at)),source_archives:loaded.map(a=>({month:a.manifest.month,archive_sha256:a.manifest.archive_sha256,qualified_price_payload_sha256:a.manifest.qualified_price_payload_sha256})),sourceHTTP:0,D1:0,history_role:'HISTORICAL_PRICE_ONLY',live_quote_eligible:false,htx_execution_price_eligible:false,decision_replay_eligible:false,entry_authorized:false,score_contribution:0,trade_content_qualified:false,signed_flow_qualified:false,actual_ENTRY:false,all102_history_complete:false,project_complete:false};
+ }catch(e){return refused(e instanceof Error?e.message:'COLD_CANDLE_PATH_NOT_CLOSED');}
+}

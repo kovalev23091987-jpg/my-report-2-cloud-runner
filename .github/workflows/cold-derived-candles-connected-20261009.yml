@@ -1,0 +1,51 @@
+name: Retained cold 3m and 5m OHLC connected consumers
+on:
+  push:
+    branches: [codex/cold-ohlc-intervals-20261009]
+    paths: ['runner/binance-delayed-price-history.mjs','tools/verify-binance-derived-candles.mjs','tools/verify-binance-derived-reference.py','.github/workflows/cold-derived-candles-connected-20261009.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main and own bounded lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(h!=='5c8ee5258a2959174ad4881eca488c78c5473608')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:h})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Restore only digest-verified previously acquired native bytes
+        run: |
+          python - <<'PY'
+          import hashlib,pathlib,zipfile
+          p=pathlib.Path('checkpoints/binance-monthly-original-37937872663.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd'
+          with zipfile.ZipFile(p) as z:z.extractall('retained-native')
+          PY
+      - name: Exercise 12 actual cold OHLC paths and 18 refusal controls
+        run: |
+          mkdir -p audit-output
+          node tools/verify-binance-derived-candles.mjs retained-native/binance-monthly audit-output > audit-output/consumer-console.json
+          python tools/verify-binance-derived-reference.py retained-native/binance-monthly audit-output > audit-output/reference-console.json
+          node tools/verify-binance-monthly-price.mjs retained-native/binance-monthly > audit-output/unchanged-1m-consumer-console.json
+          cp retained-native/binance-monthly/current-consumer-results.json audit-output/unchanged-1m-consumer-results.json
+          node --check runner/binance-delayed-price-history.mjs
+          node --check tools/verify-binance-derived-candles.mjs
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum current-generation/files/src/worker.js current-generation/files/runner-main.mjs cloudflare/public-collector/continuous-backup-worker.mjs runner/binance-delayed-price-history.mjs > audit-output/runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cold-derived-candles-connected-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
