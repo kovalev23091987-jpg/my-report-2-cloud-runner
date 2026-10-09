@@ -47,6 +47,7 @@ jobs:
         run: |
           REPORT2_RECEIPT_RUNTIME=runtime node --test current-generation/tests/failure-and-trigger-receipts.test.mjs > audit-output/failure-trigger-runtime.tap
           REPORT2_SIGNED_TAPE_MODULE_ROOT=runtime/src node --test current-generation/tests/htx-signed-tape.test.mjs > audit-output/signed-tape-runtime.tap
+          REPORT2_UNIFIED_MODULE_ROOT=runtime/src REPORT2_JOINT_REPAIR_RUNTIME_ROOT=runtime node --test current-generation/tests/joint-main-admission-repair.test.mjs current-generation/tests/unified-block-output.test.mjs > audit-output/optional-assembled-runtime.tap
           node --test current-generation/tests/removal-evidence-publication.test.mjs > audit-output/removal-evidence-publication.tap
           REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/removal-evidence-publication.runtime.mjs > audit-output/removal-evidence-runtime.tap
           cmp current-generation/files/src/v3-telegram-lifecycle-sidecar.mjs runtime/src/v3-telegram-lifecycle-sidecar.mjs
