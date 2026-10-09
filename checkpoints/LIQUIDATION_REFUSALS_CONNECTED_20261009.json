@@ -1,0 +1,68 @@
+{
+  "schema": "LIQUIDATION_REFUSALS_CONNECTED_20261009_V1",
+  "status": "EXACT_ASSEMBLED_SOURCE_DIAGNOSTIC_AND_TWO_REPORT_CONSUMERS_VERIFIED",
+  "PR": 256,
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "tested_head": "fd2dfba06345f5f6ef2476a6910570d6a54b248c",
+  "cloud_run": 37926094518,
+  "artifact_id": 11613933835,
+  "artifact_digest": "sha256:559917fad26fd97202556195c023e71f9b07896070713ca26ea5aedfb587098e",
+  "archive": "checkpoints/liquidation-refusal-connected-37926094518.zip",
+  "worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+  "original_source": {
+    "cloud_run": 37917588047,
+    "archive": "checkpoints/post254-natural-37917588047.zip",
+    "sha256": "94c9480f583af8393ed331c16967f891fedf271e76f3fad557ca1a2abb836df4",
+    "run_id": "1791541597504-1791541612818",
+    "final_audit_evaluated_ts": 1791541723888
+  },
+  "changes": [
+    "Bind attempted native route reasons to exact contract/run/snapshot and original observation cutoff",
+    "Carry bounded diagnostic-only receipt into canonical, manual, brief Telegram and manual liquidation-only output",
+    "Separate unsupported asset, request limit, failed source and empty eligible-level bounded sample",
+    "Retain skipped no-admitted-source route with original run identity",
+    "Preserve source timestamps, raw levels, scores, direction/entry gates and all historical SENT/golden bytes"
+  ],
+  "proof_limits": [
+    "Original final audit was later than the original canonical snapshots: no backdating; tests use explicit later controlled review",
+    "Retained report2-run-result canonical projection lacks full display metadata; controlled approved output-contract fixture tests renderer only",
+    "The checked200 dYdX accounts are a bounded sample, not full market census",
+    "No fresh source acquisition, real ENTRY or fresh SENT accepted by these tests"
+  ],
+  "tests": {
+    "generation_unit": {
+      "passed": 1171,
+      "failed": 0,
+      "skipped": 3,
+      "total": 1174
+    },
+    "optional_assembled_runtime": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "covers_three_unit_skips": true
+    },
+    "asset_refusals_assembled": 5,
+    "source_and_canonical_consumers": 7,
+    "original_fetch_completion": 5,
+    "signed_tape": 10,
+    "removal_unit": 8,
+    "removal_runtime": 8,
+    "approved_delivery": 35,
+    "integration": 37,
+    "syntax": "PASS",
+    "generation": "PASS",
+    "binding": "PASS"
+  },
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "threshold_weights_freshness_caps_unchanged": true,
+  "all_tasks_complete": false,
+  "project_complete": false,
+  "checked_at": 1791546852031
+}
