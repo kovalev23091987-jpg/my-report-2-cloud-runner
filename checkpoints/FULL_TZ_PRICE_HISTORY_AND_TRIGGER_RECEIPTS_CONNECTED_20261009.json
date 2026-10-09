@@ -1,0 +1,241 @@
+{
+  "schema": "FULL_TZ_PRICE_HISTORY_AND_TRIGGER_RECEIPTS_CONNECTED_20261009_V1",
+  "PR": 255,
+  "tested_head": "48dfe21fe98649804e1f234f937f7840aef3829b",
+  "source_retention_head": "cb42e3c3c658916900b203f7f6026a0a377e112c",
+  "cloud_run": 37922621629,
+  "artifact": 11612548310,
+  "artifact_sha256": "e042b96769ea6a6b4596933b1f73d953159382ea7defb5d47f4476b4dbdc9364",
+  "original_validation_archive": "checkpoints/full-tz-connected-37922621629.zip",
+  "status": "EXACT_ASSEMBLED_CONNECTED_VALIDATION_PASSED",
+  "tests": {
+    "removal-evidence-runtime.tap": {
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "77d2a6bdcdfcf6fea90250a2d17d1b10c57591becc3247e795f3c4f737671774"
+    },
+    "approved-delivery-runtime.tap": {
+      "pass": 35,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "3b0984466e48343f174ba7c1e92fd2eaf0b5bd494aacb6365c95a7ea071df18e"
+    },
+    "failure-trigger-runtime.tap": {
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "f04ea14d4cfd6234623542a4d3f4242b42adc6e2af5455b0135d4da639c9edb0"
+    },
+    "collector-price-history.tap": {
+      "pass": 32,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "d6eed4a7bb8ad2576e1371801164d63097ea10b8d4d3af8d05ee5ccb3ee1eb99"
+    },
+    "optional-assembled-runtime.tap": {
+      "pass": 14,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "f18ebf0c7fe6993a5a462c89c68d282b49963d32888dc1f21feac7acf1b51f44"
+    },
+    "signed-tape-runtime.tap": {
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "82f911fd844a2f8b0a8e31f547abb2f874700ac69d375bdf622c9d2fa1a4325b"
+    },
+    "current-generation-unit-tests.tap": {
+      "pass": 1166,
+      "fail": 0,
+      "skipped": 3,
+      "sha256": "e9c229afef9c1df640a285eceff423d0d8a63ec6f953dfcd2f5a5d7d3ca6104c"
+    },
+    "removal-evidence-publication.tap": {
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "28d0bd3ee06cf52068638e99a7d4241ce6855bb17977bcae58de2529a29a8af7"
+    }
+  },
+  "python_actual_archive_checks": 4,
+  "runtime_binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "68360a02846fecd77a188197edf4680463051fb9723f3fe2ee2eb378778c9108",
+    "runtime_checked": true
+  },
+  "integration": {
+    "passed": 37,
+    "failed": 0,
+    "telegram_network_calls": 0
+  },
+  "historical_price_qualification": {
+    "schema": "HTX_DELAYED_ARCHIVE_PRICE_QUALIFICATION_V1",
+    "status": "PARTIAL_PRICE_HISTORY",
+    "contract": "NEAR-USDT",
+    "native_instrument": "NEAR-USDT-PERP",
+    "archive_sha256": "9b0fc4e6078184bfdc932c311cde89d9545f119b134d85e0ab02d57aa3235e14",
+    "csv_sha256": "4f9c3eb185a099136d5531ad7f472068ba1d23c9adc488b22cd853467ac8c769",
+    "bars_sha256": "47e458922d794ec96a42606966a637e81554e2dec36702090c1e154a5a8a4719",
+    "source_ts": 1791139079109,
+    "event_interval": [
+      1790956800000,
+      1791043200000
+    ],
+    "explicit_day_offset_minutes": 480,
+    "other_files_calendar_qualified": false,
+    "raw_records": 4051,
+    "distinct_raw_tradeId_values": 3722,
+    "shared_raw_id_groups": 243,
+    "raw_records_removed": 0,
+    "raw_timestamps_shifted": 0,
+    "minute_count": 1440,
+    "qualified_price_minutes": 1435,
+    "failures": [
+      {
+        "minute_ts": 1790963100000,
+        "archive_records": 3,
+        "bar_count": 3,
+        "file_order_ohlc_match": true,
+        "timestamp_order_ohlc_match": false,
+        "raw_size_sum": "8.000000000000000000",
+        "native_bar_vol": "16",
+        "raw_price_size_sum": "38.280000000000000000000000000000000000",
+        "native_bar_turnover": "76.56",
+        "source_line_numbers": [
+          337,
+          338,
+          339
+        ]
+      },
+      {
+        "minute_ts": 1790973660000,
+        "archive_records": 5,
+        "bar_count": 6,
+        "file_order_ohlc_match": false,
+        "timestamp_order_ohlc_match": false,
+        "raw_size_sum": "148.000000000000000000",
+        "native_bar_vol": "440",
+        "raw_price_size_sum": "687.480000000000000000000000000000000000",
+        "native_bar_turnover": "2043.552",
+        "source_line_numbers": [
+          1526,
+          1527,
+          1528,
+          1529,
+          1530
+        ]
+      },
+      {
+        "minute_ts": 1790973720000,
+        "archive_records": 2,
+        "bar_count": 1,
+        "file_order_ohlc_match": false,
+        "timestamp_order_ohlc_match": false,
+        "raw_size_sum": "75.000000000000000000",
+        "native_bar_vol": "6",
+        "raw_price_size_sum": "348.213000000000000000000000000000000000",
+        "native_bar_turnover": "27.834",
+        "source_line_numbers": [
+          1531,
+          1532
+        ]
+      },
+      {
+        "minute_ts": 1790981520000,
+        "archive_records": 3,
+        "bar_count": 3,
+        "file_order_ohlc_match": true,
+        "timestamp_order_ohlc_match": false,
+        "raw_size_sum": "4.000000000000000000",
+        "native_bar_vol": "8",
+        "raw_price_size_sum": "18.671000000000000000000000000000000000",
+        "native_bar_turnover": "37.342",
+        "source_line_numbers": [
+          1800,
+          1801,
+          1802
+        ]
+      },
+      {
+        "minute_ts": 1791021780000,
+        "archive_records": 5,
+        "bar_count": 5,
+        "file_order_ohlc_match": true,
+        "timestamp_order_ohlc_match": false,
+        "raw_size_sum": "751.000000000000000000",
+        "native_bar_vol": "1502",
+        "raw_price_size_sum": "3539.410000000000000000000000000000000000",
+        "native_bar_turnover": "7078.82",
+        "source_line_numbers": [
+          3261,
+          3262,
+          3263,
+          3264,
+          3265
+        ]
+      }
+    ],
+    "measured_vol_twice_raw_size_minutes": 1438,
+    "measured_turnover_twice_raw_price_size_minutes": 1438,
+    "quantity_unit_qualified": false,
+    "exchange_fill_identity_qualified": false,
+    "signed_notional_or_cvd_calculated": false,
+    "live_quote_eligible": false,
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "complete_30_90day_102asset_history": false,
+    "project_complete": false,
+    "qualified_at": 1791544549312,
+    "original_source_clock_refreshed": false,
+    "original_acquisition_clock_known": false,
+    "decision_replay_eligible": false,
+    "qualification_scope": "DELAYED_HISTORICAL_PRICE_INSPECTION_ONLY",
+    "source_timestamp_order_inversions": 160,
+    "price_admission_requires_file_and_timestamp_order_agreement": true,
+    "qualified_price_payload_sha256": "e6e43ed9a3da3facc736a904524256e718a9b5bb6e8e1371feb9915fdf4a2a23"
+  },
+  "actual_historical_price_consumer": {
+    "schema": "ACTUAL_DELAYED_PRICE_SOURCE_TO_CONSUMER_V1",
+    "scope": "ONE_RETAINED_NEAR_DAY_AND_COVERAGE_PROBE_ONLY",
+    "archive_sha256": "9b0fc4e6078184bfdc932c311cde89d9545f119b134d85e0ab02d57aa3235e14",
+    "source_ts": 1791139079109,
+    "original_source_clock_refreshed": false,
+    "first_hour": {
+      "status": "CLOSED_HISTORICAL_PRICE_WINDOW",
+      "minutes": 60,
+      "endpoint": {
+        "status": "CLOSED",
+        "target_ts": 1790960400000,
+        "endpoint_ts": 1790960399999,
+        "close": 4.822
+      }
+    },
+    "first_six_hours": {
+      "status": "CENSORED_MISSING_HISTORY",
+      "reason": "DISPUTED_OR_MISSING_MINUTE"
+    },
+    "forbidden_scope_checks": 4,
+    "entry_samples_created": 0,
+    "telegram_entry_proven": false,
+    "all102_30_90day_history": false,
+    "statistical_acceptance": false,
+    "project_complete": false
+  },
+  "changes": [
+    "Keep up to six previous exact SENT price checks and first trigger reached receipt in same original task write",
+    "Retain collector receipt on analytics expiry and lease recovery without price-clock or TTL renewal",
+    "Qualify retained delayed prices with exact archive checksum, asset, historical native bars and file/epoch order agreement; censor five disputed minutes without deleting raw records",
+    "Require complete bounded price window before historical price consumer; no quantity conversion or live source authority"
+  ],
+  "unit_runtime_skip_note": "Three runtime-only skips in generic1169 suite are covered by14 exact assembled runtime checks; not1169 passes",
+  "sourceHTTP_added_by_implementation": 0,
+  "D1_operations_added_by_price_history": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "new_price_history_receipt_naturally_observed": false,
+  "statistical_acceptance": false,
+  "project_complete": false
+}
