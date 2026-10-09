@@ -220,19 +220,27 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
     const raw=[];let cursor=null,complete=false,payloadBytes=0;
     for(let page=0;page<maxPages;page++){
       const columns='bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes';
-      const sql=cursor
-        ?`SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
-          WHERE generation=?6 AND actor='HUB_PUBLIC_COLLECTOR'
-            AND bucket BETWEEN ?7 AND ?5 AND (bucket,shard)>(?7,?8)
-          UNION ALL
-          SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
-          WHERE generation IN (?1,?2,?3) AND generation>?6 AND actor='HUB_PUBLIC_COLLECTOR'
-            AND bucket BETWEEN ?4 AND ?5
-          ORDER BY generation,bucket,shard LIMIT ?9`
-        :`SELECT ${columns} FROM report2_market_snapshot_batch_v1
+      let sql,args;
+      if(cursor){
+        // Exclude completed generations before querying. A SQL generation>?x
+        // filter over the original IN list still billed their entire range.
+        const future=HISTORY_COMPATIBILITY.generations.filter(g=>g>cursor.generation);
+        const next=future.length
+          ?` UNION ALL SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
+              WHERE generation IN (${future.map((_,i)=>'?'+(i+5)).join(',')}) AND actor='HUB_PUBLIC_COLLECTOR'
+                AND bucket BETWEEN ?${future.length+5} AND ?3`
+          :'';
+        sql=`SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
+          WHERE generation=?1 AND actor='HUB_PUBLIC_COLLECTOR'
+            AND bucket BETWEEN ?2 AND ?3 AND (bucket,shard)>(?2,?4)${next}
+          ORDER BY generation,bucket,shard LIMIT ?${future.length?future.length+6:5}`;
+        args=[cursor.generation,cursor.bucket,upper,cursor.shard,...future,...(future.length?[Math.floor(start/(5*MINUTE))*5*MINUTE]:[]),pageLimit+1];
+      }else{
+        sql=`SELECT ${columns} FROM report2_market_snapshot_batch_v1
           WHERE generation IN (?1,?2,?3) AND actor='HUB_PUBLIC_COLLECTOR' AND bucket BETWEEN ?4 AND ?5
           ORDER BY generation,bucket,shard LIMIT ?6`;
-      const args=[...HISTORY_COMPATIBILITY.generations,Math.floor(start/(5*MINUTE))*5*MINUTE,upper,...(cursor?[cursor.generation,cursor.bucket,cursor.shard]:[]),pageLimit+1];
+        args=[...HISTORY_COMPATIBILITY.generations,Math.floor(start/(5*MINUTE))*5*MINUTE,upper,pageLimit+1];
+      }
       const records=rowsOf(await db.prepare(sql).bind(...args).all()),retained=records.slice(0,pageLimit);
       for(const row of retained){payloadBytes+=new TextEncoder().encode(String(row.payload??'')).byteLength;raw.push(row);}
       if(payloadBytes>R820_PROSPECTIVE_VALIDATION_BUDGET.max_collector_payload_bytes_per_path){collectorReason='COLLECTOR_RAW_BYTE_CAP';break;}
