@@ -1,0 +1,111 @@
+{
+  "schema": "PAGED_PROSPECTIVE_HISTORY_RELEASE_20261009_V1",
+  "saved_ts": 1791506295520,
+  "pr": 247,
+  "production_head": "ffa81b9abb92860cdd6ed58722f5e6a3ed01526b",
+  "tested_head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+  "proof_head": "eb506e79ed6f2a0002f0443a01f298c88b3d7f77",
+  "cloud_run": 37865298193,
+  "artifact_id": 11588125984,
+  "artifact_digest": "sha256:7ccc418f0db9ab9c235e3b8c27cef31febd3a686dcdf511ec40500a312fac29b",
+  "proof": "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
+  "status": "DEPLOYED_INDEXED_PAGED_ORIGINAL_HISTORY_READER_WITH_UNCHANGED_ENVELOPE",
+  "generation_unit_tests": 1149,
+  "history_tests": 27,
+  "dense_regressions": 11,
+  "integration_scenarios": 37,
+  "original12h_replay": {
+    "schema": "ORIGINAL12H_INDEXED_PAGE_REPLAY_20261009_V1",
+    "head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+    "cloud_run": "37865298193",
+    "status": "EXACT_ORIGINAL12H_PRICE_POINTS_UNCHANGED_WITH_INDEXED_CONTINUATION",
+    "original_source_cloud_run": 37864646300,
+    "original_read_ts": 1791505519147,
+    "original_start_ts": 1791462000000,
+    "original_end_ts": 1791505200000,
+    "original_rows": 870,
+    "points": 144,
+    "controlled_SQLite_queries": 3,
+    "controlled_rows_returned": 872,
+    "actual_D1": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "source_clocks_refreshed": false,
+    "all_continuation_queries_indexed": true,
+    "scope": "IMMUTABLE_REAL_ORIGINAL_PAYLOAD_REPLAY_AT_ORIGINAL_RECEIPT;SQLITE_COUNTS_NOT_ACTUAL_BILLED_D1"
+  },
+  "actual24h": {
+    "contract": "BTC-USDT",
+    "start_ts": 1791419400000,
+    "end_ts": 1791505800000,
+    "read_ts": 1791505971960,
+    "status": "CLOSED",
+    "points": 288,
+    "original_rows": 1734,
+    "cycle_usage": {
+      "rows_read": 1761,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    },
+    "D1": {
+      "requests": 9,
+      "rows_read": 1767,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 5,
+          "rows_read": 1761,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "sourceHTTP": 0,
+    "source_clocks_refreshed": false,
+    "outcome_writes": 0,
+    "task_writes": 0
+  },
+  "policy": {
+    "rows_read": 3000,
+    "rows_written": 8,
+    "requests_soft_cap": 14,
+    "max_scan_rows_per_path": 320,
+    "max_collector_rows_per_page": 400,
+    "max_collector_pages_per_path": 7,
+    "max_collector_payload_bytes_per_path": 50331648,
+    "max_capture_candidates": 12,
+    "max_early_outcomes_per_cycle": 1,
+    "max_entry_samples_per_cycle": 1,
+    "max_entry_outcomes_per_cycle": 1
+  },
+  "validation_history": "checkpoints/PAGED_HISTORY_VALIDATION_HISTORY_20261009.json",
+  "MAIN": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "actual_ENTRY": false,
+  "full_project_complete": false,
+  "all102_30_90day_coverage": false,
+  "scope": "ACTUAL_ORIGINAL24H_BTC_SNAPSHOT_PATH_ONLY;NOT_EMPIRICAL_ENTRY_OUTCOME_OR_ALL_ASSET_HISTORY"
+}
