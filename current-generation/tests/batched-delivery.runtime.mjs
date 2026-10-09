@@ -133,7 +133,7 @@ test('owner-required old-idea replay: before/after actual source weights keep se
 });
 for(const side of ['LONG','SHORT'])test(`${side}: published adapter observation receives the new bounded collector price check`,async()=>{
  const c=rangeCanonical(side),{db,x}=await prepare(c);try{
-  const sent=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>({ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9002})})});assert.equal(sent.sent,1);
+  const sent=await runBoundTelegramDeliverySidecar(db,{enabled:true,source_run_id:c.run_id,now_ts:x.now+1,relay_url:'https://controlled.invalid/relay',relay_key:'CONTROLLED-NONSECRET',fetch_impl:async()=>({ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:9002})})});assert.equal(sent.sent,1);assert.equal(sent.lifecycle[0].bound_receipt.schema,'BOUND_DELIVERY_RECEIPT_V1');assert.equal(sent.lifecycle[0].bound_receipt.dispatch_finalized,true);assert.equal(sent.lifecycle[0].bound_receipt.run_id,c.run_id);assert.equal(sent.lifecycle[0].bound_receipt.snapshot_id,c.snapshot_id);
   assert.equal(c.metadata.price_recheck_policy,'LIGHT_PRICE_AND_CANCELLATION_5M');
   assert.doesNotMatch(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}).text,/Проверка цены и отмены:/);
   // This partial-data fixture intentionally suppresses manual entry/trigger details.
