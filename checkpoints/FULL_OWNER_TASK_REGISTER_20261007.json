@@ -1277,9 +1277,10 @@
         "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
         "checkpoints/RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009.json",
         "checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json",
-        "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json"
+        "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json",
+        "checkpoints/ISOLATED_MONTHLY_HISTORY_CONNECTED_20261009.json"
       ],
-      "current_scope_and_remaining_limit": "Шесть исходных ZIP и CHECKSUM сохранены. Для BTC на Binance Spot и USD-M отдельно подтверждены 92 дня и 132480 уникальных минут. Текущий cold-потребитель закрывает 30, 60 и 90 дней; 16 контролей отказывают в подмене рынка, символа и HTX, пропусках, повреждении и недоступности на историческом cutoff. Это цена одной монеты. Trades, aggTrades, 3m, 5m, история 102 активов и статистика ENTRY остаются открытыми. Использовано 12 фактических HTTP; обычные source caps и cadence не менялись. PR265 построил 3m/5m OHLC из полных исходных 1m свечей: 12 окон по двум раздельным рынкам и 276480 свечей сверены с оригинальными CSV независимым Python consumer. Это производные свечи, не официальные native3m/5m ZIP; объёмы, trades/aggTrades, остальные активы и исторические решения не квалифицированы. Новых sourceHTTP/D1/MAIN/Telegram не было.",
+      "current_scope_and_remaining_limit": "Шесть исходных ZIP и CHECKSUM сохранены. Для BTC на Binance Spot и USD-M отдельно подтверждены 92 дня и 132480 уникальных минут. Текущий cold-потребитель закрывает 30, 60 и 90 дней; 16 контролей отказывают в подмене рынка, символа и HTX, пропусках, повреждении и недоступности на историческом cutoff. Это цена одной монеты. Trades, aggTrades, 3m, 5m, история 102 активов и статистика ENTRY остаются открытыми. Использовано 12 фактических HTTP; обычные source caps и cadence не менялись. PR265 построил 3m/5m OHLC из полных исходных 1m свечей: 12 окон по двум раздельным рынкам и 276480 свечей сверены с оригинальными CSV независимым Python consumer. Это производные свечи, не официальные native3m/5m ZIP; объёмы, trades/aggTrades, остальные активы и исторические решения не квалифицированы. Новых sourceHTTP/D1/MAIN/Telegram не было. PR268: exact market/symbol/month archive storage and generic grouped cold-price consumer are cloud-verified on retained BTC Spot/USD-M:264960 original minutes preserved,6 price paths,16 refusals; synthetic ETH fixture only checks symbol isolation. No live acquisition, no new actual asset, no trades/aggTrades or all102 coverage.",
       "task_id": "R068",
       "scope_status": "PARTIAL_OR_EMPIRICAL_OPEN_WITH_SCOPED24H_READER_PROOF",
       "original_requirement_preserved": true,
@@ -4300,7 +4301,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791561778914,
+  "updated_ts": 1791564892230,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7488,7 +7489,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "PR267_ACTUAL_NATIVE_TRIGGER_REFUSAL_PROVENANCE_VERIFIED;KNOWN_BOME_ACCOUNT_SCOPE_PRESERVED;D1_20261009_DAY_BLOCKED;FULL_TZ_OPEN",
-  "next_action": "Restore fresh main and verify a later measured native daily admission, without resetting 2026-10-09 unknown usage or reviving expired observations. Continue exact original TIA SENT/task chain, natural approved102 scope, actual ENTRY, general source/block usefulness, all-asset trade/event/price30–90day history and empirical outcomes. Original ZEC167 exact failed mandatory predicate remains unproven. Read checkpoints/FULL_TZ_CONTINUATION_20261009_AFTER_PR267.md.",
+  "next_action": "Resume from fresh main and PR268 preserved proof. No new live D1 admission on 2026-10-09 and no repeat of exhausted cold acquisition pool. After a measured later natural daily admission, verify original exact TIA SENT/task, current same-run source consumption/ENTRY/cancellation and wider approved102 history/empirical outcomes. Do not invent missing data or historical availability. Optional persistent development execution requires publishing a Codex Cloud environment and actually starting a task as documented in checkpoints/CLOUD_EXECUTOR_SETUP_20261009.md; no such task is running.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -9020,7 +9021,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "FULL_TZ_BLOCKED_FRESH_NATIVE_ADMISSION_AND_EMPIRICAL_ACCEPTANCE;CHECKPOINTED",
+  "current_execution_block": "PR268_OFFLINE_HISTORY_INFRASTRUCTURE_VERIFIED;NATIVE_DAY_AND_NEW_EMPIRICAL_ACCEPTANCE_BLOCKED;NO_DEVELOPMENT_AGENT_RUNNING",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -9396,5 +9397,60 @@
     "actual_ENTRY": false,
     "agent_background_process_running": false
   },
-  "agent_background_development_process_running": false
+  "agent_background_development_process_running": false,
+  "latest_isolated_monthly_history_release": {
+    "schema": "ISOLATED_MONTHLY_HISTORY_CONNECTED_20261009_V1",
+    "PR": 268,
+    "status": "MERGED_EXACT_CLOUD_HISTORY_INFRASTRUCTURE_VERIFIED",
+    "tested_head": "df1ed5b8cf101d77518e666a462899516415828b",
+    "cloud_run": 37961972902,
+    "job": 113926799532,
+    "artifact_id": 11632820258,
+    "artifact_digest": "sha256:5efb59889e4e9d7515b28e8b9434a7202cdd37be5c9920c9decf358f9a47afe6",
+    "retained": "checkpoints/isolated-monthly-history-37961972902.zip",
+    "original_retained_archive": "checkpoints/binance-monthly-original-37937872663.zip",
+    "original_retained_digest": "sha256:fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd",
+    "qualified_archive_count": 6,
+    "actual_symbols": [
+      "BTCUSDT"
+    ],
+    "actual_markets": [
+      "spot",
+      "usd_m_futures"
+    ],
+    "compared_original_minutes": 264960,
+    "closed_30_60_90_day_price_paths": 6,
+    "refusal_controls": 16,
+    "python_tests": 8,
+    "node_tests": 3,
+    "synthetic_other_symbol_fixture_is_not_actual_ETH_history": true,
+    "modern_layout": "MARKET_SYMBOL_MONTH",
+    "legacy_single_symbol_compatible": true,
+    "legacy_multi_symbol_collision_refused_before_writes": true,
+    "duplicate_exact_archive_identity_refused_before_writes": true,
+    "live_acquisition_source_and_D1_policy_unchanged": true,
+    "original_source_clock_refreshed": false,
+    "htx_asset_identity_qualified": false,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "all102_history_complete": false,
+    "project_complete": false,
+    "cloud_executor_setup": "checkpoints/CLOUD_EXECUTOR_SETUP_20261009.md",
+    "cloud_development_agent_task_created": false,
+    "blocked_native_D1_20261009_unchanged": true,
+    "production_head": "68aed16e9c7073efaef51ba6cccde166de83faa1",
+    "proof_head": "e0f29cc38a9c8cd5f57e81f0a24f095bf043d1f8",
+    "proof": "checkpoints/ISOLATED_MONTHLY_HISTORY_CONNECTED_20261009.json"
+  },
+  "cloud_executor_setup": {
+    "path": "checkpoints/CLOUD_EXECUTOR_SETUP_20261009.md",
+    "state": "CONCRETE_SETUP_AND_CONTINUATION_PROMPT_PREPARED;CLOUD_TASK_NOT_CREATED",
+    "actual_agent_running": false,
+    "requires_account_environment_publication": true,
+    "current_tool_can_create_Codex_Cloud_task": false,
+    "new_chat_automation_created": false
+  }
 }
