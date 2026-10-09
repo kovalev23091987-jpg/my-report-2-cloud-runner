@@ -12729,6 +12729,16 @@ const buildShadowDecisionTelemetry = (() => {
       spot_quality: spotQuality,
       stage0_history_available: Boolean(historyData && Object.keys(historyData).length),
       htx_coverage_pct: round2(htxCoveragePct),
+      // Preserve the exact predicates that set dqStatus. Optional flow24h,
+      // spot and external gaps must not be presented as a mandatory failure.
+      dq_failure_receipt: {
+        schema: "HTX_DQ_PREDICATES_V1", contract: contractCode, evaluated_ts: observedTs,
+        status: dqStatus, sufficiency,
+        mandatory_checks: [
+          ...executionFutureChecks.map(([key, ok]) => ({key:"futures."+key,closed:ok})),
+          ...coreTrajectoryKeys.map(key => ({key:"trajectory."+key,closed:closed(trajectoryCoverage?.[key])})),
+        ],
+      },
     };
 
     return {

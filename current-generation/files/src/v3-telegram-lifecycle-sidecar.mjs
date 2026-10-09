@@ -36,6 +36,27 @@ function priorLifecycleFor(list,contract,waveId){
   const arr=(Array.isArray(list)?list:[]).filter(x=>text(x?.contract)===contract&&(!waveId||text(x?.wave_id)===waveId));
   return arr.sort((a,b)=>(finite(b?.updated_ts)??0)-(finite(a?.updated_ts)??0))[0]||null;
 }
+function parsed(v,fallback=null){try{return JSON.parse(v);}catch{return fallback;}}
+export function lifecycleRemovalReceipt({contract,direction:dir,wave_id,reason,handoff,shadow,final,early,observed_ts}={}){
+  if(!reason)return null;
+  const conditions=[];
+  const add=(source,row_id,field,value,ts)=>conditions.push({source,row_id:row_id||null,field,value,observed_ts:ts});
+  if(reason==='HARD_VETO')add('final_decision_integration_shadow',final?.decision_id,'hard_veto',Number(final?.hard_veto),final?.observation_ts);
+  else if(reason==='INVALIDATED')add('final_decision_integration_shadow',final?.decision_id,'risk_state',upper(final?.risk_state),final?.observation_ts);
+  else if(TERMINAL.has(reason))add('v3_early_candidate_wave',early?.wave_id,'lifecycle_stage',upper(early?.lifecycle_stage),early?.last_seen_ts);
+  else if(reason==='DATA_UNUSABLE'){
+    if(['BLOCKED','INSUFFICIENT'].includes(upper(final?.data_quality)))add('final_decision_integration_shadow',final?.decision_id,'data_quality',upper(final?.data_quality),final?.observation_ts);
+    if(upper(shadow?.dq_status)==='INSUFFICIENT')add('shadow_decision_log',shadow?.shadow_id,'dq_status','INSUFFICIENT',shadow?.observed_ts);
+  }else if(reason==='DIRECTION_DESTROYED'){
+    if(final)add('final_decision_integration_shadow',final.decision_id,'direction',upper(final.direction),final.observation_ts);
+    for(const [source,row_id,d,ts] of [['deep_check_handoff',handoff?.handoff_id,handoff?.handoff_direction,handoff?.scan_ts],['shadow_decision_log',shadow?.shadow_id,shadowDirectional(shadow),shadow?.observed_ts],['v3_early_candidate_wave',early?.wave_id,early?.direction_hint,early?.last_seen_ts]])if(direction(d))add(source,row_id,'direction',upper(d),ts);
+  }
+  const flags=parsed(shadow?.evidence_flags_json,{}),dq=flags?.dq_failure_receipt;
+  const failedChecks=dq?.schema==='HTX_DQ_PREDICATES_V1'&&dq.contract===contract&&dq.evaluated_ts===shadow?.observed_ts&&dq.status===shadow?.dq_status
+    ? (dq.mandatory_checks||[]).filter(c=>c.closed===false&&typeof c.key==='string').slice(0,10).map(c=>c.key):[];
+  return {schema:'LIFECYCLE_REMOVAL_RECEIPT_V1',contract,direction:dir,wave_id,reason,source_run_id:text(handoff?.source_run_id),observed_ts,conditions,
+    ...(reason==='DATA_UNUSABLE'?{failed_checks:failedChecks,sufficiency:dq?.sufficiency??null,detail_status:dq?'ORIGINAL_DQ_PREDICATES':'ORIGINAL_PREDICATES_NOT_RETAINED'}:{}),market_snapshot:false};
+}
 function normalizedSufficiency(v){return upper(v||'UNKNOWN');}
 function shadowDirectional(row){
   if(!row)return null;
@@ -130,6 +151,8 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
     upper(shadow?.dq_status||''),
     upper(final?.timing_state||'')
   ].join('|');
+  const observationTs=finite(final?.observation_ts)??finite(shadow?.observed_ts)??scanTs??now;
+  const removalReceipt=lifecycleRemovalReceipt({contract,direction:dir,wave_id:wave,reason:removal,handoff,shadow,final,early,observed_ts:observationTs});
   const ctx={
     contract,direction:dir,wave_id:wave,rules_version:V3_TELEGRAM_SHADOW_RULES_VERSION,
     ...(observationPublication?{canonical_observation_publication:observationPublication}:{}),
@@ -166,7 +189,8 @@ export function deriveLifecycleContext({handoff,early,shadow,final,previous,now_
     valid_until_ts:validUntil,
     decision_id:text(final?.decision_id)||null,
     score_0_100:score,
-    message_hash:materialHash,
+    message_hash:removalReceipt?JSON.stringify({...removalReceipt,material_hash:materialHash}):materialHash,
+    removal_receipt:removalReceipt,
     ticker:contract,
     shadow_only:true,
   };
@@ -205,7 +229,7 @@ export async function loadLifecycleSourceRows(db,{source_run_id,now_ts=Date.now(
       db.prepare(`SELECT wave_id,contract_code,generation,first_seen_ts,lifecycle_stage,direction_hint,direction_state,
         early_detection_quality_0_100,last_seen_ts FROM v3_early_candidate_wave WHERE contract_code IN (${placeholders})
         ORDER BY last_seen_ts DESC LIMIT 24`).bind(...contracts),
-      db.prepare(`SELECT shadow_id,contract_code,observed_ts,rules_version,direction_hint,eq_status,dq_status,stage,data_sufficiency,created_ts
+      db.prepare(`SELECT shadow_id,contract_code,observed_ts,rules_version,direction_hint,eq_status,dq_status,stage,data_sufficiency,evidence_flags_json,created_ts
         FROM shadow_decision_log WHERE contract_code IN (${placeholders}) AND observed_ts BETWEEN ?${contracts.length+1} AND ?${contracts.length+2}
         ORDER BY observed_ts DESC LIMIT 24`).bind(...args),
       db.prepare(`SELECT f.decision_id,f.contract_code,f.observation_ts,f.direction,f.directional_quality,f.entry_action,f.entry_quality,
@@ -260,7 +284,7 @@ export async function runV3TelegramLifecycleSidecar(db,{source_run_id,now_ts=Dat
           proof.updated_ts!==now_ts || proof.shadow_only!==1)persisted.status='PERSISTENCE_READBACK_FAILED';
       } catch {persisted.status='PERSISTENCE_READBACK_FAILED';}
     }
-    transitions.push({contract,wave_id:derived.ctx.wave_id,direction:derived.ctx.direction,status:persisted.status,previous_status:persisted.previous_status??null,current_status:persisted.current_status??null,reason:persisted.reason??null,dispatch:persisted.dispatch?{state:persisted.dispatch.state,idempotency_key:persisted.dispatch.idempotency_key}:null,score_0_100:derived.ctx.score_0_100});
+    transitions.push({contract,wave_id:derived.ctx.wave_id,direction:derived.ctx.direction,status:persisted.status,previous_status:persisted.previous_status??null,current_status:persisted.current_status??null,reason:persisted.reason??null,removal_receipt:derived.ctx.removal_receipt,dispatch:persisted.dispatch?{state:persisted.dispatch.state,idempotency_key:persisted.dispatch.idempotency_key}:null,score_0_100:derived.ctx.score_0_100});
   }
   const after=typeof db.usageSnapshot==='function'?db.usageSnapshot():null;
   const delta=usageDelta(before,after);
