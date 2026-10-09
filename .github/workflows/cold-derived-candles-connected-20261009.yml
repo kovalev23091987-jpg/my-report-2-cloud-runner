@@ -42,7 +42,7 @@ jobs:
           node --check runner/binance-delayed-price-history.mjs
           node --check tools/verify-binance-derived-candles.mjs
           git rev-parse HEAD > audit-output/head.txt
-          sha256sum current-generation/files/src/worker.js current-generation/files/runner-main.mjs cloudflare/public-collector/src/worker.mjs runner/binance-delayed-price-history.mjs > audit-output/runtime-hashes.txt
+          sha256sum current-generation/files/src/worker.js current-generation/files/runner-main.mjs cloudflare/public-collector/continuous-backup-worker.mjs runner/binance-delayed-price-history.mjs > audit-output/runtime-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
