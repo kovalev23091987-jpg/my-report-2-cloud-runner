@@ -7513,8 +7513,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "ACTUAL_POST_PR273_NATURAL_KNOWN_DAY_GUARD_VERIFIED;ZERO_REPEAT_COST;NEXT_UTC_DAY_HEALTHY_NATIVE_ADMISSION_PENDING;FULL_TZ_OPEN",
-  "next_action": "Natural post-PR273 scheduled guard is now verified by report37990754638 and automatic audit37990815294: the same-day retained unknown-cost refusal stopped all repeated D1/source/Telegram work at zero cost. This is not healthy admission, market analysis, SENT or ENTRY. Do not repeat same-day probes. On the next UTC day wait for the first original measured healthy native admission from the scheduled pipeline; if it appears, continue exact same-idea source→fact→consumer→report→native-approved delivery. Expanded original history and mature empirical outcomes remain separate open work; mandatory all16 stays cancelled.",
+  "latest_status": "ACTUAL_POST_PR273_REPORT_AND_RETAINED_HISTORY_GUARDS_VERIFIED;ZERO_REPEAT_COST;NEXT_UTC_DAY_HEALTHY_NATIVE_ADMISSION_PENDING;FULL_TZ_OPEN",
+  "next_action": "Both natural post-merge guards are now verified: scheduled Report2 run37990754638/audit37990815294 and retained-history run37994076945. They stop the known 2026-10-09 UTC unknown-cost condition before repeated D1/source/Telegram work; the history job also skips maintenance lease and archive migration. These successes are not healthy native admission, market analysis, SENT, ENTRY or new history. Do not repeat same-day probes. On the next UTC day wait for the first original measured healthy scheduled admission, then continue same-idea source→fact→consumer→report→native-approved delivery. Expanded original history and mature empirical outcomes remain separate open work; mandatory all16 stays cancelled.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -9046,7 +9046,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "NATIVE_20261009_UNKNOWN_COST_GUARDED_WITH_ZERO_REPEAT_COST;NEXT_UTC_DAY_HEALTHY_NATIVE_ADMISSION_PENDING",
+  "current_execution_block": "NATIVE_20261009_UNKNOWN_COST_GUARDED_ACROSS_REPORT_AND_HISTORY;NEXT_UTC_DAY_HEALTHY_NATIVE_ADMISSION_PENDING",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -9825,5 +9825,70 @@
     "project_complete": false,
     "full_TZ_complete": false,
     "proof_created_ts": 1791579962605
+  },
+  "latest_actual_post_pr273_retained_history_guard": {
+    "schema": "ACTUAL_POST_PR273_RETAINED_HISTORY_GUARD_READBACK_20261009_V1",
+    "status": "ACTUAL_NATURAL_RETAINED_HISTORY_GUARD_VERIFIED",
+    "cloud_run": 37994076945,
+    "head": "3c8ef0265ca344fbfd1c0a65e0fbab9283a8fe82",
+    "conclusion": "success",
+    "job_id": 114035475058,
+    "artifact_id": 11646576286,
+    "artifact_digest": "sha256:636f0fcff719feb47f7c2416b40559bf18bdd205b8fefdf21f74d6819ab3f552",
+    "guard": {
+      "blocked": true,
+      "status": "RETAINED_SAME_DAY_UNKNOWN_D1_COST_BLOCK",
+      "day_utc": "2026-10-09",
+      "original_refusal": {
+        "run_id": 37976223431,
+        "head": "e4f9cbdb8b1c072b67ff2de9471ffc96b1d69ff7",
+        "reason": "D1_TRIGGER_BUDGET_NOT_CLOSED",
+        "artifact_id": 11639420864,
+        "artifact_digest": "sha256:44da9ad4287e92b56f385361d8516af222d34c891c26e8a1ea7ecc24f78c6e92",
+        "audit_cloud_run": 37976274967,
+        "audit_artifact_digest": "sha256:9183cbbfd8b2cf1fc5e0f9c0d5e1639e89ad6c2752c39e28f9406a55bf17932f"
+      },
+      "native_daily_aggregate": {
+        "day_utc": "2026-10-09",
+        "status": "DAY_USAGE_CLOSED",
+        "run_count": 69,
+        "reserved_rows_read": 993000,
+        "reserved_rows_written": 17664,
+        "measured_rows_read": 595632,
+        "measured_rows_written": 8023,
+        "unknown_operations": 1,
+        "unfinished_reservations": 0
+      },
+      "sourceHTTP": 0,
+      "D1": 0,
+      "Telegram": 0,
+      "market_conditions_evaluated": false,
+      "entry_authorized": false,
+      "source_clock_refreshed": false,
+      "next_day_requires_native_measured_admission": true
+    },
+    "steps": {
+      "exact_known_day_preflight": "COMPLETED_SUCCESS",
+      "acquire_bounded_owner": "SKIPPED",
+      "verify_maintenance_lease": "SKIPPED",
+      "preserve_or_relocate_history": "SKIPPED",
+      "release_maintenance_owner": "SKIPPED",
+      "artifact_upload": "COMPLETED_SUCCESS"
+    },
+    "guard_before_maintenance_lease_and_native_actions": true,
+    "maintenance_lease_acquired": false,
+    "archive_migration_ran": false,
+    "new_actual_archive_produced": false,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "next_UTC_day_requires_original_measured_healthy_admission": true,
+    "scope": "NATURAL_POST_PR273_RETAINED_HISTORY_SCHEDULED_GUARD;NO_NATIVE_D1_OR_SOURCE_CALL;NO_NEW_ARCHIVE_OR_ENTRY",
+    "code_changes": false,
+    "tests_repeated": 0,
+    "project_complete": false,
+    "full_TZ_complete": false,
+    "proof_created_ts": 1791583151254
   }
 }
