@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
+import {claimDueRecheck,requeueExpiredLease} from '../../current-generation/files/src/recheck-scheduler.mjs';
 const source=fs.readFileSync(new URL('./injected-worker-tail.js',import.meta.url),'utf8');
 const api=Function('worker_default',source+'\nreturn {evaluate:__report2PriceCheck,run:__report2RunPriceRechecks,stable:__report2PriceStable,scheduled:__report2PublicCollectorScheduled};')({});
 const T=1791285886589,now=T+300000,bucket=Math.floor(now/300000)*300000;
@@ -33,6 +34,42 @@ function seed(db,id='TASK',c=canonical(),sent='SENT',message='9001'){
  db.raw.prepare("INSERT INTO v3_user_lifecycle_shadow VALUES(?,?,?,'v3','OBSERVE',?)").run(c.metadata.contract,c.direction,wave,T);
 }
 const runArgs={rows:[market()],market_source_ts:now,bucket,now};
+test('reached trigger survives later waiting, unavailable price and original expiry without current authority',async()=>{
+ const db=new DB();try{
+  seed(db);let first;
+  for(const [offset,price,status] of [[0,.285132,'TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'],[300000,.28,'WAITING_FOR_PRICE'],[600000,null,'NOT_CHECKED'],[1500000,null,'EXPIRED']]){
+   const ts=now+offset,r=await api.run(db,{rows:price===null?[]:[{...market(price),observed_ts:ts}],market_source_ts:ts,bucket:bucket+offset,now:ts});
+   assert.equal(r.results[0].status,status);assert.equal(r.results[0].entry_authorized,false);if(!offset)first=r.results[0];
+  }
+  const row=db.raw.prepare('SELECT state,last_result,expires_ts FROM v3_recheck_task_shadow').get(),last=JSON.parse(row.last_result);
+  assert.equal(row.state,'EXPIRED');assert.equal(row.expires_ts,T+1800000);assert.equal(last.price,undefined);
+  assert.deepEqual(last.prior_checks.map(r=>r.status),['TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED','WAITING_FOR_PRICE','NOT_CHECKED']);
+  assert.equal(last.first_trigger_receipt.checked_ts,first.checked_ts);assert.equal(last.first_trigger_receipt.source_ts,first.source_ts);assert.equal(last.first_trigger_receipt.price,first.price);
+  assert.equal(last.first_trigger_receipt.entry_authorized,false);assert.equal(last.history_scope,'RETAINED_DIAGNOSTICS_NOT_CURRENT_AUTHORITY');
+ }finally{db.close();}
+});
+test('foreign, corrupt or future previous checks cannot enter exact task history',async()=>{
+ for(const mutate of [r=>r.task_id='FOREIGN',r=>r.publication_id='FOREIGN',r=>r.snapshot_id='FOREIGN',r=>r.analytical_fingerprint='CORRUPT',r=>r.checked_ts=now+600001,r=>r.entry_authorized=true]){
+  const db=new DB();try{seed(db);await api.run(db,{...runArgs,rows:[market(.285132)]});const old=JSON.parse(db.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result);mutate(old);db.raw.prepare('UPDATE v3_recheck_task_shadow SET last_result=?').run(JSON.stringify(old));
+   const ts=now+300000;await api.run(db,{...runArgs,rows:[{...market(.28),observed_ts:ts}],market_source_ts:ts,now:ts,bucket:bucket+300000});const saved=JSON.parse(db.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result);
+   assert.equal(saved.first_trigger_receipt??null,null);assert.deepEqual(saved.prior_checks??[],[]);assert.equal(saved.status,'WAITING_FOR_PRICE');
+  }finally{db.close();}
+ }
+});
+test('analytics expiry and lease recovery preserve receipts; historical crossing cannot claim a current deep check',async()=>{
+ const db=new DB();try{
+  seed(db);await api.run(db,{...runArgs,rows:[market(.285132)]});const reached=JSON.parse(db.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result);
+  db.raw.exec(`UPDATE v3_recheck_task_shadow SET state='CLAIMED',lease_expires_ts=${now-1}`);
+  assert.equal((await requeueExpiredLease(db,{now_ts:now})).requeued,1);const recovered=JSON.parse(db.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result);
+  assert.equal(recovered.checked_ts,reached.checked_ts);assert.equal(recovered.price,reached.price);assert.equal(recovered.lease_recovery.refreshes_price,false);
+  const later=now+300000;await api.run(db,{...runArgs,rows:[{...market(.28),observed_ts:later}],market_source_ts:later,bucket:bucket+300000,now:later});
+  assert.equal((await claimDueRecheck(db,{now_ts:later,task_id:'TASK'})).claimed,false);
+  const before=db.raw.prepare('SELECT last_result FROM v3_recheck_task_shadow').get().last_result;
+  assert.equal((await claimDueRecheck(db,{now_ts:T+1800001,task_id:'TASK'})).claimed,false);
+  const end=db.raw.prepare('SELECT state,last_result,expires_ts FROM v3_recheck_task_shadow').get();assert.equal(end.state,'EXPIRED');assert.equal(end.expires_ts,T+1800000);
+  assert.deepEqual(JSON.parse(end.last_result).original_light_price_receipt,JSON.parse(before));assert.equal(JSON.parse(end.last_result).reason,'TTL_EXPIRED_BEFORE_RECHECK');
+ }finally{db.close();}
+});
 for(const direction of ['LONG','SHORT'])test(`${direction}: exact SENT task gets a durable price receipt, repeats next slot, never becomes full DONE`,async()=>{
  const db=new DB();try{seed(db,'TASK',canonical(direction));const r=await api.run(db,runArgs);assert.equal(r.checked,1);assert.equal(r.results[0].status,'WAITING_FOR_PRICE');assert.equal(r.results[0].telegram_message_id,'9001');assert.equal((await api.run(db,runArgs)).selected,0);
  const later=now+300000;assert.equal((await api.run(db,{...runArgs,rows:[{...market(),observed_ts:later}],market_source_ts:later,now:later,bucket:bucket+300000})).checked,1);
