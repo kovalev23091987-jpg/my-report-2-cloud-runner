@@ -5,10 +5,10 @@
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
     "current-generation/files/src/manual-report-formatter.mjs": "857620917e0c4d7f8320afd424953bb6ce48f4e5c3b9025b94bedc46f7df48c4",
     "current-generation/files/src/telegram-compact-formatter.mjs": "6820fd2dd398e3dab90d6d298783901f1f3ee3b33a16a5c4d2163d0e395454c4",
-    "current-generation/files/src/canonical-display.mjs": "64b05e37095499ffe59fdf3299ba1f56b65233222409f213491db2e68db6801e",
+    "current-generation/files/src/canonical-display.mjs": "83c8ed20fb44b239bb557d32df1129aec75609eaac93a58922edbd643f87ba43",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "0e11f1c5359b4fb95d5937e3c5a12a7fda3abdce94df236cecc0a76eb82f0832",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "ed4a389f83562aaa2e75bf5ebd22e97ad6bad96a3e79c267dd9cec1308b1ca8d",
     "current-generation/files/src/canonical-publication.mjs": "4ecf83c881d3f66891d17fa37577c335a5c1a863ea6a8268a8f42f63b62067d5",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
@@ -719,5 +719,23 @@
     "source_clock_policy": "ORIGINAL_PRIMARY_SCHEDULE_QUERY_NOT_UNLOCK_EXECUTION",
     "score_adjustment": 0,
     "goldens_changed": false
+  },
+  "liquidation_acquisition_diagnostic_extension_20261009": {
+    "owner_authorization": "Preserve concrete refusal causes from actual native acquisition through exact asset/snapshot to report; no weakening of conditions, source freshness or approved forms.",
+    "module_changes": {
+      "current-generation/files/src/canonical-display.mjs": {
+        "before": "64b05e37095499ffe59fdf3299ba1f56b65233222409f213491db2e68db6801e",
+        "after": "83c8ed20fb44b239bb557d32df1129aec75609eaac93a58922edbd643f87ba43"
+      },
+      "current-generation/files/src/canonical-runtime-adapter.mjs": {
+        "before": "0e11f1c5359b4fb95d5937e3c5a12a7fda3abdce94df236cecc0a76eb82f0832",
+        "after": "ed4a389f83562aaa2e75bf5ebd22e97ad6bad96a3e79c267dd9cec1308b1ca8d"
+      }
+    },
+    "golden_fixture_bytes_changed": false,
+    "legacy_input_outputs_changed": false,
+    "new_field": "acquisition_diagnostics",
+    "score_adjustment": 0,
+    "entry_authorized": false
   }
 }
