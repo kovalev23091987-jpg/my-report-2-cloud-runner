@@ -1,3 +1,4 @@
+import {bindLiquidationAcquisitionDiagnostics} from './liquidation-source-acquisition-audit.mjs';
 import {verifiedObservationRange} from './observation-technical-range.mjs';
 import {captureIdeaBasisReceipt} from './idea-basis-facts.mjs';
 import {readProspectiveOpportunity} from './prospective-opportunity-view.mjs';
@@ -221,7 +222,7 @@ export function buildRuntimeCanonicalBundle({
  contract,run_id,snapshot_id,observed_ts,discovery_row=null,publication_shadow=null,opportunity=null,
  public_evidence=null,liquidation_intelligence=null,futures_component=null,execution_handoff=null,data_sufficiency=null,free_source_summary=null,smart_money_raw=null,shadow_decision=null,
  existing_source_receipts=null,previous_snapshot_context=null,oi_window_receipts=null,native_liquidation_acquisition=null,
- internal_market_context=null,execution_context_source=null,
+ internal_market_context=null,execution_context_source=null,liquidation_source_acquisition_audit=null,
 }={}){
  const route=publication_shadow?.entry_signal||null;
  const directionResolution=resolveCanonicalDirection({route,discovery:discovery_row,decision_ts:observed_ts});
@@ -278,6 +279,8 @@ export function buildRuntimeCanonicalBundle({
  const trackedHlView=trackedHlAllowed?capturedTrackedBands({contract,run_id,observed_ts}):{source:'BYK_TRACKED_HL_BANDS',status:'COVERAGE_GATE_NOT_ADMITTED',maps:[],network_calls:0};
  const nativeFutureMaps=capturedNativeFutureMaps({contract,run_id}).filter(map=>{const source=nativeLiquidationSourceId(map);return source&&liquidationGate.allowed.has(source);});
  const renderedLiquidationView={...nativeLiquidationView,...buildPumpLiquidationZones({contract,rolling_24h_change_pct:finite(discovery_row?.rolling_24h_change_pct),current_price:price,early_anomaly:liqPriority.priority==='EARLY_PREMOVE_ANOMALY',priority_reason:liqPriority.reason,provider_maps:[...futureMapSource.maps,...trackedHlView.maps,...nativeFutureMaps],native_contexts:nativeContexts,projected:coinLobsterAllowed?coinLobsterFutureRows(internal_market_context?.cross_exchange_risk?.future_provider_models):[],calculation_context:{source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),market_source_ts:finite(discovery_row?.source_ts??discovery_row?.snapshot_ts),open_interest_value_usdt:finite(discovery_row?.open_interest_value_usdt),turnover_24h_usdt:finite(discovery_row?.turnover_24h_usdt),oi_change_pct:discovery_row?.oi_change_pct??{'4h':finite(discovery_row?.best_oi_build_pct)},price_change_pct:discovery_row?.price_change_pct??{'24h':finite(discovery_row?.rolling_24h_change_pct)},funding_rate_pct:finite(discovery_row?.funding_per_hour_pct??discovery_row?.funding_rate_pct),market_24h:discovery_row?.market_24h??null,price_tick:finite(discovery_row?.price_tick),volume_ratio:finite(discovery_row?.volume_ratio)},volume_profile:volumeProfile,observed_ts}),future_hint:coinLobsterAllowed?capturedCoinLobsterHint(contract):{source:'COINLOBSTER_FUTURE_HINT',contract,status:'COVERAGE_GATE_NOT_ADMITTED',data_available:false,network_calls:0},future_source_status:{coverage_admission:liquidationGate.admission,...futureMapSource,maps:undefined,tracked_hl:{...trackedHlView,maps:undefined}}};
+ const acquisitionDiagnostics=bindLiquidationAcquisitionDiagnostics({audit:liquidation_source_acquisition_audit,contract,run_id,snapshot_id,observed_ts});
+ if(acquisitionDiagnostics)renderedLiquidationView.acquisition_diagnostics=acquisitionDiagnostics;
  const technicalFacts=[...readHtxTechnicalStructure({contract,now:observed_ts}),...precommittedTechnicalPlanEvidence({scenario:publication_shadow?.scenario_plan,contract,snapshot_id,observed_ts})];
  const executionFacts=buildCanonicalExecutionEvidence({contract,run_id,snapshot_id,observed_ts,execution_context_source});
  if(internal_market_context?.evidence_v2){

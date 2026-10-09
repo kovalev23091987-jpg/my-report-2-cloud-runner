@@ -17163,9 +17163,12 @@ async function buildDeepCheckInput(params, env) {
     const identity={contract,run_id:canonicalRunId,snapshot_id:stage392SnapshotId,observed_ts:now};
     try{canonicalExecutionContextSource=await loadExecutionReportSource(env.DATA_DB,{...identity,canonical:identity},canonicalRunId);}catch{}
   }
+  let canonicalLiquidationSourceAudit=null;
+  if(typeof env?.REPORT2_LIQUIDATION_SOURCE_AUDIT==='function')try{canonicalLiquidationSourceAudit=env.REPORT2_LIQUIDATION_SOURCE_AUDIT({contract,run_id:canonicalRunId,evaluated_ts:now});}catch{/* Diagnostic failure cannot change the decision. */}
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
+      liquidation_source_acquisition_audit:canonicalLiquidationSourceAudit,
       contract,
       run_id: canonicalRunId,
       execution_context_source: canonicalExecutionContextSource,

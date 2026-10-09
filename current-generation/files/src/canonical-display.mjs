@@ -1,4 +1,5 @@
 // Presentation only: never computes direction, scores, gates or targets.
+import {liquidationAcquisitionAbsenceText} from './liquidation-source-acquisition-audit.mjs';
 const text=v=>v==null?'':String(v).trim();
 export const LIQUIDATION_DISPLAY_MIN_SEPARATION_PCT=5;
 export const LIQUIDATION_DISPLAY_MAX_PER_SIDE=4;
@@ -102,6 +103,18 @@ export function selectLiquidationDisplayZones(liq,side,{limit=LIQUIDATION_DISPLA
 }
 function displayPriceRange(z){return displayNumber(z?.price);}
 function displayDistanceRange(z){const d=finite(z?.distance_pct);return d===null?null:`${d>0?'+':d<0?'−':''}${displayNumber(Math.abs(Number(d.toFixed(2))))}%`;}
+function liquidationAbsenceLine(liq,policy){
+ if(policy!==RELEVANT_LIQUIDATION_PRESENTATION||!liq?.acquisition_diagnostics||['ABOVE','BELOW'].some(side=>selectLiquidationDisplayZones(liq,side,{policy}).length))return null;
+ const audit=auditLiquidationPresentation(liq,{policy});
+ if(audit.rows.length){
+  const statuses=new Set(audit.rows.map(r=>r.status));
+  if(statuses.size===1&&statuses.has('OUTSIDE_PRESENTATION_DISTANCE_BOUND'))return 'Полученные уровни дальше 100% от цены сравнения.';
+  if(statuses.has('DISTANCE_SOURCE_REFERENCE_MISMATCH'))return 'Цена уровня не согласуется с исходной ценой источника.';
+  if(statuses.has('SOURCE_REFERENCE_NOT_CLOSED'))return 'Нет подтверждённой цены для расчёта расстояния до уровней.';
+  if(statuses.has('DISTANCE_NOT_CLOSED'))return 'Расстояние до полученных уровней не подтверждено.';
+ }
+ return liquidationAcquisitionAbsenceText(liq.acquisition_diagnostics);
+}
 export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}={}){
  const lines=[];
  const current=policy===RELEVANT_LIQUIDATION_PRESENTATION;
@@ -113,6 +126,7 @@ export function displayFutureLiquidations(liq,{compact=false,policy='ORIGINAL'}=
   });lines.push(`${label}: ${parts.length?parts.join('; '):current?'подходящие уровни не подтверждены':'уровни будущих ликвидаций не получены'}.`);
  }
  if(compact&&[...selectLiquidationDisplayZones(liq,'ABOVE',{policy}),...selectLiquidationDisplayZones(liq,'BELOW',{policy})].some(z=>z.estimated||z.display_contains_estimates))lines.push('≈ — расчётный уровень.');
+ const absent=liquidationAbsenceLine(liq,policy);if(absent)lines.push(absent);
  const sample=(liq?.source_receipts||[]).find(r=>r.coverage?.kind==='TRACKED_ACCOUNT_SAMPLE_ONLY')?.coverage;
  if(sample)lines.push(`Hyperliquid: выборка до ${sample.account_population_limit} аккаунтов${compact?'':`; проверено ${sample.provider_coverage?.scanned??'не указано'}; без цены ликвидации ${sample.provider_totals?.without_liq_px??'не указано'} позиций`}.`);
  if(!compact&&liq?.provider_zone_count){
@@ -145,6 +159,7 @@ export function displayBriefTelegramLiquidations(liq,formatPrice,{policy='ORIGIN
   if(used.some(z=>z.conditional_cross||z.conditional_on_other_positions))lines.push('Зависят от других позиций счёта.');
   if(used.some(z=>z.source_clock_closed===false))lines.push('Время исходного состояния неизвестно.');
  }
+ const absent=liquidationAbsenceLine(liq,policy);if(absent)lines.push(absent);
  return lines;
 }
 export function displayLegacyLiquidations(liq,{policy='ORIGINAL'}={}){
