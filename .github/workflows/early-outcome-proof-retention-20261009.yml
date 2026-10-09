@@ -1,0 +1,28 @@
+name: Retain exact early outcome originals and fair recent queue connected proof
+on:
+  push:
+    branches: [codex/cadence-history-20261009]
+    paths: ['.github/workflows/early-outcome-proof-retention-20261009.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/',''),main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='211e3eb0df6adc9fa889efc33d787aadfac8a0a9')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const files=[[11615812967,"46729091833e253d6d04bc84d50ef875ed92b45d4021678d08d06cac6e1b635c","checkpoints/remaining-history-cadence-original-37930327402.zip"],[11616340369,"1b5e68368351c1b8a3fe8984ee6c5fad83cb779d2ba89f8cfcb98607d9b5daa8","checkpoints/early-outcome-original-path-37930961701.zip"],[11617120580,"e5952241ce737fa5ba86a79fcfa27a2bb4651d2eb9f9e7a1f80d3b931242fae9","checkpoints/early-outcome-fairness-connected-37931728185.zip"],[11615554480,"a09a9d6e62760c4951ee1929cb9ef83667ad0f1ad6c8a3a78e38becc9471a8ca","checkpoints/post257-natural-37930291022.zip"],[11615519618,"9c60243dd02c7272d76e3994104b7b35e42d0a00f628bb56701f22694513f7f9","checkpoints/post257-telegram-37930291022.zip"],[11617116083,"af3cb10682468e7e50da238f605b4bd035897fe7277a3ccd17f13cefcfe380c1","checkpoints/gram171-original-chain-37932064823.zip"],[11617250525,"8616ae9699bab2684221e5f4ea46f6615916c971aaa60c47cc348b0f3b10adf0","checkpoints/gram171-partial-read-37931885030.zip"]],tree=[];
+            for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+            const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain original mature BR path, fair queue tests, natural GRAM delivery and trigger'})).data;
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED_BEFORE_WRITE');
+            await github.rest.git.updateRef({owner,repo,ref,sha:next.sha,force:false});
+            core.info(JSON.stringify({status:'EXACT_CHAIN_AND_STATISTICAL_INPUTS_RETAINED',head:next.sha,files:tree.map(x=>x.path),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,project_complete:false}));
