@@ -71,7 +71,7 @@ test('new cancellation binds a separate decision publication and preserves every
  const db=new DB();t.after(()=>db.close());const before=await seed(db),result=await reconciler.reconcilePendingPublications(db,{now_ts:NOW,source_run_id:'CURRENT-REMOVAL'});
  assert.equal(result.results[0].status,'BOUND_ACTIONABLE',JSON.stringify(result));assert.notEqual(result.results[0].publication_id,before.publication_id);
  assert.deepEqual(db.raw.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?').get(before.publication_id),before);
- const bound=await publication.loadBoundTelegram(db,{idempotency_key:'REMOVE',now_ts:NOW});assert.equal(bound.ok,true,JSON.stringify(bound));assert.equal(bound.canonical.run_id,'CURRENT-REMOVAL');assert.equal(bound.canonical.observed_ts,obs);assert.equal(bound.canonical.metadata.lifecycle_removal.prior_publication_id,before.publication_id);
+ const bound=await publication.loadBoundTelegram(db,{idempotency_key:'REMOVE',now_ts:NOW});assert.equal(bound.ok,true,JSON.stringify(bound));assert.equal(bound.canonical.run_id,'CURRENT-REMOVAL');assert.equal(bound.canonical.metadata.publication_kind,'LIFECYCLE_ADMINISTRATIVE');assert.equal(bound.canonical.observed_ts,obs);assert.equal(bound.canonical.metadata.lifecycle_removal.prior_publication_id,before.publication_id);
  assert.match(bound.text,/проверенная выборка сделок фьючерса HTX/);assert.doesNotMatch(bound.text,/91|2023|889|Оценка|Уровни|Ликвидации/);assert.deepEqual(bound.canonical.targets,[]);assert.equal(bound.canonical.metadata.lifecycle_removal.market_snapshot,false);
  const wrongEvent=publication.assessActionability({canonical:bound.canonical,lifecycle_event:'ENTRY',prior_sent:true});assert.equal(wrongEvent.deliver,false);
  const again=await reconciler.reconcilePendingPublications(db,{now_ts:NOW+1000,source_run_id:'ANOTHER-RUN'});assert.equal(again.processed,0);
@@ -96,4 +96,19 @@ test('actual Worker DQ producer retains mandatory failed predicates while option
  const partial=build(opts);assert.equal(partial.dq.status,'PARTIAL');assert.equal(partial.evidence_flags.dq_failure_receipt.mandatory_checks.filter(c=>!c.closed).length,0);
  const failed=build({...opts,futures:{coverage:{...fc,htx_futures_order_flow_sample:'partial'}}});assert.equal(failed.dq.status,'INSUFFICIENT');assert.equal(failed.stage,'OBSERVE_DATA_INSUFFICIENT');assert.deepEqual(JSON.parse(JSON.stringify(failed.evidence_flags.dq_failure_receipt.mandatory_checks.filter(c=>!c.closed))),[{key:'futures.htx_futures_order_flow_sample',closed:false}]);
  const sh={shadow_id:'S',observed_ts:obs,dq_status:'INSUFFICIENT',evidence_flags_json:JSON.stringify(failed.evidence_flags)},r=sidecar.lifecycleRemovalReceipt({contract:'ZEC-USDT',direction:'LONG',wave_id:'W-ZEC',reason:'DATA_UNUSABLE',handoff:{source_run_id:'CURRENT-REMOVAL'},shadow:sh,observed_ts:obs});assert.deepEqual(r.failed_checks,['futures.htx_futures_order_flow_sample']);assert.equal(r.sufficiency,'PARTIAL');
+});
+
+test('administrative cancellation uses one reconciliation slot without increasing delivery limits or joining statistical decisions',async t=>{
+ const db=new DB();t.after(()=>db.close());await seed(db);
+ db.raw.exec("UPDATE v3_telegram_dispatch_shadow SET decision_id='FINAL-DIAGNOSTIC' WHERE idempotency_key='REMOVE'");
+ db.raw.prepare("INSERT INTO v3_telegram_dispatch_shadow(dispatch_id,idempotency_key,contract,direction,wave_id,lifecycle_event,rules_version,state,message_hash,created_ts,updated_ts,shadow_only) VALUES('D-DEFER','DEFER','ZEC-USDT','LONG','W-ZEC','IDEA_REMOVED','v3','PENDING',?,?,?,1)").run(JSON.stringify(receipt()),obs-1,obs-1);
+ const result=await reconciler.reconcilePendingPublications(db,{now_ts:NOW});assert.equal(result.processed,1);assert.equal(result.capacity_deferred,1);assert.equal(result.results[0].key,'REMOVE');assert.equal(db.raw.prepare("SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='DEFER'").get().state,'PENDING');
+ const p=db.raw.prepare('SELECT decision_id FROM canonical_publication_shadow WHERE publication_id=?').get(result.results[0].publication_id);assert.equal(p.decision_id,null);
+});
+
+test('assembled delivery sends only the separate removal with confirmed prior receipt and retains the original SENT',async t=>{
+ const db=new DB();t.after(()=>db.close());const before=await seed(db);let calls=0,payload;
+ const result=await sender.runBoundTelegramDeliverySidecar(db,{enabled:true,relay_url:'https://relay.invalid',relay_key:'CONTROLLED',now_ts:NOW,source_run_id:'CURRENT-REMOVAL',fetch_impl:async(_url,options)=>{calls++;payload=JSON.parse(options.body);return {ok:true,status:200,json:async()=>({ok:true,status:'SENT',message_id:7777})};}});
+ assert.equal(result.status,'CLOSED',JSON.stringify(result));assert.equal(result.sent,1);assert.equal(calls,1);assert.match(payload.text,/ИДЕЯ СНЯТА/);assert.doesNotMatch(payload.text,/2023|889|91|Оценка/);assert.deepEqual(db.raw.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?').get(before.publication_id),before);
+ assert.equal(db.raw.prepare("SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='OLD'").get().state,'SENT');assert.equal(db.raw.prepare('SELECT COUNT(*) n FROM v3_recheck_task_shadow').get().n,0);
 });

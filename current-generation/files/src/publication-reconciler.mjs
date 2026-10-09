@@ -23,10 +23,10 @@ async function removalPublicationForDispatch(db,row,life,now){
  const prior=await db.prepare(`SELECT b.publication_id,b.idempotency_key,b.run_id,b.snapshot_id,b.observed_ts,b.analytical_fingerprint,b.presentation_hash,d.telegram_message_id FROM v3_telegram_dispatch_shadow d JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE d.contract=?1 AND d.direction=?2 AND d.wave_id=?3 AND d.rules_version=?4 AND d.lifecycle_event IN ('OBSERVE','WAIT','ENTRY') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.sent_ts<?5 AND b.contract_code=d.contract AND b.direction=d.direction AND b.wave_id=d.wave_id AND b.rules_version=d.rules_version AND b.lifecycle_event=d.lifecycle_event ORDER BY d.sent_ts DESC,d.idempotency_key ASC LIMIT 1`).bind(row.contract,upper(row.direction),row.wave_id,row.rules_version,Number(row.created_ts)).first();
  if(!prior)return {status:'REMOVAL_WITHOUT_PRIOR_DELIVERY',life};
  const canonical={status:'CLOSED',state:'REJECTED',direction:upper(row.direction),run_id:receipt.source_run_id,snapshot_id:'REMOVAL:'+row.contract+':'+receipt.observed_ts,observed_ts:receipt.observed_ts,
-  metadata:{contract:row.contract,lifecycle_removal:{...receipt,prior_publication_id:prior.publication_id,prior_idempotency_key:prior.idempotency_key,prior_run_id:prior.run_id,prior_snapshot_id:prior.snapshot_id,prior_observed_ts:prior.observed_ts,prior_analytical_fingerprint:prior.analytical_fingerprint,prior_presentation_hash:prior.presentation_hash,prior_telegram_message_id:String(prior.telegram_message_id)}},
+  metadata:{contract:row.contract,publication_kind:'LIFECYCLE_ADMINISTRATIVE',lifecycle_removal:{...receipt,prior_publication_id:prior.publication_id,prior_idempotency_key:prior.idempotency_key,prior_run_id:prior.run_id,prior_snapshot_id:prior.snapshot_id,prior_observed_ts:prior.observed_ts,prior_analytical_fingerprint:prior.analytical_fingerprint,prior_presentation_hash:prior.presentation_hash,prior_telegram_message_id:String(prior.telegram_message_id)}},
   scores:{overall_0_100:null,coin_interest_0_100:null,entry_readiness_0_100:null,is_probability:false},trigger:null,entry:null,targets:[],source_receipts:[],hard_gates:[],reasons:[],liquidations:{status:'NOT_EVALUATED',above:[],below:[]}};
  canonical.analytical_fingerprint=publication.canonicalFingerprint(canonical);
- const saved=await publication.persistCanonicalSnapshot(db,{canonical,wave_id:row.wave_id,decision_id:row.decision_id,now_ts:now});
+ const saved=await publication.persistCanonicalSnapshot(db,{canonical,wave_id:row.wave_id,decision_id:null,now_ts:now});
  if(!saved.persisted&&saved.status!=='DEDUPLICATED')return {status:saved.status,life};
  return {status:'CLOSED',life,pub:{publication_id:saved.publication_id,canonical_json:JSON.stringify(canonical),presentation_inputs_json:'{}',run_id:canonical.run_id,snapshot_id:canonical.snapshot_id,observed_ts:canonical.observed_ts,created_ts:now}};
 }
@@ -126,7 +126,12 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
  const recentAfter=now-PUBLICATION_BINDING_GRACE_MS;
  const q=await db.prepare(`SELECT d.dispatch_id,d.idempotency_key,d.contract,d.direction,d.wave_id,d.lifecycle_event,d.rules_version,d.state,d.decision_id,d.message_hash,d.created_ts,d.updated_ts FROM v3_telegram_dispatch_shadow d LEFT JOIN v3_dispatch_publication_binding_shadow b ON b.idempotency_key=d.idempotency_key WHERE d.state IN ('PENDING','FAILED_RETRYABLE') AND b.idempotency_key IS NULL ORDER BY CASE WHEN d.created_ts>=?2 THEN 0 ELSE 1 END,CASE WHEN d.lifecycle_event='IDEA_REMOVED' THEN 0 WHEN d.lifecycle_event='ENTRY' THEN 1 WHEN d.lifecycle_event='WAIT' THEN 2 ELSE 3 END,d.created_ts DESC LIMIT ?1`).bind(boundedLimit,recentAfter).all();
  const out=[];
- for(const row of rows(q)){
+ // A separate administrative insert consumes the existing write allowance.
+ // Reconcile one such cancellation per call; leave other work pending without
+ // increasing the frozen max-reconcile, delivery or D1 envelopes.
+ const pending=rows(q),administrative=pending.find(row=>upper(row.lifecycle_event)==='IDEA_REMOVED'&&(String(row.message_hash||'').startsWith('{')||Number(row.created_ts)>=Date.parse('2026-10-09T08:30:00Z')));
+ const selected=administrative?[administrative]:pending;
+ for(const row of selected){
   const exact=await exactPublicationForDispatch(db,row,{executor_run_id:source_run_id,now_ts:now});
   if(exact.status!=='CLOSED'){
    if(exact.status==='EXPIRED_NOT_SENT')await mark(db,row.idempotency_key,'EXPIRED_NOT_SENT',exact.status,now);
@@ -154,7 +159,7 @@ export async function reconcilePendingPublications(db,{now_ts=Date.now(),limit=8
   if(!b.bound){await mark(db,row.idempotency_key,'FAILED_FINAL',b.status,now);out.push({key:row.idempotency_key,status:b.status});continue;}
   out.push({key:row.idempotency_key,status:'BOUND_ACTIONABLE',publication_id:exact.pub.publication_id,run_id:canonical.run_id,snapshot_id:canonical.snapshot_id});
  }
- return {status:'CLOSED',processed:out.length,source_run_id:text(source_run_id)||null,executor_run_id:text(source_run_id)||null,results:out};
+ return {status:'CLOSED',processed:out.length,capacity_deferred:pending.length-selected.length,source_run_id:text(source_run_id)||null,executor_run_id:text(source_run_id)||null,results:out};
 }
 
 export async function loadBoundDispatchForNetwork(db,{row,now_ts=Date.now()}={}){
