@@ -15,11 +15,13 @@ const out={schema:'ORIGINAL24H_ALL_APPROVED_DECISION_TRIGGER_DIAGNOSIS_20261009_
 fs.mkdirSync('audit-output',{recursive:true});
 out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
 if(out.admission.allowed){await reserveRunBudget(db,{reservationId:id,now,reservation});try{
- const metadata=await db.prepare("SELECT name,tbl_name,sql FROM sqlite_master WHERE type='index' AND tbl_name IN ('canonical_publication_shadow','v3_dispatch_publication_binding_shadow') AND sql IS NOT NULL ORDER BY name LIMIT 64").all();out.index_metadata=metadata.results;
+ const previous=JSON.parse(fs.readFileSync('checkpoints/ORIGINAL24H_TRIGGER_COHORT_ADMISSION_HISTORY_20261009.json'));if(previous.cloud_run!=='37868794286'||previous.head!=='ceea9e0aa8a62fd58d157b17d7fa8fa203cf2824')throw Error('ORIGINAL_INDEX_RECEIPT_REQUIRED');
+ const metadata={results:previous.index_metadata};out.index_metadata=metadata.results;out.original_index_read_cloud_run=previous.cloud_run;
  const safe=xs=>xs.filter(x=>/^[A-Za-z_][A-Za-z0-9_]*$/.test(x.name));
  const indices=safe(metadata.results||[]),canon=indices.filter(x=>x.tbl_name==='canonical_publication_shadow');
- const index=canon.find(x=>/\(\s*["`]?observed_ts["`]?\s*[,)]/i.test(x.sql))||canon.find(x=>/\(\s*["`]?contract_code["`]?\s*,\s*["`]?observed_ts["`]?\s*[,)]/i.test(x.sql));
- if(!index)throw Error('BOUNDED_CANONICAL_TIME_INDEX_REQUIRED');
+ const index=canon.find(x=>/\(\s*["`]?observed_ts["`]?\s*[,)]/i.test(x.sql))||canon.find(x=>/\(\s*["`]?contract_code["`]?\s*,\s*["`]?observed_ts["`]?\s*[,)]/i.test(x.sql))||canon.find(x=>x.name==='idx_canonical_publication_identity');
+ if(!index)throw Error('ORIGINAL_KNOWN_CANONICAL_INDEX_REQUIRED');
+ const bounded=await db.prepare('SELECT COUNT(*) AS rows FROM (SELECT publication_id FROM canonical_publication_shadow LIMIT 1001)').first();out.hot_table_upper_bound_probe=bounded;if(!Number.isSafeInteger(bounded.rows)||bounded.rows>1000)throw Error('BOUNDED_HOT_CANONICAL_TABLE_TOO_LARGE');
  const where='observed_ts>=?1 AND observed_ts<=?2 AND contract_code IN ('+contracts.map((_,i)=>'?'+(i+3)).join(',')+')',args=[a.start_ts,a.end_ts,...contracts];
  const count=await db.prepare('SELECT COUNT(*) AS rows,COALESCE(SUM(LENGTH(canonical_json)),0) AS bytes FROM canonical_publication_shadow INDEXED BY '+index.name+' WHERE '+where).bind(...args).first();out.complete_range_count=count;out.canonical_index=index.name;
  if(!Number.isSafeInteger(count.rows)||count.rows>200||count.bytes>30*1024*1024)throw Error('CANONICAL_RANGE_TOO_LARGE');
