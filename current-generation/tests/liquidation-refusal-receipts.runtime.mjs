@@ -24,10 +24,14 @@ test('assembled source routing retains a skipped exact asset without HTTP, D1 or
  const c=build({...args,liquidation_source_acquisition_audit:a}).canonical;assert.equal(c.liquidations.acquisition_diagnostics.routes[0].kind,'NOT_EVALUATED');assert.equal(c.liquidations.acquisition_diagnostics.entry_authorized,false);assert.equal(c.state,'REJECTED');
 });
 test('approved renderer carries original retained reasons with no forced publication or historical text rewrite',()=>{
- const c=structuredClone(original.candidates.find(r=>r.contract==='龙虾-USDT').canonical),saved=JSON.stringify(c);
- const old=render({canonical:c,lifecycle_event:'OBSERVE'});assert.equal(old.ok,true);
- // Explicit later controlled review identity; this is not the old live snapshot.
- c.snapshot_id='CONTROLLED_DELIVERY_REVIEW:龙虾-USDT';c.observed_ts=T;c.liquidations.acquisition_diagnostics=bind({audit,contract:'龙虾-USDT',run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:T});c.analytical_fingerprint=fingerprint(c);
+ const actual=original.candidates.find(r=>r.contract==='龙虾-USDT').canonical,saved=JSON.stringify(actual);
+ const old=render({canonical:actual,lifecycle_event:'OBSERVE'});assert.equal(old.ok,false);assert.equal(old.status,'CANONICAL_NOT_CLOSED');
+ // A controlled approved output-contract fixture tests only presentation.
+ // The original natural candidate stays unclosed and is never published.
+ const c=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/output-contract/long-observe-full.json')).canonical;
+ c.run_id=original.run_id;c.snapshot_id='CONTROLLED_DELIVERY_REVIEW:龙虾-USDT';c.observed_ts=T;c.metadata.contract='龙虾-USDT';c.metadata.validated_signal=false;c.candidates=[{contract:'龙虾-USDT'}];c.universe=[{contract:'龙虾-USDT'}];c.liquidations=structuredClone(actual.liquidations);
+ const before=structuredClone(c);c.liquidations.acquisition_diagnostics=bind({audit,contract:'龙虾-USDT',run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:T});c.analytical_fingerprint=fingerprint(c);
+ for(const field of ['state','direction','scores','entry','trigger','invalidation','targets','source_receipts','hard_gates'])assert.deepEqual(c[field],before[field]);
  const out=render({canonical:c,lifecycle_event:'OBSERVE'});assert.equal(out.ok,true);assert(out.text.includes('часть площадок не поддерживает монету'));assert(out.text.includes('выборка не дала подходящих уровней'));assert(out.length<=1800);assert(manual({canonical:c}).text.includes('выборка не дала подходящих уровней'));
  assert.equal(JSON.stringify(original.candidates.find(r=>r.contract==='龙虾-USDT').canonical),saved);assert.equal(c.state,'OBSERVE');assert.equal(c.metadata.validated_signal,false);
  fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/liquidation-refusal-consumer-proof.json',JSON.stringify({schema:'LIQUIDATION_REFUSAL_CONSUMER_RETAINED_REVIEW_V1',source_run:37917588047,scope:'CONTROLLED_LATER_REVIEW_NOT_ORIGINAL_LIVE_SNAPSHOT',diagnostics:c.liquidations.acquisition_diagnostics,telegram:out,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,actual_ENTRY:false,new_fresh_SENT:false},null,2)+'\n');
