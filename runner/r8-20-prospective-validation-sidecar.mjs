@@ -9,13 +9,16 @@ import {digest} from './src/upstream-proof-utils.mjs';
 import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
 import {HISTORY_COMPATIBILITY, verifiedCollectorRows, chooseCompleteBucket} from './src/market-history-reader.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v5-durable-turn-verified-history-20260930';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v6-paged-verified-history-20261009';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
   rows_written: 8,
   requests_soft_cap: 14,
   max_scan_rows_per_path: 320,
+  max_collector_rows_per_page: 400,
+  max_collector_pages_per_path: 7,
+  max_collector_payload_bytes_per_path: 48*1024*1024,
   max_capture_candidates: 12,
   max_early_outcomes_per_cycle: 1,
   max_entry_samples_per_cycle: 1,
@@ -209,16 +212,43 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
   const limit = R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path;
   let collectorReason = 'NO_FACTUAL_PATH';
   try {
-    // Index order matches generation,bucket,shard. Bound raw rows BEFORE parsing
-    // JSON; LIMIT after json_each used to conceal thousands of billed reads.
-    const batchResult = await db.prepare(`SELECT bucket,actor,generation,schema_version,shard,
-        source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes
-      FROM report2_market_snapshot_batch_v1
-      WHERE generation IN (?1,?2,?3) AND bucket BETWEEN ?4 AND ?5
-      ORDER BY generation,bucket,shard LIMIT ?6`)
-      .bind(...HISTORY_COMPATIBILITY.generations, Math.floor(start/(5*MINUTE))*5*MINUTE, upper, limit+1).all();
-    const raw = rowsOf(batchResult);
-    if (raw.length <= limit) {
+    // Each raw page is bounded before parsing and hashing; a long horizon has
+    // multiple collector shards per timestamp. Unchanged cycle admission checks
+    // every next page and never makes a truncated history factual.
+    const longPath=end-start>=4*HOUR,pageLimit=longPath?R820_PROSPECTIVE_VALIDATION_BUDGET.max_collector_rows_per_page:limit;
+    const maxPages=longPath?R820_PROSPECTIVE_VALIDATION_BUDGET.max_collector_pages_per_path:1;
+    const raw=[];let cursor=null,complete=false,payloadBytes=0;
+    for(let page=0;page<maxPages;page++){
+      const columns='bucket,actor,generation,schema_version,shard,source_timestamps_json,received_ts,status,payload_hash,payload,contract_count,payload_bytes';
+      let sql,args;
+      if(cursor){
+        // Exclude completed generations before querying. A SQL generation>?x
+        // filter over the original IN list still billed their entire range.
+        const future=HISTORY_COMPATIBILITY.generations.filter(g=>g>cursor.generation);
+        const next=future.length
+          ?` UNION ALL SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
+              WHERE generation IN (${future.map((_,i)=>'?'+(i+5)).join(',')}) AND actor='HUB_PUBLIC_COLLECTOR'
+                AND bucket BETWEEN ?${future.length+5} AND ?3`
+          :'';
+        sql=`SELECT ${columns} FROM report2_market_snapshot_batch_v1 INDEXED BY idx_report2_market_snapshot_batch_v1_range
+          WHERE generation=?1 AND actor='HUB_PUBLIC_COLLECTOR'
+            AND bucket BETWEEN ?2 AND ?3 AND (bucket,shard)>(?2,?4)${next}
+          ORDER BY generation,bucket,shard LIMIT ?${future.length?future.length+6:5}`;
+        args=[cursor.generation,cursor.bucket,upper,cursor.shard,...future,...(future.length?[Math.floor(start/(5*MINUTE))*5*MINUTE]:[]),pageLimit+1];
+      }else{
+        sql=`SELECT ${columns} FROM report2_market_snapshot_batch_v1
+          WHERE generation IN (?1,?2,?3) AND actor='HUB_PUBLIC_COLLECTOR' AND bucket BETWEEN ?4 AND ?5
+          ORDER BY generation,bucket,shard LIMIT ?6`;
+        args=[...HISTORY_COMPATIBILITY.generations,Math.floor(start/(5*MINUTE))*5*MINUTE,upper,pageLimit+1];
+      }
+      const records=rowsOf(await db.prepare(sql).bind(...args).all()),retained=records.slice(0,pageLimit);
+      for(const row of retained){payloadBytes+=new TextEncoder().encode(String(row.payload??'')).byteLength;raw.push(row);}
+      if(payloadBytes>R820_PROSPECTIVE_VALIDATION_BUDGET.max_collector_payload_bytes_per_path){collectorReason='COLLECTOR_RAW_BYTE_CAP';break;}
+      if(records.length<=pageLimit){complete=true;break;}
+      cursor=retained.at(-1);
+      if(!cursor||!Number.isSafeInteger(cursor.bucket)||!Number.isSafeInteger(cursor.shard)||!text(cursor.generation)){collectorReason='COLLECTOR_CURSOR_INVALID';break;}
+    }
+    if (complete) {
       const verified = await verifiedCollectorRows(raw.filter(r=>r.actor==='HUB_PUBLIC_COLLECTOR'), {decisionTs:nowTs});
       const buckets = new Map();
       for (const row of verified.accepted) {
@@ -236,7 +266,7 @@ async function loadFactualPath(db, { contract, startTs, endTs, allowAfterTarget 
       points.sort((a,b)=>a.ts-b.ts);
       if (coveredPath(points,start,end,5*MINUTE)) return {status:'CLOSED',points,rows_loaded:raw.length,history_source:'REPORT2_MARKET_SNAPSHOT_BATCH_V1',sampling_minutes:5,extrema_scope:'OBSERVED_SNAPSHOTS_ONLY'};
       collectorReason=verified.rejected.length?'COLLECTOR_INTEGRITY_OR_COVERAGE_GAP':'COLLECTOR_COVERAGE_GAP';
-    } else collectorReason='COLLECTOR_RAW_ROW_CAP';
+    } else if(!['COLLECTOR_RAW_BYTE_CAP','COLLECTOR_CURSOR_INVALID'].includes(collectorReason))collectorReason='COLLECTOR_RAW_ROW_CAP';
   } catch (error) {
     if (!/no such table/i.test(String(error?.message||error))) throw error;
     collectorReason='COLLECTOR_TABLE_UNAVAILABLE';
@@ -513,7 +543,8 @@ export function prospectiveBudgetGuard(db, before) {
       const delta=usageDelta(before,db.usageSnapshot());
       const writes=/^\s*(INSERT|UPDATE|DELETE)/i.test(sql)?1:0;
       const history=/FROM\s+(report2_market_snapshot_batch_v1|scan_runs)\b/i.test(sql);
-      const readReserve=history?2*(R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path+1)+8:1;
+      const rowReserve=/FROM\s+report2_market_snapshot_batch_v1\b/i.test(sql)?R820_PROSPECTIVE_VALIDATION_BUDGET.max_collector_rows_per_page:R820_PROSPECTIVE_VALIDATION_BUDGET.max_scan_rows_per_path;
+      const readReserve=history?2*(rowReserve+1)+8:1;
       if (!delta || delta.unknown_ops || delta.requests+pendingRequests+1>R820_PROSPECTIVE_VALIDATION_BUDGET.requests_soft_cap ||
           delta.rows_read+pendingReads+readReserve>R820_PROSPECTIVE_VALIDATION_BUDGET.rows_read ||
           delta.rows_written+pendingWrites+writes>R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written) {
@@ -559,7 +590,12 @@ export async function runR820ProspectiveValidationSidecar(db, { current_scan_ts,
       capture = await captureOneEntryAreaSample(db, { activation_ts: activation.activation_ts, now_ts });
       entryOutcome = earlyTurn?{status:'DEFERRED_FAIR_QUEUE_ROTATION',closed:0}:await closeOneEntryAreaOutcome(db, { current_scan_ts, activation_ts: activation.activation_ts, now_ts });
     }
-    const readiness = await loadProspectiveReadinessSnapshot(db, { activation_ts: activation.activation_ts, now_ts });
+    // Keep a factual outcome even when its bounded pages leave no room for
+    // the separate readiness read; this never promotes it to validated.
+    const beforeReadiness=usageDelta(before,db.usageSnapshot());
+    const readiness = beforeReadiness && beforeReadiness.requests+2<=R820_PROSPECTIVE_VALIDATION_BUDGET.requests_soft_cap
+      ? await loadProspectiveReadinessSnapshot(db, { activation_ts: activation.activation_ts, now_ts })
+      : base('READINESS_DEFERRED_REQUEST_ENVELOPE',{data_ready_for_separate_oos_validation:false,validated_out_of_sample:false});
     const after = typeof db.usageSnapshot === 'function' ? db.usageSnapshot() : null;
     const delta = usageDelta(before, after);
     if (delta && (delta.rows_read > R820_PROSPECTIVE_VALIDATION_BUDGET.rows_read || delta.rows_written > R820_PROSPECTIVE_VALIDATION_BUDGET.rows_written || delta.requests > R820_PROSPECTIVE_VALIDATION_BUDGET.requests_soft_cap || delta.unknown_ops > 0)) {

@@ -1,0 +1,1689 @@
+{
+  "schema": "PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009_V1",
+  "status": "BOUNDED_INDEXED_PAGED_DENSE_HISTORY_AND_ORIGINAL24H_READER_CONNECTED_VERIFIED",
+  "tested_head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+  "cloud_run": 37865298193,
+  "tests": {
+    "current-generation-unit-tests.tap": {
+      "pass": 1149,
+      "fail": 0,
+      "sha256": "3c5e2074ca1ae4d2d605b55d8ae011804b470990ded707830b7d873bf4ae0adc"
+    },
+    "prospective-history-tests.tap": {
+      "pass": 27,
+      "fail": 0,
+      "sha256": "4368a2027a8084d7c4f0b5bacba547bf7df46b550865b50b469f039c0eff6074"
+    }
+  },
+  "validation": {
+    "status": "CURRENT_GENERATION_VALIDATED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "tests": "PASS",
+    "syntax": "PASS",
+    "schedule_minutes": 20,
+    "scheduled_runs_per_day": 72,
+    "manual_runs_per_day": 8,
+    "burst_deep_checks_per_day": 3,
+    "scheduled_analytics_interval_minutes": 40,
+    "scheduled_analytics_cycles_per_day": 36,
+    "full_cycle_candidate_limit": 2,
+    "worst_case_31_day_requests": 13330,
+    "overlay": "NOT_REQUESTED"
+  },
+  "binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc",
+    "runtime_checked": true
+  },
+  "integration": {
+    "schema": "report2-v13-final-integration-37-v1",
+    "status": "PASS",
+    "runtime": "/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime",
+    "passed": 37,
+    "failed": 0,
+    "scenarios": [
+      {
+        "number": 1,
+        "name": "current early 82 becomes one actionable OBSERVE",
+        "status": "PASS"
+      },
+      {
+        "number": 2,
+        "name": "OBSERVE does not invent overall or ENTRY",
+        "status": "PASS"
+      },
+      {
+        "number": 3,
+        "name": "deep factual interest may authorize OBSERVE without early origin flag",
+        "status": "PASS"
+      },
+      {
+        "number": 4,
+        "name": "interest 69 is rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 5,
+        "name": "positive 4.9 percent plan remains eligible for early observation",
+        "status": "PASS"
+      },
+      {
+        "number": 6,
+        "name": "hard veto is rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 7,
+        "name": "neutral label cannot erase valid LONG receipt",
+        "status": "PASS"
+      },
+      {
+        "number": 8,
+        "name": "opposite valid directions conflict",
+        "status": "PASS"
+      },
+      {
+        "number": 9,
+        "name": "stale future and foreign receipts are ignored",
+        "status": "PASS"
+      },
+      {
+        "number": 10,
+        "name": "wave mismatch cannot bind direction",
+        "status": "PASS"
+      },
+      {
+        "number": 11,
+        "name": "new episode does not revive expired receipt",
+        "status": "PASS"
+      },
+      {
+        "number": 12,
+        "name": "repeat persistence is idempotent",
+        "status": "PASS"
+      },
+      {
+        "number": 13,
+        "name": "failed persistence creates no dispatch binding",
+        "status": "PASS"
+      },
+      {
+        "number": 14,
+        "name": "formatter refusal prevents transport",
+        "status": "PASS"
+      },
+      {
+        "number": 15,
+        "name": "positive provider response records SENT and message id",
+        "status": "PASS"
+      },
+      {
+        "number": 16,
+        "name": "provider failure is never SENT or blindly duplicated",
+        "status": "PASS"
+      },
+      {
+        "number": 17,
+        "name": "removal without prior delivery is not actionable",
+        "status": "PASS"
+      },
+      {
+        "number": 18,
+        "name": "manual and Telegram share one canonical fingerprint",
+        "status": "PASS"
+      },
+      {
+        "number": 19,
+        "name": "missing target remains an honest early observation with target pending",
+        "status": "PASS"
+      },
+      {
+        "number": 20,
+        "name": "next cycle uses its own evidence and does not refresh old evidence",
+        "status": "PASS"
+      },
+      {
+        "number": 21,
+        "name": "new sources OFF or timeout leave old report result unchanged",
+        "status": "PASS"
+      },
+      {
+        "number": 22,
+        "name": "same upstream cannot add an independent vote",
+        "status": "PASS"
+      },
+      {
+        "number": 23,
+        "name": "internal scheduler skip is not a provider failure",
+        "status": "PASS"
+      },
+      {
+        "number": 24,
+        "name": "valid response without mapped market is coverage unsupported",
+        "status": "PASS"
+      },
+      {
+        "number": 25,
+        "name": "ten gTrade consumers use three HTTP and separate bindings",
+        "status": "PASS"
+      },
+      {
+        "number": 26,
+        "name": "shared snapshot cannot cross run boundary",
+        "status": "PASS"
+      },
+      {
+        "number": 27,
+        "name": "failed shared fetch is not repeated for 24 consumers",
+        "status": "PASS"
+      },
+      {
+        "number": 28,
+        "name": "Hyperliquid length mismatch and alias are rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 29,
+        "name": "switching OI provider creates a separate native series without false delta",
+        "status": "PASS"
+      },
+      {
+        "number": 30,
+        "name": "funding periods and estimated rates remain separate native facts",
+        "status": "PASS"
+      },
+      {
+        "number": 31,
+        "name": "HTTP 200 malformed JSON is invalid, not zero market",
+        "status": "PASS"
+      },
+      {
+        "number": 32,
+        "name": "Retry-After 24 hours is preserved",
+        "status": "PASS"
+      },
+      {
+        "number": 33,
+        "name": "optional enrichment without capacity cannot displace ready publication",
+        "status": "PASS"
+      },
+      {
+        "number": 34,
+        "name": "role-scoped fallback remains singular and preserves the five-request cap",
+        "status": "PASS"
+      },
+      {
+        "number": 35,
+        "name": "large shared raw snapshot is retained once and not copied to consumer results",
+        "status": "PASS"
+      },
+      {
+        "number": 36,
+        "name": "assembled manual/compact keep golden, historical V5 matches and new brief facts-only policy holds",
+        "status": "PASS"
+      },
+      {
+        "number": 37,
+        "name": "unproven ENTRY remains OBSERVE",
+        "status": "PASS"
+      }
+    ],
+    "telegram_network_calls": 0,
+    "synthetic_signal_created": false,
+    "thresholds_changed": false,
+    "external_format_changed": false
+  },
+  "regression": {
+    "schema": "PAGED_DENSE_HISTORY_REGRESSION_20261009_V1",
+    "head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+    "cloud_run": "37865298193",
+    "status": "BOUNDED_PAGED6_AND7_SHARD_4H_12H_24H_HISTORY_AND_NEGATIVE_INTEGRITY_REGRESSIONS_PASS",
+    "cases": [
+      {
+        "hours": 4,
+        "shards": 6,
+        "fixture_rows": 294,
+        "price_points": 49,
+        "status": "CLOSED",
+        "queries": 1,
+        "all_pages_indexed": true
+      },
+      {
+        "hours": 12,
+        "shards": 6,
+        "fixture_rows": 870,
+        "price_points": 145,
+        "status": "CLOSED",
+        "queries": 3,
+        "all_pages_indexed": true
+      },
+      {
+        "hours": 24,
+        "shards": 6,
+        "fixture_rows": 1734,
+        "price_points": 289,
+        "status": "CLOSED",
+        "queries": 5,
+        "all_pages_indexed": true
+      },
+      {
+        "hours": 4,
+        "shards": 7,
+        "fixture_rows": 343,
+        "price_points": 49,
+        "status": "CLOSED",
+        "queries": 1,
+        "all_pages_indexed": true
+      },
+      {
+        "hours": 12,
+        "shards": 7,
+        "fixture_rows": 1015,
+        "price_points": 145,
+        "status": "CLOSED",
+        "queries": 3,
+        "all_pages_indexed": true
+      },
+      {
+        "hours": 24,
+        "shards": 7,
+        "fixture_rows": 2023,
+        "price_points": 289,
+        "status": "CLOSED",
+        "queries": 6,
+        "all_pages_indexed": true
+      },
+      {
+        "case": "overlapping_compatible_generations",
+        "status": "CLOSED",
+        "rows": 1740,
+        "price_points": 145,
+        "preferred_complete_generation_preserved": true
+      },
+      {
+        "defect": "missing_slot",
+        "status": "NO_FACTUAL_PATH",
+        "collector_reason": "COLLECTOR_COVERAGE_GAP",
+        "not_promoted_to_factual": true
+      },
+      {
+        "defect": "hash_corruption_after_first_page",
+        "status": "NO_FACTUAL_PATH",
+        "collector_reason": "COLLECTOR_INTEGRITY_OR_COVERAGE_GAP",
+        "not_promoted_to_factual": true
+      },
+      {
+        "defect": "future_receipt_after_first_page",
+        "status": "NO_FACTUAL_PATH",
+        "collector_reason": "COLLECTOR_INTEGRITY_OR_COVERAGE_GAP",
+        "not_promoted_to_factual": true
+      },
+      {
+        "defect": "incomplete_split_slot",
+        "status": "NO_FACTUAL_PATH",
+        "collector_reason": "COLLECTOR_COVERAGE_GAP",
+        "not_promoted_to_factual": true
+      }
+    ],
+    "cycle_envelope": {
+      "rows_read": 3000,
+      "rows_written": 8,
+      "requests_soft_cap": 14
+    },
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "scope": "REAL_SQLITE_HASHED_CONTROLLED_FIXTURE;NOT_ACTUAL_OUTCOME_OR_EMPIRICAL_VALIDATION"
+  },
+  "original12h_replay": {
+    "schema": "ORIGINAL12H_INDEXED_PAGE_REPLAY_20261009_V1",
+    "head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+    "cloud_run": "37865298193",
+    "status": "EXACT_ORIGINAL12H_PRICE_POINTS_UNCHANGED_WITH_INDEXED_CONTINUATION",
+    "original_source_cloud_run": 37864646300,
+    "original_read_ts": 1791505519147,
+    "original_start_ts": 1791462000000,
+    "original_end_ts": 1791505200000,
+    "original_rows": 870,
+    "points": 144,
+    "controlled_SQLite_queries": 3,
+    "controlled_rows_returned": 872,
+    "actual_D1": 0,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "source_clocks_refreshed": false,
+    "all_continuation_queries_indexed": true,
+    "scope": "IMMUTABLE_REAL_ORIGINAL_PAYLOAD_REPLAY_AT_ORIGINAL_RECEIPT;SQLITE_COUNTS_NOT_ACTUAL_BILLED_D1"
+  },
+  "previous_qualification": {
+    "cloud_run": 37864646300,
+    "tested_head": "66013a303f792aa909c345129198aa693e852151",
+    "artifact_id": 11587965323,
+    "artifact_digest": "sha256:f780cc69fd29e832920d1b18ea2caa9faae27c23ca384f93f4f986ace23b9a6a",
+    "scope": "ACTUAL12H_CLOSED_BUT_CURSOR_RESCANNED_PRIOR_ROWS;NOT24H_PRODUCTION_ACCEPTANCE"
+  },
+  "actual": {
+    "schema": "ACTUAL_PAGED_ORIGINAL24H_HISTORY_READER_20261009_V1",
+    "head": "41c72b30c1d7c47c18836719ef5a60baf0e236a4",
+    "cloud_run": "37865298193",
+    "read_ts": 1791505971960,
+    "contract": "BTC-USDT",
+    "start_ts": 1791419400000,
+    "end_ts": 1791505800000,
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "task_writes": 0,
+    "outcome_writes": 0,
+    "source_clocks_refreshed": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "scope": "READ_ONLY_ORIGINAL_COLLECTOR_SHARDS_THROUGH_ACTUAL_ASSEMBLED_PAGED_READER;NOT_NEW_SOURCE_OR_EMPIRICAL_ENTRY_OUTCOME_OR30_90DAY_COVERAGE",
+    "raw_pages": [
+      {
+        "file": "page-01.json.gz",
+        "raw_bytes": 8419475,
+        "raw_sha256": "f053faf5047e663d5ef1f8f2afb5438fc1cc43fbb0c84c289e39c69181aea921",
+        "gzip_sha256": "d037c0fee4f04c30957dd782f90c9d3d55cf5fe213aed086ae916391022f0770",
+        "rows": 401
+      },
+      {
+        "file": "page-02.json.gz",
+        "raw_bytes": 8523977,
+        "raw_sha256": "304ce11dcb71f5e700660f63bf2ea527241ee15e99ba6fcfbcd3217722db0e84",
+        "gzip_sha256": "cf8e397b78480d69b88214f894bc1189a927e491487a8c62cc287897db78bae8",
+        "rows": 401
+      },
+      {
+        "file": "page-03.json.gz",
+        "raw_bytes": 8514731,
+        "raw_sha256": "c8c8f820e895689b4b57126cc61c35e4a500cf439f5e7983bec10ab0d88fd8ac",
+        "gzip_sha256": "05559e94be2d604950ca6917e86501fe0a1a06bb079670368ddc1f66f2a0c673",
+        "rows": 401
+      },
+      {
+        "file": "page-04.json.gz",
+        "raw_bytes": 8522382,
+        "raw_sha256": "ea55d80fcd0ed32190f47e9939d1d00c3053c9dd93c2a5aec71dad9a57abc6f5",
+        "gzip_sha256": "e7005c456a75fe603a4bd6a303a6c0161f647d6304d94dd30382e60557377174",
+        "rows": 401
+      },
+      {
+        "file": "page-05.json.gz",
+        "raw_bytes": 2848711,
+        "raw_sha256": "8943697f1ad5c787062ab9d95857ba81f3ea7b8a10005d3485910e49bf3b7897",
+        "gzip_sha256": "e91de30fee9ab7ad005203bba1c2e824c26d1d402a52595ca85efb613e2acfee",
+        "rows": 134
+      }
+    ],
+    "admission": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": true,
+      "status": "CLOSED",
+      "reasons": [],
+      "daily": {
+        "ok": true,
+        "status": "DAY_USAGE_CLOSED",
+        "day_utc": "2026-10-09",
+        "run_count": 4,
+        "reserved_rows_read": 10000,
+        "reserved_rows_written": 176,
+        "measured_rows_read": 4730,
+        "measured_rows_written": 29,
+        "unknown_ops": 0,
+        "unfinished_count": 0
+      },
+      "next_reservation": {
+        "rows_read": 4000,
+        "rows_written": 16
+      },
+      "projected_reserved": {
+        "rows_read": 14000,
+        "rows_written": 192
+      },
+      "limits": {
+        "rows_read": 3500000,
+        "rows_written": 70000
+      }
+    },
+    "result": {
+      "status": "CLOSED",
+      "points": [
+        {
+          "ts": 1791419401985,
+          "price": 83220.4
+        },
+        {
+          "ts": 1791419701820,
+          "price": 83223.9
+        },
+        {
+          "ts": 1791420001953,
+          "price": 83221.8
+        },
+        {
+          "ts": 1791420302180,
+          "price": 83233.2
+        },
+        {
+          "ts": 1791420601940,
+          "price": 83354.8
+        },
+        {
+          "ts": 1791420901931,
+          "price": 83387.9
+        },
+        {
+          "ts": 1791421202697,
+          "price": 83329.6
+        },
+        {
+          "ts": 1791421501890,
+          "price": 83407.5
+        },
+        {
+          "ts": 1791421802312,
+          "price": 83434.7
+        },
+        {
+          "ts": 1791422101988,
+          "price": 83337.3
+        },
+        {
+          "ts": 1791422403205,
+          "price": 83278.7
+        },
+        {
+          "ts": 1791422702164,
+          "price": 83174
+        },
+        {
+          "ts": 1791423002236,
+          "price": 83237.2
+        },
+        {
+          "ts": 1791423301871,
+          "price": 83331
+        },
+        {
+          "ts": 1791423602006,
+          "price": 83224.8
+        },
+        {
+          "ts": 1791423902019,
+          "price": 83224
+        },
+        {
+          "ts": 1791424202753,
+          "price": 83212.3
+        },
+        {
+          "ts": 1791424502167,
+          "price": 83155.3
+        },
+        {
+          "ts": 1791424802126,
+          "price": 83066.8
+        },
+        {
+          "ts": 1791425102175,
+          "price": 83096.8
+        },
+        {
+          "ts": 1791425402291,
+          "price": 83005.5
+        },
+        {
+          "ts": 1791425702825,
+          "price": 83068.8
+        },
+        {
+          "ts": 1791426002025,
+          "price": 82994.9
+        },
+        {
+          "ts": 1791426301911,
+          "price": 83090.1
+        },
+        {
+          "ts": 1791426602027,
+          "price": 83118.8
+        },
+        {
+          "ts": 1791426903202,
+          "price": 83141.8
+        },
+        {
+          "ts": 1791427202042,
+          "price": 83191.5
+        },
+        {
+          "ts": 1791427503471,
+          "price": 83219.4
+        },
+        {
+          "ts": 1791427802176,
+          "price": 83199.1
+        },
+        {
+          "ts": 1791428103414,
+          "price": 83102.5
+        },
+        {
+          "ts": 1791428402216,
+          "price": 83127
+        },
+        {
+          "ts": 1791428702147,
+          "price": 82991.4
+        },
+        {
+          "ts": 1791429002304,
+          "price": 82942.6
+        },
+        {
+          "ts": 1791429301998,
+          "price": 82888.3
+        },
+        {
+          "ts": 1791429603581,
+          "price": 82811.4
+        },
+        {
+          "ts": 1791429902030,
+          "price": 82911.9
+        },
+        {
+          "ts": 1791430202016,
+          "price": 82926
+        },
+        {
+          "ts": 1791430502071,
+          "price": 82819.2
+        },
+        {
+          "ts": 1791430802271,
+          "price": 82853.7
+        },
+        {
+          "ts": 1791431102052,
+          "price": 82805
+        },
+        {
+          "ts": 1791431402193,
+          "price": 82824.2
+        },
+        {
+          "ts": 1791431701937,
+          "price": 82720.9
+        },
+        {
+          "ts": 1791432002280,
+          "price": 82726.1
+        },
+        {
+          "ts": 1791432302021,
+          "price": 82626.3
+        },
+        {
+          "ts": 1791432601974,
+          "price": 82727.3
+        },
+        {
+          "ts": 1791432902004,
+          "price": 82683.8
+        },
+        {
+          "ts": 1791433202226,
+          "price": 82564.3
+        },
+        {
+          "ts": 1791433501935,
+          "price": 82538.4
+        },
+        {
+          "ts": 1791433802024,
+          "price": 82835.1
+        },
+        {
+          "ts": 1791434102199,
+          "price": 82788.6
+        },
+        {
+          "ts": 1791434402011,
+          "price": 82533.5
+        },
+        {
+          "ts": 1791434702819,
+          "price": 82480
+        },
+        {
+          "ts": 1791435002235,
+          "price": 82560
+        },
+        {
+          "ts": 1791435302071,
+          "price": 82639.5
+        },
+        {
+          "ts": 1791435602176,
+          "price": 82609.3
+        },
+        {
+          "ts": 1791435902003,
+          "price": 82618.2
+        },
+        {
+          "ts": 1791436203258,
+          "price": 82562.5
+        },
+        {
+          "ts": 1791436502560,
+          "price": 82730.8
+        },
+        {
+          "ts": 1791436802121,
+          "price": 82783.7
+        },
+        {
+          "ts": 1791437101895,
+          "price": 82931.2
+        },
+        {
+          "ts": 1791437402059,
+          "price": 82871.6
+        },
+        {
+          "ts": 1791437701988,
+          "price": 82967.6
+        },
+        {
+          "ts": 1791438003307,
+          "price": 82936.4
+        },
+        {
+          "ts": 1791438302059,
+          "price": 82836.5
+        },
+        {
+          "ts": 1791438603275,
+          "price": 82866.7
+        },
+        {
+          "ts": 1791438903748,
+          "price": 82731.8
+        },
+        {
+          "ts": 1791439202078,
+          "price": 82634.3
+        },
+        {
+          "ts": 1791439501943,
+          "price": 82741.5
+        },
+        {
+          "ts": 1791439803429,
+          "price": 82826.3
+        },
+        {
+          "ts": 1791440102490,
+          "price": 82865.4
+        },
+        {
+          "ts": 1791440401619,
+          "price": 82811.4
+        },
+        {
+          "ts": 1791440701926,
+          "price": 82667.7
+        },
+        {
+          "ts": 1791441002294,
+          "price": 82548.5
+        },
+        {
+          "ts": 1791441302016,
+          "price": 82485.8
+        },
+        {
+          "ts": 1791441602176,
+          "price": 82562
+        },
+        {
+          "ts": 1791441901910,
+          "price": 82650.3
+        },
+        {
+          "ts": 1791442201979,
+          "price": 82750.4
+        },
+        {
+          "ts": 1791442501809,
+          "price": 82888
+        },
+        {
+          "ts": 1791442802852,
+          "price": 82820.6
+        },
+        {
+          "ts": 1791443101706,
+          "price": 82702.5
+        },
+        {
+          "ts": 1791443402257,
+          "price": 82936.6
+        },
+        {
+          "ts": 1791443702064,
+          "price": 83022.2
+        },
+        {
+          "ts": 1791444002905,
+          "price": 83119.8
+        },
+        {
+          "ts": 1791444301750,
+          "price": 83142
+        },
+        {
+          "ts": 1791444601668,
+          "price": 83106.9
+        },
+        {
+          "ts": 1791444901985,
+          "price": 83085
+        },
+        {
+          "ts": 1791445201646,
+          "price": 83132.1
+        },
+        {
+          "ts": 1791445502132,
+          "price": 83055.2
+        },
+        {
+          "ts": 1791445801781,
+          "price": 83038.7
+        },
+        {
+          "ts": 1791446101858,
+          "price": 82944.5
+        },
+        {
+          "ts": 1791446401658,
+          "price": 82953.3
+        },
+        {
+          "ts": 1791446701995,
+          "price": 82958.8
+        },
+        {
+          "ts": 1791447001855,
+          "price": 83009.1
+        },
+        {
+          "ts": 1791447301580,
+          "price": 82918
+        },
+        {
+          "ts": 1791447601949,
+          "price": 82986.2
+        },
+        {
+          "ts": 1791447901801,
+          "price": 82902
+        },
+        {
+          "ts": 1791448203735,
+          "price": 82968.8
+        },
+        {
+          "ts": 1791448501833,
+          "price": 82821.6
+        },
+        {
+          "ts": 1791448801632,
+          "price": 82792.3
+        },
+        {
+          "ts": 1791449101787,
+          "price": 82828.5
+        },
+        {
+          "ts": 1791449401893,
+          "price": 82875.7
+        },
+        {
+          "ts": 1791449701607,
+          "price": 82796.1
+        },
+        {
+          "ts": 1791450001680,
+          "price": 82820.5
+        },
+        {
+          "ts": 1791450301726,
+          "price": 82973.3
+        },
+        {
+          "ts": 1791450601654,
+          "price": 82994
+        },
+        {
+          "ts": 1791450902439,
+          "price": 83000.6
+        },
+        {
+          "ts": 1791451201603,
+          "price": 82925.5
+        },
+        {
+          "ts": 1791451501813,
+          "price": 83022.8
+        },
+        {
+          "ts": 1791451801819,
+          "price": 82995.3
+        },
+        {
+          "ts": 1791452103030,
+          "price": 83087.3
+        },
+        {
+          "ts": 1791452401703,
+          "price": 83114.9
+        },
+        {
+          "ts": 1791452702807,
+          "price": 83079
+        },
+        {
+          "ts": 1791453001866,
+          "price": 83059.7
+        },
+        {
+          "ts": 1791453301972,
+          "price": 83068.5
+        },
+        {
+          "ts": 1791453601551,
+          "price": 83080
+        },
+        {
+          "ts": 1791453901826,
+          "price": 83117.5
+        },
+        {
+          "ts": 1791454201843,
+          "price": 83011.7
+        },
+        {
+          "ts": 1791454501860,
+          "price": 83036.1
+        },
+        {
+          "ts": 1791454801876,
+          "price": 82945.9
+        },
+        {
+          "ts": 1791455101882,
+          "price": 82917.9
+        },
+        {
+          "ts": 1791455401739,
+          "price": 82744.4
+        },
+        {
+          "ts": 1791455701775,
+          "price": 82696.5
+        },
+        {
+          "ts": 1791456001766,
+          "price": 82650.3
+        },
+        {
+          "ts": 1791456301634,
+          "price": 82668.7
+        },
+        {
+          "ts": 1791456601868,
+          "price": 82642.2
+        },
+        {
+          "ts": 1791456901657,
+          "price": 82661.4
+        },
+        {
+          "ts": 1791457201855,
+          "price": 82699.4
+        },
+        {
+          "ts": 1791457501926,
+          "price": 82608.4
+        },
+        {
+          "ts": 1791457801640,
+          "price": 82420.1
+        },
+        {
+          "ts": 1791458102649,
+          "price": 82439.6
+        },
+        {
+          "ts": 1791458401799,
+          "price": 82355.2
+        },
+        {
+          "ts": 1791458701843,
+          "price": 82491.3
+        },
+        {
+          "ts": 1791459003290,
+          "price": 82515.8
+        },
+        {
+          "ts": 1791459302161,
+          "price": 82371.7
+        },
+        {
+          "ts": 1791459601884,
+          "price": 82479.1
+        },
+        {
+          "ts": 1791459901610,
+          "price": 82595.5
+        },
+        {
+          "ts": 1791460201841,
+          "price": 82529.9
+        },
+        {
+          "ts": 1791460501855,
+          "price": 82546.4
+        },
+        {
+          "ts": 1791460801722,
+          "price": 82466.2
+        },
+        {
+          "ts": 1791461101876,
+          "price": 82312.7
+        },
+        {
+          "ts": 1791461401795,
+          "price": 82383.8
+        },
+        {
+          "ts": 1791461701922,
+          "price": 82373.1
+        },
+        {
+          "ts": 1791462001846,
+          "price": 82401.7
+        },
+        {
+          "ts": 1791462301860,
+          "price": 82434.5
+        },
+        {
+          "ts": 1791462601958,
+          "price": 82437.8
+        },
+        {
+          "ts": 1791462901900,
+          "price": 82331
+        },
+        {
+          "ts": 1791463201680,
+          "price": 82336.7
+        },
+        {
+          "ts": 1791463501903,
+          "price": 82340
+        },
+        {
+          "ts": 1791463801766,
+          "price": 82202.6
+        },
+        {
+          "ts": 1791464101817,
+          "price": 82282.8
+        },
+        {
+          "ts": 1791464401827,
+          "price": 82289.9
+        },
+        {
+          "ts": 1791464701856,
+          "price": 82295.7
+        },
+        {
+          "ts": 1791465001773,
+          "price": 82384.6
+        },
+        {
+          "ts": 1791465301867,
+          "price": 82450.2
+        },
+        {
+          "ts": 1791465601645,
+          "price": 82564
+        },
+        {
+          "ts": 1791465903079,
+          "price": 82492.6
+        },
+        {
+          "ts": 1791466202832,
+          "price": 82323.6
+        },
+        {
+          "ts": 1791466501844,
+          "price": 82272.8
+        },
+        {
+          "ts": 1791466803400,
+          "price": 82072.8
+        },
+        {
+          "ts": 1791467103677,
+          "price": 82003.7
+        },
+        {
+          "ts": 1791467401851,
+          "price": 82095.6
+        },
+        {
+          "ts": 1791467702891,
+          "price": 82073.8
+        },
+        {
+          "ts": 1791468002490,
+          "price": 82164.9
+        },
+        {
+          "ts": 1791468301634,
+          "price": 82264.7
+        },
+        {
+          "ts": 1791468601917,
+          "price": 82411.8
+        },
+        {
+          "ts": 1791468902057,
+          "price": 82514.2
+        },
+        {
+          "ts": 1791469202441,
+          "price": 82540.4
+        },
+        {
+          "ts": 1791469501937,
+          "price": 82485.5
+        },
+        {
+          "ts": 1791469801454,
+          "price": 82702.1
+        },
+        {
+          "ts": 1791470101773,
+          "price": 82681.2
+        },
+        {
+          "ts": 1791470402071,
+          "price": 82531.7
+        },
+        {
+          "ts": 1791470701540,
+          "price": 82537.3
+        },
+        {
+          "ts": 1791471001721,
+          "price": 82641
+        },
+        {
+          "ts": 1791471301868,
+          "price": 82583.9
+        },
+        {
+          "ts": 1791471602087,
+          "price": 82657.3
+        },
+        {
+          "ts": 1791471901910,
+          "price": 82470.1
+        },
+        {
+          "ts": 1791472201885,
+          "price": 82369
+        },
+        {
+          "ts": 1791472501534,
+          "price": 82136.7
+        },
+        {
+          "ts": 1791472802465,
+          "price": 81950.3
+        },
+        {
+          "ts": 1791473102017,
+          "price": 81561
+        },
+        {
+          "ts": 1791473401843,
+          "price": 81323.1
+        },
+        {
+          "ts": 1791473701901,
+          "price": 81161.4
+        },
+        {
+          "ts": 1791474002041,
+          "price": 81273
+        },
+        {
+          "ts": 1791474301873,
+          "price": 81192.9
+        },
+        {
+          "ts": 1791474602004,
+          "price": 81414.4
+        },
+        {
+          "ts": 1791474901493,
+          "price": 81150.2
+        },
+        {
+          "ts": 1791475201646,
+          "price": 81001.6
+        },
+        {
+          "ts": 1791475501754,
+          "price": 81020.4
+        },
+        {
+          "ts": 1791475801753,
+          "price": 81107.2
+        },
+        {
+          "ts": 1791476102352,
+          "price": 81002.8
+        },
+        {
+          "ts": 1791476401706,
+          "price": 81344.8
+        },
+        {
+          "ts": 1791476701906,
+          "price": 81318.5
+        },
+        {
+          "ts": 1791477001752,
+          "price": 81295.4
+        },
+        {
+          "ts": 1791477302085,
+          "price": 81260.9
+        },
+        {
+          "ts": 1791477601616,
+          "price": 81357.8
+        },
+        {
+          "ts": 1791477902871,
+          "price": 81276.2
+        },
+        {
+          "ts": 1791478201893,
+          "price": 81007.5
+        },
+        {
+          "ts": 1791478501916,
+          "price": 81059.4
+        },
+        {
+          "ts": 1791478801768,
+          "price": 80939.4
+        },
+        {
+          "ts": 1791479101887,
+          "price": 80786.9
+        },
+        {
+          "ts": 1791479402129,
+          "price": 80795.4
+        },
+        {
+          "ts": 1791479701982,
+          "price": 80907.2
+        },
+        {
+          "ts": 1791480002399,
+          "price": 80803.2
+        },
+        {
+          "ts": 1791480301932,
+          "price": 80515.2
+        },
+        {
+          "ts": 1791480603224,
+          "price": 80698.9
+        },
+        {
+          "ts": 1791480902987,
+          "price": 80840.5
+        },
+        {
+          "ts": 1791481202773,
+          "price": 80900.9
+        },
+        {
+          "ts": 1791481503270,
+          "price": 80803.9
+        },
+        {
+          "ts": 1791481802062,
+          "price": 80555.1
+        },
+        {
+          "ts": 1791482102095,
+          "price": 80642.8
+        },
+        {
+          "ts": 1791482402380,
+          "price": 80711.8
+        },
+        {
+          "ts": 1791482702366,
+          "price": 80583.9
+        },
+        {
+          "ts": 1791483003236,
+          "price": 80541.7
+        },
+        {
+          "ts": 1791483302119,
+          "price": 80769.9
+        },
+        {
+          "ts": 1791483602969,
+          "price": 81014.5
+        },
+        {
+          "ts": 1791483902086,
+          "price": 81390.6
+        },
+        {
+          "ts": 1791484201863,
+          "price": 81394
+        },
+        {
+          "ts": 1791484502068,
+          "price": 81446.1
+        },
+        {
+          "ts": 1791484801969,
+          "price": 81477.6
+        },
+        {
+          "ts": 1791485102040,
+          "price": 81491.8
+        },
+        {
+          "ts": 1791485402030,
+          "price": 81470.7
+        },
+        {
+          "ts": 1791485702659,
+          "price": 81483.9
+        },
+        {
+          "ts": 1791486002385,
+          "price": 81470.5
+        },
+        {
+          "ts": 1791486302229,
+          "price": 81580.8
+        },
+        {
+          "ts": 1791486601990,
+          "price": 81426.9
+        },
+        {
+          "ts": 1791486902378,
+          "price": 81462.4
+        },
+        {
+          "ts": 1791487202099,
+          "price": 81584
+        },
+        {
+          "ts": 1791487502014,
+          "price": 81627.8
+        },
+        {
+          "ts": 1791487802154,
+          "price": 81656.6
+        },
+        {
+          "ts": 1791488102413,
+          "price": 81758.6
+        },
+        {
+          "ts": 1791488402889,
+          "price": 81797
+        },
+        {
+          "ts": 1791488702036,
+          "price": 81704.7
+        },
+        {
+          "ts": 1791489002408,
+          "price": 81697
+        },
+        {
+          "ts": 1791489302084,
+          "price": 81775.6
+        },
+        {
+          "ts": 1791489602050,
+          "price": 81736.8
+        },
+        {
+          "ts": 1791489902124,
+          "price": 81775.5
+        },
+        {
+          "ts": 1791490202255,
+          "price": 81845.5
+        },
+        {
+          "ts": 1791490502297,
+          "price": 81851.3
+        },
+        {
+          "ts": 1791490802527,
+          "price": 81791.1
+        },
+        {
+          "ts": 1791491102665,
+          "price": 81700
+        },
+        {
+          "ts": 1791491402044,
+          "price": 81732.5
+        },
+        {
+          "ts": 1791491702061,
+          "price": 81728.9
+        },
+        {
+          "ts": 1791492001976,
+          "price": 81776.7
+        },
+        {
+          "ts": 1791492302021,
+          "price": 81788.8
+        },
+        {
+          "ts": 1791492601966,
+          "price": 81719.3
+        },
+        {
+          "ts": 1791492901926,
+          "price": 81753
+        },
+        {
+          "ts": 1791493202062,
+          "price": 81779.5
+        },
+        {
+          "ts": 1791493502007,
+          "price": 81649.8
+        },
+        {
+          "ts": 1791493802379,
+          "price": 81648.1
+        },
+        {
+          "ts": 1791494102013,
+          "price": 81715
+        },
+        {
+          "ts": 1791494402101,
+          "price": 81741.2
+        },
+        {
+          "ts": 1791494701885,
+          "price": 81683.5
+        },
+        {
+          "ts": 1791495002440,
+          "price": 81666.3
+        },
+        {
+          "ts": 1791495302074,
+          "price": 81624.9
+        },
+        {
+          "ts": 1791495601930,
+          "price": 81700.4
+        },
+        {
+          "ts": 1791495901997,
+          "price": 81647.8
+        },
+        {
+          "ts": 1791496202222,
+          "price": 81595.4
+        },
+        {
+          "ts": 1791496502091,
+          "price": 81678.5
+        },
+        {
+          "ts": 1791496802220,
+          "price": 81668
+        },
+        {
+          "ts": 1791497101931,
+          "price": 81667.5
+        },
+        {
+          "ts": 1791497402315,
+          "price": 81782.6
+        },
+        {
+          "ts": 1791497702040,
+          "price": 81791
+        },
+        {
+          "ts": 1791498002242,
+          "price": 81776.8
+        },
+        {
+          "ts": 1791498301860,
+          "price": 81749.3
+        },
+        {
+          "ts": 1791498602025,
+          "price": 81768
+        },
+        {
+          "ts": 1791498902192,
+          "price": 81830.3
+        },
+        {
+          "ts": 1791499202256,
+          "price": 81880.7
+        },
+        {
+          "ts": 1791499501988,
+          "price": 81874.8
+        },
+        {
+          "ts": 1791499802670,
+          "price": 81893.6
+        },
+        {
+          "ts": 1791500102045,
+          "price": 81826.1
+        },
+        {
+          "ts": 1791500402390,
+          "price": 81854.9
+        },
+        {
+          "ts": 1791500702024,
+          "price": 81859.2
+        },
+        {
+          "ts": 1791501001971,
+          "price": 81828.5
+        },
+        {
+          "ts": 1791501302066,
+          "price": 81801.1
+        },
+        {
+          "ts": 1791501602211,
+          "price": 81809.1
+        },
+        {
+          "ts": 1791501901883,
+          "price": 81862
+        },
+        {
+          "ts": 1791502202369,
+          "price": 81795.9
+        },
+        {
+          "ts": 1791502501975,
+          "price": 81833.8
+        },
+        {
+          "ts": 1791502801936,
+          "price": 81814.6
+        },
+        {
+          "ts": 1791503102444,
+          "price": 81773.8
+        },
+        {
+          "ts": 1791503402785,
+          "price": 81681.4
+        },
+        {
+          "ts": 1791503702084,
+          "price": 81665.9
+        },
+        {
+          "ts": 1791504001953,
+          "price": 81705.4
+        },
+        {
+          "ts": 1791504301941,
+          "price": 81756.2
+        },
+        {
+          "ts": 1791504602027,
+          "price": 81753.6
+        },
+        {
+          "ts": 1791504902356,
+          "price": 81801.9
+        },
+        {
+          "ts": 1791505203272,
+          "price": 81700
+        },
+        {
+          "ts": 1791505502318,
+          "price": 81708.6
+        }
+      ],
+      "rows_loaded": 1734,
+      "history_source": "REPORT2_MARKET_SNAPSHOT_BATCH_V1",
+      "sampling_minutes": 5,
+      "extrema_scope": "OBSERVED_SNAPSHOTS_ONLY"
+    },
+    "policy": {
+      "rows_read": 3000,
+      "rows_written": 8,
+      "requests_soft_cap": 14,
+      "max_scan_rows_per_path": 320,
+      "max_collector_rows_per_page": 400,
+      "max_collector_pages_per_path": 7,
+      "max_collector_payload_bytes_per_path": 50331648,
+      "max_capture_candidates": 12,
+      "max_early_outcomes_per_cycle": 1,
+      "max_entry_samples_per_cycle": 1,
+      "max_entry_outcomes_per_cycle": 1
+    },
+    "cycle_usage": {
+      "rows_read": 1761,
+      "rows_written": 0,
+      "requests": 5,
+      "unknown_ops": 0
+    },
+    "status": "ACTUAL_ORIGINAL24H_PAGED_HISTORY_CLOSED",
+    "proof_limit": "A path is closed only with original receipt/hash/schema/complete-slot/exact-contract/time/cadence checks; extrema are sampled snapshots only. This one original24h path does not prove all-asset coverage or an empirical entry outcome.",
+    "finalized_usage": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "status": "FINALIZED",
+      "reservation_id": "PAGED_HISTORY_ACTUAL:37865298193:1",
+      "source_run_id": "37865298193",
+      "measured_rows_read": 1766,
+      "measured_rows_written_accounted": 4,
+      "measured_requests_accounted": 9,
+      "unknown_ops": 0
+    },
+    "d1_usage": {
+      "requests": 9,
+      "rows_read": 1767,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 5,
+          "rows_read": 1761,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    }
+  },
+  "retained_directory": "checkpoints/paged-prospective-history-37865298193",
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "project_complete": false,
+  "new_fresh_SENT": false,
+  "all_global_source_D1_core_weights_ENTRY_and_original_TTL_unchanged": true,
+  "actual24h_coverage_verified": true,
+  "controlled24h_is_not_empirical_outcome": true
+}
