@@ -167,3 +167,8 @@ PR266 закрывает дефект empty-string equality: две отсутс
 
 
 Актуальное продолжение после PR267: `checkpoints/FULL_TZ_CONTINUATION_20261009_AFTER_PR267.md`. Actual37954328290 подтвердил новые native trigger-refusal поляPR266 и сохранил day unknown1; это отказ до анализа, не ENTRY. Новый full-cycle adaptive native readback пока не принят. Полный реестр, история102 и статистика остаются открытыми; source clocks,прежние SENT и суточные caps не изменены. Proof: `checkpoints/POST266_NATIVE_REFUSAL_AND_RETAINED_LIQUIDATION_SEMANTICS_20261009.json`.
+
+
+Последние критерии владельца подтверждены09.10 20:05МСК: `checkpoints/OWNER_MAXIMUM_USEFUL_CONTINUATION_RESTORED_20261009.json`. Обязательные15/16 не критерий пригодного информационного отчёта; карта необязательна, shortTelegram до2уровней/сторону. Не переоткрывать прошлую scoped приёмку; приоритет полезной production-chain. PR269: retained HTX multi-day reader проверен на одном actual NEAR дне и synthetic boundary fixtures; реальное30–90дневное покрытие не создано. Штатный37963513377 в20:03МСК снова отказал до анализа на том же unknownD1=1; свежих market decisions/ENTRY нет. Квота не переоценена и не сброшена. Актуальные proof/status/phase сохраняют это ограничение.
+
+Сверка последних cloud-инструкций, прежней scoped приёмки, Library-аудитов и внедрений PR254–269: `checkpoints/CLOUD_RULES_AND_COMPLETED_WORK_RECONCILIATION_20261009.json`. Не повторять закрытые ремонты из устаревшего аудита ZEC или возвращать обязательные15/16, полный raw24h/Nansen и четыре уровня в briefTelegram. Ограничения фактической приёмки сохранены.
