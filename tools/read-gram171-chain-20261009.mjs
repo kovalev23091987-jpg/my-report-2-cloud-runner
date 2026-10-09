@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
 import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
-const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),reservation={rows_read:1000,rows_written:16},id='GRAM171_CHAIN:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT,pub='PUB:52245a6bbe74c0377546fe64df30997b02a14373',contract='GRAM-USDT',wave='EDW:GRAM-USDT:1791548960778:G4';
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),reservation={rows_read:1000,rows_written:16},id='GRAM171_OWNER_READ:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT,pub='PUB:52245a6bbe74c0377546fe64df30997b02a14373',contract='GRAM-USDT',wave='EDW:GRAM-USDT:1791548960778:G4';
 const out={schema:'GRAM_ORIGINAL_SAME_RUN_SENT_AND_CURRENT_TASK_READ_20261009_V1',head:process.env.GITHUB_SHA,cloud_run:process.env.GITHUB_RUN_ID,read_ts:now,sourceHTTP:0,MAIN:0,Telegram:0,task_writes:0,source_clock_refreshed:false,full_TZ_complete:false};
 out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
 if(out.admission.allowed){await reserveRunBudget(db,{reservationId:id,now,reservation});try{
@@ -12,6 +12,7 @@ if(out.admission.allowed){await reserveRunBudget(db,{reservationId:id,now,reserv
  if(child)out.recheck_publication=await db.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(child).first();
  out.trigger_kick_slots=await db.prepare('SELECT day_key,slot,task_id,kick_ts FROM report2_trigger_kick_slot WHERE day_key=?1 ORDER BY slot LIMIT 3').bind(new Date(now).toISOString().slice(0,10)).all();
  out.trigger_kick_poll=await db.prepare('SELECT * FROM report2_trigger_kick_poll WHERE day_key=?1 LIMIT 1').bind(new Date(now).toISOString().slice(0,10)).first();
+ out.scheduler_owner_read=await db.prepare('SELECT owner,updated_ts FROM v3_scheduler_job_ownership_shadow WHERE job_key=?1 LIMIT 1').bind('PERIODIC_ANALYTICS').first();
  out.original_shadow=await db.prepare('SELECT * FROM shadow_decision_log INDEXED BY idx_shadow_decision_log_contract_ts WHERE contract_code=?1 AND observed_ts BETWEEN ?2 AND ?3 ORDER BY observed_ts DESC LIMIT 1').bind(contract,1791548949006,1791549059999).first();
  out.original_final=await db.prepare('SELECT * FROM final_decision_integration_shadow INDEXED BY idx_final_decision_observation WHERE contract_code=?3 AND observation_ts BETWEEN ?1 AND ?2 ORDER BY observation_ts DESC LIMIT 1').bind(1791548949006,1791549059999,contract).first();
  const u=db.usageSnapshot();if(u.unknown_ops||u.rows_read>900||u.rows_written>14||u.requests>15)throw Error('READ_ENVELOPE_EXCEEDED');out.status='EXACT_ORIGINAL_SENT_AND_CURRENT_TASK_READ_CLOSED';
