@@ -1,12 +1,13 @@
-name: Original24h all approved canonical decisions and trigger prices
+name: Recover qualified original24h trigger cohort without repeated D1
 on:
   push:
     branches: [codex/original24h-general-trigger-cohort-20261009]
-    paths: ['.github/workflows/original24h-trigger-cohort-20261009.yml', 'tools/original-trigger-cohort-audit*', 'tools/read-original24h-trigger-cohort-20261009.mjs']
+    paths: ['.github/workflows/original24h-trigger-cohort-20261009.yml']
 permissions:
   contents: write
+  actions: read
 jobs:
-  read:
+  retain:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
@@ -14,37 +15,42 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Require exact main and own original-window owner
+      - name: Require exact owner and unchanged already qualified audit code
         uses: actions/github-script@v7
         with:
           script: |
             const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='c488ea18e9aba24b5f0ae83f4524299922bd58a5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
-      - name: Verify strict original sampled-window audit
-        run: |
-          mkdir -p audit-output
-          node --test tools/original-trigger-cohort-audit.test.mjs > audit-output/controlled-tests.tap
-          node --check tools/read-original24h-trigger-cohort-20261009.mjs
-      - name: Read bounded original canonical cohort without source or task writes
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/read-original24h-trigger-cohort-20261009.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
+            const cmp=(await github.rest.repos.compareCommits({owner,repo,base:'37b902402e3f3d70bfa14b7baa9be0b96d972fd7',head:context.sha})).data;
+            if(cmp.files.some(f=>!['.github/workflows/original24h-trigger-cohort-20261009.yml','tools/audit-original24h-market-range-20261009.mjs','checkpoints/ORIGINAL24H_TRIGGER_COHORT_RETENTION_HISTORY_20261009.json'].includes(f.filename)))throw Error('QUALIFIED_AUDIT_CODE_CHANGED');
+      - name: Recover exact qualified source artifact without source or D1 calls
+        uses: actions/github-script@v7
         with:
-          name: original24h-trigger-cohort-${{ github.run_id }}
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11588993547,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(b).digest('hex')!=='96441c960e095f65ca46ee5ffb649b81c649ae2dcc6b039ed7af3baca816e9be')throw Error('SOURCE_ZIP_HASH');
+            fs.writeFileSync('qualified-source.zip',b);fs.mkdirSync('audit-output',{recursive:true});cp.execFileSync('unzip',['-q','qualified-source.zip','-d','audit-output']);
+            const p=JSON.parse(fs.readFileSync('audit-output/original24h-trigger-cohort.json')),raw=fs.readFileSync('audit-output/original24h-canonical-rows.json.gz');
+            if(p.status!=='BOUNDED_ALL_APPROVED_ORIGINAL24H_DECISION_TRIGGER_AUDIT_CLOSED'||p.head!=='37b902402e3f3d70bfa14b7baa9be0b96d972fd7'||p.summary.canonical_rows!==47||p.summary.trigger_candidates!==14||p.summary.exact_SENT!==9||!p.exact_dispatch_range_closed||crypto.createHash('sha256').update(raw).digest('hex')!==p.original_canonical_gzip_sha256)throw Error('SOURCE_AUDIT_NOT_CLOSED');
+            const expanded=require('zlib').gunzipSync(raw);if(crypto.createHash('sha256').update(expanded).digest('hex')!==p.original_canonical_raw_sha256)throw Error('RAW_SOURCE_HASH');
+            const t=fs.readFileSync('audit-output/controlled-tests.tap','utf8');if(!/(?:#|ℹ) pass 8/.test(t)||!/(?:#|ℹ) fail 0/.test(t))throw Error('SOURCE_TESTS_NOT_PASS');
+      - name: Compute descriptive original ranges without fresh prices or entry inference
+        run: node tools/audit-original24h-market-range-20261009.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recovered-original24h-trigger-cohort-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
-      - name: Retain original states and measured bounded audit
+      - name: Retain qualified original timestamps and bounded audit
         uses: actions/github-script@v7
         with:
           script: |
             const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='c488ea18e9aba24b5f0ae83f4524299922bd58a5')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
-            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,proof=JSON.parse(fs.readFileSync('audit-output/original24h-trigger-cohort.json'));
-            if(proof.status!=='BOUNDED_ALL_APPROVED_ORIGINAL24H_DECISION_TRIGGER_AUDIT_CLOSED'||proof.sourceHTTP!==0||proof.task_writes!==0||proof.source_clocks_refreshed)throw Error('AUDIT_NOT_CLOSED');
-            const tests=fs.readFileSync('audit-output/controlled-tests.tap','utf8');if(!/(?:#|ℹ) pass 8/.test(tests)||!/(?:#|ℹ) fail 0/.test(tests))throw Error('TEST_NOT_PASS');
+            const fs=require('fs'),proof=JSON.parse(fs.readFileSync('audit-output/original24h-trigger-cohort.json'));
+            proof.retention={cloud_run:context.runId,tested_head:context.sha,source_cloud_run:37869142345,source_artifact_id:11588993547,source_artifact_digest:'sha256:96441c960e095f65ca46ee5ffb649b81c649ae2dcc6b039ed7af3baca816e9be',source_qualification:'SUCCESS;ONLY_FINAL_WRITER_FAILED_DUPLICATE_OWNER_IDENTIFIER',sourceHTTP:0,D1:0};
+            proof.retained_directory='checkpoints/original24h-trigger-cohort-'+context.runId;
             const entries=[];
-            for(const file of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+file).toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/original24h-trigger-cohort-'+context.runId+'/'+file,mode:'100644',type:'blob',sha:b.sha});}
-            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/ORIGINAL24H_ALL_APPROVED_TRIGGER_COHORT_20261009.json',mode:'100644',type:'blob',sha:b.sha});
-            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,commit=(await github.rest.git.createCommit({owner,repo,message:'Retain actual complete original24h canonical trigger diagnosis',tree:tree.sha,parents:[context.sha]})).data;
+            for(const file of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+file).toString('base64'),encoding:'base64'})).data;entries.push({path:proof.retained_directory+'/'+file,mode:'100644',type:'blob',sha:b.sha});}
+            for(const [path,data] of [['checkpoints/ORIGINAL24H_ALL_APPROVED_TRIGGER_COHORT_20261009.json',JSON.stringify(proof,null,2)+'\n'],['checkpoints/ORIGINAL24H_ALL102_DESCRIPTIVE_PRICE_RANGES_20261009.json',fs.readFileSync('audit-output/original24h-market-ranges.json','utf8')]]){const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(data).toString('base64'),encoding:'base64'})).data;entries.push({path,mode:'100644',type:'blob',sha:b.sha});}
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,commit=(await github.rest.git.createCommit({owner,repo,message:'Retain complete original24h decision, sampled trigger and descriptive range proofs',tree:tree.sha,parents:[context.sha]})).data;
             await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:commit.sha,force:false});

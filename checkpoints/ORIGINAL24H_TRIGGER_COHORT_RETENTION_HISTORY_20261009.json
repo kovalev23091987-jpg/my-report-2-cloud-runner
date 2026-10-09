@@ -1,0 +1,63 @@
+{
+  "schema": "ORIGINAL24H_TRIGGER_COHORT_RETENTION_HISTORY_20261009_V1",
+  "source_cloud_run": 37869142345,
+  "tested_head": "37b902402e3f3d70bfa14b7baa9be0b96d972fd7",
+  "qualification": "COMPLETE_ORIGINAL47_DECISIONS14_OBSERVATIONS9_SENT_AND8_CONTROLS_PASS",
+  "final_writer_failure": "SyntaxError: Identifier 'owner' has already been declared",
+  "artifact_id": 11588993547,
+  "artifact_digest": "sha256:96441c960e095f65ca46ee5ffb649b81c649ae2dcc6b039ed7af3baca816e9be",
+  "charged_D1": {
+    "requests": 9,
+    "rows_read": 1151,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 11,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 2,
+        "rows_read": 587,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 460,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 37,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 55,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "no_repeat_actual_source_or_D1": true,
+  "recovery_sourceHTTP": 0,
+  "recovery_D1": 0,
+  "project_complete": false
+}
