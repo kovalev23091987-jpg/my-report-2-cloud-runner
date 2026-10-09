@@ -30,6 +30,11 @@ jobs:
           node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
           node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
           node --check tools/read-native-kline-archive-20261009.mjs
+      - name: Restore original one-attempt transport failure and unchanged four-attempt reservation
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11614790613,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(b).digest('hex')!=='141ca65187d50b85871c6a0a940e25930a7bbe7299b475a2abeb6f8fa4d28e0f')throw Error('EXACT_ORIGINAL_PROBE_DIGEST');fs.writeFileSync('retained-native-kline.zip',b);fs.mkdirSync('retained-native-kline');cp.execFileSync('unzip',['-q','retained-native-kline.zip','-d','retained-native-kline']);
       - name: Preserve one bounded official kline archive and checksum
         env:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
