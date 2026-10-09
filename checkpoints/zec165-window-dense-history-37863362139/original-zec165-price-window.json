@@ -1,0 +1,448 @@
+{
+  "schema": "ORIGINAL_ZEC165_IMMUTABLE_PRICE_WINDOW_DIAGNOSIS_20261009_V1",
+  "head": "365b761d3d7abc85ff2cbb1b4e11e3e06128b295",
+  "cloud_run": "37863362139",
+  "read_ts": 1791504614887,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "cache_writes": 0,
+  "source_clocks_refreshed": false,
+  "actual_ENTRY": false,
+  "helper_sha256": "1287cb2872c8e68d10ca7827f960c3abcba1207e354f30d4d456e9dc9367848d",
+  "collector_source_sha256": "9a30ef54c44f14db1e072caefd8b3546dfbd481a679d08e0a6904760078cbd71",
+  "scope": "READ_ONLY_ORIGINAL_IMMUTABLE_SHARDS_AND_EXACT_CANONICAL;REPLAY_AT_STORED_RECEIPT_IS_NOT_PROOF_OF_ACTUAL_COLLECTOR_ACTION",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-09",
+      "run_count": 1,
+      "reserved_rows_read": 1000,
+      "reserved_rows_written": 128,
+      "measured_rows_read": 33,
+      "measured_rows_written": 17,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 1000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 2000,
+      "rows_written": 144
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "actual_task": {
+    "task_id": "RCHK:61df81de7da78101dd5216170974992a2f3d563d",
+    "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+    "contract_code": "ZEC-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+    "snapshot_id": "S392:ZEC-USDT:1791501879771",
+    "run_id": "1791501812954-1791501825647",
+    "due_ts": 1791502179771,
+    "expires_ts": 1791503679771,
+    "state": "EXPIRED",
+    "attempt_count": 0,
+    "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791503703527,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791503700000,\"task_id\":\"RCHK:61df81de7da78101dd5216170974992a2f3d563d\",\"publication_id\":\"PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b\",\"run_id\":\"1791501812954-1791501825647\",\"snapshot_id\":\"S392:ZEC-USDT:1791501879771\",\"analytical_fingerprint\":\"4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b\",\"telegram_message_id\":\"165\"}",
+    "created_ts": 1791501913581,
+    "updated_ts": 1791503703527
+  },
+  "exact_SENT": {
+    "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+    "run_id": "1791501812954-1791501825647",
+    "snapshot_id": "S392:ZEC-USDT:1791501879771",
+    "analytical_fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
+    "observed_ts": 1791501879771,
+    "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+    "lifecycle_event": "OBSERVE",
+    "state": "SENT",
+    "telegram_message_id": "165",
+    "sent_ts": 1791501913581
+  },
+  "original_day_poll": {
+    "day_key": "2026-10-08",
+    "last_bucket": 1791503700000,
+    "polls": 42
+  },
+  "original_day_kicks": {
+    "success": true,
+    "meta": {
+      "served_by": "v3-prod",
+      "served_by_region": "EEUR",
+      "served_by_colo": "ARN",
+      "served_by_primary": true,
+      "timings": {
+        "sql_duration_ms": 0.1575
+      },
+      "duration": 0.1575,
+      "changes": 0,
+      "last_row_id": 1915,
+      "changed_db": false,
+      "size_after": 413630464,
+      "rows_read": 0,
+      "rows_written": 0,
+      "total_attempts": 1
+    },
+    "results": []
+  },
+  "raw_file": "exact-original-price-shards.json.gz",
+  "gzip_sha256": "5c412d33c85d36903fbd6b7776fb202dc74e9ad0bff3ccf30bc02775bffa4fb8",
+  "shards": 42,
+  "payload_bytes": 789113,
+  "cases": [
+    {
+      "contract": "ZEC-USDT",
+      "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+      "run_id": "1791501812954-1791501825647",
+      "snapshot_id": "S392:ZEC-USDT:1791501879771",
+      "fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
+      "observed_ts": 1791501879771,
+      "trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 1208.64,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791503679771,
+        "next_recheck_ts": 1791502179771,
+        "cancel_condition": "price<1162",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "message_id": "165",
+      "samples": [
+        {
+          "bucket": 1791501600000,
+          "original_received_ts": 1791501603593,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1189.73,
+            "turnover_24h_usdt": 39297481.2644,
+            "oi_contracts": 189978,
+            "oi_value_usdt": 2260225.2594,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791501602211,
+            "market_age_sec": 1.382,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791501602212,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791501603593,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "NOT_CHECKED",
+            "reason": "FRESH_EXACT_HTX_PRICE_REQUIRED"
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791501900000,
+          "original_received_ts": 1791501902667,
+          "due_and_inside_original_TTL": false,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1192.55,
+            "turnover_24h_usdt": 39827818.8818,
+            "oi_contracts": 198990,
+            "oi_value_usdt": 2373055.245,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791501901883,
+            "market_age_sec": 0.784,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791501901884,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791501902667,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1192.55,
+            "source_ts": 1791501901884,
+            "observed_ts": 1791501901883,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791502200000,
+          "original_received_ts": 1791502203765,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1189.38,
+            "turnover_24h_usdt": 39920656.6582,
+            "oi_contracts": 197390,
+            "oi_value_usdt": 2347717.182,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791502202369,
+            "market_age_sec": 1.396,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791502202370,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791502203765,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1189.38,
+            "source_ts": 1791502202370,
+            "observed_ts": 1791502202369,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791502500000,
+          "original_received_ts": 1791502502754,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1193.18,
+            "turnover_24h_usdt": 39892729.0838,
+            "oi_contracts": 197683,
+            "oi_value_usdt": 2358714.0194,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791502501975,
+            "market_age_sec": 0.779,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791502501975,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791502502754,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1193.18,
+            "source_ts": 1791502501975,
+            "observed_ts": 1791502501975,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791502800000,
+          "original_received_ts": 1791502803017,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1192.72,
+            "turnover_24h_usdt": 39929107.512,
+            "oi_contracts": 198380,
+            "oi_value_usdt": 2366117.936,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791502801936,
+            "market_age_sec": 1.081,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791502801936,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791502803017,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1192.72,
+            "source_ts": 1791502801936,
+            "observed_ts": 1791502801936,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791503100000,
+          "original_received_ts": 1791503103840,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1185.98,
+            "turnover_24h_usdt": 39985773.023,
+            "oi_contracts": 198251,
+            "oi_value_usdt": 2351217.2098,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791503102444,
+            "market_age_sec": 1.396,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791503102445,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791503103840,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1185.98,
+            "source_ts": 1791503102445,
+            "observed_ts": 1791503102444,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        },
+        {
+          "bucket": 1791503400000,
+          "original_received_ts": 1791503403476,
+          "due_and_inside_original_TTL": true,
+          "market": {
+            "contract": "ZEC-USDT",
+            "catalog_active": true,
+            "contract_size": 0.01,
+            "price": 1187.57,
+            "turnover_24h_usdt": 39944358.4512,
+            "oi_contracts": 198878,
+            "oi_value_usdt": 2361815.4646,
+            "funding_rate": 0.0001,
+            "funding_interval_hours": null,
+            "observed_ts": 1791503402785,
+            "market_age_sec": 0.691,
+            "source_status": "CLOSED",
+            "missing": []
+          },
+          "market_source_ts": 1791503402786,
+          "replay": {
+            "schema": "LIGHT_PRICE_RECHECK_V1",
+            "scope": "PRICE_AND_CANCELLATION_ONLY",
+            "checked_ts": 1791503403476,
+            "entry_authorized": false,
+            "full_analysis_completed": false,
+            "status": "WAITING_FOR_PRICE",
+            "price": 1187.57,
+            "source_ts": 1791503402786,
+            "observed_ts": 1791503402785,
+            "source": "HTX_OFFICIAL_COLLECTOR",
+            "settlement_confirmed": false
+          },
+          "actual_collector_checked_ts_proven": false
+        }
+      ],
+      "eligible_samples": 5,
+      "eligible_trigger_reached_samples": 0,
+      "eligible_cancelled_samples": 0,
+      "missing_buckets": [],
+      "unobserved_intraminute_prices_not_inferred": true
+    }
+  ],
+  "status": "BOUNDED_ORIGINAL_IMMUTABLE_PRICE_WINDOW_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ORIGINAL_ZEC165_PRICE_WINDOW:37863362139:1",
+    "source_run_id": "37863362139",
+    "measured_rows_read": 57,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 16,
+    "unknown_ops": 0
+  },
+  "d1_usage": {
+    "requests": 16,
+    "rows_read": 58,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_market_snapshot_batch_v1": {
+        "requests": 7,
+        "rows_read": 49,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:report2_trigger_kick_poll": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:report2_trigger_kick_slot": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  }
+}
