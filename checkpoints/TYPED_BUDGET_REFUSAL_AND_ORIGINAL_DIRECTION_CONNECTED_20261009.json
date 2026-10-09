@@ -1,0 +1,475 @@
+{
+  "schema": "TYPED_BUDGET_REFUSAL_AND_ORIGINAL_DIRECTION_CONNECTED_20261009_V1",
+  "status": "CONNECTED_REFUSAL_AND_PRECOMPILE_CODE_VERIFIED;CURRENT_NATIVE_DAY_ADMISSION_BLOCKED",
+  "PR": 263,
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "cloud_run": 37947759844,
+  "tested_head": "fada0c3bba7651e1cb2a581fb2047243262c6d2f",
+  "artifact_id": 11623997784,
+  "artifact_digest": "sha256:7a8496dac9d49c45b4266144227df9f68feaca23a1a4c6ae34393a7939391be1",
+  "retained": "checkpoints/typed-budget-connected-37947759844.zip",
+  "tests": {
+    "removal-evidence-runtime.tap": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "10b479e781d8e916c8e97607634df69790f927b5f8a7413a6faa04687652ae88"
+    },
+    "diagnostic-sql-preflight.tap": {
+      "tests": 4,
+      "pass": 4,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "51e4c34cb4603b93096a436f812149e9babfcb37ec99cdf82812d95e6e8f0303"
+    },
+    "liquidation-refusal-consumer-runtime.tap": {
+      "tests": 7,
+      "pass": 7,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "f541d8bda5fb21684c6bf4fc9ba5e6151d6d5cbbf0e1187281328226a62b0297"
+    },
+    "approved-delivery-runtime.tap": {
+      "tests": 35,
+      "pass": 35,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "bb4ff14a0ba6649df785a0d6d63f7f5217ce2cc2943da95adce7f0cd10f34613"
+    },
+    "failure-trigger-runtime.tap": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "dc7d19531e4ea3beed65d1a3b3c1e7eb40afbc4a1977479e773b4732ac63ca1e"
+    },
+    "optional-assembled-runtime.tap": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "8fdd9d6637278c1e8b1eb481856cfd600c5e3ee112c02de52634096c0d4f16a7"
+    },
+    "pre-analysis-failure-runtime.tap": {
+      "tests": 15,
+      "pass": 15,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "9156b2696c0cac42e3ef4628a8f3e556683219687228dce2d9659c3d1d82bd8c"
+    },
+    "d1-failure-accounting-runtime.tap": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "fb90307bfa12c3b46d5b9880c7f3d6fefac76d03c0f844acc88fd2e3b85d501d"
+    },
+    "liquidation-refusal-unit-runtime.tap": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "b4e8a93707834384dcbd8ac772eee26be9449a18b50b565466d2df045bfcb16e"
+    },
+    "signed-tape-runtime.tap": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "422c83550740ee26efef1e756008b984a276fe5e2cb32b465e32daf491292489"
+    },
+    "current-generation-unit-tests.tap": {
+      "tests": 1206,
+      "pass": 1203,
+      "fail": 0,
+      "skipped": 3,
+      "sha256": "1de56309057eb444dece452385e182d87957a51e6ee14b1025e8d8b58fa70d05"
+    },
+    "removal-evidence-publication.tap": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "397110382d26d5644fe9b43976dfaf94cbee198837f395d233eae3eb2eaf1a43"
+    }
+  },
+  "binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "c50eed81b60d35b2011fb9701ad3191efe5285885548452ff52ccf1f26461e8c",
+    "runtime_checked": true
+  },
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "changes": [
+    "Precompile bounded diagnostic SELECTs locally using retained native column identities; no native DDL/index/cost claim",
+    "Before first D1 connection, the repaired original-reader plan rejects unknown columns and forbidden/unbounded SQL",
+    "Both ownership checks preserve measured subtotals, unknown operations and nullable total costs in future refusal artifacts",
+    "Both regular and triggered daily admission failures preserve exact task/head/run/stage and actual daily blocker before throwing; no market refusal or ENTRY",
+    "Existing unknown-usage guard, cadence, caps and original task lifetimes remain strict; no automatic retry, ledger correction or cap refund"
+  ],
+  "validation_external_effects": {
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "engineering_incident": {
+    "run": 37945843469,
+    "head": "1aaa5030310f458604501c6be5f3ddd31a64caa8",
+    "read_ts": 1791556806680,
+    "status": "READ_NOT_CLOSED",
+    "cause": "DIAGNOSTIC_QUERY_INVALID_COLUMN_NAMES",
+    "native_error": "D1_BRIDGE_FAILURE:D1_ERROR: no such column: raw_favourable_move_pct at offset 60: SQLITE_ERROR",
+    "wrong_fields": [
+      "raw_favourable_move_pct",
+      "raw_adverse_move_pct"
+    ],
+    "actual_existing_fields": [
+      "mfe_pct",
+      "mae_pct"
+    ],
+    "artifact_id": 11624150550,
+    "artifact_digest": "sha256:0b9335969f6c50599759f1fb2a6c9b913e50db5ad6cbc717615e02107491d3bc",
+    "retained": "checkpoints/original-direction-inputs-37945843469.zip",
+    "usage": {
+      "requests": 10,
+      "rows_read": 75,
+      "rows_written": 4,
+      "unknown_ops": 1,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 69,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:scan_runs": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_early_feature_snapshot": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:tz101_entry_area_calibration_state": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_early_outcome_journal": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 1
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "reserved_rows_read": 1000,
+    "reserved_rows_written": 16,
+    "unknown_ops_preserved": 1,
+    "task_or_outcome_writes": 0,
+    "old_records_rewritten": false,
+    "rows_cost_reconstructed": false,
+    "quota_reset_or_refunded": false,
+    "first_five_original_read_queries_returned_native_rows": true,
+    "whole_original_read_closed": false
+  },
+  "actual_daily_denial": {
+    "run": 37945979439,
+    "head": "fe8a98fc3ae7f3abb988b5cb2e92049c5840477f",
+    "read_ts": 1791556862021,
+    "status": "D1_ADMISSION_BLOCKED",
+    "admission": {
+      "schema": "report2-d1-reservation-budget-v2",
+      "allowed": false,
+      "status": "UNMEASURED_FINALIZED_USAGE",
+      "daily": {
+        "ok": true,
+        "status": "DAY_USAGE_CLOSED",
+        "day_utc": "2026-10-09",
+        "run_count": 69,
+        "reserved_rows_read": 993000,
+        "reserved_rows_written": 17664,
+        "measured_rows_read": 595632,
+        "measured_rows_written": 8023,
+        "unknown_ops": 1,
+        "unfinished_count": 0
+      }
+    },
+    "usage": {
+      "requests": 1,
+      "rows_read": 69,
+      "rows_written": 0,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 69,
+          "rows_written": 0,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "artifact_id": 11623431135,
+    "artifact_digest": "sha256:3a62908e0d5b91b2df19b8e47c140ea7d4e0a9a6bc6717e25d5cce6ad2af9ef7",
+    "retained": "checkpoints/original-direction-blocked-37945979439.zip",
+    "corrected_query_not_executed": true,
+    "same_day_more_live_D1_not_attempted": true,
+    "new_UTC_day_admission_not_yet_verified": true
+  },
+  "original_native_scope": {
+    "source_run": 37937215275,
+    "scan_ts": 1791552612763,
+    "read_run": 37945843469,
+    "persisted_scan_ts": 1791552612763,
+    "native_unique_crypto_contracts": 103,
+    "approved_analysis_contracts_present": 102,
+    "outside_approved": [
+      "CT-USDT"
+    ],
+    "missing_approved": [],
+    "compact_exact_contract_list_retained": true,
+    "native_catalog_asset_metadata_retained": false,
+    "new_current_scope_live_acceptance": false
+  },
+  "original_direction_inputs": [
+    {
+      "contract": "BR-USDT",
+      "feature": {
+        "contract_code": "BR-USDT",
+        "ts_bucket": 1791552600000,
+        "observed_ts": 1791552612763,
+        "rules_version": "v3-early-discovery-shadow-v1",
+        "direction_hint": null,
+        "direction_state": "DIRECTION_NOT_CLOSED",
+        "long_evidence_domain_count": 1,
+        "short_evidence_domain_count": 2,
+        "early_detection_quality_0_100": 73,
+        "feature_json": "{\"windows\":{\"5m\":{\"available\":true,\"reference_ts\":1791552303331,\"price_change_pct\":-0.8822408536585447,\"oi_change_pct\":0.1829112006896949,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":0.04414532304108931},\"15m\":{\"available\":true,\"reference_ts\":1791551702083,\"price_change_pct\":-0.9878940155322091,\"oi_change_pct\":0.42040849692284166,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":0.008862119400565582},\"1h\":{\"available\":true,\"reference_ts\":1791549002061,\"price_change_pct\":-0.4268759571209757,\"oi_change_pct\":4.498778694600736,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":2.4020953408080192},\"4h\":{\"available\":true,\"reference_ts\":1791538203786,\"price_change_pct\":2.3694723791156003,\"oi_change_pct\":-0.594185307207673,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":8.278836040837767},\"12h\":{\"available\":false,\"price_change_pct\":null,\"oi_change_pct\":null,\"funding_change_pct_points\":null,\"turnover_24h_change_pct_proxy\":null},\"24h\":{\"available\":false,\"price_change_pct\":null,\"oi_change_pct\":null,\"funding_change_pct_points\":null,\"turnover_24h_change_pct_proxy\":null}},\"acceleration\":{\"price_pct_per_min_delta\":-0.11058856969622832,\"oi_pct_per_min_delta\":0.008555007009749538},\"self_normalized\":{\"price_5m\":{\"status\":\"CLOSED\",\"value\":-0.8822408536585447,\"sample_size\":72,\"median\":0.016624280212929055,\"mad\":0.3489379535469461,\"robust_z\":-1.7374900627725305,\"percentile\":0.0625},\"oi_5m\":{\"status\":\"CLOSED\",\"value\":0.1829112006896949,\"sample_size\":72,\"median\":0.031767938236992865,\"mad\":0.190908334865586,\"robust_z\":0.5339983398486515,\"percentile\":0.7152777777777778},\"funding_5m\":{\"status\":\"CLOSED\",\"value\":0,\"sample_size\":72,\"median\":0,\"mad\":0,\"robust_z\":null,\"percentile\":0.5},\"turnover_5m_proxy\":{\"status\":\"CLOSED\",\"value\":0.04414532304108931,\"sample_size\":72,\"median\":0.03424657713674284,\"mad\":0.05591255500714265,\"robust_z\":0.11941168923572842,\"percentile\":0.5902777777777778}},\"relative_strength\":{\"btc_1h_pct_points\":-0.25324665928412315,\"eth_1h_pct_points\":-0.19295081316702545,\"btc_4h_pct_points\":1.996218789440296,\"eth_4h_pct_points\":2.7750433919653483},\"feature_fusion\":{\"version\":\"v3-early-feature-fusion-shadow-v1\",\"status\":\"CLOSED\",\"as_of_ts\":1791552612763,\"features\":{\"price\":{\"status\":\"CLOSED\",\"current_price\":0.52017,\"windows\":{\"5m\":{\"prior_ts\":1791552303331,\"change_pct\":-0.8822408536585447},\"15m\":{\"prior_ts\":1791551702083,\"change_pct\":-0.9878940155322091},\"1h\":{\"prior_ts\":1791549002061,\"change_pct\":-0.4268759571209757},\"4h\":{\"prior_ts\":1791538203786,\"change_pct\":2.3694723791156003},\"12h\":{\"prior_ts\":null,\"change_pct\":null},\"24h\":{\"prior_ts\":null,\"change_pct\":null}},\"velocity_5m_pct_per_min\":-0.17644817073170893,\"acceleration_5m_vs_15m_pct_per_min\":-0.11058856969622832,\"compression_expansion_ratio\":null,\"breakout_attempt\":false,\"reclaim\":false,\"failure\":false,\"upper_wick_ratio\":null,\"lower_wick_ratio\":null,\"distance_from_4h_high_pct\":-4.624213865307403,\"distance_from_4h_low_pct\":3.116265239369631},\"oi\":{\"status\":\"CLOSED\",\"current_oi\":85991,\"windows\":{\"5m\":{\"prior_ts\":1791552303331,\"change_pct\":0.1829112006896949},\"15m\":{\"prior_ts\":1791551702083,\"change_pct\":0.42040849692284166},\"1h\":{\"prior_ts\":1791549002061,\"change_pct\":4.498778694600736},\"4h\":{\"prior_ts\":1791538203786,\"change_pct\":-0.594185307207673},\"12h\":{\"prior_ts\":null,\"change_pct\":null},\"24h\":{\"prior_ts\":null,\"change_pct\":null}},\"velocity_5m_pct_per_min\":0.03658224013793898,\"acceleration_5m_vs_15m_pct_per_min\":0.008555007009749538,\"oi_growth_to_price_growth_5m\":-0.20732569788758318,\"oi_growth_to_price_growth_15m\":-0.4255603235903343,\"state_5m\":\"OI_EXPANSION_DOWN\",\"recovery_after_capitulation\":false},\"funding\":{\"status\":\"CLOSED\",\"current_rate\":0.00005,\"interval_hours\":null,\"delta_1h\":0,\"delta_4h\":0,\"velocity_1h\":0,\"acceleration_1h_vs_4h\":0,\"sign_transition\":false,\"cross_venue\":[{\"venue\":\"HTX\",\"rate\":0.00005,\"interval_hours\":null}],\"consensus\":\"INSUFFICIENT_VENUES\",\"relative_to_price_1h\":{\"funding_delta\":0,\"price_change_pct\":-0.4268759571209757},\"relative_to_oi_1h\":{\"funding_delta\":0,\"oi_change_pct\":4.498778694600736}},\"volume\":{\"status\":\"NO_DATA\"},\"orderflow\":{\"status\":\"NO_DATA\",\"coverage_closed\":false},\"relative_strength\":{\"status\":\"CLOSED\",\"btc_1h_pct_points\":-0.25324665928412315,\"eth_1h_pct_points\":-0.19295081316702545,\"btc_4h_pct_points\":1.996218789440296,\"eth_4h_pct_points\":2.7750433919653483,\"sector_1h_pct_points\":null,\"down_market_resilience\":false,\"recovery_speed_ratio\":null,\"repeated_level_hold\":false},\"basis\":{\"status\":\"NO_DATA\"},\"orderbook\":{\"status\":\"NO_DATA\"},\"positioning\":{\"status\":\"NO_DATA\"},\"liquidation\":{\"status\":\"NO_DATA\"}},\"health\":{\"price\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"oi\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"funding\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"volume\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"orderflow\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"basis\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"orderbook\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"positioning\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null}},\"closed_domains\":[\"price\",\"oi\",\"funding\",\"relative\"],\"closed_domain_count\":4,\"no_lookahead\":true,\"probability\":null,\"final_entry\":false,\"shadow_only\":true}}",
+        "evidence_json": "[{\"domain\":\"RELATIVE_STRENGTH\",\"side\":\"LONG\",\"status\":\"CLOSED\",\"btc_1h_pct_points\":-0.25324665928412315,\"eth_1h_pct_points\":-0.19295081316702545,\"btc_4h_pct_points\":1.996218789440296,\"eth_4h_pct_points\":2.7750433919653483},{\"domain\":\"RELATIVE_STRENGTH\",\"side\":\"SHORT\",\"status\":\"CLOSED\",\"btc_1h_pct_points\":-0.25324665928412315,\"eth_1h_pct_points\":-0.19295081316702545,\"btc_4h_pct_points\":1.996218789440296,\"eth_4h_pct_points\":2.7750433919653483},{\"domain\":\"PRICE_STATE_TRANSITION\",\"side\":\"SHORT\",\"status\":\"CLOSED\",\"failure\":false,\"acceleration\":-0.11058856969622832},{\"domain\":\"RELATIVE_STRENGTH\",\"side\":\"SHORT\",\"status\":\"CLOSED\",\"btc_1h_pct_points\":-0.25324665928412315,\"eth_1h_pct_points\":-0.19295081316702545,\"btc_4h_pct_points\":1.996218789440296,\"eth_4h_pct_points\":2.7750433919653483,\"sector_1h_pct_points\":null,\"down_market_resilience\":false,\"recovery_speed_ratio\":null,\"repeated_level_hold\":false}]",
+        "shadow_only": 1
+      },
+      "deep_mandatory_DQ_checks_passed": 10,
+      "original_direction_reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+    },
+    {
+      "contract": "BTR-USDT",
+      "feature": {
+        "contract_code": "BTR-USDT",
+        "ts_bucket": 1791552600000,
+        "observed_ts": 1791552612763,
+        "rules_version": "v3-early-discovery-shadow-v1",
+        "direction_hint": null,
+        "direction_state": "DIRECTION_NOT_CLOSED",
+        "long_evidence_domain_count": 1,
+        "short_evidence_domain_count": 1,
+        "early_detection_quality_0_100": 64,
+        "feature_json": "{\"windows\":{\"5m\":{\"available\":true,\"reference_ts\":1791552303331,\"price_change_pct\":-0.49251752225799583,\"oi_change_pct\":-0.36509947097831397,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":-0.16579945013708297},\"15m\":{\"available\":true,\"reference_ts\":1791551702082,\"price_change_pct\":-0.4548038658328535,\"oi_change_pct\":0.45826759822702456,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":-0.2634510646573607},\"1h\":{\"available\":true,\"reference_ts\":1791549002061,\"price_change_pct\":2.1785644816183725,\"oi_change_pct\":0.7990351273933438,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":-0.2898286565070074},\"4h\":{\"available\":true,\"reference_ts\":1791538203786,\"price_change_pct\":3.2429245283018826,\"oi_change_pct\":-1.7342739564961795,\"funding_change_pct_points\":0,\"turnover_24h_change_pct_proxy\":0.5348240376483959},\"12h\":{\"available\":false,\"price_change_pct\":null,\"oi_change_pct\":null,\"funding_change_pct_points\":null,\"turnover_24h_change_pct_proxy\":null},\"24h\":{\"available\":false,\"price_change_pct\":null,\"oi_change_pct\":null,\"funding_change_pct_points\":null,\"turnover_24h_change_pct_proxy\":null}},\"acceleration\":{\"price_pct_per_min_delta\":-0.06818324672940894,\"oi_pct_per_min_delta\":-0.10357106741079776},\"self_normalized\":{\"price_5m\":{\"status\":\"CLOSED\",\"value\":-0.49251752225799583,\"sample_size\":72,\"median\":-0.03950659390632438,\"mad\":0.41485614322368525,\"robust_z\":-0.7365244316759862,\"percentile\":0.20833333333333334},\"oi_5m\":{\"status\":\"CLOSED\",\"value\":-0.36509947097831397,\"sample_size\":72,\"median\":0.07259886557836603,\"mad\":0.5211447098272926,\"robust_z\":-0.5664904159606543,\"percentile\":0.3402777777777778},\"funding_5m\":{\"status\":\"CLOSED\",\"value\":0,\"sample_size\":72,\"median\":0,\"mad\":0,\"robust_z\":null,\"percentile\":0.5},\"turnover_5m_proxy\":{\"status\":\"CLOSED\",\"value\":-0.16579945013708297,\"sample_size\":72,\"median\":0.018224076967632286,\"mad\":0.06718788837330458,\"robust_z\":-1.847389039357546,\"percentile\":0.027777777777777776}},\"relative_strength\":{\"btc_1h_pct_points\":2.352193779455225,\"eth_1h_pct_points\":2.4124896255723227,\"btc_4h_pct_points\":2.8696709386265784,\"eth_4h_pct_points\":3.6484955411516307},\"feature_fusion\":{\"version\":\"v3-early-feature-fusion-shadow-v1\",\"status\":\"CLOSED\",\"as_of_ts\":1791552612763,\"features\":{\"price\":{\"status\":\"CLOSED\",\"current_price\":0.05253,\"windows\":{\"5m\":{\"prior_ts\":1791552303331,\"change_pct\":-0.49251752225799583},\"15m\":{\"prior_ts\":1791551702082,\"change_pct\":-0.4548038658328535},\"1h\":{\"prior_ts\":1791549002061,\"change_pct\":2.1785644816183725},\"4h\":{\"prior_ts\":1791538203786,\"change_pct\":3.2429245283018826},\"12h\":{\"prior_ts\":null,\"change_pct\":null},\"24h\":{\"prior_ts\":null,\"change_pct\":null}},\"velocity_5m_pct_per_min\":-0.09850350445159917,\"acceleration_5m_vs_15m_pct_per_min\":-0.06818324672940894,\"compression_expansion_ratio\":null,\"breakout_attempt\":false,\"reclaim\":false,\"failure\":false,\"upper_wick_ratio\":null,\"lower_wick_ratio\":null,\"distance_from_4h_high_pct\":-0.9802073515551402,\"distance_from_4h_low_pct\":4.9760191846522694},\"oi\":{\"status\":\"CLOSED\",\"current_oi\":13372,\"windows\":{\"5m\":{\"prior_ts\":1791552303331,\"change_pct\":-0.36509947097831397},\"15m\":{\"prior_ts\":1791551702082,\"change_pct\":0.45826759822702456},\"1h\":{\"prior_ts\":1791549002061,\"change_pct\":0.7990351273933438},\"4h\":{\"prior_ts\":1791538203786,\"change_pct\":-1.7342739564961795},\"12h\":{\"prior_ts\":null,\"change_pct\":null},\"24h\":{\"prior_ts\":null,\"change_pct\":null}},\"velocity_5m_pct_per_min\":-0.0730198941956628,\"acceleration_5m_vs_15m_pct_per_min\":-0.10357106741079776,\"oi_growth_to_price_growth_5m\":0.741292348959442,\"oi_growth_to_price_growth_15m\":-1.0076158816016838,\"state_5m\":\"DELEVERAGING_DOWN\",\"recovery_after_capitulation\":false},\"funding\":{\"status\":\"CLOSED\",\"current_rate\":0.00005,\"interval_hours\":null,\"delta_1h\":0,\"delta_4h\":0,\"velocity_1h\":0,\"acceleration_1h_vs_4h\":0,\"sign_transition\":false,\"cross_venue\":[{\"venue\":\"HTX\",\"rate\":0.00005,\"interval_hours\":null}],\"consensus\":\"INSUFFICIENT_VENUES\",\"relative_to_price_1h\":{\"funding_delta\":0,\"price_change_pct\":2.1785644816183725},\"relative_to_oi_1h\":{\"funding_delta\":0,\"oi_change_pct\":0.7990351273933438}},\"volume\":{\"status\":\"NO_DATA\"},\"orderflow\":{\"status\":\"NO_DATA\",\"coverage_closed\":false},\"relative_strength\":{\"status\":\"CLOSED\",\"btc_1h_pct_points\":2.352193779455225,\"eth_1h_pct_points\":2.4124896255723227,\"btc_4h_pct_points\":2.8696709386265784,\"eth_4h_pct_points\":3.6484955411516307,\"sector_1h_pct_points\":null,\"down_market_resilience\":false,\"recovery_speed_ratio\":null,\"repeated_level_hold\":false},\"basis\":{\"status\":\"NO_DATA\"},\"orderbook\":{\"status\":\"NO_DATA\"},\"positioning\":{\"status\":\"NO_DATA\"},\"liquidation\":{\"status\":\"NO_DATA\"}},\"health\":{\"price\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"oi\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"funding\":{\"status\":\"CLOSED\",\"last_ts\":1791552612763,\"age_ms\":0},\"volume\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"orderflow\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"basis\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"orderbook\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null},\"positioning\":{\"status\":\"NO_DATA\",\"last_ts\":null,\"age_ms\":null}},\"closed_domains\":[\"price\",\"oi\",\"funding\",\"relative\"],\"closed_domain_count\":4,\"no_lookahead\":true,\"probability\":null,\"final_entry\":false,\"shadow_only\":true}}",
+        "evidence_json": "[{\"domain\":\"RELATIVE_STRENGTH\",\"side\":\"LONG\",\"status\":\"CLOSED\",\"btc_1h_pct_points\":2.352193779455225,\"eth_1h_pct_points\":2.4124896255723227,\"btc_4h_pct_points\":2.8696709386265784,\"eth_4h_pct_points\":3.6484955411516307},{\"domain\":\"PRICE_STATE_TRANSITION\",\"side\":\"SHORT\",\"status\":\"CLOSED\",\"failure\":false,\"acceleration\":-0.06818324672940894},{\"domain\":\"RELATIVE_STRENGTH\",\"side\":\"LONG\",\"status\":\"CLOSED\",\"btc_1h_pct_points\":2.352193779455225,\"eth_1h_pct_points\":2.4124896255723227,\"btc_4h_pct_points\":2.8696709386265784,\"eth_4h_pct_points\":3.6484955411516307,\"sector_1h_pct_points\":null,\"down_market_resilience\":false,\"recovery_speed_ratio\":null,\"repeated_level_hold\":false}]",
+        "shadow_only": 1
+      },
+      "deep_mandatory_DQ_checks_passed": 10,
+      "original_direction_reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+    }
+  ],
+  "latest_actual_post261_natural": {
+    "run": 37944444674,
+    "head": "73790ff74cb75cd905f03a09c0a3369f4a9a8c0c",
+    "run_id": "1791556134383-1791556142196",
+    "scope": "AFTER_PR261_BEFORE_PR262",
+    "artifact_id": 11622448979,
+    "artifact_digest": "sha256:927d0b3a5d4f858e33c15efd91ad111a85a81c8a1b04cbda7b66c52246895687",
+    "retained": "checkpoints/post261-natural-37944444674.zip",
+    "candidates": [
+      {
+        "contract": "TIA-USDT",
+        "publication_id": "PUB:48b01e1c254abd26912def577822f42d8dc8f125",
+        "snapshot_id": "S392:TIA-USDT:1791556224281",
+        "observed_ts": 1791556224281,
+        "state": "OBSERVE",
+        "direction": "SHORT",
+        "trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 0.45,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791558024281,
+          "next_recheck_ts": 1791556524281,
+          "cancel_condition": "price>0.4865",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 2,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 0
+        }
+      },
+      {
+        "contract": "FIL-USDT",
+        "publication_id": "PUB:e10ad406d39a6629a33321b476d4f4d41fd96db5",
+        "snapshot_id": "S392:FIL-USDT:1791556190872",
+        "observed_ts": 1791556190872,
+        "state": "REJECTED",
+        "direction": null,
+        "trigger": null,
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 0,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 2
+        }
+      }
+    ],
+    "delivery_log_SENT": true,
+    "delivery_log_message_id_masked": true,
+    "unmasked_message_id": null,
+    "exact_native_SENT_binding_read": false,
+    "actual_ENTRY": false,
+    "actual_TIA_price_trigger_reached_verified": false,
+    "actual_TIA_current_task_state_read": false,
+    "statistical_sidecar": "DEFERRED_LOW_PRIORITY_CADENCE;NO_NEW_OUTCOME_CLOSURE_PROVEN"
+  },
+  "source_clocks_refreshed": false,
+  "threshold_weights_gates_cadence_caps_changed": false,
+  "retry_implemented": false,
+  "actual_ENTRY": false,
+  "new_native_MESSAGE_ID_ACCEPTANCE": false,
+  "original_GRAM_error_reconstructed": false,
+  "all102_30_90day_history_complete": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false,
+  "exact_original_direction_policy": {
+    "cloud_run": 37948687183,
+    "artifact_id": 11624318704,
+    "artifact_digest": "sha256:a172446faf470bb9872461cb8e79b65fd65ab752d52d1efcbe5c7c15625db52e",
+    "retained": "checkpoints/original-direction-domain-policy-37948687183.zip",
+    "actual_producer_replayed_on_native_inputs": {
+      "schema": "EXACT_ORIGINAL_DIRECTION_DOMAIN_POLICY_V1",
+      "head": "30b4d20cee82d4353741a89045f015a023902c09",
+      "cloud_run": 37948687183,
+      "producer_path": "src/v3-early-discovery.mjs",
+      "producer_sha256": "9dceeb5cb9c41ee936864cda4575e2c08e2668b41e5ff728bc09d491f7fc1f18",
+      "original_read_run": 37945843469,
+      "original_read_status": "READ_NOT_CLOSED",
+      "original_read_complete": false,
+      "source_clocks_refreshed": false,
+      "sourceHTTP": 0,
+      "D1": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "actual_ENTRY": false,
+      "project_complete": false,
+      "features": [
+        {
+          "contract": "BR-USDT",
+          "observed_ts": 1791552612763,
+          "raw_evidence_rows": 4,
+          "long_domains": [
+            "RELATIVE_STRENGTH"
+          ],
+          "short_domains": [
+            "RELATIVE_STRENGTH",
+            "PRICE_STATE_TRANSITION"
+          ],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "minimum_distinct_domains_one_side": 3,
+          "minimum_LONG_met": false,
+          "minimum_SHORT_met": false,
+          "quality": 73,
+          "reason": "NEITHER_SIDE_REACHED_THREE_DISTINCT_FACT_DOMAINS",
+          "ENTRY_authorized": false
+        },
+        {
+          "contract": "BTR-USDT",
+          "observed_ts": 1791552612763,
+          "raw_evidence_rows": 3,
+          "long_domains": [
+            "RELATIVE_STRENGTH"
+          ],
+          "short_domains": [
+            "PRICE_STATE_TRANSITION"
+          ],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "minimum_distinct_domains_one_side": 3,
+          "minimum_LONG_met": false,
+          "minimum_SHORT_met": false,
+          "quality": 64,
+          "reason": "NEITHER_SIDE_REACHED_THREE_DISTINCT_FACT_DOMAINS",
+          "ENTRY_authorized": false
+        }
+      ],
+      "controls": [
+        {
+          "name": "three distinct LONG",
+          "long_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "short_domains": [],
+          "direction_hint": "LONG",
+          "direction_state": "LONG_WATCH",
+          "controlled": true,
+          "actual_ENTRY": false
+        },
+        {
+          "name": "duplicates not three domains",
+          "long_domains": [
+            "A"
+          ],
+          "short_domains": [],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "controlled": true,
+          "actual_ENTRY": false
+        },
+        {
+          "name": "both directions require deep resolution",
+          "long_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "short_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "direction_hint": null,
+          "direction_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+          "controlled": true,
+          "actual_ENTRY": false
+        }
+      ]
+    },
+    "interpretation": "Three distinct fact domains on one side are required; repeated evidence or provider count does not add a domain. No gate changed."
+  }
+}
