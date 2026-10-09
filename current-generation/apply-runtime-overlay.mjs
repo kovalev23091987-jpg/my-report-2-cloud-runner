@@ -16,6 +16,7 @@ const files=[
  'official-event-sources.json',
  'main-official-event-sources.json',
  'runner-main.mjs',
+ 'src/same-run-delivery-proof.mjs',
  'src/pre-analysis-failure-receipt.mjs',
  'src/approved-htx-analysis-scope.mjs',
  'src/liquidation-source-acquisition-audit.mjs',

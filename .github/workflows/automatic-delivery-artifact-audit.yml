@@ -1,0 +1,40 @@
+name: Automatic exact delivery artifact audit
+on:
+  workflow_run:
+    workflows: [Report 2 Cloud Runner]
+    types: [completed]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  audit:
+    if: ${{ github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Restore only exact existing canonical artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),run=context.payload.workflow_run;
+            const a=(await github.rest.actions.listWorkflowRunArtifacts({owner:context.repo.owner,repo:context.repo.repo,run_id:run.id})).data.artifacts.filter(a=>a.name==='report2-run-result'&&!a.expired);
+            if(a.length!==1)throw Error('EXACT_SINGLE_CANONICAL_ARTIFACT_REQUIRED');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:a[0].id,archive_format:'zip'})).data);
+            const digest='sha256:'+crypto.createHash('sha256').update(b).digest('hex');if(digest!==a[0].digest)throw Error('ARTIFACT_DIGEST_REQUIRED');
+            fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('source.zip',b);
+            cp.execFileSync('python',['-c',"import zipfile,pathlib; z=zipfile.ZipFile('source.zip'); names=['report2-run-result.json','same-run-delivery-proof.json']; [(pathlib.Path('audit-output')/n).write_bytes(z.read(n)) for n in names if z.namelist().count(n)==1 and z.getinfo(n).file_size<32*1024*1024]"]);
+            fs.writeFileSync('audit-output/source-artifact.json',JSON.stringify({source_cloud_run:run.id,source_head:run.head_sha,source_artifact_id:a[0].id,source_artifact_digest:digest,observer_head:context.sha,sourceHTTP:0,D1:0,Telegram:0,project_complete:false},null,2));
+      - name: Verify delivery binding without sources, D1 or Telegram
+        env:
+          SOURCE_HEAD: ${{ github.event.workflow_run.head_sha }}
+        run: node tools/verify-same-run-delivery-artifact.mjs audit-output "$SOURCE_HEAD"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: automatic-delivery-audit-${{ github.event.workflow_run.id }}
+          path: audit-output/
+          retention-days: 30

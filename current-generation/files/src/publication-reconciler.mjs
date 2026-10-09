@@ -167,14 +167,16 @@ export async function loadBoundDispatchForNetwork(db,{row,now_ts=Date.now()}={})
  const life=await db.prepare(`SELECT status,reason,observation_ts,valid_until_ts,updated_ts FROM v3_user_lifecycle_shadow WHERE contract=?1 AND direction=?2 AND wave_id=?3 AND rules_version=?4 LIMIT 1`).bind(row.contract,upper(row.direction),row.wave_id,row.rules_version).first();
  if(!life||upper(life.status)!==upper(row.lifecycle_event))return {status:'LIFECYCLE_SUPERSEDED',ok:false};
  const canonical=bound.canonical;
+ let alreadyReadTask=null;
  const nativePresent=canonical?.liquidations?.early_context_present===true||canonical?.liquidations?.native_extension?.schema==='NATIVE_LIQUIDATION_CONTEXT_V1';
  if(nativePresent&&['OBSERVE','WAIT'].includes(upper(row.lifecycle_event))){
   let task=null;try{task=await db.prepare(`SELECT state,due_ts,expires_ts,run_id,snapshot_id FROM v3_recheck_task_shadow WHERE publication_id=?1 AND contract_code=?2 AND direction=?3 AND wave_id=?4 LIMIT 1`).bind(bound.publication_id,row.contract,upper(row.direction),row.wave_id).first();}catch{return {status:'RECHECK_TASK_NOT_PERSISTED',ok:false};}
+  alreadyReadTask=task;
   if(!task||!['PENDING','CLAIMED'].includes(task.state)||task.run_id!==canonical.run_id||task.snapshot_id!==canonical.snapshot_id||task.due_ts!==canonical?.trigger?.next_recheck_ts||task.expires_ts!==canonical?.trigger?.expires_ts)return {status:'RECHECK_TASK_NOT_PERSISTED',ok:false};
  }
  const valid=Number(life.valid_until_ts??canonical?.trigger?.expires_ts??0)||null;
  if(valid!==null&&valid<Number(now_ts)&&upper(row.lifecycle_event)!=='IDEA_REMOVED')return {status:'EXPIRED_NOT_SENT',ok:false};
- return {...bound,status:'CLOSED',ok:true,revalidation:{status:upper(row.lifecycle_event),now:Number(now_ts),observation_ts:Number(canonical.observed_ts),valid_until_ts:valid,identity_current:true,data_current:true,cancellation_prior_delivery_verified:upper(row.lifecycle_event)==='IDEA_REMOVED'&&bound.prior_delivery_verified===true,lifecycle_stage:upper(row.lifecycle_event),hard_veto:false,superseded:false,timing_state:upper(row.lifecycle_event)==='ENTRY'?'ENTRY_WINDOW':'WAIT'}};
+ return {...bound,status:'CLOSED',ok:true,task_at_delivery:alreadyReadTask,revalidation:{status:upper(row.lifecycle_event),now:Number(now_ts),observation_ts:Number(canonical.observed_ts),valid_until_ts:valid,identity_current:true,data_current:true,cancellation_prior_delivery_verified:upper(row.lifecycle_event)==='IDEA_REMOVED'&&bound.prior_delivery_verified===true,lifecycle_stage:upper(row.lifecycle_event),hard_veto:false,superseded:false,timing_state:upper(row.lifecycle_event)==='ENTRY'?'ENTRY_WINDOW':'WAIT'}};
 }
 
 export default{PUBLICATION_RECONCILER_VERSION,PUBLICATION_BINDING_GRACE_MS,reconcilePendingPublications,loadBoundDispatchForNetwork};

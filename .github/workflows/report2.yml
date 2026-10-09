@@ -421,6 +421,7 @@ jobs:
           name: report2-run-result
           path: |
             runtime/report2-run-result.json
+            runtime/same-run-delivery-proof.json
             runtime/raw24h-control-readback.json
           if-no-files-found: warn
           retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}

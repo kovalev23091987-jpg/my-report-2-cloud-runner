@@ -1,3 +1,4 @@
+import {buildSameRunDeliveryProof} from './src/same-run-delivery-proof.mjs';
 import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget} from './src/triggered-entry-recheck.mjs';
 import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission} from './src/pre-analysis-failure-receipt.mjs';
 import {buildLiquidationSourceAcquisitionAudit,bindLiquidationAcquisitionDiagnostics} from './src/liquidation-source-acquisition-audit.mjs';
@@ -1088,6 +1089,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
+  await fs.writeFile('same-run-delivery-proof.json',JSON.stringify(buildSameRunDeliveryProof({output:canonicalRunOutput,delivery:v3TelegramDeliverySidecar,recorded_at:Date.now()}),null,2));
   console.log('CANONICAL_RUN_OUTPUT',JSON.stringify({status:canonicalRunOutput.status,run_id:canonicalRunOutput.run_id,candidates:canonicalRunOutput.candidates.map(row=>({contract:row.contract,direction:row.direction,state:row.canonical_state,actionability_status:row.actionability_status,wave_id_present:Boolean(row.wave_id)}))}));
 
   // Statistical/diagnostic observers are hourly and only after every user-critical
