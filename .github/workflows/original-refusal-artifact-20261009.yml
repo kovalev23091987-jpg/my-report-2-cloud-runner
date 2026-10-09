@@ -1,0 +1,40 @@
+name: Original production refusal artifact validation
+on:
+  push:
+    branches: [codex/original-refusal-artifact-20261009]
+    paths: ['tools/*artifact*.mjs','current-generation/tests/production-artifact-outcome.test.mjs','.github/workflows/*refusal*','.github/workflows/automatic-delivery-artifact-audit.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require fresh main and own bounded lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(h!=="4729be9f62c6ac5869c88d3f467a1ca9b5cb03b6")throw Error('MAIN_MOVED');
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=="CODEX:AUTOMATIC_REFUSAL_AUDIT:20261009:1791568793466"||p.lease.expires_ts<=Date.now()||f.active)throw Error('LEASE_BLOCKED');
+      - name: Verify actual original refusal and delivery separation without D1 or sources
+        run: |
+          mkdir -p audit-output
+          echo '0cbaa6cf70d6495ca9c774f3e5add3dbf3aae8799cb40c8a1ec2744e7f71bcc0  checkpoints/natural-refusal-37968252442.zip' | sha256sum -c -
+          node --test current-generation/tests/production-artifact-outcome.test.mjs current-generation/tests/same-run-delivery-proof.test.mjs > audit-output/tests.tap
+          unzip -p checkpoints/natural-refusal-37968252442.zip report2-run-result.json > audit-output/report2-run-result.json
+          node tools/verify-same-run-delivery-artifact.mjs audit-output c9a9fa6fd2ffe39f8b731fa8f23515a5bb50abb7 > audit-output/cli.json
+          node --check tools/production-artifact-outcome.mjs
+          git rev-parse HEAD > audit-output/head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-refusal-artifact-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
