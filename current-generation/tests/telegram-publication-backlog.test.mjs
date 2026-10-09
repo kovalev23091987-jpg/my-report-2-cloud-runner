@@ -21,7 +21,7 @@ for(const name of ['canonical-publication.mjs','recheck-scheduler.mjs','manual-r
     : path.join(unified,name);
  fs.copyFileSync(source,path.join(runtime,name));
 }
-for(const name of ['publication-reconciler.mjs','bound-telegram-delivery-sidecar.mjs'])fs.copyFileSync(path.join(generation,'files/src',name),path.join(runtime,name));
+for(const name of ['liquidation-source-acquisition-audit.mjs','htx-contract-key.mjs','publication-reconciler.mjs','bound-telegram-delivery-sidecar.mjs'])fs.copyFileSync(path.join(generation,'files/src',name),path.join(runtime,name));
 test.after(()=>fs.rmSync(runtime,{recursive:true,force:true}));
 
 const publication=await import(pathToFileURL(path.join(runtime,'canonical-publication.mjs')).href);

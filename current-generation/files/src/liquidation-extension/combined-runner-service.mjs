@@ -128,7 +128,7 @@ export function createCombinedLiquidationService({mode='OFF',provider_admit,fetc
   if(/^0x[0-9a-f]{40}$/i.test(id.gmx_market_address||'')&&(!restrict||allowed.has('GMX_NATIVE')))lanes.push('GMX_NATIVE');
   if(typeof oxarchive==='function'&&(!restrict||allowed.has('OXARCHIVE_HL_BUCKETS')))lanes.push('OXARCHIVE_HL_BUCKETS');
   if(dydx&&(!restrict||allowed.has('DYDX_PINNED_NATIVE'))&&(dydx.canCollect(params)||dydx.hasRunSnapshot(params.run_id)))lanes.push('DYDX_PINNED_NATIVE');
-  if(!lanes.length){routed.push({contract:params.contract,status:'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE',allowed_source_ids:[...allowed],candidate_http_cap:candidateHttpCap});return null;}
+  if(!lanes.length){routed.push({contract:params.contract,run_id:params.run_id,status:'SKIPPED_NO_COVERAGE_ADMITTED_SOURCE',allowed_source_ids:[...allowed],candidate_http_cap:candidateHttpCap});return null;}
   let healthRows=[];try{healthRows=source_weight_store?await source_weight_store.load(lanes):[];}catch{healthRows=[];}
   // Weekly proof is a structural routing hint only. The producer must still
   // reread the native catalog/account at the original current-run clocks.

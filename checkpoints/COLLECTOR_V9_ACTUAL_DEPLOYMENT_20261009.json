@@ -1,0 +1,88 @@
+{
+  "schema": "COLLECTOR_V9_ACTUAL_DEPLOYMENT_20261009_V1",
+  "status": "DEPLOYED_EXACT_CODE_BINDINGS_CRONS_AND_FIRST_LIVE_SAMPLE_VERIFIED",
+  "cloud_run": 37923742569,
+  "head": "e02f352cf4c36c0492f026b864ba2dc053481b34",
+  "artifact_id": 11612808262,
+  "artifact_digest": "sha256:b3951d40c79f0d4c89c5f37890352b0884fb75c8b414b1bc3f6b3922889f6fc1",
+  "archive": "checkpoints/collector-v9-release-37923742569.zip",
+  "original_receipts": {
+    "prepare-proof.json": {
+      "status": "UPGRADED",
+      "script": "my-report-2-hub",
+      "base_sha256": "b64537d8d47397aaba8283bac6b835f58a62d390efaa4d7fb49b335aaae629bc",
+      "output_sha256": "ac92a596f09720ddc88aa0b7d90ca864913f691c9a568a4608918b2c3934db34",
+      "collector_version": "report2-public-collector-v9-retained-price-checks-20261009",
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PRICE_RECHECK_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false
+    },
+    "deployment-proof.json": {
+      "status": "DEPLOYED_VERIFIED",
+      "script": "my-report-2-hub",
+      "expected_module_sha256": "ac92a596f09720ddc88aa0b7d90ca864913f691c9a568a4608918b2c3934db34",
+      "response_sha256": "2929bf00b8764caa45655663a5423d79bc648fe93e6bb882f95258891ced49a3",
+      "collector_marker": true,
+      "exact_module_matches": true,
+      "price_recheck_binding_present": true,
+      "crons": [
+        "*/5 * * * *",
+        "3-58/5 * * * *"
+      ],
+      "binding_names": [
+        "ALERT_DISPATCH_KEY",
+        "ANALYTICS_ENABLED",
+        "BYKARANTELI_API_KEY",
+        "CALIBRATION_APPLY_ENABLED",
+        "DATA_DB",
+        "DELIVERY_ENABLED",
+        "PRICE_RECHECK_ENABLED",
+        "PUBLIC_COLLECTOR_ENABLED",
+        "REPORT2_CLOUD_SOURCE_PROXY_TOKEN",
+        "REPORT2_CURRENT_GENERATION",
+        "TELEGRAM_BOT_TOKEN",
+        "TELEGRAM_CHAT_ID",
+        "TELEGRAM_TEST_KEY"
+      ],
+      "secret_values_exported": false,
+      "verified_at": "2026-10-09T11:27:02.318Z"
+    },
+    "first-live-sample-proof.json": {
+      "status": "FIRST_LIVE_SAMPLE_CLOSED",
+      "actor": "HUB_PUBLIC_COLLECTOR",
+      "generation": "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M",
+      "bucket": 1791545400000,
+      "completed_ts": 1791545405527,
+      "contracts": 377,
+      "shards": 6,
+      "external_requests": 4,
+      "rows_read": 42,
+      "rows_written": 17,
+      "payload_bytes": 112937,
+      "batch_contracts": 377,
+      "batch_shards": 6,
+      "analytical_decision": false,
+      "telegram": false,
+      "paid_source": false,
+      "verified_at": "2026-10-09T11:30:25.063Z"
+    }
+  },
+  "price_history_trigger_case_naturally_observed": false,
+  "first_sample_is_not_ENTRY_or_price_history_trigger_acceptance": true,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "project_complete": false
+}
