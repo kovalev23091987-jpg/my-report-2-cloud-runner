@@ -1,0 +1,949 @@
+{
+  "schema": "MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009_V1",
+  "status": "EXACT_ORIGINAL_TWO_VENUE_92DAY_PRICES_AND_CURRENT_CONSUMERS_VERIFIED",
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "source_cloud_run": 37937872663,
+  "source_head": "623a6610ef80ff083c3eee178c565ebde95c402c",
+  "source_artifact_id": 11618917059,
+  "source_artifact_digest": "sha256:fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd",
+  "retained_original": "checkpoints/binance-monthly-original-37937872663.zip",
+  "tested_head": "0fdaf594be8fe8ab7e32f2333bad3e1bdfdf60e6",
+  "connected_cloud_run": 37938399671,
+  "connected_artifact_id": 11620425632,
+  "connected_artifact_digest": "sha256:4a8db94af2570f08256f87db848466086bd64108e8b7f464b8b0d259ae4a7e81",
+  "retained_connected": "checkpoints/binance-monthly-connected-37938399671.zip",
+  "actual_symbol": "BTCUSDT",
+  "actual_venues": [
+    {
+      "venue": "BINANCE",
+      "market": "spot",
+      "quote": "USDT",
+      "period": [
+        "2026-06-01T00:00:00Z",
+        "2026-09-01T00:00:00Z"
+      ],
+      "complete_days": 92,
+      "complete_price_minutes": 132480
+    },
+    {
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "quote": "USDT",
+      "period": [
+        "2026-06-01T00:00:00Z",
+        "2026-09-01T00:00:00Z"
+      ],
+      "complete_days": 92,
+      "complete_price_minutes": 132480
+    }
+  ],
+  "qualifications": [
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-06",
+      "interval_ms": 60000,
+      "event_interval": [
+        1780272000000,
+        1782864000000
+      ],
+      "minute_count": 43200,
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip",
+      "archive_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+      "checksum_sha256": "1b97197f34f7e2794f3defa8e93ec2c02f1496303aec1aaf200ded1f3daf9741",
+      "csv_sha256": "db449105339f695657d674f8831a0595a8f5f19bbc5750268e0670ba56a72c03",
+      "native_timestamp_unit": "microseconds",
+      "native_header_present": false,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552915253,
+      "qualified_at": 1791552924065,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip.CHECKSUM",
+          "started_ts": 1791552914015,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552914206,
+          "bytes": 88,
+          "sha256": "1b97197f34f7e2794f3defa8e93ec2c02f1496303aec1aaf200ded1f3daf9741",
+          "server_date": "Fri, 09 Oct 2026 13:35:15 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip",
+          "started_ts": 1791552914207,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552915253,
+          "bytes": 2092027,
+          "sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+          "server_date": "Fri, 09 Oct 2026 13:35:14 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "6ca0d063c0095edbdfe02ef9d796e94d5c251acac454997a1406a009b1c3cc6b"
+    },
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-07",
+      "interval_ms": 60000,
+      "event_interval": [
+        1782864000000,
+        1785542400000
+      ],
+      "minute_count": 44640,
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip",
+      "archive_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+      "checksum_sha256": "e182119afc15ded08bb0292c56418c34e975bba38e6f7e80bde2597676ba976d",
+      "csv_sha256": "a5d6c63a4116da9f33a739ff0a772e9d0d5b433be5e6c1010bf6822c6c27722c",
+      "native_timestamp_unit": "microseconds",
+      "native_header_present": false,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552917053,
+      "qualified_at": 1791552925051,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip.CHECKSUM",
+          "started_ts": 1791552915256,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552915712,
+          "bytes": 88,
+          "sha256": "e182119afc15ded08bb0292c56418c34e975bba38e6f7e80bde2597676ba976d",
+          "server_date": "Fri, 09 Oct 2026 13:35:16 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip",
+          "started_ts": 1791552915713,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552917053,
+          "bytes": 2112275,
+          "sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+          "server_date": "Fri, 09 Oct 2026 13:35:16 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "eabb7d51394ebbf5bb21711be9383e4716ad70d8e8ae7a09dcb5d32b2de8d74d"
+    },
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-08",
+      "interval_ms": 60000,
+      "event_interval": [
+        1785542400000,
+        1788220800000
+      ],
+      "minute_count": 44640,
+      "archive_url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip",
+      "archive_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+      "checksum_sha256": "7e5beb54a36e7e7da778f844f93ea28a62daeaad94013c28a33715610fc7c3f6",
+      "csv_sha256": "eeae500451e4297645b7252c776f967d03670a942fbc51c6c1566021a7977f6e",
+      "native_timestamp_unit": "microseconds",
+      "native_header_present": false,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552918545,
+      "qualified_at": 1791552926083,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip.CHECKSUM",
+          "started_ts": 1791552917056,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552917237,
+          "bytes": 88,
+          "sha256": "7e5beb54a36e7e7da778f844f93ea28a62daeaad94013c28a33715610fc7c3f6",
+          "server_date": "Fri, 09 Oct 2026 13:35:17 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip",
+          "started_ts": 1791552917237,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552918545,
+          "bytes": 2084946,
+          "sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+          "server_date": "Fri, 09 Oct 2026 13:35:18 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "1cedafa8853081b8d5b57c3fab0f997b23b82cd6aa7aadc4374fe6355b5a009f"
+    },
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-06",
+      "interval_ms": 60000,
+      "event_interval": [
+        1780272000000,
+        1782864000000
+      ],
+      "minute_count": 43200,
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip",
+      "archive_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+      "checksum_sha256": "4ad3629c9f07704f2de61bf7e1a5508964eed95346b6a32b880089a3ea4b3596",
+      "csv_sha256": "a0d502fe633a659c806c787bbbc338627527df786bf94c65bc01cef9eb4b853e",
+      "native_timestamp_unit": "milliseconds",
+      "native_header_present": true,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552920374,
+      "qualified_at": 1791552927099,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip.CHECKSUM",
+          "started_ts": 1791552918553,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552919015,
+          "bytes": 89,
+          "sha256": "4ad3629c9f07704f2de61bf7e1a5508964eed95346b6a32b880089a3ea4b3596",
+          "server_date": "Fri, 09 Oct 2026 13:35:18 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-06.zip",
+          "started_ts": 1791552919015,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552920374,
+          "bytes": 1838455,
+          "sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+          "server_date": "Fri, 09 Oct 2026 13:35:19 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "242894e6c901dbc37b6c4b0576924cfeb49e08e876052fcafbe2e8bbf32183cd"
+    },
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-07",
+      "interval_ms": 60000,
+      "event_interval": [
+        1782864000000,
+        1785542400000
+      ],
+      "minute_count": 44640,
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip",
+      "archive_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+      "checksum_sha256": "1cd084ee3d85aa4e26070a31a691718f8d6428182a23113c54bd9f0662bcc824",
+      "csv_sha256": "55513f41367680136e1937c8e7fb6cdcff08eb1a05b37702cee1a6742ca513d1",
+      "native_timestamp_unit": "milliseconds",
+      "native_header_present": true,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552922199,
+      "qualified_at": 1791552928017,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip.CHECKSUM",
+          "started_ts": 1791552920377,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552920824,
+          "bytes": 89,
+          "sha256": "1cd084ee3d85aa4e26070a31a691718f8d6428182a23113c54bd9f0662bcc824",
+          "server_date": "Fri, 09 Oct 2026 13:35:20 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-07.zip",
+          "started_ts": 1791552920825,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552922199,
+          "bytes": 1844583,
+          "sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+          "server_date": "Fri, 09 Oct 2026 13:35:22 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "bad76207b038275f7215007a73e8a186a08db1ab3803855d4905d4b00f96995d"
+    },
+    {
+      "schema": "BINANCE_MONTHLY_COLD_PRICE_V1",
+      "status": "CLOSED_PRICE_HISTORY",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "base": "BTC",
+      "quote": "USDT",
+      "month": "2026-08",
+      "interval_ms": 60000,
+      "event_interval": [
+        1785542400000,
+        1788220800000
+      ],
+      "minute_count": 44640,
+      "archive_url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip",
+      "archive_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+      "checksum_sha256": "285e684f9ecfbdab2d3f6bc5ef3b968459fb6f47fa017ad3b6feda1a14cdb91e",
+      "csv_sha256": "675f1a0c9f3a265cafbc69e7821eb891ff432cfa12aba45c77754a06190fd80e",
+      "native_timestamp_unit": "milliseconds",
+      "native_header_present": true,
+      "native_source_publication_ts": null,
+      "source_ts": null,
+      "available_at": 1791552923723,
+      "qualified_at": 1791552929002,
+      "original_receipts": [
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip.CHECKSUM",
+          "started_ts": 1791552922202,
+          "file": "original.zip.CHECKSUM",
+          "http_status": 200,
+          "received_ts": 1791552922371,
+          "bytes": 89,
+          "sha256": "285e684f9ecfbdab2d3f6bc5ef3b968459fb6f47fa017ad3b6feda1a14cdb91e",
+          "server_date": "Fri, 09 Oct 2026 13:35:22 GMT",
+          "source_publication_clock_proven": false
+        },
+        {
+          "url": "https://data.binance.vision/data/futures/um/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-08.zip",
+          "started_ts": 1791552922372,
+          "file": "original.zip",
+          "http_status": 200,
+          "received_ts": 1791552923723,
+          "bytes": 1817920,
+          "sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+          "server_date": "Fri, 09 Oct 2026 13:35:22 GMT",
+          "source_publication_clock_proven": false
+        }
+      ],
+      "history_role": "HISTORICAL_PRICE_ONLY",
+      "live_quote_eligible": false,
+      "decision_replay_eligible": false,
+      "htx_execution_price_eligible": false,
+      "entry_authorized": false,
+      "score_contribution": 0,
+      "trade_content_qualified": false,
+      "signed_flow_qualified": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "qualified_price_payload_sha256": "a0e91cb2a9b5fff9e54d69ab4668127e08d2fe845e78c49f49eaac97e1a48d41"
+    }
+  ],
+  "current_consumer_results": [
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1782864000000,
+      "minute_count": 43200,
+      "price_start": 73674.39,
+      "price_end": 58624.71,
+      "raw_return_pct": -20.42728823407971,
+      "range_above_start_pct": 0.5668319751273243,
+      "range_below_start_pct": -21.11911615420229,
+      "available_at": 1791552918545,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+          "qualified_price_payload_sha256": "6ca0d063c0095edbdfe02ef9d796e94d5c251acac454997a1406a009b1c3cc6b"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+          "qualified_price_payload_sha256": "eabb7d51394ebbf5bb21711be9383e4716ad70d8e8ae7a09dcb5d32b2de8d74d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+          "qualified_price_payload_sha256": "1cedafa8853081b8d5b57c3fab0f997b23b82cd6aa7aadc4374fe6355b5a009f"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 30
+    },
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1785456000000,
+      "minute_count": 86400,
+      "price_start": 73674.39,
+      "price_end": 64780.02,
+      "raw_return_pct": -12.072539725133801,
+      "range_above_start_pct": 0.5668319751273243,
+      "range_below_start_pct": -21.546428820109675,
+      "available_at": 1791552918545,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+          "qualified_price_payload_sha256": "6ca0d063c0095edbdfe02ef9d796e94d5c251acac454997a1406a009b1c3cc6b"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+          "qualified_price_payload_sha256": "eabb7d51394ebbf5bb21711be9383e4716ad70d8e8ae7a09dcb5d32b2de8d74d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+          "qualified_price_payload_sha256": "1cedafa8853081b8d5b57c3fab0f997b23b82cd6aa7aadc4374fe6355b5a009f"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 60
+    },
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "spot",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1788048000000,
+      "minute_count": 129600,
+      "price_start": 73674.39,
+      "price_end": 78230,
+      "raw_return_pct": 6.183437691170579,
+      "range_above_start_pct": 10.593206133094558,
+      "range_below_start_pct": -21.546428820109675,
+      "available_at": 1791552918545,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "c8e1d5e70b766dd2312fc9cd7085785bb25708e27e75c21a5a5aaba61a6d07f5",
+          "qualified_price_payload_sha256": "6ca0d063c0095edbdfe02ef9d796e94d5c251acac454997a1406a009b1c3cc6b"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "3ef15c84353da48e1c7c5fd99b9751cb036bf8986ed47f7cd1be63359c0d4f6b",
+          "qualified_price_payload_sha256": "eabb7d51394ebbf5bb21711be9383e4716ad70d8e8ae7a09dcb5d32b2de8d74d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "acab442e02745177063031d402929703ae983715010064b40cf811c4beb843d4",
+          "qualified_price_payload_sha256": "1cedafa8853081b8d5b57c3fab0f997b23b82cd6aa7aadc4374fe6355b5a009f"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 90
+    },
+    {
+      "control": "foreign_execution_venue",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "BOUNDED_EXACT_VENUE_INTERVAL_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "other_market",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "other_symbol",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "historical_unavailable",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "ORIGINAL_AVAILABILITY_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "missing_month",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "ADJACENT_NONOVERLAPPING_MONTHS_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "duplicate_month",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "ADJACENT_NONOVERLAPPING_MONTHS_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "tampered_payload",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_NATIVE_UNIT_AND_PAYLOAD_HASH_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "live_role",
+      "market": "spot",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1782864000000,
+      "minute_count": 43200,
+      "price_start": 73653.2,
+      "price_end": 58605.4,
+      "raw_return_pct": -20.430612654983083,
+      "range_above_start_pct": 0.5665741610683561,
+      "range_below_start_pct": -21.211841440697754,
+      "available_at": 1791552923723,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+          "qualified_price_payload_sha256": "242894e6c901dbc37b6c4b0576924cfeb49e08e876052fcafbe2e8bbf32183cd"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+          "qualified_price_payload_sha256": "bad76207b038275f7215007a73e8a186a08db1ab3803855d4905d4b00f96995d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+          "qualified_price_payload_sha256": "a0e91cb2a9b5fff9e54d69ab4668127e08d2fe845e78c49f49eaac97e1a48d41"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 30
+    },
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1785456000000,
+      "minute_count": 86400,
+      "price_start": 73653.2,
+      "price_end": 64750,
+      "raw_return_pct": -12.088001607533682,
+      "range_above_start_pct": 0.5665741610683561,
+      "range_below_start_pct": -21.580325091102626,
+      "available_at": 1791552923723,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+          "qualified_price_payload_sha256": "242894e6c901dbc37b6c4b0576924cfeb49e08e876052fcafbe2e8bbf32183cd"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+          "qualified_price_payload_sha256": "bad76207b038275f7215007a73e8a186a08db1ab3803855d4905d4b00f96995d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+          "qualified_price_payload_sha256": "a0e91cb2a9b5fff9e54d69ab4668127e08d2fe845e78c49f49eaac97e1a48d41"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 60
+    },
+    {
+      "schema": "BINANCE_COLD_PRICE_PATH_V1",
+      "status": "CLOSED_PRICE_PATH",
+      "venue": "BINANCE",
+      "market": "usd_m_futures",
+      "symbol": "BTCUSDT",
+      "quote": "USDT",
+      "start_ts": 1780272000000,
+      "end_ts": 1788048000000,
+      "minute_count": 129600,
+      "price_start": 73653.2,
+      "price_end": 78200.7,
+      "raw_return_pct": 6.174205601385951,
+      "range_above_start_pct": 10.653712262332116,
+      "range_below_start_pct": -21.580325091102626,
+      "available_at": 1791552923723,
+      "source_archives": [
+        {
+          "month": "2026-06",
+          "archive_sha256": "9b214199eb5063585c7ed0f59ba19323326d68ac024b85106713989399204490",
+          "qualified_price_payload_sha256": "242894e6c901dbc37b6c4b0576924cfeb49e08e876052fcafbe2e8bbf32183cd"
+        },
+        {
+          "month": "2026-07",
+          "archive_sha256": "f18440bb58f0c7e1ff63cbb906132002877c4914540c8aebab920da6937cff73",
+          "qualified_price_payload_sha256": "bad76207b038275f7215007a73e8a186a08db1ab3803855d4905d4b00f96995d"
+        },
+        {
+          "month": "2026-08",
+          "archive_sha256": "adfd0846ea580681aeb18a6bdf06660dcfcc1a7b6819ea2eecfc3c53240ec67a",
+          "qualified_price_payload_sha256": "a0e91cb2a9b5fff9e54d69ab4668127e08d2fe845e78c49f49eaac97e1a48d41"
+        }
+      ],
+      "sourceHTTP": 0,
+      "D1": 0,
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false,
+      "cost_adjusted_return": null,
+      "directional_return": null,
+      "actual_ENTRY": false,
+      "all102_history_complete": false,
+      "project_complete": false,
+      "days": 90
+    },
+    {
+      "control": "foreign_execution_venue",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "BOUNDED_EXACT_VENUE_INTERVAL_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "other_market",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "other_symbol",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "historical_unavailable",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "ORIGINAL_AVAILABILITY_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "missing_month",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "ADJACENT_NONOVERLAPPING_MONTHS_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "duplicate_month",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "ADJACENT_NONOVERLAPPING_MONTHS_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "tampered_payload",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_NATIVE_UNIT_AND_PAYLOAD_HASH_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    },
+    {
+      "control": "live_role",
+      "market": "usd_m_futures",
+      "status": "NOT_CLOSED",
+      "reason": "EXACT_COLD_VENUE_IDENTITY_AND_ROLE_REQUIRED",
+      "live_quote_eligible": false,
+      "htx_execution_price_eligible": false,
+      "decision_replay_eligible": false,
+      "entry_authorized": false
+    }
+  ],
+  "tests": {
+    "qualifier_groups": 6,
+    "actual_original_price_horizons": 6,
+    "actual_original_rejected_controls": 16,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "actual_acquisition": {
+    "sourceHTTP": 12,
+    "max_sourceHTTP": 12,
+    "source_admission": {
+      "allowed": true,
+      "status": "RESERVED",
+      "source": "BINANCE_DELAYED_MONTHLY_ARCHIVE_QUALIFICATION",
+      "day_utc": "2026-10-09",
+      "attempts": 12
+    },
+    "D1": {
+      "requests": 8,
+      "rows_read": 69,
+      "rows_written": 9,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 65,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 2,
+          "rows_read": 1,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "whole_job_and_statistics_budget": {
+      "used": {
+        "hot": 0,
+        "background": 0,
+        "statistics": 12
+      },
+      "total": 12,
+      "limits": {
+        "whole_job": 164,
+        "hot": 120,
+        "background": 28,
+        "statistics": 16,
+        "full_deep": 50,
+        "standard_supplemental": 5,
+        "liquidation_only": 8,
+        "hub_daily": 900
+      },
+      "remaining": 152
+    },
+    "failed_attempts_refunded": false,
+    "reservation_reset": false
+  },
+  "production_worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+  "production_runner_sha256": "2fd960dd99b277cace1a6e48e7dbf0ea9bd36d9bb16888a3677f1d809996103d",
+  "production_runtime_changed": false,
+  "production_connected_regression_reused": "checkpoints/GRAM_ORIGINAL_PRE_ANALYSIS_FAILURE_CONNECTED_20261009.json",
+  "monthly_source_workflow_retired_after_one_acquisition": true,
+  "official_schema_reference": "https://github.com/binance/binance-public-data",
+  "scope": "COLD_PRICE_ONLY;ONE_COIN_TWO_EXACT_BINANCE_MARKETS;NO_HTX_EXECUTION_PRICE_SUBSTITUTION;NOT_POINT_IN_TIME_DECISION_BACKTEST",
+  "live_price_eligible": false,
+  "price_available_at_is_actual_acquisition": true,
+  "original_publication_clock_known": false,
+  "trade_content_qualified": false,
+  "signed_flow_or_volume_units_qualified": false,
+  "original_SOURCE_clocks_refreshed": false,
+  "all102_30_90day_event_trade_history_complete": false,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false
+}
