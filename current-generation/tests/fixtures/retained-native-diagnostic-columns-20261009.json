@@ -1,0 +1,82 @@
+{
+  "schema": "RETAINED_NATIVE_READ_COLUMNS_V1",
+  "scope": "COLUMN_IDENTITIES_FROM_ORIGINAL_MEASURED_READS;NOT_NATIVE_DDL_INDEX_OR_COST_PROOF",
+  "sources": [
+    {
+      "run": 37945843469,
+      "head": "1aaa5030310f458604501c6be5f3ddd31a64caa8",
+      "artifact_id": 11624150550,
+      "digest": "sha256:0b9335969f6c50599759f1fb2a6c9b913e50db5ad6cbc717615e02107491d3bc",
+      "scope": "FIRST_FIVE_QUERIES_CLOSED;SUBSEQUENT_BAD_COLUMN_QUERY_FAILED"
+    },
+    {
+      "run": 37939704771,
+      "head": "7d3966cbdd65d3a011c9903a31a4c4cefe8e56ce",
+      "artifact_id": 11621621108,
+      "digest": "sha256:6135d9a5c5c8e01f09cf9e527cbc361d2d884996db4abb512fce1b0ad55d592b"
+    }
+  ],
+  "tables": {
+    "scan_runs": [
+      "ts_bucket",
+      "ts",
+      "universe_total",
+      "scanned",
+      "missing",
+      "errors",
+      "stale",
+      "stage0_coverage_pct",
+      "payload_json"
+    ],
+    "v3_early_feature_snapshot": [
+      "contract_code",
+      "ts_bucket",
+      "observed_ts",
+      "rules_version",
+      "direction_hint",
+      "direction_state",
+      "long_evidence_domain_count",
+      "short_evidence_domain_count",
+      "early_detection_quality_0_100",
+      "feature_json",
+      "evidence_json",
+      "shadow_only"
+    ],
+    "tz101_entry_area_calibration_state": [
+      "state_key",
+      "status",
+      "updated_ts"
+    ],
+    "v3_early_outcome_journal": [
+      "outcome_id",
+      "wave_id",
+      "contract_code",
+      "direction_hint",
+      "first_seen_ts",
+      "horizon_hours",
+      "target_ts",
+      "outcome_status",
+      "rules_version",
+      "decision_without_filter_json",
+      "decision_with_filter_json",
+      "first_seen_context_json",
+      "entry_condition_json",
+      "invalidation_json",
+      "regime",
+      "liquidity_bucket",
+      "raw_return_pct",
+      "directional_return_pct",
+      "mfe_pct",
+      "mae_pct",
+      "realized_r",
+      "model_r",
+      "lost_rr",
+      "prevented_bad_entry",
+      "missed_good_entry",
+      "late_entry_avoided",
+      "early_alert_useful",
+      "computed_ts",
+      "shadow_only"
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 import {admitTriggeredRecheck,TRIGGERED_RECHECK_D1_RESERVATION,proveTriggeredRecheckD1Budget} from './src/triggered-entry-recheck.mjs';
-import {enforcePeriodicOwnership} from './src/pre-analysis-failure-receipt.mjs';
+import {enforcePeriodicOwnership,enforceDailyAnalysisAdmission} from './src/pre-analysis-failure-receipt.mjs';
 import {buildLiquidationSourceAcquisitionAudit,bindLiquidationAcquisitionDiagnostics} from './src/liquidation-source-acquisition-audit.mjs';
 import {saveGTradePositionRouting} from './src/liquidation-extension/gtrade-position-routing.mjs';
 import {auditObservationSourceRoles} from './src/observation-source-role-audit.mjs';
@@ -560,7 +560,7 @@ async function main() {
   console.log('TWO_CANDIDATE_EXECUTION_BUDGET',JSON.stringify(executionBudget));
   if(source==='schedule'){
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:preflight.actor});
-    await enforcePeriodicOwnership({ownership,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
+    await enforcePeriodicOwnership({ownership,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
     const cadence=triggerOnly?{claimed:false,status:'NOT_DUE',scope:'TRIGGER_ONLY_PRESERVES_REGULAR_CADENCE'}:await claimMaintenanceCadence(env.DATA_DB,{job_key:'TWO_CANDIDATE_ANALYTICS_40M',actor:manualCommandActor,now_ts:started,interval_ms:TWO_CANDIDATE_PLAN.scheduled_interval_minutes*60_000});
     console.log('SCHEDULED_TWO_CANDIDATE_ADMISSION',JSON.stringify(cadence));
     if(!cadence.claimed){
@@ -582,7 +582,7 @@ async function main() {
           }finally{
             await finalizeRunUsage(env.DATA_DB,{reservationId:triggerReservationId,sourceRunId:process.env.GITHUB_RUN_ID||'TRIGGERED_ADMISSION',usage:env.DATA_DB.usageSnapshot()});
           }
-        }else triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};
+        }else{triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};await enforceDailyAnalysisAdmission({admission:admissionBudget,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerOnly?triggerKickTaskId:null,trigger_only:triggerOnly,trigger_admission:true,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});}
       }
       console.log('TRIGGERED_ENTRY_RECHECK_ADMISSION',JSON.stringify(triggered));
       if(!triggered.claimed){
@@ -688,7 +688,7 @@ const d1DayAdmission = evaluateDailyReservationBudget({
   maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
   maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
 });
-if (!d1DayAdmission.allowed) throw new Error(`D1_DAY_PREACTION_BUDGET_BLOCKED:${d1DayAdmission.status}:${(d1DayAdmission.reasons||[]).join(",")}`);
+await enforceDailyAnalysisAdmission({admission:d1DayAdmission,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
@@ -741,7 +741,7 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   console.log('OXARCHIVE_RUNTIME_READINESS',JSON.stringify({status:oxarchiveReadiness.status,reason:oxarchiveReadiness.reason||null,enabled:oxarchiveReadiness.enabled===true,credit_cost:oxarchiveReadiness.credit_cost??null,monthly_credit_cap:oxarchiveReadiness.monthly_credit_cap,max_monthly_calls:oxarchiveReadiness.max_monthly_calls??0,automatic_topup:false}));
   if (postV7UnifiedEnabled && source === "schedule") {
     const ownership=await actorOwnsPeriodicAnalytics(env.DATA_DB,{actor:"GITHUB_ACTIONS"});
-    await enforcePeriodicOwnership({ownership,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
+    await enforcePeriodicOwnership({ownership,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
   }
   let liquidationSources=null,manualLiquidationSources=null;
   if(postV7UnifiedEnabled && envText("REPORT2_LIQUIDATION_EXTENSION_MODE",{required:false})==='SHADOW_ONLY'){
