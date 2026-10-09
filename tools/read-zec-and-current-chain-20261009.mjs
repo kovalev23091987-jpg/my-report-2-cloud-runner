@@ -1,0 +1,25 @@
+import fs from 'node:fs';
+import {RemoteD1Database} from '../runner/report2-d1-adapter.mjs';
+import {loadDailyUsageAggregate,evaluateDailyReservationBudget,reserveRunBudget,finalizeRunUsage} from '../runner/d1-preaction-budget-guard.mjs';
+const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),reservation={rows_read:5000,rows_written:16},id='ZEC_CURRENT_CHAIN:'+process.env.GITHUB_RUN_ID+':'+process.env.GITHUB_RUN_ATTEMPT;
+const out={schema:'ZEC_ORIGINAL_REMOVAL_AND_CURRENT_CHAIN_READ_20261009_V1',head:process.env.GITHUB_SHA,cloud_run:process.env.GITHUB_RUN_ID,read_ts:now,sourceHTTP:0,MAIN:0,Telegram:0,task_writes:0,source_clocks_refreshed:false,project_complete:false,limitation:'Mutable task and lifecycle rows are their state at read_ts, not overwritten historical checks. Canonical observations require their natural cloud source head before calling them post-PR251.'};
+out.admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});
+const all=async(sql,...args)=>(await db.prepare(sql).bind(...args).all()).results;
+if(out.admission.allowed){await reserveRunBudget(db,{reservationId:id,now,reservation});try{
+ const key='ZEC-USDT|LONG|EDW:ZEC-USDT:1791498286399:G7|IDEA_REMOVED|v3-telegram-shadow-r6';
+ out.original_dispatch=await db.prepare('SELECT * FROM v3_telegram_dispatch_shadow WHERE idempotency_key=?1 LIMIT 1').bind(key).first();
+ out.original_binding=await db.prepare('SELECT * FROM v3_dispatch_publication_binding_shadow WHERE idempotency_key=?1 LIMIT 1').bind(key).first();
+ out.original_shadow_rows=await all('SELECT * FROM shadow_decision_log INDEXED BY idx_shadow_decision_log_contract_ts WHERE contract_code=?1 AND observed_ts BETWEEN ?2 AND ?3 ORDER BY observed_ts DESC LIMIT 10','ZEC-USDT',1791519954546,1791520079999);
+ out.original_final_rows=await all('SELECT * FROM final_decision_integration_shadow INDEXED BY idx_final_decision_observation WHERE observation_ts BETWEEN ?1 AND ?2 AND contract_code=?3 ORDER BY observation_ts DESC LIMIT 10',1791519954546,1791520079999,'ZEC-USDT');
+ out.original_deep=await db.prepare('SELECT * FROM deep_check_run_log WHERE run_id=?1 AND contract_code=?2 LIMIT 1').bind('1791519954546-1791519967513','ZEC-USDT').first();
+ const probe=await db.prepare('SELECT COUNT(*) AS rows FROM (SELECT publication_id FROM canonical_publication_shadow LIMIT 1001)').first();out.hot_table_upper_bound=probe;if(!Number.isSafeInteger(probe.rows)||probe.rows>1000)throw Error('HOT_CANONICAL_TOO_LARGE');
+ out.since_ts=1791511200000;
+ out.canonical_rows=await all('SELECT publication_id,contract_code,run_id,snapshot_id,wave_id,direction,canonical_state,analytical_fingerprint,observed_ts,created_ts,canonical_json FROM canonical_publication_shadow WHERE observed_ts>=?1 AND observed_ts<=?2 ORDER BY observed_ts,publication_id LIMIT 151',out.since_ts,now);
+ if(out.canonical_rows.length>150)throw Error('COHORT_TRUNCATED');
+ const ids=JSON.stringify(out.canonical_rows.map(r=>r.publication_id));
+ out.tasks=await all('SELECT * FROM v3_recheck_task_shadow WHERE publication_id IN (SELECT value FROM json_each(?1)) ORDER BY created_ts LIMIT 151',ids);
+ out.bindings=await all('SELECT b.*,d.state,d.telegram_message_id,d.sent_ts,d.last_error FROM v3_dispatch_publication_binding_shadow b INDEXED BY idx_dispatch_publication_id JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key WHERE b.publication_id IN (SELECT value FROM json_each(?1)) ORDER BY b.created_ts LIMIT 151',ids);
+ if(out.tasks.length>150||out.bindings.length>150)throw Error('COHORT_RECEIPTS_TRUNCATED');
+ const u=db.usageSnapshot();if(u.unknown_ops||u.rows_read>4800||u.rows_written>14||u.requests>20)throw Error('READ_ENVELOPE_EXCEEDED');out.status='BOUNDED_ORIGINAL_ZEC_AND_CURRENT_CHAIN_READ_CLOSED';
+ }catch(e){out.status='READ_NOT_CLOSED';out.error=String(e.message).slice(0,240);}finally{out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});}}else out.status='D1_ADMISSION_BLOCKED';
+out.D1=db.usageSnapshot();fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/zec-current-chain-read.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,canonical_rows:out.canonical_rows?.length,shadow_rows:out.original_shadow_rows?.length,final_rows:out.original_final_rows?.length,D1:out.D1,error:out.error}));if(out.status!=='BOUNDED_ORIGINAL_ZEC_AND_CURRENT_CHAIN_READ_CLOSED')process.exitCode=1;

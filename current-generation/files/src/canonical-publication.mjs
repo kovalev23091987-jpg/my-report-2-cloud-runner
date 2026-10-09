@@ -49,6 +49,7 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
  const event=upper(lifecycle_event);const observed=stamp(canonical?.observed_ts);
  const base={deliver:false,status:'INTERNAL_ONLY',reason:'NOT_ACTIONABLE',create_recheck:false};
  if(canonical?.status!=='CLOSED'||observed===null)return {...base,reason:'CANONICAL_NOT_CLOSED'};
+ if(canonical?.metadata?.lifecycle_removal&&event!=='IDEA_REMOVED')return {...base,reason:'REMOVAL_EVENT_MISMATCH'};
  if(event==='IDEA_REMOVED')return prior_sent?{deliver:true,status:'ACTIONABLE',reason:'IDEA_REMOVED_AFTER_PRIOR_DELIVERY',create_recheck:false}:{...base,reason:'REMOVAL_WITHOUT_PRIOR_DELIVERY'};
  if(!['OBSERVE','WAIT','ENTRY'].includes(event))return {...base,reason:'LIFECYCLE_NOT_USER_ACTIONABLE'};
  if(!directionClosed(canonical))return {...base,reason:'DIRECTION_NOT_CLOSED'};
@@ -78,6 +79,31 @@ export function assessActionability({canonical,lifecycle_event,prior_sent=false}
  if(!entryClosed(canonical))return {...base,reason:'ENTRY_CONTEXT_NOT_CLOSED'};
  if(!closedHardGates(canonical))return {...base,reason:'HARD_GATES_NOT_CLOSED'};
  return {deliver:true,status:'ACTIONABLE',reason:'STRICT_ENTRY_CHAIN_CLOSED',create_recheck:false};
+}
+
+// An administrative cancellation is a separate immutable publication. Its
+// clock is the decision clock; no score, price or liquidation snapshot is copied.
+export function validateRemovalReceipt(r,{contract,direction,wave_id,observed_ts}={}){
+ if(r?.schema!=='LIFECYCLE_REMOVAL_RECEIPT_V1'||r.market_snapshot!==false||!text(r.source_run_id)||stamp(r.observed_ts)===null)return false;
+ if(r.contract!==contract||r.direction!==upper(direction)||r.wave_id!==wave_id||r.observed_ts!==observed_ts)return false;
+ if(!Array.isArray(r.conditions)||!r.conditions.length||r.conditions.length>6)return false;
+ const predicates={HARD_VETO:c=>c.field==='hard_veto'&&c.value===1,INVALIDATED:c=>c.field==='risk_state'&&c.value==='INVALIDATED',DATA_UNUSABLE:c=>(c.field==='dq_status'&&c.value==='INSUFFICIENT')||(c.field==='data_quality'&&['INSUFFICIENT','BLOCKED'].includes(c.value)),DIRECTION_DESTROYED:c=>c.field==='direction',EXIT:c=>c.field==='lifecycle_stage'&&c.value==='EXIT',EDGE_SPENT:c=>c.field==='lifecycle_stage'&&c.value==='EDGE_SPENT',EXCLUDE:c=>c.field==='lifecycle_stage'&&c.value==='EXCLUDE'};
+ return Boolean(predicates[r.reason])&&r.conditions.every(c=>text(c.source)&&text(c.row_id)&&stamp(c.observed_ts)!==null&&c.observed_ts<=r.observed_ts&&predicates[r.reason](c));
+}
+const REMOVAL_CHECK_RU={'futures.htx_futures_liquidity':'ликвидность фьючерса HTX','futures.htx_futures_order_flow_sample':'проверенная выборка сделок фьючерса HTX','futures.htx_open_interest':'открытый интерес HTX','futures.htx_funding':'финансирование фьючерса HTX','trajectory.price_1h':'история цены за час','trajectory.price_4h':'история цены за четыре часа','trajectory.oi_1h':'история открытого интереса за час','trajectory.oi_4h':'история открытого интереса за четыре часа','trajectory.funding_current':'текущее финансирование','trajectory.funding_history':'история финансирования'};
+export function renderRemovalNotice(canonical,{manual=false}={}){
+ const r=canonical?.metadata?.lifecycle_removal;
+ if(!validateRemovalReceipt(r,{contract:contractOf(canonical),direction:canonical?.direction,wave_id:r?.wave_id,observed_ts:canonical?.observed_ts})||!text(r?.prior_publication_id)||!text(r?.prior_idempotency_key))return {ok:false,status:'REMOVAL_RECEIPT_NOT_CLOSED',text:null};
+ const reason={HARD_VETO:'обязательная проверка риска запретила продолжение идеи',INVALIDATED:'проверка риска признала структуру идеи нарушенной',DIRECTION_DESTROYED:'повторная проверка не сохранила подтверждённое направление идеи',EXIT:'волна перешла в стадию выхода',EDGE_SPENT:'потенциал текущей волны исчерпан',EXCLUDE:'текущая волна исключена из наблюдения',DATA_UNUSABLE:'повторная проверка признала обязательные данные непригодными'}[r.reason];
+ const lines=[contractOf(canonical).replace(/-USDT$/i,''),canonical.direction==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ','⛔️ ИДЕЯ СНЯТА','',`Причина: ${reason}.`];
+ if(r.reason==='DATA_UNUSABLE'){
+  const failed=(Array.isArray(r.failed_checks)?r.failed_checks:[]).map(k=>REMOVAL_CHECK_RU[k]).filter(Boolean);
+  if(failed.length)lines.push(`Не подтверждены: ${failed.join('; ')}.`);
+  else if(r.sufficiency==='INSUFFICIENT')lines.push('Исходная проверка достаточности данных завершилась отказом.');
+  else lines.push('В исходной записи нет подробностей отказавшей проверки.');
+ }
+ if(manual)lines.push(`Проверка отмены: ${fmtMsk(r.observed_ts)} МСК.`,`Ранее отправленное сообщение: №${r.prior_telegram_message_id}.`);
+ const output=lines.join('\n');return {ok:true,status:'READY',text:output,length:output.length,max_length:1800,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 
 function expectedScoreText(canonical,label,key){const n=score(canonical?.scores?.[key]);return n===null?`${label}: не подтверждена`:`${label}: ${Math.round(n)} из 100`;}
@@ -123,6 +149,7 @@ function renderLegacyCanonicalTelegram({canonical,lifecycle_event}={}){
  lines.push(...liquidationLines(canonical));lines.push(`Снимок рынка: ${fmtMsk(canonical.observed_ts)} МСК.`);const textOut=lines.filter(Boolean).join('\n');const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
 export function renderCanonicalTelegram({canonical,lifecycle_event,context_policy='OWNER_APPROVED_BRIEF_20261007'}={}){
+ if(canonical?.metadata?.lifecycle_removal)return upper(lifecycle_event)==='IDEA_REMOVED'?renderRemovalNotice(canonical):{ok:false,status:'REMOVAL_EVENT_MISMATCH',text:null};
  if(!['OWNER_APPROVED_BRIEF_20261007','ORIGINAL_BRIEF_20261007','ORIGINAL_V5_20261006',RELEVANT_LIQUIDATION_PRESENTATION].includes(context_policy))return{ok:false,status:'APPROVED_CONTEXT_POLICY_REQUIRED',text:null};
  if(canonical?.status!=='CLOSED')return{ok:false,status:'CANONICAL_NOT_CLOSED',text:null};const nativeGuard=validateNativeLiquidationContext(canonical);if(!nativeGuard.ok)return{ok:false,status:nativeGuard.status,text:null};const event=upper(lifecycle_event),d=upper(canonical.direction),ticker=text(canonical?.metadata?.contract||canonical?.candidates?.[0]?.contract||canonical?.candidates?.[0]?.ticker).replace(/-USDT$/i,'');
  if(!ticker||!['LONG','SHORT'].includes(d))return{ok:false,status:'DISPLAY_IDENTITY_NOT_CLOSED',text:null};
@@ -150,7 +177,7 @@ export function renderCanonicalTelegram({canonical,lifecycle_event,context_polic
  } else lines.push('Причина: ранее отправленная идея больше не соответствует обязательным условиям.');
  lines.push('',...(brief?displayBriefTelegramLiquidations(canonical.liquidations,telegramPrice,{policy:liquidationPolicy}):liquidationLines(canonical)));const joined=lines.filter(x=>x!==null&&x!==undefined).join('\n');const textOut=brief?omitTelegramCurrencies(joined):joined;const max=1800;if(textOut.length>max)return {ok:false,status:'MESSAGE_TOO_LONG',text:null,length:textOut.length,max_length:max};if(hasInternalTerminology(textOut))return {ok:false,status:'FORBIDDEN_INTERNAL_TERMINOLOGY',text:null};return{ok:true,status:'READY',text:textOut,length:textOut.length,max_length:max,analytical_fingerprint:canonical.analytical_fingerprint};
 }
-export function renderCanonicalManual({canonical,liquidation_policy=liquidationPresentationPolicy(canonical?.observed_ts)}={}){return formatManualReport(canonical,{liquidation_policy});}
+export function renderCanonicalManual({canonical,liquidation_policy=liquidationPresentationPolicy(canonical?.observed_ts)}={}){return canonical?.metadata?.lifecycle_removal?renderRemovalNotice(canonical,{manual:true}):formatManualReport(canonical,{liquidation_policy});}
 
 export function validatePresentation({canonical,manual_text,telegram_text,direction,lifecycle_event}={}){
  const fail=reason=>({status:'NOT_CLOSED',reason,presentation_hash:null});
@@ -183,7 +210,7 @@ export function validatePresentation({canonical,manual_text,telegram_text,direct
   const legacy=canonical.observed_ts<cutover?renderLegacyCanonicalTelegram({canonical,lifecycle_event:event}):null;
   if((!originalBrief?.ok||telegram_text!==originalBrief.text)&&(!originalV5?.ok||telegram_text!==originalV5.text)&&(!legacy?.ok||telegram_text!==legacy.text))return fail('TELEGRAM_CANONICAL_CONTENT_MISMATCH');
  }
- const expectedManual=formatManualReport(canonical);
+ const expectedManual=renderCanonicalManual({canonical});
  if(!expectedManual.ok)return fail(expectedManual.status);
  if(manual_text!==expectedManual.text)return fail('MANUAL_CANONICAL_CONTENT_MISMATCH');
  return {status:'CLOSED',reason:null,presentation_hash:sha256({manual_text,telegram_text,analytical_fingerprint:canonical.analytical_fingerprint})};
@@ -209,6 +236,7 @@ export async function persistCanonicalSnapshot(db,{canonical,presentation_inputs
 
 export async function finalizePublication(db,{publication_id,lifecycle_event,direction,manual_text,telegram_text,prior_sent=false,now_ts=Date.now()}={}){
  const row=await db.prepare(`SELECT * FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1`).bind(text(publication_id)).first();if(!row)return {status:'PUBLICATION_NOT_FOUND',deliver:false};
+ if(Number(now_ts)>=Date.parse('2026-10-09T08:30:00Z')&&text(row.lifecycle_event)&&upper(row.lifecycle_event)!==upper(lifecycle_event))return {status:'IMMUTABLE_PUBLICATION_EVENT_MISMATCH',deliver:false};
  let canonical;try{canonical=JSON.parse(row.canonical_json);}catch{return {status:'CANONICAL_JSON_INVALID',deliver:false};}
  const id=validateCanonicalIdentity(canonical,{contract:row.contract_code,direction,run_id:row.run_id,snapshot_id:row.snapshot_id,observed_ts:row.observed_ts});if(id.status!=='CLOSED')return {...id,deliver:false};
  const action=assessActionability({canonical,lifecycle_event,prior_sent});
