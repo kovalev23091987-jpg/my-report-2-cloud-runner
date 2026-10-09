@@ -393,266 +393,43 @@
     "automatic_continuation_created_by_cleanup": false,
     "active_cloud_development_jobs": [],
     "last_bounded_read": {
-      "proof": "checkpoints/post245-production-readback-20261008/37859121552/summary.json",
-      "sent_proof": "checkpoints/POST245_ACTUAL_REPORT_SENT_20261008.json",
-      "cloud_run": 37859121552,
-      "head": "7bea2db324a8ae213ae9f9cb428ca0d091afd72f",
-      "run_id": "1791501812954-1791501825647",
-      "generated_at": "2026-10-08T23:25:17.519Z",
-      "result_artifact_id": 11585193546,
-      "result_artifact_digest": "sha256:65c0b02f77dcf8ccc3263c9f41aadbcfc727d114fedfa6003d0fe9c522cecd5f",
-      "info_artifact_id": 11585094188,
-      "info_artifact_digest": "sha256:16429efdf9764e693cafe9e45b227f1a502bdfa8aef4a39f560c568eda5e7b64",
-      "read_cloud_run": 37860703402,
-      "read_artifact_id": 11586217287,
-      "read_artifact_digest": "sha256:3779639374c3e9dc694cca811cb94dfb0cbacf132f68538e2249c8b34ed83a96",
-      "read_ts": 1791502821984,
-      "candidates": [
-        {
-          "contract": "FIL-USDT",
-          "state": "REJECTED",
-          "direction": null,
-          "snapshot_id": "S392:FIL-USDT:1791501908983",
-          "publication_id": "PUB:76bf8accbf6f746a80c1e78d8cc579c315a900cb",
-          "fingerprint": "c8179986049c52d1615bc20dae14f25f60c7160e70d79d141f1f011d6a8f6b85",
-          "participating": 7,
-          "participating_ids": [
-            "N05",
-            "N08",
-            "N09",
-            "N10",
-            "N11",
-            "N12",
-            "N16"
-          ],
-          "nonzero_count": 0,
-          "N12_score": null,
-          "N05": {
-            "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-            "rendered": [
-              {
-                "block_id": "N05",
-                "evidence_id": "EV2:ba0487073bc708ed5117b5d2d60c5c8a1911d592ac336ee3bc024b2f7e2ca047",
-                "physical_root_key": "HTX_RAW_FILLS:FIL-USDT:1791487380000:1791501780000",
-                "evidence_ids": [
-                  "EV2:ba0487073bc708ed5117b5d2d60c5c8a1911d592ac336ee3bc024b2f7e2ca047"
-                ],
-                "physical_root_keys": [
-                  "HTX_RAW_FILLS:FIL-USDT:1791487380000:1791501780000"
-                ],
-                "source_ts": 1791501780000,
-                "observed_ts": 1791501884312,
-                "label": "Фактический поток фьючерсных сделок за четыре часа",
-                "value": "2641 исходных сделок: покупки 650 638,59, продажи 734 419,91 USDT; разница -83 781,32 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
-                "source": "HTX / исходные сделки",
-                "consumer": "MANUAL_CONFIRMED_CONTEXT",
-                "score_contribution": 0
-              }
-            ],
-            "source_clock_unchanged": true
-          },
-          "native_levels": [
-            {
-              "price": 0.9405076104136083,
-              "distance_pct": -13.047517883719607,
-              "reference_price": 1.081634,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 1077.3159868634827,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 1.4697244416809165,
-              "distance_pct": 35.880015021801896,
-              "reference_price": 1.081634,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 170.60454733001822,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 1.5032838307491514,
-              "distance_pct": 38.982671656877585,
-              "reference_price": 1.081634,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 166.91866269923767,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 1.5496140302596046,
-              "distance_pct": 43.26602439083873,
-              "reference_price": 1.081634,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 324.2695337993613,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 0.8000866843,
-              "distance_pct": -26.054835092421445,
-              "reference_price": 1.082,
-              "source": "Hyperliquid official",
-              "source_ts": 1791501873544,
-              "estimated": false,
-              "conditional_cross": false,
-              "notional": 32461.8394,
-              "notional_unit": "USDC",
-              "is_HTX_target": false
-            }
-          ]
-        },
-        {
-          "contract": "ZEC-USDT",
-          "state": "OBSERVE",
-          "direction": "LONG",
-          "snapshot_id": "S392:ZEC-USDT:1791501879771",
-          "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
-          "fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
-          "participating": 8,
-          "participating_ids": [
-            "N02",
-            "N05",
-            "N08",
-            "N09",
-            "N10",
-            "N11",
-            "N12",
-            "N16"
-          ],
-          "nonzero_count": 1,
-          "N12_score": 0.0227,
-          "N05": {
-            "status": "CLOSED_EXACT_FUTURES_FLOW_4H",
-            "rendered": [
-              {
-                "block_id": "N05",
-                "evidence_id": "EV2:31e18a62cc57d4c8ccd05bf8b5508a6e12c42241409bae1715aad0aacb8d6bb1",
-                "physical_root_key": "HTX_RAW_FILLS:ZEC-USDT:1791487380000:1791501780000",
-                "evidence_ids": [
-                  "EV2:31e18a62cc57d4c8ccd05bf8b5508a6e12c42241409bae1715aad0aacb8d6bb1"
-                ],
-                "physical_root_keys": [
-                  "HTX_RAW_FILLS:ZEC-USDT:1791487380000:1791501780000"
-                ],
-                "source_ts": 1791501780000,
-                "observed_ts": 1791501838328,
-                "label": "Фактический поток фьючерсных сделок за четыре часа",
-                "value": "2669 исходных сделок: покупки 1 895 669,93, продажи 1 321 368,94 USDT; разница 574 300,99 USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа",
-                "source": "HTX / исходные сделки",
-                "consumer": "MANUAL_CONFIRMED_CONTEXT",
-                "score_contribution": 0
-              }
-            ],
-            "source_clock_unchanged": true
-          },
-          "native_levels": [
-            {
-              "price": 2023.4719689331064,
-              "distance_pct": 69.83726946343238,
-              "reference_price": 1191.4181,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 358.7750377087846,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 1810.19831186469,
-              "distance_pct": 51.93644547322973,
-              "reference_price": 1191.4181,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 924.4275451110233,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 1807.7165509985352,
-              "distance_pct": 51.728142370720654,
-              "reference_price": 1191.4181,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 441.22770156658197,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 2207.543645736779,
-              "distance_pct": 85.28706637382619,
-              "reference_price": 1191.4181,
-              "source": "gTrade official SDK",
-              "source_ts": 1791501840487,
-              "estimated": true,
-              "conditional_cross": false,
-              "notional": 131.31395597608605,
-              "notional_unit": "USD",
-              "is_HTX_target": false
-            },
-            {
-              "price": 889.2052221198,
-              "distance_pct": -25.464776016781222,
-              "reference_price": 1193,
-              "source": "Hyperliquid official",
-              "source_ts": 1791501867624,
-              "estimated": false,
-              "conditional_cross": true,
-              "notional": 11930000,
-              "notional_unit": "USDC",
-              "is_HTX_target": false
-            }
-          ]
-        }
+      "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
+      "cloud_run": 37862220122,
+      "tested_head": "93f6975f4f3eb5670098ec12fed7b84c02da53ab",
+      "proof_head": "eea82c73fa8446a5b94819651e87cfbbc42447c3",
+      "artifact_id": 11586528706,
+      "artifact_digest": "sha256:178902b24a5e14ae1ba6231b8fbfee93b97d150b77490da959c36d24658db9bf",
+      "checked_ts": 1791503829793,
+      "sourceHTTP": 0,
+      "D1": {
+        "requests": 14,
+        "rows_read": 104,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "status": "BOUNDED_RETAINED_COVERAGE_READ_COMPLETED",
+      "prospective": {
+        "signal_rows": 0,
+        "outcome_rows": 0,
+        "activation": 1789813960780,
+        "precision": null,
+        "recall": null,
+        "validated": false
+      },
+      "collector_current_generation_retained_span_days": 3,
+      "collector_all_asset_coverage_proven": false,
+      "Deribit_observed_bases": [
+        "AVAX",
+        "BTC",
+        "ETH",
+        "HYPE",
+        "SOL",
+        "TRX",
+        "XRP"
       ],
-      "Telegram_sent_verified": true,
-      "SENT": {
-        "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
-        "run_id": "1791501812954-1791501825647",
-        "snapshot_id": "S392:ZEC-USDT:1791501879771",
-        "analytical_fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
-        "observed_ts": 1791501879771,
-        "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
-        "lifecycle_event": "OBSERVE",
-        "state": "SENT",
-        "telegram_message_id": "165",
-        "sent_ts": 1791501913581,
-        "last_error": "SENT"
-      },
-      "original_task": {
-        "task_id": "RCHK:61df81de7da78101dd5216170974992a2f3d563d",
-        "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
-        "contract_code": "ZEC-USDT",
-        "direction": "LONG",
-        "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
-        "snapshot_id": "S392:ZEC-USDT:1791501879771",
-        "run_id": "1791501812954-1791501825647",
-        "due_ts": 1791502179771,
-        "expires_ts": 1791503679771,
-        "state": "PENDING",
-        "attempt_count": 0,
-        "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791502803519,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"WAITING_FOR_PRICE\",\"price\":1192.72,\"source_ts\":1791502801936,\"observed_ts\":1791502801936,\"source\":\"HTX_OFFICIAL_COLLECTOR\",\"settlement_confirmed\":false,\"last_bucket\":1791502800000,\"task_id\":\"RCHK:61df81de7da78101dd5216170974992a2f3d563d\",\"publication_id\":\"PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b\",\"run_id\":\"1791501812954-1791501825647\",\"snapshot_id\":\"S392:ZEC-USDT:1791501879771\",\"analytical_fingerprint\":\"4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b\",\"telegram_message_id\":\"165\"}",
-        "created_ts": 1791501913581,
-        "updated_ts": 1791502803519
-      },
-      "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
+      "actual_usable_IV_from_catalog": false,
+      "Delta_cached_catalog_or_quotes": false,
+      "no_score_or_ENTRY": true
     },
     "active_natural_report_readback": {
       "active": false,
@@ -1257,8 +1034,8 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791503572490,
-  "next_action": "Expand genuinely useful exact primary source/category/attention/options coverage within existing quotas; no unchanged empty Sablier/Llama403 repeat. Review all102-asset30–90-day history and matured cohort; current ZEC/FIL full240-minute flows are limited proof. Read next natural current-release report jointly for source use, exact trigger, unchanged ENTRY gates and same-run SENT; no forced MAIN or expired task revival.",
+  "updated_ts": 1791504030278,
+  "next_action": "QUALIFY_DYNAMIC_EXACT_DERIBIT_SHARED_USDC_QUOTES_FROM_VERIFIED_RETAINED_PRIMARY_CATALOG_WITH_ONE_BOUNDED_SOURCE_HTTP;RETAIN_ENTRY_AND_HISTORY_GAPS",
   "current_task": "FULL_OWNER_TZ_IN_PROGRESS",
   "latest_native_payment_release": {
     "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
@@ -1607,7 +1384,7 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "PRIMARY_SUI_MONTHLY_PROJECTION_RELEASE_AND_ORIGINAL_CACHE_BOUND;NEXT_GENERAL_COVERAGE",
+  "current_execution_block": "RETAINED_SOURCE_COHORT_COVERAGE_COMPLETED;DERIBIT_USDC_PRIMARY_QUOTE_QUALIFICATION_NEXT",
   "latest_development_lease_release": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
     "released_ts": 1791503572490,
@@ -5258,5 +5035,44 @@
       "new_full_analysis_required_for_ENTRY": true,
       "actual_ENTRY_verified": false
     }
+  },
+  "latest_retained_source_cohort_history_coverage": {
+    "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
+    "cloud_run": 37862220122,
+    "tested_head": "93f6975f4f3eb5670098ec12fed7b84c02da53ab",
+    "proof_head": "eea82c73fa8446a5b94819651e87cfbbc42447c3",
+    "artifact_id": 11586528706,
+    "artifact_digest": "sha256:178902b24a5e14ae1ba6231b8fbfee93b97d150b77490da959c36d24658db9bf",
+    "checked_ts": 1791503829793,
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 14,
+      "rows_read": 104,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "status": "BOUNDED_RETAINED_COVERAGE_READ_COMPLETED",
+    "prospective": {
+      "signal_rows": 0,
+      "outcome_rows": 0,
+      "activation": 1789813960780,
+      "precision": null,
+      "recall": null,
+      "validated": false
+    },
+    "collector_current_generation_retained_span_days": 3,
+    "collector_all_asset_coverage_proven": false,
+    "Deribit_observed_bases": [
+      "AVAX",
+      "BTC",
+      "ETH",
+      "HYPE",
+      "SOL",
+      "TRX",
+      "XRP"
+    ],
+    "actual_usable_IV_from_catalog": false,
+    "Delta_cached_catalog_or_quotes": false,
+    "no_score_or_ENTRY": true
   }
 }
