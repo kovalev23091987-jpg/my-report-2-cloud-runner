@@ -1,0 +1,48 @@
+name: Original approved 102 asset twenty-four-hour reader replay
+on:
+  push:
+    branches: [codex/approved102-original24h-replay-20261009]
+    paths: ['tools/replay-approved-universe24h-20261009.mjs','.github/workflows/approved102-original24h-replay-20261009.yml']
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main and owned bounded lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='4bbdee65210afafac28e379ae227c3524ecfc385')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble current production reader and replay every approved contract without network
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          cmp runtime/r8-20-prospective-validation-sidecar.mjs runner/r8-20-prospective-validation-sidecar.mjs
+          node tools/replay-approved-universe24h-20261009.mjs runtime > audit-output/replay.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved102-original24h-replay-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain exact original clock replay proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='4bbdee65210afafac28e379ae227c3524ecfc385')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),p=JSON.parse(fs.readFileSync('audit-output/approved102-original24h-replay.json')),binding=JSON.parse(fs.readFileSync('audit-output/binding.json'));if(p.status!=='ALL102_APPROVED_ANALYSIS_CONTRACTS_ORIGINAL24H_READER_CLOSED'||p.contracts!==102||p.total_points!==29376||p.actual_D1!==0||p.sourceHTTP!==0||p.source_clocks_refreshed||binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED')throw Error('CONNECTED_REPLAY_FAILED');
+            const proof={...p,binding,retained_directory:'checkpoints/approved102-original24h-replay-'+context.runId},tree=[];
+            for(const f of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;tree.push({path:proof.retained_directory+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:JSON.stringify(proof,null,2)+'\n',encoding:'utf-8'})).data;tree.push({path:'checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json',mode:'100644',type:'blob',sha:b.sha});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain unchanged original24h price paths of all102 approved assets through assembled reader',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
