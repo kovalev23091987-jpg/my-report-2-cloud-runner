@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {gunzipSync} from 'node:zlib';
+import {inspectArchivePriceSeries} from '../runner/htx-delayed-price-history.mjs';
+import {selectHorizonEndpoint} from '../current-generation/files/src/outcome-v2.mjs';
+const [dir,out]=process.argv.slice(2);if(!dir||!out)throw Error('RETAINED_DIRECTORY_AND_PROOF_PATH_REQUIRED');
+const manifest=JSON.parse(fs.readFileSync(dir+'/archive-price-qualification.json')),payload=fs.readFileSync(dir+'/qualified-historical-price-minutes.json.gz'),original=JSON.parse(gunzipSync(payload)).sort((a,b)=>a.open_ts-b.open_ts),baseline=JSON.parse(fs.readFileSync(dir+'/native-price-consumer-proof.json'));
+const start=manifest.event_interval[0],args={archives:[{manifest,payload}],contract:manifest.contract,start_ts:start,end_ts:manifest.event_interval[1],as_of_ts:manifest.qualified_at};
+const actual=inspectArchivePriceSeries(args);assert.equal(actual.status,'CLOSED_HISTORICAL_PRICE_SERIES');assert.deepEqual(actual.candles,original);assert.equal(actual.source_ts,null);assert.equal(actual.source_archives[0].source_ts,manifest.source_ts);assert.equal(actual.source_archives[0].available_at,manifest.available_at);
+const endpoints=baseline.endpoints.map(({horizon,endpoint})=>{const result=selectHorizonEndpoint({anchor_ts:start,horizon,candles:actual.candles});assert.deepEqual(result,endpoint);return {horizon,endpoint:result};});
+const missing=[];for(const days of [30,60,90]){const r=inspectArchivePriceSeries({...args,end_ts:start+days*86400000,as_of_ts:Math.max(manifest.qualified_at,start+days*86400000)});assert.equal(r.status,'CENSORED_MISSING_HISTORY');assert.equal(r.reason,'FULL_REQUESTED_DAYS_NOT_COVERED');assert.deepEqual(r.candles,[]);missing.push({requested_days:days,status:r.status,reason:r.reason});}
+fs.writeFileSync(out,JSON.stringify({schema:'HTX_RETAINED_DAILY_SERIES_CONNECTED_PROOF_V1',scope:'ONE_ACTUAL_NATIVE_RETAINED_DAY_AND_SYNTHETIC_MULTI_DAY_BOUNDARY_TESTS',contract:manifest.contract,actual_native_days:1,actual_native_minutes:actual.minute_count,original_rows_and_clocks_equal:true,source_archives:actual.source_archives,endpoints,unavailable_longer_windows:missing,synthetic_multi_day_is_actual_market_evidence:false,sourceHTTP:0,D1:0,new_fresh_SENT:false,entry_samples_created:0,actual_ENTRY:false,complete_30_90day_102asset_history:false,statistical_acceptance:false,project_complete:false},null,2)+'\n');
+console.log(JSON.stringify({status:actual.status,actual_native_days:1,minutes:actual.minute_count,horizons:endpoints.map(e=>e.horizon),longer_actual_windows:'CENSORED_MISSING_HISTORY',sourceHTTP:0,D1:0,project_complete:false}));
