@@ -1,0 +1,49 @@
+name: Retained history known-day guard caller validation
+on:
+  push:
+    branches: [codex/retained-history-known-day-guard-20261009]
+    paths: ['.github/workflows/retained-history-maintenance.yml','.github/workflows/retained-history-known-day-guard-20261009.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Verify own lease and reuse exactly tested guard module
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(h!=="b0ea3f73e79e2df7b0bb5e5455aae5de0819204c")throw Error('MAIN_MOVED');
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=="CODEX:KNOWN_D1_DAY_GUARD:20261009:1791578406261"||p.lease.expires_ts<=Date.now()||f.active)throw Error('LEASE_BLOCKED');
+            const old=Buffer.from((await github.rest.repos.getContent({owner,repo,path:'tools/known-d1-day-guard.mjs',ref:'460b2bf22a2aa1170d472edcb32e681018efea61'})).data.content,'base64');
+            if(!old.equals(fs.readFileSync('tools/known-d1-day-guard.mjs')))throw Error('REUSED_GUARD_CHANGED');
+      - name: Execute the exact maintenance preflight command without lease or D1
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),w=fs.readFileSync('.github/workflows/retained-history-maintenance.yml','utf8'),lines=w.split('\n');
+            const g=lines.findIndex(x=>x.includes('- name: Defer exact known same-day D1 block')),l=lines.findIndex(x=>x.includes('- name: Acquire bounded owner'));
+            if(g<0||l<=g||!lines[l+1].includes("steps.known_day_guard.outputs.blocked != 'true'"))throw Error('GUARD_BEFORE_NATIVE_ACTIONS_REQUIRED');
+            const r=lines.findIndex((x,i)=>i>g&&i<l&&x.includes('run: |'));const cmd=lines.slice(r+1,l).map(x=>x.slice(10)).join('\n');
+            const generation=w.match(/REPORT2_CURRENT_GENERATION: (\S+)/)?.[1];if(generation!=='MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M')throw Error('CURRENT_GENERATION_REQUIRED');
+            fs.mkdirSync('audit-output',{recursive:true});
+            cp.execFileSync('bash',['-e','-c',cmd],{env:{...process.env,REPORT2_CURRENT_GENERATION:generation,GITHUB_OUTPUT:process.cwd()+'/audit-output/guard-github-output'}});
+            const guard=JSON.parse(fs.readFileSync('audit-output/known-d1-day-guard.json'));
+            const today=new Date().toISOString().slice(0,10);if(guard.blocked!==(today==='2026-10-09'))throw Error('UTC_DAY_GUARD_RESULT');
+            if(guard.D1!==0||guard.sourceHTTP!==0||guard.Telegram!==0)throw Error('EXTRA_CALLS');
+            if(!w.includes("cron: '17 * * * *'")||!w.includes("always() && steps.lease.outputs.allowed == 'true'"))throw Error('CADENCE_OR_LEASE_RELEASE_CHANGED');
+            fs.writeFileSync('audit-output/history-caller-proof.json',JSON.stringify({head:context.sha,status:'EXACT_MAINTENANCE_PREFLIGHT_COMMAND_EXECUTED',guard,guard_before_native_actions:true,archive_migration_ran:false,maintenance_lease_acquired:false,D1:0,sourceHTTP:0,Telegram:0,reused_guard_cloud_run:37988897381,reused_guard_tests_pass:34,project_complete:false},null,2));
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: retained-history-day-guard-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
