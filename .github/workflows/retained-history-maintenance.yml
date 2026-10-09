@@ -16,12 +16,22 @@ jobs:
   archive:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 6
+    env:
+      REPORT2_CURRENT_GENERATION: MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Defer exact known same-day D1 block without native admission reads
+        if: ${{ github.event_name == 'schedule' }}
+        id: known_day_guard
+        run: |
+          mkdir -p audit-output
+          node tools/known-d1-day-guard.mjs . > audit-output/known-d1-day-guard.json
+          git rev-parse HEAD > audit-output/head.txt
       - name: Acquire bounded owner after fresh main and fence read
+        if: ${{ steps.known_day_guard.outputs.blocked != 'true' }}
         id: lease
         env:
           GITHUB_TOKEN: ${{ github.token }}
