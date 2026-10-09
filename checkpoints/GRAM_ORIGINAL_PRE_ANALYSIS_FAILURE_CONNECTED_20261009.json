@@ -1,0 +1,144 @@
+{
+  "schema": "GRAM_ORIGINAL_PRE_ANALYSIS_FAILURE_AND_CONNECTED_REFUSAL_RELEASE_20261009_V1",
+  "PR": 259,
+  "status": "ORIGINAL_GRAM_TRIGGER_INFRASTRUCTURE_READ_FAILURE_VERIFIED;NEW_REFUSAL_ARTIFACT_PATH_TESTED",
+  "original_canonical_proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
+  "failed_original_run": {
+    "run_id": 37931650060,
+    "head": "211e3eb0df6adc9fa889efc33d787aadfac8a0a9",
+    "job_id": 113823625088,
+    "task_id": "RCHK:493dd8a27079e267c97e2fa638fee498babc3bb4",
+    "created_at": "2026-10-09T12:41:03Z",
+    "fatal_at": "2026-10-09T12:41:32.0357026Z",
+    "fatal": "PERIODIC_ANALYTICS_OWNER_NOT_GITHUB:READ_FAILED",
+    "analytics_fencing_lease_claimed": true,
+    "analytics_fencing_lease_released_on_fatal": true,
+    "full_recheck_attempt_count_as_of_later_read": 0,
+    "canonical_run_artifact_created": false,
+    "error_before_full_market_analysis": true,
+    "exact_original_native_bridge_error_not_exported": true,
+    "original_bridge_error_inferred": false,
+    "source_HTTP_or_D1_unknown_costs_not_invented": true,
+    "retained_original_sanitized_log_excerpt": "checkpoints/gram171-trigger-run-37931650060-original-sanitized-excerpt.log"
+  },
+  "original_kick_read": {
+    "cloud_run": 37933704172,
+    "head": "cbc4c82e8931d0c3afa08186dc406d159076b766",
+    "read_ts": 1791550782468,
+    "artifact_id": 11617357270,
+    "artifact_digest": "sha256:ce8a7b6ed8d477d7d35c715ddf967a91a85c02cb2bab5caaeb42925fe8254ef3",
+    "retained": "checkpoints/gram171-original-kick-read-37933704172.zip",
+    "D1": {
+      "requests": 11,
+      "rows_read": 70,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "slot_count": 2,
+    "daily_cap": 3,
+    "GRAM_slot": 1,
+    "GRAM_kick_ts": 1791549660741,
+    "poll_count": 154,
+    "GRAM_kick_not_blocked_by_daily_cap": true
+  },
+  "later_native_owner_read": {
+    "cloud_run": 37934183350,
+    "head": "93140d7337f8859eac5ad6e242d8809d5a9944bd",
+    "read_ts": 1791551027194,
+    "artifact_id": 11616949998,
+    "artifact_digest": "sha256:c1805f4373ddb540921c8dadf43d1b0c3b17d37e44951a2a56e1f5af9386aafb",
+    "retained": "checkpoints/gram171-original-owner-read-37934183350.zip",
+    "owner": "GITHUB_ACTIONS",
+    "owner_updated_ts": 1790448000000,
+    "D1": {
+      "requests": 12,
+      "rows_read": 72,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "later_read_does_not_reconstruct_original_read_error": true
+  },
+  "new_implementation": {
+    "artifact_before_throw": "report2-run-result.json",
+    "receipt": "PRE_ANALYSIS_FAILURE_RECEIPT_V1",
+    "both_current_ownership_checks": true,
+    "original_run_head_task_binding": true,
+    "safe_error_family_and_known_HTTP_or_bridge_code": true,
+    "unclassified_error_hashed_raw_error_not_exported": true,
+    "fail_closed_preserved": true,
+    "market_conditions_not_evaluated": true,
+    "task_writes": 0,
+    "provider_HTTP": 0,
+    "source_clocks_refreshed": false,
+    "old_task_revived": false,
+    "blind_retry": false,
+    "cap_refund": false,
+    "score_and_ENTRY_rules_unchanged": true
+  },
+  "connected_validation": {
+    "cloud_run": 37935207883,
+    "head": "51f21a56ab91b3cbeb8ce247258cf889919d3bf8",
+    "artifact_id": 11618421029,
+    "artifact_digest": "sha256:72267cb1fef6b74e96363514d73ccc50b257806aff92defdc1c9a782230681f1",
+    "retained": "checkpoints/pre-analysis-failure-connected-37935207883.zip",
+    "unit": {
+      "pass": 1179,
+      "fail": 0,
+      "skip": 3
+    },
+    "assembled_optional_runtime": {
+      "pass": 14,
+      "fail": 0
+    },
+    "new_pre_analysis_runtime": {
+      "pass": 8,
+      "fail": 0
+    },
+    "delivery": {
+      "pass": 35,
+      "fail": 0
+    },
+    "integration": {
+      "pass": 37,
+      "fail": 0
+    },
+    "generation": "CURRENT_GENERATION_VALIDATED",
+    "binding": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "new_actual_diagnostic_occurrence": false,
+  "actual_ENTRY": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false,
+  "final_original_read": {
+    "cloud_run": 37935851081,
+    "head": "fdf8f896c86ceed3e8bedcdda29e7d3ec0abb9b6",
+    "read_ts": 1791551892602,
+    "artifact_id": 11618152065,
+    "artifact_digest": "sha256:641efce8cb355b5efe427dd4b36a9914dac952e4f4ba35a7dbd5e5b7a1c781c4",
+    "retained": "checkpoints/gram171-original-final-read-37935851081.zip",
+    "D1": {
+      "requests": 16,
+      "rows_read": 78,
+      "rows_written": 4,
+      "unknown_ops": 0
+    },
+    "task": {
+      "state": "EXPIRED",
+      "attempt_count": 0,
+      "original_expires_ts": 1791550811706,
+      "expired_receipt_ts": 1791551104696,
+      "reason": "ORIGINAL_TTL_EXPIRED",
+      "first_trigger_receipt_retained": true,
+      "prior_checks_retained": 5
+    },
+    "entry_signals": 0,
+    "entry_outcomes": 0,
+    "entry_tables_complete_with_bounded101_read": true,
+    "fair_queue_has_not_yet_run_after_PR258": true
+  }
+}
