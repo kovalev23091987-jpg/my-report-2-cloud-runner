@@ -73,7 +73,8 @@ class NativeKline(unittest.TestCase):
                 self.call(bars=json.dumps(b).encode())
 
     def test_native_transport_clock_cannot_be_backdated_or_renamed_as_market_time(self):
-        for patch in [{'received_ts': ASOF + 1}, {'http_status': 403}, {'url': 'https://foreign.test/data'}, {'file': 'native-kline.zip.CHECKSUM'}]:
+        swapped_file = 'native-kline.zip' if ACQUISITION['receipts'][0]['file'].endswith('.CHECKSUM') else 'native-kline.zip.CHECKSUM'
+        for patch in [{'received_ts': ASOF + 1}, {'http_status': 403}, {'url': 'https://foreign.test/data'}, {'file': swapped_file}]:
             a = copy.deepcopy(ACQUISITION)
             a['receipts'][0].update(patch)
             with self.assertRaises(ValueError):
