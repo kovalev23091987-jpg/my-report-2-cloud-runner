@@ -1,0 +1,33 @@
+{
+  "schema": "WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_VALIDATION_HISTORY_20261009_V1",
+  "attempts": [
+    {
+      "cloud_run": 37867296785,
+      "tested_head": "e4648b0413f7cd8ea8adeb63fd1e170400bd0120",
+      "artifact_id": 11588254480,
+      "artifact_digest": "sha256:4f2a94ae2ce325665c74d0862f30d156bce5a9341e886cc9f91e9f26225d4c83",
+      "status": "CONTROLLED_DISPLAY_EXPECTATION_FAILED_BEFORE_PRIMARY_SOURCE_CALLS",
+      "sourceHTTP": 0,
+      "D1": 0,
+      "source_attempts_reset": false,
+      "reason": "Test expected technical article identifier in human-readable canonical label; actual consumer correctly uses registry display label Solana. Test and qualifier expectation corrected; product renderer unchanged."
+    },
+    {
+      "cloud_run": 37867511041,
+      "tested_head": "ae44017eaa1f9c64933447c00ba7f8355e0effec",
+      "artifact_id": 11589200162,
+      "artifact_digest": "sha256:ceb47cbac7237e08a96d438d590f39d555aeb05384406abfb876c898e5e034eb",
+      "status": "SOURCE_AND_ASSIGNED_CONSUMER_QUALIFIED;FINAL_RECEIPT_WRITER_FAILED_MISSING_UNIT_TAP;REUSE_WITHOUT_SOURCE_REDISPATCH",
+      "sourceHTTP": 2,
+      "D1": {
+        "requests": 52,
+        "rows_read": 25,
+        "rows_written": 24,
+        "unknown_ops": 0
+      },
+      "source_attempts_reset": false,
+      "source_receipts_refreshed": false,
+      "reason": "Validation and binding PASS,14targeted tests and37integration PASS; both real primary sources and cache reads qualified. Receipt writer requested unretained optional unit tap. Recover immutable artifact, do not repeat providers or D1."
+    }
+  ]
+}

@@ -5,6 +5,8 @@ export const WIKIMEDIA_NATIVE_PAGES=Object.freeze({
  cardano:Object.freeze({article:'Cardano_(blockchain_platform)',label:'Cardano'}),
  bitcoin:Object.freeze({article:'Bitcoin',label:'Bitcoin'}),
  ethereum:Object.freeze({article:'Ethereum',label:'Ethereum'}),
+ solana:Object.freeze({article:'Solana_(blockchain_platform)',label:'Solana'}),
+ dogecoin:Object.freeze({article:'Dogecoin',label:'Dogecoin'}),
 });
 export function exactWikimediaPageBinding({contract,asset_identity}={}){
  const native=exactNativeSectorBinding(asset_identity,contract),page=native&&WIKIMEDIA_NATIVE_PAGES[native.chain];
