@@ -13,18 +13,66 @@
     "TELEGRAM": "ACTUAL_ALGO170_EXACT_SENT_BINDING_AND_APPROVED_PAYLOAD_AUDIT;NOT_ENTRY_OR_FIXED_REMOVAL_ACCEPTANCE"
   },
   "latest_actual_report": {
-    "proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
-    "natural_cloud_run": 37930291022,
-    "original_read_cloud_run": 37932064823,
-    "message_id": 171,
-    "lifecycle": "OBSERVE",
-    "original_light_price_trigger_reached": true,
-    "full_recheck": "PENDING_AS_OF1791549899458",
+    "run": 37944444674,
+    "head": "73790ff74cb75cd905f03a09c0a3369f4a9a8c0c",
+    "run_id": "1791556134383-1791556142196",
+    "scope": "AFTER_PR261_BEFORE_PR262",
+    "artifact_id": 11622448979,
+    "artifact_digest": "sha256:927d0b3a5d4f858e33c15efd91ad111a85a81c8a1b04cbda7b66c52246895687",
+    "retained": "checkpoints/post261-natural-37944444674.zip",
+    "candidates": [
+      {
+        "contract": "TIA-USDT",
+        "publication_id": "PUB:48b01e1c254abd26912def577822f42d8dc8f125",
+        "snapshot_id": "S392:TIA-USDT:1791556224281",
+        "observed_ts": 1791556224281,
+        "state": "OBSERVE",
+        "direction": "SHORT",
+        "trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 0.45,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791558024281,
+          "next_recheck_ts": 1791556524281,
+          "cancel_condition": "price>0.4865",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 2,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 0
+        }
+      },
+      {
+        "contract": "FIL-USDT",
+        "publication_id": "PUB:e10ad406d39a6629a33321b476d4f4d41fd96db5",
+        "snapshot_id": "S392:FIL-USDT:1791556190872",
+        "observed_ts": 1791556190872,
+        "state": "REJECTED",
+        "direction": null,
+        "trigger": null,
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 0,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 2
+        }
+      }
+    ],
+    "delivery_log_SENT": true,
+    "delivery_log_message_id_masked": true,
+    "unmasked_message_id": null,
+    "exact_native_SENT_binding_read": false,
     "actual_ENTRY": false,
-    "head": "ddbb8bfa45dedb0005297f2f0c8765de49a1d8cc",
-    "run_id": "1791548949006-1791548960596",
-    "snapshot_id": "S392:GRAM-USDT:1791549011706",
-    "scope": "POST257_NATURAL;PRE258"
+    "actual_TIA_price_trigger_reached_verified": false,
+    "actual_TIA_current_task_state_read": false,
+    "statistical_sidecar": "DEFERRED_LOW_PRIORITY_CADENCE;NO_NEW_OUTCOME_CLOSURE_PROVEN"
   },
   "pending": [
     {
@@ -89,6 +137,12 @@
       "task": "Fresh production cancellation receipt and concrete subcheck; no replay of old score/native levels",
       "class": "PR253_IMPLEMENTATION_TESTED_ACTUAL_REMOVAL_SENT_PENDING",
       "proof": "checkpoints/ZEC_CANCELLATION_CONNECTED_RELEASE_20261009.json"
+    },
+    {
+      "task": "Native daily budget after failed diagnostic SQL: preserve unknown cost and verify a later natural measured daily admission without resetting 2026-10-09 ledger",
+      "class": "NATIVE_DAY_ADMISSION_BLOCKED_UNKNOWN_USAGE",
+      "proof": "checkpoints/TYPED_BUDGET_REFUSAL_AND_ORIGINAL_DIRECTION_CONNECTED_20261009.json",
+      "current_observe_blocker": true
     }
   ],
   "source_accounting": {
@@ -681,9 +735,9 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791552040677,
-  "next_action": "Continue full register: broad qualified historical trade/event/price coverage and empirical approved ENTRY outcomes, source usefulness, natural same-run native absence diagnostics and exact delivered ENTRY. This new cold price path does not reconstruct original historical decision evidence or trade quantities.",
-  "current_task": "FULL_OWNER_TZ_IN_PROGRESS",
+  "updated_ts": 1791558695086,
+  "next_action": "Continue whole register using retained evidence and source-free checks. No further live D1 reads or admissions on 2026-10-09 after preserved unknown cost. Fresh native daily acceptance, production approved-102 scan, exact latest TIA SENT id/task chain, actual ENTRY and matured statistics remain open; a later UTC day is not assumed healthy without a fresh measured admission.",
+  "current_task": "FULL_OWNER_TZ_IN_PROGRESS;LIVE_D1_DAY_BLOCKED;OFFLINE_WORK_CONTINUES",
   "latest_native_payment_release": {
     "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
     "pr": 204,
@@ -1189,7 +1243,7 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "FULL_TZ_TRIGGERED_RECHECK_INFRASTRUCTURE_RECOVERY_AND_STATISTICS_IN_PROGRESS",
+  "current_execution_block": "FULL_TZ_OFFLINE_RETAINED_SOURCE_CONSUMERS_AND_REMAINING_ACCEPTANCE_IN_PROGRESS",
   "latest_development_lease_release": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
     "released_ts": 1791503572490,
@@ -2984,7 +3038,7 @@
     "next_action": "Use retained original-clock proofs first. PR237 and PR238 are merged and cloud verified; verify the next naturally eligible trigger through new full analysis and unchanged entry gates, and a fresh native-level automatic SENT. Continue all remaining generic source/block and prospective/history requirements; do not resurrect expired SENT159/160 tasks, repeat unchanged source probes, reset quotas or invent ENTRY.",
     "agent_background_running_after_turn": false
   },
-  "latest_status": "PR259_ORIGINAL_GRAM_TRIGGER_DISPATCH_SUCCEEDED_OWNER_READ_FAILED_BEFORE_ANALYSIS;TASK_NOW_EXPIRED0ATTEMPTS;CURRENT_FAILURE_ARTIFACT_PATH_VERIFIED;FULL_TZ_OPEN",
+  "latest_status": "PR263_TYPED_BUDGET_REFUSALS_AND_EXACT_ORIGINAL_DIRECTION_VERIFIED;NATIVE_20261009_DAY_ADMISSION_BLOCKED_UNKNOWN_DIAGNOSTIC_USAGE;FULL_TZ_OPEN",
   "latest_liquidation_relevance_release": {
     "status": "MERGED_AND_COMPOSED_TESTED_NO_NEW_LIVE_SENT",
     "prs": [
@@ -7137,5 +7191,198 @@
     "actual_ENTRY": false,
     "new_SENT": false,
     "full_TZ_complete": false
+  },
+  "latest_typed_budget_refusal_release": {
+    "PR": 263,
+    "proof": "checkpoints/TYPED_BUDGET_REFUSAL_AND_ORIGINAL_DIRECTION_CONNECTED_20261009.json",
+    "cloud_run": 37947759844,
+    "tested_head": "fada0c3bba7651e1cb2a581fb2047243262c6d2f",
+    "artifact_digest": "sha256:7a8496dac9d49c45b4266144227df9f68feaca23a1a4c6ae34393a7939391be1",
+    "worker_sha256": "c50eed81b60d35b2011fb9701ad3191efe5285885548452ff52ccf1f26461e8c",
+    "unit_pass": 1203,
+    "integration_pass": 37,
+    "approved_delivery_pass": 35,
+    "actual_ENTRY": false,
+    "full_TZ_complete": false
+  },
+  "current_native_D1_daily_blocker": {
+    "day": "2026-10-09",
+    "status": "UNMEASURED_FINALIZED_USAGE",
+    "native_read_run": 37945979439,
+    "unknown_operations": 1,
+    "causal_attempt_run": 37945843469,
+    "reason": "Diagnostic SQL requested nonexistent raw_favourable_move_pct and raw_adverse_move_pct. Original failed request remains charged with unknown native row cost; daily admission correctly blocks subsequent reservations.",
+    "no_reset_refund_retry_or_guard_bypass": true,
+    "proof": "checkpoints/TYPED_BUDGET_REFUSAL_AND_ORIGINAL_DIRECTION_CONNECTED_20261009.json"
+  },
+  "latest_original_direction_policy": {
+    "cloud_run": 37948687183,
+    "artifact_id": 11624318704,
+    "artifact_digest": "sha256:a172446faf470bb9872461cb8e79b65fd65ab752d52d1efcbe5c7c15625db52e",
+    "retained": "checkpoints/original-direction-domain-policy-37948687183.zip",
+    "actual_producer_replayed_on_native_inputs": {
+      "schema": "EXACT_ORIGINAL_DIRECTION_DOMAIN_POLICY_V1",
+      "head": "30b4d20cee82d4353741a89045f015a023902c09",
+      "cloud_run": 37948687183,
+      "producer_path": "src/v3-early-discovery.mjs",
+      "producer_sha256": "9dceeb5cb9c41ee936864cda4575e2c08e2668b41e5ff728bc09d491f7fc1f18",
+      "original_read_run": 37945843469,
+      "original_read_status": "READ_NOT_CLOSED",
+      "original_read_complete": false,
+      "source_clocks_refreshed": false,
+      "sourceHTTP": 0,
+      "D1": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "actual_ENTRY": false,
+      "project_complete": false,
+      "features": [
+        {
+          "contract": "BR-USDT",
+          "observed_ts": 1791552612763,
+          "raw_evidence_rows": 4,
+          "long_domains": [
+            "RELATIVE_STRENGTH"
+          ],
+          "short_domains": [
+            "RELATIVE_STRENGTH",
+            "PRICE_STATE_TRANSITION"
+          ],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "minimum_distinct_domains_one_side": 3,
+          "minimum_LONG_met": false,
+          "minimum_SHORT_met": false,
+          "quality": 73,
+          "reason": "NEITHER_SIDE_REACHED_THREE_DISTINCT_FACT_DOMAINS",
+          "ENTRY_authorized": false
+        },
+        {
+          "contract": "BTR-USDT",
+          "observed_ts": 1791552612763,
+          "raw_evidence_rows": 3,
+          "long_domains": [
+            "RELATIVE_STRENGTH"
+          ],
+          "short_domains": [
+            "PRICE_STATE_TRANSITION"
+          ],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "minimum_distinct_domains_one_side": 3,
+          "minimum_LONG_met": false,
+          "minimum_SHORT_met": false,
+          "quality": 64,
+          "reason": "NEITHER_SIDE_REACHED_THREE_DISTINCT_FACT_DOMAINS",
+          "ENTRY_authorized": false
+        }
+      ],
+      "controls": [
+        {
+          "name": "three distinct LONG",
+          "long_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "short_domains": [],
+          "direction_hint": "LONG",
+          "direction_state": "LONG_WATCH",
+          "controlled": true,
+          "actual_ENTRY": false
+        },
+        {
+          "name": "duplicates not three domains",
+          "long_domains": [
+            "A"
+          ],
+          "short_domains": [],
+          "direction_hint": null,
+          "direction_state": "DIRECTION_NOT_CLOSED",
+          "controlled": true,
+          "actual_ENTRY": false
+        },
+        {
+          "name": "both directions require deep resolution",
+          "long_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "short_domains": [
+            "A",
+            "B",
+            "C"
+          ],
+          "direction_hint": null,
+          "direction_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+          "controlled": true,
+          "actual_ENTRY": false
+        }
+      ]
+    },
+    "interpretation": "Three distinct fact domains on one side are required; repeated evidence or provider count does not add a domain. No gate changed."
+  },
+  "latest_post261_actual_natural": {
+    "run": 37944444674,
+    "head": "73790ff74cb75cd905f03a09c0a3369f4a9a8c0c",
+    "run_id": "1791556134383-1791556142196",
+    "scope": "AFTER_PR261_BEFORE_PR262",
+    "artifact_id": 11622448979,
+    "artifact_digest": "sha256:927d0b3a5d4f858e33c15efd91ad111a85a81c8a1b04cbda7b66c52246895687",
+    "retained": "checkpoints/post261-natural-37944444674.zip",
+    "candidates": [
+      {
+        "contract": "TIA-USDT",
+        "publication_id": "PUB:48b01e1c254abd26912def577822f42d8dc8f125",
+        "snapshot_id": "S392:TIA-USDT:1791556224281",
+        "observed_ts": 1791556224281,
+        "state": "OBSERVE",
+        "direction": "SHORT",
+        "trigger": {
+          "trigger_type": "PRICE_CONFIRMATION",
+          "metric": "price",
+          "operator": "<=",
+          "value": 0.45,
+          "unit": "USDT",
+          "timeframe": "5m",
+          "expires_ts": 1791558024281,
+          "next_recheck_ts": 1791556524281,
+          "cancel_condition": "price>0.4865",
+          "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+        },
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 2,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 0
+        }
+      },
+      {
+        "contract": "FIL-USDT",
+        "publication_id": "PUB:e10ad406d39a6629a33321b476d4f4d41fd96db5",
+        "snapshot_id": "S392:FIL-USDT:1791556190872",
+        "observed_ts": 1791556190872,
+        "state": "REJECTED",
+        "direction": null,
+        "trigger": null,
+        "block_use": {
+          "checked_block_count": 11,
+          "participating_block_count": 9,
+          "score_applied_block_count": 0,
+          "neutral_assessed_and_rendered_block_count": 7,
+          "unscored_diagnostic_assessed_and_rendered_block_count": 2
+        }
+      }
+    ],
+    "delivery_log_SENT": true,
+    "delivery_log_message_id_masked": true,
+    "unmasked_message_id": null,
+    "exact_native_SENT_binding_read": false,
+    "actual_ENTRY": false,
+    "actual_TIA_price_trigger_reached_verified": false,
+    "actual_TIA_current_task_state_read": false,
+    "statistical_sidecar": "DEFERRED_LOW_PRIORITY_CADENCE;NO_NEW_OUTCOME_CLOSURE_PROVEN"
   }
 }
