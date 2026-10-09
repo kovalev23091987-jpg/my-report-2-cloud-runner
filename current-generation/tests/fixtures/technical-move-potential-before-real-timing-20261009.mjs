@@ -1,5 +1,4 @@
-import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
-export const TECHNICAL_MOVE_POTENTIAL_VERSION='technical-move-potential-v5-actual-producer-timing-20261009';
+export const TECHNICAL_MOVE_POTENTIAL_VERSION='technical-move-potential-v4-no-fixed-minimum-20261001';
 export const MINIMUM_TECHNICAL_MOVE_PCT=null;
 const finite=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)?n:null;};
 const arr=v=>Array.isArray(v)?v:[];
@@ -24,38 +23,24 @@ function liquidationCandidates({direction,entry,zones}){
  }
  return {candidates:out,obstacles};
 }
-function producerTimingClosed(event,{contract,decision_ts}={}){
- const timing=event?.observation_timing;
- // Retain the inherited explicit contract for existing callers. When the
- // real producer supplies a timing receipt, that receipt takes precedence.
- if(timing==null)return event?.timely===true;
- const d=event?.minute_decomposition,first=timing.first_seen_ts,close=event?.event_close_ts,start=event?.timestamp;
- return isExactHtxUsdtSwapKey(contract)&&event?.contract===contract&&event?.exchange==='HTX'&&
-  timing.timely_for_precommitted_funnel===true&&timing.retrospective_promotion_forbidden===false&&
-  [first,close,start,decision_ts].every(Number.isSafeInteger)&&start<close&&close<=first&&first<=decision_ts&&
-  first-close<=600000&&decision_ts-close<=600000&&decision_ts-first<=300000&&timing.lag_from_event_close_ms===first-close&&
-  d?.status==='CLOSED'&&d.classification_allowed===true&&d.missing_or_incomplete===false&&
-  d.event_start_ts===start&&d.event_close_ts===close&&d.expected_one_minute_bars===(close-start)/60000&&
-  Number.isSafeInteger(d.expected_one_minute_bars)&&d.expected_one_minute_bars>0&&d.one_minute_bars===d.expected_one_minute_bars;
-}
-function candleCandidate({direction,entry,opportunity,contract,decision_ts}){
+function candleCandidate({direction,entry,opportunity}){
  const event=opportunity?.newest_event,c=event?.candle||{},high=finite(c.high),low=finite(c.low);
  const classified=event?.minute_decomposition?.classification_allowed===true;
  // A historical candle may remain useful context, but it cannot create a new
  // tradable target unless the opportunity engine marked this exact event timely.
- if(!classified||!producerTimingClosed(event,{contract,decision_ts})||high===null||low===null||low<=0||high<=low)return null;
+ if(!classified||event?.timely!==true||high===null||low===null||low<=0||high<=low)return null;
  const width=high-low,target=direction==='LONG'?entry+width:entry-width;
  if(target<=0||!correctSide(direction,entry,target))return null;
  const potential=move(direction,entry,target);if(potential<=0)return null;
  return {target_price:target,potential_move_pct:potential,basis:'MEASURED_ANOMALY_CANDLE_RANGE',basis_ru:'измеренная ширина подтверждаемой свечной аномалии',evidence_count:1,technical_inputs:{anomaly_high:high,anomaly_low:low,measured_range_pct:width/entry*100,event_id:event?.event_id??null}};
 }
 
-export function evaluateTechnicalMovePotential({direction,current_price,trigger_price=null,liquidation_zones=null,opportunity=null,contract=null,decision_ts=null,rolling_24h_change_pct=null,oi_change_pct=null,volume_ratio=null,funding_rate_pct=null,early_anomaly=false}={}){
+export function evaluateTechnicalMovePotential({direction,current_price,trigger_price=null,liquidation_zones=null,opportunity=null,rolling_24h_change_pct=null,oi_change_pct=null,volume_ratio=null,funding_rate_pct=null,early_anomaly=false}={}){
  const d=text(direction).toUpperCase(),current=finite(current_price),trigger=finite(trigger_price)??current;
  const base={version:TECHNICAL_MOVE_POTENTIAL_VERSION,status:'NOT_CLOSED',reason:'FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN',direction:d||null,entry_reference_price:trigger,minimum_move_pct:null,target_price:null,potential_move_pct:null,basis:null,basis_ru:null,not_random_target:true};
  if(!['LONG','SHORT'].includes(d)||current===null||current<=0||trigger===null||trigger<=0)return {...base,reason:'DIRECTION_OR_PRICE_NOT_CLOSED'};
  const liquidation=liquidationCandidates({direction:d,entry:trigger,zones:liquidation_zones});
- const candidates=[candleCandidate({direction:d,entry:trigger,opportunity,contract,decision_ts}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
+ const candidates=[candleCandidate({direction:d,entry:trigger,opportunity}),...liquidation.candidates].filter(Boolean).sort((a,b)=>a.potential_move_pct-b.potential_move_pct||b.evidence_count-a.evidence_count);
  if(!candidates.length)return base;
  const chosen=candidates[0];
  const obstacles=liquidation.obstacles.filter(row=>row.move_pct>0&&row.move_pct<chosen.potential_move_pct).sort((a,b)=>a.move_pct-b.move_pct);
@@ -63,4 +48,3 @@ export function evaluateTechnicalMovePotential({direction,current_price,trigger_
 }
 
 export default{TECHNICAL_MOVE_POTENTIAL_VERSION,MINIMUM_TECHNICAL_MOVE_PCT,evaluateTechnicalMovePotential};
-

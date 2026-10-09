@@ -2,6 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {evaluateTechnicalMovePotential} from '../files/src/technical-move-potential.mjs';
 
+const T=Date.UTC(2026,9,8,12),actualTimingEvent=()=>({contract:'TEST-USDT',exchange:'HTX',timestamp:T-900000,event_close_ts:T,candle:{high:101,low:94},observation_timing:{first_seen_ts:T+1000,lag_from_event_close_ms:1000,timely_for_precommitted_funnel:true,retrospective_promotion_forbidden:false},minute_decomposition:{status:'CLOSED',classification_allowed:true,missing_or_incomplete:false,event_start_ts:T-900000,event_close_ts:T,expected_one_minute_bars:15,one_minute_bars:15}});
+const actualTarget=e=>evaluateTechnicalMovePotential({contract:'TEST-USDT',decision_ts:T+2000,direction:'LONG',current_price:100,trigger_price:101,opportunity:{newest_event:e}});
+test('actual producer timing receipt closes a measured target without invented timely field',()=>{const e=actualTimingEvent();assert.equal(e.timely,undefined);const r=actualTarget(e);assert.equal(r.status,'CLOSED');assert.equal(r.target_price,108);assert.equal(r.basis,'MEASURED_ANOMALY_CANDLE_RANGE');});
+test('stale or future producer clocks and retrospective receipts cannot be overridden by legacy timely flag',()=>{for(const change of [{first_seen_ts:T+3000},{first_seen_ts:T-1000},{first_seen_ts:T-600001},{timely_for_precommitted_funnel:false},{retrospective_promotion_forbidden:true},{lag_from_event_close_ms:0}]){const e=actualTimingEvent();e.timely=true;Object.assign(e.observation_timing,change);assert.equal(actualTarget(e).status,'NOT_CLOSED');}});
+test('foreign, inverse, incomplete or inconsistent actual source windows reject measured targets',()=>{for(const change of [{contract:'OTHER-USDT'},{exchange:'BYBIT'},{contract:'TEST-USD'},{timestamp:T-899999},{minute_decomposition:{...actualTimingEvent().minute_decomposition,missing_or_incomplete:true}},{minute_decomposition:{...actualTimingEvent().minute_decomposition,one_minute_bars:14}}])assert.equal(actualTarget({...actualTimingEvent(),...change}).status,'NOT_CLOSED');});
+test('original event and receipt expiry remain strict at decision time',()=>{const e=actualTimingEvent();const assess=decision_ts=>evaluateTechnicalMovePotential({contract:'TEST-USDT',decision_ts,direction:'LONG',current_price:100,trigger_price:101,opportunity:{newest_event:e}});assert.equal(assess(T+301001).status,'NOT_CLOSED');assert.equal(assess(T+600001).status,'NOT_CLOSED');assert.equal(assess(null).status,'NOT_CLOSED');});
+
 test('a bare five-percent wish is rejected without technical evidence',()=>{
  const r=evaluateTechnicalMovePotential({direction:'LONG',current_price:100,trigger_price:101,liquidation_zones:{above:[{kind:'CALCULATED',price:110,strength_label_ru:'крупная'}]}});
  assert.equal(r.status,'NOT_CLOSED');assert.equal(r.target_price,null);assert.equal(r.not_random_target,true);
@@ -39,3 +46,4 @@ test('estimated or conditional account levels cannot override the target proof g
   assert.equal(r.status,'NOT_CLOSED');assert.equal(r.target_price,null);
  }
 });
+

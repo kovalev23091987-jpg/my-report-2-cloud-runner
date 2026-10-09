@@ -8,7 +8,7 @@
     "current-generation/files/src/canonical-display.mjs": "64b05e37095499ffe59fdf3299ba1f56b65233222409f213491db2e68db6801e",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
-    "current-generation/files/src/canonical-runtime-adapter.mjs": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
+    "current-generation/files/src/canonical-runtime-adapter.mjs": "0e11f1c5359b4fb95d5937e3c5a12a7fda3abdce94df236cecc0a76eb82f0832",
     "current-generation/files/src/canonical-publication.mjs": "ca750fe7bf14b9a2c46dae551088f381263179c222f7f352719142cfc39bd255",
     "current-generation/files/src/early-direction-receipt.mjs": "033011f644497d8a27f9d7a8572ac441b298f6d0b5eb736c9d724392673e1a71",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
@@ -597,6 +597,25 @@
       "automatic_golden_update": false,
       "failed_hash_only_cloud_run": 37649912749,
       "note": "All existing immutable output scenarios passed; the intended additional fact consumer changed only its pinned source hash. Do not regenerate any approved fixture."
+    },
+    {
+      "date": "2026-10-09",
+      "scope": "OWNER_REQUIRED_ACTUAL_PRODUCER_TIMING_TECHNICAL_TARGET_HANDOFF",
+      "authorization": "Owner requires completing strategy repairs; actual producer emits observation_timing rather than legacy timely flag.",
+      "module_changes": {
+        "current-generation/files/src/canonical-runtime-adapter.mjs": {
+          "before": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
+          "after": "0e11f1c5359b4fb95d5937e3c5a12a7fda3abdce94df236cecc0a76eb82f0832",
+          "exact_scope": "Pass exact contract and original decision timestamp to measured technical-target consumer."
+        }
+      },
+      "golden_fixtures_changed": false,
+      "legacy_canonical_input_outputs_changed": false,
+      "approved_manual_telegram_forms_changed": false,
+      "strategy_weights_or_entry_rules_changed": false,
+      "automatic_golden_update": false,
+      "failed_hash_only_cloud_run": 37870592591,
+      "note": "Intentional consumer wiring hash only; all existing golden messages and 35 assembled delivery checks passed unchanged. No fixture regeneration."
     }
   ],
   "consumer_selection_revisions": [
