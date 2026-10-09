@@ -1,0 +1,44 @@
+name: Full current original chain and statistics readback
+on:
+  push:
+    branches: [codex/full-tz-20261009]
+    paths: ['.github/workflows/full-current-chain-20261009.yml','tools/read-full-current-chain-20261009.mjs']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require own bounded lease and exact source branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='1c6cbca295d40c4f2d8343fa0dd39e98ce7f92c2')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Bounded original D1 read through existing daily admission
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-full-current-chain-20261009.mjs
+      - name: Retain exact assembled producer source without runtime secrets
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output/producer-source
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/producer-source/assembly.json
+          for f in v3-early-discovery.mjs v3-early-persistence-runtime.mjs tz101-entry-area-calibration.mjs; do cp runtime/src/$f audit-output/producer-source/; done
+          sha256sum audit-output/producer-source/*.mjs > audit-output/producer-source/source-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: full-current-chain-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
