@@ -1,0 +1,2115 @@
+{
+  "schema": "ZEC_ORIGINAL_REMOVAL_AND_CURRENT_CHAIN_READ_20261009_V1",
+  "head": "81d54cc5adc17d6202713d47c4ecebd63a840171",
+  "cloud_run": "37905678125",
+  "read_ts": 1791534812048,
+  "sourceHTTP": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "task_writes": 0,
+  "source_clocks_refreshed": false,
+  "project_complete": false,
+  "limitation": "Mutable task and lifecycle rows are their state at read_ts, not overwritten historical checks. Canonical observations require their natural cloud source head before calling them post-PR251.",
+  "admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-09",
+      "run_count": 37,
+      "reserved_rows_read": 618000,
+      "reserved_rows_written": 11344,
+      "measured_rows_read": 371476,
+      "measured_rows_written": 5019,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 5000,
+      "rows_written": 16
+    },
+    "projected_reserved": {
+      "rows_read": 623000,
+      "rows_written": 11360
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "original_dispatch": {
+    "dispatch_id": "V3TG:ZEC-USDT|LONG|EDW:ZEC-USDT:1791498286399:G7|IDEA_REMOVED|v3-telegram-shadow-r6",
+    "idempotency_key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791498286399:G7|IDEA_REMOVED|v3-telegram-shadow-r6",
+    "contract": "ZEC-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+    "lifecycle_event": "IDEA_REMOVED",
+    "rules_version": "v3-telegram-shadow-r6",
+    "state": "SENT",
+    "decision_id": null,
+    "message_hash": "LONG|DISCOVERY|75|75|OBSERVE_DATA_INSUFFICIENT|INSUFFICIENT|",
+    "telegram_message_id": "167",
+    "last_error": "SENT",
+    "created_ts": 1791520072082,
+    "updated_ts": 1791520073064,
+    "sent_ts": 1791520073064,
+    "shadow_only": 1
+  },
+  "original_binding": {
+    "idempotency_key": "ZEC-USDT|LONG|EDW:ZEC-USDT:1791498286399:G7|IDEA_REMOVED|v3-telegram-shadow-r6",
+    "publication_id": "PUB:6729cd6f050ab073a19dc1bac020209cc7e54a1b",
+    "contract_code": "ZEC-USDT",
+    "direction": "LONG",
+    "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+    "lifecycle_event": "IDEA_REMOVED",
+    "rules_version": "v3-telegram-shadow-r6",
+    "decision_id": null,
+    "snapshot_id": "S392:ZEC-USDT:1791501879771",
+    "run_id": "1791501812954-1791501825647",
+    "observed_ts": 1791501879771,
+    "analytical_fingerprint": "4088f78347fe85fac72c92041b845c9ebd4b646648c234436bb19ba3312cdb9b",
+    "presentation_hash": "9495e03f88415e0953105424ff544bd044864a511a62dff5d38b3b854d7fb5e3",
+    "created_ts": 1791520073064,
+    "shadow_only": 1
+  },
+  "original_shadow_rows": [
+    {
+      "shadow_id": "1791520019496:ZEC-USDT",
+      "contract_code": "ZEC-USDT",
+      "observed_ts": 1791520019496,
+      "rules_version": "shadow-dc-eq-dq-v1.3-funding-context-only",
+      "source": "DEEP_CHECK_INPUT",
+      "mode": "SHADOW_ONLY_NO_EXECUTION",
+      "direction_hint": "LONG",
+      "dc_long": 27.18,
+      "dc_short": 9.27,
+      "eq_status": "NOT_CLOSED",
+      "dq_status": "INSUFFICIENT",
+      "stage": "OBSERVE_DATA_INSUFFICIENT",
+      "data_sufficiency": "PARTIAL",
+      "missing_chains_json": "[\"cross_exchange_derivatives\",\"btc_eth_and_sector_relative_strength\",\"smart_money_onchain\",\"supporting_risk_supply_social_fundamentals\",\"external_market_regime_timing\",\"portfolio_risk_if_positions_known\"]",
+      "evidence_flags_json": "{\"funding_pct\":0.01,\"funding_interval_hours\":8,\"price_1h_pct\":0.37,\"price_4h_pct\":2.61,\"price_24h_pct\":-6.3,\"futures_flow_1h_delta_pct\":null,\"futures_flow_4h_delta_pct\":null,\"spot_flow_delta_pct\":null,\"oi_1h_change_pct\":4.95,\"oi_4h_change_pct\":10.08,\"oi_window_receipts\":{\"1h\":{\"version\":\"oi-window-receipt-post-v7-20260926\",\"status\":\"CLOSED\",\"reason\":null,\"contract_code\":\"ZEC-USDT\",\"venue\":\"HTX\",\"market_type\":\"USDT_M_PERPETUAL\",\"metric\":\"OPEN_INTEREST\",\"source\":\"HTX official public API\",\"endpoint\":\"/linear-swap-api/v1/swap_his_open_interest\",\"amount_type\":1,\"unit\":\"CONTRACTS\",\"method\":\"END_OVER_START_MINUS_ONE_TIMES_100\",\"window_kind\":\"COMPLETED_HOURLY_POINTS\",\"source_period\":\"60min\",\"requested_hours\":1,\"window_start_ts\":1791514800000,\"window_end_ts\":1791518400000,\"time_zone\":\"UTC\",\"as_of_ts\":1791520019496,\"source_end_age_sec\":1619.496,\"freshness_limit_sec\":5400,\"start_value\":208458,\"end_value\":218769,\"change_pct\":4.946320122038972,\"original_response_received_ts\":null,\"as_of_eligible_by_source_time\":true,\"is_rolling_to_message_time\":false},\"4h\":{\"version\":\"oi-window-receipt-post-v7-20260926\",\"status\":\"CLOSED\",\"reason\":null,\"contract_code\":\"ZEC-USDT\",\"venue\":\"HTX\",\"market_type\":\"USDT_M_PERPETUAL\",\"metric\":\"OPEN_INTEREST\",\"source\":\"HTX official public API\",\"endpoint\":\"/linear-swap-api/v1/swap_his_open_interest\",\"amount_type\":1,\"unit\":\"CONTRACTS\",\"method\":\"END_OVER_START_MINUS_ONE_TIMES_100\",\"window_kind\":\"COMPLETED_HOURLY_POINTS\",\"source_period\":\"60min\",\"requested_hours\":4,\"window_start_ts\":1791504000000,\"window_end_ts\":1791518400000,\"time_zone\":\"UTC\",\"as_of_ts\":1791520019496,\"source_end_age_sec\":1619.496,\"freshness_limit_sec\":5400,\"start_value\":198732,\"end_value\":218769,\"change_pct\":10.082422559024206,\"original_response_received_ts\":null,\"as_of_eligible_by_source_time\":true,\"is_rolling_to_message_time\":false}},\"absorption_1h\":\"insufficient\",\"absorption_4h\":\"insufficient\",\"spot_quality\":\"YELLOW\",\"stage0_history_available\":true,\"htx_coverage_pct\":64.71}",
+      "calibrated": 0,
+      "full_decision_eligible": 0,
+      "actual_decision_generated": 0,
+      "validated": 0,
+      "telegram_started": 0,
+      "created_ts": 1791520019496
+    }
+  ],
+  "original_final_rows": [],
+  "original_deep": {
+    "id": 2255,
+    "run_id": "1791519954546-1791519967513",
+    "contract_code": "ZEC-USDT",
+    "started_ts": 1791519976711,
+    "completed_ts": 1791520022159,
+    "execution_status": "COMPLETED",
+    "data_sufficiency": "PARTIAL",
+    "gaps_json": "[\"futures_snapshot.htx_futures_order_flow\",\"spot_snapshot.quality_status_GREEN\",\"futures_trajectory.flow_5m\",\"futures_trajectory.flow_15m\",\"futures_trajectory.flow_1h\",\"futures_trajectory.flow_4h\",\"futures_trajectory.flow_24h\"]",
+    "fulfilled_components": 4,
+    "failed_components_json": "[]",
+    "decision_generated": 0,
+    "validated": 0,
+    "telegram_started": 0,
+    "error_text": null,
+    "created_ts": 1791520022159,
+    "v3_handoff_id": "1791519954546-1791519967513|ZEC-USDT|EDW:ZEC-USDT:1791498286399:G7|ZEC-USDT|EDW:ZEC-USDT:1791498286399:G7|EARLY_BRIDGE",
+    "v3_handoff_logical_key": "1791519954546-1791519967513|ZEC-USDT|EDW:ZEC-USDT:1791498286399:G7|ZEC-USDT|EDW:ZEC-USDT:1791498286399:G7|EARLY_BRIDGE",
+    "v3_scan_ts": 1791519967678,
+    "v3_base_ticker": "ZEC",
+    "v3_discovery_rank": 1,
+    "v3_detectors_json": "[\"5m:oi_change_pct\",\"1h:oi_change_pct\",\"4h:oi_change_pct\",\"early:RELATIVE_STRENGTH\",\"early:PRICE_STATE_TRANSITION\"]",
+    "v3_evidence_ids_json": "[\"EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:LONG\",\"EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:SHORT\",\"EDW:ZEC-USDT:1791498286399:G7:PRICE_STATE_TRANSITION:LONG\"]",
+    "v3_first_seen_state_json": null,
+    "v3_current_state_json": "\"DISCOVERY\"",
+    "v3_direction": null,
+    "v3_wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+    "v3_dedup_reentry_key": "ZEC-USDT|EDW:ZEC-USDT:1791498286399:G7|EARLY_BRIDGE"
+  },
+  "hot_table_upper_bound": {
+    "rows": 174
+  },
+  "since_ts": 1791511200000,
+  "status": "BOUNDED_ORIGINAL_ZEC_AND_CURRENT_CHAIN_READ_CLOSED",
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "ZEC_CURRENT_CHAIN:37905678125:1",
+    "source_run_id": "37905678125",
+    "measured_rows_read": 493,
+    "measured_rows_written_accounted": 4,
+    "measured_requests_accounted": 13,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 13,
+    "rows_read": 494,
+    "rows_written": 4,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 38,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:v3_telegram_dispatch_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:shadow_decision_log": {
+        "requests": 1,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:final_decision_integration_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:deep_check_run_log": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "first:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 174,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:canonical_publication_shadow": {
+        "requests": 1,
+        "rows_read": 189,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_recheck_task_shadow": {
+        "requests": 1,
+        "rows_read": 44,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "all:v3_dispatch_publication_binding_shadow": {
+        "requests": 1,
+        "rows_read": 42,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "source_artifact_id": 11604576340,
+  "source_artifact_digest": "sha256:5a16d6e7dcef3ce535d5092c7bc33604803587fa5d165dc47c7063e1d7cb7a5d",
+  "cases": [
+    {
+      "publication_id": "PUB:e17687c6bc7b360f36e1be045b165807c57979f7",
+      "contract_code": "NEAR-USDT",
+      "run_id": "1791513813591-1791513823351",
+      "snapshot_id": "S392:NEAR-USDT:1791513893605",
+      "wave_id": "EDW:NEAR-USDT:1791510252209:G9",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "d16d9c79d4dce18801a02752d9fe97ffb2ae0855eaa46c29bae9ade1951ff80f",
+      "observed_ts": 1791513893605,
+      "created_ts": 1791513893605,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 90,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 4.712,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791515693605,
+        "next_recheck_ts": 1791514193605,
+        "cancel_condition": "price<4.547",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:NEAR-USDT:1791510252209:G9:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791513823545,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791513823545,
+          "available_at": 1791513823545,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:NEAR-USDT:1791510252209:G9:OI_ACCELERATION:BOTH",
+            "EDW:NEAR-USDT:1791510252209:G9:RELATIVE_STRENGTH:LONG",
+            "EDW:NEAR-USDT:1791510252209:G9:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:NEAR-USDT:1791510252209:G9:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "NEAR-USDT",
+          "decision_ts": 1791513893605,
+          "status": "CLOSED",
+          "reason": "EXISTING_FACTUAL_OBSERVATION_PLAN_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 4.68,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:NEAR-USDT:MARKET:EPISODE:1791509400000:1791512100000",
+          "event_close_ts": 1791510300000,
+          "producer_observed_ts": 1791513891907,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "anomaly_candle_closed": true,
+          "event_high": 4.712,
+          "event_low": 4.547,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 4.712,
+          "cancellation_price": 4.547
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "version": "technical-move-potential-v5-actual-producer-timing-20261009",
+        "status": "NOT_CLOSED",
+        "reason": "FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN",
+        "direction": "LONG",
+        "entry_reference_price": 4.712,
+        "minimum_move_pct": null,
+        "target_price": null,
+        "potential_move_pct": null,
+        "basis": null,
+        "basis_ru": null,
+        "not_random_target": true
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "NEAR-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 7721671.758,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:0915d773e7c127126749387394e9c4ddd75950a6",
+      "contract_code": "ZEC-USDT",
+      "run_id": "1791513813591-1791513823351",
+      "snapshot_id": "S392:ZEC-USDT:1791513935081",
+      "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "8325fca3a28608cf64c1b103d9c978e75d7417c03419fc9115db3eac002db44e",
+      "observed_ts": 1791513935081,
+      "created_ts": 1791513935081,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 90,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 1255.98,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791515735081,
+        "next_recheck_ts": 1791514235081,
+        "cancel_condition": "price<1114",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:ZEC-USDT:1791498286399:G7:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791513823545,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791513823545,
+          "available_at": 1791513823545,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ZEC-USDT:1791498286399:G7:OI_ACCELERATION:BOTH",
+            "EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:LONG",
+            "EDW:ZEC-USDT:1791498286399:G7:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:ZEC-USDT:1791498286399:G7:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ZEC-USDT",
+          "decision_ts": 1791513935081,
+          "status": "CLOSED",
+          "reason": "VERIFIED_TECHNICAL_RANGE_OBSERVATION_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 1206.255,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:ZEC-USDT:MARKET:EPISODE:1791510300000:1791512100000",
+          "event_close_ts": 1791511200000,
+          "producer_observed_ts": 1791513933745,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "technical_range_receipt": {
+            "level": 1255.98,
+            "cancel": 1114,
+            "evidence_id": "EV2:b6c346a25d73f42f1c7717fed543befba74b20124703cd9d0bed358db9b6b1cf",
+            "source_ts": 1791513898106,
+            "observed_ts": 1791513898579,
+            "window_start": 1791439200000,
+            "window_end": 1791511200000,
+            "period": "60min",
+            "basis": "VERIFIED_CLOSED_CANDLE_RANGE",
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          "anomaly_candle_closed": true,
+          "event_high": 1197.28,
+          "event_low": 1188.5,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 1255.98,
+          "cancellation_price": 1114
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "status": "NOT_CLOSED",
+        "reason": "FORWARD_OBSERVATION_CONDITIONS_ONLY",
+        "potential_move_pct": null,
+        "target_price": null
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ZEC-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 41393568.2434,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:69770ec0abb6a919e0f2bb5600b862641fa848c0",
+      "contract_code": "ZEC-USDT",
+      "run_id": "1791516320367-1791516328417",
+      "snapshot_id": "S392:ZEC-USDT:1791516367120",
+      "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "ff64b5791a551fe3daeae27a5a16423dd16ef86180fe3093e4b44a119b51516e",
+      "observed_ts": 1791516367120,
+      "created_ts": 1791516367120,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 1255.98,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791518167120,
+        "next_recheck_ts": 1791516667120,
+        "cancel_condition": "price<1114",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:ZEC-USDT:1791498286399:G7:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791516328571,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791516328571,
+          "available_at": 1791516328571,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ZEC-USDT:1791498286399:G7:OI_ACCELERATION:BOTH",
+            "EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:LONG",
+            "EDW:ZEC-USDT:1791498286399:G7:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ZEC-USDT",
+          "decision_ts": 1791516367120,
+          "status": "CLOSED",
+          "reason": "VERIFIED_TECHNICAL_RANGE_OBSERVATION_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 1223.585,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:ZEC-USDT:MARKET:EPISODE:1791510300000:1791514800000",
+          "event_close_ts": 1791511200000,
+          "producer_observed_ts": 1791516366073,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "technical_range_receipt": {
+            "level": 1255.98,
+            "cancel": 1114,
+            "evidence_id": "EV2:60125bf69f599209de5a7e6b905740c685a55e9383accb873bddc8cb03c4dc83",
+            "source_ts": 1791516340013,
+            "observed_ts": 1791516340467,
+            "window_start": 1791442800000,
+            "window_end": 1791514800000,
+            "period": "60min",
+            "basis": "VERIFIED_CLOSED_CANDLE_RANGE",
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          "anomaly_candle_closed": true,
+          "event_high": 1197.28,
+          "event_low": 1188.5,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 1255.98,
+          "cancellation_price": 1114
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "status": "NOT_CLOSED",
+        "reason": "FORWARD_OBSERVATION_CONDITIONS_ONLY",
+        "potential_move_pct": null,
+        "target_price": null
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ZEC-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 43012961.6476,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:e626ca589d7add8acb2f0f775d66824ffafce933",
+      "contract_code": "BOME-USDT",
+      "run_id": "1791516320367-1791516328417",
+      "snapshot_id": "S392:BOME-USDT:1791516396304",
+      "wave_id": null,
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "f5559ca98356b95f00f0673c1abe42ba6e6f5e677eac1e57d98987b865b5128f",
+      "observed_ts": 1791516396304,
+      "created_ts": 1791516396304,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "BOME-USDT",
+          "decision_ts": 1791516396304,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 0.0010607
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "BOME-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 116311.9186,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:65e4588161f8a36ac036be0baa546bd9096ad754",
+      "contract_code": "ZEC-USDT",
+      "run_id": "1791519954546-1791519967513",
+      "snapshot_id": "S392:ZEC-USDT:1791520019496",
+      "wave_id": "EDW:ZEC-USDT:1791498286399:G7",
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "3af6b7c0e394f1964f5fb6b205df446736fc4753ef3c2059153995b6756ef18c",
+      "observed_ts": 1791520019496,
+      "created_ts": 1791520019496,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791519967678,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791519967678,
+          "available_at": 1791519967678,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:LONG",
+            "EDW:ZEC-USDT:1791498286399:G7:RELATIVE_STRENGTH:SHORT",
+            "EDW:ZEC-USDT:1791498286399:G7:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ZEC-USDT",
+          "decision_ts": 1791520019496,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 1220.9650000000001
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ZEC-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 40452257.0258,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:433d9e77857e883fb5d902e29394bfce6e815d3a",
+      "contract_code": "NEAR-USDT",
+      "run_id": "1791519954546-1791519967513",
+      "snapshot_id": "S392:NEAR-USDT:1791520068353",
+      "wave_id": "EDW:NEAR-USDT:1791510252209:G9",
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "f17e176906d216b0276a43ae508f46dc430afd963e32361eb7c899a439eb9550",
+      "observed_ts": 1791520068353,
+      "created_ts": 1791520068353,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791519967678,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791519967678,
+          "available_at": 1791519967678,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:NEAR-USDT:1791510252209:G9:RELATIVE_STRENGTH:LONG",
+            "EDW:NEAR-USDT:1791510252209:G9:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "NEAR-USDT",
+          "decision_ts": 1791520068353,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 4.754
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "NEAR-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 7807648.672,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:9abf987c5af84b166868b33648ae443867859d73",
+      "contract_code": "PONS-USDT",
+      "run_id": "1791523513858-1791523524157",
+      "snapshot_id": "S392:PONS-USDT:1791523570376",
+      "wave_id": "EDW:PONS-USDT:1791523524309:G4",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "a50e66f89ccc7351c8821d6d9438cce587aea62125eeceb7ab691fe054d840bf",
+      "observed_ts": 1791523570376,
+      "created_ts": 1791523570376,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 83,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 0.4099,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791525370376,
+        "next_recheck_ts": 1791523870376,
+        "cancel_condition": "price<0.33092",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:PONS-USDT:1791523524309:G4:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791523524309,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791523524309,
+          "available_at": 1791523524309,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:PONS-USDT:1791523524309:G4:RELATIVE_STRENGTH:LONG",
+            "EDW:PONS-USDT:1791523524309:G4:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:PONS-USDT:1791523524309:G4:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "PONS-USDT",
+          "decision_ts": 1791523570376,
+          "status": "CLOSED",
+          "reason": "VERIFIED_TECHNICAL_RANGE_OBSERVATION_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 0.36757,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:PONS-USDT:MARKET:EPISODE:1791519300000:1791520200000",
+          "event_close_ts": 1791520200000,
+          "producer_observed_ts": 1791523569006,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "technical_range_receipt": {
+            "level": 0.4099,
+            "cancel": 0.33092,
+            "evidence_id": "EV2:5f9cf476d13cc72f2d92781095f81df3a90bdf6068d5ffe9a533ae5c91b3de55",
+            "source_ts": 1791523535216,
+            "observed_ts": 1791523535500,
+            "window_start": 1791450000000,
+            "window_end": 1791522000000,
+            "period": "60min",
+            "basis": "VERIFIED_CLOSED_CANDLE_RANGE",
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          "anomaly_candle_closed": true,
+          "event_high": 0.36327,
+          "event_low": 0.36117,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 0.4099,
+          "cancellation_price": 0.33092
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "status": "NOT_CLOSED",
+        "reason": "FORWARD_OBSERVATION_CONDITIONS_ONLY",
+        "potential_move_pct": null,
+        "target_price": null
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "PONS-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 307857.7034,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [
+        {
+          "task_id": "RCHK:959330c1413f53f1f7289280df3fea2944936e05",
+          "publication_id": "PUB:9abf987c5af84b166868b33648ae443867859d73",
+          "contract_code": "PONS-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:PONS-USDT:1791523524309:G4",
+          "snapshot_id": "S392:PONS-USDT:1791523570376",
+          "run_id": "1791523513858-1791523524157",
+          "due_ts": 1791523870376,
+          "expires_ts": 1791525370376,
+          "state": "EXPIRED",
+          "attempt_count": 0,
+          "lease_owner": null,
+          "lease_started_ts": null,
+          "lease_expires_ts": null,
+          "last_result": "{\"schema\":\"LIGHT_PRICE_RECHECK_V1\",\"scope\":\"PRICE_AND_CANCELLATION_ONLY\",\"checked_ts\":1791525604242,\"entry_authorized\":false,\"full_analysis_completed\":false,\"status\":\"EXPIRED\",\"reason\":\"ORIGINAL_TTL_EXPIRED\",\"last_bucket\":1791525600000,\"task_id\":\"RCHK:959330c1413f53f1f7289280df3fea2944936e05\",\"publication_id\":\"PUB:9abf987c5af84b166868b33648ae443867859d73\",\"run_id\":\"1791523513858-1791523524157\",\"snapshot_id\":\"S392:PONS-USDT:1791523570376\",\"analytical_fingerprint\":\"a50e66f89ccc7351c8821d6d9438cce587aea62125eeceb7ab691fe054d840bf\",\"telegram_message_id\":\"168\"}",
+          "created_ts": 1791523604813,
+          "updated_ts": 1791525604242,
+          "shadow_only": 1
+        }
+      ],
+      "bindings_at_read_ts": [
+        {
+          "idempotency_key": "PONS-USDT|LONG|EDW:PONS-USDT:1791523524309:G4|OBSERVE|v3-telegram-shadow-r6",
+          "publication_id": "PUB:9abf987c5af84b166868b33648ae443867859d73",
+          "contract_code": "PONS-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:PONS-USDT:1791523524309:G4",
+          "lifecycle_event": "OBSERVE",
+          "rules_version": "v3-telegram-shadow-r6",
+          "decision_id": null,
+          "snapshot_id": "S392:PONS-USDT:1791523570376",
+          "run_id": "1791523513858-1791523524157",
+          "observed_ts": 1791523570376,
+          "analytical_fingerprint": "a50e66f89ccc7351c8821d6d9438cce587aea62125eeceb7ab691fe054d840bf",
+          "presentation_hash": "068f2456befb3f8bcfd9d5afbc8cc0add55fc1edba5ff07b52979ee271beb975",
+          "created_ts": 1791523604813,
+          "shadow_only": 1,
+          "state": "SENT",
+          "telegram_message_id": "168",
+          "sent_ts": 1791523604813,
+          "last_error": "SENT"
+        }
+      ]
+    },
+    {
+      "publication_id": "PUB:a1d102540a3faa1dc9d7ddfede922db190d4eeb9",
+      "contract_code": "龙虾-USDT",
+      "run_id": "1791523513858-1791523524157",
+      "snapshot_id": "S392:龙虾-USDT:1791523600587",
+      "wave_id": null,
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "9b2421dcfda8b649d83852b7d8cd4e49a6e3e45818f02b8bef6fe0839395bb62",
+      "observed_ts": 1791523600587,
+      "created_ts": 1791523600587,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": null,
+            "confirmation_state": "UNCONFIRMED",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": null,
+          "available_at": null,
+          "same_contract": false,
+          "same_wave": false,
+          "fresh": false,
+          "directed": false,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "龙虾-USDT",
+          "decision_ts": 1791523600587,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 0.046176999999999996
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "龙虾-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 1299222.0004,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:b4c792899ad45debf89b897e8c61fbbe4df1ea88",
+      "contract_code": "FIL-USDT",
+      "run_id": "1791527479914-1791527494840",
+      "snapshot_id": "S392:FIL-USDT:1791527543062",
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "ddbcf304aab9fd237571c62b2ce87ac32042ec1ae9a8da62575f90a2e059aa7a",
+      "observed_ts": 1791527543062,
+      "created_ts": 1791527543062,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791527495013,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791527495013,
+          "available_at": 1791527495013,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FIL-USDT:1791466318001:G9:RELATIVE_STRENGTH:LONG",
+            "EDW:FIL-USDT:1791466318001:G9:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "FIL-USDT",
+          "decision_ts": 1791527543062,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 1.0865
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "FIL-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 9197996.60572,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:fd1b8bc8bf9316babbf0d6cd8da6d48bff6c2d9c",
+      "contract_code": "FARTCOIN-USDT",
+      "run_id": "1791527479914-1791527494840",
+      "snapshot_id": "S392:FARTCOIN-USDT:1791527583325",
+      "wave_id": "EDW:FARTCOIN-USDT:1791527495013:G4",
+      "direction": "LONG",
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "105a0af7e3f878e8b244cc899d0d63731b62e6aee2dd85b59585e8e9a96c3cb0",
+      "observed_ts": 1791527583325,
+      "created_ts": 1791527583325,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 93,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:FARTCOIN-USDT:1791527495013:G4:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791527495013,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791527495013,
+          "available_at": 1791527495013,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FARTCOIN-USDT:1791527495013:G4:OI_ACCELERATION:BOTH",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:RELATIVE_STRENGTH:LONG",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "FARTCOIN-USDT",
+          "decision_ts": 1791527583325,
+          "status": "NOT_CLOSED",
+          "reason": "NO_FORWARD_FACTUAL_PRICE_TRIGGER",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 0.167,
+          "prospective_input_present": true,
+          "prospective_receipt_usable": true,
+          "event_id": "OPP:opportunity-effort-result-v1:FARTCOIN-USDT:HTX:15m:1791526500000:EFFORT_VS_RESULT",
+          "event_close_ts": 1791527400000,
+          "producer_observed_ts": 1791527582101,
+          "producer_available_at": 1791527582101,
+          "statistical_episode_id": "OPP:opportunity-integrity-v2:FARTCOIN-USDT:MARKET:EPISODE:1791515700000:1791527400000",
+          "anomaly_candle_closed": true,
+          "event_high": 0.16648,
+          "event_low": 0.16549,
+          "routed_trigger_price": null,
+          "selected_trigger_price": null,
+          "cancellation_price": null
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "FARTCOIN-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 293834.66278,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:c5fe585f727a29c11611146a97fd9f1d67cad51f",
+      "contract_code": "ADA-USDT",
+      "run_id": "1791530937511-1791530945592",
+      "snapshot_id": "S392:ADA-USDT:1791530991911",
+      "wave_id": "EDW:ADA-USDT:1791530945756:G6",
+      "direction": "LONG",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "e4830ff6bb25b371ee8a3eeb8c74d11c3646a1a51df3805da402f3da3cbc4655",
+      "observed_ts": 1791530991911,
+      "created_ts": 1791530991911,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": ">=",
+        "value": 0.240388,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791532791911,
+        "next_recheck_ts": 1791531291911,
+        "cancel_condition": "price<0.239464",
+        "level_origin": "VERIFIED_ANOMALY_CANDLE_LEVEL"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "LONG",
+        "facts": [
+          {
+            "direction": "LONG",
+            "evidence_id": "EARLY:EDW:ADA-USDT:1791530945756:G6:LONG",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "LONG",
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791530945756,
+            "confirmation_state": "LONG_WATCH",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791530945756,
+          "available_at": 1791530945756,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ADA-USDT:1791530945756:G6:OI_ACCELERATION:BOTH",
+            "EDW:ADA-USDT:1791530945756:G6:RELATIVE_STRENGTH:LONG",
+            "EDW:ADA-USDT:1791530945756:G6:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "LONG",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ADA-USDT",
+          "decision_ts": 1791530991911,
+          "status": "CLOSED",
+          "reason": "EXISTING_FACTUAL_OBSERVATION_PLAN_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "LONG",
+          "current_price": 0.2401725,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:ADA-USDT:MARKET:EPISODE:1791527400000:1791528300000",
+          "event_close_ts": 1791528300000,
+          "producer_observed_ts": 1791530990602,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "anomaly_candle_closed": true,
+          "event_high": 0.240388,
+          "event_low": 0.239464,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 0.240388,
+          "cancellation_price": 0.239464
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "version": "technical-move-potential-v5-actual-producer-timing-20261009",
+        "status": "NOT_CLOSED",
+        "reason": "FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN",
+        "direction": "LONG",
+        "entry_reference_price": 0.240388,
+        "minimum_move_pct": null,
+        "target_price": null,
+        "potential_move_pct": null,
+        "basis": null,
+        "basis_ru": null,
+        "not_random_target": true
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ADA-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 4512574.6099,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [
+        {
+          "task_id": "RCHK:bf6ed983091e19692df97145307e53f31c4a80d8",
+          "publication_id": "PUB:c5fe585f727a29c11611146a97fd9f1d67cad51f",
+          "contract_code": "ADA-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:ADA-USDT:1791530945756:G6",
+          "snapshot_id": "S392:ADA-USDT:1791530991911",
+          "run_id": "1791530937511-1791530945592",
+          "due_ts": 1791531291911,
+          "expires_ts": 1791532791911,
+          "state": "DONE",
+          "attempt_count": 1,
+          "lease_owner": null,
+          "lease_started_ts": null,
+          "lease_expires_ts": null,
+          "last_result": "PUB:d62088acf9a5780fc20a9b90ff8001ce5240f145",
+          "created_ts": 1791531037285,
+          "updated_ts": 1791531445494,
+          "shadow_only": 1
+        }
+      ],
+      "bindings_at_read_ts": [
+        {
+          "idempotency_key": "ADA-USDT|LONG|EDW:ADA-USDT:1791530945756:G6|OBSERVE|v3-telegram-shadow-r6",
+          "publication_id": "PUB:c5fe585f727a29c11611146a97fd9f1d67cad51f",
+          "contract_code": "ADA-USDT",
+          "direction": "LONG",
+          "wave_id": "EDW:ADA-USDT:1791530945756:G6",
+          "lifecycle_event": "OBSERVE",
+          "rules_version": "v3-telegram-shadow-r6",
+          "decision_id": null,
+          "snapshot_id": "S392:ADA-USDT:1791530991911",
+          "run_id": "1791530937511-1791530945592",
+          "observed_ts": 1791530991911,
+          "analytical_fingerprint": "e4830ff6bb25b371ee8a3eeb8c74d11c3646a1a51df3805da402f3da3cbc4655",
+          "presentation_hash": "cc1c96ed59e0dacedba0e1577de3e27874f4a6affbb054d96f6ec6a771215b0f",
+          "created_ts": 1791531037285,
+          "shadow_only": 1,
+          "state": "SENT",
+          "telegram_message_id": "169",
+          "sent_ts": 1791531037285,
+          "last_error": "SENT"
+        }
+      ]
+    },
+    {
+      "publication_id": "PUB:e369eb697f838f25d6e2374d627271a0227f33b5",
+      "contract_code": "FARTCOIN-USDT",
+      "run_id": "1791530937511-1791530945592",
+      "snapshot_id": "S392:FARTCOIN-USDT:1791531032439",
+      "wave_id": "EDW:FARTCOIN-USDT:1791527495013:G4",
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "fc6639e0912bf41a1c6f5c5959c77d1eaec60587cf43f2dc5033ad701f326cc9",
+      "observed_ts": 1791531032439,
+      "created_ts": 1791531032439,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791530945756,
+            "confirmation_state": "BIDIRECTIONAL_REQUIRES_DEEP_RESOLUTION",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791530945756,
+          "available_at": 1791530945756,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FARTCOIN-USDT:1791527495013:G4:OI_ACCELERATION:BOTH",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:FUNDING_TRAJECTORY:SHORT",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:RELATIVE_STRENGTH:LONG",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:FARTCOIN-USDT:1791527495013:G4:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "FARTCOIN-USDT",
+          "decision_ts": 1791531032439,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 0.16775
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "FARTCOIN-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 372368.91886,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:d62088acf9a5780fc20a9b90ff8001ce5240f145",
+      "contract_code": "ADA-USDT",
+      "run_id": "1791531383421-1791531390996",
+      "snapshot_id": "S392:ADA-USDT:1791531443171",
+      "wave_id": "EDW:ADA-USDT:1791530945756:G6",
+      "direction": null,
+      "canonical_state": "REJECTED",
+      "analytical_fingerprint": "b7daff31206b9a7260444d7d792521991835cdb30eb2c8d4820a99fded45200e",
+      "observed_ts": 1791531443171,
+      "created_ts": 1791531443171,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": null,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": null,
+      "original_state": "REJECTED",
+      "direction_resolution": {
+        "status": "UNKNOWN",
+        "direction": null,
+        "facts": [],
+        "early_receipt": {
+          "closed": false,
+          "direction": null,
+          "candidate": {
+            "direction": "LONG",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791531391155,
+            "confirmation_state": "DIRECTION_NOT_CLOSED",
+            "direction_raw": "LONG"
+          },
+          "source_ts": 1791531391155,
+          "available_at": 1791531391155,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": false,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ADA-USDT:1791530945756:G6:RELATIVE_STRENGTH:LONG",
+            "EDW:ADA-USDT:1791530945756:G6:PRICE_STATE_TRANSITION:LONG"
+          ],
+          "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+        },
+        "candidate_direction": "UNKNOWN",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": false,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ADA-USDT",
+          "decision_ts": 1791531443171,
+          "status": "NOT_CLOSED",
+          "reason": "DIRECTION_NOT_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": null,
+          "current_price": 0.24084
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": "PLAN_NOT_CLOSED"
+      },
+      "technical_move_potential": null,
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ADA-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 4477811.03906,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:b535d0062b26419ce5f616e0cb65387300b7646d",
+      "contract_code": "FIL-USDT",
+      "run_id": "1791534423478-1791534432558",
+      "snapshot_id": "S392:FIL-USDT:1791534468282",
+      "wave_id": "EDW:FIL-USDT:1791466318001:G9",
+      "direction": "SHORT",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "edb5aca353111a1dfbf065183eb786fba1388ea60ad820c8d5f1a1831d7c0767",
+      "observed_ts": 1791534468282,
+      "created_ts": 1791534468282,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 91,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": "<=",
+        "value": 1.0694,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791536268282,
+        "next_recheck_ts": 1791534768282,
+        "cancel_condition": "price>1.0993",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "SHORT",
+        "facts": [
+          {
+            "direction": "SHORT",
+            "evidence_id": "EARLY:EDW:FIL-USDT:1791466318001:G9:SHORT",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "SHORT",
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791534432706,
+            "confirmation_state": "SHORT_WATCH",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791534432706,
+          "available_at": 1791534432706,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:FIL-USDT:1791466318001:G9:OI_ACCELERATION:BOTH",
+            "EDW:FIL-USDT:1791466318001:G9:RELATIVE_STRENGTH:SHORT",
+            "EDW:FIL-USDT:1791466318001:G9:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:FIL-USDT:1791466318001:G9:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "SHORT",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "FIL-USDT",
+          "decision_ts": 1791534468282,
+          "status": "CLOSED",
+          "reason": "VERIFIED_TECHNICAL_RANGE_OBSERVATION_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "SHORT",
+          "current_price": 1.0771,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:FIL-USDT:MARKET:EPISODE:1791451800000:1791468000000",
+          "event_close_ts": 1791452700000,
+          "producer_observed_ts": 1791534467121,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "technical_range_receipt": {
+            "level": 1.0694,
+            "cancel": 1.0993,
+            "evidence_id": "EV2:3e54557a224a72ebce54797763964bfdd166871583ca2edb420449b6997667a8",
+            "source_ts": 1791534443531,
+            "observed_ts": 1791534444164,
+            "window_start": 1791515700000,
+            "window_end": 1791533700000,
+            "period": "15min",
+            "basis": "VERIFIED_CLOSED_CANDLE_RANGE",
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          "replaced_historical_fallback_reason": "CANCELLATION_ALREADY_TRUE_AT_SNAPSHOT",
+          "anomaly_candle_closed": true,
+          "event_high": 1.076,
+          "event_low": 1.0619,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 1.0694,
+          "cancellation_price": 1.0993
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "status": "NOT_CLOSED",
+        "reason": "FORWARD_OBSERVATION_CONDITIONS_ONLY",
+        "potential_move_pct": null,
+        "target_price": null
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "FIL-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 9480350.25412,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [],
+      "bindings_at_read_ts": []
+    },
+    {
+      "publication_id": "PUB:a8706f3469332158671bf84deb66475b6e08c129",
+      "contract_code": "ALGO-USDT",
+      "run_id": "1791534423478-1791534432558",
+      "snapshot_id": "S392:ALGO-USDT:1791534497057",
+      "wave_id": "EDW:ALGO-USDT:1791534432706:G3",
+      "direction": "SHORT",
+      "canonical_state": "OBSERVE",
+      "analytical_fingerprint": "978fd946843c19494fd7cbff004b054172676b94fa1d3602287af0d65747f8a5",
+      "observed_ts": 1791534497057,
+      "created_ts": 1791534497057,
+      "original_scores": {
+        "overall_0_100": null,
+        "coin_interest_0_100": 82,
+        "entry_readiness_0_100": null,
+        "is_probability": false
+      },
+      "original_trigger": {
+        "trigger_type": "PRICE_CONFIRMATION",
+        "metric": "price",
+        "operator": "<=",
+        "value": 0.11517,
+        "unit": "USDT",
+        "timeframe": "5m",
+        "expires_ts": 1791536297057,
+        "next_recheck_ts": 1791534797057,
+        "cancel_condition": "price>0.13277",
+        "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+      },
+      "original_state": "OBSERVE",
+      "direction_resolution": {
+        "status": "CLOSED",
+        "direction": "SHORT",
+        "facts": [
+          {
+            "direction": "SHORT",
+            "evidence_id": "EARLY:EDW:ALGO-USDT:1791534432706:G3:SHORT",
+            "origin": "EARLY_CYCLE"
+          }
+        ],
+        "early_receipt": {
+          "closed": true,
+          "direction": "SHORT",
+          "candidate": {
+            "direction": "SHORT",
+            "origin": "EARLY_CYCLE",
+            "source_ts": 1791534432706,
+            "confirmation_state": "SHORT_WATCH",
+            "direction_raw": "SHORT"
+          },
+          "source_ts": 1791534432706,
+          "available_at": 1791534432706,
+          "same_contract": true,
+          "same_wave": true,
+          "fresh": true,
+          "directed": true,
+          "direction_state_closed": true,
+          "evidence_ids": [],
+          "unassigned_evidence_ids": [
+            "EDW:ALGO-USDT:1791534432706:G3:RELATIVE_STRENGTH:SHORT",
+            "EDW:ALGO-USDT:1791534432706:G3:VOLUME_ACCELERATION_PROXY:BOTH",
+            "EDW:ALGO-USDT:1791534432706:G3:PRICE_STATE_TRANSITION:SHORT"
+          ],
+          "reason": "CLOSED_ASSIGNED_DIRECTION_RECEIPT"
+        },
+        "candidate_direction": "SHORT",
+        "authorized_entry_direction": "UNKNOWN"
+      },
+      "scenario_plan_transfer": {
+        "existing_plan_closed": false,
+        "fallback_plan_closed": true,
+        "fallback_receipt": {
+          "version": "observation-plan-diagnostic-v1-20261006",
+          "contract": "ALGO-USDT",
+          "decision_ts": 1791534497057,
+          "status": "CLOSED",
+          "reason": "VERIFIED_TECHNICAL_RANGE_OBSERVATION_CLOSED",
+          "score_contribution": 0,
+          "entry_authorized_by_receipt": false,
+          "direction": "SHORT",
+          "current_price": 0.1187,
+          "prospective_input_present": false,
+          "prospective_receipt_usable": false,
+          "event_id": "OPP:opportunity-integrity-v2:ALGO-USDT:MARKET:EPISODE:1791513000000:1791532800000",
+          "event_close_ts": 1791513900000,
+          "producer_observed_ts": 1791534496038,
+          "producer_available_at": null,
+          "statistical_episode_id": null,
+          "technical_range_receipt": {
+            "level": 0.11517,
+            "cancel": 0.13277,
+            "evidence_id": "EV2:3877ec63e79e924977a1139b6127acc3953e7e87f82a638906c59e78bab1bf45",
+            "source_ts": 1791534472420,
+            "observed_ts": 1791534473054,
+            "window_start": 1791460800000,
+            "window_end": 1791532800000,
+            "period": "60min",
+            "basis": "VERIFIED_CLOSED_CANDLE_RANGE",
+            "score_contribution": 0,
+            "entry_authorized": false
+          },
+          "replaced_historical_fallback_reason": "CANCELLATION_ALREADY_TRUE_AT_SNAPSHOT",
+          "anomaly_candle_closed": true,
+          "event_high": 0.1175,
+          "event_low": 0.11664,
+          "routed_trigger_price": null,
+          "selected_trigger_price": 0.11517,
+          "cancellation_price": 0.13277
+        },
+        "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+        "reason": null
+      },
+      "technical_move_potential": {
+        "status": "NOT_CLOSED",
+        "reason": "FORWARD_OBSERVATION_CONDITIONS_ONLY",
+        "potential_move_pct": null,
+        "target_price": null
+      },
+      "hard_gates": [
+        {
+          "version": "htx-futures-turnover-gate-v1-20260924",
+          "contract": "ALGO-USDT",
+          "venue": "HTX",
+          "market_type": "FUTURES",
+          "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+          "minimum_usd": 100000,
+          "turnover_usd_equivalent": 429783.3378,
+          "inclusive_boundary": true,
+          "external_turnover_can_substitute": false,
+          "htx_spot_required": false,
+          "status": "CLOSED",
+          "allowed": true,
+          "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+        },
+        {
+          "gate": "HTX_EXECUTION_HANDOFF",
+          "status": null,
+          "reason": null
+        }
+      ],
+      "tasks_at_read_ts": [
+        {
+          "task_id": "RCHK:7a2a3428094be13d8faf0062cd5a5169584bc4a4",
+          "publication_id": "PUB:a8706f3469332158671bf84deb66475b6e08c129",
+          "contract_code": "ALGO-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:ALGO-USDT:1791534432706:G3",
+          "snapshot_id": "S392:ALGO-USDT:1791534497057",
+          "run_id": "1791534423478-1791534432558",
+          "due_ts": 1791534797057,
+          "expires_ts": 1791536297057,
+          "state": "PENDING",
+          "attempt_count": 0,
+          "lease_owner": null,
+          "lease_started_ts": null,
+          "lease_expires_ts": null,
+          "last_result": null,
+          "created_ts": 1791534501114,
+          "updated_ts": 1791534501114,
+          "shadow_only": 1
+        }
+      ],
+      "bindings_at_read_ts": [
+        {
+          "idempotency_key": "ALGO-USDT|SHORT|EDW:ALGO-USDT:1791534432706:G3|OBSERVE|v3-telegram-shadow-r6",
+          "publication_id": "PUB:a8706f3469332158671bf84deb66475b6e08c129",
+          "contract_code": "ALGO-USDT",
+          "direction": "SHORT",
+          "wave_id": "EDW:ALGO-USDT:1791534432706:G3",
+          "lifecycle_event": "OBSERVE",
+          "rules_version": "v3-telegram-shadow-r6",
+          "decision_id": null,
+          "snapshot_id": "S392:ALGO-USDT:1791534497057",
+          "run_id": "1791534423478-1791534432558",
+          "observed_ts": 1791534497057,
+          "analytical_fingerprint": "978fd946843c19494fd7cbff004b054172676b94fa1d3602287af0d65747f8a5",
+          "presentation_hash": "d88508bee6ba87ac03dedb765953552d32b34258520398e15129479013b02182",
+          "created_ts": 1791534501114,
+          "shadow_only": 1,
+          "state": "SENT",
+          "telegram_message_id": "170",
+          "sent_ts": 1791534501114,
+          "last_error": "SENT"
+        }
+      ]
+    }
+  ],
+  "source_kind": "ORIGINAL_PERSISTED_CANONICAL_AND_MUTABLE_TASK_AT_READ_TS",
+  "actual_ENTRY": false,
+  "runtime_changed_by_read": false,
+  "full_project_complete": false
+}
