@@ -4,7 +4,7 @@ import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 import {installEvidenceSourceStore,readEvidenceSourceCache,writeEvidenceSourceCache,evidenceSourceCacheWriteWireBytes} from './evidence-source-store.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 export const HTX_SIGNED_TAPE_VERSION='htx-signed-tape-v1-exact-minute-raw-20261004';
-const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map(),acquisitionReceipts=new Map(),ringReadbacks=new Map();
+const MIN=60000,DAY=1440*MIN,TTL=120000,SOURCE='HTX_SIGNED_RAW_TAPE',captured=new Map(),verifiedRings=new Map(),acquisitionReceipts=new Map(),ringReadbacks=new Map(),requestReceipts=new Map();
 const n=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const hash=v=>crypto.createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const close=(a,b)=>Math.abs(a-b)<=Math.max(1,Math.abs(a),Math.abs(b))*1e-9;
@@ -35,7 +35,20 @@ export function decodeSignedTapeStorage(payload){
   return ring?.version===HTX_SIGNED_TAPE_VERSION&&ring.contract===payload.contract?ring:null;
  }catch{return null;}
 }
-export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();ringReadbacks.clear();}
+export function clearHtxSignedTapeSnapshots(){captured.clear();verifiedRings.clear();acquisitionReceipts.clear();ringReadbacks.clear();requestReceipts.clear();}
+// Diagnostic receipts never supply a payload or renew a source clock. Record
+// only actual attempts at the three existing exact-contract primary routes.
+export function observeHtxAcquisitionAttempt({url,started_ts,received_ts=null,http_status=null,stage,error_code=null}={}){
+ let u;try{u=new URL(url);}catch{return;}
+ const contract=u.searchParams.get('contract_code');
+ if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||!Number.isSafeInteger(started_ts))return;
+ const type=u.pathname==='/linear-swap-ex/market/history/trade'?'trades':u.pathname==='/linear-swap-ex/market/history/kline'&&u.searchParams.get('period')==='1min'?'minutes':u.pathname==='/linear-swap-api/v1/swap_contract_info'?'metadata':null;
+ if(!type||!['REQUEST_STARTED','HTTP_RESPONSE','JSON_PARSE_FAILED','API_REJECTED','COMPLETED','TRANSPORT_FAILED','BODY_READ_FAILED','TIMEOUT'].includes(stage))return;
+ const codes=new Set(['INVALID_JSON','BODY_LIMIT','CHANNEL_MISMATCH','HTTP_REJECTED','API_REJECTED','ABORT_ERROR','TRANSPORT_EXCEPTION']);
+ const prior=requestReceipts.get(contract)||{};
+ prior[type]={stage,started_ts,received_ts:Number.isSafeInteger(received_ts)&&received_ts>=started_ts?received_ts:null,http_status:Number.isInteger(http_status)&&http_status>=100&&http_status<=599?http_status:null,error_code:codes.has(error_code)?error_code:null};
+ retainBounded(requestReceipts,contract,prior);
+}
 export function observeHtxSignedTape(payload,url,observed_ts=Date.now()){
  const u=new URL(url),contract=u.searchParams.get('contract_code');if(u.hostname!=='api.hbdm.com'||!isExactHtxUsdtSwapKey(contract)||payload?.status!=='ok')return;
  let type=null;
@@ -106,18 +119,19 @@ function retainBounded(map,contract,value){
  if(!map.has(contract)&&map.size>=8)map.delete(map.keys().next().value);
  map.set(contract,value);
 }
-function acquisitionClockDiagnostic(snapshot,now){
+function acquisitionClockDiagnostic(snapshot,now,contract){
  return Object.fromEntries(['trades','minutes','metadata'].map(type=>{
   const s=snapshot?.[type],source_ts=Number.isSafeInteger(s?.payload?.ts)?s.payload.ts:null,received_ts=Number.isSafeInteger(s?.observed_ts)?s.observed_ts:null;
   const status=!s?'MISSING_CAPTURE':source_ts===null||received_ts===null?'SOURCE_CLOCK_REQUIRED':source_ts>received_ts||received_ts>now?'SOURCE_CLOCK_ORDER_NOT_CLOSED':now-source_ts>TTL?'SOURCE_CAPTURE_NOT_FRESH':'CLOCK_CLOSED';
-  return[type,{status,source_ts,received_ts,age_ms:source_ts===null?null:now-source_ts}];
+  const attempt=requestReceipts.get(contract)?.[type];
+  return[type,{status,source_ts,received_ts,age_ms:source_ts===null?null:now-source_ts,...(attempt&&attempt.started_ts<=now&&(!attempt.received_ts||attempt.received_ts<=now)?{attempt}: {})}];
  }));
 }
 export async function persistCapturedHtxSignedTape({db,contract,now=Date.now(),db_admit,publish_verified_24h=false}={}){
  const snapshot=captured.get(contract),acquisition=verifiedSignedMinutes({snapshot,contract,now});
  let preparedStorage=null,currentRunFlowRetained=false;
  const finish=result=>{
-  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??preparedStorage?.storage_bytes??null,wire_bytes:preparedStorage?.wire_bytes??null,wire_cap:HTX_SIGNED_TAPE_WIRE_CAP,storage_encoding:result.storage_encoding??preparedStorage?.encoding??null,uncompressed_bytes:result.uncompressed_bytes??preparedStorage?.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now),failure_stage:result.failure_stage??null,error_code:result.error_code??null,current_run_verified_flow_retained:currentRunFlowRetained,retained_flow_is_not_durable_write_acceptance:true,network_calls:0,internal_only:true});
+  if(isExactHtxUsdtSwapKey(contract)&&Number.isSafeInteger(now))retainBounded(acquisitionReceipts,contract,{status:result.status,observed_ts:now,new_verified_minutes:acquisition.minutes.length,unverified_recent_minutes:acquisition.gaps.length,persisted_minutes:result.persisted_minutes??null,storage_bytes:result.storage_bytes??preparedStorage?.storage_bytes??null,wire_bytes:preparedStorage?.wire_bytes??null,wire_cap:HTX_SIGNED_TAPE_WIRE_CAP,storage_encoding:result.storage_encoding??preparedStorage?.encoding??null,uncompressed_bytes:result.uncompressed_bytes??preparedStorage?.uncompressed_bytes??null,discarded_older_minutes:result.discarded_older_minutes??0,source_clocks:acquisitionClockDiagnostic(snapshot,now,contract),failure_stage:result.failure_stage??null,error_code:result.error_code??null,current_run_verified_flow_retained:currentRunFlowRetained,retained_flow_is_not_durable_write_acceptance:true,network_calls:0,internal_only:true});
   return result;
  };
  if(!acquisition.minutes.length)return finish({...acquisition,evidence:[]});

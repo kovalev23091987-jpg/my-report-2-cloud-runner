@@ -1,0 +1,501 @@
+{
+  "schema": "POST253_ORIGINAL_NATURAL_READBACK_20261009_V1",
+  "cloud_run": 37911259034,
+  "head": "58e4c9e661677179b3f92356b7be341770223323",
+  "run_id": "1791537994409-1791538002098",
+  "generated_at": "2026-10-09T09:28:08.131Z",
+  "source": "schedule",
+  "artifact_id": 11606916679,
+  "artifact_digest": "sha256:fe0b50f7f95a9f393cf4f877faec279974aaeb77f218eec3c43ffed4fc187d08",
+  "telegram_artifact_id": 11607001653,
+  "telegram_artifact_digest": "sha256:481d014f535139667607d8bb6375eb3d97a763c54c963275e78bbe7c2c8b08c2",
+  "retained_run_zip": "checkpoints/post253-natural-37911259034.zip",
+  "cases": [
+    {
+      "contract": "BTW-USDT",
+      "publication_id": "PUB:4120d343ad356ffff6bf494ed48003a3118f5daa",
+      "snapshot_id": "S392:BTW-USDT:1791538083969",
+      "observed_ts": 1791538083969,
+      "canonical_state": "REJECTED",
+      "direction": null,
+      "block_coverage": {
+        "status": "PARTIAL_BLOCK_CHECK",
+        "coverage_count": 15,
+        "checked_block_count": 13,
+        "usable_block_count": 4,
+        "score_or_risk_input_block_count": 4,
+        "admitted_control_context_block_count": 4,
+        "admitted_neutral_context_block_count": 5,
+        "observed_context_not_score_eligible_block_count": 0,
+        "checked_neutral_no_event_block_count": 0,
+        "blocked_required_source_block_count": 2,
+        "all_blocks_have_assigned_consumer": true,
+        "all_blocks_decision_accounted": false,
+        "actual_use_is_measured_in_canonical_result": true,
+        "all_blocks_checked": false,
+        "all_blocks_have_useful_data": false,
+        "strict_fresh_required": false,
+        "internal_only": true
+      },
+      "block_decision_use": {
+        "schema": "report2-block-decision-use-audit-v3-explicit-unscored-diagnostics",
+        "run_id": "1791537994409-1791538002098",
+        "snapshot_id": "S392:BTW-USDT:1791538083969",
+        "contract": "BTW-USDT",
+        "decision_ts": 1791538083969,
+        "score_status": "BASE_SCORE_MISSING",
+        "direction_closed": false,
+        "required_block_count": 15,
+        "checked_block_count": 13,
+        "directional_eligible_block_count": 2,
+        "score_applied_block_count": 0,
+        "control_check_reported_block_count": 4,
+        "participating_block_count": 10,
+        "neutral_assessed_and_rendered_block_count": 8,
+        "unscored_diagnostic_assessed_and_rendered_block_count": 2,
+        "rendered_context_block_count": 13,
+        "all_blocks_have_proven_decision_effect": false,
+        "missing_effect_not_coerced_to_success": true,
+        "score_or_strategy_changed": false,
+        "internal_only": true
+      },
+      "source_role_gate": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "BTW-USDT",
+        "run_id": "1791537994409-1791538002098",
+        "snapshot_id": "S392:BTW-USDT:1791538083969",
+        "observed_ts": 1791538083969,
+        "status": "NOT_CLOSED",
+        "observation_source_gate_closed": false,
+        "reasons": [
+          "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+        ],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "HTX_OFFICIAL"
+        ],
+        "classified_receipt_count": 11,
+        "usable_role_receipt_count": 1,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 2,
+          "FACT_OR_IDENTITY_NOT_VERIFIED": 4,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "FUNDING_RATE",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791536400000,
+            "received_ts": 1791538050785,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "OI_CHANGE_1H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791536400000,
+            "received_ts": 1791538050785,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "PRICE_CHANGE_4H",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791532800000,
+            "received_ts": 1791538050785,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "TAKER_BALANCE_1H_RAW",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "FACT_OR_IDENTITY_NOT_VERIFIED",
+            "independence_group": null,
+            "event_ts": 1791536400000,
+            "received_ts": 1791538050785,
+            "max_age_sec": 7200,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "RELATIVE_STRENGTH_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538050785,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1791538083055,
+            "received_ts": 1791538083968,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "lifecycle_transition": {
+        "contract": "BTW-USDT",
+        "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      }
+    },
+    {
+      "contract": "龙虾-USDT",
+      "publication_id": "PUB:0ccbb526c1442cd05af152ac8da9718d889b92fe",
+      "snapshot_id": "S392:龙虾-USDT:1791538047944",
+      "observed_ts": 1791538047944,
+      "canonical_state": "OBSERVE",
+      "direction": "SHORT",
+      "block_coverage": {
+        "status": "PARTIAL_BLOCK_CHECK",
+        "coverage_count": 15,
+        "checked_block_count": 12,
+        "usable_block_count": 4,
+        "score_or_risk_input_block_count": 4,
+        "admitted_control_context_block_count": 4,
+        "admitted_neutral_context_block_count": 4,
+        "observed_context_not_score_eligible_block_count": 0,
+        "checked_neutral_no_event_block_count": 0,
+        "blocked_required_source_block_count": 3,
+        "all_blocks_have_assigned_consumer": true,
+        "all_blocks_decision_accounted": false,
+        "actual_use_is_measured_in_canonical_result": true,
+        "all_blocks_checked": false,
+        "all_blocks_have_useful_data": false,
+        "strict_fresh_required": false,
+        "internal_only": true
+      },
+      "block_decision_use": {
+        "schema": "report2-block-decision-use-audit-v3-explicit-unscored-diagnostics",
+        "run_id": "1791537994409-1791538002098",
+        "snapshot_id": "S392:龙虾-USDT:1791538047944",
+        "contract": "龙虾-USDT",
+        "decision_ts": 1791538047944,
+        "score_status": "CLOSED",
+        "direction_closed": true,
+        "required_block_count": 15,
+        "checked_block_count": 12,
+        "directional_eligible_block_count": 2,
+        "score_applied_block_count": 2,
+        "control_check_reported_block_count": 4,
+        "participating_block_count": 10,
+        "neutral_assessed_and_rendered_block_count": 8,
+        "unscored_diagnostic_assessed_and_rendered_block_count": 0,
+        "rendered_context_block_count": 12,
+        "all_blocks_have_proven_decision_effect": false,
+        "missing_effect_not_coerced_to_success": true,
+        "score_or_strategy_changed": false,
+        "internal_only": true
+      },
+      "source_role_gate": {
+        "schema": "ORIGINAL_OBSERVATION_SOURCE_ROLE_AUDIT_V1",
+        "contract": "龙虾-USDT",
+        "run_id": "1791537994409-1791538002098",
+        "snapshot_id": "S392:龙虾-USDT:1791538047944",
+        "observed_ts": 1791538047944,
+        "status": "NOT_CLOSED",
+        "observation_source_gate_closed": false,
+        "reasons": [
+          "FEWER_THAN_TWO_VERIFIED_DISTINCT_ORIGINS"
+        ],
+        "verified_HTX_execution": true,
+        "distinct_verified_origins": [
+          "HTX_OFFICIAL"
+        ],
+        "classified_receipt_count": 8,
+        "usable_role_receipt_count": 1,
+        "exclusion_reason_counts": {
+          "SOURCE_NOT_CLOSED": 3,
+          "UNKNOWN_OR_CONFLICTING_PROVIDER": 4
+        },
+        "receipts": [
+          {
+            "source_key": "BYBIT_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "OKX_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "GATE_OFFICIAL",
+            "metric": "VENUE_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "SOURCE_NOT_CLOSED",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "RELATIVE_STRENGTH_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": null,
+            "metric": "CHAIN_STATUS",
+            "assigned_roles": [],
+            "usable": false,
+            "exclusion_reason": "UNKNOWN_OR_CONFLICTING_PROVIDER",
+            "independence_group": null,
+            "event_ts": null,
+            "received_ts": 1791538011285,
+            "max_age_sec": null,
+            "normalized_value": null
+          },
+          {
+            "source_key": "HTX_OFFICIAL",
+            "metric": "EXECUTION_GATE_STATUS",
+            "assigned_roles": [
+              "EXECUTION_TRUTH"
+            ],
+            "usable": true,
+            "exclusion_reason": null,
+            "independence_group": "HTX_OFFICIAL",
+            "event_ts": 1791538047298,
+            "received_ts": 1791538047943,
+            "max_age_sec": 15,
+            "normalized_value": 1
+          }
+        ],
+        "omitted_receipt_details": 0,
+        "revalidated_at_original_observation": true,
+        "not_a_current_source_refresh": true,
+        "decisions_changed": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "internal_only": true
+      },
+      "lifecycle_transition": {
+        "contract": "龙虾-USDT",
+        "status": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+        "current_status": null,
+        "dispatch": null
+      }
+    }
+  ],
+  "telegram_info_proof": {
+    "schema": "telegram-info-proof-v1",
+    "head": "58e4c9e661677179b3f92356b7be341770223323",
+    "source": "schedule",
+    "source_run_id": "1791537994409-1791538002098",
+    "lifecycle": {
+      "version": "v3-telegram-lifecycle-sidecar-v2-canonical-authority-20261005",
+      "mode": "SHADOW_ONLY",
+      "network_send": false,
+      "dispatch_enabled": true,
+      "probability": null,
+      "validated_signal": false,
+      "trading_execution": false,
+      "status": "CLOSED",
+      "completed_handoffs": 2,
+      "transitions": [
+        {
+          "contract": "BTW-USDT",
+          "status": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "reason": "CANONICAL_DIRECTION_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        },
+        {
+          "contract": "龙虾-USDT",
+          "status": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+          "reason": "OBSERVE_SOURCE_ROLES_NOT_CLOSED",
+          "current_status": null,
+          "dispatch": null
+        }
+      ],
+      "usage_delta": {
+        "rows_read": 122,
+        "rows_written": 0,
+        "requests": 5,
+        "unknown_ops": 0
+      }
+    },
+    "candidate_sha": "92c079540618aaea7403eaccf6146f6418c61f036b36ee8fc90de35dfa31d75f",
+    "v3_telegram_network_enabled": true,
+    "output": {
+      "version": "telegram-output-v9-plain-text-explained-score",
+      "enabled": false,
+      "info_enabled": false,
+      "final_chain_auto": false,
+      "final_chain_threshold": 70,
+      "morning": {
+        "status": "INFO_DISABLED",
+        "sent": false
+      },
+      "early_info": {
+        "status": "INFO_DISABLED",
+        "sent": false,
+        "count": 0
+      },
+      "watch70": {
+        "status": "DISABLED_FINAL_CHAIN_ONLY",
+        "sent": 0
+      },
+      "shadow_decision": {
+        "status": "OUTPUT_DISABLED",
+        "sent": false,
+        "count": 0
+      }
+    },
+    "live_probability": null,
+    "validated_signal": false,
+    "execution": false,
+    "automatic_weight_tuning": false
+  },
+  "actual_ENTRY": false,
+  "fresh_fixed_removal_SENT": false,
+  "new_SENT": false,
+  "source_HTTP_for_readback": 0,
+  "D1_for_readback": 0,
+  "MAIN_for_readback": 0,
+  "Telegram_for_readback": 0,
+  "source_clocks_refreshed": false,
+  "full_project_complete": false
+}

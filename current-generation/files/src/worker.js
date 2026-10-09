@@ -5,6 +5,7 @@ import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
 import {parseHtxMarketJson,exactTradeIdentity} from './htx-trade-json.mjs';
+import {observeHtxAcquisitionAttempt} from './htx-signed-tape.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap,nativeLiquidationCollectionMode} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
@@ -287,6 +288,10 @@ function normalizeSpotSymbol(value) {
 
 async function fetchJson(url) {
   let timeout = null;
+  const started_ts=Date.now();
+  let received_ts=null,http_status=null,reading_body=false;
+  const retain=(stage,error_code=null)=>observeHtxAcquisitionAttempt({url,started_ts,received_ts,http_status,stage,error_code});
+  retain('REQUEST_STARTED');
   try {
     const controller = new AbortController();
     timeout = setTimeout(() => controller.abort(), 10000);
@@ -300,11 +305,15 @@ async function fetchJson(url) {
       signal: controller.signal,
     });
 
+    received_ts=Date.now();http_status=response.status;retain('HTTP_RESPONSE');
+    reading_body=true;
     const text = await response.text();
+    reading_body=false;
     let data;
     try {
       data = parseHtxMarketJson(text, url);
     } catch (error) {
+      retain('JSON_PARSE_FAILED',error?.code==='HTX_TRADE_CHANNEL_MISMATCH'?'CHANNEL_MISMATCH':error?.message==='HTX_TRADE_BODY_LIMIT'?'BODY_LIMIT':'INVALID_JSON');
       return {
         ok: false,
         url,
@@ -322,6 +331,7 @@ async function fetchJson(url) {
           data?.code === undefined &&
           data?.success === undefined));
 
+    retain(apiOk?'COMPLETED':'API_REJECTED',apiOk?null:response.ok?'API_REJECTED':'HTTP_REJECTED');
     return {
       ok: apiOk,
       url,
@@ -336,6 +346,7 @@ async function fetchJson(url) {
           "api_error",
     };
   } catch (error) {
+    retain(error?.name==='AbortError'?'TIMEOUT':reading_body?'BODY_READ_FAILED':'TRANSPORT_FAILED',error?.name==='AbortError'?'ABORT_ERROR':'TRANSPORT_EXCEPTION');
     return {
       ok: false,
       url,

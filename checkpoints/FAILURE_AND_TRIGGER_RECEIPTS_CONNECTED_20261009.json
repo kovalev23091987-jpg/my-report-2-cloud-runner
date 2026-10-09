@@ -1,0 +1,88 @@
+{
+  "schema": "FAILURE_AND_TRIGGER_RECEIPTS_CONNECTED_20261009_V1",
+  "status": "EXACT_CURRENT_ASSEMBLED_REQUEST_FAILURE_AND_TRIGGER_COMPLETION_RETENTION_VERIFIED",
+  "pr": 254,
+  "tested_head": "e064f7865c70c02ba1fcafee3449c87be75a955b",
+  "cloud_run": 37914006539,
+  "artifact_id": 11608191010,
+  "artifact_digest": "sha256:fb482959622741784e2b73bae412cd04b8e31b320a900ea38c31572a9fe445e5",
+  "retained_directory": "checkpoints/failure-receipts-37914006539",
+  "tests": {
+    "removal-evidence-runtime.tap": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "43ad24532ac19a6c9b67d3f11b80498ced36d06c37a5f7aea220564aa12095cb"
+    },
+    "approved-delivery-runtime.tap": {
+      "tests": 35,
+      "pass": 35,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "033ffc41bce04d352b6602ff8a3d04dc400ae75f8e5f7f3d5700a4137283ba1a"
+    },
+    "failure-trigger-runtime.tap": {
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "1b7e59c9517b7e00fc80c9a0a6fcda003bbafa004aa05744b952c06054fd545e"
+    },
+    "optional-assembled-runtime.tap": {
+      "tests": 14,
+      "pass": 14,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "8a5a70da88d4ed1bed65d7db668a025ac7e91cb06b05888beb70c157b8825952"
+    },
+    "signed-tape-runtime.tap": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "ba793a1ef833f95f541e000eb164e9cb95207e7b1f20b3451d6ea731686f2bcb"
+    },
+    "current-generation-unit-tests.tap": {
+      "tests": 1169,
+      "pass": 1166,
+      "fail": 0,
+      "skipped": 3,
+      "sha256": "9ecd99279419833331d2448cbadbe52f4e96c7e7280e2ebe5c40fed7da7477ba"
+    },
+    "removal-evidence-publication.tap": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "skipped": 0,
+      "sha256": "e1897a2689f0e812caafb3c580b589ac26343eb073689b901f75d338b70fc010"
+    }
+  },
+  "unit_runtime_skips": "3 unit cases requiring explicit runtime modes; separately covered in14 optional-assembled-runtime tests with0skips",
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "68360a02846fecd77a188197edf4680463051fb9723f3fe2ee2eb378778c9108",
+    "runtime_checked": true
+  },
+  "changes": [
+    "Existing exact HTX fetch observer preserves safe request stage/status/clock diagnostics, without payload invention or source refresh",
+    "Existing task completion UPDATE preserves original LIGHT_PRICE_RECHECK_V1 receipt and new canonical publication ID atomically with no additional operation"
+  ],
+  "sourceHTTP_validation": 0,
+  "D1_validation": 0,
+  "MAIN_validation": 0,
+  "Telegram_validation": 0,
+  "threshold_weights_gates_TTL_cadence_quotas_unchanged": true,
+  "actual_ENTRY": false,
+  "fresh_fixed_removal_SENT": false,
+  "new_current_release_SENT": false,
+  "original_ZEC_transport_cause_reconstructed": false,
+  "original_ADA_light_price_reconstructed": false,
+  "full_project_complete": false,
+  "natural_post253_readback": "checkpoints/POST253_ORIGINAL_NATURAL_READBACK_20261009.json"
+}
