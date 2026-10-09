@@ -1303,9 +1303,10 @@
       "evidence": [
         "current-generation/apply-runtime-overlay.mjs",
         "current-generation/validate.mjs",
-        "checkpoints/crypto-scope-release-evidence-20261004.json"
+        "checkpoints/crypto-scope-release-evidence-20261004.json",
+        "checkpoints/EXACT_IDENTITY_AND_NATIVE_ADMISSION_PROVENANCE_CONNECTED_20261009.json"
       ],
-      "current_scope_and_remaining_limit": "Сохранить текущие identity, gates, quotas, единицы и исходные часы. Разрешение владельца на production уже дано; старый candidate-only не действующий запрет. Наличие защитного кода не доказывает полное покрытие всех активов.",
+      "current_scope_and_remaining_limit": "Сохранить текущие identity, gates, quotas, единицы и исходные часы. Разрешение владельца на production уже дано; старый candidate-only не действующий запрет. Наличие защитного кода не доказывает полное покрытие всех активов. PR266 запрещает совпадение двух отсутствующих contract identities в early-direction qualification; корректные непустые исходные BR/BTR и legacy canonical тексты не меняются.",
       "task_id": "R069",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
       "original_requirement_preserved": true
@@ -4071,7 +4072,8 @@
         "reason": "Diagnostic SQL requested nonexistent raw_favourable_move_pct and raw_adverse_move_pct. Original failed request remains charged with unknown native row cost; daily admission correctly blocks subsequent reservations.",
         "no_reset_refund_retry_or_guard_bypass": true,
         "proof": "checkpoints/TYPED_BUDGET_REFUSAL_AND_ORIGINAL_DIRECTION_CONNECTED_20261009.json"
-      }
+      },
+      "latest_provenance_proof": "checkpoints/EXACT_IDENTITY_AND_NATIVE_ADMISSION_PROVENANCE_CONNECTED_20261009.json"
     },
     {
       "task_id": "OWNER_ONE_CANONICAL_TWO_FORMATTERS",
@@ -4298,7 +4300,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791560168222,
+  "updated_ts": 1791560722816,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7485,8 +7487,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "PR265_BTC_TWO_MARKET_3M_5M_30_60_90DAY_DERIVED_COLD_PRICE_HISTORY_AND_WHOLE_REGISTER_REVIEW_VERIFIED;ACTUAL_NATIVE_D1_DAY_REFUSAL_BOUND;FULL_TZ_OPEN",
-  "next_action": "Continue remaining source-free implementation/retained-data checks. Do not repeat live D1 admissions against the blocked 2026-10-09 ledger or reuse today's exhausted cold-archive acquisition pool. Actual ENTRY, latest TIA original task/native SENT binding, next measured native daily admission, production approved-102 scope, all-asset event/trade history and empirical statistics remain open.",
+  "latest_status": "PR266_MISSING_IDENTITY_REJECTED_AND_NATIVE_DAILY_PROVENANCE_SEPARATE;COMMON_CHAIN_TESTS_PASS;D1_20261009_DAY_BLOCKED;FULL_TZ_OPEN",
+  "next_action": "Continue retained-data checks and preserve full registry. Original ZEC167 exact mandatory predicate is not retained; no cause invented. Blocked 2026-10-09 D1 ledger and exhausted cold-source acquisition pool prohibit fresh admissions today. Actual ENTRY, TIA exact native SENT/task chain, all-asset30–90d history, next native daily admission, approved102 production membership and empirical statistics remain open.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -9018,7 +9020,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "FULL_TZ_REMAINING_IDENTITY_AND_EXACT_ADMISSION_RECEIPTS_REVIEW_IN_PROGRESS",
+  "current_execution_block": "FULL_TZ_RETAINED_LIQUIDATION_SCOPE_AND_FINAL_OPEN_ACCEPTANCE_REVIEW_IN_PROGRESS",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -9324,5 +9326,19 @@
       }
     ],
     "full_remaining_details": "whole-register-retained-use.json inside retained ZIP"
+  },
+  "latest_exact_identity_and_native_admission_provenance": {
+    "PR": 266,
+    "proof": "checkpoints/EXACT_IDENTITY_AND_NATIVE_ADMISSION_PROVENANCE_CONNECTED_20261009.json",
+    "cloud_run": 37953389215,
+    "tested_head": "f5841a05355649610b82d0a422c0ba0f2fc187e5",
+    "artifact_digest": "sha256:dbc8c45dfb445b7c1893be1dc5607f4dca9c1b131a6108e5da178229f04cd32d",
+    "unit_pass": 1210,
+    "preanalysis_runtime_pass": 17,
+    "early_direction_runtime_pass": 3,
+    "delivery_pass": 35,
+    "integration_pass": 37,
+    "actual_ENTRY": false,
+    "full_TZ_complete": false
   }
 }
