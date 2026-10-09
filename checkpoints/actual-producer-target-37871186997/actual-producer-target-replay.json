@@ -1,0 +1,127 @@
+{
+  "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_HANDOFF_REPLAY_20261009_V1",
+  "status": "ACTUAL_ORIGINAL_FILLS_PRODUCER_SCHEMA_AND_ASSIGNED_TARGET_CONSUMER_VERIFIED",
+  "fixture_gzip_sha256": "a3eaef9b87ed5a415317f5099e6dc61f72e5dd375325392909055edef5472eea",
+  "fixture_source_http": 0,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "source_clocks_refreshed": false,
+  "controlled_direction_qualification": true,
+  "original_source_direction_closed": false,
+  "original_exchange_candle_body_claim": false,
+  "basis": "ORIGINAL360_MINUTE_RETAINED_FILL_REPLAY;VERIFIED_EMPTY_MINUTES_USE_PRIOR_ACTUAL_FILL;NOT_NEW_SOURCE_OR_REAL_ENTRY",
+  "baseline_source_head": "9f55efe0febf6631648597d5fca4d1bd465f04cb",
+  "original_adapter_sha256": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
+  "original_target_evaluator_sha256": "5e6fe5d9ac89cc1ac1330409edfe4bdb2f2dcf6f389717b1b0115d4eb4bebd37",
+  "original_source": {
+    "contract": "WIF-USDT",
+    "original_event_observed_ts": 1791253483010,
+    "original_canonical_cutoff": 1791253484352,
+    "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT",
+    "event_close_ts": 1791252900000,
+    "observed_ts": 1791253483010,
+    "source_ts": 1791252900000,
+    "observation_timing": {
+      "first_seen_ts": 1791253483010,
+      "lag_from_event_close_ms": 583010,
+      "timely_for_precommitted_funnel": true,
+      "retrospective_promotion_forbidden": false
+    },
+    "candle": {
+      "open": 0.2482,
+      "high": 0.2482,
+      "low": 0.246,
+      "close": 0.2464,
+      "volume": 14284.557799999997,
+      "trade_count": null
+    }
+  },
+  "old_potential": {
+    "version": "technical-move-potential-v4-no-fixed-minimum-20261001",
+    "status": "NOT_CLOSED",
+    "reason": "FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN",
+    "direction": "SHORT",
+    "entry_reference_price": 0.246,
+    "minimum_move_pct": null,
+    "target_price": null,
+    "potential_move_pct": null,
+    "basis": null,
+    "basis_ru": null,
+    "not_random_target": true
+  },
+  "new_potential": {
+    "version": "technical-move-potential-v5-actual-producer-timing-20261009",
+    "status": "CLOSED",
+    "reason": null,
+    "direction": "SHORT",
+    "entry_reference_price": 0.246,
+    "minimum_move_pct": null,
+    "target_price": 0.2438,
+    "potential_move_pct": 0.8943089430894391,
+    "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+    "basis_ru": "измеренная ширина подтверждаемой свечной аномалии",
+    "not_random_target": true,
+    "evidence_count": 1,
+    "technical_inputs": {
+      "anomaly_high": 0.2482,
+      "anomaly_low": 0.246,
+      "measured_range_pct": 0.8943089430894339,
+      "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT"
+    },
+    "all_candidates": [
+      {
+        "target_price": 0.2438,
+        "potential_move_pct": 0.8943089430894391,
+        "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+        "basis_ru": "измеренная ширина подтверждаемой свечной аномалии",
+        "evidence_count": 1,
+        "technical_inputs": {
+          "anomaly_high": 0.2482,
+          "anomaly_low": 0.246,
+          "measured_range_pct": 0.8943089430894339,
+          "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT"
+        }
+      }
+    ],
+    "path_obstacles": [],
+    "begin_close_price": 0.2438,
+    "favorable_move_proven": true
+  },
+  "controlled_consumer": {
+    "before_targets": [],
+    "after_targets": [
+      {
+        "price": 0.2438,
+        "source": "technically_proven_move_potential",
+        "start_closing": true,
+        "potential_move_pct": 0.8943089430894391,
+        "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+        "basis_ru": "измеренная ширина подтверждаемой свечной аномалии"
+      }
+    ],
+    "unchanged_scores": true,
+    "unchanged_state": true,
+    "unchanged_trigger_invalidation": true,
+    "state": "OBSERVE",
+    "manual": {
+      "ok": true,
+      "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+      "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-06T02:24:44.352Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: продажа\nОбщая оценка: не подтверждена\nМонета интересна: 82 из 100\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- Качество раннего сигнала: 82\n- Закрытые минутные свечи: 15\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\n- WIF-USDT: приоритет не проверено/100; причина не проверена\nВсего ранних кандидатов: 1.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОтмена идеи: цена>0.2482\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nПАМП И ЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+      "formatter": "manual-report-approved-layout-v1-20260927",
+      "analytical_fingerprint": "0279f71e102901f9ab959d21c1b5634dce99c29edf4b8caf1953a1662cf6406e"
+    },
+    "telegram": {
+      "ok": true,
+      "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+      "message": "WIF — ⛔️ ВЫВОД НЕ ГОТОВ\nСнимок: 2026-10-06T02:24:44.352Z\nОбщая оценка: не проверено\nМонета интересна: 82 из 100\nГотовность ко входу: не проверено\n• Качество раннего сигнала: 82 из 100\n• Закрытые минутные свечи: 15 1м — ХТХ\nРанний кандидат: WIF; подтверждены ранние признаки.\nПочему не закрыто:\n• сводка источников не подтверждена; вывод не готов.\nЛиквидации:\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.",
+      "length": 486,
+      "max_length": 1600,
+      "formatter": "telegram-compact-formatter-v5-surface-contract-20260925",
+      "analytical_fingerprint": "0279f71e102901f9ab959d21c1b5634dce99c29edf4b8caf1953a1662cf6406e"
+    }
+  }
+}

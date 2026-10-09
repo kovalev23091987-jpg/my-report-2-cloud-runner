@@ -1,0 +1,390 @@
+{
+  "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_CONNECTED_20261009_V1",
+  "status": "ACTUAL_PRODUCER_TIMING_REACHES_MEASURED_TARGET_WITH_UNCHANGED_ENTRY_GATES",
+  "tested_head": "8016620bc7efde4beedd2dc485debc7ecc2cd3e8",
+  "cloud_run": 37871186997,
+  "tests": {
+    "actual-producer-target-runtime.tap": {
+      "pass": 5,
+      "fail": 0,
+      "sha256": "ec085970b55d9cc1ef07a4edbcdeb6b8680588ed563770cdb98206ae9c52182a"
+    },
+    "approved-delivery-runtime.tap": {
+      "pass": 35,
+      "fail": 0,
+      "sha256": "3e0fbc975ffe47fbb03f744ef215b9dfae26f380aab2744c2e52053c320d7fa3"
+    },
+    "current-generation-unit-tests.tap": {
+      "pass": 1153,
+      "fail": 0,
+      "sha256": "542621d5d952a8d75cdae93347b069d04e232ed9011f83f152ed38ee192c7e64"
+    },
+    "prospective-and-range-runtime.tap": {
+      "pass": 8,
+      "fail": 0,
+      "sha256": "bf3371884173a7454cd892e9d450ad11e55a6500575a9b8668aff68caa7d7060"
+    },
+    "technical-target-unit.tap": {
+      "pass": 10,
+      "fail": 0,
+      "sha256": "b8ab70ba1f2f39e973aa0854b918270d6efe4a417d609f6f6175e26c7fc9a3bb"
+    }
+  },
+  "replay": {
+    "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_HANDOFF_REPLAY_20261009_V1",
+    "status": "ACTUAL_ORIGINAL_FILLS_PRODUCER_SCHEMA_AND_ASSIGNED_TARGET_CONSUMER_VERIFIED",
+    "fixture_gzip_sha256": "a3eaef9b87ed5a415317f5099e6dc61f72e5dd375325392909055edef5472eea",
+    "fixture_source_http": 0,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "source_clocks_refreshed": false,
+    "controlled_direction_qualification": true,
+    "original_source_direction_closed": false,
+    "original_exchange_candle_body_claim": false,
+    "basis": "ORIGINAL360_MINUTE_RETAINED_FILL_REPLAY;VERIFIED_EMPTY_MINUTES_USE_PRIOR_ACTUAL_FILL;NOT_NEW_SOURCE_OR_REAL_ENTRY",
+    "baseline_source_head": "9f55efe0febf6631648597d5fca4d1bd465f04cb",
+    "original_adapter_sha256": "4a55daa24c7127892b87ce882b7ce39a2191eca682d0fe9cd23af86fd7db6f79",
+    "original_target_evaluator_sha256": "5e6fe5d9ac89cc1ac1330409edfe4bdb2f2dcf6f389717b1b0115d4eb4bebd37",
+    "original_source": {
+      "contract": "WIF-USDT",
+      "original_event_observed_ts": 1791253483010,
+      "original_canonical_cutoff": 1791253484352,
+      "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT",
+      "event_close_ts": 1791252900000,
+      "observed_ts": 1791253483010,
+      "source_ts": 1791252900000,
+      "observation_timing": {
+        "first_seen_ts": 1791253483010,
+        "lag_from_event_close_ms": 583010,
+        "timely_for_precommitted_funnel": true,
+        "retrospective_promotion_forbidden": false
+      },
+      "candle": {
+        "open": 0.2482,
+        "high": 0.2482,
+        "low": 0.246,
+        "close": 0.2464,
+        "volume": 14284.557799999997,
+        "trade_count": null
+      }
+    },
+    "old_potential": {
+      "version": "technical-move-potential-v4-no-fixed-minimum-20261001",
+      "status": "NOT_CLOSED",
+      "reason": "FAVORABLE_TECHNICAL_TARGET_NOT_PROVEN",
+      "direction": "SHORT",
+      "entry_reference_price": 0.246,
+      "minimum_move_pct": null,
+      "target_price": null,
+      "potential_move_pct": null,
+      "basis": null,
+      "basis_ru": null,
+      "not_random_target": true
+    },
+    "new_potential": {
+      "version": "technical-move-potential-v5-actual-producer-timing-20261009",
+      "status": "CLOSED",
+      "reason": null,
+      "direction": "SHORT",
+      "entry_reference_price": 0.246,
+      "minimum_move_pct": null,
+      "target_price": 0.2438,
+      "potential_move_pct": 0.8943089430894391,
+      "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+      "basis_ru": "измеренная ширина подтверждаемой свечной аномалии",
+      "not_random_target": true,
+      "evidence_count": 1,
+      "technical_inputs": {
+        "anomaly_high": 0.2482,
+        "anomaly_low": 0.246,
+        "measured_range_pct": 0.8943089430894339,
+        "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT"
+      },
+      "all_candidates": [
+        {
+          "target_price": 0.2438,
+          "potential_move_pct": 0.8943089430894391,
+          "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+          "basis_ru": "измеренная ширина подтверждаемой свечной аномалии",
+          "evidence_count": 1,
+          "technical_inputs": {
+            "anomaly_high": 0.2482,
+            "anomaly_low": 0.246,
+            "measured_range_pct": 0.8943089430894339,
+            "event_id": "OPP:opportunity-effort-result-v1:WIF-USDT:HTX:15m:1791252000000:EFFORT_VS_RESULT"
+          }
+        }
+      ],
+      "path_obstacles": [],
+      "begin_close_price": 0.2438,
+      "favorable_move_proven": true
+    },
+    "controlled_consumer": {
+      "before_targets": [],
+      "after_targets": [
+        {
+          "price": 0.2438,
+          "source": "technically_proven_move_potential",
+          "start_closing": true,
+          "potential_move_pct": 0.8943089430894391,
+          "basis": "MEASURED_ANOMALY_CANDLE_RANGE",
+          "basis_ru": "измеренная ширина подтверждаемой свечной аномалии"
+        }
+      ],
+      "unchanged_scores": true,
+      "unchanged_state": true,
+      "unchanged_trigger_invalidation": true,
+      "state": "OBSERVE",
+      "manual": {
+        "ok": true,
+        "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+        "text": "МОЙ ОТЧЁТ 2\nСнимок рынка: 2026-10-06T02:24:44.352Z\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nСостояние: вывод не готов — есть непереведённая внутренняя причина\nНаправление: продажа\nОбщая оценка: не подтверждена\nМонета интересна: 82 из 100\nГотовность ко входу: не подтверждена — внутренняя причина требует проверки\nПРИЧИНЫ\n- Качество раннего сигнала: 82\n- Закрытые минутные свечи: 15\nРАННИЕ КАНДИДАТЫ ДО ДВИЖЕНИЯ\n- WIF-USDT: приоритет не проверено/100; причина не проверена\nВсего ранних кандидатов: 1.\nИСТОЧНИКИ И ЖЁСТКИЕ ПРОВЕРКИ\nСвежие подтверждённые источники: нет подтверждённых источников для этого снимка.\nЖёсткие проверки: 0.\nПОЧЕМУ ВЫВОД НЕ ЗАКРЫТ\n- Сводка источников не была передана назначенным владельцем; вывод оставлен в безопасном режиме.\nОтмена идеи: цена>0.2482\nОснова идеи: существенные факторы оценки не раскрыты в данных этого отчёта.\nПАМП И ЛИКВИДАЦИИ\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.\nКАЧЕСТВО ДОПОЛНИТЕЛЬНЫХ ИСТОЧНИКОВ\nСтатус непрерывного сбора: частичное покрытие в реальном времени.\nНовые внешние запросы горячего цикла: 0.",
+        "formatter": "manual-report-approved-layout-v1-20260927",
+        "analytical_fingerprint": "0279f71e102901f9ab959d21c1b5634dce99c29edf4b8caf1953a1662cf6406e"
+      },
+      "telegram": {
+        "ok": true,
+        "status": "SAFE_FAIL_CLOSED_UNKNOWN_REASON",
+        "message": "WIF — ⛔️ ВЫВОД НЕ ГОТОВ\nСнимок: 2026-10-06T02:24:44.352Z\nОбщая оценка: не проверено\nМонета интересна: 82 из 100\nГотовность ко входу: не проверено\n• Качество раннего сигнала: 82 из 100\n• Закрытые минутные свечи: 15 1м — ХТХ\nРанний кандидат: WIF; подтверждены ранние признаки.\nПочему не закрыто:\n• сводка источников не подтверждена; вывод не готов.\nЛиквидации:\nСильные ликвидации выше: уровни будущих ликвидаций не получены.\nСильные ликвидации ниже: уровни будущих ликвидаций не получены.",
+        "length": 486,
+        "max_length": 1600,
+        "formatter": "telegram-compact-formatter-v5-surface-contract-20260925",
+        "analytical_fingerprint": "0279f71e102901f9ab959d21c1b5634dce99c29edf4b8caf1953a1662cf6406e"
+      }
+    }
+  },
+  "integration": {
+    "schema": "report2-v13-final-integration-37-v1",
+    "status": "PASS",
+    "runtime": "/home/runner/work/my-report-2-cloud-runner/my-report-2-cloud-runner/runtime",
+    "passed": 37,
+    "failed": 0,
+    "scenarios": [
+      {
+        "number": 1,
+        "name": "current early 82 becomes one actionable OBSERVE",
+        "status": "PASS"
+      },
+      {
+        "number": 2,
+        "name": "OBSERVE does not invent overall or ENTRY",
+        "status": "PASS"
+      },
+      {
+        "number": 3,
+        "name": "deep factual interest may authorize OBSERVE without early origin flag",
+        "status": "PASS"
+      },
+      {
+        "number": 4,
+        "name": "interest 69 is rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 5,
+        "name": "positive 4.9 percent plan remains eligible for early observation",
+        "status": "PASS"
+      },
+      {
+        "number": 6,
+        "name": "hard veto is rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 7,
+        "name": "neutral label cannot erase valid LONG receipt",
+        "status": "PASS"
+      },
+      {
+        "number": 8,
+        "name": "opposite valid directions conflict",
+        "status": "PASS"
+      },
+      {
+        "number": 9,
+        "name": "stale future and foreign receipts are ignored",
+        "status": "PASS"
+      },
+      {
+        "number": 10,
+        "name": "wave mismatch cannot bind direction",
+        "status": "PASS"
+      },
+      {
+        "number": 11,
+        "name": "new episode does not revive expired receipt",
+        "status": "PASS"
+      },
+      {
+        "number": 12,
+        "name": "repeat persistence is idempotent",
+        "status": "PASS"
+      },
+      {
+        "number": 13,
+        "name": "failed persistence creates no dispatch binding",
+        "status": "PASS"
+      },
+      {
+        "number": 14,
+        "name": "formatter refusal prevents transport",
+        "status": "PASS"
+      },
+      {
+        "number": 15,
+        "name": "positive provider response records SENT and message id",
+        "status": "PASS"
+      },
+      {
+        "number": 16,
+        "name": "provider failure is never SENT or blindly duplicated",
+        "status": "PASS"
+      },
+      {
+        "number": 17,
+        "name": "removal without prior delivery is not actionable",
+        "status": "PASS"
+      },
+      {
+        "number": 18,
+        "name": "manual and Telegram share one canonical fingerprint",
+        "status": "PASS"
+      },
+      {
+        "number": 19,
+        "name": "missing target remains an honest early observation with target pending",
+        "status": "PASS"
+      },
+      {
+        "number": 20,
+        "name": "next cycle uses its own evidence and does not refresh old evidence",
+        "status": "PASS"
+      },
+      {
+        "number": 21,
+        "name": "new sources OFF or timeout leave old report result unchanged",
+        "status": "PASS"
+      },
+      {
+        "number": 22,
+        "name": "same upstream cannot add an independent vote",
+        "status": "PASS"
+      },
+      {
+        "number": 23,
+        "name": "internal scheduler skip is not a provider failure",
+        "status": "PASS"
+      },
+      {
+        "number": 24,
+        "name": "valid response without mapped market is coverage unsupported",
+        "status": "PASS"
+      },
+      {
+        "number": 25,
+        "name": "ten gTrade consumers use three HTTP and separate bindings",
+        "status": "PASS"
+      },
+      {
+        "number": 26,
+        "name": "shared snapshot cannot cross run boundary",
+        "status": "PASS"
+      },
+      {
+        "number": 27,
+        "name": "failed shared fetch is not repeated for 24 consumers",
+        "status": "PASS"
+      },
+      {
+        "number": 28,
+        "name": "Hyperliquid length mismatch and alias are rejected",
+        "status": "PASS"
+      },
+      {
+        "number": 29,
+        "name": "switching OI provider creates a separate native series without false delta",
+        "status": "PASS"
+      },
+      {
+        "number": 30,
+        "name": "funding periods and estimated rates remain separate native facts",
+        "status": "PASS"
+      },
+      {
+        "number": 31,
+        "name": "HTTP 200 malformed JSON is invalid, not zero market",
+        "status": "PASS"
+      },
+      {
+        "number": 32,
+        "name": "Retry-After 24 hours is preserved",
+        "status": "PASS"
+      },
+      {
+        "number": 33,
+        "name": "optional enrichment without capacity cannot displace ready publication",
+        "status": "PASS"
+      },
+      {
+        "number": 34,
+        "name": "role-scoped fallback remains singular and preserves the five-request cap",
+        "status": "PASS"
+      },
+      {
+        "number": 35,
+        "name": "large shared raw snapshot is retained once and not copied to consumer results",
+        "status": "PASS"
+      },
+      {
+        "number": 36,
+        "name": "assembled manual/compact keep golden, historical V5 matches and new brief facts-only policy holds",
+        "status": "PASS"
+      },
+      {
+        "number": 37,
+        "name": "unproven ENTRY remains OBSERVE",
+        "status": "PASS"
+      }
+    ],
+    "telegram_network_calls": 0,
+    "synthetic_signal_created": false,
+    "thresholds_changed": false,
+    "external_format_changed": false
+  },
+  "validation": {
+    "status": "CURRENT_GENERATION_VALIDATED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "tests": "PASS",
+    "syntax": "PASS",
+    "schedule_minutes": 20,
+    "scheduled_runs_per_day": 72,
+    "manual_runs_per_day": 8,
+    "burst_deep_checks_per_day": 3,
+    "scheduled_analytics_interval_minutes": 40,
+    "scheduled_analytics_cycles_per_day": 36,
+    "full_cycle_candidate_limit": 2,
+    "worst_case_31_day_requests": 13330,
+    "overlay": "NOT_REQUESTED"
+  },
+  "binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "340f249cceda6204c4cee125dd84dda2e107c9290bc629f206d79ffa3335eebc",
+    "runtime_checked": true
+  },
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "new_fresh_SENT": false,
+  "source_clocks_refreshed": false,
+  "weights_thresholds_ENTRY_quotas_unchanged": true,
+  "original_SENT_rewritten": false,
+  "full_project_complete": false,
+  "retained_directory": "checkpoints/actual-producer-target-37871186997"
+}
