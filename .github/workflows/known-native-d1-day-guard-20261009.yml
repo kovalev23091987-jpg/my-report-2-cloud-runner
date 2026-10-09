@@ -1,0 +1,42 @@
+name: Known native D1 day refusal guard validation
+on:
+  push:
+    branches: [codex/known-native-d1-day-guard-20261009]
+    paths: ['tools/known-d1-day-guard.mjs','current-generation/tests/known-d1-day-guard.test.mjs','.github/workflows/report2.yml','.github/workflows/known-native-d1-day-guard-20261009.yml']
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require own bounded lease and exact main
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(h!=="56c197732c4cb8b67b412fe302c5bf45b9d36eaf")throw Error('MAIN_MOVED');
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=="CODEX:KNOWN_D1_DAY_GUARD:20261009:1791578406261"||p.lease.expires_ts<=Date.now()||f.active)throw Error('LEASE_BLOCKED');
+      - name: Verify original same-day refusal, current CLI and native next-day admission
+        run: |
+          mkdir -p audit-output
+          node --import ./current-generation/tests/early-evidence-repair/no-network.mjs --test current-generation/tests/known-d1-day-guard.test.mjs current-generation/tests/production-artifact-outcome.test.mjs current-generation/tests/same-run-delivery-proof.test.mjs current-generation/tests/pre-analysis-failure-receipt.test.mjs > audit-output/tests.tap
+          REPORT2_CURRENT_GENERATION=MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M node --import ./current-generation/tests/early-evidence-repair/no-network.mjs tools/known-d1-day-guard.mjs . > audit-output/known-day-guard.json
+          if [ -f runtime/report2-run-result.json ]; then
+            cp runtime/report2-run-result.json audit-output/
+            node tools/verify-same-run-delivery-artifact.mjs audit-output "$GITHUB_SHA" > audit-output/audit.json
+          fi
+          node --check tools/known-d1-day-guard.mjs
+          git rev-parse HEAD > audit-output/head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: known-native-day-guard-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
