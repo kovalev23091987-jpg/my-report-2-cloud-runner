@@ -705,12 +705,14 @@
       "current_assessment": "IMPLEMENTED_CLOSED_WINDOW_RULES",
       "evidence": [
         "unified-entry-signal-delta/overlay/tests/microstructure-full-chain-e2e.test.mjs",
-        "current-generation/files/src/early-wave-continuity.mjs"
+        "current-generation/files/src/early-wave-continuity.mjs",
+        "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json"
       ],
       "current_scope_and_remaining_limit": "Классификация использует завершённые свечи и explicit hypotheses; gaps блокируют вывод. Наличие механизмов не proof полного 1m/3m/5m покрытия всей universe.",
       "task_id": "R040",
       "scope_status": "RETAIN_SCOPED_EVIDENCE_AND_REVIEW_ORIGINAL_REMAINING_ACTION",
-      "original_requirement_preserved": true
+      "original_requirement_preserved": true,
+      "latest_cold_price_scope": "DERIVED_SAME_VENUE_OHLC_ONLY;NOT_NEW_LIVE_ANOMALY_CLASSIFICATION"
     },
     {
       "id": "R041",
@@ -1265,7 +1267,7 @@
       "historical_matrix": "free-sources-delta/spec/MY_REPORT_2_FREE_SOURCES_DELTA_REQUIREMENT_MATRIX_20260925.md",
       "historical_wording": "Binance Public Data archive для trades/aggTrades/1m/3m/5m Spot и USD-M; checksum; 30d/60–90d maintenance history; archive delayed and separate from realtime",
       "historical_status": "IMPLEMENTED_PARTIAL",
-      "current_assessment": "ACTUAL_TWO_VENUE_BTC_92DAY_1M_COLD_PRICES_AND_30_60_90DAY_CONSUMERS_VERIFIED;TRADE_HISTORY_AND_OTHER_ARCHIVE_TYPES_OPEN",
+      "current_assessment": "ACTUAL_TWO_VENUE_BTC_92DAY_NATIVE1M_AND_DERIVED3M5M_30_60_90DAY_COLD_PRICES_VERIFIED;TRADE_HISTORY_NATIVE_ARCHIVE_TYPES_AND_ALL_ASSETS_OPEN",
       "evidence": [
         "existing-source-coverage-delta/maintenance/binance-history-maintenance-proof.mjs",
         "current-generation/files/src/market-history-reader.mjs",
@@ -1274,9 +1276,10 @@
         "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
         "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
         "checkpoints/RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009.json",
-        "checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json"
+        "checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json",
+        "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json"
       ],
-      "current_scope_and_remaining_limit": "Шесть исходных ZIP и CHECKSUM сохранены. Для BTC на Binance Spot и USD-M отдельно подтверждены 92 дня и 132480 уникальных минут. Текущий cold-потребитель закрывает 30, 60 и 90 дней; 16 контролей отказывают в подмене рынка, символа и HTX, пропусках, повреждении и недоступности на историческом cutoff. Это цена одной монеты. Trades, aggTrades, 3m, 5m, история 102 активов и статистика ENTRY остаются открытыми. Использовано 12 фактических HTTP; обычные source caps и cadence не менялись.",
+      "current_scope_and_remaining_limit": "Шесть исходных ZIP и CHECKSUM сохранены. Для BTC на Binance Spot и USD-M отдельно подтверждены 92 дня и 132480 уникальных минут. Текущий cold-потребитель закрывает 30, 60 и 90 дней; 16 контролей отказывают в подмене рынка, символа и HTX, пропусках, повреждении и недоступности на историческом cutoff. Это цена одной монеты. Trades, aggTrades, 3m, 5m, история 102 активов и статистика ENTRY остаются открытыми. Использовано 12 фактических HTTP; обычные source caps и cadence не менялись. PR265 построил 3m/5m OHLC из полных исходных 1m свечей: 12 окон по двум раздельным рынкам и 276480 свечей сверены с оригинальными CSV независимым Python consumer. Это производные свечи, не официальные native3m/5m ZIP; объёмы, trades/aggTrades, остальные активы и исторические решения не квалифицированы. Новых sourceHTTP/D1/MAIN/Telegram не было.",
       "task_id": "R068",
       "scope_status": "PARTIAL_OR_EMPIRICAL_OPEN_WITH_SCOPED24H_READER_PROOF",
       "original_requirement_preserved": true,
@@ -4010,7 +4013,49 @@
       "task_id": "OWNER_SOURCE_USE_ACCOUNTING",
       "status": "ACTIVE_RECHECK",
       "scope_and_action": "Configured/checked/live/cache/fact/consumer/render/neutral/nonzero/control/upstream independence раздельно; partial не полныйзавершённыйблок.",
-      "latest_instruction": "Every new connection: exact actual response, useful fact, assigned consumer, original state clock and measured caps; empty new candidates disabled. Budget readback saved."
+      "latest_instruction": "Every new connection: exact actual response, useful fact, assigned consumer, original state clock and measured caps; empty new candidates disabled. Budget readback saved.",
+      "latest_retained_whole_register_use": {
+        "cloud_run": 37952239872,
+        "tested_head": "a932764944b37f96bebb203ebc3ee4dcfd2bd9fa",
+        "artifact_id": 11626710542,
+        "artifact_digest": "sha256:7539f4506584469e789e0650bbe7ba478cde1d7c0444a576647433346701cf7f",
+        "retained": "checkpoints/retained-whole-register-use-37952239872.zip",
+        "requirements": 86,
+        "core_blocks": 15,
+        "liquidation_blocks": 1,
+        "owner_tasks": 24,
+        "original_report_run": 37944444674,
+        "original_source_clock_refreshed": false,
+        "candidates": [
+          {
+            "contract": "TIA-USDT",
+            "publication_id": "PUB:48b01e1c254abd26912def577822f42d8dc8f125",
+            "snapshot_id": "S392:TIA-USDT:1791556224281",
+            "observed_ts": 1791556224281,
+            "state": "OBSERVE",
+            "core_checked": 11,
+            "core_participating": 9,
+            "core_nonzero_score": 2,
+            "core_neutral_assessed_and_rendered": 7,
+            "core_unscored_diagnostic_assessed_and_rendered": 0,
+            "requested12_13_15_useful_blocks_accepted": false
+          },
+          {
+            "contract": "FIL-USDT",
+            "publication_id": "PUB:e10ad406d39a6629a33321b476d4f4d41fd96db5",
+            "snapshot_id": "S392:FIL-USDT:1791556190872",
+            "observed_ts": 1791556190872,
+            "state": "REJECTED",
+            "core_checked": 11,
+            "core_participating": 9,
+            "core_nonzero_score": 0,
+            "core_neutral_assessed_and_rendered": 7,
+            "core_unscored_diagnostic_assessed_and_rendered": 2,
+            "requested12_13_15_useful_blocks_accepted": false
+          }
+        ],
+        "full_remaining_details": "whole-register-retained-use.json inside retained ZIP"
+      }
     },
     {
       "task_id": "OWNER_BUDGETS_AND_DURABLE_CACHE",
@@ -4041,13 +4086,14 @@
     },
     {
       "task_id": "OWNER_HISTORY_OUTCOME_STATISTICS",
-      "status": "ACTIVE_PARTIAL;ONE_NATIVE_DAY1440_PRICE_MINUTES_QUALIFIED;TRADE_QUANTITY_AND_30_90DAY_COVERAGE_OPEN;APPROVED_ENTRY_SAMPLE_ZERO",
+      "status": "ACTIVE_PARTIAL;BTC_TWO_MARKET92DAY_NATIVE1M_AND_DERIVED3M5M_VERIFIED;ALL_ASSET_HISTORY_AND_EMPIRICAL_ENTRY_OPEN",
       "scope_and_action": "Bounded30–90d maintenance/outcomes/no-lookahead/costs/cohorts/negativecontrols; реальную matured sample/recall ещё не объявлять proven.",
       "latest_statistical_implementation": "checkpoints/USEFUL_WEIGHTS_AND_LIQUIDATION_PAIR_RELEASE_20261007.json",
       "latest_proofs": [
         "checkpoints/FULL_TZ_PRICE_HISTORY_AND_TRIGGER_RECEIPTS_CONNECTED_20261009.json",
         "checkpoints/FULL_CURRENT_ORIGINAL_CHAIN_AFTER_PR254_20261009.json",
-        "checkpoints/NATIVE_FULL_DAY_PRICE_HISTORY_CONNECTED_20261009.json"
+        "checkpoints/NATIVE_FULL_DAY_PRICE_HISTORY_CONNECTED_20261009.json",
+        "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json"
       ]
     },
     {
@@ -4252,7 +4298,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791559386033,
+  "updated_ts": 1791560168222,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7439,8 +7485,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "PR264_ALL_EARLY_DIRECTION_PREDICATES_SAVED;ORIGINAL_COMPONENT_REVIEW_VERIFIED;NATIVE_DAY_D1_BLOCKED;FULL_TZ_OPEN",
-  "next_action": "Continue qualified cold-history consumers and the full source/block/task register without fresh D1 admissions on the blocked 2026-10-09 ledger. Preserve exact original direction refusals. Native next-day budget health, production approved-102 scope, TIA original task chain and actual ENTRY/statistical acceptance remain unverified.",
+  "latest_status": "PR265_BTC_TWO_MARKET_3M_5M_30_60_90DAY_DERIVED_COLD_PRICE_HISTORY_AND_WHOLE_REGISTER_REVIEW_VERIFIED;ACTUAL_NATIVE_D1_DAY_REFUSAL_BOUND;FULL_TZ_OPEN",
+  "next_action": "Continue remaining source-free implementation/retained-data checks. Do not repeat live D1 admissions against the blocked 2026-10-09 ledger or reuse today's exhausted cold-archive acquisition pool. Actual ENTRY, latest TIA original task/native SENT binding, next measured native daily admission, production approved-102 scope, all-asset event/trade history and empirical statistics remain open.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -8972,7 +9018,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "FULL_TZ_RETAINED_HISTORY_AND_ALL_BLOCK_USE_REVIEW_IN_PROGRESS",
+  "current_execution_block": "FULL_TZ_REMAINING_IDENTITY_AND_EXACT_ADMISSION_RECEIPTS_REVIEW_IN_PROGRESS",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -9166,5 +9212,117 @@
     "new_report_artifact": false,
     "new_ENTRY_or_SENT": false,
     "evidence": "GitHub masked job log 113881539606; numeric clocks and message ids not reconstructed"
+  },
+  "latest_cold_derived_candles_and_whole_register": {
+    "PR": 265,
+    "proof": "checkpoints/COLD_DERIVED_CANDLES_AND_WHOLE_REGISTER_CONNECTED_20261009.json",
+    "cloud_run": 37951988397,
+    "tested_head": "423c3080844cffca6201a3533736e859f8e2bf00",
+    "artifact_digest": "sha256:65c3a9313823735bc6fdfd6deeed13d478e62c1d52b4d79b0614370dfb91c3dd",
+    "verified_cold_price_paths": 12,
+    "refusal_controls": 18,
+    "independent_compared_candles": 276480,
+    "actual_ENTRY": false,
+    "full_TZ_complete": false
+  },
+  "latest_actual_post264_budget_refusal": {
+    "cloud_run": 37951516499,
+    "head": "5c8ee5258a2959174ad4881eca488c78c5473608",
+    "artifact_id": 11626327155,
+    "artifact_digest": "sha256:34446c9e4df8a39bacc66950147ff3ec2c4595d650599516ef400ee806e95361",
+    "retained": "checkpoints/post264-budget-refusal-37951516499.zip",
+    "actual_original_receipt": {
+      "schema": "my-report-2-canonical-run-output-v1",
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "head": "5c8ee5258a2959174ad4881eca488c78c5473608",
+      "source": "schedule",
+      "run_id": "37951516499",
+      "status": "NOT_CLOSED",
+      "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+      "candidates": [],
+      "pre_analysis_failure": {
+        "schema": "PRE_ANALYSIS_FAILURE_RECEIPT_V1",
+        "stage": "D1_DAY_PREACTION_ADMISSION",
+        "status": "UNMEASURED_FINALIZED_USAGE",
+        "reason": "D1_DAILY_ADMISSION_NOT_CLOSED",
+        "source_run_id": "37951516499",
+        "head": "5c8ee5258a2959174ad4881eca488c78c5473608",
+        "task_id": null,
+        "trigger_only": false,
+        "started_ts": 1791559497159,
+        "failed_ts": 1791559499895,
+        "daily": {
+          "status": "DAY_USAGE_CLOSED",
+          "unknown_operations": 1,
+          "reserved_rows_read": 595632,
+          "reserved_rows_written": 8023,
+          "unfinished_reservations": 0
+        },
+        "d1_attempt_usage": {
+          "attempted_statements": 24,
+          "measured_rows_read_subtotal": 567,
+          "measured_rows_written_subtotal": 5,
+          "unknown_operations": 0,
+          "row_totals_closed": true,
+          "total_rows_read": 567,
+          "total_rows_written": 5
+        },
+        "market_conditions_evaluated": false,
+        "full_analysis_completed": false,
+        "entry_authorized": false,
+        "task_writes": 0,
+        "source_clock_refreshed": false
+      },
+      "generated_at": "2026-10-09T15:24:59.895Z",
+      "secrets_included": false,
+      "alternative_manual_recalculation": false
+    },
+    "reservation_values_scope": "The receipt reports adaptive daily admission inputs, not the raw original reservation aggregate. Earlier exact raw original aggregate remains in PR263 proof.",
+    "market_HTTP_count_not_exported": true,
+    "no_full_analysis": true,
+    "no_ENTRY": true,
+    "no_report_candidates": true
+  },
+  "latest_retained_whole_register_use": {
+    "cloud_run": 37952239872,
+    "tested_head": "a932764944b37f96bebb203ebc3ee4dcfd2bd9fa",
+    "artifact_id": 11626710542,
+    "artifact_digest": "sha256:7539f4506584469e789e0650bbe7ba478cde1d7c0444a576647433346701cf7f",
+    "retained": "checkpoints/retained-whole-register-use-37952239872.zip",
+    "requirements": 86,
+    "core_blocks": 15,
+    "liquidation_blocks": 1,
+    "owner_tasks": 24,
+    "original_report_run": 37944444674,
+    "original_source_clock_refreshed": false,
+    "candidates": [
+      {
+        "contract": "TIA-USDT",
+        "publication_id": "PUB:48b01e1c254abd26912def577822f42d8dc8f125",
+        "snapshot_id": "S392:TIA-USDT:1791556224281",
+        "observed_ts": 1791556224281,
+        "state": "OBSERVE",
+        "core_checked": 11,
+        "core_participating": 9,
+        "core_nonzero_score": 2,
+        "core_neutral_assessed_and_rendered": 7,
+        "core_unscored_diagnostic_assessed_and_rendered": 0,
+        "requested12_13_15_useful_blocks_accepted": false
+      },
+      {
+        "contract": "FIL-USDT",
+        "publication_id": "PUB:e10ad406d39a6629a33321b476d4f4d41fd96db5",
+        "snapshot_id": "S392:FIL-USDT:1791556190872",
+        "observed_ts": 1791556190872,
+        "state": "REJECTED",
+        "core_checked": 11,
+        "core_participating": 9,
+        "core_nonzero_score": 0,
+        "core_neutral_assessed_and_rendered": 7,
+        "core_unscored_diagnostic_assessed_and_rendered": 2,
+        "requested12_13_15_useful_blocks_accepted": false
+      }
+    ],
+    "full_remaining_details": "whole-register-retained-use.json inside retained ZIP"
   }
 }
