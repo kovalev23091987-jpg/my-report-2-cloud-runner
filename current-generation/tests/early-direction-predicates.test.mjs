@@ -24,3 +24,7 @@ test('the diagnostic preserves the existing closed and rejected decisions withou
  for(const side of ['LONG','SHORT']){const x=input();x.early_candidate_receipt.direction_hint=side;x.early_candidate_receipt.direction_state=side+'_WATCH';x.early_candidate_receipt.evidence[0].side=side;const q=qualify(x,T);assert.equal(q.closed,true);assert.equal(q.direction,side);assert.deepEqual(q.predicate_receipt.failed_predicates,[]);assert.equal(q.predicate_receipt.diagnostic_only,true);}
  const x=input();x.early_candidate_receipt.evidence=[{status:'CLOSED',side:'BOTH',domain:'VOLUME_ACCELERATION_PROXY'}];assert.deepEqual(failed(x),['ASSIGNED_DIRECTIONAL_FACT']);assert.equal(qualify(x,T).closed,false);
 });
+test('two missing or empty contract identities never qualify as an exact match',()=>{
+ for(const value of [undefined,null,'','   ']){const x=input();x.contract=value;x.early_candidate_receipt.contract=value;const q=qualify(x,T);assert.equal(q.closed,false);assert.equal(q.same_contract,false);assert.equal(q.direction,null);assert.deepEqual(q.predicate_receipt.failed_predicates,['EXACT_CONTRACT']);}
+ const x=input();delete x.contract;assert.equal(qualify(x,T).same_contract,false);assert.equal(qualify(input(),T).closed,true);
+});

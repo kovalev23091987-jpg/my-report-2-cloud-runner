@@ -582,7 +582,7 @@ async function main() {
           }finally{
             await finalizeRunUsage(env.DATA_DB,{reservationId:triggerReservationId,sourceRunId:process.env.GITHUB_RUN_ID||'TRIGGERED_ADMISSION',usage:env.DATA_DB.usageSnapshot()});
           }
-        }else{triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};await enforceDailyAnalysisAdmission({admission:admissionBudget,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerOnly?triggerKickTaskId:null,trigger_only:triggerOnly,trigger_admission:true,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot?.()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});}
+        }else{triggered={claimed:false,status:'D1_BUDGET_BLOCKED',budget:admissionBudget};await enforceDailyAnalysisAdmission({admission:admissionBudget,context:{daily_usage_scope:'NATIVE_DAILY_AGGREGATE',native_d1_daily:admissionBudget.daily,generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerOnly?triggerKickTaskId:null,trigger_only:triggerOnly,trigger_admission:true,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot?.()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});}
       }
       console.log('TRIGGERED_ENTRY_RECHECK_ADMISSION',JSON.stringify(triggered));
       if(!triggered.claimed){
@@ -688,7 +688,7 @@ const d1DayAdmission = evaluateDailyReservationBudget({
   maxDailyReads:envNumber("REPORT2_D1_MAX_DAILY_READS", 3_500_000),
   maxDailyWrites:envNumber("REPORT2_D1_MAX_DAILY_WRITES", 70_000),
 });
-await enforceDailyAnalysisAdmission({admission:d1DayAdmission,context:{generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot?.()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
+await enforceDailyAnalysisAdmission({admission:d1DayAdmission,context:{daily_usage_scope:'ADAPTIVE_ADMISSION_POLICY_INPUTS',native_d1_daily:d1DailyBeforeReservationRaw,generation,head:process.env.GITHUB_SHA,source_run_id:process.env.GITHUB_RUN_ID,source,task_id:triggerKickTaskId,trigger_only:triggerOnly,started_ts:started,failed_ts:Date.now(),d1_usage:env.DATA_DB.usageSnapshot?.()},write_result:output=>fs.writeFile('report2-run-result.json',JSON.stringify(output,null,2))});
 console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalReservation,burst:d1RunReservation,raw_daily:d1DailyBeforeReservationRaw,adaptive_daily:d1DailyBeforeReservation,admission:d1DayAdmission}));
   const d1ReservationId = `R2RUN:${started}:${sha.slice(0,16)}`;
   const d1ReservationReceipt = await reserveRunBudget(env.DATA_DB,{reservationId:d1ReservationId,now:started,reservation:d1RunReservation});
