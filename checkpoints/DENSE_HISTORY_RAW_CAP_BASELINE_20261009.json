@@ -1,0 +1,49 @@
+{
+  "schema": "DENSE_HISTORY_RAW_CAP_BASELINE_20261009_V1",
+  "head": "365b761d3d7abc85ff2cbb1b4e11e3e06128b295",
+  "cloud_run": "37863362139",
+  "status": "STRUCTURAL_DENSE_12H_24H_RAW_CAP_REPRODUCED",
+  "cases": [
+    {
+      "hours": 4,
+      "full_fixture_shards": 294,
+      "expected_complete_price_points": 49,
+      "status": "CLOSED",
+      "collector_reason": null,
+      "returned_points": 49,
+      "raw_row_cap": 320,
+      "queries": 1,
+      "all_history_queries_indexed": true
+    },
+    {
+      "hours": 12,
+      "full_fixture_shards": 870,
+      "expected_complete_price_points": 145,
+      "status": "NO_FACTUAL_PATH",
+      "collector_reason": "COLLECTOR_RAW_ROW_CAP",
+      "returned_points": 0,
+      "raw_row_cap": 320,
+      "queries": 2,
+      "all_history_queries_indexed": true
+    },
+    {
+      "hours": 24,
+      "full_fixture_shards": 1734,
+      "expected_complete_price_points": 289,
+      "status": "NO_FACTUAL_PATH",
+      "collector_reason": "COLLECTOR_RAW_ROW_CAP",
+      "returned_points": 0,
+      "raw_row_cap": 320,
+      "queries": 2,
+      "all_history_queries_indexed": true
+    }
+  ],
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "scope": "REAL_SQLITE_SYNTHETIC_HASHED_FIXTURE_DETECTS_STRUCTURAL_LIMIT;NOT_EMPIRICAL_OUTCOME_OR_CAUSE_OF_ZERO_ACTUAL_ENTRY",
+  "production_fix_applied": false,
+  "retained_directory": "checkpoints/zec165-window-dense-history-37863362139"
+}
