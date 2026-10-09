@@ -164,3 +164,6 @@ PR265 подключил source-free cold consumer производных 3m/5m 
 
 
 PR266 закрывает дефект empty-string equality: две отсутствующие contract identities больше не подтверждают направление. Существующие непустые bindings BR/BTR сохраняют прежний результат; правило только усилено для missing identity. Квитанции отказа D1 теперь явно отличают native aggregate от adaptive admission inputs и сохраняют исходные резервации, измеренные subtotals и unknown отдельно. Missing/invalid не заменяется нулём. Облачные1210unit,17preanalysis runtime,3direction runtime,35delivery и37integration PASS. Proof: `checkpoints/EXACT_IDENTITY_AND_NATIVE_ADMISSION_PROVENANCE_CONNECTED_20261009.json`. Новые поля ещё не приняты в фактическом native запуске; последняя фактическая квитанция остаётся37951516499 изPR265. Неизвестный расход не переоценён, квота не сброшена. ENTRY/fullTZ не закрыты.
+
+
+Актуальное продолжение после PR267: `checkpoints/FULL_TZ_CONTINUATION_20261009_AFTER_PR267.md`. Actual37954328290 подтвердил новые native trigger-refusal поляPR266 и сохранил day unknown1; это отказ до анализа, не ENTRY. Новый full-cycle adaptive native readback пока не принят. Полный реестр, история102 и статистика остаются открытыми; source clocks,прежние SENT и суточные caps не изменены. Proof: `checkpoints/POST266_NATIVE_REFUSAL_AND_RETAINED_LIQUIDATION_SEMANTICS_20261009.json`.
