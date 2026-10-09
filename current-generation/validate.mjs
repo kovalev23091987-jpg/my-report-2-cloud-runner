@@ -16,6 +16,7 @@ const run=(args,{cwd=repo}={})=>{
  return result.stdout.trim();
 };
 const checks=[
+ 'files/src/pre-analysis-failure-receipt.mjs',
  '../runner/current-runtime-binding.mjs',
  'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
