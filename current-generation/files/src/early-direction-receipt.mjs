@@ -15,5 +15,22 @@ export function qualifyEarlyDirectionReceipt(discovery,decisionTs){
  const declared=arr(receipt?.evidence_ids).map(text),assigned=matching.map(row=>text(row?.evidence_id??row?.id)).filter(id=>id&&declared.includes(id));
  // An unbound list containing opposite or neutral facts cannot be relabelled as directional confirmation.
  const ids=assigned.length?assigned:matching.length===1&&evidence.length===1&&declared.length===1?declared:[];
- return {closed,direction:closed?candidate.direction:null,candidate,source_ts:sourceTs,available_at:availableAt,same_contract:sameContract,same_wave:sameWave,fresh,directed,direction_state_closed:directionStateClosed,evidence_ids:[...new Set(ids)],unassigned_evidence_ids:declared.filter(id=>!ids.includes(id)),reason:closed?'CLOSED_ASSIGNED_DIRECTION_RECEIPT':!directionStateClosed?'EARLY_DIRECTION_STATE_NOT_CLOSED':!directed?'ASSIGNED_DIRECTIONAL_FACT_REQUIRED':'EARLY_IDENTITY_TIME_OR_STATUS_NOT_CLOSED'};
+ // Preserve every actually evaluated predicate, including simultaneous failures.
+ // These diagnostics do not recalculate the producer's direction or alter a gate.
+ const checks=[
+  {predicate:'EARLY_BRIDGE_PRESENT',passed:discovery?.early_candidate_bridge===true},
+  {predicate:'EARLY_TRANSPORT_CLOSED',passed:receipt?.status==='CLOSED'},
+  {predicate:'EXACT_CONTRACT',passed:sameContract},
+  {predicate:'EXACT_WAVE',passed:sameWave},
+  {predicate:'SOURCE_CLOCK_PRESENT',passed:sourceTs!==null},
+  {predicate:'SOURCE_NOT_AFTER_DECISION',passed:sourceTs!==null&&sourceTs<=decisionTs},
+  {predicate:'AVAILABILITY_CLOCK_PRESENT',passed:availableAt!==null},
+  {predicate:'AVAILABLE_AT_DECISION',passed:availableAt!==null&&availableAt<=decisionTs},
+  {predicate:'SOURCE_WITHIN_15_MINUTES',passed:sourceTs!==null&&decisionTs-sourceTs<=15*60_000},
+  {predicate:'ASSIGNED_DIRECTIONAL_FACT',passed:directed},
+  {predicate:'DIRECTION_STATE_CLOSED',passed:directionStateClosed},
+ ];
+ const domains=side=>[...new Set(evidence.filter(row=>row?.status==='CLOSED'&&text(row?.side).toUpperCase()===side&&text(row?.domain)).map(row=>text(row.domain)))];
+ const evidenceSummary={scope:'RETAINED_BRIDGE_EVIDENCE_ONLY',long_domains:domains('LONG'),short_domains:domains('SHORT'),raw_rows:evidence.length,producer_domain_counts_verified:false,independent_provider_count:null};
+ return {closed,direction:closed?candidate.direction:null,candidate,source_ts:sourceTs,available_at:availableAt,same_contract:sameContract,same_wave:sameWave,fresh,directed,direction_state_closed:directionStateClosed,evidence_ids:[...new Set(ids)],unassigned_evidence_ids:declared.filter(id=>!ids.includes(id)),reason:closed?'CLOSED_ASSIGNED_DIRECTION_RECEIPT':!directionStateClosed?'EARLY_DIRECTION_STATE_NOT_CLOSED':!directed?'ASSIGNED_DIRECTIONAL_FACT_REQUIRED':'EARLY_IDENTITY_TIME_OR_STATUS_NOT_CLOSED',predicate_receipt:{schema:'EARLY_DIRECTION_PREDICATES_V1',decision_ts:finite(decisionTs),checks,failed_predicates:checks.filter(row=>!row.passed).map(row=>row.predicate),evidence_summary:evidenceSummary,diagnostic_only:true,changes_direction_or_entry_rules:false}};
 }
