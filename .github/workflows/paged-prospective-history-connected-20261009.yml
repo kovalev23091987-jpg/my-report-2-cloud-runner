@@ -1,0 +1,72 @@
+name: Connected paged prospective history and original twelve-hour qualification
+on:
+  push:
+    branches: [codex/paged-prospective-history-connected-20261009]
+    paths: ['runner/r8-20-prospective-validation-sidecar.mjs', 'tools/*paged*20261009.mjs', '.github/workflows/paged-prospective-history-connected-20261009.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main and owned bounded lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='27d09a2c7bdbf6d61be26a4a80860aaaa330a2a9')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Validate current generation and assemble exact new runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+          REPORT2_VALIDATION_RECEIPT_DIR: audit-output
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          node current-generation/validate.mjs > audit-output/validation.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          cmp runtime/r8-20-prospective-validation-sidecar.mjs runner/r8-20-prospective-validation-sidecar.mjs
+          node current-generation/tests/approved-entry-path.runtime.mjs runtime > audit-output/approved-entry-path.json
+          node current-generation/tests/approved-entry-performance.runtime.mjs runtime > audit-output/approved-entry-performance.json
+          node current-generation/tests/early-observation-state.runtime.mjs runtime > audit-output/early-observation-state.json
+      - name: Verify dense complete paths, negative integrity and unchanged quota admission
+        run: |
+          node current-generation/tests/prospective-public-history.runtime.mjs runtime > audit-output/prospective-history-tests.tap
+          node tools/verify-paged-dense-history-20261009.mjs runtime > audit-output/paged-dense-history-regression.log
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Qualify original actual twelve-hour retained history without source HTTP or outcome writes
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-actual-paged-history-20261009.mjs
+      - name: Print bounded failure evidence
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+f,'utf8');if(/not ok/.test(t))console.log(f,t.slice(-18000));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paged-prospective-history-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain composed tests and original source pages with measured budgets
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='27d09a2c7bdbf6d61be26a4a80860aaaa330a2a9')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),out=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),tests={};
+            for(const f of ['current-generation-unit-tests.tap','prospective-history-tests.tap']){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const validation=out('validation.json'),binding=out('binding.json'),integration=out('integration.json'),regression=out('paged-dense-history-regression.json'),actual=out('actual-paged-history.json');
+            if(validation.status!=='CURRENT_GENERATION_VALIDATED'||binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED'||integration.status!=='PASS'||integration.failed!==0||regression.cycle_envelope.rows_read!==3000||regression.cycle_envelope.rows_written!==8||regression.cycle_envelope.requests_soft_cap!==14||actual.sourceHTTP!==0||actual.task_writes!==0||actual.outcome_writes!==0||actual.d1_usage.unknown_ops!==0||actual.d1_usage.rows_read>4000||actual.d1_usage.rows_written>16)throw Error('CONNECTED_SCOPE');
+            const dir='checkpoints/paged-prospective-history-'+context.runId,entries=[];
+            const walk=(folder,prefix='')=>fs.readdirSync(folder,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(folder+'/'+e.name,prefix+e.name+'/'):[prefix+e.name]);
+            for(const f of walk('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;entries.push({path:dir+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const proof={schema:'PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009_V1',status:'BOUNDED_PAGED_DENSE_HISTORY_AND_ORIGINAL12H_READER_CONNECTED_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,validation,binding,integration,regression,actual,retained_directory:dir,sourceHTTP:0,MAIN:0,Telegram:0,actual_ENTRY:false,project_complete:false,new_fresh_SENT:false,all_global_source_D1_core_weights_ENTRY_and_original_TTL_unchanged:true,actual24h_coverage_verified:false,controlled24h_is_not_empirical_outcome:true};
+            const b=(await github.rest.git.createBlob({owner,repo,content:JSON.stringify(proof,null,2)+'\n',encoding:'utf-8'})).data;entries.push({path:'checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json',mode:'100644',type:'blob',sha:b.sha});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain dense history regression and original twelve-hour reader qualification within unchanged cycle budget',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
