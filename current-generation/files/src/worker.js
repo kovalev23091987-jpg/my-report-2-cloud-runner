@@ -1,3 +1,4 @@
+import {bindApprovedHtxAnalysisScope} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
 import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
@@ -5266,9 +5267,11 @@ async function persistStage0(
    * consumer and persisted market-history shard. Unknown classifications are
    * retained in the audit and fail completeness; they are never silently
    * promoted to crypto. */
+  const approvedScope=bindApprovedHtxAnalysisScope(allContracts,{observed_ts:now});
   const contracts = allContracts.filter(
-    (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED"
+    (row) => row?.instrument_scope?.classification === "CRYPTO_CONFIRMED" && approvedScope.contracts.includes(row)
   );
+  env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT=approvedScope.audit;
   const excludedNonCryptoContracts = allContracts
     .filter((row) => row?.instrument_scope?.classification === "NON_CRYPTO_HTX_CLASSIFIED")
     .map((row) => row.contract_code);
@@ -5292,7 +5295,7 @@ async function persistStage0(
         "STALE"
     ).length;
 
-  const missing =
+  const missing = approvedScope.audit.missing_approved_analysis_contracts.length +
     contracts.filter(
       (c) =>
         c.data_status ===
@@ -5317,7 +5320,7 @@ async function persistStage0(
     ).length;
 
   const universeTotal =
-    contracts.length;
+    approvedScope.audit.expected_analysis_contracts;
 
   const cryptoScopeConfirmed =
     contracts.filter(
@@ -5506,7 +5509,7 @@ async function persistStage0(
       contracts:
         contractsR.ok &&
         instrumentScopeUnknown === 0 &&
-        universeTotal > 0,
+        universeTotal > 0 && approvedScope.audit.status === 'CLOSED',
 
       market:
         marketR.ok,
@@ -5593,19 +5596,20 @@ async function persistStage0(
     },
 
     scope_audit: {
+      approved_generation: approvedScope.audit,
       source_active_derivatives_total:
         activeHtxDerivativeTotal,
       crypto_futures_retained:
-        universeTotal,
+        contracts.length,
       excluded_non_crypto_contracts:
         excludedNonCryptoContracts,
       unknown_fail_closed_contracts:
         unknownScopeContracts,
       lost_contracts:
-        activeHtxDerivativeTotal -
-        universeTotal -
-        excludedNonCryptoContracts.length -
-        unknownScopeContracts.length,
+        activeHtxDerivativeTotal - contracts.length -
+        excludedNonCryptoContracts.length - unknownScopeContracts.length -
+        approvedScope.audit.outside_approved_crypto_contracts.length -
+        approvedScope.audit.identity_rejected.length - approvedScope.audit.duplicate_rejected.length,
     },
 
     contracts,
@@ -20223,6 +20227,7 @@ export async function scanLiquidationCandidates({env,max_candidates=5,exact_cont
 
 export {
   LIQUIDATION_INTELLIGENCE_API,
+  htxUniverseScan as loadApprovedStage0ScanForTest,
   loadHistoryTargets as loadStage0HistoryTargetsForTest,
   htxStage0History as htxStage0HistoryForTest,
   refreshHtxExecutionQuoteIfNeeded as refreshHtxExecutionQuoteIfNeededForTest,

@@ -1083,7 +1083,8 @@ console.log("R8_8_ADAPTIVE_DAILY_ADMISSION", JSON.stringify({nominal:d1NominalRe
   const canonicalRunOutputBase=await loadCanonicalRunOutput(env.DATA_DB,{runId:cron.run_id,source,generation,head:process.env.GITHUB_SHA||null,cron,candidateContracts:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT?.deep_check_selected||[]});
   const canonicalRunOutput={...canonicalRunOutputBase,liquidation_source_acquisition_audit:buildLiquidationSourceAcquisitionAudit({summary:liquidationSources?.summary(),run_id:String(cron.run_id||''),candidates:canonicalRunOutputBase.candidates.map(r=>r.contract),evaluated_ts:Date.now()}),market_scan_audit:{
     universe_total:Number(cron.universe_total),scanned:Number(cron.scanned),errors:Number(scan.errors||0),stale:Number(scan.stale||0),
-    stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
+    approved_scope:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT||null,
+    stage0_coverage_pct:Number(scan.stage0_coverage_pct),complete:env.REPORT2_CURRENT_CYCLE_UNIVERSE_AUDIT?.status==='CLOSED'&&Number(cron.scanned)===Number(cron.universe_total)&&Number(scan.errors||0)===0&&Number(scan.stale||0)===0&&Number(scan.stage0_coverage_pct)>=99.9,
   },candidate_selection_audit:env.REPORT2_CURRENT_CYCLE_SELECTION_AUDIT||null};
   if(env.REPORT2_TRIGGERED_RECHECK_TASK_ID)canonicalRunOutput.triggered_recheck={task_id:env.REPORT2_TRIGGERED_RECHECK_TASK_ID,scope:'FRESH_FULL_ANALYSIS_FROM_EXACT_SENT_PRICE_TRIGGER',entry_authorized_by_price:false,max_per_run:1,original_ttl_unchanged:true};
   await fs.writeFile('report2-run-result.json',JSON.stringify(canonicalRunOutput,null,2));
