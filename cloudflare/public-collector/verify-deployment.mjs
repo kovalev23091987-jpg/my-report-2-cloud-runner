@@ -10,7 +10,7 @@ for(const row of accounts){const scripts=(await asJson(`/accounts/${row.id}/work
 if(!account)throw Error('CLOUDFLARE_HUB_NOT_FOUND');
 const base=`/accounts/${account.id}/workers/scripts/${SCRIPT}`,content=await request(`${base}/content/v2`,'*/*'),expected=fs.readFileSync(path.join(outDir,'worker.js'),'utf8');
 const deployedModule=moduleFromMultipart(content.bytes,content.type);if(sha(deployedModule)!==sha(expected))throw Error('PUBLIC_COLLECTOR_EXACT_MODULE_MISMATCH');
-const text=deployedModule;if(!text.includes('report2-public-collector-v8-light-price-recheck-20261006'))throw Error('PUBLIC_COLLECTOR_MARKER_NOT_DEPLOYED');
+const text=deployedModule;if(!text.includes('report2-public-collector-v9-retained-price-checks-20261009'))throw Error('PUBLIC_COLLECTOR_MARKER_NOT_DEPLOYED');
 const cronValues=value=>{const found=[];const visit=node=>{if(Array.isArray(node)){for(const item of node)visit(item);return;}if(!node||typeof node!=='object')return;for(const [key,item] of Object.entries(node)){if(key==='cron'&&typeof item==='string')found.push(item);else visit(item);}};visit(value);return found;};
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));let schedulesRaw=null,crons=[];
 for(let attempt=0;attempt<10;attempt++){

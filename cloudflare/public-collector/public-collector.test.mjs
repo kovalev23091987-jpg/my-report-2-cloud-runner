@@ -94,7 +94,7 @@ test('T03 upgrades the already deployed V1 collector without touching the Hub pr
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v8-light-price-recheck-20261006/);
+  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v1-20260928/);
   assert.equal(upgraded.source.match(/__REPORT2_PUBLIC_COLLECTOR_HANDLER as default/g)?.length,1);
 });
@@ -105,7 +105,7 @@ test('T03 upgrades the deployed V3 collector and preserves the Hub prefix',()=>{
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
   assert.match(upgraded.source,/const hubPrefix=true/);
-  assert.match(upgraded.source,/report2-public-collector-v8-light-price-recheck-20261006/);
+  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
   assert.doesNotMatch(upgraded.source,/report2-public-collector-v3-contract-integrity-20260928/);
 });
 
@@ -114,7 +114,7 @@ test('T03 upgrades V4 while retaining exact bounded claims and a shorter backup 
   const previous='const worker_default={};\nvar __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v4-linear-pack-20260929";\nexport {\n  __REPORT2_PUBLIC_COLLECTOR_HANDLER as default\n};';
   const upgraded=patchWorker(previous,injected);
   assert.equal(upgraded.status,'UPGRADED');
-  assert.match(upgraded.source,/report2-public-collector-v8-light-price-recheck-20261006/);
+  assert.match(upgraded.source,/report2-public-collector-v9-retained-price-checks-20261009/);
   assert.doesNotMatch(upgraded.source,/now \+ 24e4/);
   assert.equal((upgraded.source.match(/now \+ 12e4/g)||[]).length,2);
 });

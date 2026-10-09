@@ -1,4 +1,4 @@
-var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v8-light-price-recheck-20261006";
+var __REPORT2_PUBLIC_COLLECTOR_VERSION = "report2-public-collector-v9-retained-price-checks-20261009";
 var __REPORT2_PUBLIC_COLLECTOR_GENERATION = "MY_REPORT_2_CURRENT_20260928_CANONICAL_RUNTIME_V12_CONTRACT_INTEGRITY_20M";
 var __REPORT2_PUBLIC_COLLECTOR_ACTOR = "HUB_PUBLIC_COLLECTOR";
 var __REPORT2_PUBLIC_COLLECTOR_SLOT_MS = 5 * 60 * 1e3;
@@ -234,6 +234,23 @@ function __report2PriceCheck({canonical, market, market_source_ts, now, expires_
 function __report2PriceStable(value) {
   return Array.isArray(value) ? value.map(__report2PriceStable) : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().filter(key=>value[key]!==undefined).map(key=>[key,__report2PriceStable(value[key])])) : value;
 }
+// Retained checks are diagnostic history, never current price/entry authority.
+// Keep the first reached trigger even when a later slot waits, lacks data or expires.
+function __report2PriceHistory(saved, previous) {
+  var prior;
+  try {prior=JSON.parse(previous);} catch {return saved;}
+  var keys=['task_id','publication_id','run_id','snapshot_id','analytical_fingerprint','telegram_message_id'];
+  if (prior?.schema!=='LIGHT_PRICE_RECHECK_V1' || !keys.every(key=>prior[key]===saved[key])) return saved;
+  var allowed=['schema','scope','status','reason','checked_ts','last_bucket','price','source_ts','observed_ts','source','settlement_confirmed','entry_authorized','full_analysis_completed'];
+  var pick=function(row) {
+    if (row?.schema!=='LIGHT_PRICE_RECHECK_V1' || row.entry_authorized!==false || row.full_analysis_completed!==false || !Number.isFinite(row.checked_ts) || row.checked_ts>=saved.checked_ts) return null;
+    return Object.fromEntries(allowed.filter(key=>row[key]!==undefined).map(key=>[key,row[key]]));
+  };
+  var checks=[...(Array.isArray(prior.prior_checks)?prior.prior_checks:[]),prior].map(pick).filter(Boolean);
+  var first=pick(prior.first_trigger_receipt) || checks.find(row=>row.status==='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED');
+  if (first?.status!=='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED') first=null;
+  return {...saved,history_scope:'RETAINED_DIAGNOSTICS_NOT_CURRENT_AUTHORITY',prior_checks:checks.slice(-6),first_trigger_receipt:first??null};
+}
 async function __report2RunPriceRechecks(db,{rows,market_source_ts,bucket,now}) {
   var query = await db.prepare(`SELECT t.*,p.canonical_json,p.analytical_fingerprint,d.telegram_message_id
     FROM v3_recheck_task_shadow t
@@ -254,7 +271,7 @@ async function __report2RunPriceRechecks(db,{rows,market_source_ts,bucket,now}) 
     var id=String(task.telegram_message_id ?? '');
     if (!/^[1-9][0-9]*$/.test(id) || !Number.isSafeInteger(Number(id)) || fingerprint!==task.analytical_fingerprint || fingerprint!==canonical.analytical_fingerprint || canonical.metadata?.contract!==task.contract_code || canonical.run_id!==task.run_id || canonical.snapshot_id!==task.snapshot_id || canonical.direction!==task.direction || canonical.trigger?.next_recheck_ts!==task.due_ts || canonical.trigger?.expires_ts!==task.expires_ts) {receipt.results.push({task_id:task.task_id,status:'EXACT_SENT_IDENTITY_REQUIRED'});continue;}
     var result=__report2PriceCheck({canonical,market:marketMap.get(task.contract_code),market_source_ts,now,expires_ts:task.expires_ts});
-    var saved={...result,last_bucket:bucket,task_id:task.task_id,publication_id:task.publication_id,run_id:task.run_id,snapshot_id:task.snapshot_id,analytical_fingerprint:fingerprint,telegram_message_id:id};
+    var saved=__report2PriceHistory({...result,last_bucket:bucket,task_id:task.task_id,publication_id:task.publication_id,run_id:task.run_id,snapshot_id:task.snapshot_id,analytical_fingerprint:fingerprint,telegram_message_id:id},task.last_result);
     var state=result.status==='CANCELLED'?'CANCELLED':result.status==='EXPIRED'?'EXPIRED':'PENDING';
     var write=await db.prepare(`UPDATE v3_recheck_task_shadow SET state=?2,last_result=?3,updated_ts=?4
       WHERE task_id=?1 AND state='PENDING' AND publication_id=?5 AND run_id=?6 AND snapshot_id=?7 AND updated_ts=?8`).bind(task.task_id,state,JSON.stringify(saved),now,task.publication_id,task.run_id,task.snapshot_id,task.updated_ts).run();
