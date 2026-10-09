@@ -25,9 +25,9 @@ test('assembled source routing retains a skipped exact asset without HTTP, D1 or
 });
 test('approved renderer carries original retained reasons with no forced publication or historical text rewrite',()=>{
  const actual=original.candidates.find(r=>r.contract==='龙虾-USDT').canonical,saved=JSON.stringify(actual);
- const old=render({canonical:actual,lifecycle_event:'OBSERVE'});assert.equal(old.ok,false);assert.equal(old.status,'CANONICAL_NOT_CLOSED');
+ const old=render({canonical:actual,lifecycle_event:'OBSERVE'});assert.equal(old.ok,false);assert.equal(old.status,'DISPLAY_IDENTITY_NOT_CLOSED');
  // A controlled approved output-contract fixture tests only presentation.
- // The original natural candidate stays unclosed and is never published.
+ // This retained run projection has no full display identity/metadata; it is never promoted to a publishable canonical.
  const c=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/output-contract/long-observe-full.json')).canonical;
  c.run_id=original.run_id;c.snapshot_id='CONTROLLED_DELIVERY_REVIEW:龙虾-USDT';c.observed_ts=T;c.metadata.contract='龙虾-USDT';c.metadata.validated_signal=false;c.candidates=[{contract:'龙虾-USDT'}];c.universe=[{contract:'龙虾-USDT'}];c.liquidations=structuredClone(actual.liquidations);
  const before=structuredClone(c);c.liquidations.acquisition_diagnostics=bind({audit,contract:'龙虾-USDT',run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:T});c.analytical_fingerprint=fingerprint(c);
