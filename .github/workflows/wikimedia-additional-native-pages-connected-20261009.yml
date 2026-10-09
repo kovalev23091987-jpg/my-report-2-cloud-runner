@@ -43,7 +43,7 @@ jobs:
       - name: Print bounded failure evidence
         if: failure()
         run: |
-          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('live-proof.json'))){const t=fs.readFileSync('audit-output/'+f,'utf8');if(/not ok|NOT_CLOSED/.test(t))console.log(f,t.slice(-18000));}"
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('live-proof.json'))){const t=fs.readFileSync('audit-output/'+f,'utf8');if(/not ok|✖|NOT_CLOSED|AssertionError/.test(t))console.log(f,t.slice(-18000));}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
