@@ -120,7 +120,7 @@
     "historical_hint_does_not_close_current_level": true,
     "report_search_release": "checkpoints/AUTOMATIC_REPORT_SOURCE_SEARCH_AND_N05_N15_RELEASE_20261007.json"
   },
-  "updated_ts": 1791506295520,
+  "updated_ts": 1791506980160,
   "latest_dydx_shared_dense_consumer_release": {
     "path": "checkpoints/DYDX_SHARED_PAIR_DENSE_CONSUMER_RELEASE_20261007.json",
     "pr": 221,
@@ -1202,5 +1202,178 @@
     "readiness_deferred_when_less_than_two_requests_remain": true,
     "exact_raw24h_trades_remains_deferred": true,
     "probability_validated_and_automatic_weights_off": true
+  },
+  "latest_approved102_original24h_history_replay": {
+    "pr": 248,
+    "production_head": "c3cab57998df1cdb0e9c6a40f5045da1c3346317",
+    "tested_head": "3e0e7708685771099b223ed27784b0f1efeccfe7",
+    "proof_head": "1b4aec5538a67fd7017808bb7cfb25ce24116e5d",
+    "cloud_run": 37866518018,
+    "artifact_id": 11588218019,
+    "artifact_digest": "sha256:426be56c9adf8e9aacd945ca2290b4db153231e8f3b98897f42bf2850dc42a90",
+    "proof": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+    "status": "ALL102_APPROVED_ANALYSIS_CONTRACTS_ORIGINAL24H_READER_CLOSED",
+    "source_cloud_run": 37865298193,
+    "original_read_ts": 1791505971960,
+    "original_start_ts": 1791419400000,
+    "original_end_ts": 1791505800000,
+    "original_rows": 1734,
+    "assets": 102,
+    "price_points": 29376,
+    "approved_universe": {
+      "original_observed_ts": 1791136124778,
+      "gzip_sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613",
+      "assets": 102,
+      "contracts": 119,
+      "families": 3,
+      "new_current_tradeability_claim": false
+    },
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "source_clocks_refreshed": false,
+    "all_original_points_unchanged": true,
+    "controlled_SQLite_queries": 510,
+    "controlled_rows_returned": 177276,
+    "all102_30_90day_history": false,
+    "single_production_cycle_all102_claim": false,
+    "full_project_complete": false,
+    "runtime_unchanged_since247": true
+  },
+  "latest_post_pr246_natural_readback": {
+    "proof": "checkpoints/POST246_NATURAL_NO_IDEA_ORIGINAL_ARTIFACT_READBACK_20261009.json",
+    "cloud_run": 37865651594,
+    "head": "27d09a2c7bdbf6d61be26a4a80860aaaa330a2a9",
+    "run_id": "1791506219364-1791506228302",
+    "generated_at": "2026-10-09T00:38:36.515Z",
+    "status": "ACTUAL_NATURAL_REJECTED_NO_IDEA_NO_SENT",
+    "scope": "ACTUAL_NATURAL_PRODUCTION_AFTER_PR246_BEFORE_PR247;REJECTED_NO_SAME_RUN_SENT_NO_ENTRY",
+    "artifacts": [
+      {
+        "id": 11588061969,
+        "digest": "sha256:6b150df73cd9cb817f0bf654aeb082d3c9bd2654d0bf85b002b95bc799b7372d"
+      },
+      {
+        "id": 11587912896,
+        "digest": "sha256:1fb5d33ca27ca5146bf62a8d2a9d4fdb96cb922f663103daed15eb44a1875494"
+      }
+    ],
+    "market_scan": {
+      "universe_total": 103,
+      "scanned": 103,
+      "errors": 0,
+      "stale": 0,
+      "stage0_coverage_pct": 100,
+      "complete": true
+    },
+    "candidates": [
+      {
+        "contract": "UNI-USDT",
+        "publication_id": "PUB:a2af55f09895b0f7884b81d147fbacedea026065",
+        "snapshot_id": "S392:UNI-USDT:1791506311540",
+        "observed_ts": 1791506311540,
+        "state": "REJECTED",
+        "direction": null,
+        "scores": {
+          "overall_0_100": null,
+          "coin_interest_0_100": null,
+          "entry_readiness_0_100": null,
+          "is_probability": false
+        },
+        "reasons": [
+          {
+            "label": "Качество раннего сигнала",
+            "value": 64,
+            "unit": "из 100",
+            "source": "V3 early"
+          },
+          {
+            "label": "Закрытые минутные свечи",
+            "value": 15,
+            "unit": "1м",
+            "source": "HTX"
+          }
+        ],
+        "participating": 10,
+        "participating_ids": [
+          "N02",
+          "N03",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "checked": 13,
+        "score_applied": 0,
+        "N05_status": "CLOSED_EXACT_FUTURES_FLOW_4H"
+      },
+      {
+        "contract": "FIL-USDT",
+        "publication_id": "PUB:7eddb2b64ef16786b95743b572d9fb5591756367",
+        "snapshot_id": "S392:FIL-USDT:1791506274377",
+        "observed_ts": 1791506274377,
+        "state": "REJECTED",
+        "direction": null,
+        "scores": {
+          "overall_0_100": null,
+          "coin_interest_0_100": null,
+          "entry_readiness_0_100": null,
+          "is_probability": false
+        },
+        "reasons": [
+          {
+            "label": "Качество раннего сигнала",
+            "value": 64,
+            "unit": "из 100",
+            "source": "V3 early"
+          },
+          {
+            "label": "Закрытые минутные свечи",
+            "value": 15,
+            "unit": "1м",
+            "source": "HTX"
+          }
+        ],
+        "participating": 9,
+        "participating_ids": [
+          "N02",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "checked": 11,
+        "score_applied": 0,
+        "N05_status": "CLOSED_EXACT_FUTURES_FLOW_4H"
+      }
+    ],
+    "sourceHTTP_diagnostic": 0,
+    "D1_diagnostic": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "old_fresh_SENT165_retained": true,
+    "all102_30_90day_history": false
+  },
+  "approved_universe_history_coverage": {
+    "proof": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+    "original_catalog_observed_ts": 1791136124778,
+    "assets": 102,
+    "original_price_window_hours": 24,
+    "all_paths_closed": true,
+    "source_clocks_preserved": true,
+    "all102_30_90day_history": false,
+    "raw_trade_history_claim": false,
+    "new_current_HTX_tradeability_claim": false
   }
 }
