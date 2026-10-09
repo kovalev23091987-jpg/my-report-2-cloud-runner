@@ -78,8 +78,8 @@
       "latest_actual_QNT_trigger_proof": "checkpoints/UNUSED_NATIVE_PAIR_RESERVE_CONNECTED_20261008.json",
       "latest_actual_QNT_trigger_scope": "POST243_SENT163_PENDING_ASOF_21_51;21_50_PRICE237_65_BELOW253_81;NO_KICK_OR_ENTRY_CLAIM",
       "latest_actual_original_price_scope": "ZEC165_EXACT_ORIGINAL_CANONICAL_SENT_AND7_IMMUTABLE_SLOTS;5_ELIGIBLE_SAMPLES_ALL_BELOW1208_64;ORIGINAL_TASK_EXPIRED;NO_SAMPLED_TRIGGER_OR_KICK;NOT_INTRAMINUTE_PROOF",
-      "latest_actual_natural_trigger_proof": "checkpoints/POST245_ACTUAL_REPORT_SENT_20261008.json",
-      "latest_actual_natural_trigger_scope": "POST245_ZEC_SENT165_PENDING_ASOF23_40UTC;PRICE1192_72_BELOW1208_64;ORIGINAL30MIN_TTL_UNCHANGED;NO_KICK_OR_ENTRY",
+      "latest_actual_natural_trigger_proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
+      "latest_actual_natural_trigger_scope": "GRAM_SENT171_price1.5004>=1.4943_original_sourceclock1791549602052;taskPENDING0attempts_asof1791549899458;NOT_ENTRY_OR_SETTLEMENT",
       "latest_scoped_continuation_proofs": [
         "checkpoints/FAILURE_AND_TRIGGER_RECEIPTS_CONNECTED_20261009.json",
         "checkpoints/POST253_ORIGINAL_NATURAL_READBACK_20261009.json",
@@ -927,7 +927,12 @@
       "latest_actual_retained_coverage": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
       "latest_structural_history_defect": "REPAIRED_BY_PR247_INDEXED_PAGING;ORIGINAL_BASELINE_RETAINED;NOT_CAUSAL_PROOF_FOR_ZERO_ENTRY",
       "latest_paged_history_release": "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
-      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json"
+      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+      "latest_early_outcome_fairness_release": {
+        "proof": "checkpoints/EARLY_OUTCOME_FAIR_RECENT_AND_RETAINED_CONNECTED_20261009.json",
+        "scope": "OriginalBR1h12points78hashedrows_to_current_consumer;SIMULATED_WRITES_NOT_EMPIRICAL_ENTRY_ACCEPTANCE",
+        "production_outcome_closed": false
+      }
     },
     {
       "id": "R052",
@@ -951,7 +956,12 @@
       "latest_actual_retained_coverage": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
       "latest_structural_history_defect": "REPAIRED_BY_PR247_INDEXED_PAGING;ORIGINAL_BASELINE_RETAINED;NOT_CAUSAL_PROOF_FOR_ZERO_ENTRY",
       "latest_paged_history_release": "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
-      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json"
+      "latest_approved102_original24h_history_replay": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
+      "latest_early_outcome_fairness_release": {
+        "proof": "checkpoints/EARLY_OUTCOME_FAIR_RECENT_AND_RETAINED_CONNECTED_20261009.json",
+        "scope": "OriginalBR1h12points78hashedrows_to_current_consumer;SIMULATED_WRITES_NOT_EMPIRICAL_ENTRY_ACCEPTANCE",
+        "production_outcome_closed": false
+      }
     },
     {
       "id": "R053",
@@ -987,6 +997,11 @@
         "missed_entry_count": null,
         "precision": null,
         "recall": null
+      },
+      "latest_early_outcome_fairness_release": {
+        "proof": "checkpoints/EARLY_OUTCOME_FAIR_RECENT_AND_RETAINED_CONNECTED_20261009.json",
+        "scope": "OriginalBR1h12points78hashedrows_to_current_consumer;SIMULATED_WRITES_NOT_EMPIRICAL_ENTRY_ACCEPTANCE",
+        "production_outcome_closed": false
       }
     },
     {
@@ -4130,7 +4145,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791548443946,
+  "updated_ts": 1791550567068,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -4240,126 +4255,18 @@
     "natural_production_acceptance": "PENDING"
   },
   "latest_actual_report": {
-    "proof": "checkpoints/POST246_NATURAL_NO_IDEA_ORIGINAL_ARTIFACT_READBACK_20261009.json",
-    "cloud_run": 37865651594,
-    "head": "27d09a2c7bdbf6d61be26a4a80860aaaa330a2a9",
-    "run_id": "1791506219364-1791506228302",
-    "generated_at": "2026-10-09T00:38:36.515Z",
-    "status": "ACTUAL_NATURAL_REJECTED_NO_IDEA_NO_SENT",
-    "scope": "ACTUAL_NATURAL_PRODUCTION_AFTER_PR246_BEFORE_PR247;REJECTED_NO_SAME_RUN_SENT_NO_ENTRY",
-    "artifacts": [
-      {
-        "id": 11588061969,
-        "digest": "sha256:6b150df73cd9cb817f0bf654aeb082d3c9bd2654d0bf85b002b95bc799b7372d"
-      },
-      {
-        "id": 11587912896,
-        "digest": "sha256:1fb5d33ca27ca5146bf62a8d2a9d4fdb96cb922f663103daed15eb44a1875494"
-      }
-    ],
-    "market_scan": {
-      "universe_total": 103,
-      "scanned": 103,
-      "errors": 0,
-      "stale": 0,
-      "stage0_coverage_pct": 100,
-      "complete": true
-    },
-    "candidates": [
-      {
-        "contract": "UNI-USDT",
-        "publication_id": "PUB:a2af55f09895b0f7884b81d147fbacedea026065",
-        "snapshot_id": "S392:UNI-USDT:1791506311540",
-        "observed_ts": 1791506311540,
-        "state": "REJECTED",
-        "direction": null,
-        "scores": {
-          "overall_0_100": null,
-          "coin_interest_0_100": null,
-          "entry_readiness_0_100": null,
-          "is_probability": false
-        },
-        "reasons": [
-          {
-            "label": "Качество раннего сигнала",
-            "value": 64,
-            "unit": "из 100",
-            "source": "V3 early"
-          },
-          {
-            "label": "Закрытые минутные свечи",
-            "value": 15,
-            "unit": "1м",
-            "source": "HTX"
-          }
-        ],
-        "participating": 10,
-        "participating_ids": [
-          "N02",
-          "N03",
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N15",
-          "N16"
-        ],
-        "checked": 13,
-        "score_applied": 0,
-        "N05_status": "CLOSED_EXACT_FUTURES_FLOW_4H"
-      },
-      {
-        "contract": "FIL-USDT",
-        "publication_id": "PUB:7eddb2b64ef16786b95743b572d9fb5591756367",
-        "snapshot_id": "S392:FIL-USDT:1791506274377",
-        "observed_ts": 1791506274377,
-        "state": "REJECTED",
-        "direction": null,
-        "scores": {
-          "overall_0_100": null,
-          "coin_interest_0_100": null,
-          "entry_readiness_0_100": null,
-          "is_probability": false
-        },
-        "reasons": [
-          {
-            "label": "Качество раннего сигнала",
-            "value": 64,
-            "unit": "из 100",
-            "source": "V3 early"
-          },
-          {
-            "label": "Закрытые минутные свечи",
-            "value": 15,
-            "unit": "1м",
-            "source": "HTX"
-          }
-        ],
-        "participating": 9,
-        "participating_ids": [
-          "N02",
-          "N05",
-          "N08",
-          "N09",
-          "N10",
-          "N11",
-          "N12",
-          "N15",
-          "N16"
-        ],
-        "checked": 11,
-        "score_applied": 0,
-        "N05_status": "CLOSED_EXACT_FUTURES_FLOW_4H"
-      }
-    ],
-    "sourceHTTP_diagnostic": 0,
-    "D1_diagnostic": 0,
+    "proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
+    "natural_cloud_run": 37930291022,
+    "original_read_cloud_run": 37932064823,
+    "message_id": 171,
+    "lifecycle": "OBSERVE",
+    "original_light_price_trigger_reached": true,
+    "full_recheck": "PENDING_AS_OF1791549899458",
     "actual_ENTRY": false,
-    "new_fresh_SENT": false,
-    "old_fresh_SENT165_retained": true,
-    "all102_30_90day_history": false
+    "head": "ddbb8bfa45dedb0005297f2f0c8765de49a1d8cc",
+    "run_id": "1791548949006-1791548960596",
+    "snapshot_id": "S392:GRAM-USDT:1791549011706",
+    "scope": "POST257_NATURAL;PRE258"
   },
   "latest_official_trade_native_capability": {
     "path": "checkpoints/OFFICIAL_TRADE_NATIVE_DISCOVERY_CAPABILITY_20261007.json",
@@ -7425,8 +7332,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "PR256_EXACT_LIQUIDATION_REFUSALS_SOURCE_TO_REPORT_VERIFIED;PR255_COLLECTOR_V9_ACTUALLY_DEPLOYED;FULL_TZ_OPEN",
-  "next_action": "Continue full register: broad qualified historical trade/event/price coverage and empirical approved ENTRY outcomes, source usefulness, natural same-run native absence diagnostics and exact delivered ENTRY. This new cold price path does not reconstruct original historical decision evidence or trade quantities.",
+  "latest_status": "PR258_ORIGINAL_MATURE_PRICE_PATH_AND_FAIR_QUEUE_CONSUMER_VERIFIED;POST257_NATURAL_GRAM_OBSERVE_SENT171_LIGHT_PRICE_TRIGGER_REACHED_FULL_ANALYSIS_PENDING_AS_OF_READ;FULL_TZ_OPEN",
+  "next_action": "Continue whole register: close original GRAM full recheck from natural trigger without forcing ENTRY; verify deployed fair queue outcome; qualify broader actual native history and all block usefulness/statistical gaps under unchanged limits.",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -8631,45 +8538,9 @@
   },
   "latest_actual_post251_recheck": "checkpoints/ACTUAL_POST251_ADA169_FULL_RECHECK_20261009.json",
   "latest_actual_original_sent": {
-    "schema": "ACTUAL_POST251_ALGO170_SENT_BINDING_20261009_V1",
-    "status": "EXACT_ORIGINAL_SENT_BINDING_WITH_APPROVED_RENDERED_PAYLOAD_AUDIT",
-    "source_cloud_run": 37904983782,
-    "source_head": "0557f363065e0a566372d8721267de097e45ead5",
-    "source_run_id": "1791534423478-1791534432558",
-    "source_artifact_id": 11604196321,
-    "source_artifact_digest": "sha256:50619457149159a79b94265241adf2e9eba0110ce68b4f6741b8b2f97ad23765",
-    "contract": "ALGO-USDT",
-    "publication_id": "PUB:a8706f3469332158671bf84deb66475b6e08c129",
-    "snapshot_id": "S392:ALGO-USDT:1791534497057",
-    "analytical_fingerprint": "978fd946843c19494fd7cbff004b054172676b94fa1d3602287af0d65747f8a5",
-    "observed_ts": 1791534497057,
-    "direction": "SHORT",
-    "telegram_message_id": "170",
-    "sent_ts": 1791534501114,
-    "original_trigger": {
-      "trigger_type": "PRICE_CONFIRMATION",
-      "metric": "price",
-      "operator": "<=",
-      "value": 0.11517,
-      "unit": "USDT",
-      "timeframe": "5m",
-      "expires_ts": 1791536297057,
-      "next_recheck_ts": 1791534797057,
-      "cancel_condition": "price>0.13277",
-      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
-    },
-    "actual_participating_blocks": 9,
-    "checked_blocks": 11,
-    "nonzero_score_blocks": 2,
-    "proof": "checkpoints/ACTUAL_POST251_ALGO170_SENT_BINDING_20261009.json",
-    "D1_read_cloud_run": 37905678125,
-    "D1_read_artifact_id": 11604576340,
-    "D1_read_artifact_digest": "sha256:5a16d6e7dcef3ce535d5092c7bc33604803587fa5d165dc47c7063e1d7cb7a5d",
-    "D1_read_ts": 1791534812048,
-    "scope": "POST_PR251_BEFORE_PR253;OBSERVE_ONLY;NOT_FIXED_CANCELLATION_OR_ENTRY_ACCEPTANCE",
-    "original_source_clocks_unchanged": true,
-    "actual_ENTRY": false,
-    "full_project_complete": false
+    "proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
+    "status": "EXACT_SAME_RUN_OBSERVE_SENT171_ORIGINAL_D1_BINDING_AND_CURRENT_RENDER_VERIFIED",
+    "actual_ENTRY": false
   },
   "latest_failure_and_trigger_receipts_release": {
     "schema": "FAILURE_AND_TRIGGER_RECEIPTS_CONNECTED_20261009_V1",
@@ -8946,5 +8817,22 @@
     "new_fresh_SENT": false,
     "full_TZ_complete": false
   },
-  "full_TZ_complete": false
+  "full_TZ_complete": false,
+  "latest_early_outcome_fairness_release": {
+    "proof": "checkpoints/EARLY_OUTCOME_FAIR_RECENT_AND_RETAINED_CONNECTED_20261009.json",
+    "cloud_run": 37931728185,
+    "tested_head": "95351c8e69a4475a344695185e4c6e7a1b296def",
+    "actual_production_outcome_closed": false,
+    "full_TZ_complete": false
+  },
+  "latest_original_post257_natural_readback": {
+    "proof": "checkpoints/POST257_ORIGINAL_NATURAL_SENT_AND_TRIGGER_20261009.json",
+    "natural_cloud_run": 37930291022,
+    "original_read_cloud_run": 37932064823,
+    "message_id": 171,
+    "lifecycle": "OBSERVE",
+    "original_light_price_trigger_reached": true,
+    "full_recheck": "PENDING_AS_OF1791549899458",
+    "actual_ENTRY": false
+  }
 }

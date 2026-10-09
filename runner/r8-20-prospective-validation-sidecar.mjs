@@ -9,7 +9,7 @@ import {digest} from './src/upstream-proof-utils.mjs';
 import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
 import {HISTORY_COMPATIBILITY, verifiedCollectorRows, chooseCompleteBucket} from './src/market-history-reader.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v6-paged-verified-history-20261009';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v7-fair-recent-and-retained-outcomes-20261009';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -292,21 +292,38 @@ export async function closeOneEarlyDiscoveryOutcome(db, { current_scan_ts, now_t
   const queueKey='R8_20_EARLY_OUTCOME_CURSOR_V1';
   const state=await db.prepare(`SELECT status FROM tz101_entry_area_calibration_state WHERE state_key=?1 LIMIT 1`).bind(queueKey).first();
   const cursor=parseJson(state?.status,{});
+  // A historical hole can precede thousands of mature observations. Keep its
+  // original cursor, but alternate it with a separate recent cursor at the same
+  // one-outcome cap. Neither lane supplies prices or authorizes an ENTRY.
+  const recentFloor=Math.max(0,currentTs-24*HOUR);
+  const excluded=int(cursor.last_attempt_retry_after_ts)>now_ts?text(cursor.last_attempt_id):'';
   const select=async (target,id)=>db.prepare(`SELECT outcome_id,wave_id,contract_code,direction_hint,first_seen_ts,horizon_hours,target_ts,
       outcome_status,first_seen_context_json,computed_ts,shadow_only
     FROM v3_early_outcome_journal
     WHERE shadow_only=1 AND computed_ts IS NULL AND outcome_status='PENDING' AND target_ts BETWEEN ?1 AND ?2
-      AND (target_ts>?1 OR outcome_id>?3)
-    ORDER BY target_ts ASC,outcome_id ASC LIMIT 1`).bind(target,currentTs,id).first();
-  let task=await select(int(cursor.target_ts)??0,text(cursor.outcome_id));
-  let retryAfter=int(cursor.retry_after_ts)??0;
-  if (!task && cursor.outcome_id && now_ts>=retryAfter) {task=await select(0,'');retryAfter=0;}
-  if (!task && cursor.outcome_id && now_ts<retryAfter) return {status:'DEFERRED_EARLY_RETRY_COOLDOWN',closed:0,retry_after_ts:retryAfter};
+      AND (target_ts>?1 OR outcome_id>?3) AND outcome_id<>?4
+    ORDER BY target_ts ASC,outcome_id ASC LIMIT 1`).bind(target,currentTs,id,excluded).first();
+  const recent=parseJson(JSON.stringify(cursor.recent_cursor??{}),{});
+  const laneCursor=lane=>lane==='RECENT'?recent:cursor;
+  const inLane=async lane=>{
+    const c=laneCursor(lane),floor=lane==='RECENT'?recentFloor:0;
+    const remembered=int(c.target_ts),target=Math.max(floor,remembered??floor);
+    const id=remembered!==null&&remembered>=floor?text(c.outcome_id):'';
+    let task=await select(target,id);
+    const retryAfter=int(c.retry_after_ts)??0;
+    if(!task&&c.outcome_id&&now_ts>=retryAfter)task=await select(floor,'');
+    return {task,lane,retryAfter};
+  };
+  let selected=await inLane(cursor.next_lane==='RETAINED'?'RETAINED':'RECENT');
+  if(!selected.task)selected=await inLane(selected.lane==='RECENT'?'RETAINED':'RECENT');
+  const {task,lane}=selected;
+  if (!task && (cursor.outcome_id||recent.outcome_id)) return {status:'DEFERRED_EARLY_RETRY_COOLDOWN',closed:0,retry_after_ts:Math.max(int(cursor.retry_after_ts)??0,int(recent.retry_after_ts)??0)};
   if (!task) return { status: 'CLOSED_NO_DUE_EARLY_OUTCOME', closed: 0 };
   // Advance before attempting history. Failed/missing observations stay PENDING,
   // with null results, and are revisited on a later sweep. New due tasks are not
   // held behind an old hole. The queue key never modifies activation/readiness.
-  const next={target_ts:Number(task.target_ts),outcome_id:text(task.outcome_id),retry_after_ts:retryAfter||Number(now_ts)+24*HOUR};
+  const progress={target_ts:Number(task.target_ts),outcome_id:text(task.outcome_id),retry_after_ts:Number(now_ts)+24*HOUR};
+  const next={...cursor,...(lane==='RETAINED'?progress:{}),recent_cursor:lane==='RECENT'?progress:recent,next_lane:lane==='RECENT'?'RETAINED':'RECENT',last_attempt_id:text(task.outcome_id),last_attempt_retry_after_ts:Number(now_ts)+24*HOUR};
   await db.prepare(`INSERT INTO tz101_entry_area_calibration_state
     (state_key,status,closed_samples,train_samples,holdout_samples,validated_out_of_sample,live_promotion_allowed,automatic_rule_promotion,updated_ts)
     VALUES(?1,?2,0,0,0,0,0,0,?3) ON CONFLICT(state_key) DO UPDATE SET status=excluded.status,updated_ts=excluded.updated_ts`)
