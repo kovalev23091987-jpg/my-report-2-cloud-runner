@@ -32,3 +32,8 @@ test('assembled canonical stores simultaneous failures while keeping routed dire
  const resolved=resolve({route:{state:'OBSERVE',direction:'SHORT'},discovery:d,decision_ts:T});assert.equal(resolved.direction,'SHORT');assert.equal(resolved.authorized_entry_direction,'UNKNOWN');
 });
 test.after(()=>{fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/early-direction-predicates-consumer-proof.json',JSON.stringify(out,null,2)+'\n');});
+test('an assembled missing-identity early receipt cannot introduce direction into an otherwise rejected canonical',()=>{
+ const T=1791552702776,d={early_candidate_bridge:true,early_candidate_wave_id:'CONTROLLED_W',early_candidate_receipt:{status:'CLOSED',wave_id:'CONTROLLED_W',source_ts:T-1000,available_at:T-1000,direction_hint:'LONG',direction_state:'LONG_WATCH',evidence:[{status:'CLOSED',side:'LONG',domain:'RELATIVE_STRENGTH'}]}};
+ assert.equal(qualify(d,T).closed,false);assert.equal(resolve({discovery:d,decision_ts:T}).direction,null);
+ const c=build({contract:'BR-USDT',run_id:'CONTROLLED_EMPTY_IDENTITY',snapshot_id:'CONTROLLED_EMPTY_IDENTITY',observed_ts:T,discovery_row:d}).canonical;assert.equal(c.state,'REJECTED');assert.equal(c.direction,null);assert.deepEqual(c.metadata.direction_resolution.early_receipt.predicate_receipt.failed_predicates,['EXACT_CONTRACT']);
+});

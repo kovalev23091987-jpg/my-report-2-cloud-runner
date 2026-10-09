@@ -7,7 +7,7 @@ export function qualifyEarlyDirectionReceipt(discovery,decisionTs){
  const state=text(receipt?.direction_state).toUpperCase();
  const candidate=normalizeDirectionCandidate(receipt?.direction_hint??discovery?.early_candidate_direction_hint,{origin:'EARLY_CYCLE',source_ts:receipt?.source_ts??discovery?.early_candidate_source_ts,confirmation_state:state||'UNCONFIRMED'});
  const sourceTs=finite(receipt?.source_ts??receipt?.feature_observed_ts??discovery?.early_candidate_source_ts),availableAt=finite(receipt?.available_at??discovery?.early_candidate_available_at??sourceTs);
- const sameContract=text(receipt?.contract)===text(discovery?.contract),sameWave=text(receipt?.wave_id)!==''&&text(receipt?.wave_id)===text(discovery?.early_candidate_wave_id??discovery?.wave_id);
+ const sameContract=text(receipt?.contract)!==''&&text(receipt?.contract)===text(discovery?.contract),sameWave=text(receipt?.wave_id)!==''&&text(receipt?.wave_id)===text(discovery?.early_candidate_wave_id??discovery?.wave_id);
  const fresh=sourceTs!==null&&availableAt!==null&&sourceTs<=decisionTs&&availableAt<=decisionTs&&decisionTs-sourceTs<=15*60_000;
  const evidence=arr(receipt?.evidence),matching=evidence.filter(row=>row?.status==='CLOSED'&&text(row?.side).toUpperCase()===candidate.direction),directed=matching.length>0;
  const directionStateClosed=['CLOSED','CONFIRMED','DIRECTION_CLOSED',`${candidate.direction}_WATCH`,`${candidate.direction}_CONFIRMED`].includes(state)&&['LONG','SHORT'].includes(candidate.direction);
