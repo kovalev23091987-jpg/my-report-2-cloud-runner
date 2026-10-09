@@ -1,0 +1,46 @@
+name: Original retained monthly prices connected qualification and rejection controls
+on:
+  push:
+    branches: [codex/monthly-price-history-20261009]
+    paths: ['tools/qualify-binance-monthly-price.py','tools/test_binance_monthly_price.py','tools/verify-binance-monthly-price.mjs','runner/binance-delayed-price-history.mjs','.github/workflows/binance-monthly-connected-20261009.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main and own live lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='515e58f360559854c9811c50ced706945feb759d')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Restore checksum-bound original source bytes without new source calls
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11618917059,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(b).digest('hex')!=='fba36560d7618be996d3484e2ead601b0710eb9d15c49c76d8b7a147fe7f1ccd')throw Error('ORIGINAL_BATCH_DIGEST');fs.mkdirSync('retained-monthly',{recursive:true});fs.writeFileSync('retained-monthly.zip',b);cp.execFileSync('unzip',['-q','retained-monthly.zip','-d','retained-monthly']);fs.mkdirSync('audit-output',{recursive:true});
+      - name: Strict calendar schema unit geometry checksum and availability controls
+        run: |
+          python tools/test_binance_monthly_price.py > audit-output/qualifier-tests.txt 2>&1
+          python tools/qualify-binance-monthly-price.py --directory retained-monthly/binance-monthly > audit-output/original-qualification-console.json
+          node tools/verify-binance-monthly-price.mjs retained-monthly/binance-monthly > audit-output/original-consumer-console.json
+          cp retained-monthly/binance-monthly/qualification-summary.json audit-output/current-qualification-summary.json
+          cp retained-monthly/binance-monthly/current-consumer-results.json audit-output/current-consumer-results.json
+          node --check tools/read-binance-monthly-original-20261009.mjs
+          node --check runner/binance-delayed-price-history.mjs
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum current-generation/files/src/worker.js current-generation/files/runner-main.mjs > audit-output/unchanged-production-runtime-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: binance-monthly-connected-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30

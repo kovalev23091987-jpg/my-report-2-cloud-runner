@@ -1265,7 +1265,7 @@
       "historical_matrix": "free-sources-delta/spec/MY_REPORT_2_FREE_SOURCES_DELTA_REQUIREMENT_MATRIX_20260925.md",
       "historical_wording": "Binance Public Data archive для trades/aggTrades/1m/3m/5m Spot и USD-M; checksum; 30d/60–90d maintenance history; archive delayed and separate from realtime",
       "historical_status": "IMPLEMENTED_PARTIAL",
-      "current_assessment": "PARTIAL_HISTORY_COVERAGE",
+      "current_assessment": "ACTUAL_TWO_VENUE_BTC_92DAY_1M_COLD_PRICES_AND_30_60_90DAY_CONSUMERS_VERIFIED;TRADE_HISTORY_AND_OTHER_ARCHIVE_TYPES_OPEN",
       "evidence": [
         "existing-source-coverage-delta/maintenance/binance-history-maintenance-proof.mjs",
         "current-generation/files/src/market-history-reader.mjs",
@@ -1273,9 +1273,10 @@
         "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
         "checkpoints/PAGED_PROSPECTIVE_HISTORY_CONNECTED_20261009.json",
         "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
-        "checkpoints/RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009.json"
+        "checkpoints/RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009.json",
+        "checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json"
       ],
-      "current_scope_and_remaining_limit": "Архивный maintenance/checksum механизм и ограниченный runtime history есть. Проверка отдельного BTC архива и парсера не обеспечивает 30–90 дней полного event/trade history каждого из102 активов и не доказывает актуальный seamless consumer для каждого. Heavy history вне hot cycle; не заполнять пропуски. PR247: actual original BTC24h snapshot path CLOSED with288points/1734original rows,5queries/1761billed cycle reads;12horiginal replay unchanged. Does not close30–90day history of all102assets or create an ENTRY/mature empirical cohort. PR248: all102 approved asset analysis contracts each have288 unchanged original price points in one24hwindow, replayed through current assembled reader at original receipt. No new D1/source calls. This does not establish30–90day event/trade coverage, perpetual reconnect uptime, or empirical ENTRY outcomes.",
+      "current_scope_and_remaining_limit": "Шесть исходных ZIP и CHECKSUM сохранены. Для BTC на Binance Spot и USD-M отдельно подтверждены 92 дня и 132480 уникальных минут. Текущий cold-потребитель закрывает 30, 60 и 90 дней; 16 контролей отказывают в подмене рынка, символа и HTX, пропусках, повреждении и недоступности на историческом cutoff. Это цена одной монеты. Trades, aggTrades, 3m, 5m, история 102 активов и статистика ENTRY остаются открытыми. Использовано 12 фактических HTTP; обычные source caps и cadence не менялись.",
       "task_id": "R068",
       "scope_status": "PARTIAL_OR_EMPIRICAL_OPEN_WITH_SCOPED24H_READER_PROOF",
       "original_requirement_preserved": true,
@@ -8947,5 +8948,18 @@
     "nonzero": 1,
     "neutral_assessed_and_rendered": 6,
     "all_assets_complete": false
-  }
+  },
+  "latest_monthly_cold_price_history": {
+    "proof": "checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json",
+    "source_cloud_run": 37937872663,
+    "tested_cloud_run": 37938399671,
+    "scope": "COLD_PRICE_ONLY;ONE_COIN_TWO_EXACT_BINANCE_MARKETS;NO_HTX_EXECUTION_PRICE_SUBSTITUTION;NOT_POINT_IN_TIME_DECISION_BACKTEST",
+    "price_days_per_market": 92,
+    "price_minutes_per_market": 132480,
+    "actual_ENTRY": false,
+    "statistical_acceptance": false,
+    "all102_history_complete": false,
+    "full_TZ_complete": false
+  },
+  "current_execution_block": "ORIGINAL_MONTHLY_COLD_PRICE_HISTORY_CONNECTED;NATURAL_ENTRY_AND_FULL_EVENT_TRADE_HISTORY_OPEN"
 }
