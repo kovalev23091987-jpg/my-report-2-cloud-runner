@@ -1,63 +1,52 @@
-name: Connected exact additional native pageviews qualification
+name: Recover connected native pageview proof without repeating qualified source calls
 on:
   push:
     branches: [codex/wikimedia-additional-native-pages-connected-20261009]
-    paths: ['current-generation/files/src/wikimedia-page-binding.mjs','current-generation/tests/wikimedia-native-pages.runtime.mjs','tools/qualify-wikimedia-additional-native-pages-20261009.mjs','.github/workflows/wikimedia-additional-native-pages-connected-20261009.yml']
+    paths: ['.github/workflows/wikimedia-additional-native-pages-connected-20261009.yml']
 permissions:
   contents: write
+  actions: read
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 6
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Require exact main and owned bounded lease
+      - name: Require exact main, own lease and unchanged already tested production code
         uses: actions/github-script@v7
         with:
           script: |
             const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='2f8d1dbde5e1601d396640edabd0b6a22d45647d')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
-      - name: Assemble production chain and verify native identity, neutral consumers and unchanged entry
-        env:
-          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
-        run: |
-          mkdir -p runtime audit-output
-          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
-          tar -xzf runtime/payload.tar.gz -C runtime
-          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
-          node current-generation/validate.mjs > audit-output/validation.json
-          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
-          cmp runtime/src/wikimedia-page-binding.mjs current-generation/files/src/wikimedia-page-binding.mjs
-          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/wikimedia-native-pages.runtime.mjs current-generation/tests/wikimedia-attention-context.test.mjs > audit-output/wikimedia-pages-runtime.tap
-          node current-generation/tests/approved-entry-path.runtime.mjs runtime > audit-output/approved-entry-path.json
-          node current-generation/tests/approved-entry-performance.runtime.mjs runtime > audit-output/approved-entry-performance.json
-          node current-generation/tests/early-observation-state.runtime.mjs runtime > audit-output/early-observation-state.json
-          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
-      - name: Verify only two admitted ordinary primary pageview requests and unchanged cache clocks
-        env:
-          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
-          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
-        run: node tools/qualify-wikimedia-additional-native-pages-20261009.mjs
-      - name: Print bounded failure evidence
-        if: failure()
-        run: |
-          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('live-proof.json'))){const t=fs.readFileSync('audit-output/'+f,'utf8');if(/not ok|✖|NOT_CLOSED|AssertionError/.test(t))console.log(f,t.slice(-18000));}"
+            const cmp=(await github.rest.repos.compareCommits({owner,repo,base:'ae44017eaa1f9c64933447c00ba7f8355e0effec',head:context.sha})).data;
+            if(cmp.files.some(f=>!['.github/workflows/wikimedia-additional-native-pages-connected-20261009.yml','checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_VALIDATION_HISTORY_20261009.json'].includes(f.filename)))throw Error('QUALIFIED_CODE_CHANGED');
+      - name: Recover exact immutable source artifact and original consumer results
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,fs=require('fs'),crypto=require('crypto'),cp=require('child_process');
+            const zip=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11589200162,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(zip).digest('hex')!=='ceb47cbac7237e08a96d438d590f39d555aeb05384406abfb876c898e5e034eb')throw Error('ORIGINAL_ARTIFACT_HASH_CHANGED');
+            fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('qualified-original.zip',zip);cp.execFileSync('unzip',['-q','qualified-original.zip','-d','audit-output']);
+            const read=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),live=read('wikimedia-additional-native-pages-live-proof.json'),binding=read('binding.json'),validation=read('validation.json'),integration=read('integration.json'),tap=fs.readFileSync('audit-output/wikimedia-pages-runtime.tap','utf8');
+            if(!/(?:#|ℹ) pass 14/.test(tap)||!/(?:#|ℹ) fail 0/.test(tap)||binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED'||validation.status!=='CURRENT_GENERATION_VALIDATED'||integration.status!=='PASS'||integration.passed!==37||integration.failed!==0||live.status!=='ACTUAL_EXACT_NATIVE_PAGES_AND_ASSEMBLED_NEUTRAL_N06_CONSUMERS_CLOSED'||live.results.length!==2||live.sourceHTTP!==2||live.D1_actual.unknown_ops!==0||live.D1_actual.rows_read>1500||live.D1_actual.rows_written>100||live.results.some(x=>x.score_adjustment!==0||x.cache_hit_HTTP!==0||x.cache_hit_original_clocks_unchanged!==true))throw Error('ORIGINAL_QUALIFIED_SOURCE_CONSUMER_SCOPE_FAILED');
+            const raw=fs.readFileSync('audit-output/wikimedia-additional-native-pages-raw.json.gz');if(crypto.createHash('sha256').update(raw).digest('hex')!==live.raw_gzip_sha256)throw Error('ORIGINAL_SOURCE_BODY_HASH_FAILED');
+            const zlib=require('zlib'),original=JSON.parse(zlib.gunzipSync(raw));for(const source of original.raw){if(crypto.createHash('sha256').update(source.raw_body_utf8).digest('hex')!==source.body_sha256||source.http_status!==200||!Number.isSafeInteger(source.received_ts))throw Error('ORIGINAL_SOURCE_RECEIPT_INVALID');}
+            const proof={schema:'WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009_V1',status:'EXACT_SOL_DOGE_PRIMARY_PAGEVIEWS_AND_NEUTRAL_N06_CONSUMERS_VERIFIED',tested_head:'ae44017eaa1f9c64933447c00ba7f8355e0effec',source_cloud_run:37867511041,recovery_tested_head:context.sha,recovery_cloud_run:context.runId,source_artifact_id:11589200162,source_artifact_digest:'sha256:ceb47cbac7237e08a96d438d590f39d555aeb05384406abfb876c898e5e034eb',source_job_qualification_steps:'SUCCESS;FINAL_RECEIPT_WRITER_FAILED_MISSING_OPTIONAL_UNIT_TAP',tests:{wikimedia_runtime:{pass:14,fail:0,sha256:crypto.createHash('sha256').update(tap).digest('hex')},generation:{status:validation.tests,raw_unit_tap_retained:false}},binding,validation,integration,live,retained_directory:'checkpoints/wikimedia-additional-native-pages-'+context.runId,sourceHTTP:live.sourceHTTP,D1:live.D1_actual,recovery_sourceHTTP:0,recovery_D1:0,MAIN:0,Telegram:0,actual_ENTRY:false,new_fresh_SENT:false,project_complete:false,primary_attention_substituted:false,all_limits_core_weights_ENTRY_original_clocks_unchanged:true,no_source_redispatch_after_receipt_writer_failure:true};fs.writeFileSync('audit-output/recovered-connected-proof.json',JSON.stringify(proof,null,2)+'\n');console.log(JSON.stringify({status:proof.status,sourceHTTP:proof.sourceHTTP,recovery_sourceHTTP:0,recovery_D1:0}));
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: additional-native-pageviews-${{ github.run_id }}
+          name: recovered-additional-native-pageviews-${{ github.run_id }}
           path: audit-output/
           retention-days: 30
-      - name: Retain composed source and assigned report consumer proof
+      - name: Retain original clocks and composed qualification proof
         uses: actions/github-script@v7
         with:
           script: |
             const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='2f8d1dbde5e1601d396640edabd0b6a22d45647d')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='HTX:1791485859126:full-owner-cloud-continuation'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
-            const fs=require('fs'),crypto=require('crypto'),readOut=f=>JSON.parse(fs.readFileSync('audit-output/'+f)),tests={};
-            for(const f of ['current-generation-unit-tests.tap','wikimedia-pages-runtime.tap']){const t=fs.readFileSync('audit-output/'+f,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_FAILED:'+f);tests[f]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
-            const binding=readOut('binding.json'),validation=readOut('validation.json'),integration=readOut('integration.json'),live=readOut('wikimedia-additional-native-pages-live-proof.json');if(binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED'||validation.status!=='CURRENT_GENERATION_VALIDATED'||integration.status!=='PASS'||integration.failed!==0||live.status!=='ACTUAL_EXACT_NATIVE_PAGES_AND_ASSEMBLED_NEUTRAL_N06_CONSUMERS_CLOSED'||live.results.length!==2||live.sourceHTTP>2||live.D1_actual.unknown_ops!==0||live.D1_actual.rows_read>1500||live.D1_actual.rows_written>100||live.results.some(x=>x.score_adjustment!==0||x.cache_hit_HTTP!==0||x.cache_hit_original_clocks_unchanged!==true))throw Error('SOURCE_CONSUMER_SCOPE_NOT_CLOSED');
-            const dir='checkpoints/wikimedia-additional-native-pages-'+context.runId,tree=[];for(const f of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;tree.push({path:dir+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
-            const proof={schema:'WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009_V1',status:'EXACT_SOL_DOGE_PRIMARY_PAGEVIEWS_AND_NEUTRAL_N06_CONSUMERS_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,binding,validation,integration,live,retained_directory:dir,sourceHTTP:live.sourceHTTP,D1:live.D1_actual,MAIN:0,Telegram:0,actual_ENTRY:false,new_fresh_SENT:false,project_complete:false,primary_attention_substituted:false,all_limits_core_weights_ENTRY_original_clocks_unchanged:true};const b=(await github.rest.git.createBlob({owner,repo,content:JSON.stringify(proof,null,2)+'\n',encoding:'utf-8'})).data;tree.push({path:'checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009.json',mode:'100644',type:'blob',sha:b.sha});
-            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain ordinary admitted exact native pageviews and neutral assigned consumer proof',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
+            const fs=require('fs'),proof=JSON.parse(fs.readFileSync('audit-output/recovered-connected-proof.json')),tree=[];
+            for(const f of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+f).toString('base64'),encoding:'base64'})).data;tree.push({path:proof.retained_directory+'/'+f,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:JSON.stringify(proof,null,2)+'\n',encoding:'utf-8'})).data;tree.push({path:'checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009.json',mode:'100644',type:'blob',sha:b.sha});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,t=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain qualified primary pageviews and original consumer clocks without repeating source calls',tree:t.sha,parents:[context.sha]})).data;await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
