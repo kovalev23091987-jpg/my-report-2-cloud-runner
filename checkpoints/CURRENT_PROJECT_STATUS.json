@@ -1,6 +1,6 @@
 {
   "schema": "report2-authoritative-current-status-v1",
-  "updated_utc": "2026-10-09T01:24:52.595Z",
+  "updated_utc": "2026-10-09T01:45:44.449Z",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "refs/heads/main",
   "version_resolution": "RESOLVE_FRESH_MAIN_AND_READ_ALL_CURRENT_DOCUMENTS_AT_THAT_EXACT_SHA; DO_NOT_PIN_TO_THIS_DOCUMENT_COMMIT_OR_A_TEST_BRANCH",
@@ -769,155 +769,55 @@
     }
   },
   "latest_verified_release": {
-    "schema": "WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_RELEASE_20261009_V1",
-    "status": "EXACT_SOL_DOGE_PRIMARY_PAGEVIEWS_AND_NEUTRAL_N06_CONSUMERS_VERIFIED",
-    "pr": 249,
-    "production_head": "1a6bfba97fcb46a384090f3b3a99b363a7f47989",
-    "tested_head": "ae44017eaa1f9c64933447c00ba7f8355e0effec",
-    "proof_head": "7916e9e00222173595b265d9eb5ff32585336021",
-    "source_cloud_run": 37867511041,
-    "recovery_cloud_run": 37867799302,
-    "source_artifact_id": 11589200162,
-    "source_artifact_digest": "sha256:ceb47cbac7237e08a96d438d590f39d555aeb05384406abfb876c898e5e034eb",
-    "artifact_id": 11589240993,
-    "artifact_digest": "sha256:b490af83c95c27e050a8b591f4aae0a49abf5bddc134845f53d5301cfc5cf1bf",
-    "proof": "checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009.json",
-    "contracts": [
-      "SOL-USDT",
-      "DOGE-USDT"
-    ],
-    "native_page_capabilities": [
-      "cardano",
-      "bitcoin",
-      "ethereum",
-      "solana",
-      "dogecoin"
-    ],
-    "published_window_end": 1791417600000,
-    "original_receipts": [
-      {
-        "contract": "SOL-USDT",
-        "summary": {
-          "recent_7day_views": 1928,
-          "previous_7day_views": 2386,
-          "change_pct": -19.19530595138307,
-          "day_count": 14,
-          "window_end": 1791417600000
-        },
-        "observed_ts": 1791507578695,
-        "expires_at": 1791529178695,
-        "cache_hit_original_clocks_unchanged": true
-      },
-      {
-        "contract": "DOGE-USDT",
-        "summary": {
-          "recent_7day_views": 2588,
-          "previous_7day_views": 2508,
-          "change_pct": 3.189792663476876,
-          "day_count": 14,
-          "window_end": 1791417600000
-        },
-        "observed_ts": 1791507581389,
-        "expires_at": 1791529181389,
-        "cache_hit_original_clocks_unchanged": true
-      }
-    ],
+    "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_RELEASE_20261009_V1",
+    "status": "ACTUAL_PRODUCER_TIMING_REACHES_MEASURED_TARGET_WITH_UNCHANGED_ENTRY_GATES",
+    "pr": 251,
+    "production_head": "03cb2b6e4179bd31e843bd036d14723b37c8c585",
+    "tested_head": "8016620bc7efde4beedd2dc485debc7ecc2cd3e8",
+    "proof_head": "ae456743f3aa33c2a1086021d490cb01e6e70c93",
+    "cloud_run": 37871186997,
+    "artifact_id": 11590990567,
+    "artifact_digest": "sha256:ceebd54efdbbffc93233d69c91d3fbc50b4c99cf5fd5a9e174b6433da4e8a428",
+    "proof": "checkpoints/ACTUAL_PRODUCER_TECHNICAL_TARGET_CONNECTED_20261009.json",
     "tests": {
-      "wikimedia_runtime": {
-        "pass": 14,
+      "actual-producer-target-runtime.tap": {
+        "pass": 5,
         "fail": 0,
-        "sha256": "50d309fdfc57af406838644134dd38169d2526cac0a6f7ed76526984eb55a007"
+        "sha256": "ec085970b55d9cc1ef07a4edbcdeb6b8680588ed563770cdb98206ae9c52182a"
       },
-      "generation": {
-        "status": "PASS",
-        "raw_unit_tap_retained": false
+      "approved-delivery-runtime.tap": {
+        "pass": 35,
+        "fail": 0,
+        "sha256": "3e0fbc975ffe47fbb03f744ef215b9dfae26f380aab2744c2e52053c320d7fa3"
+      },
+      "current-generation-unit-tests.tap": {
+        "pass": 1153,
+        "fail": 0,
+        "sha256": "542621d5d952a8d75cdae93347b069d04e232ed9011f83f152ed38ee192c7e64"
+      },
+      "prospective-and-range-runtime.tap": {
+        "pass": 8,
+        "fail": 0,
+        "sha256": "bf3371884173a7454cd892e9d450ad11e55a6500575a9b8668aff68caa7d7060"
+      },
+      "technical-target-unit.tap": {
+        "pass": 10,
+        "fail": 0,
+        "sha256": "b8ab70ba1f2f39e973aa0854b918270d6efe4a417d609f6f6175e26c7fc9a3bb"
       }
     },
     "integration_scenarios": 37,
-    "sourceHTTP": 2,
-    "D1": {
-      "requests": 52,
-      "rows_read": 25,
-      "rows_written": 24,
-      "unknown_ops": 0,
-      "targets": {
-        "first:report2_runner_budget_ledger_shadow": {
-          "requests": 2,
-          "rows_read": 7,
-          "rows_written": 0,
-          "unknown_ops": 0
-        },
-        "run:OTHER": {
-          "requests": 7,
-          "rows_read": 0,
-          "rows_written": 3,
-          "unknown_ops": 0
-        },
-        "batch:OTHER": {
-          "requests": 20,
-          "rows_read": 0,
-          "rows_written": 0,
-          "unknown_ops": 0
-        },
-        "first:report2_evidence_source_cache": {
-          "requests": 6,
-          "rows_read": 2,
-          "rows_written": 0,
-          "unknown_ops": 0
-        },
-        "batch:report2_evidence_source_daily": {
-          "requests": 4,
-          "rows_read": 2,
-          "rows_written": 4,
-          "unknown_ops": 0
-        },
-        "batch:report2_evidence_source_reservation": {
-          "requests": 2,
-          "rows_read": 2,
-          "rows_written": 4,
-          "unknown_ops": 0
-        },
-        "first:report2_evidence_source_reservation": {
-          "requests": 2,
-          "rows_read": 2,
-          "rows_written": 0,
-          "unknown_ops": 0
-        },
-        "run:report2_provider_minute_ledger_v1": {
-          "requests": 2,
-          "rows_read": 4,
-          "rows_written": 8,
-          "unknown_ops": 0
-        },
-        "first:report2_provider_minute_ledger_v1": {
-          "requests": 4,
-          "rows_read": 5,
-          "rows_written": 0,
-          "unknown_ops": 0
-        },
-        "run:report2_evidence_source_cache": {
-          "requests": 2,
-          "rows_read": 0,
-          "rows_written": 4,
-          "unknown_ops": 0
-        },
-        "run:report2_runner_budget_ledger_shadow": {
-          "requests": 1,
-          "rows_read": 1,
-          "rows_written": 1,
-          "unknown_ops": 0
-        }
-      }
-    },
-    "recovery_sourceHTTP": 0,
-    "recovery_D1": 0,
+    "actual_source": "ORIGINAL_RETAINED_WIF_RAW_FILLS_WITH_UNCHANGED_PRODUCER",
+    "consumer_direction_qualification": "CONTROLLED;ORIGINAL_UNKNOWN_DIRECTION_STILL_REJECTED",
+    "sourceHTTP": 0,
+    "D1": 0,
     "MAIN": 0,
     "Telegram": 0,
     "actual_ENTRY": false,
     "new_fresh_SENT": false,
-    "primary_attention_substituted": false,
     "source_clocks_refreshed": false,
-    "all_limits_core_weights_ENTRY_original_clocks_unchanged": true,
+    "original_SENT_rewritten": false,
+    "weights_thresholds_entry_rules_quotas_unchanged": true,
     "full_project_complete": false
   },
   "owner_requested_current_batch_complete": false,
@@ -1003,8 +903,8 @@
     "new_SOL_ADA_GitHub_feeds_enabled": false
   },
   "current_release_new_fresh_SENT": false,
-  "updated_ts": 1791509092595,
-  "next_action": "Inspect actual technical-target producer-to-canonical binding: all47 retained canonical rows have no favorable target, while price crossings alone only authorize new analysis. Historical published NEAR157/159 crossings preceded PR238/240/241; three post-continuous-worker SENT163/164/165 have complete sampled windows and no crossing. Preserve all entry gates, original TTL and existing quotas. Continue broad source/event-history coverage; natural current ENTRY and mature empirical cohorts remain open.",
+  "updated_ts": 1791510344449,
+  "next_action": "PR251 fixes actual observation_timing→technical-target handoff with raw-fill replay and current runtime validation. Continue broader source/event/trade-history coverage and natural current ENTRY/delivery acceptance; retain original clocks and unchanged entry gates/caps. Do not replay completed probes or force MAIN/SENT.",
   "current_task": "FULL_OWNER_TZ_IN_PROGRESS",
   "latest_native_payment_release": {
     "path": "checkpoints/NATIVE_PAYMENT_CONNECTION_RELEASE_20261007.json",
@@ -1511,7 +1411,7 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "DYNAMIC_N14_SEVEN_PRIMARY_IV_CONTEXTS_ACTUALLY_QUALIFIED;ENTRY_AND_HISTORY_GAPS_OPEN",
+  "current_execution_block": "ACTUAL_PRODUCER_TECHNICAL_TARGET_HANDOFF_REPAIRED;NATURAL_CURRENT_ENTRY_AND_FULL_HISTORY_COVERAGE_OPEN",
   "latest_development_lease_release": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
     "released_ts": 1791503572490,
@@ -5171,44 +5071,156 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "previous_verified_release": {
-    "pr": 248,
-    "production_head": "c3cab57998df1cdb0e9c6a40f5045da1c3346317",
-    "tested_head": "3e0e7708685771099b223ed27784b0f1efeccfe7",
-    "proof_head": "1b4aec5538a67fd7017808bb7cfb25ce24116e5d",
-    "cloud_run": 37866518018,
-    "artifact_id": 11588218019,
-    "artifact_digest": "sha256:426be56c9adf8e9aacd945ca2290b4db153231e8f3b98897f42bf2850dc42a90",
-    "proof": "checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json",
-    "status": "ALL102_APPROVED_ANALYSIS_CONTRACTS_ORIGINAL24H_READER_CLOSED",
-    "source_cloud_run": 37865298193,
-    "original_read_ts": 1791505971960,
-    "original_start_ts": 1791419400000,
-    "original_end_ts": 1791505800000,
-    "original_rows": 1734,
-    "assets": 102,
-    "price_points": 29376,
-    "approved_universe": {
-      "original_observed_ts": 1791136124778,
-      "gzip_sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613",
-      "assets": 102,
-      "contracts": 119,
-      "families": 3,
-      "new_current_tradeability_claim": false
+    "schema": "WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_RELEASE_20261009_V1",
+    "status": "EXACT_SOL_DOGE_PRIMARY_PAGEVIEWS_AND_NEUTRAL_N06_CONSUMERS_VERIFIED",
+    "pr": 249,
+    "production_head": "1a6bfba97fcb46a384090f3b3a99b363a7f47989",
+    "tested_head": "ae44017eaa1f9c64933447c00ba7f8355e0effec",
+    "proof_head": "7916e9e00222173595b265d9eb5ff32585336021",
+    "source_cloud_run": 37867511041,
+    "recovery_cloud_run": 37867799302,
+    "source_artifact_id": 11589200162,
+    "source_artifact_digest": "sha256:ceb47cbac7237e08a96d438d590f39d555aeb05384406abfb876c898e5e034eb",
+    "artifact_id": 11589240993,
+    "artifact_digest": "sha256:b490af83c95c27e050a8b591f4aae0a49abf5bddc134845f53d5301cfc5cf1bf",
+    "proof": "checkpoints/WIKIMEDIA_ADDITIONAL_NATIVE_PAGES_CONNECTED_20261009.json",
+    "contracts": [
+      "SOL-USDT",
+      "DOGE-USDT"
+    ],
+    "native_page_capabilities": [
+      "cardano",
+      "bitcoin",
+      "ethereum",
+      "solana",
+      "dogecoin"
+    ],
+    "published_window_end": 1791417600000,
+    "original_receipts": [
+      {
+        "contract": "SOL-USDT",
+        "summary": {
+          "recent_7day_views": 1928,
+          "previous_7day_views": 2386,
+          "change_pct": -19.19530595138307,
+          "day_count": 14,
+          "window_end": 1791417600000
+        },
+        "observed_ts": 1791507578695,
+        "expires_at": 1791529178695,
+        "cache_hit_original_clocks_unchanged": true
+      },
+      {
+        "contract": "DOGE-USDT",
+        "summary": {
+          "recent_7day_views": 2588,
+          "previous_7day_views": 2508,
+          "change_pct": 3.189792663476876,
+          "day_count": 14,
+          "window_end": 1791417600000
+        },
+        "observed_ts": 1791507581389,
+        "expires_at": 1791529181389,
+        "cache_hit_original_clocks_unchanged": true
+      }
+    ],
+    "tests": {
+      "wikimedia_runtime": {
+        "pass": 14,
+        "fail": 0,
+        "sha256": "50d309fdfc57af406838644134dd38169d2526cac0a6f7ed76526984eb55a007"
+      },
+      "generation": {
+        "status": "PASS",
+        "raw_unit_tap_retained": false
+      }
     },
-    "sourceHTTP": 0,
-    "D1": 0,
+    "integration_scenarios": 37,
+    "sourceHTTP": 2,
+    "D1": {
+      "requests": 52,
+      "rows_read": 25,
+      "rows_written": 24,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 7,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 7,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:OTHER": {
+          "requests": 20,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 6,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 4,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 4,
+          "rows_read": 5,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_evidence_source_cache": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "recovery_sourceHTTP": 0,
+    "recovery_D1": 0,
     "MAIN": 0,
     "Telegram": 0,
     "actual_ENTRY": false,
     "new_fresh_SENT": false,
+    "primary_attention_substituted": false,
     "source_clocks_refreshed": false,
-    "all_original_points_unchanged": true,
-    "controlled_SQLite_queries": 510,
-    "controlled_rows_returned": 177276,
-    "all102_30_90day_history": false,
-    "single_production_cycle_all102_claim": false,
-    "full_project_complete": false,
-    "runtime_unchanged_since247": true
+    "all_limits_core_weights_ENTRY_original_clocks_unchanged": true,
+    "full_project_complete": false
   },
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
@@ -6220,6 +6232,58 @@
     "outcome_writes": 0,
     "runtime_changed": false,
     "original_clocks_unchanged": true,
+    "full_project_complete": false
+  },
+  "latest_actual_producer_technical_target_release": {
+    "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_RELEASE_20261009_V1",
+    "status": "ACTUAL_PRODUCER_TIMING_REACHES_MEASURED_TARGET_WITH_UNCHANGED_ENTRY_GATES",
+    "pr": 251,
+    "production_head": "03cb2b6e4179bd31e843bd036d14723b37c8c585",
+    "tested_head": "8016620bc7efde4beedd2dc485debc7ecc2cd3e8",
+    "proof_head": "ae456743f3aa33c2a1086021d490cb01e6e70c93",
+    "cloud_run": 37871186997,
+    "artifact_id": 11590990567,
+    "artifact_digest": "sha256:ceebd54efdbbffc93233d69c91d3fbc50b4c99cf5fd5a9e174b6433da4e8a428",
+    "proof": "checkpoints/ACTUAL_PRODUCER_TECHNICAL_TARGET_CONNECTED_20261009.json",
+    "tests": {
+      "actual-producer-target-runtime.tap": {
+        "pass": 5,
+        "fail": 0,
+        "sha256": "ec085970b55d9cc1ef07a4edbcdeb6b8680588ed563770cdb98206ae9c52182a"
+      },
+      "approved-delivery-runtime.tap": {
+        "pass": 35,
+        "fail": 0,
+        "sha256": "3e0fbc975ffe47fbb03f744ef215b9dfae26f380aab2744c2e52053c320d7fa3"
+      },
+      "current-generation-unit-tests.tap": {
+        "pass": 1153,
+        "fail": 0,
+        "sha256": "542621d5d952a8d75cdae93347b069d04e232ed9011f83f152ed38ee192c7e64"
+      },
+      "prospective-and-range-runtime.tap": {
+        "pass": 8,
+        "fail": 0,
+        "sha256": "bf3371884173a7454cd892e9d450ad11e55a6500575a9b8668aff68caa7d7060"
+      },
+      "technical-target-unit.tap": {
+        "pass": 10,
+        "fail": 0,
+        "sha256": "b8ab70ba1f2f39e973aa0854b918270d6efe4a417d609f6f6175e26c7fc9a3bb"
+      }
+    },
+    "integration_scenarios": 37,
+    "actual_source": "ORIGINAL_RETAINED_WIF_RAW_FILLS_WITH_UNCHANGED_PRODUCER",
+    "consumer_direction_qualification": "CONTROLLED;ORIGINAL_UNKNOWN_DIRECTION_STILL_REJECTED",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "source_clocks_refreshed": false,
+    "original_SENT_rewritten": false,
+    "weights_thresholds_entry_rules_quotas_unchanged": true,
     "full_project_complete": false
   }
 }

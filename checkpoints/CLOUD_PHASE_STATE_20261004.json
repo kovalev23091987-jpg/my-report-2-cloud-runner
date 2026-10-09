@@ -170,17 +170,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:1791485859126:full-owner-cloud-continuation",
-    "acquired_ts": 1791509281333,
-    "expires_ts": 1791510481333,
-    "scope": "GENERIC_ACTUAL_PRODUCER_TIMELINESS_TECHNICAL_TARGET_HANDOFF_REPAIR;IMMUTABLE_FILLS_REPLAY;SOURCE_HTTP0_D10_NO_MAIN_NO_ENTRY"
-  },
-  "next_action": "Inspect actual technical-target producer-to-canonical binding: all47 retained canonical rows have no favorable target, while price crossings alone only authorize new analysis. Historical published NEAR157/159 crossings preceded PR238/240/241; three post-continuous-worker SENT163/164/165 have complete sampled windows and no crossing. Preserve all entry gates, original TTL and existing quotas. Continue broad source/event-history coverage; natural current ENTRY and mature empirical cohorts remain open.",
+  "lease": null,
+  "next_action": "PR251 fixes actual observation_timing→technical-target handoff with raw-fill replay and current runtime validation. Continue broader source/event/trade-history coverage and natural current ENTRY/delivery acceptance; retain original clocks and unchanged entry gates/caps. Do not replay completed probes or force MAIN/SENT.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791509281333,
+  "updated_ts": 1791510344456,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -232,11 +227,11 @@
   },
   "last_released_lease": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
-    "acquired_ts": 1791508196691,
-    "expires_ts": 1791509396691,
-    "scope": "BOUNDED_ORIGINAL24H_ALL_DECISIONS_TRIGGER_PRICE_DIAGNOSIS;SOURCE_HTTP0;NO_MAIN_NO_TASK_WRITES_NO_ENTRY",
-    "released_ts": 1791509092595,
-    "reason": "Complete original24h actual cohort and sampled trigger proof retained in PR250; no active development run; release for natural scheduled analysis and maintenance"
+    "acquired_ts": 1791509281333,
+    "expires_ts": 1791510481333,
+    "scope": "GENERIC_ACTUAL_PRODUCER_TIMELINESS_TECHNICAL_TARGET_HANDOFF_REPAIR;IMMUTABLE_FILLS_REPLAY;SOURCE_HTTP0_D10_NO_MAIN_NO_ENTRY",
+    "released_ts": 1791510344456,
+    "reason": "PR251 target consumer fix and exact assembled proof retained; release for natural scheduled analysis and maintenance before next work block"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -4717,6 +4712,58 @@
     "outcome_writes": 0,
     "runtime_changed": false,
     "original_clocks_unchanged": true,
+    "full_project_complete": false
+  },
+  "latest_actual_producer_technical_target_release": {
+    "schema": "ACTUAL_PRODUCER_TECHNICAL_TARGET_RELEASE_20261009_V1",
+    "status": "ACTUAL_PRODUCER_TIMING_REACHES_MEASURED_TARGET_WITH_UNCHANGED_ENTRY_GATES",
+    "pr": 251,
+    "production_head": "03cb2b6e4179bd31e843bd036d14723b37c8c585",
+    "tested_head": "8016620bc7efde4beedd2dc485debc7ecc2cd3e8",
+    "proof_head": "ae456743f3aa33c2a1086021d490cb01e6e70c93",
+    "cloud_run": 37871186997,
+    "artifact_id": 11590990567,
+    "artifact_digest": "sha256:ceebd54efdbbffc93233d69c91d3fbc50b4c99cf5fd5a9e174b6433da4e8a428",
+    "proof": "checkpoints/ACTUAL_PRODUCER_TECHNICAL_TARGET_CONNECTED_20261009.json",
+    "tests": {
+      "actual-producer-target-runtime.tap": {
+        "pass": 5,
+        "fail": 0,
+        "sha256": "ec085970b55d9cc1ef07a4edbcdeb6b8680588ed563770cdb98206ae9c52182a"
+      },
+      "approved-delivery-runtime.tap": {
+        "pass": 35,
+        "fail": 0,
+        "sha256": "3e0fbc975ffe47fbb03f744ef215b9dfae26f380aab2744c2e52053c320d7fa3"
+      },
+      "current-generation-unit-tests.tap": {
+        "pass": 1153,
+        "fail": 0,
+        "sha256": "542621d5d952a8d75cdae93347b069d04e232ed9011f83f152ed38ee192c7e64"
+      },
+      "prospective-and-range-runtime.tap": {
+        "pass": 8,
+        "fail": 0,
+        "sha256": "bf3371884173a7454cd892e9d450ad11e55a6500575a9b8668aff68caa7d7060"
+      },
+      "technical-target-unit.tap": {
+        "pass": 10,
+        "fail": 0,
+        "sha256": "b8ab70ba1f2f39e973aa0854b918270d6efe4a417d609f6f6175e26c7fc9a3bb"
+      }
+    },
+    "integration_scenarios": 37,
+    "actual_source": "ORIGINAL_RETAINED_WIF_RAW_FILLS_WITH_UNCHANGED_PRODUCER",
+    "consumer_direction_qualification": "CONTROLLED;ORIGINAL_UNKNOWN_DIRECTION_STILL_REJECTED",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "source_clocks_refreshed": false,
+    "original_SENT_rewritten": false,
+    "weights_thresholds_entry_rules_quotas_unchanged": true,
     "full_project_complete": false
   }
 }
