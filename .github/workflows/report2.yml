@@ -385,8 +385,13 @@ jobs:
           path: report2-v13-p0-dry-run.json
           if-no-files-found: error
           retention-days: 30
-      - name: Maintain weekly liquidation coverage without Telegram
+      - name: Reuse verified same-day unknown D1 cost refusal without native reprobe
         if: ${{ github.event_name == 'schedule' }}
+        id: known_day_guard
+        run: node tools/known-d1-day-guard.mjs . > runtime/known-d1-day-guard.json
+
+      - name: Maintain weekly liquidation coverage without Telegram
+        if: ${{ github.event_name == 'schedule' && steps.known_day_guard.outputs.blocked != 'true' }}
         id: weekly_coverage
         shell: bash
         env:
@@ -394,7 +399,7 @@ jobs:
         run: node runner/liquidation-coverage-weekly.mjs runtime
 
       - name: Full Report 2 cycle
-        if: ${{ (github.event_name != 'schedule' || steps.weekly_coverage.outputs.maintenance_active != 'true') && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
+        if: ${{ steps.known_day_guard.outputs.blocked != 'true' && (github.event_name != 'schedule' || steps.weekly_coverage.outputs.maintenance_active != 'true') && inputs.reason != 'T00_RUNTIME_EXPORT' && inputs.reason != 'T00_D1_INVENTORY' && inputs.reason != 'V13_P0_READ_ONLY_DIAG' && inputs.reason != 'V13_P0_DRY_RUN' && inputs.reason != 'V13_SHADOW_MARKET_SMOKE' && inputs.reason != 'V13_FINAL_37' && inputs.reason != 'T16_DERIBIT_ALT_OPTIONS_SMOKE' && inputs.reason != 'T16_CHAIN_SUPPLY_SMOKE' && inputs.reason != 'T16_SOURCIFY_ABI_SMOKE' && inputs.reason != 'T16_BLUESKY_ATTENTION_SMOKE' && inputs.reason != 'T16_METADATA_SOURCES_SMOKE' && inputs.reason != 'T16_OFFICIAL_FEED_SMOKE' && inputs.reason != 'T16_LIDO_SNAPSHOT_SMOKE' && inputs.reason != 'T16_LIGHTER_NATIVE_SMOKE' && inputs.reason != 'T16_GMX_NATIVE_SMOKE' && inputs.reason != 'T16_GTRADE_NATIVE_SMOKE' && inputs.reason != 'T16_BLOCKSCOUT_INDEX_SMOKE' }}
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -422,6 +427,7 @@ jobs:
           path: |
             runtime/report2-run-result.json
             runtime/same-run-delivery-proof.json
+            runtime/known-d1-day-guard.json
             runtime/raw24h-control-readback.json
           if-no-files-found: warn
           retention-days: ${{ github.event_name == 'schedule' && 7 || 30 }}
