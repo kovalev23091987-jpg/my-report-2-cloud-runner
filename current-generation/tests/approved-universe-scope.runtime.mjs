@@ -27,3 +27,6 @@ test('actual assembled incomplete catalog cannot claim 100 percent approved cove
 test('actual assembled wrong asset and duplicate catalog rows leave approved identities unavailable',async()=>{
  for(const catalog of [base.map((x,i)=>({...native(x),symbol:i?x.asset_symbol:'WRONG'})),[...base.map(native),native(base[0])]]){const {result}=await run(catalog);assert.equal(result.counts.scanned,101);assert.equal(result.health.contracts,false);assert.equal(result.scope_audit.lost_contracts,0);assert.ok(result.scope_audit.approved_generation.missing_approved_analysis_contracts.includes(base[0].contract_code));}
 });
+test('actual assembled conflict across native crypto and stock rows cannot inherit a approved identity',async()=>{
+ const {result}=await run([...base.map(native),{...native(base[0]),labels:['stock'],tradfi_labels:['stock']}]);assert.equal(result.counts.scanned,101);assert.equal(result.health.contracts,false);assert.equal(result.scope_audit.lost_contracts,0);assert.ok(result.scope_audit.approved_generation.missing_approved_analysis_contracts.includes(base[0].contract_code));assert.ok(!result.contracts.some(x=>x.contract_code===base[0].contract_code));
+});

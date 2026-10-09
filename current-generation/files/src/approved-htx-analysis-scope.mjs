@@ -5,7 +5,7 @@ export const APPROVED_HTX_ANALYSIS_CONTRACTS=Object.freeze([{"contract_code":"AA
 const approved=new Map(APPROVED_HTX_ANALYSIS_CONTRACTS.map(x=>[x.contract_code,x.asset_symbol]));
 export function bindApprovedHtxAnalysisScope(rows,{observed_ts}={}){
  const crypto=(Array.isArray(rows)?rows:[]).filter(x=>x?.instrument_scope?.classification==='CRYPTO_CONFIRMED'),counts=new Map();
- for(const x of crypto)counts.set(x.contract_code,(counts.get(x.contract_code)||0)+1);
+ for(const x of Array.isArray(rows)?rows:[])counts.set(x?.contract_code,(counts.get(x?.contract_code)||0)+1);
  const accepted=[],outside=[],identity_rejected=[],duplicate_rejected=[];
  for(const x of crypto){
   if(!approved.has(x.contract_code)){outside.push({contract:x.contract_code,reason:'NOT_IN_APPROVED_GENERATION_UNIVERSE'});continue;}

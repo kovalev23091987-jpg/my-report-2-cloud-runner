@@ -22,3 +22,6 @@ test('missing, aliased, mismatched and duplicated approved identities fail compl
 test('structural membership cannot override primary noncrypto or missing classification',()=>{
  const input=base.map((x,i)=>({...row(x),instrument_scope:{classification:i>1?'CRYPTO_CONFIRMED':i?'UNKNOWN_FAIL_CLOSED':'NON_CRYPTO_HTX_CLASSIFIED'}}));const result=bind(input,{observed_ts:999});assert.equal(result.contracts.length,100);assert.equal(result.audit.status,'NOT_CLOSED');assert.deepEqual(result.audit.missing_approved_analysis_contracts,base.slice(0,2).map(x=>x.contract_code));
 });
+test('conflicting native classes for one approved contract cannot select the convenient crypto row',()=>{
+ const input=[...base.map(row),{...row(base[0]),instrument_scope:{classification:'NON_CRYPTO_HTX_CLASSIFIED'}}],result=bind(input,{observed_ts:999});assert.equal(result.audit.status,'NOT_CLOSED');assert.equal(result.contracts.length,101);assert.ok(result.audit.missing_approved_analysis_contracts.includes(base[0].contract_code));assert.deepEqual(result.audit.duplicate_rejected,[{contract:base[0].contract_code,reason:'DUPLICATE_NATIVE_APPROVED_CONTRACT'}]);
+});

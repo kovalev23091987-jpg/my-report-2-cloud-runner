@@ -1,0 +1,50 @@
+name: Exact final scope conflicts and original report consumers
+on:
+  push:
+    branches: [codex/approved-universe-scope-20261009]
+    paths: ['current-generation/files/src/approved-htx-analysis-scope.mjs','current-generation/tests/approved-universe-scope*','.github/workflows/approved-scope-final-consumers-20261009.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main, own repair lease and review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='73790ff74cb75cd905f03a09c0a3369f4a9a8c0c')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Assemble final scope and verify exact original consumers
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output original-refusals original-natural
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+          node --test current-generation/tests/approved-universe-scope.test.mjs > audit-output/approved-scope-unit.tap
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-universe-scope.runtime.mjs > audit-output/approved-scope-runtime.tap
+          unzip -q checkpoints/post259-original-refusals-37939704771.zip -d original-refusals
+          unzip -q checkpoints/post259-natural-37937215275.zip -d original-natural
+          REPORT2_TEST_RUNTIME=runtime node tools/verify-post259-original-refusals.mjs original-refusals/post259-original-refusals.json original-natural/report2-run-result.json audit-output/current-original-refusal-consumers.json > audit-output/current-original-refusal-console.json
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          cmp current-generation/files/src/approved-htx-analysis-scope.mjs runtime/src/approved-htx-analysis-scope.mjs
+          sha256sum runtime/src/approved-htx-analysis-scope.mjs runtime/src/worker.js runtime/runner-main.mjs > audit-output/runtime-hashes.txt
+          git rev-parse HEAD > audit-output/head.txt
+      - name: Show scoped check failure
+        if: failure()
+        run: cat audit-output/*.tap
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: approved-scope-final-consumers-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
