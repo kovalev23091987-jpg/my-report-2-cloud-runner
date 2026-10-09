@@ -1,0 +1,33 @@
+name: Retain exact native archive qualification originals and connected proof
+on:
+  push:
+    branches: [codex/history-completion-20261009]
+    paths: ['.github/workflows/native-kline-proof-retention-20261009.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/',''),main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='0222887934602c576faf0fd7d9dd38ff01db9d9e')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const files=[
+              [11614790613,'141ca65187d50b85871c6a0a940e25930a7bbe7299b475a2abeb6f8fa4d28e0f','checkpoints/native-kline-original-37927094470.zip'],
+              [11614801469,'f3c336fd6f1fe1aaa26b8c955cdd83c8ac7732046e9b93424fde9285f48273d2','checkpoints/native-kline-original-37927521761.zip'],
+              [11614289582,'59e67e7860586a603fb3f2d5f3543dbc2902fdf476e6e244fe5f63765a08e774','checkpoints/native-kline-original-37927835391.zip'],
+              [11614927699,'854bc3431a77a13c17fbb4da57ae314c034d4f8df6de2e1edbc40a14ea0cefe5','checkpoints/native-kline-price-connected-37929161332.zip']
+            ],tree=[];
+            for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+            const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain original native archive attempts, exact ZIP and cold horizon qualification'})).data;
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED_BEFORE_WRITE');
+            await github.rest.git.updateRef({owner,repo,ref,sha:next.sha,force:false});
+            core.info(JSON.stringify({status:'ORIGINAL_ARCHIVES_RETAINED',head:next.sha,files:tree.map(x=>x.path),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,project_complete:false}));

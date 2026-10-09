@@ -1,0 +1,51 @@
+name: Native full day price to current horizon consumers
+on:
+  push:
+    branches: [codex/history-completion-20261009]
+    paths: ['tools/qualify-native-kline-archive.py','tools/test_native_kline_archive.py','tools/verify-native-kline-price-history.mjs','runner/htx-delayed-price-history.mjs','.github/workflows/native-kline-price-connected-20261009.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact current main, current production parity and own bounded lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='0222887934602c576faf0fd7d9dd38ff01db9d9e')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            cp.execFileSync('git',['diff','--exit-code',main,'HEAD','--','current-generation','cloudflare/public-collector','runner/runner-main.mjs','runner/canonical-runtime-adapter.mjs','REPORT2_CURRENT_GENERATION.json']);
+            fs.mkdirSync('audit-output');
+            fs.writeFileSync('audit-output/production-parity.json',JSON.stringify({main,current_worker_sha256:'f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf',unchanged_current_generation:true,prior_connected_validation:'checkpoints/liquidation-refusal-connected-37926094518.zip',prior_unit_pass:1171,prior_delivery_pass:35,prior_integration_pass:37,tests_reused_for_unchanged_production:true,sourceHTTP:0,D1:0,MAIN:0,Telegram:0,full_TZ_complete:false},null,2));
+            const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11614289582,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!=='59e67e7860586a603fb3f2d5f3543dbc2902fdf476e6e244fe5f63765a08e774')throw Error('ORIGINAL_DOWNLOAD_DIGEST');
+            fs.writeFileSync('retained-native-kline-download.zip',bytes);fs.mkdirSync('retained-native-kline-download');cp.execFileSync('unzip',['-q','retained-native-kline-download.zip','-d','retained-native-kline-download']);
+            const old=fs.readFileSync('checkpoints/full-tz-connected-37922621629.zip');if(crypto.createHash('sha256').update(old).digest('hex')!=='e042b96769ea6a6b4596933b1f73d953159382ea7defb5d47f4476b4dbdc9364')throw Error('OLD_PARTIAL_PROOF_DIGEST');
+            fs.mkdirSync('retained-partial-proof');cp.execFileSync('unzip',['-q','checkpoints/full-tz-connected-37922621629.zip','-d','retained-partial-proof']);
+      - name: Qualify original native prices and reject conflicting identity, availability and price paths
+        run: |
+          python tools/test_native_kline_archive.py > audit-output/native-qualification-tests.txt 2>&1
+          python tools/qualify-native-kline-archive.py --archive retained-native-kline-download/native-kline-archive/native-kline.zip --checksum retained-native-kline-download/native-kline-archive/native-kline.zip.CHECKSUM --bars checkpoints/htx-archive-primary-20261004/near-archive-minute-counts-20261003.json.gz --acquisition retained-native-kline-download/native-kline-archive-download.json --contract NEAR-USDT --day 2026-10-03 --day-offset-minutes 480 --as-of-ts "$(node -p 'Date.now()')" --outdir audit-output/native-price-history > audit-output/qualification-console.json
+          node --check runner/htx-delayed-price-history.mjs
+          node tools/verify-native-kline-price-history.mjs audit-output/native-price-history > audit-output/native-consumer-console.json
+          node tools/verify-delayed-price-history.mjs retained-partial-proof/delayed-price-history > audit-output/unchanged-partial-consumer.json
+          git rev-parse HEAD > audit-output/head.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: native-kline-price-connected-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+
