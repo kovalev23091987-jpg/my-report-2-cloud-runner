@@ -41,35 +41,34 @@
       "id": "JOINT_REPORT",
       "status": "VERIFIED",
       "completion_receipt": {
-        "path": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json",
-        "sha256": "2bfaf5ced37c638f5fc0a71d0d09c33872bc9909b36b29dfa012606460b0937c"
+        "path": "checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json",
+        "sha256": "1f96b811b84bdc7aa2a0f4b1dcb7e7678f2f6f1f8e6ee1dcaeb0c8634736eb3c"
       },
       "previous_completion_receipt": {
         "path": "checkpoints/joint-report-functional-acceptance-20261005.json",
         "sha256": "4b696df873f87bb56520d2a69f00464aa56560e9fbb1514d3583c7c91b45f44b"
       },
       "previous_completed_ts": 1791163289172,
-      "completion_scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+      "completion_scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
       "functional_acceptance": {
         "status": "COMPLETED",
-        "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+        "scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
         "receipt": {
-          "cloud_run": 37681792251,
-          "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
-          "run_id": "1791404713379-1791404725011",
-          "contract": "BOME-USDT",
-          "snapshot_id": "S392:BOME-USDT:1791404783785",
-          "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
-          "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
-          "telegram_message_id": "155",
-          "sent_ts": 1791404833130,
-          "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
-          "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
-          "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
-          "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
+          "cloud_run": 37871165868,
+          "head": "9f55efe0febf6631648597d5fca4d1bd465f04cb",
+          "run_id": "1791510243768-1791510252054",
+          "contract": "NEAR-USDT",
+          "snapshot_id": "S392:NEAR-USDT:1791510303126",
+          "publication_id": "PUB:23c2214fc9e221c5c7f90d8431998219be7574f8",
+          "fingerprint": "819737f645cd823c8f9acefe4de7c127ec96c51e026e1f9a70b2d52281c4d5ff",
+          "telegram_message_id": "166",
+          "sent_ts": 1791510340512,
+          "status": "EXACT_ORIGINAL_CANONICAL_BOUND_SENT_VERIFIED",
+          "scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
+          "proof": "checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json"
         }
       },
-      "completed_ts": 1791404833130,
+      "completed_ts": 1791510340512,
       "previous_reopened_reason": "Sequential project acceptance is pending; actual scoped QNT delivery is accepted separately and must not be repeated.",
       "previous_current_owner_completion_receipt": {
         "path": "checkpoints/OWNER_CURRENT_JOINT_ACCEPTANCE_20261006.json",
@@ -101,41 +100,67 @@
           "previous_functional_acceptance_retained_in": "checkpoints/archive/phase-before-owner-brief-20261007.json"
         },
         "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE"
+      },
+      "previous_current_scoped_acceptance_before_pr252": {
+        "completion_receipt": {
+          "path": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json",
+          "sha256": "2bfaf5ced37c638f5fc0a71d0d09c33872bc9909b36b29dfa012606460b0937c"
+        },
+        "functional_acceptance": {
+          "status": "COMPLETED",
+          "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+          "receipt": {
+            "cloud_run": 37681792251,
+            "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+            "run_id": "1791404713379-1791404725011",
+            "contract": "BOME-USDT",
+            "snapshot_id": "S392:BOME-USDT:1791404783785",
+            "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+            "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+            "telegram_message_id": "155",
+            "sent_ts": 1791404833130,
+            "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
+            "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
+            "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+            "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
+          }
+        },
+        "completion_scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+        "completed_ts": 1791404833130
       }
     },
     {
       "id": "TELEGRAM",
       "status": "VERIFIED",
       "completion_receipt": {
-        "path": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json",
-        "sha256": "2bfaf5ced37c638f5fc0a71d0d09c33872bc9909b36b29dfa012606460b0937c"
+        "path": "checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json",
+        "sha256": "1f96b811b84bdc7aa2a0f4b1dcb7e7678f2f6f1f8e6ee1dcaeb0c8634736eb3c"
       },
       "previous_completion_receipt": {
         "path": "checkpoints/telegram-functional-acceptance-20261005.json",
         "sha256": "fab0b5e5d2543f5839c1a4867a91fe4a88555e20f8b22c34dd65e7cdc15f4fcf"
       },
       "previous_completed_ts": 1791166512309,
-      "completion_scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+      "completion_scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
       "functional_acceptance": {
         "status": "COMPLETED",
-        "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+        "scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
         "receipt": {
-          "cloud_run": 37681792251,
-          "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
-          "run_id": "1791404713379-1791404725011",
-          "contract": "BOME-USDT",
-          "snapshot_id": "S392:BOME-USDT:1791404783785",
-          "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
-          "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
-          "telegram_message_id": "155",
-          "sent_ts": 1791404833130,
-          "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
-          "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
-          "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
-          "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
+          "cloud_run": 37871165868,
+          "head": "9f55efe0febf6631648597d5fca4d1bd465f04cb",
+          "run_id": "1791510243768-1791510252054",
+          "contract": "NEAR-USDT",
+          "snapshot_id": "S392:NEAR-USDT:1791510303126",
+          "publication_id": "PUB:23c2214fc9e221c5c7f90d8431998219be7574f8",
+          "fingerprint": "819737f645cd823c8f9acefe4de7c127ec96c51e026e1f9a70b2d52281c4d5ff",
+          "telegram_message_id": "166",
+          "sent_ts": 1791510340512,
+          "status": "EXACT_ORIGINAL_CANONICAL_BOUND_SENT_VERIFIED",
+          "scope": "SOURCE_HEAD_AFTER_PR249_BEFORE_PR251;ACTUAL_NEAR166_OBSERVE;NOT_TARGET_FIX_OR_ENTRY_OR_FULL_PROJECT_ACCEPTANCE",
+          "proof": "checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json"
         }
       },
-      "completed_ts": 1791404833130,
+      "completed_ts": 1791510340512,
       "previous_reopened_reason": "Sequential project acceptance is pending; actual scoped QNT delivery is accepted separately and must not be repeated.",
       "previous_current_owner_completion_receipt": {
         "path": "checkpoints/OWNER_CURRENT_V5_TELEGRAM_ACCEPTANCE_20261006.json",
@@ -167,20 +192,42 @@
           "previous_functional_acceptance_retained_in": "checkpoints/archive/phase-before-owner-brief-20261007.json"
         },
         "completion_scope": "ACTUAL_POST_PR202_AUTOMATIC_AKE_LONG_OBSERVE_SENT152_WITH_7_CORE_BLOCKS_AND_HONEST_OPTIONAL_MAP_ABSENCE; BTR_REJECTED; NO_ENTRY_OR_PROFITABILITY_ACCEPTANCE"
+      },
+      "previous_current_scoped_acceptance_before_pr252": {
+        "completion_receipt": {
+          "path": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json",
+          "sha256": "2bfaf5ced37c638f5fc0a71d0d09c33872bc9909b36b29dfa012606460b0937c"
+        },
+        "functional_acceptance": {
+          "status": "COMPLETED",
+          "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+          "receipt": {
+            "cloud_run": 37681792251,
+            "head": "53729f7af3f2b7e540f6df3d2b9d65af0140b981",
+            "run_id": "1791404713379-1791404725011",
+            "contract": "BOME-USDT",
+            "snapshot_id": "S392:BOME-USDT:1791404783785",
+            "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+            "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+            "telegram_message_id": "155",
+            "sent_ts": 1791404833130,
+            "presentation_hash": "cd40288e88b3f19bcbbb3fcbcdb4ab1ac233dc74ef80a763c745d4d90280cc27",
+            "status": "EXACT_SAME_RUN_CANONICAL_APPROVED_TELEGRAM_SENT_VERIFIED",
+            "scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+            "proof": "checkpoints/ACTUAL_POST_PR229_BOME_LONG_OBSERVE_SENT155_20261007.json"
+          }
+        },
+        "completion_scope": "AFTER_PR228_AND_PR229_BEFORE_PR230; NOT_FULL_PROJECT_COMPLETE",
+        "completed_ts": 1791404833130
       }
     }
   ],
-  "lease": {
-    "owner": "HTX:1791485859126:full-owner-cloud-continuation",
-    "acquired_ts": 1791510741209,
-    "expires_ts": 1791511941209,
-    "scope": "EXACT_PRE251_NATURAL_NEAR_SENT_AND_TASK_READBACK;SOURCE_HTTP0;NO_MAIN_NO_TASK_WRITES;ARCHIVE_FORMAT_READ_ONLY"
-  },
-  "next_action": "PR251 fixes actual observation_timing→technical-target handoff with raw-fill replay and current runtime validation. Continue broader source/event/trade-history coverage and natural current ENTRY/delivery acceptance; retain original clocks and unchanged entry gates/caps. Do not replay completed probes or force MAIN/SENT.",
+  "lease": null,
+  "next_action": "PR251 actual target timing handoff is repaired and fully tested. Latest real delivery is NEAR OBSERVE166 from the pre251 natural01:45UTC run; light5m task actually checked price4.639 below5.585 and preserved original expiry. Current-release natural ENTRY/SENT acceptance remains open. Continue broad source/event/trade-history work; retained native archive has UTC+8 filename scope, shared tradeId with distinct payloads and unproven historical size units, so qualify archive identity/units/calendar before ingestion. Preserve gates/caps and do not force MAIN, extend old TTL or repeat completed probes.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791510741209,
+  "updated_ts": 1791511361981,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -232,11 +279,11 @@
   },
   "last_released_lease": {
     "owner": "HTX:1791485859126:full-owner-cloud-continuation",
-    "acquired_ts": 1791509281333,
-    "expires_ts": 1791510481333,
-    "scope": "GENERIC_ACTUAL_PRODUCER_TIMELINESS_TECHNICAL_TARGET_HANDOFF_REPAIR;IMMUTABLE_FILLS_REPLAY;SOURCE_HTTP0_D10_NO_MAIN_NO_ENTRY",
-    "released_ts": 1791510344456,
-    "reason": "PR251 target consumer fix and exact assembled proof retained; release for natural scheduled analysis and maintenance before next work block"
+    "acquired_ts": 1791510741209,
+    "expires_ts": 1791511941209,
+    "scope": "EXACT_PRE251_NATURAL_NEAR_SENT_AND_TASK_READBACK;SOURCE_HTTP0;NO_MAIN_NO_TASK_WRITES;ARCHIVE_FORMAT_READ_ONLY",
+    "released_ts": 1791511361981,
+    "reason": "PR252 exact original NEAR166 receipt and live price recheck retained; archive format diagnosis preserved; release for natural scheduled analysis and maintenance"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -4770,5 +4817,186 @@
     "original_SENT_rewritten": false,
     "weights_thresholds_entry_rules_quotas_unchanged": true,
     "full_project_complete": false
+  },
+  "latest_pre251_natural_NEAR_SENT_release": {
+    "schema": "ACTUAL_PRE251_NEAR_ORIGINAL_SENT_RELEASE_20261009_V1",
+    "status": "ACTUAL_PRE251_NEAR_ORIGINAL_SENT_AND_TASK_BOUND",
+    "pr": 252,
+    "production_head": "6f355f1933f071d4564d657975f8764dd6862576",
+    "tested_head": "86ca545b8a83ff340f1cd810b25ea1a84aa64452",
+    "proof_head": "98ca1fa3657834d3dd0532ad0932202ce4c149bd",
+    "cloud_run": 37871951117,
+    "artifact_id": 11590427357,
+    "artifact_digest": "sha256:0510a9f8de77d1230b9784c2c448e097e87f148a8b5d01c2d8da9036efd49d5e",
+    "proof": "checkpoints/ACTUAL_PRE251_NEAR_ORIGINAL_SENT_TASK_20261009.json",
+    "source_cloud_run": 37871165868,
+    "source_head": "9f55efe0febf6631648597d5fca4d1bd465f04cb",
+    "source_run_id": "1791510243768-1791510252054",
+    "scope": "AFTER_PR249_BEFORE_PR251;NOT_CURRENT_TARGET_FIX_ACCEPTANCE",
+    "contract": "NEAR-USDT",
+    "snapshot_id": "S392:NEAR-USDT:1791510303126",
+    "publication_id": "PUB:23c2214fc9e221c5c7f90d8431998219be7574f8",
+    "analytical_fingerprint": "819737f645cd823c8f9acefe4de7c127ec96c51e026e1f9a70b2d52281c4d5ff",
+    "observed_ts": 1791510303126,
+    "telegram_message_id": "166",
+    "sent_ts": 1791510340512,
+    "original_trigger": {
+      "trigger_type": "PRICE_CONFIRMATION",
+      "metric": "price",
+      "operator": ">=",
+      "value": 5.585,
+      "unit": "USDT",
+      "timeframe": "5m",
+      "expires_ts": 1791512103126,
+      "next_recheck_ts": 1791510603126,
+      "cancel_condition": "price<4.302",
+      "level_origin": "VERIFIED_CLOSED_CANDLE_RANGE"
+    },
+    "task_read_ts": 1791510834364,
+    "task_state": "PENDING",
+    "light_price_recheck": {
+      "schema": "LIGHT_PRICE_RECHECK_V1",
+      "scope": "PRICE_AND_CANCELLATION_ONLY",
+      "checked_ts": 1791510604056,
+      "entry_authorized": false,
+      "full_analysis_completed": false,
+      "status": "WAITING_FOR_PRICE",
+      "price": 4.639,
+      "source_ts": 1791510602856,
+      "observed_ts": 1791510602855,
+      "source": "HTX_OFFICIAL_COLLECTOR",
+      "settlement_confirmed": false,
+      "last_bucket": 1791510600000,
+      "task_id": "RCHK:6b9b9725ee7cb44fe644585d7de68c32c76f8bea",
+      "publication_id": "PUB:23c2214fc9e221c5c7f90d8431998219be7574f8",
+      "run_id": "1791510243768-1791510252054",
+      "snapshot_id": "S392:NEAR-USDT:1791510303126",
+      "analytical_fingerprint": "819737f645cd823c8f9acefe4de7c127ec96c51e026e1f9a70b2d52281c4d5ff",
+      "telegram_message_id": "166"
+    },
+    "actual_participating_blocks": 11,
+    "checked_blocks": 13,
+    "nonzero_score_blocks": 2,
+    "sourceHTTP": 0,
+    "D1": {
+      "requests": 6,
+      "rows_read": 20,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 13,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:v3_recheck_task_shadow": {
+          "requests": 1,
+          "rows_read": 4,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_dispatch_publication_binding_shadow": {
+          "requests": 1,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "MAIN": 0,
+    "Telegram": 0,
+    "task_writes": 0,
+    "source_clocks_refreshed": false,
+    "actual_ENTRY": false,
+    "current_PR251_target_fix_acceptance": false,
+    "full_project_complete": false
+  },
+  "latest_native_archive_format_diagnosis": {
+    "schema": "RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009_V1",
+    "status": "ACTUAL_RETAINED_ARCHIVE_SCHEMA_ID_AND_CALENDAR_LIMITS_MEASURED",
+    "read_ts": 1791511361972,
+    "source": "checkpoints/htx-archive-primary-20261004/near-trades-20261003.zip",
+    "source_provenance": "checkpoints/htx-archive-primary-20261004/provenance.json",
+    "original_source_clock_refreshed": false,
+    "scope": "ONE_RETAINED_OFFICIAL_NEAR_ARCHIVE_ONLY;NOT_ALL_ARCHIVES_OR_CURRENT_SOURCE_ACCEPTANCE",
+    "file": {
+      "zip_sha256": "9b0fc4e6078184bfdc932c311cde89d9545f119b134d85e0ab02d57aa3235e14",
+      "csv_sha256": "4f9c3eb185a099136d5531ad7f472068ba1d23c9adc488b22cd853467ac8c769",
+      "csv_header": [
+        "instId",
+        "tradeId",
+        "px",
+        "side",
+        "size",
+        "ts"
+      ],
+      "native_instrument": "NEAR-USDT-PERP",
+      "filename": "NEAR-USDT-PERP-trades-2026-10-03.csv",
+      "rows": 4051,
+      "distinct_tradeId_lexemes": 3722,
+      "shared_id_groups": 243,
+      "extra_rows_with_shared_ids": 329,
+      "shared_ids_with_different_payloads": 243,
+      "exact_row_repetitions": 1,
+      "side_counts_raw": {
+        "buy": 2083,
+        "sell": 1968
+      },
+      "first_ts": 1790956813243,
+      "last_ts": 1791043172619,
+      "observed_minutes_in_file": 1440,
+      "observed_file_calendar_interval_utc": [
+        1790956800000,
+        1791043200000
+      ],
+      "filename_midnight_offset_minutes_matching_this_file": 480,
+      "all_other_archives_timezone_verified": false,
+      "tradeId_semantics_or_composite_uniqueness_verified": false,
+      "historical_contract_size_or_quantity_unit_verified": false,
+      "notional_usdt_calculated": false,
+      "archive_rows_are_not_new_realtime_quotes": true,
+      "rows_deleted_or_deduplicated": false
+    },
+    "directory": {
+      "source": "checkpoints/htx-archive-primary-20261004/htx-archive-near.xml.gz",
+      "gzip_sha256": "096028ea1d2e07203342d3da42ffc7005ea537a586478dab25418fdd10180067",
+      "archive_date_range": [
+        "2026-02-01",
+        "2026-10-03"
+      ],
+      "zip_and_checksum_keys": 490,
+      "directory_only_not_download_coverage": true
+    },
+    "common_directory_matrix": {
+      "path": "checkpoints/htx-archive-common-futures-matrix-20261004.json",
+      "original_checked_at": "2026-10-04T18:45:20.813328+00:00",
+      "exact_keys_present": 119,
+      "actual_file_coverage": false
+    },
+    "required_before_trade_consumer_admission": [
+      "Verify provider meaning of archive tradeId and an exact per-fill identity; same ID has different source payloads, so blindly deduplicating by ID drops329 rows",
+      "Verify archive date/timezone per admitted schema and convert actual epoch timestamps; this saved filename maps to UTC+8 day",
+      "Verify historical source size units and exact contract size before USDT notional conversion",
+      "Use separate delayed archive lineage, not realtime HTX tape or an extra directional vote"
+    ],
+    "entry_absence_causally_explained_by_archive": false,
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "project_complete": false
   }
 }

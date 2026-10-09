@@ -1,0 +1,75 @@
+{
+  "schema": "RETAINED_NATIVE_ARCHIVE_FORMAT_DIAGNOSIS_20261009_V1",
+  "status": "ACTUAL_RETAINED_ARCHIVE_SCHEMA_ID_AND_CALENDAR_LIMITS_MEASURED",
+  "read_ts": 1791511361972,
+  "source": "checkpoints/htx-archive-primary-20261004/near-trades-20261003.zip",
+  "source_provenance": "checkpoints/htx-archive-primary-20261004/provenance.json",
+  "original_source_clock_refreshed": false,
+  "scope": "ONE_RETAINED_OFFICIAL_NEAR_ARCHIVE_ONLY;NOT_ALL_ARCHIVES_OR_CURRENT_SOURCE_ACCEPTANCE",
+  "file": {
+    "zip_sha256": "9b0fc4e6078184bfdc932c311cde89d9545f119b134d85e0ab02d57aa3235e14",
+    "csv_sha256": "4f9c3eb185a099136d5531ad7f472068ba1d23c9adc488b22cd853467ac8c769",
+    "csv_header": [
+      "instId",
+      "tradeId",
+      "px",
+      "side",
+      "size",
+      "ts"
+    ],
+    "native_instrument": "NEAR-USDT-PERP",
+    "filename": "NEAR-USDT-PERP-trades-2026-10-03.csv",
+    "rows": 4051,
+    "distinct_tradeId_lexemes": 3722,
+    "shared_id_groups": 243,
+    "extra_rows_with_shared_ids": 329,
+    "shared_ids_with_different_payloads": 243,
+    "exact_row_repetitions": 1,
+    "side_counts_raw": {
+      "buy": 2083,
+      "sell": 1968
+    },
+    "first_ts": 1790956813243,
+    "last_ts": 1791043172619,
+    "observed_minutes_in_file": 1440,
+    "observed_file_calendar_interval_utc": [
+      1790956800000,
+      1791043200000
+    ],
+    "filename_midnight_offset_minutes_matching_this_file": 480,
+    "all_other_archives_timezone_verified": false,
+    "tradeId_semantics_or_composite_uniqueness_verified": false,
+    "historical_contract_size_or_quantity_unit_verified": false,
+    "notional_usdt_calculated": false,
+    "archive_rows_are_not_new_realtime_quotes": true,
+    "rows_deleted_or_deduplicated": false
+  },
+  "directory": {
+    "source": "checkpoints/htx-archive-primary-20261004/htx-archive-near.xml.gz",
+    "gzip_sha256": "096028ea1d2e07203342d3da42ffc7005ea537a586478dab25418fdd10180067",
+    "archive_date_range": [
+      "2026-02-01",
+      "2026-10-03"
+    ],
+    "zip_and_checksum_keys": 490,
+    "directory_only_not_download_coverage": true
+  },
+  "common_directory_matrix": {
+    "path": "checkpoints/htx-archive-common-futures-matrix-20261004.json",
+    "original_checked_at": "2026-10-04T18:45:20.813328+00:00",
+    "exact_keys_present": 119,
+    "actual_file_coverage": false
+  },
+  "required_before_trade_consumer_admission": [
+    "Verify provider meaning of archive tradeId and an exact per-fill identity; same ID has different source payloads, so blindly deduplicating by ID drops329 rows",
+    "Verify archive date/timezone per admitted schema and convert actual epoch timestamps; this saved filename maps to UTC+8 day",
+    "Verify historical source size units and exact contract size before USDT notional conversion",
+    "Use separate delayed archive lineage, not realtime HTX tape or an extra directional vote"
+  ],
+  "entry_absence_causally_explained_by_archive": false,
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "project_complete": false
+}
