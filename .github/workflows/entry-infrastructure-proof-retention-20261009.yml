@@ -21,10 +21,10 @@ jobs:
             if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
             if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
             const files=[
- [11621581750,'e1bab5fc654665d95bf1ba9473120b624bba1fd4d56307ab1b2dc5e9b3fc3ee1','checkpoints/entry-infrastructure-connected-37940093559.zip'],
- [11621621108,'6135d9a5c5c8e01f09cf9e527cbc361d2d884996db4abb512fce1b0ad55d592b','checkpoints/post259-original-refusals-37939704771.zip'],
- [11621896259,'b08a6180e8851a57ac9ef0107d2e145e385f26d562b544cdcc9cfc1898bdc3e6','checkpoints/post259-refusal-consumers-37942734352.zip']
- ],tree=[];
+            [11621581750,'e1bab5fc654665d95bf1ba9473120b624bba1fd4d56307ab1b2dc5e9b3fc3ee1','checkpoints/entry-infrastructure-connected-37940093559.zip'],
+            [11621621108,'6135d9a5c5c8e01f09cf9e527cbc361d2d884996db4abb512fce1b0ad55d592b','checkpoints/post259-original-refusals-37939704771.zip'],
+            [11621896259,'b08a6180e8851a57ac9ef0107d2e145e385f26d562b544cdcc9cfc1898bdc3e6','checkpoints/post259-refusal-consumers-37942734352.zip']
+            ],tree=[];
             for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
             const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain failed-attempt accounting and original direction refusals'})).data;
             if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED_BEFORE_WRITE');
