@@ -120,7 +120,7 @@
     "historical_hint_does_not_close_current_level": true,
     "report_search_release": "checkpoints/AUTOMATIC_REPORT_SOURCE_SEARCH_AND_N05_N15_RELEASE_20261007.json"
   },
-  "updated_ts": 1791503572490,
+  "updated_ts": 1791504332075,
   "latest_dydx_shared_dense_consumer_release": {
     "path": "checkpoints/DYDX_SHARED_PAIR_DENSE_CONSUMER_RELEASE_20261007.json",
     "pr": 221,
@@ -999,5 +999,81 @@
     "global_HTTP_cap": 164,
     "expiry_boundary_reject": "now>=original_expires_at",
     "cache_rebuilt_and_validated": true
+  },
+  "latest_dynamic_deribit_USDC_source_consumer_qualification": {
+    "proof": "checkpoints/DYNAMIC_DERIBIT_USDC_SOURCE_CONSUMER_QUALIFICATION_20261009.json",
+    "cloud_run": 37862768967,
+    "tested_head": "b5ffab43fb1292249b66230e5623312f6f8d45ac",
+    "proof_head": "f36ad5d22248ec640125f8ab1493a93011921264",
+    "artifact_id": 11586826081,
+    "artifact_digest": "sha256:146eab85676ba6cf650788aea860746e069c96753d9dc3802eb4f3fa9d7fa0af",
+    "checked_ts": 1791504210977,
+    "status": "ACTUAL_DYNAMIC_PRIMARY_USDC_QUOTES_AND_N14_CONSUMER_QUALIFIED",
+    "sourceHTTP": 1,
+    "D1": {
+      "requests": 72,
+      "rows_read": 34,
+      "rows_written": 17,
+      "unknown_ops": 0
+    },
+    "original_catalog": {
+      "observed_ts": 1791501864226,
+      "expires_ts": 1791523464226,
+      "raw_sha256": "164c29df284ac63dfe1b68121ddb96dfeb51c903e8476479ff3567d5a34527f6",
+      "gzip_sha256": "e7f2d8d21e4b2bd3fa3d44e4e516529cab45991a590e381d8b45797ce0248d28",
+      "response_sha256": "0a72aca90b6cd9cadafe0524fb716dc6c19b53335e7cb2595b9764c73f4c8a13",
+      "instrument_count": 5938
+    },
+    "source": {
+      "url": "https://www.deribit.com/api/v2/public/get_book_summary_by_currency?currency=USDC&kind=option",
+      "http_status": 200,
+      "received_ts": 1791504213046,
+      "body_sha256": "7d3625265ab5e0a1abc63ca25424420c98d7bb1660edfd576e84b569b63b7773",
+      "gzip_sha256": "ebac2743d05fba00592af851d55e5b517829ff179f9d4db6d16ddbcf56507509",
+      "raw_bytes": 1941970,
+      "file": "deribit-USDC-book.json.gz"
+    },
+    "dynamic_contracts": [
+      "AVAX-USDT",
+      "BTC-USDT",
+      "ETH-USDT",
+      "HYPE-USDT",
+      "SOL-USDT",
+      "TRX-USDT",
+      "XRP-USDT"
+    ],
+    "usable_IV_contracts": [
+      "AVAX-USDT",
+      "BTC-USDT",
+      "ETH-USDT",
+      "HYPE-USDT",
+      "SOL-USDT",
+      "TRX-USDT",
+      "XRP-USDT"
+    ],
+    "rendered_context_contracts": [
+      "AVAX-USDT",
+      "BTC-USDT",
+      "ETH-USDT",
+      "HYPE-USDT",
+      "SOL-USDT",
+      "TRX-USDT",
+      "XRP-USDT"
+    ],
+    "score_adjustment": 0,
+    "HTX_identity_scope": {
+      "kind": "RETAINED_APPROVED_PROJECT_UNIVERSE_NOT_NEW_CURRENT_HTX_CATALOG",
+      "universe_original_observed_ts": 1791136124778,
+      "universe_gzip_sha256": "edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613",
+      "crypto_contracts": 119,
+      "crypto_assets": 102,
+      "current_HTX_tradeability_claim": false,
+      "new_HTX_identity_HTTP": 0
+    },
+    "MAIN": 0,
+    "Telegram": 0,
+    "actual_ENTRY": false,
+    "new_fresh_SENT": false,
+    "no_BTC_ETH_extrapolation": true
   }
 }
