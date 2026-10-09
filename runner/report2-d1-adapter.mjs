@@ -121,9 +121,9 @@ export class RemoteD1Database {
     }
     const bucket = this._usage.targets[target];
     bucket.requests += 1;
-    if (usage?.measured === true) {
-      const rr = Number(usage.rows_read || 0);
-      const rw = Number(usage.rows_written || 0);
+    if (usage?.measured === true && Number.isSafeInteger(usage.rows_read) && usage.rows_read >= 0 && Number.isSafeInteger(usage.rows_written) && usage.rows_written >= 0) {
+      const rr = usage.rows_read;
+      const rw = usage.rows_written;
       this._usage.rows_read += rr;
       this._usage.rows_written += rw;
       bucket.rows_read += rr;
@@ -151,6 +151,7 @@ export class RemoteD1Database {
     }
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+    let nativeUsageRecorded = false;
     try {
       const response = await this.fetchImpl(this.url, {
         method: "POST",
@@ -175,8 +176,15 @@ export class RemoteD1Database {
         throw new Error(`D1_BRIDGE_FAILURE:${code}`);
       }
       this._recordUsage(originalPayload, data?.usage);
+      nativeUsageRecorded = true;
       return this._retainedHistory ? await this._retainedHistory.restore(data.result) : data.result;
     } catch (error) {
+      // A failed bridge response does not prove that the SQL was never run.
+      // Retain every attempted statement as unknown, without inventing row
+      // counts or resetting reservations. Downstream budget guards stay closed.
+      // A failure in retained-history restoration after a measured DB reply
+      // must not charge the original SQL a second time.
+      if (!nativeUsageRecorded) this._recordUsage(originalPayload, null);
       if (error?.name === "AbortError") throw new Error("D1_BRIDGE_TIMEOUT");
       throw error;
     } finally {

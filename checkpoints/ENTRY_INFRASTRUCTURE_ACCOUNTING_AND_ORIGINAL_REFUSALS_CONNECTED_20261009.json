@@ -1,0 +1,535 @@
+{
+  "schema": "ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009_V1",
+  "status": "FAILED_SQL_ATTEMPTS_COUNTED_AND_EXACT_ORIGINAL_REFUSALS_REPRODUCED",
+  "PR": 261,
+  "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+  "tested_head": "96f1c5f5964138b41f0a529d2391c8805f699fcd",
+  "connected_cloud_run": 37940093559,
+  "artifact_id": 11621581750,
+  "artifact_digest": "sha256:e1bab5fc654665d95bf1ba9473120b624bba1fd4d56307ab1b2dc5e9b3fc3ee1",
+  "retained_connected": "checkpoints/entry-infrastructure-connected-37940093559.zip",
+  "tests": {
+    "removal-evidence-runtime.tap": {
+      "sha256": "3c3355ebac970895aa9c9aca126e1dd9d599286f94ae8aabb6cc1986ce43e141"
+    },
+    "liquidation-refusal-consumer-runtime.tap": {
+      "sha256": "8b22bf27c5593e5c7cad85e637d99c282dc4e946d6c0d997b80217f0a099e7b1"
+    },
+    "approved-delivery-runtime.tap": {
+      "sha256": "e9cd56aa114eb9ca4987529a3daebd56ef6dd08d72f3208511d660380ee2eb49"
+    },
+    "failure-trigger-runtime.tap": {
+      "sha256": "b204a77503cfe5d2cc16cac419ec5ce8e93eaec598fabd78de700b985da5e15c"
+    },
+    "optional-assembled-runtime.tap": {
+      "sha256": "b21ba4d73095eb2ba0aea31e6c3fb580e04fe1afcb6dcd72f582317c39432b38"
+    },
+    "pre-analysis-failure-runtime.tap": {
+      "sha256": "fd26f74d69314a35ad499b4c44ed003304498ff184c880169293c1abd5e136da"
+    },
+    "d1-failure-accounting-runtime.tap": {
+      "sha256": "737a1a47c46f7f7600a0c72e5e6693f93cf404c3a9b6fb9c8d7989fa501ccfba"
+    },
+    "liquidation-refusal-unit-runtime.tap": {
+      "sha256": "8b8c0e4cf09b9ce7dd4975fbf30cb542adea1d103327c82b9c6959ce9547284c"
+    },
+    "signed-tape-runtime.tap": {
+      "sha256": "24b7c22c89035de8a023ceb5b55e6aee4f21ebcf0ce4ad7c0ce9ed1c43923fea"
+    },
+    "current-generation-unit-tests.tap": {
+      "sha256": "87203c9c4d7f97f321af6df1f0b3e8cc5b0cc3f776951934e9a25244d73e0596"
+    },
+    "removal-evidence-publication.tap": {
+      "sha256": "6adeef0fc510b86b2f5bb4e5263115c2a3911c5bc90377dd0f2ac5d4b8cd2f1f"
+    }
+  },
+  "binding": {
+    "status": "CURRENT_RUNTIME_BINDING_VERIFIED",
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "worker_sha256": "f13bd1e2125e8a0e5818051e6d0b0ad731848cf8c26c78d6519465910afae2cf",
+    "runtime_checked": true
+  },
+  "integration": {
+    "passed": 37,
+    "failed": 0
+  },
+  "validation": "CURRENT_GENERATION_VALIDATED",
+  "changes": [
+    "Every failed D1 transport, timeout, HTTP, JSON or bridge attempt retains its statement count as unknown usage; no fabricated zero rows, retry, cap reset or refund",
+    "Measured usage requires native nonnegative safe-integer read and write counts; absent or invalid metadata remains unknown",
+    "A post-success retained-history restoration failure does not charge an already measured SQL response twice",
+    "Existing unknown-usage admission fails closed; original scheduler denial and future bound pre-analysis receipt remain intact"
+  ],
+  "test_external_effects": {
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "original_read": {
+    "run": 37939704771,
+    "head": "7d3966cbdd65d3a011c9903a31a4c4cefe8e56ce",
+    "read_ts": 1791553822137,
+    "artifact_id": 11621621108,
+    "artifact_digest": "sha256:6135d9a5c5c8e01f09cf9e527cbc361d2d884996db4abb512fce1b0ad55d592b",
+    "retained": "checkpoints/post259-original-refusals-37939704771.zip",
+    "usage": {
+      "requests": 15,
+      "rows_read": 78,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 66,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:shadow_decision_log": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:final_decision_integration_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:canonical_publication_shadow": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:tz101_entry_area_calibration_state": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "first:v3_early_outcome_journal": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_signal": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:tz101_entry_area_calibration_outcome": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "task_or_outcome_writes": 0
+  },
+  "original_consumer": {
+    "cloud_run": 37942734352,
+    "head": "4c1034c00b4cb8699779a41b25f0f8b193073fb1",
+    "artifact_id": 11621896259,
+    "artifact_digest": "sha256:b08a6180e8851a57ac9ef0107d2e145e385f26d562b544cdcc9cfc1898bdc3e6",
+    "retained": "checkpoints/post259-refusal-consumers-37942734352.zip",
+    "proof": {
+      "schema": "POST259_ORIGINAL_REFUSALS_CURRENT_CONSUMERS_V1",
+      "source_read_run": 37939704771,
+      "source_read_head": "7d3966cbdd65d3a011c9903a31a4c4cefe8e56ce",
+      "source_read_ts": 1791553822137,
+      "original_natural_run": 37937215275,
+      "original_natural_head": "515e58f360559854c9811c50ced706945feb759d",
+      "sourceHTTP": 0,
+      "D1": 0,
+      "MAIN": 0,
+      "Telegram": 0,
+      "actual_ENTRY": false,
+      "original_clocks_refreshed": false,
+      "project_complete": false,
+      "candidates": [
+        {
+          "contract": "BR-USDT",
+          "run_id": "1791552597150-1791552612560",
+          "snapshot_id": "S392:BR-USDT:1791552702776",
+          "publication_id": "PUB:5d60c638e0e95339114b63ff49010d73df7ed972",
+          "observed_ts": 1791552702776,
+          "analytical_fingerprint": "b02a62f9d7a7586c84c401d8397a0b36f6d86358bc12c925429de933a7cfea57",
+          "state": "REJECTED",
+          "shadow_stage": "SHADOW_OBSERVE_NEUTRAL",
+          "dq_receipt": {
+            "schema": "HTX_DQ_PREDICATES_V1",
+            "contract": "BR-USDT",
+            "evaluated_ts": 1791552702776,
+            "status": "PARTIAL",
+            "sufficiency": "PARTIAL",
+            "mandatory_checks": [
+              {
+                "key": "futures.htx_futures_liquidity",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_futures_order_flow_sample",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_open_interest",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_funding",
+                "closed": true
+              },
+              {
+                "key": "trajectory.price_1h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.price_4h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.oi_1h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.oi_4h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.funding_current",
+                "closed": true
+              },
+              {
+                "key": "trajectory.funding_history",
+                "closed": true
+              }
+            ]
+          },
+          "direction_resolution": {
+            "status": "UNKNOWN",
+            "direction": null,
+            "facts": [],
+            "early_receipt": {
+              "closed": false,
+              "direction": null,
+              "candidate": {
+                "direction": "LONG",
+                "origin": "EARLY_CYCLE",
+                "source_ts": 1791552612763,
+                "confirmation_state": "DIRECTION_NOT_CLOSED",
+                "direction_raw": "LONG"
+              },
+              "source_ts": 1791552612763,
+              "available_at": 1791552612763,
+              "same_contract": true,
+              "same_wave": true,
+              "fresh": true,
+              "directed": true,
+              "direction_state_closed": false,
+              "evidence_ids": [],
+              "unassigned_evidence_ids": [
+                "EDW:BR-USDT:1791545058092:G10:RELATIVE_STRENGTH:LONG",
+                "EDW:BR-USDT:1791545058092:G10:RELATIVE_STRENGTH:SHORT",
+                "EDW:BR-USDT:1791545058092:G10:PRICE_STATE_TRANSITION:SHORT"
+              ],
+              "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+            },
+            "candidate_direction": "UNKNOWN",
+            "authorized_entry_direction": "UNKNOWN"
+          },
+          "scenario_plan_transfer": {
+            "existing_plan_closed": false,
+            "fallback_plan_closed": false,
+            "fallback_receipt": {
+              "version": "observation-plan-diagnostic-v1-20261006",
+              "contract": "BR-USDT",
+              "decision_ts": 1791552702776,
+              "status": "NOT_CLOSED",
+              "reason": "DIRECTION_NOT_CLOSED",
+              "score_contribution": 0,
+              "entry_authorized_by_receipt": false,
+              "direction": null,
+              "current_price": 0.520375
+            },
+            "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+            "reason": "PLAN_NOT_CLOSED"
+          },
+          "hard_gates": [
+            {
+              "version": "htx-futures-turnover-gate-v1-20260924",
+              "contract": "BR-USDT",
+              "venue": "HTX",
+              "market_type": "FUTURES",
+              "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+              "minimum_usd": 100000,
+              "turnover_usd_equivalent": 550603.7743,
+              "inclusive_boundary": true,
+              "external_turnover_can_substitute": false,
+              "htx_spot_required": false,
+              "status": "CLOSED",
+              "allowed": true,
+              "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+            },
+            {
+              "gate": "HTX_EXECUTION_HANDOFF",
+              "status": null,
+              "reason": null
+            }
+          ],
+          "final_decision_present": false,
+          "manual_exact_same_run_artifact": true,
+          "canonical_DB_manual_text": null,
+          "telegram_formatter_refusal_exact": true,
+          "telegram_formatter_reason": "DISPLAY_IDENTITY_NOT_CLOSED",
+          "telegram_SENT": false,
+          "manual_sha256": "693a20b3ce083b9997b342c26583b2943a8a8fb3f56bbf4d865b0f36d2f1aa1f",
+          "telegram_text": null,
+          "block_use": {
+            "checked": 11,
+            "participating": 7,
+            "nonzero": 0,
+            "neutral_assessed_and_rendered": 6,
+            "unscored_diagnostics_assessed_and_rendered": 1,
+            "participating_block_ids": [
+              "N05",
+              "N08",
+              "N09",
+              "N10",
+              "N11",
+              "N12",
+              "N16"
+            ]
+          }
+        },
+        {
+          "contract": "BTR-USDT",
+          "run_id": "1791552597150-1791552612560",
+          "snapshot_id": "S392:BTR-USDT:1791552667442",
+          "publication_id": "PUB:c5c7cb3dacdbe44b5a74ec8a4bdb771e32eceddc",
+          "observed_ts": 1791552667442,
+          "analytical_fingerprint": "35d4d62eb8359131adaede00c3b0119f6d4e4656be648af715abeeb832e541da",
+          "state": "REJECTED",
+          "shadow_stage": "SHADOW_OBSERVE_LONG_BIAS",
+          "dq_receipt": {
+            "schema": "HTX_DQ_PREDICATES_V1",
+            "contract": "BTR-USDT",
+            "evaluated_ts": 1791552667442,
+            "status": "PARTIAL",
+            "sufficiency": "PARTIAL",
+            "mandatory_checks": [
+              {
+                "key": "futures.htx_futures_liquidity",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_futures_order_flow_sample",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_open_interest",
+                "closed": true
+              },
+              {
+                "key": "futures.htx_funding",
+                "closed": true
+              },
+              {
+                "key": "trajectory.price_1h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.price_4h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.oi_1h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.oi_4h",
+                "closed": true
+              },
+              {
+                "key": "trajectory.funding_current",
+                "closed": true
+              },
+              {
+                "key": "trajectory.funding_history",
+                "closed": true
+              }
+            ]
+          },
+          "direction_resolution": {
+            "status": "UNKNOWN",
+            "direction": null,
+            "facts": [],
+            "early_receipt": {
+              "closed": false,
+              "direction": null,
+              "candidate": {
+                "direction": "LONG",
+                "origin": "EARLY_CYCLE",
+                "source_ts": 1791552612763,
+                "confirmation_state": "DIRECTION_NOT_CLOSED",
+                "direction_raw": "LONG"
+              },
+              "source_ts": 1791552612763,
+              "available_at": 1791552612763,
+              "same_contract": true,
+              "same_wave": true,
+              "fresh": true,
+              "directed": true,
+              "direction_state_closed": false,
+              "evidence_ids": [],
+              "unassigned_evidence_ids": [
+                "EDW:BTR-USDT:1791552612763:G4:RELATIVE_STRENGTH:LONG",
+                "EDW:BTR-USDT:1791552612763:G4:PRICE_STATE_TRANSITION:SHORT"
+              ],
+              "reason": "EARLY_DIRECTION_STATE_NOT_CLOSED"
+            },
+            "candidate_direction": "UNKNOWN",
+            "authorized_entry_direction": "UNKNOWN"
+          },
+          "scenario_plan_transfer": {
+            "existing_plan_closed": false,
+            "fallback_plan_closed": false,
+            "fallback_receipt": {
+              "version": "observation-plan-diagnostic-v1-20261006",
+              "contract": "BTR-USDT",
+              "decision_ts": 1791552667442,
+              "status": "NOT_CLOSED",
+              "reason": "DIRECTION_NOT_CLOSED",
+              "score_contribution": 0,
+              "entry_authorized_by_receipt": false,
+              "direction": null,
+              "current_price": 0.052680000000000005
+            },
+            "target_proof_status": "PENDING_FOR_EARLY_OBSERVATION",
+            "reason": "PLAN_NOT_CLOSED"
+          },
+          "hard_gates": [
+            {
+              "version": "htx-futures-turnover-gate-v1-20260924",
+              "contract": "BTR-USDT",
+              "venue": "HTX",
+              "market_type": "FUTURES",
+              "metric": "rolling_24h_monetary_turnover_usd_equivalent",
+              "minimum_usd": 100000,
+              "turnover_usd_equivalent": 206330.5194,
+              "inclusive_boundary": true,
+              "external_turnover_can_substitute": false,
+              "htx_spot_required": false,
+              "status": "CLOSED",
+              "allowed": true,
+              "reason": "HTX_FUTURES_24H_TURNOVER_GATE_PASS"
+            },
+            {
+              "gate": "HTX_EXECUTION_HANDOFF",
+              "status": null,
+              "reason": null
+            }
+          ],
+          "final_decision_present": false,
+          "manual_exact_same_run_artifact": true,
+          "canonical_DB_manual_text": null,
+          "telegram_formatter_refusal_exact": true,
+          "telegram_formatter_reason": "DISPLAY_IDENTITY_NOT_CLOSED",
+          "telegram_SENT": false,
+          "manual_sha256": "34afb2c384b0ba7abafaf1cfc7ed9127c39c833fd5f0814aae42806aa7a01d31",
+          "telegram_text": null,
+          "block_use": {
+            "checked": 11,
+            "participating": 7,
+            "nonzero": 0,
+            "neutral_assessed_and_rendered": 6,
+            "unscored_diagnostics_assessed_and_rendered": 1,
+            "participating_block_ids": [
+              "N05",
+              "N08",
+              "N09",
+              "N10",
+              "N11",
+              "N12",
+              "N16"
+            ]
+          }
+        }
+      ],
+      "original_universe_scope": {
+        "approved_contracts": 119,
+        "approved_assets": 102,
+        "original_scan_count": 103,
+        "actual_qualified_candidates_outside_approved": [
+          {
+            "rank": 15,
+            "queue_priority_rank": 15,
+            "contract": "CT-USDT",
+            "score_0_100": 48,
+            "direction_hint": "NEUTRAL_ANOMALY",
+            "funding_bonus_0_5": 0,
+            "non_funding_anomaly_flags_count": 4,
+            "turnover_24h_usdt": 530245.8434
+          }
+        ],
+        "approved_universe_changed": false,
+        "full_universe_list_originally_retained": false,
+        "requires_general_scope_repair": true
+      },
+      "queue_states": [
+        {
+          "state_key": "R8_20_OUTCOME_QUEUE_TURN_V1",
+          "status": "EARLY",
+          "updated_ts": 1791552710118
+        },
+        {
+          "state_key": "R8_20_EARLY_OUTCOME_CURSOR_V1",
+          "status": "{\"target_ts\":1790007407162,\"outcome_id\":\"EDW:TRUMP-USDT:1790003807162:G1:H1\",\"retry_after_ts\":1790859191818}",
+          "updated_ts": 1791549057283
+        }
+      ],
+      "original_BR_h1": {
+        "outcome_id": "EDW:BR-USDT:1791545058092:G10:H1",
+        "computed_ts": null,
+        "production_closed": false
+      },
+      "entry_statistics": {
+        "signals": 0,
+        "outcomes": 0,
+        "signals_full_table_closed": true,
+        "outcomes_full_table_closed": true
+      }
+    }
+  },
+  "GRAM_underlying_historical_native_error_reconstructed": false,
+  "new_natural_failed_request_path_proven": false,
+  "retry_implemented": false,
+  "new_SENT": false,
+  "actual_ENTRY": false,
+  "source_clocks_refreshed": false,
+  "original_TTL_changed": false,
+  "original_SENT_rewritten": false,
+  "threshold_weights_gates_cadence_source_and_D1_caps_changed": false,
+  "all102_history_complete": false,
+  "statistical_acceptance": false,
+  "full_TZ_complete": false
+}

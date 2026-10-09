@@ -1,0 +1,32 @@
+name: Retain failed D1 accounting and exact original refusal consumers
+on:
+  push:
+    branches: [codex/entry-infrastructure-accounting-20261009]
+    paths: ['.github/workflows/entry-infrastructure-proof-retention-20261009.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  retain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/',''),main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(main!=='bcef3dab90a4870a21d7b6068a3ecd7f0d50c21e')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:FULL_TZ:20261009:1791542831880'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const files=[
+            [11621581750,'e1bab5fc654665d95bf1ba9473120b624bba1fd4d56307ab1b2dc5e9b3fc3ee1','checkpoints/entry-infrastructure-connected-37940093559.zip'],
+            [11621621108,'6135d9a5c5c8e01f09cf9e527cbc361d2d884996db4abb512fce1b0ad55d592b','checkpoints/post259-original-refusals-37939704771.zip'],
+            [11621896259,'b08a6180e8851a57ac9ef0107d2e145e385f26d562b544cdcc9cfc1898bdc3e6','checkpoints/post259-refusal-consumers-37942734352.zip']
+            ],tree=[];
+            for(const [id,hash,path] of files){const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:id,archive_format:'zip'})).data);if(crypto.createHash('sha256').update(bytes).digest('hex')!==hash)throw Error('EXACT_ORIGINAL_DIGEST:'+id);const blob=(await github.rest.git.createBlob({owner,repo,content:bytes.toString('base64'),encoding:'base64'})).data;tree.push({path,mode:'100644',type:'blob',sha:blob.sha});}
+            const prior=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,created=(await github.rest.git.createTree({owner,repo,base_tree:prior.tree.sha,tree})).data,next=(await github.rest.git.createCommit({owner,repo,tree:created.sha,parents:[context.sha],message:'proof: retain failed-attempt accounting and original direction refusals'})).data;
+            if((await github.rest.git.getRef({owner,repo,ref})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED_BEFORE_WRITE');
+            await github.rest.git.updateRef({owner,repo,ref,sha:next.sha,force:false});
+            core.info(JSON.stringify({status:'ORIGINAL_REFUSALS_AND_ACCOUNTING_RETAINED',head:next.sha,files:tree.map(x=>x.path),sourceHTTP:0,D1:0,MAIN:0,Telegram:0,project_complete:false}));
