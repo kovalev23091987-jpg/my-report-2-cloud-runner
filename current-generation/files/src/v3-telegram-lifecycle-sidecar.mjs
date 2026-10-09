@@ -52,10 +52,11 @@ export function lifecycleRemovalReceipt({contract,direction:dir,wave_id,reason,h
     for(const [source,row_id,d,ts] of [['deep_check_handoff',handoff?.handoff_id,handoff?.handoff_direction,handoff?.scan_ts],['shadow_decision_log',shadow?.shadow_id,shadowDirectional(shadow),shadow?.observed_ts],['v3_early_candidate_wave',early?.wave_id,early?.direction_hint,early?.last_seen_ts]])if(direction(d))add(source,row_id,'direction',upper(d),ts);
   }
   const flags=parsed(shadow?.evidence_flags_json,{}),dq=flags?.dq_failure_receipt;
-  const failedChecks=dq?.schema==='HTX_DQ_PREDICATES_V1'&&dq.contract===contract&&dq.evaluated_ts===shadow?.observed_ts&&dq.status===shadow?.dq_status
+  const predicatesClosed=dq?.schema==='HTX_DQ_PREDICATES_V1'&&dq.contract===contract&&dq.evaluated_ts===shadow?.observed_ts&&dq.status===shadow?.dq_status;
+  const failedChecks=predicatesClosed
     ? (dq.mandatory_checks||[]).filter(c=>c.closed===false&&typeof c.key==='string').slice(0,10).map(c=>c.key):[];
   return {schema:'LIFECYCLE_REMOVAL_RECEIPT_V1',contract,direction:dir,wave_id,reason,source_run_id:text(handoff?.source_run_id),observed_ts,conditions,
-    ...(reason==='DATA_UNUSABLE'?{failed_checks:failedChecks,sufficiency:dq?.sufficiency??null,detail_status:dq?'ORIGINAL_DQ_PREDICATES':'ORIGINAL_PREDICATES_NOT_RETAINED'}:{}),market_snapshot:false};
+    ...(reason==='DATA_UNUSABLE'?{failed_checks:failedChecks,sufficiency:predicatesClosed?dq.sufficiency:null,detail_status:predicatesClosed?'ORIGINAL_DQ_PREDICATES':'ORIGINAL_PREDICATES_NOT_RETAINED'}:{}),market_snapshot:false};
 }
 function normalizedSufficiency(v){return upper(v||'UNKNOWN');}
 function shadowDirectional(row){

@@ -112,3 +112,10 @@ test('assembled delivery sends only the separate removal with confirmed prior re
  assert.equal(result.status,'CLOSED',JSON.stringify(result));assert.equal(result.sent,1);assert.equal(calls,1);assert.match(payload.text,/ИДЕЯ СНЯТА/);assert.doesNotMatch(payload.text,/2023|889|91|Оценка/);assert.deepEqual(db.raw.prepare('SELECT * FROM canonical_publication_shadow WHERE publication_id=?').get(before.publication_id),before);
  assert.equal(db.raw.prepare("SELECT state FROM v3_telegram_dispatch_shadow WHERE idempotency_key='OLD'").get().state,'SENT');assert.equal(db.raw.prepare('SELECT COUNT(*) n FROM v3_recheck_task_shadow').get().n,0);
 });
+
+test('foreign or retimed DQ predicate detail cannot supply a specific cancellation cause',()=>{
+ for(const change of [{contract:'NEAR-USDT'},{evaluated_ts:obs-1},{status:'PARTIAL'}]){
+  const shadow={shadow_id:'ZEC',observed_ts:obs,dq_status:'INSUFFICIENT',evidence_flags_json:JSON.stringify({dq_failure_receipt:{schema:'HTX_DQ_PREDICATES_V1',contract:'ZEC-USDT',evaluated_ts:obs,status:'INSUFFICIENT',sufficiency:'INSUFFICIENT',mandatory_checks:[{key:'futures.htx_futures_order_flow_sample',closed:false}],...change}})};
+  const r=sidecar.lifecycleRemovalReceipt({contract:'ZEC-USDT',direction:'LONG',wave_id:'W-ZEC',reason:'DATA_UNUSABLE',handoff:{source_run_id:'CURRENT'},shadow,observed_ts:obs});assert.equal(r.sufficiency,null);assert.deepEqual(r.failed_checks,[]);assert.equal(r.detail_status,'ORIGINAL_PREDICATES_NOT_RETAINED');
+ }
+});
