@@ -13,7 +13,8 @@ test('original BR and BTR component reconstruction preserves every previous pred
  assert.equal(native.status,'READ_NOT_CLOSED');assert.equal(saved.status,'EXACT_REFUSALS_AND_FAIR_QUEUE_READ_CLOSED');
  for(const f of native.features){
   const record=saved.exact_candidates.find(x=>x.contract===f.contract),c=JSON.parse(record.canonical.canonical_json),prior=c.metadata.direction_resolution.early_receipt;
-  const d={contract:f.contract,early_candidate_bridge:true,early_candidate_wave_id:c.wave_id,early_candidate_receipt:{status:'CLOSED',contract:f.contract,wave_id:c.wave_id,source_ts:prior.source_ts,available_at:prior.available_at,direction_hint:prior.candidate.direction_raw,direction_state:f.feature.direction_state,evidence:JSON.parse(f.feature.evidence_json),evidence_ids:prior.unassigned_evidence_ids}};
+  const wave=record.canonical.wave_id;assert.ok(typeof wave==='string'&&wave.startsWith('EDW:'+f.contract+':'));
+  const d={contract:f.contract,early_candidate_bridge:true,early_candidate_wave_id:wave,early_candidate_receipt:{status:'CLOSED',contract:f.contract,wave_id:wave,source_ts:prior.source_ts,available_at:prior.available_at,direction_hint:prior.candidate.direction_raw,direction_state:f.feature.direction_state,evidence:JSON.parse(f.feature.evidence_json),evidence_ids:prior.unassigned_evidence_ids}};
   const q=qualify(d,c.observed_ts),without=structuredClone(q);delete without.predicate_receipt;assert.deepEqual(without,prior);
   assert.deepEqual(q.predicate_receipt.failed_predicates,['DIRECTION_STATE_CLOSED']);
   assert.equal(q.predicate_receipt.evidence_summary.long_domains.length,f.feature.long_evidence_domain_count);assert.equal(q.predicate_receipt.evidence_summary.short_domains.length,f.feature.short_evidence_domain_count);
