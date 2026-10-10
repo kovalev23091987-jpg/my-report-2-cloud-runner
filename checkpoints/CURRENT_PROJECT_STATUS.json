@@ -1259,7 +1259,7 @@
     "artifact_digest": "sha256:21ad1dd4404a3ce6a08903e8503181645621ee7e08296089f42e8c0c398f682b",
     "new_fresh_same_run_SENT": false
   },
-  "current_execution_block": "ACTUAL_102_PRICE_GAP_CENSUS_VERIFIED;BULK_HTX_30_90DAY_ARCHIVE_AND_MATURE_EMPIRICAL_DENOMINATOR_STILL_OPEN",
+  "current_execution_block": "HTX_COMPACT_90D_4H_BULK_SOURCE_SCHEDULED_PILOT_PENDING;NATIVE_1M_30_90D_AND_EMPIRICAL_ENTRY_OUTCOMES_STILL_OPEN",
   "latest_development_lease_release": {
     "owner": "CODEX:FULL_TZ:20261009:1791542831880",
     "acquired_ts": 1791542831880,
@@ -8511,6 +8511,31 @@
     "minimum_remaining_days_90day_102assets": 3059,
     "scope": "LOWER_BOUND_ONLY_UNDER_CURRENT_DAILY_ZIP_METHOD",
     "required_next_action": "BULK_SOURCE_OR_EXPLICIT_SOURCE_CAP_REVIEW_WITH_BUDGETS;DO_NOT_BLOCK_PRODUCTION",
+    "project_complete": false
+  },
+  "latest_htx_compact_90d_4h_implementation": {
+    "proof": "checkpoints/HTX_COMPACT_90D_4H_BULK_ADAPTER_ACCEPTANCE_20261010.json",
+    "pr": 296,
+    "merged_head": "32f12236491fd1baa508ecbb3a124989dad0fa08",
+    "test_cloud_run": 38039243023,
+    "tested_code_head": "f9348723e82143567bbb4a43d84dbeaea9aac346",
+    "node_tests_passed": 12,
+    "node_tests_failed": 0,
+    "python_tests_passed": 2,
+    "workflow": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+    "scheduled_utc": "00:15 daily",
+    "first_pilot_asset": "NEAR-USDT",
+    "pilot_actual_source_calls": 0,
+    "source": "HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION",
+    "source_daily_cap_unchanged": 6,
+    "expected_bars_per_asset": 540,
+    "asset_universe": 102,
+    "anchor_end_utc": "2026-10-10T00:00:00Z",
+    "conditional_min_days_to_attempt_102_assets": 18,
+    "actual_90d_4h_complete_assets": 0,
+    "actual_90d_native_1m_complete_assets": 0,
+    "full_TZ_complete": false,
+    "actual_ENTRY": false,
     "project_complete": false
   }
 }
