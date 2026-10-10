@@ -2,10 +2,10 @@
   "schema": "OWNER_REVIEW_RESUME_POINT_20261010_V1",
   "recorded_ts": 1791647380532,
   "owner_instruction_local": "2026-10-10T14:32:56+03:00",
-  "source_main": "a2bdcab9a281417a9e29442bd97551516f915ab4",
+  "source_main": "da983b3bbf58b2fbfbcdafb0e7c47db3eecc064a",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "main",
-  "current_task": "OWNER_N05_MAXIMUM_COVERAGE_AND_HTX_CRYPTO_FUTURES_UNIVERSE_REFRESH",
+  "current_task": "OWNER_N05_MAXIMUM_USEFUL_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS",
   "continuation_policy": "PERSIST_EVERY_COMPLETED_PACKAGE_AND_IN_PROGRESS_HANDOFF_IN_GITHUB;RESUME_FROM_ACTUAL_VERIFIED_STATE",
   "completed_and_verified": [
     {
@@ -43,13 +43,19 @@
       "pr": 306,
       "cloud_run": 38064914622,
       "proof": "checkpoints/N05_LARGE_VENUE_CONNECTED_RELEASE_20261010.json"
+    },
+    {
+      "scope": "HTX current crypto futures universe and all104 native collection",
+      "status": "MERGED_104_CRYPTO_ASSETS_121_CONTRACTS_AND_NATURAL_COLLECTION_VERIFIED",
+      "proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json"
     }
   ],
   "next_work_in_order": [
     {
       "id": "HTX_CRYPTO_FUTURES_UNIVERSE_REFRESH",
-      "status": "IN_PROGRESS",
-      "action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS"
+      "status": "MERGED_NATURAL104_COLLECTION_VERIFIED",
+      "action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS",
+      "proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json"
     },
     {
       "id": "N05_BINANCE_NATIVE_INTEGRATION",
@@ -58,8 +64,8 @@
     },
     {
       "id": "N05_BROAD_SOURCE_QUALIFICATION",
-      "status": "OPEN;22_INDIVIDUAL_RETAINED_FULL_FLOW_ASSETS;NOT_CONTINUOUS;51_POLONIEX_AND57_KUCOIN_EXACT_STRUCTURAL_BINDINGS_NOT_FLOW",
-      "action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS"
+      "status": "OPEN;22_INDIVIDUAL_RETAINED_ASSETS_OF_CURRENT104;NOT32_CONTINUOUS",
+      "action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT"
     },
     {
       "id": "N05_LARGE_FLOW_AND_AGREEMENT_CALIBRATION",
@@ -1030,20 +1036,108 @@
     ],
     "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
   },
-  "next_action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS",
+  "next_action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT",
   "latest_package_accounting": {
-    "original_research_HTTP": 55,
-    "original_D1": {
-      "rows_read": 1153,
-      "rows_written": 409,
-      "unknown_ops": 0
+    "catalog_HTTP": 6,
+    "catalog_D1": {
+      "requests": 46,
+      "rows_read": 161,
+      "rows_written": 46,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 82,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 12,
+          "rows_read": 6,
+          "rows_written": 6,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 6,
+          "rows_read": 6,
+          "rows_written": 12,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 6,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 6,
+          "rows_read": 27,
+          "rows_written": 24,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 12,
+          "rows_read": 33,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
     },
-    "replay_source_HTTP": 0,
-    "verification_source_HTTP": 0,
-    "verification_D1": 0,
+    "original_collector_readback_HTTP": 0,
+    "original_collector_readback_D1": {
+      "requests": 6,
+      "rows_read": 91,
+      "rows_written": 4,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 83,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_market_snapshot_batch_v1": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "all:report2_market_snapshot_batch_v1": {
+          "requests": 1,
+          "rows_read": 6,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "verification_HTTP": 0,
     "Telegram": 0,
     "MAIN": 0,
-    "raw_source_hashes_verified": 55
+    "source_caps_reset": false
   },
   "latest_n05_broad_venue_release": {
     "schema": "N05_BROAD_VENUE_CONNECTED_RELEASE_20261010_V1",
@@ -1155,9 +1249,9 @@
     "new_fresh_SENT": false,
     "project_complete": false
   },
-  "latest_status": "MERGED_ASSEMBLED_POLONIEX_AND_KRAKEN_ALIASES_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
-  "updated_ts": 1791652715281,
-  "updated_utc": "2026-10-10T17:18:35.281Z",
+  "latest_status": "HTX104_NATURAL_COLLECTION_VERIFIED;N05_22_INDIVIDUAL_RETAINED_FULL_FLOW_ASSETS;BROAD_COVERAGE_AND_CALIBRATION_OPEN",
+  "updated_ts": 1791654143385,
+  "updated_utc": "2026-10-10T17:42:23.385Z",
   "owner_latest_continuation_instruction": {
     "received_local": "2026-10-10T19:24:00+03:00",
     "owner_text": "Выполняй без остановок дальше. И без моих команд.",
@@ -1505,7 +1599,598 @@
     "scope_change_authorized": true,
     "new_members_require_current_primary_metadata": true,
     "source_caps_and_reserves_unchanged": true,
-    "status": "IN_PROGRESS",
-    "verified_base_manifest_assets": 102
-  }
+    "status": "MERGED_VERIFIED",
+    "verified_base_manifest_assets": 102,
+    "proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json",
+    "current_assets": 104
+  },
+  "latest_htx_current_crypto_universe_release": {
+    "schema": "HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_RELEASE_V1",
+    "proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json",
+    "recorded_ts": 1791654143385,
+    "status": "MERGED_104_CRYPTO_ASSETS_121_CONTRACTS_AND_NATURAL_COLLECTION_VERIFIED",
+    "pr": 309,
+    "production_head": "da983b3bbf58b2fbfbcdafb0e7c47db3eecc064a",
+    "exact_runtime_tested_head": "44dec9f6515e1f285b1feb85535dd882e7ccd8ff",
+    "exact_runtime_test_run": 38071724772,
+    "verified_head": "53bd4f1e32ed374a8bd1afbf43e538e285806541",
+    "retained_head": "070a7c7ee784cc2061c09d1bfeadc10234d5ed4f",
+    "cloud_run": 38071922903,
+    "artifact": {
+      "id": 11677285552,
+      "digest": "sha256:67cd762045572734a43718f86e18ef565d61e384c61b2bcb7a92fa1b5315aa45"
+    },
+    "cloud_proof": "checkpoints/htx-scope-verification-38071922903/proof.json",
+    "proof_file_hashes": {
+      "approved-delivery.tap": "69b9fa1c61e26ef2134ade34bb7dcab993cf6ef4cda9698916dcdafef4f95435",
+      "assembled-scope.tap": "75a5fbf3ea7a4fd13d91348e2da45013f2f365516288606baa8fae77c095102f",
+      "assembly.json": "de6e0c4004397f8db8cd1cd2eb375be4fd1b46ec3a38ecf622f30580dd930a25",
+      "binding.json": "9b5a41beeaca6c16f63ddda6a63643a4290e4ac85db6c6a3ce97cc0c1091a358",
+      "current-generation-unit-tests.tap": "4ec65ee7eb5049147a7140d8191a3a0ebf5c54f85e23d9ef9364885a2ab8ed3c",
+      "generation.log": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+      "integration.json": "75e228f7d6281e39c3645f783247f3a055b9a6dc63ba29f59c07242969600782",
+      "original-collector-readback.json": "2c5d8da25f2996b2e2861bcbf20e6532cc755d921588604e8853682ed4710597",
+      "original-scope-replay.json": "8e2944aa83ad514fec49b8585748d56e4659ea4acf3d0848465444bf41526b64",
+      "reused-completed-runtime.json": "b5150d129a8d8dd584d370b32ef2ed86607db8f57a1f1fce679451c7b4bce94b"
+    },
+    "independently_verified_proof_hashes": 10,
+    "current_scope": {
+      "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+      "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
+      "manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+      "approved_contracts": 121,
+      "approved_assets": 104,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "catalog_observed_ts": 1791652904807
+    },
+    "original_catalog": {
+      "run": 38071397633,
+      "head": "02ff89fc8b6ce6b4fa14d82c8d8d1ae0fce941d7",
+      "retained": "fa20928b4e4109f3ba0a074841e01261a35ca355",
+      "proof": "checkpoints/htx-crypto-universe-refresh-38071397633/proof.json",
+      "artifact": "sha256:7bd4d6f464619c68107e39bd28286d346b900154726a4894a0ff690368a304ee",
+      "observed_ts": 1791652904807,
+      "source_receipts": [
+        {
+          "name": "linear-default",
+          "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:linear-default",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 1,
+            "cap": 6
+          },
+          "file": "linear-default.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652898233,
+          "body_sha256": "fd0d507189aaa378fad7f409a2702f418c8627c203e202d7b95b76f1658cde7f",
+          "gzip_sha256": "4a83449a89c5cbb35d669d729430f4a4feb823d29b1e979f18b0a23f73844a4b",
+          "bytes": 192471,
+          "source_ts": 1791652898021
+        },
+        {
+          "name": "linear-all",
+          "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all&support_margin_mode=all",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:linear-all",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 2,
+            "cap": 6
+          },
+          "file": "linear-all.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652899540,
+          "body_sha256": "5f074cd61eb660171f4145d3555e61b46442b675cc97c7c8cb512741e3b5f682",
+          "gzip_sha256": "f4e386447f74fcd7820c70425c91762cc726b49ad7b311f888ff12506c48d146",
+          "bytes": 190379,
+          "source_ts": 1791652899405
+        },
+        {
+          "name": "linear-cross",
+          "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=all&support_margin_mode=cross",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:linear-cross",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 3,
+            "cap": 6
+          },
+          "file": "linear-cross.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652900855,
+          "body_sha256": "5b502db526d26427e8950e2e672ff73065711d2f0566c0c0debcf5cd61b1459f",
+          "gzip_sha256": "75a843630d0ad6b781cb845160e8bc8ff716e43d86da34b75c0cc342907014b8",
+          "bytes": 2135,
+          "source_ts": 1791652900724
+        },
+        {
+          "name": "linear-isolated",
+          "url": "https://api.hbdm.com/linear-swap-api/v1/swap_contract_info?business_type=swap&support_margin_mode=isolated",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:linear-isolated",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 4,
+            "cap": 6
+          },
+          "file": "linear-isolated.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652902222,
+          "body_sha256": "185f34a244b53a2c5d76d90f8f515fc7bb9365bae4af596f25009b3110b612dc",
+          "gzip_sha256": "5040d28d468ea6328d33968ef26b128e6f5d505e6ab16b15d5d87ced44a6e9d2",
+          "bytes": 93,
+          "source_ts": 1791652902035
+        },
+        {
+          "name": "coin-swap",
+          "url": "https://api.hbdm.com/swap-api/v1/swap_contract_info",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:coin-swap",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 5,
+            "cap": 6
+          },
+          "file": "coin-swap.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652903527,
+          "body_sha256": "bd89f240e20ab3bacf7dcb943a89524be85254df308386221082359bfd17f43b",
+          "gzip_sha256": "6aee67a48ec3d782523bc844ee9c17ccdd30cb88aced36c66c492a80a2e54e72",
+          "bytes": 1361,
+          "source_ts": 1791652903372
+        },
+        {
+          "name": "coin-delivery",
+          "url": "https://api.hbdm.com/api/v1/contract_contract_info",
+          "sourceHTTP": 1,
+          "whole_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "lane": "background",
+            "attempts": 1,
+            "logical_request_id": "HTX_UNIVERSE_REFRESH:38071397633:1:coin-delivery",
+            "duplicate": false
+          },
+          "daily_admission": {
+            "allowed": true,
+            "status": "RESERVED",
+            "source": "HTX_PUBLIC_RISK",
+            "day_utc": "2026-10-10",
+            "attempts": 1
+          },
+          "minute_admission": {
+            "allowed": true,
+            "status": "RESERVED_OR_IDENTICAL",
+            "provider": "HTX",
+            "minute_bucket": 1791652860000,
+            "reserved_units": 1,
+            "rolling_units": 6,
+            "cap": 6
+          },
+          "file": "coin-delivery.json.gz",
+          "http_status": 200,
+          "received_ts": 1791652904807,
+          "body_sha256": "9bce5c4f980edc09b47888553a398e2a61bc1330280c76e24285d894cd3df57b",
+          "gzip_sha256": "b4436b9cde102fd211c26960257b0d42ce6d2e8bbcef28c9c8d59a35828f0ea4",
+          "bytes": 2520,
+          "source_ts": 1791652904674
+        }
+      ],
+      "raw_source_hashes_verified": 6,
+      "all_three_families_and_all_margin_modes": true,
+      "added_assets": [
+        "CT",
+        "RLC"
+      ],
+      "removed_assets": [],
+      "expired_contracts_removed": [
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261009"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261009"
+        }
+      ],
+      "added_contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261023"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261023"
+        },
+        {
+          "family": "linear",
+          "contract_code": "RLC-USDT"
+        },
+        {
+          "family": "linear",
+          "contract_code": "CT-USDT"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261023"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261023"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261023"
+        }
+      ],
+      "excluded_noncrypto": 276,
+      "unsupported_exact_inverse_delivery_contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261016"
+        },
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261023"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261016"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261023"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "BTC-USD"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "ETH-USD"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "XRP-USD"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "TRX-USD"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "DOGE-USD"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261016"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261023"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261225"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261016"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261023"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261225"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261016"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261023"
+        }
+      ]
+    },
+    "actual_collection": {
+      "proof": "checkpoints/htx-scope-verification-38071922903/original-collector-readback.json",
+      "status": "ALL_APPROVED_ASSETS_PRESENT_IN_ORIGINAL_NATURAL_COLLECTOR_BUCKET",
+      "original_bucket": 1791653100000,
+      "original_market_source_ts": 1791653102534,
+      "original_catalog_source_ts": 1791653104037,
+      "original_received_ts": 1791653104207,
+      "read_ts": 1791653358191,
+      "approved_present": 104,
+      "approved_current_closed_at_original_read": 104,
+      "new_assets": [
+        {
+          "contract": "CT-USDT",
+          "status": "CLOSED",
+          "source_ts": 1791653102533,
+          "price": 0.30749,
+          "oi_contracts": 8753,
+          "oi_value_usdt": 26893.5925,
+          "funding_rate": 0.00005,
+          "missing": [],
+          "fresh_at_read": true
+        },
+        {
+          "contract": "RLC-USDT",
+          "status": "CLOSED",
+          "source_ts": 1791653102533,
+          "price": 1.0144,
+          "oi_contracts": 7940,
+          "oi_value_usdt": 8091.654,
+          "funding_rate": -0.001597131858333047,
+          "missing": [],
+          "fresh_at_read": true
+        }
+      ],
+      "forced_collector_run": false,
+      "collector_cadence_minutes": 5,
+      "analysis_cadence_minutes": 40,
+      "all_derivatives_backup_contains_noncrypto": true,
+      "noncrypto_never_admitted_to_crypto_analysis": true,
+      "not_240min_N05_flow_claim": true
+    },
+    "tests": {
+      "unit_pass": 1328,
+      "assembled_scope_and_pause_report_pass": 10,
+      "delivery_pass": 35,
+      "integration_pass": 37,
+      "fail": 0,
+      "immutable_completed_artifact_reused_after_runtime_diff_guard": true,
+      "completed_runtime_tests_repeated": false,
+      "manual_and_Telegram_both_verified": true,
+      "controlled_no_live_delivery": true
+    },
+    "accounting": {
+      "catalog_HTTP": 6,
+      "catalog_D1": {
+        "requests": 46,
+        "rows_read": 161,
+        "rows_written": 46,
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 82,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "batch:report2_evidence_source_daily": {
+            "requests": 12,
+            "rows_read": 6,
+            "rows_written": 6,
+            "unknown_ops": 0
+          },
+          "batch:report2_evidence_source_reservation": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 12,
+            "unknown_ops": 0
+          },
+          "first:report2_evidence_source_reservation": {
+            "requests": 6,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_provider_minute_ledger_v1": {
+            "requests": 6,
+            "rows_read": 27,
+            "rows_written": 24,
+            "unknown_ops": 0
+          },
+          "first:report2_provider_minute_ledger_v1": {
+            "requests": 12,
+            "rows_read": 33,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "original_collector_readback_HTTP": 0,
+      "original_collector_readback_D1": {
+        "requests": 6,
+        "rows_read": 91,
+        "rows_written": 4,
+        "unknown_ops": 0,
+        "targets": {
+          "first:report2_runner_budget_ledger_shadow": {
+            "requests": 2,
+            "rows_read": 83,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:OTHER": {
+            "requests": 1,
+            "rows_read": 0,
+            "rows_written": 3,
+            "unknown_ops": 0
+          },
+          "first:report2_market_snapshot_batch_v1": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "all:report2_market_snapshot_batch_v1": {
+            "requests": 1,
+            "rows_read": 6,
+            "rows_written": 0,
+            "unknown_ops": 0
+          },
+          "run:report2_runner_budget_ledger_shadow": {
+            "requests": 1,
+            "rows_read": 1,
+            "rows_written": 1,
+            "unknown_ops": 0
+          }
+        }
+      },
+      "verification_HTTP": 0,
+      "Telegram": 0,
+      "MAIN": 0,
+      "source_caps_reset": false
+    },
+    "N05": {
+      "individual_retained_full_flow_assets": 22,
+      "current_denominator": 104,
+      "thirty_percent_asset_count": 32,
+      "simultaneous_continuous_or_32_full_flow_assets_proven": false,
+      "score_contribution": 0,
+      "calibration_open": true,
+      "exhausted_roles_20261010_UTC": [
+        "BINANCE",
+        "GATE",
+        "BITGET",
+        "POLONIEX"
+      ],
+      "no_exhausted_role_retry_or_alias": true
+    },
+    "other_limits": {
+      "unsupported_inverse_delivery_count": 17,
+      "N01_N02_N03_paused": true,
+      "threshold": 70,
+      "weights_entry_freshness_and_reserves_unchanged": true,
+      "old_102_history_and_old_canonical_evidence_not_rewritten": true
+    },
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "next_action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT"
+  },
+  "current_crypto_futures_universe": {
+    "generation": "MY_REPORT_2_CURRENT_20260929_CURRENT_CYCLE_V13_20M",
+    "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
+    "manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+    "approved_contracts": 121,
+    "approved_assets": 104,
+    "catalog_families": 3,
+    "unsupported_inverse_delivery_contracts": 17,
+    "catalog_observed_ts": 1791652904807
+  },
+  "current_asset_count": 104,
+  "current_collection_and_source_plan": "checkpoints/HTX_104_ASSET_COLLECTION_AND_N05_PLAN_20261010.json"
 }
