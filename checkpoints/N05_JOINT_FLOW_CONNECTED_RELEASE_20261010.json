@@ -1,0 +1,208 @@
+{
+  "schema": "N05_JOINT_FLOW_CONNECTED_RELEASE_20261010_V1",
+  "proof": "checkpoints/N05_JOINT_FLOW_CONNECTED_RELEASE_20261010.json",
+  "recorded_ts": 1791635193214,
+  "status": "MERGED_SHARED_BOTH_CHAIN_IMPLEMENTATION_VERIFIED;BROAD_USEFUL_COVERAGE_AND_CALIBRATION_OPEN",
+  "pr": 304,
+  "production_head": "ba0bbc0570714bfcb3499bd07f6f70eff5435890",
+  "tested_head": "cb329dddcf40cdfac9bb57d417371abd912403d4",
+  "retained_head": "9f93d5d32738e18d7ae2947d73773c636d262da1",
+  "cloud_run": 38051756435,
+  "artifact": {
+    "id": 11669528983,
+    "name": "n05-joint-runtime-38051756435",
+    "size_in_bytes": 63552,
+    "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11669528983",
+    "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11669528983/zip",
+    "expired": false,
+    "created_at": "2026-10-10T12:23:51Z",
+    "expires_at": "2026-11-09T12:23:50Z",
+    "updated_at": "2026-10-10T12:23:51Z",
+    "digest": "sha256:a27ead5f98d07d49a9dc20f86a2dbd10e96a4635059f17a247885b3c52c85768",
+    "workflow_run": {
+      "id": 38051756435,
+      "repository_id": 1371866675,
+      "head_repository_id": 1371866675,
+      "head_branch": "n05-joint-flow-20261010",
+      "head_sha": "cb329dddcf40cdfac9bb57d417371abd912403d4"
+    }
+  },
+  "cloud_proof": "checkpoints/n05-joint-runtime-38051756435/proof.json",
+  "pagination_proof": "checkpoints/n05-joint-runtime-38051756435/pagination-summary.json",
+  "tests": {
+    "unit_pass": 1284,
+    "unit_fail": 0,
+    "unit_skipped": 0,
+    "assembled_joint_pagination_pause_pass": 17,
+    "approved_delivery_pass": 35,
+    "integration_pass": 37,
+    "generation": "PASS",
+    "runtime_binding": "PASS",
+    "retained_proof_file_hashes_verified": 7
+  },
+  "implementation": {
+    "exact_HTX_asset_required": true,
+    "minimum_distinct_actual_venues": 2,
+    "spot_and_futures_in_one_conclusion": true,
+    "full_aligned_closed_minutes": 240,
+    "preserve_components_and_contradictions": true,
+    "no_HTX_only_or_Nansen_as_consensus": true,
+    "shared_manual_and_Telegram_validation": true,
+    "original_archive_bytes_preserved": true,
+    "N01_N02_N03_paused": true,
+    "N05_score_contribution": 0,
+    "calibration": "PENDING_REAL_OUTCOMES",
+    "operational_not_calibrated_agreement_guards": {
+      "minimum_absolute_imbalance": 0.05,
+      "maximum_component_imbalance_spread": 0.15
+    },
+    "Bitget_daily_cap": 16,
+    "Bitget_max_trade_pages_per_market": 3,
+    "whole_job_HTTP_cap": 164,
+    "source_caps_reset": false
+  },
+  "actual_TRX_historical_pagination": {
+    "result": {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "TRX-USDT",
+      "venue": "BITGET",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791618240000,
+      "window_end_ts": 1791632640000,
+      "observed_ts": 1791635030398,
+      "verified_minutes": 240,
+      "pages": 2,
+      "buy_quote": 93183.387856504,
+      "sell_quote": 71094.779495639,
+      "trade_count": 1141,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 416.07,
+        "count": 58,
+        "buy_quote": 39058.874083938,
+        "sell_quote": 17953.528958166997,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": 0.13445857545705606,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true
+    },
+    "original_source_run": 38049404414,
+    "original_window_end_ts": 1791632640000,
+    "sourceHTTP": 2,
+    "D1": {
+      "requests": 20,
+      "rows_read": 70,
+      "rows_written": 18,
+      "unknown_ops": 0,
+      "targets": {
+        "first:report2_runner_budget_ledger_shadow": {
+          "requests": 2,
+          "rows_read": 51,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:OTHER": {
+          "requests": 1,
+          "rows_read": 0,
+          "rows_written": 3,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_cache": {
+          "requests": 2,
+          "rows_read": 0,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_daily": {
+          "requests": 4,
+          "rows_read": 2,
+          "rows_written": 2,
+          "unknown_ops": 0
+        },
+        "batch:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 4,
+          "unknown_ops": 0
+        },
+        "first:report2_evidence_source_reservation": {
+          "requests": 2,
+          "rows_read": 2,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_provider_minute_ledger_v1": {
+          "requests": 2,
+          "rows_read": 5,
+          "rows_written": 8,
+          "unknown_ops": 0
+        },
+        "first:report2_provider_minute_ledger_v1": {
+          "requests": 4,
+          "rows_read": 7,
+          "rows_written": 0,
+          "unknown_ops": 0
+        },
+        "run:report2_runner_budget_ledger_shadow": {
+          "requests": 1,
+          "rows_read": 1,
+          "rows_written": 1,
+          "unknown_ops": 0
+        }
+      }
+    },
+    "runtime_fresh_eligible": false,
+    "original_clock_not_refreshed": true
+  },
+  "actual_coverage": {
+    "universe_assets": 102,
+    "minimum_useful_assets": 31,
+    "exact_Bitget_identity_bindings": 49,
+    "bindings_are_not_full_flow_coverage": true,
+    "full_flow_assets": 3,
+    "full_flow_market_windows": 5,
+    "actual_fresh_multi_venue_agreements": 0,
+    "thirty_percent_useful_flow_coverage_proven": false
+  },
+  "large_trade_policy": {
+    "full_flow_reconciled_before_filtering": true,
+    "current_window_P95_tail_is_diagnostic_only": true,
+    "threshold_ties_can_include_more_than_five_percent": true,
+    "normal_historical_volume_calibration_pending": true,
+    "market_impact_not_verified": true,
+    "score_contribution": 0
+  },
+  "limits": {
+    "Bitget_daily_role_used": 16,
+    "Bitget_remaining_same_UTC_day": 0,
+    "no_reset_refund_or_alias": true,
+    "provider_body_max_bytes": 8388608,
+    "server_trade_page_max": 1000,
+    "other_venue_caps_unchanged": true
+  },
+  "new_fresh_SENT": false,
+  "actual_ENTRY": false,
+  "Telegram": 0,
+  "project_complete": false,
+  "remaining": [
+    "OTHER_CONNECTED_AND_ADDITIONAL_VENUES_ACTUAL_FULL_WINDOW_QUALIFICATION",
+    "AT_LEAST31_EXACT_ASSETS_USEFUL_FLOW_COVERAGE",
+    "HIGH_TURNOVER_COMPLETENESS_WITHIN_CAPS",
+    "LARGE_FLOW_SIGNIFICANCE_AGAINST_ACTUAL_HISTORY",
+    "EMPIRICAL_AGREEMENT_AND_SCORE_CALIBRATION",
+    "NATURAL_SAME_RUN_MANUAL_TELEGRAM_ACCEPTANCE",
+    "OLD_TZ_HISTORY_STATISTICS_FINAL_ACCEPTANCE_RETAINED_OPEN"
+  ],
+  "next_action": "QUALIFY_BINANCE_SMALLER_OFFICIAL_CATALOG_AND_NATIVE_TAKER_CANDLES;QUALIFY_GATE_OKX_AND_REMAINING_VENUES_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_BITGET_ON_EXHAUSTED_DAY"
+}
