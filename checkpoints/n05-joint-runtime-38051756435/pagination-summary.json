@@ -1,0 +1,266 @@
+{
+  "schema": "N05_ACTUAL_SPOT_FUTURES_QUALIFICATION_V1",
+  "stage": "window",
+  "run": "38051756435",
+  "head": "cb329dddcf40cdfac9bb57d417371abd912403d4",
+  "started_ts": 1791635026990,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 2,
+  "sources": [
+    {
+      "name": "TRX-ORIGINAL-WINDOW-CANDLES",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/candles?symbol=TRXUSDT&granularity=1min&startTime=1791618240000&endTime=1791632639999&limit=240",
+      "method": "GET",
+      "received_ts": 1791635029151,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38051756435:window:1:TRX-ORIGINAL-WINDOW-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791634980000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "a95c9380cfc83116f2d6edfbc7aa16d5d879eaff0defba291485852c646149d6",
+      "gzip_sha256": "5d33f36423844d1af707d438e9db7fad230c9768964a59c671540eab50201240",
+      "bytes": 22937,
+      "file": "TRX-ORIGINAL-WINDOW-CANDLES.json.gz"
+    },
+    {
+      "name": "TRX-NEXT-ID-PAGE",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/fills-history?symbol=TRXUSDT&startTime=1791618240000&endTime=1791632639999&limit=1000&idLessThan=1492729441387540480",
+      "method": "GET",
+      "received_ts": 1791635030398,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38051756435:window:1:TRX-NEXT-ID-PAGE",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791634980000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "18d33311bc0eb901d7ae04d54c7309b071aed46e02eb00cc72d85c09539c60e2",
+      "gzip_sha256": "f32433fef53dcf9abf9f5ad5544f181055aea3f287c734d433345b9372900f8d",
+      "bytes": 17345,
+      "file": "TRX-NEXT-ID-PAGE.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 50,
+      "reserved_rows_read": 777000,
+      "reserved_rows_written": 15548,
+      "measured_rows_read": 518025,
+      "measured_rows_written": 6148,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 793000,
+      "rows_written": 16048
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "original_window_immutable": true,
+  "original_source_run": 38049404414,
+  "original_end_ts": 1791632640000,
+  "cursor": "1492729441387540480",
+  "result": {
+    "version": "bitget-four-hour-flow-v1-20261010",
+    "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+    "check_completed": true,
+    "contract": "TRX-USDT",
+    "venue": "BITGET",
+    "market": "SPOT",
+    "quote": "USDT",
+    "window_start_ts": 1791618240000,
+    "window_end_ts": 1791632640000,
+    "observed_ts": 1791635030398,
+    "verified_minutes": 240,
+    "pages": 2,
+    "buy_quote": 93183.387856504,
+    "sell_quote": 71094.779495639,
+    "trade_count": 1141,
+    "score_contribution": 0,
+    "entry_authorized": false,
+    "unreconciled_minutes": [],
+    "large_trade_context": {
+      "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+      "threshold_quote": 416.07,
+      "count": 58,
+      "buy_quote": 39058.874083938,
+      "sell_quote": 17953.528958166997,
+      "market_impact_verified": false,
+      "score_contribution": 0
+    },
+    "imbalance": 0.13445857545705606,
+    "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+    "raw_trade_counter_independently_verified": false,
+    "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+    "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+    "not_onchain_exchange_flows": true
+  },
+  "runtime_fresh_eligible": false,
+  "reason": "Historical source qualification only; original window is beyond five-minute publication TTL",
+  "additional_catalogs_not_useful_flow_proof": true,
+  "status": "BOUNDED_WINDOW_QUALIFICATION_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 2,
+      "statistics": 0
+    },
+    "total": 2,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 162
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38051756435:window:1",
+    "source_run_id": "38051756435",
+    "measured_rows_read": 69,
+    "measured_rows_written_accounted": 18,
+    "measured_requests_accounted": 20,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 20,
+    "rows_read": 70,
+    "rows_written": 18,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 51,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 2,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 4,
+        "rows_read": 2,
+        "rows_written": 2,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 4,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 2,
+        "rows_read": 2,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 2,
+        "rows_read": 5,
+        "rows_written": 8,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 4,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791635030610
+}
