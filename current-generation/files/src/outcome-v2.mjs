@@ -1,6 +1,14 @@
 const finite=v=>v!==null&&v!==undefined&&v!==''&&Number.isFinite(Number(v))?Number(v):null;
 export const HORIZONS=Object.freeze({h1:3600000,h4:14400000,h12:43200000,h24:86400000});
-export function deliveredEntryCohort({publication,dispatch,relay_receipt}={}){const included=publication?.event==='ENTRY'&&dispatch?.publication_id===publication?.publication_id&&dispatch?.dispatch_id===relay_receipt?.dispatch_id&&relay_receipt?.state==='SENT'&&Number(relay_receipt?.message_id)>0&&dispatch?.recipient_identity===relay_receipt?.recipient_identity;return {included,status:included?'DELIVERED_ENTRY':'ANALYTICAL_ONLY',sample_key:included?[publication.generation,publication.wave_id,publication.direction,publication.publication_id,dispatch.dispatch_id].join('|'):null};}
+export function deliveredEntryCohort({publication,dispatch,relay_receipt}={}) {
+  const present=v=>(typeof v==='string'&&v.trim().length>0)||(Number.isSafeInteger(v)&&v>0);
+  const id=Number(relay_receipt?.message_id);
+  const included=publication?.event==='ENTRY'&&['LONG','SHORT'].includes(publication?.direction)&&
+    [publication?.publication_id,publication?.generation,publication?.wave_id,dispatch?.dispatch_id,dispatch?.recipient_identity].every(present)&&
+    dispatch?.publication_id===publication?.publication_id&&dispatch?.dispatch_id===relay_receipt?.dispatch_id&&
+    relay_receipt?.state==='SENT'&&Number.isSafeInteger(id)&&id>0&&dispatch?.recipient_identity===relay_receipt?.recipient_identity;
+  return {included,status:included?'DELIVERED_ENTRY':'ANALYTICAL_ONLY',sample_key:included?[publication.generation,publication.wave_id,publication.direction,publication.publication_id,dispatch.dispatch_id].join('|'):null};
+}
 export function selectEntryAnchor({direction,delivery_ts,quotes,notional_usd}={}){const type=direction==='LONG'?'EXECUTABLE_ASK':'EXECUTABLE_BID',rows=(quotes||[]).filter(q=>q.type===type&&q.source_ts>=delivery_ts&&q.source_ts<=delivery_ts+30000&&q.notional_usd===notional_usd&&finite(q.value)>0).sort((a,b)=>a.source_ts-b.source_ts);if(!rows.length)return {status:'ENTRY_REFERENCE_UNAVAILABLE'};const q=rows[0];return {status:'CLOSED',anchor_price:Number(q.value),anchor_ts:q.source_ts,delivery_delay_ms:q.source_ts-delivery_ts,type,notional_usd};}
 export function selectHorizonEndpoint({anchor_ts,horizon,candles}={}) {
   const duration=Object.hasOwn(HORIZONS,horizon)?HORIZONS[horizon]:null;
