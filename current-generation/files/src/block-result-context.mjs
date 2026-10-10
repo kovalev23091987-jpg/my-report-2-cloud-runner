@@ -1,3 +1,4 @@
+import {validateJointFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {normalizePublishedMonthlySchedule,SUI_MONTHLY_SCHEDULE_ROUTE} from './published-monthly-supply-schedule.mjs';
 import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
@@ -220,15 +221,10 @@ function describe(row,now){
   const label=native?'Публичные сообщения с официальным доменом проекта':market?'Публичные сообщения с точной парой HTX':'Публичные сообщения с точным адресом токена',scope=native?`подтверждённому домену ${row.official_domain}`:market?`точной записи ${row.htx_contract.replace('-','/')} вместе с HTX`:'адресу';
   return{source:'Bluesky',label,value:`за ${fmt((end-start)/60000)} минут: ${authors} авторов, ${posts} сообщений${row.sample_saturated?'; выборка ограничена лимитом':''}; поиск только по ${scope}, общий интерес к активу и направление цены этим не подтверждены`};
  }
- if(row.block_id==='N05'&&row.metric_family==='CEX_NET_FLOW_TWO_COMPLETE_HOURS'){
-  const start=number(row.window_start_ts),end=number(row.window_end_ts),incoming=number(row.incoming_tokens),outgoing=number(row.outgoing_tokens);
-  if(start===null||end===null||end-start!==7200000||end>now||row.source_ts!==end||!positive(incoming)||!positive(outgoing)||row.unit!=='TOKEN_AMOUNT'||!eq(incoming-outgoing,row.value))return null;
-  return{source:'Nansen',label:'Потоки токена через биржи за два полных часа',value:`поступило ${fmt(incoming)}, выведено ${fmt(outgoing)}; чистый ${incoming>=outgoing?'приток':'отток'} ${fmt(Math.abs(incoming-outgoing))} токенов; охват источника ${fmt(row.coverage_fraction*100)} из 100`};
- }
- if(row.block_id==='N05'&&row.metric_family==='EXACT_FUTURES_TAKER_FLOW_4H'){
-  const start=number(row.window_start_ts),end=number(row.window_end_ts),buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),count=number(row.raw_trade_count);
-  if(row.provider_id!=='HTX_FUTURES_RAW_FLOW'||row.upstream_id!=='HTX_OFFICIAL_RAW_FILLS'||row.source_clock_policy!=='IMMUTABLE_EXACT_RAW_MINUTES'||row.common_upstream_not_independent_vote!==true||row.score_contribution!==0||row.entry_authorized!==false||start===null||end===null||end-start!==14400000||end>now||now-end>300000||!positive(buy)||!positive(sell)||!Number.isSafeInteger(count)||count<1||row.factual_1m_trade_count!==count||row.unit!=='USDT'||!eq(row.value,buy-sell))return null;
-  return{source:'HTX / исходные сделки',label:'Фактический поток фьючерсных сделок за четыре часа',value:`${count} исходных сделок: покупки ${fmt(buy)}, продажи ${fmt(sell)} USDT; разница ${fmt(buy-sell)} USDT; точный счётчик закрытых минут подтверждён; это контекст потока рынка, не ввод/вывод токена, не отдельный голос и не разрешение входа`};
+ if(row.block_id==='N05'){
+  if(!validateJointFlowEvidence(row,now))return null;
+  const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).join('; ');
+  return{source:'HTX / Bitget',label:'Согласованный поток спота и фьючерсов за четыре часа',value:`${parts}; полные окна сопоставлены, близость направления проверена; баллы и разрешение входа не назначены`};
  }
  if(row.block_id==='N12'&&row.metric_family==='EXACT_SIGNED_RAW_24H'){
   const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),start=number(row.window_start),end=number(row.window_end),count=number(row.raw_trade_count);

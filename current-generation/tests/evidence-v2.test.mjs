@@ -28,7 +28,7 @@ test('K16: validation exposes the exact rejection reason',()=>{
 });
 
 test('K16: one event through multiple transports owns one score family',()=>{
-  const base=make(templates.find(x=>x.block_id==='N05'));
+  const base=make(templates.find(x=>x.block_id==='N06'));
   const result=consumeEvidenceV2([base,{...base,evidence_id:'OTHER',provider_id:'AGGREGATOR'}],{base_interest:70,decision_ts:1500});
   assert.equal(result.receipts.filter(x=>x.reason==='CONSUMED').length,1);assert.equal(result.receipts.filter(x=>x.reason==='DUPLICATE_UPSTREAM_EVENT').length,1);
 });
@@ -42,7 +42,7 @@ test('K30: nine independent N07 events remain capped to 0.2 points',()=>{
  const result=consumeEvidenceV2(rows,{base_interest:70,decision_ts:1500});assert.ok(Math.abs(result.block_contributions.N07)<=.2);assert.ok(Math.abs(result.adjustment)<=.2);
 });
 test('K31-K33 base-owned roots, missing expiry and future source time never contribute',()=>{
- const row=make(templates.find(x=>x.block_id==='N05')),root='ROOT:BASE';
+ const row=make(templates.find(x=>x.block_id==='N06')),root='ROOT:BASE';
  assert.equal(consumeEvidenceV2([{...row,physical_root_key:root}],{base_interest:70,decision_ts:1500,base_evidence_roots:[root]}).adjustment,0);
  assert.equal(consumeEvidenceV2([{...row,expires_at:null}],{base_interest:70,decision_ts:1500}).adjustment,0);
  assert.equal(consumeEvidenceV2([{...row,source_ts:1500+3600000,expires_at:1500+7200000}],{base_interest:70,decision_ts:1500}).adjustment,0);

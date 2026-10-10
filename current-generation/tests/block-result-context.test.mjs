@@ -10,10 +10,10 @@ function prepared(){const c=input();c.metadata.supporting_context={facts:consume
 
 test('actual historical BTW flows, margin permission and bounded trades reach existing report layout without inventing score',()=>{
  const c=prepared(),score=JSON.stringify(c.metadata.supplemental_score_adjustment),facts=consume(c).facts;
- assert.deepEqual(facts.map(f=>f.block_id).sort(),['N04','N05','N06','N09','N12']);
+ assert.deepEqual(facts.map(f=>f.block_id).sort(),['N04','N06','N09','N12']);
  const manual=formatManualReport(c);assert.equal(manual.ok,true);
  const proof=auditRenderedBlockResults({canonical:c,manual});
- assert.deepEqual(proof.used_context_block_ids.sort(),['N04','N05','N06','N09','N12']);
+ assert.deepEqual(proof.used_context_block_ids.sort(),['N04','N06','N09','N12']);
  assert.equal(JSON.stringify(c.metadata.supplemental_score_adjustment),score);
  assert.equal(proof.entry_authorized,false);
  assert.match(manual.text,/ограниченная выборка, не суточный поток/);
