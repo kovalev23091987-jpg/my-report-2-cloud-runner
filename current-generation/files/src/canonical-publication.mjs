@@ -1,3 +1,4 @@
+import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatManualReport} from './manual-report-formatter.mjs';
 import {factualIdeaBasis,IDEA_BASIS_CUTOVER} from './idea-basis-facts.mjs';
 import {displayWindow,displayUnit,displayCondition,displayInvalidation,hasInternalTerminology,displayMarketFacts,displayLegacyLiquidations,displayFutureLiquidations,displayBriefTelegramLiquidations,liquidationPresentationPolicy,RELEVANT_LIQUIDATION_PRESENTATION} from './canonical-display.mjs';
@@ -295,6 +296,8 @@ export async function loadExactManual(db,{publication_id,expected_identity=null}
  if(expected_identity&&Object.entries(expected_identity).some(([k,v])=>({publication_id:p.publication_id,contract:p.contract_code,direction:p.direction,run_id:p.run_id,snapshot_id:p.snapshot_id,observed_ts:p.observed_ts})[k]!==v))return {status:'MANUAL_EXACT_IDENTITY_MISMATCH',ok:false};
  const actual=sha256({manual_text:p.manual_text,telegram_text:p.telegram_text,analytical_fingerprint:p.analytical_fingerprint});
  if(actual!==p.presentation_hash||canonical.analytical_fingerprint!==p.analytical_fingerprint)return {status:'PRESENTATION_CONTENT_MISMATCH',ok:false};
+ const paused=(canonical?.metadata?.supporting_context?.facts||[]).filter(f=>PAUSED_BLOCKS[f?.block_id]);
+ if(paused.length){const current=renderCanonicalManual({canonical});if(!current.ok)return{status:'PAUSED_BLOCK_MANUAL_REFRESH_FAILED',ok:false};return{status:'CLOSED',ok:true,text:current.text,canonical,analytical_fingerprint:p.analytical_fingerprint,original_presentation_hash:p.presentation_hash,original_full_presentation_hash_verified:true,paused_block_facts_suppressed:[...new Set(paused.map(f=>f.block_id))],historical_snapshot:true};}
  return {status:'CLOSED',ok:true,text:p.manual_text,canonical,analytical_fingerprint:p.analytical_fingerprint,presentation_hash:p.presentation_hash,full_presentation_hash_verified:true,historical_snapshot:true};
 }
 

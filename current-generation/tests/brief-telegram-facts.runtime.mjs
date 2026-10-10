@@ -17,9 +17,9 @@ assert.equal(c.snapshot_id,'S392:ZEC-USDT:1791329017450');
 assert.equal(c.analytical_fingerprint,'a23d782ba8b4694ea18fdb4751066bed73145eb3592129cfd1493253e06ae8fb');
 const proof={schema:'OWNER_BRIEF_TELEGRAM_FACTS_20261007',source_cloud_run:exact.source_cloud_run,source_head:exact.source_head,run_id:c.run_id,snapshot_id:c.snapshot_id,fingerprint:c.analytical_fingerprint,sourceHTTP:0,MAIN:0,Telegram:0,new_fresh_SENT:false,cases:[]};
 globalThis.fetch=async()=>{throw Error('LIVE_NETWORK_FORBIDDEN');};
-test('actual ZEC user receipt replays to brief facts and rounded estimated levels; exact analysis and manual remain unchanged',()=>{
+test('actual ZEC user receipt replays to brief facts and rounded estimated levels; exact analysis remains unchanged and paused supply is absent from manual',()=>{
  const before=JSON.stringify(c),tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),manual=pub.renderCanonicalManual({canonical:c});
- assert.ok(tg.ok,JSON.stringify(tg));assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text);
+ assert.ok(tg.ok,JSON.stringify(tg));assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- История предложения по данным CoinMetrics:')).join('\n'));
  assert.equal(c.trigger.value,1383.45);assert.equal(c.invalidation.price,1319.19);
  assert.match(tg.text,/цены выше 1 383,45/);assert.match(tg.text,/цена ниже 1 319,19/);
  assert.match(tg.text,/1 613 \(\+18%\) — средняя \(расчётный\)/);assert.match(tg.text,/2 555 \(\+87%\) — небольшая \(расчётный\)/);
@@ -27,14 +27,14 @@ test('actual ZEC user receipt replays to brief facts and rounded estimated level
  assert.doesNotMatch(tg.text,/\bUSD(?:T|C)?\b|История предложения|CoinMetrics|Ждём подтверждения:|монета должна|Снимок рынка:|20509|16627|817019/);
  assert.equal(pub.validatePresentation({canonical:c,manual_text:manual.text,telegram_text:tg.text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
  const audit=context.auditRenderedBlockResults({canonical:c,manual,telegram:tg});
- assert.ok(audit.context_receipts.some(r=>/История предложения/.test(r.label)));
+ assert.ok(!audit.context_receipts.some(r=>r.block_id==='N02'||/История предложения/.test(r.label)));
  assert.ok(!audit.telegram_context_receipts.some(r=>/История предложения/.test(r.label)));
- proof.preview=tg.text;proof.manual_unchanged=true;proof.canonical_unchanged=true;
+ proof.preview=tg.text;proof.manual_only_paused_N02_removed=true;proof.canonical_unchanged=true;
  proof.cases.push({case:'ACTUAL_ZEC_PREVIEW_NO_RESEND',eligible_levels:4});
 });
 test('actual immutable ZEC SENT retains its original historical bytes and hash',()=>{
- assert.ok(row.telegram_text);assert.equal(pub.renderCanonicalTelegram({canonical:c,lifecycle_event:row.lifecycle_event,context_policy:'ORIGINAL_V5_20261006'}).text,row.telegram_text);
- const v=pub.validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text,direction:c.direction,lifecycle_event:row.lifecycle_event});assert.equal(v.status,'CLOSED');assert.equal(v.presentation_hash,row.presentation_hash);
+ assert.ok(row.telegram_text);assert.equal(pub.sha256({manual_text:row.manual_text,telegram_text:row.telegram_text,analytical_fingerprint:c.analytical_fingerprint}),row.presentation_hash);const current=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:row.lifecycle_event,context_policy:'ORIGINAL_V5_20261006'});assert.doesNotMatch(current.text,/История предложения|CoinMetrics/);const oldLine=row.telegram_text.split('\n').find(line=>line.startsWith('• История предложения'));assert.ok(oldLine);const replacement='• В последних 86 полученных сделках покупки составили 50273,99 USDT, продажи — 155761,99 USDT. Выборка маленькая, по ней нельзя судить обо всём рынке.';assert.equal(current.text,row.telegram_text.replace(oldLine,replacement));
+ const v=pub.validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text,direction:c.direction,lifecycle_event:row.lifecycle_event});assert.equal(v.status,'NOT_CLOSED');assert.equal(pub.validatePresentation({canonical:c,manual_text:pub.renderCanonicalManual({canonical:c}).text,telegram_text:pub.renderCanonicalTelegram({canonical:c,lifecycle_event:row.lifecycle_event}).text,direction:c.direction,lifecycle_event:row.lifecycle_event}).status,'CLOSED');
  proof.original_sent=exact.dispatch.results.filter(r=>r.contract==='ZEC-USDT').map(r=>({state:r.state,message_id:r.telegram_message_id,publication_id:r.publication_id,sent_ts:r.sent_ts}));
  proof.cases.push({case:'ORIGINAL_ZEC_SENT_BYTES_PRESERVED',presentation_hash:row.presentation_hash});
 });
