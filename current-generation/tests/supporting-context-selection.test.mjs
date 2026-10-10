@@ -17,8 +17,8 @@ test('one busy block cannot evict other factual blocks from the unchanged 24-lin
  assert.equal(audit.available_not_rendered_evidence_ids.length,0);
  assert.equal(JSON.stringify(input),before);assert.equal(manual.text.split('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ')[1].split('\n').filter(x=>x.startsWith('- ')).length,24);
 });
-test('all 13 active block positions survive overflow without creating missing-block facts',()=>{
- const ids=['N03','N04','N05','N06','N07','N08','N09','N10','N11','N12','N14','N15','N16'];
+test('all 12 active block positions survive overflow without creating missing-block facts',()=>{
+ const ids=['N04','N05','N06','N07','N08','N09','N10','N11','N12','N14','N15','N16'];
  const busy=Array.from({length:32},(_,i)=>({block_id:'N04',label:'Перевод',value:i}));
  const rows=[...busy,...ids.map(block_id=>({block_id,label:block_id,value:1}))],selected=selectSupportingContextFacts(rows);
  assert.equal(selected.length,24);assert.deepEqual([...new Set(selected.map(r=>r.block_id))].sort(),ids);

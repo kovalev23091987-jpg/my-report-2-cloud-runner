@@ -1,4 +1,4 @@
-name: Owner N01/N02 pause assembled cloud verification
+name: Owner N01/N02/N03 pause assembled cloud verification
 on:
   push:
     branches: [n02-owner-pause-20261010]
@@ -62,7 +62,7 @@ jobs:
           node --input-type=module - <<'JS'
           import fs from 'node:fs';import {createHash} from 'node:crypto';
           const out='audit-output/n02-owner-pause/',files=fs.readdirSync(out),sha=b=>createHash('sha256').update(b).digest('hex');
-          const proof={schema:'N01_N02_OWNER_PAUSE_ASSEMBLED_CLOUD_VERIFICATION_V1',run:Number(process.env.GITHUB_RUN_ID),head:process.env.GITHUB_SHA,verified_ts:Date.now(),status:'ASSEMBLED_PAUSE_SCORE_REPORT_BINDING_AND_DELIVERY_VERIFIED',source_http:0,D1_reads:0,D1_writes:0,Telegram:0,controlled_cases_not_live_signal_acceptance:true,qualified_independent_release_pairs:0,N01_status:'PAUSED_BY_OWNER',N02_status:'PAUSED_BY_OWNER',N02_score_contribution:0,N02_supply_only_http:0,N02_in_active_coverage:false,manual_and_Telegram_both_verified:true,N01_score_contribution:0,N01_calendar_http:0,N01_in_active_coverage:false,remaining_active_block_count:13,threshold:70,other_weights_redistributed:false,source_caps_reset:false,project_complete:false,files:Object.fromEntries(files.map(f=>[f,sha(fs.readFileSync(out+f))]))};
+          const proof={schema:'N01_N02_OWNER_PAUSE_ASSEMBLED_CLOUD_VERIFICATION_V1',run:Number(process.env.GITHUB_RUN_ID),head:process.env.GITHUB_SHA,verified_ts:Date.now(),status:'ASSEMBLED_PAUSE_SCORE_REPORT_BINDING_AND_DELIVERY_VERIFIED',source_http:0,D1_reads:0,D1_writes:0,Telegram:0,controlled_cases_not_live_signal_acceptance:true,qualified_independent_release_pairs:0,N01_status:'PAUSED_BY_OWNER',N02_status:'PAUSED_BY_OWNER',N03_status:'PAUSED_BY_OWNER',N03_score_contribution:0,N03_in_active_coverage:false,N02_score_contribution:0,N02_supply_only_http:0,N02_in_active_coverage:false,manual_and_Telegram_both_verified:true,N01_score_contribution:0,N01_calendar_http:0,N01_in_active_coverage:false,remaining_active_block_count:12,threshold:70,other_weights_redistributed:false,source_caps_reset:false,project_complete:false,files:Object.fromEntries(files.map(f=>[f,sha(fs.readFileSync(out+f))]))};
           fs.writeFileSync(out+'proof.json',JSON.stringify(proof,null,2)+'\n');
           JS
       - name: Print bounded failed test evidence
@@ -87,4 +87,4 @@ jobs:
             const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
             const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
             for(const name of fs.readdirSync('audit-output/n02-owner-pause')){const b=fs.readFileSync('audit-output/n02-owner-pause/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/n02-owner-pause-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
-            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain assembled N01/N02 owner pause proof '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain assembled N01/N02/N03 owner pause proof '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});

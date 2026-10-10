@@ -46,7 +46,7 @@ test('native assets account for unavailable exact routes while all useful market
  };
  const result=auditCandidateBlocks({sources,strict_fresh:true,decision_ts:T});
  assert.equal(result.status,'PARTIAL_BLOCK_CHECK');assert.equal(result.checked_block_count,7);
- for(const block of ['N03','N04','N05','N06','N07','N15']){
+ for(const block of ['N04','N05','N06','N07','N15']){
   assert.equal(result.blocks[block].status,'NOT_CHECKED');
   assert.equal(result.blocks[block].usable_facts,0);
  }
