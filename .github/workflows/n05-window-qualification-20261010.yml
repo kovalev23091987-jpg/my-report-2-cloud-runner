@@ -1,0 +1,50 @@
+name: N05 bounded full window qualification
+on:
+  push:
+    branches: [n05-joint-flow-20261010]
+    paths: ['tools/qualify-n05-window-20261010.mjs', '.github/workflows/n05-window-qualification-20261010.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  window:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Guard exact main, own lease and fence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='c19825e01dc9d49bfafe892a1b2124a29dd8363b')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:head})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=='CODEX:N05_JOINT_FLOW_IMPLEMENTATION:1791632269631'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Pagination and precision checks
+        run: node --test current-generation/tests/bitget-four-hour-flow.test.mjs
+      - name: Actual complete windows within existing caps
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/qualify-n05-window-20261010.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-window-${{ github.run_id }}
+          path: audit-output/n05-window/
+          retention-days: 30
+      - name: Retain exact original evidence
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/','');
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='c19825e01dc9d49bfafe892a1b2124a29dd8363b')throw Error('MAIN_MOVED');
+            const p=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:main})).data.content,'base64').toString());if(p.lease?.owner!=='CODEX:N05_JOINT_FLOW_IMPLEMENTATION:1791632269631'||p.lease.expires_ts<=Date.now())throw Error('OWNER_BLOCKED');
+            const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
+            const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
+            for(const name of fs.readdirSync('audit-output/n05-window')){const b=fs.readFileSync('audit-output/n05-window/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/n05-window-qualification-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain actual N05 source qualification '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});
