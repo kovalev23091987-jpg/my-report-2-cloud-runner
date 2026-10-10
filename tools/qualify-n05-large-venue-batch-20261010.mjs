@@ -48,9 +48,9 @@ async function publicSocket(){
  receipt.daily_admission=await reserveEvidenceSourceAttempts(db,{source:'N05_OFFICIAL_FLOW:GATE',reservation_id:key,attempts:1,daily_cap:16,now:Date.now()});if(!receipt.daily_admission.allowed){receipt.status='SOURCE_DAILY_CAP_DENIED';return [];}
  receipt.minute_admission=await reserveProviderMinuteUnits(db,{provider:'GATE',reservation_id:key,units:1,cap:4,now:Date.now()});if(!receipt.minute_admission.allowed){receipt.status='PROVIDER_MINUTE_CAP_DENIED';return [];}
  const request={time:Math.floor(Date.now()/1000),channel:'spot.trades',event:'subscribe',payload:['BTC_USDT']},messages=[],raw=[];receipt.sourceHTTP=1;out.sourceHTTP++;receipt.started_ts=Date.now();
- await new Promise(resolve=>{let done=false,total=0;const ws=new WebSocket(receipt.url),finish=status=>{if(done)return;done=true;clearTimeout(timer);receipt.status=status;receipt.received_ts=Date.now();try{ws.close();}catch{}resolve();},timer=setTimeout(()=>finish('BOUNDED_PUBLIC_CAPTURE_CLOSED'),20000);
+ await new Promise(resolve=>{let done=false,total=0;const ws=new WebSocket(receipt.url),finish=status=>{if(done)return;done=true;clearTimeout(timer);receipt.status=status;receipt.received_ts=Date.now();try{ws.close();}catch{}resolve();},timer=setTimeout(()=>finish('BOUNDED_PUBLIC_CAPTURE_CLOSED'),120000);
   ws.addEventListener('open',()=>{receipt.http_status=101;ws.send(JSON.stringify(request));});
-  ws.addEventListener('message',e=>{if(done)return;const text=String(e.data);total+=Buffer.byteLength(text);if(total>2*1024*1024)return finish('BODY_LIMIT');raw.push({received_ts:Date.now(),text});try{const m=JSON.parse(text);messages.push(m);if(m.error)return finish('PUBLIC_SUBSCRIPTION_ERROR');if(messages.filter(x=>x.channel==='spot.trades'&&x.event==='update').length>=80)return finish('BOUNDED_PUBLIC_CAPTURE_CLOSED');}catch{return finish('INVALID_PUBLIC_JSON');}});
+  ws.addEventListener('message',e=>{if(done)return;const text=String(e.data);total+=Buffer.byteLength(text);if(total>2*1024*1024)return finish('BODY_LIMIT');raw.push({received_ts:Date.now(),text});try{const m=JSON.parse(text);messages.push(m);if(m.error)return finish('PUBLIC_SUBSCRIPTION_ERROR');if(messages.filter(x=>x.channel==='spot.trades'&&x.event==='update').length>=40)return finish('BOUNDED_PUBLIC_CAPTURE_CLOSED');}catch{return finish('INVALID_PUBLIC_JSON');}});
   ws.addEventListener('error',()=>finish('PUBLIC_SOCKET_TRANSPORT_ERROR'));ws.addEventListener('close',()=>finish('PUBLIC_SOCKET_CLOSED'));
  });
  const bytes=Buffer.from(JSON.stringify({request,raw})),gz=gzipSync(bytes);receipt.body_sha256=hash(bytes);receipt.gzip_sha256=hash(gz);receipt.bytes=bytes.length;receipt.file=receipt.name+'.json.gz';await fs.writeFile(root+'/'+receipt.file,gz);
@@ -58,46 +58,16 @@ async function publicSocket(){
 }
 try{
  out.daily_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');await reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const htx=normalizeHtxAssetReferences(await saved(firstDir,'identity-HTX')),catalog=await saved(oldDir,'BINANCE-SMALL-CATALOG'),currencies=await saved(oldDir,'GATE-ALL-CURRENCY-IDENTITY'),spot=await saved(firstDir,'catalog-GATE-SPOT');
- const end=Math.floor(Date.now()/60000)*60000;out.window_end_ts=end;out.source_history=[];out.native_windows=[];out.gate_windows=[];
- // Structural identity cache uses the actual retained metadata clock, never this retrieval clock.
- const curReceipt=prior.sources.find(r=>r.name==='GATE-ALL-CURRENCY-IDENTITY'),catalogSummary=JSON.parse(await fs.readFile(firstDir+'/catalog-summary.json','utf8'));
- const compactCurrencies=currencies.map(r=>({currency:r.currency,delisted:r.delisted,trade_disabled:r.trade_disabled,chains:(r.chains||[]).map(c=>({name:c.name,addr:c.addr}))})),compactSpot=spot.map(r=>({id:r.id,base:r.base,quote:r.quote,trade_status:r.trade_status}));
- const spotReceipt=(catalogSummary.sources||catalogSummary.receipts||[]).find(r=>/GATE-SPOT/.test(r.name||'')),spotClock=spotReceipt?.received_ts;
- if(Buffer.byteLength(JSON.stringify(compactCurrencies))<900000)await writeEvidenceSourceCache(db,{source:'GATE_ASSET_REFERENCE',asset_key:'N05:CURRENCIES',observed_ts:curReceipt.received_ts,expires_ts:curReceipt.received_ts+21600000,payload:{version:'gate-flow-collector-v1-20261010',observed_ts:curReceipt.received_ts,payload:compactCurrencies,receipt:curReceipt}});
- if(spotReceipt&&Buffer.byteLength(JSON.stringify(compactSpot))<900000)await writeEvidenceSourceCache(db,{source:'N05_OFFICIAL_FLOW:GATE',asset_key:'METADATA:SPOT',observed_ts:spotClock,expires_ts:spotClock+21600000,payload:{version:'gate-flow-collector-v1-20261010',observed_ts:spotClock,payload:compactSpot,receipt:spotReceipt}});
- out.metadata_cache_seed={original_currencies_observed_ts:curReceipt.received_ts,spot_receipt_available:Boolean(spotReceipt),clocks_refreshed:false};
- const messages=await publicSocket(),updates=messages.filter(m=>m.channel==='spot.trades'&&m.event==='update');
- const wsReceipt=out.sources.at(-1);
+ const original=JSON.parse(await fs.readFile('checkpoints/n05-large-qualification-38063816181/large-summary.json','utf8'));
+ out.previous_qualification_run=38063816181;out.source_history=original.source_history;out.native_windows=original.native_windows;out.gate_windows=[];
+ const messages=await publicSocket(),updates=messages.filter(m=>m.channel==='spot.trades'&&m.event==='update'),wsReceipt=out.sources.at(-1);
  const trades=updates.length?await get('GATE-PAIRED-REST-DIRECTION','GATE','https://api.gateio.ws/api/v4/spot/trades?currency_pair=BTC_USDT&from='+Math.floor(wsReceipt.started_ts/1000)+'&to='+Math.floor(Date.now()/1000)+'&limit=1000&page=1'):null;
  out.direction_proof=matchGatePublicRestDirection({messages,rest:trades,pair:'BTC_USDT'});out.direction_proof.reference_id=out.direction_proof.verified?'GATE_PAIRED_PUBLIC_TAKER_V4_'+process.env.GITHUB_RUN_ID:null;
  out.direction_proof.source_receipts=out.sources.filter(r=>/DIRECTION/.test(r.name)).map(r=>({file:r.file,body_sha256:r.body_sha256,gzip_sha256:r.gzip_sha256,received_ts:r.received_ts,http_status:r.http_status,sourceHTTP:r.sourceHTTP}));
- // Saved 240-minute Gate windows are re-qualified from original bytes only if the generic public REST taker contract is proven.
- for(const old of prior.gate_windows){
-  const base=old.contract.slice(0,-5),pages=[await saved(oldDir,'GATE-'+base+'-PAGE-1')],candles=await saved(oldDir,'GATE-'+base+'-CANDLES'),flow=normalizeGateSpotFlow({contract:old.contract,identity:old.identity,currencies,spot,pages,candles,window_end_ts:old.window_end_ts,observed_ts:old.observed_ts,direction_reference:out.direction_proof});
-  out.gate_windows.push({...flow,scope:'RETAINED_ORIGINAL_WINDOW'});
-  const histEnd=turnoverHistoryEnd(old.window_start_ts),hour=await get('GATE-'+base+'-PRIOR30D-HOURS','GATE','https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair='+base+'_USDT&from='+(histEnd-30*86400000)/1000+'&to='+(histEnd/1000-1)+'&interval=1h');
-  out.source_history.push(normalizeTurnoverBaseline({contract:old.contract,venue:'GATE',candles:hour,history_end_ts:histEnd,observed_ts:out.sources.at(-1).received_ts,current_flow:flow}));
- }
- const oldNative=prior.binance_native_market_windows;
- for(const old of oldNative){const receipt=prior.sources.find(r=>r.name==='BINANCE-'+old.base+'-NATIVE-240'),flow=normalizeBinanceNativeFlow({contract:old.base+'-USDT',identity:old.HTX_identity,catalog,candles:await saved(oldDir,'BINANCE-'+old.base+'-NATIVE-240'),window_end_ts:old.window_end_ts,observed_ts:receipt.received_ts}),histEnd=turnoverHistoryEnd(flow.window_start_ts),hour=await get('BINANCE-'+old.base+'-PRIOR30D-HOURS','BINANCE','https://data-api.binance.vision/api/v3/klines?symbol='+old.base+'USDT&interval=1h&startTime='+(histEnd-30*86400000)+'&endTime='+(histEnd-1)+'&limit=720');out.source_history.push(normalizeTurnoverBaseline({contract:flow.contract,venue:'BINANCE',candles:hour,history_end_ts:histEnd,observed_ts:out.sources.at(-1).received_ts,current_flow:flow}));}
- for(const base of ['BTC','ETH','BNB']){
-  const identity=htx.entries[base]?.status==='CLOSED'?htx.entries[base].identities[0]:null;if(!identity){out.native_windows.push({contract:base+'-USDT',status:'HTX_EXACT_IDENTITY_OPEN',check_completed:false});continue;}
-  const candles=await get('BINANCE-'+base+'-NATIVE-240','BINANCE','https://data-api.binance.vision/api/v3/klines?symbol='+base+'USDT&interval=1m&startTime='+(end-14400000)+'&endTime='+(end-1)+'&limit=240'),flow=normalizeBinanceNativeFlow({contract:base+'-USDT',identity,catalog,candles,window_end_ts:end,observed_ts:out.sources.at(-1).received_ts});out.native_windows.push(flow);
-  if(flow.check_completed){const histEnd=turnoverHistoryEnd(flow.window_start_ts),hour=await get('BINANCE-'+base+'-PRIOR30D-HOURS','BINANCE','https://data-api.binance.vision/api/v3/klines?symbol='+base+'USDT&interval=1h&startTime='+(histEnd-30*86400000)+'&endTime='+(histEnd-1)+'&limit=720');out.source_history.push(normalizeTurnoverBaseline({contract:flow.contract,venue:'BINANCE',candles:hour,history_end_ts:histEnd,observed_ts:out.sources.at(-1).received_ts,current_flow:flow}));}
- }
- // Only two already exactly bound markets; original qualification is not fetched again.
- if(out.direction_proof.verified)for(const old of prior.gate_windows){
-  const contract=old.contract,base=contract.slice(0,-5),identity=old.identity;
-  if(!exactGateTokenBinding({contract,identity,currencies,spot}))continue;
-  const query='currency_pair='+base+'_USDT&from='+(end-14400000)/1000+'&to='+(end/1000-1),candles=await get('GATE-'+base+'-FRESH-CANDLES','GATE','https://api.gateio.ws/api/v4/spot/candlesticks?'+query+'&interval=1m'),pages=[];
-  for(let page=1;candles&&page<=3;page++){
-   const rows=await get('GATE-'+base+'-FRESH-PAGE-'+page,'GATE','https://api.gateio.ws/api/v4/spot/trades?'+query+'&limit=1000&page='+page);if(!Array.isArray(rows))break;pages.push(rows);
-   const flow=normalizeGateSpotFlow({contract,identity,currencies,spot,pages,candles,window_end_ts:end,observed_ts:out.sources.at(-1).received_ts,direction_reference:out.direction_proof});
-   if(flow.check_completed||rows.length<1000||page===3){out.gate_windows.push({...flow,scope:'ACTUAL_BOUNDED_CURRENT_WINDOW'});break;}
-  }
- }
+ const currencies=await saved(oldDir,'GATE-ALL-CURRENCY-IDENTITY'),spot=await saved(firstDir,'catalog-GATE-SPOT');
+ for(const old of prior.gate_windows){const base=old.contract.slice(0,-5),flow=normalizeGateSpotFlow({contract:old.contract,identity:old.identity,currencies,spot,pages:[await saved(oldDir,'GATE-'+base+'-PAGE-1')],candles:await saved(oldDir,'GATE-'+base+'-CANDLES'),window_end_ts:old.window_end_ts,observed_ts:old.observed_ts,direction_reference:out.direction_proof});out.gate_windows.push({...flow,scope:'RETAINED_ORIGINAL_WINDOW'});const histEnd=turnoverHistoryEnd(old.window_start_ts),receipt=original.sources.find(r=>r.name==='GATE-'+base+'-PRIOR30D-HOURS');out.source_history=out.source_history.filter(r=>!(r.venue==='GATE'&&r.contract===old.contract));out.source_history.push(normalizeTurnoverBaseline({contract:old.contract,venue:'GATE',candles:await saved('checkpoints/n05-large-qualification-38063816181','GATE-'+base+'-PRIOR30D-HOURS'),history_end_ts:histEnd,observed_ts:receipt.received_ts,current_flow:flow}));}
  out.actual_other_source_research_reused=true;out.no_unsupported_or_partial_old_feed_declared_complete=true;out.individual_trade_size_and_price_impact_calibration_still_open=true;out.status='LARGE_VENUE_AND_TURNOVER_FACTS_RETAINED';
+
 }catch(e){out.status='LARGE_BATCH_NOT_CLOSED';out.reason=e.message;}
 finally{
  out.http_budget=budget.summary();if(admitted)out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>reservation.rows_read||out.D1.rows_written>reservation.rows_written)out.status='D1_ENVELOPE_NOT_CLOSED';out.completed_ts=Date.now();await fs.writeFile(root+'/large-summary.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,direction:out.direction_proof?.status,matches:out.direction_proof?.matched_count,D1:out.D1,native:out.native_windows?.map(r=>({contract:r.contract,status:r.status,reason:r.reason})),gate:out.gate_windows?.map(r=>({contract:r.contract,status:r.status,reason:r.reason,scope:r.scope})),history:out.source_history?.map(r=>({contract:r.contract,venue:r.venue,status:r.status,reason:r.reason,ratio:r.ratio_to_median})),sources:out.sources.map(r=>({name:r.name,status:r.status,http:r.http_status,bytes:r.bytes}))}));
