@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canonicalFingerprint,assessActionability,renderCanonicalTelegram} from '../src/canonical-publication.mjs';
-import {assessStrategyFitShadow,STRATEGY_FIT_GROUP_WEIGHTS} from '../src/owner-strategy-fit-shadow.mjs';
+import {canonicalFingerprint,assessActionability,renderCanonicalTelegram} from '../files/src/canonical-publication.mjs';
+import {assessStrategyFitShadow,STRATEGY_FIT_GROUP_WEIGHTS} from '../files/src/owner-strategy-fit-shadow.mjs';
 const T=Date.UTC(2026,9,10,8),names=Object.keys(STRATEGY_FIT_GROUP_WEIGHTS);
 const c={status:'CLOSED',run_id:'R:actual-snapshot-bound',snapshot_id:'S:original',observed_ts:T,
  direction:'LONG',metadata:{contract:'NEAR-USDT'},scores:{overall_0_100:82,coin_interest_0_100:83,is_probability:false}};
