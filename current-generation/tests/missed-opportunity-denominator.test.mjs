@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import {summarizeMissedOpportunityEvidence as summarize} from '../files/src/missed-opportunity-denominator.mjs';
 const close=1791000000000,target=close+3600000,now=target+120000;
 const base=()=>({horizon:'1h',source_artifact_digest:'sha256:'+'a'.repeat(64),
- event:{contract:'NEAR-USDT',episode_id:'EP1',independent_sample:true,control_group:false,control_eligible:false,event_close_ts:close,direction_at_event:'LONG',directional_evaluation_eligible:true,direction_locked_ts:close-1000,funnel:{stage:'CONFIRMATION_PENDING'}},
- decision:{contract:'NEAR-USDT',episode_id:'EP1',direction:'LONG',stage:'CONFIRMATION_PENDING',head:'b'.repeat(40),run_id:'RUN1',snapshot_id:'S1',observed_ts:close+60000},
- outcome:{status:'OK',horizon:'1h',trajectory_complete:true,target_ts:target,source_start_ts:close,source_end_ts:target,as_of_ts:target,expected_bars:60,observed_bars:60,trajectory_coverage_pct:100,direction_at_event:'LONG',direction_locked_ts:close-1000,directional_evaluation_eligible:true,mfe_pct:6,directional_return_pct:2,missed_opportunity_detected:true,late_entry_candidate:false,false_rejection_candidate:true}});
+ event:{contract:'NEAR-USDT',exchange:'HTX',episode_id:'EP1',independent_sample:true,control_group:false,control_eligible:false,event_close_ts:close,direction_at_event:'LONG',directional_evaluation_eligible:true,direction_locked_ts:close-1000,funnel:{stage:'CONFIRMATION_PENDING'}},
+ decision:{contract:'NEAR-USDT',exchange:'HTX',episode_id:'EP1',direction:'LONG',stage:'CONFIRMATION_PENDING',head:'b'.repeat(40),run_id:'RUN1',snapshot_id:'S1',observed_ts:close+60000},
+ outcome:{status:'OK',exchange:'HTX',horizon:'1h',trajectory_complete:true,target_ts:target,source_start_ts:close,source_end_ts:target,as_of_ts:target,expected_bars:60,observed_bars:60,trajectory_coverage_pct:100,direction_at_event:'LONG',direction_locked_ts:close-1000,directional_evaluation_eligible:true,mfe_pct:6,directional_return_pct:2,missed_opportunity_detected:true,late_entry_candidate:false,false_rejection_candidate:true}});
 const run=rows=>summarize({rows,now_ts:now});
 test('exact precommitted independent episode with full future path enters denominator once',()=>{
  const row=base(),r=run([row,row]);assert.equal(r.status,'SCOPED_PROVENANCE_BOUND_SHADOW_DENOMINATOR');
@@ -33,6 +33,11 @@ test('malformed source receipt and non-HTX contract censor without throwing',()=
  const a=base();a.source_artifact_digest={hash:'a'.repeat(64)};
  const b=base();b.event.episode_id='EP2';b.decision.episode_id='EP2';b.event.contract='BTC-USD';b.decision.contract='BTC-USD';
  const r=run([a,b]);assert.equal(r.eligible,0);assert.equal(r.censored,2);
+});
+test('missing, foreign or cross-bound venue identities never enter the HTX denominator',()=>{
+ const cases=[];
+ for(const patch of [r=>delete r.event.exchange,r=>r.event.exchange='BINANCE',r=>r.decision.exchange='OKX',r=>r.outcome.exchange='BYBIT']){const row=base();patch(row);row.event.episode_id='VENUE'+cases.length;row.decision.episode_id=row.event.episode_id;cases.push(row);}
+ const r=run(cases);assert.equal(r.venue,'HTX');assert.equal(r.eligible,0);assert.equal(r.censored,cases.length);assert.equal(r.missed_rate_pct,null);
 });
 test('empty actual cohort cannot be reported as 0 percent misses',()=>{
  const r=run([]);assert.equal(r.status,'NO_ACTUAL_PROVEN_DIRECTIONAL_DENOMINATOR');assert.equal(r.missed_rate_pct,null);
