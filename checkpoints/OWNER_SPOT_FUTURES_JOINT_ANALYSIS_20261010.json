@@ -1,0 +1,70 @@
+{
+  "schema": "OWNER_SPOT_FUTURES_JOINT_ANALYSIS_20261010_V1",
+  "recorded_ts": 1791631937879,
+  "owner_instruction_local": [
+    "2026-10-10T14:26:51+03:00",
+    "2026-10-10T14:27:52+03:00",
+    "2026-10-10T14:29:15+03:00"
+  ],
+  "scope": "ALL_BLOCKS_WHERE_THE_METRIC_HAS_SPOT_AND_FUTURES_MARKET_MEANING;EXACT_APPROVED_HTX_ASSETS",
+  "owner_intent": "Analyze spot and futures components and compare them together in one joint asset-level conclusion; aligned pressure can support a stronger signal.",
+  "requirements": [
+    "Trading futures does not limit analytical inputs to futures; include useful spot evidence.",
+    "Preserve venue and market provenance while combining compatible spot/futures evidence in a joint conclusion.",
+    "Compare the exact same asset over aligned complete windows, with original source clocks and verified units/contract multipliers.",
+    "For trade flow compare aggressive buy/sell imbalance; each execution has both a buyer and seller, so this is not net capital entering the market.",
+    "For N05 qualify independent actual venues, same direction and comparable normalized strength; HTX-only evidence is not multi-venue consensus.",
+    "Retain market-specific aggregates and disagreement flags; a larger futures turnover must not conceal contradictory spot pressure.",
+    "Missing data is unknown, not zero, agreement, a bearish reading, or permission to require all blocks or markets.",
+    "Do not double-count copied feeds, common upstreams or the same physical fact across blocks as independent confirmation.",
+    "Onchain exchange deposits/withdrawals from Nansen remain a separate contextual metric; do not add token quantities to quote-denominated taker turnover.",
+    "Funding, open interest and liquidations remain derivatives-specific; spot context can inform the joint conclusion without fabricating spot equivalents."
+  ],
+  "proposed_diagnostic_not_calibrated": {
+    "market_imbalance": "(aggressive_buy_quote - aggressive_sell_quote) / (aggressive_buy_quote + aggressive_sell_quote), only with validated positive denominator",
+    "joint_states": [
+      "ALIGNED_BUY_PRESSURE",
+      "ALIGNED_SELL_PRESSURE",
+      "MIXED_OR_CONTRADICTORY",
+      "PARTIAL_OR_UNKNOWN"
+    ],
+    "spot_futures_weights": null,
+    "agreement_similarity_threshold": null,
+    "minimum_qualified_venues": null,
+    "score_bonus": null,
+    "no_numeric_policy_adopted": true
+  },
+  "source_qualification_open": {
+    "scope": [
+      "HTX",
+      "BINANCE_OFFICIAL",
+      "BYBIT_OFFICIAL",
+      "GATE_OFFICIAL",
+      "OKX_OFFICIAL",
+      "Other actually connected venues after inventory verification",
+      "Additional useful public sources"
+    ],
+    "spot_and_futures_required_in_research": true,
+    "documentation_is_not_actual_connection_proof": true,
+    "actual_data_coverage_separate_from_instrument_listing_coverage": true,
+    "useful_30_percent_102_asset_target_minimum": 31,
+    "coverage_target_not_report_gate": true,
+    "Nansen_current_source_HTTP_cap": 0,
+    "Nansen_deferral_not_lifted_by_general_research_request": true
+  },
+  "implementation_status": "OWNER_RULE_RECORDED;JOINT_SPOT_FUTURES_MULTI_VENUE_RUNTIME_AND_ACTUAL_COVERAGE_NOT_YET_VERIFIED",
+  "runtime_code_changed": false,
+  "sourceHTTP": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "tests_repeated": false,
+  "paused_blocks": [
+    "N01",
+    "N02",
+    "N03"
+  ],
+  "N04_remains_active_partial": true,
+  "threshold_weights_caps_freshness_and_approved_forms_unchanged": true,
+  "project_complete": false,
+  "next_action": "QUALIFY_ACTUAL_CONNECTED_SPOT_AND_FUTURES_FLOW_SOURCES_WITHIN_CAPS;KEEP_OWNER_SEQUENTIAL_N05_REVIEW"
+}
