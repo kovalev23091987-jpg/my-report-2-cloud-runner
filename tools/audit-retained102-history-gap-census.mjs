@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {auditRetainedHtxHistoryCoverage as audit} from '../runner/retained102-history-gap-census.mjs';
+const sha=b=>createHash('sha256').update(b).digest('hex');
+const universeBytes=fs.readFileSync('checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz');
+if(sha(universeBytes)!=='edfb909938001fe2bdddf79fee8063af095abb47285611f5c5c222788700c613')throw Error('ORIGINAL_UNIVERSE_BYTES_CHANGED');
+const universe=JSON.parse(gunzipSync(universeBytes));
+const files={sampled:'checkpoints/APPROVED102_ORIGINAL24H_ASSEMBLED_READER_REPLAY_20261009.json',native:'checkpoints/NATIVE_FULL_DAY_PRICE_HISTORY_CONNECTED_20261009.json',binance:'checkpoints/MONTHLY_COLD_PRICE_HISTORY_CONNECTED_20261009.json'};
+const objects=Object.fromEntries(Object.entries(files).map(([k,p])=>[k,JSON.parse(fs.readFileSync(p))]));
+const census=audit({universe,...objects});
+if(census.status!=='PARTIAL_VERIFIED_RETAINED_EVIDENCE_ONLY')throw Error('ORIGINAL_HISTORY_CENSUS_NOT_CLOSED:'+census.reason);
+const proof={...census,head:process.env.GITHUB_SHA||null,run:process.env.GITHUB_RUN_ID||null,original_proof_sha256:Object.fromEntries(Object.entries(files).map(([k,p])=>[k,sha(fs.readFileSync(p))])),scope:'EXISTING_RETAINED_PROOFS_ONLY_NO_NEW_SOURCE_OR_STATISTICS'};
+fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/factual102-history-gap-census.json',JSON.stringify(proof,null,2)+'\n');
+console.log(JSON.stringify({status:proof.status,assets:proof.rows.length,sampled:proof.sampled_24h.points,verified_native_minutes:proof.native_htx_1m.qualified_minutes,full30:proof.verified_30d_complete_assets,full90:proof.verified_90d_complete_assets}));
