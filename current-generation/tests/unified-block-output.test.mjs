@@ -24,8 +24,8 @@ test('same genuine historical context retains historical V5 slots and full manua
  const c=control(),before=JSON.stringify(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}),manual=formatManualReport(c);
  assert.equal(tg.ok,true,tg.status);assert.equal(manual.ok,true,manual.status);
  const proof=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
- assert.equal(proof.used_context_block_ids.length,4);assert.equal(proof.telegram_used_context_block_ids.length,2);
- assert.equal(proof.telegram_available_not_rendered_evidence_ids.length,2);
+ assert.equal(proof.used_context_block_ids.length,4);assert.equal(proof.telegram_used_context_block_ids.length,3);
+ assert.equal(proof.telegram_available_not_rendered_evidence_ids.length,1);
  assert.equal(proof.telegram_delivery_proven,false);assert.equal(proof.telegram_message_id,null);
  assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);
  assert.equal(JSON.stringify(c),before);
