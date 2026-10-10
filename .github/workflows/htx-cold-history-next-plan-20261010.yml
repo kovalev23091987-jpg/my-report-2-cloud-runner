@@ -1,0 +1,44 @@
+name: Actual retained HTX next-batch rotation proof
+on:
+  push:
+    branches: [codex/htx-cold-history-actual-acquisition-20261010]
+    paths:
+      - .github/workflows/htx-cold-history-next-plan-20261010.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require own lease and exact review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(fence.active||phase.lease?.owner!=='CHATGPT:HTX_COLD_BACKFILL:20261010:SESSION'||phase.lease.expires_ts<=Date.now())throw Error('OWNER_LEASE_REQUIRED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_HEAD_MOVED');
+      - name: Test next bounded plan using original persisted HTX archive evidence
+        run: |
+          set -e
+          mkdir -p audit-output
+          node --check runner/htx-cold-history-backfill-plan.mjs
+          node --check tools/audit-htx-cold-history-backfill-plan.mjs
+          node --test runner/htx-cold-history-backfill-plan.test.mjs
+          node tools/audit-htx-cold-history-backfill-plan.mjs
+          git rev-parse HEAD > audit-output/tested-head.txt
+          sha256sum runner/htx-cold-history-backfill-plan.mjs tools/audit-htx-cold-history-backfill-plan.mjs > audit-output/code-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: actual-htx-cold-history-next-plan-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 90
