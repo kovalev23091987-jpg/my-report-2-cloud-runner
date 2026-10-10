@@ -1,3 +1,4 @@
+import {assessOriginalStrategyFacts} from './owner-strategy-fact-mapping.mjs';
 import {bindLiquidationAcquisitionDiagnostics} from './liquidation-source-acquisition-audit.mjs';
 import {verifiedObservationRange} from './observation-technical-range.mjs';
 import {captureIdeaBasisReceipt} from './idea-basis-facts.mjs';
@@ -365,6 +366,7 @@ export function buildRuntimeCanonicalBundle({
  const manual=formatManualReport(canonical);
  const block_rendered_results=auditRenderedBlockResults({canonical,manual});
  const surface_contract=buildOutputSurfaceContract({canonical,telegram,manual});
- return {version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,block_rendered_results,parity_fingerprint:canonical?.analytical_fingerprint??null};
+ const strategy_fit_shadow=assessOriginalStrategyFacts(canonical);
+ return {strategy_fit_shadow,version:CANONICAL_RUNTIME_ADAPTER_VERSION,status:canonical?.status==='CLOSED'&&surface_contract.status==='CLOSED'?'CLOSED':'NOT_CLOSED',canonical,telegram,manual,surface_contract,block_rendered_results,parity_fingerprint:canonical?.analytical_fingerprint??null};
 }
 export default{CANONICAL_RUNTIME_ADAPTER_VERSION,resolveCanonicalDirection,selectCanonicalPublicationState,selectCanonicalInterestBasis,buildRuntimeCanonicalBundle};

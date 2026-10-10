@@ -46,6 +46,9 @@ jobs:
       - name: Verify original trigger candle full analysis and terminal lifecycle
         run: |
           REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/original-idea-recheck.runtime.mjs current-generation/tests/triggered-entry-recheck.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs > audit-output/original-idea-recheck.tap
+          REPORT2_STRATEGY_MAPPING_PROOF=audit-output/strategy-fact-mapping.json node --test current-generation/tests/owner-strategy-fact-mapping.test.mjs > audit-output/strategy-fact-mapping.tap
+          cmp current-generation/files/src/owner-strategy-fact-mapping.mjs runtime/src/owner-strategy-fact-mapping.mjs
+          cmp current-generation/files/src/owner-strategy-fit-shadow.mjs runtime/src/owner-strategy-fit-shadow.mjs
           cmp current-generation/files/src/original-idea-recheck.mjs runtime/src/original-idea-recheck.mjs
           cmp current-generation/files/src/original-idea-terminal.mjs runtime/src/original-idea-terminal.mjs
       - name: Verify strict reachable entry and approved delivery pipeline
