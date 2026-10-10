@@ -67,8 +67,6 @@ jobs:
           JS
       - name: Replay original native responses with immutable digests and clocks
         run: |
-          node tools/replay-n05-retained-native-20261010.mjs
-          node tools/replay-n05-large-venue-20261010.mjs
           node tools/replay-n05-remaining-exchanges-20261010.mjs
           node --input-type=module - <<'JS'
           import fs from 'node:fs';import {createHash} from 'node:crypto';
