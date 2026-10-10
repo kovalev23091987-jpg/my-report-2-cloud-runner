@@ -1,0 +1,2683 @@
+{
+  "schema": "N05_REMAINING_EXCHANGE_QUALIFICATION_V1",
+  "stage": "poloniex",
+  "run": "38069554249",
+  "head": "a0f41f74aeac54016ae6abe92ccc3452d278e61f",
+  "started_ts": 1791651275109,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 15,
+  "sources": [
+    {
+      "name": "POLONIEX-EXACT-ASSETS",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/v2/currencies",
+      "method": "GET",
+      "received_ts": 1791651278008,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-EXACT-ASSETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "23462bb8608b48d601bbcedd8a2be50ec6cfff41a8b2af5d184a9b00af0b32de",
+      "gzip_sha256": "a225d6f415138c0b737f3cbadc1b0d298c821f35ad212858f7d02297314a4de4",
+      "bytes": 682729,
+      "file": "POLONIEX-EXACT-ASSETS.json.gz"
+    },
+    {
+      "name": "POLONIEX-SPOT-MARKETS",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets",
+      "method": "GET",
+      "received_ts": 1791651279489,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-SPOT-MARKETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "e82313fc3856db985d7abbc1d159504567fb17ad77d67c18eabb65b3c36dda21",
+      "gzip_sha256": "3e7680e9894ca3cb5741cfb586050f59b19b58d4a404745c5f3543303782fd5a",
+      "bytes": 501297,
+      "file": "POLONIEX-SPOT-MARKETS.json.gz"
+    },
+    {
+      "name": "POLONIEX-AAVE-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/AAVE_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651280814,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-AAVE-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "99a6f4cd106f0378899225dc75979489c26a11aa9bbf8f3f3ab708e94be67d85",
+      "gzip_sha256": "377216058061c30b76f1a8b9be8dc410781f5da66aebde5768c6eb35cfeb47e0",
+      "bytes": 34622,
+      "file": "POLONIEX-AAVE-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ACE-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/ACE_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651282502,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-ACE-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "442f2491d42a1d96ebc5c32ee46565a92d9d09ec6ad75db6dfb5f798bc3d301e",
+      "gzip_sha256": "74368b9a9a9c74ec1f111694632361330e82020fa3780ad87d73cff0f6bfc77e",
+      "bytes": 24721,
+      "file": "POLONIEX-ACE-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-APR-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/APR_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651284173,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-APR-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c11c930565359be2a03b8d1935d6f37da3f23c894f7e6e3231d5d05b9bffeb7e",
+      "gzip_sha256": "89b7808559126c030d320e1e368fcb9d40926a2a8306f124431874227d0b5ef9",
+      "bytes": 28321,
+      "file": "POLONIEX-APR-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ASTER-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/ASTER_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651285931,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-ASTER-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651240000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "49dd6ce0717097077c01aa47247032f7b79738d3083b690c5deced00a06e0ce2",
+      "gzip_sha256": "7923bea5d64943689a4cca3d114d1318461f6469cc08ac40a138b054cc6d83bb",
+      "bytes": 28321,
+      "file": "POLONIEX-ASTER-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-BEAT-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/BEAT_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651339554,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-BEAT-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "28c854dc5ceaf2356743b456b9c5dd2f6ce4ebeb8da9f7dd09b8f5bd77c9c9f8",
+      "gzip_sha256": "22e36e96d85f1ab1f35022f840abc379f8dcf2105a94d8872da00786e8bbde15",
+      "bytes": 28321,
+      "file": "POLONIEX-BEAT-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-BOME-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/BOME_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651340884,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-BOME-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "cb9856f65528ab62615b1c6b8dae0afd977453e37d9c829fe92afd67640cf778",
+      "gzip_sha256": "e2a6d911ab8be1b16d4a7cd1d015a2ab3e63824b14201c00f76d7a7b1ed78f01",
+      "bytes": 31921,
+      "file": "POLONIEX-BOME-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-BONK-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/BONK_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651342560,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-BONK-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "d8297a5669e0e4041b6fa1c3c34e6b2e89f7246053bf66b445c98ac0d9a12f3d",
+      "gzip_sha256": "517c5f4d3168d7b261107be4695f598c1e6db1c11ad023ab862b7d38da7a9647",
+      "bytes": 34321,
+      "file": "POLONIEX-BONK-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-BTW-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/BTW_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651344264,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-BTW-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "6220f50264984573f5054afbf5552bc6565660c76746c60ceaeb91d308de20c5",
+      "gzip_sha256": "b7aa5948e796f7af96e4df0b1e4c696432281572e3b38eac24679bec339a7222",
+      "bytes": 33360,
+      "file": "POLONIEX-BTW-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-DOGE-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/DOGE_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651346056,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-DOGE-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "163fae660c3127fcc0270f591b89ffcc99a4f14d08a9c0c209ff8349dc353380",
+      "gzip_sha256": "30bc094e230355f456acc75a662542b2600fe8c0e40c11fa71447d707214dc8f",
+      "bytes": 39083,
+      "file": "POLONIEX-DOGE-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-DOS-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/DOS_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651347745,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-DOS-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651300000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "387e8e2eab3180f6217be7711c32e6eb548a956fb85d6a30deb9357247600668",
+      "gzip_sha256": "82e7beaffa80e74ed44d88eb407efdc7b09313bf6369c428783b8d85a12ca3d8",
+      "bytes": 24721,
+      "file": "POLONIEX-DOS-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ENA-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/ENA_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651401442,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-ENA-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651360000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "60d83b9369647e616e577df0fa6bdde12f1147e90fe11fd8be0cc592d2b8f7d4",
+      "gzip_sha256": "604f9ec0cc802602868ede0d9e9e98a0538b4ffc1454a617d69b1075b716a32c",
+      "bytes": 28321,
+      "file": "POLONIEX-ENA-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ETC-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/ETC_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651403005,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-ETC-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651360000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "5748ec8d5cccc4af960bb223ac903b52f17eade01940141c17bcbb5b8090b45b",
+      "gzip_sha256": "236d8c123a39d1e283f6585426e00eca17ba3fd1342ee1cc261e68493f5b6b81",
+      "bytes": 33943,
+      "file": "POLONIEX-ETC-NATIVE-240.json.gz"
+    },
+    {
+      "name": "POLONIEX-ETHFI-NATIVE-240",
+      "venue": "POLONIEX",
+      "url": "https://api.poloniex.com/markets/ETHFI_USDT/candles?interval=MINUTE_1&startTime=1791636840000&endTime=1791651239999&limit=240",
+      "method": "GET",
+      "received_ts": 1791651404665,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069554249:poloniex:1:POLONIEX-ETHFI-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:POLONIEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "POLONIEX",
+        "minute_bucket": 1791651360000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "92ae3b4bb7b5453c2fee476eee884cbf93d4209e53e9ef39cab7afd614a4ec90",
+      "gzip_sha256": "f287010aa4f2c5026eae338ffbb84353e009798f210382bcd1191c91a71e255f",
+      "bytes": 28321,
+      "file": "POLONIEX-ETHFI-NATIVE-240.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "window_end_ts": 1791651240000,
+  "window_start_ts": 1791636840000,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 77,
+      "reserved_rows_read": 1261000,
+      "reserved_rows_written": 26676,
+      "measured_rows_read": 735916,
+      "measured_rows_written": 9183,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 1277000,
+      "rows_written": 27176
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "windows": [
+    {
+      "symbol": "AAVE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "asset": {
+        "id": 446,
+        "coin": "AAVE",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Aave",
+        "networkList": [
+          {
+            "id": 446,
+            "coin": "AAVE",
+            "name": "Ethereum",
+            "currencyType": "address",
+            "blockchain": "ETH",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "-1",
+            "decimals": 8,
+            "withdrawFee": "0.00460996",
+            "minConfirm": 64,
+            "contractAddress": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "AAVE_USDT",
+        "baseCurrencyName": "AAVE",
+        "quoteCurrencyName": "USDT",
+        "displayName": "AAVE/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1659018834722,
+        "tradableStartTime": 1659018834722,
+        "symbolTradeLimit": {
+          "symbol": "AAVE_USDT",
+          "priceScale": 2,
+          "quantityScale": 6,
+          "amountScale": 2,
+          "minQuantity": "0.000001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651280814,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "ACE",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      },
+      "asset": {
+        "id": 1158,
+        "coin": "ACE",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Fusionist",
+        "networkList": [
+          {
+            "id": 1158,
+            "coin": "ACE",
+            "name": "Binance smart chain",
+            "currencyType": "address",
+            "blockchain": "BSC",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "-1",
+            "decimals": 8,
+            "withdrawFee": "1.08072075",
+            "minConfirm": 15,
+            "contractAddress": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "ACE_USDT",
+        "baseCurrencyName": "ACE",
+        "quoteCurrencyName": "USDT",
+        "displayName": "ACE/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1703174400000,
+        "tradableStartTime": 1703246400000,
+        "symbolTradeLimit": {
+          "symbol": "ACE_USDT",
+          "priceScale": 2,
+          "quantityScale": 6,
+          "amountScale": 2,
+          "minQuantity": "0.000001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651282502,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "APR",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x5a9610919f5e81183823a2be4bd1beb2b4da2a20"
+      },
+      "asset": {
+        "id": 2413,
+        "coin": "APR",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "APRIORI",
+        "networkList": [
+          {
+            "id": 2413,
+            "coin": "APR",
+            "name": "Ethereum",
+            "currencyType": "address",
+            "blockchain": "ETH",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "3.00000000",
+            "decimals": 8,
+            "withdrawFee": "7.14939367",
+            "minConfirm": 64,
+            "contractAddress": "0x5a9610919f5e81183823a2be4bd1beb2b4da2a20"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "APR_USDT",
+        "baseCurrencyName": "APR",
+        "quoteCurrencyName": "USDT",
+        "displayName": "APR/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1761643200000,
+        "tradableStartTime": 1761651000000,
+        "symbolTradeLimit": {
+          "symbol": "APR_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651284173,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "ASTER",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      },
+      "asset": {
+        "id": 2375,
+        "coin": "ASTER",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "ASTER",
+        "networkList": [
+          {
+            "id": 2375,
+            "coin": "ASTER",
+            "name": "Binance smart chain",
+            "currencyType": "address",
+            "blockchain": "BSC",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "10.00000000",
+            "decimals": 8,
+            "withdrawFee": "0.63562461",
+            "minConfirm": 15,
+            "contractAddress": "0x000ae314e2a2172a039b26378814c252734f556a"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "ASTER_USDT",
+        "baseCurrencyName": "ASTER",
+        "quoteCurrencyName": "USDT",
+        "displayName": "ASTER/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1758267000000,
+        "tradableStartTime": 1758285000000,
+        "symbolTradeLimit": {
+          "symbol": "ASTER_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651285931,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "BEAT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+      },
+      "asset": {
+        "id": 2423,
+        "coin": "BEAT",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Audiera",
+        "networkList": [
+          {
+            "id": 2423,
+            "coin": "BEAT",
+            "name": "Binance smart chain",
+            "currencyType": "address",
+            "blockchain": "BSC",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "11.00000000",
+            "decimals": 8,
+            "withdrawFee": "3.84940606",
+            "minConfirm": 15,
+            "contractAddress": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "BEAT_USDT",
+        "baseCurrencyName": "BEAT",
+        "quoteCurrencyName": "USDT",
+        "displayName": "BEAT/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1763089200000,
+        "tradableStartTime": 1763100000000,
+        "symbolTradeLimit": {
+          "symbol": "BEAT_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651339554,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "BOME",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      },
+      "asset": {
+        "id": 1339,
+        "coin": "BOME",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "BOOK OF MEME",
+        "networkList": [
+          {
+            "id": 1339,
+            "coin": "BOME",
+            "name": "Solana",
+            "currencyType": "address",
+            "blockchain": "SOL",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "1606.90000000",
+            "decimals": 6,
+            "withdrawFee": "803.43000000",
+            "minConfirm": 300,
+            "contractAddress": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "BOME_USDT",
+        "baseCurrencyName": "BOME",
+        "quoteCurrencyName": "USDT",
+        "displayName": "BOME/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1710432000000,
+        "tradableStartTime": 1710469800000,
+        "symbolTradeLimit": {
+          "symbol": "BOME_USDT",
+          "priceScale": 7,
+          "quantityScale": 1,
+          "amountScale": 7,
+          "minQuantity": "0.1",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651340884,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "BONK",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      "asset": {
+        "id": 816,
+        "coin": "BONK",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Bonk",
+        "networkList": [
+          {
+            "id": 816,
+            "coin": "BONK",
+            "name": "Solana",
+            "currencyType": "address",
+            "blockchain": "SOL",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "479080.20000000",
+            "decimals": 5,
+            "withdrawFee": "239540.08000000",
+            "minConfirm": 15,
+            "contractAddress": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "BONK_USDT",
+        "baseCurrencyName": "BONK",
+        "quoteCurrencyName": "USDT",
+        "displayName": "BONK/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1672805345714,
+        "tradableStartTime": 1672805345707,
+        "symbolTradeLimit": {
+          "symbol": "BONK_USDT",
+          "priceScale": 9,
+          "quantityScale": 0,
+          "amountScale": 8,
+          "minQuantity": "10",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651342560,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "BTW",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      },
+      "asset": {
+        "id": 2667,
+        "coin": "BTW",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Bitway Token",
+        "networkList": [
+          {
+            "id": 2667,
+            "coin": "BTW",
+            "name": "Binance smart chain",
+            "currencyType": "address",
+            "blockchain": "BSC",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "5.00000000",
+            "decimals": 8,
+            "withdrawFee": "0.38836095",
+            "minConfirm": 15,
+            "contractAddress": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "BTW_USDT",
+        "baseCurrencyName": "BTW",
+        "quoteCurrencyName": "USDT",
+        "displayName": "BTW/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1789979400000,
+        "tradableStartTime": 1789986600000,
+        "symbolTradeLimit": {
+          "symbol": "BTW_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651344264,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "DOGE",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "asset": {
+        "id": 59,
+        "coin": "DOGE",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Dogecoin",
+        "networkList": [
+          {
+            "id": 524,
+            "coin": "DOGETRON",
+            "name": "Tron",
+            "currencyType": "address",
+            "blockchain": "TRX",
+            "withdrawalEnable": false,
+            "depositEnable": false,
+            "depositAddress": null,
+            "withdrawMin": "-1",
+            "decimals": 8,
+            "withdrawFee": "20.00000000",
+            "minConfirm": 1,
+            "contractAddress": "THbVQp8kMjStKNnf2iCY6NEzThKMK5aBHg"
+          },
+          {
+            "id": 59,
+            "coin": "DOGE",
+            "name": "Dogecoin",
+            "currencyType": "address",
+            "blockchain": "DOGE",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "6.00000000",
+            "decimals": 8,
+            "withdrawFee": "5.00000000",
+            "minConfirm": 6,
+            "contractAddress": null
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": true,
+        "supportBorrow": true
+      },
+      "market": {
+        "symbol": "DOGE_USDT",
+        "baseCurrencyName": "DOGE",
+        "quoteCurrencyName": "USDT",
+        "displayName": "DOGE/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1659018821810,
+        "tradableStartTime": 1659018821810,
+        "symbolTradeLimit": {
+          "symbol": "DOGE_USDT",
+          "priceScale": 6,
+          "quantityScale": 3,
+          "amountScale": 5,
+          "minQuantity": "0.001",
+          "minAmount": "1",
+          "maxQuantity": "700000",
+          "maxAmount": "300000",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": true,
+          "maxLeverage": 3
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651346056,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "DOS",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      },
+      "asset": {
+        "id": 2606,
+        "coin": "DOS",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "DAPPOS",
+        "networkList": [
+          {
+            "id": 2606,
+            "coin": "DOS",
+            "name": "Ethereum",
+            "currencyType": "address",
+            "blockchain": "ETH",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "3.00000000",
+            "decimals": 8,
+            "withdrawFee": "1.12858286",
+            "minConfirm": 64,
+            "contractAddress": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "DOS_USDT",
+        "baseCurrencyName": "DOS",
+        "quoteCurrencyName": "USDT",
+        "displayName": "DOS/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1786518000000,
+        "tradableStartTime": 1786525200000,
+        "symbolTradeLimit": {
+          "symbol": "DOS_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651347745,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "ENA",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "asset": {
+        "id": 1419,
+        "coin": "ENA",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Ethena",
+        "networkList": [
+          {
+            "id": 1419,
+            "coin": "ENA",
+            "name": "Ethereum",
+            "currencyType": "address",
+            "blockchain": "ETH",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "-1",
+            "decimals": 8,
+            "withdrawFee": "3.58931395",
+            "minConfirm": 64,
+            "contractAddress": "0x57e114B691Db790C35207b2e685D4A43181e6061"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "ENA_USDT",
+        "baseCurrencyName": "ENA",
+        "quoteCurrencyName": "USDT",
+        "displayName": "ENA/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1711987200000,
+        "tradableStartTime": 1712055600000,
+        "symbolTradeLimit": {
+          "symbol": "ENA_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651401442,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "ETC",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      },
+      "asset": {
+        "id": 283,
+        "coin": "ETC",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Ethereum Classic",
+        "networkList": [
+          {
+            "id": 283,
+            "coin": "ETC",
+            "name": "Ethereum Classic",
+            "currencyType": "address",
+            "blockchain": "ETC",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "0.10000000",
+            "decimals": 8,
+            "withdrawFee": "0.04375000",
+            "minConfirm": 7000,
+            "contractAddress": null
+          }
+        ],
+        "externalTransferEnabled": true,
+        "supportCollateral": true,
+        "supportBorrow": true
+      },
+      "market": {
+        "symbol": "ETC_USDT",
+        "baseCurrencyName": "ETC",
+        "quoteCurrencyName": "USDT",
+        "displayName": "ETC/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1659018820497,
+        "tradableStartTime": 1659018820497,
+        "symbolTradeLimit": {
+          "symbol": "ETC_USDT",
+          "priceScale": 3,
+          "quantityScale": 6,
+          "amountScale": 2,
+          "minQuantity": "0.000001",
+          "minAmount": "1",
+          "maxQuantity": "2800",
+          "maxAmount": "100000",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": true,
+          "maxLeverage": 3
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651403005,
+      "native_minutes": 240
+    },
+    {
+      "symbol": "ETHFI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      },
+      "asset": {
+        "id": 1343,
+        "coin": "ETHFI",
+        "delisted": false,
+        "tradeEnable": true,
+        "name": "Ether Fi",
+        "networkList": [
+          {
+            "id": 1343,
+            "coin": "ETHFI",
+            "name": "Ethereum",
+            "currencyType": "address",
+            "blockchain": "ETH",
+            "withdrawalEnable": true,
+            "depositEnable": true,
+            "depositAddress": null,
+            "withdrawMin": "-1",
+            "decimals": 8,
+            "withdrawFee": "1.29914159",
+            "minConfirm": 64,
+            "contractAddress": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+          }
+        ],
+        "externalTransferEnabled": false,
+        "supportCollateral": false,
+        "supportBorrow": false
+      },
+      "market": {
+        "symbol": "ETHFI_USDT",
+        "baseCurrencyName": "ETHFI",
+        "quoteCurrencyName": "USDT",
+        "displayName": "ETHFI/USDT",
+        "state": "NORMAL",
+        "visibleStartTime": 1710748800000,
+        "tradableStartTime": 1710766800000,
+        "symbolTradeLimit": {
+          "symbol": "ETHFI_USDT",
+          "priceScale": 4,
+          "quantityScale": 4,
+          "amountScale": 4,
+          "minQuantity": "0.0001",
+          "minAmount": "1",
+          "maxQuantity": "0",
+          "maxAmount": "0",
+          "highestBid": "0",
+          "lowestAsk": "0"
+        },
+        "crossMargin": {
+          "supportCrossMargin": false,
+          "maxLeverage": 1
+        }
+      },
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651404665,
+      "native_minutes": 240
+    }
+  ],
+  "original_universe_assets": [
+    {
+      "symbol": "AAVE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "AAVE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "AAVE-USDT"
+    },
+    {
+      "symbol": "ACE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ACE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ACE-USDT"
+    },
+    {
+      "symbol": "ADA",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ADA-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ADA-USDT"
+    },
+    {
+      "symbol": "AKE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "AKE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "AKE-USDT"
+    },
+    {
+      "symbol": "ALGO",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ALGO-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ALGO-USDT"
+    },
+    {
+      "symbol": "APR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "APR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "APR-USDT"
+    },
+    {
+      "symbol": "APT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "APT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "APT-USDT"
+    },
+    {
+      "symbol": "ARB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ARB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ARB-USDT"
+    },
+    {
+      "symbol": "ASTER",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ASTER-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ASTER-USDT"
+    },
+    {
+      "symbol": "ATOM",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ATOM-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ATOM-USDT"
+    },
+    {
+      "symbol": "AVAX",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "AVAX-USDT"
+        }
+      ],
+      "asset_analysis_contract": "AVAX-USDT"
+    },
+    {
+      "symbol": "AVNT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "AVNT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "AVNT-USDT"
+    },
+    {
+      "symbol": "BANK",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BANK-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BANK-USDT"
+    },
+    {
+      "symbol": "BCH",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BCH-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BCH-USDT"
+    },
+    {
+      "symbol": "BEAT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BEAT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BEAT-USDT"
+    },
+    {
+      "symbol": "BILL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BILL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BILL-USDT"
+    },
+    {
+      "symbol": "BNB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BNB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BNB-USDT"
+    },
+    {
+      "symbol": "BOME",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BOME-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BOME-USDT"
+    },
+    {
+      "symbol": "BONK",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BONK-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BONK-USDT"
+    },
+    {
+      "symbol": "BR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BR-USDT"
+    },
+    {
+      "symbol": "BTC",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT"
+        },
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261009"
+        },
+        {
+          "family": "linear",
+          "contract_code": "BTC-USDT-261016"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "BTC-USD"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261016"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "BTC261225"
+        }
+      ],
+      "asset_analysis_contract": "BTC-USDT"
+    },
+    {
+      "symbol": "BTR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BTR-USDT"
+    },
+    {
+      "symbol": "BTT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BTT-USDT"
+    },
+    {
+      "symbol": "BTW",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "BTW-USDT"
+        }
+      ],
+      "asset_analysis_contract": "BTW-USDT"
+    },
+    {
+      "symbol": "CASHCAT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "CASHCAT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "CASHCAT-USDT"
+    },
+    {
+      "symbol": "CHZ",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "CHZ-USDT"
+        }
+      ],
+      "asset_analysis_contract": "CHZ-USDT"
+    },
+    {
+      "symbol": "DASH",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "DASH-USDT"
+        }
+      ],
+      "asset_analysis_contract": "DASH-USDT"
+    },
+    {
+      "symbol": "DOGE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "DOGE-USDT"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "DOGE-USD"
+        }
+      ],
+      "asset_analysis_contract": "DOGE-USDT"
+    },
+    {
+      "symbol": "DOS",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "DOS-USDT"
+        }
+      ],
+      "asset_analysis_contract": "DOS-USDT"
+    },
+    {
+      "symbol": "DOT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "DOT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "DOT-USDT"
+    },
+    {
+      "symbol": "ENA",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ENA-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ENA-USDT"
+    },
+    {
+      "symbol": "ETC",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ETC-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ETC-USDT"
+    },
+    {
+      "symbol": "ETH",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261009"
+        },
+        {
+          "family": "linear",
+          "contract_code": "ETH-USDT-261016"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "ETH-USD"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261016"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "ETH261225"
+        }
+      ],
+      "asset_analysis_contract": "ETH-USDT"
+    },
+    {
+      "symbol": "ETHFI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ETHFI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ETHFI-USDT"
+    },
+    {
+      "symbol": "EUL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "EUL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "EUL-USDT"
+    },
+    {
+      "symbol": "FARTCOIN",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "FARTCOIN-USDT"
+        }
+      ],
+      "asset_analysis_contract": "FARTCOIN-USDT"
+    },
+    {
+      "symbol": "FIL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "FIL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "FIL-USDT"
+    },
+    {
+      "symbol": "FLOKI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "FLOKI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "FLOKI-USDT"
+    },
+    {
+      "symbol": "GPS",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "GPS-USDT"
+        }
+      ],
+      "asset_analysis_contract": "GPS-USDT"
+    },
+    {
+      "symbol": "GRAM",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "GRAM-USDT"
+        }
+      ],
+      "asset_analysis_contract": "GRAM-USDT"
+    },
+    {
+      "symbol": "HBAR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "HBAR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "HBAR-USDT"
+    },
+    {
+      "symbol": "HYPE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "HYPE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "HYPE-USDT"
+    },
+    {
+      "symbol": "ICP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ICP-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ICP-USDT"
+    },
+    {
+      "symbol": "JST",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "JST-USDT"
+        }
+      ],
+      "asset_analysis_contract": "JST-USDT"
+    },
+    {
+      "symbol": "JUP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "JUP-USDT"
+        }
+      ],
+      "asset_analysis_contract": "JUP-USDT"
+    },
+    {
+      "symbol": "LAB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "LAB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "LAB-USDT"
+    },
+    {
+      "symbol": "LINK",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "LINK-USDT"
+        }
+      ],
+      "asset_analysis_contract": "LINK-USDT"
+    },
+    {
+      "symbol": "LIT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "LIT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "LIT-USDT"
+    },
+    {
+      "symbol": "LSK",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "LSK-USDT"
+        }
+      ],
+      "asset_analysis_contract": "LSK-USDT"
+    },
+    {
+      "symbol": "LTC",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "LTC-USDT"
+        }
+      ],
+      "asset_analysis_contract": "LTC-USDT"
+    },
+    {
+      "symbol": "MARSCOIN",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "MARSCOIN-USDT"
+        }
+      ],
+      "asset_analysis_contract": "MARSCOIN-USDT"
+    },
+    {
+      "symbol": "MUBARAK",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "MUBARAK-USDT"
+        }
+      ],
+      "asset_analysis_contract": "MUBARAK-USDT"
+    },
+    {
+      "symbol": "MYX",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "MYX-USDT"
+        }
+      ],
+      "asset_analysis_contract": "MYX-USDT"
+    },
+    {
+      "symbol": "NEAR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "NEAR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "NEAR-USDT"
+    },
+    {
+      "symbol": "NIL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "NIL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "NIL-USDT"
+    },
+    {
+      "symbol": "OKB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "OKB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "OKB-USDT"
+    },
+    {
+      "symbol": "ONDO",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ONDO-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ONDO-USDT"
+    },
+    {
+      "symbol": "ONG",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ONG-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ONG-USDT"
+    },
+    {
+      "symbol": "OP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "OP-USDT"
+        }
+      ],
+      "asset_analysis_contract": "OP-USDT"
+    },
+    {
+      "symbol": "ORDI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ORDI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ORDI-USDT"
+    },
+    {
+      "symbol": "PAXG",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PAXG-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PAXG-USDT"
+    },
+    {
+      "symbol": "PENGU",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PENGU-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PENGU-USDT"
+    },
+    {
+      "symbol": "PEOPLE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PEOPLE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PEOPLE-USDT"
+    },
+    {
+      "symbol": "PEPE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PEPE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PEPE-USDT"
+    },
+    {
+      "symbol": "PIPPIN",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PIPPIN-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PIPPIN-USDT"
+    },
+    {
+      "symbol": "PONS",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PONS-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PONS-USDT"
+    },
+    {
+      "symbol": "PUMP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "PUMP-USDT"
+        }
+      ],
+      "asset_analysis_contract": "PUMP-USDT"
+    },
+    {
+      "symbol": "QNT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "QNT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "QNT-USDT"
+    },
+    {
+      "symbol": "RAVE",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "RAVE-USDT"
+        }
+      ],
+      "asset_analysis_contract": "RAVE-USDT"
+    },
+    {
+      "symbol": "RAY",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "RAY-USDT"
+        }
+      ],
+      "asset_analysis_contract": "RAY-USDT"
+    },
+    {
+      "symbol": "RIVER",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "RIVER-USDT"
+        }
+      ],
+      "asset_analysis_contract": "RIVER-USDT"
+    },
+    {
+      "symbol": "SHIB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SHIB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SHIB-USDT"
+    },
+    {
+      "symbol": "SKR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SKR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SKR-USDT"
+    },
+    {
+      "symbol": "SKYAI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SKYAI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SKYAI-USDT"
+    },
+    {
+      "symbol": "SOL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SOL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SOL-USDT"
+    },
+    {
+      "symbol": "STEEM",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "STEEM-USDT"
+        }
+      ],
+      "asset_analysis_contract": "STEEM-USDT"
+    },
+    {
+      "symbol": "SUI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SUI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SUI-USDT"
+    },
+    {
+      "symbol": "SUN",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SUN-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SUN-USDT"
+    },
+    {
+      "symbol": "SUSHI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "SUSHI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "SUSHI-USDT"
+    },
+    {
+      "symbol": "TAO",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "TAO-USDT"
+        }
+      ],
+      "asset_analysis_contract": "TAO-USDT"
+    },
+    {
+      "symbol": "TIA",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "TIA-USDT"
+        }
+      ],
+      "asset_analysis_contract": "TIA-USDT"
+    },
+    {
+      "symbol": "TRUMP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "TRUMP-USDT"
+        }
+      ],
+      "asset_analysis_contract": "TRUMP-USDT"
+    },
+    {
+      "symbol": "TRX",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "TRX-USDT"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "TRX-USD"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261009"
+        },
+        {
+          "family": "coin_delivery",
+          "contract_code": "TRX261016"
+        }
+      ],
+      "asset_analysis_contract": "TRX-USDT"
+    },
+    {
+      "symbol": "TUT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "TUT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "TUT-USDT"
+    },
+    {
+      "symbol": "UB",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "UB-USDT"
+        }
+      ],
+      "asset_analysis_contract": "UB-USDT"
+    },
+    {
+      "symbol": "UNI",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "UNI-USDT"
+        }
+      ],
+      "asset_analysis_contract": "UNI-USDT"
+    },
+    {
+      "symbol": "USELESS",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "USELESS-USDT"
+        }
+      ],
+      "asset_analysis_contract": "USELESS-USDT"
+    },
+    {
+      "symbol": "VELVET",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "VELVET-USDT"
+        }
+      ],
+      "asset_analysis_contract": "VELVET-USDT"
+    },
+    {
+      "symbol": "WIF",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "WIF-USDT"
+        }
+      ],
+      "asset_analysis_contract": "WIF-USDT"
+    },
+    {
+      "symbol": "WIN",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "WIN-USDT"
+        }
+      ],
+      "asset_analysis_contract": "WIN-USDT"
+    },
+    {
+      "symbol": "WLD",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "WLD-USDT"
+        }
+      ],
+      "asset_analysis_contract": "WLD-USDT"
+    },
+    {
+      "symbol": "XAUT",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "XAUT-USDT"
+        }
+      ],
+      "asset_analysis_contract": "XAUT-USDT"
+    },
+    {
+      "symbol": "XLM",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "XLM-USDT"
+        }
+      ],
+      "asset_analysis_contract": "XLM-USDT"
+    },
+    {
+      "symbol": "XMR",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "XMR-USDT"
+        }
+      ],
+      "asset_analysis_contract": "XMR-USDT"
+    },
+    {
+      "symbol": "XPL",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "XPL-USDT"
+        }
+      ],
+      "asset_analysis_contract": "XPL-USDT"
+    },
+    {
+      "symbol": "XRP",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "XRP-USDT"
+        },
+        {
+          "family": "coin_swap",
+          "contract_code": "XRP-USD"
+        }
+      ],
+      "asset_analysis_contract": "XRP-USDT"
+    },
+    {
+      "symbol": "ZEC",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ZEC-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ZEC-USDT"
+    },
+    {
+      "symbol": "ZKC",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "ZKC-USDT"
+        }
+      ],
+      "asset_analysis_contract": "ZKC-USDT"
+    },
+    {
+      "symbol": "哈基米",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "哈基米-USDT"
+        }
+      ],
+      "asset_analysis_contract": "哈基米-USDT"
+    },
+    {
+      "symbol": "币安人生",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "币安人生-USDT"
+        }
+      ],
+      "asset_analysis_contract": "币安人生-USDT"
+    },
+    {
+      "symbol": "牛来",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "牛来-USDT"
+        }
+      ],
+      "asset_analysis_contract": "牛来-USDT"
+    },
+    {
+      "symbol": "龙虾",
+      "contracts": [
+        {
+          "family": "linear",
+          "contract_code": "龙虾-USDT"
+        }
+      ],
+      "asset_analysis_contract": "龙虾-USDT"
+    }
+  ],
+  "status": "REMAINING_EXCHANGE_ROUTE_FACTS_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 15,
+      "statistics": 0
+    },
+    "total": 15,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 149
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38069554249:poloniex:1",
+    "source_run_id": "38069554249",
+    "measured_rows_read": 302,
+    "measured_rows_written_accounted": 111,
+    "measured_requests_accounted": 124,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 124,
+    "rows_read": 303,
+    "rows_written": 111,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 78,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 15,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 30,
+        "rows_read": 15,
+        "rows_written": 17,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 15,
+        "rows_read": 15,
+        "rows_written": 30,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 15,
+        "rows_read": 15,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 15,
+        "rows_read": 82,
+        "rows_written": 60,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 30,
+        "rows_read": 97,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791651404872,
+  "raw_batch": {
+    "file": "original-batch.json.gz",
+    "body_sha256": "48d05da112b7cbfbc91bcc013dd67abca7f9a616d30d5dee11e3f85e937e83ec",
+    "gzip_sha256": "307ff3bdb4df58a6b3a268d566694a3ebd23e64d27d60505dd75bc09820d190d",
+    "bytes": 1529477
+  },
+  "coverage_qualified": false
+}
