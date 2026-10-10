@@ -1,0 +1,68 @@
+name: N05 broad exchange proof close after completed assembled checks
+on:
+  push:
+    branches: [n05-broad-exchanges-20261010]
+    paths: ['.github/workflows/n05-broad-resume-20261010.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main and own lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='61e21d87988bfbc58dd13a8544af08d5dbb05065')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:head})).data.content,'base64').toString());
+            const p=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),f=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(p.lease?.owner!=='CODEX:N05_BROAD_EXCHANGES:1791647541921'||p.lease.expires_ts<=Date.now()||f.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+      - name: Reuse exact completed assembled tests with hashes and unchanged repository inputs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo,sha=b=>crypto.createHash('sha256').update(b).digest('hex'),original='495c288a84ab8043fa9f63bd984a0f64be46201f';
+            const diff=cp.execFileSync('git',['diff','--name-only',original,context.sha]).toString().trim().split('\n');if(diff.length!==1||diff[0]!=='.github/workflows/n05-broad-resume-20261010.yml')throw Error('TESTED_INPUTS_CHANGED');
+            const b=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11675460709,archive_format:'zip'})).data);if(sha(b)!=='de75515288500ceadc6f5e4bc17a4be97f39ae29e19fc0a87266212338cc436b')throw Error('VERIFIED_ZIP_HASH');
+            fs.mkdirSync('audit-output/n05-broad-resume',{recursive:true});fs.writeFileSync('verified-tests.zip',b);cp.execFileSync('unzip',['-q','verified-tests.zip','-d','audit-output/n05-broad-resume']);
+            const out='audit-output/n05-broad-resume/',p=JSON.parse(fs.readFileSync(out+'proof.json'));if(p.head!==original||p.status!=='ASSEMBLED_BROAD_VENUE_JOINT_FLOW_SCORE_REPORT_BINDING_VERIFIED')throw Error('ASSEMBLED_PROOF_NOT_CLOSED');
+            for(const [f,digest] of Object.entries(p.files))if(sha(fs.readFileSync(out+f))!==digest)throw Error('VERIFIED_OUTPUT_HASH:'+f);
+            for(const f of ['generation.log','assembled-pause.tap','approved-delivery.tap'])if(/not ok|✖|# fail [1-9]|ℹ fail [1-9]/.test(fs.readFileSync(out+f,'utf8')))throw Error('COMPLETED_TEST_FAILURE:'+f);
+            p.reused_verification_head=original;p.reused_verification_run=38067257184;p.repository_inputs_identical_except_proof_workflow=true;p.head=context.sha;p.run=context.runId;p.original_replay_complete=false;
+            fs.writeFileSync(out+'proof.json',JSON.stringify(p,null,2)+'\n');
+      - name: Replay newly retained exchange windows from original bytes and original clocks
+        run: |
+          node tools/replay-n05-broad-exchanges-20261010.mjs
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';import {createHash} from 'node:crypto';
+          const out='audit-output/n05-broad-resume/',proof=JSON.parse(fs.readFileSync(out+'proof.json')),sha=b=>createHash('sha256').update(b).digest('hex');
+          proof.files=Object.fromEntries(fs.readdirSync(out).filter(f=>f!=='proof.json').map(f=>[f,sha(fs.readFileSync(out+f))]));proof.original_replay_complete=true;proof.verified_ts=Date.now();
+          fs.writeFileSync(out+'proof.json',JSON.stringify(proof,null,2)+'\n');
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n05-broad-resume-${{ github.run_id }}
+          path: audit-output/n05-broad-resume/
+          retention-days: 30
+      - name: Retain exact cloud proof on review branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/','');
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='61e21d87988bfbc58dd13a8544af08d5dbb05065')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='CODEX:N05_BROAD_EXCHANGES:1791647541921'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
+            const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
+            for(const name of fs.readdirSync('audit-output/n05-broad-resume')){const b=fs.readFileSync('audit-output/n05-broad-resume/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/n05-broad-resume-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain complete assembled N05 broad exchange proof '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});

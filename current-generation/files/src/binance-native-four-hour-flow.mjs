@@ -6,7 +6,21 @@ export const BINANCE_NATIVE_REFERENCES=Object.freeze({
  BNB:Object.freeze({chain:'bsc',native_asset_id:'bsc:mainnet',reference_id:'BINANCE_PRIMARY_BSC_BNB_20261010',url:'https://www.binance.com/en/research/projects/bnb'}),
  ADA:Object.freeze({chain:'cardano',native_asset_id:'cardano:mainnet',reference_id:'BINANCE_PRIMARY_CARDANO_ADA_20261010',url:'https://www.binance.com/en/research/projects/cardano'}),
  APT:Object.freeze({chain:'aptos',native_asset_id:'aptos:mainnet',reference_id:'BINANCE_PRIMARY_APTOS_APT_20261010',url:'https://www.binance.com/en/research/projects/aptos'}),
- ATOM:Object.freeze({chain:'cosmos',native_asset_id:'cosmos:mainnet',reference_id:'BINANCE_PRIMARY_COSMOS_ATOM_20261010',url:'https://www.binance.com/en/research/projects/cosmos-network'})
+ ATOM:Object.freeze({chain:'cosmos',native_asset_id:'cosmos:mainnet',reference_id:'BINANCE_PRIMARY_COSMOS_ATOM_20261010',url:'https://www.binance.com/en/research/projects/cosmos-network'}),
+ LTC:Object.freeze({chain:'litecoin',native_asset_id:'litecoin:mainnet',reference_id:'BINANCE_PRIMARY_LTC_20261010',url:'https://www.binance.com/en/research/projects/litecoin'}),
+ BCH:Object.freeze({chain:'bitcoin-cash',native_asset_id:'bitcoin-cash:mainnet',reference_id:'BINANCE_PRIMARY_BCH_20261010',url:'https://www.binance.com/en/research/projects/bitcoin-cash'}),
+ DOGE:Object.freeze({chain:'dogecoin',native_asset_id:'dogecoin:mainnet',reference_id:'BINANCE_PRIMARY_DOGE_20261010',url:'https://www.binance.com/en/research/projects/dogecoin'}),
+ ZEC:Object.freeze({chain:'zcash',native_asset_id:'zcash:mainnet',reference_id:'BINANCE_PRIMARY_ZEC_20261010',url:'https://www.binance.com/en/research/projects/zcash'}),
+ XLM:Object.freeze({chain:'stellar',native_asset_id:'stellar:mainnet',reference_id:'BINANCE_PRIMARY_XLM_20261010',url:'https://www.binance.com/en/research/projects/stellar-lumens'}),
+ ETC:Object.freeze({chain:'ethereum-classic',native_asset_id:'ethereum-classic:mainnet',reference_id:'BINANCE_PRIMARY_ETC_20261010',url:'https://www.binance.com/en/research/projects/ethereum-classic'}),
+ NEAR:Object.freeze({chain:'near',native_asset_id:'near:mainnet',reference_id:'BINANCE_PRIMARY_NEAR_20261010',url:'https://www.binance.com/en/research/projects/near-protocol'}),
+ SOL:Object.freeze({chain:'solana',native_asset_id:'solana:mainnet',reference_id:'BINANCE_PRIMARY_SOL_20261010',url:'https://www.binance.com/en/research/projects/solana'}),
+ AVAX:Object.freeze({chain:'avalanche',native_asset_id:'avalanche:mainnet',reference_id:'BINANCE_PRIMARY_AVAX_20261010',url:'https://www.binance.com/en/research/projects/avalanche'}),
+ DOT:Object.freeze({chain:'polkadot',native_asset_id:'polkadot:mainnet',reference_id:'BINANCE_PRIMARY_DOT_20261010',url:'https://www.binance.com/en/research/projects/polkadot'}),
+ TRX:Object.freeze({chain:'tron',native_asset_id:'tron:mainnet',reference_id:'BINANCE_PRIMARY_TRX_20261010',url:'https://www.binance.com/en/research/projects/tron'}),
+ XRP:Object.freeze({chain:'xrp',native_asset_id:'xrp:mainnet',reference_id:'BINANCE_PRIMARY_XRP_20261010',url:'https://www.binance.com/en/research/projects/xrp'}),
+ SUI:Object.freeze({chain:'sui',native_asset_id:'sui:mainnet',reference_id:'BINANCE_PRIMARY_SUI_20261010',url:'https://www.binance.com/en/research/projects/sui'}),
+ HBAR:Object.freeze({chain:'hedera',native_asset_id:'hedera:mainnet',reference_id:'BINANCE_PRIMARY_HBAR_20261010',url:'https://www.binance.com/en/research/projects/hedera-hashgraph'})
 });
 export function exactBinanceNativeIdentity(contract,identity){
  const base=String(contract||'').replace(/-USDT$/,''),r=BINANCE_NATIVE_REFERENCES[base];

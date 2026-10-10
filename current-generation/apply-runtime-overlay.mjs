@@ -115,7 +115,7 @@ const files=[
  'src/gdelt-official-discovery.mjs',
  'src/shadow-market-pilot.mjs',
  'src/blockscout-index-evidence.mjs',
- 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-flow-collector.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/source-closure-diagnostics.mjs',
+ 'src/gate-four-hour-flow.mjs','src/gate-flow-collector.mjs','src/gate-public-taker-reference.mjs','src/flow-turnover-baseline.mjs','src/flow-turnover-collector.mjs','src/backpack-four-hour-flow.mjs','src/backpack-flow-collector.mjs','src/kraken-four-hour-flow.mjs','src/kraken-flow-collector.mjs','src/kraken-public-taker-reference.mjs','src/n05-source-headroom.mjs','src/binance-native-four-hour-flow.mjs','src/binance-native-flow-collector.mjs','src/external-n05-flow-collector.mjs','src/bitget-four-hour-flow.mjs','src/bitget-flow-collector.mjs','src/joint-spot-futures-flow.mjs','src/candidate-evidence-v2-runtime.mjs','src/source-closure-diagnostics.mjs',
  'src/htx-large-trades-evidence.mjs','src/coinpaprika-sector-evidence.mjs','src/coingecko-sector-evidence.mjs','src/sector-context.mjs','src/block-result-context.mjs','src/finalized-chain-events.mjs','src/native-evm-finalized-context.mjs',
  'src/durable-command-queue.mjs',
  'src/strict-delivery-binding.mjs',

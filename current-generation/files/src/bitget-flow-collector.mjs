@@ -1,3 +1,4 @@
+import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {createHash} from 'node:crypto';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
@@ -17,6 +18,7 @@ export async function collectBitgetFlow(params={}){
   const id=`N05_BITGET:${run_id}:${contract}:${++sequence}`,r={url,received_ts:null,http_status:null,status:'NOT_ATTEMPTED',actual_http:0,...part};receipts.push(r);
   if(!admitDb()){r.status='FLOW_DB_HEADROOM_REQUIRED';return null;}
   const backoff=await readEvidenceSourceCache(db,{source:'N05_PROVIDER_BACKOFF:BITGET',asset_key:'SHARED',now:clock()});if(backoff){r.status='DURABLE_VENUE_BACKOFF';return null;}
+  if(!await n05SourceHasHeadroom(db,SOURCE,16,clock())){r.status='SOURCE_DAILY_CAP_DENIED';return null;}
   const grant=request_admit?.({logical_request_id:id,lane:'background',attempts:1});if(grant?.allowed!==true||grant.duplicate){r.status=grant?.status||'WHOLE_JOB_HTTP_ADMISSION_REQUIRED';return null;}
   const daily=await reserveEvidenceSourceAttempts(db,{source:SOURCE,reservation_id:id,attempts:1,daily_cap:16,now:clock()});if(!daily.allowed){r.status='SOURCE_DAILY_CAP_DENIED';return null;}
   const minute=await reserveProviderMinuteUnits(db,{provider:'BITGET',reservation_id:id,units:1,cap:6,now:clock()});if(!minute.allowed){r.status=minute.status;return null;}
@@ -44,3 +46,4 @@ export async function collectBitgetFlow(params={}){
   return{...root,status:components.some(c=>c.check_completed)?'CLOSED_QUALIFIED_FLOW_COMPONENTS':'PARTIAL_FOUR_HOUR_FLOW',components,network_calls:calls};
  }catch(e){return{...root,status:'FLOW_COLLECTOR_ERROR',reason:e.message,network_calls:calls};}
 }
+

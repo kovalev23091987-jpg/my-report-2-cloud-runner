@@ -8,6 +8,9 @@ const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..')
 export async function loadEffectivePresentationModules(){
   const target=fs.mkdtempSync(path.join(os.tmpdir(),'report2-output-contract-'));
   const copies={
+    'backpack-four-hour-flow.mjs':'current-generation/files/src/backpack-four-hour-flow.mjs',
+    'kraken-four-hour-flow.mjs':'current-generation/files/src/kraken-four-hour-flow.mjs',
+    'kraken-public-taker-reference.mjs':'current-generation/files/src/kraken-public-taker-reference.mjs',
     'binance-native-four-hour-flow.mjs':'current-generation/files/src/binance-native-four-hour-flow.mjs',
     'gate-four-hour-flow.mjs':'current-generation/files/src/gate-four-hour-flow.mjs',
     'gate-public-taker-reference.mjs':'current-generation/files/src/gate-public-taker-reference.mjs',
