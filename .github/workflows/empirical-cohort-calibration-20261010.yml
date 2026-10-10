@@ -1,0 +1,24 @@
+name: Empirical cohort and calibration guard acceptance
+on:
+  push:
+    branches:
+      - codex/empirical-cohort-calibration-guards-20261010
+  pull_request:
+    paths:
+      - current-generation/files/src/outcome-v2.mjs
+      - current-generation/files/src/calibration-v2.mjs
+      - current-generation/tests/outcome-calibration-v2.test.mjs
+permissions:
+  contents: read
+jobs:
+  empirical-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --check current-generation/files/src/outcome-v2.mjs
+      - run: node --check current-generation/files/src/calibration-v2.mjs
+      - run: node --test current-generation/tests/outcome-calibration-v2.test.mjs

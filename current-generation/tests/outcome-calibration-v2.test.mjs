@@ -54,3 +54,43 @@ test('K14: factor stays one without all future gates and chronological test is u
   const rows=Array.from({length:199},(_,i)=>({asset:`A${i%20}`,wave:`W${i}`,upstream_venue:'HL',forecast_family:'Z',horizon:'4h',direction:i%2?'LONG':'SHORT',observed_ts:Date.UTC(2026,0,1)+i*4*3600000}));const readiness=calibrationReadiness(rows);assert.equal(readiness.eligible,false);assert.equal(resolveCalibrationFactor({apply_enabled:true,state:'ACTIVE',candidate_factor:1.25,readiness}).factor,1);
   const split=assignChronologicalSplit(Array.from({length:10},(_,i)=>({observed_ts:i})));assert.deepEqual(split.map(x=>x.split),['TRAIN','TRAIN','TRAIN','TRAIN','TRAIN','TRAIN','VALIDATION','VALIDATION','TEST','TEST']);
 });
+
+
+test('K13: a delivered-entry cohort requires exact identities and a positive integer message id',()=>{
+  const publication={event:'ENTRY',publication_id:'P',generation:'G',wave_id:'W',direction:'LONG'};
+  const dispatch={publication_id:'P',dispatch_id:'D',recipient_identity:'R'};
+  const relay_receipt={dispatch_id:'D',recipient_identity:'R',state:'SENT',message_id:'173'};
+  assert.equal(deliveredEntryCohort({publication,dispatch,relay_receipt}).included,true);
+  for(const invalid of [0,-1,'1.5','Infinity','NaN',null]){
+    assert.equal(deliveredEntryCohort({publication,dispatch,relay_receipt:{...relay_receipt,message_id:invalid}}).included,false);
+  }
+  assert.equal(deliveredEntryCohort({publication,dispatch:{...dispatch,recipient_identity:undefined},relay_receipt:{...relay_receipt,recipient_identity:undefined}}).included,false);
+  assert.equal(deliveredEntryCohort({publication:{...publication,direction:null},dispatch,relay_receipt}).included,false);
+  assert.equal(deliveredEntryCohort({publication:{...publication,wave_id:''},dispatch,relay_receipt}).included,false);
+});
+
+test('K14: malformed or nonpositive OHLC cannot become a closed zone touch',()=>{
+  for(const input of [
+    {direction:'LONG',level_price:100,path_high:110,path_low:120},
+    {direction:'SHORT',level_price:100,path_high:120,path_low:0},
+    {direction:'LONG',level_price:0,path_high:110,path_low:90},
+    {direction:'LONG',level_price:100,path_high:'NaN',path_low:90}
+  ])assert.deepEqual(evaluateZoneTouch(input),{status:'CENSORED',zone_touch:null});
+  assert.deepEqual(evaluateZoneTouch({direction:'LONG',level_price:100,path_high:110,path_low:90}),{status:'CLOSED',zone_touch:true});
+});
+
+test('K14: malformed prospective observations cannot create calibration readiness or crash a batch',()=>{
+  const valid={asset:'SOL',wave:'W1',upstream_venue:'HL',forecast_family:'ZONES',horizon:'1h',direction:'LONG',observed_ts:Date.UTC(2026,9,10)};
+  const rows=[valid,{...valid,wave:'W2',observed_ts:'broken'},{...valid,wave:'W3',direction:'SIDEWAYS'},{...valid,wave:'W4',asset:null},{...valid,wave:'W5',observed_ts:Infinity}];
+  const result=calibrationReadiness(rows);
+  assert.equal(result.independent_waves,1);assert.equal(result.excluded_invalid,4);assert.equal(result.eligible,false);
+});
+
+test('K14: activation gates reject invalid factors and impossible coverage while leaving shadow weights at one',()=>{
+  const good={apply_enabled:true,state:'ACTIVE',candidate_factor:1.1,readiness:{eligible:true},test_lower_bound:.1,action_coverage:.9,hard_gates_unchanged:true,costs_not_worse:true,false_data_not_worse:true};
+  assert.equal(resolveCalibrationFactor(good).factor,1.1);
+  for(const bad of [{candidate_factor:NaN},{candidate_factor:Infinity},{candidate_factor:0},{action_coverage:1.1},{action_coverage:NaN},{test_lower_bound:2}]){
+    const result=resolveCalibrationFactor({...good,...bad});assert.equal(result.factor,1);assert.equal(result.status,'SHADOW_FACTOR_ONE');
+  }
+  assert.equal(resolveCalibrationFactor({...good,apply_enabled:false}).factor,1);
+});
