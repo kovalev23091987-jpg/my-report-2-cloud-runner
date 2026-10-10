@@ -1,0 +1,101 @@
+{
+  "schema": "OWNER_N01_N02_N03_STRATEGY_PAUSE_20261010_V1",
+  "proof": "checkpoints/OWNER_N01_N02_N03_STRATEGY_PAUSE_20261010.json",
+  "status": "PAUSED_BY_OWNER;BOTH_MANUAL_AND_TELEGRAM_ASSEMBLED_CLOUD_VERIFIED",
+  "pr": 303,
+  "cloud_run": 38047803306,
+  "tested_head": "f27fa189c1ec62b8fa66b82f27394e43c83f03b0",
+  "retained_head": "edb2702aa2b966eaf496862c7dea95d08b91c541",
+  "cloud_proof": "checkpoints/n02-owner-pause-38047803306/proof.json",
+  "artifact_id": 11667822706,
+  "artifact_digest": "sha256:4eab2253441f3402fe9975bd35784c521be7d8c6245fec4f4b1483dbbcf520a9",
+  "recorded_ts": 1791631095779,
+  "paused_block_ids": [
+    "N01",
+    "N02",
+    "N03"
+  ],
+  "blocks": {
+    "N01": {
+      "status": "PAUSED_BY_OWNER",
+      "in_strategy": false,
+      "score_contribution": 0,
+      "missing_penalty": 0,
+      "in_active_denominator": false,
+      "manual_report_facts_enabled": false,
+      "Telegram_report_facts_enabled": false,
+      "indirect_consumer_use_enabled": false
+    },
+    "N02": {
+      "status": "PAUSED_BY_OWNER",
+      "in_strategy": false,
+      "score_contribution": 0,
+      "missing_penalty": 0,
+      "in_active_denominator": false,
+      "manual_report_facts_enabled": false,
+      "Telegram_report_facts_enabled": false,
+      "indirect_consumer_use_enabled": false
+    },
+    "N03": {
+      "status": "PAUSED_BY_OWNER",
+      "in_strategy": false,
+      "score_contribution": 0,
+      "missing_penalty": 0,
+      "in_active_denominator": false,
+      "manual_report_facts_enabled": false,
+      "Telegram_report_facts_enabled": false,
+      "indirect_consumer_use_enabled": false
+    }
+  },
+  "active_additional_block_count": 12,
+  "mandatory_all_blocks_gate": false,
+  "threshold": 70,
+  "other_weights_redistributed": false,
+  "source_caps_or_reservations_reset": false,
+  "paused_only_routes": [
+    "TOKEN_CALENDAR",
+    "TOKEN_SCHEDULE",
+    "COINMETRICS",
+    "CHAIN_SUPPLY_EXCEPT_EXACT_XRP_N04_VALIDATED_LEDGER_DEPENDENCY"
+  ],
+  "shared_active_sources_preserved": true,
+  "historical_archive_bytes_and_source_clocks_preserved": true,
+  "new_manual_load_masks_stored_paused_facts": true,
+  "old_paused_presentation_not_admitted_for_new_dispatch": true,
+  "tests": {
+    "unit": 1269,
+    "unit_failed": 0,
+    "unit_skipped": 0,
+    "assembled_pause_and_schedule": 29,
+    "approved_report_and_delivery": 35,
+    "integration": 37,
+    "binding": "PASS",
+    "retained_SHA256": "ALL_7_FILES_VERIFIED"
+  },
+  "sourceHTTP": 0,
+  "production_D1_reads": 0,
+  "production_D1_writes": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "actual_ENTRY": false,
+  "paused_requirements_complete": false,
+  "project_complete": false,
+  "owner_decisions": [
+    "N01: pause unless qualified useful independent agreeing sources exist; no participation",
+    "N02: owner explicitly paused supply block and both report chains",
+    "N03: owner additionally explicitly paused supply reduction/burn/buyback block on 10.10.2026 14:13MSK"
+  ],
+  "resume_requires_new_owner_decision": true,
+  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04;DO_NOT_REACTIVATE_N01_N02_N03_OR_UNRELATED_PAUSED_WIP_OR_COMPLETION_AUTOMATION",
+  "superseded_cloud_attempts": [
+    {
+      "run": 38047505908,
+      "reason": "Legacy runtime tests expected paused N02 output; explicit removal of paused rows and immutable archival hashes tested separately"
+    },
+    {
+      "run": 38047632787,
+      "reason": "Remaining original QNT manual comparison expected N02; fixed scoped expected N02/N03 exclusions; original fixture bytes preserved"
+    }
+  ],
+  "block": "N03"
+}

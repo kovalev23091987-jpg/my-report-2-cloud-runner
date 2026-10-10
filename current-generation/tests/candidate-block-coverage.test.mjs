@@ -4,21 +4,20 @@ import {auditCandidateBlocks,sourceWasActuallyChecked,sourceWasAttempted} from '
 const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','OFFICIAL_TOKEN_SCHEDULE','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
 const completeSources=()=>Object.fromEntries(SOURCE_NAMES.map(source=>[source,{status:'VALID_RESPONSE_NO_EVENT',network_calls:1}]));
 
-test('all 14 active additional blocks are checked without equating a check to a score',()=>{
+test('all 12 active additional blocks are checked without equating a check to a score',()=>{
  const now=1_800_000_000_000;
  const evidence=[{evidence_id:'supply',asset_id:'ethereum:0x1',htx_contract:'ABC-USDT',block_id:'N02',metric_family:'TOTAL_SUPPLY_OBSERVATION',provider_id:'CHAIN_RPC',upstream_id:'PUBLICNODE_RPC',dependency_group:'supply',observed_ts:now,source_ts:now,first_known_ts:now,expires_at:now+60_000,coverage_status:'CONTEXT_ONLY',coverage_fraction:0,schema_version:'v2',validation_status:'VALID',identity_status:'EXACT',finality_status:'FINAL'}];
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,14);
- assert.equal(result.checked_block_count,14);
+ assert.equal(result.coverage_count,12);
+ assert.equal(result.checked_block_count,12);
  assert.equal(result.all_blocks_checked,true);
- assert.equal(result.blocks.N02.status,'CHECKED_NEUTRAL_CONTEXT');
- assert.equal(result.blocks.N02.decision_path,'ADMITTED_NEUTRAL_CONTEXT');
- assert.deepEqual(result.blocks.N02.evidence_rejection_reasons,{ZERO_DECISION_COVERAGE:1});
+ assert.equal(result.blocks.N02.status,'BLOCK_PAUSED_BY_OWNER');
+ assert.equal(result.blocks.N02.decision_path,'EXCLUDED_PAUSED_BLOCK');
+ assert.deepEqual(result.blocks.N02.evidence_rejection_reasons,{});
  assert.equal(result.all_blocks_have_assigned_consumer,true);assert.equal(result.all_blocks_decision_accounted,false);
- assert.equal(result.blocks.N02.source_statuses.CHAIN_SUPPLY,'CLOSED');
- assert.deepEqual(result.blocks.N02.source_checks.CHAIN_SUPPLY,{status:'CLOSED',attempted:true,checked:true,capability_resolved_without_route:false,network_calls:1,cache_status:null,receipt_count:0,admission_status:null,blocking_checks:[],valid_evidence_ids:[],provider_ids:[],declared_upstream_ids:[],physical_root_keys:[],receipts:[]});
+ assert.deepEqual(result.blocks.N02.source_checks,{});
  assert.equal(result.blocks.N06.status,'CHECKED_NO_USABLE_FACTS');
  assert.equal(result.blocks.N06.source_statuses.BLUESKY_PUBLIC,'CLOSED');
  assert.equal(result.blocks.N10.status,'CHECKED_NO_USABLE_FACTS');
@@ -96,7 +95,7 @@ test('saturated or incomplete event samples remain attempted without closing neu
  for(const status of ['LOG_SAMPLE_SATURATED','SOURCE_SAMPLE_TRUNCATED','SOURCE_SAMPLE_INCOMPLETE']){
   const sources=completeSources();sources.CHAIN_EVENTS={status,network_calls:2,receipts:[{http_status:200}]};
   const result=auditCandidateBlocks({sources,strict_fresh:true});
-  for(const block of ['N03','N04']){
+  for(const block of ['N04']){
    assert.equal(result.blocks[block].source_checks.CHAIN_EVENTS.attempted,true);
    assert.equal(result.blocks[block].checked,false);
    assert.equal(result.blocks[block].decision_path,'BLOCKED_REQUIRED_SOURCE_NOT_CHECKED');

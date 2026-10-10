@@ -85,7 +85,7 @@ test('all 15 blocks and market routes remain assigned for arbitrary HTX futures'
  }
  for(const chain of ['ethereum','bsc','arbitrum','base','polygon','optimism','avalanche','solana']){
   const identity={chain,contract_or_mint:chain==='solana'?'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn':address},plan=planCandidateEvidenceRoutes({contract:'OTHER-USDT',asset_identity:identity});
-  for(const route of ['CHAIN_SUPPLY','CHAIN_EVENTS','BLUESKY','SECTOR_COINGECKO'])assert.ok(plan.routes.some(r=>r.name===route),`${chain}:${route}`);
+  for(const route of ['CHAIN_EVENTS','BLUESKY','SECTOR_COINGECKO'])assert.ok(plan.routes.some(r=>r.name===route),`${chain}:${route}`);
  }
 });
 

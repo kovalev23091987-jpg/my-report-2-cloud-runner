@@ -58,7 +58,7 @@ test('native priority keeps the existing HTTP ceiling, all admitted caches and d
   SECTOR_COINGECKO:async p=>{const a=p.request_admit({attempts:2,source:'COINGECKO_SECTOR'});if(!a.allowed)return{status:a.status,evidence:[],network_calls:0,admission:a};await p.fetch_impl('https://fixture.invalid/a');await p.fetch_impl('https://fixture.invalid/b');return{status:'CLOSED',network_calls:2,evidence:[]};},
   BLUESKY:async()=>({status:'CLOSED',cache_status:'VALID_CACHE',network_calls:0,evidence:[]}),
  }});
- assert.equal(cmAttempts,1);assert.ok(network<=2);assert.equal(out.network_calls,network);assert.ok(out.reserved_requests<=2);
- assert.equal(out.results.COINMETRICS.admission.allowed,false);
+ assert.equal(cmAttempts,0);assert.ok(network<=2);assert.equal(out.network_calls,network);assert.ok(out.reserved_requests<=2);
+ assert.equal(out.results.COINMETRICS.status,'BLOCK_PAUSED_BY_OWNER');
  assert.equal(out.results.BLUESKY.cache_status,'VALID_CACHE');
 });

@@ -328,18 +328,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:N02_OWNER_PAUSE:1791630123935",
-    "acquired_ts": 1791630123935,
-    "expires_ts": 1791632223935,
-    "expected_main": "34692d992f2be70ba218487ac4bf6f4ffb31bceb",
-    "scope": "OWNER_N02_PAUSE_WITH_N01_N02_MANUAL_AND_TELEGRAM_CHAIN_EXCLUSION;NEXT_N03_REVIEW"
-  },
-  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N02;DO_NOT_REACTIVATE_N01_OR_UNRELATED_PAUSED_WIP",
+  "lease": null,
+  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04;DO_NOT_REACTIVATE_N01_N02_N03_OR_UNRELATED_PAUSED_WIP_OR_COMPLETION_AUTOMATION",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791629862922,
+  "updated_ts": 1791631095779,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -390,14 +384,15 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:N01_CONSENSUS:1791628248983",
-    "acquired_ts": 1791628248983,
-    "expires_ts": 1791631248983,
-    "expected_main": "498c2546a80eb640a9e670a593fb5270c753d6f7",
-    "scope": "OWNER_REQUESTED_N01_INDEPENDENT_MATCHED_MEDIUM_LARGE_RELEASE_FACT_CONSUMER_AND_PUBLIC_ID_QUALIFICATION",
-    "released_ts": 1791629862922,
-    "release_reason": "N01_OWNER_PAUSE_CLOUD_VERIFIED_AND_SAVED;OWNER_REVIEW_CONTINUES_WITH_N02",
-    "release_pr": 302
+    "owner": "CODEX:N02_OWNER_PAUSE:1791630123935",
+    "acquired_ts": 1791630123935,
+    "expires_ts": 1791632223935,
+    "expected_main": "34692d992f2be70ba218487ac4bf6f4ffb31bceb",
+    "scope": "OWNER_N02_PAUSE_WITH_N01_N02_MANUAL_AND_TELEGRAM_CHAIN_EXCLUSION;NEXT_N03_REVIEW",
+    "released_ts": 1791631095779,
+    "reason": "N01_N02_N03_OWNER_PAUSE_CLOUD_VERIFIED_AND_MAIN_RELEASE",
+    "pr": 303,
+    "owner_followup_scope": "N03_ADDITIONALLY_PAUSED;NEXT_N04_REVIEW"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -817,7 +812,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N02_NEXT;N01_PAUSED_NOT_COUNTED_IN_STRATEGY",
+  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04_NEXT;N01_N02_N03_PAUSED_IN_BOTH_REPORT_CHAINS",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -6882,7 +6877,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-10T10:57:42.922Z",
+  "updated_utc": "2026-10-10T11:18:15.779Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -7172,7 +7167,7 @@
     "project_complete": false,
     "updated_ts": 1791625374004
   },
-  "phase": "OWNER_N02_PAUSE_IMPLEMENTATION",
+  "phase": "OWNER_N01_N02_N03_PAUSE_VERIFIED_N04_REVIEW_NEXT",
   "latest_owner_block_review_pause": {
     "schema": "OWNER_BLOCK_REQUIREMENTS_REVIEW_PAUSE_20261010_V1",
     "status": "DEVELOPMENT_PAUSED_BY_OWNER_FOR_SEQUENTIAL_BLOCK_REVIEW",
@@ -7196,7 +7191,7 @@
     },
     "production_operational_jobs_stopped": false,
     "project_complete": false,
-    "current_review_status": "N01_OWNER_PAUSE_CLOUD_VERIFIED;N02_REVIEW_NEXT"
+    "current_review_status": "N01_N02_N03_OWNER_PAUSE_CLOUD_VERIFIED;N04_REVIEW_NEXT"
   },
   "latest_n01_free_source_qualification": {
     "proof": "checkpoints/N01_FREE_SOURCE_QUALIFICATION_RELEASE_20261010.json",
@@ -7249,5 +7244,105 @@
     "N01_requirements_complete": false,
     "project_complete": false,
     "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N02;DO_NOT_REACTIVATE_N01_OR_UNRELATED_PAUSED_WIP"
+  },
+  "latest_n01_n02_n03_owner_strategy_pause": {
+    "schema": "OWNER_N01_N02_N03_STRATEGY_PAUSE_20261010_V1",
+    "proof": "checkpoints/OWNER_N01_N02_N03_STRATEGY_PAUSE_20261010.json",
+    "status": "PAUSED_BY_OWNER;BOTH_MANUAL_AND_TELEGRAM_ASSEMBLED_CLOUD_VERIFIED",
+    "pr": 303,
+    "cloud_run": 38047803306,
+    "tested_head": "f27fa189c1ec62b8fa66b82f27394e43c83f03b0",
+    "retained_head": "edb2702aa2b966eaf496862c7dea95d08b91c541",
+    "cloud_proof": "checkpoints/n02-owner-pause-38047803306/proof.json",
+    "artifact_id": 11667822706,
+    "artifact_digest": "sha256:4eab2253441f3402fe9975bd35784c521be7d8c6245fec4f4b1483dbbcf520a9",
+    "recorded_ts": 1791631095779,
+    "paused_block_ids": [
+      "N01",
+      "N02",
+      "N03"
+    ],
+    "blocks": {
+      "N01": {
+        "status": "PAUSED_BY_OWNER",
+        "in_strategy": false,
+        "score_contribution": 0,
+        "missing_penalty": 0,
+        "in_active_denominator": false,
+        "manual_report_facts_enabled": false,
+        "Telegram_report_facts_enabled": false,
+        "indirect_consumer_use_enabled": false
+      },
+      "N02": {
+        "status": "PAUSED_BY_OWNER",
+        "in_strategy": false,
+        "score_contribution": 0,
+        "missing_penalty": 0,
+        "in_active_denominator": false,
+        "manual_report_facts_enabled": false,
+        "Telegram_report_facts_enabled": false,
+        "indirect_consumer_use_enabled": false
+      },
+      "N03": {
+        "status": "PAUSED_BY_OWNER",
+        "in_strategy": false,
+        "score_contribution": 0,
+        "missing_penalty": 0,
+        "in_active_denominator": false,
+        "manual_report_facts_enabled": false,
+        "Telegram_report_facts_enabled": false,
+        "indirect_consumer_use_enabled": false
+      }
+    },
+    "active_additional_block_count": 12,
+    "mandatory_all_blocks_gate": false,
+    "threshold": 70,
+    "other_weights_redistributed": false,
+    "source_caps_or_reservations_reset": false,
+    "paused_only_routes": [
+      "TOKEN_CALENDAR",
+      "TOKEN_SCHEDULE",
+      "COINMETRICS",
+      "CHAIN_SUPPLY_EXCEPT_EXACT_XRP_N04_VALIDATED_LEDGER_DEPENDENCY"
+    ],
+    "shared_active_sources_preserved": true,
+    "historical_archive_bytes_and_source_clocks_preserved": true,
+    "new_manual_load_masks_stored_paused_facts": true,
+    "old_paused_presentation_not_admitted_for_new_dispatch": true,
+    "tests": {
+      "unit": 1269,
+      "unit_failed": 0,
+      "unit_skipped": 0,
+      "assembled_pause_and_schedule": 29,
+      "approved_report_and_delivery": 35,
+      "integration": 37,
+      "binding": "PASS",
+      "retained_SHA256": "ALL_7_FILES_VERIFIED"
+    },
+    "sourceHTTP": 0,
+    "production_D1_reads": 0,
+    "production_D1_writes": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "paused_requirements_complete": false,
+    "project_complete": false,
+    "owner_decisions": [
+      "N01: pause unless qualified useful independent agreeing sources exist; no participation",
+      "N02: owner explicitly paused supply block and both report chains",
+      "N03: owner additionally explicitly paused supply reduction/burn/buyback block on 10.10.2026 14:13MSK"
+    ],
+    "resume_requires_new_owner_decision": true,
+    "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04;DO_NOT_REACTIVATE_N01_N02_N03_OR_UNRELATED_PAUSED_WIP_OR_COMPLETION_AUTOMATION",
+    "superseded_cloud_attempts": [
+      {
+        "run": 38047505908,
+        "reason": "Legacy runtime tests expected paused N02 output; explicit removal of paused rows and immutable archival hashes tested separately"
+      },
+      {
+        "run": 38047632787,
+        "reason": "Remaining original QNT manual comparison expected N02; fixed scoped expected N02/N03 exclusions; original fixture bytes preserved"
+      }
+    ]
   }
 }

@@ -18,7 +18,7 @@ test('original-clock actual finalized RPC supply keeps the original N02 N03 fact
  assert.equal(actual.not_new_live_acceptance,true);assert.equal(r.status,'CLOSED');
  assert.deepEqual(r.evidence,before.evidence);
  const facts=consumeBlockResultContext({evidence:r.evidence,contract:input.contract,now:input.observed_ts}).facts;
- assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),['N02','N03']);
+ assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),[]);
  assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:input.observed_ts}).adjustment,0);
 });
 test('controlled decrease over retained exact identity assigns current supply to N02 without replacing N03',()=>{
@@ -30,9 +30,9 @@ test('controlled decrease over retained exact identity assigns current supply to
  assert.equal(current[0].dependency_group,decrease[0].dependency_group);assert.equal(current[0].source_ts,decrease[0].source_ts);assert.equal(current[0].expires_at,decrease[0].expires_at);
  for(const row of r.evidence){assert.equal(validateEvidenceV2(row,{decision_ts:p.observed_ts}).usable,true);assert.equal(row.directional_strength,null);assert.equal(row.risk_strength,null);}
  const facts=consumeBlockResultContext({evidence:r.evidence,contract:p.contract,now:p.observed_ts}).facts;
- assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),['N02','N03']);
+ assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),[]);
  const audit=auditCandidateBlocks({evidence:r.evidence,sources:{CHAIN_SUPPLY:{...r,check_completed:true,network_calls:0},CHAIN_SUPPLY_COMPARISON:{...r,check_completed:true,network_calls:0}},decision_ts:p.observed_ts});
- assert.equal(audit.blocks.N02.observed_facts,1);assert.equal(audit.blocks.N03.observed_facts,1);
+ assert.equal(audit.blocks.N02.observed_facts,0);assert.equal(audit.blocks.N03.observed_facts,0);
  assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:p.observed_ts}).adjustment,0);
  // This branch regression changes an input explicitly; it is not actual burn evidence.
 });
@@ -56,6 +56,6 @@ test('legacy decreasing cache supplies both consumers with zero new transport an
   assert.equal(JSON.stringify(r.evidence.find(x=>x.block_id==='N03')),original);
   const current=r.evidence.find(x=>x.block_id==='N02');assert.ok(current);assert.equal(current.observed_ts,p.observed_ts);assert.equal(current.first_known_ts,p.observed_ts);assert.equal(current.expires_at,legacy.evidence[0].expires_at);
   const facts=consumeBlockResultContext({evidence:r.evidence,contract:p.contract,now:p.observed_ts+1000}).facts;
-  assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),['N02','N03']);
+  assert.deepEqual([...new Set(facts.map(f=>f.block_id))].sort(),[]);
  }finally{sql.close();}
 });

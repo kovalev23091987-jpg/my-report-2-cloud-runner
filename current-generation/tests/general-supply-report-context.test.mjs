@@ -15,11 +15,11 @@ function sample(chain,delta=0,native=false){
 test('one general producer/consumer admits bounded N03 checks across all existing supported chains, Unicode and native identities',()=>{
  for(const [chain,native] of [...['ethereum','bsc','arbitrum','base','polygon','optimism','avalanche','solana'].map(x=>[x,false]),['near',true],['solana',true]]){
   const p=sample(chain,0,native),r=normalizeChainSupply(p),facts=consumeBlockResultContext({evidence:r.evidence,contract:p.contract,now:T}).facts;
-  const f=facts.find(x=>x.block_id==='N03');assert.ok(f,`${chain}/${native}`);assert.match(f.value,/изменения предложения нет/);assert.match(f.value,/только интервал/);assert.match(f.value,/выкуп не подтверждены/);assert.equal(f.directional_vote,false);assert.equal(f.score_contribution,0);assert.equal(consumeEvidenceV2(r.evidence,{decision_ts:T,base_interest:70}).adjustment,0);
+  assert.deepEqual(facts,[]);assert.ok(r.evidence.some(row=>row.block_id==='N03'));assert.equal(consumeEvidenceV2(r.evidence,{decision_ts:T,base_interest:70}).adjustment,0);
  }
 });
 test('increases yield a bounded non-decrease check; decreases keep the original N03 fact without duplicating it',()=>{
- for(const delta of [5,-5]){const p=sample('ethereum',delta),r=normalizeChainSupply(p),facts=consumeBlockResultContext({evidence:r.evidence,contract:p.contract,now:T}).facts.filter(x=>x.block_id==='N03');assert.equal(facts.length,1);assert.match(facts[0].value,delta>0?/снижения нет, рост/:/изменение на −/);}
+ for(const delta of [5,-5]){const p=sample('ethereum',delta),r=normalizeChainSupply(p),facts=consumeBlockResultContext({evidence:r.evidence,contract:p.contract,now:T}).facts.filter(x=>x.block_id==='N03');assert.deepEqual(facts,[]);assert.ok(r.evidence.some(row=>row.block_id==='N03'));}
 });
 test('same block, foreign identity/decimals, missing history and unfinalized history never establish a comparison',()=>{
  for(const mutate of [p=>p.previous=null,p=>p.previous.block_ref=p.current.block_ref,p=>p.previous.address=address.replace(/1$/,'2'),p=>p.previous.decimals=17,p=>p.previous.finalized=false,p=>p.previous.source_ts=p.current.source_ts]){const p=sample('ethereum');mutate(p);const r=normalizeChainSupply(p);assert.equal(r.evidence.some(x=>x.block_id==='N03'),false);}

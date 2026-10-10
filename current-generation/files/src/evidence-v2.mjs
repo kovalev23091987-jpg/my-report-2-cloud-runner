@@ -5,7 +5,7 @@ export const BLOCKS=Object.freeze({
 });
 export const CHAIN_CAPS=Object.freeze({DERIVATIVES:3.2,MARKET_DEMAND:3,ONCHAIN:2,RISK_EVENTS:1.8,TECHNICAL_EXISTING:.2});
 // Owner 10.10.2026: historical rows remain readable; the paused block is no penalty.
-export const PAUSED_BLOCKS=Object.freeze({N01:'OWNER_PAUSED_NO_QUALIFIED_INDEPENDENT_RELEASE_PAIR'});
+export const PAUSED_BLOCKS=Object.freeze({N01:'OWNER_PAUSED_NO_QUALIFIED_INDEPENDENT_RELEASE_PAIR',N02:'OWNER_PAUSED_SUPPLY_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS',N03:'OWNER_PAUSED_SUPPLY_REDUCTION_BLOCK_EXCLUDED_FROM_BOTH_REPORT_CHAINS'});
 export const ACTIVE_BLOCK_IDS=Object.freeze(Object.keys(BLOCKS).filter(id=>!PAUSED_BLOCKS[id]));
 
 export function validateEvidenceV2(row,{decision_ts=Infinity}={}){

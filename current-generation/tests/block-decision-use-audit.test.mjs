@@ -8,7 +8,7 @@ function canonical(){const c=structuredClone(fixture.canonical);c.metadata.inter
 
 test('same actual BTW snapshot separates four eligible facts from zero applied score blocks',()=>{
  const c=canonical(),before=JSON.stringify(c),r=auditCanonicalBlockDecisionUse(c);
- assert.equal(r.checked_block_count,14);assert.equal(r.directional_eligible_block_count,3);
+ assert.equal(r.checked_block_count,12);assert.equal(r.directional_eligible_block_count,3);
  assert.equal(r.score_status,'BASE_SCORE_MISSING');assert.equal(r.score_applied_block_count,0);
  assert.equal(r.blocks.N15.score_application_status,'NO_BASE_SCORE_NO_APPLICATION');
  assert.equal(r.blocks.N09.score_application_status,'VALID_CONTEXT_NO_SCORE_EFFECT');

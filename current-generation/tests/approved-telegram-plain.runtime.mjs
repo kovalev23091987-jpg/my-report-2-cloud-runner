@@ -17,14 +17,15 @@ globalThis.fetch=async()=>{throw Error('LIVE_NETWORK_FORBIDDEN');};
 test('actual retained QNT renders exactly the owner-approved draft without changing canonical analysis or manual bytes',()=>{
  const before=JSON.stringify(c),tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_BRIEF_20261007'}),manual=pub.renderCanonicalManual({canonical:c});
  assert.equal(tg.ok,true,JSON.stringify(tg));assert.equal(tg.text,approved);assert.equal(tg.length<1800,true);
- assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text);
+ assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- Наблюдение предложения токена:')&&!line.startsWith('- Проверка уменьшения предложения:')).join('\n'));assert.ok(!context.auditRenderedBlockResults({canonical:c,manual,telegram:tg}).used_context_block_ids.some(id=>['N01','N02','N03'].includes(id)));
  assert.equal(pub.validatePresentation({canonical:c,manual_text:manual.text,telegram_text:tg.text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
  const audit=context.auditRenderedBlockResults({canonical:c,manual,telegram:tg});assert.ok(audit.telegram_context_receipts.some(r=>r.block_id==='N12'&&r.evidence_id===c.metadata.bounded_money_flow_diagnostic.receipts[0].evidence_id));
  proof.cases.push({case:'ACTUAL_QNT_DRAFT_EXACT',manual_unchanged:true,canonical_unchanged:true,context_N12_accounted:true});
 });
-test('immutable original SENT146 presentation remains accepted only on its original historical input',()=>{
+test('immutable original SENT146 hash is retained; obsolete paused facts cannot be admitted for new dispatch',()=>{
  assert.equal(pub.sha256({manual_text:row.manual_text,telegram_text:row.telegram_text,analytical_fingerprint:c.analytical_fingerprint}),row.presentation_hash);
- assert.equal(pub.validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
+ assert.equal(pub.validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'NOT_CLOSED');
+ const currentManual=pub.renderCanonicalManual({canonical:c}),currentTelegram=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'});assert.equal(pub.validatePresentation({canonical:c,manual_text:currentManual.text,telegram_text:currentTelegram.text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
  assert.notEqual(pub.validatePresentation({canonical:c,manual_text:row.manual_text,telegram_text:row.telegram_text+' changed',direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
  proof.cases.push({case:'ORIGINAL_SENT146_BYTES_PRESERVED',historical_presentation_hash:row.presentation_hash});
 });

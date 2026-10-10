@@ -278,6 +278,7 @@ function describe(row,now){
 // creates a missing score nor interprets raw transfers or social counts as trades.
 export function consumeBlockResultContext({evidence=[],contract,now}={}){
  const facts=[],seen=new Set();
+ evidence=list(evidence).filter(row=>!PAUSED_BLOCKS[row?.block_id]);
  if(!/^[^\s-]+-USDT$/.test(String(contract))||number(now)===null)return{status:'NOT_CLOSED',facts,internal_only:true};
  for(const row of list(evidence)){
   if(PAUSED_BLOCKS[row?.block_id]||row?.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now)continue;

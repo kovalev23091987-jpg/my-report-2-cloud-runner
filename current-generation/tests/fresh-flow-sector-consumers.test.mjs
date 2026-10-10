@@ -46,13 +46,13 @@ test('actual raw flow refuses gaps, corruption, wrong contract, future observati
 });
 test('actual 19-peer LSK sector basket gets a bound unscored assigned review, not a fake direction or score',()=>{
  const c=structuredClone(lsk.canonical),before=auditCanonicalBlockDecisionUse(c,{manual:{ok:true,text:lsk.actual_report_manual_text}});
- assert.equal(before.participating_block_count,7);assert.equal(before.blocks.N15.participating,false);
+ assert.equal(before.participating_block_count,6);assert.equal(before.blocks.N15.participating,false);
  const review=reviewSectorRelativeStrength(args(c));assert.equal(review.receipts.length,1);
  assert.equal(review.receipts[0].eligible_peers,19);assert.equal(review.receipts[0].sector_relationship,'BELOW_PEER_MEDIAN');
  assert.equal(review.receipts[0].score_contribution,0);assert.equal(review.receipts[0].control_effect,false);
  c.metadata.sector_relative_strength_review=review;
  const after=auditCanonicalBlockDecisionUse(c,{manual:{ok:true,text:lsk.actual_report_manual_text}});
- assert.equal(after.participating_block_count,8);assert.equal(after.blocks.N15.participation_status,'UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN');
+ assert.equal(after.participating_block_count,7);assert.equal(after.blocks.N15.participation_status,'UNSCORED_DIAGNOSTIC_AND_RENDERING_PROVEN');
  assert.equal(after.blocks.N15.source_accounting.used_provider_count,1);assert.equal(after.score_applied_block_count,0);
  assert.equal(c.direction,null);assert.equal(c.state,'REJECTED');assert.equal(c.metadata.supplemental_score_adjustment.status,'BASE_SCORE_MISSING');
  // This is component replay at the immutable original time, never a new live 8-block receipt.

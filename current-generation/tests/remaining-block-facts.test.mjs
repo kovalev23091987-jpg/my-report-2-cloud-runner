@@ -50,12 +50,12 @@ test('N08 scoped successful restriction check is useful context, never an indepe
 });
 test('finalized zero-address event is N03 context with exact units, no buyback/supply-change claim',()=>{
  const token='0x'+'1'.repeat(40),from='0x'+'2'.repeat(40),block={number:'0x100',hash:'0x'+'3'.repeat(64),timestamp:'0x'+(BigInt(NOW)/1000n).toString(16)},log={removed:false,address:token,transactionHash:'0x'+'4'.repeat(64),blockHash:block.hash,blockNumber:block.number,logIndex:'0x1',topics:[TRANSFER_TOPIC,'0x'+'0'.repeat(24)+from.slice(2),'0x'+'0'.repeat(64)],data:'0x'+(123n).toString(16).padStart(64,'0')};
- const row=decodeFinalizedChainEvent({log,mode:'TOKEN_TRANSFER',asset:token,block,observed_ts:NOW,contract:'LINK-USDT'});assert.equal(row.block_id,'N03');assert.equal(facts([row],'LINK-USDT').length,1);assert.match(facts([row],'LINK-USDT')[0].value,/totalSupply, выкуп.*не подтверждены/);
+ const row=decodeFinalizedChainEvent({log,mode:'TOKEN_TRANSFER',asset:token,block,observed_ts:NOW,contract:'LINK-USDT'});assert.equal(row.block_id,'N03');assert.deepEqual(facts([row],'LINK-USDT'),[]);
  for(const patch of [{to:from},{amount_base_units:'-1'},{tx_hash:null},{finality_status:'PROVISIONAL'}])assert.equal(facts([{...row,...patch}],'LINK-USDT').length,0);
 });
 test('Solana balance difference does not fabricate a burn instruction',()=>{
  const mint='1'.repeat(32),tx={slot:123,blockTime:NOW/1000,meta:{err:null,preTokenBalances:[{accountIndex:0,mint,uiTokenAmount:{amount:'100'}}],postTokenBalances:[{accountIndex:0,mint,uiTokenAmount:{amount:'90'}}]}};
- const rows=decodeFinalizedSolanaTransaction({transaction:tx,mint,signature:'1'.repeat(64),observed_ts:NOW,contract:'JUP-USDT'});assert.equal(rows[0].metric_family,'TOKEN_BALANCE_DECREASE');assert.equal(facts(rows,'JUP-USDT').length,1);
+ const rows=decodeFinalizedSolanaTransaction({transaction:tx,mint,signature:'1'.repeat(64),observed_ts:NOW,contract:'JUP-USDT'});assert.equal(rows[0].metric_family,'TOKEN_BALANCE_DECREASE');assert.deepEqual(facts(rows,'JUP-USDT'),[]);
 });
 test('technical plan is copied only from a closed same-snapshot precommitted producer',()=>{
  const p={contract:'LINK-USDT',snapshot_id:'SNAP',observed_ts:NOW,scenario:{status:'CLOSED',scenario_identity_status:'CLOSED',required_evidence_status:'CLOSED',contract_code:'LINK-USDT',snapshot_id:'SNAP',direction:'LONG',entry_trigger_price:10,target_price:12,invalidation_price:9,scenario_receipt_id:'IMMUTABLE',valid_until_ts:NOW+60000,safety:{liquidation_as_target:false,retroactive_scenario_selection:false}}};
@@ -86,12 +86,12 @@ test('actual full HTX catalog excludes every stock and exact forex correction, w
  assert.ok(eligible.length>=100);assert.ok(eligible.some(r=>r.contract_code==='NEAR-USDT'));assert.ok(eligible.some(r=>r.contract_code==='BR-USDT'));
  for(const r of catalog){if(!['PAXG-USDT','XAUT-USDT'].includes(r.contract_code)&&(r.labels.some(x=>['stock','tradfi','indices','commodities'].includes(x))||r.tradfi_labels.length))assert.equal(classify(r).eligible_for_crypto_discovery,false,r.contract_code);}
  for(const contract_code of ['EURUSD-USDT','GBPUSD-USDT','USDJPY-USDT','USDBRL-USDT']){const c=classify(catalog.find(r=>r.contract_code===contract_code));assert.equal(c.eligible_for_crypto_discovery,false);assert.ok(c.reasons.includes('HTX_OFFICIAL_FOREX_UNDERLYING'));assert.ok(c.evidence.official_forex_source_url);}
- for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,14);}
+ for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,12);}
  assert.equal(classify({...catalog.find(r=>r.contract_code==='NEAR-USDT'),contract_code:'NEWCRYPTO-USDT'}).eligible_for_crypto_discovery,true);
 });
 test('two exact finalized supply observations can provide neutral N03, but cannot prove buyback or a price effect',()=>{
  const identity={chain:'ethereum',contract_or_mint:'0x'+'1'.repeat(40)},previous={chain:'ethereum',address:identity.contract_or_mint,supply:'1000',decimals:2,source_ts:NOW-2000,block_ref:'0x1',finalized:true},current={supply:'900',decimals:2,source_ts:NOW-1000,block_ref:'0x2',finalized:true};
- const result=normalizeChainSupply({contract:'LINK-USDT',identity,current,previous,observed_ts:NOW});assert.equal(result.evidence[0].metric_family,'SUPPLY_DECREASE');assert.deepEqual(facts(result.evidence,'LINK-USDT').map(x=>x.block_id).sort(),['N02','N03']);assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ const result=normalizeChainSupply({contract:'LINK-USDT',identity,current,previous,observed_ts:NOW});assert.equal(result.evidence[0].metric_family,'SUPPLY_DECREASE');assert.deepEqual(facts(result.evidence,'LINK-USDT').map(x=>x.block_id).sort(),[]);assert.equal(consumeEvidenceV2(result.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  for(const patch of [{previous_source_ts:NOW},{previous_block_ref:'0x2'},{supply_delta_base_units:'-1'},{metric_family:'SUPPLY_INCREASE'}])assert.equal(facts([{...result.evidence[0],...patch}],'LINK-USDT').length,0);
- const audit=auditCandidateBlocks({sources:{CHAIN_EVENTS:{status:'LOG_SAMPLE_SATURATED',network_calls:2},CHAIN_SUPPLY_COMPARISON:{status:'CLOSED',network_calls:2}},evidence:result.evidence,decision_ts:NOW});assert.equal(audit.blocks.N03.checked,true);assert.equal(audit.blocks.N04.checked,false);
+ const audit=auditCandidateBlocks({sources:{CHAIN_EVENTS:{status:'LOG_SAMPLE_SATURATED',network_calls:2},CHAIN_SUPPLY_COMPARISON:{status:'CLOSED',network_calls:2}},evidence:result.evidence,decision_ts:NOW});assert.equal(audit.blocks.N03.checked,false);assert.equal(audit.blocks.N04.checked,false);
 });
