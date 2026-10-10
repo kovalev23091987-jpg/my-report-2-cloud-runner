@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {summarizeMissedOpportunityEvidence as summarize} from '../current-generation/files/src/missed-opportunity-denominator.mjs';
+import {summarizeMissedOpportunityEvidence as summarize} from '../files/src/missed-opportunity-denominator.mjs';
 const close=1791000000000,target=close+3600000,now=target+120000;
 const base=()=>({horizon:'1h',source_artifact_digest:'sha256:'+'a'.repeat(64),
  event:{contract:'NEAR-USDT',episode_id:'EP1',independent_sample:true,control_group:false,control_eligible:false,event_close_ts:close,direction_at_event:'LONG',directional_evaluation_eligible:true,direction_locked_ts:close-1000,funnel:{stage:'CONFIRMATION_PENDING'}},
