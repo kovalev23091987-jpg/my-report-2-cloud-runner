@@ -32,8 +32,9 @@ async function original(name,source,url,maxBytes=6*1024*1024){
 try{
  out.daily_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_BLOCKED');await reserveRunBudget(db,{reservationId:id,now,reservation});reserved=true;
  for(const [name,source,url,max] of [
- ['dropstab-page-js','DROPSTAB_PUBLIC_UNLOCKS','https://dropstab.com/_next/static/chunks/app/%5Blocale%5D/(main)/vesting/page-a4acaf3a9f0e7ae0.js'],
- ['cmc-page-js','CMC_PUBLIC_UNLOCKS','https://s2.coinmarketcap.com/v1/cmc/_next/static/chunks/pages/token-unlocks-960f9fe482d4d9a9.js']
+ ['dropstab-api-js','DROPSTAB_PUBLIC_UNLOCKS','https://dropstab.com/_next/static/chunks/58635-db41b1e7db377c78.js'],
+ ['cmc-page-2','CMC_PUBLIC_UNLOCKS','https://coinmarketcap.com/token-unlocks/?page=2'],
+ ['cmc-page-3','CMC_PUBLIC_UNLOCKS','https://coinmarketcap.com/token-unlocks/?page=3']
  ])await original(name,source,url,max);
  out.status='ORIGINAL_ACQUISITION_COMPLETE_COVERAGE_OPEN';
 }catch(e){out.status='QUALIFICATION_ADMISSION_NOT_CLOSED';out.reason=/^[A-Z0-9_]+$/.test(e.message)?e.message:e.name;}
