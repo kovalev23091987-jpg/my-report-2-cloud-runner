@@ -328,18 +328,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:N04_REVIEW_TO_N05:1791631252614",
-    "acquired_ts": 1791631252614,
-    "expires_ts": 1791631852614,
-    "expected_main": "2174df0dd6d20681c41c25f2348bf4de808300d6",
-    "scope": "DOCUMENT_OWNER_N04_REVIEW_FINISHED_N04_ACTIVE;NEXT_N05_INFORMATION"
-  },
-  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04;DO_NOT_REACTIVATE_N01_N02_N03_OR_UNRELATED_PAUSED_WIP_OR_COMPLETION_AUTOMATION",
+  "lease": null,
+  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05;KEEP_N04_ACTIVE_PARTIAL_AND_N01_N02_N03_PAUSED;DO_NOT_RESUME_UNRELATED_WIP_OR_COMPLETION_AUTOMATION",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791631095779,
+  "updated_ts": 1791631291151,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -390,15 +384,13 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:N02_OWNER_PAUSE:1791630123935",
-    "acquired_ts": 1791630123935,
-    "expires_ts": 1791632223935,
-    "expected_main": "34692d992f2be70ba218487ac4bf6f4ffb31bceb",
-    "scope": "OWNER_N02_PAUSE_WITH_N01_N02_MANUAL_AND_TELEGRAM_CHAIN_EXCLUSION;NEXT_N03_REVIEW",
-    "released_ts": 1791631095779,
-    "reason": "N01_N02_N03_OWNER_PAUSE_CLOUD_VERIFIED_AND_MAIN_RELEASE",
-    "pr": 303,
-    "owner_followup_scope": "N03_ADDITIONALLY_PAUSED;NEXT_N04_REVIEW"
+    "owner": "CODEX:N04_REVIEW_TO_N05:1791631252614",
+    "acquired_ts": 1791631252614,
+    "expires_ts": 1791631852614,
+    "expected_main": "2174df0dd6d20681c41c25f2348bf4de808300d6",
+    "scope": "DOCUMENT_OWNER_N04_REVIEW_FINISHED_N04_ACTIVE;NEXT_N05_INFORMATION",
+    "released_ts": 1791631291151,
+    "reason": "DOCUMENT_N04_REVIEW_FINISHED_N05_NEXT"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -818,7 +810,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04_NEXT;N01_N02_N03_PAUSED_IN_BOTH_REPORT_CHAINS",
+  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05_NEXT;N04_ACTIVE_PARTIAL;N01_N02_N03_PAUSED",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -6883,7 +6875,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-10T11:18:15.779Z",
+  "updated_utc": "2026-10-10T11:21:31.151Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -7173,7 +7165,7 @@
     "project_complete": false,
     "updated_ts": 1791625374004
   },
-  "phase": "OWNER_N01_N02_N03_PAUSE_VERIFIED_N04_REVIEW_NEXT",
+  "phase": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05",
   "latest_owner_block_review_pause": {
     "schema": "OWNER_BLOCK_REQUIREMENTS_REVIEW_PAUSE_20261010_V1",
     "status": "DEVELOPMENT_PAUSED_BY_OWNER_FOR_SEQUENTIAL_BLOCK_REVIEW",
@@ -7197,7 +7189,7 @@
     },
     "production_operational_jobs_stopped": false,
     "project_complete": false,
-    "current_review_status": "N01_N02_N03_OWNER_PAUSE_CLOUD_VERIFIED;N04_REVIEW_NEXT"
+    "current_review_status": "N01_N02_N03_PAUSE_VERIFIED;N04_EXPLANATION_FINISHED_ACTIVE_PARTIAL;N05_REVIEW_NEXT"
   },
   "latest_n01_free_source_qualification": {
     "proof": "checkpoints/N01_FREE_SOURCE_QUALIFICATION_RELEASE_20261010.json",
@@ -7350,5 +7342,37 @@
         "reason": "Remaining original QNT manual comparison expected N02; fixed scoped expected N02/N03 exclusions; original fixture bytes preserved"
       }
     ]
+  },
+  "latest_owner_block_review_handoff": {
+    "proof": "checkpoints/OWNER_N04_REVIEW_TO_N05_20261010.json",
+    "schema": "OWNER_N04_REVIEW_TO_N05_20261010_V1",
+    "recorded_ts": 1791631291151,
+    "status": "N04_EXPLANATION_FINISHED;N04_ACTIVE_PARTIAL;N05_REVIEW_NEXT",
+    "base_main": "2174df0dd6d20681c41c25f2348bf4de808300d6",
+    "N04": {
+      "active": true,
+      "implementation_complete": false,
+      "coverage_30_percent_proven": false,
+      "remaining_limits": [
+        "Partial native/token transfer samples",
+        "Address attribution and full transfer history not closed",
+        "All102 useful coverage not proven"
+      ],
+      "pause_decision_received": false
+    },
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03"
+    ],
+    "active_additional_block_count": 12,
+    "next_review": "N05",
+    "runtime_code_changes": false,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "tests_repeated": false,
+    "new_fresh_SENT": false,
+    "project_complete": false
   }
 }

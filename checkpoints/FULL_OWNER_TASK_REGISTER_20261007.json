@@ -2041,7 +2041,38 @@
         "new_fresh_SENT": false
       },
       "latest_post_pr226_natural_audit": "checkpoints/POST_PR226_NATURAL_CONNECTED_AUDIT_20261007.json",
-      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json"
+      "latest_connected_source_batch": "checkpoints/POST238_ACTUAL_CONNECTED_BLOCK_BATCH_20261008.json",
+      "latest_owner_review": {
+        "schema": "OWNER_N04_REVIEW_TO_N05_20261010_V1",
+        "recorded_ts": 1791631291151,
+        "status": "N04_EXPLANATION_FINISHED;N04_ACTIVE_PARTIAL;N05_REVIEW_NEXT",
+        "base_main": "2174df0dd6d20681c41c25f2348bf4de808300d6",
+        "N04": {
+          "active": true,
+          "implementation_complete": false,
+          "coverage_30_percent_proven": false,
+          "remaining_limits": [
+            "Partial native/token transfer samples",
+            "Address attribution and full transfer history not closed",
+            "All102 useful coverage not proven"
+          ],
+          "pause_decision_received": false
+        },
+        "paused_blocks": [
+          "N01",
+          "N02",
+          "N03"
+        ],
+        "active_additional_block_count": 12,
+        "next_review": "N05",
+        "runtime_code_changes": false,
+        "sourceHTTP": 0,
+        "production_D1": 0,
+        "Telegram": 0,
+        "tests_repeated": false,
+        "new_fresh_SENT": false,
+        "project_complete": false
+      }
     },
     {
       "task_id": "BLOCK_N05",
@@ -4432,7 +4463,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791631095779,
+  "updated_ts": 1791631291151,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7684,7 +7715,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "ACTUAL_20261010_NATIVE_ADMISSION_HEALTHY;FULL102_SCAN;BOME_AND_NEAR_REJECTED;NO_SENT_OR_ENTRY;HISTORY_RELOCATED;FULL_TZ_OPEN",
-  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04;DO_NOT_REACTIVATE_N01_N02_N03_OR_UNRELATED_PAUSED_WIP_OR_COMPLETION_AUTOMATION",
+  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05;KEEP_N04_ACTIVE_PARTIAL_AND_N01_N02_N03_PAUSED;DO_NOT_RESUME_UNRELATED_WIP_OR_COMPLETION_AUTOMATION",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -9216,7 +9247,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N04_NEXT;N01_N02_N03_PAUSED_IN_BOTH_REPORT_CHAINS",
+  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05_NEXT;N04_ACTIVE_PARTIAL;N01_N02_N03_PAUSED",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -10235,7 +10266,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-10T11:18:15.779Z",
+  "updated_utc": "2026-10-10T11:21:31.151Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -10530,7 +10561,7 @@
     },
     "production_operational_jobs_stopped": false,
     "project_complete": false,
-    "current_review_status": "N01_N02_N03_OWNER_PAUSE_CLOUD_VERIFIED;N04_REVIEW_NEXT"
+    "current_review_status": "N01_N02_N03_PAUSE_VERIFIED;N04_EXPLANATION_FINISHED_ACTIVE_PARTIAL;N05_REVIEW_NEXT"
   },
   "latest_n01_free_source_qualification": {
     "proof": "checkpoints/N01_FREE_SOURCE_QUALIFICATION_RELEASE_20261010.json",
@@ -10683,5 +10714,37 @@
         "reason": "Remaining original QNT manual comparison expected N02; fixed scoped expected N02/N03 exclusions; original fixture bytes preserved"
       }
     ]
+  },
+  "latest_owner_block_review_handoff": {
+    "proof": "checkpoints/OWNER_N04_REVIEW_TO_N05_20261010.json",
+    "schema": "OWNER_N04_REVIEW_TO_N05_20261010_V1",
+    "recorded_ts": 1791631291151,
+    "status": "N04_EXPLANATION_FINISHED;N04_ACTIVE_PARTIAL;N05_REVIEW_NEXT",
+    "base_main": "2174df0dd6d20681c41c25f2348bf4de808300d6",
+    "N04": {
+      "active": true,
+      "implementation_complete": false,
+      "coverage_30_percent_proven": false,
+      "remaining_limits": [
+        "Partial native/token transfer samples",
+        "Address attribution and full transfer history not closed",
+        "All102 useful coverage not proven"
+      ],
+      "pause_decision_received": false
+    },
+    "paused_blocks": [
+      "N01",
+      "N02",
+      "N03"
+    ],
+    "active_additional_block_count": 12,
+    "next_review": "N05",
+    "runtime_code_changes": false,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "tests_repeated": false,
+    "new_fresh_SENT": false,
+    "project_complete": false
   }
 }
