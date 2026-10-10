@@ -1,0 +1,57 @@
+{
+  "schema": "OWNER_N05_MULTI_VENUE_CONSENSUS_REQUIREMENT_20261010_V1",
+  "recorded_ts": 1791631603099,
+  "owner_instruction_local": "2026-10-10T14:24:36+03:00",
+  "status": "OWNER_REQUIREMENT_RECORDED;MULTI_VENUE_N05_IMPLEMENTATION_AND_ACTUAL_COVERAGE_NOT_VERIFIED",
+  "scope": "Only exact assets/contracts from approved HTX universe; compare corresponding external venue data, not arbitrary markets",
+  "required_use": "Consider N05 only with useful comparable multi-exchange evidence close in strength and same direction",
+  "comparison_requirements": [
+    "Exact same asset binding and compatible market type",
+    "Aligned complete windows, original source times and comparable units",
+    "Compare normalized directional imbalance rather than equal absolute turnover across unequal venues",
+    "Distinct actual exchanges; copied upstream response is not another exchange",
+    "Do not combine futures taker flow and onchain exchange deposits as one metric",
+    "Missing or incomplete venue data is not zero flow or agreement",
+    "Unresolved material contradiction is not a confirmed consensus"
+  ],
+  "numeric_similarity_threshold": null,
+  "minimum_qualified_venue_count": null,
+  "thresholds_not_yet_agreed_or_calibrated": true,
+  "current_N05_sources": [
+    {
+      "id": "PRIMARY_HTX_FUTURES_FLOW",
+      "provider": "HTX official raw fills",
+      "metric": "EXACT_FUTURES_TAKER_FLOW_4H",
+      "scope": "One venue,240 closed minutes",
+      "current_separate_score_contribution": 0
+    },
+    {
+      "id": "NANSEN_FLOWS",
+      "provider": "Nansen Token God Mode",
+      "metric": "CEX_NET_FLOW_TWO_COMPLETE_HOURS",
+      "scope": "Token deposits/withdrawals,not futures buy/sell flow",
+      "runtime_use_deferred_by_current_rules": true
+    },
+    {
+      "id": "CHAIN_EVENTS",
+      "provider": "Exact finalized chain event adapters",
+      "role": "SUPPLEMENTAL",
+      "scope": "Transaction facts,not an independent complete cross-exchange flow"
+    }
+  ],
+  "other_connected_venue_roles": [
+    "BINANCE_OFFICIAL",
+    "BYBIT_OFFICIAL",
+    "GATE_OFFICIAL",
+    "OKX_OFFICIAL"
+  ],
+  "other_connected_venues_not_current_N05_consensus_sources": true,
+  "actual_30_percent_universe_coverage_proven": false,
+  "runtime_implementation_changed": false,
+  "sourceHTTP": 0,
+  "production_D1": 0,
+  "Telegram": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "next_action": "CONTINUE_OWNER_N05_REVIEW_AND_QUALIFY_EXISTING_VENUE_FLOW_CAPABILITIES_WITHIN_CAPS;DO_NOT_CLAIM_CONSENSUS_FROM_HTX_ONLY"
+}

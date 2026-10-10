@@ -2079,7 +2079,7 @@
       "block": "N05",
       "name": "Потоки: полный4h HTX либо проверенный разрешённый источник",
       "status": "ACTUAL_FIL_QNT_BR_ZEC_RAY_AND_龙虾_FULL240_USED;ALL_ASSET_HISTORY_OPEN",
-      "remaining_action": "Latest natural ZEC/FIL report uses/rendered full240 closed minutes with original clocks. Older ZEC188-minute gap is a different historical window; no new algorithm fix claimed. Broader acquisition and all102-asset30–90-day historical coverage remain open.",
+      "remaining_action": "Owner requires comparable, close-strength same-direction flows across multiple actual venues for the exact HTX asset. Current HTX-only neutral flow and deferred Nansen adapter do not prove this. Qualify existing connected venue flow data, agree/calibrate similarity thresholds, implement and verify both chains within existing caps. All102-asset30–90-day history remains open.",
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -2404,6 +2404,11 @@
         "actual_score_contribution": 0,
         "scope": "ONE_ORIGINAL_GRAM_SNAPSHOT_CURRENT_MANUAL_AND_SENT171_EXACT",
         "all_assets_complete": false
+      },
+      "owner_required_multi_venue_consensus": {
+        "proof": "checkpoints/OWNER_N05_MULTI_VENUE_CONSENSUS_REQUIREMENT_20261010.json",
+        "status": "OWNER_REQUIREMENT_RECORDED;MULTI_VENUE_N05_IMPLEMENTATION_AND_ACTUAL_COVERAGE_NOT_VERIFIED",
+        "implemented": false
       }
     },
     {
@@ -4463,7 +4468,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791631291151,
+  "updated_ts": 1791631603099,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -7715,7 +7720,7 @@
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
   "latest_status": "ACTUAL_20261010_NATIVE_ADMISSION_HEALTHY;FULL102_SCAN;BOME_AND_NEAR_REJECTED;NO_SENT_OR_ENTRY;HISTORY_RELOCATED;FULL_TZ_OPEN",
-  "next_action": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05;KEEP_N04_ACTIVE_PARTIAL_AND_N01_N02_N03_PAUSED;DO_NOT_RESUME_UNRELATED_WIP_OR_COMPLETION_AUTOMATION",
+  "next_action": "CONTINUE_OWNER_N05_REVIEW_AND_QUALIFY_EXISTING_VENUE_FLOW_CAPABILITIES_WITHIN_CAPS;DO_NOT_CLAIM_CONSENSUS_FROM_HTX_ONLY",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -9247,7 +9252,7 @@
     "all102_history_complete": false,
     "full_TZ_complete": false
   },
-  "current_execution_block": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05_NEXT;N04_ACTIVE_PARTIAL;N01_N02_N03_PAUSED",
+  "current_execution_block": "OWNER_N05_MULTI_VENUE_FLOW_REQUIREMENTS_REVIEW;N01_N02_N03_PAUSED",
   "latest_entry_infrastructure_and_original_refusals": {
     "PR": 261,
     "proof": "checkpoints/ENTRY_INFRASTRUCTURE_ACCOUNTING_AND_ORIGINAL_REFUSALS_CONNECTED_20261009.json",
@@ -10266,7 +10271,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-10T11:21:31.151Z",
+  "updated_utc": "2026-10-10T11:26:43.099Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -10746,5 +10751,63 @@
     "tests_repeated": false,
     "new_fresh_SENT": false,
     "project_complete": false
+  },
+  "latest_owner_n05_consensus_requirement": {
+    "proof": "checkpoints/OWNER_N05_MULTI_VENUE_CONSENSUS_REQUIREMENT_20261010.json",
+    "schema": "OWNER_N05_MULTI_VENUE_CONSENSUS_REQUIREMENT_20261010_V1",
+    "recorded_ts": 1791631603099,
+    "owner_instruction_local": "2026-10-10T14:24:36+03:00",
+    "status": "OWNER_REQUIREMENT_RECORDED;MULTI_VENUE_N05_IMPLEMENTATION_AND_ACTUAL_COVERAGE_NOT_VERIFIED",
+    "scope": "Only exact assets/contracts from approved HTX universe; compare corresponding external venue data, not arbitrary markets",
+    "required_use": "Consider N05 only with useful comparable multi-exchange evidence close in strength and same direction",
+    "comparison_requirements": [
+      "Exact same asset binding and compatible market type",
+      "Aligned complete windows, original source times and comparable units",
+      "Compare normalized directional imbalance rather than equal absolute turnover across unequal venues",
+      "Distinct actual exchanges; copied upstream response is not another exchange",
+      "Do not combine futures taker flow and onchain exchange deposits as one metric",
+      "Missing or incomplete venue data is not zero flow or agreement",
+      "Unresolved material contradiction is not a confirmed consensus"
+    ],
+    "numeric_similarity_threshold": null,
+    "minimum_qualified_venue_count": null,
+    "thresholds_not_yet_agreed_or_calibrated": true,
+    "current_N05_sources": [
+      {
+        "id": "PRIMARY_HTX_FUTURES_FLOW",
+        "provider": "HTX official raw fills",
+        "metric": "EXACT_FUTURES_TAKER_FLOW_4H",
+        "scope": "One venue,240 closed minutes",
+        "current_separate_score_contribution": 0
+      },
+      {
+        "id": "NANSEN_FLOWS",
+        "provider": "Nansen Token God Mode",
+        "metric": "CEX_NET_FLOW_TWO_COMPLETE_HOURS",
+        "scope": "Token deposits/withdrawals,not futures buy/sell flow",
+        "runtime_use_deferred_by_current_rules": true
+      },
+      {
+        "id": "CHAIN_EVENTS",
+        "provider": "Exact finalized chain event adapters",
+        "role": "SUPPLEMENTAL",
+        "scope": "Transaction facts,not an independent complete cross-exchange flow"
+      }
+    ],
+    "other_connected_venue_roles": [
+      "BINANCE_OFFICIAL",
+      "BYBIT_OFFICIAL",
+      "GATE_OFFICIAL",
+      "OKX_OFFICIAL"
+    ],
+    "other_connected_venues_not_current_N05_consensus_sources": true,
+    "actual_30_percent_universe_coverage_proven": false,
+    "runtime_implementation_changed": false,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "project_complete": false,
+    "next_action": "CONTINUE_OWNER_N05_REVIEW_AND_QUALIFY_EXISTING_VENUE_FLOW_CAPABILITIES_WITHIN_CAPS;DO_NOT_CLAIM_CONSENSUS_FROM_HTX_ONLY"
   }
 }
