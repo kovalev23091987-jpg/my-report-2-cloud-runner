@@ -1,0 +1,15 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import{gunzipSync}from'node:zlib';import{createHash}from'node:crypto';
+import{HTX_CATALOG_URLS,mergeHtxLinearCatalogModes,buildHtxCryptoUniverse}from'../current-generation/files/src/htx-crypto-universe.mjs';
+import{APPROVED_HTX_SCOPE,APPROVED_HTX_ANALYSIS_CONTRACTS}from'../current-generation/files/src/approved-htx-analysis-scope.mjs';
+const dir='checkpoints/htx-crypto-universe-refresh-38071397633',proof=JSON.parse(fs.readFileSync(dir+'/proof.json')),sha=b=>createHash('sha256').update(b).digest('hex'),payload={};
+for(const r of proof.receipts){const z=fs.readFileSync(dir+'/'+r.file),b=gunzipSync(z);assert.equal(sha(z),r.gzip_sha256);assert.equal(sha(b),r.body_sha256);payload[r.name]=JSON.parse(b);}
+const worker=fs.readFileSync('current-generation/files/src/worker.js','utf8'),a=worker.indexOf('function classifyHtxInstrumentScope('),b=worker.indexOf('function symbolFingerprint(',a),classify=vm.runInNewContext(worker.slice(a,b)+';classifyHtxInstrumentScope',{});
+const merged=mergeHtxLinearCatalogModes({base:payload['linear-default'],modes:{all:payload['linear-all'],cross:payload['linear-cross'],isolated:payload['linear-isolated']},observed_ts:proof.original_observed_ts});assert.equal(merged.status,'CLOSED');
+const universe=buildHtxCryptoUniverse({catalogs:{linear:merged.payload,coin_swap:payload['coin-swap'],coin_delivery:payload['coin-delivery']},classify_linear:classify,observed_ts:proof.original_observed_ts});assert.equal(universe.status,'CLOSED');
+const z=fs.readFileSync(APPROVED_HTX_SCOPE.manifest),body=gunzipSync(z);assert.equal(sha(z),proof.manifest.gzip_sha256);assert.equal(sha(z),APPROVED_HTX_SCOPE.manifest_sha256);assert.equal(sha(body),proof.manifest.body_sha256);assert.deepEqual(JSON.parse(body),JSON.parse(JSON.stringify(universe)));
+assert.deepEqual(APPROVED_HTX_ANALYSIS_CONTRACTS,universe.assets.filter(r=>r.asset_analysis_contract).map(r=>({contract_code:r.asset_analysis_contract,asset_symbol:r.symbol})));
+assert.equal(universe.assets.length,104);assert.equal(universe.contracts.length,121);assert.equal(universe.excluded.length,276);
+for(const symbol of ['CT','RLC'])assert.ok(APPROVED_HTX_ANALYSIS_CONTRACTS.some(r=>r.asset_symbol===symbol&&r.contract_code===symbol+'-USDT'));
+for(const symbol of ['AAPL','EURUSD','GBPUSD','USDJPY','USDBRL'])assert.equal(universe.assets.some(r=>r.symbol===symbol),false);
+const out={schema:'HTX_CURRENT_NATIVE_SCOPE_REPLAY_V1',status:'SIX_ORIGINAL_PRIMARY_CATALOGS_HASHES_CLOCKS_CLASSIFICATION_AND_APPROVED_SCOPE_REPRODUCED',original_run:proof.run,sourceHTTP:0,D1:0,Telegram:0,raw_hashes_verified:6,original_observed_ts:proof.original_observed_ts,approved_assets:104,crypto_contracts:121,excluded_noncrypto:276,new_assets:proof.added_assets,old_history_or_flow_clocks_refreshed:false};
+fs.mkdirSync('audit-output/htx-scope-verification',{recursive:true});fs.writeFileSync('audit-output/htx-scope-verification/original-scope-replay.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify(out));

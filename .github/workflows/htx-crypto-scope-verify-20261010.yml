@@ -1,0 +1,83 @@
+name: HTX current approved crypto universe and collector verification
+on:
+  push:
+    branches: [htx-crypto-universe-refresh-20261010]
+    paths: ['current-generation/**', 'tools/verify-current-htx-universe-20261010.mjs', '.github/workflows/htx-crypto-scope-verify-20261010.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main, own lease and immutable already passed runtime
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,head=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            if(head!=='dff0545969f124dbf116a1e5ee2fd77485393886')throw Error('MAIN_MOVED');
+            const read=async path=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path,ref:head})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='CODEX:N05_BROAD_EXCHANGES:1791647541921'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_FENCE_BLOCKED');
+            const comparison=(await github.rest.repos.compareCommitsWithBasehead({owner,repo,basehead:'44dec9f6515e1f285b1feb85535dd882e7ccd8ff...'+context.sha})).data;
+            const allowed=new Set(['tools/verify-current-htx-universe-20261010.mjs','.github/workflows/htx-crypto-scope-verify-20261010.yml']);
+            if(!comparison.files?.length||comparison.files.some(f=>!allowed.has(f.filename)))throw Error('PASSED_RUNTIME_CHANGED');
+      - name: Restore exact completed generation, scope, delivery and integration checks
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),cp=require('child_process'),crypto=require('crypto'),owner=context.repo.owner,repo=context.repo.repo;
+            const bytes=Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:11676533899,archive_format:'zip'})).data);
+            if(crypto.createHash('sha256').update(bytes).digest('hex')!=='26ee94ba6efa75b10667e6a9d6ddcdadc5cf1fc8c5dac82016d0390fc9af3a9c')throw Error('IMMUTABLE_COMPLETED_RUNTIME_ZIP_HASH');
+            fs.mkdirSync('audit-output/htx-scope-verification',{recursive:true});fs.writeFileSync('/tmp/htx-completed-runtime.zip',bytes);cp.execFileSync('unzip',['-q','/tmp/htx-completed-runtime.zip','-d','audit-output/htx-scope-verification']);
+            const dir='audit-output/htx-scope-verification/';
+            for(const [file,count]of [['current-generation-unit-tests.tap',1328],['assembled-scope.tap',10],['approved-delivery.tap',35]]){
+              const s=fs.readFileSync(dir+file,'utf8');if(!s.includes('tests '+count)||!s.includes('pass '+count)||!s.includes('fail 0')||!s.includes('skipped 0'))throw Error('COMPLETED_TEST_NOT_CLOSED:'+file);
+            }
+            const integration=JSON.parse(fs.readFileSync(dir+'integration.json'));if(integration.passed!==37||integration.failed!==0)throw Error('COMPLETED_INTEGRATION_NOT_CLOSED');
+            const generation=JSON.parse(fs.readFileSync(dir+'generation.log'));if(generation.status!=='CURRENT_GENERATION_VALIDATED')throw Error('COMPLETED_GENERATION_NOT_CLOSED');
+            const binding=JSON.parse(fs.readFileSync(dir+'binding.json'));if(binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED'||!binding.runtime_checked)throw Error('COMPLETED_BINDING_NOT_CLOSED');
+            fs.writeFileSync(dir+'reused-completed-runtime.json',JSON.stringify({schema:'IMMUTABLE_COMPLETED_HTX_SCOPE_RUNTIME_REUSE_V1',run:38071724772,head:'44dec9f6515e1f285b1feb85535dd882e7ccd8ff',artifact_id:11676533899,artifact_sha256:'26ee94ba6efa75b10667e6a9d6ddcdadc5cf1fc8c5dac82016d0390fc9af3a9c',runtime_code_unchanged:true,generation_unit_pass:1328,assembled_scope_pass:10,delivery_pass:35,integration_pass:37,fail:0,tests_repeated:false})+'\n');
+      - name: Replay six retained current primary catalogs without source calls
+        run: node tools/verify-current-htx-universe-20261010.mjs
+      - name: Read original natural collection for all current approved assets
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/read-current-htx-collector-20261010.mjs
+      - name: Bind exact combined scope proof
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';import {createHash} from 'node:crypto';
+          const dir='audit-output/htx-scope-verification/',sha=b=>createHash('sha256').update(b).digest('hex'),readback=JSON.parse(fs.readFileSync(dir+'original-collector-readback.json'));
+          const proof={schema:'HTX_CURRENT_APPROVED_CRYPTO_UNIVERSE_ASSEMBLED_VERIFICATION_V1',status:'ASSEMBLED_CURRENT_CRYPTO_UNIVERSE_BOTH_REPORT_CHAINS_AND_BINDING_VERIFIED',run:Number(process.env.GITHUB_RUN_ID),head:process.env.GITHUB_SHA,verified_ts:Date.now(),approved_assets:104,crypto_contracts:121,excluded_noncrypto_contracts:276,new_assets:['CT','RLC'],manual_and_Telegram_both_verified:true,controlled_reports_not_live_signal_acceptance:true,collector_status:readback.status,collector_approved_present:readback.approved_present??0,collector_approved_current_closed:readback.approved_current_closed??0,sourceHTTP:0,D1_reads:readback.D1.rows_read,D1_writes:readback.D1.rows_written,Telegram:0,MAIN:0,threshold:70,N05_score_contribution:0,N01_N02_N03_paused:true,source_caps_reset:false,original_source_clocks_preserved:true,files:Object.fromEntries(fs.readdirSync(dir).map(f=>[f,sha(fs.readFileSync(dir+f))])),new_fresh_SENT:false,project_complete:false};
+          fs.writeFileSync(dir+'proof.json',JSON.stringify(proof,null,2)+'\n');
+          JS
+      - name: Print bounded failed test evidence
+        if: failure()
+        run: |
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';const p='audit-output/htx-scope-verification/';for(const f of fs.readdirSync(p).filter(f=>/log|tap/.test(f))){const s=fs.readFileSync(p+f,'utf8');if(/failing tests|not ok|Error|fail [1-9]/.test(s))console.log(f,s.slice(-24000));}
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: htx-scope-verification-${{ github.run_id }}
+          path: audit-output/htx-scope-verification/
+          retention-days: 30
+      - name: Retain exact cloud proof on review branch
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo,ref=context.ref.replace('refs/','');
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(main!=='dff0545969f124dbf116a1e5ee2fd77485393886')throw Error('MAIN_MOVED');
+            const phase=JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:main})).data.content,'base64').toString());if(phase.lease?.owner!=='CODEX:N05_BROAD_EXCHANGES:1791647541921'||phase.lease.expires_ts<=Date.now())throw Error('OWNER_BLOCKED');
+            const current=(await github.rest.git.getRef({owner,repo,ref})).data.object.sha;if(current!==context.sha)throw Error('SUPERSEDED_HEAD');
+            const base=(await github.rest.git.getCommit({owner,repo,commit_sha:current})).data.tree.sha,tree=[];
+            for(const name of fs.readdirSync('audit-output/htx-scope-verification')){const b=fs.readFileSync('audit-output/htx-scope-verification/'+name),blob=(await github.rest.git.createBlob({owner,repo,content:b.toString('base64'),encoding:'base64'})).data;tree.push({path:'checkpoints/htx-scope-verification-'+context.runId+'/'+name,mode:'100644',type:'blob',sha:blob.sha});}
+            const t=(await github.rest.git.createTree({owner,repo,base_tree:base,tree})).data,c=(await github.rest.git.createCommit({owner,repo,tree:t.sha,parents:[current],message:'Retain current HTX universe and natural collector proof '+context.runId})).data;await github.rest.git.updateRef({owner,repo,ref,sha:c.sha,force:false});
