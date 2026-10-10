@@ -14,13 +14,13 @@ const row=source.rows.find(r=>r.contract_code==='QNT-USDT'),c=row.canonical;
 const approved=fs.readFileSync('current-generation/tests/fixtures/approved-telegram-qnt-20261007.txt','utf8').trimEnd();
 const proof={schema:'OWNER_APPROVED_TELEGRAM_PLAIN_V5_VALIDATION',source_cloud_run:37487195477,source_head:source.source_head,run_id:c.run_id,snapshot_id:c.snapshot_id,fingerprint:c.analytical_fingerprint,owner_approved_at:'2026-10-06T18:37:54Z',sourceHTTP:0,MAIN:0,production_D1:0,Telegram:0,cases:[]};
 globalThis.fetch=async()=>{throw Error('LIVE_NETWORK_FORBIDDEN');};
-test('actual retained QNT renders exactly the owner-approved draft without changing canonical analysis or manual bytes',()=>{
+test('actual retained QNT preserves the approved Telegram draft and canonical bytes while suppressing obsolete manual facts',()=>{
  const before=JSON.stringify(c),tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_BRIEF_20261007'}),manual=pub.renderCanonicalManual({canonical:c});
  assert.equal(tg.ok,true,JSON.stringify(tg));assert.equal(tg.text,approved);assert.equal(tg.length<1800,true);
- assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- Наблюдение предложения токена:')&&!line.startsWith('- Проверка уменьшения предложения:')).join('\n'));assert.ok(!context.auditRenderedBlockResults({canonical:c,manual,telegram:tg}).used_context_block_ids.some(id=>['N01','N02','N03'].includes(id)));
+ assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- Наблюдение предложения токена:')&&!line.startsWith('- Проверка уменьшения предложения:')&&!line.startsWith('- Фактический поток фьючерсных сделок за четыре часа:')).join('\n'));assert.ok(!context.auditRenderedBlockResults({canonical:c,manual,telegram:tg}).used_context_block_ids.some(id=>['N01','N02','N03'].includes(id)));
  assert.equal(pub.validatePresentation({canonical:c,manual_text:manual.text,telegram_text:tg.text,direction:c.direction,lifecycle_event:'OBSERVE'}).status,'CLOSED');
  const audit=context.auditRenderedBlockResults({canonical:c,manual,telegram:tg});assert.ok(audit.telegram_context_receipts.some(r=>r.block_id==='N12'&&r.evidence_id===c.metadata.bounded_money_flow_diagnostic.receipts[0].evidence_id));
- proof.cases.push({case:'ACTUAL_QNT_DRAFT_EXACT',manual_unchanged:true,canonical_unchanged:true,context_N12_accounted:true});
+ proof.cases.push({case:'ACTUAL_QNT_DRAFT_EXACT',current_manual_obsolete_facts_suppressed:true,original_manual_bytes_preserved:true,canonical_unchanged:true,context_N12_accounted:true});
 });
 test('immutable original SENT146 hash is retained; obsolete paused facts cannot be admitted for new dispatch',()=>{
  assert.equal(pub.sha256({manual_text:row.manual_text,telegram_text:row.telegram_text,analytical_fingerprint:c.analytical_fingerprint}),row.presentation_hash);

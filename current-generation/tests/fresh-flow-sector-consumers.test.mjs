@@ -23,8 +23,8 @@ test('actual 03:35 exact saved LSK and NEAR 240-minute raw flow closes at origin
   assert.equal(e.window_end_ts-e.window_start_ts,14400000);assert.equal(e.directional_strength,null);assert.equal(e.risk_strength,null);
   assert.equal(validateEvidenceV2(e,{decision_ts:c.observed_ts}).usable,true);
   const final=finalizeCandidateBlockCoverage({evidence_result:{evidence:[],decision_ts:c.observed_ts},decision_ts:c.observed_ts,primary_sources:{PRIMARY_HTX_FUTURES_FLOW:result}});
-  assert.equal(final.block_coverage.blocks.N05.usable_facts,1);
-  const context=consumeBlockResultContext({evidence:result.evidence,contract:row.contract_code,now:c.observed_ts});assert.ok(context.facts.some(f=>f.block_id==='N05'));
+  assert.equal(final.block_coverage.blocks.N05.usable_facts,0);
+  const context=consumeBlockResultContext({evidence:result.evidence,contract:row.contract_code,now:c.observed_ts});assert.equal(context.facts.some(f=>f.block_id==='N05'),false);
   assert.equal(e.score_contribution,0);assert.equal(e.entry_authorized,false);
  }
 });

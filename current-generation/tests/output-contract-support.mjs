@@ -8,6 +8,9 @@ const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'../..')
 export async function loadEffectivePresentationModules(){
   const target=fs.mkdtempSync(path.join(os.tmpdir(),'report2-output-contract-'));
   const copies={
+    'joint-spot-futures-flow.mjs':'current-generation/files/src/joint-spot-futures-flow.mjs',
+    'bitget-four-hour-flow.mjs':'current-generation/files/src/bitget-four-hour-flow.mjs',
+    'evidence-source-adapters.mjs':'current-generation/files/src/evidence-source-adapters.mjs',
     'liquidation-source-acquisition-audit.mjs':'current-generation/files/src/liquidation-source-acquisition-audit.mjs',
     'htx-contract-key.mjs':'current-generation/files/src/htx-contract-key.mjs',
     'idea-basis-facts.mjs':'current-generation/files/src/idea-basis-facts.mjs',

@@ -31,6 +31,7 @@ export function consumeEvidenceV2(rows,{base_interest,decision_ts,base_evidence_
   for(const row of rows||[]){const validation=validateEvidenceV2(row,{decision_ts}),config=BLOCKS[row.block_id],key=evidenceDedupKey(row);let contribution=0,reason=validation.status;
     const capPolicy=resolveBlockCap(row,{decision_ts,weight_policy_version,adaptive_policy});
     if(PAUSED_BLOCKS[row.block_id]){reason='BLOCK_PAUSED_BY_OWNER';}
+    else if(row.block_id==='N05'){reason='N05_JOINT_FLOW_UNCALIBRATED_CONTEXT_ONLY';}
     else if(validation.usable&&config&&!seen.has(key)&&!base_evidence_ids.includes(row.evidence_id)){seen.add(key);const hasDirectional=row.directional_strength!==null&&row.directional_strength!==undefined&&row.directional_strength!=='',strength=hasDirectional?clamp(Number(row.directional_strength),-1,1):-clamp(Number(row.risk_strength??0),0,1),raw=capPolicy.cap*validation.quality*strength;contribution=clamp(raw,-capPolicy.cap,capPolicy.cap);blockValues.set(row.block_id,(blockValues.get(row.block_id)||0)+contribution);blockCaps.set(row.block_id,Math.max(blockCaps.get(row.block_id)||0,capPolicy.cap));reason='CONSUMED';}
     else if(seen.has(key))reason='DUPLICATE_UPSTREAM_EVENT';else if(base_evidence_ids.includes(row.evidence_id))reason='ALREADY_OWNED_BY_BASE_SCORER';
     receipts.push({evidence_id:row.evidence_id,block_id:row.block_id,family:config?.family||null,consumer:config?.consumer||null,physical_root_key:key,raw_contribution:contribution,reason,block_weight:capPolicy});

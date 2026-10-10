@@ -19,7 +19,7 @@ const proof={schema:'OWNER_BRIEF_TELEGRAM_FACTS_20261007',source_cloud_run:exact
 globalThis.fetch=async()=>{throw Error('LIVE_NETWORK_FORBIDDEN');};
 test('actual ZEC user receipt replays to brief facts and rounded estimated levels; exact analysis remains unchanged and paused supply is absent from manual',()=>{
  const before=JSON.stringify(c),tg=pub.renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),manual=pub.renderCanonicalManual({canonical:c});
- assert.ok(tg.ok,JSON.stringify(tg));assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- История предложения по данным CoinMetrics:')).join('\n'));
+ assert.ok(tg.ok,JSON.stringify(tg));assert.equal(pub.canonicalFingerprint(c),c.analytical_fingerprint);assert.equal(JSON.stringify(c),before);assert.equal(manual.text,row.manual_text.split('\n').filter(line=>!line.startsWith('- История предложения по данным CoinMetrics:')&&!line.startsWith('- Фактический поток фьючерсных сделок за четыре часа:')).join('\n'));
  assert.equal(c.trigger.value,1383.45);assert.equal(c.invalidation.price,1319.19);
  assert.match(tg.text,/цены выше 1 383,45/);assert.match(tg.text,/цена ниже 1 319,19/);
  assert.match(tg.text,/1 613 \(\+18%\) — средняя \(расчётный\)/);assert.match(tg.text,/2 555 \(\+87%\) — небольшая \(расчётный\)/);
