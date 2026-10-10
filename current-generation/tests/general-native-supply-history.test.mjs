@@ -6,12 +6,12 @@ const saved=JSON.parse(zlib.gunzipSync(fs.readFileSync(new URL('fixtures/coinmet
 test('same source/consumer mechanism accepts only exact confirmed native network families and advertised free supply metric',()=>{
  for(const [symbol,d]of Object.entries(COINMETRICS_NATIVE_NETWORK_FAMILIES)){
   const contract=symbol+'-USDT',identity={chain:d.chain,asset_kind:'NATIVE',native_asset_id:d.chain+':mainnet',contract_or_mint:null};
-  assert.equal(exactCoinmetricsNativeIdentity(contract,identity),true);assert.ok(planCandidateEvidenceRoutes({contract,asset_identity:identity}).routes.some(r=>r.name==='COINMETRICS'));
+  assert.equal(exactCoinmetricsNativeIdentity(contract,identity),true);assert.ok(!planCandidateEvidenceRoutes({contract,asset_identity:identity}).routes.some(r=>r.name==='COINMETRICS'));
   const catalog={data:[structuredClone(saved.catalog.data.find(r=>r.asset==='btc'))]};catalog.data[0].asset=d.id;
   // Controlled contract regression, never advertised as new live provider data.
   const series={data:saved.series.data.filter(r=>r.asset==='btc').map(r=>({...r,asset:d.id,SplyCur:r.SplyCur.includes('.')?r.SplyCur.split('.')[0]+'.'+r.SplyCur.split('.')[1].slice(0,d.decimals):r.SplyCur}))};
   const params={contract,identity,catalog,series,observed_ts:saved.now};const r=normalizeCoinmetricsSupply(params);
-  assert.equal(r.status,'CLOSED',symbol);assert.equal(r.summary.chain_finalized_block_claim,false);assert.equal(r.summary.burn_or_buyback_cause_verified,false);assert.equal(consumeBlockResultContext({contract,evidence:r.evidence,now:saved.now}).facts.length,1);
+  assert.equal(r.status,'CLOSED',symbol);assert.equal(r.summary.chain_finalized_block_claim,false);assert.equal(r.summary.burn_or_buyback_cause_verified,false);assert.equal(consumeBlockResultContext({contract,evidence:r.evidence,now:saved.now}).facts.length,0);
   for(const bad of [{...identity,chain:'foreign'},{...identity,native_asset_id:d.chain+':testnet'},{...identity,asset_kind:'TOKEN'},{...identity,contract_or_mint:'wrapped'}])assert.equal(deriveCoinmetricsSupplyContext({...params,identity:bad}),null);
   catalog.data[0].metrics[0].frequencies[0].community=false;assert.equal(deriveCoinmetricsSupplyContext(params),null);
  }

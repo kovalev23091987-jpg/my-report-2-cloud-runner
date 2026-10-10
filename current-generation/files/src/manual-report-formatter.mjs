@@ -1,3 +1,4 @@
+import {PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {formatCoinLobsterFutureLines} from './coinlobster-future-model.mjs';
 import {factualIdeaBasis} from './idea-basis-facts.mjs';
 import {formatLiquidationHistoryFacts} from './gate-liquidation-history.mjs';
@@ -17,7 +18,7 @@ export const SUPPORTING_CONTEXT_SELECTION_VERSION='supporting-context-block-rese
 // score or source authority. Never manufacture a fact for an uncovered block.
 // Keep the approved 24-line bound and original ordering among selected facts.
 export function selectSupportingContextFacts(facts=[]){
- const rows=(Array.isArray(facts)?facts:[]).filter(f=>f&&typeof f==='object');
+ const rows=(Array.isArray(facts)?facts:[]).filter(f=>f&&typeof f==='object'&&!PAUSED_BLOCKS[f.block_id]);
  if(rows.length<=24)return rows;
  const firstByBlock=new Map(),selected=new Set();
  for(let i=0;i<rows.length;i++){

@@ -61,9 +61,9 @@ test('one native observation retains historical V5 and manual surfaces without s
  const normalized=normalizeChainSupply({identity,contract:'NEAR-USDT',current:{supply:'1000000000000000000000001',decimals:24,source_ts:c.observed_ts-60000,block_ref:hash,finalized:true},observed_ts:c.observed_ts});
  c.metadata.internal_market_context.evidence_v2.evidence=normalized.evidence;c.metadata.supporting_context={facts:consumeBlockResultContext({evidence:normalized.evidence,contract:'NEAR-USDT',now:c.observed_ts}).facts};c.source_receipts=[];c.analytical_fingerprint=canonicalFingerprint(c);
  const manual=formatManualReport(c),tg=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}),proof=auditRenderedBlockResults({canonical:c,manual,telegram:tg});
- assert.equal(manual.ok,true,manual.status);assert.equal(tg.ok,true,tg.status);assert.deepEqual(proof.used_context_block_ids,['N02']);assert.deepEqual(proof.telegram_used_context_block_ids,['N02']);assert.equal(proof.telegram_delivery_proven,false);assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);
- for(const text of [manual.text,tg.text])assert.match(text,/Наблюдение предложения нативного NEAR:.*одно подтверждённое наблюдение/);
- assert.equal(c.metadata.supporting_context.facts[0].score_contribution,0);
+ assert.equal(manual.ok,true,manual.status);assert.equal(tg.ok,true,tg.status);assert.deepEqual(proof.used_context_block_ids,[]);assert.deepEqual(proof.telegram_used_context_block_ids,[]);assert.equal(proof.telegram_delivery_proven,false);assert.equal(assessActionability({canonical:c,lifecycle_event:'OBSERVE',context_policy:'ORIGINAL_V5_20261006'}).deliver,false);
+ for(const text of [manual.text,tg.text])assert.doesNotMatch(text,/Наблюдение предложения нативного NEAR/);
+ assert.deepEqual(c.metadata.supporting_context.facts,[]);
 });
 test('general announcement feed cannot mark N01 unlock/vesting schedule checked',()=>{
  const audit=auditCandidateBlocks({sources:{OFFICIAL_EVENTS:{status:'CLOSED',network_calls:1},OFFICIAL_TOKEN_SCHEDULE:{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0}},decision_ts:NOW});

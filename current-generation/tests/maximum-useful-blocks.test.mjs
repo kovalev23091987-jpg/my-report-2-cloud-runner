@@ -38,9 +38,9 @@ test('technical response retains first acquisition time and is audited at the fi
 });
 test('maximum-useful report accepts honestly accounted optional gaps and never turns them into checked blocks',()=>{
  const now=src.observed_ts,source=capabilityCheckedNoExactRoute({contract:'ZEC-USDT',identity_method:'HTX_OFFICIAL_NATIVE_CURRENCY_NETWORK',asset_identity:{chain:'zcash',asset_kind:'NATIVE',native_asset_id:'zcash:mainnet',contract_or_mint:null},now},'CHAIN_SUPPLY','NO_NATIVE_ADAPTER');
- const coverage=auditCandidateBlocks({sources:{CHAIN_SUPPLY:source},decision_ts:now});assert.equal(coverage.blocks.N02.checked,false);assert.equal(coverage.blocks.N02.source_checks.CHAIN_SUPPLY.attempted,false);
+ const coverage=auditCandidateBlocks({sources:{CHAIN_SUPPLY:source},decision_ts:now});assert.equal(coverage.blocks.N02.checked,false);assert.equal(coverage.blocks.N02.included_in_active_coverage,false);
  const result=enforceManualBlockCoverage({status:'CLOSED',source:'manual',candidates:[{block_coverage:coverage,canonical:{state:'REJECTED',data_quality:{sufficient:false}}}]});assert.equal(result.status,'CLOSED');assert.equal(result.block_audit.minimum_checked_block_count,0);assert.equal(result.block_audit.all_candidates_data_sufficient,false);assert.equal(result.block_audit.full_15_per_candidate_required,false);
- assert.match(formatManualRunSummary(result),/0 из 14/);assert.match(formatManualRunSummary(result),/не входить/);
+ assert.match(formatManualRunSummary(result),/0 из 13/);assert.match(formatManualRunSummary(result),/не входить/);
 });
 test('real neutral execution facts retain consumer review without base score or direction; no invented score or entry',()=>{
  const id=identity(),context=consumeCanonicalExecutionContext(id),evidence=buildCanonicalExecutionEvidence(id);

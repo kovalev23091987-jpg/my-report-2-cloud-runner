@@ -39,23 +39,23 @@ test('failed source status never masquerades as healthy absence of ideas',()=>{
 });
 test('manual run always returns the owner layout instead of stored technical text',()=>{
  const approved='МОЙ ОТЧЁТ 2\n\nКАНОНИЧЕСКОЕ СОСТОЯНИЕ\nНаблюдение по QNT-USDT.';
- const ids=['N02','N03','N04','N05','N06','N07','N08','N09','N10','N11','N12','N14','N15','N16'];
+ const ids=['N03','N04','N05','N06','N07','N08','N09','N10','N11','N12','N14','N15','N16'];
  const blocks=Object.fromEntries(ids.map((id,i)=>[id,{status:i<2?'ADMISSIBLE_FACTUAL_CONTEXT':i<8?'FACTS_PRESENT_NOT_DECISION_ADMISSIBLE':'CHECKED_NO_USABLE_FACTS'}]));
- const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:14,checked_block_count:14,usable_block_count:2,all_blocks_checked:true,blocks}}],generated_at};
+ const output={status:'CLOSED',source:'manual',candidates:[{manual_text:approved,block_coverage:{coverage_count:13,checked_block_count:13,usable_block_count:2,all_blocks_checked:true,blocks}}],generated_at};
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'CLOSED');
  const rendered=formatManualRunSummary(checked);
- assert.match(rendered,/Проверка дополнительных блоков: 14 из 14; неподтверждённых: 0/u);
- assert.match(rendered,/Новые допущенные факты: 2 блока; сведения без допуска в решение: 6; событий не обнаружено: 6/u);
+ assert.match(rendered,/Проверка дополнительных блоков: 13 из 13; неподтверждённых: 0/u);
+ assert.match(rendered,/Новые допущенные факты: 2 блока; сведения без допуска в решение: 6; событий не обнаружено: 5/u);
  assert.match(rendered,/ЛОНГ[\s\S]*ШОРТ/u);
  assert.doesNotMatch(rendered,/КАНОНИЧЕСКОЕ СОСТОЯНИЕ/u);
 });
 test('manual run fails closed when any candidate lacks a active 14 block check',()=>{
- const output={status:'CLOSED',source:'manual',candidates:[{manual_text:'НЕ ПОКАЗЫВАТЬ',block_coverage:{coverage_count:14,checked_block_count:12,all_blocks_checked:false}}],generated_at};
+ const output={status:'CLOSED',source:'manual',candidates:[{manual_text:'НЕ ПОКАЗЫВАТЬ',block_coverage:{coverage_count:13,checked_block_count:12,all_blocks_checked:false}}],generated_at};
  const checked=enforceManualBlockCoverage(output);
  assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
  assert.equal(checked.reason,'BLOCK_OUTCOME_AUDIT_MISSING');
- assert.match(formatManualRunSummary(checked),/12 из 14/u);
+ assert.match(formatManualRunSummary(checked),/12 из 13/u);
  assert.doesNotMatch(formatManualRunSummary(checked),/НЕ ПОКАЗЫВАТЬ/u);
 });
 test('empty manual run cannot claim a vacuous 14 of 14 check',()=>{
@@ -63,13 +63,13 @@ test('empty manual run cannot claim a vacuous 14 of 14 check',()=>{
  assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
  assert.equal(checked.block_audit.candidate_count,0);
  assert.equal(checked.block_audit.all_candidates_fully_checked,false);
- assert.match(formatManualRunSummary(checked),/0 из 14/u);
- assert.doesNotMatch(formatManualRunSummary(checked),/Проверка дополнительных блоков: 14 из 14/u);
+ assert.match(formatManualRunSummary(checked),/0 из 13/u);
+ assert.doesNotMatch(formatManualRunSummary(checked),/Проверка дополнительных блоков: 13 из 13/u);
 });
 test('workflow dispatch is treated as a manual owner run and fails closed on partial coverage',()=>{
- const checked=enforceManualBlockCoverage({status:'CLOSED',source:'workflow_dispatch',candidates:[{block_coverage:{coverage_count:14,checked_block_count:14,all_blocks_checked:false}}],generated_at});
+ const checked=enforceManualBlockCoverage({status:'CLOSED',source:'workflow_dispatch',candidates:[{block_coverage:{coverage_count:13,checked_block_count:13,all_blocks_checked:false}}],generated_at});
  assert.equal(checked.status,'PARTIAL_DATA_UNAVAILABLE');
- assert.match(formatManualRunSummary(checked),/14 из 14/u);
+ assert.match(formatManualRunSummary(checked),/13 из 13/u);
 });
 test('standalone answer distinguishes projected 0xArchive buckets from direct Hyperliquid prices',()=>{
  const context={schema:'SCOPED_PROVIDER_LIQUIDATION_CONTEXT_V1',status:'USABLE_SCOPED_NATIVE_CONTEXT',provider:'0xArchive',venue:'Hyperliquid',binding:{native_symbol:'FIL'},source_ts:1_800_000_000_000,price_quote:'USD',above:[{native_price:1.1,distance_pct:10,notional:42000,notional_unit:'USD'}],below:[]};
@@ -89,9 +89,9 @@ test('partial analysis preserves only verified same-run rendered facts without c
  const row={contract:c.metadata.contract,run_id:c.run_id,snapshot_id:c.snapshot_id,observed_ts:c.observed_ts,canonical:c,manual_text:manual.text,block_rendered_results:auditRenderedBlockResults({canonical:c,manual})};
  const output={status:'PARTIAL_DATA_UNAVAILABLE',run_id:c.run_id,candidates:[row]};
  const text=formatManualRunSummary(output);
- assert.match(text,/Проверка не завершена/u);assert.match(text,/238 токенов/u);assert.match(text,/Действие сейчас: не входить/u);
+ assert.match(text,/Проверка не завершена/u);assert.match(text,/238000000000000000000 минимальных единиц/u);assert.match(text,/Действие сейчас: не входить/u);
  assert.doesNotMatch(text,/Уровень входа:/u);
  for(const mutate of [r=>r.run_id='foreign',r=>r.snapshot_id='foreign',r=>r.manual_text='',r=>r.block_rendered_results.status='UNVERIFIED']){
-  const changed=structuredClone(row);mutate(changed);assert.doesNotMatch(formatManualRunSummary({...output,candidates:[changed]}),/238 токенов/u);
+  const changed=structuredClone(row);mutate(changed);assert.doesNotMatch(formatManualRunSummary({...output,candidates:[changed]}),/238000000000000000000 минимальных единиц/u);
  }
 });
