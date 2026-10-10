@@ -10,7 +10,7 @@ import {derivePublishedCalendarContext} from './published-token-calendar.mjs';
 import {normalizeCoinpaprikaMarketSupply} from './coinpaprika-market-supply.mjs';
 import {deriveDeribitOptionRisk} from './deribit-option-risk-context.mjs';
 import {SOLANA_MAINNET_GENESIS} from './solana-native-supply.mjs';
-import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
+import {PAUSED_BLOCKS,validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 import {deriveDeltaOptionRisk} from './delta-options-evidence.mjs';
 import {deriveCoinmetricsSupplyContext} from './coinmetrics-supply-context.mjs';
 import {consumeCanonicalExecutionContext} from './execution-report-context.mjs';
@@ -280,7 +280,7 @@ export function consumeBlockResultContext({evidence=[],contract,now}={}){
  const facts=[],seen=new Set();
  if(!/^[^\s-]+-USDT$/.test(String(contract))||number(now)===null)return{status:'NOT_CLOSED',facts,internal_only:true};
  for(const row of list(evidence)){
-  if(row?.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now)continue;
+  if(PAUSED_BLOCKS[row?.block_id]||row?.htx_contract!==contract||!validateEvidenceV2(row,{decision_ts:now}).usable||number(row.observed_ts)===null||row.source_ts>row.observed_ts||row.observed_ts>now)continue;
   const fact=describe(row,now),root=evidenceDedupKey(row);
   if(!fact||seen.has(root))continue;
   seen.add(root);facts.push({...common,...fact,unit:'',field:row.metric_family,block_id:row.block_id,evidence_id:row.evidence_id,physical_root_key:root,source_ts:row.source_ts,observed_ts:row.observed_ts});

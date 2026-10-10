@@ -80,7 +80,7 @@ test('Full Evidence keeps 35/30/20/15 while supplemental scoring keeps 32/30/20/
  assert.match(supplemental,/DERIVATIVES:\s*32/);assert.match(supplemental,/SUPPORTING_RISK:\s*18/);assert.match(supplemental,/maximum_absolute_adjustment:10/);
 });
 test('EvidenceV2 reaches the same bounded manual and Telegram score path without a second scorer',()=>{
- const evidence={evidence_id:'E1',asset_id:'asset:sol',htx_contract:'SOL-USDT',block_id:'N01',metric_family:'unlock',provider_id:'OFFICIAL_EVENTS',upstream_id:'OFFICIAL',dependency_group:'EVENT',observed_ts:1000,source_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:3000,directional_strength:null,risk_strength:1,reliability:1};
+ const evidence={evidence_id:'E1',asset_id:'asset:sol',htx_contract:'SOL-USDT',block_id:'N07',metric_family:'official-risk',provider_id:'OFFICIAL_EVENTS',upstream_id:'OFFICIAL',dependency_group:'EVENT',observed_ts:1000,source_ts:1000,first_known_ts:1000,coverage_status:'COMPLETE',coverage_fraction:1,identity_status:'EXACT',finality_status:'FINAL',schema_version:'v1',validation_status:'VALID',expires_at:3000,directional_strength:null,risk_strength:1,reliability:1};
  const rows=buildSupplementalScoreEvidence({direction:'LONG',internal_market_context:{decision_ts:2000,evidence_v2:{evidence:[evidence]}}});
  const receipt=applySupplementalScoreAdjustment(70,rows);assert.ok(receipt.adjustment<0);assert.ok(receipt.adjustment>=-1.8);assert.ok(rows.some(row=>row.source_id==='EVIDENCE_V2'));
 });

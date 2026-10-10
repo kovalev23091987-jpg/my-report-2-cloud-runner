@@ -67,7 +67,7 @@ test('one native observation retains historical V5 and manual surfaces without s
 });
 test('general announcement feed cannot mark N01 unlock/vesting schedule checked',()=>{
  const audit=auditCandidateBlocks({sources:{OFFICIAL_EVENTS:{status:'CLOSED',network_calls:1},OFFICIAL_TOKEN_SCHEDULE:{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0}},decision_ts:NOW});
- assert.equal(audit.blocks.N01.checked,false);assert.deepEqual(audit.blocks.N01.missing_required,['OFFICIAL_TOKEN_SCHEDULE']);assert.equal(audit.blocks.N07.checked,true);assert.equal(audit.block_count??Object.keys(audit.blocks).length,15);
+ assert.equal(audit.blocks.N01.checked,false);assert.deepEqual(audit.blocks.N01.missing_required,[]);assert.equal(audit.blocks.N07.checked,true);assert.equal(audit.block_count??Object.keys(audit.blocks).length,15);
 });
 test('typed unlock cannot bypass confirmation or create risk from negative/incomplete amounts',()=>{
  const input={asset_id:'near:native:mainnet',htx_contract:'NEAR-USDT',event_id:'UNLOCK_CONTROL',event_type:'TOKEN_UNLOCK',effective_at:NOW+1000,source_ts:NOW-1000,observed_ts:NOW,amount_usd:10,htx_turnover_24h_usd:100,confirmed:true};

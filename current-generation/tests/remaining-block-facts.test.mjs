@@ -22,12 +22,12 @@ const sourceBody=name=>gunzipSync(fs.readFileSync(new URL(name+'.html.gz',fixtur
 const facts=(evidence,contract)=>consumeBlockResultContext({evidence,contract,now:NOW}).facts;
 function memoryDB(){const sqlite=new DatabaseSync(':memory:');return{sqlite,prepare(sql){return{args:[],bind(...args){this.args=args;return this;},async run(){return sqlite.prepare(sql).run(...this.args);},async first(){return sqlite.prepare(sql).get(...this.args)||null;}};},async batch(rows){return Promise.all(rows.map(r=>r.run()));}};}
 
-test('primary APT and NEAR documents provide two exact N01 contexts, never an observed unlock or new score',()=>{
+test('primary APT and NEAR documents retain exact internal N01 contexts, never an observed unlock or new score',()=>{
  for(const [symbol,chain,name] of [['APT','aptos','aptschedule'],['NEAR','near','nearhome']]){
   const body=sourceBody(name),receipt=manifest.responses.find(r=>r.name===name);assert.equal(crypto.createHash('sha256').update(body).digest('hex'),receipt.body_sha256);assert.equal(receipt.synthetic,false);
   const r=normalizeOfficialTokenSchedule({contract:symbol+'-USDT',asset_identity:native(chain),body,source_url:receipt.url,observed_ts:NOW});
-  assert.equal(r.status,'CLOSED');assert.equal(r.evidence[0].block_id,'N01');assert.equal(validateEvidenceV2(r.evidence[0],{decision_ts:NOW}).usable,true);assert.equal(facts(r.evidence,symbol+'-USDT').length,1);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
-  assert.equal(planCandidateEvidenceRoutes({contract:symbol+'-USDT',asset_identity:native(chain)}).routes.some(r=>r.name==='TOKEN_SCHEDULE'),true);
+  assert.equal(r.status,'CLOSED');assert.equal(r.evidence[0].block_id,'N01');assert.equal(validateEvidenceV2(r.evidence[0],{decision_ts:NOW}).usable,true);assert.equal(facts(r.evidence,symbol+'-USDT').length,0);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+  assert.equal(planCandidateEvidenceRoutes({contract:symbol+'-USDT',asset_identity:native(chain)}).routes.some(r=>r.name==='TOKEN_SCHEDULE'),false);
  }
 });
 test('missing anchors, 200 soft error, wrong asset, wrapped asset, redirect and unlimited body cannot close vesting',()=>{
@@ -86,7 +86,7 @@ test('actual full HTX catalog excludes every stock and exact forex correction, w
  assert.ok(eligible.length>=100);assert.ok(eligible.some(r=>r.contract_code==='NEAR-USDT'));assert.ok(eligible.some(r=>r.contract_code==='BR-USDT'));
  for(const r of catalog){if(!['PAXG-USDT','XAUT-USDT'].includes(r.contract_code)&&(r.labels.some(x=>['stock','tradfi','indices','commodities'].includes(x))||r.tradfi_labels.length))assert.equal(classify(r).eligible_for_crypto_discovery,false,r.contract_code);}
  for(const contract_code of ['EURUSD-USDT','GBPUSD-USDT','USDJPY-USDT','USDBRL-USDT']){const c=classify(catalog.find(r=>r.contract_code===contract_code));assert.equal(c.eligible_for_crypto_discovery,false);assert.ok(c.reasons.includes('HTX_OFFICIAL_FOREX_UNDERLYING'));assert.ok(c.evidence.official_forex_source_url);}
- for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,15);}
+ for(const r of eligible){const plan=planCandidateEvidenceRoutes({contract:r.contract_code});assert.ok(plan.routes.some(x=>x.name==='DERIBIT'));assert.ok(plan.routes.some(x=>x.name==='LARGE_TRADES'));assert.equal(auditCandidateBlocks({}).coverage_count,14);}
  assert.equal(classify({...catalog.find(r=>r.contract_code==='NEAR-USDT'),contract_code:'NEWCRYPTO-USDT'}).eligible_for_crypto_discovery,true);
 });
 test('two exact finalized supply observations can provide neutral N03, but cannot prove buyback or a price effect',()=>{

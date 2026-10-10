@@ -49,11 +49,17 @@ test('K31-K33 base-owned roots, missing expiry and future source time never cont
 });
 
 test('K16: risk strength can only reduce suitability and never becomes a bullish direction',()=>{
-  const risk={...make(templates.find(row=>row.block_id==='N01')),directional_strength:null,risk_strength:.8};
+  const risk={...make(templates.find(row=>row.block_id==='N07')),directional_strength:null,risk_strength:.8};
   const result=consumeEvidenceV2([risk],{base_interest:70,decision_ts:1500});assert.ok(result.adjustment<0);assert.ok(result.final_interest<70);
 });
 
 test('K16: hotlist is bounded to 12 and quality does not punish an unattempted source',()=>{
   const hot=buildHotlist({active_publications:[{contract:'A-USDT',last_checked_ts:5}],manual_contract:'M-USDT',pending:Array.from({length:20},(_,i)=>({contract:`P${i}-USDT`,last_checked_ts:i}))});assert.equal(hot.length,12);assert.equal(hot[0].contract,'A-USDT');
   assert.deepEqual(nextSourceQuality({current:.8,attempted:false,response_usable:false}),{quality:.8,quarantined:false,invalid_streak:0,probe_success_streak:0});
+});
+
+test('unmatched N01 risk cannot penalize a coin or lower its score below 70',()=>{
+ const risk={...make(templates.find(row=>row.block_id==='N01')),risk_strength:1};
+ const result=consumeEvidenceV2([risk],{base_interest:70,decision_ts:1500});
+ assert.equal(result.adjustment,0);assert.equal(result.final_interest,70);assert.equal(result.receipts[0].reason,'BLOCK_PAUSED_BY_OWNER');
 });

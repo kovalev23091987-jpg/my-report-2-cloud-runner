@@ -16,12 +16,12 @@ function db(){const sqlite=new DatabaseSync(':memory:');return{prepare(sql){retu
 test('exact native ADA official routes are planned without wrapped substitution',()=>{
  const compiled=compileOfficialSourceRegistry((()=>{const r=JSON.parse(fs.readFileSync(new URL('../files/main-official-event-sources.json',import.meta.url)));r.entries=r.entries.filter(e=>Date.parse(e.verified_at)<=NOW);return r;})(),{now:NOW});
  assert.equal(compiled.registry.ADA.native_asset_id,'cardano:mainnet');assert.deepEqual(compiled.registry.ADA.official_feeds,meta.official_feeds);
- const planned=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:compiled.registry.ADA,run_id:'C',now:NOW});assert.ok(planned.routes.some(x=>x.name==='TOKEN_SCHEDULE'));assert.ok(planned.routes.some(x=>x.name==='OFFICIAL'));
+ const planned=planCandidateEvidenceRoutes({contract:'ADA-USDT',asset_identity:identity,asset_metadata:compiled.registry.ADA,run_id:'C',now:NOW});assert.equal(planned.routes.some(x=>x.name==='TOKEN_SCHEDULE'),false);assert.ok(planned.routes.some(x=>x.name==='OFFICIAL'));
  for(const wrong of [{...identity,native_asset_id:'cardano:testnet'},{...identity,contract_or_mint:'0x'+'1'.repeat(40)},{...identity,asset_kind:'WRAPPED'}])assert.equal(exactTokenScheduleRoute({contract:'ADA-USDT',asset_identity:wrong}),null);
 });
 test('ADA historical distribution is useful bounded context without claiming future unlocks',()=>{
  const r=normalizeOfficialTokenSchedule({contract:'ADA-USDT',asset_identity:identity,body,source_url:'https://cardano.org/genesis/',observed_ts:NOW});assert.equal(r.status,'CLOSED');assert.equal(r.evidence[0].metric_family,'OFFICIAL_INITIAL_DISTRIBUTION_TERMS');
- const c=consumeBlockResultContext({evidence:r.evidence,contract:'ADA-USDT',now:NOW});assert.equal(c.facts.length,1);assert.match(c.facts[0].value,/будущие разблокировки/);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
+ const c=consumeBlockResultContext({evidence:r.evidence,contract:'ADA-USDT',now:NOW});assert.equal(c.facts.length,0);assert.equal(consumeEvidenceV2(r.evidence,{base_interest:70,decision_ts:NOW}).adjustment,0);
  assert.equal(normalizeOfficialTokenSchedule({contract:'ADA-USDT',asset_identity:identity,body:body.replace('31,112,484,646','31,112,484,645'),source_url:'https://cardano.org/genesis/',observed_ts:NOW}).evidence.length,0);
  assert.equal(consumeBlockResultContext({evidence:[{...r.evidence[0],future_unlock_schedule_verified:true}],contract:'ADA-USDT',now:NOW}).facts.length,0);
 });

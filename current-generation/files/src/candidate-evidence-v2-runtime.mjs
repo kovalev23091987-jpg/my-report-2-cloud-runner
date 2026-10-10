@@ -19,7 +19,7 @@ import {collectHtxOfficialAnnouncements} from './htx-official-announcements-evid
 import {collectOfficialTokenSchedule,exactTokenScheduleRoute} from './official-token-schedule.mjs';
 import {collectGdeltOfficialDiscovery} from './gdelt-official-discovery.mjs';
 import {collectBlockscoutIndexEvidence} from './blockscout-index-evidence.mjs';
-import {BLOCKS,evidenceDedupKey,validateEvidenceV2} from './evidence-v2.mjs';
+import {BLOCKS,PAUSED_BLOCKS,evidenceDedupKey,validateEvidenceV2} from './evidence-v2.mjs';
 import {buildEvidenceV2} from './evidence-source-adapters.mjs';
 import {recordEvidenceSourceHealth} from './evidence-source-store.mjs';
 
@@ -153,7 +153,7 @@ export async function collectEvidenceRouteBlock({routes=[],collectors={},params=
   if(result?.duplicate===true)return{...result,allowed:false,status:'ALREADY_RESERVED_NO_REDISPATCH'};
   if(result?.allowed===true){reserved+=n;routeReserved+=n;}return result;
  };
- for(const route of routes){const collect=collectors[route.name];if(typeof collect!=='function')continue;
+ for(const route of routes){if(['TOKEN_CALENDAR','TOKEN_SCHEDULE'].includes(route.name)&&PAUSED_BLOCKS.N01){results[route.name]={status:'BLOCK_PAUSED_BY_OWNER',network_calls:0,evidence:[],check_completed:false,internal_only:true};receipts.push({route:route.name,status:'BLOCK_PAUSED_BY_OWNER',actual_http:0,phase_reserved:reserved});continue;}const collect=collectors[route.name];if(typeof collect!=='function')continue;
   // Collectors read valid cached facts before their request admission. Calling
   // every relevant role also reuses caches after the network envelope is full.
   const before=reserved,beforeActual=actual;routeReserved=0;let result;const fetch_impl=async(...args)=>{if(actual-beforeActual>=routeReserved||actual>=reserved||actual>=max_requests)throw Error('EVIDENCE_ROUTE_TRANSPORT_NOT_ADMITTED');actual++;return(params.fetch_impl||globalThis.fetch)(...args);};
@@ -213,6 +213,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
  const result={};
  const controlConsumers=new Set(['EXECUTION_GATE','TARGET_PATH_INVALIDATION','EXECUTION_STRESS','EXECUTION_COST_GATE']);
  for(const block of Object.keys(BLOCKS)){
+  if(PAUSED_BLOCKS[block]){result[block]={status:'BLOCK_PAUSED_BY_OWNER',pause_reason:PAUSED_BLOCKS[block],included_in_active_coverage:false,checked:false,observed_facts:0,valid_context_facts:0,usable_facts:0,source_statuses:{},source_checks:{},decision_consumer:null,maximum_score_points:0,decision_path:'EXCLUDED_PAUSED_BLOCK',evidence_rejection_reasons:{},required_all:[],required_any:[],missing_required:[]};continue;}
   const rows=(Array.isArray(evidence)?evidence:[]).filter(row=>row?.block_id===block);
   const evaluated=rows.map(row=>({row,validation:validateEvidenceV2(row,{decision_ts})}));
   const validContext=evaluated.filter(({validation})=>validation.usable).length;
@@ -239,8 +240,8 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
    required_all:proof.required_all,required_any:proof.required_any,missing_required:proof.missing_required,
   };
  }
- const values=Object.values(result);
- return {status:values.every(row=>row.checked)?'CLOSED_ALL_15_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,
+ const values=Object.values(result).filter(row=>row.included_in_active_coverage!==false);
+ return {status:values.every(row=>row.checked)?'CLOSED_ALL_ACTIVE_BLOCKS_CHECKED':'PARTIAL_BLOCK_CHECK',blocks:result,coverage_count:values.length,paused_block_ids:Object.keys(PAUSED_BLOCKS),paused_blocks_excluded_from_coverage:true,
   checked_block_count:values.filter(row=>row.checked).length,usable_block_count:values.filter(row=>row.usable_facts>0).length,
   score_or_risk_input_block_count:values.filter(row=>row.decision_path==='ADMITTED_SCORE_OR_RISK_INPUT').length,
   admitted_control_context_block_count:values.filter(row=>row.decision_path==='ADMITTED_CONTROL_CONTEXT').length,
@@ -255,7 +256,7 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
 
 export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},decision_ts=evidence_result?.decision_ts??Date.now()}={}){
  const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
- const evidence=[...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])];
+ const evidence=[...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])].filter(row=>!PAUSED_BLOCKS[row?.block_id]);
  return {...evidence_result,decision_ts,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts,strict_fresh:evidence_result?.strict_fresh_required===true})};
 }
 
@@ -263,8 +264,8 @@ export function planCandidateEvidenceRoutes(params={}){
  const chainName=String(params?.asset_identity?.chain||'').toLowerCase(),address=String(params?.asset_identity?.contract_or_mint||''),chainEligible=Boolean(chainName&&address&&params?.asset_identity?.asset_kind!=='NATIVE'),nativeSectorEligible=Boolean(exactNativeSectorBinding(params?.asset_identity,params?.contract)),nativeContract={near:'NEAR-USDT',solana:'SOL-USDT',cardano:'ADA-USDT',xrp:'XRP-USDT',stellar:'XLM-USDT'}[chainName],nativeSupplyEligible=['near','solana','cardano','xrp','stellar'].includes(chainName)&&params?.asset_identity?.asset_kind==='NATIVE'&&params?.asset_identity?.native_asset_id===`${chainName}:mainnet`&&!address&&params?.contract===nativeContract,nativeChainEventsEligible=['solana','xrp'].includes(chainName)&&nativeSupplyEligible||exactNativeEvmNetwork(params)?.production_enabled===true,supplyEligible=chainEligible||nativeSupplyEligible,chainEventsEligible=chainEligible||nativeChainEventsEligible,evmEligible=chainEligible&&chainName!=='solana'&&/^0x[0-9a-f]{40}$/i.test(address),officialDomains=Array.isArray(params?.asset_metadata?.official_domains)?params.asset_metadata.official_domains:[],socialEligible=/^[^\s-]+-USDT$/u.test(String(params?.contract||'').toUpperCase()),officialFeeds=Array.isArray(params?.asset_metadata?.official_feeds)?params.asset_metadata.official_feeds:[],officialEligible=officialDomains.length>0&&officialFeeds.length>0,gdeltEligible=officialDomains.length>0&&Boolean(String(params?.asset_metadata?.official_name||'').trim()),blockscoutEligible=evmEligible&&Boolean(String(params?.blockscout_api_key||'').trim()),key=`${params?.run_id}:${params?.contract}:${Math.floor(Number(params?.now||Date.now())/(20*60_000))}`;
  const routes=[...(exactCoinmetricsNativeIdentity(params?.contract,params?.asset_identity)?[{name:'COINMETRICS',role:'ADDITIONAL_NATIVE_DAILY_SUPPLY_HISTORY'}]:[]),{name:'LARGE_TRADES',role:'ACTUAL_HTX_TRADE_CONTEXT'},...(!officialEligible?[{name:'HTX_ANNOUNCEMENTS',role:'OFFICIAL_HTX_ASSET_EVENT_CONTEXT'}]:[]),...(officialEligible?[{name:'OFFICIAL',role:'OFFICIAL_EVENT_CONTEXT'}]:[]),...(supplyEligible?[{name:'CHAIN_SUPPLY',role:'FINALIZED_SUPPLY_CONTEXT'}]:[]),...(chainEventsEligible?[{name:'CHAIN_EVENTS',role:'FINALIZED_TRANSFER_CONTEXT'}]:[]),...(blockscoutEligible?[{name:'BLOCKSCOUT',role:'INDEX_DISCOVERY'}]:[]),{name:'DERIBIT',role:'OPTION_CONTEXT'},...(DELTA_OBSERVED_OPTION_BASES.includes(String(params?.contract||'').replace(/-USDT$/,''))?[{name:'DELTA',role:'INDEPENDENT_SCOPED_OPTION_CONTEXT'}]:[]),...(socialEligible?[{name:'BLUESKY',role:'ATTENTION_CONTEXT'}]:[]),...(gdeltEligible?[{name:'GDELT',role:'OFFICIAL_LINK_DISCOVERY'}]:[])];
  if(exactWikimediaPage(params))routes.push({name:'WIKIMEDIA',role:'ADDITIONAL_DAILY_PAGEVIEW_CONTEXT'});
- if(publishedCalendarCandidateEligible(params))routes.push({name:'TOKEN_CALENDAR',role:'ADDITIONAL_PUBLISHED_FUTURE_VESTING_CALENDAR'});
- if(exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:exactTokenScheduleRoute(params).parser==='SUI_PUBLISHED_MONTH_END_SCHEDULE_V1'?'OFFICIAL_PUBLISHED_MONTHLY_PROJECTION_CONTEXT':'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
+ if(!PAUSED_BLOCKS.N01&&publishedCalendarCandidateEligible(params))routes.push({name:'TOKEN_CALENDAR',role:'ADDITIONAL_PUBLISHED_FUTURE_VESTING_CALENDAR'});
+ if(!PAUSED_BLOCKS.N01&&exactTokenScheduleRoute(params))routes.push({name:'TOKEN_SCHEDULE',role:exactTokenScheduleRoute(params).parser==='SUI_PUBLISHED_MONTH_END_SCHEDULE_V1'?'OFFICIAL_PUBLISHED_MONTHLY_PROJECTION_CONTEXT':'OFFICIAL_VESTING_DOCUMENT_CONTEXT'});
  if(/^\S{1,32}-USDT$/u.test(String(params?.contract||'')))routes.push({name:'SECTOR',role:'EXACT_PROVIDER_MARKET_SUPPLY_AND_SECTOR_CONTEXT'});
  if(nativeSectorEligible||chainEligible&&Object.hasOwn(COINGECKO_ASSET_PLATFORMS,chainName))routes.push({name:'SECTOR_COINGECKO',role:'SECTOR_RELATIVE_STRENGTH_CONTEXT'});
  return{routes,key,chainName,chainEligible,nativeSectorEligible,nativeSupplyEligible,nativeChainEventsEligible,supplyEligible,chainEventsEligible,evmEligible,socialEligible,officialEligible,gdeltEligible,blockscoutEligible};
@@ -294,11 +295,12 @@ export async function collectCandidateEvidenceV2(params={}){
  if(exactCapability&&Number(cgSector.network_calls)>0&&['EXACT_ASSET_AND_CATEGORY_REQUIRED','EXACT_SECTOR_REGISTRY_REQUIRED'].includes(String(cgSector.status)))cgSector=noRoute('COINGECKO_SECTOR','PROVIDER_CHECK_FOUND_NO_EXACT_FUNCTIONAL_CATEGORY_ROUTE');
  const supplementalSources=params?.supplemental_context?.sources||{};
  const nansen=resolveNansenFlowPrimary(supplementalSources.NANSEN_FLOWS,params);
- const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]);
+ const evidence=[...(coinmetrics.evidence||[]),...(delta.evidence||[]),...(cgSector.evidence||[]),...(largeTrades.evidence||[]),...(sector.evidence||[]),...(Array.isArray(htx?.evidence)?htx.evidence:[]),...(Array.isArray(deribit?.evidence)?deribit.evidence:[]),...(Array.isArray(chainSupply?.evidence)?chainSupply.evidence:[]),...(Array.isArray(chainEvents?.evidence)?chainEvents.evidence:[]),...(Array.isArray(bluesky?.evidence)?bluesky.evidence:[]),...(Array.isArray(official?.evidence)?official.evidence:[]),...(Array.isArray(blockscout?.evidence)?blockscout.evidence:[]),...nansenFlowEvidence(nansen,params)].filter(row=>BLOCKS[row?.block_id]&&!PAUSED_BLOCKS[row?.block_id]);
  const wikimedia=routeBlock.results.WIKIMEDIA||{status:'EXACT_VERIFIED_PAGE_BINDING_REQUIRED',evidence:[],network_calls:0};
  const htxAnnouncements=routeBlock.results.HTX_ANNOUNCEMENTS||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',evidence:[],network_calls:0};
- const publishedCalendar=routeBlock.results.TOKEN_CALENDAR||{status:'EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED',evidence:[],network_calls:0,check_completed:false,internal_only:true};
- const tokenSchedule=routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
+ const pausedN01={status:'BLOCK_PAUSED_BY_OWNER',pause_reason:PAUSED_BLOCKS.N01,network_calls:0,evidence:[],check_completed:false,internal_only:true};
+ const publishedCalendar=PAUSED_BLOCKS.N01?pausedN01:routeBlock.results.TOKEN_CALENDAR||{status:'EXACT_ALREADY_VERIFIED_PROVIDER_ID_REQUIRED',evidence:[],network_calls:0,check_completed:false,internal_only:true};
+ const tokenSchedule=PAUSED_BLOCKS.N01?pausedN01:routeBlock.results.TOKEN_SCHEDULE||(exactCapability?noRoute('OFFICIAL_TOKEN_SCHEDULE','NO_EXACT_STRUCTURED_TOKEN_SCHEDULE_ROUTE_IN_REGISTRY'):{status:'STRUCTURED_TOKEN_SCHEDULE_REQUIRED',network_calls:0,evidence:[],check_completed:false,internal_only:true});
  const statuses=[publishedCalendar?.status,wikimedia?.status,coinmetrics?.status,delta?.status,tokenSchedule?.status,cgSector?.status,largeTrades?.status,sector?.status,htx?.status,htxAnnouncements?.status,deribit?.status,chainSupply?.status,chainEvents?.status,bluesky?.status,official?.status,gdelt?.status,blockscout?.status],closed=statuses.some(value=>value==='CLOSED'||value==='CLOSED_BOUNDED_SAMPLE'||value==='CLOSED_BOUNDED_HTX_ANNOUNCEMENT_CHECK');
  // Generic news cannot close vesting. Only the exact primary-document adapter
  // may close N01; its static terms are not an observed future unlock transfer.

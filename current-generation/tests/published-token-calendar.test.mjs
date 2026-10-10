@@ -3,7 +3,7 @@ import {extractPublishedCalendarPage,derivePublishedCalendarContext,normalizePub
 import {DatabaseSync} from 'node:sqlite';
 import {consumeBlockResultContext} from '../files/src/block-result-context.mjs';
 import {buildSupplementalScoreEvidence,applySupplementalScoreAdjustment} from '../files/src/supplemental-score-evidence.mjs';
-import {validateEvidenceV2} from '../files/src/evidence-v2.mjs';
+import {validateEvidenceV2,consumeEvidenceV2} from '../files/src/evidence-v2.mjs';
 const raw=gunzipSync(fs.readFileSync(new URL('../../audit-fixes/published-token-calendar-20261006/actual-aptos-public-page.html.gz',import.meta.url))),body=raw.toString('utf8'),SHA='9c447ba6cb77275aca337c421d7cd40fa116ad1ed830580885ce8d8abf2b536c',T=Date.parse('2026-10-05T23:47:52.429Z');
 const params={contract:'APT-USDT',asset_identity:{chain:'aptos',asset_kind:'NATIVE',native_asset_id:'aptos:mainnet',contract_or_mint:null},now:T};
 function database(){const sqlite=new DatabaseSync(':memory:');return{prepare(sql){const stmt=sqlite.prepare(sql);let values=[];return{bind(...v){values=v;return this;},async first(){return stmt.get(...values)||null;},async all(){return{results:stmt.all(...values)};},async run(){const ack=stmt.run(...values);return{meta:{changes:Number(ack.changes)}};}};},async batch(rows){return Promise.all(rows.map(r=>r.run()));}};}
@@ -11,8 +11,8 @@ test('actual received public page yields four distinct future cliff records at t
  assert.equal(createHash('sha256').update(raw).digest('hex'),SHA);const reference=await resolvePublishedCalendarReference(params),page=extractPublishedCalendarPage(body),result=normalizePublishedCalendar({page,reference,observed_ts:T,document_sha256:SHA});
  assert.equal(result.status,'CLOSED');assert.equal(result.context.events.length,4);assert.ok(result.context.events.every(e=>e.effective_at===1791760464000));assert.deepEqual(result.context.events.map(e=>e.amount_tokens).sort((a,b)=>a-b),[1333333.3333333333,2807971.6715208334,3210144.664725,3958333.3333333335].sort((a,b)=>a-b));
  const row=result.evidence[0];assert.equal(validateEvidenceV2(row,{decision_ts:T}).usable,true);assert.equal(row.risk_strength,null);assert.equal(row.directional_strength,null);assert.equal(row.official_confirmation,false);assert.equal(row.actual_unlock_transfer_verified,false);assert.equal(row.effective_from,null);
- const facts=consumeBlockResultContext({evidence:[row],contract:'APT-USDT',now:T});assert.equal(facts.facts.length,1);assert.ok(facts.facts[0].value.includes('2026-10-11 23:14 UTC'));assert.ok(facts.facts[0].value.includes('календарь поставщика'));
- const supplied=buildSupplementalScoreEvidence({direction:'UNKNOWN',contract:'APT-USDT',observed_ts:T,internal_market_context:{decision_ts:T,evidence_v2:{evidence:[row]}}}),assessment=applySupplementalScoreAdjustment(null,supplied);assert.equal(assessment.status,'BASE_SCORE_MISSING');assert.ok(assessment.receipts.some(r=>r.provider_object_id===row.evidence_id&&r.score_contribution===0&&r.evidence_v2_receipts.some(e=>e.block_id==='N01'&&e.consumer==='SUPPORTING_RISK_RECHECK'&&e.reason==='CONSUMED')));
+ const facts=consumeBlockResultContext({evidence:[row],contract:'APT-USDT',now:T});assert.equal(facts.facts.length,0); // A single provider is retained, not published as consensus.
+ const supplied=buildSupplementalScoreEvidence({direction:'UNKNOWN',contract:'APT-USDT',observed_ts:T,internal_market_context:{decision_ts:T,evidence_v2:{evidence:[row]}}}),assessment=applySupplementalScoreAdjustment(null,supplied);assert.equal(assessment.status,'BASE_SCORE_MISSING');assert.equal(supplied.length,0);assert.equal(consumeEvidenceV2([row],{base_interest:70,decision_ts:T}).receipts[0].reason,'BLOCK_PAUSED_BY_OWNER');
 });
 test('provider id, chain identity, original clocks and event uniqueness are mandatory',async()=>{
  const reference=await resolvePublishedCalendarReference(params),page=extractPublishedCalendarPage(body);
