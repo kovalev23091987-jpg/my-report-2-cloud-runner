@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "CHATGPT:HTX_COMPACT_HISTORY:20261010:IMPLEMENTATION",
-    "acquired_ts": 1791622029364,
-    "expires_ts": 1791624429364,
-    "scope": "BUILD_BOUNDED_HTX_COMPACT_4H_PRICE_ONLY_HISTORY_SAME_SOURCE_CAP_NO_LIVE_HTTP",
-    "expected_main": "3bc3fcd5cbc7e623edced6e5a8be58848967ea43"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "Under a new measured healthy admission and explicit provider reservation, execute the accepted bounded HTX archive batch, preserve exact receipts and gaps, qualify retained price files, and feed the accepted partial-coverage consumer; separately bind the next natural SENT trigger to its fresh same-idea disposition.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
@@ -390,11 +388,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CHATGPT:HTX_HISTORY_THROUGHPUT_REVIEW:20261010",
-    "acquired_ts": 1791621838175,
-    "expires_ts": 1791622438175,
-    "released_ts": 1791621863261,
-    "reason": "Documented conservative source throughput lower bound; no source or production calls"
+    "owner": "CHATGPT:HTX_COMPACT_HISTORY:20261010:IMPLEMENTATION",
+    "acquired_ts": 1791622029364,
+    "expires_ts": 1791624429364,
+    "released_ts": 1791622329900,
+    "reason": "PR296 exact-head offline cloud tested and merged; compact source pilot scheduled with shared original HTX daily cap"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -814,7 +812,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "ACTUAL_HTX_ARCHIVES_AND_WLD174_PROOFS_CLOSED;102_ASSET_BULK_HISTORY_SOURCE_OR_CAP_REVIEW_OPEN;EMPIRICAL_ENTRY_OUTCOMES_OPEN",
+  "current_execution_block": "HTX_COMPACT_90D_4H_SCHEDULED_NEAR_PILOT_PENDING;102_NATIVE_1M_AND_EMPIRICAL_OUTCOMES_OPEN",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -7046,5 +7044,19 @@
     "minimum_days_90day_102assets": 3059,
     "source_cap_unchanged": 6,
     "next": "Find bulk source or explicit cap review; continue production lifecycle and outcome work."
+  },
+  "latest_htx_compact_90d_4h_implementation": {
+    "proof": "checkpoints/HTX_COMPACT_90D_4H_BULK_ADAPTER_ACCEPTANCE_20261010.json",
+    "pr": 296,
+    "merged_head": "32f12236491fd1baa508ecbb3a124989dad0fa08",
+    "test_cloud_run": 38039243023,
+    "scheduled_workflow": ".github/workflows/htx-compact-4h-daily-20261010.yml",
+    "first_pilot_asset": "NEAR-USDT",
+    "first_pilot_actual_HTTP": 0,
+    "source_cap_unchanged": 6,
+    "conditional_90d_4h_asset_days_only": true,
+    "native_1m_complete": false,
+    "actual_ENTRY": false,
+    "project_complete": false
   }
 }
