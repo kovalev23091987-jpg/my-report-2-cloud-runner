@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {summarizeMissedOpportunityEvidence as summarize} from '../current-generation/files/src/missed-opportunity-denominator.mjs';
+const file='current-generation/tests/fixtures/actual-prospective-episode-37405375170.json.gz';
+const bytes=fs.readFileSync(file),fixture=JSON.parse(gunzipSync(bytes));
+if(fixture.sourceHTTP!==0||fixture.is_new_live_source_acceptance!==false||!Array.isArray(fixture.rows)||fixture.rows.length<1)throw Error('EXACT_RETAINED_PROSPECTIVE_FIXTURE_REQUIRED');
+const rows=fixture.rows.map(row=>({event:row.original_event,horizon:'1h',source_artifact_digest:null,decision:null,outcome:null}));
+const result=summarize({rows,now_ts:Date.now()});
+if(result.eligible!==0||result.missed_rate_pct!==null||result.status!=='NO_ACTUAL_PROVEN_DIRECTIONAL_DENOMINATOR')throw Error('MISSING_ORIGINAL_DECISION_WRONGLY_PROMOTED');
+const proof={...result,source_fixture_sha256:createHash('sha256').update(bytes).digest('hex'),source_fixture_rows:fixture.rows.length,head:process.env.GITHUB_SHA||null,run:process.env.GITHUB_RUN_ID||null,scope:'ACTUAL_RETAINED_EVENTS_LACK_BOUND_PRECOMMITTED_DECISION_AND_CLOSED_FUTURE_OUTCOME;NO_ZERO_RATE_CLAIM',actual_prospective_outcomes_added:0,source_clocks_refreshed:false};
+fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('audit-output/retained-missed-opportunity-census.json',JSON.stringify(proof,null,2)+'\n');
+console.log(JSON.stringify({status:proof.status,retained_rows:proof.source_fixture_rows,eligible:proof.eligible,censored:proof.censored,missed_rate_pct:proof.missed_rate_pct}));
