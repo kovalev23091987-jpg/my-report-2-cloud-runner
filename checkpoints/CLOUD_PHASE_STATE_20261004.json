@@ -328,18 +328,12 @@
       }
     }
   ],
-  "lease": {
-    "owner": "CODEX:OWNER_RESUME_CHECKPOINT:1791632013875",
-    "acquired_ts": 1791632013875,
-    "expires_ts": 1791632373875,
-    "expected_main": "5955ae4ef18ac177fa84760ddb420099af7105d3",
-    "scope": "PERSIST_EXACT_OWNER_REVIEW_RESUME_POINT_AND_IMPLEMENTATION_VS_REQUIREMENT_STATUS;NO_RUNTIME_CHANGE"
-  },
-  "next_action": "QUALIFY_ACTUAL_CONNECTED_SPOT_AND_FUTURES_FLOW_SOURCES_WITHIN_CAPS;KEEP_OWNER_SEQUENTIAL_N05_REVIEW",
+  "lease": null,
+  "next_action": "RESUME_N05_ACTUAL_SPOT_AND_FUTURES_SOURCE_QUALIFICATION_THEN_SHARED_JOINT_FLOW_IMPLEMENTATION;READ_OWNER_REVIEW_RESUME_POINT",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791631937879,
+  "updated_ts": 1791632069937,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -390,13 +384,13 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CODEX:SPOT_FUTURES_OWNER_RULE:1791631874059",
-    "acquired_ts": 1791631874059,
-    "expires_ts": 1791632474059,
-    "expected_main": "5adc60d11f4be2100fca39ce647f7cd91e899c0e",
-    "scope": "PERSIST_ALL_BLOCK_SPOT_FUTURES_JOINT_ANALYSIS_OWNER_RULE;NO_RUNTIME_PROMOTION",
-    "released_ts": 1791631937879,
-    "reason": "OWNER_JOINT_SPOT_FUTURES_RULE_PERSISTED;NO_RUNTIME_CHANGE"
+    "owner": "CODEX:OWNER_RESUME_CHECKPOINT:1791632013875",
+    "acquired_ts": 1791632013875,
+    "expires_ts": 1791632373875,
+    "expected_main": "5955ae4ef18ac177fa84760ddb420099af7105d3",
+    "scope": "PERSIST_EXACT_OWNER_REVIEW_RESUME_POINT_AND_IMPLEMENTATION_VS_REQUIREMENT_STATUS;NO_RUNTIME_CHANGE",
+    "released_ts": 1791632069937,
+    "reason": "EXACT_DURABLE_OWNER_REVIEW_RESUME_POINT_PERSISTED"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -7509,5 +7503,113 @@
     "threshold_weights_caps_freshness_and_approved_forms_unchanged": true,
     "project_complete": false,
     "next_action": "QUALIFY_ACTUAL_CONNECTED_SPOT_AND_FUTURES_FLOW_SOURCES_WITHIN_CAPS;KEEP_OWNER_SEQUENTIAL_N05_REVIEW"
+  },
+  "latest_owner_review_resume_point": {
+    "proof": "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+    "schema": "OWNER_REVIEW_RESUME_POINT_20261010_V1",
+    "recorded_ts": 1791632069937,
+    "owner_instruction_local": "2026-10-10T14:32:56+03:00",
+    "source_main": "5955ae4ef18ac177fa84760ddb420099af7105d3",
+    "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+    "working_ref": "main",
+    "current_task": "OWNER_SEQUENTIAL_BLOCK_REVIEW_N05",
+    "continuation_policy": "PERSIST_EVERY_COMPLETED_PACKAGE_AND_IN_PROGRESS_HANDOFF_IN_GITHUB;RESUME_FROM_ACTUAL_VERIFIED_STATE",
+    "completed_and_verified": [
+      {
+        "scope": "N01,N02,N03 pause",
+        "status": "IMPLEMENTED_IN_MANUAL_AND_TELEGRAM_CHAINS;ASSEMBLED_CLOUD_VERIFIED",
+        "pr": 303,
+        "cloud_run": 38047803306,
+        "proof": "checkpoints/OWNER_N01_N02_N03_STRATEGY_PAUSE_20261010.json"
+      },
+      {
+        "scope": "N04 explanation and handoff",
+        "status": "EXPLANATION_FINISHED;ACTIVE_PARTIAL;NO_PAUSE_INSTRUCTION",
+        "proof": "checkpoints/OWNER_N04_REVIEW_TO_N05_20261010.json"
+      },
+      {
+        "scope": "N05 multi-venue owner requirement",
+        "status": "SAVED_REQUIREMENT;RUNTIME_IMPLEMENTATION_NOT_VERIFIED",
+        "proof": "checkpoints/OWNER_N05_MULTI_VENUE_CONSENSUS_REQUIREMENT_20261010.json"
+      },
+      {
+        "scope": "All relevant blocks joint spot/futures analysis",
+        "status": "SAVED_REQUIREMENT;JOINT_RUNTIME_IMPLEMENTATION_NOT_VERIFIED",
+        "proof": "checkpoints/OWNER_SPOT_FUTURES_JOINT_ANALYSIS_20261010.json"
+      }
+    ],
+    "next_work_in_order": [
+      {
+        "id": "N05_ACTUAL_VENUE_INVENTORY",
+        "action": "Reuse actual retained evidence and current source configs; distinguish declared capability from actual connection. Include spot and futures routes across every actually connected venue.",
+        "status": "OPEN"
+      },
+      {
+        "id": "N05_BOUNDED_CLOUD_QUALIFICATION",
+        "action": "Obtain missing actual comparable responses through bounded GitHub cloud jobs, exact approved HTX assets and original windows; retain source errors, coverage and quota evidence. Separate market catalog coverage from usable full flow coverage.",
+        "status": "NOT_STARTED;NO_ACTUAL_MULTI_VENUE_COVERAGE_CLAIM"
+      },
+      {
+        "id": "N05_SHARED_JOINT_FLOW_IMPLEMENTATION",
+        "action": "Implement common exact-asset normalization, venue/market components, joint direction and explicit disagreement/missing status for both manual and Telegram consumers; validate completeness before use.",
+        "status": "OPEN;NO_JOINT_RUNTIME_CHANGE_YET"
+      },
+      {
+        "id": "N05_CALIBRATION_AND_CONNECTED_ACCEPTANCE",
+        "action": "Calibrate tolerances, independent venue count and any score impact using real retained data; verify changed paths assembled in the cloud and preserve prior reports, limits and owner pauses. New fresh SENT requires same-run source-to-message_id proof.",
+        "status": "OPEN"
+      },
+      {
+        "id": "NEXT_OWNER_BLOCK_REVIEW",
+        "action": "After N05 work report actual result and remaining limits, then proceed to next block under sequential owner review.",
+        "status": "AFTER_N05"
+      }
+    ],
+    "preserve": {
+      "universe_contracts": 119,
+      "universe_assets": 102,
+      "excluded_inverse_delivery_contracts": 17,
+      "threshold": 70,
+      "whole_job_HTTP_cap": 164,
+      "source_caps_and_manual_reserve": "UNCHANGED",
+      "Nansen_HTTP_cap": 0,
+      "original_source_clocks": "UNCHANGED",
+      "N01_N02_N03": "PAUSED_IN_BOTH_CHAINS",
+      "N04": "ACTIVE_PARTIAL",
+      "mandatory_all_blocks_gate": false,
+      "useful_coverage_target_not_report_gate": true,
+      "approved_forms": "UNCHANGED",
+      "broader_old_TZ_tasks": "RETAINED_OPEN;UNRELATED_WIP_NOT_RESUMED_DURING_OWNER_REVIEW"
+    },
+    "resume_read_order": [
+      "AGENTS.md",
+      "MY_REPORT_2_STARTUP_CONTRACT.md",
+      "REPORT2_CURRENT_GENERATION.json",
+      "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "audit-fixes/source-optimization-20260930/execution-lock.json",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json"
+    ],
+    "resume_guards": [
+      "Read fresh main/phase/fence together and acquire bounded own CAS lease before edits/tests/live.",
+      "Reuse completed cloud acceptance; new calls only for missing facts/new defect.",
+      "Update current status, task register and phase after each package; retain exact branch/head/proof for unfinished work.",
+      "Persisted rules are not proof that runtime implements them.",
+      "Cloud production schedules and a continuously running development agent are separate; do not claim work after the turn without an actual executor."
+    ],
+    "cloud_execution": {
+      "owner_sequential_review_remains_active": true,
+      "completion_automation_id": "6abc3eaf8e2c8191b5f91d1f653db5ef",
+      "completion_automation_enabled": false,
+      "new_automation_created": false,
+      "continuous_development_executor_claimed": false
+    },
+    "runtime_changed_this_package": false,
+    "sourceHTTP": 0,
+    "production_D1": 0,
+    "Telegram": 0,
+    "tests_repeated": false,
+    "project_complete": false
   }
 }
