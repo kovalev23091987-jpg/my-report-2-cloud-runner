@@ -1,8 +1,11 @@
 export const KRAKEN_FLOW_VERSION='kraken-native-count-flow-v1-20261010';
 export const KRAKEN_NATIVE_NETWORK_REFERENCE='https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken';
-const native={ADA:'cardano',ATOM:'cosmos',AVAX:'avalanche',BCH:'bitcoin-cash',BNB:'bsc',DOT:'polkadot',ETH:'ethereum',LTC:'litecoin',SOL:'solana',XRP:'xrp'};
+export const KRAKEN_NATIVE_CODE_REFERENCE='https://support.kraken.com/articles/360001206766-bitcoin-currency-code-xbt-vs-btc';
+const native={BTC:'bitcoin',DOGE:'dogecoin',ADA:'cardano',ATOM:'cosmos',AVAX:'avalanche',BCH:'bitcoin-cash',BNB:'bsc',DOT:'polkadot',ETH:'ethereum',LTC:'litecoin',SOL:'solana',XRP:'xrp'};
 export function exactKrakenNativeIdentity(contract,identity){const base=String(contract||'').replace(/-USDT$/,'');return Boolean(native[base]&&contract===base+'-USDT'&&identity?.asset_kind==='NATIVE'&&identity.chain===native[base]&&identity.native_asset_id===native[base]+':mainnet'&&!identity.contract_or_mint);}
-export function exactKrakenNativeBinding({contract,identity,instrument}={}){const base=String(contract||'').replace(/-USDT$/,'');return Boolean(exactKrakenNativeIdentity(contract,identity)&&instrument?.wsname===base+'/USDT'&&instrument.base===(({ETH:'XETH',LTC:'XLTC',XRP:'XXRP'})[base]||base)&&instrument.quote==='USDT'&&instrument.altname===base+'USDT'&&instrument.status==='online');}
+const codes=Object.freeze({BTC:{api:'XBT',base:'XXBT'},DOGE:{api:'XDG',base:'XXDG'},ETH:{api:'ETH',base:'XETH'},LTC:{api:'LTC',base:'XLTC'},XRP:{api:'XRP',base:'XXRP'}});
+export function krakenNativeMarketCode(contract){const base=String(contract||'').replace(/-USDT$/,'');return native[base]&&contract===base+'-USDT'?(codes[base]?.api||base)+'USDT':null;}
+export function exactKrakenNativeBinding({contract,identity,instrument}={}){const base=String(contract||'').replace(/-USDT$/,''),code=codes[base]||{api:base,base};return Boolean(exactKrakenNativeIdentity(contract,identity)&&instrument?.wsname===code.api+'/USDT'&&instrument.base===code.base&&instrument.quote==='USDT'&&instrument.altname===krakenNativeMarketCode(contract)&&instrument.status==='online');}
 
 export function matchKrakenPublicRestDirection({messages,rest,symbol}={}){
  const root={status:'KRAKEN_DIRECTION_NOT_CONFIRMED',verified:false,matched_count:0};

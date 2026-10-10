@@ -2,7 +2,7 @@ import {n05SourceHasHeadroom} from './n05-source-headroom.mjs';
 import {createHash} from 'node:crypto';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {reserveProviderMinuteUnits} from './provider-minute-ledger.mjs';
-import {exactKrakenNativeIdentity,exactKrakenNativeBinding,normalizeKrakenNativeFlow} from './kraken-four-hour-flow.mjs';
+import {exactKrakenNativeIdentity,exactKrakenNativeBinding,normalizeKrakenNativeFlow,krakenNativeMarketCode} from './kraken-four-hour-flow.mjs';
 import {KRAKEN_PUBLIC_TAKER_REFERENCE} from './kraken-public-taker-reference.mjs';
 const SOURCE='N05_OFFICIAL_FLOW:KRAKEN',VERSION='kraken-native-flow-collector-v1-20261010',hash=b=>createHash('sha256').update(b).digest('hex');
 export async function collectKrakenFlow(params={}){
@@ -30,7 +30,7 @@ export async function collectKrakenFlow(params={}){
   if(!admitDb())return{...root,status:'FLOW_DB_HEADROOM_REQUIRED'};
   const end=Math.floor(now/60000)*60000,key=`NATIVE_FLOW:${contract}:${end}`,old=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:key,now,include_cache_clock:true});
   if(old?.version===VERSION&&old.observed_ts<=now&&old.observed_ts>=end){const component=normalizeKrakenNativeFlow({contract,identity,instrument:old.instrument,candles:old.candles,pages:old.pages,window_end_ts:end,observed_ts:old.observed_ts,direction_reference:KRAKEN_PUBLIC_TAKER_REFERENCE});return{...root,status:component.status,components:[component],network_calls:calls,cache_status:'HIT_ORIGINAL_CLOCKS',check_completed:component.check_completed};}
-  const symbol=contract.replace(/-USDT$/,'USDT'),metaKey='NATIVE_METADATA:ALL_PAIRS',cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:metaKey,now,include_cache_clock:true});let catalog;
+  const symbol=krakenNativeMarketCode(contract),metaKey='NATIVE_METADATA:ALL_PAIRS',cached=await readEvidenceSourceCache(db,{source:SOURCE,asset_key:metaKey,now,include_cache_clock:true});let catalog;
   if(cached?.version===VERSION&&cached.observed_ts<=now&&now-cached.observed_ts<=21600000){catalog=cached.catalog;receipts.push({...cached.receipt,actual_http:0,cache_status:'HIT_ORIGINAL_CLOCKS'});}
   else{const p=await get('https://api.kraken.com/0/public/AssetPairs');if(p?.error?.length!==0||!p.result)return{...root,status:receipts.at(-1)?.status||'INVALID_METADATA',network_calls:calls};catalog=Object.values(p.result).filter(r=>r.quote==='USDT').map(r=>({base:r.base,quote:r.quote,wsname:r.wsname,altname:r.altname,status:r.status}));const ts=receipts.at(-1).received_ts;if(admitDb())await writeEvidenceSourceCache(db,{source:SOURCE,asset_key:metaKey,observed_ts:ts,expires_ts:ts+21600000,payload:{version:VERSION,observed_ts:ts,catalog,receipt:receipts.at(-1)}});}
   const instruments=catalog.filter(r=>r.altname===symbol);if(instruments.length!==1||!exactKrakenNativeBinding({contract,identity,instrument:instruments[0]}))return{...root,status:'EXACT_PRIMARY_NATIVE_ASSET_BINDING_REQUIRED',network_calls:calls};
