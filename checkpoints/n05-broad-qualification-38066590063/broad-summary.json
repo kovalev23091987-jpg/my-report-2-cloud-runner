@@ -1,0 +1,3260 @@
+{
+  "schema": "N05_BROAD_EXCHANGE_QUALIFICATION_V1",
+  "stage": "broad-exchanges",
+  "run": "38066590063",
+  "head": "5a64031121f9bf7e22b5ee373392c9f520e0c850",
+  "started_ts": 1791648645647,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 7,
+  "sources": [
+    {
+      "name": "KRAKEN-PUBLIC-WS-DIRECTION",
+      "venue": "KRAKEN",
+      "url": "wss://ws.kraken.com/v2",
+      "method": "GET_HTTP_UPGRADE",
+      "transport": "PUBLIC_WEBSOCKET",
+      "sourceHTTP": 1,
+      "received_ts": 1791648648661,
+      "http_status": 101,
+      "status": "BOUNDED_PUBLIC_CAPTURE_CLOSED",
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-PUBLIC-WS-DIRECTION",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "started_ts": 1791648647351,
+      "body_sha256": "e05fdb24796e181f347035302ab17baf4eeb82ffcec2dd88c2b964fdfcfaaa18",
+      "gzip_sha256": "b24c7236a2cac95c2ca305e622417d2c146aad00c778edc231ce002bbe8080a0",
+      "bytes": 18056,
+      "file": "KRAKEN-PUBLIC-WS-DIRECTION.json.gz"
+    },
+    {
+      "name": "KRAKEN-DOT-PAIRED-RECENT",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/Trades?pair=DOTUSDT&count=1000",
+      "method": "GET",
+      "received_ts": 1791648649620,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-DOT-PAIRED-RECENT",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "14f617c82617874cb7fe4e0e519c356269392428d28e19cde0d8fab750227262",
+      "gzip_sha256": "c99fed4c6a0993b2f3c0d186a5e7ccbf626cb279e79ebc049bf33336fa856c0e",
+      "bytes": 64228,
+      "file": "KRAKEN-DOT-PAIRED-RECENT.json.gz"
+    },
+    {
+      "name": "KRAKEN-ATOM-PAIRED-RECENT",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/Trades?pair=ATOMUSDT&count=1000",
+      "method": "GET",
+      "received_ts": 1791648650537,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-ATOM-PAIRED-RECENT",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "14ddf15bbb784968ba57dc0a042a31e8b5e25dd4c4bb74c72a9775b0a4b9c519",
+      "gzip_sha256": "f97a5a8fd795c1cf976f56dcde2ac56ec7e52d4b96c3d5d48d8c825bb1030d0d",
+      "bytes": 66214,
+      "file": "KRAKEN-ATOM-PAIRED-RECENT.json.gz"
+    },
+    {
+      "name": "KRAKEN-BCH-CANDLES",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/OHLC?pair=BCHUSDT&interval=1&since=1791634200",
+      "method": "GET",
+      "received_ts": 1791648651459,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-BCH-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "14a29f8f6703d20ce306cf5a0ae4bbccf47f5f612267bf6f013bde35595da34a",
+      "gzip_sha256": "9934df845ee1394d558e789dcd7d030964bf48c5b92fca678a119e2adf1a001e",
+      "bytes": 17246,
+      "file": "KRAKEN-BCH-CANDLES.json.gz"
+    },
+    {
+      "name": "KRAKEN-BCH-HISTORY",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/Trades?pair=BCHUSDT&since=1791634199999999999&count=1000",
+      "method": "GET",
+      "received_ts": 1791648652355,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-BCH-HISTORY",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "abdc527d2453662d108c77bbb5530a9860d3877af444eb5377fa4746fa677d83",
+      "gzip_sha256": "e18599886d4bbb081d831d92b68079d282cc5c957b2268362ce5f76d21cb56f0",
+      "bytes": 6381,
+      "file": "KRAKEN-BCH-HISTORY.json.gz"
+    },
+    {
+      "name": "KRAKEN-LTC-CANDLES",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/OHLC?pair=LTCUSDT&interval=1&since=1791634200",
+      "method": "GET",
+      "received_ts": 1791648653264,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-LTC-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648600000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "e3329ef6202e0ef6c9f6e0ac941dd1821e8d1edccd73d84966a9bfeb30c30807",
+      "gzip_sha256": "dcb89bfe67055d397bbd6e405cd7dfba9b0d0c31078e9e824d3c798ed9018134",
+      "bytes": 19889,
+      "file": "KRAKEN-LTC-CANDLES.json.gz"
+    },
+    {
+      "name": "KRAKEN-LTC-HISTORY",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/Trades?pair=LTCUSDT&since=1791634199999999999&count=1000",
+      "method": "GET",
+      "received_ts": 1791648709741,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1:KRAKEN-LTC-HISTORY",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791648660000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "de0b8545a0fc68607f7817c2c110d2bcc730f9ae5c78070b2ae31bb3cc9240d8",
+      "gzip_sha256": "ff7177413012a1fe148e360eebe3abb4166f82c6c51ee440a1699b5c6bd37aa8",
+      "bytes": 9727,
+      "file": "KRAKEN-LTC-HISTORY.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 71,
+      "reserved_rows_read": 1141500,
+      "reserved_rows_written": 23820,
+      "measured_rows_read": 690757,
+      "measured_rows_written": 8332,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 1157500,
+      "rows_written": 24320
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "backpack_bindings": [
+    {
+      "contract": "AAVE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "market": "AAVE_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "BONK-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      "market": "BONK_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "ENA-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "market": "ENA_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "JUP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "market": "JUP_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "LINK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+      "market": "LINK_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "ONDO-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "market": "ONDO_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "PENGU-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "market": "PENGU_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "PEPE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      },
+      "market": "PEPE_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "PUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      "market": "PUMP_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "RAY-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "market": "RAY_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "SHIB-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      },
+      "market": "SHIB_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "SKR-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3"
+      },
+      "market": "SKR_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "TRUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "market": "TRUMP_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "UNI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "market": "UNI_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "WIF-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      "market": "WIF_USDC",
+      "quote": "USDC"
+    },
+    {
+      "contract": "WLD-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x163f8c2467924be0ae7b5347228cabf260318753"
+      },
+      "market": "WLD_USDC",
+      "quote": "USDC"
+    }
+  ],
+  "backpack_windows": [
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "TRUMP-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648385870,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 0,
+      "sell_quote": 24.482899999999997,
+      "trade_count": 1,
+      "imbalance": -1,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "RAY-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648387183,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 0,
+      "sell_quote": 125.68679999999999,
+      "trade_count": 7,
+      "imbalance": -1,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "backpack-count-reconciled-flow-v1-20261010",
+      "contract": "UNI-USDT",
+      "venue": "BACKPACK",
+      "market": "SPOT",
+      "quote": "USDC",
+      "status": "CLOSED_COUNT_AND_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648389968,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 311.65026,
+      "sell_quote": 50.94891,
+      "trade_count": 21,
+      "imbalance": 0.7189794449888012,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "physical_root": "BACKPACK_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "BUYER_MAKER_FALSE_IS_TAKER_BUY",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "quote_comparison_policy": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+      "absolute_cross_quote_turnover_comparable": false,
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 0,
+          "sell_quote": 0,
+          "trade_count": 0,
+          "imbalance": null
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 4.57764,
+          "sell_quote": 6.89787,
+          "trade_count": 3,
+          "imbalance": -0.20218970660127525
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    }
+  ],
+  "native_assets": [
+    {
+      "symbol": "BTC",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "bitcoin",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "bitcoin:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 4
+    },
+    {
+      "symbol": "ETH",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "ethereum",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "ethereum:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 1
+    },
+    {
+      "symbol": "XRP",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "xrp",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "xrp:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "BCH",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "bitcoin-cash",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "bitcoin-cash:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 1
+    },
+    {
+      "symbol": "LTC",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "litecoin",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "litecoin:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 1
+    },
+    {
+      "symbol": "ADA",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "cardano",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "cardano:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "ETC",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "ethereum-classic",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "ethereum-classic:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "ZEC",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "zcash",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "zcash:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "TRX",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "tron",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "tron:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 4
+    },
+    {
+      "symbol": "XLM",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "stellar",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "stellar:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "DOGE",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "dogecoin",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "dogecoin:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "ATOM",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "cosmos",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "cosmos:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "DOT",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "polkadot",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "polkadot:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 1
+    },
+    {
+      "symbol": "AVAX",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "avalanche",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "avalanche:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "HBAR",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "hedera",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "hedera:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "NEAR",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "near",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "near:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "SOL",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "solana",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "solana:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "APT",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "aptos",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "aptos:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "BNB",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "bsc",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "bsc:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    },
+    {
+      "symbol": "SUI",
+      "status": "CLOSED",
+      "identities": [
+        {
+          "chain": "sui",
+          "asset_kind": "NATIVE",
+          "native_asset_id": "sui:mainnet",
+          "contract_or_mint": null
+        }
+      ],
+      "binding_scope": "EXACT_NATIVE_CHAIN_TYPE_0",
+      "wrapped_bindings_excluded": 0
+    }
+  ],
+  "binance_bindings": [
+    {
+      "contract": "BTC-USDT",
+      "identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ETH-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "XRP-USDT",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "BCH-USDT",
+      "identity": {
+        "chain": "bitcoin-cash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin-cash:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "LTC-USDT",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ADA-USDT",
+      "identity": {
+        "chain": "cardano",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cardano:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ETC-USDT",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "TRX-USDT",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "XLM-USDT",
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "DOGE-USDT",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ATOM-USDT",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "DOT-USDT",
+      "identity": {
+        "chain": "polkadot",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "polkadot:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "AVAX-USDT",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "HBAR-USDT",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "NEAR-USDT",
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "SOL-USDT",
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "APT-USDT",
+      "identity": {
+        "chain": "aptos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "aptos:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "BNB-USDT",
+      "identity": {
+        "chain": "bsc",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bsc:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "SUI-USDT",
+      "identity": {
+        "chain": "sui",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "sui:mainnet",
+        "contract_or_mint": null
+      }
+    }
+  ],
+  "binance_windows": [
+    {
+      "version": "binance-native-taker-flow-v1-20261010",
+      "contract": "XRP-USDT",
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648254111,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 3301276.3950900002,
+      "sell_quote": 4616550.9243,
+      "trade_count": 29103,
+      "imbalance": -0.16611558653079217,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_id": "BINANCE_PRIMARY_XRP_20261010",
+      "physical_root": "BINANCE_OFFICIAL_SPOT_KLINES",
+      "direction_semantics": "OFFICIAL_KLINE_TAKER_BUY_QUOTE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 338815.71952999994,
+          "sell_quote": 287853.36568,
+          "trade_count": 1827,
+          "imbalance": 0.08132259122519545
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 1033632.05084,
+          "sell_quote": 1129632.41922,
+          "trade_count": 6267,
+          "imbalance": -0.044377545930543265
+        }
+      ],
+      "native_aggregate_not_individual_trades": true
+    }
+  ],
+  "kraken_usdt_markets": [
+    {
+      "key": "ADAUSDT",
+      "base": "ADA",
+      "quote": "USDT",
+      "wsname": "ADA/USDT",
+      "altname": "ADAUSDT",
+      "status": "online"
+    },
+    {
+      "key": "ALGOUSDT",
+      "base": "ALGO",
+      "quote": "USDT",
+      "wsname": "ALGO/USDT",
+      "altname": "ALGOUSDT",
+      "status": "online"
+    },
+    {
+      "key": "ATOMUSDT",
+      "base": "ATOM",
+      "quote": "USDT",
+      "wsname": "ATOM/USDT",
+      "altname": "ATOMUSDT",
+      "status": "online"
+    },
+    {
+      "key": "AVAXUSDT",
+      "base": "AVAX",
+      "quote": "USDT",
+      "wsname": "AVAX/USDT",
+      "altname": "AVAXUSDT",
+      "status": "online"
+    },
+    {
+      "key": "BCHUSDT",
+      "base": "BCH",
+      "quote": "USDT",
+      "wsname": "BCH/USDT",
+      "altname": "BCHUSDT",
+      "status": "online"
+    },
+    {
+      "key": "BNBUSDT",
+      "base": "BNB",
+      "quote": "USDT",
+      "wsname": "BNB/USDT",
+      "altname": "BNBUSDT",
+      "status": "online"
+    },
+    {
+      "key": "DOTUSDT",
+      "base": "DOT",
+      "quote": "USDT",
+      "wsname": "DOT/USDT",
+      "altname": "DOTUSDT",
+      "status": "online"
+    },
+    {
+      "key": "ETHUSDT",
+      "base": "XETH",
+      "quote": "USDT",
+      "wsname": "ETH/USDT",
+      "altname": "ETHUSDT",
+      "status": "online"
+    },
+    {
+      "key": "FARTCOINUSDT",
+      "base": "FARTCOIN",
+      "quote": "USDT",
+      "wsname": "FARTCOIN/USDT",
+      "altname": "FARTCOINUSDT",
+      "status": "online"
+    },
+    {
+      "key": "LINKUSDT",
+      "base": "LINK",
+      "quote": "USDT",
+      "wsname": "LINK/USDT",
+      "altname": "LINKUSDT",
+      "status": "online"
+    },
+    {
+      "key": "LTCUSDT",
+      "base": "XLTC",
+      "quote": "USDT",
+      "wsname": "LTC/USDT",
+      "altname": "LTCUSDT",
+      "status": "online"
+    },
+    {
+      "key": "PENGUUSDT",
+      "base": "PENGU",
+      "quote": "USDT",
+      "wsname": "PENGU/USDT",
+      "altname": "PENGUUSDT",
+      "status": "online"
+    },
+    {
+      "key": "SHIBUSDT",
+      "base": "SHIB",
+      "quote": "USDT",
+      "wsname": "SHIB/USDT",
+      "altname": "SHIBUSDT",
+      "status": "online"
+    },
+    {
+      "key": "SOLUSDT",
+      "base": "SOL",
+      "quote": "USDT",
+      "wsname": "SOL/USDT",
+      "altname": "SOLUSDT",
+      "status": "online"
+    },
+    {
+      "key": "TRUMPUSDT",
+      "base": "TRUMP",
+      "quote": "USDT",
+      "wsname": "TRUMP/USDT",
+      "altname": "TRUMPUSDT",
+      "status": "online"
+    },
+    {
+      "key": "XAUTUSDT",
+      "base": "XAUT",
+      "quote": "USDT",
+      "wsname": "XAUT/USDT",
+      "altname": "XAUTUSDT",
+      "status": "online"
+    },
+    {
+      "key": "XMRUSDT",
+      "base": "XXMR",
+      "quote": "USDT",
+      "wsname": "XMR/USDT",
+      "altname": "XMRUSDT",
+      "status": "online"
+    },
+    {
+      "key": "XRPUSDT",
+      "base": "XXRP",
+      "quote": "USDT",
+      "wsname": "XRP/USDT",
+      "altname": "XRPUSDT",
+      "status": "online"
+    }
+  ],
+  "coinbase_chain_metadata": [
+    {
+      "id": "AAVE",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+          "crypto_address_link": "https://etherscan.io/token/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.07,
+          "max_withdrawal_amount": 32200,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ADA",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 5000000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "cardano",
+          "name": "Cardano",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://explorer.cardano.org/en/address?address={{address}}",
+          "crypto_transaction_link": "",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 5000000,
+          "network_confirmations": 10,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ALGO",
+      "supported_networks": [
+        {
+          "id": "algorand",
+          "name": "Algorand",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://algoexplorer.io/address/{{address}}",
+          "crypto_transaction_link": "https://algoexplorer.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 55000000,
+          "network_confirmations": 1,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "APR",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x5A9610919f5e81183823A2be4Bd1BeB2B4da2a20",
+          "crypto_address_link": "https://etherscan.io/token/0x5A9610919f5e81183823A2be4Bd1BeB2B4da2a20?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 400000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "APT",
+      "supported_networks": [
+        {
+          "id": "aptos",
+          "name": "Aptos",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://explorer.aptoslabs.com/account/{{address}}",
+          "crypto_transaction_link": "https://explorer.aptoslabs.com/txn/0x{{txId}}",
+          "min_withdrawal_amount": 0.021,
+          "max_withdrawal_amount": 500000,
+          "network_confirmations": 1,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ARB",
+      "supported_networks": [
+        {
+          "id": "arbitrum",
+          "name": "Arbitrum",
+          "status": "online",
+          "contract_address": "0x912ce59144191c1204e64559fe8253a0e49e6548",
+          "crypto_address_link": "https://arbiscan.io/token/0x912CE59144191C1204E64559FE8253a0e49E6548?a={{address}",
+          "crypto_transaction_link": "https://arbiscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 8000000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ASTER",
+      "supported_networks": [
+        {
+          "id": "bsc",
+          "name": "BNB Smart Chain",
+          "status": "online",
+          "contract_address": "0x000Ae314E2A2172a039B26378814C252734f556A",
+          "crypto_address_link": "https://bscscan.com/token/0x000Ae314E2A2172a039B26378814C252734f556A?a={{address}}",
+          "crypto_transaction_link": "https://bscscan.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 10000000,
+          "network_confirmations": 25,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ATOM",
+      "supported_networks": [
+        {
+          "id": "cosmos",
+          "name": "Cosmos",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://cosmos.bigdipper.live/account/{{address}}",
+          "crypto_transaction_link": "https://cosmos.bigdipper.live/transactions/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 250000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": "^\\w{1,24}$",
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "AVAX",
+      "supported_networks": [
+        {
+          "id": "avacchain",
+          "name": "Avalanche C-Chain",
+          "status": "online",
+          "contract_address": "0xfvweahmxkfeig8snevq42hc6whryy3efyavebmqdndgcgxn5z",
+          "crypto_address_link": "https://snowscan.xyz/address/{{address}}",
+          "crypto_transaction_link": "https://snowscan.xyz/tx/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 200000,
+          "network_confirmations": 1,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "AVNT",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "0x696F9436B67233384889472Cd7cD58A6fB5DF4f1",
+          "crypto_address_link": "https://basescan.org/token/0x696F9436B67233384889472Cd7cD58A6fB5DF4f1?a={{address}}",
+          "crypto_transaction_link": "https://basescan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 3200000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "BCH",
+      "supported_networks": [
+        {
+          "id": "bitcoincash",
+          "name": "Bitcoin Cash",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://blockchair.com/bitcoin-cash/address/{{address}}",
+          "crypto_transaction_link": "https://blockchair.com/bitcoin-cash/transaction/{{txId}}",
+          "min_withdrawal_amount": 0.00001,
+          "max_withdrawal_amount": 10600,
+          "network_confirmations": 12,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "BILL",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0xb1110919016846972056AB995054D65560D5f05E",
+          "crypto_address_link": "https://etherscan.io/token/0xb1110919016846972056AB995054D65560D5f05E?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 10000000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "BNB",
+      "supported_networks": [
+        {
+          "id": "bsc",
+          "name": "BNB Smart Chain",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://bscscan.com/address/{{address}}",
+          "crypto_transaction_link": "https://bscscan.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 900,
+          "network_confirmations": 25,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "BONK",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00001,
+          "max_withdrawal_amount": 75000000000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "BTC",
+      "supported_networks": [
+        {
+          "id": "arbitrum",
+          "name": "Arbitrum",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://arbiscan.io/address/{{address}}",
+          "crypto_transaction_link": "https://arbiscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00002,
+          "max_withdrawal_amount": 200,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00002,
+          "max_withdrawal_amount": 200,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "bitcoin",
+          "name": "Bitcoin",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://live.blockcypher.com/btc/address/{{address}}",
+          "crypto_transaction_link": "https://live.blockcypher.com/btc/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 2400,
+          "network_confirmations": 2,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        },
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://etherscan.io/token/0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.00002,
+          "max_withdrawal_amount": 200,
+          "network_confirmations": 35,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00002,
+          "max_withdrawal_amount": 200,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "CHZ",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x3506424f91fd33084466f402d5d97f05f8e3b4af",
+          "crypto_address_link": "https://etherscan.io/token/0x3506424f91fd33084466f402d5d97f05f8e3b4af?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 9213000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "DASH",
+      "supported_networks": [
+        {
+          "id": "dash",
+          "name": "Dash",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://chain.so/address/DASH/{{address}}",
+          "crypto_transaction_link": "https://chain.so/tx/DASH/{{address}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 5900,
+          "network_confirmations": 2,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "DOGE",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 60000000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "dogecoin",
+          "name": "Dogecoin",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://dogechain.info/address/{{address}}",
+          "crypto_transaction_link": "",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 60000000,
+          "network_confirmations": 50,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "DOT",
+      "supported_networks": [
+        {
+          "id": "polkadot",
+          "name": "Polkadot",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://assethub-polkadot.subscan.io/account/{{address}}",
+          "crypto_transaction_link": "https://assethub-polkadot.subscan.io/extrinsic/{{txId}}",
+          "min_withdrawal_amount": 1.03,
+          "max_withdrawal_amount": 2500000,
+          "network_confirmations": 10,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ENA",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x57e114B691Db790C35207b2e685D4A43181e6061",
+          "crypto_address_link": "https://etherscan.io/token/0x57e114B691Db790C35207b2e685D4A43181e6061?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 1280000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ETC",
+      "supported_networks": [
+        {
+          "id": "ethereumclassic",
+          "name": "Ethereum Classic",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://gastracker.io/addr/{{address}}",
+          "crypto_transaction_link": "https://gastracker.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 15350,
+          "network_confirmations": 3000,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ETH",
+      "supported_networks": [
+        {
+          "id": "arbitrum",
+          "name": "Arbitrum",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://arbiscan.io/address/{{address}}",
+          "crypto_transaction_link": "https://arbiscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 133,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 1000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://etherscan.io/address/{{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 40000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "optimism",
+          "name": "Optimism",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://optimistic.etherscan.io/address/{{address}}",
+          "crypto_transaction_link": "https://optimistic.etherscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 111,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "polygon",
+          "name": "Polygon",
+          "status": "online",
+          "contract_address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "crypto_address_link": "https://polygonscan.com/address/{{address}}",
+          "crypto_transaction_link": "https://polygonscan.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 30,
+          "network_confirmations": 128,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "unichain",
+          "name": "Unichain",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://unichain-d7a86fxp.blockscout.com/address/{{address}}",
+          "crypto_transaction_link": "https://unichain-d7a86fxp.blockscout.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 300,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ETHFI",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0xFe0c30065B384F05761f15d0CC899D4F9F9Cc0eB",
+          "crypto_address_link": "https://etherscan.io/token/0xFe0c30065B384F05761f15d0CC899D4F9F9Cc0eB?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 240000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "EUL",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b",
+          "crypto_address_link": "https://etherscan.io/token/0xd9fcd98c322942075a5c3860693e9f4f03aae07b?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 120000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "FARTCOIN",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 533000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "FIL",
+      "supported_networks": [
+        {
+          "id": "filecoin",
+          "name": "Filecoin",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://filfox.info/en/address/{{address}}",
+          "crypto_transaction_link": "https://filfox.info/en/message/{{txId}}",
+          "min_withdrawal_amount": 0.2,
+          "max_withdrawal_amount": 1500000,
+          "network_confirmations": 60,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "FLOKI",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e",
+          "crypto_address_link": "https://etherscan.io/token/0xcf0c122c6b73ff809c693db761e7baebe62b6a2e?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 2076840000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "HBAR",
+      "supported_networks": [
+        {
+          "id": "hedera",
+          "name": "Hedera",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://hashscan.io/#/mainnet/account/{{address}}",
+          "crypto_transaction_link": "https://hashscan.io/#/mainnet/transaction/{{txId}}",
+          "min_withdrawal_amount": 2,
+          "max_withdrawal_amount": 10000000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": "^.{1,100}$",
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "HYPE",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "0xB200000000000000000000451d033a5000cb479e",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.01,
+          "max_withdrawal_amount": 20000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "hyperliquid",
+          "name": "HyperEVM",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://www.hyperscan.com/address/{{address}}",
+          "crypto_transaction_link": "https://www.hyperscan.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.01,
+          "max_withdrawal_amount": 20000,
+          "network_confirmations": 1,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "ICP",
+      "supported_networks": [
+        {
+          "id": "dfinity",
+          "name": "Dfinity",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://dashboard.internetcomputer.org/account/{{address}}",
+          "crypto_transaction_link": "",
+          "min_withdrawal_amount": 0.04,
+          "max_withdrawal_amount": 400000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "JUP",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "delisted",
+          "contract_address": "0x4B1E80cAC91e2216EEb63e29B957eB91Ae9C2Be8",
+          "crypto_address_link": "https://etherscan.io/token/0x4B1E80cAC91e2216EEb63e29B957eB91Ae9C2Be8?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 56330000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "LINK",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x514910771af9ca656af840dff83e8264ecf986ca",
+          "crypto_address_link": "https://etherscan.io/token/0x514910771af9ca656af840dff83e8264ecf986ca?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.01,
+          "max_withdrawal_amount": 579800,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "LIT",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "delisted",
+          "contract_address": "0xb59490ab09a0f526cc7305822ac65f2ab12f9723",
+          "crypto_address_link": "https://etherscan.io/token/0xb59490ab09a0f526cc7305822ac65f2ab12f9723?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 430000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "LTC",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 54400,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "litecoin",
+          "name": "Litecoin",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://live.blockcypher.com/ltc/address/{{address}}",
+          "crypto_transaction_link": "https://live.blockcypher.com/ltc/tx/{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 54400,
+          "network_confirmations": 6,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "NEAR",
+      "supported_networks": [
+        {
+          "id": "near",
+          "name": "Near",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://wallet.near.org/{{address}}",
+          "crypto_transaction_link": "https://explorer.near.org/transactions/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 700000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ONDO",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3",
+          "crypto_address_link": "https://etherscan.io/token/0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 13330000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "OP",
+      "supported_networks": [
+        {
+          "id": "optimism",
+          "name": "Optimism",
+          "status": "online",
+          "contract_address": "0x4200000000000000000000000000000000000042",
+          "crypto_address_link": "https://optimistic.etherscan.io/token/0x4200000000000000000000000000000000000042?a={{address}}",
+          "crypto_transaction_link": "https://optimistic.etherscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 0.05,
+          "max_withdrawal_amount": 5000000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "PAXG",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+          "crypto_address_link": "https://etherscan.io/token/0x45804880de22913dafe09f4980848ece6ecbaf78?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 100,
+          "network_confirmations": 35,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "PENGU",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 36900000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "PEPE",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+          "crypto_address_link": "https://etherscan.io/token/0x6982508145454ce325ddbe47a25d4ec3d2311933?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 50000000000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "PONS",
+      "supported_networks": [
+        {
+          "id": "robinhood",
+          "name": "Robinhood",
+          "status": "online",
+          "contract_address": "0x39dBED3a2bd333467115dE45665cC57F813C4571",
+          "crypto_address_link": "https://robinhoodchain.blockscout.com/token/0x39dBED3a2bd333467115dE45665cC57F813C4571?a={{address}}",
+          "crypto_transaction_link": "https://robinhoodchain.blockscout.com/tx/{{txId}}",
+          "min_withdrawal_amount": 1e-7,
+          "max_withdrawal_amount": 350000,
+          "network_confirmations": 1,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "PUMP",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 2500000000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "QNT",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x4a220e6096b25eadb88358cb44068a3248254675",
+          "crypto_address_link": "https://etherscan.io/token/0x4a220e6096b25eadb88358cb44068a3248254675?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 0.001,
+          "max_withdrawal_amount": 13600,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "RAVE",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "0x1aA8fD5BCce2231C6100d55Bf8B377cff33Acfc3",
+          "crypto_address_link": "https://basescan.org/token/0x1aA8fD5BCce2231C6100d55Bf8B377cff33Acfc3?a={{address}}",
+          "crypto_transaction_link": "https://basescan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 1180000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "RAY",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "4k3dyjzvzp8emzwuxbbcjevwskkk59s5icnly3qrkx6r",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 330000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "SHIB",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+          "crypto_address_link": "https://etherscan.io/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 979245283000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "SKR",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 160000000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "SOL",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "0x311935Cd80B76769bF2ecC9D8Ab7635b2139cf82",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.005,
+          "max_withdrawal_amount": 200000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.005,
+          "max_withdrawal_amount": 200000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "SUI",
+      "supported_networks": [
+        {
+          "id": "sui",
+          "name": "Sui",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://explorer.sui.io/addresses/{{address}}?network=mainnet",
+          "crypto_transaction_link": "https://explorer.sui.io/transaction/{{txId}}?network=mainnet",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 1300000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "SUSHI",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+          "crypto_address_link": "https://etherscan.io/token/0x6b3595068778dd592e39a122f4f5a5cf09c90fe2?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 1360000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "TAO",
+      "supported_networks": [
+        {
+          "id": "bittensor",
+          "name": "Bittensor",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://taostats.io/account/{{address}}",
+          "crypto_transaction_link": "https://taostats.io/transfer/{{txId}}",
+          "min_withdrawal_amount": 0.0001,
+          "max_withdrawal_amount": 1500,
+          "network_confirmations": 2,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "TIA",
+      "supported_networks": [
+        {
+          "id": "celestia",
+          "name": "Celestia",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "explorer.modular.cloud/celestia-mainnet/addresses/{{address}}",
+          "crypto_transaction_link": "explorer.modular.cloud/celestia-mainnet/transactions/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 200000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": "^.{1,256}$",
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "TRUMP",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 300000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "UNI",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+          "crypto_address_link": "https://etherscan.io/token/0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 624200,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "USELESS",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "Dz9mQ9NzkBcCsuGPFJ3r1bS4wgqKMHBPiVuniW8Mbonk",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 1880000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "WIF",
+      "supported_networks": [
+        {
+          "id": "solana",
+          "name": "Solana",
+          "status": "online",
+          "contract_address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+          "crypto_address_link": "https://explorer.solana.com/address/{{address}}",
+          "crypto_transaction_link": "https://explorer.solana.com/tx/{{txId}}",
+          "min_withdrawal_amount": 0.000001,
+          "max_withdrawal_amount": 500000,
+          "network_confirmations": 31,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "WLD",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://etherscan.io/address/{{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 500000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "optimism",
+          "name": "Optimism",
+          "status": "online",
+          "contract_address": "0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1",
+          "crypto_address_link": "https://optimistic.etherscan.io/token/0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1?a={{address}}",
+          "crypto_transaction_link": "https://optimistic.etherscan.io/tx/{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 550000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "worldchain",
+          "name": "Worldchain",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://worldscan.org/address/{{address}}",
+          "crypto_transaction_link": "https://worldscan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 5000000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "XLM",
+      "supported_networks": [
+        {
+          "id": "stellar",
+          "name": "Stellar",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://stellar.expert/explorer/public/account/{{address}}",
+          "crypto_transaction_link": "https://stellar.expert/explorer/public/tx/{{txId}}",
+          "min_withdrawal_amount": 2,
+          "max_withdrawal_amount": 30000000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": "^[ -~]{1,28}$",
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "XPL",
+      "supported_networks": [
+        {
+          "id": "plasma",
+          "name": "Plasma",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://plasmascan.to/address/{{address}}",
+          "crypto_transaction_link": "https://testnet.plasmascan.to/tx/{{txId}}",
+          "min_withdrawal_amount": 0.1,
+          "max_withdrawal_amount": 1250000,
+          "network_confirmations": 4,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    },
+    {
+      "id": "XRP",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 1,
+          "max_withdrawal_amount": 10000000,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "ripple",
+          "name": "Ripple",
+          "status": "online",
+          "contract_address": null,
+          "crypto_address_link": "https://bithomp.com/explorer/{{address}}",
+          "crypto_transaction_link": "https://bithomp.com/explorer/{{txId}}",
+          "min_withdrawal_amount": 0.35,
+          "max_withdrawal_amount": 10000000,
+          "network_confirmations": 0,
+          "processing_time_seconds": null,
+          "destination_tag_regex": "^\\d{1,10}$",
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ZEC",
+      "supported_networks": [
+        {
+          "id": "base",
+          "name": "Base",
+          "status": "online",
+          "contract_address": "0xB2000000000000000000008501b13360000cb2EC",
+          "crypto_address_link": "https://basescan.org/address/{{address}}",
+          "crypto_transaction_link": "https://basescan.org/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00001,
+          "max_withdrawal_amount": 15600,
+          "network_confirmations": null,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        },
+        {
+          "id": "zcash",
+          "name": "Zcash",
+          "status": "online",
+          "contract_address": "",
+          "crypto_address_link": "https://mainnet.zcashexplorer.app/address/{{address}}",
+          "crypto_transaction_link": "https://mainnet.zcashexplorer.app/tx/{{txId}}",
+          "min_withdrawal_amount": 0.00001,
+          "max_withdrawal_amount": 15600,
+          "network_confirmations": 110,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": false
+        }
+      ]
+    },
+    {
+      "id": "ZKC",
+      "supported_networks": [
+        {
+          "id": "ethereum",
+          "name": "Ethereum",
+          "status": "online",
+          "contract_address": "0x000006c2A22ff4A44ff1f5d0F2ed65F781F55555",
+          "crypto_address_link": "https://etherscan.io/token/0x000006c2A22ff4A44ff1f5d0F2ed65F781F55555?a={{address}}",
+          "crypto_transaction_link": "https://etherscan.io/tx/0x{{txId}}",
+          "min_withdrawal_amount": 1e-8,
+          "max_withdrawal_amount": 2000000,
+          "network_confirmations": 14,
+          "processing_time_seconds": null,
+          "destination_tag_regex": null,
+          "is_evm_network": true
+        }
+      ]
+    }
+  ],
+  "kraken_direction": [
+    {
+      "status": "MATCHED_OFFICIAL_PUBLIC_TAKER_AND_REST_FIELDS",
+      "verified": true,
+      "matched_count": 50,
+      "matched_ids": [
+        3235131,
+        3235132,
+        3235133,
+        3235134,
+        3235135,
+        3235136,
+        3235137,
+        3235138,
+        3235139,
+        3235140,
+        3235141,
+        3235142,
+        3235143,
+        3235144,
+        3235145,
+        3235146,
+        3235147,
+        3235148,
+        3235149,
+        3235150,
+        3235151,
+        3235152,
+        3235153,
+        3235154,
+        3235155,
+        3235156,
+        3235157,
+        3235158,
+        3235159,
+        3235160,
+        3235161,
+        3235162,
+        3235163,
+        3235164,
+        3235165,
+        3235166,
+        3235167,
+        3235168,
+        3235169,
+        3235170,
+        3235171,
+        3235172,
+        3235173,
+        3235174,
+        3235175,
+        3235176,
+        3235177,
+        3235178,
+        3235179,
+        3235180
+      ],
+      "symbol": "DOT/USDT",
+      "both_sides_confirmed": true,
+      "side_semantics": "REST_B_IS_TAKER_BUY_REST_S_IS_TAKER_SELL",
+      "reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "immutable_receipts": [
+        {
+          "name": "KRAKEN-PUBLIC-WS-DIRECTION",
+          "body_sha256": "e05fdb24796e181f347035302ab17baf4eeb82ffcec2dd88c2b964fdfcfaaa18",
+          "gzip_sha256": "b24c7236a2cac95c2ca305e622417d2c146aad00c778edc231ce002bbe8080a0",
+          "received_ts": 1791648648661,
+          "file": "KRAKEN-PUBLIC-WS-DIRECTION.json.gz"
+        },
+        {
+          "name": "KRAKEN-DOT-PAIRED-RECENT",
+          "body_sha256": "14f617c82617874cb7fe4e0e519c356269392428d28e19cde0d8fab750227262",
+          "gzip_sha256": "c99fed4c6a0993b2f3c0d186a5e7ccbf626cb279e79ebc049bf33336fa856c0e",
+          "received_ts": 1791648649620,
+          "file": "KRAKEN-DOT-PAIRED-RECENT.json.gz"
+        },
+        {
+          "name": "KRAKEN-ATOM-PAIRED-RECENT",
+          "body_sha256": "14ddf15bbb784968ba57dc0a042a31e8b5e25dd4c4bb74c72a9775b0a4b9c519",
+          "gzip_sha256": "f97a5a8fd795c1cf976f56dcde2ac56ec7e52d4b96c3d5d48d8c825bb1030d0d",
+          "received_ts": 1791648650537,
+          "file": "KRAKEN-ATOM-PAIRED-RECENT.json.gz"
+        }
+      ]
+    },
+    {
+      "status": "MATCHED_OFFICIAL_PUBLIC_TAKER_AND_REST_FIELDS",
+      "verified": true,
+      "matched_count": 50,
+      "matched_ids": [
+        427473,
+        427474,
+        427475,
+        427476,
+        427477,
+        427478,
+        427479,
+        427480,
+        427481,
+        427482,
+        427483,
+        427484,
+        427485,
+        427486,
+        427487,
+        427488,
+        427489,
+        427490,
+        427491,
+        427492,
+        427493,
+        427494,
+        427495,
+        427496,
+        427497,
+        427498,
+        427499,
+        427500,
+        427501,
+        427502,
+        427503,
+        427504,
+        427505,
+        427506,
+        427507,
+        427508,
+        427509,
+        427510,
+        427511,
+        427512,
+        427513,
+        427514,
+        427515,
+        427516,
+        427517,
+        427518,
+        427519,
+        427520,
+        427521,
+        427522
+      ],
+      "symbol": "ATOM/USDT",
+      "both_sides_confirmed": true,
+      "side_semantics": "REST_B_IS_TAKER_BUY_REST_S_IS_TAKER_SELL"
+    }
+  ],
+  "direction_reference": {
+    "status": "MATCHED_OFFICIAL_PUBLIC_TAKER_AND_REST_FIELDS",
+    "verified": true,
+    "matched_count": 50,
+    "matched_ids": [
+      3235131,
+      3235132,
+      3235133,
+      3235134,
+      3235135,
+      3235136,
+      3235137,
+      3235138,
+      3235139,
+      3235140,
+      3235141,
+      3235142,
+      3235143,
+      3235144,
+      3235145,
+      3235146,
+      3235147,
+      3235148,
+      3235149,
+      3235150,
+      3235151,
+      3235152,
+      3235153,
+      3235154,
+      3235155,
+      3235156,
+      3235157,
+      3235158,
+      3235159,
+      3235160,
+      3235161,
+      3235162,
+      3235163,
+      3235164,
+      3235165,
+      3235166,
+      3235167,
+      3235168,
+      3235169,
+      3235170,
+      3235171,
+      3235172,
+      3235173,
+      3235174,
+      3235175,
+      3235176,
+      3235177,
+      3235178,
+      3235179,
+      3235180
+    ],
+    "symbol": "DOT/USDT",
+    "both_sides_confirmed": true,
+    "side_semantics": "REST_B_IS_TAKER_BUY_REST_S_IS_TAKER_SELL",
+    "reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+    "immutable_receipts": [
+      {
+        "name": "KRAKEN-PUBLIC-WS-DIRECTION",
+        "body_sha256": "e05fdb24796e181f347035302ab17baf4eeb82ffcec2dd88c2b964fdfcfaaa18",
+        "gzip_sha256": "b24c7236a2cac95c2ca305e622417d2c146aad00c778edc231ce002bbe8080a0",
+        "received_ts": 1791648648661,
+        "file": "KRAKEN-PUBLIC-WS-DIRECTION.json.gz"
+      },
+      {
+        "name": "KRAKEN-DOT-PAIRED-RECENT",
+        "body_sha256": "14f617c82617874cb7fe4e0e519c356269392428d28e19cde0d8fab750227262",
+        "gzip_sha256": "c99fed4c6a0993b2f3c0d186a5e7ccbf626cb279e79ebc049bf33336fa856c0e",
+        "received_ts": 1791648649620,
+        "file": "KRAKEN-DOT-PAIRED-RECENT.json.gz"
+      },
+      {
+        "name": "KRAKEN-ATOM-PAIRED-RECENT",
+        "body_sha256": "14ddf15bbb784968ba57dc0a042a31e8b5e25dd4c4bb74c72a9775b0a4b9c519",
+        "gzip_sha256": "f97a5a8fd795c1cf976f56dcde2ac56ec7e52d4b96c3d5d48d8c825bb1030d0d",
+        "received_ts": 1791648650537,
+        "file": "KRAKEN-ATOM-PAIRED-RECENT.json.gz"
+      }
+    ]
+  },
+  "kraken_windows": [
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "DOT-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648392713,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 16521.16518407418,
+      "sell_quote": 10640.585960340315,
+      "trade_count": 754,
+      "imbalance": 0.2165022127059411,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "polkadot",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "polkadot:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 246.3422777475,
+          "sell_quote": 68.51432511,
+          "trade_count": 42,
+          "imbalance": 0.5647902919094334
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 6685.334054206812,
+          "sell_quote": 1472.407829043917,
+          "trade_count": 282,
+          "imbalance": 0.6390158330292289
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "ATOM-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791633780000,
+      "window_end_ts": 1791648180000,
+      "observed_ts": 1791648395394,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 23517.534495400057,
+      "sell_quote": 14252.254227061514,
+      "trade_count": 159,
+      "imbalance": 0.24530929564952825,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647280000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 3252.746659855473,
+          "sell_quote": 76.182114182458,
+          "trade_count": 13,
+          "imbalance": 0.9542302528209095
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791644580000,
+          "window_end_ts": 1791648180000,
+          "buy_quote": 9024.027279493486,
+          "sell_quote": 905.7860983315959,
+          "trade_count": 28,
+          "imbalance": 0.8175623118246378
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "BCH-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791634200000,
+      "window_end_ts": 1791648600000,
+      "observed_ts": 1791648652355,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 479.17527316999997,
+      "sell_quote": 5585.4503634786,
+      "trade_count": 96,
+      "imbalance": -0.8419769654785159,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "bitcoin-cash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin-cash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791647700000,
+          "window_end_ts": 1791648600000,
+          "buy_quote": 105.29963524359998,
+          "sell_quote": 0,
+          "trade_count": 2,
+          "imbalance": 1
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791645000000,
+          "window_end_ts": 1791648600000,
+          "buy_quote": 137.3169252436,
+          "sell_quote": 274.05986347979996,
+          "trade_count": 7,
+          "imbalance": -0.33240314471933596
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "LTC-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "KRAKEN_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "window_start_ts": 1791634200000,
+      "window_end_ts": 1791648600000,
+      "observed_ts": 1791648709741,
+      "verified_minutes": 0,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "EXACT_KRAKEN_PRIMARY_NATIVE_BINDING_REQUIRED"
+    }
+  ],
+  "window_end_ts": 1791648600000,
+  "status": "BROAD_SOURCE_COUNT_AND_SIDE_QUALIFICATION_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 7,
+      "statistics": 0
+    },
+    "total": 7,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 157
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38066590063:broad-exchanges:1",
+    "source_run_id": "38066590063",
+    "measured_rows_read": 166,
+    "measured_rows_written_accounted": 53,
+    "measured_requests_accounted": 60,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 60,
+    "rows_read": 167,
+    "rows_written": 53,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 72,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 7,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 14,
+        "rows_read": 7,
+        "rows_written": 7,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 7,
+        "rows_read": 7,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 7,
+        "rows_read": 33,
+        "rows_written": 28,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 14,
+        "rows_read": 40,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791648709892
+}
