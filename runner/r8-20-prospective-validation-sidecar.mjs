@@ -9,7 +9,7 @@ import {digest} from './src/upstream-proof-utils.mjs';
 import {classifyDeliveryCohort} from './src/prospective-delivery-cohort.mjs';
 import {HISTORY_COMPATIBILITY, verifiedCollectorRows, chooseCompleteBucket} from './src/market-history-reader.mjs';
 
-export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v7-fair-recent-and-retained-outcomes-20261009';
+export const R820_PROSPECTIVE_VALIDATION_VERSION = 'r8-20-prospective-v8-fail-closed-readiness-integrity-20261010';
 export const R820_ENTRY_ACTIVATION_KEY = 'R8_20_PROSPECTIVE_ACTIVATION_V1';
 export const R820_PROSPECTIVE_VALIDATION_BUDGET = Object.freeze({
   rows_read: 3000,
@@ -91,14 +91,42 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     db.prepare(`SELECT direction,COUNT(*) AS sample_count,MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts
       FROM tz101_entry_area_calibration_signal
       WHERE created_ts>=?1 AND calibration_only=1 AND live_promotion_allowed=0
+        AND direction IN ('LONG','SHORT') AND json_valid(sample_json)=1
+        AND json_extract(sample_json,'$.direction')=direction
+        AND json_extract(sample_json,'$.observed_ts')=observed_ts
+        AND json_extract(sample_json,'$.approved_entry_only')=1
       GROUP BY direction ORDER BY direction`).bind(activationTs).all(),
-    db.prepare(`WITH base AS (
+    db.prepare(`WITH joined AS (
         SELECT o.sample_id,o.direction,o.horizon_hours,o.observed_ts,o.outcome_json,s.sample_json,
           COALESCE(json_extract(s.sample_json,'$.idea_basis'),'UNKNOWN') AS idea_basis,
-          COALESCE(json_extract(s.sample_json,'$.cohort_type'),'ANALYTICAL_PROSPECTIVE') AS cohort_type
+          COALESCE(json_extract(s.sample_json,'$.cohort_type'),'ANALYTICAL_PROSPECTIVE') AS cohort_type,
+          CASE WHEN
+            o.calibration_only=1 AND o.live_promotion_allowed=0 AND
+            s.calibration_only=1 AND s.live_promotion_allowed=0 AND
+            o.direction IN ('LONG','SHORT') AND o.direction=s.direction AND
+            o.horizon_hours IN (1,4,12,24) AND o.observed_ts=s.observed_ts AND
+            json_valid(o.outcome_json)=1 AND json_valid(s.sample_json)=1 AND
+            json_extract(o.outcome_json,'$.status')='CLOSED_FACTUAL' AND
+            json_extract(o.outcome_json,'$.direction')=o.direction AND
+            json_extract(o.outcome_json,'$.horizon_hours')=o.horizon_hours AND
+            json_extract(o.outcome_json,'$.observed_ts')=o.observed_ts AND
+            json_extract(s.sample_json,'$.direction')=s.direction AND
+            json_extract(s.sample_json,'$.observed_ts')=s.observed_ts AND
+            json_extract(s.sample_json,'$.approved_entry_only')=1 AND
+            json_type(s.sample_json,'$.idea_basis')='text' AND
+            json_type(s.sample_json,'$.cohort_type')='text' AND
+            json_type(s.sample_json,'$.source_ids')='array' AND
+            json_type(o.outcome_json,'$.directional_return_pct') IN ('integer','real') AND
+            json_type(o.outcome_json,'$.mfe_directional_pct_snapshot') IN ('integer','real') AND
+            json_type(o.outcome_json,'$.mae_directional_pct_snapshot') IN ('integer','real') AND
+            json_type(o.outcome_json,'$.target_touched') IN ('true','false','integer') AND
+            json_type(o.outcome_json,'$.invalidation_touched') IN ('true','false','integer')
+          THEN 1 ELSE 0 END AS integrity_closed
         FROM tz101_entry_area_calibration_outcome o
         JOIN tz101_entry_area_calibration_signal s ON s.sample_id=o.sample_id
-        WHERE o.computed_ts>=?1 AND o.calibration_only=1 AND o.live_promotion_allowed=0
+        WHERE o.computed_ts>=?1
+      ), base AS (
+        SELECT * FROM joined WHERE integrity_closed=1
       )
       SELECT 'BASIS' AS dimension,idea_basis AS dimension_value,direction,horizon_hours,
         COUNT(DISTINCT sample_id) AS closed_samples,MIN(observed_ts) AS first_observed_ts,MAX(observed_ts) AS last_observed_ts,
@@ -127,6 +155,10 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
         SUM(CASE WHEN json_extract(outcome_json,'$.target_touched')=1 THEN 1 ELSE 0 END),
         SUM(CASE WHEN json_extract(outcome_json,'$.invalidation_touched')=1 THEN 1 ELSE 0 END)
       FROM base GROUP BY cohort_type,direction,horizon_hours
+      UNION ALL
+      SELECT 'INTEGRITY' AS dimension,'EXCLUDED_INVALID' AS dimension_value,NULL AS direction,NULL AS horizon_hours,
+        COUNT(DISTINCT sample_id) AS closed_samples,NULL,NULL,NULL,NULL,NULL,NULL,NULL
+      FROM joined WHERE integrity_closed=0
       ORDER BY dimension,direction,horizon_hours,dimension_value`).bind(activationTs).all(),
   ]);
   const signalRows = rowsOf(signalsResult).map(row => ({
@@ -142,7 +174,8 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     const first=int(row.first_observed_ts),last=int(row.last_observed_ts);
     observed.set(key,{closed_samples:prior.closed_samples+(Number(row.closed_samples)||0),first_observed_ts:prior.first_observed_ts===null?first:first===null?prior.first_observed_ts:Math.min(prior.first_observed_ts,first),last_observed_ts:prior.last_observed_ts===null?last:last===null?prior.last_observed_ts:Math.max(prior.last_observed_ts,last)});
   }
-  const performance=outcomeRows.map(row=>({dimension:text(row.dimension),group:text(row.dimension_value),direction:text(row.direction),horizon_hours:Number(row.horizon_hours),samples:Number(row.closed_samples)||0,average_return_pct:finite(row.average_return_pct),average_best_move_pct:finite(row.average_best_move_pct),average_worst_move_pct:finite(row.average_worst_move_pct),begin_close_hits:Number(row.begin_close_hits)||0,invalidation_hits:Number(row.invalidation_hits)||0}));
+  const excludedInvalidOutcomes=Number(outcomeRows.find(row=>row.dimension==='INTEGRITY')?.closed_samples)||0;
+  const performance=outcomeRows.filter(row=>['BASIS','SOURCE','COHORT'].includes(row.dimension)).map(row=>({dimension:text(row.dimension),group:text(row.dimension_value),direction:text(row.direction),horizon_hours:Number(row.horizon_hours),samples:Number(row.closed_samples)||0,average_return_pct:finite(row.average_return_pct),average_best_move_pct:finite(row.average_best_move_pct),average_worst_move_pct:finite(row.average_worst_move_pct),begin_close_hits:Number(row.begin_close_hits)||0,invalidation_hits:Number(row.invalidation_hits)||0}));
   const cells = [];
   for (const direction of ['LONG', 'SHORT']) {
     for (const horizonHours of HORIZONS) {
@@ -171,6 +204,7 @@ export async function loadProspectiveReadinessSnapshot(db, { activation_ts, now_
     signal_rows: signalRows,
     outcome_cells: cells,
     approved_entry_performance: performance,
+    integrity_excluded_outcomes: excludedInvalidOutcomes,
     performance_dimensions:['BASIS','SOURCE','COHORT'],
     data_ready_for_separate_oos_validation: readyCells === cells.length,
     validated_out_of_sample: false,
