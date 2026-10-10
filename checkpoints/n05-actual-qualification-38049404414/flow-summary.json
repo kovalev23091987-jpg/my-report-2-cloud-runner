@@ -1,0 +1,1209 @@
+{
+  "schema": "N05_ACTUAL_SPOT_FUTURES_QUALIFICATION_V1",
+  "stage": "flow",
+  "run": "38049404414",
+  "head": "391f33e47ef5b3d9b85c0a90002e48147b9e0f9f",
+  "started_ts": 1791632651764,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 14,
+  "sources": [
+    {
+      "venue": "HTX",
+      "market": "SPOT",
+      "status": "NO_CATALOG_CANDIDATE;NOT_ZERO_FLOW",
+      "sourceHTTP": 0
+    },
+    {
+      "venue": "BINANCE",
+      "market": "SPOT",
+      "status": "NO_CATALOG_CANDIDATE;NOT_ZERO_FLOW",
+      "sourceHTTP": 0
+    },
+    {
+      "venue": "BINANCE",
+      "market": "FUTURES",
+      "status": "NO_CATALOG_CANDIDATE;NOT_ZERO_FLOW",
+      "sourceHTTP": 0
+    },
+    {
+      "venue": "BYBIT",
+      "market": "SPOT",
+      "status": "NO_CATALOG_CANDIDATE;NOT_ZERO_FLOW",
+      "sourceHTTP": 0
+    },
+    {
+      "venue": "BYBIT",
+      "market": "FUTURES",
+      "status": "NO_CATALOG_CANDIDATE;NOT_ZERO_FLOW",
+      "sourceHTTP": 0
+    },
+    {
+      "name": "flow-GATE-SPOT-QNT",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/trades?currency_pair=QNT_USDT&from=1791618240&to=1791632639&limit=1000",
+      "method": "GET",
+      "received_ts": 1791632654672,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-GATE-SPOT-QNT",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "4e87fd8cf8f7d9f4d72768a7c5406b21e8218f6f51b72e4e8d185f2d095597d6",
+      "gzip_sha256": "8927c1f36393ac7050649b97161af76800f4617b8a680d513e5689a66a8f8946",
+      "bytes": 182156,
+      "file": "flow-GATE-SPOT-QNT.json.gz",
+      "market": "SPOT",
+      "candidate": "QNT",
+      "instrument": "QNT_USDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 1000,
+      "sample": [
+        {
+          "id": "6738224",
+          "create_time": "1791632638",
+          "create_time_ms": "1791632638219.569000",
+          "currency_pair": "QNT_USDT",
+          "side": "buy",
+          "amount": "0.147",
+          "price": "248.35",
+          "sequence_id": "6738224"
+        },
+        {
+          "id": "6738223",
+          "create_time": "1791632633",
+          "create_time_ms": "1791632633981.834000",
+          "currency_pair": "QNT_USDT",
+          "side": "buy",
+          "amount": "0.687",
+          "price": "248.34",
+          "sequence_id": "6738223"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-GATE-FUTURES-AAVE",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/futures/usdt/trades?contract=AAVE_USDT&from=1791618240&to=1791632639&limit=1000",
+      "method": "GET",
+      "received_ts": 1791632656212,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-GATE-FUTURES-AAVE",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "3461d56832d8696eb68046129561ef7ec6175afdb497f5cfb3bc92ad8b2f39e4",
+      "gzip_sha256": "1f3d892edf1ad2a62513a3a484513ba956b1745320ac2a231bada34024267ed3",
+      "bytes": 127024,
+      "file": "flow-GATE-FUTURES-AAVE.json.gz",
+      "market": "FUTURES",
+      "candidate": "AAVE",
+      "instrument": "AAVE_USDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 1000,
+      "sample": [
+        {
+          "id": 32164932,
+          "contract": "AAVE_USDT",
+          "create_time": 1791632635.57,
+          "create_time_ms": 1791632635.57,
+          "size": -14,
+          "price": "172.83"
+        },
+        {
+          "id": 32164931,
+          "contract": "AAVE_USDT",
+          "create_time": 1791632633.57,
+          "create_time_ms": 1791632633.57,
+          "size": -11,
+          "price": "172.82"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-OKX-SPOT-BTC",
+      "venue": "OKX",
+      "url": "https://www.okx.com/api/v5/market/history-trades?instId=BTC-USDT&limit=100",
+      "method": "GET",
+      "received_ts": 1791632657585,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-OKX-SPOT-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:OKX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "OKX",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "f73368ff31ff74a6ea400dc04efa088c68aa4ffdebcc9d19e21efe39fc124517",
+      "gzip_sha256": "9d3df23ed973941ac29f34003698cd28dad52f86399734c5b9b073ddd26bca98",
+      "bytes": 12482,
+      "file": "flow-OKX-SPOT-BTC.json.gz",
+      "market": "SPOT",
+      "candidate": "BTC",
+      "instrument": "BTC-USDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "instId": "BTC-USDT",
+          "tradeId": "1068843576",
+          "px": "82896.7",
+          "sz": "0.0000102",
+          "side": "sell",
+          "ts": "1791632654924",
+          "source": "0"
+        },
+        {
+          "instId": "BTC-USDT",
+          "tradeId": "1068843575",
+          "px": "82897",
+          "sz": "0.0000313",
+          "side": "sell",
+          "ts": "1791632654924",
+          "source": "0"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-OKX-FUTURES-BTC",
+      "venue": "OKX",
+      "url": "https://www.okx.com/api/v5/market/history-trades?instId=BTC-USDT-SWAP&limit=100",
+      "method": "GET",
+      "received_ts": 1791632658861,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-OKX-FUTURES-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:OKX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "OKX",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "5ad43d4ce5d35466cdf23407f0fbababf6e02d80de826c3458f79e56e05cb02f",
+      "gzip_sha256": "978a61c9ec4e3a6993aa4c396e8865b5f9f6ade7d5e428ff20d6c47983076f11",
+      "bytes": 12436,
+      "file": "flow-OKX-FUTURES-BTC.json.gz",
+      "market": "FUTURES",
+      "candidate": "BTC",
+      "instrument": "BTC-USDT-SWAP",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "instId": "BTC-USDT-SWAP",
+          "tradeId": "2986245758",
+          "px": "82855.9",
+          "sz": "6.07",
+          "side": "buy",
+          "ts": "1791632657726",
+          "source": "0"
+        },
+        {
+          "instId": "BTC-USDT-SWAP",
+          "tradeId": "2986245757",
+          "px": "82855.9",
+          "sz": "0.09",
+          "side": "buy",
+          "ts": "1791632656171",
+          "source": "0"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-BITGET-SPOT-TRX",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/fills-history?symbol=TRXUSDT&startTime=1791618240000&endTime=1791632639999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791632660244,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-BITGET-SPOT-TRX",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "dbcbca27d99d4fab07f0a24dc59b81f30ce58f31c1da99a1d2416ad1f50226b9",
+      "gzip_sha256": "987fc7a908276ebc5ff8c5a31f35852f4f2c412cd4fbd2c1747a50eb9fef4bcf",
+      "bytes": 122394,
+      "file": "flow-BITGET-SPOT-TRX.json.gz",
+      "market": "SPOT",
+      "candidate": "TRX",
+      "instrument": "TRXUSDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 1000,
+      "sample": [
+        {
+          "symbol": "TRXUSDT",
+          "tradeId": "1492780946576633856",
+          "side": "Sell",
+          "price": "0.33147",
+          "size": "436.7547",
+          "ts": "1791632632869"
+        },
+        {
+          "symbol": "TRXUSDT",
+          "tradeId": "1492780903467577354",
+          "side": "Sell",
+          "price": "0.33145",
+          "size": "663.1103",
+          "ts": "1791632622591"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-BITGET-FUTURES-BTC",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/mix/market/fills-history?symbol=BTCUSDT&productType=USDT-FUTURES&startTime=1791618240000&endTime=1791632639999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791632661574,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-BITGET-FUTURES-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "7100a43a60a53e96fdd4d16160f4d337769e67304cb6e712a02459be8faddf40",
+      "gzip_sha256": "132af796b95c2c39e09cd997552ce82f6e73199c93015ad750ad78c51ff5ff99",
+      "bytes": 120938,
+      "file": "flow-BITGET-FUTURES-BTC.json.gz",
+      "market": "FUTURES",
+      "candidate": "BTC",
+      "instrument": "BTCUSDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 1000,
+      "sample": [
+        {
+          "tradeId": "1492780945003790336",
+          "price": "82855.5",
+          "size": "0.0954",
+          "side": "Buy",
+          "ts": "1791632632494",
+          "symbol": "BTCUSDT"
+        },
+        {
+          "tradeId": "1492780935436582912",
+          "price": "82855.5",
+          "size": "0.1493",
+          "side": "Buy",
+          "ts": "1791632630213",
+          "symbol": "BTCUSDT"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-KUCOIN-SPOT-XMR",
+      "venue": "KUCOIN",
+      "url": "https://api.kucoin.com/api/v1/market/histories?symbol=XMR-USDT",
+      "method": "GET",
+      "received_ts": 1791632662925,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-KUCOIN-SPOT-XMR",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KUCOIN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KUCOIN",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "23e1dbe0a352c311b8fa2451900cb9fa313e0a30db3b9843f2b98b98740a4ab5",
+      "gzip_sha256": "b76aee11730c9ed1917614291775213a7498e927fed5db2254759d767c8aede6",
+      "bytes": 13532,
+      "file": "flow-KUCOIN-SPOT-XMR.json.gz",
+      "market": "SPOT",
+      "candidate": "XMR",
+      "instrument": "XMR-USDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "sequence": "24767538186436610",
+          "tradeId": "24767538186436610",
+          "price": "526.94",
+          "size": "0.037",
+          "side": "buy",
+          "time": 1791632301263000000
+        },
+        {
+          "sequence": "24767538186436611",
+          "tradeId": "24767538186436611",
+          "price": "526.94",
+          "size": "0.111",
+          "side": "buy",
+          "time": 1791632301263000000
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-KUCOIN-FUTURES-ETH",
+      "venue": "KUCOIN",
+      "url": "https://api-futures.kucoin.com/api/v1/trade/history?symbol=ETHUSDTM",
+      "method": "GET",
+      "received_ts": 1791632665337,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-KUCOIN-FUTURES-ETH",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KUCOIN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KUCOIN",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "096ce3b9a1a3d8df1ad3b9d21619bde2a1af0258ad227460aa47c992a586af91",
+      "gzip_sha256": "6c09b08364f70d165f1df7755d4d0f72ceacaa98079b5486f77e76d133168d41",
+      "bytes": 20772,
+      "file": "flow-KUCOIN-FUTURES-ETH.json.gz",
+      "market": "FUTURES",
+      "candidate": "ETH",
+      "instrument": "ETHUSDTM",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "sequence": 1835009671630,
+          "contractId": 201,
+          "tradeId": "1835009671630",
+          "makerOrderId": "498364886066216960",
+          "takerOrderId": "498364940575387650",
+          "ts": 1791632663009000000,
+          "size": 5,
+          "price": "2497.34",
+          "side": "buy"
+        },
+        {
+          "sequence": 1835009671629,
+          "contractId": 201,
+          "tradeId": "1835009671629",
+          "makerOrderId": "498364864960401409",
+          "takerOrderId": "498364940575387650",
+          "ts": 1791632663009000000,
+          "size": 8,
+          "price": "2497.33",
+          "side": "buy"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-MEXC-SPOT-HBAR",
+      "venue": "MEXC",
+      "url": "https://api.mexc.com/api/v3/aggTrades?symbol=HBARUSDT&startTime=1791618240000&endTime=1791632639999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791632666719,
+      "http_status": 400,
+      "status": "HTTP_400",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-MEXC-SPOT-HBAR",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:MEXC",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "MEXC",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "2b977afcbfa9ad3e2987ed1db0000892665a3c124c04e046430eaa778abe93b5",
+      "gzip_sha256": "37dfd1d611ae02347a9898e82284e8b8d85aa9a656071526c3800294b789b8c4",
+      "bytes": 71,
+      "file": "flow-MEXC-SPOT-HBAR.json.gz",
+      "market": "SPOT",
+      "candidate": "HBAR",
+      "instrument": "HBARUSDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 0,
+      "sample": [],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-MEXC-FUTURES-BTC",
+      "venue": "MEXC",
+      "url": "https://contract.mexc.com/api/v1/contract/deals/BTC_USDT?limit=1000",
+      "method": "GET",
+      "received_ts": 1791632668405,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-MEXC-FUTURES-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:MEXC",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "MEXC",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c44784d3f0f71bb467c40d647e2895a319049af167c7135cd84bd57073f3d71e",
+      "gzip_sha256": "59e4f48d45ef8a2a0632a9597f83d4fe292af38a7d3fe740c36e1a43f25d202b",
+      "bytes": 9707,
+      "file": "flow-MEXC-FUTURES-BTC.json.gz",
+      "market": "FUTURES",
+      "candidate": "BTC",
+      "instrument": "BTC_USDT",
+      "quote": "USDT",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "p": 82851.5,
+          "v": 2,
+          "T": 1,
+          "O": 3,
+          "M": 1,
+          "t": 1791632667336,
+          "i": "16557600577",
+          "cts": "1791632667336"
+        },
+        {
+          "p": 82851.5,
+          "v": 2,
+          "T": 1,
+          "O": 3,
+          "M": 1,
+          "t": 1791632667336,
+          "i": "16557600574",
+          "cts": "1791632667336"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-HYPERLIQUID-FUTURES-BTC",
+      "venue": "HYPERLIQUID",
+      "url": "https://api.hyperliquid.xyz/info",
+      "method": "POST",
+      "received_ts": 1791632669731,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-HYPERLIQUID-FUTURES-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:HYPERLIQUID",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "HYPERLIQUID",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "50228db616117a8c0158f9d30543eb58c3bc71a7702862000dee064ca4dd13bd",
+      "gzip_sha256": "60c7aa1e2c428b46e4b41f3312d6e3afe9bc5798e14d5a762291a8e4af5bc17b",
+      "bytes": 2743,
+      "file": "flow-HYPERLIQUID-FUTURES-BTC.json.gz",
+      "market": "FUTURES",
+      "candidate": "BTC",
+      "instrument": "BTC",
+      "quote": "USDC",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 10,
+      "sample": [
+        {
+          "coin": "BTC",
+          "side": "B",
+          "px": "82852.0",
+          "sz": "0.00077",
+          "time": 1791632669009,
+          "hash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "tid": 929209327905169,
+          "users": [
+            "0x626582a385b422e167fa37ea3dba363fd76a27f7",
+            "0x8f63c88fccae90c1f9eb8b447f830bce7b71dd74"
+          ]
+        },
+        {
+          "coin": "BTC",
+          "side": "B",
+          "px": "82852.0",
+          "sz": "0.86458",
+          "time": 1791632667391,
+          "hash": "0x4da822274a24140a4f21044640661902028d000ce52732dcf170cd7a0927edf4",
+          "tid": 817186202524996,
+          "users": [
+            "0xc95a65ae949552209d1d23eb43c7a2892c05a287",
+            "0x8f63c88fccae90c1f9eb8b447f830bce7b71dd74"
+          ]
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-HYPERLIQUID-SPOT-TRUMP",
+      "venue": "HYPERLIQUID",
+      "url": "https://api.hyperliquid.xyz/info",
+      "method": "POST",
+      "received_ts": 1791632670959,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-HYPERLIQUID-SPOT-TRUMP",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:HYPERLIQUID",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "HYPERLIQUID",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "1d401b5d51a7f99da1e24c024cacf55bf36cecd0032df0c5dabe2a4b59464722",
+      "gzip_sha256": "0a682414ef4a9722e13493594426869a35843119d274fc9929fef026ff6d5dcc",
+      "bytes": 2750,
+      "file": "flow-HYPERLIQUID-SPOT-TRUMP.json.gz",
+      "market": "SPOT",
+      "candidate": "TRUMP",
+      "instrument": "@9",
+      "quote": "USDC",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 10,
+      "sample": [
+        {
+          "coin": "@9",
+          "side": "A",
+          "px": "0.000578",
+          "sz": "3141.77",
+          "time": 1791131798303,
+          "hash": "0x5a0cbb9c56ea37e65b860445d595470204d30081f1ed56b8fdd566ef15ee11d0",
+          "tid": 1110430249129842,
+          "users": [
+            "0xc861a42a9283998f7c189db5faa4b5cb61a6e05d",
+            "0x077f2c8ef353d66ba632ec837f840067e1a1615c"
+          ]
+        },
+        {
+          "coin": "@9",
+          "side": "A",
+          "px": "0.000582",
+          "sz": "18524.05",
+          "time": 1791131798303,
+          "hash": "0x5a0cbb9c56ea37e65b860445d595470204d30081f1ed56b8fdd566ef15ee11d0",
+          "tid": 1057130533077194,
+          "users": [
+            "0xc861a42a9283998f7c189db5faa4b5cb61a6e05d",
+            "0x077f2c8ef353d66ba632ec837f840067e1a1615c"
+          ]
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-LIGHTER-FUTURES-DASH",
+      "venue": "LIGHTER",
+      "url": "https://mainnet.zklighter.elliot.ai/api/v1/recentTrades?market_id=127&limit=100",
+      "method": "GET",
+      "received_ts": 1791632672299,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-LIGHTER-FUTURES-DASH",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:LIGHTER",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "LIGHTER",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "844f256bf25a164de2f3d6bb786e0950743966ffd7863d4ca468bc0ef9552642",
+      "gzip_sha256": "d63998d9e797426a5b259705e109d504cde05549c311812009d4661b196083d6",
+      "bytes": 107919,
+      "file": "flow-LIGHTER-FUTURES-DASH.json.gz",
+      "market": "FUTURES",
+      "candidate": "DASH",
+      "instrument": "127",
+      "quote": "USDC",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "trade_id": 34040142297,
+          "trade_id_str": "34040142297",
+          "tx_hash": "15715a3b75eda5a2fa1a1912741224dac1276b8cef4812e61086c6f4e519e4386180257c25012a4a",
+          "type": "trade",
+          "market_id": 127,
+          "market_symbol": "DASH",
+          "market_kind": "perps",
+          "size": "0.292",
+          "price": "51.013",
+          "usd_amount": "14.895796",
+          "ask_id": 36028797130866400,
+          "ask_id_str": "36028797130866399",
+          "bid_id": 36310271892841580,
+          "bid_id_str": "36310271892841583",
+          "ask_client_id": 49014000419,
+          "ask_client_id_str": "49014000419",
+          "bid_client_id": 179162832890205,
+          "bid_client_id_str": "179162832890205",
+          "ask_account_id": 270812,
+          "bid_account_id": 733382,
+          "is_maker_ask": true,
+          "block_height": 352719704,
+          "timestamp": 1791628329746,
+          "taker_position_size_before": "-0.292",
+          "taker_entry_quote_before": "15.012596",
+          "taker_initial_margin_fraction_before": 2000,
+          "taker_position_sign_changed": true,
+          "maker_fee": 28,
+          "maker_position_size_before": "50.959",
+          "maker_entry_quote_before": "2612.320396",
+          "maker_initial_margin_fraction_before": 1000,
+          "transaction_time": 1791628329841553,
+          "ask_order_version": 0,
+          "bid_order_version": 0
+        },
+        {
+          "trade_id": 34039708968,
+          "trade_id_str": "34039708968",
+          "tx_hash": "a6fce4c956ec3a434ac95331b1beaac8a8712b89b9195873fd4bc4369a020125a5dc0f5c0af8db72",
+          "type": "trade",
+          "market_id": 127,
+          "market_symbol": "DASH",
+          "market_kind": "perps",
+          "size": "0.545",
+          "price": "51.283",
+          "usd_amount": "27.949235",
+          "ask_id": 36028797130866230,
+          "ask_id_str": "36028797130866233",
+          "bid_id": 36310271892841810,
+          "bid_id_str": "36310271892841804",
+          "ask_client_id": 49014000281,
+          "ask_client_id_str": "49014000281",
+          "bid_client_id": 179162776520263,
+          "bid_client_id_str": "179162776520263",
+          "ask_account_id": 270812,
+          "bid_account_id": 745201,
+          "is_maker_ask": true,
+          "block_height": 352717174,
+          "timestamp": 1791627766062,
+          "taker_position_size_before": "-0.545",
+          "taker_entry_quote_before": "28.020085",
+          "taker_initial_margin_fraction_before": 2500,
+          "taker_position_sign_changed": true,
+          "maker_fee": 28,
+          "maker_position_size_before": "51.504",
+          "maker_entry_quote_before": "2640.258830",
+          "maker_initial_margin_fraction_before": 1000,
+          "transaction_time": 1791627766150226,
+          "ask_order_version": 0,
+          "bid_order_version": 0
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    },
+    {
+      "name": "flow-DYDX-FUTURES-BTC",
+      "venue": "DYDX",
+      "url": "https://indexer.dydx.trade/v4/trades/perpetualMarket/BTC-USD?limit=100",
+      "method": "GET",
+      "received_ts": 1791632674050,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38049404414:flow:1:flow-DYDX-FUTURES-BTC",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:DYDX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "DYDX",
+        "minute_bucket": 1791632640000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "72bd606a6aa60d578a49f29bd8964694a2125ea9edd6a1a7ae74c21fce4b9802",
+      "gzip_sha256": "d2dae7a4b1613a2fe980c8b2051f7592a06668f81ebb4f6ad4c401e84397e4df",
+      "bytes": 16342,
+      "file": "flow-DYDX-FUTURES-BTC.json.gz",
+      "market": "FUTURES",
+      "candidate": "BTC",
+      "instrument": "BTC-USD",
+      "quote": "USD",
+      "exact_asset_identity_verified": false,
+      "returned_rows": 100,
+      "sample": [
+        {
+          "id": "067cdcc70000000200000002",
+          "side": "BUY",
+          "size": "0.0001",
+          "price": "82799",
+          "type": "LIMIT",
+          "createdAt": "2026-10-10T11:43:38.228Z",
+          "createdAtHeight": "108846279"
+        },
+        {
+          "id": "067cdbb20000000200000002",
+          "side": "BUY",
+          "size": "0.0001",
+          "price": "82764",
+          "type": "LIMIT",
+          "createdAt": "2026-10-10T11:40:07.431Z",
+          "createdAtHeight": "108846002"
+        }
+      ],
+      "signed_full_window_valid": false,
+      "incomplete_reason": "BOUNDED_TRADE_PAGE_WITHOUT_FULL_WINDOW_COUNTER_RECONCILIATION"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 47,
+      "reserved_rows_read": 743500,
+      "reserved_rows_written": 14532,
+      "measured_rows_read": 517059,
+      "measured_rows_written": 5956,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 759500,
+      "rows_written": 15032
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "catalog_run": "38049404414",
+  "window_end_ts": 1791632640000,
+  "window_start_ts": 1791618240000,
+  "Nansen": {
+    "sourceHTTP": 0,
+    "status": "DEFERRED_EXISTING_CAP_ZERO",
+    "metric": "ONCHAIN_EXCHANGE_DEPOSITS_WITHDRAWALS_NOT_TAKER_FLOW"
+  },
+  "additional_specialists": {
+    "status": "DECLARED_ROLES_NOT_ACCEPTED_AS_FLOW",
+    "sources": [
+      "DEPTH_RADAR",
+      "VYX",
+      "BYKARANTELI",
+      "COINLOBSTER",
+      "COINFUTY",
+      "TRADER_PRO"
+    ],
+    "reason": "No verified independent full-window signed-flow route from retained role declaration; no blind private/paid endpoint probe"
+  },
+  "status": "ACTUAL_RESPONSES_RETAINED;ASSET_BINDING_AND_FULL_USEFUL_COVERAGE_OPEN",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 14,
+      "statistics": 0
+    },
+    "total": 14,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 150
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38049404414:flow:1",
+    "source_run_id": "38049404414",
+    "measured_rows_read": 228,
+    "measured_rows_written_accounted": 102,
+    "measured_requests_accounted": 116,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 116,
+    "rows_read": 229,
+    "rows_written": 102,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 48,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 14,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 28,
+        "rows_read": 14,
+        "rows_written": 14,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 14,
+        "rows_read": 14,
+        "rows_written": 28,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 14,
+        "rows_read": 14,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 14,
+        "rows_read": 62,
+        "rows_written": 56,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 28,
+        "rows_read": 76,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791632674243
+}
