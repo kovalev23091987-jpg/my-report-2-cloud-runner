@@ -1,4 +1,4 @@
-import {validateJointFlowEvidence} from './joint-spot-futures-flow.mjs';
+import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 import {normalizePublishedMonthlySchedule,SUI_MONTHLY_SCHEDULE_ROUTE} from './published-monthly-supply-schedule.mjs';
 import {verifiedWikimediaEvidencePage} from './wikimedia-page-binding.mjs';
 import {verifiedNativeEvmContextRow,NATIVE_EVM_NETWORKS} from './native-evm-finalized-context.mjs';
@@ -222,6 +222,11 @@ function describe(row,now){
   return{source:'Bluesky',label,value:`за ${fmt((end-start)/60000)} минут: ${authors} авторов, ${posts} сообщений${row.sample_saturated?'; выборка ограничена лимитом':''}; поиск только по ${scope}, общий интерес к активу и направление цены этим не подтверждены`};
  }
  if(row.block_id==='N05'){
+  if(row.metric_family==='AVAILABLE_VENUE_TAKER_FLOW_4H'){
+   if(!validateAvailableFlowEvidence(row,now))return null;
+   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: покупки ${fmt(c.buy_quote)}, продажи ${fmt(c.sell_quote)} ${c.quote}; ${c.imbalance===0?'равные объёмы':`перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`}`).join('; ');
+   return{source:[...new Set(row.components.map(c=>c.venue))].join(' / '),label:'Поток сделок по доступным площадкам за четыре часа',value:`${parts}; ${row.venue_count===1?'данные одной биржи':'две доступные биржи'}, полные окна проверены; общее направление рынка и будущая цена не установлены, баллы не назначены`};
+  }
   if(!validateJointFlowEvidence(row,now))return null;
   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).join('; ');
   return{source:[...new Set(row.components.map(c=>c.venue==='BITGET'?'Bitget':c.venue==='BINANCE'?'Binance':c.venue))].join(' / '),label:'Согласованный поток спота и фьючерсов за четыре часа',value:`${parts}; полные окна сопоставлены, близость направления проверена; баллы и разрешение входа не назначены`};
