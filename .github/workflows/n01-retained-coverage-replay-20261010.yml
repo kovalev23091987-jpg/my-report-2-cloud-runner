@@ -1,0 +1,41 @@
+name: Report2 N01 Retained Original Coverage Replay
+on:
+  push:
+    branches: [n01-free-source-qualification-20261010]
+    paths: ['tools/analyze-n01-free-source-coverage-20261010.py', '.github/workflows/n01-retained-coverage-replay-20261010.yml']
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify retained originals and reproducible 102 matrix without HTTP or D1
+        run: |
+          cp checkpoints/N01_FREE_SOURCE_ACTUAL_COVERAGE_20261010.json /tmp/n01-original-coverage.json
+          python tools/analyze-n01-free-source-coverage-20261010.py
+          cmp /tmp/n01-original-coverage.json checkpoints/N01_FREE_SOURCE_ACTUAL_COVERAGE_20261010.json
+          python - <<'PY'
+          import json
+          from collections import Counter
+          d=json.load(open('checkpoints/N01_FREE_SOURCE_ACTUAL_COVERAGE_20261010.json'))
+          assert len(d['matrix'])==len({x['symbol'] for x in d['matrix']})==102
+          assert d['minimum_assets']==31 and d['project_complete'] is False and d['production_changed'] is False
+          counts=Counter()
+          for a in d['acquisitions']:
+              raw=json.load(open(f"checkpoints/n01-free-source-qualification-{a['run']}/acquisition.json"))
+              assert raw['D1']['unknown_ops']==0 and raw['sourceHTTP']==raw['http_budget']['total']
+              assert raw['D1']['rows_read']<=2000 and raw['D1']['rows_written']<=96
+              for s in raw['sources']:
+                  if s['daily_admission']['allowed']: counts[s['source']]+=1
+          assert all(n<=d['provider_caps_unchanged'][source] for source,n in counts.items())
+          assert counts==Counter({'DROPSTAB_PUBLIC_UNLOCKS':4,'CMC_PUBLIC_UNLOCKS':4,'TOKENOMIST_PUBLIC_UNLOCKS':3,'STREAMFLOW_PUBLIC_LOCKUPS':2,'HTX_ASSET_REFERENCE':1})
+          assert all(x['semantic_status']=='SIGN_IN_REQUIRED' for x in d['sources']['Tokenomist']['pagination'])
+          assert all(not s['production_enabled'] and not s['fully_identity_and_clock_qualified_assets'] for s in d['sources'].values())
+          assert d['union_includes_undated_emission_context_and_small_events_not_strategy_useful_unlock_coverage']
+          assert d['owner_consensus_policy']['minimum_independent_upstreams']==2
+          assert d['owner_consensus_policy']['missing_data_is_not_no_unlock']
+          assert not d['owner_consensus_policy']['qualified_independent_consensus_events']
+          print('PASS: original digests, 102 matrix, 14 admitted HTTP, measured D1, unchanged provider caps, sign-in gate, no inflated coverage or consensus')
+          PY
