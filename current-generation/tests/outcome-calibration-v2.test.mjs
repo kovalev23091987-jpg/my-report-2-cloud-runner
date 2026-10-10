@@ -29,6 +29,18 @@ test('K13: bad first mature row never blocks next and at most eight are selected
   const rows=[{status:'PENDING',due_ts:1,attempts:3,history_available:false},...Array.from({length:10},(_,i)=>({id:i,status:'PENDING',due_ts:1,attempts:0,history_available:true}))];const out=selectMatureOutcomes(rows,{now:100000,limit:8});assert.equal(out.selected.length,8);assert.equal(out.skipped[0].next_status,'CENSORED_MISSING_HISTORY');assert.equal(out.cursor_advanced,11);
 });
 
+test('K13: invalid anchor identity and malformed mature rows stay censored',()=>{
+  const quote={type:'EXECUTABLE_BID',source_ts:1010,value:99,notional_usd:1000};
+  assert.equal(selectEntryAnchor({direction:'SIDEWAYS',delivery_ts:1000,quotes:[quote],notional_usd:1000}).status,'ENTRY_REFERENCE_INVALID');
+  assert.equal(selectEntryAnchor({direction:'SHORT',delivery_ts:'1000',quotes:[quote],notional_usd:1000}).status,'ENTRY_REFERENCE_INVALID');
+  assert.equal(selectEntryAnchor({direction:'SHORT',delivery_ts:1000,quotes:[{...quote,source_ts:1000.5}],notional_usd:1000}).status,'ENTRY_REFERENCE_UNAVAILABLE');
+  assert.equal(selectEntryAnchor({direction:'SHORT',delivery_ts:1000,quotes:[{...quote,notional_usd:'1000'}],notional_usd:1000}).status,'CLOSED');
+  const valid={status:'PENDING',due_ts:1,attempts:0,history_available:true};
+  const rows=[valid,{...valid,due_ts:'1'},{...valid,attempts:NaN},{...valid,history_available:'yes'},null];
+  const selected=selectMatureOutcomes(rows,{now:100000,limit:8});assert.equal(selected.status,'CLOSED');assert.equal(selected.selected.length,1);assert.equal(selected.invalid.length,4);
+  const invalidBatch=selectMatureOutcomes(rows,{now:100000,limit:99});assert.equal(invalidBatch.status,'CENSORED_INVALID_BATCH');assert.equal(invalidBatch.selected.length,0);
+});
+
 test('K13: missing or invalid price history is censored, never counted as a closed path or modelled profit',()=>{
   const empty=evaluatePricePath({direction:'LONG',anchor_price:100,target_price:105,invalidation_price:95,candles:[]});
   assert.equal(empty.status,'CENSORED_MISSING_HISTORY');assert.equal(empty.mfe_pct,null);assert.equal(empty.target_touch,null);
