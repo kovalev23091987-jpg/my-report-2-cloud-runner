@@ -1,0 +1,741 @@
+{
+  "schema": "ACTUAL_ORIGINAL_STRATEGY_FACT_MAPPING_V1_20261010",
+  "status": "THREE_ORIGINAL_SENT_FACT_CRITERION_PARITY_VERIFIED",
+  "cases": [
+    {
+      "contract": "ZEC-USDT",
+      "actual_SENT_message_id": "150",
+      "source_file": "checkpoints/actual-zec-sent150-original-input-20261007.json.gz",
+      "source_gzip_sha256": "8e20f1a2ed98e7fe3bc6ea14032957deaecd21562634958d1f2c03ebc5c45400",
+      "publication_id": "PUB:de7346a6c8744b7c66bd38d8b9696f0b8f119a3d",
+      "source_run": "1791328948326-1791328960491",
+      "snapshot": "S392:ZEC-USDT:1791329017450",
+      "original_fingerprint": "a23d782ba8b4694ea18fdb4751066bed73145eb3592129cfd1493253e06ae8fb",
+      "original_observed_ts": 1791329017450,
+      "original_score": 82,
+      "actual_source_mapping": {
+        "version": "OWNER_STRATEGY_FIT_SHADOW_V1_20261010",
+        "status": "SHADOW_CRITERION_MATCH_COMPUTED",
+        "contract": "ZEC-USDT",
+        "direction": "LONG",
+        "run_id": "1791328948326-1791328960491",
+        "snapshot_id": "S392:ZEC-USDT:1791329017450",
+        "fingerprint": "a23d782ba8b4694ea18fdb4751066bed73145eb3592129cfd1493253e06ae8fb",
+        "decision_ts": 1791329017450,
+        "match_score_0_100": 33,
+        "all_applicable_criteria_verified": false,
+        "weight_model": "PRIMARY_35_30_20_15",
+        "groups": [
+          {
+            "group": "direction_and_independent_evidence",
+            "weight": 35,
+            "applicable": 3,
+            "verified": 0,
+            "awarded": 0,
+            "criteria": [
+              {
+                "id": "okx_momentum_4h",
+                "name": "Изменение цены за четыре часа на OKX",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "OKX Public V5",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791324000000,
+                  "observed_ts": 1791328972791,
+                  "physical_root": "OKX|ZEC-USDT-SWAP|RETAINED_PROVIDER_RESPONSE|1791328972791",
+                  "value": -1.0816777041942616
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "gate_momentum_4h",
+                "name": "Изменение цены за четыре часа на GATE",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "Gate Public Futures",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791324000000,
+                  "observed_ts": 1791328972791,
+                  "physical_root": "GATE|ZEC_USDT|RETAINED_PROVIDER_RESPONSE|1791328972791",
+                  "value": -1.0926589506059181
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "gate_oi_building_1h",
+                "name": "Рост открытого интереса при движении в направлении идеи",
+                "role": "OI_WITH_DIRECTIONAL_PRICE_NOT_FUNDING_ALONE",
+                "source": "Gate Public Futures",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791327600000,
+                  "observed_ts": 1791328972791,
+                  "physical_root": "GATE|ZEC_USDT|RETAINED_PROVIDER_RESPONSE|1791328972791",
+                  "value": -0.005605707709610552
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "native_market_confirmation",
+            "weight": 30,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 15,
+            "criteria": [
+              {
+                "id": "htx_exact_taker_flow_4h",
+                "name": "Полный поток сделок HTX за четыре часа",
+                "role": "NATIVE_SIGNED_FLOW_DIRECTION",
+                "source": "HTX_OFFICIAL_RAW_FILLS",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791328860000,
+                  "observed_ts": 1791328975102,
+                  "physical_root": "HTX_RAW_FILLS:ZEC-USDT:1791314460000:1791328860000",
+                  "value": -73703.78319999785
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "htx_fresh_primary_price",
+                "name": "Свежая фактическая цена HTX",
+                "role": "PRIMARY_PRICE_AVAILABILITY_NOT_DIRECTION",
+                "source": "HTX_OFFICIAL_PRIMARY_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791328978164,
+                "diagnostic_fact": {
+                  "source_ts": 1791328973368,
+                  "observed_ts": 1791328978164,
+                  "physical_root": "market.ZEC-USDT.depth.step0:1791328973368",
+                  "value": 1366.365
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791328973368,
+                "physical_root": "market.ZEC-USDT.depth.step0:1791328973368",
+                "score_contribution": 15
+              }
+            ]
+          },
+          {
+            "group": "entry_scenario_and_settlement",
+            "weight": 20,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 10,
+            "criteria": [
+              {
+                "id": "original_closed_candle_plan",
+                "name": "Исходный план из проверенных закрытых свечей",
+                "role": "SOURCE_BOUND_TRIGGER_AND_INVALIDATION",
+                "source": "HTX_OFFICIAL_CLOSED_CANDLES",
+                "reason": "VERIFIED",
+                "observed_ts": 1791328974389,
+                "diagnostic_fact": {
+                  "source_ts": 1791328973883,
+                  "observed_ts": 1791328974389,
+                  "physical_root": "HTX_CLOSED_CANDLES:ZEC-USDT:60min:1791327600000",
+                  "value": null
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791328973883,
+                "physical_root": "HTX_CLOSED_CANDLES:ZEC-USDT:60min:1791327600000",
+                "score_contribution": 10
+              },
+              {
+                "id": "original_trigger_settlement",
+                "name": "Закрепление исходного триггера закрытой свечой",
+                "role": "ORIGINAL_TRIGGER_SETTLEMENT_NOT_ENTRY_AUTHORITY",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "invalidation_risk_and_target",
+            "weight": 15,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 7.5,
+            "criteria": [
+              {
+                "id": "htx_execution_cost_assessed",
+                "name": "Издержки оценены по исходному стакану HTX",
+                "role": "EXECUTION_COST_ASSESSMENT_AVAILABILITY_NOT_FAVORABLE_RETURN",
+                "source": "HTX_IMMUTABLE_EXECUTION_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791329017450,
+                "diagnostic_fact": {
+                  "source_ts": 1791329017168,
+                  "observed_ts": 1791329017450,
+                  "physical_root": "market.ZEC-USDT.depth.step0:1791329017168",
+                  "value": null
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791329017168,
+                "physical_root": "market.ZEC-USDT.depth.step0:1791329017168",
+                "score_contribution": 7.5
+              },
+              {
+                "id": "independent_measured_target",
+                "name": "Независимо подтверждённая измеренная цель",
+                "role": "MEASURED_TARGET_AND_INVALIDATION",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          }
+        ],
+        "score_semantics": "VERIFIED_STRATEGY_CRITERION_MATCH_NOT_WIN_PROBABILITY",
+        "canonical_overall_score_0_100": null,
+        "canonical_coin_interest_score_0_100": 82,
+        "canonical_score_unchanged": true,
+        "production_filter_unchanged": true,
+        "telegram_text_unchanged": true,
+        "telegram_send_allowed_by_this_score": false,
+        "entry_authorized": false,
+        "is_probability": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram": 0,
+        "project_complete": false,
+        "fact_mapping_version": "EXACT_CANONICAL_STRATEGY_FACT_MAPPING_V1_20261010"
+      },
+      "canonical_unchanged": true,
+      "Telegram_unchanged": true,
+      "old_admission_unchanged": true,
+      "source_clocks_refreshed": false,
+      "actual_ENTRY": false
+    },
+    {
+      "contract": "AKE-USDT",
+      "actual_SENT_message_id": "152",
+      "source_file": "checkpoints/actual-current-approved-brief-37557085058.json.gz",
+      "source_gzip_sha256": "b159bcf725af3f607d0036ea1eb9575ca8136fe2fe44a90a6a6fc62b737ad156",
+      "publication_id": "PUB:698ae2391b8b7469ef9e83321e200284db2be131",
+      "source_run": "1791336391823-1791336400972",
+      "snapshot": "S392:AKE-USDT:1791336461166",
+      "original_fingerprint": "5dcb3d91a3788f1626fbbe2680d0aba19a26ab174e7008c409d30563af3694cd",
+      "original_observed_ts": 1791336461166,
+      "original_score": 82,
+      "actual_source_mapping": {
+        "version": "OWNER_STRATEGY_FIT_SHADOW_V1_20261010",
+        "status": "SHADOW_CRITERION_MATCH_COMPUTED",
+        "contract": "AKE-USDT",
+        "direction": "LONG",
+        "run_id": "1791336391823-1791336400972",
+        "snapshot_id": "S392:AKE-USDT:1791336461166",
+        "fingerprint": "5dcb3d91a3788f1626fbbe2680d0aba19a26ab174e7008c409d30563af3694cd",
+        "decision_ts": 1791336461166,
+        "match_score_0_100": 56,
+        "all_applicable_criteria_verified": false,
+        "weight_model": "PRIMARY_35_30_20_15",
+        "groups": [
+          {
+            "group": "direction_and_independent_evidence",
+            "weight": 35,
+            "applicable": 3,
+            "verified": 2,
+            "awarded": 23.333333,
+            "criteria": [
+              {
+                "id": "okx_momentum_4h",
+                "name": "Изменение цены за четыре часа на OKX",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "OKX Public V5",
+                "reason": "VERIFIED",
+                "observed_ts": 1791336439762,
+                "diagnostic_fact": {
+                  "source_ts": 1791331200000,
+                  "observed_ts": 1791336439762,
+                  "physical_root": "OKX|AKE-USDT-SWAP|RETAINED_PROVIDER_RESPONSE|1791336439762",
+                  "value": 1.4256619144602967
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791331200000,
+                "physical_root": "OKX|AKE-USDT-SWAP|RETAINED_PROVIDER_RESPONSE|1791336439762",
+                "score_contribution": 11.666667
+              },
+              {
+                "id": "gate_momentum_4h",
+                "name": "Изменение цены за четыре часа на GATE",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "Gate Public Futures",
+                "reason": "VERIFIED",
+                "observed_ts": 1791336439762,
+                "diagnostic_fact": {
+                  "source_ts": 1791331200000,
+                  "observed_ts": 1791336439762,
+                  "physical_root": "GATE|AKE_USDT|RETAINED_PROVIDER_RESPONSE|1791336439762",
+                  "value": 1.4826934239423606
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791331200000,
+                "physical_root": "GATE|AKE_USDT|RETAINED_PROVIDER_RESPONSE|1791336439762",
+                "score_contribution": 11.666667
+              },
+              {
+                "id": "gate_oi_building_1h",
+                "name": "Рост открытого интереса при движении в направлении идеи",
+                "role": "OI_WITH_DIRECTIONAL_PRICE_NOT_FUNDING_ALONE",
+                "source": "Gate Public Futures",
+                "reason": "DUPLICATE_OR_UNKNOWN_PHYSICAL_ROOT",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791334800000,
+                  "observed_ts": 1791336439762,
+                  "physical_root": "GATE|AKE_USDT|RETAINED_PROVIDER_RESPONSE|1791336439762",
+                  "value": 0.04880876117263622
+                },
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "native_market_confirmation",
+            "weight": 30,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 15,
+            "criteria": [
+              {
+                "id": "htx_exact_taker_flow_4h",
+                "name": "Полный поток сделок HTX за четыре часа",
+                "role": "NATIVE_SIGNED_FLOW_DIRECTION",
+                "source": "HTX_OFFICIAL_RAW_FILLS",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791336360000,
+                  "observed_ts": 1791336440872,
+                  "physical_root": "HTX_RAW_FILLS:AKE-USDT:1791321960000:1791336360000",
+                  "value": -8280.9426
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "htx_fresh_primary_price",
+                "name": "Свежая фактическая цена HTX",
+                "role": "PRIMARY_PRICE_AVAILABILITY_NOT_DIRECTION",
+                "source": "HTX_OFFICIAL_PRIMARY_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791336443708,
+                "diagnostic_fact": {
+                  "source_ts": 1791336439988,
+                  "observed_ts": 1791336443708,
+                  "physical_root": "market.AKE-USDT.depth.step0:1791336439988",
+                  "value": 0.029896199999999998
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791336439988,
+                "physical_root": "market.AKE-USDT.depth.step0:1791336439988",
+                "score_contribution": 15
+              }
+            ]
+          },
+          {
+            "group": "entry_scenario_and_settlement",
+            "weight": 20,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 10,
+            "criteria": [
+              {
+                "id": "original_closed_candle_plan",
+                "name": "Исходный план из проверенных закрытых свечей",
+                "role": "SOURCE_BOUND_TRIGGER_AND_INVALIDATION",
+                "source": "HTX_OFFICIAL_CLOSED_CANDLES",
+                "reason": "VERIFIED",
+                "observed_ts": 1791336441087,
+                "diagnostic_fact": {
+                  "source_ts": 1791336440460,
+                  "observed_ts": 1791336441087,
+                  "physical_root": "HTX_CLOSED_CANDLES:AKE-USDT:60min:1791334800000",
+                  "value": null
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791336440460,
+                "physical_root": "HTX_CLOSED_CANDLES:AKE-USDT:60min:1791334800000",
+                "score_contribution": 10
+              },
+              {
+                "id": "original_trigger_settlement",
+                "name": "Закрепление исходного триггера закрытой свечой",
+                "role": "ORIGINAL_TRIGGER_SETTLEMENT_NOT_ENTRY_AUTHORITY",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "invalidation_risk_and_target",
+            "weight": 15,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 7.5,
+            "criteria": [
+              {
+                "id": "htx_execution_cost_assessed",
+                "name": "Издержки оценены по исходному стакану HTX",
+                "role": "EXECUTION_COST_ASSESSMENT_AVAILABILITY_NOT_FAVORABLE_RETURN",
+                "source": "HTX_IMMUTABLE_EXECUTION_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791336461166,
+                "diagnostic_fact": {
+                  "source_ts": 1791336460988,
+                  "observed_ts": 1791336461166,
+                  "physical_root": "market.AKE-USDT.depth.step0:1791336460988",
+                  "value": null
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791336460988,
+                "physical_root": "market.AKE-USDT.depth.step0:1791336460988",
+                "score_contribution": 7.5
+              },
+              {
+                "id": "independent_measured_target",
+                "name": "Независимо подтверждённая измеренная цель",
+                "role": "MEASURED_TARGET_AND_INVALIDATION",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          }
+        ],
+        "score_semantics": "VERIFIED_STRATEGY_CRITERION_MATCH_NOT_WIN_PROBABILITY",
+        "canonical_overall_score_0_100": null,
+        "canonical_coin_interest_score_0_100": 82,
+        "canonical_score_unchanged": true,
+        "production_filter_unchanged": true,
+        "telegram_text_unchanged": true,
+        "telegram_send_allowed_by_this_score": false,
+        "entry_authorized": false,
+        "is_probability": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram": 0,
+        "project_complete": false,
+        "fact_mapping_version": "EXACT_CANONICAL_STRATEGY_FACT_MAPPING_V1_20261010"
+      },
+      "canonical_unchanged": true,
+      "Telegram_unchanged": true,
+      "old_admission_unchanged": true,
+      "source_clocks_refreshed": false,
+      "actual_ENTRY": false
+    },
+    {
+      "contract": "BOME-USDT",
+      "actual_SENT_message_id": "155",
+      "source_file": "checkpoints/post-pr229-bome-sent-read-37682711022/exact-current-data.json.gz",
+      "source_gzip_sha256": "64371d66509dc15e374d071b5c244d8d76097a588489ac8d29f0a7988fa7efdd",
+      "publication_id": "PUB:0f5c700d0f580e4accf78685cc37e9574acbddcb",
+      "source_run": "1791404713379-1791404725011",
+      "snapshot": "S392:BOME-USDT:1791404783785",
+      "original_fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+      "original_observed_ts": 1791404783785,
+      "original_score": 82,
+      "actual_source_mapping": {
+        "version": "OWNER_STRATEGY_FIT_SHADOW_V1_20261010",
+        "status": "SHADOW_CRITERION_MATCH_COMPUTED",
+        "contract": "BOME-USDT",
+        "direction": "LONG",
+        "run_id": "1791404713379-1791404725011",
+        "snapshot_id": "S392:BOME-USDT:1791404783785",
+        "fingerprint": "b7a3d2b8d1fc80f705d7e641565bbb2bc2de5355f2c542c7b79bdc581b522488",
+        "decision_ts": 1791404783785,
+        "match_score_0_100": 46,
+        "all_applicable_criteria_verified": false,
+        "weight_model": "PRIMARY_35_30_20_15",
+        "groups": [
+          {
+            "group": "direction_and_independent_evidence",
+            "weight": 35,
+            "applicable": 3,
+            "verified": 2,
+            "awarded": 23.333333,
+            "criteria": [
+              {
+                "id": "okx_momentum_4h",
+                "name": "Изменение цены за четыре часа на OKX",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "OKX Public V5",
+                "reason": "VERIFIED",
+                "observed_ts": 1791404737671,
+                "diagnostic_fact": {
+                  "source_ts": 1791399600000,
+                  "observed_ts": 1791404737671,
+                  "physical_root": "OKX|BOME-USDT-SWAP|RETAINED_PROVIDER_RESPONSE|1791404737671",
+                  "value": 0.8045733643870401
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791399600000,
+                "physical_root": "OKX|BOME-USDT-SWAP|RETAINED_PROVIDER_RESPONSE|1791404737671",
+                "score_contribution": 11.666667
+              },
+              {
+                "id": "gate_momentum_4h",
+                "name": "Изменение цены за четыре часа на GATE",
+                "role": "DIRECTIONAL_MARKET_CONFIRMATION",
+                "source": "Gate Public Futures",
+                "reason": "VERIFIED",
+                "observed_ts": 1791404737671,
+                "diagnostic_fact": {
+                  "source_ts": 1791399600000,
+                  "observed_ts": 1791404737671,
+                  "physical_root": "GATE|BOME_USDT|RETAINED_PROVIDER_RESPONSE|1791404737671",
+                  "value": 0.932400932400923
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791399600000,
+                "physical_root": "GATE|BOME_USDT|RETAINED_PROVIDER_RESPONSE|1791404737671",
+                "score_contribution": 11.666667
+              },
+              {
+                "id": "gate_oi_building_1h",
+                "name": "Рост открытого интереса при движении в направлении идеи",
+                "role": "OI_WITH_DIRECTIONAL_PRICE_NOT_FUNDING_ALONE",
+                "source": "Gate Public Futures",
+                "reason": "DUPLICATE_OR_UNKNOWN_PHYSICAL_ROOT",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791403200000,
+                  "observed_ts": 1791404737671,
+                  "physical_root": "GATE|BOME_USDT|RETAINED_PROVIDER_RESPONSE|1791404737671",
+                  "value": 0
+                },
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "native_market_confirmation",
+            "weight": 30,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 15,
+            "criteria": [
+              {
+                "id": "htx_exact_taker_flow_4h",
+                "name": "Полный поток сделок HTX за четыре часа",
+                "role": "NATIVE_SIGNED_FLOW_DIRECTION",
+                "source": "HTX_OFFICIAL_RAW_FILLS",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791404640000,
+                  "observed_ts": 1791404738782,
+                  "physical_root": "HTX_RAW_FILLS:BOME-USDT:1791390240000:1791404640000",
+                  "value": -3492.9535999999953
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "htx_fresh_primary_price",
+                "name": "Свежая фактическая цена HTX",
+                "role": "PRIMARY_PRICE_AVAILABILITY_NOT_DIRECTION",
+                "source": "HTX_OFFICIAL_PRIMARY_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791404744255,
+                "diagnostic_fact": {
+                  "source_ts": 1791404737669,
+                  "observed_ts": 1791404744255,
+                  "physical_root": "market.BOME-USDT.depth.step0:1791404737669",
+                  "value": 0.0009776
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791404737669,
+                "physical_root": "market.BOME-USDT.depth.step0:1791404737669",
+                "score_contribution": 15
+              }
+            ]
+          },
+          {
+            "group": "entry_scenario_and_settlement",
+            "weight": 20,
+            "applicable": 2,
+            "verified": 0,
+            "awarded": 0,
+            "criteria": [
+              {
+                "id": "original_closed_candle_plan",
+                "name": "Исходный план из проверенных закрытых свечей",
+                "role": "SOURCE_BOUND_TRIGGER_AND_INVALIDATION",
+                "source": "HTX_OFFICIAL_CLOSED_CANDLES",
+                "reason": "FACT_DOES_NOT_CONFIRM_DECLARED_CRITERION",
+                "observed_ts": null,
+                "diagnostic_fact": {
+                  "source_ts": 1791404738444,
+                  "observed_ts": 1791404738744,
+                  "physical_root": "HTX_CLOSED_CANDLES:BOME-USDT:60min:1791403200000",
+                  "value": null
+                },
+                "status": "CONTRADICTED",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              },
+              {
+                "id": "original_trigger_settlement",
+                "name": "Закрепление исходного триггера закрытой свечой",
+                "role": "ORIGINAL_TRIGGER_SETTLEMENT_NOT_ENTRY_AUTHORITY",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          },
+          {
+            "group": "invalidation_risk_and_target",
+            "weight": 15,
+            "applicable": 2,
+            "verified": 1,
+            "awarded": 7.5,
+            "criteria": [
+              {
+                "id": "htx_execution_cost_assessed",
+                "name": "Издержки оценены по исходному стакану HTX",
+                "role": "EXECUTION_COST_ASSESSMENT_AVAILABILITY_NOT_FAVORABLE_RETURN",
+                "source": "HTX_IMMUTABLE_EXECUTION_BOOK",
+                "reason": "VERIFIED",
+                "observed_ts": 1791404783784,
+                "diagnostic_fact": {
+                  "source_ts": 1791404783469,
+                  "observed_ts": 1791404783784,
+                  "physical_root": "market.BOME-USDT.depth.step0:1791404783469",
+                  "value": null
+                },
+                "status": "VERIFIED",
+                "verified": true,
+                "source_ts": 1791404783469,
+                "physical_root": "market.BOME-USDT.depth.step0:1791404783469",
+                "score_contribution": 7.5
+              },
+              {
+                "id": "independent_measured_target",
+                "name": "Независимо подтверждённая измеренная цель",
+                "role": "MEASURED_TARGET_AND_INVALIDATION",
+                "source": null,
+                "reason": "SOURCE_FACT_ABSENT",
+                "observed_ts": null,
+                "diagnostic_fact": null,
+                "status": "MISSING",
+                "verified": false,
+                "source_ts": null,
+                "physical_root": null,
+                "score_contribution": 0
+              }
+            ]
+          }
+        ],
+        "score_semantics": "VERIFIED_STRATEGY_CRITERION_MATCH_NOT_WIN_PROBABILITY",
+        "canonical_overall_score_0_100": null,
+        "canonical_coin_interest_score_0_100": 82,
+        "canonical_score_unchanged": true,
+        "production_filter_unchanged": true,
+        "telegram_text_unchanged": true,
+        "telegram_send_allowed_by_this_score": false,
+        "entry_authorized": false,
+        "is_probability": false,
+        "sourceHTTP": 0,
+        "D1": 0,
+        "Telegram": 0,
+        "project_complete": false,
+        "fact_mapping_version": "EXACT_CANONICAL_STRATEGY_FACT_MAPPING_V1_20261010"
+      },
+      "canonical_unchanged": true,
+      "Telegram_unchanged": true,
+      "old_admission_unchanged": true,
+      "source_clocks_refreshed": false,
+      "actual_ENTRY": false
+    }
+  ],
+  "sourceHTTP": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "display_score_activated": false,
+  "full_project_complete": false
+}
