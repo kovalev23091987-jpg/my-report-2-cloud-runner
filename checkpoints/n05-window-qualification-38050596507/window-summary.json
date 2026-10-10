@@ -1,0 +1,6757 @@
+{
+  "schema": "N05_ACTUAL_SPOT_FUTURES_QUALIFICATION_V1",
+  "stage": "window",
+  "run": "38050596507",
+  "head": "8a07234dfe1aee9b3e2b991bb5a44f81d52c6056",
+  "started_ts": 1791633829239,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 11,
+  "sources": [
+    {
+      "name": "BITGET-SPOT-TICKERS",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/tickers",
+      "method": "GET",
+      "received_ts": 1791633831294,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-SPOT-TICKERS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "2065830922274ffaf942bdeb268c3b67139cfd2045ec840dc8ba1d235f20f263",
+      "gzip_sha256": "fe627846272cc1f1c696135f9256084d7bea5f9ad0e7723d8fbb72a4d8788a38",
+      "bytes": 1082997,
+      "file": "BITGET-SPOT-TICKERS.json.gz"
+    },
+    {
+      "name": "BITGET-SPOT-SUSHI-candles-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/candles?symbol=SUSHIUSDT&granularity=1min&startTime=1791619380000&endTime=1791633779999&limit=240",
+      "method": "GET",
+      "received_ts": 1791633832469,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-SPOT-SUSHI-candles-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "37711c1d790e4fdfd171f7140ff623f631b67ead4603ee341afe5c86ce7aa03b",
+      "gzip_sha256": "c2302a1ffec5882b9def957d5af54e9fad3468e014ee46c966c0c7f615c368cc",
+      "bytes": 16644,
+      "file": "BITGET-SPOT-SUSHI-candles-0.json.gz"
+    },
+    {
+      "name": "BITGET-SPOT-SUSHI-fills-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/fills-history?symbol=SUSHIUSDT&startTime=1791619380000&endTime=1791633779999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791633833648,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-SPOT-SUSHI-fills-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "abaab8bf5582c161211aff0c567c29e75e26d796b29e1e9bd718822bf024332b",
+      "gzip_sha256": "2aeda2e8f10a215e9aac788a7942d27285ba31525f8a2a28568f29063a5f21e4",
+      "bytes": 7702,
+      "file": "BITGET-SPOT-SUSHI-fills-0.json.gz"
+    },
+    {
+      "name": "BITGET-FUTURES-SUSHI-candles-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/mix/market/candles?symbol=SUSHIUSDT&productType=USDT-FUTURES&granularity=1m&startTime=1791619380000&endTime=1791633779999&limit=240",
+      "method": "GET",
+      "received_ts": 1791633834809,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-FUTURES-SUSHI-candles-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c8e55e7fb4c90965ae3716e194c930993ed8468a4669ad4040f45090e37ff4eb",
+      "gzip_sha256": "b67ec3d9979ead126bdea095de42208d7c842c2461a8957a5807836acedf65b7",
+      "bytes": 15181,
+      "file": "BITGET-FUTURES-SUSHI-candles-0.json.gz"
+    },
+    {
+      "name": "BITGET-FUTURES-SUSHI-fills-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/mix/market/fills-history?symbol=SUSHIUSDT&productType=USDT-FUTURES&startTime=1791619380000&endTime=1791633779999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791633835990,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-FUTURES-SUSHI-fills-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "e36afb4c196c41607a27eaf08b8d65303524a7713d1ca02b2f9f1871564ef0c5",
+      "gzip_sha256": "6b37887e9e6777e5ead71d68d9394ea8c2508a190c63df23ddd2d84c797472d6",
+      "bytes": 15248,
+      "file": "BITGET-FUTURES-SUSHI-fills-0.json.gz"
+    },
+    {
+      "name": "BITGET-SPOT-BANK-candles-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/candles?symbol=BANKUSDT&granularity=1min&startTime=1791619380000&endTime=1791633779999&limit=240",
+      "method": "GET",
+      "received_ts": 1791633837142,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-SPOT-BANK-candles-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633780000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c990f190e2cb64acdbf4f3f1963266ff9717c9091d0a354ae6b6aa9c4c66732f",
+      "gzip_sha256": "1359e38bc687b7352d87a83cb150b6c5b40f002b42b6e8fbb3659c2423a346b8",
+      "bytes": 17700,
+      "file": "BITGET-SPOT-BANK-candles-0.json.gz"
+    },
+    {
+      "name": "BITGET-SPOT-BANK-fills-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/spot/market/fills-history?symbol=BANKUSDT&startTime=1791619380000&endTime=1791633779999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791633892970,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-SPOT-BANK-fills-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633840000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "0898c56f6678cfba99f5adcaf5bf7a30023c01a7d1c4d23fd48a8b5168d7b5dc",
+      "gzip_sha256": "7c8cc80761afbe4700db8ecabcf9ad4fa42c795dcdaf266c7b5042f9664e8d21",
+      "bytes": 16702,
+      "file": "BITGET-SPOT-BANK-fills-0.json.gz"
+    },
+    {
+      "name": "BITGET-FUTURES-BANK-candles-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/mix/market/candles?symbol=BANKUSDT&productType=USDT-FUTURES&granularity=1m&startTime=1791619380000&endTime=1791633779999&limit=240",
+      "method": "GET",
+      "received_ts": 1791633894115,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-FUTURES-BANK-candles-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633840000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "7fb342644723c71372d3a394a3ca94625abcac1c0b428a74e7eda81516c61aa7",
+      "gzip_sha256": "5779dad5523dcbfe65a255cd8d11003d7f6b8fe4923ad8242ff10c36791e7667",
+      "bytes": 16734,
+      "file": "BITGET-FUTURES-BANK-candles-0.json.gz"
+    },
+    {
+      "name": "BITGET-FUTURES-BANK-fills-0",
+      "venue": "BITGET",
+      "url": "https://api.bitget.com/api/v2/mix/market/fills-history?symbol=BANKUSDT&productType=USDT-FUTURES&startTime=1791619380000&endTime=1791633779999&limit=1000",
+      "method": "GET",
+      "received_ts": 1791633895273,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:BITGET-FUTURES-BANK-fills-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BITGET",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BITGET",
+        "minute_bucket": 1791633840000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "0e76540fa53ec83f6a2aa4b11eff59c1e9da825a883decd7a107de4748ee4a12",
+      "gzip_sha256": "dfbf6184192310c28ec61fd4a4d674af35890504dcb635f9c47a12736b6d0a30",
+      "bytes": 43007,
+      "file": "BITGET-FUTURES-BANK-fills-0.json.gz"
+    },
+    {
+      "name": "catalog-COINBASE-SPOT",
+      "venue": "COINBASE",
+      "url": "https://api.exchange.coinbase.com/products",
+      "method": "GET",
+      "received_ts": 1791633896376,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:catalog-COINBASE-SPOT",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINBASE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINBASE",
+        "minute_bucket": 1791633840000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "04c54d1dc6130bee59b0d2bfa65253284c29822bbdc88b1b110acbd2bbc41989",
+      "gzip_sha256": "55c769f93ef8173f16292000c3aeeb341764207b10a2b13a961d17b5e846c505",
+      "bytes": 355056,
+      "file": "catalog-COINBASE-SPOT.json.gz"
+    },
+    {
+      "name": "catalog-KRAKEN-SPOT",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/AssetPairs",
+      "method": "GET",
+      "received_ts": 1791633897537,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38050596507:window:1:catalog-KRAKEN-SPOT",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791633840000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "098ea2f787d114c7b8bbb28ef23fb5e452c9c5b4fac5442e6e7f562eed794b55",
+      "gzip_sha256": "7d7414eae74dc3d55fd203d077a093c8d124601d8013344cff421d16bba7fa08",
+      "bytes": 678579,
+      "file": "catalog-KRAKEN-SPOT.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 49,
+      "reserved_rows_read": 761000,
+      "reserved_rows_written": 15048,
+      "measured_rows_read": 517833,
+      "measured_rows_written": 6063,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 777000,
+      "rows_written": 15548
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "exact_binding_candidates": [
+    {
+      "base": "AAVE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "spot": "AAVEUSDT",
+      "futures": "AAVEUSDT"
+    },
+    {
+      "base": "ACE",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      },
+      "spot": "ACEUSDT",
+      "futures": "ACEUSDT"
+    },
+    {
+      "base": "APR",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x5a9610919f5e81183823a2be4bd1beb2b4da2a20"
+      },
+      "spot": "APRUSDT",
+      "futures": "APRUSDT"
+    },
+    {
+      "base": "ASTER",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      },
+      "spot": "ASTERUSDT",
+      "futures": "ASTERUSDT"
+    },
+    {
+      "base": "ATOM",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "ATOMUSDT",
+      "futures": "ATOMUSDT"
+    },
+    {
+      "base": "AVAX",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "AVAXUSDT",
+      "futures": "AVAXUSDT"
+    },
+    {
+      "base": "AVNT",
+      "identity": {
+        "chain": "base",
+        "contract_or_mint": "0x696f9436b67233384889472cd7cd58a6fb5df4f1"
+      },
+      "spot": "AVNTUSDT",
+      "futures": "AVNTUSDT"
+    },
+    {
+      "base": "BANK",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      },
+      "spot": "BANKUSDT",
+      "futures": "BANKUSDT"
+    },
+    {
+      "base": "BILL",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xb1110919016846972056ab995054d65560d5f05e"
+      },
+      "spot": "BILLUSDT",
+      "futures": "BILLUSDT"
+    },
+    {
+      "base": "BNB",
+      "identity": {
+        "chain": "bsc",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bsc:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "BNBUSDT",
+      "futures": "BNBUSDT"
+    },
+    {
+      "base": "BOME",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      },
+      "spot": "BOMEUSDT",
+      "futures": "BOMEUSDT"
+    },
+    {
+      "base": "BTC",
+      "identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "BTCUSDT",
+      "futures": "BTCUSDT"
+    },
+    {
+      "base": "BTW",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      },
+      "spot": "BTWUSDT",
+      "futures": "BTWUSDT"
+    },
+    {
+      "base": "DOGE",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "DOGEUSDT",
+      "futures": "DOGEUSDT"
+    },
+    {
+      "base": "DOS",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      },
+      "spot": "DOSUSDT",
+      "futures": "DOSUSDT"
+    },
+    {
+      "base": "ENA",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "spot": "ENAUSDT",
+      "futures": "ENAUSDT"
+    },
+    {
+      "base": "ETH",
+      "identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "ETHUSDT",
+      "futures": "ETHUSDT"
+    },
+    {
+      "base": "ETHFI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      },
+      "spot": "ETHFIUSDT",
+      "futures": "ETHFIUSDT"
+    },
+    {
+      "base": "FARTCOIN",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      },
+      "spot": "FARTCOINUSDT",
+      "futures": "FARTCOINUSDT"
+    },
+    {
+      "base": "FLOKI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"
+      },
+      "spot": "FLOKIUSDT",
+      "futures": "FLOKIUSDT"
+    },
+    {
+      "base": "HBAR",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "HBARUSDT",
+      "futures": "HBARUSDT"
+    },
+    {
+      "base": "JUP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "spot": "JUPUSDT",
+      "futures": "JUPUSDT"
+    },
+    {
+      "base": "LINK",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+      "spot": "LINKUSDT",
+      "futures": "LINKUSDT"
+    },
+    {
+      "base": "LIT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2"
+      },
+      "spot": "LITUSDT",
+      "futures": "LITUSDT"
+    },
+    {
+      "base": "LTC",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "LTCUSDT",
+      "futures": "LTCUSDT"
+    },
+    {
+      "base": "MUBARAK",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x5c85d6c6825ab4032337f11ee92a72df936b46f6"
+      },
+      "spot": "MUBARAKUSDT",
+      "futures": "MUBARAKUSDT"
+    },
+    {
+      "base": "NIL",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47"
+      },
+      "spot": "NILUSDT",
+      "futures": "NILUSDT"
+    },
+    {
+      "base": "ONDO",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "spot": "ONDOUSDT",
+      "futures": "ONDOUSDT"
+    },
+    {
+      "base": "OP",
+      "identity": {
+        "chain": "optimism",
+        "contract_or_mint": "0x4200000000000000000000000000000000000042"
+      },
+      "spot": "OPUSDT",
+      "futures": "OPUSDT"
+    },
+    {
+      "base": "PENGU",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "spot": "PENGUUSDT",
+      "futures": "PENGUUSDT"
+    },
+    {
+      "base": "PEOPLE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "spot": "PEOPLEUSDT",
+      "futures": "PEOPLEUSDT"
+    },
+    {
+      "base": "PEPE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      },
+      "spot": "PEPEUSDT",
+      "futures": "PEPEUSDT"
+    },
+    {
+      "base": "PUMP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      "spot": "PUMPUSDT",
+      "futures": "PUMPUSDT"
+    },
+    {
+      "base": "QNT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+      },
+      "spot": "QNTUSDT",
+      "futures": "QNTUSDT"
+    },
+    {
+      "base": "RAY",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "spot": "RAYUSDT",
+      "futures": "RAYUSDT"
+    },
+    {
+      "base": "RIVER",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xda7ad9dea9397cffddae2f8a052b82f1484252b3"
+      },
+      "spot": "RIVERUSDT",
+      "futures": "RIVERUSDT"
+    },
+    {
+      "base": "SHIB",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      },
+      "spot": "SHIBUSDT",
+      "futures": "SHIBUSDT"
+    },
+    {
+      "base": "SKR",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3"
+      },
+      "spot": "SKRUSDT",
+      "futures": "SKRUSDT"
+    },
+    {
+      "base": "SKYAI",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x92aa03137385f18539301349dcfc9ebc923ffb10"
+      },
+      "spot": "SKYAIUSDT",
+      "futures": "SKYAIUSDT"
+    },
+    {
+      "base": "SOL",
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "SOLUSDT",
+      "futures": "SOLUSDT"
+    },
+    {
+      "base": "SUSHI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "spot": "SUSHIUSDT",
+      "futures": "SUSHIUSDT"
+    },
+    {
+      "base": "TRUMP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "spot": "TRUMPUSDT",
+      "futures": "TRUMPUSDT"
+    },
+    {
+      "base": "TRX",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "TRXUSDT",
+      "futures": "TRXUSDT"
+    },
+    {
+      "base": "TUT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+      },
+      "spot": "TUTUSDT",
+      "futures": "TUTUSDT"
+    },
+    {
+      "base": "UNI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "spot": "UNIUSDT",
+      "futures": "UNIUSDT"
+    },
+    {
+      "base": "WIF",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      "spot": "WIFUSDT",
+      "futures": "WIFUSDT"
+    },
+    {
+      "base": "WLD",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x163f8c2467924be0ae7b5347228cabf260318753"
+      },
+      "spot": "WLDUSDT",
+      "futures": "WLDUSDT"
+    },
+    {
+      "base": "XRP",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      },
+      "spot": "XRPUSDT",
+      "futures": "XRPUSDT"
+    },
+    {
+      "base": "ZKC",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x000006c2a22ff4a44ff1f5d0f2ed65f781f55555"
+      },
+      "spot": "ZKCUSDT",
+      "futures": "ZKCUSDT"
+    }
+  ],
+  "binding_coverage_is_not_full_flow_coverage": true,
+  "selected": [
+    {
+      "base": "SUSHI",
+      "usdtVolume": "12208.30935095"
+    },
+    {
+      "base": "BANK",
+      "usdtVolume": "20990.5977311"
+    }
+  ],
+  "window_end_ts": 1791633780000,
+  "full_windows": [
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "SUSHI-USDT",
+      "venue": "BITGET",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791619380000,
+      "window_end_ts": 1791633780000,
+      "observed_ts": 1791633833648,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 534.04327662,
+      "sell_quote": 251.54191075,
+      "trade_count": 62,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 36.437743559999994,
+        "count": 4,
+        "buy_quote": 276.56930657,
+        "sell_quote": 0,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": 0.3596062787484124,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      }
+    },
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "SUSHI-USDT",
+      "venue": "BITGET",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1791619380000,
+      "window_end_ts": 1791633780000,
+      "observed_ts": 1791633835991,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 2115.6105000000002,
+      "sell_quote": 3547.7592,
+      "trade_count": 128,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 66.6532,
+        "count": 7,
+        "buy_quote": 353.7532,
+        "sell_quote": 1944.4993999999997,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": -0.2528792531414645,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      }
+    },
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "BANK-USDT",
+      "venue": "BITGET",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791619380000,
+      "window_end_ts": 1791633780000,
+      "observed_ts": 1791633892971,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 322.9608274,
+      "sell_quote": 1321.1664311,
+      "trade_count": 136,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 37.154990399999996,
+        "count": 7,
+        "buy_quote": 37.286187399999996,
+        "sell_quote": 866.2418213,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": -0.6071340272107045,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      }
+    },
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "BANK-USDT",
+      "venue": "BITGET",
+      "market": "FUTURES",
+      "quote": "USDT",
+      "window_start_ts": 1791619380000,
+      "window_end_ts": 1791633780000,
+      "observed_ts": 1791633895274,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 12033.21793,
+      "sell_quote": 16474.86006,
+      "trade_count": 357,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 299.64146,
+        "count": 18,
+        "buy_quote": 3667.98299,
+        "sell_quote": 4603.96358,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": -0.15580293177105906,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      }
+    }
+  ],
+  "coinbase_catalog_candidates": [
+    "ETC",
+    "LINK",
+    "TRUMP",
+    "SUSHI",
+    "EUL",
+    "XRP",
+    "PONS",
+    "ENA",
+    "AAVE",
+    "AVAX",
+    "BCH",
+    "HYPE",
+    "DOT",
+    "ETH",
+    "LTC",
+    "QNT",
+    "AVNT",
+    "FIL",
+    "ARB",
+    "DOGE",
+    "ZEC",
+    "BTC",
+    "ASTER",
+    "XLM",
+    "OP",
+    "RAVE",
+    "ZKC",
+    "SHIB",
+    "CHZ",
+    "PENGU",
+    "TIA",
+    "BNB",
+    "SKR",
+    "SOL",
+    "PAXG",
+    "ICP",
+    "PUMP",
+    "SUI",
+    "APR",
+    "XPL",
+    "HBAR",
+    "BILL",
+    "TAO",
+    "FARTCOIN",
+    "ATOM",
+    "ADA",
+    "ONDO",
+    "NEAR",
+    "PEPE",
+    "ALGO",
+    "BONK",
+    "WLD",
+    "UNI",
+    "RAY",
+    "APT",
+    "WIF",
+    "DASH",
+    "FLOKI",
+    "ETHFI",
+    "USELESS"
+  ],
+  "kraken_catalog_candidates": [
+    {
+      "instrument": "0GEUR",
+      "wsname": "0G/EUR"
+    },
+    {
+      "instrument": "0GUSD",
+      "wsname": "0G/USD"
+    },
+    {
+      "instrument": "1INCHEUR",
+      "wsname": "1INCH/EUR"
+    },
+    {
+      "instrument": "1INCHUSD",
+      "wsname": "1INCH/USD"
+    },
+    {
+      "instrument": "2ZEUR",
+      "wsname": "2Z/EUR"
+    },
+    {
+      "instrument": "2ZUSD",
+      "wsname": "2Z/USD"
+    },
+    {
+      "instrument": "AAVEETH",
+      "wsname": "AAVE/ETH"
+    },
+    {
+      "instrument": "AAVEEUR",
+      "wsname": "AAVE/EUR"
+    },
+    {
+      "instrument": "AAVEGBP",
+      "wsname": "AAVE/GBP"
+    },
+    {
+      "instrument": "AAVEUSD",
+      "wsname": "AAVE/USD"
+    },
+    {
+      "instrument": "AAVEXBT",
+      "wsname": "AAVE/XBT"
+    },
+    {
+      "instrument": "ABEUR",
+      "wsname": "AB/EUR"
+    },
+    {
+      "instrument": "ABUSD",
+      "wsname": "AB/USD"
+    },
+    {
+      "instrument": "ACHEUR",
+      "wsname": "ACH/EUR"
+    },
+    {
+      "instrument": "ACHUSD",
+      "wsname": "ACH/USD"
+    },
+    {
+      "instrument": "ACTEUR",
+      "wsname": "ACT/EUR"
+    },
+    {
+      "instrument": "ACTUSD",
+      "wsname": "ACT/USD"
+    },
+    {
+      "instrument": "ACUEUR",
+      "wsname": "ACU/EUR"
+    },
+    {
+      "instrument": "ACUUSD",
+      "wsname": "ACU/USD"
+    },
+    {
+      "instrument": "ADAAUD",
+      "wsname": "ADA/AUD"
+    },
+    {
+      "instrument": "ADAETH",
+      "wsname": "ADA/ETH"
+    },
+    {
+      "instrument": "ADAEUR",
+      "wsname": "ADA/EUR"
+    },
+    {
+      "instrument": "ADAGBP",
+      "wsname": "ADA/GBP"
+    },
+    {
+      "instrument": "ADAUSD",
+      "wsname": "ADA/USD"
+    },
+    {
+      "instrument": "ADAUSDC",
+      "wsname": "ADA/USDC"
+    },
+    {
+      "instrument": "ADAUSDT",
+      "wsname": "ADA/USDT"
+    },
+    {
+      "instrument": "ADAXBT",
+      "wsname": "ADA/XBT"
+    },
+    {
+      "instrument": "ADIEUR",
+      "wsname": "ADI/EUR"
+    },
+    {
+      "instrument": "ADIUSD",
+      "wsname": "ADI/USD"
+    },
+    {
+      "instrument": "ADXEUR",
+      "wsname": "ADX/EUR"
+    },
+    {
+      "instrument": "ADXUSD",
+      "wsname": "ADX/USD"
+    },
+    {
+      "instrument": "AEROEUR",
+      "wsname": "AERO/EUR"
+    },
+    {
+      "instrument": "AEROUSD",
+      "wsname": "AERO/USD"
+    },
+    {
+      "instrument": "AEUR",
+      "wsname": "A/EUR"
+    },
+    {
+      "instrument": "AEVOEUR",
+      "wsname": "AEVO/EUR"
+    },
+    {
+      "instrument": "AEVOUSD",
+      "wsname": "AEVO/USD"
+    },
+    {
+      "instrument": "AIEUR",
+      "wsname": "AI/EUR"
+    },
+    {
+      "instrument": "AINUSD",
+      "wsname": "AIN/USD"
+    },
+    {
+      "instrument": "AIOUSD",
+      "wsname": "AIO/USD"
+    },
+    {
+      "instrument": "AIOZEUR",
+      "wsname": "AIOZ/EUR"
+    },
+    {
+      "instrument": "AIOZUSD",
+      "wsname": "AIOZ/USD"
+    },
+    {
+      "instrument": "AIUSD",
+      "wsname": "AI/USD"
+    },
+    {
+      "instrument": "AIXBTEUR",
+      "wsname": "AIXBT/EUR"
+    },
+    {
+      "instrument": "AIXBTUSD",
+      "wsname": "AIXBT/USD"
+    },
+    {
+      "instrument": "AKEUSD",
+      "wsname": "AKE/USD"
+    },
+    {
+      "instrument": "AKTEUR",
+      "wsname": "AKT/EUR"
+    },
+    {
+      "instrument": "AKTUSD",
+      "wsname": "AKT/USD"
+    },
+    {
+      "instrument": "ALCHEUR",
+      "wsname": "ALCH/EUR"
+    },
+    {
+      "instrument": "ALCHUSD",
+      "wsname": "ALCH/USD"
+    },
+    {
+      "instrument": "ALCXEUR",
+      "wsname": "ALCX/EUR"
+    },
+    {
+      "instrument": "ALCXUSD",
+      "wsname": "ALCX/USD"
+    },
+    {
+      "instrument": "ALEOUSD",
+      "wsname": "ALEO/USD"
+    },
+    {
+      "instrument": "ALEOUSDT",
+      "wsname": "ALEO/USDT"
+    },
+    {
+      "instrument": "ALGOETH",
+      "wsname": "ALGO/ETH"
+    },
+    {
+      "instrument": "ALGOEUR",
+      "wsname": "ALGO/EUR"
+    },
+    {
+      "instrument": "ALGOGBP",
+      "wsname": "ALGO/GBP"
+    },
+    {
+      "instrument": "ALGOUSD",
+      "wsname": "ALGO/USD"
+    },
+    {
+      "instrument": "ALGOUSDC",
+      "wsname": "ALGO/USDC"
+    },
+    {
+      "instrument": "ALGOUSDT",
+      "wsname": "ALGO/USDT"
+    },
+    {
+      "instrument": "ALGOXBT",
+      "wsname": "ALGO/XBT"
+    },
+    {
+      "instrument": "ALICEEUR",
+      "wsname": "ALICE/EUR"
+    },
+    {
+      "instrument": "ALICEUSD",
+      "wsname": "ALICE/USD"
+    },
+    {
+      "instrument": "ALIGNUSD",
+      "wsname": "ALIGN/USD"
+    },
+    {
+      "instrument": "ALKIMIEUR",
+      "wsname": "ALKIMI/EUR"
+    },
+    {
+      "instrument": "ALKIMIUSD",
+      "wsname": "ALKIMI/USD"
+    },
+    {
+      "instrument": "ALLOUSD",
+      "wsname": "ALLO/USD"
+    },
+    {
+      "instrument": "ALPHAEUR",
+      "wsname": "ALPHA/EUR"
+    },
+    {
+      "instrument": "ALPHAUSD",
+      "wsname": "ALPHA/USD"
+    },
+    {
+      "instrument": "ALTEUR",
+      "wsname": "ALT/EUR"
+    },
+    {
+      "instrument": "ALTHEAEUR",
+      "wsname": "ALTHEA/EUR"
+    },
+    {
+      "instrument": "ALTHEAUSD",
+      "wsname": "ALTHEA/USD"
+    },
+    {
+      "instrument": "ALTUSD",
+      "wsname": "ALT/USD"
+    },
+    {
+      "instrument": "AMIUSD",
+      "wsname": "AMI/USD"
+    },
+    {
+      "instrument": "ANIMEEUR",
+      "wsname": "ANIME/EUR"
+    },
+    {
+      "instrument": "ANIMEUSD",
+      "wsname": "ANIME/USD"
+    },
+    {
+      "instrument": "ANKREUR",
+      "wsname": "ANKR/EUR"
+    },
+    {
+      "instrument": "ANKRUSD",
+      "wsname": "ANKR/USD"
+    },
+    {
+      "instrument": "ANKRXBT",
+      "wsname": "ANKR/XBT"
+    },
+    {
+      "instrument": "ANONEUR",
+      "wsname": "ANON/EUR"
+    },
+    {
+      "instrument": "ANONUSD",
+      "wsname": "ANON/USD"
+    },
+    {
+      "instrument": "APEEUR",
+      "wsname": "APE/EUR"
+    },
+    {
+      "instrument": "APENFTEUR",
+      "wsname": "APENFT/EUR"
+    },
+    {
+      "instrument": "APENFTUSD",
+      "wsname": "APENFT/USD"
+    },
+    {
+      "instrument": "APEUSD",
+      "wsname": "APE/USD"
+    },
+    {
+      "instrument": "APEUSDC",
+      "wsname": "APE/USDC"
+    },
+    {
+      "instrument": "APEUSDT",
+      "wsname": "APE/USDT"
+    },
+    {
+      "instrument": "API3EUR",
+      "wsname": "API3/EUR"
+    },
+    {
+      "instrument": "API3USD",
+      "wsname": "API3/USD"
+    },
+    {
+      "instrument": "APREUR",
+      "wsname": "APR/EUR"
+    },
+    {
+      "instrument": "APRUSD",
+      "wsname": "APR/USD"
+    },
+    {
+      "instrument": "APTEUR",
+      "wsname": "APT/EUR"
+    },
+    {
+      "instrument": "APTUSD",
+      "wsname": "APT/USD"
+    },
+    {
+      "instrument": "APUEUR",
+      "wsname": "APU/EUR"
+    },
+    {
+      "instrument": "APUUSD",
+      "wsname": "APU/USD"
+    },
+    {
+      "instrument": "APXUSDUSD",
+      "wsname": "APXUSD/USD"
+    },
+    {
+      "instrument": "APXUSDUSDC",
+      "wsname": "APXUSD/USDC"
+    },
+    {
+      "instrument": "ARBEUR",
+      "wsname": "ARB/EUR"
+    },
+    {
+      "instrument": "ARBUSD",
+      "wsname": "ARB/USD"
+    },
+    {
+      "instrument": "ARCEUR",
+      "wsname": "ARC/EUR"
+    },
+    {
+      "instrument": "ARCUSD",
+      "wsname": "ARC/USD"
+    },
+    {
+      "instrument": "AREUR",
+      "wsname": "AR/EUR"
+    },
+    {
+      "instrument": "ARKMEUR",
+      "wsname": "ARKM/EUR"
+    },
+    {
+      "instrument": "ARKMUSD",
+      "wsname": "ARKM/USD"
+    },
+    {
+      "instrument": "ARPAEUR",
+      "wsname": "ARPA/EUR"
+    },
+    {
+      "instrument": "ARPAUSD",
+      "wsname": "ARPA/USD"
+    },
+    {
+      "instrument": "ARUSD",
+      "wsname": "AR/USD"
+    },
+    {
+      "instrument": "ARXUSD",
+      "wsname": "ARX/USD"
+    },
+    {
+      "instrument": "ASSETUSD",
+      "wsname": "ASSET/USD"
+    },
+    {
+      "instrument": "ASTEREUR",
+      "wsname": "ASTER/EUR"
+    },
+    {
+      "instrument": "ASTERUSD",
+      "wsname": "ASTER/USD"
+    },
+    {
+      "instrument": "ASTREUR",
+      "wsname": "ASTR/EUR"
+    },
+    {
+      "instrument": "ASTRUSD",
+      "wsname": "ASTR/USD"
+    },
+    {
+      "instrument": "ATHEUR",
+      "wsname": "ATH/EUR"
+    },
+    {
+      "instrument": "ATHUSD",
+      "wsname": "ATH/USD"
+    },
+    {
+      "instrument": "ATLASUSD",
+      "wsname": "ATLAS/USD"
+    },
+    {
+      "instrument": "ATOMETH",
+      "wsname": "ATOM/ETH"
+    },
+    {
+      "instrument": "ATOMEUR",
+      "wsname": "ATOM/EUR"
+    },
+    {
+      "instrument": "ATOMGBP",
+      "wsname": "ATOM/GBP"
+    },
+    {
+      "instrument": "ATOMUSD",
+      "wsname": "ATOM/USD"
+    },
+    {
+      "instrument": "ATOMUSDC",
+      "wsname": "ATOM/USDC"
+    },
+    {
+      "instrument": "ATOMUSDT",
+      "wsname": "ATOM/USDT"
+    },
+    {
+      "instrument": "ATOMXBT",
+      "wsname": "ATOM/XBT"
+    },
+    {
+      "instrument": "AUCTIONEUR",
+      "wsname": "AUCTION/EUR"
+    },
+    {
+      "instrument": "AUCTIONUSD",
+      "wsname": "AUCTION/USD"
+    },
+    {
+      "instrument": "AUDIOEUR",
+      "wsname": "AUDIO/EUR"
+    },
+    {
+      "instrument": "AUDIOUSD",
+      "wsname": "AUDIO/USD"
+    },
+    {
+      "instrument": "AUDJPY",
+      "wsname": "AUD/JPY"
+    },
+    {
+      "instrument": "AUDUSD",
+      "wsname": "AUD/USD"
+    },
+    {
+      "instrument": "AUDXAUD",
+      "wsname": "AUDX/AUD"
+    },
+    {
+      "instrument": "AUDXUSD",
+      "wsname": "AUDX/USD"
+    },
+    {
+      "instrument": "AUGURUSD",
+      "wsname": "AUGUR/USD"
+    },
+    {
+      "instrument": "AUSD",
+      "wsname": "A/USD"
+    },
+    {
+      "instrument": "AUSDUSD",
+      "wsname": "AUSD/USD"
+    },
+    {
+      "instrument": "AVAAIUSD",
+      "wsname": "AVAAI/USD"
+    },
+    {
+      "instrument": "AVAEUR",
+      "wsname": "AVA/EUR"
+    },
+    {
+      "instrument": "AVAUSD",
+      "wsname": "AVA/USD"
+    },
+    {
+      "instrument": "AVAXEUR",
+      "wsname": "AVAX/EUR"
+    },
+    {
+      "instrument": "AVAXUSD",
+      "wsname": "AVAX/USD"
+    },
+    {
+      "instrument": "AVAXUSDC",
+      "wsname": "AVAX/USDC"
+    },
+    {
+      "instrument": "AVAXUSDT",
+      "wsname": "AVAX/USDT"
+    },
+    {
+      "instrument": "AVLUSD",
+      "wsname": "AVL/USD"
+    },
+    {
+      "instrument": "AVNTEUR",
+      "wsname": "AVNT/EUR"
+    },
+    {
+      "instrument": "AVNTUSD",
+      "wsname": "AVNT/USD"
+    },
+    {
+      "instrument": "AXSEUR",
+      "wsname": "AXS/EUR"
+    },
+    {
+      "instrument": "AXSUSD",
+      "wsname": "AXS/USD"
+    },
+    {
+      "instrument": "AZTECEUR",
+      "wsname": "AZTEC/EUR"
+    },
+    {
+      "instrument": "AZTECUSD",
+      "wsname": "AZTEC/USD"
+    },
+    {
+      "instrument": "B2EUR",
+      "wsname": "B2/EUR"
+    },
+    {
+      "instrument": "B2USD",
+      "wsname": "B2/USD"
+    },
+    {
+      "instrument": "B3EUR",
+      "wsname": "B3/EUR"
+    },
+    {
+      "instrument": "B3USD",
+      "wsname": "B3/USD"
+    },
+    {
+      "instrument": "BABYEUR",
+      "wsname": "BABY/EUR"
+    },
+    {
+      "instrument": "BABYSHARKUSD",
+      "wsname": "BABYSHARK/USD"
+    },
+    {
+      "instrument": "BABYUSD",
+      "wsname": "BABY/USD"
+    },
+    {
+      "instrument": "BADGEREUR",
+      "wsname": "BADGER/EUR"
+    },
+    {
+      "instrument": "BADGERUSD",
+      "wsname": "BADGER/USD"
+    },
+    {
+      "instrument": "BALEUR",
+      "wsname": "BAL/EUR"
+    },
+    {
+      "instrument": "BALUSD",
+      "wsname": "BAL/USD"
+    },
+    {
+      "instrument": "BANANAS31EUR",
+      "wsname": "BANANAS31/EUR"
+    },
+    {
+      "instrument": "BANANAS31USD",
+      "wsname": "BANANAS31/USD"
+    },
+    {
+      "instrument": "BANDEUR",
+      "wsname": "BAND/EUR"
+    },
+    {
+      "instrument": "BANDUSD",
+      "wsname": "BAND/USD"
+    },
+    {
+      "instrument": "BASEDEUR",
+      "wsname": "BASED/EUR"
+    },
+    {
+      "instrument": "BASEDUSD",
+      "wsname": "BASED/USD"
+    },
+    {
+      "instrument": "BATEUR",
+      "wsname": "BAT/EUR"
+    },
+    {
+      "instrument": "BATUSD",
+      "wsname": "BAT/USD"
+    },
+    {
+      "instrument": "BCHAUD",
+      "wsname": "BCH/AUD"
+    },
+    {
+      "instrument": "BCHETH",
+      "wsname": "BCH/ETH"
+    },
+    {
+      "instrument": "BCHEUR",
+      "wsname": "BCH/EUR"
+    },
+    {
+      "instrument": "BCHGBP",
+      "wsname": "BCH/GBP"
+    },
+    {
+      "instrument": "BCHJPY",
+      "wsname": "BCH/JPY"
+    },
+    {
+      "instrument": "BCHUSD",
+      "wsname": "BCH/USD"
+    },
+    {
+      "instrument": "BCHUSDC",
+      "wsname": "BCH/USDC"
+    },
+    {
+      "instrument": "BCHUSDT",
+      "wsname": "BCH/USDT"
+    },
+    {
+      "instrument": "BCHXBT",
+      "wsname": "BCH/XBT"
+    },
+    {
+      "instrument": "BDXNEUR",
+      "wsname": "BDXN/EUR"
+    },
+    {
+      "instrument": "BDXNUSD",
+      "wsname": "BDXN/USD"
+    },
+    {
+      "instrument": "BEAMEUR",
+      "wsname": "BEAM/EUR"
+    },
+    {
+      "instrument": "BEAMUSD",
+      "wsname": "BEAM/USD"
+    },
+    {
+      "instrument": "BERAEUR",
+      "wsname": "BERA/EUR"
+    },
+    {
+      "instrument": "BERAUSD",
+      "wsname": "BERA/USD"
+    },
+    {
+      "instrument": "BERAUSDC",
+      "wsname": "BERA/USDC"
+    },
+    {
+      "instrument": "BERAUSDT",
+      "wsname": "BERA/USDT"
+    },
+    {
+      "instrument": "BERTEUR",
+      "wsname": "BERT/EUR"
+    },
+    {
+      "instrument": "BERTUSD",
+      "wsname": "BERT/USD"
+    },
+    {
+      "instrument": "BGBEUR",
+      "wsname": "BGB/EUR"
+    },
+    {
+      "instrument": "BGBUSD",
+      "wsname": "BGB/USD"
+    },
+    {
+      "instrument": "BICOEUR",
+      "wsname": "BICO/EUR"
+    },
+    {
+      "instrument": "BICOUSD",
+      "wsname": "BICO/USD"
+    },
+    {
+      "instrument": "BIGTIMEEUR",
+      "wsname": "BIGTIME/EUR"
+    },
+    {
+      "instrument": "BIGTIMEUSD",
+      "wsname": "BIGTIME/USD"
+    },
+    {
+      "instrument": "BILLEUR",
+      "wsname": "BILL/EUR"
+    },
+    {
+      "instrument": "BILLUSD",
+      "wsname": "BILL/USD"
+    },
+    {
+      "instrument": "BILLYEUR",
+      "wsname": "BILLY/EUR"
+    },
+    {
+      "instrument": "BILLYUSD",
+      "wsname": "BILLY/USD"
+    },
+    {
+      "instrument": "BIOEUR",
+      "wsname": "BIO/EUR"
+    },
+    {
+      "instrument": "BIOUSD",
+      "wsname": "BIO/USD"
+    },
+    {
+      "instrument": "BLENDEUR",
+      "wsname": "BLEND/EUR"
+    },
+    {
+      "instrument": "BLENDUSD",
+      "wsname": "BLEND/USD"
+    },
+    {
+      "instrument": "BLESSUSD",
+      "wsname": "BLESS/USD"
+    },
+    {
+      "instrument": "BLUAIEUR",
+      "wsname": "BLUAI/EUR"
+    },
+    {
+      "instrument": "BLUAIUSD",
+      "wsname": "BLUAI/USD"
+    },
+    {
+      "instrument": "BLUEEUR",
+      "wsname": "BLUE/EUR"
+    },
+    {
+      "instrument": "BLUEUSD",
+      "wsname": "BLUE/USD"
+    },
+    {
+      "instrument": "BLUREUR",
+      "wsname": "BLUR/EUR"
+    },
+    {
+      "instrument": "BLURUSD",
+      "wsname": "BLUR/USD"
+    },
+    {
+      "instrument": "BLZUSD",
+      "wsname": "BLZ/USD"
+    },
+    {
+      "instrument": "BMBUSD",
+      "wsname": "BMB/USD"
+    },
+    {
+      "instrument": "BMTEUR",
+      "wsname": "BMT/EUR"
+    },
+    {
+      "instrument": "BMTUSD",
+      "wsname": "BMT/USD"
+    },
+    {
+      "instrument": "BNBEUR",
+      "wsname": "BNB/EUR"
+    },
+    {
+      "instrument": "BNBUSD",
+      "wsname": "BNB/USD"
+    },
+    {
+      "instrument": "BNBUSDC",
+      "wsname": "BNB/USDC"
+    },
+    {
+      "instrument": "BNBUSDT",
+      "wsname": "BNB/USDT"
+    },
+    {
+      "instrument": "BNKRUSD",
+      "wsname": "BNKR/USD"
+    },
+    {
+      "instrument": "BNTEUR",
+      "wsname": "BNT/EUR"
+    },
+    {
+      "instrument": "BNTUSD",
+      "wsname": "BNT/USD"
+    },
+    {
+      "instrument": "BOBAEUR",
+      "wsname": "BOBA/EUR"
+    },
+    {
+      "instrument": "BOBAUSD",
+      "wsname": "BOBA/USD"
+    },
+    {
+      "instrument": "BOBEUR",
+      "wsname": "BOB/EUR"
+    },
+    {
+      "instrument": "BOBUSD",
+      "wsname": "BOB/USD"
+    },
+    {
+      "instrument": "BODENEUR",
+      "wsname": "BODEN/EUR"
+    },
+    {
+      "instrument": "BODENUSD",
+      "wsname": "BODEN/USD"
+    },
+    {
+      "instrument": "BONKEUR",
+      "wsname": "BONK/EUR"
+    },
+    {
+      "instrument": "BONKUSD",
+      "wsname": "BONK/USD"
+    },
+    {
+      "instrument": "BONZOUSD",
+      "wsname": "BONZO/USD"
+    },
+    {
+      "instrument": "BOSUSD",
+      "wsname": "BOS/USD"
+    },
+    {
+      "instrument": "BREVEUR",
+      "wsname": "BREV/EUR"
+    },
+    {
+      "instrument": "BREVUSD",
+      "wsname": "BREV/USD"
+    },
+    {
+      "instrument": "BRL1USD",
+      "wsname": "BRL1/USD"
+    },
+    {
+      "instrument": "BTREUR",
+      "wsname": "BTR/EUR"
+    },
+    {
+      "instrument": "BTRUSD",
+      "wsname": "BTR/USD"
+    },
+    {
+      "instrument": "BTTEUR",
+      "wsname": "BTT/EUR"
+    },
+    {
+      "instrument": "BTTUSD",
+      "wsname": "BTT/USD"
+    },
+    {
+      "instrument": "C98USD",
+      "wsname": "C98/USD"
+    },
+    {
+      "instrument": "CAKEEUR",
+      "wsname": "CAKE/EUR"
+    },
+    {
+      "instrument": "CAKEUSD",
+      "wsname": "CAKE/USD"
+    },
+    {
+      "instrument": "CAMPEUR",
+      "wsname": "CAMP/EUR"
+    },
+    {
+      "instrument": "CAMPUSD",
+      "wsname": "CAMP/USD"
+    },
+    {
+      "instrument": "CAPUSD",
+      "wsname": "CAP/USD"
+    },
+    {
+      "instrument": "CARVEUR",
+      "wsname": "CARV/EUR"
+    },
+    {
+      "instrument": "CARVUSD",
+      "wsname": "CARV/USD"
+    },
+    {
+      "instrument": "CASHUSD",
+      "wsname": "CASH/USD"
+    },
+    {
+      "instrument": "CASHUSDC",
+      "wsname": "CASH/USDC"
+    },
+    {
+      "instrument": "CATEUR",
+      "wsname": "CAT/EUR"
+    },
+    {
+      "instrument": "CATUSD",
+      "wsname": "CAT/USD"
+    },
+    {
+      "instrument": "CCDEUR",
+      "wsname": "CCD/EUR"
+    },
+    {
+      "instrument": "CCDUSD",
+      "wsname": "CCD/USD"
+    },
+    {
+      "instrument": "CCEUR",
+      "wsname": "CC/EUR"
+    },
+    {
+      "instrument": "CCUSD",
+      "wsname": "CC/USD"
+    },
+    {
+      "instrument": "CCUSDC",
+      "wsname": "CC/USDC"
+    },
+    {
+      "instrument": "CCUSDT",
+      "wsname": "CC/USDT"
+    },
+    {
+      "instrument": "CELOEUR",
+      "wsname": "CELO/EUR"
+    },
+    {
+      "instrument": "CELOUSD",
+      "wsname": "CELO/USD"
+    },
+    {
+      "instrument": "CELREUR",
+      "wsname": "CELR/EUR"
+    },
+    {
+      "instrument": "CELRUSD",
+      "wsname": "CELR/USD"
+    },
+    {
+      "instrument": "CFGEUR",
+      "wsname": "CFG/EUR"
+    },
+    {
+      "instrument": "CFGUSD",
+      "wsname": "CFG/USD"
+    },
+    {
+      "instrument": "CFXEUR",
+      "wsname": "CFX/EUR"
+    },
+    {
+      "instrument": "CFXUSD",
+      "wsname": "CFX/USD"
+    },
+    {
+      "instrument": "CHECKUSD",
+      "wsname": "CHECK/USD"
+    },
+    {
+      "instrument": "CHEEMSEUR",
+      "wsname": "CHEEMS/EUR"
+    },
+    {
+      "instrument": "CHEEMSUSD",
+      "wsname": "CHEEMS/USD"
+    },
+    {
+      "instrument": "CHEXEUR",
+      "wsname": "CHEX/EUR"
+    },
+    {
+      "instrument": "CHEXUSD",
+      "wsname": "CHEX/USD"
+    },
+    {
+      "instrument": "CHILLHOUSEEUR",
+      "wsname": "CHILLHOUSE/EUR"
+    },
+    {
+      "instrument": "CHILLHOUSEUSD",
+      "wsname": "CHILLHOUSE/USD"
+    },
+    {
+      "instrument": "CHIPEUR",
+      "wsname": "CHIP/EUR"
+    },
+    {
+      "instrument": "CHIPUSD",
+      "wsname": "CHIP/USD"
+    },
+    {
+      "instrument": "CHREUR",
+      "wsname": "CHR/EUR"
+    },
+    {
+      "instrument": "CHRUSD",
+      "wsname": "CHR/USD"
+    },
+    {
+      "instrument": "CHZEUR",
+      "wsname": "CHZ/EUR"
+    },
+    {
+      "instrument": "CHZUSD",
+      "wsname": "CHZ/USD"
+    },
+    {
+      "instrument": "CLANKEREUR",
+      "wsname": "CLANKER/EUR"
+    },
+    {
+      "instrument": "CLANKERUSD",
+      "wsname": "CLANKER/USD"
+    },
+    {
+      "instrument": "CLOUDUSD",
+      "wsname": "CLOUD/USD"
+    },
+    {
+      "instrument": "CMETHETH",
+      "wsname": "CMETH/ETH"
+    },
+    {
+      "instrument": "CMETHUSD",
+      "wsname": "CMETH/USD"
+    },
+    {
+      "instrument": "COMPEUR",
+      "wsname": "COMP/EUR"
+    },
+    {
+      "instrument": "COMPUSD",
+      "wsname": "COMP/USD"
+    },
+    {
+      "instrument": "COMPXBT",
+      "wsname": "COMP/XBT"
+    },
+    {
+      "instrument": "COOKIEEUR",
+      "wsname": "COOKIE/EUR"
+    },
+    {
+      "instrument": "COOKIEUSD",
+      "wsname": "COOKIE/USD"
+    },
+    {
+      "instrument": "COPMUSD",
+      "wsname": "COPM/USD"
+    },
+    {
+      "instrument": "COQEUR",
+      "wsname": "COQ/EUR"
+    },
+    {
+      "instrument": "COQUSD",
+      "wsname": "COQ/USD"
+    },
+    {
+      "instrument": "CORNUSD",
+      "wsname": "CORN/USD"
+    },
+    {
+      "instrument": "COTIEUR",
+      "wsname": "COTI/EUR"
+    },
+    {
+      "instrument": "COTIUSD",
+      "wsname": "COTI/USD"
+    },
+    {
+      "instrument": "COWEUR",
+      "wsname": "COW/EUR"
+    },
+    {
+      "instrument": "COWUSD",
+      "wsname": "COW/USD"
+    },
+    {
+      "instrument": "CPOOLEUR",
+      "wsname": "CPOOL/EUR"
+    },
+    {
+      "instrument": "CPOOLUSD",
+      "wsname": "CPOOL/USD"
+    },
+    {
+      "instrument": "CROEUR",
+      "wsname": "CRO/EUR"
+    },
+    {
+      "instrument": "CROUSD",
+      "wsname": "CRO/USD"
+    },
+    {
+      "instrument": "CROUSDC",
+      "wsname": "CRO/USDC"
+    },
+    {
+      "instrument": "CROUSDT",
+      "wsname": "CRO/USDT"
+    },
+    {
+      "instrument": "CRVEUR",
+      "wsname": "CRV/EUR"
+    },
+    {
+      "instrument": "CRVUSD",
+      "wsname": "CRV/USD"
+    },
+    {
+      "instrument": "CSPRUSD",
+      "wsname": "CSPR/USD"
+    },
+    {
+      "instrument": "CTCEUR",
+      "wsname": "CTC/EUR"
+    },
+    {
+      "instrument": "CTCUSD",
+      "wsname": "CTC/USD"
+    },
+    {
+      "instrument": "CTRUSD",
+      "wsname": "CTR/USD"
+    },
+    {
+      "instrument": "CTSIEUR",
+      "wsname": "CTSI/EUR"
+    },
+    {
+      "instrument": "CTSIUSD",
+      "wsname": "CTSI/USD"
+    },
+    {
+      "instrument": "CTUSD",
+      "wsname": "CT/USD"
+    },
+    {
+      "instrument": "CVCEUR",
+      "wsname": "CVC/EUR"
+    },
+    {
+      "instrument": "CVCUSD",
+      "wsname": "CVC/USD"
+    },
+    {
+      "instrument": "CVXEUR",
+      "wsname": "CVX/EUR"
+    },
+    {
+      "instrument": "CVXUSD",
+      "wsname": "CVX/USD"
+    },
+    {
+      "instrument": "CYBEREUR",
+      "wsname": "CYBER/EUR"
+    },
+    {
+      "instrument": "CYBERUSD",
+      "wsname": "CYBER/USD"
+    },
+    {
+      "instrument": "DAGEUR",
+      "wsname": "DAG/EUR"
+    },
+    {
+      "instrument": "DAGUSD",
+      "wsname": "DAG/USD"
+    },
+    {
+      "instrument": "DAIEUR",
+      "wsname": "DAI/EUR"
+    },
+    {
+      "instrument": "DAIUSD",
+      "wsname": "DAI/USD"
+    },
+    {
+      "instrument": "DAIUSDT",
+      "wsname": "DAI/USDT"
+    },
+    {
+      "instrument": "DASHEUR",
+      "wsname": "DASH/EUR"
+    },
+    {
+      "instrument": "DASHUSD",
+      "wsname": "DASH/USD"
+    },
+    {
+      "instrument": "DBREUR",
+      "wsname": "DBR/EUR"
+    },
+    {
+      "instrument": "DBRUSD",
+      "wsname": "DBR/USD"
+    },
+    {
+      "instrument": "DCRUSD",
+      "wsname": "DCR/USD"
+    },
+    {
+      "instrument": "DEBITUSD",
+      "wsname": "DEBIT/USD"
+    },
+    {
+      "instrument": "DEEPEUR",
+      "wsname": "DEEP/EUR"
+    },
+    {
+      "instrument": "DEEPUSD",
+      "wsname": "DEEP/USD"
+    },
+    {
+      "instrument": "DEGENEUR",
+      "wsname": "DEGEN/EUR"
+    },
+    {
+      "instrument": "DEGENUSD",
+      "wsname": "DEGEN/USD"
+    },
+    {
+      "instrument": "DENTEUR",
+      "wsname": "DENT/EUR"
+    },
+    {
+      "instrument": "DENTUSD",
+      "wsname": "DENT/USD"
+    },
+    {
+      "instrument": "DGAIUSD",
+      "wsname": "DGAI/USD"
+    },
+    {
+      "instrument": "DMCEUR",
+      "wsname": "DMC/EUR"
+    },
+    {
+      "instrument": "DMCUSD",
+      "wsname": "DMC/USD"
+    },
+    {
+      "instrument": "DOGEUR",
+      "wsname": "DOG/EUR"
+    },
+    {
+      "instrument": "DOGSEUR",
+      "wsname": "DOGS/EUR"
+    },
+    {
+      "instrument": "DOGSUSD",
+      "wsname": "DOGS/USD"
+    },
+    {
+      "instrument": "DOGUSD",
+      "wsname": "DOG/USD"
+    },
+    {
+      "instrument": "DOLOEUR",
+      "wsname": "DOLO/EUR"
+    },
+    {
+      "instrument": "DOLOUSD",
+      "wsname": "DOLO/USD"
+    },
+    {
+      "instrument": "DOSUSD",
+      "wsname": "DOS/USD"
+    },
+    {
+      "instrument": "DOTETH",
+      "wsname": "DOT/ETH"
+    },
+    {
+      "instrument": "DOTEUR",
+      "wsname": "DOT/EUR"
+    },
+    {
+      "instrument": "DOTGBP",
+      "wsname": "DOT/GBP"
+    },
+    {
+      "instrument": "DOTJPY",
+      "wsname": "DOT/JPY"
+    },
+    {
+      "instrument": "DOTUSD",
+      "wsname": "DOT/USD"
+    },
+    {
+      "instrument": "DOTUSDC",
+      "wsname": "DOT/USDC"
+    },
+    {
+      "instrument": "DOTUSDT",
+      "wsname": "DOT/USDT"
+    },
+    {
+      "instrument": "DOTXBT",
+      "wsname": "DOT/XBT"
+    },
+    {
+      "instrument": "DOVUUSD",
+      "wsname": "DOVU/USD"
+    },
+    {
+      "instrument": "DRIFTEUR",
+      "wsname": "DRIFT/EUR"
+    },
+    {
+      "instrument": "DRIFTUSD",
+      "wsname": "DRIFT/USD"
+    },
+    {
+      "instrument": "DRVEUR",
+      "wsname": "DRV/EUR"
+    },
+    {
+      "instrument": "DRVUSD",
+      "wsname": "DRV/USD"
+    },
+    {
+      "instrument": "DUALEUR",
+      "wsname": "DUAL/EUR"
+    },
+    {
+      "instrument": "DUALUSD",
+      "wsname": "DUAL/USD"
+    },
+    {
+      "instrument": "DUCKEUR",
+      "wsname": "DUCK/EUR"
+    },
+    {
+      "instrument": "DUCKUSD",
+      "wsname": "DUCK/USD"
+    },
+    {
+      "instrument": "DYDXEUR",
+      "wsname": "DYDX/EUR"
+    },
+    {
+      "instrument": "DYDXUSD",
+      "wsname": "DYDX/USD"
+    },
+    {
+      "instrument": "DYMEUR",
+      "wsname": "DYM/EUR"
+    },
+    {
+      "instrument": "DYMUSD",
+      "wsname": "DYM/USD"
+    },
+    {
+      "instrument": "EATEUR",
+      "wsname": "EAT/EUR"
+    },
+    {
+      "instrument": "EATUSD",
+      "wsname": "EAT/USD"
+    },
+    {
+      "instrument": "EDGEEUR",
+      "wsname": "EDGE/EUR"
+    },
+    {
+      "instrument": "EDGEUSD",
+      "wsname": "EDGE/USD"
+    },
+    {
+      "instrument": "EDGEXEUR",
+      "wsname": "EDGEX/EUR"
+    },
+    {
+      "instrument": "EDGEXUSD",
+      "wsname": "EDGEX/USD"
+    },
+    {
+      "instrument": "EDUEUR",
+      "wsname": "EDU/EUR"
+    },
+    {
+      "instrument": "EDUUSD",
+      "wsname": "EDU/USD"
+    },
+    {
+      "instrument": "EGLDEUR",
+      "wsname": "EGLD/EUR"
+    },
+    {
+      "instrument": "EGLDUSD",
+      "wsname": "EGLD/USD"
+    },
+    {
+      "instrument": "EIGENEUR",
+      "wsname": "EIGEN/EUR"
+    },
+    {
+      "instrument": "EIGENUSD",
+      "wsname": "EIGEN/USD"
+    },
+    {
+      "instrument": "ELIZAOSEUR",
+      "wsname": "ELIZAOS/EUR"
+    },
+    {
+      "instrument": "ELIZAOSUSD",
+      "wsname": "ELIZAOS/USD"
+    },
+    {
+      "instrument": "ELXEUR",
+      "wsname": "ELX/EUR"
+    },
+    {
+      "instrument": "ELXUSD",
+      "wsname": "ELX/USD"
+    },
+    {
+      "instrument": "ENAEUR",
+      "wsname": "ENA/EUR"
+    },
+    {
+      "instrument": "ENAUSD",
+      "wsname": "ENA/USD"
+    },
+    {
+      "instrument": "ENJEUR",
+      "wsname": "ENJ/EUR"
+    },
+    {
+      "instrument": "ENJUSD",
+      "wsname": "ENJ/USD"
+    },
+    {
+      "instrument": "ENSEUR",
+      "wsname": "ENS/EUR"
+    },
+    {
+      "instrument": "ENSOEUR",
+      "wsname": "ENSO/EUR"
+    },
+    {
+      "instrument": "ENSOUSD",
+      "wsname": "ENSO/USD"
+    },
+    {
+      "instrument": "ENSUSD",
+      "wsname": "ENS/USD"
+    },
+    {
+      "instrument": "ESEUR",
+      "wsname": "ES/EUR"
+    },
+    {
+      "instrument": "ESPEUR",
+      "wsname": "ESP/EUR"
+    },
+    {
+      "instrument": "ESPORTSUSD",
+      "wsname": "ESPORTS/USD"
+    },
+    {
+      "instrument": "ESPUSD",
+      "wsname": "ESP/USD"
+    },
+    {
+      "instrument": "ESUSD",
+      "wsname": "ES/USD"
+    },
+    {
+      "instrument": "ETHAUD",
+      "wsname": "ETH/AUD"
+    },
+    {
+      "instrument": "ETHCHF",
+      "wsname": "ETH/CHF"
+    },
+    {
+      "instrument": "ETHDAI",
+      "wsname": "ETH/DAI"
+    },
+    {
+      "instrument": "ETHEURC",
+      "wsname": "ETH/EURC"
+    },
+    {
+      "instrument": "ETHEUROP",
+      "wsname": "ETH/EUROP"
+    },
+    {
+      "instrument": "ETHFIDD",
+      "wsname": "ETH/FIDD"
+    },
+    {
+      "instrument": "ETHFIEUR",
+      "wsname": "ETHFI/EUR"
+    },
+    {
+      "instrument": "ETHFIUSD",
+      "wsname": "ETHFI/USD"
+    },
+    {
+      "instrument": "ETHPYUSD",
+      "wsname": "ETH/PYUSD"
+    },
+    {
+      "instrument": "ETHSOFID",
+      "wsname": "ETH/SOFID"
+    },
+    {
+      "instrument": "ETHUSD1",
+      "wsname": "ETH/USD1"
+    },
+    {
+      "instrument": "ETHUSDC",
+      "wsname": "ETH/USDC"
+    },
+    {
+      "instrument": "ETHUSDT",
+      "wsname": "ETH/USDT"
+    },
+    {
+      "instrument": "EULEUR",
+      "wsname": "EUL/EUR"
+    },
+    {
+      "instrument": "EULUSD",
+      "wsname": "EUL/USD"
+    },
+    {
+      "instrument": "EURAUD",
+      "wsname": "EUR/AUD"
+    },
+    {
+      "instrument": "EURCAD",
+      "wsname": "EUR/CAD"
+    },
+    {
+      "instrument": "EURCEUR",
+      "wsname": "EURC/EUR"
+    },
+    {
+      "instrument": "EURCHF",
+      "wsname": "EUR/CHF"
+    },
+    {
+      "instrument": "EURCUSD",
+      "wsname": "EURC/USD"
+    },
+    {
+      "instrument": "EURCUSDC",
+      "wsname": "EURC/USDC"
+    },
+    {
+      "instrument": "EURGBP",
+      "wsname": "EUR/GBP"
+    },
+    {
+      "instrument": "EURJPY",
+      "wsname": "EUR/JPY"
+    },
+    {
+      "instrument": "EUROPEUR",
+      "wsname": "EUROP/EUR"
+    },
+    {
+      "instrument": "EUROPUSD",
+      "wsname": "EUROP/USD"
+    },
+    {
+      "instrument": "EUROPUSDC",
+      "wsname": "EUROP/USDC"
+    },
+    {
+      "instrument": "EURQEUR",
+      "wsname": "EURQ/EUR"
+    },
+    {
+      "instrument": "EURQUSD",
+      "wsname": "EURQ/USD"
+    },
+    {
+      "instrument": "EVAAUSD",
+      "wsname": "EVAA/USD"
+    },
+    {
+      "instrument": "EVEUR",
+      "wsname": "EV/EUR"
+    },
+    {
+      "instrument": "EVUSD",
+      "wsname": "EV/USD"
+    },
+    {
+      "instrument": "EWTEUR",
+      "wsname": "EWT/EUR"
+    },
+    {
+      "instrument": "EWTUSD",
+      "wsname": "EWT/USD"
+    },
+    {
+      "instrument": "FARTCOINEUR",
+      "wsname": "FARTCOIN/EUR"
+    },
+    {
+      "instrument": "FARTCOINUSD",
+      "wsname": "FARTCOIN/USD"
+    },
+    {
+      "instrument": "FARTCOINUSDC",
+      "wsname": "FARTCOIN/USDC"
+    },
+    {
+      "instrument": "FARTCOINUSDT",
+      "wsname": "FARTCOIN/USDT"
+    },
+    {
+      "instrument": "FETEUR",
+      "wsname": "FET/EUR"
+    },
+    {
+      "instrument": "FETUSD",
+      "wsname": "FET/USD"
+    },
+    {
+      "instrument": "FFUSD",
+      "wsname": "FF/USD"
+    },
+    {
+      "instrument": "FHEEUR",
+      "wsname": "FHE/EUR"
+    },
+    {
+      "instrument": "FHEUSD",
+      "wsname": "FHE/USD"
+    },
+    {
+      "instrument": "FIDAEUR",
+      "wsname": "FIDA/EUR"
+    },
+    {
+      "instrument": "FIDAUSD",
+      "wsname": "FIDA/USD"
+    },
+    {
+      "instrument": "FIDDUSD",
+      "wsname": "FIDD/USD"
+    },
+    {
+      "instrument": "FIDDUSDC",
+      "wsname": "FIDD/USDC"
+    },
+    {
+      "instrument": "FIDDUSDT",
+      "wsname": "FIDD/USDT"
+    },
+    {
+      "instrument": "FIGHTEUR",
+      "wsname": "FIGHT/EUR"
+    },
+    {
+      "instrument": "FIGHTUSD",
+      "wsname": "FIGHT/USD"
+    },
+    {
+      "instrument": "FILETH",
+      "wsname": "FIL/ETH"
+    },
+    {
+      "instrument": "FILEUR",
+      "wsname": "FIL/EUR"
+    },
+    {
+      "instrument": "FILGBP",
+      "wsname": "FIL/GBP"
+    },
+    {
+      "instrument": "FILUSD",
+      "wsname": "FIL/USD"
+    },
+    {
+      "instrument": "FILXBT",
+      "wsname": "FIL/XBT"
+    },
+    {
+      "instrument": "FISEUR",
+      "wsname": "FIS/EUR"
+    },
+    {
+      "instrument": "FISUSD",
+      "wsname": "FIS/USD"
+    },
+    {
+      "instrument": "FLOCKEUR",
+      "wsname": "FLOCK/EUR"
+    },
+    {
+      "instrument": "FLOCKUSD",
+      "wsname": "FLOCK/USD"
+    },
+    {
+      "instrument": "FLOKIEUR",
+      "wsname": "FLOKI/EUR"
+    },
+    {
+      "instrument": "FLOKIUSD",
+      "wsname": "FLOKI/USD"
+    },
+    {
+      "instrument": "FLOWEUR",
+      "wsname": "FLOW/EUR"
+    },
+    {
+      "instrument": "FLOWUSD",
+      "wsname": "FLOW/USD"
+    },
+    {
+      "instrument": "FLREUR",
+      "wsname": "FLR/EUR"
+    },
+    {
+      "instrument": "FLRUSD",
+      "wsname": "FLR/USD"
+    },
+    {
+      "instrument": "FLUXEUR",
+      "wsname": "FLUX/EUR"
+    },
+    {
+      "instrument": "FLUXUSD",
+      "wsname": "FLUX/USD"
+    },
+    {
+      "instrument": "FOLDUSD",
+      "wsname": "FOLD/USD"
+    },
+    {
+      "instrument": "FOLKSUSD",
+      "wsname": "FOLKS/USD"
+    },
+    {
+      "instrument": "FORESTUSD",
+      "wsname": "FOREST/USD"
+    },
+    {
+      "instrument": "FORTHEUR",
+      "wsname": "FORTH/EUR"
+    },
+    {
+      "instrument": "FORTHUSD",
+      "wsname": "FORTH/USD"
+    },
+    {
+      "instrument": "FRNTUSD",
+      "wsname": "FRNT/USD"
+    },
+    {
+      "instrument": "FRNTUSDC",
+      "wsname": "FRNT/USDC"
+    },
+    {
+      "instrument": "FUNEUR",
+      "wsname": "FUN/EUR"
+    },
+    {
+      "instrument": "FUNUSD",
+      "wsname": "FUN/USD"
+    },
+    {
+      "instrument": "FWOGEUR",
+      "wsname": "FWOG/EUR"
+    },
+    {
+      "instrument": "FWOGUSD",
+      "wsname": "FWOG/USD"
+    },
+    {
+      "instrument": "FXSEUR",
+      "wsname": "FXS/EUR"
+    },
+    {
+      "instrument": "FXSUSD",
+      "wsname": "FXS/USD"
+    },
+    {
+      "instrument": "GAIBUSD",
+      "wsname": "GAIB/USD"
+    },
+    {
+      "instrument": "GALAEUR",
+      "wsname": "GALA/EUR"
+    },
+    {
+      "instrument": "GALAUSD",
+      "wsname": "GALA/USD"
+    },
+    {
+      "instrument": "GAME2EUR",
+      "wsname": "GAME2/EUR"
+    },
+    {
+      "instrument": "GAME2USD",
+      "wsname": "GAME2/USD"
+    },
+    {
+      "instrument": "GASEUR",
+      "wsname": "GAS/EUR"
+    },
+    {
+      "instrument": "GASUSD",
+      "wsname": "GAS/USD"
+    },
+    {
+      "instrument": "GENIUSEUR",
+      "wsname": "GENIUS/EUR"
+    },
+    {
+      "instrument": "GENIUSUSD",
+      "wsname": "GENIUS/USD"
+    },
+    {
+      "instrument": "GFIEUR",
+      "wsname": "GFI/EUR"
+    },
+    {
+      "instrument": "GFIUSD",
+      "wsname": "GFI/USD"
+    },
+    {
+      "instrument": "GHSTEUR",
+      "wsname": "GHST/EUR"
+    },
+    {
+      "instrument": "GHSTUSD",
+      "wsname": "GHST/USD"
+    },
+    {
+      "instrument": "GIBUSD",
+      "wsname": "GIB/USD"
+    },
+    {
+      "instrument": "GIGAEUR",
+      "wsname": "GIGA/EUR"
+    },
+    {
+      "instrument": "GIGAUSD",
+      "wsname": "GIGA/USD"
+    },
+    {
+      "instrument": "GLMREUR",
+      "wsname": "GLMR/EUR"
+    },
+    {
+      "instrument": "GLMRUSD",
+      "wsname": "GLMR/USD"
+    },
+    {
+      "instrument": "GMTEUR",
+      "wsname": "GMT/EUR"
+    },
+    {
+      "instrument": "GMTUSD",
+      "wsname": "GMT/USD"
+    },
+    {
+      "instrument": "GMXEUR",
+      "wsname": "GMX/EUR"
+    },
+    {
+      "instrument": "GMXUSD",
+      "wsname": "GMX/USD"
+    },
+    {
+      "instrument": "GNOEUR",
+      "wsname": "GNO/EUR"
+    },
+    {
+      "instrument": "GNOTUSD",
+      "wsname": "GNOT/USD"
+    },
+    {
+      "instrument": "GNOUSD",
+      "wsname": "GNO/USD"
+    },
+    {
+      "instrument": "GOATEUR",
+      "wsname": "GOAT/EUR"
+    },
+    {
+      "instrument": "GOATUSD",
+      "wsname": "GOAT/USD"
+    },
+    {
+      "instrument": "GOMININGEUR",
+      "wsname": "GOMINING/EUR"
+    },
+    {
+      "instrument": "GOMININGUSD",
+      "wsname": "GOMINING/USD"
+    },
+    {
+      "instrument": "GRASSEUR",
+      "wsname": "GRASS/EUR"
+    },
+    {
+      "instrument": "GRASSUSD",
+      "wsname": "GRASS/USD"
+    },
+    {
+      "instrument": "GRIFFAINEUR",
+      "wsname": "GRIFFAIN/EUR"
+    },
+    {
+      "instrument": "GRIFFAINUSD",
+      "wsname": "GRIFFAIN/USD"
+    },
+    {
+      "instrument": "GRTEUR",
+      "wsname": "GRT/EUR"
+    },
+    {
+      "instrument": "GRTGBP",
+      "wsname": "GRT/GBP"
+    },
+    {
+      "instrument": "GRTUSD",
+      "wsname": "GRT/USD"
+    },
+    {
+      "instrument": "GRTXBT",
+      "wsname": "GRT/XBT"
+    },
+    {
+      "instrument": "GSTEUR",
+      "wsname": "GST/EUR"
+    },
+    {
+      "instrument": "GSTUSD",
+      "wsname": "GST/USD"
+    },
+    {
+      "instrument": "GTCEUR",
+      "wsname": "GTC/EUR"
+    },
+    {
+      "instrument": "GTCUSD",
+      "wsname": "GTC/USD"
+    },
+    {
+      "instrument": "GUNEUR",
+      "wsname": "GUN/EUR"
+    },
+    {
+      "instrument": "GUNUSD",
+      "wsname": "GUN/USD"
+    },
+    {
+      "instrument": "GUSD",
+      "wsname": "G/USD"
+    },
+    {
+      "instrument": "GWEIUSD",
+      "wsname": "GWEI/USD"
+    },
+    {
+      "instrument": "HBAREUR",
+      "wsname": "HBAR/EUR"
+    },
+    {
+      "instrument": "HBARUSD",
+      "wsname": "HBAR/USD"
+    },
+    {
+      "instrument": "HFTEUR",
+      "wsname": "HFT/EUR"
+    },
+    {
+      "instrument": "HFTUSD",
+      "wsname": "HFT/USD"
+    },
+    {
+      "instrument": "HMSTREUR",
+      "wsname": "HMSTR/EUR"
+    },
+    {
+      "instrument": "HMSTRUSD",
+      "wsname": "HMSTR/USD"
+    },
+    {
+      "instrument": "HNTEUR",
+      "wsname": "HNT/EUR"
+    },
+    {
+      "instrument": "HNTUSD",
+      "wsname": "HNT/USD"
+    },
+    {
+      "instrument": "HOLOUSD",
+      "wsname": "HOLO/USD"
+    },
+    {
+      "instrument": "HONEYEUR",
+      "wsname": "HONEY/EUR"
+    },
+    {
+      "instrument": "HONEYUSD",
+      "wsname": "HONEY/USD"
+    },
+    {
+      "instrument": "HPOS10IEUR",
+      "wsname": "HPOS10I/EUR"
+    },
+    {
+      "instrument": "HPOS10IUSD",
+      "wsname": "HPOS10I/USD"
+    },
+    {
+      "instrument": "HSKEUR",
+      "wsname": "HSK/EUR"
+    },
+    {
+      "instrument": "HSKUSD",
+      "wsname": "HSK/USD"
+    },
+    {
+      "instrument": "HYPEEUR",
+      "wsname": "HYPE/EUR"
+    },
+    {
+      "instrument": "HYPEUSD",
+      "wsname": "HYPE/USD"
+    },
+    {
+      "instrument": "IAGEUR",
+      "wsname": "IAG/EUR"
+    },
+    {
+      "instrument": "IAGUSD",
+      "wsname": "IAG/USD"
+    },
+    {
+      "instrument": "ICNTEUR",
+      "wsname": "ICNT/EUR"
+    },
+    {
+      "instrument": "ICNTUSD",
+      "wsname": "ICNT/USD"
+    },
+    {
+      "instrument": "ICPEUR",
+      "wsname": "ICP/EUR"
+    },
+    {
+      "instrument": "ICPUSD",
+      "wsname": "ICP/USD"
+    },
+    {
+      "instrument": "IDEXEUR",
+      "wsname": "IDEX/EUR"
+    },
+    {
+      "instrument": "IDEXUSD",
+      "wsname": "IDEX/USD"
+    },
+    {
+      "instrument": "IDOSEUR",
+      "wsname": "IDOS/EUR"
+    },
+    {
+      "instrument": "IDOSUSD",
+      "wsname": "IDOS/USD"
+    },
+    {
+      "instrument": "IMXEUR",
+      "wsname": "IMX/EUR"
+    },
+    {
+      "instrument": "IMXUSD",
+      "wsname": "IMX/USD"
+    },
+    {
+      "instrument": "INEUR",
+      "wsname": "IN/EUR"
+    },
+    {
+      "instrument": "INITEUR",
+      "wsname": "INIT/EUR"
+    },
+    {
+      "instrument": "INITUSD",
+      "wsname": "INIT/USD"
+    },
+    {
+      "instrument": "INJEUR",
+      "wsname": "INJ/EUR"
+    },
+    {
+      "instrument": "INJUSD",
+      "wsname": "INJ/USD"
+    },
+    {
+      "instrument": "INUSD",
+      "wsname": "IN/USD"
+    },
+    {
+      "instrument": "INXEUR",
+      "wsname": "INX/EUR"
+    },
+    {
+      "instrument": "INXUSD",
+      "wsname": "INX/USD"
+    },
+    {
+      "instrument": "IPEUR",
+      "wsname": "IP/EUR"
+    },
+    {
+      "instrument": "IPUSD",
+      "wsname": "IP/USD"
+    },
+    {
+      "instrument": "JAILSTOOLUSD",
+      "wsname": "JAILSTOOL/USD"
+    },
+    {
+      "instrument": "JASMYEUR",
+      "wsname": "JASMY/EUR"
+    },
+    {
+      "instrument": "JASMYUSD",
+      "wsname": "JASMY/USD"
+    },
+    {
+      "instrument": "JITOSOLEUR",
+      "wsname": "JITOSOL/EUR"
+    },
+    {
+      "instrument": "JITOSOLSOL",
+      "wsname": "JITOSOL/SOL"
+    },
+    {
+      "instrument": "JITOSOLUSD",
+      "wsname": "JITOSOL/USD"
+    },
+    {
+      "instrument": "JOEEUR",
+      "wsname": "JOE/EUR"
+    },
+    {
+      "instrument": "JOEUSD",
+      "wsname": "JOE/USD"
+    },
+    {
+      "instrument": "JSTEUR",
+      "wsname": "JST/EUR"
+    },
+    {
+      "instrument": "JSTUSD",
+      "wsname": "JST/USD"
+    },
+    {
+      "instrument": "JTOEUR",
+      "wsname": "JTO/EUR"
+    },
+    {
+      "instrument": "JTOUSD",
+      "wsname": "JTO/USD"
+    },
+    {
+      "instrument": "JUPEUR",
+      "wsname": "JUP/EUR"
+    },
+    {
+      "instrument": "JUPUSD",
+      "wsname": "JUP/USD"
+    },
+    {
+      "instrument": "KAITOEUR",
+      "wsname": "KAITO/EUR"
+    },
+    {
+      "instrument": "KAITOUSD",
+      "wsname": "KAITO/USD"
+    },
+    {
+      "instrument": "KASEUR",
+      "wsname": "KAS/EUR"
+    },
+    {
+      "instrument": "KASUSD",
+      "wsname": "KAS/USD"
+    },
+    {
+      "instrument": "KASUSDT",
+      "wsname": "KAS/USDT"
+    },
+    {
+      "instrument": "KATEUR",
+      "wsname": "KAT/EUR"
+    },
+    {
+      "instrument": "KATUSD",
+      "wsname": "KAT/USD"
+    },
+    {
+      "instrument": "KAVAEUR",
+      "wsname": "KAVA/EUR"
+    },
+    {
+      "instrument": "KAVAUSD",
+      "wsname": "KAVA/USD"
+    },
+    {
+      "instrument": "KEEPUSD",
+      "wsname": "KEEP/USD"
+    },
+    {
+      "instrument": "KERNELEUR",
+      "wsname": "KERNEL/EUR"
+    },
+    {
+      "instrument": "KERNELUSD",
+      "wsname": "KERNEL/USD"
+    },
+    {
+      "instrument": "KGENUSD",
+      "wsname": "KGEN/USD"
+    },
+    {
+      "instrument": "KIIUSD",
+      "wsname": "KII/USD"
+    },
+    {
+      "instrument": "KMNOEUR",
+      "wsname": "KMNO/EUR"
+    },
+    {
+      "instrument": "KMNOUSD",
+      "wsname": "KMNO/USD"
+    },
+    {
+      "instrument": "KNCEUR",
+      "wsname": "KNC/EUR"
+    },
+    {
+      "instrument": "KNCUSD",
+      "wsname": "KNC/USD"
+    },
+    {
+      "instrument": "KNTQEUR",
+      "wsname": "KNTQ/EUR"
+    },
+    {
+      "instrument": "KNTQUSD",
+      "wsname": "KNTQ/USD"
+    },
+    {
+      "instrument": "KSMEUR",
+      "wsname": "KSM/EUR"
+    },
+    {
+      "instrument": "KSMGBP",
+      "wsname": "KSM/GBP"
+    },
+    {
+      "instrument": "KSMUSD",
+      "wsname": "KSM/USD"
+    },
+    {
+      "instrument": "KTAEUR",
+      "wsname": "KTA/EUR"
+    },
+    {
+      "instrument": "KTAUSD",
+      "wsname": "KTA/USD"
+    },
+    {
+      "instrument": "KULAEUR",
+      "wsname": "KULA/EUR"
+    },
+    {
+      "instrument": "KULAUSD",
+      "wsname": "KULA/USD"
+    },
+    {
+      "instrument": "L3USD",
+      "wsname": "L3/USD"
+    },
+    {
+      "instrument": "LAPTOPUSD",
+      "wsname": "LAPTOP/USD"
+    },
+    {
+      "instrument": "LAVAEUR",
+      "wsname": "LAVA/EUR"
+    },
+    {
+      "instrument": "LAVAUSD",
+      "wsname": "LAVA/USD"
+    },
+    {
+      "instrument": "LAYEREUR",
+      "wsname": "LAYER/EUR"
+    },
+    {
+      "instrument": "LAYERUSD",
+      "wsname": "LAYER/USD"
+    },
+    {
+      "instrument": "LCAPEUR",
+      "wsname": "LCAP/EUR"
+    },
+    {
+      "instrument": "LCAPUSD",
+      "wsname": "LCAP/USD"
+    },
+    {
+      "instrument": "LCXEUR",
+      "wsname": "LCX/EUR"
+    },
+    {
+      "instrument": "LCXUSD",
+      "wsname": "LCX/USD"
+    },
+    {
+      "instrument": "LDOEUR",
+      "wsname": "LDO/EUR"
+    },
+    {
+      "instrument": "LDOUSD",
+      "wsname": "LDO/USD"
+    },
+    {
+      "instrument": "LIGHTERUSD",
+      "wsname": "LIGHTER/USD"
+    },
+    {
+      "instrument": "LINEAEUR",
+      "wsname": "LINEA/EUR"
+    },
+    {
+      "instrument": "LINEAUSD",
+      "wsname": "LINEA/USD"
+    },
+    {
+      "instrument": "LINKAUD",
+      "wsname": "LINK/AUD"
+    },
+    {
+      "instrument": "LINKETH",
+      "wsname": "LINK/ETH"
+    },
+    {
+      "instrument": "LINKEUR",
+      "wsname": "LINK/EUR"
+    },
+    {
+      "instrument": "LINKGBP",
+      "wsname": "LINK/GBP"
+    },
+    {
+      "instrument": "LINKJPY",
+      "wsname": "LINK/JPY"
+    },
+    {
+      "instrument": "LINKUSD",
+      "wsname": "LINK/USD"
+    },
+    {
+      "instrument": "LINKUSDC",
+      "wsname": "LINK/USDC"
+    },
+    {
+      "instrument": "LINKUSDT",
+      "wsname": "LINK/USDT"
+    },
+    {
+      "instrument": "LINKXBT",
+      "wsname": "LINK/XBT"
+    },
+    {
+      "instrument": "LIONEUR",
+      "wsname": "LION/EUR"
+    },
+    {
+      "instrument": "LIONUSD",
+      "wsname": "LION/USD"
+    },
+    {
+      "instrument": "LITEUR",
+      "wsname": "LIT/EUR"
+    },
+    {
+      "instrument": "LITUSD",
+      "wsname": "LIT/USD"
+    },
+    {
+      "instrument": "LMWREUR",
+      "wsname": "LMWR/EUR"
+    },
+    {
+      "instrument": "LMWRUSD",
+      "wsname": "LMWR/USD"
+    },
+    {
+      "instrument": "LOFIEUR",
+      "wsname": "LOFI/EUR"
+    },
+    {
+      "instrument": "LOFIUSD",
+      "wsname": "LOFI/USD"
+    },
+    {
+      "instrument": "LPTEUR",
+      "wsname": "LPT/EUR"
+    },
+    {
+      "instrument": "LPTUSD",
+      "wsname": "LPT/USD"
+    },
+    {
+      "instrument": "LQTYEUR",
+      "wsname": "LQTY/EUR"
+    },
+    {
+      "instrument": "LQTYUSD",
+      "wsname": "LQTY/USD"
+    },
+    {
+      "instrument": "LRCEUR",
+      "wsname": "LRC/EUR"
+    },
+    {
+      "instrument": "LRCUSD",
+      "wsname": "LRC/USD"
+    },
+    {
+      "instrument": "LSETHETH",
+      "wsname": "LSETH/ETH"
+    },
+    {
+      "instrument": "LSETHUSD",
+      "wsname": "LSETH/USD"
+    },
+    {
+      "instrument": "LSKEUR",
+      "wsname": "LSK/EUR"
+    },
+    {
+      "instrument": "LSKUSD",
+      "wsname": "LSK/USD"
+    },
+    {
+      "instrument": "LSSOLEUR",
+      "wsname": "LSSOL/EUR"
+    },
+    {
+      "instrument": "LSSOLSOL",
+      "wsname": "LSSOL/SOL"
+    },
+    {
+      "instrument": "LSSOLUSD",
+      "wsname": "LSSOL/USD"
+    },
+    {
+      "instrument": "LTCAUD",
+      "wsname": "LTC/AUD"
+    },
+    {
+      "instrument": "LTCETH",
+      "wsname": "LTC/ETH"
+    },
+    {
+      "instrument": "LTCGBP",
+      "wsname": "LTC/GBP"
+    },
+    {
+      "instrument": "LTCUSDC",
+      "wsname": "LTC/USDC"
+    },
+    {
+      "instrument": "LTCUSDT",
+      "wsname": "LTC/USDT"
+    },
+    {
+      "instrument": "LUNAEUR",
+      "wsname": "LUNA/EUR"
+    },
+    {
+      "instrument": "LUNAUSD",
+      "wsname": "LUNA/USD"
+    },
+    {
+      "instrument": "MANAEUR",
+      "wsname": "MANA/EUR"
+    },
+    {
+      "instrument": "MANAUSD",
+      "wsname": "MANA/USD"
+    },
+    {
+      "instrument": "MANAUSDC",
+      "wsname": "MANA/USDC"
+    },
+    {
+      "instrument": "MANAUSDT",
+      "wsname": "MANA/USDT"
+    },
+    {
+      "instrument": "MANAXBT",
+      "wsname": "MANA/XBT"
+    },
+    {
+      "instrument": "MANTRAEUR",
+      "wsname": "MANTRA/EUR"
+    },
+    {
+      "instrument": "MANTRAUSD",
+      "wsname": "MANTRA/USD"
+    },
+    {
+      "instrument": "MASKEUR",
+      "wsname": "MASK/EUR"
+    },
+    {
+      "instrument": "MASKUSD",
+      "wsname": "MASK/USD"
+    },
+    {
+      "instrument": "MEEUR",
+      "wsname": "ME/EUR"
+    },
+    {
+      "instrument": "MEGAEUR",
+      "wsname": "MEGA/EUR"
+    },
+    {
+      "instrument": "MEGAUSD",
+      "wsname": "MEGA/USD"
+    },
+    {
+      "instrument": "MELANIAEUR",
+      "wsname": "MELANIA/EUR"
+    },
+    {
+      "instrument": "MELANIAUSD",
+      "wsname": "MELANIA/USD"
+    },
+    {
+      "instrument": "MELANIAUSDC",
+      "wsname": "MELANIA/USDC"
+    },
+    {
+      "instrument": "MELANIAUSDT",
+      "wsname": "MELANIA/USDT"
+    },
+    {
+      "instrument": "MEMEEUR",
+      "wsname": "MEME/EUR"
+    },
+    {
+      "instrument": "MEMEUSD",
+      "wsname": "MEME/USD"
+    },
+    {
+      "instrument": "MERLEUR",
+      "wsname": "MERL/EUR"
+    },
+    {
+      "instrument": "MERLUSD",
+      "wsname": "MERL/USD"
+    },
+    {
+      "instrument": "METEUR",
+      "wsname": "MET/EUR"
+    },
+    {
+      "instrument": "METHETH",
+      "wsname": "METH/ETH"
+    },
+    {
+      "instrument": "METHUSD",
+      "wsname": "METH/USD"
+    },
+    {
+      "instrument": "METISEUR",
+      "wsname": "METIS/EUR"
+    },
+    {
+      "instrument": "METISUSD",
+      "wsname": "METIS/USD"
+    },
+    {
+      "instrument": "METUSD",
+      "wsname": "MET/USD"
+    },
+    {
+      "instrument": "MEUSD",
+      "wsname": "ME/USD"
+    },
+    {
+      "instrument": "MEWEUR",
+      "wsname": "MEW/EUR"
+    },
+    {
+      "instrument": "MEWUSD",
+      "wsname": "MEW/USD"
+    },
+    {
+      "instrument": "MEZOUSD",
+      "wsname": "MEZO/USD"
+    },
+    {
+      "instrument": "MFEUR",
+      "wsname": "MF/EUR"
+    },
+    {
+      "instrument": "MFUSD",
+      "wsname": "MF/USD"
+    },
+    {
+      "instrument": "MIMEUR",
+      "wsname": "MIM/EUR"
+    },
+    {
+      "instrument": "MIMUSD",
+      "wsname": "MIM/USD"
+    },
+    {
+      "instrument": "MINAEUR",
+      "wsname": "MINA/EUR"
+    },
+    {
+      "instrument": "MINAGBP",
+      "wsname": "MINA/GBP"
+    },
+    {
+      "instrument": "MINAUSD",
+      "wsname": "MINA/USD"
+    },
+    {
+      "instrument": "MINAXBT",
+      "wsname": "MINA/XBT"
+    },
+    {
+      "instrument": "MIRAEUR",
+      "wsname": "MIRA/EUR"
+    },
+    {
+      "instrument": "MIRAUSD",
+      "wsname": "MIRA/USD"
+    },
+    {
+      "instrument": "MNTEUR",
+      "wsname": "MNT/EUR"
+    },
+    {
+      "instrument": "MNTUSD",
+      "wsname": "MNT/USD"
+    },
+    {
+      "instrument": "MOCAEUR",
+      "wsname": "MOCA/EUR"
+    },
+    {
+      "instrument": "MOCAUSD",
+      "wsname": "MOCA/USD"
+    },
+    {
+      "instrument": "MOGEUR",
+      "wsname": "MOG/EUR"
+    },
+    {
+      "instrument": "MOGUSD",
+      "wsname": "MOG/USD"
+    },
+    {
+      "instrument": "MONEUR",
+      "wsname": "MON/EUR"
+    },
+    {
+      "instrument": "MONUSD",
+      "wsname": "MON/USD"
+    },
+    {
+      "instrument": "MOODENGEUR",
+      "wsname": "MOODENG/EUR"
+    },
+    {
+      "instrument": "MOODENGUSD",
+      "wsname": "MOODENG/USD"
+    },
+    {
+      "instrument": "MORPHOEUR",
+      "wsname": "MORPHO/EUR"
+    },
+    {
+      "instrument": "MORPHOUSD",
+      "wsname": "MORPHO/USD"
+    },
+    {
+      "instrument": "MOVREUR",
+      "wsname": "MOVR/EUR"
+    },
+    {
+      "instrument": "MOVRUSD",
+      "wsname": "MOVR/USD"
+    },
+    {
+      "instrument": "MSOLEUR",
+      "wsname": "MSOL/EUR"
+    },
+    {
+      "instrument": "MSOLUSD",
+      "wsname": "MSOL/USD"
+    },
+    {
+      "instrument": "MUBARAKUSD",
+      "wsname": "MUBARAK/USD"
+    },
+    {
+      "instrument": "MXNBUSD",
+      "wsname": "MXNB/USD"
+    },
+    {
+      "instrument": "MYXEUR",
+      "wsname": "MYX/EUR"
+    },
+    {
+      "instrument": "MYXUSD",
+      "wsname": "MYX/USD"
+    },
+    {
+      "instrument": "NANOEUR",
+      "wsname": "NANO/EUR"
+    },
+    {
+      "instrument": "NANOUSD",
+      "wsname": "NANO/USD"
+    },
+    {
+      "instrument": "NEAREUR",
+      "wsname": "NEAR/EUR"
+    },
+    {
+      "instrument": "NEARUSD",
+      "wsname": "NEAR/USD"
+    },
+    {
+      "instrument": "NEIROEUR",
+      "wsname": "NEIRO/EUR"
+    },
+    {
+      "instrument": "NEIROUSD",
+      "wsname": "NEIRO/USD"
+    },
+    {
+      "instrument": "NEOEUR",
+      "wsname": "NEO/EUR"
+    },
+    {
+      "instrument": "NEOUSD",
+      "wsname": "NEO/USD"
+    },
+    {
+      "instrument": "NESUSD",
+      "wsname": "NES/USD"
+    },
+    {
+      "instrument": "NEXEUR",
+      "wsname": "NEX/EUR"
+    },
+    {
+      "instrument": "NEXUSD",
+      "wsname": "NEX/USD"
+    },
+    {
+      "instrument": "NIGHTEUR",
+      "wsname": "NIGHT/EUR"
+    },
+    {
+      "instrument": "NIGHTUSD",
+      "wsname": "NIGHT/USD"
+    },
+    {
+      "instrument": "NILEUR",
+      "wsname": "NIL/EUR"
+    },
+    {
+      "instrument": "NILUSD",
+      "wsname": "NIL/USD"
+    },
+    {
+      "instrument": "NMREUR",
+      "wsname": "NMR/EUR"
+    },
+    {
+      "instrument": "NMRUSD",
+      "wsname": "NMR/USD"
+    },
+    {
+      "instrument": "NOBODYEUR",
+      "wsname": "NOBODY/EUR"
+    },
+    {
+      "instrument": "NOBODYUSD",
+      "wsname": "NOBODY/USD"
+    },
+    {
+      "instrument": "NOCKUSD",
+      "wsname": "NOCK/USD"
+    },
+    {
+      "instrument": "NODEUSD",
+      "wsname": "NODE/USD"
+    },
+    {
+      "instrument": "NOSEUR",
+      "wsname": "NOS/EUR"
+    },
+    {
+      "instrument": "NOSUSD",
+      "wsname": "NOS/USD"
+    },
+    {
+      "instrument": "NOTEUR",
+      "wsname": "NOT/EUR"
+    },
+    {
+      "instrument": "NOTUSD",
+      "wsname": "NOT/USD"
+    },
+    {
+      "instrument": "NPCEUR",
+      "wsname": "NPC/EUR"
+    },
+    {
+      "instrument": "NPCUSD",
+      "wsname": "NPC/USD"
+    },
+    {
+      "instrument": "OBOLEUR",
+      "wsname": "OBOL/EUR"
+    },
+    {
+      "instrument": "OBOLUSD",
+      "wsname": "OBOL/USD"
+    },
+    {
+      "instrument": "OBOLUSDT",
+      "wsname": "OBOL/USDT"
+    },
+    {
+      "instrument": "OCEANEUR",
+      "wsname": "OCEAN/EUR"
+    },
+    {
+      "instrument": "OCEANUSD",
+      "wsname": "OCEAN/USD"
+    },
+    {
+      "instrument": "ODOSUSD",
+      "wsname": "ODOS/USD"
+    },
+    {
+      "instrument": "OGNEUR",
+      "wsname": "OGN/EUR"
+    },
+    {
+      "instrument": "OGNUSD",
+      "wsname": "OGN/USD"
+    },
+    {
+      "instrument": "OKBUSD",
+      "wsname": "OKB/USD"
+    },
+    {
+      "instrument": "OMGEUR",
+      "wsname": "OMG/EUR"
+    },
+    {
+      "instrument": "OMGUSD",
+      "wsname": "OMG/USD"
+    },
+    {
+      "instrument": "OMIEUR",
+      "wsname": "OMI/EUR"
+    },
+    {
+      "instrument": "OMIUSD",
+      "wsname": "OMI/USD"
+    },
+    {
+      "instrument": "ONDOEUR",
+      "wsname": "ONDO/EUR"
+    },
+    {
+      "instrument": "ONDOUSD",
+      "wsname": "ONDO/USD"
+    },
+    {
+      "instrument": "ONEUSD",
+      "wsname": "ONE/USD"
+    },
+    {
+      "instrument": "OOBEUR",
+      "wsname": "OOB/EUR"
+    },
+    {
+      "instrument": "OOBUSD",
+      "wsname": "OOB/USD"
+    },
+    {
+      "instrument": "OPENEUR",
+      "wsname": "OPEN/EUR"
+    },
+    {
+      "instrument": "OPENUSD",
+      "wsname": "OPEN/USD"
+    },
+    {
+      "instrument": "OPEUR",
+      "wsname": "OP/EUR"
+    },
+    {
+      "instrument": "OPNUSD",
+      "wsname": "OPN/USD"
+    },
+    {
+      "instrument": "OPUSD",
+      "wsname": "OP/USD"
+    },
+    {
+      "instrument": "ORCAEUR",
+      "wsname": "ORCA/EUR"
+    },
+    {
+      "instrument": "ORCAUSD",
+      "wsname": "ORCA/USD"
+    },
+    {
+      "instrument": "ORDERUSD",
+      "wsname": "ORDER/USD"
+    },
+    {
+      "instrument": "OSMOEUR",
+      "wsname": "OSMO/EUR"
+    },
+    {
+      "instrument": "OSMOUSD",
+      "wsname": "OSMO/USD"
+    },
+    {
+      "instrument": "OUSDUSD",
+      "wsname": "OUSD/USD"
+    },
+    {
+      "instrument": "OXTEUR",
+      "wsname": "OXT/EUR"
+    },
+    {
+      "instrument": "OXTUSD",
+      "wsname": "OXT/USD"
+    },
+    {
+      "instrument": "PACKUSD",
+      "wsname": "PACK/USD"
+    },
+    {
+      "instrument": "PACTUSD",
+      "wsname": "PACT/USD"
+    },
+    {
+      "instrument": "PARTIEUR",
+      "wsname": "PARTI/EUR"
+    },
+    {
+      "instrument": "PARTIUSD",
+      "wsname": "PARTI/USD"
+    },
+    {
+      "instrument": "PAXGETH",
+      "wsname": "PAXG/ETH"
+    },
+    {
+      "instrument": "PAXGEUR",
+      "wsname": "PAXG/EUR"
+    },
+    {
+      "instrument": "PAXGUSD",
+      "wsname": "PAXG/USD"
+    },
+    {
+      "instrument": "PAXGXBT",
+      "wsname": "PAXG/XBT"
+    },
+    {
+      "instrument": "PEAQEUR",
+      "wsname": "PEAQ/EUR"
+    },
+    {
+      "instrument": "PEAQUSD",
+      "wsname": "PEAQ/USD"
+    },
+    {
+      "instrument": "PEAQUSDC",
+      "wsname": "PEAQ/USDC"
+    },
+    {
+      "instrument": "PENDLEEUR",
+      "wsname": "PENDLE/EUR"
+    },
+    {
+      "instrument": "PENDLEUSD",
+      "wsname": "PENDLE/USD"
+    },
+    {
+      "instrument": "PENGUEUR",
+      "wsname": "PENGU/EUR"
+    },
+    {
+      "instrument": "PENGUUSD",
+      "wsname": "PENGU/USD"
+    },
+    {
+      "instrument": "PENGUUSDC",
+      "wsname": "PENGU/USDC"
+    },
+    {
+      "instrument": "PENGUUSDT",
+      "wsname": "PENGU/USDT"
+    },
+    {
+      "instrument": "PEPEAUD",
+      "wsname": "PEPE/AUD"
+    },
+    {
+      "instrument": "PEPECAD",
+      "wsname": "PEPE/CAD"
+    },
+    {
+      "instrument": "PEPECOINUSD",
+      "wsname": "PEPECOIN/USD"
+    },
+    {
+      "instrument": "PEPEEUR",
+      "wsname": "PEPE/EUR"
+    },
+    {
+      "instrument": "PEPEGBP",
+      "wsname": "PEPE/GBP"
+    },
+    {
+      "instrument": "PEPEUR",
+      "wsname": "PEP/EUR"
+    },
+    {
+      "instrument": "PEPEUSD",
+      "wsname": "PEPE/USD"
+    },
+    {
+      "instrument": "PEPUSD",
+      "wsname": "PEP/USD"
+    },
+    {
+      "instrument": "PERPEUR",
+      "wsname": "PERP/EUR"
+    },
+    {
+      "instrument": "PERPUSD",
+      "wsname": "PERP/USD"
+    },
+    {
+      "instrument": "PHAEUR",
+      "wsname": "PHA/EUR"
+    },
+    {
+      "instrument": "PHAUSD",
+      "wsname": "PHA/USD"
+    },
+    {
+      "instrument": "PIEUR",
+      "wsname": "PI/EUR"
+    },
+    {
+      "instrument": "PIEVERSEUSD",
+      "wsname": "PIEVERSE/USD"
+    },
+    {
+      "instrument": "PIPEEUR",
+      "wsname": "PIPE/EUR"
+    },
+    {
+      "instrument": "PIPEUSD",
+      "wsname": "PIPE/USD"
+    },
+    {
+      "instrument": "PIUSD",
+      "wsname": "PI/USD"
+    },
+    {
+      "instrument": "PLAYEUR",
+      "wsname": "PLAY/EUR"
+    },
+    {
+      "instrument": "PLAYUSD",
+      "wsname": "PLAY/USD"
+    },
+    {
+      "instrument": "PLUMEEUR",
+      "wsname": "PLUME/EUR"
+    },
+    {
+      "instrument": "PLUMEUSD",
+      "wsname": "PLUME/USD"
+    },
+    {
+      "instrument": "PNTUSD",
+      "wsname": "PNT/USD"
+    },
+    {
+      "instrument": "PNUTEUR",
+      "wsname": "PNUT/EUR"
+    },
+    {
+      "instrument": "PNUTUSD",
+      "wsname": "PNUT/USD"
+    },
+    {
+      "instrument": "POLEUR",
+      "wsname": "POL/EUR"
+    },
+    {
+      "instrument": "POLISEUR",
+      "wsname": "POLIS/EUR"
+    },
+    {
+      "instrument": "POLISUSD",
+      "wsname": "POLIS/USD"
+    },
+    {
+      "instrument": "POLSEUR",
+      "wsname": "POLS/EUR"
+    },
+    {
+      "instrument": "POLSUSD",
+      "wsname": "POLS/USD"
+    },
+    {
+      "instrument": "POLUSD",
+      "wsname": "POL/USD"
+    },
+    {
+      "instrument": "PONDEUR",
+      "wsname": "POND/EUR"
+    },
+    {
+      "instrument": "PONDUSD",
+      "wsname": "POND/USD"
+    },
+    {
+      "instrument": "PONKEEUR",
+      "wsname": "PONKE/EUR"
+    },
+    {
+      "instrument": "PONKEUSD",
+      "wsname": "PONKE/USD"
+    },
+    {
+      "instrument": "PONSUSD",
+      "wsname": "PONS/USD"
+    },
+    {
+      "instrument": "POPCATEUR",
+      "wsname": "POPCAT/EUR"
+    },
+    {
+      "instrument": "POPCATGBP",
+      "wsname": "POPCAT/GBP"
+    },
+    {
+      "instrument": "POPCATUSD",
+      "wsname": "POPCAT/USD"
+    },
+    {
+      "instrument": "PORTALEUR",
+      "wsname": "PORTAL/EUR"
+    },
+    {
+      "instrument": "PORTALUSD",
+      "wsname": "PORTAL/USD"
+    },
+    {
+      "instrument": "POWREUR",
+      "wsname": "POWR/EUR"
+    },
+    {
+      "instrument": "POWRUSD",
+      "wsname": "POWR/USD"
+    },
+    {
+      "instrument": "PRCLEUR",
+      "wsname": "PRCL/EUR"
+    },
+    {
+      "instrument": "PRCLUSD",
+      "wsname": "PRCL/USD"
+    },
+    {
+      "instrument": "PRIMEEUR",
+      "wsname": "PRIME/EUR"
+    },
+    {
+      "instrument": "PRIMEUSD",
+      "wsname": "PRIME/USD"
+    },
+    {
+      "instrument": "PROEUR",
+      "wsname": "PRO/EUR"
+    },
+    {
+      "instrument": "PROMPTEUR",
+      "wsname": "PROMPT/EUR"
+    },
+    {
+      "instrument": "PROMPTUSD",
+      "wsname": "PROMPT/USD"
+    },
+    {
+      "instrument": "PROSEUR",
+      "wsname": "PROS/EUR"
+    },
+    {
+      "instrument": "PROSUSD",
+      "wsname": "PROS/USD"
+    },
+    {
+      "instrument": "PROUSD",
+      "wsname": "PRO/USD"
+    },
+    {
+      "instrument": "PROVEEUR",
+      "wsname": "PROVE/EUR"
+    },
+    {
+      "instrument": "PROVEUSD",
+      "wsname": "PROVE/USD"
+    },
+    {
+      "instrument": "PTBEUR",
+      "wsname": "PTB/EUR"
+    },
+    {
+      "instrument": "PTBUSD",
+      "wsname": "PTB/USD"
+    },
+    {
+      "instrument": "PUFFEREUR",
+      "wsname": "PUFFER/EUR"
+    },
+    {
+      "instrument": "PUFFERUSD",
+      "wsname": "PUFFER/USD"
+    },
+    {
+      "instrument": "PUMPEUR",
+      "wsname": "PUMP/EUR"
+    },
+    {
+      "instrument": "PUMPSOL",
+      "wsname": "PUMP/SOL"
+    },
+    {
+      "instrument": "PUMPUSD",
+      "wsname": "PUMP/USD"
+    },
+    {
+      "instrument": "PUPSEUR",
+      "wsname": "PUPS/EUR"
+    },
+    {
+      "instrument": "PUPSUSD",
+      "wsname": "PUPS/USD"
+    },
+    {
+      "instrument": "PWTUSD",
+      "wsname": "PWT/USD"
+    },
+    {
+      "instrument": "PYTHEUR",
+      "wsname": "PYTH/EUR"
+    },
+    {
+      "instrument": "PYTHUSD",
+      "wsname": "PYTH/USD"
+    },
+    {
+      "instrument": "PYUSDUSD",
+      "wsname": "PYUSD/USD"
+    },
+    {
+      "instrument": "QCADUSD",
+      "wsname": "QCAD/USD"
+    },
+    {
+      "instrument": "QEUR",
+      "wsname": "Q/EUR"
+    },
+    {
+      "instrument": "QIUSD",
+      "wsname": "QI/USD"
+    },
+    {
+      "instrument": "QNTEUR",
+      "wsname": "QNT/EUR"
+    },
+    {
+      "instrument": "QNTUSD",
+      "wsname": "QNT/USD"
+    },
+    {
+      "instrument": "QTUMEUR",
+      "wsname": "QTUM/EUR"
+    },
+    {
+      "instrument": "QTUMUSD",
+      "wsname": "QTUM/USD"
+    },
+    {
+      "instrument": "QUAIEUR",
+      "wsname": "QUAI/EUR"
+    },
+    {
+      "instrument": "QUAIUSD",
+      "wsname": "QUAI/USD"
+    },
+    {
+      "instrument": "QUIDUSD",
+      "wsname": "QUID/USD"
+    },
+    {
+      "instrument": "QUSD",
+      "wsname": "Q/USD"
+    },
+    {
+      "instrument": "RADEUR",
+      "wsname": "RAD/EUR"
+    },
+    {
+      "instrument": "RADUSD",
+      "wsname": "RAD/USD"
+    },
+    {
+      "instrument": "RAILSEUR",
+      "wsname": "RAILS/EUR"
+    },
+    {
+      "instrument": "RAILSUSD",
+      "wsname": "RAILS/USD"
+    },
+    {
+      "instrument": "RAREEUR",
+      "wsname": "RARE/EUR"
+    },
+    {
+      "instrument": "RAREUSD",
+      "wsname": "RARE/USD"
+    },
+    {
+      "instrument": "RARIEUR",
+      "wsname": "RARI/EUR"
+    },
+    {
+      "instrument": "RARIUSD",
+      "wsname": "RARI/USD"
+    },
+    {
+      "instrument": "RAYEUR",
+      "wsname": "RAY/EUR"
+    },
+    {
+      "instrument": "RAYUSD",
+      "wsname": "RAY/USD"
+    },
+    {
+      "instrument": "REDEUR",
+      "wsname": "RED/EUR"
+    },
+    {
+      "instrument": "REDUSD",
+      "wsname": "RED/USD"
+    },
+    {
+      "instrument": "REKTEUR",
+      "wsname": "REKT/EUR"
+    },
+    {
+      "instrument": "REKTUSD",
+      "wsname": "REKT/USD"
+    },
+    {
+      "instrument": "RENDEREUR",
+      "wsname": "RENDER/EUR"
+    },
+    {
+      "instrument": "RENDERUSD",
+      "wsname": "RENDER/USD"
+    },
+    {
+      "instrument": "RENEUR",
+      "wsname": "REN/EUR"
+    },
+    {
+      "instrument": "RENUSD",
+      "wsname": "REN/USD"
+    },
+    {
+      "instrument": "REPPOEUR",
+      "wsname": "REPPO/EUR"
+    },
+    {
+      "instrument": "REPPOUSD",
+      "wsname": "REPPO/USD"
+    },
+    {
+      "instrument": "REQEUR",
+      "wsname": "REQ/EUR"
+    },
+    {
+      "instrument": "REQUSD",
+      "wsname": "REQ/USD"
+    },
+    {
+      "instrument": "REUSD",
+      "wsname": "RE/USD"
+    },
+    {
+      "instrument": "REZEUR",
+      "wsname": "REZ/EUR"
+    },
+    {
+      "instrument": "REZUSD",
+      "wsname": "REZ/USD"
+    },
+    {
+      "instrument": "RIVEREUR",
+      "wsname": "RIVER/EUR"
+    },
+    {
+      "instrument": "RIVERUSD",
+      "wsname": "RIVER/USD"
+    },
+    {
+      "instrument": "RLCEUR",
+      "wsname": "RLC/EUR"
+    },
+    {
+      "instrument": "RLCUSD",
+      "wsname": "RLC/USD"
+    },
+    {
+      "instrument": "RLSEUR",
+      "wsname": "RLS/EUR"
+    },
+    {
+      "instrument": "RLSUSD",
+      "wsname": "RLS/USD"
+    },
+    {
+      "instrument": "RLUSDUSD",
+      "wsname": "RLUSD/USD"
+    },
+    {
+      "instrument": "RLUSDUSDC",
+      "wsname": "RLUSD/USDC"
+    },
+    {
+      "instrument": "RLUSDUSDT",
+      "wsname": "RLUSD/USDT"
+    },
+    {
+      "instrument": "RNBWUSD",
+      "wsname": "RNBW/USD"
+    },
+    {
+      "instrument": "ROBOUSD",
+      "wsname": "ROBO/USD"
+    },
+    {
+      "instrument": "ROLLEUR",
+      "wsname": "ROLL/EUR"
+    },
+    {
+      "instrument": "ROLLUSD",
+      "wsname": "ROLL/USD"
+    },
+    {
+      "instrument": "RPLEUR",
+      "wsname": "RPL/EUR"
+    },
+    {
+      "instrument": "RPLUSD",
+      "wsname": "RPL/USD"
+    },
+    {
+      "instrument": "RSCEUR",
+      "wsname": "RSC/EUR"
+    },
+    {
+      "instrument": "RSCUSD",
+      "wsname": "RSC/USD"
+    },
+    {
+      "instrument": "RSREUR",
+      "wsname": "RSR/EUR"
+    },
+    {
+      "instrument": "RSRUSD",
+      "wsname": "RSR/USD"
+    },
+    {
+      "instrument": "RUJIEUR",
+      "wsname": "RUJI/EUR"
+    },
+    {
+      "instrument": "RUJIUSD",
+      "wsname": "RUJI/USD"
+    },
+    {
+      "instrument": "RUNEEUR",
+      "wsname": "RUNE/EUR"
+    },
+    {
+      "instrument": "RUNEUSD",
+      "wsname": "RUNE/USD"
+    },
+    {
+      "instrument": "RVVUSD",
+      "wsname": "RVV/USD"
+    },
+    {
+      "instrument": "SAFEEUR",
+      "wsname": "SAFE/EUR"
+    },
+    {
+      "instrument": "SAFEUSD",
+      "wsname": "SAFE/USD"
+    },
+    {
+      "instrument": "SAGAEUR",
+      "wsname": "SAGA/EUR"
+    },
+    {
+      "instrument": "SAGAUSD",
+      "wsname": "SAGA/USD"
+    },
+    {
+      "instrument": "SAHARAEUR",
+      "wsname": "SAHARA/EUR"
+    },
+    {
+      "instrument": "SAHARAUSD",
+      "wsname": "SAHARA/USD"
+    },
+    {
+      "instrument": "SAMOEUR",
+      "wsname": "SAMO/EUR"
+    },
+    {
+      "instrument": "SAMOUSD",
+      "wsname": "SAMO/USD"
+    },
+    {
+      "instrument": "SANDEUR",
+      "wsname": "SAND/EUR"
+    },
+    {
+      "instrument": "SANDGBP",
+      "wsname": "SAND/GBP"
+    },
+    {
+      "instrument": "SANDUSD",
+      "wsname": "SAND/USD"
+    },
+    {
+      "instrument": "SANDXBT",
+      "wsname": "SAND/XBT"
+    },
+    {
+      "instrument": "SAPIENEUR",
+      "wsname": "SAPIEN/EUR"
+    },
+    {
+      "instrument": "SAPIENUSD",
+      "wsname": "SAPIEN/USD"
+    },
+    {
+      "instrument": "SAUCEEUR",
+      "wsname": "SAUCE/EUR"
+    },
+    {
+      "instrument": "SAUCEUSD",
+      "wsname": "SAUCE/USD"
+    },
+    {
+      "instrument": "SCEUR",
+      "wsname": "SC/EUR"
+    },
+    {
+      "instrument": "SCOREUR",
+      "wsname": "SCOR/EUR"
+    },
+    {
+      "instrument": "SCORUSD",
+      "wsname": "SCOR/USD"
+    },
+    {
+      "instrument": "SCRTEUR",
+      "wsname": "SCRT/EUR"
+    },
+    {
+      "instrument": "SCRTUSD",
+      "wsname": "SCRT/USD"
+    },
+    {
+      "instrument": "SCUSD",
+      "wsname": "SC/USD"
+    },
+    {
+      "instrument": "SCXBT",
+      "wsname": "SC/XBT"
+    },
+    {
+      "instrument": "SEIEUR",
+      "wsname": "SEI/EUR"
+    },
+    {
+      "instrument": "SEIUSD",
+      "wsname": "SEI/USD"
+    },
+    {
+      "instrument": "SENTEUR",
+      "wsname": "SENT/EUR"
+    },
+    {
+      "instrument": "SENTUSD",
+      "wsname": "SENT/USD"
+    },
+    {
+      "instrument": "SEUR",
+      "wsname": "S/EUR"
+    },
+    {
+      "instrument": "SGBEUR",
+      "wsname": "SGB/EUR"
+    },
+    {
+      "instrument": "SGBUSD",
+      "wsname": "SGB/USD"
+    },
+    {
+      "instrument": "SHAPEUSD",
+      "wsname": "SHAPE/USD"
+    },
+    {
+      "instrument": "SHIBEUR",
+      "wsname": "SHIB/EUR"
+    },
+    {
+      "instrument": "SHIBUSD",
+      "wsname": "SHIB/USD"
+    },
+    {
+      "instrument": "SHIBUSDC",
+      "wsname": "SHIB/USDC"
+    },
+    {
+      "instrument": "SHIBUSDT",
+      "wsname": "SHIB/USDT"
+    },
+    {
+      "instrument": "SHXEUR",
+      "wsname": "SHX/EUR"
+    },
+    {
+      "instrument": "SHXUSD",
+      "wsname": "SHX/USD"
+    },
+    {
+      "instrument": "SIGMAEUR",
+      "wsname": "SIGMA/EUR"
+    },
+    {
+      "instrument": "SIGMAUSD",
+      "wsname": "SIGMA/USD"
+    },
+    {
+      "instrument": "SIGNEUR",
+      "wsname": "SIGN/EUR"
+    },
+    {
+      "instrument": "SIGNUSD",
+      "wsname": "SIGN/USD"
+    },
+    {
+      "instrument": "SKREUR",
+      "wsname": "SKR/EUR"
+    },
+    {
+      "instrument": "SKRUSD",
+      "wsname": "SKR/USD"
+    },
+    {
+      "instrument": "SKYEUR",
+      "wsname": "SKY/EUR"
+    },
+    {
+      "instrument": "SKYUSD",
+      "wsname": "SKY/USD"
+    },
+    {
+      "instrument": "SLXEUR",
+      "wsname": "SLX/EUR"
+    },
+    {
+      "instrument": "SLXUSD",
+      "wsname": "SLX/USD"
+    },
+    {
+      "instrument": "SN44USD",
+      "wsname": "SN44/USD"
+    },
+    {
+      "instrument": "SN51USD",
+      "wsname": "SN51/USD"
+    },
+    {
+      "instrument": "SN62USD",
+      "wsname": "SN62/USD"
+    },
+    {
+      "instrument": "SN64USD",
+      "wsname": "SN64/USD"
+    },
+    {
+      "instrument": "SN75USD",
+      "wsname": "SN75/USD"
+    },
+    {
+      "instrument": "SN8USD",
+      "wsname": "SN8/USD"
+    },
+    {
+      "instrument": "SNEKEUR",
+      "wsname": "SNEK/EUR"
+    },
+    {
+      "instrument": "SNEKUSD",
+      "wsname": "SNEK/USD"
+    },
+    {
+      "instrument": "SNXEUR",
+      "wsname": "SNX/EUR"
+    },
+    {
+      "instrument": "SNXUSD",
+      "wsname": "SNX/USD"
+    },
+    {
+      "instrument": "SNXXBT",
+      "wsname": "SNX/XBT"
+    },
+    {
+      "instrument": "SODAUSD",
+      "wsname": "SODA/USD"
+    },
+    {
+      "instrument": "SOFIDUSD",
+      "wsname": "SOFID/USD"
+    },
+    {
+      "instrument": "SOFIDUSDC",
+      "wsname": "SOFID/USDC"
+    },
+    {
+      "instrument": "SOFIDUSDT",
+      "wsname": "SOFID/USDT"
+    },
+    {
+      "instrument": "SOLAUD",
+      "wsname": "SOL/AUD"
+    },
+    {
+      "instrument": "SOLCAD",
+      "wsname": "SOL/CAD"
+    },
+    {
+      "instrument": "SOLETH",
+      "wsname": "SOL/ETH"
+    },
+    {
+      "instrument": "SOLEUR",
+      "wsname": "SOL/EUR"
+    },
+    {
+      "instrument": "SOLEURC",
+      "wsname": "SOL/EURC"
+    },
+    {
+      "instrument": "SOLGBP",
+      "wsname": "SOL/GBP"
+    },
+    {
+      "instrument": "SOLSOFID",
+      "wsname": "SOL/SOFID"
+    },
+    {
+      "instrument": "SOLUSD",
+      "wsname": "SOL/USD"
+    },
+    {
+      "instrument": "SOLUSD1",
+      "wsname": "SOL/USD1"
+    },
+    {
+      "instrument": "SOLUSDC",
+      "wsname": "SOL/USDC"
+    },
+    {
+      "instrument": "SOLUSDT",
+      "wsname": "SOL/USDT"
+    },
+    {
+      "instrument": "SOLVEUR",
+      "wsname": "SOLV/EUR"
+    },
+    {
+      "instrument": "SOLVUSD",
+      "wsname": "SOLV/USD"
+    },
+    {
+      "instrument": "SOLXBT",
+      "wsname": "SOL/XBT"
+    },
+    {
+      "instrument": "SOMIEUR",
+      "wsname": "SOMI/EUR"
+    },
+    {
+      "instrument": "SOMIUSD",
+      "wsname": "SOMI/USD"
+    },
+    {
+      "instrument": "SONICUSD",
+      "wsname": "SONIC/USD"
+    },
+    {
+      "instrument": "SOONEUR",
+      "wsname": "SOON/EUR"
+    },
+    {
+      "instrument": "SOONUSD",
+      "wsname": "SOON/USD"
+    },
+    {
+      "instrument": "SOSOEUR",
+      "wsname": "SOSO/EUR"
+    },
+    {
+      "instrument": "SOSOUSD",
+      "wsname": "SOSO/USD"
+    },
+    {
+      "instrument": "SPACEEUR",
+      "wsname": "SPACE/EUR"
+    },
+    {
+      "instrument": "SPACEUSD",
+      "wsname": "SPACE/USD"
+    },
+    {
+      "instrument": "SPELLEUR",
+      "wsname": "SPELL/EUR"
+    },
+    {
+      "instrument": "SPELLUSD",
+      "wsname": "SPELL/USD"
+    },
+    {
+      "instrument": "SPKEUR",
+      "wsname": "SPK/EUR"
+    },
+    {
+      "instrument": "SPKUSD",
+      "wsname": "SPK/USD"
+    },
+    {
+      "instrument": "SPXEUR",
+      "wsname": "SPX/EUR"
+    },
+    {
+      "instrument": "SPXUSD",
+      "wsname": "SPX/USD"
+    },
+    {
+      "instrument": "SRMEUR",
+      "wsname": "SRM/EUR"
+    },
+    {
+      "instrument": "SRMUSD",
+      "wsname": "SRM/USD"
+    },
+    {
+      "instrument": "SSVEUR",
+      "wsname": "SSV/EUR"
+    },
+    {
+      "instrument": "SSVUSD",
+      "wsname": "SSV/USD"
+    },
+    {
+      "instrument": "STABLEUSD",
+      "wsname": "STABLE/USD"
+    },
+    {
+      "instrument": "STBLEUR",
+      "wsname": "STBL/EUR"
+    },
+    {
+      "instrument": "STBLUSD",
+      "wsname": "STBL/USD"
+    },
+    {
+      "instrument": "STEUR",
+      "wsname": "ST/EUR"
+    },
+    {
+      "instrument": "STGEUR",
+      "wsname": "STG/EUR"
+    },
+    {
+      "instrument": "STGUSD",
+      "wsname": "STG/USD"
+    },
+    {
+      "instrument": "STORJEUR",
+      "wsname": "STORJ/EUR"
+    },
+    {
+      "instrument": "STORJUSD",
+      "wsname": "STORJ/USD"
+    },
+    {
+      "instrument": "STRKEUR",
+      "wsname": "STRK/EUR"
+    },
+    {
+      "instrument": "STRKUSD",
+      "wsname": "STRK/USD"
+    },
+    {
+      "instrument": "STUSD",
+      "wsname": "ST/USD"
+    },
+    {
+      "instrument": "STXEUR",
+      "wsname": "STX/EUR"
+    },
+    {
+      "instrument": "STXUSD",
+      "wsname": "STX/USD"
+    },
+    {
+      "instrument": "SUIEUR",
+      "wsname": "SUI/EUR"
+    },
+    {
+      "instrument": "SUIGBP",
+      "wsname": "SUI/GBP"
+    },
+    {
+      "instrument": "SUIUSD",
+      "wsname": "SUI/USD"
+    },
+    {
+      "instrument": "SUKUEUR",
+      "wsname": "SUKU/EUR"
+    },
+    {
+      "instrument": "SUKUUSD",
+      "wsname": "SUKU/USD"
+    },
+    {
+      "instrument": "SUNDOGEUR",
+      "wsname": "SUNDOG/EUR"
+    },
+    {
+      "instrument": "SUNDOGUSD",
+      "wsname": "SUNDOG/USD"
+    },
+    {
+      "instrument": "SUNEUR",
+      "wsname": "SUN/EUR"
+    },
+    {
+      "instrument": "SUNUSD",
+      "wsname": "SUN/USD"
+    },
+    {
+      "instrument": "SUPEREUR",
+      "wsname": "SUPER/EUR"
+    },
+    {
+      "instrument": "SUPERUSD",
+      "wsname": "SUPER/USD"
+    },
+    {
+      "instrument": "SUPEUR",
+      "wsname": "SUP/EUR"
+    },
+    {
+      "instrument": "SUPUSD",
+      "wsname": "SUP/USD"
+    },
+    {
+      "instrument": "SUSD",
+      "wsname": "S/USD"
+    },
+    {
+      "instrument": "SUSDC",
+      "wsname": "S/USDC"
+    },
+    {
+      "instrument": "SUSDT",
+      "wsname": "S/USDT"
+    },
+    {
+      "instrument": "SUSHIEUR",
+      "wsname": "SUSHI/EUR"
+    },
+    {
+      "instrument": "SUSHIUSD",
+      "wsname": "SUSHI/USD"
+    },
+    {
+      "instrument": "SWARMSEUR",
+      "wsname": "SWARMS/EUR"
+    },
+    {
+      "instrument": "SWARMSUSD",
+      "wsname": "SWARMS/USD"
+    },
+    {
+      "instrument": "SWEATEUR",
+      "wsname": "SWEAT/EUR"
+    },
+    {
+      "instrument": "SWEATUSD",
+      "wsname": "SWEAT/USD"
+    },
+    {
+      "instrument": "SWELLEUR",
+      "wsname": "SWELL/EUR"
+    },
+    {
+      "instrument": "SWELLUSD",
+      "wsname": "SWELL/USD"
+    },
+    {
+      "instrument": "SXTEUR",
+      "wsname": "SXT/EUR"
+    },
+    {
+      "instrument": "SXTUSD",
+      "wsname": "SXT/USD"
+    },
+    {
+      "instrument": "SYNDEUR",
+      "wsname": "SYND/EUR"
+    },
+    {
+      "instrument": "SYNDUSD",
+      "wsname": "SYND/USD"
+    },
+    {
+      "instrument": "SYNEUR",
+      "wsname": "SYN/EUR"
+    },
+    {
+      "instrument": "SYNUSD",
+      "wsname": "SYN/USD"
+    },
+    {
+      "instrument": "SYRUPEUR",
+      "wsname": "SYRUP/EUR"
+    },
+    {
+      "instrument": "SYRUPUSD",
+      "wsname": "SYRUP/USD"
+    },
+    {
+      "instrument": "TACUSD",
+      "wsname": "TAC/USD"
+    },
+    {
+      "instrument": "TAKEEUR",
+      "wsname": "TAKE/EUR"
+    },
+    {
+      "instrument": "TAKEUSD",
+      "wsname": "TAKE/USD"
+    },
+    {
+      "instrument": "TAOEUR",
+      "wsname": "TAO/EUR"
+    },
+    {
+      "instrument": "TAOUSD",
+      "wsname": "TAO/USD"
+    },
+    {
+      "instrument": "TBTCEUR",
+      "wsname": "TBTC/EUR"
+    },
+    {
+      "instrument": "TBTCUSD",
+      "wsname": "TBTC/USD"
+    },
+    {
+      "instrument": "TBTCXBT",
+      "wsname": "TBTC/XBT"
+    },
+    {
+      "instrument": "TCSUSD",
+      "wsname": "TCS/USD"
+    },
+    {
+      "instrument": "TELEUR",
+      "wsname": "TEL/EUR"
+    },
+    {
+      "instrument": "TELUSD",
+      "wsname": "TEL/USD"
+    },
+    {
+      "instrument": "TEUR",
+      "wsname": "T/EUR"
+    },
+    {
+      "instrument": "TGBPUSD",
+      "wsname": "TGBP/USD"
+    },
+    {
+      "instrument": "THQEUR",
+      "wsname": "THQ/EUR"
+    },
+    {
+      "instrument": "THQUSD",
+      "wsname": "THQ/USD"
+    },
+    {
+      "instrument": "TIAEUR",
+      "wsname": "TIA/EUR"
+    },
+    {
+      "instrument": "TIAUSD",
+      "wsname": "TIA/USD"
+    },
+    {
+      "instrument": "TLMEUR",
+      "wsname": "TLM/EUR"
+    },
+    {
+      "instrument": "TLMUSD",
+      "wsname": "TLM/USD"
+    },
+    {
+      "instrument": "TMXUSD",
+      "wsname": "TMX/USD"
+    },
+    {
+      "instrument": "TNSREUR",
+      "wsname": "TNSR/EUR"
+    },
+    {
+      "instrument": "TNSRUSD",
+      "wsname": "TNSR/USD"
+    },
+    {
+      "instrument": "TOKENEUR",
+      "wsname": "TOKEN/EUR"
+    },
+    {
+      "instrument": "TOKENUSD",
+      "wsname": "TOKEN/USD"
+    },
+    {
+      "instrument": "TONEUR",
+      "wsname": "TON/EUR"
+    },
+    {
+      "instrument": "TONUSD",
+      "wsname": "TON/USD"
+    },
+    {
+      "instrument": "TONUSDC",
+      "wsname": "TON/USDC"
+    },
+    {
+      "instrument": "TONUSDT",
+      "wsname": "TON/USDT"
+    },
+    {
+      "instrument": "TOSHIEUR",
+      "wsname": "TOSHI/EUR"
+    },
+    {
+      "instrument": "TOSHIUSD",
+      "wsname": "TOSHI/USD"
+    },
+    {
+      "instrument": "TRACEUR",
+      "wsname": "TRAC/EUR"
+    },
+    {
+      "instrument": "TRACUSD",
+      "wsname": "TRAC/USD"
+    },
+    {
+      "instrument": "TREADUSD",
+      "wsname": "TREAD/USD"
+    },
+    {
+      "instrument": "TREEEUR",
+      "wsname": "TREE/EUR"
+    },
+    {
+      "instrument": "TREEUSD",
+      "wsname": "TREE/USD"
+    },
+    {
+      "instrument": "TRIAEUR",
+      "wsname": "TRIA/EUR"
+    },
+    {
+      "instrument": "TRIAUSD",
+      "wsname": "TRIA/USD"
+    },
+    {
+      "instrument": "TRUEUR",
+      "wsname": "TRU/EUR"
+    },
+    {
+      "instrument": "TRUMPEUR",
+      "wsname": "TRUMP/EUR"
+    },
+    {
+      "instrument": "TRUMPUSD",
+      "wsname": "TRUMP/USD"
+    },
+    {
+      "instrument": "TRUMPUSDC",
+      "wsname": "TRUMP/USDC"
+    },
+    {
+      "instrument": "TRUMPUSDT",
+      "wsname": "TRUMP/USDT"
+    },
+    {
+      "instrument": "TRUSTEUR",
+      "wsname": "TRUST/EUR"
+    },
+    {
+      "instrument": "TRUSTUSD",
+      "wsname": "TRUST/USD"
+    },
+    {
+      "instrument": "TRUUSD",
+      "wsname": "TRU/USD"
+    },
+    {
+      "instrument": "TRXETH",
+      "wsname": "TRX/ETH"
+    },
+    {
+      "instrument": "TRXEUR",
+      "wsname": "TRX/EUR"
+    },
+    {
+      "instrument": "TRXUSD",
+      "wsname": "TRX/USD"
+    },
+    {
+      "instrument": "TRXUSDD",
+      "wsname": "TRX/USDD"
+    },
+    {
+      "instrument": "TRXXBT",
+      "wsname": "TRX/XBT"
+    },
+    {
+      "instrument": "TURBOEUR",
+      "wsname": "TURBO/EUR"
+    },
+    {
+      "instrument": "TURBOUSD",
+      "wsname": "TURBO/USD"
+    },
+    {
+      "instrument": "TUSD",
+      "wsname": "T/USD"
+    },
+    {
+      "instrument": "TXEUR",
+      "wsname": "TX/EUR"
+    },
+    {
+      "instrument": "TXUSD",
+      "wsname": "TX/USD"
+    },
+    {
+      "instrument": "UAIEUR",
+      "wsname": "UAI/EUR"
+    },
+    {
+      "instrument": "UAIUSD",
+      "wsname": "UAI/USD"
+    },
+    {
+      "instrument": "UEUR",
+      "wsname": "U/EUR"
+    },
+    {
+      "instrument": "UFDEUR",
+      "wsname": "UFD/EUR"
+    },
+    {
+      "instrument": "UFDUSD",
+      "wsname": "UFD/USD"
+    },
+    {
+      "instrument": "UMAEUR",
+      "wsname": "UMA/EUR"
+    },
+    {
+      "instrument": "UMAUSD",
+      "wsname": "UMA/USD"
+    },
+    {
+      "instrument": "UMXMUSD",
+      "wsname": "UMXM/USD"
+    },
+    {
+      "instrument": "UNFIEUR",
+      "wsname": "UNFI/EUR"
+    },
+    {
+      "instrument": "UNFIUSD",
+      "wsname": "UNFI/USD"
+    },
+    {
+      "instrument": "UNIETH",
+      "wsname": "UNI/ETH"
+    },
+    {
+      "instrument": "UNIEUR",
+      "wsname": "UNI/EUR"
+    },
+    {
+      "instrument": "UNITASUSD",
+      "wsname": "UNITAS/USD"
+    },
+    {
+      "instrument": "UNITASUSDT",
+      "wsname": "UNITAS/USDT"
+    },
+    {
+      "instrument": "UNIUSD",
+      "wsname": "UNI/USD"
+    },
+    {
+      "instrument": "UNIXBT",
+      "wsname": "UNI/XBT"
+    },
+    {
+      "instrument": "UPEUR",
+      "wsname": "UP/EUR"
+    },
+    {
+      "instrument": "UPUSD",
+      "wsname": "UP/USD"
+    },
+    {
+      "instrument": "USATUSD",
+      "wsname": "USAT/USD"
+    },
+    {
+      "instrument": "USATUSDT",
+      "wsname": "USAT/USDT"
+    },
+    {
+      "instrument": "USD1USD",
+      "wsname": "USD1/USD"
+    },
+    {
+      "instrument": "USD1USDC",
+      "wsname": "USD1/USDC"
+    },
+    {
+      "instrument": "USDCAUD",
+      "wsname": "USDC/AUD"
+    },
+    {
+      "instrument": "USDCCAD",
+      "wsname": "USDC/CAD"
+    },
+    {
+      "instrument": "USDCCHF",
+      "wsname": "USDC/CHF"
+    },
+    {
+      "instrument": "USDCEUR",
+      "wsname": "USDC/EUR"
+    },
+    {
+      "instrument": "USDCGBP",
+      "wsname": "USDC/GBP"
+    },
+    {
+      "instrument": "USDCHF",
+      "wsname": "USD/CHF"
+    },
+    {
+      "instrument": "USDCUSD",
+      "wsname": "USDC/USD"
+    },
+    {
+      "instrument": "USDCUSDT",
+      "wsname": "USDC/USDT"
+    },
+    {
+      "instrument": "USDDEUR",
+      "wsname": "USDD/EUR"
+    },
+    {
+      "instrument": "USDDUSD",
+      "wsname": "USDD/USD"
+    },
+    {
+      "instrument": "USDEEUR",
+      "wsname": "USDE/EUR"
+    },
+    {
+      "instrument": "USDEUSD",
+      "wsname": "USDE/USD"
+    },
+    {
+      "instrument": "USDEUSDC",
+      "wsname": "USDE/USDC"
+    },
+    {
+      "instrument": "USDEUSDT",
+      "wsname": "USDE/USDT"
+    },
+    {
+      "instrument": "USDGOUSD",
+      "wsname": "USDGO/USD"
+    },
+    {
+      "instrument": "USDGUSD",
+      "wsname": "USDG/USD"
+    },
+    {
+      "instrument": "USDGUSDC",
+      "wsname": "USDG/USDC"
+    },
+    {
+      "instrument": "USDGUSDT",
+      "wsname": "USDG/USDT"
+    },
+    {
+      "instrument": "USDPTUSD",
+      "wsname": "USDPT/USD"
+    },
+    {
+      "instrument": "USDPTUSDC",
+      "wsname": "USDPT/USDC"
+    },
+    {
+      "instrument": "USDPTUSDT",
+      "wsname": "USDPT/USDT"
+    },
+    {
+      "instrument": "USDQUSD",
+      "wsname": "USDQ/USD"
+    },
+    {
+      "instrument": "USDQUSDC",
+      "wsname": "USDQ/USDC"
+    },
+    {
+      "instrument": "USDQUSDT",
+      "wsname": "USDQ/USDT"
+    },
+    {
+      "instrument": "USDSEUR",
+      "wsname": "USDS/EUR"
+    },
+    {
+      "instrument": "USDSMUSD",
+      "wsname": "USDSM/USD"
+    },
+    {
+      "instrument": "USDSUIUSD",
+      "wsname": "USDSUI/USD"
+    },
+    {
+      "instrument": "USDSUSD",
+      "wsname": "USDS/USD"
+    },
+    {
+      "instrument": "USDTAUD",
+      "wsname": "USDT/AUD"
+    },
+    {
+      "instrument": "USDTCAD",
+      "wsname": "USDT/CAD"
+    },
+    {
+      "instrument": "USDTCHF",
+      "wsname": "USDT/CHF"
+    },
+    {
+      "instrument": "USDTEUR",
+      "wsname": "USDT/EUR"
+    },
+    {
+      "instrument": "USDTGBP",
+      "wsname": "USDT/GBP"
+    },
+    {
+      "instrument": "USDTJPY",
+      "wsname": "USDT/JPY"
+    },
+    {
+      "instrument": "USDTUSD",
+      "wsname": "USDT/USD"
+    },
+    {
+      "instrument": "USDUCEUR",
+      "wsname": "USDUC/EUR"
+    },
+    {
+      "instrument": "USDUCUSD",
+      "wsname": "USDUC/USD"
+    },
+    {
+      "instrument": "USELESSEUR",
+      "wsname": "USELESS/EUR"
+    },
+    {
+      "instrument": "USELESSUSD",
+      "wsname": "USELESS/USD"
+    },
+    {
+      "instrument": "USEUR",
+      "wsname": "US/EUR"
+    },
+    {
+      "instrument": "USTABLESUSD",
+      "wsname": "USTABLES/USD"
+    },
+    {
+      "instrument": "USUALEUR",
+      "wsname": "USUAL/EUR"
+    },
+    {
+      "instrument": "USUALUSD",
+      "wsname": "USUAL/USD"
+    },
+    {
+      "instrument": "USUSD",
+      "wsname": "US/USD"
+    },
+    {
+      "instrument": "UUSD",
+      "wsname": "U/USD"
+    },
+    {
+      "instrument": "UXLINKUSD",
+      "wsname": "UXLINK/USD"
+    },
+    {
+      "instrument": "VELODROMEEUR",
+      "wsname": "VELODROME/EUR"
+    },
+    {
+      "instrument": "VELODROMEUSD",
+      "wsname": "VELODROME/USD"
+    },
+    {
+      "instrument": "VELOEUR",
+      "wsname": "VELO/EUR"
+    },
+    {
+      "instrument": "VELOUSD",
+      "wsname": "VELO/USD"
+    },
+    {
+      "instrument": "VELVETUSD",
+      "wsname": "VELVET/USD"
+    },
+    {
+      "instrument": "VETEUR",
+      "wsname": "VET/EUR"
+    },
+    {
+      "instrument": "VETUSD",
+      "wsname": "VET/USD"
+    },
+    {
+      "instrument": "VETUSDC",
+      "wsname": "VET/USDC"
+    },
+    {
+      "instrument": "VETUSDT",
+      "wsname": "VET/USDT"
+    },
+    {
+      "instrument": "VFYEUR",
+      "wsname": "VFY/EUR"
+    },
+    {
+      "instrument": "VFYUSD",
+      "wsname": "VFY/USD"
+    },
+    {
+      "instrument": "VINEEUR",
+      "wsname": "VINE/EUR"
+    },
+    {
+      "instrument": "VINEUSD",
+      "wsname": "VINE/USD"
+    },
+    {
+      "instrument": "VIRTUALEUR",
+      "wsname": "VIRTUAL/EUR"
+    },
+    {
+      "instrument": "VIRTUALUSD",
+      "wsname": "VIRTUAL/USD"
+    },
+    {
+      "instrument": "VIRTUALUSDC",
+      "wsname": "VIRTUAL/USDC"
+    },
+    {
+      "instrument": "VIRTUALUSDT",
+      "wsname": "VIRTUAL/USDT"
+    },
+    {
+      "instrument": "VOOIUSD",
+      "wsname": "VOOI/USD"
+    },
+    {
+      "instrument": "VSNEUR",
+      "wsname": "VSN/EUR"
+    },
+    {
+      "instrument": "VSNUSD",
+      "wsname": "VSN/USD"
+    },
+    {
+      "instrument": "VTHOEUR",
+      "wsname": "VTHO/EUR"
+    },
+    {
+      "instrument": "VTHOUSD",
+      "wsname": "VTHO/USD"
+    },
+    {
+      "instrument": "VVVEUR",
+      "wsname": "VVV/EUR"
+    },
+    {
+      "instrument": "VVVUSD",
+      "wsname": "VVV/USD"
+    },
+    {
+      "instrument": "WALEUR",
+      "wsname": "WAL/EUR"
+    },
+    {
+      "instrument": "WALUSD",
+      "wsname": "WAL/USD"
+    },
+    {
+      "instrument": "WARDEUR",
+      "wsname": "WARD/EUR"
+    },
+    {
+      "instrument": "WARDUSD",
+      "wsname": "WARD/USD"
+    },
+    {
+      "instrument": "WARUSD",
+      "wsname": "WAR/USD"
+    },
+    {
+      "instrument": "WAXLEUR",
+      "wsname": "WAXL/EUR"
+    },
+    {
+      "instrument": "WAXLUSD",
+      "wsname": "WAXL/USD"
+    },
+    {
+      "instrument": "WBTCEUR",
+      "wsname": "WBTC/EUR"
+    },
+    {
+      "instrument": "WBTCUSD",
+      "wsname": "WBTC/USD"
+    },
+    {
+      "instrument": "WBTCXBT",
+      "wsname": "WBTC/XBT"
+    },
+    {
+      "instrument": "WBTEUR",
+      "wsname": "WBT/EUR"
+    },
+    {
+      "instrument": "WBTUSD",
+      "wsname": "WBT/USD"
+    },
+    {
+      "instrument": "WCTEUR",
+      "wsname": "WCT/EUR"
+    },
+    {
+      "instrument": "WCTUSD",
+      "wsname": "WCT/USD"
+    },
+    {
+      "instrument": "WELLEUR",
+      "wsname": "WELL/EUR"
+    },
+    {
+      "instrument": "WELLUSD",
+      "wsname": "WELL/USD"
+    },
+    {
+      "instrument": "WEMIXUSD",
+      "wsname": "WEMIX/USD"
+    },
+    {
+      "instrument": "WEUR",
+      "wsname": "W/EUR"
+    },
+    {
+      "instrument": "WFBEUR",
+      "wsname": "WFB/EUR"
+    },
+    {
+      "instrument": "WFBUSD",
+      "wsname": "WFB/USD"
+    },
+    {
+      "instrument": "WIFEUR",
+      "wsname": "WIF/EUR"
+    },
+    {
+      "instrument": "WIFGBP",
+      "wsname": "WIF/GBP"
+    },
+    {
+      "instrument": "WIFUSD",
+      "wsname": "WIF/USD"
+    },
+    {
+      "instrument": "WINEUR",
+      "wsname": "WIN/EUR"
+    },
+    {
+      "instrument": "WINGSUSD",
+      "wsname": "WINGS/USD"
+    },
+    {
+      "instrument": "WINUSD",
+      "wsname": "WIN/USD"
+    },
+    {
+      "instrument": "WLDEUR",
+      "wsname": "WLD/EUR"
+    },
+    {
+      "instrument": "WLDUSD",
+      "wsname": "WLD/USD"
+    },
+    {
+      "instrument": "WLFIEUR",
+      "wsname": "WLFI/EUR"
+    },
+    {
+      "instrument": "WLFIUSD",
+      "wsname": "WLFI/USD"
+    },
+    {
+      "instrument": "WMTXEUR",
+      "wsname": "WMTX/EUR"
+    },
+    {
+      "instrument": "WMTXUSD",
+      "wsname": "WMTX/USD"
+    },
+    {
+      "instrument": "WOJAKUSD",
+      "wsname": "WOJAK/USD"
+    },
+    {
+      "instrument": "WOOEUR",
+      "wsname": "WOO/EUR"
+    },
+    {
+      "instrument": "WOOUSD",
+      "wsname": "WOO/USD"
+    },
+    {
+      "instrument": "WUSD",
+      "wsname": "W/USD"
+    },
+    {
+      "instrument": "XANEUR",
+      "wsname": "XAN/EUR"
+    },
+    {
+      "instrument": "XANUSD",
+      "wsname": "XAN/USD"
+    },
+    {
+      "instrument": "XAUTUSD",
+      "wsname": "XAUT/USD"
+    },
+    {
+      "instrument": "XAUTUSDT",
+      "wsname": "XAUT/USDT"
+    },
+    {
+      "instrument": "XBTAUD",
+      "wsname": "XBT/AUD"
+    },
+    {
+      "instrument": "XBTAUSD",
+      "wsname": "XBT/AUSD"
+    },
+    {
+      "instrument": "XBTCHF",
+      "wsname": "XBT/CHF"
+    },
+    {
+      "instrument": "XBTDAI",
+      "wsname": "XBT/DAI"
+    },
+    {
+      "instrument": "XBTEURC",
+      "wsname": "XBT/EURC"
+    },
+    {
+      "instrument": "XBTFIDD",
+      "wsname": "XBT/FIDD"
+    },
+    {
+      "instrument": "XBTPYUSD",
+      "wsname": "XBT/PYUSD"
+    },
+    {
+      "instrument": "XBTSOFID",
+      "wsname": "XBT/SOFID"
+    },
+    {
+      "instrument": "XBTUSD1",
+      "wsname": "XBT/USD1"
+    },
+    {
+      "instrument": "XBTUSDC",
+      "wsname": "XBT/USDC"
+    },
+    {
+      "instrument": "XBTUSDT",
+      "wsname": "XBT/USDT"
+    },
+    {
+      "instrument": "XCNEUR",
+      "wsname": "XCN/EUR"
+    },
+    {
+      "instrument": "XCNUSD",
+      "wsname": "XCN/USD"
+    },
+    {
+      "instrument": "XDCCAD",
+      "wsname": "XDC/CAD"
+    },
+    {
+      "instrument": "XDCEUR",
+      "wsname": "XDC/EUR"
+    },
+    {
+      "instrument": "XDCUSD",
+      "wsname": "XDC/USD"
+    },
+    {
+      "instrument": "XDCUSDC",
+      "wsname": "XDC/USDC"
+    },
+    {
+      "instrument": "XDGAUD",
+      "wsname": "XDG/AUD"
+    },
+    {
+      "instrument": "XDGCAD",
+      "wsname": "XDG/CAD"
+    },
+    {
+      "instrument": "XDGEUR",
+      "wsname": "XDG/EUR"
+    },
+    {
+      "instrument": "XDGGBP",
+      "wsname": "XDG/GBP"
+    },
+    {
+      "instrument": "XDGUSD",
+      "wsname": "XDG/USD"
+    },
+    {
+      "instrument": "XDGUSDC",
+      "wsname": "XDG/USDC"
+    },
+    {
+      "instrument": "XDGUSDT",
+      "wsname": "XDG/USDT"
+    },
+    {
+      "instrument": "XDPUSD",
+      "wsname": "XDP/USD"
+    },
+    {
+      "instrument": "ETCETH",
+      "wsname": "ETC/ETH"
+    },
+    {
+      "instrument": "ETCXBT",
+      "wsname": "ETC/XBT"
+    },
+    {
+      "instrument": "ETCEUR",
+      "wsname": "ETC/EUR"
+    },
+    {
+      "instrument": "ETCUSD",
+      "wsname": "ETC/USD"
+    },
+    {
+      "instrument": "ETHXBT",
+      "wsname": "ETH/XBT"
+    },
+    {
+      "instrument": "ETHCAD",
+      "wsname": "ETH/CAD"
+    },
+    {
+      "instrument": "ETHEUR",
+      "wsname": "ETH/EUR"
+    },
+    {
+      "instrument": "ETHGBP",
+      "wsname": "ETH/GBP"
+    },
+    {
+      "instrument": "ETHJPY",
+      "wsname": "ETH/JPY"
+    },
+    {
+      "instrument": "ETHUSD",
+      "wsname": "ETH/USD"
+    },
+    {
+      "instrument": "XIONEUR",
+      "wsname": "XION/EUR"
+    },
+    {
+      "instrument": "XIONUSD",
+      "wsname": "XION/USD"
+    },
+    {
+      "instrument": "XL1EUR",
+      "wsname": "XL1/EUR"
+    },
+    {
+      "instrument": "XL1USD",
+      "wsname": "XL1/USD"
+    },
+    {
+      "instrument": "LTCXBT",
+      "wsname": "LTC/XBT"
+    },
+    {
+      "instrument": "LTCEUR",
+      "wsname": "LTC/EUR"
+    },
+    {
+      "instrument": "LTCJPY",
+      "wsname": "LTC/JPY"
+    },
+    {
+      "instrument": "LTCUSD",
+      "wsname": "LTC/USD"
+    },
+    {
+      "instrument": "MLNXBT",
+      "wsname": "MLN/XBT"
+    },
+    {
+      "instrument": "MLNEUR",
+      "wsname": "MLN/EUR"
+    },
+    {
+      "instrument": "MLNUSD",
+      "wsname": "MLN/USD"
+    },
+    {
+      "instrument": "XMNEUR",
+      "wsname": "XMN/EUR"
+    },
+    {
+      "instrument": "XMNUSD",
+      "wsname": "XMN/USD"
+    },
+    {
+      "instrument": "XMRUSDC",
+      "wsname": "XMR/USDC"
+    },
+    {
+      "instrument": "XMRUSDT",
+      "wsname": "XMR/USDT"
+    },
+    {
+      "instrument": "XNYEUR",
+      "wsname": "XNY/EUR"
+    },
+    {
+      "instrument": "XNYUSD",
+      "wsname": "XNY/USD"
+    },
+    {
+      "instrument": "XPLEUR",
+      "wsname": "XPL/EUR"
+    },
+    {
+      "instrument": "XPLUSD",
+      "wsname": "XPL/USD"
+    },
+    {
+      "instrument": "XRPAUD",
+      "wsname": "XRP/AUD"
+    },
+    {
+      "instrument": "XRPETH",
+      "wsname": "XRP/ETH"
+    },
+    {
+      "instrument": "XRPGBP",
+      "wsname": "XRP/GBP"
+    },
+    {
+      "instrument": "XRPRLUSD",
+      "wsname": "XRP/RLUSD"
+    },
+    {
+      "instrument": "XRPUSDC",
+      "wsname": "XRP/USDC"
+    },
+    {
+      "instrument": "XRPUSDT",
+      "wsname": "XRP/USDT"
+    },
+    {
+      "instrument": "XTZEUR",
+      "wsname": "XTZ/EUR"
+    },
+    {
+      "instrument": "XTZUSD",
+      "wsname": "XTZ/USD"
+    },
+    {
+      "instrument": "XTZUSDC",
+      "wsname": "XTZ/USDC"
+    },
+    {
+      "instrument": "XTZUSDT",
+      "wsname": "XTZ/USDT"
+    },
+    {
+      "instrument": "XU3O8EUR",
+      "wsname": "XU3O8/EUR"
+    },
+    {
+      "instrument": "XU3O8USD",
+      "wsname": "XU3O8/USD"
+    },
+    {
+      "instrument": "XBTEUROP",
+      "wsname": "XBT/EUROP"
+    },
+    {
+      "instrument": "XBTUSDQ",
+      "wsname": "XBT/USDQ"
+    },
+    {
+      "instrument": "XBTCAD",
+      "wsname": "XBT/CAD"
+    },
+    {
+      "instrument": "XBTEUR",
+      "wsname": "XBT/EUR"
+    },
+    {
+      "instrument": "XBTGBP",
+      "wsname": "XBT/GBP"
+    },
+    {
+      "instrument": "XBTJPY",
+      "wsname": "XBT/JPY"
+    },
+    {
+      "instrument": "XBTUSD",
+      "wsname": "XBT/USD"
+    },
+    {
+      "instrument": "XDGXBT",
+      "wsname": "XDG/XBT"
+    },
+    {
+      "instrument": "XLMXBT",
+      "wsname": "XLM/XBT"
+    },
+    {
+      "instrument": "XLMEUR",
+      "wsname": "XLM/EUR"
+    },
+    {
+      "instrument": "XLMGBP",
+      "wsname": "XLM/GBP"
+    },
+    {
+      "instrument": "XLMUSD",
+      "wsname": "XLM/USD"
+    },
+    {
+      "instrument": "XMRXBT",
+      "wsname": "XMR/XBT"
+    },
+    {
+      "instrument": "XMREUR",
+      "wsname": "XMR/EUR"
+    },
+    {
+      "instrument": "XMRUSD",
+      "wsname": "XMR/USD"
+    },
+    {
+      "instrument": "XRPXBT",
+      "wsname": "XRP/XBT"
+    },
+    {
+      "instrument": "XRPCAD",
+      "wsname": "XRP/CAD"
+    },
+    {
+      "instrument": "XRPEUR",
+      "wsname": "XRP/EUR"
+    },
+    {
+      "instrument": "XRPUSD",
+      "wsname": "XRP/USD"
+    },
+    {
+      "instrument": "XYOEUR",
+      "wsname": "XYO/EUR"
+    },
+    {
+      "instrument": "XYOUSD",
+      "wsname": "XYO/USD"
+    },
+    {
+      "instrument": "ZECEUR",
+      "wsname": "ZEC/EUR"
+    },
+    {
+      "instrument": "ZECUSD",
+      "wsname": "ZEC/USD"
+    },
+    {
+      "instrument": "YBEUR",
+      "wsname": "YB/EUR"
+    },
+    {
+      "instrument": "YBUSD",
+      "wsname": "YB/USD"
+    },
+    {
+      "instrument": "YFIEUR",
+      "wsname": "YFI/EUR"
+    },
+    {
+      "instrument": "YFIUSD",
+      "wsname": "YFI/USD"
+    },
+    {
+      "instrument": "YGGEUR",
+      "wsname": "YGG/EUR"
+    },
+    {
+      "instrument": "YGGUSD",
+      "wsname": "YGG/USD"
+    },
+    {
+      "instrument": "YOMUSD",
+      "wsname": "YOM/USD"
+    },
+    {
+      "instrument": "ZAMAEUR",
+      "wsname": "ZAMA/EUR"
+    },
+    {
+      "instrument": "ZAMAUSD",
+      "wsname": "ZAMA/USD"
+    },
+    {
+      "instrument": "ZBCNEUR",
+      "wsname": "ZBCN/EUR"
+    },
+    {
+      "instrument": "ZBCNUSD",
+      "wsname": "ZBCN/USD"
+    },
+    {
+      "instrument": "ZBTEUR",
+      "wsname": "ZBT/EUR"
+    },
+    {
+      "instrument": "ZBTUSD",
+      "wsname": "ZBT/USD"
+    },
+    {
+      "instrument": "ZCHFCHF",
+      "wsname": "ZCHF/CHF"
+    },
+    {
+      "instrument": "ZCHFUSD",
+      "wsname": "ZCHF/USD"
+    },
+    {
+      "instrument": "ZEREBROEUR",
+      "wsname": "ZEREBRO/EUR"
+    },
+    {
+      "instrument": "ZEREBROUSD",
+      "wsname": "ZEREBRO/USD"
+    },
+    {
+      "instrument": "ZETAEUR",
+      "wsname": "ZETA/EUR"
+    },
+    {
+      "instrument": "ZETAUSD",
+      "wsname": "ZETA/USD"
+    },
+    {
+      "instrument": "EURUSD",
+      "wsname": "EUR/USD"
+    },
+    {
+      "instrument": "ZEUSEUR",
+      "wsname": "ZEUS/EUR"
+    },
+    {
+      "instrument": "ZEUSUSD",
+      "wsname": "ZEUS/USD"
+    },
+    {
+      "instrument": "ZEXEUR",
+      "wsname": "ZEX/EUR"
+    },
+    {
+      "instrument": "ZEXUSD",
+      "wsname": "ZEX/USD"
+    },
+    {
+      "instrument": "GBPUSD",
+      "wsname": "GBP/USD"
+    },
+    {
+      "instrument": "ZIGEUR",
+      "wsname": "ZIG/EUR"
+    },
+    {
+      "instrument": "ZIGUSD",
+      "wsname": "ZIG/USD"
+    },
+    {
+      "instrument": "ZKEUR",
+      "wsname": "ZK/EUR"
+    },
+    {
+      "instrument": "ZKPEUR",
+      "wsname": "ZKP/EUR"
+    },
+    {
+      "instrument": "ZKPUSD",
+      "wsname": "ZKP/USD"
+    },
+    {
+      "instrument": "ZKUSD",
+      "wsname": "ZK/USD"
+    },
+    {
+      "instrument": "ZORAEUR",
+      "wsname": "ZORA/EUR"
+    },
+    {
+      "instrument": "ZORAUSD",
+      "wsname": "ZORA/USD"
+    },
+    {
+      "instrument": "ZRCEUR",
+      "wsname": "ZRC/EUR"
+    },
+    {
+      "instrument": "ZRCUSD",
+      "wsname": "ZRC/USD"
+    },
+    {
+      "instrument": "ZROEUR",
+      "wsname": "ZRO/EUR"
+    },
+    {
+      "instrument": "ZROUSD",
+      "wsname": "ZRO/USD"
+    },
+    {
+      "instrument": "ZRXEUR",
+      "wsname": "ZRX/EUR"
+    },
+    {
+      "instrument": "ZRXUSD",
+      "wsname": "ZRX/USD"
+    },
+    {
+      "instrument": "ZRXXBT",
+      "wsname": "ZRX/XBT"
+    },
+    {
+      "instrument": "USDCAD",
+      "wsname": "USD/CAD"
+    },
+    {
+      "instrument": "USDJPY",
+      "wsname": "USD/JPY"
+    }
+  ],
+  "additional_catalogs_not_useful_flow_proof": true,
+  "status": "BOUNDED_WINDOW_QUALIFICATION_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 11,
+      "statistics": 0
+    },
+    "total": 11,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 153
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38050596507:window:1",
+    "source_run_id": "38050596507",
+    "measured_rows_read": 192,
+    "measured_rows_written_accounted": 85,
+    "measured_requests_accounted": 92,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 92,
+    "rows_read": 193,
+    "rows_written": 85,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 50,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 11,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 22,
+        "rows_read": 11,
+        "rows_written": 15,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 11,
+        "rows_read": 11,
+        "rows_written": 22,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 11,
+        "rows_read": 11,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 11,
+        "rows_read": 49,
+        "rows_written": 44,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 22,
+        "rows_read": 60,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791633897723
+}
