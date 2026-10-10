@@ -11,6 +11,33 @@ const upstreamFor=components=>components.some(c=>['BINANCE','GATE','KRAKEN','BAC
 export const JOINT_FLOW_VERSION='joint-spot-futures-flow-v1-20261010';
 // Operational agreement guards, not forecast probabilities or trading weights.
 export const JOINT_FLOW_POLICY=Object.freeze({minimum_absolute_imbalance:.05,maximum_imbalance_spread:.15,minimum_distinct_venues:2,score_contribution:0});
+// A qualified single-venue window is descriptive information, not consensus.
+// The same exact-asset, full-window and source-clock checks remain mandatory.
+export function availableFlowContext({primary,external,contract,now=Date.now()}={}){
+ const h=primary?.evidence?.find(r=>r.block_id==='N05'&&r.metric_family==='EXACT_FUTURES_TAKER_FLOW_4H');
+ contract=contract||h?.htx_contract;
+ const root={status:'AVAILABLE_FLOW_NOT_CONFIRMED',check_completed:false,evidence:[],components:[],network_calls:0,internal_only:true};
+ if(!/^\S+-USDT$/u.test(contract||'')||!Number.isSafeInteger(now))return{...root,reason:'EXACT_CONTRACT_AND_DECISION_CLOCK_REQUIRED'};
+ const full=(jointSpotFuturesFlow({primary,external:{components:[]},now}).components||[]).filter(c=>Number.isSafeInteger(h?.observed_ts)&&h.observed_ts>=c.window_end_ts&&h.observed_ts<=now&&Number.isSafeInteger(c.raw_trade_count)&&c.raw_trade_count>0).map(c=>({...c,observed_ts:h.observed_ts}));
+ const qualified=c=>(c.version===BITGET_FLOW_VERSION&&c.status==='CLOSED_VOLUME_RECONCILED_FOUR_HOURS'&&c.venue==='BITGET'&&c.physical_root==='BITGET_OFFICIAL_PUBLIC_TRADES')||qualifiedBinanceNativeComponent(c)||qualifiedGateSpotComponent(c,GATE_PUBLIC_TAKER_REFERENCE)||qualifiedBackpackSpotComponent(c)||qualifiedKrakenNativeComponent(c,KRAKEN_PUBLIC_TAKER_REFERENCE)||qualifiedPoloniexNativeComponent(c);
+ const valid=c=>c.contract===contract&&c.check_completed===true&&c.exact_asset_binding===true&&c.verified_minutes===240&&Number.isSafeInteger(c.window_start_ts)&&c.window_start_ts%60000===0&&c.window_end_ts-c.window_start_ts===14400000&&c.window_end_ts<=now&&now-c.window_end_ts<=300000&&Number.isSafeInteger(c.observed_ts)&&c.observed_ts>=c.window_end_ts&&c.observed_ts<=now&&['SPOT','FUTURES'].includes(c.market)&&(c.quote==='USDT'||c.venue==='BACKPACK'&&c.quote==='USDC')&&[c.buy_quote,c.sell_quote].every(v=>typeof v==='number'&&Number.isFinite(v)&&v>=0)&&c.buy_quote+c.sell_quote>0;
+ const candidates=[...full.filter(c=>c.contract===contract),...(external?.components||[]).filter(c=>qualified(c)&&valid(c))];
+ const keys=candidates.map(c=>c.venue+':'+c.market);if(new Set(keys).size!==keys.length)return{...root,reason:'DUPLICATE_UPSTREAM_MARKET_COMPONENT'};
+ if(!candidates.length)return{...root,reason:'NO_FRESH_EXACT_FULL_WINDOW;MISSING_IS_NOT_ZERO'};
+ const end=Math.max(...candidates.map(c=>c.window_end_ts)),same=candidates.filter(c=>c.window_end_ts===end);
+ // Prefer two physical venues where available; do not multiply one venue's votes.
+ const selected=[same[0],...same.slice(1).sort((a,b)=>Number(b.venue!==same[0].venue)-Number(a.venue!==same[0].venue))].slice(0,2);
+ const components=selected.map(c=>({...c,imbalance:(c.buy_quote-c.sell_quote)/(c.buy_quote+c.sell_quote)})),venues=new Set(components.map(c=>c.venue)).size,start=end-14400000,physical=`AVAILABLE_FLOW:${contract}:${start}:${end}`;
+ const evidence=buildEvidenceV2({provider_id:'AVAILABLE_VERIFIED_TAKER_FLOW',upstream_id:'QUALIFIED_OFFICIAL_TAKER_FLOW',asset_id:h?.asset_id||`HTX:USDT_M_PERPETUAL:${contract}`,htx_contract:contract,block_id:'N05',metric_family:'AVAILABLE_VENUE_TAKER_FLOW_4H',origin_event_id:physical,dependency_group:physical,source_ts:end,observed_ts:Math.max(...components.map(c=>c.observed_ts||h.observed_ts||end)),expires_at:end+300000,coverage_status:'EXACT_WINDOW_LIMITED_VENUES',coverage_fraction:0,unit:'PER_VENUE_RELATIVE_FLOW_IMBALANCE',value:null,directional_strength:null,risk_strength:null,extra:{available_flow_version:'available-venue-flow-v1-20261010',components,window_start_ts:start,window_end_ts:end,venue_count:venues,source_scope:venues===1?'ONE_VENUE_ONLY':'TWO_AVAILABLE_VENUES',market_wide_direction_proven:false,absolute_cross_quote_turnover_summed:false,score_contribution:0,entry_authorized:false,physical_root_key:physical}});
+ return{...root,status:'CLOSED_AVAILABLE_VENUE_FLOW_CONTEXT',check_completed:true,evidence:[evidence],components};
+}
+export function validateAvailableFlowEvidence(row,now){
+ if(row?.metric_family!=='AVAILABLE_VENUE_TAKER_FLOW_4H'||row.available_flow_version!=='available-venue-flow-v1-20261010'||row.provider_id!=='AVAILABLE_VERIFIED_TAKER_FLOW'||row.upstream_id!=='QUALIFIED_OFFICIAL_TAKER_FLOW'||row.market_wide_direction_proven!==false||row.absolute_cross_quote_turnover_summed!==false||row.score_contribution!==0||row.entry_authorized!==false||row.coverage_fraction!==0||row.directional_strength!==null||row.risk_strength!==null||row.value!==null||!Array.isArray(row.components)||row.components.length<1||row.components.length>2)return false;
+ const h=row.components.find(c=>c.venue==='HTX'),primary=h?{check_completed:true,evidence:[{block_id:'N05',metric_family:'EXACT_FUTURES_TAKER_FLOW_4H',provider_id:'HTX_FUTURES_RAW_FLOW',upstream_id:'HTX_OFFICIAL_RAW_FILLS',source_clock_policy:'IMMUTABLE_EXACT_RAW_MINUTES',score_contribution:0,entry_authorized:false,raw_trade_count:h.raw_trade_count,factual_1m_trade_count:h.raw_trade_count,window_start_ts:h.window_start_ts,window_end_ts:h.window_end_ts,htx_contract:h.contract,asset_id:row.asset_id,observed_ts:h.observed_ts,buy_quote_turnover_usdt:h.buy_quote,sell_quote_turnover_usdt:h.sell_quote}]}:null;
+ if(h&&(h.market!=='FUTURES'||h.quote!=='USDT'||h.physical_root!=='HTX_OFFICIAL_RAW_FILLS'||h.raw_trade_counter_independently_verified!==true||!Number.isSafeInteger(h.raw_trade_count)||h.raw_trade_count<1))return false;
+ const rebuilt=availableFlowContext({primary,external:{components:row.components.filter(c=>c.venue!=='HTX')},contract:row.htx_contract,now}).evidence[0];
+ return Boolean(rebuilt&&JSON.stringify(rebuilt.components)===JSON.stringify(row.components)&&['evidence_id','raw_hash','source_ts','observed_ts','expires_at','unit','window_start_ts','window_end_ts','venue_count','source_scope','coverage_status'].every(k=>rebuilt[k]===row[k]));
+}
 export function jointSpotFuturesFlow({primary,external,now=Date.now()}={}){
  const h=primary?.check_completed===true?primary.evidence?.find(r=>r.block_id==='N05'&&r.metric_family==='EXACT_FUTURES_TAKER_FLOW_4H'):null;
  const root={version:JOINT_FLOW_VERSION,status:'JOINT_SPOT_FUTURES_NOT_CONFIRMED',check_completed:false,evidence:[],network_calls:0,internal_only:true,policy:JOINT_FLOW_POLICY};

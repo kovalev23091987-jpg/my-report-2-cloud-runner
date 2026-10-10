@@ -1,4 +1,4 @@
-import {validateJointFlowEvidence} from './joint-spot-futures-flow.mjs';
+import {validateJointFlowEvidence,validateAvailableFlowEvidence} from './joint-spot-futures-flow.mjs';
 // Owner-approved presentation only. Receipts and analysis values remain unchanged.
 const number=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const pct=v=>Math.abs(v).toFixed(1).replace('.',',');
@@ -45,6 +45,7 @@ export function plainContextFact(f,c){
 // Telegram. Historical supply and other raw diagnostic context stay in the
 // canonical analysis and manual report; they cannot occupy a spare bullet.
 export function isApprovedTelegramContextFact(f,c){
+ if(f?.block_id==='N05'&&f.field==='AVAILABLE_VENUE_TAKER_FLOW_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateAvailableFlowEvidence(row,c.observed_ts);}
  if(f?.block_id==='N05'&&f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'){const row=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);return validateJointFlowEvidence(row,c.observed_ts);}
  if(f?.block_id!=='N12'||f.label!=='Направление последних сделок HTX')return false;
  const r=c?.metadata?.internal_market_context?.evidence_v2?.evidence?.find(r=>r.evidence_id===f.evidence_id);

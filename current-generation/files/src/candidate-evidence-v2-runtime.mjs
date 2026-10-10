@@ -1,5 +1,5 @@
 import {collectExternalN05Flow} from './external-n05-flow-collector.mjs';
-import {jointSpotFuturesFlow} from './joint-spot-futures-flow.mjs';
+import {jointSpotFuturesFlow,availableFlowContext} from './joint-spot-futures-flow.mjs';
 import {exactNativeEvmNetwork} from './native-evm-finalized-context.mjs';
 import {capturedSignedTapeFourHourFlow} from './htx-signed-tape.mjs';
 import {buildHtxFlowClosureDiagnostic,retainHtxFlowClosureDiagnostic} from './source-closure-diagnostics.mjs';
@@ -106,7 +106,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY','COINPAPRIKA_SECTOR']},
  N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
- N05:{all:['JOINT_SPOT_FUTURES_FLOW'],any:[],supplemental:['CHAIN_EVENTS','PRIMARY_HTX_FUTURES_FLOW','NANSEN_FLOWS','EXTERNAL_N05_FLOW','BITGET_FOUR_HOUR_FLOW']},
+ N05:{all:[],any:['JOINT_SPOT_FUTURES_FLOW','AVAILABLE_N05_FLOW_CONTEXT'],supplemental:['CHAIN_EVENTS','PRIMARY_HTX_FUTURES_FLOW','NANSEN_FLOWS','EXTERNAL_N05_FLOW','BITGET_FOUR_HOUR_FLOW']},
  N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY','WIKIMEDIA_ATTENTION']},
  N07:{any:['OFFICIAL_EVENTS','HTX_OFFICIAL_ANNOUNCEMENTS'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
@@ -257,10 +257,11 @@ export function auditCandidateBlocks({evidence=[],sources={},decision_ts=Date.no
   all_blocks_checked:values.every(row=>row.checked),all_blocks_have_useful_data:values.every(row=>row.usable_facts>0),strict_fresh_required:strict_fresh,internal_only:true};
 }
 
-export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},decision_ts=evidence_result?.decision_ts??Date.now()}={}){
+export function finalizeCandidateBlockCoverage({evidence_result={},primary_sources={},contract=evidence_result.contract,decision_ts=evidence_result?.decision_ts??Date.now()}={}){
  const sources={...(evidence_result?.sources||{}),...(primary_sources||{})};
  const joint=jointSpotFuturesFlow({primary:sources.PRIMARY_HTX_FUTURES_FLOW,external:sources.EXTERNAL_N05_FLOW||sources.BITGET_FOUR_HOUR_FLOW,now:decision_ts});sources.JOINT_SPOT_FUTURES_FLOW=joint;
- const evidence=[...(joint.evidence||[]),...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])].filter(row=>!PAUSED_BLOCKS[row?.block_id]&&(row?.block_id!=='N05'||row.metric_family==='JOINT_SPOT_FUTURES_AGREEMENT_4H'));
+ const available=joint.check_completed?{status:'JOINT_FLOW_CONTEXT_ALREADY_AVAILABLE',check_completed:false,evidence:[],network_calls:0}:availableFlowContext({contract,primary:sources.PRIMARY_HTX_FUTURES_FLOW,external:sources.EXTERNAL_N05_FLOW||sources.BITGET_FOUR_HOUR_FLOW,now:decision_ts});sources.AVAILABLE_N05_FLOW_CONTEXT=available;
+ const evidence=[...(joint.evidence||[]),...(available.evidence||[]),...(evidence_result?.evidence||[]),...Object.values(primary_sources||{}).flatMap(source=>Array.isArray(source?.evidence)?source.evidence:[])].filter(row=>!PAUSED_BLOCKS[row?.block_id]&&(row?.block_id!=='N05'||['JOINT_SPOT_FUTURES_AGREEMENT_4H','AVAILABLE_VENUE_TAKER_FLOW_4H'].includes(row.metric_family)));
  return {...evidence_result,decision_ts,evidence,sources,block_coverage:auditCandidateBlocks({evidence,sources,decision_ts,strict_fresh:evidence_result?.strict_fresh_required===true})};
 }
 
@@ -323,6 +324,7 @@ export async function collectCandidateEvidenceV2(params={}){
  const block_coverage=auditCandidateBlocks({evidence,sources,decision_ts:auditDecisionTs,strict_fresh:params?.strict_fresh_manual===true});
  return{
   version:CANDIDATE_EVIDENCE_V2_RUNTIME_VERSION,
+  contract:params.contract,
   status:closed?'CLOSED':statuses.find(Boolean)||'NOT_CLOSED',
   evidence,
   network_calls:core.network_calls+routeBlock.network_calls,

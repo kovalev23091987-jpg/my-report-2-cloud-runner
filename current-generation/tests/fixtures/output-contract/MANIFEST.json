@@ -3,17 +3,17 @@
   "captured_at": "2026-09-28T02:30:00+03:00",
   "effective_modules": {
     "post-v7-consolidated/final-reconciliation/files/src/canonical-publication.mjs": "899034d819fc5be601184da11dc57540e67591dc3e3e3bd2d2e20ff3fac6ab7a",
-    "current-generation/files/src/manual-report-formatter.mjs": "c95f49ccde9cdfade521ed259335fa554efb54468bb6cf9623bf7c8306f88d60",
+    "current-generation/files/src/manual-report-formatter.mjs": "1910b64f6a106b22e0b4203b428b3cc9455a144ef9b07869d46ae708c2ab1737",
     "current-generation/files/src/telegram-compact-formatter.mjs": "6820fd2dd398e3dab90d6d298783901f1f3ee3b33a16a5c4d2163d0e395454c4",
     "current-generation/files/src/canonical-display.mjs": "83c8ed20fb44b239bb557d32df1129aec75609eaac93a58922edbd643f87ba43",
     "current-generation/files/src/reason-registry.mjs": "7774b91d730fd0338a888360e0f57b6697741679178adf62e553682476c48051",
     "current-generation/files/src/native-liquidation-guard.mjs": "19ae635fdbd0f909b85555698712cdfd3ad67badbf22568f38ce51a764da2064",
     "current-generation/files/src/canonical-runtime-adapter.mjs": "32c2b945ac834bfeead3bb751450a2326668cf99ad4df01f9e12f5dcb2d59655",
-    "current-generation/files/src/canonical-publication.mjs": "d574809a71b283b4ac386adb7c8e80b09235eee751e18aafc5c9bdf407b198da",
+    "current-generation/files/src/canonical-publication.mjs": "acd06ac6c25fd76cb024ec1a0724a267ab4c9001404ca31fd70af861a5710602",
     "current-generation/files/src/early-direction-receipt.mjs": "a229beb8bf1873df93f4442cf77ea0f5a89c64ead1d79930fb4dda1951451534",
     "current-generation/files/src/observation-source-role-gate.mjs": "3cbebfa9ab48d9bc221fc29328c1ef6914e9b817c1ef05079d8933155b7c95dc",
-    "current-generation/files/src/block-result-context.mjs": "234ef903ff0b36e933814f32104a83e4a9a75db3fbc1b2574f29839471f480e8",
-    "current-generation/files/src/telegram-plain-facts.mjs": "4a18d486341471890e04af6d01c2c0e96d2403f291ec23a4034146800af25f03",
+    "current-generation/files/src/block-result-context.mjs": "b27ed1533a24ba53711f6d33369593836eb1aa96b325a4133c651a439cd251b8",
+    "current-generation/files/src/telegram-plain-facts.mjs": "44b54029517c78fb301318af3fe8f0d84e86d06dde53e6f4911c23c613d82bb9",
     "current-generation/files/src/idea-basis-facts.mjs": "4743dd292b4e8cad3a6d0fe2cf15183a467ccb5aa5473df69b96038fa1bb6519"
   },
   "fixtures": {
@@ -663,6 +663,32 @@
       "strategy_weights_or_entry_rules_changed": false,
       "original_saved_sent_bytes_unchanged": true,
       "note": "New qualified Binance joint context names its actual venue. Existing Bitget label and all historical fixtures remain unchanged."
+    },
+    {
+      "date": "2026-10-10",
+      "scope": "OWNER_N05_AVAILABLE_SINGLE_OR_TWO_VENUE_INFORMATION_2058MSK",
+      "authorization": "Owner20:58:26MSK permits descriptive conclusions from one or two available sources and requires every asset to retain available information. Full-window/freshness and exact identity checks remain; N05 score0 and consensus/ENTRY rules unchanged.",
+      "module_changes": {
+        "current-generation/files/src/block-result-context.mjs": {
+          "before": "234ef903ff0b36e933814f32104a83e4a9a75db3fbc1b2574f29839471f480e8",
+          "after": "b27ed1533a24ba53711f6d33369593836eb1aa96b325a4133c651a439cd251b8"
+        },
+        "current-generation/files/src/manual-report-formatter.mjs": {
+          "before": "c95f49ccde9cdfade521ed259335fa554efb54468bb6cf9623bf7c8306f88d60",
+          "after": "1910b64f6a106b22e0b4203b428b3cc9455a144ef9b07869d46ae708c2ab1737"
+        },
+        "current-generation/files/src/canonical-publication.mjs": {
+          "before": "d574809a71b283b4ac386adb7c8e80b09235eee751e18aafc5c9bdf407b198da",
+          "after": "acd06ac6c25fd76cb024ec1a0724a267ab4c9001404ca31fd70af861a5710602"
+        },
+        "current-generation/files/src/telegram-plain-facts.mjs": {
+          "before": "4a18d486341471890e04af6d01c2c0e96d2403f291ec23a4034146800af25f03",
+          "after": "44b54029517c78fb301318af3fe8f0d84e86d06dde53e6f4911c23c613d82bb9"
+        }
+      },
+      "golden_fixtures_changed": false,
+      "original_saved_sent_bytes_unchanged": true,
+      "automatic_golden_update": false
     }
   ],
   "consumer_selection_revisions": [
