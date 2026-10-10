@@ -1,6 +1,6 @@
 {
   "schema": "HTX_CURRENT_104_ASSET_COLLECTION_AND_N05_CONTINUATION_PLAN_V1",
-  "recorded_ts": 1791656608698,
+  "recorded_ts": 1791657667603,
   "approved_manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
   "approved_manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
   "scope_proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json",
@@ -4064,7 +4064,7 @@
   "new_fresh_SENT": false,
   "calibration_open": true,
   "no_new_automation": true,
-  "next_action": "CONTINUE_MAXIMUM_USEFUL_SOURCE_COVERAGE_PER104_ASSETS;USE_QUALIFIED_SINGLE_OR_TWO_VENUE_CONTEXT_WHEN_FULL_CONSENSUS_UNAVAILABLE;QUALIFY_SAVED12_POLONIEX_CANDIDATES_AFTER_NATIVE_ADMISSION;KEEP_EXISTING_CAPS",
+  "next_action": "CONTINUE_N05_MAXIMUM_COVERAGE_IN_LARGE_BATCHES;EXECUTE_SAVED12_SHARED_NATIVE_BATCH_ONLY_AFTER_FRESH_SOURCE_ADMISSION;KEEP_ALL_CAPS",
   "latest_exact_route_reconciliation": {
     "schema": "N05_104_EXACT_ROUTE_CONNECTED_CHECKPOINT_V1",
     "proof": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
@@ -4201,7 +4201,11 @@
     "existing_source_daily_cap": 16,
     "actual_native_admission_before_calls": true,
     "skip_when_exhausted": true,
-    "prior_hint_must_not_establish_current_zero_activity": true
+    "prior_hint_must_not_establish_current_zero_activity": true,
+    "execution_tool": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+    "maximum_primary_HTX_identity_HTTP": 1,
+    "maximum_total_source_HTTP": 16,
+    "native_batch_not_live_executed": true
   },
   "latest_available_flow_release": "checkpoints/N05_AVAILABLE_VENUE_FLOW_CONNECTED_RELEASE_20261010.json",
   "owner_information_policy": {
@@ -4302,5 +4306,55 @@
     "project_complete": false,
     "next_action": "CONTINUE_MAXIMUM_USEFUL_SOURCE_COVERAGE_PER104_ASSETS;USE_QUALIFIED_SINGLE_OR_TWO_VENUE_CONTEXT_WHEN_FULL_CONSENSUS_UNAVAILABLE;QUALIFY_SAVED12_POLONIEX_CANDIDATES_AFTER_NATIVE_ADMISSION;KEEP_EXISTING_CAPS"
   },
-  "updated_ts": 1791656608698
+  "updated_ts": 1791657667603,
+  "owner_mandatory_large_batches_for_all_project_chats": {
+    "schema": "OWNER_MANDATORY_LARGE_BATCHES_FOR_ALL_PROJECT_CHATS_V1",
+    "recorded_ts": 1791657613341,
+    "owner_instruction_at_msk": "2026-10-10T21:30:25+03:00",
+    "owner_exact_instruction": "Я это уже миллиони Раз говорил закрепи это прав да для всех часто в в облаке как обязательное правило",
+    "interpreted_requirement": "Закрепить крупные связанные пакеты работы, затем совместную проверку и экономию лимитов как обязательное правило всех чатов и исполнителей проекта.",
+    "scope": "ALL_CHATS_AGENTS_AND_CLOUD_EXECUTORS_OF_MY_REPORT_2",
+    "mandatory": true,
+    "authoritative_locations": [
+      "AGENTS.md",
+      "MY_REPORT_2_STARTUP_CONTRACT.md",
+      "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "checkpoints/CLOUD_RULES_AND_COMPLETED_WORK_RECONCILIATION_20261009.json"
+    ],
+    "rules": [
+      "Собирать связанные изменения в крупный полезный пакет, затем проверять совместно завершённый пакет и затронутые цепочки.",
+      "До обращения к источникам использовать сохранённые исходные ответы и проверять обработку на локальных или облачных контролируемых данных без provider HTTP.",
+      "Переиспользовать доказательства неизменённых частей по точным head/hash/artifact; не повторять успешные probes/tests/MAIN ради активности.",
+      "Новые реальные запросы разрешены ради конкретного недостающего факта; перед ними фиксировать состав пакета, ожидаемые HTTP/D1, исходный anchor и доступный запас существующих лимитов.",
+      "Общие справочники получать один раз на пакет; данные разных монет сохранять отдельно с точной идентичностью, часами, окнами и отказами.",
+      "Если бюджет источника не позволяет запланированный полезный пакет, не тратить запросы на повторное подключение или заведомо незавершаемый сбор; сохранить причину и следующую выполнимую задачу.",
+      "После пакета сохранять code/head/proof и обновлять единые status/phase/register/resume в облаке, чтобы следующий чат продолжал с последней точки."
+    ],
+    "unchanged_required_preconditions": [
+      "Fresh main/owned bounded CAS lease/inactive foreign fence before mutations, tests or live calls",
+      "Native HTTP/provider/day/minute/D1 admission before real requests",
+      "Threshold70, source freshness, entry/scenario guards, weights, current104 crypto scope and paused N01-N03",
+      "No source cap reset, quota alias, fake clock, invented flow or fake SENT"
+    ],
+    "implemented_example": {
+      "PR": 311,
+      "cloud_run": 38075401232,
+      "provider_HTTP_for_tests": 0,
+      "passed": {
+        "unit": 1339,
+        "assembled": 41,
+        "delivery": 35,
+        "integration": 37
+      }
+    },
+    "additional_prepared_batch": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+    "additional_batch_live_executed": false,
+    "new_automation_created": false,
+    "global_personal_memory_changed": false
+  },
+  "latest_N05_coverage_bottleneck_and_shared_batch_plan": "checkpoints/N05_COVERAGE_BOTTLENECK_AND_SHARED_BATCH_PLAN_20261010.json",
+  "mandatory_batch_rule": "checkpoints/OWNER_MANDATORY_LARGE_BATCHES_FOR_ALL_CHATS_20261010.json"
 }

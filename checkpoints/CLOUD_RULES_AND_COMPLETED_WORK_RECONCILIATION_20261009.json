@@ -296,5 +296,54 @@
   "completed_tests_source_probes_or_MAIN_repeated_in_this_reconciliation": 0,
   "new_manual_live_D1_or_source_calls_in_this_reconciliation": 0,
   "full_TZ_complete": false,
-  "background_development_task_created": false
+  "background_development_task_created": false,
+  "latest_mandatory_all_chat_batch_rule": "checkpoints/OWNER_MANDATORY_LARGE_BATCHES_FOR_ALL_CHATS_20261010.json",
+  "owner_mandatory_large_batches_for_all_project_chats": {
+    "schema": "OWNER_MANDATORY_LARGE_BATCHES_FOR_ALL_PROJECT_CHATS_V1",
+    "recorded_ts": 1791657613341,
+    "owner_instruction_at_msk": "2026-10-10T21:30:25+03:00",
+    "owner_exact_instruction": "Я это уже миллиони Раз говорил закрепи это прав да для всех часто в в облаке как обязательное правило",
+    "interpreted_requirement": "Закрепить крупные связанные пакеты работы, затем совместную проверку и экономию лимитов как обязательное правило всех чатов и исполнителей проекта.",
+    "scope": "ALL_CHATS_AGENTS_AND_CLOUD_EXECUTORS_OF_MY_REPORT_2",
+    "mandatory": true,
+    "authoritative_locations": [
+      "AGENTS.md",
+      "MY_REPORT_2_STARTUP_CONTRACT.md",
+      "checkpoints/CURRENT_PROJECT_STATUS.json",
+      "checkpoints/CLOUD_PHASE_STATE_20261004.json",
+      "checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json",
+      "checkpoints/OWNER_REVIEW_RESUME_POINT_20261010.json",
+      "checkpoints/CLOUD_RULES_AND_COMPLETED_WORK_RECONCILIATION_20261009.json"
+    ],
+    "rules": [
+      "Собирать связанные изменения в крупный полезный пакет, затем проверять совместно завершённый пакет и затронутые цепочки.",
+      "До обращения к источникам использовать сохранённые исходные ответы и проверять обработку на локальных или облачных контролируемых данных без provider HTTP.",
+      "Переиспользовать доказательства неизменённых частей по точным head/hash/artifact; не повторять успешные probes/tests/MAIN ради активности.",
+      "Новые реальные запросы разрешены ради конкретного недостающего факта; перед ними фиксировать состав пакета, ожидаемые HTTP/D1, исходный anchor и доступный запас существующих лимитов.",
+      "Общие справочники получать один раз на пакет; данные разных монет сохранять отдельно с точной идентичностью, часами, окнами и отказами.",
+      "Если бюджет источника не позволяет запланированный полезный пакет, не тратить запросы на повторное подключение или заведомо незавершаемый сбор; сохранить причину и следующую выполнимую задачу.",
+      "После пакета сохранять code/head/proof и обновлять единые status/phase/register/resume в облаке, чтобы следующий чат продолжал с последней точки."
+    ],
+    "unchanged_required_preconditions": [
+      "Fresh main/owned bounded CAS lease/inactive foreign fence before mutations, tests or live calls",
+      "Native HTTP/provider/day/minute/D1 admission before real requests",
+      "Threshold70, source freshness, entry/scenario guards, weights, current104 crypto scope and paused N01-N03",
+      "No source cap reset, quota alias, fake clock, invented flow or fake SENT"
+    ],
+    "implemented_example": {
+      "PR": 311,
+      "cloud_run": 38075401232,
+      "provider_HTTP_for_tests": 0,
+      "passed": {
+        "unit": 1339,
+        "assembled": 41,
+        "delivery": 35,
+        "integration": 37
+      }
+    },
+    "additional_prepared_batch": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+    "additional_batch_live_executed": false,
+    "new_automation_created": false,
+    "global_personal_memory_changed": false
+  }
 }

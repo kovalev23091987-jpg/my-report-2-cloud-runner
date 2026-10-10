@@ -1,0 +1,122 @@
+{
+  "schema": "N05_COVERAGE_BOTTLENECK_AND_SHARED_BATCH_PLAN_V1",
+  "recorded_ts": 1791657613341,
+  "basis_main": "c10eca5733947d286d4e2a2240163dd2c66671e9",
+  "owner_questions_at_msk": [
+    "2026-10-10T21:24:15+03:00",
+    "2026-10-10T21:26:25+03:00"
+  ],
+  "current_scope": {
+    "approved_assets": 104,
+    "original_price_OI_funding_assets": 104,
+    "retained_individual_full_external_flow_assets": 22,
+    "simultaneous_fresh_or_continuous_22_not_proven": true,
+    "all104_complete_N05_not_proven": true,
+    "Binance_exact_native_registry_assets": 20,
+    "Poloniex_exact_structural_bindings": 52,
+    "KuCoin_exact_research_bindings": 59,
+    "Poloniex_or_KuCoin_unique_assets": 69,
+    "structural_bindings_are_not_full_flow": true
+  },
+  "bottlenecks": [
+    {
+      "kind": "INTERNAL_BOT_DAILY_CAP",
+      "fact": "N05 source role cap16 per venue per UTC day is explicitly coded; this is not the exchange public API limit.",
+      "runtime_files": [
+        "current-generation/files/src/poloniex-native-flow-collector.mjs",
+        "current-generation/files/src/binance-native-flow-collector.mjs",
+        "current-generation/files/src/n05-source-headroom.mjs"
+      ],
+      "changed": false
+    },
+    {
+      "kind": "SHARED_CALLER_BUDGET",
+      "fact": "Five calls per external collector are shared by all venues, metadata, pagination and optional baseline; first-success early return removed PR311.",
+      "changed": "EARLY_RETURN_FIXED;CAP_UNCHANGED"
+    },
+    {
+      "kind": "EXACT_IDENTITY",
+      "fact": "Public ticker listing alone cannot prove token chain/address equality. Binance20 is our qualified native registry, not Binance's complete coin listing."
+    },
+    {
+      "kind": "WINDOW_COMPLETENESS",
+      "fact": "Latest100/1000 trade pages, incomplete minute grids, stale candles and ambiguous duplicate IDs cannot establish a full240-minute N05 window."
+    },
+    {
+      "kind": "SOURCE_SEMANTICS",
+      "fact": "Native taker buy/sell candles are usable for aggregate flow; they do not establish whale-sized individual trades, verified exchange deposits/withdrawals or calibrated forecast."
+    }
+  ],
+  "official_primary_documentation": [
+    {
+      "url": "https://api-docs.poloniex.com/spot/api/",
+      "checked_ts": 1791657613341,
+      "fact": "Public requests require no authentication; documented market API rate limits are independent of our16/day role cap."
+    },
+    {
+      "url": "https://api-docs.poloniex.com/spot/api/public/market-data",
+      "checked_ts": 1791657613341,
+      "fact": "Native minute candles contain buyTakerAmount, buyTakerQuantity and tradeCount; symbols are queried individually."
+    },
+    {
+      "url": "https://developers.binance.com/docs/binance-spot-api-docs/web-socket-streams",
+      "checked_ts": 1791657613341,
+      "fact": "Native kline stream carries closed flag, native count, total quote and buy taker quote volume; persistent transport deployment and measured accounting are not yet qualified in this package."
+    }
+  ],
+  "capacity_arithmetic": {
+    "one_fresh_native_window_per_104_assets_on_one_venue_ideal_minimum_HTTP": 104,
+    "assumption": "One call per symbol with existing valid identity/market metadata and no pagination; no guarantee every venue lists all104.",
+    "fresh_window_every40_minutes_for104_ideal_daily_HTTP": 3744,
+    "saved52_Poloniex_routes_every40_minutes_ideal_daily_HTTP": 1872,
+    "existing_source_role_daily_cap": 16,
+    "conclusion": "The fixed16/day role cap cannot support frequent full-universe REST collection even on an ideal native-candle source. Cache/metadata reuse helps, but does not create a fresh rolling window for every asset.",
+    "BYK_monthly_quota_is_not_a_global_public_exchange_HTTP_quota": true,
+    "existing_caps_changed": false
+  },
+  "next_prepared_batch": {
+    "tool": "tools/acquire-n05-saved12-native-batch-20261010.mjs",
+    "candidate_contracts": [
+      "FLOKI-USDT",
+      "LINK-USDT",
+      "LSK-USDT",
+      "NEAR-USDT",
+      "PEPE-USDT",
+      "QNT-USDT",
+      "RLC-USDT",
+      "SHIB-USDT",
+      "SOL-USDT",
+      "SUI-USDT",
+      "XLM-USDT",
+      "ZEC-USDT"
+    ],
+    "shared_Poloniex_metadata": 3,
+    "maximum_Poloniex_windows": 12,
+    "maximum_Poloniex_HTTP": 15,
+    "maximum_HTX_primary_identity_HTTP": 1,
+    "maximum_total_source_HTTP": 16,
+    "existing_Poloniex_role_cap": 16,
+    "existing_HTX_ASSET_REFERENCE_cap": 8,
+    "existing_minute_cap": 6,
+    "D1_reserved_reads": 16000,
+    "D1_reserved_writes": 500,
+    "all_or_none_role_headroom_preflight": true,
+    "fresh_cloud_guard_required": true,
+    "common_actual_closed_anchor": true,
+    "source_clocks_retained": true,
+    "skip_unknown_binding_and_current_zero_activity_without_faking_full_window": true,
+    "offline_plan_and_syntax_pass": true,
+    "actual_live_execution": false,
+    "not_scheduled": true
+  },
+  "next_work": [
+    "Acquire saved12 native batch only after actual source/D1 headroom is available, with fresh owned lease; do not retry exhausted10OctUTC.",
+    "Preserve full identity/source proof and reconcile all104 source availability separately from actual full windows.",
+    "Resolve source budget allocation or qualify an economical persistent shared transport before claiming frequent broad coverage; no new source caps or live transport enabled by this diagnostic."
+  ],
+  "provider_HTTP": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "calibration_open": true,
+  "project_complete": false
+}
