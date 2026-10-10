@@ -404,7 +404,9 @@ jobs:
         run: |
           set -Eeuo pipefail
           cd runtime
-          node runner-main.mjs
+          node runner-main.mjs | tee report2-run-console.log
+          node ../tools/report2-no-work-receipt.mjs report2-run-console.log report2-no-work-receipt.json "$GITHUB_SHA" "$GITHUB_RUN_ID"
+          rm -f report2-run-console.log
 
       - name: Upload sanitized measured-run receipt
         if: ${{ always() && startsWith(inputs.reason || '', 'T15_MEASURED_') }}
@@ -427,6 +429,7 @@ jobs:
           path: |
             runtime/report2-run-result.json
             runtime/same-run-delivery-proof.json
+            runtime/report2-no-work-receipt.json
             runtime/known-d1-day-guard.json
             runtime/raw24h-control-readback.json
           if-no-files-found: warn

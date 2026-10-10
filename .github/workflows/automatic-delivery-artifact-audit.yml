@@ -26,12 +26,13 @@ jobs:
             const b=Buffer.from((await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:a[0].id,archive_format:'zip'})).data);
             const digest='sha256:'+crypto.createHash('sha256').update(b).digest('hex');if(digest!==a[0].digest)throw Error('ARTIFACT_DIGEST_REQUIRED');
             fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync('source.zip',b);
-            cp.execFileSync('python',['-c',"import zipfile,pathlib; z=zipfile.ZipFile('source.zip'); names=['report2-run-result.json','same-run-delivery-proof.json']; [(pathlib.Path('audit-output')/n).write_bytes(z.read(n)) for n in names if z.namelist().count(n)==1 and z.getinfo(n).file_size<32*1024*1024]"]);
+            cp.execFileSync('python',['-c',"import zipfile,pathlib; z=zipfile.ZipFile('source.zip'); names=['report2-run-result.json','same-run-delivery-proof.json','report2-no-work-receipt.json']; [(pathlib.Path('audit-output')/n).write_bytes(z.read(n)) for n in names if z.namelist().count(n)==1 and z.getinfo(n).file_size<32*1024*1024]"]);
             fs.writeFileSync('audit-output/source-artifact.json',JSON.stringify({source_cloud_run:run.id,source_head:run.head_sha,source_conclusion:run.conclusion,source_artifact_id:a[0].id,source_artifact_digest:digest,observer_head:context.sha,sourceHTTP:0,D1:0,Telegram:0,project_complete:false},null,2));
       - name: Verify delivery binding without sources, D1 or Telegram
         env:
           SOURCE_HEAD: ${{ github.event.workflow_run.head_sha }}
-        run: node tools/verify-same-run-delivery-artifact.mjs audit-output "$SOURCE_HEAD"
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: node tools/verify-same-run-delivery-artifact.mjs audit-output "$SOURCE_HEAD" "$SOURCE_RUN_ID"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
