@@ -1,0 +1,2611 @@
+{
+  "next_qualification_plan": {
+    "candidate_contracts": [
+      "FLOKI-USDT",
+      "LINK-USDT",
+      "LSK-USDT",
+      "NEAR-USDT",
+      "PEPE-USDT",
+      "QNT-USDT",
+      "RLC-USDT",
+      "SHIB-USDT",
+      "SOL-USDT",
+      "SUI-USDT",
+      "XLM-USDT",
+      "ZEC-USDT"
+    ],
+    "original_hint_window_end_ts": 1791651480000,
+    "current_activity_not_proven": true,
+    "refresh_primary_metadata_before_future_acquisition": true,
+    "common_closed_minute_anchor_required": true,
+    "cold_metadata_calls": 3,
+    "one_native_candle_call_per_candidate": true,
+    "planned_cold_HTTP": 15,
+    "existing_source_daily_cap": 16,
+    "actual_native_admission_before_calls": true,
+    "skip_when_exhausted": true,
+    "prior_hint_must_not_establish_current_zero_activity": true
+  },
+  "schema": "N05_CURRENT104_EXACT_ROUTE_RECONCILIATION_V1",
+  "status": "CURRENT104_SCOPE_REPLAYED_AGAINST_RETAINED_PRIMARY_IDENTITIES_AND_MARKETS",
+  "manifest": "checkpoints/htx-current-crypto-futures-universe-20261010.json.gz",
+  "manifest_sha256": "ade6878a0ba9921a83695a1a82d19be9867ddebb7ff8b741a3b46f59f950a81c",
+  "source_inputs": [
+    {
+      "path": "checkpoints/n05-actual-qualification-38049404414/identity-HTX.json.gz",
+      "body_sha256": "f2bcb443ac8b167fa0b64709fa019107043208e37ae94df96b676ef9c51a0d29",
+      "gzip_sha256": "f662bdb1562bce5c19a3b7df96978b2fe27264ff271121d12d0f44b5ee94497c",
+      "original_received_ts": 1791632635640
+    },
+    {
+      "path": "checkpoints/n05-poloniex-qualification-38069554249/original-batch.json.gz",
+      "body_sha256": "48d05da112b7cbfbc91bcc013dd67abca7f9a616d30d5dee11e3f85e937e83ec",
+      "gzip_sha256": "307ff3bdb4df58a6b3a268d566694a3ebd23e64d27d60505dd75bc09820d190d"
+    },
+    {
+      "path": "checkpoints/n05-remaining-qualification-38068243085/original-batch.json.gz",
+      "body_sha256": "a0542dee7d122b1a11678b6960033e8e25f6f007ad969029e7d81b42e439b3c3",
+      "gzip_sha256": "b31ebfc040364de7be6a514a4121ef13df14d4b67e8ea64b84f82e0896a831ab"
+    },
+    {
+      "path": "checkpoints/n05-poloniex-qualification-38069848900/original-batch.json.gz",
+      "body_sha256": "52c53879a7ce5b2bb3a77bdb706f853f23192efbac72273ff4ea995788d243fd",
+      "gzip_sha256": "763c4c068798217f66c43c7f46d6c02fb2fa831e3aa441684d9e7cc6bc7f5169"
+    }
+  ],
+  "identity_runtime_sha256": "e110f256dfaab17fbbac59781c235d74184729abb08d4ae75578f32b4e784e40",
+  "native_rules_sha256": "df98faf19aa7f19991b92462f493b933a66e8d0596636e28ea01821889eac0ae",
+  "counts": {
+    "approved_assets": 104,
+    "closed_exact_identity": 71,
+    "poloniex_exact_bindings": 52,
+    "kucoin_research_exact_bindings": 59,
+    "assets_with_either_exact_route": 69
+  },
+  "new_assets": [
+    {
+      "symbol": "CT",
+      "contract": "CT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "RLC",
+      "contract": "RLC-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x607f4c5bb672230e8672085532f7e901544a7375"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791635945498,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    }
+  ],
+  "rows": [
+    {
+      "symbol": "AAVE",
+      "contract": "AAVE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 36986,
+        "original_close_ts": 1791651537416,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ACE",
+      "contract": "ACE-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791240663938,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ADA",
+      "contract": "ADA-USDT",
+      "identity": {
+        "chain": "cardano",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cardano:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "ada",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 152013,
+        "original_close_ts": 1791651537332,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "AKE",
+      "contract": "AKE-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ALGO",
+      "contract": "ALGO-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "APR",
+      "contract": "APR-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x5a9610919f5e81183823a2be4bd1beb2b4da2a20"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1785921995856,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "APT",
+      "contract": "APT-USDT",
+      "identity": {
+        "chain": "aptos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "aptos:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 121304,
+        "original_close_ts": 1791651538246,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ARB",
+      "contract": "ARB-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 105263,
+        "original_close_ts": 1791651537289,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ASTER",
+      "contract": "ASTER-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791561754683,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ATOM",
+      "contract": "ATOM-USDT",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "atom",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 192102,
+        "original_close_ts": 1791651537631,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "AVAX",
+      "contract": "AVAX-USDT",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "avaxc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 102214,
+        "original_close_ts": 1791651536643,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "AVNT",
+      "contract": "AVNT-USDT",
+      "identity": {
+        "chain": "base",
+        "contract_or_mint": "0x696f9436b67233384889472cd7cd58a6fb5df4f1"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "base",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790492424915,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BANK",
+      "contract": "BANK-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "BCH",
+      "contract": "BCH-USDT",
+      "identity": {
+        "chain": "bitcoin-cash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin-cash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 62046,
+        "original_close_ts": 1791651539207,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "BEAT",
+      "contract": "BEAT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791611796714,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BILL",
+      "contract": "BILL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xb1110919016846972056ab995054d65560d5f05e"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BNB",
+      "contract": "BNB-USDT",
+      "identity": {
+        "chain": "bsc",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bsc:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 82865,
+        "original_close_ts": 1791651538786,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "BOME",
+      "contract": "BOME-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791514407076,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BONK",
+      "contract": "BONK-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 15,
+        "original_close_ts": 1791624171101,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BR",
+      "contract": "BR-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BTC",
+      "contract": "BTC-USDT",
+      "identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "btc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 163756,
+        "original_close_ts": 1791651539145,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "BTR",
+      "contract": "BTR-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BTT",
+      "contract": "BTT-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 23480,
+        "original_close_ts": 1791651538819,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "BTW",
+      "contract": "BTW-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 8004,
+        "original_close_ts": 1791651538371,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "CASHCAT",
+      "contract": "CASHCAT-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1789970908690,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "CHZ",
+      "contract": "CHZ-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791561027113,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "CT",
+      "contract": "CT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "DASH",
+      "contract": "DASH-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 71256,
+        "original_close_ts": 1791651536926,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "DOGE",
+      "contract": "DOGE-USDT",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "doge",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 95876,
+        "original_close_ts": 1791651535668,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "DOS",
+      "contract": "DOS-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1789936574196,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "DOT",
+      "contract": "DOT-USDT",
+      "identity": {
+        "chain": "polkadot",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "polkadot:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 99314,
+        "original_close_ts": 1791651537829,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ENA",
+      "contract": "ENA-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791521298796,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ETC",
+      "contract": "ETC-USDT",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "etc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 52372,
+        "original_close_ts": 1791651479936,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ETH",
+      "contract": "ETH-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 63313,
+        "original_close_ts": 1791651536449,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ETHFI",
+      "contract": "ETHFI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790872775476,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "EUL",
+      "contract": "EUL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "FARTCOIN",
+      "contract": "FARTCOIN-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790216317727,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "FIL",
+      "contract": "FIL-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_AND_TOKEN_BINDINGS_REQUIRE_EXPLICIT_SCOPE",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 109283,
+        "original_close_ts": 1791651536192,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "FLOKI",
+      "contract": "FLOKI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 38981,
+        "original_close_ts": 1791651528703,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "GPS",
+      "contract": "GPS-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "GRAM",
+      "contract": "GRAM-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 11,
+        "original_close_ts": 1791650648965,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "HBAR",
+      "contract": "HBAR-USDT",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "hbar",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "HYPE",
+      "contract": "HYPE-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ICP",
+      "contract": "ICP-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 45818,
+        "original_close_ts": 1791651485775,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "JST",
+      "contract": "JST-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 75124,
+        "original_close_ts": 1791651534483,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "JUP",
+      "contract": "JUP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790789225861,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "LAB",
+      "contract": "LAB-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1789267921169,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "LINK",
+      "contract": "LINK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 82415,
+        "original_close_ts": 1791651539140,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "LIT",
+      "contract": "LIT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791488773653,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "LSK",
+      "contract": "LSK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6033f7f88332b8db6ad452b7c6d5bb643990ae3f"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 38199,
+        "original_close_ts": 1791651538758,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "LTC",
+      "contract": "LTC-USDT",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "ltc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 88458,
+        "original_close_ts": 1791651536964,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "MARSCOIN",
+      "contract": "MARSCOIN-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xfe189e97832da1573e4e4ff034f4ffc3a15c7777"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "MUBARAK",
+      "contract": "MUBARAK-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x5c85d6c6825ab4032337f11ee92a72df936b46f6"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790797335786,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "MYX",
+      "contract": "MYX-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "NEAR",
+      "contract": "NEAR-USDT",
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "near",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 409202,
+        "original_close_ts": 1791651539369,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "NIL",
+      "contract": "NIL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "OKB",
+      "contract": "OKB-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x75231f58b43240c9718dd58b4967c5114342a86c"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791460409153,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ONDO",
+      "contract": "ONDO-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 2,
+        "original_close_ts": 1791637292755,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ONG",
+      "contract": "ONG-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "OP",
+      "contract": "OP-USDT",
+      "identity": {
+        "chain": "optimism",
+        "contract_or_mint": "0x4200000000000000000000000000000000000042"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "optimism",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 243772,
+        "original_close_ts": 1791651538302,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ORDI",
+      "contract": "ORDI-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790200169271,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PAXG",
+      "contract": "PAXG-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PENGU",
+      "contract": "PENGU-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PEOPLE",
+      "contract": "PEOPLE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1789414700306,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "PEPE",
+      "contract": "PEPE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 43303,
+        "original_close_ts": 1791651539254,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PIPPIN",
+      "contract": "PIPPIN-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790439092477,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PONS",
+      "contract": "PONS-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791424941480,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "PUMP",
+      "contract": "PUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "QNT",
+      "contract": "QNT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+      },
+      "identity_status": "VERSIONED_EXPLORER_EXACT_TOKEN_BINDING",
+      "identity_original_received_ts": 1791157800000,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 3875,
+        "original_close_ts": 1791651503279,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "RAVE",
+      "contract": "RAVE-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "RAY",
+      "contract": "RAY-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791459543181,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "RIVER",
+      "contract": "RIVER-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xda7ad9dea9397cffddae2f8a052b82f1484252b3"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "RLC",
+      "contract": "RLC-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x607f4c5bb672230e8672085532f7e901544a7375"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791635945498,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SHIB",
+      "contract": "SHIB-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 48867,
+        "original_close_ts": 1791651533919,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SKR",
+      "contract": "SKR-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SKYAI",
+      "contract": "SKYAI-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x92aa03137385f18539301349dcfc9ebc923ffb10"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1786030054938,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SOL",
+      "contract": "SOL-USDT",
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 207810,
+        "original_close_ts": 1791651537688,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "STEEM",
+      "contract": "STEEM-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 34752,
+        "original_close_ts": 1791651536985,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SUI",
+      "contract": "SUI-USDT",
+      "identity": {
+        "chain": "sui",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "sui:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sui",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 210578,
+        "original_close_ts": 1791651537833,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SUN",
+      "contract": "SUN-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 91891,
+        "original_close_ts": 1791651535104,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "SUSHI",
+      "contract": "SUSHI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790846952528,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "TAO",
+      "contract": "TAO-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "TIA",
+      "contract": "TIA-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "TRUMP",
+      "contract": "TRUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791316805075,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "TRX",
+      "contract": "TRX-USDT",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "trx",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 53110,
+        "original_close_ts": 1791651531236,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "TUT",
+      "contract": "TUT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "bsc",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790364019554,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "UB",
+      "contract": "UB-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1789268122293,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "UNI",
+      "contract": "UNI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 162617,
+        "original_close_ts": 1791651537732,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "USELESS",
+      "contract": "USELESS-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790769063803,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "VELVET",
+      "contract": "VELVET-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791379114760,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "WIF",
+      "contract": "WIF-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "sol",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 1,
+        "original_close_ts": 1791572131031,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "WIN",
+      "contract": "WIN-USDT",
+      "identity": null,
+      "identity_status": "SUPPORTED_HTX_TOKEN_ADDRESS_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 65043,
+        "original_close_ts": 1791651537566,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "WLD",
+      "contract": "WLD-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x163f8c2467924be0ae7b5347228cabf260318753"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 325570,
+        "original_close_ts": 1791651539471,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "XAUT",
+      "contract": "XAUT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x68749665ff8d2d112fa859aa293f07a622782f38"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "XLM",
+      "contract": "XLM-USDT",
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "xlm",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 56059,
+        "original_close_ts": 1791651535268,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "XMR",
+      "contract": "XMR-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 108081,
+        "original_close_ts": 1791651535161,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "XPL",
+      "contract": "XPL-USDT",
+      "identity": null,
+      "identity_status": "NATIVE_OR_UNSUPPORTED_HTX_ASSET",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "XRP",
+      "contract": "XRP-USDT",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "xrp",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 124564,
+        "original_close_ts": 1791651537394,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": true
+    },
+    {
+      "symbol": "ZEC",
+      "contract": "ZEC-USDT",
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        },
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "zec",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 52355,
+        "original_close_ts": 1791651479717,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "ZKC",
+      "contract": "ZKC-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x000006c2a22ff4a44ff1f5d0f2ed65f781f55555"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "KUCOIN",
+          "production_adapter_enabled": false,
+          "exact_binding": true,
+          "chain_id": "eth",
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": null,
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "哈基米",
+      "contract": "哈基米-USDT",
+      "identity": null,
+      "identity_status": "HTX_CURRENCY_NOT_FOUND",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790204957499,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "币安人生",
+      "contract": "币安人生-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x924fa68a0fc644485b8df8abfa0a41c2e7744444"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1788330036250,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "牛来",
+      "contract": "牛来-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xbeea1d618e533a387d941f58a7d4c9b7bd377777"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1791312336655,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    },
+    {
+      "symbol": "龙虾",
+      "contract": "龙虾-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xeccbb861c0dda7efd964010085488b69317e4444"
+      },
+      "identity_status": "CLOSED",
+      "identity_original_received_ts": 1791632635640,
+      "routes": [
+        {
+          "venue": "POLONIEX",
+          "production_adapter_enabled": true,
+          "exact_binding": true,
+          "flow_window_proven": false
+        }
+      ],
+      "poloniex_original_activity_hint": {
+        "trade_count_24h": 0,
+        "original_close_ts": 1790032222869,
+        "original_received_ts": 1791651540378,
+        "not_current_flow": true
+      },
+      "prior_individual_full_window": false
+    }
+  ],
+  "sourceHTTP": 0,
+  "D1": 0,
+  "Telegram": 0,
+  "runtime_changed": false,
+  "new_full_flow_assets": 0,
+  "retained_individual_full_flow_assets": 22,
+  "simultaneous_continuous_flow_coverage": false,
+  "metadata_is_not_fresh_directional_flow": true,
+  "source_clocks_refreshed": false,
+  "score_contribution": 0,
+  "calibration_open": true,
+  "project_complete": false
+}

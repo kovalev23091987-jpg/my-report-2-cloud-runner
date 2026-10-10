@@ -1036,7 +1036,7 @@
     ],
     "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
   },
-  "next_action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT",
+  "next_action": "QUALIFY_SAVED12_POLONIEX_CANDIDATES_WITH_FRESH_METADATA_COMMON240M_ANCHOR_AND_EXISTING16_ROLE_CAP_AFTER_NATIVE_ADMISSION;NO_20261010_EXHAUSTED_ROLE_REPEAT;KUCOIN_FLOW_RESEARCH_OPEN",
   "latest_package_accounting": {
     "catalog_HTTP": 6,
     "catalog_D1": {
@@ -2194,37 +2194,120 @@
   "current_asset_count": 104,
   "current_collection_and_source_plan": "checkpoints/HTX_104_ASSET_COLLECTION_AND_N05_PLAN_20261010.json",
   "latest_development_lease_release": {
-    "schema": "N05_104_UNIVERSE_EXECUTION_CHECKPOINT_V1",
-    "owner": "CODEX:N05_BROAD_EXCHANGES:1791647541921",
-    "acquired_ts": 1791647541921,
-    "released_ts": 1791654339428,
-    "status": "VERIFIED_CLOUD_RELEASES_AND_104_ASSET_COLLECTION_PLAN_SAVED",
-    "proof": "checkpoints/N05_104_UNIVERSE_LEASE_RELEASE_20261010.json",
-    "verified_main_before_release": "cf9c449e43b5aed8faa9714cffff543e9af51d31",
-    "completed_PRs": [
-      307,
-      308,
-      309
+    "owner": "CODEX:N05_104_ROUTE_RECONCILIATION:1791654863073",
+    "released_ts": 1791655128985,
+    "reason": "104_EXACT_ROUTE_REPLAY_AND_PER_ASSET_PLAN_SAVED",
+    "proof": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json"
+  },
+  "latest_N05_104_exact_routes": {
+    "schema": "N05_104_EXACT_ROUTE_CONNECTED_CHECKPOINT_V1",
+    "proof": "checkpoints/N05_104_EXACT_SOURCE_ROUTES_20261010.json",
+    "script": "tools/reconcile-n05-104-exact-routes-20261010.mjs",
+    "recorded_ts": 1791655128985,
+    "status": "CURRENT104_SCOPE_REPLAYED_AGAINST_RETAINED_PRIMARY_IDENTITIES_AND_MARKETS",
+    "proof_sha256": "409dcb41480235a8248a19827c21595e9fd84b52bdd0e948fe5246532d5802a6",
+    "script_sha256": "f263247b3a6ed292709e458cb2ff58a70b189de69197b28570570cfa6c4954d9",
+    "counts": {
+      "approved_assets": 104,
+      "closed_exact_identity": 71,
+      "poloniex_exact_bindings": 52,
+      "kucoin_research_exact_bindings": 59,
+      "assets_with_either_exact_route": 69
+    },
+    "new_asset_routes": [
+      {
+        "symbol": "CT",
+        "contract": "CT-USDT",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x0a092e544da31150b439a1aaa1a3a2214a867f46"
+        },
+        "identity_status": "CLOSED",
+        "identity_original_received_ts": 1791632635640,
+        "routes": [
+          {
+            "venue": "KUCOIN",
+            "production_adapter_enabled": false,
+            "exact_binding": true,
+            "chain_id": "eth",
+            "flow_window_proven": false
+          }
+        ],
+        "poloniex_original_activity_hint": null,
+        "prior_individual_full_window": false
+      },
+      {
+        "symbol": "RLC",
+        "contract": "RLC-USDT",
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x607f4c5bb672230e8672085532f7e901544a7375"
+        },
+        "identity_status": "CLOSED",
+        "identity_original_received_ts": 1791632635640,
+        "routes": [
+          {
+            "venue": "POLONIEX",
+            "production_adapter_enabled": true,
+            "exact_binding": true,
+            "flow_window_proven": false
+          },
+          {
+            "venue": "KUCOIN",
+            "production_adapter_enabled": false,
+            "exact_binding": true,
+            "chain_id": "eth",
+            "flow_window_proven": false
+          }
+        ],
+        "poloniex_original_activity_hint": {
+          "trade_count_24h": 0,
+          "original_close_ts": 1791635945498,
+          "original_received_ts": 1791651540378,
+          "not_current_flow": true
+        },
+        "prior_individual_full_window": false
+      }
     ],
-    "current_crypto_assets": 104,
-    "crypto_contracts": 121,
-    "new_assets": [
-      "CT",
-      "RLC"
-    ],
-    "noncrypto_contracts_excluded": 276,
-    "original_natural_collection_bucket_ts": 1791653100000,
-    "approved_assets_collected_in_original_bucket": 104,
-    "retained_individual_four_hour_flow_assets": 22,
-    "simultaneous_continuous_N05_coverage_proven": false,
-    "score_contribution": 0,
-    "calibration_open": true,
-    "project_complete": false,
-    "agent_background_process_running": false,
-    "existing_production_collection_schedule_changed": false,
-    "next_action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT",
-    "source_HTTP": 0,
+    "next_qualification_plan": {
+      "candidate_contracts": [
+        "FLOKI-USDT",
+        "LINK-USDT",
+        "LSK-USDT",
+        "NEAR-USDT",
+        "PEPE-USDT",
+        "QNT-USDT",
+        "RLC-USDT",
+        "SHIB-USDT",
+        "SOL-USDT",
+        "SUI-USDT",
+        "XLM-USDT",
+        "ZEC-USDT"
+      ],
+      "original_hint_window_end_ts": 1791651480000,
+      "current_activity_not_proven": true,
+      "refresh_primary_metadata_before_future_acquisition": true,
+      "common_closed_minute_anchor_required": true,
+      "cold_metadata_calls": 3,
+      "one_native_candle_call_per_candidate": true,
+      "planned_cold_HTTP": 15,
+      "existing_source_daily_cap": 16,
+      "actual_native_admission_before_calls": true,
+      "skip_when_exhausted": true,
+      "prior_hint_must_not_establish_current_zero_activity": true
+    },
+    "checks": "Original four gzip/body hashes and current manifest hash verified; exact current runtime identity normalizer replayed; 104 unique plan rows; 52 Poloniex bindings,59 KuCoin bindings and22 previous full-window rows preserved",
+    "primary_identity_only_scope": 71,
+    "other_identity_routes_not_classified_by_this_two_venue_replay": 33,
+    "sourceHTTP": 0,
     "D1": 0,
-    "Telegram": 0
+    "Telegram": 0,
+    "runtime_changed": false,
+    "full_flow_assets": 22,
+    "new_full_flow_assets": 0,
+    "same_anchor_continuous_coverage": false,
+    "calibration_open": true,
+    "score_contribution": 0,
+    "project_complete": false
   }
 }
