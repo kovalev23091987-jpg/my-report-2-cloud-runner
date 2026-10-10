@@ -1,6 +1,9 @@
 // Primary venue identity references are structural, never prices or freshness receipts.
 export const BINANCE_NATIVE_FLOW_VERSION='binance-native-taker-flow-v1-20261010';
 export const BINANCE_NATIVE_REFERENCES=Object.freeze({
+ BTC:Object.freeze({chain:'bitcoin',native_asset_id:'bitcoin:mainnet',reference_id:'BINANCE_PRIMARY_BITCOIN_BTC_20261010',url:'https://www.binance.com/en/research/projects/bitcoin'}),
+ ETH:Object.freeze({chain:'ethereum',native_asset_id:'ethereum:mainnet',reference_id:'BINANCE_PRIMARY_ETHEREUM_ETH_20261010',url:'https://www.binance.com/en/research/projects/ethereum'}),
+ BNB:Object.freeze({chain:'bsc',native_asset_id:'bsc:mainnet',reference_id:'BINANCE_PRIMARY_BSC_BNB_20261010',url:'https://www.binance.com/en/research/projects/bnb'}),
  ADA:Object.freeze({chain:'cardano',native_asset_id:'cardano:mainnet',reference_id:'BINANCE_PRIMARY_CARDANO_ADA_20261010',url:'https://www.binance.com/en/research/projects/cardano'}),
  APT:Object.freeze({chain:'aptos',native_asset_id:'aptos:mainnet',reference_id:'BINANCE_PRIMARY_APTOS_APT_20261010',url:'https://www.binance.com/en/research/projects/aptos'}),
  ATOM:Object.freeze({chain:'cosmos',native_asset_id:'cosmos:mainnet',reference_id:'BINANCE_PRIMARY_COSMOS_ATOM_20261010',url:'https://www.binance.com/en/research/projects/cosmos-network'})
