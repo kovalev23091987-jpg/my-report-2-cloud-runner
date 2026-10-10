@@ -1,0 +1,31 @@
+name: Prospective readiness integrity acceptance
+on:
+  pull_request:
+    paths:
+      - runner/r8-20-prospective-validation-sidecar.mjs
+      - current-generation/tests/approved-entry-performance.runtime.mjs
+      - .github/workflows/prospective-readiness-integrity-20261010.yml
+permissions:
+  contents: read
+jobs:
+  readiness-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Assemble exact runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime .
+          cmp runtime/r8-20-prospective-validation-sidecar.mjs runner/r8-20-prospective-validation-sidecar.mjs
+      - name: Verify fail-closed readiness aggregation
+        run: |
+          node --check runner/r8-20-prospective-validation-sidecar.mjs
+          node current-generation/tests/approved-entry-performance.runtime.mjs runtime
