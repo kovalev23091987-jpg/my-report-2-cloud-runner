@@ -50,8 +50,8 @@ try{
    existing.push(m);
  }
  out.plan=planCompactHtx90d({universe,manifests:existing,now_ts:now,limit:6});
- if(out.plan.status==='ALL_CONTRACTS_ATTEMPTED_OR_COOLDOWN'){
-   out.status='NO_ELIGIBLE_NEW_ASSET_OR_COOLDOWN';
+ if(out.plan.status==='ALL_CONTRACTS_ATTEMPTED_OR_COOLDOWN'||out.plan.status==='PILOT_NEAR_NOT_VERIFIED_OR_COOLDOWN'){
+   out.status=out.plan.status==='PILOT_NEAR_NOT_VERIFIED_OR_COOLDOWN'?'PILOT_NOT_QUALIFIED_WAIT_OR_REVIEW':'NO_ELIGIBLE_NEW_ASSET_OR_COOLDOWN';
  }else if(out.plan.status!=='BOUNDED_COMPACT_ACQUISITION_PLAN'){
    throw Error('BOUNDED_EXACT_102_SOURCE_PLAN_REQUIRED_'+out.plan.status);
  }else{
