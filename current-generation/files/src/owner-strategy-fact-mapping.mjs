@@ -1,7 +1,7 @@
 import {assessStrategyFitShadow,STRATEGY_FIT_GROUP_WEIGHTS} from './owner-strategy-fit-shadow.mjs';
 import {validateEvidenceV2,evidenceDedupKey} from './evidence-v2.mjs';
 
-export const STRATEGY_FACT_MAPPING_VERSION='EXACT_CANONICAL_STRATEGY_FACT_MAPPING_V1_20261010';
+export const STRATEGY_FACT_MAPPING_VERSION='EXACT_CANONICAL_STRATEGY_FACT_MAPPING_V2_STAGE_APPLICABILITY_20261010';
 // A declared, inspectable shadow rubric. Facts qualify only their stated role;
 // availability of a price/book is never a directional vote or ENTRY authority.
 export function mapOriginalStrategyFacts(canonical){
@@ -52,9 +52,16 @@ export function mapOriginalStrategyFacts(canonical){
  // confirmation. No missing target is replaced by a liquidation estimate.
  const target=(c?.targets||[]).find(t=>typeof t.price==='number'&&t.price>0);
  add('invalidation_risk_and_target','independent_measured_target','Независимо подтверждённая измеренная цель','MEASURED_TARGET_AND_INVALIDATION',target?range:null,Boolean(target&&p?.value&&sign*(target.price-p.value)>0),180000);
- return {version:STRATEGY_FACT_MAPPING_VERSION,criteria:groups,sourceHTTP:0,D1:0,Telegram:0,production_filter_unchanged:true};
+ const initial=!c?.metadata?.original_idea_recheck&&['OBSERVE','WAIT_FOR_TRIGGER'].includes(c?.state);
+ const defer=(id,reason)=>{const row=Object.values(groups).flat().find(r=>r.id===id);Object.assign(row,{status:'NOT_APPLICABLE',source_ts:null,observed_ts:null,physical_root:null,reason});};
+ // Applicability follows the existing observation contract, not a target score.
+ // Waiting for ENTRY is not a failed initial idea. A target is optional for
+ // OBSERVE; all existing target/cost/settlement gates still apply to ENTRY.
+ if(initial)defer('original_trigger_settlement','FUTURE_ENTRY_CHECK_NOT_APPLICABLE_TO_INITIAL_IDEA');
+ if(initial&&c.state==='OBSERVE')defer('independent_measured_target','TARGET_OPTIONAL_FOR_EXISTING_OBSERVE_CONTRACT');
+ return {version:STRATEGY_FACT_MAPPING_VERSION,publication_stage:initial?'INITIAL_IDEA':'FRESH_ANALYSIS_OR_ENTRY',criteria:groups,sourceHTTP:0,D1:0,Telegram:0,production_filter_unchanged:true};
 }
 export function assessOriginalStrategyFacts(canonical,{weight_model='PRIMARY_35_30_20_15'}={}){
  const mapped=mapOriginalStrategyFacts(canonical);
- return {...assessStrategyFitShadow({canonical,criteria:mapped.criteria,decision_ts:canonical?.observed_ts,weight_model}),fact_mapping_version:mapped.version};
+ return {...assessStrategyFitShadow({canonical,criteria:mapped.criteria,decision_ts:canonical?.observed_ts,weight_model}),fact_mapping_version:mapped.version,publication_stage:mapped.publication_stage,production_threshold_authority:'EXISTING_CANONICAL_SCORE_ONLY',shadow_score_may_filter_initial_delivery:false};
 }

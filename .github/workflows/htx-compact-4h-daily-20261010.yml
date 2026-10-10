@@ -97,6 +97,11 @@ jobs:
             audit-output/htx-compact-4h/
             checkpoints/htx-compact-4h/
           retention-days: 90
+      - name: Reconcile actual coverage and owner registers from exact retained source bytes
+        if: success() && steps.lease.outputs.acquired == 'true'
+        env:
+          REPORT2_PERSIST_HISTORY_CENSUS: '1'
+        run: node tools/audit-expanded-history-and-original-statistics.mjs
       - name: Confirm own active lease and no new fence before persistence
         if: success() && steps.lease.outputs.acquired == 'true'
         uses: actions/github-script@v7
@@ -119,6 +124,7 @@ jobs:
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add -f checkpoints/htx-compact-4h/
+            git add -f checkpoints/HTX_EXPANDED_102_ACTUAL_COVERAGE_LATEST.json checkpoints/CURRENT_PROJECT_STATUS.json checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json
             if ! git diff --cached --quiet; then
               git commit -m 'Retain admitted HTX compact 4h source receipts and historical prices'
               git push origin HEAD:main
