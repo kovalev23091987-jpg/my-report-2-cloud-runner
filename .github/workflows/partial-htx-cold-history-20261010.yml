@@ -1,0 +1,40 @@
+name: Partial HTX cold history preservation
+on:
+  push:
+    branches: [codex/partial-htx-cold-history-20261010]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require active owner lease, no fence and exact review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(phase.lease?.owner!=='chatgpt-cold-history-archive-20261010'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_LEASE_BLOCKED');
+            const review=(await github.rest.git.getRef({owner,repo,ref:'heads/codex/partial-htx-cold-history-20261010'})).data.object.sha;
+            if(review!==context.sha)throw Error('REVIEW_HEAD_MOVED');
+      - name: Verify partial preservation, exact gaps and actual retained NEAR day
+        run: |
+          node --check runner/htx-delayed-price-history.mjs
+          node --test runner/htx-delayed-price-series.test.mjs runner/htx-partial-cold-history.test.mjs
+          node tools/audit-partial-htx-cold-history.mjs
+          git rev-parse HEAD > audit-output/tested-head.txt
+          sha256sum runner/htx-delayed-price-history.mjs runner/htx-partial-cold-history.test.mjs tools/audit-partial-htx-cold-history.mjs > audit-output/code-hashes.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: partial-htx-cold-history-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
