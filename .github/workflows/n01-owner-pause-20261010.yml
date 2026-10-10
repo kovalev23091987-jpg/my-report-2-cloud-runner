@@ -50,6 +50,8 @@ jobs:
       - name: Verify generation, assembled pause, score, report and runtime binding
         env:
           REPORT2_TEST_RUNTIME: runtime
+          REPORT2_UNIFIED_MODULE_ROOT: runtime/src
+          REPORT2_JOINT_REPAIR_RUNTIME_ROOT: runtime
           REPORT2_VALIDATION_RECEIPT_DIR: audit-output/n01-owner-pause
         run: |
           node current-generation/validate.mjs > audit-output/n01-owner-pause/generation.log 2>&1
