@@ -224,7 +224,7 @@ function describe(row,now){
  if(row.block_id==='N05'){
   if(!validateJointFlowEvidence(row,now))return null;
   const parts=row.components.map(c=>`${c.venue} ${c.market==='SPOT'?'спот':'фьючерсы'}: перевес ${c.imbalance>0?'покупок':'продаж'} ${fmt(Math.abs(c.imbalance)*100)}%`).join('; ');
-  return{source:'HTX / Bitget',label:'Согласованный поток спота и фьючерсов за четыре часа',value:`${parts}; полные окна сопоставлены, близость направления проверена; баллы и разрешение входа не назначены`};
+  return{source:[...new Set(row.components.map(c=>c.venue==='BITGET'?'Bitget':c.venue==='BINANCE'?'Binance':c.venue))].join(' / '),label:'Согласованный поток спота и фьючерсов за четыре часа',value:`${parts}; полные окна сопоставлены, близость направления проверена; баллы и разрешение входа не назначены`};
  }
  if(row.block_id==='N12'&&row.metric_family==='EXACT_SIGNED_RAW_24H'){
   const buy=number(row.buy_quote_turnover_usdt),sell=number(row.sell_quote_turnover_usdt),start=number(row.window_start),end=number(row.window_end),count=number(row.raw_trade_count);
