@@ -18,7 +18,7 @@ const run=(args,{cwd=repo}={})=>{
 const checks=[
  'files/src/pre-analysis-failure-receipt.mjs',
  '../runner/current-runtime-binding.mjs',
- 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs',
+ 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs','files/src/original-idea-recheck.mjs','files/src/original-idea-terminal.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  '../audit-fixes/t16/run-official-feed-smoke.mjs',

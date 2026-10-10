@@ -1,7 +1,8 @@
+import {originalIdeaIdentity,qualifyOriginalIdeaSettlement,finishOriginalIdeaAnalysis} from './original-idea-recheck.mjs';
 import {bindApprovedHtxAnalysisScope} from './approved-htx-analysis-scope.mjs';
 import {mergeHtxSignedHistoryTrades} from './htx-signed-tape.mjs';
 import {bindVerifiedFuturesFlow} from './verified-futures-flow-binding.mjs';
-import {buildHtxPrimaryTechnicalReceipt} from './htx-technical-structure.mjs';
+import {buildHtxPrimaryTechnicalReceipt,readHtxClosedTriggerCandles} from './htx-technical-structure.mjs';
 import {buildHtxFuturesFlowPrimary} from './candidate-evidence-v2-runtime.mjs';
 import {isFreshManualMainAnalysis} from './two-candidate-policy.mjs';
 import {bindSelectedEarlyEvidence,rankedEarlyPersistenceContracts} from './selected-early-evidence.mjs';
@@ -10,7 +11,7 @@ import {observeHtxAcquisitionAttempt} from './htx-signed-tape.mjs';
 import {buildCandidateSourceRoutingPlan,remainingLiquidationHttpCap,nativeLiquidationCollectionMode} from './candidate-source-routing.mjs';
 import { buildHtxOiWindowReceipt } from './oi-window-receipt.mjs';
 import { persistCanonicalSnapshot } from './canonical-publication.mjs';
-import { claimDueRecheck, completeRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
+import { claimDueRecheck, requeueExpiredLease } from './recheck-scheduler.mjs';
 import {
   FAST_MOVE_WATCH_VERSION,
   FAST_MOVE_WATCH_STATUS,
@@ -17169,6 +17170,10 @@ async function buildDeepCheckInput(params, env) {
   }
   let canonicalLiquidationSourceAudit=null;
   if(typeof env?.REPORT2_LIQUIDATION_SOURCE_AUDIT==='function')try{canonicalLiquidationSourceAudit=env.REPORT2_LIQUIDATION_SOURCE_AUDIT({contract,run_id:canonicalRunId,evaluated_ts:now});}catch{/* Diagnostic failure cannot change the decision. */}
+  const originalRecheckContext=env?.REPORT2_ORIGINAL_RECHECK_CONTEXT;
+  const originalIdeaRecheck=originalRecheckContext?.task?.contract_code===contract
+    ?qualifyOriginalIdeaSettlement({...originalRecheckContext,candles:readHtxClosedTriggerCandles({contract,now}),now_ts:now,current_price:htxObservationReferencePrice?.status==='CLOSED'?htxObservationReferencePrice.value:null})
+    :params?.discovery_row?.recheck_forced?{schema:'ORIGINAL_IDEA_RECHECK_V1_20261010',status:'NOT_CONFIRMED',settlement_confirmed:false,entry_authorized:false,reason:'EXACT_ORIGINAL_IDEA_REQUIRED'}:null;
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
       native_liquidation_acquisition:nativeLiquidationAcquisition,
@@ -17208,6 +17213,7 @@ async function buildDeepCheckInput(params, env) {
           ? { hyperliquid: smartMoneyRaw.hyperliquid_context }
           : null,
       internal_market_context:internalMarketContext,
+      original_idea_recheck:originalIdeaRecheck,
       previous_snapshot_context:
         previousSnapshotContext,
     });
@@ -19232,6 +19238,15 @@ const __REPORT2_ORIGINAL_HANDLER = {
             });
       }
 
+      env.REPORT2_ORIGINAL_RECHECK_CONTEXT=null;
+      if(postV7RecheckClaim.claimed){
+        const task=postV7RecheckClaim.task;
+        const sent=await env.DATA_DB.prepare(`SELECT d.telegram_message_id FROM v3_dispatch_publication_binding_shadow b JOIN v3_telegram_dispatch_shadow d ON d.idempotency_key=b.idempotency_key WHERE b.publication_id=?1 AND b.contract_code=?2 AND b.direction=?3 AND b.wave_id=?4 AND b.run_id=?5 AND b.snapshot_id=?6 AND b.lifecycle_event IN ('OBSERVE','WAIT') AND d.state='SENT' AND CAST(d.telegram_message_id AS INTEGER)>0 AND d.contract=b.contract_code AND d.direction=b.direction AND d.wave_id=b.wave_id LIMIT 1`).bind(task.publication_id,task.contract_code,task.direction,task.wave_id,task.run_id,task.snapshot_id).first();
+        const saved=await env.DATA_DB.prepare('SELECT canonical_json FROM canonical_publication_shadow WHERE publication_id=?1 LIMIT 1').bind(task.publication_id).first();
+        let canonical=null;try{canonical=JSON.parse(saved?.canonical_json);}catch{}
+        if(sent&&originalIdeaIdentity({task,canonical}))env.REPORT2_ORIGINAL_RECHECK_CONTEXT={task,canonical};
+      }
+
       if(env?.REPORT2_TRIGGERED_RECHECK_TASK_ID && (!postV7RecheckClaim.claimed || postV7RecheckClaim.task?.task_id!==env.REPORT2_TRIGGERED_RECHECK_TASK_ID))throw new Error('TRIGGERED_RECHECK_CLAIM_NOT_CLOSED');
 
       console.log(
@@ -19441,7 +19456,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
         const telemetry=(Array.isArray(fastMoveAdaptivePrefilter?.contract_telemetry)?fastMoveAdaptivePrefilter.contract_telemetry:[])
           .find(row=>String(row?.contract||'').trim()===dueRecheckContract);
         if (telemetry) {
-          const forced={priority_rank:0,...telemetry,contract:dueRecheckContract,recheck_task_id:postV7RecheckClaim.task.task_id,recheck_forced:true};
+          const forced={priority_rank:0,...telemetry,contract:dueRecheckContract,early_candidate_wave_id:postV7RecheckClaim.task.wave_id,wave_id:postV7RecheckClaim.task.wave_id,recheck_task_id:postV7RecheckClaim.task.task_id,recheck_forced:true};
           postV7DeepPrefilter={...fastMoveAdaptivePrefilter,shortlist:[forced,...(fastMoveAdaptivePrefilter.shortlist||[]).filter(row=>String(row?.contract||'').trim()!==dueRecheckContract)]};
         }
       }
@@ -19706,7 +19721,7 @@ const __REPORT2_ORIGINAL_HANDLER = {
           .find(row=>String(row?.contract||'').trim()===String(postV7RecheckClaim.task.contract_code||'').trim());
         const receipt=exactResult?.post_v7_canonical_persistence;
         if (exactResult?.execution_status === 'FULFILLED' && exactResult?.canonical_analytical_result?.status === 'CLOSED' && ['CLOSED','DEDUPLICATED'].includes(receipt?.status) && receipt?.publication_id) {
-          await completeRecheck(env.DATA_DB,{task_id:postV7RecheckClaim.task.task_id,actor:postV7RecheckClaim.task.lease_owner,lease_started_ts:postV7RecheckClaim.task.lease_started_ts,result:'DONE',new_publication_id:receipt.publication_id,now_ts:Date.now()});
+          await finishOriginalIdeaAnalysis(env.DATA_DB,{task:postV7RecheckClaim.task,canonical:exactResult.canonical_analytical_result,publication_id:receipt.publication_id,now_ts:Date.now()});
         }
       }
 

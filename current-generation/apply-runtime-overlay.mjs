@@ -88,7 +88,7 @@ const files=[
  'src/deep-candidate-order.mjs',
  'src/discovery-candidate-score.mjs',
  'src/two-candidate-policy.mjs',
- 'src/triggered-entry-recheck.mjs','src/recheck-scheduler.mjs',
+ 'src/triggered-entry-recheck.mjs','src/recheck-scheduler.mjs','src/original-idea-recheck.mjs','src/original-idea-terminal.mjs',
  'src/bounded-hot-maintenance.mjs',
  'src/htx-asset-identity.mjs',
  'src/coinpaprika-htx-identity.mjs','src/coinpaprika-market-supply.mjs',

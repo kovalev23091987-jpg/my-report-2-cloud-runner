@@ -38,6 +38,27 @@ export function readHtxTechnicalStructure({contract,now=Date.now()}={}){
  return rolling&&rolling.observed_ts<=now&&now-rolling.payload?.ts<=TTL?normalizeHtxRollingRange({payload:rolling.payload,contract,observed_ts:rolling.observed_ts}):[];
 }
 
+// Read existing raw responses only; a rolling summary or range high/low never
+// proves a trigger's candle close. Five exact 1m bars may form one closed 5m bar.
+export function readHtxClosedTriggerCandles({contract,now=Date.now()}={}){
+ const out=[];
+ for(const period of ['5min','1min']){
+  const s=captured.get(contract+':'+period),p=s?.payload,duration=periods[period];
+  if(!s||p?.status!=='ok'||p.ch!==`market.${contract}.kline.${period}`||!Number.isSafeInteger(p.ts)||p.ts>s.observed_ts||s.observed_ts>now||now-p.ts>TTL||!Array.isArray(p.data))continue;
+  const end=Math.floor(p.ts/duration)*duration;
+  const valid=r=>Number.isSafeInteger(r?.id)&&['open','high','low','close'].every(k=>typeof r[k]==='number'&&Number.isFinite(r[k])&&r[k]>0)&&r.low<=r.high&&r.open>=r.low&&r.open<=r.high&&r.close>=r.low&&r.close<=r.high;
+  const make=(rows,start,finish,source)=>({contract,source,source_ts:p.ts,observed_ts:s.observed_ts,interval_ms:finish-start,window_start:start,window_end:finish,open:rows[0].open,high:Math.max(...rows.map(r=>r.high)),low:Math.min(...rows.map(r=>r.low)),close:rows.at(-1).close,all_candles_closed:true,candle_ids:rows.map(r=>r.id)});
+  const rows=p.data.filter(r=>valid(r)&&r.id*1000===end-duration);
+  if(rows.length===1)out.push(make(rows,end-duration,end,'HTX_OFFICIAL_CLOSED_CANDLE'));
+  if(period==='1min'){
+   const finish=Math.floor(p.ts/300000)*300000,start=finish-300000;
+   const five=p.data.filter(r=>r?.id*1000>=start&&r?.id*1000<finish).sort((a,b)=>a.id-b.id);
+   if(five.length===5&&five.every((r,i)=>valid(r)&&r.id*1000===start+i*60000))out.push(make(five,start,finish,'HTX_OFFICIAL_FIVE_CLOSED_1M_CANDLES'));
+  }
+ }
+ return out;
+}
+
 // A completed promise is not proof that its provider returned useful data.
 // Check the existing snapshot AND trajectory; a rolling price summary alone
 // cannot admit the primary technical pipeline. Flow coverage is independent.

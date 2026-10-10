@@ -1,0 +1,91 @@
+name: Original idea candle settlement terminal lifecycle and connected pipeline
+on:
+  push:
+    branches: [full-tz-telegram-20261010]
+    paths: ['current-generation/**', '.github/workflows/original-idea-full-block-20261010.yml']
+permissions:
+  contents: write
+  actions: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require exact main, own repair lease and review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;if(h!=='e6c32c93a8ee300d78a6b6436cebb2fac94ca073')throw Error('MAIN_MOVED');const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');if(phase.lease?.owner!=='CODEX:FULL_TZ:20261010:TRANSFER:1791623601778'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_BLOCKED');if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+      - name: Restore exact already retained delivery fixtures with immutable digests
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs'),crypto=require('crypto'),cp=require('child_process'),owner=context.repo.owner,repo=context.repo.repo;
+            const manifest=JSON.parse(fs.readFileSync('current-generation/tests/fixtures/batched-retained-delivery-source-manifest.json'));
+            for(const s of [...manifest.sources,{name:'qnt1826',artifact_id:11423583100,sha256:'f0f94d4beb9740adfdbf7dc83a276b305b7665e39dfb1aa0ae025005de3c7585'}]){
+              const b=s.zip_path?fs.readFileSync(s.zip_path):Buffer.from((await github.rest.actions.downloadArtifact({owner,repo,artifact_id:s.artifact_id,archive_format:'zip'})).data);
+              if(crypto.createHash('sha256').update(b).digest('hex')!==s.sha256)throw Error('RETAINED_SOURCE_ZIP_HASH:'+s.name);
+              fs.mkdirSync('batch-source/'+s.name,{recursive:true});fs.writeFileSync('batch-source/'+s.name+'.zip',b);cp.execFileSync('unzip',['-q','batch-source/'+s.name+'.zip','-d','batch-source/'+s.name]);
+            }
+            fs.mkdirSync('audit-output',{recursive:true});
+            for(const [from,to] of [['checkpoints/actual-zec-sent150-original-input-20261007.json.gz','audit-output/exact-current-data.json.gz'],['checkpoints/production-liq-original-20261008/near0930/exact-current-data.json.gz','audit-output/near0930-exact-current-data.json.gz']])fs.copyFileSync(from,to);
+      - name: Assemble exact connected current runtime
+        env:
+          REPORT2_PAYLOAD_KEY: ${{ secrets.REPORT2_PAYLOAD_KEY }}
+        run: |
+          mkdir -p runtime audit-output
+          node runner/payload-crypto.mjs decrypt payload/report2-runtime.enc "$REPORT2_PAYLOAD_KEY" runtime/payload.tar.gz
+          tar -xzf runtime/payload.tar.gz -C runtime
+          rm runtime/payload.tar.gz
+          node post-v7-consolidated/full-validation/apply-all-runtime.mjs runtime . > audit-output/assembly.json
+          npm ci --prefix runtime/src/liquidation-extension --ignore-scripts --no-audit --no-fund
+      - name: Verify original trigger candle full analysis and terminal lifecycle
+        run: |
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/original-idea-recheck.test.mjs current-generation/tests/triggered-entry-recheck.test.mjs cloudflare/public-collector/light-price-recheck.test.mjs > audit-output/original-idea-recheck.tap
+          cmp current-generation/files/src/original-idea-recheck.mjs runtime/src/original-idea-recheck.mjs
+          cmp current-generation/files/src/original-idea-terminal.mjs runtime/src/original-idea-terminal.mjs
+      - name: Verify strict reachable entry and approved delivery pipeline
+        run: |
+          node current-generation/tests/approved-entry-path.runtime.mjs runtime > audit-output/approved-entry-path.json
+          node current-generation/tests/approved-entry-performance.runtime.mjs runtime > audit-output/approved-entry-performance.json
+          REPORT2_TEST_RUNTIME=runtime node --test current-generation/tests/approved-telegram-plain.runtime.mjs current-generation/tests/brief-telegram-facts.runtime.mjs current-generation/tests/batched-delivery.runtime.mjs > audit-output/approved-delivery-runtime.tap
+          node audit-fixes/v13/final-integration-37.mjs runtime > audit-output/integration.json
+      - name: Validate generation and exact runtime binding
+        run: |
+          REPORT2_VALIDATION_RECEIPT_DIR=audit-output node current-generation/validate.mjs > audit-output/validation.json 2> audit-output/validation-errors.txt
+          node runner/current-runtime-binding.mjs --runtime runtime > audit-output/binding.json
+          git rev-parse HEAD > audit-output/head.txt
+          sha256sum runtime/src/original-idea-recheck.mjs runtime/src/original-idea-terminal.mjs runtime/src/htx-technical-structure.mjs runtime/src/canonical-runtime-adapter.mjs runtime/src/worker.js > audit-output/target-runtime-hashes.txt
+      - name: Show meaningful check failure locations
+        if: failure()
+        run: |
+          node --input-type=module -e "import fs from 'node:fs';for(const f of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap')||f.endsWith('errors.txt'))){const ls=fs.readFileSync('audit-output/'+f,'utf8').split(String.fromCharCode(10));for(let i=0;i<ls.length;i++)if(/not ok|AssertionError|ERR_ASSERTION|error:|expected:|actual:|test at/.test(ls[i]))process.stdout.write(f+':'+ls.slice(Math.max(0,i-2),i+18).join(String.fromCharCode(10))+String.fromCharCode(10));}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: original-idea-full-block-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
+      - name: Retain exact connected proof
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo,h=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:h})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json'),fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(h!=='e6c32c93a8ee300d78a6b6436cebb2fac94ca073'||phase.lease?.owner!=='CODEX:FULL_TZ:20261010:TRANSFER:1791623601778'||phase.lease.expires_ts<=Date.now()||fence.active)throw Error('OWNER_OR_MAIN_MOVED');
+            if((await github.rest.git.getRef({owner,repo,ref:context.ref.replace('refs/','')})).data.object.sha!==context.sha)throw Error('REVIEW_MOVED');
+            const fs=require('fs'),crypto=require('crypto'),tests={};
+            for(const file of fs.readdirSync('audit-output').filter(f=>f.endsWith('.tap'))){const t=fs.readFileSync('audit-output/'+file,'utf8'),pass=Number(t.match(/(?:#|ℹ) pass (\d+)/)?.[1]),fail=Number(t.match(/(?:#|ℹ) fail (\d+)/)?.[1]);if(!Number.isInteger(pass)||fail!==0)throw Error('TEST_NOT_PASS:'+file);tests[file]={pass,fail,sha256:crypto.createHash('sha256').update(t).digest('hex')};}
+            const integration=JSON.parse(fs.readFileSync('audit-output/integration.json')),validation=JSON.parse(fs.readFileSync('audit-output/validation.json')),binding=JSON.parse(fs.readFileSync('audit-output/binding.json'));
+            if(integration.failed!==0||integration.passed!==37||validation.status!=='CURRENT_GENERATION_VALIDATED'||binding.status!=='CURRENT_RUNTIME_BINDING_VERIFIED')throw Error('CONNECTED_PROOF_NOT_CLOSED');
+            const proof={schema:'ORIGINAL_IDEA_FULL_BLOCK_CONNECTED_V1_20261010',status:'CONTROLLED_ORIGINAL_CLOCK_SETTLEMENT_TERMINAL_AND_CONNECTED_PIPELINE_VERIFIED',tested_head:context.sha,cloud_run:context.runId,tests,integration,validation,binding,sourceHTTP:0,D1:0,Telegram:0,actual_ENTRY:false,new_fresh_SENT:false,source_clocks_refreshed:false,weights_thresholds_ENTRY_quotas_unchanged:true,original_SENT_rewritten:false,full_project_complete:false,retained_directory:'checkpoints/original-idea-full-block-'+context.runId};
+            const entries=[];
+            for(const file of fs.readdirSync('audit-output')){const b=(await github.rest.git.createBlob({owner,repo,content:fs.readFileSync('audit-output/'+file).toString('base64'),encoding:'base64'})).data;entries.push({path:proof.retained_directory+'/'+file,mode:'100644',type:'blob',sha:b.sha});}
+            const b=(await github.rest.git.createBlob({owner,repo,content:Buffer.from(JSON.stringify(proof,null,2)+'\n').toString('base64'),encoding:'base64'})).data;entries.push({path:'checkpoints/ORIGINAL_IDEA_FULL_BLOCK_CONNECTED_20261010.json',mode:'100644',type:'blob',sha:b.sha});
+            const parent=(await github.rest.git.getCommit({owner,repo,commit_sha:context.sha})).data,tree=(await github.rest.git.createTree({owner,repo,base_tree:parent.tree.sha,tree:entries})).data,c=(await github.rest.git.createCommit({owner,repo,message:'Retain original idea closed candle and terminal connected cloud proof',tree:tree.sha,parents:[context.sha]})).data;
+            await github.rest.git.updateRef({owner,repo,ref:context.ref.replace('refs/',''),sha:c.sha,force:false});
