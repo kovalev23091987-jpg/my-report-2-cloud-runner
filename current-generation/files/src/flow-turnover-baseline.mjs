@@ -6,11 +6,11 @@ export function normalizeTurnoverBaseline({contract,venue,market='SPOT',quote='U
  const start=history_end_ts-30*86400000,root={version:FLOW_TURNOVER_BASELINE_VERSION,status:'TURNOVER_HISTORY_NOT_CLOSED',check_completed:false,contract,venue,market,quote,history_start_ts:start,history_end_ts,observed_ts,score_contribution:0,entry_authorized:false,individual_trade_size_calibration:false,price_impact_calibration:false,direction_prediction:false};
  try{
   if(!['BINANCE','GATE'].includes(venue)||market!=='SPOT'||quote!=='USDT'||current_flow?.check_completed!==true||current_flow.contract!==contract||current_flow.venue!==venue||current_flow.market!==market||current_flow.quote!==quote||current_flow.window_end_ts-current_flow.window_start_ts!==14400000||current_flow.exact_asset_binding!==true)throw Error('QUALIFIED_SAME_VENUE_FLOW_REQUIRED');
-  if(!Number.isSafeInteger(history_end_ts)||history_end_ts%3600000||history_end_ts!==turnoverHistoryEnd(current_flow.window_start_ts)||!Number.isSafeInteger(observed_ts)||observed_ts<history_end_ts||observed_ts<current_flow.observed_ts)throw Error('HISTORY_MUST_PRECEDE_CURRENT_WINDOW');
+  if(!Number.isSafeInteger(history_end_ts)||history_end_ts%3600000||history_end_ts!==turnoverHistoryEnd(current_flow.window_start_ts)||!Number.isSafeInteger(observed_ts)||observed_ts<history_end_ts)throw Error('HISTORY_MUST_PRECEDE_CURRENT_WINDOW');
   if(!Array.isArray(candles)||candles.length!==720)throw Error('EXACT_720_CLOSED_HOURS_REQUIRED');
   const rows=candles.map(r=>{
    if(!Array.isArray(r))throw Error('INVALID_HOURLY_CANDLE');let ts,q,b,ohlc;
-   if(venue==='BINANCE'){if(r.length!==12||r[6]!==r[0]+3599999||!Number.isSafeInteger(r[8])||r[8]<0)throw Error('INVALID_NATIVE_HOUR');ts=r[0];q=decimal(r[7]);b=decimal(r[5]);ohlc=[r[1],r[2],r[3],r[4]];if(decimal(r[9])>b||decimal(r[10])>q||(r[8]===0&&(q||b)))throw Error('INVALID_NATIVE_HOURLY_VOLUME');}
+   if(venue==='BINANCE'){if(r.length!==12||r[6]!==r[0]+3599999||!Number.isSafeInteger(r[8])||r[8]<0)throw Error('INVALID_NATIVE_HOUR');ts=r[0];q=decimal(r[7]);b=decimal(r[5]);ohlc=[r[1],r[2],r[3],r[4]];if(decimal(r[9])>b||decimal(r[10])>q||(r[8]===0&&(q||b))||(r[8]>0&&(!q||!b)))throw Error('INVALID_NATIVE_HOURLY_VOLUME');}
    else{if(r.length!==8||r[7]!=='true'||!/^\d+$/.test(r[0]))throw Error('INVALID_NATIVE_HOUR');ts=Number(r[0])*1000;q=decimal(r[1]);b=decimal(r[6]);ohlc=[r[5],r[3],r[4],r[2]];}
    const[o,h,l,c]=ohlc.map(decimal);if(l<=0n||o<l||o>h||c<l||c>h||h<l||Boolean(q)!==Boolean(b))throw Error('INVALID_NATIVE_HOURLY_PRICE_OR_VOLUME');
    return{ts,q};
