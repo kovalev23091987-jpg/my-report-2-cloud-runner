@@ -1,0 +1,32 @@
+{
+  "schema": "REPORT2_EMPIRICAL_OUTCOME_MISSING_HISTORY_REVIEW_V1",
+  "created_utc": "2026-10-10T06:16:23.675Z",
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "source_main_head": "64172799e86415063bb269273676c90f883ccd2f",
+  "pr": 279,
+  "pr_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/279",
+  "review_head": "3a263ce5dc185b6796eadec795108c704ecae32e",
+  "files": [
+    "current-generation/files/src/outcome-v2.mjs",
+    "current-generation/tests/outcome-calibration-v2.test.mjs"
+  ],
+  "original_defect": "evaluatePricePath returned CLOSED with Infinity/-Infinity for empty closed candle path; invalid OHLC could return CLOSED with NaN; invalid zero endpoint could return modelled outcome",
+  "proposed_fix": "Censor missing and invalid candle paths, invalid horizon and nonpositive outcome prices instead of closed empirical outcomes",
+  "verification": {
+    "scope": "ISOLATED_LOCAL_NODE22_FUNCTION_BODY_EQUIVALENT_MANUAL_TESTS",
+    "checks": 9,
+    "passed": 9,
+    "exact_repository_head_suite_run": false,
+    "github_actions_proof": false
+  },
+  "production": {
+    "merged": false,
+    "code_changed_on_main": false,
+    "source_http": 0,
+    "telegram": 0,
+    "main_analytics": 0,
+    "actual_ENTRY_claimed": false,
+    "project_complete": false
+  },
+  "next_action": "Obtain exact PR-head cloud or complete checked-out repo test before merge; do not claim full empirical acceptance; then continue remaining history/source/outcome work."
+}
