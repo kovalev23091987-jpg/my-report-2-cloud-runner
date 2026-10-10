@@ -335,11 +335,11 @@
     "expected_main": "f7dc6006f94d4b236b2cb2f4a42e9bd8a37bb76d",
     "scope": "OWNER_APPROVED_N05_ACTUAL_SPOT_FUTURES_SOURCE_QUALIFICATION_AND_SHARED_BOTH_CHAIN_IMPLEMENTATION_WITHIN_EXISTING_CAPS"
   },
-  "next_action": "RESUME_N05_ACTUAL_SPOT_AND_FUTURES_SOURCE_QUALIFICATION_THEN_SHARED_JOINT_FLOW_IMPLEMENTATION;READ_OWNER_REVIEW_RESUME_POINT",
+  "next_action": "IMPLEMENT_BOUNDED_TIME_RANGE_PAGINATION_AND_MINUTE_RECONCILIATION;QUALIFY_EXACT_ASSETS;INCLUDE_COINBASE_AND_ADDITIONAL_KRAKEN_DISCOVERY;THEN_SHARED_BOTH_CHAIN_N05_CONSUMER",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
   "spot_only_assets_included": false,
   "new_iteration_is_new_phase": false,
-  "updated_ts": 1791632069937,
+  "updated_ts": 1791632968763,
   "owner_scope_amendment": {
     "id": "OWNER_RAW24H_DEFERRAL_20261004",
     "path": "checkpoints/OWNER_RAW24H_DEFERRAL_20261004.md",
@@ -7616,6 +7616,100 @@
     "production_D1": 0,
     "Telegram": 0,
     "tests_repeated": false,
+    "project_complete": false
+  },
+  "latest_n05_actual_source_discovery": {
+    "proof": "checkpoints/N05_ACTUAL_SOURCE_DISCOVERY_20261010.json",
+    "schema": "N05_ACTUAL_SOURCE_DISCOVERY_20261010_V1",
+    "recorded_ts": 1791632968763,
+    "status": "ACTUAL_CATALOGS_AND_TRADE_PAGES_RETAINED;FULL_WINDOW_QUALIFICATION_AND_RUNTIME_IMPLEMENTATION_IN_PROGRESS",
+    "cloud_run": 38049404414,
+    "tested_head": "391f33e47ef5b3d9b85c0a90002e48147b9e0f9f",
+    "retained_head": "e389612b9feeec9adf4246ffc1bd2d610468e3a4",
+    "raw_evidence": "checkpoints/n05-actual-qualification-38049404414/",
+    "artifacts": [
+      {
+        "id": 11668682835,
+        "name": "n05-actual-flow-38049404414",
+        "digest": "sha256:d6c12dbef6a9a4f00d520802f980bf30da9dcdfb2f8a761c17cb2a75bad7e28b"
+      },
+      {
+        "id": 11668463127,
+        "name": "n05-catalog-38049404414",
+        "digest": "sha256:3e14e08303c1eb4b1a6abec679584257ac46d25e9c0088dfbab61d035c593421"
+      }
+    ],
+    "providerHTTP": {
+      "catalog_job": 20,
+      "flow_job": 14,
+      "whole_job_cap": 164,
+      "background_cap_each_job": 28
+    },
+    "D1": {
+      "catalog": {
+        "rows_read": 228,
+        "rows_written": 170,
+        "unknown_ops": 0
+      },
+      "flow": {
+        "rows_read": 229,
+        "rows_written": 102,
+        "unknown_ops": 0
+      }
+    },
+    "catalog_candidates_not_flow_coverage": {
+      "HTX_SPOT": 87,
+      "GATE_SPOT": 97,
+      "GATE_FUTURES": 100,
+      "OKX_SPOT": 64,
+      "OKX_FUTURES": 74,
+      "BITGET_SPOT": 83,
+      "BITGET_FUTURES": 95,
+      "KUCOIN_SPOT": 90,
+      "KUCOIN_FUTURES": 90,
+      "MEXC_SPOT": 99,
+      "MEXC_FUTURES": 94,
+      "HYPERLIQUID_FUTURES": 59,
+      "HYPERLIQUID_SPOT": 5,
+      "LIGHTER_FUTURES": 54,
+      "DYDX_FUTURES": 47
+    },
+    "new_parser_defect": {
+      "scope": "Research catalog HTX spot quote case only",
+      "reason": "Official HTX quote is lowercase usdt; original research parser compared to uppercase",
+      "retained_replay_candidates": 87,
+      "production_runtime_affected": false,
+      "sourceHTTP_to_replay": 0
+    },
+    "actual_trade_pages": [
+      "GATE_SPOT",
+      "GATE_FUTURES",
+      "OKX_SPOT",
+      "OKX_FUTURES",
+      "BITGET_SPOT",
+      "BITGET_FUTURES",
+      "KUCOIN_SPOT",
+      "KUCOIN_FUTURES",
+      "MEXC_FUTURES",
+      "HYPERLIQUID_SPOT",
+      "HYPERLIQUID_FUTURES",
+      "LIGHTER_FUTURES",
+      "DYDX_FUTURES"
+    ],
+    "full_four_hour_qualified_markets": 0,
+    "reasons": [
+      "Trade REST pages are bounded by server limits; one page is not full4h",
+      "Gate and Bitget support time range/cursor pagination, next task is bounded pagination and minute volume reconciliation",
+      "Binance Spot catalog exceeded bounded8MiB parser limit; no useful coverage claimed",
+      "Binance Futures HTTP451 and Bybit HTTP403 retained with durable no-retry backoff",
+      "MEXC Spot4h aggregate request HTTP400; alternative bounded recent route/history capability remains to qualify",
+      "Nansen remains0, no paid/key probe, onchain flow is a separate metric"
+    ],
+    "next_action": "IMPLEMENT_BOUNDED_TIME_RANGE_PAGINATION_AND_MINUTE_RECONCILIATION;QUALIFY_EXACT_ASSETS;INCLUDE_COINBASE_AND_ADDITIONAL_KRAKEN_DISCOVERY;THEN_SHARED_BOTH_CHAIN_N05_CONSUMER",
+    "runtime_changed": false,
+    "Telegram": 0,
+    "MAIN": 0,
+    "new_fresh_SENT": false,
     "project_complete": false
   }
 }
