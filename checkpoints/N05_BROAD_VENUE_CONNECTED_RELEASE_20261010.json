@@ -1,0 +1,110 @@
+{
+  "schema": "N05_BROAD_VENUE_CONNECTED_RELEASE_20261010_V1",
+  "proof": "checkpoints/N05_BROAD_VENUE_CONNECTED_RELEASE_20261010.json",
+  "recorded_ts": 1791649861283,
+  "status": "MERGED_ASSEMBLED_BINANCE_KRAKEN_BACKPACK_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
+  "pr": 307,
+  "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+  "production_head": "53351f452ad77e10bad3ea948705814e6183f731",
+  "tested_head": "495c288a84ab8043fa9f63bd984a0f64be46201f",
+  "retained_head": "d9d817b71c34cf04a7465ad1992becfb40a41a9b",
+  "cloud_run": 38067481654,
+  "reused_completed_cloud_run": 38067257184,
+  "cloud_proof": "checkpoints/n05-broad-resume-38067481654/proof.json",
+  "original_replay": "checkpoints/n05-broad-resume-38067481654/broad-replay.json",
+  "artifact": {
+    "id": 11675855575,
+    "digest": "sha256:4d68c5b187d882afbeca542a6033d906ef3a7f0c406f5384d52df77c48795c13"
+  },
+  "tests": {
+    "unit_pass": 1316,
+    "assembled_pass": 49,
+    "approved_delivery_pass": 35,
+    "integration_pass": 37,
+    "failed": 0,
+    "retained_proof_file_hashes_verified": 8,
+    "raw_hash_checks": 28,
+    "paired_taker_matches": 50,
+    "runtime_tree_identical_after_merge": true
+  },
+  "actual_coverage": {
+    "universe_assets": 102,
+    "minimum_useful_assets": 31,
+    "structural_native_Binance_assets": 20,
+    "exact_Backpack_assets": 16,
+    "exact_Kraken_native_USDT_assets": 10,
+    "bindings_are_not_full_flow_coverage": true,
+    "individual_retained_full_flow_assets": 17,
+    "individual_retained_full_flow_asset_symbols": [
+      "ADA",
+      "APT",
+      "ATOM",
+      "BTC",
+      "ETH",
+      "BNB",
+      "SUSHI",
+      "BANK",
+      "TRX",
+      "PEOPLE",
+      "XRP",
+      "TRUMP",
+      "RAY",
+      "UNI",
+      "DOT",
+      "BCH",
+      "LTC"
+    ],
+    "new_package_full_flow_windows": 8,
+    "simultaneous_continuous_coverage": false,
+    "thirty_percent_useful_flow_coverage_proven": false,
+    "actual_new_fresh_multi_venue_acceptance": false
+  },
+  "implementation": {
+    "source_role_preflight_prevents_exhausted_role_from_spending_caller_grants": true,
+    "shared_Binance_metadata": true,
+    "caller_HTTP_hard_cap": 5,
+    "Backpack_exact_chain_address": true,
+    "Backpack_independent_native_count_base_quote": true,
+    "Kraken_exact_native_identity": true,
+    "Kraken_independent_native_count_base_VWAP": true,
+    "Kraken_native_quote_volume_available": false,
+    "USDC_comparison": "WITHIN_VENUE_DIMENSIONLESS_IMBALANCE_ONLY",
+    "absolute_cross_quote_turnover_summed": false,
+    "aligned_closed_minutes": 240,
+    "minimum_physical_venues": 2,
+    "spot_and_futures_required": true,
+    "N05_score_contribution": 0,
+    "operational_not_calibrated_agreement_guards": {
+      "minimum_absolute_imbalance": 0.05,
+      "maximum_component_imbalance_spread": 0.15
+    },
+    "manual_and_Telegram_both_verified": true,
+    "N01_N02_N03_paused": true,
+    "source_caps_reset": false
+  },
+  "accounting": {
+    "source_research_http": 28,
+    "D1": {
+      "rows_read": 635,
+      "rows_written": 214,
+      "unknown_ops": 0
+    },
+    "replay_source_HTTP": 0,
+    "verification_source_HTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0
+  },
+  "UTC_20261010_exhausted_N05_roles": [
+    "BINANCE",
+    "GATE",
+    "BITGET"
+  ],
+  "remaining_work": [
+    "Qualify and implement useful OKX/KuCoin/MEXC routes under unchanged quotas; first reuse retained responses.",
+    "Confirm at least31/102 assets with useful same-window coverage; listings alone do not qualify.",
+    "Calibrate individual large flows, liquidity/impact and real outcomes before any score effect.",
+    "Confirm natural fresh same-run canonical/manual/Telegram use without inventing signals."
+  ],
+  "new_fresh_SENT": false,
+  "project_complete": false
+}
