@@ -1,0 +1,159 @@
+{
+  "schema": "ACTUAL_NEW_UTC_DAY_NATIVE_ADMISSION_AND_HISTORY_20261010_V1",
+  "status": "ORIGINAL_MEASURED_HEALTHY_NATIVE_ADMISSION_FULL102_ANALYSIS_AND_EXACT_HISTORY_RELOCATION_VERIFIED",
+  "proof_created_ts": 1791594424541,
+  "read_existing_natural_artifacts_only": true,
+  "manual_D1_calls": 0,
+  "manual_source_calls": 0,
+  "manual_Telegram_calls": 0,
+  "source_report": {
+    "cloud_run": 38009639959,
+    "head": "f64bc6be030daf15c5d02f7fc20480ea14845897",
+    "run_id": "1791592494850-1791592504189",
+    "generated_at": "2026-10-10T00:36:37.765Z",
+    "artifact_id": 11652678284,
+    "artifact_digest": "sha256:8b35faeaac5b982f88594bec44af5616bd5f4c4a841ed5ca12509b19d5f78ad9",
+    "status": "CLOSED",
+    "pipeline_health": "HEALTHY_NO_IDEA",
+    "market_scan": {
+      "approved_contracts": 119,
+      "approved_assets": 102,
+      "catalog_families": 3,
+      "unsupported_inverse_delivery_contracts": 17,
+      "scanned": 102,
+      "errors": 0,
+      "stale": 0,
+      "complete": true
+    },
+    "candidates": [
+      {
+        "contract": "BOME-USDT",
+        "publication_id": "PUB:6fb0aea516d6b77836d59a727db40dec0ff441aa",
+        "snapshot_id": "S392:BOME-USDT:1791592593509",
+        "wave_id": "EDW:BOME-USDT:1791592504341:G7",
+        "observed_ts": 1791592593509,
+        "analytical_fingerprint": "414cd46c0b872621dbbcba9d814e0827a7197b49ff257504d86c85ca1783d234",
+        "state": "REJECTED",
+        "direction": "LONG",
+        "interest_0_100": 82,
+        "checked_blocks": 9,
+        "participating_blocks": 9,
+        "score_applied_blocks": 2,
+        "participating_ids": [
+          "N02",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N15",
+          "N16"
+        ],
+        "reason_summary": "Early quality 82; 15 closed minute candles; HTX OI -1.575262544%/1h and -28.30429239%/4h; complete entry plan not confirmed."
+      },
+      {
+        "contract": "NEAR-USDT",
+        "publication_id": "PUB:a60fdc6b7378502642b3d4690a7a7efc0ea7aa02",
+        "snapshot_id": "S392:NEAR-USDT:1791592555789",
+        "wave_id": "EDW:NEAR-USDT:1791592504341:G10",
+        "observed_ts": 1791592555789,
+        "analytical_fingerprint": "702275f034bf944c2b556c361d188b51100078ade7cd5d445dd03405442ff85f",
+        "state": "REJECTED",
+        "direction": null,
+        "interest_0_100": null,
+        "checked_blocks": 9,
+        "participating_blocks": 8,
+        "score_applied_blocks": 0,
+        "participating_ids": [
+          "N02",
+          "N05",
+          "N08",
+          "N09",
+          "N10",
+          "N11",
+          "N12",
+          "N16"
+        ],
+        "reason_summary": "Early quality 64; 15 closed minute candles; direction and entry readiness not closed."
+      }
+    ],
+    "exact_SENT": 0,
+    "actual_ENTRY": 0
+  },
+  "automatic_delivery_audit": {
+    "cloud_run": 38009798141,
+    "head": "f64bc6be030daf15c5d02f7fc20480ea14845897",
+    "artifact_id": 11652427856,
+    "artifact_digest": "sha256:e067a6de7f830a6036896f90822e062a47bcca5434763f9f4cb22da4b97baf8c",
+    "status": "NO_EXACT_SAME_RUN_SENT",
+    "sourceHTTP": 0,
+    "D1": 0,
+    "Telegram": 0,
+    "task_state_after_delivery_known": false
+  },
+  "retained_history_maintenance": {
+    "cloud_run": 38010341016,
+    "head": "f64bc6be030daf15c5d02f7fc20480ea14845897",
+    "artifact_id": 11652973453,
+    "artifact_digest": "sha256:3a85ec13d4af79137bf34892b442bea3e32551b0af3608675b40425dfa367503",
+    "status": "EXACT_ARCHIVE_AND_READTHROUGH_VERIFIED",
+    "archive_commit": "58e1568c9caf2de24367bcb2ff8a62ce6afa7d01",
+    "moved_rows": 44,
+    "moved_by_table": {
+      "full_evidence_shadow_log": 24,
+      "canonical_publication_shadow": 20
+    },
+    "database_bytes_before": 405696512,
+    "database_bytes_after": 393715712,
+    "usage": {
+      "requests": 184,
+      "rows_read": 431,
+      "rows_written": 224,
+      "unknown_ops": 0
+    },
+    "archive_http": 88,
+    "github_http": 6,
+    "sourceHTTP": 0,
+    "Telegram": 0,
+    "admission": {
+      "allowed": true,
+      "status": "CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count_before_maintenance": 1,
+      "reserved_rows_read": 54000,
+      "reserved_rows_written": 840,
+      "measured_rows_read": 35464,
+      "measured_rows_written": 497,
+      "unknown_ops": 0,
+      "unfinished_count": 0,
+      "next_reservation": {
+        "rows_read": 5000,
+        "rows_written": 400
+      },
+      "projected_reserved": {
+        "rows_read": 59000,
+        "rows_written": 1240
+      },
+      "limits": {
+        "rows_read": 3500000,
+        "rows_written": 70000
+      }
+    }
+  },
+  "source_to_fact_to_consumer_to_report": {
+    "source_facts": "Original scheduled HTX/external-source facts in report artifact 11652678284",
+    "consumers": "Stage0 102-asset scan, candidate selection and per-block decision-use audits",
+    "canonical_reports": [
+      "BOME-USDT REJECTED",
+      "NEAR-USDT REJECTED"
+    ],
+    "telegram_message_id": null,
+    "delivery": "NO_EXACT_SAME_RUN_SENT"
+  },
+  "acceptance_scope": "FIRST_ORIGINAL_MEASURED_HEALTHY_2026-10-10_UTC_ADMISSION;FULL_102_SCAN;TWO_EXACT_REJECTIONS;NO_SENT_OR_ENTRY;EXACT_ARCHIVE_READTHROUGH_VERIFIED",
+  "no_fabricated_ENTRY_or_delivery": true,
+  "not_full_project_acceptance": true,
+  "full_TZ_complete": false,
+  "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
+}
