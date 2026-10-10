@@ -14,17 +14,19 @@ export function originalIdeaIdentity({task,canonical}={}){
 }
 // This receipt qualifies the original trigger only. All evidence and execution
 // checks of the new full analysis are still required to authorize ENTRY.
-export function qualifyOriginalIdeaSettlement({task,canonical,candles=[],now_ts,current_price=null}={}){
+export function qualifyOriginalIdeaSettlement({task,canonical,candles=[],now_ts,current_price=null,current_price_receipt=null}={}){
  const base={schema:ORIGINAL_IDEA_RECHECK_VERSION,status:'NOT_CONFIRMED',settlement_confirmed:false,entry_authorized:false,sourceHTTP:0,
   task_id:task?.task_id??null,publication_id:task?.publication_id??null,wave_id:task?.wave_id??null,
   contract:task?.contract_code??null,direction:task?.direction??null,original_run_id:task?.run_id??null,
   original_snapshot_id:task?.snapshot_id??null,original_fingerprint:canonical?.analytical_fingerprint??null,
-  original_expires_ts:task?.expires_ts??null,checked_ts:now_ts};
+  original_expires_ts:task?.expires_ts??null,checked_ts:now_ts,primary_price_receipt:current_price_receipt};
  const fail=reason=>({...base,reason});
  if(!originalIdeaIdentity({task,canonical})||!stamp(now_ts))return fail('EXACT_ORIGINAL_IDEA_REQUIRED');
  if(now_ts>=task.expires_ts)return {...fail('ORIGINAL_TTL_EXPIRED'),status:'EXPIRED'};
  const trigger=canonical.trigger,cancel=/^price\s*(>=|<=|>|<)\s*([0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?)$/i.exec(String(trigger.cancel_condition||''));
  if(trigger.metric!=='price'||trigger.unit!=='USDT'||!['>','>=','<','<='].includes(trigger.operator)||!(trigger.value>0)||!cancel||!(Number(cancel[2])>0))return fail('ORIGINAL_PRICE_CONDITIONS_REQUIRED');
+ const primary=current_price_receipt;
+ if(primary?.status!=='CLOSED'||primary.venue!=='HTX'||primary.type!=='MID_OBSERVATION'||primary.contract!==task.contract_code||primary.value!==current_price||!stamp(primary.source_ts)||!stamp(primary.received_ts)||primary.source_ts>primary.received_ts||primary.received_ts>now_ts||now_ts-primary.source_ts>180000||primary.source_ts<canonical.observed_ts)return fail('FRESH_PRIMARY_PRICE_REQUIRED');
  if(typeof current_price!=='number'||!Number.isFinite(current_price)||current_price<=0)return fail('FRESH_PRIMARY_PRICE_REQUIRED');
  if(compare(current_price,cancel[1],Number(cancel[2])))return {...fail('ORIGINAL_PRICE_CANCELLED'),status:'CANCELLED',price:current_price,cancel_condition:trigger.cancel_condition};
  const period=String(trigger.timeframe||'').toLowerCase(),duration=period==='5m'||period==='5min'?300000:period==='1m'||period==='1min'?60000:null;
@@ -68,5 +70,5 @@ export async function finishOriginalIdeaAnalysis(db,{task,canonical,publication_
  const outcome=classifyOriginalIdeaAnalysis({task,canonical,now_ts});
  if(!outcome.result)return {status:outcome.reason,completed:false};
  return {...await completeRecheck(db,{task_id:task.task_id,actor:task.lease_owner,lease_started_ts:task.lease_started_ts,
-  result:outcome.result,new_publication_id:publication_id,completion_reason:outcome.reason,now_ts}),reason:outcome.reason};
+  result:outcome.result,new_publication_id:publication_id,analysis_receipt:canonical?.metadata?.original_idea_recheck??null,completion_reason:outcome.reason,now_ts}),reason:outcome.reason};
 }

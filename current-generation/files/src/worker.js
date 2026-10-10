@@ -17172,7 +17172,7 @@ async function buildDeepCheckInput(params, env) {
   if(typeof env?.REPORT2_LIQUIDATION_SOURCE_AUDIT==='function')try{canonicalLiquidationSourceAudit=env.REPORT2_LIQUIDATION_SOURCE_AUDIT({contract,run_id:canonicalRunId,evaluated_ts:now});}catch{/* Diagnostic failure cannot change the decision. */}
   const originalRecheckContext=env?.REPORT2_ORIGINAL_RECHECK_CONTEXT;
   const originalIdeaRecheck=originalRecheckContext?.task?.contract_code===contract
-    ?qualifyOriginalIdeaSettlement({...originalRecheckContext,candles:readHtxClosedTriggerCandles({contract,now}),now_ts:now,current_price:htxObservationReferencePrice?.status==='CLOSED'?htxObservationReferencePrice.value:null})
+    ?qualifyOriginalIdeaSettlement({...originalRecheckContext,candles:readHtxClosedTriggerCandles({contract,now}),now_ts:now,current_price_receipt:htxObservationReferencePrice,current_price:htxObservationReferencePrice?.status==='CLOSED'?htxObservationReferencePrice.value:null})
     :params?.discovery_row?.recheck_forced?{schema:'ORIGINAL_IDEA_RECHECK_V1_20261010',status:'NOT_CONFIRMED',settlement_confirmed:false,entry_authorized:false,reason:'EXACT_ORIGINAL_IDEA_REQUIRED'}:null;
   const canonicalAnalyticalBundle =
     buildRuntimeCanonicalBundle({
