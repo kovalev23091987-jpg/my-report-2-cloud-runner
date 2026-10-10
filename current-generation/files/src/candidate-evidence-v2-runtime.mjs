@@ -106,7 +106,7 @@ export const BLOCK_SOURCE_REQUIREMENTS=Object.freeze({
  N02:{all:['CHAIN_SUPPLY'],supplemental:['BLOCKSCOUT_INDEX','COINMETRICS_SUPPLY','COINPAPRIKA_SECTOR']},
  N03:{any:['CHAIN_EVENTS','CHAIN_SUPPLY_COMPARISON'],supplemental:['BLOCKSCOUT_INDEX']},
  N04:{all:['CHAIN_EVENTS'],supplemental:['BLOCKSCOUT_INDEX']},
- N05:{all:['JOINT_SPOT_FUTURES_FLOW'],any:[],supplemental:['CHAIN_EVENTS','PRIMARY_HTX_FUTURES_FLOW','NANSEN_FLOWS','BITGET_FOUR_HOUR_FLOW']},
+ N05:{all:['JOINT_SPOT_FUTURES_FLOW'],any:[],supplemental:['CHAIN_EVENTS','PRIMARY_HTX_FUTURES_FLOW','NANSEN_FLOWS','EXTERNAL_N05_FLOW','BITGET_FOUR_HOUR_FLOW']},
  N06:{all:['BLUESKY_PUBLIC'],supplemental:['GDELT_NEWS_DISCOVERY','WIKIMEDIA_ATTENTION']},
  N07:{any:['OFFICIAL_EVENTS','HTX_OFFICIAL_ANNOUNCEMENTS'],supplemental:['GDELT_NEWS_DISCOVERY']},
  N08:{all:['HTX_PUBLIC_RISK'],supplemental:['OFFICIAL_EVENTS']},
@@ -310,7 +310,7 @@ export async function collectCandidateEvidenceV2(params={}){
  // may close N01; its static terms are not an observed future unlock transfer.
  evidence.push(...(publishedCalendar.evidence||[]),...(tokenSchedule.evidence||[]),...(wikimedia.evidence||[]),...(htxAnnouncements.evidence||[]));
  const comparison=chainSupply?.status==='CLOSED'&&chainSupply?.evidence?.some(r=>['SUPPLY_DECREASE','SUPPLY_INCREASE','SUPPLY_UNCHANGED','SUPPLY_REDUCTION_CHECK'].includes(r.metric_family))?{...chainSupply,check_completed:chainSupply.network_calls>0,scope:chainName==='cardano'?'EXACT_TWO_CLOSED_CARDANO_EPOCHS':'EXACT_FINALIZED_SUPPLY_COMPARISON',transfer_cause_verified:false}:{status:'TWO_FINALIZED_SUPPLY_OBSERVATIONS_REQUIRED',network_calls:0,evidence:[]};
- const sources={EXTERNAL_N05_FLOW:routeBlock.results.JOINT_FLOW||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',components:[],network_calls:0,evidence:[]},BITGET_FOUR_HOUR_FLOW:routeBlock.results.JOINT_FLOW||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',components:[],network_calls:0,evidence:[]},DEFILLAMA_PUBLISHED_CALENDAR:publishedCalendar,WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
+ const sources={EXTERNAL_N05_FLOW:routeBlock.results.JOINT_FLOW||{status:'DEFERRED_SHARED_REQUEST_ENVELOPE',components:[],network_calls:0,evidence:[]},DEFILLAMA_PUBLISHED_CALENDAR:publishedCalendar,WIKIMEDIA_ATTENTION:wikimedia,COINMETRICS_SUPPLY:coinmetrics,COINGECKO_SECTOR:cgSector,HTX_LARGE_TRADES:largeTrades,COINPAPRIKA_SECTOR:sector,HTX_PUBLIC_RISK:htx,HTX_OFFICIAL_ANNOUNCEMENTS:htxAnnouncements,DERIBIT_ALT_OPTIONS:deribit,DELTA_OPTIONS:delta,CHAIN_SUPPLY:chainSupply,CHAIN_SUPPLY_COMPARISON:comparison,CHAIN_EVENTS:chainEvents,BLUESKY_PUBLIC:bluesky,OFFICIAL_EVENTS:official,OFFICIAL_TOKEN_SCHEDULE:tokenSchedule,GDELT_NEWS_DISCOVERY:gdelt,BLOCKSCOUT_INDEX:blockscout,NANSEN_FLOWS:nansen};
  // Fix the decision clock only after every asynchronous collector returns.
  // Responses received after params.now must not be rejected as future-known.
  const auditDecisionTs=Date.now();
