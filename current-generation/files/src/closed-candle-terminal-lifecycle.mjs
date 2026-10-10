@@ -34,7 +34,7 @@ function exactOriginal({canonical,task,light_receipt}){
 export function confirmOriginalClosedCandle({canonical,task,light_receipt,candle,now_ts}={}){
  const exact=exactOriginal({canonical,task,light_receipt});if(!exact.ok)return exact;
  const now=stamp(now_ts),checked=stamp(light_receipt?.checked_ts),source=stamp(light_receipt?.source_ts),observed=stamp(light_receipt?.observed_ts),price=finite(light_receipt?.price);
- if(now===null||checked===null||source===null||observed===null||checked>now||now-checked>CLOSED_CANDLE_MAX_SOURCE_AGE_MS||source>checked||observed>checked||checked<canonical.observed_ts)return fail('FRESH_LIGHT_PRICE_RECEIPT_REQUIRED');
+ if(now===null||checked===null||source===null||observed===null||checked>now||now-checked>exact.interval_ms+CLOSED_CANDLE_MAX_SOURCE_AGE_MS||source>checked||observed>checked||checked<canonical.observed_ts)return fail('FRESH_LIGHT_PRICE_RECEIPT_REQUIRED');
  if(light_receipt.status!=='TRIGGER_PRICE_REACHED_FULL_ANALYSIS_REQUIRED'||price===null||price<=0||!compare(price,exact.trigger.operator,Number(exact.trigger.value))||compare(price,exact.cancel.operator,exact.cancel.value))return fail('LIGHT_PRICE_TRIGGER_NOT_REACHED');
  if(now>=Number(task.expires_ts))return fail('ORIGINAL_TRIGGER_EXPIRED',{terminal_disposition:'EXPIRED'});
  const open=stamp(candle?.open_ts),closeTs=stamp(candle?.close_ts),candleSource=stamp(candle?.source_ts),candleObserved=stamp(candle?.observed_ts),close=finite(candle?.close);
