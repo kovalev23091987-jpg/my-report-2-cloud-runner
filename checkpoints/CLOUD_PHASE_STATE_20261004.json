@@ -7711,5 +7711,210 @@
     "MAIN": 0,
     "new_fresh_SENT": false,
     "project_complete": false
+  },
+  "latest_n05_full_window_qualification": {
+    "schema": "N05_FULL_WINDOW_QUALIFICATION_20261010_V1",
+    "recorded_ts": 1791633971859,
+    "status": "FOUR_BITGET_MARKET_WINDOWS_VOLUME_RECONCILED;JOINT_RUNTIME_IN_PROGRESS",
+    "run": 38050596507,
+    "tested_head": "8a07234dfe1aee9b3e2b991bb5a44f81d52c6056",
+    "retained_head": "9c686779ecd179e94c73a507b9aeb685a3882aa1",
+    "artifact": [
+      {
+        "id": 11668464753,
+        "digest": "sha256:c6b113f0595ebe8a47c71cf793813737dfa361ddfe27c5368cf12a6ee96b10f6",
+        "name": "n05-window-38050596507"
+      }
+    ],
+    "raw_evidence": "checkpoints/n05-window-qualification-38050596507/",
+    "bindings": 49,
+    "bindings_are_not_flow_coverage": true,
+    "measured_flow_assets": 2,
+    "measured_flow_markets": 4,
+    "full_windows": [
+      {
+        "version": "bitget-four-hour-flow-v1-20261010",
+        "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+        "check_completed": true,
+        "contract": "SUSHI-USDT",
+        "venue": "BITGET",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791619380000,
+        "window_end_ts": 1791633780000,
+        "observed_ts": 1791633833648,
+        "verified_minutes": 240,
+        "pages": 1,
+        "buy_quote": 534.04327662,
+        "sell_quote": 251.54191075,
+        "trade_count": 62,
+        "score_contribution": 0,
+        "entry_authorized": false,
+        "unreconciled_minutes": [],
+        "large_trade_context": {
+          "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+          "threshold_quote": 36.437743559999994,
+          "count": 4,
+          "buy_quote": 276.56930657,
+          "sell_quote": 0,
+          "market_impact_verified": false,
+          "score_contribution": 0
+        },
+        "imbalance": 0.3596062787484124,
+        "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+        "raw_trade_counter_independently_verified": false,
+        "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+        "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+        "not_onchain_exchange_flows": true,
+        "exact_asset_binding": true,
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+        }
+      },
+      {
+        "version": "bitget-four-hour-flow-v1-20261010",
+        "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+        "check_completed": true,
+        "contract": "SUSHI-USDT",
+        "venue": "BITGET",
+        "market": "FUTURES",
+        "quote": "USDT",
+        "window_start_ts": 1791619380000,
+        "window_end_ts": 1791633780000,
+        "observed_ts": 1791633835991,
+        "verified_minutes": 240,
+        "pages": 1,
+        "buy_quote": 2115.6105000000002,
+        "sell_quote": 3547.7592,
+        "trade_count": 128,
+        "score_contribution": 0,
+        "entry_authorized": false,
+        "unreconciled_minutes": [],
+        "large_trade_context": {
+          "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+          "threshold_quote": 66.6532,
+          "count": 7,
+          "buy_quote": 353.7532,
+          "sell_quote": 1944.4993999999997,
+          "market_impact_verified": false,
+          "score_contribution": 0
+        },
+        "imbalance": -0.2528792531414645,
+        "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+        "raw_trade_counter_independently_verified": false,
+        "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+        "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+        "not_onchain_exchange_flows": true,
+        "exact_asset_binding": true,
+        "identity": {
+          "chain": "ethereum",
+          "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+        }
+      },
+      {
+        "version": "bitget-four-hour-flow-v1-20261010",
+        "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+        "check_completed": true,
+        "contract": "BANK-USDT",
+        "venue": "BITGET",
+        "market": "SPOT",
+        "quote": "USDT",
+        "window_start_ts": 1791619380000,
+        "window_end_ts": 1791633780000,
+        "observed_ts": 1791633892971,
+        "verified_minutes": 240,
+        "pages": 1,
+        "buy_quote": 322.9608274,
+        "sell_quote": 1321.1664311,
+        "trade_count": 136,
+        "score_contribution": 0,
+        "entry_authorized": false,
+        "unreconciled_minutes": [],
+        "large_trade_context": {
+          "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+          "threshold_quote": 37.154990399999996,
+          "count": 7,
+          "buy_quote": 37.286187399999996,
+          "sell_quote": 866.2418213,
+          "market_impact_verified": false,
+          "score_contribution": 0
+        },
+        "imbalance": -0.6071340272107045,
+        "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+        "raw_trade_counter_independently_verified": false,
+        "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+        "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+        "not_onchain_exchange_flows": true,
+        "exact_asset_binding": true,
+        "identity": {
+          "chain": "bsc",
+          "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+        }
+      },
+      {
+        "version": "bitget-four-hour-flow-v1-20261010",
+        "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+        "check_completed": true,
+        "contract": "BANK-USDT",
+        "venue": "BITGET",
+        "market": "FUTURES",
+        "quote": "USDT",
+        "window_start_ts": 1791619380000,
+        "window_end_ts": 1791633780000,
+        "observed_ts": 1791633895274,
+        "verified_minutes": 240,
+        "pages": 1,
+        "buy_quote": 12033.21793,
+        "sell_quote": 16474.86006,
+        "trade_count": 357,
+        "score_contribution": 0,
+        "entry_authorized": false,
+        "unreconciled_minutes": [],
+        "large_trade_context": {
+          "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+          "threshold_quote": 299.64146,
+          "count": 18,
+          "buy_quote": 3667.98299,
+          "sell_quote": 4603.96358,
+          "market_impact_verified": false,
+          "score_contribution": 0
+        },
+        "imbalance": -0.15580293177105906,
+        "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+        "raw_trade_counter_independently_verified": false,
+        "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+        "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+        "not_onchain_exchange_flows": true,
+        "exact_asset_binding": true,
+        "identity": {
+          "chain": "bsc",
+          "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+        }
+      }
+    ],
+    "sourceHTTP": 11,
+    "D1": {
+      "rows_read": 193,
+      "rows_written": 85,
+      "unknown_ops": 0
+    },
+    "cause": {
+      "provider_page_max": 1000,
+      "internal_body_limit_bytes": 8388608,
+      "body_limit_does_not_extend_history": true,
+      "fixed_window_id_pagination_implemented_on_review_branch": true,
+      "production_pagination_enabled": false
+    },
+    "large_trade_policy": {
+      "current_window_top_five_percent": "descriptive only, not proven impact",
+      "full_flow_required_before_filtering": true,
+      "score_contribution": 0
+    },
+    "next_action": "FINISH_SHARED_MANUAL_TELEGRAM_CONSUMER_AND_CLOUD_TESTS;CONTINUE_OTHER_VENUES_AND_HIGH_TURNOVER_PAGINATION_PROOF",
+    "production_enabled": false,
+    "new_fresh_SENT": false,
+    "project_complete": false,
+    "proof": "checkpoints/N05_FULL_WINDOW_QUALIFICATION_20261010.json"
   }
 }
