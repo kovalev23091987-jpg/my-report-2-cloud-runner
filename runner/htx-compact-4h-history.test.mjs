@@ -6,10 +6,10 @@ const universe={status:'CLOSED',assets:Array.from({length:101},(_,i)=>({asset_an
 const received=anchor+3600000;
 const bars=()=>Array.from({length:540},(_,i)=>({id:(anchor-90*86400000+i*step)/1000,open:10,high:11,low:9,close:10.5,vol:100}));
 const payload=(rows=bars(),opts={})=>JSON.stringify({status:'ok',ch:'market.NEAR-USDT.kline.4hour',ts:anchor+1000,data:rows,...opts});
-test('real 102-contract universe plans 6 one-attempt same-ledger official 4h reads with NEAR first',()=>{
+test('real 102-contract universe plans one bounded NEAR pilot before the six-attempt phase',()=>{
  const p=planCompactHtx90d({universe,now_ts:received});
  assert.equal(p.status,'BOUNDED_COMPACT_ACQUISITION_PLAN');
- assert.equal(p.planned.length,6);assert.equal(p.planned_source_http,6);
+ assert.equal(p.planned.length,1);assert.equal(p.planned_source_http,1);assert.equal(p.pilot_qualified,false);
  assert.equal(p.planned[0].contract,'NEAR-USDT');
  assert.equal(p.source_ledger,'HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION');
  assert.equal(p.source_daily_cap,6);assert.equal(p.same_source_as_daily_zip,true);
@@ -57,10 +57,12 @@ test('untrusted manifests and duplicate contracts never schedule HTTP',()=>{
 test('existing completed assets are skipped, partials are retried only after 7d and max three attempts',()=>{
  const m={schema:COMPACT_HTX_4H.schema,contract:'NEAR-USDT',anchor_end_ts:anchor,attempted_ts:received,status:'COMPLETE_90D_4H_PRICE_ONLY',attempts_total:1};
  const p=planCompactHtx90d({universe,manifests:[m],now_ts:received});
- assert.equal(p.complete_90d_4h_price_only,1);assert.ok(p.planned.every(x=>x.contract!=='NEAR-USDT'));
+ assert.equal(p.complete_90d_4h_price_only,1);assert.equal(p.planned.length,6);assert.equal(p.pilot_qualified,true);assert.ok(p.planned.every(x=>x.contract!=='NEAR-USDT'));
  const partial={...m,status:'PARTIAL_90D_4H_PRICE_ONLY'};
- assert.ok(planCompactHtx90d({universe,manifests:[partial],now_ts:received+8*86400000}).eligible_retry_assets===1);
+ assert.equal(planCompactHtx90d({universe,manifests:[partial],now_ts:received+8*86400000}).planned.length,1);
+ assert.equal(planCompactHtx90d({universe,manifests:[partial],now_ts:received+8*86400000}).eligible_retry_assets,1);
  assert.equal(planCompactHtx90d({universe,manifests:[{...partial,attempts_total:3}],now_ts:received+8*86400000}).eligible_retry_assets,0);
+ assert.equal(planCompactHtx90d({universe,manifests:[{...partial,attempts_total:3}],now_ts:received+8*86400000}).status,'PILOT_NEAR_NOT_VERIFIED_OR_COOLDOWN');
 });
 test('coarse bar price path cannot be interpreted as minute-grid or a retrospective ENTRY',()=>{
  const r=qualifyCompactHtx90d({contract:'NEAR-USDT',raw:payload(),received_ts:received});
