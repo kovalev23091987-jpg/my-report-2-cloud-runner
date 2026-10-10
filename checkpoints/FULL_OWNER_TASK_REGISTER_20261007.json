@@ -10276,5 +10276,43 @@
       "FACTUAL_30_90_DAY_HISTORY_FOR_102_ASSETS_REMAINS_OPEN",
       "NEXT_ACTUAL_SENT_TO_FRESH_SAME_IDEA_FINAL_DISPOSITION_REMAINS_OPEN"
     ]
+  },
+  "owner_telegram_strategy_fit_and_lifecycle_20261010": {
+    "schema": "OWNER_TELEGRAM_STRATEGY_FIT_AND_NATURAL_LIFECYCLE_TZ_20261010_V1",
+    "approval": "checkpoints/OWNER_TELEGRAM_STRATEGY_FIT_AND_LIFECYCLE_TZ_20261010.json",
+    "status": "STAGE_1_SHADOW_MERGED_STAGES_2_TO_5_OPEN",
+    "stage1_pr": 297,
+    "stage1_merged_head": "1c69ed2f23487ae1a2aabd65f86d9893b64bf706",
+    "stage1_cloud_run": 38040023100,
+    "stage1_tests_passed": 44,
+    "stage1_tests_failed": 0,
+    "stage1_no_new_HTTP": true,
+    "stage1_no_Telegram": true,
+    "stage1_no_gate_changes": true,
+    "stage1_no_threshold_changes": true,
+    "remaining": [
+      {
+        "id": "TG_SCORE_ORIGINAL_SENT_REPLAY",
+        "status": "OPEN",
+        "requirement": "Re-evaluate original retained SENT on same snapshot/clock; prove meaningful 100-point criteria and non-dropping canonical actionability, no shadow promotion."
+      },
+      {
+        "id": "TG_CLOSED_CANDLE_TRIGGER",
+        "status": "OPEN",
+        "requirement": "Confirm exact original timeframe with native closed candle rather than touching price; no stale/cross-venue/missing candle promotion."
+      },
+      {
+        "id": "TG_TERMINAL_DELIVERY",
+        "status": "OPEN",
+        "requirement": "Same original publication/task -> new full analysis -> ENTRY approved, or reasoned CANCELLED/EXPIRED, each with deduplicated Telegram message_id; never claim exchange fill."
+      },
+      {
+        "id": "TG_NO_DROP_PRODUCTION_ACCEPTANCE",
+        "status": "OPEN",
+        "requirement": "Exact-head cloud tests, real source clocks, pre/post OBSERVE/WAIT/SENT counts, fallback rollback, no new 70+ signal suppression."
+      }
+    ],
+    "full_TZ_complete": false,
+    "actual_ENTRY": false
   }
 }
