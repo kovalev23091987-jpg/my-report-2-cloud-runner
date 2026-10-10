@@ -1,0 +1,52 @@
+{
+  "schema": "PARTIAL_HTX_COLD_HISTORY_PRESERVATION_20261010_V1",
+  "status": "MERGED_EXACT_HEAD_CLOUD_PROVEN",
+  "pr": 287,
+  "tested_head": "d02d65ae75e07fbc65de4a9434224127cedf3631",
+  "cloud_run": 38036936372,
+  "workflow_job": 114169213170,
+  "artifact_id": 11663742456,
+  "artifact_digest": "sha256:2b2679c5d043771696d26c2001527a7d95ffb97bf5fc122c5bebfbd47791f94c",
+  "merged_head": "ac65299fde6000fe5aeec71aed10ea0972946f23",
+  "confirmed_defect": "The complete-series consumer discarded already verified days whenever another requested day was absent; no separate consumer retained factual partial progress and exact gaps.",
+  "implementation": {
+    "consumer": "inspectArchivePriceCoverage",
+    "partial_verified_minutes_preserved": true,
+    "contiguous_segments_preserved": true,
+    "exact_gaps_preserved": true,
+    "identical_duplicate_archives_collapsed": true,
+    "conflicting_or_overlapping_archives_fail_closed": true,
+    "existing_complete_series_contract_unchanged": true
+  },
+  "actual_retained_proof": {
+    "contract": "NEAR-USDT",
+    "source_artifact": "checkpoints/native-kline-price-connected-37929161332.zip",
+    "source_artifact_digest": "sha256:854bc3431a77a13c17fbb4da57ae314c034d4f8df6de2e1edbc40a14ea0cefe5",
+    "source_cloud_run": 37929161332,
+    "requested_days": 30,
+    "verified_native_days": 1,
+    "verified_native_minutes": 1440,
+    "coverage_ratio": 0.03333333333333333,
+    "explicit_missing_days": 29,
+    "original_source_clocks_preserved": true
+  },
+  "scope": "HTX_RETAINED_PRICE_ONLY_PARTIAL_COVERAGE;NOT_VOLUME_OR_FLOW_OR_DECISION_REPLAY",
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "entry_samples_created": 0,
+  "actual_ENTRY": false,
+  "complete_30d_102_assets": false,
+  "complete_90d_102_assets": false,
+  "statistical_acceptance": false,
+  "project_complete": false,
+  "remaining": [
+    "FACTUAL_MULTI_ASSET_ARCHIVE_ACQUISITION_REMAINS_OPEN",
+    "FACTUAL_30_90_DAY_HISTORY_FOR_102_ASSETS_REMAINS_OPEN",
+    "EMPIRICAL_MISSED_OPPORTUNITY_DENOMINATOR_REMAINS_OPEN",
+    "NEXT_ACTUAL_SENT_TO_FRESH_SAME_IDEA_FINAL_DISPOSITION_REMAINS_OPEN"
+  ],
+  "recorded_ts": 1791619881981,
+  "recorded_utc": "2026-10-10T08:11:21.980Z"
+}
