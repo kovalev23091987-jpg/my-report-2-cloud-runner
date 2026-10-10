@@ -2078,7 +2078,7 @@
       "task_id": "BLOCK_N05",
       "block": "N05",
       "name": "Согласованный поток спота и фьючерсов нескольких бирж",
-      "status": "HTX104_NATURAL_COLLECTION_VERIFIED;N05_22_INDIVIDUAL_RETAINED_FULL_FLOW_ASSETS;BROAD_COVERAGE_AND_CALIBRATION_OPEN",
+      "status": "MAXIMUM_SOURCE_COLLECTOR_AND_AVAILABLE_INFORMATION_CONNECTED;WIDE_FRESH_COVERAGE_AND_CALIBRATION_OPEN",
       "remaining_action": "CONTINUE_N05_MAXIMUM_USEFUL_EXACT_FLOW_COVERAGE_FOR104_CURRENT_HTX_CRYPTO_ASSETS_WITH_ORIGINAL_BUDGETS;USE_SAVED_BINDINGS_AND_PARTIAL_REPLIES;NO_EXHAUSTED_ROLE_REPEAT",
       "previous_exact_proofs": [
         {
@@ -3374,7 +3374,92 @@
       "current_asset_count": 104,
       "distinct_retained_full_flow_assets": 22,
       "simultaneous_continuous_coverage_proven": false,
-      "current_approved_scope_proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json"
+      "current_approved_scope_proof": "checkpoints/HTX_CURRENT_CRYPTO_FUTURES_UNIVERSE_CONNECTED_20261010.json",
+      "latest_maximum_source_collector_release": {
+        "schema": "N05_MAXIMUM_SOURCE_COLLECTOR_CONNECTED_RELEASE_V1",
+        "proof": "checkpoints/N05_MAXIMUM_SOURCE_COLLECTOR_CONNECTED_RELEASE_20261010.json",
+        "recorded_ts": 1791656608698,
+        "status": "MERGED_ASSEMBLED_MAX_SOURCE_SHARED_CAP_AND_BOTH_REPORTS_VERIFIED",
+        "pr": 311,
+        "PR_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/311",
+        "production_head": "b5586092e556a619047eafbcaf120810a2fabfc1",
+        "tested_head": "ad7126bd5eeb8e07bb366b7b5d81658a60e0d266",
+        "retained_head": "04e7021142a3e3e5b6ff2c11ba68da28200d1262",
+        "cloud_run": 38075401232,
+        "cloud_proof": "checkpoints/n05-max-source-collector-38075401232/proof.json",
+        "artifact": {
+          "id": 11677869490,
+          "name": "n05-max-source-collector-38075401232",
+          "size_in_bytes": 56204,
+          "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11677869490",
+          "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11677869490/zip",
+          "expired": false,
+          "created_at": "2026-10-10T18:21:20Z",
+          "expires_at": "2026-11-09T18:21:19Z",
+          "updated_at": "2026-10-10T18:21:20Z",
+          "digest": "sha256:88276d0061a577b00496de71b301fadc53ae32c49303c3562db7064deb5e4df1",
+          "workflow_run": {
+            "id": 38075401232,
+            "repository_id": 1371866675,
+            "head_repository_id": 1371866675,
+            "head_branch": "n05-max-source-collector-20261010",
+            "head_sha": "ad7126bd5eeb8e07bb366b7b5d81658a60e0d266"
+          }
+        },
+        "proof_file_hashes": {
+          "approved-delivery.tap": "5476abc705abd9bf63061a07a74ee3abfb95d64122f5d906607b8be866462745",
+          "assembled-pause.tap": "9bdf382771e8db377817307660f4a0cd0c0330a3c654fe3bcfa415500c01e184",
+          "assembly.json": "de6e0c4004397f8db8cd1cd2eb375be4fd1b46ec3a38ecf622f30580dd930a25",
+          "binding.json": "9b5a41beeaca6c16f63ddda6a63643a4290e4ac85db6c6a3ce97cc0c1091a358",
+          "current-generation-unit-tests.tap": "278a695c8c661d1f7fe3badbb7f5a8ddaf5d76afa072fbf782bf515e99f78502",
+          "generation.log": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+          "integration.json": "75e228f7d6281e39c3645f783247f3a055b9a6dc63ba29f59c07242969600782"
+        },
+        "independently_verified_proof_hashes": 7,
+        "merged_tree_matches_retained_verified_tree": true,
+        "tests": {
+          "unit": 1339,
+          "assembled": 41,
+          "approved_delivery": 35,
+          "integration": 37,
+          "failures": 0,
+          "skips": 0
+        },
+        "implementation": [
+          "First-success early return removed from generic external N05 collector",
+          "All exact eligible venue routes share unchanged five-request caller envelope and original durable provider caps",
+          "Cache-only routes can add components after HTTP admission is exhausted",
+          "Later source refusals preserve earlier complete components and original source clocks",
+          "Optional existing single-venue turnover baseline deferred until all flow routes are checked",
+          "Legacy Bitget adapter root false completion cannot discard a complete qualified component",
+          "Joint validator and builder bounded at eight qualified market components; all components must agree; duplicate physical market rejected",
+          "Informational fallback retains existing one/two-venue scope; additional acquired source components remain in external source audit"
+        ],
+        "scope": {
+          "approved_assets": 104,
+          "original_basic_collection_verified_assets": 104,
+          "retained_individual_full_flow_assets": 22,
+          "new_live_full_flow_assets": 0,
+          "simultaneous_continuous_flow_coverage": false,
+          "maximum_per_coin_source_coverage_complete": false,
+          "large_flow_calibration_complete": false
+        },
+        "accounting": {
+          "sourceHTTP": 0,
+          "D1_reads": 0,
+          "D1_writes": 0,
+          "Telegram": 0,
+          "MAIN": 0,
+          "production_caps_reset": false,
+          "controlled_responses_only": true
+        },
+        "N05_score": 0,
+        "N01_N02_N03_paused": true,
+        "new_fresh_SENT": false,
+        "actual_ENTRY": false,
+        "project_complete": false,
+        "next_action": "CONTINUE_MAXIMUM_USEFUL_SOURCE_COVERAGE_PER104_ASSETS;USE_QUALIFIED_SINGLE_OR_TWO_VENUE_CONTEXT_WHEN_FULL_CONSENSUS_UNAVAILABLE;QUALIFY_SAVED12_POLONIEX_CANDIDATES_AFTER_NATIVE_ADMISSION;KEEP_EXISTING_CAPS"
+      }
     },
     {
       "task_id": "BLOCK_N06",
@@ -5433,7 +5518,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791654143385,
+  "updated_ts": 1791656608698,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -14295,5 +14380,90 @@
     "source_caps_unchanged": true,
     "full_window_claim_requires240_closed_minutes": true,
     "consensus_and_ENTRY_criteria_unchanged": true
+  },
+  "latest_N05_maximum_source_collector_release": {
+    "schema": "N05_MAXIMUM_SOURCE_COLLECTOR_CONNECTED_RELEASE_V1",
+    "proof": "checkpoints/N05_MAXIMUM_SOURCE_COLLECTOR_CONNECTED_RELEASE_20261010.json",
+    "recorded_ts": 1791656608698,
+    "status": "MERGED_ASSEMBLED_MAX_SOURCE_SHARED_CAP_AND_BOTH_REPORTS_VERIFIED",
+    "pr": 311,
+    "PR_url": "https://github.com/kovalev23091987-jpg/my-report-2-cloud-runner/pull/311",
+    "production_head": "b5586092e556a619047eafbcaf120810a2fabfc1",
+    "tested_head": "ad7126bd5eeb8e07bb366b7b5d81658a60e0d266",
+    "retained_head": "04e7021142a3e3e5b6ff2c11ba68da28200d1262",
+    "cloud_run": 38075401232,
+    "cloud_proof": "checkpoints/n05-max-source-collector-38075401232/proof.json",
+    "artifact": {
+      "id": 11677869490,
+      "name": "n05-max-source-collector-38075401232",
+      "size_in_bytes": 56204,
+      "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11677869490",
+      "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11677869490/zip",
+      "expired": false,
+      "created_at": "2026-10-10T18:21:20Z",
+      "expires_at": "2026-11-09T18:21:19Z",
+      "updated_at": "2026-10-10T18:21:20Z",
+      "digest": "sha256:88276d0061a577b00496de71b301fadc53ae32c49303c3562db7064deb5e4df1",
+      "workflow_run": {
+        "id": 38075401232,
+        "repository_id": 1371866675,
+        "head_repository_id": 1371866675,
+        "head_branch": "n05-max-source-collector-20261010",
+        "head_sha": "ad7126bd5eeb8e07bb366b7b5d81658a60e0d266"
+      }
+    },
+    "proof_file_hashes": {
+      "approved-delivery.tap": "5476abc705abd9bf63061a07a74ee3abfb95d64122f5d906607b8be866462745",
+      "assembled-pause.tap": "9bdf382771e8db377817307660f4a0cd0c0330a3c654fe3bcfa415500c01e184",
+      "assembly.json": "de6e0c4004397f8db8cd1cd2eb375be4fd1b46ec3a38ecf622f30580dd930a25",
+      "binding.json": "9b5a41beeaca6c16f63ddda6a63643a4290e4ac85db6c6a3ce97cc0c1091a358",
+      "current-generation-unit-tests.tap": "278a695c8c661d1f7fe3badbb7f5a8ddaf5d76afa072fbf782bf515e99f78502",
+      "generation.log": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+      "integration.json": "75e228f7d6281e39c3645f783247f3a055b9a6dc63ba29f59c07242969600782"
+    },
+    "independently_verified_proof_hashes": 7,
+    "merged_tree_matches_retained_verified_tree": true,
+    "tests": {
+      "unit": 1339,
+      "assembled": 41,
+      "approved_delivery": 35,
+      "integration": 37,
+      "failures": 0,
+      "skips": 0
+    },
+    "implementation": [
+      "First-success early return removed from generic external N05 collector",
+      "All exact eligible venue routes share unchanged five-request caller envelope and original durable provider caps",
+      "Cache-only routes can add components after HTTP admission is exhausted",
+      "Later source refusals preserve earlier complete components and original source clocks",
+      "Optional existing single-venue turnover baseline deferred until all flow routes are checked",
+      "Legacy Bitget adapter root false completion cannot discard a complete qualified component",
+      "Joint validator and builder bounded at eight qualified market components; all components must agree; duplicate physical market rejected",
+      "Informational fallback retains existing one/two-venue scope; additional acquired source components remain in external source audit"
+    ],
+    "scope": {
+      "approved_assets": 104,
+      "original_basic_collection_verified_assets": 104,
+      "retained_individual_full_flow_assets": 22,
+      "new_live_full_flow_assets": 0,
+      "simultaneous_continuous_flow_coverage": false,
+      "maximum_per_coin_source_coverage_complete": false,
+      "large_flow_calibration_complete": false
+    },
+    "accounting": {
+      "sourceHTTP": 0,
+      "D1_reads": 0,
+      "D1_writes": 0,
+      "Telegram": 0,
+      "MAIN": 0,
+      "production_caps_reset": false,
+      "controlled_responses_only": true
+    },
+    "N05_score": 0,
+    "N01_N02_N03_paused": true,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "next_action": "CONTINUE_MAXIMUM_USEFUL_SOURCE_COVERAGE_PER104_ASSETS;USE_QUALIFIED_SINGLE_OR_TWO_VENUE_CONTEXT_WHEN_FULL_CONSENSUS_UNAVAILABLE;QUALIFY_SAVED12_POLONIEX_CANDIDATES_AFTER_NATIVE_ADMISSION;KEEP_EXISTING_CAPS"
   }
 }
