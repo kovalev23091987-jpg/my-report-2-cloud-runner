@@ -70,8 +70,10 @@ jobs:
           REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
           REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
         run: |
-          node tools/qualify-n05-original-pagination-20261010.mjs
-          cp audit-output/n05-pagination/* audit-output/n05-joint-runtime/
+          if ! compgen -G 'checkpoints/n05-joint-runtime-*/pagination-summary.json' > /dev/null; then
+            node tools/qualify-n05-original-pagination-20261010.mjs
+            cp audit-output/n05-pagination/* audit-output/n05-joint-runtime/
+          fi
       - name: Print bounded failed test evidence
         if: failure()
         run: |
