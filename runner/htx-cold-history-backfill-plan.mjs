@@ -9,7 +9,7 @@ export function planHtxColdHistoryBackfill({census,window_end_day,window_days=30
  if(census?.schema!=='HTX_RETAINED_102_FACTUAL_HISTORY_GAP_CENSUS_V1'||census.status!=='PARTIAL_VERIFIED_RETAINED_EVIDENCE_ONLY'||census.rows?.length!==102||new Set(census.rows.map(x=>x.contract)).size!==102||census.rows.some(x=>!isExactHtxUsdtSwapKey(x.contract))||!day(window_end_day)||![30,90].includes(window_days)||!Number.isSafeInteger(source_http_reservation)||source_http_reservation<2||source_http_reservation>16||source_http_reservation%2||!Array.isArray(verified)||verified.length>9180)return no('EXACT_102_CENSUS_WINDOW_AND_RESERVATION_REQUIRED');
  const wanted=dates(window_end_day,window_days),known=new Set(),counts=new Map(census.rows.map(x=>[x.contract,0]));
  for(const r of verified){
-  if(!isExactHtxUsdtSwapKey(r?.contract)||!day(r?.archive_day)||!wanted.includes(r.archive_day)||!['EXACT_NATIVE_ONE_MINUTE_ARCHIVE_RETAINED_NOT_YET_PRICE_QUALIFIED','CLOSED_PRICE_HISTORY'].includes(r.status))return no('EXACT_VERIFIED_ARCHIVE_RECEIPTS_REQUIRED');
+  if(!isExactHtxUsdtSwapKey(r?.contract)||!day(r?.archive_day)||!wanted.includes(r.archive_day)||!['EXACT_NATIVE_ONE_MINUTE_ARCHIVE_RETAINED_NOT_YET_PRICE_QUALIFIED','CHECKSUM_AND_1440_MINUTE_GRID_VERIFIED_PRICE_API_NOT_CROSSCHECKED','CLOSED_PRICE_HISTORY'].includes(r.status))return no('EXACT_VERIFIED_ARCHIVE_RECEIPTS_REQUIRED');
   const key=r.contract+'|'+r.archive_day;if(known.has(key))return no('DUPLICATE_VERIFIED_ARCHIVE_RECEIPT');known.add(key);if(counts.has(r.contract))counts.set(r.contract,counts.get(r.contract)+1);
  }
  const candidates=[];
