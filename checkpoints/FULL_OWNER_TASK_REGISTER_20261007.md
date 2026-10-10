@@ -2,7 +2,7 @@
 
 Источник текущего статуса: `checkpoints/CURRENT_PROJECT_STATUS.json`. Полный machine-readable реестр: `checkpoints/FULL_OWNER_TASK_REGISTER_20261007.json`.
 
-Все задачи завершены: **нет**. PR203 расширил N02/N03/N07 и прошёл облачную проверку неизменной доставки Telegram. Фактический отчёт с 12–15 блоками и новый SENT после этого выпуска пока не подтверждены. Проверки компонентов не заменяют полный рыночный отчёт.
+Все задачи завершены: **нет**. Текущий пакет N05 — PR306: проверенные потоки Gate, шесть нативных активов Binance и семь полных историй оборота за предыдущие 30 дней. Cloud 38064914622: 1301 unit + 34 assembled + 35 delivery + 37 integration PASS. Подтверждены отдельные окна 10/102 активов; это не постоянное свежее покрытие 31 активов. Калибровка крупных сделок и влияния на цену остаётся открытой. Доказательство: `checkpoints/N05_LARGE_VENUE_CONNECTED_RELEASE_20261010.json`.
 
 ## Исходные 86 требований
 
@@ -552,11 +552,15 @@ Blockchain semantics: duplicate/reorg/transfer/bridge/liquidity/multihop never a
 
 Увеличить точную finalized transfer coverage/labels там, где это действительно доступно. Bridge/liquidity/internal transfer не buy; индекс до primary finality лишь provisional.
 
-### BLOCK_N05: Потоки: полный4h HTX либо проверенный разрешённый источник
+### BLOCK_N05: Согласованный поток спота и фьючерсов нескольких бирж
 
-Статус: PARTIAL_PRIMARY_FLOW_AND_ATTRIBUTION.
+Статус: MERGED_ASSEMBLED_GATE_BINANCE_TURNOVER_VERIFIED;BROAD_COVERAGE_AND_LARGE_FLOW_CALIBRATION_OPEN.
 
-Проверить полный240минHTX и потребление сохранённых signed fills; не отменять условие. New exchange-labelled sources только с проверенным доступом/label semantics. Nansen отложен0; exact24h отложен отдельно.
+PR306 подключил Gate после 39 точных совпадений публичных REST/WebSocket сделок по ID, времени, цене, объёму и стороне инициатора. Принимаются точные chain/address и полные 240 закрытых минут. Binance: ADA, APT, ATOM, BTC, ETH, BNB; Bitget: ранее подтверждённые SUSHI, BANK, TRX; Gate: PEOPLE. В каждой новой аналитике нужны свежие совпадающие окна HTX и внешней биржи, одно направление и близкая сила. Исторические окна не выдаются за текущий сигнал.
+
+Реальные 30-дневные истории общего оборота подтверждены для семи активов/площадок. Это 180 непересекающихся четырёхчасовых выборок на каждом рынке; не калибровка размеров отдельных крупных сделок и не доказательство движения цены. N05 score0; порог, веса и утверждённые формы прежние. Gate/Bitget N05 cap16 исчерпаны 10OctUTC; сброс и обход через alias запрещены. Сохранённое окно Gate SUSHI содержит незакрытую минуту, новый запрос сделок отклонён квотой без HTTP.
+
+Осталось: широкое полезное покрытие 31/102, регулярные полные окна, история отдельных крупных сделок и реальные outcomes, естественный same-run manual/Telegram. Proof: `checkpoints/N05_LARGE_VENUE_CONNECTED_RELEASE_20261010.json`.
 
 ### BLOCK_N06: Социальная активность и внимание
 
@@ -676,7 +680,7 @@ Blockchain semantics: duplicate/reorg/transfer/bridge/liquidity/multihop never a
 
 - **OWNER_HISTORICAL_TELEGRAM_DELETION_REQUEST** — NOT_VERIFIED_IN_RESTORED_EVIDENCE: Сохранять историческую просьбу удаления старыхсообщений; факт её исполнения не восстановлен. Нельзя молча считать её выполненной или удалять новые сообщения по неопределённому scope.
 
-## Последний внедрённый пакет
+## Исторические пакеты PR203–PR205
 
 `checkpoints/GENERAL_BLOCK_CONNECTIONS_RELEASE_20261007.json`: PR203, проверенный candidate `b7d162e731f77bae5b853d8ca01d45875b586445`, облачный запуск 37575766314. Новые сведения N02/N03/N07 без новых баллов, изменения входа, частоты анализа, лимитов и согласованного Telegram.
 

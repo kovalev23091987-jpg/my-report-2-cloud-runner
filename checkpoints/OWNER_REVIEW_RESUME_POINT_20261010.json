@@ -1,11 +1,11 @@
 {
   "schema": "OWNER_REVIEW_RESUME_POINT_20261010_V1",
-  "recorded_ts": 1791645140430,
+  "recorded_ts": 1791647380532,
   "owner_instruction_local": "2026-10-10T14:32:56+03:00",
-  "source_main": "2500f85ed8518781707702045c47f12f9f2c7a30",
+  "source_main": "bd37a26caa5eb03b49a0f9ea44efebe915a15fb5",
   "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
   "working_ref": "main",
-  "current_task": "OWNER_APPROVED_N05_JOINT_FLOW_SOURCE_COVERAGE_AND_LARGE_FLOW_CALIBRATION",
+  "current_task": "OWNER_APPROVED_N05_REMAINING_EXACT_SOURCE_COVERAGE_AND_RAW_LARGE_FLOW_CALIBRATION",
   "continuation_policy": "PERSIST_EVERY_COMPLETED_PACKAGE_AND_IN_PROGRESS_HANDOFF_IN_GITHUB;RESUME_FROM_ACTUAL_VERIFIED_STATE",
   "completed_and_verified": [
     {
@@ -36,6 +36,13 @@
       "pr": 305,
       "cloud_run": 38062344960,
       "proof": "checkpoints/N05_NATIVE_FLOW_CONNECTED_RELEASE_20261010.json"
+    },
+    {
+      "scope": "N05 Gate exact token flow, six Binance native assets and seven real prior 30-day turnover histories",
+      "status": "MERGED_ASSEMBLED_VERIFIED_PARTIAL",
+      "pr": 306,
+      "cloud_run": 38064914622,
+      "proof": "checkpoints/N05_LARGE_VENUE_CONNECTED_RELEASE_20261010.json"
     }
   ],
   "next_work_in_order": [
@@ -46,13 +53,13 @@
     },
     {
       "id": "N05_BROAD_SOURCE_QUALIFICATION",
-      "status": "OPEN;6_DISTINCT_RETAINED_FULL_FLOW_ASSETS_NOT31;NOT_CONTINUOUS_FRESH_COVERAGE",
-      "action": "CONTINUE_GATE_DIRECTION_PROOF_AND_BROAD_EXACT_SOURCE_COVERAGE_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_CLOSED_NATIVE_RUN38052957545_OR_Bitget_EXHAUSTED_20261010"
+      "status": "OPEN;10_DISTINCT_RETAINED_FULL_FLOW_ASSETS_NOT31;NOT_CONTINUOUS_FRESH_COVERAGE",
+      "action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
     },
     {
       "id": "N05_LARGE_FLOW_AND_AGREEMENT_CALIBRATION",
-      "status": "OPEN;NO_SCORE_OR_IMPACT_CLAIM",
-      "action": "Use retained actual 30–90day/history when available; current P95 sample is descriptive and not an impact threshold."
+      "status": "SEVEN_PRIOR_30DAY_TOTAL_TURNOVER_BASELINES_VERIFIED;INDIVIDUAL_LARGE_TRADE_AND_PRICE_IMPACT_CALIBRATION_OPEN",
+      "action": "Reuse exact retained seven prior total-turnover histories; acquire raw individual-size history and real outcomes only for missing facts within old caps. Current-window P95 tails do not prove whales, exchange inflow or price impact."
     },
     {
       "id": "N05_NATURAL_BOTH_CHAIN_ACCEPTANCE",
@@ -515,5 +522,189 @@
     "original_responses_retained_under": "checkpoints/n05-native-qualification-38052957545",
     "completed_source_acquisition_not_repeated": true
   },
-  "test_repeat_reason": "NEW_RUNTIME_CONNECTION_AND_NEW_ISOLATED_ASSEMBLY_DEPENDENCY"
+  "test_repeat_reason": "NEW_GATE_NATIVE_TURNOVER_CONNECTIONS_AND_LARGE_METADATA_CACHE_DEFECT",
+  "latest_large_venue_release": {
+    "schema": "N05_LARGE_VENUE_CONNECTED_RELEASE_20261010_V1",
+    "proof": "checkpoints/N05_LARGE_VENUE_CONNECTED_RELEASE_20261010.json",
+    "recorded_ts": 1791647296547,
+    "status": "MERGED_ASSEMBLED_GATE_BINANCE_TURNOVER_VERIFIED;BROAD_COVERAGE_AND_LARGE_FLOW_CALIBRATION_OPEN",
+    "pr": 306,
+    "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+    "production_head": "bd37a26caa5eb03b49a0f9ea44efebe915a15fb5",
+    "tested_head": "7db51e648f2b93ff691a5496019117c8c461993c",
+    "retained_head": "b5c1bc027532359d3921012a9087fb0a200ebca9",
+    "cloud_run": 38064914622,
+    "artifact": {
+      "id": 11674776683,
+      "name": "n05-large-resume-38064914622",
+      "size_in_bytes": 55111,
+      "url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11674776683",
+      "archive_download_url": "https://api.github.com/repos/kovalev23091987-jpg/my-report-2-cloud-runner/actions/artifacts/11674776683/zip",
+      "expired": false,
+      "created_at": "2026-10-10T15:46:19Z",
+      "expires_at": "2026-11-09T15:46:17Z",
+      "updated_at": "2026-10-10T15:46:19Z",
+      "digest": "sha256:a706a2429dc9217e26e94145ec6243952b08eebdb556fe8b75cc31a660370d38",
+      "workflow_run": {
+        "id": 38064914622,
+        "repository_id": 1371866675,
+        "head_repository_id": 1371866675,
+        "head_branch": "n05-large-venue-batch-20261010",
+        "head_sha": "7db51e648f2b93ff691a5496019117c8c461993c"
+      }
+    },
+    "cloud_proof": "checkpoints/n05-large-resume-38064914622/proof.json",
+    "actual_replay_proof": "checkpoints/n05-large-resume-38064914622/large-actual-replay.json",
+    "tests": {
+      "unit_pass": 1301,
+      "unit_fail": 0,
+      "unit_skipped": 0,
+      "assembled_joint_Gate_native_baseline_pause_pass": 34,
+      "approved_delivery_pass": 35,
+      "integration_pass": 37,
+      "generation": "PASS",
+      "runtime_binding": "PASS",
+      "retained_proof_file_hashes_verified": 8,
+      "original_raw_hash_checks": 37
+    },
+    "implementation": {
+      "new_runtime_source": "GATE_OFFICIAL_PUBLIC_TRADES",
+      "Gate_primary_paired_direction_trades": 39,
+      "Gate_direction_reference": "GATE_PAIRED_PUBLIC_TAKER_V4_38064035277",
+      "Gate_token_binding": "EXACT_HTX_CHAIN_AND_ADDRESS",
+      "Gate_closed_native_minutes_required": 240,
+      "Gate_same_volume_decimal_reconciler": true,
+      "Gate_no_independent_raw_counter_claim": true,
+      "Binance_native_assets": [
+        "ADA",
+        "APT",
+        "ATOM",
+        "BTC",
+        "ETH",
+        "BNB"
+      ],
+      "joint_spot_and_HTX_futures_shared_validation": true,
+      "optional_prior_turnover_history": {
+        "days": 30,
+        "hours": 720,
+        "nonoverlapping_4hour_samples": 180,
+        "closed_assets": 7,
+        "scope": "DESCRIPTIVE_TOTAL_VENUE_TURNOVER_NOT_INDIVIDUAL_LARGE_TRADE_CALIBRATION_OR_PRICE_IMPACT",
+        "same_existing_role_daily_cap": true,
+        "caller_whole_job_envelope_unchanged": true
+      },
+      "metadata_cache": {
+        "original_clocks_preserved": true,
+        "Gate_chain_fields_compacted": true,
+        "oversized_unrelated_field_test_pass": true
+      },
+      "recent_windows_minutes": [
+        15,
+        60
+      ],
+      "large_trade_tail": "CURRENT_WINDOW_P95_DIAGNOSTIC_ONLY_WHEN_RAW_FULL_FLOW_RECONCILED",
+      "N05_score_contribution": 0,
+      "entry_authorized": false,
+      "approved_forms_unchanged": true,
+      "N01_N02_N03_paused": true,
+      "N04_active_partial": true
+    },
+    "actual_retained_coverage": {
+      "scope": "SEPARATE_ORIGINAL_WINDOWS_NOT_SIMULTANEOUS_CURRENT_ALL_ASSET_COVERAGE",
+      "approved_assets": 102,
+      "useful_asset_target": 31,
+      "Binance_exact_assets": [
+        "ADA",
+        "APT",
+        "ATOM",
+        "BTC",
+        "ETH",
+        "BNB"
+      ],
+      "Bitget_exact_assets_retained_from_PR304": [
+        "SUSHI",
+        "BANK",
+        "TRX"
+      ],
+      "Gate_full_window_assets": [
+        "PEOPLE"
+      ],
+      "distinct_external_full_window_assets": 10,
+      "full_prior_30day_turnover_histories": 7,
+      "continuous_fresh_coverage_proven": false,
+      "thirty_percent_proven": false,
+      "natural_multi_venue_agreements_proven_in_this_package": false,
+      "Gate_exact_reference_bindings": 43,
+      "Gate_bindings_are_not_flow_coverage": true
+    },
+    "source_qualifications": [
+      {
+        "run": 38063816181,
+        "path": "checkpoints/n05-large-qualification-38063816181",
+        "new_HTTP": 13
+      },
+      {
+        "run": 38064035277,
+        "path": "checkpoints/n05-large-qualification-38064035277",
+        "new_HTTP": 2
+      },
+      {
+        "run": 38064624661,
+        "path": "checkpoints/n05-large-qualification-38064624661",
+        "new_HTTP": 1
+      }
+    ],
+    "SUSHI_Gate_limit": {
+      "original_window_rejected_reason": "GATE_240_NATIVE_CLOSED_MINUTES_REQUIRED",
+      "original_open_flag_preserved": true,
+      "new_candles_retained": true,
+      "new_trade_request": "SOURCE_DAILY_CAP_DENIED",
+      "new_trade_request_actual_HTTP": 0,
+      "full_window_not_claimed": true
+    },
+    "limits": {
+      "whole_job_HTTP_cap": 164,
+      "Gate_flow_daily_cap": 16,
+      "Gate_remaining_same_UTC_day": 0,
+      "Gate_reference_daily_cap": 8,
+      "Gate_provider_rolling_60s_cap": 4,
+      "Gate_max_trade_pages": 3,
+      "Binance_flow_daily_cap": 16,
+      "Binance_provider_rolling_60s_cap": 6,
+      "Bitget_flow_daily_cap": 16,
+      "Bitget_remaining_same_UTC_day": 0,
+      "source_caps_reset": false,
+      "source_caps_aliased": false,
+      "Nansen_HTTP_cap": 0,
+      "D1_limits_and_manual_reserve_unchanged": true,
+      "analytics_minutes": 40,
+      "collector_minutes": 5
+    },
+    "sourceHTTP": 16,
+    "D1_reads": 403,
+    "D1_writes": 128,
+    "D1_unknown_ops": 0,
+    "Telegram": 0,
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "remaining": [
+      "AT_LEAST31_EXACT_ASSETS_USEFUL_FLOW_COVERAGE_NOT_LISTINGS",
+      "REGULAR_FRESH_ALIGNED_HTX_AND_EXTERNAL_COMPLETE_WINDOWS",
+      "HIGH_TURNOVER_INDIVIDUAL_RAW_LARGE_TRADE_COMPLETENESS_WITHIN_CAPS",
+      "INDIVIDUAL_LARGE_FLOW_SIGNIFICANCE_AGAINST_REAL_30_90DAY_HISTORY",
+      "EMPIRICAL_DIRECTION_AGREEMENT_AND_PRICE_IMPACT_SCORE_CALIBRATION",
+      "NATURAL_SAME_RUN_MANUAL_AND_TELEGRAM_ACCEPTANCE",
+      "BROADER_OLD_TZ_TASKS_RETAINED_OPEN"
+    ],
+    "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES"
+  },
+  "next_action": "CONTINUE_REMAINING_N05_EXACT_VENUE_AND_RAW_LARGE_FLOW_HISTORY_QUALIFICATION_WITHIN_EXISTING_CAPS;REUSE_CLOSED_Gate_DIRECTION_AND_SEVEN_HISTORY_PROOFS;NO_Gate_OR_Bitget_RETRY_ON_EXHAUSTED_20261010_UTC;NO_QUOTA_RESET_OR_ALIASES",
+  "latest_package_accounting": {
+    "sourceHTTP": 16,
+    "D1_reads": 403,
+    "D1_writes": 128,
+    "D1_unknown_ops": 0,
+    "Telegram": 0
+  }
 }
