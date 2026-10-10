@@ -1,7 +1,9 @@
 export const KRAKEN_FLOW_VERSION='kraken-native-count-flow-v1-20261010';
 export const KRAKEN_NATIVE_NETWORK_REFERENCE='https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken';
 const native={ADA:'cardano',ATOM:'cosmos',AVAX:'avalanche',BCH:'bitcoin-cash',BNB:'bsc',DOT:'polkadot',ETH:'ethereum',LTC:'litecoin',SOL:'solana',XRP:'xrp'};
-export function exactKrakenNativeBinding({contract,identity,instrument}={}){const base=String(contract||'').replace(/-USDT$/,'');return Boolean(native[base]&&contract===base+'-USDT'&&identity?.asset_kind==='NATIVE'&&identity.chain===native[base]&&identity.native_asset_id===native[base]+':mainnet'&&!identity.contract_or_mint&&instrument?.wsname===base+'/USDT'&&instrument.base===base&&instrument.quote==='USDT'&&instrument.altname===base+'USDT'&&instrument.status==='online');}
+export function exactKrakenNativeIdentity(contract,identity){const base=String(contract||'').replace(/-USDT$/,'');return Boolean(native[base]&&contract===base+'-USDT'&&identity?.asset_kind==='NATIVE'&&identity.chain===native[base]&&identity.native_asset_id===native[base]+':mainnet'&&!identity.contract_or_mint);}
+export function exactKrakenNativeBinding({contract,identity,instrument}={}){const base=String(contract||'').replace(/-USDT$/,'');return Boolean(exactKrakenNativeIdentity(contract,identity)&&instrument?.wsname===base+'/USDT'&&instrument.base===(({ETH:'XETH',LTC:'XLTC',XRP:'XXRP'})[base]||base)&&instrument.quote==='USDT'&&instrument.altname===base+'USDT'&&instrument.status==='online');}
+
 export function matchKrakenPublicRestDirection({messages,rest,symbol}={}){
  const root={status:'KRAKEN_DIRECTION_NOT_CONFIRMED',verified:false,matched_count:0};
  try{
