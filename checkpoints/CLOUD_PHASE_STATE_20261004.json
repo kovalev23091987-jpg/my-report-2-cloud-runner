@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "CHATGPT:HTX_COLD_BACKFILL:20261010:SESSION",
-    "acquired_ts": 1791621221638,
-    "expires_ts": 1791623621638,
-    "scope": "BOUNDED_HTX_COLD_HISTORY_ACQUISITION_EXISTING_ADMISSION_NO_BYPASS",
-    "expected_main": "f6025257b09b4c83cdc8615f157243501ea42e6f"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "Under a new measured healthy admission and explicit provider reservation, execute the accepted bounded HTX archive batch, preserve exact receipts and gaps, qualify retained price files, and feed the accepted partial-coverage consumer; separately bind the next natural SENT trigger to its fresh same-idea disposition.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
@@ -390,11 +388,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "HTX:HISTORY:38038206606",
-    "acquired_ts": 1791621137173,
-    "expires_ts": 1791621617173,
-    "released_ts": 1791621154624,
-    "reason": "Bounded retained-history maintenance finished"
+    "owner": "CHATGPT:HTX_COLD_BACKFILL:20261010:SESSION",
+    "acquired_ts": 1791621221638,
+    "expires_ts": 1791623621638,
+    "released_ts": 1791621597229,
+    "reason": "PR294 actual source bytes retained, cloud tested, status readback complete; release bounded archive lease"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -814,7 +812,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "HEALTHY_NATIVE_ADMISSION_ACTIVE;NEXT_EXACT_SENT_TRIGGER_CHAIN_AND_EXPANDED_EMPIRICAL_HISTORY_OPEN",
+  "current_execution_block": "HTX_ARCHIVE_BATCH_3_ACTUAL_RETAINED;NEXT_DAY_SOURCE_CAP;NEXT_ACTUAL_SENT_TO_FINAL_DISPOSITION_AND_EMPIRICAL_COHORT_OPEN",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -7007,6 +7005,22 @@
     "artifact_digest": "sha256:36a754970fb615c91aab194ffd74f85d16c85b0828c37bd9ec9c80c40ce7ebd7",
     "merged_head": "3e41e327d262f5ba4718262ca3b16b79c6f9a0e7",
     "status": "MERGED_EXACT_HEAD_CLOUD_PROVEN;8_ARCHIVES_16HTTP_PLAN_ONLY;ACTUAL_ACQUISITION_OPEN",
+    "project_complete": false
+  },
+  "latest_actual_htx_cold_history_acquisition": {
+    "proof": "checkpoints/ACTUAL_HTX_COLD_HISTORY_BATCH_20261010.json",
+    "pr": 294,
+    "merged_head": "07c3f26a8d8d385edf12875da42a9f93c6f273f0",
+    "source_run": 38038404724,
+    "retained_run": 38038487874,
+    "next_plan_run": 38038539269,
+    "sourceHTTP": 6,
+    "actual_verified_archive_pairs": 3,
+    "structurally_verified_minutes": 4320,
+    "source_daily_cap_exhausted_2026_10_10": true,
+    "price_qualified": false,
+    "all102_30_90day_history_complete": false,
+    "actual_ENTRY": false,
     "project_complete": false
   }
 }
