@@ -62,7 +62,7 @@ jobs:
           node --input-type=module - <<'JS'
           import fs from 'node:fs';import {createHash} from 'node:crypto';
           const out='audit-output/n05-large-resume/',files=fs.readdirSync(out),sha=b=>createHash('sha256').update(b).digest('hex');
-          const proof={schema:'N05_NATIVE_FLOW_ASSEMBLED_CLOUD_VERIFICATION_V1',run:Number(process.env.GITHUB_RUN_ID),head:process.env.GITHUB_SHA,verified_ts:Date.now(),status:'ASSEMBLED_NATIVE_AND_JOINT_FLOW_SCORE_REPORT_BINDING_VERIFIED',source_http:0,D1_reads:0,D1_writes:0,Telegram:0,controlled_cases_not_live_signal_acceptance:true,manual_and_Telegram_both_verified:true,threshold:70,source_caps_reset:false,N01_N02_N03_paused:true,N05_score_contribution:0,N05_calibration_pending:true,project_complete:false,files:Object.fromEntries(files.map(f=>[f,sha(fs.readFileSync(out+f))]))};
+          const proof={schema:'N05_LARGE_VENUE_FLOW_ASSEMBLED_CLOUD_VERIFICATION_V1',run:Number(process.env.GITHUB_RUN_ID),head:process.env.GITHUB_SHA,verified_ts:Date.now(),status:'ASSEMBLED_GATE_BINANCE_TURNOVER_JOINT_FLOW_SCORE_REPORT_BINDING_VERIFIED',source_http:0,D1_reads:0,D1_writes:0,Telegram:0,controlled_cases_not_live_signal_acceptance:true,manual_and_Telegram_both_verified:true,threshold:70,source_caps_reset:false,N01_N02_N03_paused:true,N05_score_contribution:0,N05_calibration_pending:true,project_complete:false,files:Object.fromEntries(files.map(f=>[f,sha(fs.readFileSync(out+f))]))};
           fs.writeFileSync(out+'proof.json',JSON.stringify(proof,null,2)+'\n');
           JS
       - name: Replay original native responses with immutable digests and clocks
