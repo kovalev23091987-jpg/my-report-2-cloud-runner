@@ -48,13 +48,18 @@ export function planCompactHtx90d({universe,manifests=[],now_ts=Date.now(),limit
  }
  // Calibrate against the independently retained native NEAR 1m proof first.
  fresh.sort((a,b)=>Number(b==='NEAR-USDT')-Number(a==='NEAR-USDT')||a.localeCompare(b));
- const planned=[...fresh,...retry].slice(0,limit).map(contract=>({
+ const pilot=known.get('NEAR-USDT');
+ const pilotQualified=pilot?.status==='COMPLETE_90D_4H_PRICE_ONLY';
+ const candidates=pilotQualified?[...fresh,...retry]:
+   fresh.includes('NEAR-USDT')?['NEAR-USDT']:
+   retry.includes('NEAR-USDT')?['NEAR-USDT']:[];
+ const planned=candidates.slice(0,pilotQualified?limit:1).map(contract=>({
    contract,url:exactCompactHtxUrl(contract),anchor_end_ts:COMPACT_HTX_4H.anchor_end_ts,
    period:'4hour',size:1200,source_http_reserved:1,availability_unproven:true,
    native_1m_complete:false,entry_authorized:false
  }));
- return {schema:'HTX_COMPACT_90D_4H_ACQUISITION_PLAN_V1',status:planned.length?'BOUNDED_COMPACT_ACQUISITION_PLAN':'ALL_CONTRACTS_ATTEMPTED_OR_COOLDOWN',
-   assets:102,complete_90d_4h_price_only:[...known.values()].filter(m=>m.status==='COMPLETE_90D_4H_PRICE_ONLY').length,
+ return {schema:'HTX_COMPACT_90D_4H_ACQUISITION_PLAN_V1',status:planned.length?'BOUNDED_COMPACT_ACQUISITION_PLAN':pilotQualified?'ALL_CONTRACTS_ATTEMPTED_OR_COOLDOWN':'PILOT_NEAR_NOT_VERIFIED_OR_COOLDOWN',
+   assets:102,pilot_qualified:pilotQualified,complete_90d_4h_price_only:[...known.values()].filter(m=>m.status==='COMPLETE_90D_4H_PRICE_ONLY').length,
    attempted_assets:known.size,unattempted_assets:fresh.length,eligible_retry_assets:retry.length,
    planned,planned_source_http:planned.length,source_daily_cap:6,source_ledger:COMPACT_HTX_4H.source,
    same_source_as_daily_zip:true,sourceHTTP:0,D1:0,Telegram:0,actual_ENTRY:false,project_complete:false};
