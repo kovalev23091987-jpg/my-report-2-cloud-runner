@@ -1,6 +1,6 @@
-import {BLOCKS} from './evidence-v2.mjs';
+import {BLOCKS,ACTIVE_BLOCK_IDS,PAUSED_BLOCKS} from './evidence-v2.mjs';
 import {consumeExecutionReportContext} from './execution-report-context.mjs';
-const requiredBlockCount=Object.keys(BLOCKS).length;
+const requiredBlockCount=ACTIVE_BLOCK_IDS.length;
 import {nativeLiquidationLines,nativeLiquidationSources} from './native-liquidation-guard.mjs';
 import {displayFutureLiquidations,displayCoinLobsterHint,liquidationPresentationPolicy} from './canonical-display.mjs';
 export const MANUAL_RUN_SUMMARY_VERSION='manual-run-summary-ru-v4-owner-layout-15-blocks-20261004';
@@ -17,7 +17,7 @@ function confirmedRunContext(candidates,runId){
   const binding=contract(row?.contract)&&row.run_id===runId&&c?.run_id===runId&&proof?.run_id===runId&&
    proof.contract===row.contract&&row.snapshot_id&&row.snapshot_id===c.snapshot_id&&proof.snapshot_id===row.snapshot_id&&
    row.observed_ts===c.observed_ts&&proof.status==='RENDERED_OUTPUT_VERIFIED'&&typeof row.manual_text==='string';
-  const savedFacts=binding?(Array.isArray(proof.context_receipts)?proof.context_receipts:[]).filter(f=>BLOCKS[f.block_id]&&f.consumer==='MANUAL_CONFIRMED_CONTEXT'&&f.score_contribution===0&&
+  const savedFacts=binding?(Array.isArray(proof.context_receipts)?proof.context_receipts:[]).filter(f=>BLOCKS[f.block_id]&&!PAUSED_BLOCKS[f.block_id]&&f.consumer==='MANUAL_CONFIRMED_CONTEXT'&&f.score_contribution===0&&
    typeof f.label==='string'&&typeof f.value==='string'&&Number.isFinite(f.source_ts)&&Number.isFinite(f.observed_ts)&&f.source_ts<=f.observed_ts&&f.observed_ts<=row.observed_ts&&
    row.manual_text.includes(`- ${f.label}: ${f.value}`)):[];
   const executionFacts=consumeExecutionReportContext(row,runId).facts;
@@ -90,7 +90,7 @@ export function enforceManualBlockCoverage(output={}){
   maximum_not_checked_block_count:auditStatusCounts.length?Math.max(...auditStatusCounts.map(counts=>Number(counts.NOT_CHECKED||0))):requiredBlockCount,
   data_sufficient_candidate_count:sufficientCandidates,all_candidates_data_sufficient:sufficientCandidates===output.candidates.length,
   all_candidates_fully_checked:fullyChecked===audits.length};
- const accounted=audits.every(a=>a?.coverage_count===requiredBlockCount&&Object.keys(BLOCKS).every(id=>a.blocks?.[id]&&typeof a.blocks[id].status==='string'&&a.blocks[id].source_statuses&&a.blocks[id].source_checks));
+ const accounted=audits.every(a=>a?.coverage_count===requiredBlockCount&&ACTIVE_BLOCK_IDS.every(id=>a.blocks?.[id]&&typeof a.blocks[id].status==='string'&&a.blocks[id].source_statuses&&a.blocks[id].source_checks));
  block_audit.all_block_outcomes_accounted=accounted;
  block_audit.full_15_per_candidate_required=false;
  if(block_audit.all_candidates_fully_checked||accounted)return {...output,block_audit};

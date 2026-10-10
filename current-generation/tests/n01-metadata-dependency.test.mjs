@@ -39,7 +39,7 @@ test('existing dispatcher can resolve actual newly received metadata once inside
    SECTOR_COINGECKO:async p=>{order.push('SECTOR_COINGECKO');assert.equal(p.now,params.now);return {status:'ACTUAL_SAVED_METADATA_AVAILABLE',evidence:[],network_calls:0};},
    TOKEN_CALENDAR:async p=>{order.push('TOKEN_CALENDAR');assert.equal(p.now,r.decision_ts);const reference=await resolvePublishedCalendarReference(p);assert.ok(reference);return{status:'EXACT_REFERENCE_ONLY_CALENDAR_FACT_NOT_ASSERTED',reference,evidence:[],network_calls:0};}
   }});
-  assert.deepEqual(order,['SECTOR_COINGECKO','TOKEN_CALENDAR']);assert.equal(result.network_calls,0);assert.equal(result.reserved_requests,0);
+  assert.deepEqual(order,['SECTOR_COINGECKO']);assert.equal(result.results.TOKEN_CALENDAR.status,'BLOCK_PAUSED_BY_OWNER');assert.equal(result.network_calls,0);assert.equal(result.reserved_requests,0);
   assert.equal(result.results.TOKEN_CALENDAR.evidence.length,0);assert.equal(result.max_requests,1);
  }
 });

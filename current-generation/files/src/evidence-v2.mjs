@@ -4,6 +4,9 @@ export const BLOCKS=Object.freeze({
  N01:{family:'RISK_EVENTS',cap:.3,consumer:'SUPPORTING_RISK_RECHECK'},N02:{family:'ONCHAIN',cap:.3,consumer:'SUPPLY_RISK'},N03:{family:'ONCHAIN',cap:.3,consumer:'MONEY_FLOW_CONTEXT'},N04:{family:'ONCHAIN',cap:.3,consumer:'TRANSFER_INVESTIGATION'},N05:{family:'ONCHAIN',cap:.5,consumer:'MARKET_FLOW_CONFIRMATION'},N06:{family:'MARKET_DEMAND',cap:.2,consumer:'EARLY_INTEREST_PRIORITY'},N07:{family:'RISK_EVENTS',cap:.2,consumer:'OFFICIAL_EVENT_RISK'},N08:{family:'RISK_EVENTS',cap:.2,consumer:'EXECUTION_GATE'},N09:{family:'RISK_EVENTS',cap:.2,consumer:'EXECUTION_ELIGIBILITY'},N10:{family:'TECHNICAL_EXISTING',cap:.2,consumer:'TARGET_PATH_INVALIDATION'},N11:{family:'MARKET_DEMAND',cap:.4,consumer:'EXECUTION_STRESS'},N12:{family:'MARKET_DEMAND',cap:.6,consumer:'MONEY_FLOW_DIAGNOSTIC'},N14:{family:'DERIVATIVES',cap:.3,consumer:'OPTIONS_RISK_CONTEXT'},N15:{family:'MARKET_DEMAND',cap:.6,consumer:'SECTOR_RELATIVE_STRENGTH'},N16:{family:'RISK_EVENTS',cap:.3,consumer:'EXECUTION_COST_GATE'},
 });
 export const CHAIN_CAPS=Object.freeze({DERIVATIVES:3.2,MARKET_DEMAND:3,ONCHAIN:2,RISK_EVENTS:1.8,TECHNICAL_EXISTING:.2});
+// Owner 10.10.2026: historical rows remain readable; the paused block is no penalty.
+export const PAUSED_BLOCKS=Object.freeze({N01:'OWNER_PAUSED_NO_QUALIFIED_INDEPENDENT_RELEASE_PAIR'});
+export const ACTIVE_BLOCK_IDS=Object.freeze(Object.keys(BLOCKS).filter(id=>!PAUSED_BLOCKS[id]));
 
 export function validateEvidenceV2(row,{decision_ts=Infinity}={}){
   const required=['evidence_id','asset_id','htx_contract','block_id','metric_family','provider_id','upstream_id','dependency_group','observed_ts','source_ts','first_known_ts','expires_at','coverage_status','schema_version','validation_status','identity_status','finality_status'];
@@ -27,7 +30,8 @@ export function consumeEvidenceV2(rows,{base_interest,decision_ts,base_evidence_
   const seen=new Set(base_evidence_roots.map(String)),blockValues=new Map(),blockCaps=new Map(),receipts=[];
   for(const row of rows||[]){const validation=validateEvidenceV2(row,{decision_ts}),config=BLOCKS[row.block_id],key=evidenceDedupKey(row);let contribution=0,reason=validation.status;
     const capPolicy=resolveBlockCap(row,{decision_ts,weight_policy_version,adaptive_policy});
-    if(validation.usable&&config&&!seen.has(key)&&!base_evidence_ids.includes(row.evidence_id)){seen.add(key);const hasDirectional=row.directional_strength!==null&&row.directional_strength!==undefined&&row.directional_strength!=='',strength=hasDirectional?clamp(Number(row.directional_strength),-1,1):-clamp(Number(row.risk_strength??0),0,1),raw=capPolicy.cap*validation.quality*strength;contribution=clamp(raw,-capPolicy.cap,capPolicy.cap);blockValues.set(row.block_id,(blockValues.get(row.block_id)||0)+contribution);blockCaps.set(row.block_id,Math.max(blockCaps.get(row.block_id)||0,capPolicy.cap));reason='CONSUMED';}
+    if(PAUSED_BLOCKS[row.block_id]){reason='BLOCK_PAUSED_BY_OWNER';}
+    else if(validation.usable&&config&&!seen.has(key)&&!base_evidence_ids.includes(row.evidence_id)){seen.add(key);const hasDirectional=row.directional_strength!==null&&row.directional_strength!==undefined&&row.directional_strength!=='',strength=hasDirectional?clamp(Number(row.directional_strength),-1,1):-clamp(Number(row.risk_strength??0),0,1),raw=capPolicy.cap*validation.quality*strength;contribution=clamp(raw,-capPolicy.cap,capPolicy.cap);blockValues.set(row.block_id,(blockValues.get(row.block_id)||0)+contribution);blockCaps.set(row.block_id,Math.max(blockCaps.get(row.block_id)||0,capPolicy.cap));reason='CONSUMED';}
     else if(seen.has(key))reason='DUPLICATE_UPSTREAM_EVENT';else if(base_evidence_ids.includes(row.evidence_id))reason='ALREADY_OWNED_BY_BASE_SCORER';
     receipts.push({evidence_id:row.evidence_id,block_id:row.block_id,family:config?.family||null,consumer:config?.consumer||null,physical_root_key:key,raw_contribution:contribution,reason,block_weight:capPolicy});
   }

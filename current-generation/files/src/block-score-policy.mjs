@@ -16,6 +16,7 @@ export function validBlockWeightPolicy(policy,now){
  return Object.entries(policy.blocks||{}).every(([id,r])=>Object.hasOwn(INITIAL_BLOCK_CAPS,id)&&Number.isFinite(r.factor)&&r.factor>=.75&&r.factor<=1.25&&(r.factor===1||!NON_ADAPTIVE_BLOCKS.includes(id)&&r.status==='VALIDATED_LATER_SAMPLE_PREDICTIVE_ASSOCIATION'&&Number.isSafeInteger(r.last_validated_ts)&&r.last_validated_ts<=now&&now-r.last_validated_ts<=35*86400000&&r.independent_samples>=200&&r.calendar_days>=30&&r.assets>=20&&r.long>=50&&r.short>=50&&r.validation_count>=40&&r.test_count>=40&&r.validation_confidence_closed===true&&r.test_confidence_closed===true));
 }
 export function resolveBlockCap(row,{decision_ts,weight_policy_version,adaptive_policy}={}){
+ if(row?.block_id==='N01')return{cap:0,initial_cap:0,factor:1,version:BLOCK_WEIGHT_VERSION,status:'BLOCK_PAUSED_BY_OWNER',policy_fingerprint:null};
  const legacy=LEGACY_BLOCK_CAPS[row?.block_id];
  const current=weight_policy_version===BLOCK_WEIGHT_VERSION||weight_policy_version!== 'LEGACY'&&Number.isFinite(decision_ts)&&decision_ts>=BLOCK_WEIGHT_CUTOVER;
  const coverage=Number(row?.coverage_fraction),reliability=Number(row?.reliability??.8);

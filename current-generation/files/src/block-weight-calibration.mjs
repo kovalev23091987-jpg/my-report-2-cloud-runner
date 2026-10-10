@@ -1,10 +1,10 @@
-import {BLOCKS,validateEvidenceV2} from './evidence-v2.mjs';
+import {BLOCKS,ACTIVE_BLOCK_IDS,validateEvidenceV2} from './evidence-v2.mjs';
 import {BLOCK_WEIGHT_VERSION,INITIAL_BLOCK_CAPS,NON_ADAPTIVE_BLOCKS,blockPolicyDigest,validBlockWeightPolicy} from './block-score-policy.mjs';
 import {readEvidenceSourceCache,writeEvidenceSourceCache} from './evidence-source-store.mjs';
 import {digest} from './upstream-proof-utils.mjs';
 
 const DAY=86400000,HORIZON=4*3600000,WEEK=7*DAY,SOURCE='BLOCK_WEIGHT_STATISTICS',KEY='CURRENT_POLICY_V1';
-const ids=Object.keys(BLOCKS).filter(id=>!NON_ADAPTIVE_BLOCKS.includes(id)),array=v=>Array.isArray(v)?v:[],num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
+const ids=ACTIVE_BLOCK_IDS.filter(id=>!NON_ADAPTIVE_BLOCKS.includes(id)),array=v=>Array.isArray(v)?v:[],num=v=>typeof v==='number'&&Number.isFinite(v)?v:null;
 const stamp=v=>Number.isSafeInteger(v)&&v>=1e12,clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
 export const BLOCK_WEIGHT_STATS_BUDGET=Object.freeze({rows_read:8000,rows_written:4,source_http:0,max_joined_rows:2400});
 

@@ -4,14 +4,14 @@ import {auditCandidateBlocks,sourceWasActuallyChecked,sourceWasAttempted} from '
 const SOURCE_NAMES=['CHAIN_SUPPLY','CHAIN_EVENTS','NANSEN_FLOWS','PRIMARY_TECHNICAL_CONTEXT','PRIMARY_EXECUTION_STRESS','PRIMARY_EXECUTION_COST','BLOCKSCOUT_INDEX','BLUESKY_PUBLIC','OFFICIAL_EVENTS','OFFICIAL_TOKEN_SCHEDULE','GDELT_NEWS_DISCOVERY','HTX_PUBLIC_RISK','HTX_LARGE_TRADES','DERIBIT_ALT_OPTIONS','COINPAPRIKA_SECTOR','COINGECKO_SECTOR','SOURCIFY_ABI'];
 const completeSources=()=>Object.fromEntries(SOURCE_NAMES.map(source=>[source,{status:'VALID_RESPONSE_NO_EVENT',network_calls:1}]));
 
-test('all 15 configured additional blocks are checked without equating a check to a score',()=>{
+test('all 14 active additional blocks are checked without equating a check to a score',()=>{
  const now=1_800_000_000_000;
  const evidence=[{evidence_id:'supply',asset_id:'ethereum:0x1',htx_contract:'ABC-USDT',block_id:'N02',metric_family:'TOTAL_SUPPLY_OBSERVATION',provider_id:'CHAIN_RPC',upstream_id:'PUBLICNODE_RPC',dependency_group:'supply',observed_ts:now,source_ts:now,first_known_ts:now,expires_at:now+60_000,coverage_status:'CONTEXT_ONLY',coverage_fraction:0,schema_version:'v2',validation_status:'VALID',identity_status:'EXACT',finality_status:'FINAL'}];
  const sources=completeSources();
  sources.CHAIN_SUPPLY={status:'CLOSED',network_calls:1};sources.BLUESKY_PUBLIC={status:'CLOSED',network_calls:1};
  const result=auditCandidateBlocks({evidence,sources,decision_ts:now});
- assert.equal(result.coverage_count,15);
- assert.equal(result.checked_block_count,15);
+ assert.equal(result.coverage_count,14);
+ assert.equal(result.checked_block_count,14);
  assert.equal(result.all_blocks_checked,true);
  assert.equal(result.blocks.N02.status,'CHECKED_NEUTRAL_CONTEXT');
  assert.equal(result.blocks.N02.decision_path,'ADMITTED_NEUTRAL_CONTEXT');
@@ -55,7 +55,7 @@ test('a supplemental route cannot close a missing primary block owner',()=>{
  };
  const result=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000});
  assert.equal(result.blocks.N01.checked,false);
- assert.equal(result.blocks.N01.missing_required[0],'OFFICIAL_TOKEN_SCHEDULE');
+ assert.equal(result.blocks.N01.status,'BLOCK_PAUSED_BY_OWNER');
  assert.equal(result.blocks.N02.checked,false);
  assert.equal(result.blocks.N03.checked,false);
  assert.equal(result.blocks.N07.checked,false);
@@ -87,7 +87,7 @@ test('strict fresh manual audit rejects cache-only external owners but accepts f
  const result=auditCandidateBlocks({sources,decision_ts:1_800_000_000_000,strict_fresh:true});
  assert.equal(result.strict_fresh_required,true);
  assert.equal(result.blocks.N01.checked,false);
- assert.deepEqual(result.blocks.N01.missing_required,['OFFICIAL_TOKEN_SCHEDULE']);
+ assert.deepEqual(result.blocks.N01.missing_required,[]);
  assert.equal(result.blocks.N10.checked,true);
  assert.equal(result.all_blocks_checked,false);
 });
