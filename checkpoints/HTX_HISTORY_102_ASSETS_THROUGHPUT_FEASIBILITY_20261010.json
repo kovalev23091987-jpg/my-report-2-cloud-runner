@@ -1,0 +1,43 @@
+{
+  "schema": "HTX_HISTORY_102_ASSETS_THROUGHPUT_FEASIBILITY_20261010_V1",
+  "status": "DAILY_ZIP_SIX_ATTEMPT_SOURCE_CAP_NOT_FEASIBLE_FOR_NEAR_TERM_102_ASSET_30_90_DAY_COMPLETION",
+  "calculation_type": "LOWER_BOUND_UNDER_CURRENT_DAILY_ZIP_AND_CHECKSUM_METHOD",
+  "assets": 102,
+  "source": "HTX_DELAYED_KLINE_ARCHIVE_QUALIFICATION",
+  "source_daily_cap": 6,
+  "source_http_per_archive_pair": 2,
+  "previously_acquired_archive_slots": 4,
+  "existing_native_price_qualified_slots": 1,
+  "existing_new_structural_not_API_price_qualified_slots": 3,
+  "windows": [
+    {
+      "days": 30,
+      "total_asset_day_slots": 3060,
+      "remaining_slots": 3056,
+      "minimum_remaining_sourceHTTP": 6112,
+      "minimum_days_at_cap": 1019
+    },
+    {
+      "days": 90,
+      "total_asset_day_slots": 9180,
+      "remaining_slots": 9176,
+      "minimum_remaining_sourceHTTP": 18352,
+      "minimum_days_at_cap": 3059
+    }
+  ],
+  "assumptions": [
+    "one daily 1m ZIP per asset-day",
+    "one CHECKSUM plus one ZIP HTTP attempt per asset-day",
+    "existing 4 acquired slots lie within the anchored window",
+    "no retries, no 404, no contention and full daily cap allocated to this backfill",
+    "source daily cap remains 6; other work may consume it"
+  ],
+  "limitations": [
+    "Lower bound applies to this exact daily-object acquisition method, not all possible HTX data sources.",
+    "Official archived futures directory previously listed daily/klines; monthly bulk object availability was not proven.",
+    "Existing 3 new ZIPs have integrity/grid checks, not API OHLC qualification."
+  ],
+  "decision": "DO_NOT_PROMISE_IMMEDIATE_102_ASSET_30_90_DAY_HISTORY_BY_DAILY_ZIP_METHOD",
+  "next_action": "Investigate verifiable bulk archive/alternative provenance or request an explicit, measured source-cap review. Continue independent production and empirical signal-lifecycle work now.",
+  "project_complete": false
+}
