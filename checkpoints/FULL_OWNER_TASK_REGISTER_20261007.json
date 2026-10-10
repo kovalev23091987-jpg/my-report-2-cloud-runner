@@ -10280,7 +10280,7 @@
   "owner_telegram_strategy_fit_and_lifecycle_20261010": {
     "schema": "OWNER_TELEGRAM_STRATEGY_FIT_AND_NATURAL_LIFECYCLE_TZ_20261010_V1",
     "approval": "checkpoints/OWNER_TELEGRAM_STRATEGY_FIT_AND_LIFECYCLE_TZ_20261010.json",
-    "status": "STAGE_1_SHADOW_MERGED_STAGES_2_TO_5_OPEN",
+    "status": "STAGES_1_AND_2_SHADOW_AND_ORIGINAL_SENT_NO_DROP_MERGED;STAGES_3_TO_5_OPEN",
     "stage1_pr": 297,
     "stage1_merged_head": "1c69ed2f23487ae1a2aabd65f86d9893b64bf706",
     "stage1_cloud_run": 38040023100,
@@ -10293,7 +10293,7 @@
     "remaining": [
       {
         "id": "TG_SCORE_ORIGINAL_SENT_REPLAY",
-        "status": "OPEN",
+        "status": "CLOSED_TWO_ACTUAL_RETAINED_SENT_SNAPSHOTS;MORE_PRODUCTION_PARITY_PENDING",
         "requirement": "Re-evaluate original retained SENT on same snapshot/clock; prove meaningful 100-point criteria and non-dropping canonical actionability, no shadow promotion."
       },
       {
@@ -10313,6 +10313,16 @@
       }
     ],
     "full_TZ_complete": false,
-    "actual_ENTRY": false
+    "actual_ENTRY": false,
+    "stage2_pr": 298,
+    "stage2_merged_head": "5af4c10343173ba8e589bed93a8eb3c90af158a8",
+    "stage2_cloud_run": 38040119738,
+    "stage2_original_snapshots": [
+      "ZEC-USDT:SENT150:82",
+      "AKE-USDT:SENT152:82"
+    ],
+    "stage2_original_actionability_unchanged": true,
+    "stage2_original_telegram_text_unchanged": true,
+    "stage2_no_new_HTTP_D1_Telegram": true
   }
 }
