@@ -9,13 +9,14 @@ export const STRATEGY_FIT_GROUP_WEIGHTS=Object.freeze({
  entry_scenario_and_settlement:20,
  invalidation_risk_and_target:15
 });
+export const STRATEGY_FIT_FAMILY_WEIGHTS=Object.freeze(Object.fromEntries(Object.keys(STRATEGY_FIT_GROUP_WEIGHTS).map((k,i)=>[k,[32,30,20,18][i]])));
 const status=v=>String(v??'').trim().toUpperCase();
 const stamp=v=>Number.isSafeInteger(v)&&v>1_000_000_000_000;
 const fail=(reason,details={})=>({version:STRATEGY_FIT_SHADOW_VERSION,status:'NOT_CLOSED',
  reason,match_score_0_100:null,canonical_score_unchanged:true,production_filter_unchanged:true,
  telegram_text_unchanged:true,telegram_send_allowed_by_this_score:false,entry_authorized:false,
  is_probability:false,sourceHTTP:0,D1:0,Telegram:0,project_complete:false,...details});
-export function assessStrategyFitShadow({canonical,criteria,decision_ts}={}) {
+export function assessStrategyFitShadow({canonical,criteria,decision_ts,weight_model='PRIMARY_35_30_20_15'}={}) {
  if(canonical?.status!=='CLOSED'||!stamp(decision_ts)||decision_ts!==canonical.observed_ts||
     !canonical.run_id||!canonical.snapshot_id||!canonical.analytical_fingerprint||
     canonical.analytical_fingerprint!==canonicalFingerprint(canonical)||
@@ -27,8 +28,10 @@ export function assessStrategyFitShadow({canonical,criteria,decision_ts}={}) {
     Object.keys(criteria).length!==4||
     Object.keys(criteria).some(k=>!Object.hasOwn(STRATEGY_FIT_GROUP_WEIGHTS,k)))
    return fail('FOUR_DECLARED_STRATEGY_CRITERION_GROUPS_REQUIRED');
+ if(!['PRIMARY_35_30_20_15','FAMILY_32_30_20_18'].includes(weight_model))return fail('DECLARED_WEIGHT_MODEL_REQUIRED');
+ const weights=weight_model==='FAMILY_32_30_20_18'?STRATEGY_FIT_FAMILY_WEIGHTS:STRATEGY_FIT_GROUP_WEIGHTS;
  let score=0;const groups=[],usedRoots=new Set();
- for(const [group,weight] of Object.entries(STRATEGY_FIT_GROUP_WEIGHTS)){
+ for(const [group,weight] of Object.entries(weights)){
    const rows=criteria[group];
    if(!Array.isArray(rows)||rows.length<1||rows.length>8)
      return fail('NONEMPTY_BOUNDED_GROUP_REQUIRED',{failed_group:group});
@@ -52,11 +55,12 @@ export function assessStrategyFitShadow({canonical,criteria,decision_ts}={}) {
        usedRoots.add(r.physical_root);earned++;
      }else if(r.physical_root!==null||r.source_ts!==null||r.observed_ts!==null)
        return fail('UNVERIFIED_CRITERION_CANNOT_CARRY_SOURCE_FACT',{failed_group:group,criterion:r.id});
-     receipts.push({id:r.id,status:status(r.status),verified,source_ts:verified?r.source_ts:null,
+     receipts.push({id:r.id,name:r.name??r.id,role:r.role??group,source:r.source??null,reason:r.reason??(verified?'VERIFIED':status(r.status)),observed_ts:verified?r.observed_ts:null,diagnostic_fact:r.diagnostic_fact??null,status:status(r.status),verified,source_ts:verified?r.source_ts:null,
        physical_root:verified?r.physical_root:null});
    }
    const applicable=receipts.filter(x=>x.status!=='NOT_APPLICABLE');
    if(!applicable.length)return fail('GROUP_WITHOUT_APPLICABLE_CRITERIA',{failed_group:group});
+   for(const r of receipts)r.score_contribution=r.verified?Number((weight/applicable.length).toFixed(6)):0;
    const awarded=weight*earned/applicable.length;
    score+=awarded;
    groups.push({group,weight,applicable:applicable.length,verified:earned,
@@ -67,7 +71,7 @@ export function assessStrategyFitShadow({canonical,criteria,decision_ts}={}) {
  return {version:STRATEGY_FIT_SHADOW_VERSION,status:'SHADOW_CRITERION_MATCH_COMPUTED',
    contract,direction:canonical.direction,run_id:canonical.run_id,snapshot_id:canonical.snapshot_id,
    fingerprint:canonical.analytical_fingerprint,decision_ts,match_score_0_100:allVerified?100:Math.min(99,result),
-   all_applicable_criteria_verified:allVerified,groups,
+   all_applicable_criteria_verified:allVerified,weight_model,groups,
    score_semantics:'VERIFIED_STRATEGY_CRITERION_MATCH_NOT_WIN_PROBABILITY',
    canonical_overall_score_0_100:canonical.scores?.overall_0_100??null,
    canonical_coin_interest_score_0_100:canonical.scores?.coin_interest_0_100??null,

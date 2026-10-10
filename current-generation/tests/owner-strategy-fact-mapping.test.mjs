@@ -1,0 +1,25 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {gunzipSync} from 'node:zlib';
+import {createHash} from 'node:crypto';
+import {assessOriginalStrategyFacts,mapOriginalStrategyFacts} from '../files/src/owner-strategy-fact-mapping.mjs';
+import {canonicalFingerprint,renderCanonicalTelegram,assessActionability} from '../files/src/canonical-publication.mjs';
+const sources=[['ZEC-USDT','150','checkpoints/actual-zec-sent150-original-input-20261007.json.gz'],['AKE-USDT','152','checkpoints/actual-current-approved-brief-37557085058.json.gz'],['BOME-USDT','155','checkpoints/post-pr229-bome-sent-read-37682711022/exact-current-data.json.gz']];
+const proofs=[];
+for(const [contract,message,file] of sources){
+ const bytes=fs.readFileSync(file),row=JSON.parse(gunzipSync(bytes)).rows.find(r=>r.contract_code===contract),c=row.canonical;
+ test('actual original '+contract+' SENT'+message+' maps facts without changing source clocks, score, admission or message',()=>{
+  const before=JSON.stringify(c),text=renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),action=assessActionability({canonical:c,lifecycle_event:'OBSERVE',direction:c.direction,now_ts:c.observed_ts});
+  const r=assessOriginalStrategyFacts(c);assert.equal(r.status,'SHADOW_CRITERION_MATCH_COMPUTED');assert.equal(JSON.stringify(c),before);assert.deepEqual(renderCanonicalTelegram({canonical:c,lifecycle_event:'OBSERVE'}),text);assert.deepEqual(assessActionability({canonical:c,lifecycle_event:'OBSERVE',direction:c.direction,now_ts:c.observed_ts}),action);
+  assert.equal(r.telegram_send_allowed_by_this_score,false);assert.equal(r.is_probability,false);assert(r.match_score_0_100<100);assert(r.groups.some(g=>g.verified>0));
+  for(const g of r.groups)for(const k of g.criteria){assert(k.name&&k.role&&k.reason);assert.equal(typeof k.score_contribution,'number');if(k.verified){assert(k.source&&k.source_ts<=k.observed_ts&&k.observed_ts<=c.observed_ts);}else assert.equal(k.score_contribution,0);}
+  proofs.push({contract,actual_SENT_message_id:message,source_file:file,source_gzip_sha256:createHash('sha256').update(bytes).digest('hex'),publication_id:row.publication_id??null,source_run:c.run_id,snapshot:c.snapshot_id,original_fingerprint:c.analytical_fingerprint,original_observed_ts:c.observed_ts,original_score:c.scores.coin_interest_0_100,actual_source_mapping:r,canonical_unchanged:true,Telegram_unchanged:true,old_admission_unchanged:true,source_clocks_refreshed:false,actual_ENTRY:false});
+ });
+}
+const ake=JSON.parse(gunzipSync(fs.readFileSync(sources[1][2]))).rows[0].canonical;
+test('positive cross-venue price fact and negative native full4h flow remain separate confirmations and contradictions',()=>{const r=assessOriginalStrategyFacts(ake),criteria=r.groups.flatMap(g=>g.criteria);assert.equal(criteria.find(x=>x.id==='okx_momentum_4h').status,'VERIFIED');assert.equal(criteria.find(x=>x.id==='htx_exact_taker_flow_4h').status,'CONTRADICTED');assert.equal(criteria.find(x=>x.id==='original_trigger_settlement').status,'MISSING');});
+test('stale or future original source fact earns no points, never a rewritten clock',()=>{for(const kind of ['stale','future']){const c=structuredClone(ake),r=c.source_receipts.find(r=>r.venue==='OKX'&&r.metric==='price_change_4h');r.event_ts=kind==='stale'?c.observed_ts-14400001:c.observed_ts+1;c.analytical_fingerprint=canonicalFingerprint(c);const mapped=mapOriginalStrategyFacts(c);assert.equal(mapped.criteria.direction_and_independent_evidence[0].status,'MISSING');assert.equal(mapped.criteria.direction_and_independent_evidence[0].source_ts,null);}});
+test('duplicated primary event or aliased same book never gains independent points',()=>{const c=structuredClone(ake),ev=c.metadata.internal_market_context.evidence_v2.evidence,range=ev.find(x=>x.metric_family==='CLOSED_CANDLE_RANGE_CONTEXT'),book=ev.find(x=>x.metric_family==='VERIFIED_EXECUTION_COST_CONTEXT');book.physical_root_key=range.dependency_group;c.analytical_fingerprint=canonicalFingerprint(c);const r=assessOriginalStrategyFacts(c);const cost=r.groups.flatMap(g=>g.criteria).find(k=>k.id==='htx_execution_cost_assessed');assert.equal(cost.status,'MISSING');assert.equal(cost.reason,'DUPLICATE_OR_UNKNOWN_PHYSICAL_ROOT');assert.equal(cost.score_contribution,0);});
+test('declared family model retains32/30/20/18 and source mapping never affects production eligibility',()=>{const r=assessOriginalStrategyFacts(ake,{weight_model:'FAMILY_32_30_20_18'});assert.deepEqual(r.groups.map(g=>g.weight),[32,30,20,18]);assert.equal(r.production_filter_unchanged,true);assert.equal(r.entry_authorized,false);});
+test.after(()=>{if(process.env.REPORT2_STRATEGY_MAPPING_PROOF){const output={schema:'ACTUAL_ORIGINAL_STRATEGY_FACT_MAPPING_V1_20261010',status:'THREE_ORIGINAL_SENT_FACT_CRITERION_PARITY_VERIFIED',cases:proofs,sourceHTTP:0,D1:0,Telegram:0,actual_ENTRY:false,display_score_activated:false,full_project_complete:false};fs.mkdirSync('audit-output',{recursive:true});fs.writeFileSync(process.env.REPORT2_STRATEGY_MAPPING_PROOF,JSON.stringify(output,null,2)+'\n');}});

@@ -8,7 +8,7 @@ import {proveTwoCandidateBudget} from './files/src/two-candidate-policy.mjs';
 
 const here=path.dirname(fileURLToPath(import.meta.url));
 const repo=path.resolve(here,'..');
-const expectedWorker='c50eed81b60d35b2011fb9701ad3191efe5285885548452ff52ccf1f26461e8c';
+const expectedWorker='98095698fd89c43b49f4d167f7600da33b424443204b7a4eeadf2362dd4e5efe';
 const run=(args,{cwd=repo}={})=>{
  const result=spawnSync(process.execPath,args,{cwd,encoding:'utf8',stdio:'pipe',maxBuffer:16*1024*1024});
  if(args[0]==='--test'&&process.env.REPORT2_VALIDATION_RECEIPT_DIR){fs.mkdirSync(process.env.REPORT2_VALIDATION_RECEIPT_DIR,{recursive:true});fs.writeFileSync(path.join(process.env.REPORT2_VALIDATION_RECEIPT_DIR,'current-generation-unit-tests.tap'),result.stdout||'');}
@@ -18,7 +18,7 @@ const run=(args,{cwd=repo}={})=>{
 const checks=[
  'files/src/pre-analysis-failure-receipt.mjs',
  '../runner/current-runtime-binding.mjs',
- 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs',
+ 'runtime-policy-patches.mjs','files/src/telegram-delivery-receipt.mjs','files/src/triggered-entry-recheck.mjs','files/src/recheck-scheduler.mjs','files/src/original-idea-recheck.mjs','files/src/original-idea-terminal.mjs','files/src/owner-strategy-fit-shadow.mjs','files/src/owner-strategy-fact-mapping.mjs',
  '../runner/r8-20-prospective-validation-sidecar.mjs',
  '../audit-fixes/t16/run-metadata-sources-smoke.mjs',
  '../audit-fixes/t16/run-official-feed-smoke.mjs',

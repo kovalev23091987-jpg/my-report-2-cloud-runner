@@ -87,21 +87,34 @@ export function validateRemovalReceipt(r,{contract,direction,wave_id,observed_ts
  if(r?.schema!=='LIFECYCLE_REMOVAL_RECEIPT_V1'||r.market_snapshot!==false||!text(r.source_run_id)||stamp(r.observed_ts)===null)return false;
  if(r.contract!==contract||r.direction!==upper(direction)||r.wave_id!==wave_id||r.observed_ts!==observed_ts)return false;
  if(!Array.isArray(r.conditions)||!r.conditions.length||r.conditions.length>6)return false;
- const predicates={HARD_VETO:c=>c.field==='hard_veto'&&c.value===1,INVALIDATED:c=>c.field==='risk_state'&&c.value==='INVALIDATED',DATA_UNUSABLE:c=>(c.field==='dq_status'&&c.value==='INSUFFICIENT')||(c.field==='data_quality'&&['INSUFFICIENT','BLOCKED'].includes(c.value)),DIRECTION_DESTROYED:c=>c.field==='direction',EXIT:c=>c.field==='lifecycle_stage'&&c.value==='EXIT',EDGE_SPENT:c=>c.field==='lifecycle_stage'&&c.value==='EDGE_SPENT',EXCLUDE:c=>c.field==='lifecycle_stage'&&c.value==='EXCLUDE'};
+ const originalTerminal=['ORIGINAL_TTL_EXPIRED','ORIGINAL_PRICE_CANCELLED'].includes(r.reason);
+ if(originalTerminal){
+  if(!text(r.original_task_id)||!text(r.original_publication_id)||!text(r.original_run_id)||!text(r.original_snapshot_id)||!text(r.original_fingerprint)||!/^([1-9][0-9]*)$/.test(String(r.original_telegram_message_id))||stamp(r.original_expires_ts)===null)return false;
+  if(r.reason==='ORIGINAL_TTL_EXPIRED'&&r.original_expires_ts>r.observed_ts)return false;
+  if(r.reason==='ORIGINAL_PRICE_CANCELLED'){
+   const full=r.original_full_analysis_receipt,priceReceipt=full?.primary_price_receipt;
+   const l=r.original_light_price_receipt||(full?{status:full.status,task_id:full.task_id,publication_id:full.publication_id,run_id:full.original_run_id,snapshot_id:full.original_snapshot_id,analytical_fingerprint:full.original_fingerprint,telegram_message_id:r.original_telegram_message_id,price:full.price}:null),m=/^price\s*(>=|<=|>|<)\s*([0-9]+(?:\.[0-9]+)?(?:e[+-]?[0-9]+)?)$/i.exec(String(r.cancel_condition||''));
+   if(!l||l.status!=='CANCELLED'||l.task_id!==r.original_task_id||l.publication_id!==r.original_publication_id||l.run_id!==r.original_run_id||l.snapshot_id!==r.original_snapshot_id||l.analytical_fingerprint!==r.original_fingerprint||String(l.telegram_message_id)!==r.original_telegram_message_id||!m||!Number.isFinite(l.price)||l.price<=0)return false;
+   if(full&&(priceReceipt?.status!=='CLOSED'||priceReceipt.venue!=='HTX'||priceReceipt.contract!==contract||priceReceipt.type!=='MID_OBSERVATION'||priceReceipt.value!==full.price||!Number.isSafeInteger(priceReceipt.source_ts)||priceReceipt.source_ts>priceReceipt.received_ts||priceReceipt.received_ts>full.checked_ts||full.checked_ts-priceReceipt.source_ts>180000||full.checked_ts>=r.original_expires_ts))return false;
+   const p=l.price,v=Number(m[2]),hit=m[1]==='>'?p>v:m[1]==='>='?p>=v:m[1]==='<'?p<v:p<=v;if(!hit)return false;
+  }
+ }
+ const predicates={ORIGINAL_TTL_EXPIRED:c=>c.source==='ORIGINAL_RECHECK_TASK_TTL'&&c.row_id===r.original_task_id&&c.field==='original_expires_ts'&&c.value===r.original_expires_ts&&c.value<=r.observed_ts,ORIGINAL_PRICE_CANCELLED:c=>c.row_id===r.original_task_id&&c.field==='original_cancel_price'&&((c.source==='HTX_OFFICIAL_COLLECTOR'&&c.value===r.original_light_price_receipt?.price)||(c.source==='HTX_OFFICIAL_FULL_ANALYSIS'&&c.value===r.original_full_analysis_receipt?.price)),HARD_VETO:c=>c.field==='hard_veto'&&c.value===1,INVALIDATED:c=>c.field==='risk_state'&&c.value==='INVALIDATED',DATA_UNUSABLE:c=>(c.field==='dq_status'&&c.value==='INSUFFICIENT')||(c.field==='data_quality'&&['INSUFFICIENT','BLOCKED'].includes(c.value)),DIRECTION_DESTROYED:c=>c.field==='direction',EXIT:c=>c.field==='lifecycle_stage'&&c.value==='EXIT',EDGE_SPENT:c=>c.field==='lifecycle_stage'&&c.value==='EDGE_SPENT',EXCLUDE:c=>c.field==='lifecycle_stage'&&c.value==='EXCLUDE'};
  return Boolean(predicates[r.reason])&&r.conditions.every(c=>text(c.source)&&text(c.row_id)&&stamp(c.observed_ts)!==null&&c.observed_ts<=r.observed_ts&&predicates[r.reason](c));
 }
 const REMOVAL_CHECK_RU={'futures.htx_futures_liquidity':'ликвидность фьючерса HTX','futures.htx_futures_order_flow_sample':'проверенная выборка сделок фьючерса HTX','futures.htx_open_interest':'открытый интерес HTX','futures.htx_funding':'финансирование фьючерса HTX','trajectory.price_1h':'история цены за час','trajectory.price_4h':'история цены за четыре часа','trajectory.oi_1h':'история открытого интереса за час','trajectory.oi_4h':'история открытого интереса за четыре часа','trajectory.funding_current':'текущее финансирование','trajectory.funding_history':'история финансирования'};
 export function renderRemovalNotice(canonical,{manual=false}={}){
  const r=canonical?.metadata?.lifecycle_removal;
  if(!validateRemovalReceipt(r,{contract:contractOf(canonical),direction:canonical?.direction,wave_id:r?.wave_id,observed_ts:canonical?.observed_ts})||!text(r?.prior_publication_id)||!text(r?.prior_idempotency_key))return {ok:false,status:'REMOVAL_RECEIPT_NOT_CLOSED',text:null};
- const reason={HARD_VETO:'обязательная проверка риска запретила продолжение идеи',INVALIDATED:'проверка риска признала структуру идеи нарушенной',DIRECTION_DESTROYED:'повторная проверка не сохранила подтверждённое направление идеи',EXIT:'волна перешла в стадию выхода',EDGE_SPENT:'потенциал текущей волны исчерпан',EXCLUDE:'текущая волна исключена из наблюдения',DATA_UNUSABLE:'повторная проверка признала обязательные данные непригодными'}[r.reason];
- const lines=[contractOf(canonical).replace(/-USDT$/i,''),canonical.direction==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ','⛔️ ИДЕЯ СНЯТА','',`Причина: ${reason}.`];
+ const reason={ORIGINAL_TTL_EXPIRED:'срок исходной идеи истёк без подтверждённого входа',ORIGINAL_PRICE_CANCELLED:'цена выполнила исходное условие отмены',HARD_VETO:'обязательная проверка риска запретила продолжение идеи',INVALIDATED:'проверка риска признала структуру идеи нарушенной',DIRECTION_DESTROYED:'повторная проверка не сохранила подтверждённое направление идеи',EXIT:'волна перешла в стадию выхода',EDGE_SPENT:'потенциал текущей волны исчерпан',EXCLUDE:'текущая волна исключена из наблюдения',DATA_UNUSABLE:'повторная проверка признала обязательные данные непригодными'}[r.reason];
+ const lines=[contractOf(canonical).replace(/-USDT$/i,''),canonical.direction==='LONG'?'🟢 РОСТ':'🔴 СНИЖЕНИЕ',r.reason==='ORIGINAL_TTL_EXPIRED'?'⌛️ СРОК ИДЕИ ИСТЁК':r.reason==='ORIGINAL_PRICE_CANCELLED'?'⛔️ ИДЕЯ ОТМЕНЕНА':'⛔️ ИДЕЯ СНЯТА','',`Причина: ${reason}.`];
  if(r.reason==='DATA_UNUSABLE'){
   const failed=(Array.isArray(r.failed_checks)?r.failed_checks:[]).map(k=>REMOVAL_CHECK_RU[k]).filter(Boolean);
   if(failed.length)lines.push(`Не подтверждены: ${failed.join('; ')}.`);
   else if(r.sufficiency==='INSUFFICIENT')lines.push('Исходная проверка достаточности данных завершилась отказом.');
   else lines.push('В исходной записи нет подробностей отказавшей проверки.');
  }
+ if(['ORIGINAL_TTL_EXPIRED','ORIGINAL_PRICE_CANCELLED'].includes(r.reason))lines.push(`Исходное сообщение: №${r.original_telegram_message_id}.`);
  if(manual)lines.push(`Проверка отмены: ${fmtMsk(r.observed_ts)} МСК.`,`Ранее отправленное сообщение: №${r.prior_telegram_message_id}.`);
  const output=lines.join('\n');return {ok:true,status:'READY',text:output,length:output.length,max_length:1800,analytical_fingerprint:canonical.analytical_fingerprint};
 }
