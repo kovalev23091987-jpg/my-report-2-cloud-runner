@@ -1,0 +1,43 @@
+{
+  "schema": "HTX_MISSED_DENOMINATOR_VENUE_BINDING_20261010_V1",
+  "status": "MERGED_EXACT_HEAD_CLOUD_PROVEN",
+  "pr": 290,
+  "tested_head": "39bcfc378b3d1f5049fed403cd9496c69b0b85b2",
+  "cloud_run": 38037289638,
+  "workflow_job": 114170270381,
+  "artifact_id": 11664029289,
+  "artifact_digest": "sha256:04d16b5afa4fb3879f5fc6d68048f1f0c1b2cd5b2daec5c2a1a724d0e5a76a5c",
+  "merged_head": "bed222f0cbb0c4f53339022f64bfea49cbf8bf7f",
+  "confirmed_defect": "A syntactically valid USDT contract from another venue could enter the HTX-only missed-opportunity denominator because venue identity was not bound across event, decision and outcome.",
+  "implementation": {
+    "event_exchange_required": "HTX",
+    "decision_exchange_must_match_event": true,
+    "outcome_exchange_must_match_event": true,
+    "missing_or_foreign_venue_censored": true,
+    "result_venue_declared": "HTX"
+  },
+  "focused_tests": {
+    "passed": 8,
+    "failed": 0,
+    "foreign_venues_covered": ["BINANCE", "OKX", "BYBIT"],
+    "missing_venue_covered": true
+  },
+  "retained_actual_result": {
+    "retained_rows": 2,
+    "eligible": 0,
+    "censored": 2,
+    "missed_rate_pct": null,
+    "interpretation": "NO_ACTUAL_PROVEN_DIRECTIONAL_DENOMINATOR;NOT_ZERO_PERCENT_MISSES"
+  },
+  "sourceHTTP": 0,
+  "D1": 0,
+  "MAIN": 0,
+  "Telegram": 0,
+  "actual_ENTRY": false,
+  "validated_probability": false,
+  "auto_trading": false,
+  "statistical_acceptance": false,
+  "project_complete": false,
+  "recorded_ts": 1791620234478,
+  "recorded_utc": "2026-10-10T08:17:14.477Z"
+}
