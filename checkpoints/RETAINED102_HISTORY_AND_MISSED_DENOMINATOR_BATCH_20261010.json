@@ -1,0 +1,69 @@
+{
+  "schema": "REPORT2_RETAINED102_HISTORY_AND_MISSED_DENOMINATOR_BATCH_V1",
+  "updated_utc": "2026-10-10T08:02:36.282Z",
+  "source_main_before_batch": "455f4aa161cf3f63cf04de77de6187c4135c4f3e",
+  "releases": [
+    {
+      "pr": 284,
+      "scope": "FACTUAL_102_RETAINED_HISTORY_CENSUS_NO_5M_TO_1M_OR_CROSS_VENUE_PROMOTION",
+      "tested_head": "272bf79ddbeea449311c4ce123a790b962c7a088",
+      "cloud_run": 38036230089,
+      "tests_passed": 3,
+      "tests_failed": 0,
+      "artifact_id": 11663642735,
+      "artifact_digest": "sha256:383a403134d15a2c1677e4fb2e9657bacf2b9305896a4b1498d79a5da8066556",
+      "merged_head": "c902725d27bb4609db9f636c74377d5f60df47f1"
+    },
+    {
+      "pr": 285,
+      "scope": "ORIGINAL_PRECOMMITTED_INDEPENDENT_EPISODE_DENOMINATOR_AND_EXPLICIT_CENSORING",
+      "tested_head": "e1cd37ede71c389c608b3242bb11b31540b68a42",
+      "cloud_run": 38036435741,
+      "tests_passed": 7,
+      "tests_failed": 0,
+      "artifact_id": 11664282698,
+      "artifact_digest": "sha256:333d155cac341d0280992b48efd57868c0e278da508de7198c97c2c8d655a108",
+      "merged_head": "e690da0b3e041e41b170d0b5e99c37699e79ba1d"
+    }
+  ],
+  "retained_originals": {
+    "approved_universe_contracts": 119,
+    "assets": 102,
+    "catalog_families": 3,
+    "sampled_24h_assets": 102,
+    "sampled_5m_price_points": 29376,
+    "sampled_original_cloud_run": 37865298193,
+    "sampled_original_artifact_digest": "sha256:7ccc418f0db9ab9c235e3b8c27cef31febd3a686dcdf511ec40500a312fac29b",
+    "native_htx_qualified_1m_asset": "NEAR-USDT",
+    "native_htx_qualified_minutes": 1440,
+    "native_original_artifact_digest": "sha256:854bc3431a77a13c17fbb4da57ae314c034d4f8df6de2e1edbc40a14ea0cefe5",
+    "binance_cold_92day_symbol": "BTCUSDT",
+    "binance_cold_is_not_htx_execution": true,
+    "full30d_102asset_qualified": false,
+    "full90d_102asset_qualified": false
+  },
+  "missed_opportunities": {
+    "actual_retained_episode_rows_checked": 2,
+    "proven_eligible_denominator": 0,
+    "censored_missing_original_decision_or_future_outcome": 2,
+    "missed_rate_pct": null,
+    "zero_missed_rate_claim_forbidden": true,
+    "actual_ENTRY": false,
+    "validated_probability": false
+  },
+  "next_technical_action": "Evaluate a factual HTX native archive bulk/monthly acquisition route and its independent original provider caps before any new source requests; preserve sourceHTTP/D1 reservations. Under the prior scoped two-request-per-archive and six-attempt engineering daily cap, 102 assets x 30 days would require 3060 archive-days / 6120 HTTP attempts, not feasible as an immediate one-run backfill. Do not assume that scoped cap is universal or silently increase it. Separately obtain original prospective decision and mature future path receipts for empirical denominator.",
+  "unchanged": {
+    "sourceHTTP": 0,
+    "D1": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "threshold70": true,
+    "weights": true,
+    "production_cadence": true,
+    "original_TTL": true,
+    "universe119_102_3_17": true,
+    "auto_trading": false
+  },
+  "project_complete": false,
+  "full_TZ_complete": false
+}
