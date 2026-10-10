@@ -36,17 +36,31 @@ import {normalizeHtxAssetReferences} from '../current-generation/files/src/htx-a
 const saved=async(dir,name)=>JSON.parse(gunzipSync(await fs.readFile(dir+'/'+name+'.json.gz')));
 try{
  out.daily_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');await reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const refs=normalizeHtxAssetReferences(await saved('checkpoints/n05-actual-qualification-38049404414','identity-HTX'));
- out.exact_htx_assets=universe.assets.map(a=>{const contract=typeof a==='string'?a:a.contract||a.contract_code||a.symbol+'-USDT';const symbol=contract.replace(/-USDT$/,'');return{contract,symbol,...refs.entries[symbol]};});
- out.original_universe_shape=universe.assets.slice(0,2);
- out.all_native_entries=Object.entries(refs.entries).filter(([k,v])=>v.status==='CLOSED'&&v.identities[0]?.asset_kind==='NATIVE').map(([symbol,v])=>({symbol,...v}));
- const dirs='checkpoints/n05-window-qualification-38050596507';
- for(const venue of ['KRAKEN','COINBASE']){const cat=await saved(dirs,'catalog-'+venue+'-SPOT');out[venue+'_catalog_shape']=Array.isArray(cat)?cat.slice(0,2):{...cat,result:cat.result?Object.fromEntries(Object.entries(cat.result).slice(0,2)):undefined};out[venue+'_markets']=venue==='KRAKEN'?Object.entries(cat.result||{}).filter(([k,r])=>out.exact_htx_assets.some(a=>a.symbol===r.base||a.symbol===r.base.replace(/^X(?=XBT|ETH|LTC|XRP|XLM|ZEC)/,'')||r.wsname?.split('/')[0]===a.symbol)).map(([k,r])=>({key:k,base:r.base,quote:r.quote,wsname:r.wsname,altname:r.altname,status:r.status})):cat.filter(r=>out.exact_htx_assets.some(a=>a.symbol===r.base_currency)).map(r=>({id:r.id,base:r.base_currency,quote:r.quote_currency,status:r.status}));}
- out.backpack_assets=await get('BACKPACK-ASSETS','BACKPACK','https://api.backpack.exchange/api/v1/assets');
- out.backpack_markets=await get('BACKPACK-MARKETS','BACKPACK','https://api.backpack.exchange/api/v1/markets');
- out.coinbase_currencies=await get('COINBASE-CURRENCIES','COINBASE','https://api.exchange.coinbase.com/currencies');
- out.status='BROAD_METADATA_RETAINED_NOT_FLOW_COVERAGE';
+
+ const prior=JSON.parse(await fs.readFile('checkpoints/n05-broad-qualification-38065882136/broad-summary.json','utf8'));
+ out.exact_htx_assets=prior.exact_htx_assets;out.native_assets=prior.all_native_entries.filter(a=>prior.exact_htx_assets.some(x=>x.symbol===a.symbol));
+ out.kraken_usdt_markets=prior.KRAKEN_markets.filter(a=>a.quote==='USDT');
+ out.coinbase_chain_metadata=prior.coinbase_currencies?.filter(a=>prior.exact_htx_assets.some(x=>x.symbol===a.id)).map(a=>({id:a.id,details:a.details,supported_networks:a.supported_networks}));
+ const assets=prior.backpack_assets.filter(a=>prior.exact_htx_assets.some(x=>x.symbol===a.symbol));
+ const chains={Ethereum:'ethereum',Solana:'solana',Bsc:'bsc',Arbitrum:'arbitrum',Base:'base',Polygon:'polygon',Optimism:'optimism',Avalanche:'avalanche'};
+ out.backpack_bindings=[];
+ for(const h of prior.exact_htx_assets){if(h.status!=='CLOSED'||h.identities?.length!==1||!h.identities[0].contract_or_mint)continue;const identity=h.identities[0],rows=assets.filter(a=>a.symbol===h.symbol);if(rows.length!==1)continue;const match=(rows[0].tokens||[]).filter(t=>chains[t.blockchain]===identity.chain&&typeof t.contractAddress==='string'&&(identity.chain==='solana'?t.contractAddress===identity.contract_or_mint:t.contractAddress.toLowerCase()===identity.contract_or_mint.toLowerCase()));if(match.length!==1)continue;
+  for(const m of prior.backpack_markets.filter(m=>m.baseSymbol===h.symbol&&m.marketType==='SPOT'&&m.orderBookState==='Open'&&m.visible===true&&!m.rwaMarketType&&['USDT','USDC'].includes(m.quoteSymbol)))out.backpack_bindings.push({contract:h.contract,identity,market:m.symbol,quote:m.quoteSymbol});
+ }
+ out.backpack_assets=assets.map(a=>({symbol:a.symbol,tokens:a.tokens.map(t=>({blockchain:t.blockchain,contractAddress:t.contractAddress}))}));
+ out.backpack_markets=prior.backpack_markets.filter(m=>out.backpack_bindings.some(b=>b.market===m.symbol));
+ const tickers=await get('BACKPACK-TICKERS','BACKPACK','https://api.backpack.exchange/api/v1/tickers');
+ const candidates=out.backpack_bindings.map(b=>({...b,ticker:tickers?.find(t=>t.symbol===b.market)})).filter(b=>Number(b.ticker?.trades)>0).sort((a,b)=>Number(a.ticker.trades)-Number(b.ticker.trades)).slice(0,4);
+ const end=Math.floor(Date.now()/60000)*60000;out.window_end_ts=end;out.backpack_windows=[];
+ for(const b of candidates){const bars=await get('BACKPACK-'+b.market+'-CANDLES','BACKPACK','https://api.backpack.exchange/api/v1/klines?symbol='+encodeURIComponent(b.market)+'&interval=1m&startTime='+(end-14400000)/1000+'&endTime='+(end/1000-1)+'&priceType=Last&source=Venue');if(!Array.isArray(bars))continue;
+  const pages=[];for(let page=0;page<3;page++){const raw=await get('BACKPACK-'+b.market+'-TRADES-'+page,'BACKPACK','https://api.backpack.exchange/api/v1/trades/history?symbol='+encodeURIComponent(b.market)+'&limit=1000&offset='+page*1000);if(!Array.isArray(raw))break;pages.push(raw);const ts=raw.at(-1)?.timestamp;if(raw.length<1000||Number(ts)/1000<end-14400000)break;}
+  out.backpack_windows.push({...b,ticker:undefined,bars,pages,observed_ts:out.sources.at(-1).received_ts});
+ }
+ const catalog=await saved('checkpoints/n05-native-qualification-38052957545','BINANCE-SMALL-CATALOG');out.binance_bindings=out.native_assets.filter(a=>catalog.symbols.some(s=>s.baseAsset===a.symbol&&s.quoteAsset==='USDT'&&s.status==='TRADING')).map(a=>({contract:a.symbol+'-USDT',identity:a.identities[0]}));out.binance_windows=[];
+ for(const b of out.binance_bindings.filter(a=>!['BTC','ETH','BNB','ADA','APT','ATOM'].includes(a.contract.replace('-USDT',''))).slice(0,3)){const candles=await get('BINANCE-'+b.contract+'-EXPANDED-CANDLES','BINANCE','https://data-api.binance.vision/api/v3/klines?symbol='+b.contract.replace('-USDT','USDT')+'&interval=1m&startTime='+(end-14400000)+'&endTime='+(end-1)+'&limit=240');out.binance_windows.push({...b,candles,observed_ts:out.sources.at(-1).received_ts});}
+ out.status='BROAD_WINDOWS_RETAINED_PENDING_NORMALIZATION';
+
 }catch(e){out.status='BROAD_BATCH_NOT_CLOSED';out.reason=e.message;}
 finally{
- out.http_budget=budget.summary();if(admitted)out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>reservation.rows_read||out.D1.rows_written>reservation.rows_written)out.status='D1_ENVELOPE_NOT_CLOSED';out.completed_ts=Date.now();await fs.writeFile(root+'/broad-summary.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,D1:out.D1,natives:out.all_native_entries?.map(r=>r.symbol),shape:out.original_universe_shape,backpack_markets:out.backpack_markets?.filter(r=>r.marketType==='SPOT').map(r=>r.symbol),sources:out.sources.map(r=>({name:r.name,status:r.status,http:r.http_status,bytes:r.bytes}))}));
+ out.http_budget=budget.summary();if(admitted)out.finalized_usage=await finalizeRunUsage(db,{reservationId:id,sourceRunId:process.env.GITHUB_RUN_ID,usage:db.usageSnapshot()});out.D1=db.usageSnapshot();if(out.D1.unknown_ops||out.D1.rows_read>reservation.rows_read||out.D1.rows_written>reservation.rows_written)out.status='D1_ENVELOPE_NOT_CLOSED';out.completed_ts=Date.now();await fs.writeFile(root+'/broad-summary.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({status:out.status,reason:out.reason,sourceHTTP:out.sourceHTTP,D1:out.D1,natives:out.all_native_entries?.map(r=>r.symbol),shape:out.original_universe_shape,backpack_bindings:out.backpack_bindings?.map(r=>r.market),backpack_windows:out.backpack_windows?.map(r=>({market:r.market,bars:r.bars.length,counts:r.bars.reduce((n,b)=>n+Number(b.trades),0),pages:r.pages.length,first:r.pages[0]?.[0],last:r.pages.at(-1)?.at(-1),samplebar:r.bars[0]})),binance:out.binance_bindings?.map(r=>r.contract),sources:out.sources.map(r=>({name:r.name,status:r.status,http:r.http_status,bytes:r.bytes}))}));
 }
