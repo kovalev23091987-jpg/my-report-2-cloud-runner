@@ -1,0 +1,57 @@
+name: Actual bounded HTX native cold-history acquisition
+on:
+  push:
+    branches: [codex/htx-cold-history-actual-acquisition-20261010]
+    paths:
+      - tools/acquire-bounded-htx-cold-history-20261010.mjs
+      - tools/validate-htx-native-zip.py
+      - .github/workflows/htx-cold-history-actual-acquisition-20261010.yml
+permissions:
+  contents: read
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    concurrency:
+      group: report2-htx-cold-archive-acquisition
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Require own bounded owner lease, no fence, exact review head
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const read=async p=>JSON.parse(Buffer.from((await github.rest.repos.getContent({owner,repo,path:p,ref:main})).data.content,'base64').toString());
+            const phase=await read('checkpoints/CLOUD_PHASE_STATE_20261004.json');
+            const fence=await read('audit-fixes/source-optimization-20260930/execution-lock.json');
+            if(fence.active||phase.lease?.owner!=='CHATGPT:HTX_COLD_BACKFILL:20261010:SESSION'||phase.lease.expires_ts<=Date.now())
+              throw Error('EXACT_BOUNDED_OWNER_LEASE_REQUIRED');
+            const branch=context.ref.replace('refs/','');
+            if((await github.rest.git.getRef({owner,repo,ref:branch})).data.object.sha!==context.sha)
+              throw Error('REVIEW_HEAD_MOVED');
+      - name: Check planner, actual acquisition and native ZIP validator
+        run: |
+          set -e
+          node --check tools/acquire-bounded-htx-cold-history-20261010.mjs
+          node --test runner/htx-cold-history-backfill-plan.test.mjs
+          python3 tools/validate-htx-native-zip.py --self-test
+          mkdir -p audit-output/htx-cold-history-actual
+          git rev-parse HEAD > audit-output/htx-cold-history-actual/tested-head.txt
+          sha256sum tools/acquire-bounded-htx-cold-history-20261010.mjs tools/validate-htx-native-zip.py > audit-output/htx-cold-history-actual/code-hashes.txt
+      - name: Fetch admitted actual official HTX ZIP plus checksum objects
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/acquire-bounded-htx-cold-history-20261010.mjs
+      - name: Retain source bytes, receipts and original tested head
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: actual-htx-cold-history-${{ github.run_id }}
+          path: audit-output/htx-cold-history-actual/
+          retention-days: 90
