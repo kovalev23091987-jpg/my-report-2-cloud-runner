@@ -1,0 +1,21 @@
+name: Verify outcome missing-data guards
+on:
+  push:
+    branches:
+      - codex/outcome-missing-data-guard-20261010
+  pull_request:
+    paths:
+      - current-generation/files/src/outcome-v2.mjs
+      - current-generation/tests/outcome-calibration-v2.test.mjs
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node --check current-generation/files/src/outcome-v2.mjs
+      - run: node --test current-generation/tests/outcome-calibration-v2.test.mjs
