@@ -38,23 +38,7 @@ const saved=async(dir,name)=>JSON.parse(gunzipSync(await fs.readFile(dir+'/'+nam
 const end=Math.floor(Date.now()/60000)*60000,start=end-14400000;out.window_end_ts=end;out.window_start_ts=start;
 try{
  out.daily_admission=evaluateDailyReservationBudget({daily:await loadDailyUsageAggregate(db,now),nextReservation:reservation,maxDailyReads:3500000,maxDailyWrites:70000});if(!out.daily_admission.allowed)throw Error('D1_DAILY_ADMISSION_DENIED');await reserveRunBudget(db,{reservationId:id,now,reservation});admitted=true;
- const reference=await saved('checkpoints/n05-actual-qualification-38049404414','identity-HTX');out.htx_entries=normalizeHtxAssetReferences(reference).entries;
- out.assets=await get('POLONIEX-EXACT-ASSETS','POLONIEX','https://api.poloniex.com/v2/currencies');
- out.markets=await get('POLONIEX-SPOT-MARKETS','POLONIEX','https://api.poloniex.com/markets');
- out.windows=[];out.original_universe_assets=universe.assets;
- const already=new Set(['ADA','APT','ATOM','BTC','ETH','BNB','SUSHI','BANK','TRX','PEOPLE','XRP','TRUMP','RAY','UNI','DOT','BCH','LTC','AVAX']);
- const symbols=universe.assets.map(a=>typeof a==='string'?a:a.symbol||a.asset).filter(Boolean).map(a=>a.replace(/-USDT$/,'')).sort();
- for(const symbol of symbols){
-  if(already.has(symbol)||out.windows.length>=13)continue;const entry=out.htx_entries[symbol];if(entry?.status!=='CLOSED')continue;
-  const market=Array.isArray(out.markets)?out.markets.filter(m=>m.symbol===symbol+'_USDT'):[],asset=Array.isArray(out.assets)?out.assets.filter(a=>a.coin===symbol&&a.delisted===false&&a.tradeEnable===true):[];
-  if(market.length!==1||asset.length!==1||market[0].state!=='NORMAL')continue;
-  const identity=entry.identities[0],tokenChains={ETH:'ethereum',ERC20:'ethereum',BSC:'bsc',BEP20:'bsc',SOL:'solana',SOLANA:'solana',ARBITRUM:'arbitrum',BASE:'base',OPTIMISM:'optimism',POLYGON:'polygon',AVAX:'avalanche'};
-  const nativeChains={BTC:'bitcoin',ETH:'ethereum',DOGE:'dogecoin',LTC:'litecoin',BCH:'bitcoin-cash',ZEC:'zcash',ETC:'ethereum-classic',XLM:'stellar',NEAR:'near',ADA:'cardano',ATOM:'cosmos',SOL:'solana',BNB:'bsc',BSC:'bsc',AVAX:'avalanche',DOT:'polkadot',TRX:'tron',XRP:'xrp',HBAR:'hedera',APT:'aptos',SUI:'sui'};
-  const exact=asset[0].networkList?.filter(n=>identity.asset_kind==='NATIVE'?nativeChains[n.blockchain]===identity.chain&&!n.contractAddress&&identity.native_asset_id===identity.chain+':mainnet':tokenChains[n.blockchain]===identity.chain&&typeof n.contractAddress==='string'&&(identity.chain==='solana'?n.contractAddress===identity.contract_or_mint:n.contractAddress.toLowerCase()===String(identity.contract_or_mint).toLowerCase()));
-  if(exact?.length!==1)continue;
-  const candles=await get('POLONIEX-'+symbol+'-NATIVE-240','POLONIEX',`https://api.poloniex.com/markets/${symbol}_USDT/candles?interval=MINUTE_1&startTime=${start}&endTime=${end-1}&limit=240`);
-  out.windows.push({symbol,identity:entry.identities[0],asset:asset[0],market:market[0],candles,window_end_ts:end,observed_ts:out.sources.at(-1)?.received_ts});
- }
+ out.prior_native_run=38069554249;out.activity=await get('POLONIEX-ALL-24H-ACTIVITY','POLONIEX','https://api.poloniex.com/markets/ticker24h');
  out.status='REMAINING_EXCHANGE_ROUTE_FACTS_RETAINED';
 }catch(e){out.status='REMAINING_EXCHANGE_BATCH_NOT_CLOSED';out.reason=e.message;}
 finally{
