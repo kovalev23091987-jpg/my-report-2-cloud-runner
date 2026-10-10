@@ -1,0 +1,75 @@
+{
+  "schema": "OWNER_TELEGRAM_STRATEGY_FIT_AND_NATURAL_LIFECYCLE_TZ_20261010_V1",
+  "status": "OWNER_APPROVED_FOR_STAGED_IMPLEMENTATION_NOT_FULLY_PRODUCTION_ACCEPTED",
+  "approved_scope": {
+    "meaning": "0..100 means verified strategy criterion match, not win probability, predicted PnL or trading fill",
+    "hundred": "100 only when all applicable declared criteria are verified and none are missing, contradictory, stale, duplicated or vetoed",
+    "bands": {
+      "100": "ALL_APPLICABLE_CRITERIA_VERIFIED",
+      "90-99": "HIGH_MATCH_WITH_MINOR_GAPS",
+      "80-89": "GOOD_MATCH_WITH_UNCONFIRMED_COMPONENTS",
+      "70-79": "MINIMUM_REVIEWABLE_MATCH",
+      "0-69": "NOT_ENOUGH_STRATEGY_MATCH"
+    },
+    "min_existing_send_threshold": 70,
+    "existing_full_weights": [
+      35,
+      30,
+      20,
+      15
+    ],
+    "existing_family_caps": [
+      32,
+      30,
+      20,
+      18
+    ],
+    "no_extra_filter_from_new_score": true,
+    "no_new_15_16_block_gate": true,
+    "shadow_first": true,
+    "existing_initial_OBSERVE_WAIT_ENTRY_delivery_unchanged": true,
+    "single_visible_score_eventually": true,
+    "do_not_rename_existing_score_until_proven": true,
+    "unknown_facts_never_pass": true,
+    "not_a_probability": true,
+    "freeze_on_missing_data": false,
+    "missing_criteria_reduce_shadow_score_not_existing_eligibility": true,
+    "telegram_strategy_fit_visibility": "AFTER_EXACT_RETAINED_REAL_SIGNAL_PARITY_AND_NO_DROP_VALIDATION_ONLY",
+    "price_crossing_not_candle_settlement": true,
+    "candle_confirmation": "Use original trigger's explicit timeframe and closed HTX candle evidence; no price touch as a settled close",
+    "lifecycle": [
+      "ORIGINAL_SAVED_SENT",
+      "LIGHT_PRICE_CHECK",
+      "CLOSED_CANDLE_CONFIRMATION_IF_REQUIRED",
+      "NEW_FULL_ANALYSIS_SAME_IDEA",
+      "ENTRY_APPROVED_OR_CANCELLED_OR_EXPIRED",
+      "DEDUPLICATED_TELEGRAM_TERMINAL_RECEIPT"
+    ],
+    "entry_notice": "ENTRY APPROVED by strategy, never claim exchange order was filled without exchange execution receipt",
+    "cancellation_notice": "Cancellation/expiry must have original publication_id, task_id, trigger clocks, reason, and confirmed Telegram message_id",
+    "no_automatic_trading": true,
+    "preserve": "HTX crypto futures 119 contracts/102 assets/3 families/17 inverse delivery exclusions, threshold70, weights35/30/20/15 and32/30/20/18, 164HTTP, D1 3.5m/70k, source caps, manual reserves, analytics40min collector5min, original TTL and entry freshness",
+    "release_stages": [
+      "1 owner spec and isolated strategy-fit shadow adapter + synthetic safety tests; no production gates or Telegram changes",
+      "2 replay on original retained same-run canonical SENT and no-regression delivery baseline, report differences only",
+      "3 fix closed candle confirmation and terminal delivery as independent fail-closed paths with exact original ids",
+      "4 exact-head cloud proof on realistic immutable saved facts, then scoped production rollout with rollback and fresh SENT/message_id verification",
+      "5 compare original signal count and send reasons before/after; rollback new presentation on regression"
+    ]
+  },
+  "technical_findings": {
+    "current_observe_threshold": "assessActionability checks coin_interest_0_100 >=70; current Telegram renderer uses overall_0_100 if available else interest. Their semantics differ.",
+    "light_check": "cloudflare/public-collector/injected-worker-tail.js tests price only; settlement_confirmed false.",
+    "triggered_analysis": "current-generation/files/src/triggered-entry-recheck.mjs has exact-SENT admission but no proved natural ENTRY completion.",
+    "expiry": "recheck-scheduler persists EXPIRED, terminal Telegram delivery not accepted.",
+    "latest_real_example": "WLD-USDT SHORT original SENT message_id 174; natural light check PENDING at 0.5505; no ENTRY."
+  },
+  "safety": {
+    "sourceHTTP": 0,
+    "MAIN": 0,
+    "Telegram": 0,
+    "project_complete": false,
+    "actual_ENTRY": false
+  },
+  "remaining": "Implement stage 2-5 with real original source clocks, replay and fresh end-to-end delivery; do not switch score in production on shadow-only evidence."
+}
