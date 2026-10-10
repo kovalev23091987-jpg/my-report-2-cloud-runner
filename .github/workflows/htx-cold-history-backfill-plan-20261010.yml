@@ -11,7 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: '24'}
+        with:
+          node-version: '24'
       - name: Require active owner lease, no fence and exact review head
         uses: actions/github-script@v7
         with:
@@ -30,4 +31,7 @@ jobs:
           sha256sum runner/htx-cold-history-backfill-plan.mjs tools/audit-htx-cold-history-backfill-plan.mjs > audit-output/code-hashes.txt
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: htx-cold-history-backfill-plan-${{ github.run_id }}, path: audit-output/, retention-days: 30}
+        with:
+          name: htx-cold-history-backfill-plan-${{ github.run_id }}
+          path: audit-output/
+          retention-days: 30
