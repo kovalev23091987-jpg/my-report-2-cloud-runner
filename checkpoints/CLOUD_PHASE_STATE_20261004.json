@@ -329,11 +329,9 @@
     }
   ],
   "lease": {
-    "owner": "CHATGPT:WLD174_LIFECYCLE:20261010",
-    "acquired_ts": 1791621611090,
-    "expires_ts": 1791623111090,
-    "scope": "READ_ONLY_WLD174_EXACT_SENT_TO_FINAL_DISPOSITION_NO_SOURCE_OR_TELEGRAM",
-    "expected_main": "53581561df58b7714b1b376406651499640304c2"
+    "owner": null,
+    "acquired_ts": null,
+    "expires_ts": null
   },
   "next_action": "Under a new measured healthy admission and explicit provider reservation, execute the accepted bounded HTX archive batch, preserve exact receipts and gaps, qualify retained price files, and feed the accepted partial-coverage consumer; separately bind the next natural SENT trigger to its fresh same-idea disposition.",
   "common_future_universe": "checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz",
@@ -390,11 +388,11 @@
     "continuous_telegram_manual_on_request": true
   },
   "last_released_lease": {
-    "owner": "CHATGPT:HTX_COLD_BACKFILL:20261010:SESSION",
-    "acquired_ts": 1791621221638,
-    "expires_ts": 1791623621638,
-    "released_ts": 1791621597229,
-    "reason": "PR294 actual source bytes retained, cloud tested, status readback complete; release bounded archive lease"
+    "owner": "CHATGPT:WLD174_LIFECYCLE:20261010",
+    "acquired_ts": 1791621611090,
+    "expires_ts": 1791623111090,
+    "released_ts": 1791621726248,
+    "reason": "WLD174 natural exact same-run SENT and price-only PENDING readback merged as PR295"
   },
   "owner_priority_blocks_amendment": {
     "owner_instruction_at": "2026-10-05T21:46:54+03:00",
@@ -814,7 +812,7 @@
     "sourceHTTP": 0,
     "changes_within_existing_family_envelopes": true
   },
-  "current_execution_block": "HTX_ARCHIVE_BATCH_3_ACTUAL_RETAINED;NEXT_DAY_SOURCE_CAP;NEXT_ACTUAL_SENT_TO_FINAL_DISPOSITION_AND_EMPIRICAL_COHORT_OPEN",
+  "current_execution_block": "WLD174_NATURAL_SENT_AND_PENDING_PRICE_ONLY_CONFIRMED;FINAL_SAME_IDEA_DISPOSITION_AND_STATISTICS_OPEN",
   "owner_authorized_transfer": {
     "at_utc": "2026-10-07T08:02:51.004Z",
     "owner_instruction_at_msk": "2026-10-07T11:02:05+03:00",
@@ -7023,6 +7021,20 @@
     "price_qualified": false,
     "all102_30_90day_history_complete": false,
     "actual_ENTRY": false,
+    "project_complete": false
+  },
+  "latest_actual_WLD174_original_lifecycle": {
+    "proof": "checkpoints/WLD174_ACTUAL_SAME_RUN_SENT_AND_LIGHT_RECHECK_20261010.json",
+    "pr": 295,
+    "merged_head": "ad79c1df01633a961775727281606f414af25fdb",
+    "source_cloud_run": 38037700109,
+    "read_cloud_run": 38038731142,
+    "telegram_message_id": "174",
+    "task_state": "PENDING",
+    "last_original_price": 0.5505,
+    "sourceHTTP": 0,
+    "actual_ENTRY": false,
+    "final_disposition_proven": false,
     "project_complete": false
   }
 }
