@@ -1,0 +1,1198 @@
+{
+  "schema": "N05_ACTUAL_SPOT_FUTURES_QUALIFICATION_V1",
+  "stage": "native",
+  "run": "38052957545",
+  "head": "3afeb76150f97d15968bb0f74f558da170bfa629",
+  "started_ts": 1791636169691,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 10,
+  "sources": [
+    {
+      "name": "BINANCE-SMALL-CATALOG",
+      "venue": "BINANCE",
+      "url": "https://data-api.binance.vision/api/v3/exchangeInfo?showPermissionSets=false&symbolStatus=TRADING&permissions=SPOT",
+      "method": "GET",
+      "received_ts": 1791636172404,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:BINANCE-SMALL-CATALOG",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "d78a84616b9a9d4c313a60c818b7f141130ed495b3a21090d4327272821145fe",
+      "gzip_sha256": "542b4cea4fd801e96352ac0d93a0fb2e735da2ba250a9a19ccb6d1d7798a9923",
+      "bytes": 2495842,
+      "file": "BINANCE-SMALL-CATALOG.json.gz"
+    },
+    {
+      "name": "BINANCE-ADA-NATIVE-240",
+      "venue": "BINANCE",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ADAUSDT&interval=1m&startTime=1791621720000&endTime=1791636119999&limit=240",
+      "method": "GET",
+      "received_ts": 1791636173433,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:BINANCE-ADA-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "e5a68ec97e4d81dd3cbceff9190ae50ac808a3e93fb12115724f2b3dec04ced3",
+      "gzip_sha256": "141efbc971afaac1fee45ca7acfb1393654553d9f8c27f316fdda0fe1e891ee2",
+      "bytes": 37259,
+      "file": "BINANCE-ADA-NATIVE-240.json.gz"
+    },
+    {
+      "name": "BINANCE-APT-NATIVE-240",
+      "venue": "BINANCE",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=APTUSDT&interval=1m&startTime=1791621720000&endTime=1791636119999&limit=240",
+      "method": "GET",
+      "received_ts": 1791636174452,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:BINANCE-APT-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "0210d7ec5aed2fb8978bb1580816371f96e61f8d15a0d9464150081e14a3ed6c",
+      "gzip_sha256": "1866d3a7affa5fb4276e928f04eeed12fe9d4bb70b8bb5b2c5a145ab162b50b6",
+      "bytes": 36098,
+      "file": "BINANCE-APT-NATIVE-240.json.gz"
+    },
+    {
+      "name": "BINANCE-ATOM-NATIVE-240",
+      "venue": "BINANCE",
+      "url": "https://data-api.binance.vision/api/v3/klines?symbol=ATOMUSDT&interval=1m&startTime=1791621720000&endTime=1791636119999&limit=240",
+      "method": "GET",
+      "received_ts": 1791636175439,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:BINANCE-ATOM-NATIVE-240",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:BINANCE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "BINANCE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "252224e6c5fa8a6aeb90ad8fb3bf011a8f822ec0819186c789ef33d45d418810",
+      "gzip_sha256": "6764a4e3b29addf030d802ed1539d13e17e75e55716d60c4803cff7f17ad7cbb",
+      "bytes": 35876,
+      "file": "BINANCE-ATOM-NATIVE-240.json.gz"
+    },
+    {
+      "name": "GATE-ALL-CURRENCY-IDENTITY",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/currencies",
+      "method": "GET",
+      "received_ts": 1791636178054,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-ALL-CURRENCY-IDENTITY",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "GATE_ASSET_REFERENCE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "c66180ff0c9665e6e4b7b304031652a8bc1b5a4a7a202900dd3410cac7d8d50b",
+      "gzip_sha256": "b74ef586f4951455382b336b1abe998df295ce54ff10643e503f9b0f157c9b8b",
+      "bytes": 2128050,
+      "file": "GATE-ALL-CURRENCY-IDENTITY.json.gz"
+    },
+    {
+      "name": "GATE-SPOT-TURNOVER",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/tickers",
+      "method": "GET",
+      "received_ts": 1791636179147,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-SPOT-TURNOVER",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "713a897510ea73e970969c6feabbedde7c0ccd8e2bca73a2d101e0f09d5d97ac",
+      "gzip_sha256": "a1647407e4e83fcdaad20b88f0e776610d30f8e6d474288ce67b0216a97b3ff4",
+      "bytes": 537717,
+      "file": "GATE-SPOT-TURNOVER.json.gz"
+    },
+    {
+      "name": "GATE-SUSHI-CANDLES",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=SUSHI_USDT&from=1791621720&to=1791636119&interval=1m",
+      "method": "GET",
+      "received_ts": 1791636180239,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-SUSHI-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636120000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "9e3c3cc79120ed8b8a4ee025026933601bd0e5422f665a4dc521c130a6f6f8d4",
+      "gzip_sha256": "dd25f87594843ca05792cb2f268ed21a2554bb388491f84ac3b5269a042e2b48",
+      "bytes": 19487,
+      "file": "GATE-SUSHI-CANDLES.json.gz"
+    },
+    {
+      "name": "GATE-SUSHI-PAGE-1",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/trades?currency_pair=SUSHI_USDT&from=1791621720&to=1791636119&limit=1000&page=1",
+      "method": "GET",
+      "received_ts": 1791636181556,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-SUSHI-PAGE-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636180000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "09ad6b079008114367858b16a01c92c558d3491648f50f0a8fcc1b8c7e9c4f76",
+      "gzip_sha256": "08bf2056937ae6710a1e5989b9745555de4691cdcbf0f81b0bbc02c49c2fbc19",
+      "bytes": 7757,
+      "file": "GATE-SUSHI-PAGE-1.json.gz"
+    },
+    {
+      "name": "GATE-PEOPLE-CANDLES",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/candlesticks?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&interval=1m",
+      "method": "GET",
+      "received_ts": 1791636239894,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-PEOPLE-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636180000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "d1ab0d86376dc71a5e36b21ecdc09795539c6ddeeaca041687485cd543bdc6d7",
+      "gzip_sha256": "f3b4d1c99ff8db71feb541f5b5d77ea7a0279a1a516e375e2d9baeb527c917c4",
+      "bytes": 22174,
+      "file": "GATE-PEOPLE-CANDLES.json.gz"
+    },
+    {
+      "name": "GATE-PEOPLE-PAGE-1",
+      "venue": "GATE",
+      "url": "https://api.gateio.ws/api/v4/spot/trades?currency_pair=PEOPLE_USDT&from=1791621720&to=1791636119&limit=1000&page=1",
+      "method": "GET",
+      "received_ts": 1791636240904,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38052957545:native:1:GATE-PEOPLE-PAGE-1",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:GATE",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "GATE",
+        "minute_bucket": 1791636240000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 4
+      },
+      "retry_after": null,
+      "body_sha256": "d23048cd12557ed81683218f81be92d9e8240e33e25fbef79d3175740828dca5",
+      "gzip_sha256": "2151c43f1aa4b3436adb26d6fea66b728031a52ed264a4d7931a33fbd4db7c30",
+      "bytes": 12042,
+      "file": "GATE-PEOPLE-PAGE-1.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 52,
+      "reserved_rows_read": 847000,
+      "reserved_rows_written": 16888,
+      "measured_rows_read": 553326,
+      "measured_rows_written": 6645,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 863000,
+      "rows_written": 17388
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "window_end_ts": 1791636120000,
+  "binance_catalog_candidates": [
+    "BTC",
+    "ETH",
+    "BNB",
+    "LTC",
+    "ADA",
+    "XRP",
+    "XLM",
+    "TRX",
+    "ETC",
+    "LINK",
+    "ONG",
+    "ZEC",
+    "DASH",
+    "ATOM",
+    "ALGO",
+    "DOGE",
+    "WIN",
+    "CHZ",
+    "HBAR",
+    "BCH",
+    "LSK",
+    "SOL",
+    "JST",
+    "DOT",
+    "PAXG",
+    "SUSHI",
+    "UNI",
+    "SUN",
+    "AVAX",
+    "AAVE",
+    "NEAR",
+    "FIL",
+    "SHIB",
+    "ICP",
+    "QNT",
+    "RAY",
+    "PEOPLE",
+    "STEEM",
+    "OP",
+    "APT",
+    "ARB",
+    "SUI",
+    "PEPE",
+    "FLOKI",
+    "WLD",
+    "TIA",
+    "ORDI",
+    "BONK",
+    "ACE",
+    "JUP",
+    "WIF",
+    "BOME",
+    "ETHFI",
+    "ENA",
+    "TAO",
+    "PENGU",
+    "TRUMP",
+    "GPS",
+    "NIL",
+    "MUBARAK",
+    "TUT",
+    "ONDO",
+    "PUMP",
+    "AVNT",
+    "ZKC",
+    "XPL",
+    "ASTER",
+    "EUL",
+    "BANK",
+    "币安人生",
+    "XAUT",
+    "GRAM",
+    "MARSCOIN",
+    "牛来",
+    "HYPE"
+  ],
+  "binance_native_market_windows": [
+    {
+      "base": "ADA",
+      "market": "SPOT",
+      "window_start_ts": 1791621720000,
+      "window_end_ts": 1791636120000,
+      "HTX_identity": {
+        "chain": "cardano",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cardano:mainnet",
+        "contract_or_mint": null
+      },
+      "external_identity_scope": "MARKET_SYMBOL_ONLY_NOT_YET_ELIGIBLE",
+      "score_contribution": 0,
+      "native_240_minute_grid": true,
+      "status": "COMPLETE_NATIVE_TAKER_CANDLES;ASSET_BINDING_OPEN",
+      "trade_count": 16612,
+      "buy_quote": 2074636.7423699992,
+      "sell_quote": 2081503.341490001,
+      "imbalance": -0.0016521577669308116,
+      "large_individual_trades_not_available": true
+    },
+    {
+      "base": "APT",
+      "market": "SPOT",
+      "window_start_ts": 1791621720000,
+      "window_end_ts": 1791636120000,
+      "HTX_identity": {
+        "chain": "aptos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "aptos:mainnet",
+        "contract_or_mint": null
+      },
+      "external_identity_scope": "MARKET_SYMBOL_ONLY_NOT_YET_ELIGIBLE",
+      "score_contribution": 0,
+      "native_240_minute_grid": true,
+      "status": "COMPLETE_NATIVE_TAKER_CANDLES;ASSET_BINDING_OPEN",
+      "trade_count": 7176,
+      "buy_quote": 319430.59411199996,
+      "sell_quote": 473483.84603,
+      "imbalance": -0.19428735828094043,
+      "large_individual_trades_not_available": true
+    },
+    {
+      "base": "ATOM",
+      "market": "SPOT",
+      "window_start_ts": 1791621720000,
+      "window_end_ts": 1791636120000,
+      "HTX_identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "external_identity_scope": "MARKET_SYMBOL_ONLY_NOT_YET_ELIGIBLE",
+      "score_contribution": 0,
+      "native_240_minute_grid": true,
+      "status": "COMPLETE_NATIVE_TAKER_CANDLES;ASSET_BINDING_OPEN",
+      "trade_count": 5053,
+      "buy_quote": 370555.3472799998,
+      "sell_quote": 431133.47996000043,
+      "imbalance": -0.0755631494685474,
+      "large_individual_trades_not_available": true
+    }
+  ],
+  "gate_exact_token_bindings": [
+    {
+      "base": "AAVE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "spot": "AAVE_USDT",
+      "future": "AAVE_USDT"
+    },
+    {
+      "base": "ACE",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      },
+      "spot": "ACE_USDT",
+      "future": "ACE_USDT"
+    },
+    {
+      "base": "ASTER",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      },
+      "spot": "ASTER_USDT",
+      "future": "ASTER_USDT"
+    },
+    {
+      "base": "BANK",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      },
+      "spot": "BANK_USDT",
+      "future": "BANK_USDT"
+    },
+    {
+      "base": "BEAT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+      },
+      "spot": "BEAT_USDT",
+      "future": "BEAT_USDT"
+    },
+    {
+      "base": "BOME",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      },
+      "spot": "BOME_USDT",
+      "future": "BOME_USDT"
+    },
+    {
+      "base": "BONK",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      "spot": "BONK_USDT",
+      "future": "BONK_USDT"
+    },
+    {
+      "base": "BTW",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      },
+      "spot": "BTW_USDT",
+      "future": "BTW_USDT"
+    },
+    {
+      "base": "DOS",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      },
+      "spot": "DOS_USDT",
+      "future": "DOS_USDT"
+    },
+    {
+      "base": "ENA",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "spot": "ENA_USDT",
+      "future": "ENA_USDT"
+    },
+    {
+      "base": "ETHFI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      },
+      "spot": "ETHFI_USDT",
+      "future": "ETHFI_USDT"
+    },
+    {
+      "base": "EUL",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b"
+      },
+      "spot": "EUL_USDT",
+      "future": "EUL_USDT"
+    },
+    {
+      "base": "FARTCOIN",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      },
+      "spot": "FARTCOIN_USDT",
+      "future": "FARTCOIN_USDT"
+    },
+    {
+      "base": "FLOKI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"
+      },
+      "spot": "FLOKI_USDT",
+      "future": "FLOKI_USDT"
+    },
+    {
+      "base": "JUP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "spot": "JUP_USDT",
+      "future": "JUP_USDT"
+    },
+    {
+      "base": "LINK",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+      "spot": "LINK_USDT",
+      "future": "LINK_USDT"
+    },
+    {
+      "base": "LIT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2"
+      },
+      "spot": "LIT_USDT",
+      "future": "LIT_USDT"
+    },
+    {
+      "base": "LSK",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6033f7f88332b8db6ad452b7c6d5bb643990ae3f"
+      },
+      "spot": "LSK_USDT",
+      "future": "LSK_USDT"
+    },
+    {
+      "base": "MARSCOIN",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xfe189e97832da1573e4e4ff034f4ffc3a15c7777"
+      },
+      "spot": "MARSCOIN_USDT",
+      "future": "MARSCOIN_USDT"
+    },
+    {
+      "base": "MUBARAK",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x5c85d6c6825ab4032337f11ee92a72df936b46f6"
+      },
+      "spot": "MUBARAK_USDT",
+      "future": "MUBARAK_USDT"
+    },
+    {
+      "base": "NIL",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47"
+      },
+      "spot": "NIL_USDT",
+      "future": "NIL_USDT"
+    },
+    {
+      "base": "OKB",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x75231f58b43240c9718dd58b4967c5114342a86c"
+      },
+      "spot": "OKB_USDT",
+      "future": "OKB_USDT"
+    },
+    {
+      "base": "ONDO",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "spot": "ONDO_USDT",
+      "future": "ONDO_USDT"
+    },
+    {
+      "base": "PENGU",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "spot": "PENGU_USDT",
+      "future": "PENGU_USDT"
+    },
+    {
+      "base": "PEOPLE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "spot": "PEOPLE_USDT",
+      "future": "PEOPLE_USDT"
+    },
+    {
+      "base": "PEPE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      },
+      "spot": "PEPE_USDT",
+      "future": "PEPE_USDT"
+    },
+    {
+      "base": "PIPPIN",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump"
+      },
+      "spot": "PIPPIN_USDT",
+      "future": "PIPPIN_USDT"
+    },
+    {
+      "base": "PUMP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      "spot": "PUMP_USDT",
+      "future": "PUMP_USDT"
+    },
+    {
+      "base": "QNT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+      },
+      "spot": "QNT_USDT",
+      "future": "QNT_USDT"
+    },
+    {
+      "base": "RAY",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "spot": "RAY_USDT",
+      "future": "RAY_USDT"
+    },
+    {
+      "base": "SHIB",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      },
+      "spot": "SHIB_USDT",
+      "future": "SHIB_USDT"
+    },
+    {
+      "base": "SKR",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3"
+      },
+      "spot": "SKR_USDT",
+      "future": "SKR_USDT"
+    },
+    {
+      "base": "SKYAI",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x92aa03137385f18539301349dcfc9ebc923ffb10"
+      },
+      "spot": "SKYAI_USDT",
+      "future": "SKYAI_USDT"
+    },
+    {
+      "base": "SUSHI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "spot": "SUSHI_USDT",
+      "future": "SUSHI_USDT"
+    },
+    {
+      "base": "TRUMP",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "spot": "TRUMP_USDT",
+      "future": "TRUMP_USDT"
+    },
+    {
+      "base": "TUT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+      },
+      "spot": "TUT_USDT",
+      "future": "TUT_USDT"
+    },
+    {
+      "base": "UNI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "spot": "UNI_USDT",
+      "future": "UNI_USDT"
+    },
+    {
+      "base": "WIF",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      "spot": "WIF_USDT",
+      "future": "WIF_USDT"
+    },
+    {
+      "base": "WLD",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x163f8c2467924be0ae7b5347228cabf260318753"
+      },
+      "spot": "WLD_USDT",
+      "future": "WLD_USDT"
+    },
+    {
+      "base": "XAUT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x68749665ff8d2d112fa859aa293f07a622782f38"
+      },
+      "spot": "XAUT_USDT",
+      "future": "XAUT_USDT"
+    },
+    {
+      "base": "ZKC",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x000006c2a22ff4a44ff1f5d0f2ed65f781f55555"
+      },
+      "spot": "ZKC_USDT",
+      "future": "ZKC_USDT"
+    },
+    {
+      "base": "牛来",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xbeea1d618e533a387d941f58a7d4c9b7bd377777"
+      },
+      "spot": "牛来_USDT",
+      "future": "牛来_USDT"
+    },
+    {
+      "base": "龙虾",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xeccbb861c0dda7efd964010085488b69317e4444"
+      },
+      "spot": "龙虾_USDT",
+      "future": "龙虾_USDT"
+    }
+  ],
+  "gate_selected": [
+    {
+      "base": "SUSHI",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "spot": "SUSHI_USDT",
+      "future": "SUSHI_USDT",
+      "turnover": "7967.162216"
+    },
+    {
+      "base": "PEOPLE",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "spot": "PEOPLE_USDT",
+      "future": "PEOPLE_USDT",
+      "turnover": "22367.712591"
+    }
+  ],
+  "gate_windows": [
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "SUSHI-USDT",
+      "venue": "GATE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791621720000,
+      "window_end_ts": 1791636120000,
+      "observed_ts": 1791636181556,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 483.89000599999997,
+      "sell_quote": 1235.625294,
+      "trade_count": 42,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 122.52612,
+        "count": 3,
+        "buy_quote": 0,
+        "sell_quote": 599.2246269999999,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": -0.43717859794559544,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "normalization": "GATE_SPOT_NATIVE_MINUTE_AND_PUBLIC_TRADES_TO_EXACT_DECIMAL_RECONCILER",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "exact_asset_binding": true,
+      "side_semantics_cross_channel_documented": true,
+      "REST_taker_semantics_requires_final_primary_contract_confirmation": true,
+      "production_eligible": false
+    },
+    {
+      "version": "bitget-four-hour-flow-v1-20261010",
+      "status": "CLOSED_VOLUME_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "contract": "PEOPLE-USDT",
+      "venue": "GATE",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791621720000,
+      "window_end_ts": 1791636120000,
+      "observed_ts": 1791636240904,
+      "verified_minutes": 240,
+      "pages": 1,
+      "buy_quote": 1083.386975,
+      "sell_quote": 451.658815,
+      "trade_count": 64,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "unreconciled_minutes": [],
+      "large_trade_context": {
+        "method": "CURRENT_WINDOW_TOP_FIVE_PERCENT_NOT_CALIBRATED",
+        "threshold_quote": 53.054050999999994,
+        "count": 4,
+        "buy_quote": 300.90731000000005,
+        "sell_quote": 53.054050999999994,
+        "market_impact_verified": false,
+        "score_contribution": 0
+      },
+      "imbalance": 0.41153701349847027,
+      "volume_precision_policy": "EXACT_DECIMAL_PRODUCTS_WITH_ONE_DISPLAYED_UNIT_ROUNDING_BOUND",
+      "raw_trade_counter_independently_verified": false,
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "direction_semantics": "OFFICIAL_PUBLIC_TRADE_SIDE",
+      "not_onchain_exchange_flows": true,
+      "normalization": "GATE_SPOT_NATIVE_MINUTE_AND_PUBLIC_TRADES_TO_EXACT_DECIMAL_RECONCILER",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "exact_asset_binding": true,
+      "side_semantics_cross_channel_documented": true,
+      "REST_taker_semantics_requires_final_primary_contract_confirmation": true,
+      "production_eligible": false
+    }
+  ],
+  "identity_bindings_are_not_complete_flow_coverage": true,
+  "native_aggregate_does_not_identify_large_individual_trades": true,
+  "status": "BOUNDED_NATIVE_WINDOW_QUALIFICATION_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 10,
+      "statistics": 0
+    },
+    "total": 10,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 154
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38052957545:native:1",
+    "source_run_id": "38052957545",
+    "measured_rows_read": 169,
+    "measured_rows_written_accounted": 76,
+    "measured_requests_accounted": 84,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 84,
+    "rows_read": 170,
+    "rows_written": 76,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 53,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 10,
+        "rows_read": 4,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 20,
+        "rows_read": 10,
+        "rows_written": 12,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 20,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 10,
+        "rows_read": 10,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 10,
+        "rows_read": 36,
+        "rows_written": 40,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 20,
+        "rows_read": 46,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791636241064
+}
