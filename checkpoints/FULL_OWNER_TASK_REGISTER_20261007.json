@@ -2078,8 +2078,13 @@
       "task_id": "BLOCK_N05",
       "block": "N05",
       "name": "Согласованный поток спота и фьючерсов нескольких бирж",
-      "status": "MERGED_ASSEMBLED_BINANCE_KRAKEN_BACKPACK_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
-      "remaining_action": "N05_CONTINUE_OKX_KUCOIN_MEXC_MISSING_FACTS_AND_GENERIC_ROUTES_WITHIN_EXISTING_CAPS;REUSE_PR307_HASHED_PROOFS;NO_EXHAUSTED_BINANCE_GATE_BITGET_RETRY_OR_QUOTA_RESET",
+      "status": "MERGED_ASSEMBLED_POLONIEX_AND_KRAKEN_ALIASES_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
+      "remaining_action": [
+        "Fresh HTX crypto futures universe per owner's20:17MSK request; reconcile new contracts, remove noncrypto, persist exact manifest and bind production collection",
+        "Maximum useful full-window coverage within existing admitted capacity",
+        "Same-anchor natural spot/futures agreement and approved source→fact→consumer→manual/Telegram receipts",
+        "Raw individual-size and outcome calibration; native aggregate taker volumes do not prove whales or inflow"
+      ],
       "previous_exact_proofs": [
         {
           "run_id": "1791328948326-1791328960491",
@@ -3036,6 +3041,340 @@
         ],
         "new_fresh_SENT": false,
         "project_complete": false
+      },
+      "latest_expanded_native_release": {
+        "schema": "N05_EXPANDED_NATIVE_FLOW_CONNECTED_RELEASE_V1",
+        "proof": "checkpoints/N05_EXPANDED_NATIVE_FLOW_CONNECTED_RELEASE_20261010.json",
+        "recorded_ts": 1791652715281,
+        "status": "MERGED_ASSEMBLED_POLONIEX_AND_KRAKEN_ALIASES_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
+        "pr": 308,
+        "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+        "production_head": "a2bdcab9a281417a9e29442bd97551516f915ab4",
+        "tested_head": "690d7889bd5e19a69234fab5feeb77c0fb2e7492",
+        "retained_head": "b562f72ab920f3224e2a660f6029922db96a15b3",
+        "cloud_run": 38070942195,
+        "cloud_proof": "checkpoints/n05-expanded-resume-38070942195/proof.json",
+        "original_replay": "checkpoints/n05-expanded-resume-38070942195/remaining-replay.json",
+        "artifact": {
+          "id": 11676981575,
+          "digest": "sha256:e4e72294afdb1ed257bd8eda310dc19893809fca4c1675dfa368f419b7b1e335"
+        },
+        "proof_file_hashes": {
+          "approved-delivery.tap": "d26516343c165c052f81f703f5ef517b7fa3f98d082e3c8b031bcb80392bb6f8",
+          "assembled-pause.tap": "711f0f2130f4aa830fa9353f941d07fdb1ca430b945c777ea9194a11a3e67abb",
+          "assembly.json": "de6e0c4004397f8db8cd1cd2eb375be4fd1b46ec3a38ecf622f30580dd930a25",
+          "binding.json": "9b5a41beeaca6c16f63ddda6a63643a4290e4ac85db6c6a3ce97cc0c1091a358",
+          "current-generation-unit-tests.tap": "18e3773c233fbaac533801bbba5fe88db297fd416fbaf16ef92f5846d2e86d7a",
+          "generation.log": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+          "integration.json": "75e228f7d6281e39c3645f783247f3a055b9a6dc63ba29f59c07242969600782",
+          "remaining-replay.json": "dbd6935a2d167ae6cfea0c83250d3cb3c15f886d0dbcf59ec5d9050250a3a453"
+        },
+        "proof_hashes_independently_verified": 8,
+        "tests": {
+          "unit_pass": 1327,
+          "assembled_pass": 60,
+          "delivery_pass": 35,
+          "integration_pass": 37,
+          "fail": 0,
+          "manual_and_Telegram_both_verified": true,
+          "controlled_not_live_signal_acceptance": true
+        },
+        "implementation": {
+          "poloniex_native_taker_candles": true,
+          "exact_chain_address_or_native_identity": true,
+          "closed_native_minutes": 240,
+          "native_trade_count_verified": true,
+          "individual_sizes_available": false,
+          "metadata_shared_cache_hours": 6,
+          "activity_hint_cache_minutes": 15,
+          "per_caller_shared_cap": 5,
+          "daily_role_cap": 16,
+          "provider_minute_cap": 6,
+          "body_limit_bytes": 8388608,
+          "durable_backoff_minutes": 15,
+          "kraken_BTC_alias": "XBT/XXBT",
+          "kraken_DOGE_alias": "XDG/XXDG",
+          "kraken_native_structural_assets": 12,
+          "poloniex_exact_structural_assets": 51,
+          "kucoin_exact_research_assets": 57,
+          "kucoin_production_full_flow_enabled": false,
+          "okx_mexc_coinex_production_enabled": false
+        },
+        "actual_coverage": {
+          "previous_retained_assets": 17,
+          "new_distinct_assets": [
+            "AVAX",
+            "AAVE",
+            "BTW",
+            "DOGE",
+            "ETC"
+          ],
+          "distinct_retained_full_flow_assets": 22,
+          "full_windows": [
+            {
+              "contract": "AVAX-USDT",
+              "venue": "KRAKEN",
+              "trade_count": 98,
+              "window_end_ts": 1791650940000,
+              "observed_ts": 1791651099834
+            },
+            {
+              "contract": "AAVE-USDT",
+              "venue": "POLONIEX",
+              "trade_count": 4664,
+              "window_end_ts": 1791651240000,
+              "observed_ts": 1791651280814
+            },
+            {
+              "contract": "BTW-USDT",
+              "venue": "POLONIEX",
+              "trade_count": 1420,
+              "window_end_ts": 1791651240000,
+              "observed_ts": 1791651344264
+            },
+            {
+              "contract": "DOGE-USDT",
+              "venue": "POLONIEX",
+              "trade_count": 18511,
+              "window_end_ts": 1791651240000,
+              "observed_ts": 1791651346056
+            },
+            {
+              "contract": "ETC-USDT",
+              "venue": "POLONIEX",
+              "trade_count": 9297,
+              "window_end_ts": 1791651240000,
+              "observed_ts": 1791651403005
+            }
+          ],
+          "poloniex_recent_activity_candidates": [
+            {
+              "contract": "AAVE-USDT",
+              "trade_count_24h": 36986,
+              "original_close_ts": 1791651537416,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "ADA-USDT",
+              "trade_count_24h": 152013,
+              "original_close_ts": 1791651537332,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "APT-USDT",
+              "trade_count_24h": 121304,
+              "original_close_ts": 1791651538246,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "ATOM-USDT",
+              "trade_count_24h": 192102,
+              "original_close_ts": 1791651537631,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "AVAX-USDT",
+              "trade_count_24h": 102214,
+              "original_close_ts": 1791651536643,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "BCH-USDT",
+              "trade_count_24h": 62046,
+              "original_close_ts": 1791651539207,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "BTC-USDT",
+              "trade_count_24h": 163756,
+              "original_close_ts": 1791651539145,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "BTW-USDT",
+              "trade_count_24h": 8004,
+              "original_close_ts": 1791651538371,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "DOGE-USDT",
+              "trade_count_24h": 95876,
+              "original_close_ts": 1791651535668,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "DOT-USDT",
+              "trade_count_24h": 99314,
+              "original_close_ts": 1791651537829,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "ETC-USDT",
+              "trade_count_24h": 52372,
+              "original_close_ts": 1791651479936,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "ETH-USDT",
+              "trade_count_24h": 63313,
+              "original_close_ts": 1791651536449,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "FLOKI-USDT",
+              "trade_count_24h": 38981,
+              "original_close_ts": 1791651528703,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "LINK-USDT",
+              "trade_count_24h": 82415,
+              "original_close_ts": 1791651539140,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "LSK-USDT",
+              "trade_count_24h": 38199,
+              "original_close_ts": 1791651538758,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "LTC-USDT",
+              "trade_count_24h": 88458,
+              "original_close_ts": 1791651536964,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "NEAR-USDT",
+              "trade_count_24h": 409202,
+              "original_close_ts": 1791651539369,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "PEPE-USDT",
+              "trade_count_24h": 43303,
+              "original_close_ts": 1791651539254,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "QNT-USDT",
+              "trade_count_24h": 3875,
+              "original_close_ts": 1791651503279,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "SHIB-USDT",
+              "trade_count_24h": 48867,
+              "original_close_ts": 1791651533919,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "SOL-USDT",
+              "trade_count_24h": 207810,
+              "original_close_ts": 1791651537688,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "SUI-USDT",
+              "trade_count_24h": 210578,
+              "original_close_ts": 1791651537833,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "TRX-USDT",
+              "trade_count_24h": 53110,
+              "original_close_ts": 1791651531236,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "UNI-USDT",
+              "trade_count_24h": 162617,
+              "original_close_ts": 1791651537732,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "XLM-USDT",
+              "trade_count_24h": 56059,
+              "original_close_ts": 1791651535268,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "XRP-USDT",
+              "trade_count_24h": 124564,
+              "original_close_ts": 1791651537394,
+              "not_four_hour_flow": true
+            },
+            {
+              "contract": "ZEC-USDT",
+              "trade_count_24h": 52355,
+              "original_close_ts": 1791651479717,
+              "not_four_hour_flow": true
+            }
+          ],
+          "bindings_and_activity_are_not_full_flow": true,
+          "simultaneous_continuous_coverage": false,
+          "thirty_percent_useful_coverage_proven": false
+        },
+        "refusals": {
+          "OKX": "PARTIAL_NATIVE_MINUTE_RECONCILIATION",
+          "MEXC": "AMBIGUOUS_INDIVIDUAL_TUPLES_OR_INCOMPLETE_NATIVE_VOLUMES",
+          "CoinEx": "EMPTY_NATIVE_CANDLES_AND_13DAY_OLD_TRADES",
+          "KuCoin": "LATEST100_AND_CLOSED_NATIVE_GRID_NOT_PROVEN",
+          "poloniex_no_trade_contracts": [
+            "ACE-USDT",
+            "APR-USDT",
+            "ASTER-USDT",
+            "BEAT-USDT",
+            "BOME-USDT",
+            "BONK-USDT",
+            "DOS-USDT",
+            "ENA-USDT",
+            "ETHFI-USDT"
+          ]
+        },
+        "accounting": {
+          "original_research_HTTP": 55,
+          "original_D1": {
+            "rows_read": 1153,
+            "rows_written": 409,
+            "unknown_ops": 0
+          },
+          "replay_source_HTTP": 0,
+          "verification_source_HTTP": 0,
+          "verification_D1": 0,
+          "Telegram": 0,
+          "MAIN": 0,
+          "raw_source_hashes_verified": 55
+        },
+        "UTC_20261010_exhausted_N05_roles": [
+          "BINANCE",
+          "GATE",
+          "BITGET",
+          "POLONIEX"
+        ],
+        "limits": {
+          "threshold": 70,
+          "N05_score_contribution": 0,
+          "N05_calibration_pending": true,
+          "N01_N02_N03_paused": true,
+          "source_caps_reset": false,
+          "quotes_not_mechanically_summed": true,
+          "original_source_clocks_preserved": true
+        },
+        "initial_failed_run": {
+          "run": 38070615697,
+          "reason": "PRODUCTION_ASSEMBLY_AND_PRESENTATION_FIXTURE_MODULE_LIST_MISSING_POLONIEX;FIXED_AND_FULL_RELATED_VALIDATION_PASSED"
+        },
+        "remaining_work": [
+          "Fresh HTX crypto futures universe per owner's20:17MSK request; reconcile new contracts, remove noncrypto, persist exact manifest and bind production collection",
+          "Maximum useful full-window coverage within existing admitted capacity",
+          "Same-anchor natural spot/futures agreement and approved source→fact→consumer→manual/Telegram receipts",
+          "Raw individual-size and outcome calibration; native aggregate taker volumes do not prove whales or inflow"
+        ],
+        "new_fresh_SENT": false,
+        "actual_ENTRY": false,
+        "project_complete": false,
+        "next_action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS"
       }
     },
     {
@@ -5095,7 +5434,7 @@
     "liqflow_and_native_HL_same_upstream": true,
     "rotation_current_work": "Qualified two-market structural hints, fresh runtime revalidation, same 5 HTTP cap; weekly protect native requests and same-run reuse"
   },
-  "updated_ts": 1791649861283,
+  "updated_ts": 1791652715281,
   "latest_native_routing_weekly_release": {
     "path": "checkpoints/NATIVE_ROUTING_AND_WEEKLY_RELEASE_20261007.json",
     "pr": 210,
@@ -8345,8 +8684,8 @@
     },
     "scope": "ACTUAL_POST245_ZEC_LONG_OBSERVE_SENT165_WITH_FULL240MIN_FLOW_AND_NATIVE_LEVELS;FIL_REJECTED;BEFORE_PR246;NO_ENTRY;NOT_FRESH_HBAR_OR_SUI_SOURCE_SENT"
   },
-  "latest_status": "MERGED_ASSEMBLED_BINANCE_KRAKEN_BACKPACK_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
-  "next_action": "N05_CONTINUE_OKX_KUCOIN_MEXC_MISSING_FACTS_AND_GENERIC_ROUTES_WITHIN_EXISTING_CAPS;REUSE_PR307_HASHED_PROOFS;NO_EXHAUSTED_BINANCE_GATE_BITGET_RETRY_OR_QUOTA_RESET",
+  "latest_status": "MERGED_ASSEMBLED_POLONIEX_AND_KRAKEN_ALIASES_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
+  "next_action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS",
   "latest_retained_source_cohort_history_coverage": {
     "proof": "checkpoints/RETAINED_SOURCE_COHORT_HISTORY_COVERAGE_20261008.json",
     "cloud_run": 37862220122,
@@ -10897,7 +11236,7 @@
     "full_TZ_complete": false,
     "next_action": "Continue normal scheduled reports under measured closed admission. On the next actual native-approved SENT/OBSERVE, retain its original trigger and verify the same idea at the required fresh recheck through ENTRY or exact refusal/cancellation. Keep expanded history and mature empirical outcomes open separately."
   },
-  "updated_utc": "2026-10-10T16:31:01.283Z",
+  "updated_utc": "2026-10-10T17:18:35.281Z",
   "latest_no_work_audit_false_failure_repair": {
     "status": "NATURAL_PRODUCTION_ACCEPTED",
     "checkpoint": "checkpoints/PR277_NATURAL_NO_WORK_AUDIT_ACCEPTANCE_20261010.json",
@@ -11882,7 +12221,7 @@
       "next_action": "QUALIFY_BINANCE_SMALLER_OFFICIAL_CATALOG_AND_NATIVE_TAKER_CANDLES;QUALIFY_GATE_OKX_AND_REMAINING_VENUES_WITHIN_EXISTING_CAPS;DO_NOT_REPEAT_BITGET_ON_EXHAUSTED_DAY"
     }
   },
-  "current_task": "OWNER_N05_EXPAND_ALL_AGREED_VENUES_AND_ADDITIONAL_USEFUL_SOURCES",
+  "current_task": "OWNER_N05_MAXIMUM_COVERAGE_AND_HTX_CRYPTO_FUTURES_UNIVERSE_REFRESH",
   "latest_n05_actual_source_discovery": {
     "proof": "checkpoints/N05_ACTUAL_SOURCE_DISCOVERY_20261010.json",
     "schema": "N05_ACTUAL_SOURCE_DISCOVERY_20261010_V1",
@@ -12798,5 +13137,349 @@
     ],
     "new_fresh_SENT": false,
     "project_complete": false
+  },
+  "latest_n05_expanded_native_release": {
+    "schema": "N05_EXPANDED_NATIVE_FLOW_CONNECTED_RELEASE_V1",
+    "proof": "checkpoints/N05_EXPANDED_NATIVE_FLOW_CONNECTED_RELEASE_20261010.json",
+    "recorded_ts": 1791652715281,
+    "status": "MERGED_ASSEMBLED_POLONIEX_AND_KRAKEN_ALIASES_VERIFIED;CONTINUOUS_COVERAGE_AND_CALIBRATION_OPEN",
+    "pr": 308,
+    "repository": "kovalev23091987-jpg/my-report-2-cloud-runner",
+    "production_head": "a2bdcab9a281417a9e29442bd97551516f915ab4",
+    "tested_head": "690d7889bd5e19a69234fab5feeb77c0fb2e7492",
+    "retained_head": "b562f72ab920f3224e2a660f6029922db96a15b3",
+    "cloud_run": 38070942195,
+    "cloud_proof": "checkpoints/n05-expanded-resume-38070942195/proof.json",
+    "original_replay": "checkpoints/n05-expanded-resume-38070942195/remaining-replay.json",
+    "artifact": {
+      "id": 11676981575,
+      "digest": "sha256:e4e72294afdb1ed257bd8eda310dc19893809fca4c1675dfa368f419b7b1e335"
+    },
+    "proof_file_hashes": {
+      "approved-delivery.tap": "d26516343c165c052f81f703f5ef517b7fa3f98d082e3c8b031bcb80392bb6f8",
+      "assembled-pause.tap": "711f0f2130f4aa830fa9353f941d07fdb1ca430b945c777ea9194a11a3e67abb",
+      "assembly.json": "de6e0c4004397f8db8cd1cd2eb375be4fd1b46ec3a38ecf622f30580dd930a25",
+      "binding.json": "9b5a41beeaca6c16f63ddda6a63643a4290e4ac85db6c6a3ce97cc0c1091a358",
+      "current-generation-unit-tests.tap": "18e3773c233fbaac533801bbba5fe88db297fd416fbaf16ef92f5846d2e86d7a",
+      "generation.log": "61df858e913ce51f883a9d67192cb6a65db9b082e99df0e1257c28892e7e923f",
+      "integration.json": "75e228f7d6281e39c3645f783247f3a055b9a6dc63ba29f59c07242969600782",
+      "remaining-replay.json": "dbd6935a2d167ae6cfea0c83250d3cb3c15f886d0dbcf59ec5d9050250a3a453"
+    },
+    "proof_hashes_independently_verified": 8,
+    "tests": {
+      "unit_pass": 1327,
+      "assembled_pass": 60,
+      "delivery_pass": 35,
+      "integration_pass": 37,
+      "fail": 0,
+      "manual_and_Telegram_both_verified": true,
+      "controlled_not_live_signal_acceptance": true
+    },
+    "implementation": {
+      "poloniex_native_taker_candles": true,
+      "exact_chain_address_or_native_identity": true,
+      "closed_native_minutes": 240,
+      "native_trade_count_verified": true,
+      "individual_sizes_available": false,
+      "metadata_shared_cache_hours": 6,
+      "activity_hint_cache_minutes": 15,
+      "per_caller_shared_cap": 5,
+      "daily_role_cap": 16,
+      "provider_minute_cap": 6,
+      "body_limit_bytes": 8388608,
+      "durable_backoff_minutes": 15,
+      "kraken_BTC_alias": "XBT/XXBT",
+      "kraken_DOGE_alias": "XDG/XXDG",
+      "kraken_native_structural_assets": 12,
+      "poloniex_exact_structural_assets": 51,
+      "kucoin_exact_research_assets": 57,
+      "kucoin_production_full_flow_enabled": false,
+      "okx_mexc_coinex_production_enabled": false
+    },
+    "actual_coverage": {
+      "previous_retained_assets": 17,
+      "new_distinct_assets": [
+        "AVAX",
+        "AAVE",
+        "BTW",
+        "DOGE",
+        "ETC"
+      ],
+      "distinct_retained_full_flow_assets": 22,
+      "full_windows": [
+        {
+          "contract": "AVAX-USDT",
+          "venue": "KRAKEN",
+          "trade_count": 98,
+          "window_end_ts": 1791650940000,
+          "observed_ts": 1791651099834
+        },
+        {
+          "contract": "AAVE-USDT",
+          "venue": "POLONIEX",
+          "trade_count": 4664,
+          "window_end_ts": 1791651240000,
+          "observed_ts": 1791651280814
+        },
+        {
+          "contract": "BTW-USDT",
+          "venue": "POLONIEX",
+          "trade_count": 1420,
+          "window_end_ts": 1791651240000,
+          "observed_ts": 1791651344264
+        },
+        {
+          "contract": "DOGE-USDT",
+          "venue": "POLONIEX",
+          "trade_count": 18511,
+          "window_end_ts": 1791651240000,
+          "observed_ts": 1791651346056
+        },
+        {
+          "contract": "ETC-USDT",
+          "venue": "POLONIEX",
+          "trade_count": 9297,
+          "window_end_ts": 1791651240000,
+          "observed_ts": 1791651403005
+        }
+      ],
+      "poloniex_recent_activity_candidates": [
+        {
+          "contract": "AAVE-USDT",
+          "trade_count_24h": 36986,
+          "original_close_ts": 1791651537416,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "ADA-USDT",
+          "trade_count_24h": 152013,
+          "original_close_ts": 1791651537332,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "APT-USDT",
+          "trade_count_24h": 121304,
+          "original_close_ts": 1791651538246,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "ATOM-USDT",
+          "trade_count_24h": 192102,
+          "original_close_ts": 1791651537631,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "AVAX-USDT",
+          "trade_count_24h": 102214,
+          "original_close_ts": 1791651536643,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "BCH-USDT",
+          "trade_count_24h": 62046,
+          "original_close_ts": 1791651539207,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "BTC-USDT",
+          "trade_count_24h": 163756,
+          "original_close_ts": 1791651539145,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "BTW-USDT",
+          "trade_count_24h": 8004,
+          "original_close_ts": 1791651538371,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "DOGE-USDT",
+          "trade_count_24h": 95876,
+          "original_close_ts": 1791651535668,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "DOT-USDT",
+          "trade_count_24h": 99314,
+          "original_close_ts": 1791651537829,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "ETC-USDT",
+          "trade_count_24h": 52372,
+          "original_close_ts": 1791651479936,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "ETH-USDT",
+          "trade_count_24h": 63313,
+          "original_close_ts": 1791651536449,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "FLOKI-USDT",
+          "trade_count_24h": 38981,
+          "original_close_ts": 1791651528703,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "LINK-USDT",
+          "trade_count_24h": 82415,
+          "original_close_ts": 1791651539140,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "LSK-USDT",
+          "trade_count_24h": 38199,
+          "original_close_ts": 1791651538758,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "LTC-USDT",
+          "trade_count_24h": 88458,
+          "original_close_ts": 1791651536964,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "NEAR-USDT",
+          "trade_count_24h": 409202,
+          "original_close_ts": 1791651539369,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "PEPE-USDT",
+          "trade_count_24h": 43303,
+          "original_close_ts": 1791651539254,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "QNT-USDT",
+          "trade_count_24h": 3875,
+          "original_close_ts": 1791651503279,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "SHIB-USDT",
+          "trade_count_24h": 48867,
+          "original_close_ts": 1791651533919,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "SOL-USDT",
+          "trade_count_24h": 207810,
+          "original_close_ts": 1791651537688,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "SUI-USDT",
+          "trade_count_24h": 210578,
+          "original_close_ts": 1791651537833,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "TRX-USDT",
+          "trade_count_24h": 53110,
+          "original_close_ts": 1791651531236,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "UNI-USDT",
+          "trade_count_24h": 162617,
+          "original_close_ts": 1791651537732,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "XLM-USDT",
+          "trade_count_24h": 56059,
+          "original_close_ts": 1791651535268,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "XRP-USDT",
+          "trade_count_24h": 124564,
+          "original_close_ts": 1791651537394,
+          "not_four_hour_flow": true
+        },
+        {
+          "contract": "ZEC-USDT",
+          "trade_count_24h": 52355,
+          "original_close_ts": 1791651479717,
+          "not_four_hour_flow": true
+        }
+      ],
+      "bindings_and_activity_are_not_full_flow": true,
+      "simultaneous_continuous_coverage": false,
+      "thirty_percent_useful_coverage_proven": false
+    },
+    "refusals": {
+      "OKX": "PARTIAL_NATIVE_MINUTE_RECONCILIATION",
+      "MEXC": "AMBIGUOUS_INDIVIDUAL_TUPLES_OR_INCOMPLETE_NATIVE_VOLUMES",
+      "CoinEx": "EMPTY_NATIVE_CANDLES_AND_13DAY_OLD_TRADES",
+      "KuCoin": "LATEST100_AND_CLOSED_NATIVE_GRID_NOT_PROVEN",
+      "poloniex_no_trade_contracts": [
+        "ACE-USDT",
+        "APR-USDT",
+        "ASTER-USDT",
+        "BEAT-USDT",
+        "BOME-USDT",
+        "BONK-USDT",
+        "DOS-USDT",
+        "ENA-USDT",
+        "ETHFI-USDT"
+      ]
+    },
+    "accounting": {
+      "original_research_HTTP": 55,
+      "original_D1": {
+        "rows_read": 1153,
+        "rows_written": 409,
+        "unknown_ops": 0
+      },
+      "replay_source_HTTP": 0,
+      "verification_source_HTTP": 0,
+      "verification_D1": 0,
+      "Telegram": 0,
+      "MAIN": 0,
+      "raw_source_hashes_verified": 55
+    },
+    "UTC_20261010_exhausted_N05_roles": [
+      "BINANCE",
+      "GATE",
+      "BITGET",
+      "POLONIEX"
+    ],
+    "limits": {
+      "threshold": 70,
+      "N05_score_contribution": 0,
+      "N05_calibration_pending": true,
+      "N01_N02_N03_paused": true,
+      "source_caps_reset": false,
+      "quotes_not_mechanically_summed": true,
+      "original_source_clocks_preserved": true
+    },
+    "initial_failed_run": {
+      "run": 38070615697,
+      "reason": "PRODUCTION_ASSEMBLY_AND_PRESENTATION_FIXTURE_MODULE_LIST_MISSING_POLONIEX;FIXED_AND_FULL_RELATED_VALIDATION_PASSED"
+    },
+    "remaining_work": [
+      "Fresh HTX crypto futures universe per owner's20:17MSK request; reconcile new contracts, remove noncrypto, persist exact manifest and bind production collection",
+      "Maximum useful full-window coverage within existing admitted capacity",
+      "Same-anchor natural spot/futures agreement and approved source→fact→consumer→manual/Telegram receipts",
+      "Raw individual-size and outcome calibration; native aggregate taker volumes do not prove whales or inflow"
+    ],
+    "new_fresh_SENT": false,
+    "actual_ENTRY": false,
+    "project_complete": false,
+    "next_action": "REFRESH_HTX_CRYPTO_FUTURES_UNIVERSE_AND_BIND_ALL_APPROVED_ASSETS_TO_EXISTING_COLLECTOR_WITH_CURRENT_CAPS"
+  },
+  "owner_htx_universe_refresh_20261010": {
+    "requested_local": "2026-10-10T20:17:04+03:00",
+    "confirmed_local": "2026-10-10T20:17:19+03:00",
+    "owner_text": "Обнови список монет HTX: именно криптофьючерсы, без акций и валютных пар; сохрани в облаке, работай и собирай информацию по всем.",
+    "scope_change_authorized": true,
+    "new_members_require_current_primary_metadata": true,
+    "source_caps_and_reserves_unchanged": true,
+    "status": "IN_PROGRESS",
+    "verified_base_manifest_assets": 102
   }
 }
