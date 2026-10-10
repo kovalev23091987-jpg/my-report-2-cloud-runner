@@ -18,7 +18,7 @@ export const SUPPORTING_CONTEXT_SELECTION_VERSION='supporting-context-block-rese
 // score or source authority. Never manufacture a fact for an uncovered block.
 // Keep the approved 24-line bound and original ordering among selected facts.
 export function selectSupportingContextFacts(facts=[]){
- const rows=(Array.isArray(facts)?facts:[]).filter(f=>f&&typeof f==='object'&&!PAUSED_BLOCKS[f.block_id]&&(f.block_id!=='N05'||f.field==='JOINT_SPOT_FUTURES_AGREEMENT_4H'));
+ const rows=(Array.isArray(facts)?facts:[]).filter(f=>f&&typeof f==='object'&&!PAUSED_BLOCKS[f.block_id]&&(f.block_id!=='N05'||['JOINT_SPOT_FUTURES_AGREEMENT_4H','AVAILABLE_VENUE_TAKER_FLOW_4H'].includes(f.field)));
  if(rows.length<=24)return rows;
  const firstByBlock=new Map(),selected=new Set();
  for(let i=0;i<rows.length;i++){
