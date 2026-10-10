@@ -6,6 +6,7 @@ import {loadDailyUsageAggregate,evaluateDailyReservationBudget,evaluateWithinRun
 import {createUnifiedHttpBudget} from '../current-generation/files/src/unified-budget.mjs';
 import {reserveEvidenceSourceAttempts,readEvidenceSourceCache,writeEvidenceSourceCache} from '../current-generation/files/src/evidence-source-store.mjs';
 import {reserveProviderMinuteUnits} from '../current-generation/files/src/provider-minute-ledger.mjs';
+// Runtime pagination tests must pass before provider attempts.
 const stage='window',root='audit-output/n05-window',hash=b=>createHash('sha256').update(b).digest('hex');
 const universe=JSON.parse(gunzipSync(await fs.readFile('checkpoints/htx-all-modes-crypto-futures-universe-20261004.json.gz')));if(universe.assets.length!==102)throw Error('EXACT_UNIVERSE_REQUIRED');
 const db=new RemoteD1Database(process.env.REPORT2_D1_BRIDGE_URL,process.env.REPORT2_D1_BRIDGE_TOKEN),now=Date.now(),id=`N05_QUALIFICATION:${process.env.GITHUB_RUN_ID}:${stage}:${process.env.GITHUB_RUN_ATTEMPT}`,reservation={rows_read:16000,rows_written:500},budget=createUnifiedHttpBudget(),blocked=new Set();
