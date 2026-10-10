@@ -29,6 +29,11 @@ test('retrospective false-rejection or missed label conflicts are censored',()=>
  const b=base();b.event.episode_id='EP2';b.decision.episode_id='EP2';b.outcome.false_rejection_candidate=false;
  const r=run([a,b]);assert.equal(r.eligible,0);assert.equal(r.censored,2);
 });
+test('malformed source receipt and non-HTX contract censor without throwing',()=>{
+ const a=base();a.source_artifact_digest={hash:'a'.repeat(64)};
+ const b=base();b.event.episode_id='EP2';b.decision.episode_id='EP2';b.event.contract='BTC-USD';b.decision.contract='BTC-USD';
+ const r=run([a,b]);assert.equal(r.eligible,0);assert.equal(r.censored,2);
+});
 test('empty actual cohort cannot be reported as 0 percent misses',()=>{
  const r=run([]);assert.equal(r.status,'NO_ACTUAL_PROVEN_DIRECTIONAL_DENOMINATOR');assert.equal(r.missed_rate_pct,null);
  assert.equal(summarize({rows:[base()],now_ts:0}).status,'INVALID_BOUNDED_COHORT');

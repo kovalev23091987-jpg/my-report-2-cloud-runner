@@ -1,3 +1,4 @@
+import {isExactHtxUsdtSwapKey} from './htx-contract-key.mjs';
 // Shadow-only, precommitted independent episodes. A missing outcome is
 // censored, never a non-missed case; controlled fixtures are not empirical.
 const H=Object.freeze({'1h':3600000,'4h':14400000,'12h':43200000,'24h':86400000});
@@ -9,8 +10,8 @@ const stages=new Set(['ANOMALOUS_EVENT','CONFIRMATION_PENDING','ENTRY_TRIGGER_SH
 function classify(row,now,threshold) {
  const e=row?.event,d=row?.decision,o=row?.outcome,h=row?.horizon;
  if(!e||!d||!o||!Object.hasOwn(H,h))return 'CENSORED_UNPROVEN_OR_MISSING_RECEIPT';
- if(!text(e.contract)||!text(e.episode_id)||e.independent_sample!==true||e.control_group!==false||e.control_eligible!==false||!time(e.event_close_ts)||!['LONG','SHORT'].includes(e.direction_at_event)||e.directional_evaluation_eligible!==true||!time(e.direction_locked_ts)||e.direction_locked_ts>e.event_close_ts)return 'CENSORED_NO_PRECOMMITTED_DIRECTIONAL_EPISODE';
- if(d.contract!==e.contract||d.episode_id!==e.episode_id||d.direction!==e.direction_at_event||d.stage!==e.funnel?.stage||!stages.has(d.stage)||!hex(d.head,40)||!text(d.run_id)||!text(d.snapshot_id)||!time(d.observed_ts)||d.observed_ts<e.event_close_ts||d.observed_ts>e.event_close_ts+600000||d.observed_ts>=e.event_close_ts+H[h]||!hex(row.source_artifact_digest?.replace(/^sha256:/,''),64))return 'CENSORED_ORIGINAL_DECISION_BINDING_REQUIRED';
+ if(!isExactHtxUsdtSwapKey(e.contract)||!text(e.episode_id)||e.independent_sample!==true||e.control_group!==false||e.control_eligible!==false||!time(e.event_close_ts)||!['LONG','SHORT'].includes(e.direction_at_event)||e.directional_evaluation_eligible!==true||!time(e.direction_locked_ts)||e.direction_locked_ts>e.event_close_ts)return 'CENSORED_NO_PRECOMMITTED_DIRECTIONAL_EPISODE';
+ if(d.contract!==e.contract||d.episode_id!==e.episode_id||d.direction!==e.direction_at_event||d.stage!==e.funnel?.stage||!stages.has(d.stage)||!hex(d.head,40)||!text(d.run_id)||!text(d.snapshot_id)||!time(d.observed_ts)||d.observed_ts<e.event_close_ts||d.observed_ts>e.event_close_ts+600000||d.observed_ts>=e.event_close_ts+H[h]||!hex(typeof row.source_artifact_digest==='string'?row.source_artifact_digest.replace(/^sha256:/,''):null,64))return 'CENSORED_ORIGINAL_DECISION_BINDING_REQUIRED';
  const target=e.event_close_ts+H[h];
  if(o.status!=='OK'||o.horizon!==h||o.trajectory_complete!==true||o.target_ts!==target||o.source_start_ts!==e.event_close_ts||o.source_end_ts!==target||!time(o.as_of_ts)||o.as_of_ts<target||o.as_of_ts>now||!Number.isSafeInteger(o.expected_bars)||o.expected_bars<1||o.observed_bars!==o.expected_bars||o.trajectory_coverage_pct!==100||o.direction_at_event!==e.direction_at_event||o.direction_locked_ts!==e.direction_locked_ts||o.directional_evaluation_eligible!==true||!number(o.mfe_pct)||!number(o.directional_return_pct))return 'CENSORED_INCOMPLETE_OR_UNBOUND_FUTURE_PATH';
  const reached=o.mfe_pct>=threshold,triggered=['ENTRY_TRIGGER_SHADOW','CHASE_RISK'].includes(d.stage);
