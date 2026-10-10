@@ -29,6 +29,19 @@ test('K13: bad first mature row never blocks next and at most eight are selected
   const rows=[{status:'PENDING',due_ts:1,attempts:3,history_available:false},...Array.from({length:10},(_,i)=>({id:i,status:'PENDING',due_ts:1,attempts:0,history_available:true}))];const out=selectMatureOutcomes(rows,{now:100000,limit:8});assert.equal(out.selected.length,8);assert.equal(out.skipped[0].next_status,'CENSORED_MISSING_HISTORY');assert.equal(out.cursor_advanced,11);
 });
 
+test('K13: missing or invalid price history is censored, never counted as a closed path or modelled profit',()=>{
+  const empty=evaluatePricePath({direction:'LONG',anchor_price:100,target_price:105,invalidation_price:95,candles:[]});
+  assert.equal(empty.status,'CENSORED_MISSING_HISTORY');assert.equal(empty.mfe_pct,null);assert.equal(empty.target_touch,null);
+  const malformed=evaluatePricePath({direction:'SHORT',anchor_price:100,target_price:90,invalidation_price:110,candles:[{closed:true,high:'missing',low:80}]});
+  assert.equal(malformed.status,'CENSORED_INVALID_HISTORY');assert.equal(malformed.mae_pct,null);
+  assert.equal(evaluatePricePath({direction:'LONG',anchor_price:0,target_price:105,invalidation_price:95,candles:[{closed:true,high:110,low:90}]}).status,'CENSORED_INVALID_INPUT');
+  const target=1000+3600000;
+  assert.equal(selectHorizonEndpoint({anchor_ts:1000,horizon:'h1',candles:[{closed:true,close_ts:target-1000,close:'NaN'}]}).status,'CENSORED_INVALID_HISTORY');
+  assert.equal(selectHorizonEndpoint({anchor_ts:1000,horizon:'unknown',candles:[]}).status,'CENSORED_INVALID_INPUT');
+  const invalid=calculateOutcome({direction:'SHORT',anchor_price:100,endpoint_price:0,costs:{fees_pct:0,spread_slippage_pct:0,funding_pct:0}});
+  assert.equal(invalid.net_status,'CENSORED_INVALID_PRICE');assert.equal(invalid.net_return_pct,null);assert.equal(invalid.gross_return_pct,null);
+});
+
 test('K14: endpoint +0.6% does not touch levels 105–112.6 without path high',()=>{
   for(const level of [105,106,108,112.6])assert.equal(evaluateZoneTouch({direction:'LONG',level_price:level,path_high:100.6,path_low:99}).zone_touch,false);
 });
