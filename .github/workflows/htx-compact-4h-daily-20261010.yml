@@ -1,0 +1,156 @@
+name: Bounded HTX compact 90d 4h history (shared source cap)
+on:
+  push:
+    branches: [codex/htx-compact-90d-coarse-history-20261010]
+    paths:
+      - runner/htx-compact-4h-history.mjs
+      - runner/htx-compact-4h-history.test.mjs
+      - tools/acquire-htx-compact-4h-history.mjs
+      - .github/workflows/htx-compact-4h-daily-20261010.yml
+  schedule:
+    - cron: '15 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Exact offline 90d coarse history, daily ZIP and no-ENTRY safety tests
+        run: |
+          set -e
+          node --check runner/htx-compact-4h-history.mjs
+          node --check tools/acquire-htx-compact-4h-history.mjs
+          node --test runner/htx-compact-4h-history.test.mjs runner/htx-cold-history-backfill-plan.test.mjs
+          python3 tools/validate-htx-native-zip.py --self-test
+  acquire:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    concurrency:
+      group: report2-htx-compact-4h-shared-source-ledger
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: CAS acquire own bounded lease; skip on foreign lease, fence or moved main
+        id: lease
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const phasePath='checkpoints/CLOUD_PHASE_STATE_20261004.json';
+            const fencePath='audit-fixes/source-optimization-20260930/execution-lock.json';
+            const read=async p=>{
+              const response=(await github.rest.repos.getContent({owner,repo,path:p,ref:'main'})).data;
+              return {data:JSON.parse(Buffer.from(response.content,'base64').toString('utf8')),sha:response.sha};
+            };
+            const main=(await github.rest.git.getRef({owner,repo,ref:'heads/main'})).data.object.sha;
+            const phase=await read(phasePath),fence=await read(fencePath),now=Date.now();
+            if(main!==context.sha||fence.data.active||phase.data.lease?.owner&&phase.data.lease.expires_ts>now){
+              core.setOutput('acquired','false');
+              core.info('SAFE_SKIP: MOVED_MAIN_OR_ACTIVE_FOREIGN_LEASE_OR_FENCE');
+              return;
+            }
+            const leaseOwner='GH_ACTIONS:HTX_COMPACT_4H:'+context.runId+':'+context.runAttempt;
+            phase.data.lease={owner:leaseOwner,acquired_ts:now,expires_ts:now+25*60000,
+              expected_main:main,scope:'HTX_COMPACT_4H_SAME_SOURCE_6_PER_DAY_PRICE_ONLY_NO_TELEGRAM'};
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,repo,path:phasePath,branch:'main',sha:phase.sha,
+              message:'CAS acquire bounded HTX compact 4h daily archive lease',
+              content:Buffer.from(JSON.stringify(phase.data,null,2)+'\n').toString('base64')});
+            const confirm=await read(phasePath);
+            if(confirm.data.lease?.owner!==leaseOwner)throw Error('LEASE_CAS_READBACK_NOT_CLOSED');
+            core.setOutput('acquired','true');
+            core.setOutput('owner',leaseOwner);
+      - name: Check out exact leased main commit
+        if: steps.lease.outputs.acquired == 'true'
+        run: |
+          set -e
+          git fetch origin main
+          git checkout -B main origin/main
+          git rev-parse HEAD > /tmp/htx-compact-tested-head
+      - name: Fetch up to six HTX native 4h histories with original shared D1 source cap
+        if: steps.lease.outputs.acquired == 'true'
+        env:
+          REPORT2_D1_BRIDGE_URL: ${{ secrets.REPORT2_D1_BRIDGE_URL }}
+          REPORT2_D1_BRIDGE_TOKEN: ${{ secrets.REPORT2_D1_BRIDGE_TOKEN }}
+        run: node tools/acquire-htx-compact-4h-history.mjs
+      - name: Retain source responses and admission receipts even on failure
+        if: always() && steps.lease.outputs.acquired == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: htx-compact-4h-${{ github.run_id }}
+          path: |
+            audit-output/htx-compact-4h/
+            checkpoints/htx-compact-4h/
+          retention-days: 90
+      - name: Confirm own active lease and no new fence before persistence
+        if: success() && steps.lease.outputs.acquired == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const p=(await github.rest.repos.getContent({owner,repo,path:'checkpoints/CLOUD_PHASE_STATE_20261004.json',ref:'main'})).data;
+            const f=(await github.rest.repos.getContent({owner,repo,path:'audit-fixes/source-optimization-20260930/execution-lock.json',ref:'main'})).data;
+            const phase=JSON.parse(Buffer.from(p.content,'base64').toString());
+            const fence=JSON.parse(Buffer.from(f.content,'base64').toString());
+            if(fence.active||phase.lease?.owner!==process.env.EXPECTED_LEASE_OWNER||phase.lease.expires_ts<=Date.now())
+              throw Error('PERSISTENCE_OWNER_LEASE_OR_FENCE_NOT_CLOSED');
+        env:
+          EXPECTED_LEASE_OWNER: ${{ steps.lease.outputs.owner }}
+      - name: Persist exact raw/normalized compressed price-only bytes and per-asset manifests
+        if: success() && steps.lease.outputs.acquired == 'true'
+        run: |
+          set -e
+          if [ -d checkpoints/htx-compact-4h ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f checkpoints/htx-compact-4h/
+            if ! git diff --cached --quiet; then
+              git commit -m 'Retain admitted HTX compact 4h source receipts and historical prices'
+              git push origin HEAD:main
+            fi
+          fi
+      - name: Release only own lease and record measured batch status
+        if: always() && steps.lease.outputs.acquired == 'true'
+        uses: actions/github-script@v7
+        env:
+          EXPECTED_LEASE_OWNER: ${{ steps.lease.outputs.owner }}
+        with:
+          script: |
+            const fs=require('fs'),owner=context.repo.owner,repo=context.repo.repo;
+            const p='checkpoints/CLOUD_PHASE_STATE_20261004.json';
+            const response=(await github.rest.repos.getContent({owner,repo,path:p,ref:'main'})).data;
+            const phase=JSON.parse(Buffer.from(response.content,'base64').toString());
+            if(phase.lease?.owner!==process.env.EXPECTED_LEASE_OWNER){
+              core.warning('LEASE_NOT_OWNED: release skipped');
+              return;
+            }
+            let proof=null;
+            try{proof=JSON.parse(fs.readFileSync('audit-output/htx-compact-4h/actual-batch.json','utf8'));}catch{}
+            const previous=phase.lease,now=Date.now();
+            phase.last_released_lease={owner:previous.owner,acquired_ts:previous.acquired_ts,
+              expires_ts:previous.expires_ts,released_ts:now,reason:'HTX_COMPACT_4H_DAILY_BOUNDED_RUN'};
+            phase.lease={owner:null,acquired_ts:null,expires_ts:null};
+            if(proof)phase.latest_htx_compact_4h_daily={
+              cloud_run:context.runId,head:proof.head,status:proof.status,sourceHTTP:proof.sourceHTTP,
+              source_http_reserved:proof.source_http_reserved,results:proof.results?.map(x=>({
+                contract:x.contract,status:x.status,observed_bars:x.observed_bars})),
+              D1:proof.D1,source_cap_unchanged:6,native_1m_complete:false,actual_ENTRY:false,project_complete:false};
+            await github.rest.repos.createOrUpdateFileContents({
+              owner,repo,path:p,branch:'main',sha:response.sha,
+              message:'Release HTX compact 4h daily lease and record measured source batch',
+              content:Buffer.from(JSON.stringify(phase,null,2)+'\n').toString('base64')});
