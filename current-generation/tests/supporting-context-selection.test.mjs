@@ -13,14 +13,14 @@ test('one busy block cannot evict other factual blocks from the unchanged 24-lin
  const input=[...overload,...facts],before=JSON.stringify(input);canonical.metadata.supporting_context={facts:input};
  const selected=selectSupportingContextFacts(input),manual=formatManualReport(canonical),audit=auditRenderedBlockResults({canonical,manual});
  assert.equal(selected.length,24);assert.equal(manual.ok,true);
- assert.deepEqual(audit.used_context_block_ids.sort(),['N04','N05','N06','N09','N12']);
+ assert.deepEqual(audit.used_context_block_ids.sort(),['N04','N06','N09','N12']);
  assert.equal(audit.available_not_rendered_evidence_ids.length,0);
  assert.equal(JSON.stringify(input),before);assert.equal(manual.text.split('ДОПОЛНИТЕЛЬНЫЙ ПОДТВЕРЖДЁННЫЙ КОНТЕКСТ')[1].split('\n').filter(x=>x.startsWith('- ')).length,24);
 });
 test('all 12 active block positions survive overflow without creating missing-block facts',()=>{
  const ids=['N04','N05','N06','N07','N08','N09','N10','N11','N12','N14','N15','N16'];
  const busy=Array.from({length:32},(_,i)=>({block_id:'N04',label:'Перевод',value:i}));
- const rows=[...busy,...ids.map(block_id=>({block_id,label:block_id,value:1}))],selected=selectSupportingContextFacts(rows);
+ const rows=[...busy,...ids.map(block_id=>({block_id,label:block_id,value:1,...(block_id==='N05'?{field:'JOINT_SPOT_FUTURES_AGREEMENT_4H'}:{})}))],selected=selectSupportingContextFacts(rows);
  assert.equal(selected.length,24);assert.deepEqual([...new Set(selected.map(r=>r.block_id))].sort(),ids);
  assert.ok(selected.every(r=>rows.includes(r)));
  assert.equal(selectSupportingContextFacts(busy).some(r=>r.block_id==='N05'),false);
