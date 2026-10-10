@@ -1,0 +1,1721 @@
+{
+  "schema": "N05_REMAINING_ORIGINAL_ROUTE_REPLAY_V1",
+  "status": "ORIGINAL_HASHES_CLOCKS_FULL_NATIVE_WINDOWS_AND_REFUSALS_REPRODUCED",
+  "source_HTTP": 0,
+  "Telegram": 0,
+  "D1": 0,
+  "raw_hash_checks": 55,
+  "original_batches": [
+    {
+      "run": 38068243085,
+      "kind": "remaining",
+      "body_sha256": "a0542dee7d122b1a11678b6960033e8e25f6f007ad969029e7d81b42e439b3c3",
+      "gzip_sha256": "b31ebfc040364de7be6a514a4121ef13df14d4b67e8ea64b84f82e0896a831ab"
+    },
+    {
+      "run": 38068562919,
+      "kind": "remaining",
+      "body_sha256": "cf3edcd0853ebf36d72dca0ad58ea257e3e468b0310fef5579c032081951b0cb",
+      "gzip_sha256": "6d896edd63b90d0eada4907198e3bc4b19af81242f077e97f7b427465b3679b1"
+    },
+    {
+      "run": 38069197541,
+      "kind": "coinex",
+      "body_sha256": "d6efa525ae69f8c221693f7e64ddaeca9eca975f0f316b576de611a9b1c0cbef",
+      "gzip_sha256": "50336b321679954b357df6ef8278e10faab3ed63fe9846bc72e9cebbc1d645a1"
+    },
+    {
+      "run": 38069554249,
+      "kind": "poloniex",
+      "body_sha256": "48d05da112b7cbfbc91bcc013dd67abca7f9a616d30d5dee11e3f85e937e83ec",
+      "gzip_sha256": "307ff3bdb4df58a6b3a268d566694a3ebd23e64d27d60505dd75bc09820d190d"
+    },
+    {
+      "run": 38069848900,
+      "kind": "poloniex",
+      "body_sha256": "52c53879a7ce5b2bb3a77bdb706f853f23192efbac72273ff4ea995788d243fd",
+      "gzip_sha256": "763c4c068798217f66c43c7f46d6c02fb2fa831e3aa441684d9e7cc6bc7f5169"
+    }
+  ],
+  "original_acquisition_HTTP": 55,
+  "original_D1": {
+    "rows_read": 1153,
+    "rows_written": 409,
+    "unknown_ops": 0
+  },
+  "full_flow_windows": [
+    {
+      "version": "kraken-native-count-flow-v1-20261010",
+      "contract": "AVAX-USDT",
+      "venue": "KRAKEN",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_COUNT_BASE_VWAP_RECONCILED_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791636540000,
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791651099834,
+      "verified_minutes": 240,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 7116.997120033159,
+      "sell_quote": 24454.883141225277,
+      "trade_count": 98,
+      "imbalance": -0.5491559538969644,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://support.kraken.com/articles/360000678446-cryptocurrencies-available-on-kraken",
+      "direction_reference_id": "KRAKEN_PAIRED_PUBLIC_TAKER_V2_38066590063",
+      "physical_root": "KRAKEN_OFFICIAL_PUBLIC_TRADES",
+      "direction_semantics": "PAIRED_OFFICIAL_PUBLIC_TAKER_SIDE",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "raw_trade_counter_independently_verified": true,
+      "native_quote_volume_available": false,
+      "native_vwap_verified": true,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791650040000,
+          "window_end_ts": 1791650940000,
+          "buy_quote": 38.52946,
+          "sell_quote": 33.3011,
+          "trade_count": 3,
+          "imbalance": 0.07278740413551
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791647340000,
+          "window_end_ts": 1791650940000,
+          "buy_quote": 38.52946,
+          "sell_quote": 440.13517874634,
+          "trade_count": 8,
+          "imbalance": -0.8390127162895857
+        }
+      ],
+      "large_individual_trades_available": true,
+      "large_trade_context": null,
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "AAVE-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791636840000,
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651280814,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 356144.39999999997,
+      "sell_quote": 365995.84,
+      "trade_count": 4664,
+      "imbalance": -0.013642003940951967,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791650340000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 27335.52,
+          "sell_quote": 26391.38,
+          "trade_count": 344,
+          "imbalance": 0.017572947629585924
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791647640000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 78236.33,
+          "sell_quote": 75666.39,
+          "trade_count": 978,
+          "imbalance": 0.01669847030643773
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "BTW-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791636840000,
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651344264,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 3512.4446,
+      "sell_quote": 2983.9125,
+      "trade_count": 1420,
+      "imbalance": 0.08135822767501497,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791650340000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 137.7567,
+          "sell_quote": 216.9905,
+          "trade_count": 81,
+          "imbalance": -0.22335285521633433
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791647640000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 717.2462,
+          "sell_quote": 752.3065,
+          "trade_count": 323,
+          "imbalance": -0.023857803806559642
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "DOGE-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791636840000,
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651346056,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 1094390.95016,
+      "sell_quote": 1053130.75025,
+      "trade_count": 18511,
+      "imbalance": 0.01921293736036413,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791650340000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 38639.154460000005,
+          "sell_quote": 32560.16121,
+          "trade_count": 611,
+          "imbalance": 0.08537993929850927
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791647640000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 229833.63121,
+          "sell_quote": 218589.19936,
+          "trade_count": 3846,
+          "imbalance": 0.025075511511550293
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    },
+    {
+      "version": "poloniex-native-taker-flow-v1-20261010",
+      "contract": "ETC-USDT",
+      "venue": "POLONIEX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "status": "CLOSED_NATIVE_TAKER_CANDLES_FOUR_HOURS",
+      "check_completed": true,
+      "window_start_ts": 1791636840000,
+      "window_end_ts": 1791651240000,
+      "observed_ts": 1791651403005,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "minutes": 240,
+      "buy_quote": 276825.57,
+      "sell_quote": 286757.19,
+      "trade_count": 9297,
+      "imbalance": -0.017622292065853824,
+      "verified_minutes": 240,
+      "exact_asset_binding": true,
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      },
+      "identity_reference_url": "https://api.poloniex.com/v2/currencies",
+      "identity_binding": "PRIMARY_CURRENCY_NETWORK_AND_EXACT_ADDRESS",
+      "physical_root": "POLONIEX_OFFICIAL_SPOT_CANDLES",
+      "direction_semantics": "OFFICIAL_NATIVE_BUY_TAKER_QUOTE_AMOUNT",
+      "source_clock_policy": "IMMUTABLE_CLOSED_WINDOW",
+      "native_trade_count_verified": true,
+      "native_aggregate_not_individual_trades": true,
+      "large_individual_trades_available": false,
+      "large_trade_context": null,
+      "recent_windows": [
+        {
+          "minutes": 15,
+          "window_start_ts": 1791650340000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 22985.03,
+          "sell_quote": 24859.36,
+          "trade_count": 789,
+          "imbalance": -0.03917554388299234
+        },
+        {
+          "minutes": 60,
+          "window_start_ts": 1791647640000,
+          "window_end_ts": 1791651240000,
+          "buy_quote": 67673.63,
+          "sell_quote": 67646.95,
+          "trade_count": 2252,
+          "imbalance": 0.00019716143693738233
+        }
+      ],
+      "not_onchain_exchange_flows": true
+    }
+  ],
+  "partial_okx": [
+    {
+      "version": "okx-native-volume-reconciled-flow-v1-20261010",
+      "contract": "NEAR-USDT",
+      "venue": "OKX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635700000,
+      "window_end_ts": 1791650100000,
+      "observed_ts": 1791650108472,
+      "status": "OKX_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "NATIVE_CLOSED_FLAG_REQUIRED"
+    },
+    {
+      "version": "okx-native-volume-reconciled-flow-v1-20261010",
+      "contract": "ETC-USDT",
+      "venue": "OKX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635700000,
+      "window_end_ts": 1791650100000,
+      "observed_ts": 1791650167006,
+      "status": "OKX_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "MINUTE_BASE_AND_QUOTE_VOLUME_NOT_RECONCILED",
+      "verified_minutes": 195,
+      "trade_count": 700,
+      "unreconciled_minutes": [
+        1791635760000,
+        1791635880000,
+        1791636060000,
+        1791636180000,
+        1791636240000,
+        1791636300000,
+        1791636360000,
+        1791636420000,
+        1791636480000,
+        1791636540000,
+        1791636600000,
+        1791636720000,
+        1791636780000,
+        1791636840000,
+        1791636900000,
+        1791636960000,
+        1791637020000,
+        1791637080000,
+        1791637140000,
+        1791637200000,
+        1791637260000,
+        1791637320000,
+        1791637380000,
+        1791637440000,
+        1791637500000,
+        1791637560000,
+        1791637620000,
+        1791637680000,
+        1791637740000,
+        1791637860000,
+        1791637920000,
+        1791638040000,
+        1791638100000,
+        1791638400000,
+        1791638460000,
+        1791638520000,
+        1791638580000,
+        1791638700000,
+        1791638820000,
+        1791639060000,
+        1791639120000,
+        1791639180000,
+        1791639300000,
+        1791639360000,
+        1791639420000
+      ]
+    },
+    {
+      "version": "okx-native-volume-reconciled-flow-v1-20261010",
+      "contract": "ATOM-USDT",
+      "venue": "OKX",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635700000,
+      "window_end_ts": 1791650100000,
+      "observed_ts": 1791650172840,
+      "status": "OKX_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "MINUTE_BASE_AND_QUOTE_VOLUME_NOT_RECONCILED",
+      "verified_minutes": 125,
+      "trade_count": 685,
+      "unreconciled_minutes": [
+        1791635700000,
+        1791635880000,
+        1791635940000,
+        1791636120000,
+        1791636180000,
+        1791636300000,
+        1791636360000,
+        1791636480000,
+        1791636600000,
+        1791636720000,
+        1791636780000,
+        1791636840000,
+        1791636900000,
+        1791636960000,
+        1791637080000,
+        1791637200000,
+        1791637320000,
+        1791637440000,
+        1791637620000,
+        1791637740000,
+        1791637920000,
+        1791638040000,
+        1791638100000,
+        1791638160000,
+        1791638220000,
+        1791638340000,
+        1791638400000,
+        1791638460000,
+        1791638520000,
+        1791638580000,
+        1791638640000,
+        1791638700000,
+        1791638880000,
+        1791638940000,
+        1791639000000,
+        1791639180000,
+        1791639480000,
+        1791639660000,
+        1791639720000,
+        1791639840000,
+        1791639900000,
+        1791640080000,
+        1791640200000,
+        1791640320000,
+        1791640380000,
+        1791640560000,
+        1791640680000,
+        1791640740000,
+        1791640920000,
+        1791641040000,
+        1791641100000,
+        1791641160000,
+        1791641220000,
+        1791641340000,
+        1791641460000,
+        1791641520000,
+        1791641580000,
+        1791641700000,
+        1791641760000,
+        1791641820000,
+        1791641880000,
+        1791641940000,
+        1791642000000,
+        1791642060000,
+        1791642120000,
+        1791642240000,
+        1791642300000,
+        1791642360000,
+        1791642480000,
+        1791642540000,
+        1791642600000,
+        1791642720000,
+        1791642780000,
+        1791642840000,
+        1791642900000,
+        1791642960000,
+        1791643020000,
+        1791643080000,
+        1791643140000,
+        1791643200000,
+        1791643260000,
+        1791643320000,
+        1791643440000,
+        1791643500000,
+        1791643620000,
+        1791643680000,
+        1791643800000,
+        1791643860000,
+        1791643920000,
+        1791643980000,
+        1791644040000,
+        1791644100000,
+        1791644160000,
+        1791644220000,
+        1791644280000,
+        1791644400000,
+        1791644460000,
+        1791644520000,
+        1791644580000,
+        1791644640000,
+        1791644700000,
+        1791644760000,
+        1791644880000,
+        1791644940000,
+        1791645180000,
+        1791645240000,
+        1791645300000,
+        1791645360000,
+        1791645420000,
+        1791645480000,
+        1791645600000,
+        1791645660000,
+        1791645780000,
+        1791645840000,
+        1791645900000
+      ]
+    }
+  ],
+  "partial_mexc": [
+    {
+      "version": "mexc-native-quoteqty-flow-v1-20261010",
+      "contract": "HBAR-USDT",
+      "venue": "MEXC",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635700000,
+      "window_end_ts": 1791650100000,
+      "observed_ts": 1791650390293,
+      "status": "MEXC_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "AMBIGUOUS_DUPLICATE_INDIVIDUAL_TRADE"
+    },
+    {
+      "version": "mexc-native-quoteqty-flow-v1-20261010",
+      "contract": "XLM-USDT",
+      "venue": "MEXC",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635940000,
+      "window_end_ts": 1791650340000,
+      "observed_ts": 1791650392727,
+      "status": "MEXC_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "MINUTE_NATIVE_BASE_AND_QUOTE_AMOUNT_NOT_RECONCILED"
+    },
+    {
+      "version": "mexc-native-quoteqty-flow-v1-20261010",
+      "contract": "ETC-USDT",
+      "venue": "MEXC",
+      "market": "SPOT",
+      "quote": "USDT",
+      "window_start_ts": 1791635940000,
+      "window_end_ts": 1791650340000,
+      "observed_ts": 1791650395088,
+      "status": "MEXC_FULL_WINDOW_NOT_CLOSED",
+      "check_completed": false,
+      "score_contribution": 0,
+      "entry_authorized": false,
+      "reason": "MINUTE_NATIVE_BASE_AND_QUOTE_AMOUNT_NOT_RECONCILED"
+    }
+  ],
+  "poloniex_no_activity_contracts": [
+    "ACE-USDT",
+    "APR-USDT",
+    "ASTER-USDT",
+    "BEAT-USDT",
+    "BOME-USDT",
+    "BONK-USDT",
+    "DOS-USDT",
+    "ENA-USDT",
+    "ETHFI-USDT"
+  ],
+  "poloniex_bindings": [
+    {
+      "contract": "AAVE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      }
+    },
+    {
+      "contract": "ACE-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      }
+    },
+    {
+      "contract": "ADA-USDT",
+      "identity": {
+        "chain": "cardano",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cardano:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "APR-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x5a9610919f5e81183823a2be4bd1beb2b4da2a20"
+      }
+    },
+    {
+      "contract": "APT-USDT",
+      "identity": {
+        "chain": "aptos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "aptos:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ASTER-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      }
+    },
+    {
+      "contract": "ATOM-USDT",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "AVAX-USDT",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "BCH-USDT",
+      "identity": {
+        "chain": "bitcoin-cash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin-cash:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "BEAT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+      }
+    },
+    {
+      "contract": "BOME-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      }
+    },
+    {
+      "contract": "BONK-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      }
+    },
+    {
+      "contract": "BTC-USDT",
+      "identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "BTW-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x444045b0ee1ee319a660a5e3d604ca0ffa35acaa"
+      }
+    },
+    {
+      "contract": "DOGE-USDT",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "DOS-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      }
+    },
+    {
+      "contract": "DOT-USDT",
+      "identity": {
+        "chain": "polkadot",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "polkadot:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ENA-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      }
+    },
+    {
+      "contract": "ETC-USDT",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ETH-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ETHFI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      }
+    },
+    {
+      "contract": "FARTCOIN-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      }
+    },
+    {
+      "contract": "FLOKI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"
+      }
+    },
+    {
+      "contract": "JUP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      }
+    },
+    {
+      "contract": "LINK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      }
+    },
+    {
+      "contract": "LIT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2"
+      }
+    },
+    {
+      "contract": "LSK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6033f7f88332b8db6ad452b7c6d5bb643990ae3f"
+      }
+    },
+    {
+      "contract": "LTC-USDT",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "MUBARAK-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x5c85d6c6825ab4032337f11ee92a72df936b46f6"
+      }
+    },
+    {
+      "contract": "NEAR-USDT",
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ONDO-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      }
+    },
+    {
+      "contract": "PEOPLE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      }
+    },
+    {
+      "contract": "PEPE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      }
+    },
+    {
+      "contract": "PIPPIN-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "Dfh5DzRgSvvCFDoYc2ciTkMrbDfRKybA4SoFbPmApump"
+      }
+    },
+    {
+      "contract": "QNT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+      }
+    },
+    {
+      "contract": "RAY-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      }
+    },
+    {
+      "contract": "SHIB-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      }
+    },
+    {
+      "contract": "SKYAI-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x92aa03137385f18539301349dcfc9ebc923ffb10"
+      }
+    },
+    {
+      "contract": "SOL-USDT",
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "SUI-USDT",
+      "identity": {
+        "chain": "sui",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "sui:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "SUSHI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      }
+    },
+    {
+      "contract": "TRX-USDT",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "TUT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+      }
+    },
+    {
+      "contract": "UNI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      }
+    },
+    {
+      "contract": "WIF-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      }
+    },
+    {
+      "contract": "XLM-USDT",
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "XRP-USDT",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "ZEC-USDT",
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      }
+    },
+    {
+      "contract": "币安人生-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x924fa68a0fc644485b8df8abfa0a41c2e7744444"
+      }
+    },
+    {
+      "contract": "牛来-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xbeea1d618e533a387d941f58a7d4c9b7bd377777"
+      }
+    },
+    {
+      "contract": "龙虾-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xeccbb861c0dda7efd964010085488b69317e4444"
+      }
+    }
+  ],
+  "poloniex_recent_activity_candidates": [
+    {
+      "contract": "AAVE-USDT",
+      "trade_count_24h": 36986,
+      "original_close_ts": 1791651537416,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "ADA-USDT",
+      "trade_count_24h": 152013,
+      "original_close_ts": 1791651537332,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "APT-USDT",
+      "trade_count_24h": 121304,
+      "original_close_ts": 1791651538246,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "ATOM-USDT",
+      "trade_count_24h": 192102,
+      "original_close_ts": 1791651537631,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "AVAX-USDT",
+      "trade_count_24h": 102214,
+      "original_close_ts": 1791651536643,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "BCH-USDT",
+      "trade_count_24h": 62046,
+      "original_close_ts": 1791651539207,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "BTC-USDT",
+      "trade_count_24h": 163756,
+      "original_close_ts": 1791651539145,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "BTW-USDT",
+      "trade_count_24h": 8004,
+      "original_close_ts": 1791651538371,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "DOGE-USDT",
+      "trade_count_24h": 95876,
+      "original_close_ts": 1791651535668,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "DOT-USDT",
+      "trade_count_24h": 99314,
+      "original_close_ts": 1791651537829,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "ETC-USDT",
+      "trade_count_24h": 52372,
+      "original_close_ts": 1791651479936,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "ETH-USDT",
+      "trade_count_24h": 63313,
+      "original_close_ts": 1791651536449,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "FLOKI-USDT",
+      "trade_count_24h": 38981,
+      "original_close_ts": 1791651528703,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "LINK-USDT",
+      "trade_count_24h": 82415,
+      "original_close_ts": 1791651539140,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "LSK-USDT",
+      "trade_count_24h": 38199,
+      "original_close_ts": 1791651538758,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "LTC-USDT",
+      "trade_count_24h": 88458,
+      "original_close_ts": 1791651536964,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "NEAR-USDT",
+      "trade_count_24h": 409202,
+      "original_close_ts": 1791651539369,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "PEPE-USDT",
+      "trade_count_24h": 43303,
+      "original_close_ts": 1791651539254,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "QNT-USDT",
+      "trade_count_24h": 3875,
+      "original_close_ts": 1791651503279,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "SHIB-USDT",
+      "trade_count_24h": 48867,
+      "original_close_ts": 1791651533919,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "SOL-USDT",
+      "trade_count_24h": 207810,
+      "original_close_ts": 1791651537688,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "SUI-USDT",
+      "trade_count_24h": 210578,
+      "original_close_ts": 1791651537833,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "TRX-USDT",
+      "trade_count_24h": 53110,
+      "original_close_ts": 1791651531236,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "UNI-USDT",
+      "trade_count_24h": 162617,
+      "original_close_ts": 1791651537732,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "XLM-USDT",
+      "trade_count_24h": 56059,
+      "original_close_ts": 1791651535268,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "XRP-USDT",
+      "trade_count_24h": 124564,
+      "original_close_ts": 1791651537394,
+      "not_four_hour_flow": true
+    },
+    {
+      "contract": "ZEC-USDT",
+      "trade_count_24h": 52355,
+      "original_close_ts": 1791651479717,
+      "not_four_hour_flow": true
+    }
+  ],
+  "kucoin_bindings": [
+    {
+      "contract": "AAVE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ACE-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xc27a719105a987b4c34116223cae8bd8f4b5def4"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ADA-USDT",
+      "identity": {
+        "chain": "cardano",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cardano:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "ada",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ASTER-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x000ae314e2a2172a039b26378814c252734f556a"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ATOM-USDT",
+      "identity": {
+        "chain": "cosmos",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "cosmos:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "atom",
+      "flow_qualified": false
+    },
+    {
+      "contract": "AVAX-USDT",
+      "identity": {
+        "chain": "avalanche",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "avalanche:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "avaxc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "AVNT-USDT",
+      "identity": {
+        "chain": "base",
+        "contract_or_mint": "0x696f9436b67233384889472cd7cd58a6fb5df4f1"
+      },
+      "chain_id": "base",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BANK-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x3aee7602b612de36088f3ffed8c8f10e86ebf2bf"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BEAT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcf3232b85b43bca90e51d38cc06cc8bb8c8a3e36"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BILL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xb1110919016846972056ab995054d65560d5f05e"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BNB-USDT",
+      "identity": {
+        "chain": "bsc",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bsc:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BOME-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BONK-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "BTC-USDT",
+      "identity": {
+        "chain": "bitcoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "bitcoin:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "btc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "DOGE-USDT",
+      "identity": {
+        "chain": "dogecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "dogecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "doge",
+      "flow_qualified": false
+    },
+    {
+      "contract": "DOS-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x951f086a127e280724fd93ccc543f65065afeb5e"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ENA-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ETC-USDT",
+      "identity": {
+        "chain": "ethereum-classic",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum-classic:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "etc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ETH-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "ethereum:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ETHFI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfe0c30065b384f05761f15d0cc899d4f9f9cc0eb"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "EUL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xd9fcd98c322942075a5c3860693e9f4f03aae07b"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "FARTCOIN-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "9BB6NFEcjBCtnNLFko2FqVQBq8HHM13kCyYcdQbgpump"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "FLOKI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xcf0c122c6b73ff809c693db761e7baebe62b6a2e"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "HBAR-USDT",
+      "identity": {
+        "chain": "hedera",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "hedera:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "hbar",
+      "flow_qualified": false
+    },
+    {
+      "contract": "JUP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "LINK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x514910771af9ca656af840dff83e8264ecf986ca"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "LIT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "LSK-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6033f7f88332b8db6ad452b7c6d5bb643990ae3f"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "LTC-USDT",
+      "identity": {
+        "chain": "litecoin",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "litecoin:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "ltc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "MARSCOIN-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xfe189e97832da1573e4e4ff034f4ffc3a15c7777"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "MUBARAK-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0x5c85d6c6825ab4032337f11ee92a72df936b46f6"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "NEAR-USDT",
+      "identity": {
+        "chain": "near",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "near:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "near",
+      "flow_qualified": false
+    },
+    {
+      "contract": "NIL-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7cf9a80db3b29ee8efe3710aadb7b95270572d47"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ONDO-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0xfaba6f8e4a5e8ab82f62fe7c39859fa577269be3"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "OP-USDT",
+      "identity": {
+        "chain": "optimism",
+        "contract_or_mint": "0x4200000000000000000000000000000000000042"
+      },
+      "chain_id": "optimism",
+      "flow_qualified": false
+    },
+    {
+      "contract": "PENGU-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "2zMMhcVQEXDtdE6vsFS7S7D5oUodfJHE8vd1gnBouauv"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "PEOPLE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x7a58c0be72be218b41c608b7fe7c5bb630736c71"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "PEPE-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "PUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "QNT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x4a220e6096b25eadb88358cb44068a3248254675"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "RAY-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "SHIB-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "SKR-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "SOL-USDT",
+      "identity": {
+        "chain": "solana",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "solana:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "SUI-USDT",
+      "identity": {
+        "chain": "sui",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "sui:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "sui",
+      "flow_qualified": false
+    },
+    {
+      "contract": "SUSHI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "TRUMP-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "TRX-USDT",
+      "identity": {
+        "chain": "tron",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "tron:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "trx",
+      "flow_qualified": false
+    },
+    {
+      "contract": "TUT-USDT",
+      "identity": {
+        "chain": "bsc",
+        "contract_or_mint": "0xcaae2a2f939f51d97cdfa9a86e79e3f085b799f3"
+      },
+      "chain_id": "bsc",
+      "flow_qualified": false
+    },
+    {
+      "contract": "UNI-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "WIF-USDT",
+      "identity": {
+        "chain": "solana",
+        "contract_or_mint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm"
+      },
+      "chain_id": "sol",
+      "flow_qualified": false
+    },
+    {
+      "contract": "WLD-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x163f8c2467924be0ae7b5347228cabf260318753"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "XAUT-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x68749665ff8d2d112fa859aa293f07a622782f38"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    },
+    {
+      "contract": "XLM-USDT",
+      "identity": {
+        "chain": "stellar",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "stellar:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "xlm",
+      "flow_qualified": false
+    },
+    {
+      "contract": "XRP-USDT",
+      "identity": {
+        "chain": "xrp",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "xrp:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "xrp",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ZEC-USDT",
+      "identity": {
+        "chain": "zcash",
+        "asset_kind": "NATIVE",
+        "native_asset_id": "zcash:mainnet",
+        "contract_or_mint": null
+      },
+      "chain_id": "zec",
+      "flow_qualified": false
+    },
+    {
+      "contract": "ZKC-USDT",
+      "identity": {
+        "chain": "ethereum",
+        "contract_or_mint": "0x000006c2a22ff4a44ff1f5d0f2ed65f781f55555"
+      },
+      "chain_id": "eth",
+      "flow_qualified": false
+    }
+  ],
+  "bindings_and_activity_are_not_flow_coverage": true,
+  "coinex_refusal": "EMPTY_NATIVE_MINUTES_AND_ORIGINAL_TRADES_OUTSIDE_REQUESTED_WINDOW",
+  "kucoin_refusal": "LATEST_PUBLIC_TRADES_LIMIT100_AND_NATIVE_GRID_NOT_PROVEN",
+  "candidate_okx_mexc_production_enabled": false,
+  "distinct_retained_full_flow_assets": 22,
+  "simultaneous_continuous_coverage": false,
+  "thirty_percent_useful_coverage_proven": false,
+  "score_contribution": 0,
+  "new_fresh_SENT": false,
+  "project_complete": false
+}

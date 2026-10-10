@@ -1,0 +1,1158 @@
+{
+  "schema": "N05_REMAINING_EXCHANGE_QUALIFICATION_V1",
+  "stage": "coinex",
+  "run": "38069197541",
+  "head": "1b719a4f5f982a4c3fc7014182c1a7c2a6713308",
+  "started_ts": 1791650970437,
+  "approved_assets": 102,
+  "minimum_useful_assets": 31,
+  "coverage_is_not_listing": true,
+  "sourceHTTP": 16,
+  "sources": [
+    {
+      "name": "COINEX-EXACT-ASSETS",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/assets/info",
+      "method": "GET",
+      "received_ts": 1791650973347,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-EXACT-ASSETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "3179b70a3f6ad960e028b66f2f6f3365648633e9b5bbed109b83df59ebfa5604",
+      "gzip_sha256": "253b57dc7405555ac91580c89031d93e5e53518fa4d8698a155c78d87a373cbc",
+      "bytes": 308496,
+      "file": "COINEX-EXACT-ASSETS.json.gz"
+    },
+    {
+      "name": "COINEX-SPOT-MARKETS",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/market",
+      "method": "GET",
+      "received_ts": 1791650974637,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-SPOT-MARKETS",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "f18ebedccf7ef55765cb4ae18d3e10a59954f12a394db4ec351cd4b1a1ba6ca5",
+      "gzip_sha256": "cdfed6232d187f1513d2e39ccb85593566014af1f35afddb800793eeff6ff508",
+      "bytes": 281626,
+      "file": "COINEX-SPOT-MARKETS.json.gz"
+    },
+    {
+      "name": "COINEX-ETC-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=ETCUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791650975893,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-ETC-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 3,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-ETC-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-ETC-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=ETCUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791650977179,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-ETC-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 4,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "2851590e3220c3781c43ec10e6873ffde86d6f63896ad25d7e7dd7774c13bead",
+      "gzip_sha256": "3470c8cf555c41ffda9362152a98c5b8909677a4f07368775dd24fcc3468ceae",
+      "bytes": 98766,
+      "file": "COINEX-ETC-TRADES-0.json.gz"
+    },
+    {
+      "name": "COINEX-NEAR-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=NEARUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791650978459,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-NEAR-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-NEAR-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-NEAR-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=NEARUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791650979716,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-NEAR-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791650940000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "ab9d8ce3fc88a60e282f3c665285fc9ae8cadb3999f719cf1f5221a721b1593b",
+      "gzip_sha256": "e76c71b990ef75899996c454efdc2ce2736515c9cfb0d16d8aa06f8e3ab420d8",
+      "bytes": 97969,
+      "file": "COINEX-NEAR-TRADES-0.json.gz"
+    },
+    {
+      "name": "COINEX-HBAR-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=HBARUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791651034697,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-HBAR-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-HBAR-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-HBAR-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=HBARUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791651036039,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-HBAR-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "d50c1b51955e9866659b3a3aadc0fee72e69b8871acf2019dae016df5d92d1f2",
+      "gzip_sha256": "49f2dfb09a8bcae6441ef99c456222d553ebaae5684f0521c2ac4bcd40135a6b",
+      "bytes": 98639,
+      "file": "COINEX-HBAR-TRADES-0.json.gz"
+    },
+    {
+      "name": "COINEX-SUI-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=SUIUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791651037254,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-SUI-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-SUI-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-SUI-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=SUIUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791651038693,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-SUI-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c241e7581835a9915e2bd767dcff1954f6724ea51e6e555758a1cff98496726c",
+      "gzip_sha256": "00cb135cc98c4a197e9cbdd032816b01eed782f9fd9b98c30dc7b76f4f1bdbf1",
+      "bytes": 98215,
+      "file": "COINEX-SUI-TRADES-0.json.gz"
+    },
+    {
+      "name": "COINEX-LINK-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=LINKUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791651039898,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-LINK-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-LINK-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-LINK-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=LINKUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791651041120,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-LINK-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651000000,
+        "reserved_units": 1,
+        "rolling_units": 6,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "5df5e7ff2c3922888037a553202c34e082bb309c3d9aee15a98cb38d40abc527",
+      "gzip_sha256": "841a6bfae4fd70667c5b216022ef0bd1a67ebad6b8380e89cbc438dececd8a61",
+      "bytes": 99340,
+      "file": "COINEX-LINK-TRADES-0.json.gz"
+    },
+    {
+      "name": "COINEX-AAVE-CANDLES",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/kline?market=AAVEUSDT&period=1min&limit=300",
+      "method": "GET",
+      "received_ts": 1791651096079,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-AAVE-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651060000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "8f916d7a2796a353dc47eb75ff3de132eb2c549ffd89c7de2feacfed2a07dceb",
+      "gzip_sha256": "41c95fdc1f1c82fb8ebb694f82df0d3755ce1d76ff6ca40d99d41fc42c9f4c2b",
+      "bytes": 35,
+      "file": "COINEX-AAVE-CANDLES.json.gz"
+    },
+    {
+      "name": "COINEX-AAVE-TRADES-0",
+      "venue": "COINEX",
+      "url": "https://api.coinex.com/v2/spot/deals?market=AAVEUSDT&limit=1000&last_id=0",
+      "method": "GET",
+      "received_ts": 1791651097314,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:COINEX-AAVE-TRADES-0",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:COINEX",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "COINEX",
+        "minute_bucket": 1791651060000,
+        "reserved_units": 1,
+        "rolling_units": 5,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "936a9cec29e3bc5ba910cf05d341b00c581ab9dae2f0b152677dd75e3c846da7",
+      "gzip_sha256": "df6d4acbfb533b7bd0eea3bdcea73fcfea07fc1c2de78a8ab4417d88968a7800",
+      "bytes": 99266,
+      "file": "COINEX-AAVE-TRADES-0.json.gz"
+    },
+    {
+      "name": "KRAKEN-AVAX-CANDLES",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/OHLC?pair=AVAXUSDT&interval=1&since=1791636540",
+      "method": "GET",
+      "received_ts": 1791651098582,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:KRAKEN-AVAX-CANDLES",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791651060000,
+        "reserved_units": 1,
+        "rolling_units": 1,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "c665c6943fc0575afeb22f86e853a8b211fc08ef4d755d6ae3acd17a3a08588c",
+      "gzip_sha256": "606041fd2052fae2bfdfd3b95f07ea1d36a960c6fee0a5cffede6a7301e63ad7",
+      "bytes": 17616,
+      "file": "KRAKEN-AVAX-CANDLES.json.gz"
+    },
+    {
+      "name": "KRAKEN-AVAX-HISTORY",
+      "venue": "KRAKEN",
+      "url": "https://api.kraken.com/0/public/Trades?pair=AVAXUSDT&since=1791636539999999999&count=1000",
+      "method": "GET",
+      "received_ts": 1791651099834,
+      "http_status": 200,
+      "status": "RECEIVED_NOT_QUALIFIED",
+      "sourceHTTP": 1,
+      "source_ts": null,
+      "retrieval_is_not_event_time": true,
+      "whole_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "lane": "background",
+        "attempts": 1,
+        "logical_request_id": "N05_QUALIFICATION:38069197541:coinex:1:KRAKEN-AVAX-HISTORY",
+        "duplicate": false
+      },
+      "daily_admission": {
+        "allowed": true,
+        "status": "RESERVED",
+        "source": "N05_OFFICIAL_FLOW:KRAKEN",
+        "day_utc": "2026-10-10",
+        "attempts": 1
+      },
+      "minute_admission": {
+        "allowed": true,
+        "status": "RESERVED_OR_IDENTICAL",
+        "provider": "KRAKEN",
+        "minute_bucket": 1791651060000,
+        "reserved_units": 1,
+        "rolling_units": 2,
+        "cap": 6
+      },
+      "retry_after": null,
+      "body_sha256": "f17d66824edc3e1120b2f8591433ef7b0d6dc5016336eae9bd38dddc7aa40c37",
+      "gzip_sha256": "83f8e75e1bfa7fa45dfa754a281f4b12f44bd87e5382df50ad9d4ee57b401ef0",
+      "bytes": 6349,
+      "file": "KRAKEN-AVAX-HISTORY.json.gz"
+    }
+  ],
+  "MAIN": 0,
+  "Telegram": 0,
+  "score_adjustment": 0,
+  "production_enabled": false,
+  "new_fresh_SENT": false,
+  "project_complete": false,
+  "window_end_ts": 1791650940000,
+  "window_start_ts": 1791636540000,
+  "daily_admission": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "allowed": true,
+    "status": "CLOSED",
+    "reasons": [],
+    "daily": {
+      "ok": true,
+      "status": "DAY_USAGE_CLOSED",
+      "day_utc": "2026-10-10",
+      "run_count": 76,
+      "reserved_rows_read": 1245000,
+      "reserved_rows_written": 26176,
+      "measured_rows_read": 735613,
+      "measured_rows_written": 9065,
+      "unknown_ops": 0,
+      "unfinished_count": 0
+    },
+    "next_reservation": {
+      "rows_read": 16000,
+      "rows_written": 500
+    },
+    "projected_reserved": {
+      "rows_read": 1261000,
+      "rows_written": 26676
+    },
+    "limits": {
+      "rows_read": 3500000,
+      "rows_written": 70000
+    }
+  },
+  "windows": [
+    {
+      "symbol": "ETC",
+      "asset": {
+        "short_name": "ETC",
+        "full_name": "Ethereum Classic",
+        "website_url": "http://ethereumclassic.org",
+        "white_paper_url": "https://whitepaperdatabase.com/ethereum-classic-etc-whitepaper/",
+        "chain_info": [
+          {
+            "chain_name": "ETC",
+            "identity": "",
+            "explorer_url": ""
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "ETC",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "ETCUSDT",
+        "min_amount": "0.02",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 4,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791650977179,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "0.39843683",
+            "created_at": 1790646003071,
+            "deal_id": 7354354898,
+            "price": "7.805",
+            "side": "sell"
+          },
+          "last": {
+            "amount": "0.022",
+            "created_at": 1790620076172,
+            "deal_id": 7353607975,
+            "price": "8.7937",
+            "side": "sell"
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "NEAR",
+      "asset": {
+        "short_name": "NEAR",
+        "full_name": "NEAR Protocol",
+        "website_url": "https://near.org/",
+        "white_paper_url": "https://near.org/papers/the-official-near-white-paper/",
+        "chain_info": [
+          {
+            "chain_name": "NEAR",
+            "identity": "",
+            "explorer_url": ""
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "NEAR",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "NEARUSDT",
+        "min_amount": "0.05",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 4,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791650979716,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "0.058",
+            "created_at": 1790648229822,
+            "deal_id": 7354410941,
+            "price": "4.7078",
+            "side": "buy"
+          },
+          "last": {
+            "amount": "0.058",
+            "created_at": 1790638167676,
+            "deal_id": 7354132518,
+            "price": "4.8294",
+            "side": "buy"
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "HBAR",
+      "asset": {
+        "short_name": "HBAR",
+        "full_name": "Hedera Hashgraph",
+        "website_url": "https://www.hedera.com/",
+        "white_paper_url": "https://www.hedera.com/whitepaper",
+        "chain_info": [
+          {
+            "chain_name": "HBAR",
+            "identity": "",
+            "explorer_url": ""
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "HBAR",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "HBARUSDT",
+        "min_amount": "2",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 6,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791651036039,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "2.22",
+            "created_at": 1790648003104,
+            "deal_id": 7354407728,
+            "price": "0.129628",
+            "side": "buy"
+          },
+          "last": {
+            "amount": "2.28",
+            "created_at": 1790638517134,
+            "deal_id": 7354142748,
+            "price": "0.121505",
+            "side": "buy"
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "SUI",
+      "asset": {
+        "short_name": "SUI",
+        "full_name": "Sui",
+        "website_url": "https://sui.io/",
+        "white_paper_url": "https://github.com/MystenLabs/sui/blob/main/doc/paper/sui.pdf",
+        "chain_info": [
+          {
+            "chain_name": "SUI",
+            "identity": "0x2::sui::SUI",
+            "explorer_url": "https://suiscan.xyz/mainnet/coin/0x2::sui::SUI/txs"
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "SUI",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "SUIUSDT",
+        "min_amount": "0.2",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 4,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791651038693,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "0.22",
+            "created_at": 1790648470189,
+            "deal_id": 7354414389,
+            "price": "1.1605",
+            "side": "buy"
+          },
+          "last": {
+            "amount": "0.224",
+            "created_at": 1790638587195,
+            "deal_id": 7354144678,
+            "price": "1.1655",
+            "side": "sell"
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "LINK",
+      "asset": {
+        "short_name": "LINK",
+        "full_name": "Chainlink",
+        "website_url": "https://chain.link/",
+        "white_paper_url": "https://link.smartcontract.com/whitepaper",
+        "chain_info": [
+          {
+            "chain_name": "ERC20",
+            "identity": "0x514910771af9ca656af840dff83e8264ecf986ca",
+            "explorer_url": "https://etherscan.io/token/0x514910771af9ca656af840dff83e8264ecf986ca"
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "LINK",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "LINKUSDT",
+        "min_amount": "0.01",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 4,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791651041120,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "0.0118",
+            "created_at": 1790647442188,
+            "deal_id": 7354394991,
+            "price": "15.1904",
+            "side": "buy"
+          },
+          "last": {
+            "amount": "2.3",
+            "created_at": 1790638500966,
+            "deal_id": 7354142440,
+            "price": "15.369",
+            "side": "buy"
+          }
+        }
+      ]
+    },
+    {
+      "symbol": "AAVE",
+      "asset": {
+        "short_name": "AAVE",
+        "full_name": "Aave",
+        "website_url": "https://app.aave.com/",
+        "white_paper_url": "https://github.com/aave/aave-protocol/blob/master/docs/Aave_Protocol_Whitepaper_v1_0.pdf",
+        "chain_info": [
+          {
+            "chain_name": "ERC20",
+            "identity": "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9",
+            "explorer_url": "https://etherscan.io/token/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+          }
+        ]
+      },
+      "market": {
+        "base_ccy": "AAVE",
+        "base_ccy_precision": 8,
+        "delisted_at": 0,
+        "is_amm_available": false,
+        "is_api_trading_available": true,
+        "is_margin_available": true,
+        "is_pre_market_trading_available": false,
+        "maker_fee_rate": "0.002",
+        "market": "AAVEUSDT",
+        "min_amount": "0.001",
+        "quote_ccy": "USDT",
+        "quote_ccy_precision": 2,
+        "status": "online",
+        "taker_fee_rate": "0.002"
+      },
+      "window_end_ts": 1791650940000,
+      "observed_ts": 1791651097314,
+      "native_minutes": 0,
+      "raw_pages": [
+        {
+          "code": 0,
+          "rows": 1000,
+          "first": {
+            "amount": "0.00111",
+            "created_at": 1790648469456,
+            "deal_id": 7354414366,
+            "price": "145.27",
+            "side": "sell"
+          },
+          "last": {
+            "amount": "0.00112",
+            "created_at": 1790638438300,
+            "deal_id": 7354140619,
+            "price": "148.94",
+            "side": "buy"
+          }
+        }
+      ]
+    }
+  ],
+  "kraken_window": {
+    "contract": "AVAX-USDT",
+    "identity": {
+      "chain": "avalanche",
+      "asset_kind": "NATIVE",
+      "native_asset_id": "avalanche:mainnet",
+      "contract_or_mint": null
+    },
+    "instrument": {
+      "key": "AVAXUSDT",
+      "base": "AVAX",
+      "quote": "USDT",
+      "wsname": "AVAX/USDT",
+      "altname": "AVAXUSDT",
+      "status": "online"
+    },
+    "window_end_ts": 1791650940000,
+    "observed_ts": 1791651099834
+  },
+  "status": "REMAINING_EXCHANGE_ROUTE_FACTS_RETAINED",
+  "http_budget": {
+    "used": {
+      "hot": 0,
+      "background": 16,
+      "statistics": 0
+    },
+    "total": 16,
+    "limits": {
+      "whole_job": 164,
+      "hot": 120,
+      "background": 28,
+      "statistics": 16,
+      "full_deep": 50,
+      "standard_supplemental": 5,
+      "liquidation_only": 8,
+      "hub_daily": 900
+    },
+    "remaining": 148
+  },
+  "finalized_usage": {
+    "schema": "report2-d1-reservation-budget-v2",
+    "status": "FINALIZED",
+    "reservation_id": "N05_QUALIFICATION:38069197541:coinex:1",
+    "source_run_id": "38069197541",
+    "measured_rows_read": 303,
+    "measured_rows_written_accounted": 118,
+    "measured_requests_accounted": 132,
+    "unknown_ops": 0
+  },
+  "D1": {
+    "requests": 132,
+    "rows_read": 304,
+    "rows_written": 118,
+    "unknown_ops": 0,
+    "targets": {
+      "first:report2_runner_budget_ledger_shadow": {
+        "requests": 2,
+        "rows_read": 77,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:OTHER": {
+        "requests": 1,
+        "rows_read": 0,
+        "rows_written": 3,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_cache": {
+        "requests": 16,
+        "rows_read": 0,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_daily": {
+        "requests": 32,
+        "rows_read": 16,
+        "rows_written": 18,
+        "unknown_ops": 0
+      },
+      "batch:report2_evidence_source_reservation": {
+        "requests": 16,
+        "rows_read": 16,
+        "rows_written": 32,
+        "unknown_ops": 0
+      },
+      "first:report2_evidence_source_reservation": {
+        "requests": 16,
+        "rows_read": 16,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_provider_minute_ledger_v1": {
+        "requests": 16,
+        "rows_read": 81,
+        "rows_written": 64,
+        "unknown_ops": 0
+      },
+      "first:report2_provider_minute_ledger_v1": {
+        "requests": 32,
+        "rows_read": 97,
+        "rows_written": 0,
+        "unknown_ops": 0
+      },
+      "run:report2_runner_budget_ledger_shadow": {
+        "requests": 1,
+        "rows_read": 1,
+        "rows_written": 1,
+        "unknown_ops": 0
+      }
+    }
+  },
+  "completed_ts": 1791651100034,
+  "raw_batch": {
+    "file": "original-batch.json.gz",
+    "body_sha256": "d6efa525ae69f8c221693f7e64ddaeca9eca975f0f316b576de611a9b1c0cbef",
+    "gzip_sha256": "50336b321679954b357df6ef8278e10faab3ed63fe9846bc72e9cebbc1d645a1",
+    "bytes": 1219411
+  },
+  "coverage_qualified": false
+}

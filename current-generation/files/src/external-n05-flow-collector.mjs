@@ -1,3 +1,4 @@
+import {collectPoloniexFlow} from './poloniex-native-flow-collector.mjs';
 import {collectBackpackFlow} from './backpack-flow-collector.mjs';
 import {collectKrakenFlow} from './kraken-flow-collector.mjs';
 import {collectGateFlow} from './gate-flow-collector.mjs';
@@ -19,5 +20,8 @@ export async function collectExternalN05Flow(params={}){
  if(params.asset_identity?.contract_or_mint){const gate=await collectGateFlow(params);results.push(gate);if(gate.check_completed)return complete(merged({...gate,selected_venue:'GATE',source_selection:'EXACT_GATE_CHAIN_ADDRESS_PAIRED_TAKER_TRADES'}));}
  if(params.asset_identity?.contract_or_mint){const backpack=await collectBackpackFlow(params);results.push(backpack);if(backpack.check_completed)return merged({...backpack,selected_venue:'BACKPACK',source_selection:'EXACT_CHAIN_ADDRESS_NATIVE_MINUTE_COUNTS'});}
  const bitget=await collectBitgetFlow(params);results.push(bitget);
+ if(bitget.check_completed)return merged({...bitget,selected_venue:'BITGET'});
+ const poloniex=await collectPoloniexFlow(params);results.push(poloniex);
+ if(poloniex.check_completed)return merged({...poloniex,selected_venue:'POLONIEX',source_selection:'EXACT_CHAIN_ADDRESS_NATIVE_TAKER_CANDLES'});
  return{...bitget,network_calls:results.reduce((n,r)=>n+(r.network_calls||0),0),receipts:results.flatMap(r=>r.receipts||[]),components:results.flatMap(r=>r.components||[]),selected_venue:'BITGET',adapter_results:results.map(({components,receipts,...r})=>r)};
 }
